@@ -5,7 +5,6 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import {
     Camera,
-    Edit3,
     Eye,
     Trash2,
     User
@@ -40,11 +39,11 @@
   }
 
   function getInitials(name: string) {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+    return name.split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase();
   }
 </script>
 
-<Card class="hover:shadow-lg transition-shadow cursor-pointer border-2" on:click={() => dispatch('view', poi)}>
+<Card class="hover:shadow-lg transition-shadow cursor-pointer border-2" on:click={() => onView?.(poi)}>
   <CardHeader class="pb-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -99,7 +98,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click|stopPropagation={() => dispatch('view', poi)}
+        on:click|stopPropagation={() => onView?.(poi)}
         class="flex-1"
       >
         <Eye class="w-4 h-4 mr-1" />
@@ -108,16 +107,16 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click|stopPropagation={() => dispatch('edit', poi)}
+        on:click|stopPropagation={() => onEdit?.(poi)}
         class="flex-1"
       >
-        <Edit3 class="w-4 h-4 mr-1" />
+        <Edit class="w-4 h-4 mr-1" />
         Edit
       </Button>
       <Button
         variant="ghost"
         size="sm"
-        on:click|stopPropagation={() => dispatch('delete', poi)}
+        on:click|stopPropagation={() => onDelete?.(poi)}
         class="text-red-600 hover:text-red-700"
       >
         <Trash2 class="w-4 h-4" />
@@ -128,6 +127,7 @@
 
 <style>
   .line-clamp-2 {
+    line-clamp: 2;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

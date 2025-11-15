@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/button';
   import {
     Dialog,
     DialogContent,
@@ -7,22 +7,44 @@
     DialogHeader,
     DialogTitle,
   } from '$lib/components/ui/dialog';
-  import { Input } from '$lib/components/ui/input';
-  import { Progress } from '$lib/components/ui/progress';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import { createEventDispatcher } from 'svelte';
-  import { writable } from 'svelte/store';
+  import Input from '$lib/components/ui/input';
+  import Progress from '$lib/components/ui/progress';
+  import Textarea from '$lib/components/ui/textarea';
 
-  export let open = false;
-  export let caseId: string;
+  type Statement = {
+    victimName: string;
+    victimContact: string;
+    incidentDate: string;
+    incidentLocation: string;
+    incidentDescription: string;
+    emotionalImpact: string;
+    physicalImpact: string;
+    financialImpact: string;
+    linkedEvidence: string[];
+    additionalNotes: string;
+  };
+
+  type Props = {
+    open: boolean;
+    caseId: string;
+    onSave: (data: { statement: Statement }) => void;
+    onCancel: () => void;
+  };
+
+  let {
+    open = $bindable(false),
+    caseId,
+    onSave,
+    onCancel
+  } = $props<Props>();
 
   type WizardStep = 'basic-info' | 'incident-details' | 'impact-assessment' | 'evidence-links' | 'review';
 
-  let currentStep: WizardStep = 'basic-info';
-  let stepProgress = 0;
+  let currentStep = $state<WizardStep>('basic-info');
+  let stepProgress = $state(0);
 
   // Form data
-  let statement = writable({
+  let statement = $state<Statement>({
     victimName: '',
     victimContact: '',
     incidentDate: '',
@@ -31,17 +53,12 @@
     emotionalImpact: '',
     physicalImpact: '',
     financialImpact: '',
-    linkedEvidence: [] as string[],
+    linkedEvidence: [],
     additionalNotes: '',
   });
 
-  let aiSuggestions = '';
-  let isGeneratingSuggestions = false;
-
-  const dispatch = createEventDispatcher<{
-    save: { statement: typeof $statement };
-    cancel: void;
-  }>();
+  let aiSuggestions = $state('');
+  let isGeneratingSuggestions = $state(false);
 
   const steps: { id: WizardStep; title: string; description: string }[] = [
     { id: 'basic-info', title: 'Basic Information', description: 'Victim details and contact information' },
@@ -82,7 +99,7 @@
       const response = await fetch('/api/victim-statement/ai/suggestions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ statement: $statement, caseId }),
+        body: JSON.stringify({ statement, caseId }),
       });
 
       const result = await response.json();
@@ -96,14 +113,14 @@
   }
 
   function saveStatement() {
-    dispatch('save', { statement: $statement });
+    onSave({ statement });
     resetWizard();
   }
 
   function resetWizard() {
     currentStep = 'basic-info';
     stepProgress = 0;
-    statement.set({
+    statement = {
       victimName: '',
       victimContact: '',
       incidentDate: '',
@@ -114,17 +131,19 @@
       financialImpact: '',
       linkedEvidence: [],
       additionalNotes: '',
-    });
+    };
     aiSuggestions = '';
   }
 
   function cancelWizard() {
     resetWizard();
-    dispatch('cancel');
+    onCancel();
   }
 
   // Reactive progress update
-  $: updateProgress();
+  $effect(() => {
+    updateProgress();
+  });
 </script>
 
 <Dialog bind:open on:openChange={(e) => !e.detail && cancelWizard()}>
@@ -138,7 +157,7 @@
 
     <!-- Progress Bar -->
     <div class="wizard-progress">
-      <Progress value={stepProgress} class="progress-bar" />
+      <Progress bind:value={stepProgress} class="progress-bar" />
       <div class="step-indicators">
         {#each steps as step, index}
           <div
@@ -162,44 +181,49 @@
             <label for="victimName">Victim Name:</label>
             <Input
               id="victimName"
-              bind:value={$statement.victimName}
+              value={statement.victimName}
+              on:input={(e) => statement.victimName = e.target.value}
               placeholder="Full name of the victim"
             />
-          </div>
           <div class="form-group">
             <label for="victimContact">Contact Information:</label>
             <Input
               id="victimContact"
-              bind:value={$statement.victimContact}
+              value={statement.victimContact}
+              on:input={(e) => statement.victimContact = e.target.value}
               placeholder="Phone, email, or address"
             />
+          </div>
           </div>
         </div>
       {/if}
 
       {#if currentStep === 'incident-details'}
-        <div class="step-content">
-          <h3>Incident Details</h3>
           <div class="form-group">
             <label for="incidentDate">Date of Incident:</label>
             <Input
               id="incidentDate"
               type="date"
-              bind:value={$statement.incidentDate}
+              value={statement.incidentDate}
+              on:input={(e) => statement.incidentDate = e.target.value}
             />
-          </div>
           <div class="form-group">
             <label for="incidentLocation">Location:</label>
             <Input
               id="incidentLocation"
-              bind:value={$statement.incidentLocation}
+              value={statement.incidentLocation}
+              on:input={(e) => statement.incidentLocation = e.target.value}
               placeholder="Where did the incident occur?"
             />
-          </div>
           <div class="form-group">
             <label for="incidentDescription">Description:</label>
             <Textarea
-              bind:value={$statement.incidentDescription}
+              value={statement.incidentDescription}
+              on:input={(e) => statement.incidentDescription = e.target.value}
+              placeholder="Detailed description of what happened"
+              rows={6}
+            />
+          </div>nd:value={statement.incidentDescription}
               placeholder="Detailed description of what happened"
               rows={6}
             />
@@ -223,31 +247,34 @@
             </div>
           {/if}
         </div>
-      {/if}
-
-      {#if currentStep === 'impact-assessment'}
-        <div class="step-content">
-          <h3>Impact Assessment</h3>
           <div class="form-group">
             <label for="emotionalImpact">Emotional Impact:</label>
             <Textarea
-              bind:value={$statement.emotionalImpact}
+              value={statement.emotionalImpact}
+              on:input={(e) => statement.emotionalImpact = e.target.value}
               placeholder="How has this affected you emotionally?"
               rows={4}
             />
-          </div>
           <div class="form-group">
             <label for="physicalImpact">Physical Impact:</label>
             <Textarea
-              bind:value={$statement.physicalImpact}
+              value={statement.physicalImpact}
+              on:input={(e) => statement.physicalImpact = e.target.value}
               placeholder="Any physical effects or injuries?"
               rows={4}
             />
-          </div>
           <div class="form-group">
             <label for="financialImpact">Financial Impact:</label>
             <Textarea
-              bind:value={$statement.financialImpact}
+              value={statement.financialImpact}
+              on:input={(e) => statement.financialImpact = e.target.value}
+              placeholder="Any financial losses or costs incurred?"
+              rows={4}
+            />
+          </div>lass="form-group">
+            <label for="financialImpact">Financial Impact:</label>
+            <Textarea
+              bind:value={statement.financialImpact}
               placeholder="Any financial losses or costs incurred?"
               rows={4}
             />
@@ -272,20 +299,20 @@
           <div class="review-summary">
             <div class="review-section">
               <h4>Victim Information</h4>
-              <p><strong>Name:</strong> {$statement.victimName}</p>
-              <p><strong>Contact:</strong> {$statement.victimContact}</p>
+              <p><strong>Name:</strong> {statement.victimName}</p>
+              <p><strong>Contact:</strong> {statement.victimContact}</p>
             </div>
             <div class="review-section">
               <h4>Incident Details</h4>
-              <p><strong>Date:</strong> {$statement.incidentDate}</p>
-              <p><strong>Location:</strong> {$statement.incidentLocation}</p>
-              <p><strong>Description:</strong> {$statement.incidentDescription}</p>
+              <p><strong>Date:</strong> {statement.incidentDate}</p>
+              <p><strong>Location:</strong> {statement.incidentLocation}</p>
+              <p><strong>Description:</strong> {statement.incidentDescription}</p>
             </div>
             <div class="review-section">
               <h4>Impact Assessment</h4>
-              <p><strong>Emotional:</strong> {$statement.emotionalImpact}</p>
-              <p><strong>Physical:</strong> {$statement.physicalImpact}</p>
-              <p><strong>Financial:</strong> {$statement.financialImpact}</p>
+              <p><strong>Emotional:</strong> {statement.emotionalImpact}</p>
+              <p><strong>Physical:</strong> {statement.physicalImpact}</p>
+              <p><strong>Financial:</strong> {statement.financialImpact}</p>
             </div>
           </div>
         </div>

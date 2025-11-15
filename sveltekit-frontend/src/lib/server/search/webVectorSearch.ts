@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import { webEmbeddings, webPages } from '$lib/server/db/schema-web';
 import { sql } from 'drizzle-orm';
-import { generateEmbedding } from '$lib/server/ai/embeddings-gemma';
+import { generateEmbedding } from '$lib/server/ai/agentic-stream';
 
 export interface SearchResult {
   id: string;
@@ -24,7 +24,7 @@ export async function cosineSearchWeb({
   topK?: number;
   scope?: string;
 }): Promise<{ docs: SearchResult[] }> {
-  const embedding = await generateEmbedding(query);
+  const embedding = await generateEmbedding(query, {});
 
   // Get base vector results (expanded set for reranking)
   const base = await db
@@ -55,14 +55,14 @@ export async function cosineSearchWeb({
       if (!p) return null;
       return {
         id: b.id,
-        url: p.url,
-        title: p.title || '',
-        content: p.content,
-        source: p.source,
+        url: (p as any).url,
+        title: (p as any).title || '',
+        content: (p as any).content,
+        source: (p as any).source,
         vectorScore: b.distance,
         bm25Score: 0,
         combinedScore: 0,
-        createdAt: p.createdAt
+        createdAt: (p as any).createdAt
       };
     })
     .filter(Boolean) as SearchResult[];

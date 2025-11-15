@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { db } from '../../src/lib/server/db'; // adjust path
 import { webPages, webEmbeddings } from '../../src/lib/server/db/schema-web';
 import { eq } from 'drizzle-orm';
-import { generateEmbedding } from '../../src/lib/server/ai/embeddings-gemma'; // your embeddinggemma:latest wrapper
+import { generateEmbedding } from '../../src/lib/server/ai/embeddings-enhanced';
 
 function hashId(input: string) {
   return crypto.createHash('sha256').update(input).digest('hex');

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { db } from '../src/lib/server/db';
 import { webPages, webEmbeddings } from '../src/lib/server/db/schema-web';
-import { generateEmbedding } from '../src/lib/server/ai/embeddings-gemma';
+import { generateEmbedding } from '../src/lib/server/ai/embeddings';
 import crypto from 'crypto';
 
 function hashId(input: string) {

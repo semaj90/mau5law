@@ -11,7 +11,7 @@ export async function getCachedSearch(query: string, scope?: string) {
   const raw = await redis.get(key);
   if (!raw) return null;
   try {
-    const parsed = JSON.parse(raw);
+    const parsed = JSON.parse(raw as string);
     return parsed;
   } catch {
     return null;

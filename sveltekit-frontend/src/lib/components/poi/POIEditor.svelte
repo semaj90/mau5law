@@ -1,36 +1,25 @@
 <script lang="ts">
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import { Input } from '$lib/components/ui/input/Input.svelte';
+  import { Label } from '$lib/components/ui/label/Label.svelte';
+  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/Select.svelte';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { AlertTriangle, Save, X } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
   import POIPhotoGrid from './POIPhotoGrid.svelte';
 
-  export let poi: {
-    id?: string;
-    name: string;
-    alias?: string;
-    threatLevel: string;
-    photos?: Array<{
-      url: string;
-      thumbnailUrl: string;
-      metadata?: any;
-      ai?: any;
-    }>;
-    notes?: string;
-  } = {
-    name: '',
-    alias: '',
-    threatLevel: 'low',
-    photos: [],
-    notes: ''
-  };
-
-  export let isNew = false;
+  let {
+    poi = {
+      name: '',
+      alias: '',
+      threatLevel: 'low',
+      photos: [],
+      notes: ''
+    },
+    isNew = false
+  } = $props();
 
   const dispatch = createEventDispatcher();
 

@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let a;
-  export let b;
+  let { a, b } = $props();
 </script>
 
 <div class="fixed inset-0 bg-black bg-opacity-80 flex p-10 gap-8 text-white">

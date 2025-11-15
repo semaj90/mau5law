@@ -8,12 +8,12 @@
   let { class: className = '', children, ...rest }: Props = $props();
 </script>
 
-<h3
+<div
   class={`
-    text-2xl font-semibold leading-none tracking-tight
+    flex h-full w-full items-center justify-center rounded-full bg-muted
     ${className}
   `}
   {...rest}
 >
   {@render children?.()}
-</h3>
+</div>

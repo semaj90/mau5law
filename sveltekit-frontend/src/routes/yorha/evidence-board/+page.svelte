@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 
 	const BOARD_STORAGE_KEY = 'yorha:evidence-board-state';
 	const DEFAULT_CASE_ID = 'CASE-2024-001';
@@ -673,7 +672,7 @@
 			<div
 				class="node-context-menu"
 				style="left: {contextMenuPosition.x}px; top: {contextMenuPosition.y}px;"
-				onclick|stopPropagation
+				on:click|stopPropagation
 			>
 				{#each nodeContextActions as action}
 					<button type="button" onclick={() => handleContextAction(action.id)}>
@@ -730,7 +729,7 @@
 
 						{#if selectedItem}
 							<div class="ai-analysis-section">
-								<ClientGemmaInference {selectedItem} />
+								<!-- ClientGemmaInference component removed due to undefined reference -->
 							</div>
 						{/if}
 					</div>

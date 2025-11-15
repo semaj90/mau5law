@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let nodes;
-  export let viewport;
+  let { nodes, viewport } = $props();
 </script>
 
 <div class="fixed bottom-4 right-4 w-48 h-48 bg-gray-900 border border-cyan-400 p-1 opacity-90">

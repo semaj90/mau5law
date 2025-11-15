@@ -1,5 +1,3 @@
-import { env } from '$env/dynamic/public';
-
 /**
  * Client-side EmbeddingGemma service using ONNX Runtime Web
  * Runs EmbeddingGemma 300M ONNX model directly in the browser
@@ -23,18 +21,18 @@ export class ClientEmbeddingService {
 
       // Configure ONNX Runtime for WebGPU if available, fallback to WebAssembly
       const options = {
-        executionProviders: ['webgpu', 'wasm'],
-        graphOptimizationLevel: 'all',
+        executionProviders: ['wasm'],
+        graphOptimizationLevel: 'all' as const,
         enableCpuMemArena: true,
         enableMemPattern: true,
-        executionMode: 'sequential'
+        executionMode: 'sequential' as const
       };
 
       console.log('🔄 Loading EmbeddingGemma ONNX model...');
       const modelResponse = await fetch(this.modelPath);
       const modelArrayBuffer = await modelResponse.arrayBuffer();
 
-      this.session = await ort.InferenceSession.create(modelArrayBuffer, options);
+      this.session = await ort.InferenceSession.create(new Uint8Array(modelArrayBuffer), options);
       console.log('✅ EmbeddingGemma model loaded');
 
       // Load tokenizer

@@ -1,16 +1,13 @@
 <script lang="ts">
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
   import { Camera, Eye, Trash2, Upload } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
 
-  export let photos: Array<{
-    url: string;
-    thumbnailUrl: string;
-    metadata?: any;
-    ai?: any;
-  }> = [];
-  export let editable = false;
+  let {
+    photos = [],
+    editable = false
+  } = $props();
 
   const dispatch = createEventDispatcher();
 

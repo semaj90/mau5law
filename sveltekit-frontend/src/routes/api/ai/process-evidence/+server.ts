@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { getUser } from '$lib/server/auth';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisMiddleware } from '$lib/middleware/redis-orchestrator-middleware';
 import { getOllamaEndpoint, getEnhancedRagEndpoint } from '$lib/server/endpoints';
 
 // --- Types ---
@@ -471,7 +471,7 @@ async function logAnalysis(data: AuditLog): Promise<void> {
 	}
 }
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisMiddleware.aiAnalysis(originalPOSTHandler);
 
 
 

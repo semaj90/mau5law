@@ -1,8 +1,8 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import * as Dialog from '$lib/components/ui/dialog';
+  import { Dialog as Root, DialogContent as Content, DialogOverlay as Overlay, DialogClose as Close } from '$lib/components/ui/dialog';
   import { appStore } from '$lib/stores/app-store';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
 
   // YoRHaModalComponent is being replaced by bits-ui Dialog
 
@@ -34,10 +34,10 @@
       error = null;
 
       // Load cases from API
-      await appStore.loadCases();
+      // await appStore.loadCases();
 
       // Get cases from store and filter for recent ones
-      const allCases = appStore.cases || [];
+      const allCases = $appStore.cases || [];
       recentCases = allCases
         .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
         .slice(0, 10)
@@ -175,15 +175,21 @@
     await goto(`/cases/${caseId}`);
   }
 
+  let intervalId: number;
+
   onMount(async () => {
     await loadData();
 
     // Refresh data periodically
-    const interval = setInterval(async () => {
+    intervalId = setInterval(async () => {
       await loadData();
     }, 60000); // Refresh every minute
+  });
 
-    return () => clearInterval(interval);
+  onDestroy(() => {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
   });
 </script>
 
@@ -317,12 +323,12 @@
 </div>
 
 {#if showNewCaseModal}
-  <Dialog.Root bind:open={showNewCaseModal}>
-    <Dialog.Overlay
+  <Root bind:open={showNewCaseModal}>
+    <Overlay
       class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out
              data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
-    <Dialog.Content
+    <Content
       class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4
              border border-slate-700 bg-black/60 p-6 shadow-lg duration-200 data-[state=open]:animate-in
              data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
@@ -330,12 +336,12 @@
              data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2
              data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full"
     >
-      <Dialog.Header>
-        <Dialog.Title class="text-xl font-semibold text-slate-100">Create New Case</Dialog.Title>
-        <Dialog.Description class="text-sm text-slate-300">
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-slate-100">Create New Case</h2>
+        <p class="text-sm text-slate-300">
           Fill in the details for the new case.
-        </Dialog.Description>
-      </Dialog.Header>
+        </p>
+      </div>
       <form
         class="space-y-4"
         onsubmit={(e) => {
@@ -392,7 +398,7 @@
           </button>
         </div>
       </form>
-      <Dialog.Close
+      <Close
         class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
       >
         <svg
@@ -411,9 +417,9 @@
           <path d="M6 6L18 18" />
         </svg>
         <span class="sr-only">Close</span>
-      </Dialog.Close>
-    </Dialog.Content>
-  </Dialog.Root>
+      </Close>
+    </Content>
+  </Root>
 {/if}
 
 

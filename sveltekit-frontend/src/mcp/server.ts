@@ -154,11 +154,11 @@ class YoRhaLegalMCPServer {
         switch (name) {
           case 'rag_web_search':
             const searchResult = await mcpTools.rag.webSearch(
-              args.query,
+              args.query as string,
               {
-                topK: args.topK,
-                scope: args.scope,
-                threshold: args.threshold
+                topK: args.topK as number,
+                scope: args.scope as string,
+                threshold: args.threshold as number
               }
             );
             return {
@@ -166,13 +166,13 @@ class YoRhaLegalMCPServer {
             };
 
           case 'rag_index_web_page':
-            const indexResult = await mcpTools.rag.indexWebPage(args.url);
+            const indexResult = await mcpTools.rag.indexWebPage(args.url as string);
             return {
               content: [{ type: 'text', text: JSON.stringify(indexResult, null, 2) }]
             };
 
           case 'rag_index_directory':
-            const dirResult = await mcpTools.rag.indexDirectory(args.path);
+            const dirResult = await mcpTools.rag.indexDirectory(args.path as string);
             return {
               content: [{ type: 'text', text: JSON.stringify(dirResult, null, 2) }]
             };
@@ -190,7 +190,7 @@ class YoRhaLegalMCPServer {
             };
 
           case 'rag_clear_cache':
-            const clearResult = await mcpTools.rag.clearLangCache(args.scope);
+            const clearResult = await mcpTools.rag.clearLangCache(args.scope as string);
             return {
               content: [{ type: 'text', text: JSON.stringify(clearResult, null, 2) }]
             };

@@ -1,20 +1,22 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import type { EvidenceNode as EvidenceNodeType } from '$lib/server/db/schema-postgres';
-  import { createEventDispatcher } from 'svelte';
+  import Button from '$lib/components/ui/button';
 
-  export let node: EvidenceNodeType;
-  export let isSelected = false;
-  export let mode: 'grid' | 'free' | 'magnetic' = 'free';
+  type EvidenceNodeType = {
+    id: string;
+    x: number;
+    y: number;
+    type: string;
+    title: string;
+    confidence?: number;
+    description?: string;
+    metadata?: Record<string, any>;
+  };
 
-  let isDragging = false;
-  let dragStart = { x: 0, y: 0 };
+  let { node, isSelected = false, onSelect, onMove } = $props<EvidenceNodeType & { isSelected?: boolean; onSelect: (data: { nodeId: string; multiSelect: boolean }) => void; onMove: (data: { nodeId: string; x: number; y: number }) => void; }>();
+
+  let isDragging = $state(false);
+  let dragStart = $state({ x: 0, y: 0 });
   let element: HTMLElement;
-
-  const dispatch = createEventDispatcher<{
-    select: { nodeId: string; multiSelect: boolean };
-    move: { nodeId: string; x: number; y: number };
-  }>();
 
   function handleMouseDown(event: MouseEvent) {
     if (event.button !== 0) return; // Only left click
@@ -23,7 +25,7 @@
     dragStart = { x: event.clientX - node.x, y: event.clientY - node.y };
 
     // Select node
-    dispatch('select', {
+    onSelect({
       nodeId: node.id,
       multiSelect: event.ctrlKey || event.metaKey,
     });
@@ -37,7 +39,7 @@
     const newX = event.clientX - dragStart.x;
     const newY = event.clientY - dragStart.y;
 
-    dispatch('move', {
+    onMove({
       nodeId: node.id,
       x: newX,
       y: newY,
@@ -49,13 +51,16 @@
   }
 
   // Global mouse event listeners for dragging
-  $: if (isDragging) {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  } else {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  }
+  $effect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  });
 
   // Node type styling
   function getNodeTypeColor(type: string): string {
@@ -133,7 +138,7 @@
 
   <!-- Node Actions -->
   <div class="node-actions">
-    <Button variant="ghost" size="sm" on:click={() => dispatch('select', { nodeId: node.id, multiSelect: false })}>
+    <Button variant="ghost" size="sm" on:click={() => onSelect({ nodeId: node.id, multiSelect: false })}>
       View Details
     </Button>
   </div>

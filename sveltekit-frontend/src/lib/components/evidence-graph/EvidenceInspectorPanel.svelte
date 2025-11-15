@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let evidence;
-  export let open = false;
+  let { evidence, open = false } = $props();
 </script>
 
 <div class="fixed right-0 top-0 h-full w-[28rem] bg-gray-950 text-white p-5 nes-container with-title"
