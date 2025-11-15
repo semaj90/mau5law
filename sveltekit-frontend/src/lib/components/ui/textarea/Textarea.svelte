@@ -1,15 +1,34 @@
 <script lang="ts">
-  // Truncated file - replaced with stub
+  interface Props {
+    placeholder?: string;
+    value?: string;
+    class?: string;
+    disabled?: boolean;
+    rows?: number;
+    [key: string]: any;
+  }
+
+  let {
+    placeholder = '',
+    value = '',
+    class: className = '',
+    disabled = false,
+    rows = 3,
+    ...rest
+  }: Props = $props();
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
-  .page-repair {
-    padding: 2rem;
-    font-family: sans-serif;
-  }
-</style>
+<textarea
+  {placeholder}
+  {value}
+  {disabled}
+  {rows}
+  class={`
+    flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2
+    text-sm ring-offset-background placeholder:text-muted-foreground
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+    focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
+    ${className}
+  `}
+  {...rest}
+></textarea>

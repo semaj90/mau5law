@@ -1,32 +1,28 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Select } from '$lib/components/ui/select';
-  import type { EvidenceConnection, EvidenceNode as EvidenceNodeType } from '$lib/server/db/schema-postgres';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import Button from '$lib/components/ui/button';
+  import Select from '$lib/components/ui/select';
+  import { evidence, evidenceConnections } from '$lib/server/db/schema-postgres';
+  import { onMount } from 'svelte';
   import { get, writable } from 'svelte/store';
   import EvidenceConnections from './EvidenceConnections.svelte';
   import EvidenceNode from './EvidenceNode.svelte';
 
-  export let caseId: string;
-  export let initialNodes: EvidenceNodeType[] = [];
-  export let initialConnections: EvidenceConnection[] = [];
+  let { caseId, initialNodes = [], initialConnections = [] }: { caseId: string; initialNodes?: EvidenceNodeType[]; initialConnections?: EvidenceConnection[] } = $props();
+  type EvidenceConnection = typeof evidenceConnections.$inferSelect;
+
+  let { caseId, initialNodes = [], initialConnections = [] }: { caseId: string; initialNodes?: (typeof EvidenceNodeType)[]; initialConnections?: any[] } = $props();
 
   // Board modes
-  type BoardMode = 'grid' | 'free' | 'magnetic';
-
-  let boardMode: BoardMode = 'free';
   let nodes = writable<EvidenceNodeType[]>(initialNodes);
   let connections = writable<EvidenceConnection[]>(initialConnections);
+  let boardMode: BoardMode = 'free';
+  let nodes = writable<(typeof EvidenceNodeType)[]>(initialNodes);
+  let connections = writable<any[]>(initialConnections);
   let selectedNodes = writable<Set<string>>(new Set());
-  let isDragging = false;
-  let dragOffset = { x: 0, y: 0 };
-  let canvasElement: HTMLDivElement;
 
   // Reactive statements for store values
-  $: currentNodes = $nodes;
-  $: currentSelectedNodes = $selectedNodes;
-
-  const dispatch = createEventDispatcher();
+  let currentNodes = $derived(() => $nodes);
+  let currentSelectedNodes = $derived(() => $selectedNodes);
 
   // Grid snapping
   const GRID_SIZE = 50;
@@ -172,13 +168,13 @@
   });
 </script>
 
-<div class="evidence-board-container">
-  <!-- Toolbar -->
-  <div class="board-toolbar">
     <div class="mode-selector">
-      <Select bind:value={boardMode} on:change={(e) => changeMode(e.detail.value)}>
+      <select bind:value={boardMode} on:change={(e) => changeMode(e.target.value as BoardMode)} class="mode-selector">
         <option value="grid">Grid Mode</option>
         <option value="free">Free Mode</option>
+        <option value="magnetic">Magnetic AI</option>
+      </select>
+    </div>ption value="free">Free Mode</option>
         <option value="magnetic">Magnetic AI</option>
       </Select>
     </div>
@@ -209,14 +205,14 @@
     bind:this={canvasElement}
   >
     <!-- Connections Layer -->
-    <EvidenceConnections connections={$connections} nodes={currentNodes} />
-
-    <!-- Nodes Layer -->
-    {#each currentNodes as node (node.id)}
+    <EvidenceConnections connections={connections} nodes={nodes} />
       <EvidenceNode
-        {node}
+        {...node}
         isSelected={currentSelectedNodes.has(node.id)}
         mode={boardMode}
+        on:select={(e: CustomEvent<{nodeId: string; multiSelect: boolean}>) => selectNode(e.detail.nodeId, e.detail.multiSelect)}
+        on:move={(e: CustomEvent<{nodeId: string; x: number; y: number}>) => moveNode(e.detail.nodeId, e.detail.x, e.detail.y)}
+      />mode={boardMode}
         on:select={(e) => selectNode(e.detail.nodeId, e.detail.multiSelect)}
         on:move={(e) => moveNode(e.detail.nodeId, e.detail.x, e.detail.y)}
       />

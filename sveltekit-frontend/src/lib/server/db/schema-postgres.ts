@@ -975,7 +975,6 @@ export const casesRelations = relations(cases, ({ many, one }) => ({
   caseScores: many(caseScores),
   userAiQueries: many(userAiQueriesTable),
   canvasStates: many(canvasStates),
-  evidenceNodes: many(evidenceNodes),
 }));
 
 export const criminalsRelations = relations(criminals, ({ many, one }) => ({

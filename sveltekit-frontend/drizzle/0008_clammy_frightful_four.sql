@@ -24,6 +24,7 @@ CREATE TABLE "ai_reports" (
 	"updatedAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+ALTER TABLE "ai_reports" ADD CONSTRAINT "ai_reports_created_by_users_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
 CREATE TABLE "attachment_verifications" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"attachment_id" uuid,
@@ -495,7 +496,7 @@ ALTER TABLE "documents" ALTER COLUMN "user_id" SET DATA TYPE uuid;--> statement-
 ALTER TABLE "documents" ALTER COLUMN "user_id" DROP NOT NULL;--> statement-breakpoint
 ALTER TABLE "documents" ALTER COLUMN "file_size" SET DATA TYPE bigint;--> statement-breakpoint
 ALTER TABLE "documents" ALTER COLUMN "file_size" SET NOT NULL;--> statement-breakpoint
-/* 
+/*
     Unfortunately in current drizzle-kit version we can't automatically get name for primary key.
     We are working on making it available!
 
@@ -506,7 +507,7 @@ ALTER TABLE "documents" ALTER COLUMN "file_size" SET NOT NULL;--> statement-brea
                 AND table_name = 'embedding_cache'
                 AND constraint_type = 'PRIMARY KEY';
         2. Uncomment code below and paste pk name manually
-        
+
     Hope to release this update as soon as possible
 */
 

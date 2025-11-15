@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
+  import Badge from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button';
   import Card from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
+  import Input from '$lib/components/ui/input';
   import { appActions, appStore } from '$lib/stores/app-store';
-  import * as Lucide from 'lucide-svelte';
+  import { Cpu, Database, RefreshCw, Save, Server, Zap } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   // Reactive state from app store
@@ -34,20 +34,6 @@
     });
     return unsubscribe;
   });
-
-  function resolveIcon(name: string) {
-    const ns = Lucide as Record<string, any>;
-    return ns[name] ?? ns[name.toLowerCase()] ?? ns.default?.[name] ?? ns.default ?? undefined;
-  }
-
-  const Settings = resolveIcon('Settings');
-  const Database = resolveIcon('Database');
-  const Server = resolveIcon('Server');
-  const Cpu = resolveIcon('Cpu');
-  const HardDrive = resolveIcon('HardDrive');
-  const Zap = resolveIcon('Zap');
-  const Save = resolveIcon('Save');
-  const RefreshCw = resolveIcon('RefreshCw');
 
   function getHealthColor(status: string) {
     switch (status?.toLowerCase()) {
@@ -117,13 +103,13 @@
     }
   }
 
-  onMount(async () => {
-    await loadConfig();
-    await appActions.loadSystemMetrics();
+  onMount(() => {
+    loadConfig();
+    appActions.loadSystemMetrics();
 
     // Refresh system metrics periodically
-    const interval = setInterval(async () => {
-      await appActions.loadSystemMetrics();
+    const interval = setInterval(() => {
+      appActions.loadSystemMetrics();
     }, 30000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
@@ -264,19 +250,23 @@
         <div class="card-content">
           <div class="config-fields">
             <div class="field-group">
-              <label class="field-label">Database URL</label>
+              <label for="databaseUrl" class="field-label">Database URL</label>
               <Input
+                id="databaseUrl"
                 type="text"
-                bind:value={config.databaseUrl}
+                value={config.databaseUrl}
+                on:input={(e) => config.databaseUrl = e.target.value}
                 placeholder="postgresql://user:pass@localhost:5432/db"
                 class="config-input"
               />
             </div>
             <div class="field-group">
-              <label class="field-label">Redis URL</label>
+              <label for="redisUrl" class="field-label">Redis URL</label>
               <Input
+                id="redisUrl"
                 type="text"
-                bind:value={config.redisUrl}
+                value={config.redisUrl}
+                on:input={(e) => config.redisUrl = e.target.value}
                 placeholder="redis://localhost:6379"
                 class="config-input"
               />
@@ -297,29 +287,35 @@
         <div class="card-content">
           <div class="config-fields">
             <div class="field-group">
-              <label class="field-label">Ollama URL</label>
+              <label for="ollamaUrl" class="field-label">Ollama URL</label>
               <Input
+                id="ollamaUrl"
                 type="text"
-                bind:value={config.ollamaUrl}
+                value={config.ollamaUrl}
+                on:input={(e) => config.ollamaUrl = e.target.value}
                 placeholder="http://localhost:11434"
                 class="config-input"
               />
             </div>
             <div class="field-group">
-              <label class="field-label">GPU Layers</label>
+              <label for="gpuLayers" class="field-label">GPU Layers</label>
               <Input
+                id="gpuLayers"
                 type="number"
-                bind:value={config.gpuLayers}
+                value={config.gpuLayers.toString()}
+                on:input={(e) => config.gpuLayers = parseInt(e.target.value) || config.gpuLayers}
                 min="1"
                 max="50"
                 class="config-input"
               />
             </div>
             <div class="field-group">
-              <label class="field-label">Max Batch Size</label>
+              <label for="maxBatchSize" class="field-label">Max Batch Size</label>
               <Input
+                id="maxBatchSize"
                 type="number"
-                bind:value={config.maxBatchSize}
+                value={config.maxBatchSize.toString()}
+                on:input={(e) => config.maxBatchSize = parseInt(e.target.value) || config.maxBatchSize}
                 min="1"
                 max="1000"
                 class="config-input"

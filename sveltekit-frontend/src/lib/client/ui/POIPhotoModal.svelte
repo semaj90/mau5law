@@ -1,14 +1,9 @@
 <script lang="ts">
-  import Badge from '$lib/components/ui/badge';
+  import Card from '$lib/components/ui/bits/Card';
+  import CardContent from '$lib/components/ui/bits/CardContent';
+  import CardHeader from '$lib/components/ui/bits/CardHeader';
+  import CardTitle from '$lib/components/ui/bits/CardTitle';
   import Button from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/card';
-  import CardContent from '$lib/components/ui/card-content';
-  import CardHeader from '$lib/components/ui/card-header';
-  import CardTitle from '$lib/components/ui/card-title';
-  import Tabs from '$lib/components/ui/tabs/Tabs.svelte';
-  import TabsContent from '$lib/components/ui/tabs/TabsContent.svelte';
-  import TabsList from '$lib/components/ui/tabs/TabsList.svelte';
-  import TabsTrigger from '$lib/components/ui/tabs/TabsTrigger.svelte';
   import {
     Brain,
     Calendar,
@@ -48,9 +43,9 @@
     onClose: () => void;
   }>();
 
-  let zoom = 1;
-  let rotation = 0;
-  let imageElement: HTMLImageElement;
+  let zoom = $state(1);
+  let rotation = $state(0);
+  let imageElement = $state<HTMLImageElement>();
 
   $effect(() => {
     if (!open) {
@@ -148,122 +143,110 @@
 
         <!-- Analysis Panel -->
         <div class="w-80 border-l bg-gray-50 overflow-y-auto">
-          <Tabs defaultValue="overview" class="h-full">
-            <TabsList class="grid w-full grid-cols-3">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="metadata">Metadata</TabsTrigger>
-              <TabsTrigger value="analysis">AI Analysis</TabsTrigger>
-            </TabsList>
+          <div class="p-4 space-y-4">
+            <Card>
+              <CardHeader class="pb-3">
+                <CardTitle class="text-lg">Photo Overview</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-3">
+                {#if photo.metadata?.timestamp}
+                  <div class="flex items-center gap-2">
+                    <Calendar class="w-4 h-4 text-gray-500" />
+                    <span class="text-sm">{formatTimestamp(photo.metadata.timestamp)}</span>
+                  </div>
+                {/if}
 
-            <TabsContent value="overview" class="p-4 space-y-4">
-              <Card>
-                <CardHeader class="pb-3">
-                  <CardTitle class="text-lg">Photo Overview</CardTitle>
-                </CardHeader>
-                <CardContent class="space-y-3">
-                  {#if photo.metadata?.timestamp}
-                    <div class="flex items-center gap-2">
-                      <Calendar class="w-4 h-4 text-gray-500" />
-                      <span class="text-sm">{formatTimestamp(photo.metadata.timestamp)}</span>
-                    </div>
-                  {/if}
+                {#if photo.metadata?.gps}
+                  <div class="flex items-center gap-2">
+                    <MapPin class="w-4 h-4 text-gray-500" />
+                    <span class="text-sm">{formatGPS(photo.metadata.gps)}</span>
+                  </div>
+                {/if}
 
-                  {#if photo.metadata?.gps}
-                    <div class="flex items-center gap-2">
-                      <MapPin class="w-4 h-4 text-gray-500" />
-                      <span class="text-sm">{formatGPS(photo.metadata.gps)}</span>
-                    </div>
-                  {/if}
+                {#if photo.metadata?.device}
+                  <div class="flex items-center gap-2">
+                    <Camera class="w-4 h-4 text-gray-500" />
+                    <span class="text-sm">{photo.metadata.device}</span>
+                  </div>
+                {/if}
 
-                  {#if photo.metadata?.device}
-                    <div class="flex items-center gap-2">
-                      <Camera class="w-4 h-4 text-gray-500" />
-                      <span class="text-sm">{photo.metadata.device}</span>
-                    </div>
-                  {/if}
+                {#if photo.metadata?.ai?.qualityScore}
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm">Quality Score</span>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      {Math.round(photo.metadata.ai.qualityScore * 100)}%
+                    </span>
+                  </div>
+                {/if}
+              </CardContent>
+            </Card>
 
-                  {#if photo.metadata?.ai?.qualityScore}
-                    <div class="flex items-center justify-between">
-                      <span class="text-sm">Quality Score</span>
-                      <Badge variant={photo.metadata.ai.qualityScore > 0.8 ? 'default' : 'secondary'}>
-                        {Math.round(photo.metadata.ai.qualityScore * 100)}%
-                      </Badge>
-                    </div>
-                  {/if}
-                </CardContent>
-              </Card>
-            </TabsContent>
+            <Card>
+              <CardHeader class="pb-3">
+                <CardTitle class="text-lg flex items-center gap-2">
+                  <Tag class="w-4 h-4" />
+                  EXIF Metadata
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {#if photo.metadata?.exif}
+                  <div class="space-y-2 text-sm">
+                    {#each Object.entries(photo.metadata.exif) as [key, value]}
+                      <div class="flex justify-between">
+                        <span class="font-medium text-gray-600">{key}:</span>
+                        <span class="text-gray-800">{String(value)}</span>
+                      </div>
+                    {/each}
+                  </div>
+                {:else}
+                  <p class="text-gray-500 text-sm">No EXIF data available</p>
+                {/if}
+              </CardContent>
+            </Card>
 
-            <TabsContent value="metadata" class="p-4">
-              <Card>
-                <CardHeader class="pb-3">
-                  <CardTitle class="text-lg flex items-center gap-2">
-                    <Tag class="w-4 h-4" />
-                    EXIF Metadata
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {#if photo.metadata?.exif}
-                    <div class="space-y-2 text-sm">
-                      {#each Object.entries(photo.metadata.exif) as [key, value]}
-                        <div class="flex justify-between">
-                          <span class="font-medium text-gray-600">{key}:</span>
-                          <span class="text-gray-800">{String(value)}</span>
-                        </div>
+            <Card>
+              <CardHeader class="pb-3">
+                <CardTitle class="text-lg flex items-center gap-2">
+                  <Brain class="w-4 h-4" />
+                  AI Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                {#if photo.metadata?.ai?.caption}
+                  <div>
+                    <h4 class="font-medium text-sm mb-2">AI Caption</h4>
+                    <p class="text-sm text-gray-700 bg-blue-50 p-3 rounded">
+                      {photo.metadata.ai.caption}
+                    </p>
+                  </div>
+                {/if}
+
+                {#if photo.metadata?.ai?.tags && photo.metadata.ai.tags.length > 0}
+                  <div>
+                    <h4 class="font-medium text-sm mb-2">AI Tags</h4>
+                    <div class="flex flex-wrap gap-1">
+                      {#each photo.metadata.ai.tags as tag}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-gray-300 text-gray-700">
+                          {tag}
+                        </span>
                       {/each}
                     </div>
-                  {:else}
-                    <p class="text-gray-500 text-sm">No EXIF data available</p>
-                  {/if}
-                </CardContent>
-              </Card>
-            </TabsContent>
+                  </div>
+                {/if}
 
-            <TabsContent value="analysis" class="p-4">
-              <Card>
-                <CardHeader class="pb-3">
-                  <CardTitle class="text-lg flex items-center gap-2">
-                    <Brain class="w-4 h-4" />
-                    AI Analysis
-                  </CardTitle>
-                </CardHeader>
-                <CardContent class="space-y-4">
-                  {#if photo.metadata?.ai?.caption}
-                    <div>
-                      <h4 class="font-medium text-sm mb-2">AI Caption</h4>
-                      <p class="text-sm text-gray-700 bg-blue-50 p-3 rounded">
-                        {photo.metadata.ai.caption}
-                      </p>
-                    </div>
-                  {/if}
-
-                  {#if photo.metadata?.ai?.tags && photo.metadata.ai.tags.length > 0}
-                    <div>
-                      <h4 class="font-medium text-sm mb-2">AI Tags</h4>
-                      <div class="flex flex-wrap gap-1">
-                        {#each photo.metadata.ai.tags as tag}
-                          <Badge variant="outline" class="text-xs">
-                            {tag}
-                          </Badge>
-                        {/each}
-                      </div>
-                    </div>
-                  {/if}
-
-                  {#if photo.metadata?.ai?.faceEmbedding}
-                    <div class="flex items-center gap-2">
-                      <Badge variant="secondary" class="text-xs">
-                        Face Detected
-                      </Badge>
-                      <span class="text-xs text-gray-500">
-                        {photo.metadata.ai.faceEmbedding.length}D embedding
-                      </span>
-                    </div>
-                  {/if}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                {#if photo.metadata?.ai?.faceEmbedding}
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      Face Detected
+                    </span>
+                    <span class="text-xs text-gray-500">
+                      {photo.metadata.ai.faceEmbedding.length}D embedding
+                    </span>
+                  </div>
+                {/if}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
