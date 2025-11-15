@@ -183,11 +183,9 @@ export function activate(context: vscode.ExtensionContext) {
           <div class="yorha-panel-content p-4">
             <div class="flex items-center justify-between mb-2">
               <!-- render icon using svelte:component for dynamic components -->
-              <svelte:component
-                this={feature.icon}
-                class={'h-6 w-6 ' + getStatusColor(feature.status)}
+              <feature.icon class={'h-6 w-6 ' + getStatusColor(feature.status)}
                 aria-hidden="true"
-              />
+              / />
               <span class="sr-only"
                 >{feature.name} {feature.status ? 'operational' : 'offline'}</span
               >
@@ -243,11 +241,9 @@ export function activate(context: vscode.ExtensionContext) {
                   <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                     <!-- Fix: Use svelte:component directly instead of {@const} -->
                     <!-- dynamic component using svelte:component -->
-                    <svelte:component
-                      this={feature.icon}
-                      class="h-5 w-5 text-blue-600 dark:text-blue-400"
+                    <feature.icon class="h-5 w-5 text-blue-600 dark:text-blue-400"
                       aria-hidden="true"
-                    />
+                    / />
                     <span class="sr-only"
                       >{feature.name} {feature.status ? 'online' : 'offline'}</span
                     >
@@ -343,11 +339,9 @@ export function activate(context: vscode.ExtensionContext) {
               <div class="flex items-center gap-3 mb-3">
                 <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                   <!-- dynamic component using svelte:component -->
-                  <svelte:component
-                    this={useCase.icon}
-                    class="h-5 w-5 text-green-600 dark:text-green-400"
+                  <useCase.icon class="h-5 w-5 text-green-600 dark:text-green-400"
                     aria-hidden="true"
-                  />
+                  / />
                   <span class="sr-only">{useCase.title}</span>
                 </div>
                 <h3 class="font-semibold">{useCase.title}</h3>

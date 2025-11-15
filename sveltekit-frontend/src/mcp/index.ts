@@ -49,10 +49,24 @@ export interface UserTools {
   getUserAnalytics(): Promise<MCPToolResponse<any>>;
 }
 
+export interface RAGTools {
+  webSearch(query: string, options?: {
+    topK?: number;
+    scope?: string;
+    threshold?: number;
+  }): Promise<MCPToolResponse<any[]>>;
+  indexWebPage(url: string): Promise<MCPToolResponse<{ indexed: boolean; id: string }>>;
+  indexDirectory(path: string): Promise<MCPToolResponse<{ indexed: number; errors: string[] }>>;
+  syncMinIO(): Promise<MCPToolResponse<{ processed: number; skipped: number }>>;
+  getLangCacheStats(): Promise<MCPToolResponse<{ hits: number; misses: number; total: number }>>;
+  clearLangCache(scope?: string): Promise<MCPToolResponse<{ cleared: number }>>;
+}
+
 export interface MCPTools {
   cases: CasesTools;
   evidence: EvidenceTools;
   users: UserTools;
+  rag: RAGTools;
   getAnalytics(params: Record<string, string>): Promise<MCPToolResponse<any>>;
   analyzeLegalDocument(document: unknown): Promise<MCPToolResponse<any>>;
   extractClauses(documentId: string): Promise<MCPToolResponse<any>>;
@@ -107,6 +121,61 @@ export const mcpTools: MCPTools = {
       data: { id: userId, ...((updates as any) || {}) },
     }),
     getUserAnalytics: async () => ({ success: true, data: { totalUsers: 1, activeUsers: 1 } }),
+  },
+  rag: {
+    webSearch: async (query, options) => {
+      try {
+        const response = await fetch('/api/websearch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, ...options })
+        });
+        const result = await response.json();
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: String(error) };
+      }
+    },
+    indexWebPage: async (url) => {
+      try {
+        // This would call the web crawler tool
+        return { success: true, data: { indexed: true, id: `web-${Date.now()}` } };
+      } catch (error) {
+        return { success: false, error: String(error) };
+      }
+    },
+    indexDirectory: async (path) => {
+      try {
+        // This would call the fs indexer tool
+        return { success: true, data: { indexed: 0, errors: [] } };
+      } catch (error) {
+        return { success: false, error: String(error) };
+      }
+    },
+    syncMinIO: async () => {
+      try {
+        // This would trigger MinIO sync
+        return { success: true, data: { processed: 0, skipped: 0 } };
+      } catch (error) {
+        return { success: false, error: String(error) };
+      }
+    },
+    getLangCacheStats: async () => {
+      try {
+        // This would query Redis for cache stats
+        return { success: true, data: { hits: 0, misses: 0, total: 0 } };
+      } catch (error) {
+        return { success: false, error: String(error) };
+      }
+    },
+    clearLangCache: async (scope) => {
+      try {
+        // This would clear Redis cache
+        return { success: true, data: { cleared: 0 } };
+      } catch (error) {
+        return { success: false, error: String(error) };
+      }
+    },
   },
   getAnalytics: async (_params) => ({ success: true, data: null }),
   analyzeLegalDocument: async (_document) => ({ success: true, data: null }),

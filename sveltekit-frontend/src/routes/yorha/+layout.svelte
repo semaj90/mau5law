@@ -267,7 +267,7 @@
               >
                 {#if item.icon}
                   <!-- render icon with svelte:component for dynamic components -->
-                  <svelte:component this={item.icon} size={16} />
+                  <item.icon size={16} / />
                 {/if}
                 <div class="yorha-nav-content">
                   <span class="yorha-nav-label">{item.label}</span>

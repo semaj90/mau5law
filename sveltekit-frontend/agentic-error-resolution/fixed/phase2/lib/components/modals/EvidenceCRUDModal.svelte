@@ -335,7 +335,7 @@
         <CardHeader class="border-b">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <svelte:component this={typeIcons[evidence.type]} class="w-6 h-6" />
+              <typeIcons[evidence.type] class="w-6 h-6" / />
               <CardTitle>
                 {mode === 'create' ? 'Create Evidence' :
                  mode === 'edit' ? 'Edit Evidence' : 'View Evidence'}

@@ -852,10 +852,8 @@
                         {#each Array.isArray(analysisResult.comparison.recommendations) ? analysisResult.comparison.recommendations : [] as rec}
                           <div class="bg-slate-700/50 rounded-lg p-4">
                             <div class="flex items-center gap-2 mb-2">
-                              <svelte:component
-                                this={getPriorityIcon(rec.priority)}
-                                class={`w-5 h-5 ${getPriorityColor(rec.priority)}`}
-                              />
+                              <getPriorityIcon(rec.priority) class={`w-5 h-5 ${getPriorityColor(rec.priority)}`}
+                              / />
                               <h5 class={`text-lg font-semibold ${getPriorityColor(rec.priority)}`}>
                                 {rec.type.toUpperCase()}: {rec.description}
                               </h5>

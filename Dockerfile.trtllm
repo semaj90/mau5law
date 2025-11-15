@@ -4,6 +4,15 @@
 
 FROM nvcr.io/nvidia/tensorrt-llm/release:latest
 
+# Copy and install local TensorRT repository
+COPY python_codebase/third_party_integrations/ubuntu_tensorrt/nv-tensorrt-local-repo-ubuntu2204-10.11.0-cuda-12.9_1.0-1_amd64.deb /tmp/
+RUN dpkg -i /tmp/nv-tensorrt-local-repo-ubuntu2204-10.11.0-cuda-12.9_1.0-1_amd64.deb && \
+    apt-get update && \
+    # You might need to specify a version here, e.g., apt-get install -y tensorrt-llm=<version>
+    apt-get install -y tensorrt-llm && \
+    rm /tmp/nv-tensorrt-local-repo-ubuntu2204-10.11.0-cuda-12.9_1.0-1_amd64.deb && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 

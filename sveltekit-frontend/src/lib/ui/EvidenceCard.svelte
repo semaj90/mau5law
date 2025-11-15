@@ -97,7 +97,7 @@
 >
   <div class="card-header">
     <div class="file-icon">
-      <svelte:component this={getFileIcon(evidence.mimeType || 'application/octet-stream')} size={24} />
+      <getFileIcon(evidence.mimeType || 'application/octet-stream') size={24} / />
     </div>
 
     {#if isTagged}

@@ -172,10 +172,10 @@ def convert_checkpoint():
     config = {
         "architecture": "GemmaForCausalLM",
         "dtype": "float16",
-        "hidden_size": 3840,
-        "intermediate_size": 15360,
+        "hidden_size": 4096,
+        "intermediate_size": 16384,
         "num_hidden_layers": 48,
-        "num_attention_heads": 16,
+        "num_attention_heads": 32,
         "num_key_value_heads": 8,
         "vocab_size": 262208,
         "max_position_embeddings": 4096,
@@ -193,11 +193,11 @@ def convert_checkpoint():
             "max_beam_width": 1,
             "vocab_size": 262208,
             "num_layers": 48,
-            "num_heads": 16,
+            "num_heads": 32,
             "num_kv_heads": 8,
-            "hidden_size": 3840,
-            "inter_size": 15360,
-            "head_size": 256
+            "hidden_size": 4096,
+            "inter_size": 16384,
+            "head_size": 128
         }
     }
 

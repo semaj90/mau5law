@@ -1,7 +1,7 @@
 <!-- FOAF Recommendations Modal - SSR compatible with Svelte 5 runes + Melt-UI -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import * as Dialog from 'bits-ui';
+  import { Dialog } from 'bits-ui/components/ui/dialog';
   import { fade, fly } from 'svelte/transition';
   import { X, Users, UserCheck, Briefcase, Mail } from 'lucide-svelte';
   interface Person {

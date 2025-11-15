@@ -113,12 +113,9 @@ AI Document Summarization - Generate summaries of legal documents
 </script>
 
 <!-- render the resolved template component -->
-<svelte:component
-  this={EssentialRouteComponent}
-  pageTitle="Document Summarization"
+<EssentialRouteComponent pageTitle="Document Summarization"
   description="AI-powered legal document analysis and summarization"
-  showBackButton={true}
->
+  showBackButton={true}> />
   {#snippet children()}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Upload and Controls -->

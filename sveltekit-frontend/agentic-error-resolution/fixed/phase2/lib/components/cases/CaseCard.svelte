@@ -1,6 +1,6 @@
 
 <script lang="ts">
-  import * as ContextMenu from 'bits-ui';
+  import { ContextMenu } from 'bits-ui/components/ui/context-menu';
   import { fly, scale } from 'svelte/transition';
   import {
     FileText,

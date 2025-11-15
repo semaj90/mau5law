@@ -107,10 +107,8 @@
 				<div class="recommendation-card priority-{recommendation.priority}">
 					<div class="card-header">
 						<div class="type-indicator">
-							<svelte:component
-								this={getTypeIcon(recommendation.type)}
-								class="type-icon {getTypeColor(recommendation.type)}"
-							/>
+							<getTypeIcon(recommendation.type) class="type-icon {getTypeColor(recommendation.type)}"
+							/ />
 							<span class="type-label capitalize">{recommendation.type}</span>
 						</div>
 

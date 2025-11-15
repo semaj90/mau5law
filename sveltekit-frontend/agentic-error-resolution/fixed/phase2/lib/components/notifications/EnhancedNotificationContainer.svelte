@@ -195,11 +195,10 @@ mcp<script lang="ts">
           <div class="container mx-auto px-4">
             <!-- Icon -->
             <div class="container mx-auto px-4">
-              <svelte:component
-                this={getNotificationIcon((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).type)}
+              <getNotificationIcon((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any ).type)}
                 class="container mx-auto px-4"
                 aria-hidden="true"
-              />
+              / />
             </div>
             <!-- Content -->
             <div class="container mx-auto px-4">

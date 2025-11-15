@@ -184,18 +184,30 @@ try {
     # Remove stopped containers (older than 1 hour)
     $stoppedContainers = docker ps -a --filter "status=exited" --filter "status=created" --format "{{.ID}} {{.CreatedAt}}"
     foreach ($container in $stoppedContainers) {
-        $parts = $container -split " "
-        $containerId = $parts[0]
-        $createdAt = [DateTime]::Parse($parts[1..($parts.Length-1)] -join " ")
+        try {
+            $parts = $container -split " ", 2
+            $containerId = $parts[0]
+            $createdAtString = $parts[1]
 
-        if ((Get-Date) - $createdAt -gt [TimeSpan]::FromHours(1)) {
-            if (!$DryRun) {
-                docker rm $containerId 2>$null | Out-Null
-                Write-Action "Removed old stopped container: $containerId" -color $Green
-                $cleanupActions += "Removed old containers"
-            } else {
-                Write-Action "Would remove old stopped container: $containerId" -color $Yellow
+            # Try to parse the date, skip if it fails
+            try {
+                $createdAt = [DateTime]::Parse($createdAtString)
+                if ((Get-Date) - $createdAt -gt [TimeSpan]::FromHours(1)) {
+                    if (!$DryRun) {
+                        docker rm $containerId 2>$null | Out-Null
+                        Write-Action "Removed old stopped container: $containerId" -color $Green
+                        $cleanupActions += "Removed old containers"
+                    } else {
+                        Write-Action "Would remove old stopped container: $containerId" -color $Yellow
+                    }
+                }
+            } catch {
+                # Skip containers with unparseable dates
+                Write-Action "Skipping container $containerId (unparseable date)" -color $White
             }
+        } catch {
+            # Skip malformed container lines
+            Write-Action "Skipping malformed container line: $container" -color $White
         }
     }
 

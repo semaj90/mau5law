@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { Button, default as DialogBackdrop, default as DialogBody, default as DialogContent, default as DialogFooter, default as DialogHeader, default as DialogRoot, default as DialogTitle } from 'bits-ui';
+  import { Button } from 'bits-ui/components/ui/button';
+  import { DialogBackdrop, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle } from 'bits-ui/components/ui/dialog';
 
   // Define the structure for the AI analysis results
   export interface AnalysisResult {

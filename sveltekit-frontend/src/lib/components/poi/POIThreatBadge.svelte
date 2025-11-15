@@ -54,7 +54,7 @@
 
 <Badge class="{config.color} border font-semibold {getSizeClasses(size)}">
   {#if showIcon}
-    <svelte:component this={config.icon} class="w-3 h-3 mr-1" />
+    <config.icon class="w-3 h-3 mr-1" / />
   {/if}
   {config.label}
 </Badge>

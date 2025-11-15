@@ -183,7 +183,7 @@
               <Card class="p-4">
                 <div class="flex items-start gap-3">
                   <div class="flex-shrink-0">
-                    <svelte:component this={getFileIcon(fileData.file)} class="w-8 h-8 text-gray-400" />
+                    <getFileIcon(fileData.file) class="w-8 h-8 text-gray-400" / />
                   </div>
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between mb-2">

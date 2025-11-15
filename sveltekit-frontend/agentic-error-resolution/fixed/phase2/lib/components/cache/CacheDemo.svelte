@@ -4,11 +4,11 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import Button from 'bits-ui';
-  import { Input } from 'bits-ui';
-  import { Badge } from 'bits-ui';
-  import { Progress } from 'bits-ui';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from 'bits-ui';
+  import Button from 'bits-ui/components/ui/button';
+  import { Input } from 'bits-ui/components/ui/input';
+  import { Badge } from 'bits-ui/components/ui/badge';
+  import { Progress } from 'bits-ui/components/ui/progress';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from 'bits-ui/components/ui/tabs';
   import {
     Database,
     Zap,

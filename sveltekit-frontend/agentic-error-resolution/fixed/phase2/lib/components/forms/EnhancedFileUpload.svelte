@@ -308,7 +308,7 @@ export default ;
                 {#if previews[file.name]}
                   <img src={previews[file.name]} alt={file.name} class="h-12 w-12 object-cover rounded" />
                 {:else}
-                  <svelte:component this={getFileIcon(file)} class="h-12 w-12 nes-text is-disabled" />
+                  <getFileIcon(file) class="h-12 w-12 nes-text is-disabled" / />
                 {/if}
               </div>
               <div class="flex-1 min-w-0">

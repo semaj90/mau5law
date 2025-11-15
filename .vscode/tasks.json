@@ -2269,6 +2269,72 @@
       "detail": "Build TensorRT engines for Gemma3 with FP16/FP8/INT8 precision modes"
     },
     {
+      "label": "🎯 Build TensorRT Engines (RTX 8GB Optimized)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/build-tensorrt-engines-rtx8gb.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "TENSORRT_CONTAINER": "legal-ai-tensorrt-llm",
+          "MODEL_PATH": "/workspace/model_unsloth_hf_f16",
+          "OUTPUT_DIR": "/workspace/engines/rtx8gb",
+          "SHARD_SIZE": "4",
+          "USE_STREAMING": "true",
+          "QUANTIZATION_LEVEL": "int4"
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Build TensorRT engines optimized for RTX 8GB GPUs with model sharding and streaming"
+    },
+    {
+      "label": "🚀 Start RTX 8GB TensorRT Service",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/start-rtx8gb-service.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "TENSORRT_CONTAINER": "legal-ai-tensorrt-llm",
+          "ENGINE_PATH": "/workspace/engines/rtx8gb/engine",
+          "PORT": "8099",
+          "MAX_MEMORY_GB": "6"
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Start streaming inference server optimized for RTX 8GB GPUs"
+    },
+    {
       "label": "🖥️ YoRHa System Monitor - Quick Status",
       "type": "shell",
       "command": "pwsh",

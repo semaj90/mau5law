@@ -105,8 +105,7 @@ export const caseRiskLevelEnum = pgEnum("case_risk_level", [
 // === TABLES FOR LEGAL AI APPLICATION ===
 
 export const users = pgTable("users", {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
+  id: integer("id")
     .primaryKey()
     .notNull(),
   email: varchar("email", { length: 255 }).unique().notNull(),
@@ -196,7 +195,7 @@ export const cases = pgTable(
     court: varchar("court", { length: 200 }),
     clientName: varchar("client_name", { length: 200 }),
     opposingParty: varchar("opposing_party", { length: 200 }),
-    assignedAttorney: uuid("assigned_attorney"), // Foreign key to users.id
+    assignedAttorney: integer("assigned_attorney"), // Foreign key to users.id
     filingDate: timestamp("filing_date", { withTimezone: true }),
     dueDate: timestamp("due_date", { withTimezone: true }),
     closedDate: timestamp("closed_date", { withTimezone: true }),
@@ -259,7 +258,7 @@ export const criminals = pgTable(
     notes: text("notes"),
     aiSummary: text("ai_summary"),
     aiTags: jsonb("ai_tags").default([]).notNull().$type<string[]>(),
-    createdBy: uuid("created_by"), // Foreign key to users.id
+    createdBy: integer("created_by"), // Foreign key to users.id
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
   },
@@ -301,7 +300,7 @@ export const evidence = pgTable(
     fileUrl: text("file_url"),
     fileName: varchar("file_name", { length: 255 }),
     canvasPosition: jsonb("canvas_position").default({}).notNull(),
-    uploadedBy: uuid("uploaded_by"), // Foreign key to users.id
+    uploadedBy: integer("uploaded_by"), // Foreign key to users.id
     uploadedAt: timestamp("uploaded_at", { mode: "string" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
   },
@@ -361,9 +360,9 @@ export const legalDocuments = pgTable('legal_documents', {
   mimeType: text('mime_type').notNull(),
   fileSize: bigint('file_size', { mode: 'number' }).notNull().default(0),
   caseId: uuid('case_id'), // Foreign key to cases table
-  userId: uuid('user_id'), // Foreign key to users table
+  userId: integer('user_id'), // Foreign key to users table
   evidenceId: uuid('evidence_id'), // Added: Foreign key to evidence table
-  createdBy: uuid('created_by'), // Added: Foreign key to users table
+  createdBy: integer('created_by'), // Added: Foreign key to users table
   status: documentStatusEnum('status').notNull().default('queued'),
   documentType: documentTypeEnum('document_type'), // Specific legal document type
   practiceArea: varchar('practice_area', { length: 100 }),
@@ -415,7 +414,7 @@ export const storageFiles = pgTable('storage_files', {
   key: text('key').notNull(),
   original_name: text('original_name'),
   bucket: text('bucket').notNull(),
-  userId: uuid('user_id'), // Changed to uuid and named userId for consistency
+  userId: integer('user_id'), // Changed to integer and named userId for consistency
   size: bigint('size', { mode: 'bigint' }).notNull(),
   mime: text('mime'),
   uploadedAt: timestamp('uploaded_at').defaultNow().notNull(), // Changed to uploadedAt for consistency
@@ -456,7 +455,7 @@ export const caseScores = pgTable(
       .primaryKey()
       .notNull(),
     // Foreign key to users.id; who performed the calculation (nullable to allow on delete set null)
-    calculatedBy: uuid("calculated_by"),
+    calculatedBy: integer("calculated_by"),
     caseId: uuid("case_id").notNull(),
     score: numeric("score", { precision: 5, scale: 2 }).notNull(),
     riskLevel: caseRiskLevelEnum("risk_level").notNull(),
@@ -501,7 +500,7 @@ export const userAiQueriesTable = pgTable(
   "user_ai_queries",
   {
     id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
-    userId: uuid("user_id").notNull(),
+    userId: integer("user_id").notNull(),
     caseId: uuid("case_id"),
     query: text("query").notNull(),
     response: text("response").notNull(),
@@ -540,7 +539,7 @@ export const autoTagsTable = pgTable(
     source: varchar("source", { length: 100 }).notNull(), // e.g., 'ai_analysis', 'user'
     model: varchar("model", { length: 100 }),
     isConfirmed: boolean("is_confirmed").default(false).notNull(),
-    confirmedBy: uuid("confirmed_by"), // FK to users.id
+    confirmedBy: integer("confirmed_by"), // FK to users.id
     confirmedAt: timestamp("confirmed_at", { mode: "string" }),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
   },
@@ -582,8 +581,8 @@ export const vectorJobs = pgTable('vector_jobs', {
 export const caseActivities = pgTable('case_activities', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid('case_id'),
-  assignedTo: uuid('assigned_to'),
-  createdBy: uuid('created_by'),
+  assignedTo: integer('assigned_to'),
+  createdBy: integer('created_by'),
   activityType: varchar('activity_type', { length: 100 }),
   description: text('description'),
   status: activityStatusEnum('status'),
@@ -595,7 +594,7 @@ export const caseActivities = pgTable('case_activities', {
 export const attachmentVerifications = pgTable('attachment_verifications', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   attachmentId: uuid('attachment_id'), // FK to evidence.id or legalDocuments.id
-  verifiedBy: uuid('verified_by'), // FK to users.id
+  verifiedBy: integer('verified_by'), // FK to users.id
   status: verificationStatusEnum('status'),
   verificationDate: timestamp('verification_date'),
   notes: text('notes'),
@@ -606,7 +605,7 @@ export const attachmentVerifications = pgTable('attachment_verifications', {
 export const canvasStates = pgTable('canvas_states', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid('case_id'), // FK to cases.id
-  userId: uuid('user_id'), // FK to users.id
+  userId: integer('user_id'), // FK to users.id
   stateData: jsonb('state_data').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -615,7 +614,7 @@ export const canvasStates = pgTable('canvas_states', {
 export const canvasAnnotations = pgTable('canvas_annotations', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   canvasStateId: uuid('canvas_state_id'), // FK to canvasStates
-  createdBy: uuid('created_by'), // FK to users.id
+  createdBy: integer('created_by'), // FK to users.id
   annotationData: jsonb('annotation_data').default({}).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updatedAt').defaultNow()
@@ -629,8 +628,8 @@ export const canvasAutosaves = pgTable("canvas_autosaves", {
 
 export const aiReports = pgTable('ai_reports', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  caseId: uuid('case_id'), // FK to cases.id
-  createdBy: uuid('created_by'), // FK to users.id
+  caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }), // FK to cases.id
+  createdBy: integer('created_by').references(() => users.id, { onDelete: 'set null' }), // FK to users.id
   reportType: varchar('report_type', { length: 100 }).notNull(),
   summary: text('summary'),
   fullReport: text('full_report'),
@@ -648,7 +647,7 @@ export const citations = pgTable('citations', {
   sourceUrl: text('source_url'),
   pageNumber: integer('page_number'),
   confidence: real('confidence'),
-  createdBy: uuid('created_by'), // FK to users.id
+  createdBy: integer('created_by'), // FK to users.id
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
@@ -656,7 +655,7 @@ export const citations = pgTable('citations', {
 export const reports = pgTable('reports', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid('case_id'), // FK to cases.id
-  createdBy: uuid('created_by'), // FK to users.id
+  createdBy: integer('created_by'), // FK to users.id
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content'),
   status: reportStatusEnum('status').default('draft').notNull(),
@@ -668,7 +667,7 @@ export const reports = pgTable('reports', {
 
 export const savedReports = pgTable('saved_reports', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(), // FK to users.id
+  userId: integer('user_id').notNull(), // FK to users.id
   reportId: uuid('report_id').notNull(), // FK to reports.id
   caseId: uuid('case_id'), // FK to cases.id
   savedAt: timestamp('saved_at').defaultNow().notNull(),
@@ -679,7 +678,7 @@ export const savedReports = pgTable('saved_reports', {
 
 export const themes = pgTable('themes', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(), // FK to users.id
+  userId: integer('user_id').notNull(), // FK to users.id
   name: varchar('name', { length: 100 }).notNull(),
   config: jsonb('config').notNull(),
   isDefault: boolean('is_default').default(false).notNull(),
@@ -690,7 +689,7 @@ export const themes = pgTable('themes', {
 export const personsOfInterest = pgTable('persons', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid('case_id'),
-  createdBy: uuid('created_by'),
+  createdBy: integer('created_by'),
   name: text('name').notNull(),
   aliases: jsonb('aliases').$type<string[]>().default([]),
   threatLevel: varchar('threat_level', { enum: ["low", "medium", "high", "critical"] })
@@ -770,7 +769,7 @@ export const poiPhotos = pgTable('poi_photos', {
 export const hashVerifications = pgTable('hash_verifications', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   evidenceId: uuid('evidence_id').notNull(),
-  verifiedBy: uuid('verified_by'),
+  verifiedBy: integer('verified_by'),
   hashValue: text('hash_value').notNull(),
   algorithm: varchar('algorithm', { length: 50 }).notNull(),
   status: verificationStatusEnum('status').default('pending').notNull(),
@@ -789,7 +788,7 @@ export const contentEmbeddings = pgTable('content_embeddings', {
 
 export const userEmbeddings = pgTable('user_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(),
+  userId: integer('user_id').notNull(),
   embedding: text('embedding').notNull(), // Store vector as text
   model: varchar('model', { length: 100 }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -821,7 +820,7 @@ export const caseEmbeddings = pgTable('case_embeddings', {
 
 export const ragSessions = pgTable('rag_sessions', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(),
+  userId: integer('user_id').notNull(),
   caseId: uuid('case_id'),
   title: varchar('title', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -860,7 +859,7 @@ export const legalPrecedents = pgTable('legal_precedents', {
 
 export const legalAnalysisSessions = pgTable('legal_analysis_sessions', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(),
+  userId: integer('user_id').notNull(),
   caseId: uuid('case_id'),
   analysisType: varchar('analysis_type', { length: 100 }).notNull(),
   inputData: jsonb('input_data'),
@@ -873,7 +872,7 @@ export const legalAnalysisSessions = pgTable('legal_analysis_sessions', {
 export const legalResearch = pgTable('legal_research', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid('case_id'),
-  createdBy: uuid('created_by').notNull(),
+  createdBy: integer('created_by').notNull(),
   query: text('query').notNull(),
   results: jsonb('results'),
   status: varchar('status', { length: 50 }).default('completed').notNull(),
@@ -1179,90 +1178,6 @@ export const vectorOutboxRelations = relations(vectorOutbox, () => ({
 
 export const vectorJobsRelations = relations(vectorJobs, () => ({
   // No explicit relations
-}));
-
-// === POI PHOTOS TABLE ===
-export const poiPhotos = pgTable('poi_photos', {
-  id: serial('id').primaryKey(),
-  poiId: integer('poi_id').notNull().references(() => personsOfInterest.id),
-  minioPath: text('minio_path').notNull(),
-  url: text('url').notNull(),
-  thumbnailUrl: text('thumbnail_url'),
-  metadata: jsonb('metadata').$type<{
-    exif?: Record<string, any>;
-    gps?: { lat: number; lng: number } | null;
-    timestamp?: string | null;
-    device?: string | null;
-    ai?: {
-      caption?: string;
-      tags?: string[];
-      qualityScore?: number;
-      faceEmbedding?: number[];
-    };
-  }>(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
-});
-
-export const evidenceNodes = pgTable("evidence_nodes", {
-  id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  caseId: uuid("case_id").notNull(),
-  title: text("title"),
-  description: text("description"),
-  type: text("type"), // video, image, document, audio, etc.
-  thumbnailUrl: text("thumbnail_url"),
-  contentUrl: text("content_url"),
-  x: integer("x").default(100), // board position
-  y: integer("y").default(100),
-  embedding: text("embedding"), // Store vector as text (768 dimensions)
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const evidenceConnections = pgTable("evidence_connections", {
-  id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  sourceId: uuid("source_id").notNull(),
-  targetId: uuid("target_id").notNull(),
-  relationship: text("relationship").default("related"),
-  strength: real("strength").default(0.5),
-  createdAt: timestamp("created_at").defaultNow(),
-}, (table) => ({
-  foreignKeys: [
-    foreignKey({
-      columns: [table.sourceId],
-      foreignColumns: [evidenceNodes.id],
-      name: "evidence_connections_source_id_evidence_nodes_id_fk",
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.targetId],
-      foreignColumns: [evidenceNodes.id],
-      name: "evidence_connections_target_id_evidence_nodes_id_fk",
-    }).onDelete("cascade"),
-  ],
-}));
-
-// === RELATIONS FOR EVIDENCE BOARD ===
-export const evidenceNodesRelations = relations(evidenceNodes, ({ one, many }) => ({
-  case: one(cases, { fields: [evidenceNodes.caseId], references: [cases.id] }),
-  connectionsAsSource: many(evidenceConnections, { relationName: "sourceConnections" }),
-  connectionsAsTarget: many(evidenceConnections, { relationName: "targetConnections" }),
-}));
-
-export const evidenceConnectionsRelations = relations(evidenceConnections, ({ one }) => ({
-  sourceNode: one(evidenceNodes, {
-    fields: [evidenceConnections.sourceId],
-    references: [evidenceNodes.id],
-    relationName: "sourceConnections"
-  }),
-  targetNode: one(evidenceNodes, {
-    fields: [evidenceConnections.targetId],
-    references: [evidenceNodes.id],
-    relationName: "targetConnections"
-  }),
-}));
-
-// === POI PHOTOS RELATIONS ===
-export const poiPhotosRelations = relations(poiPhotos, ({ one }) => ({
-  poi: one(personsOfInterest, { fields: [poiPhotos.poiId], references: [personsOfInterest.id] }),
 }));
 
 // === DATABASE CONNECTION & HELPERS ===

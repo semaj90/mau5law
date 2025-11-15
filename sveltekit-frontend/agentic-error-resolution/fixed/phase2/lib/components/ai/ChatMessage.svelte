@@ -84,7 +84,7 @@
         {@const ToneIcon = getEmotionalToneIcon(emotionalTone)}
         <div class="flex items-center gap-1 text-xs mt-2" class={getEmotionalToneColor(emotionalTone)}>
           {#if ToneIcon}
-            <svelte:component this={ToneIcon} class="w-3 h-3" />
+            <ToneIcon class="w-3 h-3" / />
           {/if}
           <span>{emotionalTone}</span>
         {/if}
