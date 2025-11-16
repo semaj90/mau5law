@@ -4,12 +4,12 @@
   import POIPhotoModal from '$lib/client/ui/POIPhotoModal.svelte';
   import POIPhotoUploader from '$lib/client/ui/POIPhotoUploader.svelte';
   import POIThreatBadge from '$lib/components/poi/POIThreatBadge.svelte';
-  import Button from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/card';
-  import CardContent from '$lib/components/ui/card-content';
-  import CardHeader from '$lib/components/ui/card-header';
-  import CardTitle from '$lib/components/ui/card-title';
-  import Separator from '$lib/components/ui/separator';
+  import Button from '$lib/components/ui/button.svelte';
+  import Card from '$lib/components/ui/card.svelte';
+  import CardContent from '$lib/components/ui/card-content.svelte';
+  import CardHeader from '$lib/components/ui/card-header.svelte';
+  import CardTitle from '$lib/components/ui/card-title.svelte';
+  import Separator from '$lib/components/ui/separator.svelte';
   import {
     ArrowLeft,
     Camera,
@@ -84,9 +84,13 @@
     showPhotoModal = true;
   }
 
-  function handlePhotoUpload(event: CustomEvent) {
+  function handlePhotoUpload(data: any) {
     // Refresh photos after upload
     loadPOI();
+  }
+
+  function handlePhotoError(error: any) {
+    console.error('Photo upload error:', error);
   }
 
   function handleEdit() {
@@ -182,7 +186,7 @@
                     >
                       <img
                         src={photo.thumbnailUrl || photo.url}
-                        alt="POI photo thumbnail"
+                        alt=""
                         class="w-full h-full object-cover"
                       />
                     </button>
@@ -195,6 +199,7 @@
               <POIPhotoUploader
                 poiId={parseInt(poi.id)}
                 on:upload={handlePhotoUpload}
+                on:error={handlePhotoError}
               />
             </CardContent>
           </Card>

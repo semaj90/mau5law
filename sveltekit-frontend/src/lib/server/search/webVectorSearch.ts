@@ -1,7 +1,8 @@
 import { db } from '$lib/server/db';
 import { webEmbeddings, webPages } from '$lib/server/db/schema-web';
 import { sql } from 'drizzle-orm';
-import { generateEmbedding } from '$lib/server/ai/agentic-stream';
+import { generateEmbedding } from '$lib/server/ai/embeddings';
+import { aiRerank } from '$lib/server/ai/rerank-gemma';
 
 export interface SearchResult {
   id: string;
@@ -97,9 +98,7 @@ export async function cosineSearchWeb({
   // Sort by combined score
   docs.sort((a, b) => b.combinedScore - a.combinedScore);
 
-  // TODO: Add Gemma reranking here
-  // const reranked = await aiRerank(query, docs.slice(0, topK * 2));
-  // return { docs: reranked.slice(0, topK) };
-
-  return { docs: docs.slice(0, topK) };
+  // Add Gemma reranking
+  const reranked = await aiRerank(query, docs.slice(0, topK * 2));
+  return { docs: reranked.slice(0, topK) };
 }

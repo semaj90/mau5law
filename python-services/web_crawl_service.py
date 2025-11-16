@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Phase 70: Web Crawl Service
-Crawls legal websites and extracts structured data
+Phase 70: Web Crawl Service with LangExtract Integration
+Crawls legal websites, extracts structured data, and processes with LangExtract
 """
 
 import os
@@ -11,47 +11,50 @@ import logging
 from typing import Dict, List, Optional, Any
 from urllib.parse import urlparse, urljoin
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
+from typing import List, Optional, Dict
 import uvicorn
 import aiohttp
 import re
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import hashlib
+import requests
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Phase 70 Web Crawl Service", version="1.0.0")
+app = FastAPI(title="Phase 70 Web Crawl Service with LangExtract", version="1.0.0")
+
+class CrawledPage(BaseModel):
+    url: HttpUrl
+    title: Optional[str]
+    text: str                    # cleaned main content
+    html: Optional[str] = None   # optional raw HTML snippet
+    meta: Dict[str, str] = {}
+    links: List[HttpUrl] = []
+    langextract: Optional[Dict[str, Any]] = None  # LangExtract structured data
+    doc_id: Optional[str] = None  # LangExtract document ID
 
 class CrawlRequest(BaseModel):
-    url: str
-    max_depth: int = 2
-    max_pages: int = 10
-    include_patterns: List[str] = []
-    exclude_patterns: List[str] = []
-    delay_seconds: float = 1.0
-    timeout_seconds: int = 30
+    url: HttpUrl
+    depth: int = 1
+    legal_domains: Optional[List[str]] = None
+    include_langextract: bool = True  # Whether to run LangExtract
 
 class CrawlResponse(BaseModel):
-    pages_crawled: int
-    total_size: int
-    duration: float
-    pages: List[Dict[str, Any]]
-    errors: List[str]
-
-class PageData(BaseModel):
-    url: str
-    title: str
-    content: str
-    links: List[str]
-    metadata: Dict[str, Any]
-    crawled_at: str
-    content_hash: str
+    root_url: HttpUrl
+    depth: int
+    pages: List[CrawledPage]
+    langextract_processed: int = 0
 
 # Global HTTP session
 session = None
+
+# LangExtract service configuration
+LANGEXTRACT_URL = os.getenv("LANGEXTRACT_URL", "http://localhost:8099/extract")
 
 async def init_session():
     """Initialize aiohttp session"""
@@ -141,100 +144,101 @@ def calculate_content_hash(content: str) -> str:
     """Calculate SHA256 hash of content"""
     return hashlib.sha256(content.encode('utf-8')).hexdigest()
 
-async def crawl_page(url: str, depth: int = 0) -> Optional[PageData]:
-    """Crawl a single page"""
+async def process_with_langextract(text: str, url: str = None, title: str = None, meta: Dict = None) -> Dict[str, Any]:
+    """Process text with LangExtract service"""
     try:
-        async with session.get(url) as response:
-            if response.status != 200:
-                logger.warning(f"HTTP {response.status} for {url}")
-                return None
+        payload = {
+            "text": text,
+            "url": url,
+            "title": title,
+            "meta": meta or {}
+        }
 
-            html = await response.text()
-            content_type = response.headers.get('content-type', '')
+        response = requests.post(LANGEXTRACT_URL, json=payload, timeout=90)
+        response.raise_for_status()
 
-            # Check if it's HTML
-            if 'text/html' not in content_type.lower():
-                logger.info(f"Skipping non-HTML content: {url}")
-                return None
+        result = response.json()
+        logger.info(f"✅ LangExtract processed document: {result.get('doc_id', 'unknown')}")
+        return result
 
-            # Extract data
-            title = extract_metadata(html).get('title', '')
-            links = extract_links(html, url)
-            metadata = extract_metadata(html)
-            content_hash = calculate_content_hash(html)
+    except Exception as e:
+        logger.error(f"❌ LangExtract failed for {url}: {e}")
+        return None
 
-            return PageData(
-                url=url,
-                title=title,
-                content=html,
-                links=links,
-                metadata=metadata,
-                crawled_at=datetime.now().isoformat(),
-                content_hash=content_hash
-            )
+def crawl_single_page(url: str, include_langextract: bool = True) -> Optional[CrawledPage]:
+    """Crawl a single page and optionally process with LangExtract"""
+    try:
+        response = requests.get(url, timeout=30, headers={
+            'User-Agent': 'Phase70-WebCrawler/1.0 (Legal AI Assistant)'
+        })
+        response.raise_for_status()
+
+        html = response.text
+        content_type = response.headers.get('content-type', '')
+
+        # Check if it's HTML
+        if 'text/html' not in content_type.lower():
+            logger.info(f"Skipping non-HTML content: {url}")
+            return None
+
+        # Extract data
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Extract title
+        title_tag = soup.find('title')
+        title = title_tag.text.strip() if title_tag else "No Title"
+
+        # Extract main text content (cleaned)
+        for script in soup(["script", "style"]):
+            script.decompose()
+        text_content = soup.get_text(separator='\n', strip=True)
+
+        # Extract links
+        links = []
+        for a_tag in soup.find_all('a', href=True):
+            href = urljoin(url, a_tag['href'])
+            if is_valid_url(href):
+                links.append(href)
+
+        # Extract meta
+        meta = {}
+        for meta_tag in soup.find_all('meta'):
+            name = meta_tag.get('name') or meta_tag.get('property')
+            content = meta_tag.get('content')
+            if name and content:
+                meta[name] = content
+
+        # Process with LangExtract if requested
+        langextract_result = None
+        doc_id = None
+        if include_langextract and text_content.strip():
+            logger.info(f"🔍 Processing {url} with LangExtract...")
+            langextract_result = asyncio.run(process_with_langextract(
+                text_content, url, title, meta
+            ))
+            if langextract_result:
+                doc_id = langextract_result.get('doc_id')
+
+        return CrawledPage(
+            url=url,
+            title=title,
+            text=text_content,
+            html=html[:10000] if len(html) > 10000 else html,  # Limit HTML size
+            meta=meta,
+            links=links[:100],  # Limit links
+            langextract=langextract_result.get('structured') if langextract_result else None,
+            doc_id=doc_id
+        )
 
     except Exception as e:
         logger.error(f"Failed to crawl {url}: {e}")
         return None
 
-async def crawl_website(request: CrawlRequest) -> CrawlResponse:
-    """Crawl website with breadth-first search"""
-    start_time = datetime.now()
-    crawled_urls = set()
-    to_crawl = [(request.url, 0)]  # (url, depth)
-    pages = []
-    errors = []
-    total_size = 0
-
-    while to_crawl and len(pages) < request.max_pages:
-        current_url, depth = to_crawl.pop(0)
-
-        if current_url in crawled_urls or depth > request.max_depth:
-            continue
-
-        crawled_urls.add(current_url)
-
-        # Check include/exclude patterns
-        if not matches_pattern(current_url, request.include_patterns):
-            continue
-        if matches_pattern(current_url, request.exclude_patterns):
-            continue
-
-        logger.info(f"Crawling: {current_url} (depth: {depth})")
-
-        # Crawl page
-        page_data = await crawl_page(current_url, depth)
-        if page_data:
-            pages.append(page_data.dict())
-            total_size += len(page_data.content)
-
-            # Add new links to crawl queue
-            if depth < request.max_depth:
-                for link in page_data.links:
-                    if link not in crawled_urls:
-                        to_crawl.append((link, depth + 1))
-        else:
-            errors.append(f"Failed to crawl: {current_url}")
-
-        # Rate limiting
-        if request.delay_seconds > 0:
-            await asyncio.sleep(request.delay_seconds)
-
-    duration = (datetime.now() - start_time).total_seconds()
-
-    return CrawlResponse(
-        pages_crawled=len(pages),
-        total_size=total_size,
-        duration=round(duration, 2),
-        pages=pages,
-        errors=errors
-    )
-
 @app.on_event("startup")
 async def startup_event():
     """Initialize HTTP session"""
     await init_session()
-    logger.info("✅ Web crawl service initialized")
+    logger.info("✅ Web crawl service with LangExtract initialized")
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -246,19 +250,40 @@ async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "service": "Phase 70 Web Crawl Service",
-        "session_active": session is not None
+        "service": "Phase 70 Web Crawl Service with LangExtract",
+        "session_active": session is not None,
+        "langextract_url": LANGEXTRACT_URL
     }
 
 @app.post("/crawl", response_model=CrawlResponse)
-async def crawl_endpoint(request: CrawlRequest):
-    """Crawl website endpoint"""
-    if not is_valid_url(request.url):
+def crawl_endpoint(req: CrawlRequest) -> CrawlResponse:
+    """Crawl website endpoint with LangExtract integration"""
+    if not is_valid_url(str(req.url)):
         raise HTTPException(status_code=400, detail="Invalid URL provided")
 
     try:
-        result = await crawl_website(request)
-        return result
+        pages = []
+        langextract_processed = 0
+
+        # Crawl the main page
+        logger.info(f"🌐 Crawling: {req.url}")
+        page_data = crawl_single_page(str(req.url), req.include_langextract)
+
+        if page_data:
+            pages.append(page_data)
+            if page_data.langextract:
+                langextract_processed += 1
+
+        # For now, just return the single page
+        # You can expand this to crawl multiple pages/depths as needed
+
+        return CrawlResponse(
+            root_url=req.url,
+            depth=req.depth,
+            pages=pages,
+            langextract_processed=langextract_processed
+        )
+
     except Exception as e:
         logger.error(f"Crawl failed: {e}")
         raise HTTPException(status_code=500, detail=f"Crawl failed: {e}")
@@ -267,9 +292,10 @@ async def crawl_endpoint(request: CrawlRequest):
 async def crawl_status():
     """Get crawl service status"""
     return {
-        "service": "Phase 70 Web Crawl Service",
-        "active_crawls": 0,  # Would track active crawls in production
+        "service": "Phase 70 Web Crawl Service with LangExtract",
+        "active_crawls": 0,
         "queue_size": 0,
+        "langextract_url": LANGEXTRACT_URL,
         "timestamp": datetime.now().isoformat()
     }
 
@@ -277,7 +303,7 @@ if __name__ == "__main__":
     port = int(os.getenv("WEB_CRAWL_PORT", "8103"))
     host = os.getenv("WEB_CRAWL_HOST", "0.0.0.0")
 
-    logger.info(f"🚀 Starting web crawl service on {host}:{port}")
+    logger.info(f"🚀 Starting web crawl service with LangExtract on {host}:{port}")
     uvicorn.run(
         "web_crawl_service:app",
         host=host,

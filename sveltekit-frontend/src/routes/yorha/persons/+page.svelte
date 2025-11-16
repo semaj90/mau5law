@@ -1,13 +1,8 @@
 <script lang="ts">
 	import POIPhotoModal from '$lib/components/POIPhotoModal.svelte';
 	import { appActions, appStore } from '$lib/stores/app-store';
-	import {
-	  Badge,
-	  Button,
-	  Card,
-	  Input
-	} from "bits-ui";
-	import { AlertTriangle, Edit3, Eye, Plus, Search, Shield, Trash2 } from 'lucide-svelte';
+	import { Input as BitsInput, Badge as BitsBadge, Button as BitsButton, Card as BitsCard } from 'bits-ui';
+	import { AlertCircle, Edit, Eye, Plus, Search, Shield, Trash2 } from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 
 // Enhanced Person interface with AI analysis and photos
@@ -63,10 +58,12 @@ interface Person {
 	});
 
 	// Convert aliases input to array (simple reactive helper)
-	$: newPerson.aliases = newPerson.aliasesInput
-		.split(',')
-		.map(alias => alias.trim())
-		.filter(alias => alias.length > 0);
+	$effect(() => {
+		newPerson.aliases = newPerson.aliasesInput
+			.split(',')
+			.map(alias => alias.trim())
+			.filter(alias => alias.length > 0);
+	});
 
 	let formError = $state<string | null>(null);
 
@@ -78,11 +75,11 @@ interface Person {
 			newPerson.photos = Array.from(files);
 			// Generate previews
 			newPerson.photoPreviews = [];
-			newPerson.photos.forEach((file, index) => {
+			newPerson.photos.forEach((file) => {
 				const reader = new FileReader();
 				reader.onload = (e) => {
 					if (e.target?.result) {
-						newPerson.photoPreviews[index] = e.target.result as string;
+						newPerson.photoPreviews.push(e.target.result as string);
 						newPerson.photoPreviews = [...newPerson.photoPreviews]; // Trigger reactivity
 					}
 				};
@@ -147,7 +144,7 @@ interface Person {
 	}
 
 	// Derived filtered list (reactive)
-	$: filteredPersons = persons.filter((person) => {
+	let filteredPersons = $derived(persons.filter((person) => {
 	  if (searchQuery) {
 	    const q = searchQuery.toLowerCase();
 	    if (
@@ -165,7 +162,7 @@ interface Person {
 	  if (selectedThreatLevel !== 'all' && person.threat_level !== selectedThreatLevel) return false;
 
 	  return true;
-	});
+	}));
 
 	const threatColors = {
 		low: 'bg-green-100 text-green-800 border-green-200',
@@ -369,10 +366,10 @@ interface Person {
 		}
 	}
 
-	onMount(async () => {
-		await appActions.loadPOIs();
-		const interval = setInterval(async () => {
-			await appActions.loadPOIs();
+	onMount(() => {
+		appActions.loadPOIs();
+		const interval = setInterval(() => {
+			appActions.loadPOIs();
 		}, 60000);
 		return () => clearInterval(interval);
 	});
@@ -435,13 +432,13 @@ interface Person {
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <Button
+        <BitsButton
           class="header-btn bits-btn"
           onclick={() => (showNewPersonModal = true)}
           type="button"
         >
           <Plus class="w-4" /> ADD PERSON
-        </Button>
+        </BitsButton>
       </div>
     </header>
 
@@ -450,7 +447,7 @@ interface Person {
       <div class="search-section">
         <div class="search-input-wrapper">
           <Search class="search-icon w-4" />
-          <Input
+          <BitsInput
             type="text"
             placeholder="Search persons, aliases, descriptions..."
             bind:value={searchQuery}
@@ -490,7 +487,7 @@ interface Person {
     <!-- Error, State -->
     {#if error}
       <div class="error-banner">
-        <AlertTriangle class="w-4" />
+        <AlertCircle class="w-4" />
         {error}
       </div>
     {/if}
@@ -506,12 +503,11 @@ interface Person {
         <!-- Corrected $derived store access -->
         {#each filteredPersons as person (person.id)}
           <!-- use direct component tags (Svelte, 5 supports dynamic, component, variables) -->
-          <!-- @ts-expect-error: Type '() => any' is not assignable to type 'never'. Type 'string' is not assignable to type 'never'. This is likely a type inference issue with Svelte 5 and the Card component's definition. -->
-          <Card class="person-nier-bits-card">
+          <BitsCard class="person-nier-bits-card">
             <div class="person-header">
               <div class="person-photo">
                 {#if person.photos && person.photos.length > 0}
-                  <div class="relative cursor-pointer" on:click={() => openPhotoViewer(person, 0)}>
+                  <div class="relative cursor-pointer" onclick={() => openPhotoViewer(person, 0)}>
                     <img src={person.photos[0]} alt={person.name} class="hover:opacity-80 transition-opacity" />
                     {#if person.photos.length > 1}
                       <div class="absolute top-1 right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -532,12 +528,12 @@ interface Person {
               </div>
               <div class="person-badges">
                 <Badge class={getThreatLevelColor(person.threat_level)}>
+                <BitsBadge class={getThreatLevelColor(person.threat_level)}>
                   {person.threat_level.toUpperCase()}
-                </Badge>
-                <Badge class={getStatusColor(person.status)}>
+                </BitsBadge>lass={getStatusColor(person.status)}>
+                <BitsBadge class={getStatusColor(person.status)}>
                   {person.status.toUpperCase()}
-                </Badge>
-              </div>
+                </BitsBadge>
             </div>
             <div class="person-content">
               <div class="person-details">
@@ -566,21 +562,21 @@ interface Person {
             </div>
             <div class="person-actions nes-container">
               <Button class="bits-btn" size="sm" variant="ghost" type="button">
+              <BitsButton class="bits-btn" size="sm" variant="ghost" type="button">
                 <Eye class="w-4" /> View
-              </Button>
-							<Button class="bits-btn" size="sm" variant="ghost" type="button">
-								<Edit3 class="w-4" /> Edit
-							</Button>
-              <Button class="bits-btn" size="sm" variant="destructive" type="button">
+              </BitsButton>its-btn" size="sm" variant="ghost" type="button">
+							<BitsButton class="bits-btn" size="sm" variant="ghost" type="button">
+								<Edit class="w-4" /> Edit
+							</BitsButton>utton class="bits-btn" size="sm" variant="destructive" type="button">
+              <BitsButton class="bits-btn" size="sm" variant="destructive" type="button">
                 <Trash2 class="w-4" /> Remove
-              </Button>
-            </div>
+              </BitsButton>
           </Card>
         {/each}
       {/if}
     </div>
 
-    {#if filteredPersons().length === 0}
+    {#if filteredPersons.length === 0}
       <div class="empty-state">
         <div class="empty-icon">👤</div>
         <div class="empty-title">No Persons Found</div>
@@ -637,21 +633,21 @@ interface Person {
           <div class="form-field">
             <label class="form-label" for="full-name">FULL NAME</label>
             <Input
+            <BitsInput
               id="full-name"
               placeholder="Enter full name"
               class="yorha-input"
               bind:value={newPerson.name}
-            />
-          </div>
+            />v>
           <div class="form-field">
             <label class="form-label" for="alias">ALIAS / CODENAME</label>
             <Input
+            <BitsInput
               id="alias"
               placeholder="Known aliases (comma-separated)"
               class="yorha-input"
               bind:value={newPerson.aliasesInput}
-            />
-          </div>
+            />v>
           <div class="form-field">
             <label class="form-label" for="threat-level">THREAT LEVEL</label>
             <select id="threat-level" class="yorha-select" bind:value={newPerson.threat_level}>
@@ -673,21 +669,21 @@ interface Person {
           <div class="form-field">
             <label class="form-label" for="last-seen">LAST SEEN DATE</label>
             <Input
+            <BitsInput
               id="last-seen"
               type="date"
               class="yorha-input"
               bind:value={newPerson.last_seen}
-            />
-          </div>
+            />v>
           <div class="form-field">
             <label class="form-label" for="location">LAST KNOWN LOCATION</label>
             <Input
+            <BitsInput
               id="location"
               placeholder="e.g. Downtown District"
               class="yorha-input"
               bind:value={newPerson.location}
-            />
-          </div>
+            />v>
           <div class="form-field">
             <label class="form-label" for="description">DESCRIPTION</label>
             <textarea
@@ -705,7 +701,7 @@ interface Person {
               type="file"
               accept="image/*"
               multiple
-              on:change={handlePhotoSelect}
+              onchange={handlePhotoSelect}
               class="yorha-file-input"
             />
             <div class="text-xs text-gray-400 mt-1">Upload multiple photos for AI analysis and facial recognition</div>
@@ -713,12 +709,12 @@ interface Person {
             <!-- Photo Previews -->
             {#if newPerson.photoPreviews.length > 0}
               <div class="photo-previews mt-2">
-                {#each newPerson.photoPreviews as preview, index}
+                {#each newPerson.photoPreviews as preview}
                   <div class="photo-preview">
-                    <img src={preview} alt="Preview {index + 1}" />
+                    <img src={preview} alt="Preview" />
                     <button
                       type="button"
-                      on:click={() => removePhoto(index)}
+                      onclick={() => removePhoto(newPerson.photoPreviews.indexOf(preview))}
                       class="photo-remove"
                     >
                       ×
@@ -732,6 +728,7 @@ interface Person {
       </div>
       <footer class="dialog-footer">
         <Button
+        <BitsButton
           class="bits-btn"
           variant="ghost"
           onclick={() => {
@@ -752,8 +749,7 @@ interface Person {
           type="button"
         >
           CANCEL
-        </Button>
-        <Button class="bits-btn" onclick={handleAddPerson} type="submit">ADD PERSON</Button>
+        <BitsButton class="bits-btn" onclick={handleAddPerson} type="submit">ADD PERSON</BitsButton>ton>
       </footer>
     </div>
   </div>

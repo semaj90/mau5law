@@ -133,15 +133,15 @@ async function generateLocalEmbedding(text: string, model: string = process.env.
     }
 
     // Quantize EmbeddingGemma (768D) to 384D for schema compatibility
-    if (model.startsWith('embeddinggemma') && rawEmbedding.length === 768) {
-      return quantizeEmbedding(rawEmbedding, 384);
-    }
+    // if (model.startsWith('embeddinggemma') && rawEmbedding.length === 768) {
+    //   return quantizeEmbedding(rawEmbedding, 384);
+    // }
 
     return rawEmbedding;
   } catch (error: unknown) {
     console.error('Ollama embedding generation failed: ', error);
     // Fallback to mock embedding for development
-    return generateMockEmbedding(384); // Fallback to 384D for schema compatibility
+    return generateMockEmbedding(768); // Use 768D for web embeddings schema
   }
 }
 // Quantize high-dimensional embeddings to target dimensions (with quality preservation)

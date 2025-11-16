@@ -335,24 +335,52 @@ class Context7MulticoreServer {
             },
           },
           {
-            name: 'minio_operations',
-            description: 'Advanced MinIO operations for legal document storage',
+            name: 'web_crawl_legal_documents',
+            description: 'Crawl legal websites and extract structured document data using FastAPI web crawler service',
             inputSchema: {
               type: 'object',
               properties: {
-                operation: {
+                url: {
                   type: 'string',
-                  enum: ['upload', 'download', 'delete', 'list_objects', 'get_metadata', 'health_check'],
-                  description: 'MinIO operation to perform'
+                  description: 'Starting URL to crawl for legal documents'
                 },
-                bucket: { type: 'string', description: 'Bucket name' },
-                objectKey: { type: 'string', description: 'Object key/filename' },
-                fileData: { type: 'string', description: 'Base64 encoded file data (for uploads)' },
-                metadata: { type: 'object', description: 'File metadata' }
+                maxDepth: {
+                  type: 'number',
+                  description: 'Maximum crawling depth (default: 2)',
+                  default: 2
+                },
+                maxPages: {
+                  type: 'number',
+                  description: 'Maximum number of pages to crawl (default: 10)',
+                  default: 10
+                },
+                includePatterns: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'URL patterns to include (regex)',
+                  default: []
+                },
+                excludePatterns: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'URL patterns to exclude (regex)',
+                  default: []
+                },
+                legalDomains: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Legal domains to prioritize (e.g., ["court.gov", "law.com"])',
+                  default: []
+                },
+                extractMetadata: {
+                  type: 'boolean',
+                  description: 'Extract OpenGraph and meta tag metadata',
+                  default: true
+                }
               },
-              required: ['operation'],
-            },
-          }
+              required: ['url']
+            }
+          },
         ],
       };
     });
@@ -390,6 +418,8 @@ class Context7MulticoreServer {
             return await this.embeddingGeneration(args.texts, args.batchSize, args.normalize, args.model);
           case 'minio_operations':
             return await this.minioOperations(args.operation, args);
+          case 'web_crawl_legal_documents':
+            return await this.webCrawlLegalDocuments(args);
           default:
             throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
         }
@@ -1352,6 +1382,182 @@ class Context7MulticoreServer {
       };
     } catch (error) {
       throw new McpError(ErrorCode.InternalError, `MinIO operation failed: ${error.message}`);
+    }
+  }
+
+  async webCrawlLegalDocuments(args) {
+    try {
+      const {
+        url,
+        maxDepth = 2,
+        maxPages = 10,
+        includePatterns = [],
+        excludePatterns = [],
+        legalDomains = [],
+        extractMetadata = true
+      } = args;
+
+      // Web crawl service endpoint (from docker-compose-phase70.yml)
+      const webCrawlEndpoint = 'http://localhost:8103/crawl';
+
+      const crawlRequest = {
+        url,
+        max_depth: maxDepth,
+        max_pages: maxPages,
+        include_patterns: includePatterns,
+        exclude_patterns: excludePatterns,
+        delay_seconds: 1.0,
+        timeout_seconds: 30
+      };
+
+      console.log(`[Context7-Multicore] 🌐 Starting web crawl: ${url} (depth: ${maxDepth}, max pages: ${maxPages})`);
+
+      // Call the FastAPI web crawl service
+      const response = await fetch(webCrawlEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(crawlRequest)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Web crawl service returned ${response.status}: ${response.statusText}`);
+      }
+
+      const crawlResult = await response.json();
+
+      // Process and enhance the crawled data
+      const enhancedResult = {
+        ...crawlResult,
+        crawled_at: new Date().toISOString(),
+        mcp_processed: true,
+        legal_domains_prioritized: legalDomains.length > 0,
+        metadata_extraction: extractMetadata,
+        rtx_integration: 'enabled'
+      };
+
+      // Cache the crawl results in Redis
+      const cacheKey = `rtx:webcrawl:${Buffer.from(url).toString('base64').slice(0, 32)}`;
+      await this.redis.setex(cacheKey, 3600, JSON.stringify(enhancedResult)); // 1 hour cache
+
+      // Publish to RAG ingestion pipeline if documents were crawled
+      let ingestionJobId = null;
+      if (enhancedResult.pages && enhancedResult.pages.length > 0) {
+        try {
+          console.log(`[Context7-Multicore] 📤 Publishing ${enhancedResult.pages.length} crawled pages to RAG ingestion pipeline`);
+
+          // Import the RabbitMQ helper dynamically
+          const { RabbitMQIngestHelper } = await import('../scripts/rabbitmq-ingest.js');
+          const ingestHelper = new RabbitMQIngestHelper();
+
+          await ingestHelper.connect();
+          ingestionJobId = await ingestHelper.publishCrawledDocuments(enhancedResult, {
+            mcp_job_id: `mcp_crawl_${Date.now()}`,
+            priority: 1,
+            source: 'mcp_web_crawl'
+          });
+          await ingestHelper.close();
+
+          console.log(`[Context7-Multicore] ✅ Published to ingestion pipeline: ${ingestionJobId}`);
+          enhancedResult.ingestion_job_id = ingestionJobId;
+
+        } catch (ingestError) {
+          console.warn(`[Context7-Multicore] ⚠️ Failed to publish to ingestion pipeline: ${ingestError.message}`);
+          enhancedResult.ingestion_error = ingestError.message;
+        }
+
+        // If we have crawled pages, generate embeddings for them
+        const textsToEmbed = enhancedResult.pages
+          .filter(page => page.content && page.content.length > 100)
+          .map(page => page.content.substring(0, 1000)); // First 1000 chars for embedding
+
+        if (textsToEmbed.length > 0) {
+          try {
+            console.log(`[Context7-Multicore] 🤖 Generating embeddings for ${textsToEmbed.length} crawled pages`);
+            const embeddingResult = await this.embeddingGeneration(textsToEmbed, 5, true, 'nomic-embed-text');
+
+            // Add embeddings to the result
+            if (embeddingResult.content && embeddingResult.content[0]) {
+              const embeddingData = JSON.parse(embeddingResult.content[0].text);
+              enhancedResult.embeddings_generated = embeddingData.texts_processed || 0;
+              enhancedResult.embedding_model = 'nomic-embed-text';
+            }
+          } catch (embeddingError) {
+            console.warn('[Context7-Multicore] ⚠️ Embedding generation failed:', embeddingError.message);
+            enhancedResult.embedding_error = embeddingError.message;
+          }
+        }
+      }
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              action: 'web_crawl_legal_documents',
+              url,
+              crawl_config: {
+                maxDepth,
+                maxPages,
+                includePatterns,
+                excludePatterns,
+                legalDomains,
+                extractMetadata
+              },
+              results: enhancedResult,
+              ingestion_job_id: ingestionJobId,
+              cached_for: '1 hour',
+              cache_key: cacheKey,
+              fastapi_service: 'web-crawl-service:8103',
+              timestamp: new Date().toISOString()
+            }, null, 2)
+          }
+        ]
+      };
+    } catch (error) {
+      // Fallback: return mock data if service is unavailable
+      console.warn(`[Context7-Multicore] ⚠️ Web crawl service unavailable, returning mock data: ${error.message}`);
+
+      const mockResult = {
+        pages_crawled: 1,
+        total_size: 15000,
+        duration: 2.5,
+        pages: [
+          {
+            url: args.url,
+            title: 'Mock Legal Document',
+            content: 'This is mock content from a legal document. In a real implementation, this would be actual crawled content from legal websites.',
+            links: [`${args.url}/terms`, `${args.url}/privacy`],
+            metadata: {
+              description: 'Mock legal document for testing',
+              keywords: 'legal, document, mock',
+              author: 'Legal AI System'
+            },
+            crawled_at: new Date().toISOString(),
+            content_hash: 'mock-hash-123'
+          }
+        ],
+        errors: [],
+        service_status: 'mock_fallback',
+        error_message: error.message
+      };
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              action: 'web_crawl_legal_documents',
+              url: args.url,
+              results: mockResult,
+              fallback_mode: true,
+              error: error.message,
+              timestamp: new Date().toISOString()
+            }, null, 2)
+          }
+        ]
+      };
     }
   }
 
