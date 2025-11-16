@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Badge from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button';
   import Card from '$lib/components/ui/card';
   import Input from '$lib/components/ui/input';
@@ -210,9 +209,9 @@
               {#each Object.entries(systemMetrics.services || {}) as [service, status] (service)}
                 <div class="status-item">
                   <div class="status-name">{service}</div>
-                  <Badge class={getHealthColor((status as any)?.status || 'unknown')}>
+                  <span class="status-badge {getHealthColor((status as any)?.status || 'unknown')}">
                     {(status as any)?.status || 'UNKNOWN'}
-                  </Badge>
+                  </span>
                   {#if (status as any)?.status === 'running' || (status as any)?.status === 'healthy'}
                     <Button
                       onclick={() => restartService(service)}

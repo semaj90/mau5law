@@ -1,9 +1,9 @@
 // tools/pgvector-import-codemods.ts
 import * as fs from 'node:fs';
-import * as pg from 'pg';
+import { Client } from 'pg';
 
 const INPUT = process.argv[2] ?? 'logs/codemod-memories-embedded.jsonl';
-const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
 interface EmbeddedCodemodMemory {
   id: string;
@@ -27,8 +27,10 @@ interface EmbeddedCodemodMemory {
   summary_short?: string;
 }
 
-async function createTableIfNotExists(client: pg.Client) {
+async function createTableIfNotExists(client: InstanceType<typeof Client>) {
   console.log('📋 Ensuring codemod_memories table exists...');
+
+  await client.query(`CREATE EXTENSION IF NOT EXISTS vector;`);
 
   await client.query(`
     CREATE TABLE IF NOT EXISTS codemod_memories (
@@ -57,7 +59,7 @@ async function importToPgvector() {
     process.exit(1);
   }
 
-  const client = new pg.Client({ connectionString: DATABASE_URL });
+  const client = new Client({ connectionString: DATABASE_URL });
   await client.connect();
 
   try {
@@ -82,7 +84,7 @@ async function importToPgvector() {
       const batch = memories.slice(i, i + batchSize);
 
       const values = batch.map((mem, idx) => {
-        return `($${idx * 12 + 1}, $${idx * 12 + 2}, $${idx * 12 + 3}, $${idx * 12 + 4}, $${idx * 12 + 5}, $${idx * 12 + 6}, $${idx * 12 + 7}, $${idx * 12 + 8}, $${idx * 12 + 9}, $${idx * 12 + 10}, $${idx * 12 + 11}, $${idx * 12 + 12}::vector(768))`;
+        return `($${idx * 12 + 1}, $${idx * 12 + 2}, $${idx * 12 + 3}, $${idx * 12 + 4}, $${idx * 12 + 5}, $${idx * 12 + 6}, $${idx * 12 + 7}, $${idx * 12 + 8}, $${idx * 12 + 9}, $${idx * 12 + 10}, $${idx * 12 + 11}, $${idx * 12 + 12}::vector)`;
       }).join(', ');
 
       const params = batch.flatMap(mem => [

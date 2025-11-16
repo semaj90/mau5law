@@ -75,24 +75,36 @@ async function importToQdrant() {
     for (let i = 0; i < memories.length; i += batchSize) {
       const batch = memories.slice(i, i + batchSize);
 
-      const points = batch.map(mem => ({
-        id: mem.id,
-        vector: mem.embedding,
-        payload: {
+      const points = batch.map(mem => {
+        const payload: any = {
           error_code: mem.code,
           error_key: mem.errorKey,
           message: mem.message,
           occurrence_count: mem.count,
-          priority: mem.priority ?? null,
-          framework: mem.framework ?? null,
-          source: mem.source ?? null,
           tags: mem.tags ?? [],
           content: mem.content,
           langextract: mem.langextract ?? {},
           timestamp: mem.timestamp,
           embedding_model: mem.embedding_model ?? 'embeddinggemma:latest',
-        },
-      }));
+        };
+
+        // Only add non-null optional fields
+        if (mem.priority !== null && mem.priority !== undefined) {
+          payload.priority = mem.priority;
+        }
+        if (mem.framework !== null && mem.framework !== undefined) {
+          payload.framework = mem.framework;
+        }
+        if (mem.source !== null && mem.source !== undefined) {
+          payload.source = mem.source;
+        }
+
+        return {
+          id: mem.id,
+          vector: mem.embedding,
+          payload,
+        };
+      });
 
       await client.upsert(COLLECTION_NAME, {
         wait: true,

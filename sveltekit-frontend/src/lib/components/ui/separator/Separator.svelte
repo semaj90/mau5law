@@ -1,15 +1,22 @@
 <script lang="ts">
-  // Truncated file - replaced with stub
+  interface Props {
+    orientation?: 'horizontal' | 'vertical';
+    class?: string;
+    [key: string]: any;
+  }
+
+  let {
+    orientation = 'horizontal',
+    class: className = '',
+    ...rest
+  }: Props = $props();
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
-
-<style>
-  .page-repair {
-    padding: 2rem;
-    font-family: sans-serif;
-  }
-</style>
+<div
+  class={`
+    shrink-0 bg-border
+    ${orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]'}
+    ${className}
+  `}
+  {...rest}
+></div>

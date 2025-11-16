@@ -1,169 +1,198 @@
 // tools/query-dual-codemods.ts
-import * as pg from 'pg';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import fetch from 'node-fetch';
+import pg from 'pg';
 
-const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+const OLLAMA_ENDPOINT =
+  process.env.OLLAMA_ENDPOINT ?? 'http://localhost:11434';
+const EMBED_MODEL = process.env.EMBED_MODEL ?? 'embeddinggemma:latest';
+
+const DATABASE_URL =
+  process.env.DATABASE_URL ??
+  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
+
 const QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';
-const COLLECTION_NAME = 'codemod_memories';
-const OLLAMA_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
+const QDRANT_COLLECTION =
+  process.env.QDRANT_COLLECTION ?? 'codemod_memories';
 
-interface QueryResult {
+type PgRow = {
   id: string;
   error_code: string;
-  error_key: string;
   message: string;
   occurrence_count: number;
-  priority?: string;
-  framework?: string;
-  source?: string;
-  tags: string[];
-  content: string;
-  langextract?: any;
   similarity_score: number;
-  source_db: 'pgvector' | 'qdrant';
-}
+};
 
-async function embedQuery(query: string): Promise<number[]> {
-  const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
+type QdrantMatch = {
+  id: string | number;
+  score: number;
+  payload?: any;
+};
+
+export async function embedQuery(text: string): Promise<number[]> {
+  const res = await fetch(`${OLLAMA_ENDPOINT}/api/embeddings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'embeddinggemma:latest',
-      prompt: query,
+      model: EMBED_MODEL,
+      prompt: text,
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`Ollama embedding failed: ${response.statusText}`);
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(
+      `Embed error ${res.status} ${res.statusText}: ${t}`,
+    );
   }
 
-  const data = await response.json();
-  return data.embedding;
+  const data: any = await res.json();
+
+  // Handle Ollama variants: { embedding: [...] } or { embeddings: [[...]] }
+  if (Array.isArray(data.embedding)) return data.embedding;
+  if (Array.isArray(data.embeddings)) return data.embeddings[0];
+
+  throw new Error('Unexpected embedding response format from Ollama');
 }
 
-async function searchPgvector(embedding: number[], limit: number = 5): Promise<QueryResult[]> {
-  const client = new pg.Client({ connectionString: DATABASE_URL });
+export async function searchPgvector(
+  embedding: number[],
+  limit: number,
+): Promise<PgRow[]> {
+  const client = new pg.Client({
+    connectionString: DATABASE_URL,
+  });
   await client.connect();
 
   try {
-    const query = `
+    const vectorLiteral = '[' + embedding.join(',') + ']';
+
+    const res = await client.query<PgRow>(
+      `
       SELECT
         id,
         error_code,
-        error_key,
         message,
         occurrence_count,
-        priority,
-        framework,
-        source,
-        tags,
-        content,
-        langextract,
-        1 - (embedding <=> $1::vector) as similarity_score
+        1 - (embedding <=> $1::vector) AS similarity_score
       FROM codemod_memories
-      ORDER BY embedding <=> $1::vector
-      LIMIT $2;
-    `;
+      ORDER BY embedding <-> $1::vector
+      LIMIT $2::int;
+    `,
+      [vectorLiteral, limit],
+    );
 
-    const result = await client.query(query, [`[${embedding.join(',')}]`, limit]);
-
-    return result.rows.map(row => ({
-      ...row,
-      source_db: 'pgvector' as const,
-    }));
+    return res.rows;
   } finally {
     await client.end();
   }
 }
 
-async function searchQdrant(embedding: number[], limit: number = 5): Promise<QueryResult[]> {
-  const client = new QdrantClient({ url: QDRANT_URL });
+export async function searchQdrant(
+  embedding: number[],
+  limit: number,
+): Promise<QdrantMatch[]> {
+  const safeLimit =
+    Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 5;
 
-  const response = await client.search(COLLECTION_NAME, {
+  const body = {
     vector: embedding,
-    limit,
+    limit: safeLimit,
     with_payload: true,
-    with_vector: false,
-  });
+  };
 
-  return response.map(hit => ({
-    id: hit.id as string,
-    error_code: hit.payload?.error_code as string,
-    error_key: hit.payload?.error_key as string,
-    message: hit.payload?.message as string,
-    occurrence_count: hit.payload?.occurrence_count as number,
-    priority: hit.payload?.priority as string,
-    framework: hit.payload?.framework as string,
-    source: hit.payload?.source as string,
-    tags: hit.payload?.tags as string[] || [],
-    content: hit.payload?.content as string,
-    langextract: hit.payload?.langextract,
-    similarity_score: hit.score || 0,
-    source_db: 'qdrant' as const,
-  }));
+  const res = await fetch(
+    `${QDRANT_URL}/collections/${QDRANT_COLLECTION}/points/search`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+  );
+
+  const data: any = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      `Qdrant search error ${res.status} ${res.statusText}: ${JSON.stringify(
+        data,
+      )}`,
+    );
+  }
+
+  return (data.result ?? []) as QdrantMatch[];
 }
 
-async function searchDual(query: string, limit: number = 5): Promise<QueryResult[]> {
+async function searchDual(query: string, limit: number) {
   console.log(`🔍 Searching for: "${query}"`);
+  const safeLimit =
+    Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 5;
 
   const embedding = await embedQuery(query);
   console.log(`📊 Generated ${embedding.length}-dimensional embedding`);
 
-  // Search both databases in parallel
-  const [pgResults, qdrantResults] = await Promise.all([
-    searchPgvector(embedding, limit),
-    searchQdrant(embedding, limit),
+  const [pgRows, qdrantMatches] = await Promise.all([
+    searchPgvector(embedding, safeLimit),
+    searchQdrant(embedding, safeLimit),
   ]);
 
-  // Combine and deduplicate by id, keeping highest similarity score
-  const combined = new Map<string, QueryResult>();
+  console.log('\n=== pgvector results ===');
+  for (const row of pgRows) {
+    console.log(
+      `• [${row.error_code}] ${row.message} (score=${row.similarity_score.toFixed(
+        4,
+      )}, occurrences=${row.occurrence_count})`,
+    );
+  }
 
-  [...pgResults, ...qdrantResults].forEach(result => {
-    const existing = combined.get(result.id);
-    if (!existing || result.similarity_score > existing.similarity_score) {
-      combined.set(result.id, result);
-    }
-  });
-
-  // Sort by similarity score and return top results
-  const sorted = Array.from(combined.values())
-    .sort((a, b) => b.similarity_score - a.similarity_score)
-    .slice(0, limit);
-
-  return sorted;
+  console.log('\n=== Qdrant results ===');
+  for (const m of qdrantMatches) {
+    const code =
+      m.payload?.code ??
+      m.payload?.error_code ??
+      m.payload?.errorKey ??
+      'unknown';
+    const message = m.payload?.message ?? '';
+    console.log(
+      `• [${code}] ${message} (score=${m.score.toFixed(4)})`,
+    );
+  }
 }
 
 async function main() {
-  const query = process.argv[2];
-  const limit = parseInt(process.argv[3] ?? '5');
-
-  if (!query) {
-    console.error('Usage: node tools/query-dual-codemods.ts "your query here" [limit]');
+  const [, , ...args] = process.argv;
+  if (!args.length) {
+    console.error(
+      'Usage: npx tsx tools/query-dual-codemods.ts "query" --limit 5',
+    );
     process.exit(1);
   }
 
-  try {
-    const results = await searchDual(query, limit);
+  const queryParts: string[] = [];
+  let limit = 5;
 
-    console.log(`\n🎯 Found ${results.length} relevant codemod memories:\n`);
-
-    results.forEach((result, idx) => {
-      console.log(`${idx + 1}. [${result.source_db.toUpperCase()}] ${result.error_code}`);
-      console.log(`   Error: ${result.message}`);
-      console.log(`   Occurrences: ${result.occurrence_count}`);
-      console.log(`   Similarity: ${(result.similarity_score * 100).toFixed(1)}%`);
-      if (result.tags.length > 0) {
-        console.log(`   Tags: ${result.tags.join(', ')}`);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--limit' && i + 1 < args.length) {
+      const n = Number(args[i + 1]);
+      if (Number.isFinite(n) && n > 0) {
+        limit = Math.floor(n);
       }
-      console.log(`   Content: ${result.content.substring(0, 200)}${result.content.length > 200 ? '...' : ''}`);
-      console.log('');
-    });
+      i++;
+    } else {
+      queryParts.push(args[i]);
+    }
+  }
 
-  } catch (error) {
-    console.error('❌ Query failed:', error);
+  const query = queryParts.join(' ');
+
+  try {
+    await searchDual(query, limit);
+  } catch (err) {
+    console.error('❌ Query failed:', err);
     process.exit(1);
   }
 }
 
-main();
+if (process.argv[1]?.endsWith('query-dual-codemods.ts')) {
+  // Only auto-run when invoked directly
+  // (so you can still import { embedQuery, searchPgvector } in tsx -e)
+  main();
+}
