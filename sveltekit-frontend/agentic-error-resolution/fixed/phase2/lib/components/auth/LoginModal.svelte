@@ -1,10 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import Button from "$lib/components/ui/button/Button.svelte";
   import { loginSchema } from '$lib/schemas/auth';
   import { toastStore } from '$lib/stores/toast';
-  import { Dialog } from 'bits-ui/components/ui/dialog';
-  import X from 'lucide-svelte';
+  import Button from "$lib/ui/button/Button.svelte";
+  import { Close as DialogClose, Content as DialogContent, Overlay as DialogOverlay, Portal as DialogPortal, Root as DialogRoot, Title as DialogTitle } from 'bits-ui/components/dialog';
+  import { X } from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
   interface Props {
@@ -20,7 +20,7 @@
         if (f.valid) {
           toastStore.success('✅ Signed in successfully!');
           onlogin?.();
-          open = $state(false);
+          open = false;
           // Redirect to dashboard after successful login
           setTimeout(() => {
             goto('/dashboard').catch(err => console.error('Navigation error:', err));
@@ -30,27 +30,28 @@
     }
   );
   function closeModal() {
-    open = $state(false);
+    open = false;
   }
 </script>
-<Dialog bind:open>
-  <Dialog.Portal>
-    <Dialog.Overlay class="fixed inset-0 bg-black/80 z-50" />
-    <Dialog.Content
+<DialogRoot bind:open>
+  <DialogPortal>
+    <DialogOverlay class="fixed inset-0 bg-black/80 z-50" />
+    <DialogContent
       class="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-slate-200 bg-white p-6 shadow-lg"
     >
       <div class="flex items-center justify-between mb-4">
-        <Dialog.Title class="text-xl font-bold text-slate-900">Sign In</Dialog.Title>
-        <Dialog.Close asChild>
+        <DialogTitle class="text-xl font-bold text-slate-900">Sign In</DialogTitle>
+        <DialogClose asChild>
           <button class="p-1 hover:bg-slate-100 rounded">
             <X class="w-5 h-5" />
           </button>
-        </Dialog.Close>
+        </DialogClose>
       </div>
       {#if $message}
         <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
           {$message}
-        {/if}
+        </div>
+      {/if}
       <form class="space-y-4" method="POST" action="/api/auth/login" use:enhance>
         <div>
           <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
@@ -124,6 +125,6 @@
           Create one
         </button>
       </div>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog>
+    </DialogContent>
+  </DialogPortal>
+</DialogRoot>

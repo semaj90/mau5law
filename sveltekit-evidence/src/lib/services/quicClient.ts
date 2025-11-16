@@ -5,6 +5,7 @@ interface QuicClientConfig {
   quicServerUrl: string;
   gpuInferenceUrl: string;
   fastApiTensorUrl: string;
+  simdParserUrl: string;
   timeout: number;
 }
 
@@ -17,6 +18,7 @@ export class QuicClient {
       quicServerUrl: config.quicServerUrl || "http://localhost:4433",
       gpuInferenceUrl: config.gpuInferenceUrl || "http://localhost:8097",
       fastApiTensorUrl: config.fastApiTensorUrl || "http://localhost:8000",
+      simdParserUrl: config.simdParserUrl || "http://localhost:8097",
       timeout: config.timeout || 30000,
     };
   }
@@ -338,6 +340,45 @@ export class QuicClient {
     }
   }
 
+  // SIMD JSON Parser Service
+  async parseJsonWithSimd(jsonText: string): Promise<any> {
+    try {
+      const response = await this.enhancedFetch(
+        `${this.config.simdParserUrl}/parse`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            text: jsonText,
+          }),
+        },
+      );
+
+      if (response.ok) {
+        return await response.json();
+      }
+      throw new Error(`SIMD parsing failed: ${response.statusText}`);
+    } catch (error) {
+      console.error("SIMD JSON parsing failed:", error);
+      throw error;
+    }
+  }
+
+  async getSimdParserHealth(): Promise<any> {
+    try {
+      const response = await this.enhancedFetch(
+        `${this.config.simdParserUrl}/health`,
+      );
+
+      if (response.ok) {
+        return await response.json();
+      }
+      return null;
+    } catch (error) {
+      console.error("SIMD parser health check failed:", error);
+      return null;
+    }
+  }
+
   // FastAPI Tensor Service
   async generateMultiSliceEmbedding(text: string): Promise<any> {
     try {
@@ -396,12 +437,14 @@ export class QuicClient {
       this.enhancedFetch(`${this.config.quicServerUrl}/health`),
       this.enhancedFetch(`${this.config.gpuInferenceUrl}/health`),
       this.enhancedFetch(`${this.config.fastApiTensorUrl}/health`),
+      this.enhancedFetch(`${this.config.simdParserUrl}/health`),
     ]);
 
     return {
       quicServer: checks[0].status === "fulfilled" && checks[0].value.ok,
       gpuInference: checks[1].status === "fulfilled" && checks[1].value.ok,
       fastApiTensor: checks[2].status === "fulfilled" && checks[2].value.ok,
+      simdParser: checks[3].status === "fulfilled" && checks[3].value.ok,
     };
   }
 }

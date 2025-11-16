@@ -14,18 +14,27 @@ import uvicorn
 
 # Language processing
 try:
-    import tree_sitter
+    from typing import Dict
+    from tree_sitter import Language, Parser
     import tree_sitter_typescript
     import tree_sitter_javascript
     TREE_SITTER_AVAILABLE = True
+    # Type aliases for when tree_sitter is available
+    Tree = Any
 except ImportError:
     TREE_SITTER_AVAILABLE = False
+    # Fallback types when tree_sitter is not available
+    Language = Any
+    Parser = Any
+    Tree = Any
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+print("Initializing FastAPI app...")
 app = FastAPI(title="Phase 70 Language Extraction Service", version="1.0.0")
+print("FastAPI app initialized successfully")
 
 class ExtractRequest(BaseModel):
     code: str
@@ -41,29 +50,53 @@ class ExtractResponse(BaseModel):
     errors: List[str] = []
     backend: str = "tree-sitter"
 
-# Tree-sitter parsers
-parsers = {}
+# Tree-sitter parsers and languages
+_language_cache: Dict[str, Language] = {}
+_parser_cache: Dict[str, Parser] = {}
 
-def get_parser(language: str) -> Optional[tree_sitter.Parser]:
-    """Get or create tree-sitter parser for language"""
+
+def get_ts_language(lang_name: str) -> Language:
+    """
+    Return a cached tree_sitter.Language for the given language name
+    using the new tree-sitter Python API.
+    """
+    if lang_name in _language_cache:
+        return _language_cache[lang_name]
+
+    if lang_name == "typescript":
+        # tree_sitter_typescript.language_typescript() → low-level C language
+        ts_lang = Language(tree_sitter_typescript.language_typescript())
+    elif lang_name == "javascript":
+        # tree_sitter_javascript has a language() function
+        ts_lang = Language(tree_sitter_javascript.language())
+    else:
+        raise ValueError(f"Unsupported language: {lang_name}")
+
+    _language_cache[lang_name] = ts_lang
+    return ts_lang
+
+
+def get_parser(language: str) -> Optional[Parser]:
+    """
+    Return a cached Parser instance bound to the requested language.
+    Uses the new API: Parser(Language(...)) instead of parser.language = ...
+    """
     if not TREE_SITTER_AVAILABLE:
         return None
 
-    if language not in parsers:
-        parser = tree_sitter.Parser()
+    if language in _parser_cache:
+        return _parser_cache[language]
 
-        if language == "typescript":
-            parser.set_language(tree_sitter_typescript.language_typescript())
-        elif language == "javascript":
-            parser.set_language(tree_sitter_javascript.language_javascript())
-        else:
-            return None
+    try:
+        ts_lang = get_ts_language(language)
+        parser = Parser(ts_lang)
+        _parser_cache[language] = parser
+        return parser
+    except Exception as e:
+        logger.error(f"Failed to create parser for {language}: {e}")
+        return None
 
-        parsers[language] = parser
-
-    return parsers[language]
-
-def extract_functions(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, Any]]:
+def extract_functions(tree: Tree, source_code: str) -> List[Dict[str, Any]]:
     """Extract function definitions"""
     functions = []
 
@@ -105,7 +138,7 @@ def extract_functions(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str
     traverse(tree.root_node)
     return functions
 
-def extract_classes(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, Any]]:
+def extract_classes(tree: Tree, source_code: str) -> List[Dict[str, Any]]:
     """Extract class definitions"""
     classes = []
 
@@ -142,7 +175,7 @@ def extract_classes(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, 
     traverse(tree.root_node)
     return classes
 
-def extract_interfaces(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, Any]]:
+def extract_interfaces(tree: Tree, source_code: str) -> List[Dict[str, Any]]:
     """Extract interface definitions"""
     interfaces = []
 
@@ -179,7 +212,7 @@ def extract_interfaces(tree: tree_sitter.Tree, source_code: str) -> List[Dict[st
     traverse(tree.root_node)
     return interfaces
 
-def extract_imports(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, Any]]:
+def extract_imports(tree: Tree, source_code: str) -> List[Dict[str, Any]]:
     """Extract import statements"""
     imports = []
 
@@ -209,7 +242,7 @@ def extract_imports(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, 
     traverse(tree.root_node)
     return imports
 
-def extract_exports(tree: tree_sitter.Tree, source_code: str) -> List[Dict[str, Any]]:
+def extract_exports(tree: Tree, source_code: str) -> List[Dict[str, Any]]:
     """Extract export statements"""
     exports = []
 
@@ -282,10 +315,16 @@ async def extract_code(request: ExtractRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
+    import sys
+    import os
+    # Add current directory to path for imports
+    sys.path.insert(0, os.path.dirname(__file__))
+
+    print("Starting LangExtract service on port 9002...")
     uvicorn.run(
-        "langextract_stream_api:app",
+        app,
         host="0.0.0.0",
-        port=9001,
+        port=9002,
         reload=False,
         log_level="info"
     )

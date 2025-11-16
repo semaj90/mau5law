@@ -1,9 +1,9 @@
 <script lang="ts">
   import { caseStore } from '$lib/stores/unified/case-store';
-  import EvidenceBoard from '../../../../sveltekit-evidence/src/lib/components/EvidenceBoard.svelte';
   import { onMount } from 'svelte';
+  import EvidenceBoard from '../../../../sveltekit-evidence/src/lib/components/EvidenceBoard.svelte';
 
-  let activeCaseId: string | null = null;
+  let activeCaseId = $state<string | null>(null);
 
   onMount(() => {
     const unsubscribe = caseStore.subscribe(store => {

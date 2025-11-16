@@ -1071,6 +1071,114 @@
 			"args": ["up", "-d"],
 			"detail": "🔥 Complete automation: Embed → Cluster → Fix (17 – 22 min total)",
 			"problemMatcher": []
+		},
+		{
+			"label": "🔍 Interactive Keyword Search (Frontend)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/../scripts/search-keywords.ps1",
+				"-Interactive"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Interactive PowerShell search with glob/ripgrep/awk functionality - asks for keywords and patterns"
+		},
+		{
+			"label": "🔍 Search Frontend Code (TS/JS/Svelte)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/../scripts/search-keywords.ps1",
+				"-Interactive",
+				"-Include",
+				"*.ts,*.tsx,*.js,*.jsx,*.svelte"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Search TypeScript, JavaScript, and Svelte files in frontend"
+		},
+		{
+			"label": "🔍 Quick Error Search (Frontend)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/../scripts/search-keywords.ps1",
+				"-Keywords",
+				"error,Error,ERROR,console.error",
+				"-Include",
+				"*.ts,*.tsx,*.js,*.jsx,*.svelte",
+				"-Context",
+				"2"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"detail": "Quick search for error-related keywords in frontend code"
+		},
+		{
+			"label": "🔍 Search Component Props/Events",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/../scripts/search-keywords.ps1",
+				"-Keywords",
+				"onClick,on:click,dispatch,onMount",
+				"-Include",
+				"*.svelte",
+				"-Context",
+				"1"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"detail": "Search for Svelte component events and lifecycle methods"
 		}
 	]
 }

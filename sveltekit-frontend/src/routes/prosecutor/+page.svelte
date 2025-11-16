@@ -4,7 +4,7 @@
   let { data } = $props();
 
   // Extract caseId from URL params if available
-  $: caseId = data?.caseId || null;
+  let caseId = $derived(data?.caseId || null);
 </script>
 
 <svelte:head>

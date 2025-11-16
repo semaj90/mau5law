@@ -4,34 +4,35 @@ https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  'use runes';
 
   // Removed unused imports: onDestroy, quintOut, Modal, Component
-  import { onMount } from 'svelte';
-  import  AdvancedSearch  from "../search/AdvancedSearch.svelte";
-  import  ReportToolbar  from "./ReportToolbar.svelte";
-  import  RichTextEditor  from "./RichTextEditor.svelte";
-  import  EvidenceForm  from "./EvidenceForm.svelte";
-  import  MasonryGrid  from "$lib/components/ui/MasonryGrid.svelte";
-  import  EvidenceCardComponent  from "$lib/components/evidence/EvidenceCard.svelte";
-  import { Button as BitsButton } from 'bits-ui/components/ui/button';
-  // Icons
+  import EvidenceCardComponent from "$lib/components/evidence/EvidenceCard.svelte";
+  import MasonryGrid from "$lib/components/ui/MasonryGrid.svelte";
+  import { Button } from 'bits-ui/components/ui/button';
+  import { onMount, tick } from 'svelte';
+  import AdvancedSearch from "../search/AdvancedSearch.svelte";
+  import EvidenceForm from "./EvidenceForm.svelte";
+  import ReportToolbar from "./ReportToolbar.svelte";
+  import RichTextEditor from "./RichTextEditor.svelte";
+// Icons
   import { invalidateAll } from "$app/navigation";
-  import { Columns, Download, Eye, Grid, Layout, Loader2, Maximize2, Minimize2, PanelLeftOpen, PenLine, Plus, Search, Settings, Trash2 } from "lucide-svelte";
-  import type { ReportStoreState, ReportUIState, EditorState } from '$lib/types/report';
-  import * as unified from '$lib/stores/unified';
   import { legalAnalysisCache } from '$lib/services/legal-analysis-cache';
-  // lightweight Evidence type used in this component (prevents "Cannot find name: 'Evidence'")
-  type Evidence = {
+  import { editorState as unifiedEditorState, report as unifiedReport, reportActions as unifiedReportActions, reportUI as unifiedReportUI, setupAutoSave as unifiedSetupAutoSave } from '$lib/stores/unified';
+  import type { EditorState, ReportStoreState, ReportUIState } from '$lib/types/report';
+  import { Download, Eye, LayoutDashboard, LayoutGrid, LayoutList, Loader2, Maximize2, Minimize2, PanelLeftOpen, PenLine, Plus, Search, Settings, Trash2 } from "lucide-svelte";
+// Create runtime aliases / fallbacks for external stores and actions
+  import type { Writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
+  // Define Evidence interface
+  interface Evidence {
     id: string;
     title: string;
     description?: string;
     tags?: string[];
     url?: string;
-    file?: any;
-  };
-  // Create runtime aliases / fallbacks for external stores and actions
-  import { writable } from 'svelte/store';
-  import type { Writable } from 'svelte/store';
+    file?: any; // Use a more specific type if known, e.g., File
+  }
   // helper: ensure we always have a Writable<T> (wrap readable stores if necessary)
   function ensureWritable<T>(maybeStore: any, fallback: T): Writable<T> {
     if (maybeStore && typeof maybeStore.subscribe === 'function' && typeof maybeStore.set === 'function' && typeof maybeStore.update === 'function') {
@@ -40,13 +41,13 @@ https://svelte.dev/e/js_parse_error -->
     const w = writable<T>(fallback);
     if (maybeStore && typeof maybeStore.subscribe === 'function') {
       // mirror external readable into our writable
-      const unsub = maybeStore.subscribe((v: T) => w.set(v));
+      maybeStore.subscribe((v: T) => w.set(v));
       // best-effort cleanup if caller uses onDestroy (not required here)
     }
     return w;
   }
   // editorState store fallback (safe)
-  const editorState = ensureWritable<EditorState>((unified as any).editorState, { wordCount: 0 } as EditorState);
+  const editorState = ensureWritable<EditorState>(unifiedEditorState, { wordCount: 0 } as EditorState);
   // report store fallback (minimal shape) — widen type to include properties used in this component
   type ReportExt = ReportStoreState & {
     settings: { layout: 'single' | 'dual' | 'masonry'; autoSave?: boolean };
@@ -60,35 +61,49 @@ https://svelte.dev/e/js_parse_error -->
     attachedEvidence: [],
     metadata: { status: 'draft', updatedAt: new Date() },
   };
-  const report = ensureWritable<ReportExt>((unified as any).report, defaultReport);
+  const report = ensureWritable<ReportExt>(unifiedReport, defaultReport);
   // reportActions fallback (use any access to avoid missing-property TS errors)
-  const reportActions = (unified as any).reportActions ?? {
+  const reportActions = unifiedReportActions ?? {
     updateTitle: (t: string) => report.update(r => ({ ...r, title: t })),
-    updateSettings: (s: Record<string unknown>) => report.update(r => ({ ...r, settings: { ...(r as any).settings, ...(s as any) } })),
+    updateSettings: (s: Record<string, unknown>) => report.update(r => ({ ...r, settings: { ...(r as any).settings, ...(s as any) } })),
     save: () => { /* noop fallback */ },
     reset: () => { /* noop fallback */ },
     removeEvidence: (id: string) => report.update(r => ({ ...(r as any), attachedEvidence: (r as any).attachedEvidence?.filter((e: any) => e.id !== id) })),
   } as any;
   // reportUI fallback
-  const reportUI = ensureWritable<ReportUIState>((unified as any).reportUI, { sidebarOpen: true, fullscreen: false, sidebarWidth: 320 } as ReportUIState);
+  const reportUI = ensureWritable<ReportUIState>(unifiedReportUI, { sidebarOpen: true, fullscreen: false, sidebarWidth: 320 } as ReportUIState);
   // setupAutoSave fallback
-  const setupAutoSave = (unified as any).setupAutoSave ?? (() => () => { /* noop cleanup */ });
+  const setupAutoSave = unifiedSetupAutoSave ?? (() => () => { /* noop cleanup */ });
   // Create permissive aliases for UI components to avoid strict SvelteComponentTyped event/slot typing errors
-  const Button: any = BitsButton as unknown as any;
   const EvidenceCard: any = EvidenceCardComponent as unknown as any;
   // MasonryGrid alias as any to avoid strict slot typing issues in templates
   const MasonryGridComponent: any = MasonryGrid as any;
   // Legal document comparison state
-  let comparingId: string | null = null;
-  let compareError: string | null = null;
-  let comparisonResults: Record<string any> = {};
-  let cacheStats = { totalEntries: 0, oldestEntry: null as number | null, newestEntry: null as number | null, totalSize: 0 };
+  let comparingId = $state<string | null>(null);
+  let compareError = $state<string | null>(null);
+  type AnalysisResult = {
+    analysis?: {
+      who?: {
+        personsOfInterest?: { name: string }[];
+      };
+      what?: {
+        legalIssues?: string[];
+      };
+    };
+    comparison?: {
+      similarCases?: { title: string; score: number }[];
+    };
+    processingTime: number;
+    fromCache?: boolean;
+  };
+  let comparisonResults = $state<Record<string, AnalysisResult>>({});
+  let cacheStats = $state({ totalEntries: 0, oldestEntry: null as number | null, newestEntry: null as number | null, totalSize: 0 });
   // Modal & form state (added to fix missing identifiers)
-  let showEvidenceModal: boolean = $state(false);
-  let showSettingsModal: boolean = $state(false);
-  let evidenceFormData: any = {}; // form model used by EvidenceForm
-  let selectedEvidence: Evidence | null = null;
-  let evidenceSearchResults: Evidence[] = []; // populated on mount from report attachedEvidence
+  let showEvidenceModal = $state(false);
+  let showSettingsModal = $state(false);
+  let evidenceFormData = $state<any>({}); // form model used by EvidenceForm
+  let selectedEvidence = $state<Evidence | null>(null);
+  let evidenceSearchResults = $state<Evidence[]>([]); // populated on mount from report attachedEvidence
   // Editor ref & autosave cleanup placeholder
   let editorComponent: any = null;
   let cleanupAutoSave: (() => void) | undefined = undefined;
@@ -115,9 +130,7 @@ https://svelte.dev/e/js_parse_error -->
     // initialize local evidence search results from report attached evidence
     evidenceSearchResults = Array.isArray($report?.attachedEvidence) ? ($report.attachedEvidence as Evidence[]) : [];
     return () => {
-      window.removeEventListener('resize', updateEditorHeight);
-      if (cleanupAutoSave) cleanupAutoSave();
-    };
+
   });
   // Update cache statistics
   function updateCacheStats() {
@@ -159,7 +172,9 @@ https://svelte.dev/e/js_parse_error -->
         console.error("Error deleting evidence:", error);
         alert("Error deleting evidence");
       }
-    }
+  const handleCompareEvidence = async (evidence: Evidence) =>
+  {
+    comparingId = evidence.id;
   }
   const handleDownloadEvidence = (evidence: Evidence) => {
     if (evidence.url) {
@@ -184,7 +199,9 @@ https://svelte.dev/e/js_parse_error -->
       // 2. No cache hit - analyze with API
       const formData = new FormData();
       // Create a text file from evidence content for analysis
-      const textContent = `${evidence.title}\n\n${evidence.description || ''}`;
+      const textContent = `${evidence.title}
+
+${evidence.description || ''}`;
       const blob = new Blob([textContent], { type: 'text/plain' });
       const file = new File([blob], `${evidence.title}.txt`, { type: 'text/plain' });
       formData.append('file', file);
@@ -266,8 +283,6 @@ https://svelte.dev/e/js_parse_error -->
       toggleFullscreen();
     }
   }
-  // Added imports for focus management
-  import { tick } from 'svelte';
   // Modal refs for focus management
   let evidenceModalRef: HTMLDivElement | null = null;
   let evidenceModalContentRef: HTMLDivElement | null = null;
@@ -275,11 +290,11 @@ https://svelte.dev/e/js_parse_error -->
   let settingsModalContentRef: HTMLDivElement | null = null;
   // Unified close helpers
   function closeEvidenceModal() {
-    showEvidenceModal = $state(false);
+    showEvidenceModal = false;
     selectedEvidence = null;
   }
   function closeSettingsModal() {
-    showSettingsModal = $state(false);
+    showSettingsModal = false;
   }
   // Keyboard handlers for overlay and content
   function handleOverlayKeydown(e: KeyboardEvent, closeFn: () => void) {
@@ -303,28 +318,32 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Focus management when modals open
-  $: if (showEvidenceModal) {
-    // wait for DOM, then move focus into the modal content (best for screen readers)
-    (async () => {
-      await tick();
-      // prefer focusing content or the close button if present
-      if (evidenceModalContentRef) {
-        evidenceModalContentRef.focus();
-      } else if (evidenceModalRef) {
-        evidenceModalRef.focus();
-      }
-    })();
-  }
-  $: if (showSettingsModal) {
-    (async () => {
-      await tick();
-      if (settingsModalContentRef) {
-        settingsModalContentRef.focus();
-      } else if (settingsModalRef) {
-        settingsModalRef.focus();
-      }
-    })();
-  }
+  $effect(() => {
+    if (showEvidenceModal) {
+      // wait for DOM, then move focus into the modal content (best for screen readers)
+      (async () => {
+        await tick();
+        // prefer focusing content or the close button if present
+        if (evidenceModalContentRef) {
+          evidenceModalContentRef.focus();
+        } else if (evidenceModalRef) {
+          evidenceModalRef.focus();
+        }
+      })();
+    }
+  });
+  $effect(() => {
+    if (showSettingsModal) {
+      (async () => {
+        await tick();
+        if (settingsModalContentRef) {
+          settingsModalContentRef.focus();
+        } else if (settingsModalRef) {
+          settingsModalRef.focus();
+        }
+      })();
+    }
+  });
 
 </script>
 <svelte:window onkeydown={handleKeydown} />
@@ -481,7 +500,8 @@ https://svelte.dev/e/js_parse_error -->
             <div>
               <p>No evidence found</p>
               <small>Add evidence to enhance your report</small>
-            {/if}
+            </div>
+          {/if}
         </section>
         <!-- Legal Analysis Results Panel -->
         {#if Object.keys(comparisonResults).length > 0}
@@ -495,51 +515,42 @@ https://svelte.dev/e/js_parse_error -->
                   <h4 class="text-xs font-semibold text-gray-900">
                     {evidenceSearchResults.find(e => e.id === evidenceId)?.title || 'Analysis Result'}
                   </h4>
-                  {#if result.fromCache}
-                    <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded flex items-center gap-1">
-                      <span class="text-[10px]">⚡</span>
-                      Cached
-                    </span>
-                  {/if}
-                </div>
-                {#if result.analysis}
-                  <!-- WHO Section -->
-                  {#if result.analysis.who?.personsOfInterest?.length > 0}
+                  {#if result.analysis?.who?.personsOfInterest?.length > 0}
                     <div class="mb-2">
                       <span class="text-xs font-medium text-blue-700">WHO:</span>
                       <div class="flex flex-wrap gap-1 mt-1">
-                        {#each Array.isArray(result.analysis.who.personsOfInterest.slice(0, 3)) ? result.analysis.who.personsOfInterest.slice(0, 3) : [] as person}
+                        {#each result.analysis.who.personsOfInterest.slice(0, 3) as person}
                           <span class="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
                             {person.name}
                           </span>
                         {/each}
                       </div>
-                    {/if}
-                  <!-- WHAT Section -->
-                  {#if result.analysis.what?.legalIssues?.length > 0}
+                    </div>
+                  {/if}
+                  {#if result.analysis?.what?.legalIssues?.length > 0}
                     <div class="mb-2">
                       <span class="text-xs font-medium text-green-700">WHAT:</span>
                       <div class="flex flex-wrap gap-1 mt-1">
-                        {#each Array.isArray(result.analysis.what.legalIssues.slice(0, 2)) ? result.analysis.what.legalIssues.slice(0, 2) : [] as issue}
+                        {#each result.analysis.what.legalIssues.slice(0, 2) as issue}
                           <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded">
                             {issue}
                           </span>
                         {/each}
                       </div>
-                    {/if}
-                  <!-- Similar Cases -->
+                    </div>
+                  {/if}
                   {#if result.comparison?.similarCases?.length > 0}
                     <div class="mb-2">
                       <span class="text-xs font-medium text-purple-700">Similar Cases:</span>
                       <div class="space-y-1 mt-1">
-                        {#each Array.isArray(result.comparison.similarCases.slice(0, 2)) ? result.comparison.similarCases.slice(0, 2) : [] as similarCase}
+                        {#each result.comparison.similarCases.slice(0, 2) as similarCase}
                           <div class="text-xs text-gray-600 truncate">
                             • {similarCase.title} ({(similarCase.score * 100).toFixed(0)}%)
                           </div>
                         {/each}
                       </div>
-                    {/if}
-                {/if}
+                    </div>
+                  {/if}
                 <div class="text-xs text-gray-400 mt-2">
                   Processed in {(result.processingTime / 1000).toFixed(1)}s
                 </div>
@@ -621,11 +632,11 @@ https://svelte.dev/e/js_parse_error -->
             class="layout-toggle"
           >
             {#if $report.settings.layout === "single"}
-              <Layout size={18} />
+              <LayoutDashboard size={18} />
             {:else if $report.settings.layout === "dual"}
-              <Columns size={18} />
+              <LayoutGrid size={18} />
             {:else}
-              <Grid size={18} />
+              <LayoutList size={18} />
             {/if}
           </Button>
           <Button
@@ -842,5 +853,16 @@ https://svelte.dev/e/js_parse_error -->
   .editor-main { flex: 1; display: flex; flex-direction: column; }
   .editor-header { display: flex; align-items: center; justify-content: space-betweennn; padding: 0.5rem 1rem; }
   .evidence-panel { width: 320px; border-left: 1px solid #e6e6e6; padding: 0.75rem; overflow: auto; }
+
+  /* Masonry 3-column grid for potential use */
+  .masonry-3-column-grid {
+    column-count: 3;
+    column-gap: 1rem; /* Adjust gap as needed */
+  }
+
+  .masonry-3-column-grid > * {
+    break-inside: avoid; /* Prevent items from breaking across columns */
+    margin-bottom: 1rem; /* Adjust vertical spacing between items */
+  }
 </style>
 <!-- Ensure file ends with a newline -->

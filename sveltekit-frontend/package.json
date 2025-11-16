@@ -488,7 +488,10 @@
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "qa:nightly": "node scripts/phase53-report.mjs",
     "analyze:build": "ts-node scripts/analyze-build-logs.ts",
-    "check:all:json": "svelte-check --output json > .svelte-check-output.json && npm run analyze:build"
+    "check:all:json": "svelte-check --output json > .svelte-check-output.json && npm run analyze:build",
+    "parse:svelte-errors": "tsx ../tools/parse-svelte-errors.ts .svelte-errors-raw.log .svelte-errors.jsonl",
+    "rank:svelte-errors": "tsx ../tools/rank-svelte-errors.ts .svelte-errors.jsonl .svelte-errors-top.json 100 5",
+    "analyze:svelte-errors": "npm run parse:svelte-errors && npm run rank:svelte-errors"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { appStore } from '$lib/stores/app-store';
+  import { appActions, appStore } from '$lib/stores/app-store';
   import { onMount } from 'svelte';
 
   let { webgpuCapabilities = null, cpuCapabilities = null } = $props();
@@ -16,16 +16,25 @@
   let loading = $state(true);
   let error = $state<string | null>(null);
 
+  // Subscribe to store
+  let appState = $state();
+  $effect(() => {
+    const unsubscribe = appStore.subscribe(state => {
+      appState = state;
+    });
+    return unsubscribe;
+  });
+
   async function loadSystemMetrics() {
     try {
       loading = true;
       error = null;
 
       // Load system metrics from API
-      await appStore.loadSystemMetrics();
+      await appActions.loadSystemMetrics();
 
       // Get metrics from store
-      systemMetrics = appStore.systemMetrics;
+      systemMetrics = appState?.systemMetrics;
 
       // Update health scores based on real data
       if (systemMetrics) {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import { Camera, Eye, Trash2, Upload } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
 
@@ -60,7 +60,7 @@
         <div class="relative group">
           <div
             class="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow border-2 border-gray-200"
-            on:click={() => handlePhotoClick(photo, index)}
+            onclick={() => handlePhotoClick(photo, index)}
           >
             <img
               src={photo.thumbnailUrl}
@@ -75,7 +75,7 @@
               size="sm"
               variant="secondary"
               class="opacity-0 group-hover:opacity-100 transition-opacity"
-              on:click={() => handlePhotoClick(photo, index)}
+              onclick={() => handlePhotoClick(photo, index)}
             >
               <Eye class="w-4 h-4" />
             </Button>
@@ -84,7 +84,7 @@
                 size="sm"
                 variant="destructive"
                 class="opacity-0 group-hover:opacity-100 transition-opacity"
-                on:click={() => handleDelete(index)}
+                onclick={() => handleDelete(index)}
               >
                 <Trash2 class="w-4 h-4" />
               </Button>

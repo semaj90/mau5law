@@ -3,12 +3,12 @@
   import type { TopicNode } from '$lib/types/evidence-board';
   import { onMount } from 'svelte';
 
-  let topics: TopicNode[] = [];
-  let selectedTopic: TopicNode | null = null;
-  let loading = true;
-  let error = '';
+  let topics = $state<TopicNode[]>([]);
+  let selectedTopic = $state<TopicNode | null>(null);
+  let loading = $state(true);
+  let error = $state('');
 
-  $: caseId = $page.params.caseId;
+  let caseId = $derived($page.params.caseId);
 
   onMount(async () => {
     try {
@@ -76,7 +76,7 @@
           <button
             class="absolute px-3 py-2 text-xs shadow-lg border-2 rounded transition-all hover:scale-105 hover:shadow-xl {severityColor(topic)}"
             style="left: {topic.somX * 85 + 5}%; top: {topic.somY * 80 + 10}%;"
-            on:click={() => selectTopic(topic)}
+            onclick={() => selectTopic(topic)}
           >
             <div class="font-mono tracking-wide font-semibold">
               {topic.title}
@@ -132,7 +132,7 @@
 
         <button
           class="w-full mt-4 px-3 py-2 bg-lime-600 hover:bg-lime-500 text-black text-xs font-bold uppercase tracking-wide transition-colors"
-          on:click={sendToChat}
+          onclick={sendToChat}
         >
           Analyze in AI Terminal
         </button>
