@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { Dialog as Root, DialogContent as Content, DialogOverlay as Overlay, DialogClose as Close } from '$lib/components/ui/dialog';
-  import { appStore } from '$lib/stores/app-store';
+  import { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
+  import { appActions, appStore } from '$lib/stores/app-store';
   import { onDestroy, onMount } from 'svelte';
 
   // YoRHaModalComponent is being replaced by bits-ui Dialog
@@ -28,16 +28,25 @@
   let evidenceInsights = $state([]);
   let recentCases = $state([]);
 
+  // Subscribe to store
+  let appState = $state();
+  $effect(() => {
+    const unsubscribe = appStore.subscribe(state => {
+      appState = state;
+    });
+    return unsubscribe;
+  });
+
   async function loadCases() {
     try {
       loading = true;
       error = null;
 
       // Load cases from API
-      // await appStore.loadCases();
+      await appActions.loadCases();
 
       // Get cases from store and filter for recent ones
-      const allCases = $appStore.cases || [];
+      const allCases = appState?.cases || [];
       recentCases = allCases
         .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
         .slice(0, 10)
@@ -87,9 +96,9 @@
   async function loadEvidenceInsights() {
     try {
       // Load evidence from API
-      await appStore.loadEvidence();
+      await appActions.loadEvidence();
 
-      const evidence = appStore.evidence || [];
+      const evidence = appState?.evidence || [];
 
       // Generate insights from evidence data
       evidenceInsights = evidence
@@ -175,7 +184,7 @@
     await goto(`/cases/${caseId}`);
   }
 
-  let intervalId: number;
+  let intervalId: ReturnType<typeof setInterval>;
 
   onMount(async () => {
     await loadData();

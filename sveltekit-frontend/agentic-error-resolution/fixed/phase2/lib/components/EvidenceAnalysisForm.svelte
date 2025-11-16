@@ -3,21 +3,24 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from 'bits-ui/components/ui/button';
-  import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
-  import type { OCRResult } from '$lib/services/ocr-processor';
+  import { fade, slide } from 'svelte/transition';
+  import type { OCRResult } from '$lib/ocr-processor';
+  import { Button } from '$lib/ui/Button.svelte';
 
   // explicit props (Svelte 5 safe, TypeScript-friendly)
-  const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
-  const { formDataProp } = $props<{ formDataProp: | {
-        extracted_entities: any[] }>()
-        key_facts: string[];
-        legal_issues: string[];
-        precedents: any[];
-      }
-    | undefined;
-  const { ocrResultsProp } = $props<{ ocrResultsProp: OCRResult[] | undefined }>()
+  let { ondispatch, formDataProp, ocrResultsProp } = $props<{
+    ondispatch: (payload: any) => void;
+    formDataProp:
+      | {
+          extracted_entities: any[];
+          key_facts: string[];
+          legal_issues: string[];
+          precedents: any[];
+        }
+      | undefined;
+    ocrResultsProp: OCRResult[] | undefined;
+  }>();
 
   // local state derived from props with safe defaults
   let formData = formDataProp ?? {
@@ -33,11 +36,6 @@ https://svelte.dev/e/js_parse_error -->
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
 
-  // Entity types for classification
-  const entityTypes = [
-    'Person', 'Organization', 'Location', 'Date', 'Money', 'Legal Document',
-    'Court', 'Judge', 'Law', 'Statute', 'Contract Term', 'Evidence', 'Other'
-  ];
   // Legal issue categories
   const legalIssueCategories = [
     'Contract Breach', 'Negligence', 'Constitutional Rights', 'Property Rights',
@@ -91,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
       // Mock entity extraction
       const patterns = [
         { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
-        { type: 'Date', regex: /(\d{1 2}\/\d{1 2}\/\d{4}|\d{4}-\d{2}-\d{2})/g, confidence: 0.95 },
+        { type: 'Date', regex: /(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/g, confidence: 0.95 },
         { type: 'Money', regex: /\$[\d,]+(?:\.\d{2})?/g, confidence: 0.90 },
         { type: 'Organization', regex: /([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\.?)/g, confidence: 0.80 },
         { type: 'Legal Document', regex: /(contract|agreement|lease|deed|will|testament)/gi, confidence: 0.75 }
@@ -102,7 +100,8 @@ https://svelte.dev/e/js_parse_error -->
           const value = match[1] ?? match[0];
           if (value && !entities.some((e) => e.value === value && e.type === pattern.type)) {
             entities.push({
-              type: pattern.type value,
+              type: pattern.type,
+              value: value,
               confidence: pattern.confidence
             });
           }
@@ -178,16 +177,16 @@ https://svelte.dev/e/js_parse_error -->
     formData.key_facts = [...formData.key_facts, ''];
   }
   function removeKeyFact(index: number) {
-    formData.key_facts = formData.key_facts.filter((_, i) => i !== index);
+    formData.key_facts = formData.key_facts.filter((_: string, i: number) => i !== index);
   }
   function addLegalIssue() {
     formData.legal_issues = [...formData.legal_issues, ''];
   }
   function removeLegalIssue(index: number) {
-    formData.legal_issues = formData.legal_issues.filter((_, i) => i !== index);
+    formData.legal_issues = formData.legal_issues.filter((_: string, i: number) => i !== index);
   }
   function removeEntity(index: number) {
-    formData.extracted_entities = formData.extracted_entities.filter((_, i) => i !== index);
+    formData.extracted_entities = formData.extracted_entities.filter((_: any, i: number) => i !== index);
   }
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.9) return 'bg-green-100 text-green-800';
@@ -230,7 +229,8 @@ https://svelte.dev/e/js_parse_error -->
           🤖 Start Analysis
         </Button>
       </div>
-    {/if}
+    </div>
+  {/if}
   <!-- Analysis Progress -->
   {#if isAnalyzing}
     <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:slide>
@@ -247,7 +247,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <p class="text-sm text-blue-700">{$currentAnalysisStep}</p>
       </div>
-    {/if}
+    </div>
+  {/if}
   <!-- Extracted Entities -->
   <div class="mb-8">
     <h3 class="text-lg font-medium text-gray-900 mb-4">Extracted Entities</h3>
@@ -372,7 +373,8 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    {/if}
+    </div>
+  {/if}
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button

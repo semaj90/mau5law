@@ -1,6 +1,6 @@
 <script lang="ts">
   import Avatar from '$lib/components/ui/avatar';
-  import Badge from '$lib/components/ui/badge';
+  import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button';
   import Card from '$lib/components/ui/card';
   import Dialog from '$lib/components/ui/dialog';

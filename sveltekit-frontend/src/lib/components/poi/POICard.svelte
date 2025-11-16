@@ -5,28 +5,36 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import {
     Camera,
+    Edit,
     Eye,
     Trash2,
     User
   } from 'lucide-svelte';
-  import { createEventDispatcher } from 'svelte';
 
-  export let poi: {
-    id: string;
-    name: string;
-    alias?: string;
-    threatLevel: string;
-    photos?: Array<{
-      url: string;
-      thumbnailUrl: string;
-      metadata?: any;
-      ai?: any;
-    }>;
-    notes?: string;
-    createdAt: string;
-  };
-
-  const dispatch = createEventDispatcher();
+  let {
+    poi,
+    onView,
+    onEdit,
+    onDelete
+  } = $props<{
+    poi: {
+      id: string;
+      name: string;
+      alias?: string;
+      threatLevel: string;
+      photos?: Array<{
+        url: string;
+        thumbnailUrl: string;
+        metadata?: any;
+        ai?: any;
+      }>;
+      notes?: string;
+      createdAt: string;
+    };
+    onView?: (poi: any) => void;
+    onEdit?: (poi: any) => void;
+    onDelete?: (poi: any) => void;
+  }>();
 
   function getThreatColor(level: string) {
     switch (level) {
@@ -43,7 +51,22 @@
   }
 </script>
 
-<Card class="hover:shadow-lg transition-shadow cursor-pointer border-2" on:click={() => onView?.(poi)}>
+  function getThreatColor(level: string) {
+    switch (level) {
+      case 'critical': return 'bg-red-500 text-white';
+      case 'high': return 'bg-orange-500 text-white';
+      case 'medium': return 'bg-yellow-500 text-black';
+      case 'low': return 'bg-green-500 text-white';
+      default: return 'bg-gray-500 text-white';
+    }
+  }
+
+  function getInitials(name: string) {
+    return name.split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase();
+  }
+</script>
+
+<Card class="hover:shadow-lg transition-shadow cursor-pointer border-2" onclick={() => onView?.(poi)}>
   <CardHeader class="pb-3">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -98,7 +121,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click|stopPropagation={() => onView?.(poi)}
+        onclick={(e) => { e.stopPropagation(); onView?.(poi); }}
         class="flex-1"
       >
         <Eye class="w-4 h-4 mr-1" />
@@ -107,7 +130,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click|stopPropagation={() => onEdit?.(poi)}
+        onclick={(e) => { e.stopPropagation(); onEdit?.(poi); }}
         class="flex-1"
       >
         <Edit class="w-4 h-4 mr-1" />
@@ -116,7 +139,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click|stopPropagation={() => onDelete?.(poi)}
+        onclick={(e) => { e.stopPropagation(); onDelete?.(poi); }}
         class="text-red-600 hover:text-red-700"
       >
         <Trash2 class="w-4 h-4" />

@@ -338,7 +338,7 @@
             class="flex flex-col justify-between gap-3 rounded-lg border border-gray-800 bg-black/60 p-4"
           >
             <div class="flex items-center gap-3">
-              <endpoint.icon class="h-6 w-6" / />
+              <svelte:component this={endpoint.icon} class="h-6 w-6" />
               <div>
                 <h3 class="font-semibold">{endpoint.name}</h3>
                 <p class="text-sm">{endpoint.description}</p>

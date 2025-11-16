@@ -1,5 +1,5 @@
 ﻿import type { Document } from '$lib/types';
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types.js';
 import { error, fail, json } from '@sveltejs/kit';
 import { getUserId } from '$lib/server/auth/utils';
 
@@ -35,7 +35,9 @@ export const load: PageServerLoad = async ({ locals }) => {
     console.error('Error loading CUDA streaming data: ', err);
     return getDefaultGPUData();
   }
-};export const actions: Actions = {
+};
+
+export const actions: Actions = {
   startStream: async ({ request, locals }) => {
     const data = await request.formData();
     const operationType = data.get('operationType') as string;
@@ -115,8 +117,9 @@ export const load: PageServerLoad = async ({ locals }) => {
       console.error('CUDA document processing failed: ', err);
       return fail(500, { error: 'Document processing failed' });
     }
-  }
-}; async function getGPUSystemInfo(): Promise<any> {
+};
+
+async function getGPUSystemInfo(): Promise<any> {
   // Mock GPU info - replace with actual CUDA/GPU detection
   return {
     gpuAvailable: true,

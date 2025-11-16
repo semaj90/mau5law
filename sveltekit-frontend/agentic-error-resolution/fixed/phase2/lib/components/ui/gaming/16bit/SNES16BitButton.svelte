@@ -10,10 +10,9 @@
 -->
 <script lang="ts">
   import { Button as BitsButton } from 'bits-ui/components/ui/button';
-  import type { GamingComponentProps } from '../types/gaming-types.js';
-  import { SNES_COLOR_PALETTE } from '../constants/gaming-constants.js';
   import type { Snippet } from 'svelte';
-  import { retroAudio, generateGradient, getSizeStyles, getMode7Transform, SNES_PALETTE } from '../effects';
+  import { generateGradient, getMode7Transform, getSizeStyles, retroAudio, SNES_PALETTE } from '../effects';
+  import type { GamingComponentProps } from '../types/gaming-types.js';
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -31,6 +30,19 @@
     // Content
     children?: Snippet;
     class?: string;
+    // Additional props from GamingComponentProps or added
+    era?: string;
+    variant?: string;
+    size?: string;
+    disabled?: boolean;
+    loading?: boolean;
+    pixelPerfect?: boolean;
+    enableScanlines?: boolean;
+    enableCRTEffect?: boolean;
+    animationStyle?: string;
+    onClick?: () => void;
+    onHover?: () => void;
+    onFocus?: () => void;
   }
   let { era = '16bit', variant = 'primary', size = 'md', // Changed from 'medium' to: 'md'
     disabled = false, loading = false, pixelPerfect = false, // SNES had smoother graphics
@@ -46,7 +58,7 @@
       await retroAudio.playSNESButtonClick({ volume: 0.3, harmonics: true });
     }
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 120);
     // call only if a function was provided to avoid TS: "not callable" error
     if (typeof onClick === 'function') onClick();
@@ -58,7 +70,7 @@
     if (typeof onHover === 'function') onHover();
   };
   const handleUnhover = () => {
-    isHovered = $state(false);
+    isHovered = false;
   };
   const handleFocus = () => {
     if (disabled) return;
@@ -68,7 +80,7 @@
   // Derived state using modular utilities
   const sizeStyles = $derived(getSizeStyles(size as any));
   const variantGradient = $derived(
-    generateGradient({ variant: variant as any, direction gradientDirection, colorPalette: SNES_PALETTE })
+    generateGradient({ variant: variant as any, direction: gradientDirection, colorPalette: SNES_PALETTE })
   );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>
@@ -158,19 +170,19 @@
   }
   @keyframes plasmaShift {
     0% {
-      background-position 0% 0%;
+      background-position: 0% 0%;
     }
     50% {
-      background-position 100% 100%;
+      background-position: 100% 100%;
     }
     100% {
-      background-position 0% 0%;
+      background-position: 0% 0%;
     }
   }
   :global(.snes-16bit-button.mode7) {
     transform-style: preserve-3d;
   }
-  :global(.snes-16bit-buttonnot(:disabled):hover) {
+  :global(.snes-16bit-button:not(:disabled):hover) {
     border-color: rgba(255, 255, 255, 0.5);
     box-shadow:
       0 3px 0px rgba(0, 0, 0, 0.3),
@@ -179,13 +191,13 @@
       0 4px 8px rgba(0, 0, 0, 0.2);
     filter: brightness(1.1) saturate(1.1);
   }
-  :global(.snes-16bit-buttonnot(:disabled):active) {
+  :global(.snes-16bit-button:not(:disabled):active) {
     box-shadow:
       0 1px 0px rgba(0, 0, 0, 0.3),
       inset 0 1px 0px rgba(255, 255, 255, 0.3),
       inset 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-  :global(.snes-16bit-buttondisabled) {
+  :global(.snes-16bit-button:disabled) {
     background: linear-gradient(to bottom, #7c7c7c, #5c5c5c, #3c3c3c);
     color: #bcbcbc;
     cursor: not-allowed;
@@ -195,7 +207,7 @@
       0 1px 0px rgba(0, 0, 0, 0.2),
       inset 0 1px 0px rgba(255, 255, 255, 0.1);
   }
-  :global(.snes-16bit-buttonfocus-visible) {
+  :global(.snes-16bit-button:focus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
@@ -242,7 +254,7 @@
       transform: none !important;
     }
   }
-  @media (prefers-reduced-motion reduce) {
+  @media (prefers-reduced-motion: reduce) {
     :global(.snes-16bit-button) {
       animation: none;
       transition: opacity 150ms ease;

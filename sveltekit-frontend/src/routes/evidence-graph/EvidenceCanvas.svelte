@@ -535,7 +535,6 @@
         {/if}
       </aside>
     {/if}
-  {/if}
 </div>
 <style>
   .evidence-canvas-container {

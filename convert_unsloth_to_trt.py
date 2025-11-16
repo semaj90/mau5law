@@ -110,6 +110,23 @@ def concatenate_qkv_weights(layer_tensors: Dict[str, torch.Tensor], layer_idx: s
     return result
 
 
+def adjust_qk_layernorm_tensor(key: str, tensor: torch.Tensor, head_size: int) -> torch.Tensor:
+    """Slice Q/K layernorm weights down to head_size entries if needed."""
+    if not key.endswith(('attention.q_layernorm.weight', 'attention.k_layernorm.weight')):
+        return tensor
+
+    if tensor.shape[0] == head_size:
+        return tensor
+
+    if tensor.shape[0] < head_size:
+        raise ValueError(
+            f"Tensor {key} has smaller dimension ({tensor.shape[0]}) than head_size ({head_size})"
+        )
+
+    # TRT-LLM expects only the first head_size entries.
+    return tensor[:head_size].clone()
+
+
 def convert_checkpoint(hf_checkpoint_dir: str, output_dir: str) -> str:
     """Convert HuggingFace checkpoint to TensorRT-LLM format"""
 
@@ -127,6 +144,13 @@ def convert_checkpoint(hf_checkpoint_dir: str, output_dir: str) -> str:
         config['architecture'] = 'Gemma3ForCausalLM'
         config.setdefault('architectures', ['Gemma3ForCausalLM'])
         config['dtype'] = config.get('torch_dtype', 'float16')
+
+        head_size = config.get('head_dim')
+        if head_size is None:
+            hidden = config.get('hidden_size', 0)
+            heads = config.get('num_attention_heads', 1) or 1
+            head_size = max(1, hidden // heads)
+            config['head_dim'] = head_size
 
         with open(os.path.join(output_dir, 'config.json'), 'w') as f:
             json.dump(config, f, indent=2)
@@ -158,6 +182,8 @@ def convert_checkpoint(hf_checkpoint_dir: str, output_dir: str) -> str:
             for hf_key in f.keys():
                 tensor = f.get_tensor(hf_key)
                 trt_key = map_hf_to_trt_key(hf_key)
+
+                tensor = adjust_qk_layernorm_tensor(trt_key, tensor, head_size)
 
                 if trt_key in all_tensors:
                     print(f"Warning: duplicate key {trt_key}, overwriting")

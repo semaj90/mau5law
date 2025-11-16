@@ -198,7 +198,7 @@
         status: 'sent'
       };
       chatMessages = chatMessages
-        .map((msg) => (msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg))
+        .map((msg): ChatMessage => (msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg))
         .concat(assistantMessage);
       if (queuedAttachment) {
         queuedAttachment.status = 'uploaded';
@@ -362,10 +362,14 @@
           <div
             class:drop-active={dropActive}
             class="drop-zone"
-            ondragenter|preventDefault={() => (dropActive = true)}
-            ondragover|preventDefault={() => (dropActive = true)}
-            ondragleave|preventDefault={() => (dropActive = false)}
-            ondrop={onDrop}
+            on:dragenter|preventDefault={() => (dropActive = true)}
+            on:dragover|preventDefault={() => (dropActive = true)}
+            on:dragleave|preventDefault={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                dropActive = false;
+              }
+            }}
+            on:drop={onDrop}
           >
             <p>Drag and drop files to add context or click to browse.</p>
             <input

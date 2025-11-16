@@ -1440,7 +1440,7 @@
     {
       "label": "Phase48: Start LangExtract API",
       "type": "shell",
-      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "command": "${workspaceFolder}/.venv-phase46/Scripts/python.exe",
       "args": [
         "-m",
         "uvicorn",
@@ -1451,7 +1451,7 @@
         "9001"
       ],
       "options": {
-        "cwd": "${workspaceFolder}",
+        "cwd": "${workspaceFolder}/python-services",
         "env": {
           "PYTHONPATH": "${workspaceFolder}"
         }
@@ -2232,6 +2232,18 @@
       "default": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
     },
     {
+      "id": "searchKeyword",
+      "type": "promptString",
+      "description": "Keyword or regex (ripgrep syntax)",
+      "default": "TODO"
+    },
+    {
+      "id": "globPattern",
+      "type": "promptString",
+      "description": "Glob pattern for files (fast-glob syntax, e.g. **/*.ts)",
+      "default": "**/*.ts"
+    },
+    {
       "label": "🔥 Build TensorRT Engines (FP16/FP8/INT8)",
       "type": "shell",
       "command": "pwsh",
@@ -2469,6 +2481,331 @@
       },
       "problemMatcher": [],
       "detail": "Clean development environment: logs, caches, Docker resources, temp files"
+    },
+    {
+      "label": "Go: Start SIMD JSON Accelerator",
+      "type": "shell",
+      "command": "go",
+      "args": [
+        "run",
+        "simd-json-accelerator.go"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/go-microservice",
+        "env": {
+          "SIMD_JSON_PORT": "8095"
+        }
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "detail": "Starts the Go SIMD JSON accelerator service on port 8095."
+    },
+    {
+      "label": "Go: Start SIMD HTTP Fallback",
+      "type": "shell",
+      "command": "go",
+      "args": [
+        "run",
+        "simd-http-server.go"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/go-microservice"
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "detail": "Starts the Go SIMD HTTP fallback server on port 8099."
+    },
+    {
+      "label": "Start All SIMD Services",
+      "dependsOn": [
+        "Python: Install SIMD Parser Deps",
+        "Python: Start SIMD Parser Service",
+        "Go: Start SIMD JSON Accelerator",
+        "Go: Start SIMD HTTP Fallback"
+      ],
+      "dependsOrder": "sequence",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "detail": "Starts all SIMD JSON parsing services: Python (8097), Go Accelerator (8095), Go Fallback (8099)"
+    },
+    {
+      "label": "🔍 Interactive Keyword Search (All Files)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Interactive PowerShell search with glob/ripgrep/awk functionality - asks for keywords and patterns"
+    },
+    {
+      "label": "🔍 Search TypeScript/JavaScript Files",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive",
+        "-Include",
+        "*.ts,*.tsx,*.js,*.jsx,*.svelte"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Search TypeScript, JavaScript, and Svelte files interactively"
+    },
+    {
+      "label": "🔍 Search Python Files",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive",
+        "-Include",
+        "*.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Search Python files interactively"
+    },
+    {
+      "label": "🔍 Search Configuration Files",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive",
+        "-Include",
+        "*.json,*.yaml,*.yml,*.toml,*.config.*,*.env*"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Search configuration files interactively"
+    },
+    {
+      "label": "🔍 Search Documentation Files",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive",
+        "-Include",
+        "*.md,*.txt,README*,CHANGELOG*,*.doc,*.docx"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Search documentation files interactively"
+    },
+    {
+      "label": "🔍 Quick Error Search (TypeScript)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Keywords",
+        "error,Error,ERROR",
+        "-Include",
+        "*.ts,*.tsx,*.js,*.jsx,*.svelte",
+        "-Context",
+        "3"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "detail": "Quick search for error-related keywords in TypeScript/JavaScript files"
+    },
+    {
+      "label": "🔍 Quick Function Search (TypeScript)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Keywords",
+        "function,async function,const.*=.*=>",
+        "-Include",
+        "*.ts,*.tsx,*.js,*.jsx,*.svelte",
+        "-Context",
+        "1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "detail": "Quick search for function definitions in TypeScript/JavaScript files"
+    },
+    {
+      "label": "🔍 Search with Ripgrep (Force)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive",
+        "-UseRipgrep"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Force use of ripgrep for searching (if available)"
+    },
+    {
+      "label": "Interactive Ripgrep Search",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-File",
+        "${workspaceFolder}/scripts/search-with-rg.ps1",
+        "-SearchRoot",
+        "${workspaceFolder}",
+        "-GlobPattern",
+        "${input:globPattern}",
+        "-Keyword",
+        "${input:searchKeyword}"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🔍 Ollama Search Codebase",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/search-keywords.ps1",
+        "-Interactive"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Interactive PowerShell search with Ollama AI analysis - search codebase and get AI insights"
     }
   ]
 }

@@ -3,12 +3,12 @@
   import type { ShardNode } from '$lib/types/evidence-board';
   import { onMount } from 'svelte';
 
-  let shards: ShardNode[] = [];
-  let selectedShard: ShardNode | null = null;
-  let loading = true;
-  let error = '';
+  let shards = $state<ShardNode[]>([]);
+  let selectedShard = $state<ShardNode | null>(null);
+  let loading = $state(true);
+  let error = $state('');
 
-  $: docId = $page.params.docId;
+  let docId = $derived($page.params.docId);
 
   onMount(async () => {
     try {
@@ -113,7 +113,7 @@
           <button
             class="absolute w-16 h-16 rounded-full shadow-lg border-2 transition-all hover:scale-110 hover:shadow-xl flex flex-col items-center justify-center text-[10px] {statusColor(shard)}"
             style="left: {position.left}; top: {position.top}; transform: {position.transform};"
-            on:click={() => selectShard(shard)}
+            onclick={() => selectShard(shard)}
           >
             <div class="font-mono font-bold">
               {shard.shardId}
@@ -184,7 +184,7 @@
 
         <button
           class="w-full mt-4 px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-black text-xs font-bold uppercase tracking-wide transition-colors"
-          on:click={sendToChat}
+          onclick={sendToChat}
         >
           Load in AI Terminal
         </button>

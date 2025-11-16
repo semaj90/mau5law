@@ -35,7 +35,7 @@
   const defaultHeight = 600;
 
   let svg: SVGSVGElement;
-  let simulation: d3.Simulation<GraphNode, undefined>;
+  let simulation: any;
 
   let isSignalsPanelOpen = $state(false);
   let isSignalsLoading = $state(false);
