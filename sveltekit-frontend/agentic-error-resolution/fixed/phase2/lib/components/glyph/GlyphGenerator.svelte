@@ -3,7 +3,7 @@
   import  Button  from "$lib/components/ui/button.svelte"; // Adjusted import
   import * as Card from '$lib/components/ui/card.svelte'; // Adjusted import
   // GRPMO Extended Thinking Integration
-  import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
+  import type { grpmoOrchestrator, type ExtendedThinkingStage  } from '$lib/server/db/vector-operations';
   import type { SimilarityResult } from '$lib/server/db/vector-operations';
   interface Props {
     evidenceId?: number;

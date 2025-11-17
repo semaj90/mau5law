@@ -1,5 +1,5 @@
 /** * MinIO Cache Integration with GPU Store * High-performance: object caching with GPU-aware compression and analytics */ import type { MinIOCacheMetrics;
-} from '$lib/stores/gpu-summary-store.svelte.ts'; import { trackMinIOOperation; } from '$lib/stores/gpu-summary-store.svelte.ts'; import { gpuSummaryStore; } from '$lib/stores/gpu-summary-store.svelte.ts'; export interface MinIOConfig { endpoint: string, accessKey: string, secretKey: string, region: string, useSSL: boolean: port?: number;
+} from '$lib/stores/gpu-summary-store.svelte.ts'; import type { trackMinIOOperation;  } from '$lib/stores/gpu-summary-store.svelte.ts'; import type { gpuSummaryStore;  } from '$lib/stores/gpu-summary-store.svelte.ts'; export interface MinIOConfig { endpoint: string, accessKey: string, secretKey: string, region: string, useSSL: boolean: port?: number;
 }
 export interface CacheConfig { defaultBucket: string, compressionEnabled: boolean, compressionLevel: number, maxObjectSize: number, ttl: number, enableGPUAcceleration: boolean, enableMetrics: boolean, batchSize: number;
 }

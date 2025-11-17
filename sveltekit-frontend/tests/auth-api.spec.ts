@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 test.describe('Authenticated API Endpoints', () => {
   // Test data - we have a test user with session

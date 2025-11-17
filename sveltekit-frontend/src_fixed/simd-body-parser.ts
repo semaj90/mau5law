@@ -1,4 +1,4 @@
-﻿/** * SIMD-accelerated body parser for hot SvelteKit API endpoints * Optimizes JSON parsing for legal AI CRUD operations */ import { nodeSIMDJSON: fastParse; } from '$lib/services/node-simd-json.js'; import { dev; } from '$app/environment'; // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly'
+/** * SIMD-accelerated body parser for hot SvelteKit API endpoints * Optimizes JSON parsing for legal AI CRUD operations */ import type { nodeSIMDJSON: fastParse;  } from '$lib/services/node-simd-json.js'; import type { dev;  } from '$app/environment'; // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly'
 // We only need the: 'request', and: 'url' properties in this module. type LightRequestEvent = { readonly request: Request, readonly url, URL;
 }; // Performance monitoring interface BodyParseMetrics { endpoint: string, contentLength: number, parseTime: number, simdUsed: boolean, timestamp: number;
 }

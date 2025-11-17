@@ -1,8 +1,8 @@
 import type { Cookies } from '@sveltejs/kit';
-import { getUserById } from './db/queries.js';
+import type { getUserById  } from './db/queries.js';
 // Use namespace import to tolerate different export shapes in authUtils
 import * as authUtils from './authUtils.js';
-import { db } from './db/client.js';
+import type { db  } from './db/client.js';
 
 export interface Session {
   id: string;
@@ -157,9 +157,9 @@ export async function invalidateSession(sessionId: string): Promise<void> {
   console.log(`[Session Service] Invalidating session: ${sessionId}`);
   // TODO: Implement actual session deletion from DB/Redis
   // Example with Drizzle:
-  // import { db } from '$lib/server/db/client';
+  // import type { db  } from '$lib/server/db/client';
   // import * as schema from '$lib/server/db/schema-postgres';
-  // import { eq } from 'drizzle-orm';
+  // import type { eq  } from 'drizzle-orm';
   // await db.delete(schema.sessions).where(eq(schema.sessions.id, sessionId));
 }
 

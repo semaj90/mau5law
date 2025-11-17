@@ -18,10 +18,10 @@
     onconfigure?: () => void;
     onupgrade?: () => void;
   } = $props();
-  import { fade, slide, scale } from 'svelte/transition';
-  import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
+  import type { fade, slide, scale  } from 'svelte/transition';
+  import type { Brain, Zap, Settings, Crown, Info  } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { cn } from '$lib/utils';
+  import type { cn  } from '$lib/utils';
   let showTooltip = $state(false);
   let showConfig = $state(false);
   let thinkingDepth = $state('detailed');

@@ -81,8 +81,8 @@
     }
   ];
 
-  let selectedEvidence = $state // TODO: Verify store subscription is correct for Svelte 5(new Set<string>());
-  let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5('grid'); // 'grid' or 'list'
+  let selectedEvidence = $state(new Set<string>());
+  let viewMode = $state('grid'); // 'grid' or 'list'
 
   function toggleSelection(evidenceId: string) {
     if (selectedEvidence.has(evidenceId)) {

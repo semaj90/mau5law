@@ -12,11 +12,11 @@
    */
 
   // Reworked imports: remove @xstate/svelte, unused db/eq and lucide named imports that caused TS errors.
-  import { onMount, onDestroy } from 'svelte';
-  import { fabric } from 'fabric';
-  import { writable, get } from 'svelte/store'; // added `get` for sync reads of store
-  import { qdrantClient } from '$lib/ai/qdrant-service';
-  import { rabbitMQClient } from '$lib/services/rabbitmq-client';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { fabric  } from 'fabric';
+  import type { writable, get  } from 'svelte/store'; // added `get` for sync reads of store
+  import type { qdrantClient  } from '$lib/ai/qdrant-service';
+  import type { rabbitMQClient  } from '$lib/services/rabbitmq-client';
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
@@ -1089,11 +1089,11 @@
    */
 
   // Reworked imports: remove @xstate/svelte, unused db/eq and lucide named imports that caused TS errors.
-  import { onMount, onDestroy } from 'svelte';
-  import { fabric } from 'fabric';
-  import { writable, get } from 'svelte/store'; // added `get` for sync reads of store
-  import { qdrantClient } from '$lib/ai/qdrant-service';
-  import { rabbitMQClient } from '$lib/services/rabbitmq-client';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { fabric  } from 'fabric';
+  import type { writable, get  } from 'svelte/store'; // added `get` for sync reads of store
+  import type { qdrantClient  } from '$lib/ai/qdrant-service';
+  import type { rabbitMQClient  } from '$lib/services/rabbitmq-client';
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.

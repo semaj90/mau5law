@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { query = "" } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { query = "" } = $props();
   export let onSearch;
 </script>
 

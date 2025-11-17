@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-  import EvidenceBoardLayout from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/EvidenceBoardLayout.svelte';
-  import { EvidenceCard } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/EvidenceCard'; // Changed to named import
+  import type { User } from '$lib/types';
+  import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
+  import type { EvidenceCard  } from '$lib/components/ui/EvidenceCard'; // Changed to named import
 
   // Replace the very-generic Record<string, any> with a focused shape
   type SystemStatus = {
@@ -13,8 +13,8 @@
   };
 
   // Svelte 5 runes - narrow the state type
-  let systemStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<SystemStatus>({});
-  let authStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let systemStatus = $state <SystemStatus>({});
+  let authStatus = $state <any>(null);
 
   type TestResult = {
     success?: boolean;
@@ -26,8 +26,8 @@
   };
 
   // typed testResults to avoid: unknown/indexing issues
-  let testResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Record<string, TestResult>>({});
-  let isRunning = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let testResults = $state <Record<string, TestResult>>({});
+  let isRunning = $state <boolean>(false);
 
   // helper to safely format: unknown timestamps (prevents TS Date overload issues)
   function formatTimestamp(ts: unknown): string {

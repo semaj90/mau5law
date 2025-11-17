@@ -1,7 +1,7 @@
 <script lang="ts">
-  import ContextualEvidenceChatModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ai/ContextualEvidenceChatModal.svelte';
+  import ContextualEvidenceChatModal from '$lib/components/ai/ContextualEvidenceChatModal.svelte';
 
-  let chatOpen = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let chatOpen = $state (true);
 
   const statusCards = [
     { label: 'Active Cases', value: '3', detail: 'Command Center' },

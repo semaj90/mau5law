@@ -1,23 +1,22 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from 'fs/promises';
+import type { fail, redirect  } from '@sveltejs/kit';
+import type { superValidate  } from 'sveltekit-superforms/server';
+import type { zod  } from 'sveltekit-superforms/adapters';
+import type { writeFile, mkdir  } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto'; // Corrected import
-import {
-  evidenceUploadSchema,
+import type { evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
   validateFileType,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db'; // Adjust the import based on your project structure
-import { evidence, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema'; // Adjust the import based on your project structure
-import { eq, type InferInsertModel } from 'drizzle-orm';
-import { resolveUser, getUserId, getMetaEnv } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { dev } from '$app/environment'; // Get typed environment access
+ } from '$lib/schemas/evidence-upload';
+import type { db  } from '$lib/server/db'; // Adjust the import based on your project structure
+import type { evidence, cases  } from '$lib/server/db/schema'; // Adjust the import based on your project structure
+import type { eq, type InferInsertModel  } from 'drizzle-orm';
+import type { resolveUser, getUserId, getMetaEnv  } from '$lib/server/auth/utils';
+import type { PageServerLoad, Actions } from './$types .js';
+import type { dev  } from '$app/environment'; // Get typed environment access
 
 const metaEnv = getMetaEnv();
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type']; // Corrected InferInsertModel usage

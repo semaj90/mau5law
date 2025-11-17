@@ -1,6 +1,6 @@
 <script lang="ts">
   // import raw defaults and cast to the Svelte constructor type to satisfy TS
-  import { SvelteComponent } from 'svelte';
+  import type { SvelteComponent  } from 'svelte';
   import CardDefault from '$lib/components/ui/card/Card.svelte';
   import CardContentDefault from '$lib/components/ui/card/CardContent.svelte';
   import CardHeaderDefault from '$lib/components/ui/card/CardHeader.svelte';
@@ -14,7 +14,7 @@
   const CardTitle = CardTitleDefault as unknown as typeof SvelteComponent;
   const Button = ButtonDefault as unknown as typeof SvelteComponent;
 
-  import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config';
+  import type { routeGroups, getRouteGroupByTheme  } from '$lib/data/route-groups-config';
 
   // Get legal route group
   const legalGroup = getRouteGroupByTheme('matrix');

@@ -1,6 +1,6 @@
 // AI Evidence Analysis API Routes
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
 
 // POST /api/evidence/ai/similar - Find similar evidence using Gemma3-Legal + Qdrant
 export async function POST({ request }: { request: Request }) {

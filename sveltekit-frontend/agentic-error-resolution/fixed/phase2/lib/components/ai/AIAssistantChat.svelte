@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  Button, Input, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import  Switch  from "$lib/components/ui/switch/Switch.svelte";
   import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
-  import { aiAssistantManager, isAIActive, isProcessing, currentResponse, conversationHistory, currentModel, currentTemperature, aiError, clusterHealth, context7Analysis, aiUsage } from '$lib/stores/aiAssistant.svelte.js';
-  import { unifiedAIService } from '$lib/ai/unified-ai-service.js';
+  import type { aiAssistantManager, isAIActive, isProcessing, currentResponse, conversationHistory, currentModel, currentTemperature, aiError, clusterHealth, context7Analysis, aiUsage  } from '$lib/stores/aiAssistant.svelte.js';
+  import type { unifiedAIService  } from '$lib/ai/unified-ai-service.js';
   import type { UnifiedQueryOptions } from '$lib/ai/unified-ai-service.js';
   // Component props using Svelte 5 $props()
   interface Props {

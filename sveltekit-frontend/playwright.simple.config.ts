@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import type { defineConfig, devices  } from '@playwright/test';
 
 /**
  * Dynamic Playwright Config

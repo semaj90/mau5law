@@ -14,11 +14,11 @@
  * ✅ Full error handling
  * ✅ Performance optimized
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { z } from 'zod';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { sql } from 'drizzle-orm';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { z  } from 'zod';
+import type { db  } from '$lib/server/db';
+import type { sql  } from 'drizzle-orm';
 
 // ===== SCHEMAS =====
 const VectorSearchRequestSchema = z.object({

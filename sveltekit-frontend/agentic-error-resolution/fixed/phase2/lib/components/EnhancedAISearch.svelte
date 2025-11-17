@@ -2,9 +2,9 @@
   // Svelte 5 runes are auto-imported
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
-  import { enhancedAIPipeline as enhancedAiPipeline } from "$lib/services/enhanced-ai-pipeline";
+  import type { enhancedAIPipeline as enhancedAiPipeline  } from '$lib/services/enhanced-ai-pipeline';
   import type { EnhancedSearchOptions, EnhancedSearchResult, Jurisdiction, PracticeArea } from "$lib/types/ai-types";
-  import { Button, Select } from "bits-ui";
+  import type { Button, Select  } from 'bits-ui';
   // Props
   interface Props {
     initialQuery?: string;

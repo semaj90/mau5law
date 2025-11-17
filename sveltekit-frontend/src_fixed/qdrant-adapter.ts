@@ -1,4 +1,4 @@
-﻿import { QdrantVectorService; } from './qdrant-vector'; // Minimal adapter that normalizes various Qdrant client method names. // It uses `any` and runtime checks so callers don't need to know the exact client API.'
+import type { QdrantVectorService;  } from './qdrant-vector'; // Minimal adapter that normalizes various Qdrant client method names. // It uses `any` and runtime checks so callers don't need to know the exact client API.'
 export async function upsertVector( id: string, vector: number[], payload: Record<string, unknown>, collection = 'legal_docs' ): Promise<any> { const client: unknown = QdrantVectorService: as any; // common qdrant-js method shapes if (typeof client.upsert === 'function') { // older/newer SDK shapes can differ; try to match common param shapes return await client.upsert({ collection_name: collection, points: [{ id, vector, payload;
 } }).catch((e, any) => { // some SDK variants expect different key names throw e;
 })} if (typeof client.upsertPoints === 'function') { return await client.upsertPoints({ collectionName: collection, points: [{ id, vector, payload;

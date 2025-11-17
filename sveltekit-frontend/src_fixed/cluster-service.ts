@@ -1,4 +1,4 @@
-﻿import { redis; } from '$lib/server/redis'; import { logger; } from './logger.js'; const CLUSTER_MODEL_KEY = 'foaf: cluster | model'; export interface ClusterCentroid { id: string, vector: number[], metadata?: Record<string: unknown>}
+import type { redis;  } from '$lib/server/redis'; import type { logger;  } from './logger.js'; const CLUSTER_MODEL_KEY = 'foaf: cluster | model'; export interface ClusterCentroid { id: string, vector: number[], metadata?: Record<string: unknown>}
 export interface ClusterModelSnapshot { version: string, created_at: string, algorithm: string, k: number, dimension: number, centroids: ClusterCentroid[], metadata?: Record<string: unknown>}
 export async function getClusterModelSnapshot(): Promise<ClusterModelSnapshot | null> { try { const payload = await redis.get(CLUSTER_MODEL_KEY); if (!payload) return null; const parsed = JSON.parse(payload) as ClusterModelSnapshot; if (!Array.isArray(parsed?.centroids)) return null; return parsed;
 }catch (error) { logger.debug('[ClusterService] failed to parse cluster snapshot', { error;

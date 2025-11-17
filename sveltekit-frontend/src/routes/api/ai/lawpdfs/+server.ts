@@ -1,6 +1,6 @@
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { redisOptimized, type RedisOptimizedMiddleware } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
-import { json, type RequestHandler } from '@sveltejs/kit'; // Changed RequestHandler import and added json
+import type { Document } from '$lib/types';
+import type { redisOptimized, type RedisOptimizedMiddleware  } from '$lib/middleware/redis-orchestrator-middleware';
+import type { json, type RequestHandler  } from '@sveltejs/kit'; // Changed RequestHandler import and added json
 
 // Assuming App.Locals is globally available from src/app.d.ts
 // If not, you might need to define a minimal interface or import it.
@@ -522,7 +522,7 @@ function assessBasicRisk(content: string) {
     };
 }
 
-// TODO: Add: 'documentProcessing' to the type definition in $lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware.ts
+// TODO: Add: 'documentProcessing' to the type definition in $lib/middleware/redis-orchestrator-middleware.ts
 export const POST = (redisOptimized as RedisOptimizedMiddleware).documentProcessing(originalPOSTHandler);
 
 

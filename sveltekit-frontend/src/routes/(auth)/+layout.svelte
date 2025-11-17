@@ -1,24 +1,24 @@
 <!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
 <script lang="ts">
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import type { page  } from '$app/stores';
   import type { Snippet } from 'svelte';
-  import NavBar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/NavBar.svelte';
-  import Sidebar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/themes/retro-console-palettes';
+  import NavBar from '$lib/components/layout/NavBar.svelte';
+  import Sidebar from '$lib/components/layout/Sidebar.svelte';
+  import type { applyConsolePalette, type ConsolePaletteName  } from '$lib/themes/retro-console-palettes';
 
   interface Props {
     data: Record<string, unknown>;
     children?: Snippet;
   }
 
-  let { data, children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { data, children }: Props = $props ();
 
   // State management
-  let sidebarOpen = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let selectedTheme = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ConsolePaletteName>('legal');
+  let sidebarOpen = $state <boolean>(true);
+  let selectedTheme = $state <ConsolePaletteName>('legal');
 
   // Derived values
-  let user = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.user);
+  let user = $derived (data?.user);
 
   // Sidebar toggle handler
   function toggleSidebar() {
@@ -26,7 +26,7 @@
   }
 
   // Initialize theme on mount
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     if (typeof localStorage !== 'undefined') {
       const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName;
       if (stored) {

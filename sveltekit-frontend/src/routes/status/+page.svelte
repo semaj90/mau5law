@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  import GPUCacheIntegrationDemo from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
+  import type { browser  } from '$app/environment';
+  import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
 
   // System status state
-  let systemHealth = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let integrationTests = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>({});
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let lastUpdated = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let systemHealth = $state <any>(null);
+  let integrationTests = $state <any>({});
+  let isLoading = $state <boolean>(true);
+  let lastUpdated = $state <string>('');
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     if (!browser) return;
 
     let intervalId: ReturnType<typeof setInterval>;
@@ -90,7 +90,7 @@
     try {
       // Test gaming constants availability
       const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import(
-        '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/gaming/constants/gaming-constants.js'
+        '$lib/components/ui/gaming/constants/gaming-constants.js'
       );
       const nesCount = NES_COLOR_PALETTE
         ? Array.isArray(NES_COLOR_PALETTE)

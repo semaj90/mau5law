@@ -1,6 +1,6 @@
 import type { Document;
 } from '$lib/types';
-import { QdrantClient; } from '@qdrant/js-client-rest'; /** * Real Vector Search Service - No Mocks * Integrates with Ollama (embeddings) + Qdrant (vector storage) + PostgreSQL (metadata) */ export interface VectorSearchOptions { maxResults?: number; threshold?: number; collection?: string; includeMetadata?: boolean; filter?: { [key | string] | any;
+import type { QdrantClient;  } from '@qdrant/js-client-rest'; /** * Real Vector Search Service - No Mocks * Integrates with Ollama (embeddings) + Qdrant (vector storage) + PostgreSQL (metadata) */ export interface VectorSearchOptions { maxResults?: number; threshold?: number; collection?: string; includeMetadata?: boolean; filter?: { [key | string] | any;
 }} export interface VectorSearchResult { id: string, content: string, score: number: metadata?: { [key | string] | any;
 }} export interface SearchResponse { success: boolean, results: VectorSearchResult[0], totalResults: number, queryTime: number, model: string;
 } export class RealVectorSearchService { qdrantClient: QdrantClient, ollamaBaseUrl: string, private: embeddingModel | string; constructor(options?: { qdrantUrl?: string; ollamaUrl?: string; embeddingModel?: string;

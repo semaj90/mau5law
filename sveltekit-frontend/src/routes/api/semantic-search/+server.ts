@@ -1,14 +1,14 @@
 /** * Semantic Search API - Production Ready with RAG * * Endpoint: /api/semantic-search * Category: rag * Priority: 160 * * Services: * - Qdrant: High-speed vector search (2-5ms HNSW) * - pgvector: Persistent fallback storage * - Ollama: Query embeddings via centralized service * - Redis: Search result caching * * Features: * - Hybrid search (Qdrant → pgvector fallback) * - Legal relevance re-ranking * - GPU-accelerated similarity (optional) * - Intelligent caching with TTL * - Multi-table search (evidence, cases, documents) */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-// Removed: import { withValidationAndRate } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/middleware/validate-and-rate';
-// Removed: import { readBodyFast } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/json-fast';
-// Removed: import { searchSimilarDocuments, services } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-client';
-import { sql } from 'drizzle-orm';
-// Removed: import { fastStringify } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/fast-json';
-// Removed: import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ollama';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+// Removed: import type { withValidationAndRate  } from '$lib/server/middleware/validate-and-rate';
+// Removed: import type { readBodyFast  } from '$lib/server/utils/json-fast';
+// Removed: import type { searchSimilarDocuments, services  } from '$lib/server/services';
+import db from '$lib/server/db/unified-client';
+import type { sql  } from 'drizzle-orm';
+// Removed: import type { fastStringify  } from '$lib/utils/fast-json';
+// Removed: import type { getOllamaEndpoint  } from '$lib/server/ollama';
 
 // New/relocated constants and typed cache (moved before handlers)
 const PREFERRED_EMBEDDING_MODEL = 'embeddinggemma: latest';

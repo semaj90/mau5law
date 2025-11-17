@@ -1,18 +1,18 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { cases, evidence, legalDocuments, users } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
-import { sql, eq, ilike, and, or, desc } from 'drizzle-orm';
-import type { CommandSearchRequest, CommandSearchResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/api';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { json  } from '@sveltejs/kit';
+import type { db  } from '$lib/server/db';
+import type { cases, evidence, legalDocuments, users  } from '$lib/server/db/schema';
+import type { sql, eq, ilike, and, or, desc  } from 'drizzle-orm';
+import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
+import type { RequestHandler } from './$types .js';
 
-type CaseResult = typeof cases.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 & { similarity: number; content?: string };
-type EvidenceResult = typeof evidence.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 & {
+type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
+type EvidenceResult = typeof evidence.$inferSelect & {
   caseTitle: string | null;
   similarity: number;
   content?: string;
 };
-type DocumentResult = typeof legalDocuments.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 & { similarity: number };
-type PersonResult = typeof users.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 & { similarity: number; content?: string };
+type DocumentResult = typeof legalDocuments.$inferSelect & { similarity: number };
+type PersonResult = typeof users.$inferSelect & { similarity: number; content?: string };
 
 interface SearchResults {
   cases: CaseResult[];
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(desc(cases.updatedAt))
           .limit(limit);
 
-        results.cases = caseResults.map((case_: typeof cases.$inferSelect // TODO: Verify store subscription is correct for Svelte 5) => ({
+        results.cases = caseResults.map((case_: typeof cases.$inferSelect ) => ({
           ...case_,
           similarity: calculateSimilarity(
             searchQuery,
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(desc(evidence.updatedAt))
           .limit(limit);
 
-        results.evidence = evidenceResults.map((item: typeof evidence.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 & { caseTitle: string | null }) => ({
+        results.evidence = evidenceResults.map((item: typeof evidence.$inferSelect & { caseTitle: string | null }) => ({
           ...item,
           similarity: calculateSimilarity(
             searchQuery,
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(desc(legalDocuments.updatedAt))
           .limit(limit);
 
-        results.documents = documentResults.map((doc: typeof legalDocuments.$inferSelect // TODO: Verify store subscription is correct for Svelte 5) => ({
+        results.documents = documentResults.map((doc: typeof legalDocuments.$inferSelect ) => ({
           ...doc,
           similarity: calculateSimilarity(
             searchQuery,
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           .orderBy(desc(users.updatedAt))
           .limit(limit);
 
-        results.people = userResults.map((person: typeof users.$inferSelect // TODO: Verify store subscription is correct for Svelte 5) => ({
+        results.people = userResults.map((person: typeof users.$inferSelect ) => ({
           ...person,
           similarity: calculateSimilarity(
             searchQuery,

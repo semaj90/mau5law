@@ -1,12 +1,12 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json, error } from '@sveltejs/kit';
-import { ollamaConfig } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollama-config-service.js';
-import { ENV_CONFIG } from '$lib // TODO: Verify store subscription is correct for Svelte 5/config/environment.js';
+import type { RequestHandler } from './$types .js';
+import type { json, error  } from '@sveltejs/kit';
+import type { ollamaConfig  } from '$lib/services/ollama-config-service.js';
+import type { ENV_CONFIG  } from '$lib/config/environment.js';
 /* * Evidence Enhancement API * Analyzes uploaded evidence and suggests relevant labels and classifications */
 import postgres from 'postgres';
-import { z } from 'zod';
+import type { z  } from 'zod';
 
 // Configuration
 const CONFIG = {
@@ -175,7 +175,7 @@ function getDB() {
 async function getRedis(): Promise<RedisLike> {
   if (!redis) {
     try {
-      const { createRedisInstance } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis');
+      const { createRedisInstance } = await import('$lib/server/redis');
       // createRedisInstance should return a Redis-like client
       // Cast via `unknown` first to avoid direct incompatible-conversion errors.
       redis = createRedisInstance() as unknown as RedisLike;

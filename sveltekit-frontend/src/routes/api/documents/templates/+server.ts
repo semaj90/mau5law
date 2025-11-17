@@ -1,7 +1,7 @@
-﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
 
 // Document templates with pre-filled content
 const documentTemplates = {

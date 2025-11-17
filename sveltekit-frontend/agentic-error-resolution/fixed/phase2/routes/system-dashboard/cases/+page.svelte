@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import  Button, Card, Input  from "$lib/components/ui/enhanced-bits.svelte";
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
+  import type { onMount  } from 'svelte';
+  import type { goto  } from '$app/navigation';
   import type { PageData } from './$types';
 
   type Case = {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import Button from '$lib/components/ui/button';
 
   type EvidenceNodeType = {
     id: string;
@@ -12,10 +12,10 @@
     metadata?: Record<string, any>;
   };
 
-  let { node, isSelected = false, onSelect, onMove } = $props // TODO: Verify store subscription is correct for Svelte 5<EvidenceNodeType & { isSelected?: boolean; onSelect: (data: { nodeId: string; multiSelect: boolean }) => void; onMove: (data: { nodeId: string; x: number; y: number }) => void; }>();
+  let { node, isSelected = false, onSelect, onMove } = $props<EvidenceNodeType & { isSelected?: boolean; onSelect: (data: { nodeId: string; multiSelect: boolean }) => void; onMove: (data: { nodeId: string; x: number; y: number }) => void; }>();
 
-  let isDragging = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let dragStart = $state // TODO: Verify store subscription is correct for Svelte 5({ x: 0, y: 0 });
+  let isDragging = $state(false);
+  let dragStart = $state({ x: 0, y: 0 });
   let element: HTMLElement;
 
   function handleMouseDown(event: MouseEvent) {
@@ -51,7 +51,7 @@
   }
 
   // Global mouse event listeners for dragging
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);

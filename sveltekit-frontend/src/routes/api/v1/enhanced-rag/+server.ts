@@ -1,11 +1,10 @@
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import {
-  testVectorOperations,
+import type { json, error, type RequestHandler  } from '@sveltejs/kit';
+import type { testVectorOperations,
   hybridSearch,
   generateSampleEmbedding,
   type TestVectorOperationsResult, // Import the new type
   type HybridSearchResult, // Import the new type
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/vector-operations'; // Changed from .js to remove .ts
+ } from '$lib/server/db/vector-operations'; // Changed from .js to remove .ts
 
 const ENHANCED_RAG_CONFIG = {
   baseUrl: import.meta.env.ENHANCED_RAG_URL || 'http://localhost:8094',

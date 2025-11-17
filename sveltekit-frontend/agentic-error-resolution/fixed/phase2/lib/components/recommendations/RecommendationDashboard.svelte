@@ -3,7 +3,7 @@
   Unified interface for all recommendation features
 -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
   import  LastSearchedModal  from "./LastSearchedModal.svelte";
   import  LastWorkedModal  from "./LastWorkedModal.svelte";

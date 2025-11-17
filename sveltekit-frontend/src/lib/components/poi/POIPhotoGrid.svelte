@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button/Button.svelte';
-  import { Camera, Eye, Trash2, Upload } from 'lucide-svelte';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import type { Camera, Eye, Trash2, Upload  } from 'lucide-svelte';
   // Migrated from createEventDispatcher to callback props;
 
   let {
     photos = [],
     editable = false
-  } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  } = $props();
 
   const dispatch = createEventDispatcher();
 

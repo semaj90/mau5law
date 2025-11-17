@@ -1,12 +1,12 @@
 <script lang="ts">
-import { enhancedRAGStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores/enhanced-rag-store.js';
-import type { WorkerStats } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/workers/specialized-worker-system.js';
-import { onMount } from 'svelte';
+import type { enhancedRAGStore  } from '$lib/stores/enhanced-rag-store.js';
+import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
+import type { onMount  } from 'svelte';
 
   type PerfPoint = { time: Date; value: number };
 
   // Reactive state using Svelte, 5 runes
-  let systemStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
+  let systemStatus = $state ({
     neuralMemory: { currentUsage: 0,
       efficiency: 0,
       predictions: [] as unknown[],
@@ -24,19 +24,19 @@ import { onMount } from 'svelte';
     } as WorkerStats,
     recommendations: [] as string[]
   });
-  let isMonitoring = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let lastUpdate = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(new Date());
+  let isMonitoring = $state <boolean>(false);
+  let lastUpdate = $state (new Date());
 
   // Real-time performance metrics
-  let performanceChart = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
+  let performanceChart = $state ({
     memoryUsage: [] as PerfPoint[],
     cacheHitRate: [] as PerfPoint[],
     processingTime: [] as PerfPoint[]
   });
 
   // Demo job for testing worker system
-  let testJobResult = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let isSubmittingJob = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let testJobResult = $state <any>(null);
+  let isSubmittingJob = $state <boolean>(false);
 
   async function updateSystemMetrics(): Promise<any> {
     try {
@@ -155,7 +155,7 @@ import { onMount } from 'svelte';
     startMonitoring()});
 
   // initial fetch/effect
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     updateSystemMetrics()});
 </script>
 

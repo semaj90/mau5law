@@ -1,8 +1,8 @@
 <script lang="ts">
-  import EvidenceFilters from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/evidence/EvidenceFilters.svelte';
-  import EvidenceGrid from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/evidence/EvidenceGrid.svelte';
-  import EvidenceStats from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/evidence/EvidenceStats.svelte';
-  import UploadZone from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/evidence/UploadZone.svelte';
+  import EvidenceFilters from '$lib/components/yorha/evidence/EvidenceFilters.svelte';
+  import EvidenceGrid from '$lib/components/yorha/evidence/EvidenceGrid.svelte';
+  import EvidenceStats from '$lib/components/yorha/evidence/EvidenceStats.svelte';
+  import UploadZone from '$lib/components/yorha/evidence/UploadZone.svelte';
 </script>
 
 <div class="space-y-6">

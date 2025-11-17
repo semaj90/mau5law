@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.ts';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .ts';
 
 /**
  * Smart Evidence Recommendations API

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { EvidenceConnection, EvidenceNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-  import { onMount } from 'svelte';
+  import type { EvidenceConnection, EvidenceNode } from '$lib/server/db/schema-postgres';
+  import type { onMount  } from 'svelte';
   import type { Writable } from 'svelte/store';
 
   export let nodes: Writable<EvidenceNode[]>;
@@ -17,15 +17,15 @@
   }
 
   function drawConnections() {
-    if (!ctx || !$nodes // TODO: Verify store subscription is correct for Svelte 5.length) return;
+    if (!ctx || !$nodes .length) return;
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw each connection
-    $connections // TODO: Verify store subscription is correct for Svelte 5.forEach(connection => {
-      const fromNode = $nodes // TODO: Verify store subscription is correct for Svelte 5.find(n => n.id === connection.fromNodeId);
-      const toNode = $nodes // TODO: Verify store subscription is correct for Svelte 5.find(n => n.id === connection.toNodeId);
+    $connections .forEach(connection => {
+      const fromNode = $nodes .find(n => n.id === connection.fromNodeId);
+      const toNode = $nodes .find(n => n.id === connection.toNodeId);
 
       if (!fromNode || !toNode) return;
 

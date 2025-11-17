@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  Button, Card, Dialog, Input, Label, Select  from "$lib/components/ui/enhanced-bits.svelte";
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { toast } from 'svelte-sonner';
-  import { Plus, Save, Trash2, Edit, Link } from 'lucide-svelte';
+  import type { Badge  } from '$lib/components/ui/badge/index.js';
+  import type { toast  } from 'svelte-sonner';
+  import type { Plus, Save, Trash2, Edit, Link  } from 'lucide-svelte';
   // Props
   let { caseId = '', boardId = null } = $props();
   // State

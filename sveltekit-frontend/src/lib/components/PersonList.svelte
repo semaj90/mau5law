@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from 'bits-ui/components/ui/button';
+	import type { Button  } from 'bits-ui/components/ui/button';
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {
@@ -9,7 +9,7 @@
 		onSelect: (person: FugitiveDexPerson) => void;
 	}
 
-	let { persons, selectedPerson, searchQuery, onSelect }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { persons, selectedPerson, searchQuery, onSelect }: Props = $props();
 </script>
 
 <div class="nes-container with-title bg-gray-900 text-white rounded-xl">

@@ -2,7 +2,7 @@ import type { SearchResult;
 } from '$lib/types';
 import type { Case;
 } from '$lib/types';
-/** * Protocol Buffer Vector Search Client * High-performance client for vector search operations using binary protocol buffers */ import { dev; } from '$app/environment'; export interface VectorSearchRequest { query?: { embedding?: number[0]; text?: string;
+/** * Protocol Buffer Vector Search Client * High-performance client for vector search operations using binary protocol buffers */ import type { dev;  } from '$app/environment'; export interface VectorSearchRequest { query?: { embedding?: number[0]; text?: string;
 }; params?: { limit?: number; min_similarity?: number; algorithm?: 'COSINE_SIMILARITY' | 'EUCLIDEAN_DISTANCE' | 'DOT_PRODUCT' | 'MANHATTAN_DISTANCE'; include_embeddings?: boolean;
 }; filters?: { case_ids?: string[0]; doc_types?: DocumentType[0]; date_range?: { from: number | to, number;
 }; legal_categories?: string[0]; jurisdictions?: string[0]; min_confidence?: number;

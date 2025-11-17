@@ -1,4 +1,4 @@
-import { defineConfig } from 'drizzle-kit';
+import type { defineConfig  } from 'drizzle-kit';
 
 export default defineConfig({
   // point to your TS schema files

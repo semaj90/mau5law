@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { loginSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/auth';
-  import { superForm } from 'sveltekit-superforms';
-  import { zodClient } from 'sveltekit-superforms/adapters';
-  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+  import type { goto  } from '$app/navigation';
+  import type { loginSchema  } from '$lib/schemas/auth';
+  import type { superForm  } from 'sveltekit-superforms';
+  import type { zodClient  } from 'sveltekit-superforms/adapters';
+  import type { PageData } from './$types ';
 
   // Page data from server
-  let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { data }: { data: PageData } = $props ();
 
   // Form handling with Svelte 5 runes
   let { form, errors, enhance, message } = superForm(data.form, {
@@ -16,12 +16,12 @@
   });
 
   // Show success banner if coming from registration
-  let registrationSuccess = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.registrationSuccess ?? null);
+  let registrationSuccess = $derived (data?.registrationSuccess ?? null);
 
   // Handle demo login
   function handleDemoLogin() {
-    form.update($form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 => ({
-      ...$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5,
+    form.update($form => ({
+      ...$form ,
       email: 'demo@example.com',
       password: 'demo123'
     }));
@@ -53,10 +53,10 @@
         </div>
       {/if}
 
-      {#if $message // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5}
+      {#if $message }
         <div class="error-message">
           <span>⚠</span>
-          <span>{$message // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5}</span>
+          <span>{$message }</span>
         </div>
       {/if}
 
@@ -67,14 +67,14 @@
             id="email"
             name="email"
             type="email"
-            bind:value={$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email}
+            bind:value={$form .email}
             placeholder="Enter your email"
-            aria-invalid={$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email ? 'true' : undefined}
+            aria-invalid={$errors .email ? 'true' : undefined}
             class="form-input"
             required
           />
-          {#if $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email}
-            <span class="field-error">{$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email}</span>
+          {#if $errors .email}
+            <span class="field-error">{$errors .email}</span>
           {/if}
         </div>
 
@@ -84,14 +84,14 @@
             id="password"
             name="password"
             type="password"
-            bind:value={$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}
+            bind:value={$form .password}
             placeholder="Enter your password"
-            aria-invalid={$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password ? 'true' : undefined}
+            aria-invalid={$errors .password ? 'true' : undefined}
             class="form-input"
             required
           />
-          {#if $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}
-            <span class="field-error">{$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}</span>
+          {#if $errors .password}
+            <span class="field-error">{$errors .password}</span>
           {/if}
         </div>
 

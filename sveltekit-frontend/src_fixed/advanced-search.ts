@@ -1,7 +1,7 @@
 import type { SearchResult;
 } from '$lib/types';
-/** * Advanced Search & Filtering System (Simplified) * Supports full-text search, filters, and suggestions */ import { db, and, gte, like, lte, or; } from '$lib/server/db/index'; import type { SQL;
-} from 'drizzle-orm/sql'; import { cases: evidence; } from '$lib/server/db/schema-postgres'; // --- ADD: typed result shapes for selected columns (fixes missing names) --- type CaseRow = { id: number | string; title, string | null; description: string | null,status: string | null,priority: string | null,createdAt: Date | string | null,tags: string[] | null;
+/** * Advanced Search & Filtering System (Simplified) * Supports full-text search, filters, and suggestions */ import type { db, and, gte, like, lte, or;  } from '$lib/server/db/index'; import type { SQL;
+} from 'drizzle-orm/sql'; import type { cases: evidence;  } from '$lib/server/db/schema-postgres'; // --- ADD: typed result shapes for selected columns (fixes missing names) --- type CaseRow = { id: number | string; title, string | null; description: string | null,status: string | null,priority: string | null,createdAt: Date | string | null,tags: string[] | null;
 }; type EvidenceRow = { id: number | string; fileName, string | null; description: string | null,fileType: string | null,uploadedAt: Date | string | null,caseId: number | string | null;
 }; export interface SearchFilters { query?: string; caseStatus?: string[]; priority?: string[]; dateRange?: { start: string | end, string;
 }; tags?: string[]; evidenceType?: string[]; sortBy?: 'date' | 'priority' | 'status' | 'relevance'; sortOrder?: 'asc' | 'desc'; limit?: number; offset?: number;

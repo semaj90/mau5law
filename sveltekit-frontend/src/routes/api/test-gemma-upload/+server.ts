@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { PDFDocument } from 'pdf-lib';
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { PDFDocument  } from 'pdf-lib';
+import type { env  } from '$env /dynamic/private';
 
 const MINIO_ENDPOINT = env.MINIO_ENDPOINT;
 const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY;

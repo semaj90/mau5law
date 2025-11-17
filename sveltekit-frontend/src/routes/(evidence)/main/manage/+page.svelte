@@ -1,5 +1,5 @@
 <script lang="ts">
-  import EvidenceFilesManager from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/evidence/EvidenceFilesManager.svelte';
+  import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
 </script>
 
 <main class="page-repair">

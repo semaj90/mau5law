@@ -5,7 +5,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- NieR-themed Rich Text Editor for Legal Investigation Notes -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  	import { onMount, onDestroy } from 'svelte';
+  	import type { onMount, onDestroy  } from 'svelte';
   	import 
     Card,
     CardHeader,
@@ -14,11 +14,10 @@ https://svelte.dev/e/attribute_duplicate -->
    from "$lib/components/ui/enhanced-bits.svelte";
   	import  Button  from "$lib/components/ui/Button.svelte";
   	// Badge replaced with span - not available in enhanced-bits
-  	import {
-  		Bold, Italic, Underline, List, ListOrdered,
+  	import type { Bold, Italic, Underline, List, ListOrdered,
   		Link2, Image, Quote, Code, Save,
   		FileText, Zap, Eye, Search
-  	} from 'lucide-svelte';
+  	 } from 'lucide-svelte';
   	// Svelte 5 state management
   	let editorContainer: HTMLDivElement;
   	let editorContent = $state('');

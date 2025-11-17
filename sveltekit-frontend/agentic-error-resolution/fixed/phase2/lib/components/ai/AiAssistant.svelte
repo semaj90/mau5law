@@ -12,8 +12,8 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Type interfaces for the component
-  import { getContext, onMount } from 'svelte';
-  import { get, readable } from 'svelte/store';
+  import type { getContext, onMount  } from 'svelte';
+  import type { get, readable  } from 'svelte/store';
   // Simplified Button import (avoid casting workaround)
   import  Button  from "$lib/components/ui/Button.svelte";
   // Import the whole module namespace to avoid named-export mismatch errors

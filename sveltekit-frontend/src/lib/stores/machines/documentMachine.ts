@@ -1,5 +1,5 @@
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import type { Document } from '$lib/types';
+import type { createMachine, assign, type ActorRefFrom  } from 'xstate';
 
 /**
  * Document Processing XState Machine
@@ -7,7 +7,7 @@ import { createMachine, assign, type ActorRefFrom } from 'xstate';
  */
 
 // Local fallback interfaces to satisfy type references during checks
-// Prefer real types from $lib // TODO: Verify store subscription is correct for Svelte 5/types when available.
+// Prefer real types from $lib/types when available.
 interface _FallbackLegalDocument {
   id: string;
   title?: string;

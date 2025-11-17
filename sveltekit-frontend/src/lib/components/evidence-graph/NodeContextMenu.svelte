@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { x, y, node, onAction } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { x, y, node, onAction } = $props();
 </script>
 
 <div class="absolute bg-gray-800 text-white p-3 rounded-lg border border-cyan-300"

@@ -11,7 +11,7 @@ Features:
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-import { onMount } from 'svelte';
+import type { onMount  } from 'svelte';
 import  Button  from "./Button.svelte";
 import  Card  from "./Card.svelte";
 import  CardContent  from "./CardContent.svelte";

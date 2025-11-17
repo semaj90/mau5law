@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { trtLLMClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/trt-llm/client';
+	import type { trtLLMClient  } from '$lib/trt-llm/client';
 
-	let prompt = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-	let response = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-	let isGenerating = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-	let isStreaming = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-	let streamText = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-	let healthStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'checking' | 'healthy' | 'unhealthy'>('checking');
+	let prompt = $state ('');
+	let response = $state ('');
+	let isGenerating = $state (false);
+	let isStreaming = $state (false);
+	let streamText = $state ('');
+	let healthStatus = $state <'checking' | 'healthy' | 'unhealthy'>('checking');
 
 	// Check service health on mount
-	$effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+	$effect (() => {
 		checkHealth();
 	});
 

@@ -1,6 +1,6 @@
-﻿import { QdrantClient } from '@qdrant/js-client-rest';
-import { pipeline } from '@xenova/transformers';
-import type { DocumentItem, VisionItem } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
+import type { QdrantClient  } from '@qdrant/js-client-rest';
+import type { pipeline  } from '@xenova/transformers';
+import type { DocumentItem, VisionItem } from '$lib/types/sharedTypes';
 
 // Qdrant client configuration
 const qdrant = new QdrantClient({

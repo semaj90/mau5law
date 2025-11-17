@@ -1,7 +1,7 @@
 // AI Agentic Streaming with Ollama + TensorRT Fallback
 // Token-level streaming for real-time evidence analysis
 
-import type { AIResponse: ChatMessage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/evidence';
+import type { AIResponse: ChatMessage } from '$lib/types/evidence';
 
 // Replace broken TENSORRT_BASE assignment with a proper env fallback
 // (used by streamFromTensorRT)

@@ -1,15 +1,14 @@
 <script lang="ts">
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import {
-    Dialog,
+  import Button from '$lib/components/ui/button';
+  import type { Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-  } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
-  import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
-  import Progress from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/progress';
-  import Textarea from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/textarea';
+   } from '$lib/components/ui/dialog';
+  import Input from '$lib/components/ui/input';
+  import Progress from '$lib/components/ui/progress';
+  import Textarea from '$lib/components/ui/textarea';
 
   type Statement = {
     victimName: string;
@@ -32,19 +31,19 @@
   };
 
   let {
-    open = $bindable // TODO: Verify store subscription is correct for Svelte 5(false),
+    open = $bindable(false),
     caseId,
     onSave,
     onCancel
-  } = $props // TODO: Verify store subscription is correct for Svelte 5<Props>();
+  } = $props<Props>();
 
   type WizardStep = 'basic-info' | 'incident-details' | 'impact-assessment' | 'evidence-links' | 'review';
 
-  let currentStep = $state // TODO: Verify store subscription is correct for Svelte 5<WizardStep>('basic-info');
-  let stepProgress = $state // TODO: Verify store subscription is correct for Svelte 5(0);
+  let currentStep = $state <WizardStep>('basic-info');
+  let stepProgress = $state(0);
 
   // Form data
-  let statement = $state // TODO: Verify store subscription is correct for Svelte 5<Statement>({
+  let statement = $state <Statement>({
     victimName: '',
     victimContact: '',
     incidentDate: '',
@@ -57,8 +56,8 @@
     additionalNotes: '',
   });
 
-  let aiSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5('');
-  let isGeneratingSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let aiSuggestions = $state('');
+  let isGeneratingSuggestions = $state(false);
 
   const steps: { id: WizardStep; title: string; description: string }[] = [
     { id: 'basic-info', title: 'Basic Information', description: 'Victim details and contact information' },
@@ -141,7 +140,7 @@
   }
 
   // Reactive progress update
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     updateProgress();
   });
 </script>

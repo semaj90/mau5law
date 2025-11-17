@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
 
 export const POST: RequestHandler = async ({ request, fetch }) => {
 	try {

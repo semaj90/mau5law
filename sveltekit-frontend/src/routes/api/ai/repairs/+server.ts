@@ -6,9 +6,9 @@
  * to the dashboard for display and approval.
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { QdrantClient } from '@qdrant/js-client-rest';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { QdrantClient  } from '@qdrant/js-client-rest';
 
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 const COLLECTION_NAME = 'ai_repair_suggestions';

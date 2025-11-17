@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
+import type { json  } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import type { spawn  } from 'child_process';
+import type { fileURLToPath  } from 'url';
+import type { dirname, join  } from 'path';
 
 export const POST: RequestHandler = async ({ request }) => {
   const { urls, source = 'web' } = await request.json();

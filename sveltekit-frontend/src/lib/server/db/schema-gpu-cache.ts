@@ -1,6 +1,5 @@
 // Top imports (ensure these are present)
-import {
-  pgTable,
+import type { pgTable,
   serial,
   text,
   jsonb,
@@ -9,8 +8,8 @@ import {
   integer,
   real,
   uuid,
-} from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
+ } from 'drizzle-orm/pg-core';
+import type { vector  } from 'pgvector/drizzle-orm';
 
 // ===============
 // =============================================================
@@ -32,13 +31,13 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   compilationSuccess: boolean('compilation_success').default(false),
   // Semantic embeddings for similarity search
   sourceEmbedding: vector('source_embedding', { dimensions: 384 }), // nomic-embed-text
-  semanticTags: text('semantic_tags').array().$type // TODO: Verify store subscription is correct for Svelte 5<string[]>().notNull(), // Array of semantic tags, e.g. ['legal-doc', 'timeline', 'evidence']
+  semanticTags: text('semantic_tags').array().$type <string[]>().notNull(), // Array of semantic tags, e.g. ['legal-doc', 'timeline', 'evidence']
   // Legal workflow context
-  legalContext: jsonb('legal_context').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  legalContext: jsonb('legal_context').$type <Record<string, unknown> | null>(),
   // Performance metrics
-  performanceMetrics: jsonb('performance_metrics').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  performanceMetrics: jsonb('performance_metrics').$type <Record<string, unknown> | null>(),
   // Reinforcement learning data
-  reinforcementData: jsonb('reinforcement_data').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  reinforcementData: jsonb('reinforcement_data').$type <Record<string, unknown> | null>(),
   // Version and lifecycle
   version: integer('version').default(1),
   deprecated: boolean('deprecated').default(false),
@@ -47,7 +46,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   lastAccessedAt: timestamp('last_accessed_at', { withTimezone: true }),
   // MinIO integration for large assets
   minioPath: text('minio_path'), // Optional path for large shader assets
-  assetBundle: jsonb('asset_bundle').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  assetBundle: jsonb('asset_bundle').$type <Record<string, unknown> | null>(),
 });
 
 export const shaderUserPatterns = pgTable('shader_user_patterns', {
@@ -64,12 +63,12 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   preloadSuccessful: boolean('preload_successful'),
   userSatisfaction: real('user_satisfaction'), // -1 to, 1
   // Contextual metadata
-  documentContext: jsonb('document_context').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  documentContext: jsonb('document_context').$type <Record<string, unknown> | null>(),
   // Reinforcement learning features
   stateVector: vector('state_vector', { dimensions: 64 }), // Compressed workflow state
   actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding
   reward: real('reward'), // Computed reward for this access
-  reinforcement_data: jsonb('reinforcement_data').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  reinforcement_data: jsonb('reinforcement_data').$type <Record<string, unknown> | null>(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
@@ -83,9 +82,9 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   ruleName: text('rule_name').notNull(),
   ruleType: text('rule_type').notNull(), // 'sequential', 'conditional', 'temporal', 'similarity'
   // Condition matching
-  triggerConditions: jsonb('trigger_conditions').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  triggerConditions: jsonb('trigger_conditions').$type <Record<string, unknown> | null>(),
   // Preload specifications
-  preloadTargets: jsonb('preload_targets').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  preloadTargets: jsonb('preload_targets').$type <Record<string, unknown> | null>(),
   accuracy: real('accuracy').notNull(), // Historical accuracy
   // Performance metrics
   triggerCount: integer('trigger_count').default(0),
@@ -141,7 +140,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   id: serial('id').primaryKey(), // Queue identification
   queueKey: text('queue_key').notNull().unique(),
   priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload'
-  status: text('status').notNull().$type // TODO: Verify store subscription is correct for Svelte 5<ShaderCompilationStatus>(), // restrict to valid status values
+  status: text('status').notNull().$type <ShaderCompilationStatus>(), // restrict to valid status values
   // Shader information
   shaderKey: text('shader_key').notNull(),
   sourceCode: text('source_code').notNull(),
@@ -150,13 +149,13 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   // Processing context
   userId: text('user_id'),
   sessionId: text('session_id'),
-  workflowContext: jsonb('workflow_context').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  workflowContext: jsonb('workflow_context').$type <Record<string, unknown> | null>(),
   // Queue timing
   queuedAt: timestamp('queued_at', { withTimezone: true }).defaultNow(),
   startedAt: timestamp('started_at', { withTimezone: true }),
   completedAt: timestamp('completed_at', { withTimezone: true }),
   // Processing results
-  compilationResult: jsonb('compilation_result').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(),
+  compilationResult: jsonb('compilation_result').$type <Record<string, unknown> | null>(),
   // Retry logic
   retryCount: integer('retry_count').default(0),
   maxRetries: integer('max_retries').default(3),
@@ -175,7 +174,7 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
   recommendationType: text('recommendation_type').notNull(), // 'similar', 'next', 'popular', 'optimal'
   confidence: real('confidence').notNull(),
   reasoning: text('reasoning'), // Recommendation context
-  baseContext: jsonb('base_context').$type // TODO: Verify store subscription is correct for Svelte 5<Record<string, unknown> | null>(), // Context that triggered this recommendation
+  baseContext: jsonb('base_context').$type <Record<string, unknown> | null>(), // Context that triggered this recommendation
   expectedBenefit: real('expected_benefit'), // Expected performance/satisfaction improvement
   // Metadata
   computedAt: timestamp('computed_at', { withTimezone: true }).defaultNow(),
@@ -189,15 +188,15 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
 // ============================================================================
 // EXPORT TYPES FOR TYPESCRIPT
 // ============================================================================
-export type ShaderCacheEntry = typeof shaderCacheEntries.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-export type InsertShaderCacheEntry = typeof shaderCacheEntries.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
-export type ShaderUserPattern = typeof shaderUserPatterns.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-export type InsertShaderUserPattern = typeof shaderUserPatterns.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
-export type ShaderPreloadRule = typeof shaderPreloadRules.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-export type InsertShaderPreloadRule = typeof shaderPreloadRules.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
-export type ShaderDependency = typeof shaderDependencies.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-export type InsertShaderDependency = typeof shaderDependencies.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
-export type ShaderCompilationQueue = typeof shaderCompilationQueue.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-export type InsertShaderCompilationQueue = typeof shaderCompilationQueue.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
-export type ShaderRecommendation = typeof shaderRecommendationsView.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-export type InsertShaderRecommendation = typeof shaderRecommendationsView.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
+export type ShaderCacheEntry = typeof shaderCacheEntries.$inferSelect ;
+export type InsertShaderCacheEntry = typeof shaderCacheEntries.$inferInsert ;
+export type ShaderUserPattern = typeof shaderUserPatterns.$inferSelect ;
+export type InsertShaderUserPattern = typeof shaderUserPatterns.$inferInsert ;
+export type ShaderPreloadRule = typeof shaderPreloadRules.$inferSelect ;
+export type InsertShaderPreloadRule = typeof shaderPreloadRules.$inferInsert ;
+export type ShaderDependency = typeof shaderDependencies.$inferSelect ;
+export type InsertShaderDependency = typeof shaderDependencies.$inferInsert ;
+export type ShaderCompilationQueue = typeof shaderCompilationQueue.$inferSelect ;
+export type InsertShaderCompilationQueue = typeof shaderCompilationQueue.$inferInsert ;
+export type ShaderRecommendation = typeof shaderRecommendationsView.$inferSelect ;
+export type InsertShaderRecommendation = typeof shaderRecommendationsView.$inferInsert ;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import DetectiveModeDashboard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/DetectiveModeDashboard.svelte';
+  import DetectiveModeDashboard from '$lib/components/yorha/DetectiveModeDashboard.svelte';
 
   interface Case {
     id: string;

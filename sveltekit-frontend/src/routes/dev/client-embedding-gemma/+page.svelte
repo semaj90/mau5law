@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { findSimilar, getClientEmbeddingGemma, type ClientEmbeddingGemma } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ClientEmbeddingGemma';
-  import { onMount } from 'svelte';
+  import type { findSimilar, getClientEmbeddingGemma, type ClientEmbeddingGemma  } from '$lib/ClientEmbeddingGemma';
+  import type { onMount  } from 'svelte';
 
   let service: ClientEmbeddingGemma;
-  let isInitializing = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let isReady = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let isInitializing = $state(true);
+  let isReady = $state(false);
+  let error = $state <string | null>(null);
 
   // Test data - legal documents
-  let testTexts = $state // TODO: Verify store subscription is correct for Svelte 5([
+  let testTexts = $state([
     'This contract establishes binding legal obligations between the parties with consideration exchanged.',
     'The plaintiff alleges breach of fiduciary duty and seeks compensatory damages in excess of jurisdictional minimum.',
     'Legal precedent from appellate court decisions supports this interpretation of statutory language.',
@@ -19,11 +19,11 @@
     'Class certification requires showing commonality of legal and factual issues among putative class members.'
   ]);
 
-  let queryText = $state // TODO: Verify store subscription is correct for Svelte 5('Breach of contract lawsuit seeking damages');
-  let embeddings = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let queryEmbedding = $state // TODO: Verify store subscription is correct for Svelte 5<number[] | null>(null);
-  let similarities = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let isGenerating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let queryText = $state('Breach of contract lawsuit seeking damages');
+  let embeddings = $state <any>(null);
+  let queryEmbedding = $state <number[] | null>(null);
+  let similarities = $state <any[]>([]);
+  let isGenerating = $state(false);
 
   onMount(async () => {
     try {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Search } from 'lucide-svelte';
+  import type { Search  } from 'lucide-svelte';
 
   interface Props {
     placeholder?: string;
@@ -25,7 +25,7 @@
     onfocus,
     onblur,
     ...rest
-  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+  }: Props = $props();
 </script>
 
 <div class="relative">

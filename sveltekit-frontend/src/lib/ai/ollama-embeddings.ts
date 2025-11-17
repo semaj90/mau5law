@@ -249,7 +249,7 @@ export const ollamaEmbeddings = new OllamaEmbeddings();
  * USAGE EXAMPLES:
  *
  * // Server-side (API route):
- * import { ollamaEmbeddings } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/ollama-embeddings';
+ * import type { ollamaEmbeddings  } from '$lib/ai/ollama-embeddings';
  *
  * export const POST = async ({ request }) => {
  *   const { text } = await request.json();

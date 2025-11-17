@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   // UI components (existing bits-ui / enhanced-bits-ui)
   import Card from '$lib/components/ui/card/Card.svelte';
   import CardHeader from '$lib/components/ui/card/CardHeader.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
+  import type { onMount  } from 'svelte';
+  import type { nesGPUBridge  } from '$lib/gpu/nes-gpu-memory-bridge';
   import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte';

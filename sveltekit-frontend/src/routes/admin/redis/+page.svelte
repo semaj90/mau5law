@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AdvancedRedisMonitoringDashboard from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/redis/AdvancedRedisMonitoringDashboard.svelte'; // Auto-switch to advanced dashboard for next-level features let showAdvancedFeatures = true;
+  import AdvancedRedisMonitoringDashboard from '$lib/components/redis/AdvancedRedisMonitoringDashboard.svelte'; // Auto-switch to advanced dashboard for next-level features let showAdvancedFeatures = true;
 </script>
 
 <main class="page-repair">

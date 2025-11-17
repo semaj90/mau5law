@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import type { json  } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // new types to avoid `any`

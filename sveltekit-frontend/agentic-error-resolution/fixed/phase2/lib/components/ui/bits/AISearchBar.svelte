@@ -1,7 +1,7 @@
 <!-- AI Search Bar: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Input, Button } from './index.js';
+  import type { Input, Button  } from './index.js';
   import Search from 'lucide-svelte';
   interface Props {
     placeholder?: string;

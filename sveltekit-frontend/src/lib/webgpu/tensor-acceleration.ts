@@ -2,7 +2,7 @@
  * WebGPU Tensor Acceleration System
  * Client-side GPU acceleration for legal AI operations
  */
-import { SIMDGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js'; // Fix: Changed import to SIMDGPUTilingEngine
+import type { SIMDGPUTilingEngine  } from '$lib/evidence/simd-gpu-tiling-engine.js'; // Fix: Changed import to SIMDGPUTilingEngine
 
 export interface WebGPUTensorConfig {
   deviceType: 'discrete' | 'integrated' | 'auto';
@@ -45,7 +45,7 @@ export class WebGPUTensorAccelerator {
     totalOperations: 0,
     errorCount: 0,
   };
-  private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  private isInitialized = $state (false);
   operationQueue: TensorOperation[] = [];
   private simdTilingEngine: SIMDGPUTilingEngine; // Fix: Declare instance of SIMDGPUTilingEngine
 
@@ -875,7 +875,7 @@ export class WebGPUTensorAccelerator {
     this.bufferPool.forEach((buffer) => buffer.destroy());
     this.bufferPool = [];
     this.shaderCache.clear();
-    this.isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false); // Re-assigning $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 to reset reactivity
+    this.isInitialized = $state (false); // Re-assigning $state to reset reactivity
     console.log('🧹 WebGPU Tensor Accelerator cleaned up');
   }
 }

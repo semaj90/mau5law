@@ -1,6 +1,6 @@
 // vitest.config.integration.ts
-import { defineConfig } from 'vitest/config';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import type { defineConfig  } from 'vitest/config';
+import type { svelte  } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
   plugins: [svelte()],

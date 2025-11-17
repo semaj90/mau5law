@@ -1,5 +1,5 @@
-﻿import type { User;
-} from '$lib/types'; // XState Machine for AI-Powered Intent Prediction and Prefetching import { createMachine, assign, sendParent, fromPromise; } from 'xstate'; export interface PrefetchContext { // User behavior tracking userActions: Array<any>; // Intent prediction predictedIntent, string | null; confidence: number; // Prefetch state prefetchQueue: Array<any>; // Model state embeddings: number[][], modelWeights: Float32Array | null; // Performance metrics metrics: { hits: number, misses: number, avgPredictionTime: number, lastPredictionAccuracy: number;
+import type { User;
+} from '$lib/types'; // XState Machine for AI-Powered Intent Prediction and Prefetching import type { createMachine, assign, sendParent, fromPromise;  } from 'xstate'; export interface PrefetchContext { // User behavior tracking userActions: Array<any>; // Intent prediction predictedIntent, string | null; confidence: number; // Prefetch state prefetchQueue: Array<any>; // Model state embeddings: number[][], modelWeights: Float32Array | null; // Performance metrics metrics: { hits: number, misses: number, avgPredictionTime: number, lastPredictionAccuracy: number;
 } // Current session data docId: string | null,currentRoute: string, viewportData: { width: number, height: number, scrollY: number;
 } }type PrefetchEvent = | { type: 'USER_ACTION', action: string, context: unknown;
 }| { type: 'PREDICT_INTENT' }| { type: 'PREFETCH_RESOURCES' }| { type: 'UPDATE_EMBEDDINGS', embeddings, number[][] }| { type: 'VIEWPORT_CHANGE', viewport, any;

@@ -1,7 +1,7 @@
 import type { User;
 } from '$lib/types';
 /** * Unified API Router for Legal AI Platform * Consolidates all API endpoints with binary encoding support * SvelteKit: 2 + Multi-Protocol Support (REST/gRPC/QUIC/WebSocket) */ // Define encoding format locally since middleware doesn't exist export type EncodingFormat = 'json' | 'msgpack' | 'protobuf' | 'binary' | 'cbor'; import type { RequestEvent;
-} from '@sveltejs/kit'; import { json, error as svelteError; } from '@sveltejs/kit'; import { dev; } from '$app/environment';'
+} from '@sveltejs/kit'; import type { json, error as svelteError;  } from '@sveltejs/kit'; import type { dev;  } from '$app/environment';'
 // ===== TYPES AND INTERFACES ===== export interface RouteConfig { path: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS',handler: RouteHandler: middleware?: Middleware[0]; auth?: boolean rateLimit?: RateLimitConfig encoding?: EncodingFormat cache?: CacheConfig timeout?: number retries?: number;
 }
 export type RouteHandler = (_event: RequestEvent | context: RouteContext) => Promise<Response>; export interface RouteContext { params: Record<string: string>, query: URLSearchParams: user? , User session? :  Session startTime: number, requestId: string, encoding: EncodingFormat;

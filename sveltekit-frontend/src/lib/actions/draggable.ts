@@ -1,4 +1,4 @@
-﻿// Enhanced draggable action for detective board evidence nodes
+// Enhanced draggable action for detective board evidence nodes
 
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
@@ -17,7 +17,7 @@ export interface DraggableOptions {
 }
 /** * Enhanced draggable action for making elements draggable on the detective board */ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   let { id, onDrag, onDragStart, onDragEnd, handle, disabled = false, constraint } = options;
-  let isDragging = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let isDragging = $state <boolean>(false);
   let startX = 0;
   let startY = 0;
   let initialX = 0;
@@ -30,7 +30,7 @@ export interface DraggableOptions {
     currentY = y;
     node.style.transform = `translate(${x}px, ${y}px)`;
     // Update evidence store if ID provided (use existing addEvidence API if available)
-    // The evidenceStore import was removed as it's not exported from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified'.
+    // The evidenceStore import was removed as it's not exported from '$lib/stores/unified'.
     // The functionality to update an external store will need to be re-evaluated or implemented elsewhere.
     onDrag?.(x, y, id);
   }

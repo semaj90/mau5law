@@ -1,9 +1,9 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui, shadcn-svelte, and nes.css -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { browser } from '$app/environment';
-  import { onMount, tick } from 'svelte';
-  import { Dialog } from 'bits-ui'; // Changed from MeltDialog to bits-ui
+  import type { browser  } from '$app/environment';
+  import type { onMount, tick  } from 'svelte';
+  import type { Dialog  } from 'bits-ui'; // Changed from MeltDialog to bits-ui
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Input  from "$lib/components/ui/Input.svelte";
   // Badge replaced with span - not available in enhanced-bits
@@ -14,10 +14,10 @@
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
   import  ScrollArea  from "$lib/components/ui/scrollarea/ScrollArea.svelte";
-  import { Bot, User, Send, Loader2, CheckCircle, // Fixed typo
+  import type { Bot, User, Send, Loader2, CheckCircle, // Fixed typo
     XCircle, // Fixed typo
-    MessageCircle, Settings, Download, Trash2 } from 'lucide-svelte';
-  import { getOllamaHealthEndpoint } from '$lib/utils/ollama-endpoint'; // Import Ollama endpoint utility
+    MessageCircle, Settings, Download, Trash2  } from 'lucide-svelte';
+  import type { getOllamaHealthEndpoint  } from '$lib/utils/ollama-endpoint'; // Import Ollama endpoint utility
   import type { ChatMessage } from '$lib/types/chat'; // Import ChatMessage type
   // Props using Svelte 5 runes
   let { open = $bindable(false), caseId = undefined, title = 'Enhanced AI Legal Assistant' }: {

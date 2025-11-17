@@ -1,7 +1,7 @@
 <script lang="ts">
   // Enhanced UI Preview with Session-Aware Components
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import type { onMount  } from 'svelte';
+  import type { page  } from '$app/stores';
   // NES UI Components
   // import MeltButton from '$lib/components/ui/MeltButton.svelte'; // REMOVED
   import StatsCard from '$lib/components/ui/StatsCard.svelte';
@@ -15,15 +15,14 @@
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
   // import  sessionActions, user, isAuthenticated  from "$lib/stores/sessionStore.svelte";
-  import {
-    formatRelativeTime,
+  import type { formatRelativeTime,
     formatDetailedTimestamp,
     truncateFilename,
     truncateText,
     getFileIcon,
     getPriorityColor,
     getStatusColor,
-  } from '$lib/utils/formatting';
+   } from '$lib/utils/formatting';
 
   // Improved: Use QuickActionButton directly, ensure its props/events are typed correctly
 

@@ -1,21 +1,21 @@
 <script lang="ts">
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported â€” do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
 
-  let mounted = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let machineId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('auth-machine'); // simplified default
-  let transitions = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let mounted = $state <boolean>(false);
+  let machineId = $state <string>('auth-machine'); // simplified default
+  let transitions = $state <any[]>([]);
   // Precompute a stable sorted list for the template to iterate over.
-  // Using $derived // TODO: Verify store subscription is correct for Svelte 5 keeps this reactive in Svelte, 5 runes mode.
-  let sortedTransitions = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
+  // Using $derived keeps this reactive in Svelte, 5 runes mode.
+  let sortedTransitions = $derived(() => {
     if (!Array.isArray(transitions)) return [];
     return [...transitions].sort(
       (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     )});
-  let currentState = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let selectedTransition = $state // TODO: Verify store subscription is correct for Svelte 5<any | null>(null);
+  let currentState = $state <string>('');
+  let loading = $state <boolean>(true);
+  let selectedTransition = $state <any | null>(null);
 
   // Mock transition data (fixed syntax: colons, property names)
   let mockTransitions: Record<string, any> = {
@@ -81,11 +81,11 @@ import type { Case } from '$lib // TODO: Verify store subscription is correct fo
     }
   };
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     mounted = true
     loadTransitions()});
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (machineId) {
       loadTransitions()}
   });

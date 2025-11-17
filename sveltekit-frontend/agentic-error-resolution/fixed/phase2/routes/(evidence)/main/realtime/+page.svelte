@@ -5,10 +5,10 @@
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
-  import { evidenceStore  } from '$lib/stores/unified";
-  import { lokiEvidenceService } from "$lib/utils/loki-evidence";
-  import { Activity, BarChart3, Clock, Database, RefreshCw, Wifi, WifiOff } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import type { evidenceStore   } from '$lib/stores/unified';
+  import type { lokiEvidenceService  } from '$lib/utils/loki-evidence';
+  import type { Activity, BarChart3, Clock, Database, RefreshCw, Wifi, WifiOff  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   // Demo state
   let selectedCaseId: string | undefined = $state(undefined);
   let searchQuery = $state("");

@@ -1,6 +1,6 @@
-import { browser, dev } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment'; // Corrected import: 'browser' and 'dev' are separate booleans
-import { PUBLIC_OLLAMA_URL } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/static/public';
-import { OLLAMA_URL } from '$lib/server/env.server';
+import type { browser, dev  } from '$app/environment'; // Corrected import: 'browser' and 'dev' are separate booleans
+import type { PUBLIC_OLLAMA_URL  } from '$env /static/public';
+import type { OLLAMA_URL  } from '$lib/server/env.server';
 
 /**
  * Returns the base URL for the Ollama service.

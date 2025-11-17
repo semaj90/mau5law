@@ -6,7 +6,7 @@
   import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
   import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
-  import { cn } from '$lib/utils';
+  import type { cn  } from '$lib/utils';
   import type { SystemStatus } from '$lib/types/ai';
 
   // --- added: explicit local domain types to avoid `any` ---

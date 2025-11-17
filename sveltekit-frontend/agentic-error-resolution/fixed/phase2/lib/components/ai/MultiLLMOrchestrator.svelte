@@ -4,8 +4,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { derived, writable } from 'svelte/store';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { derived, writable  } from 'svelte/store';
   import  Badge  from "$lib/components/ui/badge.svelte";
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
@@ -15,8 +15,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
   import  Progress  from "$lib/components/ui/progress/Progress.svelte";
-  import {
-    Play,
+  import type { Play,
     Pause,
     Square,
     RefreshCw,
@@ -31,8 +30,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     CheckCircle,
     AlertCircle,
     X
-  } from 'lucide-svelte';
-  import { aiWorkerManager } from '$lib/services/ai-worker-manager.js';
+   } from 'lucide-svelte';
+  import type { aiWorkerManager  } from '$lib/services/ai-worker-manager.js';
   import type {
     AITask,
     AIResponse,

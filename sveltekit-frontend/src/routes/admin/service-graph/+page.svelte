@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+import type { onMount  } from 'svelte';
 
   interface Service {
     id: string

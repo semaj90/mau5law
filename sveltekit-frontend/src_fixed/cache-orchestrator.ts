@@ -1,6 +1,6 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
-/** * Cache Orchestrator Service * Coordinates Redis + WebGPU + SIMD + SOM cache warming and synchronization */ import { redisWebGPUIntegration; } from '../integrations/redis-webgpu-simd-integration.js'; import { initializeSOMCache; } from '../webgpu/som-webgpu-cache.js'; import type { WebGPUSOMCache;
+/** * Cache Orchestrator Service * Coordinates Redis + WebGPU + SIMD + SOM cache warming and synchronization */ import type { redisWebGPUIntegration;  } from '../integrations/redis-webgpu-simd-integration.js'; import type { initializeSOMCache;  } from '../webgpu/som-webgpu-cache.js'; import type { WebGPUSOMCache;
 } from '../webgpu/som-webgpu-cache.js'; // --- CHANGES START --- // Align integration types with implementation and reduce `any` usage interface RedisWebGPUIntegration { // this integration initialize() a: boolean (ok/fail) in the implementation initialize(), Promise<boolean>; getCachedResult? (key :  string): Promise<unknown | null>; cacheResult? (key :  string, value: unknown: opts?: { ttl?: number; priority?: number ): Promise<void>; computeVectorSimilarityOptimized? (query :  number[], candidates: number[][], opts?: Record<string, unknown>): Promise<number[] | unknown>; syncWithSom? () :  Promise<void>; getMetrics?(): Promise<{ efficiency?: number;
 }| undefined>} // Augment external SOM cache type locally for optional helpers used by this orchestrator type MaybeSOMCache = (WebGPUSOMCache & { precomputeEmbeddings?: (opts: { errorMessages: string[], batchSize?: number;
 } => Promise<void>; syncWithRedis?: () => Promise<void>; dispose?: () => void;

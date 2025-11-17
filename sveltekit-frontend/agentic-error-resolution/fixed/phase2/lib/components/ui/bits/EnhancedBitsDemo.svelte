@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button, Dialog, Input } from './index';
+  import type { Button, Dialog, Input  } from './index';
   // Local SelectOption type (used by the demo data)
   type SelectOption = {
     value: string;
@@ -8,8 +8,8 @@
     description?: string;
     category?: string;
   };
-  import { cn } from '$lib/utils/cn';
-  import { Search, FileText, Scale, Brain, AlertTriangle, CheckCircle } from 'lucide-svelte';
+  import type { cn  } from '$lib/utils/cn';
+  import type { Search, FileText, Scale, Brain, AlertTriangle, CheckCircle  } from 'lucide-svelte';
   // Demo state using Svelte 5 runes
   let selectedCaseType = $state('');
   let selectedEvidenceCategory = $state('');

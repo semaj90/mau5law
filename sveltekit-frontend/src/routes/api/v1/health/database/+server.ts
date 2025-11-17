@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
-import dbHealthChecker from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/health-check';
+import type { RequestHandler } from './$types ';
+import type { json, error  } from '@sveltejs/kit';
+import type { ensureError  } from '$lib/utils/ensure-error';
+import dbHealthChecker from '$lib/server/db/health-check';
 
 // Add a typed interface for the health checker to avoid `any` casts
 type DbHealthChecker = {

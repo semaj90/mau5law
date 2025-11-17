@@ -4,9 +4,9 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { fade, fly  } from 'svelte/transition';
+  import type { quintOut  } from 'svelte/easing';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
@@ -16,14 +16,13 @@ https://svelte.dev/e/attribute_duplicate -->
    from "$lib/components/ui/enhanced-bits.svelte";
   import  Badge  from "$lib/components/ui/badge.svelte";
   // Import QLorA training service
-  import {
-    qloraTrainingService,
+  import type { qloraTrainingService,
     trainingConfig,
     currentTrainingJob,
     userAnalytics,
     type TrainingJob,
     type QLorATrainingConfig
-  } from '$lib/services/qlora-training-service';
+   } from '$lib/services/qlora-training-service';
   // Props
   interface Props {
     caseFiles?: File[];

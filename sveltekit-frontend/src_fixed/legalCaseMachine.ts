@@ -1,4 +1,4 @@
-/** * Legal Case Management XState Machine * Type-Safe Implementation with Production-Grade Error Handling */ import { createMachine, assign, fromPromise; } from 'xstate'; import type { CaseForm, TimelineEvent, LegalContext, CaseMetrics;
+/** * Legal Case Management XState Machine * Type-Safe Implementation with Production-Grade Error Handling */ import type { createMachine, assign, fromPromise;  } from 'xstate'; import type { CaseForm, TimelineEvent, LegalContext, CaseMetrics;
 } from '../types/case.js'; import type { User;
 } from '../types/user.js'; import crypto from "crypto"; // Legal Case Events - Strongly Typed export type LegalCaseEvent = | { type: 'LOAD_CASE', caseId, string;
 }| { type: 'CREATE_CASE', caseData, Partial<CaseForm> }| { type: 'UPDATE_CASE', caseId: string, updates: Partial<CaseForm> }| { type: 'DELETE_CASE', caseId, string;

@@ -1,18 +1,18 @@
 <script lang="ts">
 	// Migrated from createEventDispatcher to callback props;
-	import { Brain, TriangleAlert, CircleCheck, Lightbulb, Target } from 'lucide-svelte';
-	import type { Recommendation } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/recommendation'; // Import the interface
+	import type { Brain, TriangleAlert, CircleCheck, Lightbulb, Target  } from 'lucide-svelte';
+	import type { Recommendation } from '$lib/types/recommendation'; // Import the interface
 
 	/** @type {string} */
 	export let evidenceId;
 	/** @type {string | undefined} */
-	let { caseId = undefined } = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { caseId = undefined } = $props();
 	/** @type {any[]} */
 	export let recommendations: Recommendation[] = [];
 	/** @type {boolean} */
-	let { isLoading = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { isLoading = false } = $props();
 	/** @type {string | null} */
-	let { error = null } = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { error = null } = $props();
 
 	const dispatch = createEventDispatcher<{
 		generate: { evidenceId: string; caseId?: string };

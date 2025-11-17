@@ -6,11 +6,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { browser } from "$app/environment";
+  import type { browser  } from '$app/environment';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import { notifications  } from '$lib/stores/unified";
-  import { AlertTriangle, CheckCircle, Download, Info, RefreshCw, XCircle } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import type { notifications   } from '$lib/stores/unified';
+  import type { AlertTriangle, CheckCircle, Download, Info, RefreshCw, XCircle  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   let { showPanel = $bindable()  }: { showPanel = $bindable() : any } = $props(); // false
   interface AccessibilityIssue {
     id: string;

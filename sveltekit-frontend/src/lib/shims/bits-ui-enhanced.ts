@@ -267,14 +267,13 @@ export function createCustomTheme(theme: Partial<DesignTokens>): DesignTokens {
 }
 
 // Bits UI re-exports with enhanced styling
-import {
-	Dialog,
+import type { Dialog,
 	Button,
 	Select,
 	Popover,
 	Tooltip,
 	Combobox,
-} from 'bits-ui';
+ } from 'bits-ui';
 
 export {
 	Dialog,

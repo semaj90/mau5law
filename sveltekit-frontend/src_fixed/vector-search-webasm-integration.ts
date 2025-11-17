@@ -1,7 +1,7 @@
 import type { SearchResult;
 } from '$lib/types';
-/** * Vector Search WebASM Integration * Integrates WebASM inference with existing vector search pipeline */ import { VectorSearchInferenceEngine: webASMInferenceService; } from './webasm-inference-service.js'; import type { WebASMModelConfig: VectorSearchInferenceConfig;
-} from './webasm-inference-service.js'; import { gpuSummaryStore; } from '$lib/stores/gpu-summary-store.svelte.ts'; import type { MinIOCacheMetrics;
+/** * Vector Search WebASM Integration * Integrates WebASM inference with existing vector search pipeline */ import type { VectorSearchInferenceEngine: webASMInferenceService;  } from './webasm-inference-service.js'; import type { WebASMModelConfig: VectorSearchInferenceConfig;
+} from './webasm-inference-service.js'; import type { gpuSummaryStore;  } from '$lib/stores/gpu-summary-store.svelte.ts'; import type { MinIOCacheMetrics;
 } from '$lib/stores/gpu-summary-store.svelte.ts'; export interface VectorSearchPipelineConfig { embedding: { model: string, dimensions: number, batchSize: number;
 } similarity: { model: string, function: 'cosine' | 'euclidean' | 'dot_product'; threshold, number;
 } caching: { enabled: boolean, ttl: number, maxSize: number, compression: boolean;

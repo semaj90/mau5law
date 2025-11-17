@@ -2,7 +2,7 @@ import type { User;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-// API Service Registry and Route Mapper // Maps all your existing API routes and provides service discovery import { existsSync, readdirSync, statSync; } from 'fs'; import { join; } from 'path'; import { Socket; } from 'net'; // Add explicit types to avoid `any` type HealthStatus = 'healthy' | 'unhealthy' | 'error' | 'unknown'; export interface ServiceConfig { name: string, port: number, host: string, type: string, required: boolean; // healthCheck returns a Promise<boolean> , healthCheck: () => Promise<boolean>; // allow extra properties used elsewhere [key, string]: unknown;
+// API Service Registry and Route Mapper // Maps all your existing API routes and provides service discovery import type { existsSync, readdirSync, statSync;  } from 'fs'; import type { join;  } from 'path'; import type { Socket;  } from 'net'; // Add explicit types to avoid `any` type HealthStatus = 'healthy' | 'unhealthy' | 'error' | 'unknown'; export interface ServiceConfig { name: string, port: number, host: string, type: string, required: boolean; // healthCheck returns a Promise<boolean> , healthCheck: () => Promise<boolean>; // allow extra properties used elsewhere [key, string]: unknown;
 }
 export interface RouteConfig { endpoints: string[], description: string: dependencies?: string[]; required?: boolean; [key, string]: unknown;
 }

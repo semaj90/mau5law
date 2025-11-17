@@ -1,7 +1,7 @@
 // GRPO (Guided Reasoning and Policy Optimization) Thinking Response Embedding Service // Specialized service for indexing and searching reasoning chain patterns with timestamps
-import { db, sql } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { generateEmbedding as generateEmbeddingsBatch } from './vectorDBService.js';
-import { createHash } from 'crypto';
+import type { db, sql  } from '$lib/server/db';
+import type { generateEmbedding as generateEmbeddingsBatch  } from './vectorDBService.js';
+import type { createHash  } from 'crypto';
 
 // GRPO Thinking Response interface
 export interface GrpoThinkingResponse {

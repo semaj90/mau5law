@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
   // 1. Define Law interface
   interface Law {
@@ -13,10 +13,10 @@
   }
 
   // 2. Update laws type
-  let laws: Law[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let laws: Law[] = $state ([]);
+  let loading = $state <boolean>(true);
   let error: string | null = null;
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let searchQuery = $state <string>('');
 
   // 3. Fix data fetching with onMount
   onMount(() => {
@@ -36,7 +36,7 @@
       }
     })();
   });
-  let filteredLaws = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
+  let filteredLaws = $derived (
     laws.filter(
       (law) =>
         (law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||

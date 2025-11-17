@@ -1,5 +1,5 @@
 import type { Case } from '$lib/types';
-// Clean minimal RAG ingestion worker // Use centralized environment config for service endpoints import { CONFIG } from '$lib/config/env.server'; // Replace loose types with explicit definitions
+// Clean minimal RAG ingestion worker // Use centralized environment config for service endpoints import type { CONFIG  } from '$lib/config/env.server'; // Replace loose types with explicit definitions
 type ProcessOptions = { id?: string; caseId?: string; metadata?: Record<string, unknown>; priority?: 'low' | 'medium' | 'high' };
 type ProcessDocumentPayload = { documentId: string; objectPath?: string; content?: ArrayBuffer | string; options?: ProcessOptions };
 type GenerateEmbeddingsPayload = { text: string; model?: string };

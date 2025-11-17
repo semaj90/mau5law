@@ -24,12 +24,12 @@ declare module '../stores/auth.svelte.js' {
 	export default user;
 }
 
-declare module '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment' {
+declare module '$app/environment' {
 	export const browser: boolean;
 	export const dev: boolean;
 }
 
-declare module '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private' {
+declare module '$env /dynamic/private' {
 	export const env: Record<string, string>;
 }
 

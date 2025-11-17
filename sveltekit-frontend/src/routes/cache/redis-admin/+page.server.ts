@@ -1,6 +1,6 @@
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { error, fail } from '@sveltejs/kit';
-import { redisService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-service';
+import type { PageServerLoad, Actions } from './$types .js';
+import type { error, fail  } from '@sveltejs/kit';
+import type { redisService  } from '$lib/server/redis-service';
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {

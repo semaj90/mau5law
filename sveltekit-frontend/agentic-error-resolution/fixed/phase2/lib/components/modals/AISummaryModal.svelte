@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 
   const { onclose } = $props<{ onclose: ((event?: any) }>()
-  import { aiService } from '$lib/services/aiService';
+  import type { aiService  } from '$lib/services/aiService';
   import * as Dialog from '$lib/components/ui/dialog.svelte';
   import  Button  from "$lib/components/ui/button.svelte";
   // use icon components from the icons subpath (lucide-svelte exports individual files)

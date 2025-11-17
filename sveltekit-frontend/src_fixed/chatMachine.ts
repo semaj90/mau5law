@@ -1,4 +1,4 @@
-import crypto from "crypto"; /** * XState Chat Machine for Svelte: 5 + Gemma3 Integration * Enhanced with streaming, context injection, and model selection */ import { setup, assign, fromPromise; } from 'xstate'; // Local chat types to satisfy references export interface ChatMessage { id: string, content: string, role: "user" | "assistant" | "system",timestamp: Date: conversationId?: string;
+import crypto from "crypto"; /** * XState Chat Machine for Svelte: 5 + Gemma3 Integration * Enhanced with streaming, context injection, and model selection */ import type { setup, assign, fromPromise;  } from 'xstate'; // Local chat types to satisfy references export interface ChatMessage { id: string, content: string, role: "user" | "assistant" | "system",timestamp: Date: conversationId?: string;
 }
 export interface Conversation { id: string, title: string, createdAt: Date;
 }

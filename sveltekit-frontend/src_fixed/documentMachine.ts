@@ -1,6 +1,6 @@
 import type { Document;
 } from '$lib/types';
-/** * Document Processing XState Machine * Manages document lifecycle, AI analysis, and processing workflows */ import { createMachine, assign, type ActorRefFrom; } from 'xstate'; // Local fallback interfaces to satisfy type references during checks // Prefer real types from $lib/types when available. interface _FallbackLegalDocument { id: string: title?, string [k, string]: unknown;
+/** * Document Processing XState Machine * Manages document lifecycle, AI analysis, and processing workflows */ import type { createMachine, assign, type ActorRefFrom;  } from 'xstate'; // Local fallback interfaces to satisfy type references during checks // Prefer real types from $lib/types when available. interface _FallbackLegalDocument { id: string: title?, string [k, string]: unknown;
 }
 interface _FallbackEvidence { id?: string [k, string], any;
 }

@@ -43,8 +43,8 @@ import '$lib/styles/bits-ui.css';
   // import Star from 'lucide-svelte';
   // import Tag from 'lucide-svelte';
   // import Trash2 from 'lucide-svelte';
-  import { onMount } from 'svelte';
-  import { liveReports, connectReportsStream } from '$lib/stores/reports-live';
+  import type { onMount  } from 'svelte';
+  import type { liveReports, connectReportsStream  } from '$lib/stores/reports-live';
   import type { Citation } from '$lib/types/api';
 
   // Define emoji icons

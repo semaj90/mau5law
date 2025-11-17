@@ -1,12 +1,12 @@
 <script lang="ts">
-	import PersonHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/PersonHeader.svelte';
-	import PersonList from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/PersonList.svelte';
-	import PersonProfile from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/PersonProfile.svelte';
-	import PersonStatsPanel from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/PersonStatsPanel.svelte';
-	import type { APIPerson, FugitiveDexPerson } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/types';
+	import PersonHeader from '$lib/components/PersonHeader.svelte';
+	import PersonList from '$lib/components/PersonList.svelte';
+	import PersonProfile from '$lib/components/PersonProfile.svelte';
+	import PersonStatsPanel from '$lib/components/PersonStatsPanel.svelte';
+	import type { APIPerson, FugitiveDexPerson } from '$lib/components/types';
 
 	// Reactive state with Svelte 5 runes
-	let persons = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<FugitiveDexPerson[]>([
+	let persons = $state <FugitiveDexPerson[]>([
 		{
 			id: '001',
 			name: 'John, "The Ghost" Doe',
@@ -87,11 +87,10 @@
 		}
 	]);
 
-	let selectedPerson = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<FugitiveDexPerson | null>(null);
-	let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+	let selectedPerson = $state <FugitiveDexPerson | null>(null);
+	let searchQuery = $state <string>('');
 
-	// Initialize selected person with $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
-	$effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+	// Initialize selected person with $effect $effect (() => {
 		if (persons.length > 0 && selectedPerson === null) {
 			selectedPerson = persons[0];
 		}
@@ -142,7 +141,7 @@
 	}
 
 	// Load data on mount
-	$effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+	$effect (() => {
 		loadPersonsFromAPI();
 	});
 

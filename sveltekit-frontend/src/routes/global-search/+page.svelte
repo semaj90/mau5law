@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { OllamaGetEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/ollama/client';
+  import type { OllamaGetEndpoint  } from '$lib/server/ollama/client';
 
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let isSearching = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let searchFilters = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
+  let searchQuery = $state ('');
+  let searchResults = $state <any[]>([]);
+  let isSearching = $state (false);
+  let searchFilters = $state ({
     cases: true,
     evidence: true,
     persons: true,
     documents: true,
     communications: true
   });
-  let searchScope = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'all' | 'recent' | 'archived'>('all');
-  let selectedResult = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let searchScope = $state <'all' | 'recent' | 'archived'>('all');
+  let selectedResult = $state <any>(null);
 
   // Search scopes
   const searchScopes = [
@@ -22,7 +22,7 @@
   ];
 
   // Mock search data
-  let allRecords = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
+  let allRecords = $state ([
     {
       id: 'C001',
       type: 'case',

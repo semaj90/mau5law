@@ -10,15 +10,14 @@
   import CitationsManager from '$lib/components/citations.svelte';
   // UI components are imported via barrel files for consistency and SSR compatibility.
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge';
-  import {
-    Card,
+  import type { Badge  } from '$lib/components/ui/badge';
+  import type { Card,
     CardHeader,
     CardTitle,
     CardDescription,
     CardContent,
-  } from '$lib/components/ui/card';
-  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
+   } from '$lib/components/ui/card';
+  import type { Tabs, TabsList, TabsTrigger, TabsContent  } from '$lib/components/ui/tabs';
   import FileText from 'lucide-svelte/icons/file-text';
   import Search from 'lucide-svelte/icons/search';
   import Brain from 'lucide-svelte/icons/brain';

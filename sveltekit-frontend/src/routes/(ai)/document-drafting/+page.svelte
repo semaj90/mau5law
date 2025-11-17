@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegalDocumentDrafting from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/LegalDocumentDrafting.svelte';
+  import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
 </script>
 
 <main class="page-container">

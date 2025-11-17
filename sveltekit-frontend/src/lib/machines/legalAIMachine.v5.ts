@@ -1,6 +1,6 @@
-import { createMachine, assign, fromPromise, createActor } from 'xstate';
-import { writable } from 'svelte/store';
-import { productionServiceClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/api/production-service-client';
+import type { createMachine, assign, fromPromise, createActor  } from 'xstate';
+import type { writable  } from 'svelte/store';
+import type { productionServiceClient  } from '$lib/api/production-service-client';
 
 // Define missing types
 interface LooseObject {

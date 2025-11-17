@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { aiAssistant  } from '$lib/stores/unified';
-  import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
-  import { cudaServiceWorker, legalCUDAService } from '$lib/ai/cuda-service-worker.js';
+  import type { aiAssistant   } from '$lib/stores/unified';
+  import type { browserLocalAI, legalLocalAI  } from '$lib/ai/browser-local-ai.js';
+  import type { cudaServiceWorker, legalCUDAService  } from '$lib/ai/cuda-service-worker.js';
   import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
   // Test state
   let selectedTest = $state<'local' | 'cuda' | 'unified' | 'all'>('unified');

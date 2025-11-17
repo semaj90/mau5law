@@ -7,7 +7,7 @@
  * for parallel text processing and rendering pipeline optimization.
  */
 
-import { simdTextTilingEngine, type CompressedTextTile } from '$lib/ai/simd-text-tiling-engine.js';
+import type { simdTextTilingEngine, type CompressedTextTile  } from '$lib/ai/simd-text-tiling-engine.js';
 
 export interface TextTileRenderConfig {
   canvasWidth: number;

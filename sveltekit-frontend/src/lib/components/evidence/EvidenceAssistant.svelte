@@ -1,19 +1,18 @@
 <script lang="ts">
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import {
-    Dialog,
+  import type { Badge  } from '$lib/components/ui/badge';
+  import type { Button  } from '$lib/components/ui/button';
+  import type { Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle
-  } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
-  import { Textarea } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/textarea';
-  import type { EvidenceNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+   } from '$lib/components/ui/dialog';
+  import type { Textarea  } from '$lib/components/ui/textarea';
+  import type { EvidenceNode } from '$lib/server/db/schema-postgres';
   // Migrated from createEventDispatcher to callback props;
 
   export let node: EvidenceNode;
-  let { open = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { open = false } = $props();
 
   let analysis = '';
   let isAnalyzing = false;

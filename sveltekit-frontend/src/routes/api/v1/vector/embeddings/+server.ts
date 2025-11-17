@@ -1,11 +1,11 @@
 /** * Vector Embeddings API - RAG Chunking with CUDA Parallel Processing * Handles text embedding, batch processing, and document chunking for legal AI */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { PGVECTOR_CONFIG, getEmbeddingModel } from '$lib // TODO: Verify store subscription is correct for Svelte 5/config/pgvector-gpu-config.js'; // Removed getCudaServiceUrl
-import { generateEmbeddings } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/embedding-service';
-import { MinIOService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/minio-service';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { PGVECTOR_CONFIG, getEmbeddingModel  } from '$lib/config/pgvector-gpu-config.js'; // Removed getCudaServiceUrl
+import type { generateEmbeddings  } from '$lib/server/services/embedding-service';
+import type { MinIOService  } from '$lib/server/services/minio-service';
 
-// TODO: This interface should ideally be defined in $lib // TODO: Verify store subscription is correct for Svelte 5/server/services/embedding-service.ts
+// TODO: This interface should ideally be defined in $lib/server/services/embedding-service.ts
 // Adding it here temporarily to resolve compilation errors in this file.
 interface EmbedResponse {
   embeddings: number[][];

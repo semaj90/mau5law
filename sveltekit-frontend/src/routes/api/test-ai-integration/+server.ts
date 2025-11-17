@@ -1,15 +1,14 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
 
 /* * AI Integration Test Suite * Comprehensive testing of all AI/MCP API endpoints */
-import {
-  validateMCPRequest,
+import type { validateMCPRequest,
   mcpMemoryReadGraph,
   semanticSearch,
   commonMCPQueries,
   generateMCPPrompt,
   copilotOrchestrator,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/mcp-helpers';
+ } from '$lib/utils/mcp-helpers';
 
 // Helper type for AI/API responses to reduce repetition
 type AiApiResponse = { [key: string]: any };

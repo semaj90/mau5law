@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { redis } from '$lib/server/redis';
+import type { json  } from '@sveltejs/kit';
+import type { redis  } from '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();
-  let redisOk = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let redisOk = $state <boolean>(false);
   let latencyMs: number | null = null;
   try {
     const pingStart = Date.now();

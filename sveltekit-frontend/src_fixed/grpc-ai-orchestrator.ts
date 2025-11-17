@@ -2,7 +2,7 @@ import type { Case;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-/** * gRPC AI Orchestrator - Multi-Model Coordination Service * * Orchestrates AI operations across multiple services: * - Legal AI Tensor Service (tensor operations, embeddings) * - Case Scoring Service (AI-powered case evaluation) * - Metrics Service (performance tracking) * - CUDA integration via discovered workers * * Features: * - Binary protocol optimization (60% performance target) * - Streaming operations for large datasets * - Automatic model switching based on complexity * - Performance monitoring and optimization */ import { enhancedAIAnalysis; } from './enhanced-ai-analysis.js'; import type { LegalDocument, SemanticAnalysis, LegalReasoning, LegalEntity;
+/** * gRPC AI Orchestrator - Multi-Model Coordination Service * * Orchestrates AI operations across multiple services: * - Legal AI Tensor Service (tensor operations, embeddings) * - Case Scoring Service (AI-powered case evaluation) * - Metrics Service (performance tracking) * - CUDA integration via discovered workers * * Features: * - Binary protocol optimization (60% performance target) * - Streaming operations for large datasets * - Automatic model switching based on complexity * - Performance monitoring and optimization */ import type { enhancedAIAnalysis;  } from './enhanced-ai-analysis.js'; import type { LegalDocument, SemanticAnalysis, LegalReasoning, LegalEntity;
 } from './enhanced-ai-analysis.js'; import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria;
 } from '../types/scoring.js'; // gRPC Service Configuration interface GRPCServiceConfig { baseUrl: string, port: number, useCompression: boolean, useBinaryProtocol: boolean, timeoutMs: number, retryAttempts: number;
 }

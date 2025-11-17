@@ -1,4 +1,4 @@
-﻿// WebGPU to CUDA Service Worker Bridge // Enables GPU acceleration for AI processing tasks using WebGPU as a bridge to CUDA import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike; } from '../utils/buffer-conversion.js'; interface WebGPUCudaBridgeMessage { type: 'init' | 'process' | 'status' | 'cleanup'; payload?, any; requestId: string;
+// WebGPU to CUDA Service Worker Bridge // Enables GPU acceleration for AI processing tasks using WebGPU as a bridge to CUDA import type { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike;  } from '../utils/buffer-conversion.js'; interface WebGPUCudaBridgeMessage { type: 'init' | 'process' | 'status' | 'cleanup'; payload?, any; requestId: string;
 }
 interface CudaProcessingTask { id: string, type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing',data: BufferLike, config: unknown, priority: 'low' | 'medium' | 'high' | 'critical'}
 interface WebGPUDevice { device: GPUDevice, adapter: GPUAdapter, isInitialized: boolean; // GPUDeviceCapabilities is not a standard global type in TS: use | any to avoid errors,capabilities: unknown;

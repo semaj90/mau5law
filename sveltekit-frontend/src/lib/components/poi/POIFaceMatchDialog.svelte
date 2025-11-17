@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { Avatar, AvatarFallback, AvatarImage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/avatar';
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import { Card, CardContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-  import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
-  import { Percent, Search, User, X } from 'lucide-svelte';
+  import type { Avatar, AvatarFallback, AvatarImage  } from '$lib/components/ui/avatar';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import type { Button  } from '$lib/components/ui/button';
+  import type { Card, CardContent  } from '$lib/components/ui/card';
+  import type { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle  } from '$lib/components/ui/dialog';
+  import type { Percent, Search, User, X  } from 'lucide-svelte';
 
   let {
     open,
     matches = [],
     onClose,
     onSelect
-  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  } = $props<{
     open: boolean;
     matches?: Array<{
       poi: {

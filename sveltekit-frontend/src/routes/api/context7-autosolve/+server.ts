@@ -1,10 +1,10 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
 import importedChatEngine from '../../../lib/services/user-chat-recommendation-engine.js';
 import importedMultiLayerCache from '../../../lib/services/multiLayerCache.js';
 import importedGoBinaryService from '../../../lib/services/go-binary-integration.js';
-import { Context7FlashAttentionIntegration } from '../../../lib/services/context7-flashattention-integration.js';
-import { analyzeCurrentErrors } from '../../../context7-multicore-error-analysis.js';
+import type { Context7FlashAttentionIntegration  } from '../../../lib/services/context7-flashattention-integration.js';
+import type { analyzeCurrentErrors  } from '../../../context7-multicore-error-analysis.js';
 import crypto from 'crypto';
 import type { MultiLayerCache, UserChatRecommendationEngine, GoBinaryIntegrationService } from '../../../lib/types/services.js';
 

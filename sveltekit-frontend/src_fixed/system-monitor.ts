@@ -1,4 +1,4 @@
-﻿import { createMachine, assign, interpret; } from 'xstate'; export interface SystemMonitorContext { // timestamp ms of last user activity lastActivity: number | null; // last observed network latency in ms, latency: number | null; // whether fallback mode (e.g. CPU-only) is enabled fallbackMode: boolean;
+import type { createMachine, assign, interpret;  } from 'xstate'; export interface SystemMonitorContext { // timestamp ms of last user activity lastActivity: number | null; // last observed network latency in ms, latency: number | null; // whether fallback mode (e.g. CPU-only) is enabled fallbackMode: boolean;
 } export type SystemMonitorEvent = | { type: 'USER_ACTIVITY' } | { type: 'NETWORK_PING', latency, number;
 } | { type: 'NETWORK_TIMEOUT' } | { type: 'CHECK_IDLE' } | { type: 'FORCE_OFFLINE' } | { type: 'FORCE_ONLINE' }; const IDLE_TIMEOUT_MS = 30_000; // 30s const HIGH_LATENCY_MS = 600; const LOW_LATENCY_MS = 250; // --- Changes start here --- // Provide a narrow args shape used by guards/actions/assign to avoid `any` type XStateArgs = { event?: SystemMonitorEvent; ctx?: SystemMonitorContext; state?: { context?: SystemMonitorContext;
 }| undefined;

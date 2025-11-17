@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { getNeo4jDriver } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/neo4j-driver';
-import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoint';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { getNeo4jDriver  } from '$lib/server/neo4j-driver';
+import type { getOllamaEndpoint  } from '$lib/utils/ollama-endpoint';
 
 interface GraphSignal {
   a: string;
@@ -92,7 +92,7 @@ async function fetchGraphSignals(caseId?: string): Promise<GraphSignal[]> {
   try {
     const query = `
       MATCH (a:Evidence)-[r:SIMILAR]-(b:Evidence)
-      ${caseId ? 'WHERE a.caseId = $caseId // TODO: Verify store subscription is correct for Svelte 5 OR b.caseId = $caseId // TODO: Verify store subscription is correct for Svelte 5' : ''}
+      ${caseId ? 'WHERE a.caseId = $caseId OR b.caseId = $caseId ' : ''}
       RETURN a, b, r
       ORDER BY r.score DESC
       LIMIT 40

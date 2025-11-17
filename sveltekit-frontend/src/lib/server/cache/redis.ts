@@ -1,7 +1,7 @@
-import { gzipSync, gunzipSync } from 'zlib';
-import { Buffer } from 'buffer';
+import type { gzipSync, gunzipSync  } from 'zlib';
+import type { Buffer  } from 'buffer';
 import crypto from 'crypto';
-import { createClient } from 'redis';
+import type { createClient  } from 'redis';
 
 // --- Custom Type to handle Redis client type inference issues ---
 type AppRedisClient = ReturnType<typeof createClient>;

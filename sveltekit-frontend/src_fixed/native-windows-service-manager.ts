@@ -1,4 +1,4 @@
-import { flashAttentionProcessor; } from './flashattention-gpu-error-processor.js'; import { concurrentSearch; } from './concurrent-indexeddb-search.js'; export interface WindowsService { name: string, displayName: string, executable: string, port: number, status: 'running' | 'stopped' | 'starting' | 'stopping' | 'error'; pid?: number uptime?: number healthEndpoint?: string;
+import type { flashAttentionProcessor;  } from './flashattention-gpu-error-processor.js'; import type { concurrentSearch;  } from './concurrent-indexeddb-search.js'; export interface WindowsService { name: string, displayName: string, executable: string, port: number, status: 'running' | 'stopped' | 'starting' | 'stopping' | 'error'; pid?: number uptime?: number healthEndpoint?: string;
 }
 export interface ServiceHealth { serviceName: string, isHealthy: boolean, responseTime: number, lastCheck: number, errorCount: number;
 }

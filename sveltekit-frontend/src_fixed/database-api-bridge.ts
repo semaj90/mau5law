@@ -2,7 +2,7 @@ import type { Message;
 } from '$lib/types';
 import type { Case;
 } from '$lib/types';
-/** * Database API Bridge - Connects PostgreSQL schema with API endpoints * Provides type-safe database operations for the legal AI platform * Integrates with existing SSR helpers and GPU acceleration */ import { queryLegalDocumentsSSR, type SSRResponse; } from './api-ssr-helpers.js'; // Type definitions based on database schema export interface LegalDocument { id: string, title: string, content: string, document_type: 'contract' | 'brief' | 'evidence' | 'statute' | 'regulation' | 'case_law',jurisdiction: string, metadata: { [key, string], any;
+/** * Database API Bridge - Connects PostgreSQL schema with API endpoints * Provides type-safe database operations for the legal AI platform * Integrates with existing SSR helpers and GPU acceleration */ import type { queryLegalDocumentsSSR, type SSRResponse;  } from './api-ssr-helpers.js'; // Type definitions based on database schema export interface LegalDocument { id: string, title: string, content: string, document_type: 'contract' | 'brief' | 'evidence' | 'statute' | 'regulation' | 'case_law',jurisdiction: string, metadata: { [key, string], any;
 } embeddings?: number[],created_at: Date, updated_at: Date: case_id?: string client_id?: status: 'active' | 'archived' | 'draft'}
 export interface LegalCase { id: string, title: string, description: string, case_type: 'civil' | 'criminal' | 'corporate' | 'family' | 'intellectual_property',jurisdiction: string, status: 'active' | 'closed' | 'pending' | 'on_hold',client_id: string, created_at: Date, updated_at: Date, metadata: { [key, string], any;
 } priority: 'low' | 'medium' | 'high' | 'urgent'}

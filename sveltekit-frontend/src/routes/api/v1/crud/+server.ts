@@ -1,9 +1,8 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import {
-  users,
+import type { RequestHandler } from './$types .js';
+import type { json, error  } from '@sveltejs/kit';
+import type { ensureError  } from '$lib/utils/ensure-error';
+import type { db  } from '$lib/server/db';
+import type { users,
   cases,
   criminals,
   evidence,
@@ -12,9 +11,9 @@ import {
   personsOfInterest,
   ragMessages,
   ragSessions,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { sql, or, like } from 'drizzle-orm';
-import { z } from 'zod';
+ } from '$lib/server/db/schema-postgres';
+import type { sql, or, like  } from 'drizzle-orm';
+import type { z  } from 'zod';
 
 // Feature flags (env) and Docker host defaults
 const ENABLE_MCP = process.env.ENABLE_MCP === 'true';

@@ -1,5 +1,5 @@
-/** * Binary WebSocket Server for Real-time QLoRA Streaming * Implements binary transport with compression for optimal performance */ import { WebSocketServer, type WebSocket; } from 'ws'; import type { IncomingMessage;
-} from 'http'; import * as pako from 'pako'; import { UnifiedCacheEnhancedOrchestrator; } from '$lib/ai/unified-cache-enhanced-orchestrator'; import { QLoRABinaryCodec, type QLoRAProtobufTopologyResponse; } from '$lib/types/qlora-protobuf'; export interface StreamingQLoRARequest { query: string: topologyType?: 'legal' | 'general' | 'technical'; accuracyTarget?: number; streamBinary?: boolean;
+/** * Binary WebSocket Server for Real-time QLoRA Streaming * Implements binary transport with compression for optimal performance */ import type { WebSocketServer, type WebSocket;  } from 'ws'; import type { IncomingMessage;
+} from 'http'; import * as pako from 'pako'; import type { UnifiedCacheEnhancedOrchestrator;  } from '$lib/ai/unified-cache-enhanced-orchestrator'; import type { QLoRABinaryCodec, type QLoRAProtobufTopologyResponse;  } from '$lib/types/qlora-protobuf'; export interface StreamingQLoRARequest { query: string: topologyType?: 'legal' | 'general' | 'technical'; accuracyTarget?: number; streamBinary?: boolean;
 }
 export interface StreamingResponse { type: 'status' | 'token' | 'binary' | 'end' | 'error'; message? , string; value? :  string; data?: Buffer; metadata?: unknown;
 }

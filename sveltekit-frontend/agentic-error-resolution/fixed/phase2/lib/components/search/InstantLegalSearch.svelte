@@ -17,13 +17,13 @@ https://svelte.dev/e/expected_token -->
   - Fuse.js: Fuzzy search with legal-specific weighting
 -->
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { instantSearchEngine, type InstantSearchResult, type SearchFilters } from '$lib/services/instant-search-engine.js';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { instantSearchEngine, type InstantSearchResult, type SearchFilters  } from '$lib/services/instant-search-engine.js';
   import  Input  from "$lib/components/ui/enhanced-bits.svelte";
   import  Button  from "$lib/components/ui/nes-button.svelte";
   import * as Card from '$lib/components/ui/card.svelte';
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Search, Loader2, Filter, TrendingUp, Clock, AlertTriangle, FileText, Scale, Shield, Zap } from 'lucide-svelte';
+  import type { Badge  } from '$lib/components/ui/badge/index.js';
+  import type { Search, Loader2, Filter, TrendingUp, Clock, AlertTriangle, FileText, Scale, Shield, Zap  } from 'lucide-svelte';
   // Props using Svelte 5 syntax
   let { placeholder = 'Search legal documents, cases, evidence...', showFilters = true, showStats = true, showAdvanced = false, maxResults = 20, onResultClick, onResultAction, class: className = '' }: {
     placeholder?: string;

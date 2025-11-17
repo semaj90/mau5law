@@ -1,6 +1,6 @@
 /** * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues * Proper fromPromise usage with typed context and error handling */
-import { fromPromise, createActor, type ActorRefFrom } from 'xstate';
-import { fetchWithTimeout } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils';
+import type { fromPromise, createActor, type ActorRefFrom  } from 'xstate';
+import type { fetchWithTimeout  } from '$lib/utils';
 
 // ===== EMBEDDING ACTOR =====
 export interface EmbeddingActorInput {

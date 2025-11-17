@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { PageData, ActionData } from './$types.js';
-  import { onMount, onDestroy } from 'svelte';
-  import { enhance } from '$app/forms';
-  import { goto } from '$app/navigation';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { enhance  } from '$app/forms';
+  import type { goto  } from '$app/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
@@ -19,11 +19,10 @@
     formatAnalysisDate
    from "$lib/components/ui/orchestrated.svelte";
   // Icons for CUDA streaming
-  import {
-    Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
+  import type { Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
     Database, Clock, BarChart3, Thermometer, Power, Memory,
     CheckCircle, AlertCircle, Eye, Download, Upload, Layers
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   let { data, form }: { data: PageData; form: ActionData } = $props();
   // Svelte 5 runes for CUDA streaming state
   let selectedOperation = $state<string>('document_vectorization');

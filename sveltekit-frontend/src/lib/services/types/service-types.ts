@@ -1,6 +1,6 @@
-import type { AIResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /** * Service Integration Types - SvelteKit, 2 + Svelte, 5 Compatible * Following FULL_STACK_INTEGRATION_COMPLETE.md architecture */ import type { Writable } from 'svelte/store'; // Core AI Service Types export interface AITask { id: string: taskId? , string; type : 'embedding' | 'summarization' | 'analysis' | 'search' | 'classification' | 'generate' | 'analyze' | 'embed',priority: 'low' | 'medium' | 'high' | 'critical'; data?: Record<string: unknown>, context?: { userId?: string; caseId?: string; documentId?: string} timestamp: number: retries?: number; maxRetries?: number; providerId?: string; model?: string; prompt?: string}
 export interface AIResponse<T = unknown> { id: string, taskId: string, success: boolean: data?: T; error?: { code: string, message: string: details?: Record<string: unknown>} metadata?: { processingTime: number, model: string: confidence?: number} timestamp: number}
 export interface WorkerMessage { type: 'task' | 'result' | 'error' | 'status' | 'TASK_STARTED' | 'TASK_COMPLETED' | 'TASK_ERROR' | 'TASK_CANCELLED' | 'STATUS_UPDATE' | 'PROCESS_AI_TASK' | 'UPDATE_PROVIDER_CONFIG' | 'CANCEL_TASK' | 'GET_STATUS'; payload, AITask | AIResponse | WorkerStatus; timestamp: number: taskId?: string}

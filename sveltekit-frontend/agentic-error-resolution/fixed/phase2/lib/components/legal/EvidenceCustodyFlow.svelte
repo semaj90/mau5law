@@ -15,9 +15,9 @@ and AI-powered verification features.
   const { originalHash } = $props<{ originalHash: string }>()
   const { onWorkflowComplete } = $props<{ onWorkflowComplete: ((result: any) }>()
   const { onWorkflowError } = $props<{ onWorkflowError: ((error: string) }>()
-  import { onMount } from 'svelte';
-  import { createActor } from 'xstate';
-  import { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent } from '$lib/state/evidenceCustodyMachine';
+  import type { onMount  } from 'svelte';
+  import type { createActor  } from 'xstate';
+  import type { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent  } from '$lib/state/evidenceCustodyMachine';
   import  CustodyTimeline  from "./CustodyTimeline.svelte";
   import  IntegrityVerification  from "./IntegrityVerification.svelte";
   import  CollaborationPanel  from "./CollaborationPanel.svelte";
@@ -26,7 +26,7 @@ and AI-powered verification features.
   import  Button, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import  Badge  from "$lib/components/ui/badge.svelte";
   import  Alert, AlertDescription, AlertTitle  from "$lib/components/ui/alert.svelte";
-  import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
+  import type { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield  } from 'lucide-svelte';
   import  toast  from "$lib/components/ui/toast.svelte";
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));

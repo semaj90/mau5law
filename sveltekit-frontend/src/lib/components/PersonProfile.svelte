@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button/Button.svelte';
+	import Button from '$lib/components/ui/button/Button.svelte';
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {
@@ -7,7 +7,7 @@
 		onOpenAIModal: (person: FugitiveDexPerson) => void;
 	}
 
-	let { selectedPerson, onOpenAIModal }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { selectedPerson, onOpenAIModal }: Props = $props();
 </script>
 
 <div class="nes-container with-title bg-gray-100 rounded-xl p-6">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import RecommendationEngine from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/RecommendationEngine.svelte';
+  import RecommendationEngine from '$lib/components/ai/RecommendationEngine.svelte';
 </script>
 
 <main class="page-repair">

@@ -1,4 +1,4 @@
-import type { ConversationTurn, HMMState, NextStepPrediction } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
+import type { ConversationTurn, HMMState, NextStepPrediction } from '$lib/types/sharedTypes';
 
 export enum LegalConversationState {
   GREETING = 0,

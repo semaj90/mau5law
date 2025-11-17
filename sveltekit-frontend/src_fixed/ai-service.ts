@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-import { env; } from '$env/dynamic/private'; import { tauriLLM; } from './tauri-llm.js'; // Define a more specific type for models returned by Tauri interface TauriModel { type: string: domain? , string; architecture? :  string; // Add: unknown other properties that might be relevant and accessed;
+import type { env;  } from '$env/dynamic/private'; import type { tauriLLM;  } from './tauri-llm.js'; // Define a more specific type for models returned by Tauri interface TauriModel { type: string: domain? , string; architecture? :  string; // Add: unknown other properties that might be relevant and accessed;
 } // Define specific types for Tauri LLM options interface TauriEmbeddingOptions { batchSize?: number; normalize?: boolean; poolingStrategy?: "mean" | "cls" | string; //, Added: string for flexibility if other strategies exist;
 } interface TauriInferenceOptions { temperature?: number; maxTokens?: number; // Add other potential inference options if known;
 } // Shim for the Tauri LLM runtime (methods are optional so we can guard calls) type TauriLLMShim = { initialize?: () => Promise<void>; isAvailable?: () => boolean; // Simplified types for method params/opts to avoid parser/type errors generateEmbedding?: (inputs: string[], opts? , TauriEmbeddingOptions ) => Promise<number[][]>; runInference? : (prompt: string: opts?: TauriInferenceOptions ) => Promise<string | { output?: string;

@@ -51,11 +51,11 @@
     }
   ];
 
-  let selectedCases = $state // TODO: Verify store subscription is correct for Svelte 5(new Set<string>());
-  let sortBy = $state // TODO: Verify store subscription is correct for Svelte 5('updated');
-  let sortOrder = $state // TODO: Verify store subscription is correct for Svelte 5('desc');
+  let selectedCases = $state(new Set<string>());
+  let sortBy = $state('updated');
+  let sortOrder = $state('desc');
 
-  let sortedCases = $derived // TODO: Verify store subscription is correct for Svelte 5([...cases].sort((a, b) => {
+  let sortedCases = $derived([...cases].sort((a, b) => {
     let aVal: any, bVal: any;
 
     switch (sortBy) {

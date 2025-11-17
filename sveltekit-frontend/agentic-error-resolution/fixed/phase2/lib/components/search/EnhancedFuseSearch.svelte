@@ -9,8 +9,8 @@
   import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
   import  Button  from "$lib/components/ui/Button.svelte";
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
-  import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
-  import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
+  import type { Search, ExternalLink, Sparkles, FileText, Scale  } from 'lucide-svelte';
+  import type { legalDocuments, type LegalDocument  } from '$lib/data/legal-documents';
   // Props
   let { placeholder = 'Search laws, cases, and legal documents...', maxResults = 10, showCategories = true, compact = false }: { placeholder = 'Search laws, cases, and legal documents...',
     maxResults = 10,

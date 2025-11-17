@@ -1,6 +1,6 @@
-﻿ // Phase 3: Performance Optimization - Complete File // #get-library-docs sveltekit2 #memory #create_entities // import { db; } from '$lib/server/db' // Mock db for TypeScript compatibility const db = { execute: async (query, any) => [] as any[] }
-import { sql; } from 'drizzle-orm'; import type { Redis;
-} from 'ioredis'; import { getRedisConfig; } from '$lib/config/redis-config'; import { createRedisInstance; } from '$lib/server/redis'; // 1. Database Query Optimization export class OptimizedQueries { // Paginated cases with efficient counting static async getCasesPaginated(userId, string, page = 1, limit = 20) { const offset = (page - 1) * limit; const result = await db.execute(sql` WITH case_data AS ( SELECT c.*, COUNT(*) OVER() as total_count, ROW_NUMBER() OVER(ORDER BY c.updated_at DESC) as row_num FROM cases c WHERE c.user_id = ${userId;
+ // Phase 3: Performance Optimization - Complete File // #get-library-docs sveltekit2 #memory #create_entities // import { db; } from '$lib/server/db' // Mock db for TypeScript compatibility const db = { execute: async (query, any) => [] as any[] }
+import type { sql;  } from 'drizzle-orm'; import type { Redis;
+} from 'ioredis'; import type { getRedisConfig;  } from '$lib/config/redis-config'; import type { createRedisInstance;  } from '$lib/server/redis'; // 1. Database Query Optimization export class OptimizedQueries { // Paginated cases with efficient counting static async getCasesPaginated(userId, string, page = 1, limit = 20) { const offset = (page - 1) * limit; const result = await db.execute(sql` WITH case_data AS ( SELECT c.*, COUNT(*) OVER() as total_count, ROW_NUMBER() OVER(ORDER BY c.updated_at DESC) as row_num FROM cases c WHERE c.user_id = ${userId;
 } ) SELECT * FROM case_data WHERE row_num > ${offset;
 }AND row_num <= ${offset + limit;
 } `);` return { cases: result, totalCount: result[0]? .total_count || 0, hasMore :  Number(result[0]?.total_count || 0) > offset + limit;

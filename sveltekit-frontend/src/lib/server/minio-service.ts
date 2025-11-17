@@ -7,15 +7,14 @@
  * - JSON/text detection
  * - Batch text extraction with concurrency
  */
-import {
-  S3Client,
+import type { S3Client,
   GetObjectCommand,
   PutObjectCommand,
   ListObjectsV2Command,
   HeadObjectCommand,
-} from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { Readable } from 'stream';
+ } from '@aws-sdk/client-s3';
+import type { Upload  } from '@aws-sdk/lib-storage';
+import type { Readable  } from 'stream';
 
 interface MinIOConfig {
   endpoint: string;

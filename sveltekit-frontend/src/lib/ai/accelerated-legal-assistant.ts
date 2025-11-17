@@ -1,8 +1,8 @@
 // Accelerated Legal AI Assistant with SIMD + WebGPU Integration
 // Real-time evidence analysis using GPU acceleration
-import { legalSimilarityWebGPU, prepareLegalEmbeddingsForWebGPU } from '../webgpu/legal-similarity-compute.js';
-import { simdVectorProcessor } from '../simd/vector-simd.js';
-import { nesMemory } from '../memory/nes-memory-architecture.js';
+import type { legalSimilarityWebGPU, prepareLegalEmbeddingsForWebGPU  } from '../webgpu/legal-similarity-compute.js';
+import type { simdVectorProcessor  } from '../simd/vector-simd.js';
+import type { nesMemory  } from '../memory/nes-memory-architecture.js';
 import type { LegalSimilarityResult } from '../webgpu/legal-similarity-compute.js';
 
 export interface AcceleratedAnalysisRequest {

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { userStore } from '$lib/stores/user';
+  import type { userStore  } from '$lib/stores/user';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { LogOut, Smartphone, Monitor, Clock, MapPin, AlertCircle } from 'lucide-svelte';
+  import type { LogOut, Smartphone, Monitor, Clock, MapPin, AlertCircle  } from 'lucide-svelte';
 
   interface Session {
     id: string;
@@ -100,7 +100,7 @@
     loadSessions();
   });
 
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 </script>
 
 {#if !$userStore}

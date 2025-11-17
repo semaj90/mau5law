@@ -1,13 +1,13 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { RequestHandler } from './$types .js';
 /* * PostgreSQL-First Worker Trigger API * Handles Redis events for auto-tagging and case processing */
-import { json, error } from '@sveltejs/kit';
-import { redisService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-service';
-import { z } from 'zod';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index';
-import { cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import type { json, error  } from '@sveltejs/kit';
+import type { redisService  } from '$lib/server/redis-service';
+import type { z  } from 'zod';
+import db from '$lib/server/db/index';
+import type { cases  } from '$lib/server/db/schema-postgres';
+import type { eq  } from 'drizzle-orm';
 import type { PgDatabase } from 'drizzle-orm/pg-core'; // Import PgDatabase type
-import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres'; // Import the schema for typing db
+import * as schema from '$lib/server/db/schema-postgres'; // Import the schema for typing db
 
 // Validation schema for worker trigger requests
 const WorkerTriggerSchema = z.object({

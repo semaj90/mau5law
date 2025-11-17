@@ -7,8 +7,8 @@ Manages AutoGen and CrewAI multi-agent workflows
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { writable  } from 'svelte/store';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Card  from "$lib/components/ui/enhanced-bits.svelte";
   import  CardContent  from "$lib/components/ui/CardContent.svelte";
@@ -19,10 +19,9 @@ Manages AutoGen and CrewAI multi-agent workflows
     Input
    from "$lib/components/ui/enhanced-bits.svelte";
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
-  import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/index.ts';
-  import {
-    Users,
+  import type { mcpGPUOrchestrator  } from '$lib/services/mcp-gpu-orchestrator';
+  import type { Select, SelectContent, SelectItem, SelectTrigger, SelectValue  } from '$lib/components/ui/select/index.ts';
+  import type { Users,
     Brain,
     Database,
     Play,
@@ -40,9 +39,9 @@ Manages AutoGen and CrewAI multi-agent workflows
     Activity,
     Settings,
     Download
-  } from 'lucide-svelte';
-  import { autoGenService, analyzeCaseWithAgents, reviewEvidenceWithAgents, researchLegalPrecedents } from '$lib/services/autogen-service.js';
-  import { crewAIService, analyzeLegalCaseWithCrew, analyzeContractWithCrew } from '$lib/services/crewai-service.js';
+   } from 'lucide-svelte';
+  import type { autoGenService, analyzeCaseWithAgents, reviewEvidenceWithAgents, researchLegalPrecedents  } from '$lib/services/autogen-service.js';
+  import type { crewAIService, analyzeLegalCaseWithCrew, analyzeContractWithCrew  } from '$lib/services/crewai-service.js';
   import type {
     AutoGenConversation,
     AutoGenMessage

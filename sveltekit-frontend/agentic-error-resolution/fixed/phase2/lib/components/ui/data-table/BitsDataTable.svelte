@@ -1,8 +1,8 @@
 <!-- Data Table Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { cn } from '$lib/utils';
-  import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
+  import type { cn  } from '$lib/utils';
+  import type { ChevronDown, ChevronUp, Search, Filter, Download  } from 'lucide-svelte';
   import  BitsInput  from "../input/BitsInput.svelte";
   import  Button  from "../button/Button.svelte";
   export interface DataTableColumn<T = any> {

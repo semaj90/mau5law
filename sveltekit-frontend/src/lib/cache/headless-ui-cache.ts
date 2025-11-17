@@ -1,6 +1,6 @@
 /** * Headless UI Caching System * Client-side caching layer that bridges server-side Redis tensor cache * with XState Neural Sprite frontend for maximum performance */
 import vectorWasm from '../wasm/vector-wasm-wrapper.js';
-import { browser } from '$app/environment';
+import type { browser  } from '$app/environment';
 
 export interface CacheEntry<T = unknown> {
   // Changed default type parameter from 'any' to 'unknown'

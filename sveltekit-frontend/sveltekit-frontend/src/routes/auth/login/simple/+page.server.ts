@@ -1,10 +1,10 @@
 import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { z } from 'zod';
-import { SimpleAuthService } from '$lib/server/auth-simple';
-import { createUserSession, setSessionCookie } from '$lib/server/lucia';
+import type { fail, redirect  } from '@sveltejs/kit';
+import type { superValidate  } from 'sveltekit-superforms/server';
+import type { zod  } from 'sveltekit-superforms/adapters';
+import type { z  } from 'zod';
+import type { SimpleAuthService  } from '$lib/server/auth-simple';
+import type { createUserSession, setSessionCookie  } from '$lib/server/lucia';
 
 const loginSchema = z.object({
 	email: z.string().email(),

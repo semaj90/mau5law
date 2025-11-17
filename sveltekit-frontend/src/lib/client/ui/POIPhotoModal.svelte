@@ -1,9 +1,4 @@
 <script lang="ts">
-  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/Card';
-  import CardContent from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/CardContent';
-  import CardHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/CardHeader';
-  import CardTitle from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/CardTitle';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
   import {
     Brain,
     Calendar,
@@ -22,7 +17,7 @@
     open,
     photo,
     onClose
-  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  } = $props<{
     open: boolean;
     photo: {
       url: string;
@@ -43,11 +38,11 @@
     onClose: () => void;
   }>();
 
-  let zoom = $state // TODO: Verify store subscription is correct for Svelte 5(1);
-  let rotation = $state // TODO: Verify store subscription is correct for Svelte 5(0);
-  let imageElement = $state // TODO: Verify store subscription is correct for Svelte 5<HTMLImageElement>();
+  let zoom = $state(1);
+  let rotation = $state(0);
+  let imageElement = $state<HTMLImageElement>();
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {
     if (!open) {
       zoom = 1;
       rotation = 0;
@@ -101,25 +96,24 @@
           POI Photo Analysis
         </h2>
         <div class="flex items-center gap-2">
-          <!-- Zoom Controls -->
-          <Button variant="outline" size="sm" onclick={zoomOut}>
+          <button class="nio-btn" type="button" onclick={zoomOut}>
             <ZoomOut class="w-4 h-4" />
-          </Button>
+          </button>
           <span class="text-sm text-gray-600 min-w-[60px] text-center">
             {Math.round(zoom * 100)}%
           </span>
-          <Button variant="outline" size="sm" onclick={zoomIn}>
+          <button class="nio-btn" type="button" onclick={zoomIn}>
             <ZoomIn class="w-4 h-4" />
-          </Button>
-          <Button variant="outline" size="sm" onclick={resetView}>
+          </button>
+          <button class="nio-btn" type="button" onclick={resetView}>
             <RotateCcw class="w-4 h-4" />
-          </Button>
-          <Button variant="outline" size="sm" onclick={downloadImage}>
+          </button>
+          <button class="nio-btn" type="button" onclick={downloadImage}>
             <Download class="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="sm" onclick={handleClose}>
+          </button>
+          <button class="nio-btn ghost" type="button" onclick={handleClose}>
             <X class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -144,11 +138,11 @@
         <!-- Analysis Panel -->
         <div class="w-80 border-l bg-gray-50 overflow-y-auto">
           <div class="p-4 space-y-4">
-            <Card>
-              <CardHeader class="pb-3">
-                <CardTitle class="text-lg">Photo Overview</CardTitle>
-              </CardHeader>
-              <CardContent class="space-y-3">
+            <section class="analysis-card">
+              <header class="analysis-card-header">
+                <h3 class="analysis-card-title text-lg">Photo Overview</h3>
+              </header>
+              <div class="analysis-card-body space-y-3">
                 {#if photo.metadata?.timestamp}
                   <div class="flex items-center gap-2">
                     <Calendar class="w-4 h-4 text-gray-500" />
@@ -178,40 +172,38 @@
                     </span>
                   </div>
                 {/if}
-              </CardContent>
-            </Card>
+              </div>
+            </section>
 
-            <Card>
-              <CardHeader class="pb-3">
-                <CardTitle class="text-lg flex items-center gap-2">
-                  <Tag class="w-4 h-4" />
-                  EXIF Metadata
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+            <section class="analysis-card">
+              <header class="analysis-card-header">
+                <h3 class="analysis-card-title text-lg flex items-center gap-2">
+                  <Tag class="w-4 h-4" /> EXIF Metadata
+                </h3>
+              </header>
+              <div class="analysis-card-body">
                 {#if photo.metadata?.exif}
                   <div class="space-y-2 text-sm">
-                    {#each Object.entries(photo.metadata.exif) as [key, value]}
+                    {#each Object.entries(photo.metadata.exif) as [exifKey, exifValue]}
                       <div class="flex justify-between">
-                        <span class="font-medium text-gray-600">{key}:</span>
-                        <span class="text-gray-800">{String(value)}</span>
+                        <span class="font-medium text-gray-600">{exifKey}:</span>
+                        <span class="text-gray-800">{String(exifValue)}</span>
                       </div>
                     {/each}
                   </div>
                 {:else}
                   <p class="text-gray-500 text-sm">No EXIF data available</p>
                 {/if}
-              </CardContent>
-            </Card>
+              </div>
+            </section>
 
-            <Card>
-              <CardHeader class="pb-3">
-                <CardTitle class="text-lg flex items-center gap-2">
-                  <Brain class="w-4 h-4" />
-                  AI Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent class="space-y-4">
+            <section class="analysis-card">
+              <header class="analysis-card-header">
+                <h3 class="analysis-card-title text-lg flex items-center gap-2">
+                  <Brain class="w-4 h-4" /> AI Analysis
+                </h3>
+              </header>
+              <div class="analysis-card-body space-y-4">
                 {#if photo.metadata?.ai?.caption}
                   <div>
                     <h4 class="font-medium text-sm mb-2">AI Caption</h4>
@@ -225,9 +217,9 @@
                   <div>
                     <h4 class="font-medium text-sm mb-2">AI Tags</h4>
                     <div class="flex flex-wrap gap-1">
-                      {#each photo.metadata.ai.tags as tag}
+                      {#each photo.metadata.ai.tags as aiTag}
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-gray-300 text-gray-700">
-                          {tag}
+                          {aiTag}
                         </span>
                       {/each}
                     </div>
@@ -244,11 +236,50 @@
                     </span>
                   </div>
                 {/if}
-              </CardContent>
-            </Card>
+              </div>
+            </section>
           </div>
         </div>
       </div>
     </div>
   </div>
 {/if}
+
+<style>
+  .analysis-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: #fff;
+  }
+  .analysis-card-header {
+    padding: 0.75rem 1rem 0.25rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .analysis-card-title {
+    font-weight: 600;
+    color: #111827;
+  }
+  .analysis-card-body {
+    padding: 0.75rem 1rem 1rem;
+  }
+  .nio-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.35rem;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #111827;
+    transition: background 0.15s;
+  }
+  .nio-btn:hover {
+    background: #f3f4f6;
+  }
+  .nio-btn.ghost {
+    border: none;
+    background: transparent;
+    color: #6b7280;
+  }
+</style>

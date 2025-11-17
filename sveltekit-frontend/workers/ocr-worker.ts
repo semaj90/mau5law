@@ -12,9 +12,9 @@
 
 import amqp from 'amqplib';
 import Tesseract from 'tesseract.js';
-import { createWorker } from 'tesseract.js';
+import type { createWorker  } from 'tesseract.js';
 import sharp from 'sharp';
-import { Pool } from 'pg';
+import type { Pool  } from 'pg';
 import * as minioService from '../src/lib/server/storage/minio-service.js'; // Changed to namespace import
 
 // Environment configuration

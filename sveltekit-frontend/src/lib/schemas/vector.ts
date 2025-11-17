@@ -1,4 +1,4 @@
-﻿import { z } from 'zod';
+import type { z  } from 'zod';
 
 // Zod schemas for vector search & RAG endpoints
 export const vectorSearchRequestSchema = z.object({

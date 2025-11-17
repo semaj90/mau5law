@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { get } from 'svelte/store';
-  import { userStore, loadUserSession, updateUserProfile as updateUserStoreProfile, type UserSession } from '$lib/stores/user';
+  import type { onMount  } from 'svelte';
+  import type { browser  } from '$app/environment';
+  import type { get  } from 'svelte/store';
+  import type { userStore, loadUserSession, updateUserProfile as updateUserStoreProfile, type UserSession  } from '$lib/stores/user';
   import Button from '$lib/components/ui/wrappers/bits/Button.svelte';
   import Input from '$lib/components/ui/bits/Input.svelte';
   import Card from '$lib/components/ui/bits/Card.svelte';

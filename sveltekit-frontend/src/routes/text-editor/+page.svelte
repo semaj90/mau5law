@@ -1,10 +1,10 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+import type { onMount  } from 'svelte';
 import type { SvelteComponent } from 'svelte'; // Added import for SvelteComponent type
 
 // Some lucide-svelte installations/types export icons differently.
 // Import the single working icon and use simple fallbacks for others.
-import { FileText } from 'lucide-svelte'; // Changed to named import as per Svelte 5 UI kit guidelines
+import type { FileText  } from 'lucide-svelte'; // Changed to named import as per Svelte 5 UI kit guidelines
 
 // Dynamically load the editor to avoid: "no default export" TS error for the static import
 let EditorComponent: typeof SvelteComponent | null = null; // Changed type from unknown to typeof SvelteComponent | null
@@ -14,7 +14,7 @@ onMount(async () => {
 				// We expect it to either have a default export that is a SvelteComponent,
 				// or a named export 'NierRichTextEditor' that is a SvelteComponent,
 				// or the module itself exports the SvelteComponent directly.
-				const mod = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/editors/NierRichTextEditor.svelte');
+				const mod = await import('$lib/components/editors/NierRichTextEditor.svelte');
 				// Safely assign, asserting the final type to satisfy TypeScript.
 				EditorComponent = (mod?.default ?? (mod as any)?.NierRichTextEditor ?? mod) as typeof SvelteComponent;
 			} catch (err) {
@@ -23,7 +23,7 @@ onMount(async () => {
 			}
 		});
 
-// --- CHANGED: Replace Svelte runes ($state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 / $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) with plain variables + reactive statement ---
+// --- CHANGED: Replace Svelte runes ($state / $derived ) with plain variables + reactive statement ---
 let editorValue: string = '';
 let documentTitle: string = 'Untitled Document';
 let lastSaved: Date | null = null;

@@ -3,10 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { writable } from 'svelte/store';
-  import { fade, slide } from 'svelte/transition';
+  import type { writable  } from 'svelte/store';
+  import type { fade, slide  } from 'svelte/transition';
   import type { OCRResult } from '$lib/ocr-processor';
-  import { Button } from '$lib/ui/Button.svelte';
+  import type { Button  } from '$lib/ui/Button.svelte';
 
   // explicit props (Svelte 5 safe, TypeScript-friendly)
   let { ondispatch, formDataProp, ocrResultsProp } = $props<{

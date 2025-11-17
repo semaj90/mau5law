@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { type AISuggestion } from './ai-suggestions-service';
+  import type { type AISuggestion  } from './ai-suggestions-service';
 
-  let { show = $bindable // TODO: Verify store subscription is correct for Svelte 5(false) }: { show: boolean } = $props // TODO: Verify store subscription is correct for Svelte 5();
-  let currentSuggestion = $state // TODO: Verify store subscription is correct for Svelte 5<AISuggestion | null>(null);
+  let { show = $bindable(false) }: { show: boolean } = $props();
+  let currentSuggestion = $state <AISuggestion | null>(null);
 
   export function showModal(suggestion: AISuggestion) {
     currentSuggestion = suggestion;

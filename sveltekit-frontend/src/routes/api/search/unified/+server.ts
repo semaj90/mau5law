@@ -1,5 +1,5 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { z  } from 'zod';
 
 // Search result interface
 interface SearchResult {

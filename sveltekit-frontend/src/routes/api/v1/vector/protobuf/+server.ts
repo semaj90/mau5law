@@ -1,5 +1,5 @@
-import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
 import * as protobuf from 'protobufjs';
 
 // Protocol Buffer Implementation for High-Performance Vector Search

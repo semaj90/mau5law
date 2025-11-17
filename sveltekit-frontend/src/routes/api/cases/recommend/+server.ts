@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { vectorSearchService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/real-vector-search-service';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { vectorSearchService  } from '$lib/services/real-vector-search-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

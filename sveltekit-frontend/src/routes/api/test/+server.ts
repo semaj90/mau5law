@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import type { json  } from '@sveltejs/kit';
 
 export const GET = async () => {
   return json({ message: 'Test endpoint working', timestamp: new Date().toISOString() });

@@ -1,5 +1,5 @@
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { error  } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types .js';
 
 export const load: PageServerLoad = async ({ locals }) => {
   try {

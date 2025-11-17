@@ -1,12 +1,12 @@
 <!-- Evidence CRUD Modal - SPA-style with Svelte 5 + Drizzle + PostgreSQL -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { evidenceStore  } from '$lib/stores/unified';
-  import { embeddingsService } from '$lib/services/embeddings-service';
-  import { showSuccess, showError  } from '$lib/stores/unified';
+  import type { onMount  } from 'svelte';
+  import type { evidenceStore   } from '$lib/stores/unified';
+  import type { embeddingsService  } from '$lib/services/embeddings-service';
+  import type { showSuccess, showError   } from '$lib/stores/unified';
   import  Button, Card, CardContent, CardHeader, CardTitle, Input, Label  from "$lib/components/ui/enhanced-bits.svelte";
-  import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte';
+  import type { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic  } from 'lucide-svelte';
   interface Evidence {
     id?: string;
     title: string;

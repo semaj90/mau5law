@@ -13,9 +13,9 @@ export interface Evidence {
 // ENHANCED STATE MACHINES FOR LEGAL AI SYSTEM - FIXED VERSION
 // Building on existing autoTaggingMachine with advanced capabilities
 // ======================================================================
-import { assign, setup, fromPromise, createActor } from 'xstate';
-import { writable, derived } from 'svelte/store';
-import { browser } from '$app/environment';
+import type { assign, setup, fromPromise, createActor  } from 'xstate';
+import type { writable, derived  } from 'svelte/store';
+import type { browser  } from '$app/environment';
 
 // ======================================================================
 // ENHANCED TYPES
@@ -568,18 +568,18 @@ export const evidenceProcessingStore = writable({
 // Derived stores for easy component access
 export const currentlyProcessingStore = derived(
   evidenceProcessingStore,
-  $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.context?.evidenceQueue[0] || null
+  $store => $store .context?.evidenceQueue[0] || null
 );
 
 export const processingResultsStore = derived(
   evidenceProcessingStore,
-  $store // TODO: Verify store subscription is correct for Svelte 5 => Array.from($store // TODO: Verify store subscription is correct for Svelte 5.context?.processingResults?.values() || [])
+  $store => Array.from($store .context?.processingResults?.values() || [])
 );
 
 export const aiRecommendationsStore = derived(
   evidenceProcessingStore,
-  $store // TODO: Verify store subscription is correct for Svelte 5 => {
-    const analysis = $store // TODO: Verify store subscription is correct for Svelte 5.context?.aiAnalysis;
+  $store => {
+    const analysis = $store .context?.aiAnalysis;
     if (!analysis) return [];
     return Array.from(analysis.values()).flatMap(
       (a: any) => a.suggestedActions?.map((action: string) => ({
@@ -595,21 +595,21 @@ export const aiRecommendationsStore = derived(
 
 export const vectorSimilarityStore = derived(
   evidenceProcessingStore,
-  $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.context?.vectorMatches || []
+  $store => $store .context?.vectorMatches || []
 );
 
 export const graphRelationshipsStore = derived(
   evidenceProcessingStore,
-  $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.context?.graphRelationships || []
+  $store => $store .context?.graphRelationships || []
 );
 
 export const systemHealthStore = derived(
   evidenceProcessingStore,
-  $store // TODO: Verify store subscription is correct for Svelte 5 => ({
-    health: $store // TODO: Verify store subscription is correct for Svelte 5.context?.systemHealth || 'unknown',
-    errors: $store // TODO: Verify store subscription is correct for Svelte 5.context?.errors?.filter((e: any) => !e.resolved) || [],
-    cacheHits: $store // TODO: Verify store subscription is correct for Svelte 5.context?.cacheHits || 0,
-    lastSync: $store // TODO: Verify store subscription is correct for Svelte 5.context?.lastSync
+  $store => ({
+    health: $store .context?.systemHealth || 'unknown',
+    errors: $store .context?.errors?.filter((e: any) => !e.resolved) || [],
+    cacheHits: $store .context?.cacheHits || 0,
+    lastSync: $store .context?.lastSync
   })
 );
 

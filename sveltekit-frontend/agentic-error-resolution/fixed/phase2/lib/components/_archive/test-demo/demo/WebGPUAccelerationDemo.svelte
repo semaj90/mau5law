@@ -1,8 +1,8 @@
 <!-- WebGPU Client-Side Acceleration Demo -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
+  import type { onMount  } from 'svelte';
+  import type { webGPUAccelerator, type WebGPUCapabilities  } from '$lib/services/webgpu-accelerator';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import 
     Card,

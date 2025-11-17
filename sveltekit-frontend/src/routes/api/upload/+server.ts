@@ -1,10 +1,10 @@
-﻿import { json, error, type RequestHandler } from '@sveltejs/kit';
-﻿import { auth } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth';
-﻿import { uploadMinioObject } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/minio';
-﻿import { superValidate } from 'sveltekit-superforms/server';
-﻿import { zod } from 'sveltekit-superforms/adapters';
-﻿import { uploadSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/upload';
-﻿import { fail } from '@sveltejs/kit';
+import type { json, error, type RequestHandler  } from '@sveltejs/kit';
+﻿import type { auth  } from '$lib/server/auth';
+﻿import type { uploadMinioObject  } from '$lib/server/services/minio';
+﻿import type { superValidate  } from 'sveltekit-superforms/server';
+﻿import type { zod  } from 'sveltekit-superforms/adapters';
+﻿import type { uploadSchema  } from '$lib/schemas/upload';
+﻿import type { fail  } from '@sveltejs/kit';
 ﻿
 ﻿export const POST: RequestHandler = async ({ request, locals }) => {
 ﻿	const session = await locals.auth.validate();

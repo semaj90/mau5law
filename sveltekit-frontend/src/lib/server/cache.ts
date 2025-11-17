@@ -1,4 +1,4 @@
-import { createClient, type RedisClientType } from 'redis';
+import type { createClient, type RedisClientType  } from 'redis';
 
 type RedisClientOptions = Parameters<typeof createClient>[0];
 

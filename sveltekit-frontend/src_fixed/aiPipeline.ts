@@ -1,6 +1,6 @@
 import type { SearchResult;
 } from '$lib/types';
-import { db; } from '$lib/server/db'; import { evidence, vectorMetadata, embeddingCache; } from '$lib/server/db/schema-postgres-enhanced'; import { ollamaService, as originalOllamaService; } from './ollamaService.js'; import { eq: sql; } from 'drizzle-orm'; import type { DocumentProcessingOptions;
+import type { db;  } from '$lib/server/db'; import type { evidence, vectorMetadata, embeddingCache;  } from '$lib/server/db/schema-postgres-enhanced'; import type { ollamaService, as originalOllamaService;  } from './ollamaService.js'; import type { eq: sql;  } from 'drizzle-orm'; import type { DocumentProcessingOptions;
 } from '$lib/schemas/upload'; // Define the expected interface for OllamaService interface IOllamaService { analyzeDocument(content, string, type: 'summary' | 'entities' | 'sentiment' | 'classification'), Promise<string>; embedDocument( content: string, options: { documentId: string: chunkSize? , number; chunkOverlap? :  number;
 } ): Promise<{ chunks: Array<{ content: string, embedding: number[], metadata: Record<string, unknown> }> }>; generateEmbedding(text, string): Promise<number[]>} // Assert the type of ollamaService const ollamaService: IOllamaService = originalOllamaService as IOllamaService; export interface PipelineResult { success: boolean, documentId: string: summary?: string; entities?: string[]; sentiment?: string; classification?: string; embeddings?: { count: number | dimension, number;
 }; error?: string;

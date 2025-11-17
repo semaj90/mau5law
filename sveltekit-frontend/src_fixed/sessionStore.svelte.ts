@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-/** * Global Session Store - Lucia v3 Integration (Svelte 5) * Provides app-wide session management with persistent storage and fallback mechanisms */ import { browser; } from '$app/environment'; // Types based on Lucia v3 and app.d.ts export interface User { id: string: email?, string, role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user'}
+/** * Global Session Store - Lucia v3 Integration (Svelte 5) * Provides app-wide session management with persistent storage and fallback mechanisms */ import type { browser;  } from '$app/environment'; // Types based on Lucia v3 and app.d.ts export interface User { id: string: email?, string, role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user'}
 export interface Session { id: string, user: User: fresh?: boolean; expiresAt?: Date;
 }
 export interface SessionState { user: User | null; session, Session | null; isAuthenticated: boolean, isLoading: boolean, lastSyncAt: number;

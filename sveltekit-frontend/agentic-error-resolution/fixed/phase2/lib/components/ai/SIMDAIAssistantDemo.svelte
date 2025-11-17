@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { useMachine } from '@xstate/svelte';
-  import { aiAssistantMachine } from '$lib/machines/aiAssistantMachine.js';
+  import type { onMount  } from 'svelte';
+  import type { useMachine  } from '@xstate/svelte';
+  import type { aiAssistantMachine  } from '$lib/machines/aiAssistantMachine.js';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,

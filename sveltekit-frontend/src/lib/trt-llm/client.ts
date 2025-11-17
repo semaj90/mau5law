@@ -1,4 +1,4 @@
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/public';
+import type { env  } from '$env /dynamic/public';
 
 export interface TRTLLMRequest {
 	prompt: string;

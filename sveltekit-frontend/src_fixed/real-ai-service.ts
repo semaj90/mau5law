@@ -1,6 +1,6 @@
 import type { Document;
 } from '$lib/types';
-import crypto from "crypto"; import { getOllamaEndpoint; } from '$lib/server/ollama'; // Import getOllamaEndpoint // Define a basic chat message interface export interface ChatMessage { role: 'user' | 'assistant' | 'system'; content, string;
+import crypto from "crypto"; import type { getOllamaEndpoint;  } from '$lib/server/ollama'; // Import getOllamaEndpoint // Define a basic chat message interface export interface ChatMessage { role: 'user' | 'assistant' | 'system'; content, string;
 } // Define a basic interface for RAG context results, matching common vector search output export interface RAGDocumentResult { id: string, title: string, summary: string, relevanceScore: number; // Add other relevant fields if needed from your vector search results [key, string]: unknown; // Allow for additional metadata;
 } // Define return types for specific methods export interface ConnectionResult { success: boolean, model: string, availableModels: string[], error?: string;
 } export interface ModelSwitchResult { success: boolean: error?, string;

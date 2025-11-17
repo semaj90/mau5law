@@ -1,6 +1,6 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { RequestHandler } from './$types .js';
 /* * QUIC Vector Proxy API - High-Performance Vector Operations * Provides vector search with intelligent caching and multi-backend routing * Port: 8445 (QUIC), 8446 (HTTP/2 fallback) * Backends: Qdrant (6333), pgvector via Enhanced RAG (8094) */
-import { json, error } from '@sveltejs/kit';
+import type { json, error  } from '@sveltejs/kit';
 
 // Define VectorSearchQuery locally since it's not exported from the module
 type VectorSearchQuery = {

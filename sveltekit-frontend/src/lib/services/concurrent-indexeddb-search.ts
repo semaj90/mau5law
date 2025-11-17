@@ -1,4 +1,4 @@
-import Fuse from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/fuse-import';
+import Fuse from '$lib/utils/fuse-import';
 
 export interface SearchableDocument {
   id: string;

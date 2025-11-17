@@ -11,10 +11,10 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button as BitsButton } from 'bits-ui/components/ui/button';
-  import { onMount  } from "svelte";
+  import type { Button as BitsButton  } from 'bits-ui/components/ui/button';
+  import type { onMount   } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
-  import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
+  import type { N64_TEXTURE_PRESETS  } from '../constants/gaming-constants.js';
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';

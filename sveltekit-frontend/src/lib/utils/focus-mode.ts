@@ -2,7 +2,7 @@
  * Focus Mode Utility
  * Provides distraction-free writing experience by dimming non-essential UI elements
  */
-import { writable } from "svelte/store";
+import type { writable  } from 'svelte/store';
 
 export interface FocusSettings {
 	dimOpacity: number;
@@ -33,7 +33,7 @@ export const focusMode = writable(false);
 export const focusSettings = writable(defaultFocusSettings);
 
 export class FocusManager {
-	private isActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+	private isActive = $state (false);
 	private originalStyles: Map<Element, string> = new Map();
 	private settings: FocusSettings;
 	private observer: MutationObserver | null = null;

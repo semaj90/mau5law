@@ -1,4 +1,4 @@
-import { writable, derived, type Writable, type Readable; } from 'svelte/store'; import { browser; } from '$app/environment'; import { copilotOrchestrator, mcpMemoryReadGraph, semanticSearch, generateMCPPrompt; } from '$lib/optimization/comprehensive-orchestrator'; import type { OrchestrationOptions, MCPToolRequest, EnhancedRAGEngine;
+import type { writable, derived, type Writable, type Readable;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; import type { copilotOrchestrator, mcpMemoryReadGraph, semanticSearch, generateMCPPrompt;  } from '$lib/optimization/comprehensive-orchestrator'; import type { OrchestrationOptions, MCPToolRequest, EnhancedRAGEngine;
 } from '$lib/types/ai'; import type { StatelessAPICoordinator;
 } from './stateless-api-coordinator.js'; // --- Types --- export interface MCPSemanticResult { id: string, content: string, relevance: number, source: 'context7' | 'local' | 'hybrid',metadata: { libraryId?: string; documentType?: string,confidence: number | processingTime, number;
 }; enhancedData?: { pageRankScore?: number; userFeedback?: number; networkPosition?: number;

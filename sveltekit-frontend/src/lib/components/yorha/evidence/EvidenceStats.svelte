@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
-  let stats = $state // TODO: Verify store subscription is correct for Svelte 5({
+  let stats = $state({
     totalDocuments: 15432,
     documentsProcessed: 12847,
     aiAnalyzed: 9876,
@@ -11,7 +11,7 @@
     successRate: 94.7
   });
 
-  let processingQueue = $state // TODO: Verify store subscription is correct for Svelte 5([
+  let processingQueue = $state([
     { id: 'EVD-2024-007', name: 'Contract Analysis.pdf', progress: 45, eta: '2m 15s' },
     { id: 'EVD-2024-008', name: 'Financial Report.xlsx', progress: 78, eta: '45s' },
     { id: 'EVD-2024-009', name: 'Email Chain.eml', progress: 23, eta: '4m 30s' }

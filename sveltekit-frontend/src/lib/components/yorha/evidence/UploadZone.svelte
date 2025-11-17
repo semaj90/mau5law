@@ -3,10 +3,10 @@
 
   const dispatch = createEventDispatcher();
 
-  let isDragOver = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let uploadedFiles: File[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
-  let uploadProgress = $state // TODO: Verify store subscription is correct for Svelte 5(0);
-  let isUploading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let isDragOver = $state(false);
+  let uploadedFiles: File[] = $state([]);
+  let uploadProgress = $state(0);
+  let isUploading = $state(false);
 
   function handleDragOver(event: DragEvent) {
     event.preventDefault();

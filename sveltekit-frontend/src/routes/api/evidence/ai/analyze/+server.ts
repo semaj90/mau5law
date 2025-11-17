@@ -1,6 +1,6 @@
 // AI Evidence Analysis API Route
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
 
 // POST /api/evidence/ai/analyze - Analyze evidence node with AI
 export async function POST({ request }: { request: Request }) {

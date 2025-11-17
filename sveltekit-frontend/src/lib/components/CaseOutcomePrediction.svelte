@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Migrated from createEventDispatcher to callback props;
-	import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5/forms';
-	import { writable } from 'svelte/store';
+	import type { enhance  } from '$app/forms';
+	import type { writable  } from 'svelte/store';
 
 	const dispatch = createEventDispatcher();
 
@@ -13,7 +13,7 @@
 		partyType = 'plaintiff',
 		historicalData = [],
 		similarCases = []
-	} = $props // TODO: Verify store subscription is correct for Svelte 5();
+	} = $props();
 
 	// Define a type for the prediction outcome part that is stored in history
 	interface OutcomePredictionSummary {
@@ -33,9 +33,9 @@
 	}
 
 	// Local state
-	let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-	let prediction = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null); // Keep as any for flexibility, or define a proper type if available
-	let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+	let isLoading = $state <boolean>(false);
+	let prediction = $state <any>(null); // Keep as any for flexibility, or define a proper type if available
+	let error = $state <string | null>(null);
 	let showAdvanced = writable(false);
 	let analysisHistory = writable<AnalysisHistoryItem[]>([]); // Explicitly type the writable store
 	let exportFormat = writable('json');
@@ -154,13 +154,13 @@
 
 		const data = {
 			export_timestamp: new Date().toISOString(),
-			case_data: $formData // TODO: Verify store subscription is correct for Svelte 5,
+			case_data: $formData ,
 			prediction_results: prediction
 		};
 
 		let content, filename, mimeType;
 
-		if ($exportFormat // TODO: Verify store subscription is correct for Svelte 5 === 'json') {
+		if ($exportFormat === 'json') {
 			content = JSON.stringify(data, null, 2);
 			filename = `case-prediction-${Date.now()}.json`;
 			mimeType = 'application/json';
@@ -308,7 +308,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 					<textarea
 						id="caseFacts"
 						name="caseFacts"
-						bind:value={$formData // TODO: Verify store subscription is correct for Svelte 5.caseFacts}
+						bind:value={$formData .caseFacts}
 						placeholder="Enter detailed case facts, evidence, witness statements, and relevant circumstances..."
 						rows="8"
 						required
@@ -318,7 +318,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 				<div class="form-row">
 					<div class="form-group">
 						<label for="caseType">Case Type</label>
-						<select id="caseType" name="caseType" bind:value={$formData // TODO: Verify store subscription is correct for Svelte 5.caseType}>
+						<select id="caseType" name="caseType" bind:value={$formData .caseType}>
 							{#each caseTypes as type (type.value)}
 								<option value={type.value}>{type.label}</option>
 							{/each}
@@ -327,7 +327,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 
 					<div class="form-group">
 						<label for="jurisdiction">Jurisdiction</label>
-						<select id="jurisdiction" name="jurisdiction" bind:value={$formData // TODO: Verify store subscription is correct for Svelte 5.jurisdiction}>
+						<select id="jurisdiction" name="jurisdiction" bind:value={$formData .jurisdiction}>
 							{#each jurisdictions as juris (juris.value)}
 								<option value={juris.value}>{juris.label}</option>
 							{/each}
@@ -336,7 +336,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 
 					<div class="form-group">
 						<label for="partyType">Your Role</label>
-						<select id="partyType" name="partyType" bind:value={$formData // TODO: Verify store subscription is correct for Svelte 5.partyType}>
+						<select id="partyType" name="partyType" bind:value={$formData .partyType}>
 							{#each partyTypes as party (party.value)}
 								<option value={party.value}>{party.label}</option>
 							{/each}
@@ -348,10 +348,10 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 			<div class="form-section">
 				<div class="section-header" onclick={() => showAdvanced.update(v => !v)}>
 					<h3>Advanced Analysis Options</h3>
-					<span class="toggle-icon">{$showAdvanced // TODO: Verify store subscription is correct for Svelte 5 ? '▼' : '▶'}</span>
+					<span class="toggle-icon">{$showAdvanced ? '▼' : '▶'}</span>
 				</div>
 
-				{#if $showAdvanced // TODO: Verify store subscription is correct for Svelte 5}
+				{#if $showAdvanced }
 					<div class="advanced-options">
 						<div class="form-group">
 							<label for="historicalData">
@@ -361,7 +361,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 							<textarea
 								id="historicalData"
 								name="historicalData"
-								bind:value={$formData // TODO: Verify store subscription is correct for Svelte 5.historicalData}
+								bind:value={$formData .historicalData}
 								placeholder="Enter historical case data, one per line..."
 								rows="4"
 							></textarea>
@@ -375,7 +375,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 							<textarea
 								id="similarCases"
 								name="similarCases"
-								bind:value={$formData // TODO: Verify store subscription is correct for Svelte 5.similarCases}
+								bind:value={$formData .similarCases}
 								placeholder="Enter similar case references, one per line..."
 								rows="4"
 							></textarea>
@@ -415,7 +415,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 			<div class="results-header">
 				<h3>📊 Case Outcome Analysis</h3>
 				<div class="export-controls">
-					<select bind:value={$exportFormat // TODO: Verify store subscription is correct for Svelte 5}>
+					<select bind:value={$exportFormat }>
 						<option value="json">JSON</option>
 						<option value="txt">Text Report</option>
 					</select>
@@ -628,11 +628,11 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 		</div>
 	{/if}
 
-	{#if $analysisHistory // TODO: Verify store subscription is correct for Svelte 5.length > 0}
+	{#if $analysisHistory .length > 0}
 		<div class="analysis-history">
 			<h3>📚 Recent Analyses</h3>
 			<div class="history-list">
-				{#each $analysisHistory // TODO: Verify store subscription is correct for Svelte 5 as historyItem (historyItem.id)}
+				{#each $analysisHistory as historyItem (historyItem.id)}
 					<div class="history-item" onclick={() => loadFromHistory(historyItem)}>
 						<div class="history-header">
 							<span class="history-case">{historyItem.caseFacts}</span>

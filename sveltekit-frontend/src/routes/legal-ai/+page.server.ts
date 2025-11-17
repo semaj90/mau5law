@@ -1,10 +1,10 @@
 /** * SSR Data Loader for Legal AI Page * Fetches initial state from database for server-side rendering * Integrates with our decoupled architecture */
 
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { db } from '$lib/server/db/index.js';
-import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
-import { desc, eq, sql } from 'drizzle-orm';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { PageServerLoad } from './$types .js';
+import type { db  } from '$lib/server/db/index.js';
+import type { legalDocuments, ragSessions  } from '$lib/server/db/schema-postgres.js';
+import type { desc, eq, sql  } from 'drizzle-orm';
+import type { langExtractService  } from '$lib/services/langextract-ollama-service.js';
 
 // Types for page data
 export interface LegalAIPageData {
@@ -48,9 +48,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       .select({
         id: ragSessions.id,
         sessionName: ragSessions.sessionName,
-        messageCount: ragSessions.messageCount,
-        lastActivity: ragSessions.updatedAt,
-        createdAt: ragSessions.createdAt
+        messageCount: ragSessions.messageCount; lastActivity: ragSessions.updatedAt; createdAt: ragSessions.createdAt
       })
       .from(ragSessions)
       .where(eq(ragSessions.isActive, true))
@@ -63,9 +61,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         id: legalDocuments.id,
         title: legalDocuments.title,
         summary: legalDocuments.summary,
-        documentType: legalDocuments.documentType,
-        createdAt: legalDocuments.createdAt,
-        keyTerms: legalDocuments.keyTerms
+        documentType: legalDocuments.documentType; createdAt: legalDocuments.createdAt; keyTerms: legalDocuments.keyTerms
       })
       .from(legalDocuments)
       .orderBy(desc(legalDocuments.createdAt))
@@ -88,9 +84,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         return {
           id: session.id,
           sessionName: session.sessionName || `Session ${session.id.slice(0, 8)}`,
-          messageCount: session.messageCount || 0,
-          lastActivity: session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
-          documentsProcessed: parseInt(count as string) || 0
+          messageCount: session.messageCount || 0; lastActivity: session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(); documentsProcessed: parseInt(count as string) || 0
         };
       })
     );
@@ -129,24 +123,18 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
     const pageData: LegalAIPageData = {
       initialState: {
         langchainService: {
-          isAvailable: isOllamaAvailable,
-          models: availableModels,
-          error: isOllamaAvailable ? null : 'Ollama service not available'
+          isAvailable: isOllamaAvailable; models: availableModels; error: isOllamaAvailable ? null : 'Ollama service not available'
         },
         recentSessions: sessionsWithCounts,
         recentDocuments: recentDocuments.map(doc => ({
           id: doc.id,
           title: doc.title || 'Untitled Document',
           summary: doc.summary || 'No summary available',
-          documentType: doc.documentType || 'unknown',
-          createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
-          keyTerms: doc.keyTerms || []
+          documentType: doc.documentType || 'unknown'; createdAt: doc.createdAt?.toISOString() || new Date().toISOString(); keyTerms: doc.keyTerms || []
         })),
         serviceStatus: {
           postgresql: postgresqlAvailable,
-          ollama: isOllamaAvailable,
-          redis: redisAvailable,
-          lastChecked: new Date().toISOString()
+          ollama: isOllamaAvailable; redis: redisAvailable; lastChecked: new Date().toISOString()
         }
       },
       meta: {
@@ -164,26 +152,21 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
     return {
       initialState: {
         langchainService: {
-          isAvailable: false,
-          models: [],
-          error: 'Failed to load service data'
+          isAvailable: false; models: []; error: 'Failed to load service data'
         },
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {
           postgresql: false,
-          ollama: false,
-          redis: false,
-          lastChecked: new Date().toISOString()
+          ollama: false; redis: false; lastChecked: new Date().toISOString()
         }
       },
       meta: {
-        totalDocuments: 0,
-        totalSessions: 0,
-        serverRenderTime: Date.now() - startTime
+        totalDocuments: 0; totalSessions: 0; serverRenderTime: Date.now() - startTime
       }
     };
   }
 };
+
 
 

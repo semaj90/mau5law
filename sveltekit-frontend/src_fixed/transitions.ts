@@ -1,4 +1,4 @@
-﻿// Transition utilities for Melt UI components // Compatible with Pico CSS + UnoCSS setup import { cubicOut; } from 'svelte/easing'; import type { TransitionConfig;
+// Transition utilities for Melt UI components // Compatible with Pico CSS + UnoCSS setup import type { cubicOut;  } from 'svelte/easing'; import type { TransitionConfig;
 } from 'svelte/transition'; // Restored TransitionConfig type import export function flyAndScale( node: Element, params: { y?: number; x?: number; start?: number; duration?: number;
 }= { }
 ): TransitionConfig { const style = getComputedStyle(node); const transform = style.transform === 'none' ? ''  :  style.transform; const scaleConversion = (valueA: number, scaleA: [number, number], scaleB: [number, number]) => { const [minA, maxA] = scaleA; const [minB, maxB] = scaleB; const percentage = (valueA - minA) / (maxA - minA); const valueB = percentage * (maxB - minB) + minB; return valueB;

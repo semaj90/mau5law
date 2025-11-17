@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-  import { Archive, Download, Eye, FileText, Image, Music, Trash2, Video, Zap } from 'lucide-svelte';
+  import type { Evidence } from '$lib/types';
+  import type { Archive, Download, Eye, FileText, Image, Music, Trash2, Video, Zap  } from 'lucide-svelte';
   // Migrated from createEventDispatcher to callback props;
   import Tooltip from './Tooltip.svelte';
 
@@ -26,7 +26,7 @@
     onDownload,
     readonly = false,
     showActions = true
-  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  }: Props = $props ();
 
   const dispatch = createEventDispatcher();
 

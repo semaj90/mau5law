@@ -1,13 +1,13 @@
 <!-- YorhaAI Assistant - Production-Ready Chat Interface with Svelte 5 + bits-ui -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->
 <script lang="ts">
-  import { tick } from 'svelte';
-  import { browser } from '$app/environment';
+  import type { tick  } from 'svelte';
+  import type { browser  } from '$app/environment';
   import Button from '$lib/components/ui/Button.svelte'; // Corrected casing
   import  ScrollArea  from "$lib/components/ui/scroll-area.svelte"; // Changed to named import
   import  Separator  from "$lib/components/ui/separator.svelte";
   import  Input  from "$lib/components/ui/input.svelte";
-  import { Bot, Send, Wifi, WifiOff, Loader2 } from 'lucide-svelte';
+  import type { Bot, Send, Wifi, WifiOff, Loader2  } from 'lucide-svelte';
   import Root from '$lib/components/ui/sheet/Root.svelte';
   import Trigger from '$lib/components/ui/sheet/Trigger.svelte';
   import Content from '$lib/components/ui/sheet/Content.svelte';

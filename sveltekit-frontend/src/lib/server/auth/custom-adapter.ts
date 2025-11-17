@@ -1,9 +1,9 @@
 // Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN queries
-import { type Adapter, type DatabaseSession, type DatabaseUser } from 'lucia';
+import type { type Adapter, type DatabaseSession, type DatabaseUser  } from 'lucia';
 
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client'; // Corrected import path for db
-import { sessions, users } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres'; // Corrected import for sessions and users
-import { eq, sql } from 'drizzle-orm'; // Import eq and sql from drizzle-orm
+import type { db  } from '$lib/server/db/client'; // Corrected import path for db
+import type { sessions, users  } from '$lib/server/db/schema-postgres'; // Corrected import for sessions and users
+import type { eq, sql  } from 'drizzle-orm'; // Import eq and sql from drizzle-orm
 
 // --- new/adjusted DB row types for safer casting (moved to top-level) ---
 type UserRow = {

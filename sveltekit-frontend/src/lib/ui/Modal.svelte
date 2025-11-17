@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { AlertCircle, AlertTriangle, CheckCircle, Info, X } from 'lucide-svelte';
-  import { onDestroy, onMount } from 'svelte';
+  import type { AlertCircle, AlertTriangle, CheckCircle, Info, X  } from 'lucide-svelte';
+  import type { onDestroy, onMount  } from 'svelte';
 
   interface Props {
     open: boolean;
@@ -19,7 +19,7 @@
   }
 
   let {
-    open = $bindable // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false),
+    open = $bindable (false),
     title = '',
     description = '',
     children,
@@ -32,10 +32,10 @@
     cancelText = 'Cancel',
     showFooter = true,
     loading = false
-  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  }: Props = $props ();
 
-  let modalRef = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<HTMLElement>();
-  let previousFocus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<HTMLElement>();
+  let modalRef = $state <HTMLElement>();
+  let previousFocus = $state <HTMLElement>();
 
   // Get icon based on variant
   function getVariantIcon() {
@@ -81,7 +81,7 @@
   }
 
   // Focus management
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     if (open) {
       previousFocus = document.activeElement as HTMLElement;
 

@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-import { EventEmitter; } from 'events'; /** * Ultra-High Performance WebAssembly JSON Processor * 10x faster than RapidJSON with neural network optimization * Memory-efficient streaming parser with intelligent compression */ // Add small shared types to avoid repeating: 'any' type JSONCharacteristics = { size: number, depth: number, arrays: number, objects: number, strings: number, numbers: number, complexity: number, repetition: number;
+import type { EventEmitter;  } from 'events'; /** * Ultra-High Performance WebAssembly JSON Processor * 10x faster than RapidJSON with neural network optimization * Memory-efficient streaming parser with intelligent compression */ // Add small shared types to avoid repeating: 'any' type JSONCharacteristics = { size: number, depth: number, arrays: number, objects: number, strings: number, numbers: number, complexity: number, repetition: number;
 }; type ObjectCharacteristics = { isSimple: boolean, hasRepeatingPatterns: boolean, depth: number, size: number;
 }; // WebAssembly interface types export interface WasmJSONParser { // allow either sync or async implementations parse(input, string), any | Promise<unknown>; stringify(obj, any): string | Promise<string>; // ensure parseStream returns the StreamingParseResult shape (sync or async) parseStream(input, Uint8Array): StreamingParseResult | Promise<StreamingParseResult>; // return memory usage in MB (consistent with metrics.memoryUsed) getMemoryUsage(): number; optimize(): void; dispose(): void;
 }

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 test.describe('Evidence Upload RAG Integration', () => {
   test('evidence upload page loads', async ({ page }) => {

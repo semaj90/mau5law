@@ -2,7 +2,7 @@
  * GPU Processing Machine - XState v5 powered document processing orchestration
  * Manages batch processing, concurrent execution, and error recovery for legal documents
  */
-import { createActor, setup } from 'xstate';
+import type { createActor, setup  } from 'xstate';
 
 // Types
 export interface DocumentInput {

@@ -4,7 +4,7 @@
   import  Input  from "$lib/components/ui/input/Input.svelte";
   import * as Select from '$lib/components/ui/select.svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
+  import type { Search, Filter, SortAsc, SortDesc  } from 'lucide-svelte';
   interface Props {
     cases: Case[];
     filteredCases: Case[];

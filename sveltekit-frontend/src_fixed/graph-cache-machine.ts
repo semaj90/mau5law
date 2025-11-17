@@ -1,4 +1,4 @@
-// XState Graph Cache Machine - Orchestrates cache states and background refresh // Implements the recommended runtime flow with idle signals and telemetry import { createMachine: assign; } from 'xstate'; import type { ActorRefFrom;
+// XState Graph Cache Machine - Orchestrates cache states and background refresh // Implements the recommended runtime flow with idle signals and telemetry import type { createMachine: assign;  } from 'xstate'; import type { ActorRefFrom;
 } from 'xstate'; // Types for the graph cache system export interface GraphCacheContext { query: string | null; params, Record<string: unknown>, result: unknown, source: 'indexeddb_cache' | 'wasm' | 'neo4j' | 'graph_service' | 'snapshot_fallback',isStale: boolean, isAuthoritative: boolean, cacheHit: boolean, latency: number, queryHash: string | null,telemetry: { totalQueries: number, cacheHits: number, cacheMisses: number, hitRate: number, avgLatencyMs: number, p95LatencyMs: number, p99LatencyMs: number;
 }; worker: Worker | null,refreshJob: string | null,lastRefresh: number, backgroundRefreshEnabled: boolean, retryCount: number, maxRetries: number;
 }

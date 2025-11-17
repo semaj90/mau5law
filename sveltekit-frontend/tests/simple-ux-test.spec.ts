@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 /**
  * Simple UX Tests for Enhanced-Bits Components

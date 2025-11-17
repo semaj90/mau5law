@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-  import { onMount } from 'svelte';
-  import { get, writable } from 'svelte/store';
+  import type { Case } from '$lib/types';
+  import type { onMount  } from 'svelte';
+  import type { get, writable  } from 'svelte/store';
 
-  // Dynamically-loaded component (runes-mode $state // TODO: Verify store subscription is correct for Svelte 5 is available project-wide)
-  let EnhancedMCPIntegration = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  // Dynamically-loaded component (runes-mode $state is available project-wide)
+  let EnhancedMCPIntegration = $state <any>(null);
 
   // load component on client mount
   onMount(() => {
     (async () => {
       try {
-        const mod = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/EnhancedMCPIntegration.svelte');
+        const mod = await import('$lib/components/ai/EnhancedMCPIntegration.svelte');
         const anyMod = mod as unknown as any;
         EnhancedMCPIntegration = anyMod?.default ?? anyMod;
       } catch (e) {
@@ -37,12 +37,12 @@
 
   const systemLogs = writable<SystemLog[]>([]);
 
-  let selectedCaseId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('demo-case-001');
-  let enableRealtimeUpdates = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let showMetrics = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let enableClusterMode = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let selectedCaseId = $state <string>('demo-case-001');
+  let enableRealtimeUpdates = $state <boolean>(true);
+  let showMetrics = $state <boolean>(true);
+  let enableClusterMode = $state <boolean>(true);
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     checkSystemStatus();
     startSystemMonitoring();
     logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
@@ -247,7 +247,7 @@
     <h2>System Status</h2>
     <div class="status-grid">
       <div
-        class="status-card {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.mcpServerRunning
+        class="status-card {$integrationStatus .mcpServerRunning
           ? 'status-online'
           : 'status-offline'}"
       >
@@ -255,13 +255,13 @@
         <div>
           <div class="status-title">MCP Server</div>
           <div class="status-subtitle">
-            {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.mcpServerRunning ? 'Online' : 'Offline'}
+            {$integrationStatus .mcpServerRunning ? 'Online' : 'Offline'}
           </div>
         </div>
       </div>
 
       <div
-        class="status-card {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.clusterSystemOnline
+        class="status-card {$integrationStatus .clusterSystemOnline
           ? 'status-online'
           : 'status-offline'}"
       >
@@ -269,13 +269,13 @@
         <div>
           <div class="status-title">Cluster</div>
           <div class="status-subtitle">
-            {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.clusterSystemOnline ? 'Online' : 'Unavailable'}
+            {$integrationStatus .clusterSystemOnline ? 'Online' : 'Unavailable'}
           </div>
         </div>
       </div>
 
       <div
-        class="status-card {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.ollamaModelsLoaded
+        class="status-card {$integrationStatus .ollamaModelsLoaded
           ? 'status-online'
           : 'status-offline'}"
       >
@@ -283,13 +283,13 @@
         <div>
           <div class="status-title">Ollama Models</div>
           <div class="status-subtitle">
-            {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.ollamaModelsLoaded ? 'Loaded' : 'Not loaded'}
+            {$integrationStatus .ollamaModelsLoaded ? 'Loaded' : 'Not loaded'}
           </div>
         </div>
       </div>
 
       <div
-        class="status-card {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.vsCodeExtensionActive
+        class="status-card {$integrationStatus .vsCodeExtensionActive
           ? 'status-online'
           : 'status-offline'}"
       >
@@ -297,13 +297,13 @@
         <div>
           <div class="status-title">VS Code Extension</div>
           <div class="status-subtitle">
-            {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.vsCodeExtensionActive ? 'Detected' : 'Not detected'}
+            {$integrationStatus .vsCodeExtensionActive ? 'Detected' : 'Not detected'}
           </div>
         </div>
       </div>
 
       <div
-        class="status-card {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.contextualAnalysisReady
+        class="status-card {$integrationStatus .contextualAnalysisReady
           ? 'status-online'
           : 'status-offline'}"
       >
@@ -311,7 +311,7 @@
         <div>
           <div class="status-title">Contextual Analysis</div>
           <div class="status-subtitle">
-            {$integrationStatus // TODO: Verify store subscription is correct for Svelte 5.contextualAnalysisReady ? 'Ready' : 'Pending'}
+            {$integrationStatus .contextualAnalysisReady ? 'Ready' : 'Pending'}
           </div>
         </div>
       </div>
@@ -341,8 +341,8 @@
   <section class="system-logs">
     <h2>System Logs</h2>
     <div class="logs-container">
-      {#if $systemLogs // TODO: Verify store subscription is correct for Svelte 5.length > 0}
-        {#each $systemLogs // TODO: Verify store subscription is correct for Svelte 5 as log (log.timestamp)}
+      {#if $systemLogs .length > 0}
+        {#each $systemLogs as log (log.timestamp)}
           <div class="log-entry log-{log.level}">
             <div class="log-timestamp">{new Date(log.timestamp).toLocaleTimeString()}</div>
             <div class="log-source">{log.source}</div>

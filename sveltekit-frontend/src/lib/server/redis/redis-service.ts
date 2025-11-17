@@ -1,4 +1,4 @@
-import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-client';
+import type { redis  } from '$lib/server/redis-client';
 
 export class RedisService {
   private isConnected = false;

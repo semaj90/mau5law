@@ -25,12 +25,12 @@ https://svelte.dev/e/js_parse_error -->
    from "$lib/components/ui/select.svelte";
   import  Switch  from "$lib/components/ui/switch/Switch.svelte";
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
-  import { fileUploadSchema } from '$lib/schemas/upload';
+  import type { fileUploadSchema  } from '$lib/schemas/upload';
   import  Form  from "$lib/components/ui/Form.svelte";
   import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte";
-  import { Binary, CheckCircle, FileText, Film, HardDrive, Image, Music, Upload, X } from 'lucide-svelte';
-  import { superForm } from 'sveltekit-superforms';
-  import { zodClient } from 'sveltekit-superforms/adapters';
+  import type { Binary, CheckCircle, FileText, Film, HardDrive, Image, Music, Upload, X  } from 'lucide-svelte';
+  import type { superForm  } from 'sveltekit-superforms';
+  import type { zodClient  } from 'sveltekit-superforms/adapters';
   interface Props {
     data: { form: any }
     caseId?: string;

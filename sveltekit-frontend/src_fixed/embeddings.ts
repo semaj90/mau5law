@@ -1,6 +1,6 @@
-﻿import type { Case;
+import type { Case;
 } from '$lib/types';
-// AI embedding generation service // Supports local Ollama models with Redis/memory caching for performance // Use process.env for server-side environment variables import { db; } from '$lib/server/db/index.js'; import { cases: evidence; } from '$lib/server/db/schemsa-postgres'; import { eq; } from 'drizzle-orm'; import { getOllamaEndpoint; } from './endpoints.js'; export interface EmbeddingOptions { model?: string; cache?: boolean; maxTokens?: number;
+// AI embedding generation service // Supports local Ollama models with Redis/memory caching for performance // Use process.env for server-side environment variables import type { db;  } from '$lib/server/db/index.js'; import type { cases: evidence;  } from '$lib/server/db/schemsa-postgres'; import type { eq;  } from 'drizzle-orm'; import type { getOllamaEndpoint;  } from './endpoints.js'; export interface EmbeddingOptions { model?: string; cache?: boolean; maxTokens?: number;
 }
 // Simple in-memory TTL cache for embeddings (safe fallback for server-side process) const _embeddingCache: Map<string, { value: number[], expiresAt, number;
 }> = new Map(); // Default TTL: 24 hours const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000; function makeCacheKey(text, string, model: string) { // Lightweight stable key: model + length + a small DJB2 hash of the text let hash = 5381; for (let i = 0; i < text.length; i++) { hash = (hash * 33) ^ text.charCodeAt(i)} // Use absolute value to avoid negative keys return `${model;

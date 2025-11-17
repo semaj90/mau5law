@@ -1,7 +1,7 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { SearchBox } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui'; // Changed to named import
-  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits'; // Changed to named import
+  import type { SearchBox  } from '$lib/components/ui'; // Changed to named import
+  import type { Button  } from '$lib/components/ui/enhanced-bits'; // Changed to named import
   // Removed redundant 'uno.css' and 'nes.css/css/nes.min.css' imports as they are handled by +layout.svelte
 
   interface VectorResult {
@@ -19,9 +19,9 @@
     [key: string]: unknown; // Allow other top-level properties
   }
 
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<VectorResult[]>([]); // Use VectorResult type
-  let selectedDocument = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<VectorResult | null>(null); // Use VectorResult type
-  let isAnalyzing = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let searchResults = $state <VectorResult[]>([]); // Use VectorResult type
+  let selectedDocument = $state <VectorResult | null>(null); // Use VectorResult type
+  let isAnalyzing = $state <boolean>(false);
 
   const handleSearchResults = (results: VectorResult[]) => {
     // Use VectorResult type
@@ -59,7 +59,7 @@
     return (n * 100).toFixed(1);
   }
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     // Set page title
     document.title = 'Legal AI Search - Deeds Platform';
   });

@@ -1,4 +1,4 @@
-import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
+import type { redis  } from '$lib/server/redis';
 import crypto from 'crypto';
 
 function keyForQuery(query: string, scope: string = 'global'): string {

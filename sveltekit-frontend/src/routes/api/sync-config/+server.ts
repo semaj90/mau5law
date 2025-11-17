@@ -1,6 +1,6 @@
-﻿/* * Configuration Sync API Endpoint * Tests and validates all system connections and configurations */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+/* * Configuration Sync API Endpoint * Tests and validates all system connections and configurations */
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
 
 // Add small explicit types to avoid `any` type
 type PostgresConnection = {
@@ -19,7 +19,7 @@ let minioService: MinIOServiceShape | null = null;
 
 try {
   // Dynamic imports to handle server-only modules
-  const pgModule = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/connection.js');
+  const pgModule = await import('$lib/server/db/connection.js');
   // prefer exported default, fall back to module itself
   postgresConnection = (pgModule.default ?? pgModule) as unknown as PostgresConnection;
 } catch (error) {
@@ -27,7 +27,7 @@ try {
 }
 
 try {
-  const minioModule = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/storage/minio-service.js');
+  const minioModule = await import('$lib/server/storage/minio-service.js');
   // cast getInstance result to our shape
   minioService = (minioModule?.MinIOService?.getInstance?.() ?? null) as unknown as MinIOServiceShape | null;
 } catch (error) {

@@ -1,4 +1,4 @@
-import { ASTProcessor, AutosuggestContext } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ast/ast-processor';
+import type { ASTProcessor, AutosuggestContext  } from '$lib/ast/ast-processor';
 
 export interface SuggestionResult {
   suggestions: Array<{

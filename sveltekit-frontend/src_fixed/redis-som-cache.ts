@@ -1,4 +1,4 @@
-﻿import { EventEmitter; } from 'events'; /** * Redis-Compatible Self-Organizing Map Cache System * Advanced memory management with machine learning clustering */ // === Neural Network Self-Organizing Map for Cache Intelligence === export interface SOMNode { weights: Float64Array, activation: number, cluster_id: number, access_count: number, last_update: number;
+import type { EventEmitter;  } from 'events'; /** * Redis-Compatible Self-Organizing Map Cache System * Advanced memory management with machine learning clustering */ // === Neural Network Self-Organizing Map for Cache Intelligence === export interface SOMNode { weights: Float64Array, activation: number, cluster_id: number, access_count: number, last_update: number;
 }
 export interface CacheEntry { key: string, value: unknown, ttl: number, created_at: number, access_count: number, size: number, som_cluster: number, priority_score: number, metadata: { content_type: 'json' | 'string' | 'buffer' | 'object'; compression_ratio? , number; access_pattern : 'frequent' | 'burst' | 'linear' | 'random',ai_relevance: number; // 0-1 score;
 }

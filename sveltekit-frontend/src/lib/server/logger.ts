@@ -1,6 +1,6 @@
 import redis from '$lib/server/redis-client'; // Changed to default import
-import { type RedisClientType } from 'redis'; // Changed to import RedisClientType from 'redis'
-import { formatErrorResponse } from './errors';
+import type { type RedisClientType  } from 'redis'; // Changed to import RedisClientType from 'redis'
+import type { formatErrorResponse  } from './errors';
 let _redis: RedisClientType | null = null; // Changed type to RedisClientType
 try {
   _redis = redis as RedisClientType; // Cast to RedisClientType

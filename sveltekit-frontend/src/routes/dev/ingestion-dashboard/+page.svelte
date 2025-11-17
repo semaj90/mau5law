@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-  import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
+import type { Document } from '$lib/types';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { writable  } from 'svelte/store';
 
   // Dashboard data store - initialize with safe defaults
   const dashboardData = writable({
@@ -12,7 +12,7 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
     system: { uptime: 0, memory: { rss: 0 }, config: {} }
   });
   let pollInterval: ReturnType<typeof setInterval> | null = null
-  let isConnected = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let isConnected = $state <boolean>(false);
   let errorMessage = '';
   let autoRefresh = true
   let refreshRate = 5000; // ms

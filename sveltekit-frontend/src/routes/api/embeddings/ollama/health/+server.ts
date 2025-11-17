@@ -1,6 +1,6 @@
-﻿/** * Ollama Health Check Endpoint * * GET /api/embeddings/ollama/health */ import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/ollama-utils';
+/** * Ollama Health Check Endpoint * * GET /api/embeddings/ollama/health */ import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { getOllamaEndpoint  } from '$lib/server/ai/ollama-utils';
 
 function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 2000) {
 	// AbortSignal.timeout may not be available in all runtimes, use AbortController for compatibility

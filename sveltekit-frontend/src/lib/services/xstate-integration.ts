@@ -1,10 +1,9 @@
-import { createActor, type Snapshot } from 'xstate';
-import { writable, type Writable } from 'svelte/store';
-import {
-  legalAIMachine,
+import type { createActor, type Snapshot  } from 'xstate';
+import type { writable, type Writable  } from 'svelte/store';
+import type { legalAIMachine,
   type LegalAIEvent,
   type LegalAIContext,
-} from '$lib/machines/legalAIMachine.v5';
+ } from '$lib/machines/legalAIMachine.v5';
 
 // Create the actor for the legal AI machine
 let legalAIActor: ReturnType<typeof createActor<typeof legalAIMachine>> | undefined;

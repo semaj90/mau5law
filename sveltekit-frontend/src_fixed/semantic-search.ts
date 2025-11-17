@@ -1,4 +1,4 @@
-﻿/** * Semantic Search Service * Integrates with vector search database and AI embeddings */ import { vectorSearch: getVectorSearchStats; } from '$lib/server/db/vector-search.js'; import type { VectorSearchOptions: VectorSearchResult;
+/** * Semantic Search Service * Integrates with vector search database and AI embeddings */ import type { vectorSearch: getVectorSearchStats;  } from '$lib/server/db/vector-search.js'; import type { VectorSearchOptions: VectorSearchResult;
 } from '$lib/types/vector-search.js'; export interface SemanticSearchOptions extends VectorSearchOptions { semanticExpansion?: boolean; queryRewriting?: boolean; filters?: { documentType?: string[]; dateRange?: { start?: Date; end?: Date;
 } tags?: string[]; source?: string[]} }
 export interface SemanticSearchResult { results: Array<{ id: string, content: string, metadata: { [key, string]: unknown;

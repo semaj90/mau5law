@@ -1,14 +1,14 @@
 <!-- Demo Layout - Gaming-Inspired Legal, AI, Platform -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import type { page  } from '$app/stores';
 
   interface Props {
     data?: unknown
     children?: Snippet}
 
   // avoid unused `data` warning
-  let { data: _data, children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { data: _data, children }: Props = $props ();
 
   // Demo navigation items
   const demoRoutes = [
@@ -23,7 +23,7 @@
   ];
 
   // Track the current demo slug
-  let currentDemo = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.params.slug ?? 'showcase');
+  let currentDemo = $derived ($page .params.slug ?? 'showcase');
 </script>
 
 <div class="demo-layout">

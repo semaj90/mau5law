@@ -1,5 +1,5 @@
-﻿// Shim module to select between real Context7 WASM and the mock implementation
-// Usage: import context7 from '$lib // TODO: Verify store subscription is correct for Svelte 5/integrations/context7-wasm'
+// Shim module to select between real Context7 WASM and the mock implementation
+// Usage: import context7 from '$lib/integrations/context7-wasm'
 // Always prefer mock unless a future real binding is added to dependencies.
 // This avoids build-time unresolved module errors for: '@context7/wasm'.
 

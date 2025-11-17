@@ -9,11 +9,11 @@ Features:
 - Real-time AI analysis with GPU acceleration
 -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card.svelte';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
-  import { Upload, FileText, Clock, Link, Brain, Zap, CheckCircle, AlertCircle, Eye, Download, BarChart3, Network } from 'lucide-svelte';
+  import type { Upload, FileText, Clock, Link, Brain, Zap, CheckCircle, AlertCircle, Eye, Download, BarChart3, Network  } from 'lucide-svelte';
 
   // Reactive state
   let currentTab = $state('upload');

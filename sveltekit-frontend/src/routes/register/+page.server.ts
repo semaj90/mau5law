@@ -1,11 +1,11 @@
-import { fail, redirect } from '@sveltejs/kit';
+import type { fail, redirect  } from '@sveltejs/kit';
 import type { JSONSchema7 } from 'json-schema';
-import { message, superValidate } from 'sveltekit-superforms';
+import type { message, superValidate  } from 'sveltekit-superforms';
 // rename adapter import to avoid collision with zod library
-import { zod as zodAdapter } from 'sveltekit-superforms/adapters';
-import { z } from 'zod';
-import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { hashPassword } from '$lib/server/lucia';
+import type { zod as zodAdapter  } from 'sveltekit-superforms/adapters';
+import type { z  } from 'zod';
+import type { Actions, PageServerLoad } from './$types .js';
+import type { hashPassword  } from '$lib/server/lucia';
 
 /**
  * Helper: load register schema dynamically and fallback to a minimal Zod schema

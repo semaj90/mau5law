@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Removed createEventDispatcher, enhance, writable as they are deprecated or unused.
 	// // Migrated from createEventDispatcher to callback props;
-	// import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5/forms';
-	// import { writable } from 'svelte/store';
+	// import type { enhance  } from '$app/forms';
+	// import type { writable  } from 'svelte/store';
 
 	// Define the AnalysisResult interface for type safety
 	interface AnalysisResult {
@@ -38,12 +38,12 @@
 		patterns = [] as string[], // Explicitly type patterns as string array
 		onAnalysisComplete = (analysis: AnalysisResult) => {}, // Callback prop for analysis completion
 		onAnalysisError = (error: string | Error) => {} // Callback prop for analysis errors
-	} = $props // TODO: Verify store subscription is correct for Svelte 5();
+	} = $props();
 
-	// Reactive state using $state // TODO: Verify store subscription is correct for Svelte 5 for Svelte 5
-	let isAnalyzing = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-	let analysis: AnalysisResult | null = $state // TODO: Verify store subscription is correct for Svelte 5(null); // Type analysis result
-	let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null); // Type error message
+	// Reactive state using $state for Svelte 5
+	let isAnalyzing = $state(false);
+	let analysis: AnalysisResult | null = $state(null); // Type analysis result
+	let error: string | null = $state(null); // Type error message
 
 	// Form action for pattern recognition
 	async function analyzePatterns() {

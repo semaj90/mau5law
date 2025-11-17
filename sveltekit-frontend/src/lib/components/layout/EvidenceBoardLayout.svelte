@@ -4,7 +4,7 @@
     class?: string;
   }
 
-  let { title, class: className = '' }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { title, class: className = '' }: Props = $props();
 </script>
 
 <div class="evidence-board-layout {className}">

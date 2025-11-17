@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { Message } from '$lib/types';
   /**
    * ðŸ¤– Agentic RAG Demo
    *
@@ -12,15 +12,15 @@
    * - Tool orchestration
    */
 
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Button.svelte';
-  import { Bot, Zap, Tool, Database, Search, Upload } from 'lucide-svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import type { Bot, Zap, Tool, Database, Search, Upload  } from 'lucide-svelte';
 
   // State using Svelte, 5 runes
-  let query = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let messages = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let isProcessing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let availableTools = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let selectedDocument = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let query = $state <string>('');
+  let messages = $state <any[]>([]);
+  let isProcessing = $state <boolean>(false);
+  let availableTools = $state <string[]>([]);
+  let selectedDocument = $state <any>(null);
 
   // Sample queries
   const sampleQueries = [
@@ -32,7 +32,7 @@
   ];
 
   // Load available tools on mount
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     loadTools();
   });
   async function loadTools(): Promise<any> {

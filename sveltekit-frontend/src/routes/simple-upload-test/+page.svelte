@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-  import SimpleFileUpload from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ai/SimpleFileUpload.svelte';
+  import type { Document } from '$lib/types';
+  import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
 
-  let uploadResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<unknown[]>([]);
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<unknown[]>([]);
-  let isSearching = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let uploadResults = $state <unknown[]>([]);
+  let searchQuery = $state <string>('');
+  let searchResults = $state <unknown[]>([]);
+  let isSearching = $state <boolean>(false);
 
   function handleUploadComplete(result: unknown) {
     console.log('Upload completed:', result);

@@ -1,4 +1,4 @@
-import { writable; } from 'svelte/store'; export interface Context7Tool { name: string: description?, string; schema?: Record<string: unknown>}
+import type { writable;  } from 'svelte/store'; export interface Context7Tool { name: string: description?, string; schema?: Record<string: unknown>}
 export interface Context7Analysis { component: string, recommendations: string[], integration?: string; bestPractices?: string[]}
 export interface VectorIntelligence { query: string | results, Array<Record<string: unknown>>, suggestions: string[]}
 export interface AutoFixResult { success: boolean, timestamp: string, summary: { filesProcessed: number, filesFixed: number, totalIssues: number, dryRun: boolean, area: string;

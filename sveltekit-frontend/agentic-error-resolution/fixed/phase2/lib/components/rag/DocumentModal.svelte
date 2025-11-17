@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X, Download, Trash2, Clock, FileText, Zap } from 'lucide-svelte';
+  import type { X, Download, Trash2, Clock, FileText, Zap  } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   interface Document {
     id: string;

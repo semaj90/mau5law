@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/custom-reranker';
-import { mcpContext72GetLibraryDocs } from '$lib // TODO: Verify store subscription is correct for Svelte 5/mcp-context72-get-library-docs';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { json  } from '@sveltejs/kit';
+import type { enhancedSearchWithNeo4j  } from '$lib/ai/custom-reranker';
+import type { mcpContext72GetLibraryDocs  } from '$lib/mcp-context72-get-library-docs';
+import type { RequestHandler } from './$types .js';
 
 // --- Added types to avoid `any` ---
 type MemoryRecord = { relatedId?: string };

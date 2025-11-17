@@ -1,19 +1,17 @@
 // @ts-nocheck
-import { ChatOllama } from '@langchain/ollama';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import {
-	generateEmbedding,
+import type { ChatOllama  } from '@langchain/ollama';
+import type { StringOutputParser  } from '@langchain/core/output_parsers';
+import type { generateEmbedding,
 	storeChatEmbedding,
 	searchSimilarChats,
 	searchSimilarChatsKeyword,
 	type VectorSearchResult,
-} from '$lib/server/services/vectorDBService';
-import {
-	storeGrpoThinkingResponse,
+ } from '$lib/server/services/vectorDBService';
+import type { storeGrpoThinkingResponse,
 	searchGrpoThinkingResponses,
 	type GrpoThinkingResponse,
 	type ThinkingRecommendation,
-} from '$lib/server/services/grpoThinkingService';
+ } from '$lib/server/services/grpoThinkingService';
 
 export interface ChatStreamOptions {
 	message: string;

@@ -3,22 +3,22 @@
 import * as loggerModule from "./logger.js";
 const logger = (loggerModule as any)?.logger ?? console;
 
-import { drizzle } from "drizzle-orm/postgres-js";
+import type { drizzle  } from 'drizzle-orm/postgres-js';
 // Use only the widely-available column helpers to avoid missing/third-party exports.
-import { pgTable, text, timestamp, uuid, integer, boolean, json } from "drizzle-orm/pg-core"; // added json
+import type { pgTable, text, timestamp, uuid, integer, boolean, json  } from 'drizzle-orm/pg-core'; // added json
 import type { PoolConfig } from "pg";
-import { sql, eq } from "drizzle-orm";
+import type { sql, eq  } from 'drizzle-orm';
 import postgres from "postgres";
-import { ChatOllama, OllamaEmbeddings } from "@langchain/ollama";
-import { Neo4jVectorStore } from "@langchain/community/vectorstores/neo4j_vector";
+import type { ChatOllama, OllamaEmbeddings  } from '@langchain/ollama';
+import type { Neo4jVectorStore  } from '@langchain/community/vectorstores/neo4j_vector';
 import Redis from "ioredis";
-import { createHash } from "node:crypto";
-import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
+import type { createHash  } from 'node:crypto';
+import type { PGVectorStore  } from '@langchain/community/vectorstores/pgvector';
 // REMOVE static named imports that caused compile errors and use runtime placeholders:
-// import { AIAssistantInputSynthesizer } from "./ai-assistant-input-synthesizer.js";
-// import { legalBERT } from "./legalbert-middleware.js";
-// import { monitoringService } from "./monitoring-service.js";
-import { getOllamaEndpoint } from "./endpoints.js"; // keep as-is
+// import type { AIAssistantInputSynthesizer  } from './ai-assistant-input-synthesizer.js';
+// import type { legalBERT  } from './legalbert-middleware.js';
+// import type { monitoringService  } from './monitoring-service.js';
+import type { getOllamaEndpoint  } from './endpoints.js'; // keep as-is
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable("legal_documents", {

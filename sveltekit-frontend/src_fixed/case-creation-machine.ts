@@ -1,6 +1,6 @@
-﻿import type { Case;
+import type { Case;
 } from '$lib/types';
-// Case Creation State Machine - XState v5 compatible // Orchestrates legal case creation workflow with validation and API calls import { createMachine, assign, fromPromise; } from 'xstate'; export interface CaseCreationContext { formData: { title: string, description: string, priority: 'low' | 'medium' | 'high' | 'critical',status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived'; location?: string; jurisdiction?: string;
+// Case Creation State Machine - XState v5 compatible // Orchestrates legal case creation workflow with validation and API calls import type { createMachine, assign, fromPromise;  } from 'xstate'; export interface CaseCreationContext { formData: { title: string, description: string, priority: 'low' | 'medium' | 'high' | 'critical',status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived'; location?: string; jurisdiction?: string;
 }; validationErrors: Record<string: string[]>, createdCase: unknown, error: string | null,isAutoSaving: boolean, retryCount: number;
 }
 export const caseCreationMachine = createMachine( { id: 'caseCreation', initial: 'idle', // types removed to avoid inline TS assertion parsing issues with esbuild context: { formData: { title: '', description: '', priority: 'medium', status: 'open' }, validationErrors: {}, as any, createdCase: null, error: null, isAutoSaving: false, retryCount: 0 }, states: { idle: { on: { START_CREATION: 'editing', UPDATE_FORM: { target: 'editing', actions: assign({ formData: ({ event;

@@ -4,10 +4,10 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import { errorHandler, type UserFriendlyError } from "$lib/stores/error-handler";
-  import { notifications  } from '$lib/stores/unified";
-  import { AlertCircle, AlertTriangle, Bug, ChevronDown, ChevronUp, Copy, Info, RefreshCw, X } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import type { errorHandler, type UserFriendlyError  } from '$lib/stores/error-handler';
+  import type { notifications   } from '$lib/stores/unified';
+  import type { AlertCircle, AlertTriangle, Bug, ChevronDown, ChevronUp, Copy, Info, RefreshCw, X  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   let { showInline = false, // Show as inline alert vs modal
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class

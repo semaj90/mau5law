@@ -1,4 +1,4 @@
-﻿// Type definitions for multi-LLM synthesis and legal AI pipeline
+// Type definitions for multi-LLM synthesis and legal AI pipeline
 // Local AuditLogEntry interface defined below
 export interface AIModelOutput {
   content: string
@@ -50,15 +50,14 @@ export interface AgentTrigger {
 // TODO: After initial test, wire up real Context7 semantic search, logging, and agent triggers using mcp_memory_create_relations and mcp_context7_resolve-library-id
 // These types are used by the backend endpoint, UI, and agent orchestration for Phase, 10 full-stack integration.
 // --- Real Context7 Semantic Search & Agent Integration Implementation ---
-import {
-  copilotOrchestrator,
+import type { copilotOrchestrator,
   semanticSearch,
   mcpMemoryReadGraph,
   mcpCodebaseAnalyze,
   generateMCPPrompt,
   commonMCPQueries,
   type MCPToolRequest,
-  type OrchestrationOptions} from '../utils/mcp-helpers.js';
+  type OrchestrationOptions } from '../utils/mcp-helpers.js';
 // Context7 Semantic Search Integration
 export interface Context7SearchOptions {
   query: string

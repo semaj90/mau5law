@@ -1,9 +1,9 @@
 <script lang="ts">
   // RAG Document Upload Component
   // Handles file uploads for knowledge base integration
-  import { onMount } from 'svelte';
-  import { Button } from "$lib/components/ui/Button.svelte";
-  import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card.svelte";
+  import type { onMount  } from 'svelte';
+  import type { Button  } from '$lib/components/ui/Button.svelte';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card.svelte';
   interface Props {
     multiple?: boolean;
     maxSize?: number; // in MB

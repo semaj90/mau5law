@@ -1,16 +1,16 @@
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
 
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import type { fail, redirect  } from '@sveltejs/kit';
+import type { superValidate  } from 'sveltekit-superforms/server';
+import type { zod  } from 'sveltekit-superforms/adapters';
+import type { writeFile, mkdir  } from 'fs/promises';
+import type { existsSync  } from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
-import { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType } from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload.js';
-import { db, cases, evidence, helpers } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { getUserId } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
+import type { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType  } from '$lib/schemas/evidence-upload.js';
+import type { db, cases, evidence, helpers  } from '$lib/server/db';
+import type { PageServerLoad, Actions } from './$types .js';
+import type { getUserId  } from '$lib/server/auth/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values

@@ -1,8 +1,8 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { ragRequestSchema, ragResponseSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/vector';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { ragRequestSchema, ragResponseSchema  } from '$lib/schemas/vector';
 import type { z } from 'zod';
-import { safeFetchJson } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/fetch-wrapper';
+import type { safeFetchJson  } from '$lib/server/fetch-wrapper';
 
 const RAG_BASE = process.env.RAG_SERVICE_URL || 'http://localhost:8094';
 

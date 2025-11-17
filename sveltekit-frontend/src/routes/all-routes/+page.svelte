@@ -1,37 +1,36 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
   // Change: Use individual default imports for Dialog components
   // Revert: Use named imports from the dialog index file, which is the standard Shadcn-svelte pattern.
-  import {
-    Dialog,
+  import type { Dialog,
     DialogContent,
     DialogDescription,
     DialogTitle,
     DialogFooter, // Added: Import DialogFooter from main dialog entry
     DialogHeader, // Added: Import DialogHeader from main dialog entry
     DialogClose, // Added: Import DialogClose from main dialog entry
-  } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
-  // Removed: import DialogFooter from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogFooter.svelte';
-  // Removed: import DialogHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogHeader.svelte';
-  // Removed: import DialogClose from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogClose.svelte';
-  import type { Props } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types/page'; // Import the Props type
+   } from '$lib/components/ui/dialog';
+  // Removed: import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
+  // Removed: import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
+  // Removed: import DialogClose from '$lib/components/ui/dialog/DialogClose.svelte';
+  import type { Props } from '$lib/types/page'; // Import the Props type
 
   // All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
   // Integrates with Gemma Embeddings Vector Architecture for route categorization
 
-  // Removed: type Props definition moved to $lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types/page.ts
+  // Removed: type Props definition moved to $lib/types/page.ts
 
-  let { data }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
-  let selectedRoute = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<RouteItem | null>(null); // Explicitly typed
-  let showModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let searchTerm = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let selectedCategory = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-  let selectedSection = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-  let isLoaded = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let showStats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let showSSRTest = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let layoutMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'flexbox'>('grid');
-  let showClustered = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let { data }: Props = $props ();
+  let selectedRoute = $state <RouteItem | null>(null); // Explicitly typed
+  let showModal = $state <boolean>(false);
+  let searchTerm = $state <string>('');
+  let selectedCategory = $state <string>('all');
+  let selectedSection = $state <string>('all');
+  let isLoaded = $state <boolean>(false);
+  let showStats = $state <boolean>(true);
+  let showSSRTest = $state <boolean>(false);
+  let layoutMode = $state <'grid' | 'flexbox'>('grid');
+  let showClustered = $state <boolean>(false);
 
   // K-means clustering logic for API endpoints
   function clusterAPIEndpoints(routes: RouteItem[]): Record<string, RouteItem[]> {
@@ -72,7 +71,7 @@
   }
 
   // Clustered API routes
-  let clusteredAPIs = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Record<string, RouteItem[]>>({});
+  let clusteredAPIs = $state <Record<string, RouteItem[]>>({});
 
   // --- Add: lightweight types to avoid implicit: unknown errors ---
   type RouteItem = {
@@ -242,7 +241,7 @@
   }
 
   // Enhanced route processing with categorization - typed
-  let allRoutes = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<RouteItem[]>([]);
+  let allRoutes = $state <RouteItem[]>([]);
 
   // Enhanced route statistics with section separation - typed
   const initialStats: RouteStats = {
@@ -252,12 +251,12 @@
     byPriority: { production: 0, testing: 0, consolidation: 0, demo: 0, other: 0 },
     sections: { core: 0, api: 0, demo: 0, infrastructure: 0, other: 0 },
   };
-  let routeStats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<RouteStats>(initialStats);
+  let routeStats = $state <RouteStats>(initialStats);
 
   // Enhanced filtering with section and category support
-  let filteredRoutes = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<RouteItem[]>([]);
+  let filteredRoutes = $state <RouteItem[]>([]);
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     const routes: RouteItem[] = [];
     // Add configured routes
     if (data.availableRoutes) {
@@ -290,7 +289,7 @@
     allRoutes = routes.sort((a: RouteItem, b: RouteItem) => a.path.localeCompare(b.path)); // Explicitly typed a, b
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     const stats: RouteStats = {
       total: allRoutes.length,
       byCategory: {},
@@ -327,7 +326,7 @@
     routeStats = stats;
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     let routes = allRoutes;
 
     // Filter by section
@@ -359,7 +358,7 @@
     filteredRoutes = routes;
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     clusteredAPIs = clusterAPIEndpoints(allRoutes);
   });
 
@@ -369,7 +368,7 @@
     showModal = true;
   }
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     isLoaded = true;
     console.log('All routes page loaded with', allRoutes.length, 'routes');
   });
@@ -506,7 +505,7 @@
   }
 
   // Minimal openCluster dialog state (keeps previous API)
-  let openClusterDialogs = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{ [key: string]: boolean }>({});
+  let openClusterDialogs = $state <{ [key: string]: boolean }>({});
   function openCluster(serviceName: string) {
     openClusterDialogs = { ...(openClusterDialogs || {}), [serviceName]: true };
   }

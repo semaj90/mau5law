@@ -1,8 +1,8 @@
 <!-- Gaming Evidence Board Recreation - Enhanced-Bits + WebGPU -->
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { fade, scale, fly } from 'svelte/transition';
-  import { browser } from '$app/environment';
+  import type { onMount  } from 'svelte';
+  import type { fade, scale, fly  } from 'svelte/transition';
+  import type { browser  } from '$app/environment';
   import 
     Card,
     CardHeader,

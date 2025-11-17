@@ -1,13 +1,13 @@
-import { randomUUID } from 'crypto'; // Changed from 'node: crypto'
+import type { randomUUID  } from 'crypto'; // Changed from 'node: crypto'
 import Loki, { type Collection } from 'lokijs';
 import Fuse from 'fuse.js';
-import { Redis } from 'ioredis'; // Changed import to use named export Redis
-import { QdrantClient } from '@qdrant/js-client-rest'; // Removed PointStruct from import
-import { Pool, type PoolClient } from 'pg';
+import type { Redis  } from 'ioredis'; // Changed import to use named export Redis
+import type { QdrantClient  } from '@qdrant/js-client-rest'; // Removed PointStruct from import
+import type { Pool, type PoolClient  } from 'pg';
 import neo4j, { type Driver, type Session, auth } from 'neo4j-driver'; // Changed to import neo4j as default, and types/auth as named
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { OpenAIEmbeddings } from '@langchain/openai';
-// Removed: import { pipeline, type Pipeline } from '@xenova/transformers'; // Added for summarization
+import type { RecursiveCharacterTextSplitter  } from '@langchain/textsplitters';
+import type { OpenAIEmbeddings  } from '@langchain/openai';
+// Removed: import type { pipeline, type Pipeline  } from '@xenova/transformers'; // Added for summarization
 
 // Define PointStruct locally as it's not consistently exported or recognized
 interface PointStruct {
@@ -336,8 +336,8 @@ export class LokiHybridStore {
       session = this.neo4jDriver.session();
       for (const item of ctx.collection.find()) {
         await session.run(
-          `MERGE (e:Evidence {id: $id // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5})
-           SET e.title = $title // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, e.summary = $summary // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, e.tags = $tags // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, e.updatedAt = datetime()`,
+          `MERGE (e:Evidence {id: $id })
+           SET e.title = $title , e.summary = $summary , e.tags = $tags , e.updatedAt = datetime()`,
           { id: item.id, title: item.title ?? null, summary: item.summary ?? null, tags: item.tags ?? [] }
         );
       }

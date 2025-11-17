@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 import path from 'path';
 
 test.describe('Evidence Upload with RAG Integration', () => {

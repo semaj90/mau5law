@@ -3,7 +3,7 @@
 
   const dispatch = createEventDispatcher();
 
-  let { message = "CONTRADICTION DETECTED!", show = false, autoHide = true, duration = 3000 } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { message = "CONTRADICTION DETECTED!", show = false, autoHide = true, duration = 3000 } = $props<{
     message?: string;
     show?: boolean;
     autoHide?: boolean;
@@ -12,7 +12,7 @@
 
   let timeoutId: number;
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (show && autoHide) {
       timeoutId = setTimeout(() => {
         dispatch('hide');

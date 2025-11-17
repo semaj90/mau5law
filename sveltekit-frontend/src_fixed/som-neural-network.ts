@@ -1,4 +1,4 @@
-﻿/** * Self-Organizing Map (SOM) Neural Network for Graph Decomposition * Integrates with TensorFlow.js and GPU acceleration for legal graph analysis */ import * as tf from '@tensorflow/tfjs'; import  '@tensorflow/tfjs-backend-webgl'; import  '@tensorflow/tfjs-backend-webgpu'; import { MultiLayerCache; } from '../services/multiLayerCache.js'; export interface SOMConfig { gridSize: { width: number | height: number;
+/** * Self-Organizing Map (SOM) Neural Network for Graph Decomposition * Integrates with TensorFlow.js and GPU acceleration for legal graph analysis */ import * as tf from '@tensorflow/tfjs'; import  '@tensorflow/tfjs-backend-webgl'; import  '@tensorflow/tfjs-backend-webgpu'; import type { MultiLayerCache;  } from '../services/multiLayerCache.js'; export interface SOMConfig { gridSize: { width: number | height: number;
 }; learningRate: number, neighborhoodRadius: number, epochs: number, enableGPU: boolean, decayRate: number, inputDimension: number;
 }
 export interface SOMNode { position: { x: number | y: number;

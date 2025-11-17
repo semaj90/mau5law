@@ -4,9 +4,9 @@
   import type { ZodTypeAny } from 'zod';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   import X from 'lucide-svelte';
-  import { superForm } from 'sveltekit-superforms';
-  import { zod } from 'sveltekit-superforms/adapters';
-  import { registerSchema } from '$lib/schemas/auth';
+  import type { superForm  } from 'sveltekit-superforms';
+  import type { zod  } from 'sveltekit-superforms/adapters';
+  import type { registerSchema  } from '$lib/schemas/auth';
   interface Props {
     onsuccess?: () => void;
     open?: boolean;

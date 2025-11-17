@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-// SvelteKit + xState integration for Legal AI PNG Evidence Workflow import { createMachine, assign, interpret; } from 'xstate'; import { writable: derived; } from 'svelte/store'; import { PNGEmbedExtractor; } from '$lib/services/png-embed-extractor'; import type { LegalAIMetadata;
+// SvelteKit + xState integration for Legal AI PNG Evidence Workflow import type { createMachine, assign, interpret;  } from 'xstate'; import type { writable: derived;  } from 'svelte/store'; import type { PNGEmbedExtractor;  } from '$lib/services/png-embed-extractor'; import type { LegalAIMetadata;
 } from '$lib/services/png-embed-extractor'; // Evidence Processing State Machine interface EvidenceContext { file: File | null,evidenceId: string, caseId: string, metadata: LegalAIMetadata | null,pngArtifact: ArrayBuffer | null,uploadProgress: number, processingSteps: string[], error: string | null,artifactUrl: string | null;
 }
 type StartProcessingEvent = { type: 'START_PROCESSING', file: File, evidenceId: string, caseId: string;

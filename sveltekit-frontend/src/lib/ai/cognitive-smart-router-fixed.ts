@@ -8,9 +8,9 @@
  * - llamacpp-ollama-integration.ts (RTX + Ollama native)
  */
 
-import { webLlamaService } from './webasm-llamacpp.js';
-import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator.js';
-import { WebGPUAIEngine } from '../webgpu/webgpu-ai-engine.js';
+import type { webLlamaService  } from './webasm-llamacpp.js';
+import type { nesCacheOrchestrator  } from '../services/nes-cache-orchestrator.js';
+import type { WebGPUAIEngine  } from '../webgpu/webgpu-ai-engine.js';
 import type { WebLlamaResponse } from './webasm-llamacpp.js';
 import type { OllamaConfig, LlamaCppConfig } from '../services/llamacpp-ollama-integration.js';
 

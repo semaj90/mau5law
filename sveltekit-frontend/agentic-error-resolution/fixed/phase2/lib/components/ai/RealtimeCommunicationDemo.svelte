@@ -4,8 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { realtimeComm, connectionStatus, messages, streamingResponses, type RealtimeMessage, type StreamingResponse } from '$lib/services/realtime-communication';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { realtimeComm, connectionStatus, messages, streamingResponses, type RealtimeMessage, type StreamingResponse  } from '$lib/services/realtime-communication';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,

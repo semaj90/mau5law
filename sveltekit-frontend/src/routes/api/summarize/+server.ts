@@ -1,6 +1,6 @@
-﻿import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoint';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { getOllamaEndpoint  } from '$lib/utils/ollama-endpoint';
 async function generateSummary(content: string): Promise<string> {
   const response = await fetch(getOllamaEndpoint(), {
     method: 'POST',

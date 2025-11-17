@@ -1,9 +1,9 @@
-﻿import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { reports } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
-import { count, desc, eq } from 'drizzle-orm';
+import type { cuidSchema  } from '$lib/server/z-schemas';
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { z  } from 'zod';
+import type { db  } from '$lib/server/db';
+import type { reports  } from '$lib/server/db/schema';
+import type { count, desc, eq  } from 'drizzle-orm';
 
 /* * Reports API Routes with Lucia v3 Authentication * GET /api/v1/reports - List user's reports (with pagination)' * POST /api/v1/reports - Create new report */
 

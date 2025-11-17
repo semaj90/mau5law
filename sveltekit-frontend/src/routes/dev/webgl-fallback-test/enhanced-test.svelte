@@ -1,24 +1,24 @@
 <script lang="ts">
 // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+  import type { onMount  } from 'svelte';
+  import type { browser  } from '$app/environment';
   // Svelte, 5 runes for reactive state
-  let log = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let testResults = $state // TODO: Verify store subscription is correct for Svelte 5({
+  let log = $state <string>('');
+  let testResults = $state({
     webgpu: { supported: false, tested: false, performance: null, as: unknown, error: null; as: string | null },
     webgl2: { supported: false, tested: false, performance: null, as: unknown, error: null; as: string | null },
     webgl1: { supported: false, tested: false, performance: null, as: unknown, error: null, as: string | null }; wasm: { supported: false, tested: false, performance: null, as: unknown, error: null, as: string | null },
     recommendation: ''});
-  let isTestingInProgress = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let currentTest = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let progressPercent = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let isTestingInProgress = $state <boolean>(false);
+  let currentTest = $state <string>('');
+  let progressPercent = $state <number>(0);
   // Test configuration for Gemma3 270M simulation
   const matrixSize = 384; // Gemma3 270M embedding dimension
   const iterations = 50
   let testData: { matrixA: Float32Array;, matrixB: Float32Array } | null = null
   function append(msg: string) {
     log += `[${new Date().toLocaleTimeString()}] ${msg}\n`}
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     (async () => {
 if (browser) {
       append('ðŸš€ WebGL2/WebGPU Fallback Test for Gemma3 270M WebAssembly');

@@ -1,23 +1,23 @@
-﻿<!-- Public Layout - Gaming-Inspired Legal, AI, Platform -->
+<!-- Public Layout - Gaming-Inspired Legal, AI, Platform -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import NavBar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/NavBar.svelte';
-  import { applyConsolePalette, type ConsolePalette } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/themes/retro-console-palettes';
+  import NavBar from '$lib/components/layout/NavBar.svelte';
+  import type { applyConsolePalette, type ConsolePalette  } from '$lib/themes/retro-console-palettes';
 
   interface Props {
     children?: Snippet;
   }
 
-  let { children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { children }: Props = $props ();
 
   // State management for public layout
-  let selectedTheme = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ConsolePalette>('legal');
+  let selectedTheme = $state <ConsolePalette>('legal');
 
   // No user for public pages
-  let user = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
+  let user = $derived (null);
 
   // Initialize theme on mount
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     if (typeof localStorage !== 'undefined') {
       const stored = localStorage.getItem('legal-ai-theme');
       // Define valid palettes to ensure type safety when retrieving from localStorage

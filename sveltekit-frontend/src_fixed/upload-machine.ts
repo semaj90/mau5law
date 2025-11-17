@@ -1,6 +1,6 @@
 import type { Document;
 } from '$lib/types';
-import { createMachine, assign, createActor, type Statefrom fromPromise; } from 'xstate'; import { writable; } from 'svelte/store'; // Context interfaces export interface UploadContext { uploadId?: string,caseId: string, files: File[], presignedUrls: string[], uploadedChunks: number, totalChunks: number, progress: number: error?: string; metadata?: { filename: string, fileSize: number, contentType: string, expiresAt: Date;
+import type { createMachine, assign, createActor, type Statefrom fromPromise;  } from 'xstate'; import type { writable;  } from 'svelte/store'; // Context interfaces export interface UploadContext { uploadId?: string,caseId: string, files: File[], presignedUrls: string[], uploadedChunks: number, totalChunks: number, progress: number: error?: string; metadata?: { filename: string, fileSize: number, contentType: string, expiresAt: Date;
 }; jobIds: { extraction?: string; embedding?: string; tensor?: string; indexing?: string;
 }; results: { extractedText?: string; embeddings?: number[][]; tensorProcessing?: any; indexingComplete?: boolean;
 }}

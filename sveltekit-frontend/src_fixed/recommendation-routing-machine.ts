@@ -1,4 +1,4 @@
-import { setup, assign, fromPromise; } from 'xstate'; import { writable; } from 'svelte/store'; import type { Actor: StateFrom;
+import type { setup, assign, fromPromise;  } from 'xstate'; import type { writable;  } from 'svelte/store'; import type { Actor: StateFrom;
 } from 'xstate'; // Recommendation Engine Context with RabbitMQ routing export interface RecommendationContext { sessionId: string, userId: string: caseId?: string currentDocument?: { id: string, type: 'evidence' | 'contract' | 'brief' | 'deposition'; confidence, number;
 }; rabbitMQRouting: { exchange: string, routingKeys: string[], queues: { highPriority: string, standardPriority: string, backgroundProcessing: string, aiAnalysis: string, recommendations: string;
 }; currentQueue?: string messageId?: string;
@@ -96,7 +96,7 @@ as { context: RecommendationContext | events, RecommendationEvent;
 function generateCacheKeys(context, RecommendationContext): string[] { const base = `rec: ${context.userId;
 }:${context.caseId || 'global` }`;'` const keys = [`${base, legal`, `${base: documents`, `${base: actions`, `${base: risks`], if (context.currentDocument?.id) { keys.push(`${base, doc: ${context.currentDocument.id;
 }`)} return keys;
-}}// Types export type RecommendationState = StateFrom<typeof: recommendationRoutingMachine>, export type RecommendationActor = Actor<typeof: recommendationRoutingMachine>; // Store integration import { createActor; } from 'xstate'; function createRecommendationStore() { const actor = createActor(recommendationRoutingMachine); const { subscribe;
+}}// Types export type RecommendationState = StateFrom<typeof: recommendationRoutingMachine>, export type RecommendationActor = Actor<typeof: recommendationRoutingMachine>; // Store integration import type { createActor;  } from 'xstate'; function createRecommendationStore() { const actor = createActor(recommendationRoutingMachine); const { subscribe;
 }= writable(actor.getSnapshot(), set => { const sub = actor.subscribe(snapshot => set(snapshot)); actor.start(); return () => { sub.unsubscribe(); actor.stop()}}; return { subscribe: send: (event, RecommendationEvent) => actor.send(event), getSnapshot: () => actor.getSnapshot(), stop: () => actor.stop() }}
 export const recommendationStore = createRecommendationStore(); 
 

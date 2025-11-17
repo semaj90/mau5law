@@ -1,10 +1,10 @@
 <script lang="ts">
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Enhanced-Bits orchestrated components â€” adjust imports to match module exports
-  import Badge from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/Badge.svelte';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/Button.svelte';
-  import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Input.svelte';
+  import Badge from '$lib/components/ui/enhanced-bits/Badge.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
   // NOTE: lucide-svelte named exports caused type/import issues in this project
   // use a small inline icon map (emoji placeholders) to avoid breaking the build.
   const ICON = {
@@ -55,15 +55,15 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
     suggestions?: string[]}
 
   // Svelte, 5 runes for reactive state
-  let query = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let results = $state // TODO: Verify store subscription is correct for Svelte 5<VectorSearchResult[]>([]);
-  let searchInfo = $state // TODO: Verify store subscription is correct for Svelte 5<SearchResponse['query_info'] | null>(null);
-  let suggestions = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let searchMode = $state // TODO: Verify store subscription is correct for Svelte 5<'semantic' | 'keyword' | 'hybrid'>('semantic');
-  let selectedTypes = $state // TODO: Verify store subscription is correct for Svelte 5<Set<string>>(new Set());
-  let similarityThreshold = $state // TODO: Verify store subscription is correct for Svelte 5(0.7);
+  let query = $state <string>('');
+  let loading = $state <boolean>(false);
+  let results = $state <VectorSearchResult[]>([]);
+  let searchInfo = $state <SearchResponse['query_info'] | null>(null);
+  let suggestions = $state <string[]>([]);
+  let error = $state <string | null>(null);
+  let searchMode = $state <'semantic' | 'keyword' | 'hybrid'>('semantic');
+  let selectedTypes = $state <Set<string>>(new Set());
+  let similarityThreshold = $state(0.7);
 
   // Search suggestions for different legal domains
   const searchSuggestions = [
@@ -157,7 +157,7 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
     return `${(ms / 1000).toFixed(2)}s`}
 
   // Initialize with example search on mount
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     // Auto-suggest based on existing RAG demo
     if (!query) {
       query = 'Contract breach and liability analysis'}

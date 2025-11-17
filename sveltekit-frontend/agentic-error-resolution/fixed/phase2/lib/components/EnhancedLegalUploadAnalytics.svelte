@@ -5,8 +5,8 @@
 -->
 <script lang="ts">
   // --- Fixes applied in this block: imports, props default, $state usage, helper functions, event handlers, network checks ---
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
+  import type { onMount  } from 'svelte';
+  import type { goto  } from '$app/navigation';
   // Use named exports for the UI kit components
   import 
     Button,
@@ -18,13 +18,12 @@
     Input,
     Select
    from "$lib/components/ui/enhanced-bits.svelte";
-  import {
-    createUploadAnalyticsActor,
+  import type { createUploadAnalyticsActor,
     getContextualPromptsByTiming,
     calculateUserEngagementScore,
     generateUserInsights,
     type UserAnalytics
-  } from '$lib/machines/comprehensive-upload-analytics-machine-fixed';
+   } from '$lib/machines/comprehensive-upload-analytics-machine-fixed';
   // Props with enhanced legal context
   interface Props {
     caseId?: string;

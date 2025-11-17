@@ -1,14 +1,14 @@
 // Evidence Processing Workflow with AI Analysis + Vector Storage
 // Integrates XState, Ollama streaming, PGVector, Qdrant, Redis caching
-import { createActor, createMachine, assign, type Snapshot } from 'xstate'; // Changed 'State' to 'Snapshot'
+import type { createActor, createMachine, assign, type Snapshot  } from 'xstate'; // Changed 'State' to 'Snapshot'
 import type {
   Evidence, // NOTE: Ensure 'Evidence' interface in '$lib/types/evidence.ts' includes 'fileName: string;'
   EvidenceAnalysisResult,
   WorkflowContext,
   AnalysisUpdate,
 } from '$lib/types/evidence'; // Import types from the new file
-import { runAIAgentStream, generateEmbedding } from '$lib/server/ai/agentic-stream';
-import { evidenceWsServer } from '$lib/server/ws-evidence-server';
+import type { runAIAgentStream, generateEmbedding  } from '$lib/server/ai/agentic-stream';
+import type { evidenceWsServer  } from '$lib/server/ws-evidence-server';
 
 // Simple storage stubs (replace with actual implementations)
 interface VectorStore {

@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { contextualUnderstanding } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/contextual-understanding-service';
-import type { LegalEntity } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { contextualUnderstanding  } from '$lib/server/ai/contextual-understanding-service';
+import type { LegalEntity } from '$lib/types/sharedTypes';
 
 interface UpdatePayload {
   sessionId?: string;

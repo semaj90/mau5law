@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
-  let serviceStatus = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let testTexts = $state // TODO: Verify store subscription is correct for Svelte 5([
+  let serviceStatus = $state <any>(null);
+  let testTexts = $state([
     'This contract establishes binding legal obligations between the parties.',
     'The plaintiff alleges breach of fiduciary duty and seeks damages.',
     'Legal precedent from similar cases supports this interpretation.'
   ]);
-  let embeddings = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let embeddings = $state <any>(null);
+  let isLoading = $state(false);
+  let error = $state <string | null>(null);
 
   onMount(async () => {
     await checkServiceStatus();

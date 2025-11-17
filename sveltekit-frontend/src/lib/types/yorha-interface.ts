@@ -527,7 +527,7 @@ export type YoRHaCommandStatus = CommandStatus;
 // === Svelte 5 Runes Integration ===
 /**
  * Reactive state wrapper for YoRHa system metrics
- * Compatible with Svelte 5 $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5() runes
+ * Compatible with Svelte 5 $state () runes
  */
 export interface YoRHaReactiveState<T> {
   value: T;

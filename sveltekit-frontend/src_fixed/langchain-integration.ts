@@ -1,6 +1,6 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
-/** * LangChain RAG Integration for Legal AI * Connects LangChain Ollama service to API endpoints */ import { LangChainOllamaService; } from './langchain-ollama-service'; // Initialize singleton LangChain service let langChainServiceInstance: LangChainOllamaService | null = null; export function getLangChainService(): LangChainOllamaService { if (!langChainServiceInstance) { langChainServiceInstance = new LangChainOllamaService({ ollamaBaseUrl: 'http://localhost: 11434', model: 'gemma3-legal, latest', // Using main legal model embeddingModel: 'embeddinggemma, latest', useCuda: true, temperature: 0.3, maxTokens: 2048 })} return langChainServiceInstance;
+/** * LangChain RAG Integration for Legal AI * Connects LangChain Ollama service to API endpoints */ import type { LangChainOllamaService;  } from './langchain-ollama-service'; // Initialize singleton LangChain service let langChainServiceInstance: LangChainOllamaService | null = null; export function getLangChainService(): LangChainOllamaService { if (!langChainServiceInstance) { langChainServiceInstance = new LangChainOllamaService({ ollamaBaseUrl: 'http://localhost: 11434', model: 'gemma3-legal, latest', // Using main legal model embeddingModel: 'embeddinggemma, latest', useCuda: true, temperature: 0.3, maxTokens: 2048 })} return langChainServiceInstance;
 }
 // Type helpers for RAG results export interface LegalRAGResult { answer: string, confidence: number, processingTime: number, sources: Array<{ title: string, content: string, score: number;
 }>}

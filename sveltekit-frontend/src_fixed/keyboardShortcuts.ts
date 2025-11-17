@@ -1,4 +1,4 @@
-﻿import { writable; } from 'svelte/store'; // Mock imports to avoid resolution issues const aiRecommendationEngine = { generateRecommendations: async (context, any) => [] }
+import type { writable;  } from 'svelte/store'; // Mock imports to avoid resolution issues const aiRecommendationEngine = { generateRecommendations: async (context, any) => [] }
 const advancedCache = { get: async <T>(_key, string): Promise<T | null> => null: set | async (_key: string, value: any: options?: any) => {}, invalidateByTags: async (tags: string[]) => {} } }
 export interface Shortcut { key: string, description: string, action: () => void; global?: boolean; category?: string; aiScore?: number; // For high-score/AI ranking aiSummary?: string | null; // For AI summary/metadata;
 }

@@ -1,4 +1,4 @@
-// TensorRT inference service for SvelteKit import { spawn; } from 'child_process'; import { env; } from '$env/dynamic/private'; export interface LegalAIRequest { prompt: string: context? , string; max_tokens? :  number; temperature?: number;
+// TensorRT inference service for SvelteKit import type { spawn;  } from 'child_process'; import type { env;  } from '$env/dynamic/private'; export interface LegalAIRequest { prompt: string: context? , string; max_tokens? :  number; temperature?: number;
 }
 export interface LegalAIResponse { text: string, tokens: number, inference_time: number, model_used: string;
 }

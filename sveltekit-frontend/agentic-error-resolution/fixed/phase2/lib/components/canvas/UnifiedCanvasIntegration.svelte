@@ -4,8 +4,8 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount  } from "svelte";
-  import { writable } from 'svelte/store';
+  import type { onMount   } from 'svelte';
+  import type { writable  } from 'svelte/store';
   import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte";
   import  CanvasBoard  from "$lib/components/yorha/CanvasBoard.svelte";
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";

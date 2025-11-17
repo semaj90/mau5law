@@ -1,9 +1,9 @@
 <!-- Enhanced-Bits POI Card Component -->
 <!-- Integrates with legal-poi.ts store for Persons of Interest management -->
 <script lang="ts">
-  import { Button, Card, CardHeader, CardTitle, CardContent } from './index.js';
+  import type { Button, Card, CardHeader, CardTitle, CardContent  } from './index.js';
   import type { PersonOfInterest } from '$lib/stores/legal-poi.js';
-  import { createWantedPoster, addToWatchList, recordSighting } from '$lib/stores/legal-poi.js';
+  import type { createWantedPoster, addToWatchList, recordSighting  } from '$lib/stores/legal-poi.js';
   interface Props {
     poi: PersonOfInterest;
     onEdit?: (poi: PersonOfInterest) => void;

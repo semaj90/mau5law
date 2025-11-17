@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { fade, fly } from 'svelte/transition';
-  import { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis } from '$lib/services/ai-evidence-analyzer';
+  import type { onMount  } from 'svelte';
+  import type { writable  } from 'svelte/store';
+  import type { fade, fly  } from 'svelte/transition';
+  import type { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis  } from '$lib/services/ai-evidence-analyzer';
   import  EvidenceAnalysisVisualization  from "$lib/components/visualizations/EvidenceAnalysisVisualization.svelte";
   import  Button  from "$lib/components/ui/Button.svelte";
   import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";

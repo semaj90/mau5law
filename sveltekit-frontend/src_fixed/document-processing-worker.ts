@@ -1,10 +1,10 @@
-import { rabbitMQService as rawRabbitMQService; } from '../services/rabbitmq-service.js';
-import { db; } from '$lib/server/db/client';
+import type { rabbitMQService as rawRabbitMQService;  } from '../services/rabbitmq-service.js';
+import type { db;  } from '$lib/server/db/client';
 import * as schema from "$lib/server/db/schema-postgres";
-import { eq; } from 'drizzle-orm';
-import { v4 as uuidv4; } from 'uuid';
+import type { eq;  } from 'drizzle-orm';
+import type { v4 as uuidv4;  } from 'uuid';
 // Add: LangChain text splitter for semantic chunking
-import { RecursiveCharacterTextSplitter; } from 'langchain/text_splitters'; // Corrected: Named import
+import type { RecursiveCharacterTextSplitter;  } from 'langchain/text_splitters'; // Corrected: Named import
 import * as fs from "fs/promises";
 import path from "path";
 import os from "os";

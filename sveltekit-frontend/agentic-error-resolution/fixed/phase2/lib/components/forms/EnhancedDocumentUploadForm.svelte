@@ -2,12 +2,12 @@
 <!-- Production-ready form with state management, validation, and progress tracking -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { createDocumentUploadForm, FORM_STORAGE_KEYS, FormStatePersistence } from "$lib/forms/superforms-xstate-integration";
-  import { DocumentUploadSchema } from "$lib/state/legal-form-machines";
+  import type { createDocumentUploadForm, FORM_STORAGE_KEYS, FormStatePersistence  } from '$lib/forms/superforms-xstate-integration';
+  import type { DocumentUploadSchema  } from '$lib/state/legal-form-machines';
   // Use bits-ui (or enhanced-bits-ui) components
-  import { Alert, AlertDescription, Badge, Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Input, Progress, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from "bits-ui";
-  import { AlertTriangle, CheckCircle, FileText, Loader2, RotateCcw, Save, Upload, X, Zap } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import type { Alert, AlertDescription, Badge, Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Input, Progress, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea  } from 'bits-ui';
+  import type { AlertTriangle, CheckCircle, FileText, Loader2, RotateCcw, Save, Upload, X, Zap  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   import type { Infer, SuperValidated } from "sveltekit-superforms";
 
   // Props

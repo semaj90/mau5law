@@ -1,6 +1,6 @@
 /** * RabbitMQ + XState Integration for Self-Prompting Legal AI * Free, high-performance message queuing with state machine coordination */
-import { createMachine, assign, fromPromise } from "xstate";
-import { browser } from "$app/environment";
+import type { createMachine, assign, fromPromise  } from 'xstate';
+import type { browser  } from '$app/environment';
 
 // --- ADDED: lightweight type definitions to fix TS errors --- //
 type UserHistoryItem = { action?: string; data?: unknown; timestamp?: number; error?: unknown };

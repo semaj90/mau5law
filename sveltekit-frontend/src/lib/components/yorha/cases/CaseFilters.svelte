@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import type { createEventDispatcher  } from 'svelte';
 
   // Migrated from createEventDispatcher to callback props;
 

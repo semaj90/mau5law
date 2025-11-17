@@ -9,9 +9,9 @@
   - Enhanced audio capabilities
 -->
 <script lang="ts">
-  import { Button as BitsButton } from 'bits-ui/components/ui/button';
+  import type { Button as BitsButton  } from 'bits-ui/components/ui/button';
   import type { Snippet } from 'svelte';
-  import { generateGradient, getMode7Transform, getSizeStyles, retroAudio, SNES_PALETTE } from '../effects';
+  import type { generateGradient, getMode7Transform, getSizeStyles, retroAudio, SNES_PALETTE  } from '../effects';
   import type { GamingComponentProps } from '../types/gaming-types.js';
   interface Props extends GamingComponentProps {
     // Button specific props

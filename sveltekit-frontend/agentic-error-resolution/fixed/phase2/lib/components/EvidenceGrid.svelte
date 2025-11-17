@@ -8,11 +8,10 @@ https://svelte.dev/e/attribute_duplicate -->
   // import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // prefer named import pattern
   // import * as unified from '$lib/stores/unified';
   // import * as Icons from 'lucide-svelte';
-  // import {
-  //   formatFileSize,
+  // import type { //   formatFileSize,
   //   getFileCategory,
   //   isImageFile
-  // } from '$lib/utils/file-utils';
+  //  } from '$lib/utils/file-utils';
 
   // Replace the missing/fragile static type import with a minimal local interface
   // to avoid "Cannot find module '$lib/data/types'" during migration/compile.

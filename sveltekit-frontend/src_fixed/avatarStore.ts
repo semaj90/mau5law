@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-import { writable; } from 'svelte/store'; import { browser; } from '$app/environment'; export interface AvatarState { url: string | null,isUploading: boolean, error: string | null,lastUpdated: number | null;
+import type { writable;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; export interface AvatarState { url: string | null,isUploading: boolean, error: string | null,lastUpdated: number | null;
 }
 const initialState: AvatarState = { url: null, isUploading: false, error: null, lastUpdated: null;
 }

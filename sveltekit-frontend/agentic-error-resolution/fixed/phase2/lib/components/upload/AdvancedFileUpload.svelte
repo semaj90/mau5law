@@ -1,12 +1,12 @@
 <!-- Component exported by default -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { browser } from "$app/environment";
+  import type { browser  } from '$app/environment';
   import  Button  from "$lib/components/ui/Button.svelte";
-  import { notifications  } from '$lib/stores/unified";
-  import { FocusManager } from "$lib/utils/accessibility";
-  import { AlertTriangle, Camera, Eye, File as FileIcon, FileText, Image as ImageIcon, Loader2, Mic, Paperclip, Trash2, Upload, Video } from 'lucide-svelte';
-  import { onMount  } from "svelte";
+  import type { notifications   } from '$lib/stores/unified';
+  import type { FocusManager  } from '$lib/utils/accessibility';
+  import type { AlertTriangle, Camera, Eye, File as FileIcon, FileText, Image as ImageIcon, Loader2, Mic, Paperclip, Trash2, Upload, Video  } from 'lucide-svelte';
+  import type { onMount   } from 'svelte';
   // Props using Svelte 5 syntax
   let {
     multiple = true,

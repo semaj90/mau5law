@@ -1,10 +1,10 @@
-import { users } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { json } from '@sveltejs/kit';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import { eq } from 'drizzle-orm';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { users  } from '$lib/server/db/schema-postgres';
+import type { json  } from '@sveltejs/kit';
+import type { existsSync, mkdirSync, writeFileSync  } from 'fs';
+import type { join  } from 'path';
+import type { eq  } from 'drizzle-orm';
+import type { db  } from '$lib/server/db/index';
+import type { RequestHandler } from './$types .js';
 
 const UPLOAD_DIR = 'static/uploads/avatars';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

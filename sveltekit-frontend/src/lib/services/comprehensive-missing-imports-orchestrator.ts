@@ -14,7 +14,7 @@ import webFetcher from './web-fetch-missing-implementations.js';
 import type {
   MissingImportAnalysis,
   AutomatedResolutionResult,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/automated-resolution';
+} from '$lib/types/automated-resolution';
 
 export class ComprehensiveMissingImportsOrchestrator {
   performanceMetrics: { [key: string]: number } = {};
@@ -209,7 +209,7 @@ ${filesWithMostErrors || '- None listed'}
 
 ## 🔧 CATEGORIZED MISSING ITEMS
 ### Svelte 5 Runes
-${this.getCategoryItems(analysis, ['$state // TODO: Verify store subscription is correct for Svelte 5', '$derived', '$effect // TODO: Verify store subscription is correct for Svelte 5', '$props', '$bindable', '$inspect // TODO: Verify store subscription is correct for Svelte 5'])}
+${this.getCategoryItems(analysis, ['$state ', '$derived', '$effect ', '$props', '$bindable', '$inspect '])}
 
 ### Drizzle ORM Functions
 ${this.getCategoryItems(analysis, ['pgTable', 'serial', 'text', 'varchar', 'integer', 'boolean', 'timestamp', 'json', 'jsonb', 'uuid', 'vector', 'eq', 'ne', 'gt', 'gte', 'lt', 'lte', 'isNull', 'isNotNull', 'inArray', 'notInArray'])}

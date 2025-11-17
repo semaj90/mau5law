@@ -1,4 +1,4 @@
-import type { AIResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { AIResponse } from '$lib/types';
 import crypto from 'crypto';
 
 /** * CrewAI Multi-Agent Service * Handles role-based agent crews for specialized legal workflows */

@@ -1,7 +1,7 @@
 <!-- AI Assistant Integration Test Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Card, CardContent, CardHeader, CardTitle, Button, Alert } from './index.js';
+  import type { Card, CardContent, CardHeader, CardTitle, Button, Alert  } from './index.js';
   import  Bot  from "lucide-svelte/icons/bot.svelte";
   import  CheckCircle  from "lucide-svelte/icons/check-circle.svelte";
   // Test data

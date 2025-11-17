@@ -2,7 +2,7 @@
 // This stub provides a minimal API surface used across the app without importing
 // the actual: 'lokijs' UMD bundle (which can break under ESM/HMR).
 
-type Doc = Record<string, unknown> & { $loki // TODO: Verify store subscription is correct for Svelte 5?: number };
+type Doc = Record<string, unknown> & { $loki ?: number };
 
 class MemoryCollection<T extends Doc = Doc> {
   name: string;
@@ -19,7 +19,7 @@ class MemoryCollection<T extends Doc = Doc> {
     }
     // clone via a safe cast so we don't introduce `any`
     const clone = { ...(doc as unknown as Record<string, unknown>) } as T;
-    clone.$loki // TODO: Verify store subscription is correct for Svelte 5 = this.data.length + 1;
+    clone.$loki = this.data.length + 1;
     this.data.push(clone);
     return clone;
   }
@@ -41,14 +41,14 @@ class MemoryCollection<T extends Doc = Doc> {
   }
 
   update(doc: T): void {
-    if (doc.$loki // TODO: Verify store subscription is correct for Svelte 5 == null) return;
-    const idx = this.data.findIndex((d) => d.$loki // TODO: Verify store subscription is correct for Svelte 5 === doc.$loki // TODO: Verify store subscription is correct for Svelte 5);
+    if (doc.$loki == null) return;
+    const idx = this.data.findIndex((d) => d.$loki === doc.$loki );
     if (idx >= 0) this.data[idx] = doc;
   }
 
   remove(doc: T): void {
-    if (doc.$loki // TODO: Verify store subscription is correct for Svelte 5 == null) return;
-    const idx = this.data.findIndex((d) => d.$loki // TODO: Verify store subscription is correct for Svelte 5 === doc.$loki // TODO: Verify store subscription is correct for Svelte 5);
+    if (doc.$loki == null) return;
+    const idx = this.data.findIndex((d) => d.$loki === doc.$loki );
     if (idx >= 0) this.data.splice(idx, 1);
   }
 }

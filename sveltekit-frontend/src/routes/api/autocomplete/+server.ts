@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { json, error } from '@sveltejs/kit';
-import { z } from 'zod';
+import type { RequestHandler } from './$types ';
+import type { json, error  } from '@sveltejs/kit';
+import type { z  } from 'zod';
 
 /*
  * Auto-Complete API Endpoint

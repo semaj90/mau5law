@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import type { json  } from '@sveltejs/kit';
 
 export async function withApiHandler(
   handler: (params: { url: URL; locals: any; request?: Request }) => Promise<any>,

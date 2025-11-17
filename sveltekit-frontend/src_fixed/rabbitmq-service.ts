@@ -1,5 +1,5 @@
-import { browser; } from '$app/environment'; // keep import safe for client bundling
-import { RABBITMQ_URL; } from '$env/static/private';
+import type { browser;  } from '$app/environment'; // keep import safe for client bundling
+import type { RABBITMQ_URL;  } from '$env/static/private';
 import type { Connection, Channel, Replies, ConsumeMessage;
 } from 'amqplib';
 

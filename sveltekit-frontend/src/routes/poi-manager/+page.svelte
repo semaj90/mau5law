@@ -1,13 +1,13 @@
 <script lang="ts">
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'bits-ui/components/ui/dialog';
 import Card from '$lib/components/ui/Card.svelte';
 import Input from '$lib/components/ui/Input.svelte';
 import Select from '$lib/components/ui/Select.svelte';
 import Textarea from '$lib/components/ui/Textarea.svelte';
-import { onMount } from 'svelte';
-import { cn } from '$lib/utils.js';
-import { Edit, FilterIcon as Filter, GridIcon as Grid, List, Plus, Trash2 } from 'lucide-svelte';
-import { toast } from 'svelte-sonner';
+import type { cn  } from '$lib/utils.js';
+import type { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle  } from 'bits-ui/components/ui/dialog';
+import type { Edit, Funnel as Filter, Grid3x3 as Grid, List, Plus, Trash2  } from 'lucide-svelte';
+import type { onMount  } from 'svelte';
+import type { toast  } from 'svelte-sonner';
 
 interface PhysicalDescription {
   height: string;
@@ -278,7 +278,7 @@ function editPoi(poi: Poi) { // Explicitly type poi
 }
 
 // Filter POIs
-$effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+$effect(() => {
   let filtered = pois;
   if (searchQuery.trim()) {
     const query = searchQuery.toLowerCase();
@@ -447,7 +447,7 @@ const statusColors = {
         <DialogTitle>Create New POI</DialogTitle>
         <DialogDescription>Fill in the details for the new Person of Interest.</DialogDescription>
       </DialogHeader>
-      <form onsubmit|preventDefault={createPoi} class="space-y-4">
+      <form on:submit|preventDefault={createPoi} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />
@@ -515,7 +515,7 @@ const statusColors = {
         <DialogTitle>Edit POI</DialogTitle>
         <DialogDescription>Update the details for {selectedPoi?.name}.</DialogDescription>
       </DialogHeader>
-      <form onsubmit|preventDefault={updatePoi} class="space-y-4">
+      <form on:submit|preventDefault={updatePoi} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />

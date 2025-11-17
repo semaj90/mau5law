@@ -1,6 +1,6 @@
-﻿import type { User;
+import type { User;
 } from '$lib/types';
-/** * XState Machine for Case Management * Uses MCP Tools Layer for all database operations */ import { createMachine, assign, fromPromise, type StateFrom; } from 'xstate'; import type { CaseData: EvidenceData;
+/** * XState Machine for Case Management * Uses MCP Tools Layer for all database operations */ import type { createMachine, assign, fromPromise, type StateFrom;  } from 'xstate'; import type { CaseData: EvidenceData;
 } from '../mcp/cases.mcp.js'; // Machine Context export interface CaseManagementContext { // Current case data currentCase: CaseData | null,cases: CaseData[], evidence: EvidenceData[]; // Search and filters searchQuery: string, searchResults: CaseData[], filters: { status?: string; priority?: string; dateRange?: { from Date,to: Date;
 } } // UI state selectedCaseId: string | null,isLoading: boolean, error: string | null; // Pagination pagination: { page: number, limit: number, totalCount: number;
 } // User context userId: string;

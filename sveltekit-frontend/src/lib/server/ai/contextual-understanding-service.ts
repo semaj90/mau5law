@@ -5,9 +5,9 @@ import type {
   HMMState,
   LegalEntity,
   NextStepPrediction,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
-import { cognitiveCache, getRedisClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache';
-import { hmmStateMachine, LegalConversationState } from './hmm-state-machine';
+} from '$lib/types/sharedTypes';
+import type { cognitiveCache, getRedisClient  } from '$lib/server/cache';
+import type { hmmStateMachine, LegalConversationState  } from './hmm-state-machine';
 
 const CONTEXT_TTL_SECONDS = Number(process.env.CONTEXT_STATE_TTL ?? 3600);
 const MAX_HISTORY_LENGTH = Number(process.env.CONTEXT_MAX_HISTORY ?? 50);

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
-  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import Button from '$lib/components/ui/button';
+  import Card from '$lib/components/ui/card';
+  import type { Input  } from '$lib/components/ui/input';
+  import type { appActions, appStore  } from '$lib/stores/app-store';
   import * as Lucide from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
   // Reactive state from app store (plain locals to be updated via subscription)
   let searchResults: any[] = [];

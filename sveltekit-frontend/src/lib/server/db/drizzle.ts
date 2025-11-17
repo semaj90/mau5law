@@ -1,16 +1,16 @@
-﻿/** * Unified Drizzle + Vector + Storage utilities * Generates a small integration layer over the existing db client, qdrant and minio helpers */ /* eslint-disable @typescript-eslint/no-explicit-any */
+/** * Unified Drizzle + Vector + Storage utilities * Generates a small integration layer over the existing db client, qdrant and minio helpers */ /* eslint-disable @typescript-eslint/no-explicit-any */
 import lazyDb from './client.js'; // Corrected: lazyDb is a default export
 import * as schema from './schema-unified.js';
-import { sql, eq } from 'drizzle-orm'; // Corrected: Import eq from drizzle-orm
-import qdrantClient from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/qdrant-client'; // Corrected: qdrantClient is a default export
-import { Client } from 'minio'; // Corrected: MinioClient is not exported, use Client
+import type { sql, eq  } from 'drizzle-orm'; // Corrected: Import eq from drizzle-orm
+import qdrantClient from '$lib/services/qdrant-client'; // Corrected: qdrantClient is a default export
+import type { Client  } from 'minio'; // Corrected: MinioClient is not exported, use Client
 
 const _CFG: unknown = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
 
 // Lazy-load project's cache/redis helper at runtime.
 // Returns: undefined when the module cannot be found or fails to import.
-let _cacheInitialized = false; // Removed $state // TODO: Verify store subscription is correct for Svelte 5, not allowed at module level
-let _cache: any | undefined = undefined; // Removed $state // TODO: Verify store subscription is correct for Svelte 5, not allowed at module level
+let _cacheInitialized = false; // Removed $state , not allowed at module level
+let _cache: any | undefined = undefined; // Removed $state , not allowed at module level
 
 async function getCache(): Promise<any | undefined> {
   // simple memoization to avoid repeated dynamic imports
@@ -18,7 +18,7 @@ async function getCache(): Promise<any | undefined> {
   _cacheInitialized = true;
   try {
     // dynamic import so this file can be imported without forcing cache module to exist
-    const mod = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis');
+    const mod = await import('$lib/server/cache/redis');
     _cache = (mod as any).default ?? mod;
   } catch (err) {
     _cache = undefined;

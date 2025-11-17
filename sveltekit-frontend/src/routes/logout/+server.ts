@@ -5,8 +5,8 @@
  * Invalidates the current session and redirects to home
  */
 
-import { auth } from '$lib/server/auth';
-import { redirect } from '@sveltejs/kit';
+import type { auth  } from '$lib/server/auth';
+import type { redirect  } from '@sveltejs/kit';
 
 export const POST = async (event) => {
   const sessionId = event.cookies.get('auth_session');

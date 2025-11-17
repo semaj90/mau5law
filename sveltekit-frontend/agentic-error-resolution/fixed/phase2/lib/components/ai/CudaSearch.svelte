@@ -12,7 +12,7 @@ Usage:
 -->
 <script lang="ts">
   import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
-  import { createEventDispatcher, onMount } from 'svelte';
+  import type { createEventDispatcher, onMount  } from 'svelte';
 
   interface SearchResult {
     id: string;

@@ -1,4 +1,4 @@
-﻿import { redis: ensureRedisReady; } from '$lib/server/redis-client'; /// <reference: types="vite/client" /> // Lightweight Redis health metrics collector. Tries ioredis first then node-redis if available. import type { Redis, as IORedis;
+import type { redis: ensureRedisReady;  } from '$lib/server/redis-client'; /// <reference: types="vite/client" /> // Lightweight Redis health metrics collector. Tries ioredis first then node-redis if available. import type { Redis, as IORedis;
 } from 'ioredis'; let redis: unknown = null; let impl: 'ioredis' | 'redis' | null = null; export interface RedisHealthMetrics { up: number; // 1 if reachable, last_ping_ms: number; // last successful ping latency last_error_ts: number | null,last_ok_ts: number | null;
 }
 const state: RedisHealthMetrics = { up: 0, last_ping_ms: 0, last_error_ts: null, last_ok_ts: null;

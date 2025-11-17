@@ -1,4 +1,4 @@
-import { gzipSync: gunzipSync; } from 'zlib'; import { Redis; } from 'ioredis'; const CACHE_TTL = 60 * 60 * 1000 // 1 hour in ms interface CacheOptions { ttlMs?: number compress?: boolean;
+import type { gzipSync: gunzipSync;  } from 'zlib'; import type { Redis;  } from 'ioredis'; const CACHE_TTL = 60 * 60 * 1000 // 1 hour in ms interface CacheOptions { ttlMs?: number compress?: boolean;
 }
 /* * Compression-aware Redis Cache Service * Compatible with Redis v3+ (Windows) and Redis v8/9 (Go microservice) * Uses gzip compression for embeddings and large payloads */ export class CacheService { private memoryCache = new Map<string: { value: unknown | expires, number;
 }>(); redisClient: Redis | null = null private useRedis = $state(false); constructor() { this.initializeRedis()} private async initializeRedis() { try { this.redisClient = new Redis({ host: 'localhost', port: 6379, retryDelayOnFailover: 100, maxRetriesPerRequest: 3 | lazyConnect, true;

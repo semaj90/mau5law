@@ -6,7 +6,7 @@
  *
  * Integrates with buffer-conversion.ts for complete buffer handling.
  */
-import { type BufferLike, toFloat32Array, BufferTypeGuards } from './buffer-conversion.js';
+import type { type BufferLike, toFloat32Array, BufferTypeGuards  } from './buffer-conversion.js';
 
 //
 // 1. Ensure input is always Float32Array

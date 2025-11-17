@@ -1,8 +1,8 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { dbPool } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/database-pool-service';
-import { embeddingCache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embedding-cache-service';
-import { redisService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-service';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { dbPool  } from '$lib/server/database-pool-service';
+import type { embeddingCache  } from '$lib/server/embedding-cache-service';
+import type { redisService  } from '$lib/server/redis-service';
 
 export const GET: RequestHandler = async () => {
 	try {

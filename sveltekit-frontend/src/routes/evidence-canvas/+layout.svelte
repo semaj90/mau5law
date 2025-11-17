@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/state';
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
+  import type { page  } from '$app/state';
+  import type { browser  } from '$app/environment';
   // Add: unknown layout-specific state or logic here
-  let mounted = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let mounted = $state <boolean>(false);
 
   // Mark mounted when running in browser (keeps SSR behaviour clean)
   if (browser) {

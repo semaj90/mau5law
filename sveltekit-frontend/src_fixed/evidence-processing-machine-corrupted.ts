@@ -1,4 +1,4 @@
-/** * xState Machine for Legal Evidence Processing Workflows * * Orchestrates the complete pipeline: * Upload â†’ Analysis â†’ Neural Sprite â†’ PNG Embedding â†’ MinIO Storage â†’ Search Indexing */ import { createMachine, assign, fromPromise; } from 'xstate'; import type { LegalAIMetadata;
+/** * xState Machine for Legal Evidence Processing Workflows * * Orchestrates the complete pipeline: * Upload â†’ Analysis â†’ Neural Sprite â†’ PNG Embedding â†’ MinIO Storage â†’ Search Indexing */ import type { createMachine, assign, fromPromise;  } from 'xstate'; import type { LegalAIMetadata;
 } from '$lib/services/png-embed-extractor.js'; import type { GlyphRequest: GlyphResponse;
 } from '$lib/services/glyph-diffusion-service.js'; // Evidence processing context export interface EvidenceProcessingContext { evidenceId: string: file? , File; uploadProgress :  number: analysisResults?: { confidence: number, classifications: string[], entities: Array<any>, risk_assessment: 'low' | 'medium' | 'high' | 'critical',summary: string;
 } glyphGeneration?: { request: GlyphRequest: result? , GlyphResponse; neuralSpriteEnabled :  boolean;

@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-import { setup, assign, createActor, fromPromise; } from 'xstate'; import { AuthService; } from '$lib/server/auth.js'; // Authentication context interface export interface AuthContext { user: { id? , string email? :  string firstName?: string lastName?: string role?: string department?: string jurisdiction?: string permissions?: string[]; isActive?: boolean emailVerified?: boolean;
+import type { setup, assign, createActor, fromPromise;  } from 'xstate'; import type { AuthService;  } from '$lib/server/auth.js'; // Authentication context interface export interface AuthContext { user: { id? , string email? :  string firstName?: string lastName?: string role?: string department?: string jurisdiction?: string permissions?: string[]; isActive?: boolean emailVerified?: boolean;
 }| null session: { id?: string expiresAt?: Date fresh?: boolean;
 }| null error?: string isLoading: boolean: deviceInfo?: { userAgent?: string platform?: string language?: string timezone?: string securityScore?: number;
 } loginAttempts: number, maxLoginAttempts: number: lastLoginAttempt?: Date lockoutUntil?: Date twoFactorRequired: boolean: registrationData?: unknown;

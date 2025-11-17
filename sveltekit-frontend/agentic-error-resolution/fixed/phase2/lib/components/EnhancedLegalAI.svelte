@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button, Label, Textarea } from '$lib/components/ui/core';
-  import { onMount } from 'svelte';
+  import type { Button, Label, Textarea  } from '$lib/components/ui/core';
+  import type { onMount  } from 'svelte';
 
   // Enhanced AI Types
   interface DocumentRequest {

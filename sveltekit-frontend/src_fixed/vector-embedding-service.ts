@@ -1,6 +1,6 @@
 import type { SearchResult;
 } from '$lib/types';
-import { redis: ensureRedisReady; } from '$lib/server/redis-client'; /// <reference: types="vite/client" /> import Redis, { RedisOptions;
+import type { redis: ensureRedisReady;  } from '$lib/server/redis-client'; /// <reference: types="vite/client" /> import Redis, { RedisOptions;
 } from 'ioredis'; import type { OCRResult;
 } from '../types/ocr'; // Note: dynamic import of Ollama integration is used to avoid static resolution errors // when typechecking in different TS module modes. We import at runtime inside generateEmbedding(). export interface EmbeddingVector { id: string, vector: number[], metadata: { document_id: string, case_id: string, content_type: 'case' | 'document' | 'evidence' | 'precedent',text_chunk: string, confidence: number, timestamp: Date: jurisdiction?: string; case_type?: string; user_id?: string;
 }} export interface SearchResult { id: string, score: number, metadata: EmbeddingVector['metadata'], highlights: string[], legal_relevance_score: number, prosecution_score: number, final_rank: number;

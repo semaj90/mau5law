@@ -1,12 +1,12 @@
-﻿import type { Case } from '../../types';
+import type { Case } from '../../types';
 
 // AI embedding generation service
 // Supports local Ollama models with Redis/memory caching for performance
 // Use process.env for server-side environment variables
-import { db } from '../db/index.js';
-import { cases, evidence } from '../db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { getOllamaEndpoint } from './endpoints.js';
+import type { db  } from '../db/index.js';
+import type { cases, evidence  } from '../db/schema-postgres';
+import type { eq  } from 'drizzle-orm';
+import type { getOllamaEndpoint  } from './endpoints.js';
 
 export interface EmbeddingOptions {
   model?: string;

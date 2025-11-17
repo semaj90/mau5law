@@ -1,11 +1,10 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { ollamaChatStream } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollamaChatStream';
-import {
-  initializeChatEmbeddingsTable,
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { ollamaChatStream  } from '$lib/services/ollamaChatStream';
+import type { initializeChatEmbeddingsTable,
   searchSimilarChats,
   type VectorSearchResult,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/vectorDBService';
+ } from '$lib/server/services/vectorDBService';
 
 // Initialize database on startup
 let dbInitialized = false;

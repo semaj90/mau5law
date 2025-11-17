@@ -27,7 +27,10 @@ param(
     [switch]$SkipInference,
 
     [Parameter(Mandatory=$false)]
-    [switch]$DryRun
+    [switch]$DryRun,
+
+    [Parameter(Mandatory=$false)]
+    [int]$VarianceThreshold = 5
 )
 
 # Configuration
@@ -42,12 +45,13 @@ $RedisUrl = "localhost:6379"
 $MinioUrl = "localhost:9000"
 
 # Paths
-$WorkspaceRoot = Split-Path -Parent $PSScriptRoot
+$WorkspaceRoot = $PSScriptRoot
 $LogsDir = Join-Path $WorkspaceRoot "logs"
 $DatasetsDir = Join-Path $WorkspaceRoot "datasets"
 $CheckpointsDir = Join-Path $WorkspaceRoot "checkpoints"
 $AdaptersDir = Join-Path $WorkspaceRoot "adapters"
 $EnginesDir = Join-Path $WorkspaceRoot "engines"
+$DatasetFullPath = if ([System.IO.Path]::IsPathRooted($DatasetPath)) { $DatasetPath } else { Join-Path $WorkspaceRoot $DatasetPath }
 
 # Ensure directories exist
 @($LogsDir, $DatasetsDir, $CheckpointsDir, $AdaptersDir, $EnginesDir) | ForEach-Object {
@@ -63,6 +67,158 @@ function Write-PhaseLog {
     $LogMessage = "[$Timestamp] [$Level] $Message"
     Write-Host $LogMessage -ForegroundColor $(if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "WARN") { "Yellow" } else { "Green" })
     Add-Content -Path (Join-Path $LogsDir "phase_ast_qlora.log") -Value $LogMessage
+}
+
+# Capture adaptive context from repo files to seed datasets
+function Get-AdaptiveContext {
+    param([int]$MaxLines = 80)
+
+$candidateFiles = @(
+        (Join-Path $WorkspaceRoot "readme11425.md"),
+        (Join-Path $WorkspaceRoot "Main Project\LEGAL_AI_INTEGRATION_README.md"),
+        (Join-Path $WorkspaceRoot "Main Project\PROJECT_TASK_LOG.md")
+    )
+
+    $snapshots = @()
+
+    foreach ($file in $candidateFiles) {
+        if (Test-Path $file) {
+            try {
+                $content = Get-Content -Path $file -TotalCount $MaxLines -ErrorAction Stop
+                $trimmed = ($content -join " ").Trim()
+                if ($trimmed.Length -gt 0) {
+                    $snapshots += [PSCustomObject]@{
+                        Source = Split-Path $file -Leaf
+                        Text   = $trimmed
+                    }
+                }
+            } catch {
+                Write-PhaseLog ("Failed reading context file {0}: {1}" -f $file, $_.Exception.Message) "WARN"
+            }
+        }
+    }
+
+    if ($snapshots.Count -eq 0) {
+        $snapshots += [PSCustomObject]@{
+            Source = "SyntheticContext"
+            Text   = "Bro is this legal? Provide legal reasoning, risk assessment, and recommended actions."
+        }
+    }
+
+    return $snapshots
+}
+
+function Measure-DatasetVariance {
+    param([string]$DatasetFile)
+
+    try {
+        $raw = Get-Content -Path $DatasetFile -Raw -ErrorAction Stop
+        $data = $raw | ConvertFrom-Json
+    } catch {
+        Write-PhaseLog "Unable to parse dataset for variance check: $($_.Exception.Message)" "WARN"
+        return [double]::PositiveInfinity
+    }
+
+    if ($null -eq $data) { return [double]::PositiveInfinity }
+    if (-not ($data -is [System.Collections.IEnumerable])) { return [double]::PositiveInfinity }
+
+    $lengths = @()
+    foreach ($entry in $data) {
+        $text = if ($entry.output) { $entry.output } elseif ($entry.response) { $entry.response } else { "" }
+        $lengths += ($text.ToString().Length)
+    }
+
+    if ($lengths.Count -lt 2) { return 0 }
+
+    $avg = ($lengths | Measure-Object -Average).Average
+    $variance = ($lengths | ForEach-Object { [math]::Pow($_ - $avg, 2) } | Measure-Object -Sum).Sum / [math]::Max(1, $lengths.Count)
+    $stdDev = [math]::Sqrt($variance)
+    return [math]::Round($stdDev, 2)
+}
+
+function Generate-AdaptiveDataset {
+    param([string]$OutputPath)
+
+    Write-PhaseLog "Generating adaptive dataset at $OutputPath"
+
+    $snapshots = Get-AdaptiveContext
+    $records = @()
+    $index = 1
+
+    foreach ($snapshot in $snapshots) {
+        $records += [PSCustomObject]@{
+            instruction = "Legal risk assessment for context snapshot #$index"
+            input       = "Source: $($snapshot.Source)`nContext: $($snapshot.Text)"
+            output      = "Analyze legality, cite relevant statutes, evaluate mens rea, and provide recommended investigator actions with confidence scoring."
+        }
+        $index++
+    }
+
+    $json = $records | ConvertTo-Json -Depth 4
+
+    $outputDir = Split-Path $OutputPath -Parent
+    if (!(Test-Path $outputDir)) {
+        New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+    }
+
+    Set-Content -Path $OutputPath -Value $json -Encoding UTF8
+    Write-PhaseLog "Adaptive dataset created with $($records.Count) entries."
+}
+
+function Ensure-AdaptiveDataset {
+    param(
+        [string]$DatasetFile,
+        [int]$VarianceThreshold
+    )
+
+    if (!(Test-Path $DatasetFile)) {
+        Write-PhaseLog "Dataset $DatasetFile missing. Generating adaptive dataset..."
+        Generate-AdaptiveDataset -OutputPath $DatasetFile
+        return $true
+    }
+
+    $variance = Measure-DatasetVariance -DatasetFile $DatasetFile
+    Write-PhaseLog "Dataset variance score: $variance (threshold $VarianceThreshold)"
+
+    if ($variance -gt $VarianceThreshold -and $VarianceThreshold -ge 0) {
+        Write-PhaseLog "Dataset variance exceeds threshold. Regenerating for adaptive use."
+        Generate-AdaptiveDataset -OutputPath $DatasetFile
+    }
+
+    return $true
+}
+
+# Run repo verification commands to catch regressions early
+function Invoke-CodebaseVerification {
+    param(
+        [string]$Priority = "Critical",
+        [string]$Context = "General verification"
+    )
+
+    if ($DryRun) {
+        Write-PhaseLog "DRY RUN: [$Priority] Would run verification for $Context (npm run check / npx tsc --noEmit --skipLibCheck)"
+        return
+    }
+
+    $commands = @(
+        "npm run check",
+        "npx tsc --noEmit --skipLibCheck"
+    )
+
+    Push-Location $WorkspaceRoot
+    try {
+        foreach ($command in $commands) {
+            Write-PhaseLog "[$Priority] Verifying ($Context) with: $command"
+            Invoke-Expression $command
+            if ($LASTEXITCODE -ne 0) {
+                Write-PhaseLog "[$Priority] Verification command failed: $command" "ERROR"
+                throw "Verification failed during $Context"
+            }
+        }
+        Write-PhaseLog "[$Priority] Verification passed for $Context"
+    } finally {
+        Pop-Location
+    }
 }
 
 # Check service health
@@ -327,12 +483,18 @@ function Invoke-Main {
         if (!(Start-PhaseAStServices)) {
             throw "Service startup failed"
         }
+        Invoke-CodebaseVerification -Priority "Critical" -Context "Service startup"
 
         # Phase 1: Dataset ingestion
+        if (!(Ensure-AdaptiveDataset -DatasetFile $DatasetFullPath -VarianceThreshold $VarianceThreshold)) {
+            throw "Adaptive dataset preparation failed"
+        }
+
         if (!$SkipIngestion -and ($Mode -eq "full" -or $Mode -eq "ingestion")) {
             if (!(Invoke-DatasetIngestion)) {
                 throw "Dataset ingestion failed"
             }
+            Invoke-CodebaseVerification -Priority "High" -Context "Dataset ingestion"
         }
 
         # Phase 2: QLoRA training
@@ -340,6 +502,7 @@ function Invoke-Main {
             if (!(Invoke-QLoRATraining)) {
                 throw "QLoRA training failed"
             }
+            Invoke-CodebaseVerification -Priority "High" -Context "QLoRA training"
         }
 
         # Phase 3: TensorRT integration
@@ -347,6 +510,7 @@ function Invoke-Main {
             if (!(Invoke-TensorRTIntegration)) {
                 throw "TensorRT integration failed"
             }
+            Invoke-CodebaseVerification -Priority "Medium" -Context "TensorRT integration"
         }
 
         # Phase 4: Inference testing
@@ -354,6 +518,7 @@ function Invoke-Main {
             if (!(Invoke-InferenceTesting)) {
                 throw "Inference testing failed"
             }
+            Invoke-CodebaseVerification -Priority "Medium" -Context "Inference testing"
         }
 
         # Phase 5: Performance benchmarking

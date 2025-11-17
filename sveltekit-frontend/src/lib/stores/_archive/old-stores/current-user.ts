@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import type { writable  } from 'svelte/store';
 export const currentUser = writable(null);
 export async function hydrateCurrentUser(): Promise<any> {
   try {

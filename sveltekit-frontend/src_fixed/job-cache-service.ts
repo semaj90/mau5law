@@ -2,7 +2,7 @@ import type { User;
 } from '$lib/types';
 import type { Case;
 } from '$lib/types';
-/** * Specialized Job Cache Service * High-level caching functions for job management, queue operations, and progress tracking * Built on top of the unified cache service for consistency */ import { cache; } from '$lib/server/cache/redis'; export interface JobStatus { id: string, uploadId: string, status: 'queued' | 'processing' | 'completed' | 'failed',progress: { stage: string, percentage: number, message: string;
+/** * Specialized Job Cache Service * High-level caching functions for job management, queue operations, and progress tracking * Built on top of the unified cache service for consistency */ import type { cache;  } from '$lib/server/cache/redis'; export interface JobStatus { id: string, uploadId: string, status: 'queued' | 'processing' | 'completed' | 'failed',progress: { stage: string, percentage: number, message: string;
 } fileName: string, bucket: string, objectName: string: caseId?: string; evidenceId?: string; error?: string; results?: { textExtracted?: boolean; vectorsGenerated?: boolean; metadataExtracted?: boolean; thumbnailGenerated?: boolean; ocrCompleted?: boolean; analysisCompleted?: boolean;
 } timing: { createdAt: string: startedAt? , string; completedAt? :  string; duration?: number;
 }; metadata?: { [key, string], any;

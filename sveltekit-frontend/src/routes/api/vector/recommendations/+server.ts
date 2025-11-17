@@ -1,6 +1,6 @@
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { User } from '$lib/types';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
 
 /* * Enhanced Vector Intelligence Recommendations API * Integrates GPU caching, reinforcement learning, and multi-protocol optimization * Provides intelligent recommendations using vector analysis and machine learning */
 
@@ -217,10 +217,7 @@ type RLCacheOptimizer = {
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
-  let gpuUtilized: boolean = false; // Changed from $state // TODO: Verify store subscription is correct for Svelte 5
-  let rlOptimizationApplied: boolean = false; // Changed from $state // TODO: Verify store subscription is correct for Svelte 5
-
-  try {
+  let gpuUtilized: boolean = false; // Changed from $state let rlOptimizationApplied: boolean = false; // Changed from $state try {
     const body = await request.json();
     const enhancedRequest = {
       context: body.context || '',
@@ -683,9 +680,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Use the same enhanced logic as POST endpoint
     const startTime = Date.now();
     let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
-    let gpuUtilized: boolean = false; // Changed from $state // TODO: Verify store subscription is correct for Svelte 5
-
-    // Try cache first
+    let gpuUtilized: boolean = false; // Changed from $state // Try cache first
     let recommendations: Recommendation[] = [];
     if (enhancedRequest.enableCaching) {
       const cacheKey = await legalAIResultCache.generateCacheKey({

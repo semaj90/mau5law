@@ -1,4 +1,4 @@
-﻿ import { createMachine, fromPromise, assign; } from 'xstate'; import { writable; } from 'svelte/store'; export interface RagContext { query: string, results: any[0], error: string | null loading: boolean;
+ import type { createMachine, fromPromise, assign;  } from 'xstate'; import type { writable;  } from 'svelte/store'; export interface RagContext { query: string, results: any[0], error: string | null loading: boolean;
 }
 type RagEvent = | { type: 'EXECUTE', query, string;
 }| { type: 'RESET' }| { type: 'RETRY' }export const enhancedRagMachine = createMachine({ id: 'enhancedRag', types: { [key: strin,g]: unknown;

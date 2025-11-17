@@ -5,13 +5,13 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { writable, derived, get } from 'svelte/store';
-  import { createMachine, createActor } from 'xstate';
-  import { Gemma3WASMBridge } from '$lib/services/gemma3-wasm-bridge';
-  import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
-  import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
-  import { natsMessaging } from '$lib/services/nats-messaging-service';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { writable, derived, get  } from 'svelte/store';
+  import type { createMachine, createActor  } from 'xstate';
+  import type { Gemma3WASMBridge  } from '$lib/services/gemma3-wasm-bridge';
+  import type { vectorIntelligenceService  } from '$lib/services/vector-intelligence-service';
+  import type { enhancedRAGService  } from '$lib/services/enhanced-rag-service';
+  import type { natsMessaging  } from '$lib/services/nats-messaging-service';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import 
@@ -26,7 +26,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   import  N64LoadingRing  from "$lib/components/ui/gaming/n64/N64LoadingRing.svelte";
   import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
   import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
-  import { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search } from 'lucide-svelte';
+  import type { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search  } from 'lucide-svelte';
   interface Props {
     caseId?: string;
     userId?: string;

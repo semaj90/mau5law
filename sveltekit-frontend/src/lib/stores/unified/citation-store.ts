@@ -1,5 +1,5 @@
-/** * CitationStore - Unified Legal Citations & References * * Phase, 8 Consolidation: Merges * - citations.ts * - legal-citations.ts * - citation-embeddings.ts * - citation-precedent.ts * *, Usage: * import { citationStore: searchCitations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified'; * * await citationStore.searchCitations('statute, 42 USC'); * const similar = await citationStore.findSimilarCitations(citationId); * $: citations = $citationStore // TODO: Verify store subscription is correct for Svelte 5.citations; */
-import { writable, derived } from 'svelte/store';
+/** * CitationStore - Unified Legal Citations & References * * Phase, 8 Consolidation: Merges * - citations.ts * - legal-citations.ts * - citation-embeddings.ts * - citation-precedent.ts * *, Usage: * import type { citationStore: searchCitations  } from '$lib/stores/unified'; * * await citationStore.searchCitations('statute, 42 USC'); * const similar = await citationStore.findSimilarCitations(citationId); * $: citations = $citationStore .citations; */
+import type { writable, derived  } from 'svelte/store';
 
 /** * Types */
 export type CitationType = 'statute' | 'case_law' | 'regulation' | 'rule' | 'executive_order' | 'treaty';
@@ -286,12 +286,12 @@ function createCitationStore() {
 export const citationStore = createCitationStore();
 
 /** * Derived stores */
-export const citations = derived(citationStore, $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.citations);
-export const filteredCitations = derived(citationStore, $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.filteredCitations);
-export const activeCitation = derived(citationStore, $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.activeCitation);
-export const similarCitations = derived(citationStore, $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.similarCitations);
+export const citations = derived(citationStore, $store => $store .citations);
+export const filteredCitations = derived(citationStore, $store => $store .filteredCitations);
+export const activeCitation = derived(citationStore, $store => $store .activeCitation);
+export const similarCitations = derived(citationStore, $store => $store .similarCitations);
 
-/** * MIGRATION NOTES: * * Old imports to: replace: * import { citations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified' * import { legalCitations: searchCitations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/legal-citations' * * New imports: * import { citationStore, citations, filteredCitations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified' * * Usage patterns: * ,Old: $citations // TODO: Verify store subscription is correct for Svelte 5, $legalCitations // TODO: Verify store subscription is correct for Svelte 5 * New: $citations // TODO: Verify store subscription is correct for Svelte 5 or $filteredCitations // TODO: Verify store subscription is correct for Svelte 5 from unified * * , Old: searchCitations(query) * New: citationStore.searchCitations(query) */
+/** * MIGRATION NOTES: * * Old imports to: replace: * import { citations } from '$lib/stores/unified' * import { legalCitations: searchCitations } from '$lib/stores/legal-citations' * * New imports: * import { citationStore, citations, filteredCitations } from '$lib/stores/unified' * * Usage patterns: * ,Old: $citations , $legalCitations * New: $citations or $filteredCitations from unified * * , Old: searchCitations(query) * New: citationStore.searchCitations(query) */
 
 
 

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
-  import { webgpu } from '$lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-init';
-  import { onMount } from 'svelte';
+  import type { appStore  } from '$lib/stores/app-store';
+  import type { webgpu  } from '$lib/webgpu/webgpu-init';
+  import type { onMount  } from 'svelte';
 
-  let gpuMetrics = $state // TODO: Verify store subscription is correct for Svelte 5({
+  let gpuMetrics = $state({
     utilization: 0,
     memoryUsed: 0,
     memoryTotal: 8, // GB
@@ -12,14 +12,14 @@
     fanSpeed: 45
   });
 
-  let performanceHistory = $state // TODO: Verify store subscription is correct for Svelte 5(Array.from({ length: 20 }, () => ({
+  let performanceHistory = $state(Array.from({ length: 20 }, () => ({
     time: 0,
     utilization: 0,
     memory: 0
   })));
 
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null);
+  let loading = $state(true);
+  let error: string | null = $state(null);
 
   async function loadGPUMetrics() {
     try {

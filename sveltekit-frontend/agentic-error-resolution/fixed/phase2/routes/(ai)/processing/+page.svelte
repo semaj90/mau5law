@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
+  import type { nesGPUBridge  } from '$lib/gpu/nes-gpu-memory-bridge';
+  import type { glyphShaderCacheBridge  } from '$lib/cache/glyph-shader-cache-bridge';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte';
-  import { fade, fly } from 'svelte/transition';
+  import type { fade, fly  } from 'svelte/transition';
 
   // Add Job type so $state infers properly (prevents 'never' issues)
   type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';

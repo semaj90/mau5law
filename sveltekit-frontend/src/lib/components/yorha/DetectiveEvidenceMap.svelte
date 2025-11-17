@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from 'd3';
-  import { onDestroy, onMount } from 'svelte';
+  import type { onDestroy, onMount  } from 'svelte';
 
   interface EvidenceNode {
     id: string;
@@ -27,7 +27,7 @@
     timeline: Array<{ evidenceId: string; timestamp: string; description: string }>;
   }
 
-  let { data = null, caseId = null, show = true } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { data = null, caseId = null, show = true } = $props<{
     data?: DetectiveMapData | null;
     caseId?: string | null;
     show?: boolean;
@@ -36,12 +36,12 @@
   let container: HTMLElement;
   let svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   let simulation: d3.Simulation<d3.SimulationNodeDatum, undefined>;
-  let width = $state // TODO: Verify store subscription is correct for Svelte 5(1200);
-  let height = $state // TODO: Verify store subscription is correct for Svelte 5(800);
+  let width = $state(1200);
+  let height = $state(800);
   let zoom: d3.ZoomBehavior<Element, unknown>;
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let selectedNode = $state // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode | null>(null);
-  let filterMode = $state // TODO: Verify store subscription is correct for Svelte 5<'all' | 'evidence' | 'contradictions' | 'timeline'>('all');
+  let isLoading = $state(true);
+  let selectedNode = $state <EvidenceNode | null>(null);
+  let filterMode = $state <'all' | 'evidence' | 'contradictions' | 'timeline'>('all');
 
   // Phoenix Wright color scheme
   const colors = {
@@ -379,7 +379,7 @@
     }
   }
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (data && show) {
       initializeVisualization();
     }

@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5/forms';
+  import type { enhance  } from '$app/forms';
   interface Props {
     data?: unknown;
     form?: unknown;
   }
-  let { data, form }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let showPassword = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let { data, form }: Props = $props();
+  let isLoading = $state <boolean>(false);
+  let showPassword = $state <boolean>(false);
 </script>
 
 <main class="page-repair">

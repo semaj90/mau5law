@@ -1,4 +1,4 @@
-import { GPU } from 'gpu.js';
+import type { GPU  } from 'gpu.js';
 
 export interface WebGPUCapabilities {
   hasWebGPU: boolean;

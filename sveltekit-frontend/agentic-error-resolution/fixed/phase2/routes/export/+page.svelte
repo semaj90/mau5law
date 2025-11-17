@@ -5,8 +5,8 @@
   import TooltipContent from '$lib/components/ui/TooltipContent.svelte';
   import TooltipTrigger from '$lib/components/ui/TooltipTrigger.svelte';
   import type { Case } from '$lib/types/index';
-  import { AlertTriangle, Calendar, CheckCircle, Database, Download, FileText, Filter } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import type { AlertTriangle, Calendar, CheckCircle, Database, Download, FileText, Filter  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   // Export state
   let exportLoading = $state(false);
   let exportError: string | null = $state(null);

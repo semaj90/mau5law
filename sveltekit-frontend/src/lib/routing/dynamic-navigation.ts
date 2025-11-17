@@ -1,7 +1,7 @@
 /** Dynamic Navigation System - manages navigation state and programmatic utilities */
-import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
-import { goto, afterNavigate } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
+import type { writable, derived, get, type Writable, type Readable  } from 'svelte/store';
+import type { goto, afterNavigate  } from '$app/navigation';
+import type { browser  } from '$app/environment';
 
 // Robust import for route registry: tolerate different export shapes (routeRegistry, RouteRegistry, default)
 import * as RouteRegistryModule from './route-registry.js';

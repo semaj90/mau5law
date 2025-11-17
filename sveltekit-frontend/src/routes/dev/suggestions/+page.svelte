@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported import { onMount } from "svelte"; let items: unknown[] = $state // TODO: Verify store subscription is correct for Svelte 5([]); let count = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0); $effect // TODO: Verify store subscription is correct for Svelte 5(() => { (async () => { try { const res = await fetch("/logs/svelte-suggestions.json"); const data = await res.json(); count = data.count; items = data.item} catch })()});
+  // Svelte, 5 runes are auto-imported import type { onMount  } from 'svelte'; let items: unknown[] = $state([]); let count = $state <number>(0); $effect(() => {() => { (async () => { try { const res = await fetch("/logs/svelte-suggestions.json"); const data = await res.json(); count = data.count; items = data.item} catch })()});
 </script>
 
 <main class="page-repair">

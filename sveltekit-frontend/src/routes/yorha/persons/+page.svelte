@@ -1,9 +1,9 @@
 <script lang="ts">
-	import POIPhotoModal from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/POIPhotoModal.svelte';
-	import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
-	import { Input as BitsInput, Badge as BitsBadge, Button as BitsButton, Card as BitsCard } from 'bits-ui';
-	import { AlertCircle, Edit, Eye, Plus, Search, Shield, Trash2 } from 'lucide-svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import POIPhotoModal from '$lib/components/POIPhotoModal.svelte';
+	import type { appActions, appStore  } from '$lib/stores/app-store';
+	import type { Input as BitsInput, Badge as BitsBadge, Button as BitsButton, Card as BitsCard  } from 'bits-ui';
+	import type { AlertCircle, Edit, Eye, Plus, Search, Shield, Trash2  } from 'lucide-svelte';
+	import type { onDestroy, onMount  } from 'svelte';
 
 // Enhanced Person interface with AI analysis and photos
 interface Person {
@@ -29,22 +29,22 @@ interface Person {
 }
 
 	// Local reactive state (Svelte 5 runes)
-	let persons = $state // TODO: Verify store subscription is correct for Svelte 5<Person[]>([]);
-	let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5('');
-	let selectedThreatLevel = $state // TODO: Verify store subscription is correct for Svelte 5('all');
-	let showNewPersonModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-	let selectedPerson = $state // TODO: Verify store subscription is correct for Svelte 5<Person | null>(null);
-	let loading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-	let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+	let persons = $state <Person[]>([]);
+	let searchQuery = $state('');
+	let selectedThreatLevel = $state('all');
+	let showNewPersonModal = $state(false);
+	let selectedPerson = $state <Person | null>(null);
+	let loading = $state(false);
+	let error = $state <string | null>(null);
 
 	// Photo viewer modal state
-	let showPhotoViewer = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-	let viewedPerson = $state // TODO: Verify store subscription is correct for Svelte 5<Person | null>(null);
-	let viewedPhotos = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-	let currentPhotoIndex = $state // TODO: Verify store subscription is correct for Svelte 5(0);
+	let showPhotoViewer = $state(false);
+	let viewedPerson = $state <Person | null>(null);
+	let viewedPhotos = $state <any[]>([]);
+	let currentPhotoIndex = $state(0);
 
 	// New person form state
- 	let newPerson = $state // TODO: Verify store subscription is correct for Svelte 5({
+ 	let newPerson = $state({
 		name: '',
 		aliases: [] as string[],
 		aliasesInput: '',
@@ -58,14 +58,14 @@ interface Person {
 	});
 
 	// Convert aliases input to array (simple reactive helper)
-	$effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+	$effect(() => {() => {
 		newPerson.aliases = newPerson.aliasesInput
 			.split(',')
 			.map(alias => alias.trim())
 			.filter(alias => alias.length > 0);
 	});
 
-	let formError = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+	let formError = $state <string | null>(null);
 
 	// Photo handling functions
 	function handlePhotoSelect(event: Event) {
@@ -144,7 +144,7 @@ interface Person {
 	}
 
 	// Derived filtered list (reactive)
-	let filteredPersons = $derived // TODO: Verify store subscription is correct for Svelte 5(persons.filter((person) => {
+	let filteredPersons = $derived(persons.filter((person) => {
 	  if (searchQuery) {
 	    const q = searchQuery.toLowerCase();
 	    if (
@@ -500,7 +500,7 @@ interface Person {
           <div class="loading-text">Loading persons of interest...</div>
         </div>
       {:else}
-        <!-- Corrected $derived // TODO: Verify store subscription is correct for Svelte 5 store access -->
+        <!-- Corrected $derived store access -->
         {#each filteredPersons as person (person.id)}
           <!-- use direct component tags (Svelte, 5 supports dynamic, component, variables) -->
           <BitsCard class="person-nier-bits-card">

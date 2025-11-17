@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Dialog as BitsDialog } from "bits-ui";
+  import type { Dialog as BitsDialog  } from 'bits-ui';
   // Event callbacks via props - Svelte 5 pattern
-  import { superForm } from "sveltekit-superforms";
+  import type { superForm  } from 'sveltekit-superforms';
   interface Props {
     data: any;
     open?: boolean;

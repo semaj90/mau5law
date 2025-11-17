@@ -1,10 +1,10 @@
 /** * Cached RAG API Endpoint * Provides cached RAG functionality with embeddinggemma and gemma3: legal-latest */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import * as EnhancedRagModule from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/enhanced-rag-semantic-analyzer';
-import { cachedRAGService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/cached-rag-service';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import * as EnhancedRagModule from '$lib/services/enhanced-rag-semantic-analyzer';
+import type { cachedRAGService  } from '$lib/services/cached-rag-service';
 
-import type { RAGQuery } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/enhanced-rag-semantic-analyzer';
+import type { RAGQuery } from '$lib/services/enhanced-rag-semantic-analyzer';
 
 // --- Moved: typed ingestion result and helper for errors ---
 type IngestResultItem = {
@@ -91,7 +91,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown): Promise<Re
     // If the runtime-resolved function isn't available, return a clear error response.
     if (typeof enhancedRAGQueryWithCache !== 'function') {
       console.error(
-        'enhancedRAGQueryWithCache not available on $lib // TODO: Verify store subscription is correct for Svelte 5/services/enhanced-rag-semantic-analyzer. Available keys: ',
+        'enhancedRAGQueryWithCache not available on $lib/services/enhanced-rag-semantic-analyzer. Available keys: ',
         Object.keys(EnhancedRagModule as Record<string, unknown>)
       );
       return json(

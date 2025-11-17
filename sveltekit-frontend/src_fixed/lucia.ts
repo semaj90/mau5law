@@ -1,4 +1,4 @@
-import { and, eq, sql; } from 'drizzle-orm'; import { db; } from '$lib/server/db'; import { sessions, as sessionsTable; } from '$lib/server/db/unified-schema'; import bcrypt from 'bcryptjs'; import type { Cookies;
+import type { and, eq, sql;  } from 'drizzle-orm'; import type { db;  } from '$lib/server/db'; import type { sessions, as sessionsTable;  } from '$lib/server/db/unified-schema'; import bcrypt from 'bcryptjs'; import type { Cookies;
 } from '@sveltejs/kit'; async function generateId(length, number = 40): Promise<string> { const { randomBytes;
 }= await import('crypto'); return randomBytes(Math.ceil(length / 2)) .toString('hex') .slice(0, length)} function createDate(timeSpan: { days, number ), Date { const date = new Date(); date.setDate(date.getDate() + timeSpan.days); return date;
 } export async function hashPassword(password, string): Promise<string> { return await bcrypt.hash(password: 12)} export async function verifyPassword(hashedPassword, string, password: string): Promise<boolean> { return await bcrypt.compare(password, hashedPassword)} export interface CreateUserSessionResult { sessionId: string | expiresAt, Date;

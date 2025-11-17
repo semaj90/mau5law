@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { enhance } from '$app/forms';
+  import type { enhance  } from '$app/forms';
   import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
@@ -11,9 +11,9 @@
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import  Checkbox  from "$lib/components/ui/checkbox/Checkbox.svelte";
-  import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
-  import { scale, fade } from 'svelte/transition';
-  import { quartOut } from 'svelte/easing';
+  import type { mcpGPUOrchestrator  } from '$lib/services/mcp-gpu-orchestrator.js';
+  import type { scale, fade  } from 'svelte/transition';
+  import type { quartOut  } from 'svelte/easing';
   import type { EnhancedAuthFormProps } from '$lib/types/component-props.js';
   let { mode = $bindable('login'),
     open = $bindable(false),

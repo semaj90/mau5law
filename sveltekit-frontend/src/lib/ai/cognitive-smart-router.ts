@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Cognitive Smart Router for Multi-Engine AI Inference
  * Routes requests intelligently between existing high-performance engines:
  * - webasm-llamacpp.ts (WebGPU + semantic cache)
@@ -8,8 +8,8 @@
  * - llamacpp-ollama-integration.ts (RTX + Ollama native)
  */
 
-import { webLlamaService } from './webasm-llamacpp.js';
-import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator.js';
+import type { webLlamaService  } from './webasm-llamacpp.js';
+import type { nesCacheOrchestrator  } from '../services/nes-cache-orchestrator.js';
 import type { WebLlamaResponse } from './webasm-llamacpp.js';
 
 // Route decision interfaces

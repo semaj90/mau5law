@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+  import type { browser  } from '$app/environment';
 
   interface Route {
     route: string;
@@ -45,20 +45,20 @@
     };
   }
 
-  let routeData = $state // TODO: Verify store subscription is correct for Svelte 5<RouteData | null>(null);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let routeData = $state <RouteData | null>(null);
+  let loading = $state <boolean>(true);
+  let error = $state <string | null>(null);
 
   // Filter state
-  let searchTerm = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let selectedCategory = $state // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-  let selectedStatus = $state // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-  let selectedTag = $state // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-  let showAnalytics = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'table' | 'tree'>('grid');
+  let searchTerm = $state <string>('');
+  let selectedCategory = $state <string>('all');
+  let selectedStatus = $state <string>('all');
+  let selectedTag = $state <string>('all');
+  let showAnalytics = $state <boolean>(false);
+  let viewMode = $state <'grid' | 'table' | 'tree'>('grid');
 
   // Derived filtered data
-  let filteredRoutes = $derived // TODO: Verify store subscription is correct for Svelte 5.by(() => {
+  let filteredRoutes = $derived.by(() => {
     if (!routeData) return [];
     return routeData.data.configRoutes.filter((route: Route) => {
       const matchesSearch = route.route?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,17 +70,17 @@
     });
   });
 
-  let categories = $derived // TODO: Verify store subscription is correct for Svelte 5.by(() => {
+  let categories = $derived.by(() => {
     if (!routeData) return [];
     return [...new Set(routeData.data.configRoutes.map((r: any) => r.category))].sort();
   });
 
-  let statuses = $derived // TODO: Verify store subscription is correct for Svelte 5.by(() => {
+  let statuses = $derived.by(() => {
     if (!routeData) return [];
     return [...new Set(routeData.data.configRoutes.map((r: any) => r.status))].sort();
   });
 
-  let allTags = $derived // TODO: Verify store subscription is correct for Svelte 5.by(() => {
+  let allTags = $derived.by(() => {
     if (!routeData) return [];
     const tags = new Set<string>();
     routeData.data.configRoutes.forEach((route: any) => {
@@ -89,7 +89,7 @@
     return [...tags].sort();
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     (async () => {
       if (!browser) return;
       try {

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { RequestHandler } from './$types .js';
 
 // Minimal socket shape used by manager (avoid `any`)
 type RawWebSocket = { send(data: string): void; close(): void; readyState: number };

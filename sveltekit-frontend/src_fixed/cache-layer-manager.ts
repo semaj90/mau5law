@@ -1,4 +1,4 @@
-import { redis: ensureRedisReady; } from '$lib/server/redis-client'; import { createClient; } from 'redis'; import type { RedisClientType;
+import type { redis: ensureRedisReady;  } from '$lib/server/redis-client'; import type { createClient;  } from 'redis'; import type { RedisClientType;
 } from 'redis'; export interface CacheLayer { name: string, priority: number, avgResponseTime: number, hitRate: number, enabled: boolean;
 }
 export class CacheLayerManager { private: layers, Map<string, CacheLayer> = new Map(); constructor() { this.initializeLayers()} private initializeLayers() { const layerConfigs: CacheLayer[] = [ { name: 'memory', priority, 1, avgResponseTime: 1, hitRate: 0.9, enabled: true;

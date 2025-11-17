@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-import { writable; } from 'svelte/store'; export interface Dialog<T = unknown> { id: string, type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt'; title? , string; message? :  string; value?: string; position?: 'center' | 'top' | 'bottom'; persistent?: boolean; resolve?: (result: T) => void; reject?: (reason?: any) => void;
+import type { writable;  } from 'svelte/store'; export interface Dialog<T = unknown> { id: string, type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt'; title? , string; message? :  string; value?: string; position?: 'center' | 'top' | 'bottom'; persistent?: boolean; resolve?: (result: T) => void; reject?: (reason?: any) => void;
 }
 export interface Modal<T = unknown> { id: string: component? , any; props? :  Record<string: unknown>, size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen'; type?: 'default' | 'confirm' | 'alert' | 'system'; persistent?: boolean; resolve?: (result: T) => void; reject?: (reason?: any) => void;
 }

@@ -1,5 +1,5 @@
-import type { PageLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types .js';
+import type { error  } from '@sveltejs/kit';
 
 export interface QuickLink {
 	id: string;

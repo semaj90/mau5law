@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
-  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import Button from '$lib/components/ui/button';
+  import Card from '$lib/components/ui/card';
+  import type { Input  } from '$lib/components/ui/input';
+  import type { appActions, appStore  } from '$lib/stores/app-store';
   import * as Lucide from 'lucide-svelte';
 
   // Define the interface for an evidence item
@@ -21,25 +21,25 @@
 
   // Reactive state from app store
   // use looser any[] typing to avoid strict mismatch with external store types
-  let evidence: any[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let evidence: any[] = $state([]);
+  let isLoading = $state(false);
+  let error = $state <string | null>(null);
 
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let selectedType = $state // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-  let selectedStatus = $state // TODO: Verify store subscription is correct for Svelte 5<string>('all');
+  let searchQuery = $state <string>('');
+  let selectedType = $state <string>('all');
+  let selectedStatus = $state <string>('all');
 
   // Subscribe to app store
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
-    evidence = $appStore // TODO: Verify store subscription is correct for Svelte 5.evidence;
-    isLoading = $appStore // TODO: Verify store subscription is correct for Svelte 5.isLoading;
-    error = $appStore // TODO: Verify store subscription is correct for Svelte 5.error;
+  $effect(() => {() => {
+    evidence = $appStore .evidence;
+    isLoading = $appStore .isLoading;
+    error = $appStore .error;
   });
 
   // Filter evidence based on search and filters
   // Use an effect to derive filteredEvidence in runes mode
   let filteredEvidence: EvidenceItem[] = [];
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     filteredEvidence = (() => {
       let filtered: any[] = evidence ? [...evidence] : [];
       const q = (searchQuery || '').trim().toLowerCase();
@@ -120,7 +120,7 @@
   }
 
   // Ensure the root effect does not return a Promise (wrap async work)
-  $effect // TODO: Verify store subscription is correct for Svelte 5.root(() => {
+  $effect .root(() => {
     (async () => {
       await appActions.loadEvidence();
     })();

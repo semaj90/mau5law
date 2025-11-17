@@ -1,10 +1,10 @@
 <script lang="ts">
   /// <reference types="vite/client" />
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/state';
+  import type { page  } from '$app/state';
   // @ts-ignore - some environments lack @xstate/svelte types during migration
-  import { useMachine } from '@xstate/svelte';
-  import { legalCaseMachine, legalCaseSelectors } from '$lib/state/legal-case-machine.js';
+  import type { useMachine  } from '@xstate/svelte';
+  import type { legalCaseMachine, legalCaseSelectors  } from '$lib/state/legal-case-machine.js';
   import type { LegalCaseContext } from '$lib/state/legal-case-machine.js';
   import  Button  from "$lib/components/ui/Button.svelte";
   // Get caseId from route params

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { PNGEmbedExtractor } from '../src/lib/services/png-embed-extractor';
+import type { describe, it, expect, beforeAll, afterAll, vi  } from 'vitest';
+import type { PNGEmbedExtractor  } from '../src/lib/services/png-embed-extractor';
 import type { LegalAIMetadata } from '../src/lib/types/legal-ai-metadata';
 
 // Integration test for the complete Legal AI PNG Evidence Workflow

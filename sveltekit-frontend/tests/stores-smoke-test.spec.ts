@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 test.describe('Store Consolidation Smoke Tests', () => {
   test('auth store loads without errors', async ({ page }) => {
@@ -69,7 +69,7 @@ test.describe('Store Consolidation Smoke Tests', () => {
       <html>
         <head>
           <script type="module">
-            import { auth, aiAssistant, chatStore } from '/src/lib/stores/index.ts';
+            import type { auth, aiAssistant, chatStore  } from '/src/lib/stores/index.ts';
 
             window.storesLoaded = {
               auth: typeof auth !== 'undefined',

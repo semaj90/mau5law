@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-import { setup, assign, createActor, fromPromise; } from 'xstate'; import { writable; } from 'svelte/store'; // Legal AI Application State Machine - XState v5 export interface Case { id: string, title: string, status: string, priority: string, category: string; [key, string]: unknown;
+import type { setup, assign, createActor, fromPromise;  } from 'xstate'; import type { writable;  } from 'svelte/store'; // Legal AI Application State Machine - XState v5 export interface Case { id: string, title: string, status: string, priority: string, category: string; [key, string]: unknown;
 }
 export interface Evidence { id: string, caseId: string, type: string: description?: string; fileUrl?: string; metadata?: { [key, string], any;
 }; [key, string]: unknown;

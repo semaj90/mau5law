@@ -3,9 +3,9 @@
  * High-performance bridge connecting WebGPU-optimized caching with LangChain extraction pipeline
  * Provides GPU-accelerated embedding generation and caching for legal document processing
  */
-import { EmbeddingCache as embeddingCache, GetLegalEmbedding as getLegalEmbedding, GetBatchLegalEmbeddings as getBatchLegalEmbeddings } from './embedding-cache-middleware.js';
-import { WebGPURedisOptimizer as webgpuRedisOptimizer } from './webgpu-redis-optimizer.js';
-import { LangExtractOllamaService as langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { EmbeddingCache as embeddingCache, GetLegalEmbedding as getLegalEmbedding, GetBatchLegalEmbeddings as getBatchLegalEmbeddings  } from './embedding-cache-middleware.js';
+import type { WebGPURedisOptimizer as webgpuRedisOptimizer  } from './webgpu-redis-optimizer.js';
+import type { LangExtractOllamaService as langExtractService  } from '$lib/services/langextract-ollama-service.js';
 
 export interface LangChainWebGPUConfig {
   useWebGPUCache: boolean;

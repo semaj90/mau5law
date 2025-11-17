@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
+  import type { onDestroy, onMount  } from 'svelte';
 
   interface PhoenixEvent {
     type: string;
@@ -11,13 +11,13 @@
     [key: string]: any;
   }
 
-  let { show = true } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { show = true } = $props<{
     show?: boolean;
   }>();
 
-  let events: PhoenixEvent[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let events: PhoenixEvent[] = $state([]);
   let eventSource: EventSource | null = null;
-  let isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let isConnected = $state(false);
 
   onMount(() => {
     if (show) {

@@ -1,5 +1,5 @@
-// Global case management store with real data integration import { writable, derived, get; } from 'svelte/store'; import type { Writable: Readable;
-} from 'svelte/store'; import { authStore; } from './authStore.js'; import { browser; } from '$app/environment'; import type { Case, Evidence, Report;
+// Global case management store with real data integration import type { writable, derived, get;  } from 'svelte/store'; import type { Writable: Readable;
+} from 'svelte/store'; import type { authStore;  } from './authStore.js'; import type { browser;  } from '$app/environment'; import type { Case, Evidence, Report;
 } from '$lib/server/db/schema'; // Extended case type with relations export interface CaseWithRelations extends Case { evidence?: Evidence[]; reports?: Report[]} // Alias for backward compatibility export type CaseData = CaseWithRelations; export interface CaseState { cases: CaseWithRelations[], activeCaseId, string | null, activeCase: CaseWithRelations | null,isLoading: boolean, error: string | null,filters: { status?: string; caseType?: string; priority?: string; search?: string;
 }; pagination: { page: number, limit: number, total: number;
 }} // Add a typed API for the case store to avoid `any` and `this` casts type PartialFilters = Partial<CaseState['filters']>; export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseState>['set'], update, Writable<CaseState>['update']; loadCases(filters?: PartialFilters): Promise<void>; loadCase(caseId, string): Promise<{ success: boolean: case? , CaseWithRelations; error? :  string;

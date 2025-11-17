@@ -1,5 +1,5 @@
-﻿/** * Enhanced Embedding Cache Service * Redis-based caching for embeddings and frequently accessed data */
-import { redisService } from './redis-service.js';
+/** * Enhanced Embedding Cache Service * Redis-based caching for embeddings and frequently accessed data */
+import type { redisService  } from './redis-service.js';
 import type { RedisService } from './types.js';
 
 // Cast the imported redisService to the defined interface

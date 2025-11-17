@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from "$lib/types/global";
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import 
     Input
@@ -13,8 +13,8 @@
     CardTitle,
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
-  import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
-  import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
+  import type { Loader2, Search, Brain, Zap, Database  } from 'lucide-svelte';
+  import type { context7Service, type VectorIntelligence  } from '$lib/services/context7Service';
   // Reactive state from Context7 service
   const { vectorResults, isAnalyzing } = context7Servic;
   let searchQuery = $state('');

@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
+  import type { page  } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import  UiButton as Button  from "$lib/components/ui.svelte";
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   let caseId: string | null = $state(null);
   let readOnly = $state(false);
   $effect(() => {

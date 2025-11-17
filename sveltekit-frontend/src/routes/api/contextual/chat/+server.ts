@@ -1,14 +1,12 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { agenticGemma3 } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/gemma3-agentic-functions';
-import type { AttachmentMetadata } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
-import {
-  ingestContextualAttachment,
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { agenticGemma3  } from '$lib/server/ai/gemma3-agentic-functions';
+import type { AttachmentMetadata } from '$lib/types/sharedTypes';
+import type { ingestContextualAttachment,
   resolveAttachmentReference,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/storage/contextual-attachment-helper';
-import {
-  isLuciaAvailableForContextualUploads,
+ } from '$lib/server/storage/contextual-attachment-helper';
+import type { isLuciaAvailableForContextualUploads,
   requireLuciaForContextualUploads,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/contextual-upload-guard';
+ } from '$lib/server/auth/contextual-upload-guard';
 
 interface ChatPayload {
   message?: string;

@@ -1,6 +1,6 @@
-﻿import type { User;
+import type { User;
 } from '$lib/types';
-/** * XState Event Machine for User Typing States * Tracks user typing behavior for contextual prompting and analytics * Integrates with multi-core workers for real-time processing */ import { createMachine, assign, fromPromise; } from 'xstate'; export type TypingEvent = | { type: 'USER_STARTED_TYPING', text: string, timestamp: number;
+/** * XState Event Machine for User Typing States * Tracks user typing behavior for contextual prompting and analytics * Integrates with multi-core workers for real-time processing */ import type { createMachine, assign, fromPromise;  } from 'xstate'; export type TypingEvent = | { type: 'USER_STARTED_TYPING', text: string, timestamp: number;
 }| { type: 'USER_STOPPED_TYPING', text: string, timestamp: number;
 }| { type: 'USER_SUBMITTED', text: string, timestamp: number;
 }| { type: 'USER_CLEARED', timestamp, number;

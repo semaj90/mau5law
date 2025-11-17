@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { PageServerLoad } from './$types ';
 
 export const load: PageServerLoad = async ({ locals }) => {
     // Ensure user and session are explicitly typed as potentially null.

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 test.describe('MinIO Upload API', () => {
   test('should upload a file successfully', async ({ request }) => {

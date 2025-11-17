@@ -1,5 +1,5 @@
-import { Client } from 'minio';
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
+import type { Client  } from 'minio';
+import type { env  } from '$env /dynamic/private';
 
 // Centralized MinIO client initialization
 let minioClient: Client | null = null;

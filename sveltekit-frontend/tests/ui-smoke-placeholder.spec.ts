@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 const PLACEHOLDER_TEXT = 'Page under reconstruction';
 

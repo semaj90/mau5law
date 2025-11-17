@@ -1,10 +1,10 @@
-import { rabbitMQService as rawRabbitMQService } from "../services/rabbitmq-service.js";
-import { db } from "$lib/server/db/client";
+import type { rabbitMQService as rawRabbitMQService  } from '../services/rabbitmq-service.js';
+import type { db  } from '$lib/server/db/client';
 import * as schema from "$lib/server/db/schema-postgres";
-import { eq } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
+import type { eq  } from 'drizzle-orm';
+import type { v4 as uuidv4  } from 'uuid';
 // Add: LangChain text splitter for semantic chunking
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitters"; // Corrected: Named import
+import type { RecursiveCharacterTextSplitter  } from 'langchain/text_splitters'; // Corrected: Named import
 import * as fs from "fs/promises";
 import path from "path";
 import os from "os";
@@ -50,10 +50,10 @@ export interface EmbeddingResult {
   model: string;
 }
 // Corrected: Use Drizzle's inferred select type for DocumentProcessingRecord
-export type DocumentProcessingRecord = typeof schema.documentProcessing.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5;
+export type DocumentProcessingRecord = typeof schema.documentProcessing.$inferSelect ;
 
 class DocumentProcessingWorker {
-  private isRunning = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  private isRunning = $state (false);
   private processedCount = 0;
   private failedCount = 0;
   private intervalHandle: ReturnType<typeof setInterval> | null = null;
@@ -67,7 +67,7 @@ class DocumentProcessingWorker {
       console.log("Document processing worker is already running");
       return;
     }
-    this.isRunning = true; // Corrected: $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 rune is for declaration, not assignment
+    this.isRunning = true; // Corrected: $state rune is for declaration, not assignment
     console.log("ðŸ”„ Starting document processing worker...");
     try {
       await rabbitMQService.connect();
@@ -76,12 +76,12 @@ class DocumentProcessingWorker {
     } catch (error: Error | unknown) {
       const message = error instanceof Error ? error.message : String(error); // Corrected syntax
       console.error("Failed to start document processing worker: ", message);
-      this.isRunning = false; // Corrected: $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 rune is for declaration, not assignment
+      this.isRunning = false; // Corrected: $state rune is for declaration, not assignment
       throw error;
     }
   }
   async stop(): Promise<void> {
-    this.isRunning = false; // Corrected: $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 rune is for declaration, not assignment
+    this.isRunning = false; // Corrected: $state rune is for declaration, not assignment
     console.log("ðŸ›‘ Stopping document processing worker...");
     if (this.intervalHandle) {
       clearInterval(this.intervalHandle);

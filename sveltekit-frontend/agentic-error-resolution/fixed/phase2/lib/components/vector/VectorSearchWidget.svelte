@@ -6,11 +6,10 @@ Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { Badge } from '$lib/components/ui/badge.svelte'";
-  import {
-    Search,
+  import type { Search,
     Loader2,
     FileText,
     Users,
@@ -19,8 +18,8 @@ Compact searchable component for embedding in other interfaces
     Scale,
     Eye,
     X
-  } from 'lucide-svelte';
-  import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
+   } from 'lucide-svelte';
+  import type { vectorIntelligenceService  } from '$lib/services/vector-intelligence-service.js';
   import type { VectorSearchResult } from '$lib/services/vector-intelligence-service.js';
   interface Props {
     placeholder?: string;

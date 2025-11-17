@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { AccessibilityTester } from './accessibility-tester';
+import type { test, expect  } from '@playwright/test';
+import type { AccessibilityTester  } from './accessibility-tester';
 
 test.describe('Accessibility Tests', () => {
   let accessibilityTester: AccessibilityTester;

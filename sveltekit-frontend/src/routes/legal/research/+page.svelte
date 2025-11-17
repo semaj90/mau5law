@@ -1,11 +1,11 @@
 <script lang="ts">
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { nesGPUBridge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/gpu/nes-gpu-memory-bridge';
-  import HeadlessDialog from '$lib // TODO: Verify store subscription is correct for Svelte 5/headless/HeadlessDialog.svelte';
-  import LoadingButton from '$lib // TODO: Verify store subscription is correct for Svelte 5/headless/LoadingButton.svelte';
-  import FormField from '$lib // TODO: Verify store subscription is correct for Svelte 5/headless/FormField.svelte';
+  import type { onMount  } from 'svelte';
+  import type { nesGPUBridge  } from '$lib/gpu/nes-gpu-memory-bridge';
+  import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
+  import LoadingButton from '$lib/headless/LoadingButton.svelte';
+  import FormField from '$lib/headless/FormField.svelte';
   // Icons (import only icons actually used to avoid type errors)
   import Search from 'lucide-svelte/icons/search';
   import BookOpen from 'lucide-svelte/icons/book-open';
@@ -64,10 +64,10 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
    , findings: unknown[]};
   // --- END ADDED ---
 
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5<DocumentResult[]>([]);
-  let isSearching = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let selectedFilters = $state // TODO: Verify store subscription is correct for Svelte 5<{
+  let searchQuery = $state <string>('');
+  let searchResults = $state <DocumentResult[]>([]);
+  let isSearching = $state <boolean>(false);
+  let selectedFilters = $state <{
     jurisdiction: string
     court: string
     documentType: string
@@ -78,25 +78,25 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
     dateRange: '',
     precedentialValue: ''
   });
-  let sortBy = $state // TODO: Verify store subscription is correct for Svelte 5<string>('relevance');
-  let currentPage = $state // TODO: Verify store subscription is correct for Svelte 5<number>(1);
-  let totalResults = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
-  let savedCitations = $state // TODO: Verify store subscription is correct for Svelte 5<Citation[]>([]);
-  let showCitationDialog = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let selectedDocument = $state // TODO: Verify store subscription is correct for Svelte 5<DocumentResult | null>(null);
-  let researchSession = $state // TODO: Verify store subscription is correct for Svelte 5<ResearchSession>({
+  let sortBy = $state <string>('relevance');
+  let currentPage = $state <number>(1);
+  let totalResults = $state <number>(0);
+  let savedCitations = $state <Citation[]>([]);
+  let showCitationDialog = $state <boolean>(false);
+  let selectedDocument = $state <DocumentResult | null>(null);
+  let researchSession = $state <ResearchSession>({
     id: null,
     startTime: new Date(),
     queries: [],
     findings: []
   });
   // Advanced search options
-  let advancedSearch = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let searchMode = $state // TODO: Verify store subscription is correct for Svelte 5<'semantic' | 'boolean' | 'phrase'>('semantic'); // semantic, boolean, phrase
-  let aiSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let relatedTopics = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let advancedSearch = $state <boolean>(false);
+  let searchMode = $state <'semantic' | 'boolean' | 'phrase'>('semantic'); // semantic, boolean, phrase
+  let aiSuggestions = $state <string[]>([]);
+  let relatedTopics = $state <string[]>([]);
   // Filter options from database
-  let filterOptions = $state // TODO: Verify store subscription is correct for Svelte 5<{
+  let filterOptions = $state <{
     jurisdictions: string[],
     courts: string[],
     documentTypes: string[],
@@ -106,7 +106,7 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
     precedentialValues: ['High', 'Medium', 'Low', 'Informational']
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     (async () => {
       await initializeResearchSession();
       await loadSavedCitations();

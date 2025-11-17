@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  import LoginButton from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/auth/LoginButton.svelte';
-  import * as unified from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores/unified';
-  import ContextualEvidenceChatModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ai/ContextualEvidenceChatModal.svelte';
-  import { createFileUploader } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils/file-uploader';
-  import { derived, writable } from 'svelte/store';
+  import type { browser  } from '$app/environment';
+  import LoginButton from '$lib/components/auth/LoginButton.svelte';
+  import * as unified from '$lib/stores/unified';
+  import ContextualEvidenceChatModal from '$lib/components/ai/ContextualEvidenceChatModal.svelte';
+  import type { createFileUploader  } from '$lib/utils/file-uploader';
+  import type { derived, writable  } from 'svelte/store';
 
-  let file = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
-  let result = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null); // Use any for now, or define a proper interface for the result
-  let isUploading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let file = $state <File | null>(null);
+  let result = $state <any>(null); // Use any for now, or define a proper interface for the result
+  let isUploading = $state <boolean>(false);
 
   async function handleUpload() {
     if (!file) {
@@ -56,14 +56,13 @@
   // Use svelte/store derived and coerce values into arrays to avoid type errors
   let displayRecommendations = derived(
     [recommendations, partialRecommendations, engineState],
-    ([$recs // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, $partial // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5]) => {
+    ([$recs , $partial , $state ]) => {
       // cast to unknown before accessing .items to satisfy TS
-      const recsArr = Array.isArray($recs // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) ? $recs // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 : (($recs // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 as { items?: any[] })?.items ?? []);
-      const partialArr = Array.isArray($partial // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)
-        ? $partial // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
-        : (($partial // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 as { items?: any[] })?.items ?? []);
+      const recsArr = Array.isArray($recs ) ? $recs : (($recs as { items?: any[] })?.items ?? []);
+      const partialArr = Array.isArray($partial )
+        ? $partial : (($partial as { items?: any[] })?.items ?? []);
       // show streaming partials while processing, otherwise final recommendations
-      if ($state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 === 'processing' && partialArr.length) return partialArr;
+      if ($state === 'processing' && partialArr.length) return partialArr;
       return recsArr.length ? recsArr : partialArr;
     }
   );
@@ -82,16 +81,16 @@
     autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
   };
   // typed stats and reactive primitives to silence 'unknown' type errors
-  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{ totalCases: number; totalEvidence: number; processingJobs: number }>({
+  let stats = $state <{ totalCases: number; totalEvidence: number; processingJobs: number }>({
     totalCases: 0,
     totalEvidence: 0,
     processingJobs: 0,
   });
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let userQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let registerOpen = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let loading = $state <boolean>(true);
+  let userQuery = $state <string>('');
+  let registerOpen = $state <boolean>(false);
   let registerDialogRef: HTMLDialogElement; // Reference to the native dialog element
-  let showAIChatModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showAIChatModal = $state (false);
   // ---------------------------------------------------------------
 
   function openRegister() {
@@ -100,7 +99,7 @@
   }
 
   // Check system health on mount
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     if (browser) {
       checkSystemHealth();
       const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
@@ -376,8 +375,8 @@
       </button>
     </div>
 
-    {#if $errorMessage // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5}
-      <p class="nes-text is-error" style="margin-top: 1rem;">{$errorMessage // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5}</p>
+    {#if $errorMessage }
+      <p class="nes-text is-error" style="margin-top: 1rem;">{$errorMessage }</p>
     {/if}
 
     {#if result}
@@ -398,8 +397,8 @@
     {/if}
 
     <div class="recommendation-cards" aria-live="polite">
-      {#if $displayRecommendations // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 && $displayRecommendations // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.length}
-        {#each $displayRecommendations // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 as rec (rec.id ?? rec.title ?? Math.random())}
+      {#if $displayRecommendations && $displayRecommendations .length}
+        {#each $displayRecommendations as rec (rec.id ?? rec.title ?? Math.random())}
           <div class="card {rec.streaming ? 'streaming' : ''} {rec.dynamic ? 'dym' : ''}">
             {@html escapeHtml(rec.title ?? rec.summary ?? '')}
             <div class="meta">

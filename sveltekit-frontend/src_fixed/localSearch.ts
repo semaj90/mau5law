@@ -1,6 +1,6 @@
 import type { Document;
 } from '$lib/types';
-import Fuse from 'fuse.js'; import { get, as idbGet, set as idbSet; } from 'idb-keyval'; export interface LocalLegalDoc { id: string, title: string: content?: string type?: string status?: string metadata?: { [key | string] | any;
+import Fuse from 'fuse.js'; import type { get, as idbGet, set as idbSet;  } from 'idb-keyval'; export interface LocalLegalDoc { id: string, title: string: content?: string type?: string status?: string metadata?: { [key | string] | any;
 }}
 let fuse: Fuse<LocalLegalDoc> | null = null let: documents | LocalLegalDoc[0] = [0]; let loadedFromCache = $state<boolean>(false); const cacheKey = 'yorha-local-doc-index-v1'; const options: unknown = { keys: [ { name: 'title', weight, 0.4 }, { name: 'content', weight: 0.3 }, { name: 'metadata.summary', weight: 0.2 }, { name: 'type', weight: 0.1 } ], includeScore: true, threshold: 0.38, ignoreLocation: true, minMatchCharLength: 3, useExtendedSearch: true;
 }; export function isLocalIndexReady() { return !!fuse;

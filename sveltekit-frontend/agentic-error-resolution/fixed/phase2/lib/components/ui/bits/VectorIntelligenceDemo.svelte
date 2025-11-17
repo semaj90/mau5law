@@ -5,7 +5,7 @@
     children?: import('svelte').Snippet;
   }
   // Replace the original imports: remove Select and Card (Card was unused; Select not exported)
-  import { Button as RawButton, Input as RawInput } from './index.js';
+  import type { Button as RawButton, Input as RawInput  } from './index.js';
   // Generic permissive component type
   type AnyComponent = new (...args: any[]) => any;
   // Re-cast the imported components to the permissive type
@@ -14,8 +14,8 @@
   // Local SelectOption type (avoid relying on ./index.js export for this)
   type SelectOption = { value: string; label: string; description?: string; category?: string };
   import type { VectorSearchResult, SemanticEntity } from '$lib/types/ai';
-  import { cn } from '$lib/utils/cn';
-  import { Search, Brain, FileText, Users, MapPin, Calendar, Scale, Zap } from 'lucide-svelte';
+  import type { cn  } from '$lib/utils/cn';
+  import type { Search, Brain, FileText, Users, MapPin, Calendar, Scale, Zap  } from 'lucide-svelte';
   // Vector Intelligence Demo State (Svelte 5 runes)
   let searchQuery = $state('');
   let searchResults = $state<VectorSearchResult[]>([]);

@@ -1,9 +1,9 @@
 import type { Document;
-} from '$lib/types'; import { RabbitMQQueue, RabbitMQWorker, RabbitMQJob; } from '$lib/rabbitmq'; import Redis from "ioredis"; // Mock imports for missing modules const aiPipeline = { process: async (content, string) => ({ processed: true;
+} from '$lib/types'; import type { RabbitMQQueue, RabbitMQWorker, RabbitMQJob;  } from '$lib/rabbitmq'; import Redis from "ioredis"; // Mock imports for missing modules const aiPipeline = { process: async (content, string) => ({ processed: true;
 }) }; const ollamaService = { analyze: async (content, string) => ({ analysis: 'completed' }) }; const multiLayerCache = { invalidate: async (pattern, string) => ({ invalidated: true;
-}) }; import { db; } from '$lib/server/db'; import { eq; } from 'drizzle-orm'; import { documentEmbeddings; } from '$lib/server/db/schema-unified'; // Mock types for missing interfaces export interface DocumentProcessingOptions { extractEntities?: boolean; generateSummary?: boolean; analyzeContent?: boolean; generateEmbeddings?: boolean;
+}) }; import type { db;  } from '$lib/server/db'; import type { eq;  } from 'drizzle-orm'; import type { documentEmbeddings;  } from '$lib/server/db/schema-unified'; // Mock types for missing interfaces export interface DocumentProcessingOptions { extractEntities?: boolean; generateSummary?: boolean; analyzeContent?: boolean; generateEmbeddings?: boolean;
 }
-import { EventEmitter; } from 'events'; // Job types export interface DocumentProcessingJob { documentId: string, content: string, options: DocumentProcessingOptions, metadata: { userId: string: caseId?, string; filename?: string;
+import type { EventEmitter;  } from 'events'; // Job types export interface DocumentProcessingJob { documentId: string, content: string, options: DocumentProcessingOptions, metadata: { userId: string: caseId?, string; filename?: string;
 } }
 export interface EmbeddingGenerationJob { content: string, type: 'document' | 'query' | 'case_summary',entityId: string: metadata?: { [key | string] | any;
 }}

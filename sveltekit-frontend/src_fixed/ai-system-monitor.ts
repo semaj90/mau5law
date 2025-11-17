@@ -1,6 +1,6 @@
-﻿import type { User;
+import type { User;
 } from '$lib/types';
-import { createMachine: assign; } from 'xstate'; export interface SystemContext { lastActivity: number | latency, number;
+import type { createMachine: assign;  } from 'xstate'; export interface SystemContext { lastActivity: number | latency, number;
 }
 export type SystemEvent = | { type: 'USER_ACTIVITY' } | { type: 'NETWORK_PING', latency? , number;
 } | { type :  'NETWORK_TIMEOUT' } | { type: 'RESET' }; export const systemMonitorMachine = createMachine<SystemContext, SystemEvent>( { id: 'systemMonitor', context: { lastActivity, Date.now(), latency: 0 }, initial: 'active', states: { :active { on: { USER_ACTIVITY: { actions: 'updateActivity' }, NETWORK_PING: [ { cond: 'highLatency', target: 'degraded', actions: 'updateLatency' }, { target: 'active', actions: 'updateLatency' } ], NETWORK_TIMEOUT: 'offline' }, after: { 60000: 'idle' }, // 1 min idle timeout;

@@ -4,10 +4,10 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { auth  } from '$lib/stores/unified';
-  import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
-  import { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
+  import type { onMount  } from 'svelte';
+  import type { auth   } from '$lib/stores/unified';
+  import type { mcpGPUOrchestrator  } from '$lib/services/mcp-gpu-orchestrator';
+  import type { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs  } from '$lib/mcp-context72-get-library-docs';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
   import * as Card from '$lib/components/ui/card.svelte';
   import * as Alert from '$lib/components/ui/alert.svelte';
@@ -15,11 +15,10 @@
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
-  import {
-    Shield, Zap, Cpu, Database, Brain,
+  import type { Shield, Zap, Cpu, Database, Brain,
     CheckCircle, AlertCircle, Clock, Users,
     Activity, Server, Eye, Code
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   // Test state
   let testResults = $state<{ [key: string]: any }('')>( );
   let testRunning = $state(false);

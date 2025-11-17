@@ -1,15 +1,15 @@
-﻿import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
 
 // End-to-End Vector Pipeline Test
 // Tests: Document Upload → Embedding → Search → Results
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { users, cases, documents, documentVectors } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { eq, sql, desc } from 'drizzle-orm';
-import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
+import type { db  } from '$lib/server/db';
+import type { users, cases, documents, documentVectors  } from '$lib/server/db/schema-postgres';
+import type { eq, sql, desc  } from 'drizzle-orm';
+import type { OllamaEmbeddings  } from '@langchain/community/embeddings/ollama';
 
 // ============================================================================
 // TEST CONFIGURATION

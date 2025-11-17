@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
   interface Props {
     evidenceItem?: {
@@ -10,19 +10,19 @@
     };
   }
 
-  let { evidenceItem }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { evidenceItem }: Props = $props();
 
   let model: any = null;
   let tokenizer: any = null;
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let inputText = $state // TODO: Verify store subscription is correct for Svelte 5('');
-  let outputText = $state // TODO: Verify store subscription is correct for Svelte 5('');
-  let isGenerating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let currentProvider = $state // TODO: Verify store subscription is correct for Svelte 5('detecting');
-  let modelLoaded = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let isLoading = $state(true);
+  let inputText = $state('');
+  let outputText = $state('');
+  let isGenerating = $state(false);
+  let currentProvider = $state('detecting');
+  let modelLoaded = $state(false);
 
   // Set default input based on evidence item with legal analysis prompt
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (evidenceItem) {
       inputText = `LEGAL ANALYSIS REQUEST:\n\nEvidence Title: ${evidenceItem.title}\nEvidence Content: ${evidenceItem.excerpt}\nEvidence Type: ${evidenceItem.type}\nRelevance Score: ${evidenceItem.relevance}%\n\nPlease provide a comprehensive legal analysis including:\n1. Key legal issues identified\n2. Potential risks or implications\n3. Recommended actions\n4. Supporting legal precedents or principles\n\nAnalysis:`;
     }

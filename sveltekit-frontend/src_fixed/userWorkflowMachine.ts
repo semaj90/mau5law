@@ -1,5 +1,5 @@
 import type { User;
-} from '$lib/types'; /** * User Workflow XState Machine * Manages user interaction workflows, case management, and collaborative processes */ import { createMachine, assign, type ActorRefFrom; } from 'xstate'; // Type definitions export interface User { id: string, email: string, name: string, role: string;
+} from '$lib/types'; /** * User Workflow XState Machine * Manages user interaction workflows, case management, and collaborative processes */ import type { createMachine, assign, type ActorRefFrom;  } from 'xstate'; // Type definitions export interface User { id: string, email: string, name: string, role: string;
 }
 export interface LegalCase { id: string, title: string, status: string, createdAt: Date;
 }

@@ -1,12 +1,12 @@
 <!-- GPU AI Assistant - Real-time streaming chat with server GPU -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { gpuAIService } from '$lib/services/gpu-ai-service';
-  import { evidenceStore  } from '$lib/stores/unified';
-  import { showSuccess, showError  } from '$lib/stores/unified';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { gpuAIService  } from '$lib/services/gpu-ai-service';
+  import type { evidenceStore   } from '$lib/stores/unified';
+  import type { showSuccess, showError   } from '$lib/stores/unified';
   import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
-  import { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal } from 'lucide-svelte';
+  import type { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal  } from 'lucide-svelte';
   interface ChatMessage {
     id: string;
     type: 'user' | 'assistant' | 'system';

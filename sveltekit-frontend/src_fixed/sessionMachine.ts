@@ -1,4 +1,4 @@
-// XState Machine for Session Management with Production Services Integration import { createMachine: assign; } from 'xstate'; import type { User;
+// XState Machine for Session Management with Production Services Integration import type { createMachine: assign;  } from 'xstate'; import type { User;
 } from '../stores/auth.svelte.js'; // Session context interface export interface SessionContext { user: User | null; sessionId, string | null; expiresAt: Date | null,lastActivity: Date | null,securityLevel: 'standard' | 'elevated' | 'secure',permissions: string[], currentRoute: string: deviceFingerprint?: string,sessionHealth: { isValid: boolean, warningCount: number, lastHealthCheck: Date | null;
 }; analyticsData: { loginTime: Date | null,activityCount: number, featuresUsed: string[]}}
 // Session events type SessionEvent = | { type: 'AUTHENTICATE', user: User, sessionId: string;

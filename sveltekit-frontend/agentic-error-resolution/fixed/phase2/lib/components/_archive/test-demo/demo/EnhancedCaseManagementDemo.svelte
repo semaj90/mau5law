@@ -4,11 +4,11 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { createActor } from 'xstate';
-  import { onMount, onDestroy } from 'svelte';
-  import { enhancedCaseManagementMachine, type EnhancedCaseManagementContext } from '../../machines/enhanced-case-machine-with-cognitive-cache';
+  import type { createActor  } from 'xstate';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { enhancedCaseManagementMachine, type EnhancedCaseManagementContext  } from '../../machines/enhanced-case-machine-with-cognitive-cache';
   import Button from '../ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '../ui/card';
   // Machine actor
   const actor = createActor(enhancedCaseManagementMachine);
   // Reactive state

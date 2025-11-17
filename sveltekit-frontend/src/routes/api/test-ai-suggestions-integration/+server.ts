@@ -1,11 +1,11 @@
-import { json } from '@sveltejs/kit';
+import type { json  } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit'; // Import all our AI suggestion services
-// Removed: import { testOllamaIntegration } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollama-suggestions-service';
-import { testEnhancedRAGIntegration } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/enhanced-rag-suggestions-service';
-import { AISuggestionsGRPCClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ai-suggestions-grpc-client'; // Corrected import
-import { pgvectorHealthCheck } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/pgvector-utils';
-import generateEnhancedEmbedding from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/embeddings-enhanced'; // Changed to default import
-import { dbHealthCheck } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index'; // Changed to named import
+// Removed: import type { testOllamaIntegration  } from '$lib/services/ollama-suggestions-service';
+import type { testEnhancedRAGIntegration  } from '$lib/services/enhanced-rag-suggestions-service';
+import type { AISuggestionsGRPCClient  } from '$lib/services/ai-suggestions-grpc-client'; // Corrected import
+import type { pgvectorHealthCheck  } from '$lib/server/db/pgvector-utils';
+import generateEnhancedEmbedding from '$lib/server/ai/embeddings-enhanced'; // Changed to default import
+import type { dbHealthCheck  } from '$lib/server/db/index'; // Changed to named import
 
 export interface IntegrationTestResult {
   service: string;

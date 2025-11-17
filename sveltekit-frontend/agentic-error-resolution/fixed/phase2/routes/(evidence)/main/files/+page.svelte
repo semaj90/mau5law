@@ -6,12 +6,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   let { caseId = '' }: Props = $props();
 
-  import { page } from '$app/state';
+  import type { page  } from '$app/state';
   import Button from '$lib/components/ui/button/Button.svelte';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
-  import { notifications  } from '$lib/stores/unified';
-  import { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import type { notifications   } from '$lib/stores/unified';
+  import type { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
 
   // Props
 

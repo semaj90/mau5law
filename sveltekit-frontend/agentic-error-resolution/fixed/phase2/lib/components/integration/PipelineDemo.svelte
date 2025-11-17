@@ -4,8 +4,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
 {#snippet default}
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
-  import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
+  import type { pipelineManager, type PipelineType, type PipelineResult  } from '$lib/services/pipeline-manager';
+  import type { PipelineVisualizer  } from '$lib/services/pipeline-visualizer';
   import  Button  from "$lib/components/ui/Button.svelte";
   import 
     Card,

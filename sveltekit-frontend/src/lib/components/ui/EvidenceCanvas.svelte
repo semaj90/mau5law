@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
-  import { Button } from 'bits-ui/components/ui/button';
-  import { DialogBackdrop, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle } from 'bits-ui/components/ui/dialog';
+  import type { browser  } from '$app/environment';
+  import type { Button  } from 'bits-ui/components/ui/button';
+  import type { DialogBackdrop, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle  } from 'bits-ui/components/ui/dialog';
 
   // Define the structure for the AI analysis results
   export interface AnalysisResult {
@@ -33,10 +33,10 @@
     onDelete?: (item: EvidenceItem) => void | Promise<void>;
   }
 
-  let { evidenceItems = [], onAnalyze, onEdit, onDelete }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
-  let showModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let selectedItem: EvidenceItem | null = $state // TODO: Verify store subscription is correct for Svelte 5(null);
-  let isAnalyzing = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let { evidenceItems = [], onAnalyze, onEdit, onDelete }: Props = $props();
+  let showModal = $state(false);
+  let selectedItem: EvidenceItem | null = $state(null);
+  let isAnalyzing = $state(false);
 
   const handleItemClick = (item: EvidenceItem) => {
     selectedItem = item;

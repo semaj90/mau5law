@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { chatContext } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/chat-context';
-  import { onMount } from 'svelte';
+  import type { chatContext  } from '$lib/stores/chat-context';
+  import type { onMount  } from 'svelte';
 
   // Define interfaces locally since they are not exported from chat-context
   interface TopicNode {
@@ -41,11 +41,11 @@
   }
 </script>
 
-{#if $chatContext // TODO: Verify store subscription is correct for Svelte 5.length > 0}
+{#if $chatContext .length > 0}
   <div class="mb-4 p-3 bg-[#1a1813] border border-[#3a352a] rounded">
     <div class="flex items-center justify-between mb-2">
       <h3 class="text-xs font-mono tracking-wide text-[#f5f0e2]">
-        PINNED CONTEXT ({$chatContext // TODO: Verify store subscription is correct for Svelte 5.length})
+        PINNED CONTEXT ({$chatContext .length})
       </h3>
       <button
         class="text-[10px] text-red-400 hover:text-red-300"
@@ -56,7 +56,7 @@
     </div>
 
     <div class="space-y-2 max-h-32 overflow-y-auto">
-      {#each $chatContext // TODO: Verify store subscription is correct for Svelte 5 as item}
+      {#each $chatContext as item}
         <div class="flex items-center justify-between p-2 bg-[#221e17] rounded text-[10px]">
           <div class="flex-1">
             <div class="font-mono text-[#f5f0e2]">

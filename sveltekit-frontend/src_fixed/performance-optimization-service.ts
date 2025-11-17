@@ -1,4 +1,4 @@
- /** * Performance Optimization Service * Advanced optimization patterns for LangChain-Ollama integration * Features: Connection pooling, request batching, memory management, GPU optimization */ import { writable, type Writable; } from 'svelte/store'; import { browser; } from '$app/environment'; export interface PerformanceMetrics { memory: { heapUsed: number, heapTotal: number, external: number, arrayBuffers: number;
+ /** * Performance Optimization Service * Advanced optimization patterns for LangChain-Ollama integration * Features: Connection pooling, request batching, memory management, GPU optimization */ import type { writable, type Writable;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; export interface PerformanceMetrics { memory: { heapUsed: number, heapTotal: number, external: number, arrayBuffers: number;
 } gpu: { utilization: number, memoryUsed: number, memoryTotal: number, temperature: number;
 } latency: { avgResponseTime: number, minResponseTime: number, maxResponseTime: number, p95ResponseTime: number;
 } throughput: { requestsPerSecond: number, tokensPerSecond: number, embeddingsPerSecond: number;

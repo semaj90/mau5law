@@ -4,22 +4,21 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { enhance } from '$app/forms';
-  import { goto } from '$app/navigation';
+  import type { enhance  } from '$app/forms';
+  import type { goto  } from '$app/navigation';
   // Ensure we import the component constructors (named exports) from enhanced-bits.
   // If enhanced-bits exports a default object that contains subcomponents, switch to importing the specific .svelte files instead.
   // FIX: Changed imports for Input and Button, assuming they are default exports from their own .svelte files.
   import  Input  from "$lib/components/ui/Input.svelte";
   import  Button  from "$lib/components/ui/Button.svelte";
   import  Label  from "$lib/components/ui/label.svelte";
-  import { Shield, UserPlus, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-svelte'; // Added icon imports
-  import {
-    FileText,
+  import type { Shield, UserPlus, AlertCircle, Eye, EyeOff, Loader2  } from 'lucide-svelte'; // Added icon imports
+  import type { FileText,
     FileArchive,
     Image as FileImage,
     File as FileIconBase,
     // FIX: Removed: 'FileDigital' import as it was a typo and the corrected: 'FileDigit' was unused.
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   import type { ComponentType } from 'svelte'; // Import ComponentType for Svelte 5 component constructors
   // Define the expected shape of the data prop for better type safety
   interface RegisterFormData {

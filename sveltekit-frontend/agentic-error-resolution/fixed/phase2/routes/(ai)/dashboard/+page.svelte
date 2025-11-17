@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import type { Button  } from '$lib/components/ui/button';
   import type { PageData } from './$types';
 
   // Replace legacy `export let data` with Svelte 5 runes pattern

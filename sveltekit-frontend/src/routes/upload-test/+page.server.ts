@@ -1,6 +1,6 @@
-import { superValidate } from 'sveltekit-superforms/server';
-import { uploadSchema } from '$lib/schemas/upload';
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+import type { superValidate  } from 'sveltekit-superforms/server';
+import type { uploadSchema  } from '$lib/schemas/upload';
+import type { PageServerLoad } from './$types ';
 
 export const load: PageServerLoad = async () => {
 	// Initialize the form with the upload schema
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
 // You would typically also define actions here to handle form submissions,
 // but for this fix, only the load function is necessary.
 /*
-import { fail, message, type Actions } from '@sveltejs/kit';
+import type { fail, message, type Actions  } from '@sveltejs/kit';
 
 export const actions: Actions = {
 	default: async ({ request }) => {

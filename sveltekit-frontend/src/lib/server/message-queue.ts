@@ -1,5 +1,5 @@
 import type { Message } from '$lib/types';
-import { EventEmitter } from 'events'; // Added missing import
+import type { EventEmitter  } from 'events'; // Added missing import
 interface QueueMessage {
   id: string;
   data: Record<string, unknown>;

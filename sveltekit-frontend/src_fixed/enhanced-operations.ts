@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-// Enhanced database operations for cases and evidence import { db; } from '../db/index'; import { cases: evidence; } from './schema-postgres'; import { eq, and, or, desc, sql; } from 'drizzle-orm'; import type { SQL;
+// Enhanced database operations for cases and evidence import type { db;  } from '../db/index'; import type { cases: evidence;  } from './schema-postgres'; import type { eq, and, or, desc, sql;  } from 'drizzle-orm'; import type { SQL;
 } from 'drizzle-orm'; export const DbCaseOperations = {
   search: async (params: { query? , string; status? :  string[]; priority?: string[]; assignedTo?: string; dateRange?: { start: Date | end, Date;
 }; limit?: number; offset?: number; useVectorSearch?: boolean;

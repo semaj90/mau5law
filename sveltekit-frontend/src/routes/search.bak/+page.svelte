@@ -1,12 +1,12 @@
-﻿<script lang="ts">
-  import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-  import { onMount } from 'svelte';
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
-  import PgvectorSearchInterface from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/search/PgvectorSearchInterface.svelte';
+<script lang="ts">
+  import type { User } from '$lib/types';
+  import type { onMount  } from 'svelte';
+  import type { goto  } from '$app/navigation';
+  import type { page  } from '$app/stores';
+  import PgvectorSearchInterface from '$lib/components/search/PgvectorSearchInterface.svelte';
 
-  let isAuthenticated = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let userName = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let isAuthenticated = $state <boolean>(false);
+  let userName = $state <string>('');
 
   onMount(() => {
     (async () => {

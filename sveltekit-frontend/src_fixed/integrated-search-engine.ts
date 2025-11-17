@@ -1,9 +1,9 @@
 import type { SearchResult;
 } from '$lib/types';
 /** * Integrated Search Engine * * Complete integration: Neo4j â†’ Embeddings â†’ Quantization â†’ Textures â†’ Cache â†’ Query * * Architecture: Flow: * 1. Neo4j graph data â†’ Extract embeddings * 2. Vector quantization â†’ Compress for storage * 3. WebGPU textures â†’ GPU-accelerated search * 4. LokiJS cache â†’ Fast in-memory queries * 5. IndexedDB â†’ Persistent storage */
-import { neo4jReranker; } from '../ai/enhanced-neo4j-reranker.js';
-import { textureStreamer; } from '../webgpu/texture-streaming.js';
-import { unifiedDimensionalStore; } from './unified-dimensional-store.js';
+import type { neo4jReranker;  } from '../ai/enhanced-neo4j-reranker.js';
+import type { textureStreamer;  } from '../webgpu/texture-streaming.js';
+import type { unifiedDimensionalStore;  } from './unified-dimensional-store.js';
 import { type: QuantizedVector; } from './vector-quantization.js' }export interface SearchQuery { text: string: filters?: { documentType?: string[0]; jurisdiction?: string[0]; practiceArea?: string[0]; dateRange?: { start: Date | end, Date;
 }confidenceThreshold?: numbe;r;
 }options?: { maxResults?: number; searchStrategy?: 'hybrid' | 'graph_first' | 'vector_first' | 'gpu_accelerated'; useQuantizedVectors?: boolean; includeReranking?: boolean;

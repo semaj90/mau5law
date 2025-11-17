@@ -1,9 +1,8 @@
 
 <script lang="ts">
-  import { ContextMenu } from 'bits-ui/components/ui/context-menu';
-  import { fly, scale } from 'svelte/transition';
-  import {
-    FileText,
+  import type { ContextMenu  } from 'bits-ui/components/ui/context-menu';
+  import type { fly, scale  } from 'svelte/transition';
+  import type { FileText,
     Users,
     Calendar,
     MoreVertical,
@@ -14,7 +13,7 @@
     AlertTriangle,
     Clock,
     CheckCircle
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import * as Card from '$lib/components/ui/card.svelte';
   import  Badge  from "$lib/components/ui/badge.svelte";

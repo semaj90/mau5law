@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { writable, type Writable, get } from 'svelte/store'; import type { LLMProvider } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/llm'; export interface SearchResult { id: string, score: number, payload: { content: string }}
+import type { SearchResult } from '$lib/types';
+import type { writable, type Writable, get  } from 'svelte/store'; import type { LLMProvider } from '$lib/types/llm'; export interface SearchResult { id: string, score: number, payload: { content: string }}
 export interface QueryIntent { type: string, confidence: number, entities: string[]}
 export interface QueryContext { userId: string: sessionId?, string; previousQueries?: string[]}
 export interface RAGQuery { id: string, originalQuery: string, expandedQueries: string[], intent: QueryIntent, context: QueryContext, timestamp: number}

@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import type { onMount, onDestroy  } from 'svelte';
   import  Button  from "$lib/components/ui/Button.svelte";
-  import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-svelte';
+  import type { AlertTriangle, RefreshCw, Home, Bug  } from 'lucide-svelte';
   interface Props {
     fallback?: string;
     showDetails?: boolean;

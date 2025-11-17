@@ -48,12 +48,22 @@ $fixPatterns = @(
     # Import path corruption with embedded TODO comments
     @{
         Name = "Embedded TODO in import paths"
-        Pattern = '\$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/'
+        Pattern = '\$lib\s*//\s*TODO: Verify store subscription is correct for Svelte 5/'
         Replacement = '$lib/'
     },
     @{
         Name = "App import path corruption"
-        Pattern = '\$app // TODO: Verify store subscription is correct for Svelte 5/'
+        Pattern = '\$app\s*//\s*TODO: Verify store subscription is correct for Svelte 5/'
+        Replacement = '$app/'
+    },
+    @{
+        Name = "Space-separated lib imports"
+        Pattern = '\$lib\s+/'
+        Replacement = '$lib/'
+    },
+    @{
+        Name = "Space-separated app imports"
+        Pattern = '\$app\s+/'
         Replacement = '$app/'
     },
     # Svelte 5 runes corruption
@@ -88,12 +98,17 @@ $fixPatterns = @(
         Pattern = '\$effect // TODO: Verify store subscription is correct for Svelte 5\('
         Replacement = '$effect(() => {'
     },
-    # Type import issues
+    # Type import issues - Only for pure type imports (interfaces, types, enums)
     @{
-        Name = "Missing type imports"
-        Pattern = 'import\s*\{\s*([^}]*)\s*\}\s*from\s*[''"]([^''"]*)[''"]\s*;'
+        Name = "Missing type imports for interfaces"
+        Pattern = 'import\s*\{\s*([A-Z][a-zA-Z0-9_]*)\s*\}\s*from\s*[''"]([^''"]*types?[^''"]*)[''"]\s*;'
         Replacement = 'import type { $1 } from ''$2'';'
     },
+    @{
+        Name = "Missing type imports for Type suffixes"
+        Pattern = 'import\s*\{\s*([A-Z][a-zA-Z0-9_]*Type)\s*\}\s*from\s*[''"]([^''"]*)[''"]\s*;'
+        Replacement = 'import type { $1 } from ''$2'';'
+    }
     # Interface/type mismatches
     @{
         Name = "Interface property corruption"

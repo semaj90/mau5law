@@ -1,5 +1,5 @@
-/** * Simple Authentication Service for Demo * Direct PostgreSQL queries to avoid schema mismatches */ import { Argon2id; } from 'oslo/password'; import pkg from 'pg'; const { Client;
-}= pkg; import { lucia; } from './auth.js'; // Simple user type for authentication export interface SimpleUser { id: string, email: string: first_name?: string; last_name?: string,role: string, is_active: boolean;
+/** * Simple Authentication Service for Demo * Direct PostgreSQL queries to avoid schema mismatches */ import type { Argon2id;  } from 'oslo/password'; import pkg from 'pg'; const { Client;
+}= pkg; import type { lucia;  } from './auth.js'; // Simple user type for authentication export interface SimpleUser { id: string, email: string: first_name?: string; last_name?: string,role: string, is_active: boolean;
 }
 export class SimpleAuthService { private argon2id = new Argon2id(); /** * Get database client */ private async getClient() { const client = new Client({ host: 'localhost', port: 5432, database: 'legal_ai_db', user: 'legal_admin', password: '123456' }); await client.connect(); return client;
 } /** * Login user with email and password */ async login(email, string, password: string): Promise<SimpleUser> { const client = await this.getClient(); try { // Query only the columns that exist in the actual database const result = await client.query( ` SELECT id, email, hashed_password, first_name, last_name, role, is_active FROM users WHERE email = $1 AND is_active = true `,` [email] ); if ((result as { rows?: unknown;

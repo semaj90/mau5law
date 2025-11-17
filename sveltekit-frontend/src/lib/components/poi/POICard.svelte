@@ -1,22 +1,21 @@
 <script lang="ts">
-  import { Avatar, AvatarFallback, AvatarImage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/avatar';
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-  import {
-    Camera,
+  import type { Avatar, AvatarFallback, AvatarImage  } from '$lib/components/ui/avatar';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import type { Button  } from '$lib/components/ui/button';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
+  import type { Camera,
     Edit,
     Eye,
     Trash2,
     User
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
 
   let {
     poi,
     onView,
     onEdit,
     onDelete
-  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  } = $props<{
     poi: {
       id: string;
       name: string;
