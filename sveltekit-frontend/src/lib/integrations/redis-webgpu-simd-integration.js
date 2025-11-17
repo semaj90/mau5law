@@ -5,8 +5,8 @@
  */
 import { json } from '@sveltejs/kit';
 import {
-  redisWebGPUIntegration, processLegalDocumentOptimized, computeVectorSimilarityOptimized, generateIntelligentTodosOptimized} from '$lib/integrations/redis-webgpu-simd-integration.js';
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
+  redisWebGPUIntegration, processLegalDocumentOptimized, computeVectorSimilarityOptimized, generateIntelligentTodosOptimized} from '$lib // TODO: Verify store subscription is correct for Svelte 5/integrations/redis-webgpu-simd-integration.js';
+import { readBodyFastWithMetrics } from '$lib // TODO: Verify store subscription is correct for Svelte 5/simd/simd-json-integration.js';
 // GET: Demonstrate system capabilities and status
 export const GET = async ({ url }) => {
   try {
@@ -14,7 +14,7 @@ export const GET = async ({ url }) => {
     switch (demo) {
       case 'status': {
         // Show integrated system status
-        // NOTE: If 'getSystemStatus' or 'getMetrics' are not defined on RedisWebGPUSIMDIntegration, // their types need to be added to the definition in '$lib/integrations/redis-webgpu-simd-integration.js'.
+        // NOTE: If 'getSystemStatus' or 'getMetrics' are not defined on RedisWebGPUSIMDIntegration, // their types need to be added to the definition in '$lib // TODO: Verify store subscription is correct for Svelte 5/integrations/redis-webgpu-simd-integration.js'.
         const systemStatus = redisWebGPUIntegration.getSystemStatus();
         const metrics = redisWebGPUIntegration.getMetrics();
         return json({
@@ -66,7 +66,7 @@ export const POST = async ({ request }) => {
     switch (operation) {
       case 'legal_document': {
         const docResult = await processLegalDocumentOptimized(typeof data === 'string' ? data : JSON.stringify(data), {
-          useCache: options.useCache !== false, // FIX: JobType in $lib/integrations/redis-webgpu-simd-integration.js needs to include these string literals
+          useCache: options.useCache !== false, // FIX: JobType in $lib // TODO: Verify store subscription is correct for Svelte 5/integrations/redis-webgpu-simd-integration.js needs to include these string literals
           pipeline: options.pipeline || ['document-analysis', 'entity-extraction', 'risk-assessment'], priority: options.priority || 2});
         return json({
           success: true
@@ -160,7 +160,7 @@ async function runPerformanceBenchmark() {
   const candidateVectors = Array.from({ length: 1000 }, () => Array.from({ length: 768 }, () => Math.random()));
   // Traditional CPU similarity
   const cpuSimStart = performance.now();
-  const $_cpuSimilarities = candidateVectors.map(candidate => {
+  const $_cpuSimilarities // TODO: Verify store subscription is correct for Svelte 5 = candidateVectors.map(candidate => {
     let dot = 0, normA = 0, normB = 0
     for (let i = 0; i < 768; i++) {
       dot += queryVector[i] * candidate[i];
@@ -215,7 +215,7 @@ async function runComprehensivePerformanceTest(testConfig) {
     // Test subset
     const result = await processLegalDocumentOptimized(JSON.stringify(doc), {
       useCache: true
-      // FIX: JobType in $lib/integrations/redis-webgpu-simd-integration.js needs to include these string literals
+      // FIX: JobType in $lib // TODO: Verify store subscription is correct for Svelte 5/integrations/redis-webgpu-simd-integration.js needs to include these string literals
       pipeline: ['document-analysis', 'entity-extraction', 'risk-assessment']});
     docResults.push(result) }
   results.phases.push({

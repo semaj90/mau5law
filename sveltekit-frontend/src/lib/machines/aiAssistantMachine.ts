@@ -317,7 +317,7 @@ class MemoryManager {
 }
 
 // --- Minimal worker pool (uses blobs safely) ---
-export class $WebWorkerPool {
+export class $WebWorkerPool // TODO: Verify store subscription is correct for Svelte 5 {
   private _workers: Worker[] = [];
   private _nextWorker = 0;
   constructor(

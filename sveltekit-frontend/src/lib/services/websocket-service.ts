@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * WebSocket Real-time Integration System * Provides live updates for dashboard, collaborative editing, and processing status */ import { WebSocketServer } from 'ws'; import { EventEmitter } from 'events'; import type { IncomingMessage } from 'http'; import type { WebSocket } from 'ws'; export interface WebSocketMessage { type: string, payload: unknown, timestamp: string: userId?: string; sessionId?: string}
 export interface ClientConnection { ws: WebSocket: userId? , string; sessionId :  string, subscriptions: Set<string>, lastActivity: Date}
 export interface RealTimeEvent { type: 'case_updated' | 'evidence_added' | 'processing_status' | 'collaboration_update' | 'system_health'; entityType?: 'case' | 'evidence' | 'report' | 'person'; entityId?: number,data: unknown: userId?, string, timestamp: Date}

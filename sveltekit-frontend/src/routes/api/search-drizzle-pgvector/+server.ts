@@ -15,9 +15,9 @@
  * ✅ Performance optimized
  */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { z } from 'zod';
-import { db } from '$lib/server/db';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
 import { sql } from 'drizzle-orm';
 
 // ===== SCHEMAS =====

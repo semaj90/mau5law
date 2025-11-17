@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 
 /**
  * NES Memory Architecture - Phase 14

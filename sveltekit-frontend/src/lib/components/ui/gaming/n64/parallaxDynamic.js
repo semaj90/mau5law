@@ -6,7 +6,7 @@
 // Performance tracking
 let frameCount = 0
 let lastFrameTime = 0
-let isAnimating = $state(false);
+let isAnimating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 let rafId = null
 // Configuration
 const DEFAULT_CONFIG = {
@@ -225,7 +225,7 @@ function startAnimationLoop() {
  * Stop the animation loop
  */
 function stopAnimationLoop() {
-  isAnimating = $state(false);
+  isAnimating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
   if (rafId) {
     cancelAnimationFrame(rafId);
     rafId = null}

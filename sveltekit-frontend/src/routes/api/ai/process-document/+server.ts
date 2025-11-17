@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: process-document * Category: conservative * Bank: PRG_ROM * Priority: 150 * Type: aiAnalysis * * Impact: * - Cache; Strategy: conservative * - Memory: Bank | PRG_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
 import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit'; // Import generic RequestHandler
 import { json } from '@sveltejs/kit';
 import { URL } from 'url';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
 
 const CUDA_SERVICE_URL = 'http://localhost:8097';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';

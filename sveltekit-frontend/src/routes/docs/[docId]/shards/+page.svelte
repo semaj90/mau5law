@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import type { ShardNode } from '$lib/types/evidence-board';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import type { ShardNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/evidence-board';
   import { onMount } from 'svelte';
 
-  let shards = $state<ShardNode[]>([]);
-  let selectedShard = $state<ShardNode | null>(null);
-  let loading = $state(true);
-  let error = $state('');
+  let shards = $state // TODO: Verify store subscription is correct for Svelte 5<ShardNode[]>([]);
+  let selectedShard = $state // TODO: Verify store subscription is correct for Svelte 5<ShardNode | null>(null);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5('');
 
-  let docId = $derived($page.params.docId);
+  let docId = $derived // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5.params.docId);
 
   onMount(async () => {
     try {

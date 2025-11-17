@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 
 /**
  * Loki.js + Redis High-Performance Caching - Phase 14
@@ -16,7 +16,7 @@ import { EventEmitter } from 'events';
 import crypto from 'crypto';
 
 // Conditional imports to avoid circular dependencies
-const redisServicePromise = import('$lib/server/redis-service.js')
+const redisServicePromise = import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-service.js')
 	.then((m) => m.redisService)
 	.catch(() => null);
 
@@ -589,22 +589,22 @@ export class LokiRedisCache extends EventEmitter {
 				// Build Loki.js query
 				const lokiQuery: Record<string, any> = {};
 				if (filters.riskLevel) {
-					lokiQuery.riskLevel = { $in: filters.riskLevel };
+					lokiQuery.riskLevel = { $in // TODO: Verify store subscription is correct for Svelte 5: filters.riskLevel };
 				}
 				if (filters.confidenceMin) {
-					lokiQuery.confidenceLevel = { $gte: filters.confidenceMin };
+					lokiQuery.confidenceLevel = { $gte // TODO: Verify store subscription is correct for Svelte 5: filters.confidenceMin };
 				}
 				if (filters.priorityMin) {
-					lokiQuery.priority = { $gte: filters.priorityMin };
+					lokiQuery.priority = { $gte // TODO: Verify store subscription is correct for Svelte 5: filters.priorityMin };
 				}
 
 				// Text search (simple contains for now, could be enhanced with full-text search)
 				if (query) {
-					lokiQuery.$or = [
-						{ id: { $contains: query } },
-						{ 'metadata.title': { $contains: query } },
-						{ 'metadata.description': { $contains: query } },
-						{ 'metadata.jurisdiction': { $contains: query } }
+					lokiQuery.$or // TODO: Verify store subscription is correct for Svelte 5 = [
+						{ id: { $contains // TODO: Verify store subscription is correct for Svelte 5: query } },
+						{ 'metadata.title': { $contains // TODO: Verify store subscription is correct for Svelte 5: query } },
+						{ 'metadata.description': { $contains // TODO: Verify store subscription is correct for Svelte 5: query } },
+						{ 'metadata.jurisdiction': { $contains // TODO: Verify store subscription is correct for Svelte 5: query } }
 					];
 				}
 				const documents = collection.find(lokiQuery);

@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-  import  Button  from "$lib/components/ui/core.svelte";
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import  Button  from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/core.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Card.svelte";
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -15,10 +15,10 @@ import type { Case } from '$lib/types';
     documentTitle?: string
     caseTitle?: string}
 
-  let citations = $state<Citation[]>([]);
-  let loading = $state<boolean>(true);
-  let searchQuery = $state<string>('');
-  let citationType = $state<string>('all');
+  let citations = $state // TODO: Verify store subscription is correct for Svelte 5<Citation[]>([]);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let citationType = $state // TODO: Verify store subscription is correct for Svelte 5<string>('all');
 
   onMount(() => {
 		(async () => {

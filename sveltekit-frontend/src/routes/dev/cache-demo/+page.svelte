@@ -1,6 +1,6 @@
 <!-- Cache System, Demo, Page -->
 <script lang="ts">
-  import CacheDemo from '$lib/components/cache/CacheDemo.svelte';
+  import CacheDemo from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/cache/CacheDemo.svelte';
 </script>
 
 <svelte:head>

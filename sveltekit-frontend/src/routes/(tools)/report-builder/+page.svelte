@@ -1,12 +1,12 @@
 <script lang="ts" runes>
-  import type { PageData } from './$types';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5';
   // Load ReportEditor dynamically to avoid TS: "no default export" error
-  // Make EditorComponent reactive using Svelte 5 runes ($state) so updates are reflected in the UI
-  let EditorComponent: any = $state(null);
+  // Make EditorComponent reactive using Svelte 5 runes ($state // TODO: Verify store subscription is correct for Svelte 5) so updates are reflected in the UI
+  let EditorComponent: any = $state // TODO: Verify store subscription is correct for Svelte 5(null);
   async function loadEditor(): Promise<any> {
     try {
       // Cast the dynamic import to unknown to avoid TypeScript errors about .default / named exports
-      const mod = (await import('$lib/components/editor/ReportEditor.svelte')) as unknown;
+      const mod = (await import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/editor/ReportEditor.svelte')) as unknown;
       // module might expose default or a named export; prefer default then fallback
       EditorComponent =
         (mod as { default?: any }).default ?? (mod as { ReportEditor?: any }).ReportEditor;
@@ -15,13 +15,13 @@
     }
   }
 
-  // Use Svelte 5 $effect instead of onMount
-  $effect(() => {
+  // Use Svelte 5 $effect // TODO: Verify store subscription is correct for Svelte 5 instead of onMount
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     loadEditor();
   });
   // Use FabricCanvas as CanvasEditor alternative
-  import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
-  import type { Report, CanvasState } from '$lib/data/types';
+  import FabricCanvas from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/canvas/FabricCanvas.svelte';
+  import type { Report, CanvasState } from '$lib // TODO: Verify store subscription is correct for Svelte 5/data/types';
   // Avoid importing namespaces as types here — use lightweight local types to satisfy the component's needs.
   type LocalEvidence = {
     id: string;
@@ -62,24 +62,24 @@
   type LocalCitationPoint = { source: string; text: string; [key: string]: unknown };
   let currentReport: LocalReport | null = null; // Use LocalReport type
   let currentCanvasState: CanvasState | null = null;
-  let evidence = $state<LocalEvidence[]>([]);
-  let citationPoints = $state<LocalCitationPoint[]>([]);
-  let activeTab: 'editor' | 'canvas' = $state('editor');
-  let isLoading = $state<boolean>(false);
-  let error = $state<string>('');
-  // $props() provides an object with a `data` property (page load data).
+  let evidence = $state // TODO: Verify store subscription is correct for Svelte 5<LocalEvidence[]>([]);
+  let citationPoints = $state // TODO: Verify store subscription is correct for Svelte 5<LocalCitationPoint[]>([]);
+  let activeTab: 'editor' | 'canvas' = $state // TODO: Verify store subscription is correct for Svelte 5('editor');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  // $props // TODO: Verify store subscription is correct for Svelte 5() provides an object with a `data` property (page load data).
   // Declare the outer shape so TypeScript knows `data` exists (optional).
-  let { data } = $props<{ data?: PageData }>();
-  // Changed to receive data using $props() with explicit wrapper type
+  let { data } = $props // TODO: Verify store subscription is correct for Svelte 5<{ data?: PageData }>();
+  // Changed to receive data using $props // TODO: Verify store subscription is correct for Svelte 5() with explicit wrapper type
   // Demo case ID - in real app this would come from the route (read safely from the page store)
-  let caseId: string = $state('demo-case-123');
+  let caseId: string = $state // TODO: Verify store subscription is correct for Svelte 5('demo-case-123');
   // Initialize with default and make reactive
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     // Safely access caseId from data, falling back to default
     caseId = data?.caseId ?? 'demo-case-123';
   });
-  // Load demo data once using $effect (Svelte 5 runes)
-  $effect(() => {
+  // Load demo data once using $effect // TODO: Verify store subscription is correct for Svelte 5 (Svelte 5 runes)
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (caseId) {
       loadDemoData();
     }
@@ -262,7 +262,7 @@
   // Safely derive a reportId for the CanvasEditor; Report type may not include 'id'.
   let reportId: string = 'temp-report-id';
   // replace legacy reactive statement with runes-compatible effect & use a safe cast to avoid TS error
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     reportId = currentReport?.id ?? 'temp-report-id'; // No need for 'as unknown' if LocalReport has 'id'
   });
 </script>
@@ -288,7 +288,7 @@
   {#if error}
     <div class="space-y-4">
       ❌ {error}
-      <!-- changed: use onclick instead of deprecated on:click -->
+      <!-- changed: use onclick instead of deprecated onclick -->
       <button onclick={() => (error = '')}>×</button>
     </div>
   {/if}

@@ -1,11 +1,11 @@
-import { loginSchema } from '$lib/schemas/auth';
-import { db } from '$lib/server/db/client';
-import { users } from '$lib/server/db/schema-postgres';
+import { loginSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/auth';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
+import { users } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
 
 // Replace load to accept the full event and pass it to superValidate
 export const load: PageServerLoad = async (event) => {

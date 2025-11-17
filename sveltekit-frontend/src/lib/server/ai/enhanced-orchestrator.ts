@@ -279,7 +279,7 @@ export class EnhancedAISynthesisOrchestrator {
   private pgVectorStore: InstanceType<typeof PGVectorStore> | null = null;
   private ollama!: ChatOllama;
   private embeddings!: OllamaEmbeddings;
-  private initialized = false; // Changed from $state(false)
+  private initialized = false; // Changed from $state // TODO: Verify store subscription is correct for Svelte 5(false)
 
   constructor() {
     // initialization deferred to be async-safe

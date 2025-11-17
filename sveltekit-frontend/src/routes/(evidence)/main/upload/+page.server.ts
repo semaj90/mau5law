@@ -7,10 +7,10 @@ import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
-import { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType } from '$lib/schemas/evidence-upload.js';
-import { db, cases, evidence, helpers } from '$lib/server/db';
-import type { PageServerLoad, Actions } from './$types.js';
-import { getUserId } from '$lib/server/auth/utils';
+import { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType } from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload.js';
+import { db, cases, evidence, helpers } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { getUserId } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values

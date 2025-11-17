@@ -1,5 +1,5 @@
 /** * XState v5 Actor for Embedding Generation * Uses fromPromise for async embedding operations with legal AI context */ import { fromPromise } from 'xstate/actors'; import { createActor } from 'xstate';
-import { ollamaGenerateEmbedding } from '$lib/services/ollamaService'; // Changed to named import
+import { ollamaGenerateEmbedding } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollamaService'; // Changed to named import
 export interface EmbeddingInput {
     text: string;
     context?: {

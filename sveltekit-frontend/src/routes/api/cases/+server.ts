@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
-import * as CaseOperations from '$lib/server/db/enhanced-operations';
-import redis from '$lib/server/redis-client';
-import type { RequestHandler } from './$types';
-import { resolveUser, getMetaEnv } from '$lib/server/auth/utils';
+import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/response';
+import * as CaseOperations from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/enhanced-operations';
+import redis from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-client';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { resolveUser, getMetaEnv } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
 import { json } from '@sveltejs/kit';
-import { dev } from '$app/environment';
+import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
 const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;
@@ -380,8 +380,8 @@ export const OPTIONS: RequestHandler = async () => {
  the catch blocks return safe defaults so frontend continues to work. */
 export const _drizzleGET: RequestHandler = async () => {
   try {
-    const { db } = await import('$lib/server/db/client');
-    const { cases } = await import('$lib/server/db/schema-postgres');
+    const { db } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client');
+    const { cases } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres');
     const rows = await db.select().from(cases).limit(100);
     return json(rows);
   } catch (err) {
@@ -393,8 +393,8 @@ export const _drizzleGET: RequestHandler = async () => {
 export const _drizzlePOST: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json();
-    const { db } = await import('$lib/server/db/client');
-    const { cases } = await import('$lib/server/db/schema-postgres');
+    const { db } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client');
+    const { cases } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres');
     const insert = await db.insert(cases).values({
       title: payload.title ?? 'Untitled case',
       status: payload.status ?? 'new',

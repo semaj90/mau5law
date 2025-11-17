@@ -1,7 +1,7 @@
 ﻿/** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: ask * Category: conservative * Bank: PRG_ROM * Priority: 150 * Type: aiAnalysis * * Impact: * - Cache; Strategy: conservative * - Memory: Bank | PRG_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
 import { json } from '@sveltejs/kit';
-import ollamaService from '$lib/services/ollama-service'; // Changed to default import
-import type { RequestHandler } from './$types.js';
+import ollamaService from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollama-service'; // Changed to default import
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 interface SearchResultItem {
   id: string;

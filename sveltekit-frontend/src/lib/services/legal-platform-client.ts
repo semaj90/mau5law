@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Legal AI Platform Client Service * TypeScript client for interacting with the centralized Legal Platform API v2 * Provides type-safe CRUD operations for cases, evidence, criminals, and documents * Includes comprehensive error handling and logging */ import {
   errorHandler,
   handleApiError,

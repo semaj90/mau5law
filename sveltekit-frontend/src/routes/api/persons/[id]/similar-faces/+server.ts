@@ -1,8 +1,8 @@
-import db from "$lib/server/db/drizzle";
-import { personsOfInterest } from "$lib/server/db/schema-postgres";
+import db from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle";
+import { personsOfInterest } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres";
 import { sql } from "drizzle-orm";
 import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
+import type { RequestHandler } from "./$types // TODO: Verify store subscription is correct for Svelte 5";
 
 // drizzle db may be typed as unknown depending on how it's exported
 // cast to any for this endpoint to allow calling select/execute

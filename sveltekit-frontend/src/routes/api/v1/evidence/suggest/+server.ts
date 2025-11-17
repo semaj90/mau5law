@@ -1,8 +1,8 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
-import ollamaService from '$lib/server/services/ollama-service';
-import { getUserId } from '$lib/server/utils/auth';
-import { SuggestionSchema } from '$lib/server/z-schemas/AnalysisRequestSchema'; // Assuming SuggestionSchema is exported from the same file
+import ollamaService from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/ollama-service';
+import { getUserId } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/auth';
+import { SuggestionSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas/AnalysisRequestSchema'; // Assuming SuggestionSchema is exported from the same file
 
 /*
  * POST /api/v1/evidence/suggest

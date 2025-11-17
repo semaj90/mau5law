@@ -1,6 +1,6 @@
-import { getCachedSearch, setCachedSearch } from '$lib/server/search/langCache';
-import { cosineSearchWeb } from '$lib/server/search/webVectorSearch';
-import { logToolCall } from '$lib/server/training/query-logger';
+import { getCachedSearch, setCachedSearch } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/search/langCache';
+import { cosineSearchWeb } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/search/webVectorSearch';
+import { logToolCall } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/training/query-logger';
 import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {

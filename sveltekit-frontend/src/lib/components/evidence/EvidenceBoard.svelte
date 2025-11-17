@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button';
-  import Select from '$lib/components/ui/select';
-  import { evidence, evidenceConnections } from '$lib/server/db/schema-postgres';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import Select from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/select';
+  import { evidence, evidenceConnections } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
   import { onMount } from 'svelte';
   import { get, writable } from 'svelte/store';
   import EvidenceConnections from './EvidenceConnections.svelte';
   import EvidenceNode from './EvidenceNode.svelte';
 
-  let { caseId, initialNodes = [], initialConnections = [] }: { caseId: string; initialNodes?: EvidenceNodeType[]; initialConnections?: EvidenceConnection[] } = $props();
-  type EvidenceConnection = typeof evidenceConnections.$inferSelect;
+  let { caseId, initialNodes = [], initialConnections = [] }: { caseId: string; initialNodes?: EvidenceNodeType[]; initialConnections?: EvidenceConnection[] } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  type EvidenceConnection = typeof evidenceConnections.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
 
-  let { caseId, initialNodes = [], initialConnections = [] }: { caseId: string; initialNodes?: (typeof EvidenceNodeType)[]; initialConnections?: any[] } = $props();
+  let { caseId, initialNodes = [], initialConnections = [] }: { caseId: string; initialNodes?: (typeof EvidenceNodeType)[]; initialConnections?: any[] } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   // Board modes
   let nodes = writable<EvidenceNodeType[]>(initialNodes);
@@ -21,8 +21,8 @@
   let selectedNodes = writable<Set<string>>(new Set());
 
   // Reactive statements for store values
-  let currentNodes = $derived(() => $nodes);
-  let currentSelectedNodes = $derived(() => $selectedNodes);
+  let currentNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(() => $nodes // TODO: Verify store subscription is correct for Svelte 5);
+  let currentSelectedNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(() => $selectedNodes // TODO: Verify store subscription is correct for Svelte 5);
 
   // Grid snapping
   const GRID_SIZE = 50;
@@ -169,7 +169,7 @@
 </script>
 
     <div class="mode-selector">
-      <select bind:value={boardMode} on:change={(e) => changeMode(e.target.value as BoardMode)} class="mode-selector">
+      <select bind:value={boardMode} onchange={(e) => changeMode(e.target.value as BoardMode)} class="mode-selector">
         <option value="grid">Grid Mode</option>
         <option value="free">Free Mode</option>
         <option value="magnetic">Magnetic AI</option>
@@ -182,15 +182,15 @@
     <div class="actions">
       <Button
         variant="outline"
-        on:click={createConnection}
-        disabled={$selectedNodes.size !== 2}
+        onclick={createConnection}
+        disabled={$selectedNodes // TODO: Verify store subscription is correct for Svelte 5.size !== 2}
       >
         Connect Nodes
       </Button>
       <Button
         variant="destructive"
-        on:click={deleteSelectedNodes}
-        disabled={$selectedNodes.size === 0}
+        onclick={deleteSelectedNodes}
+        disabled={$selectedNodes // TODO: Verify store subscription is correct for Svelte 5.size === 0}
       >
         Delete Selected
       </Button>

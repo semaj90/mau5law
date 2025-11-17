@@ -1,14 +1,14 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  // import UnifiedCanvasIntegration from '$lib/components/unified.svelte'; // Not found, not used
-  // import NierRichTextEditor from '$lib/components/editors.svelte'; // Not found, not used
-  // import EnhancedAIAssistant from '$lib/components/ai.svelte'; // Not found, not used
-  // import CitationsManager from '$lib/components/citations.svelte'; // Not found, not used
+  // import UnifiedCanvasIntegration from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/unified.svelte'; // Not found, not used
+  // import NierRichTextEditor from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/editors.svelte'; // Not found, not used
+  // import EnhancedAIAssistant from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ai.svelte'; // Not found, not used
+  // import CitationsManager from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/citations.svelte'; // Not found, not used
   // UI components are imported via barrel files for consistency and SSR compatibility.
-  // import Button from '$lib/components/ui/enhanced-bits.svelte'; // Not used
-  // import { Badge } from '$lib/components/ui/badge'; // Not used
-  // import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card'; // Corrected casing
-  // import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs'; // Not exported, not used
+  // import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits.svelte'; // Not used
+  // import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge'; // Not used
+  // import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/card'; // Corrected casing
+  // import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/tabs'; // Not exported, not used
   // import FileText from 'lucide-svelte/icons/file-text'; // Not used
   // import Search from 'lucide-svelte/icons/search'; // Not used
   // import Brain from 'lucide-svelte/icons/brain'; // Not used
@@ -53,15 +53,15 @@
   }
 
   // State management with Svelte, 5 runes
-  let currentCase = $state<Case | null>(null);
-  let cases = $state<Case[]>([]);
-  let evidence = $state<EvidenceItem[]>([]);
-  let chatMessages = $state<ChatMessage[]>([]);
-  // let activeTab = $state<string>('evidence'); // activeTab is declared but its value is never read.
-  let investigationNotes = $state<string>('');
-  let citations = $state<string[]>([]);
-  let isSaving = $state<boolean>(false);
-  let systemStatus = $state({
+  let currentCase = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Case | null>(null);
+  let cases = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Case[]>([]);
+  let evidence = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceItem[]>([]);
+  let chatMessages = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ChatMessage[]>([]);
+  // let activeTab = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('evidence'); // activeTab is declared but its value is never read.
+  let investigationNotes = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let citations = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let isSaving = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let systemStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     evidenceCanvas: true,
     detectiveAnalysis: true,
     aiAssistant: false,
@@ -153,7 +153,7 @@
   // }
 
   // Initialize
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     console.log('ðŸš€ Legal Investigation Workspace initialized');
     // Load existing cases and evidence
     loadCases();

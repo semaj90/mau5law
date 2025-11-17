@@ -8,22 +8,22 @@
 -->
 <script lang="ts">
   // Component state
-  let reportText = $state<string>('');
-  let summary = $state<string>('');
-  let isLoading = $state<boolean>(false);
-  let errorMessage = $state<string>('');
-  let processingSteps = $state<string[]>([]);
-  let metadata = $state<any>(null);
+  let reportText = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let summary = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let processingSteps = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let metadata = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
   // Summarization options
-  let summaryLength = $state<'short' | 'medium' | 'long'>('medium');
-  let includeKeyTerms = $state<boolean>(true);
-  let includeLegalAnalysis = $state<boolean>(true);
-  let temperature = $state(0.3);
+  let summaryLength = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'short' | 'medium' | 'long'>('medium');
+  let includeKeyTerms = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let includeLegalAnalysis = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let temperature = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0.3);
   // UI state
-  let activeTab = $state<'input' | 'summary' | 'analysis'>('input');
-  let wordCount = $state<number>(0);
-  let charCount = $state<number>(0);
-  let estimatedProcessingTime = $state<number>(0);
+  let activeTab = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'input' | 'summary' | 'analysis'>('input');
+  let wordCount = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let charCount = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let estimatedProcessingTime = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
   // Sample legal document for demonstration
   const sampleLegalDoc = `MEMORANDUM OF LAW
 TO: Senior Partner
@@ -54,8 +54,8 @@ Total estimated damages: $3,750,000
 IV. CONCLUSION AND RECOMMENDATIONS
 We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
 Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
-  // Reactive calculations (use $effect in Svelte, 5 runes)
-  $effect(() => {
+  // Reactive calculations (use $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 in Svelte, 5 runes)
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0;
     charCount = reportText.length;
     // Estimate processing time based on document length (roughly, 1 second per 1000 chars)
@@ -171,7 +171,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
       console.error('Failed to copy:', error);
     }
   }
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     // Auto-focus on text area when page loads
     document.getElementById('document-input')?.focus();
   });

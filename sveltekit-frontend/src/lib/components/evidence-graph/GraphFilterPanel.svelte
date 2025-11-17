@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { filters, onFilterChange } = $props();
+  let { filters, onFilterChange } = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="nes-container with-title bg-gray-900 text-white p-4 rounded-lg">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
   import { fly, fade } from 'svelte/transition';
 
   // Mock user data (as if signed in)
@@ -15,18 +15,18 @@
   };
 
   // Demo state
-  let activeView = $state('dashboard');
-  let isAIActive = $state(true);
-  let currentPrompt = $state('');
-  let isTyping = $state(false);
-  let typewriterIndex = $state(0);
-  let showQuickInput = $state(false);
-  let quickInput = $state('');
-  let workflowStep = $state(0);
-  let timestamp = $state('');
+  let activeView = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('dashboard');
+  let isAIActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let currentPrompt = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let isTyping = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let typewriterIndex = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0);
+  let showQuickInput = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let quickInput = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let workflowStep = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0);
+  let timestamp = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
 
   // Demo data
-  let cases = $state([
+  let cases = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
     {
       id: '1',
       title: 'State v. Johnson - Armed Robbery',
@@ -68,7 +68,7 @@
     { step: 'how', question: 'How was it carried out? Method of operation.', icon: '⚖️' },
   ];
 
-  let workflowAnswers = $state({
+  let workflowAnswers = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     what: '',
     who: '',
     when: '',
@@ -175,7 +175,7 @@
     }, 8000);
   }
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     updateTimestamp();
     const tsInterval = setInterval(updateTimestamp, 1000);
     startAIPrompting();

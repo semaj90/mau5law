@@ -226,24 +226,6 @@
 			"detail": "Fix critical TypeScript parse errors (2828 → <100 errors)"
 		},
 		{
-			"label": "⚡ QUIC: Start Protocol Services",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-Command",
-				"cd quic-services; ./start-quic.bat"
-			],
-			"group": "build",
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"detail": "Start QUIC protocol services for ultra-low latency"
-		},
-		{
 			"label": "✅ TypeScript Check - Fixed Barrel Exports",
 			"type": "shell",
 			"command": "npx",

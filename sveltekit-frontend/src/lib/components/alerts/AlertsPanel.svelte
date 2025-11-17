@@ -1,10 +1,10 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
-  import { X } from '$lib/components/icons';
-  // This component assumes an alert store exists, e.g., at $lib/stores/alertStore.ts
+  import { X } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/icons';
+  // This component assumes an alert store exists, e.g., at $lib // TODO: Verify store subscription is correct for Svelte 5/stores/alertStore.ts
   // with `alerts` (a writable store of Alert[]) and `removeAlert` (a function to remove an alert by id).
-  import { alerts, removeAlert } from '$lib/stores/alerts';
-  import type { Alert } from '$lib/stores/alerts';
+  import { alerts, removeAlert } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/alerts';
+  import type { Alert } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/alerts';
   import { onDestroy } from 'svelte'; // Import onDestroy for cleanup
 
   const alertClasses: Record<Alert['type'], string> = {
@@ -17,9 +17,9 @@
   const alertTimers = new Map<string, NodeJS.Timeout>();
 
   // Auto-dismiss alerts and manage timers
-  $: if ($alerts) {
+  $: if ($alerts // TODO: Verify store subscription is correct for Svelte 5) {
     // Clear timers for alerts that are no longer present
-    const currentAlertIds = new Set($alerts.map((a) => a.id));
+    const currentAlertIds = new Set($alerts // TODO: Verify store subscription is correct for Svelte 5.map((a) => a.id));
     for (const [id, timer] of alertTimers.entries()) {
       if (!currentAlertIds.has(id)) {
         clearTimeout(timer);
@@ -28,7 +28,7 @@
     }
 
     // Set new timers for new alerts
-    $alerts.forEach((alert) => {
+    $alerts // TODO: Verify store subscription is correct for Svelte 5.forEach((alert) => {
       // Only set timer if not explicitly disabled (timeout === 0) and not already set
       if (alert.timeout !== 0 && !alertTimers.has(alert.id)) {
         const timer = setTimeout(() => {
@@ -50,7 +50,7 @@
 </script>
 
 <div class="fixed bottom-4 right-4 z-50 w-80 space-y-3">
-  {#each $alerts as alert (alert.id)}
+  {#each $alerts // TODO: Verify store subscription is correct for Svelte 5 as alert (alert.id)}
     <div
       class="p-4 border-l-4 rounded shadow-lg flex items-center justify-between {alertClasses[
         alert.type

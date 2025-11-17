@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import POIPhotoModal from '$lib/client/ui/POIPhotoModal.svelte';
-  import POIPhotoUploader from '$lib/client/ui/POIPhotoUploader.svelte';
-  import POIThreatBadge from '$lib/components/poi/POIThreatBadge.svelte';
-  import Button from '$lib/components/ui/button.svelte';
-  import CardContent from '$lib/components/ui/card-content.svelte';
-  import CardHeader from '$lib/components/ui/card-header.svelte';
-  import CardTitle from '$lib/components/ui/card-title.svelte';
-  import Card from '$lib/components/ui/card.svelte';
-  import Separator from '$lib/components/ui/separator.svelte';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import POIPhotoModal from '$lib // TODO: Verify store subscription is correct for Svelte 5/client/ui/POIPhotoModal.svelte';
+  import POIPhotoUploader from '$lib // TODO: Verify store subscription is correct for Svelte 5/client/ui/POIPhotoUploader.svelte';
+  import POIThreatBadge from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIThreatBadge.svelte';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button.svelte';
+  import CardContent from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card-content.svelte';
+  import CardHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card-header.svelte';
+  import CardTitle from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card-title.svelte';
+  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card.svelte';
+  import Separator from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/separator.svelte';
   import {
     ArrowLeft,
     Camera,
@@ -36,17 +36,17 @@
     notes?: string;
   }
 
-  let poi = $state<POI | null>(null);
-  let photos = $state<Photo[]>([]);
-  let selectedPhoto = $state<Photo | null>(null);
-  let showPhotoModal = $state(false);
-  let loading = $state(true);
+  let poi = $state // TODO: Verify store subscription is correct for Svelte 5<POI | null>(null);
+  let photos = $state // TODO: Verify store subscription is correct for Svelte 5<Photo[]>([]);
+  let selectedPhoto = $state // TODO: Verify store subscription is correct for Svelte 5<Photo | null>(null);
+  let showPhotoModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
 
   // Load POI data
   async function loadPOI() {
     try {
       loading = true;
-      const poiId = $page.params.id;
+      const poiId = $page // TODO: Verify store subscription is correct for Svelte 5.params.id;
 
       // Load POI details - use persons-of-interest API with search
       const poiResponse = await fetch(`/api/persons-of-interest?search=${encodeURIComponent(poiId)}&limit=1`);
@@ -110,7 +110,7 @@
   <div class="max-w-6xl mx-auto p-6">
     <!-- Header -->
     <div class="mb-6">
-      <Button variant="ghost" on:click={handleBack} class="mb-4">
+      <Button variant="ghost" onclick={handleBack} class="mb-4">
         <ArrowLeft class="w-4 h-4 mr-2" />
         Back to POI List
       </Button>
@@ -149,7 +149,7 @@
             </div>
           </div>
 
-          <Button on:click={handleEdit}>
+          <Button onclick={handleEdit}>
             <Edit class="w-4 h-4 mr-2" />
             Edit POI
           </Button>

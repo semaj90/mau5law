@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { WebGPUCapabilities } from '$lib/webgpu/webgpu-init';
+  import { WebGPUCapabilities } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-init';
   import { onMount } from 'svelte';
 
-  let activeTab = $state<'general' | 'ai' | 'database' | 'gpu' | 'security'>('general');
+  let activeTab = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'general' | 'ai' | 'database' | 'gpu' | 'security'>('general');
 
   // Configuration settings
-  let config = $state({
+  let config = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     general: {
       theme: 'yorha',
       language: 'en',
@@ -46,7 +46,7 @@
   });
 
   // System information
-  let systemInfo = $state({
+  let systemInfo = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     version: '2.0.0',
     uptime: '0d 0h 0m',
     memory: { used: 0, total: 0, percentage: 0 },
@@ -54,9 +54,9 @@
     cpu: { usage: 0, cores: 0 }
   });
 
-  let webgpuCapabilities = $state({ hasWebGPU: false });
+  let webgpuCapabilities = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({ hasWebGPU: false });
 
-  let performanceMetrics = $state({
+  let performanceMetrics = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     responseTime: 0,
     throughput: 0,
     errorRate: 0,

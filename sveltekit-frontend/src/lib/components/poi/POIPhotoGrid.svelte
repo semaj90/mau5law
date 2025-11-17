@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button/Button.svelte';
   import { Camera, Eye, Trash2, Upload } from 'lucide-svelte';
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   let {
     photos = [],
     editable = false
-  } = $props();
+  } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   const dispatch = createEventDispatcher();
 
@@ -31,7 +31,7 @@
         <Camera class="w-5 h-5" />
         POI Photos ({photos.length})
       </h3>
-      <Button on:click={handleUpload} variant="outline" size="sm">
+      <Button onclick={handleUpload} variant="outline" size="sm">
         <Upload class="w-4 h-4 mr-2" />
         Upload Photo
       </Button>
@@ -48,7 +48,7 @@
       <Camera class="w-12 h-12 text-gray-400 mx-auto mb-4" />
       <p class="text-gray-500 mb-4">No photos uploaded yet</p>
       {#if editable}
-        <Button on:click={handleUpload} variant="outline">
+        <Button onclick={handleUpload} variant="outline">
           <Upload class="w-4 h-4 mr-2" />
           Upload First Photo
         </Button>

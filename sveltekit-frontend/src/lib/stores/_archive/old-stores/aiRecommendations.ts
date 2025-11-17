@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
+import { aiRecommendationEngine } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ai-recommendation-engine';
 export const recommendations = writable<any[]>([]);
 export const partialRecommendations = writable<any[]>([]);
 export const engineState = writable<'idle' | 'processing' | 'success' | 'failure'>('idle');

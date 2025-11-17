@@ -6,7 +6,7 @@
     [key: string]: any;
   }
 
-  let { htmlFor, class: className = '', children, ...rest }: Props = $props();
+  let { htmlFor, class: className = '', children, ...rest }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <label

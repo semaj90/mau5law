@@ -128,7 +128,7 @@ export interface VectorSearchResult {
 
 // Loki.js specific types
 export interface LokiMessage extends ChatMessage {
-  $loki?: number;
+  $loki // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5?: number;
   meta?: {
     created: number;
     revision: number;

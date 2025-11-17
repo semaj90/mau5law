@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 
   // Define Machine shape so TS can infer types (fixes: unknown[])
   interface Machine {
@@ -15,10 +15,10 @@
   }
 
   // component state (Svelte 5 runes) with explicit generics
-  let mounted = $state<boolean>(false);
-  let machines = $state<Machine[]>([]);
-  let selectedMachine = $state<Machine | null>(null);
-  let loading = $state<boolean>(true);
+  let mounted = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let machines = $state // TODO: Verify store subscription is correct for Svelte 5<Machine[]>([]);
+  let selectedMachine = $state // TODO: Verify store subscription is correct for Svelte 5<Machine | null>(null);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
 
   // Mock machine registry data - replace with actual XState registry
   const mockMachines: Machine[] = [
@@ -60,7 +60,7 @@
     },
   ];
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     mounted = true;
     void loadMachines(); // Use void to explicitly ignore the Promise
   });

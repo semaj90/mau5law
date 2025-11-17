@@ -1,6 +1,6 @@
 ﻿/** * Dynamic Routing Test Page - Load Function * Basic data loading for the routing test page */
 
-import type { PageLoad } from './$types.js';
+import type { PageLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const load: PageLoad = async ({ params, url, route }) => {
   // Basic page data without complex routing imports

@@ -115,24 +115,24 @@
     },
   ];
 
-  let testResults = $state<TestResult[]>([]);
-  let isRunning = $state<boolean>(false);
-  let autoRefresh = $state<boolean>(false);
-  let filter = $state<'all' | 'success' | 'error'>('all');
+  let testResults = $state // TODO: Verify store subscription is correct for Svelte 5<TestResult[]>([]);
+  let isRunning = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let autoRefresh = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let filter = $state // TODO: Verify store subscription is correct for Svelte 5<'all' | 'success' | 'error'>('all');
   let refreshTimer: ReturnType<typeof setInterval> | null = null;
 
-  const totalTests = $derived(() => testResults.length);
-  const successCount = $derived(
+  const totalTests = $derived // TODO: Verify store subscription is correct for Svelte 5(() => testResults.length);
+  const successCount = $derived // TODO: Verify store subscription is correct for Svelte 5(
     () => testResults.filter((item) => item.status === 'success').length
   );
-  const errorCount = $derived(() => testResults.filter((item) => item.status === 'error').length);
-  const averageLatency = $derived(() => {
+  const errorCount = $derived // TODO: Verify store subscription is correct for Svelte 5(() => testResults.filter((item) => item.status === 'error').length);
+  const averageLatency = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     const t = testResults.length;
     if (t === 0) return 0;
     return Math.round(testResults.reduce((sum, item) => sum + item.durationMs, 0) / t);
   });
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (autoRefresh) {
       if (refreshTimer) clearInterval(refreshTimer);
       refreshTimer = setInterval(() => {

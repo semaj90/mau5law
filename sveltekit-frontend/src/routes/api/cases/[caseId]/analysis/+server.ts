@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { json } from '@sveltejs/kit';
-import { caseActivities, cases } from '$lib/server/db/schema-postgres';
-import db from '$lib/server/db/index'; // Changed to default import
-import type { RequestHandler } from './$types.js';
+import { caseActivities, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index'; // Changed to default import
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { QdrantClient } from '@qdrant/qdrant-js';
 import { eq } from 'drizzle-orm';
-import { getQdrantUrl, getOllamaUrl } from '$lib/server/utils/endpoints'; // Import centralized endpoint helpers
+import { getQdrantUrl, getOllamaUrl } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/endpoints'; // Import centralized endpoint helpers
 
 // Environment variables fallback is now handled by the helper functions
 const QDRANT_URL = getQdrantUrl();

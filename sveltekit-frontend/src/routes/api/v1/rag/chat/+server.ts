@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { OllamaService } from '$lib/server/ollama';
+import { OllamaService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ollama';
 
 const ollama = new OllamaService();
 

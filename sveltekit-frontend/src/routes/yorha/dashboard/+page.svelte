@@ -1,9 +1,9 @@
 <script lang="ts">
   // Fixed imports and clean top-level declarations
   import { onDestroy, onMount } from 'svelte';
-  import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
-  import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
-  import type { PageData } from './$types';
+  import * as yorhaAPI from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient';
+  import YoRHaSystemStatus from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/yorha/YoRHaSystemStatus.svelte';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
   // runtime d3 namespace holder — use `any` to avoid TS namespace generics issues at compile time
   let d3: any = null;
@@ -36,35 +36,35 @@
     edges: GraphEdge[];
   }
 
-  // Svelte, 5 (runes) pattern: read page data from $props() // keep TS typing with an assertion
-  let { data } = $props() as { data: PageData };
+  // Svelte, 5 (runes) pattern: read page data from $props // TODO: Verify store subscription is correct for Svelte 5() // keep TS typing with an assertion
+  let { data } = $props // TODO: Verify store subscription is correct for Svelte 5() as { data: PageData };
 
   // System metrics and status - initialized from SSR data
-  let systemMetrics = $state(data.systemStatus);
+  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5(data.systemStatus);
 
   // typed graphData with a safe default to avoid: 'never' inference
-  let graphData = $state<YoRHaGraphData>(data.graphData ?? { nodes: [], edges: [] });
+  let graphData = $state // TODO: Verify store subscription is correct for Svelte 5<YoRHaGraphData>(data.graphData ?? { nodes: [], edges: [] });
 
-  let _multicoreStatus = $state(data.multicoreStatus); // prefixed with: '_' to indicate intentionally unused
+  let _multicoreStatus = $state // TODO: Verify store subscription is correct for Svelte 5(data.multicoreStatus); // prefixed with: '_' to indicate intentionally unused
 
   // Correct realtimeData typing and initialization
-  let realtimeData = $state({
+  let realtimeData = $state // TODO: Verify store subscription is correct for Svelte 5({
     cpuHistory: [] as number[],
     memoryHistory: [] as number[],
     networkHistory: [] as number[],
     timestamp: Date.now(),
   });
 
-  let isLoading = $state(!data.initialLoad);
-  let lastUpdate = $state(new Date(data.timestamp));
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(!data.initialLoad);
+  let lastUpdate = $state // TODO: Verify store subscription is correct for Svelte 5(new Date(data.timestamp));
 
   // Data update intervals
-  let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
-  let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
-  let errorMessage = $state<string | null>(null);
+  let metricsInterval = $state // TODO: Verify store subscription is correct for Svelte 5<ReturnType<typeof setInterval> | null>(null);
+  let realtimeInterval = $state // TODO: Verify store subscription is correct for Svelte 5<ReturnType<typeof setInterval> | null>(null);
+  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // add a ref for the d3 render container - make reactive so bind:this updates are tracked
-  let graphContainer = $state<HTMLElement | null>(null);
+  let graphContainer = $state // TODO: Verify store subscription is correct for Svelte 5<HTMLElement | null>(null);
 
   // D3 runtime handles - use: any to avoid referencing missing `select` symbol/type
   let svg: any = null;
@@ -73,16 +73,16 @@
   let resizeObserver: ResizeObserver | null = null;
 
   // dynamic loader for YoRHaDataVizComponent
-  let YoRHaDataVizComponent = $state<any | null>(null);
+  let YoRHaDataVizComponent = $state // TODO: Verify store subscription is correct for Svelte 5<any | null>(null);
 
   // add: derived wrapper for runes-mode dynamic component rendering
-  let VizComponent = $derived(YoRHaDataVizComponent);
+  let VizComponent = $derived // TODO: Verify store subscription is correct for Svelte 5(YoRHaDataVizComponent);
 
   // add: safe vizProps derived from page data to avoid TS errors when PageData lacks vizProps
-  let vizProps = $derived(() => (data as any).vizProps ?? {});
+  let vizProps = $derived // TODO: Verify store subscription is correct for Svelte 5(() => (data as any).vizProps ?? {});
 
   // mark intentionally unused variable as used (no-op) to silence: "declared but never read"
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     void _multicoreStatus;
   });
 
@@ -92,7 +92,7 @@
     errorMessage = null;
     try {
       // Simulate API call to fetch initial system data
-      // NOTE: The import `import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';`
+      // NOTE: The import `import * as yorhaAPI from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient.svelte';`
       // suggests `YoRHaAPIClient.svelte` is a Svelte component. If it's meant to provide API functions,
       // it should typically be a `.ts` or `.js` file. For now, assuming `yorhaAPI` has these methods.
       const response = await yorhaAPI.getSystemStatus(); // Assuming this exists and returns data
@@ -163,7 +163,7 @@
     d3 = null; // Clear d3 reference
   }
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     (async () => {
       await loadSystemData();
       startRealTimeUpdates();
@@ -177,7 +177,7 @@
     // dynamic import of data viz component (safe, non-blocking)
     (async () => {
       try {
-        const modAny: any = await import('$lib/components/yorha/YoRHaDataViz.svelte');
+        const modAny: any = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/yorha/YoRHaDataViz.svelte');
         YoRHaDataVizComponent = (modAny && (modAny.default ?? modAny)) || null;
       } catch (err) {
         // non-fatal - continue without viz if module not present
@@ -197,7 +197,7 @@
   });
 
   // react to graphData updates and re-render D3 when data changes
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     graphData; // make reactive
     if (svg) {
       updateD3();

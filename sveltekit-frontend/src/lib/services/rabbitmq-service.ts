@@ -1,5 +1,5 @@
-import { browser } from '$app/environment'; // keep import safe for client bundling
-import { RABBITMQ_URL } from '$env/static/private';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment'; // keep import safe for client bundling
+import { RABBITMQ_URL } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/static/private';
 import type { Connection, Channel, Replies, ConsumeMessage } from 'amqplib';
 
 // --- TYPES ---
@@ -75,8 +75,8 @@ class RabbitMQService implements IRabbitMQService {
   private connection: Connection | null = null; // Fixed: comma to colon
   private channel: Channel | null = null
   private config: RabbitMQConfig; // Fixed: colon after private
-  private isConnected = false; // Fixed: removed $state
-  private isInitializing = false; // Fixed: removed $state
+  private isConnected = false; // Fixed: removed $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
+  private isInitializing = false; // Fixed: removed $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
 
   private constructor() {
     // Avoid importing SvelteKit server-only env modules at top-level; read from process.env at runtime.
@@ -112,18 +112,18 @@ class RabbitMQService implements IRabbitMQService {
           this.isConnected = false});
         this.connection.on('close', () => {
           console.log('RabbitMQ connection closed');
-          this.isConnected = false; // Fixed: removed $state
+          this.isConnected = false; // Fixed: removed $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
         });
 
         await this.setupInfrastructure();
         this.isConnected = true
-        this.isInitializing = false; // Fixed: removed $state
+        this.isInitializing = false; // Fixed: removed $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
         console.log('âœ… RabbitMQ connected and configured');
         return} catch (err) {
         console.error(`RabbitMQ connect attempt ${attempt}/${maxRetries} failed: `, err); // Fixed: template literal and comma
         if (attempt < maxRetries) {
           await new Promise(r => setTimeout(r, retryDelay))} else {
-          this.isInitializing = false; // Fixed: removed $state
+          this.isInitializing = false; // Fixed: removed $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
           throw new Error('Could not connect to RabbitMQ after multiple attempts')}
       }
     }
@@ -271,7 +271,7 @@ class RabbitMQService implements IRabbitMQService {
         await this.connection.close()} catch (err) {
         console.error('Error closing connection: ', err)}
       this.connection = null}
-    this.isConnected = false; // Fixed: removed $state
+    this.isConnected = false; // Fixed: removed $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
     console.log('RabbitMQ connection closed')}
 
   async healthCheck(): Promise<any> {

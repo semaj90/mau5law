@@ -1,16 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { cn } from '$lib/utils';
+  import { cn } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils';
   import * as Lucide from 'lucide-svelte';
 // Re-introducing Lucide icons
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card } from '$lib/components/ui/card';
-  import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '$lib/components/ui/dialog';
-  import { Input } from '$lib/components/ui/input';
-  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import { Card } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
+  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+  import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/select';
 // Updated for bits-ui sub-components (SSR-compatible)
-  import { Label } from '$lib/components/ui/label';
+  import { Label } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/label';
  // Assuming Label is available for forms
 
   // Interfaces
@@ -63,20 +63,20 @@
   const RefreshCw = resolveIcon('RefreshCw');
 
   // State
-  let searchQuery = $state<string>('');
-  let viewMode = $state<'grid' | 'list'>('grid'); // Changed to 'grid' | 'list' and initial value to 'grid'
-  let showFilters = $state<boolean>(false);
-  let selectedThreatLevel = $state<string>('');
-  let selectedStatus = $state<string>('');
-  let selectedRelationship = $state<string>('');
-  let sortBy = $state<'name' | 'updated' | 'created' | 'threat'>('updated');
-  let sortOrder = $state<'asc' | 'desc'>('desc');
-  let isLoading = $state<boolean>(false);
-  let showAddModal = $state<boolean>(false);
-  let error = $state<string | null>(null);
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'list'>('grid'); // Changed to 'grid' | 'list' and initial value to 'grid'
+  let showFilters = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let selectedThreatLevel = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let selectedStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let selectedRelationship = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let sortBy = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'name' | 'updated' | 'created' | 'threat'>('updated');
+  let sortOrder = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'asc' | 'desc'>('desc');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let showAddModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // Mock data - replace with API calls (fixed: object literal syntax)
-  let persons = $state<PersonOfInterest[]>([
+  let persons = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<PersonOfInterest[]>([
     {
       id: '1',
       name: 'Marcus Chen',
@@ -161,7 +161,7 @@
   ]);
 
   // New person form state for the modal
-  let newPerson = $state<Omit<PersonOfInterest, 'id' | 'caseIds' | 'createdAt' | 'updatedAt' | 'createdBy' | 'position'>>({
+  let newPerson = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Omit<PersonOfInterest, 'id' | 'caseIds' | 'createdAt' | 'updatedAt' | 'createdBy' | 'position'>>({
     name: '',
     aliases: [],
     relationship: 'person_of_interest',
@@ -182,7 +182,7 @@
   });
 
   // Computed properties (fixed: use persons, shallow copy, correct return)
-  let filteredPersons = $derived(() => {
+  let filteredPersons = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     let filtered = persons.slice();
 
     // Search filter
@@ -341,7 +341,7 @@
     isLoading = false;
   }
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     loadPersons();
   });
 </script>

@@ -9,7 +9,7 @@
 		onSelect: (person: FugitiveDexPerson) => void;
 	}
 
-	let { persons, selectedPerson, searchQuery, onSelect }: Props = $props();
+	let { persons, selectedPerson, searchQuery, onSelect }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="nes-container with-title bg-gray-900 text-white rounded-xl">

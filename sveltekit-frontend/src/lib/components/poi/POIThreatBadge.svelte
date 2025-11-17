@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
   import { AlertCircle, AlertTriangle, CheckCircle, Shield } from 'lucide-svelte';
 
   export let threatLevel: string;
   export let size: 'sm' | 'md' | 'lg' = 'md';
-  export let showIcon = true;
+  let { showIcon = true } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   function getThreatConfig(level: string) {
     switch (level) {

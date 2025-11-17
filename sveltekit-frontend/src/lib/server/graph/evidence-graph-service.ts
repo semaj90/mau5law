@@ -66,10 +66,10 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
     await session.writeTransaction(async (tx: Transaction) => {
       // Upsert evidence node
       await tx.run(
-        `MERGE (e:Evidence {id: $evidenceId})
-				SET e.title = COALESCE($title, e.title),
-					e.summary = COALESCE($summary, e.summary),
-					e.riskLevel = COALESCE($riskLevel, e.riskLevel),
+        `MERGE (e:Evidence {id: $evidenceId // TODO: Verify store subscription is correct for Svelte 5})
+				SET e.title = COALESCE($title // TODO: Verify store subscription is correct for Svelte 5, e.title),
+					e.summary = COALESCE($summary // TODO: Verify store subscription is correct for Svelte 5, e.summary),
+					e.riskLevel = COALESCE($riskLevel // TODO: Verify store subscription is correct for Svelte 5, e.riskLevel),
 					e.updatedAt = datetime()`,
         {
           evidenceId: data.evidenceId,
@@ -82,9 +82,9 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
       // Upsert case and relationship
       if (data.caseId) {
         const res = await tx.run(
-          `MERGE (c:Case {id: $caseId})
-					SET c.name = COALESCE($caseName, c.name), c.updatedAt = datetime()
-					MERGE (e:Evidence {id: $evidenceId})
+          `MERGE (c:Case {id: $caseId // TODO: Verify store subscription is correct for Svelte 5})
+					SET c.name = COALESCE($caseName // TODO: Verify store subscription is correct for Svelte 5, c.name), c.updatedAt = datetime()
+					MERGE (e:Evidence {id: $evidenceId // TODO: Verify store subscription is correct for Svelte 5})
 					MERGE (e)-[r:ASSOCIATED_WITH]->(c)
 					SET r.updatedAt = datetime()`,
           { caseId: data.caseId, caseName: data.caseName, evidenceId: data.evidenceId }
@@ -96,11 +96,11 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
       // Entities and MENTIONS
       if (Array.isArray(data.entities) && data.entities.length) {
         const res = await tx.run(
-          `UNWIND $entities AS ent
+          `UNWIND $entities // TODO: Verify store subscription is correct for Svelte 5 AS ent
 					MERGE (n:Entity {id: ent.id})
 					SET n.name = ent.name, n.type = COALESCE(ent.type, 'unknown'), n.updatedAt = datetime()
 					WITH n
-					MERGE (e:Evidence {id: $evidenceId})
+					MERGE (e:Evidence {id: $evidenceId // TODO: Verify store subscription is correct for Svelte 5})
 					MERGE (e)-[r:MENTIONS]->(n)
 					SET r.updatedAt = datetime()`,
           {
@@ -119,8 +119,8 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
       // Explicit edges
       if (Array.isArray(data.relatedEvidence) && data.relatedEvidence.length) {
         const res = await tx.run(
-          `UNWIND $related AS rel
-					MERGE (src:Evidence {id: $evidenceId})
+          `UNWIND $related // TODO: Verify store subscription is correct for Svelte 5 AS rel
+					MERGE (src:Evidence {id: $evidenceId // TODO: Verify store subscription is correct for Svelte 5})
 					MERGE (dst:Evidence {id: rel.evidenceId})
 					MERGE (src)-[r:DERIVED_FROM]->(dst)
 					SET r.updatedAt = datetime()`,
@@ -133,8 +133,8 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
       // Similar evidence links (with score)
       if (Array.isArray(data.similarEvidence) && data.similarEvidence.length) {
         const res = await tx.run(
-          `UNWIND $similar AS rel
-					MERGE (src:Evidence {id: $evidenceId})
+          `UNWIND $similar // TODO: Verify store subscription is correct for Svelte 5 AS rel
+					MERGE (src:Evidence {id: $evidenceId // TODO: Verify store subscription is correct for Svelte 5})
 					MERGE (dst:Evidence {id: rel.evidenceId})
 					MERGE (src)-[r:SIMILAR_TO]->(dst)
 					SET r.score = rel.score, r.updatedAt = datetime()`,
@@ -168,10 +168,10 @@ export async function createSimilarityLinks(
       for (const n of neighbors) {
         if (n.similarity >= SIMILARITY_THRESHOLD) {
           await tx.run(
-            `MERGE (a:Evidence {id: $a})
-						MERGE (b:Evidence {id: $b})
+            `MERGE (a:Evidence {id: $a // TODO: Verify store subscription is correct for Svelte 5})
+						MERGE (b:Evidence {id: $b // TODO: Verify store subscription is correct for Svelte 5})
 						MERGE (a)-[r:SIMILAR_TO]->(b)
-						SET r.score = $score, r.createdAt = datetime()`,
+						SET r.score = $score // TODO: Verify store subscription is correct for Svelte 5, r.createdAt = datetime()`,
             { a: evidenceId, b: n.key, score: n.similarity }
           );
         }

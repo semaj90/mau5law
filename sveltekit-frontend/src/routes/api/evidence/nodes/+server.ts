@@ -1,8 +1,8 @@
 // Evidence Board API Routes
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidenceNodes, evidenceConnections } from '$lib/server/db/schema';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import { evidenceNodes, evidenceConnections } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 // GET /api/evidence/nodes - Get all evidence nodes for a case

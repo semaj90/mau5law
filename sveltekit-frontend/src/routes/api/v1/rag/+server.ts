@@ -4,13 +4,13 @@
  * Supports multi-protocol routing (HTTP, gRPC, QUIC) with automatic failover
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json, error } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { ensureError } from '$lib/utils/ensure-error';
-import { dev } from '$app/environment';
-import type { EnhancedRAGRequest, EnhancedRAGResponse, APIRequestContext } from '$lib/types/api.js';
-import { embeddingService } from '$lib/server/embedding-service.js';
+import { readBodyFast } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/json-fast';
+import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
+import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import type { EnhancedRAGRequest, EnhancedRAGResponse, APIRequestContext } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/api.js';
+import { embeddingService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embedding-service.js';
 import crypto from 'crypto';
 
 // Enhanced RAG Service Configuration

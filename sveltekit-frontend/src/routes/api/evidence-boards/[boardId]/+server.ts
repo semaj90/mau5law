@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidenceBoards, evidenceBoardItems, evidenceBoardConnections, evidence, personsOfInterest } from '$lib/database/enhanced-schema';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import { evidenceBoards, evidenceBoardItems, evidenceBoardConnections, evidence, personsOfInterest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/database/enhanced-schema';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 

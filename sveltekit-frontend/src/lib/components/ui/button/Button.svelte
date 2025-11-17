@@ -15,7 +15,7 @@
     disabled = false,
     children,
     ...rest
-  }: Props = $props();
+  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <button

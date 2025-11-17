@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 const EMBEDDING_SERVICE_URL = 'http://localhost:8094';
 

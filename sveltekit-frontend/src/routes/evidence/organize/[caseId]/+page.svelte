@@ -9,22 +9,22 @@
 -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { page } from, '$app/stores';
+  import { page } from, '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
   import { onMount } from, 'svelte';
-  import CaseEvidenceOrganizer from, '$lib/components/evidence/CaseEvidenceOrganizer.svelte';
+  import CaseEvidenceOrganizer from, '$lib // TODO: Verify store subscription is correct for Svelte 5/components/evidence/CaseEvidenceOrganizer.svelte';
   // Get case ID from route parameters
-  const caseId = $page.params.caseId;
+  const caseId = $page // TODO: Verify store subscription is correct for Svelte 5.params.caseId;
   // State
-  let caseData = $state<any>(null);
-  let organizationHistory = $state<any[]>([]);
-  let isLoading = $state<boolean>(true);
-  let error = $state<string | null>(null);
-  let selectedEvidence = $state<any[]>([]);
-  let organizationStats = $state<any>( );
+  let caseData = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let organizationHistory = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let selectedEvidence = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let organizationStats = $state // TODO: Verify store subscription is correct for Svelte 5<any>( );
   /**
    * Initialize the page
    */
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     (async () => {
 if (!caseId) {
       error = 'Case ID is required';

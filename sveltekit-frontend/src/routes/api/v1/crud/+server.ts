@@ -1,7 +1,7 @@
-﻿import type { RequestHandler } from './$types.js';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { db } from '$lib/server/db';
+import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
 import {
   users,
   cases,
@@ -12,7 +12,7 @@ import {
   personsOfInterest,
   ragMessages,
   ragSessions,
-} from '$lib/server/db/schema-postgres';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { sql, or, like } from 'drizzle-orm';
 import { z } from 'zod';
 

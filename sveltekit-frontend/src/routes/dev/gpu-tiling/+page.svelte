@@ -1,11 +1,11 @@
 <script lang="ts">
-import { embedText } from '$lib/ai/tensor-client';
+import { embedText } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/tensor-client';
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true
   let gpuTile = true
   let result: unknown = null
-  let ocrBusy = $state<boolean>(false);
-  let runBusy = $state<boolean>(false);
+  let ocrBusy = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let runBusy = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as: unknown).gpu
   async function run(): Promise<any> {
     runBusy = true

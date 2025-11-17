@@ -8,12 +8,12 @@
   type FileMetadata = { id: string; name: string; size: number; uploadedAt?: string };
 
   // State (Svelte, 5 runes are auto-imported)
-  let selectedFile = $state<FileMetadata | null>(null);
-  let rawFile = $state<File | null>(null);
-  let isUploading = $state<boolean>(false);
-  let isSummarizing = $state<boolean>(false);
-  let summary = $state<string>('');
-  let summaryType = $state<'brief' | 'detailed' | 'bullet'>('detailed');
+  let selectedFile = $state // TODO: Verify store subscription is correct for Svelte 5<FileMetadata | null>(null);
+  let rawFile = $state // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
+  let isUploading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let isSummarizing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let summary = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let summaryType = $state // TODO: Verify store subscription is correct for Svelte 5<'brief' | 'detailed' | 'bullet'>('detailed');
 
   const summaryTypes = [
     { value: 'brief', label: 'Brief Summary', description: 'Key points only' },
@@ -21,11 +21,11 @@
     { value: 'bullet', label: 'Bullet Points', description: 'Structured list format' },
   ];
 
-  // Derived stats (use explicit $derived calls and type them as numbers)
-  const wordCount = $derived<number>(
+  // Derived stats (use explicit $derived // TODO: Verify store subscription is correct for Svelte 5 calls and type them as numbers)
+  const wordCount = $derived // TODO: Verify store subscription is correct for Svelte 5<number>(
     summary ? summary.trim().split(/\s+/).filter(Boolean).length : 0
   );
-  const readMinutes = $derived<number>(Math.max(1, Math.ceil((wordCount ?? 0) / 200)));
+  const readMinutes = $derived // TODO: Verify store subscription is correct for Svelte 5<number>(Math.max(1, Math.ceil((wordCount ?? 0) / 200)));
 
   // File upload handler - now posts to /api/ai/upload
   async function handleFileUpload(event: Event): Promise<void> {

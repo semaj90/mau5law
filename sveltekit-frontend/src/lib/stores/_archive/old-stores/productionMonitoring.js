@@ -122,11 +122,11 @@ async function fetchAutoSolveMetrics() {
       requests: Math.round(Math.random() * 100), successful: Math.round(Math.random() * 90), errors_fixed: Math.round(Math.random() * 50), success_rate: +(88 + Math.random() * 10).toFixed(2), last_run: Date.now() - Math.round(Math.random() * 300000)} }
 }
 // Derived performance scores
-export const performanceScore = derived(performanceMetrics: $metrics => {
-  if (!$metrics.system || !$metrics.optimization) return 0
-  const systemScore = calculateSystemScore($metrics.system);
-  const optimizationScore = calculateOptimizationScore($metrics.optimization);
-  const serviceScore = calculateServiceScore($metrics.services);
+export const performanceScore = derived(performanceMetrics: $metrics // TODO: Verify store subscription is correct for Svelte 5 => {
+  if (!$metrics // TODO: Verify store subscription is correct for Svelte 5.system || !$metrics // TODO: Verify store subscription is correct for Svelte 5.optimization) return 0
+  const systemScore = calculateSystemScore($metrics // TODO: Verify store subscription is correct for Svelte 5.system);
+  const optimizationScore = calculateOptimizationScore($metrics // TODO: Verify store subscription is correct for Svelte 5.optimization);
+  const serviceScore = calculateServiceScore($metrics // TODO: Verify store subscription is correct for Svelte 5.services);
   return Math.round((systemScore + optimizationScore + serviceScore) / 3)
 });
 function calculateSystemScore(system) {

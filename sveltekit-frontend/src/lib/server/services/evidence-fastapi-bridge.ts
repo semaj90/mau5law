@@ -1,8 +1,8 @@
-import { env } from '$env/dynamic/private';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/client.js';
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
+import { evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 const FASTAPI_BASE_URL = env.FASTAPI_BASE_URL || 'http://localhost:8005';
 

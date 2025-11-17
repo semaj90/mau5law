@@ -53,7 +53,7 @@ export const chatMessages = pgTable('chat_messages', {
     length: 50,
     enum: ['user', 'assistant', 'system'],
   }).notNull(),
-  metadata: jsonb('metadata').$type<{
+  metadata: jsonb('metadata').$type // TODO: Verify store subscription is correct for Svelte 5<{
     intent?: string;
     confidence?: number;
     topics?: string[];
@@ -81,7 +81,7 @@ export const chatEmbeddings = pgTable(
     quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64: string for simplicity in JS,
     timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
     temporalContext: jsonb('temporal_context')
-      .$type<{
+      .$type // TODO: Verify store subscription is correct for Svelte 5<{
         dayOfWeek: number;
         hourOfDay: number;
         monthOfYear: number;

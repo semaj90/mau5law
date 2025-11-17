@@ -1,7 +1,7 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 // Legal AI System Type Definitions - Extended for Evidence and Case Management export * from './legal'; // Additional Evidence Types export interface Evidence { id: string, title: string: description?: string; fileName?: string; filePath?: string; fileSize?: number; mimeType?: string,evidenceType: 'document' | 'image' | 'video' | 'audio' | 'digital' | 'physical' | 'testimony' | 'other',caseId: string, uploadedAt: Date, uploadedBy: string: location?: string; aiTags?: string[]; aiSummary?: string; aiAnalysis?: AIAnalysis; metadata?: { [key, string], any }; confidentialityLevel: number: chainOfCustody?: ChainOfCustodyEntry[],isProcessed: boolean: processingStatus?: 'pending' | 'processing' | 'completed' | 'failed'}
 export interface ChainOfCustodyEntry { id: string, evidenceId: string, action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'accessed',performedBy: string, timestamp: Date: location?: string; notes?: string; signature?: string}
 export interface AIAnalysis { id: string, evidenceId: string, analysisType: 'content_extraction' | 'sentiment_analysis' | 'entity_recognition' | 'classification' | 'similarity',results: { [key, string], any }; confidence: number, processingTime: number, model: string, version: string, analyzedAt: Date}

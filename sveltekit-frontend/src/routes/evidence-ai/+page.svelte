@@ -14,10 +14,10 @@ import { onMount } from 'svelte';
   let wsReconnecting = $state<boolean>(false);
 
   // File upload state
-  let selectedFile = $state<File | null>(null);
-  let isDragging = $state<boolean>(false);
-  let uploadProgress = $state<number>(0);
-  let currentFileId = $state<string | null>(null);
+  let selectedFile = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
+  let isDragging = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let uploadProgress = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let currentFileId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // Workflow state
   interface WorkflowStatus {
@@ -26,13 +26,13 @@ import { onMount } from 'svelte';
     status: 'pending' | 'processing' | 'complete' | 'error';
     message?: string
   }
-  let workflowStatus = $state<WorkflowStatus>({ stage: 'idle',
+  let workflowStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<WorkflowStatus>({ stage: 'idle',
     progress: 0,
     status: 'pending'
   });
 
   // Backend health state
-  let backendStatus = $state<{
+  let backendStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{
     typescript: boolean
     pythonAI: boolean
     capabilities: string[]
@@ -42,21 +42,21 @@ import { onMount } from 'svelte';
   });
 
   // AI streaming state
-  let streamingTokens = $state<string>('');
-  let isStreaming = $state<boolean>(false);
-  let aiSource = $state<'ollama' | 'tensorrt' | 'typescript-fallback' | null>(null);
+  let streamingTokens = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let isStreaming = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let aiSource = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'ollama' | 'tensorrt' | 'typescript-fallback' | null>(null);
 
   // Auto-tags state
-  let extractedTags = $state<string[]>([]);
+  let extractedTags = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
 
   // Search state
-  let searchQuery = $state<string>('');
-  let searchResults = $state<any[]>([]);
-  let aiSuggestions = $state<any[]>([]);
-  let isSearching = $state<boolean>(false);
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let aiSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let isSearching = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   // File metadata
-  let fileMetadata = $state<{
+  let fileMetadata = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{
     filename: string
     size: number
     uploadTime: string
@@ -356,7 +356,7 @@ import { onMount } from 'svelte';
   }
 
   // debounced effect for searchQuery
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (!searchQuery) {
       if (searchTimeout) {
         clearTimeout(searchTimeout);
@@ -513,7 +513,7 @@ import { onMount } from 'svelte';
               type="file"
               class="hidden"
               id="file-input"
-              on:change={handleFileSelect}
+              onchange={handleFileSelect}
               accept=".pdf,.doc,.docx,.txt,.jpg,.png"
             />
             <Button onclick={() => document.getElementById('file-input')?.click()}>

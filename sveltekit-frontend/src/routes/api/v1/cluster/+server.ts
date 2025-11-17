@@ -1,6 +1,6 @@
-﻿import type { RequestHandler } from './$types';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 /* * Cluster API Endpoint - Service Orchestration & Health * to: cluster-http.exe: 8213, modular-cluster-service-production.exe: 8215 */
-import { productionServiceClient } from '$lib/services/productionServiceClient';
+import { productionServiceClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/productionServiceClient';
 import { json, error } from '@sveltejs/kit';
 
 // Add a minimal local interface for the methods we call and cast the imported client.

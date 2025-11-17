@@ -1,9 +1,9 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from '$lib/server/minio-service';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
-import { getOllamaEmbeddingEndpoint } from '$lib/utils/ollama-endpoint'; // NEW IMPORT
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { getCudaServiceUrl, getEmbeddingModel } from '$lib // TODO: Verify store subscription is correct for Svelte 5/config/pgvector-gpu-config.js';
+import { MinIOService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio-service';
+import { generateEmbeddings } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/embedding-service';
+import { getOllamaEmbeddingEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoint'; // NEW IMPORT
 interface ChunkingRequest {
   text?: string;
   minioUrl?: string;

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { caseStore } from '$lib/stores/unified/case-store';
+  import { caseStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified/case-store';
   import { onMount } from 'svelte';
   import EvidenceBoard from '../../../../sveltekit-evidence/src/lib/components/EvidenceBoard.svelte';
 
-  let activeCaseId = $state<string | null>(null);
+  let activeCaseId = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   onMount(() => {
     const unsubscribe = caseStore.subscribe(store => {

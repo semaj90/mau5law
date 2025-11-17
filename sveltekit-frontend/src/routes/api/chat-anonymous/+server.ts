@@ -1,8 +1,8 @@
-﻿import type { Message } from '$lib/types';
+﻿import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { generateChatResponse } from '$lib/server/services';
+import { readBodyFast } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/json-fast';
+import { generateChatResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services';
 
 /**
  * Anonymous Chat API - Production Ready

@@ -8,7 +8,7 @@ import {
   CaseCreationSchema,
   SearchQuerySchema,
   AIAnalysisSchema
-} from '$lib/schemas/forms';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/forms';
 
 // Import types (assuming they exist)
 import type {
@@ -17,7 +17,7 @@ import type {
   CreatedCase,
   SearchResult,
   AIAnalysisResult
-} from '$lib/types';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 
 // ============================================================================
 // CONTEXT INTERFACES

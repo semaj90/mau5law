@@ -1,7 +1,7 @@
 <script lang="ts">
   // Removed unused imports:
-  // import type { Document } from '$lib/types';
-  // import FormField from '$lib/headless/FormField.svelte';
+  // import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  // import FormField from '$lib // TODO: Verify store subscription is correct for Svelte 5/headless/FormField.svelte';
 
   // Use dynamic imports for bridges to avoid "not a module" / "no exported member" compile issues.
   // We'll populate these at runtime in initializeNESGPUBridge().
@@ -10,7 +10,7 @@
 
   import { fade, fly } from 'svelte/transition';
 
-  // Add Job type so $state infers properly (prevents 'never' issues)
+  // Add Job type so $state // TODO: Verify store subscription is correct for Svelte 5 infers properly (prevents 'never' issues)
   type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
   interface Job {
     id: string;
@@ -29,10 +29,10 @@
   }
 
   // Use explicit generics so TS doesn't infer `never`
-  let processingQueue = $state<Job[]>([]);
-  let activeJobs = $state<Job[]>([]);
-  let completedJobs = $state<Job[]>([]);
-  let systemMetrics = $state({
+  let processingQueue = $state // TODO: Verify store subscription is correct for Svelte 5<Job[]>([]);
+  let activeJobs = $state // TODO: Verify store subscription is correct for Svelte 5<Job[]>([]);
+  let completedJobs = $state // TODO: Verify store subscription is correct for Svelte 5<Job[]>([]);
+  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5({
     nesMemory: { usedRAM: 0, totalRAM: 2048, usedCHR: 0, totalCHR: 8192 },
     gpuUtilization: 0,
     vectorProcessingRate: 0,
@@ -40,24 +40,24 @@
     bankSwitchingFreq: 0,
     chrRomPatterns: 0,
   });
-  let performanceStats = $state({
+  let performanceStats = $state // TODO: Verify store subscription is correct for Svelte 5({
     totalDocumentsProcessed: 0,
     averageProcessingTime: 0,
     successRate: 0,
     memoryEfficiency: 0,
   });
-  let showJobDialog = $state<boolean>(false);
-  let isProcessing = $state<boolean>(false);
-  let newJobForm = $state({
+  let showJobDialog = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let isProcessing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let newJobForm = $state // TODO: Verify store subscription is correct for Svelte 5({
     documentId: '',
     analysisType: 'semantic',
     priority: 'normal',
     useGPU: true,
     errors: {} as Record<string, string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
   });
-  let realTimeStats = $state<boolean>(true);
+  let realTimeStats = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     initializeNESGPUBridge();
     if (realTimeStats) {
       startRealtimeMonitoring();

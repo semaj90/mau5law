@@ -1,3 +1,3 @@
 // Compatibility shim: delegate to the real RabbitMQ service implementation
-export * from '$lib/server/messaging/rabbitmq-service';
-export { rabbitmqService, as rabbitMQService } from '$lib/server/messaging/rabbitmq-service'; 
+export * from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/messaging/rabbitmq-service';
+export { rabbitmqService, as rabbitMQService } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/messaging/rabbitmq-service'; 

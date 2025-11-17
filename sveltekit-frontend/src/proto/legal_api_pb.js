@@ -2,17 +2,17 @@
 // Instruct ESLint and TS tooling to skip / not type-check this generated JS.
  /* eslint-disable */
 /* @ts-nocheck */
-import * as $protobuf from 'protobufjs/minimal';
+import * as $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 from 'protobufjs/minimal';
 
 // Common aliases
-const $Reader = $protobuf.Reader,
-  $Writer = $protobuf.Writer,
-  $util = $protobuf.util;
+const $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader,
+  $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer,
+  $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util;
 
 // Exported root namespace
-const $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {});
+const $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.roots['default'] || ($protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.roots['default'] = {});
 
-export const legal = ($root.legal = (() => {
+export const legal = ($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal = (() => {
   /**
    * Namespace legal.
    * @exports legal
@@ -87,7 +87,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.User
        * @instance
        */
-      User.prototype.roles = $util.emptyArray;
+      User.prototype.roles = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * User createdAt.
@@ -131,11 +131,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.User
        * @static
        * @param {legal.api.IUser} message User message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       User.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id);
         if (message.email != null && Object.hasOwnProperty.call(message, 'email'))
@@ -146,17 +146,17 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < message.roles.length; ++i)
             writer.uint32(/* id 4, wireType 2 =*/ 34).string(message.roles[i]);
         if (message.createdAt != null && Object.hasOwnProperty.call(message, 'createdAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.createdAt,
             writer.uint32(/* id 5, wireType 2 =*/ 42).fork()
           ).ldelim();
         if (message.updatedAt != null && Object.hasOwnProperty.call(message, 'updatedAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.updatedAt,
             writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
           ).ldelim();
         if (message.preferences != null && Object.hasOwnProperty.call(message, 'preferences'))
-          $root.legal.api.UserPreferences.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences.encode(
             message.preferences,
             writer.uint32(/* id 7, wireType 2 =*/ 58).fork()
           ).ldelim();
@@ -169,8 +169,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.User
        * @static
        * @param {legal.api.IUser} message User message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       User.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -181,16 +181,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.User
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.User} User
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       User.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.User();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -213,15 +213,15 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 5: {
-              message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 6: {
-              message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.updatedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 7: {
-              message.preferences = $root.legal.api.UserPreferences.decode(reader, reader.uint32());
+              message.preferences = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -237,13 +237,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.User
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.User} User
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       User.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -258,26 +258,26 @@ export const legal = ($root.legal = (() => {
       User.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.id != null && message.hasOwnProperty('id'))
-          if (!$util.isString(message.id)) return 'id: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.id)) return 'id: string expected';
         if (message.email != null && message.hasOwnProperty('email'))
-          if (!$util.isString(message.email)) return 'email: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.email)) return 'email: string expected';
         if (message.name != null && message.hasOwnProperty('name'))
-          if (!$util.isString(message.name)) return 'name: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.name)) return 'name: string expected';
         if (message.roles != null && message.hasOwnProperty('roles')) {
           if (!Array.isArray(message.roles)) return 'roles: array expected';
           for (let i = 0; i < message.roles.length; ++i)
-            if (!$util.isString(message.roles[i])) return 'roles: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.roles[i])) return 'roles: string[] expected';
         }
         if (message.createdAt != null && message.hasOwnProperty('createdAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.createdAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.createdAt);
           if (error) return 'createdAt.' + error;
         }
         if (message.updatedAt != null && message.hasOwnProperty('updatedAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.updatedAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.updatedAt);
           if (error) return 'updatedAt.' + error;
         }
         if (message.preferences != null && message.hasOwnProperty('preferences')) {
-          let error = $root.legal.api.UserPreferences.verify(message.preferences);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences.verify(message.preferences);
           if (error) return 'preferences.' + error;
         }
         return null;
@@ -292,8 +292,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.User} User
        */
       User.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.User) return object;
-        let message = new $root.legal.api.User();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User();
         if (object.id != null) message.id = String(object.id);
         if (object.email != null) message.email = String(object.email);
         if (object.name != null) message.name = String(object.name);
@@ -306,17 +306,17 @@ export const legal = ($root.legal = (() => {
         if (object.createdAt != null) {
           if (typeof object.createdAt !== 'object')
             throw TypeError('.legal.api.User.createdAt: object expected');
-          message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
+          message.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.createdAt);
         }
         if (object.updatedAt != null) {
           if (typeof object.updatedAt !== 'object')
             throw TypeError('.legal.api.User.updatedAt: object expected');
-          message.updatedAt = $root.google.protobuf.Timestamp.fromObject(object.updatedAt);
+          message.updatedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.updatedAt);
         }
         if (object.preferences != null) {
           if (typeof object.preferences !== 'object')
             throw TypeError('.legal.api.User.preferences: object expected');
-          message.preferences = $root.legal.api.UserPreferences.fromObject(object.preferences);
+          message.preferences = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences.fromObject(object.preferences);
         }
         return message;
       };
@@ -327,7 +327,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.User
        * @static
        * @param {legal.api.User} message User
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       User.toObject = function toObject(message, options) {
@@ -350,11 +350,11 @@ export const legal = ($root.legal = (() => {
           for (let j = 0; j < message.roles.length; ++j) object.roles[j] = message.roles[j];
         }
         if (message.createdAt != null && message.hasOwnProperty('createdAt'))
-          object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
+          object.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.createdAt, options);
         if (message.updatedAt != null && message.hasOwnProperty('updatedAt'))
-          object.updatedAt = $root.google.protobuf.Timestamp.toObject(message.updatedAt, options);
+          object.updatedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.updatedAt, options);
         if (message.preferences != null && message.hasOwnProperty('preferences'))
-          object.preferences = $root.legal.api.UserPreferences.toObject(
+          object.preferences = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences.toObject(
             message.preferences,
             options
           );
@@ -369,7 +369,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       User.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -465,11 +465,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.UserPreferences
        * @static
        * @param {legal.api.IUserPreferences} message UserPreferences message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       UserPreferences.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.theme != null && Object.hasOwnProperty.call(message, 'theme'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.theme);
         if (message.language != null && Object.hasOwnProperty.call(message, 'language'))
@@ -490,8 +490,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.UserPreferences
        * @static
        * @param {legal.api.IUserPreferences} message UserPreferences message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       UserPreferences.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -502,16 +502,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.UserPreferences
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.UserPreferences} UserPreferences
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       UserPreferences.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.UserPreferences();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -545,13 +545,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.UserPreferences
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.UserPreferences} UserPreferences
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       UserPreferences.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -566,9 +566,9 @@ export const legal = ($root.legal = (() => {
       UserPreferences.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.theme != null && message.hasOwnProperty('theme'))
-          if (!$util.isString(message.theme)) return 'theme: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.theme)) return 'theme: string expected';
         if (message.language != null && message.hasOwnProperty('language'))
-          if (!$util.isString(message.language)) return 'language: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.language)) return 'language: string expected';
         if (message.notificationsEnabled != null && message.hasOwnProperty('notificationsEnabled'))
           if (typeof message.notificationsEnabled !== 'boolean')
             return 'notificationsEnabled: boolean expected';
@@ -587,8 +587,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.UserPreferences} UserPreferences
        */
       UserPreferences.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.UserPreferences) return object;
-        let message = new $root.legal.api.UserPreferences();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.UserPreferences();
         if (object.theme != null) message.theme = String(object.theme);
         if (object.language != null) message.language = String(object.language);
         if (object.notificationsEnabled != null)
@@ -603,7 +603,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.UserPreferences
        * @static
        * @param {legal.api.UserPreferences} message UserPreferences
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       UserPreferences.toObject = function toObject(message, options) {
@@ -633,7 +633,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       UserPreferences.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -729,11 +729,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthRequest
        * @static
        * @param {legal.api.IAuthRequest} message AuthRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AuthRequest.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.email != null && Object.hasOwnProperty.call(message, 'email'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.email);
         if (message.password != null && Object.hasOwnProperty.call(message, 'password'))
@@ -751,8 +751,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthRequest
        * @static
        * @param {legal.api.IAuthRequest} message AuthRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AuthRequest.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -763,16 +763,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.AuthRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.AuthRequest} AuthRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AuthRequest.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.AuthRequest();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AuthRequest();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -806,13 +806,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.AuthRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.AuthRequest} AuthRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AuthRequest.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -827,13 +827,13 @@ export const legal = ($root.legal = (() => {
       AuthRequest.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.email != null && message.hasOwnProperty('email'))
-          if (!$util.isString(message.email)) return 'email: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.email)) return 'email: string expected';
         if (message.password != null && message.hasOwnProperty('password'))
-          if (!$util.isString(message.password)) return 'password: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.password)) return 'password: string expected';
         if (message.rememberMe != null && message.hasOwnProperty('rememberMe'))
           if (typeof message.rememberMe !== 'boolean') return 'rememberMe: boolean expected';
         if (message.clientInfo != null && message.hasOwnProperty('clientInfo'))
-          if (!$util.isString(message.clientInfo)) return 'clientInfo: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.clientInfo)) return 'clientInfo: string expected';
         return null;
       };
 
@@ -846,8 +846,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.AuthRequest} AuthRequest
        */
       AuthRequest.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.AuthRequest) return object;
-        let message = new $root.legal.api.AuthRequest();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AuthRequest) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AuthRequest();
         if (object.email != null) message.email = String(object.email);
         if (object.password != null) message.password = String(object.password);
         if (object.rememberMe != null) message.rememberMe = Boolean(object.rememberMe);
@@ -861,7 +861,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthRequest
        * @static
        * @param {legal.api.AuthRequest} message AuthRequest
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       AuthRequest.toObject = function toObject(message, options) {
@@ -891,7 +891,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       AuthRequest.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -976,7 +976,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthResponse
        * @instance
        */
-      AuthResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+      AuthResponse.prototype.expiresAt = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromBits(0, 0, false) : 0;
 
       /**
        * Creates a new AuthResponse instance using the specified properties.
@@ -996,17 +996,17 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthResponse
        * @static
        * @param {legal.api.IAuthResponse} message AuthResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AuthResponse.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.success != null && Object.hasOwnProperty.call(message, 'success'))
           writer.uint32(/* id 1, wireType 0 =*/ 8).bool(message.success);
         if (message.token != null && Object.hasOwnProperty.call(message, 'token'))
           writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.token);
         if (message.user != null && Object.hasOwnProperty.call(message, 'user'))
-          $root.legal.api.User.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User.encode(
             message.user,
             writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
           ).ldelim();
@@ -1023,8 +1023,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthResponse
        * @static
        * @param {legal.api.IAuthResponse} message AuthResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AuthResponse.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -1035,16 +1035,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.AuthResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.AuthResponse} AuthResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AuthResponse.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.AuthResponse();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AuthResponse();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -1058,7 +1058,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 3: {
-              message.user = $root.legal.api.User.decode(reader, reader.uint32());
+              message.user = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User.decode(reader, reader.uint32());
               break;
             }
             case 4: {
@@ -1082,13 +1082,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.AuthResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.AuthResponse} AuthResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AuthResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -1105,20 +1105,20 @@ export const legal = ($root.legal = (() => {
         if (message.success != null && message.hasOwnProperty('success'))
           if (typeof message.success !== 'boolean') return 'success: boolean expected';
         if (message.token != null && message.hasOwnProperty('token'))
-          if (!$util.isString(message.token)) return 'token: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.token)) return 'token: string expected';
         if (message.user != null && message.hasOwnProperty('user')) {
-          let error = $root.legal.api.User.verify(message.user);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User.verify(message.user);
           if (error) return 'user.' + error;
         }
         if (message.errorMessage != null && message.hasOwnProperty('errorMessage'))
-          if (!$util.isString(message.errorMessage)) return 'errorMessage: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.errorMessage)) return 'errorMessage: string expected';
         if (message.expiresAt != null && message.hasOwnProperty('expiresAt'))
           if (
-            !$util.isInteger(message.expiresAt) &&
+            !$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.expiresAt) &&
             !(
               message.expiresAt &&
-              $util.isInteger(message.expiresAt.low) &&
-              $util.isInteger(message.expiresAt.high)
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.expiresAt.low) &&
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.expiresAt.high)
             )
           )
             return 'expiresAt: integer|Long expected';
@@ -1134,24 +1134,24 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.AuthResponse} AuthResponse
        */
       AuthResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.AuthResponse) return object;
-        let message = new $root.legal.api.AuthResponse();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AuthResponse) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AuthResponse();
         if (object.success != null) message.success = Boolean(object.success);
         if (object.token != null) message.token = String(object.token);
         if (object.user != null) {
           if (typeof object.user !== 'object')
             throw TypeError('.legal.api.AuthResponse.user: object expected');
-          message.user = $root.legal.api.User.fromObject(object.user);
+          message.user = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User.fromObject(object.user);
         }
         if (object.errorMessage != null) message.errorMessage = String(object.errorMessage);
         if (object.expiresAt != null)
-          if ($util.Long)
-            (message.expiresAt = $util.Long.fromValue(object.expiresAt)).unsigned = false;
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long)
+            (message.expiresAt = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromValue(object.expiresAt)).unsigned = false;
           else if (typeof object.expiresAt === 'string')
             message.expiresAt = parseInt(object.expiresAt, 10);
           else if (typeof object.expiresAt === 'number') message.expiresAt = object.expiresAt;
           else if (typeof object.expiresAt === 'object')
-            message.expiresAt = new $util.LongBits(
+            message.expiresAt = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
               object.expiresAt.low >>> 0,
               object.expiresAt.high >>> 0
             ).toNumber();
@@ -1164,7 +1164,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AuthResponse
        * @static
        * @param {legal.api.AuthResponse} message AuthResponse
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       AuthResponse.toObject = function toObject(message, options) {
@@ -1175,8 +1175,8 @@ export const legal = ($root.legal = (() => {
           object.token = '';
           object.user = null;
           object.errorMessage = '';
-          if ($util.Long) {
-            let long = new $util.Long(0, 0, false);
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long) {
+            let long = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long(0, 0, false);
             object.expiresAt =
               options.longs === String
                 ? long.toString()
@@ -1189,7 +1189,7 @@ export const legal = ($root.legal = (() => {
           object.success = message.success;
         if (message.token != null && message.hasOwnProperty('token')) object.token = message.token;
         if (message.user != null && message.hasOwnProperty('user'))
-          object.user = $root.legal.api.User.toObject(message.user, options);
+          object.user = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.User.toObject(message.user, options);
         if (message.errorMessage != null && message.hasOwnProperty('errorMessage'))
           object.errorMessage = message.errorMessage;
         if (message.expiresAt != null && message.hasOwnProperty('expiresAt'))
@@ -1199,9 +1199,9 @@ export const legal = ($root.legal = (() => {
           else
             object.expiresAt =
               options.longs === String
-                ? $util.Long.prototype.toString.call(message.expiresAt)
+                ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.prototype.toString.call(message.expiresAt)
                 : options.longs === Number
-                  ? new $util.LongBits(
+                  ? new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
                       message.expiresAt.low >>> 0,
                       message.expiresAt.high >>> 0
                     ).toNumber()
@@ -1217,7 +1217,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       AuthResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -1320,7 +1320,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalDocument
        * @instance
        */
-      LegalDocument.prototype.tags = $util.emptyArray;
+      LegalDocument.prototype.tags = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * LegalDocument metadata.
@@ -1360,7 +1360,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalDocument
        * @instance
        */
-      LegalDocument.prototype.collaboratorIds = $util.emptyArray;
+      LegalDocument.prototype.collaboratorIds = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * LegalDocument status.
@@ -1396,11 +1396,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalDocument
        * @static
        * @param {legal.api.ILegalDocument} message LegalDocument message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       LegalDocument.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id);
         if (message.title != null && Object.hasOwnProperty.call(message, 'title'))
@@ -1415,17 +1415,17 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < message.tags.length; ++i)
             writer.uint32(/* id 6, wireType 2 =*/ 50).string(message.tags[i]);
         if (message.metadata != null && Object.hasOwnProperty.call(message, 'metadata'))
-          $root.legal.api.DocumentMetadata.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata.encode(
             message.metadata,
             writer.uint32(/* id 7, wireType 2 =*/ 58).fork()
           ).ldelim();
         if (message.createdAt != null && Object.hasOwnProperty.call(message, 'createdAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.createdAt,
             writer.uint32(/* id 8, wireType 2 =*/ 66).fork()
           ).ldelim();
         if (message.updatedAt != null && Object.hasOwnProperty.call(message, 'updatedAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.updatedAt,
             writer.uint32(/* id 9, wireType 2 =*/ 74).fork()
           ).ldelim();
@@ -1447,8 +1447,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalDocument
        * @static
        * @param {legal.api.ILegalDocument} message LegalDocument message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       LegalDocument.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -1459,16 +1459,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.LegalDocument
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.LegalDocument} LegalDocument
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       LegalDocument.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.LegalDocument();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -1499,15 +1499,15 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 7: {
-              message.metadata = $root.legal.api.DocumentMetadata.decode(reader, reader.uint32());
+              message.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata.decode(reader, reader.uint32());
               break;
             }
             case 8: {
-              message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 9: {
-              message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.updatedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 10: {
@@ -1541,13 +1541,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.LegalDocument
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.LegalDocument} LegalDocument
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       LegalDocument.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -1562,13 +1562,13 @@ export const legal = ($root.legal = (() => {
       LegalDocument.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.id != null && message.hasOwnProperty('id'))
-          if (!$util.isString(message.id)) return 'id: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.id)) return 'id: string expected';
         if (message.title != null && message.hasOwnProperty('title'))
-          if (!$util.isString(message.title)) return 'title: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.title)) return 'title: string expected';
         if (message.content != null && message.hasOwnProperty('content'))
-          if (!$util.isString(message.content)) return 'content: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.content)) return 'content: string expected';
         if (message.fileUrl != null && message.hasOwnProperty('fileUrl'))
-          if (!$util.isString(message.fileUrl)) return 'fileUrl: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.fileUrl)) return 'fileUrl: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -1587,26 +1587,26 @@ export const legal = ($root.legal = (() => {
         if (message.tags != null && message.hasOwnProperty('tags')) {
           if (!Array.isArray(message.tags)) return 'tags: array expected';
           for (let i = 0; i < message.tags.length; ++i)
-            if (!$util.isString(message.tags[i])) return 'tags: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.tags[i])) return 'tags: string[] expected';
         }
         if (message.metadata != null && message.hasOwnProperty('metadata')) {
-          let error = $root.legal.api.DocumentMetadata.verify(message.metadata);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata.verify(message.metadata);
           if (error) return 'metadata.' + error;
         }
         if (message.createdAt != null && message.hasOwnProperty('createdAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.createdAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.createdAt);
           if (error) return 'createdAt.' + error;
         }
         if (message.updatedAt != null && message.hasOwnProperty('updatedAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.updatedAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.updatedAt);
           if (error) return 'updatedAt.' + error;
         }
         if (message.ownerId != null && message.hasOwnProperty('ownerId'))
-          if (!$util.isString(message.ownerId)) return 'ownerId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.ownerId)) return 'ownerId: string expected';
         if (message.collaboratorIds != null && message.hasOwnProperty('collaboratorIds')) {
           if (!Array.isArray(message.collaboratorIds)) return 'collaboratorIds: array expected';
           for (let i = 0; i < message.collaboratorIds.length; ++i)
-            if (!$util.isString(message.collaboratorIds[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.collaboratorIds[i]))
               return 'collaboratorIds: string[] expected';
         }
         if (message.status != null && message.hasOwnProperty('status'))
@@ -1642,8 +1642,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.LegalDocument} LegalDocument
        */
       LegalDocument.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.LegalDocument) return object;
-        let message = new $root.legal.api.LegalDocument();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument();
         if (object.id != null) message.id = String(object.id);
         if (object.title != null) message.title = String(object.title);
         if (object.content != null) message.content = String(object.content);
@@ -1701,17 +1701,17 @@ export const legal = ($root.legal = (() => {
         if (object.metadata != null) {
           if (typeof object.metadata !== 'object')
             throw TypeError('.legal.api.LegalDocument.metadata: object expected');
-          message.metadata = $root.legal.api.DocumentMetadata.fromObject(object.metadata);
+          message.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata.fromObject(object.metadata);
         }
         if (object.createdAt != null) {
           if (typeof object.createdAt !== 'object')
             throw TypeError('.legal.api.LegalDocument.createdAt: object expected');
-          message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
+          message.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.createdAt);
         }
         if (object.updatedAt != null) {
           if (typeof object.updatedAt !== 'object')
             throw TypeError('.legal.api.LegalDocument.updatedAt: object expected');
-          message.updatedAt = $root.google.protobuf.Timestamp.fromObject(object.updatedAt);
+          message.updatedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.updatedAt);
         }
         if (object.ownerId != null) message.ownerId = String(object.ownerId);
         if (object.collaboratorIds) {
@@ -1782,7 +1782,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalDocument
        * @static
        * @param {legal.api.LegalDocument} message LegalDocument
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       LegalDocument.toObject = function toObject(message, options) {
@@ -1814,20 +1814,20 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.DocumentType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.DocumentType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentType[message.type]
               : message.type;
         if (message.tags && message.tags.length) {
           object.tags = [];
           for (let j = 0; j < message.tags.length; ++j) object.tags[j] = message.tags[j];
         }
         if (message.metadata != null && message.hasOwnProperty('metadata'))
-          object.metadata = $root.legal.api.DocumentMetadata.toObject(message.metadata, options);
+          object.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata.toObject(message.metadata, options);
         if (message.createdAt != null && message.hasOwnProperty('createdAt'))
-          object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
+          object.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.createdAt, options);
         if (message.updatedAt != null && message.hasOwnProperty('updatedAt'))
-          object.updatedAt = $root.google.protobuf.Timestamp.toObject(message.updatedAt, options);
+          object.updatedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.updatedAt, options);
         if (message.ownerId != null && message.hasOwnProperty('ownerId'))
           object.ownerId = message.ownerId;
         if (message.collaboratorIds && message.collaboratorIds.length) {
@@ -1838,16 +1838,16 @@ export const legal = ($root.legal = (() => {
         if (message.status != null && message.hasOwnProperty('status'))
           object.status =
             options.enums === String
-              ? $root.legal.api.DocumentStatus[message.status] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentStatus[message.status] === undefined
                 ? message.status
-                : $root.legal.api.DocumentStatus[message.status]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentStatus[message.status]
               : message.status;
         if (message.securityLevel != null && message.hasOwnProperty('securityLevel'))
           object.securityLevel =
             options.enums === String
-              ? $root.legal.api.SecurityLevel[message.securityLevel] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SecurityLevel[message.securityLevel] === undefined
                 ? message.securityLevel
-                : $root.legal.api.SecurityLevel[message.securityLevel]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SecurityLevel[message.securityLevel]
               : message.securityLevel;
         return object;
       };
@@ -1860,7 +1860,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       LegalDocument.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -2006,7 +2006,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @instance
        */
-      DocumentMetadata.prototype.parties = $util.emptyArray;
+      DocumentMetadata.prototype.parties = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * DocumentMetadata practiceAreas.
@@ -2014,7 +2014,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @instance
        */
-      DocumentMetadata.prototype.practiceAreas = $util.emptyArray;
+      DocumentMetadata.prototype.practiceAreas = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * DocumentMetadata confidenceScore.
@@ -2038,7 +2038,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @instance
        */
-      DocumentMetadata.prototype.keyTerms = $util.emptyArray;
+      DocumentMetadata.prototype.keyTerms = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * DocumentMetadata citations.
@@ -2046,7 +2046,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @instance
        */
-      DocumentMetadata.prototype.citations = $util.emptyArray;
+      DocumentMetadata.prototype.citations = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * DocumentMetadata caseInfo.
@@ -2074,18 +2074,18 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @static
        * @param {legal.api.IDocumentMetadata} message DocumentMetadata message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       DocumentMetadata.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.jurisdiction != null && Object.hasOwnProperty.call(message, 'jurisdiction'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.jurisdiction);
         if (message.courtLevel != null && Object.hasOwnProperty.call(message, 'courtLevel'))
           writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.courtLevel);
         if (message.parties != null && message.parties.length)
           for (let i = 0; i < message.parties.length; ++i)
-            $root.legal.api.Party.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party.encode(
               message.parties[i],
               writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
             ).ldelim();
@@ -2104,12 +2104,12 @@ export const legal = ($root.legal = (() => {
             writer.uint32(/* id 7, wireType 2 =*/ 58).string(message.keyTerms[i]);
         if (message.citations != null && message.citations.length)
           for (let i = 0; i < message.citations.length; ++i)
-            $root.legal.api.LegalCitation.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.encode(
               message.citations[i],
               writer.uint32(/* id 8, wireType 2 =*/ 66).fork()
             ).ldelim();
         if (message.caseInfo != null && Object.hasOwnProperty.call(message, 'caseInfo'))
-          $root.legal.api.CaseInformation.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation.encode(
             message.caseInfo,
             writer.uint32(/* id 9, wireType 2 =*/ 74).fork()
           ).ldelim();
@@ -2122,8 +2122,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @static
        * @param {legal.api.IDocumentMetadata} message DocumentMetadata message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       DocumentMetadata.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -2134,16 +2134,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.DocumentMetadata
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.DocumentMetadata} DocumentMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       DocumentMetadata.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.DocumentMetadata();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -2158,7 +2158,7 @@ export const legal = ($root.legal = (() => {
             }
             case 3: {
               if (!(message.parties && message.parties.length)) message.parties = [];
-              message.parties.push($root.legal.api.Party.decode(reader, reader.uint32()));
+              message.parties.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party.decode(reader, reader.uint32()));
               break;
             }
             case 4: {
@@ -2182,11 +2182,11 @@ export const legal = ($root.legal = (() => {
             }
             case 8: {
               if (!(message.citations && message.citations.length)) message.citations = [];
-              message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+              message.citations.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.decode(reader, reader.uint32()));
               break;
             }
             case 9: {
-              message.caseInfo = $root.legal.api.CaseInformation.decode(reader, reader.uint32());
+              message.caseInfo = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -2202,13 +2202,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.DocumentMetadata
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.DocumentMetadata} DocumentMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       DocumentMetadata.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -2223,41 +2223,41 @@ export const legal = ($root.legal = (() => {
       DocumentMetadata.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.jurisdiction != null && message.hasOwnProperty('jurisdiction'))
-          if (!$util.isString(message.jurisdiction)) return 'jurisdiction: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.jurisdiction)) return 'jurisdiction: string expected';
         if (message.courtLevel != null && message.hasOwnProperty('courtLevel'))
-          if (!$util.isString(message.courtLevel)) return 'courtLevel: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.courtLevel)) return 'courtLevel: string expected';
         if (message.parties != null && message.hasOwnProperty('parties')) {
           if (!Array.isArray(message.parties)) return 'parties: array expected';
           for (let i = 0; i < message.parties.length; ++i) {
-            let error = $root.legal.api.Party.verify(message.parties[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party.verify(message.parties[i]);
             if (error) return 'parties.' + error;
           }
         }
         if (message.practiceAreas != null && message.hasOwnProperty('practiceAreas')) {
           if (!Array.isArray(message.practiceAreas)) return 'practiceAreas: array expected';
           for (let i = 0; i < message.practiceAreas.length; ++i)
-            if (!$util.isString(message.practiceAreas[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.practiceAreas[i]))
               return 'practiceAreas: string[] expected';
         }
         if (message.confidenceScore != null && message.hasOwnProperty('confidenceScore'))
           if (typeof message.confidenceScore !== 'number')
             return 'confidenceScore: number expected';
         if (message.riskLevel != null && message.hasOwnProperty('riskLevel'))
-          if (!$util.isString(message.riskLevel)) return 'riskLevel: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.riskLevel)) return 'riskLevel: string expected';
         if (message.keyTerms != null && message.hasOwnProperty('keyTerms')) {
           if (!Array.isArray(message.keyTerms)) return 'keyTerms: array expected';
           for (let i = 0; i < message.keyTerms.length; ++i)
-            if (!$util.isString(message.keyTerms[i])) return 'keyTerms: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.keyTerms[i])) return 'keyTerms: string[] expected';
         }
         if (message.citations != null && message.hasOwnProperty('citations')) {
           if (!Array.isArray(message.citations)) return 'citations: array expected';
           for (let i = 0; i < message.citations.length; ++i) {
-            let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.verify(message.citations[i]);
             if (error) return 'citations.' + error;
           }
         }
         if (message.caseInfo != null && message.hasOwnProperty('caseInfo')) {
-          let error = $root.legal.api.CaseInformation.verify(message.caseInfo);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation.verify(message.caseInfo);
           if (error) return 'caseInfo.' + error;
         }
         return null;
@@ -2272,8 +2272,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.DocumentMetadata} DocumentMetadata
        */
       DocumentMetadata.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.DocumentMetadata) return object;
-        let message = new $root.legal.api.DocumentMetadata();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.DocumentMetadata();
         if (object.jurisdiction != null) message.jurisdiction = String(object.jurisdiction);
         if (object.courtLevel != null) message.courtLevel = String(object.courtLevel);
         if (object.parties) {
@@ -2283,7 +2283,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.parties.length; ++i) {
             if (typeof object.parties[i] !== 'object')
               throw TypeError('.legal.api.DocumentMetadata.parties: object expected');
-            message.parties[i] = $root.legal.api.Party.fromObject(object.parties[i]);
+            message.parties[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party.fromObject(object.parties[i]);
           }
         }
         if (object.practiceAreas) {
@@ -2310,13 +2310,13 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.citations.length; ++i) {
             if (typeof object.citations[i] !== 'object')
               throw TypeError('.legal.api.DocumentMetadata.citations: object expected');
-            message.citations[i] = $root.legal.api.LegalCitation.fromObject(object.citations[i]);
+            message.citations[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.fromObject(object.citations[i]);
           }
         }
         if (object.caseInfo != null) {
           if (typeof object.caseInfo !== 'object')
             throw TypeError('.legal.api.DocumentMetadata.caseInfo: object expected');
-          message.caseInfo = $root.legal.api.CaseInformation.fromObject(object.caseInfo);
+          message.caseInfo = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation.fromObject(object.caseInfo);
         }
         return message;
       };
@@ -2327,7 +2327,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.DocumentMetadata
        * @static
        * @param {legal.api.DocumentMetadata} message DocumentMetadata
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       DocumentMetadata.toObject = function toObject(message, options) {
@@ -2353,7 +2353,7 @@ export const legal = ($root.legal = (() => {
         if (message.parties && message.parties.length) {
           object.parties = [];
           for (let j = 0; j < message.parties.length; ++j)
-            object.parties[j] = $root.legal.api.Party.toObject(message.parties[j], options);
+            object.parties[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party.toObject(message.parties[j], options);
         }
         if (message.practiceAreas && message.practiceAreas.length) {
           object.practiceAreas = [];
@@ -2375,13 +2375,13 @@ export const legal = ($root.legal = (() => {
         if (message.citations && message.citations.length) {
           object.citations = [];
           for (let j = 0; j < message.citations.length; ++j)
-            object.citations[j] = $root.legal.api.LegalCitation.toObject(
+            object.citations[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.toObject(
               message.citations[j],
               options
             );
         }
         if (message.caseInfo != null && message.hasOwnProperty('caseInfo'))
-          object.caseInfo = $root.legal.api.CaseInformation.toObject(message.caseInfo, options);
+          object.caseInfo = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation.toObject(message.caseInfo, options);
         return object;
       };
 
@@ -2393,7 +2393,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       DocumentMetadata.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -2489,11 +2489,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Party
        * @static
        * @param {legal.api.IParty} message Party message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Party.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.name);
         if (message.role != null && Object.hasOwnProperty.call(message, 'role'))
@@ -2501,7 +2501,7 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
           writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.type);
         if (message.contact != null && Object.hasOwnProperty.call(message, 'contact'))
-          $root.legal.api.ContactInfo.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo.encode(
             message.contact,
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
           ).ldelim();
@@ -2514,8 +2514,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Party
        * @static
        * @param {legal.api.IParty} message Party message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Party.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -2526,16 +2526,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.Party
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.Party} Party
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Party.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.Party();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -2553,7 +2553,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 4: {
-              message.contact = $root.legal.api.ContactInfo.decode(reader, reader.uint32());
+              message.contact = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -2569,13 +2569,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.Party
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.Party} Party
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Party.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -2590,13 +2590,13 @@ export const legal = ($root.legal = (() => {
       Party.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.name != null && message.hasOwnProperty('name'))
-          if (!$util.isString(message.name)) return 'name: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.name)) return 'name: string expected';
         if (message.role != null && message.hasOwnProperty('role'))
-          if (!$util.isString(message.role)) return 'role: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.role)) return 'role: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
-          if (!$util.isString(message.type)) return 'type: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.type)) return 'type: string expected';
         if (message.contact != null && message.hasOwnProperty('contact')) {
-          let error = $root.legal.api.ContactInfo.verify(message.contact);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo.verify(message.contact);
           if (error) return 'contact.' + error;
         }
         return null;
@@ -2611,15 +2611,15 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.Party} Party
        */
       Party.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.Party) return object;
-        let message = new $root.legal.api.Party();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Party();
         if (object.name != null) message.name = String(object.name);
         if (object.role != null) message.role = String(object.role);
         if (object.type != null) message.type = String(object.type);
         if (object.contact != null) {
           if (typeof object.contact !== 'object')
             throw TypeError('.legal.api.Party.contact: object expected');
-          message.contact = $root.legal.api.ContactInfo.fromObject(object.contact);
+          message.contact = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo.fromObject(object.contact);
         }
         return message;
       };
@@ -2630,7 +2630,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Party
        * @static
        * @param {legal.api.Party} message Party
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       Party.toObject = function toObject(message, options) {
@@ -2646,7 +2646,7 @@ export const legal = ($root.legal = (() => {
         if (message.role != null && message.hasOwnProperty('role')) object.role = message.role;
         if (message.type != null && message.hasOwnProperty('type')) object.type = message.type;
         if (message.contact != null && message.hasOwnProperty('contact'))
-          object.contact = $root.legal.api.ContactInfo.toObject(message.contact, options);
+          object.contact = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo.toObject(message.contact, options);
         return object;
       };
 
@@ -2658,7 +2658,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       Party.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -2754,11 +2754,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ContactInfo
        * @static
        * @param {legal.api.IContactInfo} message ContactInfo message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ContactInfo.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.address != null && Object.hasOwnProperty.call(message, 'address'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.address);
         if (message.phone != null && Object.hasOwnProperty.call(message, 'phone'))
@@ -2776,8 +2776,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ContactInfo
        * @static
        * @param {legal.api.IContactInfo} message ContactInfo message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ContactInfo.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -2788,16 +2788,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ContactInfo
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ContactInfo} ContactInfo
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ContactInfo.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ContactInfo();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -2831,13 +2831,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ContactInfo
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ContactInfo} ContactInfo
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ContactInfo.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -2852,13 +2852,13 @@ export const legal = ($root.legal = (() => {
       ContactInfo.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.address != null && message.hasOwnProperty('address'))
-          if (!$util.isString(message.address)) return 'address: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.address)) return 'address: string expected';
         if (message.phone != null && message.hasOwnProperty('phone'))
-          if (!$util.isString(message.phone)) return 'phone: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.phone)) return 'phone: string expected';
         if (message.email != null && message.hasOwnProperty('email'))
-          if (!$util.isString(message.email)) return 'email: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.email)) return 'email: string expected';
         if (message.lawFirm != null && message.hasOwnProperty('lawFirm'))
-          if (!$util.isString(message.lawFirm)) return 'lawFirm: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.lawFirm)) return 'lawFirm: string expected';
         return null;
       };
 
@@ -2871,8 +2871,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ContactInfo} ContactInfo
        */
       ContactInfo.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ContactInfo) return object;
-        let message = new $root.legal.api.ContactInfo();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ContactInfo();
         if (object.address != null) message.address = String(object.address);
         if (object.phone != null) message.phone = String(object.phone);
         if (object.email != null) message.email = String(object.email);
@@ -2886,7 +2886,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ContactInfo
        * @static
        * @param {legal.api.ContactInfo} message ContactInfo
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ContactInfo.toObject = function toObject(message, options) {
@@ -2915,7 +2915,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ContactInfo.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -3011,11 +3011,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalCitation
        * @static
        * @param {legal.api.ILegalCitation} message LegalCitation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       LegalCitation.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.citationText != null && Object.hasOwnProperty.call(message, 'citationText'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.citationText);
         if (message.source != null && Object.hasOwnProperty.call(message, 'source'))
@@ -3033,8 +3033,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalCitation
        * @static
        * @param {legal.api.ILegalCitation} message LegalCitation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       LegalCitation.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -3045,16 +3045,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.LegalCitation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.LegalCitation} LegalCitation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       LegalCitation.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.LegalCitation();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -3088,13 +3088,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.LegalCitation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.LegalCitation} LegalCitation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       LegalCitation.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -3109,11 +3109,11 @@ export const legal = ($root.legal = (() => {
       LegalCitation.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.citationText != null && message.hasOwnProperty('citationText'))
-          if (!$util.isString(message.citationText)) return 'citationText: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.citationText)) return 'citationText: string expected';
         if (message.source != null && message.hasOwnProperty('source'))
-          if (!$util.isString(message.source)) return 'source: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.source)) return 'source: string expected';
         if (message.url != null && message.hasOwnProperty('url'))
-          if (!$util.isString(message.url)) return 'url: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.url)) return 'url: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -3136,8 +3136,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.LegalCitation} LegalCitation
        */
       LegalCitation.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.LegalCitation) return object;
-        let message = new $root.legal.api.LegalCitation();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation();
         if (object.citationText != null) message.citationText = String(object.citationText);
         if (object.source != null) message.source = String(object.source);
         if (object.url != null) message.url = String(object.url);
@@ -3174,7 +3174,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.LegalCitation
        * @static
        * @param {legal.api.LegalCitation} message LegalCitation
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       LegalCitation.toObject = function toObject(message, options) {
@@ -3194,9 +3194,9 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.CitationType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CitationType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.CitationType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CitationType[message.type]
               : message.type;
         return object;
       };
@@ -3209,7 +3209,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       LegalCitation.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -3314,7 +3314,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.CaseInformation
        * @instance
        */
-      CaseInformation.prototype.judges = $util.emptyArray;
+      CaseInformation.prototype.judges = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new CaseInformation instance using the specified properties.
@@ -3334,17 +3334,17 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.CaseInformation
        * @static
        * @param {legal.api.ICaseInformation} message CaseInformation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       CaseInformation.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.caseNumber != null && Object.hasOwnProperty.call(message, 'caseNumber'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.caseNumber);
         if (message.courtName != null && Object.hasOwnProperty.call(message, 'courtName'))
           writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.courtName);
         if (message.filingDate != null && Object.hasOwnProperty.call(message, 'filingDate'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.filingDate,
             writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
           ).ldelim();
@@ -3362,8 +3362,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.CaseInformation
        * @static
        * @param {legal.api.ICaseInformation} message CaseInformation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       CaseInformation.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -3374,16 +3374,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.CaseInformation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.CaseInformation} CaseInformation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       CaseInformation.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.CaseInformation();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -3397,7 +3397,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 3: {
-              message.filingDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.filingDate = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 4: {
@@ -3422,13 +3422,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.CaseInformation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.CaseInformation} CaseInformation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       CaseInformation.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -3443,11 +3443,11 @@ export const legal = ($root.legal = (() => {
       CaseInformation.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.caseNumber != null && message.hasOwnProperty('caseNumber'))
-          if (!$util.isString(message.caseNumber)) return 'caseNumber: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.caseNumber)) return 'caseNumber: string expected';
         if (message.courtName != null && message.hasOwnProperty('courtName'))
-          if (!$util.isString(message.courtName)) return 'courtName: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.courtName)) return 'courtName: string expected';
         if (message.filingDate != null && message.hasOwnProperty('filingDate')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.filingDate);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.filingDate);
           if (error) return 'filingDate.' + error;
         }
         if (message.status != null && message.hasOwnProperty('status'))
@@ -3465,7 +3465,7 @@ export const legal = ($root.legal = (() => {
         if (message.judges != null && message.hasOwnProperty('judges')) {
           if (!Array.isArray(message.judges)) return 'judges: array expected';
           for (let i = 0; i < message.judges.length; ++i)
-            if (!$util.isString(message.judges[i])) return 'judges: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.judges[i])) return 'judges: string[] expected';
         }
         return null;
       };
@@ -3479,14 +3479,14 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.CaseInformation} CaseInformation
        */
       CaseInformation.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.CaseInformation) return object;
-        let message = new $root.legal.api.CaseInformation();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseInformation();
         if (object.caseNumber != null) message.caseNumber = String(object.caseNumber);
         if (object.courtName != null) message.courtName = String(object.courtName);
         if (object.filingDate != null) {
           if (typeof object.filingDate !== 'object')
             throw TypeError('.legal.api.CaseInformation.filingDate: object expected');
-          message.filingDate = $root.google.protobuf.Timestamp.fromObject(object.filingDate);
+          message.filingDate = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.filingDate);
         }
         switch (object.status) {
           default:
@@ -3536,7 +3536,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.CaseInformation
        * @static
        * @param {legal.api.CaseInformation} message CaseInformation
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       CaseInformation.toObject = function toObject(message, options) {
@@ -3554,13 +3554,13 @@ export const legal = ($root.legal = (() => {
         if (message.courtName != null && message.hasOwnProperty('courtName'))
           object.courtName = message.courtName;
         if (message.filingDate != null && message.hasOwnProperty('filingDate'))
-          object.filingDate = $root.google.protobuf.Timestamp.toObject(message.filingDate, options);
+          object.filingDate = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.filingDate, options);
         if (message.status != null && message.hasOwnProperty('status'))
           object.status =
             options.enums === String
-              ? $root.legal.api.CaseStatus[message.status] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseStatus[message.status] === undefined
                 ? message.status
-                : $root.legal.api.CaseStatus[message.status]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.CaseStatus[message.status]
               : message.status;
         if (message.judges && message.judges.length) {
           object.judges = [];
@@ -3577,7 +3577,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       CaseInformation.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -3665,7 +3665,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchRequest
        * @instance
        */
-      SearchRequest.prototype.filters = $util.emptyArray;
+      SearchRequest.prototype.filters = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * SearchRequest limit.
@@ -3733,16 +3733,16 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchRequest
        * @static
        * @param {legal.api.ISearchRequest} message SearchRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchRequest.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.query);
         if (message.filters != null && message.filters.length)
           for (let i = 0; i < message.filters.length; ++i)
-            $root.legal.api.SearchFilter.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter.encode(
               message.filters[i],
               writer.uint32(/* id 2, wireType 2 =*/ 18).fork()
             ).ldelim();
@@ -3758,7 +3758,7 @@ export const legal = ($root.legal = (() => {
         )
           writer.uint32(/* id 6, wireType 0 =*/ 48).bool(message.includeEmbeddings);
         if (message.sort != null && Object.hasOwnProperty.call(message, 'sort'))
-          $root.legal.api.SortOptions.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions.encode(
             message.sort,
             writer.uint32(/* id 7, wireType 2 =*/ 58).fork()
           ).ldelim();
@@ -3773,8 +3773,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchRequest
        * @static
        * @param {legal.api.ISearchRequest} message SearchRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchRequest.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -3785,16 +3785,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SearchRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SearchRequest} SearchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchRequest.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SearchRequest();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchRequest();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -3805,7 +3805,7 @@ export const legal = ($root.legal = (() => {
             }
             case 2: {
               if (!(message.filters && message.filters.length)) message.filters = [];
-              message.filters.push($root.legal.api.SearchFilter.decode(reader, reader.uint32()));
+              message.filters.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter.decode(reader, reader.uint32()));
               break;
             }
             case 3: {
@@ -3825,7 +3825,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 7: {
-              message.sort = $root.legal.api.SortOptions.decode(reader, reader.uint32());
+              message.sort = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions.decode(reader, reader.uint32());
               break;
             }
             case 8: {
@@ -3845,13 +3845,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SearchRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SearchRequest} SearchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchRequest.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -3866,18 +3866,18 @@ export const legal = ($root.legal = (() => {
       SearchRequest.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.query != null && message.hasOwnProperty('query'))
-          if (!$util.isString(message.query)) return 'query: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.query)) return 'query: string expected';
         if (message.filters != null && message.hasOwnProperty('filters')) {
           if (!Array.isArray(message.filters)) return 'filters: array expected';
           for (let i = 0; i < message.filters.length; ++i) {
-            let error = $root.legal.api.SearchFilter.verify(message.filters[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter.verify(message.filters[i]);
             if (error) return 'filters.' + error;
           }
         }
         if (message.limit != null && message.hasOwnProperty('limit'))
-          if (!$util.isInteger(message.limit)) return 'limit: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.limit)) return 'limit: integer expected';
         if (message.offset != null && message.hasOwnProperty('offset'))
-          if (!$util.isInteger(message.offset)) return 'offset: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.offset)) return 'offset: integer expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -3893,11 +3893,11 @@ export const legal = ($root.legal = (() => {
           if (typeof message.includeEmbeddings !== 'boolean')
             return 'includeEmbeddings: boolean expected';
         if (message.sort != null && message.hasOwnProperty('sort')) {
-          let error = $root.legal.api.SortOptions.verify(message.sort);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions.verify(message.sort);
           if (error) return 'sort.' + error;
         }
         if (message.userId != null && message.hasOwnProperty('userId'))
-          if (!$util.isString(message.userId)) return 'userId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.userId)) return 'userId: string expected';
         return null;
       };
 
@@ -3910,8 +3910,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SearchRequest} SearchRequest
        */
       SearchRequest.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SearchRequest) return object;
-        let message = new $root.legal.api.SearchRequest();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchRequest) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchRequest();
         if (object.query != null) message.query = String(object.query);
         if (object.filters) {
           if (!Array.isArray(object.filters))
@@ -3920,7 +3920,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.filters.length; ++i) {
             if (typeof object.filters[i] !== 'object')
               throw TypeError('.legal.api.SearchRequest.filters: object expected');
-            message.filters[i] = $root.legal.api.SearchFilter.fromObject(object.filters[i]);
+            message.filters[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter.fromObject(object.filters[i]);
           }
         }
         if (object.limit != null) message.limit = object.limit | 0;
@@ -3958,7 +3958,7 @@ export const legal = ($root.legal = (() => {
         if (object.sort != null) {
           if (typeof object.sort !== 'object')
             throw TypeError('.legal.api.SearchRequest.sort: object expected');
-          message.sort = $root.legal.api.SortOptions.fromObject(object.sort);
+          message.sort = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions.fromObject(object.sort);
         }
         if (object.userId != null) message.userId = String(object.userId);
         return message;
@@ -3970,7 +3970,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchRequest
        * @static
        * @param {legal.api.SearchRequest} message SearchRequest
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SearchRequest.toObject = function toObject(message, options) {
@@ -3990,7 +3990,7 @@ export const legal = ($root.legal = (() => {
         if (message.filters && message.filters.length) {
           object.filters = [];
           for (let j = 0; j < message.filters.length; ++j)
-            object.filters[j] = $root.legal.api.SearchFilter.toObject(message.filters[j], options);
+            object.filters[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter.toObject(message.filters[j], options);
         }
         if (message.limit != null && message.hasOwnProperty('limit')) object.limit = message.limit;
         if (message.offset != null && message.hasOwnProperty('offset'))
@@ -3998,14 +3998,14 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.SearchType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.SearchType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchType[message.type]
               : message.type;
         if (message.includeEmbeddings != null && message.hasOwnProperty('includeEmbeddings'))
           object.includeEmbeddings = message.includeEmbeddings;
         if (message.sort != null && message.hasOwnProperty('sort'))
-          object.sort = $root.legal.api.SortOptions.toObject(message.sort, options);
+          object.sort = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions.toObject(message.sort, options);
         if (message.userId != null && message.hasOwnProperty('userId'))
           object.userId = message.userId;
         return object;
@@ -4019,7 +4019,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SearchRequest.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -4087,7 +4087,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFilter
        * @instance
        */
-      SearchFilter.prototype.values = $util.emptyArray;
+      SearchFilter.prototype.values = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new SearchFilter instance using the specified properties.
@@ -4107,11 +4107,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFilter
        * @static
        * @param {legal.api.ISearchFilter} message SearchFilter message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchFilter.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.field != null && Object.hasOwnProperty.call(message, 'field'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.field);
         if (message.operator != null && Object.hasOwnProperty.call(message, 'operator'))
@@ -4128,8 +4128,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFilter
        * @static
        * @param {legal.api.ISearchFilter} message SearchFilter message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchFilter.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -4140,16 +4140,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SearchFilter
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SearchFilter} SearchFilter
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchFilter.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SearchFilter();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -4180,13 +4180,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SearchFilter
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SearchFilter} SearchFilter
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchFilter.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -4201,13 +4201,13 @@ export const legal = ($root.legal = (() => {
       SearchFilter.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.field != null && message.hasOwnProperty('field'))
-          if (!$util.isString(message.field)) return 'field: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.field)) return 'field: string expected';
         if (message.operator != null && message.hasOwnProperty('operator'))
-          if (!$util.isString(message.operator)) return 'operator: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.operator)) return 'operator: string expected';
         if (message.values != null && message.hasOwnProperty('values')) {
           if (!Array.isArray(message.values)) return 'values: array expected';
           for (let i = 0; i < message.values.length; ++i)
-            if (!$util.isString(message.values[i])) return 'values: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.values[i])) return 'values: string[] expected';
         }
         return null;
       };
@@ -4221,8 +4221,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SearchFilter} SearchFilter
        */
       SearchFilter.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SearchFilter) return object;
-        let message = new $root.legal.api.SearchFilter();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFilter();
         if (object.field != null) message.field = String(object.field);
         if (object.operator != null) message.operator = String(object.operator);
         if (object.values) {
@@ -4241,7 +4241,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFilter
        * @static
        * @param {legal.api.SearchFilter} message SearchFilter
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SearchFilter.toObject = function toObject(message, options) {
@@ -4270,7 +4270,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SearchFilter.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -4348,11 +4348,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SortOptions
        * @static
        * @param {legal.api.ISortOptions} message SortOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SortOptions.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.field != null && Object.hasOwnProperty.call(message, 'field'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.field);
         if (message.descending != null && Object.hasOwnProperty.call(message, 'descending'))
@@ -4366,8 +4366,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SortOptions
        * @static
        * @param {legal.api.ISortOptions} message SortOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SortOptions.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -4378,16 +4378,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SortOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SortOptions} SortOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SortOptions.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SortOptions();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -4413,13 +4413,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SortOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SortOptions} SortOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SortOptions.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -4434,7 +4434,7 @@ export const legal = ($root.legal = (() => {
       SortOptions.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.field != null && message.hasOwnProperty('field'))
-          if (!$util.isString(message.field)) return 'field: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.field)) return 'field: string expected';
         if (message.descending != null && message.hasOwnProperty('descending'))
           if (typeof message.descending !== 'boolean') return 'descending: boolean expected';
         return null;
@@ -4449,8 +4449,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SortOptions} SortOptions
        */
       SortOptions.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SortOptions) return object;
-        let message = new $root.legal.api.SortOptions();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SortOptions();
         if (object.field != null) message.field = String(object.field);
         if (object.descending != null) message.descending = Boolean(object.descending);
         return message;
@@ -4462,7 +4462,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SortOptions
        * @static
        * @param {legal.api.SortOptions} message SortOptions
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SortOptions.toObject = function toObject(message, options) {
@@ -4486,7 +4486,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SortOptions.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -4562,7 +4562,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResponse
        * @instance
        */
-      SearchResponse.prototype.results = $util.emptyArray;
+      SearchResponse.prototype.results = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * SearchResponse totalCount.
@@ -4622,14 +4622,14 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResponse
        * @static
        * @param {legal.api.ISearchResponse} message SearchResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchResponse.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.results != null && message.results.length)
           for (let i = 0; i < message.results.length; ++i)
-            $root.legal.api.SearchResult.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult.encode(
               message.results[i],
               writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
             ).ldelim();
@@ -4645,7 +4645,7 @@ export const legal = ($root.legal = (() => {
         )
           writer.uint32(/* id 5, wireType 0 =*/ 40).int32(message.processingTimeMs);
         if (message.metadata != null && Object.hasOwnProperty.call(message, 'metadata'))
-          $root.legal.api.SearchMetadata.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata.encode(
             message.metadata,
             writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
           ).ldelim();
@@ -4658,8 +4658,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResponse
        * @static
        * @param {legal.api.ISearchResponse} message SearchResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchResponse.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -4670,23 +4670,23 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SearchResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SearchResponse} SearchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchResponse.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SearchResponse();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResponse();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
           switch (tag >>> 3) {
             case 1: {
               if (!(message.results && message.results.length)) message.results = [];
-              message.results.push($root.legal.api.SearchResult.decode(reader, reader.uint32()));
+              message.results.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult.decode(reader, reader.uint32()));
               break;
             }
             case 2: {
@@ -4706,7 +4706,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 6: {
-              message.metadata = $root.legal.api.SearchMetadata.decode(reader, reader.uint32());
+              message.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -4722,13 +4722,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SearchResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SearchResponse} SearchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -4745,21 +4745,21 @@ export const legal = ($root.legal = (() => {
         if (message.results != null && message.hasOwnProperty('results')) {
           if (!Array.isArray(message.results)) return 'results: array expected';
           for (let i = 0; i < message.results.length; ++i) {
-            let error = $root.legal.api.SearchResult.verify(message.results[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult.verify(message.results[i]);
             if (error) return 'results.' + error;
           }
         }
         if (message.totalCount != null && message.hasOwnProperty('totalCount'))
-          if (!$util.isInteger(message.totalCount)) return 'totalCount: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.totalCount)) return 'totalCount: integer expected';
         if (message.maxScore != null && message.hasOwnProperty('maxScore'))
           if (typeof message.maxScore !== 'number') return 'maxScore: number expected';
         if (message.queryId != null && message.hasOwnProperty('queryId'))
-          if (!$util.isString(message.queryId)) return 'queryId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.queryId)) return 'queryId: string expected';
         if (message.processingTimeMs != null && message.hasOwnProperty('processingTimeMs'))
-          if (!$util.isInteger(message.processingTimeMs))
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.processingTimeMs))
             return 'processingTimeMs: integer expected';
         if (message.metadata != null && message.hasOwnProperty('metadata')) {
-          let error = $root.legal.api.SearchMetadata.verify(message.metadata);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata.verify(message.metadata);
           if (error) return 'metadata.' + error;
         }
         return null;
@@ -4774,8 +4774,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SearchResponse} SearchResponse
        */
       SearchResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SearchResponse) return object;
-        let message = new $root.legal.api.SearchResponse();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResponse) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResponse();
         if (object.results) {
           if (!Array.isArray(object.results))
             throw TypeError('.legal.api.SearchResponse.results: array expected');
@@ -4783,7 +4783,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.results.length; ++i) {
             if (typeof object.results[i] !== 'object')
               throw TypeError('.legal.api.SearchResponse.results: object expected');
-            message.results[i] = $root.legal.api.SearchResult.fromObject(object.results[i]);
+            message.results[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult.fromObject(object.results[i]);
           }
         }
         if (object.totalCount != null) message.totalCount = object.totalCount | 0;
@@ -4793,7 +4793,7 @@ export const legal = ($root.legal = (() => {
         if (object.metadata != null) {
           if (typeof object.metadata !== 'object')
             throw TypeError('.legal.api.SearchResponse.metadata: object expected');
-          message.metadata = $root.legal.api.SearchMetadata.fromObject(object.metadata);
+          message.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata.fromObject(object.metadata);
         }
         return message;
       };
@@ -4804,7 +4804,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResponse
        * @static
        * @param {legal.api.SearchResponse} message SearchResponse
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SearchResponse.toObject = function toObject(message, options) {
@@ -4821,7 +4821,7 @@ export const legal = ($root.legal = (() => {
         if (message.results && message.results.length) {
           object.results = [];
           for (let j = 0; j < message.results.length; ++j)
-            object.results[j] = $root.legal.api.SearchResult.toObject(message.results[j], options);
+            object.results[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult.toObject(message.results[j], options);
         }
         if (message.totalCount != null && message.hasOwnProperty('totalCount'))
           object.totalCount = message.totalCount;
@@ -4835,7 +4835,7 @@ export const legal = ($root.legal = (() => {
         if (message.processingTimeMs != null && message.hasOwnProperty('processingTimeMs'))
           object.processingTimeMs = message.processingTimeMs;
         if (message.metadata != null && message.hasOwnProperty('metadata'))
-          object.metadata = $root.legal.api.SearchMetadata.toObject(message.metadata, options);
+          object.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata.toObject(message.metadata, options);
         return object;
       };
 
@@ -4847,7 +4847,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SearchResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -4919,7 +4919,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResult
        * @instance
        */
-      SearchResult.prototype.highlights = $util.emptyArray;
+      SearchResult.prototype.highlights = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * SearchResult similarity.
@@ -4943,7 +4943,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResult
        * @instance
        */
-      SearchResult.prototype.relatedCitations = $util.emptyArray;
+      SearchResult.prototype.relatedCitations = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new SearchResult instance using the specified properties.
@@ -4963,13 +4963,13 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResult
        * @static
        * @param {legal.api.ISearchResult} message SearchResult message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchResult.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.document != null && Object.hasOwnProperty.call(message, 'document'))
-          $root.legal.api.LegalDocument.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument.encode(
             message.document,
             writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
           ).ldelim();
@@ -4979,7 +4979,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < message.highlights.length; ++i)
             writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.highlights[i]);
         if (message.similarity != null && Object.hasOwnProperty.call(message, 'similarity'))
-          $root.legal.api.VectorSimilarity.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity.encode(
             message.similarity,
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
           ).ldelim();
@@ -4987,7 +4987,7 @@ export const legal = ($root.legal = (() => {
           writer.uint32(/* id 5, wireType 2 =*/ 42).string(message.excerpt);
         if (message.relatedCitations != null && message.relatedCitations.length)
           for (let i = 0; i < message.relatedCitations.length; ++i)
-            $root.legal.api.LegalCitation.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.encode(
               message.relatedCitations[i],
               writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
             ).ldelim();
@@ -5000,8 +5000,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResult
        * @static
        * @param {legal.api.ISearchResult} message SearchResult message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchResult.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -5012,22 +5012,22 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SearchResult
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SearchResult} SearchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchResult.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SearchResult();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
           switch (tag >>> 3) {
             case 1: {
-              message.document = $root.legal.api.LegalDocument.decode(reader, reader.uint32());
+              message.document = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument.decode(reader, reader.uint32());
               break;
             }
             case 2: {
@@ -5040,7 +5040,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 4: {
-              message.similarity = $root.legal.api.VectorSimilarity.decode(reader, reader.uint32());
+              message.similarity = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity.decode(reader, reader.uint32());
               break;
             }
             case 5: {
@@ -5051,7 +5051,7 @@ export const legal = ($root.legal = (() => {
               if (!(message.relatedCitations && message.relatedCitations.length))
                 message.relatedCitations = [];
               message.relatedCitations.push(
-                $root.legal.api.LegalCitation.decode(reader, reader.uint32())
+                $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.decode(reader, reader.uint32())
               );
               break;
             }
@@ -5068,13 +5068,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SearchResult
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SearchResult} SearchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchResult.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -5089,7 +5089,7 @@ export const legal = ($root.legal = (() => {
       SearchResult.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.document != null && message.hasOwnProperty('document')) {
-          let error = $root.legal.api.LegalDocument.verify(message.document);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument.verify(message.document);
           if (error) return 'document.' + error;
         }
         if (message.score != null && message.hasOwnProperty('score'))
@@ -5097,18 +5097,18 @@ export const legal = ($root.legal = (() => {
         if (message.highlights != null && message.hasOwnProperty('highlights')) {
           if (!Array.isArray(message.highlights)) return 'highlights: array expected';
           for (let i = 0; i < message.highlights.length; ++i)
-            if (!$util.isString(message.highlights[i])) return 'highlights: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.highlights[i])) return 'highlights: string[] expected';
         }
         if (message.similarity != null && message.hasOwnProperty('similarity')) {
-          let error = $root.legal.api.VectorSimilarity.verify(message.similarity);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity.verify(message.similarity);
           if (error) return 'similarity.' + error;
         }
         if (message.excerpt != null && message.hasOwnProperty('excerpt'))
-          if (!$util.isString(message.excerpt)) return 'excerpt: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.excerpt)) return 'excerpt: string expected';
         if (message.relatedCitations != null && message.hasOwnProperty('relatedCitations')) {
           if (!Array.isArray(message.relatedCitations)) return 'relatedCitations: array expected';
           for (let i = 0; i < message.relatedCitations.length; ++i) {
-            let error = $root.legal.api.LegalCitation.verify(message.relatedCitations[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.verify(message.relatedCitations[i]);
             if (error) return 'relatedCitations.' + error;
           }
         }
@@ -5124,12 +5124,12 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SearchResult} SearchResult
        */
       SearchResult.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SearchResult) return object;
-        let message = new $root.legal.api.SearchResult();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchResult();
         if (object.document != null) {
           if (typeof object.document !== 'object')
             throw TypeError('.legal.api.SearchResult.document: object expected');
-          message.document = $root.legal.api.LegalDocument.fromObject(object.document);
+          message.document = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument.fromObject(object.document);
         }
         if (object.score != null) message.score = Number(object.score);
         if (object.highlights) {
@@ -5142,7 +5142,7 @@ export const legal = ($root.legal = (() => {
         if (object.similarity != null) {
           if (typeof object.similarity !== 'object')
             throw TypeError('.legal.api.SearchResult.similarity: object expected');
-          message.similarity = $root.legal.api.VectorSimilarity.fromObject(object.similarity);
+          message.similarity = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity.fromObject(object.similarity);
         }
         if (object.excerpt != null) message.excerpt = String(object.excerpt);
         if (object.relatedCitations) {
@@ -5152,7 +5152,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.relatedCitations.length; ++i) {
             if (typeof object.relatedCitations[i] !== 'object')
               throw TypeError('.legal.api.SearchResult.relatedCitations: object expected');
-            message.relatedCitations[i] = $root.legal.api.LegalCitation.fromObject(
+            message.relatedCitations[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.fromObject(
               object.relatedCitations[i]
             );
           }
@@ -5166,7 +5166,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchResult
        * @static
        * @param {legal.api.SearchResult} message SearchResult
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SearchResult.toObject = function toObject(message, options) {
@@ -5183,7 +5183,7 @@ export const legal = ($root.legal = (() => {
           object.excerpt = '';
         }
         if (message.document != null && message.hasOwnProperty('document'))
-          object.document = $root.legal.api.LegalDocument.toObject(message.document, options);
+          object.document = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalDocument.toObject(message.document, options);
         if (message.score != null && message.hasOwnProperty('score'))
           object.score =
             options.json && !isFinite(message.score) ? String(message.score) : message.score;
@@ -5193,7 +5193,7 @@ export const legal = ($root.legal = (() => {
             object.highlights[j] = message.highlights[j];
         }
         if (message.similarity != null && message.hasOwnProperty('similarity'))
-          object.similarity = $root.legal.api.VectorSimilarity.toObject(
+          object.similarity = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity.toObject(
             message.similarity,
             options
           );
@@ -5202,7 +5202,7 @@ export const legal = ($root.legal = (() => {
         if (message.relatedCitations && message.relatedCitations.length) {
           object.relatedCitations = [];
           for (let j = 0; j < message.relatedCitations.length; ++j)
-            object.relatedCitations[j] = $root.legal.api.LegalCitation.toObject(
+            object.relatedCitations[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.toObject(
               message.relatedCitations[j],
               options
             );
@@ -5218,7 +5218,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SearchResult.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -5314,11 +5314,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.VectorSimilarity
        * @static
        * @param {legal.api.IVectorSimilarity} message VectorSimilarity message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       VectorSimilarity.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (
           message.cosineSimilarity != null &&
           Object.hasOwnProperty.call(message, 'cosineSimilarity')
@@ -5345,8 +5345,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.VectorSimilarity
        * @static
        * @param {legal.api.IVectorSimilarity} message VectorSimilarity message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       VectorSimilarity.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -5357,16 +5357,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.VectorSimilarity
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.VectorSimilarity} VectorSimilarity
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       VectorSimilarity.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.VectorSimilarity();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -5400,13 +5400,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.VectorSimilarity
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.VectorSimilarity} VectorSimilarity
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       VectorSimilarity.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -5427,10 +5427,10 @@ export const legal = ($root.legal = (() => {
           if (typeof message.euclideanDistance !== 'number')
             return 'euclideanDistance: number expected';
         if (message.embeddingDimension != null && message.hasOwnProperty('embeddingDimension'))
-          if (!$util.isInteger(message.embeddingDimension))
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.embeddingDimension))
             return 'embeddingDimension: integer expected';
         if (message.modelUsed != null && message.hasOwnProperty('modelUsed'))
-          if (!$util.isString(message.modelUsed)) return 'modelUsed: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.modelUsed)) return 'modelUsed: string expected';
         return null;
       };
 
@@ -5443,8 +5443,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.VectorSimilarity} VectorSimilarity
        */
       VectorSimilarity.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.VectorSimilarity) return object;
-        let message = new $root.legal.api.VectorSimilarity();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.VectorSimilarity();
         if (object.cosineSimilarity != null)
           message.cosineSimilarity = Number(object.cosineSimilarity);
         if (object.euclideanDistance != null)
@@ -5461,7 +5461,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.VectorSimilarity
        * @static
        * @param {legal.api.VectorSimilarity} message VectorSimilarity
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       VectorSimilarity.toObject = function toObject(message, options) {
@@ -5498,7 +5498,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       VectorSimilarity.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -5551,7 +5551,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchMetadata
        * @instance
        */
-      SearchMetadata.prototype.suggestedQueries = $util.emptyArray;
+      SearchMetadata.prototype.suggestedQueries = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * SearchMetadata facets.
@@ -5559,7 +5559,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchMetadata
        * @instance
        */
-      SearchMetadata.prototype.facets = $util.emptyArray;
+      SearchMetadata.prototype.facets = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * SearchMetadata hasMoreResults.
@@ -5587,17 +5587,17 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchMetadata
        * @static
        * @param {legal.api.ISearchMetadata} message SearchMetadata message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchMetadata.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.suggestedQueries != null && message.suggestedQueries.length)
           for (let i = 0; i < message.suggestedQueries.length; ++i)
             writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.suggestedQueries[i]);
         if (message.facets != null && message.facets.length)
           for (let i = 0; i < message.facets.length; ++i)
-            $root.legal.api.SearchFacet.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet.encode(
               message.facets[i],
               writer.uint32(/* id 2, wireType 2 =*/ 18).fork()
             ).ldelim();
@@ -5612,8 +5612,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchMetadata
        * @static
        * @param {legal.api.ISearchMetadata} message SearchMetadata message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchMetadata.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -5624,16 +5624,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SearchMetadata
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SearchMetadata} SearchMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchMetadata.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SearchMetadata();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -5646,7 +5646,7 @@ export const legal = ($root.legal = (() => {
             }
             case 2: {
               if (!(message.facets && message.facets.length)) message.facets = [];
-              message.facets.push($root.legal.api.SearchFacet.decode(reader, reader.uint32()));
+              message.facets.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet.decode(reader, reader.uint32()));
               break;
             }
             case 3: {
@@ -5666,13 +5666,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SearchMetadata
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SearchMetadata} SearchMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchMetadata.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -5689,13 +5689,13 @@ export const legal = ($root.legal = (() => {
         if (message.suggestedQueries != null && message.hasOwnProperty('suggestedQueries')) {
           if (!Array.isArray(message.suggestedQueries)) return 'suggestedQueries: array expected';
           for (let i = 0; i < message.suggestedQueries.length; ++i)
-            if (!$util.isString(message.suggestedQueries[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.suggestedQueries[i]))
               return 'suggestedQueries: string[] expected';
         }
         if (message.facets != null && message.hasOwnProperty('facets')) {
           if (!Array.isArray(message.facets)) return 'facets: array expected';
           for (let i = 0; i < message.facets.length; ++i) {
-            let error = $root.legal.api.SearchFacet.verify(message.facets[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet.verify(message.facets[i]);
             if (error) return 'facets.' + error;
           }
         }
@@ -5714,8 +5714,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SearchMetadata} SearchMetadata
        */
       SearchMetadata.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SearchMetadata) return object;
-        let message = new $root.legal.api.SearchMetadata();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchMetadata();
         if (object.suggestedQueries) {
           if (!Array.isArray(object.suggestedQueries))
             throw TypeError('.legal.api.SearchMetadata.suggestedQueries: array expected');
@@ -5730,7 +5730,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.facets.length; ++i) {
             if (typeof object.facets[i] !== 'object')
               throw TypeError('.legal.api.SearchMetadata.facets: object expected');
-            message.facets[i] = $root.legal.api.SearchFacet.fromObject(object.facets[i]);
+            message.facets[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet.fromObject(object.facets[i]);
           }
         }
         if (object.hasMoreResults != null) message.hasMoreResults = Boolean(object.hasMoreResults);
@@ -5743,7 +5743,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchMetadata
        * @static
        * @param {legal.api.SearchMetadata} message SearchMetadata
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SearchMetadata.toObject = function toObject(message, options) {
@@ -5762,7 +5762,7 @@ export const legal = ($root.legal = (() => {
         if (message.facets && message.facets.length) {
           object.facets = [];
           for (let j = 0; j < message.facets.length; ++j)
-            object.facets[j] = $root.legal.api.SearchFacet.toObject(message.facets[j], options);
+            object.facets[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet.toObject(message.facets[j], options);
         }
         if (message.hasMoreResults != null && message.hasOwnProperty('hasMoreResults'))
           object.hasMoreResults = message.hasMoreResults;
@@ -5777,7 +5777,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SearchMetadata.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -5836,7 +5836,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFacet
        * @instance
        */
-      SearchFacet.prototype.values = $util.emptyArray;
+      SearchFacet.prototype.values = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new SearchFacet instance using the specified properties.
@@ -5856,16 +5856,16 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFacet
        * @static
        * @param {legal.api.ISearchFacet} message SearchFacet message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchFacet.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.field != null && Object.hasOwnProperty.call(message, 'field'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.field);
         if (message.values != null && message.values.length)
           for (let i = 0; i < message.values.length; ++i)
-            $root.legal.api.FacetValue.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue.encode(
               message.values[i],
               writer.uint32(/* id 2, wireType 2 =*/ 18).fork()
             ).ldelim();
@@ -5878,8 +5878,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFacet
        * @static
        * @param {legal.api.ISearchFacet} message SearchFacet message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SearchFacet.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -5890,16 +5890,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SearchFacet
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SearchFacet} SearchFacet
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchFacet.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SearchFacet();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -5910,7 +5910,7 @@ export const legal = ($root.legal = (() => {
             }
             case 2: {
               if (!(message.values && message.values.length)) message.values = [];
-              message.values.push($root.legal.api.FacetValue.decode(reader, reader.uint32()));
+              message.values.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue.decode(reader, reader.uint32()));
               break;
             }
             default:
@@ -5926,13 +5926,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SearchFacet
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SearchFacet} SearchFacet
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SearchFacet.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -5947,11 +5947,11 @@ export const legal = ($root.legal = (() => {
       SearchFacet.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.field != null && message.hasOwnProperty('field'))
-          if (!$util.isString(message.field)) return 'field: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.field)) return 'field: string expected';
         if (message.values != null && message.hasOwnProperty('values')) {
           if (!Array.isArray(message.values)) return 'values: array expected';
           for (let i = 0; i < message.values.length; ++i) {
-            let error = $root.legal.api.FacetValue.verify(message.values[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue.verify(message.values[i]);
             if (error) return 'values.' + error;
           }
         }
@@ -5967,8 +5967,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SearchFacet} SearchFacet
        */
       SearchFacet.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SearchFacet) return object;
-        let message = new $root.legal.api.SearchFacet();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SearchFacet();
         if (object.field != null) message.field = String(object.field);
         if (object.values) {
           if (!Array.isArray(object.values))
@@ -5977,7 +5977,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.values.length; ++i) {
             if (typeof object.values[i] !== 'object')
               throw TypeError('.legal.api.SearchFacet.values: object expected');
-            message.values[i] = $root.legal.api.FacetValue.fromObject(object.values[i]);
+            message.values[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue.fromObject(object.values[i]);
           }
         }
         return message;
@@ -5989,7 +5989,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SearchFacet
        * @static
        * @param {legal.api.SearchFacet} message SearchFacet
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SearchFacet.toObject = function toObject(message, options) {
@@ -6001,7 +6001,7 @@ export const legal = ($root.legal = (() => {
         if (message.values && message.values.length) {
           object.values = [];
           for (let j = 0; j < message.values.length; ++j)
-            object.values[j] = $root.legal.api.FacetValue.toObject(message.values[j], options);
+            object.values[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue.toObject(message.values[j], options);
         }
         return object;
       };
@@ -6014,7 +6014,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SearchFacet.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -6092,11 +6092,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.FacetValue
        * @static
        * @param {legal.api.IFacetValue} message FacetValue message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       FacetValue.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.value);
         if (message.count != null && Object.hasOwnProperty.call(message, 'count'))
@@ -6110,8 +6110,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.FacetValue
        * @static
        * @param {legal.api.IFacetValue} message FacetValue message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       FacetValue.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -6122,16 +6122,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.FacetValue
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.FacetValue} FacetValue
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       FacetValue.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.FacetValue();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -6157,13 +6157,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.FacetValue
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.FacetValue} FacetValue
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       FacetValue.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -6178,9 +6178,9 @@ export const legal = ($root.legal = (() => {
       FacetValue.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.value != null && message.hasOwnProperty('value'))
-          if (!$util.isString(message.value)) return 'value: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.value)) return 'value: string expected';
         if (message.count != null && message.hasOwnProperty('count'))
-          if (!$util.isInteger(message.count)) return 'count: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.count)) return 'count: integer expected';
         return null;
       };
 
@@ -6193,8 +6193,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.FacetValue} FacetValue
        */
       FacetValue.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.FacetValue) return object;
-        let message = new $root.legal.api.FacetValue();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.FacetValue();
         if (object.value != null) message.value = String(object.value);
         if (object.count != null) message.count = object.count | 0;
         return message;
@@ -6206,7 +6206,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.FacetValue
        * @static
        * @param {legal.api.FacetValue} message FacetValue
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       FacetValue.toObject = function toObject(message, options) {
@@ -6229,7 +6229,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       FacetValue.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -6326,7 +6326,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatMessage
        * @instance
        */
-      ChatMessage.prototype.attachments = $util.emptyArray;
+      ChatMessage.prototype.attachments = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * ChatMessage timestamp.
@@ -6362,11 +6362,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatMessage
        * @static
        * @param {legal.api.IChatMessage} message ChatMessage message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatMessage.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id);
         if (message.sessionId != null && Object.hasOwnProperty.call(message, 'sessionId'))
@@ -6379,17 +6379,17 @@ export const legal = ($root.legal = (() => {
           writer.uint32(/* id 5, wireType 0 =*/ 40).int32(message.type);
         if (message.attachments != null && message.attachments.length)
           for (let i = 0; i < message.attachments.length; ++i)
-            $root.legal.api.Attachment.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment.encode(
               message.attachments[i],
               writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
             ).ldelim();
         if (message.timestamp != null && Object.hasOwnProperty.call(message, 'timestamp'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.timestamp,
             writer.uint32(/* id 7, wireType 2 =*/ 58).fork()
           ).ldelim();
         if (message.metadata != null && Object.hasOwnProperty.call(message, 'metadata'))
-          $root.legal.api.MessageMetadata.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata.encode(
             message.metadata,
             writer.uint32(/* id 8, wireType 2 =*/ 66).fork()
           ).ldelim();
@@ -6402,8 +6402,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatMessage
        * @static
        * @param {legal.api.IChatMessage} message ChatMessage message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatMessage.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -6414,16 +6414,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ChatMessage
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ChatMessage} ChatMessage
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatMessage.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ChatMessage();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatMessage();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -6450,15 +6450,15 @@ export const legal = ($root.legal = (() => {
             }
             case 6: {
               if (!(message.attachments && message.attachments.length)) message.attachments = [];
-              message.attachments.push($root.legal.api.Attachment.decode(reader, reader.uint32()));
+              message.attachments.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment.decode(reader, reader.uint32()));
               break;
             }
             case 7: {
-              message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.timestamp = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 8: {
-              message.metadata = $root.legal.api.MessageMetadata.decode(reader, reader.uint32());
+              message.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -6474,13 +6474,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ChatMessage
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ChatMessage} ChatMessage
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatMessage.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -6495,13 +6495,13 @@ export const legal = ($root.legal = (() => {
       ChatMessage.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.id != null && message.hasOwnProperty('id'))
-          if (!$util.isString(message.id)) return 'id: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.id)) return 'id: string expected';
         if (message.sessionId != null && message.hasOwnProperty('sessionId'))
-          if (!$util.isString(message.sessionId)) return 'sessionId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.sessionId)) return 'sessionId: string expected';
         if (message.userId != null && message.hasOwnProperty('userId'))
-          if (!$util.isString(message.userId)) return 'userId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.userId)) return 'userId: string expected';
         if (message.content != null && message.hasOwnProperty('content'))
-          if (!$util.isString(message.content)) return 'content: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.content)) return 'content: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -6516,16 +6516,16 @@ export const legal = ($root.legal = (() => {
         if (message.attachments != null && message.hasOwnProperty('attachments')) {
           if (!Array.isArray(message.attachments)) return 'attachments: array expected';
           for (let i = 0; i < message.attachments.length; ++i) {
-            let error = $root.legal.api.Attachment.verify(message.attachments[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment.verify(message.attachments[i]);
             if (error) return 'attachments.' + error;
           }
         }
         if (message.timestamp != null && message.hasOwnProperty('timestamp')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.timestamp);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.timestamp);
           if (error) return 'timestamp.' + error;
         }
         if (message.metadata != null && message.hasOwnProperty('metadata')) {
-          let error = $root.legal.api.MessageMetadata.verify(message.metadata);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata.verify(message.metadata);
           if (error) return 'metadata.' + error;
         }
         return null;
@@ -6540,8 +6540,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ChatMessage} ChatMessage
        */
       ChatMessage.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ChatMessage) return object;
-        let message = new $root.legal.api.ChatMessage();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatMessage) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatMessage();
         if (object.id != null) message.id = String(object.id);
         if (object.sessionId != null) message.sessionId = String(object.sessionId);
         if (object.userId != null) message.userId = String(object.userId);
@@ -6581,18 +6581,18 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.attachments.length; ++i) {
             if (typeof object.attachments[i] !== 'object')
               throw TypeError('.legal.api.ChatMessage.attachments: object expected');
-            message.attachments[i] = $root.legal.api.Attachment.fromObject(object.attachments[i]);
+            message.attachments[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment.fromObject(object.attachments[i]);
           }
         }
         if (object.timestamp != null) {
           if (typeof object.timestamp !== 'object')
             throw TypeError('.legal.api.ChatMessage.timestamp: object expected');
-          message.timestamp = $root.google.protobuf.Timestamp.fromObject(object.timestamp);
+          message.timestamp = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.timestamp);
         }
         if (object.metadata != null) {
           if (typeof object.metadata !== 'object')
             throw TypeError('.legal.api.ChatMessage.metadata: object expected');
-          message.metadata = $root.legal.api.MessageMetadata.fromObject(object.metadata);
+          message.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata.fromObject(object.metadata);
         }
         return message;
       };
@@ -6603,7 +6603,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatMessage
        * @static
        * @param {legal.api.ChatMessage} message ChatMessage
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ChatMessage.toObject = function toObject(message, options) {
@@ -6629,22 +6629,22 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.MessageType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.MessageType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageType[message.type]
               : message.type;
         if (message.attachments && message.attachments.length) {
           object.attachments = [];
           for (let j = 0; j < message.attachments.length; ++j)
-            object.attachments[j] = $root.legal.api.Attachment.toObject(
+            object.attachments[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment.toObject(
               message.attachments[j],
               options
             );
         }
         if (message.timestamp != null && message.hasOwnProperty('timestamp'))
-          object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
+          object.timestamp = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.timestamp, options);
         if (message.metadata != null && message.hasOwnProperty('metadata'))
-          object.metadata = $root.legal.api.MessageMetadata.toObject(message.metadata, options);
+          object.metadata = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata.toObject(message.metadata, options);
         return object;
       };
 
@@ -6656,7 +6656,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ChatMessage.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -6755,7 +6755,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.MessageMetadata
        * @instance
        */
-      MessageMetadata.prototype.sourceDocuments = $util.emptyArray;
+      MessageMetadata.prototype.sourceDocuments = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * MessageMetadata confidenceScore.
@@ -6783,11 +6783,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.MessageMetadata
        * @static
        * @param {legal.api.IMessageMetadata} message MessageMetadata message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       MessageMetadata.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.modelUsed != null && Object.hasOwnProperty.call(message, 'modelUsed'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.modelUsed);
         if (message.tokensUsed != null && Object.hasOwnProperty.call(message, 'tokensUsed'))
@@ -6814,8 +6814,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.MessageMetadata
        * @static
        * @param {legal.api.IMessageMetadata} message MessageMetadata message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       MessageMetadata.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -6826,16 +6826,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.MessageMetadata
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.MessageMetadata} MessageMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       MessageMetadata.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.MessageMetadata();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -6875,13 +6875,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.MessageMetadata
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.MessageMetadata} MessageMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       MessageMetadata.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -6896,16 +6896,16 @@ export const legal = ($root.legal = (() => {
       MessageMetadata.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.modelUsed != null && message.hasOwnProperty('modelUsed'))
-          if (!$util.isString(message.modelUsed)) return 'modelUsed: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.modelUsed)) return 'modelUsed: string expected';
         if (message.tokensUsed != null && message.hasOwnProperty('tokensUsed'))
-          if (!$util.isInteger(message.tokensUsed)) return 'tokensUsed: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.tokensUsed)) return 'tokensUsed: integer expected';
         if (message.processingTimeMs != null && message.hasOwnProperty('processingTimeMs'))
           if (typeof message.processingTimeMs !== 'number')
             return 'processingTimeMs: number expected';
         if (message.sourceDocuments != null && message.hasOwnProperty('sourceDocuments')) {
           if (!Array.isArray(message.sourceDocuments)) return 'sourceDocuments: array expected';
           for (let i = 0; i < message.sourceDocuments.length; ++i)
-            if (!$util.isString(message.sourceDocuments[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.sourceDocuments[i]))
               return 'sourceDocuments: string[] expected';
         }
         if (message.confidenceScore != null && message.hasOwnProperty('confidenceScore'))
@@ -6923,8 +6923,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.MessageMetadata} MessageMetadata
        */
       MessageMetadata.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.MessageMetadata) return object;
-        let message = new $root.legal.api.MessageMetadata();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.MessageMetadata();
         if (object.modelUsed != null) message.modelUsed = String(object.modelUsed);
         if (object.tokensUsed != null) message.tokensUsed = object.tokensUsed | 0;
         if (object.processingTimeMs != null)
@@ -6947,7 +6947,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.MessageMetadata
        * @static
        * @param {legal.api.MessageMetadata} message MessageMetadata
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       MessageMetadata.toObject = function toObject(message, options) {
@@ -6990,7 +6990,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       MessageMetadata.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -7095,11 +7095,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatRequest
        * @static
        * @param {legal.api.IChatRequest} message ChatRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatRequest.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.sessionId != null && Object.hasOwnProperty.call(message, 'sessionId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.sessionId);
         if (message.userId != null && Object.hasOwnProperty.call(message, 'userId'))
@@ -7107,12 +7107,12 @@ export const legal = ($root.legal = (() => {
         if (message.message != null && Object.hasOwnProperty.call(message, 'message'))
           writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.message);
         if (message.context != null && Object.hasOwnProperty.call(message, 'context'))
-          $root.legal.api.ChatContext.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext.encode(
             message.context,
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
           ).ldelim();
         if (message.options != null && Object.hasOwnProperty.call(message, 'options'))
-          $root.legal.api.ChatOptions.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions.encode(
             message.options,
             writer.uint32(/* id 5, wireType 2 =*/ 42).fork()
           ).ldelim();
@@ -7125,8 +7125,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatRequest
        * @static
        * @param {legal.api.IChatRequest} message ChatRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatRequest.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -7137,16 +7137,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ChatRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ChatRequest} ChatRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatRequest.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ChatRequest();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatRequest();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -7164,11 +7164,11 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 4: {
-              message.context = $root.legal.api.ChatContext.decode(reader, reader.uint32());
+              message.context = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext.decode(reader, reader.uint32());
               break;
             }
             case 5: {
-              message.options = $root.legal.api.ChatOptions.decode(reader, reader.uint32());
+              message.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -7184,13 +7184,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ChatRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ChatRequest} ChatRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatRequest.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -7205,17 +7205,17 @@ export const legal = ($root.legal = (() => {
       ChatRequest.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.sessionId != null && message.hasOwnProperty('sessionId'))
-          if (!$util.isString(message.sessionId)) return 'sessionId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.sessionId)) return 'sessionId: string expected';
         if (message.userId != null && message.hasOwnProperty('userId'))
-          if (!$util.isString(message.userId)) return 'userId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.userId)) return 'userId: string expected';
         if (message.message != null && message.hasOwnProperty('message'))
-          if (!$util.isString(message.message)) return 'message: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.message)) return 'message: string expected';
         if (message.context != null && message.hasOwnProperty('context')) {
-          let error = $root.legal.api.ChatContext.verify(message.context);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext.verify(message.context);
           if (error) return 'context.' + error;
         }
         if (message.options != null && message.hasOwnProperty('options')) {
-          let error = $root.legal.api.ChatOptions.verify(message.options);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions.verify(message.options);
           if (error) return 'options.' + error;
         }
         return null;
@@ -7230,20 +7230,20 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ChatRequest} ChatRequest
        */
       ChatRequest.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ChatRequest) return object;
-        let message = new $root.legal.api.ChatRequest();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatRequest) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatRequest();
         if (object.sessionId != null) message.sessionId = String(object.sessionId);
         if (object.userId != null) message.userId = String(object.userId);
         if (object.message != null) message.message = String(object.message);
         if (object.context != null) {
           if (typeof object.context !== 'object')
             throw TypeError('.legal.api.ChatRequest.context: object expected');
-          message.context = $root.legal.api.ChatContext.fromObject(object.context);
+          message.context = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext.fromObject(object.context);
         }
         if (object.options != null) {
           if (typeof object.options !== 'object')
             throw TypeError('.legal.api.ChatRequest.options: object expected');
-          message.options = $root.legal.api.ChatOptions.fromObject(object.options);
+          message.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions.fromObject(object.options);
         }
         return message;
       };
@@ -7254,7 +7254,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatRequest
        * @static
        * @param {legal.api.ChatRequest} message ChatRequest
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ChatRequest.toObject = function toObject(message, options) {
@@ -7274,9 +7274,9 @@ export const legal = ($root.legal = (() => {
         if (message.message != null && message.hasOwnProperty('message'))
           object.message = message.message;
         if (message.context != null && message.hasOwnProperty('context'))
-          object.context = $root.legal.api.ChatContext.toObject(message.context, options);
+          object.context = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext.toObject(message.context, options);
         if (message.options != null && message.hasOwnProperty('options'))
-          object.options = $root.legal.api.ChatOptions.toObject(message.options, options);
+          object.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions.toObject(message.options, options);
         return object;
       };
 
@@ -7288,7 +7288,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ChatRequest.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -7343,7 +7343,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatContext
        * @instance
        */
-      ChatContext.prototype.documentIds = $util.emptyArray;
+      ChatContext.prototype.documentIds = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * ChatContext caseId.
@@ -7359,7 +7359,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatContext
        * @instance
        */
-      ChatContext.prototype.previousMessageIds = $util.emptyArray;
+      ChatContext.prototype.previousMessageIds = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * ChatContext variables.
@@ -7367,7 +7367,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatContext
        * @instance
        */
-      ChatContext.prototype.variables = $util.emptyObject;
+      ChatContext.prototype.variables = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyObject;
 
       /**
        * Creates a new ChatContext instance using the specified properties.
@@ -7387,11 +7387,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatContext
        * @static
        * @param {legal.api.IChatContext} message ChatContext message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatContext.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.documentIds != null && message.documentIds.length)
           for (let i = 0; i < message.documentIds.length; ++i)
             writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.documentIds[i]);
@@ -7419,8 +7419,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatContext
        * @static
        * @param {legal.api.IChatContext} message ChatContext message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatContext.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -7431,16 +7431,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ChatContext
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ChatContext} ChatContext
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatContext.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ChatContext(),
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext(),
           key,
           value;
         while (reader.pos < end) {
@@ -7463,7 +7463,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 4: {
-              if (message.variables === $util.emptyObject) message.variables = {};
+              if (message.variables === $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyObject) message.variables = {};
               let end2 = reader.uint32() + reader.pos;
               key = '';
               value = '';
@@ -7497,13 +7497,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ChatContext
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ChatContext} ChatContext
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatContext.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -7520,22 +7520,22 @@ export const legal = ($root.legal = (() => {
         if (message.documentIds != null && message.hasOwnProperty('documentIds')) {
           if (!Array.isArray(message.documentIds)) return 'documentIds: array expected';
           for (let i = 0; i < message.documentIds.length; ++i)
-            if (!$util.isString(message.documentIds[i])) return 'documentIds: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.documentIds[i])) return 'documentIds: string[] expected';
         }
         if (message.caseId != null && message.hasOwnProperty('caseId'))
-          if (!$util.isString(message.caseId)) return 'caseId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.caseId)) return 'caseId: string expected';
         if (message.previousMessageIds != null && message.hasOwnProperty('previousMessageIds')) {
           if (!Array.isArray(message.previousMessageIds))
             return 'previousMessageIds: array expected';
           for (let i = 0; i < message.previousMessageIds.length; ++i)
-            if (!$util.isString(message.previousMessageIds[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.previousMessageIds[i]))
               return 'previousMessageIds: string[] expected';
         }
         if (message.variables != null && message.hasOwnProperty('variables')) {
-          if (!$util.isObject(message.variables)) return 'variables: object expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isObject(message.variables)) return 'variables: object expected';
           let key = Object.keys(message.variables);
           for (let i = 0; i < key.length; ++i)
-            if (!$util.isString(message.variables[key[i]]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.variables[key[i]]))
               return 'variables: string{k:string} expected';
         }
         return null;
@@ -7550,8 +7550,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ChatContext} ChatContext
        */
       ChatContext.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ChatContext) return object;
-        let message = new $root.legal.api.ChatContext();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatContext();
         if (object.documentIds) {
           if (!Array.isArray(object.documentIds))
             throw TypeError('.legal.api.ChatContext.documentIds: array expected');
@@ -7583,7 +7583,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatContext
        * @static
        * @param {legal.api.ChatContext} message ChatContext
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ChatContext.toObject = function toObject(message, options) {
@@ -7624,7 +7624,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ChatContext.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -7729,11 +7729,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatOptions
        * @static
        * @param {legal.api.IChatOptions} message ChatOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatOptions.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.model != null && Object.hasOwnProperty.call(message, 'model'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.model);
         if (message.temperature != null && Object.hasOwnProperty.call(message, 'temperature'))
@@ -7753,8 +7753,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatOptions
        * @static
        * @param {legal.api.IChatOptions} message ChatOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatOptions.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -7765,16 +7765,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ChatOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ChatOptions} ChatOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatOptions.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ChatOptions();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -7812,13 +7812,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ChatOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ChatOptions} ChatOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatOptions.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -7833,11 +7833,11 @@ export const legal = ($root.legal = (() => {
       ChatOptions.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.model != null && message.hasOwnProperty('model'))
-          if (!$util.isString(message.model)) return 'model: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.model)) return 'model: string expected';
         if (message.temperature != null && message.hasOwnProperty('temperature'))
           if (typeof message.temperature !== 'number') return 'temperature: number expected';
         if (message.maxTokens != null && message.hasOwnProperty('maxTokens'))
-          if (!$util.isInteger(message.maxTokens)) return 'maxTokens: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.maxTokens)) return 'maxTokens: integer expected';
         if (message.stream != null && message.hasOwnProperty('stream'))
           if (typeof message.stream !== 'boolean') return 'stream: boolean expected';
         if (message.includeSources != null && message.hasOwnProperty('includeSources'))
@@ -7855,8 +7855,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ChatOptions} ChatOptions
        */
       ChatOptions.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ChatOptions) return object;
-        let message = new $root.legal.api.ChatOptions();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatOptions();
         if (object.model != null) message.model = String(object.model);
         if (object.temperature != null) message.temperature = Number(object.temperature);
         if (object.maxTokens != null) message.maxTokens = object.maxTokens | 0;
@@ -7871,7 +7871,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatOptions
        * @static
        * @param {legal.api.ChatOptions} message ChatOptions
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ChatOptions.toObject = function toObject(message, options) {
@@ -7907,7 +7907,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ChatOptions.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -7973,7 +7973,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatResponse
        * @instance
        */
-      ChatResponse.prototype.sources = $util.emptyArray;
+      ChatResponse.prototype.sources = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * ChatResponse confidence.
@@ -8005,7 +8005,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatResponse
        * @instance
        */
-      ChatResponse.prototype.citations = $util.emptyArray;
+      ChatResponse.prototype.citations = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * ChatResponse actionItems.
@@ -8013,7 +8013,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatResponse
        * @instance
        */
-      ChatResponse.prototype.actionItems = $util.emptyArray;
+      ChatResponse.prototype.actionItems = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new ChatResponse instance using the specified properties.
@@ -8033,11 +8033,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatResponse
        * @static
        * @param {legal.api.IChatResponse} message ChatResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatResponse.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.response != null && Object.hasOwnProperty.call(message, 'response'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.response);
         if (message.sources != null && message.sources.length)
@@ -8051,13 +8051,13 @@ export const legal = ($root.legal = (() => {
           writer.uint32(/* id 5, wireType 0 =*/ 40).int32(message.tokensUsed);
         if (message.citations != null && message.citations.length)
           for (let i = 0; i < message.citations.length; ++i)
-            $root.legal.api.LegalCitation.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.encode(
               message.citations[i],
               writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
             ).ldelim();
         if (message.actionItems != null && message.actionItems.length)
           for (let i = 0; i < message.actionItems.length; ++i)
-            $root.legal.api.ActionItem.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem.encode(
               message.actionItems[i],
               writer.uint32(/* id 7, wireType 2 =*/ 58).fork()
             ).ldelim();
@@ -8070,8 +8070,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatResponse
        * @static
        * @param {legal.api.IChatResponse} message ChatResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ChatResponse.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -8082,16 +8082,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ChatResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ChatResponse} ChatResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatResponse.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ChatResponse();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatResponse();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -8119,12 +8119,12 @@ export const legal = ($root.legal = (() => {
             }
             case 6: {
               if (!(message.citations && message.citations.length)) message.citations = [];
-              message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+              message.citations.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.decode(reader, reader.uint32()));
               break;
             }
             case 7: {
               if (!(message.actionItems && message.actionItems.length)) message.actionItems = [];
-              message.actionItems.push($root.legal.api.ActionItem.decode(reader, reader.uint32()));
+              message.actionItems.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem.decode(reader, reader.uint32()));
               break;
             }
             default:
@@ -8140,13 +8140,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ChatResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ChatResponse} ChatResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ChatResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -8161,29 +8161,29 @@ export const legal = ($root.legal = (() => {
       ChatResponse.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.response != null && message.hasOwnProperty('response'))
-          if (!$util.isString(message.response)) return 'response: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.response)) return 'response: string expected';
         if (message.sources != null && message.hasOwnProperty('sources')) {
           if (!Array.isArray(message.sources)) return 'sources: array expected';
           for (let i = 0; i < message.sources.length; ++i)
-            if (!$util.isString(message.sources[i])) return 'sources: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.sources[i])) return 'sources: string[] expected';
         }
         if (message.confidence != null && message.hasOwnProperty('confidence'))
           if (typeof message.confidence !== 'number') return 'confidence: number expected';
         if (message.modelUsed != null && message.hasOwnProperty('modelUsed'))
-          if (!$util.isString(message.modelUsed)) return 'modelUsed: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.modelUsed)) return 'modelUsed: string expected';
         if (message.tokensUsed != null && message.hasOwnProperty('tokensUsed'))
-          if (!$util.isInteger(message.tokensUsed)) return 'tokensUsed: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.tokensUsed)) return 'tokensUsed: integer expected';
         if (message.citations != null && message.hasOwnProperty('citations')) {
           if (!Array.isArray(message.citations)) return 'citations: array expected';
           for (let i = 0; i < message.citations.length; ++i) {
-            let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.verify(message.citations[i]);
             if (error) return 'citations.' + error;
           }
         }
         if (message.actionItems != null && message.hasOwnProperty('actionItems')) {
           if (!Array.isArray(message.actionItems)) return 'actionItems: array expected';
           for (let i = 0; i < message.actionItems.length; ++i) {
-            let error = $root.legal.api.ActionItem.verify(message.actionItems[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem.verify(message.actionItems[i]);
             if (error) return 'actionItems.' + error;
           }
         }
@@ -8199,8 +8199,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ChatResponse} ChatResponse
        */
       ChatResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ChatResponse) return object;
-        let message = new $root.legal.api.ChatResponse();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatResponse) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ChatResponse();
         if (object.response != null) message.response = String(object.response);
         if (object.sources) {
           if (!Array.isArray(object.sources))
@@ -8219,7 +8219,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.citations.length; ++i) {
             if (typeof object.citations[i] !== 'object')
               throw TypeError('.legal.api.ChatResponse.citations: object expected');
-            message.citations[i] = $root.legal.api.LegalCitation.fromObject(object.citations[i]);
+            message.citations[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.fromObject(object.citations[i]);
           }
         }
         if (object.actionItems) {
@@ -8229,7 +8229,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.actionItems.length; ++i) {
             if (typeof object.actionItems[i] !== 'object')
               throw TypeError('.legal.api.ChatResponse.actionItems: object expected');
-            message.actionItems[i] = $root.legal.api.ActionItem.fromObject(object.actionItems[i]);
+            message.actionItems[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem.fromObject(object.actionItems[i]);
           }
         }
         return message;
@@ -8241,7 +8241,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ChatResponse
        * @static
        * @param {legal.api.ChatResponse} message ChatResponse
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ChatResponse.toObject = function toObject(message, options) {
@@ -8276,7 +8276,7 @@ export const legal = ($root.legal = (() => {
         if (message.citations && message.citations.length) {
           object.citations = [];
           for (let j = 0; j < message.citations.length; ++j)
-            object.citations[j] = $root.legal.api.LegalCitation.toObject(
+            object.citations[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.toObject(
               message.citations[j],
               options
             );
@@ -8284,7 +8284,7 @@ export const legal = ($root.legal = (() => {
         if (message.actionItems && message.actionItems.length) {
           object.actionItems = [];
           for (let j = 0; j < message.actionItems.length; ++j)
-            object.actionItems[j] = $root.legal.api.ActionItem.toObject(
+            object.actionItems[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem.toObject(
               message.actionItems[j],
               options
             );
@@ -8300,7 +8300,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ChatResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -8396,17 +8396,17 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ActionItem
        * @static
        * @param {legal.api.IActionItem} message ActionItem message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ActionItem.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.description != null && Object.hasOwnProperty.call(message, 'description'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.description);
         if (message.priority != null && Object.hasOwnProperty.call(message, 'priority'))
           writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.priority);
         if (message.dueDate != null && Object.hasOwnProperty.call(message, 'dueDate'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.dueDate,
             writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
           ).ldelim();
@@ -8421,8 +8421,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ActionItem
        * @static
        * @param {legal.api.IActionItem} message ActionItem message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       ActionItem.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -8433,16 +8433,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.ActionItem
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.ActionItem} ActionItem
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ActionItem.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.ActionItem();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -8456,7 +8456,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 3: {
-              message.dueDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.dueDate = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 4: {
@@ -8476,13 +8476,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.ActionItem
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.ActionItem} ActionItem
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       ActionItem.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -8497,7 +8497,7 @@ export const legal = ($root.legal = (() => {
       ActionItem.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.description != null && message.hasOwnProperty('description'))
-          if (!$util.isString(message.description)) return 'description: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.description)) return 'description: string expected';
         if (message.priority != null && message.hasOwnProperty('priority'))
           switch (message.priority) {
             default:
@@ -8509,11 +8509,11 @@ export const legal = ($root.legal = (() => {
               break;
           }
         if (message.dueDate != null && message.hasOwnProperty('dueDate')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.dueDate);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.dueDate);
           if (error) return 'dueDate.' + error;
         }
         if (message.assignedTo != null && message.hasOwnProperty('assignedTo'))
-          if (!$util.isString(message.assignedTo)) return 'assignedTo: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.assignedTo)) return 'assignedTo: string expected';
         return null;
       };
 
@@ -8526,8 +8526,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.ActionItem} ActionItem
        */
       ActionItem.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.ActionItem) return object;
-        let message = new $root.legal.api.ActionItem();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionItem();
         if (object.description != null) message.description = String(object.description);
         switch (object.priority) {
           default:
@@ -8556,7 +8556,7 @@ export const legal = ($root.legal = (() => {
         if (object.dueDate != null) {
           if (typeof object.dueDate !== 'object')
             throw TypeError('.legal.api.ActionItem.dueDate: object expected');
-          message.dueDate = $root.google.protobuf.Timestamp.fromObject(object.dueDate);
+          message.dueDate = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.dueDate);
         }
         if (object.assignedTo != null) message.assignedTo = String(object.assignedTo);
         return message;
@@ -8568,7 +8568,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.ActionItem
        * @static
        * @param {legal.api.ActionItem} message ActionItem
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       ActionItem.toObject = function toObject(message, options) {
@@ -8585,12 +8585,12 @@ export const legal = ($root.legal = (() => {
         if (message.priority != null && message.hasOwnProperty('priority'))
           object.priority =
             options.enums === String
-              ? $root.legal.api.ActionPriority[message.priority] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionPriority[message.priority] === undefined
                 ? message.priority
-                : $root.legal.api.ActionPriority[message.priority]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionPriority[message.priority]
               : message.priority;
         if (message.dueDate != null && message.hasOwnProperty('dueDate'))
-          object.dueDate = $root.google.protobuf.Timestamp.toObject(message.dueDate, options);
+          object.dueDate = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.dueDate, options);
         if (message.assignedTo != null && message.hasOwnProperty('assignedTo'))
           object.assignedTo = message.assignedTo;
         return object;
@@ -8604,7 +8604,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       ActionItem.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -8692,7 +8692,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Attachment
        * @instance
        */
-      Attachment.prototype.size = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+      Attachment.prototype.size = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromBits(0, 0, false) : 0;
 
       /**
        * Attachment url.
@@ -8728,11 +8728,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Attachment
        * @static
        * @param {legal.api.IAttachment} message Attachment message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Attachment.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.filename != null && Object.hasOwnProperty.call(message, 'filename'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.filename);
         if (message.contentType != null && Object.hasOwnProperty.call(message, 'contentType'))
@@ -8752,8 +8752,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Attachment
        * @static
        * @param {legal.api.IAttachment} message Attachment message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Attachment.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -8764,16 +8764,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.Attachment
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.Attachment} Attachment
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Attachment.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.Attachment();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -8811,13 +8811,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.Attachment
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.Attachment} Attachment
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Attachment.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -8832,23 +8832,23 @@ export const legal = ($root.legal = (() => {
       Attachment.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.filename != null && message.hasOwnProperty('filename'))
-          if (!$util.isString(message.filename)) return 'filename: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.filename)) return 'filename: string expected';
         if (message.contentType != null && message.hasOwnProperty('contentType'))
-          if (!$util.isString(message.contentType)) return 'contentType: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.contentType)) return 'contentType: string expected';
         if (message.size != null && message.hasOwnProperty('size'))
           if (
-            !$util.isInteger(message.size) &&
+            !$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.size) &&
             !(
               message.size &&
-              $util.isInteger(message.size.low) &&
-              $util.isInteger(message.size.high)
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.size.low) &&
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.size.high)
             )
           )
             return 'size: integer|Long expected';
         if (message.url != null && message.hasOwnProperty('url'))
-          if (!$util.isString(message.url)) return 'url: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.url)) return 'url: string expected';
         if (message.checksum != null && message.hasOwnProperty('checksum'))
-          if (!$util.isString(message.checksum)) return 'checksum: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.checksum)) return 'checksum: string expected';
         return null;
       };
 
@@ -8861,16 +8861,16 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.Attachment} Attachment
        */
       Attachment.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.Attachment) return object;
-        let message = new $root.legal.api.Attachment();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Attachment();
         if (object.filename != null) message.filename = String(object.filename);
         if (object.contentType != null) message.contentType = String(object.contentType);
         if (object.size != null)
-          if ($util.Long) (message.size = $util.Long.fromValue(object.size)).unsigned = false;
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long) (message.size = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromValue(object.size)).unsigned = false;
           else if (typeof object.size === 'string') message.size = parseInt(object.size, 10);
           else if (typeof object.size === 'number') message.size = object.size;
           else if (typeof object.size === 'object')
-            message.size = new $util.LongBits(
+            message.size = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
               object.size.low >>> 0,
               object.size.high >>> 0
             ).toNumber();
@@ -8885,7 +8885,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Attachment
        * @static
        * @param {legal.api.Attachment} message Attachment
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       Attachment.toObject = function toObject(message, options) {
@@ -8894,8 +8894,8 @@ export const legal = ($root.legal = (() => {
         if (options.defaults) {
           object.filename = '';
           object.contentType = '';
-          if ($util.Long) {
-            let long = new $util.Long(0, 0, false);
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long) {
+            let long = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long(0, 0, false);
             object.size =
               options.longs === String
                 ? long.toString()
@@ -8916,9 +8916,9 @@ export const legal = ($root.legal = (() => {
           else
             object.size =
               options.longs === String
-                ? $util.Long.prototype.toString.call(message.size)
+                ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.prototype.toString.call(message.size)
                 : options.longs === Number
-                  ? new $util.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber()
+                  ? new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber()
                   : message.size;
         if (message.url != null && message.hasOwnProperty('url')) object.url = message.url;
         if (message.checksum != null && message.hasOwnProperty('checksum'))
@@ -8934,7 +8934,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       Attachment.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -9004,7 +9004,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisRequest
        * @instance
        */
-      AnalysisRequest.prototype.specificQueries = $util.emptyArray;
+      AnalysisRequest.prototype.specificQueries = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * AnalysisRequest options.
@@ -9040,11 +9040,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisRequest
        * @static
        * @param {legal.api.IAnalysisRequest} message AnalysisRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisRequest.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.documentId != null && Object.hasOwnProperty.call(message, 'documentId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.documentId);
         if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
@@ -9053,7 +9053,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < message.specificQueries.length; ++i)
             writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.specificQueries[i]);
         if (message.options != null && Object.hasOwnProperty.call(message, 'options'))
-          $root.legal.api.AnalysisOptions.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions.encode(
             message.options,
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
           ).ldelim();
@@ -9068,8 +9068,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisRequest
        * @static
        * @param {legal.api.IAnalysisRequest} message AnalysisRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisRequest.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -9080,16 +9080,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.AnalysisRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.AnalysisRequest} AnalysisRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisRequest.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.AnalysisRequest();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisRequest();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -9109,7 +9109,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 4: {
-              message.options = $root.legal.api.AnalysisOptions.decode(reader, reader.uint32());
+              message.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions.decode(reader, reader.uint32());
               break;
             }
             case 5: {
@@ -9129,13 +9129,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.AnalysisRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.AnalysisRequest} AnalysisRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisRequest.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -9150,7 +9150,7 @@ export const legal = ($root.legal = (() => {
       AnalysisRequest.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.documentId != null && message.hasOwnProperty('documentId'))
-          if (!$util.isString(message.documentId)) return 'documentId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.documentId)) return 'documentId: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -9166,15 +9166,15 @@ export const legal = ($root.legal = (() => {
         if (message.specificQueries != null && message.hasOwnProperty('specificQueries')) {
           if (!Array.isArray(message.specificQueries)) return 'specificQueries: array expected';
           for (let i = 0; i < message.specificQueries.length; ++i)
-            if (!$util.isString(message.specificQueries[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.specificQueries[i]))
               return 'specificQueries: string[] expected';
         }
         if (message.options != null && message.hasOwnProperty('options')) {
-          let error = $root.legal.api.AnalysisOptions.verify(message.options);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions.verify(message.options);
           if (error) return 'options.' + error;
         }
         if (message.userId != null && message.hasOwnProperty('userId'))
-          if (!$util.isString(message.userId)) return 'userId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.userId)) return 'userId: string expected';
         return null;
       };
 
@@ -9187,8 +9187,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.AnalysisRequest} AnalysisRequest
        */
       AnalysisRequest.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.AnalysisRequest) return object;
-        let message = new $root.legal.api.AnalysisRequest();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisRequest) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisRequest();
         if (object.documentId != null) message.documentId = String(object.documentId);
         switch (object.type) {
           default:
@@ -9232,7 +9232,7 @@ export const legal = ($root.legal = (() => {
         if (object.options != null) {
           if (typeof object.options !== 'object')
             throw TypeError('.legal.api.AnalysisRequest.options: object expected');
-          message.options = $root.legal.api.AnalysisOptions.fromObject(object.options);
+          message.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions.fromObject(object.options);
         }
         if (object.userId != null) message.userId = String(object.userId);
         return message;
@@ -9244,7 +9244,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisRequest
        * @static
        * @param {legal.api.AnalysisRequest} message AnalysisRequest
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       AnalysisRequest.toObject = function toObject(message, options) {
@@ -9262,9 +9262,9 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.AnalysisType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.AnalysisType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisType[message.type]
               : message.type;
         if (message.specificQueries && message.specificQueries.length) {
           object.specificQueries = [];
@@ -9272,7 +9272,7 @@ export const legal = ($root.legal = (() => {
             object.specificQueries[j] = message.specificQueries[j];
         }
         if (message.options != null && message.hasOwnProperty('options'))
-          object.options = $root.legal.api.AnalysisOptions.toObject(message.options, options);
+          object.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions.toObject(message.options, options);
         if (message.userId != null && message.hasOwnProperty('userId'))
           object.userId = message.userId;
         return object;
@@ -9286,7 +9286,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       AnalysisRequest.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -9370,7 +9370,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisOptions
        * @instance
        */
-      AnalysisOptions.prototype.practiceAreas = $util.emptyArray;
+      AnalysisOptions.prototype.practiceAreas = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * AnalysisOptions confidenceThreshold.
@@ -9406,11 +9406,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisOptions
        * @static
        * @param {legal.api.IAnalysisOptions} message AnalysisOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisOptions.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.jurisdiction != null && Object.hasOwnProperty.call(message, 'jurisdiction'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.jurisdiction);
         if (message.practiceAreas != null && message.practiceAreas.length)
@@ -9435,8 +9435,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisOptions
        * @static
        * @param {legal.api.IAnalysisOptions} message AnalysisOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisOptions.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -9447,16 +9447,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.AnalysisOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.AnalysisOptions} AnalysisOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisOptions.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.AnalysisOptions();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -9492,13 +9492,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.AnalysisOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.AnalysisOptions} AnalysisOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisOptions.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -9513,11 +9513,11 @@ export const legal = ($root.legal = (() => {
       AnalysisOptions.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.jurisdiction != null && message.hasOwnProperty('jurisdiction'))
-          if (!$util.isString(message.jurisdiction)) return 'jurisdiction: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.jurisdiction)) return 'jurisdiction: string expected';
         if (message.practiceAreas != null && message.hasOwnProperty('practiceAreas')) {
           if (!Array.isArray(message.practiceAreas)) return 'practiceAreas: array expected';
           for (let i = 0; i < message.practiceAreas.length; ++i)
-            if (!$util.isString(message.practiceAreas[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.practiceAreas[i]))
               return 'practiceAreas: string[] expected';
         }
         if (message.confidenceThreshold != null && message.hasOwnProperty('confidenceThreshold'))
@@ -9541,8 +9541,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.AnalysisOptions} AnalysisOptions
        */
       AnalysisOptions.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.AnalysisOptions) return object;
-        let message = new $root.legal.api.AnalysisOptions();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisOptions();
         if (object.jurisdiction != null) message.jurisdiction = String(object.jurisdiction);
         if (object.practiceAreas) {
           if (!Array.isArray(object.practiceAreas))
@@ -9564,7 +9564,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisOptions
        * @static
        * @param {legal.api.AnalysisOptions} message AnalysisOptions
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       AnalysisOptions.toObject = function toObject(message, options) {
@@ -9604,7 +9604,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       AnalysisOptions.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -9676,7 +9676,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResponse
        * @instance
        */
-      AnalysisResponse.prototype.results = $util.emptyArray;
+      AnalysisResponse.prototype.results = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * AnalysisResponse overallConfidence.
@@ -9700,7 +9700,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResponse
        * @instance
        */
-      AnalysisResponse.prototype.recommendations = $util.emptyArray;
+      AnalysisResponse.prototype.recommendations = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new AnalysisResponse instance using the specified properties.
@@ -9720,18 +9720,18 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResponse
        * @static
        * @param {legal.api.IAnalysisResponse} message AnalysisResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisResponse.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.analysisId != null && Object.hasOwnProperty.call(message, 'analysisId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.analysisId);
         if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
           writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.type);
         if (message.results != null && message.results.length)
           for (let i = 0; i < message.results.length; ++i)
-            $root.legal.api.AnalysisResult.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult.encode(
               message.results[i],
               writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
             ).ldelim();
@@ -9741,13 +9741,13 @@ export const legal = ($root.legal = (() => {
         )
           writer.uint32(/* id 4, wireType 5 =*/ 37).float(message.overallConfidence);
         if (message.createdAt != null && Object.hasOwnProperty.call(message, 'createdAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.createdAt,
             writer.uint32(/* id 5, wireType 2 =*/ 42).fork()
           ).ldelim();
         if (message.recommendations != null && message.recommendations.length)
           for (let i = 0; i < message.recommendations.length; ++i)
-            $root.legal.api.Recommendation.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation.encode(
               message.recommendations[i],
               writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
             ).ldelim();
@@ -9760,8 +9760,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResponse
        * @static
        * @param {legal.api.IAnalysisResponse} message AnalysisResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisResponse.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -9772,16 +9772,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.AnalysisResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.AnalysisResponse} AnalysisResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisResponse.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.AnalysisResponse();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResponse();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -9796,7 +9796,7 @@ export const legal = ($root.legal = (() => {
             }
             case 3: {
               if (!(message.results && message.results.length)) message.results = [];
-              message.results.push($root.legal.api.AnalysisResult.decode(reader, reader.uint32()));
+              message.results.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult.decode(reader, reader.uint32()));
               break;
             }
             case 4: {
@@ -9804,14 +9804,14 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 5: {
-              message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 6: {
               if (!(message.recommendations && message.recommendations.length))
                 message.recommendations = [];
               message.recommendations.push(
-                $root.legal.api.Recommendation.decode(reader, reader.uint32())
+                $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation.decode(reader, reader.uint32())
               );
               break;
             }
@@ -9828,13 +9828,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.AnalysisResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.AnalysisResponse} AnalysisResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -9849,7 +9849,7 @@ export const legal = ($root.legal = (() => {
       AnalysisResponse.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.analysisId != null && message.hasOwnProperty('analysisId'))
-          if (!$util.isString(message.analysisId)) return 'analysisId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.analysisId)) return 'analysisId: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -9865,7 +9865,7 @@ export const legal = ($root.legal = (() => {
         if (message.results != null && message.hasOwnProperty('results')) {
           if (!Array.isArray(message.results)) return 'results: array expected';
           for (let i = 0; i < message.results.length; ++i) {
-            let error = $root.legal.api.AnalysisResult.verify(message.results[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult.verify(message.results[i]);
             if (error) return 'results.' + error;
           }
         }
@@ -9873,13 +9873,13 @@ export const legal = ($root.legal = (() => {
           if (typeof message.overallConfidence !== 'number')
             return 'overallConfidence: number expected';
         if (message.createdAt != null && message.hasOwnProperty('createdAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.createdAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.createdAt);
           if (error) return 'createdAt.' + error;
         }
         if (message.recommendations != null && message.hasOwnProperty('recommendations')) {
           if (!Array.isArray(message.recommendations)) return 'recommendations: array expected';
           for (let i = 0; i < message.recommendations.length; ++i) {
-            let error = $root.legal.api.Recommendation.verify(message.recommendations[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation.verify(message.recommendations[i]);
             if (error) return 'recommendations.' + error;
           }
         }
@@ -9895,8 +9895,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.AnalysisResponse} AnalysisResponse
        */
       AnalysisResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.AnalysisResponse) return object;
-        let message = new $root.legal.api.AnalysisResponse();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResponse) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResponse();
         if (object.analysisId != null) message.analysisId = String(object.analysisId);
         switch (object.type) {
           default:
@@ -9937,7 +9937,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.results.length; ++i) {
             if (typeof object.results[i] !== 'object')
               throw TypeError('.legal.api.AnalysisResponse.results: object expected');
-            message.results[i] = $root.legal.api.AnalysisResult.fromObject(object.results[i]);
+            message.results[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult.fromObject(object.results[i]);
           }
         }
         if (object.overallConfidence != null)
@@ -9945,7 +9945,7 @@ export const legal = ($root.legal = (() => {
         if (object.createdAt != null) {
           if (typeof object.createdAt !== 'object')
             throw TypeError('.legal.api.AnalysisResponse.createdAt: object expected');
-          message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
+          message.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.createdAt);
         }
         if (object.recommendations) {
           if (!Array.isArray(object.recommendations))
@@ -9954,7 +9954,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.recommendations.length; ++i) {
             if (typeof object.recommendations[i] !== 'object')
               throw TypeError('.legal.api.AnalysisResponse.recommendations: object expected');
-            message.recommendations[i] = $root.legal.api.Recommendation.fromObject(
+            message.recommendations[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation.fromObject(
               object.recommendations[i]
             );
           }
@@ -9968,7 +9968,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResponse
        * @static
        * @param {legal.api.AnalysisResponse} message AnalysisResponse
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       AnalysisResponse.toObject = function toObject(message, options) {
@@ -9989,14 +9989,14 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.AnalysisType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.AnalysisType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisType[message.type]
               : message.type;
         if (message.results && message.results.length) {
           object.results = [];
           for (let j = 0; j < message.results.length; ++j)
-            object.results[j] = $root.legal.api.AnalysisResult.toObject(
+            object.results[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult.toObject(
               message.results[j],
               options
             );
@@ -10007,11 +10007,11 @@ export const legal = ($root.legal = (() => {
               ? String(message.overallConfidence)
               : message.overallConfidence;
         if (message.createdAt != null && message.hasOwnProperty('createdAt'))
-          object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
+          object.createdAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.createdAt, options);
         if (message.recommendations && message.recommendations.length) {
           object.recommendations = [];
           for (let j = 0; j < message.recommendations.length; ++j)
-            object.recommendations[j] = $root.legal.api.Recommendation.toObject(
+            object.recommendations[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation.toObject(
               message.recommendations[j],
               options
             );
@@ -10027,7 +10027,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       AnalysisResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -10107,7 +10107,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResult
        * @instance
        */
-      AnalysisResult.prototype.supportingText = $util.emptyArray;
+      AnalysisResult.prototype.supportingText = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * AnalysisResult citations.
@@ -10115,7 +10115,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResult
        * @instance
        */
-      AnalysisResult.prototype.citations = $util.emptyArray;
+      AnalysisResult.prototype.citations = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * AnalysisResult riskLevel.
@@ -10143,11 +10143,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResult
        * @static
        * @param {legal.api.IAnalysisResult} message AnalysisResult message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisResult.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.category != null && Object.hasOwnProperty.call(message, 'category'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.category);
         if (message.finding != null && Object.hasOwnProperty.call(message, 'finding'))
@@ -10159,7 +10159,7 @@ export const legal = ($root.legal = (() => {
             writer.uint32(/* id 4, wireType 2 =*/ 34).string(message.supportingText[i]);
         if (message.citations != null && message.citations.length)
           for (let i = 0; i < message.citations.length; ++i)
-            $root.legal.api.LegalCitation.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.encode(
               message.citations[i],
               writer.uint32(/* id 5, wireType 2 =*/ 42).fork()
             ).ldelim();
@@ -10174,8 +10174,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResult
        * @static
        * @param {legal.api.IAnalysisResult} message AnalysisResult message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       AnalysisResult.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -10186,16 +10186,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.AnalysisResult
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.AnalysisResult} AnalysisResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisResult.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.AnalysisResult();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -10220,7 +10220,7 @@ export const legal = ($root.legal = (() => {
             }
             case 5: {
               if (!(message.citations && message.citations.length)) message.citations = [];
-              message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+              message.citations.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.decode(reader, reader.uint32()));
               break;
             }
             case 6: {
@@ -10240,13 +10240,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.AnalysisResult
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.AnalysisResult} AnalysisResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       AnalysisResult.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -10261,21 +10261,21 @@ export const legal = ($root.legal = (() => {
       AnalysisResult.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.category != null && message.hasOwnProperty('category'))
-          if (!$util.isString(message.category)) return 'category: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.category)) return 'category: string expected';
         if (message.finding != null && message.hasOwnProperty('finding'))
-          if (!$util.isString(message.finding)) return 'finding: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.finding)) return 'finding: string expected';
         if (message.confidence != null && message.hasOwnProperty('confidence'))
           if (typeof message.confidence !== 'number') return 'confidence: number expected';
         if (message.supportingText != null && message.hasOwnProperty('supportingText')) {
           if (!Array.isArray(message.supportingText)) return 'supportingText: array expected';
           for (let i = 0; i < message.supportingText.length; ++i)
-            if (!$util.isString(message.supportingText[i]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.supportingText[i]))
               return 'supportingText: string[] expected';
         }
         if (message.citations != null && message.hasOwnProperty('citations')) {
           if (!Array.isArray(message.citations)) return 'citations: array expected';
           for (let i = 0; i < message.citations.length; ++i) {
-            let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.verify(message.citations[i]);
             if (error) return 'citations.' + error;
           }
         }
@@ -10301,8 +10301,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.AnalysisResult} AnalysisResult
        */
       AnalysisResult.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.AnalysisResult) return object;
-        let message = new $root.legal.api.AnalysisResult();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.AnalysisResult();
         if (object.category != null) message.category = String(object.category);
         if (object.finding != null) message.finding = String(object.finding);
         if (object.confidence != null) message.confidence = Number(object.confidence);
@@ -10320,7 +10320,7 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.citations.length; ++i) {
             if (typeof object.citations[i] !== 'object')
               throw TypeError('.legal.api.AnalysisResult.citations: object expected');
-            message.citations[i] = $root.legal.api.LegalCitation.fromObject(object.citations[i]);
+            message.citations[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.fromObject(object.citations[i]);
           }
         }
         switch (object.riskLevel) {
@@ -10356,7 +10356,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.AnalysisResult
        * @static
        * @param {legal.api.AnalysisResult} message AnalysisResult
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       AnalysisResult.toObject = function toObject(message, options) {
@@ -10389,7 +10389,7 @@ export const legal = ($root.legal = (() => {
         if (message.citations && message.citations.length) {
           object.citations = [];
           for (let j = 0; j < message.citations.length; ++j)
-            object.citations[j] = $root.legal.api.LegalCitation.toObject(
+            object.citations[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.LegalCitation.toObject(
               message.citations[j],
               options
             );
@@ -10397,9 +10397,9 @@ export const legal = ($root.legal = (() => {
         if (message.riskLevel != null && message.hasOwnProperty('riskLevel'))
           object.riskLevel =
             options.enums === String
-              ? $root.legal.api.RiskLevel[message.riskLevel] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.RiskLevel[message.riskLevel] === undefined
                 ? message.riskLevel
-                : $root.legal.api.RiskLevel[message.riskLevel]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.RiskLevel[message.riskLevel]
               : message.riskLevel;
         return object;
       };
@@ -10412,7 +10412,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       AnalysisResult.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -10517,7 +10517,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Recommendation
        * @instance
        */
-      Recommendation.prototype.steps = $util.emptyArray;
+      Recommendation.prototype.steps = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * Creates a new Recommendation instance using the specified properties.
@@ -10537,11 +10537,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Recommendation
        * @static
        * @param {legal.api.IRecommendation} message Recommendation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Recommendation.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.title != null && Object.hasOwnProperty.call(message, 'title'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.title);
         if (message.description != null && Object.hasOwnProperty.call(message, 'description'))
@@ -10562,8 +10562,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Recommendation
        * @static
        * @param {legal.api.IRecommendation} message Recommendation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Recommendation.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -10574,16 +10574,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.Recommendation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.Recommendation} Recommendation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Recommendation.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.Recommendation();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -10622,13 +10622,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.Recommendation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.Recommendation} Recommendation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Recommendation.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -10643,9 +10643,9 @@ export const legal = ($root.legal = (() => {
       Recommendation.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.title != null && message.hasOwnProperty('title'))
-          if (!$util.isString(message.title)) return 'title: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.title)) return 'title: string expected';
         if (message.description != null && message.hasOwnProperty('description'))
-          if (!$util.isString(message.description)) return 'description: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.description)) return 'description: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
           switch (message.type) {
             default:
@@ -10669,7 +10669,7 @@ export const legal = ($root.legal = (() => {
         if (message.steps != null && message.hasOwnProperty('steps')) {
           if (!Array.isArray(message.steps)) return 'steps: array expected';
           for (let i = 0; i < message.steps.length; ++i)
-            if (!$util.isString(message.steps[i])) return 'steps: string[] expected';
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.steps[i])) return 'steps: string[] expected';
         }
         return null;
       };
@@ -10683,8 +10683,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.Recommendation} Recommendation
        */
       Recommendation.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.Recommendation) return object;
-        let message = new $root.legal.api.Recommendation();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.Recommendation();
         if (object.title != null) message.title = String(object.title);
         if (object.description != null) message.description = String(object.description);
         switch (object.type) {
@@ -10750,7 +10750,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.Recommendation
        * @static
        * @param {legal.api.Recommendation} message Recommendation
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       Recommendation.toObject = function toObject(message, options) {
@@ -10769,16 +10769,16 @@ export const legal = ($root.legal = (() => {
         if (message.type != null && message.hasOwnProperty('type'))
           object.type =
             options.enums === String
-              ? $root.legal.api.RecommendationType[message.type] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.RecommendationType[message.type] === undefined
                 ? message.type
-                : $root.legal.api.RecommendationType[message.type]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.RecommendationType[message.type]
               : message.type;
         if (message.priority != null && message.hasOwnProperty('priority'))
           object.priority =
             options.enums === String
-              ? $root.legal.api.ActionPriority[message.priority] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionPriority[message.priority] === undefined
                 ? message.priority
-                : $root.legal.api.ActionPriority[message.priority]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.ActionPriority[message.priority]
               : message.priority;
         if (message.steps && message.steps.length) {
           object.steps = [];
@@ -10795,7 +10795,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       Recommendation.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -10892,11 +10892,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckRequest
        * @static
        * @param {legal.api.IHealthCheckRequest} message HealthCheckRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       HealthCheckRequest.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.service != null && Object.hasOwnProperty.call(message, 'service'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.service);
         if (message.includeDetails != null && Object.hasOwnProperty.call(message, 'includeDetails'))
@@ -10910,8 +10910,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckRequest
        * @static
        * @param {legal.api.IHealthCheckRequest} message HealthCheckRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       HealthCheckRequest.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -10922,16 +10922,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.HealthCheckRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.HealthCheckRequest} HealthCheckRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       HealthCheckRequest.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.HealthCheckRequest();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.HealthCheckRequest();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -10957,13 +10957,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.HealthCheckRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.HealthCheckRequest} HealthCheckRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       HealthCheckRequest.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -10978,7 +10978,7 @@ export const legal = ($root.legal = (() => {
       HealthCheckRequest.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.service != null && message.hasOwnProperty('service'))
-          if (!$util.isString(message.service)) return 'service: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.service)) return 'service: string expected';
         if (message.includeDetails != null && message.hasOwnProperty('includeDetails'))
           if (typeof message.includeDetails !== 'boolean')
             return 'includeDetails: boolean expected';
@@ -10994,8 +10994,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.HealthCheckRequest} HealthCheckRequest
        */
       HealthCheckRequest.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.HealthCheckRequest) return object;
-        let message = new $root.legal.api.HealthCheckRequest();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.HealthCheckRequest) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.HealthCheckRequest();
         if (object.service != null) message.service = String(object.service);
         if (object.includeDetails != null) message.includeDetails = Boolean(object.includeDetails);
         return message;
@@ -11007,7 +11007,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckRequest
        * @static
        * @param {legal.api.HealthCheckRequest} message HealthCheckRequest
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       HealthCheckRequest.toObject = function toObject(message, options) {
@@ -11032,7 +11032,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       HealthCheckRequest.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -11102,7 +11102,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckResponse
        * @instance
        */
-      HealthCheckResponse.prototype.details = $util.emptyObject;
+      HealthCheckResponse.prototype.details = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyObject;
 
       /**
        * HealthCheckResponse timestamp.
@@ -11138,11 +11138,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckResponse
        * @static
        * @param {legal.api.IHealthCheckResponse} message HealthCheckResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       HealthCheckResponse.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.healthy != null && Object.hasOwnProperty.call(message, 'healthy'))
           writer.uint32(/* id 1, wireType 0 =*/ 8).bool(message.healthy);
         if (message.status != null && Object.hasOwnProperty.call(message, 'status'))
@@ -11158,7 +11158,7 @@ export const legal = ($root.legal = (() => {
               .string(message.details[keys[i]])
               .ldelim();
         if (message.timestamp != null && Object.hasOwnProperty.call(message, 'timestamp'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.timestamp,
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
           ).ldelim();
@@ -11173,8 +11173,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckResponse
        * @static
        * @param {legal.api.IHealthCheckResponse} message HealthCheckResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       HealthCheckResponse.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -11185,16 +11185,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.HealthCheckResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.HealthCheckResponse} HealthCheckResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       HealthCheckResponse.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.HealthCheckResponse(),
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.HealthCheckResponse(),
           key,
           value;
         while (reader.pos < end) {
@@ -11210,7 +11210,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 3: {
-              if (message.details === $util.emptyObject) message.details = {};
+              if (message.details === $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyObject) message.details = {};
               let end2 = reader.uint32() + reader.pos;
               key = '';
               value = '';
@@ -11232,7 +11232,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 4: {
-              message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.timestamp = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 5: {
@@ -11252,13 +11252,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.HealthCheckResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.HealthCheckResponse} HealthCheckResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       HealthCheckResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -11275,20 +11275,20 @@ export const legal = ($root.legal = (() => {
         if (message.healthy != null && message.hasOwnProperty('healthy'))
           if (typeof message.healthy !== 'boolean') return 'healthy: boolean expected';
         if (message.status != null && message.hasOwnProperty('status'))
-          if (!$util.isString(message.status)) return 'status: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.status)) return 'status: string expected';
         if (message.details != null && message.hasOwnProperty('details')) {
-          if (!$util.isObject(message.details)) return 'details: object expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isObject(message.details)) return 'details: object expected';
           let key = Object.keys(message.details);
           for (let i = 0; i < key.length; ++i)
-            if (!$util.isString(message.details[key[i]]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.details[key[i]]))
               return 'details: string{k:string} expected';
         }
         if (message.timestamp != null && message.hasOwnProperty('timestamp')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.timestamp);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.timestamp);
           if (error) return 'timestamp.' + error;
         }
         if (message.version != null && message.hasOwnProperty('version'))
-          if (!$util.isString(message.version)) return 'version: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.version)) return 'version: string expected';
         return null;
       };
 
@@ -11301,8 +11301,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.HealthCheckResponse} HealthCheckResponse
        */
       HealthCheckResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.HealthCheckResponse) return object;
-        let message = new $root.legal.api.HealthCheckResponse();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.HealthCheckResponse) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.HealthCheckResponse();
         if (object.healthy != null) message.healthy = Boolean(object.healthy);
         if (object.status != null) message.status = String(object.status);
         if (object.details) {
@@ -11315,7 +11315,7 @@ export const legal = ($root.legal = (() => {
         if (object.timestamp != null) {
           if (typeof object.timestamp !== 'object')
             throw TypeError('.legal.api.HealthCheckResponse.timestamp: object expected');
-          message.timestamp = $root.google.protobuf.Timestamp.fromObject(object.timestamp);
+          message.timestamp = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.timestamp);
         }
         if (object.version != null) message.version = String(object.version);
         return message;
@@ -11327,7 +11327,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.HealthCheckResponse
        * @static
        * @param {legal.api.HealthCheckResponse} message HealthCheckResponse
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       HealthCheckResponse.toObject = function toObject(message, options) {
@@ -11351,7 +11351,7 @@ export const legal = ($root.legal = (() => {
             object.details[keys2[j]] = message.details[keys2[j]];
         }
         if (message.timestamp != null && message.hasOwnProperty('timestamp'))
-          object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
+          object.timestamp = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.timestamp, options);
         if (message.version != null && message.hasOwnProperty('version'))
           object.version = message.version;
         return object;
@@ -11365,7 +11365,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       HealthCheckResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -11460,7 +11460,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SystemStatus
        * @instance
        */
-      SystemStatus.prototype.requestsPerMinute = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+      SystemStatus.prototype.requestsPerMinute = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromBits(0, 0, false) : 0;
 
       /**
        * SystemStatus lastUpdated.
@@ -11488,11 +11488,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SystemStatus
        * @static
        * @param {legal.api.ISystemStatus} message SystemStatus message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SystemStatus.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.serviceName != null && Object.hasOwnProperty.call(message, 'serviceName'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.serviceName);
         if (message.operational != null && Object.hasOwnProperty.call(message, 'operational'))
@@ -11512,7 +11512,7 @@ export const legal = ($root.legal = (() => {
         )
           writer.uint32(/* id 6, wireType 0 =*/ 48).int64(message.requestsPerMinute);
         if (message.lastUpdated != null && Object.hasOwnProperty.call(message, 'lastUpdated'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.lastUpdated,
             writer.uint32(/* id 7, wireType 2 =*/ 58).fork()
           ).ldelim();
@@ -11525,8 +11525,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SystemStatus
        * @static
        * @param {legal.api.ISystemStatus} message SystemStatus message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       SystemStatus.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -11537,16 +11537,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.SystemStatus
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.SystemStatus} SystemStatus
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SystemStatus.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.SystemStatus();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SystemStatus();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -11576,7 +11576,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 7: {
-              message.lastUpdated = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.lastUpdated = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             default:
@@ -11592,13 +11592,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.SystemStatus
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.SystemStatus} SystemStatus
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       SystemStatus.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -11613,7 +11613,7 @@ export const legal = ($root.legal = (() => {
       SystemStatus.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.serviceName != null && message.hasOwnProperty('serviceName'))
-          if (!$util.isString(message.serviceName)) return 'serviceName: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.serviceName)) return 'serviceName: string expected';
         if (message.operational != null && message.hasOwnProperty('operational'))
           if (typeof message.operational !== 'boolean') return 'operational: boolean expected';
         if (message.cpuUsage != null && message.hasOwnProperty('cpuUsage'))
@@ -11621,20 +11621,20 @@ export const legal = ($root.legal = (() => {
         if (message.memoryUsage != null && message.hasOwnProperty('memoryUsage'))
           if (typeof message.memoryUsage !== 'number') return 'memoryUsage: number expected';
         if (message.activeConnections != null && message.hasOwnProperty('activeConnections'))
-          if (!$util.isInteger(message.activeConnections))
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.activeConnections))
             return 'activeConnections: integer expected';
         if (message.requestsPerMinute != null && message.hasOwnProperty('requestsPerMinute'))
           if (
-            !$util.isInteger(message.requestsPerMinute) &&
+            !$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.requestsPerMinute) &&
             !(
               message.requestsPerMinute &&
-              $util.isInteger(message.requestsPerMinute.low) &&
-              $util.isInteger(message.requestsPerMinute.high)
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.requestsPerMinute.low) &&
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.requestsPerMinute.high)
             )
           )
             return 'requestsPerMinute: integer|Long expected';
         if (message.lastUpdated != null && message.hasOwnProperty('lastUpdated')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.lastUpdated);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.lastUpdated);
           if (error) return 'lastUpdated.' + error;
         }
         return null;
@@ -11649,8 +11649,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.SystemStatus} SystemStatus
        */
       SystemStatus.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.SystemStatus) return object;
-        let message = new $root.legal.api.SystemStatus();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SystemStatus) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.SystemStatus();
         if (object.serviceName != null) message.serviceName = String(object.serviceName);
         if (object.operational != null) message.operational = Boolean(object.operational);
         if (object.cpuUsage != null) message.cpuUsage = Number(object.cpuUsage);
@@ -11658,22 +11658,22 @@ export const legal = ($root.legal = (() => {
         if (object.activeConnections != null)
           message.activeConnections = object.activeConnections | 0;
         if (object.requestsPerMinute != null)
-          if ($util.Long)
-            (message.requestsPerMinute = $util.Long.fromValue(object.requestsPerMinute)).unsigned =
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long)
+            (message.requestsPerMinute = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromValue(object.requestsPerMinute)).unsigned =
               false;
           else if (typeof object.requestsPerMinute === 'string')
             message.requestsPerMinute = parseInt(object.requestsPerMinute, 10);
           else if (typeof object.requestsPerMinute === 'number')
             message.requestsPerMinute = object.requestsPerMinute;
           else if (typeof object.requestsPerMinute === 'object')
-            message.requestsPerMinute = new $util.LongBits(
+            message.requestsPerMinute = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
               object.requestsPerMinute.low >>> 0,
               object.requestsPerMinute.high >>> 0
             ).toNumber();
         if (object.lastUpdated != null) {
           if (typeof object.lastUpdated !== 'object')
             throw TypeError('.legal.api.SystemStatus.lastUpdated: object expected');
-          message.lastUpdated = $root.google.protobuf.Timestamp.fromObject(object.lastUpdated);
+          message.lastUpdated = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.lastUpdated);
         }
         return message;
       };
@@ -11684,7 +11684,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.SystemStatus
        * @static
        * @param {legal.api.SystemStatus} message SystemStatus
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       SystemStatus.toObject = function toObject(message, options) {
@@ -11696,8 +11696,8 @@ export const legal = ($root.legal = (() => {
           object.cpuUsage = 0;
           object.memoryUsage = 0;
           object.activeConnections = 0;
-          if ($util.Long) {
-            let long = new $util.Long(0, 0, false);
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long) {
+            let long = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long(0, 0, false);
             object.requestsPerMinute =
               options.longs === String
                 ? long.toString()
@@ -11732,15 +11732,15 @@ export const legal = ($root.legal = (() => {
           else
             object.requestsPerMinute =
               options.longs === String
-                ? $util.Long.prototype.toString.call(message.requestsPerMinute)
+                ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.prototype.toString.call(message.requestsPerMinute)
                 : options.longs === Number
-                  ? new $util.LongBits(
+                  ? new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
                       message.requestsPerMinute.low >>> 0,
                       message.requestsPerMinute.high >>> 0
                     ).toNumber()
                   : message.requestsPerMinute;
         if (message.lastUpdated != null && message.hasOwnProperty('lastUpdated'))
-          object.lastUpdated = $root.google.protobuf.Timestamp.toObject(
+          object.lastUpdated = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(
             message.lastUpdated,
             options
           );
@@ -11755,7 +11755,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       SystemStatus.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -11816,7 +11816,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchRequest
        * @instance
        */
-      BatchRequest.prototype.operations = $util.emptyArray;
+      BatchRequest.prototype.operations = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * BatchRequest options.
@@ -11852,21 +11852,21 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchRequest
        * @static
        * @param {legal.api.IBatchRequest} message BatchRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchRequest.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.batchId != null && Object.hasOwnProperty.call(message, 'batchId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.batchId);
         if (message.operations != null && message.operations.length)
           for (let i = 0; i < message.operations.length; ++i)
-            $root.legal.api.BatchOperation.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation.encode(
               message.operations[i],
               writer.uint32(/* id 2, wireType 2 =*/ 18).fork()
             ).ldelim();
         if (message.options != null && Object.hasOwnProperty.call(message, 'options'))
-          $root.legal.api.BatchOptions.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions.encode(
             message.options,
             writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
           ).ldelim();
@@ -11881,8 +11881,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchRequest
        * @static
        * @param {legal.api.IBatchRequest} message BatchRequest message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchRequest.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -11893,16 +11893,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.BatchRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.BatchRequest} BatchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchRequest.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.BatchRequest();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchRequest();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -11914,12 +11914,12 @@ export const legal = ($root.legal = (() => {
             case 2: {
               if (!(message.operations && message.operations.length)) message.operations = [];
               message.operations.push(
-                $root.legal.api.BatchOperation.decode(reader, reader.uint32())
+                $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation.decode(reader, reader.uint32())
               );
               break;
             }
             case 3: {
-              message.options = $root.legal.api.BatchOptions.decode(reader, reader.uint32());
+              message.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions.decode(reader, reader.uint32());
               break;
             }
             case 4: {
@@ -11939,13 +11939,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.BatchRequest
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.BatchRequest} BatchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchRequest.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -11960,20 +11960,20 @@ export const legal = ($root.legal = (() => {
       BatchRequest.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.batchId != null && message.hasOwnProperty('batchId'))
-          if (!$util.isString(message.batchId)) return 'batchId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.batchId)) return 'batchId: string expected';
         if (message.operations != null && message.hasOwnProperty('operations')) {
           if (!Array.isArray(message.operations)) return 'operations: array expected';
           for (let i = 0; i < message.operations.length; ++i) {
-            let error = $root.legal.api.BatchOperation.verify(message.operations[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation.verify(message.operations[i]);
             if (error) return 'operations.' + error;
           }
         }
         if (message.options != null && message.hasOwnProperty('options')) {
-          let error = $root.legal.api.BatchOptions.verify(message.options);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions.verify(message.options);
           if (error) return 'options.' + error;
         }
         if (message.userId != null && message.hasOwnProperty('userId'))
-          if (!$util.isString(message.userId)) return 'userId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.userId)) return 'userId: string expected';
         return null;
       };
 
@@ -11986,8 +11986,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.BatchRequest} BatchRequest
        */
       BatchRequest.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.BatchRequest) return object;
-        let message = new $root.legal.api.BatchRequest();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchRequest) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchRequest();
         if (object.batchId != null) message.batchId = String(object.batchId);
         if (object.operations) {
           if (!Array.isArray(object.operations))
@@ -11996,13 +11996,13 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.operations.length; ++i) {
             if (typeof object.operations[i] !== 'object')
               throw TypeError('.legal.api.BatchRequest.operations: object expected');
-            message.operations[i] = $root.legal.api.BatchOperation.fromObject(object.operations[i]);
+            message.operations[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation.fromObject(object.operations[i]);
           }
         }
         if (object.options != null) {
           if (typeof object.options !== 'object')
             throw TypeError('.legal.api.BatchRequest.options: object expected');
-          message.options = $root.legal.api.BatchOptions.fromObject(object.options);
+          message.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions.fromObject(object.options);
         }
         if (object.userId != null) message.userId = String(object.userId);
         return message;
@@ -12014,7 +12014,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchRequest
        * @static
        * @param {legal.api.BatchRequest} message BatchRequest
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       BatchRequest.toObject = function toObject(message, options) {
@@ -12031,13 +12031,13 @@ export const legal = ($root.legal = (() => {
         if (message.operations && message.operations.length) {
           object.operations = [];
           for (let j = 0; j < message.operations.length; ++j)
-            object.operations[j] = $root.legal.api.BatchOperation.toObject(
+            object.operations[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation.toObject(
               message.operations[j],
               options
             );
         }
         if (message.options != null && message.hasOwnProperty('options'))
-          object.options = $root.legal.api.BatchOptions.toObject(message.options, options);
+          object.options = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions.toObject(message.options, options);
         if (message.userId != null && message.hasOwnProperty('userId'))
           object.userId = message.userId;
         return object;
@@ -12051,7 +12051,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       BatchRequest.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -12119,7 +12119,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOperation
        * @instance
        */
-      BatchOperation.prototype.parameters = $util.emptyObject;
+      BatchOperation.prototype.parameters = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyObject;
 
       /**
        * Creates a new BatchOperation instance using the specified properties.
@@ -12139,11 +12139,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOperation
        * @static
        * @param {legal.api.IBatchOperation} message BatchOperation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchOperation.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.operationId != null && Object.hasOwnProperty.call(message, 'operationId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.operationId);
         if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
@@ -12167,8 +12167,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOperation
        * @static
        * @param {legal.api.IBatchOperation} message BatchOperation message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchOperation.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -12179,16 +12179,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.BatchOperation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.BatchOperation} BatchOperation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchOperation.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.BatchOperation(),
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation(),
           key,
           value;
         while (reader.pos < end) {
@@ -12204,7 +12204,7 @@ export const legal = ($root.legal = (() => {
               break;
             }
             case 3: {
-              if (message.parameters === $util.emptyObject) message.parameters = {};
+              if (message.parameters === $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyObject) message.parameters = {};
               let end2 = reader.uint32() + reader.pos;
               key = '';
               value = '';
@@ -12238,13 +12238,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.BatchOperation
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.BatchOperation} BatchOperation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchOperation.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -12259,14 +12259,14 @@ export const legal = ($root.legal = (() => {
       BatchOperation.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.operationId != null && message.hasOwnProperty('operationId'))
-          if (!$util.isString(message.operationId)) return 'operationId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.operationId)) return 'operationId: string expected';
         if (message.type != null && message.hasOwnProperty('type'))
-          if (!$util.isString(message.type)) return 'type: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.type)) return 'type: string expected';
         if (message.parameters != null && message.hasOwnProperty('parameters')) {
-          if (!$util.isObject(message.parameters)) return 'parameters: object expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isObject(message.parameters)) return 'parameters: object expected';
           let key = Object.keys(message.parameters);
           for (let i = 0; i < key.length; ++i)
-            if (!$util.isString(message.parameters[key[i]]))
+            if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.parameters[key[i]]))
               return 'parameters: string{k:string} expected';
         }
         return null;
@@ -12281,8 +12281,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.BatchOperation} BatchOperation
        */
       BatchOperation.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.BatchOperation) return object;
-        let message = new $root.legal.api.BatchOperation();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOperation();
         if (object.operationId != null) message.operationId = String(object.operationId);
         if (object.type != null) message.type = String(object.type);
         if (object.parameters) {
@@ -12301,7 +12301,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOperation
        * @static
        * @param {legal.api.BatchOperation} message BatchOperation
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       BatchOperation.toObject = function toObject(message, options) {
@@ -12332,7 +12332,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       BatchOperation.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -12428,11 +12428,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOptions
        * @static
        * @param {legal.api.IBatchOptions} message BatchOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchOptions.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (
           message.parallelExecution != null &&
           Object.hasOwnProperty.call(message, 'parallelExecution')
@@ -12456,8 +12456,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOptions
        * @static
        * @param {legal.api.IBatchOptions} message BatchOptions message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchOptions.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -12468,16 +12468,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.BatchOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.BatchOptions} BatchOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchOptions.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.BatchOptions();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -12511,13 +12511,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.BatchOptions
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.BatchOptions} BatchOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchOptions.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -12535,9 +12535,9 @@ export const legal = ($root.legal = (() => {
           if (typeof message.parallelExecution !== 'boolean')
             return 'parallelExecution: boolean expected';
         if (message.maxConcurrency != null && message.hasOwnProperty('maxConcurrency'))
-          if (!$util.isInteger(message.maxConcurrency)) return 'maxConcurrency: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.maxConcurrency)) return 'maxConcurrency: integer expected';
         if (message.timeoutSeconds != null && message.hasOwnProperty('timeoutSeconds'))
-          if (!$util.isInteger(message.timeoutSeconds)) return 'timeoutSeconds: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.timeoutSeconds)) return 'timeoutSeconds: integer expected';
         if (message.continueOnError != null && message.hasOwnProperty('continueOnError'))
           if (typeof message.continueOnError !== 'boolean')
             return 'continueOnError: boolean expected';
@@ -12553,8 +12553,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.BatchOptions} BatchOptions
        */
       BatchOptions.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.BatchOptions) return object;
-        let message = new $root.legal.api.BatchOptions();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchOptions();
         if (object.parallelExecution != null)
           message.parallelExecution = Boolean(object.parallelExecution);
         if (object.maxConcurrency != null) message.maxConcurrency = object.maxConcurrency | 0;
@@ -12570,7 +12570,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchOptions
        * @static
        * @param {legal.api.BatchOptions} message BatchOptions
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       BatchOptions.toObject = function toObject(message, options) {
@@ -12601,7 +12601,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       BatchOptions.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -12672,7 +12672,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResponse
        * @instance
        */
-      BatchResponse.prototype.results = $util.emptyArray;
+      BatchResponse.prototype.results = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.emptyArray;
 
       /**
        * BatchResponse startedAt.
@@ -12716,28 +12716,28 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResponse
        * @static
        * @param {legal.api.IBatchResponse} message BatchResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchResponse.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.batchId != null && Object.hasOwnProperty.call(message, 'batchId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.batchId);
         if (message.status != null && Object.hasOwnProperty.call(message, 'status'))
           writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.status);
         if (message.results != null && message.results.length)
           for (let i = 0; i < message.results.length; ++i)
-            $root.legal.api.BatchResult.encode(
+            $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult.encode(
               message.results[i],
               writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
             ).ldelim();
         if (message.startedAt != null && Object.hasOwnProperty.call(message, 'startedAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.startedAt,
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
           ).ldelim();
         if (message.completedAt != null && Object.hasOwnProperty.call(message, 'completedAt'))
-          $root.google.protobuf.Timestamp.encode(
+          $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.encode(
             message.completedAt,
             writer.uint32(/* id 5, wireType 2 =*/ 42).fork()
           ).ldelim();
@@ -12752,8 +12752,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResponse
        * @static
        * @param {legal.api.IBatchResponse} message BatchResponse message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchResponse.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -12764,16 +12764,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.BatchResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.BatchResponse} BatchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchResponse.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.BatchResponse();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResponse();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -12788,15 +12788,15 @@ export const legal = ($root.legal = (() => {
             }
             case 3: {
               if (!(message.results && message.results.length)) message.results = [];
-              message.results.push($root.legal.api.BatchResult.decode(reader, reader.uint32()));
+              message.results.push($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult.decode(reader, reader.uint32()));
               break;
             }
             case 4: {
-              message.startedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.startedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 5: {
-              message.completedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+              message.completedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.decode(reader, reader.uint32());
               break;
             }
             case 6: {
@@ -12816,13 +12816,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.BatchResponse
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.BatchResponse} BatchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -12837,7 +12837,7 @@ export const legal = ($root.legal = (() => {
       BatchResponse.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.batchId != null && message.hasOwnProperty('batchId'))
-          if (!$util.isString(message.batchId)) return 'batchId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.batchId)) return 'batchId: string expected';
         if (message.status != null && message.hasOwnProperty('status'))
           switch (message.status) {
             default:
@@ -12852,20 +12852,20 @@ export const legal = ($root.legal = (() => {
         if (message.results != null && message.hasOwnProperty('results')) {
           if (!Array.isArray(message.results)) return 'results: array expected';
           for (let i = 0; i < message.results.length; ++i) {
-            let error = $root.legal.api.BatchResult.verify(message.results[i]);
+            let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult.verify(message.results[i]);
             if (error) return 'results.' + error;
           }
         }
         if (message.startedAt != null && message.hasOwnProperty('startedAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.startedAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.startedAt);
           if (error) return 'startedAt.' + error;
         }
         if (message.completedAt != null && message.hasOwnProperty('completedAt')) {
-          let error = $root.google.protobuf.Timestamp.verify(message.completedAt);
+          let error = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.verify(message.completedAt);
           if (error) return 'completedAt.' + error;
         }
         if (message.errorMessage != null && message.hasOwnProperty('errorMessage'))
-          if (!$util.isString(message.errorMessage)) return 'errorMessage: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.errorMessage)) return 'errorMessage: string expected';
         return null;
       };
 
@@ -12878,8 +12878,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.BatchResponse} BatchResponse
        */
       BatchResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.BatchResponse) return object;
-        let message = new $root.legal.api.BatchResponse();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResponse) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResponse();
         if (object.batchId != null) message.batchId = String(object.batchId);
         switch (object.status) {
           default:
@@ -12916,18 +12916,18 @@ export const legal = ($root.legal = (() => {
           for (let i = 0; i < object.results.length; ++i) {
             if (typeof object.results[i] !== 'object')
               throw TypeError('.legal.api.BatchResponse.results: object expected');
-            message.results[i] = $root.legal.api.BatchResult.fromObject(object.results[i]);
+            message.results[i] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult.fromObject(object.results[i]);
           }
         }
         if (object.startedAt != null) {
           if (typeof object.startedAt !== 'object')
             throw TypeError('.legal.api.BatchResponse.startedAt: object expected');
-          message.startedAt = $root.google.protobuf.Timestamp.fromObject(object.startedAt);
+          message.startedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.startedAt);
         }
         if (object.completedAt != null) {
           if (typeof object.completedAt !== 'object')
             throw TypeError('.legal.api.BatchResponse.completedAt: object expected');
-          message.completedAt = $root.google.protobuf.Timestamp.fromObject(object.completedAt);
+          message.completedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.fromObject(object.completedAt);
         }
         if (object.errorMessage != null) message.errorMessage = String(object.errorMessage);
         return message;
@@ -12939,7 +12939,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResponse
        * @static
        * @param {legal.api.BatchResponse} message BatchResponse
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       BatchResponse.toObject = function toObject(message, options) {
@@ -12958,19 +12958,19 @@ export const legal = ($root.legal = (() => {
         if (message.status != null && message.hasOwnProperty('status'))
           object.status =
             options.enums === String
-              ? $root.legal.api.BatchStatus[message.status] === undefined
+              ? $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchStatus[message.status] === undefined
                 ? message.status
-                : $root.legal.api.BatchStatus[message.status]
+                : $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchStatus[message.status]
               : message.status;
         if (message.results && message.results.length) {
           object.results = [];
           for (let j = 0; j < message.results.length; ++j)
-            object.results[j] = $root.legal.api.BatchResult.toObject(message.results[j], options);
+            object.results[j] = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult.toObject(message.results[j], options);
         }
         if (message.startedAt != null && message.hasOwnProperty('startedAt'))
-          object.startedAt = $root.google.protobuf.Timestamp.toObject(message.startedAt, options);
+          object.startedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(message.startedAt, options);
         if (message.completedAt != null && message.hasOwnProperty('completedAt'))
-          object.completedAt = $root.google.protobuf.Timestamp.toObject(
+          object.completedAt = $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp.toObject(
             message.completedAt,
             options
           );
@@ -12987,7 +12987,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       BatchResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -13113,11 +13113,11 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResult
        * @static
        * @param {legal.api.IBatchResult} message BatchResult message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchResult.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.operationId != null && Object.hasOwnProperty.call(message, 'operationId'))
           writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.operationId);
         if (message.success != null && Object.hasOwnProperty.call(message, 'success'))
@@ -13140,8 +13140,8 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResult
        * @static
        * @param {legal.api.IBatchResult} message BatchResult message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       BatchResult.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -13152,16 +13152,16 @@ export const legal = ($root.legal = (() => {
        * @function decode
        * @memberof legal.api.BatchResult
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {legal.api.BatchResult} BatchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchResult.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.legal.api.BatchResult();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -13199,13 +13199,13 @@ export const legal = ($root.legal = (() => {
        * @function decodeDelimited
        * @memberof legal.api.BatchResult
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {legal.api.BatchResult} BatchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       BatchResult.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -13220,13 +13220,13 @@ export const legal = ($root.legal = (() => {
       BatchResult.verify = function verify(message) {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.operationId != null && message.hasOwnProperty('operationId'))
-          if (!$util.isString(message.operationId)) return 'operationId: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.operationId)) return 'operationId: string expected';
         if (message.success != null && message.hasOwnProperty('success'))
           if (typeof message.success !== 'boolean') return 'success: boolean expected';
         if (message.resultData != null && message.hasOwnProperty('resultData'))
-          if (!$util.isString(message.resultData)) return 'resultData: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.resultData)) return 'resultData: string expected';
         if (message.errorMessage != null && message.hasOwnProperty('errorMessage'))
-          if (!$util.isString(message.errorMessage)) return 'errorMessage: string expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isString(message.errorMessage)) return 'errorMessage: string expected';
         if (message.processingTimeMs != null && message.hasOwnProperty('processingTimeMs'))
           if (typeof message.processingTimeMs !== 'number')
             return 'processingTimeMs: number expected';
@@ -13242,8 +13242,8 @@ export const legal = ($root.legal = (() => {
        * @returns {legal.api.BatchResult} BatchResult
        */
       BatchResult.fromObject = function fromObject(object) {
-        if (object instanceof $root.legal.api.BatchResult) return object;
-        let message = new $root.legal.api.BatchResult();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.legal.api.BatchResult();
         if (object.operationId != null) message.operationId = String(object.operationId);
         if (object.success != null) message.success = Boolean(object.success);
         if (object.resultData != null) message.resultData = String(object.resultData);
@@ -13259,7 +13259,7 @@ export const legal = ($root.legal = (() => {
        * @memberof legal.api.BatchResult
        * @static
        * @param {legal.api.BatchResult} message BatchResult
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       BatchResult.toObject = function toObject(message, options) {
@@ -13296,7 +13296,7 @@ export const legal = ($root.legal = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       BatchResult.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -13323,7 +13323,7 @@ export const legal = ($root.legal = (() => {
   return legal;
 })());
 
-export const google = ($root.google = (() => {
+export const google = ($root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google = (() => {
   /**
    * Namespace google.
    * @exports google
@@ -13368,7 +13368,7 @@ export const google = ($root.google = (() => {
        * @memberof google.protobuf.Timestamp
        * @instance
        */
-      Timestamp.prototype.seconds = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+      Timestamp.prototype.seconds = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromBits(0, 0, false) : 0;
 
       /**
        * Timestamp nanos.
@@ -13396,11 +13396,11 @@ export const google = ($root.google = (() => {
        * @memberof google.protobuf.Timestamp
        * @static
        * @param {google.protobuf.ITimestamp} message Timestamp message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Timestamp.encode = function encode(message, writer) {
-        if (!writer) writer = $Writer.create();
+        if (!writer) writer = $Writer // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create();
         if (message.seconds != null && Object.hasOwnProperty.call(message, 'seconds'))
           writer.uint32(/* id 1, wireType 0 =*/ 8).int64(message.seconds);
         if (message.nanos != null && Object.hasOwnProperty.call(message, 'nanos'))
@@ -13414,8 +13414,8 @@ export const google = ($root.google = (() => {
        * @memberof google.protobuf.Timestamp
        * @static
        * @param {google.protobuf.ITimestamp} message Timestamp message or plain object to encode
-       * @param {$protobuf.Writer} [writer] Writer to encode to
-       * @returns {$protobuf.Writer} Writer
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} [writer] Writer to encode to
+       * @returns {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer} Writer
        */
       Timestamp.encodeDelimited = function encodeDelimited(message, writer) {
         return this.encode(message, writer).ldelim();
@@ -13426,16 +13426,16 @@ export const google = ($root.google = (() => {
        * @function decode
        * @memberof google.protobuf.Timestamp
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @param {number} [length] Message length if known beforehand
        * @returns {google.protobuf.Timestamp} Timestamp
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Timestamp.decode = function decode(reader, length, error) {
-        if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.create(reader);
         let end = length === undefined ? reader.len : reader.pos + length,
-          message = new $root.google.protobuf.Timestamp();
+          message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp();
         while (reader.pos < end) {
           let tag = reader.uint32();
           if (tag === error) break;
@@ -13461,13 +13461,13 @@ export const google = ($root.google = (() => {
        * @function decodeDelimited
        * @memberof google.protobuf.Timestamp
        * @static
-       * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader|Uint8Array} reader Reader or buffer to decode from
        * @returns {google.protobuf.Timestamp} Timestamp
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
        */
       Timestamp.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+        if (!(reader instanceof $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)) reader = new $Reader // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(reader);
         return this.decode(reader, reader.uint32());
       };
 
@@ -13483,16 +13483,16 @@ export const google = ($root.google = (() => {
         if (typeof message !== 'object' || message === null) return 'object expected';
         if (message.seconds != null && message.hasOwnProperty('seconds'))
           if (
-            !$util.isInteger(message.seconds) &&
+            !$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.seconds) &&
             !(
               message.seconds &&
-              $util.isInteger(message.seconds.low) &&
-              $util.isInteger(message.seconds.high)
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.seconds.low) &&
+              $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.seconds.high)
             )
           )
             return 'seconds: integer|Long expected';
         if (message.nanos != null && message.hasOwnProperty('nanos'))
-          if (!$util.isInteger(message.nanos)) return 'nanos: integer expected';
+          if (!$util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.isInteger(message.nanos)) return 'nanos: integer expected';
         return null;
       };
 
@@ -13505,15 +13505,15 @@ export const google = ($root.google = (() => {
        * @returns {google.protobuf.Timestamp} Timestamp
        */
       Timestamp.fromObject = function fromObject(object) {
-        if (object instanceof $root.google.protobuf.Timestamp) return object;
-        let message = new $root.google.protobuf.Timestamp();
+        if (object instanceof $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp) return object;
+        let message = new $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.google.protobuf.Timestamp();
         if (object.seconds != null)
-          if ($util.Long) (message.seconds = $util.Long.fromValue(object.seconds)).unsigned = false;
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long) (message.seconds = $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.fromValue(object.seconds)).unsigned = false;
           else if (typeof object.seconds === 'string')
             message.seconds = parseInt(object.seconds, 10);
           else if (typeof object.seconds === 'number') message.seconds = object.seconds;
           else if (typeof object.seconds === 'object')
-            message.seconds = new $util.LongBits(
+            message.seconds = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
               object.seconds.low >>> 0,
               object.seconds.high >>> 0
             ).toNumber();
@@ -13527,15 +13527,15 @@ export const google = ($root.google = (() => {
        * @memberof google.protobuf.Timestamp
        * @static
        * @param {google.protobuf.Timestamp} message Timestamp
-       * @param {$protobuf.IConversionOptions} [options] Conversion options
+       * @param {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions} [options] Conversion options
        * @returns {Object.<string,*>} Plain object
        */
       Timestamp.toObject = function toObject(message, options) {
         if (!options) options = {};
         let object = {};
         if (options.defaults) {
-          if ($util.Long) {
-            let long = new $util.Long(0, 0, false);
+          if ($util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long) {
+            let long = new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long(0, 0, false);
             object.seconds =
               options.longs === String
                 ? long.toString()
@@ -13551,9 +13551,9 @@ export const google = ($root.google = (() => {
           else
             object.seconds =
               options.longs === String
-                ? $util.Long.prototype.toString.call(message.seconds)
+                ? $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Long.prototype.toString.call(message.seconds)
                 : options.longs === Number
-                  ? new $util.LongBits(
+                  ? new $util // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.LongBits(
                       message.seconds.low >>> 0,
                       message.seconds.high >>> 0
                     ).toNumber()
@@ -13570,7 +13570,7 @@ export const google = ($root.google = (() => {
        * @returns {Object.<string,*>} JSON object
        */
       Timestamp.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        return this.constructor.toObject(this, $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.toJSONOptions);
       };
 
       /**
@@ -13597,4 +13597,4 @@ export const google = ($root.google = (() => {
   return google;
 })());
 
-export { $root as default };
+export { $root // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 as default };

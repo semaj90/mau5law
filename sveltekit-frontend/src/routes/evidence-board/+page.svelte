@@ -19,25 +19,25 @@
     type: string;
   }
 
-  import { page } from '$app/stores';
-  import ClientGemmaInference from '$lib/components/ClientGemmaInference.svelte';
-  import EvidenceAssistant from '$lib/components/evidence/EvidenceAssistant.svelte';
-  import EvidenceBoard from '$lib/components/evidence/EvidenceBoard.svelte';
-  import VictimStatementWizard from '$lib/components/evidence/VictimStatementWizard.svelte';
-  import Button from '$lib/components/ui/button';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import ClientGemmaInference from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ClientGemmaInference.svelte';
+  import EvidenceAssistant from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/evidence/EvidenceAssistant.svelte';
+  import EvidenceBoard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/evidence/EvidenceBoard.svelte';
+  import VictimStatementWizard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/evidence/VictimStatementWizard.svelte';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
   import { onMount } from 'svelte';
 
-  let caseId = $state('');
-  let nodes = $state<EvidenceNode[]>([]);
-  let connections = $state<EvidenceConnection[]>([]);
-  let showAssistant = $state(false);
-  let selectedNode = $state<EvidenceNode | null>(null);
-  let showVictimWizard = $state(false);
-  let showClientInference = $state(false);
+  let caseId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let nodes = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode[]>([]);
+  let connections = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceConnection[]>([]);
+  let showAssistant = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let selectedNode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode | null>(null);
+  let showVictimWizard = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showClientInference = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 
   onMount(async () => {
     // Extract case ID from URL params
-    const urlParams = new URLSearchParams($page.url.search);
+    const urlParams = new URLSearchParams($page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.search);
     caseId = urlParams.get('caseId') || 'default-case';
 
     // Load existing evidence
@@ -121,16 +121,16 @@
   <header class="page-header">
     <h1>Evidence Board</h1>
     <div class="header-actions">
-      <Button variant="outline" on:click={addEvidenceNode}>
+      <Button variant="outline" onclick={addEvidenceNode}>
         Add Evidence
       </Button>
-      <Button variant="outline" on:click={() => showVictimWizard = true}>
+      <Button variant="outline" onclick={() => showVictimWizard = true}>
         Victim Statement
       </Button>
-      <Button variant="outline" on:click={() => showClientInference = true}>
+      <Button variant="outline" onclick={() => showClientInference = true}>
         AI Analysis
       </Button>
-      <Button variant="outline" on:click={() => loadEvidence()}>
+      <Button variant="outline" onclick={() => loadEvidence()}>
         Refresh
       </Button>
     </div>

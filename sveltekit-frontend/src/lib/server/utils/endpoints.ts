@@ -1,4 +1,4 @@
-import { env } from '$env/static/private';
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/static/private';
 
 /**
  * Centralized utility functions for retrieving service endpoints.

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   const dispatch = createEventDispatcher();
 
@@ -11,7 +11,7 @@
     timestamp?: string;
   }
 
-  let { a, b, show = false } = $props<{
+  let { a, b, show = false } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     a: EvidenceItem;
     b: EvidenceItem;
     show?: boolean;

@@ -1,4 +1,4 @@
-import type { RerankRequest } from '$lib/types';
+import type { RerankRequest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 
 // Placeholder for server-side reranking (replace with real implementation)
 export async function serverRerank(request: RerankRequest): Promise<any> {

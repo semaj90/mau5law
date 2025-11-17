@@ -1,28 +1,28 @@
 <script lang="ts">
-  import EvidenceCanvas from '$lib/ui/EvidenceCanvas.svelte'; // Corrected import path
+  import EvidenceCanvas from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ui/EvidenceCanvas.svelte'; // Corrected import path
   import { TriangleAlert as AlertTriangle, Check, FileText, Loader, Sparkles, Upload, Zap } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   // Page data from server
-  let { data }: { data: any } = $props();
-  let evidence = $derived(data?.evidence || []);
-  let caseId = $derived(data?.caseId || null);
+  let { data }: { data: any } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let evidence = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.evidence || []);
+  let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.caseId || null);
 
   // State management with Svelte 5 runes
-  let uploadFile = $state<File | null>(null);
-  let isUploading = $state(false);
-  let uploadProgress = $state(0);
-  let uploadResult = $state<any | null>(null);
-  let uploadError = $state<string | null>(null);
-  let selectedEvidenceId = $state<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null);
-  let recommendationsLoading = $state(false);
-  let recommendationsError = $state<string | null>(null);
-  let recommendations = $state<any[]>([]);
-  let aiTaggingActive = $state(false);
-  let taggedEvidenceIds = $state<string[]>([]);
+  let uploadFile = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
+  let isUploading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let uploadProgress = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0);
+  let uploadResult = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any | null>(null);
+  let uploadError = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let selectedEvidenceId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null);
+  let recommendationsLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let recommendationsError = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let recommendations = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let aiTaggingActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let taggedEvidenceIds = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
 
   // Form data
-  let formData = $state({
+  let formData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     title: '',
     description: '',
     evidenceType: 'document',
@@ -31,8 +31,8 @@
   });
 
   // Derived state
-  let canSubmit = $derived(uploadFile !== null && formData.title.length > 0 && !isUploading);
-  let fileSize = $derived(uploadFile ? formatFileSize(uploadFile.size) : null);
+  let canSubmit = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(uploadFile !== null && formData.title.length > 0 && !isUploading);
+  let fileSize = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(uploadFile ? formatFileSize(uploadFile.size) : null);
 
   // Load evidence on mount
   onMount(async () => {

@@ -7,7 +7,7 @@
     autosave?: boolean;
   }
 
-  let { value = $bindable(''), placeholder = '', caseId = '', readonly = false, autosave = false }: Props = $props();
+  let { value = $bindable // TODO: Verify store subscription is correct for Svelte 5(''), placeholder = '', caseId = '', readonly = false, autosave = false }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="nier-rich-text-editor">

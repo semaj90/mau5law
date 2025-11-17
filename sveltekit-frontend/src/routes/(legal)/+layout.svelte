@@ -1,15 +1,15 @@
 ﻿<script lang="ts">
   // Legal AI interface layout with unified navigation
-  import NavBar from '$lib/components/layout/NavBar.svelte';
-  import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePalette } from '$lib/themes/retro-console-palettes'; // Changed to named import for applyConsolePalette and type ConsolePalette
+  import NavBar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/NavBar.svelte';
+  import Sidebar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePalette } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/themes/retro-console-palettes'; // Changed to named import for applyConsolePalette and type ConsolePalette
 
   // Legal-focused console theme (green on black for legal work)
   const consolePalette: ConsolePalette = 'legal';
   applyConsolePalette(consolePalette);
 
   // Declare children as a prop for Svelte 5 runes mode
-  let { children } = $props();
+  let { children } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <svelte:head>

@@ -1,6 +1,6 @@
 <!-- YoRHa, Interface, Layout -->
 <script lang="ts">
-  import { afterNavigate, goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
   import {
     Bot,
     ChevronLeft,
@@ -95,7 +95,7 @@
   async function fetchYoRhaStatus(): Promise<any | null> {
     try {
       // Cast to any so TypeScript doesn't enforce a specific shape on the imported module.
-      const mod = (await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient').catch(
+      const mod = (await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient').catch(
         () => null
       )) as any;
       if (mod) {
@@ -195,7 +195,7 @@
       <button
         class="yorha-menu-toggle"
         aria-label="Open sidebar"
-        on:click={() => (sidebarOpen = true)}
+        onclick={() => (sidebarOpen = true)}
       >
         <Terminal size={16} />
       </button>
@@ -220,7 +220,7 @@
     </div>
   </header>
   <div class="yorha-content">
-    <!-- replace illegal $slots use with, standard, slot -->
+    <!-- replace illegal $slots // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 use with, standard, slot -->
     <main class="yorha-main">
       <slot />
     </main>
@@ -229,8 +229,8 @@
   {#if sidebarOpen}
     <div
       class="yorha-overlay"
-      on:click={closeSidebar}
-      on:keydown={handleSidebarKeydown}
+      onclick={closeSidebar}
+      onkeydown={handleSidebarKeydown}
       role="button"
       tabindex="0"
       aria-label="Close sidebar overlay"
@@ -249,8 +249,8 @@
             class="yorha-sidebar-close"
             aria-label="Close sidebar"
             tabindex="0"
-            on:click={closeSidebar}
-            on:keydown={handleSidebarKeydown}
+            onclick={closeSidebar}
+            onkeydown={handleSidebarKeydown}
           >
             <ChevronLeft size={16} />
           </button>
@@ -261,7 +261,7 @@
             <li class="yorha-nav-item">
               <button
                 class="yorha-nav-link"
-                on:click={() => navigateTo(item.path)}
+                onclick={() => navigateTo(item.path)}
                 class:yorha-nav-active={isActivePath(item.path)}
                 aria-current={isActivePath(item.path) ? 'page' : undefined}
               >

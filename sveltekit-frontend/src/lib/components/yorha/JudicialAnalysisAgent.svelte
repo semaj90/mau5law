@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   interface Evidence {
     id: string;
@@ -39,7 +39,7 @@
     summary: string;
   }
 
-  let { caseId = null, evidence = [], charges = [], jurisdiction = 'federal' } = $props<{
+  let { caseId = null, evidence = [], charges = [], jurisdiction = 'federal' } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     caseId?: string | null;
     evidence?: Evidence[];
     charges?: string[];
@@ -48,9 +48,9 @@
 
   const dispatch = createEventDispatcher();
 
-  let isAnalyzing = $state(false);
-  let analysis = $state<JudicialAnalysis | null>(null);
-  let activeTab = $state<'overview' | 'admissibility' | 'probable-cause' | 'case-strength' | 'recommendations'>('overview');
+  let isAnalyzing = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let analysis = $state // TODO: Verify store subscription is correct for Svelte 5<JudicialAnalysis | null>(null);
+  let activeTab = $state // TODO: Verify store subscription is correct for Svelte 5<'overview' | 'admissibility' | 'probable-cause' | 'case-strength' | 'recommendations'>('overview');
 
   async function performAnalysis() {
     if (evidence.length === 0) {

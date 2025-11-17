@@ -1,10 +1,10 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/client.js'; // Corrected import path for db
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js'; // Corrected import path for db
 import { sql } from 'drizzle-orm'; // Corrected import path for sql
-import { MinIOService } from '$lib/server/minio-service'; // For handling MinIO URLs
-import { embedText } from '$lib/server/services/vectorDBService'; // Changed from generateEmbedding to embedText
-import { redis } from '$lib/server/cache/redis'; // For caching
+import { MinIOService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio-service'; // For handling MinIO URLs
+import { embedText } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/vectorDBService'; // Changed from generateEmbedding to embedText
+import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis'; // For caching
 
 // Define types for canvas data
 interface CanvasObject {

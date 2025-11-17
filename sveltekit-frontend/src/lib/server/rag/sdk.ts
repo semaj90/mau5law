@@ -1,5 +1,5 @@
-import { redis } from '$lib/server/redis';
-import { publishToQueue } from '$lib/server/rabbitmq';
+import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
+import { publishToQueue } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/rabbitmq';
 import type { RagShardJob, DocStatus, DocStatusInfo } from './types';
 
 export async function enqueueDocumentForRag(params: {

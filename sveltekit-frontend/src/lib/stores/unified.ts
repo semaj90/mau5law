@@ -3,7 +3,7 @@
  *
  * This file defines and exports core types and stores
  * allowing imports like:
- * import { aiAssistant } from '$lib/stores/unified'
+ * import { aiAssistant } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores/unified'
  */
 
 /**
@@ -64,7 +64,7 @@ export type POIAnalysis = Record<string, unknown>;
 import { writable, type Readable, get } from 'svelte/store';
 
 // xstate integration (used by helper functions below)
-import { xstateIntegration } from '$lib/services/xstate-integration';
+import { xstateIntegration } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/xstate-integration';
 
 // --- User Store Types and Store ---
 export interface UserStoreState {

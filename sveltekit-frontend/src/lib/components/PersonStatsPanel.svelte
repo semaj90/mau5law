@@ -6,7 +6,7 @@
 		selectedPerson: FugitiveDexPerson | null;
 	}
 
-	let { selectedPerson }: Props = $props();
+	let { selectedPerson }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 {#if selectedPerson}

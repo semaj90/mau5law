@@ -1,7 +1,7 @@
-﻿import type { RequestHandler } from './$types.js';
-import { db, sql } from '$lib/server/db';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { db, sql } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
 import { json, error } from '@sveltejs/kit';
-import { generateEmbedding } from '$lib/server/services/vectorDBService';
+import { generateEmbedding } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/vectorDBService';
 
 // Define types for better code quality
 interface SimilarChunk {

@@ -172,9 +172,6 @@ https://svelte.dev/e/js_parse_error -->
         console.error("Error deleting evidence:", error);
         alert("Error deleting evidence");
       }
-  const handleCompareEvidence = async (evidence: Evidence) =>
-  {
-    comparingId = evidence.id;
   }
   const handleDownloadEvidence = (evidence: Evidence) => {
     if (evidence.url) {

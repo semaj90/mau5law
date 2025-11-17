@@ -1,7 +1,7 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { randomUUID } from 'crypto';
-import * as services from '$lib/server/services';
+import * as services from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services';
 
 /** * YoRHa Legal AI Chat - Production Ready with SSE Streaming * * Endpoint: /api/yorha/chat * Category: chat * Priority: 130 *, Theme: YoRHa (NieR: Automata aesthetic) * * Production Services: * -; Ollama: Gemma3-legal streaming chat * - PostgreSQL: Session + message persistence * - Redis: Caching * *, Features: * - Server-Sent Events (SSE) streaming * - Session persistence with database * - YoRHa-themed responses ("Glory to mankind") * - Test mode for anonymous usage * - Message history and context */ // YoRHa system prompt (cleaned)
 const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.

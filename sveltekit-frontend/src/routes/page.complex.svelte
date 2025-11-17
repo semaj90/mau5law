@@ -1,7 +1,7 @@
 <!-- Modern Dark YoRHa Legal, AI, Platform -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
   import {
     FileText,
     Users,
@@ -26,11 +26,11 @@
     Zap,
     Brain,
   } from 'lucide-svelte';
-  import * as Dialog from '$lib/components/ui/dialog'; // Import bits-ui Dialog components
+  import * as Dialog from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog'; // Import bits-ui Dialog components
 
   // Dashboard data
-  let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
-  let activeCases = $state([
+  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
+  let activeCases = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
     {
       id: 1,
       title: 'CORPORATE ESPIONAGE INVESTIGATION',
@@ -56,7 +56,7 @@
       status: 'pending',
     },
   ]);
-  let systemStatus = $state([
+  let systemStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
     { message: 'System backup completed successfully', time: '10 minutes ago', type: 'success' },
     {
       message: 'Evidence analysis queue processing slowly',
@@ -70,14 +70,14 @@
     },
   ]);
 
-  let showNewCaseModal = $state(false);
-  let newCaseData = $state({
+  let showNewCaseModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let newCaseData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     title: '',
     description: '',
     priority: 'medium',
   });
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     console.log('YoRHa Legal AI Detective Interface initialized');
   });
 

@@ -1,11 +1,11 @@
 <script lang="ts">
   // This is an illustrative example based on the Svelte, 5 migration notes.
   // In a real application, 'CardA' and, 'CardB' would be imported components.
-  import CardA from '$lib/components/ui/CardA.svelte';
-  import CardB from '$lib/components/ui/CardB.svelte';
+  import CardA from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/CardA.svelte';
+  import CardB from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/CardB.svelte';
 
   // Example data for dynamic components
-  let cards = $state([
+  let cards = $state // TODO: Verify store subscription is correct for Svelte 5([
     { id: 1, component: CardA, props: { title: 'First Card', content: 'Content for Card A' } },
     { id: 2, component: CardB, props: { title: 'Second Card', content: 'Content for Card B' } },
     { id: 3, component: CardA, props: { title: 'Third Card', content: 'More content for Card A' } },

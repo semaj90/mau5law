@@ -1,4 +1,4 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
 /* * Legal Strategy Recommendation Engine * AI-powered case strategy analysis and recommendations */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';

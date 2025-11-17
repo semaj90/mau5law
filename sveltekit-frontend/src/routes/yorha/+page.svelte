@@ -29,17 +29,17 @@
   type LegalAISession = { session_id?: string; user_id?: string; created_at?: string };
 
   // Keep only imports that actually exist / are used
-  import { goto } from '$app/navigation';
-  import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
-  import YoRHaCommandInterface from '$lib/components/yorha/YoRHaCommandInterface.svelte';
-  import { withAbort } from '$lib/yorha/constants';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import YoRHaCommandCenter from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/YoRHaCommandCenter.svelte';
+  import YoRHaCommandInterface from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/YoRHaCommandInterface.svelte';
+  import { withAbort } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/yorha/constants';
 
   // --- Reactive State Declarations (Svelte 5 Runes) ---
-  let localIndexReady = $state(false);
-  let localIndexCount = $state(0);
-  let localLoadedFromCache = $state(false);
-  let layoutData = $state<any | null>(null);
-  let systemData = $state<SystemMetrics>({
+  let localIndexReady = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let localIndexCount = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0);
+  let localLoadedFromCache = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let layoutData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any | null>(null);
+  let systemData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<SystemMetrics>({
     cpu_usage: 50,
     memory_usage: 60,
     gpu_utilization: 70,
@@ -49,16 +49,16 @@
     security_level: 'HIGH',
     quantum_state: 'STABLE',
   });
-  let legalSession = $state<LegalAISession | null>(null);
-  let showCommandInterface = $state(false);
-  let holographicMode = $state(false);
-  let activeModule = $state('overview'); // Default module
-  let activeSection = $state('overview'); // Default section
-  let isLoading = $state(false);
-  let ragResult = $state<any | null>(null);
-  let searchResults = $state<SearchResult[]>([]);
-  let searchTerm = $state('');
-  let searchMode = $state<'local' | 'remote' | 'hybrid'>('hybrid'); // Default search mode
+  let legalSession = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<LegalAISession | null>(null);
+  let showCommandInterface = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let holographicMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let activeModule = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('overview'); // Default module
+  let activeSection = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('overview'); // Default section
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let ragResult = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any | null>(null);
+  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<SearchResult[]>([]);
+  let searchTerm = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let searchMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'local' | 'remote' | 'hybrid'>('hybrid'); // Default search mode
 
   // --- IndexedDB Local Index Implementation ---
   const LOCAL_DB_NAME = 'yorha-local-index';
@@ -371,7 +371,7 @@
   }
 
   // Ensure initialization runs during component initialization
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     // Fire and forget async initialization
     (async () => {
       await initializeLocalIndex(); // Call the local index initialization
@@ -379,7 +379,7 @@
 
       try {
         // Dynamic import to avoid static type errors if the client module shape differs
-        const clientModule = await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient');
+        const clientModule = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient');
 
         // Determine the actual client object based on common export patterns
         let client: {
@@ -454,20 +454,20 @@
   });
 
   // add local refs to avoid compile-time prop checking
-  let yoRHaCenterRef = $state<any>(null);
-  let yoRHaInterfaceRef = $state<any>(null);
+  let yoRHaCenterRef = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let yoRHaInterfaceRef = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
 
   // Push systemData into the command center instance at runtime
-  $effect(() => {
-    if (yoRHaCenterRef && typeof yoRHaCenterRef.$set === 'function') {
-      yoRHaCenterRef.$set({ systemData });
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+    if (yoRHaCenterRef && typeof yoRHaCenterRef.$set // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 === 'function') {
+      yoRHaCenterRef.$set // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({ systemData });
     }
   });
 
   // Push legalSession into the command interface instance at runtime
-  $effect(() => {
-    if (yoRHaInterfaceRef && typeof yoRHaInterfaceRef.$set === 'function') {
-      yoRHaInterfaceRef.$set({ legalSession });
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+    if (yoRHaInterfaceRef && typeof yoRHaInterfaceRef.$set // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 === 'function') {
+      yoRHaInterfaceRef.$set // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({ legalSession });
     }
   });
 

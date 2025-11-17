@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { nodes, viewport } = $props();
+  let { nodes, viewport } = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="fixed bottom-4 right-4 w-48 h-48 bg-gray-900 border border-cyan-400 p-1 opacity-90">

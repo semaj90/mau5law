@@ -1,7 +1,7 @@
-﻿import type { User } from '$lib/types';
+﻿import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/connection';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/connection';
 import { passwordResetTokens, users } from '../../../../../drizzle/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { z } from 'zod';

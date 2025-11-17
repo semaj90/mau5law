@@ -1,7 +1,7 @@
-﻿import type { RequestHandler } from './$types.js';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
-import type { DimensionalArray, CacheMetadata } from '$lib/ai/dimensional-cache-engine';
+import { dimensionalCache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/dimensional-cache-engine';
+import type { DimensionalArray, CacheMetadata } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/dimensional-cache-engine';
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {

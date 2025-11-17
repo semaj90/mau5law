@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import { users } from '$lib/server/db/schema-postgres';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import { users } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { db } from './client.js'; // Changed from "./index.js"
 

@@ -51,7 +51,7 @@
     }>;
   }
 
-  let { analysis }: { analysis: AnalysisData } = $props();
+  let { analysis }: { analysis: AnalysisData } = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <main class="page-repair">

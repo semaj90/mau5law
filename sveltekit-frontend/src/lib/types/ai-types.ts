@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 
 // Enhanced AI Types for Legal Document Processing
 // SvelteKit 2 + Svelte 5 Compatible Types

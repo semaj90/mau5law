@@ -7,9 +7,9 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/client.js';
-import { canvasStates, canvasAnnotations } from '$lib/server/db/schema-postgres.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js';
+import { canvasStates, canvasAnnotations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres.js';
 import { eq } from 'drizzle-orm';
 import type { InferSelectModel } from 'drizzle-orm';
 import {

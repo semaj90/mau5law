@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getNeo4jDriver } from '$lib/server/neo4j-driver';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { getNeo4jDriver } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/neo4j-driver';
 
 type ContradictionLink = {
   source: string;
@@ -18,7 +18,7 @@ export const GET: RequestHandler = async () => {
         `
         MATCH (a:Evidence)-[r:CONTRADICTS]-(b:Evidence)
         RETURN a { .* } AS source, b { .* } AS target, r { .* } AS rel
-        LIMIT $limit
+        LIMIT $limit // TODO: Verify store subscription is correct for Svelte 5
         `,
         { limit: 500 }
       );

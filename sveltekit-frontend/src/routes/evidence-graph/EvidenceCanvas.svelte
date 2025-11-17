@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
-  import CaseSuggestionModal from '$lib/evidence-canvas/CaseSuggestionModal.svelte';
-  import EvidenceCanvas from '$lib/evidence-canvas/EvidenceCanvas.svelte';
-  import GraphControlPanel from '$lib/evidence-canvas/GraphControlPanel.svelte';
-  import { initialize } from '$lib/evidence-canvas/webgpu-init';
+  import type { EvidenceNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/case-similarity-service';
+  import CaseSuggestionModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/CaseSuggestionModal.svelte';
+  import EvidenceCanvas from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/EvidenceCanvas.svelte';
+  import GraphControlPanel from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/GraphControlPanel.svelte';
+  import { initialize } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/webgpu-init';
   import { onDestroy, onMount } from 'svelte';
 
-  import fetchEvidence from '$lib/api/evidence';
-  import analyzeCaseSimilarity from '$lib/server/case-similarity';
-  import runGPUSimilarity from '$lib/webgpu/similarity-gpu';
+  import fetchEvidence from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/api/evidence';
+  import analyzeCaseSimilarity from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/case-similarity';
+  import runGPUSimilarity from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/similarity-gpu';
 
   interface EvidenceEdge {
     id: string;
@@ -18,11 +18,11 @@
   }
 
   // Reactive state
-  let canvas = $state<any>(null);
-  let suggestion = $state<any>(null);
-  let isLoading = $state(true);
-  let error = $state<string | null>(null);
-  let stats = $state({
+  let canvas = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let suggestion = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     nodes: 0,
     edges: 0,
     clusters: 0,
@@ -31,21 +31,21 @@
   });
 
   // Live update event source
-  let eventSource = $state<EventSource | null>(null);
+  let eventSource = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EventSource | null>(null);
 
   // Control panel state
-  let layoutAlgorithm = $state('force');
-  let showLabels = $state(true);
-  let nodeSize = $state('adaptive');
-  let edgeThreshold = $state(0.6);
-  let contextMenu = $state<{ visible: boolean; x: number; y: number; node: EvidenceNode | null }>({
+  let layoutAlgorithm = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('force');
+  let showLabels = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let nodeSize = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('adaptive');
+  let edgeThreshold = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0.6);
+  let contextMenu = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{ visible: boolean; x: number; y: number; node: EvidenceNode | null }>({
     visible: false,
     x: 0,
     y: 0,
     node: null
   });
-  let metadataNode = $state<EvidenceNode | null>(null);
-  let pinnedNodeIds = $state<string[]>([]);
+  let metadataNode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode | null>(null);
+  let pinnedNodeIds = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
 
   onMount(async () => {
     try {
@@ -471,13 +471,13 @@
       <div
         class="context-menu nes-container is-dark"
         style={`left:${contextMenu.x}px; top:${contextMenu.y}px`}
-        on:click|stopPropagation
+        onclick|stopPropagation
       >
         <p class="menu-title">{contextMenu.node?.label ?? 'Canvas'}</p>
         {#each contextActions as action}
           <button
             class={`nes-btn ${action.accent ? `is-${action.accent}` : ''}`}
-            on:click={() => action.handler(contextMenu.node)}
+            onclick={() => action.handler(contextMenu.node)}
           >
             {action.label}
           </button>
@@ -492,7 +492,7 @@
             <p class="metadata-title">{metadataNode.label}</p>
             <p class="muted">{metadataNode.type}</p>
           </div>
-          <button class="nes-btn" on:click={() => (metadataNode = null)}>Close</button>
+          <button class="nes-btn" onclick={() => (metadataNode = null)}>Close</button>
         </header>
 
         <section>

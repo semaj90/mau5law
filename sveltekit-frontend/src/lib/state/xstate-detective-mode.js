@@ -8,13 +8,13 @@
  * In your root layout component (e.g., +layout.svelte):
  *
  * import { onMount } from 'svelte';
- * import { enableDetectiveMode } from '$lib/state/xstate-detective-mode';
+ * import { enableDetectiveMode } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/state/xstate-detective-mode';
  *
  * onMount(() => {
  *   enableDetectiveMode();
  * });
  */
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 let inspector;
 /**

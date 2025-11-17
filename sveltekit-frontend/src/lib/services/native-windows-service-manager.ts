@@ -23,7 +23,7 @@ export interface ServiceHealth {
 export class NativeWindowsServiceManager {
   private services: Map<string, WindowsService> = new Map();
   private healthMonitor: NodeJS.Timeout | null = null;
-  private isInitialized = $state(false);
+  private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 
   constructor() {
     this.initializeServiceDefinitions();

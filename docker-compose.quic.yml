@@ -27,6 +27,23 @@ services:
       - legal-ai-network
     restart: unless-stopped
 
+  # Envoy Proxy with QUIC support for ultra-low latency
+  envoy-quic:
+    image: envoyproxy/envoy:v1.28-latest
+    container_name: legal-ai-envoy-quic
+    ports:
+      - "8081:8081"       # HTTP/2 + QUIC
+      - "8081:8081/udp"   # QUIC/HTTP3
+    volumes:
+      - ./envoy-quic.yaml:/etc/envoy/envoy.yaml:ro
+    networks:
+      - legal-ai-network
+    depends_on:
+      - sveltekit-1
+      - sveltekit-2
+      - quic-bridge
+    restart: unless-stopped
+
   # SvelteKit Frontend Instance 1
   sveltekit-1:
     build:
@@ -76,38 +93,53 @@ services:
       - redis
     restart: unless-stopped
 
-  # Enhanced Go Bridge with QUIC CORS
-  tensorrt-bridge:
+  # QUIC Bridge Service (Go implementation for ultra-low latency)
+  quic-bridge:
     build:
       context: ./go-microservice
-      dockerfile: Dockerfile.bridge
-    container_name: legal-ai-bridge-quic
+      dockerfile: Dockerfile.quic-bridge
+    container_name: legal-ai-quic-bridge
     ports:
-      - "8087:8087"
+      - "8094:8094"  # QUIC bridge port
+      - "8095:8095"  # HTTP fallback
     environment:
-      - PORT=8087
-      - REDIS_PASSWORD=redis
+      - QUIC_PORT=8094
+      - HTTP_PORT=8095
       - REDIS_URL=redis://:redis@redis:6379
+      - PHASE47_GRAPH_URL=http://graph-analyzer:8093
       - TENSORRT_LEGAL_URL=http://tensorrt-legal:8090
       - TENSORRT_270M_URL=http://tensorrt-270m:8091
-      - OLLAMA_URL=http://ollama:11434
-      - GPU_DEVICE=0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     networks:
       - legal-ai-network
     depends_on:
       - redis
+      - graph-analyzer
       - tensorrt-legal
       - tensorrt-270m
     restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+
+  # Graph Analyzer Service (Phase 47)
+  graph-analyzer:
+    build:
+      context: ./python-services
+      dockerfile: Dockerfile.graph-analyzer
+    container_name: legal-ai-graph-analyzer
+    ports:
+      - "8093:8093"
+    environment:
+      - PHASE47_ENABLE_OLLAMA_FALLBACK=true
+      - OLLAMA_ENDPOINT=http://ollama:11434
+      - REDIS_URL=redis://:redis@redis:6379
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - legal-ai-network
+    depends_on:
+      - redis
+      - ollama
+    restart: unless-stopped
 
   # TensorRT Legal Model (7GB VRAM)
   tensorrt-legal:
@@ -230,6 +262,23 @@ services:
       - legal-ai-network
     restart: unless-stopped
 
+  # NATS Message Queue for ultra-low latency microservice communication
+  nats:
+    image: nats:2.10-alpine
+    container_name: legal-ai-nats
+    ports:
+      - "4222:4222"  # NATS client port
+      - "8222:8222"  # HTTP monitoring port
+      - "6222:6222"  # Cluster port
+    volumes:
+      - ./message-queue/nats/nats-server.conf:/etc/nats/nats-server.conf:ro
+      - nats_data:/data
+      - nats_logs:/logs
+    command: ["nats-server", "-c", "/etc/nats/nats-server.conf"]
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
 networks:
   legal-ai-network:
     driver: bridge
@@ -243,3 +292,5 @@ volumes:
   postgres_data:
   redis_data:
   qdrant_data:
+  nats_data:
+  nats_logs:

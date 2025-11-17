@@ -1,14 +1,14 @@
 // Global User Store with PostgreSQL Integration + Svelte 5 Runes
 // Predictive Analytics, Chat History, and Real-time Synchronization
 import { writable, derived, type Writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 import type { User, Session } from 'lucia';
 import crypto from 'crypto';
 import type {
   UserPattern,
   RecommendationResult,
   ChatAnalytics,
-} from '$lib/server/services/user-recommendation-service';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/user-recommendation-service';
 
 // ===== CORE USER STATE =====
 export interface GlobalUserState {
@@ -162,18 +162,18 @@ const defaultState: GlobalUserState = {
 };
 
 // ===== SVELTE 5 RUNES STORE =====
-let globalUserState = $state<GlobalUserState>(defaultState);
+let globalUserState = $state // TODO: Verify store subscription is correct for Svelte 5<GlobalUserState>(defaultState);
 
-// Reactive computations using Svelte 5 $derived
-const userDisplayName = $derived(
+// Reactive computations using Svelte 5 $derived // TODO: Verify store subscription is correct for Svelte 5
+const userDisplayName = $derived // TODO: Verify store subscription is correct for Svelte 5(
   globalUserState.profile?.name ||
     globalUserState.profile?.firstName ||
     globalUserState.profile?.email ||
     'Anonymous User'
 );
 
-const isOnline = $derived(globalUserState.syncStatus !== 'offline' && browser);
-const hasUnsynced = $derived(globalUserState.pendingChanges > 0);
+const isOnline = $derived // TODO: Verify store subscription is correct for Svelte 5(globalUserState.syncStatus !== 'offline' && browser);
+const hasUnsynced = $derived // TODO: Verify store subscription is correct for Svelte 5(globalUserState.pendingChanges > 0);
 
 // ===== STORE ACTIONS =====
 export const globalUserStore = {

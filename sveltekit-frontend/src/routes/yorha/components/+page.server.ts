@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const load: PageServerLoad = async () => {
   try {
@@ -124,14 +124,14 @@ export const load: PageServerLoad = async () => {
     const codeSnippets = {
       button: `
 <script lang="ts">
-    import { YoRHaButton3D } from '$lib/components/three/yorha-ui.svelte';
+    import { YoRHaButton3D } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui.svelte';
     let buttonConfig = { text: 'Execute Command', variant: 'primary', size: 'medium', glowEffect: true };
 </script>
 <YoRHaButton3D {...buttonConfig} onclick={() => console.log('YoRHa button clicked')} />
 `,
       panel: `
 <script lang="ts">
-    import { YoRHaPanel3D } from '$lib/components/three/yorha-ui.svelte';
+    import { YoRHaPanel3D } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui.svelte';
 </script>
 <YoRHaPanel3D title="System Status" variant="terminal" borderGlow={true}>
     <div slot="content">Panel content goes here...</div>
@@ -139,15 +139,15 @@ export const load: PageServerLoad = async () => {
 `,
       input: `
 <script lang="ts">
-    import { YoRHaInput3D } from '$lib/components/three/yorha-ui.svelte';
+    import { YoRHaInput3D } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui.svelte';
     let inputValue = '';
 </script>
 <YoRHaInput3D bind:value={inputValue} placeholder="Enter neural link..." variant="terminal" neuralGlow={true} />
 `,
       modal: `
 <script lang="ts">
-    import { YoRHaModal3D } from '$lib/components/three/yorha-ui.svelte';
-    let showModal = $state<boolean>(false);
+    import { YoRHaModal3D } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui.svelte';
+    let showModal = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 </script>
 <YoRHaModal3D bind:open={showModal} title="System Alert" variant="alert" size="medium">
     <div slot="content">Modal content...</div>

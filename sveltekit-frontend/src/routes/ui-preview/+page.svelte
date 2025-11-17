@@ -1,24 +1,24 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
 
   // NES UI Components
-  import StatsCard from '$lib/components/ui/StatsCard/StatsCard.svelte';
-  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
-  import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
-  import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
-  import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
+  import StatsCard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/StatsCard/StatsCard.svelte';
+  import Dialog from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/Dialog.svelte';
+  import DialogContent from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogContent.svelte';
+  import DialogDescription from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogDescription.svelte';
+  import DialogTitle from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogTitle.svelte';
 
   // Enhanced-Bits UI Components
   // Button is shipped as a default export in this kit — import from the lowercase path
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import QuickActionButton from '$lib/components/ui/QuickActionButton/QuickActionButton.svelte';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button/Button.svelte';
+  import QuickActionButton from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/QuickActionButton/QuickActionButton.svelte';
 
   // Global Components
-  import KeyboardShortcutProvider from '$lib/components/KeyboardShortcutProvider.svelte';
+  import KeyboardShortcutProvider from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/KeyboardShortcutProvider.svelte';
 
   // Stores and Utilities
-  // NOTE: The following functions must be exported from '$lib/utils/formatting.ts'
+  // NOTE: The following functions must be exported from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils/formatting.ts'
   // for TypeScript errors to be fully resolved.
   import {
     formatRelativeTime,
@@ -28,21 +28,21 @@
     getFileIcon,
     getPriorityColor,
     getStatusColor,
-  } from '$lib/utils/formatting';
+  } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils/formatting';
 
   // Component state
-  let showDialog = $state<boolean>(false);
-  let selectedTab = $state<string>('buttons');
-  let showSidebar = $state<boolean>(true);
-  let mockSessionActive = $state<boolean>(false);
+  let showDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let selectedTab = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('buttons');
+  let showSidebar = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let mockSessionActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   // Modal states
-  let showModal = $state<boolean>(false);
-  let modalVariant = $state<string>('gradient');
-  let modalSize = $state<string>('md');
+  let showModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let modalVariant = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('gradient');
+  let modalSize = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('md');
 
   // Mock user data for session/user demo
-  let mockUser = $state({
+  let mockUser = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     id: 'demo-user-123',
     email: 'demo@legalai.com',
     role: 'prosecutor' as const,
@@ -128,17 +128,17 @@
   // Mock page store data simulation
   onMount(() => {
     // Initialize session store with page data (simulated)
-    const { data } = $page; // Destructure data from $page to avoid deprecation warning
+    const { data } = $page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5; // Destructure data from $page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 to avoid deprecation warning
     if (data?.user) {
       mockSessionActions.init(data);
     }
   });
 
   // Mock reactive data with conditionals for session/user demo
-  let currentUser = $derived(mockSessionActive ? mockUser : null);
-  let authenticated = $derived(mockSessionActive);
+  let currentUser = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(mockSessionActive ? mockUser : null);
+  let authenticated = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(mockSessionActive);
 
-  let stats = $derived(
+  let stats = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
     mockSessionActive
       ? {
           casesWorked: 23,
@@ -190,8 +190,8 @@
     { title: 'Family Law Custody Battle', status: 'open', priority: 'low' },
   ];
 
-  let focusReady = $state<boolean>(false);
-  $effect(() => {
+  let focusReady = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     focusReady = true;
   });
 
@@ -491,7 +491,7 @@
         <h4>Integration Notes</h4>
         <ol class="nes-list is-circle">
           <li>
-            The actual sidebar component lives in <code>$lib/components/layout/Sidebar.svelte</code
+            The actual sidebar component lives in <code>$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/Sidebar.svelte</code
             >.
           </li>
           <li>

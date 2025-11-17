@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { RAGService } from '$lib/server/rag';
+import { RAGService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/rag';
 
 const rag = new RAGService();
 

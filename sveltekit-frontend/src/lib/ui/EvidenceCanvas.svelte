@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Evidence } from '$lib/types';
+  import type { Evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
   import { Archive, FileText, Image, Music, Target, Video, Zap } from 'lucide-svelte';
-  import { createEventDispatcher, onMount } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
   import EvidenceCard from './EvidenceCard.svelte';
 
   interface Props {
@@ -20,22 +20,22 @@
     onDelete,
     onDownload,
     readonly = false
-  }: Props = $props();
+  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   const dispatch = createEventDispatcher();
 
   // State management
-  let canvasRef = $state<HTMLElement>();
-  let zoom = $state(1);
-  let panX = $state(0);
-  let panY = $state(0);
-  let isDragging = $state(false);
-  let dragStart = $state({ x: 0, y: 0 });
-  let dropZoneActive = $state(false);
-  let droppedEvidenceIds = $state<string[]>([]);
+  let canvasRef = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<HTMLElement>();
+  let zoom = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(1);
+  let panX = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0);
+  let panY = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0);
+  let isDragging = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let dragStart = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({ x: 0, y: 0 });
+  let dropZoneActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let droppedEvidenceIds = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
 
   // Evidence positioning and layout
-  let evidencePositions = $state<Map<string, { x: number; y: number; width: number; height: number }>>(new Map());
+  let evidencePositions = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Map<string, { x: number; y: number; width: number; height: number }>>(new Map());
 
   // Calculate icon based on file type
   function getFileIcon(mimeType: string) {
@@ -47,7 +47,7 @@
   }
 
   // Calculate evidence positions in a grid layout
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (!evidence.length) return;
 
     const positions = new Map();
@@ -204,7 +204,7 @@
   }
 
   // Clear dropped evidence after AI processing
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (taggedEvidenceIds.length === 0) {
       droppedEvidenceIds = [];
     }
@@ -275,7 +275,7 @@
             evidence={item}
             {isTagged}
             {isDropped}
-            on:click={(e) => handleEvidenceClick(item.id, e)}
+            onclick={(e) => handleEvidenceClick(item.id, e)}
             on:delete={(e) => handleDelete(item.id, e)}
             on:download={(e) => handleDownload(item.id, e)}
           />

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { dev } from '$app/environment';
+  import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
 
-  // Svelte 5: Use single $props() call to destructure all props
-  const { status, error } = $props<{
+  // Svelte 5: Use single $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5() call to destructure all props
+  const { status, error } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{
     status: number;
     error: { message?: string } | undefined;
   }>();

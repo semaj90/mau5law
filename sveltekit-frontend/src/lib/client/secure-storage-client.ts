@@ -141,9 +141,9 @@ export class SecureStorageClient {
 /** * Reactive storage manager for Svelte components */
 export class ReactiveStorageManager {
   client: SecureStorageClient;
-  private files = $state<StorageFile[]>([]);
-  private loading = $state(false);
-  private error = $state<string | null>(null);
+  private files = $state // TODO: Verify store subscription is correct for Svelte 5<StorageFile[]>([]);
+  private loading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  private error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   constructor(authToken?: string) {
     this.client = new SecureStorageClient('/api/v1/storage', authToken);

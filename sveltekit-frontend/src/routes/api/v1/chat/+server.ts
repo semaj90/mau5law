@@ -1,14 +1,14 @@
 import { json } from '@sveltejs/kit';
-import * as orchestrator from '$lib/services/unified-legal-orchestrator';
-import { contextualMemoryChatService } from '$lib/services/contextual-memory-chat-service';
-import { parallelOrchestrationMaster } from '$lib/services/parallel-orchestration-master';
-import type { ParallelRequest } from '$lib/services/parallel-orchestration-master';
-import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
-import { analytics } from '$lib/server/database/connection';
-import { dev } from '$app/environment';
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
-import { fastStringify } from '$lib/utils/fast-json';
-import type { RequestHandler } from './$types.js';
+import * as orchestrator from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/unified-legal-orchestrator';
+import { contextualMemoryChatService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/contextual-memory-chat-service';
+import { parallelOrchestrationMaster } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/parallel-orchestration-master';
+import type { ParallelRequest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/parallel-orchestration-master';
+import { natsQuicSearchService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/search/nats-quic-search-service';
+import { analytics } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/database/connection';
+import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { readBodyFastWithMetrics } from '$lib // TODO: Verify store subscription is correct for Svelte 5/simd/simd-json-integration';
+import { fastStringify } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/fast-json';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 // --- Added: lightweight types for parallel execution results ---
 type MultiEmbeddingResult = {
@@ -594,6 +594,6 @@ async function callOrchestratorProcessRequest(orchestrationRequest: any): Promis
 
   // 5) nothing found: throw a clear runtime error
   throw new Error(
-    "Unified orchestrator entrypoint not found. Expected: 'processRequest' or equivalent export on $lib/services/unified-legal-orchestrator."
+    "Unified orchestrator entrypoint not found. Expected: 'processRequest' or equivalent export on $lib // TODO: Verify store subscription is correct for Svelte 5/services/unified-legal-orchestrator."
   );
 }

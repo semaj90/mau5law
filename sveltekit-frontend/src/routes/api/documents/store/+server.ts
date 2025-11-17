@@ -1,12 +1,12 @@
 ﻿import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 // Enhanced Document Storage API with MinIO + PostgreSQL + Cognitive Cache
-import { db } from '$lib/server/db/client.js';
-import { legal_documents } from '$lib/server/db/schema-postgres';
-import cognitiveCacheManager from '$lib/services/cognitive-cache-integration'; // Changed to default import
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js';
+import { legal_documents } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import cognitiveCacheManager from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/cognitive-cache-integration'; // Changed to default import
 import { count } from 'drizzle-orm'; // Add sql to the import
-import { getDatabaseHealth } from '$lib/server/utils/health.ts';
+import { getDatabaseHealth } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/health.ts';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

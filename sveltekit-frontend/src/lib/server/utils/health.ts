@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db/client.js';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js';
 import { sql } from 'drizzle-orm';
 
 export async function getDatabaseHealth() {

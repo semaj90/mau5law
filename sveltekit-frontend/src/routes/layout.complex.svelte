@@ -1,12 +1,12 @@
 ﻿<script lang="ts">
-  import Navigation from '$lib/components/Navigation.svelte';
+  import Navigation from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/Navigation.svelte';
   import { setContext } from 'svelte';
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
 
   // Runes-mode reactive locals
-  let theme = $state<'dark' | 'light'>('dark');
-  let sidebarOpen = $state<boolean>(false);
+  let theme = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'dark' | 'light'>('dark');
+  let sidebarOpen = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   // Provide a small app context for other components/services
   setContext('app', {
@@ -19,18 +19,18 @@
   });
 
   // Nav props object typed as any to avoid strict prop-type mismatch errors on the component
-  const navProps: any = $derived({ // Changed to $derived
+  const navProps: any = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({ // Changed to $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
     sidebarOpen: () => sidebarOpen,
     setSidebarOpen: (v: boolean) => (sidebarOpen = v),
     toggleSidebar: () => (sidebarOpen = !sidebarOpen),
   });
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     // Initialization side-effect
     console.log('Modern Dark YoRHa Legal AI Interface initialized');
     document.documentElement.setAttribute('data-theme', theme);
 
-    // The navProps update logic is no longer needed here as it's now $derived
+    // The navProps update logic is no longer needed here as it's now $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5
   });
 </script>
 

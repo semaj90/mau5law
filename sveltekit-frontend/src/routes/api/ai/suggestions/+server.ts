@@ -1,14 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '$lib/database';
-import { chatMessages, chatRecommendations } from '$lib/database/schema';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/database';
+import { chatMessages, chatRecommendations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/database/schema';
 import { eq } from 'drizzle-orm';
-import { generateEnhancedEmbedding } from '$lib/embeddings';
-import { generateOllamaSuggestions } from '$lib/ai/ollama';
-import { generateVectorContextualSuggestions } from '$lib/ai/vector-search';
-import { generateEnhancedRAGSuggestions } from '$lib/ai/enhanced-rag';
-import { aiSuggestionsClient, ReportTypeUtils } from '$lib/grpc/protobuf-client';
+import { generateEnhancedEmbedding } from '$lib // TODO: Verify store subscription is correct for Svelte 5/embeddings';
+import { generateOllamaSuggestions } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/ollama';
+import { generateVectorContextualSuggestions } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/vector-search';
+import { generateEnhancedRAGSuggestions } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/enhanced-rag';
+import { aiSuggestionsClient, ReportTypeUtils } from '$lib // TODO: Verify store subscription is correct for Svelte 5/grpc/protobuf-client';
 
 export interface EnhancedSuggestionRequest {
 	content: string;

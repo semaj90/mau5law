@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { writeFile, unlink } from 'fs/promises';
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     let processPath: string;
-    let shouldCleanup = false; // Removed $state as it's a Svelte 5 component primitive, not for server endpoints
+    let shouldCleanup = false; // Removed $state // TODO: Verify store subscription is correct for Svelte 5 as it's a Svelte 5 component primitive, not for server endpoints
 
     if (imageFile) {
       // Save uploaded file temporarily

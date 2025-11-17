@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
 export interface TestResult {
   test: string;

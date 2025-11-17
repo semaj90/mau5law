@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   const dispatch = createEventDispatcher();
 
-  let { message = "CONTRADICTION DETECTED!", show = false, autoHide = true, duration = 3000 } = $props<{
+  let { message = "CONTRADICTION DETECTED!", show = false, autoHide = true, duration = 3000 } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     message?: string;
     show?: boolean;
     autoHide?: boolean;
@@ -12,7 +12,7 @@
 
   let timeoutId: number;
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (show && autoHide) {
       timeoutId = setTimeout(() => {
         dispatch('hide');

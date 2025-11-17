@@ -1,5 +1,5 @@
 import { interpret } from 'xstate';
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 import { aiAssistantMachine } from './aiAssistantMachine.js';
 export function createAssistantStore() {
   // Determine a safe initial snapshot from the machine

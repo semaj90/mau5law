@@ -19,7 +19,7 @@ export * from './route-guards.js';
 export * from './dynamic-navigation.js';
 
 // Provide a local fallback RouteDefinition type so callers don't break if the
-// upstream "$lib/data/routes-config" doesn't export exactly that name.
+// upstream "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/data/routes-config" doesn't export exactly that name.
 export type RouteDefinition = {
   id?: string;
   route?: string;

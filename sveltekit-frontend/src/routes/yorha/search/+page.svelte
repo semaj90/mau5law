@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/card';
-  import { Input } from '$lib/components/ui/input';
-  import { appActions, appStore } from '$lib/stores/app-store';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
   import * as Lucide from 'lucide-svelte';
   import { onMount } from 'svelte';
 
@@ -181,11 +181,11 @@
               type="text"
               placeholder="Search across cases, evidence, persons, and documents..."
               bind:value={searchQuery}
-              on:keydown={handleKeyDown}
+              onkeydown={handleKeyDown}
             />
           </div>
           <div class="search-btn">
-            <Button on:click={performSearch} disabled={isLoading}>
+            <Button onclick={performSearch} disabled={isLoading}>
               {isLoading ? 'SEARCHING...' : 'SEARCH'}
             </Button>
           </div>

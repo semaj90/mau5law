@@ -12,7 +12,7 @@ export const persons = pgTable("persons", {
 
   threatLevel: text("threat_level").default("unknown"), // low / medium / high / critical
 
-  photos: jsonb("photos").$type<Array<{
+  photos: jsonb("photos").$type // TODO: Verify store subscription is correct for Svelte 5<Array<{
     url: string;
     thumbnailUrl: string;
     metadata: {
@@ -40,8 +40,8 @@ export const evidenceNodes = pgTable("evidence_nodes", {
   type: text("type").notNull(), // poi, evidence, statement, theory
   title: text("title").notNull(),
   content: text("content"),
-  position: jsonb("position").$type<{x: number, y: number}>(),
-  connections: jsonb("connections").$type<Array<string>>(), // node IDs
+  position: jsonb("position").$type // TODO: Verify store subscription is correct for Svelte 5<{x: number, y: number}>(),
+  connections: jsonb("connections").$type // TODO: Verify store subscription is correct for Svelte 5<Array<string>>(), // node IDs
   metadata: jsonb("metadata"),
   embedding: vector("embedding", { dimensions: 768 }),
   createdAt: timestamp("created_at").defaultNow(),
@@ -87,7 +87,7 @@ export const videoEvidence = pgTable("video_evidence", {
   filename: text("filename").notNull(),
   minioKey: text("minio_key").notNull(),
   transcription: text("transcription"),
-  segments: jsonb("segments").$type<Array<{
+  segments: jsonb("segments").$type // TODO: Verify store subscription is correct for Svelte 5<Array<{
     start: number;
     end: number;
     text: string;

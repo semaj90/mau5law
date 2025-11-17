@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types'; // Svelte 5 runes are auto-imported
   /**
    * Single Page App Demo Route
    * Full-screen canvas UX with gemma3:legal-latest integration
    */
   // Import component with the name used in the template
-  import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
+  import SPACanvasComp from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
   import {
     LegalAILogic,
     type LegalDocument,
     type EvidenceItem,
-  } from '$lib/core/logic/legal-ai-logic';
-  // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import)
-  import '$lib/styles/hybrid-theme.css';
+  } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/core/logic/legal-ai-logic';
+  // Let Vite resolve the $lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 alias (avoids PostCSS ENOENT on @import)
+  import '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/styles/hybrid-theme.css';
 
   // Sample legal data for demonstration
   const initialLegalData = {
@@ -23,11 +23,11 @@
   };
 
   // reactive state for the data and flags
-  let legalData = $state<typeof initialLegalData>(initialLegalData);
-  let currentView = $state<'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases'>('dashboard');
-  let isLoading = $state<boolean>(true);
+  let legalData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<typeof initialLegalData>(initialLegalData);
+  let currentView = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases'>('dashboard');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     (async () => {
       // Simulate loading legal data
       await loadSampleData();

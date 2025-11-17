@@ -1,8 +1,8 @@
 <script lang="ts">
   // Use bits-ui Button component (switch from enhanced-bits import)
-  import { Button } from '$lib/components/ui/button';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
 
-  import SecurityMonitoringDashboard from '$lib/components/security/SecurityMonitoringDashboard.svelte';
+  import SecurityMonitoringDashboard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/security/SecurityMonitoringDashboard.svelte';
 </script>
 
 <svelte:head>

@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 import Redis from 'ioredis';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from '$lib/server/db/unified-schema';
+import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-schema';
 import { Ollama } from '@langchain/ollama';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { PromptTemplate } from '@langchain/core/prompts';

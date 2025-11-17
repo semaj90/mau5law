@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Cached RAG Service for Legal AI Platform * Integrates enhanced caching with RAG operations * Uses embeddinggemma for embeddings gemma3: legal-latest for responses */
 import enhancedCachingService from './advanced-result-cache.js';
 import type { RAGQuery, RAGResponse } from './enhanced-rag-semantic-analyzer.js';
@@ -69,15 +69,15 @@ type EnhancedCachingServiceAdapter = {
 // --- end adapter type ---
 
 // --- ADD: typed interfaces for external services + small server-side helpers ---
-type $UltraJSONParser = { parse: (s: string) => unknown; stringify: (v: unknown) => string };
-// Removed types: $WasmClusteringService, $NESGPUBridge, $OllamaService
+type $UltraJSONParser // TODO: Verify store subscription is correct for Svelte 5 = { parse: (s: string) => unknown; stringify: (v: unknown) => string };
+// Removed types: $WasmClusteringService // TODO: Verify store subscription is correct for Svelte 5, $NESGPUBridge // TODO: Verify store subscription is correct for Svelte 5, $OllamaService // TODO: Verify store subscription is correct for Svelte 5
 // These were declared but never referenced; keeping only the adapters actually used below.
-type $RedisCacheAdapter = {
+type $RedisCacheAdapter // TODO: Verify store subscription is correct for Svelte 5 = {
   get: (key: string) => Promise<unknown | null>;
   set: (key: string, value: unknown, ttlSeconds?: number) => Promise<boolean>;
   del?: (key: string) => Promise<boolean>;
 };
-type $QdrantAdapter = {
+type $QdrantAdapter // TODO: Verify store subscription is correct for Svelte 5 = {
   upsertCollection: (
     collection: string,
     vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
@@ -89,7 +89,7 @@ type $QdrantAdapter = {
     filter?: Record<string, unknown>
   ) => Promise<unknown[]>;
 };
-type $PostgresJSONStore = {
+type $PostgresJSONStore // TODO: Verify store subscription is correct for Svelte 5 = {
   upsertDocument: (doc: { id: string; body: Record<string, unknown> }) => Promise<boolean>;
   queryByField: (field: string, value: unknown) => Promise<Record<string, unknown>[]>;
 };
@@ -254,7 +254,7 @@ export async function ollamaGenerate(
   }
 }
 
-const $redisAdapter: $RedisCacheAdapter = {
+const $redisAdapter // TODO: Verify store subscription is correct for Svelte 5: $RedisCacheAdapter // TODO: Verify store subscription is correct for Svelte 5 = {
   async get(key: string) {
     try {
       const r = await fetch(`/api/redis/get?key=${encodeURIComponent(key)}`);
@@ -278,7 +278,7 @@ const $redisAdapter: $RedisCacheAdapter = {
   },
 };
 
-const $qdrantAdapter: $QdrantAdapter = {
+const $qdrantAdapter // TODO: Verify store subscription is correct for Svelte 5: $QdrantAdapter // TODO: Verify store subscription is correct for Svelte 5 = {
   async upsertCollection(
     collection: string,
     vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>
@@ -309,7 +309,7 @@ const $qdrantAdapter: $QdrantAdapter = {
   },
 };
 
-const pgJsonStore: $PostgresJSONStore = {
+const pgJsonStore: $PostgresJSONStore // TODO: Verify store subscription is correct for Svelte 5 = {
   async upsertDocument(doc: { id: string; body: Record<string, unknown> }) {
     try {
       const r = await fetch('/api/postgres/json/upsert', {

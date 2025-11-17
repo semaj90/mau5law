@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   // Define types since they are not exported from the modules
   type EvidenceNode = {
@@ -36,7 +36,7 @@
     };
   }>();
 
-  let { gpuAccelerationEnabled = false } = $props();
+  let { gpuAccelerationEnabled = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   let canvas: HTMLCanvasElement;
   let gl: WebGL2RenderingContext | null = null;

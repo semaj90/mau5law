@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
-	import { Dialog, DialogContent, DialogTitle, DialogDescription } from '$lib/components/ui/dialog';
-	import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
-	import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import Label from '$lib/components/ui/Label.svelte';
-	import Progress from '$lib/components/ui/progress/Progress.svelte';
-	import { Textarea } from '$lib/components/ui/textarea';
+	import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+	import { Dialog, DialogContent, DialogTitle, DialogDescription } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
+	import DialogHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogHeader.svelte';
+	import DialogFooter from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogFooter.svelte';
+	import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Button.svelte';
+	import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Input.svelte';
+	import Label from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Label.svelte';
+	import Progress from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/progress/Progress.svelte';
+	import { Textarea } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/textarea';
 
 	// Define missing types
 	type SearchResult = {
@@ -40,19 +40,19 @@
 	};
 
 	// Reactive state with Svelte 5 syntax
-	let analyzing = $state<boolean>(false);
-	let results = $state<SearchResult | null>(null);
-	let error = $state<string>('');
-	let progress = $state<number>(0);
-	let showResults = $state<boolean>(false);
+	let analyzing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+	let results = $state // TODO: Verify store subscription is correct for Svelte 5<SearchResult | null>(null);
+	let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+	let progress = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+	let showResults = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
 	// Form data
-	let caseId = $state<string>('');
-	let evidenceContent = $state<string>('');
-	let evidenceFile = $state<File | null>(null);
-	let evidenceType = $state<string>('police_report');
-	let priority = $state<string>('medium');
-	let sessionId = $state<string>('');
+	let caseId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+	let evidenceContent = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+	let evidenceFile = $state // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
+	let evidenceType = $state // TODO: Verify store subscription is correct for Svelte 5<string>('police_report');
+	let priority = $state // TODO: Verify store subscription is correct for Svelte 5<string>('medium');
+	let sessionId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
 
 	// Analysis pipeline steps with enhanced metadata
 	const steps = [
@@ -82,7 +82,7 @@
 	];
 
 	// Current step tracking
-	let currentStep = $derived(steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25));
+	let currentStep = $derived // TODO: Verify store subscription is correct for Svelte 5(steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25));
 
 	// File upload handler
 	function handleFileUpload(event: Event) {
@@ -235,7 +235,7 @@
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceFile">Upload File (optional)</Label>
-				<input type="file" id="evidenceFile" on:change={handleFileUpload} class="file-input" />
+				<input type="file" id="evidenceFile" onchange={handleFileUpload} class="file-input" />
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceContent">Evidence Content</Label>
@@ -252,10 +252,10 @@
 			</div>
 		</CardContent>
 		<CardFooter>
-			<Button on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent} class="upload-btn">
+			<Button onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent} class="upload-btn">
 				{analyzing ? 'Analyzing...' : 'Start Analysis'}
 			</Button>
-			<Button on:click={resetForm} variant="outline" class="reset-btn">Reset</Button>
+			<Button onclick={resetForm} variant="outline" class="reset-btn">Reset</Button>
 		</CardFooter>
 	</Card>
 
@@ -326,7 +326,7 @@
 				{/if}
 			</CardContent>
 			<CardFooter>
-				<Button on:click={() => viewDetailedResults(results!)}>View Details</Button>
+				<Button onclick={() => viewDetailedResults(results!)}>View Details</Button>
 			</CardFooter>
 		</Card>
 	{/if}

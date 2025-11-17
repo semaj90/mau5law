@@ -1,6 +1,6 @@
 <script lang="ts">
   // Minimal test page to verify server works
-  let timestamp = $state(new Date().toISOString());
+  let timestamp = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(new Date().toISOString());
 </script>
 
 <main class="page-repair">

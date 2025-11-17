@@ -1,10 +1,10 @@
 ﻿import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { redisService } from '$lib/server/redis-service.js';
-import { lokiRedisCache } from '$lib/cache/loki-redis-integration.js'; // Assuming named export
-import { instantSearchEngine } from '$lib/services/instant-search-engine.js'; // Assuming named export
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { redisService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-service.js';
+import { lokiRedisCache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/cache/loki-redis-integration.js'; // Assuming named export
+import { instantSearchEngine } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/instant-search-engine.js'; // Assuming named export
 
-// Define SearchResult locally as it's not exported from $lib/types based on errors
+// Define SearchResult locally as it's not exported from $lib // TODO: Verify store subscription is correct for Svelte 5/types based on errors
 interface SearchResult {
   id?: string;
   responseTime?: number;
@@ -403,7 +403,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // For production, use centralized logging or remove debug logs.
     // Example: logEvent('instant-search-test-completed', results.summary);
     // Centralized logging for production
-    // import { logEvent } from '$lib/server/logging-service.js'
+    // import { logEvent } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/logging-service.js'
     // await logEvent('instant-search-test-completed', results.summary)
     return json(results);
   } catch (err: unknown) {

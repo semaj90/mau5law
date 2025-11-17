@@ -3,7 +3,7 @@ import { json, error } from '@sveltejs/kit';
 
 // Archived non-essential handlers preserved for reference/reuse
 // Moved out of +server.ts to keep the active endpoint lean and focused.
-import { librarySyncService } from '$lib/services/library-sync-service';
+import { librarySyncService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/library-sync-service';
 
 // Local copy of backend config and forwarder to keep this module self-contained
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:8000';

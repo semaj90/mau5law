@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /* * Enhanced Vector Pipeline API Endpoint * Integrates MinIO law PDFs with FastEmbed for optimized vector search */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { minio } from '$lib/server/minio/client';
-import { db } from '$lib/server/db';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { minio } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio/client';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
 
 /* * Typed DB wrapper and helpers to avoid `any` casts */
 // Tighten DB typing (avoid `any`)
@@ -258,7 +258,7 @@ class VectorPipelineService {
     return chunks.filter((chunk) => chunk.trim().length > 0);
   }
 
-  /* * Generate embeddings using FastEmbed service (prefer $lib/services/embedding-service) */
+  /* * Generate embeddings using FastEmbed service (prefer $lib // TODO: Verify store subscription is correct for Svelte 5/services/embedding-service) */
   private async generateEmbeddings(texts: string[], model: string): Promise<number[][]> {
     try {
       // Prefer the centralized embeddingService (may wrap Ollama / other backends)
@@ -455,7 +455,7 @@ class VectorPipelineService {
     if (options.filters) {
       const filterConditions = Object.entries(options.filters).map(([key, value]) => {
         params.push(value);
-        return `metadata->>'${key}' = $${params.length}`;
+        return `metadata->>'${key}' = $$ // TODO: Verify store subscription is correct for Svelte 5{params.length}`;
       });
       if (filterConditions.length > 0) {
         whereClause = 'WHERE ' + filterConditions.join(' AND ');

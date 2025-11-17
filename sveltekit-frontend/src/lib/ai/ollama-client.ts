@@ -168,9 +168,9 @@ export function getOllamaEndpoint(model: 'gemma3-legal:latest' | 'embeddinggemma
  *
  * // In a Svelte component:
  * <script lang="ts">
- * import { ollamaClient, getOllamaEndpoint } from '$lib/ai/ollama-client';
+ * import { ollamaClient, getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/ollama-client';
  *
- * let response = $state<string>('');
+ * let response = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
  *
  * async function ask(question: string): Promise<void> {
  *   const result = await ollamaClient.generate(question, {

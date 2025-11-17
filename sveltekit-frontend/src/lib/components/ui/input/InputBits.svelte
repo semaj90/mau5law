@@ -25,7 +25,7 @@
     onfocus,
     onblur,
     ...rest
-  }: Props = $props();
+  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="relative">

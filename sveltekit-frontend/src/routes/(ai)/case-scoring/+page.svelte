@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CaseScoringDashboard } from '$lib/components/ai/CaseScoringDashboard';
+  import { CaseScoringDashboard } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/CaseScoringDashboard';
 </script>
 
 <main class="page-container">

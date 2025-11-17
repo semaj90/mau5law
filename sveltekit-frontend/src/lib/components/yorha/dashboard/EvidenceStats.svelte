@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { appStore } from '$lib/stores/app-store';
+  import { appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
   import { onMount } from 'svelte';
 
-  let stats = $state({
+  let stats = $state // TODO: Verify store subscription is correct for Svelte 5({
     totalDocuments: 15432,
     processedToday: 247,
     aiAnalyzed: 12847,
@@ -10,14 +10,14 @@
     evidenceQuality: 94
   });
 
-  let chartData = $state([
+  let chartData = $state // TODO: Verify store subscription is correct for Svelte 5([
     { label: 'Documents', value: stats.totalDocuments, color: 'bg-cyan-400' },
     { label: 'AI Analyzed', value: stats.aiAnalyzed, color: 'bg-green-400' },
     { label: 'Pending', value: stats.pendingReview, color: 'bg-yellow-400' }
   ]);
 
-  let loading = $state(true);
-  let error: string | null = $state(null);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null);
 
   async function loadEvidenceStats() {
     try {

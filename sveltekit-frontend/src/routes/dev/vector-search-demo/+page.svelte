@@ -1,8 +1,8 @@
 <script lang="ts">
 `
-import type { SearchResult } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
+import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
 </script>
 
 <main class="page-repair">

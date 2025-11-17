@@ -1,6 +1,6 @@
 import crypto from 'crypto'; // Added import for crypto
 
-// Legal Case Store - Svelte 5 Runes Implementation. Types are imported from $lib/types.
+// Legal Case Store - Svelte 5 Runes Implementation. Types are imported from $lib // TODO: Verify store subscription is correct for Svelte 5/types.
 export interface User {
   id: string;
   role: string;
@@ -41,27 +41,27 @@ export interface AuditLogEntry {
 
 export function createLegalCaseStore() {
   // State using Svelte, 5 runes
-  let cases: LegalCase[] = $state([]);
-  let selectedCase = $state<LegalCase | null>(null); // Changed to 'let'
-  const aiInsights = $state<Record<string, AIInsights>>({});
-  let auditLog: AuditLogEntry[] = $state([]);
-  let currentUser = $state<User | null>({
+  let cases: LegalCase[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let selectedCase = $state // TODO: Verify store subscription is correct for Svelte 5<LegalCase | null>(null); // Changed to 'let'
+  const aiInsights = $state // TODO: Verify store subscription is correct for Svelte 5<Record<string, AIInsights>>({});
+  let auditLog: AuditLogEntry[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let currentUser = $state // TODO: Verify store subscription is correct for Svelte 5<User | null>({
     // Changed to 'let'
     id: 'demo-user-001',
     clearanceLevel: 3,
     role: 'legal-analyst',
   });
-  const loading = $state({ cases: false, analysis: false, documents: false });
+  const loading = $state // TODO: Verify store subscription is correct for Svelte 5({ cases: false, analysis: false, documents: false });
 
   // Derived state for filtered cases based on user clearance
-  const filteredCases = $derived(
+  const filteredCases = $derived // TODO: Verify store subscription is correct for Svelte 5(
     !currentUser
       ? []
       : cases.filter((legalCase) => legalCase.confidentialityLevel <= currentUser.clearanceLevel)
   );
 
   // Derived state for case statistics
-  const caseStats = $derived({
+  const caseStats = $derived // TODO: Verify store subscription is correct for Svelte 5({
     total: filteredCases.length,
     active: filteredCases.filter((c) => c.status === 'active').length,
     pending: filteredCases.filter((c) => c.status === 'pending').length,
@@ -84,7 +84,7 @@ export function createLegalCaseStore() {
         timestamp: new Date(),
         ...action,
       };
-      auditLog.push(newLogEntry); // Directly update the $state auditLog
+      auditLog.push(newLogEntry); // Directly update the $state // TODO: Verify store subscription is correct for Svelte 5 auditLog
     },
   };
 

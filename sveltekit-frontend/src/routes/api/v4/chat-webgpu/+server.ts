@@ -3,13 +3,13 @@
  * High-performance chat with RTX, 3060 Ti optimization and tensor acceleration
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import * as webgpuAIModule from '$lib/webgpu/webgpu-ai-engine.js'; // Changed to namespace import
-import { WebGPURedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
-import ollamaChatStream from '$lib/services/ollamaChatStream.js';
-import { getRedisClient } from '$lib/server/cache/redis';
-import { LLM_MODEL /*, requireRedis */ } from '$lib/server/ai/legal-rag-pipeline'; // Removed unused requireRedis
+import * as webgpuAIModule from '$lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-ai-engine.js'; // Changed to namespace import
+import { WebGPURedisOptimizer } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/webgpu-redis-optimizer.js';
+import ollamaChatStream from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollamaChatStream.js';
+import { getRedisClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis';
+import { LLM_MODEL /*, requireRedis */ } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/legal-rag-pipeline'; // Removed unused requireRedis
 
 // Define a minimal interface for the Redis client methods used
 interface RedisClientWithRateLimitMethods {

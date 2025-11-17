@@ -1,10 +1,10 @@
 <script lang="ts">
-  import PhoenixProsecutorDashboard from '$lib/components/yorha/PhoenixProsecutorDashboard.svelte';
+  import PhoenixProsecutorDashboard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/PhoenixProsecutorDashboard.svelte';
 
-  let { data } = $props();
+  let { data } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   // Extract caseId from URL params if available
-  let caseId = $derived(data?.caseId || null);
+  let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.caseId || null);
 </script>
 
 <svelte:head>

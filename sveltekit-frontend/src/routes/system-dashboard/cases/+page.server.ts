@@ -1,6 +1,6 @@
 ﻿import type { ServerLoad } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import pool from '$lib/server/db/client';
+import pool from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
 
 export type CaseSummary = {
   id: string;

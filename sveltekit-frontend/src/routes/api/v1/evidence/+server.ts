@@ -1,8 +1,8 @@
 ﻿import { json, error } from '@sveltejs/kit';
-import { db } from '$lib/server/db/client.js';
-import { evidence } from '$lib/server/db/schema-postgres';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js';
+import { evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

@@ -4,7 +4,7 @@ import {
   legalAIMachine,
   type LegalAIEvent,
   type LegalAIContext,
-} from '$lib/machines/legalAIMachine.v5';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/machines/legalAIMachine.v5';
 
 // Create the actor for the legal AI machine
 let legalAIActor: ReturnType<typeof createActor<typeof legalAIMachine>> | undefined;

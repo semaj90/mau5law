@@ -1,8 +1,8 @@
 import { json } from "@sveltejs/kit";
-import { neo4jDriver } from "$lib/server/neo4j-driver";
-import { db } from "$lib/server/db/drizzle";
-import { evidence, cases, poi } from "$lib/server/db/schema-postgres";
-import { vectorSearchService } from "$lib/services/real-vector-search-service";
+import { neo4jDriver } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/neo4j-driver";
+import { db } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle";
+import { evidence, cases, poi } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres";
+import { vectorSearchService } from "$lib // TODO: Verify store subscription is correct for Svelte 5/services/real-vector-search-service";
 import { eq } from "drizzle-orm";
 
 export async function GET({ url }) {
@@ -19,7 +19,7 @@ export async function GET({ url }) {
 
     if (caseId) {
       graphQuery = `
-        MATCH (c:Case {id: $caseId})<-[:BELONGS_TO]-(e:Evidence)-[r:SIMILAR]-(b:Evidence)-[:BELONGS_TO]->(c)
+        MATCH (c:Case {id: $caseId // TODO: Verify store subscription is correct for Svelte 5})<-[:BELONGS_TO]-(e:Evidence)-[r:SIMILAR]-(b:Evidence)-[:BELONGS_TO]->(c)
         RETURN e, r, b LIMIT 750
       `;
     }

@@ -1,8 +1,8 @@
-import { db } from '$lib/server/db';
-import { webEmbeddings, webPages } from '$lib/server/db/schema-web';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import { webEmbeddings, webPages } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-web';
 import { sql } from 'drizzle-orm';
-import { generateEmbedding } from '$lib/server/ai/embeddings';
-import { aiRerank } from '$lib/server/ai/rerank-gemma';
+import { generateEmbedding } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/embeddings';
+import { aiRerank } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/rerank-gemma';
 
 export interface SearchResult {
   id: string;

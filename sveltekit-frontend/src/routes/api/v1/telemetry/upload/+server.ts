@@ -2,8 +2,8 @@
 // Receives and processes structured upload telemetry events
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { TelemetryEvent } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/upload-telemetry-service';
 
 interface TelemetryBatch {
   sessionId: string;

@@ -1,20 +1,20 @@
 <!-- NieR-Themed Rich Text Editor Page Legal AI Platform - Text, Editor -->
 <script lang="ts">
-  import type { Document } from '$lib/types';
-  import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from "$lib/components/ui/card"; // Assuming enhanced-bits.svelte exports these as named exports from card
-  import { Badge } from "$lib/components/ui/badge"; // Assuming badge.svelte exports as named export
+  import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import NierRichTextEditor from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/editors/NierRichTextEditor.svelte';
+  import { Card, CardHeader, CardTitle, CardContent } from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card"; // Assuming enhanced-bits.svelte exports these as named exports from card
+  import { Badge } from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge"; // Assuming badge.svelte exports as named export
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
-  import NesCard from "$lib/components/ui/nes-ui.svelte"; // Assuming nes-ui.svelte exports as default, but using named import for consistency if possible, otherwise keep default.
+  import NesCard from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/nes-ui.svelte"; // Assuming nes-ui.svelte exports as default, but using named import for consistency if possible, otherwise keep default.
 
   // Editor state
-  let editorValue = $state<string>('');
-  let documentTitle = $state<string>('Untitled Document');
-  let lastSaved = $state<Date | null>(null);
-  let isModified = $state<boolean>(false);
+  let editorValue = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let documentTitle = $state // TODO: Verify store subscription is correct for Svelte 5<string>('Untitled Document');
+  let lastSaved = $state // TODO: Verify store subscription is correct for Svelte 5<Date | null>(null);
+  let isModified = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   // Document metadata
-  let documentStats = $derived(() => {
+  let documentStats = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     const trimmed = editorValue.trim();
     return {
       words: trimmed ? trimmed.split(/\s+/).length : 0,

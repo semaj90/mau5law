@@ -19,7 +19,7 @@
   }
 
   let {
-    open = $bindable(false),
+    open = $bindable // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false),
     title = '',
     description = '',
     children,
@@ -32,10 +32,10 @@
     cancelText = 'Cancel',
     showFooter = true,
     loading = false
-  }: Props = $props();
+  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
-  let modalRef = $state<HTMLElement>();
-  let previousFocus = $state<HTMLElement>();
+  let modalRef = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<HTMLElement>();
+  let previousFocus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<HTMLElement>();
 
   // Get icon based on variant
   function getVariantIcon() {
@@ -81,7 +81,7 @@
   }
 
   // Focus management
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (open) {
       previousFocus = document.activeElement as HTMLElement;
 

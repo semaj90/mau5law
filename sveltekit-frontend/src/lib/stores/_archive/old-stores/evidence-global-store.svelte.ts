@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 
 /**
  * Evidence Management Global Store - SvelteKit: 2 + Svelte: 5
@@ -70,12 +70,12 @@ export interface UIState {
 
 // Global Evidence Store Svelte: 5 Runes
 class EvidenceGlobalStore {
-  // Core data using $state
-  cases = $state<Record<string, LegalCase>>({});
-  currentCaseId = $state<string | null>(null);
+  // Core data using $state // TODO: Verify store subscription is correct for Svelte 5
+  cases = $state // TODO: Verify store subscription is correct for Svelte 5<Record<string, LegalCase>>({});
+  currentCaseId = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // UI state
-  ui = $state<UIState>({
+  ui = $state // TODO: Verify store subscription is correct for Svelte 5<UIState>({
     selectedNodeIds: [],
     draggedNodeId: null,
     modalOpen: false,
@@ -88,19 +88,19 @@ class EvidenceGlobalStore {
   });
 
   // Performance tracking
-  stats = $state({
+  stats = $state // TODO: Verify store subscription is correct for Svelte 5({
     totalNodes: 0,
     totalConnections: 0,
     aiSuggestionsGenerated: 0,
     lastSync: 0
   });
 
-  // Derived state using $derived
-  currentCase = $derived(this.currentCaseId ? this.cases[this.currentCaseId] : null);
-  currentNodes = $derived(this.currentCase?.nodes || []);
-  selectedNodes = $derived(this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)));
-  filteredNodes = $derived(this.applyFilters(this.currentNodes));
-  hasUnsavedChanges = $derived(this.checkUnsavedChanges());
+  // Derived state using $derived // TODO: Verify store subscription is correct for Svelte 5
+  currentCase = $derived // TODO: Verify store subscription is correct for Svelte 5(this.currentCaseId ? this.cases[this.currentCaseId] : null);
+  currentNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(this.currentCase?.nodes || []);
+  selectedNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)));
+  filteredNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(this.applyFilters(this.currentNodes));
+  hasUnsavedChanges = $derived // TODO: Verify store subscription is correct for Svelte 5(this.checkUnsavedChanges());
 
   // Web Worker for background AI processing
   aiWorker: Worker | null = null;
@@ -366,7 +366,7 @@ class EvidenceGlobalStore {
     this.ui.aiProcessing = true;
     try {
       // Import AI services dynamically
-      const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
+      const { legalLocalAI } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/ai/browser-local-ai.js');
       const suggestions = await legalLocalAI.suggestEvidenceLinks(
         this.currentNodes.map(node => ({
           id: node.id,

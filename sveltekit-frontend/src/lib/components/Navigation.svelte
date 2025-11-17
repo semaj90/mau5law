@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
   import { onMount } from 'svelte';
 
   // Props interface
@@ -10,11 +10,11 @@
     toggleSidebar?: () => void;
   }
 
-  let { sidebarOpen = false, setSidebarOpen, toggleSidebar }: Props = $props();
+  let { sidebarOpen = false, setSidebarOpen, toggleSidebar }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   // Local state
-  let isMobile = $state(false);
-  let currentPath = $state('/');
+  let isMobile = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let currentPath = $state // TODO: Verify store subscription is correct for Svelte 5('/');
 
   // Navigation items
   const navItems = [
@@ -27,7 +27,7 @@
   ];
 
   // Update current path
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     const unsubscribe = page.subscribe((pageData) => {
       currentPath = pageData.url.pathname;
     });

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/client';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
 import { sql } from 'drizzle-orm';
 
 export async function GET() {

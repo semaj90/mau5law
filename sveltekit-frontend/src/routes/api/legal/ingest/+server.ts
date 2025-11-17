@@ -1,10 +1,10 @@
-import redis from '$lib/server/redis-client'; // Changed to default import
+import redis from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-client'; // Changed to default import
 import { json, error } from '@sveltejs/kit';
 import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
 import type { RedisClientType } from 'redis';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import neo4j from 'neo4j-driver'; // Add Neo4j driver import
 
 // Define PdfParseResult interface
@@ -147,7 +147,7 @@ const TRUSTED_LEGAL_SOURCES = [
 
 // Import for production storage: Persists processed LegalDocument[] to PostgreSQL/pgvector for downstream RAG and search.
 // Expected: contract | storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void>
-import { storeDocumentsInDatabase } from '$lib/server/db';
+import { storeDocumentsInDatabase } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
@@ -686,7 +686,7 @@ function calculateCaseAISummaryScore(documents: LegalDocument[]): number {
 
 // getRedisClient function - returns the already imported and presumably connected client
 async function getRedisClient(): Promise<RedisClientType | null> {
-  // The 'redis' import from '$lib/server/redis-client' is expected to be the connected client.
+  // The 'redis' import from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-client' is expected to be the connected client.
   // We'll assume it's already connected or handles its own connection lifecycle.
   // A simple ping can verify, but might not be strictly necessary if the client module guarantees readiness.
   try {
@@ -714,7 +714,7 @@ async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string):
 
     // Create or update Case node
     await session.run(
-      `MERGE (c:Case {id: $caseId})
+      `MERGE (c:Case {id: $caseId // TODO: Verify store subscription is correct for Svelte 5})
              SET c.timestamp = datetime()`,
       { caseId }
     );
@@ -722,10 +722,10 @@ async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string):
     for (const doc of documents) {
       // Create or update Document node
       await session.run(
-        `MERGE (d:Document {id: $docId})
-                 ON CREATE SET d.filename = $filename, d.jurisdiction = $jurisdiction, d.extractedTextSnippet = $extractedTextSnippet
-                 ON MATCH SET d.filename = $filename, d.jurisdiction = $jurisdiction, d.extractedTextSnippet = $extractedTextSnippet
-                 MERGE (c:Case {id: $caseId})-[:CONTAINS_DOCUMENT]->(d)`,
+        `MERGE (d:Document {id: $docId // TODO: Verify store subscription is correct for Svelte 5})
+                 ON CREATE SET d.filename = $filename // TODO: Verify store subscription is correct for Svelte 5, d.jurisdiction = $jurisdiction // TODO: Verify store subscription is correct for Svelte 5, d.extractedTextSnippet = $extractedTextSnippet // TODO: Verify store subscription is correct for Svelte 5
+                 ON MATCH SET d.filename = $filename // TODO: Verify store subscription is correct for Svelte 5, d.jurisdiction = $jurisdiction // TODO: Verify store subscription is correct for Svelte 5, d.extractedTextSnippet = $extractedTextSnippet // TODO: Verify store subscription is correct for Svelte 5
+                 MERGE (c:Case {id: $caseId // TODO: Verify store subscription is correct for Svelte 5})-[:CONTAINS_DOCUMENT]->(d)`,
         {
           docId: doc.id,
           filename: doc.filename,
@@ -738,10 +738,10 @@ async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string):
       // Create Entity nodes and relationships
       for (const entity of doc.entities) {
         await session.run(
-          `MERGE (e:Entity {text: $entityText, type: $entityType})
-                     ON CREATE SET e.jurisdiction = $jurisdiction, e.confidence = $confidence
-                     ON MATCH SET e.jurisdiction = $jurisdiction, e.confidence = $confidence
-                     MERGE (d:Document {id: $docId})-[:MENTIONS_ENTITY {type: $entityType, confidence: $confidence}]->(e)`,
+          `MERGE (e:Entity {text: $entityText // TODO: Verify store subscription is correct for Svelte 5, type: $entityType // TODO: Verify store subscription is correct for Svelte 5})
+                     ON CREATE SET e.jurisdiction = $jurisdiction // TODO: Verify store subscription is correct for Svelte 5, e.confidence = $confidence // TODO: Verify store subscription is correct for Svelte 5
+                     ON MATCH SET e.jurisdiction = $jurisdiction // TODO: Verify store subscription is correct for Svelte 5, e.confidence = $confidence // TODO: Verify store subscription is correct for Svelte 5
+                     MERGE (d:Document {id: $docId // TODO: Verify store subscription is correct for Svelte 5})-[:MENTIONS_ENTITY {type: $entityType // TODO: Verify store subscription is correct for Svelte 5, confidence: $confidence // TODO: Verify store subscription is correct for Svelte 5}]->(e)`,
           {
             entityText: entity.text,
             entityType: entity.type,
@@ -755,10 +755,10 @@ async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string):
       // Create FactCheck nodes and relationships
       for (const factCheck of doc.factChecks) {
         await session.run(
-          `MERGE (fc:FactCheck {claim: $claim})
-                     ON CREATE SET fc.status = $status, fc.confidence = $confidence, fc.jurisdiction = $jurisdiction, fc.sources = $sources
-                     ON MATCH SET fc.status = $status, fc.confidence = $confidence, fc.jurisdiction = $jurisdiction, fc.sources = $sources
-                     MERGE (d:Document {id: $docId})-[:HAS_FACTCHECK {status: $status, confidence: $confidence}]->(fc)`,
+          `MERGE (fc:FactCheck {claim: $claim // TODO: Verify store subscription is correct for Svelte 5})
+                     ON CREATE SET fc.status = $status // TODO: Verify store subscription is correct for Svelte 5, fc.confidence = $confidence // TODO: Verify store subscription is correct for Svelte 5, fc.jurisdiction = $jurisdiction // TODO: Verify store subscription is correct for Svelte 5, fc.sources = $sources // TODO: Verify store subscription is correct for Svelte 5
+                     ON MATCH SET fc.status = $status // TODO: Verify store subscription is correct for Svelte 5, fc.confidence = $confidence // TODO: Verify store subscription is correct for Svelte 5, fc.jurisdiction = $jurisdiction // TODO: Verify store subscription is correct for Svelte 5, fc.sources = $sources // TODO: Verify store subscription is correct for Svelte 5
+                     MERGE (d:Document {id: $docId // TODO: Verify store subscription is correct for Svelte 5})-[:HAS_FACTCHECK {status: $status // TODO: Verify store subscription is correct for Svelte 5, confidence: $confidence // TODO: Verify store subscription is correct for Svelte 5}]->(fc)`,
           {
             claim: factCheck.claim,
             status: factCheck.status,

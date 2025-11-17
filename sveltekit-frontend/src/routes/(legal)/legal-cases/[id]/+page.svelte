@@ -1,14 +1,14 @@
 <script lang="ts">
-import type { Case } from, '$lib/types';
-	import { goto } from, '$app/navigation';
-	import type { PageData } from, './$types';
+import type { Case } from, '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+	import { goto } from, '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+	import type { PageData } from, './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 	// Svelte, 5 runes
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
-	let caseData = $derived(data.case);
-	let caseId = $derived(data.caseId);
-	let error = $derived(data.error);
+	let caseData = $derived // TODO: Verify store subscription is correct for Svelte 5(data.case);
+	let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5(data.caseId);
+	let error = $derived // TODO: Verify store subscription is correct for Svelte 5(data.error);
 
 	// Status and priority colors
 	const statusStyles: Record<string { bg: string, text: string; label: string }> = {

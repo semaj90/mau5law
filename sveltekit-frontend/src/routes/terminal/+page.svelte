@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { OllamaGetEndpoint } from '$lib/server/ollama/client';
-  import { webgpuCapabilities } from '$lib/webgpu/webgpu-init';
+  import { OllamaGetEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/ollama/client';
+  import { webgpuCapabilities } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-init';
   import { onMount } from 'svelte';
 
-  let commandInput = $state('');
-  let terminalHistory = $state<any[]>([]);
-  let isProcessing = $state(false);
-  let currentMode = $state<'chat' | 'command' | 'analysis'>('chat');
+  let commandInput = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let terminalHistory = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let isProcessing = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let currentMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'chat' | 'command' | 'analysis'>('chat');
   let terminalRef: HTMLDivElement;
 
   // Terminal modes
@@ -17,8 +17,8 @@
   ];
 
   // Command history
-  let commandHistory = $state<string[]>([]);
-  let historyIndex = $state(-1);
+  let commandHistory = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let historyIndex = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(-1);
 
   // Available commands
   const availableCommands = {

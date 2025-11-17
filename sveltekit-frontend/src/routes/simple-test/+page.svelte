@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 
 // Keep this page small and valid while we repair corrupted portions elsewhere.
 let isSubmitting = false;

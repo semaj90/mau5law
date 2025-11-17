@@ -3,8 +3,8 @@
  * POST /api/v1/cases/[id]/detective - Toggle detective mode for case
  */
 import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import UserScopedCRUDService from '$lib/server/services/user-scoped-crud';
+import makeHttpErrorPayload from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/makeHttpError';
+import UserScopedCRUDService from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/user-scoped-crud';
 import { z } from 'zod';
 
 // UUID validation schema

@@ -1,6 +1,6 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
 import { redirect } from '@sveltejs/kit';
-import { invalidateSession, deleteSessionTokenCookie } from '$lib/server/session';
+import { invalidateSession, deleteSessionTokenCookie } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/session';
 
 export const load: PageServerLoad = async ({ cookies, locals }) => {
   if (!locals.user) throw redirect(302, '/login');

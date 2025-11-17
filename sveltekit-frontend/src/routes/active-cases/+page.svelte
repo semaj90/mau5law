@@ -1,7 +1,7 @@
 <script lang="ts">
-  import CaseFilters from '$lib/components/yorha/cases/CaseFilters.svelte';
-  import CasesList from '$lib/components/yorha/cases/CasesList.svelte';
-  import CaseStats from '$lib/components/yorha/cases/CaseStats.svelte';
+  import CaseFilters from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/cases/CaseFilters.svelte';
+  import CasesList from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/cases/CasesList.svelte';
+  import CaseStats from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/cases/CaseStats.svelte';
 </script>
 
 <div class="space-y-6">

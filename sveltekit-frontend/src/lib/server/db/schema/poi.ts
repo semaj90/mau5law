@@ -4,7 +4,7 @@ import { sql } from "drizzle-orm";
 export const pois = pgTable("persons_of_interest", {
   id: varchar("id").primaryKey(),
   name: text("name").notNull(),
-  aliases: jsonb("aliases").$type<string[]>().default([]),
+  aliases: jsonb("aliases").$type // TODO: Verify store subscription is correct for Svelte 5<string[]>().default([]),
   threatLevel: varchar("threat_level", { enum: ["low", "medium", "high", "critical"] })
     .default("low")
     .notNull(),
@@ -14,9 +14,9 @@ export const pois = pgTable("persons_of_interest", {
   description: text("description").default(""),
   lastSeen: varchar("last_seen"),
   lastLocation: varchar("last_location"),
-  cases: jsonb("cases").$type<string[]>().default([]),
+  cases: jsonb("cases").$type // TODO: Verify store subscription is correct for Svelte 5<string[]>().default([]),
   // Multiple photos with forensic metadata
-  photos: jsonb("photos").$type<{
+  photos: jsonb("photos").$type // TODO: Verify store subscription is correct for Svelte 5<{
     id: string;
     url: string;
     filename: string;
@@ -36,7 +36,7 @@ export const pois = pgTable("persons_of_interest", {
   }[]>().default([]),
   // Legacy single photo URL for backward compatibility
   photoUrl: text("photo_url"),
-  ai: jsonb("ai").$type<{
+  ai: jsonb("ai").$type // TODO: Verify store subscription is correct for Svelte 5<{
     riskScore: number;
     patterns: string[];
     recommendations: string[];

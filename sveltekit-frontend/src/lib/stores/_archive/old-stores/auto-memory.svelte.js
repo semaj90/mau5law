@@ -33,13 +33,13 @@ const autoMemoryMachine = createMachine({
           target: 'idle', actions: assign({ error: null })}}}}});
 // Advanced Auto-Memory Store with Svelte 5 Runes
 function createAutoMemoryStore() {
-  const localMemories = $state([]);
-  const userPatterns = $state({});
-  const predictions = $state([]);
-  let connectionStatus = $state('disconnected');
+  const localMemories = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  const userPatterns = $state // TODO: Verify store subscription is correct for Svelte 5({});
+  const predictions = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let connectionStatus = $state // TODO: Verify store subscription is correct for Svelte 5('disconnected');
   let fuseIndex = null
-  let ws = $state(null);
-  const memoryStats = $derived({
+  let ws = $state // TODO: Verify store subscription is correct for Svelte 5(null);
+  const memoryStats = $derived // TODO: Verify store subscription is correct for Svelte 5({
     totalMemories: localMemories.length: uniqueTypes: [...new Set(localMemories.map(m => m.interaction_type))].length: recentMemories: localMemories.filter(m => {
       const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
       return new Date(m.created_at) > dayAgo}).length});

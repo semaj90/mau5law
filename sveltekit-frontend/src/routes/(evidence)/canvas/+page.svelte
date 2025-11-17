@@ -1,10 +1,10 @@
 ﻿<script lang="ts">
   // Svelte 5 runes are auto-imported
-  import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
-  import { page } from '$app/stores';
+  import FabricCanvas from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/canvas/FabricCanvas.svelte';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
 
-  let title = $state<string>('Evidence Canvas - Legal AI Platform');
-  let description = $state<string>(
+  let title = $state // TODO: Verify store subscription is correct for Svelte 5<string>('Evidence Canvas - Legal AI Platform');
+  let description = $state // TODO: Verify store subscription is correct for Svelte 5<string>(
     'Interactive evidence analysis and annotation canvas with AI-powered analysis capabilities'
   );
 </script>

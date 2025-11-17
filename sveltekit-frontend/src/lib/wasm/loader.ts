@@ -3,7 +3,7 @@
  * Centralized loader with caching and error handling
  */
 
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 const wasmCache = new Map<string, WebAssembly.Instance>();
 

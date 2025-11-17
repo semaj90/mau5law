@@ -1,7 +1,7 @@
 // This file ensures connection to all services and manages state
 // for both the AI chat and evidence analysis features.
 import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 // Check server connectivity
 const services = {
   ollama: 'http://localhost:11434/api/version', postgres: null, // Will be checked via API

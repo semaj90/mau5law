@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { clientGemmaInference } from '$lib/ai/client-gemma-inference';
+  import { clientGemmaInference } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/client-gemma-inference';
   import { onMount } from 'svelte';
 
-  let isInitialized = $state(false);
-  let isInitializing = $state(false);
-  let initializationError = $state<string | null>(null);
+  let isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let isInitializing = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let initializationError = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
-  let prompt = $state('Explain the basics of contract law in simple terms.');
-  let response = $state('');
-  let isGenerating = $state(false);
+  let prompt = $state // TODO: Verify store subscription is correct for Svelte 5('Explain the basics of contract law in simple terms.');
+  let response = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let isGenerating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
-  let embeddingText = $state('This is a sample legal document for testing embeddings.');
-  let embeddingResult = $state<{embedding: number[], dimensions: number} | null>(null);
-  let isGeneratingEmbedding = $state(false);
+  let embeddingText = $state // TODO: Verify store subscription is correct for Svelte 5('This is a sample legal document for testing embeddings.');
+  let embeddingResult = $state // TODO: Verify store subscription is correct for Svelte 5<{embedding: number[], dimensions: number} | null>(null);
+  let isGeneratingEmbedding = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
   onMount(async () => {
     isInitializing = true;

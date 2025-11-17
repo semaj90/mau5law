@@ -2,7 +2,7 @@
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Use runes-style local state for mount flag
-  let mounted = $state<boolean>(false);
+  let mounted = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   onMount(() => {
     mounted = true;

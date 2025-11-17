@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
-  import type { Document } from '$lib/types';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
   import { onMount } from 'svelte';
 
   // Keep only icons actually used; remove unused ones to silence linter warnings.
   import { Cpu, Brain, Zap, Database, Activity } from 'lucide-svelte';
 
   // Removed unused UI imports (Button/Badge/Textarea/LLMSelector) to avoid "declared but never read".
-  import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
+  import type { AITask, LLMModel } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/ai-worker.js';
 
   // Use namespace import to avoid TS errors when the module has different export shapes.
-  import * as aiWorkerService from '$lib/services/ai-worker-manager.js';
+  import * as aiWorkerService from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ai-worker-manager.js';
 
   // dynamic orchestrator component (workaround for modules without a typed default export)
   let OrchestratorComponent: unknown = null;
@@ -18,7 +18,7 @@
   onMount(() => {
     (async () => {
       try {
-        const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
+        const mod = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/MultiLLMOrchestrator.svelte');
         // prefer default export, then named export, then module itself
         OrchestratorComponent =
           (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown }).default ??
@@ -41,7 +41,7 @@
   let selectedModel: LLMModel | undefined = undefined;
   let userPrompt =
     'Analyze the following legal document for key terms, potential issues, and recommendations...';
-  let isProcessing = $state<boolean>(false);
+  let isProcessing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let demoResults: DemoResult[] = [];
 
   // Demo scenarios

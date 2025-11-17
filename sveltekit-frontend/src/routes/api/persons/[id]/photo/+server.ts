@@ -1,8 +1,8 @@
-import db from "$lib/server/db/drizzle";
-import { poiPhotos, personsOfInterest } from "$lib/server/db/schema-postgres";
+import db from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle";
+import { poiPhotos, personsOfInterest } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
+import type { RequestHandler } from "./$types // TODO: Verify store subscription is correct for Svelte 5";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 import sharp from "sharp";

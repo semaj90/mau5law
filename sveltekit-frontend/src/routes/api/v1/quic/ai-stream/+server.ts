@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 /* * QUIC AI Stream API - Real-time AI Streaming Service * Provides AI streaming with WebSocket + HTTP/3 support and session management * Port: 8447 (QUIC), 8448 (HTTP/2 fallback) * Backends: Ollama (11434), Enhanced RAG (8094) */
 import { json, error } from '@sveltejs/kit';
 import crypto from 'crypto';
-import { getEnhancedRagUrl } from '$lib/utils/enhanced-rag-endpoint'; // Import new helper
+import { getEnhancedRagUrl } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/enhanced-rag-endpoint'; // Import new helper
 
 const getOllamaBaseUrl = (): string => {
   return process.env.OLLAMA_BASE_URL || 'http://ollama:11434';

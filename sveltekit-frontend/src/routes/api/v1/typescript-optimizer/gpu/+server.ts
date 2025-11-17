@@ -1,12 +1,12 @@
 import { json } from '@sveltejs/kit'; // Added json import
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 // GPU-Accelerated TypeScript Error Processing
 // NVIDIA RTX, 3060 Ti optimized processing for high-performance TypeScript error fixing
 import type {
   OptimizedFixRequest,
   OptimizedFixResponse,
   GPUProcessingStats,
-} from '$lib/types/typescript-optimizer';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/typescript-optimizer';
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094'; // Removed extra space
 

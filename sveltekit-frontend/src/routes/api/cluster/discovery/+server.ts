@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
 /*
  * Service Discovery and Failover API
@@ -360,7 +360,7 @@ async function checkServiceHealth(
     return { serviceId, status: 'unknown', error: 'Service not found' };
   }
 
-  // Use $force to decide whether to perform an immediate health check.
+  // Use $force // TODO: Verify store subscription is correct for Svelte 5 to decide whether to perform an immediate health check.
   // If not forced and last check was recent (e.g. within 5s), return cached status.
   try {
     const lastCheckIso = service.health?.lastCheck;
@@ -490,7 +490,7 @@ async function executeFailover(
       return { success: false, error: `Target instance not found or unhealthy` };
     }
 
-    service.failover.primary = false; // Removed $state
+    service.failover.primary = false; // Removed $state // TODO: Verify store subscription is correct for Svelte 5
     service.status = 'unhealthy';
     target.failover.primary = true;
 

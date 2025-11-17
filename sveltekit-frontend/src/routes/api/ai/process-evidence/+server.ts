@@ -1,8 +1,8 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
-import { getUser } from '$lib/server/auth';
-import { redisMiddleware } from '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint, getEnhancedRagEndpoint } from '$lib/server/endpoints';
+import { getUser } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth';
+import { redisMiddleware } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint, getEnhancedRagEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/endpoints';
 
 // --- Types ---
 type EvidenceItem = Record<string, unknown>;

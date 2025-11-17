@@ -1,6 +1,6 @@
 <script lang="ts">
   // Define props using Svelte 5 runes
-  let { title, value }: { title: string; value: string } = $props();
+  let { title, value }: { title: string; value: string } = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <main class="page-repair">

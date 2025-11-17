@@ -1,10 +1,10 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import ollamaChatStream from '$lib/services/ollamaChatStream'; // Changed to default import
-import * as vectorDBService from '$lib/server/services/vectorDBService'; // Namespace import remains
-import { chatRateLimiter } from '$lib/server/middleware/rate-limiter'; // Import remains, file created
+import ollamaChatStream from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollamaChatStream'; // Changed to default import
+import * as vectorDBService from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/vectorDBService'; // Namespace import remains
+import { chatRateLimiter } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/middleware/rate-limiter'; // Import remains, file created
 import { createHash } from 'node:crypto';
-import { getOllamaEndpoint, getChatModel } from '$lib/utils/ollama'; // Updated to import model getter
-import logger from '$lib/server/logger'; // Reverted to default import
+import { getOllamaEndpoint, getChatModel } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama'; // Updated to import model getter
+import logger from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/logger'; // Reverted to default import
 
 // Define an interface for the expected methods from vectorDBService
 interface VectorDBServiceWithChatMethods {

@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
-  import type { User } from '$lib/types';
+  import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
   import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
 
   interface AdminLayoutData {
     user?: {
@@ -15,7 +15,7 @@
     children?: Snippet;
   }
 
-  let { data = {}, children }: Props = $props();
+  let { data = {}, children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   const navItems = [
     { href: '/admin', label: 'Overview', icon: 'ðŸ“Š' },
@@ -57,7 +57,7 @@
 
     <nav class="nav-list">
       {#each Array.isArray(navItems) ? navItems : [] as item}
-        <a href={item.href} class:active={isActive($page.url.pathname, item.href)}>
+        <a href={item.href} class:active={isActive($page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.pathname, item.href)}>
           <span class="nav-icon">{item.icon}</span>
           <span class="nav-label">{item.label}</span>
         </a>

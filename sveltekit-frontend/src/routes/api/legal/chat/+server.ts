@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/client'; // Corrected path for db client
-import { legalAnalysisSessions, legalDocuments, legalPrecedents } from '$lib/server/db/schema'; // Schema objects
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client'; // Corrected path for db client
+import { legalAnalysisSessions, legalDocuments, legalPrecedents } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema'; // Schema objects
 import { eq, like, and, desc } from 'drizzle-orm'; // Drizzle ORM functions
 
 type DBCondition = SQL | undefined; // Use SQL type for Drizzle conditions
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const relevantSources = await findRelevantLegalSources(prompt, caseId);
     const analysisResult = await generateLegalAnalysis(prompt, relevantSources, context);
 
-    const sessionInsert: typeof legalAnalysisSessions.$inferInsert = {
+    const sessionInsert: typeof legalAnalysisSessions.$inferInsert // TODO: Verify store subscription is correct for Svelte 5 = {
       caseId: caseId || null,
       userId,
       sessionType,

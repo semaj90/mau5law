@@ -1,6 +1,6 @@
 // AI Magnetic Mode API Route
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 // POST /api/evidence/ai/magnetize - Calculate force-directed layout for magnetic mode
 export async function POST({ request }: { request: Request }) {

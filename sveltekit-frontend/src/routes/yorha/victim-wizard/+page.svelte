@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invalidateAll } from '$app/navigation';
+  import { invalidateAll } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
 
   type IncidentForm = {
     victimName: string;
@@ -11,7 +11,7 @@
     immediateNeeds: string;
   };
 
-  const form = $state<IncidentForm>({
+  const form = $state // TODO: Verify store subscription is correct for Svelte 5<IncidentForm>({
     victimName: '',
     reporterEmail: '',
     dateTime: '',
@@ -21,10 +21,10 @@
     immediateNeeds: ''
   });
 
-  let currentStep = $state(1);
-  let isSubmitting = $state(false);
-  let aiOutput = $state<string | null>(null);
-  let errorMessage = $state<string | null>(null);
+  let currentStep = $state // TODO: Verify store subscription is correct for Svelte 5(1);
+  let isSubmitting = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let aiOutput = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   const steps = [
     { id: 1, title: 'Victim & Reporter' },
@@ -118,7 +118,7 @@
       </div>
 
       <div class="actions">
-        <button class="nes-btn is-primary" on:click={nextStep}>Next</button>
+        <button class="nes-btn is-primary" onclick={nextStep}>Next</button>
       </div>
     {/if}
 
@@ -146,8 +146,8 @@
       </label>
 
       <div class="actions">
-        <button class="nes-btn" on:click={prevStep}>Back</button>
-        <button class="nes-btn is-primary" on:click={nextStep}>Next</button>
+        <button class="nes-btn" onclick={prevStep}>Back</button>
+        <button class="nes-btn is-primary" onclick={nextStep}>Next</button>
       </div>
     {/if}
 
@@ -177,8 +177,8 @@
       {/if}
 
       <div class="actions">
-        <button class="nes-btn" on:click={prevStep}>Back</button>
-        <button class="nes-btn is-success" disabled={isSubmitting} on:click={submitStatement}>
+        <button class="nes-btn" onclick={prevStep}>Back</button>
+        <button class="nes-btn is-success" disabled={isSubmitting} onclick={submitStatement}>
           {isSubmitting ? 'Generating…' : 'Generate Statement'}
         </button>
       </div>

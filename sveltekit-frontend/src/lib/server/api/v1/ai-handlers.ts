@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
-import type { EmbeddingService } from '$lib/server/embeddings';
-import type { OllamaService } from '$lib/server/ollama';
+import type { EmbeddingService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embeddings';
+import type { OllamaService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ollama';
 
 interface UserType {
   id: string;

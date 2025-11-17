@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Dialog, DialogContent } from '$lib/components/ui/dialog';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import { Dialog, DialogContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/tabs';
   import { Camera, ChevronLeft, ChevronRight, Download, Eye, X, ZoomIn, ZoomOut } from 'lucide-svelte';
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   export let photos: any[] = [];
   export let currentIndex: number = 0;
@@ -80,7 +80,7 @@
             alt={currentPhoto.originalName}
             class="max-w-full max-h-full object-contain transition-transform duration-200"
             style="transform: scale({zoomLevel})"
-            on:keydown={(e) => {
+            onkeydown={(e) => {
               if (e.key === 'ArrowLeft') prevPhoto();
               if (e.key === 'ArrowRight') nextPhoto();
               if (e.key === '+') zoomIn();
@@ -93,14 +93,14 @@
           {#if photos.length > 1}
             <button
               class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-              on:click={prevPhoto}
+              onclick={prevPhoto}
               disabled={currentIndex === 0}
             >
               <ChevronLeft class="w-6 h-6" />
             </button>
             <button
               class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-              on:click={nextPhoto}
+              onclick={nextPhoto}
               disabled={currentIndex === photos.length - 1}
             >
               <ChevronRight class="w-6 h-6" />
@@ -109,13 +109,13 @@
 
           <!-- Zoom Controls -->
           <div class="absolute top-4 right-4 flex gap-2">
-            <Button variant="secondary" size="sm" on:click={zoomOut} disabled={zoomLevel <= 0.5}>
+            <Button variant="secondary" size="sm" onclick={zoomOut} disabled={zoomLevel <= 0.5}>
               <ZoomOut class="w-4 h-4" />
             </Button>
-            <Button variant="secondary" size="sm" on:click={zoomIn} disabled={zoomLevel >= 3}>
+            <Button variant="secondary" size="sm" onclick={zoomIn} disabled={zoomLevel >= 3}>
               <ZoomIn class="w-4 h-4" />
             </Button>
-            <Button variant="secondary" size="sm" on:click={downloadPhoto}>
+            <Button variant="secondary" size="sm" onclick={downloadPhoto}>
               <Download class="w-4 h-4" />
             </Button>
           </div>
@@ -134,7 +134,7 @@
         <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold">Photo Analysis</h3>
-            <Button variant="ghost" size="sm" on:click={close}>
+            <Button variant="ghost" size="sm" onclick={close}>
               <X class="w-4 h-4" />
             </Button>
           </div>

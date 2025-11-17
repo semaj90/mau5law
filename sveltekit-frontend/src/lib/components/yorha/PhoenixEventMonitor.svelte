@@ -11,13 +11,13 @@
     [key: string]: any;
   }
 
-  let { show = true } = $props<{
+  let { show = true } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     show?: boolean;
   }>();
 
-  let events: PhoenixEvent[] = $state([]);
+  let events: PhoenixEvent[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
   let eventSource: EventSource | null = null;
-  let isConnected = $state(false);
+  let isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
   onMount(() => {
     if (show) {

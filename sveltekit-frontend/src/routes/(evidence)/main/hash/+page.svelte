@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
   import { onMount } from 'svelte';
-  import { page } from '$app/state';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/state';
 
-  let hashInput = $state<string>(
+  let hashInput = $state // TODO: Verify store subscription is correct for Svelte 5<string>(
     '81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd'
   );
   let searchResult: unknown = null;
-  let loading = $state<boolean>(false);
-  let error = $state<string>('');
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     // Check if hash was provided in URL
     const urlHash = page.url.searchParams.get('hash');
     if (urlHash) {

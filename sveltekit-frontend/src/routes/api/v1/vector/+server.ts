@@ -1,10 +1,10 @@
-﻿import type { RequestHandler } from './$types.js'; // Unified Vector Processing API Endpoint // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js'; // Unified Vector Processing API Endpoint // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL
 import { json } from '@sveltejs/kit';
 import type {
   VectorOperationRequest,
   VectorOperationResponse,
   VectorJobResult,
-} from '$lib/types/vector-jobs';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/vector-jobs';
 
 // Environment configuration
 const VECTOR_SERVICE_URL = import.meta.env.VECTOR_SERVICE_URL || 'http://localhost:5178/vector';
@@ -237,8 +237,8 @@ async function processDefault(
   // Fallback to PostgreSQL-only processing
   try {
     // Store job in database outbox for eventual processing
-    const db = await import('$lib/server/db/drizzle');
-    const { vectorOutbox } = await import('$lib/server/db/schema-postgres');
+    const db = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle');
+    const { vectorOutbox } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres');
     await db.default.insert(vectorOutbox).values({
       ownerType: request.ownerType,
       ownerId: request.ownerId,
@@ -394,7 +394,7 @@ async function checkServiceHealth(serviceUrl: string): Promise<boolean> {
 
 async function checkDatabaseHealth(): Promise<boolean> {
   try {
-    const db = await import('$lib/server/db/drizzle');
+    const db = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle');
     // Simple query to test connection
     await db.default.execute('SELECT 1');
     return true;
@@ -471,8 +471,8 @@ async function getJobStatus(
   }
   try {
     // Check job status in database
-    const db = await import('$lib/server/db/drizzle');
-    const { vectorJobs } = await import('$lib/server/db/schema-postgres');
+    const db = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle');
+    const { vectorJobs } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres');
     const { eq } = await import('drizzle-orm');
     const job = await db.default.select().from(vectorJobs).where(eq(vectorJobs.id, jobId)).limit(1);
 

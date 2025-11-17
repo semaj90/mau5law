@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
-  import { appActions, appStore } from '$lib/stores/app-store';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
+  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
   import { onDestroy, onMount } from 'svelte';
 
   // YoRHaModalComponent is being replaced by bits-ui Dialog
 
-  let selectedSection = $state('command-center');
-  let showNewCaseModal = $state(false);
-  let newCaseData = $state({
+  let selectedSection = $state // TODO: Verify store subscription is correct for Svelte 5('command-center');
+  let showNewCaseModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let newCaseData = $state // TODO: Verify store subscription is correct for Svelte 5({
     title: '',
     description: '',
     priority: 'medium',
   });
 
-  let loading = $state(true);
-  let error: string | null = $state(null);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null);
 
-  const sections = $state([
+  const sections = $state // TODO: Verify store subscription is correct for Svelte 5([
     { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
     { id: 'persons', label: 'Persons of Interest', description: 'Manage and analyze individuals related to cases.' },
     { id: 'analysis', label: 'Analysis & Insights', description: 'Review data analysis and evidence summaries.' },
@@ -25,12 +25,12 @@
     { id: 'search', label: 'Global Search', description: 'Comprehensive search across all data sources.' },
   ]);
 
-  let evidenceInsights = $state([]);
-  let recentCases = $state([]);
+  let evidenceInsights = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let recentCases = $state // TODO: Verify store subscription is correct for Svelte 5([]);
 
   // Subscribe to store
-  let appState = $state();
-  $effect(() => {
+  let appState = $state // TODO: Verify store subscription is correct for Svelte 5();
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     const unsubscribe = appStore.subscribe(state => {
       appState = state;
     });

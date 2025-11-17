@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { EvidenceItem } from '$lib/components/ui/EvidenceCanvas.svelte';
-  import EvidenceCanvas from '$lib/components/ui/EvidenceCanvas.svelte';
+  import type { EvidenceItem } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/EvidenceCanvas.svelte';
+  import EvidenceCanvas from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/EvidenceCanvas.svelte';
 
-  let evidenceItems: EvidenceItem[] = $state([
+  let evidenceItems: EvidenceItem[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
     {
       id: '1',
       title: 'Contract Agreement',

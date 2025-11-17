@@ -1,6 +1,6 @@
-﻿import { SimpleAuthService } from '$lib/server/auth-simple';
-import { lucia } from '$lib/server/auth'; // Changed to a named import
-import type { RequestHandler } from './$types.js';
+﻿import { SimpleAuthService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth-simple';
+import { lucia } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth'; // Changed to a named import
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 // Define the User interface for type safety
 interface User {
@@ -12,7 +12,7 @@ interface User {
 }
 
 // Locally define the expected methods for SimpleAuthService to satisfy type checker.
-// The actual SimpleAuthService class in '$lib/server/auth-simple' must implement these methods.
+// The actual SimpleAuthService class in '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth-simple' must implement these methods.
 // interface ISimpleAuthService {
 //     authenticateDemoUser(): Promise<User>;
 // }

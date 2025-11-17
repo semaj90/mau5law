@@ -3,9 +3,9 @@
   error,
   type RequestHandler,
 } from "@sveltejs/kit";
-import makeHttpErrorPayload from "$lib/server/api/makeHttpError";
-import { db } from "$lib/server/db/unified-client";
-import { citations } from "$lib/server/db/schemas/cases-schema";
+import makeHttpErrorPayload from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/makeHttpError";
+import { db } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-client";
+import { citations } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schemas/cases-schema";
 import { eq, InferModel } from "drizzle-orm";
 import { z } from "zod";
 

@@ -44,11 +44,11 @@ export { default as Search } from './search/Search.svelte';
 export { default as User } from './user/User.svelte';
 
 // Component usage guide:
-// import { Button, Card } from '$lib/components/ui';
+// import { Button, Card } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui';
 // Core components
-// import { NES } from '$lib/components/ui';
+// import { NES } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui';
 // NES gaming style
-// import { Bits } from '$lib/components/ui';
+// import { Bits } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui';
 // bits-ui based
 
 export { default as SearchBox } from './SearchBox.svelte';

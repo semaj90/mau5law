@@ -1,4 +1,4 @@
-declare module '$lib/server/webgpu-redis-optimizer.js' {
+declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/webgpu-redis-optimizer.js' {
   export class WebGPURedisOptimizer {
     constructor();
     setOptimized(

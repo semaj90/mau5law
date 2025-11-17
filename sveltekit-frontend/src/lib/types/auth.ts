@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Authentication Types * Standardized types for user sessions and authentication */ export interface SessionUser { id: string, email: string, name: string | null,role: string, isActive: boolean}
 export interface UserSession { user: SessionUser | null}
 export interface SessionValidationResult { user: SessionUser | null; isValid, boolean}

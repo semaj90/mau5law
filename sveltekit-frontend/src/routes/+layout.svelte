@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import CommandCenterNav from '$lib/components/yorha/CommandCenterNav.svelte';
-  import SystemStatus from '$lib/components/yorha/SystemStatus.svelte';
-  import { cpuFallback } from '$lib/webgpu/webgpu-cpu-fallback';
-  import { webgpu } from '$lib/webgpu/webgpu-init';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import CommandCenterNav from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/CommandCenterNav.svelte';
+  import SystemStatus from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/SystemStatus.svelte';
+  import { cpuFallback } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-cpu-fallback';
+  import { webgpu } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-init';
   import { onMount } from 'svelte';
   import { derived } from 'svelte/store';
 
-  // Simple boolean flags (avoid incorrect $state usage)
+  // Simple boolean flags (avoid incorrect $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 usage)
   let webgpuReady = false;
   let cpuFallbackReady = false;
 
@@ -28,8 +28,8 @@
   });
 
   // Derived store based on the page store (runes-mode compatible)
-  const isCommandCenter = derived(page, ($page) => {
-    const path = $page.url.pathname;
+  const isCommandCenter = derived(page, ($page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) => {
+    const path = $page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.pathname;
     return (
       path.startsWith('/yorha') ||
       path === '/' ||

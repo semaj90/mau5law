@@ -2,9 +2,9 @@
 // Svelte, 5 runes are auto-imported
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
-  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
-  import type { PageData } from './$types.js';
-  const { data }: { data: PageData } = $props();
+  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload.js';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
+  const { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {
     validators: zod(evidenceUploadSchema),
@@ -23,27 +23,27 @@
   // File upload state
   let selectedFile: File | null = null
   let filePreview: string | null = null
-  let dragOver = $state<boolean>(false);
+  let dragOver = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   // Removed unused 'uploading' and 'progressPercent'
-  let metadata = $state<any>(null);
+  let metadata = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
   // Handle file selection
   async function handleFileSelect(file: File): Promise<any> {
     selectedFile = file; // Fixed: 'fil' to 'file'
     // Validate file size
     if (!validateFileSize(file, 100 * 1024 * 1024)) { // Added max size argument (100MB)
-      $errors.file = ['File size exceeds 100MB limit'];
+      $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file = ['File size exceeds 100MB limit'];
       selectedFile = null
       return}
 
     // Auto-detect evidence type from file
-    const detectedType = getFileTypeFromMime(file.type, $form.evidence_type); // Added second argument
+    const detectedType = getFileTypeFromMime(file.type, $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type); // Added second argument
     if (detectedType !== 'UNKNOWN') {
-      $form.evidence_type = detectedType as any;
+      $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type = detectedType as any;
     }
 
     // Validate file type against evidence type
-    if (!validateFileType(file, $form.evidence_type)) {
-      $errors.file = [`File type ${file.type} not supported for ${$form.evidence_type} evidence`];
+    if (!validateFileType(file, $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type)) {
+      $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file = [`File type ${file.type} not supported for ${$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type} evidence`];
       selectedFile = null
       return}
 
@@ -54,7 +54,7 @@
 
     // Generate metadata preview with fallback
     try {
-      metadata = await generateMetadataFromFile(file, $form.evidence_type)} catch (error) {
+      metadata = await generateMetadataFromFile(file, $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type)} catch (error) {
       console.warn('Failed to generate metadata preview:', error);
       // Provide mock metadata as fallback
       metadata = {
@@ -62,7 +62,7 @@
         error: 'failure default to mock',
         fallbackMetadata: { fileName: file.name,
           fileSize: file.size,
-          mimeType: file.type, detectedType: $form.evidence_type, // Fixed: comma
+          mimeType: file.type, detectedType: $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type, // Fixed: comma
           estimatedProcessingTime: '2-5 minutes',
           suggestedTags: ['document', 'evidence'],
           confidenceLevel: 'medium'
@@ -71,9 +71,9 @@
     }
 
     // Clear unknown file errors
-    if ($errors.file) {
-      delete $errors.file; // Fixed: '$errors.fil' to '$errors.file'
-      $errors = $errors; // Fixed: '$error' to '$errors'
+    if ($errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file) {
+      delete $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file; // Fixed: '$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.fil' to '$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file'
+      $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5; // Fixed: '$error // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5' to '$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5'
     }
   }
 
@@ -103,10 +103,10 @@
   function onEvidenceTypeChange() {
     if (selectedFile) {
       // Re-validate file when evidence type changes
-      if (!validateFileType(selectedFile, $form.evidence_type)) {
-        $errors.file = [`File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`]} else if ($errors.file) {
-        delete $errors.file; // Fixed: '$errors.fil' to '$errors.file'
-        $errors = $errors; // Fixed: '$error' to '$errors'
+      if (!validateFileType(selectedFile, $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type)) {
+        $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file = [`File type ${selectedFile.type} not supported for ${$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.evidence_type} evidence`]} else if ($errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file) {
+        delete $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file; // Fixed: '$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.fil' to '$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.file'
+        $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5; // Fixed: '$error // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5' to '$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5'
       }
     }
   }

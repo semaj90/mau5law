@@ -135,15 +135,15 @@ export const searchConfigTable = pgTable('search_config', {
 });
 
 // Types for enhanced type safety
-export type Case = typeof casesTable.$inferSelect;
-export type NewCase = typeof casesTable.$inferInsert;
-export type Document = typeof documentsTable.$inferSelect;
-export type NewDocument = typeof documentsTable.$inferInsert;
-export type Evidence = typeof evidenceTable.$inferSelect;
-export type NewEvidence = typeof evidenceTable.$inferInsert;
-export type TimelineEvent = typeof timelineEventsTable.$inferSelect;
-export type NewTimelineEvent = typeof timelineEventsTable.$inferInsert;
-export type VectorSimilarity = typeof vectorSimilarityView.$inferSelect;
-export type QueryCacheEntry = typeof queryCache.$inferSelect;
-export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
-export type SearchConfig = typeof searchConfigTable.$inferSelect;
+export type Case = typeof casesTable.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type NewCase = typeof casesTable.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
+export type Document = typeof documentsTable.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type NewDocument = typeof documentsTable.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
+export type Evidence = typeof evidenceTable.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type NewEvidence = typeof evidenceTable.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
+export type TimelineEvent = typeof timelineEventsTable.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type NewTimelineEvent = typeof timelineEventsTable.$inferInsert // TODO: Verify store subscription is correct for Svelte 5;
+export type VectorSimilarity = typeof vectorSimilarityView.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type QueryCacheEntry = typeof queryCache.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type AnalyticsEvent = typeof analyticsEvents.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+export type SearchConfig = typeof searchConfigTable.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;

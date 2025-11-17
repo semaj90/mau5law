@@ -1,5 +1,5 @@
 import { apiFetch } from '../clients/api-client.js';
-import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Import the new utility
+import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/endpoints'; // Import the new utility
 
 export interface EmbedRequest {
   text: string;

@@ -13,10 +13,10 @@
   }
 
   // 2. Update laws type
-  let laws: Law[] = $state([]);
-  let loading = $state<boolean>(true);
+  let laws: Law[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
   let error: string | null = null;
-  let searchQuery = $state<string>('');
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
 
   // 3. Fix data fetching with onMount
   onMount(() => {
@@ -36,7 +36,7 @@
       }
     })();
   });
-  let filteredLaws = $derived(
+  let filteredLaws = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
     laws.filter(
       (law) =>
         (law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||

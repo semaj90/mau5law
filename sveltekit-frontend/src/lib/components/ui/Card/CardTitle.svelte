@@ -5,7 +5,7 @@
     [key: string]: any;
   }
 
-  let { class: className = '', children, ...rest }: Props = $props();
+  let { class: className = '', children, ...rest }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <h3

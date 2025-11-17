@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   interface Evidence {
     id: string;
@@ -23,18 +23,18 @@
     };
   }
 
-  let { caseId = null, initialEvidence = [] } = $props<{
+  let { caseId = null, initialEvidence = [] } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     caseId?: string | null;
     initialEvidence?: Evidence[];
   }>();
 
   const dispatch = createEventDispatcher();
 
-  let narrative = $state('');
-  let selectedEvidence = $state<Evidence[]>(initialEvidence);
-  let isGenerating = $state(false);
-  let generatedReport = $state<PoliceReport | null>(null);
-  let activeSection = $state<string | null>(null);
+  let narrative = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let selectedEvidence = $state // TODO: Verify store subscription is correct for Svelte 5<Evidence[]>(initialEvidence);
+  let isGenerating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let generatedReport = $state // TODO: Verify store subscription is correct for Svelte 5<PoliceReport | null>(null);
+  let activeSection = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   async function generateReport() {
     if (!narrative.trim() && selectedEvidence.length === 0) {

@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json, error } from '@sveltejs/kit';
 
 /**
@@ -8,11 +8,11 @@ import { json, error } from '@sveltejs/kit';
  * Validates Windows-native deployment and multi-protocol communication
  */
 
-import { ensureError } from '$lib/utils/ensure-error';
-import { dev } from '$app/environment';
-import { APIOrchestrator } from '$lib/services/api-orchestrator.js';
-import { embeddingService } from '$lib/server/embedding-service.js';
-import type { APIResponse, APIRequestContext } from '$lib/types/api.js';
+import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
+import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { APIOrchestrator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/api-orchestrator.js';
+import { embeddingService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embedding-service.js';
+import type { APIResponse, APIRequestContext } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/api.js';
 import crypto from 'crypto';
 
 export interface IntegrationTestResult {

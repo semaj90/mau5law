@@ -1,5 +1,5 @@
 <script lang="ts">
-  import GraphView from '$lib/components/GraphView.svelte';
+  import GraphView from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/GraphView.svelte';
   import { onDestroy, onMount } from 'svelte';
   import ContradictionReveal from './ContradictionReveal.svelte';
   import EvidenceComparisonOverlay from './evidence/EvidenceComparisonOverlay.svelte';
@@ -21,40 +21,40 @@
     confidence: string;
   }
 
-  let { caseId = null } = $props<{
+  let { caseId = null } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     caseId?: string | null;
   }>();
 
-  let selectedEvidence: Evidence[] = $state([]);
-  let showComparison = $state(false);
-  let showHUD = $state(true);
-  let showEventMonitor = $state(true);
-  let currentContradictions: string[] = $state([]);
-  let isProsecutorMode = $state(true);
+  let selectedEvidence: Evidence[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let showComparison = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showHUD = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let showEventMonitor = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let currentContradictions: string[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let isProsecutorMode = $state // TODO: Verify store subscription is correct for Svelte 5(true);
 
   // Prosecutor mode state
-  let investigationActive = $state(false);
-  let evidenceCount = $state(0);
-  let contradictionsFound = $state(0);
-  let aiSummariesReady = $state(0);
+  let investigationActive = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let evidenceCount = $state // TODO: Verify store subscription is correct for Svelte 5(0);
+  let contradictionsFound = $state // TODO: Verify store subscription is correct for Svelte 5(0);
+  let aiSummariesReady = $state // TODO: Verify store subscription is correct for Svelte 5(0);
 
   // Risk meter + SSE
   let eventSource: EventSource | null = null;
-  let riskScore = $state(48);
-  let riskInsights = $state<{ message: string; delta: number; timestamp: string }[]>([]);
-  let riskTrend = $state<'up' | 'down' | 'steady'>('steady');
-  let lastCaseTheory = $state<string | null>(null);
+  let riskScore = $state // TODO: Verify store subscription is correct for Svelte 5(48);
+  let riskInsights = $state // TODO: Verify store subscription is correct for Svelte 5<{ message: string; delta: number; timestamp: string }[]>([]);
+  let riskTrend = $state // TODO: Verify store subscription is correct for Svelte 5<'up' | 'down' | 'steady'>('steady');
+  let lastCaseTheory = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // Predictive recommendations
-  let didYouMean = $state<string[]>([]);
-  let predictiveSummary = $state('');
-  let graphRecommendations = $state<RecommendationItem[]>([]);
-  let predictiveSignals = $state<string[]>([]);
-  let isLoadingRecommendations = $state(false);
-  let lastRecommendationQuery = $state('Investigation overview');
+  let didYouMean = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let predictiveSummary = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let graphRecommendations = $state // TODO: Verify store subscription is correct for Svelte 5<RecommendationItem[]>([]);
+  let predictiveSignals = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let isLoadingRecommendations = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let lastRecommendationQuery = $state // TODO: Verify store subscription is correct for Svelte 5('Investigation overview');
 
-  let riskLevel = $derived(riskScore >= 70 ? 'critical' : riskScore >= 40 ? 'elevated' : 'stable');
-  let riskLabel = $derived(
+  let riskLevel = $derived // TODO: Verify store subscription is correct for Svelte 5(riskScore >= 70 ? 'critical' : riskScore >= 40 ? 'elevated' : 'stable');
+  let riskLabel = $derived // TODO: Verify store subscription is correct for Svelte 5(
     riskLevel === 'critical' ? 'Critical Risk' : riskLevel === 'elevated' ? 'Elevated Risk' : 'Stable'
   );
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, CardContent } from '$lib/components/ui/card';
+  import { Card, CardContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
 </script>
 
 <main class="page-repair">

@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import { webgpuLangChainBridge, processLegalDocumentWithWebGPU, processBatchDocumentsWithWebGPU, getLangChainWebGPUStats, type LangChainWebGPUConfig } from '$lib/server/webgpu-langchain-bridge.js';
+import { webgpuLangChainBridge, processLegalDocumentWithWebGPU, processBatchDocumentsWithWebGPU, getLangChainWebGPUStats, type LangChainWebGPUConfig } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/webgpu-langchain-bridge.js';
 
 /**
  * WebGPU-Enhanced LangExtract API

@@ -87,7 +87,7 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Process Document</h2>
 
-            <form on:submit|preventDefault={handleSubmit} class="space-y-4">
+            <form onsubmit|preventDefault={handleSubmit} class="space-y-4">
                 <div>
                     <label for="documentUrl" class="block text-sm font-medium text-gray-700 mb-2">
                         Document URL

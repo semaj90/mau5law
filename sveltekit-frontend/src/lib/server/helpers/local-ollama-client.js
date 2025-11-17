@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
 
 const API_URL = env.OLLAMA_API_URL || env.PUBLIC_OLLAMA_API_URL || 'http://localhost:11434';
 const EMBEDDING_MODEL = env.OLLAMA_EMBED_MODEL || 'nomic-embed-text';

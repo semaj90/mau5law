@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * XState State Machine for Evidence Processing Workflow * Handles the complete lifecycle of evidence from upload to AI analysis */ import {
   createMachine,
   assign,

@@ -30,18 +30,18 @@
     createdAt: string;
   }
 
-  let { currentCase = null } = $props<{
+  let { currentCase = null } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     currentCase?: Case | null;
   }>();
 
-  let activeModule = $state<'map' | 'police' | 'cross-exam' | 'judicial' | 'timeline'>('map');
-  let caseEvidence = $state<Evidence[]>([]);
-  let witnesses = $state<Witness[]>([]);
-  let charges = $state<string[]>([]);
-  let selectedWitness = $state<Witness | null>(null);
+  let activeModule = $state // TODO: Verify store subscription is correct for Svelte 5<'map' | 'police' | 'cross-exam' | 'judicial' | 'timeline'>('map');
+  let caseEvidence = $state // TODO: Verify store subscription is correct for Svelte 5<Evidence[]>([]);
+  let witnesses = $state // TODO: Verify store subscription is correct for Svelte 5<Witness[]>([]);
+  let charges = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let selectedWitness = $state // TODO: Verify store subscription is correct for Svelte 5<Witness | null>(null);
 
   // Mock data for demonstration - in real app this would come from database
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (currentCase) {
       // Load case data
       caseEvidence = [

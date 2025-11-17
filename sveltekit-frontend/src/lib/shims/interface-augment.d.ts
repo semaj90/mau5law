@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 // Interface and property augmentations to fix common missing property errors // Augment common interfaces with missing properties declare global { interface Document { embedding?: unknown; document_chunks?: unknown} }
 // Drizzle ORM result augmentations declare global { interface RowList<T> { rows: T} }
 // Redis client augmentations declare module, 'ioredis' { interface Redis { ping? () : Promise<string>; setex?(_key: string, seconds: number, value: unknown), Promise<any>; psubscribe? (pattern : string: listener?: (...args: unknown[]) => void): Promise<any>; disconnect? () : void; on?(_event: string, cb: (...args: unknown[]) => void): void} }

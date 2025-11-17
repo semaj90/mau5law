@@ -1,7 +1,7 @@
-﻿import unifiedClient from '$lib/server/db/unified-client'; // Changed to default import
+﻿import unifiedClient from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-client'; // Changed to default import
 import { sql } from 'drizzle-orm';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const GET: RequestHandler = async () => {
 	try {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async () => {
 
 		// Test 5: Qdrant Connection Check
 		const qdrant = unifiedClient.qdrant(); // Changed unifiedDb to unifiedClient
-		let qdrantSupport = false; // Changed from $state<boolean>(false)
+		let qdrantSupport = false; // Changed from $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false)
 		if (qdrant) {
 			try {
 				await qdrant.getCollections();
