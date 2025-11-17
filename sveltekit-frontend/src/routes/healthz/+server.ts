@@ -1,5 +1,5 @@
-﻿import { json } from '@sveltejs/kit';
-import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/redis';
+import { json } from '@sveltejs/kit';
+import { redis } from '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();
   let redisOk = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);

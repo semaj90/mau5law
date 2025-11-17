@@ -1,8 +1,8 @@
-﻿import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
 import { Client as MinioClient } from 'minio'; // Corrected import and aliasing
 import { Buffer } from 'buffer';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client'; // Corrected import path for db
-import * as enhancedEmbeddingSchema from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/enhanced-embedding-schema'; // Import schema as a namespace
+import { db } from '$lib/server/db/client'; // Corrected import path for db
+import * as enhancedEmbeddingSchema from '$lib/server/db/enhanced-embedding-schema'; // Import schema as a namespace
 import { DocumentUploadSchema, type UploadData } from './schema';
 import { fail } from '@sveltejs/kit';
 

@@ -1,14 +1,14 @@
-﻿// Minimal, forgiving ambient declarations to reduce noisy type errors during iterative fixes.
+// Minimal, forgiving ambient declarations to reduce noisy type errors during iterative fixes.
 // Add more specific typings progressively as files are stabilized.
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/shims/xstate' {
+declare module '$lib/shims/xstate' {
 	export function createMachine(...args: any[]): any;
 	export function assign(...args: any[]): any;
 	export function fromPromise(...args: any[]): any;
 	export type AnyEventObject = Record<string, unknown>;
 }
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload' {
+declare module '$lib/schemas/evidence-upload' {
 	export type VideoMetadata = {
 		id?: string;
 		filename?: string;
@@ -85,7 +85,7 @@ declare module 'redis' {
 }
 
 /* Server/db module stubs used in the codebase */
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js' {
+declare module '$lib/server/db/client.js' {
 	/** Minimal typed exports for common query usage in the codebase */
 	export function query<T = unknown>(sql: string, params?: unknown[]): Promise<DBQueryResult<T>>;
 	export function ensureEvidenceTable(): Promise<void> | void;
@@ -93,20 +93,20 @@ declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 
 	export default client;
 }
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle' {
+declare module '$lib/server/db/drizzle' {
 	const enhanced_db: unknown;
 	export { enhanced_db };
 	export default enhanced_db;
 }
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/index' {
+declare module '$lib/server/db/index' {
 	export const isPostgreSQL: unknown;
 	export const users: unknown;
 	const _default: unknown;
 	export default _default;
 }
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/database' {
+declare module '$lib/server/database' {
 	export const documents: unknown;
 	export const embeddings: unknown;
 	export const searchSessions: unknown;
@@ -114,20 +114,20 @@ declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 
 	export default _default;
 }
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/redis-service' {
+declare module '$lib/server/redis-service' {
 	export const redisService: SimpleRedis;
 	const _default: SimpleRedis;
 	export default _default;
 }
 
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/nomic-embedding-service' {
+declare module '$lib/services/nomic-embedding-service' {
 	const nomicEmbeddings: unknown;
 	export { nomicEmbeddings };
 	export default nomicEmbeddings;
 }
 
 /* Generic catch-all for unstable internal modules */
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/*' {
+declare module '$lib/*' {
 	const whatever: unknown;
 	export default whatever;
 }

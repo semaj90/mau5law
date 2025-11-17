@@ -14,7 +14,7 @@ export class MoogleGraphSynthesizer {
   wasmInstance: WebAssembly.Instance | null = null;
   private renderingCache: Map<string, any> = new Map();
   gpuCache: LegalGPUAwareCache;
-  private gpuCacheInitialized: boolean = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  private gpuCacheInitialized: boolean = $state(false);
   gl: WebGL2RenderingContext | null = null;
   private shaderPrograms: Map<string, WebGLProgram> = new Map();
   vertexBuffers: Map<string, WebGLBuffer> = new Map();

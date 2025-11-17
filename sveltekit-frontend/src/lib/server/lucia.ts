@@ -1,5 +1,5 @@
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db'; // Consolidated import for db
-import { users, sessions } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema'; // Import users and sessions from schema
+import { db } from '$lib/server/db'; // Consolidated import for db
+import { users, sessions } from '$lib/server/db/schema'; // Import users and sessions from schema
 import bcrypt from 'bcryptjs';
 import type { Cookies } from '@sveltejs/kit';
 import { Lucia } from 'lucia';

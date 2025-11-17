@@ -1,15 +1,12 @@
 <script lang="ts">
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'bits-ui/components/ui/dialog';
-// Svelte, 5 runes are auto-imported
-import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Card.svelte';
-import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Input.svelte';
-import Select from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Select.svelte';
-import Textarea from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Textarea.svelte';
+import Card from '$lib/components/ui/Card.svelte';
+import Input from '$lib/components/ui/Input.svelte';
+import Select from '$lib/components/ui/Select.svelte';
+import Textarea from '$lib/components/ui/Textarea.svelte';
 import { onMount } from 'svelte';
-// Use namespace imports with runtime fallback to handle files that may not export a default
-// Error handling: toast is used for user-facing notifications (success/error) per platform standards
-import { cn } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils.js';
-import { Edit, Filter, Grid, List, Plus, Trash2 } from 'lucide-svelte';
+import { cn } from '$lib/utils.js';
+import { Edit, FilterIcon as Filter, GridIcon as Grid, List, Plus, Trash2 } from 'lucide-svelte';
 import { toast } from 'svelte-sonner';
 
 interface PhysicalDescription {
@@ -68,23 +65,23 @@ interface FormData {
 }
 
 // State
-let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'list'>('grid');
-let showFilters = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-let showCreateDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-let showEditDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-let selectedPoi = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi | null>(null); // Use Poi interface
-let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-let isSubmitting = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+let searchQuery = $state<string>('');
+let viewMode = $state<'grid' | 'list'>('grid');
+let showFilters = $state<boolean>(false);
+let showCreateDialog = $state<boolean>(false);
+let showEditDialog = $state<boolean>(false);
+let selectedPoi = $state<Poi | null>(null); // Use Poi interface
+let isLoading = $state<boolean>(false);
+let isSubmitting = $state<boolean>(false);
 // Filter state
-let statusFilter = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-let priorityFilter = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
-let threatLevelFilter = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
+let statusFilter = $state<string>('all');
+let priorityFilter = $state<string>('all');
+let threatLevelFilter = $state<string>('all');
 // POI data
-let pois = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi[]>([]); // Use Poi interface
-let filteredPois = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi[]>([]); // Use Poi interface
+let pois = $state<Poi[]>([]); // Use Poi interface
+let filteredPois = $state<Poi[]>([]); // Use Poi interface
 // Form data
-let formData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi>({ // Use Poi interface
+let formData = $state<Poi>({ // Use Poi interface
   name: '',
   aliases: [],
   dateOfBirth: '',
@@ -113,9 +110,9 @@ let formData = $state // TODO: Verify store subscription is correct for Svelte 5
 });
 
 // String representations for array fields
-let aliasesString = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-let knownHabitsString = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-let associatesString = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+let aliasesString = $state<string>('');
+let knownHabitsString = $state<string>('');
+let associatesString = $state<string>('');
 
 // Load POIs from API
 async function loadPois(): Promise<any> {

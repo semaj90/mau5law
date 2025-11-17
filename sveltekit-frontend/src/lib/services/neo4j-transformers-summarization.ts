@@ -1,5 +1,5 @@
-﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /** * Cleaned and fixed Neo4j Transformers Summarization pipeline. * - Valid TypeScript, fixed imports / signatures / typos. * - Core methods preserved with simplified/defensive implementations. * - TODO markers where functionality can be extended. */ import neo4j from 'neo4j-driver';
 import * as langChainOllamaService from './langchain-ollama-llama-integration.js';
 import { vectorProxy } from './grpc-quic-vector-proxy.js';

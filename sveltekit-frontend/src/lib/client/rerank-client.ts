@@ -1,4 +1,4 @@
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { browser } from '$app/environment';
 import Loki from 'lokijs'; // Import Loki.js
 
 // Define a lightweight local type that captures the collection methods used here.

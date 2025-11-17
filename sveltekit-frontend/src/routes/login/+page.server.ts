@@ -1,19 +1,18 @@
-import { loginSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/auth';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
-import { users } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import { LoginSchema as loginSchema } from '$lib/schemas/auth';
+import { db } from '$lib/server/db/client';
+import { users } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-import { createUserSession, setSessionCookie, verifyPassword } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/lucia';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
 // Replace load to accept the full event and pass it to superValidate
 export const load: PageServerLoad = async (event) => {
   // use event.locals / event.url instead of destructuring only parts
-  const localsTyped = event.locals as App.Locals;
 
   // If user is already logged in, redirect to dashboard
-  if (localsTyped.user) {
+  if ((event.locals as any).user) {
     throw redirect(303, '/dashboard');
   }
 
@@ -54,11 +53,11 @@ export const actions: Actions = {
           .where(eq(users.email, email as string)) // Use eq directly
           .limit(1);
       } catch (e: unknown) {
+      } catch (e: unknown) {
         console.error('[Login] DB select failed: ', e);
-        return message(form, 'Login failed (db error). Please try again.', { status: 500 });
-      }
+        return fail(500, { form, message: 'Login failed (db error). Please try again.' });
       if (!Array.isArray(existingUser) || existingUser.length === 0) {
-        return message(form, 'Incorrect email or password', { status: 400 });
+        return fail(400, { form, message: 'Incorrect email or password' });
       }
       // Narrow the user shape for local usage
       const user = existingUser[0] as {
@@ -68,18 +67,18 @@ export const actions: Actions = {
         is_active?: boolean;
       };
       if (!user || !user.hashed_password) {
-        return message(form, 'Incorrect email or password', { status: 400 });
+        return fail(400, { form, message: 'Incorrect email or password' });
       }
       // Check if user is active
       if (!user.is_active) {
-        return message(form, 'Account is deactivated', { status: 403 });
+        return fail(403, { form, message: 'Account is deactivated' });
       }
 
       // Verify password using custom lucia
       const validPassword = await verifyPassword(user.hashed_password, password as string);
       if (!validPassword) {
         console.log(`[Login] Password verification failed for ${user.email}`);
-        return message(form, 'Incorrect email or password', { status: 400 });
+        return fail(400, { form, message: 'Incorrect email or password' });
       }
 
       // Create session using custom lucia
@@ -95,7 +94,7 @@ export const actions: Actions = {
     } catch (err: unknown) {
       console.error('[Login] Error: ', err);
       if (err instanceof Response) throw err;
-      return message(form, 'Login failed. Please try again.', { status: 500 });
+      return fail(500, { form, message: 'Login failed. Please try again.' });
     }
   },
 };

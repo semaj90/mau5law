@@ -1,5 +1,5 @@
 import { createMachine, assign, fromPromise } from 'xstate';
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib/types';
 import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 // Re-define Session interface for the machine's context

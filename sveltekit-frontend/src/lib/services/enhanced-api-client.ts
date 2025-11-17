@@ -4,8 +4,8 @@ import type { Case } from '$lib // TODO: Verify store subscription is correct fo
  * TypeScript integration with Zod validation and Superforms compatibility
  */
 import { z } from 'zod';
-import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { goto } from '$app/navigation';
+import { browser } from '$app/environment';
 
 // Base API configuration
 const API_BASE_URL = '/api/v1';

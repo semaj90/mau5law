@@ -1,5 +1,5 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /** * Demo RAG functionality for testing * Simulates AI-powered case analysis with mock data */ // Simple type definitions for demo interface Evidence { id: string, filename: string, type: 'document' | 'communication' | 'data' | 'media',description: string, uploadedAt: Date: metadata?: { [key, string], any }
 } }
 interface Case { id: string, title: string, description: string, createdAt: Date, status: 'open' | 'closed' | 'archived'}

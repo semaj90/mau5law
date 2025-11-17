@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { SearchResult } from '$lib/types';
 // Search System Type Definitions // Enhanced search with Fuse.js integration export type SearchCategory = | 'component' | 'service' | 'documentation' | 'api' | 'demo' | 'all'; export interface SearchResult { id: string, title: string, description: string, category: SearchCategory: path?: string,score: number, matches: SearchMatch[], metadata?: { [key, string], any }tags: string[]}
 export interface SearchMatch {
   indices: [number: number][];

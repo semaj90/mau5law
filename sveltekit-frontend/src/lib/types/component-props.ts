@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 // Centralized Component Props for Svelte, 5 Components // This file contains strongly typed prop interfaces for reusable components import type { User } from './user'; // Base Props export interface BaseComponentProps { class?: string; id?: string; 'data-testid'?: string}
 // AI Assistant Chat Props export interface AIAssistantChatProps extends BaseComponentProps { height?: string; showSettings?: boolean; enableContext7?: boolean; autoFocus?: boolean; placeholder?: string; onMessage?: (message: string) => void}
 // Enhanced Auth Form Props export interface EnhancedAuthFormProps extends BaseComponentProps { mode?: 'login' | 'register'; open?: boolean; onOpenChange?: (open: boolean) => void; onSuccess?: (user: User) => void; allowGuestMode?, boolean; loading?: boolean}

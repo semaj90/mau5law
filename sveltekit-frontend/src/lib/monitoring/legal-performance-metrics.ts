@@ -1,4 +1,4 @@
-﻿import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 /** * Legal Document Processing Performance Metrics * Comprehensive monitoring for Gemma3: legal-latest model and caching systems */ import { writable, derived, type Writable } from 'svelte/store'; export interface CacheHitMetrics { L1_GPU: number, L2_Memory: number, L3_Redis: number, L4_Database: number, overall: number}
 export interface LatencyMetrics { embedding_generation: number, similarity_search: number, result_retrieval: number, total_query_time: number, cache_lookup_time: number}
 export interface ResourceMetrics { gpu_vram_usage: number; // MB used of RTX, 3060 Ti: system_ram_usage: number; // MB used of system RAM: redis_memory_usage: number; // MB used in Redis: postgres_cache_size: number; // MB used in PostgreSQL cache: cpu_usage: number; // Percentage: gpu_utilization: number; // Percentage }

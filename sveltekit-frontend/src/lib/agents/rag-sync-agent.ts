@@ -1,4 +1,4 @@
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { browser } from '$app/environment';
 import { IndexedDBService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/indexeddb-service'; // Corrected: Named import
 // import type { LegalDocumentJSON } from "$lib // TODO: Verify store subscription is correct for Svelte 5/wasm/simd-json-wrapper"; // New import - This import is causing the error.
 import * as vectorWasm from '$lib // TODO: Verify store subscription is correct for Svelte 5/wasm/vector-wasm-wrapper'; // Fix: Changed to namespace import to resolve 'no default export' error

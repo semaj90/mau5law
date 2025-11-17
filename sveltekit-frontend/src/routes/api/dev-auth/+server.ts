@@ -1,7 +1,7 @@
-﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { dev } from '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming
 import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
 import { users, sessions, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';

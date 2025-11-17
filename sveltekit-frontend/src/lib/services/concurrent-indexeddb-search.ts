@@ -54,7 +54,7 @@ export class ConcurrentIndexedDBSearch {
   private fuse: InstanceType<typeof Fuse> | null = null;
   workers: Worker[] = [];
   private workerPool: number = 4;
-  private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  private isInitialized = $state(false);
   documents: SearchableDocument[] = [];
 
   constructor() {

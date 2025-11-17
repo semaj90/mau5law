@@ -5,7 +5,7 @@ import redis from '$lib // TODO: Verify store subscription is correct for Svelte
 import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { resolveUser, getMetaEnv } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
 import { json } from '@sveltejs/kit';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { dev } from '$app/environment';
 
 const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
 const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;

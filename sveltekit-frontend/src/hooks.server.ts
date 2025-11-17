@@ -1,8 +1,8 @@
 import type { Handle } from '@sveltejs/kit';
-import { createRuntimeConnection, closeConnections } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
-import { getRedisClient, closeRedisClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis';
-import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/messaging/rabbitmq';
-import { setLuciaAvailabilityForUploads } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/auth/contextual-upload-guard';
+import { createRuntimeConnection, closeConnections } from '$lib/server/db/client';
+import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
+import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
+import { setLuciaAvailabilityForUploads } from '$lib/server/auth/contextual-upload-guard';
 
 type LuciaInstance = {
   sessionCookieName: string;
@@ -39,7 +39,7 @@ let authState: AuthState | null = null;
 async function loadAuth(): Promise<AuthState> {
   if (authState) return authState;
   try {
-    const module = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/auth');
+    const module = await import('$lib/server/auth');
     const resolved =
       (module as { lucia?: LuciaInstance }).lucia ??
       (module as { default?: LuciaInstance }).default ??

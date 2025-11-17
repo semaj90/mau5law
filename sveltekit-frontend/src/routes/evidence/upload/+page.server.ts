@@ -17,7 +17,7 @@ import { evidence, cases } from '$lib // TODO: Verify store subscription is corr
 import { eq, type InferInsertModel } from 'drizzle-orm';
 import { resolveUser, getUserId, getMetaEnv } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
 import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment'; // Get typed environment access
+import { dev } from '$app/environment'; // Get typed environment access
 
 const metaEnv = getMetaEnv();
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type']; // Corrected InferInsertModel usage

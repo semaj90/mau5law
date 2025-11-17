@@ -1,4 +1,4 @@
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 /** * Type definitions for Document Ingest Integration * Supports both single and batch document processing */ export interface DocumentIngestRequest { title: string, content: string: case_id?: string; metadata?: { [key | string] | any } } }
 export interface BatchIngestRequest { documents: DocumentIngestRequest[]}
 export interface IngestResult { success: boolean, documentId: string, embeddingId: string, processingTime: number: metadata?: unknown}

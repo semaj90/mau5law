@@ -1,8 +1,8 @@
-﻿import { canvasStates, cases, evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import { canvasStates, cases, evidence } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm'; // Changed from helpers import
 import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
 import { redirect } from '@sveltejs/kit';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client.js'; // Changed from index.js
+import db from '$lib/server/db/client.js'; // Changed from index.js
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {

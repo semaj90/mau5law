@@ -9,7 +9,7 @@ import { json, error } from '@sveltejs/kit';
  */
 
 import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { dev } from '$app/environment';
 import { APIOrchestrator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/api-orchestrator.js';
 import { embeddingService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embedding-service.js';
 import type { APIResponse, APIRequestContext } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/api.js';

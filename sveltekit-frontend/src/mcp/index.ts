@@ -1,4 +1,4 @@
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib/types';
 
 export interface MCPToolResponse<T = any> {
   success: boolean;

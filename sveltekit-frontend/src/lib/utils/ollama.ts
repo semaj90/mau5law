@@ -1,6 +1,6 @@
 import { browser, dev } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment'; // Corrected import: 'browser' and 'dev' are separate booleans
 import { PUBLIC_OLLAMA_URL } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/static/public';
-import { OLLAMA_URL } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/env.server';
+import { OLLAMA_URL } from '$lib/server/env.server';
 
 /**
  * Returns the base URL for the Ollama service.
@@ -55,7 +55,7 @@ export function getOllamaEndpoint(path: string): string {
  * Get the default chat model (gemma3-legal:latest).
  */
 export function getChatModel(): string {
-  const { GEMMA3_LEGAL_MODEL } = require('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/env.server'); // Dynamic import to avoid client-side exposure
+  const { GEMMA3_LEGAL_MODEL } = require('$lib/server/env.server'); // Dynamic import to avoid client-side exposure
   return GEMMA3_LEGAL_MODEL;
 }
 
@@ -63,6 +63,6 @@ export function getChatModel(): string {
  * Get the default embedding model (embeddinggemma:latest).
  */
 export function getEmbeddingModel(): string {
-  const { EMBEDDING_MODEL } = require('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/env.server'); // Dynamic import to avoid client-side exposure
+  const { EMBEDDING_MODEL } = require('$lib/server/env.server'); // Dynamic import to avoid client-side exposure
   return EMBEDDING_MODEL;
 }

@@ -1,4 +1,4 @@
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ai/langchain-rag' {
+declare module '$lib/ai/langchain-rag' {
   // Optional factory functions
   export const getVectorStore: (() => Promise<unknown> | unknown) | undefined;
   export const createVectorStore: (() => Promise<unknown> | unknown) | undefined;

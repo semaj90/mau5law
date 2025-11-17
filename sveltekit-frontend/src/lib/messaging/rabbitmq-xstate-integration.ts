@@ -1,6 +1,6 @@
 /** * RabbitMQ + XState Integration for Self-Prompting Legal AI * Free, high-performance message queuing with state machine coordination */
 import { createMachine, assign, fromPromise } from "xstate";
-import { browser } from "$app // TODO: Verify store subscription is correct for Svelte 5/environment";
+import { browser } from "$app/environment";
 
 // --- ADDED: lightweight type definitions to fix TS errors --- //
 type UserHistoryItem = { action?: string; data?: unknown; timestamp?: number; error?: unknown };
@@ -159,7 +159,7 @@ interface UserPatterns {
 export class RabbitMQXStateIntegration {
   private static connection: ConnectionLike | null = null;
   private static channel: unknown = null;
-  private static isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  private static isInitialized = $state(false);
 
   // Free RabbitMQ configuration (CloudAMQP free tier)
   private static config: RabbitMQConfig = {

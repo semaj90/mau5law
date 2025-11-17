@@ -5,7 +5,7 @@ import { parallelOrchestrationMaster } from '$lib // TODO: Verify store subscrip
 import type { ParallelRequest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/parallel-orchestration-master';
 import { natsQuicSearchService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/search/nats-quic-search-service';
 import { analytics } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/database/connection';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { dev } from '$app/environment';
 import { readBodyFastWithMetrics } from '$lib // TODO: Verify store subscription is correct for Svelte 5/simd/simd-json-integration';
 import { fastStringify } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/fast-json';
 import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';

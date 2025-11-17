@@ -1,1 +1,1 @@
-// Re-export shared text utilities for shorter imports via $lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/shared-text export * from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/../../../shared/text';
+// Re-export shared text utilities for shorter imports via $lib/shared-text export * from '$lib/../../../shared/text';

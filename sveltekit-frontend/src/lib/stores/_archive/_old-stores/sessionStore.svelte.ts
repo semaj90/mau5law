@@ -1,5 +1,5 @@
 import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-/** * Global Session Store - Lucia v3 Integration (Svelte 5) * Provides app-wide session management with persistent storage and fallback mechanisms */ import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+/** * Global Session Store - Lucia v3 Integration (Svelte 5) * Provides app-wide session management with persistent storage and fallback mechanisms */ import { browser } from '$app/environment';
 
 // Types based on Lucia v3 and app.d.ts
 // Removed the malformed local 'User' interface definition, relying on '$lib // TODO: Verify store subscription is correct for Svelte 5/types'

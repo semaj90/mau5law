@@ -15,7 +15,7 @@ export interface Evidence {
 // ======================================================================
 import { assign, setup, fromPromise, createActor } from 'xstate';
 import { writable, derived } from 'svelte/store';
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { browser } from '$app/environment';
 
 // ======================================================================
 // ENHANCED TYPES

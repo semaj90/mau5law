@@ -1,7 +1,7 @@
-﻿// Advanced experimental service
+// Advanced experimental service
 /** * RabbitMQ Service Worker - simplified, syntactically-correct version */
-import { rabbitmqService } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/messaging/rabbitmq-service.js';
-import { publishToQueue } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/rabbitmq.js';
+import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
+import { publishToQueue } from '$lib/server/rabbitmq.js';
 // Removed problematic `import type ...` which caused parser errors in the build.
 // Added a local MessageHandler type so we don't rely on a type-only import.
 

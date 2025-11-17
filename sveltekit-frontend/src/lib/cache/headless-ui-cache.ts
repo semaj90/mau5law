@@ -1,6 +1,6 @@
 /** * Headless UI Caching System * Client-side caching layer that bridges server-side Redis tensor cache * with XState Neural Sprite frontend for maximum performance */
-import vectorWasm from '../wasm/vector-wasm-wrapper.js'; // Changed from namespace import to default import
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import vectorWasm from '../wasm/vector-wasm-wrapper.js';
+import { browser } from '$app/environment';
 
 export interface CacheEntry<T = unknown> {
   // Changed default type parameter from 'any' to 'unknown'
@@ -496,4 +496,35 @@ export class HeadlessUICache {
     }
     return size;
   }
+
+  // Export cache statistics for monitoring
+  getStats() {
+    return {
+      hitRatio: this.hitRatio,
+      totalRequests: this.totalRequests,
+      cacheHits: this.cacheHits,
+      memorySize: this.calculateMemorySize(),
+    };
+  }
+
+  clear(): void {
+    this.memoryCache.clear();
+    // Clear IndexedDB if available
+    if (this.db) {
+      // Implementation for clearing IndexedDB
+    }
+  }
+
+  dispose(): void {
+    if (this.syncTimer) {
+      clearInterval(this.syncTimer);
+    }
+    this.clear();
+    if (this.db) {
+      this.db.close();
+    }
+  }
 }
+
+// Export the main cache instance
+export const headlessUICache = new HeadlessUICache();

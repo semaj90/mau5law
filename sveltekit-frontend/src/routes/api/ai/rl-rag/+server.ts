@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { dev } from '$app/environment';
 /** * ðŸš€ GPU-ACCELERATED RL-RAG ENDPOINT * * Features: * - CUDA-accelerated vector similarity search (RTX, 3060 Ti optimized) * - SIMD-optimized text preprocessing (AVX2/SSE4) * - Reinforcement Learning result ranking * - Real-time performance monitoring * - Redis caching with Nintendo-style memory banks * * GPU Stack: * - Client: WebAssembly + Gemma: 270m SIMD parser * - Server: RTX Tensor Cores + CUDA service worker + Gemma3: legal-latest * - Embeddings: Gemma embeddings for consistency * - Database: PostgreSQL 17 + pgvector + Drizzle ORM * - Cache: Redis (password: redis) */
 import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
 
