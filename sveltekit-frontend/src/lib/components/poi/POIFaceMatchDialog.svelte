@@ -1,9 +1,10 @@
 <script lang="ts">
-  import Avatar from '$lib/components/ui/avatar';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/card';
-  import Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardContent } from '$lib/components/ui/card';
+  import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '$lib/components/ui/dialog';
+  import { Percent, Search, User, X } from 'lucide-svelte';
 
   let {
     open,
@@ -55,12 +56,16 @@
     return 'text-red-600';
   }
 
-  function getInitials(name: string) {
+  function getInitials(name: string): string {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  }
+
+  function handleOpenChange(isOpen: boolean) {
+    if (!isOpen) onClose();
   }
 </script>
 
-<Dialog {open} on:close={handleClose}>
+<Dialog open={open} onOpenChange={handleOpenChange}>
   <DialogContent class="max-w-4xl max-h-[80vh] overflow-y-auto">
     <DialogHeader>
       <DialogTitle class="flex items-center gap-2">

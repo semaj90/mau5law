@@ -63,7 +63,7 @@
     goto(path);
   }
 
-  let currentPath = $derived(page.url.pathname);
+  let currentPath = $derived(() => $page.url.pathname);
 </script>
 
 <div class="p-6">
@@ -78,7 +78,7 @@
     {#each navigation as item}
       <button
         class="w-full text-left p-3 rounded-lg transition-all duration-200 hover:bg-slate-700/50 hover:border-cyan-400/30 border border-transparent {currentPath === item.path ? 'bg-cyan-400/10 border-cyan-400/50 text-cyan-300' : 'text-slate-300'}"
-        on:click={() => navigateTo(item.path)}
+        onclick={() => navigateTo(item.path)}
       >
         <div class="flex items-center space-x-3">
           <span class="text-lg">{item.icon}</span>

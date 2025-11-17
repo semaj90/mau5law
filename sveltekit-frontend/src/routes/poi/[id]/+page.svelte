@@ -5,10 +5,10 @@
   import POIPhotoUploader from '$lib/client/ui/POIPhotoUploader.svelte';
   import POIThreatBadge from '$lib/components/poi/POIThreatBadge.svelte';
   import Button from '$lib/components/ui/button.svelte';
-  import Card from '$lib/components/ui/card.svelte';
   import CardContent from '$lib/components/ui/card-content.svelte';
   import CardHeader from '$lib/components/ui/card-header.svelte';
   import CardTitle from '$lib/components/ui/card-title.svelte';
+  import Card from '$lib/components/ui/card.svelte';
   import Separator from '$lib/components/ui/separator.svelte';
   import {
     ArrowLeft,

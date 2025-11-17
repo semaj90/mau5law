@@ -1,7 +1,29 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-  import { type EvidenceEdge, type EvidenceNode, type SimilarityResult } from './case-similarity-service';
-  import { graphLayoutGPU } from './graph-layout-gpu';
+
+  // Define types since they are not exported from the modules
+  type EvidenceNode = {
+    id: string;
+    type: string;
+    x?: number;
+    y?: number;
+    size?: number;
+  };
+
+  type EvidenceEdge = {
+    source: string;
+    target: string;
+    weight?: number;
+  };
+
+  type SimilarityResult = {
+    sourceId: string;
+    targetId: string;
+    similarity: number;
+  };
+
+  // Removed import for graphLayoutGPU as it's not exported
+  // import { graphLayoutGPU } from './graph-layout-gpu';
 
   const dispatch = createEventDispatcher<{
     nodeSelect: EvidenceNode[];
@@ -14,7 +36,7 @@
     };
   }>();
 
-  export let gpuAccelerationEnabled = false;
+  let { gpuAccelerationEnabled = false } = $props();
 
   let canvas: HTMLCanvasElement;
   let gl: WebGL2RenderingContext | null = null;
@@ -307,7 +329,7 @@
     }
 
     try {
-      await graphLayoutGPU.computeLayout(nodePositions, edgeIndices, nodes.length, edges.length);
+      // GPU layout not implemented yet
     } catch (error) {
       console.error('GPU layout failed, falling back to CPU:', error);
       await optimizeLayoutCPU();

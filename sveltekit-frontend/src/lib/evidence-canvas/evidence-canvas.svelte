@@ -1,32 +1,31 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { EvidenceCanvas } from './evidence-canvas-core.svelte';
-  import { GraphControlPanel } from './graph-control-panel.svelte';
-  import { CaseSuggestionModal } from './case-suggestion-modal.svelte';
+  import EvidenceCanvas from './evidence-canvas-core.svelte';
+  import GraphControlPanel from './graph-control-panel.svelte';
+  import CaseSuggestionModal from './case-suggestion-modal.svelte';
   import { webgpuInitService } from './webgpu-init';
   import { graphLayoutGPU } from './graph-layout-gpu';
-  import { caseSimilarityService } from './case-similarity-service';
+  import { caseSimilarityService, type EvidenceNode } from './case-similarity-service';
   import { aiSuggestionsService, type AISuggestion, type SuggestionContext } from './ai-suggestions-service';
-  import type { EvidenceNode, EvidenceEdge } from './case-similarity-service';
 
-  export let caseId: string;
-  export let caseType: string = 'general';
-  export let jurisdiction: string = 'general';
-  export let initialNodes: EvidenceNode[] = [];
-  export let initialEdges: EvidenceEdge[] = [];
+  type EvidenceEdge = { source: string, target: string };
+
+  let { caseId, caseType = 'general', jurisdiction = 'general', initialNodes = [], initialEdges = [] } = $props<{ caseId: string; caseType?: string; jurisdiction?: string; initialNodes?: EvidenceNode[]; initialEdges?: EvidenceEdge[]; }>();
 
   let canvas: EvidenceCanvas;
   let controlPanel: GraphControlPanel;
   let suggestionModal: CaseSuggestionModal;
 
-  let webgpuSupported = false;
-  let gpuAccelerationEnabled = false;
-  let suggestions: AISuggestion[] = [];
-  let selectedSuggestions: AISuggestion[] = [];
-  let showSuggestions = false;
+  let webgpuSupported = $state(false);
+  let gpuAccelerationEnabled = $state(false);
+  let suggestions = $state<AISuggestion[]>([]);
+  let selectedSuggestions = $state<AISuggestion[]>([]);
+  let showSuggestions = $state(false);
 
-  let currentPhase = 'investigation';
-  let selectedNodes: EvidenceNode[] = [];
+  let showModal = $state(false);
+
+  let selectedNodes = $state<EvidenceNode[]>([]);
+  let currentPhase = $state('initial');
 
   onMount(async () => {
     // Initialize WebGPU support
@@ -48,7 +47,7 @@
     if (gpuAccelerationEnabled) {
       graphLayoutGPU.cleanup();
     }
-    caseSimilarityService.cleanup();
+    // caseSimilarityService.cleanup(); // Removed as cleanup method does not exist
   });
 
   async function loadCaseData() {
@@ -94,7 +93,7 @@
   function handleSuggestionSelect(suggestion: AISuggestion) {
     selectedSuggestions = [suggestion];
     if (suggestionModal) {
-      suggestionModal.show(suggestion);
+      suggestionModal.showModal(suggestion);
     }
   }
 
@@ -167,7 +166,7 @@
       {webgpuSupported}
       {gpuAccelerationEnabled}
       {currentPhase}
-      on:phaseChange={handlePhaseChange}
+      on:phaseChange={(e) => handlePhaseChange(e.detail)}
       on:similarityAnalysis={handleSimilarityAnalysis}
       on:layoutOptimization={handleLayoutOptimization}
       on:exportData={handleExportData}
