@@ -1,4 +1,4 @@
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/services/analytics-bridge' {
+declare module '$lib/server/services/analytics-bridge' {
   export function postAnalytics(event: {
     user_id: string;
     event_type: string;

@@ -5,14 +5,14 @@ import { message, superValidate } from 'sveltekit-superforms';
 import { zod as zodAdapter } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { hashPassword } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/lucia';
+import { hashPassword } from '$lib/server/lucia';
 
 /**
  * Helper: load register schema dynamically and fallback to a minimal Zod schema
  */
 async function loadRegisterSchema() {
   // try to load common export names and fall back to minimal validation
-  const mod = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/schemas/auth').catch(() => ({}) as any);
+  const mod = await import('$lib/schemas/auth').catch(() => ({}) as any);
   const registerSchema = mod.registerSchema ?? mod.register ?? mod.schema ?? mod.default ?? null;
 
   if (registerSchema) return registerSchema;
@@ -32,7 +32,7 @@ async function loadRegisterSchema() {
  * Helper: load DB module dynamically and normalize exports
  */
 async function loadDbModule() {
-  const mod = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db').catch(() => ({}) as any);
+  const mod = await import('$lib/server/db').catch(() => ({}) as any);
   const db = mod.db ?? mod.default ?? null;
   const users = mod.users ?? mod.default?.users ?? null;
   const helpers = mod.helpers ?? mod.default?.helpers ?? null;

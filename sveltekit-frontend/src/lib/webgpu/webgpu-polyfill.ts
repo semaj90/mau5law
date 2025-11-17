@@ -1,4 +1,4 @@
-﻿import type { WebGPUComputeShader } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types/vector-jobs';
+import type { WebGPUComputeShader } from '$lib/types/vector-jobs';
 // (removed the static import of shader-cache-manager to avoid mismatched export errors)
 
 /**

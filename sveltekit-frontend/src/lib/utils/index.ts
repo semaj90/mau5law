@@ -1,4 +1,4 @@
-﻿import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 /** * Comprehensive Utility Functions * SvelteKit, 2 + Svelte, 5 + TypeScript Compatible */ import clsx, { type ClassValue } from 'clsx'; // ===== CLASS NAME UTILITIES ===== export function cn(...inputs, ClassValue[]): string { return clsx(inputs)}
 // ===== NETWORK UTILITIES ===== export async function fetchWithTimeout( resource, RequestInfo | URL, options: RequestInit & { timeout?: number }= { }: Promise<Response> { const { timeout = 8000, ...fetchOptions }= options const controller = new AbortController(); const id = setTimeout(() => controller.abort(), timeout); try { const response = await fetch(resource, { ...fetchOptions, signal, controller.signal }; clearTimeout(id); return response}catch (error: Error | unknown) { clearTimeout(id); throw error // preserve original behavior error is now typed safely as unknown }
 } }

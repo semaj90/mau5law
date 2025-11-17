@@ -1,7 +1,7 @@
 // Global User Store with PostgreSQL Integration + Svelte 5 Runes
 // Predictive Analytics, Chat History, and Real-time Synchronization
 import { writable, derived, type Writable } from 'svelte/store';
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { browser } from '$app/environment';
 import type { User, Session } from 'lucia';
 import crypto from 'crypto';
 import type {
@@ -164,16 +164,16 @@ const defaultState: GlobalUserState = {
 // ===== SVELTE 5 RUNES STORE =====
 let globalUserState = $state // TODO: Verify store subscription is correct for Svelte 5<GlobalUserState>(defaultState);
 
-// Reactive computations using Svelte 5 $derived // TODO: Verify store subscription is correct for Svelte 5
-const userDisplayName = $derived // TODO: Verify store subscription is correct for Svelte 5(
+// Reactive computations using Svelte 5 $derived
+const userDisplayName = $derived(
   globalUserState.profile?.name ||
     globalUserState.profile?.firstName ||
     globalUserState.profile?.email ||
     'Anonymous User'
 );
 
-const isOnline = $derived // TODO: Verify store subscription is correct for Svelte 5(globalUserState.syncStatus !== 'offline' && browser);
-const hasUnsynced = $derived // TODO: Verify store subscription is correct for Svelte 5(globalUserState.pendingChanges > 0);
+const isOnline = $derived(globalUserState.syncStatus !== 'offline' && browser);
+const hasUnsynced = $derived(globalUserState.pendingChanges > 0);
 
 // ===== STORE ACTIONS =====
 export const globalUserStore = {

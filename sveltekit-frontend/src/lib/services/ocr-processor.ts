@@ -1,4 +1,4 @@
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 import path from 'path';
 import { createWorker } from 'tesseract.js';
 import pdf2pic from 'pdf2pic';

@@ -2,7 +2,7 @@
  * WebGPU Tensor Acceleration System
  * Client-side GPU acceleration for legal AI operations
  */
-import { SIMDGPUTilingEngine } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence/simd-gpu-tiling-engine.js'; // Fix: Changed import to SIMDGPUTilingEngine
+import { SIMDGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js'; // Fix: Changed import to SIMDGPUTilingEngine
 
 export interface WebGPUTensorConfig {
   deviceType: 'discrete' | 'integrated' | 'auto';

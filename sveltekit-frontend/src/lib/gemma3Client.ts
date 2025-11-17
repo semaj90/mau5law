@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoint';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 export interface ChatMessage {
 	role: 'system' | 'user' | 'assistant';

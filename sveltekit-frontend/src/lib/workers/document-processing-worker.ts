@@ -1,6 +1,6 @@
 import { rabbitMQService as rawRabbitMQService } from "../services/rabbitmq-service.js";
-import { db } from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client";
-import * as schema from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres";
+import { db } from "$lib/server/db/client";
+import * as schema from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 // Add: LangChain text splitter for semantic chunking

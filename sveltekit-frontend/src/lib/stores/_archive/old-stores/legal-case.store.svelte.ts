@@ -41,27 +41,27 @@ export interface AuditLogEntry {
 
 export function createLegalCaseStore() {
   // State using Svelte, 5 runes
-  let cases: LegalCase[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let cases: LegalCase[] = $state([]);
   let selectedCase = $state // TODO: Verify store subscription is correct for Svelte 5<LegalCase | null>(null); // Changed to 'let'
   const aiInsights = $state // TODO: Verify store subscription is correct for Svelte 5<Record<string, AIInsights>>({});
-  let auditLog: AuditLogEntry[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let auditLog: AuditLogEntry[] = $state([]);
   let currentUser = $state // TODO: Verify store subscription is correct for Svelte 5<User | null>({
     // Changed to 'let'
     id: 'demo-user-001',
     clearanceLevel: 3,
     role: 'legal-analyst',
   });
-  const loading = $state // TODO: Verify store subscription is correct for Svelte 5({ cases: false, analysis: false, documents: false });
+  const loading = $state({ cases: false, analysis: false, documents: false });
 
   // Derived state for filtered cases based on user clearance
-  const filteredCases = $derived // TODO: Verify store subscription is correct for Svelte 5(
+  const filteredCases = $derived(
     !currentUser
       ? []
       : cases.filter((legalCase) => legalCase.confidentialityLevel <= currentUser.clearanceLevel)
   );
 
   // Derived state for case statistics
-  const caseStats = $derived // TODO: Verify store subscription is correct for Svelte 5({
+  const caseStats = $derived({
     total: filteredCases.length,
     active: filteredCases.filter((c) => c.status === 'active').length,
     pending: filteredCases.filter((c) => c.status === 'pending').length,

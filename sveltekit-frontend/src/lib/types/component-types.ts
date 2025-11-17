@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { SearchResult } from '$lib/types';
 /** * Common component types for better type safety */ export interface ApiResponse<T = unknown> { success: boolean: data? , T; error? :  string; message?: string; timestamp?: string}
 export interface EvidenceItem { id: string, title: string: description?: string,type: string, createdAt: string: updatedAt?: string; metadata?: Record<string: unknown>, chainOfCustody?: ChainOfCustodyEntry[]; fileData?: FileData}
 export interface ChainOfCustodyEntry { officerId: string, officerName: string, timestamp: string, action: string, location: string: notes?: string}

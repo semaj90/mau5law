@@ -88,19 +88,19 @@ class EvidenceGlobalStore {
   });
 
   // Performance tracking
-  stats = $state // TODO: Verify store subscription is correct for Svelte 5({
+  stats = $state({
     totalNodes: 0,
     totalConnections: 0,
     aiSuggestionsGenerated: 0,
     lastSync: 0
   });
 
-  // Derived state using $derived // TODO: Verify store subscription is correct for Svelte 5
-  currentCase = $derived // TODO: Verify store subscription is correct for Svelte 5(this.currentCaseId ? this.cases[this.currentCaseId] : null);
-  currentNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(this.currentCase?.nodes || []);
-  selectedNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)));
-  filteredNodes = $derived // TODO: Verify store subscription is correct for Svelte 5(this.applyFilters(this.currentNodes));
-  hasUnsavedChanges = $derived // TODO: Verify store subscription is correct for Svelte 5(this.checkUnsavedChanges());
+  // Derived state using $derived
+  currentCase = $derived(this.currentCaseId ? this.cases[this.currentCaseId] : null);
+  currentNodes = $derived(this.currentCase?.nodes || []);
+  selectedNodes = $derived(this.currentNodes.filter(node => this.ui.selectedNodeIds.includes(node.id)));
+  filteredNodes = $derived(this.applyFilters(this.currentNodes));
+  hasUnsavedChanges = $derived(this.checkUnsavedChanges());
 
   // Web Worker for background AI processing
   aiWorker: Worker | null = null;

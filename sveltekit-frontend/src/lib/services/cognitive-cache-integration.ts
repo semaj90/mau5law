@@ -1,6 +1,6 @@
 /** * Cognitive Cache Integration Service * Thread-safe JSONB/JSON operations with GPU acceleration support * Handles concurrent access patterns for legal AI database operations */
 import { writable, type Writable } from 'svelte/store';
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { browser } from '$app/environment';
 import { createHash } from 'crypto'; // For SHA256 hashing on the server
 
 // Define a minimal RedisClientType to satisfy type-checking without a direct dependency on 'redis'.

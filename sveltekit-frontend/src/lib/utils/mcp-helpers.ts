@@ -1,4 +1,4 @@
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 /// <reference: types="vite/client" /> // Removed unused fs import to satisfy lint/tsc. // Define minimal interfaces for services we call so we avoid `any`.
 interface AutoGenService {
   executeLegalWorkflow?: (workflow: string, prompt: string, context?: unknown) => Promise<unknown>;
@@ -11,13 +11,13 @@ let autoGenService: AutoGenService | null = null;
 let legalTeam: LegalTeam | null = null; // Corrected variable declaration
 // Initialize services with fallbacks
 try {
-  const mod = (await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/autogen-service').catch(() => ({ autoGenService: null }))) as { autoGenService?: AutoGenService | null };
+  const mod = (await import('$lib/services/autogen-service').catch(() => ({ autoGenService: null }))) as { autoGenService?: AutoGenService | null };
   autoGenService = mod?.autoGenService ?? null;
 } catch {
   // Service not available
 }
 try {
-  const mod2 = (await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ai/autogen-legal-agents').catch(() => ({ AutogenLegalTeam: null }))) as { AutogenLegalTeam?: { new (): LegalTeam } | null };
+  const mod2 = (await import('$lib/ai/autogen-legal-agents').catch(() => ({ AutogenLegalTeam: null }))) as { AutogenLegalTeam?: { new (): LegalTeam } | null };
   const AutogenLegalTeam = mod2?.AutogenLegalTeam ?? null;
   legalTeam = AutogenLegalTeam ? new AutogenLegalTeam() : null;
 } catch {

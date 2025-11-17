@@ -1,5 +1,5 @@
-import type { AIResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { AIResponse } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 // Vector search types and interfaces export interface SearchResult { id: string, score: number: payload?: unknown; metadata?: { [key, string], any }}
 export interface VectorSearchOptions { limit?: number; threshold?: number; filter?: { [key | string] | any }}
 export interface EmbeddingOptions { model?: 'openai' | 'local'; cache?: boolean; maxTokens?: number}

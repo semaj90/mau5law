@@ -1,5 +1,5 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-// Clean minimal RAG ingestion worker // Use centralized environment config for service endpoints import { CONFIG } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/config/env.server'; // Replace loose types with explicit definitions
+import type { Case } from '$lib/types';
+// Clean minimal RAG ingestion worker // Use centralized environment config for service endpoints import { CONFIG } from '$lib/config/env.server'; // Replace loose types with explicit definitions
 type ProcessOptions = { id?: string; caseId?: string; metadata?: Record<string, unknown>; priority?: 'low' | 'medium' | 'high' };
 type ProcessDocumentPayload = { documentId: string; objectPath?: string; content?: ArrayBuffer | string; options?: ProcessOptions };
 type GenerateEmbeddingsPayload = { text: string; model?: string };
@@ -139,20 +139,20 @@ class RAGIngestionWorker {
     if (this.initialized) return;
     await this.simd.initialize();
     try {
-      const m = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/minio-service');
+      const m = await import('$lib/server/minio-service');
       // defensive cast via unknown to avoid unsafe direct cast errors
       this.services.MinIOService = m as unknown as MinIOService;
     } catch (e) { console.debug('minio import failed', e) }
     try {
-      const o = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ocr/ocr-client');
+      const o = await import('$lib/ocr/ocr-client');
       this.services.performOCR = (o as unknown as { performOCR?: PerformOCR }).performOCR ?? (o as unknown as PerformOCR);
     } catch (e) { console.debug('ocr import failed', e) }
     try {
-      const a = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/advanced-evidence-analyzer');
+      const a = await import('$lib/services/advanced-evidence-analyzer');
       this.services.advancedEvidenceAnalyzer = a as unknown as AdvancedEvidenceAnalyzer;
     } catch (e) { console.debug('advanced analyzer import failed', e) }
     try {
-      const gModule = await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/graph/evidence-graph-service');
+      const gModule = await import('$lib/server/graph/evidence-graph-service');
       // module shape may vary; accept object with method or callable default export
       const candidate: unknown = gModule;
       // Try evidenceGraphService export first

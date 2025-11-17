@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+
   // Migrated from createEventDispatcher to callback props;
 
   const dispatch = createEventDispatcher();
 
-  let searchQuery = $state('');
-  let statusFilter = $state('all');
-  let priorityFilter = $state('all');
-  let assigneeFilter = $state('all');
-  let dateRange = $state('all');
+  let searchQuery = '';
+  let statusFilter = 'all';
+  let priorityFilter = 'all';
+  let assigneeFilter = 'all';
+  let dateRange = 'all';
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },

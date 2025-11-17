@@ -1,4 +1,4 @@
-import { requireAuth } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/auth';
+import { requireAuth } from '$lib/server/auth';
 import { error } from '@sveltejs/kit';
 
 export async function load(event): Promise<any> {

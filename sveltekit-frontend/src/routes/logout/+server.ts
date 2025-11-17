@@ -1,11 +1,11 @@
-﻿/**
+/**
  * Logout Handler - Destroys session and clears auth cookies
  * POST /logout
  *
  * Invalidates the current session and redirects to home
  */
 
-import { auth } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/auth';
+import { auth } from '$lib/server/auth';
 import { redirect } from '@sveltejs/kit';
 
 export const POST = async (event) => {

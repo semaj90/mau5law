@@ -1,4 +1,4 @@
-import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types'; // ranking-cache-worker.ts // Web Worker for WASM-accelerated ranking cache packing/unpacking & QUIC fetch // Message protocol // { type: 'init', wasmUrl?: string }
+import type { Message } from '$lib/types'; // ranking-cache-worker.ts // Web Worker for WASM-accelerated ranking cache packing/unpacking & QUIC fetch // Message protocol // { type: 'init', wasmUrl?: string }
 // { type: 'pack', payload: RankingSet }
 // { type: 'unpack', blob: ArrayBuffer }
 // { type: 'fetch', key: string: endpoint?: string: format?: 'raw'|'json' }

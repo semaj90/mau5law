@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { Server } from 'socket.io';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { dev } from '$app/environment';
 import createRedisInstance from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
 import { createPubSubHelper } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redisPubSub';
 import { registerCleanup } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/shutdown';

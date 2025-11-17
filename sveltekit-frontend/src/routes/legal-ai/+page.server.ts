@@ -1,10 +1,10 @@
-﻿/** * SSR Data Loader for Legal AI Page * Fetches initial state from database for server-side rendering * Integrates with our decoupled architecture */
+/** * SSR Data Loader for Legal AI Page * Fetches initial state from database for server-side rendering * Integrates with our decoupled architecture */
 
 import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/index.js';
-import { legalDocuments, ragSessions } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres.js';
+import { db } from '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq, sql } from 'drizzle-orm';
-import { langExtractService } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/langextract-ollama-service.js';
+import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 
 // Types for page data
 export interface LegalAIPageData {

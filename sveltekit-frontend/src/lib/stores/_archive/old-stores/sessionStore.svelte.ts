@@ -14,7 +14,7 @@ const createSessionStore = () => {
   const sessionActor = createActor(sessionMachine);
 
   // Initialize with the actor's initial snapshot
-  let sessionSnapshot = $state // TODO: Verify store subscription is correct for Svelte 5(sessionActor.getSnapshot());
+  let sessionSnapshot = $state(sessionActor.getSnapshot());
 
   // Subscribe to actor state changes and update the reactive snapshot
   $effect // TODO: Verify store subscription is correct for Svelte 5(() => {

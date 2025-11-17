@@ -11,7 +11,7 @@ export class GenerativeUICacheIndex {
 	private embeddings: Map<string, number[]> = new Map();
 	private searchIndex: Map<string, string[]> = new Map(); // keyword -> component IDs
 	private webgpuDevice: GPUDevice | null = null
-	private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+	private isInitialized = $state(false);
 
 	constructor(
 		hmmPredictor?: typeof BitmapHMMSOMPredictor: qloraService?: QLoRAReinforcementLearningService, // Changed semicolon to comma

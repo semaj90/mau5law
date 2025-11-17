@@ -1,4 +1,4 @@
-import * as $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 from 'protobufjs';
+import * as $protobuf from 'protobufjs';
 import Long = require('long');
 /** Namespace legal. */
 export namespace legal {
@@ -70,7 +70,7 @@ export namespace legal {
        * @param [writer] Writer to encode to
        * @returns Writer
        */
-      public static encode(message: legal.api.IUser, writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+      public static encode(message: legal.api.IUser, writer?: $protobuf.Writer): $protobuf.Writer;
 
       /**
        * Encodes the specified User message, length delimited. Does not implicitly {@link legal.api.User.verify|verify} messages.
@@ -80,8 +80,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IUser,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a User message from the specified reader or buffer.
@@ -89,18 +89,18 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns User
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decode(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array, length?: number): legal.api.User;
+      public static decode(reader: $protobuf.Reader | Uint8Array, length?: number): legal.api.User;
 
       /**
        * Decodes a User message from the specified reader or buffer, length delimited.
        * @param reader Reader or buffer to decode from
        * @returns User
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.User;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.User;
 
       /**
        * Verifies a User message.
@@ -124,7 +124,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.User,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -191,8 +191,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IUserPreferences,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified UserPreferences message, length delimited. Does not implicitly {@link legal.api.UserPreferences.verify|verify} messages.
@@ -202,8 +202,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IUserPreferences,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a UserPreferences message from the specified reader or buffer.
@@ -211,10 +211,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns UserPreferences
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.UserPreferences;
 
@@ -223,10 +223,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns UserPreferences
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.UserPreferences;
 
       /**
@@ -251,7 +251,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.UserPreferences,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -318,8 +318,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAuthRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified AuthRequest message, length delimited. Does not implicitly {@link legal.api.AuthRequest.verify|verify} messages.
@@ -329,8 +329,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAuthRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an AuthRequest message from the specified reader or buffer.
@@ -338,10 +338,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns AuthRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.AuthRequest;
 
@@ -350,9 +350,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns AuthRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.AuthRequest;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.AuthRequest;
 
       /**
        * Verifies an AuthRequest message.
@@ -376,7 +376,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.AuthRequest,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -449,8 +449,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAuthResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified AuthResponse message, length delimited. Does not implicitly {@link legal.api.AuthResponse.verify|verify} messages.
@@ -460,8 +460,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAuthResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an AuthResponse message from the specified reader or buffer.
@@ -469,10 +469,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns AuthResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.AuthResponse;
 
@@ -481,9 +481,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns AuthResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.AuthResponse;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.AuthResponse;
 
       /**
        * Verifies an AuthResponse message.
@@ -507,7 +507,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.AuthResponse,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -628,8 +628,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ILegalDocument,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified LegalDocument message, length delimited. Does not implicitly {@link legal.api.LegalDocument.verify|verify} messages.
@@ -639,8 +639,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ILegalDocument,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a LegalDocument message from the specified reader or buffer.
@@ -648,10 +648,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns LegalDocument
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.LegalDocument;
 
@@ -660,9 +660,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns LegalDocument
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.LegalDocument;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.LegalDocument;
 
       /**
        * Verifies a LegalDocument message.
@@ -686,7 +686,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.LegalDocument,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -813,8 +813,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IDocumentMetadata,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified DocumentMetadata message, length delimited. Does not implicitly {@link legal.api.DocumentMetadata.verify|verify} messages.
@@ -824,8 +824,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IDocumentMetadata,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a DocumentMetadata message from the specified reader or buffer.
@@ -833,10 +833,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns DocumentMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.DocumentMetadata;
 
@@ -845,10 +845,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns DocumentMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.DocumentMetadata;
 
       /**
@@ -873,7 +873,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.DocumentMetadata,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -938,7 +938,7 @@ export namespace legal {
        * @param [writer] Writer to encode to
        * @returns Writer
        */
-      public static encode(message: legal.api.IParty, writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+      public static encode(message: legal.api.IParty, writer?: $protobuf.Writer): $protobuf.Writer;
 
       /**
        * Encodes the specified Party message, length delimited. Does not implicitly {@link legal.api.Party.verify|verify} messages.
@@ -948,8 +948,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IParty,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a Party message from the specified reader or buffer.
@@ -957,18 +957,18 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns Party
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decode(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array, length?: number): legal.api.Party;
+      public static decode(reader: $protobuf.Reader | Uint8Array, length?: number): legal.api.Party;
 
       /**
        * Decodes a Party message from the specified reader or buffer, length delimited.
        * @param reader Reader or buffer to decode from
        * @returns Party
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.Party;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.Party;
 
       /**
        * Verifies a Party message.
@@ -992,7 +992,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.Party,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1059,8 +1059,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IContactInfo,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ContactInfo message, length delimited. Does not implicitly {@link legal.api.ContactInfo.verify|verify} messages.
@@ -1070,8 +1070,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IContactInfo,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a ContactInfo message from the specified reader or buffer.
@@ -1079,10 +1079,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ContactInfo
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ContactInfo;
 
@@ -1091,9 +1091,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ContactInfo
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ContactInfo;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ContactInfo;
 
       /**
        * Verifies a ContactInfo message.
@@ -1117,7 +1117,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ContactInfo,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1184,8 +1184,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ILegalCitation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified LegalCitation message, length delimited. Does not implicitly {@link legal.api.LegalCitation.verify|verify} messages.
@@ -1195,8 +1195,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ILegalCitation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a LegalCitation message from the specified reader or buffer.
@@ -1204,10 +1204,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns LegalCitation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.LegalCitation;
 
@@ -1216,9 +1216,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns LegalCitation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.LegalCitation;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.LegalCitation;
 
       /**
        * Verifies a LegalCitation message.
@@ -1242,7 +1242,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.LegalCitation,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1323,8 +1323,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ICaseInformation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified CaseInformation message, length delimited. Does not implicitly {@link legal.api.CaseInformation.verify|verify} messages.
@@ -1334,8 +1334,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ICaseInformation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a CaseInformation message from the specified reader or buffer.
@@ -1343,10 +1343,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns CaseInformation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.CaseInformation;
 
@@ -1355,10 +1355,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns CaseInformation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.CaseInformation;
 
       /**
@@ -1383,7 +1383,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.CaseInformation,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1484,8 +1484,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISearchRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SearchRequest message, length delimited. Does not implicitly {@link legal.api.SearchRequest.verify|verify} messages.
@@ -1495,8 +1495,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISearchRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SearchRequest message from the specified reader or buffer.
@@ -1504,10 +1504,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SearchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SearchRequest;
 
@@ -1516,9 +1516,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SearchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.SearchRequest;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.SearchRequest;
 
       /**
        * Verifies a SearchRequest message.
@@ -1542,7 +1542,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SearchRequest,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1603,8 +1603,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISearchFilter,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SearchFilter message, length delimited. Does not implicitly {@link legal.api.SearchFilter.verify|verify} messages.
@@ -1614,8 +1614,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISearchFilter,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SearchFilter message from the specified reader or buffer.
@@ -1623,10 +1623,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SearchFilter
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SearchFilter;
 
@@ -1635,9 +1635,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SearchFilter
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.SearchFilter;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.SearchFilter;
 
       /**
        * Verifies a SearchFilter message.
@@ -1661,7 +1661,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SearchFilter,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1716,8 +1716,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISortOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SortOptions message, length delimited. Does not implicitly {@link legal.api.SortOptions.verify|verify} messages.
@@ -1727,8 +1727,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISortOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SortOptions message from the specified reader or buffer.
@@ -1736,10 +1736,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SortOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SortOptions;
 
@@ -1748,9 +1748,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SortOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.SortOptions;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.SortOptions;
 
       /**
        * Verifies a SortOptions message.
@@ -1774,7 +1774,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SortOptions,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -1862,8 +1862,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISearchResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SearchResponse message, length delimited. Does not implicitly {@link legal.api.SearchResponse.verify|verify} messages.
@@ -1873,8 +1873,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISearchResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SearchResponse message from the specified reader or buffer.
@@ -1882,10 +1882,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SearchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SearchResponse;
 
@@ -1894,10 +1894,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SearchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.SearchResponse;
 
       /**
@@ -1922,7 +1922,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SearchResponse,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2001,8 +2001,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISearchResult,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SearchResult message, length delimited. Does not implicitly {@link legal.api.SearchResult.verify|verify} messages.
@@ -2012,8 +2012,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISearchResult,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SearchResult message from the specified reader or buffer.
@@ -2021,10 +2021,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SearchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SearchResult;
 
@@ -2033,9 +2033,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SearchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.SearchResult;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.SearchResult;
 
       /**
        * Verifies a SearchResult message.
@@ -2059,7 +2059,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SearchResult,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2126,8 +2126,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IVectorSimilarity,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified VectorSimilarity message, length delimited. Does not implicitly {@link legal.api.VectorSimilarity.verify|verify} messages.
@@ -2137,8 +2137,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IVectorSimilarity,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a VectorSimilarity message from the specified reader or buffer.
@@ -2146,10 +2146,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns VectorSimilarity
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.VectorSimilarity;
 
@@ -2158,10 +2158,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns VectorSimilarity
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.VectorSimilarity;
 
       /**
@@ -2186,7 +2186,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.VectorSimilarity,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2247,8 +2247,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISearchMetadata,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SearchMetadata message, length delimited. Does not implicitly {@link legal.api.SearchMetadata.verify|verify} messages.
@@ -2258,8 +2258,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISearchMetadata,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SearchMetadata message from the specified reader or buffer.
@@ -2267,10 +2267,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SearchMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SearchMetadata;
 
@@ -2279,10 +2279,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SearchMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.SearchMetadata;
 
       /**
@@ -2307,7 +2307,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SearchMetadata,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2362,8 +2362,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISearchFacet,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SearchFacet message, length delimited. Does not implicitly {@link legal.api.SearchFacet.verify|verify} messages.
@@ -2373,8 +2373,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISearchFacet,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SearchFacet message from the specified reader or buffer.
@@ -2382,10 +2382,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SearchFacet
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SearchFacet;
 
@@ -2394,9 +2394,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SearchFacet
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.SearchFacet;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.SearchFacet;
 
       /**
        * Verifies a SearchFacet message.
@@ -2420,7 +2420,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SearchFacet,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2475,8 +2475,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IFacetValue,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified FacetValue message, length delimited. Does not implicitly {@link legal.api.FacetValue.verify|verify} messages.
@@ -2486,8 +2486,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IFacetValue,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a FacetValue message from the specified reader or buffer.
@@ -2495,10 +2495,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns FacetValue
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.FacetValue;
 
@@ -2507,9 +2507,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns FacetValue
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.FacetValue;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.FacetValue;
 
       /**
        * Verifies a FacetValue message.
@@ -2533,7 +2533,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.FacetValue,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2624,8 +2624,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IChatMessage,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ChatMessage message, length delimited. Does not implicitly {@link legal.api.ChatMessage.verify|verify} messages.
@@ -2635,8 +2635,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IChatMessage,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a ChatMessage message from the specified reader or buffer.
@@ -2644,10 +2644,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ChatMessage
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ChatMessage;
 
@@ -2656,9 +2656,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ChatMessage
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ChatMessage;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ChatMessage;
 
       /**
        * Verifies a ChatMessage message.
@@ -2682,7 +2682,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ChatMessage,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2764,8 +2764,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IMessageMetadata,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified MessageMetadata message, length delimited. Does not implicitly {@link legal.api.MessageMetadata.verify|verify} messages.
@@ -2775,8 +2775,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IMessageMetadata,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a MessageMetadata message from the specified reader or buffer.
@@ -2784,10 +2784,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns MessageMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.MessageMetadata;
 
@@ -2796,10 +2796,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns MessageMetadata
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.MessageMetadata;
 
       /**
@@ -2824,7 +2824,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.MessageMetadata,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -2897,8 +2897,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IChatRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ChatRequest message, length delimited. Does not implicitly {@link legal.api.ChatRequest.verify|verify} messages.
@@ -2908,8 +2908,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IChatRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a ChatRequest message from the specified reader or buffer.
@@ -2917,10 +2917,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ChatRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ChatRequest;
 
@@ -2929,9 +2929,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ChatRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ChatRequest;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ChatRequest;
 
       /**
        * Verifies a ChatRequest message.
@@ -2955,7 +2955,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ChatRequest,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3022,8 +3022,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IChatContext,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ChatContext message, length delimited. Does not implicitly {@link legal.api.ChatContext.verify|verify} messages.
@@ -3033,8 +3033,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IChatContext,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a ChatContext message from the specified reader or buffer.
@@ -3042,10 +3042,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ChatContext
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ChatContext;
 
@@ -3054,9 +3054,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ChatContext
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ChatContext;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ChatContext;
 
       /**
        * Verifies a ChatContext message.
@@ -3080,7 +3080,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ChatContext,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3153,8 +3153,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IChatOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ChatOptions message, length delimited. Does not implicitly {@link legal.api.ChatOptions.verify|verify} messages.
@@ -3164,8 +3164,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IChatOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a ChatOptions message from the specified reader or buffer.
@@ -3173,10 +3173,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ChatOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ChatOptions;
 
@@ -3185,9 +3185,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ChatOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ChatOptions;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ChatOptions;
 
       /**
        * Verifies a ChatOptions message.
@@ -3211,7 +3211,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ChatOptions,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3296,8 +3296,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IChatResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ChatResponse message, length delimited. Does not implicitly {@link legal.api.ChatResponse.verify|verify} messages.
@@ -3307,8 +3307,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IChatResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a ChatResponse message from the specified reader or buffer.
@@ -3316,10 +3316,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ChatResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ChatResponse;
 
@@ -3328,9 +3328,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ChatResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ChatResponse;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ChatResponse;
 
       /**
        * Verifies a ChatResponse message.
@@ -3354,7 +3354,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ChatResponse,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3421,8 +3421,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IActionItem,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified ActionItem message, length delimited. Does not implicitly {@link legal.api.ActionItem.verify|verify} messages.
@@ -3432,8 +3432,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IActionItem,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an ActionItem message from the specified reader or buffer.
@@ -3441,10 +3441,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns ActionItem
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.ActionItem;
 
@@ -3453,9 +3453,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns ActionItem
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.ActionItem;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.ActionItem;
 
       /**
        * Verifies an ActionItem message.
@@ -3479,7 +3479,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.ActionItem,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3560,8 +3560,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAttachment,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified Attachment message, length delimited. Does not implicitly {@link legal.api.Attachment.verify|verify} messages.
@@ -3571,8 +3571,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAttachment,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an Attachment message from the specified reader or buffer.
@@ -3580,10 +3580,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns Attachment
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.Attachment;
 
@@ -3592,9 +3592,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns Attachment
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.Attachment;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.Attachment;
 
       /**
        * Verifies an Attachment message.
@@ -3618,7 +3618,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.Attachment,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3691,8 +3691,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAnalysisRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified AnalysisRequest message, length delimited. Does not implicitly {@link legal.api.AnalysisRequest.verify|verify} messages.
@@ -3702,8 +3702,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAnalysisRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an AnalysisRequest message from the specified reader or buffer.
@@ -3711,10 +3711,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns AnalysisRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.AnalysisRequest;
 
@@ -3723,10 +3723,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns AnalysisRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.AnalysisRequest;
 
       /**
@@ -3751,7 +3751,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.AnalysisRequest,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3828,8 +3828,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAnalysisOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified AnalysisOptions message, length delimited. Does not implicitly {@link legal.api.AnalysisOptions.verify|verify} messages.
@@ -3839,8 +3839,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAnalysisOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an AnalysisOptions message from the specified reader or buffer.
@@ -3848,10 +3848,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns AnalysisOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.AnalysisOptions;
 
@@ -3860,10 +3860,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns AnalysisOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.AnalysisOptions;
 
       /**
@@ -3888,7 +3888,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.AnalysisOptions,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -3967,8 +3967,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAnalysisResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified AnalysisResponse message, length delimited. Does not implicitly {@link legal.api.AnalysisResponse.verify|verify} messages.
@@ -3978,8 +3978,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAnalysisResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an AnalysisResponse message from the specified reader or buffer.
@@ -3987,10 +3987,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns AnalysisResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.AnalysisResponse;
 
@@ -3999,10 +3999,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns AnalysisResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.AnalysisResponse;
 
       /**
@@ -4027,7 +4027,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.AnalysisResponse,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4106,8 +4106,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IAnalysisResult,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified AnalysisResult message, length delimited. Does not implicitly {@link legal.api.AnalysisResult.verify|verify} messages.
@@ -4117,8 +4117,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IAnalysisResult,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes an AnalysisResult message from the specified reader or buffer.
@@ -4126,10 +4126,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns AnalysisResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.AnalysisResult;
 
@@ -4138,10 +4138,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns AnalysisResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.AnalysisResult;
 
       /**
@@ -4166,7 +4166,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.AnalysisResult,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4247,8 +4247,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IRecommendation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified Recommendation message, length delimited. Does not implicitly {@link legal.api.Recommendation.verify|verify} messages.
@@ -4258,8 +4258,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IRecommendation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a Recommendation message from the specified reader or buffer.
@@ -4267,10 +4267,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns Recommendation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.Recommendation;
 
@@ -4279,10 +4279,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns Recommendation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.Recommendation;
 
       /**
@@ -4307,7 +4307,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.Recommendation,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4372,8 +4372,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IHealthCheckRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified HealthCheckRequest message, length delimited. Does not implicitly {@link legal.api.HealthCheckRequest.verify|verify} messages.
@@ -4383,8 +4383,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IHealthCheckRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a HealthCheckRequest message from the specified reader or buffer.
@@ -4392,10 +4392,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns HealthCheckRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.HealthCheckRequest;
 
@@ -4404,10 +4404,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns HealthCheckRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.HealthCheckRequest;
 
       /**
@@ -4432,7 +4432,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.HealthCheckRequest,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4507,8 +4507,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IHealthCheckResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified HealthCheckResponse message, length delimited. Does not implicitly {@link legal.api.HealthCheckResponse.verify|verify} messages.
@@ -4518,8 +4518,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IHealthCheckResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a HealthCheckResponse message from the specified reader or buffer.
@@ -4527,10 +4527,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns HealthCheckResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.HealthCheckResponse;
 
@@ -4539,10 +4539,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns HealthCheckResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.HealthCheckResponse;
 
       /**
@@ -4567,7 +4567,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.HealthCheckResponse,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4652,8 +4652,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.ISystemStatus,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified SystemStatus message, length delimited. Does not implicitly {@link legal.api.SystemStatus.verify|verify} messages.
@@ -4663,8 +4663,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.ISystemStatus,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a SystemStatus message from the specified reader or buffer.
@@ -4672,10 +4672,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns SystemStatus
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.SystemStatus;
 
@@ -4684,9 +4684,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns SystemStatus
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.SystemStatus;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.SystemStatus;
 
       /**
        * Verifies a SystemStatus message.
@@ -4710,7 +4710,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.SystemStatus,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4777,8 +4777,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IBatchRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified BatchRequest message, length delimited. Does not implicitly {@link legal.api.BatchRequest.verify|verify} messages.
@@ -4788,8 +4788,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IBatchRequest,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a BatchRequest message from the specified reader or buffer.
@@ -4797,10 +4797,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns BatchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.BatchRequest;
 
@@ -4809,9 +4809,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns BatchRequest
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.BatchRequest;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.BatchRequest;
 
       /**
        * Verifies a BatchRequest message.
@@ -4835,7 +4835,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.BatchRequest,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -4896,8 +4896,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IBatchOperation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified BatchOperation message, length delimited. Does not implicitly {@link legal.api.BatchOperation.verify|verify} messages.
@@ -4907,8 +4907,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IBatchOperation,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a BatchOperation message from the specified reader or buffer.
@@ -4916,10 +4916,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns BatchOperation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.BatchOperation;
 
@@ -4928,10 +4928,10 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns BatchOperation
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): legal.api.BatchOperation;
 
       /**
@@ -4956,7 +4956,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.BatchOperation,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -5023,8 +5023,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IBatchOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified BatchOptions message, length delimited. Does not implicitly {@link legal.api.BatchOptions.verify|verify} messages.
@@ -5034,8 +5034,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IBatchOptions,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a BatchOptions message from the specified reader or buffer.
@@ -5043,10 +5043,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns BatchOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.BatchOptions;
 
@@ -5055,9 +5055,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns BatchOptions
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.BatchOptions;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.BatchOptions;
 
       /**
        * Verifies a BatchOptions message.
@@ -5081,7 +5081,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.BatchOptions,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -5160,8 +5160,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IBatchResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified BatchResponse message, length delimited. Does not implicitly {@link legal.api.BatchResponse.verify|verify} messages.
@@ -5171,8 +5171,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IBatchResponse,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a BatchResponse message from the specified reader or buffer.
@@ -5180,10 +5180,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns BatchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.BatchResponse;
 
@@ -5192,9 +5192,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns BatchResponse
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.BatchResponse;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.BatchResponse;
 
       /**
        * Verifies a BatchResponse message.
@@ -5218,7 +5218,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.BatchResponse,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -5300,8 +5300,8 @@ export namespace legal {
        */
       public static encode(
         message: legal.api.IBatchResult,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified BatchResult message, length delimited. Does not implicitly {@link legal.api.BatchResult.verify|verify} messages.
@@ -5311,8 +5311,8 @@ export namespace legal {
        */
       public static encodeDelimited(
         message: legal.api.IBatchResult,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a BatchResult message from the specified reader or buffer.
@@ -5320,10 +5320,10 @@ export namespace legal {
        * @param [length] Message length if known beforehand
        * @returns BatchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): legal.api.BatchResult;
 
@@ -5332,9 +5332,9 @@ export namespace legal {
        * @param reader Reader or buffer to decode from
        * @returns BatchResult
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
-      public static decodeDelimited(reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array): legal.api.BatchResult;
+      public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): legal.api.BatchResult;
 
       /**
        * Verifies a BatchResult message.
@@ -5358,7 +5358,7 @@ export namespace legal {
        */
       public static toObject(
         message: legal.api.BatchResult,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**
@@ -5419,8 +5419,8 @@ export namespace google {
        */
       public static encode(
         message: google.protobuf.ITimestamp,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Encodes the specified Timestamp message, length delimited. Does not implicitly {@link google.protobuf.Timestamp.verify|verify} messages.
@@ -5430,8 +5430,8 @@ export namespace google {
        */
       public static encodeDelimited(
         message: google.protobuf.ITimestamp,
-        writer?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer
-      ): $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Writer;
+        writer?: $protobuf.Writer
+      ): $protobuf.Writer;
 
       /**
        * Decodes a Timestamp message from the specified reader or buffer.
@@ -5439,10 +5439,10 @@ export namespace google {
        * @param [length] Message length if known beforehand
        * @returns Timestamp
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decode(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array,
+        reader: $protobuf.Reader | Uint8Array,
         length?: number
       ): google.protobuf.Timestamp;
 
@@ -5451,10 +5451,10 @@ export namespace google {
        * @param reader Reader or buffer to decode from
        * @returns Timestamp
        * @throws {Error} If the payload is not a reader or valid buffer
-       * @throws {$protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.util.ProtocolError} If required fields are missing
+       * @throws {$protobuf.util.ProtocolError} If required fields are missing
        */
       public static decodeDelimited(
-        reader: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.Reader | Uint8Array
+        reader: $protobuf.Reader | Uint8Array
       ): google.protobuf.Timestamp;
 
       /**
@@ -5479,7 +5479,7 @@ export namespace google {
        */
       public static toObject(
         message: google.protobuf.Timestamp,
-        options?: $protobuf // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.IConversionOptions
+        options?: $protobuf.IConversionOptions
       ): { [k: string]: any };
 
       /**

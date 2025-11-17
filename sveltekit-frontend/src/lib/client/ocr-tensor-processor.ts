@@ -1,6 +1,6 @@
 /** * Client-side OCR + Tensor Processing Pipeline * OCR.js â†’ Text Extraction â†’ Node API â†’ Embeddings â†’ Multi-dimensional Tensors * SIMD parsing via Service Worker for streaming performance */
 import { ShaderCacheManager } from '$lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/shader-cache-manager.js';
-import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { browser } from '$app/environment';
 
 // Placeholder definitions to resolve compilation errors if gaming-constants.js is missing or incorrect
 // These should ideally be imported from a proper constants file.
@@ -135,7 +135,7 @@ export class OCRTensorProcessor {
   // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
   private worker?: Worker | ServiceWorker;
   private serviceWorkerRegistration?: ServiceWorkerRegistration;
-  private ocrInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  private ocrInitialized = $state(false);
   private webgpuDevice?: GPUDevice;
   private shaderCacheManager: IShaderCacheManager; // Use the new interface type
   private currentLODLevel: 'high' | 'medium' | 'low' = 'medium';

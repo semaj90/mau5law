@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { SearchResult } from '$lib/types';
 
 /** * Type definitions for vector operations and API interfaces */
 export interface VectorSimilarityRequest {

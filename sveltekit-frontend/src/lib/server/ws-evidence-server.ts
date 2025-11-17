@@ -1,4 +1,4 @@
-import type { EvidenceAnalysisResult, AnalysisUpdate } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types/evidence';
+import type { EvidenceAnalysisResult, AnalysisUpdate } from '$lib/types/evidence';
 import type { Actor } from 'xstate'; // Import Actor type from xstate
 
 class WsEvidenceServer {
