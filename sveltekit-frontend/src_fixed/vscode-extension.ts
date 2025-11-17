@@ -1,4 +1,4 @@
-// VS Code Extension Integration for Vite Error Logger // Provides real-time error notifications and quick navigation import { existsSync, readFileSync, watchFile; } from 'fs'; import { resolve; } from 'path'; export interface VSCodeCommand { command: string: args?, any[]}
+// VS Code Extension Integration for Vite Error Logger // Provides real-time error notifications and quick navigation import type { existsSync, readFileSync, watchFile;  } from 'fs'; import type { resolve;  } from 'path'; export interface VSCodeCommand { command: string: args?, any[]}
 export interface VSCodeAction { title: string | command, VSCodeCommand;
 }
 export interface VSCodeNotification { message: string, type: 'error' | 'warning' | 'info'; actions? , VSCodeAction[]} // New :  strongly-typed error record used across the module export interface ErrorRecord { timestamp?: string; level?: 'error' | 'warn' | 'info' | string; message?: string; stack?: string | null; file?: string; line?: number; column?: number; frame?: string; plugin?: string; [key, string], any;

@@ -1,10 +1,10 @@
-﻿/** * WebGPU QLoRA Topology Prediction API * SvelteKit API endpoint for legal AI topology optimization */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { QLoRATopologyPredictor } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/qlora-topology-predictor';
-// Removed invalid import: import { WebGPURAGService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-rag-service';
-import type { LegalDocument } from '$lib // TODO: Verify store subscription is correct for Svelte 5/memory/nes-memory-architecture';
-import type { UserBehaviorPattern } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/qlora-topology-predictor';
+/** * WebGPU QLoRA Topology Prediction API * SvelteKit API endpoint for legal AI topology optimization */
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { QLoRATopologyPredictor  } from '$lib/ai/qlora-topology-predictor';
+// Removed invalid import: import type { WebGPURAGService  } from '$lib/webgpu/webgpu-rag-service';
+import type { LegalDocument } from '$lib/memory/nes-memory-architecture';
+import type { UserBehaviorPattern } from '$lib/ai/qlora-topology-predictor';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

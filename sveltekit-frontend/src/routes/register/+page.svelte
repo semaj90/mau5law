@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { superForm } from 'sveltekit-superforms';
-  import { zod } from 'sveltekit-superforms/adapters';
-  import { z } from 'zod';
+  import type { goto  } from '$app/navigation';
+  import type { superForm  } from 'sveltekit-superforms';
+  import type { zod  } from 'sveltekit-superforms/adapters';
+  import type { z  } from 'zod';
 
   // Define the base Zod schema for client validation
   const baseRegisterSchema = z.object({
@@ -31,8 +31,8 @@
   });
 
   // Password strength indicator
-  let passwordStrength = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
-    const password = $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password || '';
+  let passwordStrength = $derived (() => {
+    const password = $form .password || '';
     let strength = 0;
 
     if (password.length >= 8) strength++;
@@ -89,10 +89,10 @@
         <p class="register-subtitle">Join the Legal AI Platform to get started</p>
       </div>
 
-      {#if $message // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5}
+      {#if $message }
         <div class="error-message">
           <span>⚠</span>
-          <span>{$message // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5}</span>
+          <span>{$message }</span>
         </div>
       {/if}
 
@@ -103,14 +103,14 @@
             id="email"
             name="email"
             type="email"
-            bind:value={$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email}
+            bind:value={$form .email}
             placeholder="Enter your email address"
-            aria-invalid={$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email ? 'true' : undefined}
+            aria-invalid={$errors .email ? 'true' : undefined}
             class="form-input"
             required
           />
-          {#if $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email}
-            <span class="field-error">{$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.email}</span>
+          {#if $errors .email}
+            <span class="field-error">{$errors .email}</span>
           {/if}
         </div>
 
@@ -120,13 +120,13 @@
             id="password"
             name="password"
             type="password"
-            bind:value={$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}
+            bind:value={$form .password}
             placeholder="Create a strong password"
-            aria-invalid={$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password ? 'true' : undefined}
+            aria-invalid={$errors .password ? 'true' : undefined}
             class="form-input"
             required
           />
-          {#if $form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}
+          {#if $form .password}
             <div class="password-strength">
               <div class="strength-bar">
                 <div
@@ -139,8 +139,8 @@
               </span>
             </div>
           {/if}
-          {#if $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}
-            <span class="field-error">{$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.password}</span>
+          {#if $errors .password}
+            <span class="field-error">{$errors .password}</span>
           {/if}
           <div class="password-requirements">
             <small>Password must be at least 8 characters with uppercase, lowercase, number, and special character</small>
@@ -153,14 +153,14 @@
             id="confirmPassword"
             name="confirmPassword"
             type="password"
-            bind:value={$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.confirmPassword}
+            bind:value={$form .confirmPassword}
             placeholder="Confirm your password"
-            aria-invalid={$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.confirmPassword ? 'true' : undefined}
+            aria-invalid={$errors .confirmPassword ? 'true' : undefined}
             class="form-input"
             required
           />
-          {#if $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.confirmPassword}
-            <span class="field-error">{$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.confirmPassword}</span>
+          {#if $errors .confirmPassword}
+            <span class="field-error">{$errors .confirmPassword}</span>
           {/if}
         </div>
 
@@ -170,7 +170,7 @@
               id="terms"
               name="terms"
               type="checkbox"
-              bind:checked={$form // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.terms}
+              bind:checked={$form .terms}
               class="form-checkbox"
               required
             />
@@ -179,8 +179,8 @@
               and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>
             </label>
           </div>
-          {#if $errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.terms}
-            <span class="field-error">{$errors // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.terms}</span>
+          {#if $errors .terms}
+            <span class="field-error">{$errors .terms}</span>
           {/if}
         </div>
 

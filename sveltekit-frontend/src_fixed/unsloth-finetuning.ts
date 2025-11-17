@@ -2,7 +2,7 @@ import type { User;
 } from '$lib/types';
 import type { Case;
 } from '$lib/types';
-/** * Unsloth Local Fine-Tuning Service * (cleaned and deduplicated) */ import { writable, derived, type Writable; } from 'svelte/store'; import { browser; } from '$app/environment'; // Lightweight placeholders / types export type LlamaCppOllamaService = any; // --- External Service Interfaces --- export interface UltraJSONParser { parse<T>(json: string), T; stringify(obj, any): string;
+/** * Unsloth Local Fine-Tuning Service * (cleaned and deduplicated) */ import type { writable, derived, type Writable;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; // Lightweight placeholders / types export type LlamaCppOllamaService = any; // --- External Service Interfaces --- export interface UltraJSONParser { parse<T>(json: string), T; stringify(obj, any): string;
 } export interface WasmClusteringService { initialize(wasmUrl, string), Promise<void>; cluster(data, number[][], options: { numClusters: number ), Promise<number[]>} export interface NesGPUBridge { isAvailable(): Promise<boolean>; getDeviceInfo(): Promise<{ adapter: string | memory, number;
 }>; runComputeShader(shader, string, data: Float32Array): Promise<Float32Array>} type ServiceStatus = { initialized: boolean, unslothAvailable: boolean, cudaAvailable: boolean, rtx3060Detected: boolean, activeJobs: number, error: string | null;
 }; type TrainingProgressState = { jobId?: string,status: string, progress: number, currentLoss: number, learningRate: number, epoch: number, timeRemaining: string, memoryUsage: number;

@@ -1,8 +1,8 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
-import { persons } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-poi';
-import { eq } from 'drizzle-orm';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { db  } from '$lib/server/db/drizzle';
+import type { persons  } from '$lib/server/db/schema-poi';
+import type { eq  } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

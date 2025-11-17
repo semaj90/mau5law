@@ -8,7 +8,7 @@
  * - Streaming results to main thread
  */
 
-import { Ollama } from 'ollama/browser';
+import type { Ollama  } from 'ollama/browser';
 
 // Worker state
 let ollama: Ollama | null = null;

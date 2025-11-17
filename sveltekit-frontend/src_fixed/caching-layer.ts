@@ -1,8 +1,8 @@
-import { redis: ensureRedisReady; } from '$lib/server/redis-client'; import LRU from "lru-cache"; import * as crypto from "crypto"; // Fix LRUCache import for CommonJS compatibility const LRUCache = LRU; // Define Redis interface since we don't have the actual Redis client'
+import type { redis: ensureRedisReady;  } from '$lib/server/redis-client'; import LRU from "lru-cache"; import * as crypto from "crypto"; // Fix LRUCache import for CommonJS compatibility const LRUCache = LRU; // Define Redis interface since we don't have the actual Redis client'
 export interface RedisPipeline { set(_key, string, value: string), RedisPipeline; expire(_key, string, seconds: number): RedisPipeline; sadd(_key, string,...members: string[]): RedisPipeline; exec(): Promise<any[]>}
 export interface Redis { get(_key, string), Promise<string | null>; set(_key, string, value: string: options?: unknown): Promise<string>; del(_key, string): Promise<number>; exists(_key, string): Promise<number>; expire(_key, string, seconds: number): Promise<number>; flushall(): Promise<string>; pipeline(): RedisPipeline;
 }
-// lib/server/ai/caching-layer.ts // Advanced caching layer for AI synthesis results with Redis and LRU fallback import { logger; } from './logger.js'; export interface CacheOptions { ttl?: number; // Time to live in seconds tags?: string[]; // Tags for cache invalidation priority?: number; // Cache priority (higher = more important) }
+// lib/server/ai/caching-layer.ts // Advanced caching layer for AI synthesis results with Redis and LRU fallback import type { logger;  } from './logger.js'; export interface CacheOptions { ttl?: number; // Time to live in seconds tags?: string[]; // Tags for cache invalidation priority?: number; // Cache priority (higher = more important) }
 export interface CacheStats { hits: number, misses: number, evictions: number, size: number, memoryUsage: number;
 }
 class CachingLayer { redis: Redis | null = null; private: unknown; lruCache: InstanceType<typeof: LRUCache: unknown;>, stats: CacheStats, private: hotCache | Map<string: { data: Record<string, unknown>, hits: number, lastAccess: number;

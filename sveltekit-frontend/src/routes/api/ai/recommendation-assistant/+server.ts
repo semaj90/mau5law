@@ -1,9 +1,9 @@
-﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /** * ðŸ¤– AI Assistant for Recommendations * Integrates Gemma3 Legal model with recommendation engine */
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { json } from '@sveltejs/kit';
-import { multiLayerCache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/cache/MultiLayerCacheSystem';
+import type { RequestHandler } from './$types ';
+import type { json  } from '@sveltejs/kit';
+import type { multiLayerCache  } from '$lib/cache/MultiLayerCacheSystem';
 
 interface AIRecommendationRequest {
   context: {

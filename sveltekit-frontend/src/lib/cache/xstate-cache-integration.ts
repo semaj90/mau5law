@@ -1,12 +1,12 @@
 /** * XState Neural Sprite Integration with Headless UI Cache * Bridges XState machine state management with intelligent caching */
 
-import { assign, fromPromise } from 'xstate';
+import type { assign, fromPromise  } from 'xstate';
 import type { EventObject } from 'xstate';
 
 // Local alias matching the code expectations: event with an `output` payload
 type DoneInvokeEvent<T> = EventObject & { output: T };
 
-import { headlessUICache } from './headless-ui-cache.js';
+import type { headlessUICache  } from './headless-ui-cache.js';
 
 // Define a base context type for machines that use caching
 export interface BaseMachineContext {

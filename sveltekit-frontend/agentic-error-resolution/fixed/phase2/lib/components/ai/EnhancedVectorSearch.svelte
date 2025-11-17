@@ -32,9 +32,9 @@ https://svelte.dev/e/js_parse_error -->
   //   TabsList,
   //   TabsTrigger,
   // } from "bits-ui"
-  import { BarChart3, Brain, ChevronDown, ChevronUp, Clock, Download, Eye, Filter, Loader2, Search, Share2, Target, TrendingUp, Zap } from "lucide-svelte";
-  import { onMount  } from "svelte";
-  import { derived, get, writable } from "svelte/store";
+  import type { BarChart3, Brain, ChevronDown, ChevronUp, Clock, Download, Eye, Filter, Loader2, Search, Share2, Target, TrendingUp, Zap  } from 'lucide-svelte';
+  import type { onMount   } from 'svelte';
+  import type { derived, get, writable  } from 'svelte/store';
   // Props
   let { caseId = "", userId = "", maxResults = 20, enableAnalytics = true, enableFilters = true, showPreview = true, class: className = "" }: { caseId = "",
     userId = "",

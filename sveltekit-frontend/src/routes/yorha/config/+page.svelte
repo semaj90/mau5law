@@ -1,18 +1,18 @@
 <script lang="ts">
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-  import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
-  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
-  import { Cpu, Database, RefreshCw, Save, Server, Zap } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import Button from '$lib/components/ui/button';
+  import Card from '$lib/components/ui/card';
+  import Input from '$lib/components/ui/input';
+  import type { appActions, appStore  } from '$lib/stores/app-store';
+  import type { Cpu, Database, RefreshCw, Save, Server, Zap  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
 
   // Reactive state from app store
-  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let systemMetrics = $state <any>(null);
+  let isLoading = $state(false);
+  let error = $state <string | null>(null);
 
   // Configuration state
-  let config = $state // TODO: Verify store subscription is correct for Svelte 5({
+  let config = $state({
     databaseUrl: '',
     redisUrl: '',
     ollamaUrl: '',
@@ -22,10 +22,10 @@
     enableGpu: true,
   });
 
-  let isSaving = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let isSaving = $state(false);
 
   // Subscribe to app store
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     const unsubscribe = appStore.subscribe((state) => {
       systemMetrics = state.systemMetrics;
       isLoading = state.isLoading;

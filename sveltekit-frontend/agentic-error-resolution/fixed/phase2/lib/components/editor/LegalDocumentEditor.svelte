@@ -1,9 +1,9 @@
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from "svelte";
-  import { quintOut } from "svelte/easing";
-  import { fade } from "svelte/transition";
+  import type { onMount  } from 'svelte';
+  import type { quintOut  } from 'svelte/easing';
+  import type { fade  } from 'svelte/transition';
   // Bits-UI components
   import * as Dialog from '$lib/components/ui/dialog.svelte'";
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu.svelte'";
@@ -12,8 +12,8 @@
   import { Input } from '$lib/components/ui/input.svelte'";
   import { Label } from '$lib/components/ui/label.svelte'";
   import { Textarea } from '$lib/components/ui/textarea.svelte'";
-  import { AlertCircle, BookOpen, Brain, ChevronDown, Eye, FileText, Loader2, Save, Scale, Search, Settings, Share2, // Corrected import for Share icon
-    X } from "lucide-svelte";
+  import type { AlertCircle, BookOpen, Brain, ChevronDown, Eye, FileText, Loader2, Save, Scale, Search, Settings, Share2, // Corrected import for Share icon
+    X  } from 'lucide-svelte';
   // Props
   let { caseId = undefined }: { caseId?: string } = $props();
   let { documentId = undefined }: { documentId?: string } = $props();

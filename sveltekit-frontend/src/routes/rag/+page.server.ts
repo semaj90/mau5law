@@ -1,10 +1,10 @@
-import type { Actions, PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
-import { Client as MinioClient } from 'minio'; // Corrected import and aliasing
-import { Buffer } from 'buffer';
-import { db } from '$lib/server/db/client'; // Corrected import path for db
+import type { Actions, PageServerLoad } from './$types ';
+import type { Client as MinioClient  } from 'minio'; // Corrected import and aliasing
+import type { Buffer  } from 'buffer';
+import type { db  } from '$lib/server/db/client'; // Corrected import path for db
 import * as enhancedEmbeddingSchema from '$lib/server/db/enhanced-embedding-schema'; // Import schema as a namespace
-import { DocumentUploadSchema, type UploadData } from './schema';
-import { fail } from '@sveltejs/kit';
+import type { DocumentUploadSchema, type UploadData  } from './schema';
+import type { fail  } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
   // Provide a minimal initial form: object instead of calling superValidate with a Zod schema.

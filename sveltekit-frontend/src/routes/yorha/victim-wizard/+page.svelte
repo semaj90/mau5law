@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invalidateAll } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import type { invalidateAll  } from '$app/navigation';
 
   type IncidentForm = {
     victimName: string;
@@ -11,7 +11,7 @@
     immediateNeeds: string;
   };
 
-  const form = $state // TODO: Verify store subscription is correct for Svelte 5<IncidentForm>({
+  const form = $state <IncidentForm>({
     victimName: '',
     reporterEmail: '',
     dateTime: '',
@@ -21,10 +21,10 @@
     immediateNeeds: ''
   });
 
-  let currentStep = $state // TODO: Verify store subscription is correct for Svelte 5(1);
-  let isSubmitting = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let aiOutput = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let currentStep = $state(1);
+  let isSubmitting = $state(false);
+  let aiOutput = $state <string | null>(null);
+  let errorMessage = $state <string | null>(null);
 
   const steps = [
     { id: 1, title: 'Victim & Reporter' },

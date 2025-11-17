@@ -1,14 +1,14 @@
 // Global User Store with PostgreSQL Integration + Svelte 5 Runes
 // Predictive Analytics, Chat History, and Real-time Synchronization
-import { writable, derived, type Writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import type { writable, derived, type Writable  } from 'svelte/store';
+import type { browser  } from '$app/environment';
 import type { User, Session } from 'lucia';
 import crypto from 'crypto';
 import type {
   UserPattern,
   RecommendationResult,
   ChatAnalytics,
-} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/user-recommendation-service';
+} from '$lib/server/services/user-recommendation-service';
 
 // ===== CORE USER STATE =====
 export interface GlobalUserState {
@@ -162,7 +162,7 @@ const defaultState: GlobalUserState = {
 };
 
 // ===== SVELTE 5 RUNES STORE =====
-let globalUserState = $state // TODO: Verify store subscription is correct for Svelte 5<GlobalUserState>(defaultState);
+let globalUserState = $state <GlobalUserState>(defaultState);
 
 // Reactive computations using Svelte 5 $derived
 const userDisplayName = $derived(

@@ -1,4 +1,4 @@
-/** * Console Palette Animation System * Smooth transitions between gaming themes with easing and effects */ import { CONSOLE_PALETTES, type ConsolePaletteName; } from './retro-console-palettes'; export interface AnimationOptions { duration: number, easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce',effects: AnimationEffect[]}
+/** * Console Palette Animation System * Smooth transitions between gaming themes with easing and effects */ import type { CONSOLE_PALETTES, type ConsolePaletteName;  } from './retro-console-palettes'; export interface AnimationOptions { duration: number, easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce',effects: AnimationEffect[]}
 export interface AnimationEffect { type: 'scanlines' | 'chromatic-aberration' | 'pixelate' | 'glitch' | 'crt-curve',intensity: number, duration: number;
 }
 export interface ColorTransition { from: string, to: string, current: string, progress: number;

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat)
-  import { Button } from '$lib/components/ui/core';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import type { Button  } from '$lib/components/ui/core';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
 
   interface ChatMessage {
     id: string;

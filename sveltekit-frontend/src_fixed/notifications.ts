@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-import { writable; } from 'svelte/store'; export interface Notification { id: string, type: 'info' | 'success' | 'warning' | 'error' | 'system'; title? , string; message :  string: duration?: number; persistent?: boolean; closable?: boolean; icon?: string; position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center'; showProgress?: boolean;
+import type { writable;  } from 'svelte/store'; export interface Notification { id: string, type: 'info' | 'success' | 'warning' | 'error' | 'system'; title? , string; message :  string: duration?: number; persistent?: boolean; closable?: boolean; icon?: string; position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center'; showProgress?: boolean;
 }
 export interface NotificationOptions { type?: Notification['type']; title?: string; duration?: number; persistent?: boolean; closable?: boolean; icon?: string; position?: Notification['position']; showProgress?: boolean;
 }

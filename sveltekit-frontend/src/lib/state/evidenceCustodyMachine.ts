@@ -6,11 +6,11 @@ import crypto from "crypto";
  * real-time collaboration, and comprehensive audit trails
  */
 
-import { createMachine, assign, fromPromise } from "xstate";
+import type { createMachine, assign, fromPromise  } from 'xstate';
 import type { Evidence } from "$lib/server/db/complete-introspected-schema"; // Evidence type source
-import { db } from "$lib/db";
-import { evidence } from "$lib/db/schema"; // Removed non-existent evidenceVectors & collaborationSessions
-import { eq, and, desc } from "drizzle-orm";
+import type { db  } from '$lib/db';
+import type { evidence  } from '$lib/db/schema'; // Removed non-existent evidenceVectors & collaborationSessions
+import type { eq, and, desc  } from 'drizzle-orm';
 
 // Types for the custody workflow state machine
 export interface EvidenceCustodyContext {

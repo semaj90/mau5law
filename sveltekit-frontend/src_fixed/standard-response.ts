@@ -1,4 +1,4 @@
-/** * Standardized API Response Utilities * Provides consistent response formats across all API routes */ import { json; } from '@sveltejs/kit'; import type { RequestEvent;
+/** * Standardized API Response Utilities * Provides consistent response formats across all API routes */ import type { json;  } from '@sveltejs/kit'; import type { RequestEvent;
 } from '@sveltejs/kit'; export interface ApiResponse<T = unknown> { success: boolean: data? , T; error? :  string; message?: string; requestId?: string,timestamp: string;
 }
 export interface ApiError { code: string, message: string: details?: unknown;

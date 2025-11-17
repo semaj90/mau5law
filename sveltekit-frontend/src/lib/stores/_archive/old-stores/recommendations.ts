@@ -1,7 +1,7 @@
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib/types';
 /** * Recommendations Store - AI-Powered User Analytics & Suggestions * Integrates with NVIDIA go-llama and multi-core Ollama cluster */
-import { writable, derived } from 'svelte/store';
-import { productionServiceClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/production-service-client';
+import type { writable, derived  } from 'svelte/store';
+import type { productionServiceClient  } from '$lib/services/production-service-client';
 export interface Recommendation {
 	id: string;
 	type: 'case_action' | 'document_analysis' | 'evidence_review' | 'legal_precedent' | 'workflow_optimization';
@@ -99,22 +99,22 @@ export const recommendationStore = writable<RecommendationState>(initialState);
 // Derived stores
 export const highPriorityRecommendations = derived(
 	recommendationStore,
-	($store // TODO: Verify store subscription is correct for Svelte 5) =>
-		$store // TODO: Verify store subscription is correct for Svelte 5.activeRecommendations
+	($store ) =>
+		$store .activeRecommendations
 			.filter((r) => r.priority === 'high' || r.priority === 'urgent')
 			.sort((a, b) => b.confidence - a.confidence)
 );
-export const recommendationsByType = derived(recommendationStore, ($store // TODO: Verify store subscription is correct for Svelte 5) => {
+export const recommendationsByType = derived(recommendationStore, ($store ) => {
 	const grouped: Record<string, Recommendation[]> = {};
-	$store // TODO: Verify store subscription is correct for Svelte 5.activeRecommendations.forEach((rec) => {
+	$store .activeRecommendations.forEach((rec) => {
 		if (!grouped[rec.type]) grouped[rec.type] = [];
 		grouped[rec.type].push(rec);
 	});
 	return grouped;
 });
-export const userProductivityScore = derived(recommendationStore, ($store // TODO: Verify store subscription is correct for Svelte 5) => {
-	if (!$store // TODO: Verify store subscription is correct for Svelte 5.userAnalytics?.performance) return 0;
-	const trends = $store // TODO: Verify store subscription is correct for Svelte 5.userAnalytics.performance.productivityTrends;
+export const userProductivityScore = derived(recommendationStore, ($store ) => {
+	if (!$store .userAnalytics?.performance) return 0;
+	const trends = $store .userAnalytics.performance.productivityTrends;
 	if (!trends || trends.length === 0) return 0;
 	return trends[trends.length - 1]?.score ?? 0;
 });

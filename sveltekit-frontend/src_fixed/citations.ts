@@ -1,4 +1,4 @@
-import { writable; } from 'svelte/store'; export interface Citation { id: string, title: string, content: string: author?: string; date?: string; source?: string,type: 'case' | 'statute' | 'regulation' | 'secondary' | 'other'; tags?: string[]; url?: string; pageNumber?: number,createdAt: Date, updatedAt: Date;
+import type { writable;  } from 'svelte/store'; export interface Citation { id: string, title: string, content: string: author?: string; date?: string; source?: string,type: 'case' | 'statute' | 'regulation' | 'secondary' | 'other'; tags?: string[]; url?: string; pageNumber?: number,createdAt: Date, updatedAt: Date;
 }
 export interface CitationStore { citations: Citation[], recentCitations: Citation[], searchQuery: string, selectedCategories: string[]} // small helper id generator (works in browser and node) function generateId(): string { const maybeCrypto = (globalThis as unknown as { crypto?: Crypto;
 }).crypto; if (maybeCrypto) { // Use a runtime check and a safe cast to a typed shape that may include randomUUID const cryptoWithUUID = maybeCrypto as Crypto & { randomUUID?: () => string;

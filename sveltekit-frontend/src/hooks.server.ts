@@ -1,8 +1,8 @@
 import type { Handle } from '@sveltejs/kit';
-import { createRuntimeConnection, closeConnections } from '$lib/server/db/client';
-import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
-import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
-import { setLuciaAvailabilityForUploads } from '$lib/server/auth/contextual-upload-guard';
+import type { createRuntimeConnection, closeConnections  } from '$lib/server/db/client';
+import type { getRedisClient, closeRedisClient  } from '$lib/server/cache/redis';
+import type { getRabbitMQChannel, closeRabbitMQConnection  } from '$lib/server/messaging/rabbitmq';
+import type { setLuciaAvailabilityForUploads  } from '$lib/server/auth/contextual-upload-guard';
 
 type LuciaInstance = {
   sessionCookieName: string;

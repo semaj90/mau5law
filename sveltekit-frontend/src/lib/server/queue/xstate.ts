@@ -1,4 +1,4 @@
-import { createMachine, assign, interpret, type Interpreter } from 'xstate';
+import type { createMachine, assign, interpret, type Interpreter  } from 'xstate';
 
 export interface QueueState {
   id: string;

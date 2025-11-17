@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { writable, get } from 'svelte/store';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { writable, get  } from 'svelte/store';
   // Assuming master-service-coordinator exports a singleton instance named 'masterServiceCoordinator'
   // and that instance has a 'status' store and a 'services' array.
-  import { MasterServiceCoordinator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/master-service-coordinator'; // Changed to named import
+  import type { MasterServiceCoordinator  } from '$lib/services/master-service-coordinator'; // Changed to named import
 
   // Use the status store from the instance (guard at runtime in case the module exports a class/type)
   // If MasterServiceCoordinator.status isn't present, fall back to a safe writable store so `get(...)` won't fail.
@@ -383,36 +383,36 @@
 <main class="container mx-auto p-4">
   <header class="mb-6">
     <h1 class="text-3xl font-bold">System Health Dashboard</h1>
-    {#if $healthData // TODO: Verify store subscription is correct for Svelte 5}
-      <p class="text-gray-600">Last updated: {formatTimestamp($healthData // TODO: Verify store subscription is correct for Svelte 5.timestamp)}</p>
+    {#if $healthData }
+      <p class="text-gray-600">Last updated: {formatTimestamp($healthData .timestamp)}</p>
     {/if}
   </header>
 
-  {#if $loading // TODO: Verify store subscription is correct for Svelte 5 && !$healthData // TODO: Verify store subscription is correct for Svelte 5}
+  {#if $loading && !$healthData }
     <p>Loading health status...</p>
-  {:else if $error // TODO: Verify store subscription is correct for Svelte 5}
+  {:else if $error }
     <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
       <span class="font-medium">Error!</span>
-      {$error // TODO: Verify store subscription is correct for Svelte 5}
+      {$error }
     </div>
-  {:else if $healthData // TODO: Verify store subscription is correct for Svelte 5}
+  {:else if $healthData }
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <div class="p-4 rounded-lg shadow {getStatusColor($healthData // TODO: Verify store subscription is correct for Svelte 5.overall_status)}">
+      <div class="p-4 rounded-lg shadow {getStatusColor($healthData .overall_status)}">
         <h2 class="font-bold">Overall Status</h2>
-        <p class="text-2xl capitalize">{$healthData // TODO: Verify store subscription is correct for Svelte 5.overall_status}</p>
+        <p class="text-2xl capitalize">{$healthData .overall_status}</p>
       </div>
       <div class="p-4 bg-white rounded-lg shadow">
         <h2 class="font-bold">Health</h2>
-        <p class="text-2xl">{$healthData // TODO: Verify store subscription is correct for Svelte 5.health_percentage}%</p>
+        <p class="text-2xl">{$healthData .health_percentage}%</p>
       </div>
       <div class="p-4 bg-white rounded-lg shadow">
         <h2 class="font-bold">Services Online</h2>
-        <p class="text-2xl">{$healthData // TODO: Verify store subscription is correct for Svelte 5.services_online} / {$healthData // TODO: Verify store subscription is correct for Svelte 5.services_total}</p>
+        <p class="text-2xl">{$healthData .services_online} / {$healthData .services_total}</p>
       </div>
       <div class="p-4 bg-white rounded-lg shadow">
         <h2 class="font-bold">CUDA Status</h2>
-        <p class="text-2xl">{$healthData // TODO: Verify store subscription is correct for Svelte 5.cuda.gpu_ready ? 'Ready' : 'Unavailable'}</p>
+        <p class="text-2xl">{$healthData .cuda.gpu_ready ? 'Ready' : 'Unavailable'}</p>
       </div>
     </div>
 
@@ -421,9 +421,9 @@
       <button
         onclick={fetchHealth}
         class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-gray-400"
-        disabled={$loading // TODO: Verify store subscription is correct for Svelte 5}
+        disabled={$loading }
       >
-        {$loading // TODO: Verify store subscription is correct for Svelte 5 ? 'Refreshing...' : 'Refresh Now'}
+        {$loading ? 'Refreshing...' : 'Refresh Now'}
       </button>
       <button
         onclick={toggleAutoRefresh}

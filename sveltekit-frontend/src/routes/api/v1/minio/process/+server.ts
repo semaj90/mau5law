@@ -1,5 +1,5 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { MinIOService as MinIOServiceClass } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio-service'; // Corrected import: only named export MinIOService
+import type { RequestHandler } from './$types .js';
+import type { MinIOService as MinIOServiceClass  } from '$lib/server/minio-service'; // Corrected import: only named export MinIOService
 
 // Define types for AI analysis results
 interface AIAnalysisResult {

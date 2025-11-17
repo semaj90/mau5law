@@ -1,9 +1,9 @@
-﻿import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db, sql, eq } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { personsOfInterest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { z } from 'zod';
-import { authenticateUser } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/auth-middleware';
+import type { cuidSchema  } from '$lib/server/z-schemas';
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { db, sql, eq  } from '$lib/server/db';
+import type { personsOfInterest  } from '$lib/server/db/schema-postgres';
+import type { z  } from 'zod';
+import type { authenticateUser  } from '$lib/server/api/auth-middleware';
 
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({

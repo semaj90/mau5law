@@ -1,8 +1,8 @@
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { fail } from '@sveltejs/kit';
-import { fileUploadSchema } from '$lib/schemas/fileUploadSchema';
-import { xstateIntegration } from '$lib/services/xstate-integration'; // Changed to named import
-import { z } from 'zod';
+import type { PageServerLoad, Actions } from './$types .js';
+import type { fail  } from '@sveltejs/kit';
+import type { fileUploadSchema  } from '$lib/schemas/fileUploadSchema';
+import type { xstateIntegration  } from '$lib/services/xstate-integration'; // Changed to named import
+import type { z  } from 'zod';
 import redis from '$lib/server/redis-client'; // Changed to default imports
 import ensureRedisReady from '$lib/server/redis-client'; // Import ensureRedisReady as a default export
 

@@ -1,7 +1,7 @@
-import { browser } from '$app/environment';
-import { IndexedDBService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/indexeddb-service'; // Corrected: Named import
-// import type { LegalDocumentJSON } from "$lib // TODO: Verify store subscription is correct for Svelte 5/wasm/simd-json-wrapper"; // New import - This import is causing the error.
-import * as vectorWasm from '$lib // TODO: Verify store subscription is correct for Svelte 5/wasm/vector-wasm-wrapper'; // Fix: Changed to namespace import to resolve 'no default export' error
+import type { browser  } from '$app/environment';
+import type { IndexedDBService  } from '$lib/services/indexeddb-service'; // Corrected: Named import
+// import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper"; // New import - This import is causing the error.
+import * as vectorWasm from '$lib/wasm/vector-wasm-wrapper'; // Fix: Changed to namespace import to resolve 'no default export' error
 
 /**
  * Client-side background agent that periodically finds pending documents
@@ -12,7 +12,7 @@ import * as vectorWasm from '$lib // TODO: Verify store subscription is correct 
 const DEFAULT_INTERVAL = 30_000; // 30s
 
 // WORKAROUND: Define LegalDocumentJSON locally as it's not exported from simd-json-wrapper.ts.
-// The ideal fix is to add 'export' to LegalDocumentJSON in $lib // TODO: Verify store subscription is correct for Svelte 5/wasm/simd-json-wrapper.ts.
+// The ideal fix is to add 'export' to LegalDocumentJSON in $lib/wasm/simd-json-wrapper.ts.
 interface LegalDocumentJSON {
   id: string;
   content?: string;

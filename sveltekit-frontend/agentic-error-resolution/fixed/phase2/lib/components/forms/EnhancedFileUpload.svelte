@@ -11,7 +11,7 @@ export default ;
 </script>, template, and <style>.
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import type { onMount  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
@@ -24,7 +24,7 @@ export default ;
    from "$lib/components/ui/enhanced-bits.svelte";
   import  Label  from "$lib/components/ui/label/Label.svelte";
   // Badge replaced with span - not available in enhanced-bits
-  import { AlertCircle, File as FileIcon, FileText, Image, Loader2, Music, Upload, Video, X } from "lucide-svelte";
+  import type { AlertCircle, File as FileIcon, FileText, Image, Loader2, Music, Upload, Video, X  } from 'lucide-svelte';
   // File upload interface
   interface FileUpload {
     file: Fil;

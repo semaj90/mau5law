@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { integrationChecker, type IntegrationStatus } from '$lib/integration-status';
-  import { unifiedRuntime } from '$lib/webgpu/unified-runtime-abstraction';
+  import type { onMount  } from 'svelte';
+  import type { integrationChecker, type IntegrationStatus  } from '$lib/integration-status';
+  import type { unifiedRuntime  } from '$lib/webgpu/unified-runtime-abstraction';
   import 
     Button,
     Card,
@@ -10,7 +10,7 @@
     Alert,
     AlertDescription
    from "$lib/components/ui/enhanced-bits.svelte";
-  import { Database, Cpu, Zap, Palette, Globe, Server } from 'lucide-svelte';
+  import type { Database, Cpu, Zap, Palette, Globe, Server  } from 'lucide-svelte';
   // Svelte 5 state
   let integrationStatus = $state<IntegrationStatus | null>(null);
   let isLoading = $state(false);

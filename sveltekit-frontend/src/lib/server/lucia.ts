@@ -1,9 +1,9 @@
-import { db } from '$lib/server/db'; // Consolidated import for db
-import { users, sessions } from '$lib/server/db/schema'; // Import users and sessions from schema
+import type { db  } from '$lib/server/db'; // Consolidated import for db
+import type { users, sessions  } from '$lib/server/db/schema'; // Import users and sessions from schema
 import bcrypt from 'bcryptjs';
 import type { Cookies } from '@sveltejs/kit';
-import { Lucia } from 'lucia';
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import type { Lucia  } from 'lucia';
+import type { DrizzlePostgreSQLAdapter  } from '@lucia-auth/adapter-drizzle';
 
 // Define the expected return type for createUserSession
 export interface CreateUserSessionResult {

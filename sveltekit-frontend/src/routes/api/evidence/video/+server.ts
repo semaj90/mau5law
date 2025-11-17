@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { minioService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/storage/minio-service';
-import { eventBus } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/event-bus';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { db  } from '$lib/server/db';
+import type { evidence  } from '$lib/server/db/schema-postgres';
+import type { minioService  } from '$lib/server/storage/minio-service';
+import type { eventBus  } from '$lib/server/event-bus';
 
 const FASTAPI_VIDEO_URL = process.env.FASTAPI_VIDEO_URL ?? 'http://localhost:8097';
 

@@ -1,10 +1,10 @@
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { z } from 'zod';
-import { authenticate } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth-simple'; // Changed to named import
-import { createUserSession, setSessionCookie } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/lucia';
+import type { PageServerLoad, Actions } from './$types .js';
+import type { fail, redirect  } from '@sveltejs/kit';
+import type { superValidate  } from 'sveltekit-superforms/server';
+import type { zod  } from 'sveltekit-superforms/adapters';
+import type { z  } from 'zod';
+import type { authenticate  } from '$lib/server/auth-simple'; // Changed to named import
+import type { createUserSession, setSessionCookie  } from '$lib/server/lucia';
 
 const loginSchema = z.object({
   email: z.string().email(),

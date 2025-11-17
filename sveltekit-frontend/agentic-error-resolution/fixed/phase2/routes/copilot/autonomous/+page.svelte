@@ -6,8 +6,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   // Svelte 5 runes are auto-imported
   import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // use default export for Button component
   import  Badge  from "$lib/components/ui/badge.svelte";
-  import { Bot, Brain, Search, Database, // replaced missing: 'Memory' icon with: 'Database'
-    Users, Cog, Zap, Code, Globe, Settings, CheckCircle, Activity, Workflow } from 'lucide-svelte';
+  import type { Bot, Brain, Search, Database, // replaced missing: 'Memory' icon with: 'Database'
+    Users, Cog, Zap, Code, Globe, Settings, CheckCircle, Activity, Workflow  } from 'lucide-svelte';
   import AutonomousEngineeringDemo_ from '$lib/components/copilot/AutonomousEngineeringDemo.svelte';
   // Workaround for Svelte 5 component type inference issues
   const AutonomousEngineeringDemo = AutonomousEngineeringDemo_ as any;
@@ -106,7 +106,7 @@ const analysis = await copilotSelfPrompt(userRequest, {
       title: 'Custom Extension Development',
       description: 'Build your own VS Code extension with our AI stack',
       code: `// Custom extension using our autonomous engineering
-import { copilotSelfPrompt } from './autonomous-ai';
+import type { copilotSelfPrompt  } from './autonomous-ai';
 export function activate(context: vscode.ExtensionContext) {
   const command = vscode.commands.registerCommand(
     'myext.analyzeCode',

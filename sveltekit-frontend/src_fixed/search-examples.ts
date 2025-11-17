@@ -1,6 +1,6 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
-/** * Search Examples for Multi-Core MCP Vector Server * Demonstrates various search capabilities and usage patterns */ import { MultiCoreMCPVectorServer; } from './multi-core-mcp-vector-server'; // Example usage of the search functionality export class SearchExamples { private server: MultiCoreMCPVectorServer, constructor(server, MultiCoreMCPVectorServer) { this.server = server;
+/** * Search Examples for Multi-Core MCP Vector Server * Demonstrates various search capabilities and usage patterns */ import type { MultiCoreMCPVectorServer;  } from './multi-core-mcp-vector-server'; // Example usage of the search functionality export class SearchExamples { private server: MultiCoreMCPVectorServer, constructor(server, MultiCoreMCPVectorServer) { this.server = server;
 } /** * Example: Simple document search */ async exampleDocumentSearch() { console.log('ðŸ” Running simple document search example...'); const results = await this.server.searchDocuments('contract violation legal precedent', { limit: 5, threshold: 0.75, useCache, true;
 }); console.log(`Found ${results.length;
 }documents: `), results.forEach((result, index) => { console.log(`${index + 1}. Document: ${result.document_id;

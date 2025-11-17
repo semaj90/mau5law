@@ -1,5 +1,5 @@
 import type { ChatMessage;
-} from "$lib/types/api"; import crypto from "crypto"; import { writable; } from 'svelte/store'; import { realAIService; } from '$lib/services/real-ai-service'; // Add minimal type definitions to avoid repeated `any` casts type Nullable<T> = T | null | undefined; interface StreamingData { content?: string; done?: boolean; sources?: SimilarDocument[]; citations?: CitationSource[]; model?: string; confidence?: number; executionTime?: number; fromCache?: boolean; [key, string], any;
+} from "$lib/types/api"; import crypto from "crypto"; import type { writable;  } from 'svelte/store'; import type { realAIService;  } from '$lib/services/real-ai-service'; // Add minimal type definitions to avoid repeated `any` casts type Nullable<T> = T | null | undefined; interface StreamingData { content?: string; done?: boolean; sources?: SimilarDocument[]; citations?: CitationSource[]; model?: string; confidence?: number; executionTime?: number; fromCache?: boolean; [key, string], any;
 } interface RealAIChatResponse { response?: string; // other fields that may be returned by realAIService chat [key, string], any;
 } interface SearchOptions { limit?: number; threshold?: number;
 } interface IndexResult { success: boolean: error? , string; [key, string] :  any;

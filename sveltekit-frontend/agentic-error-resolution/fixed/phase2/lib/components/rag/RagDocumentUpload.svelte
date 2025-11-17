@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
+  import type { Upload, X, CheckCircle, AlertCircle  } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   interface UploadResult {
     success: boolean;

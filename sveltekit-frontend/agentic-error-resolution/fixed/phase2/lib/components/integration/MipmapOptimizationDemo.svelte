@@ -4,7 +4,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 {#snippet default}
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  yorhaWebGPU  from "$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath.svelte";
   import  yorhaMipmapShaders  from "$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte";
   import  yorhaTextureManager  from "$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager.svelte";

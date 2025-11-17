@@ -1,7 +1,7 @@
-﻿/// <reference types="vite/client" />
+/// <reference types="vite/client" />
 
 // Svelte store for real-time AI pipeline updates via WebSocket fan-out
-import { writable, derived } from 'svelte/store';
+import type { writable, derived  } from 'svelte/store';
 
 // Local base event interface used throughout pipeline events
 export interface PipelineEventBase {
@@ -67,13 +67,13 @@ function createPipelineStore() {
   }
 
   connect();
-  const latest = derived(events, ($e // TODO: Verify store subscription is correct for Svelte 5) => $e // TODO: Verify store subscription is correct for Svelte 5[$e // TODO: Verify store subscription is correct for Svelte 5.length - 1]);
-  const llmResponses = derived(events, ($e // TODO: Verify store subscription is correct for Svelte 5) => $e // TODO: Verify store subscription is correct for Svelte 5.filter((e) => e.type === 'ai.response'));
+  const latest = derived(events, ($e ) => $e [$e .length - 1]);
+  const llmResponses = derived(events, ($e ) => $e .filter((e) => e.type === 'ai.response'));
   return { events, latest, llmResponses };
 }
 
 export const pipeline = createPipelineStore();
-  const llmResponses = derived(events, ($e // TODO: Verify store subscription is correct for Svelte 5) => $e // TODO: Verify store subscription is correct for Svelte 5.filter((e) => e.type === 'ai.response'));
+  const llmResponses = derived(events, ($e ) => $e .filter((e) => e.type === 'ai.response'));
   return { events, latest, llmResponses };
 }
 

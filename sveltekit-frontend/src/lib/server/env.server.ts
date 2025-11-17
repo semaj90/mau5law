@@ -1,5 +1,5 @@
-import { env as privateEnv } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
-import { env as publicEnv } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/public';
+import type { env as privateEnv  } from '$env /dynamic/private';
+import type { env as publicEnv  } from '$env /dynamic/public';
 
 export const ENV = {
   POSTGRES_URL: privateEnv.POSTGRES_URL!,

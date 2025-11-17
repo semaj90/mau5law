@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
-  let recommendations = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let recommendations = $state <any[]>([]);
+  let loading = $state <boolean>(true);
+  let error = $state <string | null>(null);
 
   onMount(() => {
     (async () => {

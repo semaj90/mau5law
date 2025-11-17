@@ -1,12 +1,12 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { dev } from '$app/environment';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { dev  } from '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
-import { users, sessions, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { logger } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/logger';
+import type { db  } from '$lib/server/db/drizzle';
+import type { users, sessions, cases  } from '$lib/server/db/schema-postgres';
+import type { eq  } from 'drizzle-orm';
+import type { logger  } from '$lib/server/logger';
 
 /*
  * Development Authentication Endpoint

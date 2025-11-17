@@ -1,4 +1,4 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
 
 /**
  * Evidence Management Global Store - SvelteKit: 2 + Svelte: 5
@@ -70,12 +70,11 @@ export interface UIState {
 
 // Global Evidence Store Svelte: 5 Runes
 class EvidenceGlobalStore {
-  // Core data using $state // TODO: Verify store subscription is correct for Svelte 5
-  cases = $state // TODO: Verify store subscription is correct for Svelte 5<Record<string, LegalCase>>({});
-  currentCaseId = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  // Core data using $state cases = $state <Record<string, LegalCase>>({});
+  currentCaseId = $state <string | null>(null);
 
   // UI state
-  ui = $state // TODO: Verify store subscription is correct for Svelte 5<UIState>({
+  ui = $state <UIState>({
     selectedNodeIds: [],
     draggedNodeId: null,
     modalOpen: false,
@@ -366,7 +365,7 @@ class EvidenceGlobalStore {
     this.ui.aiProcessing = true;
     try {
       // Import AI services dynamically
-      const { legalLocalAI } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/ai/browser-local-ai.js');
+      const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
       const suggestions = await legalLocalAI.suggestEvidenceLinks(
         this.currentNodes.map(node => ({
           id: node.id,

@@ -1,6 +1,6 @@
-import { createHash } from 'crypto';
-import { cognitiveCache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache';
-import { generateEmbedding as requestEmbedding } from './ollama-client';
+import type { createHash  } from 'crypto';
+import type { cognitiveCache  } from '$lib/server/cache';
+import type { generateEmbedding as requestEmbedding  } from './ollama-client';
 
 const DEFAULT_MODEL = process.env.OLLAMA_EMBED_MODEL ?? 'embeddinggemma:latest';
 const DEFAULT_DIMENSIONS = Number(process.env.OLLAMA_EMBED_DIM ?? 384);

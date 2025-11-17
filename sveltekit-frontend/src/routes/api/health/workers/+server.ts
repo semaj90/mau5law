@@ -1,7 +1,7 @@
 /** * Worker Health Check API * Monitors status of background workers: OCR, Embedding, Legal Analysis */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { redis  } from '$lib/server/redis';
 import type { RedisClientType } from 'redis';
 import * as amqp from 'amqplib';
 

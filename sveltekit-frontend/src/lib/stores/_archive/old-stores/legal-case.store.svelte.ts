@@ -1,6 +1,6 @@
 import crypto from 'crypto'; // Added import for crypto
 
-// Legal Case Store - Svelte 5 Runes Implementation. Types are imported from $lib // TODO: Verify store subscription is correct for Svelte 5/types.
+// Legal Case Store - Svelte 5 Runes Implementation. Types are imported from $lib/types.
 export interface User {
   id: string;
   role: string;
@@ -42,10 +42,10 @@ export interface AuditLogEntry {
 export function createLegalCaseStore() {
   // State using Svelte, 5 runes
   let cases: LegalCase[] = $state([]);
-  let selectedCase = $state // TODO: Verify store subscription is correct for Svelte 5<LegalCase | null>(null); // Changed to 'let'
-  const aiInsights = $state // TODO: Verify store subscription is correct for Svelte 5<Record<string, AIInsights>>({});
+  let selectedCase = $state <LegalCase | null>(null); // Changed to 'let'
+  const aiInsights = $state <Record<string, AIInsights>>({});
   let auditLog: AuditLogEntry[] = $state([]);
-  let currentUser = $state // TODO: Verify store subscription is correct for Svelte 5<User | null>({
+  let currentUser = $state <User | null>({
     // Changed to 'let'
     id: 'demo-user-001',
     clearanceLevel: 3,
@@ -84,7 +84,7 @@ export function createLegalCaseStore() {
         timestamp: new Date(),
         ...action,
       };
-      auditLog.push(newLogEntry); // Directly update the $state // TODO: Verify store subscription is correct for Svelte 5 auditLog
+      auditLog.push(newLogEntry); // Directly update the $state auditLog
     },
   };
 

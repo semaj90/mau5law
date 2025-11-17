@@ -11,7 +11,7 @@
     timestamp?: string;
   }
 
-  let { a, b, show = false } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { a, b, show = false } = $props<{
     a: EvidenceItem;
     b: EvidenceItem;
     show?: boolean;

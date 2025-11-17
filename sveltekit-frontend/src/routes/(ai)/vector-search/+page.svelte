@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { Case } from '$lib/types';
 
   interface VectorResult {
     id: string;
@@ -13,13 +13,13 @@
     evidenceId?: string;
   }
 
-  let results = $state // TODO: Verify store subscription is correct for Svelte 5<VectorResult[]>([]);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let query = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let searchType = $state // TODO: Verify store subscription is correct for Svelte 5<'content' | 'cases' | 'evidence'>('content');
-  let threshold = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0.7);
-  let limit = $state // TODO: Verify store subscription is correct for Svelte 5<number>(10);
-  let processingTime = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let results = $state <VectorResult[]>([]);
+  let loading = $state <boolean>(false);
+  let query = $state <string>('');
+  let searchType = $state <'content' | 'cases' | 'evidence'>('content');
+  let threshold = $state <number>(0.7);
+  let limit = $state <number>(10);
+  let processingTime = $state <number>(0);
 
   async function performVectorSearch(): Promise<void> {
     if (!query?.trim()) return;

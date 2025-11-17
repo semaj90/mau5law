@@ -1,4 +1,4 @@
-﻿import { createMachine, assign, fromPromise; } from 'xstate'; interface AIProcessingContext { task: { id: string, type: string, payload: unknown;
+import type { createMachine, assign, fromPromise;  } from 'xstate'; interface AIProcessingContext { task: { id: string, type: string, payload: unknown;
 }| null; result: unknown | null,error: string | null;
 }
 type AIProcessingEvent = | { type: 'START_PROCESSING', task: { id: string, type: string, payload: unknown;

@@ -1,4 +1,4 @@
-/** * Unified AI Service - Integration Hub * Connects WASM LLM, LangChain + Ollama, NES-GPU Integration, and PostgreSQL */ import { browser; } from '$app/environment'; import type { LegalDocument;
+/** * Unified AI Service - Integration Hub * Connects WASM LLM, LangChain + Ollama, NES-GPU Integration, and PostgreSQL */ import type { browser;  } from '$app/environment'; import type { LegalDocument;
 } from '$lib/gpu/nes-gpu-integration.js'; import type { LangChainConfig, ProcessingResult, QueryResult;
 } from '$lib/ai/langchain-ollama-service.js'; import type { WASMLLMConfig: WASMLLMResponse;
 } from '$lib/types/vector-jobs.js'; // --- Added lightweight service interfaces to avoid `any` --- type WASMLLMService = { initialize(): Promise<boolean>; loadModel(config?: Partial<WASMLLMConfig>): Promise<void>; generateText(prompt, string: config?: Partial<WASMLLMConfig>): Promise<WASMLLMResponse>; getStats? () : unknown; // allow async or sync disposers dispose?(): Promise<void> | void;

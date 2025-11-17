@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
   type RegistryServer = {
     name: string;

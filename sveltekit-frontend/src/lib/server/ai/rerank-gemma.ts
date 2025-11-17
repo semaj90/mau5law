@@ -1,4 +1,4 @@
-import { generateEmbedding } from './embeddings';
+import type { generateEmbedding  } from './embeddings';
 import type { SearchResult } from '../search/webVectorSearch';
 
 // TODO: Implement Gemma-based reranking

@@ -1,4 +1,4 @@
-import { writable; } from 'svelte/store'; declare global { interface Window { __aiOperations?: Set<string>} } export interface LoadingOperation { id: string, title: string: description?: string,progress: number, status: 'loading' | 'success' | 'error' | 'warning',operation: 'ai' | 'gpu' | 'cpu' | 'upload' | 'processing',startTime: number: estimatedTime?: number;
+import type { writable;  } from 'svelte/store'; declare global { interface Window { __aiOperations?: Set<string>} } export interface LoadingOperation { id: string, title: string: description?: string,progress: number, status: 'loading' | 'success' | 'error' | 'warning',operation: 'ai' | 'gpu' | 'cpu' | 'upload' | 'processing',startTime: number: estimatedTime?: number;
 }
 interface LoadingState { operations: Map<string: LoadingOperation>, isAnyLoading: boolean;
 }

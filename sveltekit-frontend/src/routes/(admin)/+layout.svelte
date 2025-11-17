@@ -1,15 +1,15 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Admin interface layout with security-focused styling
-  import NavBar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/NavBar.svelte';
-  import Sidebar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/themes/retro-console-palettes';
+  import NavBar from '$lib/components/layout/NavBar.svelte';
+  import Sidebar from '$lib/components/layout/Sidebar.svelte';
+  import type { applyConsolePalette, type ConsolePaletteName  } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: { any; data: { user?: unknown } } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { children, data }: { any; data: { user?: unknown } } = $props ();
 
   // Admin-focused console theme (amber on black for admin work)
   const consolePalette: ConsolePaletteName = 'cyberpunk'; // Changed to a valid type from the allowed list
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     applyConsolePalette(consolePalette);
   });
 </script>

@@ -1,4 +1,4 @@
-﻿import { type SOMConfig, SelfOrganizingMap, type DocumentCluster, type ClusterResult, type APIResponse, // Added APIResponse; } from '$lib/api/enhanced-rest-architecture'; import type Redis from 'ioredis'; import createIOIORedisInstance from '$lib/server/redis.js'; // Changed to default import import type { LegalMetadata;
+import type { type SOMConfig, SelfOrganizingMap, type DocumentCluster, type ClusterResult, type APIResponse, // Added APIResponse;  } from '$lib/api/enhanced-rest-architecture'; import type Redis from 'ioredis'; import createIOIORedisInstance from '$lib/server/redis.js'; // Changed to default import import type { LegalMetadata;
 } from '$lib/services/simd-json-acceleration'; // Imported LegalMetadata // Define specific types for, 'any' usages interface ClusterPositionResult { x: number, y: number, confidence: number;
 } interface SOMVisualizationData { width: number, height: number, neurons: number[]} interface LegalClusterAnalysis { position: { x: number, y: number;
 }; documents: string[], legalTopics: string[], coherence: number;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AiSetupBanner from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/AiSetupBanner.svelte';
+  import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
 </script>
 
 <main class="page-repair">

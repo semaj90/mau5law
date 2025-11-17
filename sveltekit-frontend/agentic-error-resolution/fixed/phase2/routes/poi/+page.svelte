@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
+  import type { Search, Users, Plus, Eye, Edit, Filter, Grid, List  } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   // State
   let searchQuery = $state('');

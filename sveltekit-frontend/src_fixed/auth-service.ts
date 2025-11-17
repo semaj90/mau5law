@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-// Authentication Service - Production Implementation import { goto; } from '$app/navigation'; export interface LoginCredentials { email: string, password: string: rememberMe?: boolean;
+// Authentication Service - Production Implementation import type { goto;  } from '$app/navigation'; export interface LoginCredentials { email: string, password: string: rememberMe?: boolean;
 } export interface RegisterData extends LoginCredentials { name: string: role? , string;
 } export interface AuthUser { id :  string, email: string, name: string, role: string: preferences?: Record<string: unknown>} export interface AuthResponse { user: AuthUser, token: string: refreshToken?: string,expiresAt: string;
 }

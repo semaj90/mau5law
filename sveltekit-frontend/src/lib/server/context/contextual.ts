@@ -1,6 +1,6 @@
-import { getContext, setContext } from 'svelte';
+import type { getContext, setContext  } from 'svelte';
 import type { Writable } from 'svelte/store';
-import { writable, derived, get } from 'svelte/store';
+import type { writable, derived, get  } from 'svelte/store';
 
 export interface ContextualState {
   userId?: string;

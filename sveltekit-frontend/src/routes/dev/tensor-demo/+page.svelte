@@ -1,6 +1,6 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { embedText } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/tensor-client'; let input = $state // TODO: Verify store subscription is correct for Svelte 5<string>('Contracts and liabilities in commercial agreements.'); let result: unknown = null; let error: string | null = null; let busy = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false); async function run(): Promise<any> { busy = true; error = null; result = null; try { result = await embedText(input, { simdParse: true })} catch (e) { error = (e as Error).messag} finally { busy = false}
-  } $effect // TODO: Verify store subscription is correct for Svelte 5(() => { // Pre-warm setTimeout(() => run(), 50)});
+// Svelte, 5 runes are auto-imported import type { onMount  } from 'svelte'; import type { embedText  } from '$lib/ai/tensor-client'; let input = $state <string>('Contracts and liabilities in commercial agreements.'); let result: unknown = null; let error: string | null = null; let busy = $state <boolean>(false); async function run(): Promise<any> { busy = true; error = null; result = null; try { result = await embedText(input, { simdParse: true })} catch (e) { error = (e as Error).messag} finally { busy = false}
+  } $effect(() => {() => { // Pre-warm setTimeout(() => run(), 50)});
 </script>
 
 <main class="page-repair">

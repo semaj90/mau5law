@@ -2,10 +2,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // removed enhanced-bits Button import to use native HTML5 button with bits-ui classes
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   // Badge replaced with span - not available in enhanced-bits
   import LegalAIChat from '../../lib/components/LegalAIChat.svelte'; // Changed to import LegalAIChat with relative path
-  import { Bot, MessageCircle, Cpu, Database, Zap, Server, HardDrive } from 'lucide-svelte';
+  import type { Bot, MessageCircle, Cpu, Database, Zap, Server, HardDrive  } from 'lucide-svelte';
   // State using Svelte 5 runes (typed to avoid implicit-any)
   let systemStatus = $state<Record<string, any> | null>(null);
   let chatOpen = $state(false);

@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import 
     Card,
@@ -13,34 +13,31 @@ https://svelte.dev/e/js_parse_error -->
     CardTitle,
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Separator } from '$lib/components/ui/separator/index.js';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
+  import type { Badge  } from '$lib/components/ui/badge/index.js';
+  import type { Separator  } from '$lib/components/ui/separator/index.js';
+  import type { Tabs, TabsContent, TabsList, TabsTrigger  } from '$lib/components/ui/tabs/index.js';
   import ModernAuthForm from '$lib/components/auth/ModernAuthForm.svelte';
   import AIAssistantChat from '$lib/components/ai/AIAssistantChat.svelte';
   // Import all the integrated stores and managers
-  import {
-    authService,
+  import type { authService,
     isAuthenticated,
     user,
     isLoading as authLoading
-  } from '$lib/stores/auth.svelte.js';
-  import {
-    sessionManager,
+   } from '$lib/stores/auth.svelte.js';
+  import type { sessionManager,
     isSessionActive,
     currentUser,
     sessionHealth,
     sessionAnalytics,
     securityLevel
-  } from '$lib/stores/sessionManager.svelte.js';
-  import {
-    aiAssistantManager,
+   } from '$lib/stores/sessionManager.svelte.js';
+  import type { aiAssistantManager,
     isAIProcessing,
     clusterHealth,
     aiUsage,
     conversationHistory
-  } from '$lib/stores/aiAssistant.svelte.js';
-  import { productionServiceClient } from '$lib/services/productionServiceClient.js';
+   } from '$lib/stores/aiAssistant.svelte.js';
+  import type { productionServiceClient  } from '$lib/services/productionServiceClient.js';
   // Component state using Svelte 5 runes
   let showAuthDialog = $state(false);
   let systemStatus = $state({

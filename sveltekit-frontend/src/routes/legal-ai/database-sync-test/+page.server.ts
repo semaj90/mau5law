@@ -1,10 +1,10 @@
-﻿/** * Database Sync Test Page Server Load * Demonstrates SSR data loading for the database sync integration test * Extends the main legal-ai page loader with testing-specific data */
+/** * Database Sync Test Page Server Load * Demonstrates SSR data loading for the database sync integration test * Extends the main legal-ai page loader with testing-specific data */
 
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index.js';
-import { legalDocuments, ragSessions } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres.js';
-import { desc, eq, count, sql } from 'drizzle-orm';
-import { langExtractService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/langextract-ollama-service.js';
+import type { PageServerLoad } from './$types .js';
+import type { db  } from '$lib/server/db/index.js';
+import type { legalDocuments, ragSessions  } from '$lib/server/db/schema-postgres.js';
+import type { desc, eq, count, sql  } from 'drizzle-orm';
+import type { langExtractService  } from '$lib/services/langextract-ollama-service.js';
 
 // Enhanced types for testing page
 export interface DatabaseSyncTestData {

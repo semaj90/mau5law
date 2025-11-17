@@ -1,20 +1,20 @@
-/** * Qdrant Vector Database Integration with PostgreSQL Sync * Seamless vector operations between PostgreSQL pgvector and Qdrant */ import { QdrantClient } from '@qdrant/js-client-rest';
+/** * Qdrant Vector Database Integration with PostgreSQL Sync * Seamless vector operations between PostgreSQL pgvector and Qdrant */ import type { QdrantClient  } from '@qdrant/js-client-rest';
 // Removed problematic type imports
 // import type {
 //   GetCollectionsResponse,
 //   CollectionInfo,
 //   ScoredPoint, // Added ScoredPoint for search results
 // } from "@qdrant/js-client-rest"; // Changed import path
-import { drizzle } from 'drizzle-orm/postgres-js';
+import type { drizzle  } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { eq, and, sql } from 'drizzle-orm';
+import type { eq, and, sql  } from 'drizzle-orm';
 import crypto from 'crypto';
-import { legalDocuments, cases, vectorMetadata } from './schema-postgres.js';
+import type { legalDocuments, cases, vectorMetadata  } from './schema-postgres.js';
 
 // Infer types from Drizzle schema
 // Removed unused 'type Case'
-// type Case = typeof cases.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
-type LegalDocument = typeof legalDocuments.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+// type Case = typeof cases.$inferSelect ;
+type LegalDocument = typeof legalDocuments.$inferSelect ;
 
 // Infer Qdrant types directly from client methods
 type QdrantGetCollectionsResponse = Awaited<ReturnType<QdrantClient['getCollections']>>;

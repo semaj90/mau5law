@@ -2,8 +2,8 @@
 <script lang="ts">
 
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
+  import type { onMount  } from 'svelte';
+  import type { writable  } from 'svelte/store';
   import  Button  from "$lib/components/ui/Button.svelte";
   import 
     Card,

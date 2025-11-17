@@ -10,7 +10,7 @@
     variant?: Variant;
     class?: string;
     [key: string]: any; // To capture any other passed props
-  } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  } = $props();
 </script>
 
 <main class="page-repair">

@@ -1,9 +1,9 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { users } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { hashPassword } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { users  } from '$lib/server/db/schema-postgres';
+import type { eq  } from 'drizzle-orm';
+import type { hashPassword  } from '$lib/server/auth';
+import type { db  } from '$lib/server/db';
 
 export async function GET(): Promise<any> {
   try {

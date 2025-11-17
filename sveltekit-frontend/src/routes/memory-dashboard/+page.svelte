@@ -1,12 +1,12 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  let systemStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let memoryPrediction = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  import type { onMount  } from 'svelte';
+  import type { browser  } from '$app/environment';
+  let systemStatus = $state <any>(null);
+  let memoryPrediction = $state <any>(null);
+  let isLoading = $state <boolean>(true);
+  let error = $state <string | null>(null);
+  $effect (() => {
     (async () => {
       if (browser) {
         await loadData();

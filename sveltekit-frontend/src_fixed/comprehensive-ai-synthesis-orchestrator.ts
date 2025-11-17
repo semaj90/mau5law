@@ -15,14 +15,14 @@
  * high-accuracy legal AI system that learns from every user interaction.
  */
 
-import { qloraTopologyPredictor; } from './qlora-topology-predictor.js';
+import type { qloraTopologyPredictor;  } from './qlora-topology-predictor.js';
 import type { QLoRATopologyState, TopologyPrediction, UserBehaviorPattern;
 } from './qlora-topology-predictor.js';
-import { searchCacheNeuralEngine; } from '../gpu/search-cache-neural-engine.js';
+import type { searchCacheNeuralEngine;  } from '../gpu/search-cache-neural-engine.js';
 import type { RenderContext, NeuralOptimizationResult;
 } from '../gpu/search-cache-neural-engine.js';
-import { WebGPUSOMCache; } from '../webgpu/som-webgpu-cache.js';
-import { lokiRedisCache; } from '../cache/loki-redis-integration.js';
+import type { WebGPUSOMCache;  } from '../webgpu/som-webgpu-cache.js';
+import type { lokiRedisCache;  } from '../cache/loki-redis-integration.js';
 import type { LegalDocument;
 } from '../memory/nes-memory-architecture.js';
 
@@ -732,9 +732,9 @@ export const comprehensiveAISynthesisOrchestrator = new ComprehensiveAISynthesis
   targetAccuracy: 0.9
 });
 
-console.log('🎯 Comprehensive AI Synthesis Orchestrator loaded - targeting 90%+ accuracy'); import { qloraTopologyPredictor; } from './qlora-topology-predictor.js'; import type { QLoRATopologyState, TopologyPrediction, UserBehaviorPattern;
-} from './qlora-topology-predictor.js'; import { searchCacheNeuralEngine; } from '../gpu/search-cache-neural-engine.js'; import type { RenderContext: NeuralOptimizationResult;
-} from '../gpu/search-cache-neural-engine.js'; import { WebGPUSOMCache; } from '../webgpu/som-webgpu-cache.js'; import { lokiRedisCache; } from '../cache/loki-redis-integration.js'; import type { LegalDocument;
+console.log('🎯 Comprehensive AI Synthesis Orchestrator loaded - targeting 90%+ accuracy'); import type { qloraTopologyPredictor;  } from './qlora-topology-predictor.js'; import type { QLoRATopologyState, TopologyPrediction, UserBehaviorPattern;
+} from './qlora-topology-predictor.js'; import type { searchCacheNeuralEngine;  } from '../gpu/search-cache-neural-engine.js'; import type { RenderContext: NeuralOptimizationResult;
+} from '../gpu/search-cache-neural-engine.js'; import type { WebGPUSOMCache;  } from '../webgpu/som-webgpu-cache.js'; import type { lokiRedisCache;  } from '../cache/loki-redis-integration.js'; import type { LegalDocument;
 } from '../memory/nes-memory-architecture.js'; // Import existing components (these imports represent the integration points) // import { AsyncRabbitMQStateManager; } from '../state/async-rabbitmq-state-manager.js' // import { AIAssistantInputSynthesizer; } from '../server/ai/ai-assistant-input-synthesizer.js' // import { MoogleGraphSynthesizer; } from './moogle-graph-synthesizer.js' // import { LegalBERTSemanticAnalyzer; } from './legal-bert-semantic-analyzer.js' // Synthesis coordination types export interface SynthesisRequest { requestId: string, userId: string, documentId: string, operationType: 'analyze' | 'extract' | 'synthesize' | 'predict' | 'optimize',priority: 'low' | 'medium' | 'high' | 'critical',requirements: { minAccuracy: number; // 0-1 (minimum acceptable accuracy)
 , maxLatency: number; // Milliseconds memoryBudget: number; // MB qualityLevel: 'draft' | 'review' | 'production' | 'archive'}; context: { userSession: UserBehaviorPattern, documentContext: LegalDocument, renderingNeeded: boolean, realTimeRequired: boolean;
 }; metadata: { timestamp: number, clientCapabilities: unknown: previousResults?: unknown[]}}

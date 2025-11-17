@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { caseManagementService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/case-management-service.js';
-import { enhancedEmbeddingWorker } from '$lib // TODO: Verify store subscription is correct for Svelte 5/workers/embedding-worker-enhanced.js';
-import { randomUUID } from 'node:crypto';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { caseManagementService  } from '$lib/services/case-management-service.js';
+import type { enhancedEmbeddingWorker  } from '$lib/workers/embedding-worker-enhanced.js';
+import type { randomUUID  } from 'node:crypto';
 
 // Enhanced AI analysis service
 // Local types used by the AI service

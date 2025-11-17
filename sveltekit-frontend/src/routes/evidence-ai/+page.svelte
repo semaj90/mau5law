@@ -1,8 +1,8 @@
 <script lang="ts">
-import { browser } from '$app/environment';
-import { xstateIntegration } from '$lib/services/xstate-integration';
-import { Button } from 'bits-ui';
-import { onMount } from 'svelte';
+import type { browser  } from '$app/environment';
+import type { xstateIntegration  } from '$lib/services/xstate-integration';
+import type { Button  } from 'bits-ui';
+import type { onMount  } from 'svelte';
 
   // ======================
   // SVELTE, 5 RUNES STATE
@@ -14,10 +14,10 @@ import { onMount } from 'svelte';
   let wsReconnecting = $state<boolean>(false);
 
   // File upload state
-  let selectedFile = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
-  let isDragging = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let uploadProgress = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
-  let currentFileId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let selectedFile = $state <File | null>(null);
+  let isDragging = $state <boolean>(false);
+  let uploadProgress = $state <number>(0);
+  let currentFileId = $state <string | null>(null);
 
   // Workflow state
   interface WorkflowStatus {
@@ -26,13 +26,13 @@ import { onMount } from 'svelte';
     status: 'pending' | 'processing' | 'complete' | 'error';
     message?: string
   }
-  let workflowStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<WorkflowStatus>({ stage: 'idle',
+  let workflowStatus = $state <WorkflowStatus>({ stage: 'idle',
     progress: 0,
     status: 'pending'
   });
 
   // Backend health state
-  let backendStatus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{
+  let backendStatus = $state <{
     typescript: boolean
     pythonAI: boolean
     capabilities: string[]
@@ -42,21 +42,21 @@ import { onMount } from 'svelte';
   });
 
   // AI streaming state
-  let streamingTokens = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let isStreaming = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let aiSource = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'ollama' | 'tensorrt' | 'typescript-fallback' | null>(null);
+  let streamingTokens = $state <string>('');
+  let isStreaming = $state <boolean>(false);
+  let aiSource = $state <'ollama' | 'tensorrt' | 'typescript-fallback' | null>(null);
 
   // Auto-tags state
-  let extractedTags = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let extractedTags = $state <string[]>([]);
 
   // Search state
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let aiSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let isSearching = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let searchQuery = $state <string>('');
+  let searchResults = $state <any[]>([]);
+  let aiSuggestions = $state <any[]>([]);
+  let isSearching = $state <boolean>(false);
 
   // File metadata
-  let fileMetadata = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{
+  let fileMetadata = $state <{
     filename: string
     size: number
     uploadTime: string
@@ -356,7 +356,7 @@ import { onMount } from 'svelte';
   }
 
   // debounced effect for searchQuery
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     if (!searchQuery) {
       if (searchTimeout) {
         clearTimeout(searchTimeout);

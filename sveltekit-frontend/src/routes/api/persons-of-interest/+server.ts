@@ -1,7 +1,7 @@
-﻿import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { db, personsOfInterest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { eq, and, desc, asc, sql } from 'drizzle-orm';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { db, personsOfInterest  } from '$lib/server/db';
+import type { eq, and, desc, asc, sql  } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

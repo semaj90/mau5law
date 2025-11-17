@@ -2,7 +2,7 @@
   interface Props {
     data: { message: string; path: string; targetExample: string; now: string };
   }
-  let { data }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { data }: Props = $props ();
 </script>
 
 <main class="page-repair">

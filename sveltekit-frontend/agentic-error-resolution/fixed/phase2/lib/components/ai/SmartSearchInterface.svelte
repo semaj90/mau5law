@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  	import { onMount } from 'svelte';
-  import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
+  	import type { onMount  } from 'svelte';
+  import type { frontendRAG  } from '$lib/ai/frontend-rag-pipeline';
   	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
   	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   	import  Input  from "$lib/components/ui/Input.svelte";

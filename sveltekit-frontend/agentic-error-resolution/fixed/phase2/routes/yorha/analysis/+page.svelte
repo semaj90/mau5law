@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
   import  Card as CardOriginal  from "$lib/components/ui/card.svelte"; // named export
   import  Button  from "$lib/components/ui/button.svelte"; // named export
-  import { Progress } from '$lib/components/ui/progress'; // Changed to named import from index.ts
+  import type { Progress  } from '$lib/components/ui/progress'; // Changed to named import from index.ts
   import * as Lucide from 'lucide-svelte';
 
   // lucide-svelte typing can be inconsistent — cast to any and destructure the icons we use.

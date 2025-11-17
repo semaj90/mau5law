@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import  Button  from "$lib/components/ui/Button.svelte";
-  import { fade, slide } from 'svelte/transition';
+  import type { fade, slide  } from 'svelte/transition';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
 

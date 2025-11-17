@@ -4,7 +4,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
@@ -15,8 +15,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import  Select, SelectContent, SelectItem, SelectTrigger, SelectValue  from "$lib/components/ui/select.svelte";
-  import {
-    Bot,
+  import type { Bot,
     Brain,
     Cog,
     Zap,
@@ -37,8 +36,8 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     Monitor,
     FileText,
     Settings
-  } from 'lucide-svelte';
-  import { copilotSelfPrompt } from '$lib/utils/copilot-self-prompt.js';
+   } from 'lucide-svelte';
+  import type { copilotSelfPrompt  } from '$lib/utils/copilot-self-prompt.js';
   import type { CopilotSelfPromptResult, NextAction, Recommendation } from '$lib/utils/copilot-self-prompt.js';
   interface Props {
     showAdvancedOptions?: boolean;

@@ -12,17 +12,17 @@ export interface LokiSearchOptions extends LokiCollectionOptions {
 
 export interface SearchQuery {
   [key: string]: any;
-  $and // TODO: Verify store subscription is correct for Svelte 5?: SearchQuery[];
-  $or // TODO: Verify store subscription is correct for Svelte 5?: SearchQuery[];
-  $regex // TODO: Verify store subscription is correct for Svelte 5?: RegExp;
-  $contains // TODO: Verify store subscription is correct for Svelte 5?: any;
-  $in // TODO: Verify store subscription is correct for Svelte 5?: any[];
-  $gt // TODO: Verify store subscription is correct for Svelte 5?: number | string | Date;
-  $gte // TODO: Verify store subscription is correct for Svelte 5?: number | string | Date;
-  $lt // TODO: Verify store subscription is correct for Svelte 5?: number | string | Date;
-  $lte // TODO: Verify store subscription is correct for Svelte 5?: number | string | Date;
-  $ne // TODO: Verify store subscription is correct for Svelte 5?: any;
-  $exists // TODO: Verify store subscription is correct for Svelte 5?: boolean;
+  $and ?: SearchQuery[];
+  $or ?: SearchQuery[];
+  $regex ?: RegExp;
+  $contains ?: any;
+  $in ?: any[];
+  $gt ?: number | string | Date;
+  $gte ?: number | string | Date;
+  $lt ?: number | string | Date;
+  $lte ?: number | string | Date;
+  $ne ?: any;
+  $exists ?: boolean;
 }
 
 export interface SearchResult<T = any> {

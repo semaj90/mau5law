@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
 
 /**
  * WebAssembly Chat API - Fallback for Ollama
@@ -28,7 +28,7 @@ interface WasmLLMService {
 
 // Mock WebAssembly LLM service (replace with actual implementation)
 class MockWasmLLM implements WasmLLMService {
-  private initialized = $state(false); // Assuming $state // TODO: Verify store subscription is correct for Svelte 5 is a Svelte 5 runestone feature
+  private initialized = $state(false); // Assuming $state is a Svelte 5 runestone feature
 
   async initialize(): Promise<void> {
     // Initialize WebAssembly model

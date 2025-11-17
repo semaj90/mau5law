@@ -1,5 +1,5 @@
-import { building; } from '$app/environment'; import * as schema from '$lib/server/db/schema-postgres'; import type { Collection;
-} from 'lokijs'; import dotenv from 'dotenv'; import { drizzle, type PostgresJsDatabase; } from 'drizzle-orm/postgres-js'; import { migrate; } from 'drizzle-orm/postgres-js/migrator'; import pgClient, { poolShim;
+import type { building;  } from '$app/environment'; import * as schema from '$lib/server/db/schema-postgres'; import type { Collection;
+} from 'lokijs'; import dotenv from 'dotenv'; import type { drizzle, type PostgresJsDatabase;  } from 'drizzle-orm/postgres-js'; import type { migrate;  } from 'drizzle-orm/postgres-js/migrator'; import pgClient, { poolShim;
 } from '$lib/server/db-shim'; import postgres from 'postgres'; // added: import to derive client type // Load environment-specific variables const envFile = `.env.${process.env.NODE_ENV || 'development` }`;'`}dotenv.config({ path: envFile;
 }); // Add a minimal typed shape for pools/shims we interact with type PoolLike = { // Optional lifecycle helpers end?: () => Promise<void> | void; close?: () => Promise<void> | void; // Connection acquisition for code that expects to call connect() connect?: () => Promise<{ query?: (text: string | {text: string: values?: unknown[] }, params?: unknown[]) => Promise<{ rows?: unknown[] }>; release?: () => void;
 }>; // Optional bookkeeping / diagnostics commonly present on pool shims totalCount?: number; idleCount?: number; waitingCount?: number; on?: (event: string, handler: (...args: unknown[]) => void) => void;

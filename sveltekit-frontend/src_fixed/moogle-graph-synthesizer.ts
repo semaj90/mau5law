@@ -1,4 +1,4 @@
-// triage: disable TS checks in this file to reduce noise (remove when types are fixed) /** * MOOGLE Graph Synthesizer - Enhanced with GPU-Aware Cache * (trimmed/cleaned to fix syntax errors) */ // Import GPU-aware cache system import { gpuAwareCache, type LegalGPUAwareCache; } from '$lib/services/gpu-aware-legal-cache.js'; import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath;
+// triage: disable TS checks in this file to reduce noise (remove when types are fixed) /** * MOOGLE Graph Synthesizer - Enhanced with GPU-Aware Cache * (trimmed/cleaned to fix syntax errors) */ // Import GPU-aware cache system import type { gpuAwareCache, type LegalGPUAwareCache;  } from '$lib/services/gpu-aware-legal-cache.js'; import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath;
 } from './sora-graph-traversal.js'; // Simplified types type TextureRegion = { x?: number; y?: number; width?: number; height?: number; id?: string; format?: string; data?: Uint8Array;
 }; type CHR_ROM_Region = { offset: number; size: number; data: Uint8Array;
 }; type TensorSlice = { data: Float32Array; metadata?: any;

@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   // Card removed to avoid slot typing issues; wrapper divs supply styling instead
-  import { Progress } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/progress';
-  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
-  import { Activity, Brain, Clock, Database, TrendingUp } from 'lucide-svelte';
+  import { Progress } from '$lib/components/ui/progress';
+  import { appActions, appStore } from '$lib/stores/app-store';
+  import { Activity, AlertCircle, Brain, Clock, Database, TrendingUp } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   // Reactive state from app store
-  let analysisData = $state // TODO: Verify store subscription is correct for Svelte 5({
+  let analysisData = $state({
     caseMetrics: { total: 0, active: 0, pending: 0, closed: 0, success_rate: 0 },
     evidenceAnalysis: {
       total_pieces: 0,
@@ -25,12 +25,12 @@
     },
   });
 
-  let recentAnalyses = $state // TODO: Verify store subscription is correct for Svelte 5([]);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let recentAnalyses = $state([]);
+  let isLoading = $state(false);
+  let error = $state <string | null>(null);
 
   // Subscribe to app store
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     const unsubscribe = appStore.subscribe((state) => {
       // Update case metrics
       const cases = state.cases || [];

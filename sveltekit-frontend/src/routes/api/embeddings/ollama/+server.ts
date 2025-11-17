@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Ollama Embeddings API Proxy - Production Ready
  *
  * Endpoint: /api/embeddings/ollama
@@ -22,7 +22,7 @@
  * - Batch processing supported
  */
 
-import { json, error } from '@sveltejs/kit';
+import type { json, error  } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 
 // Ollama configuration constants

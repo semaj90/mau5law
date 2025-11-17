@@ -1,14 +1,14 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
 /**
  * Complete Legal AI Case Workflow Demo
  *
  * This demonstrates the full workflow using your infrastructure:
  * 1. Create case → 2. Upload evidence → 3. Canvas positioning → 4. Timeline reconstruction → 5. RAG chat
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/index.js';
-import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema.js';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { db  } from '$lib/server/index.js';
+import * as schema from '$lib/server/db/schema.js';
 
 // --- Reworked schema bindings with clearer fallbacks & runtime guards ---
 // Directly use schema exports. If names vary, a more robust lookup might be needed,
@@ -23,7 +23,7 @@ function ensureRequiredTables(...tables: Array<{ name: string; table: any }>) {
   const missing = tables.filter((t) => !t.table).map((t) => t.name);
   if (missing.length > 0) {
     throw new Error(
-      `Missing DB exports: ${missing.join(', ')}. Please ensure these tables are exported from $lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema (e.g., export const documents = pgTable(...)).`
+      `Missing DB exports: ${missing.join(', ')}. Please ensure these tables are exported from $lib/server/db/schema (e.g., export const documents = pgTable(...)).`
     );
   }
 }
@@ -41,10 +41,10 @@ interface UserDocumentRow {
   [key: string]: unknown; // Allow other properties
 }
 
-import { sharedWorkerPool } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ingest/worker-pool-simple.js';
-import { embedText } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ingest/embed.js';
+import type { sharedWorkerPool  } from '$lib/server/ingest/worker-pool-simple.js';
+import type { embedText  } from '$lib/server/ingest/embed.js';
 // Add missing query helpers used below
-import { eq, like } from 'drizzle-orm';
+import type { eq, like  } from 'drizzle-orm';
 
 // Add a specific payload type to avoid `any` (defined once near the top)
 type UpdateCanvasPositionsPayload = {
@@ -287,7 +287,7 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
   if (!userDocumentsTable) {
     // Use the aliased table
     throw new Error(
-      'Missing DB export: "documents" / "userDocuments" required for updateCanvasPositions. Please export it from $lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema.'
+      'Missing DB export: "documents" / "userDocuments" required for updateCanvasPositions. Please export it from $lib/server/db/schema.'
     );
   }
   const nowIso = new Date().toISOString();
@@ -368,7 +368,7 @@ async function generateTimeline(data: { caseId: string }): Promise<any> {
   // Ensure documents table exists before attempting to read processed evidence
   if (!userDocumentsTable) {
     throw new Error(
-      'Missing DB export: "documents" / "userDocuments" required for generateTimeline. Please export it from $lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema.'
+      'Missing DB export: "documents" / "userDocuments" required for generateTimeline. Please export it from $lib/server/db/schema.'
     );
   }
   // Get all case activities
@@ -460,7 +460,7 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   // Ensure the documents table exists before attempting similarity search
   if (!userDocumentsTable) {
     throw new Error(
-      'Missing DB export: "documents" / "userDocuments" required for chatWithCase. Please export it from $lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema.'
+      'Missing DB export: "documents" / "userDocuments" required for chatWithCase. Please export it from $lib/server/db/schema.'
     );
   }
   // Embed the query (robustly handle single vs batch embedding responses)

@@ -4,10 +4,10 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // @ts-nocheck
-  import { onMount } from 'svelte';
-  import { browser } from "$app/environment";
+  import type { onMount  } from 'svelte';
+  import type { browser  } from '$app/environment';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { ArrowLeft, ArrowRight, Check, Lightbulb, MousePointer, Pause, Play, SkipForward, Target, X } from 'lucide-svelte';
+  import type { ArrowLeft, ArrowRight, Check, Lightbulb, MousePointer, Pause, Play, SkipForward, Target, X  } from 'lucide-svelte';
   interface OnboardingStep {
   id: string;
   title: string;

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  import { onMount } from 'svelte';
+  import type { goto  } from '$app/navigation';
+  import type { browser  } from '$app/environment';
+  import type { onMount  } from 'svelte';
 
   // client-only values to avoid SSR window access
   let currentUrl = 'SSR - Not available';

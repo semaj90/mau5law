@@ -1,4 +1,4 @@
-﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
 /** * Case Management Components Export * Legal case management and filtering components */
 export { default as CaseFilters } from './CaseFilters.svelte';
 export { default as CaseStats } from './CaseStats.svelte';

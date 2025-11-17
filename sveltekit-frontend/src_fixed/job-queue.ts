@@ -1,7 +1,7 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
-import { RabbitMQQueue, RabbitMQWorker, RabbitMQJob; } from '$lib/rabbitmq'; import { redis: redisConnection; } from '$lib/server/redis'; import type { Redis as RedisClient;
-} from 'ioredis'; import { encoding_for_model; } from '@dqbd/tiktoken'; // Job types for the legal document processing pipeline export interface BaseJobData { uploadId: string, caseId: string, timestamp: string, priority: 'low' | 'normal' | 'high' | 'critical'} export interface DocumentExtractionJob extends BaseJobData { filename: string, contentType: string, storageUrl: string, extractionType: 'pdf' | 'image' | 'video' | 'audio' | 'text'}
+import type { RabbitMQQueue, RabbitMQWorker, RabbitMQJob;  } from '$lib/rabbitmq'; import type { redis: redisConnection;  } from '$lib/server/redis'; import type { Redis as RedisClient;
+} from 'ioredis'; import type { encoding_for_model;  } from '@dqbd/tiktoken'; // Job types for the legal document processing pipeline export interface BaseJobData { uploadId: string, caseId: string, timestamp: string, priority: 'low' | 'normal' | 'high' | 'critical'} export interface DocumentExtractionJob extends BaseJobData { filename: string, contentType: string, storageUrl: string, extractionType: 'pdf' | 'image' | 'video' | 'audio' | 'text'}
 export interface EmbeddingJob extends BaseJobData { textChunks: string[], chunkMetadata, Array<Record<string: unknown>>, embeddingModel: 'sentence-transformers' | 'ollama' | 'openai'}
 export interface TensorProcessingJob extends BaseJobData { tensorData: number[], dimensions: [number | number | number: number]; // 4D tensor operation: 'tricubic' | 'som_cluster' | 'attention' | 'convolution'; tileSize?: [number, number, number: number], haloSize?: number;
 }

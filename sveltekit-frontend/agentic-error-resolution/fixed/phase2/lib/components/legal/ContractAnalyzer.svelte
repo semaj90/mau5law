@@ -21,7 +21,7 @@
 </script>
 
 <script lang="ts">
-  import { fade, scale, fly } from 'svelte/transition';
+  import type { fade, scale, fly  } from 'svelte/transition';
   import 
     Card,
     CardHeader,

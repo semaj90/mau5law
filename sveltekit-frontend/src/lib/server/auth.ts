@@ -4,23 +4,22 @@
  * Integrates with PostgreSQL, MinIO S3, and Docker microservices
  * Includes structured error handling with custom error classes
  */
-import { Lucia } from 'lucia';
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import type { Lucia  } from 'lucia';
+import type { DrizzlePostgreSQLAdapter  } from '@lucia-auth/adapter-drizzle';
 import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
+import type { eq  } from 'drizzle-orm';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Session, User } from 'lucia'; // Corrected import: import both Session and User types
 import db from './db/drizzle'; // Changed to default import for 'db'
 import * as schema from './db/schema'; // Changed to import all as 'schema'
-import {
-  RegistrationError,
+import type { RegistrationError,
   SessionError,
   LoginError,
   PasswordError,
   ProfileError,
   MicroserviceError,
-} from './errors'; // Removed ERROR_CODES
-import { getLegalGatewayUrl } from './utils/endpoints'; // Import the new endpoint helper
+ } from './errors'; // Removed ERROR_CODES
+import type { getLegalGatewayUrl  } from './utils/endpoints'; // Import the new endpoint helper
 
 // ============================================================================
 // LUCIA v3 INITIALIZATION (Corrected for v3 API)
@@ -250,7 +249,7 @@ export class AuthService {
     data: Partial<{ firstName: string | null; lastName: string | null; avatarUrl: string | null }>
   ) {
     try {
-      const updateData: Partial<typeof schema.users.$inferInsert // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5> = {
+      const updateData: Partial<typeof schema.users.$inferInsert > = {
         updatedAt: new Date().toISOString(),
       }; // Used schema.users
       if (data.firstName !== undefined) updateData.firstName = data.firstName;

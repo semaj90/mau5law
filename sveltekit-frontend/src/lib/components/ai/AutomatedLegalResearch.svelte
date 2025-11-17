@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Migrated from createEventDispatcher to callback props;
 
-	let { query = '', jurisdiction = 'general', caseType = 'civil', depth = 'comprehensive' } = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { query = '', jurisdiction = 'general', caseType = 'civil', depth = 'comprehensive' } = $props();
 
 	const dispatch = createEventDispatcher();
 

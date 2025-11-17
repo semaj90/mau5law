@@ -7,17 +7,17 @@
   // export component constructors (preferred) or import the exact component
   // constructors instead of namespace/instance objects.
   // @ts-nocheck
-  import { onDestroy, tick } from 'svelte';
+  import type { onDestroy, tick  } from 'svelte';
   import  Button  from "$lib/components/ui/Button.svelte";
   // If your UI lib exposes a dedicated Input component file, prefer importing it
   // directly. Keep this change minimal for now.
   import  Input  from "$lib/components/ui/enhanced-bits.svelte"; // import as default to match typical Bits-UI exports
   // Only import icons used in the template
-  import { Bot, Send, Cpu, Zap, MessageSquare, Mic, MicOff, Download, Square, Activity } from 'lucide-svelte';
+  import type { Bot, Send, Cpu, Zap, MessageSquare, Mic, MicOff, Download, Square, Activity  } from 'lucide-svelte';
   // some service modules export named functions; import all to avoid default-export issues
   import * as goMicroserviceClient from '$lib/services/go-microservice-client';
   // use dynamic public env to avoid missing static exports in some environments
-  import { env } from '$env/dynamic/public';
+  import type { env  } from '$env/dynamic/public';
   import * as Dialog from '$lib/components/ui/dialog.svelte';
   import * as Tooltip from '$lib/components/ui/tooltip.svelte';
   // Svelte 5 state management

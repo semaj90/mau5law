@@ -12,10 +12,10 @@ https://svelte.dev/e/js_parse_error -->
   let { caseId, searchQuery = "", selectedTypes = [] }: Props = $props();
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
   import Button from '$lib/components/ui/Button.svelte';
-  import { evidenceStore, type Evidence  } from '$lib/stores/unified";
-  import { lokiEvidenceService } from "$lib/utils/loki-evidence";
-  import { Archive, Calendar, Eye, File, FileText, Grid, Image, List, Music, Redo2, RefreshCw, Search, SortAsc, SortDesc, Tag, Trash2, Undo2, Video, Wifi, WifiOff } from "lucide-svelte";
-  import { onMount } from "svelte";
+  import type { evidenceStore, type Evidence   } from '$lib/stores/unified';
+  import type { lokiEvidenceService  } from '$lib/utils/loki-evidence';
+  import type { Archive, Calendar, Eye, File, FileText, Grid, Image, List, Music, Redo2, RefreshCw, Search, SortAsc, SortDesc, Tag, Trash2, Undo2, Video, Wifi, WifiOff  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   // Props
   let showAdvancedFilters = $state(false);
   // Store subscriptions - using $derived below

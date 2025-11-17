@@ -4,8 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
-  import { fade, slide } from 'svelte/transition';
-  import { writable } from 'svelte/store';
+  import type { fade, slide  } from 'svelte/transition';
+  import type { writable  } from 'svelte/store';
   // Events now handled via props in Svelte 5
   //
   interface FormData {

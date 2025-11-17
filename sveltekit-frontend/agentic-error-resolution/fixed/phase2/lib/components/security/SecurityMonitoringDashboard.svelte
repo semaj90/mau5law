@@ -5,11 +5,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { notifications  } from '$lib/stores/unified';
-  import { getSecurityEvents, type SecurityEvent } from '$lib/utils/security';
-  import { Activity, AlertCircle, AlertTriangle, CheckCircle, Clock, Database, Download, Eye, Info, Key, Lock, Monitor, RefreshCw, Server, Shield, Trash2, Unlock, Users, XCircle } from 'lucide-svelte';
-  import { onDestroy, onMount } from 'svelte';
-  import { writable } from 'svelte/store';
+  import type { notifications   } from '$lib/stores/unified';
+  import type { getSecurityEvents, type SecurityEvent  } from '$lib/utils/security';
+  import type { Activity, AlertCircle, AlertTriangle, CheckCircle, Clock, Database, Download, Eye, Info, Key, Lock, Monitor, RefreshCw, Server, Shield, Trash2, Unlock, Users, XCircle  } from 'lucide-svelte';
+  import type { onDestroy, onMount  } from 'svelte';
+  import type { writable  } from 'svelte/store';
   let securityEvents = $state<SecurityEvent[]>([]);
   let filteredEvents = $state<SecurityEvent[]>([]);
   let selectedSeverity = $state('');

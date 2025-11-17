@@ -188,3 +188,22 @@ npm run build 2>&1 | head -50
 *Generated on November 14, 2025 - Error Analysis Report*
 *Total Files with Errors: 500+*
 *Estimated Resolution Time: 4 weeks*
+
+---
+
+## ✅ Modernization Alignment (Bits UI v2, Svelte 5, Drizzle 0.44, Lucia v3)
+
+To get the repo back to a stable, production-ready stack:
+
+1. **Restore & upgrade the framework**
+   - Bring in a pristine `sveltekit-frontend/src` copy, then upgrade to Svelte 5 / SvelteKit 2.6.
+   - Replace `$props`/`$state` codemod debris with real Svelte runes and semantic HTML (see the refactored `POIPhotoModal.svelte` for the canonical pattern).
+2. **UI libraries**
+   - Remove shadcn/melt/smui dependencies; keep Bits UI v2 only. When needed, provide typed shims instead of relying on broken generated components.
+   - Default to UnoCSS + NES.css + HTML5 to avoid another theme migration.
+3. **Data layer & auth**
+   - Upgrade Drizzle ORM + drizzle-kit to 0.44 and re-run schema migrations.
+   - Move session/auth logic to Lucia v3, then re-test login/logout flows once `npm run check` passes.
+4. **Verification**
+   - Every script/change must end with `npm run check` and `npx tsc --noEmit --skipLibCheck`. No change is “done” until both succeed.
+   - Log which modernization requirement each change satisfies so progress is auditable.

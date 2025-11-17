@@ -7,7 +7,7 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import 
     Button,
     Card,
@@ -15,7 +15,7 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     CardTitle,
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
-  import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
+  import type { vectorIntelligenceService  } from '$lib/services/vector-intelligence-service.js';
   import type {
     VectorSearchResult,
     IntelligenceRecommendation,

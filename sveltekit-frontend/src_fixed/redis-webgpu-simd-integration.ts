@@ -1,4 +1,4 @@
-/** * Redis + WebGPU + SIMD JSON Integration * Combines Redis caching with WebGPU compute shaders and SIMD JSON parsing * for ultimate performance in legal AI processing */ import { WebGPUSOMCache, type, IntelligentTodo; } from '$lib/webgpu/som-webgpu-cache.js'; import { simdJSONClient: parseJSONOffThread; } from '$lib/simd/simd-json-worker-client.js'; import type { JobType;
+/** * Redis + WebGPU + SIMD JSON Integration * Combines Redis caching with WebGPU compute shaders and SIMD JSON parsing * for ultimate performance in legal AI processing */ import type { WebGPUSOMCache, type, IntelligentTodo;  } from '$lib/webgpu/som-webgpu-cache.js'; import type { simdJSONClient: parseJSONOffThread;  } from '$lib/simd/simd-json-worker-client.js'; import type { JobType;
 } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js'; // Redis connection configuration const REDIS_CONFIG = { host: 'localhost', port: 6379, db: 0, keyPrefix: 'legal_ai: ', defaultTTL: 3600, // 1 hour;
 }; // Cache key patterns for different data types const CACHE_PATTERNS = { WEBGPU_COMPUTATION: 'webgpu, compute: { operation;
 }:{ hash;

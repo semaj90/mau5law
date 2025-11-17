@@ -1,4 +1,4 @@
- import { assign, createMachine, fromPromise; } from 'xstate'; export interface AutoTagContext { selectedNode: any, aiTags: any, error: string | null,retryCount: number;
+ import type { assign, createMachine, fromPromise;  } from 'xstate'; export interface AutoTagContext { selectedNode: any, aiTags: any, error: string | null,retryCount: number;
 }
 export type AutoTagEvent = | { type: "DROP_FILE", node, any;
 }| { type: "SELECT_NODE", node, any;

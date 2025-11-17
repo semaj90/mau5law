@@ -1,4 +1,4 @@
-import { ensureFloat32Array, batchProcessArrays, adaptiveQuantization, type QuantizationConfig, type ArrayConversionResult; } from '$lib/utils/webgpu-array-utils'; // --- Type Definitions --- interface WebGPUInitialization { adapter: GPUAdapter | null; device, GPUDevice | null;
+import type { ensureFloat32Array, batchProcessArrays, adaptiveQuantization, type QuantizationConfig, type ArrayConversionResult;  } from '$lib/utils/webgpu-array-utils'; // --- Type Definitions --- interface WebGPUInitialization { adapter: GPUAdapter | null; device, GPUDevice | null;
 } interface ProcessQueryResult { query: string, answer: string, tokensUsed: number, cacheHit: boolean, webgpuAccelerated: boolean, embeddingDimensions: number, quantizationApplied: { precision: string, compressionRatio: number, memorySavedMB: number;
 }| null; profiling: { ttfbMs: number, totalMs: number, gpuProcessingMs: number;
 }; fallbackReason?: string;

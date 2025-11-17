@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 test.describe('RAG sync smoke', () => {
   test('IndexedDB -> agent -> /api/rag/sync -> persisted', async ({ page }) => {

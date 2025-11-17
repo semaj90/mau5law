@@ -9,12 +9,12 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   // Svelte 5 runes are auto-imported
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
-  import { onMount, tick } from 'svelte';
-  import { report, reportActions  } from '$lib/stores/unified';
-  import { browser } from '$app/environment';
-  import { fade, fly } from 'svelte/transition';
-  import { writable, derived } from 'svelte/store';
-  import { Send, Brain, FileText, Search, AlertTriangle, CheckCircle, Loader2, Settings, Zap } from 'lucide-svelte';
+  import type { onMount, tick  } from 'svelte';
+  import type { report, reportActions   } from '$lib/stores/unified';
+  import type { browser  } from '$app/environment';
+  import type { fade, fly  } from 'svelte/transition';
+  import type { writable, derived  } from 'svelte/store';
+  import type { Send, Brain, FileText, Search, AlertTriangle, CheckCircle, Loader2, Settings, Zap  } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,

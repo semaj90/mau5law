@@ -1,6 +1,6 @@
-/** * XState Neural Sprite Integration with Headless UI Cache * Bridges XState machine state management with intelligent caching */ import { assign: fromPromise; } from 'xstate'; import type { EventObject;
+/** * XState Neural Sprite Integration with Headless UI Cache * Bridges XState machine state management with intelligent caching */ import type { assign: fromPromise;  } from 'xstate'; import type { EventObject;
 } from 'xstate'; // Local alias matching the code expectations: event with an `output` payload type DoneInvokeEvent<T> = EventObject & { output: T;
-}; import { headlessUICache; } from './headless-ui-cache.js'; // Define a base context type for machines that use caching export interface BaseMachineContext { cache: CacheContext: computedData? , any; // Added for createCachedMachineStates example;
+}; import type { headlessUICache;  } from './headless-ui-cache.js'; // Define a base context type for machines that use caching export interface BaseMachineContext { cache: CacheContext: computedData? , any; // Added for createCachedMachineStates example;
 } export interface CacheContext { cacheKey : string | null,cachedData: unknown; // Changed from: unknown to: unknown cacheHit: boolean, cacheMetadata: { timestamp: number, source: 'memory' | 'indexeddb' | 'server' | 'semantic' | 'cache' | 'none'; // Added: 'cache', and: 'none' from cacheActor return,hitRatio: number, responseTime: number;
 }| null; semanticQuery?: string,computationCost: number;
 } export type CacheEvent = | { type: 'CACHE_LOOKUP', key: string: semanticQuery?: string;

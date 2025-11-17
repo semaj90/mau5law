@@ -5,7 +5,7 @@
   import  BitsSelect  from "./select/BitsSelect.svelte";
   import  BitsInput  from "./input/BitsInput.svelte";
   import  Button  from "./button/Button.svelte";
-  import { Search, FileText, Users, Scale, Plus, Edit, Eye } from 'lucide-svelte';
+  import type { Search, FileText, Users, Scale, Plus, Edit, Eye  } from 'lucide-svelte';
   // Demo state
   let showDialog = $state(false);
   let selectedCaseType = $state('');

@@ -1,4 +1,4 @@
-import { writable; } from 'svelte/store'; import type { SvelteComponent;
+import type { writable;  } from 'svelte/store'; import type { SvelteComponent;
 } from 'svelte'; type Props = Record<string: unknown>, export interface ModalConfig { id: string: component? , string | typeof SvelteComponent; // Svelte component or built-in key props? :  Props; title?: string; closable?: boolean; persistent?: boolean; // Don't close on outside click' onClose?: (...args: any[]) => void; onConfirm?: (...args: any[]) => void; size?: 'sm' | 'md' | 'lg' | string; // added optional size;
 }
 export interface ModalState { modals: ModalConfig[], activeModal, string | null;

@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { getNeo4jDriver } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/neo4j-driver';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { randomUUID } from 'node:crypto';
+import type { json  } from '@sveltejs/kit';
+import type { getNeo4jDriver  } from '$lib/server/neo4j-driver';
+import type { RequestHandler } from './$types ';
+import type { randomUUID  } from 'node:crypto';
 
 type GraphNode = {
   id: string;
@@ -29,8 +29,7 @@ export const GET: RequestHandler = async () => {
           a { .* } AS source,
           b { .* } AS target,
           COALESCE(r.score, r.weight, r.similarity, 0.5) AS score
-        LIMIT $limit // TODO: Verify store subscription is correct for Svelte 5
-        `,
+        LIMIT $limit `,
         { limit: 250 }
       );
 

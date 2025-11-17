@@ -1,7 +1,7 @@
 <!-- Vector Pipeline Demo Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
+  import type { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob  } from '$lib/machines/vector-pipeline-machine';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import 
     Card,

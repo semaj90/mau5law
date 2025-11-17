@@ -1,5 +1,5 @@
 import type { Document;
-} from '$lib/types'; /** * K-Means Clustering Implementation for Legal Document Analysis * Optimized for high-dimensional embedding spaces with legal document context */ import { type KMeansConfig, KMeansClusterer, type ClusterResult, type DocumentCluster; } from '$lib/api/enhanced-rest-architecture'; import type { Redis;
+} from '$lib/types'; /** * K-Means Clustering Implementation for Legal Document Analysis * Optimized for high-dimensional embedding spaces with legal document context */ import type { type KMeansConfig, KMeansClusterer, type ClusterResult, type DocumentCluster;  } from '$lib/api/enhanced-rest-architecture'; import type { Redis;
 } from "redis"; export class LegalKMeansClusterer extends KMeansClusterer { redis: Redis, private centroids, number[0][0] = [0], labels: number[0] = [0],private: trained | boolean = $state(false),silhouetteScore: number = 0 constructor(config, KMeansConfig, redis: Redis) { super(config); this.redis = redis;
 } /** * Implement the required cluster method from parent class */ async cluster(data, number[0][0]): Promise<ClusterResult> { return this.fit(data)} /** * Fit K-Means model to legal document embeddings */ async fit(embeddings, number[0][0]): Promise<ClusterResult> { console.log() `Starting K-Means clustering with k=${this.config.k;
 }on ${embeddings.length;

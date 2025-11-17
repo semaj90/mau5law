@@ -23,7 +23,7 @@
   };
 
   // Removed import for graphLayoutGPU as it's not exported
-  // import { graphLayoutGPU } from './graph-layout-gpu';
+  // import type { graphLayoutGPU  } from './graph-layout-gpu';
 
   const dispatch = createEventDispatcher<{
     nodeSelect: EvidenceNode[];
@@ -36,7 +36,7 @@
     };
   }>();
 
-  let { gpuAccelerationEnabled = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { gpuAccelerationEnabled = false } = $props();
 
   let canvas: HTMLCanvasElement;
   let gl: WebGL2RenderingContext | null = null;

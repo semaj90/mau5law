@@ -18,7 +18,7 @@
 /** * Throttle utility - limits function calls to once per specified interval */ export function throttle<
   T extends (...args: unknown[]) => unknown,
 >(func: T, limit: number): (...args: Parameters<T>) => void {
-  let inThrottle = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let inThrottle = $state <boolean>(false);
   return function executedFunction(this: ThisParameterType<T>, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);

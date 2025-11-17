@@ -1,10 +1,10 @@
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { browser  } from '$app/environment';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { notifications  } from '$lib/stores/unified';
-  import { Circle, Download, Image, Move, Redo, Save, Square, Trash2, Type, Undo, ZoomIn, ZoomOut } from 'lucide-svelte';
+  import type { notifications   } from '$lib/stores/unified';
+  import type { Circle, Download, Image, Move, Redo, Save, Square, Trash2, Type, Undo, ZoomIn, ZoomOut  } from 'lucide-svelte';
   // State (use normal let bindings so the file is valid)
   let canvasContainer: HTMLDivElement | undefined;
   let fabricCanvas: any = null;

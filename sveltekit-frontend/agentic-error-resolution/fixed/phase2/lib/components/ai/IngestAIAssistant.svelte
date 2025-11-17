@@ -8,8 +8,8 @@ https://svelte.dev/e/attribute_duplicate -->
    * Integrates with your existing AI agent store and production architecture
    * Uses Bits UI + Melt UI following your established component patterns
    */
-  import { onMount } from 'svelte';
-  import { writable, derived, get } from 'svelte/store';
+  import type { onMount  } from 'svelte';
+  import type { writable, derived, get  } from 'svelte/store';
   import  Button  from "$lib/components/ui/Button.svelte";
   import  Input  from "$lib/components/ui/input/Input.svelte"; // fixed: use default import (component exports default)
   import type { ComponentType } from 'svelte';
@@ -21,8 +21,8 @@ https://svelte.dev/e/attribute_duplicate -->
   import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import  Label  from "$lib/components/ui/label/LabelCompat.svelte";
   // Your established store patterns
-  import { aiAgentStore, isProcessing, systemHealth, performanceMetrics, currentConversation } from '$lib/stores/ai-agent';
-  import { enhancedIngestService } from '$lib/services/enhanced-ingest-integration';
+  import type { aiAgentStore, isProcessing, systemHealth, performanceMetrics, currentConversation  } from '$lib/stores/ai-agent';
+  import type { enhancedIngestService  } from '$lib/services/enhanced-ingest-integration';
   // Component state following your patterns
   let documentTitle = '';
   let documentContent = '';

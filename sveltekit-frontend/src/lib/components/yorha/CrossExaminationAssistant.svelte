@@ -34,7 +34,7 @@
     strategy: string;
   }
 
-  let { witness = null, evidence = [], caseContext = '' } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { witness = null, evidence = [], caseContext = '' } = $props<{
     witness?: Witness | null;
     evidence?: Evidence[];
     caseContext?: string;
@@ -42,11 +42,11 @@
 
   const dispatch = createEventDispatcher();
 
-  let isGenerating = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let session = $state // TODO: Verify store subscription is correct for Svelte 5<CrossExamSession | null>(null);
-  let selectedQuestionType = $state // TODO: Verify store subscription is correct for Svelte 5<'all' | 'general' | 'timeline' | 'credibility' | 'contradiction'>('all');
-  let selectedPriority = $state // TODO: Verify store subscription is correct for Svelte 5<'all' | 'high' | 'medium' | 'low'>('all');
-  let expandedQuestion = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let isGenerating = $state(false);
+  let session = $state <CrossExamSession | null>(null);
+  let selectedQuestionType = $state <'all' | 'general' | 'timeline' | 'credibility' | 'contradiction'>('all');
+  let selectedPriority = $state <'all' | 'high' | 'medium' | 'low'>('all');
+  let expandedQuestion = $state <string | null>(null);
 
   async function generateQuestions() {
     if (!witness) {

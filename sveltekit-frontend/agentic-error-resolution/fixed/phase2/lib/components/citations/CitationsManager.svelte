@@ -4,7 +4,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-	import { onMount } from 'svelte';
+	import type { onMount  } from 'svelte';
 	import 
 	Card,
 	CardHeader,
@@ -14,11 +14,10 @@ https://svelte.dev/e/attribute_duplicate -->
 	Badge
    from "$lib/components/ui/enhanced-bits.svelte";
 	import  Button  from "$lib/components/ui/Button.svelte";
-	import {
-		Search, BookOpen, ExternalLink, Download,
+	import type { Search, BookOpen, ExternalLink, Download,
 		Plus, FileText, Calendar, User, Tags,
 		Filter, SortAsc, Eye, Edit, Trash2
-	} from 'lucide-svelte';
+	 } from 'lucide-svelte';
   	// Svelte 5 state management
   	let citations = $state<any[]>([]);
   	let filteredCitations = $state<any[]>([]);

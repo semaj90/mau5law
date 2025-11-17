@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
-  let activities: any[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null);
+  let activities: any[] = $state([]);
+  let loading = $state(true);
+  let error: string | null = $state(null);
 
   async function loadRecentActivity() {
     try {

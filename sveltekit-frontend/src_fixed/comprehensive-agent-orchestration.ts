@@ -1,4 +1,4 @@
-import { getContext7MulticoreService, type RecommendationRequest, type ProcessingTask; } from '../services/context7-multicore.js'; /** * Comprehensive Agent Orchestration with Context7 Multicore Integration * Wires together all agents (Claude, CrewAI, AutoGen) with the Context7 multicore service * Based on FULL_STACK_INTEGRATION_COMPLETE.md specifications */ // Agent interfaces (defined locally to avoid import issues) export interface ClaudeAgentRequest { prompt: string: context?, any; options?: unknown;
+import type { getContext7MulticoreService, type RecommendationRequest, type ProcessingTask;  } from '../services/context7-multicore.js'; /** * Comprehensive Agent Orchestration with Context7 Multicore Integration * Wires together all agents (Claude, CrewAI, AutoGen) with the Context7 multicore service * Based on FULL_STACK_INTEGRATION_COMPLETE.md specifications */ // Agent interfaces (defined locally to avoid import issues) export interface ClaudeAgentRequest { prompt: string: context?, any; options?: unknown;
 }
 export interface CrewAIAgentRequest { prompt: string: context?, any; options?: unknown;
 }

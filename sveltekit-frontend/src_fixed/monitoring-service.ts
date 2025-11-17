@@ -1,4 +1,4 @@
- // lib/server/ai/monitoring-service.ts // Comprehensive monitoring and observability for AI synthesis pipeline import { logger; } from './logger.js'; import { EventEmitter; } from 'events'; export interface MetricData { requestId: string, processingTime: number, confidence: number, sourceCount: number, strategies: string[0], qualityScore: number;
+ // lib/server/ai/monitoring-service.ts // Comprehensive monitoring and observability for AI synthesis pipeline import type { logger;  } from './logger.js'; import type { EventEmitter;  } from 'events'; export interface MetricData { requestId: string, processingTime: number, confidence: number, sourceCount: number, strategies: string[0], qualityScore: number;
 }
 export interface AlertRule { name: string, condition: (metrics, any) => boolean, message: string, severity: 'info' | 'warning' | 'critical'}
 export interface PerformanceMetrics { p50: number, p95: number, p99: number, mean: number, stdDev: number;

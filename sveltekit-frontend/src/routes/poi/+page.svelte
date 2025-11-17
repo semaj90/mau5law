@@ -1,51 +1,49 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import {
-    AlertTriangle,
+  import type { goto  } from '$app/navigation';
+  import type { AlertTriangle,
     Camera,
     Grid,
     List,
     Plus,
     Search,
     Users
-  } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+   } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
 
-  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import { Card, CardContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-  import {
-    Dialog,
+  import type { Button  } from '$lib/components/ui/button';
+  import type { Card, CardContent  } from '$lib/components/ui/card';
+  import type { Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle
-  } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
-  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+   } from '$lib/components/ui/dialog';
+  import type { Input  } from '$lib/components/ui/input';
 
-  import POICard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POICard.svelte';
-  import POIEditor from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIEditor.svelte';
-  import POIFaceMatchDialog from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIFaceMatchDialog.svelte';
-  import POIPhotoModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIPhotoModal.svelte';
+  import POICard from '$lib/components/poi/POICard.svelte';
+  import POIEditor from '$lib/components/poi/POIEditor.svelte';
+  import POIFaceMatchDialog from '$lib/components/poi/POIFaceMatchDialog.svelte';
+  import POIPhotoModal from '$lib/components/poi/POIPhotoModal.svelte';
 
   // State
-  let pois = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-  let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'list'>('grid');
-  let showFilters = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let selectedThreatLevels = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(['low', 'medium', 'high', 'critical']);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let pois = $state ([]);
+  let searchQuery = $state ('');
+  let viewMode = $state <'grid' | 'list'>('grid');
+  let showFilters = $state (false);
+  let selectedThreatLevels = $state (['low', 'medium', 'high', 'critical']);
+  let loading = $state (true);
+  let error = $state ('');
 
   // Dialog states
-  let showCreateDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let showEditDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let showPhotoModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let showFaceMatchDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let editingPOI = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
-  let selectedPhoto = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
-  let faceMatches = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+  let showCreateDialog = $state (false);
+  let showEditDialog = $state (false);
+  let showPhotoModal = $state (false);
+  let showFaceMatchDialog = $state (false);
+  let editingPOI = $state (null);
+  let selectedPhoto = $state (null);
+  let faceMatches = $state ([]);
 
   // Filtered POIs
-  let filteredPOIs = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
+  let filteredPOIs = $derived (
     pois.filter(poi => {
       const matchesSearch = !searchQuery ||
         poi.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

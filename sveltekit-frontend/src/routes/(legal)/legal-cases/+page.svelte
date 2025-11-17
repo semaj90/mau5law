@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import type { goto  } from '$app/navigation';
 
   interface CaseSummary {
     id: string;
@@ -21,16 +21,16 @@
   }
 
   // Svelte, 5 props from server load function
-  let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { data }: { data: PageData } = $props();
   const initialCases = Array.isArray(data.cases) ? (data.cases as CaseSummary[]) : [];
 
   // Svelte, 5 runes - initialize from server data
-  let cases = $state // TODO: Verify store subscription is correct for Svelte 5<CaseSummary[]>(initialCases);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(data.error || null);
+  let cases = $state <CaseSummary[]>(initialCases);
+  let loading = $state <boolean>(false);
+  let error = $state <string | null>(data.error || null);
 
   // Development mode indicator
-  let devBypassActive = $state // TODO: Verify store subscription is correct for Svelte 5(data.devBypassActive || false);
+  let devBypassActive = $state(data.devBypassActive || false);
 
   function formatLabel(value: unknown): string {
     if (typeof value !== 'string') {
@@ -70,7 +70,7 @@
     return `${prefix}-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   }
 
-  const displayCases = $derived // TODO: Verify store subscription is correct for Svelte 5(
+  const displayCases = $derived(
     (cases || []).map((caseItem) => {
       const statusLabel = formatLabel(caseItem.status);
       const priorityLabel = formatLabel(caseItem.priority);
@@ -110,7 +110,7 @@
         : Array.isArray(payload?.cases)
           ? payload.cases
           : [];
-      cases = (listCandidate || []) as CaseSummary[]; // Assign to the $state // TODO: Verify store subscription is correct for Svelte 5 variable 'cases'
+      cases = (listCandidate || []) as CaseSummary[]; // Assign to the $state variable 'cases'
       error = null;
     } catch (err) {
       console.error('Failed to load cases:', err);

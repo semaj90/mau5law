@@ -1,4 +1,4 @@
-import { setCache; } from '$lib/server/utils/server-cache.js'; const RABBITMQ_URL = import.meta.env.RABBITMQ_URL || "amqp://localhost" const QUEUE_NAME = "summarization_tasks"; export async function summarizeWithQueue(content, string, documentId: string): Promise<any> { try { const { connect;
+import type { setCache;  } from '$lib/server/utils/server-cache.js'; const RABBITMQ_URL = import.meta.env.RABBITMQ_URL || "amqp://localhost" const QUEUE_NAME = "summarization_tasks"; export async function summarizeWithQueue(content, string, documentId: string): Promise<any> { try { const { connect;
 }= await import("amqplib"); const connection = await connect(RABBITMQ_URL); const channel = await connection.createChannel(); await channel.assertQueue(QUEUE_NAME, { durable: true;
 }); const task = { documentId: content;
 } channel.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(task)), { persistent: true;

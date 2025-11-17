@@ -1,7 +1,7 @@
 import type { Document } from '$lib/types';
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { error, fail, json } from '@sveltejs/kit';
-import { getUserId } from '$lib/server/auth/utils';
+import type { PageServerLoad, Actions } from './$types .js';
+import type { error, fail, json  } from '@sveltejs/kit';
+import type { getUserId  } from '$lib/server/auth/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
   try {

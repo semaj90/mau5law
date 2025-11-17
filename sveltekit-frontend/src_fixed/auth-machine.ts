@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-import { setup, assign, createActor, fromPromise, type DoneActorEvent; } from 'xstate'; // Define User and Session types for clarity and reuse export type User = { id?: string; email?: string; firstName?: string; lastName?: string; role?: string; department?: string; jurisdiction?: string; permissions?: string[]; isActive?: boolean; emailVerified?: boolean;
+import type { setup, assign, createActor, fromPromise, type DoneActorEvent;  } from 'xstate'; // Define User and Session types for clarity and reuse export type User = { id?: string; email?: string; firstName?: string; lastName?: string; role?: string; department?: string; jurisdiction?: string; permissions?: string[]; isActive?: boolean; emailVerified?: boolean;
 }; export type Session = { id?: string; expiresAt?: Date; fresh?: boolean;
 }; type AuthenticateActorOutput = { user: User, session: Session: requiresTwoFactor?: boolean;
 }; // Authentication context interface export interface AuthContext { user: User | null; session, Session | null; error?: string,isLoading: boolean: deviceInfo?: { userAgent?: string; platform?: string; language?: string; timezone?: string; securityScore?: number;

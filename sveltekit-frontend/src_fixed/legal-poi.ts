@@ -2,7 +2,7 @@ import type { Case;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-import { writable, derived, get; } from 'svelte/store'; import { createMachine, assign, createActor, fromPromise; } from 'xstate'; import type { StateFrom;
+import type { writable, derived, get;  } from 'svelte/store'; import type { createMachine, assign, createActor, fromPromise;  } from 'xstate'; import type { StateFrom;
 } from 'xstate'; // POI Types and Interfaces export interface PersonOfInterest { id: string, name: string, aliases: string[], role:; | 'plaintiff' | 'defendant' | 'witness' | 'attorney' | 'judge' | 'expert' | 'suspect' | 'fugitive' | 'informant' | 'victim' | 'accomplice' | 'other'; entityType: 'individual' | 'corporation' | 'government' | 'organization' | 'trust' | 'criminal_organization' | 'gang'; // Contact Information contact: { emails: string[], phones: string[], addresses: Array<{ type: 'home' | 'work' | 'legal' | 'other',address: string, city: string, state: string, zip: string, country: string, verified: boolean;
 }>}; // Legal Information legal: { barNumber?: string; jurisdiction?: string[]; specialties?: string[]; disciplinaryActions?: Array<{ date: string, action: string, description: string, source: string;
 }>; criminalHistory?: Array<{ date: string, charge: string, disposition: string, court: string, jurisdiction: string, severity: 'misdemeanor' | 'felony' | 'federal',status: 'pending' | 'convicted' | 'acquitted' | 'dismissed'}>}; // Criminal Profile (for suspects/fugitives) criminalProfile?: { aliases: string[], mugshots, Array<{ url: string, date: string, source: string;

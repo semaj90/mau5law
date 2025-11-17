@@ -1,4 +1,4 @@
-﻿import { getOllamaEndpoint; } from '$lib/server/helpers/ollama';
+import type { getOllamaEndpoint;  } from '$lib/server/helpers/ollama';
 /**
  * Gemma3 Legal Model Configuration
  * Optimized for RTX, 3060 Ti and legal document analysis

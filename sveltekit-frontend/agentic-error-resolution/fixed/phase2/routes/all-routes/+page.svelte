@@ -4,7 +4,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import type { PageData } from './$types';
   import Card from '$lib/components/ui/bits/Card.svelte';
   import CardHeader from '$lib/components/ui/bits/CardHeader.svelte';

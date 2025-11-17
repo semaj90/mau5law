@@ -7,8 +7,8 @@ TODO: Implement logout functionality, clear session, redirect to login
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits.svelte';
 	import * as Card from '$lib/components/ui/card.svelte';
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+	import type { onMount  } from 'svelte';
+	import type { goto  } from '$app/navigation';
 	let isLoggingOut = $state(false);
 	async function handleLogout() {
 		isLoggingOut = true;

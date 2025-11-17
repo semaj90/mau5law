@@ -1,4 +1,4 @@
-﻿/** * Legal Texture Streaming Component * Svelte, 5 headless component for N64-style texture streaming */ import { createLegalTexturePipeline, type LegalDocumentTexturePipeline, type EvidencePhoto, type DocumentScan, type CaseVisualization, type CourtroomDisplay; } from '$lib/gpu/legal-texture-pipeline'; export interface TextureStreamingConfig { enableGPU: boolean, maxChunkSize: number, cacheSize: number, adaptiveQuality: boolean, compressionEnabled: boolean;
+/** * Legal Texture Streaming Component * Svelte, 5 headless component for N64-style texture streaming */ import type { createLegalTexturePipeline, type LegalDocumentTexturePipeline, type EvidencePhoto, type DocumentScan, type CaseVisualization, type CourtroomDisplay;  } from '$lib/gpu/legal-texture-pipeline'; export interface TextureStreamingConfig { enableGPU: boolean, maxChunkSize: number, cacheSize: number, adaptiveQuality: boolean, compressionEnabled: boolean;
 }
 export interface StreamingStats { chunksLoaded: number, cacheHits: number, renderTime: number, qualityLevel: number, hasWebGL: boolean, hasWASM: boolean;
 }

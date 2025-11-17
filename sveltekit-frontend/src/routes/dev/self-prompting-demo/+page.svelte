@@ -1,6 +1,6 @@
-﻿<script lang="ts">
-  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-  import SelfPromptingDemo from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/dev/SelfPromptingDemo.svelte';
+<script lang="ts">
+  import type { Case } from '$lib/types';
+  import SelfPromptingDemo from '$lib/components/dev/SelfPromptingDemo.svelte';
 </script>
 
 <svelte:head>

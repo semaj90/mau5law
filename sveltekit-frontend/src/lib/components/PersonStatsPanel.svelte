@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { Button } from 'bits-ui/components/ui/button';
+	import type { Button  } from 'bits-ui/components/ui/button';
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {
 		selectedPerson: FugitiveDexPerson | null;
 	}
 
-	let { selectedPerson }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+	let { selectedPerson }: Props = $props();
 </script>
 
 {#if selectedPerson}

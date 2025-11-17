@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { goto } from '$app/navigation';
+  import type { goto  } from '$app/navigation';
   import Button from '$lib/components/ui/Button.svelte';
   import  Badge  from "$lib/components/ui/badge.svelte";
   // Icons
-  import { Users, Activity, Database, Cpu, HardDrive, Shield, BarChart3, Clock, CheckCircle, AlertTriangle, RefreshCw, Zap, Server, Network, Monitor } from 'lucide-svelte';
+  import type { Users, Activity, Database, Cpu, HardDrive, Shield, BarChart3, Clock, CheckCircle, AlertTriangle, RefreshCw, Zap, Server, Network, Monitor  } from 'lucide-svelte';
   // Svelte 5 runes
   let systemStats = $state({ totalUsers: 0, activeUsers: 0, totalCases: 0, activeCases: 0, totalDocuments: 0, processedDocuments: 0, aiAnalyses: 0, uptime: '0d 0h 0m' });
   let systemHealth = $state({ database: true, redis: true, aiService: true, fileSystem: true, gpu: false, vectorSearch: true });

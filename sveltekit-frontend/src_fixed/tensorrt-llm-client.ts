@@ -1,4 +1,4 @@
-/** * Ultra-optimized SvelteKit TensorRT-LLM Client * Sub-1ms response handling with QUIC, SIMD JSON, and streaming */ import { writable, type Writable; } from 'svelte/store'; import type { LegalAIRequest, LegalAIResponse, StreamingResponse, PerformanceMetrics;
+/** * Ultra-optimized SvelteKit TensorRT-LLM Client * Sub-1ms response handling with QUIC, SIMD JSON, and streaming */ import type { writable, type Writable;  } from 'svelte/store'; import type { LegalAIRequest, LegalAIResponse, StreamingResponse, PerformanceMetrics;
 } from '$lib/types/tensorrt-types'; // Performance tracking store export const performanceMetrics: Writable<PerformanceMetrics> = writable({ totalRequests: 0, averageLatency: 0, minLatency: Infinity, maxLatency: 0, errorRate: 0, throughput: 0, simdEnabled: true, quicEnabled: false;
 }); // Connection status store export const connectionStatus: Writable<{ tensorrt: boolean, simd: boolean, quic: boolean, grpc: boolean;
 }> = writable({ tensorrt: false, simd: false, quic: false, grpc: false;

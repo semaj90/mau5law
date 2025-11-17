@@ -1,5 +1,5 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
 
 /*
  * Module Management API

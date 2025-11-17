@@ -1,7 +1,7 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { mcpTools } from '../mcp/index.js';
+import type { Server  } from '@modelcontextprotocol/sdk/server/index.js';
+import type { StdioServerTransport  } from '@modelcontextprotocol/sdk/server/stdio.js';
+import type { CallToolRequestSchema, ListToolsRequestSchema  } from '@modelcontextprotocol/sdk/types.js';
+import type { mcpTools  } from '../mcp/index.js';
 
 class YoRhaLegalMCPServer {
   private server: Server;

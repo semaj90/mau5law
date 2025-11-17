@@ -3,9 +3,9 @@
  * Tests user experience, button functionality, route navigation, and legal workflows
  */
 
-import { test, expect, Page } from '@playwright/test';
+import type { test, expect, Page  } from '@playwright/test';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import type { fileURLToPath  } from 'url';
 
 // ES module compatibility
 const __filename = fileURLToPath(import.meta.url);

@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import type { AIServiceResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/ai-service';
-import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama'; // Import the new utility function
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { AIServiceResponse } from '$lib/ai/ai-service';
+import type { getOllamaEndpoint  } from '$lib/utils/ollama'; // Import the new utility function
 
 interface AIRequest {
   caseId: string;

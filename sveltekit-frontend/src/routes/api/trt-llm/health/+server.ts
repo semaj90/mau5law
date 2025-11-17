@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
+import type { json, error  } from '@sveltejs/kit';
+import type { env  } from '$env /dynamic/private';
 
 export async function GET() {
 	try {

@@ -1,11 +1,11 @@
 <!-- Enhanced RAG Demo Component with WebGPU/CUDA acceleration and Svelte 5 runes -->
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { semanticAnalyzer, isAnalyzingStore, semanticAnalysisStore, ragResponseStore, ragQueryStore, type SemanticAnalysisResult, type RAGQuery, type RAGResponse } from '$lib/services/enhanced-rag-semantic-analyzer';
+  import type { onMount  } from 'svelte';
+  import type { semanticAnalyzer, isAnalyzingStore, semanticAnalysisStore, ragResponseStore, ragQueryStore, type SemanticAnalysisResult, type RAGQuery, type RAGResponse  } from '$lib/services/enhanced-rag-semantic-analyzer';
   import  Button  from "$lib/components/ui/Button.svelte";
   import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
-  import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
-  import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';
+  import type { webgpuRAGEngine  } from '$lib/webgpu/webgpu-rag-engine';
+  import type { cudaRAG  } from '$lib/cuda/cuda-rag-bindings';
   // Modern Svelte 5 reactive state using runes
   let sampleLegalText = $state(`
 MEMORANDUM OF UNDERSTANDING

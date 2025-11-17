@@ -1,4 +1,4 @@
-﻿import { writable, derived } from 'svelte/store';
+import type { writable, derived  } from 'svelte/store';
 import type { User } from 'lucia';
 
 export interface UserSession {
@@ -20,14 +20,14 @@ export interface UserSession {
 export const userStore = writable<UserSession | null>(null);
 
 // Derived store for checking if user is authenticated
-export const isAuthenticated = derived(userStore, ($user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) => $user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 !== null);
+export const isAuthenticated = derived(userStore, ($user ) => $user !== null);
 
 // Derived store for user display name
-export const userDisplayName = derived(userStore, ($user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) => {
-  if (!$user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) return null;
-  return $user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.user.firstName && $user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.user.lastName
-    ? `${$user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.user.firstName} ${$user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.user.lastName}`
-    : $user // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.user.email;
+export const userDisplayName = derived(userStore, ($user ) => {
+  if (!$user ) return null;
+  return $user .user.firstName && $user .user.lastName
+    ? `${$user .user.firstName} ${$user .user.lastName}`
+    : $user .user.email;
 });
 
 /**

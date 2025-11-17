@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { OllamaGetEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/ollama/client';
-  import { webgpuCapabilities } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-init';
+  import type { OllamaGetEndpoint  } from '$lib/server/ollama/client';
+  import type { webgpuCapabilities  } from '$lib/webgpu/webgpu-init';
 
-  let analysisQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-  let analysisResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
-  let isAnalyzing = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let selectedEvidence = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let analysisMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'pattern' | 'correlation' | 'prediction'>('pattern');
+  let analysisQuery = $state ('');
+  let analysisResults = $state <any[]>([]);
+  let isAnalyzing = $state (false);
+  let selectedEvidence = $state <any>(null);
+  let analysisMode = $state <'pattern' | 'correlation' | 'prediction'>('pattern');
 
   // Analysis modes
   const analysisModes = [
@@ -16,7 +16,7 @@
   ];
 
   // Mock evidence data
-  let evidencePool = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
+  let evidencePool = $state ([
     {
       id: 'E001',
       type: 'document',

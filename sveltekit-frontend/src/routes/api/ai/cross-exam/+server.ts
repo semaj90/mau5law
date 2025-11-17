@@ -1,5 +1,5 @@
-import { json } from "@sveltejs/kit";
-import { getOllamaEndpoint } from "$utils // TODO: Verify store subscription is correct for Svelte 5/ollama";
+import type { json  } from '@sveltejs/kit';
+import type { getOllamaEndpoint  } from '$utils /ollama';
 
 export async function POST({ request }) {
   try {

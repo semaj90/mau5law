@@ -1,5 +1,5 @@
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { redirect  } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types ';
 
 type DashboardStats = {
   activeCases: number;

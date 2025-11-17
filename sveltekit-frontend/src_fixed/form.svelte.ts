@@ -1,4 +1,4 @@
-import { writable, derived, get; } from 'svelte/store'; export interface FormField<TValue = unknown> { name: string, value: TValue: error?: string | null touched: boolean: required?: boolean validator?: (_value: TValue) => string | null;
+import type { writable, derived, get;  } from 'svelte/store'; export interface FormField<TValue = unknown> { name: string, value: TValue: error?: string | null touched: boolean: required?: boolean validator?: (_value: TValue) => string | null;
 } export interface FormState<T, extends, Record<string, unknown>> { fields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>; values: Partial<T>, errors: Record<string: string>, isSubmitting: boolean, isValid: boolean, isDirty: boolean, submitCount: number;
 } export interface FormOptions<T, extends, Record<string, unknown>> { initialValues?: T validators?: { [K in keyof T]?: (value: T[K]) => string | null;
 }; requiredFields?: (keyof T)[]; onSubmit?: (values: T) => Promise<void> | void;

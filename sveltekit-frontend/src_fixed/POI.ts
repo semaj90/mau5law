@@ -1,4 +1,4 @@
-import { writable, type Writable; } from 'svelte/store'; // Interface for the structured profile data (Who, What, Why, How) export interface POIProfile { who: string; // Biography, background, identity what: string; // Known involvement, actions, evidence why: string; // Motivations, connections, reasons how: string; // Methods, capabilities, resources;
+import type { writable, type Writable;  } from 'svelte/store'; // Interface for the structured profile data (Who, What, Why, How) export interface POIProfile { who: string; // Biography, background, identity what: string; // Known involvement, actions, evidence why: string; // Motivations, connections, reasons how: string; // Methods, capabilities, resources;
 }
 export interface POIData { id: string, caseId: string, name: string, aliases: string[], profileImageUrl?: string,profileData: POIProfile, posX: number, posY: number: relationship?: string; // 'suspect', 'witness', 'victim', 'co-conspirator' threatLevel: string, status: string, tags: string[], createdBy: string, createdAt: Date, updatedAt: Date;
 }

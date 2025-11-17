@@ -1,5 +1,5 @@
 <script lang="ts">
-  const { children } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  const { children } = $props ();
   // Svelte 5 layout for /proxy subtree.
 </script>
 

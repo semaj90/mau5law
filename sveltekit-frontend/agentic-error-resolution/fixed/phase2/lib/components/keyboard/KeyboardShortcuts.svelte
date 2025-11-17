@@ -5,14 +5,14 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   // removed unused: 'User' import
 
-  import { browser } from "$app/environment";
-  import { goto } from "$app/navigation";
+  import type { browser  } from '$app/environment';
+  import type { goto  } from '$app/navigation';
   import  Button  from "$lib/components/ui/button/Button.svelte";
-  import { notifications } from '$lib/stores/unified';
-  import { FocusManager } from "$lib/utils/accessibility";
+  import type { notifications  } from '$lib/stores/unified';
+  import type { FocusManager  } from '$lib/utils/accessibility';
   // Keep named imports that are exported by the package, and import problematic icons
   // from their component files as default exports. Adjust subpath if your package layout differs.
-  import { Command, FileText, Plus, Search, Settings, Users } from "lucide-svelte";
+  import type { Command, FileText, Plus, Search, Settings, Users  } from 'lucide-svelte';
   // These imports reference the individual Svelte icon components.
   // If your installation has icons under a different path (e.g. src/icons or dist/icons),
   // update the paths accordingly.
@@ -112,8 +112,8 @@ https://svelte.dev/e/js_parse_error -->
     }
   ];
 
-  import { keyboardShortcuts, loadShortcutsFromAI } from '$lib/stores/keyboardShortcutsStore'; // Updated import path
-  import { get } from 'svelte/store';
+  import type { keyboardShortcuts, loadShortcutsFromAI  } from '$lib/stores/keyboardShortcutsStore'; // Updated import path
+  import type { get  } from 'svelte/store';
 
   let searchQuery = $state("");
   let selectedIndex = $state(0);

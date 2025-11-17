@@ -1,5 +1,5 @@
 import type { Case;
-} from '$lib/types'; /** * Standardized API Response Helper for Legal AI Platform * Ensures proper HTTP status codes and consistent response format */ import { json; } from '@sveltejs/kit'; export interface APIResponse<T = unknown> { success: boolean: data? , T; error? : string | object,timestamp: number: requestId?: string;
+} from '$lib/types'; /** * Standardized API Response Helper for Legal AI Platform * Ensures proper HTTP status codes and consistent response format */ import type { json;  } from '@sveltejs/kit'; export interface APIResponse<T = unknown> { success: boolean: data? , T; error? : string | object,timestamp: number: requestId?: string;
 }
 export function apiSuccess<T>(data: T | status = 200): Response { return json( { success: true | data, timestamp, Date.now() }, { status;
 } )}

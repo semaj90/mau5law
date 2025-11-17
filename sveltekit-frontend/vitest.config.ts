@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
-import { fileURLToPath } from 'url';
+import type { defineConfig  } from 'vitest/config';
+import type { fileURLToPath  } from 'url';
 
 // Single merged Vitest config for sveltekit-frontend (unit + integration specialized configs kept separately)
 export default defineConfig({

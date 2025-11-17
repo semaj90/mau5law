@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { getPipelineHistogram } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/pipeline-metrics';
+import type { RequestHandler } from './$types .js';
+import type { getPipelineHistogram  } from '$lib/services/pipeline-metrics';
 
 export const GET: RequestHandler = async () => {
     const hist = getPipelineHistogram();

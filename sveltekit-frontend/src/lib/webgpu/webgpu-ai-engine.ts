@@ -114,7 +114,7 @@ export class WebGPUAIEngine {
   private capabilities: WebGPUCapabilities | null = null;
   private computeJobs = new Map<string, AIComputeJob>();
   private shaderCache = new Map<string, GPUComputePipeline>();
-  private isInitialized = false; // $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 is for Svelte components
+  private isInitialized = false; // $state is for Svelte components
   public initPromise: Promise<void> | null = null;
   private activeModule = 'default';
   /**

@@ -1,10 +1,10 @@
 /* Upload Completion Webhook - MinIO -> Ingestion Pipeline Trigger
  * Triggers document processing workflow after successful upload */
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { redisService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-service';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-client'; // Changed from named import to default import
-import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres'; // Changed import to namespace for schema
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { redisService  } from '$lib/server/redis-service';
+import db from '$lib/server/db/unified-client'; // Changed from named import to default import
+import * as schema from '$lib/server/db/schema-postgres'; // Changed import to namespace for schema
 import crypto from 'crypto';
 
 // --- CHANGES START ---

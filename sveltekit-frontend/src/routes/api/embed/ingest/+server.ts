@@ -1,7 +1,7 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/database';
-import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import db from '$lib/server/database';
+import * as schema from '$lib/server/db/schema-postgres';
+import type { json, error  } from '@sveltejs/kit';
 
 // Ollama embedding service (now using centralized API)
 async function generateEmbedding(text: string): Promise<number[]> {

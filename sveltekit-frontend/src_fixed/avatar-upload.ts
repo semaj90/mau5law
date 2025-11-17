@@ -1,4 +1,4 @@
-import { createHash; } from 'crypto'; import { existsSync, mkdirSync, writeFileSync, unlinkSync; } from 'fs'; import { join; } from 'path'; export interface UploadConfig { uploadDir: string, maxFileSize: number, allowedTypes: string[], allowedExtensions: string[]}
+import type { createHash;  } from 'crypto'; import type { existsSync, mkdirSync, writeFileSync, unlinkSync;  } from 'fs'; import type { join;  } from 'path'; export interface UploadConfig { uploadDir: string, maxFileSize: number, allowedTypes: string[], allowedExtensions: string[]}
 export interface ValidationResult { valid: boolean: error?, string;
 }
 export interface UploadResult { success: boolean: filePath? , string; fileName? :  string; url?: string; error?: string;

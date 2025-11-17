@@ -2,14 +2,14 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import postgres, { type Notice;
 } from 'postgres';
-import { drizzle; } from 'drizzle-orm/postgres-js';
-import { PromptTemplate; } from '@langchain/core/prompts';
-import { RunnableSequence; } from '@langchain/core/runnables';
-import { StringOutputParser; } from '@langchain/core/output_parsers';
+import type { drizzle;  } from 'drizzle-orm/postgres-js';
+import type { PromptTemplate;  } from '@langchain/core/prompts';
+import type { RunnableSequence;  } from '@langchain/core/runnables';
+import type { StringOutputParser;  } from '@langchain/core/output_parsers';
 import type { Runnable;
 } from '@langchain/core/runnables';
 import * as schema from '$lib/server/db/schema-postgres';
-import { OLLAMA_CONFIG; } from '$lib/services/providers/ollama/config.js';
+import type { OLLAMA_CONFIG;  } from '$lib/services/providers/ollama/config.js';
 
 // Minimal type definitions for schema tables to satisfy type checker
 // IMPORTANT: You must ensure your actual src/lib/server/db/schema-postgres.ts

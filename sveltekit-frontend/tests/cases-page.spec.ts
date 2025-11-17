@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import type { test, expect  } from '@playwright/test';
 
 // Basic smoke test for cases page headless components
 

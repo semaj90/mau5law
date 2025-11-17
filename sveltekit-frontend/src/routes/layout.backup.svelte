@@ -1,6 +1,6 @@
-﻿<script lang="ts">
+<script lang="ts">
   import '../app.css';
-  const { children } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  const { children } = $props ();
 </script>
 
 <div class="app-layout">

@@ -1,5 +1,4 @@
-import {
-  defineConfig,
+import type { defineConfig,
   presetUno,
   presetIcons,
   presetTypography,
@@ -10,7 +9,7 @@ import {
   transformerDirectives,
   transformerVariantGroup,
   transformerCompileClass
-} from 'unocss';
+ } from 'unocss';
 
 export default defineConfig({
   presets: [

@@ -1,4 +1,4 @@
- /** * Focus Mode Utility * Provides distraction-free writing experience by dimming non-essential UI elements */ import { writable; } from 'svelte/store'; export interface FocusSettings { dimOpacity: number, transitionDuration: string, hideElements: string[], exemptElements: string[], enableFullscreen: boolean, enableZenMode: boolean;
+ /** * Focus Mode Utility * Provides distraction-free writing experience by dimming non-essential UI elements */ import type { writable;  } from 'svelte/store'; export interface FocusSettings { dimOpacity: number, transitionDuration: string, hideElements: string[], exemptElements: string[], enableFullscreen: boolean, enableZenMode: boolean;
 }
 export const defaultFocusSettings: FocusSettings = { dimOpacity: 0.3, transitionDuration: "0.3s", hideElements: [ ".toolbar", ".sidebar", ".status-bar", ".header-actions", ".footer" ], exemptElements: [".editor-content", ".shortcuts-modal", ".save-indicator"], enableFullscreen: false, enableZenMode: false;
 }

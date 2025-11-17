@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   // import * as Select from 'bits-ui'; // Removed melt dependency
-  import { fade, fly } from 'svelte/transition';
-  import { ChevronDown, CheckCircle, AlertCircle, Loader2, Cpu, Brain, Zap, Database, Globe, Settings } from 'lucide-svelte';
+  import type { fade, fly  } from 'svelte/transition';
+  import type { ChevronDown, CheckCircle, AlertCircle, Loader2, Cpu, Brain, Zap, Database, Globe, Settings  } from 'lucide-svelte';
   // LLM Provider Types
   interface LLMModel {
     id: string;

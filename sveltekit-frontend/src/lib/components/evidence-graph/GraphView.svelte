@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+  import type { browser  } from '$app/environment';
   import * as d3 from 'd3';
-  import { onDestroy, onMount } from 'svelte';
+  import type { onDestroy, onMount  } from 'svelte';
 
   interface GraphNode {
     id: string;
@@ -19,7 +19,7 @@
   }
 
   // Use Svelte runes-style props() instead of `export let`.
-  const props = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  const props = $props<{
     nodes?: GraphNode[];
     links?: GraphLink[];
     width?: number;
@@ -37,16 +37,16 @@
   let svg: SVGSVGElement;
   let simulation: any;
 
-  let isSignalsPanelOpen = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let isSignalsLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let predictiveSummary = $state // TODO: Verify store subscription is correct for Svelte 5('');
-  let predictiveSignals = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let graphRecommendations = $state // TODO: Verify store subscription is correct for Svelte 5<Array<{ title: string; rationale: string; confidence: string }>>(
+  let isSignalsPanelOpen = $state(false);
+  let isSignalsLoading = $state(false);
+  let predictiveSummary = $state('');
+  let predictiveSignals = $state <string[]>([]);
+  let graphRecommendations = $state <Array<{ title: string; rationale: string; confidence: string }>>(
     []
   );
-  let didYouMean = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let signalsError = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let lastQueryUsed = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let didYouMean = $state <string[]>([]);
+  let signalsError = $state <string | null>(null);
+  let lastQueryUsed = $state('');
   let lastSignalKey = '';
 
   const DEFAULT_QUERY = 'graph intelligence overview';
@@ -146,7 +146,7 @@
     d.fy = null;
   }
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if ((props.nodes ?? []).length > 0 && simulation) {
       simulation.nodes(props.nodes as any);
       (simulation.force('link') as any).links(props.links as any);
@@ -154,7 +154,7 @@
     }
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (browser) {
       const key = `${props.caseId ?? 'global'}::${props.query ?? DEFAULT_QUERY}`;
       if (key !== lastSignalKey) {

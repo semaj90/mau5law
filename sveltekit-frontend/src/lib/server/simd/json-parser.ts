@@ -5,7 +5,7 @@
  * Integrates with worker pool for parallel processing
  */
 
-import { Worker } from 'worker_threads';
+import type { Worker  } from 'worker_threads';
 import path from 'path';
 import os from 'os';
 

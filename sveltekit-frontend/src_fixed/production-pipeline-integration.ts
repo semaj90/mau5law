@@ -2,7 +2,7 @@ import type { SearchResult;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-/** * Production Pipeline Integration Service * Connects SvelteKit frontend to the crawl â†’ OCR â†’ embed â†’ serve pipeline * Integrates with Go gRPC Gateway, RabbitMQ, Redis, and xState */ import { writable; } from 'svelte/store'; import { createMachine, assign, createActor; } from 'xstate'; // Typed machine context & events type PipelineContext = { documents: Document[], jobs: ProcessingJob[], searchQuery: string, searchResults: SearchResult[], error: string | null;
+/** * Production Pipeline Integration Service * Connects SvelteKit frontend to the crawl â†’ OCR â†’ embed â†’ serve pipeline * Integrates with Go gRPC Gateway, RabbitMQ, Redis, and xState */ import type { writable;  } from 'svelte/store'; import type { createMachine, assign, createActor;  } from 'xstate'; // Typed machine context & events type PipelineContext = { documents: Document[], jobs: ProcessingJob[], searchQuery: string, searchResults: SearchResult[], error: string | null;
 }; type UploadSuccessEvent = { type: 'UPLOAD_SUCCESS', jobs, ProcessingJob[] }; type UploadErrorEvent = { type: 'UPLOAD_ERROR', error, string;
 }; type ProcessingSuccessEvent = { type: 'PROCESSING_SUCCESS', job, ProcessingJob;
 }; type ProcessingErrorEvent = { type: 'PROCESSING_ERROR', error, string;

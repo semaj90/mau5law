@@ -1,6 +1,6 @@
 import type { SearchResult;
 } from '$lib/types';
-import { writable, type Writable, get; } from 'svelte/store'; import type { LLMProvider;
+import type { writable, type Writable, get;  } from 'svelte/store'; import type { LLMProvider;
 } from '$lib/types/llm'; export interface SearchResult { id: string, score: number, payload: { content: string;
 }}
 export interface QueryIntent { type: string, confidence: number, entities: string[]}

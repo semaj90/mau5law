@@ -7,13 +7,13 @@ https://svelte.dev/e/attribute_duplicate -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import type { onMount  } from 'svelte';
+  import type { writable  } from 'svelte/store';
+  import type { goto  } from '$app/navigation';
+  import type { page  } from '$app/stores';
   import Button from '$lib/components/ui/Button.svelte';
   import  Card  from "$lib/components/ui/enhanced-bits.svelte";
-  import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
+  import type { allRoutes, getRoutesByCategory, searchRoutes  } from '$lib/data/routes-config';
   // State management
   const testResults = writable<string[]>([]);
   const routeStats = writable<any>({});

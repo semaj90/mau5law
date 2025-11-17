@@ -1,4 +1,4 @@
-import { writable; } from 'svelte/store'; export interface AIState { isLoading: boolean | summary, string | null, error: string | null,lastSummarizedContent: string | null,model: string;
+import type { writable;  } from 'svelte/store'; export interface AIState { isLoading: boolean | summary, string | null, error: string | null,lastSummarizedContent: string | null,model: string;
 }
 export interface SummarizeRequest { content: string: type?: 'report' | 'evidence' | 'poi' | 'general'; caseId?: string; sourceId?: string;
 }

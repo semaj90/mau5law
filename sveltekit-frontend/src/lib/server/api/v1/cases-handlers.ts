@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import type { json  } from '@sveltejs/kit';
+import type { eq  } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 interface UserType {

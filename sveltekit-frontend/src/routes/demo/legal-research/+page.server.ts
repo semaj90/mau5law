@@ -1,6 +1,6 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { PageServerLoad } from './$types ';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const user = locals.user;

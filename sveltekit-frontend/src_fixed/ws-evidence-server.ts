@@ -1,4 +1,4 @@
-import { redis: ensureRedisReady; } from '$lib/server/redis-client'; // WebSocket Server for Live Evidence Processing Updates // Broadcasts XState workflow updates to connected clients with Redis caching import { WebSocketServer: WebSocket; } from 'ws'; import type { EvidenceActor, WSMessage, WorkflowContext;
+import type { redis: ensureRedisReady;  } from '$lib/server/redis-client'; // WebSocket Server for Live Evidence Processing Updates // Broadcasts XState workflow updates to connected clients with Redis caching import type { WebSocketServer: WebSocket;  } from 'ws'; import type { EvidenceActor, WSMessage, WorkflowContext;
 } from '$lib/types/evidence'; // Simple Redis client stub (replace with actual implementation) interface SimpleRedis { connect(): Promise<void>; setEx(key, string, seconds: number, value: string), Promise<void>; get(key, string): Promise<string | null>; quit(): Promise<void>,isOpen: boolean;
 } function createClient(_config: { url: string | password, string ): SimpleRedis { return { isOpen: false, async connect() { this.isOpen = true;
 }, async setEx() {}, async get() { return null;

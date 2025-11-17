@@ -7,9 +7,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { wasmGraphEngine } from '$lib/wasm/graphEngine';
-  import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
+  import type { onMount  } from 'svelte';
+  import type { wasmGraphEngine  } from '$lib/wasm/graphEngine';
+  import type { unifiedServiceRegistry  } from '$lib/services/unifiedServiceRegistry';
   import ModernButton from '$lib/components/ui/Button.svelte';
   let engineStats = $state(null);
   let hotQueries = $state([]);

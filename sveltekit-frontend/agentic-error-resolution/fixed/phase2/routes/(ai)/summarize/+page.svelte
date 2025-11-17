@@ -8,7 +8,7 @@ AI Document Summarization - Generate summaries of legal documents
 
 	// UI components / icons
 	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte';
-	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
+	import type { FileText, Upload, Download, Brain, Clock, Star  } from 'lucide-svelte';
 
 	// Fallback summary template
 	const FALLBACK_SUMMARY = `This legal document: "{filename}" outlines key provisions, procedural requirements, and compliance standards. Main points: statutory obligations, evidence handling rules, timelines, and recommended next steps.`;

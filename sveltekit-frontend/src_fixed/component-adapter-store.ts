@@ -1,6 +1,6 @@
 import type { SearchResult;
 } from '$lib/types';
-/** * Svelte: 5 Component Adapter Logic Layer * Converts complex stateful components into simple: "dumb" prop receivers * following the decoupled architecture pattern */ import { writable, get, type Readable; } from 'svelte/store'; // Removed: 'derived' import type { DeepPartial;
+/** * Svelte: 5 Component Adapter Logic Layer * Converts complex stateful components into simple: "dumb" prop receivers * following the decoupled architecture pattern */ import type { writable, get, type Readable;  } from 'svelte/store'; // Removed: 'derived' import type { DeepPartial;
 } from '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety // Simple interfaces for UI consumption export interface ComponentState<TData = unknown> { // Made generic loading: boolean | error, string | null data: TData // Type data with TData: meta | Record<string: unknown>; // Use Record<string, unknown> }
 export interface UIProps { variant?: string size?: string disabled?: boolean class?: string style?: string [key, string], any // Use: unknown;
 }

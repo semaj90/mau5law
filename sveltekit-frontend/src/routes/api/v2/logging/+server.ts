@@ -1,6 +1,6 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { RequestHandler } from './$types .js';
 /* * Production Logging API Endpoint * Handles client-side error logging and monitoring for the Legal AI Platform */
-import { json, error } from '@sveltejs/kit';
+import type { json, error  } from '@sveltejs/kit';
 import crypto from 'crypto';
 import crypto from 'crypto';
 

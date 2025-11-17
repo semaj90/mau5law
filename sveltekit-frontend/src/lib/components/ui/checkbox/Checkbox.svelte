@@ -11,7 +11,7 @@
     class: className = '',
     disabled = false,
     ...rest
-  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+  }: Props = $props();
 </script>
 
 <input

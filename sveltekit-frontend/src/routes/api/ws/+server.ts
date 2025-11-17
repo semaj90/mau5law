@@ -1,10 +1,10 @@
 /// <reference types="vite/client" />
-import { Server } from 'socket.io';
-import { dev } from '$app/environment';
-import createRedisInstance from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
-import { createPubSubHelper } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redisPubSub';
-import { registerCleanup } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/shutdown';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { Server  } from 'socket.io';
+import type { dev  } from '$app/environment';
+import createRedisInstance from '$lib/server/redis';
+import type { createPubSubHelper  } from '$lib/server/redisPubSub';
+import type { registerCleanup  } from '$lib/server/shutdown';
+import type { RequestHandler } from './$types .js';
 
 // WebSocket server for real-time updates
 let io: Server | null = null;

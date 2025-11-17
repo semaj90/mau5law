@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PatternDetectionInterface from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/PatternDetectionInterface.svelte';
+  import PatternDetectionInterface from '$lib/components/ai/PatternDetectionInterface.svelte';
 </script>
 
 <main class="page-container">

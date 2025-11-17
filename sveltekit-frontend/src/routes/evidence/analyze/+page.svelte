@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
-	import { Dialog, DialogContent, DialogTitle, DialogDescription } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
-	import DialogHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogHeader.svelte';
-	import DialogFooter from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog/DialogFooter.svelte';
-	import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Button.svelte';
-	import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Input.svelte';
-	import Label from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Label.svelte';
-	import Progress from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/progress/Progress.svelte';
-	import { Textarea } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/textarea';
+	import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
+	import type { Dialog, DialogContent, DialogTitle, DialogDescription  } from '$lib/components/ui/dialog';
+	import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
+	import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Label from '$lib/components/ui/Label.svelte';
+	import Progress from '$lib/components/ui/progress/Progress.svelte';
+	import type { Textarea  } from '$lib/components/ui/textarea';
 
 	// Define missing types
 	type SearchResult = {
@@ -40,19 +40,19 @@
 	};
 
 	// Reactive state with Svelte 5 syntax
-	let analyzing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-	let results = $state // TODO: Verify store subscription is correct for Svelte 5<SearchResult | null>(null);
-	let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-	let progress = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
-	let showResults = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+	let analyzing = $state <boolean>(false);
+	let results = $state <SearchResult | null>(null);
+	let error = $state <string>('');
+	let progress = $state <number>(0);
+	let showResults = $state <boolean>(false);
 
 	// Form data
-	let caseId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-	let evidenceContent = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-	let evidenceFile = $state // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
-	let evidenceType = $state // TODO: Verify store subscription is correct for Svelte 5<string>('police_report');
-	let priority = $state // TODO: Verify store subscription is correct for Svelte 5<string>('medium');
-	let sessionId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+	let caseId = $state <string>('');
+	let evidenceContent = $state <string>('');
+	let evidenceFile = $state <File | null>(null);
+	let evidenceType = $state <string>('police_report');
+	let priority = $state <string>('medium');
+	let sessionId = $state <string>('');
 
 	// Analysis pipeline steps with enhanced metadata
 	const steps = [
@@ -82,7 +82,7 @@
 	];
 
 	// Current step tracking
-	let currentStep = $derived // TODO: Verify store subscription is correct for Svelte 5(steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25));
+	let currentStep = $derived(steps.findIndex(s => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25));
 
 	// File upload handler
 	function handleFileUpload(event: Event) {

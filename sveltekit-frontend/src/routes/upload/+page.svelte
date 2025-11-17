@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/state';
-  import MinIOUpload from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/upload/MinIOUpload.svelte';
-  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+  import type { goto  } from '$app/navigation';
+  import type { page  } from '$app/state';
+  import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
+  import type { PageData } from './$types ';
 
   // Define types for better clarity
   interface UploadResult {
@@ -17,12 +17,12 @@
     mimeType?: string;
   }
 
-  let { data } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{ data: PageData & { recentUploads?: UploadEntry[] } }>();
+  let { data } = $props <{ data: PageData & { recentUploads?: UploadEntry[] } }>();
 
   const caseId = page.url.searchParams.get('caseId') || ''; // Access value using page (reactive state in Svelte 5)
 
-  // Use $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 for reactive variables
-  let recentUploads = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<UploadEntry[]>(data.recentUploads ?? []);
+  // Use $state for reactive variables
+  let recentUploads = $state <UploadEntry[]>(data.recentUploads ?? []);
 
   // Upload completion handler
   function handleUploadComplete(event: CustomEvent<UploadResult>) {
@@ -281,5 +281,5 @@
   }
 </style>
 
-<!-- The component already uses Svelte 5 runes like $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 and $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 for reactivity.
+<!-- The component already uses Svelte 5 runes like $props and $state for reactivity.
      No changes are needed for this file to migrate from Svelte 4 to Svelte 5. -->

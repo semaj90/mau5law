@@ -1,6 +1,5 @@
-﻿// Move/import Drizzle pg-core symbols near the top of the file
-import {
-  pgTable,
+// Move/import Drizzle pg-core symbols near the top of the file
+import type { pgTable,
   timestamp,
   text,
   varchar,
@@ -10,8 +9,8 @@ import {
   integer,
   primaryKey,
   customType,
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+ } from 'drizzle-orm/pg-core';
+import type { sql  } from 'drizzle-orm';
 
 // Define custom vector type for pgvector
 const vector = customType<{ data: number[]; driverData: string }>({
@@ -53,7 +52,7 @@ export const chatMessages = pgTable('chat_messages', {
     length: 50,
     enum: ['user', 'assistant', 'system'],
   }).notNull(),
-  metadata: jsonb('metadata').$type // TODO: Verify store subscription is correct for Svelte 5<{
+  metadata: jsonb('metadata').$type <{
     intent?: string;
     confidence?: number;
     topics?: string[];
@@ -81,7 +80,7 @@ export const chatEmbeddings = pgTable(
     quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64: string for simplicity in JS,
     timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
     temporalContext: jsonb('temporal_context')
-      .$type // TODO: Verify store subscription is correct for Svelte 5<{
+      .$type <{
         dayOfWeek: number;
         hourOfDay: number;
         monthOfYear: number;

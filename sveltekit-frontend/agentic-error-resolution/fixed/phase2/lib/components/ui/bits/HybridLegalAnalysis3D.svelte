@@ -6,10 +6,10 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 </script>
-  import { onMount, tick } from "svelte";
+  import type { onMount, tick  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { notifications  } from '$lib/stores/unified";
-  import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
+  import type { notifications   } from '$lib/stores/unified';
+  import type { enhancedEmbeddingService  } from '$lib/services/enhanced-embedding-service';
   import {
     NESYoRHaHybrid3D,
     createNESButton,
@@ -19,8 +19,7 @@ https://svelte.dev/e/expected_token -->
     type NESYoRHaHybridStyle
   } from '$lib/components/three/yorha-ui/NESYoRHaHybrid3D.svelte'";
   import * as THREE from 'three';
-  import {
-    FileText,
+  import type { FileText,
     Brain,
     Zap,
     Activity,
@@ -29,7 +28,7 @@ https://svelte.dev/e/expected_token -->
     Cpu,
     Eye,
     Settings
-  } from "lucide-svelte";
+   } from 'lucide-svelte';
   interface Props {
     documents?: string[];
     caseId?: string;

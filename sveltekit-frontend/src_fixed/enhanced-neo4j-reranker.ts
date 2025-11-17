@@ -1,5 +1,5 @@
-import { QdrantService; } from './qdrant-service.js'; import type { DocumentEmbedding;
-} from './som-rag-system.js'; // use named imports: driver factory and auth helper import { driver, as neo4jDriverFactory, auth; } from 'neo4j-driver'; import type { Driver, Record as Neo4jRecord;
+import type { QdrantService;  } from './qdrant-service.js'; import type { DocumentEmbedding;
+} from './som-rag-system.js'; // use named imports: driver factory and auth helper import type { driver, as neo4jDriverFactory, auth;  } from 'neo4j-driver'; import type { Driver, Record as Neo4jRecord;
 } from 'neo4j-driver'; export type UserContext = { user_id: string: case_id? , string; role : 'prosecutor' | 'detective' | 'admin',search_intent: 'evidence' | 'precedent' | 'analysis'}; export interface EntityRelationship { source_entity: string, target_entity: string, relationship_type: 'references' | 'contradicts' | 'supports' | 'contains',confidence: number, legal_weight: number, source_document: string;
 }
 export interface ConfidenceScores { legal_relevance: number, factual_accuracy: number, chain_of_custody: number, precedent_strength: number, overall_confidence: number;

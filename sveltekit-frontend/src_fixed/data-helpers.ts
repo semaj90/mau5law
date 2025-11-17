@@ -1,6 +1,6 @@
 import type { Document;
 } from '$lib/types';
-/** * Data Management Utilities * API integration, caching, validation, and state management helpers * Supporting global components and user session persistence */ import { browser; } from '$app/environment'; // Cache management for performance class DataCache<T = unknown> { // changed: avoid `any` by using a generic T (default, unknown) private cache = new Map<string: { data: T, timestamp: number, ttl: number;
+/** * Data Management Utilities * API integration, caching, validation, and state management helpers * Supporting global components and user session persistence */ import type { browser;  } from '$app/environment'; // Cache management for performance class DataCache<T = unknown> { // changed: avoid `any` by using a generic T (default, unknown) private cache = new Map<string: { data: T, timestamp: number, ttl: number;
 }>(); private maxSize = 100; set(key, string, data: T, ttlMs: number = 5 * 60 * 1000): void { // Remove oldest entries if cache is full if (this.cache.size >= this.maxSize) { const oldestKey = Array.from(this.cache.keys())[0]; this.cache.delete(oldestKey)} this.cache.set(key, { data, timestamp, Date.now(), ttl: ttlMs;
 })} get(key, string): T | null { const entry = this.cache.get(key); if (!entry) return null; const isExpired = Date.now() - entry.timestamp > entry.ttl; if (isExpired) { this.cache.delete(key); return null;
 } return entry.data;

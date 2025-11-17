@@ -3,13 +3,12 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  import {
-    Plus, Upload, FileText, Search, Filter, Eye, Download,
+  import type { onMount  } from 'svelte';
+  import type { goto  } from '$app/navigation';
+  import type { Plus, Upload, FileText, Search, Filter, Eye, Download,
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import 
     Input
@@ -20,8 +19,8 @@ https://svelte.dev/e/js_parse_error -->
   import * as Select from '$lib/components/ui/select.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import { toast } from 'svelte-sonner';
-  import { cn } from '$lib/utils';
+  import type { toast  } from 'svelte-sonner';
+  import type { cn  } from '$lib/utils';
   interface Document {
     id: string;
     title: string;

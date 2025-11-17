@@ -1,27 +1,27 @@
 <script lang="ts">
-import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // No onMount or props required for this component
 
   // State management with Svelte, 5 runes
-  let embeddingText = $state // TODO: Verify store subscription is correct for Svelte 5<string>('Legal contract clause regarding intellectual property rights and patent licensing agreements');
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5<string>('intellectual property patent');
-  let caseId = $state // TODO: Verify store subscription is correct for Svelte 5<string>('CASE_2024_001');
-  let searchLimit = $state // TODO: Verify store subscription is correct for Svelte 5<number>(5);
-  let embeddingStatus = $state // TODO: Verify store subscription is correct for Svelte 5<string>('idle');
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5<SearchResult[]>([]);
-  let searchStats = $state // TODO: Verify store subscription is correct for Svelte 5<SearchStats>({ totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 });
-  let systemHealth = $state // TODO: Verify store subscription is correct for Svelte 5<SystemHealth>({ status: 'checking', database: 'checking', ollama: 'checking', embeddings: 0 });
-  let cudaStatus = $state // TODO: Verify store subscription is correct for Svelte 5<CudaStatus>({ status: 'checking', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 });
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let embeddingText = $state <string>('Legal contract clause regarding intellectual property rights and patent licensing agreements');
+  let searchQuery = $state <string>('intellectual property patent');
+  let caseId = $state <string>('CASE_2024_001');
+  let searchLimit = $state <number>(5);
+  let embeddingStatus = $state <string>('idle');
+  let searchResults = $state <SearchResult[]>([]);
+  let searchStats = $state <SearchStats>({ totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 });
+  let systemHealth = $state <SystemHealth>({ status: 'checking', database: 'checking', ollama: 'checking', embeddings: 0 });
+  let cudaStatus = $state <CudaStatus>({ status: 'checking', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 });
+  let isLoading = $state <boolean>(false);
+  let errorMessage = $state <string>('');
   // Prefer public env vars (set PUBLIC_LEGAL_AI_BASE / PUBLIC_CUDA_BASE), fall back to localhost for dev
   const API_BASE = import.meta.env.PUBLIC_LEGAL_AI_BASE || 'http://localhost:8095/api/v1',
   const CUDA_BASE = import.meta.env.PUBLIC_CUDA_BASE || 'http://localhost:8096/api/v1';
   // Health check on component mount
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     (async () => {
 await checkSystemHealth();
     await loadSearchStats();

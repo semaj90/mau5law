@@ -1,6 +1,6 @@
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json, error } from '@sveltejs/kit';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types .js';
+import type { json, error  } from '@sveltejs/kit';
 
 /**
  * Comprehensive Integration Test API - SvelteKit v2 Production
@@ -8,11 +8,11 @@ import { json, error } from '@sveltejs/kit';
  * Validates Windows-native deployment and multi-protocol communication
  */
 
-import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
-import { dev } from '$app/environment';
-import { APIOrchestrator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/api-orchestrator.js';
-import { embeddingService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embedding-service.js';
-import type { APIResponse, APIRequestContext } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/api.js';
+import type { ensureError  } from '$lib/utils/ensure-error';
+import type { dev  } from '$app/environment';
+import type { APIOrchestrator  } from '$lib/services/api-orchestrator.js';
+import type { embeddingService  } from '$lib/server/embedding-service.js';
+import type { APIResponse, APIRequestContext } from '$lib/types/api.js';
 import crypto from 'crypto';
 
 export interface IntegrationTestResult {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MCPToolsDemo from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/dev/MCPToolsDemo.svelte';
+  import MCPToolsDemo from '$lib/components/dev/MCPToolsDemo.svelte';
 </script>
 
 <svelte:head>

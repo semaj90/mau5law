@@ -1,9 +1,9 @@
-﻿import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
-import getCudaEmbedding from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/cuda-embedding-service';
-import getUserId from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/auth';
-import SimilarEvidenceSchema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas/SimilarEvidenceSchema';
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { z  } from 'zod';
+import type { env  } from '$env /dynamic/private';
+import getCudaEmbedding from '$lib/server/services/cuda-embedding-service';
+import getUserId from '$lib/server/utils/auth';
+import SimilarEvidenceSchema from '$lib/server/z-schemas/SimilarEvidenceSchema';
 
 /*
  * POST /api/v1/evidence/similar

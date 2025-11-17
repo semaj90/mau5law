@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import { MinIOService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio';
-import { OCRService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ocr';
-import { EmbeddingService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embeddings';
-import { OllamaService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ollama';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { legalDocuments } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
+import type { json  } from '@sveltejs/kit';
+import type { MinIOService  } from '$lib/server/minio';
+import type { OCRService  } from '$lib/server/ocr';
+import type { EmbeddingService  } from '$lib/server/embeddings';
+import type { OllamaService  } from '$lib/server/ollama';
+import type { db  } from '$lib/server/db';
+import type { legalDocuments  } from '$lib/server/db/schema';
 
 const minio = new MinIOService();
 const ocr = new OCRService();

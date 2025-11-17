@@ -1,6 +1,5 @@
-import { relations } from 'drizzle-orm/relations';
-import {
-  cases,
+import type { relations  } from 'drizzle-orm/relations';
+import type { cases,
   caseTimeline,
   users,
   aiRecommendations,
@@ -33,7 +32,7 @@ import {
   chatSessions,
   chatMessages,
   caseEmbeddingsOptimized,
-} from './schema';
+ } from './schema';
 
 export const caseTimelineRelations = relations(caseTimeline, ({ one }) => ({
   case: one(cases, {

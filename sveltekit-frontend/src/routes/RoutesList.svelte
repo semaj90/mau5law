@@ -95,7 +95,7 @@
 	}
 
 	const discovered = buildDiscovered();
-	const { routes: providedRoutes }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+	const { routes: providedRoutes }: Props = $props ();
 
 	// Merge provided routes (e.g., from server config) -- don't lose labels
 	const merged: DiscoveredRoute[] = (() => {
@@ -118,12 +118,12 @@
 	})();
 
 	// UI state
-	let search = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-	let showAPI = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
-	let showPages = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
-	let groupCollapse: Record<string, boolean> = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({});
+	let search = $state ('');
+	let showAPI = $state (true);
+	let showPages = $state (true);
+	let groupCollapse: Record<string, boolean> = $state ({});
 
-	const filtered = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
+	const filtered = $derived (
 		merged.filter((r) => {
 			if (!showAPI && r.kind === 'api') return false;
 			if (!showPages && r.kind === 'page') return false;
@@ -133,7 +133,7 @@
 		})
 	);
 
-	const grouped = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
+	const grouped = $derived (
 		filtered.reduce<Record<string, DiscoveredRoute[]>>((acc, r) => {
 			const g = r.group;
 			(acc[g] ||= []).push(r);

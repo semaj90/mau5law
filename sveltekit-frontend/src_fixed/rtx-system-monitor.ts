@@ -1,6 +1,6 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
-/** * RTX, 3060 Ti System Integration Status Component * Real-time monitoring of the complete Legal AI â†’ RTX â†’ CUDA pipeline */ import { rtxTensorUpscaler; } from '$lib/services/rtx-tensor-upscaler'; import type { RTXBenchmarkResults;
+/** * RTX, 3060 Ti System Integration Status Component * Real-time monitoring of the complete Legal AI â†’ RTX â†’ CUDA pipeline */ import type { rtxTensorUpscaler;  } from '$lib/services/rtx-tensor-upscaler'; import type { RTXBenchmarkResults;
 } from '$lib/services/rtx-tensor-upscaler'; export interface RTXSystemStatus { tensorCorePerformance: number; // GFLOPS, averageOperationTime: number; // microseconds: compressionRatio | number; // e.g., 50:1, searchThroughput: number; // nodes/sec: gpuUtilization | number; // percentage: memoryBandwidth | number; // GB/s: flashAttention2Active | boolean,neuralSpriteProcessing: boolean, quantizationMode: '4bit' | '8bit' | '16bit',pipelineStatus: 'active' | 'idle' | 'error'}
 export interface PipelineMetrics { svelteKitRequests: number, goMicroserviceProcessing: number, cudaWorkerOperations: number, postgresqlStorage: number, webGPURendering: number, totalPipelineTime: number;
 }

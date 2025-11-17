@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z  } from 'zod';
 
 /**
  * Schema for a TokenEntry, as seen in redis-streams.

@@ -1,7 +1,7 @@
-import { canvasStates, cases, evidence } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm'; // Changed from helpers import
-import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
-import { redirect } from '@sveltejs/kit';
+import type { canvasStates, cases, evidence  } from '$lib/server/db/schema-postgres';
+import type { eq  } from 'drizzle-orm'; // Changed from helpers import
+import type { PageServerLoad } from './$types .js';
+import type { redirect  } from '@sveltejs/kit';
 import db from '$lib/server/db/client.js'; // Changed from index.js
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   let canvasState = null;
   let reportData = null;
-  let evidenceData: Array<typeof evidence.$inferSelect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5> = []; // Corrected type
+  let evidenceData: Array<typeof evidence.$inferSelect > = []; // Corrected type
 
   if (reportId) {
     // Load existing canvas state

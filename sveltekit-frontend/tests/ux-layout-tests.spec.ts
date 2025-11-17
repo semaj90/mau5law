@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import type { test, expect, type Page  } from '@playwright/test';
 
 /**
  * UX Layout Tests for Enhanced-Bits Components

@@ -1,9 +1,9 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json, error } from '@sveltejs/kit';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-client'; // Changed from named import to default import
-import { cases, evidence, criminals, legalDocuments } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { eq, or, desc, ilike, and, SQL, sql } from 'drizzle-orm';
-import { createId } from '@paralleldrive/cuid2';
+import type { RequestHandler } from './$types .js';
+import type { json, error  } from '@sveltejs/kit';
+import db from '$lib/server/db/unified-client'; // Changed from named import to default import
+import type { cases, evidence, criminals, legalDocuments  } from '$lib/server/db/schema-postgres';
+import type { eq, or, desc, ilike, and, SQL, sql  } from 'drizzle-orm';
+import type { createId  } from '@paralleldrive/cuid2';
 
 // Go Microservice Configuration
 const GO_SERVICES = {
@@ -427,7 +427,7 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
 
 // Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
-	let dbHealthy = false; // Changed from $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false)
+	let dbHealthy = false; // Changed from $state <boolean>(false)
 	try {
 		// Simple query to check database connectivity
 		await db.execute(sql`SELECT 1`);

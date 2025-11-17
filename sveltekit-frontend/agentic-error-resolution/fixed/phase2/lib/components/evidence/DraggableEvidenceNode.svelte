@@ -1,12 +1,12 @@
 <!-- Draggable Evidence Node - Svelte 5 + Enhanced Drag System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { draggable } from '$lib/actions/draggable';
-  import { evidenceStore  } from '$lib/stores/unified';
-  import { embeddingsService } from '$lib/services/embeddings-service';
+  import type { draggable  } from '$lib/actions/draggable';
+  import type { evidenceStore   } from '$lib/stores/unified';
+  import type { embeddingsService  } from '$lib/services/embeddings-service';
   import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
-  import { showSuccess, showError  } from '$lib/stores/unified';
-  import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
+  import type { showSuccess, showError   } from '$lib/stores/unified';
+  import type { FileText, Image, Video, Mic, Zap, Bot  } from 'lucide-svelte';
   interface EvidenceNode {
     id: string;
     title: string;

@@ -1,6 +1,6 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
-import { writable; } from 'svelte/store'; // moved near top for clarity export interface LazyLoadOptions { root?: Element | null; rootMargin?: string; threshold?: number | number[]; once?: boolean; // Only trigger once and then disconnect fallbackDelay?: number; // Fallback timeout for older browsers;
+import type { writable;  } from 'svelte/store'; // moved near top for clarity export interface LazyLoadOptions { root?: Element | null; rootMargin?: string; threshold?: number | number[]; once?: boolean; // Only trigger once and then disconnect fallbackDelay?: number; // Fallback timeout for older browsers;
 }
 export interface LazyLoadEntry { element: Element, isIntersecting: boolean, intersectionRatio: number, target: Element;
 }

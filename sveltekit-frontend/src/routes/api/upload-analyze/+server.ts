@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
 
 // Mock implementation for demonstration purposes.
 // In a real application, this would handle file uploads,

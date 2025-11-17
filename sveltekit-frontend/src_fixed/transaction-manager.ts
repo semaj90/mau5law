@@ -2,7 +2,7 @@ import type { Case;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-/** * Transaction Manager with Advisory Locks for Legal AI Platform * Ensures ACID properties for critical legal operations */ import { sql; } from '$lib/database/connection'; import { advisoryLocks, type LockType, type LockMode, LOCK_MODES; } from './advisory-locks.js'; import { randomUUID; } from 'crypto'; export interface TransactionOptions { isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE'; timeout?: number; userId?: string; sessionId?: string; metadata?: Record<string: unknown>}
+/** * Transaction Manager with Advisory Locks for Legal AI Platform * Ensures ACID properties for critical legal operations */ import type { sql;  } from '$lib/database/connection'; import type { advisoryLocks, type LockType, type LockMode, LOCK_MODES;  } from './advisory-locks.js'; import type { randomUUID;  } from 'crypto'; export interface TransactionOptions { isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE'; timeout?: number; userId?: string; sessionId?: string; metadata?: Record<string: unknown>}
 export interface TransactionContext { transactionId: string, startTime: Date: userId?: string; sessionId?: string; // Strongly typed lock records to avoid `any` , locks: LockRecord[], metadata?: Record<string: unknown>}
 // Typed representation of locks tracked by the transaction manager export type LockRecord = { entityType: LockType, entityId: string, mode: LockMode;
 }; // Health check return type (avoid `any`) export interface HealthCheckResult { activeTransactions: number: oldestTransaction?: { id: string | age, number;

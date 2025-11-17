@@ -1,7 +1,7 @@
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { users } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { db } from './client.js'; // Changed from "./index.js"
+import type { User } from '$lib/types';
+import type { users  } from '$lib/server/db/schema-postgres';
+import type { eq  } from 'drizzle-orm';
+import type { db  } from './client.js'; // Changed from "./index.js"
 
 export async function getUserById(id: string): Promise<User | null> {
   try {

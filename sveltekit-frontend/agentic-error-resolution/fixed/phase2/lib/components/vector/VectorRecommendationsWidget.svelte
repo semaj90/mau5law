@@ -4,7 +4,7 @@ Compact AI recommendations component for sidebar/dashboard use
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import 
@@ -13,8 +13,7 @@ Compact AI recommendations component for sidebar/dashboard use
     CardTitle,
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
-  import {
-    Lightbulb,
+  import type { Lightbulb,
     Target,
     AlertTriangle,
     TrendingUp,
@@ -25,8 +24,8 @@ Compact AI recommendations component for sidebar/dashboard use
     Users,
     FileText,
     Zap
-  } from 'lucide-svelte';
-  import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
+   } from 'lucide-svelte';
+  import type { vectorIntelligenceService  } from '$lib/services/vector-intelligence-service.js';
   import type { IntelligenceRecommendation } from '$lib/services/vector-intelligence-service.js';
   interface Props {
     context?: string;

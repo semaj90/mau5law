@@ -1,6 +1,6 @@
-import { db } from './client.js'; // Changed import path for db
-import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js'; // Import specific schema objects
-import { sql } from 'drizzle-orm'; // Removed unused type Table
+import type { db  } from './client.js'; // Changed import path for db
+import type { legalDocuments, userAiQueries, embeddingCache  } from './schema-postgres.js'; // Import specific schema objects
+import type { sql  } from 'drizzle-orm'; // Removed unused type Table
 
 // GRPMO imports
 interface GRPMOConfig {

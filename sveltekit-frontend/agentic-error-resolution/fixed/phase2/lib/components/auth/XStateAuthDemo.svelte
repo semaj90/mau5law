@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import type { onMount, onDestroy  } from 'svelte';
   // Card components removed - using native HTML elements
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
@@ -15,11 +15,10 @@
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import  Alert  from "$lib/components/ui/alert/Alert.svelte";
   import  AlertDescription  from "$lib/components/ui/alert/AlertDescription.svelte";
-  import {
-    Shield, CheckCircle, AlertCircle, Loader2,
+  import type { Shield, CheckCircle, AlertCircle, Loader2,
     User, MessageCircle, Settings, LogOut,
     Cpu, Zap, Brain
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   // Import XState integration service
   import xstateIntegration, {
     type GlobalAppState,

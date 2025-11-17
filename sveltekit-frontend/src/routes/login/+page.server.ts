@@ -1,10 +1,10 @@
-import { LoginSchema as loginSchema } from '$lib/schemas/auth';
-import { db } from '$lib/server/db/client';
-import { users } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import type { LoginSchema as loginSchema  } from '$lib/schemas/auth';
+import type { db  } from '$lib/server/db/client';
+import type { users  } from '$lib/server/db/schema-postgres';
+import type { eq  } from 'drizzle-orm';
+import type { createUserSession, setSessionCookie, verifyPassword  } from '$lib/server/lucia';
+import type { fail, redirect  } from '@sveltejs/kit';
+import type { superValidate  } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 // Replace load to accept the full event and pass it to superValidate

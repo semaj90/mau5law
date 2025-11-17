@@ -1,24 +1,24 @@
 <script lang="ts">
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-	import { onMount } from 'svelte';
+import type { Document } from '$lib/types';
+	import type { onMount  } from 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
-	import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card/Card.svelte';
-	import CardHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card/CardHeader.svelte';
-	import CardTitle from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card/CardTitle.svelte';
-	import CardContent from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card/CardContent.svelte';
-	import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button/Button.svelte';
+	import Card from '$lib/components/ui/card/Card.svelte';
+	import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+	import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+	import CardContent from '$lib/components/ui/card/CardContent.svelte';
+	import Button from '$lib/components/ui/button/Button.svelte';
 
 	// Svelte, 5 runes
-	let systemStatus = $state // TODO: Verify store subscription is correct for Svelte 5({
+	let systemStatus = $state({
 		gpu: false,
 		ollama: false,
 		enhancedRAG: false,
 		postgres: false,
 		neo4j: false
 	});
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-	let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-	let toasts = $state // TODO: Verify store subscription is correct for Svelte 5<{ id: string, message: string;, type: 'info' | 'success' | 'error' }[]>([]);
+  let loading = $state <boolean>(false);
+	let error = $state <string>('');
+	let toasts = $state <{ id: string, message: string;, type: 'info' | 'success' | 'error' }[]>([]);
 
 	function pushToast(message: string, type: 'info' | 'success' | 'error' = 'info') {
 		const id = crypto.randomUUID();

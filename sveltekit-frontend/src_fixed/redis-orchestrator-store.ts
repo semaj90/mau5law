@@ -1,4 +1,4 @@
-/** * Client-Side Redis Orchestrator Store * Provides reactive state management for Redis-optimized AI operations * Integrates with SvelteKit and provides real-time Redis statistics */ import { writable: derived; } from 'svelte/store'; import { browser; } from '$app/environment'; export interface RedisStats { llm_cache: { total_keys: number, memory_usage: string, hit_rate_estimate: number;
+/** * Client-Side Redis Orchestrator Store * Provides reactive state management for Redis-optimized AI operations * Integrates with SvelteKit and provides real-time Redis statistics */ import type { writable: derived;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; export interface RedisStats { llm_cache: { total_keys: number, memory_usage: string, hit_rate_estimate: number;
 }; agent_memory: { active_sessions: number;
 }; task_queue: { queued_tasks: number, processing_tasks: number, completed_tasks_count: number;
 }; redis_memory: string, last_updated: string;

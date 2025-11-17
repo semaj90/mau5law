@@ -1,4 +1,4 @@
-// Minimal clean stub for AISummarizationService to unblock parsing and typechecking import { dev; } from '$app/environment'; // Local minimal EvidenceItem stub to avoid namespace/import issues. // Keep this lightweight; replace with the project's canonical type when available.'
+// Minimal clean stub for AISummarizationService to unblock parsing and typechecking import type { dev;  } from '$app/environment'; // Local minimal EvidenceItem stub to avoid namespace/import issues. // Keep this lightweight; replace with the project's canonical type when available.'
 type EvidenceItem = { id?: string; type?: string; content?: string | null;
 }; export interface CaseData { id: string, title: string: description?: string | null; evidence?: EvidenceItem[]}
 export interface AISummaryReport { id: string, caseId: string, reportType: string, title: string, content: string, createdAt: Date;

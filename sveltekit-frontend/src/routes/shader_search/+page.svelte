@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  import type { ShaderSearchResult, ShaderSearchQuery } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/shader-cache-manager';
+  import type { browser  } from '$app/environment';
+  import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
 
   interface SearchResponse {
     shaders: ShaderSearchResult[];
@@ -40,21 +40,21 @@
   }
 
   // Reactive state (Svelte, 5 runes)
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let selectedOperation = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let selectedShaderType = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'webgpu' | 'webgl' | 'all'>('all');
-  let selectedTags = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let sortBy = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'relevance' | 'performance' | 'usage' | 'recent'>('relevance');
-  let limit = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(20);
-  let searchResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ShaderSearchResult[]>([]);
-  let searchMetadata = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<SearchResponse['metadata'] | null>(null);
-  let isSearching = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ShaderStats | null>(null);
-  let selectedShader = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ShaderSearchResult | null>(null);
-  let availableTags = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
-  let availableOperations = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let searchQuery = $state <string>('');
+  let selectedOperation = $state <string>('');
+  let selectedShaderType = $state <'webgpu' | 'webgl' | 'all'>('all');
+  let selectedTags = $state <string[]>([]);
+  let sortBy = $state <'relevance' | 'performance' | 'usage' | 'recent'>('relevance');
+  let limit = $state <number>(20);
+  let searchResults = $state <ShaderSearchResult[]>([]);
+  let searchMetadata = $state <SearchResponse['metadata'] | null>(null);
+  let isSearching = $state <boolean>(false);
+  let stats = $state <ShaderStats | null>(null);
+  let selectedShader = $state <ShaderSearchResult | null>(null);
+  let availableTags = $state <string[]>([]);
+  let availableOperations = $state <string[]>([]);
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     (async () => {
       if (!browser) return;
       await loadStats();

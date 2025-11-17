@@ -3,14 +3,13 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   // prefer named exports from the UI index modules (avoids .svelte path/type resolution issues)
-  import { Button } from '$lib/components/ui/core';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import type { Button  } from '$lib/components/ui/core';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import type { Textarea  } from '$lib/components/ui/textarea';
 
-  import {
-    Cpu,
+  import type { Cpu,
     Brain,
     Zap,
     Database,
@@ -21,14 +20,13 @@ Showcases the service worker-based AI orchestration system
     Activity,
     Users,
     Workflow,
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   // use module entrypoints (drop explicit file extensions)
   import LLMSelector from '$lib/components/ai/LLMSelector';
-  import {
-    aiWorkerManager,
+  import type { aiWorkerManager,
     createGenerationTask,
     createAnalysisTask,
-  } from '$lib/services/ai-worker-manager';
+   } from '$lib/services/ai-worker-manager';
   import type { AITask, LLMModel } from '$lib/types/ai-worker';
   // dynamic orchestrator component (workaround for modules without a typed default export)
   let OrchestratorComponent = $state<any>(null);

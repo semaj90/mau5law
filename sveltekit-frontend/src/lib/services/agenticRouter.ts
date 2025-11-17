@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
-import { getOllamaEndpoint } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama";
-import logger from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/logger";
+import type { getOllamaEndpoint  } from '$lib/utils/ollama';
+import logger from "$lib/server/logger";
 
 const AGENTIC_URL = process.env.AGENTIC_URL || "http://agentic-bridge:8088/invoke";
 

@@ -1,6 +1,6 @@
 import type { Message;
 } from '$lib/types';
-// SSR-safe AI store for Gemma3 Q4_K_M GGUF integration // Manages LLM state, conversation history, and settings with proper hydration import { writable, derived, get; } from 'svelte/store'; import { browser; } from '$app/environment'; import type { AIResponse;
+// SSR-safe AI store for Gemma3 Q4_K_M GGUF integration // Manages LLM state, conversation history, and settings with proper hydration import type { writable, derived, get;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; import type { AIResponse;
 } from '$lib/data/types'; import type { ConversationHistory;
 } from '$lib/types'; // Define a type for supported Ollama Gemma models export type OllamaGemmaModel = 'gemma3: 12b' | 'gemma3: 9b' | 'gemma3: 2b' | 'gemma3: 7b'; // Define Gemma3Config interface directly export interface Gemma3Config { model: OllamaGemmaModel; // Changed, from: string to a more specific type, temperature: number, maxTokens: number, topP: number, topK: number, repeatPenalty: number, systemPrompt: string, useSystemPrompt: boolean, streamOutput: boolean;
 } // SSR-safe storage utilities const SSR_SAFE_STORAGE = { getItem: (key, string): string | null => { if (!browser) return null; try { return localStorage.getItem(key)}catch { return null;

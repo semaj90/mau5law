@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { json  } from '@sveltejs/kit';
+import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types .js';
 
 // --- New Interfaces for AI Tagging Results ---
 interface OllamaGenerateResponse {

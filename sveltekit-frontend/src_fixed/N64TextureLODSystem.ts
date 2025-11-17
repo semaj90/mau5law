@@ -1,4 +1,4 @@
-/** * ðŸŽ® N64-Style 4KB Texture LOD Swapping System * Implements aggressive texture streaming with 4KB pages like Nintendo, 64 */ import { yorhaMipmapShaders; } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'; interface LODLevel { level: number, width: number, height: number, data: ArrayBuffer, compressed: boolean, sizeKB: number;
+/** * ðŸŽ® N64-Style 4KB Texture LOD Swapping System * Implements aggressive texture streaming with 4KB pages like Nintendo, 64 */ import type { yorhaMipmapShaders;  } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'; interface LODLevel { level: number, width: number, height: number, data: ArrayBuffer, compressed: boolean, sizeKB: number;
 }
 interface TextureAsset { id: string, basePath: string, lodLevels: LODLevel[], currentLOD: number, priority: number, lastAccessed: number: gpuTexture?: GPUTexture;
 }

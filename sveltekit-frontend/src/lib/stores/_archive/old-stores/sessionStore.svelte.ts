@@ -1,7 +1,7 @@
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { $state // TODO: Verify store subscription is correct for Svelte 5, $effect // TODO: Verify store subscription is correct for Svelte 5 } from 'svelte'; // Changed from 'svelte/runes' to 'svelte'
-import { createActor } from 'xstate'; // Import createActor from xstate
-import { sessionMachine, type Session } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/sessionMachine'; // Import the session machine and Session type
+import type { User } from '$lib/types';
+import type { $state , $effect } from 'svelte'; // Changed from 'svelte/runes' to 'svelte'
+import type { createActor  } from 'xstate'; // Import createActor from xstate
+import type { sessionMachine, type Session  } from '$lib/stores/sessionMachine'; // Import the session machine and Session type
 
 /**
  * Global Session Store - Lucia v3 Integration (Svelte 5)
@@ -17,7 +17,7 @@ const createSessionStore = () => {
   let sessionSnapshot = $state(sessionActor.getSnapshot());
 
   // Subscribe to actor state changes and update the reactive snapshot
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     const subscription = sessionActor.subscribe((snapshot) => {
       sessionSnapshot = snapshot;
     });

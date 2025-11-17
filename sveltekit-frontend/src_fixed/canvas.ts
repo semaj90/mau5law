@@ -1,4 +1,4 @@
-﻿import { writable; } from 'svelte/store'; import { cubicOut; } from 'svelte/easing'; export const sidebarStore = writable<{ open: boolean;
+import type { writable;  } from 'svelte/store'; import type { cubicOut;  } from 'svelte/easing'; export const sidebarStore = writable<{ open: boolean;
 }>({ open: false;
 }); // Convenience helpers used across the app export function openSidebar() { sidebarStore.update(s => ({ ...s, open, true;
 }))}

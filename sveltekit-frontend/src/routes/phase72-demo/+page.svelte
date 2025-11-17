@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { EvidenceEdge, EvidenceNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/case-similarity-service';
-  import { EvidenceCanvas } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/evidence-canvas.svelte';
-  import { onMount } from 'svelte';
+  import type { EvidenceEdge, EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
+  import type { EvidenceCanvas  } from '$lib/evidence-canvas/evidence-canvas.svelte';
+  import type { onMount  } from 'svelte';
 
   let caseId = 'demo-case-001';
   let caseType = 'contract-dispute';

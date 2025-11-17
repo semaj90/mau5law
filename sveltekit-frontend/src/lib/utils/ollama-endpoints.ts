@@ -1,4 +1,4 @@
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
+import type { dev  } from '$app/environment';
 
 export interface OllamaEndpoints {
   primary: string;      // gemma3-legal inference

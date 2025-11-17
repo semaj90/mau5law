@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
  * const response = await qwen.generate('Summarize this contract...');
  */
 
-import { pipeline, env } from '@huggingface/transformers';
+import type { pipeline, env  } from '@huggingface/transformers';
 
 // Configure Transformers.js for browser
 env.allowLocalModels = true;

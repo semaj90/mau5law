@@ -1,9 +1,9 @@
 <!-- YoRHa Detective Interface - Enhanced-Bits Gaming UI -->
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { Button, Input } from "$lib/components/ui/enhanced-bits.svelte";
-  import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import type { goto  } from '$app/navigation';
+  import type { Button, Input  } from '$lib/components/ui/enhanced-bits.svelte';
+  import type { onMount  } from 'svelte';
+  import type { fade, fly  } from 'svelte/transition';
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';

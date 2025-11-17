@@ -1,18 +1,18 @@
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import postgres, { type Notice } from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { PromptTemplate } from '@langchain/core/prompts';
-import { RunnableSequence } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
+import type { drizzle  } from 'drizzle-orm/postgres-js';
+import type { PromptTemplate  } from '@langchain/core/prompts';
+import type { RunnableSequence  } from '@langchain/core/runnables';
+import type { StringOutputParser  } from '@langchain/core/output_parsers';
 import type { Runnable } from '@langchain/core/runnables';
-import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
-import { OLLAMA_CONFIG } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/providers/ollama/config.js';
+import * as schema from '$lib/server/db/schema-postgres';
+import type { OLLAMA_CONFIG  } from '$lib/services/providers/ollama/config.js';
 
 // Minimal type definitions for schema tables to satisfy type checker
 // IMPORTANT: You must ensure your actual src/lib/server/db/schema-postgres.ts
 // file correctly defines and exports these Drizzle table objects.
-declare module '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres' {
+declare module '$lib/server/db/schema-postgres' {
   // Example Drizzle table type (simplified)
   interface DrizzleTable<TName extends string, TColumns extends Record<string, any>> {
     _?: {
@@ -960,14 +960,14 @@ export class EnhancedLegalRAGPipeline {
       if (caseId && this.validator.validateUUID(caseId)) {
         vectorParams.push(caseId);
         keywordParams.push(caseId);
-        vectorWhereConditions.push(`dc.case_id = $$ // TODO: Verify store subscription is correct for Svelte 5{vectorParams.length}`);
-        keywordWhereConditions.push(`dc.case_id = $$ // TODO: Verify store subscription is correct for Svelte 5{keywordParams.length}`);
+        vectorWhereConditions.push(`dc.case_id = $$ {vectorParams.length}`);
+        keywordWhereConditions.push(`dc.case_id = $$ {keywordParams.length}`);
       }
       if (documentType) {
         vectorParams.push(documentType);
         keywordParams.push(documentType);
-        vectorWhereConditions.push(`dc.document_type = $$ // TODO: Verify store subscription is correct for Svelte 5{vectorParams.length}`);
-        keywordWhereConditions.push(`dc.document_type = $$ // TODO: Verify store subscription is correct for Svelte 5{keywordParams.length}`);
+        vectorWhereConditions.push(`dc.document_type = $$ {vectorParams.length}`);
+        keywordWhereConditions.push(`dc.document_type = $$ {keywordParams.length}`);
       }
 
       // Use raw SQL with concrete table names and cast this.sql to any to avoid overload typing issues
@@ -979,7 +979,7 @@ export class EnhancedLegalRAGPipeline {
         LEFT JOIN legal_documents ld ON dc.document_id = ld.id
         WHERE ${vectorWhereConditions.join(' AND ')}
         ORDER BY dc.embedding::vector <=> $1::vector
-        LIMIT $$ // TODO: Verify store subscription is correct for Svelte 5{vectorParams.length + 1}
+        LIMIT $$ {vectorParams.length + 1}
       `,
         ...vectorParams,
         limit * 2,
@@ -993,7 +993,7 @@ export class EnhancedLegalRAGPipeline {
         LEFT JOIN legal_documents ld ON dc.document_id = ld.id
         WHERE ${keywordWhereConditions.join(' AND ')}
         ORDER BY text_rank DESC
-        LIMIT $$ // TODO: Verify store subscription is correct for Svelte 5{keywordParams.length + 1}
+        LIMIT $$ {keywordParams.length + 1}
       `,
         ...keywordParams,
         limit,

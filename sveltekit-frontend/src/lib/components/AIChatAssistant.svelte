@@ -1,17 +1,17 @@
 <script lang="ts">
-  let { caseId, initialContext } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { caseId, initialContext } = $props<{
     caseId: string;
     initialContext: string;
   }>();
 
-  let messages = $state // TODO: Verify store subscription is correct for Svelte 5<{ sender: 'user' | 'ai'; text: string }[]>([
+  let messages = $state <{ sender: 'user' | 'ai'; text: string }[]>([
     {
       sender: 'ai',
       text: `Hello! I'm your AI Legal Assistant for Case ID: ${caseId}. How can I help you today?`,
     },
   ]);
-  let currentInput = $state // TODO: Verify store subscription is correct for Svelte 5('');
-  let isThinking = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let currentInput = $state('');
+  let isThinking = $state(false);
 
   async function sendMessage() {
     if (!currentInput.trim()) return;

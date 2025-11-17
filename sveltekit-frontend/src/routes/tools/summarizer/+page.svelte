@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import LegalDocumentSummarizer from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/LegalDocumentSummarizer.svelte';
+  import type { onMount  } from 'svelte';
+  import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
 
   let summarizerRef: any;
 
@@ -12,8 +12,8 @@
   // Optional runtime attachment as a fallback (some components emit events only at runtime)
   onMount(() => {
     // guard against undefined ref and provide cleanup
-    if (summarizerRef && typeof summarizerRef.$on // TODO: Verify store subscription is correct for Svelte 5 === 'function') {
-      const off = summarizerRef.$on // TODO: Verify store subscription is correct for Svelte 5('summaryGenerated', (e: CustomEvent<any>) =>
+    if (summarizerRef && typeof summarizerRef.$on === 'function') {
+      const off = summarizerRef.$on ('summaryGenerated', (e: CustomEvent<any>) =>
         handleSummaryGenerated(e)
       );
       return () => off?.();
@@ -29,7 +29,7 @@
     </header>
 
     <section class="card-content">
-      <!-- Bind the component reference and rely on the runtime $on // TODO: Verify store subscription is correct for Svelte 5 listener -->
+      <!-- Bind the component reference and rely on the runtime $on listener -->
       <LegalDocumentSummarizer bind:this={summarizerRef} />
     </section>
   </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  let recentCases: unknown[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  import type { browser  } from '$app/environment';
+  let recentCases: unknown[] = $state ([]);
+  $effect (() => {
     (async () => {
       // Load recent cases
       try {

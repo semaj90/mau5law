@@ -2,10 +2,10 @@
 <!-- Real-time monitoring and control for Node.js cluster architecture -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import type { onMount, onDestroy  } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
-  import { Activity, Cpu, MemoryStick, Users, Zap, RefreshCw, TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-svelte';
+  import type { Activity, Cpu, MemoryStick, Users, Zap, RefreshCw, TrendingUp, TrendingDown, AlertTriangle, CheckCircle  } from 'lucide-svelte';
   import type { ClusterHealth, WorkerMetrics } from '$lib/services/nodejs-cluster-architecture';
   // Cluster state
   let clusterHealth = $state<ClusterHealth>({

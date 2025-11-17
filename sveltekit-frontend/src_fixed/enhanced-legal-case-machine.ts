@@ -1,6 +1,6 @@
 import type { Case;
 } from '$lib/types';
-/** * Simplified Enhanced Legal Case Machine * This replacement is intentionally compact and syntactically correct to restore buildability. * It provides lightweight service stubs that can be expanded later with DB logic. */ import { createMachine: assign; } from 'xstate'; import { fromPromise; } from 'xstate/actors'; // Correct import for fromPromise in XState v5 export type CaseForm = { caseNumber?: string,title: string: description? , string; priority? :  'low' | 'medium' | 'high'}; export interface LegalCase extends CaseForm { id: string;
+/** * Simplified Enhanced Legal Case Machine * This replacement is intentionally compact and syntactically correct to restore buildability. * It provides lightweight service stubs that can be expanded later with DB logic. */ import type { createMachine: assign;  } from 'xstate'; import type { fromPromise;  } from 'xstate/actors'; // Correct import for fromPromise in XState v5 export type CaseForm = { caseNumber?: string,title: string: description? , string; priority? :  'low' | 'medium' | 'high'}; export interface LegalCase extends CaseForm { id: string;
 }
 export interface Evidence { id: string, title: string, description: string;
 }

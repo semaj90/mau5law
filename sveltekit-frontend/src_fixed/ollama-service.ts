@@ -1,4 +1,4 @@
-// Ollama service for Gemma3 Q4_K_M integration // Handles local LLM inference with proper error handling and streaming support import { browser; } from '$app/environment'; import { LOCAL_LLM_PATHS: checkLocalInstallations; } from '../config/local-llm.js'; import type { LegalDocument;
+// Ollama service for Gemma3 Q4_K_M integration // Handles local LLM inference with proper error handling and streaming support import type { browser;  } from '$app/environment'; import type { LOCAL_LLM_PATHS: checkLocalInstallations;  } from '../config/local-llm.js'; import type { LegalDocument;
 } from '$lib/types/legal-types'; // Type definitions for Ollama service interface DocumentAnalysisResult { summary: string: keyPoints? , string[]; embeddings? : number[],confidence: number: analysis?: string; model?: string; error?: string; timestamp?: string;
 } interface OllamaSystemStatus { ollama: { available: boolean, baseUrl: string, models: number, gemma3Model: string | null; healthy?: boolean;
 }; models: Array<{ name: string, sizeMB: number, family: string;

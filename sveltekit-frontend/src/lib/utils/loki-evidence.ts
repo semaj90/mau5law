@@ -33,7 +33,7 @@ export type EvidenceItem = {
 
 export type LokiEvidence = EvidenceItem & {
 	// Use EvidenceItem
-	$loki // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5?: number;
+	$loki ?: number;
 	meta?: unknown;
 };
 
@@ -52,8 +52,8 @@ export class LokiEvidenceService {
 	db: Loki | null = null;
 	private evidenceCollection: Collection<LokiEvidence> | null = null;
 	private syncQueue: Collection<SyncOperation> | null = null;
-	private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-	private syncInProgress = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+	private isInitialized = $state (false);
+	private syncInProgress = $state (false);
 
 	constructor() {
 		if (browser) {

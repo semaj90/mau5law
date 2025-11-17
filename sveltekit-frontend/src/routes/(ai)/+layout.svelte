@@ -1,17 +1,17 @@
 <script lang="ts">
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
-import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
-  import { afterNavigate } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/themes/retro-console-palettes';
+  import type { afterNavigate  } from '$app/navigation';
+  import type { browser  } from '$app/environment';
+  import type { applyConsolePalette, type ConsolePaletteName  } from '$lib/themes/retro-console-palettes';
 
   interface Props {
     data?: unknown
     children?: Snippet}
 
   // avoid unused: 'data' warning by renaming to `_data`
-  let { data: _data, children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { data: _data, children }: Props = $props ();
 
   // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
@@ -32,11 +32,11 @@ import type { Document } from '$lib // TODO: Verify store subscription is correc
   const consolePalette: ConsolePaletteName = 'cyberpunk';
 
   // Get current route (make reactive with Svelte, 5 runes)
-  let currentPath = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let currentPath = $state <string>('');
 
-  // Use $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 for side-effects in runes mode.
+  // Use $effect for side-effects in runes mode.
   // Initialize palette and keep currentPath in sync using afterNavigate (SSR-safe).
-  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect (() => {
     applyConsolePalette(consolePalette);
 
     if (!browser) return; // no navigation on server

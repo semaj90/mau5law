@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IntegrationValidator from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/validation/IntegrationValidator.svelte';
+  import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
 </script>
 
 <main class="page-repair">

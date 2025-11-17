@@ -1,14 +1,14 @@
-﻿/** Qdrant Vector Store Integration
+/** Qdrant Vector Store Integration
  * Provides:
  * - Contextual embedding storage and retrieval
  * - Similarity search for conversation history
  * - Entity clustering and pattern detection
  * - Integration with PostgreSQL for metadata
  */
-import { QdrantClient, type QdrantClientParams; } from '@qdrant/js-client-rest';
+import type { QdrantClient, type QdrantClientParams;  } from '@qdrant/js-client-rest';
 import type { LegalEntity;
 } from "$lib/types/sharedTypes";
-import { createHash; } from 'crypto';
+import type { createHash;  } from 'crypto';
 
 // --- Revised: local types to avoid 'any' casts ---
 type QdrantCollectionsResponse = { collections?: Array<{ name: string;

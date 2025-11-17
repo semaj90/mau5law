@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import EvidenceCard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ui/EvidenceCard.svelte';
-  import { Activity, BarChart, FileText, Plus, Search, Users } from 'lucide-svelte';
-  import { onMount } from 'svelte';
-  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+  import type { goto  } from '$app/navigation';
+  import EvidenceCard from '$lib/ui/EvidenceCard.svelte';
+  import type { Activity, BarChart, FileText, Plus, Search, Users  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
+  import type { PageData } from './$types ';
 
   // Page data from server
-  let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { data }: { data: PageData } = $props ();
 
   // State management
-  let user = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.user);
-  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
+  let user = $derived (data?.user);
+  let stats = $state ({
     totalCases: 0,
     totalEvidence: 0,
     activeCases: 0,
     recentActivity: []
   });
-  let recentEvidence = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let recentEvidence = $state ([]);
+  let searchQuery = $state ('');
+  let loading = $state (true);
 
   // Load dashboard data
   async function loadDashboardData() {

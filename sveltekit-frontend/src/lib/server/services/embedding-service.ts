@@ -16,7 +16,7 @@ let redisClient:
 
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const cfg = require('$lib // TODO: Verify store subscription is correct for Svelte 5/services/providers/ollama/config');
+  const cfg = require('$lib/services/providers/ollama/config');
   resolveBackendFromProvider = cfg?.getBackend;
 } catch {
   // Provider registry not available in this environment (tests, type-checking, etc.)
@@ -24,7 +24,7 @@ try {
 
 try {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const redisModule = require('$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis');
+  const redisModule = require('$lib/server/cache/redis');
   redisClient = redisModule?.redis;
 } catch {
   // Redis cache is optional; continue without caching.

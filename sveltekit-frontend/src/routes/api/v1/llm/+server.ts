@@ -1,5 +1,5 @@
-import { json } from "@sveltejs/kit";
-import { callTRTFP16, callTRTFP8, callTRTINT8 } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/trt-router";
+import type { json  } from '@sveltejs/kit';
+import type { callTRTFP16, callTRTFP8, callTRTINT8  } from '$lib/server/trt-router';
 
 export async function POST({ request }) {
     const { prompt, mode } = await request.json();

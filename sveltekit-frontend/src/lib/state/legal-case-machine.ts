@@ -1,10 +1,10 @@
-﻿/** * Legal Case Management State Machine * Comprehensive XState v5 machine for managing legal case workflows */
-import { setup, assign, fromPromise } from 'xstate'; // Added fromPromise
+/** * Legal Case Management State Machine * Comprehensive XState v5 machine for managing legal case workflows */
+import type { setup, assign, fromPromise  } from 'xstate'; // Added fromPromise
 import type { DoneActorEvent, ErrorActorEvent } from 'xstate'; // Changed to type-only import
 import type { Case, Evidence, NewCase, NewEvidence } from '../server/db/schema.ts'; // Updated import path and extension
-import { aiSummarizationService } from '../services/ai-summarization-service.ts'; // Updated import path and extension
-import { vectorSearchService } from '../services/vector-search-service.ts'; // Updated import path and extension
-import { embedText } from '../server/ai/embedder.ts'; // Updated import path and extension
+import type { aiSummarizationService  } from '../services/ai-summarization-service.ts'; // Updated import path and extension
+import type { vectorSearchService  } from '../services/vector-search-service.ts'; // Updated import path and extension
+import type { embedText  } from '../server/ai/embedder.ts'; // Updated import path and extension
 
 // New interfaces for service return types
 interface ProcessEvidenceServiceResult {

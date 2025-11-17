@@ -3,12 +3,12 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { goto } from "$app/navigation";
+  import type { goto  } from '$app/navigation';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Card  from "$lib/components/ui/enhanced-bits.svelte";
   import  Form  from "$lib/components/ui/Form.svelte";
   import  Input  from "$lib/components/ui/Input.svelte";
-  import { notifications  } from '$lib/stores/unified';
+  import type { notifications   } from '$lib/stores/unified';
   export const data = null;
   // Form validation
   const formOptions = { initialValues: {

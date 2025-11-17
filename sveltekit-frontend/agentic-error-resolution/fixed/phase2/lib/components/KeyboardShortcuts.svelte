@@ -2,7 +2,7 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import type { onMount, onDestroy  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
   import  Accessibility  from "lucide-svelte/icons/accessibility.svelte";

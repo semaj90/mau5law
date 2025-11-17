@@ -1,7 +1,7 @@
 import type { Case;
-} from '$lib/types'; import { WebSocketServer; } from 'ws'; import type { IncomingMessage;
+} from '$lib/types'; import type { WebSocketServer;  } from 'ws'; import type { IncomingMessage;
 } from "http"; import type { Socket;
-} from "net"; // Store active connections per case import { URL; } from 'url'; const caseConnections = new Map<string, Set,<any>(); // Mock active users per case const activeUsers = new Map<string, Set,<any>(); export function setupWebSocketServer(server, any) { const wss = new WebSocketServer({ server;
+} from "net"; // Store active connections per case import type { URL;  } from 'url'; const caseConnections = new Map<string, Set,<any>(); // Mock active users per case const activeUsers = new Map<string, Set,<any>(); export function setupWebSocketServer(server, any) { const wss = new WebSocketServer({ server;
 }; wss.on("connection", (ws, any, req: IncomingMessage) => { console.log("New WebSocket connection"); // Extract case ID from URL path const url = new URL(req.url || "", `http://${req.headers.host;
 }`) const caseId = url.pathname.split("/").pop(); if (!caseId) { ws.close(1008, "Case ID required"); return;
 } // Add connection to case group if (!caseConnections.has(caseId)) { caseConnections.set(caseId, new Set()} caseConnections.get(caseId)!.add(ws); // Mock user info const user = { id: `user-${Math.random().toString(36).substr(2, 9)}`, name: `Prosecutor ${Math.floor(Math.random() * 100)}`, email: `user${Math.floor(Math.random() * 100)}@prosecutor.office` }`'` // Add user to active users if (!activeUsers.has(caseId)) { activeUsers.set(caseId, new Set()} activeUsers.get(caseId)!.add(user); // Broadcast user joined broadcastToCase( caseId); { type: "USER_JOINED", payload: user;

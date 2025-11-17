@@ -7,10 +7,10 @@
     timestamp: Date;
   };
 
-  let messages = $state // TODO: Verify store subscription is correct for Svelte 5<ChatMessage[]>([]);
-  let currentMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let isStreaming = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let messages = $state <ChatMessage[]>([]);
+  let currentMessage = $state <string>('');
+  let isStreaming = $state <boolean>(false);
+  let error = $state <string>('');
 
   // Send a message to backend AI; supports streaming SSE-like chunks or full JSON response
   async function sendMessage(): Promise<void> {

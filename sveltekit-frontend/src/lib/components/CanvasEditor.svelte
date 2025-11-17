@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { CanvasState, CitationPoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/data/types';
-  import type { Evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/api';
+  import type { CanvasState, CitationPoint } from '$lib/data/types';
+  import type { Evidence } from '$lib/types/api';
 
-  let { canvasState, reportId, evidence, citationPoints, save } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { canvasState, reportId, evidence, citationPoints, save } = $props<{
     canvasState: CanvasState | null;
     reportId: string;
     evidence: Evidence[];
@@ -11,7 +11,7 @@
   }>();
 
   // Placeholder for canvas content
-  let currentCanvasElements = $state // TODO: Verify store subscription is correct for Svelte 5(canvasState?.elements || []);
+  let currentCanvasElements = $state(canvasState?.elements || []);
 
   function handleSave() {
     const updatedCanvasState: CanvasState = {

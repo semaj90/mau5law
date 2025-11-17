@@ -1,8 +1,8 @@
-﻿import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
+import type { cuidSchema  } from '$lib/server/z-schemas';
 /** * Detective Mode API Routes * * Endpoints: * GET /api/v1/detective - Get detective insights for cases * POST /api/v1/detective - Run detective analysis */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db, sql } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { z } from 'zod';
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { db, sql  } from '$lib/server/db';
+import type { z  } from 'zod';
 
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({

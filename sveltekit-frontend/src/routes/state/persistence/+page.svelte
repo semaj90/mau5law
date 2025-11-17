@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte, code: Expected, token } https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte; code: Expected, token } -->
 <script lang="ts">
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
-import { onMount } from 'svelte';
+import type { User } from '$lib/types';
+import type { onMount  } from 'svelte';
 
 // Simplified and valid state persistence page script while we repair more complex
 // serialized mock data that contained malformed tokens.

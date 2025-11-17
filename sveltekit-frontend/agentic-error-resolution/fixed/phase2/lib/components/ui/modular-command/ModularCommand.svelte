@@ -1,11 +1,11 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Command } from 'bits-ui/components/ui/command';
-  import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
-  import { cn } from '$lib/utils';
-  import { onMount  } from "svelte";
-  import { reactiveApiClient } from '$lib/services/api-client';
+  import type { Command  } from 'bits-ui/components/ui/command';
+  import type { Search, FileText, Users, Calendar, Gavel, Loader2  } from 'lucide-svelte';
+  import type { cn  } from '$lib/utils';
+  import type { onMount   } from 'svelte';
+  import type { reactiveApiClient  } from '$lib/services/api-client';
   import type { CommandSearchRequest, CommandSearchResponse, Case, Evidence, User, LegalDocument } from '$lib/types/api';
   interface Props {
     open?: boolean;

@@ -3,7 +3,7 @@
  * Tests for WCAG 2.1 AA compliance, screen reader compatibility, and keyboard navigation
  */
 
-import { expect } from '@playwright/test';
+import type { expect  } from '@playwright/test';
 import type { Page, Locator } from '@playwright/test';
 
 export class AccessibilityTester {

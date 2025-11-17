@@ -1,6 +1,6 @@
 <script lang="ts" runes>
   // Define the props expected by this component using Svelte 5 runes
-  let { width, height, caseId, readOnly, gridEnabled, snapToGrid, onSave } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { width, height, caseId, readOnly, gridEnabled, snapToGrid, onSave } = $props<{
     width: number;
     height: number;
     caseId: string;
@@ -15,7 +15,7 @@
   // using the defined props (e.g., initializing Fabric.js on a <canvas> element).
 
   // Example effect to log props when the component is initialized or props change
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     console.log('FabricCanvas initialized/updated with props:', {
       width,
       height,

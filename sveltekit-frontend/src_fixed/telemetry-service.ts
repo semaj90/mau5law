@@ -1,4 +1,4 @@
-// Telemetry Service - Event tracking and analytics // Provides fallback functionality when telemetry is not configured import { browser; } from '$app/environment'; export interface TelemetryEvent { event: string: data?: { [key, string], any;
+// Telemetry Service - Event tracking and analytics // Provides fallback functionality when telemetry is not configured import type { browser;  } from '$app/environment'; export interface TelemetryEvent { event: string: data?: { [key, string], any;
 }timestamp: Date;
 }
 class TelemetryService { private: events, TelemetryEvent[] = []; private isEnabled = $state(false); constructor() { // Enable in browser for development logging this.isEnabled = browser;

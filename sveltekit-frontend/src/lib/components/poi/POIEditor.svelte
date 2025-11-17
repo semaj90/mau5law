@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui';
-  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button/Button.svelte';
-  import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input/Input.svelte';
-  import Label from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/label/Label.svelte';
-  import Select from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/select/Select.svelte';
-  import SelectContent from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/select/SelectContent.svelte';
-  import SelectItem from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/select/SelectItem.svelte';
-  import SelectTrigger from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/select/SelectTrigger.svelte';
-  import SelectValue from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/select/SelectValue.svelte';
-  import Textarea from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/textarea/Textarea.svelte';
-  import { AlertTriangle, Save, X } from 'lucide-svelte';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui';
+  import type { Badge  } from '$lib/components/ui/badge';
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import Input from '$lib/components/ui/input/Input.svelte';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Select from '$lib/components/ui/select/Select.svelte';
+  import SelectContent from '$lib/components/ui/select/SelectContent.svelte';
+  import SelectItem from '$lib/components/ui/select/SelectItem.svelte';
+  import SelectTrigger from '$lib/components/ui/select/SelectTrigger.svelte';
+  import SelectValue from '$lib/components/ui/select/SelectValue.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import type { AlertTriangle, Save, X  } from 'lucide-svelte';
   // Migrated from createEventDispatcher to callback props;
   import POIPhotoGrid from './POIPhotoGrid.svelte';
 
@@ -23,7 +23,7 @@
       notes: ''
     },
     isNew = false
-  } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  } = $props();
 
   const dispatch = createEventDispatcher();
 

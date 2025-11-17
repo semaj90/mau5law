@@ -2,7 +2,7 @@ import type { User;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-/** * Q-LoRA (Quantized Low-Rank Adaptation) Training Service * Advanced reinforcement learning with parameter-efficient fine-tuning * Integrates with Ollama models for legal AI training */ import { reinforcementLearningCache; } from '$lib/caching/reinforcement-learning-cache'; import type { BitmapHiddenMarkovSOM;
+/** * Q-LoRA (Quantized Low-Rank Adaptation) Training Service * Advanced reinforcement learning with parameter-efficient fine-tuning * Integrates with Ollama models for legal AI training */ import type { reinforcementLearningCache;  } from '$lib/caching/reinforcement-learning-cache'; import type { BitmapHiddenMarkovSOM;
 } from './bitmap-hmm-som.js'; export interface QLoRAConfig { modelName: string, rankDimension: number, alpha: number, quantizationBits: number, learningRate: number, batchSize: number, maxIterations: number, rewardDiscount: number, explorationRate: number, targetUpdateFrequency: number, experienceReplaySize: number;
 }
 export interface QState { id: string, features: Float32Array, legalContext: string[], timestamp: number: somPosition?: { x: number | y, number;

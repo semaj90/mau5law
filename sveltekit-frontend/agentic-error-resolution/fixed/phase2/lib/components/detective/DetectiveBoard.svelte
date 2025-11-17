@@ -1,6 +1,6 @@
 <!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css integration -->
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import type { onMount  } from 'svelte';
 
 	// UI libraries
 	import  Button, Card, CardContent, CardHeader, CardTitle, Input  from "$lib/components/ui/enhanced-bits.svelte";
@@ -8,22 +8,22 @@
 	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
-	import { Tooltip } from 'bits-ui/components/ui/tooltip';
+	import type { Tooltip  } from 'bits-ui/components/ui/tooltip';
 
 	// utils & services
 	import Fuse from 'fuse.js';
-	import { dndzone } from 'svelte-dnd-action';
+	import type { dndzone  } from 'svelte-dnd-action';
 
 	// App stores & AI
-	import { evidenceStore  } from '$lib/stores/unified';
-	import { aiAssistant  } from '$lib/stores/unified';
+	import type { evidenceStore   } from '$lib/stores/unified';
+	import type { aiAssistant   } from '$lib/stores/unified';
 	import  AIAssistantPanel  from "../ai/AIAssistantPanel.svelte";
 	import  EvidenceCard  from "./EvidenceCard.svelte";
 	import  UploadZone  from "./UploadZone.svelte";
-	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
-	import { rabbitMQService } from '$lib/services/rabbitmq-service';
-	import { VectorService } from '$lib/services/vector-service';
-	import { gpuAccelerationService as gpuService } from '$lib/services/gpu-acceleration-service';
+	import type { analyzeEvidence, findEvidenceConnections  } from '$lib/ai/ai-service';
+	import type { rabbitMQService  } from '$lib/services/rabbitmq-service';
+	import type { VectorService  } from '$lib/services/vector-service';
+	import type { gpuAccelerationService as gpuService  } from '$lib/services/gpu-acceleration-service';
 
 	const vectorService = new VectorService();
 

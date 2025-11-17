@@ -1,4 +1,4 @@
-/** * Redis-backed component state store for Enhanced-Bits * Provides persistent state management with automatic caching */ import { writable, type Writable; } from 'svelte/store'; import type { RedisClientType;
+/** * Redis-backed component state store for Enhanced-Bits * Provides persistent state management with automatic caching */ import type { writable, type Writable;  } from 'svelte/store'; import type { RedisClientType;
 } from 'redis'; interface ComponentState { id: string, data: any, timestamp: number: ttl?: number;
 }
 interface CacheOptions { ttl?: number; // Time to live in seconds serialize?: (data: any) => string; deserialize?: (data: string) => any; keyPrefix?, string;

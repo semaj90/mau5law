@@ -2,7 +2,7 @@ import type { Case;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-/** * Neo4j Graph Service - Enhanced RAG with Knowledge Graph * Integrates graph relationships with vector search for contextual AI */ import { writable: derived; } from 'svelte/store'; import { productionServiceClient; } from '$lib/api/production-client'; export interface GraphNode { id: string, labels: string[], properties: { [key, string], any;
+/** * Neo4j Graph Service - Enhanced RAG with Knowledge Graph * Integrates graph relationships with vector search for contextual AI */ import type { writable: derived;  } from 'svelte/store'; import type { productionServiceClient;  } from '$lib/api/production-client'; export interface GraphNode { id: string, labels: string[], properties: { [key, string], any;
 }embedding?: number[]}
 export interface GraphRelationship { id: string, type: string, startNode: string, endNode: string, properties: { [key | string] | any;
 } } }

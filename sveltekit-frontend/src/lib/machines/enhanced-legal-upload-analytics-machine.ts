@@ -1,6 +1,6 @@
-import { createMachine, assign, createActor } from 'xstate';
+import type { createMachine, assign, createActor  } from 'xstate';
 import type { AnyActorLogic } from 'xstate';
-import { z } from 'zod'; // Enhanced Types for Legal AI Integration
+import type { z  } from 'zod'; // Enhanced Types for Legal AI Integration
 export interface UploadContext {
   files: File[];
   uploadProgress: number;

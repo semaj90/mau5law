@@ -1,6 +1,6 @@
 /** * Unified Dimensional Storage System * * Connects: IndexedDB â†” LokiJS â†” WebGPU Textures â†” Neo4j Graph *, Architecture: Graph â†’ Embedding â†’ Texture â†’ Cache â†’ Query */
 import LokiRedisIntegration from '../cache/loki-redis-integration.js';
-import { textureStreamer; } from '../webgpu/texture-streaming.js'; // Dimensional tensor interfaces
+import type { textureStreamer;  } from '../webgpu/texture-streaming.js'; // Dimensional tensor interfaces
 export interface TensorDimensions { d1: number // Vector dimension (384 for nomic-embed) d2? , number // Matrix height (optional) d3? : number // Tensor depth (optional) }export interface DimensionalVector { id: string, vector: Float32Array, dimensions: TensorDimensions, metadata: { type: 'embedding' | 'graph_node' | 'texture_sample', source: 'neo4j' | 'ollama' | 'webgpu' | 'cache'; legalContext?: { documentType?: 'contract' | 'evidence' | 'brief' | 'citation'; // Enforce specific literals jurisdiction?: string practiceArea?: string;
 } } timestamp: number;
 }export interface GraphToTextureMapping { nodeId: string, textureCoords: { x: number, y: number: z?: number;

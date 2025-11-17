@@ -1,12 +1,12 @@
-﻿import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 /**
  * RTX, 3060 Ti Integration API
  * SvelteKit → Go → CUDA Pipeline with FlashAttention2 + Tensor Core optimization
  * Achieves 150 GFLOPS with 4-bit 50:1 compression
  */
-import { json, type Response } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { rtxSystemMonitor, type RTXSystemStatus } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/rtx-system-monitor';
+import type { json, type Response  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { rtxSystemMonitor, type RTXSystemStatus  } from '$lib/services/rtx-system-monitor';
 
 // Pipeline configuration matching your architecture
 const PIPELINE_CONFIG = {
@@ -376,8 +376,8 @@ async function handleProcessRequest(request: Request): Promise<Response> {
   console.log('📄 RTX Document Processing Request');
   try {
     const body = await request.json();
-    // rename `options` -> `$options // TODO: Verify store subscription is correct for Svelte 5` to satisfy the project's rule for allowed unused vars (/^\$/u)
-    const { document, options: $options // TODO: Verify store subscription is correct for Svelte 5 = {} } = body;
+    // rename `options` -> `$options ` to satisfy the project's rule for allowed unused vars (/^\$/u)
+    const { document, options: $options = {} } = body;
     if (!document) {
       return json(
         {

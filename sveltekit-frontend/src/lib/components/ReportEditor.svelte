@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Report } from '$lib // TODO: Verify store subscription is correct for Svelte 5/data/types';
+  import type { Report } from '$lib/data/types';
 
-  let { report, caseId, save, autoSaveEnabled } = $props // TODO: Verify store subscription is correct for Svelte 5<{
+  let { report, caseId, save, autoSaveEnabled } = $props<{
     report: Report | null;
     caseId: string;
     save: (report: Report) => Promise<void>;
@@ -9,8 +9,8 @@
   }>();
 
   // Placeholder for report content
-  let currentContent = $state // TODO: Verify store subscription is correct for Svelte 5(report?.content || '');
-  let currentTitle = $state // TODO: Verify store subscription is correct for Svelte 5(report?.title || 'New Report');
+  let currentContent = $state(report?.content || '');
+  let currentTitle = $state(report?.title || 'New Report');
 
   function handleSave() {
     const updatedReport: Report = {

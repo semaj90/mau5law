@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Removed unused import: import CRUDDashboard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/CRUDDashboard.svelte';
+  // Removed unused import: import CRUDDashboard from '$lib/components/CRUDDashboard.svelte';
 </script>
 
 <main class="page-repair">

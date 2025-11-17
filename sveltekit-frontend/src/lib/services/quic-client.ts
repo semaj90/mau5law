@@ -1,4 +1,4 @@
-import { writable, get, type Writable } from 'svelte/store';
+import type { writable, get, type Writable  } from 'svelte/store';
 
 // JSON-safe value types
 type JsonPrimitive = string | number | boolean | null;

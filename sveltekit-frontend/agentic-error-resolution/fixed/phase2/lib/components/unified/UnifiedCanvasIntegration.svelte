@@ -4,7 +4,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  	import { onMount } from 'svelte';
+  	import type { onMount  } from 'svelte';
   	import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte";
   	import  DetectiveBoard  from "$lib/components/detective/DetectiveBoard.svelte";
   	import 
@@ -15,7 +15,7 @@ https://svelte.dev/e/attribute_duplicate -->
    from "$lib/components/ui/enhanced-bits.svelte";
   	import  Button  from "$lib/components/ui/Button.svelte";
   	// Badge replaced with span - not available in enhanced-bits
-  	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
+  	import type { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas  } from 'lucide-svelte';
   	// Svelte 5 state management
   	let viewMode = $state<'canvas' | 'board' | 'hybrid'>('hybrid');
   	let activeAnalysis = $state<any[]>([]);

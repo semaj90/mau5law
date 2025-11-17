@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-// import { getUserId } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils'; // Batch analysis schemas // Removed as per error
+import type { json, type RequestHandler  } from '@sveltejs/kit';
+import type { z  } from 'zod';
+// import type { getUserId  } from '$lib/server/auth/utils'; // Batch analysis schemas // Removed as per error
 const BatchAnalysisSchema = z.object({
 	caseId: z.string().uuid('Invalid case ID'),
 	files: z

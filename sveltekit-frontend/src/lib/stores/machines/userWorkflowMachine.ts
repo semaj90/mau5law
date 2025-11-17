@@ -1,4 +1,4 @@
-import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types'; /** * User Workflow XState Machine * Manages user interaction workflows, case management, and collaborative processes */ import { createMachine, assign, type ActorRefFrom } from 'xstate'; // Type definitions export interface User { id: string, email: string, name: string, role: string}
+import type { User } from '$lib/types'; /** * User Workflow XState Machine * Manages user interaction workflows, case management, and collaborative processes */ import type { createMachine, assign, type ActorRefFrom  } from 'xstate'; // Type definitions export interface User { id: string, email: string, name: string, role: string}
 export interface LegalCase { id: string, title: string, status: string, createdAt: Date}
 export interface Evidence { id: string, title: string, type: string, caseId: string, createdAt: Date}
 export interface WorkflowContext { caseId?: userId: string, currentStep: string, progress: number, errors: string[], data: { [key | string] | any }

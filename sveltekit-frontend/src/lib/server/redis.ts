@@ -1,8 +1,8 @@
-﻿import { createClient } from 'redis';
+import type { createClient  } from 'redis';
 
 // Prefer process.env so this module can be used in SvelteKit and non-SvelteKit
 // contexts (tests, node scripts). If you want to use SvelteKit's
-// $env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private, set those env vars into process.env at runtime.
+// $env /dynamic/private, set those env vars into process.env at runtime.
 const ENV_REDIS_URL: string = process.env.REDIS_URL ?? 'redis://localhost:6379';
 const ENV_REDIS_PASSWORD: string | undefined = process.env.REDIS_PASSWORD ?? undefined;
 

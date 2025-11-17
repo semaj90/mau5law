@@ -1,5 +1,5 @@
-import { parseJSONHTTP } from './simd-json-parser-http';
-import { parseJSON_QUIC } from './simd-json-parser-quic';
+import type { parseJSONHTTP  } from './simd-json-parser-http';
+import type { parseJSON_QUIC  } from './simd-json-parser-quic';
 
 export interface TransportResult {
   data: unknown;

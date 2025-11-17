@@ -1,7 +1,7 @@
 /** * XState v5 Ingestion Workflow Machine * Orchestrates document processing: upload â†’ chunk â†’ embed â†’ store â†’ cache * Integrates with RabbitMQ, LokiJS, and Drizzle ORM */
-import { setup, assign, createActor, fromPromise; } from 'xstate'; // Removed sendTo
-import { getEmbedding, type EmbeddingResult; } from '$lib/server/embedding-gateway.js'; // Changed getEmbeddingViaGate to getEmbedding, added type import
-import { cache; } from '$lib/server/cache/redis.js';
+import type { setup, assign, createActor, fromPromise;  } from 'xstate'; // Removed sendTo
+import type { getEmbedding, type EmbeddingResult;  } from '$lib/server/embedding-gateway.js'; // Changed getEmbeddingViaGate to getEmbedding, added type import
+import type { cache;  } from '$lib/server/cache/redis.js';
 
 export interface DocumentChunk {
   id: string

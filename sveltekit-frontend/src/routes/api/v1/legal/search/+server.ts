@@ -1,4 +1,4 @@
-﻿/**
+/**
  * POST /api/v1/legal/search
  *
  * Semantic search across legal documents with:
@@ -7,9 +7,9 @@
  * - Result caching (Redis)
  * - Metadata filtering
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { getLegalAIPipeline } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/integrations';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { getLegalAIPipeline  } from '$lib/server/integrations';
 
 /**
  * Interface for the POST request body for legal search.

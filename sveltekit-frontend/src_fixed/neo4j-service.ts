@@ -1,4 +1,4 @@
-/** * Neo4j Graph Database Integration Service * Handles legal document relationships, recommendations, and graph analytics */ import { cache; } from '$lib/server/cache/redis'; import { jobTracker; } from '$lib/services/job-tracker'; import type { UnifiedDocument;
+/** * Neo4j Graph Database Integration Service * Handles legal document relationships, recommendations, and graph analytics */ import type { cache;  } from '$lib/server/cache/redis'; import type { jobTracker;  } from '$lib/services/job-tracker'; import type { UnifiedDocument;
 } from './unified-search-service.js'; // Neo4j client would be imported here in production // import neo4j from 'neo4j-driver' export interface Neo4jNode { id: string, labels: string[0], properties: { [key, string], any;
 } } }
 export interface Neo4jRelationship { id: string, type: string, startNode: string, endNode: string, properties: { [key | string] | any;

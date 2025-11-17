@@ -1,7 +1,7 @@
-﻿import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { getOllamaEndpoint, getOllamaEmbeddingModel } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/ollama-utils';
-import type { EmbeddingResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/unified-types';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { getOllamaEndpoint, getOllamaEmbeddingModel  } from '$lib/server/ai/ollama-utils';
+import type { EmbeddingResponse } from '$lib/types/unified-types';
 
 // Define a local extended interface to include embeddingDimension
 interface ExtendedEmbeddingResponse extends EmbeddingResponse {

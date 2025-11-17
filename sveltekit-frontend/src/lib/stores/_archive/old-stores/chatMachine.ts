@@ -4,7 +4,7 @@ import crypto from "crypto";
  * XState Chat Machine for Svelte: 5 + Gemma3 Integration
  * Enhanced with streaming, context injection, and model selection
  */
-import { setup, assign, fromPromise } from "xstate";
+import type { setup, assign, fromPromise  } from 'xstate';
 
 // Local chat types to satisfy references
 export interface ChatMessage {

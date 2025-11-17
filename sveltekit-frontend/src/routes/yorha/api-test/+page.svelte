@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import type { onDestroy  } from 'svelte';
   // lucide-svelte exports named components — import them as named exports
-  import {
-    Activity,
+  import type { Activity,
     AlertTriangle,
     CheckCircle,
     Clock,
@@ -13,7 +12,7 @@
     Search,
     Server,
     TestTube,
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
 
   type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -115,24 +114,24 @@
     },
   ];
 
-  let testResults = $state // TODO: Verify store subscription is correct for Svelte 5<TestResult[]>([]);
-  let isRunning = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let autoRefresh = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let filter = $state // TODO: Verify store subscription is correct for Svelte 5<'all' | 'success' | 'error'>('all');
+  let testResults = $state <TestResult[]>([]);
+  let isRunning = $state <boolean>(false);
+  let autoRefresh = $state <boolean>(false);
+  let filter = $state <'all' | 'success' | 'error'>('all');
   let refreshTimer: ReturnType<typeof setInterval> | null = null;
 
-  const totalTests = $derived // TODO: Verify store subscription is correct for Svelte 5(() => testResults.length);
-  const successCount = $derived // TODO: Verify store subscription is correct for Svelte 5(
+  const totalTests = $derived(() => testResults.length);
+  const successCount = $derived(
     () => testResults.filter((item) => item.status === 'success').length
   );
-  const errorCount = $derived // TODO: Verify store subscription is correct for Svelte 5(() => testResults.filter((item) => item.status === 'error').length);
-  const averageLatency = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
+  const errorCount = $derived(() => testResults.filter((item) => item.status === 'error').length);
+  const averageLatency = $derived(() => {
     const t = testResults.length;
     if (t === 0) return 0;
     return Math.round(testResults.reduce((sum, item) => sum + item.durationMs, 0) / t);
   });
 
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     if (autoRefresh) {
       if (refreshTimer) clearInterval(refreshTimer);
       refreshTimer = setInterval(() => {

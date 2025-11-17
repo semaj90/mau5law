@@ -1,5 +1,4 @@
-import {
-  bigint,
+import type { bigint,
   bigserial,
   boolean,
   check,
@@ -23,14 +22,14 @@ import {
   uuid,
   varchar,
   vector,
-} from 'drizzle-orm/pg-core';
+ } from 'drizzle-orm/pg-core';
 
 const tsvector = customType<{ data: string }>({
   dataType() {
     return 'tsvector';
   },
 });
-import { sql } from 'drizzle-orm';
+import type { sql  } from 'drizzle-orm';
 
 export const predictiveAssetCache = pgTable(
   'predictive_asset_cache',

@@ -8,7 +8,7 @@
   import Grid from '$lib/components/ui/grid/Grid.svelte';
   import GridItem from '$lib/components/ui/grid/GridItem.svelte';
   // Icons
-  import { AlertTriangle, Brain, Calendar, CheckCircle, Clock, FileText, Folder, Sparkles, Target, Users } from "lucide-svelte";
+  import type { AlertTriangle, Brain, Calendar, CheckCircle, Clock, FileText, Folder, Sparkles, Target, Users  } from 'lucide-svelte';
 
   // Define the CaseItem type for clarity and reusability
   interface CaseItem {
@@ -48,7 +48,7 @@
     };
   }
 
-  import { createEventDispatcher } from 'svelte'; // Import createEventDispatcher
+  import type { createEventDispatcher  } from 'svelte'; // Import createEventDispatcher
   const dispatch = createEventDispatcher(); // Initialize dispatcher
 
   let { open = $bindable(false) } = $props<{ open?: boolean }>();

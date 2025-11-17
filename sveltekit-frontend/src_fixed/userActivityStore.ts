@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-/** * User Activity Detection Store for GPU Lifecycle Management * Tracks user interactions to trigger GPU memory optimization */ import { writable, derived, get; } from 'svelte/store'; import { browser; } from '$app/environment'; interface UserActivityMetrics { lastActivity: number, idleTimeMs: number, interactionCount: number, activityScore: number, isActive: boolean, sessionStartTime: number;
+/** * User Activity Detection Store for GPU Lifecycle Management * Tracks user interactions to trigger GPU memory optimization */ import type { writable, derived, get;  } from 'svelte/store'; import type { browser;  } from '$app/environment'; interface UserActivityMetrics { lastActivity: number, idleTimeMs: number, interactionCount: number, activityScore: number, isActive: boolean, sessionStartTime: number;
 }
 interface ActivityEvent { type: string, timestamp: number: target?: string; data?: any;
 }

@@ -1,11 +1,11 @@
 <script lang="ts">
 // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits.svelte";
-  import { LodCacheEngine } from '$lib // TODO: Verify store subscription is correct for Svelte 5/gpu/lod-cache-engine.js';
-  // import { GpuVectorProcessor } from '$lib // TODO: Verify store subscription is correct for Svelte 5/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues
-  let log = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let isRunning = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  import type { onMount  } from 'svelte';
+  import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib/components/ui/enhanced-bits.svelte";
+  import type { LodCacheEngine  } from '$lib/gpu/lod-cache-engine.js';
+  // import type { GpuVectorProcessor  } from '$lib/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues
+  let log = $state <string>('');
+  let isRunning = $state <boolean>(false);
   function append(msg: string) {
     log += msg + '\n'}
   async function runTest(): Promise<any> {
@@ -60,7 +60,7 @@
       append('ðŸ’¥ Test failed: ' + (error as Error).message)} finally {
       isRunning = false}
   }
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  $effect(() => {() => {
     append('ðŸŽ® WebGL2/WebGPU Acceleration Test - Enhanced UI Version');
     append('ðŸ”§ Click: "Run Test" to check browser GPU acceleration capabilities');
     append('ðŸ“‹ This test validates WebGPU â†’ WebGL2 â†’ WebGL1 â†’ WASM fallback chain')});

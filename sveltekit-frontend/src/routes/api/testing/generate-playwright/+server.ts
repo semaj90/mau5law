@@ -1,9 +1,9 @@
-﻿import { writeFileSync } from 'fs';
-import { join } from 'path';
-// import { fileURLToPath } from 'url';
-// import { dirname } from 'path'; // Keep dirname for use in generatePlaywrightTestFile's *generated* content
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { writeFileSync  } from 'fs';
+import type { join  } from 'path';
+// import type { fileURLToPath  } from 'url';
+// import type { dirname  } from 'path'; // Keep dirname for use in generatePlaywrightTestFile's *generated* content
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
 
 // Helper functions for test generation summary and todo file analysis
 function countGeneratedTests(playwrightTestContent: string): number {
@@ -320,10 +320,10 @@ Remaining: ${remainingItems}
 
 function generatePlaywrightTestFile(testResults: any): string {
 	// const __dirname = dirname(fileURLToPath(import.meta.url)); // Removed: Redundant and causes "Cannot find name 'dirname'."
-	return `import { test, expect, Page } from "@playwright/test";
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+	return `import type { test, expect, Page  } from '@playwright/test';
+import type { join  } from 'path';
+import type { fileURLToPath  } from 'url';
+import type { dirname  } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

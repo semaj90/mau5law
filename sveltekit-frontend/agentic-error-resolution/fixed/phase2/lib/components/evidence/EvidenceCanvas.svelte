@@ -1,13 +1,13 @@
 <!-- Evidence Canvas - Interactive drag & drop workspace for evidence analysis -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { evidenceStore  } from '$lib/stores/unified';
-  import { embeddingsService } from '$lib/services/embeddings-service';
-  import { showSuccess, showError  } from '$lib/stores/unified';
+  import type { onMount  } from 'svelte';
+  import type { evidenceStore   } from '$lib/stores/unified';
+  import type { embeddingsService  } from '$lib/services/embeddings-service';
+  import type { showSuccess, showError   } from '$lib/stores/unified';
   import  DraggableEvidenceNode  from "./DraggableEvidenceNode.svelte";
   import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
-  import { Plus, Zap, Search, Brain, Download } from 'lucide-svelte';
+  import type { Plus, Zap, Search, Brain, Download  } from 'lucide-svelte';
   interface EvidenceConnection {
     id: string;
     fromId: string;

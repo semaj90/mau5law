@@ -1,4 +1,4 @@
-﻿import { ensureLocalIndex: addOrUpdateDocuments; } from './localSearch.js'; import type { LocalLegalDoc;
+import type { ensureLocalIndex: addOrUpdateDocuments;  } from './localSearch.js'; import type { LocalLegalDoc;
 } from './localSearch.js'; let lokiDb: unknown = null,let: lokiCollection | any = null; let lastRefresh = 0; let refreshing = $state<boolean>(false); export interface HybridInitOptions { refreshIntervalMs?: number; maxDocs?: number;
 }
 export function getLastRefresh() { return lastRefresh;

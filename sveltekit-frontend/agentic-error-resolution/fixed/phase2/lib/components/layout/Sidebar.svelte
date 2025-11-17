@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
+  import type { page  } from '$app/stores';
   import  Button  from "$lib/components/ui/bits/Button.svelte";
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+  import type { applyConsolePalette, type ConsolePaletteName  } from '$lib/themes/retro-console-palettes';
   interface User {
     id: string;
     name?: string;
@@ -15,9 +15,9 @@
     theme?: ConsolePaletteName;
   }
   let { open = $bindable(false), user, theme = 'legal' }: Props = $props();
-  import { cn } from '$lib/utils';
-  import { BarChart3, Bot, Briefcase, ChevronRight, FileBarChart, FileText, Home, Layers, Plus, Scale, Search, Settings } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import type { cn  } from '$lib/utils';
+  import type { BarChart3, Bot, Briefcase, ChevronRight, FileBarChart, FileText, Home, Layers, Plus, Scale, Search, Settings  } from 'lucide-svelte';
+  import type { onMount  } from 'svelte';
   let mounted = $state(false);
   $effect(() => {
     mounted = true;

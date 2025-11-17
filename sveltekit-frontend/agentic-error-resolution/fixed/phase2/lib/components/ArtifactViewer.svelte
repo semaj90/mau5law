@@ -4,9 +4,9 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
-  import { onMount } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
-  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
+  import type { onMount  } from 'svelte';
+  import type { fade, scale  } from 'svelte/transition';
+  import type { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps   } from '$lib/stores/unified';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
@@ -18,8 +18,7 @@ https://svelte.dev/e/js_parse_error -->
   import  Badge  from "$lib/components/ui/badge.svelte";
   import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
   import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
-  import {
-    Download,
+  import type { Download,
     Eye,
     FileText,
     Shield,
@@ -30,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     AlertTriangle,
     CheckCircle,
     Info
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   // Props
   // Component state
   let artifact: any = null;

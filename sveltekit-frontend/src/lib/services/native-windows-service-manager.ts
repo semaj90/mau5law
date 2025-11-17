@@ -1,5 +1,5 @@
 import flashAttentionProcessor from './flashattention-gpu-error-processor.js';
-import { concurrentSearch } from './concurrent-indexeddb-search.js';
+import type { concurrentSearch  } from './concurrent-indexeddb-search.js';
 
 export interface WindowsService {
   name: string;
@@ -23,7 +23,7 @@ export interface ServiceHealth {
 export class NativeWindowsServiceManager {
   private services: Map<string, WindowsService> = new Map();
   private healthMonitor: NodeJS.Timeout | null = null;
-  private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  private isInitialized = $state (false);
 
   constructor() {
     this.initializeServiceDefinitions();

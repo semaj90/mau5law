@@ -1,4 +1,4 @@
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
+import type { env  } from '$env /dynamic/private';
 import neo4j, { type Driver } from 'neo4j-driver';
 
 let cachedDriver: Driver | null = null;

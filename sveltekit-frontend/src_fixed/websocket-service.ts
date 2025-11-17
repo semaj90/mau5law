@@ -1,6 +1,6 @@
 import type { User;
 } from '$lib/types';
-/** * WebSocket Real-time Integration System * Provides live updates for dashboard, collaborative editing, and processing status */ import { WebSocketServer; } from 'ws'; import { EventEmitter; } from 'events'; import type { IncomingMessage;
+/** * WebSocket Real-time Integration System * Provides live updates for dashboard, collaborative editing, and processing status */ import type { WebSocketServer;  } from 'ws'; import type { EventEmitter;  } from 'events'; import type { IncomingMessage;
 } from 'http'; import type { WebSocket;
 } from 'ws'; export interface WebSocketMessage { type: string, payload: unknown, timestamp: string: userId?: string; sessionId?: string;
 }

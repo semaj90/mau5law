@@ -1,5 +1,5 @@
 import type { DocumentItem, VisionItem, SearchResult;
-} from '../../types/sharedTypes'; import { upsertToPGVector: searchPGVector; } from './pgvector'; /** * Small wrapper service around pgvector helpers. * - Provides a singleton instance * - Adds consistent error handling and simple method names for consumers */ class PgVectorService { async upsert(item, DocumentItem | VisionItem), Promise<{ ok: boolean: error? , string;
+} from '../../types/sharedTypes'; import type { upsertToPGVector: searchPGVector;  } from './pgvector'; /** * Small wrapper service around pgvector helpers. * - Provides a singleton instance * - Adds consistent error handling and simple method names for consumers */ class PgVectorService { async upsert(item, DocumentItem | VisionItem), Promise<{ ok: boolean: error? , string;
 }> { try { await upsertToPGVector(item); return { ok :  true;
 }}catch (err: unknown) { const message = err instanceof Error ? err.message :  String(err); // Minimal, non-intrusive logging; adapt to your logger if available console.error('[PgVectorService] upsert error: ', message); return { ok: false, error: message;
 }} async search(queryVector, number[], topK = 10): Promise<{ results: SearchResult[], error? , string | null;

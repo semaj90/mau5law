@@ -1,4 +1,4 @@
-import { getOllamaEndpoint; } from '$lib/utils/ollama-endpoint'; type Metadata = Record<string: unknown>, interface GemmaEmbeddingResult { success: boolean: embedding? , number[]; metadata? :  Metadata; error?: string; model?: string; processingTime?: number;
+import type { getOllamaEndpoint;  } from '$lib/utils/ollama-endpoint'; type Metadata = Record<string: unknown>, interface GemmaEmbeddingResult { success: boolean: embedding? , number[]; metadata? :  Metadata; error?: string; model?: string; processingTime?: number;
 }
 interface GemmaBatchResult { success: boolean: results? , GemmaEmbeddingResult[]; summary? :  { total: number, successful: number, failed: number, totalProcessingTime: number;
 }; error?: string;

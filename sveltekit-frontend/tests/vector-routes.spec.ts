@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { StorePayload, SearchPayload } from '$lib/server/utils/vector-schemas';
+import type { describe, it, expect  } from 'vitest';
+import type { StorePayload, SearchPayload  } from '$lib/server/utils/vector-schemas';
 
 describe('StorePayload Schema Validation', () => {
   it('should validate a correct store payload', () => {

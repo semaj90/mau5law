@@ -1,4 +1,4 @@
-import { assign, createMachine, fromPromise } from "xstate";
+import type { assign, createMachine, fromPromise  } from 'xstate';
 
 export interface AutoTagContext {
   selectedNode: any;

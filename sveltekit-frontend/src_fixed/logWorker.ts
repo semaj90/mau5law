@@ -1,4 +1,4 @@
-﻿/// <reference: types="vite/client" /> import { RabbitMQQueue, RabbitMQWorker, RabbitMQJob; } from '$lib/rabbitmq'; import { logQueue; } from './logQueue.js'; // Define the type for the log entry data export interface LogEntryData { timestamp: string, level: string, message: string;
+/// <reference: types="vite/client" /> import type { RabbitMQQueue, RabbitMQWorker, RabbitMQJob;  } from '$lib/rabbitmq'; import type { logQueue;  } from './logQueue.js'; // Define the type for the log entry data export interface LogEntryData { timestamp: string, level: string, message: string;
 }
 // Create a new RabbitMQ Worker instance // Ensure your Redis connection details are correct (same as logQueue) const logWorker = new Worker<LogEntryData>('logQueue', async (job) => { const { timestamp, level, message;
 }= job.data; console.log(`Processing log job ${job.id;

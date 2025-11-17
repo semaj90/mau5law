@@ -1,8 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import {
-    Search,
+  import type { onMount  } from 'svelte';
+  import type { Search,
     Users,
     Plus,
     Eye,
@@ -13,7 +12,7 @@
     Trash2,
     AlertCircle,
     UserPlus,
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Input from '$lib/components/ui/Input.svelte';
 
@@ -30,8 +29,8 @@
   const Dialog = (DialogModule as any).default ?? (DialogModule as any).Dialog ?? DialogModule;
 
   // Error handling: toast is used for user-facing notifications (success/error) per platform standards
-  import { toast } from 'svelte-sonner';
-  import { cn } from '$lib/utils.js';
+  import type { toast  } from 'svelte-sonner';
+  import type { cn  } from '$lib/utils.js';
 
   // Define interfaces for POI data structure
   interface PhysicalDescription {

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { vectorSearchIndex, type SearchQuery, type VectorSearchResult } from '$lib/services/vector-search-index';
+  import type { onMount  } from 'svelte';
+  import type { vectorSearchIndex, type SearchQuery, type VectorSearchResult  } from '$lib/services/vector-search-index';
   import  ModernButton  from "$lib/components/ui/Button.svelte";
   let searchQuery = $state('');
   let isSearching = $state(false);

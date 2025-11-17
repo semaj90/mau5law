@@ -2,9 +2,9 @@ import type { Case;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-import { CONFIG; } from '$lib/config/env.server';
-import { createId; } from '@paralleldrive/cuid2';
-import { Client; } from 'minio'; // MinIO configuration (prefer CONFIG, fall back to env vars, then sensible defaults)
+import type { CONFIG;  } from '$lib/config/env.server';
+import type { createId;  } from '@paralleldrive/cuid2';
+import type { Client;  } from 'minio'; // MinIO configuration (prefer CONFIG, fall back to env vars, then sensible defaults)
 const cfg = CONFIG as any
 const MINIO_ENDPOINT = cfg.MINIO_ENDPOINT_HOST || cfg.MINIO_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost';
 const MINIO_PORT = parseInt(String(cfg.MINIO_PORT || process.env.MINIO_PORT || '9000'), 10);

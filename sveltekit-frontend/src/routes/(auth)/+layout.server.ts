@@ -1,5 +1,5 @@
-﻿import type { LayoutServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
-import { redirect } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types ';
+import type { redirect  } from '@sveltejs/kit';
 
 export const load: LayoutServerLoad = async ({ url, locals }) => {
     const path = url.pathname;

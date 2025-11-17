@@ -7,7 +7,7 @@
     (unified as any).default ??
     (unified as any);
 
-  import { goto } from '$app/navigation';
+  import type { goto  } from '$app/navigation';
   import  Button  from "$lib/components/ui/button/Button.svelte";
 
   // Svelte 5 runes - Props

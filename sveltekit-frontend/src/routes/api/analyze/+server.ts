@@ -1,7 +1,7 @@
-﻿import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib/types';
 import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { createHash } from 'node:crypto';
+import type { json  } from '@sveltejs/kit';
+import type { createHash  } from 'node:crypto';
 
 const LANGEXTRACT_URL = process.env.LANGEXTRACT_URL || 'http://localhost:8081/analyze';
 

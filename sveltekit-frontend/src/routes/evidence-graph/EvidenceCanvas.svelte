@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { EvidenceNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/case-similarity-service';
-  import CaseSuggestionModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/CaseSuggestionModal.svelte';
-  import EvidenceCanvas from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/EvidenceCanvas.svelte';
-  import GraphControlPanel from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/GraphControlPanel.svelte';
-  import { initialize } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/evidence-canvas/webgpu-init';
-  import { onDestroy, onMount } from 'svelte';
+  import type { EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
+  import CaseSuggestionModal from '$lib/evidence-canvas/CaseSuggestionModal.svelte';
+  import EvidenceCanvas from '$lib/evidence-canvas/EvidenceCanvas.svelte';
+  import GraphControlPanel from '$lib/evidence-canvas/GraphControlPanel.svelte';
+  import type { initialize  } from '$lib/evidence-canvas/webgpu-init';
+  import type { onDestroy, onMount  } from 'svelte';
 
-  import fetchEvidence from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/api/evidence';
-  import analyzeCaseSimilarity from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/case-similarity';
-  import runGPUSimilarity from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/similarity-gpu';
+  import fetchEvidence from '$lib/api/evidence';
+  import analyzeCaseSimilarity from '$lib/server/case-similarity';
+  import runGPUSimilarity from '$lib/webgpu/similarity-gpu';
 
   interface EvidenceEdge {
     id: string;
@@ -18,11 +18,11 @@
   }
 
   // Reactive state
-  let canvas = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let suggestion = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
+  let canvas = $state <any>(null);
+  let suggestion = $state <any>(null);
+  let isLoading = $state (true);
+  let error = $state <string | null>(null);
+  let stats = $state ({
     nodes: 0,
     edges: 0,
     clusters: 0,
@@ -31,21 +31,21 @@
   });
 
   // Live update event source
-  let eventSource = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EventSource | null>(null);
+  let eventSource = $state <EventSource | null>(null);
 
   // Control panel state
-  let layoutAlgorithm = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('force');
-  let showLabels = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
-  let nodeSize = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('adaptive');
-  let edgeThreshold = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(0.6);
-  let contextMenu = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<{ visible: boolean; x: number; y: number; node: EvidenceNode | null }>({
+  let layoutAlgorithm = $state ('force');
+  let showLabels = $state (true);
+  let nodeSize = $state ('adaptive');
+  let edgeThreshold = $state (0.6);
+  let contextMenu = $state <{ visible: boolean; x: number; y: number; node: EvidenceNode | null }>({
     visible: false,
     x: 0,
     y: 0,
     node: null
   });
-  let metadataNode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode | null>(null);
-  let pinnedNodeIds = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
+  let metadataNode = $state <EvidenceNode | null>(null);
+  let pinnedNodeIds = $state <string[]>([]);
 
   onMount(async () => {
     try {

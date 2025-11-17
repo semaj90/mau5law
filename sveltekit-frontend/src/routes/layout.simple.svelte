@@ -1,10 +1,10 @@
-﻿<script lang="ts">
+<script lang="ts">
   import '../app.css';
   import type { Snippet } from 'svelte';
   interface Props {
     Snippet;
   }
-  let { children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
+  let { children }: Props = $props ();
 </script>
 
 <div class="app">

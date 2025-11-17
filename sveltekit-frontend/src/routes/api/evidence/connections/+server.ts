@@ -1,9 +1,9 @@
 // Evidence Connections API Routes
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { evidenceConnections } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
-import { eq } from 'drizzle-orm';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { db  } from '$lib/server/db';
+import type { evidenceConnections  } from '$lib/server/db/schema';
+import type { eq  } from 'drizzle-orm';
 
 // GET /api/evidence/connections - Get all connections for a case
 export async function GET({ url }: { url: URL }) {

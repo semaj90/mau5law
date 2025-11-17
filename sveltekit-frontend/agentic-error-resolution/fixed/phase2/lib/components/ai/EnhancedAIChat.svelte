@@ -1,16 +1,16 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
-  import { browser } from '$app/environment';
-  import { ChatBubbleIcon, MagnifyingGlassIcon, PaperPlaneIcon } from '@radix-icons/svelte';
+  import type { browser  } from '$app/environment';
+  import type { ChatBubbleIcon, MagnifyingGlassIcon, PaperPlaneIcon  } from '@radix-icons/svelte';
   import * as Dialog from 'bits-ui/components/dialog';
-  import { onDestroy, tick } from 'svelte';
+  import type { onDestroy, tick  } from 'svelte';
 // Dialog primitives (kept as namespace for Content/Header API)
   import * as Tooltip from 'bits-ui/components/tooltip';
 // Tooltip primitives
   // Use named UI primitives from bits-ui where available (avoid default vs named export mismatch)
   import type { ChatMessage, MessageAnalysis } from '$lib/types/ai-chat';
-  import { Button } from 'bits-ui/components/ui/button';
-  import { Textarea } from 'bits-ui/components/ui/textarea';
+  import type { Button  } from 'bits-ui/components/ui/button';
+  import type { Textarea  } from 'bits-ui/components/ui/textarea';
   // Local UI type: ChatMessage plus a required `id` used by the UI (each block key)
   // and making confidence/tokensPerSecond optional as they are not always present.
   type UIMessage = ChatMessage & {

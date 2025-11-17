@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { getOllamaBaseUrl } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama';
-import { eventBus } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/event-bus';
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types ';
+import type { getOllamaBaseUrl  } from '$lib/utils/ollama';
+import type { eventBus  } from '$lib/server/event-bus';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

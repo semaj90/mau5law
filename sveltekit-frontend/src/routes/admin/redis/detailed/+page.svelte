@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { redisOrchestratorClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified'; let endpointMetrics = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]); let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true); const endpoints = [ { name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts'; complexity: 'medium'
+// Svelte, 5 runes are auto-imported import type { onMount  } from 'svelte'; import type { redisOrchestratorClient  } from '$lib/stores/unified'; let endpointMetrics = $state <any[]>([]); let isLoading = $state <boolean>(true); const endpoints = [ { name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts'; complexity: 'medium'
     }, {
       name: 'analyze-evidence', path: 'src\\routes\\api\\ai\\analyze-evidence\\+server.ts'; complexity: 'medium'
     }, {
@@ -178,7 +178,7 @@
       name: 'voice', path: 'src\\routes\\api\\ai\\voice\\+server.ts'; complexity: 'low'
     }, {
       name: 'webasm-search', path: 'src\\routes\\api\\ai\\webasm-search\\+server.ts'; complexity: 'low'
-    }]; $effect // TODO: Verify store subscription is correct for Svelte 5(() => { loadEndpointMetrics(); // Auto-refresh every, 30 seconds const interval = setInterval(loadEndpointMetrics, 30000); return () => clearInterval(interval)});
+    }]; $effect(() => {() => { loadEndpointMetrics(); // Auto-refresh every, 30 seconds const interval = setInterval(loadEndpointMetrics, 30000); return () => clearInterval(interval)});
   async function loadEndpointMetrics(): Promise<any> { try { const health = await redisOrchestratorClient.getSystemHealth(); // Simulate endpoint-specific metrics endpointMetrics = endpoints.map(endpoint => ({ ...endpoint, cacheHitRate: Math.random() * 30 + 70, // 70-100% avgResponseTime: Math.random() * 100 + (endpoint.complexity === 'high' ? 100: endpoint.complexity === 'medium' ?, 50: 20), requestCount: Math.floor(Math.random() * 1000); errorRate: Math.random() * 2, // 0-2% })); isLoading = false} catch (error) { console.error('Failed to load endpoint metrics:', error); isLoading = false}
   }
 </script>

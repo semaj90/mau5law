@@ -1,8 +1,8 @@
 <script lang="ts">
   // Removed superForm / zod / Zod types imports (client-side superforms caused invalid bindings)
-  import { Search, Upload, Tag, FileText, Database } from 'lucide-svelte';
+  import type { Search, Upload, Tag, FileText, Database  } from 'lucide-svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
 
   // receive data from load()
   const { data } = $props<{ data: any }>()

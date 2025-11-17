@@ -1,11 +1,11 @@
-﻿import { json } from '@sveltejs/kit';
-import { orchestrator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/unified-legal-orchestrator';
-import { qdrant } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/vector/qdrant-manager';
-import { db, vectorSearch } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/database/connection';
-import { natsQuicSearchService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/search/nats-quic-search-service';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import * as enhancedEmbeddingSchema from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/enhanced-embedding-schema'; // Import schema as a namespace
-import { ilike, and, eq, type SQL } from 'drizzle-orm'; // Import SQL type from drizzle-orm
+import type { json  } from '@sveltejs/kit';
+import type { orchestrator  } from '$lib/services/unified-legal-orchestrator';
+import type { qdrant  } from '$lib/server/vector/qdrant-manager';
+import type { db, vectorSearch  } from '$lib/server/database/connection';
+import type { natsQuicSearchService  } from '$lib/server/search/nats-quic-search-service';
+import type { RequestHandler } from './$types .js';
+import * as enhancedEmbeddingSchema from '$lib/server/db/enhanced-embedding-schema'; // Import schema as a namespace
+import type { ilike, and, eq, type SQL  } from 'drizzle-orm'; // Import SQL type from drizzle-orm
 
 type OrchestratorResponse = {
   _metadata?: { execution_path?: string; cached?: boolean };
@@ -260,10 +260,10 @@ async function performTextSearch(
 ): Promise<{ results: SearchResultItem[] }> {
   try {
     // Simple text search using PostgreSQL full-text search
-    // const { documentsTable } = await import("$lib // TODO: Verify store subscription is correct for Svelte 5/server/database/schema"); // Old import
+    // const { documentsTable } = await import("$lib/server/database/schema"); // Old import
     // const { ilike, and, eq } = await import("drizzle-orm"); // Already imported at top
 
-    type DocumentSelect = typeof enhancedEmbeddingSchema.documents.$inferSelect // TODO: Verify store subscription is correct for Svelte 5; // Infer type from schema
+    type DocumentSelect = typeof enhancedEmbeddingSchema.documents.$inferSelect ; // Infer type from schema
 
     const conditions: SQL<unknown>[] = []; // Explicitly type conditions
     // Add text search condition

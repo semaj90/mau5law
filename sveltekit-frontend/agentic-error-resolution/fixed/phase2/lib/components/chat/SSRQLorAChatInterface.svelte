@@ -14,13 +14,13 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null; ssrContext: any = null : any } = $props();
-  import { onMount } from "svelte";
-  import { writable, derived } from 'svelte/store';
-  import { browser } from '$app/environment';
-  import { page } from '$app/state';
+  import type { onMount  } from 'svelte';
+  import type { writable, derived  } from 'svelte/store';
+  import type { browser  } from '$app/environment';
+  import type { page  } from '$app/state';
   // XState machine integration
-  import { useMachine } from '@xstate/svelte';
-  import { chatMachine } from '$lib/machines/chat-machine';
+  import type { useMachine  } from '@xstate/svelte';
+  import type { chatMachine  } from '$lib/machines/chat-machine';
   // Neural sprite rendering
   import  NeuralSpriteRenderer  from "$lib/components/three/NeuralSpriteRenderer.svelte";
   // YoRHa UI components

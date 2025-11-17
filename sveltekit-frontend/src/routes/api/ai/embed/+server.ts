@@ -1,8 +1,8 @@
-﻿/** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: embed * Category: conservative * Bank: PRG_ROM * Priority: 150 * Type: aiAnalysis * * Impact: * - Cache; Strategy: conservative * - Memory: Bank | PRG_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { OPENAI_API_KEY, NOMIC_API_KEY } from '$env // TODO: Verify store subscription is correct for Svelte 5/static/private';
-import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
+/** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: embed * Category: conservative * Bank: PRG_ROM * Priority: 150 * Type: aiAnalysis * * Impact: * - Cache; Strategy: conservative * - Memory: Bank | PRG_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
+import type { json  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { OPENAI_API_KEY, NOMIC_API_KEY  } from '$env /static/private';
+import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Define a type for redisOptimized middleware to include all known methods
 interface RedisOptimizedMiddleware {

@@ -1,4 +1,4 @@
-import { writable; } from 'svelte/store'; import type { Evidence;
+import type { writable;  } from 'svelte/store'; import type { Evidence;
 } from '../types/api'; type EvidenceState = { /* primary shape used by consumers */ evidence: Evidence[], isLoading: boolean, error: unknown | null; [k, string]: unknown;
 }; const initialState: EvidenceState = { evidence: [], isLoading: false, error: null;
 }; const { subscribe, set, update;

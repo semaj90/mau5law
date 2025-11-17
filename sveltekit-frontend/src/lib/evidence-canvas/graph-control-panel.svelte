@@ -8,13 +8,13 @@
     exportData: void;
   }>();
 
-  let { webgpuSupported = false, gpuAccelerationEnabled = false, currentPhase = 'investigation' } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { webgpuSupported = false, gpuAccelerationEnabled = false, currentPhase = 'investigation' } = $props();
 
-  let layoutAlgorithm = $state // TODO: Verify store subscription is correct for Svelte 5('force-directed');
-  let showLabels = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let showEdges = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let nodeSize = $state // TODO: Verify store subscription is correct for Svelte 5(20);
-  let edgeOpacity = $state // TODO: Verify store subscription is correct for Svelte 5(0.5);
+  let layoutAlgorithm = $state('force-directed');
+  let showLabels = $state(true);
+  let showEdges = $state(true);
+  let nodeSize = $state(20);
+  let edgeOpacity = $state(0.5);
 
   const phases = [
     'investigation',

@@ -1,4 +1,4 @@
-import { pipeline, env } from '@xenova/transformers';
+import type { pipeline, env  } from '@xenova/transformers';
 
 // Configure transformers to use local models and avoid remote fetching
 env.localModelPath = '/models';

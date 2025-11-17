@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
-  import { onMount } from 'svelte';
+  import type { appActions, appStore  } from '$lib/stores/app-store';
+  import type { onMount  } from 'svelte';
 
-  let { webgpuCapabilities = null, cpuCapabilities = null } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  let { webgpuCapabilities = null, cpuCapabilities = null } = $props();
 
-  let systemHealth = $state // TODO: Verify store subscription is correct for Svelte 5({
+  let systemHealth = $state({
     overall: 85,
     webgpu: webgpuCapabilities?.hasWebGPU ? 95 : 60,
     cpu: cpuCapabilities?.hasWebGL ? 90 : 70,
@@ -12,13 +12,13 @@
     network: 100
   });
 
-  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let systemMetrics = $state <any>(null);
+  let loading = $state(true);
+  let error = $state <string | null>(null);
 
   // Subscribe to store
-  let appState = $state // TODO: Verify store subscription is correct for Svelte 5();
-  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
+  let appState = $state ();
+  $effect(() => {() => {
     const unsubscribe = appStore.subscribe(state => {
       appState = state;
     });

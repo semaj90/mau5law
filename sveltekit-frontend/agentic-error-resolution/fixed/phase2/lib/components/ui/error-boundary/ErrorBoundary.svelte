@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Card } from 'bits-ui/components/ui/card';
+  import type { Card  } from 'bits-ui/components/ui/card';
   import  Button  from "$lib/components/ui/Button.svelte";
   import type { Snippet } from 'svelte';
   interface Props {

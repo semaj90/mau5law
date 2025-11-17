@@ -1,7 +1,7 @@
 // Minimal WebGPU scaffold for the WebGPULegalDocumentGraph interface
 // Phase A: stable, SSR-safe, emits per-frame stats via onFrame
 
-import { captureLatency, type LatencyEntry } from '$lib/services/latency-logger';
+import type { captureLatency, type LatencyEntry  } from '$lib/services/latency-logger';
 
 // Minimal local WebGPU typings to avoid casting to `any` when global WebGPU types
 // may not be present in the TS environment. We only model what's used here.

@@ -3,8 +3,8 @@
  * Production-ready endpoint management for gemma3-legal:latest and embeddinggemma:latest
  */
 
-import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
-import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
+import type { env  } from '$env /dynamic/private';
+import type { dev  } from '$app/environment';
 
 // Ollama endpoint configuration
 export const OLLAMA_ENDPOINTS = {

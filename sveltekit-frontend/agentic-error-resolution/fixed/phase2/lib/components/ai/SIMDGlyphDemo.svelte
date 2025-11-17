@@ -4,7 +4,7 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 </script>
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,

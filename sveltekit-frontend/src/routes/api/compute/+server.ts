@@ -1,10 +1,10 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { createClient } from 'redis';
-import { nanoid } from 'nanoid';
-import { vectorOutbox, vectorJobs, vectors } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres.js';
-import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types .js';
+import type { json  } from '@sveltejs/kit';
+import type { db  } from '$lib/server/db';
+import type { createClient  } from 'redis';
+import type { nanoid  } from 'nanoid';
+import type { vectorOutbox, vectorJobs, vectors  } from '$lib/server/db/schema-postgres.js';
+import type { eq  } from 'drizzle-orm';
 
 // Initialize Redis connection
 const redis = createClient({

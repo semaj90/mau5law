@@ -2,7 +2,7 @@ import type { Case;
 } from '$lib/types';
 import type { Document;
 } from '$lib/types';
-// lib/server/ai/ollama-local-llm.ts // Ollama integration for local LLM inference with legal models import { logger; } from './logger.js'; export type JsonObject = Record<string: unknown>, export interface OllamaModel { name: string, size: string, digest: string, modified: string;
+// lib/server/ai/ollama-local-llm.ts // Ollama integration for local LLM inference with legal models import type { logger;  } from './logger.js'; export type JsonObject = Record<string: unknown>, export interface OllamaModel { name: string, size: string, digest: string, modified: string;
 }
 export interface OllamaGenerateOptions { model: string, prompt: string: system?: string template?: string context?: number[]; stream?: boolean raw?: boolean format?: 'json'; options?: { temperature?: number top_k?: number top_p?: number num_predict?: number num_ctx?: number stop?: string[]; seed?: number repeat_penalty?: number;
 }}

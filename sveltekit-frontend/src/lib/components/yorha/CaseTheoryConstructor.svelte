@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CaseTheoryPlan } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/case-theory';
+  import type { CaseTheoryPlan } from '$lib/types/case-theory';
   // Migrated from createEventDispatcher to callback props;
 
   type FormState = {
@@ -20,7 +20,7 @@
     deliverables: Record<string, boolean>;
   };
 
-  const form = $state // TODO: Verify store subscription is correct for Svelte 5<FormState>({
+  const form = $state <FormState>({
     caseName: '',
     caseId: '',
     summary: '',
@@ -46,10 +46,10 @@
 
   const dispatch = createEventDispatcher<{ generated: { plan: CaseTheoryPlan } }>();
 
-  let isSubmitting = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let plan = $state // TODO: Verify store subscription is correct for Svelte 5<CaseTheoryPlan | null>(null);
-  let rawOutput = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let isSubmitting = $state(false);
+  let plan = $state <CaseTheoryPlan | null>(null);
+  let rawOutput = $state <string | null>(null);
+  let errorMessage = $state <string | null>(null);
 
   const deliverableOptions = [
     { key: 'closingOutline', label: 'Closing Outline' },

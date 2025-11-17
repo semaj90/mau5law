@@ -19,25 +19,25 @@
     type: string;
   }
 
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
-  import ClientGemmaInference from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ClientGemmaInference.svelte';
-  import EvidenceAssistant from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/evidence/EvidenceAssistant.svelte';
-  import EvidenceBoard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/evidence/EvidenceBoard.svelte';
-  import VictimStatementWizard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/evidence/VictimStatementWizard.svelte';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import { onMount } from 'svelte';
+  import type { page  } from '$app/stores';
+  import ClientGemmaInference from '$lib/components/ClientGemmaInference.svelte';
+  import EvidenceAssistant from '$lib/components/evidence/EvidenceAssistant.svelte';
+  import EvidenceBoard from '$lib/components/evidence/EvidenceBoard.svelte';
+  import VictimStatementWizard from '$lib/components/evidence/VictimStatementWizard.svelte';
+  import Button from '$lib/components/ui/button';
+  import type { onMount  } from 'svelte';
 
-  let caseId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
-  let nodes = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode[]>([]);
-  let connections = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceConnection[]>([]);
-  let showAssistant = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let selectedNode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode | null>(null);
-  let showVictimWizard = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
-  let showClientInference = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let caseId = $state ('');
+  let nodes = $state <EvidenceNode[]>([]);
+  let connections = $state <EvidenceConnection[]>([]);
+  let showAssistant = $state (false);
+  let selectedNode = $state <EvidenceNode | null>(null);
+  let showVictimWizard = $state (false);
+  let showClientInference = $state (false);
 
   onMount(async () => {
     // Extract case ID from URL params
-    const urlParams = new URLSearchParams($page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.search);
+    const urlParams = new URLSearchParams($page .url.search);
     caseId = urlParams.get('caseId') || 'default-case';
 
     // Load existing evidence

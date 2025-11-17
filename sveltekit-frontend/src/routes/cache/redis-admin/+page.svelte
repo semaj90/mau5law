@@ -1,48 +1,47 @@
 <script lang="ts">
-import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
-  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+import type { Button  } from '$lib/components/ui/button';
+  import type { Input  } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
-  import type { PageData, ActionData } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-  import { onMount, onDestroy } from 'svelte';
-  import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5/forms';
-  import { invalidateAll } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import type { PageData, ActionData } from './$types .js';
+  import type { onMount, onDestroy  } from 'svelte';
+  import type { enhance  } from '$app/forms';
+  import type { invalidateAll  } from '$app/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
     Card,
     Input,
     Badge
-   from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
   import 
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
-   from "$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/orchestrated.svelte";
+   from "$lib/components/ui/orchestrated.svelte";
   // Icons for Redis admin
-  import {
-    Database, HardDrive, Activity, Zap, Trash2, Plus,
+  import type { Database, HardDrive, Activity, Zap, Trash2, Plus,
     RefreshCw, AlertCircle, CheckCircle, Clock, BarChart3,
     Settings, Eye, Key, Server, Cpu, Memory
-  } from 'lucide-svelte';
-  let { data, form }: { data: PageData;, form: ActionData } = $props // TODO: Verify store subscription is correct for Svelte 5();
+   } from 'lucide-svelte';
+  let { data, form }: { data: PageData;, form: ActionData } = $props();
   // Svelte, 5 runes for admin interface state
-  let selectedTab = $state // TODO: Verify store subscription is correct for Svelte 5<'overview' | 'keys' | 'performance' | 'tools'>('overview');
-  let isAutoRefresh = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let refreshInterval = $state // TODO: Verify store subscription is correct for Svelte 5<NodeJS.Timeout | null>(null);
-  let keyFilter = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let newKey = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let newValue = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
-  let newTtl = $state // TODO: Verify store subscription is correct for Svelte 5<number>(3600);
-  let selectedKey = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let keyDetails = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
-  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let selectedTab = $state <'overview' | 'keys' | 'performance' | 'tools'>('overview');
+  let isAutoRefresh = $state <boolean>(false);
+  let refreshInterval = $state <NodeJS.Timeout | null>(null);
+  let keyFilter = $state <string>('');
+  let newKey = $state <string>('');
+  let newValue = $state <string>('');
+  let newTtl = $state <number>(3600);
+  let selectedKey = $state <string | null>(null);
+  let keyDetails = $state <any>(null);
+  let isLoading = $state <boolean>(false);
   // Derived state for filtered keys
-  let filteredKeys = $derived // TODO: Verify store subscription is correct for Svelte 5(
+  let filteredKeys = $derived(
     data.recentKeys.filter(item => item.includes(keyFilter.toLowerCase())
     )
   );
   // Redis connection status
-  let connectionStatusColor = $derived // TODO: Verify store subscription is correct for Svelte 5(
+  let connectionStatusColor = $derived(
     data.connectionStatus === 'connected' ? 'text-green-600' : 'text-red-600'
   );
   // Performance metrics colors

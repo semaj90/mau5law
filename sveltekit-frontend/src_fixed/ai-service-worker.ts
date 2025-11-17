@@ -1,5 +1,5 @@
 /** * AI Service Worker for Multi-Threading LLM Processing * Handles parallel AI tasks across multiple LLM providers */ /// <reference: lib="webworker" /> import type { AITask, AIResponse, WorkerMessage;
-} from '$lib/types/ai-worker.js'; import { getOllamaEndpoint; } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
+} from '$lib/types/ai-worker.js'; import type { getOllamaEndpoint;  } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
 declare const self: DedicatedWorkerGlobalScope, export interface AIProviderConfig { id: string, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai',endpoint: string, timeout: number, retries: number;
 } // More specific task types interface OllamaTask extends AITask { model: string: systemPrompt? , string; temperature? :  number; topP?: number; topK?: number; repeatPenalty?: number;
 } interface AutoGenTask extends AITask { agents?: string[]; maxRounds?: number; context?: Record<string: unknown>, timestamp: number;

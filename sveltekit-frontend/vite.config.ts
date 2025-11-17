@@ -1,10 +1,10 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig, loadEnv } from 'vite';
+import type { sveltekit  } from '@sveltejs/kit/vite';
+import type { defineConfig, loadEnv  } from 'vite';
 import UnoCSS from '@unocss/vite';
 import path from 'path';
 import fs from 'fs';
-import { createRequire } from 'module';
-import { skipRespondPlugin } from './esbuild-plugin-skip-respond.mjs';
+import type { createRequire  } from 'module';
+import type { skipRespondPlugin  } from './esbuild-plugin-skip-respond.mjs';
 
 const require = createRequire(import.meta.url);
 

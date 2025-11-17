@@ -1,5 +1,5 @@
-﻿import type { BackendId;
-} from '$lib/types/pipeline'; import { embedText, as embedWithService, getEmbeddingServiceStatus; } from './ai/embedder.js'; export interface EmbedGatewayOptions { model?: string; tags?: string[]}
+import type { BackendId;
+} from '$lib/types/pipeline'; import type { embedText, as embedWithService, getEmbeddingServiceStatus;  } from './ai/embedder.js'; export interface EmbedGatewayOptions { model?: string; tags?: string[]}
 export interface EmbedGatewayResult { embedding: number[], backend: BackendId, model: string;
 }
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go export async function getEmbeddingViaGate(; fetchFn, typeof fetch, text: string, opts: EmbedGatewayOptions = { ): Promise<EmbedGatewayResult> { const model = opts? .model || "unknown" // @ts-ignore - Model property access || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || process.env.EMBED_MODEL_DEFAULT || process.env.PUBLIC_EMBED_MODEL_DEFAULT || 'nomic-embed-text'; // Try new embedder service first (Local Gemma3 + Nomic fallback) try { const status = await getEmbeddingServiceStatus(); if (status.activeService !== 'none') { const embedding = await embedWithService(text, model); return { embedding :  backend, status.activeService === 'local' ? 'ollama': ('fastapi' as BackendId), model;

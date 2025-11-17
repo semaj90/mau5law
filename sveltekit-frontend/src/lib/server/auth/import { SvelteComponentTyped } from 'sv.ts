@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } from 'svelte';
+import type { SvelteComponentTyped  } from 'svelte';
 
 declare module 'bits-ui' {
 	// Provide proper Svelte component class declarations instead of `typeof SvelteComponentTyped<any>`

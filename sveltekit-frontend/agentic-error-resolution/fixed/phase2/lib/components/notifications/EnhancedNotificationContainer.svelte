@@ -4,10 +4,10 @@ https://svelte.dev/e/js_parse_error -->
 mcp<script lang="ts">
   // Svelte 5 runes are auto-imported
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { notifications, type Notification  } from '$lib/stores/unified";
-  import { FocusManager } from "$lib/utils/accessibility";
-  import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
-  import { onMount  } from "svelte";
+  import type { notifications, type Notification   } from '$lib/stores/unified';
+  import type { FocusManager  } from '$lib/utils/accessibility';
+  import type { AlertCircle, AlertTriangle, Check, Info, X  } from 'lucide-svelte';
+  import type { onMount   } from 'svelte';
   // Events now handled via props in Svelte 5
   //
   let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string HTMLElement>());

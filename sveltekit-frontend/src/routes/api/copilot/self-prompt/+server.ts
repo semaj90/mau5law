@@ -1,6 +1,6 @@
-﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import type { RequestHandler } from './$types .js';
 /* * Copilot Self-Prompt API Endpoint * Enables Copilot to leverage comprehensive AI orchestration for autonomous problem-solving */
-import { json, error } from '@sveltejs/kit';
+import type { json, error  } from '@sveltejs/kit';
 
 // Placeholder for copilotSelfPrompt - will be implemented
 async function copilotSelfPrompt(

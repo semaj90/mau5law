@@ -1,13 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import {
-    Card,
+  import type { Card,
     Button,
     EvidenceThumbnail,
     EvidenceAIAnalysis,
     SearchInput,
     Board
-  } from './index';
+   } from './index';
   import type {
     EvidenceItem,
     AIAnalysis,

@@ -11,7 +11,7 @@
     class: className = '',
     children,
     ...rest
-  }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
+  }: Props = $props();
 </script>
 
 <span

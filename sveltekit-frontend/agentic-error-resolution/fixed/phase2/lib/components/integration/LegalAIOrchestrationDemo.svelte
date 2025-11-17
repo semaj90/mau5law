@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
+  import type { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy  } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
   import 
     Card,

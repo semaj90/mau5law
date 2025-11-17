@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
+  import type { goto  } from '$app/navigation';
+  import type { page  } from '$app/stores';
 
   const navigation = [
     {
@@ -63,7 +63,7 @@
     goto(path);
   }
 
-  let currentPath = $derived // TODO: Verify store subscription is correct for Svelte 5(() => $page // TODO: Verify store subscription is correct for Svelte 5.url.pathname);
+  let currentPath = $derived(() => $page.url.pathname);
 </script>
 
 <div class="p-6">

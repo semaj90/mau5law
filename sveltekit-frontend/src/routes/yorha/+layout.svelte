@@ -1,8 +1,7 @@
 <!-- YoRHa, Interface, Layout -->
 <script lang="ts">
-  import { afterNavigate, goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import {
-    Bot,
+  import type { afterNavigate, goto  } from '$app/navigation';
+  import type { Bot,
     ChevronLeft,
     ChevronRight,
     Cpu,
@@ -10,9 +9,9 @@
     Monitor,
     Search,
     Terminal,
-  } from 'lucide-svelte';
+   } from 'lucide-svelte';
   import type { SvelteComponent } from 'svelte';
-  import { onMount } from 'svelte';
+  import type { onMount  } from 'svelte';
   import '../../app.css';
  // Added: Top-level type import
 
@@ -95,7 +94,7 @@
   async function fetchYoRhaStatus(): Promise<any | null> {
     try {
       // Cast to any so TypeScript doesn't enforce a specific shape on the imported module.
-      const mod = (await import('$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient').catch(
+      const mod = (await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient').catch(
         () => null
       )) as any;
       if (mod) {
@@ -220,7 +219,7 @@
     </div>
   </header>
   <div class="yorha-content">
-    <!-- replace illegal $slots // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 use with, standard, slot -->
+    <!-- replace illegal $slots use with, standard, slot -->
     <main class="yorha-main">
       <slot />
     </main>

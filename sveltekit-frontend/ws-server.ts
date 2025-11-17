@@ -1,12 +1,11 @@
 import http from 'http';
-import { WebSocketServer } from 'ws';
-import {
-  getMissedMessages,
+import type { WebSocketServer  } from 'ws';
+import type { getMissedMessages,
   registerWsConnection,
   deregisterWsConnection,
   storeMessage,
   broadcastMessage,
-} from './src/lib/server/evidence-stream';
+ } from './src/lib/server/evidence-stream';
 
 // Simple standalone WS server example. If using svelte-adapter-node you can attach this to your SvelteKit handler.
 // Example standalone: node dist/ws-server.js (after compiling) or run with ts-node in dev.

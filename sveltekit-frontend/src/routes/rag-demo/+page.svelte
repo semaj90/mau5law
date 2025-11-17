@@ -1,6 +1,6 @@
 <!-- src/routes/rag-demo/+page.svelte -->
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import type { onMount  } from 'svelte';
 
     let documentUrl = '';
     let jobId: string | null = null;

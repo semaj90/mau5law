@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
-  import { aiSuggestionsService, type AISuggestion, type SuggestionContext } from './ai-suggestions-service';
-  import { caseSimilarityService, type EvidenceNode } from './case-similarity-service';
+  import type { onDestroy, onMount  } from 'svelte';
+  import type { aiSuggestionsService, type AISuggestion, type SuggestionContext  } from './ai-suggestions-service';
+  import type { caseSimilarityService, type EvidenceNode  } from './case-similarity-service';
   import CaseSuggestionModal from './case-suggestion-modal.svelte';
   import EvidenceCanvas from './evidence-canvas-core.svelte';
   import GraphControlPanel from './graph-control-panel.svelte';
-import { graphLayoutGPU } from './graph-layout-gpu';
-import { webgpuInitService } from './webgpu-init-service';  type EvidenceEdge = { source: string, target: string };
+import type { graphLayoutGPU  } from './graph-layout-gpu';
+import type { webgpuInitService  } from './webgpu-init-service';  type EvidenceEdge = { source: string, target: string };
 
-  let { caseId, caseType = 'general', jurisdiction = 'general', initialNodes = [], initialEdges = [] } = $props // TODO: Verify store subscription is correct for Svelte 5<{ caseId: string; caseType?: string; jurisdiction?: string; initialNodes?: EvidenceNode[]; initialEdges?: EvidenceEdge[]; }>();
+  let { caseId, caseType = 'general', jurisdiction = 'general', initialNodes = [], initialEdges = [] } = $props<{ caseId: string; caseType?: string; jurisdiction?: string; initialNodes?: EvidenceNode[]; initialEdges?: EvidenceEdge[]; }>();
 
   let canvas: EvidenceCanvas;
   let controlPanel: GraphControlPanel;
   let suggestionModal: CaseSuggestionModal;
 
-  let webgpuSupported = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let gpuAccelerationEnabled = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let suggestions = $state // TODO: Verify store subscription is correct for Svelte 5<AISuggestion[]>([]);
-  let selectedSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5<AISuggestion[]>([]);
-  let showSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let webgpuSupported = $state(false);
+  let gpuAccelerationEnabled = $state(false);
+  let suggestions = $state <AISuggestion[]>([]);
+  let selectedSuggestions = $state <AISuggestion[]>([]);
+  let showSuggestions = $state(false);
 
-  let showModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showModal = $state(false);
 
-  let selectedNodes = $state // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode[]>([]);
-  let currentPhase = $state // TODO: Verify store subscription is correct for Svelte 5('initial');
+  let selectedNodes = $state <EvidenceNode[]>([]);
+  let currentPhase = $state('initial');
 
   onMount(async () => {
     // Initialize WebGPU support

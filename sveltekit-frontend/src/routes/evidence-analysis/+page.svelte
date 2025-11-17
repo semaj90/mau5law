@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import EvidenceAnalysisDashboard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/dashboard/EvidenceAnalysisDashboard.svelte';
-  import WebGPUEvidenceGraphVisualization from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/card'; // Changed import path
+  import type { onMount  } from 'svelte';
+  import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
+  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card'; // Changed import path
 
-  let showWebGPUDemo = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let webGPUSupported = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let showWebGPUDemo = $state <boolean>(false);
+  let webGPUSupported = $state <boolean>(false);
 
   // Sample analysis for WebGPU demo
   const sampleAnalysis = {
@@ -115,8 +115,8 @@
   // NOTE: The 'Type ... is not assignable to type never' errors for props passed to
   // EvidenceAnalysisDashboard, WebGPUEvidenceGraphVisualization, Button, Card, CardHeader,
   // CardTitle, and CardContent components indicate that these components need to be
-  // updated to explicitly declare their props using Svelte 5's `$props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5()` rune.
-  // For example, inside Button.svelte, you would add: `let { onclick, variant, ...rest } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();`
+  // updated to explicitly declare their props using Svelte 5's `$props ()` rune.
+  // For example, inside Button.svelte, you would add: `let { onclick, variant, ...rest } = $props ();`
   // This fix needs to be applied to the respective component files, not in this file.
 </script>
 

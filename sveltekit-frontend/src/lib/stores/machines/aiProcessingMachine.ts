@@ -1,5 +1,5 @@
 /** * AI Processing XState Machine * Orchestrates AI tasks across multiple providers and services */
-import { createMachine, assign, fromPromise } from "xstate";
+import type { createMachine, assign, fromPromise  } from 'xstate';
 import type { AIProcessingContext, AITask, AITaskResult } from './types.js';
 
 type StartProcessing = { type: 'START_PROCESSING'; task: AITask };

@@ -1,7 +1,6 @@
-﻿/** * âš ï¸ DEPRECATED ROUTE - /api/ai/process-evidence * * File upload with AI processing has been integrated into /api/v2/evidence * * Migration: *, OLD: POST /api/ai/process-evidence (multipart/form-data) * NEW: POST /api/v2/evidence (multipart/form-data) * * The unified API automatically: * 1. Checks Python AI backend health * 2. Proxies file upload to Python FastAPI (localhost: 8000) * 3. Creates PostgreSQL evidence record * 4. Returns WebSocket URL for real-time streaming * 5. Provides workflow status tracking * * Python AI Workflow: * - Upload to MinIO (10%) * - OCR text extraction (30%) * - Embedding generation with Ollama (50%) * - AI analysis with streaming (70%) * - Vector storage (PGVector + Qdrant) (90%) * - Complete (100%) * * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md */ import {
-  json,
+/** * âš ï¸ DEPRECATED ROUTE - /api/ai/process-evidence * * File upload with AI processing has been integrated into /api/v2/evidence * * Migration: *, OLD: POST /api/ai/process-evidence (multipart/form-data) * NEW: POST /api/v2/evidence (multipart/form-data) * * The unified API automatically: * 1. Checks Python AI backend health * 2. Proxies file upload to Python FastAPI (localhost: 8000) * 3. Creates PostgreSQL evidence record * 4. Returns WebSocket URL for real-time streaming * 5. Provides workflow status tracking * * Python AI Workflow: * - Upload to MinIO (10%) * - OCR text extraction (30%) * - Embedding generation with Ollama (50%) * - AI analysis with streaming (70%) * - Vector storage (PGVector + Qdrant) (90%) * - Complete (100%) * * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md */ import type { json,
   type RequestHandler,
-} from '@sveltejs/kit';
+ } from '@sveltejs/kit';
 export const POST: RequestHandler = async () => {
   return json(
     {

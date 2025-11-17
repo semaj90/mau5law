@@ -1,4 +1,4 @@
-import { EventEmitter } from "events"; // Import vscode only when available (safe require) vscode: unknown = null try { // require may throw when not running inside VS Code extension host // eslint-disable-next-line @typescript-eslint/no-var-requires vscode = require("vscode")}
+import type { EventEmitter  } from 'events'; // Import vscode only when available (safe require) vscode: unknown = null try { // require may throw when not running inside VS Code extension host // eslint-disable-next-line @typescript-eslint/no-var-requires vscode = require("vscode")}
 catch { vscode = null} export interface CommandMetrics { commandId: string, executionTime: number, memoryUsed: number, timestamp: number, success: boolean, resourceType: "json" | "wasm" | "vector" | "cache"}
 export interface MemoryPrediction { nextAllocation: number | confidence, number}
 export type LODLevel = "auto" | "ultra" | "high" | "medium" | "low"; export interface ExtensionConfig { maxMemoryMB: number, enableWebAssembly: boolean, enableNeuralOptimization: boolean, cacheStrategy: "aggressive" | "balanced" | "conservative",lodLevel: LODLevel}

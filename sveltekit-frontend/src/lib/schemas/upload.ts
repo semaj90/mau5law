@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z  } from 'zod';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_FILE_TYPES = [

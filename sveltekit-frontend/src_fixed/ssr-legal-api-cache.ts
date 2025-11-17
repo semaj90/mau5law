@@ -1,7 +1,7 @@
 import type { User;
 } from '$lib/types';
-/** * SSR Legal API Cache * High-performance SSR-optimized cache for legal AI platform * Integrates with existing parallel cache orchestrator */ import { parallelCacheOrchestrator; } from './parallel-cache-orchestrator'; import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics;
-} from './parallel-cache-orchestrator'; import { browser; } from '$app/environment'; export interface SSRCacheConfig { defaultTTL: number, maxAge: number, staleWhileRevalidate: number, quantizeResponses: boolean, enableRAG: boolean, legalOptimizations: boolean;
+/** * SSR Legal API Cache * High-performance SSR-optimized cache for legal AI platform * Integrates with existing parallel cache orchestrator */ import type { parallelCacheOrchestrator;  } from './parallel-cache-orchestrator'; import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics;
+} from './parallel-cache-orchestrator'; import type { browser;  } from '$app/environment'; export interface SSRCacheConfig { defaultTTL: number, maxAge: number, staleWhileRevalidate: number, quantizeResponses: boolean, enableRAG: boolean, legalOptimizations: boolean;
 }
 export interface LegalAPIResponse { success: boolean, data: unknown: meta?: { userId?: string; timestamp?: string; processingTime?: number; aiModel?: string; cached?: boolean; cacheLayer?: string;
 }; pagination?: { page: number, limit: number, total: number, totalPages: number, hasNext: boolean, hasPrev: boolean;

@@ -1,4 +1,4 @@
-import { URL } from 'url'; import { dev } from '$app/environment'; import type { RequestEvent } from '@sveltejs/kit'; /** * Advanced Security Middleware * Rate Limiting, JWT Refresh, and Security Headers */ // Simple logging functions function logWarn(message, string: data?: unknown): void { console.warn(message, data)}
+import type { URL  } from 'url'; import type { dev  } from '$app/environment'; import type { RequestEvent } from '@sveltejs/kit'; /** * Advanced Security Middleware * Rate Limiting, JWT Refresh, and Security Headers */ // Simple logging functions function logWarn(message, string: data?: unknown): void { console.warn(message, data)}
 function logError(message, string: data?: unknown): void { console.error(message, data)}
 export interface RateLimitEntry { count: number, resetTime: number, blocked: boolean}
 export interface SecurityConfig { rateLimits: { general: { requests: number, windowMs: number }; auth: { requests: number | windowMs, number }; api: { requests: number | windowMs, number }; upload: { requests: number | windowMs, number }}; jwt: { accessTokenExpiry: string | refreshTokenExpiry, string}}

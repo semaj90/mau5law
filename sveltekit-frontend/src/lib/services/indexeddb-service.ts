@@ -1,4 +1,4 @@
-﻿import { openDB, type IDBPDatabase } from 'idb';
+import type { openDB, type IDBPDatabase  } from 'idb';
 
 // Define the Document interface as it's used by this service.
 // This should be compatible with the Document interface in rag-sync-agent.ts.

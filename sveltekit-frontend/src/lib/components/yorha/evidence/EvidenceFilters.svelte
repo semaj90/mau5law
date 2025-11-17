@@ -3,12 +3,12 @@
 
   const dispatch = createEventDispatcher();
 
-  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5('');
-  let typeFilter = $state // TODO: Verify store subscription is correct for Svelte 5('all');
-  let statusFilter = $state // TODO: Verify store subscription is correct for Svelte 5('all');
-  let caseFilter = $state // TODO: Verify store subscription is correct for Svelte 5('all');
-  let dateRange = $state // TODO: Verify store subscription is correct for Svelte 5('all');
-  let aiAnalyzedFilter = $state // TODO: Verify store subscription is correct for Svelte 5('all');
+  let searchQuery = $state('');
+  let typeFilter = $state('all');
+  let statusFilter = $state('all');
+  let caseFilter = $state('all');
+  let dateRange = $state('all');
+  let aiAnalyzedFilter = $state('all');
 
   const typeOptions = [
     { value: 'all', label: 'All Types' },

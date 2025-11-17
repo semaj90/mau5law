@@ -1,9 +1,9 @@
-import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib/types';
 /** * Redis-Optimized AI Analysis Endpoint * Demonstrates Redis orchestrator integration for document/evidence analysis */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
-import { callOllamaApi } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollama-client';
+import type { json, error  } from '@sveltejs/kit';
+import type { RequestHandler } from './$types .js';
+import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
+import type { callOllamaApi  } from '$lib/services/ollama-client';
 
 /** * Original Analysis Handler */
 const originalAnalysisHandler: RequestHandler = async ({ request }) => {

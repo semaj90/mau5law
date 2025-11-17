@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { superForm } from 'sveltekit-superforms/client';
+  import type { superForm  } from 'sveltekit-superforms/client';
   // evidenceUploadSchema only exports validateFileSize and getFileTypeFromMime
-  import { validateFileSize, getFileTypeFromMime } from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload.js';
+  import type { validateFileSize, getFileTypeFromMime  } from '$lib/schemas/evidence-upload.js';
 
-  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-  const { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5();
+  import type { PageData } from './$types .js';
+  const { data }: { data: PageData } = $props();
 
   // Initialize Superform with a safe fallback when the server didn't include a form
   const serverForm = (data as any)?.form ?? {};
@@ -23,10 +23,10 @@
   });
 
   // File upload state
-  let selectedFile = $state // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
-  let filePreview = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
-  let dragOver = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
-  let metadata = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let selectedFile = $state <File | null>(null);
+  let filePreview = $state <string | null>(null);
+  let dragOver = $state <boolean>(false);
+  let metadata = $state <any>(null);
 
   // Helper: validate file type (local shim using getFileTypeFromMime)
   function validateFileType(file: File, evidenceType: string | undefined): boolean {
@@ -89,20 +89,20 @@
     selectedFile = file;
     // Validate file size (100MB limit)
     if (!validateFileSize(file, 100 * 1024 * 1024)) {
-      $errors // TODO: Verify store subscription is correct for Svelte 5.file = ['File size exceeds 100MB limit'];
+      $errors .file = ['File size exceeds 100MB limit'];
       selectedFile = null;
       return;
     }
 
     // Auto-detect evidence type from file
-    const detectedType = getFileTypeFromMime(file.type, $form // TODO: Verify store subscription is correct for Svelte 5.evidence_type);
+    const detectedType = getFileTypeFromMime(file.type, $form .evidence_type);
     if (detectedType !== 'UNKNOWN') {
-      $form // TODO: Verify store subscription is correct for Svelte 5.evidence_type = detectedType as any;
+      $form .evidence_type = detectedType as any;
     }
 
     // Validate file type against evidence type (uses local shim)
-    if (!validateFileType(file, $form // TODO: Verify store subscription is correct for Svelte 5.evidence_type)) {
-      $errors // TODO: Verify store subscription is correct for Svelte 5.file = [`File type ${file.type} not supported for ${$form // TODO: Verify store subscription is correct for Svelte 5.evidence_type} evidence`];
+    if (!validateFileType(file, $form .evidence_type)) {
+      $errors .file = [`File type ${file.type} not supported for ${$form .evidence_type} evidence`];
       selectedFile = null;
       return;
     }
@@ -116,7 +116,7 @@
 
     // Generate metadata preview with fallback
     try {
-      metadata = await generateMetadataFromFile(file, $form // TODO: Verify store subscription is correct for Svelte 5.evidence_type);
+      metadata = await generateMetadataFromFile(file, $form .evidence_type);
     } catch (error) {
       console.warn('Failed to generate metadata preview:', error);
       metadata = {
@@ -126,7 +126,7 @@
           fileName: file.name,
           fileSize: file.size,
           mimeType: file.type,
-          detectedType: $form // TODO: Verify store subscription is correct for Svelte 5.evidence_type,
+          detectedType: $form .evidence_type,
           estimatedProcessingTime: '2-5 minutes',
           suggestedTags: ['document', 'evidence'],
           confidenceLevel: 'medium',
@@ -135,9 +135,9 @@
     }
 
     // Clear unknown file errors
-    if ($errors // TODO: Verify store subscription is correct for Svelte 5.file) {
-      delete $errors // TODO: Verify store subscription is correct for Svelte 5.file;
-      $errors // TODO: Verify store subscription is correct for Svelte 5 = $errors // TODO: Verify store subscription is correct for Svelte 5;
+    if ($errors .file) {
+      delete $errors .file;
+      $errors = $errors ;
     }
   }
 
@@ -170,13 +170,13 @@
   // Evidence type change handler
   function onEvidenceTypeChange() {
     if (selectedFile) {
-      if (!validateFileType(selectedFile, $form // TODO: Verify store subscription is correct for Svelte 5.evidence_type)) {
-        $errors // TODO: Verify store subscription is correct for Svelte 5.file = [
-          `File type ${selectedFile.type} not supported for ${$form // TODO: Verify store subscription is correct for Svelte 5.evidence_type} evidence`,
+      if (!validateFileType(selectedFile, $form .evidence_type)) {
+        $errors .file = [
+          `File type ${selectedFile.type} not supported for ${$form .evidence_type} evidence`,
         ];
-      } else if ($errors // TODO: Verify store subscription is correct for Svelte 5.file) {
-        delete $errors // TODO: Verify store subscription is correct for Svelte 5.file;
-        $errors // TODO: Verify store subscription is correct for Svelte 5 = $errors // TODO: Verify store subscription is correct for Svelte 5;
+      } else if ($errors .file) {
+        delete $errors .file;
+        $errors = $errors ;
       }
     }
   }
@@ -206,7 +206,7 @@
     <div style="margin-top:.5rem;">
       <label
         >Evidence type:
-        <select bind:value={$form // TODO: Verify store subscription is correct for Svelte 5.evidence_type} onchange={onEvidenceTypeChange}>
+        <select bind:value={$form .evidence_type} onchange={onEvidenceTypeChange}>
           <option value="DOCUMENT">Document</option>
           <option value="IMAGE">Image</option>
           <option value="AUDIO">Audio</option>
