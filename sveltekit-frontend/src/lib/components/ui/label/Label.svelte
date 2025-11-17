@@ -1,16 +1,16 @@
 <script lang="ts">
   interface Props {
-    for?: string;
+    htmlFor?: string;
     class?: string;
     children?: any;
     [key: string]: any;
   }
 
-  let { for: htmlFor, class: className = '', children, ...rest }: Props = $props();
+  let { htmlFor, class: className = '', children, ...rest }: Props = $props();
 </script>
 
 <label
-  {for: htmlFor}
+  for={htmlFor}
   class={`
     text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70
     ${className}

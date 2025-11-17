@@ -1,8 +1,8 @@
 <script lang="ts">
   import { type AISuggestion } from './ai-suggestions-service';
 
-  export let show = false;
-  let currentSuggestion: AISuggestion | null = null;
+  let { show = $bindable(false) }: { show: boolean } = $props();
+  let currentSuggestion = $state<AISuggestion | null>(null);
 
   export function showModal(suggestion: AISuggestion) {
     currentSuggestion = suggestion;
@@ -21,20 +21,20 @@
 </script>
 
 {#if show && currentSuggestion}
-  <div class="modal-overlay" on:click={closeModal}>
-    <div class="modal-content" on:click|stopPropagation>
+  <div class="modal-overlay" onclick={closeModal} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeModal(); }} role="button" tabindex="0">
+    <div class="modal-content" onclick={(e) => e.stopPropagation()} role="dialog">
       <!-- Modal Header -->
       <div class="modal-header">
-        <div class="suggestion-type" class:type-{currentSuggestion.type}>
+        <div class="suggestion-type type-{currentSuggestion.type}">
           {currentSuggestion.type.toUpperCase()}
         </div>
-        <div class="suggestion-priority" class:priority-{currentSuggestion.priority}>
+        <div class="suggestion-priority priority-{currentSuggestion.priority}">
           {currentSuggestion.priority.toUpperCase()}
         </div>
         <div class="suggestion-confidence">
           {Math.round(currentSuggestion.confidence * 100)}% Confidence
         </div>
-        <button class="close-button" on:click={closeModal}>×</button>
+        <button class="close-button" onclick={closeModal}>×</button>
       </div>
 
       <!-- Modal Body -->
@@ -62,7 +62,7 @@
             <ul>
               {#each currentSuggestion.actionItems as action}
                 <li>
-                  <button class="action-button" on:click={() => handleActionClick(action)}>
+                  <button class="action-button" onclick={() => handleActionClick(action)}>
                     {action}
                   </button>
                 </li>
@@ -74,7 +74,7 @@
 
       <!-- Modal Footer -->
       <div class="modal-footer">
-        <button class="dismiss-button" on:click={closeModal}>
+        <button class="dismiss-button" onclick={closeModal}>
           Dismiss
         </button>
         <button class="implement-button">

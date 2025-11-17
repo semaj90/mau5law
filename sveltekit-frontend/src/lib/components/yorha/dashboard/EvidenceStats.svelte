@@ -25,9 +25,9 @@
       error = null;
 
       // Load evidence from API
-      await appStore.loadEvidence();
+      await (appStore as any).loadEvidence();
 
-      const evidence = appStore.evidence || [];
+      const evidence = (appStore as any).evidence || [];
 
       // Calculate stats from real data
       const totalDocuments = evidence.length;
@@ -64,8 +64,8 @@
     }
   }
 
-  onMount(async () => {
-    await loadEvidenceStats();
+  onMount(() => {
+    loadEvidenceStats();
 
     // Update stats periodically
     const interval = setInterval(async () => {

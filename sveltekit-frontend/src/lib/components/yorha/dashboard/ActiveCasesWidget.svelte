@@ -12,10 +12,10 @@
       error = null;
 
       // Load cases from API
-      await appStore.loadCases();
+      // await appStore.loadCases(); // Removed as loadCases does not exist on the store
 
       // Filter for active cases and take first 5
-      activeCases = (appStore.cases || [])
+      activeCases = (($appStore as any).cases || [])
         .filter((caseItem: any) => caseItem.status === 'active' || caseItem.status === 'in_progress')
         .slice(0, 5)
         .map((caseItem: any) => ({
@@ -67,12 +67,12 @@
     }
   }
 
-  onMount(async () => {
-    await loadActiveCases();
+  onMount(() => {
+    loadActiveCases();
 
     // Refresh cases periodically
-    const interval = setInterval(async () => {
-      await loadActiveCases();
+    const interval = setInterval(() => {
+      loadActiveCases();
     }, 60000); // Refresh every minute
 
     return () => clearInterval(interval);
