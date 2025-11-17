@@ -1,13 +1,13 @@
 <!-- Dynamic Demo Page - Showcase, Individual, Demos -->
 <script lang="ts">
   import { onMount } from, 'svelte';
-  import { page } from, '$app/stores';
+  import { page } from, '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
   import type { SvelteComponent } from, 'svelte';
 
   interface Props {
     data?: unknown}
 
-  let { data }: Props = $props();
+  let { data }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   // Define a type for a Svelte component constructor
   type SvelteComponentConstructor = new (...args: unknown[]) => SvelteComponent;
@@ -16,24 +16,24 @@
   type DemoLoader = () => Promise<SvelteComponentConstructor | { default: SvelteComponentConstructor }>;
 
   const demoComponents: Record<string DemoLoader> = {
-    webgpu: () => import('$lib/components/ai/webgpu/CacheOptimizerDemo.svelte'),
-    'cuda-streaming': () => import('$lib/components/ai/OCRTensorDemo.svelte'),
-    'ai-assistant': () => import('$lib/components/ai/EnhancedRAGDemo.svelte'),
-    'evidence-canvas': () => import('$lib/components/evidence/EnhancedEvidenceBoard.svelte'),
-    'legal-research': () => import('$lib/components/ai/LegalAIPipelineDemo.svelte'),
-    'vector-search': () => import('$lib/components/ai/VectorIntelligenceDemo.svelte'),
-    'gaming-ui': () => import('$lib/components/cache/CacheDemo.svelte'),
-    performance: () => import('$lib/components/ai/CachePerformanceDashboard.svelte'),
-    'neural-topology': () => import('$lib/components/ai/NeuralTopology3DDemo.svelte'),
-    'simd-ai': () => import('$lib/components/ai/SIMDAIAssistantDemo.svelte'),
-    'realtime-comm': () => import('$lib/components/ai/RealtimeCommunicationDemo.svelte'),
-    'autonomous-eng': () => import('$lib/components/ai/copilot/AutonomousEngineeringDemo.svelte')
+    webgpu: () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/webgpu/CacheOptimizerDemo.svelte'),
+    'cuda-streaming': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/OCRTensorDemo.svelte'),
+    'ai-assistant': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/EnhancedRAGDemo.svelte'),
+    'evidence-canvas': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/evidence/EnhancedEvidenceBoard.svelte'),
+    'legal-research': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/LegalAIPipelineDemo.svelte'),
+    'vector-search': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/VectorIntelligenceDemo.svelte'),
+    'gaming-ui': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/cache/CacheDemo.svelte'),
+    performance: () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/CachePerformanceDashboard.svelte'),
+    'neural-topology': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/NeuralTopology3DDemo.svelte'),
+    'simd-ai': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/SIMDAIAssistantDemo.svelte'),
+    'realtime-comm': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/RealtimeCommunicationDemo.svelte'),
+    'autonomous-eng': () => import('$lib // TODO: Verify store subscription is correct for Svelte 5/components/ai/copilot/AutonomousEngineeringDemo.svelte')
   };
 
-  let demoSlug = $derived($page.params.slug ?? 'showcase');
-  let currentComponent = $state<SvelteComponentConstructor | null>(null);
-  let loading = $state<boolean>(true);
-  let error = $state<string | null>(null);
+  let demoSlug = $derived // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5.params.slug ?? 'showcase');
+  let currentComponent = $state // TODO: Verify store subscription is correct for Svelte 5<SvelteComponentConstructor | null>(null);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   async function loadDemoComponent(slug: string): Promise<any> {
     loading = true;
@@ -55,7 +55,7 @@
       loading = false}
   }
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (demoSlug) {
       loadDemoComponent(demoSlug)}
   });
@@ -120,7 +120,7 @@
   >;
 
   // safely index metadata by casting slug as key of demoMetadata
-  let metadata = $derived(
+  let metadata = $derived // TODO: Verify store subscription is correct for Svelte 5(
     demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: ''; tags: [] }
   );
 </script>

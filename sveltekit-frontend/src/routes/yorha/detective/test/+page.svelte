@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported in runes mode
 
-  let testResult = $state<string>('');
-  let isLoading = $state<boolean>(false);
+  let testResult = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   // Example: Split logic for testCaseList into multiple lines for readability
   async function testCaseList(): Promise<any> {

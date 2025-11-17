@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { User } from '$lib/types';
-  import type { PageData } from './$types';
-  let { data }: { data: PageData } = $props();
+  import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
+  let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
   const { user, session } = data;
 </script>
 

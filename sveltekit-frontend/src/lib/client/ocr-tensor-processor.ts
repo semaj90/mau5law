@@ -1,6 +1,6 @@
 /** * Client-side OCR + Tensor Processing Pipeline * OCR.js â†’ Text Extraction â†’ Node API â†’ Embeddings â†’ Multi-dimensional Tensors * SIMD parsing via Service Worker for streaming performance */
-import { ShaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { browser } from '$app/environment';
+import { ShaderCacheManager } from '$lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/shader-cache-manager.js';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 // Placeholder definitions to resolve compilation errors if gaming-constants.js is missing or incorrect
 // These should ideally be imported from a proper constants file.
@@ -118,7 +118,7 @@ export interface BatchProcessingItem {
 }
 
 // Define an interface for ShaderCacheManager to assert expected methods
-// This assumes the ShaderCacheManager class (from $lib/webgpu/shader-cache-manager.js)
+// This assumes the ShaderCacheManager class (from $lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/shader-cache-manager.js)
 // will eventually implement these methods.
 interface IShaderCacheManager {
   initialize(device: GPUDevice): Promise<void>;
@@ -135,7 +135,7 @@ export class OCRTensorProcessor {
   // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
   private worker?: Worker | ServiceWorker;
   private serviceWorkerRegistration?: ServiceWorkerRegistration;
-  private ocrInitialized = $state(false);
+  private ocrInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
   private webgpuDevice?: GPUDevice;
   private shaderCacheManager: IShaderCacheManager; // Use the new interface type
   private currentLODLevel: 'high' | 'medium' | 'low' = 'medium';

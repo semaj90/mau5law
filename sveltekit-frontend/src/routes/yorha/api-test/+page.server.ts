@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }) => {
   try {

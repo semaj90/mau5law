@@ -15,7 +15,7 @@ export interface Evidence {
 // ======================================================================
 import { assign, setup, fromPromise, createActor } from 'xstate';
 import { writable, derived } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 // ======================================================================
 // ENHANCED TYPES
@@ -568,18 +568,18 @@ export const evidenceProcessingStore = writable({
 // Derived stores for easy component access
 export const currentlyProcessingStore = derived(
   evidenceProcessingStore,
-  $store => $store.context?.evidenceQueue[0] || null
+  $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.context?.evidenceQueue[0] || null
 );
 
 export const processingResultsStore = derived(
   evidenceProcessingStore,
-  $store => Array.from($store.context?.processingResults?.values() || [])
+  $store // TODO: Verify store subscription is correct for Svelte 5 => Array.from($store // TODO: Verify store subscription is correct for Svelte 5.context?.processingResults?.values() || [])
 );
 
 export const aiRecommendationsStore = derived(
   evidenceProcessingStore,
-  $store => {
-    const analysis = $store.context?.aiAnalysis;
+  $store // TODO: Verify store subscription is correct for Svelte 5 => {
+    const analysis = $store // TODO: Verify store subscription is correct for Svelte 5.context?.aiAnalysis;
     if (!analysis) return [];
     return Array.from(analysis.values()).flatMap(
       (a: any) => a.suggestedActions?.map((action: string) => ({
@@ -595,21 +595,21 @@ export const aiRecommendationsStore = derived(
 
 export const vectorSimilarityStore = derived(
   evidenceProcessingStore,
-  $store => $store.context?.vectorMatches || []
+  $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.context?.vectorMatches || []
 );
 
 export const graphRelationshipsStore = derived(
   evidenceProcessingStore,
-  $store => $store.context?.graphRelationships || []
+  $store // TODO: Verify store subscription is correct for Svelte 5 => $store // TODO: Verify store subscription is correct for Svelte 5.context?.graphRelationships || []
 );
 
 export const systemHealthStore = derived(
   evidenceProcessingStore,
-  $store => ({
-    health: $store.context?.systemHealth || 'unknown',
-    errors: $store.context?.errors?.filter((e: any) => !e.resolved) || [],
-    cacheHits: $store.context?.cacheHits || 0,
-    lastSync: $store.context?.lastSync
+  $store // TODO: Verify store subscription is correct for Svelte 5 => ({
+    health: $store // TODO: Verify store subscription is correct for Svelte 5.context?.systemHealth || 'unknown',
+    errors: $store // TODO: Verify store subscription is correct for Svelte 5.context?.errors?.filter((e: any) => !e.resolved) || [],
+    cacheHits: $store // TODO: Verify store subscription is correct for Svelte 5.context?.cacheHits || 0,
+    lastSync: $store // TODO: Verify store subscription is correct for Svelte 5.context?.lastSync
   })
 );
 

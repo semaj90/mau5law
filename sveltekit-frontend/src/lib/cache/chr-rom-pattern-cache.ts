@@ -1,6 +1,6 @@
 /** * CHR-ROM Pattern Cache Integration with Redis * Nintendo-inspired optimization for legal AI platform * Achieves 0.5-2ms response times for UI patterns */
 import Redis from 'ioredis';
-import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
+import type { LegalDocumentJSON } from '$lib // TODO: Verify store subscription is correct for Svelte 5/wasm/simd-json-wrapper';
 
 export interface CHRROMPattern {
   id: string;

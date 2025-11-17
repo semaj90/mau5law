@@ -1,5 +1,5 @@
 import { Client } from 'minio';
-import { env } from '$env/dynamic/private';
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
 
 export class MinIOService {
   client = new Client({

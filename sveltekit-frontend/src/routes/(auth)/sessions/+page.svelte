@@ -12,11 +12,11 @@
     deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown';
   }
 
-  let sessions = $state<Session[]>([]);
-  let loading = $state<boolean>(true);
-  let revoking = $state<string | null>(null);
-  let message = $state<string>('');
-  let messageType = $state<'success' | 'error'>('success');
+  let sessions = $state // TODO: Verify store subscription is correct for Svelte 5<Session[]>([]);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let revoking = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let message = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let messageType = $state // TODO: Verify store subscription is correct for Svelte 5<'success' | 'error'>('success');
 
   async function loadSessions(): Promise<void> {
     try {

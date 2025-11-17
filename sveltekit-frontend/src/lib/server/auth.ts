@@ -250,7 +250,7 @@ export class AuthService {
     data: Partial<{ firstName: string | null; lastName: string | null; avatarUrl: string | null }>
   ) {
     try {
-      const updateData: Partial<typeof schema.users.$inferInsert> = {
+      const updateData: Partial<typeof schema.users.$inferInsert // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5> = {
         updatedAt: new Date().toISOString(),
       }; // Used schema.users
       if (data.firstName !== undefined) updateData.firstName = data.firstName;

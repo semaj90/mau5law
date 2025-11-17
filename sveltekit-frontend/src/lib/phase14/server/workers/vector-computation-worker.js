@@ -19,7 +19,7 @@ class VectorComputationPool {
     this.taskQueue = [];
     this.activeJobs = new Map();
     this.jobCounter = 0
-    this.initialized = $state(false) }
+    this.initialized = $state // TODO: Verify store subscription is correct for Svelte 5(false) }
   async initialize() {
     if (this.initialized) return
     try {
@@ -126,7 +126,7 @@ class VectorComputationPool {
       console.warn(`Received result for unknown job ${jobId}`);
       return}
     // Mark worker as available
-    this.workers[workerIndex].busy = $state(false);
+    this.workers[workerIndex].busy = $state // TODO: Verify store subscription is correct for Svelte 5(false);
     // Resolve or reject the job
     if (success) {
       job.resolve(data) } else {
@@ -142,7 +142,7 @@ class VectorComputationPool {
     for (const workerInfo of this.workers) {
       await workerInfo.worker.terminate() }
     this.workers = [];
-    this.initialized = $state(false) }
+    this.initialized = $state // TODO: Verify store subscription is correct for Svelte 5(false) }
   getStats() {
     return {
       poolSize: this.poolSize: activeJobs: this.activeJobs.size: queuedJobs: this.taskQueue.length: busyWorkers: this.workers.filter(item => item.length)} }
@@ -157,7 +157,7 @@ class LegalLLMWorkerPool {
     this.taskQueue = [];
     this.activeJobs = new Map();
     this.jobCounter = 0
-    this.initialized = $state(false) }
+    this.initialized = $state // TODO: Verify store subscription is correct for Svelte 5(false) }
   async initialize() {
     if (this.initialized) return
     try {
@@ -216,7 +216,7 @@ class LegalLLMWorkerPool {
     const { jobId, success, data, error } = result
     const job = this.activeJobs.get(jobId);
     if (!job) return
-    this.workers[workerIndex].busy = $state(false);
+    this.workers[workerIndex].busy = $state // TODO: Verify store subscription is correct for Svelte 5(false);
     if (success) {
       job.resolve(data) } else {
       job.reject(new Error(error), }
@@ -229,7 +229,7 @@ class LegalLLMWorkerPool {
     for (const workerInfo of this.workers) {
       await workerInfo.worker.terminate() }
     this.workers = [];
-    this.initialized = $state(false) }
+    this.initialized = $state // TODO: Verify store subscription is correct for Svelte 5(false) }
 }
 /**
  * Worker thread setup and task handlers

@@ -1,14 +1,14 @@
 <script lang="ts">
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'bits-ui/components/ui/dialog';
 // Svelte, 5 runes are auto-imported
-import Card from '$lib/components/ui/Card.svelte';
-import Input from '$lib/components/ui/Input.svelte';
-import Select from '$lib/components/ui/Select.svelte';
-import Textarea from '$lib/components/ui/Textarea.svelte';
+import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Card.svelte';
+import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Input.svelte';
+import Select from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Select.svelte';
+import Textarea from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/Textarea.svelte';
 import { onMount } from 'svelte';
 // Use namespace imports with runtime fallback to handle files that may not export a default
 // Error handling: toast is used for user-facing notifications (success/error) per platform standards
-import { cn } from '$lib/utils.js';
+import { cn } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/utils.js';
 import { Edit, Filter, Grid, List, Plus, Trash2 } from 'lucide-svelte';
 import { toast } from 'svelte-sonner';
 
@@ -68,23 +68,23 @@ interface FormData {
 }
 
 // State
-let searchQuery = $state<string>('');
-let viewMode = $state<'grid' | 'list'>('grid');
-let showFilters = $state<boolean>(false);
-let showCreateDialog = $state<boolean>(false);
-let showEditDialog = $state<boolean>(false);
-let selectedPoi = $state<Poi | null>(null); // Use Poi interface
-let isLoading = $state<boolean>(false);
-let isSubmitting = $state<boolean>(false);
+let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'list'>('grid');
+let showFilters = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+let showCreateDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+let showEditDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+let selectedPoi = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi | null>(null); // Use Poi interface
+let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+let isSubmitting = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 // Filter state
-let statusFilter = $state<string>('all');
-let priorityFilter = $state<string>('all');
-let threatLevelFilter = $state<string>('all');
+let statusFilter = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
+let priorityFilter = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
+let threatLevelFilter = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('all');
 // POI data
-let pois = $state<Poi[]>([]); // Use Poi interface
-let filteredPois = $state<Poi[]>([]); // Use Poi interface
+let pois = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi[]>([]); // Use Poi interface
+let filteredPois = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi[]>([]); // Use Poi interface
 // Form data
-let formData = $state<Poi>({ // Use Poi interface
+let formData = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Poi>({ // Use Poi interface
   name: '',
   aliases: [],
   dateOfBirth: '',
@@ -113,9 +113,9 @@ let formData = $state<Poi>({ // Use Poi interface
 });
 
 // String representations for array fields
-let aliasesString = $state<string>('');
-let knownHabitsString = $state<string>('');
-let associatesString = $state<string>('');
+let aliasesString = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+let knownHabitsString = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+let associatesString = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
 
 // Load POIs from API
 async function loadPois(): Promise<any> {
@@ -281,7 +281,7 @@ function editPoi(poi: Poi) { // Explicitly type poi
 }
 
 // Filter POIs
-$effect(() => {
+$effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
   let filtered = pois;
   if (searchQuery.trim()) {
     const query = searchQuery.toLowerCase();
@@ -333,7 +333,7 @@ const statusColors = {
 <main class="container mx-auto p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">POI Manager</h1>
-    <button on:click={() => showCreateDialog = true} class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    <button onclick={() => showCreateDialog = true} class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
       <Plus class="w-4 h-4" />
       Add POI
     </button>
@@ -342,15 +342,15 @@ const statusColors = {
   <!-- Search and filters -->
   <div class="flex gap-4 mb-6">
     <Input bind:value={searchQuery} placeholder="Search POIs..." class="flex-1" />
-    <button on:click={() => showFilters = !showFilters} class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+    <button onclick={() => showFilters = !showFilters} class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
       <Filter class="w-4 h-4" />
       Filters
     </button>
     <div class="flex gap-2">
-      <button on:click={() => viewMode = 'grid'} class={cn("flex items-center gap-2 px-4 py-2 rounded", viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600')}>
+      <button onclick={() => viewMode = 'grid'} class={cn("flex items-center gap-2 px-4 py-2 rounded", viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600')}>
         <Grid class="w-4 h-4" />
       </button>
-      <button on:click={() => viewMode = 'list'} class={cn("flex items-center gap-2 px-4 py-2 rounded", viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600')}>
+      <button onclick={() => viewMode = 'list'} class={cn("flex items-center gap-2 px-4 py-2 rounded", viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600')}>
         <List class="w-4 h-4" />
       </button>
     </div>
@@ -403,11 +403,11 @@ const statusColors = {
             <p class="text-sm mb-2"><strong>Last Seen:</strong> {poi.lastSeen || 'Unknown'}</p>
             <p class="text-sm mb-4 truncate">{poi.notes || 'No notes'}</p>
             <div class="flex gap-2">
-              <button on:click={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+              <button onclick={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                 <Edit class="w-4 h-4" />
                 Edit
               </button>
-              <button on:click={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+              <button onclick={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
                 <Trash2 class="w-4 h-4" />
                 Delete
               </button>
@@ -430,10 +430,10 @@ const statusColors = {
               <p class="text-sm mt-1 truncate">{poi.notes || 'No notes'}</p>
             </div>
             <div class="flex gap-2">
-              <button on:click={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+              <button onclick={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                 <Edit class="w-4 h-4" />
               </button>
-              <button on:click={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+              <button onclick={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
                 <Trash2 class="w-4 h-4" />
               </button>
             </div>
@@ -450,7 +450,7 @@ const statusColors = {
         <DialogTitle>Create New POI</DialogTitle>
         <DialogDescription>Fill in the details for the new Person of Interest.</DialogDescription>
       </DialogHeader>
-      <form on:submit|preventDefault={createPoi} class="space-y-4">
+      <form onsubmit|preventDefault={createPoi} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />
@@ -502,7 +502,7 @@ const statusColors = {
           </div>
         </div>
         <DialogFooter>
-          <button type="button" on:click={() => { showCreateDialog = false; resetForm(); }} class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
+          <button type="button" onclick={() => { showCreateDialog = false; resetForm(); }} class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
           <button type="submit" disabled={isSubmitting} class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
             {#if isSubmitting}Creating...{:else}Create POI{/if}
           </button>
@@ -518,7 +518,7 @@ const statusColors = {
         <DialogTitle>Edit POI</DialogTitle>
         <DialogDescription>Update the details for {selectedPoi?.name}.</DialogDescription>
       </DialogHeader>
-      <form on:submit|preventDefault={updatePoi} class="space-y-4">
+      <form onsubmit|preventDefault={updatePoi} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />
@@ -570,7 +570,7 @@ const statusColors = {
           </div>
         </div>
         <DialogFooter>
-          <button type="button" on:click={() => { showEditDialog = false; selectedPoi = null; resetForm(); }} class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
+          <button type="button" onclick={() => { showEditDialog = false; selectedPoi = null; resetForm(); }} class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
           <button type="submit" disabled={isSubmitting} class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
             {#if isSubmitting}Updating...{:else}Update POI{/if}
           </button>

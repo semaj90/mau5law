@@ -1,7 +1,7 @@
-import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db/drizzle'; // Changed to named import
+import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle'; // Changed to named import
 import { sql, eq, not, inArray } from 'drizzle-orm'; // Corrected import: notIn -> not, inArray
-import { users, cases, evidence, criminals } from '$lib/server/db/schema';
+import { users, cases, evidence, criminals } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
 
 type CountRow = { value: number | string | bigint | null };
 

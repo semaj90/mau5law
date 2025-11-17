@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/avatar';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
   import {
     Camera,
     Edit,
@@ -16,7 +16,7 @@
     onView,
     onEdit,
     onDelete
-  } = $props<{
+  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     poi: {
       id: string;
       name: string;

@@ -1,10 +1,10 @@
-﻿import type { RequestHandler } from './$types';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidenceBoards, cases } from '$lib/database/enhanced-schema';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import { evidenceBoards, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/database/enhanced-schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
 
 const createEvidenceBoardSchema = z.object({
   caseId: cuidSchema,

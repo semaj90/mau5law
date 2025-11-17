@@ -3,7 +3,7 @@
  * Provides safe named helpers backed by the context7-wasm selector shim
  */
 
-import context7 from '$lib/integrations/context7-wasm';
+import context7 from '$lib // TODO: Verify store subscription is correct for Svelte 5/integrations/context7-wasm';
 
 export interface Context7SearchOptions {
   query: string;

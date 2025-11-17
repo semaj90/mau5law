@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import type { PageData } from './$types';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
 
   export let data: PageData;
 
   // Service health and metrics state
-  let services = $state([
+  let services = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([
     {
       name: 'TensorRT-LLM Service',
       endpoint: 'http://localhost:8099',
@@ -64,7 +64,7 @@
     }
   ]);
 
-  let systemMetrics = $state({
+  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     cpu: { usage: 0, cores: 0 },
     memory: { used: 0, total: 0, percent: 0 },
     gpu: { utilization: 0, memory: { used: 0, total: 0 }, temperature: 0 },
@@ -72,7 +72,7 @@
     disk: { read: 0, write: 0 }
   });
 
-  let performanceHistory = $state({
+  let performanceHistory = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     latency: [] as number[],
     throughput: [] as number[],
     memory: [] as number[],
@@ -80,7 +80,7 @@
   });
 
   let refreshInterval: number;
-  let isRefreshing = $state(false);
+  let isRefreshing = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 
   // Health check functions
   async function checkServiceHealth(service: typeof services[0]) {

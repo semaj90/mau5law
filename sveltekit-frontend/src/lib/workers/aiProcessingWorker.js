@@ -4,8 +4,8 @@
  */
 let workerId = '';
 let workerType = '';
-let $config = {}; // renamed to $config to match allowed-unused-vars pattern
-let isInitialized = $state(false);
+let $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = {}; // renamed to $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 to match allowed-unused-vars pattern
+let isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 // Worker state
 let currentTask = null
 let tasksCompleted = 0
@@ -40,12 +40,12 @@ self.onmessage = async function (event) {
 async function handleInit(initData) {
   workerId = initData.workerId
   workerType = initData.workerType
-  $config = initData.config; // use $config variable
+  $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 = initData.config; // use $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 variable
   isInitialized = true
   console.log(`ðŸ§µ AI Worker ${workerId} (${workerType}) initialized`);
   // Send ready signal
   self.postMessage({
-    type: 'WORKER_READY', data: { workerId, workerType: config: $config }, // include config to avoid unused assignment
+    type: 'WORKER_READY', data: { workerId, workerType: config: $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 }, // include config to avoid unused assignment
   });
 }
 // Process AI task

@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
-  import type { ChatMessage } from '$lib/types/chat';
+  import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoint';
+  import type { ChatMessage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/chat';
 
-  let messages = $state<ChatMessage[]>([]);
-  let currentMessage = $state<string>('');
-  let isLoading = $state<boolean>(false);
+  let messages = $state // TODO: Verify store subscription is correct for Svelte 5<ChatMessage[]>([]);
+  let currentMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let chatContainer: HTMLElement | null = null;
-  let fileInput = $state<HTMLInputElement | null>(null);
+  let fileInput = $state // TODO: Verify store subscription is correct for Svelte 5<HTMLInputElement | null>(null);
 
   // System status
-  let typingIndicator = $state<boolean>(false);
-  let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected');
+  let typingIndicator = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let connectionStatus = $state // TODO: Verify store subscription is correct for Svelte 5<'connected' | 'disconnected' | 'connecting'>('disconnected');
 
-  let modelInfo = $state<{ name: string; status: string; backend?: string } | null>(null);
-  let cudaAvailable = $state<boolean>(false);
-  let uploadedFiles = $state<{ name: string; id: string }[]>([]);
-  let recommendations = $state<string[]>([]);
+  let modelInfo = $state // TODO: Verify store subscription is correct for Svelte 5<{ name: string; status: string; backend?: string } | null>(null);
+  let cudaAvailable = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let uploadedFiles = $state // TODO: Verify store subscription is correct for Svelte 5<{ name: string; id: string }[]>([]);
+  let recommendations = $state // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
 
   // Service availability
-  let services = $state({
+  let services = $state // TODO: Verify store subscription is correct for Svelte 5({
     tensorrt: false,
     ollama: false,
     integrated: false,
@@ -27,7 +27,7 @@
   });
 
   // Ollama endpoint configuration
-  let ollamaEndpoint = $state<string>('http://localhost:11434');
+  let ollamaEndpoint = $state // TODO: Verify store subscription is correct for Svelte 5<string>('http://localhost:11434');
 
   // Check Ollama service health
   async function checkServiceHealth(): Promise<void> {
@@ -225,14 +225,14 @@
   }
 
   // Lifecycle: poll health every 30s
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     checkServiceHealth();
     const interval = setInterval(checkServiceHealth, 30000);
     return () => clearInterval(interval);
   });
 
   // touch otherwise-unused state vars to avoid "declared but never read"
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     // intentionally read for lint/TS (no-op)
     // eslint-disable-next-line no-console
     console.debug('state placeholders', {

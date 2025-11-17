@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { MinIOService } from '$lib/server/minio';
+import type { MinIOService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio';
 
 export async function handleFileUpload(request: Request, minioService: MinIOService) {
   try {

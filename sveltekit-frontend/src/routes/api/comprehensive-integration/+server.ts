@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 interface SystemHealthResponse {
   system_overview: {

@@ -8,7 +8,7 @@ export class ProductionController {
   constructor() {
     this.tracker = tracker
     this.context7 = Context7Helper
-    this.mcpReady = $state(false) }
+    this.mcpReady = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false) }
   // Initialize with MCP memory
   async initializeMCP() {
     console.log('ðŸš€ Initializing MCP integration...');

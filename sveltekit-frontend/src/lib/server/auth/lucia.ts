@@ -1,8 +1,8 @@
 ﻿import { Lucia } from 'lucia';
 import { drizzleAdapter } from '@lucia-auth/adapter-drizzle';
 import type { User as LuciaUser } from 'lucia';
-import { db } from '$lib/server/db/client';
-import { users, sessions } from '$lib/server/db/schema-postgres';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
+import { users, sessions } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 
 export const auth = new Lucia(
   drizzleAdapter(db, {

@@ -1,5 +1,5 @@
 <script>
-  export let text = '';
+  let { text = '' } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="tooltip">

@@ -1,50 +1,50 @@
 <script lang="ts">
-import { Input } from '$lib/components/ui/input';
-  import { Button } from '$lib/components/ui/button';
+import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
   // Svelte, 5 runes are auto-imported
-  import type { PageData, ActionData } from './$types.js';
+  import type { PageData, ActionData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
   import { onMount, onDestroy } from 'svelte';
-  import { enhance } from '$app/forms';
-  import { goto } from '$app/navigation';
+  import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/forms';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
     Card,
     Input,
     Badge
-   from "$lib/components/ui/enhanced-bits.svelte";
+   from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits.svelte";
   import 
     OrchestratedCard,
     OrchestratedButton,
     type LegalEvidenceItem,
     getConfidenceClass,
     formatAnalysisDate
-   from "$lib/components/ui/orchestrated.svelte";
+   from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/orchestrated.svelte";
   // Icons for CUDA streaming
   import {
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
     Database, Clock, BarChart3, Thermometer, Power, Memory,
     CheckCircle, AlertCircle, Eye, Download, Upload, Layers
   } from 'lucide-svelte';
-  let { data, form }: { data: PageData;, form: ActionData } = $props();
+  let { data, form }: { data: PageData;, form: ActionData } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
   // Svelte, 5 runes for CUDA streaming state
-  let selectedOperation = $state<string>('document_vectorization');
-  let inputText = $state<string>('');
-  let batchSize = $state<number>(10);
-  let useGpu = $state<boolean>(true);
-  let isStreaming = $state<boolean>(false);
-  let currentSession = $state<string | null>(null);
-  let streamResults = $state<any[]>([]);
-  let processingProgress = $state<number>(0);
-  let liveMetrics = $state((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).sessionStats);
-  let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
+  let selectedOperation = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('document_vectorization');
+  let inputText = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let batchSize = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(10);
+  let useGpu = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let isStreaming = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let currentSession = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let streamResults = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let processingProgress = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let liveMetrics = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).sessionStats);
+  let selectedTab = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
   // Real-time metrics update
   let metricsInterval: NodeJS.Timeout | null = null
   let streamingSocket: EventSource | null = null
   // Derived states
-  let gpuStatus = $derived((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
-  let canStream = $derived(!isStreaming && inputText.trim.length > 0);
-  let gpuUtilizationColor = $derived(
+  let gpuStatus = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
+  let canStream = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(!isStreaming && inputText.trim.length > 0);
+  let gpuUtilizationColor = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
     (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 80 ? 'text-red-600' :
     (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
   );
@@ -171,7 +171,7 @@ import { Input } from '$lib/components/ui/input';
       streamingSocket.close()}
   });
   // Auto-refresh metrics
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     const refreshInterval = setInterval(() => {
       // Simulate live metrics updates
       liveMetrics = {

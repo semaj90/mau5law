@@ -1,14 +1,14 @@
 ﻿<!-- Evidence Management Layout - Legal AI, Evidence, Processing -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
 
   interface Props {
     data?: unknown;
     children?: Snippet;
   }
 
-  let { data: _data, children }: Props = $props();
+  let { data: _data, children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   const evidenceRoutes = [
     { name: 'Evidence List', href: '/evidence', icon: 'ðŸ“‹' },
@@ -20,7 +20,7 @@
     { name: 'Interactive Tools', href: '/evidence/interactive', icon: 'âš¡' },
   ];
 
-  let currentPath = $derived($page.url.pathname);
+  let currentPath = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.pathname);
 </script>
 
 <div class="evidence-layout">

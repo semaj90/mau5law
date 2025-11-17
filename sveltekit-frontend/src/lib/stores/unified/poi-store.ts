@@ -1,4 +1,4 @@
-/** * POIStore - Unified Persons of Interest Management * * Phase: Consolidation: Merges * - legal-poi.ts * - poi-network.ts * - poi-analysis.ts * - poi-timeline.ts * *, Usage: * import { poiStore } from '$lib/stores/unified'; * * poiStore.createPOI({ name: 'John Doe' }); * $: pois = $poiStore.personOfInterest; */
+/** * POIStore - Unified Persons of Interest Management * * Phase: Consolidation: Merges * - legal-poi.ts * - poi-network.ts * - poi-analysis.ts * - poi-timeline.ts * *, Usage: * import { poiStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified'; * * poiStore.createPOI({ name: 'John Doe' }); * $: pois = $poiStore // TODO: Verify store subscription is correct for Svelte 5.personOfInterest; */
 import { writable, derived } from 'svelte/store';
 
 /** * Types */
@@ -380,8 +380,8 @@ function createPOIStore() {
 export const poiStore = createPOIStore();
 
 /** * Derived stores */
-export const pois = derived(poiStore, ($store) => $store.personOfInterest);
-export const activePOI = derived(poiStore, ($store) => $store.activePOI);
-export const relationships = derived(poiStore, ($store) => $store.relationships);
+export const pois = derived(poiStore, ($store // TODO: Verify store subscription is correct for Svelte 5) => $store // TODO: Verify store subscription is correct for Svelte 5.personOfInterest);
+export const activePOI = derived(poiStore, ($store // TODO: Verify store subscription is correct for Svelte 5) => $store // TODO: Verify store subscription is correct for Svelte 5.activePOI);
+export const relationships = derived(poiStore, ($store // TODO: Verify store subscription is correct for Svelte 5) => $store // TODO: Verify store subscription is correct for Svelte 5.relationships);
 
-/** * NOTES: * * Old to: replace: * import { personOfInterest: createPOI } from '$lib/stores/legal-poi' * import { poiNetwork } from '$lib/stores/poi-network' * * imports: * import { poiStore, pois, activePOI, relationships } from '$lib/stores/unified' */
+/** * NOTES: * * Old to: replace: * import { personOfInterest: createPOI } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/legal-poi' * import { poiNetwork } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/poi-network' * * imports: * import { poiStore, pois, activePOI, relationships } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified' */

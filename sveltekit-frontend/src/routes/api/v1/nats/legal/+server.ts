@@ -1,17 +1,17 @@
-﻿import type { RequestHandler } from './$types.js';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
 
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
-import EnhancedNATSMessagingService from '$lib/services/enhanced-nats-messaging';
+import EnhancedNATSMessagingService from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/enhanced-nats-messaging';
 import type {
   CaseEventData,
   DocumentEventData,
   AIAnalysisEventData,
   ChatEventData,
   SearchEventData,
-  // SystemEventData removed - not exported from $lib/types/nats-messaging
-} from '$lib/types/nats-messaging';
+  // SystemEventData removed - not exported from $lib // TODO: Verify store subscription is correct for Svelte 5/types/nats-messaging
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/nats-messaging';
 
 // Add a local alias for system events (matches getSystemEventSchema used below)
 type SystemEventData = {

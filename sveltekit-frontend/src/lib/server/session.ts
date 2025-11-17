@@ -157,8 +157,8 @@ export async function invalidateSession(sessionId: string): Promise<void> {
   console.log(`[Session Service] Invalidating session: ${sessionId}`);
   // TODO: Implement actual session deletion from DB/Redis
   // Example with Drizzle:
-  // import { db } from '$lib/server/db/client';
-  // import * as schema from '$lib/server/db/schema-postgres';
+  // import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
+  // import * as schema from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
   // import { eq } from 'drizzle-orm';
   // await db.delete(schema.sessions).where(eq(schema.sessions.id, sessionId));
 }

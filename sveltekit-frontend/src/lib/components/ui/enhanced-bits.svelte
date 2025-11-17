@@ -4,13 +4,13 @@
   // you would import that component here and forward props to it.
   // For now, we'll assume it's a self-contained button.
 
-  // Use $props() to capture all passed props in Svelte 5 runes mode
+  // Use $props // TODO: Verify store subscription is correct for Svelte 5() to capture all passed props in Svelte 5 runes mode
   let {
     class: className = '',
     variant = 'default',
     size = 'default',
     ...rest
-  } = $props<{
+  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     class?: string;
     variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
     size?: 'default' | 'sm' | 'lg' | 'icon';
@@ -22,7 +22,7 @@
   const baseClasses =
     'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
-  const variantClasses = $derived(() => {
+  const variantClasses = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     switch (variant) {
       case 'destructive':
         return 'bg-destructive text-destructive-foreground hover:bg-destructive/90';
@@ -39,7 +39,7 @@
     }
   });
 
-  const sizeClasses = $derived(() => {
+  const sizeClasses = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     switch (size) {
       case 'sm':
         return 'h-9 px-3';
@@ -53,7 +53,7 @@
   });
 
   // Combine classes
-  const combinedClasses = $derived(
+  const combinedClasses = $derived // TODO: Verify store subscription is correct for Svelte 5(
     () => `${baseClasses} ${variantClasses} ${sizeClasses} ${className}`
   );
 </script>

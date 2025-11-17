@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
   import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle
-  } from '$lib/components/ui/dialog';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import type { EvidenceNode } from '$lib/server/db/schema-postgres';
-  import { createEventDispatcher } from 'svelte';
+  } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
+  import { Textarea } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/textarea';
+  import type { EvidenceNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+  // Migrated from createEventDispatcher to callback props;
 
   export let node: EvidenceNode;
-  export let open = false;
+  let { open = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   let analysis = '';
   let isAnalyzing = false;
@@ -120,7 +120,7 @@
         <div class="analysis-header">
           <h4>AI Analysis</h4>
           <Button
-            on:click={analyzeEvidence}
+            onclick={analyzeEvidence}
             disabled={isAnalyzing}
             variant="outline"
             size="sm"
@@ -152,7 +152,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:click={() => applySuggestion(suggestion)}
+                  onclick={() => applySuggestion(suggestion)}
                 >
                   {suggestion}
                 </Button>
@@ -171,7 +171,7 @@
             <input
               type="text"
               bind:value={node.title}
-              on:change={(e) => updateNode({ title: e.currentTarget.value })}
+              onchange={(e) => updateNode({ title: e.currentTarget.value })}
             />
           </label>
 
@@ -179,7 +179,7 @@
             Description:
             <Textarea
               bind:value={node.description}
-              on:change={(e) => updateNode({ description: e.currentTarget.value })}
+              onchange={(e) => updateNode({ description: e.currentTarget.value })}
               rows={3}
             />
           </label>
@@ -192,7 +192,7 @@
               max="1"
               step="0.1"
               bind:value={node.confidence}
-              on:change={(e) => updateNode({ confidence: parseFloat(e.currentTarget.value) })}
+              onchange={(e) => updateNode({ confidence: parseFloat(e.currentTarget.value) })}
             />
           </label>
         </div>

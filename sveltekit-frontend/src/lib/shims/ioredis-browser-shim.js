@@ -10,8 +10,8 @@ export default class RedisShim {
       host: 'localhost', port: 4005, db: 0, keyPrefix: '', enableOfflineMode: true
       useServiceWorker: typeof navigator !== 'undefined' && 'serviceWorker' in navigator, ...config
     };
-    this.connected = $state(false);
-    this.offlineMode = $state(false);
+    this.connected = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+    this.offlineMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
     this.stats = {
       operations: 0, hits: 0, misses: 0, errors: 0};
     // Initialize offline storage
@@ -22,7 +22,7 @@ export default class RedisShim {
     try {
       // Check if we're in browser environment
       if (typeof window === 'undefined') {
-        this.offlineMode = $state(false);
+        this.offlineMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
         return}
       // Test localStorage availability
       localStorage.setItem('redis-test', 'test');
@@ -39,14 +39,14 @@ export default class RedisShim {
       }
     } catch (error) {
       console.warn('ðŸ”§ Redis Browser Shim: Offline storage not available:', error);
-      this.offlineMode = $state(false)
+      this.offlineMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false)
     }
   }
   async connect() {
     this.connected = true
     return Promise.resolve() }
   async disconnect() {
-    this.connected = $state(false);
+    this.connected = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
     return Promise.resolve() }
   async ping() {
     return Promise.resolve('PONG') }

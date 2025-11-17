@@ -2,10 +2,10 @@
   import { Dialog } from "bits-ui/components/ui/dialog";
 
   export let person;
-  let aiOpen = $state(false);
-  let aiSummary = $state("…");
+  let aiOpen = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let aiSummary = $state // TODO: Verify store subscription is correct for Svelte 5("…");
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (aiOpen && aiSummary === "…") {
       fetch("/api/persons/summary", {
         method: "POST",

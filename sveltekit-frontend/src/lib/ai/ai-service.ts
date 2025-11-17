@@ -1,4 +1,4 @@
-import { aiAssistant } from '$lib/stores/unified';
+import { aiAssistant } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/unified';
 import { get } from 'svelte/store';
 
 // The aiAssistant store is a Svelte readable store but the runtime object

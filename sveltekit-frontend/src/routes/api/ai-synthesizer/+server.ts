@@ -1,15 +1,15 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 // AI Synthesizer API Route - Full Stack Integration
 // Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
 // TypeScript-safe with Drizzle ORM and MCP Context7 best practices
 
-import { aiOrchestrator } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
-import { monitoringService } from '$lib/server/ai/monitoring-service';
+import { aiOrchestrator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/enhanced-ai-synthesis-orchestrator';
+import { monitoringService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/monitoring-service';
 // --- added imports ---
 import { json, error } from '@sveltejs/kit';
-import { logger } from '$lib/server/logger';
-import * as caching from '$lib/server/cache';
+import { logger } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/logger';
+import * as caching from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache';
 
 // Add typed result/metric definitions
 type SynthResult = {

@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let { webgpuReady = false, cpuFallbackReady = false } = $props();
+  let { webgpuReady = false, cpuFallbackReady = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
-  let systemMetrics = $state({
+  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5({
     memory: 0,
     cpu: 0,
     gpu: 0,
     network: 0
   });
 
-  let updateInterval = $state<number | undefined>(undefined);
+  let updateInterval = $state // TODO: Verify store subscription is correct for Svelte 5<number | undefined>(undefined);
 
   onMount(() => {
     // Update system metrics every 5 seconds

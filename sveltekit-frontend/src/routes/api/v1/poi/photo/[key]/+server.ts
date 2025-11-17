@@ -1,5 +1,5 @@
-import { minio } from '$lib/server/minio/client';
-import type { RequestHandler } from './$types';
+import { minio } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio/client';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 export const GET: RequestHandler = async ({ params, url }) => {
     try {

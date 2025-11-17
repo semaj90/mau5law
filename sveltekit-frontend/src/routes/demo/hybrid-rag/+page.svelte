@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
   /**
    * ðŸ§ª Hybrid RAG + SIMD Pipeline Demo
    *
@@ -9,20 +9,20 @@ import type { Document } from '$lib/types';
    * - View synthesis ranking scores
    */
 
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/Button.svelte';
   import { Upload, Search, Zap, Database } from 'lucide-svelte';
 
   // State management using Svelte, 5 runes
-  let query = $state<string>('');
-  let documents = $state<any[]>([]);
-  let results = $state<any[]>([]);
-  let isProcessing = $state<boolean>(false);
-  let processingStage = $state<string>('');
-  let timing = $state<any>(null);
-  let error = $state<string>('');
+  let query = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let documents = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let results = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let isProcessing = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let processingStage = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let timing = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
 
   // Sample documents for testing
-  const sampleDocuments = $state([ {
+  const sampleDocuments = $state // TODO: Verify store subscription is correct for Svelte 5([ {
       id: 'doc1',
       title: 'Employment Contract - Software Engineer',
       content:

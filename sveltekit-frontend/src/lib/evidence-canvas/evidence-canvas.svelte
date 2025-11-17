@@ -1,31 +1,29 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import { aiSuggestionsService, type AISuggestion, type SuggestionContext } from './ai-suggestions-service';
+  import { caseSimilarityService, type EvidenceNode } from './case-similarity-service';
+  import CaseSuggestionModal from './case-suggestion-modal.svelte';
   import EvidenceCanvas from './evidence-canvas-core.svelte';
   import GraphControlPanel from './graph-control-panel.svelte';
-  import CaseSuggestionModal from './case-suggestion-modal.svelte';
-  import { webgpuInitService } from './webgpu-init';
-  import { graphLayoutGPU } from './graph-layout-gpu';
-  import { caseSimilarityService, type EvidenceNode } from './case-similarity-service';
-  import { aiSuggestionsService, type AISuggestion, type SuggestionContext } from './ai-suggestions-service';
+import { graphLayoutGPU } from './graph-layout-gpu';
+import { webgpuInitService } from './webgpu-init-service';  type EvidenceEdge = { source: string, target: string };
 
-  type EvidenceEdge = { source: string, target: string };
-
-  let { caseId, caseType = 'general', jurisdiction = 'general', initialNodes = [], initialEdges = [] } = $props<{ caseId: string; caseType?: string; jurisdiction?: string; initialNodes?: EvidenceNode[]; initialEdges?: EvidenceEdge[]; }>();
+  let { caseId, caseType = 'general', jurisdiction = 'general', initialNodes = [], initialEdges = [] } = $props // TODO: Verify store subscription is correct for Svelte 5<{ caseId: string; caseType?: string; jurisdiction?: string; initialNodes?: EvidenceNode[]; initialEdges?: EvidenceEdge[]; }>();
 
   let canvas: EvidenceCanvas;
   let controlPanel: GraphControlPanel;
   let suggestionModal: CaseSuggestionModal;
 
-  let webgpuSupported = $state(false);
-  let gpuAccelerationEnabled = $state(false);
-  let suggestions = $state<AISuggestion[]>([]);
-  let selectedSuggestions = $state<AISuggestion[]>([]);
-  let showSuggestions = $state(false);
+  let webgpuSupported = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let gpuAccelerationEnabled = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let suggestions = $state // TODO: Verify store subscription is correct for Svelte 5<AISuggestion[]>([]);
+  let selectedSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5<AISuggestion[]>([]);
+  let showSuggestions = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
-  let showModal = $state(false);
+  let showModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
-  let selectedNodes = $state<EvidenceNode[]>([]);
-  let currentPhase = $state('initial');
+  let selectedNodes = $state // TODO: Verify store subscription is correct for Svelte 5<EvidenceNode[]>([]);
+  let currentPhase = $state // TODO: Verify store subscription is correct for Svelte 5('initial');
 
   onMount(async () => {
     // Initialize WebGPU support
@@ -36,8 +34,6 @@
     if (gpuAccelerationEnabled) {
       await graphLayoutGPU.initialize();
     }
-
-    await caseSimilarityService.initialize();
 
     // Load initial case data
     await loadCaseData();
@@ -69,9 +65,14 @@
     }
   }
 
-  async function handleNodeSelection(nodes: EvidenceNode[]) {
+  async function handleNodeSelection(e: CustomEvent<EvidenceNode[]>) {
+    const nodes = e.detail;
     selectedNodes = nodes;
 
+    await updateSuggestions(nodes);
+  }
+
+  async function updateSuggestions(nodes: EvidenceNode[]) {
     if (nodes.length > 0) {
       // Generate AI suggestions based on selection
       const context: SuggestionContext = {
@@ -92,6 +93,7 @@
 
   function handleSuggestionSelect(suggestion: AISuggestion) {
     selectedSuggestions = [suggestion];
+    showModal = true;
     if (suggestionModal) {
       suggestionModal.showModal(suggestion);
     }
@@ -101,7 +103,7 @@
     currentPhase = phase;
     // Re-generate suggestions with new phase context
     if (selectedNodes.length > 0) {
-      handleNodeSelection(selectedNodes);
+      updateSuggestions(selectedNodes);
     }
   }
 
@@ -179,16 +181,16 @@
       <h3>AI Suggestions</h3>
       <div class="suggestions-list">
         {#each suggestions as suggestion}
-          <div
+          <button
             class="suggestion-item"
             class:selected={selectedSuggestions.includes(suggestion)}
-            on:click={() => handleSuggestionSelect(suggestion)}
+            onclick={() => handleSuggestionSelect(suggestion)}
           >
             <div class="suggestion-header">
-              <span class="suggestion-type" class:type-{suggestion.type}>
+              <span class="suggestion-type type-{suggestion.type}">
                 {suggestion.type}
               </span>
-              <span class="suggestion-priority" class:priority-{suggestion.priority}>
+              <span class="suggestion-priority priority-{suggestion.priority}">
                 {suggestion.priority}
               </span>
               <span class="suggestion-confidence">
@@ -204,14 +206,13 @@
                 {/each}
               </ul>
             {/if}
-          </div>
+          </button>
         {/each}
       </div>
     </div>
   {/if}
-
   <!-- Suggestion Modal -->
-  <CaseSuggestionModal bind:this={suggestionModal} />
+  <CaseSuggestionModal bind:this={suggestionModal} show={showModal} />
 </div>
 
 <style>

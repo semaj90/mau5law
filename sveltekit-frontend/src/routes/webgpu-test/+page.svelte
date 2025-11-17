@@ -9,7 +9,7 @@
   };
 
   let statusMessage = 'Not checked yet';
-  // removed Svelte 5 runes ($state) usage — use plain reactive vars instead
+  // removed Svelte 5 runes ($state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5) usage — use plain reactive vars instead
   let isSuccess: boolean = false;
   let errors: string[] = [];
   let recommendations: string[] = [];
@@ -93,7 +93,7 @@
     <h1>Page under reconstruction</h1>
   </header>
   <div class="controls">
-    <button on:click={runDiagnostics} disabled={checking}>Run Diagnostics</button>
+    <button onclick={runDiagnostics} disabled={checking}>Run Diagnostics</button>
   </div>
   <p>This placeholder replaces corrupted or missing markup for now.</p>
   <!-- minimal diagnostics UI to surface status -->

@@ -22,8 +22,8 @@
  * }
  */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { GRPCAIOrchestrator } from '$lib/services/grpc-ai-orchestrator';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { GRPCAIOrchestrator } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/grpc-ai-orchestrator';
 
 interface LegalDocument {
     id: string;

@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+import { webgpuPolyfill } from '$lib // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-polyfill';
 
 // Add explicit types for the polyfill surface and init result
 type PerformanceStats = Record<string, unknown>;

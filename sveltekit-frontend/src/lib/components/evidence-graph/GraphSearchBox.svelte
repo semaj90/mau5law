@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let query = "";
+  let { query = "" } = $props // TODO: Verify store subscription is correct for Svelte 5();
   export let onSearch;
 </script>
 
@@ -7,5 +7,5 @@
   class="nes-input w-full p-2 text-lg bg-black text-white border border-cyan-400"
   placeholder="Search witnesses, objects, locations, contradictions..."
   bind:value={query}
-  on:input={(e)=>onSearch(e.target.value)}
+  oninput={(e)=>onSearch(e.target.value)}
 />

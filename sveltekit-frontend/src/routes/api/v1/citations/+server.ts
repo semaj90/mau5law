@@ -1,4 +1,4 @@
-﻿import { cuidSchema } from '$lib/server/z-schemas';
+﻿import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
 /** * Legal Citations API Routes * * Endpoints: * GET /api/v1/citations - Get citations for a case * POST /api/v1/citations - Add citation */ import {
   json,
   error,

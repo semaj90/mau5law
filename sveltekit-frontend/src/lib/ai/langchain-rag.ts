@@ -5,7 +5,7 @@ import type { Document as LangChainDocumentType } from '@langchain/core/document
 import { ChatPromptTemplate as PromptTemplate } from '@langchain/core/prompts';
 import { Runnable, RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables'; // Added Runnable
 import { StringOutputParser } from '@langchain/core/output_parsers';
-import { getOllamaEmbeddingEndpoint, getOllamaGenerationEndpoint } from '$lib/utils/ollama-endpoint'; // Removed getOllamaEndpoint
+import { getOllamaEmbeddingEndpoint, getOllamaGenerationEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoint'; // Removed getOllamaEndpoint
 
 // Note: formatDocumentsAsString may need to be implemented locally
 const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {

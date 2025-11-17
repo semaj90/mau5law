@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { json, error } from '@sveltejs/kit';
 import { z } from 'zod';
 

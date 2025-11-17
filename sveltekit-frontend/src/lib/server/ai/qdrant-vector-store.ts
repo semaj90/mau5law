@@ -6,7 +6,7 @@
  * - Integration with PostgreSQL for metadata
  */
 import { QdrantClient, type QdrantClientParams } from "@qdrant/js-client-rest";
-import type { LegalEntity } from "$lib/types/sharedTypes";
+import type { LegalEntity } from "$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes";
 import { createHash } from "crypto";
 
 // --- Revised: local types to avoid 'any' casts ---

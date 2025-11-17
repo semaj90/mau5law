@@ -1,10 +1,10 @@
 ﻿import type { RequestHandler } from '@sveltejs/kit';
-import { apiError } from '$lib/server/api/standard-response';
-import { ollamaService } from '$lib/server/services/OllamaService';
-import logger from '$lib/server/production-logger'; // Changed to default import
-import { conversationService } from '$lib/server/services/conversation-service';
-import { OllamaChatStreamService } from '$lib/services/ollamaChatStream';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { apiError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/standard-response';
+import { ollamaService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/OllamaService';
+import logger from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/production-logger'; // Changed to default import
+import { conversationService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/conversation-service';
+import { OllamaChatStreamService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollamaChatStream';
+import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
 import type { RequestEvent } from '@sveltejs/kit'; // Added for RequestEvent type
 
 interface StreamLine {
@@ -14,12 +14,12 @@ interface StreamLine {
 }
 
 // --- Start: Locally defined utility functions to resolve "no exported member" errors ---
-// It is recommended to move these to a shared utility file (e.g., $lib/server/utils/request.ts)
+// It is recommended to move these to a shared utility file (e.g., $lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/request.ts)
 function getRequestId(event: RequestEvent): string | undefined {
   return event.request.headers.get('x-request-id') || crypto.randomUUID();
 }
 
-// It is recommended to move this to a shared middleware file (e.g., $lib/server/middleware/error-handling.ts)
+// It is recommended to move this to a shared middleware file (e.g., $lib // TODO: Verify store subscription is correct for Svelte 5/server/middleware/error-handling.ts)
 type AsyncRequestHandler = (event: RequestEvent) => Promise<Response>;
 function withErrorHandling(handler: AsyncRequestHandler): RequestHandler {
   return async (event: RequestEvent) => {
@@ -28,7 +28,7 @@ function withErrorHandling(handler: AsyncRequestHandler): RequestHandler {
     } catch (e) {
       const requestId = getRequestId(event);
       logger.error(`Unhandled error (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`, e);
-      // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+      // Note: The apiError function in $lib // TODO: Verify store subscription is correct for Svelte 5/server/api/standard-response.ts should be updated
       // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
       // Reordered arguments: statusCode, message, errorCode, data, requestId
       return apiError(500, 'Internal Server Error', 'INTERNAL_SERVER_ERROR', undefined, requestId);
@@ -41,10 +41,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   const requestId = getRequestId(event);
   // Note: To properly fix 'Property 'auth' does not exist on type 'Locals'',
   // you need to augment the 'Locals' interface in src/app.d.ts.
-  // Example: declare namespace App { interface Locals { auth: import('$lib/server/lucia').Auth; } }
+  // Example: declare namespace App { interface Locals { auth: import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/lucia').Auth; } }
   const session = await (event.locals as any).auth.validate(); // Get user session (type assertion for compilation)
   if (!session?.user) {
-    // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+    // Note: The apiError function in $lib // TODO: Verify store subscription is correct for Svelte 5/server/api/standard-response.ts should be updated
     // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
     // Reordered arguments: statusCode, message, errorCode, data, requestId
     return apiError(401, 'Unauthorized', 'UNAUTHORIZED', undefined, requestId);
@@ -62,7 +62,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   } = body;
 
   if (!message || !message.trim()) {
-    // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+    // Note: The apiError function in $lib // TODO: Verify store subscription is correct for Svelte 5/server/api/standard-response.ts should be updated
     // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
     // Reordered arguments: statusCode, message, errorCode, data, requestId
     return apiError(400, 'Message is required', 'INVALID_INPUT', undefined, requestId);
@@ -70,7 +70,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
 
   // Check Ollama health
   if (!(await ollamaService.isHealthy())) {
-    // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+    // Note: The apiError function in $lib // TODO: Verify store subscription is correct for Svelte 5/server/api/standard-response.ts should be updated
     // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
     // Reordered arguments: statusCode, message, errorCode, data, requestId
     return apiError(503, 'AI service is currently unavailable', 'SERVICE_UNAVAILABLE', undefined, requestId);
@@ -179,7 +179,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
             context: ragContext,
           };
 
-          // Note: The OllamaChatStreamService class in $lib/services/ollamaChatStream.ts
+          // Note: The OllamaChatStreamService class in $lib // TODO: Verify store subscription is correct for Svelte 5/services/ollamaChatStream.ts
           // needs to have a 'streamChat' method defined that returns an async iterable.
           for await (const chunk of ollamaStream.streamChat(streamOptions)) {
             if (chunk.text) {
@@ -245,7 +245,7 @@ export const OPTIONS: RequestHandler = async () => new Response(null, {
   }
 });
 
-// Note: The RedisOptimizedMiddleware class (type of redisOptimized) in $lib/middleware/redis-orchestrator-middleware.ts
+// Note: The RedisOptimizedMiddleware class (type of redisOptimized) in $lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware.ts
 // needs to have an 'aiChat' method defined that accepts a RequestHandler.
 // For now, we are directly exporting the original handler to resolve the compilation error.
 export const POST = originalPOSTHandler;

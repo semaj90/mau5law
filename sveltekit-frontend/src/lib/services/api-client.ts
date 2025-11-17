@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import { env } from '$env/dynamic/public';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/public';
 
 // API Configuration
 export const API_CONFIG = {

@@ -1,4 +1,4 @@
-import { chrCache, type CHRPattern } from '$lib/gpu/chrrom-cache';
+import { chrCache, type CHRPattern } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/gpu/chrrom-cache';
 export async function getCHRPatternOrFetch(
   _key,
   string,

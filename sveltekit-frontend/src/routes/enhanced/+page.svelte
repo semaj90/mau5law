@@ -1,24 +1,24 @@
 <script lang="ts">
-  import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types'; // Svelte 5 runes are auto-imported
   // Debounce + streaming support
-  let debounceMs = $state<number>(400);
-  let autoSearch = $state<boolean>(true);
-  let lastTimer = $state<any>(null);
-  let useStreaming = $state<boolean>(true);
-  let streaming = $state<boolean>(false);
-  let streamedCount = $state<number>(0);
-  let query = $state<string>('');
-  let mode = $state<'simple' | 'enhanced'>('simple');
-  let limit = $state<number>(8);
-  let threshold = $state<number | null>(null);
-  let model = $state<string>('');
-  let caseId = $state<string>('');
-  let autoFocus = $state<boolean>(true);
-  let loading = $state<boolean>(false);
-  let controller = $state<AbortController | null>(null);
-  let results = $state<any[]>([]);
-  let responseMeta = $state<any>(null);
-  let errorMsg = $state<string | null>(null);
+  let debounceMs = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(400);
+  let autoSearch = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let lastTimer = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let useStreaming = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let streaming = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let streamedCount = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let query = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let mode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'simple' | 'enhanced'>('simple');
+  let limit = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(8);
+  let threshold = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number | null>(null);
+  let model = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let caseId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let autoFocus = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let controller = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<AbortController | null>(null);
+  let results = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let responseMeta = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let errorMsg = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   function reset() {
     results = [];
@@ -163,7 +163,7 @@
     streaming = false;
   }
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (autoFocus) {
       const el = document.getElementById('query-input');
       el?.focus();

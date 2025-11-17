@@ -1,6 +1,6 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { QDRANT_URL } from '$env/static/private';
+import { QDRANT_URL } from '$env // TODO: Verify store subscription is correct for Svelte 5/static/private';
 
 export const GET: RequestHandler = async ({ params }) => {
   const caseId = params.caseId;

@@ -1,7 +1,7 @@
 ﻿import { json } from '@sveltejs/kit';
-import { criminals } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types.js';
+import { criminals } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { or, like, eq, and, desc, asc, sql } from 'drizzle-orm'; // Added Drizzle ORM imports
 
 // Helper function to get user ID from locals

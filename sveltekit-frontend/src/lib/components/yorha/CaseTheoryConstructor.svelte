@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { CaseTheoryPlan } from '$lib/types/case-theory';
-  import { createEventDispatcher } from 'svelte';
+  import type { CaseTheoryPlan } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/case-theory';
+  // Migrated from createEventDispatcher to callback props;
 
   type FormState = {
     caseName: string;
@@ -20,7 +20,7 @@
     deliverables: Record<string, boolean>;
   };
 
-  const form = $state<FormState>({
+  const form = $state // TODO: Verify store subscription is correct for Svelte 5<FormState>({
     caseName: '',
     caseId: '',
     summary: '',
@@ -46,10 +46,10 @@
 
   const dispatch = createEventDispatcher<{ generated: { plan: CaseTheoryPlan } }>();
 
-  let isSubmitting = $state(false);
-  let plan = $state<CaseTheoryPlan | null>(null);
-  let rawOutput = $state<string | null>(null);
-  let errorMessage = $state<string | null>(null);
+  let isSubmitting = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let plan = $state // TODO: Verify store subscription is correct for Svelte 5<CaseTheoryPlan | null>(null);
+  let rawOutput = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let errorMessage = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   const deliverableOptions = [
     { key: 'closingOutline', label: 'Closing Outline' },
@@ -164,7 +164,7 @@
       <p class="title">Case Theory Constructor</p>
       <p class="muted">Phoenix-Pro strategy builder powered by Gemma3-Legal</p>
     </div>
-    <button class="nes-btn is-primary" on:click={buildTheory} disabled={isSubmitting}>
+    <button class="nes-btn is-primary" onclick={buildTheory} disabled={isSubmitting}>
       {isSubmitting ? 'Synthesizing…' : 'Generate Theory'}
     </button>
   </header>
@@ -274,7 +274,7 @@
               <input
                 type="checkbox"
                 checked={form.deliverables[option.key]}
-                on:change={() => toggleDeliverable(option.key)}
+                onchange={() => toggleDeliverable(option.key)}
               />
               <span>{option.label}</span>
             </label>
@@ -439,7 +439,7 @@
           {/if}
 
           <div class="results-actions">
-            <button class="nes-btn is-success" on:click={exportPlan}>Export JSON</button>
+            <button class="nes-btn is-success" onclick={exportPlan}>Export JSON</button>
             {#if rawOutput}
               <details>
                 <summary>Raw Output</summary>

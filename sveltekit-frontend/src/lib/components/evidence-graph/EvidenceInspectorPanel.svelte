@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { evidence, open = false } = $props();
+  let { evidence, open = false } = $props // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="fixed right-0 top-0 h-full w-[28rem] bg-gray-950 text-white p-5 nes-container with-title"

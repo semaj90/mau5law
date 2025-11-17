@@ -1,13 +1,13 @@
 ﻿<!-- Tools & Utilities Layout - Legal AI Development Tools -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores';
 
   interface Props {
     children?: Snippet;
   }
 
-  let { children }: Props = $props();
+  let { children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   // Tools navigation items
   const toolsRoutes = [
@@ -37,8 +37,8 @@
         <a
           href={route.href}
           class="tools-nav-item"
-          class:active={$page.url.pathname === route.href ||
-            $page.url.pathname.startsWith(route.href + '/')}
+          class:active={$page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.pathname === route.href ||
+            $page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.pathname.startsWith(route.href + '/')}
         >
           <span class="tools-nav-icon">{route.icon}</span>
           <span class="tools-nav-text">{route.name}</span>
@@ -65,7 +65,7 @@
   <footer class="tools-footer">
     <div class="tools-footer-content">
       <div class="tools-info">
-        <span class="tools-current">Current: <strong>{$page.url.pathname}</strong></span>
+        <span class="tools-current">Current: <strong>{$page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.url.pathname}</strong></span>
         <span class="tools-separator">â€¢</span>
         <span class="tools-tech">Development & Utility Tools</span>
       </div>

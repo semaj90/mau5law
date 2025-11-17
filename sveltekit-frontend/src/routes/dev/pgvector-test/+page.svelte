@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Label } from '$lib/components/ui/label';
-  import { Input } from '$lib/components/ui/input';
-  import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import { Label } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/label';
+  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+  import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types'; // Svelte, 5 runes are auto-imported
 </script>
 
 <main class="page-repair">

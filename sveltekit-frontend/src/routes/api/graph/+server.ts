@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { mergePromptCluster, mergeTransition } from '$lib/server/graph-service';
+import { mergePromptCluster, mergeTransition } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/graph-service';
 
 export async function POST({ request }): Promise<any> {
 	const body = await request.json().catch(() => ({}));

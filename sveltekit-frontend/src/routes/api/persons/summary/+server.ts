@@ -1,9 +1,9 @@
-import { db } from "$lib/server/db/drizzle";
-import { personsOfInterest } from "$lib/server/db/schema-postgres";
+import { db } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle";
+import { personsOfInterest } from "$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import { getOllamaEndpoint } from "$lib/utils/ollama-helpers";
+import type { RequestHandler } from "./$types // TODO: Verify store subscription is correct for Svelte 5";
+import { getOllamaEndpoint } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-helpers";
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

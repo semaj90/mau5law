@@ -1,4 +1,4 @@
-﻿import type { RequestHandler } from './$types.js';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
 import importedChatEngine from '../../../lib/services/user-chat-recommendation-engine.js';
 import importedMultiLayerCache from '../../../lib/services/multiLayerCache.js';

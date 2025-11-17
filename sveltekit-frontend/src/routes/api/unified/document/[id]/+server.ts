@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import legalAI from '$lib/server/unified/legal-ai-service';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import legalAI from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/unified/legal-ai-service';
 
 export const GET: RequestHandler = async ({ params }) => {
   try {

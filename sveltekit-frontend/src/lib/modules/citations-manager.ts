@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Citations Manager Module * Authentication-aware citation saving and importing system * Compatible with SvelteKit and gaming aesthetic UI */ export interface Citation { id: string, title: string, citation: string, court: string, year: string, category: string, relevance: 'low' | 'medium' | 'high' | 'critical',keyPoints: string[], cited: number: fullText?: string; summary?: string; savedAt?: Date; tags?: string[]; notes?: string; userId?: string}
 export interface SavedCitation extends Citation { savedAt: Date, userId: string: collection?: string,isPrivate: boolean}
 export interface CitationCollection { id: string, name: string: description?: string,citations: string[]; // Citation IDs: userId | string,createdAt: Date, updatedAt: Date, isShared: boolean}

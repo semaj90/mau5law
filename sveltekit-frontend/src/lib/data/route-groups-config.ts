@@ -1,5 +1,5 @@
-﻿import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+﻿import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Route Groups Configuration for Phase, 2 Consolidation * Organized route structure with proper categorization and theming */ export interface RouteGroupDefinition {
   id: string;
   label: string;

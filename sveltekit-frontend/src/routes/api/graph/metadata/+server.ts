@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import { evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { count } from 'drizzle-orm';
-import { getNeo4jDriver } from '$lib/server/neo4j-driver';
+import { getNeo4jDriver } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/neo4j-driver';
 
 export const GET: RequestHandler = async () => {
   try {

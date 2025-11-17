@@ -1,4 +1,4 @@
-import Fuse from '$lib/utils/fuse-import';
+import Fuse from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/fuse-import';
 
 export interface SearchableDocument {
   id: string;
@@ -54,7 +54,7 @@ export class ConcurrentIndexedDBSearch {
   private fuse: InstanceType<typeof Fuse> | null = null;
   workers: Worker[] = [];
   private workerPool: number = 4;
-  private isInitialized = $state(false);
+  private isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5(false);
   documents: SearchableDocument[] = [];
 
   constructor() {

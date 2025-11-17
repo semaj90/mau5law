@@ -1,4 +1,4 @@
-import { ENV } from '$lib/server/env.server';
+import { ENV } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/env.server';
 
 export function OllamaGetEndpoint(model: "gemma3-legal" | "embeddinggemma") {
   return `${ENV.OLLAMA_BASE_URL}/api/generate?model=${model}:latest`;

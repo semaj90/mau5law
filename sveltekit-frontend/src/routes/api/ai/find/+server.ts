@@ -1,8 +1,8 @@
 ﻿/** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: find * Category: aggressive * Bank: CHR_ROM * Priority: 170 * Redis; Type: aiSearch * * Impact: * - Cache; Strategy: aggressive * - Memory: Bank | CHR_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh; queries: Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
-import type { RequestHandler } from '@sveltejs/kit'; // Changed import from './$types.js' to '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'; // Changed import from './$types // TODO: Verify store subscription is correct for Svelte 5.js' to '@sveltejs/kit'
 import { json } from '@sveltejs/kit';
 import { Buffer } from 'buffer';
-import { copilotOrchestrator } from "$lib/utils/mcp-helpers";
+import { copilotOrchestrator } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/mcp-helpers";
 
 // Define a mock for commonMCPQueries if it's not exported from mcp-helpers
 const commonMCPQueries = {
@@ -42,8 +42,8 @@ export interface AutoMCPSuggestion {
     [key: string]: unknown; // Allow additional properties
 }
 // Mock database imports for testing without DB connection
-// { db } from '$lib/server/db'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+// { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db'
+import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
 // Mock Redis for testing without Redis connection
 // import { Redis } from 'ioredis'
 // Mock Redis implementation (fixed stray brace)

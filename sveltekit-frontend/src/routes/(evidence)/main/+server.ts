@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
-import type { RequestHandler } from './$types.js';
-import { uploadFile } from '$lib/server/minio-client'; // Import the new MinIO utility
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { uploadFile } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio-client'; // Import the new MinIO utility
 
 // Allow GET requests to pass through to the page
 export const GET: RequestHandler = async ({ request }) => {

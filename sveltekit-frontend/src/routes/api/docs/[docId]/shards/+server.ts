@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { redis } from '$lib/server/redis';
+import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
 
 export const GET: RequestHandler = async ({ params }) => {
   const docId = params.docId;

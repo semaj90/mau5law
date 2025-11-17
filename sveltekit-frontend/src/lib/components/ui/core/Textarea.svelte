@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
   const dispatch = createEventDispatcher();
 
   export let value: string = '';

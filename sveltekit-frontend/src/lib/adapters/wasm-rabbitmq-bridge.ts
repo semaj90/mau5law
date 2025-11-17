@@ -1,12 +1,12 @@
 /** * WASM-RabbitMQ Bridge Adapter * Connects RabbitMQ message processing with WebAssembly vector operations * Enables high-performance tensor processing within RabbitMQ workflows */
 
-import { RabbitMQServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
-import type { MessageHandler } from '$lib/server/messaging/rabbitmq-service';
-import { enhanceRabbitMQMessage } from '$lib/simd/simd-json-integration.js';
+import { RabbitMQServiceWorker } from '$lib // TODO: Verify store subscription is correct for Svelte 5/workers/rabbitmq-service-worker.js';
+import type { MessageHandler } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/messaging/rabbitmq-service';
+import { enhanceRabbitMQMessage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/simd/simd-json-integration.js';
 
 // WebAssembly module cache
 let wasmModule: WebAssembly.WebAssemblyInstantiatedSource | null = null;
-let wasmReady = $state<boolean>(false);
+let wasmReady = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
 /** * Initialize WebAssembly module for RabbitMQ operations */
 export async function initializeWASMBridge(): Promise<boolean> {

@@ -1,6 +1,6 @@
-﻿import type { RequestHandler } from './$types.js';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import type { LegalAISession, LegalContext, SecurityLevel } from '$lib/types/yorha-interface';
+import type { LegalAISession, LegalContext, SecurityLevel } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/yorha-interface';
 
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration

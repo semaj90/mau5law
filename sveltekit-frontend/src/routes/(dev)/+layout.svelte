@@ -1,14 +1,14 @@
 <script lang="ts">
   // Development interface layout with debugging-focused styling
-  import NavBar from '$lib/components/layout/NavBar.svelte';
-  import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+  import NavBar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/NavBar.svelte';
+  import Sidebar from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/themes/retro-console-palettes';
 
-  let { children, data }: { any; data: unknown } = $props();
+  let { children, data }: { any; data: unknown } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   // Derive user and UI state for NavBar/Sidebar props
   const user = data?.user ?? null;
-  let sidebarOpen = $state<boolean>(true); // Fix: Declare with $state for reactivity
+  let sidebarOpen = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true); // Fix: Declare with $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 for reactivity
   function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
   }
@@ -16,7 +16,7 @@
   // Use an allowed palette name from the ConsolePaletteName union
   const consolePalette: ConsolePaletteName = 'legal';
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     applyConsolePalette(consolePalette);
   });
 </script>

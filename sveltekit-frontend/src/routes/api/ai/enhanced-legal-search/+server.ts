@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
 import {
   enhancedLegalSearch,
   type LegalSearchResult,
 } from '../../../../lib/server/ai/enhanced-legal-search.js';
-import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
+import redisOptimized from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
 
 /**
  * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied

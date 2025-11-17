@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /**
  * Enhanced API Client for Legal AI Platform
  * TypeScript integration with Zod validation and Superforms compatibility
  */
 import { z } from 'zod';
-import { goto } from '$app/navigation';
-import { browser } from '$app/environment';
+import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 // Base API configuration
 const API_BASE_URL = '/api/v1';

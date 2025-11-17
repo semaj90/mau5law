@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import EvidenceCard from '$lib/ui/EvidenceCard.svelte';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import EvidenceCard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ui/EvidenceCard.svelte';
   import { Activity, BarChart, FileText, Plus, Search, Users } from 'lucide-svelte';
   import { onMount } from 'svelte';
-  import type { PageData } from './$types';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5';
 
   // Page data from server
-  let { data }: { data: PageData } = $props();
+  let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 
   // State management
-  let user = $derived(data?.user);
-  let stats = $state({
+  let user = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(data?.user);
+  let stats = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5({
     totalCases: 0,
     totalEvidence: 0,
     activeCases: 0,
     recentActivity: []
   });
-  let recentEvidence = $state([]);
-  let searchQuery = $state('');
-  let loading = $state(true);
+  let recentEvidence = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
 
   // Load dashboard data
   async function loadDashboardData() {

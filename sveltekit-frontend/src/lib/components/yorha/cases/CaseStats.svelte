@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let stats = $state({
+  let stats = $state // TODO: Verify store subscription is correct for Svelte 5({
     totalCases: 47,
     activeCases: 23,
     reviewCases: 12,

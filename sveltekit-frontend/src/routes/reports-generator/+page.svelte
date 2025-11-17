@@ -1,33 +1,33 @@
 <script lang="ts">
  // Svelte, 5 runes are auto-imported
- import type { Evidence } from '$lib/types/api';
+ import type { Evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types/api';
  // onMount not used â€” remove to avoid unused import
- import ReportEditor from '$lib/components/ReportEditor.svelte';
- import CanvasEditor from '$lib/components/CanvasEditor.svelte';
- import AIChatAssistant from '$lib/components/AIChatAssistant.svelte';
- import type { Report, CanvasState, CitationPoint } from '$lib/data/types';
+ import ReportEditor from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ReportEditor.svelte';
+ import CanvasEditor from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/CanvasEditor.svelte';
+ import AIChatAssistant from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/AIChatAssistant.svelte';
+ import type { Report, CanvasState, CitationPoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/data/types';
 
- let currentReport = $state<Report | null>(null);
- let currentCanvasState = $state<CanvasState | null>(null);
- let evidence: Evidence[] = $state([]);
- let citationPoints: CitationPoint[] = $state([]);
- let activeTab: 'editor' | 'canvas' | 'ai-chat' = $state('editor');
- let isLoading = $state<boolean>(false);
- let error = $state<string>('');
+ let currentReport = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Report | null>(null);
+ let currentCanvasState = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<CanvasState | null>(null);
+ let evidence: Evidence[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+ let citationPoints: CitationPoint[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+ let activeTab: 'editor' | 'canvas' | 'ai-chat' = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('editor');
+ let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+ let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('');
 
  // Demo case ID - default, will be overridden from route params if present
- let caseId = $state<string>('demo-case-123');
+ let caseId = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string>('demo-case-123');
 
  // AI Chat context - built from current case data
- let aiChatContext = $derived(() => {
+ let aiChatContext = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
     const evidenceSummary = evidence.map(e => `- ${e.title} (${e.evidenceType})`).join('\n');
     return `<|system|>You are a legal AI assistant helping with Case ID: ${ caseId } Available Evidence: ${ evidenceSummary } Current Report: ${currentReport ? currentReport.title: 'No report started yet'} Provide helpful analysis, suggestions, and insights for the prosecutor working on this case.<|end|>`
  });
 
  // Ensure caseId comes from the page store before loading demo data
- $effect(() => {
-    // $page gives the current value of the routed page store
-    caseId = $page?.params?.caseId ?? caseId;
+ $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
+    // $page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 gives the current value of the routed page store
+    caseId = $page // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5?.params?.caseId ?? caseId;
     (async () => { await loadDemoData()})()
  });
 

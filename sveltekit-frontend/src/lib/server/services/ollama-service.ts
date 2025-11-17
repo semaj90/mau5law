@@ -1,4 +1,4 @@
-﻿import { env } from '$env/dynamic/private';
+﻿import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
 
 export default {
   async getOptimalModel(): Promise<string> {

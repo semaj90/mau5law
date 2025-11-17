@@ -1,11 +1,11 @@
-﻿import type { RequestHandler } from './$types';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import createRedisInstance from '$lib/server/redis'; // default export
-import { QdrantVectorService } from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
-import { env } from '$env/dynamic/private';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import createRedisInstance from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis'; // default export
+import { QdrantVectorService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/qdrant-vector'; // import module (no .js, no constructor)
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
 import { eq } from 'drizzle-orm';
-import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres';
+import { vectors, vectorJobs, evidence, reports } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 
 const DEFAULT_VECTOR_DIMENSION = 1536; // Platform-wide fallback for vector dimension
 const qdrant = QdrantVectorService; // use the exported service: object directly

@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { contextualUnderstanding } from '$lib/server/ai/contextual-understanding-service';
+import { contextualUnderstanding } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/contextual-understanding-service';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

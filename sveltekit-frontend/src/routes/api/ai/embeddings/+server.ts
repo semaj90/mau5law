@@ -1,7 +1,7 @@
 /** * Gemma Embeddings API with PostgreSQL pgvector Integration * High-performance embedding generation with Redis caching */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
-import { gemmaEmbeddingsService } from '$lib/services/gemma-embeddings-service'; // Changed to named import
+import { gemmaEmbeddingsService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/gemma-embeddings-service'; // Changed to named import
 
 // Define a type for the results of embedding generation, based on usage
 interface EmbeddingGenerationResult {

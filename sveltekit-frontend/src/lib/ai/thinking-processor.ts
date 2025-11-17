@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 // Enhanced thinking style processor for legal AI export interface ThinkingAnalysis { thinking: string, analysis: unknown, confidence: number, reasoning_steps: string[], metadata: { model_used: string, processing_time: number, thinking_enabled: boolean}}
 // Enhanced analysis with GRPO integration flag export interface EnhancedThinkingOptions extends AnalysisOptions { useGRPO?: boolean; enableRecommendations?: boolean; userId?: string; userRole?: string}
 export interface AnalysisOptions { evidenceId?: string; caseId?: string; documentType?: 'evidence' | 'case_file' | 'legal_document' | 'ocr_scan'; analysisType?: 'classification' | 'extraction' | 'reasoning' | 'compliance' | 'chain_of_custody'; useThinkingStyle?: boolean; contextDocuments?: string[]}

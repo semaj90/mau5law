@@ -1,6 +1,6 @@
 ﻿<script lang="ts">
-  import YoRHaHarvardButton from '$lib/components/ui/enhanced-bits/YoRHaHarvardButton.svelte';
-  import YoRHaHarvardCard from '$lib/components/ui/enhanced-bits/YoRHaHarvardCard.svelte';
+  import YoRHaHarvardButton from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/YoRHaHarvardButton.svelte';
+  import YoRHaHarvardCard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/YoRHaHarvardCard.svelte';
 </script>
 
 <svelte:head>

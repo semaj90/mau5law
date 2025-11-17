@@ -1,4 +1,4 @@
-import type { TextChunk } from '$lib/types';
+import type { TextChunk } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 // TypeScript declarations for missing types across the codebase // This file resolves many TS2304: "Cannot find name" errors // Engine/Graphics types
 declare class ShaderCache {
   static get(_key: string): unknown;

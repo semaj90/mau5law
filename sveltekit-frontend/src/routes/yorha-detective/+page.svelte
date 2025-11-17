@@ -1,9 +1,9 @@
 <script lang="ts">
-  import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
+  import YorHADetectiveInterface from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
-  let isBooting = $state<boolean>(true);
-  let bootProgress = $state<number>(0);
-  let bootMessages = $state<string[]>([]);
+  let isBooting = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(true);
+  let bootProgress = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let bootMessages = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string[]>([]);
   const bootSequence = [
     'Initializing YoRHa OS...',
     'Loading Neural Network Protocols...',

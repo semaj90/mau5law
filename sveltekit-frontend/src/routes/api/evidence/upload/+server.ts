@@ -1,12 +1,12 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { minioService } from '$lib/server/storage/minio-service';
-import { upsertToQdrant } from '$lib/server/vector/qdrant';
-import { enhancedRAGPipeline } from '$lib/server/ai/rag-pipeline-enhanced';
-import { eventBus } from '$lib/server/event-bus';
-import { getOllamaBaseUrl } from '$lib/utils/ollama';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
+import { evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import { minioService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/storage/minio-service';
+import { upsertToQdrant } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/vector/qdrant';
+import { enhancedRAGPipeline } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/rag-pipeline-enhanced';
+import { eventBus } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/event-bus';
+import { getOllamaBaseUrl } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama';
 import { eq } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request, locals }) => {

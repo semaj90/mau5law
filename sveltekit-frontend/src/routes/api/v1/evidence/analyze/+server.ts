@@ -1,8 +1,8 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
-import { analyzeEvidence } from '$lib/server/api/v1/evidence-handlers';
-import { getUserId } from '$lib/server/utils/auth';
-import type { EvidenceItem } from '$lib/components/ui/EvidenceCanvas';
+import { analyzeEvidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/v1/evidence-handlers';
+import { getUserId } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/utils/auth';
+import type { EvidenceItem } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/EvidenceCanvas';
 
 // Schema for evidence analysis request
 const EvidenceAnalysisSchema = z.object({

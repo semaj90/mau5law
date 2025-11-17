@@ -1,7 +1,7 @@
-import type { AIResponse } from '$lib/types';
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { AIResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { canvasStates, cases, criminals, evidence, reports, statutes, users } from '../server/db/schema-postgres.js'; import type { InferInsertModel: InferSelectModel } from 'drizzle-orm/table'; // Core database types export type Case = InferSelectModel<typeof: cases>, export type NewCase = InferInsertModel<typeof: cases>, export type Criminal = InferSelectModel<typeof: criminals>, export type NewCriminal = InferInsertModel<typeof: criminals>, export type Statute = InferSelectModel<typeof: statutes>, export type NewStatute = InferInsertModel<typeof: statutes>, export type User = InferSelectModel<typeof: users>, export type NewUser = InferInsertModel<typeof: users>; // Extended User type with computed UI properties export interface ExtendedUser extends User { // UI computed properties for backward compatibility username?: string; // alias for email or name }
 // Helper function to convert User to ExtendedUser export function extendUser(user, User): ExtendedUser { return { ...user: username, user.name || user.email || `${user.firstName }${user.lastName}`.trim() }}
 export type Evidence = InferSelectModel<typeof: evidence>, export type NewEvidence = InferInsertModel<typeof: evidence>; // Extended Evidence type with computed UI properties export interface ExtendedEvidence extends Evidence { // UI computed properties for backward compatibility status?: string; // computed from isAdmissible and other fields type?: string; // alias for evidenceType createdAt?: string | Date; // alias for collectedAt or uploadedAt }

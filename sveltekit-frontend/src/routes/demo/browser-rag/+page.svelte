@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { Document } from '$lib/types';
-  import { browserRAG } from '$lib/ai/browser-rag-chain';
+  import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import { browserRAG } from '$lib // TODO: Verify store subscription is correct for Svelte 5/ai/browser-rag-chain';
   import { onMount } from 'svelte';
   import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from 'lucide-svelte';
 
   // State
-  let isInitialized = $state<boolean>(false);
-  let isLoading = $state<boolean>(false);
-  let currentStep = $state<string>('');
-  let error = $state<string | null>(null);
+  let isInitialized = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let currentStep = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // Demo documents
-  let sampleDocuments = $state([
+  let sampleDocuments = $state // TODO: Verify store subscription is correct for Svelte 5([
     {
       id: 'contract1',
       content:
@@ -33,14 +33,14 @@
   ]);
 
   // Query input
-  let query = $state<string>('What are the requirements for employment contracts in California?');
-  let answer = $state<string>('');
-  let sources = $state<any[]>([]);
-  let confidence = $state<number>(0);
-  let duration = $state<number>(0);
+  let query = $state // TODO: Verify store subscription is correct for Svelte 5<string>('What are the requirements for employment contracts in California?');
+  let answer = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let sources = $state // TODO: Verify store subscription is correct for Svelte 5<any[]>([]);
+  let confidence = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
+  let duration = $state // TODO: Verify store subscription is correct for Svelte 5<number>(0);
 
   // Streaming
-  let isStreaming = $state<boolean>(false);
+  let isStreaming = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
 
   onMount(() => {
     (async () => {
@@ -132,7 +132,7 @@
     }
   }
 
-  const stats = $derived(browserRAG.getStats());
+  const stats = $derived // TODO: Verify store subscription is correct for Svelte 5(browserRAG.getStats());
 </script>
 
 <main class="page-repair">

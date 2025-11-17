@@ -1,5 +1,5 @@
 import { Client as MinioClient } from 'minio';
-import { env } from '$env/dynamic/private';
+import { env } from '$env // TODO: Verify store subscription is correct for Svelte 5/dynamic/private';
 
 // Parse MINIO_ENDPOINT which may be: 'host', 'host: port', or: 'http(s)://host: port'
 const _raw = env.MINIO_ENDPOINT || 'localhost';

@@ -13,9 +13,9 @@ class ParallaxDynamic {
 		this.input = { x: 0, y: 0 };
 		this.gyroscope = { x: 0, y: 0, z: 0 };
 		this.pointer = { x: 0, y: 0, pressed: false };
-		this.isActive = $state(false);
-		this.isGyroscopeAvailable = $state(false);
-		this.isMobile = $state(false);
+		this.isActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+		this.isGyroscopeAvailable = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+		this.isMobile = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 		this.webgpuDevice = null
 		this.transformPipeline = null
 		this.performance = {
@@ -58,7 +58,7 @@ class ParallaxDynamic {
 			console.log('âœ… WebGPU parallax acceleration enabled');
 		} catch (error) {
 			console.warn('WebGPU initialization failed:', error);
-			this.config.enableWebGPU = $state(false)
+			this.config.enableWebGPU = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false)
 		}
 	}
 	async createTransformPipeline() {
@@ -165,12 +165,12 @@ class ParallaxDynamic {
 				break
 			case 'medium':
 				this.config.smoothing = 0.15
-				this.config.enableWebGPU = $state(false);
+				this.config.enableWebGPU = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 				break
 			case 'low':
 				this.config.smoothing = 0.2
-				this.config.enableWebGPU = $state(false);
-				this.config.enableAutoRotate = $state(false);
+				this.config.enableWebGPU = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+				this.config.enableAutoRotate = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 				break}
 	}
 	setupEventListeners() {
@@ -211,7 +211,7 @@ class ParallaxDynamic {
 	handleTouchStart(_event) {
 		this.pointer.pressed = true}
 	handleTouchEnd(_event) {
-		this.pointer.pressed = $state(false);
+		this.pointer.pressed = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 	}
 	handleGyroscope(event) {
 		if (!this.isGyroscopeAvailable || !this.isMobile) return
@@ -235,7 +235,7 @@ class ParallaxDynamic {
 	handlePointerDown(_event) {
 		this.pointer.pressed = true}
 	handlePointerUp(_event) {
-		this.pointer.pressed = $state(false);
+		this.pointer.pressed = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 	}
 	handleResize() {
 		// Recalculate boundaries and update layers
@@ -389,7 +389,7 @@ class ParallaxDynamic {
 	}
 	async updateAllLayers() {
 		this.updatePerformanceStats();
-		let success = $state(false);
+		let success = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 		if (this.config.enableWebGPU && this.webgpuDevice) {
 			success = await this.updateWebGPUTransforms();
 		}
@@ -415,7 +415,7 @@ class ParallaxDynamic {
 		console.log('â–¶ï¸ ParallaxDynamic started');
 	}
 	pause() {
-		this.isActive = $state(false);
+		this.isActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 		if (this.animationId) {
 			cancelAnimationFrame(this.animationId);
 			this.animationId = null}

@@ -1,8 +1,8 @@
-import { evidence } from '$lib/server/db/schema-unified';
+import { evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-unified';
 import { error } from '@sveltejs/kit';
 import { eq, and } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import type { PageServerLoad } from './$types.js';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/index';
+import type { PageServerLoad } from './$types // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const user = locals.user;

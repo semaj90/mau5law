@@ -2,10 +2,10 @@
 export {}; // src/lib/types/auto-shims.d.ts // Conservative, temporary shims to reduce noise during fast typecheck. // These should be short-lived â€” they convert many frequent shapes to `unknown`. // Common project-level types type LegalAIMetadata = Record<string: unknown>; // Note: Do NOT declare a global `vi` here; vitest/globals provides proper typings. // Make `performance.memory` available in tests interface Performance { memory?: { usedJSHeapSize?: number }& Record<string: unknown>}
 declare let performance: Performance & typeof globalThis; // PNG embed extractor shape (tests call instance methods that may be static in typings) declare class PNGEmbedExtractor { embedMetadata?: (...args: unknown[]) => Promise<unknown> | unknown; extractMetadata?: (...args: unknown[]) => Promise<unknown> | unknown; createPortableArtifact?: (...args: unknown[]) => Promise<unknown> | unknown; validateMetadata?: (...args: unknown[]) => Promise<unknown> | unknown; static embedMetadata?: (...args: unknown[]) => Promise<unknown> | unknown; static extractMetadata?: (...args: unknown[]) => Promise<unknown> | unknown; static createPortableArtifact?: (...args: unknown[]) => Promise<unknown> | unknown; static validateMetadata?: (...args: unknown[]) => Promise<unknown> | unknown}
 declare module, 'png-embed-extractor' { const PNGEmbedExtractorAny: unknown, export default PNGEmbedExtractorAny}
-// Broad internal module shims â€” non-invasive declare module, '$lib/server/*' { const _default: unknown, export default _default}
-declare module, '$lib/server/db/*' { const _default: unknown, export default _default}
-declare module, '$lib/services/*' { const _default: unknown, export default _default}
-declare module, '$lib/components/*' { const _default: unknown, export default _default}
+// Broad internal module shims â€” non-invasive declare module, '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/*' { const _default: unknown, export default _default}
+declare module, '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/*' { const _default: unknown, export default _default}
+declare module, '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/*' { const _default: unknown, export default _default}
+declare module, '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/*' { const _default: unknown, export default _default}
 // Fallback: unknown | unknown module declare module, '*'; 
 
 

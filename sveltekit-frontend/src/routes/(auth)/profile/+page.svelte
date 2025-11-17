@@ -1,15 +1,15 @@
 <script lang="ts" runes>
-  import type { User } from '$lib/types';
-  import type { PageData } from './$types';
+  import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5';
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
   import { get, writable } from 'svelte/store';
-  import * as userModule from '$lib/stores/user';
-  import type { UserSession } from '$lib/stores/user';
+  import * as userModule from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/user';
+  import type { UserSession } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/user';
 
-  // Accept SvelteKit page data in runes-mode via $props()
+  // Accept SvelteKit page data in runes-mode via $props // TODO: Verify store subscription is correct for Svelte 5()
   // (replaces `export let data: unknown;` which is invalid in runes mode)
-  const props = $props<{ data?: unknown }>();
+  const props = $props // TODO: Verify store subscription is correct for Svelte 5<{ data?: unknown }>();
 
   type ProfilePageData = PageData & {
     profile?: Record<string, unknown> | null;
@@ -100,22 +100,22 @@
   const statsData = initialData.stats ?? {};
   const initialUser = normalizeUser(initialData.profile);
 
-  let user = $state<ProfileUser | null>(initialUser);
-  let profileForm = $state({
+  let user = $state // TODO: Verify store subscription is correct for Svelte 5<ProfileUser | null>(initialUser);
+  let profileForm = $state // TODO: Verify store subscription is correct for Svelte 5({
     firstName: initialUser?.firstName ?? '',
     lastName: initialUser?.lastName ?? '',
     email: initialUser?.email ?? '',
   });
-  let isSaving = $state<boolean>(false);
-  let isHydrating = $state<boolean>(!initialUser);
-  let feedback = $state<{ text: string; intent: 'success' | 'error' | 'info' | null }>({
+  let isSaving = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let isHydrating = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(!initialUser);
+  let feedback = $state // TODO: Verify store subscription is correct for Svelte 5<{ text: string; intent: 'success' | 'error' | 'info' | null }>({
     text: '',
     intent: null,
   });
-  let showRagUpload = $state<boolean>(false);
-  let ragSummary = $state<RagUploadSummary | null>(null);
+  let showRagUpload = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let ragSummary = $state // TODO: Verify store subscription is correct for Svelte 5<RagUploadSummary | null>(null);
 
-  let stats = $state<ProfileStats>({
+  let stats = $state // TODO: Verify store subscription is correct for Svelte 5<ProfileStats>({
     totalCases: toNumber(statsData['totalCases']) ?? 0,
     openCases: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0,
     closedCases:
@@ -128,7 +128,7 @@
     personsOfInterest: toNumber(statsData['totalCriminals']) ?? 0,
   });
 
-  const apiOrigin = $derived(() => {
+  const apiOrigin = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     const env = (import.meta as any)?.env ?? {};
     const pick = (...keys: string[]) => {
       for (const k of keys) {
@@ -148,7 +148,7 @@
     return candidate.replace(/\/$/, '');
   });
 
-  const dockerDiscoveryFlag = $derived(() => {
+  const dockerDiscoveryFlag = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     const env = (import.meta as any)?.env ?? {};
     return (
       (env['DEV_DOCKER_DISCOVERY'] as string | undefined) ??
@@ -157,17 +157,17 @@
     );
   });
 
-  const ragUploadEndpoint = $derived(() => resolveApi('/api/rag/upload'));
+  const ragUploadEndpoint = $derived // TODO: Verify store subscription is correct for Svelte 5(() => resolveApi('/api/rag/upload'));
 
-  const displayName = $derived(() => {
+  const displayName = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     const first = profileForm.firstName?.trim();
     const last = profileForm.lastName?.trim();
     if (first || last) return [first, last].filter(Boolean).join(' ');
     return user?.name ?? user?.email ?? 'Profile';
   });
 
-  const profileLoaded = $derived(() => Boolean(user?.email || profileForm.email));
-  const totalChunks = $derived(
+  const profileLoaded = $derived // TODO: Verify store subscription is correct for Svelte 5(() => Boolean(user?.email || profileForm.email));
+  const totalChunks = $derived // TODO: Verify store subscription is correct for Svelte 5(
     () =>
       ragSummary?.results?.reduce(
         (sum: number, item: { result?: { chunks?: number } } = { result: {} }) =>
@@ -175,7 +175,7 @@
         0
       ) ?? 0
   );
-  const totalEmbeddings = $derived(
+  const totalEmbeddings = $derived // TODO: Verify store subscription is correct for Svelte 5(
     () =>
       ragSummary?.results?.reduce(
         (sum: number, item: { result?: { embeddings?: number } } = { result: {} }) =>

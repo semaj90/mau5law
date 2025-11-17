@@ -1,4 +1,4 @@
-// import type { Case } from '$lib/types'; // Removed: 'Case' is declared but its value is never read.
+// import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types'; // Removed: 'Case' is declared but its value is never read.
 import { writable, derived, type Writable } from 'svelte/store';
 
 export interface TableState {
@@ -265,15 +265,15 @@ export const tableManager = new TableManager();
 export function createTableStats(tableId: string) {
   const table = tableManager.getTable(tableId);
   if (!table) return null;
-  return derived(table, ($table) => ({
-    totalSelected: $table.selectedRows.size,
-    hasSelection: $table.selectedRows.size > 0,
-    hasMultipleSelection: $table.selectedRows.size > 1,
-    currentPage: $table.currentPage,
-    hasSearch: $table.searchQuery.length > 0,
-    hasFilters: $table.columnFilters.size > 0,
-    totalFilters: $table.columnFilters.size,
-    expandedCount: $table.expandedRows.size
+  return derived(table, ($table // TODO: Verify store subscription is correct for Svelte 5) => ({
+    totalSelected: $table // TODO: Verify store subscription is correct for Svelte 5.selectedRows.size,
+    hasSelection: $table // TODO: Verify store subscription is correct for Svelte 5.selectedRows.size > 0,
+    hasMultipleSelection: $table // TODO: Verify store subscription is correct for Svelte 5.selectedRows.size > 1,
+    currentPage: $table // TODO: Verify store subscription is correct for Svelte 5.currentPage,
+    hasSearch: $table // TODO: Verify store subscription is correct for Svelte 5.searchQuery.length > 0,
+    hasFilters: $table // TODO: Verify store subscription is correct for Svelte 5.columnFilters.size > 0,
+    totalFilters: $table // TODO: Verify store subscription is correct for Svelte 5.columnFilters.size,
+    expandedCount: $table // TODO: Verify store subscription is correct for Svelte 5.expandedRows.size
   }));
 }
 

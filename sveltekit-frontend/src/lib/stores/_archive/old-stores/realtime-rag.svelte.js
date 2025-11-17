@@ -55,16 +55,16 @@ const ragQueryMachine = createMachine({
 // Svelte 5 Runes Store for Real-time RAG
 function createRealtimeRAGStore() {
   // State using runes
-  const documents = $state([]);
-  const activeConnections = $state(new Set());
-  const processingJobs = $state(new Map());
-  const ragHistory = $state([]);
+  const documents = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  const activeConnections = $state // TODO: Verify store subscription is correct for Svelte 5(new Set());
+  const processingJobs = $state // TODO: Verify store subscription is correct for Svelte 5(new Map());
+  const ragHistory = $state // TODO: Verify store subscription is correct for Svelte 5([]);
   // WebSocket connection
-  let ws = $state(null);
-  let connectionStatus = $state('disconnected');
+  let ws = $state // TODO: Verify store subscription is correct for Svelte 5(null);
+  let connectionStatus = $state // TODO: Verify store subscription is correct for Svelte 5('disconnected');
   // Derived state
-  const totalDocuments = $derived(() => documents.length);
-  const processingCount = $derived(
+  const totalDocuments = $derived // TODO: Verify store subscription is correct for Svelte 5(() => documents.length);
+  const processingCount = $derived // TODO: Verify store subscription is correct for Svelte 5(
     () => Array.from(processingJobs.values()).filter(job => job.status === 'processing').length
   );
   // Initialize WebSocket connection
@@ -206,7 +206,7 @@ function createRealtimeRAGStore() {
       const matchesCase = !filters.caseId || doc.case_id === filters.caseId
       return matchesSearch && matchesType && matchesCase}) }
   // Get real-time statistics
-  const stats = $derived(() => {
+  const stats = $derived // TODO: Verify store subscription is correct for Svelte 5(() => {
     const today = new Date().toDateString();
     return {
       totalDocuments: totalDocuments

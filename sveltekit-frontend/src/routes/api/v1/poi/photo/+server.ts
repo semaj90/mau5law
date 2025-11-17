@@ -1,8 +1,8 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { minio, ensureBucket } from '$lib/server/minio/client';
-import { db } from '$lib/server/db/drizzle';
-import { poiPhotos } from '$lib/server/db/schema-postgres';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { minio, ensureBucket } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio/client';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
+import { poiPhotos } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { randomUUID } from 'crypto';
 
 export const POST: RequestHandler = async ({ request }) => {

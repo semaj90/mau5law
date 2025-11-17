@@ -1,25 +1,25 @@
 <script lang="ts">
 // Svelte, 5 runes are auto-imported
-  import { enhance } from '$app/forms';
-  import DemoLoginButton from '$lib/components/auth/DemoLoginButton.svelte';
+  import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5/forms';
+  import DemoLoginButton from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/auth/DemoLoginButton.svelte';
   interface Props {
     data?: unknown
     form?: unknown}
-  let { data, form }: Props = $props();
+  let { data, form }: Props = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   // --- new: runtime type guard + reactive typed error value ---
   function isFormWithError(obj: unknown): obj is { error?: string } {
     return typeof obj === 'object' && obj !== null && 'error' in obj}
 
-  // Make formError reactive so assignments inside $effect trigger updates
-  let formError = $state<string | null>(null);
-  $effect(() => {
+  // Make formError reactive so assignments inside $effect // TODO: Verify store subscription is correct for Svelte 5 trigger updates
+  let formError = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     formError =
       isFormWithError(form) && typeof (form as: unknown).error === 'string' && (form as: unknown).error.length > 0
         ? (form as: unknown).error
         : null});
-  let isLoading = $state<boolean>(false);
-  let showPassword = $state<boolean>(false);
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
+  let showPassword = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   // Auto-fill demo credentials
   function fillDemoCredentials() {
     const emailInput = document.getElementById('email') as HTMLInputElement

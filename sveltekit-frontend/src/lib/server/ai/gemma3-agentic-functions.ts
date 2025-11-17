@@ -1,4 +1,4 @@
-import type { AttachmentMetadata, LegalEntity, NextStepPrediction } from '$lib/types/sharedTypes';
+import type { AttachmentMetadata, LegalEntity, NextStepPrediction } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
 import { embeddingGemma } from './embeddinggemma-service';
 import { contextualUnderstanding } from './contextual-understanding-service';
 import { generateCompletion, type OllamaGenerateResponse } from './ollama-client';

@@ -238,7 +238,7 @@ export const criminals = pgTable(
     firstName: varchar("first_name", { length: 100 }).notNull(),
     lastName: varchar("last_name", { length: 100 }).notNull(),
     middleName: varchar("middle_name", { length: 100 }),
-    aliases: jsonb("aliases").default([]).notNull().$type<string[]>(),
+    aliases: jsonb("aliases").default([]).notNull().$type // TODO: Verify store subscription is correct for Svelte 5<string[]>(),
     dateOfBirth: timestamp("date_of_birth", { mode: "string" }),
     placeOfBirth: varchar("place_of_birth", { length: 200 }),
     address: text("address"),
@@ -257,7 +257,7 @@ export const criminals = pgTable(
     status: varchar("status", { length: 20 }).default("active").notNull(),
     notes: text("notes"),
     aiSummary: text("ai_summary"),
-    aiTags: jsonb("ai_tags").default([]).notNull().$type<string[]>(),
+    aiTags: jsonb("ai_tags").default([]).notNull().$type // TODO: Verify store subscription is correct for Svelte 5<string[]>(),
     createdBy: integer("created_by"), // Foreign key to users.id
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
@@ -461,7 +461,7 @@ export const caseScores = pgTable(
     riskLevel: caseRiskLevelEnum("risk_level").notNull(),
     breakdown: jsonb("breakdown").default({}).notNull(),
     criteria: jsonb("criteria").default({}).notNull(),
-    recommendations: jsonb("recommendations").default([]).notNull().$type<string[]>(),
+    recommendations: jsonb("recommendations").default([]).notNull().$type // TODO: Verify store subscription is correct for Svelte 5<string[]>(),
     calculatedAt: timestamp("calculated_at", { mode: "string" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
   },
@@ -508,7 +508,7 @@ export const userAiQueriesTable = pgTable(
     queryType: varchar("query_type", { length: 50 }).notNull(),
     confidence: numeric("confidence", { precision: 3, scale: 2 }),
     processingTime: integer("processing_time"), // in ms
-    contextUsed: jsonb("context_used").default([]).$type<string[]>(),
+    contextUsed: jsonb("context_used").default([]).$type // TODO: Verify store subscription is correct for Svelte 5<string[]>(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
   },
   (table) => ({
@@ -691,7 +691,7 @@ export const personsOfInterest = pgTable('persons', {
   caseId: uuid('case_id'),
   createdBy: integer('created_by'),
   name: text('name').notNull(),
-  aliases: jsonb('aliases').$type<string[]>().default([]),
+  aliases: jsonb('aliases').$type // TODO: Verify store subscription is correct for Svelte 5<string[]>().default([]),
   threatLevel: varchar('threat_level', { enum: ["low", "medium", "high", "critical"] })
     .default("low")
     .notNull(),
@@ -701,9 +701,9 @@ export const personsOfInterest = pgTable('persons', {
   description: text('description').default(""),
   lastSeen: varchar('last_seen'),
   lastLocation: text('last_location'),
-  cases: jsonb('cases').$type<string[]>().default([]),
+  cases: jsonb('cases').$type // TODO: Verify store subscription is correct for Svelte 5<string[]>().default([]),
   // Multiple photos with forensic metadata
-  photos: jsonb('photos').$type<{
+  photos: jsonb('photos').$type // TODO: Verify store subscription is correct for Svelte 5<{
     id: string;
     url: string;
     filename: string;
@@ -723,7 +723,7 @@ export const personsOfInterest = pgTable('persons', {
   }[]>().default([]),
   // Legacy single photo URL for backward compatibility
   photoUrl: text('photo_url'),
-  ai: jsonb('ai').$type<{
+  ai: jsonb('ai').$type // TODO: Verify store subscription is correct for Svelte 5<{
     riskScore: number;
     patterns: string[];
     recommendations: string[];
@@ -745,7 +745,7 @@ export const poiPhotos = pgTable('poi_photos', {
   mimeType: text('mime_type').notNull(),
   size: bigint('size', { mode: 'number' }).notNull(),
   aiCaption: text('ai_caption'),
-  aiTags: jsonb('ai_tags').default([]).$type<string[]>(),
+  aiTags: jsonb('ai_tags').default([]).$type // TODO: Verify store subscription is correct for Svelte 5<string[]>(),
   exifData: jsonb('exif_data'),
   forensicData: jsonb('forensic_data'),
   faceEmbedding: text('face_embedding'), // Store vector as text for now

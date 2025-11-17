@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 // CrewAI Legal Document Review Multi-Agent System
 // Integrates Claude Code CLI + Local Gemma3 + Self-Prompting + Auto-Save
 import { ChatOllama } from '@langchain/ollama';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { documentUpdateLoop } from '$lib/services/documentUpdateLoop';
-import { documents, aiHistory, cases } from '$lib/db/schema';
+import { documentUpdateLoop } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/documentUpdateLoop';
+import { documents, aiHistory, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/db/schema';
 import { eq } from 'drizzle-orm';
 
 // ============================================================================
@@ -252,7 +252,7 @@ Please provide your analysis in the following JSON format:
   private async storeResults(task: DocumentReviewTask, responses: AgentResponse[]) {
     try {
       // Store in ai_history table
-      const { db } = await import('$lib/db');
+      const { db } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/db');
       await db.insert(aiHistory).values({
         userId: 'system', // TODO: Get from context
         prompt: `Legal document review: ${task.reviewType}`,

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AttachmentMetadata } from '$lib/types/sharedTypes';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import type { AttachmentMetadata } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/sharedTypes';
+  // Migrated from createEventDispatcher to callback props;
 
   type QuickAction = 'chat' | 'report' | 'case' | 'evidence';
 
@@ -27,7 +27,7 @@
 
   type CaseOption = { id: string; title: string; status?: string };
 
-  const props = $props<{
+  const props = $props // TODO: Verify store subscription is correct for Svelte 5<{
     visible?: boolean;
     defaultCaseId?: string;
     title?: string;
@@ -44,33 +44,33 @@
         return `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       }
     })() ?? `session-${Date.now()}`;
-  let sessionId = $state(sessionSeed);
-  let userId = $state('');
+  let sessionId = $state // TODO: Verify store subscription is correct for Svelte 5(sessionSeed);
+  let userId = $state // TODO: Verify store subscription is correct for Svelte 5('');
 
-  let selectedAction = $state<QuickAction>('chat');
-  let chatMessages = $state<ChatMessage[]>([]);
-  let chatInput = $state('');
-  let sendingMessage = $state(false);
-  let chatError = $state<string | null>(null);
+  let selectedAction = $state // TODO: Verify store subscription is correct for Svelte 5<QuickAction>('chat');
+  let chatMessages = $state // TODO: Verify store subscription is correct for Svelte 5<ChatMessage[]>([]);
+  let chatInput = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let sendingMessage = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let chatError = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
-  let attachments = $state<AttachmentPreview[]>([]);
-  let dropActive = $state(false);
+  let attachments = $state // TODO: Verify store subscription is correct for Svelte 5<AttachmentPreview[]>([]);
+  let dropActive = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
-  let caseOptions = $state<CaseOption[]>([]);
-  let casesLoading = $state(false);
-  let casesError = $state<string | null>(null);
+  let caseOptions = $state // TODO: Verify store subscription is correct for Svelte 5<CaseOption[]>([]);
+  let casesLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let casesError = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
-  let reportForm = $state({
+  let reportForm = $state // TODO: Verify store subscription is correct for Svelte 5({
     caseId: defaultCaseId,
     summary: '',
     includeChatTranscript: true,
     deliverables: ['closingOutline', 'investigativeGaps'] as string[]
   });
-  let reportStatus = $state<{ state: 'idle' | 'running' | 'success' | 'error'; message?: string; output?: any }>({
+  let reportStatus = $state // TODO: Verify store subscription is correct for Svelte 5<{ state: 'idle' | 'running' | 'success' | 'error'; message?: string; output?: any }>({
     state: 'idle'
   });
 
-  let caseForm = $state({
+  let caseForm = $state // TODO: Verify store subscription is correct for Svelte 5({
     title: '',
     description: '',
     priority: 'medium',
@@ -78,17 +78,17 @@
     caseType: 'criminal',
     jurisdiction: ''
   });
-  let caseFormStatus = $state<{ state: 'idle' | 'running' | 'success' | 'error'; message?: string }>({ state: 'idle' });
+  let caseFormStatus = $state // TODO: Verify store subscription is correct for Svelte 5<{ state: 'idle' | 'running' | 'success' | 'error'; message?: string }>({ state: 'idle' });
 
-  let evidenceForm = $state({
+  let evidenceForm = $state // TODO: Verify store subscription is correct for Svelte 5({
     caseId: defaultCaseId,
     title: '',
     description: '',
     evidenceType: 'document',
     tags: ''
   });
-  let evidenceFile = $state<File | null>(null);
-  let evidenceStatus = $state<{ state: 'idle' | 'running' | 'success' | 'error'; message?: string }>({ state: 'idle' });
+  let evidenceFile = $state // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
+  let evidenceStatus = $state // TODO: Verify store subscription is correct for Svelte 5<{ state: 'idle' | 'running' | 'success' | 'error'; message?: string }>({ state: 'idle' });
 
   onMount(() => {
     void loadCases();

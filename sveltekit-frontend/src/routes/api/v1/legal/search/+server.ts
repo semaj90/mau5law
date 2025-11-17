@@ -8,8 +8,8 @@
  * - Metadata filtering
  */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getLegalAIPipeline } from '$lib/server/integrations';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { getLegalAIPipeline } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/integrations';
 
 /**
  * Interface for the POST request body for legal search.

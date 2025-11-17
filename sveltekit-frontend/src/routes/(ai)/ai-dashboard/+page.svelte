@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { User } from '$lib/types';
-  import type { Case } from '$lib/types';
-  import type { Document } from '$lib/types';
-  import type { PageData } from './$types';
+  import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
   // Prefer named exports from UI kit (safer for modern kits)
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
 
   // Receive data from SvelteKit load function
   export let data: PageData;

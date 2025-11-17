@@ -1,8 +1,8 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
+  // Svelte 5 runes are auto-imported. $state // TODO: Verify store subscription is correct for Svelte 5 is declared globally in src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
   // YoRHa API client is exported as a named export.
-  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import { YoRHaAPIClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient';
 
   // Terminal state type
   type TerminalEntry = {
@@ -11,9 +11,9 @@
     text: string;
     type: 'system' | 'user' | 'success' | 'error' | 'info';
   };
-  let terminalHistory = $state<TerminalEntry[]>([]);
-  let currentInput = $state<string>('');
-  let isExecuting = $state<boolean>(false);
+  let terminalHistory = $state // TODO: Verify store subscription is correct for Svelte 5<TerminalEntry[]>([]);
+  let currentInput = $state // TODO: Verify store subscription is correct for Svelte 5<string>('');
+  let isExecuting = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   // Removed unused terminalRef
 
   // Terminal commands type

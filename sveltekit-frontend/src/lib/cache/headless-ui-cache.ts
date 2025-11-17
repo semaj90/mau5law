@@ -1,6 +1,6 @@
 /** * Headless UI Caching System * Client-side caching layer that bridges server-side Redis tensor cache * with XState Neural Sprite frontend for maximum performance */
 import vectorWasm from '../wasm/vector-wasm-wrapper.js'; // Changed from namespace import to default import
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 export interface CacheEntry<T = unknown> {
   // Changed default type parameter from 'any' to 'unknown'

@@ -1,6 +1,6 @@
-﻿import type { RequestHandler } from './$types.js';
+﻿import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json } from '@sveltejs/kit';
-import { createRedisConnection } from '$lib/server/redis';
+import { createRedisConnection } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis';
 
 // Helper: safely extract a message from unknown error values
 function extractMessage(e: unknown): string {

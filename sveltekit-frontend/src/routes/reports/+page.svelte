@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
   import { onMount, onDestroy } from 'svelte';
-  import type { Report } from '$lib/data/types'; // Corrected import path for Report
-  import TauriAPI from '$lib/tauri';
+  import type { Report } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/data/types'; // Corrected import path for Report
+  import TauriAPI from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/tauri';
 
   // Stores & helpers
   // Corrected import syntax for aliasing 'reports' as 'reportsStore'
@@ -12,7 +12,7 @@
     isSaving,
     saveReport,
     loadReports,
-  } from '$lib/stores/reports';
+  } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/stores/reports';
 
   // Add a lightweight ReportDraft type to match store emissions (many fields optional)
   type ReportDraft = Partial<Report> & {
@@ -22,13 +22,13 @@
   };
 
   // Local UI state (avoid colliding with `reports` store name)
-  let reportList = $state<Report[]>([]);
-  let loading = $state(true);
-  let error = $state<string | null>(null);
+  let reportList = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<Report[]>([]);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
   // Editor local state
-  let title = $state('');
-  let content = $state('');
-  let hoverSaveTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
+  let title = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let content = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let hoverSaveTimeout = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<ReturnType<typeof setTimeout> | null>(null);
   let reportsUnsub: (() => void) | null = null;
   let unsubActive: (() => void) | null = null;
 

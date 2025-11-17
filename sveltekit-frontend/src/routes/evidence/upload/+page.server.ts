@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
 import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -11,13 +11,13 @@ import {
   getFileTypeFromMime,
   validateFileSize,
   validateFileType,
-} from '$lib/schemas/evidence-upload';
-import { db } from '$lib/server/db'; // Adjust the import based on your project structure
-import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/schemas/evidence-upload';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db'; // Adjust the import based on your project structure
+import { evidence, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema'; // Adjust the import based on your project structure
 import { eq, type InferInsertModel } from 'drizzle-orm';
-import { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
-import type { PageServerLoad, Actions } from './$types.js';
-import { dev } from '$app/environment'; // Get typed environment access
+import { resolveUser, getUserId, getMetaEnv } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
+import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
+import { dev } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment'; // Get typed environment access
 
 const metaEnv = getMetaEnv();
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type']; // Corrected InferInsertModel usage

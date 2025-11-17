@@ -1,6 +1,6 @@
 ﻿/** * ðŸš€ FAISS 100K+ Scaling Demo API * Demonstrates the transition from pgvector to FAISS GPU at enterprise scale */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'overview';
@@ -486,7 +486,7 @@ function generateDeploymentRecommendations(documentCount: number) {
 function calculateInfrastructureCost(documentCount: number) {
   const baseCost = 100; // Monthly base cost
   const scaleFactor = Math.log10(documentCount / 1000);
-  return `$${Math.round(baseCost + scaleFactor * 50)}/month`;
+  return `$$ // TODO: Verify store subscription is correct for Svelte 5{Math.round(baseCost + scaleFactor * 50)}/month`;
 }
 
 function simulateSearchPerformance(documentCount: number) {

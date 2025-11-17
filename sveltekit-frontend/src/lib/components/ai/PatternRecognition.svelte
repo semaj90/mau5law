@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Removed createEventDispatcher, enhance, writable as they are deprecated or unused.
-	// import { createEventDispatcher } from 'svelte';
-	// import { enhance } from '$app/forms';
+	// // Migrated from createEventDispatcher to callback props;
+	// import { enhance } from '$app // TODO: Verify store subscription is correct for Svelte 5/forms';
 	// import { writable } from 'svelte/store';
 
 	// Define the AnalysisResult interface for type safety
@@ -38,12 +38,12 @@
 		patterns = [] as string[], // Explicitly type patterns as string array
 		onAnalysisComplete = (analysis: AnalysisResult) => {}, // Callback prop for analysis completion
 		onAnalysisError = (error: string | Error) => {} // Callback prop for analysis errors
-	} = $props();
+	} = $props // TODO: Verify store subscription is correct for Svelte 5();
 
-	// Reactive state using $state for Svelte 5
-	let isAnalyzing = $state(false);
-	let analysis: AnalysisResult | null = $state(null); // Type analysis result
-	let error: string | null = $state(null); // Type error message
+	// Reactive state using $state // TODO: Verify store subscription is correct for Svelte 5 for Svelte 5
+	let isAnalyzing = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+	let analysis: AnalysisResult | null = $state // TODO: Verify store subscription is correct for Svelte 5(null); // Type analysis result
+	let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null); // Type error message
 
 	// Form action for pattern recognition
 	async function analyzePatterns() {
@@ -147,7 +147,7 @@
 				type="text"
 				placeholder="Add specific pattern (e.g., indemnification, force majeure)"
 				class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-				on:keydown={(e) => { // Changed back to on:keydown
+				onkeydown={(e) => { // Changed back to onkeydown
 					if (e.key === 'Enter') {
 						e.preventDefault();
 						addPattern(e.currentTarget.value);
@@ -157,7 +157,7 @@
 			/>
 			<button
 				type="button"
-				on:click={() => { // Changed back to on:click
+				onclick={() => { // Changed back to onclick
 					const input = document.querySelector('input[placeholder*="Add specific pattern"]') as HTMLInputElement;
 					if (input?.value) {
 						addPattern(input.value);
@@ -177,7 +177,7 @@
 						{pattern}
 						<button
 							type="button"
-							on:click={() => removePattern(index)} // Changed back to on:click
+							onclick={() => removePattern(index)} // Changed back to onclick
 							class="ml-1 text-blue-600 hover:text-blue-800"
 						>
 							×
@@ -206,7 +206,7 @@
 	<div class="flex gap-3 mb-6">
 		<button
 			type="button"
-			on:click={analyzePatterns} // Changed back to on:click
+			onclick={analyzePatterns} // Changed back to onclick
 			disabled={isAnalyzing || !content.trim()}
 			class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
 		>
@@ -226,7 +226,7 @@
 		{#if analysis}
 			<button
 				type="button"
-				on:click={clearAnalysis} // Changed back to on:click
+				onclick={clearAnalysis} // Changed back to onclick
 				class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
 			>
 				Clear

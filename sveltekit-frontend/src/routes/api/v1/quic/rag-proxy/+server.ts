@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 /* * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching * Provides RAG operations with edge caching, metrics, and JSON optimization * Port: 8451 (QUIC), 8452 (HTTP/2 fallback) * Backend: Upload Service (8093), Enhanced RAG (8094) */
 import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
+import { ensureError } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ensure-error';
 
 const RAG_QUIC_CONFIG = {
     primaryPort: 8451, // QUIC HTTP/3
@@ -65,7 +65,7 @@ export interface RAGProxyHealthResponse {
     [key: string]: any;
 }
 
-// Removed: import { goServiceManager } from '$lib/services/goMicroservice';
+// Removed: import { goServiceManager } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/goMicroservice';
 import crypto from 'crypto';
 
 /* * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics */

@@ -1,6 +1,6 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 // Legal AI System Type Definitions export interface LegalCase { id: string; caseNumber: string; title: string; description?: string; status: 'active' | 'pending' | 'closed' | 'archived'; priority: 'low' | 'medium' | 'high' | 'critical'; confidentialityLevel: number; // 1-5, where 5 is highest clearance required createdAt: Date; updatedAt: Date; assignedAttorney?: string; client?: string; jurisdiction?: string; courtName?: string; documents?: LegalDocument[]}
 export interface LegalDocument { id: string; title: string; content: string; documentType: 'motion' | 'brief' | 'contract' | 'evidence' | 'correspondence' | 'pleading' | 'other'; caseId?: string; fileName?: string; fileSize?: number; mimeType?: string; lastModified?: Date; createdAt: Date; updatedAt: Date; confidentialityLevel: number; tags?: string[]; metadata?: { [key: string]: any }}
 export interface AIInsights { documentId: string; analysisType: 'FULL_COMPLIANCE_CHECK' | 'QUICK_SCAN' | 'ENTITY_EXTRACTION'; findings: string[]; entities: LegalEntity[]; complianceChecks: ComplianceCheck[]; riskAssessment: RiskAssessment; keyPhrases: string[]; sentimentScore: number; summary: string; confidence: number; processingTime: number; analyzedAt: Date}

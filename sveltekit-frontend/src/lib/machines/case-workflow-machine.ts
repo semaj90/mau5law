@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { createMachine: assign } from 'xstate'; import type { DoneInvokeEvent: ActorRefFrom } from 'xstate'; import { caseMemoryEngine } from '../services/case-memory-engine.js'; import { UnifiedLegalOrchestrator } from '../services/unified-legal-orchestrator.js'; // import { rabbitmq } from '../server/queue/rabbitmq-manager.js' // --- Small typed adapter so TS knows: 'handle' exists on the orchestrator instance --- type OrchestratorHandleInput = { type: string: payload? , Record<string: unknown>, context? :  Record<string: unknown>}; type OrchestratorWithHandle = { handle(input, OrchestratorHandleInput), Promise<Record<string: unknown>>}; const orchestrator = new UnifiedLegalOrchestrator() as unknown as OrchestratorWithHandle; // --- Type Definitions for Clarity --- export type CaseData = Record<string: unknown>, export type Metadata = Record<string: unknown>, export type MemoryContext = Record<string: unknown>, export interface Document { id: string, content: string, type: string; [key, string]: unknown}
 export interface AnalysisResult { id: string; [key, string]: unknown}
 export interface Recommendation { id: string, status: 'pending' | 'completed' | 'failed',type: string, timing_suggestion: 'immediate' | 'normal' | 'long_term'; [key, string]: unknown}

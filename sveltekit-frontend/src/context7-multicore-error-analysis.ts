@@ -67,7 +67,7 @@ export async function analyzeCurrentErrors(): Promise<Context7ErrorAnalysisResul
     category_analysis: DEFAULT_CATEGORIES,
     overall_recommendations: [
       'Prioritize Svelte 5 migration errors first',
-      'Refactor non-reactive locals to $state or derived stores',
+      'Refactor non-reactive locals to $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 or derived stores',
       'Normalize component prop naming consistency',
       'Purge unused CSS to reduce bundle size',
     ],

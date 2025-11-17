@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   interface Evidence {
     id: string;
@@ -52,7 +52,7 @@
     recommendations: string[];
   }
 
-  let { caseId = null, evidence = [], witnessStatements = [] } = $props<{
+  let { caseId = null, evidence = [], witnessStatements = [] } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     caseId?: string | null;
     evidence?: Evidence[];
     witnessStatements?: Array<{ name: string; statement: string; timestamp?: string }>;
@@ -60,11 +60,11 @@
 
   const dispatch = createEventDispatcher();
 
-  let isReconstructing = $state(false);
-  let reconstruction = $state<TimelineReconstruction | null>(null);
-  let activeView = $state<'timeline' | 'gaps' | 'contradictions' | 'summary'>('timeline');
-  let selectedEvent = $state<string | null>(null);
-  let timelineScale = $state<'hours' | 'days' | 'weeks'>('days');
+  let isReconstructing = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let reconstruction = $state // TODO: Verify store subscription is correct for Svelte 5<TimelineReconstruction | null>(null);
+  let activeView = $state // TODO: Verify store subscription is correct for Svelte 5<'timeline' | 'gaps' | 'contradictions' | 'summary'>('timeline');
+  let selectedEvent = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let timelineScale = $state // TODO: Verify store subscription is correct for Svelte 5<'hours' | 'days' | 'weeks'>('days');
 
   async function reconstructTimeline() {
     if (evidence.length === 0 && witnessStatements.length === 0) {

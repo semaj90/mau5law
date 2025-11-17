@@ -1,4 +1,4 @@
-import { personsOfInterest } from '$lib/server/db/schema-postgres';
+import { personsOfInterest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { json } from '@sveltejs/kit';
 

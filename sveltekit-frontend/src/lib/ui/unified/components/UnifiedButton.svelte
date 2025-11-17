@@ -8,7 +8,7 @@
 <button
   class="unified-button unified-button--{variant} unified-button--{size}"
   {disabled}
-  on:click={onClick}
+  onclick={onClick}
 >
   <slot />
 </button>

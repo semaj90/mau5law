@@ -1,7 +1,7 @@
 <script lang="ts">
-  import ContextualEvidenceChatModal from '$lib/components/ai/ContextualEvidenceChatModal.svelte';
+  import ContextualEvidenceChatModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ai/ContextualEvidenceChatModal.svelte';
 
-  let chatOpen = $state(true);
+  let chatOpen = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
 
   const statusCards = [
     { label: 'Active Cases', value: '3', detail: 'Command Center' },
@@ -48,7 +48,7 @@
         </p>
       </div>
       <div class="hero-actions">
-        <button class="primary" on:click={() => (chatOpen = true)}>Launch AI Chat</button>
+        <button class="primary" onclick={() => (chatOpen = true)}>Launch AI Chat</button>
         <a class="secondary" href="/dev/client-embedding-demo">Client Embedding Demo</a>
       </div>
     </header>
@@ -91,7 +91,7 @@
       <div class="panel console">
         <header>
           <h3>AI Console</h3>
-          <button class="ghost" on:click={() => (chatOpen = true)}>Open Chat</button>
+          <button class="ghost" onclick={() => (chatOpen = true)}>Open Chat</button>
         </header>
         <ul>
           <li>AI assistant initialized · 60s ago</li>

@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { User } from '$lib/server/auth/lucia'; // Adjust import path as per your Lucia setup
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/auth/lucia'; // Adjust import path as per your Lucia setup
 
 export const user = writable<User | null>(null);
 export const sessionLoading = writable(true);

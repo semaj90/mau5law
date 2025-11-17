@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { minioStorage } from '$lib/server/storage/minio';
+import { minioStorage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/storage/minio';
 import { createId } from '@paralleldrive/cuid2';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -7,26 +7,26 @@ import { writeFile, unlink, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { tmpdir } from 'os';
 // Fix 1: Correct import path for 'db' as per project guidelines
-import { db } from '$lib/server/db/client';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
 import { sql } from 'drizzle-orm';
 // Fix 2: Removed 'queueVectorEmbedding' from named imports as it's not exported from queue-service
-import { queueDocumentProcessing } from '$lib/services/queue-service';
+import { queueDocumentProcessing } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/queue-service';
 import {
   generateEmbeddings, // Corrected: Use generateEmbeddings
-} from '$lib/server/services/embedding-service';
+} from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/embedding-service';
 
 // Temporary stub for queueVectorEmbedding to resolve compilation error.
-// This function should be properly implemented and exported from "$lib/services/queue-service".
+// This function should be properly implemented and exported from "$lib // TODO: Verify store subscription is correct for Svelte 5/services/queue-service".
 const queueVectorEmbedding = async (type: string, id: string, userId: string) => {
   console.warn(
-    `[STUB] queueVectorEmbedding called for type: ${type}, id: ${id}, userId: ${userId}. Please implement/export this function in $lib/services/queue-service.`
+    `[STUB] queueVectorEmbedding called for type: ${type}, id: ${id}, userId: ${userId}. Please implement/export this function in $lib // TODO: Verify store subscription is correct for Svelte 5/services/queue-service.`
   );
   // You might want to throw an error here in a production environment to ensure it's implemented.
-  // throw new Error("queueVectorEmbedding is not implemented in $lib/services/queue-service");
+  // throw new Error("queueVectorEmbedding is not implemented in $lib // TODO: Verify store subscription is correct for Svelte 5/services/queue-service");
 };
 
 // Define DocumentProcessingJobData locally to resolve compilation error
-// This type should ideally be exported from $lib/services/queue-service or a shared types file.
+// This type should ideally be exported from $lib // TODO: Verify store subscription is correct for Svelte 5/services/queue-service or a shared types file.
 interface DocumentProcessingJobData {
   documentId: string;
   content: string;

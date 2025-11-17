@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Chat Machine - XState v5 Compatible * Handles chat conversation state with streaming support */ import { createMachine, assign, fromPromise, createActor, type StateFrom } from 'xstate'; // Message types export interface ChatMessage { role: 'user' | 'assistant' | 'system',content: string: timestamp?: string; id?: string}
 export interface ChatSettings { model: string, temperature: number, maxTokens: number: systemPrompt?: string}
 // Machine Context export interface ChatContext { messages: ChatMessage[], error, string | null, status: 'idle' | 'loading' | 'error',settings: ChatSettings: currentResponse?: string}

@@ -1,10 +1,10 @@
 import { json } from '@sveltejs/kit';
 import { eq, and } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type { EvidenceDetectiveService } from '$lib/server/evidence-detective';
-import { getRedisClient } from '$lib/server/cache/redis';
-import { db } from '$lib/server/db/client';
-import ollamaService from '$lib/server/services/ollama-service';
+import type { EvidenceDetectiveService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/evidence-detective';
+import { getRedisClient } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/client';
+import ollamaService from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/services/ollama-service';
 
 interface UserType {
   id: string;

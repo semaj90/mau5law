@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Card from '$lib/components/ui/bits/Card';
-  import CardContent from '$lib/components/ui/bits/CardContent';
-  import CardHeader from '$lib/components/ui/bits/CardHeader';
-  import CardTitle from '$lib/components/ui/bits/CardTitle';
-  import Button from '$lib/components/ui/button';
+  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/Card';
+  import CardContent from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/CardContent';
+  import CardHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/CardHeader';
+  import CardTitle from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/bits/CardTitle';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
   import {
     Brain,
     Calendar,
@@ -22,7 +22,7 @@
     open,
     photo,
     onClose
-  } = $props<{
+  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     open: boolean;
     photo: {
       url: string;
@@ -43,11 +43,11 @@
     onClose: () => void;
   }>();
 
-  let zoom = $state(1);
-  let rotation = $state(0);
-  let imageElement = $state<HTMLImageElement>();
+  let zoom = $state // TODO: Verify store subscription is correct for Svelte 5(1);
+  let rotation = $state // TODO: Verify store subscription is correct for Svelte 5(0);
+  let imageElement = $state // TODO: Verify store subscription is correct for Svelte 5<HTMLImageElement>();
 
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (!open) {
       zoom = 1;
       rotation = 0;
@@ -102,22 +102,22 @@
         </h2>
         <div class="flex items-center gap-2">
           <!-- Zoom Controls -->
-          <Button variant="outline" size="sm" on:click={zoomOut}>
+          <Button variant="outline" size="sm" onclick={zoomOut}>
             <ZoomOut class="w-4 h-4" />
           </Button>
           <span class="text-sm text-gray-600 min-w-[60px] text-center">
             {Math.round(zoom * 100)}%
           </span>
-          <Button variant="outline" size="sm" on:click={zoomIn}>
+          <Button variant="outline" size="sm" onclick={zoomIn}>
             <ZoomIn class="w-4 h-4" />
           </Button>
-          <Button variant="outline" size="sm" on:click={resetView}>
+          <Button variant="outline" size="sm" onclick={resetView}>
             <RotateCcw class="w-4 h-4" />
           </Button>
-          <Button variant="outline" size="sm" on:click={downloadImage}>
+          <Button variant="outline" size="sm" onclick={downloadImage}>
             <Download class="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" on:click={handleClose}>
+          <Button variant="ghost" size="sm" onclick={handleClose}>
             <X class="w-4 h-4" />
           </Button>
         </div>

@@ -1,10 +1,10 @@
 ﻿import { json } from '@sveltejs/kit';
-import { canvasStates } from '$lib/server/db/schema-postgres';
+import { canvasStates } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import * as dbModule from '$lib/server/db/drizzle';
+import * as dbModule from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
 const db = dbModule.default as any;
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Check if canvas state already exists for this case
     const existing = await db.select().from(canvasStates).where(eq(canvasStates.caseId, caseId)).limit(1);
 
-    let result: typeof canvasStates.$inferSelect;
+    let result: typeof canvasStates.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
     if (existing.length > 0) {
       // Update existing canvas state
       [result] = await db

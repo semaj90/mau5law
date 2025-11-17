@@ -1,15 +1,15 @@
 <!-- YoRHa 3D, Components, Gallery -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
-  import { YoRHaAPIClient as yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  // $state // TODO: Verify store subscription is correct for Svelte 5 runtime rune is provided globally via src/types/svelte-helpers.d.ts
+  import { YoRHaAPIClient as yorhaAPI } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient';
   // Import types only (keep types import if they exist)
   // Removed specific type imports as they are defined locally
   // import type {
   //   YoRHaPanel3DOptions,
   //   YoRHaInput3DOptions,
   //   YoRHaModal3DOptions,
-  // } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  // } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/three/yorha-ui/api/YoRHaAPIClient';
 
   // NOTE: YoRHaButton3DOptions is not exported from the API client, so it's defined locally based on usage.
   type YoRHaButton3DOptions = {
@@ -68,11 +68,11 @@
     Layers: '🗂️', // Corrected emoji
   };
   // Component instances and options
-  let selectedComponent = $state<string>('button');
-  let previewMode = $state<string>('3d');
-  let isLoading = $state<boolean>(false);
+  let selectedComponent = $state // TODO: Verify store subscription is correct for Svelte 5<string>('button');
+  let previewMode = $state // TODO: Verify store subscription is correct for Svelte 5<string>('3d');
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   // Component configurations
-  let buttonConfig = $state<YoRHaButton3DOptions>({
+  let buttonConfig = $state // TODO: Verify store subscription is correct for Svelte 5<YoRHaButton3DOptions>({
     text: 'YoRHa Button',
     variant: 'primary',
     size: 'medium',
@@ -82,7 +82,7 @@
     glowEffect: true,
     hoverAnimation: true,
   });
-  let panelConfig = $state<YoRHaPanel3DOptions>({
+  let panelConfig = $state // TODO: Verify store subscription is correct for Svelte 5<YoRHaPanel3DOptions>({
     title: 'YoRHa Panel',
     variant: 'default',
     width: 400,
@@ -92,7 +92,7 @@
     glitchEffect: false,
     borderGlow: true,
   });
-  let inputConfig = $state<YoRHaInput3DOptions>({
+  let inputConfig = $state // TODO: Verify store subscription is correct for Svelte 5<YoRHaInput3DOptions>({
     placeholder: 'Enter command...',
     type: 'text',
     variant: 'default',
@@ -102,7 +102,7 @@
     scanlineEffect: true,
     terminalMode: true,
   });
-  let modalConfig = $state<YoRHaModal3DOptions>({
+  let modalConfig = $state // TODO: Verify store subscription is correct for Svelte 5<YoRHaModal3DOptions>({
     title: 'YoRHa Modal',
     variant: 'default',
     size: 'medium',
@@ -112,8 +112,8 @@
     hologramEffect: true,
   });
   // UI state
-  let yorhaUI = $state<any | null>(null);
-  let canvasContainer = $state<HTMLElement | null>(null);
+  let yorhaUI = $state // TODO: Verify store subscription is correct for Svelte 5<any | null>(null);
+  let canvasContainer = $state // TODO: Verify store subscription is correct for Svelte 5<HTMLElement | null>(null);
   // Define a type for component types for better type safety (icon is now a key into IconMap)
   interface ComponentType {
     id: string;
@@ -144,7 +144,7 @@
     { id: 'code', label: 'Code', icon: 'Code' },
     { id: 'config', label: 'Config', icon: 'Settings' },
   ];
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     // Initialize 3D UI (placeholder for now)
     if (canvasContainer) {
       // TODO: Initialize 3D UI when Three.js dependencies are resolved

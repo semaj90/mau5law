@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
-  let loading = $state<boolean>(false);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let result: unknown = null
   let error: string | null = null
   let limit = 6
@@ -10,7 +10,7 @@ import { onMount, onDestroy } from 'svelte';
   let tag = '';
 
   // Modal preview state
-  let previewOpen = $state<boolean>(false);
+  let previewOpen = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let previewTitle = '';
   let previewSnippet = '';
   // Copy feedback
@@ -74,7 +74,7 @@ import { onMount, onDestroy } from 'svelte';
   }
 
   // Modal markdown rendering toggle + tiny sanitizer
-  let previewRenderMarkdown = $state<boolean>(false);
+  let previewRenderMarkdown = $state // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let purified: ((html: string) => string) | null = null
   let markdownToHtml: ((md: string) => string) | null = null
   async function ensureMarkdownLibs(): Promise<any> {

@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
@@ -20,8 +20,8 @@ import type { Document } from '$lib/types';
  */
 
 import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
 	try {

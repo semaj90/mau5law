@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
   import { Camera, Upload } from 'lucide-svelte';
 
-  let { poiId, disabled = false, onUpload, onError } = $props<{ poiId: number; disabled?: boolean; onUpload: (data: any) => void; onError: (error: any) => void }>();
+  let { poiId, disabled = false, onUpload, onError } = $props // TODO: Verify store subscription is correct for Svelte 5<{ poiId: number; disabled?: boolean; onUpload: (data: any) => void; onError: (error: any) => void }>();
 
-  let dragging = $state(false);
-  let uploading = $state(false);
+  let dragging = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let uploading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
   async function handleDrop(event: DragEvent) {
     event.preventDefault();
@@ -108,7 +108,7 @@
           <Button
             type="button"
             variant="outline"
-            on:click={triggerFileSelect}
+            onclick={triggerFileSelect}
             class="mt-2"
           >
             <Camera class="w-4 h-4 mr-2" />

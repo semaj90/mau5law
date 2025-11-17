@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
 /**
  * Advanced data export/utilities for the Detective Mode app
  * Provides secure, comprehensive data management with multiple formats

@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 import { EventEmitter } from 'events'; // Added missing import
 interface QueueMessage {
   id: string;

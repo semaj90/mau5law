@@ -4,7 +4,7 @@
   interface Props {
     Snippet;
   }
-  let { children }: Props = $props();
+  let { children }: Props = $props // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5();
 </script>
 
 <div class="app">

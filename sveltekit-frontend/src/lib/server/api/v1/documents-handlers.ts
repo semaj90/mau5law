@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { eq, and } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type { MinIOService } from '$lib/server/minio';
-import type { OCRService } from '$lib/server/ocr';
+import type { MinIOService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/minio';
+import type { OCRService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ocr';
 
 interface UserType {
   id: string;

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent } from '$lib/components/ui/card';
-  import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '$lib/components/ui/dialog';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/avatar';
+  import { Badge } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/badge';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import { Card, CardContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
   import { Percent, Search, User, X } from 'lucide-svelte';
 
   let {
@@ -11,7 +11,7 @@
     matches = [],
     onClose,
     onSelect
-  } = $props<{
+  } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     open: boolean;
     matches?: Array<{
       poi: {
@@ -86,7 +86,7 @@
       {:else}
         <div class="grid gap-4">
           {#each matches as match (match.poi.id)}
-            <Card class="cursor-pointer hover:shadow-md transition-shadow" on:click={() => handleSelectPOI(match.poi)}>
+            <Card class="cursor-pointer hover:shadow-md transition-shadow" onclick={() => handleSelectPOI(match.poi)}>
               <CardContent class="p-4">
                 <div class="flex items-center gap-4">
                   <!-- POI Photo -->
@@ -146,7 +146,7 @@
     </div>
 
     <div class="flex justify-end pt-4 border-t">
-      <Button on:click={handleClose} variant="outline">
+      <Button onclick={handleClose} variant="outline">
         <X class="w-4 h-4 mr-2" />
         Close
       </Button>

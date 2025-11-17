@@ -1,5 +1,5 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-// import { QDRANT_URL, OLLAMA_URL, EMBEDDING_MODEL } from '$env/static/private';
+// import { QDRANT_URL, OLLAMA_URL, EMBEDDING_MODEL } from '$env // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/static/private';
 
 const qdrant = new QdrantClient({ url: 'http://localhost:6333' });
 

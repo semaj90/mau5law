@@ -3,7 +3,7 @@ import { join } from 'path';
 // import { fileURLToPath } from 'url';
 // import { dirname } from 'path'; // Keep dirname for use in generatePlaywrightTestFile's *generated* content
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 // Helper functions for test generation summary and todo file analysis
 function countGeneratedTests(playwrightTestContent: string): number {

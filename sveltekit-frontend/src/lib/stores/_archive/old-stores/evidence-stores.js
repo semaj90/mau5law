@@ -4,7 +4,7 @@
  * Provides reactive state management for evidence visualization
  */
 import { writable, derived, readable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 // Core evidence processing state
 export const evidenceHierarchy = writable<any>(null);
 export const processingStatus = writable<'idle' | 'processing' | 'completed' | 'error'>('idle');
@@ -38,34 +38,34 @@ export const performanceMetrics = writable({
   averageProcessingTime: 0, totalEvidenceProcessed: 0, errorRate: 0, cacheHitRate: 0, memoryUsage: 0, lastUpdated: Date.now()});
 // Derived stores for computed values
 export const evidenceCount = derived(
-  evidenceHierarchy, ($hierarchy) => $hierarchy ? countEvidenceNodes($hierarchy) : 0
+  evidenceHierarchy, ($hierarchy // TODO: Verify store subscription is correct for Svelte 5) => $hierarchy // TODO: Verify store subscription is correct for Svelte 5 ? countEvidenceNodes($hierarchy // TODO: Verify store subscription is correct for Svelte 5) : 0
 );
 export const isProcessing = derived(
-  processingStatus, ($status) => $status === 'processing'
+  processingStatus, ($status // TODO: Verify store subscription is correct for Svelte 5) => $status // TODO: Verify store subscription is correct for Svelte 5 === 'processing'
 );
 export const processingProgress = derived(
-  [processingQueue, recursionMetrics], ([$queue, $metrics]) => {
-    const totalJobs = $queue.length
-    const completedJobs = $queue.filter(item => item.length);
+  [processingQueue, recursionMetrics], ([$queue // TODO: Verify store subscription is correct for Svelte 5, $metrics // TODO: Verify store subscription is correct for Svelte 5]) => {
+    const totalJobs = $queue // TODO: Verify store subscription is correct for Svelte 5.length
+    const completedJobs = $queue // TODO: Verify store subscription is correct for Svelte 5.filter(item => item.length);
     return {
       percentage: totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0, completed: completedJobs
       total: totalJobs
-      nodesProcessed: $metrics.totalNodesProcessed: currentDepth: $metrics.recursionStatistics.actualDepth} }
+      nodesProcessed: $metrics // TODO: Verify store subscription is correct for Svelte 5.totalNodesProcessed: currentDepth: $metrics // TODO: Verify store subscription is correct for Svelte 5.recursionStatistics.actualDepth} }
 );
 export const filteredHierarchy = derived(
-  [evidenceHierarchy, evidenceFilter], ([$hierarchy, $filter]) => {
-    if (!$hierarchy) return null
-    return filterEvidenceHierarchy($hierarchy, $filter) }
+  [evidenceHierarchy, evidenceFilter], ([$hierarchy // TODO: Verify store subscription is correct for Svelte 5, $filter // TODO: Verify store subscription is correct for Svelte 5]) => {
+    if (!$hierarchy // TODO: Verify store subscription is correct for Svelte 5) return null
+    return filterEvidenceHierarchy($hierarchy // TODO: Verify store subscription is correct for Svelte 5, $filter // TODO: Verify store subscription is correct for Svelte 5) }
 );
 export const evidenceStatistics = derived(
-  evidenceHierarchy, ($hierarchy) => {
-    if (!$hierarchy) return null
-    return calculateHierarchyStatistics($hierarchy) }
+  evidenceHierarchy, ($hierarchy // TODO: Verify store subscription is correct for Svelte 5) => {
+    if (!$hierarchy // TODO: Verify store subscription is correct for Svelte 5) return null
+    return calculateHierarchyStatistics($hierarchy // TODO: Verify store subscription is correct for Svelte 5) }
 );
 export const chainIntegrityOverview = derived(
-  evidenceHierarchy, ($hierarchy) => {
-    if (!$hierarchy) return null
-    return analyzeChainIntegrityOverview($hierarchy) }
+  evidenceHierarchy, ($hierarchy // TODO: Verify store subscription is correct for Svelte 5) => {
+    if (!$hierarchy // TODO: Verify store subscription is correct for Svelte 5) return null
+    return analyzeChainIntegrityOverview($hierarchy // TODO: Verify store subscription is correct for Svelte 5) }
 );
 // Browser-only stores for service worker management
 export const evidenceWorkerStore = (() => {

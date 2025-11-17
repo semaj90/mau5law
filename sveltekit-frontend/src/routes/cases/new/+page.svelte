@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
   import { ArrowLeft, Save, X } from 'lucide-svelte';
 
   // Form state
-  let title = $state('');
-  let caseNumber = $state('');
-  let description = $state('');
-  let status = $state<'open' | 'pending' | 'closed'>('open');
-  let tags = $state('');
-  let assignedTo = $state('');
+  let title = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let caseNumber = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let description = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let status = $state // TODO: Verify store subscription is correct for Svelte 5<'open' | 'pending' | 'closed'>('open');
+  let tags = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let assignedTo = $state // TODO: Verify store subscription is correct for Svelte 5('');
 
   // UI state
-  let loading = $state(false);
-  let error = $state<string | null>(null);
-  let tagInput = $state('');
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
+  let tagInput = $state // TODO: Verify store subscription is correct for Svelte 5('');
 
   // Computed properties
-  let tagList = $derived(tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0));
+  let tagList = $derived // TODO: Verify store subscription is correct for Svelte 5(tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0));
 
   // Handle form submission
   async function handleSubmit(e: Event) {

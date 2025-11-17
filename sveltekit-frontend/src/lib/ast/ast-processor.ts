@@ -1,5 +1,5 @@
 import { Project, SourceFile, SyntaxKind, Node, TypeChecker } from 'ts-morph';
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoints';
+import { getOllamaEndpoint } from '$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoints';
 
 export interface ASTNode {
   id: string;
@@ -347,12 +347,12 @@ export class ASTProcessor {
 
     // Common import suggestions based on project structure
     const commonImports = [
-      { text: 'from "$lib/"', kind: 'import' as const, description: 'SvelteKit lib imports' },
+      { text: 'from "$lib // TODO: Verify store subscription is correct for Svelte 5/"', kind: 'import' as const, description: 'SvelteKit lib imports' },
       { text: 'from "svelte/"', kind: 'import' as const, description: 'Svelte framework' },
-      { text: 'import { getOllamaEndpoint } from "$lib/utils/ollama-endpoints"', kind: 'import' as const, description: 'Ollama utilities' },
-      { text: 'import type { OllamaEndpoints } from "$lib/utils/ollama-endpoints"', kind: 'import' as const, description: 'Ollama types' },
-      { text: 'import { generateEmbeddings } from "$lib/utils/ollama-endpoints"', kind: 'import' as const, description: 'Embedding generation' },
-      { text: 'import { generateLegalAnalysis } from "$lib/utils/ollama-endpoints"', kind: 'import' as const, description: 'Legal analysis' },
+      { text: 'import { getOllamaEndpoint } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoints"', kind: 'import' as const, description: 'Ollama utilities' },
+      { text: 'import type { OllamaEndpoints } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoints"', kind: 'import' as const, description: 'Ollama types' },
+      { text: 'import { generateEmbeddings } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoints"', kind: 'import' as const, description: 'Embedding generation' },
+      { text: 'import { generateLegalAnalysis } from "$lib // TODO: Verify store subscription is correct for Svelte 5/utils/ollama-endpoints"', kind: 'import' as const, description: 'Legal analysis' },
     ];
 
     for (const imp of commonImports) {

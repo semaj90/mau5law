@@ -1,59 +1,512 @@
+#include <torch/torch.h>
+#include <cuda_runtime.h>
+#include <cublas_v2.h>
+#include <cudnn.h>
 #include <iostream>
 #include <vector>
 #include <string>
-#include <numeric> // For std::iota
-#include <cuda_runtime.h>
+#include <memory>
+#include <unordered_map>
+#include <algorithm>
+#include <cmath>
+#include <chrono>
+#include <thread>
+#include <future>
+#include <grpcpp/grpcpp.h>
+#include "qlora_training.grpc.pb.h"
 
+// Phase AST: QLoRA C++ Trainer Core with NF4, LoRA, and Fused Operations
+class QLoRATrainer {
+private:
+    // CUDA handles
+    cublasHandle_t cublas_handle_;
+    cudnnHandle_t cudnn_handle_;
+
+    // Model components
+    torch::nn::Module base_model_;
+    std::unordered_map<std::string, torch::nn::Module> lora_adapters_;
+    torch::optim::Optimizer* optimizer_;
+
+    // NF4 quantization parameters
+    float quant_scale_;
+    int quant_bits_ = 4;
+    bool use_double_quant_ = true;
+
+    // Training configuration
+    int lora_r_ = 16;
+    int lora_alpha_ = 32;
+    float lora_dropout_ = 0.05f;
+    bool use_gradient_checkpointing_ = true;
+
+    // Performance metrics
+    std::chrono::steady_clock::time_point training_start_;
+    size_t tokens_processed_ = 0;
+    float current_loss_ = 0.0f;
+
+    // Fused operation kernels
+    CUfunction fused_lora_forward_kernel_;
+    CUfunction fused_lora_backward_kernel_;
+    CUfunction nf4_quantize_kernel_;
+    CUfunction nf4_dequantize_kernel_;
+
+public:
+    QLoRATrainer(const std::string& model_name, int lora_r = 16, int lora_alpha = 32)
+        : lora_r_(lora_r), lora_alpha_(lora_alpha) {
+
+        // Initialize CUDA
+        initialize_cuda();
+
+        // Load base model
+        load_base_model(model_name);
+
+        // Initialize LoRA adapters
+        initialize_lora_adapters();
+
+        // Load fused operation kernels
+        load_fused_kernels();
+
+        std::cout << "Phase AST QLoRA Trainer initialized with " << lora_r << " rank, "
+                  << lora_alpha << " alpha" << std::endl;
+    }
+
+    ~QLoRATrainer() {
+        cleanup_cuda();
+    }
+
+    // Initialize CUDA contexts and handles
+    void initialize_cuda() {
+        cudaSetDevice(0); // Use first GPU
+
+        // Initialize cuBLAS
+        cublasCreate(&cublas_handle_);
+        cublasSetMathMode(cublas_handle_, CUBLAS_TENSOR_OP_MATH);
+
+        // Initialize cuDNN
+        cudnnCreate(&cudnn_handle_);
+
+        // Set CUDA device properties for optimal performance
+        cudaDeviceSetCacheConfig(cudaFuncCachePreferShared);
+        cudaDeviceSetSharedMemConfig(cudaSharedMemBankSizeEightByte);
+
+        std::cout << "CUDA initialized with Tensor Core acceleration" << std::endl;
+    }
+
+    // Load base model (placeholder - integrate with actual model loading)
+    void load_base_model(const std::string& model_name) {
+        // This would load the actual transformer model
+        // For now, create a placeholder
+        std::cout << "Loading base model: " << model_name << std::endl;
+        // base_model_ = load_transformer_model(model_name);
+    }
+
+    // Initialize LoRA adapters for target modules
+    void initialize_lora_adapters() {
+        std::vector<std::string> target_modules = {
+            "q_proj", "k_proj", "v_proj", "o_proj",
+            "gate_proj", "up_proj", "down_proj"
+        };
+
+        for (const auto& module_name : target_modules) {
+            // Create LoRA adapter: W = W0 + (A * B) * scale
+            // A: [in_features, r], B: [r, out_features]
+            auto adapter = torch::nn::Sequential(
+                torch::nn::Linear(torch::nn::LinearOptions(lora_r_, lora_r_).bias(false)),
+                torch::nn::Dropout(lora_dropout_),
+                torch::nn::Linear(torch::nn::LinearOptions(lora_r_, /*out_features*/).bias(false))
+            );
+
+            // Initialize with Kaiming uniform
+            torch::nn::init::kaiming_uniform_(adapter->parameters());
+
+            lora_adapters_[module_name] = adapter;
+            std::cout << "Initialized LoRA adapter for: " << module_name << std::endl;
+        }
+    }
+
+    // Load CUDA kernels for fused operations
+    void load_fused_kernels() {
+        CUmodule module;
+        CUresult result;
+
+        // Load PTX/CUBIN file with fused kernels
+        const char* kernel_file = "qlora_fused_kernels.cubin";
+        result = cuModuleLoad(&module, kernel_file);
+
+        if (result != CUDA_SUCCESS) {
+            std::cerr << "Failed to load fused kernels, falling back to PyTorch operations" << std::endl;
+            return;
+        }
+
+        // Load kernel functions
+        cuModuleGetFunction(&fused_lora_forward_kernel_, module, "fused_lora_forward");
+        cuModuleGetFunction(&fused_lora_backward_kernel_, module, "fused_lora_backward");
+        cuModuleGetFunction(&nf4_quantize_kernel_, module, "nf4_quantize");
+        cuModuleGetFunction(&nf4_dequantize_kernel_, module, "nf4_dequantize");
+
+        std::cout << "Loaded fused CUDA kernels for QLoRA operations" << std::endl;
+    }
+
+    // NF4 quantization with double quantization
+    torch::Tensor nf4_quantize(const torch::Tensor& input) {
+        // NF4 quantization: 4-bit with non-uniform quantization
+        // Range: [-1, 1] mapped to 16 levels
+        const float nf4_levels[16] = {
+            -1.0f, -0.696f, -0.525f, -0.394f, -0.284f, -0.184f, -0.098f, -0.025f,
+             0.025f,  0.098f,  0.184f,  0.284f,  0.394f,  0.525f,  0.696f,  1.0f
+        };
+
+        auto flat_input = input.flatten();
+        auto abs_max = torch::max(torch::abs(flat_input));
+
+        if (abs_max.item<float>() == 0.0f) {
+            return torch::zeros_like(flat_input, torch::kInt8);
+        }
+
+        // Scale to [-1, 1]
+        auto scaled = flat_input / abs_max;
+
+        // Quantize to NF4 levels
+        auto quantized = torch::zeros_like(flat_input, torch::kInt8);
+
+        // Use CUDA kernel for efficient quantization
+        if (nf4_quantize_kernel_) {
+            // Launch CUDA kernel for NF4 quantization
+            launch_nf4_quantize_kernel(scaled, quantized, nf4_levels);
+        } else {
+            // Fallback to CPU quantization
+            for (int i = 0; i < flat_input.numel(); ++i) {
+                float val = scaled[i].item<float>();
+                int best_idx = 0;
+                float min_diff = std::abs(val - nf4_levels[0]);
+
+                for (int j = 1; j < 16; ++j) {
+                    float diff = std::abs(val - nf4_levels[j]);
+                    if (diff < min_diff) {
+                        min_diff = diff;
+                        best_idx = j;
+                    }
+                }
+                quantized[i] = best_idx;
+            }
+        }
+
+        // Store scale for dequantization
+        quant_scale_ = abs_max.item<float>();
+
+        return quantized.reshape(input.sizes());
+    }
+
+    // NF4 dequantization
+    torch::Tensor nf4_dequantize(const torch::Tensor& quantized) {
+        const float nf4_levels[16] = {
+            -1.0f, -0.696f, -0.525f, -0.394f, -0.284f, -0.184f, -0.098f, -0.025f,
+             0.025f,  0.098f,  0.184f,  0.284f,  0.394f,  0.525f,  0.696f,  1.0f
+        };
+
+        auto flat_quantized = quantized.flatten().to(torch::kInt64);
+        auto dequantized = torch::zeros_like(flat_quantized, torch::kFloat32);
+
+        // Use CUDA kernel for efficient dequantization
+        if (nf4_dequantize_kernel_) {
+            launch_nf4_dequantize_kernel(flat_quantized, dequantized, nf4_levels);
+        } else {
+            // Fallback to CPU dequantization
+            for (int i = 0; i < flat_quantized.numel(); ++i) {
+                int idx = flat_quantized[i].item<int>();
+                dequantized[i] = nf4_levels[std::clamp(idx, 0, 15)];
+            }
+        }
+
+        return (dequantized * quant_scale_).reshape(quantized.sizes());
+    }
+
+    // Fused LoRA forward pass
+    torch::Tensor fused_lora_forward(const torch::Tensor& input, const std::string& module_name) {
+        if (lora_adapters_.find(module_name) == lora_adapters_.end()) {
+            return input; // No LoRA adapter for this module
+        }
+
+        auto adapter = lora_adapters_[module_name];
+        float scale = static_cast<float>(lora_alpha_) / lora_r_;
+
+        if (fused_lora_forward_kernel_) {
+            // Use fused CUDA kernel
+            return launch_fused_lora_forward(input, adapter, scale);
+        } else {
+            // Fallback to PyTorch operations
+            auto lora_output = adapter->forward(input);
+            return input + lora_output * scale;
+        }
+    }
+
+    // Fused LoRA backward pass with gradient checkpointing
+    std::vector<torch::Tensor> fused_lora_backward(
+        const torch::Tensor& grad_output,
+        const torch::Tensor& input,
+        const std::string& module_name) {
+
+        if (lora_adapters_.find(module_name) == lora_adapters_.end()) {
+            return {grad_output, torch::zeros_like(input)};
+        }
+
+        auto adapter = lora_adapters_[module_name];
+        float scale = static_cast<float>(lora_alpha_) / lora_alpha_;
+
+        if (fused_lora_backward_kernel_ && use_gradient_checkpointing_) {
+            // Use fused CUDA kernel with gradient checkpointing
+            return launch_fused_lora_backward_checkpointed(grad_output, input, adapter, scale);
+        } else {
+            // Standard backward pass
+            auto lora_output = adapter->forward(input);
+            auto grad_lora = grad_output * scale;
+
+            // Backward through adapter
+            std::vector<torch::Tensor> grad_inputs;
+            adapter->backward(grad_lora, grad_inputs);
+
+            return {grad_output + grad_inputs[0], grad_lora};
+        }
+    }
+
+    // Training step with fused operations
+    float training_step(const torch::Tensor& input_ids, const torch::Tensor& labels) {
+        torch::Tensor logits;
+
+        // Forward pass through base model with LoRA
+        {
+            torch::NoGradGuard no_grad; // Base model in eval mode
+
+            // Process through transformer layers with LoRA adapters
+            auto hidden_states = input_ids;
+
+            // Example: Process through attention layers
+            hidden_states = fused_lora_forward(hidden_states, "q_proj");
+            hidden_states = fused_lora_forward(hidden_states, "k_proj");
+            hidden_states = fused_lora_forward(hidden_states, "v_proj");
+            hidden_states = fused_lora_forward(hidden_states, "o_proj");
+
+            // Process through MLP layers
+            hidden_states = fused_lora_forward(hidden_states, "gate_proj");
+            hidden_states = fused_lora_forward(hidden_states, "up_proj");
+            hidden_states = fused_lora_forward(hidden_states, "down_proj");
+
+            // Get logits from language model head
+            logits = base_model_->forward(hidden_states);
+        }
+
+        // Compute loss
+        auto loss = torch::nn::functional::cross_entropy(
+            logits.view({-1, logits.size(-1)}),
+            labels.view({-1}),
+            torch::nn::CrossEntropyLossOptions().ignore_index(-100)
+        );
+
+        // Backward pass with fused LoRA operations
+        loss.backward();
+
+        // Optimizer step
+        optimizer_->step();
+        optimizer_->zero_grad();
+
+        float loss_value = loss.item<float>();
+        current_loss_ = loss_value;
+        tokens_processed_ += input_ids.numel();
+
+        return loss_value;
+    }
+
+    // Launch NF4 quantization kernel
+    torch::Tensor launch_nf4_quantize_kernel(
+        const torch::Tensor& input,
+        torch::Tensor& output,
+        const float* levels) {
+
+        // CUDA kernel launch parameters
+        dim3 block(256);
+        dim3 grid((input.numel() + block.x - 1) / block.x);
+
+        void* args[] = {
+            &input.data_ptr(),
+            &output.data_ptr(),
+            &levels,
+            &input.numel()
+        };
+
+        cuLaunchKernel(nf4_quantize_kernel_,
+                      grid.x, grid.y, grid.z,
+                      block.x, block.y, block.z,
+                      0, nullptr, args, nullptr);
+
+        return output;
+    }
+
+    // Launch NF4 dequantization kernel
+    torch::Tensor launch_nf4_dequantize_kernel(
+        const torch::Tensor& input,
+        torch::Tensor& output,
+        const float* levels) {
+
+        dim3 block(256);
+        dim3 grid((input.numel() + block.x - 1) / block.x);
+
+        void* args[] = {
+            &input.data_ptr(),
+            &output.data_ptr(),
+            &levels,
+            &input.numel()
+        };
+
+        cuLaunchKernel(nf4_dequantize_kernel_,
+                      grid.x, grid.y, grid.z,
+                      block.x, block.y, block.z,
+                      0, nullptr, args, nullptr);
+
+        return output;
+    }
+
+    // Launch fused LoRA forward kernel
+    torch::Tensor launch_fused_lora_forward(
+        const torch::Tensor& input,
+        torch::nn::Module& adapter,
+        float scale) {
+
+        // Get adapter weights
+        auto weight_a = adapter->parameters()[0];
+        auto weight_b = adapter->parameters()[1];
+
+        dim3 block(256);
+        dim3 grid((input.numel() + block.x - 1) / block.x);
+
+        void* args[] = {
+            &input.data_ptr(),
+            &weight_a.data_ptr(),
+            &weight_b.data_ptr(),
+            &scale,
+            &input.numel()
+        };
+
+        cuLaunchKernel(fused_lora_forward_kernel_,
+                      grid.x, grid.y, grid.z,
+                      block.x, block.y, block.z,
+                      0, nullptr, args, nullptr);
+
+        return input; // Kernel modifies input in-place
+    }
+
+    // Launch fused LoRA backward with gradient checkpointing
+    std::vector<torch::Tensor> launch_fused_lora_backward_checkpointed(
+        const torch::Tensor& grad_output,
+        const torch::Tensor& input,
+        torch::nn::Module& adapter,
+        float scale) {
+
+        // Gradient checkpointing: recompute forward pass
+        auto lora_output = adapter->forward(input);
+        auto grad_lora = grad_output * scale;
+
+        // Backward through adapter
+        std::vector<torch::Tensor> grad_inputs;
+        adapter->backward(grad_lora, grad_inputs);
+
+        return {grad_output + grad_inputs[0], grad_lora};
+    }
+
+    // Get training metrics
+    std::unordered_map<std::string, float> get_metrics() {
+        size_t elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - training_start_).count();
+
+        float tokens_per_sec = tokens_processed_ / (elapsed_ms / 1000.0f);
+
+        return {
+            {"loss", current_loss_},
+            {"tokens_processed", static_cast<float>(tokens_processed_)},
+            {"tokens_per_second", tokens_per_sec},
+            {"elapsed_seconds", elapsed_ms / 1000.0f}
+        };
+    }
+
+    // Cleanup CUDA resources
+    void cleanup_cuda() {
+        if (cublas_handle_) cublasDestroy(cublas_handle_);
+        if (cudnn_handle_) cudnnDestroy(cudnn_handle_);
+    }
+};
+
+// CUDA kernels for fused operations (would be in separate .cu file)
 extern "C" {
-    void compute_cosine_similarity(const float* vec_a, const float* vec_b, float* result, int embedding_dim);
-    void process_with_torch(float* pinned, int n); // New function to call
+
+__global__ void nf4_quantize_kernel(const float* input, int8_t* output,
+                                   const float* levels, int numel) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= numel) return;
+
+    float val = input[idx];
+    float min_diff = fabsf(val - levels[0]);
+    int best_idx = 0;
+
+    for (int i = 1; i < 16; ++i) {
+        float diff = fabsf(val - levels[i]);
+        if (diff < min_diff) {
+            min_diff = diff;
+            best_idx = i;
+        }
+    }
+
+    output[idx] = best_idx;
 }
 
-int main() {
-    std::cout << "🧠 RAG LoRA Trainer (Phase 53/54) - C++ Component" << std::endl;
-    std::cout << "-------------------------------------------------" << std::endl;
+__global__ void nf4_dequantize_kernel(const int64_t* input, float* output,
+                                     const float* levels, int numel) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= numel) return;
 
-    // --- Cosine Similarity Example ---
-    const int embedding_dim = 1024;
-    std::vector<float> host_vec_a(embedding_dim);
-    std::vector<float> host_vec_b(embedding_dim);
+    int idx_clamped = min(max((int)input[idx], 0), 15);
+    output[idx] = levels[idx_clamped];
+}
 
-    // Populate dummy embedding vectors
-    for (int i = 0; i < embedding_dim; ++i) {
-        host_vec_a[i] = static_cast<float>(i) / embedding_dim;
-        host_vec_b[i] = 1.0f - (static_cast<float>(i) / embedding_dim);
+__global__ void fused_lora_forward_kernel(const float* input, const float* weight_a,
+                                         const float* weight_b, float scale, int numel) {
+    // Fused LoRA forward: input + (input @ weight_a @ weight_b) * scale
+    // Implementation would use CUTLASS for efficient GEMM operations
+}
+
+__global__ void fused_lora_backward_kernel(const float* grad_output, const float* input,
+                                          float* grad_weight_a, float* grad_weight_b,
+                                          float scale, int numel) {
+    // Fused LoRA backward with gradient checkpointing
+    // Implementation would use CUTLASS for efficient GEMM operations
+}
+
+}
+
+// Main training function
+int main(int argc, char* argv[]) {
+    std::cout << "Phase AST: QLoRA C++ Trainer Core Starting..." << std::endl;
+
+    // Initialize trainer
+    QLoRATrainer trainer("google/gemma-3-4b-it", 16, 32);
+
+    // Training loop (simplified)
+    for (int epoch = 0; epoch < 3; ++epoch) {
+        std::cout << "Epoch " << epoch + 1 << "/3" << std::endl;
+
+        // Simulate training steps
+        for (int step = 0; step < 100; ++step) {
+            // Create dummy tensors for demonstration
+            auto input_ids = torch::randint(0, 32000, {4, 512}, torch::kLong);
+            auto labels = torch::randint(0, 32000, {4, 512}, torch::kLong);
+
+            float loss = trainer.training_step(input_ids, labels);
+
+            if (step % 10 == 0) {
+                auto metrics = trainer.get_metrics();
+                std::cout << "Step " << step << ", Loss: " << loss
+                         << ", Tokens/sec: " << metrics["tokens_per_second"] << std::endl;
+            }
+        }
     }
-    std::cout << "Populated dummy embedding vectors." << std::endl;
 
-    // Compute cosine similarity on the GPU
-    float cosine_sim_result = 0.0f;
-    compute_cosine_similarity(host_vec_a.data(), host_vec_b.data(), &cosine_sim_result, embedding_dim);
-    std::cout << "✅ Cosine similarity computed on GPU: " << cosine_sim_result << std::endl;
-
-    // --- Normalization Example (using process_with_torch) ---
-    const int data_size = 512;
-    std::vector<float> raw_data(data_size);
-    for (int i = 0; i < data_size; ++i) {
-        raw_data[i] = static_cast<float>(i); // Dummy raw data
-    }
-
-    // Allocate pinned host memory for normalization
-    float* pinned_data;
-    cudaError_t cudaStatus = cudaMallocHost((void**)&pinned_data, data_size * sizeof(float));
-    if (cudaStatus != cudaSuccess) {
-        std::cerr << "cudaMallocHost failed for normalization: " << cudaGetErrorString(cudaStatus) << std::endl;
-        return 1;
-    }
-    memcpy(pinned_data, raw_data.data(), data_size * sizeof(float));
-
-    std::cout << "\n--- Normalization Example ---" << std::endl;
-    std::cout << "Raw data (first element): " << pinned_data[0] << std::endl;
-    process_with_torch(pinned_data, data_size);
-    std::cout << "Normalized data (first element): " << pinned_data[0] << std::endl; // Should be 0.0f if normalized by 255.0f
-
-    cudaFreeHost(pinned_data);
-
-    std::cout << "\nRAG LoRA Trainer component finished." << std::endl;
-
+    std::cout << "Phase AST QLoRA Training Complete!" << std::endl;
     return 0;
 }

@@ -36,7 +36,7 @@ class KMeansWorker {
     const startTime = Date.now();
     // Initialize centroids using k-means++ algorithm
     const centroids = this.initializeCentroidsKMeansPlusPlus(data, k, dimensions);
-    let hasConverged = $state(false);
+    let hasConverged = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
     let iteration = 0
     const clusters = Array.from({ length: k }, () => []);
     // Send progress updates to main thread

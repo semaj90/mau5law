@@ -2,10 +2,10 @@
  * Integrates with existing infrastructure and new GRPO database tables
  */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/db/connection';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/db/connection';
 import { sql } from 'drizzle-orm';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis-orchestrator-middleware';
 
 // Generate embedding using nomic-embed-text
 async function generateEmbedding(text: string): Promise<number[]> {

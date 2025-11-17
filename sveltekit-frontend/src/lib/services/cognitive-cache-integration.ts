@@ -1,10 +1,10 @@
 /** * Cognitive Cache Integration Service * Thread-safe JSONB/JSON operations with GPU acceleration support * Handles concurrent access patterns for legal AI database operations */
 import { writable, type Writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5/environment';
 import { createHash } from 'crypto'; // For SHA256 hashing on the server
 
 // Define a minimal RedisClientType to satisfy type-checking without a direct dependency on 'redis'.
-// The actual client from '$lib/server/cache/redis' should match this shape.
+// The actual client from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis' should match this shape.
 type RedisClientType = {
   isReady: boolean;
   get(key: string): Promise<string | null>;
@@ -16,7 +16,7 @@ type RedisClientType = {
 let redisClient: RedisClientType | undefined; // Type will be RedisClientType from 'redis'
 if (!browser) {
   // Dynamically import to avoid bundling for client
-  import('$lib/server/cache/redis')
+  import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis')
     .then(async (module) => {
       redisClient = await module.getRedisClient();
     })

@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/drizzle';
-import { persons } from '$lib/server/db/schema-poi';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
+import { persons } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-poi';
 import { cosineDistance, sql } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ClientGemmaDemo from '$lib/components/ClientGemmaDemo.svelte';
+  import ClientGemmaDemo from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ClientGemmaDemo.svelte';
 </script>
 
 <svelte:head>

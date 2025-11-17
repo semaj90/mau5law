@@ -1,18 +1,18 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button';
-  import Card from '$lib/components/ui/card';
-  import Input from '$lib/components/ui/input';
-  import { appActions, appStore } from '$lib/stores/app-store';
+  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
+  import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
+  import { appActions, appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
   import { Cpu, Database, RefreshCw, Save, Server, Zap } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   // Reactive state from app store
-  let systemMetrics = $state<any>(null);
-  let isLoading = $state(false);
-  let error = $state<string | null>(null);
+  let systemMetrics = $state // TODO: Verify store subscription is correct for Svelte 5<any>(null);
+  let isLoading = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5<string | null>(null);
 
   // Configuration state
-  let config = $state({
+  let config = $state // TODO: Verify store subscription is correct for Svelte 5({
     databaseUrl: '',
     redisUrl: '',
     ollamaUrl: '',
@@ -22,10 +22,10 @@
     enableGpu: true,
   });
 
-  let isSaving = $state(false);
+  let isSaving = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
   // Subscribe to app store
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     const unsubscribe = appStore.subscribe((state) => {
       systemMetrics = state.systemMetrics;
       isLoading = state.isLoading;
@@ -254,7 +254,7 @@
                 id="databaseUrl"
                 type="text"
                 value={config.databaseUrl}
-                on:input={(e) => config.databaseUrl = e.target.value}
+                oninput={(e) => config.databaseUrl = e.target.value}
                 placeholder="postgresql://user:pass@localhost:5432/db"
                 class="config-input"
               />
@@ -265,7 +265,7 @@
                 id="redisUrl"
                 type="text"
                 value={config.redisUrl}
-                on:input={(e) => config.redisUrl = e.target.value}
+                oninput={(e) => config.redisUrl = e.target.value}
                 placeholder="redis://localhost:6379"
                 class="config-input"
               />
@@ -291,7 +291,7 @@
                 id="ollamaUrl"
                 type="text"
                 value={config.ollamaUrl}
-                on:input={(e) => config.ollamaUrl = e.target.value}
+                oninput={(e) => config.ollamaUrl = e.target.value}
                 placeholder="http://localhost:11434"
                 class="config-input"
               />
@@ -302,7 +302,7 @@
                 id="gpuLayers"
                 type="number"
                 value={config.gpuLayers.toString()}
-                on:input={(e) => config.gpuLayers = parseInt(e.target.value) || config.gpuLayers}
+                oninput={(e) => config.gpuLayers = parseInt(e.target.value) || config.gpuLayers}
                 min="1"
                 max="50"
                 class="config-input"
@@ -314,7 +314,7 @@
                 id="maxBatchSize"
                 type="number"
                 value={config.maxBatchSize.toString()}
-                on:input={(e) => config.maxBatchSize = parseInt(e.target.value) || config.maxBatchSize}
+                oninput={(e) => config.maxBatchSize = parseInt(e.target.value) || config.maxBatchSize}
                 min="1"
                 max="1000"
                 class="config-input"

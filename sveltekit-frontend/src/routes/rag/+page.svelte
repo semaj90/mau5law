@@ -2,22 +2,22 @@
   import { FileText } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
-  // Reactive state using Svelte 5 runes ($state)
-  let submitting = $state(false);
-  let loadingDocuments = $state(false);
-  let documents: any[] = $state([]);
+  // Reactive state using Svelte 5 runes ($state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5)
+  let submitting = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let loadingDocuments = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let documents: any[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
   let selectedFile: File | null = null;
-  let tags = $state('');
-  let uploading = $state(false);
-  let uploadResult: any = $state(null);
-  let searchQuery = $state('');
-  let searchTags = $state('');
-  let searchType = $state('hybrid'); // 'hybrid' | 'vector' | 'fuzzy'
-  let searching = $state(false);
-  let searchResults: any[] = $state([]);
-  let systemStatus: any = $state(null);
-  let activeTab = $state('upload'); // 'upload' | 'documents' | 'search'
-  let deletingId: string | null = $state(null);
+  let tags = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let uploading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let uploadResult: any = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let searchTags = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let searchType = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('hybrid'); // 'hybrid' | 'vector' | 'fuzzy'
+  let searching = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let searchResults: any[] = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+  let systemStatus: any = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
+  let activeTab = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('upload'); // 'upload' | 'documents' | 'search'
+  let deletingId: string | null = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
 
   // Load documents on mount
   async function loadDocuments(): Promise<void> {

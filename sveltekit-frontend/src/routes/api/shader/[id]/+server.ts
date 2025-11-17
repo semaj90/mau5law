@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json, error } from '@sveltejs/kit';
-import redisCacheService from '$lib/server/cache/redis'; // Import as a default object
+import redisCacheService from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis'; // Import as a default object
 
 // Define an interface that includes the missing methods for shader caching
 interface RedisCacheServiceWithShaderMethods {

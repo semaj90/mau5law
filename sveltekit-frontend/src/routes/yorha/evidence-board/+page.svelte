@@ -33,21 +33,21 @@
 		pinned?: boolean;
 	}
 
-	let evidence = $state<EvidenceItem[]>([]);
-	let board = $state<BoardItem[]>([]);
+	let evidence = $state // TODO: Verify store subscription is correct for Svelte 5<EvidenceItem[]>([]);
+	let board = $state // TODO: Verify store subscription is correct for Svelte 5<BoardItem[]>([]);
 	let dragging: EvidenceItem | null = null;
-	let selectedItem = $state<BoardItem | null>(null);
-	let showConnections = $state(false);
-	let showContextMenu = $state(false);
-	let contextMenuPosition = $state({ x: 0, y: 0 });
-	let contextMenuTarget = $state<BoardItem | null>(null);
-	let metadataPanelVisible = $state(true);
-	let metadataPanelDocked = $state(true);
-	let metadataPanelFeedback = $state('');
-	let metadataPanelIntel = $state<{ title: string; body: string } | null>(null);
-	let agenticInsight = $state('');
-	let lastTimelineIndex = $state<number | null>(null);
-	let userDockOverride = $state(false);
+	let selectedItem = $state // TODO: Verify store subscription is correct for Svelte 5<BoardItem | null>(null);
+	let showConnections = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+	let showContextMenu = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+	let contextMenuPosition = $state // TODO: Verify store subscription is correct for Svelte 5({ x: 0, y: 0 });
+	let contextMenuTarget = $state // TODO: Verify store subscription is correct for Svelte 5<BoardItem | null>(null);
+	let metadataPanelVisible = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+	let metadataPanelDocked = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+	let metadataPanelFeedback = $state // TODO: Verify store subscription is correct for Svelte 5('');
+	let metadataPanelIntel = $state // TODO: Verify store subscription is correct for Svelte 5<{ title: string; body: string } | null>(null);
+	let agenticInsight = $state // TODO: Verify store subscription is correct for Svelte 5('');
+	let lastTimelineIndex = $state // TODO: Verify store subscription is correct for Svelte 5<number | null>(null);
+	let userDockOverride = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 	let touchHoldTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	// Sample evidence data
@@ -672,7 +672,7 @@
 			<div
 				class="node-context-menu"
 				style="left: {contextMenuPosition.x}px; top: {contextMenuPosition.y}px;"
-				on:click|stopPropagation
+				onclick|stopPropagation
 			>
 				{#each nodeContextActions as action}
 					<button type="button" onclick={() => handleContextAction(action.id)}>

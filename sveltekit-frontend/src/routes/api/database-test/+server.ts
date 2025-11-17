@@ -1,7 +1,7 @@
 ﻿import { json } from '@sveltejs/kit';
-import { db, testConnection, healthCheck } from '$lib/server/db';
+import { db, testConnection, healthCheck } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
 import { sql } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 export const GET: RequestHandler = async () => {
   const results: { [key: string]: unknown } = {};

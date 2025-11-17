@@ -1,12 +1,12 @@
-﻿import { cuidSchema } from '$lib/server/z-schemas';
+﻿import { cuidSchema } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/z-schemas';
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { Client } from 'minio';
-import { db } from '$lib/db/client';
-import { documents, cases } from '$lib/db/schema/rag-integration';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/db/client';
+import { documents, cases } from '$lib // TODO: Verify store subscription is correct for Svelte 5/db/schema/rag-integration';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 
 const presignedRequestSchema = z.object({
   filename: z.string().min(1).max(255),

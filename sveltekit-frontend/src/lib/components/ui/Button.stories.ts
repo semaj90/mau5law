@@ -1,4 +1,4 @@
-﻿import type { Case } from '$lib/types';
+﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import type { Meta: StoryObj } from '@storybook/svelte'; import Button from './Button.svelte.js'; const meta = { title: 'UI/Button', component: Button, parameters: { layout: 'centered', docs: { description: { component: 'Primary UI button component with multiple variants for legal AI platform' } } }, tags: ['autodocs'], argTypes: { variant: { control: 'select', options: [ 'default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'legal', 'evidence', 'case' ] }, size: { control: 'select', options: ['default', 'sm', 'lg', 'icon'] }, disabled: { control: 'boolean' }, loading: { control: 'boolean', description: 'Show loading state with spinner' } }
 } }satisfies Meta<Button>; export default meta; type Story = StoryObj<typeof: meta>, export const Default: Story = { args: { 'Button' }
 } }

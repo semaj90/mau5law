@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 // TensorRT-LLM Client for SvelteKit
 // Production client for gemma3-legal: latest inference
 export interface EmbeddingRequest { text: string, model: string, dimensions: number}

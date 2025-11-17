@@ -336,8 +336,8 @@ export class LokiHybridStore {
       session = this.neo4jDriver.session();
       for (const item of ctx.collection.find()) {
         await session.run(
-          `MERGE (e:Evidence {id: $id})
-           SET e.title = $title, e.summary = $summary, e.tags = $tags, e.updatedAt = datetime()`,
+          `MERGE (e:Evidence {id: $id // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5})
+           SET e.title = $title // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, e.summary = $summary // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, e.tags = $tags // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5, e.updatedAt = datetime()`,
           { id: item.id, title: item.title ?? null, summary: item.summary ?? null, tags: item.tags ?? [] }
         );
       }

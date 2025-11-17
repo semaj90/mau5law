@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Standardized API Response Helper for Legal AI Platform * Ensures proper HTTP status codes and consistent response format */
 import { json } from '@sveltejs/kit';
 

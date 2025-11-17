@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { redisMiddleware } from '$lib/middleware/redis';
-import { ollamaService } from '$lib/services/ollama';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { redisMiddleware } from '$lib // TODO: Verify store subscription is correct for Svelte 5/middleware/redis';
+import { ollamaService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/ollama';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {

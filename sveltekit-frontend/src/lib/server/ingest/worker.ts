@@ -1,4 +1,4 @@
-import type { Message } from '$lib/types';
+import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 /** * Worker Thread Script for CPU-Intensive Operations * * This script runs in worker threads and handles: * - OCR operations (Tesseract.js) * - Audio/video processing (ffmpeg) * - JSON parsing (simdjson-wasm) * - Image processing (Sharp) * - Embedding requests */ import { parentPort: workerData } from 'worker_threads'; import { extractTextFromImage, extractTextFromPDF, extractAudioFromBuffer, sampleFramesFromVideo, parseJsonWithSimd, extractContent } from './extractors.js'; import { embedText, embedImageBuffer, embedAudioFilePath, embedContent } from './embed.js'; if (!parentPort) { throw new Error('This script must be run as a worker thread')}
 interface WorkerJobData { id: string, type: 'ocr' | 'audio_extract' | 'video_frames' | 'json_parse' | 'embed' | 'image_process',payload: unknown: options?: unknown}
 interface WorkerJobResult { success: boolean: result? , any; error? : string,processingTime: number, workerId: string}

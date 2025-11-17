@@ -5,7 +5,7 @@
  */
 import { EmbeddingCache as embeddingCache, GetLegalEmbedding as getLegalEmbedding, GetBatchLegalEmbeddings as getBatchLegalEmbeddings } from './embedding-cache-middleware.js';
 import { WebGPURedisOptimizer as webgpuRedisOptimizer } from './webgpu-redis-optimizer.js';
-import { LangExtractOllamaService as langExtractService } from '$lib/services/langextract-ollama-service.js';
+import { LangExtractOllamaService as langExtractService } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/services/langextract-ollama-service.js';
 
 export interface LangChainWebGPUConfig {
   useWebGPUCache: boolean;

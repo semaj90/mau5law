@@ -1,11 +1,11 @@
 <script lang="ts">
-  import ActiveCasesWidget from '$lib/components/yorha/dashboard/ActiveCasesWidget.svelte';
-  import EvidenceStats from '$lib/components/yorha/dashboard/EvidenceStats.svelte';
-  import GPUMetrics from '$lib/components/yorha/dashboard/GPUMetrics.svelte';
-  import RecentActivity from '$lib/components/yorha/dashboard/RecentActivity.svelte';
-  import SystemOverview from '$lib/components/yorha/dashboard/SystemOverview.svelte';
-  import { cpuFallback } from '$lib/webgpu/webgpu-cpu-fallback';
-  import { webgpu } from '$lib/webgpu/webgpu-init';
+  import ActiveCasesWidget from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/dashboard/ActiveCasesWidget.svelte';
+  import EvidenceStats from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/dashboard/EvidenceStats.svelte';
+  import GPUMetrics from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/dashboard/GPUMetrics.svelte';
+  import RecentActivity from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/dashboard/RecentActivity.svelte';
+  import SystemOverview from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/yorha/dashboard/SystemOverview.svelte';
+  import { cpuFallback } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-cpu-fallback';
+  import { webgpu } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/webgpu/webgpu-init';
   import { onMount } from 'svelte';
 
   let webgpuCapabilities: any = null;

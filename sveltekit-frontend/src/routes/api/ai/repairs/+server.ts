@@ -7,7 +7,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 import { QdrantClient } from '@qdrant/js-client-rest';
 
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/navigation';
   import {
     AlertTriangle,
     Camera,
@@ -11,41 +11,41 @@
   } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent } from '$lib/components/ui/card';
+  import { Button } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/button';
+  import { Card, CardContent } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/card';
   import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle
-  } from '$lib/components/ui/dialog';
-  import { Input } from '$lib/components/ui/input';
+  } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/dialog';
+  import { Input } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/ui/input';
 
-  import POICard from '$lib/components/poi/POICard.svelte';
-  import POIEditor from '$lib/components/poi/POIEditor.svelte';
-  import POIFaceMatchDialog from '$lib/components/poi/POIFaceMatchDialog.svelte';
-  import POIPhotoModal from '$lib/components/poi/POIPhotoModal.svelte';
+  import POICard from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POICard.svelte';
+  import POIEditor from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIEditor.svelte';
+  import POIFaceMatchDialog from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIFaceMatchDialog.svelte';
+  import POIPhotoModal from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIPhotoModal.svelte';
 
   // State
-  let pois = $state([]);
-  let searchQuery = $state('');
-  let viewMode = $state<'grid' | 'list'>('grid');
-  let showFilters = $state(false);
-  let selectedThreatLevels = $state(['low', 'medium', 'high', 'critical']);
-  let loading = $state(true);
-  let error = $state('');
+  let pois = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
+  let viewMode = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<'grid' | 'list'>('grid');
+  let showFilters = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let selectedThreatLevels = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(['low', 'medium', 'high', 'critical']);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5('');
 
   // Dialog states
-  let showCreateDialog = $state(false);
-  let showEditDialog = $state(false);
-  let showPhotoModal = $state(false);
-  let showFaceMatchDialog = $state(false);
-  let editingPOI = $state(null);
-  let selectedPhoto = $state(null);
-  let faceMatches = $state([]);
+  let showCreateDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showEditDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showPhotoModal = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let showFaceMatchDialog = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
+  let editingPOI = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
+  let selectedPhoto = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(null);
+  let faceMatches = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5([]);
 
   // Filtered POIs
-  let filteredPOIs = $derived(
+  let filteredPOIs = $derived // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(
     pois.filter(poi => {
       const matchesSearch = !searchQuery ||
         poi.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -214,11 +214,11 @@
         </div>
 
         <div class="flex gap-3">
-          <Button on:click={handlePhotoUpload} variant="outline">
+          <Button onclick={handlePhotoUpload} variant="outline">
             <Camera class="w-4 h-4 mr-2" />
             Face Match
           </Button>
-          <Button on:click={handleCreate}>
+          <Button onclick={handleCreate}>
             <Plus class="w-4 h-4 mr-2" />
             Add POI
           </Button>
@@ -246,14 +246,14 @@
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'outline'}
                 size="sm"
-                on:click={() => viewMode = 'grid'}
+                onclick={() => viewMode = 'grid'}
               >
                 <Grid class="w-4 h-4" />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="sm"
-                on:click={() => viewMode = 'list'}
+                onclick={() => viewMode = 'list'}
               >
                 <List class="w-4 h-4" />
               </Button>
@@ -265,7 +265,7 @@
                 <Button
                   variant={selectedThreatLevels.includes(level) ? 'default' : 'outline'}
                   size="sm"
-                  on:click={() => toggleThreatFilter(level)}
+                  onclick={() => toggleThreatFilter(level)}
                   class={level === 'critical' ? 'bg-red-500 hover:bg-red-600' :
                          level === 'high' ? 'bg-orange-500 hover:bg-orange-600' :
                          level === 'medium' ? 'bg-yellow-500 hover:bg-yellow-600' :
@@ -292,7 +292,7 @@
           <AlertTriangle class="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h3 class="text-lg font-semibold text-red-700 mb-2">Error Loading POIs</h3>
           <p class="text-red-600">{error}</p>
-          <Button on:click={loadPOIs} class="mt-4" variant="outline">
+          <Button onclick={loadPOIs} class="mt-4" variant="outline">
             Try Again
           </Button>
         </CardContent>
@@ -307,7 +307,7 @@
           <p class="text-gray-500 mb-6">
             {searchQuery ? 'Try adjusting your search terms or filters' : 'Start by adding your first person of interest'}
           </p>
-          <Button on:click={handleCreate}>
+          <Button onclick={handleCreate}>
             <Plus class="w-4 h-4 mr-2" />
             Add First POI
           </Button>

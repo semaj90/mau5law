@@ -1,4 +1,4 @@
-import { redis } from '$lib/server/redis-client';
+import { redis } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/redis-client';
 /**
  * Redis Integration Module
  * Provides unified Redis caching functionality for the legal AI platform
@@ -23,7 +23,7 @@ export class RedisIntegration {
       fallbackToMemory: true
       keyPrefix: 'legal-ai:', ...options};
     this.client = null
-    this.isConnected = $state(false);
+    this.isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false);
     this.connectionAttempts = 0
     this.maxConnectionAttempts = 3
     this.init() }
@@ -37,7 +37,7 @@ export class RedisIntegration {
       this.isConnected = true
       console.log('Redis connected successfully') } catch (error) {
       console.warn('Redis connection failed, using memory cache fallback:', error.message);
-      this.isConnected = $state(false);
+      this.isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false);
       if (this.connectionAttempts < this.maxConnectionAttempts) {
         this.connectionAttempts++;
         setTimeout(() => this.init(), 5000); // Retry after 5 seconds
@@ -91,7 +91,7 @@ export class RedisIntegration {
         await this.client.setEx(finalKey, finalTTL, JSON.stringify(compressed));
         return true} catch (error) {
         console.warn('Redis set failed, falling back to memory:', error.message);
-        this.isConnected = $state(false)
+        this.isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false)
       }
     }
     // Fallback to memory cache
@@ -113,7 +113,7 @@ export class RedisIntegration {
         }
       } catch (error) {
         console.warn('Redis get failed, checking memory cache:', error.message);
-        this.isConnected = $state(false)
+        this.isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false)
       }
     }
     // Fallback to memory cache
@@ -268,8 +268,8 @@ export class RedisIntegration {
         status.redis = result === '1';
         await this.client.del('health:check')
       } catch (error) {
-        status.redis = $state(false);
-        this.isConnected = $state(false) }
+        status.redis = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+        this.isConnected = $state // TODO: Verify store subscription is correct for Svelte 5(false) }
     }
     return status}
   /**

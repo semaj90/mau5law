@@ -1,12 +1,12 @@
 <script lang="ts">
   // Removed problematic UI imports (they caused module/type errors)
-  // import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  // import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
-  // import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
+  // import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/Button.svelte';
+  // import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/Card.svelte';
+  // import Input from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/enhanced-bits/Input.svelte';
 
   import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  import type { PageData } from './$types';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import type { PageData } from './$types // TODO: Verify store subscription is correct for Svelte 5';
 
   type Case = {
     id: string;
@@ -18,14 +18,14 @@
   };
 
   // Use SvelteKit runes-mode pattern for receiving server data
-  const props = $props<PageData & { cases?: Case[] }>();
+  const props = $props // TODO: Verify store subscription is correct for Svelte 5<PageData & { cases?: Case[] }>();
 
   // local mutable cases state (initialized from server data)
   let cases: Case[] = props?.cases ?? [];
 
   // Svelte 5 runes-style reactive local state for correct updates
   // (replace older plain `let searchQuery = ''` which caused non-reactive-update errors)
-  let searchQuery = $state('');
+  let searchQuery = $state // TODO: Verify store subscription is correct for Svelte 5('');
 
   // typed helper that returns filtered cases
   function filteredCases(): Case[] {

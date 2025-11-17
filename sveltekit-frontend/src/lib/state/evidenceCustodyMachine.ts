@@ -7,9 +7,9 @@ import crypto from "crypto";
  */
 
 import { createMachine, assign, fromPromise } from "xstate";
-import type { Evidence } from "$lib/server/db/complete-introspected-schema"; // Evidence type source
-import { db } from "$lib/db";
-import { evidence } from "$lib/db/schema"; // Removed non-existent evidenceVectors & collaborationSessions
+import type { Evidence } from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/db/complete-introspected-schema"; // Evidence type source
+import { db } from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/db";
+import { evidence } from "$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/db/schema"; // Removed non-existent evidenceVectors & collaborationSessions
 import { eq, and, desc } from "drizzle-orm";
 
 // Types for the custody workflow state machine

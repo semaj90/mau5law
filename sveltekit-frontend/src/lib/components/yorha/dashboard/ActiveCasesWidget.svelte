@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { appStore } from '$lib/stores/app-store';
+  import { appStore } from '$lib // TODO: Verify store subscription is correct for Svelte 5/stores/app-store';
   import { onMount } from 'svelte';
 
-  let activeCases: any[] = $state([]);
-  let loading = $state(true);
-  let error: string | null = $state(null);
+  let activeCases: any[] = $state // TODO: Verify store subscription is correct for Svelte 5([]);
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let error: string | null = $state // TODO: Verify store subscription is correct for Svelte 5(null);
 
   async function loadActiveCases() {
     try {
@@ -15,7 +15,7 @@
       // await appStore.loadCases(); // Removed as loadCases does not exist on the store
 
       // Filter for active cases and take first 5
-      activeCases = (($appStore as any).cases || [])
+      activeCases = (($appStore // TODO: Verify store subscription is correct for Svelte 5 as any).cases || [])
         .filter((caseItem: any) => caseItem.status === 'active' || caseItem.status === 'in_progress')
         .slice(0, 5)
         .map((caseItem: any) => ({

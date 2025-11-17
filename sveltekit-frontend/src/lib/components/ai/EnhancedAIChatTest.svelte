@@ -20,7 +20,7 @@
 <div>
   <button
     class="px-3 py-2 rounded bg-indigo-600 text-white"
-    on:click={openModal}
+    onclick={openModal}
     aria-haspopup="dialog"
   >
     Open Chat (test)
@@ -35,7 +35,7 @@
       <div class="bg-white rounded-lg shadow-lg w-[min(800px,90%)] p-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold">Enhanced AI Chat (stub)</h3>
-          <button class="text-sm text-gray-500" on:click={closeModal}>Close</button>
+          <button class="text-sm text-gray-500" onclick={closeModal}>Close</button>
         </div>
         <div class="mb-3">
           <p class="text-sm text-gray-600">Case: {caseId}</p>
@@ -47,8 +47,8 @@
           placeholder="Type a test message..."
         ></textarea>
         <div class="flex justify-end gap-2">
-          <button class="px-3 py-2 rounded border" on:click={closeModal}>Cancel</button>
-          <button class="px-3 py-2 rounded bg-blue-600 text-white" on:click={send}>Send</button>
+          <button class="px-3 py-2 rounded border" onclick={closeModal}>Cancel</button>
+          <button class="px-3 py-2 rounded bg-blue-600 text-white" onclick={send}>Send</button>
         </div>
       </div>
     </div>

@@ -4,8 +4,8 @@
  * Falls back to a 500 error if the server rerank fails.
  */
 import type { RequestHandler } from '@sveltejs/kit';
-import { serverRerank } from '$lib/server/ai/ai-assistant-input-synthesizer';
-import type { RerankRequest } from '$lib/types';
+import { serverRerank } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/ai/ai-assistant-input-synthesizer';
+import type { RerankRequest } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {

@@ -1,11 +1,11 @@
-﻿import type { Case } from '$lib/types';
+﻿import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
 import { json } from '@sveltejs/kit';
-import { caseActivities } from '$lib/server/db/schema-postgres';
-import db from '$lib/server/db/index';
+import { caseActivities } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema-postgres';
+import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/index';
 import { sql, desc } from 'drizzle-orm';
-import { eq, or as orExpr } from '$lib/server/db/utils';
-import type { RequestHandler } from './$types';
-import { getUserId } from '$lib/server/auth/utils';
+import { eq, or as orExpr } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/utils';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
+import { getUserId } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/auth/utils';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {

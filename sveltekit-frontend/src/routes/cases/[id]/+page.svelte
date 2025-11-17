@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import type { Evidence } from '$lib/types/evidence';
-  import EvidenceCard from '$lib/ui/EvidenceCard.svelte';
-  import Modal from '$lib/ui/Modal.svelte';
+  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
+  import type { Evidence } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/evidence';
+  import EvidenceCard from '$lib // TODO: Verify store subscription is correct for Svelte 5/ui/EvidenceCard.svelte';
+  import Modal from '$lib // TODO: Verify store subscription is correct for Svelte 5/ui/Modal.svelte';
   import {
     ArrowLeft,
     Calendar,
@@ -16,7 +16,7 @@
   } from 'lucide-svelte';
  // Import the unified Evidence type
 
-  // --- START: Added types to resolve 'Cannot find module './$types'' ---
+  // --- START: Added types to resolve 'Cannot find module './$types // TODO: Verify store subscription is correct for Svelte 5'' ---
   interface Case {
     id: string;
     title: string;
@@ -36,18 +36,18 @@
   // --- END: Added types ---
 
   // Page data from server
-  let { data }: { data: PageData } = $props();
+  let { data }: { data: PageData } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
   // State management
-  let caseData = $derived(data?.case);
-  let evidence: Evidence[] = $state([]); // Use the imported Evidence type
-  let loading = $state(true);
-  let showDeleteModal = $state(false);
-  let deleting = $state(false);
+  let caseData = $derived // TODO: Verify store subscription is correct for Svelte 5(data?.case);
+  let evidence: Evidence[] = $state // TODO: Verify store subscription is correct for Svelte 5([]); // Use the imported Evidence type
+  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let showDeleteModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
+  let deleting = $state // TODO: Verify store subscription is correct for Svelte 5(false);
 
   // Get case ID from URL params
-  // let caseId = $derived($page.params.id); // REMOVED: Using deprecated $page store
-  let caseId = $derived(caseData?.id); // FIXED: Derive caseId from caseData
+  // let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5.params.id); // REMOVED: Using deprecated $page // TODO: Verify store subscription is correct for Svelte 5 store
+  let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5(caseData?.id); // FIXED: Derive caseId from caseData
 
   // Load case details and evidence
   async function loadCaseData() {
@@ -140,7 +140,7 @@
   // REMOVED: });
 
   // Svelte 5: Reactively load case data when caseId is available
-  $effect(() => {
+  $effect // TODO: Verify store subscription is correct for Svelte 5(() => {
     if (caseId) {
       loadCaseData();
     }

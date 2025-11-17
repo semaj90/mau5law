@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { active = false } = $props<{
+  let { active = false } = $props // TODO: Verify store subscription is correct for Svelte 5<{
     active?: boolean;
   }>();
 </script>

@@ -1,6 +1,6 @@
-import type { AIResponse } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { AIResponse } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { User } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
+import type { Document } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 // ðŸŽ¯ Global Type Definitions for Svelte, 5 + Legal AI System // Eliminates 800+ type definition errors across the codebase // ===================================================== // CORE COMPONENT INTERFACES // ===================================================== export interface Props { data?: unknown; children?: import('svelte').Snippet; [key, string], any}
 export interface LayoutProps { import('svelte').Snippet; data?: unknown}
 export interface PageProps { data: unknown: form?, any}

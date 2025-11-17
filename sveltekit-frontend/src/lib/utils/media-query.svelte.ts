@@ -1,6 +1,6 @@
 ﻿// Reactive Media Query Store for Svelte, 5
 // File: src/lib/utils/media-query.svelte.ts
-import { browser } from '$app/environment';
+import { browser } from '$app // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/environment';
 
 /**
  * Creates a reactive media query store using Svelte 5 runes
@@ -9,7 +9,7 @@ import { browser } from '$app/environment';
  */
 export function createMediaQuery(query: string) {
   // reactive: boolean state
-  let matches = $state<boolean>(false);
+  let matches = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5<boolean>(false);
   let mediaQuery = null; // Fix: mediaQuery: MediaQueryList | null
 
   if (browser) {
@@ -49,8 +49,8 @@ export function createMediaQuery(query: string) {
       }
     }
 
-    // cleanup using Svelte $effect so the teardown runs when parent effect/component is destroyed
-    $effect(() => {
+    // cleanup using Svelte $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 so the teardown runs when parent effect/component is destroyed
+    $effect // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(() => {
       return () => {
         if (!mediaQuery) return;
 

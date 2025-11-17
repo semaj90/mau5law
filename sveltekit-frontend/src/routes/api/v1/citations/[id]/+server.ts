@@ -1,8 +1,8 @@
 /* * Individual Citation API Routes * GET /api/v1/citations/[id] - Get specific citation * PUT /api/v1/citations/[id] - Update specific citation * DELETE /api/v1/citations/[id] - Delete specific citation */
 import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/unified-client';
-import { citations } from '$lib/server/db/schemas/cases-schema';
+import makeHttpErrorPayload from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/api/makeHttpError';
+import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/unified-client';
+import { citations } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schemas/cases-schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import type { InferInsertModel } from 'drizzle-orm'; // Corrected import for Drizzle ORM type inference

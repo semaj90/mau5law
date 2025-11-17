@@ -1,4 +1,4 @@
-﻿import type { Message } from '$lib/types';
+﻿import type { Message } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/types';
 // src/lib/server/rabbitmq.ts import * as amqp from 'amqplib'; import type { Channel } from 'amqplib';
 
 let connection: unknown | null = null;

@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type { RAGService } from '$lib/server/rag';
+import type { RAGService } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/rag';
 
 interface UserType {
   id: string;

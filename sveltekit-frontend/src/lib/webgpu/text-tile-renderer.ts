@@ -7,7 +7,7 @@
  * for parallel text processing and rendering pipeline optimization.
  */
 
-import { simdTextTilingEngine, type CompressedTextTile } from '$lib/ai/simd-text-tiling-engine.js';
+import { simdTextTilingEngine, type CompressedTextTile } from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/ai/simd-text-tiling-engine.js';
 
 export interface TextTileRenderConfig {
   canvasWidth: number;

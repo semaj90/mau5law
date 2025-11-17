@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  // Migrated from createEventDispatcher to callback props;
 
   const dispatch = createEventDispatcher<{
     phaseChange: string;
@@ -8,15 +8,13 @@
     exportData: void;
   }>();
 
-  export let webgpuSupported = false;
-  export let gpuAccelerationEnabled = false;
-  export let currentPhase = 'investigation';
+  let { webgpuSupported = false, gpuAccelerationEnabled = false, currentPhase = 'investigation' } = $props // TODO: Verify store subscription is correct for Svelte 5();
 
-  let layoutAlgorithm = 'force-directed';
-  let showLabels = true;
-  let showEdges = true;
-  let nodeSize = 20;
-  let edgeOpacity = 0.5;
+  let layoutAlgorithm = $state // TODO: Verify store subscription is correct for Svelte 5('force-directed');
+  let showLabels = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let showEdges = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let nodeSize = $state // TODO: Verify store subscription is correct for Svelte 5(20);
+  let edgeOpacity = $state // TODO: Verify store subscription is correct for Svelte 5(0.5);
 
   const phases = [
     'investigation',
@@ -75,7 +73,7 @@
   <!-- Case Phase -->
   <div class="control-section">
     <h4>Case Phase</h4>
-    <select bind:value={currentPhase} on:change={handlePhaseChange}>
+    <select bind:value={currentPhase} onchange={handlePhaseChange}>
       {#each phases as phase}
         <option value={phase}>{phase.charAt(0).toUpperCase() + phase.slice(1)}</option>
       {/each}
@@ -96,7 +94,7 @@
       </select>
     </div>
 
-    <button class="action-button" on:click={handleLayoutOptimization}>
+    <button class="action-button" onclick={handleLayoutOptimization}>
       Optimize Layout
     </button>
   </div>
@@ -149,7 +147,7 @@
   <div class="control-section">
     <h4>Analysis</h4>
 
-    <button class="action-button primary" on:click={handleSimilarityAnalysis}>
+    <button class="action-button primary" onclick={handleSimilarityAnalysis}>
       Run Similarity Analysis
     </button>
 
@@ -162,7 +160,7 @@
   <div class="control-section">
     <h4>Export</h4>
 
-    <button class="action-button" on:click={handleExportData}>
+    <button class="action-button" onclick={handleExportData}>
       Export Graph Data
     </button>
 

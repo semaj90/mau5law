@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
-  import { page } from '$app/stores';
+  import type { Case } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types';
+  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
 
-  let caseId = $derived($page.url.searchParams.get('caseId') || '');
-  let uploadFile = $state<File | null>(null);
+  let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5.url.searchParams.get('caseId') || '');
+  let uploadFile = $state // TODO: Verify store subscription is correct for Svelte 5<File | null>(null);
 
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement;

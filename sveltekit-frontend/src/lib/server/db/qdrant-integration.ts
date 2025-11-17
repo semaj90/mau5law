@@ -13,8 +13,8 @@ import { legalDocuments, cases, vectorMetadata } from './schema-postgres.js';
 
 // Infer types from Drizzle schema
 // Removed unused 'type Case'
-// type Case = typeof cases.$inferSelect;
-type LegalDocument = typeof legalDocuments.$inferSelect;
+// type Case = typeof cases.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+type LegalDocument = typeof legalDocuments.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
 
 // Infer Qdrant types directly from client methods
 type QdrantGetCollectionsResponse = Awaited<ReturnType<QdrantClient['getCollections']>>;

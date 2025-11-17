@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
 import { json, error } from '@sveltejs/kit';
-import { legalAIResultCache } from '$lib/services/advanced-result-cache.js';
+import { legalAIResultCache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/advanced-result-cache.js';
 
 /*
  * AI-Assisted Boilerplate Generation API

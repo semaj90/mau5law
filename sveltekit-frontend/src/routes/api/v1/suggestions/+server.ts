@@ -3,8 +3,8 @@
 // Ultra-low latency intelligent search suggestions with graph traversal
 // ======================================================================
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js'; // Added .js extension
-import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js';
+import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5.js'; // Added .js extension
+import didYouMeanModule from '$lib // TODO: Verify store subscription is correct for Svelte 5/services/did-you-mean-quic-graph.js';
 import { z, type ZodError } from 'zod';
 
 // --- Narrow user intent and query types to avoid `any` ---

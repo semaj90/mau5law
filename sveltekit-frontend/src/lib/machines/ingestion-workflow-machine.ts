@@ -1,7 +1,7 @@
 /** * XState v5 Ingestion Workflow Machine * Orchestrates document processing: upload â†’ chunk â†’ embed â†’ store â†’ cache * Integrates with RabbitMQ, LokiJS, and Drizzle ORM */
 import { setup, assign, createActor, fromPromise } from 'xstate'; // Removed sendTo
-import { getEmbedding, type EmbeddingResult } from '$lib/server/embedding-gateway.js'; // Changed getEmbeddingViaGate to getEmbedding, added type import
-import { cache } from '$lib/server/cache/redis.js';
+import { getEmbedding, type EmbeddingResult } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/embedding-gateway.js'; // Changed getEmbeddingViaGate to getEmbedding, added type import
+import { cache } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/cache/redis.js';
 
 export interface DocumentChunk {
   id: string
@@ -272,7 +272,7 @@ export const ingestionWorkflowMachine = setup({
       const { job } = input
       try {
         // Try RabbitMQ first
-        const { publishMessage } = await import('$lib/server/rabbitmq.js'); // Changed publishToQueue to publishMessage
+        const { publishMessage } = await import('$lib // TODO: Verify store subscription is correct for Svelte 5/server/rabbitmq.js'); // Changed publishToQueue to publishMessage
         await publishMessage('ingestion.jobs', { ...job, queuedAt: new Date().toISOString() });
         console.log(`ðŸ“¤ Published job ${job.id} to RabbitMQ`);
         return { backend: 'rabbitmq', jobId: job.id }} catch (error) {

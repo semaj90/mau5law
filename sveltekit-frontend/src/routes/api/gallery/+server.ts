@@ -1,13 +1,13 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit';
-import { db, usersTable, cases, evidence, legalDocuments } from '$lib/server/database';
+import { db, usersTable, cases, evidence, legalDocuments } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/database';
 import { eq, desc, asc, and, count, gte, lte, sql, type SQL } from 'drizzle-orm';
 
 // Define types
-type EvidenceSelect = typeof evidence.$inferSelect;
-type CaseSelect = typeof cases.$inferSelect;
-type UserSelect = typeof usersTable.$inferSelect;
-type LegalDocumentSelect = typeof legalDocuments.$inferSelect;
+type EvidenceSelect = typeof evidence.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+type CaseSelect = typeof cases.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+type UserSelect = typeof usersTable.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
+type LegalDocumentSelect = typeof legalDocuments.$inferSelect // TODO: Verify store subscription is correct for Svelte 5;
 
 type EvidenceQueryResult = EvidenceSelect & {
   caseTitle: CaseSelect['title'] | null;

@@ -1,4 +1,4 @@
-import redis from '$lib/server/redis-client'; // Changed to default import
+import redis from '$lib // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5/server/redis-client'; // Changed to default import
 import { type RedisClientType } from 'redis'; // Changed to import RedisClientType from 'redis'
 import { formatErrorResponse } from './errors';
 let _redis: RedisClientType | null = null; // Changed type to RedisClientType
