@@ -1,9 +1,10 @@
-import type { defineConfig,
+import {
+  defineConfig,
   presetAttributify,
   presetUno,
   transformerDirectives,
   transformerVariantGroup,
- } from 'unocss';
+} from 'unocss';
 
 export default defineConfig({
   presets: [

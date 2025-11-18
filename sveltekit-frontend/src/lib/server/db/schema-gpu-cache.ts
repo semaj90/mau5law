@@ -1,5 +1,5 @@
 // Top imports (ensure these are present)
-import type { pgTable,
+import { pgTable,
   serial,
   text,
   jsonb,
@@ -9,7 +9,7 @@ import type { pgTable,
   real,
   uuid,
  } from 'drizzle-orm/pg-core';
-import type { vector  } from 'pgvector/drizzle-orm';
+import { vector  } from 'pgvector/drizzle-orm';
 
 // ===============
 // =============================================================

@@ -1,6 +1,7 @@
-import type { createClient, type RedisClientType  } from 'redis';
+import { createClient } from 'redis';
 
 type RedisClientOptions = Parameters<typeof createClient>[0];
+type RedisClient = ReturnType<typeof createClient>;
 
 const DEFAULT_REDIS_URL =
   process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
@@ -20,8 +21,8 @@ const REDIS_MAX_RETRIES = Number(process.env.REDIS_OP_MAX_RETRIES ?? 3);
 const REDIS_BASE_DELAY_MS = Number(process.env.REDIS_OP_BASE_DELAY_MS ?? 200);
 const REDIS_TIMEOUT_MS = Number(process.env.REDIS_OP_TIMEOUT_MS ?? 5000);
 
-let redisClient: RedisClientType | null = null;
-let redisConnectPromise: Promise<RedisClientType | null> | null = null;
+let redisClient: RedisClient | null = null;
+let redisConnectPromise: Promise<RedisClient | null> | null = null;
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -48,10 +49,10 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
   throw lastErr instanceof Error ? lastErr : new Error('Redis operation failed');
 }
 
-async function connectRedis(): Promise<RedisClientType | null> {
+async function connectRedis(): Promise<RedisClient | null> {
   if (!SHOULD_USE_REDIS) return null;
   try {
-    const options: RedisClientOptions = {
+    const options: any = {
       url: DEFAULT_REDIS_URL,
       socket: {
         reconnectStrategy: () => 1000,
@@ -66,20 +67,20 @@ async function connectRedis(): Promise<RedisClientType | null> {
     client.on('error', (err) => console.error('[cache] Redis error:', err));
 
     await withBackoff(async () => {
-      if (!client.isOpen) {
+      if (!(client as any).isOpen) {
         await client.connect();
       }
     });
 
-    return client;
+    return client as RedisClient;
   } catch (err) {
     console.warn('[cache] Failed to connect to Redis, falling back to memory cache:', err);
     return null;
   }
 }
 
-export async function getRedisClient(): Promise<RedisClientType | null> {
-  if (redisClient?.isOpen) {
+export async function getRedisClient(): Promise<RedisClient | null> {
+  if (redisClient?.status === 'ready') {
     return redisClient;
   }
 
@@ -165,9 +166,9 @@ export async function redisRateLimit(
 
   try {
     const current = await withBackoff(async () => {
-      const count = await client.incr(redisKey);
+      const count = await (client as any).incr(redisKey);
       if (count === 1) {
-        await client.expire(redisKey, Math.max(1, Math.ceil(windowMs / 1000)));
+        await (client as any).expire(redisKey, Math.max(1, Math.ceil(windowMs / 1000)));
       }
       return count;
     });
@@ -192,7 +193,7 @@ export const cognitiveCache = {
 
     try {
       const result = await withBackoff(() => client.get(key));
-      if (!result) return null;
+      if (!result || typeof result !== 'string') return null;
       return JSON.parse(result) as T;
     } catch (err) {
       console.warn('[cache] Redis GET failed:', err);

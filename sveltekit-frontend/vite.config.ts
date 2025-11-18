@@ -1,10 +1,10 @@
-import type { sveltekit  } from '@sveltejs/kit/vite';
-import type { defineConfig, loadEnv  } from 'vite';
+import { sveltekit  } from '@sveltejs/kit/vite';
+import { defineConfig, loadEnv  } from 'vite';
 import UnoCSS from '@unocss/vite';
 import path from 'path';
 import fs from 'fs';
-import type { createRequire  } from 'module';
-import type { skipRespondPlugin  } from './esbuild-plugin-skip-respond.mjs';
+import { createRequire  } from 'module';
+import { bitsUiIntegrityPlugin } from './scripts/vite-plugin-bits-ui-integrity.mjs';
 
 const require = createRequire(import.meta.url);
 
@@ -36,10 +36,11 @@ export default defineConfig(({ mode }) => {
           runes: true // 👈 enables rune transformer
         },
         ssr: {
-          noExternal: ['bits-ui']
+          noExternal: ['bits-ui', '@internationalized/date'] // Temporarily disabled
         }
       }),
-      UnoCSS(),
+      // UnoCSS(), // Temporarily disabled for testing
+      bitsUiIntegrityPlugin({ failOnError: false, autoFix: false }),
       // HMR error logger plugin
       {
         name: 'hmr-error-logger',
@@ -140,6 +141,7 @@ export default defineConfig(({ mode }) => {
         '@grpc/grpc-js',
         '@grpc/proto-loader',
         'bits-ui',
+        '@internationalized/date',
         'drizzle-orm',
         'svelte',
         '@sveltejs/kit',

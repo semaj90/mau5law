@@ -3,6 +3,7 @@ import type { createRuntimeConnection, closeConnections  } from '$lib/server/db/
 import type { getRedisClient, closeRedisClient  } from '$lib/server/cache/redis';
 import type { getRabbitMQChannel, closeRabbitMQConnection  } from '$lib/server/messaging/rabbitmq';
 import type { setLuciaAvailabilityForUploads  } from '$lib/server/auth/contextual-upload-guard';
+import { fastjsonHook } from '$lib/hooks/fastjson-server';
 
 type LuciaInstance = {
   sessionCookieName: string;
@@ -123,7 +124,7 @@ async function attachLuciaSession(event: Parameters<Handle>[0]['event']): Promis
   }
 }
 
-export const handle: Handle = async ({ event, resolve }) => {
+export const handle: Handle = fastjsonHook(async ({ event, resolve }) => {
   event.locals.db = createRuntimeConnection();
   event.locals.redis = await getRedisClient();
   try {
@@ -135,7 +136,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   await attachLuciaSession(event);
 
   return resolve(event);
-};
+});
 
 const shutdown = async () => {
   console.log('Shutting down services.');

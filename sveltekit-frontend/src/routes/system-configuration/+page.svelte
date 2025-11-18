@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { WebGPUCapabilities  } from '$lib/webgpu/webgpu-init';
-  import type { onMount  } from 'svelte';
+  import type { WebGPUCapabilities } from '$lib/webgpu/webgpu-init';
+  import { onMount } from 'svelte';
 
   let activeTab = $state <'general' | 'ai' | 'database' | 'gpu' | 'security'>('general');
 
@@ -326,8 +326,8 @@
                 <option value="all-minilm">All MiniLM</option>
                 <option value="text-embedding-ada">OpenAI Ada</option>
               </select>
-            </div>ption value="all-minilm">All MiniLM</option>
-                <option value="text-embedding-ada">OpenAI Ada</option>
+            </div>
+
             <div class="setting-group">
               <label class="setting-label" for="enable-fallback">Enable Fallback</label>
               <label class="toggle" for="enable-fallback">
@@ -344,6 +344,9 @@
 
       <!-- Database Configuration -->
       {#if activeTab === 'database'}
+        <div class="config-section">
+          <h2>DATABASE CONFIGURATION</h2>
+          <div class="settings-grid">
             <div class="setting-group">
               <label class="setting-label" for="db-type">Database Type</label>
               <select id="db-type" class="setting-input" bind:value={config.database.type}>
@@ -809,6 +812,7 @@
   }
   .setting-slider {
     -webkit-appearance: none;
+    appearance: none;
     height: 6px;
     border-radius: 3px;
     background: rgba(107, 114, 128, 0.5);

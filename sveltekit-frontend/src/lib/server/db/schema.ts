@@ -1,5 +1,5 @@
 // Move/import Drizzle pg-core symbols near the top of the file
-import type { pgTable,
+import { pgTable,
   timestamp,
   text,
   varchar,
@@ -10,11 +10,11 @@ import type { pgTable,
   primaryKey,
   customType,
  } from 'drizzle-orm/pg-core';
-import type { sql  } from 'drizzle-orm';
+import { sql  } from 'drizzle-orm';
 
 // Define custom vector type for pgvector
 const vector = customType<{ data: number[]; driverData: string }>({
-  dataType(config) {
+  dataType(config: { length?: number }) {
     return `vector(${config?.length ?? 1536})`;
   },
   toDriver(value: number[]): string {
@@ -131,15 +131,3 @@ export interface Evidence {
 }
 
 export interface NewEvidence extends Omit<Evidence, 'id' | 'uploadedAt' | 'embedding'> {}
-
-// Define the sessions table for Lucia
-export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(), // Lucia expects 'text' and manages the ID generation
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-  expiresAt: timestamp('expires_at', {
-    withTimezone: true,
-    mode: 'date',
-  }).notNull(),
-});
