@@ -11,6 +11,9 @@ const vector = (name: string, { dimensions }: { dimensions: number }) =>
       // driver expects string representation like: '[0.1,0.2,...]'
       return `[${value.join(',')}]`;
     },
+    fromDriver(value: string): number[] {
+      return value.slice(1, -1).split(',').map(parseFloat);
+    },
   } )(name);
 
 export const cases = pgTable('cases', {

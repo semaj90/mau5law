@@ -1,4 +1,4 @@
-import type { index, jsonb, pgTable, real, serial, text, timestamp  } from 'drizzle-orm/pg-core';
+import { index, jsonb, pgTable, real, serial, text, timestamp  } from 'drizzle-orm/pg-core';
 
 export const userIntentTransitions = pgTable(
   'user_intent_transitions',

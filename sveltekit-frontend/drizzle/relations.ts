@@ -1,5 +1,5 @@
-import type { relations  } from 'drizzle-orm/relations';
-import type { cases,
+import { relations  } from 'drizzle-orm/relations';
+import { cases,
   caseTimeline,
   users,
   aiRecommendations,

@@ -1,7 +1,8 @@
 // Updated PostgreSQL schema based on database introspection // This schema matches the actual database structure (drizzle/schema.ts)
-import type { sql  } from 'drizzle-orm';
-import type { relations  } from 'drizzle-orm/relations';
-import type { bigint,
+import { sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm/relations';
+import {
+  bigint,
   boolean,
   integer,
   jsonb,
@@ -17,7 +18,7 @@ import type { bigint,
   numeric,
   pgEnum,
   index
- } from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core';
 
 // Note: vector type is handled via sql`` template in table definitions
 

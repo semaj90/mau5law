@@ -31,6 +31,22 @@
 			"presentation": { "reveal": "always", "panel": "dedicated" }
 		},
 		{
+			"label": "SIMD Markdown Parser Test",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"simd:markdown:test"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"detail": "Execute the multi-layer Markdown parser harness (Go SIMD ➜ native addon ➜ fallbacks)"
+		},
+		{
 			"label": "📊 Error Analysis: Top 100 (Redis Cache)",
 			"type": "shell",
 			"command": "node",

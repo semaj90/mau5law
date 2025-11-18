@@ -9,7 +9,7 @@
 
 // For now, a minimal export to satisfy the import:
 import * as schema from './db/schema'; // Import the new schema types
-import type { pgTable, serial, text, jsonb, timestamp  } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, jsonb, timestamp  } from 'drizzle-orm/pg-core';
 
 export const personsOfInterest = pgTable('persons_of_interest', {
   id: serial('id').primaryKey(),
