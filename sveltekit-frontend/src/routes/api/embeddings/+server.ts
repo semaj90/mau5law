@@ -1,59 +1,80 @@
-import type { json  } from '@sveltejs/kit';
-import type { RequestHandler } from './$types ';
-import type { getOllamaEndpoint, getOllamaEmbeddingModel  } from '$lib/server/ai/ollama-utils';
-import type { EmbeddingResponse } from '$lib/types/unified-types';
+/**
+ * Embeddings API Route
+ * Handles embedding generation and storage for workspace notes
+ */
 
-// Define a local extended interface to include embeddingDimension
-interface ExtendedEmbeddingResponse extends EmbeddingResponse {
-  embeddingDimension?: number;
-}
+import { json, type RequestHandler } from '@sveltejs/kit';
+import {
+  generateEmbedding,
+  generateAndStoreNoteEmbedding,
+  retrieveRAGContext,
+} from '$lib/server/services/embedding-service';
+import { getOllamaEndpoint } from '$lib/utils/ollama-config';
 
 /**
- * Handles POST requests to generate embeddings for a given text using Ollama.
- * Expects a JSON body with a 'text' property.
- *
- * Example usage:
  * POST /api/embeddings
- * Body: { "text": "Your input text here." }
+ * Generate embedding for text
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { text } = await request.json();
+    const body = await request.json();
+    const { text, noteId } = body as {
+      text?: string;
+      noteId?: string;
+    };
 
-    if (typeof text !== 'string' || text.trim() === '') {
-      return json({ success: false, error: 'Invalid or empty text provided' }, { status: 400 });
+    // Verify Ollama endpoint is configured
+    const endpoint = getOllamaEndpoint();
+    if (!endpoint) {
+      return json({ error: 'Ollama endpoint not configured' }, { status: 500 });
     }
 
-    const ollamaEndpoint = getOllamaEndpoint();
-    const embeddingModel = getOllamaEmbeddingModel();
-
-    // Make a request to the Ollama embeddings API
-    const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ model: embeddingModel, prompt: text })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Ollama embedding API error:', errorData);
-      return json({ success: false, error: `Failed to get embeddings from Ollama: ${errorData.error}` }, { status: response.status });
+    // Generate embedding for text
+    if (text) {
+      const embedding = await generateEmbedding(text);
+      return json({ embedding, model: 'embeddinggemma:latest' });
     }
 
-    const data: EmbeddingResponse = await response.json();
-
-    // For known models like 'embeddinggemma:latest', we can explicitly set the dimension.
-    // This can be made more dynamic if Ollama's API provides it directly or via model info.
-    if (embeddingModel === 'embeddinggemma:latest' && data.embedding) {
-      (data as ExtendedEmbeddingResponse).embeddingDimension = 384; // embeddinggemma:latest typically produces 384-dimensional embeddings
+    // Generate and store embedding for a note
+    if (noteId && text) {
+      const embedding = await generateAndStoreNoteEmbedding(noteId, text);
+      return json({ embedding, noteId, stored: true });
     }
 
-    return json({ success: true, data });
+    return json(
+      { error: 'Missing required parameters: text or (noteId and text)' },
+      { status: 400 }
+    );
   } catch (error) {
-    console.error('Error in /api/embeddings:', error);
-    return json({ success: false, error: 'Internal server error' }, { status: 500 });
+    console.error('Embedding generation error:', error);
+    return json(
+      { error: error instanceof Error ? error.message : 'Failed to generate embedding' },
+      { status: 500 }
+    );
   }
 };
 
+/**
+ * GET /api/embeddings/rag-context
+ * Retrieve RAG context for a workspace query
+ */
+export const GET: RequestHandler = async ({ url }) => {
+  try {
+    const workspaceId = url.searchParams.get('workspaceId');
+    const query = url.searchParams.get('query');
+    const topK = parseInt(url.searchParams.get('topK') || '5', 10);
+
+    if (!workspaceId || !query) {
+      return json({ error: 'Missing required parameters: workspaceId, query' }, { status: 400 });
+    }
+
+    const context = await retrieveRAGContext(workspaceId, query, topK);
+    return json({ context, workspaceId, query });
+  } catch (error) {
+    console.error('RAG context retrieval error:', error);
+    return json(
+      { error: error instanceof Error ? error.message : 'Failed to retrieve RAG context' },
+      { status: 500 }
+    );
+  }
+};

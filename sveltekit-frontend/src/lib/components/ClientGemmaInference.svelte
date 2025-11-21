@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';
 
   interface Props {
     evidenceItem?: {
@@ -22,7 +22,7 @@
   let modelLoaded = $state(false);
 
   // Set default input based on evidence item with legal analysis prompt
-  $effect(() => {() => {
+  $effect(() => {
     if (evidenceItem) {
       inputText = `LEGAL ANALYSIS REQUEST:\n\nEvidence Title: ${evidenceItem.title}\nEvidence Content: ${evidenceItem.excerpt}\nEvidence Type: ${evidenceItem.type}\nRelevance Score: ${evidenceItem.relevance}%\n\nPlease provide a comprehensive legal analysis including:\n1. Key legal issues identified\n2. Potential risks or implications\n3. Recommended actions\n4. Supporting legal precedents or principles\n\nAnalysis:`;
     }
@@ -36,12 +36,7 @@
 
       // Load tokenizer with all required files
       tokenizer = await AutoTokenizer.from_pretrained('/models/', {
-        local_files_only: true,
-        model_json: true,
-        tokenizer_json: true,
-        special_tokens_map: true,
-        tokenizer_config: true,
-        added_tokens: true
+        local_files_only: true
       });
 
       // Load ONNX model

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { url } from '$app/stores';
   import { onMount } from 'svelte';
 
   // Props interface
@@ -14,7 +13,7 @@
 
   // Local state
   let isMobile = $state(false);
-  let currentPath = $derived(url.pathname);
+  let currentPath = $derived($page.url.pathname);
 
   // Navigation items
   const navItems = [

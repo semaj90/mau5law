@@ -9,9 +9,9 @@
   - Enhanced audio capabilities
 -->
 <script lang="ts">
-  import type { Button as BitsButton  } from 'bits-ui/components/ui/button';
+  import { Button as BitsButton } from 'bits-ui/components/ui/button';
   import type { Snippet } from 'svelte';
-  import type { generateGradient, getMode7Transform, getSizeStyles, retroAudio, SNES_PALETTE  } from '../effects';
+  import { generateGradient, getMode7Transform, getSizeStyles, retroAudio, SNES_PALETTE } from '../effects';
   import type { GamingComponentProps } from '../types/gaming-types.js';
   interface Props extends GamingComponentProps {
     // Button specific props
@@ -86,9 +86,7 @@
 </script>
 
 <div
-  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
-    ? 'mode7'
-    : ''} {plasmaEffect ? 'plasma' : ''}"
+  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
 >
   <BitsButton
     bind:el={buttonElement}
