@@ -1,25 +1,159 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported // enhanced-bits exports components as default exports â€” import only what's used. // Remove problematic Input import (it exposed an: object/instance type that TypeScript rejected). // import Input from '$lib/components/ui/enhanced-bits.svelte'; import type { Search, BookOpen, ExternalLink, Bot, MessageSquare  } from 'lucide-svelte'; // In Svelte, 5 (runes mode) don't use `export let` for page props â€” use $props () // Provide a typed shape for data so quickLinks is iterable and its fields are known. type QuickLink = { title: string, description?: string; jurisdiction?: string; category?: string; url: string}; type PageData = { quickLinks?: QuickLink[]; // ...other page data fields, if: unknown... }; // Safely read page props to avoid destructuring when $props () is: undefined const props = ($props () as { data?: PageData }) ?? {}; const data: PageData = props.data ?? { quickLinks: [] };
-  let EnhancedFuseSearch = $state <any>(null); $effect (() => { (async () => { // Support both module formats (with or without `default`) to avoid TS error const mod = await import('$lib/components/search/EnhancedFuseSearch.svelte'); EnhancedFuseSearch = (mod as: unknown).default ?? mod})()}); // Simple search state let searchQuery = $state <string>(''); let searchResults = $state <any[]>([]); let isSearching = $state <boolean>(false); async function performSearch(): Promise<any> { if (!searchQuery.trim()) return; isSearching = true; try { const params = new URLSearchParams({ q: searchQuery, jurisdiction: 'all', // Fixed syntax error here category: 'all'
-      }); const response = await fetch(`/api/laws/search?${ params }`); // Narrow JSON type so TypeScript knows: 'laws' is an array const result = (await response.json()) as { success?: boolean; laws?: unknown[]; error?: unknown}; if (result.success) { searchResults = result.laws ?? []} else { searchResults = []; console.error('Search failed:', result)}
-    } catch (error) { console.error('Search error:', error); searchResults = []} finally { isSearching = false}
-'
-  }
-  function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter') { performSearch()}
+  import Sidebar from '$lib/components/laws/Sidebar.svelte';
+  import StatuteColumn from '$lib/components/laws/StatuteColumn.svelte';
+  import type { PageData } from './$types';
+
+  let { data } = $props<{ data: PageData }>();
+
+  let selectedStatute: any = $state(null);
+  let isExplaining = $state(false);
+
+  function handleSelectStatute(statute: any) {
+    selectedStatute = statute;
+    isExplaining = false;
   }
 
-   // AI toolbar event handlers (typed) function handleAIChatResult(result: unknown) { console.log('AI Chat Result:', result)}
-  function handleAISummarizeResult(result: unknown) { console.log('AI Summarization Result:', result)}
+  async function handleExplain(sectionId: string) {
+    try {
+      const response = await fetch('/api/chat/explain-statute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sectionId,
+          stream: false,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (selectedStatute) {
+          selectedStatute.explanation = result.explanation;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to explain statute:', error);
+    } finally {
+      isExplaining = false;
+    }
+  }
+
+  function handleViewPDF(title: string) {
+    // Open PDF viewer
+    window.open(`/api/laws/download-pdf?title=${encodeURIComponent(title)}`, '_blank');
+  }
+
+  // Auto-select first statute
+  if (!selectedStatute && data.title18.length > 0) {
+    selectedStatute = data.title18[0];
+  }
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<div class="laws-page">
+  <Sidebar {data} onSelectStatute={handleSelectStatute} />
+
+  <main class="columns-container">
+    {#if selectedStatute}
+      <StatuteColumn
+        statute={selectedStatute}
+        onExplain={handleExplain}
+        onViewPDF={handleViewPDF}
+      />
+    {:else}
+      <div class="empty-state">
+        <h2>Select a statute to begin</h2>
+        <p>Choose from Title 18 (Crimes) or Title 28 (Judiciary) in the sidebar</p>
+      </div>
+    {/if}
+  </main>
+
+  <aside class="drawer">
+    <div class="drawer-content">
+      <h3>📊 Statistics</h3>
+      <div class="stat-item">
+        <span>Total Statutes:</span>
+        <strong>{data.stats.totalStatutes}</strong>
+      </div>
+      <div class="stat-item">
+        <span>Title 18:</span>
+        <strong>{data.stats.title18Count}</strong>
+      </div>
+      <div class="stat-item">
+        <span>Title 28:</span>
+        <strong>{data.stats.title28Count}</strong>
+      </div>
+    </div>
+  </aside>
+</div>
 
 <style>
-  .page-repair {
+  .laws-page {
+    display: contents;
+  }
+
+  .columns-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #fff;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
     padding: 2rem;
-    font-family: sans-serif;
+    text-align: center;
+    color: #999;
+  }
+
+  .empty-state h2 {
+    font-family: var(--font-serif);
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+  }
+
+  .drawer {
+    padding: 1.5rem;
+    border-left: 1px dotted #e0e0e0;
+    background-color: #fafafa;
+    overflow-y: auto;
+    min-width: 200px;
+  }
+
+  .drawer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .drawer-content h3 {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    border-bottom: 1px dotted #e0e0e0;
+  }
+
+  .stat-item span {
+    color: #666;
+  }
+
+  .stat-item strong {
+    color: #0066cc;
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 1024px) {
+    .drawer {
+      display: none;
+    }
   }
 </style>

@@ -18,7 +18,7 @@
   "dtype": "float16",
   "use_gemm_plugin": "auto",
   "use_gpt_attention_plugin": "float16",
-  "paged_kv_cache": true,
+  "paged_kv_cache": "enable",
   "per_group": true,
   "group_size": 128,
   "int8_kv_cache": true

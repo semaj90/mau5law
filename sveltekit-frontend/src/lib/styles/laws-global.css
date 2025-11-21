@@ -1,0 +1,142 @@
+/* Laws Browser Global Styles */
+/* Inspired by BarnsworthBurning + Austin Kleon */
+
+:root {
+  --color-bg: #fafafa;
+  --color-text: #1a1a1a;
+  --color-text-muted: #666;
+  --color-border: #e0e0e0;
+  --color-border-subtle: #f0f0f0;
+  --color-highlight: #faf1a0;
+  --color-highlight-shadow: rgba(0, 0, 0, 0.05);
+
+  --font-serif: 'IBM Plex Serif', 'Georgia', serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  --column-max-width: 600px;
+  --column-padding: 1rem 1.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+small {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Links */
+a {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #0052a3;
+  text-decoration: underline;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Highlight Style */
+.highlight-clause {
+  background-color: var(--color-highlight);
+  padding: 0.15rem 0.25rem;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--color-highlight-shadow);
+  font-weight: 500;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Print Styles */
+@media print {
+  .sidebar,
+  .drawer,
+  .controls {
+    display: none;
+  }
+
+  .laws-layout {
+    grid-template-columns: 1fr;
+  }
+}
