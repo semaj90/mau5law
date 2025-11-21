@@ -1,29 +1,60 @@
 {
-    // Reduces memory usage by excluding bulky folders from file watching.
     "files.watcherExclude": {
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
         "**/node_modules/*/**": true,
         "**/dist/**": true,
-        "**/build/**": true
+        "**/build/**": true,
+        "**/.next/**": true,
+        "**/.nuxt/**": true,
+        "**/.vuepress/**": true
     },
-    // Excludes bulky folders from search, which can speed up search and reduce memory.
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,
         "**/dist": true,
-        "**/build": true
+        "**/build": true,
+        "**/.next": true,
+        "**/.nuxt": true
     },
-    // Disables automatic type acquisition for TypeScript. This can save a lot of memory,
-    // but you may need to manually install type definitions for your projects.
     "typescript.disableAutomaticTypeAcquisition": true,
-    // Disables CodeLens, which can reduce UI lag and memory usage.
     "editor.codeLens": false,
-    // Disables automatic extension updates.
     "extensions.autoUpdate": false,
-    // Keep Svelte 5 and TypeScript support enabled.
     "svelte.enable-ts-plugin": true,
-    // Increase the memory limit for the TS server process.
-    // Note: This is now configured via the startup script for better control.
-    // "typescript.tsserver.experimental.maxTsServerMemory": 4096
+    "telemetry.telemetryLevel": "off",
+    "telemetry.enableCrashReporter": false,
+    "workbench.enableExperiments": false,
+    "editor.minimap.enabled": false,
+    "editor.renderLineHighlight": "none",
+    "editor.glyphMargin": false,
+    "editor.folding": false,
+    "editor.wordWrap": "off",
+    "breadcrumbs.enabled": false,
+    "outline.showIcons": false,
+    "outline.showNumbers": false,
+    "problems.decorations.enabled": false,
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.showTabs": "single",
+    "workbench.activityBar.visible": false,
+    "workbench.statusBar.visible": false,
+    "git.confirmSync": false,
+    "git.confirmPublish": false,
+    "git.confirmForcePush": false,
+    "git.autofetch": false,
+    "git.showPushSuccessNotification": false,
+    "git.enableSmartCommit": true,
+    "editor.acceptSuggestionOnCommitCharacters": true,
+    "editor.inlineSuggest.enabled": true,
+    "files.autoSave": "afterDelay",
+    "extensions.ignoreRecommendations": true,
+    "workbench.tips.enabled": false,
+    "workbench.welcomePage.walkthroughs.openOnInstall": false,
+    "update.mode": "none",
+    "update.showReleaseNotes": false,
+    "github.copilot.editor.enableAutoCompletions": true,
+    "github.copilot.editor.enableCodeActions": true,
+    "github.copilot.enable": true,
+    "diffEditor.renderSideBySide": false,
+    "diffEditor.ignoreTrimWhitespace": true,
+    "diffEditor.maxComputationTime": 5000
 }

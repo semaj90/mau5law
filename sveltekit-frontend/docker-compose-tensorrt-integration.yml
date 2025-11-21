@@ -6,16 +6,50 @@ POSTGRES_DB: legal_ai_db POSTGRES_USER: legal_admin POSTGRES_PASSWORD: 123456 PO
 networks: - legal-ai-net # Redis for client-side libraries and CUDA service worker redis: image: redis:7-alpine
 container_name: legal-ai-redis command: redis-server --requirepass redis --maxmemory 2gb --maxmemory-policy allkeys-lru
 ports: - '6379:6379' volumes: - redis_data:/data networks: - legal-ai-net # TensorRT-LLM Service (Gemma3:legal-latest
-with Gemma embeds) tensorrt-llm: build: context: .. dockerfile: legal-ai-tensorrt.dockerfile container_name:
-legal-ai-tensorrt environment: # TensorRT Configuration TENSORRT_ENGINES_PATH: /opt/engines MODELS_PATH: /opt/models
-GEMMA_EMBEDDINGS: true GEMMA3_LEGAL_MODEL: true # Database integration DATABASE_URL:
-postgresql://legal_admin:123456@postgres:5432/legal_ai_db REDIS_URL: redis://:redis@redis:6379/0 REDIS_PASSWORD: redis #
-GPU optimization for RTX 3060 Ti CUDA_VISIBLE_DEVICES: 0 NVIDIA_VISIBLE_DEVICES: all RTX_3060_OPTIMIZATION: true
-TENSOR_CORES_ENABLED: true # Service ports TENSORRT_PORT: 8096 WEBSOCKET_PORT: 8097 HEALTH_PORT: 8098 ports: -
-'8096:8096' # TensorRT-LLM API - '8097:8097' # WebSocket for real-time - '8098:8098' # Health/metrics volumes: -
-../TensorRT-LLM/tensorrt_env:/opt/tensorrt_env:ro - ../models:/opt/models:ro - ../engines:/opt/engines:ro -
-tensorrt_logs:/opt/logs depends_on: - postgres - redis deploy: resources: reservations: devices: - driver: nvidia count:
-1 capabilities: [gpu] networks: - legal-ai-net # SvelteKit Frontend Development Server sveltekit-dev: build: context: .
+with Gemma embeds) tensorrt-llm:
+  build: context: ..
+    dockerfile: legal-ai-tensorrt.dockerfile
+  container_name: legal-ai-tensorrt
+  environment:
+    # TensorRT Configuration
+    TENSORRT_ENGINES_PATH: /opt/engines
+    MODELS_PATH: /opt/models
+    GEMMA_EMBEDDINGS: true
+    GEMMA3_LEGAL_MODEL: true
+    # Database integration
+    DATABASE_URL: postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+    REDIS_URL: redis://:redis@redis:6379/0
+    REDIS_PASSWORD: redis
+    # GPU optimization for RTX 3060 Ti
+    CUDA_VISIBLE_DEVICES: 0
+    NVIDIA_VISIBLE_DEVICES: all
+    RTX_3060_OPTIMIZATION: true
+    TENSOR_CORES_ENABLED: true
+    # Service ports
+    TENSORRT_PORT: 8096
+    WEBSOCKET_PORT: 8097
+    HEALTH_PORT: 8098
+  ports:
+    - '8096:8096' # TensorRT-LLM API
+    - '8097:8097' # WebSocket for real-time
+    - '8098:8098' # Health/metrics
+  volumes:
+    - ../TensorRT-LLM/tensorrt_env:/opt/tensorrt_env:ro
+    - ../models:/opt/models:ro
+    - ../engines:/engines:rw
+    - ../tensor_services:/app/tensor_services:ro
+    - ../python-services:/app/python-services:ro
+  depends_on:
+    - postgres
+    - redis
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: 1
+      capabilities: [gpu]
+  command: ["/app/tensor_services/engine-builder/start_tensorrt.sh"] # SvelteKit Frontend Development Server sveltekit-dev: build: context: .
 dockerfile: Dockerfile.dev container_name: legal-ai-sveltekit environment: # Database connection DATABASE_URL:
 postgresql://legal_admin:123456@postgres:5432/legal_ai_db # Redis connection REDIS_URL: redis://:redis@redis:6379/0
 REDIS_PASSWORD: redis # TensorRT-LLM integration TENSORRT_API_URL: http://tensorrt-llm:8096 TENSORRT_WS_URL:

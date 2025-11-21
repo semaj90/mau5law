@@ -416,6 +416,8 @@ services:
       - ${TENSORRT_MODEL_DIR:-./docker/tensorrt-llm/models}:/workspace/models
       - ${TENSORRT_ENGINE_DIR:-./docker/tensorrt-llm/engines}:/workspace/engines
       - ${TENSORRT_CACHE_DIR:-./.cache/tensorrt-llm}:/workspace/cache
+      - ./scripts:/workspace/scripts
+      - ./custom_model:/workspace/custom_model
     command:
       - bash
       - -lc

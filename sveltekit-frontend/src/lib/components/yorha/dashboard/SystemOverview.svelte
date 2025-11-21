@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { appActions, appStore  } from '$lib/stores/app-store';
-  import type { onMount  } from 'svelte';
+  import { appActions, appStore } from '$lib/stores/app-store';
+  import { onMount } from 'svelte';
 
   let { webgpuCapabilities = null, cpuCapabilities = null } = $props();
 
@@ -17,8 +17,8 @@
   let error = $state <string | null>(null);
 
   // Subscribe to store
-  let appState = $state ();
-  $effect(() => {() => {
+  let appState = $state<any>();
+  $effect(() => {
     const unsubscribe = appStore.subscribe(state => {
       appState = state;
     });
@@ -54,12 +54,12 @@
     }
   }
 
-  onMount(async () => {
-    await loadSystemMetrics();
+  onMount(() => {
+    loadSystemMetrics();
 
     // Update health metrics periodically
-    const interval = window.setInterval(async () => {
-      await loadSystemMetrics();
+    const interval = window.setInterval(() => {
+      loadSystemMetrics();
     }, 30000); // Update every 30 seconds
 
     return () => clearInterval(interval);

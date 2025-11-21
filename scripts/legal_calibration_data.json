@@ -1,0 +1,27 @@
+[
+  {
+    "text": "The plaintiff alleges breach of contract under New York law.",
+    "id": "cal_1",
+    "domain": "legal"
+  },
+  {
+    "text": "Pursuant to section 5-701 of the General Obligations Law, certain agreements must be in writing.",
+    "id": "cal_2",
+    "domain": "legal"
+  },
+  {
+    "text": "The court finds negligence per se based on violation of the applicable standard of care.",
+    "id": "cal_3",
+    "domain": "legal"
+  },
+  {
+    "text": "In consideration of mutual promises, the parties agree to binding arbitration of disputes.",
+    "id": "cal_4",
+    "domain": "legal"
+  },
+  {
+    "text": "The defendant's motion to dismiss is denied for failure to state a claim.",
+    "id": "cal_5",
+    "domain": "legal"
+  }
+]

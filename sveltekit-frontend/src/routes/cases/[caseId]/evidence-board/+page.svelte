@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
-  import type { TopicNode } from '$lib // TODO: Verify store subscription is correct for Svelte 5/types/evidence-board';
+  import { page } from '$app/stores';
+  import type { TopicNode } from '$lib/types/evidence-board';
   import { onMount } from 'svelte';
 
-  let topics = $state // TODO: Verify store subscription is correct for Svelte 5<TopicNode[]>([]);
-  let selectedTopic = $state // TODO: Verify store subscription is correct for Svelte 5<TopicNode | null>(null);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
-  let error = $state // TODO: Verify store subscription is correct for Svelte 5('');
+  let topics = $state<TopicNode[]>([]);
+  let selectedTopic = $state<TopicNode | null>(null);
+  let loading = $state<boolean>(true);
+  let error = $state<string>('');
 
-  let caseId = $derived // TODO: Verify store subscription is correct for Svelte 5($page // TODO: Verify store subscription is correct for Svelte 5.params.caseId);
+  let caseId = $derived(() => $page.params.caseId);
 
   onMount(async () => {
     try {

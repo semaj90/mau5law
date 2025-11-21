@@ -18,19 +18,28 @@
 
 <style>
   .evidence-graph-page {
-    @apply min-h-screen bg-yorha-dark p-6;
+    min-height: 100vh;
+    background-color: var(--yorha-dark);
+    padding: 1.5rem;
   }
 
   .page-header {
-    @apply mb-8 text-center;
+    margin-bottom: 2rem;
+    text-align: center;
   }
 
   .neon-title {
-    @apply text-4xl font-bold text-neon-green mb-2;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    margin-bottom: 0.5rem;
     text-shadow: 0 0 10px rgba(0, 255, 128, 0.5);
   }
 
   .subtitle {
-    @apply text-gray-400 text-lg;
+    color: #9ca3af;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
   }
 </style>

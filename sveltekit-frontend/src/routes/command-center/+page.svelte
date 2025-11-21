@@ -4,12 +4,12 @@
   import GPUMetrics from '$lib/components/yorha/dashboard/GPUMetrics.svelte';
   import RecentActivity from '$lib/components/yorha/dashboard/RecentActivity.svelte';
   import SystemOverview from '$lib/components/yorha/dashboard/SystemOverview.svelte';
-  import type { cpuFallback  } from '$lib/webgpu/webgpu-cpu-fallback';
-  import type { webgpu  } from '$lib/webgpu/webgpu-init';
-  import type { onMount  } from 'svelte';
+  import { cpuFallback } from '$lib/webgpu/webgpu-cpu-fallback';
+  import { webgpu } from '$lib/webgpu/webgpu-init';
+  import { onMount } from 'svelte';
 
-  let webgpuCapabilities: any = null;
-  let cpuCapabilities: any = null;
+  let webgpuCapabilities = $state<any>(null);
+  let cpuCapabilities = $state<any>(null);
 
   onMount(async () => {
     try {

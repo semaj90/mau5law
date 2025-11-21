@@ -1,6 +1,8 @@
 <script lang="ts">
   // Migrated from createEventDispatcher to callback props;
 
+  import { createEventDispatcher } from 'svelte';
+
   const dispatch = createEventDispatcher();
 
   let searchQuery = $state('');

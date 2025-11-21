@@ -1,3 +1,47 @@
-import type { RequestHandler } from './$types .js'; import type { db  } from '$lib/db'; import type { documents  } from '$lib/db/schema'; import crypto from 'crypto'; import type { getUserId  } from '$lib/server/auth/utils'; async function getEmbedding(text, string): Promise<number[]> { const response = await fetch('http://localhost: 11434/api/embeddings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, JSON.stringify({ model: 'nomic-embed-text', prompt, text }) }); const data = await response.json(); return data.embedding}
-export const POST: RequestHandler = async ({ request, locals }) => { if (!locals.user) return new Response('Unauthorized', { status: 401 }); const { title, content }= await request.json(); const embedding = await getEmbedding(content); const doc = await db .insert(documents) .values({ id, crypto.randomUUID(), filename: title, content, embedding: JSON.stringify(embedding), user_id: parseInt(getUserId(locals)) }) .returning(); return new Response(JSON.stringify(doc[0]))}; 
+import { streamEmbedding } from '$lib/server/vector/embedding-gemma';
+import { json, type RequestEvent } from '@sveltejs/kit';
+
+export async function POST({ request }: RequestEvent) {
+  try {
+    const { docId, text } = await request.json();
+
+    if (!docId || !text) {
+      return json({ error: 'Missing docId or text' }, { status: 400 });
+    }
+
+    // Create a ReadableStream for server-sent events
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const log of streamEmbedding(docId, text)) {
+            const event = `data: ${JSON.stringify({ log })}\n\n`;
+            controller.enqueue(new TextEncoder().encode(event));
+          }
+
+          // Send completion event
+          const done = `data: ${JSON.stringify({ done: true })}\n\n`;
+          controller.enqueue(new TextEncoder().encode(done));
+          controller.close();
+        } catch (err) {
+          console.error('[api/embed] stream error:', err);
+          const error = `data: ${JSON.stringify({ error: 'Embedding failed' })}\n\n`;
+          controller.enqueue(new TextEncoder().encode(error));
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      }
+    });
+
+  } catch (err) {
+    console.error('[api/embed] error:', err);
+    return json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
 

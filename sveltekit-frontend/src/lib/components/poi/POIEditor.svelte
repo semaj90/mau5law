@@ -1,48 +1,54 @@
 <script lang="ts">
-  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui';
-  import type { Badge  } from '$lib/components/ui/badge';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui';
   import Button from '$lib/components/ui/button/Button.svelte';
   import Input from '$lib/components/ui/input/Input.svelte';
   import Label from '$lib/components/ui/label/Label.svelte';
-  import Select from '$lib/components/ui/select/Select.svelte';
-  import SelectContent from '$lib/components/ui/select/SelectContent.svelte';
-  import SelectItem from '$lib/components/ui/select/SelectItem.svelte';
-  import SelectTrigger from '$lib/components/ui/select/SelectTrigger.svelte';
-  import SelectValue from '$lib/components/ui/select/SelectValue.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import type { AlertTriangle, Save, X  } from 'lucide-svelte';
-  // Migrated from createEventDispatcher to callback props;
+  import { AlertTriangle, Save, X } from 'lucide-svelte';
+// Migrated from createEventDispatcher to callback props;
   import POIPhotoGrid from './POIPhotoGrid.svelte';
 
-  let {
-    poi = {
+  interface POI {
+    name: string;
+    alias: string;
+    threatLevel: string;
+    photos: any[];
+    notes: string;
+  }
+
+  interface Props {
+    poi?: POI;
+    isNew?: boolean;
+    onSave: (data: POI) => void;
+    onCancel: () => void;
+    onUploadPhoto: () => void;
+    onViewPhoto: (photo: any) => void;
+  }
+
+  let { poi = {
       name: '',
       alias: '',
       threatLevel: 'low',
       photos: [],
       notes: ''
-    },
-    isNew = false
-  } = $props();
-
-  const dispatch = createEventDispatcher();
+    }, isNew = false, onSave, onCancel, onUploadPhoto, onViewPhoto }: Props = $props();
 
   let formData = { ...poi };
 
   function handleSave() {
-    dispatch('save', formData);
+    onSave(formData);
   }
 
   function handleCancel() {
-    dispatch('cancel');
+    onCancel();
   }
 
   function handlePhotoUpload() {
-    dispatch('uploadPhoto');
+    onUploadPhoto();
   }
 
   function handlePhotoView(event: CustomEvent) {
-    dispatch('viewPhoto', event.detail);
+    onViewPhoto(event.detail);
   }
 
   function handlePhotoDelete(event: CustomEvent) {
@@ -76,7 +82,8 @@
         <Label for="name">Full Name *</Label>
         <Input
           id="name"
-          bind:value={formData.name}
+          value={formData.name}
+          on:input={(e) => formData.name = e.target.value}
           placeholder="Enter full name"
           required
         />
@@ -86,46 +93,26 @@
         <Label for="alias">Alias</Label>
         <Input
           id="alias"
-          bind:value={formData.alias}
+          value={formData.alias}
+          on:input={(e) => formData.alias = e.target.value}
           placeholder="Known alias or nickname"
         />
       </div>
-    </div>
-
     <!-- Threat Level -->
     <div class="space-y-2">
       <Label for="threatLevel">Threat Level</Label>
-      <Select bind:value={formData.threatLevel}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select threat level" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="low">
-            <div class="flex items-center gap-2">
-              <Badge class="bg-green-500 text-white">LOW</Badge>
-              <span>Low Risk</span>
-            </div>
-          </SelectItem>
-          <SelectItem value="medium">
-            <div class="flex items-center gap-2">
-              <Badge class="bg-yellow-500 text-black">MEDIUM</Badge>
-              <span>Medium Risk</span>
-            </div>
-          </SelectItem>
-          <SelectItem value="high">
-            <div class="flex items-center gap-2">
-              <Badge class="bg-orange-500 text-white">HIGH</Badge>
-              <span>High Risk</span>
-            </div>
-          </SelectItem>
-          <SelectItem value="critical">
-            <div class="flex items-center gap-2">
-              <Badge class="bg-red-500 text-white">CRITICAL</Badge>
-              <span>Critical Risk</span>
-            </div>
-          </SelectItem>
-        </SelectContent>
-      </Select>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="{getThreatColor(formData.threatLevel)} px-2 py-1 rounded text-xs font-semibold">{formData.threatLevel.toUpperCase()}</span>
+        <span class="text-sm text-gray-600">
+          {formData.threatLevel === 'low' ? 'Low Risk' : formData.threatLevel === 'medium' ? 'Medium Risk' : formData.threatLevel === 'high' ? 'High Risk' : 'Critical Risk'}
+        </span>
+      </div>
+      <select bind:value={formData.threatLevel} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="low">Low Risk</option>
+        <option value="medium">Medium Risk</option>
+        <option value="high">High Risk</option>
+        <option value="critical">Critical Risk</option>
+      </select>
     </div>
 
     <!-- Notes -->
@@ -133,7 +120,8 @@
       <Label for="notes">Notes</Label>
       <Textarea
         id="notes"
-        bind:value={formData.notes}
+        value={formData.notes}
+        on:input={(e) => formData.notes = e.target.value}
         placeholder="Additional notes, observations, or background information..."
         rows={4}
       />
@@ -144,9 +132,9 @@
       <POIPhotoGrid
         photos={formData.photos || []}
         editable={true}
-        on:upload={handlePhotoUpload}
-        on:view={handlePhotoView}
-        on:delete={handlePhotoDelete}
+        onUpload={handlePhotoUpload}
+        onView={handlePhotoView}
+        onDelete={handlePhotoDelete}
       />
     </div>
 
