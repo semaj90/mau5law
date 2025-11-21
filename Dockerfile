@@ -1,32 +1,23 @@
-# Use a TensorRT base image with CUDA pre-installed
-FROM nvcr.io/nvidia/tensorrt:24.10-py3
+# Dockerfile
+# ----------------------------------------------------------------------------------
+# Stage 1: Base image (Start from the official, verified TRT-LLM image)
+FROM nvcr.io/nvidia/tensorrt-llm/release:latest AS base
 
-WORKDIR /app
+# Stage 2: Install required system packages (build-essential, rustc, cargo)
+# We use one RUN command to keep this in one cache layer
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    rustc \
+    cargo \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy your Go application source code and the C wrapper
-COPY . .
+# Stage 3: Install Python dependencies (CRITICAL FIX for Conv1D error)
+# This layer caches the specific transformers version (4.31.0)
+RUN python -m pip install --no-cache-dir --no-deps \
+    'transformers==4.31.0' \
+    safetensors \
+    numpy
 
-# Copy the pre-built TensorRT engine plan file
-# Ensure your embeddinggemma.plan is in a 'models' directory relative to your Dockerfile
-COPY models/embeddinggemma.plan /models/embeddinggemma.plan
-
-# Install Go, GCC, G++ for CGo compilation
-RUN apt-get update && apt-get install -y golang gcc g++ make
-
-# Enable CGo for Go build
-ENV CGO_ENABLED=1
-
-# Compile the C shared library for TensorRT embedding
-# The -I flag points to the TensorRT headers, adjust if your path differs
-RUN nvcc -Xcompiler -fPIC -shared tensor/embedding_trt.c -o tensor/libembedding_trt.so \
-     -I/usr/include/x86_64-linux-gnu -I/usr/src/tensorrt/include
-
-# Build the Go application
-# Ensure your main entry point is correct, e.g., cmd/quic-tensor/main.go
-RUN go build -tags=cuda -o quic-tensor cmd/quic-tensor/main.go
-
-# Expose the QUIC port
-EXPOSE 4433/udp
-
-# Run the QUIC Tensor Server
-CMD ["./quic-tensor"]
+# Final image will be based on this, with all permanent dependencies installed.
+# ----------------------------------------------------------------------------------

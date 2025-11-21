@@ -1,35 +1,40 @@
-import type { pgTable, uuid, text, jsonb, timestamp, vector, real
- } from 'drizzle-orm/pg-core';
+import {
+    jsonb,
+    pgTable,
+    real,
+    text,
+    timestamp,
+    uuid,
+    vector
+} from 'drizzle-orm/pg-core';
 
-export const persons = pgTable("persons", {
+export const personsOfInterest = pgTable("persons", {
   id: uuid("id").defaultRandom().primaryKey(),
 
-  caseId: uuid("case_id").notNull(),
   name: text("name").notNull(),
-  alias: text("alias"),
-  notes: text("notes"),
+  aliases: jsonb("aliases").$type<string[]>().default([]),
+  description: text("description").notNull(),
 
-  threatLevel: text("threat_level").default("unknown"), // low / medium / high / critical
+  threatLevel: text("threat_level").default("low").$type<'low' | 'medium' | 'high' | 'critical'>(),
+  status: text("status").default("active").$type<'active' | 'inactive' | 'archived'>(),
+  relationship: text("relationship").default("person_of_interest").$type<'suspect' | 'witness' | 'victim' | 'person_of_interest' | 'informant'>(),
 
-  photos: jsonb("photos").$type <Array<{
-    url: string;
-    thumbnailUrl: string;
-    metadata: {
-      exif?: Record<string, any>;
-      gps?: { lat: number; lng: number } | null;
-      timestamp?: string | null;
-      device?: string | null;
-    };
-    ai?: {
-      faceEmbedding?: number[];       // stored as vector too
-      qualityScore?: number;
-      tags?: string[];
-    };
-  }>>(),
+  aiProfile: jsonb("ai_profile").$type<any>(),
+  who: jsonb("who"),
+  what: jsonb("what"),
+  why: jsonb("why"),
+  how: jsonb("how"),
+  risk: jsonb("risk"),
 
-  faceEmbedding: vector("face_embedding", { dimensions: 768 }),
+  confidence: real("confidence"),
+  modelVersion: text("model_version").default("gemma3-legal"),
+
+  generatedAt: timestamp("generated_at", { mode: 'date' }),
+  caseIds: jsonb("case_ids").$type<string[]>().default([]),
+  createdBy: text("created_by"),
 
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Evidence board nodes

@@ -1,12 +1,15 @@
 <script lang="ts">
-  import type { onDestroy, onMount  } from 'svelte';
-  import type { aiSuggestionsService, type AISuggestion, type SuggestionContext  } from './ai-suggestions-service';
-  import type { caseSimilarityService, type EvidenceNode  } from './case-similarity-service';
+  import { onDestroy, onMount } from 'svelte';
+  import type { AISuggestion, SuggestionContext } from './ai-suggestions-service';
+  import { aiSuggestionsService } from './ai-suggestions-service';
+  import type { EvidenceNode } from './case-similarity-service';
+  import { caseSimilarityService } from './case-similarity-service';
   import CaseSuggestionModal from './case-suggestion-modal.svelte';
   import EvidenceCanvas from './evidence-canvas-core.svelte';
   import GraphControlPanel from './graph-control-panel.svelte';
-import type { graphLayoutGPU  } from './graph-layout-gpu';
-import type { webgpuInitService  } from './webgpu-init-service';  type EvidenceEdge = { source: string, target: string };
+  import { graphLayoutGPU } from './graph-layout-gpu';
+  import { webgpuInitService } from './webgpu-init-service';
+  type EvidenceEdge = { source: string, target: string };
 
   let { caseId, caseType = 'general', jurisdiction = 'general', initialNodes = [], initialEdges = [] } = $props<{ caseId: string; caseType?: string; jurisdiction?: string; initialNodes?: EvidenceNode[]; initialEdges?: EvidenceEdge[]; }>();
 
@@ -99,13 +102,12 @@ import type { webgpuInitService  } from './webgpu-init-service';  type EvidenceE
     }
   }
 
-  function handlePhaseChange(phase: string) {
-    currentPhase = phase;
-    // Re-generate suggestions with new phase context
+  $effect(() => {
+    currentPhase;
     if (selectedNodes.length > 0) {
       updateSuggestions(selectedNodes);
     }
-  }
+  });
 
   async function handleSimilarityAnalysis() {
     if (selectedNodes.length === 0) return;
@@ -157,21 +159,18 @@ import type { webgpuInitService  } from './webgpu-init-service';  type EvidenceE
     <EvidenceCanvas
       bind:this={canvas}
       {gpuAccelerationEnabled}
-      on:nodeSelect={handleNodeSelection}
     />
   </div>
 
-  <!-- Control Panel -->
   <div class="control-panel">
     <GraphControlPanel
       bind:this={controlPanel}
       {webgpuSupported}
       {gpuAccelerationEnabled}
-      {currentPhase}
-      on:phaseChange={(e) => handlePhaseChange(e.detail)}
-      on:similarityAnalysis={handleSimilarityAnalysis}
-      on:layoutOptimization={handleLayoutOptimization}
-      on:exportData={handleExportData}
+      currentPhase={currentPhase}
+      onSimilarityAnalysis={handleSimilarityAnalysis}
+      onLayoutOptimization={handleLayoutOptimization}
+      onExportData={handleExportData}
     />
   </div>
 

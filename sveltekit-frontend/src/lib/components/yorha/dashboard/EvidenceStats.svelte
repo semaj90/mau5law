@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { appStore  } from '$lib/stores/app-store';
-  import type { onMount  } from 'svelte';
+  import { appStore } from '$lib/stores/app-store';
+  import { onMount } from 'svelte';
 
   let stats = $state({
     totalDocuments: 15432,
@@ -10,7 +10,7 @@
     evidenceQuality: 94
   });
 
-  let chartData = $state([
+  let chartData = $derived([
     { label: 'Documents', value: stats.totalDocuments, color: 'bg-cyan-400' },
     { label: 'AI Analyzed', value: stats.aiAnalyzed, color: 'bg-green-400' },
     { label: 'Pending', value: stats.pendingReview, color: 'bg-yellow-400' }

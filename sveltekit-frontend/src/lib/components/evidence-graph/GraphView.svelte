@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { browser  } from '$app/environment';
+  import { browser } from '$app/environment';
   import * as d3 from 'd3';
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
 
   interface GraphNode {
     id: string;
@@ -146,7 +146,7 @@
     d.fy = null;
   }
 
-  $effect(() => {() => {
+  $effect(() => {
     if ((props.nodes ?? []).length > 0 && simulation) {
       simulation.nodes(props.nodes as any);
       (simulation.force('link') as any).links(props.links as any);
@@ -154,7 +154,7 @@
     }
   });
 
-  $effect(() => {() => {
+  $effect(() => {
     if (browser) {
       const key = `${props.caseId ?? 'global'}::${props.query ?? DEFAULT_QUERY}`;
       if (key !== lastSignalKey) {

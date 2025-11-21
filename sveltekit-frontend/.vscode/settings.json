@@ -1,5 +1,9 @@
 {
-  // ========================================  // GPU-ACCELERATED VS CODE CONFIGURATION  // ========================================  // GPU Rendering & Hardware Acceleration  "window.titleBarStyle": "custom",
+  // ========================================
+  // GPU-ACCELERATED VS CODE CONFIGURATION
+  // ========================================
+  // GPU Rendering & Hardware Acceleration
+  "window.titleBarStyle": "custom",
   "workbench.experimental.useWebGL": true,
   "terminal.integrated.gpuAcceleration": "on",
   "editor.renderControlCharacters": false,
@@ -51,5 +55,52 @@
     "${workspaceFolder}/**",
     "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/include"
   ],
-  "typescript.inlayHints.variableTypes.enabled": true
+  "typescript.inlayHints.variableTypes.enabled": true,
+  // ========================================
+  // GITHUB COPILOT AUTO-FIX SETTINGS
+  // ========================================
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.editor.enableCodeActions": true,
+  "github.copilot.enable": true,
+  "editor.acceptSuggestionOnCommitCharacters": true,
+  "editor.inlineSuggest.enabled": true,
+  "files.autoSave": "afterDelay",
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  // ========================================
+  // ADDITIONAL GIT SETTINGS TO DISABLE DIFF PROMPTS
+  // ========================================
+  "git.autofetch": false,
+  "git.confirmPublish": false,
+  "git.confirmForcePush": false,
+  "git.showPushSuccessNotification": false,
+  "diffEditor.renderSideBySide": false,
+  "diffEditor.ignoreTrimWhitespace": true,
+  // ========================================
+  // ADDITIONAL SETTINGS TO REDUCE PROMPTS
+  // ========================================
+  "editor.suggest.insertMode": "replace",
+  "editor.suggest.showWords": false,
+  "editor.suggest.showIcons": false,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "diffEditor.codeLens": false,
+  "diffEditor.wordWrap": "off",
+  "github.copilot.advanced": {
+    "debug.overrideEngine": "nodejs"
+  },
+  "editor.acceptSuggestionOnEnter": "on",
+  // ========================================
+  // COPILOT DIFF AND CODE ACTIONS SETTINGS
+  // ========================================
+  "github.copilot.chat.codeGeneration.useInstructionFiles": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "diffEditor.enableSplitViewResizing": true,
+  "diffEditor.experimental.useVersionedHover": true
 }

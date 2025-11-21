@@ -1,22 +1,22 @@
 <script lang="ts">
-  import type { OllamaGetEndpoint  } from '$lib/server/ollama/client';
-  import type { webgpuCapabilities  } from '$lib/webgpu/webgpu-init';
+  import { OllamaGetEndpoint } from '$lib/server/ollama/client';
 
   let analysisQuery = $state ('');
-  let analysisResults = $state <any[]>([]);
+  let analysisResults: any[] = $state([]);
   let isAnalyzing = $state (false);
-  let selectedEvidence = $state <any>(null);
-  let analysisMode = $state <'pattern' | 'correlation' | 'prediction'>('pattern');
+  let selectedEvidence: any = $state(null);
+  let analysisMode: 'pattern' | 'correlation' | 'prediction' = $state('pattern');
+  let webgpuCapabilities = $state({hasWebGPU: typeof navigator !== 'undefined' && 'gpu' in navigator});
 
   // Analysis modes
   const analysisModes = [
-    { id: 'pattern', label: 'PATTERN ANALYSIS', icon: '🔍' },
-    { id: 'correlation', label: 'CORRELATION MATRIX', icon: '📊' },
-    { id: 'prediction', label: 'THREAT PREDICTION', icon: '🔮' }
+    { id: 'pattern' as const, label: 'PATTERN ANALYSIS', icon: '🔍' },
+    { id: 'correlation' as const, label: 'CORRELATION MATRIX', icon: '📊' },
+    { id: 'prediction' as const, label: 'THREAT PREDICTION', icon: '🔮' }
   ];
 
   // Mock evidence data
-  let evidencePool = $state ([
+  let evidencePool: any[] = $state([
     {
       id: 'E001',
       type: 'document',
@@ -51,7 +51,7 @@
 
     isAnalyzing = true;
     try {
-      const endpoint = await OllamaGetEndpoint();
+      const endpoint = OllamaGetEndpoint();
       const response = await fetch(`${endpoint}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

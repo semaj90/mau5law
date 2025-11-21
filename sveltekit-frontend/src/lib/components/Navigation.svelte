@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { goto  } from '$app/navigation';
-  import type { page  } from '$app/stores';
-  import type { onMount  } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { url } from '$app/stores';
+  import { onMount } from 'svelte';
 
   // Props interface
   interface Props {
@@ -14,7 +14,7 @@
 
   // Local state
   let isMobile = $state(false);
-  let currentPath = $state('/');
+  let currentPath = $derived(url.pathname);
 
   // Navigation items
   const navItems = [
@@ -22,17 +22,10 @@
     { href: '/cases', label: 'Cases', icon: '📁' },
     { href: '/evidence', label: 'Evidence', icon: '🔍' },
     { href: '/ai/chat', label: 'AI Chat', icon: '🤖' },
+    { href: '/webgpu-similarity', label: 'WebGPU Similarity', icon: '⚡' },
     { href: '/legal', label: 'Legal', icon: '⚖️' },
     { href: '/analysis', label: 'Analysis', icon: '📊' }
   ];
-
-  // Update current path
-  $effect(() => {() => {
-    const unsubscribe = page.subscribe((pageData) => {
-      currentPath = pageData.url.pathname;
-    });
-    return unsubscribe;
-  });
 
   // Check if mobile on mount
   onMount(() => {

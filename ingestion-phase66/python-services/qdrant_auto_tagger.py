@@ -23,6 +23,7 @@ import numpy as np
 from transformers import AutoTokenizer, AutoModel
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
+import re
 
 # Message queue
 import pika
@@ -53,7 +54,7 @@ class QdrantAutoTagger:
         # Initialize Qdrant client
         self.qdrant_client = QdrantClient(
             host=os.getenv('QDRANT_HOST', 'localhost'),
-            port=int(os.getenv('QDRANT_PORT', 6333)
+            port=int(os.getenv('QDRANT_PORT', 6333))
         )
 
         # Legal document categories and their representative examples
@@ -399,10 +400,10 @@ class QdrantAutoTagger:
             self.qdrant_client.create_collection(
                 collection_name=collection_name,
                 vectors_config={
-                    "categories": {
-                        "size": len(next(iter(self.category_embeddings.values()))),
-                        "distance": "Cosine"
-                    }
+                    "categories": VectorParams(
+                        size=len(next(iter(self.category_embeddings.values()))),
+                        distance=Distance.COSINE
+                    )
                 }
             )
 
@@ -449,7 +450,7 @@ class QdrantAutoTagger:
         """Main tagger loop"""
         connection = await aio_pika.connect_robust(
             host=os.getenv('RABBITMQ_HOST', 'localhost'),
-            port=int(os.getenv('RABBITMQ_PORT', 5672),
+            port=int(os.getenv('RABBITMQ_PORT', 5672)),
             login=os.getenv('RABBITMQ_USER', 'guest'),
             password=os.getenv('RABBITMQ_PASSWORD', 'guest')
         )

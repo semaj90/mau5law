@@ -1,16 +1,15 @@
 // Move/import Drizzle pg-core symbols near the top of the file
-import { pgTable,
-  timestamp,
-  text,
-  varchar,
-  json,
-  jsonb,
-  real,
-  integer,
-  primaryKey,
-  customType,
- } from 'drizzle-orm/pg-core';
-import { sql  } from 'drizzle-orm';
+import {
+    customType,
+    integer,
+    json,
+    jsonb,
+    pgTable,
+    real,
+    text,
+    timestamp,
+    varchar
+} from 'drizzle-orm/pg-core';
 
 // Define custom vector type for pgvector
 const vector = customType<{ data: number[]; driverData: string }>({
@@ -26,8 +25,9 @@ const vector = customType<{ data: number[]; driverData: string }>({
 });
 
 // Re-export the PostgreSQL schema as the main schema
-export * from './schema-postgres';
 export * from './schema-gpu-cache';
+export * from './schema-poi';
+export * from './schema-postgres';
 
 // Exported table definition used by the advanced-analysis endpoint
 export const analysisResults = pgTable('analysis_results', {

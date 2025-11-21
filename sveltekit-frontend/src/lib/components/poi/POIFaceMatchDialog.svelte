@@ -1,37 +1,30 @@
 <script lang="ts">
-  import type { Avatar, AvatarFallback, AvatarImage  } from '$lib/components/ui/avatar';
-  import type { Badge  } from '$lib/components/ui/badge';
-  import type { Button  } from '$lib/components/ui/button';
-  import type { Card, CardContent  } from '$lib/components/ui/card';
-  import type { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle  } from '$lib/components/ui/dialog';
-  import type { Percent, Search, User, X  } from 'lucide-svelte';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardContent } from '$lib/components/ui/card';
+  import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '$lib/components/ui/dialog';
+  import { Percent, Search, User, X } from 'lucide-svelte';
 
-  let {
-    open,
-    matches = [],
-    onClose,
-    onSelect
-  } = $props<{
-    open: boolean;
-    matches?: Array<{
-      poi: {
-        id: string;
-        name: string;
-        alias?: string;
-        threatLevel: string;
-        photos?: Array<{
-          url: string;
-          thumbnailUrl: string;
-          metadata?: any;
-          ai?: any;
-        }>;
-      };
-      similarity: number;
-      confidence: 'high' | 'medium' | 'low';
-    }>;
-    onClose: () => void;
-    onSelect: (poi: any) => void;
-  }>();
+  export let open: boolean;
+  export let matches: Array<{
+    poi: {
+      id: string;
+      name: string;
+      alias?: string;
+      threatLevel: string;
+      photos?: Array<{
+        url: string;
+        thumbnailUrl: string;
+        metadata?: any;
+        ai?: any;
+      }>;
+    };
+    similarity: number;
+    confidence: 'high' | 'medium' | 'low';
+  }> = [];
+  export let onClose: () => void;
+  export let onSelect: (poi: any) => void;
 
   function handleClose() {
     onClose();

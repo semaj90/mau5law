@@ -6,24 +6,23 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   'use runes';
 
-  // Removed unused imports: onDestroy, quintOut, Modal, Component
   import EvidenceCardComponent from "$lib/components/evidence/EvidenceCard.svelte";
   import MasonryGrid from "$lib/components/ui/MasonryGrid.svelte";
-  import type { Button  } from 'bits-ui/components/ui/button';
-  import type { onMount, tick  } from 'svelte';
+  import { Button } from 'bits-ui/components/ui/button';
+  import { onMount, tick } from 'svelte';
   import AdvancedSearch from "../search/AdvancedSearch.svelte";
   import EvidenceForm from "./EvidenceForm.svelte";
   import ReportToolbar from "./ReportToolbar.svelte";
   import RichTextEditor from "./RichTextEditor.svelte";
 // Icons
-  import type { invalidateAll  } from '$app/navigation';
-  import type { legalAnalysisCache  } from '$lib/services/legal-analysis-cache';
-  import type { editorState as unifiedEditorState, report as unifiedReport, reportActions as unifiedReportActions, reportUI as unifiedReportUI, setupAutoSave as unifiedSetupAutoSave  } from '$lib/stores/unified';
+  import { invalidateAll } from '$app/navigation';
+  import { legalAnalysisCache } from '$lib/services/legal-analysis-cache';
+  import { editorState as unifiedEditorState, report as unifiedReport, reportActions as unifiedReportActions, reportUI as unifiedReportUI, setupAutoSave as unifiedSetupAutoSave } from '$lib/stores/unified';
   import type { EditorState, ReportStoreState, ReportUIState } from '$lib/types/report';
-  import type { Download, Eye, LayoutDashboard, LayoutGrid, LayoutList, Loader2, Maximize2, Minimize2, PanelLeftOpen, PenLine, Plus, Search, Settings, Trash2  } from 'lucide-svelte';
+  import { Download, Eye, LayoutDashboard, LayoutGrid, LayoutList, Loader2, Maximize2, Minimize2, PanelLeftOpen, PenLine, Plus, Search, Settings, Trash2 } from 'lucide-svelte';
 // Create runtime aliases / fallbacks for external stores and actions
   import type { Writable } from 'svelte/store';
-  import type { writable  } from 'svelte/store';
+  import { writable } from 'svelte/store';
   // Define Evidence interface
   interface Evidence {
     id: string;
@@ -131,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
     evidenceSearchResults = Array.isArray($report?.attachedEvidence) ? ($report.attachedEvidence as Evidence[]) : [];
     return () => {
 
-  });
+  }
   // Update cache statistics
   function updateCacheStats() {
     cacheStats = legalAnalysisCache.getStats();
@@ -862,4 +861,3 @@ ${evidence.description || ''}`;
     margin-bottom: 1rem; /* Adjust vertical spacing between items */
   }
 </style>
-<!-- Ensure file ends with a newline -->

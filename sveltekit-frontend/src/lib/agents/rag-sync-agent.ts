@@ -1,7 +1,6 @@
-import type { browser  } from '$app/environment';
-import type { IndexedDBService  } from '$lib/services/indexeddb-service'; // Corrected: Named import
+import { browser } from '$app/environment';
+import { IndexedDBService } from '$lib/services/indexeddb-service'; // Corrected: Named import
 // import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper"; // New import - This import is causing the error.
-import * as vectorWasm from '$lib/wasm/vector-wasm-wrapper'; // Fix: Changed to namespace import to resolve 'no default export' error
 
 /**
  * Client-side background agent that periodically finds pending documents

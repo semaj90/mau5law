@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { caseStore  } from '$lib/stores/unified/case-store';
-  import type { onMount  } from 'svelte';
-  import EvidenceBoard from '../../../../sveltekit-evidence/src/lib/components/EvidenceBoard.svelte';
+  import EvidenceBoard from '$lib/components/EvidenceBoard.svelte';
+  import { caseStore } from '$lib/stores/unified/case-store';
+  import { onMount } from 'svelte';
 
   let activeCaseId = $state <string | null>(null);
 
   onMount(() => {
-    const unsubscribe = caseStore.subscribe(store => {
+    const unsubscribe = caseStore.subscribe((store: any) => {
       if (store.activeCase) {
         activeCaseId = store.activeCase.id;
       }

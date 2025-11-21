@@ -1,200 +1,493 @@
 <script lang="ts">
-	import PersonHeader from '$lib/components/PersonHeader.svelte';
-	import PersonList from '$lib/components/PersonList.svelte';
-	import PersonProfile from '$lib/components/PersonProfile.svelte';
-	import PersonStatsPanel from '$lib/components/PersonStatsPanel.svelte';
-	import type { APIPerson, FugitiveDexPerson } from '$lib/components/types';
+  import FilterPanel from '$lib/components/FilterPanel.svelte';
+  import PersonCard from '$lib/components/PersonCard.svelte';
+  import PersonForm from '$lib/components/PersonForm.svelte';
+  import SearchBar from '$lib/components/SearchBar.svelte';
+  import StatsPanel from '$lib/components/StatsPanel.svelte';
+  import type { PersonOfInterest } from '$lib/db/schema';
+  import { onMount } from 'svelte';
 
-	// Reactive state with Svelte 5 runes
-	let persons = $state <FugitiveDexPerson[]>([
-		{
-			id: '001',
-			name: 'John, "The Ghost" Doe',
-			alias: 'The Ghost',
-			role: 'Fugitive',
-			status: 'WANTED',
-			priority: 'HIGH',
-			height: '185 cm',
-			age: 45,
-			hair: 'Brown',
-			eyes: 'Blue',
-			modusOperandi: 'Break and Enter Specialist',
-			lastSeen: '2 days ago',
-			dangerLevel: 8.5,
-			photo: '/placeholder-person.jpg',
-			knownAssociates: [
-				'Phantom - Burglar, former accomplice',
-				'Arsiguent - Known to hire billers',
-				'Connection between prison and family',
-				'Connections - Langue seed gets an evil waaah'
-			],
-			knownHabits: [
-				'Prefers dark locations',
-				'Known Habits',
-				'Evade a scene has kinder Sleeps'
-			],
-			attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85, dangerousness: 90 }
-		},
-		{
-			id: '002',
-			name: 'Maria, "The Shadow" Smith',
-			alias: 'The Shadow',
-			role: 'Suspect',
-			status: 'MONITORING',
-			priority: 'MEDIUM',
-			height: '165 cm',
-			age: 32,
-			hair: 'Black',
-			eyes: 'Green',
-			modusOperandi: 'Financial Fraud Expert',
-			lastSeen: '1 week ago',
-			dangerLevel: 6.5,
-			photo: '/placeholder-person.jpg',
-			knownAssociates: [
-				'Various financial contacts',
-				'Underground banking network'
-			],
-			knownHabits: [
-				'Frequents high-end establishments',
-				'Uses multiple identities'
-			],
-			attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60, dangerousness: 65 }
-		},
-		{
-			id: '003',
-			name: 'Victor, "Red Baron" Kane',
-			alias: 'Red Baron',
-			role: 'Informant',
-			status: 'COOPERATIVE',
-			priority: 'LOW',
-			height: '175 cm',
-			age: 38,
-			hair: 'Red',
-			eyes: 'Hazel',
-			modusOperandi: 'Information Broker',
-			lastSeen: '3 hours ago',
-			dangerLevel: 3.0,
-			photo: '/placeholder-person.jpg',
-			knownAssociates: [
-				'Multiple law enforcement contacts',
-				'Various criminal networks'
-			],
-			knownHabits: [
-				'Meets at specific locations',
-				'Always demands payment upfront'
-			],
-			attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70, dangerousness: 30 }
-		}
-	]);
+  // State management with Svelte 5 runes
+  let persons = $state<PersonOfInterest[]>([]);
+  let filteredPersons = $state<PersonOfInterest[]>([]);
+  let stats = $state({
+    total: 0,
+    active: 0,
+    highRisk: 0,
+    aiGenerated: 0,
+    byPriority: {
+      low: 0,
+      medium: 0,
+      high: 0,
+      critical: 0
+    },
+    byStatus: {
+      active: 0,
+      inactive: 0,
+      archived: 0
+    }
+  });
 
-	let selectedPerson = $state <FugitiveDexPerson | null>(null);
-	let searchQuery = $state <string>('');
+  let searchQuery = $state('');
+  let filters = $state({
+    status: '',
+    priority: '',
+    tags: [] as string[]
+  });
 
-	// Initialize selected person with $effect $effect (() => {
-		if (persons.length > 0 && selectedPerson === null) {
-			selectedPerson = persons[0];
-		}
-	});
+  let showCreateForm = $state(false);
+  let loading = $state(true);
+  let error = $state<string | null>(null);
 
-	// Function to load POIs from API
-	async function loadPersonsFromAPI(): Promise<void> {
-		try {
-			const response = await fetch('/api/persons-of-interest');
-			if (response.ok) {
-				const result = await response.json();
-				const apiPersons: APIPerson[] = result.success ? result.data : [];
-				// Transform API data to FugitiveDex format
-				const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
-					id: (index + 1).toString().padStart(3, '0'),
-					name: person.name,
-					alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
-					role: person.profileData?.role || 'Unknown',
-					status: person.status?.toUpperCase() || 'UNKNOWN',
-					priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
-					height: person.profileData?.height || 'Unknown',
-					age: person.profileData?.age ?? 'Unknown',
-					hair: person.profileData?.hair || 'Unknown',
-					eyes: person.profileData?.eyes || 'Unknown',
-					modusOperandi: person.profileData?.what || 'Unknown',
-					lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
-					dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5 : person.threatLevel === 'medium' ? 5.0 : 2.0),
-					photo: '/placeholder-person.jpg',
-					knownAssociates: person.profileData?.associates || ['No known associates'],
-					knownHabits: person.profileData?.habits || ['No known habits'],
-					attributes: {
-						stealth: Math.floor(Math.random() * 100),
-						intelligence: Math.floor(Math.random() * 100),
-						strength: Math.floor(Math.random() * 100),
-						speed: Math.floor(Math.random() * 100),
-						dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10) : (person.threatLevel === 'high' ? 75 : person.threatLevel === 'medium' ? 50 : 25)
-					}
-				}));
-				if (transformedPersons.length > 0) {
-					persons = transformedPersons;
-					selectedPerson = transformedPersons[0];
-				}
-			}
-		} catch (error) {
-			console.error('Failed to load persons from API:', error);
-			// Keep using demo data as fallback
-		}
-	}
+  // Load persons from API
+  async function loadPersons() {
+    try {
+      loading = true;
+      error = null;
 
-	// Load data on mount
-	$effect (() => {
-		loadPersonsFromAPI();
-	});
+      const response = await fetch('/api/persons');
+      if (!response.ok) {
+        throw new Error(`Failed to load persons: ${response.status}`);
+      }
 
-	function handlePersonSelect(person: FugitiveDexPerson) {
-		selectedPerson = person;
-	}
+      const result = await response.json();
+      persons = result.persons || [];
+      stats = result.stats || stats;
 
-	function handleOpenAIModal(person: FugitiveDexPerson) {
-		// TODO: Implement AI modal
-		console.log('Open AI modal for:', person.name);
-	}
+      applyFilters();
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Failed to load persons';
+      console.error('Error loading persons:', err);
+    } finally {
+      loading = false;
+    }
+  }
+
+  // Apply search and filters
+  function applyFilters() {
+    let filtered = [...persons];
+
+    // Apply search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(person =>
+        person.name.toLowerCase().includes(query) ||
+        person.aliases?.some(alias => alias.toLowerCase().includes(query)) ||
+        person.description?.toLowerCase().includes(query) ||
+        person.aiProfile?.who?.toLowerCase().includes(query) ||
+        person.aiProfile?.what?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply status filter
+    if (filters.status) {
+      filtered = filtered.filter(person => person.status === filters.status);
+    }
+
+    // Apply priority filter
+    if (filters.priority) {
+      filtered = filtered.filter(person => person.priority === filters.priority);
+    }
+
+    // Apply tags filter
+    if (filters.tags.length > 0) {
+      filtered = filtered.filter(person =>
+        filters.tags.some(tag => person.tags?.includes(tag))
+      );
+    }
+
+    filteredPersons = filtered;
+  }
+
+  // Event handlers
+  function handleSearch(event: CustomEvent<string>) {
+    searchQuery = event.detail;
+    applyFilters();
+  }
+
+  function handleFilter(event: CustomEvent<typeof filters>) {
+    filters = event.detail;
+    applyFilters();
+  }
+
+  function handleCreatePerson() {
+    showCreateForm = true;
+  }
+
+  function handlePersonCreated() {
+    showCreateForm = false;
+    loadPersons(); // Refresh the list
+  }
+
+  function handleFormCancel() {
+    showCreateForm = false;
+  }
+
+  // Load data on mount
+  onMount(() => {
+    loadPersons();
+  });
+
+  // Reactive effects for filtering
+  $effect(() => {
+    applyFilters();
+  });
 </script>
 
-<main class="fugitive-dex min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-6">
-	<!-- Header -->
-	<PersonHeader />
+<main class="persons-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Persons of Interest</h1>
+      <p class="page-subtitle">
+        AI-powered legal investigation profiles with structured intelligence analysis
+      </p>
+    </div>
 
-	<!-- Main Layout -->
-	<div class="grid grid-cols-1 lg:grid-cols-[320px_1fr_320px] gap-6 mt-6">
-		<!-- Left Sidebar - Person List -->
-		<PersonList
-			{persons}
-			{selectedPerson}
-			bind:searchQuery
-			onSelect={handlePersonSelect}
-		/>
+    <button
+      class="create-btn"
+      on:click={handleCreatePerson}
+      disabled={loading}
+    >
+      <span class="btn-icon">🤖</span>
+      New POI
+    </button>
+  </div>
 
-		<!-- Main Person Detail -->
-		<PersonProfile
-			{selectedPerson}
-			onOpenAIModal={handleOpenAIModal}
-		/>
+  <!-- Stats Panel -->
+  <StatsPanel {stats} />
 
-		<!-- Right Stats Panel -->
-		<PersonStatsPanel {selectedPerson} />
-	</div>
+  <!-- Controls Bar -->
+  <div class="controls-bar">
+    <SearchBar
+      placeholder="Search persons by name, aliases, or description..."
+      on:search={handleSearch}
+    />
+
+    <FilterPanel {filters} on:filter={handleFilter} />
+  </div>
+
+  <!-- Loading State -->
+  {#if loading}
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading persons of interest...</p>
+    </div>
+  {/if}
+
+  <!-- Error State -->
+  {#if error}
+    <div class="error-state">
+      <div class="error-icon">⚠️</div>
+      <h3>Error Loading Data</h3>
+      <p>{error}</p>
+      <button class="retry-btn" on:click={loadPersons}>
+        Retry
+      </button>
+    </div>
+  {/if}
+
+  <!-- Persons Grid -->
+  {#if !loading && !error}
+    <div class="persons-grid">
+      {#if filteredPersons.length === 0}
+        <div class="empty-state">
+          {#if persons.length === 0}
+            <div class="empty-icon">👥</div>
+            <h3>No Persons of Interest</h3>
+            <p>Get started by creating your first AI-powered POI profile.</p>
+            <button class="create-first-btn" on:click={handleCreatePerson}>
+              <span class="btn-icon">🤖</span>
+              Create First POI
+            </button>
+          {:else}
+            <div class="empty-icon">🔍</div>
+            <h3>No Results Found</h3>
+            <p>No persons match your current search and filters.</p>
+            <button class="clear-filters-btn" on:click={() => { searchQuery = ''; filters = { status: '', priority: '', tags: [] }; }}>
+              Clear Filters
+            </button>
+          {/if}
+        </div>
+      {:else}
+        {#each filteredPersons as person (person.id)}
+          <PersonCard {person} />
+        {/each}
+      {/if}
+    </div>
+  {/if}
+
+  <!-- Create Person Modal -->
+  {#if showCreateForm}
+    <div class="modal-overlay" on:click={handleFormCancel}>
+      <div class="modal-content" on:click|stopPropagation>
+        <PersonForm
+          on:created={handlePersonCreated}
+          on:cancel={handleFormCancel}
+        />
+      </div>
+    </div>
+  {/if}
 </main>
 
 <style>
-	.fugitive-dex::before {
-		content: '';
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background:
-			linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px),
-			linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px);
-		background-size: 20px 20px;
-		pointer-events: none;
-		z-index: -1;
-	}
+  .persons-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+    padding: 2rem;
+    color: #e0e0e0;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .header-content {
+    flex: 1;
+  }
+
+  .page-title {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    margin: 0.5rem 0 0 0;
+    font-size: 1rem;
+    color: #b0b0b0;
+    max-width: 500px;
+  }
+
+  .create-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+  }
+
+  .create-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+  }
+
+  .create-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-icon {
+    font-size: 1.1rem;
+  }
+
+  .controls-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .loading-state p {
+    color: #b0b0b0;
+    font-size: 1rem;
+  }
+
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    border-radius: 12px;
+    margin: 2rem 0;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .error-state h3 {
+    margin: 0 0 0.5rem 0;
+    color: #ff4444;
+    font-size: 1.5rem;
+  }
+
+  .error-state p {
+    margin: 0 0 1.5rem 0;
+    color: #b0b0b0;
+  }
+
+  .retry-btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(45deg, #ff4444, #cc3333);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .retry-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);
+  }
+
+  .persons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+  }
+
+  .empty-state h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: #e0e0e0;
+  }
+
+  .empty-state p {
+    margin: 0 0 1.5rem 0;
+    color: #b0b0b0;
+    max-width: 400px;
+  }
+
+  .create-first-btn, .clear-filters-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .create-first-btn:hover, .clear-filters-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+  }
+
+  .modal-content {
+    background: rgba(26, 26, 46, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .persons-page {
+      padding: 1rem;
+    }
+
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .controls-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+
+    .persons-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .modal-overlay {
+      padding: 1rem;
+    }
+  }
 </style>
 
 

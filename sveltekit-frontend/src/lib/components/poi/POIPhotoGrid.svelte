@@ -1,26 +1,27 @@
 <script lang="ts">
-  import type { Badge  } from '$lib/components/ui/badge';
+  import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import type { Camera, Eye, Trash2, Upload  } from 'lucide-svelte';
+  import { Camera, Eye, Trash2, Upload } from 'lucide-svelte';
   // Migrated from createEventDispatcher to callback props;
 
   let {
     photos = [],
-    editable = false
+    editable = false,
+    onView,
+    onUpload,
+    onDelete
   } = $props();
 
-  const dispatch = createEventDispatcher();
-
   function handlePhotoClick(photo: any, index: number) {
-    dispatch('view', { photo, index });
+    onView({ photo, index });
   }
 
   function handleUpload() {
-    dispatch('upload');
+    onUpload();
   }
 
   function handleDelete(index: number) {
-    dispatch('delete', index);
+    onDelete(index);
   }
 </script>
 
@@ -60,7 +61,10 @@
         <div class="relative group">
           <div
             class="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow border-2 border-gray-200"
+            role="button"
+            tabindex="0"
             onclick={() => handlePhotoClick(photo, index)}
+            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { handlePhotoClick(photo, index); e.preventDefault(); } }}
           >
             <img
               src={photo.thumbnailUrl}

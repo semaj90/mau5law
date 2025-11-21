@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { randomUUID } from 'node:crypto';
 
-import fetchMcpServerData from '$lib/services/mcp-registry';
+import { fetchMcpServerData } from '$lib/services/mcp-registry';
 import { aiOrchestrator } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
 
 
