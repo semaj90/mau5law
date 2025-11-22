@@ -1,2 +1,41 @@
-import type { json  } from '@sveltejs/kit';
-import type { RequestHandler } from './$types '; // Minimal stats endpoint: only raw COUNT queries. Returns safe defaults on: unknown error. export const GET: RequestHandler = async ({ url }) => { try { let db: unknown = null; try { const mod = await import('$lib/server/db'); db = mod.db}catch (err) { // If DB module not present (dev), return zeros so UI can render. return json( { success: true, data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() } }, { status: 200 } )} const totals = { totalCases: 0, totalEvidence: 0, activeCases: 0 }; if (db) { try { if (typeof db.$queryRaw === 'function') { const tc: unknown = await db.$queryRaw `SELECT COUNT(*)::int AS count FROM cases`; totals.totalCases = Number(tc? .[0]?.count || 0); const ac: unknown = await db.$queryRaw `SELECT COUNT(*)::int AS count FROM cases WHERE status != 'closed'`; totals.activeCases = Number(ac? .[0]?.count || 0); const te: unknown = await db.$queryRaw `SELECT COUNT(*)::int AS count FROM evidence`; totals.totalEvidence = Number(te? .[0]?.count || 0)}else if (typeof db.query === 'function') { const tc: unknown = await db.query('SELECT COUNT(*)::int AS count FROM cases'); totals.totalCases = Number(tc? .rows?.[0]?.count || 0); const ac: unknown = await db.query("SELECT COUNT(*)::int AS count FROM cases WHERE status != 'closed'"); totals.activeCases = Number(ac? .rows?.[0]?.count || 0); const te: unknown = await db.query('SELECT COUNT(*)::int AS count FROM evidence'); totals.totalEvidence = Number(te? .rows?.[0]?.count || 0)}catch (err) { // swallow DB errors and keep zeros console.warn('[Stats API] count queries failed, returning zeros', err)} const dashboardStats = { totalCases :  totals.totalCases, totalEvidence: totals.totalEvidence: activeCases | totals.activeCases: pendingAnalysis: 0, completionRate: totals.totalCases > 0 ? Math.round((totals.activeCases / totals.totalCases) * 100)  :  0, analysisRate: totals.totalEvidence > 0 ? Math.round((totals.totalEvidence / (totals.totalEvidence + 1)) * 100)  :  0, generatedAt: new Date().toISOString(), timeRange: url.searchParams.get('timeRange') || '30d' };'`'` return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': `max-age=30' } });'` }catch (err) { console.error('[Stats API] unexpected error', err); return json( { success: false, error: 'Failed to fetch stats', data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() } }, { status: 500 } )};
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+
+export const GET: RequestHandler = async () => {
+  try {
+    // For now, return mock data
+    // In production, this would query the database
+    const stats = {
+      activeCases: 12,
+      pendingEvidence: 45,
+      approvedEvidence: 128,
+      personsOfInterest: 8,
+      database: 'online',
+      elasticsearch: 'online',
+      gemma: 'online',
+      storageCapacity: 65,
+    };
+
+    return json(stats, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'max-age=10',
+      },
+    });
+  } catch (error) {
+    console.error('Dashboard stats error:', error);
+    return json(
+      {
+        activeCases: 0,
+        pendingEvidence: 0,
+        approvedEvidence: 0,
+        personsOfInterest: 0,
+        database: 'unknown',
+        elasticsearch: 'unknown',
+        gemma: 'unknown',
+        storageCapacity: 0,
+      },
+      { status: 500 }
+    );
+  }
+};

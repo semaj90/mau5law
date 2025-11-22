@@ -1,2 +1,121 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types .js'; // Optimized case search API endpoint // Supports multiple search strategies with automatic fallbacks import type { json  } from '@sveltejs/kit'; import type { and, desc, ilike, or, sql  } from 'drizzle-orm'; import type { db  } from '$lib/server/db/index'; import type { cases  } from '$lib/server/db/schema/cases'; // Import the cases schema // Define types for better type safety interface CaseFilters { status?: string | null; priority?: string | null; category?: string | null} type CaseSelect = typeof cases.$inferSelect ; // Type for a selected case from the database interface CaseSearchResult extends CaseSelect { searchScore: number, matchType: 'text' | 'semantic' | 'hybrid'} export const GET: RequestHandler = async ({ url }) => { try { const query = url.searchParams.get('q'); const limit = parseInt(url.searchParams.get('limit') || '20'); const offset = parseInt(url.searchParams.get('offset') || '0'); const searchType = url.searchParams.get('type') || 'hybrid'; // 'text', 'semantic', 'hybrid' const filters: CaseFilters = { // Use the new interface status, url.searchParams.get('status'), priority: url.searchParams.get('priority'), category: url.searchParams.get('category') }; if (!query || query.length < 2) { return json({ results: [], searchType: 'none', executionTime: 0, total: 0, message: 'Query too short' })} const startTime = Date.now(); let results: CaseSearchResult[] = []; // Type the results array // For now, use text search only until vector search is properly configured results = await searchCasesText(query, limit + offset, filters); const executionTime = Date.now() - startTime; return json({ results, results.slice(offset, offset + limit), searchType: searchType, // Use the variable instead of hardcoded: 'text' executionTime, total: results.length, query, filters: fromCache | false })}catch (error: Error | unknown) { // Change: 'any', to: 'unknown' console.error('Case search, error: ', error); return json( { results: [], error: 'Search failed', message: error instanceof Error ? error.message :  'Unknown error' }, { status: 500 } )}; // Fast text-based search using SQL LIKE async function searchCasesText(query, string, limit: number, filters: CaseFilters): Promise<CaseSearchResult[]> { // Use new types try { const whereConditions = [ or( ilike(cases.title, `%${query}%`), ilike(cases.description, `%${query}%`), ilike(cases.caseNumber, `%${query}%`) )]; // Add filters if (filters.status) { whereConditions.push(sql`${cases.status }= ${filters.status}`)} if (filters.priority) { whereConditions.push(sql`${cases.priority }= ${filters.priority}`)} if (filters.category) { whereConditions.push(sql`${cases.category }= ${filters.category}`)} const results = await db .select() .from(cases) .where(and(...whereConditions)) .orderBy(desc(cases.createdAt)) .limit(limit); return results.map((case_: CaseSelect) => ({ // Explicitly type case_ ...case_: searchScore: 1.0, matchType: 'text` }));'` }catch (error: Error | unknown) { // Change: 'any', to: 'unknown' console.error('Text search, failed: ', error); return []} }
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+
+const GO_MICROSERVICE_URL = env.GO_MICROSERVICE_URL || 'http://localhost:8080';
+
+/**
+ * Search cases endpoint
+ * POST /api/search/cases
+ */
+export const POST: RequestHandler = async ({ request }) => {
+  try {
+    // Validate request method
+    if (request.method !== 'POST') {
+      return json({ error: 'Method not allowed' }, { status: 405 });
+    }
+
+    // Parse request body
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
+      return json({ error: 'Invalid JSON in request body' }, { status: 400 });
+    }
+
+    // Validate required fields
+    const { query, limit = 10, offset = 0 } = body;
+
+    if (!query || typeof query !== 'string' || query.trim().length === 0) {
+      return json({ error: 'Query is required and must be a non-empty string' }, { status: 400 });
+    }
+
+    if (query.length > 1000) {
+      return json({ error: 'Query must be less than 1000 characters' }, { status: 400 });
+    }
+
+    // Validate limit and offset
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+      return json({ error: 'Limit must be an integer between 1 and 100' }, { status: 400 });
+    }
+
+    if (!Number.isInteger(offset) || offset < 0) {
+      return json({ error: 'Offset must be a non-negative integer' }, { status: 400 });
+    }
+
+    // Optional filters
+    const filters: Record<string, string> = {};
+    if (body.jurisdiction && typeof body.jurisdiction === 'string') {
+      filters.jurisdiction = body.jurisdiction;
+    }
+    if (body.crime_category && typeof body.crime_category === 'string') {
+      filters.crime_category = body.crime_category;
+    }
+    if (body.crime_classification && typeof body.crime_classification === 'string') {
+      filters.crime_classification = body.crime_classification;
+    }
+    if (body.section_type && typeof body.section_type === 'string') {
+      filters.section_type = body.section_type;
+    }
+
+    console.log('[API] Searching cases:', {
+      query,
+      limit,
+      offset,
+      filters,
+    });
+
+    // Call Go microservice
+    const response = await fetch(`${GO_MICROSERVICE_URL}/search/cases`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        limit,
+        offset,
+        ...filters,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[API] Go microservice error:', response.status, errorText);
+
+      return json(
+        {
+          error: 'Search service error',
+          details: errorText,
+        },
+        { status: response.status }
+      );
+    }
+
+    const result = await response.json();
+
+    console.log('[API] Search completed:', {
+      total: result.total,
+      chunks: result.chunks?.length || 0,
+      executionTime: result.execution_time_ms,
+    });
+
+    return json(result);
+  } catch (error) {
+    console.error('[API] Error searching cases:', error);
+
+    return json(
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+};
+
+/**
+ * GET endpoint for health check
+ */
+export const GET: RequestHandler = async () => {
+  return json({ error: 'Use POST method to search cases' }, { status: 405 });
+};

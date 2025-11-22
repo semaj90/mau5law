@@ -1,228 +1,245 @@
-import type { json  } from '@sveltejs/kit';
-import type { RequestHandler } from './$types ';
-import type { db  } from '$lib/server/db';
-import type { evidence  } from '$lib/server/db/schema-postgres';
-import type { minioService  } from '$lib/server/storage/minio-service';
-import type { upsertToQdrant  } from '$lib/server/vector/qdrant';
-import type { enhancedRAGPipeline  } from '$lib/server/ai/rag-pipeline-enhanced';
-import type { eventBus  } from '$lib/server/event-bus';
-import type { getOllamaBaseUrl  } from '$lib/utils/ollama';
-import type { eq  } from 'drizzle-orm';
+/**
+ * Evidence Upload API
+ * Auto-creates case if missing, routes to MinIO, logs chain-of-custody
+ */
+
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { getUser } from '$lib/server/auth/lucia';
+import { db } from '$lib/server/db';
+import {
+  wardenCases,
+  wardenEvidence,
+  wardenAuditLog,
+  wardenFileLocks,
+} from '$lib/server/db/warden-schema';
+import { eq } from 'drizzle-orm';
+import crypto from 'crypto';
+import { redis } from '$lib/server/cache/redis';
+
+interface UploadRequest {
+  caseId?: string;
+  file: File;
+}
+
+/**
+ * Auto-create case for prosecutor if missing
+ */
+async function autoCreateCase(prosecutorId: string): Promise<string> {
+  const [newCase] = await db
+    .insert(wardenCases)
+    .values({
+      prosecutorId,
+      title: `Case ${new Date().toISOString().split('T')[0]}`,
+    })
+    .returning({ id: wardenCases.id });
+
+  return newCase.id;
+}
+
+/**
+ * Calculate SHA-256 hash
+ */
+function calculateSHA256(buffer: Buffer): string {
+  return crypto.createHash('sha256').update(buffer).digest('hex');
+}
+
+/**
+ * Route upload to Python worker
+ */
+async function routeUpload(
+  fileBuffer: Buffer,
+  fileName: string,
+  caseId: string,
+  prosecutorId: string
+): Promise<{
+  bucket: string;
+  objectPath: string;
+  sha256: string;
+  documentType: string;
+  confidence: number;
+}> {
+  const pythonWorkerUrl = process.env.PYTHON_WORKER_URL || 'http://localhost:8000';
+
+  try {
+    const response = await fetch(`${pythonWorkerUrl}/route`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: prosecutorId,
+        case_id: caseId,
+        file_name: fileName,
+        file: fileBuffer.toString('base64'),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Python worker error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Routing error:', error);
+    throw error;
+  }
+}
+
+/**
+ * Log to Loki (chain-of-custody)
+ */
+async function logToLoki(
+  prosecutorId: string,
+  caseId: string,
+  evidenceId: string,
+  action: string,
+  details: Record<string, unknown>
+): Promise<void> {
+  const lokiUrl = process.env.LOKI_URL || 'http://localhost:3100';
+
+  try {
+    await fetch(`${lokiUrl}/loki/api/v1/push`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        streams: [
+          {
+            stream: {
+              job: 'warden-evidence',
+              prosecutor_id: prosecutorId,
+              case_id: caseId,
+              action,
+            },
+            values: [
+              [
+                Date.now().toString() + '000000',
+                JSON.stringify({
+                  evidence_id: evidenceId,
+                  action,
+                  ...details,
+                }),
+              ],
+            ],
+          },
+        ],
+      }),
+    });
+  } catch (error) {
+    console.error('Loki logging error:', error);
+    // Don't fail upload if logging fails
+  }
+}
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
+    // 1. Authenticate
+    const user = await getUser(locals);
+    if (!user) {
+      return json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // 2. Parse form data
     const formData = await request.formData();
-    const file = formData.get('file') as File | null;
-    const title = (formData.get('title') as string | null) ?? '';
-    const description = (formData.get('description') as string | null) ?? '';
-    const evidenceType = (formData.get('evidenceType') as string | null) ?? 'document';
-    const caseId = (formData.get('caseId') as string | null) ?? '';
-    const tagsRaw = (formData.get('tags') as string | null) ?? '';
-    const isAdmissible = formData.get('isAdmissible') === 'true';
+    const file = formData.get('file') as File;
+    let caseId = formData.get('caseId') as string | null;
 
     if (!file) {
-      return json({ success: false, error: 'No file provided' }, { status: 400 });
-    }
-    if (!title || !caseId) {
-      return json({ success: false, error: 'Missing required fields: title, caseId' }, { status: 400 });
+      return json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const userId = locals.user?.id ?? 'anonymous';
-    const tags = tagsRaw
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean);
-
-    const minioReady = await minioService.initialize();
-    if (!minioReady) {
-      return json({ success: false, error: 'MinIO unavailable' }, { status: 503 });
+    // 3. Auto-create case if missing
+    if (!caseId) {
+      caseId = await autoCreateCase(user.id);
     }
 
-    const uploadResult = await minioService.uploadFile(file, file.name, {
-      bucket: 'evidence',
-      metadata: { caseId, evidenceType, uploadedBy: userId, title }
-    });
-    if (!uploadResult.success) {
-      return json({ success: false, error: uploadResult.error ?? 'File upload failed' }, { status: 500 });
-    }
-
-    eventBus.emit({
-      type: 'evidence_uploaded',
-      evidenceId: uploadResult.fileId,
-      fileName: file.name,
-      caseId,
-      message: `New evidence uploaded: ${file.name}`
+    // 4. Verify case belongs to prosecutor
+    const caseRecord = await db.query.wardenCases.findFirst({
+      where: eq(wardenCases.id, caseId),
     });
 
-    let textContent = '';
-    if (file.type === 'text/plain') {
-      textContent = await file.text();
-    } else {
-      textContent = description || title;
+    if (!caseRecord || caseRecord.prosecutorId !== user.id) {
+      return json({ error: 'Case not found or unauthorized' }, { status: 403 });
     }
 
-    eventBus.emit({
-      type: 'ocr_complete',
-      evidenceId: uploadResult.fileId,
-      message: 'OCR completed for uploaded evidence'
-    });
+    // 5. Read file and calculate hash
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
+    const sha256 = calculateSHA256(fileBuffer);
 
-    const ollamaBaseUrl = getOllamaBaseUrl();
-
-    let embeddingVector: number[] = [];
-    try {
-      const embeddingRes = await fetch(`${ollamaBaseUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'embeddinggemma:latest',
-          prompt: textContent.slice(0, 8_000)
-        })
-      });
-
-      if (embeddingRes.ok) {
-        const data = (await embeddingRes.json()) as { embedding?: number[] };
-        embeddingVector = data.embedding ?? [];
-        if (embeddingVector.length) {
-          eventBus.emit({
-            type: 'embedding_complete',
-            evidenceId: uploadResult.fileId,
-            dimensions: embeddingVector.length,
-            message: 'Embedding generated'
-          });
-        }
-      } else {
-        console.warn('Embedding request failed:', embeddingRes.status);
-      }
-    } catch (error) {
-      console.warn('Embedding generation error:', error);
+    // 6. Check file lock (prevent double-ingest)
+    const existingLock = await redis.get(`file-lock:${sha256}`);
+    if (existingLock) {
+      return json({ error: 'File is being processed' }, { status: 409 });
     }
 
-    let aiSummary = '';
-    if (textContent.length > 120) {
-      try {
-        const summaryRes = await fetch(`${ollamaBaseUrl}/api/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'gemma3-legal:latest',
-            max_tokens: 400,
-            stream: false,
-            messages: [
-              {
-                role: 'system',
-                content:
-                  'You are Phoenix-Pro, an expert legal prosecutor. Summarize evidence, reveal contradictions, and propose next actions.'
-              },
-              { role: 'user', content: textContent.slice(0, 4_000) }
-            ]
-          })
-        });
+    // 7. Acquire lock (5 minute TTL)
+    await redis.setex(`file-lock:${sha256}`, 300, user.id);
 
-        if (summaryRes.ok) {
-          const summaryJson = await summaryRes.json();
-          aiSummary = summaryJson?.message?.content ?? '';
-        }
-      } catch (error) {
-        console.warn('Summary generation failed:', error);
-      }
-    }
+    // 8. Route to Python worker
+    const routeResult = await routeUpload(fileBuffer, file.name, caseId, user.id);
 
-    const [record] = await db
-      .insert(evidence)
+    // 9. Store evidence record
+    const [evidence] = await db
+      .insert(wardenEvidence)
       .values({
         caseId,
-        title,
-        description,
-        evidenceType,
-        fileUrl: uploadResult.url,
+        prosecutorId: user.id,
         fileName: file.name,
-        fileSize: file.size,
+        sha256,
         mimeType: file.type,
-        tags,
-        isAdmissible,
-        aiSummary,
-        uploadedBy: userId,
-        metadata: { storageKey: uploadResult.fileName }
+        fileSize: fileBuffer.length,
+        minioPath: routeResult.objectPath,
+        minioBucket: routeResult.bucket,
+        documentType: routeResult.documentType,
+        inferenceConfidence: routeResult.confidence,
+        status: 'pending',
+        metadata: {
+          uploadedAt: new Date().toISOString(),
+          fileSize: fileBuffer.length,
+        },
       })
-      .returning();
+      .returning({ id: wardenEvidence.id });
 
-    if (embeddingVector.length) {
-      try {
-        await upsertToQdrant(
-          {
-            id: record.id,
-            content: textContent,
-            embeddings: embeddingVector,
-            metadata: {
-              caseId: record.caseId,
-              evidenceType: record.evidenceType,
-              title: record.title,
-              tags,
-              uploadedBy: userId
-            }
-          },
-          { url: process.env.QDRANT_URL ?? 'http://localhost:6333' }
-        );
+    // 10. Log to audit trail
+    await db.insert(wardenAuditLog).values({
+      prosecutorId: user.id,
+      caseId,
+      evidenceId: evidence.id,
+      action: 'UPLOAD',
+      sha256,
+      details: {
+        fileName: file.name,
+        bucket: routeResult.bucket,
+        documentType: routeResult.documentType,
+        confidence: routeResult.confidence,
+      },
+    });
 
-        eventBus.emit({
-          type: 'graph_update',
-          evidenceId: record.id,
-          caseId: record.caseId,
-          message: 'Graph updated with new semantic edges'
-        });
-      } catch (error) {
-        console.warn('Qdrant upsert failed:', error);
-      }
-    }
+    // 11. Log to Loki
+    await logToLoki(user.id, caseId, evidence.id, 'UPLOAD', {
+      file_name: file.name,
+      bucket: routeResult.bucket,
+      document_type: routeResult.documentType,
+      confidence: routeResult.confidence,
+      sha256,
+    });
 
-    try {
-      await enhancedRAGPipeline.indexDocument({
-        id: record.id,
-        content: textContent,
-        metadata: { type: 'evidence', caseId: record.caseId, title: record.title }
-      });
-
-      eventBus.emit({
-        type: 'ai_summary_ready',
-        evidenceId: record.id,
-        message: 'Phoenix AI summary ready'
-      });
-    } catch (error) {
-      console.warn('RAG indexing failed:', error);
-    }
+    // 12. Release lock
+    await redis.del(`file-lock:${sha256}`);
 
     return json({
       success: true,
-      data: {
-        ...record,
-        hasEmbedding: embeddingVector.length > 0
-      }
+      evidenceId: evidence.id,
+      caseId,
+      sha256,
+      bucket: routeResult.bucket,
+      objectPath: routeResult.objectPath,
+      documentType: routeResult.documentType,
+      confidence: routeResult.confidence,
+      status: 'pending',
     });
   } catch (error) {
-    console.error('Evidence upload failed:', error);
-    return json({ success: false, error: 'Failed to upload evidence' }, { status: 500 });
-  }
-};
-
-export const GET: RequestHandler = async ({ url }) => {
-  try {
-    const evidenceId = url.searchParams.get('id');
-    if (!evidenceId) {
-      return json({ error: 'Evidence ID required' }, { status: 400 });
-    }
-
-    const record = await db.query.evidence.findFirst({
-      where: eq(evidence.id, evidenceId)
-    });
-
-    if (!record) {
-      return json({ error: 'Evidence not found' }, { status: 404 });
-    }
-
-    return json({ success: true, data: record });
-  } catch (error) {
-    console.error('Evidence fetch failed:', error);
-    return json({ error: 'Failed to fetch evidence' }, { status: 500 });
+    console.error('Upload error:', error);
+    return json(
+      { error: error instanceof Error ? error.message : 'Upload failed' },
+      { status: 500 }
+    );
   }
 };

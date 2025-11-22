@@ -267,13 +267,17 @@ export function createCustomTheme(theme: Partial<DesignTokens>): DesignTokens {
 }
 
 // Bits UI re-exports with enhanced styling
-import type { Dialog,
+import { Dialog,
 	Button,
 	Select,
 	Popover,
 	Tooltip,
 	Combobox,
  } from 'bits-ui';
+import DropdownMenu from 'bits-ui';
+import ContextMenu from 'bits-ui';
+import Toolbar from 'bits-ui';
+import Resizable from 'bits-ui';
 
 export {
 	Dialog,
@@ -282,6 +286,10 @@ export {
 	Popover,
 	Tooltip,
 	Combobox,
+	DropdownMenu,
+	ContextMenu,
+	Toolbar,
+	Resizable,
 };
 // Enhanced-bits styling utilities are now defined in this file as placeholders.
 

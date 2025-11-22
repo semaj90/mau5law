@@ -1,150 +1,49 @@
-import type { Handle } from '@sveltejs/kit';
-import type { createRuntimeConnection, closeConnections  } from '$lib/server/db/client';
-import type { getRedisClient, closeRedisClient  } from '$lib/server/cache/redis';
-import type { getRabbitMQChannel, closeRabbitMQConnection  } from '$lib/server/messaging/rabbitmq';
-import type { setLuciaAvailabilityForUploads  } from '$lib/server/auth/contextual-upload-guard';
-import { fastjsonHook } from '$lib/hooks/fastjson-server';
+/**
+ * SvelteKit Server Hooks
+ * Handles request/response processing and middleware
+ */
 
-type LuciaInstance = {
-  sessionCookieName: string;
-  validateSession(sessionId: string): Promise<{ session: unknown; user: unknown }>;
-  createSessionCookie(sessionId: string): {
-    name: string;
-    value: string;
-    attributes: Record<string, any>;
+import type { Handle, HandleServerError } from '@sveltejs/kit';
+
+/**
+ * Main request handler
+ */
+export const handle: Handle = async ({ event, resolve }) => {
+  // Add request ID for tracing
+  const requestId = crypto.randomUUID();
+  event.locals.requestId = requestId;
+
+  // Add timing information
+  const startTime = Date.now();
+
+  // Resolve the request
+  const response = await resolve(event);
+
+  // Add timing headers
+  const duration = Date.now() - startTime;
+  response.headers.set('X-Request-ID', requestId);
+  response.headers.set('X-Response-Time', `${duration}ms`);
+
+  // Enable streaming for AI endpoints
+  if (event.url.pathname.startsWith('/api/ai/')) {
+    response.headers.set('Content-Type', 'application/x-ndjson');
+    response.headers.set('Cache-Control', 'no-cache');
+    response.headers.set('X-Accel-Buffering', 'no');
+  }
+
+  return response;
+};
+
+/**
+ * Error handler
+ */
+export const handleError: HandleServerError = ({ error, event }) => {
+  const errorId = crypto.randomUUID();
+
+  console.error(`[${errorId}] Error in ${event.url.pathname}:`, error);
+
+  return {
+    message: 'An unexpected error occurred',
+    code: errorId,
   };
-  createBlankSessionCookie(): { name: string; value: string; attributes: Record<string, any> };
 };
-
-interface AuthState {
-  lucia: LuciaInstance | null;
-  enabled: boolean;
-}
-
-async function initializeServices() {
-  try {
-    createRuntimeConnection();
-    const redis = await getRedisClient();
-    await redis.ping();
-    await getRabbitMQChannel().catch(() => null);
-  } catch (error) {
-    console.error('Service initialization error:', error);
-  }
-}
-
-initializeServices().catch((error) =>
-  console.error('Unhandled service initialization error:', error)
-);
-
-let authState: AuthState | null = null;
-async function loadAuth(): Promise<AuthState> {
-  if (authState) return authState;
-  try {
-    const module = await import('$lib/server/auth');
-    const resolved =
-      (module as { lucia?: LuciaInstance }).lucia ??
-      (module as { default?: LuciaInstance }).default ??
-      (module as unknown as LuciaInstance | undefined) ??
-      null;
-    if (resolved) {
-      console.log('[hooks] Lucia authentication loaded');
-      authState = { lucia: resolved, enabled: true };
-      setLuciaAvailabilityForUploads(true);
-      return authState;
-    }
-  } catch (error) {
-    console.warn('[hooks] Lucia authentication unavailable', error);
-  }
-  setLuciaAvailabilityForUploads(false);
-  authState = { lucia: null, enabled: false };
-  return authState;
-}
-
-async function attachLuciaSession(event: Parameters<Handle>[0]['event']): Promise<void> {
-  const { lucia, enabled } = await loadAuth();
-
-  event.locals.user = null;
-  event.locals.session = null;
-  event.locals.contextualSessionId = null;
-  event.locals.contextualUserId = null;
-
-  if (!enabled || !lucia) {
-    return;
-  }
-
-  const sessionCookieName = lucia.sessionCookieName;
-  const sessionId = sessionCookieName ? event.cookies.get(sessionCookieName) : undefined;
-  if (!sessionId) return;
-
-  try {
-    const { session, user } = await lucia.validateSession(sessionId);
-
-    if (session?.fresh) {
-      try {
-        const freshCookie = lucia.createSessionCookie(session.id);
-        event.cookies.set(freshCookie.name, freshCookie.value, {
-          path: '/',
-          ...freshCookie.attributes,
-        });
-      } catch (cookieError) {
-        console.warn('[hooks] Failed to refresh session cookie', cookieError);
-      }
-    }
-
-    if (!session) {
-      const blank = lucia.createBlankSessionCookie();
-      event.cookies.set(blank.name, blank.value, {
-        path: '/',
-        ...blank.attributes,
-      });
-      return;
-    }
-
-    event.locals.session = session;
-    event.locals.contextualSessionId = session.id ?? null;
-    event.locals.contextualUserId = session.userId ?? null;
-    event.locals.user = user
-      ? {
-          id: user.id,
-          email: user.email,
-          role: (user.role as string | undefined) ?? undefined,
-        }
-      : null;
-  } catch (error) {
-    console.warn('[hooks] Session validation failed', error);
-    try {
-      const blank = lucia.createBlankSessionCookie();
-      event.cookies.set(blank.name, blank.value, {
-        path: '/',
-        ...blank.attributes,
-      });
-    } catch (cookieError) {
-      console.warn('[hooks] Failed to clear session cookie', cookieError);
-    }
-  }
-}
-
-export const handle: Handle = fastjsonHook(async ({ event, resolve }) => {
-  event.locals.db = createRuntimeConnection();
-  event.locals.redis = await getRedisClient();
-  try {
-    event.locals.rabbitmqChannel = await getRabbitMQChannel();
-  } catch {
-    event.locals.rabbitmqChannel = null;
-  }
-
-  await attachLuciaSession(event);
-
-  return resolve(event);
-});
-
-const shutdown = async () => {
-  console.log('Shutting down services.');
-  await closeConnections();
-  await closeRedisClient();
-  await closeRabbitMQConnection();
-  process.exit(0);
-};
-
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);

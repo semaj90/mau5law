@@ -4,7 +4,7 @@ import UnoCSS from '@unocss/vite';
 import path from 'path';
 import fs from 'fs';
 import { createRequire  } from 'module';
-import { bitsUiIntegrityPlugin } from './scripts/vite-plugin-bits-ui-integrity.mjs';
+// import { bitsUiIntegrityPlugin } from './scripts/vite-plugin-bits-ui-integrity.mjs';
 
 const require = createRequire(import.meta.url);
 
@@ -33,14 +33,14 @@ export default defineConfig(({ mode }) => {
     plugins: [
       sveltekit({
         compilerOptions: {
-          runes: true // 👈 enables rune transformer
+          runes: true, // 👈 enables rune transformer
         },
         ssr: {
-          noExternal: ['bits-ui', '@internationalized/date'] // Temporarily disabled
-        }
+          noExternal: ['bits-ui', '@internationalized/date'], // Temporarily disabled
+        },
       }),
       // UnoCSS(), // Temporarily disabled for testing
-      bitsUiIntegrityPlugin({ failOnError: false, autoFix: false }),
+      // bitsUiIntegrityPlugin({ failOnError: false, autoFix: false }), // Disabled for faster startup
       // HMR error logger plugin
       {
         name: 'hmr-error-logger',

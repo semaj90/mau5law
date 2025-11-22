@@ -1,12 +1,46 @@
-import type { HandleClientError } from '@sveltejs/kit';
+/**
+ * SvelteKit Client Hooks
+ * Handles client-side initialization and global state
+ */
+
+import { dev } from '$app/environment';
 
 /**
- * Minimal client-side error hook so the app can surface failures without
- * leaving the file empty or syntactically invalid.
+ * Initialize client-side features
  */
-export const handleError: HandleClientError = ({ error, event }) => {
-  console.error('Client error:', error, 'event:', event);
-  return {
-    message: 'A client-side error occurred.',
-  };
-};
+if (dev) {
+  console.log('🚀 Legal AI Platform initialized');
+}
+
+/**
+ * Global error handler
+ */
+window.addEventListener('error', (event) => {
+  console.error('Uncaught error:', event.error);
+});
+
+/**
+ * Global unhandled promise rejection handler
+ */
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+});
+
+/**
+ * Performance monitoring
+ */
+if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+  try {
+    const observer = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (entry.duration > 1000) {
+          console.warn(`⚠️ Slow operation: ${entry.name} took ${entry.duration.toFixed(0)}ms`);
+        }
+      }
+    });
+
+    observer.observe({ entryTypes: ['measure', 'navigation'] });
+  } catch (e) {
+    // PerformanceObserver not supported
+  }
+}
