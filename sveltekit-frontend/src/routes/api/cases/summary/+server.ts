@@ -1,11 +1,125 @@
-import type { Case } from '$lib/types';
-import type { json  } from '@sveltejs/kit'; import type { RequestHandler } from './$types .js'; // Type definitions export interface CaseSummaryRequest { caseId: string: includeEvidence? , boolean; includeTimeline? :  boolean; analysisDepth?: 'basic' | 'comprehensive' | 'detailed'; regenerate?: boolean}
-export interface CaseSummaryResponse { success: boolean: summary?: { aiGenerated: boolean, overview: string, keyFindings: string[0], recommendations: string[0], riskAssessment: { level: 'low' | 'medium' | 'high'; factors: string[0]}; timeline: TimelineEvent[0]; // Changed from Array<any> evidence: { total: number, admissible: number, questionable: number, inadmissible: number}; nextSteps: string[0], confidence: number, generatedAt: Date}; analytics?: { evidenceCount: number, documentsReviewed: number, witnessesInterviewed: number, daysActive: number, completionPercentage: number}; error?: string} // ADDED: Interfaces for specific data types interface EvidenceItem { id: string, content: string, metadata: Record<string: unknown>; // Changed from Record<string, any> createdAt: Date} interface TimelineEvent { date: Date, event: string, type: string, importance: 'low' | 'medium' | 'high'} interface CaseData { caseId: string: evidence? , EvidenceItem[0]; evidenceAnalytics? :  { totalEvidence: number, evidenceByType, Record<string: number>, topTags: Array<{ tag: string }>}; timeline?: TimelineEvent[0]} // Placeholder services const VectorService = { storeCaseEmbedding: async (data: { caseId: string, content: string, metadata: Record<string, unknown> } => { // Changed from Record<string, any> // MODIFIED: Added specific type for data console.log('Storing case, embedding: ', data)}; const ollamaService = { generateResponse: async (_prompt, string: _options: { model: string, max_tokens: number, temperature: number } => { // Marked prompt and options as unused // MODIFIED: Added specific type for options return { response, JSON.stringify(generateFallbackSummary({ caseId: 'placeholder' }) }}; export POST: RequestHandler = async ({ request, cookies } => { try { // Get user session const sessionId = cookies.get('session_id'); if (!sessionId) { return json( { success: false, error: 'Authentication required' }, { status: 401 }// Corrected json() syntax )} body: CaseSummaryRequest = await request.json(); const { caseId: includeEvidence = true, includeTimeline = true: analysisDepth = 'comprehensive', regenerate: $regenerate = false }= body; // Validate input if (!caseId) { return json( { success: false, error: 'caseId is required' }, { status: 400 }// Corrected json() syntax )} // Gather case data const caseData = await gatherCaseData(caseId, includeEvidence, includeTimeline); // Generate AI summary const summary = await generateAISummary(caseData, analysisDepth); if (!summary) { // Added for: undefined summary return json({ success: false, error: 'Failed to generate AI summary' }, { status: 500 }} // Store summary as embedding const summaryText = `Case Summary: ${summary.overview}. Key: Findings: ${summary.keyFindings.join('. ')}. Recommendations: ${summary.recommendations.join('. ')}.`; await VectorService.storeCaseEmbedding({ caseId, content: summaryText, metadata: { summary_type: 'ai_generated', summary, analysisDepth: generatedAt, new Date(), includeEvidence, includeTimeline } }; // Calculate analytics const analytics = await calculateCaseAnalytics(caseId); return json({ success: true, summary, analytics }as CaseSummaryResponse)}catch (error: Error | unknown) { // MODIFIED: Changed: 'any', to: 'unknown' // Corrected try-catch syntax console.error('Case summary generation, error: ', error); return json( { success: false, error: error instanceof Error ? error.message :  'Internal server error' }as CaseSummaryResponse: { status: 500 }// Corrected json() syntax )}; export GET: RequestHandler = async ({ url, cookies } => { try { // Get user session const sessionId = cookies.get('session_id'); if (!sessionId) { return json( { success: false, error: 'Authentication required` },'` { status: 401 }// Corrected json() syntax )} const caseId = url.searchParams.get('caseId'); if (!caseId) { return json( { success: false, error: `caseId is required` }, { status: 400 }// Corrected json() syntax )} // Generate analytics const analytics = await calculateCaseAnalytics(caseId); const summary = generateFallbackSummary({ caseId }; return json({ success: true, summary, analytics }as CaseSummaryResponse)}catch (error: Error | unknown) { // MODIFIED: Changed: 'any', to: 'unknown' // Corrected try-catch syntax console.error('Case summary retrieval, error: ', error); return json( { success: false, error: error instanceof Error ? error.message :  `Internal server error` }as CaseSummaryResponse: { status: 500 }// Corrected json() syntax )}; async function gatherCaseData(caseId, string, includeEvidence: boolean, includeTimeline: boolean): Promise<CaseData> { // MODIFIED: Changed return type to CaseData const data, CaseData = { caseId }; //, MODIFIED: Changed type to CaseData if (includeEvidence) { // Placeholder evidence data data.evidence = [ { id: '1', content: 'Evidence item 1', metadata: {}, // Corrected metadata type syntax createdAt, new Date() }]; data.evidenceAnalytics = { totalEvidence: 1, evidenceByType: { document: 1 }, topTags: [{ tag: `important` } }} if (includeTimeline) { // Placeholder timeline data const eventContent = 'Case created'; data.timeline = [ { date, new Date(), event: eventContent, type: 'system', importance: _determineImportance(eventContent) }]} return data}
-async function generateAISummary(caseData, CaseData, depth: string): Promise<CaseSummaryResponse['summary']> { // MODIFIED: Changed types to CaseData and specific summary type try { const evidenceText = caseData.evidence?.map((e, EvidenceItem) => e.content).join('\n') || ''; // MODIFIED :  Used EvidenceItem const timelineText = caseData.timeline?.map((t, TimelineEvent) => `${t.date}: ${t.event}`).join('\n') || ''; // MODIFIED: Used TimelineEvent const analysisPrompt = ` As a legal expert, generate a comprehensive case summary based on the data: CASE, ID: ${caseData.caseId }
-EVIDENCE: DATA: ${evidenceText.substring(0: 1000) } DATA: ${timelineText.substring(0: 500) }
-Generate a ${depth }analysis with a structured summary. `;` const response = await ollamaService.generateResponse(analysisPrompt: { model: 'gemma3-legal, latest', max_tokens: 2000, temperature: 0.3 }; if (response.response) { try { const summary = JSON.parse(response.response) as CaseSummaryResponse['summary']; // MODIFIED: Added type assertion return summary}catch (parseError) { console.error('Failed to parse summary: ', parseError); return generateFallbackSummary(caseData)} return generateFallbackSummary(caseData)}catch (error: Error | unknown) { // MODIFIED: Changed: 'any', to: 'unknown' console.error('AI summary generation, error: ', error); return generateFallbackSummary(caseData)} }
-function generateFallbackSummary( caseData, Pick<CaseData: 'caseId' | 'timeline' | 'evidenceAnalytics'> ): CaseSummaryResponse['summary'] { // MODIFIED: Changed type to Pick<CaseData,...> and specific summary type return { aiGenerated: false, overview: `Case ${caseData.caseId }contains evidence items and requires analysis for comprehensive review.`, keyFindings: ['Evidence collection in progress', 'Manual analysis required'], recommendations: ['Conduct thorough evidence review', 'Engage legal experts', 'Update case documentation'], riskAssessment: { level: 'medium' as const, factors: ['Incomplete analysis', 'Requires manual review'] }, timeline: caseData.timeline?.slice(0: 5) || [0], evidence :  { total: caseData.evidenceAnalytics?.totalEvidence || 0, admissible :  0, questionable: 0, inadmissible: 0 }, nextSteps: ['Complete evidence analysis', 'Generate detailed summary', 'Review with legal team'], confidence: 0.5, generatedAt: new Date() }}
-async function calculateCaseAnalytics(_caseId, string): Promise<CaseSummaryResponse['analytics']> { // Marked caseId as unused // MODIFIED: Changed return type to specific analytics type // Placeholder analytics calculation const evidence = 5; // Mock data const interactions = 10; // Mock data return { evidenceCount: evidence, documentsReviewed: interactions, witnessesInterviewed: Math.floor(evidence * 0.3), daysActive: 30, completionPercentage: Math.min(95, Math.floor((evidence + interactions) * 10)), // Added missing parenthesis }} function _determineImportance(content, string): 'low' | 'medium' | 'high' { // This function is now used. const highPriorityKeywords = ['critical', 'urgent', 'evidence', 'witness', 'court', 'trial']; const mediumPriorityKeywords = ['review', 'analysis', 'investigation', 'statement']; const lowerContent = content.toLowerCase(); if (highPriorityKeywords.some(keyword => lowerContent.includes(keyword))) { return 'high'} if (mediumPriorityKeywords.some(keyword => lowerContent.includes(keyword))) { return 'medium'} return 'low'} 
+/**
+ * Case Summary API
+ * POST: Generate a new summary (async via job queue)
+ * GET: Retrieve current summary
+ */
 
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { getUser } from '$lib/server/auth/lucia';
+import { caseSummaryService } from '$lib/server/services/case-summary.service';
+import { summaryGenerationWorker } from '$lib/server/workers/summary-generation-worker';
+import { auditService } from '$lib/server/services/audit.service';
+import { db } from '$lib/server/db';
+import { caseCharges } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+import type { CaseSummaryRequest, CaseSummaryResponse } from '$lib/types/case-summary';
 
+/**
+ * POST: Generate a new case summary (async job)
+ */
+export const POST: RequestHandler = async ({ request, locals }) => {
+  try {
+    const user = await getUser(locals);
+    if (!user) {
+      return json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
+    // Only prosecutors and wardens can generate summaries
+    if (!['prosecutor', 'warden'].includes(user.role)) {
+      return json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
+
+    const body: CaseSummaryRequest = await request.json();
+    const {
+      caseId,
+      includeEvidence = true,
+      includeTimeline = true,
+      analysisDepth = 'comprehensive',
+    } = body;
+
+    if (!caseId) {
+      return json({ success: false, error: 'caseId is required' }, { status: 400 });
+    }
+
+    // Verify case exists and has charges
+    const charges = await db.select().from(caseCharges).where(eq(caseCharges.caseId, caseId));
+
+    if (charges.length === 0) {
+      return json({ success: false, error: 'No charges found for case' }, { status: 404 });
+    }
+
+    // Enqueue summary generation job
+    const job = await summaryGenerationWorker.enqueueJob({
+      caseId,
+      userId: user.id,
+      includeEvidence,
+      includeTimeline,
+      analysisDepth,
+    });
+
+    // Log the summary generation request
+    await auditService.logSummaryOperation(
+      user.id,
+      caseId,
+      'generate',
+      { includeEvidence, includeTimeline, analysisDepth },
+      true
+    );
+
+    return json(
+      {
+        success: true,
+        jobId: job.id,
+        message: 'Summary generation started',
+        status: 'processing',
+      },
+      { status: 202 }
+    );
+  } catch (error) {
+    console.error('Error enqueuing summary generation:', error);
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to start summary generation',
+      },
+      { status: 500 }
+    );
+  }
+};
+
+/**
+ * GET: Retrieve current summary
+ */
+export const GET: RequestHandler = async ({ url, locals }) => {
+  try {
+    const user = await getUser(locals);
+    if (!user) {
+      return json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const caseId = url.searchParams.get('caseId');
+    if (!caseId) {
+      return json({ success: false, error: 'caseId is required' }, { status: 400 });
+    }
+
+    const summary = await caseSummaryService.getSummary(caseId);
+
+    if (!summary) {
+      return json({ success: false, error: 'Summary not found' }, { status: 404 });
+    }
+
+    return json({
+      success: true,
+      summary,
+    } as CaseSummaryResponse);
+  } catch (error) {
+    console.error('Error retrieving summary:', error);
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to retrieve summary',
+      },
+      { status: 500 }
+    );
+  }
+};
