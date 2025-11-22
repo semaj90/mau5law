@@ -1,49 +1,103 @@
-﻿export class OllamaService {
-  private get baseUrl() {
-    return process.env.OLLAMA_URL || 'http://localhost:11434';
-  }
+﻿/**
+ * Ollama Integration Service
+ * Handles communication with local Ollama instance for Gemma model
+ */
 
-  private get embeddingModel() {
-    return process.env.EMBEDDING_MODEL || 'embeddinggemma:latest';
-  }
+export function getOllamaEndpoint(): string {
+  const endpoint = process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
+  return endpoint;
+}
 
-  private get llmModel() {
-    return process.env.LLM_MODEL || 'gemma3-legal:latest';
-  }
+export interface OllamaMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
 
-  async generateEmbedding(text: string) {
-    const res = await fetch(`${this.baseUrl}/api/embed`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: this.embeddingModel, input: text }),
+export interface OllamaResponse {
+  model: string;
+  created_at: string;
+  message: OllamaMessage;
+  done: boolean;
+  total_duration: number;
+  load_duration: number;
+  prompt_eval_count: number;
+  prompt_eval_duration: number;
+  eval_count: number;
+  eval_duration: number;
+}
+
+export async function queryGemma(prompt: string, systemPrompt?: string): Promise<string> {
+  const endpoint = getOllamaEndpoint();
+  const messages: OllamaMessage[] = [];
+
+  if (systemPrompt) {
+    messages.push({
+      role: 'system',
+      content: systemPrompt,
     });
-    const data = await res.json();
-    return data.data[0].embedding;
   }
 
-  async summarize(text: string) {
-    const res = await fetch(`${this.baseUrl}/api/generate`, {
+  messages.push({
+    role: 'user',
+    content: prompt,
+  });
+
+  try {
+    const response = await fetch(`${endpoint}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        model: this.llmModel,
-        prompt: `Summarize legal text:\n${text}`,
+        model: 'gemma:7b',
+        messages,
+        stream: false,
       }),
     });
-    const result = await res.json();
-    return result.response;
-  }
 
-  async chat(message: string, _caseId?: string) {
-    const res = await fetch(`${this.baseUrl}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: this.llmModel,
-        messages: [{ role: 'user', content: message }],
-      }),
+    if (!response.ok) {
+      throw new Error(`Ollama API error: ${response.statusText}`);
+    }
+
+    const data: OllamaResponse = await response.json();
+    return data.message.content;
+  } catch (error) {
+    console.error('Gemma query error:', error);
+    throw error;
+  }
+}
+
+export async function checkOllamaHealth(): Promise<boolean> {
+  const endpoint = getOllamaEndpoint();
+
+  try {
+    const response = await fetch(`${endpoint}/api/tags`, {
+      method: 'GET',
     });
-    const result = await res.json();
-    return result.message.content;
+
+    return response.ok;
+  } catch (error) {
+    console.error('Ollama health check failed:', error);
+    return false;
+  }
+}
+
+export async function listAvailableModels(): Promise<string[]> {
+  const endpoint = getOllamaEndpoint();
+
+  try {
+    const response = await fetch(`${endpoint}/api/tags`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch models');
+    }
+
+    const data = await response.json();
+    return data.models?.map((m: any) => m.name) || [];
+  } catch (error) {
+    console.error('Failed to list models:', error);
+    return [];
   }
 }

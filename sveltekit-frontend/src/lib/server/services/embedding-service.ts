@@ -1,218 +1,302 @@
-/**
- * Embedding Service
- * Generates embeddings using embeddinggemma:latest via Ollama
- * Integrates with Drizzle ORM for storing embeddings in workspace notes
- */
-
-import { getOllamaEndpoint } from '../../utils/ollama-config';
-import { db } from '../db/index';
-import { workspaceNotes } from '../db/schema-postgres';
+import { env } from '$env/dynamic/private';
+import { db } from '../db/drizzle';
+import { caseChunks, lawSections } from '../db/schema/legal-index';
 import { eq } from 'drizzle-orm';
 
-export interface EmbeddingResponse {
-  embedding: number[];
-  model: string;
-  prompt_eval_count?: number;
-}
+const OLLAMA_API_URL = env.OLLAMA_API_URL || 'http://localhost:11434';
+const EMBEDDING_MODEL = env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
+const EMBEDDING_DIMENSION = 768;
 
 /**
- * Generate embedding for text using embeddinggemma:latest
+ * Embedding cache for in-memory caching
+ */
+const embeddingCache = new Map<string, number[]>();
+
+/**
+ * Call Ollama API to generate embeddings
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const endpoint = getOllamaEndpoint();
-
-  if (!endpoint) {
-    throw new Error('Ollama endpoint not configured. Set OLLAMA_ENDPOINT environment variable.');
-  }
-
   try {
-    const response = await fetch(`${endpoint}/api/embeddings`, {
+    // Check cache first
+    const cacheKey = `embed:${text.substring(0, 100)}`;
+    if (embeddingCache.has(cacheKey)) {
+      console.log('[Embedding] Cache hit for embedding');
+      return embeddingCache.get(cacheKey)!;
+    }
+
+    console.log('[Embedding] Generating embedding via Ollama...');
+
+    const response = await fetch(`${OLLAMA_API_URL}/api/embed`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'embeddinggemma:latest',
-        prompt: text,
+        model: EMBEDDING_MODEL,
+        input: text,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.statusText}`);
+      throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
     }
 
-    const data = (await response.json()) as EmbeddingResponse;
-    return data.embedding;
+    const result = (await response.json()) as {
+      embeddings?: number[][];
+      embedding?: number[];
+    };
+
+    // Handle both single and batch responses
+    let embedding: number[];
+    if (result.embeddings && result.embeddings.length > 0) {
+      embedding = result.embeddings[0];
+    } else if (result.embedding) {
+      embedding = result.embedding;
+    } else {
+      throw new Error('No embedding in response');
+    }
+
+    // Validate embedding dimension
+    if (embedding.length !== EMBEDDING_DIMENSION) {
+      console.warn(
+        `[Embedding] Embedding dimension mismatch: expected ${EMBEDDING_DIMENSION}, got ${embedding.length}`
+      );
+    }
+
+    // Cache the embedding
+    embeddingCache.set(cacheKey, embedding);
+
+    console.log(`[Embedding] Generated embedding with ${embedding.length} dimensions`);
+    return embedding;
   } catch (error) {
-    console.error('Failed to generate embedding:', error);
+    console.error('[Embedding] Error generating embedding:', error);
     throw error;
   }
 }
 
 /**
- * Generate embeddings for multiple texts (batch)
+ * Generate embeddings for multiple texts in batch
  */
-export async function generateEmbeddingsBatch(texts: string[]): Promise<number[][]> {
-  const embeddings = await Promise.all(texts.map((text) => generateEmbedding(text)));
+export async function generateEmbeddingsBatch(
+  texts: string[],
+  concurrency: number = 5
+): Promise<number[][]> {
+  console.log(`[Embedding] Batch generating embeddings for ${texts.length} texts`);
+
+  const embeddings: number[][] = [];
+  const errors: Array<{ index: number; error: string }> = [];
+
+  // Process texts with concurrency limit
+  for (let i = 0; i < texts.length; i += concurrency) {
+    const batch = texts.slice(i, i + concurrency);
+    const batchPromises = batch.map((text, batchIndex) =>
+      generateEmbedding(text)
+        .then((embedding) => {
+          embeddings[i + batchIndex] = embedding;
+        })
+        .catch((error) => {
+          console.error(
+            `[Embedding] Error generating embedding for text ${i + batchIndex}:`,
+            error
+          );
+          errors.push({ index: i + batchIndex, error: String(error) });
+          // Use zero vector as fallback
+          embeddings[i + batchIndex] = new Array(EMBEDDING_DIMENSION).fill(0);
+        })
+    );
+
+    await Promise.all(batchPromises);
+  }
+
+  if (errors.length > 0) {
+    console.warn(`[Embedding] ${errors.length} embeddings failed, used zero vectors as fallback`);
+  }
+
+  console.log(`[Embedding] Generated ${embeddings.length} embeddings`);
   return embeddings;
 }
 
 /**
- * Store embedding in workspace note
+ * Store embedding for a case chunk
  */
-export async function storeNoteEmbedding(noteId: string, embedding: number[]): Promise<void> {
-  // Convert embedding array to JSON string for storage
-  const embeddingJson = JSON.stringify(embedding);
-
-  await db
-    .update(workspaceNotes)
-    .set({ embedding: embeddingJson })
-    .where(eq(workspaceNotes.id, noteId));
-}
-
-/**
- * Generate and store embedding for a workspace note
- */
-export async function generateAndStoreNoteEmbedding(
-  noteId: string,
-  content: string
-): Promise<number[]> {
-  const embedding = await generateEmbedding(content);
-  await storeNoteEmbedding(noteId, embedding);
-  return embedding;
-}
-
-/**
- * Calculate cosine similarity between two embeddings
- */
-export function cosineSimilarity(a: number[], b: number[]): number {
-  if (a.length !== b.length) {
-    throw new Error('Embeddings must have the same length');
-  }
-
-  let dotProduct = 0;
-  let normA = 0;
-  let normB = 0;
-
-  for (let i = 0; i < a.length; i++) {
-    dotProduct += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
-  }
-
-  normA = Math.sqrt(normA);
-  normB = Math.sqrt(normB);
-
-  if (normA === 0 || normB === 0) {
-    return 0;
-  }
-
-  return dotProduct / (normA * normB);
-}
-
-/**
- * Find similar notes in a workspace using embeddings
- */
-export async function findSimilarNotes(
-  workspaceId: string,
-  queryEmbedding: number[],
-  topK: number = 5,
-  threshold: number = 0.5
-): Promise<Array<{ id: string; content: string; similarity: number }>> {
-  // Get all notes in workspace
-  const notes = await db
-    .select()
-    .from(workspaceNotes)
-    .where(eq(workspaceNotes.workspaceId, workspaceId));
-
-  // Calculate similarity for each note
-  const similarities = notes
-    .map((note) => {
-      if (!note.embedding) {
-        return null;
-      }
-
-      try {
-        const noteEmbedding = JSON.parse(note.embedding) as number[];
-        const similarity = cosineSimilarity(queryEmbedding, noteEmbedding);
-
-        return {
-          id: note.id,
-          content: note.content,
-          similarity,
-        };
-      } catch {
-        return null;
-      }
-    })
-    .filter((item) => item !== null && item.similarity >= threshold)
-    .sort((a, b) => (b?.similarity ?? 0) - (a?.similarity ?? 0))
-    .slice(0, topK);
-
-  return similarities.filter((item) => item !== null) as Array<{
-    id: string;
-    content: string;
-    similarity: number;
-  }>;
-}
-
-/**
- * Retrieve relevant context for RAG using embeddings
- * Searches notes, evidence metadata, and statute metadata
- */
-export async function retrieveRAGContext(
-  workspaceId: string,
-  queryText: string,
-  topK: number = 5
-): Promise<string> {
+export async function storeCaseChunkEmbedding(chunkId: string, embedding: number[]): Promise<void> {
   try {
-    // Generate embedding for query
-    const queryEmbedding = await generateEmbedding(queryText);
+    console.log(`[Embedding] Storing embedding for case chunk: ${chunkId}`);
 
-    // Find similar notes
-    const similarNotes = await findSimilarNotes(workspaceId, queryEmbedding, topK, 0.5);
+    await db
+      .update(caseChunks)
+      .set({ embedding: embedding as any })
+      .where(eq(caseChunks.id, chunkId));
 
-    // Build context string
-    const contextParts: string[] = [];
-
-    if (similarNotes.length > 0) {
-      contextParts.push('## Relevant Notes and Memos:');
-      similarNotes.forEach((note) => {
-        contextParts.push(
-          `- (Similarity: ${(note.similarity * 100).toFixed(1)}%) ${note.content.substring(0, 200)}`
-        );
-      });
-    }
-
-    return contextParts.join('\n');
+    console.log(`[Embedding] Stored embedding for case chunk: ${chunkId}`);
   } catch (error) {
-    console.error('Failed to retrieve RAG context:', error);
-    return '';
+    console.error('[Embedding] Error storing case chunk embedding:', error);
+    throw error;
   }
 }
 
 /**
- * Batch process notes for embedding generation
- * Useful for initial indexing of workspace notes
+ * Store embedding for a law section
  */
-export async function indexWorkspaceNotes(workspaceId: string): Promise<number> {
-  const notes = await db
-    .select()
-    .from(workspaceNotes)
-    .where(eq(workspaceNotes.workspaceId, workspaceId));
+export async function storeLawSectionEmbedding(
+  sectionId: string,
+  embedding: number[]
+): Promise<void> {
+  try {
+    console.log(`[Embedding] Storing embedding for law section: ${sectionId}`);
 
-  let indexed = 0;
+    await db
+      .update(lawSections)
+      .set({ embedding: embedding as any })
+      .where(eq(lawSections.id, sectionId));
 
-  for (const note of notes) {
-    if (!note.embedding) {
-      try {
-        await generateAndStoreNoteEmbedding(note.id, note.content);
-        indexed++;
-      } catch (error) {
-        console.error(`Failed to index note ${note.id}:`, error);
-      }
-    }
+    console.log(`[Embedding] Stored embedding for law section: ${sectionId}`);
+  } catch (error) {
+    console.error('[Embedding] Error storing law section embedding:', error);
+    throw error;
   }
+}
 
-  return indexed;
+/**
+ * Generate and store embeddings for case chunks
+ */
+export async function embedAndStoreCaseChunks(
+  chunks: Array<{ id: string; text: string }>,
+  concurrency: number = 5
+): Promise<void> {
+  try {
+    console.log(`[Embedding] Embedding and storing ${chunks.length} case chunks`);
+
+    const texts = chunks.map((c) => c.text);
+    const embeddings = await generateEmbeddingsBatch(texts, concurrency);
+
+    // Store embeddings
+    for (let i = 0; i < chunks.length; i++) {
+      await storeCaseChunkEmbedding(chunks[i].id, embeddings[i]);
+    }
+
+    console.log(`[Embedding] Successfully embedded and stored ${chunks.length} case chunks`);
+  } catch (error) {
+    console.error('[Embedding] Error embedding and storing case chunks:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generate and store embeddings for law sections
+ */
+export async function embedAndStoreLawSections(
+  sections: Array<{ id: string; text: string }>,
+  concurrency: number = 5
+): Promise<void> {
+  try {
+    console.log(`[Embedding] Embedding and storing ${sections.length} law sections`);
+
+    const texts = sections.map((s) => s.text);
+    const embeddings = await generateEmbeddingsBatch(texts, concurrency);
+
+    // Store embeddings
+    for (let i = 0; i < sections.length; i++) {
+      await storeLawSectionEmbedding(sections[i].id, embeddings[i]);
+    }
+
+    console.log(`[Embedding] Successfully embedded and stored ${sections.length} law sections`);
+  } catch (error) {
+    console.error('[Embedding] Error embedding and storing law sections:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get embedding for a query
+ */
+export async function getQueryEmbedding(query: string): Promise<number[]> {
+  try {
+    console.log('[Embedding] Generating query embedding...');
+    const embedding = await generateEmbedding(query);
+    console.log('[Embedding] Generated query embedding');
+    return embedding;
+  } catch (error) {
+    console.error('[Embedding] Error generating query embedding:', error);
+    throw error;
+  }
+}
+
+/**
+ * Clear embedding cache
+ */
+export function clearEmbeddingCache(): void {
+  console.log(`[Embedding] Clearing embedding cache (${embeddingCache.size} entries)`);
+  embeddingCache.clear();
+}
+
+/**
+ * Get embedding cache stats
+ */
+export function getEmbeddingCacheStats() {
+  return {
+    size: embeddingCache.size,
+    maxSize: 10000, // Approximate max size
+  };
+}
+
+/**
+ * Check Ollama health
+ */
+export async function checkOllamaHealth(): Promise<boolean> {
+  try {
+    const response = await fetch(`${OLLAMA_API_URL}/api/tags`);
+    return response.ok;
+  } catch (error) {
+    console.error('[Embedding] Ollama health check failed:', error);
+    return false;
+  }
+}
+
+/**
+ * List available models in Ollama
+ */
+export async function listOllamaModels(): Promise<string[]> {
+  try {
+    const response = await fetch(`${OLLAMA_API_URL}/api/tags`);
+    if (!response.ok) {
+      throw new Error(`Ollama API error: ${response.status}`);
+    }
+
+    const result = (await response.json()) as {
+      models?: Array<{ name: string }>;
+    };
+
+    if (!result.models) {
+      return [];
+    }
+
+    return result.models.map((m) => m.name);
+  } catch (error) {
+    console.error('[Embedding] Error listing Ollama models:', error);
+    return [];
+  }
+}
+
+/**
+ * Verify embedding model is available
+ */
+export async function verifyEmbeddingModel(): Promise<boolean> {
+  try {
+    const models = await listOllamaModels();
+    const hasModel = models.some((m) => m.includes(EMBEDDING_MODEL.split(':')[0]));
+
+    if (!hasModel) {
+      console.warn(
+        `[Embedding] Model ${EMBEDDING_MODEL} not found. Available models: ${models.join(', ')}`
+      );
+      return false;
+    }
+
+    console.log(`[Embedding] Model ${EMBEDDING_MODEL} is available`);
+    return true;
+  } catch (error) {
+    console.error('[Embedding] Error verifying embedding model:', error);
+    return false;
+  }
 }

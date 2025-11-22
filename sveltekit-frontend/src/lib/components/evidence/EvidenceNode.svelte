@@ -52,7 +52,7 @@
 
   // Global mouse event listeners for dragging
   $effect(() => {() => {
-    if (isDragging) {
+  $effect(() => {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
       return () => {
@@ -61,7 +61,6 @@
       };
     }
   });
-
   // Node type styling
   function getNodeTypeColor(type: string): string {
     const colors = {
@@ -79,6 +78,14 @@
 
   function getNodeTypeIcon(type: string): string {
     const icons = {
+    const icons: Record<string, string> = {
+      document: '📄',
+      location: '📍',
+      vehicle: '🚗',
+      weapon: '🔪',
+      financial: '💰',
+      digital: '💻',
+      other: '📦',
       person: '👤',
       document: '📄',
       location: '📍',
@@ -89,6 +96,7 @@
       other: '📦',
     };
     return icons[type as keyof typeof icons] || icons.other;
+    return icons[type] ?? icons.other;
   }
 </script>
 

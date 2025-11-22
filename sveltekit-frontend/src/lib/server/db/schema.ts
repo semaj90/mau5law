@@ -1,133 +1,176 @@
-// Move/import Drizzle pg-core symbols near the top of the file
+/**
+ * Legal RAG Database Schema
+ * Drizzle ORM - PostgreSQL with pgvector
+ */
+
 import {
-    customType,
-    integer,
-    json,
-    jsonb,
-    pgTable,
-    real,
-    text,
-    timestamp,
-    varchar
+  pgTable,
+  text,
+  uuid,
+  timestamp,
+  jsonb,
+  integer,
+  real,
+  vector,
+  serial,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
-// Define custom vector type for pgvector
-const vector = customType<{ data: number[]; driverData: string }>({
-  dataType(config: { length?: number }) {
-    return `vector(${config?.length ?? 1536})`;
-  },
-  toDriver(value: number[]): string {
-    return JSON.stringify(value);
-  },
-  fromDriver(value: string): number[] {
-    return JSON.parse(value);
-  },
+// Cases table - full case metadata & authority rank
+export const cases = pgTable('cases', {
+  caseId: uuid('case_id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  jurisdiction: text('jurisdiction').notNull(), // e.g. "S.D. Cal."
+  courtLevel: text('court_level').notNull(), // District/Supreme/Appellate
+  docketNumber: text('docket_number'),
+  filingDate: timestamp('filing_date'),
+  parties: jsonb('parties'), // {plaintiff, defendants}
+  summary: text('summary'), // LLM summary extraction
+  authorityScore: real('authority_score').default(0.0), // PageRank from KAG
+  sourceUrl: text('source_url'),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Re-export the PostgreSQL schema as the main schema
-export * from './schema-gpu-cache';
-export * from './schema-poi';
-export * from './schema-postgres';
-
-// Exported table definition used by the advanced-analysis endpoint
-export const analysisResults = pgTable('analysis_results', {
-  analysisId: varchar('analysis_id', { length: 128 }).primaryKey(),
-  evidenceId: varchar('evidence_id', { length: 128 }).notNull(),
-  results: json('results').notNull(), // stores analyzer output as JSON
-  analysisTypes: json('analysis_types').notNull(), // array or: string stored as JSON,
-  confidence: real('confidence').default(0),
-  processingTime: integer('processing_time').default(0), // ms or seconds per your convention
-  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
+// Legal documents - each uploaded PDF/complaint/opinion
+export const legalDocuments = pgTable('legal_documents', {
+  docId: uuid('doc_id').primaryKey().defaultRandom(),
+  caseId: uuid('case_id').references(() => cases.caseId),
+  fileName: text('file_name').notNull(),
+  docType: text('doc_type'), // complaint, motion, opinion, statute challenge
+  sourceBucket: text('source_bucket'), // MinIO path
+  pages: integer('pages'),
+  extractedText: text('extracted_text'),
+  processed: integer('processed').default(0), // boolean as int
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Define the chat_messages table
-export const chatMessages = pgTable('chat_messages', {
-  id: varchar('id', { length: 256 }).primaryKey(),
-  userId: varchar('user_id', { length: 256 }).notNull(),
-  content: text('content').notNull(),
-  timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
-  sessionId: varchar('session_id', { length: 256 }).notNull(),
-  messageType: varchar('message_type', {
-    length: 50,
-    enum: ['user', 'assistant', 'system'],
-  }).notNull(),
-  metadata: jsonb('metadata').$type <{
-    intent?: string;
-    confidence?: number;
-    topics?: string[];
-    sentiment?: 'positive' | 'negative' | 'neutral';
-    urgency?: 'low' | 'medium' | 'high' | 'critical';
-    legalContext?: {
-      documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
-      practiceArea?: string[];
-      jurisdiction?: string;
-    };
-  }>(),
+// Chunks - 512-token legal chunks for embeddings
+export const chunks = pgTable('chunks', {
+  chunkId: uuid('chunk_id').primaryKey().defaultRandom(),
+  docId: uuid('doc_id').references(() => legalDocuments.docId),
+  caseId: uuid('case_id').references(() => cases.caseId),
+  seq: integer('seq'),
+  section: text('section'), // Facts, Jurisdiction, Claims, Prayer
+  text: text('text').notNull(),
+  tokenLength: integer('token_length'),
+  embedding: vector('embedding', { dimensions: 768 }), // Gemma 768d
+  latent128: vector('latent128', { dimensions: 128 }), // autoencoder compressed
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Define the chat_embeddings table
-export const chatEmbeddings = pgTable(
-  'chat_embeddings',
-  {
-    chatId: varchar('chat_id', { length: 256 })
-      .notNull()
-      .references(() => chatMessages.id, { onDelete: 'cascade' })
-      .primaryKey(), // Moved primaryKey here
-    embedding: vector('embedding', { length: 768 }).notNull(), // Fixed: Use custom vector type
-    // Store quantized embedding as bytea (binary data) or text (base64 encoded)
-    // For Float32Array, bytea is more efficient.
-    quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64: string for simplicity in JS,
-    timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
-    temporalContext: jsonb('temporal_context')
-      .$type <{
-        dayOfWeek: number;
-        hourOfDay: number;
-        monthOfYear: number;
-        seasonality: 'spring' | 'summer' | 'fall' | 'winter';
-        businessHours: boolean;
-      }>()
-      .notNull(),
-    semanticHash: varchar('semantic_hash', { length: 256 }).notNull(),
-  },
-  // Removed the (self) => { ... } block for primaryKey and index
-  // The index creation should ideally be handled in a migration file or a separate SQL execution.
-  // For now, commenting it out to resolve the immediate TypeError.
-  // (self) => {
-  //   return [
-  //     sql`CREATE INDEX ON ${sql.raw(self.name)} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);`,
-  //   ];
-  // }
-);
+// Legal citations - statute and precedent references
+export const legalCitations = pgTable('legal_citations', {
+  citationId: uuid('citation_id').primaryKey().defaultRandom(),
+  docId: uuid('doc_id').references(() => legalDocuments.docId),
+  caseId: uuid('case_id').references(() => cases.caseId),
+  chunkId: uuid('chunk_id').references(() => chunks.chunkId),
+  type: text('type'), // statute, case, regulation
+  citationText: text('citation_text'), // e.g. "U.S. Const. art. VI"
+  citationNormalized: text('citation_normalized'), // normalized key for KAG
+  page: integer('page'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
 
-console.log('ðŸ“  Drizzle ORM schema defined');
+// Holdings - extracted legal reasoning
+export const holdings = pgTable('holdings', {
+  holdingId: uuid('holding_id').primaryKey().defaultRandom(),
+  caseId: uuid('case_id').references(() => cases.caseId),
+  chunkId: uuid('chunk_id').references(() => chunks.chunkId),
+  issue: text('issue'), // "Is A.B. 32 preempted?"
+  holding: text('holding').notNull(),
+  reasoning: text('reasoning'),
+  references: jsonb('references'), // statute/case IDs
+  score: real('score'), // confidence from reranker
+  createdAt: timestamp('created_at').defaultNow(),
+});
 
-// Placeholder schema types for Drizzle ORM
-// Replace with your actual Drizzle schema definitions.
+// Citation graph - edge list for PageRank + Neo4j sync
+export const citationGraph = pgTable('citation_graph', {
+  id: serial('id').primaryKey(),
+  fromCase: text('from_case').notNull(),
+  toCitation: text('to_citation').notNull(),
+  weight: real('weight').default(1.0),
+});
 
-export interface Case {
-  id: string;
-  title: string;
-  description: string;
-  caseNumber: string;
-  status: 'open' | 'closed' | 'pending';
-  createdAt: Date;
-  updatedAt: Date;
-  aiSummary?: string | null;
-}
+// HMM Topic Labels - for taxonomy discovery
+export const hmmTopics = pgTable('hmm_topics', {
+  topicId: uuid('topic_id').primaryKey().defaultRandom(),
+  chunkId: uuid('chunk_id').references(() => chunks.chunkId),
+  topicLabel: text('topic_label'), // facts, reasoning, holding, etc
+  probability: real('probability'), // HMM confidence
+  sequence: integer('sequence'), // position in document
+  createdAt: timestamp('created_at').defaultNow(),
+});
 
-export interface NewCase extends Omit<Case, 'id' | 'createdAt' | 'updatedAt'> {}
+// Search cache - for Redis sync
+export const searchCache = pgTable('search_cache', {
+  cacheId: uuid('cache_id').primaryKey().defaultRandom(),
+  queryHash: text('query_hash').notNull().unique(),
+  results: jsonb('results'), // cached search results
+  ttl: integer('ttl'), // seconds
+  createdAt: timestamp('created_at').defaultNow(),
+});
 
-export interface Evidence {
-  id: string;
-  caseId: string;
-  type: string; // e.g., 'document', 'testimony', 'photo'
-  description: string;
-  filePath: string;
-  uploadedAt: Date;
-  aiSummary?: string | null;
-  embedding?: number[] | null;
-  metadata?: Record<string, unknown> | null;
-}
+// Relations
+export const casesRelations = relations(cases, ({ many }) => ({
+  documents: many(legalDocuments),
+  chunks: many(chunks),
+  citations: many(legalCitations),
+  holdings: many(holdings),
+}));
 
-export interface NewEvidence extends Omit<Evidence, 'id' | 'uploadedAt' | 'embedding'> {}
+export const documentsRelations = relations(legalDocuments, ({ one, many }) => ({
+  case: one(cases, {
+    fields: [legalDocuments.caseId],
+    references: [cases.caseId],
+  }),
+  chunks: many(chunks),
+  citations: many(legalCitations),
+}));
+
+export const chunksRelations = relations(chunks, ({ one, many }) => ({
+  document: one(legalDocuments, {
+    fields: [chunks.docId],
+    references: [legalDocuments.docId],
+  }),
+  case: one(cases, {
+    fields: [chunks.caseId],
+    references: [cases.caseId],
+  }),
+  citations: many(legalCitations),
+  holdings: many(holdings),
+  topics: many(hmmTopics),
+}));
+
+export const citationsRelations = relations(legalCitations, ({ one }) => ({
+  document: one(legalDocuments, {
+    fields: [legalCitations.docId],
+    references: [legalDocuments.docId],
+  }),
+  case: one(cases, {
+    fields: [legalCitations.caseId],
+    references: [cases.caseId],
+  }),
+  chunk: one(chunks, {
+    fields: [legalCitations.chunkId],
+    references: [chunks.chunkId],
+  }),
+}));
+
+export const holdingsRelations = relations(holdings, ({ one }) => ({
+  case: one(cases, {
+    fields: [holdings.caseId],
+    references: [cases.caseId],
+  }),
+  chunk: one(chunks, {
+    fields: [holdings.chunkId],
+    references: [chunks.chunkId],
+  }),
+}));
+
+export const hmmTopicsRelations = relations(hmmTopics, ({ one }) => ({
+  chunk: one(chunks, {
+    fields: [hmmTopics.chunkId],
+    references: [chunks.chunkId],
+  }),
+}));

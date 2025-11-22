@@ -312,6 +312,7 @@ python3.11/
 .venv-phase46/
 .venv/
 .python311/
+phase46-venv/
 
 # Ignore local svelte backup folders created by sanitizer
 .svelte-error-fixes-backup/

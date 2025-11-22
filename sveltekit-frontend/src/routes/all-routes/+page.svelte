@@ -9,7 +9,20 @@
     DialogFooter, // Added: Import DialogFooter from main dialog entry
     DialogHeader, // Added: Import DialogHeader from main dialog entry
     DialogClose, // Added: Import DialogClose from main dialog entry
+  import type { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import type {
+<script lang="ts">
+  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogTitle,
+    DialogFooter,
+    DialogHeader,
+    DialogClose,
    } from '$lib/components/ui/dialog';
+  import type { Props } from '$lib/types/page';
   // Removed: import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
   // Removed: import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
   // Removed: import DialogClose from '$lib/components/ui/dialog/DialogClose.svelte';
@@ -540,6 +553,7 @@
         </div>
 
         <!-- Section, Overview -->
+        <!-- Section Overview -->
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Card class="bg-gradient-to-br from-blue-50 to-blue-100 border-2">
             <CardContent class="p-4">
@@ -579,9 +593,11 @@
         </div>
 
         <!-- Priority, Breakdown -->
+        <!-- Priority Breakdown -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div
             class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg"
+            class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg p-4"
           >
             <h3 class="font-bold text-lg text-emerald-800 flex items-center">
               🚀 Production Ready
@@ -591,6 +607,7 @@
           </div>
           <div
             class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg"
+            class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg p-4"
           >
             <h3 class="font-bold text-lg text-orange-800 flex items-center">⚠️ Need Versioning</h3>
             <p class="text-3xl font-bold">{routeStats.byPriority.consolidation}</p>
@@ -598,6 +615,7 @@
           </div>
           <div
             class="bg-gradient-to-br from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg"
+            class="bg-gradient-to-br from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg p-4"
           >
             <h3 class="font-bold text-lg text-pink-800 flex items-center">✨ Demo Showcase</h3>
             <p class="text-3xl font-bold">{routeStats.byPriority.demo}</p>
@@ -605,6 +623,7 @@
           </div>
           <div
             class="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg"
+            class="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg p-4"
           >
             <h3 class="font-bold text-lg text-indigo-800 flex items-center">🏗️ Infrastructure</h3>
             <p class="text-3xl font-bold">{routeStats.sections.infrastructure}</p>
@@ -616,10 +635,15 @@
         <div class="bg-white rounded-lg border-2 border-gray-200">
           <h3 class="text-xl font-bold">🎯 Route Categories</h3>
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        <!-- Category Breakdown -->
+        <div class="bg-white rounded-lg border-2 border-gray-200 p-6">
+          <h3 class="text-xl font-bold mb-4">🎯 Route Categories</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {#each Object.entries(routeCategories) as [key, category]}
               {@const count = routeStats.byCategory[key] || 0}
               {@const cls = getCategoryClasses(category.color)}
               <div class={'text-center p-3 rounded-lg ' + cls.bg50 + ' ' + cls.border200}>
+              <div class={'text-center p-3 rounded-lg ' + cls.bg50 + ' border ' + cls.border200}>
                 <div class="text-2xl">{category.icon}</div>
                 <div class={'font-bold ' + cls.text800}>{count}</div>
                 <div class={'text-xs ' + cls.text600}>{category.name}</div>
@@ -631,11 +655,14 @@
     {/if}
 
     <!-- Enhanced Search and, Filters -->
+    <!-- Enhanced Search and Filters -->
     <div class="bg-white rounded-lg border-2 border-gray-200 p-6">
       <div class="flex flex-col lg:flex-row">
+      <div class="flex flex-col lg:flex-row gap-4">
         <!-- Search -->
         <div class="flex-1">
           <label for="search-routes" class="block text-sm font-medium text-gray-700"
+          <label for="search-routes" class="block text-sm font-medium text-gray-700 mb-2"
             >🔍 Search Routes</label
           >
           <input
@@ -648,8 +675,10 @@
         </div>
 
         <!-- Section, Filter -->
+        <!-- Section Filter -->
         <div class="lg:w-48">
           <label for="section-filter" class="block text-sm font-medium text-gray-700"
+          <label for="section-filter" class="block text-sm font-medium text-gray-700 mb-2"
             >📂 Section</label
           >
           <select
@@ -669,8 +698,10 @@
         </div>
 
         <!-- Category, Filter -->
+        <!-- Category Filter -->
         <div class="lg:w-64">
           <label for="category-filter" class="block text-sm font-medium text-gray-700"
+          <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2"
             >🎯 Category</label
           >
           <select
@@ -691,11 +722,14 @@
       </div>
 
       <!-- Quick Filter, Buttons -->
+      <!-- Quick Filter Buttons -->
       <div class="mt-4">
         <span id="quick-filters-label" class="block text-sm font-medium text-gray-700"
+        <span id="quick-filters-label" class="block text-sm font-medium text-gray-700 mb-2"
           >⚡ Quick Filters</span
         >
         <div class="flex flex-wrap" aria-labelledby="quick-filters-label">
+        <div class="flex flex-wrap gap-2" aria-labelledby="quick-filters-label">
           <button
             onclick={() => {
               selectedSection = 'core';
@@ -736,14 +770,18 @@
       </div>
 
       <!-- Active, Filters -->
+      <!-- Active Filters -->
 
       {#if selectedCategory !== 'all' || selectedSection !== 'all' || searchTerm}
         <div class="mt-4 flex flex-wrap">
           <span class="text-sm">Active filters:</span>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="text-sm text-gray-600">Active filters:</span>
 
           {#if selectedSection !== 'all'}
             <span
               class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center"
+              class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-1"
             >
               📂 Section {selectedSection}
               <button
@@ -755,6 +793,7 @@
           {#if selectedCategory !== 'all'}
             <span
               class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center"
+              class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center gap-1"
             >
               {routeCategories[selectedCategory].icon}
               {routeCategories[selectedCategory].name}
@@ -766,6 +805,7 @@
           {#if searchTerm}
             <span
               class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center"
+              class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center gap-1"
             >
               🔍 "{searchTerm}"
               <button
@@ -790,6 +830,8 @@
 
     <!-- Enhanced, Routes, Grid -->
     <div class="mb-4 flex justify-between">
+    <!-- Enhanced Routes Grid -->
+    <div class="mb-4 flex justify-between items-center">
       <h2 class="text-2xl">🚀 Routes ({filteredRoutes.length})</h2>
       <div class="flex items-center">
         <!-- SSR, Test, Toggle -->
