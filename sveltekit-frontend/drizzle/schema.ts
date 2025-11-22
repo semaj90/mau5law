@@ -1678,3 +1678,102 @@ export const citationNetwork = pgView('citation_network', {
 }).as(
   sql`SELECT d.id AS document_id, d.title AS document_title, d.document_type, citation.value ->> 'type'::text AS citation_type, citation.value ->> 'citation'::text AS cited_document, (citation.value ->> 'relevance'::text)::real AS relevance_score FROM legal_documents_jsonb d, LATERAL jsonb_array_elements(d.metadata -> 'citations'::text) citation(value) WHERE (d.metadata -> 'citations'::text) IS NOT NULL`
 );
+
+// Case Reporter Tables
+export const caseReports = pgTable(
+  'case_reports',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    caseId: uuid('case_id').notNull(),
+    summaryText: text('summary_text').notNull(),
+    citations: jsonb('citations'),
+    holding: text('holding'),
+    version: integer('version').default(1).notNull(),
+    createdBy: uuid('created_by').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+    isCurrent: boolean('is_current').default(true).notNull(),
+  },
+  (table) => [
+    index('idx_case_reports_case_id').on(table.caseId),
+    index('idx_case_reports_created_by').on(table.createdBy),
+    index('idx_case_reports_created_at').on(table.createdAt),
+    index('idx_case_reports_is_current').on(table.isCurrent),
+  ]
+);
+
+export const caseCharges = pgTable(
+  'case_charges',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    caseId: uuid('case_id').notNull(),
+    statuteCode: varchar('statute_code', { length: 50 }).notNull(),
+    jurisdiction: varchar('jurisdiction', { length: 12 }).notNull(),
+    severity: varchar('severity', { length: 20 }),
+    victimClass: varchar('victim_class', { length: 50 }),
+    bundling: jsonb('bundling'),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('idx_case_charges_case_id').on(table.caseId),
+    index('idx_case_charges_statute_code').on(table.statuteCode),
+    index('idx_case_charges_jurisdiction').on(table.jurisdiction),
+  ]
+);
+
+export const auditLog = pgTable(
+  'audit_log',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    userId: uuid('user_id').notNull(),
+    action: varchar('action', { length: 100 }).notNull(),
+    resourceType: varchar('resource_type', { length: 50 }),
+    resourceId: uuid('resource_id'),
+    details: jsonb('details'),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('idx_audit_log_user_id').on(table.userId),
+    index('idx_audit_log_action').on(table.action),
+    index('idx_audit_log_resource_type').on(table.resourceType),
+    index('idx_audit_log_created_at').on(table.createdAt),
+  ]
+);
+
+// Verification and Source Tracking
+export const sourceVerification = pgTable(
+  'source_verification',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    sourceUrl: text('source_url').notNull().unique(),
+    domain: varchar('domain', { length: 255 }).notNull(),
+    isVerified: boolean('is_verified').notNull(),
+    requiresVerification: boolean('requires_verification').notNull(),
+    sourceType: varchar('source_type', { length: 50 }), // 'statute', 'case_law', 'regulation'
+    jurisdiction: varchar('jurisdiction', { length: 50 }),
+    lastChecked: timestamp('last_checked', { withTimezone: true, mode: 'string' }).defaultNow(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+  },
+  (table) => [
+    index('idx_source_verification_domain').on(table.domain),
+    index('idx_source_verification_is_verified').on(table.isVerified),
+  ]
+);
+
+export const citationMetadata = pgTable(
+  'citation_metadata',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    citationId: uuid('citation_id').notNull(),
+    sourceVerificationId: uuid('source_verification_id').notNull(),
+    disclaimerRequired: boolean('disclaimer_required').notNull().default(false),
+    prosecutorAcknowledged: boolean('prosecutor_acknowledged').notNull().default(false),
+    acknowledgedBy: uuid('acknowledged_by'),
+    acknowledgedAt: timestamp('acknowledged_at', { withTimezone: true, mode: 'string' }),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow(),
+  },
+  (table) => [
+    index('idx_citation_metadata_citation_id').on(table.citationId),
+    index('idx_citation_metadata_source_verification_id').on(table.sourceVerificationId),
+  ]
+);

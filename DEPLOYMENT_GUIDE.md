@@ -1,611 +1,525 @@
-# WardenNet Deployment Guide
+# Case Reporter Summarizer - Deployment Guide
 
-## System Architecture
+## Overview
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    WardenNet Frontend                        │
-│  (SvelteKit + UnoCSS + YoRHa Aesthetic)                     │
-│  - Command Center Dashboard                                 │
-│  - Evidence Board (HTML5 Canvas)                            │
-│  - AI Legal Terminal (CRT UI)                               │
-└────────────────────┬────────────────────────────────────────┘
-                     │
-        ┌────────────┼────────────┐
-        │            │            │
-        ▼            ▼            ▼
-    ┌────────┐  ┌────────┐  ┌──────────┐
-    │ Ollama │  │ Postgres│  │Elasticsearch
-    │ Gemma  │  │pgvector │  │ (BM25)
-    │ 7B     │  │         │  │
-    └────────┘  └────────┘  └──────────┘
-```
+This guide provides comprehensive instructions for deploying the Case Reporter Summarizer system to production, staging, and development environments.
 
 ---
 
-## Phase 1: Local Development Setup
+## Prerequisites
 
-### 1.1 Prerequisites
+- Docker & Docker Compose (v20.10+)
+- PostgreSQL 15+ with pgvector extension
+- Redis 7.0+
+- Neo4j 5.0+
+- RabbitMQ 3.12+
+- Node.js 18+ (for local development)
+- 8GB+ RAM, 50GB+ disk space
+
+---
+
+## Environment Setup
+
+### 1. Development Environment
 
 ```bash
-# Node.js 18+
-node --version
-
-# npm or yarn
-npm --version
-
-# Docker (optional, for services)
-docker --version
-```
-
-### 1.2 Install Dependencies
-
-```bash
+# Clone repository
+git clone <repo-url>
 cd sveltekit-frontend
+
+# Install dependencies
 npm install
-```
 
-### 1.3 Environment Configuration
+# Create .env.local
+cp .env.example .env.local
 
-Create `.env.local`:
-
-```env
-# Ollama
-OLLAMA_ENDPOINT=http://localhost:11434
-OLLAMA_MODEL=gemma:7b
-
+# Configure environment variables
+cat > .env.local << EOF
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/wardennet
+DATABASE_URL=postgresql://user:password@localhost:5432/legal_ai_db
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=your_redis_password
 
-# Elasticsearch
-ELASTICSEARCH_URL=http://localhost:9200
+# Services
+OLLAMA_URL=http://localhost:11434
+QDRANT_URL=http://localhost:6333
+NEO4J_URL=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_neo4j_password
 
-# Auth
-AUTH_SECRET=your-secret-key-here
+# Authentication
+LUCIA_SESSION_SECRET=your_session_secret
 
-# API
-PUBLIC_API_URL=http://localhost:5173
-```
+# API Configuration
+API_BASE_URL=http://localhost:5173
+CORS_ORIGIN=http://localhost:5173
 
-### 1.4 Start Services
+# Feature Flags
+ENABLE_CACHING=true
+ENABLE_AUDIT_LOGGING=true
+ENABLE_ERROR_RECOVERY=true
+EOF
 
-```bash
-# Terminal 1: Ollama
-ollama serve
-
-# Terminal 2: PostgreSQL
-docker run -d \
-  --name postgres \
-  -e POSTGRES_PASSWORD=password \
-  -e POSTGRES_DB=wardennet \
-  -p 5432:5432 \
-  postgres:15
-
-# Terminal 3: Elasticsearch
-docker run -d \
-  --name elasticsearch \
-  -e discovery.type=single-node \
-  -p 9200:9200 \
-  docker.elastic.co/elasticsearch/elasticsearch:8.0.0
-
-# Terminal 4: WardenNet
+# Start development server
 npm run dev
 ```
 
-### 1.5 Verify Setup
+### 2. Docker Compose Setup
 
 ```bash
-# Test Ollama
-curl http://localhost:11434/api/tags
+# Use the optimized docker-compose for case reporter
+docker-compose -f docker-compose.legal-ai-optimized.yml up -d
 
-# Test PostgreSQL
-psql postgresql://user:password@localhost:5432/wardennet
-
-# Test Elasticsearch
-curl http://localhost:9200
-
-# Test WardenNet
-curl http://localhost:5173/dashboard
-```
-
----
-
-## Phase 2: Database Setup
-
-### 2.1 Create Schema
-
-```bash
-# Run migrations
-npm run migrate
-
-# Or manually create tables
-psql wardennet < scripts/schema.sql
-```
-
-### 2.2 Schema Overview
-
-```sql
--- Cases
-CREATE TABLE cases (
-  id UUID PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  status VARCHAR(50),
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
-);
-
--- Evidence
-CREATE TABLE evidence (
-  id UUID PRIMARY KEY,
-  case_id UUID REFERENCES cases(id),
-  title VARCHAR(255),
-  classification VARCHAR(50),
-  status VARCHAR(50),
-  content TEXT,
-  embedding vector(768),
-  created_at TIMESTAMP
-);
-
--- Relationships
-CREATE TABLE evidence_relationships (
-  id UUID PRIMARY KEY,
-  source_id UUID REFERENCES evidence(id),
-  target_id UUID REFERENCES evidence(id),
-  type VARCHAR(50),
-  confidence FLOAT,
-  created_at TIMESTAMP
-);
-
--- Audit Log (L3 Compliance)
-CREATE TABLE audit_log (
-  id UUID PRIMARY KEY,
-  user_id UUID,
-  action VARCHAR(255),
-  payload JSONB,
-  signature TEXT,
-  hash TEXT,
-  timestamp TIMESTAMP
-);
-```
-
-### 2.3 Enable pgvector
-
-```bash
-# Connect to PostgreSQL
-psql wardennet
-
-# Enable pgvector extension
-CREATE EXTENSION IF NOT EXISTS vector;
-
-# Create index for faster searches
-CREATE INDEX ON evidence USING ivfflat (embedding vector_cosine_ops);
-```
-
----
-
-## Phase 3: Elasticsearch Setup
-
-### 3.1 Create Index
-
-```bash
-curl -X PUT http://localhost:9200/evidence \
-  -H "Content-Type: application/json" \
-  -d '{
-    "settings": {
-      "number_of_shards": 1,
-      "number_of_replicas": 0,
-      "analysis": {
-        "analyzer": {
-          "legal_analyzer": {
-            "type": "standard",
-            "stopwords": "_english_"
-          }
-        }
-      }
-    },
-    "mappings": {
-      "properties": {
-        "id": { "type": "keyword" },
-        "case_id": { "type": "keyword" },
-        "title": { "type": "text", "analyzer": "legal_analyzer" },
-        "content": { "type": "text", "analyzer": "legal_analyzer" },
-        "classification": { "type": "keyword" },
-        "status": { "type": "keyword" },
-        "created_at": { "type": "date" }
-      }
-    }
-  }'
-```
-
-### 3.2 Index Evidence
-
-```bash
-# Bulk index evidence
-curl -X POST http://localhost:9200/evidence/_bulk \
-  -H "Content-Type: application/json" \
-  -d @scripts/evidence-bulk.jsonl
-```
-
----
-
-## Phase 4: Ollama Configuration
-
-### 4.1 Pull Gemma Model
-
-```bash
-ollama pull gemma:7b
-```
-
-### 4.2 Verify Model
-
-```bash
-curl http://localhost:11434/api/tags | jq '.models[].name'
-```
-
-### 4.3 Test Query
-
-```bash
-curl -X POST http://localhost:11434/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gemma:7b",
-    "messages": [{"role": "user", "content": "Hello"}],
-    "stream": false
-  }'
-```
-
----
-
-## Phase 5: Authentication Setup
-
-### 5.1 Configure Lucia v3
-
-```typescript
-// src/lib/server/auth.ts
-import { Lucia } from "lucia";
-import { PostgresAdapter } from "@lucia-auth/adapter-postgresql";
-
-const adapter = new PostgresAdapter(pool, {
-  user: "auth_user",
-  session: "auth_session"
-});
-
-export const auth = new Lucia(adapter, {
-  sessionCookie: {
-    attributes: {
-      secure: process.env.NODE_ENV === "production"
-    }
-  }
-});
-```
-
-### 5.2 Create Auth Tables
-
-```sql
-CREATE TABLE auth_user (
-  id TEXT PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  role VARCHAR(50),
-  created_at TIMESTAMP
-);
-
-CREATE TABLE auth_session (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL REFERENCES auth_user(id),
-  expires_at TIMESTAMP NOT NULL
-);
-```
-
----
-
-## Phase 6: Audit Logging (L3 Compliance)
-
-### 6.1 Enable Audit Mode
-
-```typescript
-// src/lib/server/audit.ts
-import crypto from 'crypto';
-
-export function generateSignature(
-  userId: string,
-  email: string,
-  role: string,
-  timestamp: string,
-  payload: any
-): string {
-  const data = `${userId}${email}${role}${timestamp}${JSON.stringify(payload)}`;
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-export async function logAction(
-  userId: string,
-  action: string,
-  payload: any
-): Promise<void> {
-  const signature = generateSignature(
-    userId,
-    user.email,
-    user.role,
-    new Date().toISOString(),
-    payload
-  );
-
-  await db.insert(auditLog).values({
-    userId,
-    action,
-    payload,
-    signature,
-    hash: crypto.createHash('sha256').update(signature).digest('hex'),
-    timestamp: new Date()
-  });
-}
-```
-
-### 6.2 Audit Mode Settings
-
-```sql
-CREATE TABLE warden_settings (
-  id UUID PRIMARY KEY,
-  audit_mode VARCHAR(3) DEFAULT 'L3',
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
-);
-
--- L3: Full forensic compliance (immutable)
--- L2: Versioned logging (mutable with history)
--- L1: Dev mode (minimal logging)
-```
-
----
-
-## Phase 7: Production Deployment
-
-### 7.1 Build for Production
-
-```bash
-npm run build
-```
-
-### 7.2 Environment Variables (Production)
-
-```env
-# Security
-NODE_ENV=production
-AUTH_SECRET=<generate-secure-key>
-
-# Database
-DATABASE_URL=postgresql://prod_user:prod_pass@prod-db:5432/wardennet
-
-# Ollama
-OLLAMA_ENDPOINT=http://ollama-service:11434
-
-# Elasticsearch
-ELASTICSEARCH_URL=http://elasticsearch-service:9200
-
-# API
-PUBLIC_API_URL=https://wardennet.example.com
-```
-
-### 7.3 Docker Deployment
-
-```dockerfile
-# Dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY . .
-RUN npm run build
-
-EXPOSE 3000
-
-CMD ["node", "build/index.js"]
-```
-
-```bash
-# Build image
-docker build -t wardennet:latest .
-
-# Run container
-docker run -d \
-  --name wardennet \
-  -p 3000:3000 \
-  --env-file .env.production \
-  wardennet:latest
-```
-
-### 7.4 Docker Compose (Full Stack)
-
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  wardennet:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgresql://postgres:password@postgres:5432/wardennet
-      OLLAMA_ENDPOINT: http://ollama:11434
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-    depends_on:
-      - postgres
-      - elasticsearch
-      - ollama
-
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: wardennet
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.0.0
-    environment:
-      discovery.type: single-node
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-
-  ollama:
-    image: ollama/ollama:latest
-    volumes:
-      - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
-
-volumes:
-  postgres_data:
-  elasticsearch_data:
-  ollama_data:
-```
-
-```bash
-# Deploy full stack
-docker-compose up -d
-
-# Check status
+# Verify services
 docker-compose ps
 
-# View logs
-docker-compose logs -f wardennet
+# Check logs
+docker-compose logs -f sveltekit-frontend
 ```
 
 ---
 
-## Phase 8: Monitoring & Maintenance
+## Production Deployment
 
-### 8.1 Health Checks
+### 1. Build Docker Image
 
 ```bash
-# Application health
-curl http://localhost:3000/health
+# Build optimized production image
+docker build -f Dockerfile.sveltekit -t case-reporter-summarizer:latest .
+
+# Tag for registry
+docker tag case-reporter-summarizer:latest registry.example.com/case-reporter-summarizer:latest
+
+# Push to registry
+docker push registry.example.com/case-reporter-summarizer:latest
+```
+
+### 2. Production Environment Variables
+
+```bash
+cat > .env.production << EOF
+# Database (use managed service)
+DATABASE_URL=postgresql://prod_user:${DB_PASSWORD}@db.example.com:5432/legal_ai_prod
+DATABASE_POOL_SIZE=20
+DATABASE_TIMEOUT=30000
+
+# Redis (use managed service)
+REDIS_HOST=redis.example.com
+REDIS_PORT=6379
+REDIS_PASSWORD=${REDIS_PASSWORD}
+REDIS_TLS=true
+
+# Services
+OLLAMA_URL=http://ollama-service:11434
+QDRANT_URL=http://qdrant-service:6333
+NEO4J_URL=bolt://neo4j-service:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=${NEO4J_PASSWORD}
+
+# RabbitMQ
+RABBITMQ_URL=amqp://rabbitmq-service:5672
+RABBITMQ_USER=admin
+RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+
+# Authentication
+LUCIA_SESSION_SECRET=${SESSION_SECRET}
+JWT_SECRET=${JWT_SECRET}
+
+# API Configuration
+API_BASE_URL=https://api.example.com
+CORS_ORIGIN=https://app.example.com
+
+# Performance
+CACHE_TTL=86400
+MAX_CONCURRENT_REQUESTS=100
+REQUEST_TIMEOUT=30000
+
+# Monitoring
+LOG_LEVEL=info
+ENABLE_METRICS=true
+METRICS_PORT=9090
+
+# Feature Flags
+ENABLE_CACHING=true
+ENABLE_AUDIT_LOGGING=true
+ENABLE_ERROR_RECOVERY=true
+ENABLE_PERFORMANCE_MONITORING=true
+EOF
+```
+
+### 3. Kubernetes Deployment
+
+```yaml
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: case-reporter-summarizer
+  namespace: legal-ai
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: case-reporter-summarizer
+  template:
+    metadata:
+      labels:
+        app: case-reporter-summarizer
+    spec:
+      containers:
+      - name: app
+        image: registry.example.com/case-reporter-summarizer:latest
+        ports:
+        - containerPort: 5173
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: url
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5173
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5173
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: case-reporter-summarizer
+  namespace: legal-ai
+spec:
+  selector:
+    app: case-reporter-summarizer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5173
+  type: LoadBalancer
+```
+
+### 4. Deploy to Kubernetes
+
+```bash
+# Create namespace
+kubectl create namespace legal-ai
+
+# Create secrets
+kubectl create secret generic db-credentials \
+  --from-literal=url=$DATABASE_URL \
+  -n legal-ai
+
+kubectl create secret generic redis-credentials \
+  --from-literal=password=$REDIS_PASSWORD \
+  -n legal-ai
+
+# Deploy
+kubectl apply -f deployment.yaml
+
+# Verify deployment
+kubectl get pods -n legal-ai
+kubectl logs -f deployment/case-reporter-summarizer -n legal-ai
+```
+
+---
+
+## Database Migration
+
+### 1. Run Migrations
+
+```bash
+# Development
+npm run db:migrate:dev
+
+# Production
+npm run db:migrate:prod
+
+# Verify schema
+npm run db:verify
+```
+
+### 2. Backup Strategy
+
+```bash
+# Daily backup
+0 2 * * * pg_dump -h db.example.com -U prod_user legal_ai_prod | gzip > /backups/db-$(date +\%Y\%m\%d).sql.gz
+
+# Verify backup
+pg_restore -l /backups/db-20240115.sql.gz | head -20
+```
+
+---
+
+## Monitoring & Logging
+
+### 1. Health Checks
+
+```bash
+# API health
+curl http://localhost:5173/health
 
 # Database health
-curl http://localhost:3000/api/health/db
+curl http://localhost:5173/api/health/database
 
-# Ollama health
-curl http://localhost:11434/api/tags
+# Redis health
+curl http://localhost:5173/api/health/redis
 
-# Elasticsearch health
-curl http://localhost:9200/_cluster/health
+# All services
+curl http://localhost:5173/api/health/all
 ```
 
-### 8.2 Performance Monitoring
+### 2. Metrics Collection
 
 ```bash
-# Database query performance
-SELECT query, calls, mean_time FROM pg_stat_statements ORDER BY mean_time DESC;
+# Prometheus metrics
+curl http://localhost:9090/metrics
 
-# Elasticsearch cluster stats
-curl http://localhost:9200/_stats
+# Performance metrics
+curl http://localhost:5173/api/metrics/performance
 
-# Ollama model performance
-curl http://localhost:11434/api/tags | jq '.models[].size'
+# Cache statistics
+curl http://localhost:5173/api/metrics/cache
 ```
 
-### 8.3 Backup Strategy
+### 3. Logging
 
 ```bash
-# PostgreSQL backup
-pg_dump wardennet > backup.sql
+# View application logs
+docker-compose logs -f sveltekit-frontend
 
-# Restore
-psql wardennet < backup.sql
+# View error logs
+docker-compose logs -f sveltekit-frontend | grep ERROR
 
-# Elasticsearch snapshot
-curl -X PUT http://localhost:9200/_snapshot/backup
-
-# Ollama models backup
-tar -czf ollama_backup.tar.gz ~/.ollama
+# Export logs
+docker-compose logs sveltekit-frontend > app.log
 ```
 
 ---
 
-## Phase 9: Security Hardening
+## Performance Optimization
 
-### 9.1 SSL/TLS
+### 1. Caching Configuration
+
+```typescript
+// Optimize cache TTLs based on usage
+const CACHE_CONFIG = {
+  summary: 24 * 60 * 60,        // 24 hours
+  similarCases: 24 * 60 * 60,   // 24 hours
+  ragResults: 12 * 60 * 60,     // 12 hours
+  statutes: 7 * 24 * 60 * 60,   // 7 days
+};
+```
+
+### 2. Database Optimization
+
+```sql
+-- Create indexes for performance
+CREATE INDEX idx_case_reports_case_id ON case_reports(case_id);
+CREATE INDEX idx_case_reports_created_at ON case_reports(created_at);
+CREATE INDEX idx_audit_log_user_id ON audit_log(user_id);
+CREATE INDEX idx_audit_log_created_at ON audit_log(created_at);
+
+-- Analyze query performance
+EXPLAIN ANALYZE SELECT * FROM case_reports WHERE case_id = 'case-123';
+```
+
+### 3. Connection Pooling
+
+```typescript
+// Configure connection pool
+const pool = new Pool({
+  max: 20,                    // Maximum connections
+  idleTimeoutMillis: 30000,   // Idle timeout
+  connectionTimeoutMillis: 2000,
+});
+```
+
+---
+
+## Scaling Strategy
+
+### 1. Horizontal Scaling
 
 ```bash
-# Generate certificates
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+# Scale to 5 replicas
+kubectl scale deployment case-reporter-summarizer --replicas=5 -n legal-ai
 
-# Configure in SvelteKit
-export HTTPS=true
-export SSL_KEY_FILE=key.pem
-export SSL_CERT_FILE=cert.pem
+# Auto-scaling based on CPU
+kubectl autoscale deployment case-reporter-summarizer \
+  --min=3 --max=10 --cpu-percent=80 -n legal-ai
 ```
 
-### 9.2 Rate Limiting
+### 2. Load Balancing
 
-```typescript
-// src/lib/server/rateLimit.ts
-import { RateLimiter } from 'bottleneck';
-
-export const limiter = new RateLimiter({
-  minTime: 100, // ms between requests
-  maxConcurrent: 10
-});
-```
-
-### 9.3 Input Validation
-
-```typescript
-// Validate all user inputs
-import { z } from 'zod';
-
-const querySchema = z.object({
-  query: z.string().min(1).max(1000),
-  caseId: z.string().uuid().optional()
-});
-
-export async function POST({ request }) {
-  const body = await request.json();
-  const validated = querySchema.parse(body);
-  // Process validated data
+```nginx
+# Nginx configuration
+upstream case_reporter {
+    server app1:5173;
+    server app2:5173;
+    server app3:5173;
 }
+
+server {
+    listen 80;
+    server_name api.example.com;
+
+    location / {
+        proxy_pass http://case_reporter;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+---
+
+## Security Hardening
+
+### 1. SSL/TLS Configuration
+
+```bash
+# Generate SSL certificate
+certbot certonly --standalone -d api.example.com
+
+# Configure in nginx
+ssl_certificate /etc/letsencrypt/live/api.example.com/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/api.example.com/privkey.pem;
+```
+
+### 2. Environment Security
+
+```bash
+# Use secrets management
+export DATABASE_URL=$(aws secretsmanager get-secret-value --secret-id db-url --query SecretString --output text)
+export REDIS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id redis-password --query SecretString --output text)
+```
+
+### 3. Network Security
+
+```yaml
+# Network policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: case-reporter-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: case-reporter-summarizer
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: legal-ai
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: legal-ai
+```
+
+---
+
+## Disaster Recovery
+
+### 1. Backup & Restore
+
+```bash
+# Backup all data
+./scripts/backup.sh
+
+# Restore from backup
+./scripts/restore.sh backup-20240115.tar.gz
+```
+
+### 2. Failover Strategy
+
+```bash
+# Health check and automatic failover
+kubectl set probe deployment/case-reporter-summarizer \
+  --liveness --initial-delay-seconds=30 --period-seconds=10
+```
+
+---
+
+## Rollback Procedure
+
+```bash
+# View deployment history
+kubectl rollout history deployment/case-reporter-summarizer -n legal-ai
+
+# Rollback to previous version
+kubectl rollout undo deployment/case-reporter-summarizer -n legal-ai
+
+# Rollback to specific revision
+kubectl rollout undo deployment/case-reporter-summarizer --to-revision=2 -n legal-ai
 ```
 
 ---
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Ollama connection refused | Ensure `ollama serve` is running |
-| Database connection error | Check `DATABASE_URL` and PostgreSQL is running |
-| Elasticsearch not responding | Verify Elasticsearch container is running |
-| Slow queries | Enable pgvector indexes and Elasticsearch caching |
-| Out of memory | Reduce model size or increase system RAM |
+### Common Issues
+
+1. **Database Connection Timeout**
+   ```bash
+   # Check database connectivity
+   psql -h db.example.com -U prod_user -d legal_ai_prod -c "SELECT 1"
+   ```
+
+2. **Redis Connection Failed**
+   ```bash
+   # Test Redis connection
+   redis-cli -h redis.example.com -a $REDIS_PASSWORD ping
+   ```
+
+3. **High Memory Usage**
+   ```bash
+   # Check memory metrics
+   docker stats case-reporter-summarizer
+
+   # Restart container
+   docker-compose restart sveltekit-frontend
+   ```
 
 ---
 
-## Next Steps
+## Maintenance Schedule
 
-1. ✅ Complete local development setup
-2. ✅ Test all endpoints
-3. ✅ Configure production environment
-4. ✅ Deploy to staging
-5. ✅ Run security audit
-6. ✅ Deploy to production
-7. ✅ Monitor and maintain
+- **Daily**: Monitor logs and metrics
+- **Weekly**: Review performance metrics and cache hit rates
+- **Monthly**: Database maintenance and index optimization
+- **Quarterly**: Security updates and dependency upgrades
 
 ---
 
-## Support
+## Support & Documentation
 
-For issues or questions:
-- Check logs: `docker-compose logs -f`
-- Review documentation: See `scripts/` directory
-- Test endpoints: Use `scripts/test-ollama.sh`
+- API Documentation: `API_DOCUMENTATION.md`
+- Implementation Summary: `IMPLEMENTATION_SUMMARY.md`
+- Performance Optimization: `PERFORMANCE_FIXES_DOCUMENTATION/`
+- Health Check Endpoints: `/api/health/*`
 
