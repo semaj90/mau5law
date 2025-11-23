@@ -1527,3 +1527,249 @@ export const workspaceCitationsRelations = relations(workspaceCitations, ({ one 
 // Keep helpers minimal here to avoid importing unavailable symbols in this environment.
 export const helpers = { sql };
 
+
+// === YORHA DETECTIVE INTERFACE SCHEMA ===
+
+/**
+ * YoRHa Cases table - stores detective cases
+ */
+export const yorhaCases = pgTable(
+  'yorha_cases',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    case_number: varchar('case_number', { length: 100 }).notNull().unique(),
+    title: varchar('title', { length: 500 }).notNull(),
+    description: text('description'),
+    status: varchar('status', { length: 50 }).default('active').notNull(),
+    priority: varchar('priority', { length: 20 }).default('medium').notNull(),
+    case_type: varchar('case_type', { length: 100 }),
+    jurisdiction: varchar('jurisdiction', { length: 200 }),
+    filed_date: timestamp('filed_date', { withTimezone: true }),
+    closed_date: timestamp('closed_date', { withTimezone: true }),
+    created_by: uuid('created_by').notNull(),
+    assigned_to: uuid('assigned_to'),
+    metadata: jsonb('metadata'),
+    created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    case_number_idx: index('yorha_cases_case_number_idx').on(table.case_number),
+    created_by_idx: index('yorha_cases_created_by_idx').on(table.created_by),
+    status_idx: index('yorha_cases_status_idx').on(table.status),
+  })
+);
+
+/**
+ * YoRHa Evidence Nodes table - stores evidence items on the evidence board
+ */
+export const yorhaEvidenceNodes = pgTable(
+  'yorha_evidence_nodes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    case_id: uuid('case_id').notNull(),
+    title: varchar('title', { length: 500 }).notNull(),
+    description: text('description'),
+    evidence_type: varchar('evidence_type', { length: 100 }).notNull(),
+    position_x: integer('position_x').default(0),
+    position_y: integer('position_y').default(0),
+    color: varchar('color', { length: 20 }).default('blue'),
+    icon: varchar('icon', { length: 100 }),
+    source: varchar('source', { length: 500 }),
+    date_collected: timestamp('date_collected', { withTimezone: true }),
+    relevance_score: integer('relevance_score').default(0),
+    file_path: varchar('file_path', { length: 1000 }),
+    file_type: varchar('file_type', { length: 100 }),
+    file_size: integer('file_size'),
+    ai_summary: text('ai_summary'),
+    ai_tags: jsonb('ai_tags'),
+    key_entities: jsonb('key_entities'),
+    status: varchar('status', { length: 50 }).default('active').notNull(),
+    created_by: uuid('created_by').notNull(),
+    created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    case_id_idx: index('yorha_evidence_nodes_case_id_idx').on(table.case_id),
+    evidence_type_idx: index('yorha_evidence_nodes_type_idx').on(table.evidence_type),
+    created_by_idx: index('yorha_evidence_nodes_created_by_idx').on(table.created_by),
+  })
+);
+
+/**
+ * YoRHa Evidence Connections table - stores relationships between evidence nodes
+ */
+export const yorhaEvidenceConnections = pgTable(
+  'yorha_evidence_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    case_id: uuid('case_id').notNull(),
+    source_node_id: uuid('source_node_id').notNull(),
+    target_node_id: uuid('target_node_id').notNull(),
+    connection_type: varchar('connection_type', { length: 100 }).notNull(),
+    strength: integer('strength').default(50),
+    description: text('description'),
+    ai_reasoning: text('ai_reasoning'),
+    confidence_score: integer('confidence_score').default(0),
+    created_by: uuid('created_by').notNull(),
+    created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    case_id_idx: index('yorha_evidence_connections_case_id_idx').on(table.case_id),
+    source_node_idx: index('yorha_evidence_connections_source_idx').on(table.source_node_id),
+    target_node_idx: index('yorha_evidence_connections_target_idx').on(table.target_node_id),
+    connection_type_idx: index('yorha_evidence_connections_type_idx').on(table.connection_type),
+  })
+);
+
+/**
+ * YoRHa Chat Sessions table - stores conversation sessions
+ */
+export const yorhaChatSessions = pgTable(
+  'yorha_chat_sessions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    case_id: uuid('case_id').notNull(),
+    user_id: uuid('user_id').notNull(),
+    title: varchar('title', { length: 500 }),
+    context_type: varchar('context_type', { length: 100 }),
+    context_id: uuid('context_id'),
+    status: varchar('status', { length: 50 }).default('active').notNull(),
+    message_count: integer('message_count').default(0),
+    created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+    last_message_at: timestamp('last_message_at', { withTimezone: true }),
+  },
+  (table) => ({
+    case_id_idx: index('yorha_chat_sessions_case_id_idx').on(table.case_id),
+    user_id_idx: index('yorha_chat_sessions_user_id_idx').on(table.user_id),
+    status_idx: index('yorha_chat_sessions_status_idx').on(table.status),
+  })
+);
+
+/**
+ * YoRHa Chat Messages table - stores individual messages in chat sessions
+ */
+export const yorhaChatMessages = pgTable(
+  'yorha_chat_messages',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    session_id: uuid('session_id').notNull(),
+    role: varchar('role', { length: 50 }).notNull(),
+    content: text('content').notNull(),
+    message_type: varchar('message_type', { length: 50 }).default('text'),
+    referenced_evidence: jsonb('referenced_evidence'),
+    model_used: varchar('model_used', { length: 100 }),
+    tokens_used: integer('tokens_used'),
+    created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    session_id_idx: index('yorha_chat_messages_session_id_idx').on(table.session_id),
+    role_idx: index('yorha_chat_messages_role_idx').on(table.role),
+    created_at_idx: index('yorha_chat_messages_created_at_idx').on(table.created_at),
+  })
+);
+
+/**
+ * YoRHa System Metrics table - stores historical system metrics
+ */
+export const yorhaSystemMetrics = pgTable(
+  'yorha_system_metrics',
+  {
+    id: serial('id').primaryKey(),
+    cpu_usage: integer('cpu_usage'),
+    cpu_cores: integer('cpu_cores'),
+    memory_usage: integer('memory_usage'),
+    memory_total_gb: integer('memory_total_gb'),
+    memory_used_gb: integer('memory_used_gb'),
+    gpu_usage: integer('gpu_usage'),
+    gpu_memory_usage: integer('gpu_memory_usage'),
+    gpu_temperature: integer('gpu_temperature'),
+    disk_usage: integer('disk_usage'),
+    disk_total_gb: integer('disk_total_gb'),
+    disk_used_gb: integer('disk_used_gb'),
+    network_latency_ms: integer('network_latency_ms'),
+    network_bandwidth_mbps: integer('network_bandwidth_mbps'),
+    system_health: varchar('system_health', { length: 50 }).default('healthy'),
+    active_cases: integer('active_cases').default(0),
+    active_sessions: integer('active_sessions').default(0),
+    recorded_at: timestamp('recorded_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    recorded_at_idx: index('yorha_system_metrics_recorded_at_idx').on(table.recorded_at),
+  })
+);
+
+// === YORHA RELATIONS ===
+
+export const yorhaCasesRelations = relations(yorhaCases, ({ many }) => ({
+  evidence_nodes: many(yorhaEvidenceNodes),
+  evidence_connections: many(yorhaEvidenceConnections),
+  chat_sessions: many(yorhaChatSessions),
+}));
+
+export const yorhaEvidenceNodesRelations = relations(yorhaEvidenceNodes, ({ one, many }) => ({
+  case: one(yorhaCases, {
+    fields: [yorhaEvidenceNodes.case_id],
+    references: [yorhaCases.id],
+  }),
+  outgoing_connections: many(yorhaEvidenceConnections, {
+    relationName: 'source',
+  }),
+  incoming_connections: many(yorhaEvidenceConnections, {
+    relationName: 'target',
+  }),
+}));
+
+export const yorhaEvidenceConnectionsRelations = relations(yorhaEvidenceConnections, ({ one }) => ({
+  case: one(yorhaCases, {
+    fields: [yorhaEvidenceConnections.case_id],
+    references: [yorhaCases.id],
+  }),
+  source_node: one(yorhaEvidenceNodes, {
+    fields: [yorhaEvidenceConnections.source_node_id],
+    references: [yorhaEvidenceNodes.id],
+    relationName: 'source',
+  }),
+  target_node: one(yorhaEvidenceNodes, {
+    fields: [yorhaEvidenceConnections.target_node_id],
+    references: [yorhaEvidenceNodes.id],
+    relationName: 'target',
+  }),
+}));
+
+export const yorhaChatSessionsRelations = relations(yorhaChatSessions, ({ one, many }) => ({
+  case: one(yorhaCases, {
+    fields: [yorhaChatSessions.case_id],
+    references: [yorhaCases.id],
+  }),
+  messages: many(yorhaChatMessages),
+}));
+
+export const yorhaChatMessagesRelations = relations(yorhaChatMessages, ({ one }) => ({
+  session: one(yorhaChatSessions, {
+    fields: [yorhaChatMessages.session_id],
+    references: [yorhaChatSessions.id],
+  }),
+}));
+
+// === TYPE EXPORTS ===
+
+export type YoRHaCase = typeof yorhaCases.$inferSelect;
+export type NewYoRHaCase = typeof yorhaCases.$inferInsert;
+
+export type YoRHaEvidenceNode = typeof yorhaEvidenceNodes.$inferSelect;
+export type NewYoRHaEvidenceNode = typeof yorhaEvidenceNodes.$inferInsert;
+
+export type YoRHaEvidenceConnection = typeof yorhaEvidenceConnections.$inferSelect;
+export type NewYoRHaEvidenceConnection = typeof yorhaEvidenceConnections.$inferInsert;
+
+export type YoRHaChatSession = typeof yorhaChatSessions.$inferSelect;
+export type NewYoRHaChatSession = typeof yorhaChatSessions.$inferInsert;
+
+export type YoRHaChatMessage = typeof yorhaChatMessages.$inferSelect;
+export type NewYoRHaChatMessage = typeof yorhaChatMessages.$inferInsert;
+
+export type YoRHaSystemMetrics = typeof yorhaSystemMetrics.$inferSelect;
+export type NewYoRHaSystemMetrics = typeof yorhaSystemMetrics.$inferInsert;

@@ -4,9 +4,10 @@
  */
 
 import type { Handle, HandleServerError } from '@sveltejs/kit';
+import { lucia } from '$lib/server/lucia';
 
 /**
- * Main request handler
+ * Main request handler with Lucia v3 session validation
  */
 export const handle: Handle = async ({ event, resolve }) => {
   // Add request ID for tracing
@@ -15,6 +16,37 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   // Add timing information
   const startTime = Date.now();
+
+  // === LUCIA V3 SESSION VALIDATION ===
+  const sessionId = event.cookies.get(lucia.sessionCookieName);
+  if (!sessionId) {
+    event.locals.user = null;
+    event.locals.session = null;
+  } else {
+    try {
+      const { session, user } = await lucia.validateSession(sessionId);
+      if (session && session.fresh) {
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        event.cookies.set(sessionCookie.name, sessionCookie.value, {
+          path: '/',
+          ...sessionCookie.attributes,
+        });
+      }
+      if (!session) {
+        const blankSessionCookie = lucia.createBlankSessionCookie();
+        event.cookies.set(blankSessionCookie.name, blankSessionCookie.value, {
+          path: '/',
+          ...blankSessionCookie.attributes,
+        });
+      }
+      event.locals.session = session;
+      event.locals.user = user;
+    } catch (error) {
+      console.error('[lucia] Session validation error:', error);
+      event.locals.user = null;
+      event.locals.session = null;
+    }
+  }
 
   // Resolve the request
   const response = await resolve(event);

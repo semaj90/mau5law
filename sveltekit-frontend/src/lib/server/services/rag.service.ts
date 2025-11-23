@@ -48,7 +48,7 @@ export class RAGService {
       // Execute statute and case law queries in parallel
       const [statutes, caseLaw] = await Promise.all([
         this.retrieveStatutes(query, jurisdiction, limit),
-        this.retrieveCaseLaw(query, jurisdiction, limit)
+        this.retrieveCaseLaw(query, jurisdiction, limit),
       ]);
 
       const executionTime = Date.now() - startTime;
@@ -57,7 +57,7 @@ export class RAGService {
         statutes,
         caseLaw,
         totalResults: statutes.length + caseLaw.length,
-        executionTimeMs: executionTime
+        executionTimeMs: executionTime,
       };
     } catch (error) {
       console.error('Error retrieving RAG context:', error);
@@ -84,7 +84,7 @@ export class RAGService {
         },
         {
           namespace: 'statutes',
-          ttl: 24 * 60 * 60 // 24 hours
+          ttl: 24 * 60 * 60, // 24 hours
         }
       );
     } catch (error) {
@@ -112,7 +112,7 @@ export class RAGService {
         },
         {
           namespace: 'rag-results',
-          ttl: 24 * 60 * 60 // 24 hours
+          ttl: 24 * 60 * 60, // 24 hours
         }
       );
     } catch (error) {
@@ -164,6 +164,64 @@ export class RAGService {
     } catch (error) {
       console.error('Error querying case law:', error);
       return [];
+    }
+  }
+
+  /**
+   * Retrieve statute context using pgvector embeddings
+   */
+  async retrieveStatuteContext(code: string, limit: number = 5): Promise<string[]> {
+    try {
+      const cacheKey = `statute_context:${code}`;
+
+      return await cacheService.getOrSet(
+        cacheKey,
+        async () => {
+          // Query pgvector for statute embeddings
+          return this.queryStatuteContext(code, limit);
+        },
+        {
+          namespace: 'statute-context',
+          ttl: 24 * 60 * 60, // 24 hours
+        }
+      );
+    } catch (error) {
+      console.error('Error retrieving statute context:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Query statute context from pgvector
+   */
+  private async queryStatuteContext(_code: string, _limit: number): Promise<string[]> {
+    try {
+      // TODO: Implement pgvector query for statute context
+      // In production, this would:
+      // 1. Generate embedding for statute code
+      // 2. Query pgvector for similar statutes
+      // 3. Return top N context strings
+
+      return [];
+    } catch (error) {
+      console.error('Error querying statute context:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Rank results by relevance score
+   */
+  async rankByRelevance<T extends { relevanceScore?: number }>(results: T[]): Promise<T[]> {
+    try {
+      return results.sort((a, b) => {
+        const scoreA = a.relevanceScore || 0;
+        const scoreB = b.relevanceScore || 0;
+        return scoreB - scoreA;
+      });
+    } catch (error) {
+      console.error('Error ranking results:', error);
+      return results;
     }
   }
 

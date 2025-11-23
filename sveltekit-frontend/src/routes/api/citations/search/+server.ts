@@ -1,6 +1,6 @@
 /**
  * Citation Search API
- * GET: Search citations
+ * GET: Search citations by statute code or title
  */
 
 import { json, type RequestHandler } from '@sveltejs/kit';
@@ -17,29 +17,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const query = url.searchParams.get('q') || '';
-    const jurisdiction = url.searchParams.get('jurisdiction');
-    const severity = url.searchParams.get('severity');
-    const caseId = url.searchParams.get('case_id');
-    const sourceType = url.searchParams.get('source_type');
-    const limit = parseInt(url.searchParams.get('limit') || '20');
-    const offset = parseInt(url.searchParams.get('offset') || '0');
-
-    if (!query) {
-      return json(
-        { success: false, error: 'Query parameter is required' },
-        { status: 400 }
-      );
+    const query = url.searchParams.get('q');
+    if (!query || query.length < 2) {
+      return json({
+        success: true,
+        citations: [],
+      });
     }
 
-    const citations = await citationService.searchCitations(user.id, query, {
-      jurisdiction: jurisdiction || undefined,
-      severity: severity || undefined,
-      case_id: caseId || undefined,
-      source_type: sourceType || undefined,
-      limit,
-      offset,
-    });
+    const citations = await citationService.searchCitations(user.id, query);
 
     return json({
       success: true,

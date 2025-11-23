@@ -45,6 +45,80 @@ export interface WebASMModelConfig {
 }
 
 export interface InferenceRequest {
+	// Common memory allocation/deallocation functions
+	_malloc?: (size: number) => number;
+	malloc?: (size: number) => number;
+	__wbindgen_malloc?: (size: number) => number;
+	_free?: (ptr: number) => void;
+	free?: (ptr: number) => void;
+	__wbindgen_free?: (ptr: number) => void;
+	// Common inference functions (typed to match our calling convention)
+	inference?: ExportFunction;
+	forward?: ExportFunction;
+	predict?: ExportFunction;
+	// Allow for other arbitrary exports with safer typing
+	[key: string]: WebASMExportValue;
+}
+export interface WebASMModel {
+	name: string;
+	wasmBuffer: Uint8Array;
+	config: WebASMModelConfig;
+	instance?: WebAssembly.Instance;
+	memory?: WebAssembly.Memory;
+	exports?: WASMExports;
+}
+
+export interface WebASMInferenceMetrics {
+	modelName: string;
+	input: Float32Array | number[];
+	batchSize?: number;
+	timeout?: number;
+}
+
+export interface InferenceResult {
+	output: Float32Array;
+	inferenceTime: number;
+	tokensPerSecond: number;
+	memoryUsage: number;
+	metrics: WebASMInferenceMetrics;
+}
+
+export interface VectorSearchInferenceConfig {
+	embeddingModel: string;
+	similarityModel: string;
+	rerankingModel?: string;
+	batchSize: number;
+	cacheTTL: number;
+	enablePipeline: boolean;
+}
+
+/** Minimal WebASM Inference Service */
+export class WebASMInferenceService {
+	private models = new Map<string, WebASMModel>();
+	private inferenceQueue: Array<{
+		request: InferenceRequest;
+		resolve: (r: InferenceResult) => void;
+		reject: (e: Error) => void;
+	wasmMemoryPages: number;
+	simdInstructions: boolean;
+	threadCount: number;
+	gpuEnabled: boolean;
+		timestamp: number;
+}
+
+export interface WebASMModelConfig {
+	modelType: 'embedding' | 'similarity' | 'classification' | 'ranking';
+	inputDimension: number;
+	outputDimension: number;
+	memoryPages: number;
+	simdEnabled: boolean;
+	threadCount: number;
+	quantization: 'fp32' | 'fp16' | 'int8' | 'int4';
+	gpuEnabled: boolean;
+	expectedExportFunction?: string;
+}
+
+export interface InferenceRequest {
 	modelName: string;
 	input: Float32Array | number[];
 	batchSize?: number;
@@ -278,3 +352,210 @@ catch { // ignore disconnect errors during cleanup } this.performanceMonitor = n
 				simdInstructions: model.config.simdEnabled,
 				threadCount: model.config.threadCount,
 				gpuEnabled: model.config.gpuEnabled,
+
+				gpuEnabled: model.config.gpuEnabled,
+				timestamp: Date.now()
+			};
+
+			// Integrate with global metrics store (guarded to avoid TS errors when the method is not declared)
+			try {
+				const store = gpuSummaryStore as unknown as GPUSummaryStoreShape;
+				store?.addWebASMMetric?.(metrics);
+			} catch {
+				// no-op if store not available
+			}
+
+			this.deallocateWasmMemory(model, inputPtr);
+			this.deallocateWasmMemory(model, outputPtr);
+
+			return {
+				output,
+				inferenceTime,
+				tokensPerSecond,
+				memoryUsage,
+				metrics
+			};
+		} catch (error: Error | unknown) {
+			performance.clearMarks?.(`webasm-inference-${modelName}-start`);
+			performance.clearMarks?.(`webasm-inference-${modelName}-end`);
+			throw new Error(
+				`Inference failed for model '${modelName}': ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	private allocateWasmMemory(model: WebASMModel, data: Float32Array): number {
+		if (!model.memory || !model.exports) throw new Error('WebASM memory not available');
+
+		// Prioritize common malloc names
+		const malloc = model.exports.malloc || model.exports.__wbindgen_malloc || model.exports._malloc;
+		if (typeof malloc !== 'function') throw new Error('Memory allocation function not found');
+
+		const byteSize = data.length * 4;
+		const ptr = malloc(byteSize);
+		if (!ptr) throw new Error('Memory allocation failed');
+
+		const memoryView = new Float32Array(model.memory.buffer, ptr, data.length);
+		memoryView.set(data);
+		return ptr;
+	}
+
+	private extractWasmMemory(model: WebASMModel, ptr: number, size: number): Float32Array {
+		if (!model.memory) throw new Error('WebASM memory not available');
+		const memoryView = new Float32Array(model.memory.buffer, ptr, size);
+		return new Float32Array(memoryView); // copy
+	}
+
+	private deallocateWasmMemory(model: WebASMModel, ptr: number): void {
+		if (!model.exports) return;
+
+		// Prioritize common free names
+		const free = model.exports.free || model.exports.__wbindgen_free || model.exports._free;
+		if (typeof free === 'function') {
+			try {
+				free(ptr);
+			} catch {
+				/* ignore free failures */
+			}
+		}
+	}
+
+	private getMemoryUsage(model: WebASMModel): number {
+		if (!model.memory) return 0;
+		return model.memory.buffer.byteLength;
+	}
+
+	private updateInferenceMetrics(modelName: string, duration: number): void {
+		console.log(`📊 Inference: ${modelName} took ${duration.toFixed(2)}ms`);
+	}
+
+	getLoadedModels(): string[] {
+		return Array.from(this.models.keys());
+	}
+
+	unloadModel(name: string): boolean {
+		const model = this.models.get(name);
+		if (model) {
+			performance.clearMarks?.(`webasm-inference-${name}-start`);
+			performance.clearMarks?.(`webasm-inference-${name}-end`);
+			performance.clearMeasures?.(`webasm-inference-${name}`);
+		}
+		return this.models.delete(name);
+	}
+
+	destroy(): void {
+		this.models.clear();
+		this.inferenceQueue.length = 0;
+		this.isProcessing = $state(false);
+		if (this.performanceMonitor) {
+			try {
+				this.performanceMonitor.disconnect();
+			} catch {
+				// ignore disconnect errors during cleanup
+			}
+			this.performanceMonitor = null;
+		}
+	}
+}
+
+/** Vector Search Integration using the WebASM service */
+export class VectorSearchInferenceEngine {
+	private wasmService: WebASMInferenceService;
+	private config: VectorSearchInferenceConfig;
+	private embeddingCache = new Map<string, { embedding: Float32Array; timestamp: number }>();
+
+	constructor(config: VectorSearchInferenceConfig) {
+		this.wasmService = new WebASMInferenceService();
+		this.config = config;
+	}
+
+	async initialize(models: { name: string; wasmBuffer: Uint8Array; config: WebASMModelConfig }[]): Promise<void> {
+		for (const model of models) {
+			await this.wasmService.loadModel(model.name, model.wasmBuffer, model.config);
+		}
+	}
+
+	async generateEmbedding(text: string, useCache = true): Promise<Float32Array> {
+		const cacheKey = `embedding:${text}`;
+		if (useCache && this.embeddingCache.has(cacheKey)) {
+			const cached = this.embeddingCache.get(cacheKey)!;
+			if (Date.now() - cached.timestamp <= this.config.cacheTTL) return cached.embedding;
+			this.embeddingCache.delete(cacheKey);
+		}
+
+		const tokenized = this.tokenizeText(text);
+		const result = await this.wasmService.runInference({
+			modelName: this.config.embeddingModel,
+			input: tokenized,
+			batchSize: 1
+		});
+
+		const embedding = result.output;
+		if (useCache) {
+			this.embeddingCache.set(cacheKey, { embedding, timestamp: Date.now() });
+		}
+		return embedding;
+	}
+
+	async performSimilaritySearch(
+		queryEmbedding: Float32Array,
+		candidateEmbeddings: Float32Array[],
+		topK = 10
+	): Promise<Array<{ index: number; similarity: number }>> {
+		const startTime = performance.now();
+		const similarities = await Promise.all(
+			candidateEmbeddings.map(async (candidate, index) => {
+				const sim = await this.computeSimilarity(queryEmbedding, candidate);
+				return { index, similarity: sim };
+			})
+		);
+
+		const results = similarities.sort((a, b) => b.similarity - a.similarity).slice(0, topK);
+		const searchTime = performance.now() - startTime;
+
+		const metrics: VectorSearchMetrics = {
+			queryId: `search-${Date.now()}`,
+			searchTime,
+			vectorDimensions: queryEmbedding.length,
+			candidateCount: candidateEmbeddings.length,
+			resultCount: results.length,
+			indexType: 'flat',
+			similarityFunction: 'cosine',
+			cacheHitRate: this.getCacheHitRate(),
+			timestamp: Date.now()
+		};
+
+		try {
+			const store = gpuSummaryStore as unknown as GPUSummaryStoreShape;
+			store?.addVectorSearch?.(metrics);
+		} catch {
+			// no-op if store not available
+		}
+
+		return results;
+	}
+
+	private tokenizeText(text: string): Float32Array {
+		// Simple tokenization - replace with proper tokenizer
+		const tokens = text.toLowerCase().split(/\s+/).map(token => token.charCodeAt(0) % 1000);
+		return new Float32Array(tokens);
+	}
+
+	private async computeSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
+		// Cosine similarity
+		let dotProduct = 0;
+		let normA = 0;
+		let normB = 0;
+		for (let i = 0; i < a.length; i++) {
+			dotProduct += a[i] * b[i];
+			normA += a[i] * a[i];
+			normB += b[i] * b[i];
+		}
+		return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+	}
+
+	private getCacheHitRate(): number {
+		// Simple cache hit rate calculation
+		return 0.85; // placeholder
+	}
+}

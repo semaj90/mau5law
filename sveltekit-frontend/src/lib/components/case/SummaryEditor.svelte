@@ -1,10 +1,17 @@
 <script lang="ts">
   import type { CaseSummary } from '$lib/types/case-summary';
+  import CitationDetail from '../legal-ai/CitationDetail.svelte';
+  import CitationList from '../legal-ai/CitationList.svelte';
+  import CitationSearch from '../legal-ai/CitationSearch.svelte';
 
   export let summary: CaseSummary;
+  export let caseId: string | null = null;
 
   let isEditing = false;
   let editedText = summary.text;
+  let showCitationPanel = false;
+  let selectedCitation: any = null;
+  let showCitationSearch = false;
 </script>
 
 <div class="summary-editor">
@@ -54,7 +61,53 @@
 
     <div class="actions">
       <button class="btn-edit" on:click={() => (isEditing = true)}>Edit</button>
+      <button class="btn-citations" on:click={() => (showCitationPanel = !showCitationPanel)}>
+        {showCitationPanel ? 'Hide' : 'Show'} Citations
+      </button>
     </div>
+
+    {#if showCitationPanel}
+      <div class="citation-panel">
+        <div class="citation-panel-header">
+          <h3>Citation Management</h3>
+          <button class="close-btn" on:click={() => (showCitationPanel = false)}>✕</button>
+        </div>
+
+        <div class="citation-panel-content">
+          {#if selectedCitation}
+            <div class="citation-detail-view">
+              <button class="back-btn" on:click={() => (selectedCitation = null)}>← Back</button>
+              <CitationDetail
+                citation={selectedCitation}
+                showActions={true}
+                on:updated={() => (selectedCitation = null)}
+                on:delete={() => (selectedCitation = null)}
+              />
+            </div>
+          {:else}
+            <div class="citation-list-view">
+              <div class="search-section">
+                <h4>Search Citations</h4>
+                <CitationSearch
+                  on:select={(e) => (selectedCitation = e.detail)}
+                />
+              </div>
+
+              <div class="list-section">
+                <CitationList
+                  {caseId}
+                  limit={10}
+                  showFilters={true}
+                  on:view={(e) => (selectedCitation = e.detail)}
+                  on:edit={(e) => (selectedCitation = e.detail)}
+                  on:deleted={() => {}}
+                />
+              </div>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
   {/if}
 </div>
 
@@ -207,5 +260,99 @@
 
   .btn-edit:hover {
     background-color: #0056b3;
+  }
+
+  .btn-citations {
+    background-color: #8b4513;
+    color: white;
+  }
+
+  .btn-citations:hover {
+    background-color: #a0522d;
+  }
+
+  .citation-panel {
+    margin-top: 1.5rem;
+    border: 2px solid #d4a574;
+    border-radius: 6px;
+    background-color: #f5f1e8;
+    overflow: hidden;
+  }
+
+  .citation-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #e0d5c7;
+    border-bottom: 1px solid #d4a574;
+  }
+
+  .citation-panel-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #2c2c2c;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+  }
+
+  .close-btn:hover {
+    color: #333;
+  }
+
+  .citation-panel-content {
+    padding: 1rem;
+  }
+
+  .citation-detail-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .back-btn {
+    align-self: flex-start;
+    padding: 0.4rem 0.8rem;
+    background-color: #e0d5c7;
+    border: 1px solid #d4a574;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background-color: #d4a574;
+  }
+
+  .citation-list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .search-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-section h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #2c2c2c;
+  }
+
+  .list-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 </style>

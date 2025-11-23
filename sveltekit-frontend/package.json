@@ -645,6 +645,7 @@
     "@msgpack/msgpack": "^3.1.2",
     "@node-rs/argon2": "^2.0.2",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@playwright/mcp": "0.0.48",
     "@protobuf-ts/plugin": "^2.11.1",
     "@sveltejs/adapter-node": "^5.4.0",
     "@tauri-apps/api": "^2.7.0",
