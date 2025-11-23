@@ -14,10 +14,15 @@
   import type { goto  } from '$app/navigation';
   let isLoggingOut = $state <boolean>(false);
   async function handleLogout(): Promise<any> {
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  let isLoggingOut = $state(false);
+  async function handleLogout(): Promise<void> {
     isLoggingOut = true;
     try {
       // TODO: Call logout API
       // await fetch('/api/auth/logout', { method: 'POST' })
+
       // Clear localStorage
       if (typeof window !== 'undefined') {
         localStorage.removeItem('user');
@@ -35,6 +40,8 @@
   }
   $effect(() => {() => {
     // Auto-logout in, 3 seconds if user doesn't cancel'
+  $effect(() => {
+    // Auto-logout in 3 seconds if user doesn't cancel
     const timer = setTimeout(handleLogout, 3000);
     return () => clearTimeout(timer);
   });

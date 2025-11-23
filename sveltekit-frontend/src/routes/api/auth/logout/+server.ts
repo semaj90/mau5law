@@ -1,2 +1,61 @@
-/** * Logout endpoint - invalidate session and clear cookies */ import type { json, type RequestHandler, redirect  } from '@sveltejs/kit'; import type { auth  } from '$lib/server/auth'; export const POST: RequestHandler = async (event) => { try { // Get session ID from cookie const sessionId = event.cookies.get('auth_session'); if (sessionId) { // Invalidate the session in database await auth.invalidateSession(sessionId)} // Clear the session cookie const sessionCookie = auth.createBlankSessionCookie(); event.cookies.set(sessionCookie.name, sessionCookie.value, { path: '/', ...sessionCookie.attributes }); return json({ success: true, message: 'Logged out successfully' })}catch (error) { console.error('Error during logout: ', error); return json( { success: false, error: { message: 'Failed to logout', code: 'LOGOUT_ERROR', status: 500 } }, { status: 500 } )}; export const GET: RequestHandler = async (event) => { // Support GET logout as well try { const sessionId = event.cookies.get('auth_session'); if (sessionId) { await auth.invalidateSession(sessionId)} const sessionCookie = auth.createBlankSessionCookie(); event.cookies.set(sessionCookie.name, sessionCookie.value, { path: '/', ...sessionCookie.attributes }); return redirect(303, '/')}catch (error) { console.error('Error during logout: ', error); return redirect(303, '/')}; 
+/**
+ * Logout endpoint - invalidate session and clear cookies (Lucia v3)
+ */
 
+import { json, redirect, type RequestHandler } from '@sveltejs/kit';
+import { lucia } from '$lib/server/lucia';
+
+export const POST: RequestHandler = async (event) => {
+  try {
+    // Invalidate the session using Lucia v3
+    if (event.locals.session) {
+      await lucia.invalidateSession(event.locals.session.id);
+    }
+
+    // Create blank session cookie
+    const sessionCookie = lucia.createBlankSessionCookie();
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '/',
+      ...sessionCookie.attributes,
+    });
+
+    return json({
+      success: true,
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    return json(
+      {
+        success: false,
+        error: {
+          message: 'Failed to logout',
+          code: 'LOGOUT_ERROR',
+        },
+      },
+      { status: 500 }
+    );
+  }
+};
+
+export const GET: RequestHandler = async (event) => {
+  // Support GET logout as well
+  try {
+    // Invalidate the session using Lucia v3
+    if (event.locals.session) {
+      await lucia.invalidateSession(event.locals.session.id);
+    }
+
+    // Create blank session cookie
+    const sessionCookie = lucia.createBlankSessionCookie();
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '/',
+      ...sessionCookie.attributes,
+    });
+
+    return redirect(303, '/');
+  } catch (error) {
+    console.error('Error during logout:', error);
+    return redirect(303, '/');
+  }
+};

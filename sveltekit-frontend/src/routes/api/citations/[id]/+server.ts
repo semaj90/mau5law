@@ -1,7 +1,7 @@
 /**
  * Citation Detail API
  * GET: Get citation detail
- * PUT: Update citation
+ * PUT: Update citation notes
  * DELETE: Delete citation
  */
 
@@ -20,9 +20,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
-    const citation = await citationService.getCitationDetail(id);
-
+    const citation = await citationService.getCitationDetail(params.id);
     if (!citation) {
       return json({ success: false, error: 'Citation not found' }, { status: 404 });
     }
@@ -37,7 +35,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       citation,
     });
   } catch (error) {
-    console.error('Error getting citation detail:', error);
+    console.error('Error getting citation:', error);
     return json(
       {
         success: false,
@@ -49,7 +47,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 };
 
 /**
- * PUT: Update citation
+ * PUT: Update citation notes
  */
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
@@ -58,34 +56,33 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
-    const body = await request.json();
-    const { notes } = body;
-
-    // Get existing citation to verify ownership
-    const existing = await citationService.getCitationDetail(id);
-    if (!existing) {
+    const citation = await citationService.getCitationDetail(params.id);
+    if (!citation) {
       return json({ success: false, error: 'Citation not found' }, { status: 404 });
     }
 
-    if (existing.user_id !== user.id) {
+    // Verify ownership
+    if (citation.user_id !== user.id) {
       return json({ success: false, error: 'Forbidden' }, { status: 403 });
     }
 
-    const updated = await citationService.updateCitationNotes(id, notes);
+    const body = await request.json();
+    const { notes } = body;
+
+    const updatedCitation = await citationService.updateCitationNotes(params.id, notes || '');
 
     // Log audit event
     await auditService.logSummaryOperation(
       user.id,
-      existing.case_id || 'unknown',
+      citation.case_id || 'unknown',
       'retrieve',
-      { citation_id: id, action: 'update' },
+      { citation_id: params.id, action: 'update' },
       true
     );
 
     return json({
       success: true,
-      citation: updated,
+      citation: updatedCitation,
     });
   } catch (error) {
     console.error('Error updating citation:', error);
@@ -109,28 +106,17 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       return json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
-
-    // Get existing citation to verify ownership
-    const existing = await citationService.getCitationDetail(id);
-    if (!existing) {
+    const citation = await citationService.getCitationDetail(params.id);
+    if (!citation) {
       return json({ success: false, error: 'Citation not found' }, { status: 404 });
     }
 
-    if (existing.user_id !== user.id) {
+    // Verify ownership
+    if (citation.user_id !== user.id) {
       return json({ success: false, error: 'Forbidden' }, { status: 403 });
     }
 
-    await citationService.deleteCitation(id, user.id);
-
-    // Log audit event
-    await auditService.logSummaryOperation(
-      user.id,
-      existing.case_id || 'unknown',
-      'retrieve',
-      { citation_id: id, action: 'delete' },
-      true
-    );
+    await citationService.deleteCitation(params.id, user.id);
 
     return json({
       success: true,

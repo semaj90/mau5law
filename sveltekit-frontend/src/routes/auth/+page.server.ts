@@ -1,6 +1,9 @@
 import type { PageServerLoad, Actions } from './$types .js';
 import type { fail, redirect  } from '@sveltejs/kit';
 import type { z  } from 'zod';
+import type { PageServerLoad, Actions } from './$types.js';
+import { fail, redirect } from '@sveltejs/kit';
+import { z } from 'zod';
 
 // Simple validation schemas
 const loginSchema = z.object({
@@ -130,5 +133,6 @@ export const actions: Actions = {
     }
   }
 };
+
 
 

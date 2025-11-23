@@ -2,16 +2,16 @@
   // Admin interface layout with security-focused styling
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import type { applyConsolePalette, type ConsolePaletteName  } from '$lib/themes/retro-console-palettes';
+  import { Snippet } from 'svelte';
 
-  let { children, data }: { any; data: { user?: unknown } } = $props ();
+  interface Props {
+    data: {
+      user: any;
+    };
+    children: Snippet;
+  }
 
-  // Admin-focused console theme (amber on black for admin work)
-  const consolePalette: ConsolePaletteName = 'cyberpunk'; // Changed to a valid type from the allowed list
-
-  $effect (() => {
-    applyConsolePalette(consolePalette);
-  });
+  let { data, children } = $props<Props>();
 </script>
 
 <svelte:head>

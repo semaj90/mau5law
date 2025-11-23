@@ -22,11 +22,9 @@ declare global {
     }
 
     interface Locals {
-      session: {
-        user: User | null;
-        // Add other session-related properties if needed
-      };
-      // Add other locals properties if needed
+      user: User | null;
+      session: Session | null;
+      requestId?: string;
     }
     // interface PageData {}
     // interface Error {}

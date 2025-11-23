@@ -1,4 +1,10 @@
 {
+  "clients": [
+    {
+      "name": "playwright",
+      "command": ["npx", "playwright-mcp"]
+    }
+  ],
   "mcpServers": {
     "context7-multicore": {
       "command": "node",

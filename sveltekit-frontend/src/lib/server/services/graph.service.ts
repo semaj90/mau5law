@@ -88,7 +88,10 @@ export class GraphService {
   /**
    * Rank precedents by relevance score
    */
-  async rankCasesByRelevance(caseIds: string[], referenceCharges: string[]): Promise<SimilarCase[]> {
+  async rankCasesByRelevance(
+    caseIds: string[],
+    referenceCharges: string[]
+  ): Promise<SimilarCase[]> {
     const session = this.driver.session();
 
     try {
@@ -140,6 +143,151 @@ export class GraphService {
     } catch (error) {
       console.error('Error creating citation relationships:', error);
       throw error;
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Find related cases for a statute
+   */
+  async findRelatedCases(statuteCode: string, limit: number = 5): Promise<any[]> {
+    const session = this.driver.session();
+
+    try {
+      const result = await session.run(
+        `
+        MATCH (s:Statute {code: $code})<-[:CHARGES_WITH]-(c:Case)
+        RETURN c.id as id, c.title as title, c.number as caseNumber,
+               c.outcome as outcome, c.year as year
+        ORDER BY c.year DESC
+        LIMIT $limit
+        `,
+        { code: statuteCode, limit }
+      );
+
+      return result.records.map((record) => ({
+        id: record.get('id'),
+        title: record.get('title') || 'Unknown',
+        caseNumber: record.get('caseNumber'),
+        outcome: record.get('outcome'),
+        year: record.get('year'),
+        relevanceScore: 1.0, // All results are equally relevant
+      }));
+    } catch (error) {
+      console.error('Error finding related cases:', error);
+      return [];
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Rank cases by relevance (number of shared statutes)
+   */
+  async rankCasesBySharedStatutes(caseIds: string[]): Promise<any[]> {
+    const session = this.driver.session();
+
+    try {
+      const result = await session.run(
+        `
+        UNWIND $caseIds as caseId
+        MATCH (c:Case {id: caseId})-[:CHARGES_WITH]->(s:Statute)
+        WITH c, count(s) as statuteCount, collect(s.code) as statutes
+        RETURN c.id as id, c.title as title, statutes, statuteCount as relevanceScore
+        ORDER BY relevanceScore DESC
+        `,
+        { caseIds }
+      );
+
+      return result.records.map((record) => ({
+        id: record.get('id'),
+        title: record.get('title') || 'Unknown',
+        statutes: record.get('statutes') || [],
+        relevanceScore: record.get('relevanceScore'),
+      }));
+    } catch (error) {
+      console.error('Error ranking cases by shared statutes:', error);
+      return [];
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Create case-statute relationship
+   */
+  async createCaseStatuteRelationship(
+    caseId: string,
+    statuteCode: string,
+    linkType: string = 'CHARGED_UNDER'
+  ): Promise<void> {
+    const session = this.driver.session();
+
+    try {
+      await session.run(
+        `
+        MERGE (c:Case {id: $caseId})
+        MERGE (s:Statute {code: $code})
+        MERGE (c)-[r:${linkType}]->(s)
+        SET r.createdAt = timestamp()
+        `,
+        { caseId, code: statuteCode }
+      );
+    } catch (error) {
+      console.error('Error creating case-statute relationship:', error);
+      throw error;
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Delete case-statute relationship
+   */
+  async deleteCaseStatuteRelationship(caseId: string, statuteCode: string): Promise<void> {
+    const session = this.driver.session();
+
+    try {
+      await session.run(
+        `
+        MATCH (c:Case {id: $caseId})-[r]->(s:Statute {code: $code})
+        DELETE r
+        `,
+        { caseId, code: statuteCode }
+      );
+    } catch (error) {
+      console.error('Error deleting case-statute relationship:', error);
+      throw error;
+    } finally {
+      await session.close();
+    }
+  }
+
+  /**
+   * Get case-statute relationships
+   */
+  async getCaseStatuteRelationships(caseId: string): Promise<any[]> {
+    const session = this.driver.session();
+
+    try {
+      const result = await session.run(
+        `
+        MATCH (c:Case {id: $caseId})-[r]->(s:Statute)
+        RETURN s.code as code, s.title as title, type(r) as linkType, r.createdAt as createdAt
+        `,
+        { caseId }
+      );
+
+      return result.records.map((record) => ({
+        code: record.get('code'),
+        title: record.get('title'),
+        linkType: record.get('linkType'),
+        createdAt: record.get('createdAt'),
+      }));
+    } catch (error) {
+      console.error('Error getting case-statute relationships:', error);
+      return [];
     } finally {
       await session.close();
     }
