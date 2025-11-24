@@ -1,369 +1,511 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
-  import '../../lib/styles/warden-theme.css';
+	import { isProcessing, registerServiceWorker, uploadFileViaQUIC, uploadProgress } from '$lib/mlp';
+	import { onMount } from 'svelte';
 
-  interface Evidence {
-    id: string;
-    fileName: string;
-    documentType: string;
-    inferenceConfidence: number;
-    status: 'pending' | 'approved' | 'rejected' | 'locked';
-    createdAt: string;
-    fileHash: string;
-    metadata?: Record<string, unknown>;
-  }
+	let selectedFile = $state<File | null>(null);
+	let isDragging = $state(false);
+	let uploadError = $state<string | null>(null);
 
-  let pendingEvidence: Evidence[] = [];
-  let approvedEvidence: Evidence[] = [];
-  let isLoading = true;
-  let error = '';
-  let isUploading = false;
-  let selectedEvidence: Evidence | null = null;
-  let uploadProgress = 0;
+	function formatFileSize(bytes: number): string {
+		if (bytes === 0) return '0 B';
+		const k = 1024;
+		const sizes = ['B', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+	}
 
-  onMount(async () => {
-    await loadEvidence();
-  });
+	onMount(async () => {
+		// Register service worker for background uploads
+		await registerServiceWorker();
+	});
 
-  const loadEvidence = async () => {
-    try {
-      const response = await fetch('/api/evidence/pending');
-      if (!response.ok) {
-        if (response.status === 401) {
-          await goto('/login');
-          return;
-        }
-        throw new Error('Failed to load evidence');
-      }
+	async function handleFileSelect(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files?.[0]) {
+			selectedFile = input.files[0];
+			uploadError = null;
+		}
+	}
 
-      const data = await response.json();
-      pendingEvidence = data.pending || [];
-      approvedEvidence = data.approved || [];
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load evidence';
-    } finally {
-      isLoading = false;
-    }
-  };
+	async function handleDragOver(event: DragEvent) {
+		event.preventDefault();
+		isDragging = true;
+	}
 
-  const handleFileUpload = async (event: Event) => {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+	async function handleDragLeave(event: DragEvent) {
+		event.preventDefault();
+		isDragging = false;
+	}
 
-    isUploading = true;
-    error = '';
-    uploadProgress = 0;
+	async function handleDrop(event: DragEvent) {
+		event.preventDefault();
+		isDragging = false;
 
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
+		if (event.dataTransfer?.files?.[0]) {
+			selectedFile = event.dataTransfer.files[0];
+			uploadError = null;
+			await startUpload();
+		}
+	}
 
-      const response = await fetch('/api/evidence/upload', {
-        method: 'POST',
-        body: formData,
-      });
+	async function startUpload() {
+		if (!selectedFile) {
+			uploadError = 'Please select a file';
+			return;
+		}
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Upload failed');
-      }
+		try {
+			uploadError = null;
+			const docId = await uploadFileViaQUIC(selectedFile, (progress) => {
+				// Progress is automatically updated in the store
+			});
 
-      uploadProgress = 100;
-      await new Promise((resolve) => setTimeout(resolve, 500));
+			console.log('✅ Upload complete:', docId);
+		} catch (error) {
+			uploadError = error instanceof Error ? error.message : 'Upload failed';
+			console.error('Upload error:', error);
+		}
+	}
 
-      // Reload evidence
-      await loadEvidence();
-      input.value = '';
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Upload failed';
-    } finally {
-      isUploading = false;
-      uploadProgress = 0;
-    }
-  };
+	function getProgressColor(stage: string): string {
+		switch (stage) {
+			case 'uploading':
+				return 'bg-blue-500';
+			case 'processing':
+				return 'bg-amber-500';
+			case 'mirroring':
+				return 'bg-purple-500';
+			case 'complete':
+				return 'bg-green-500';
+			default:
+				return 'bg-gray-500';
+		}
+	}
 
-  const approveEvidence = async (evidence: Evidence) => {
-    try {
-      const response = await fetch(`/api/evidence/${evidence.id}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'approve' }),
-      });
-
-      if (!response.ok) throw new Error('Approval failed');
-
-      await loadEvidence();
-      selectedEvidence = null;
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Approval failed';
-    }
-  };
-
-  const rejectEvidence = async (evidence: Evidence) => {
-    try {
-      const response = await fetch(`/api/evidence/${evidence.id}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'reject',
-          rejectionReason: 'Rejected by prosecutor',
-        }),
-      });
-
-      if (!response.ok) throw new Error('Rejection failed');
-
-      await loadEvidence();
-      selectedEvidence = null;
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Rejection failed';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'verdict-amber';
-      case 'approved':
-        return 'verdict-green';
-      case 'rejected':
-        return 'verdict-red';
-      case 'locked':
-        return 'legal-black';
-      default:
-        return 'charcoal-slate';
-    }
-  };
+	function getStageLabel(stage: string): string {
+		switch (stage) {
+			case 'uploading':
+				return '📤 Uploading...';
+			case 'processing':
+				return '🔄 Processing (DocLing GPU)...';
+			case 'mirroring':
+				return '🪞 Mirroring to Qdrant + Postgres...';
+			case 'complete':
+				return '✅ Complete!';
+			default:
+				return 'Ready';
+		}
+	}
 </script>
 
-<div class="evidence-grid min-h-screen">
-  <!-- Header -->
-  <header class="bg-bone-white border-b border-blueprint-grid sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-6 py-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-legal-black">Evidence Intake</h1>
-          <p class="text-charcoal-slate mt-1">Chain-of-Custody Management</p>
-        </div>
-        <a href="/dashboard" class="btn btn-secondary">
-          ← Dashboard
-        </a>
-      </div>
-    </div>
-  </header>
+<div class="evidence-container">
+	<!-- Header -->
+	<div class="header">
+		<h1>📄 Evidence Upload</h1>
+		<p>Upload legal documents for GPU-accelerated processing</p>
+	</div>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-6 py-8">
-    {#if error}
-      <div class="mb-6 p-4 bg-verdict-red bg-opacity-10 border border-verdict-red rounded">
-        <p class="text-verdict-red font-mono text-sm">{error}</p>
-      </div>
-    {/if}
+	<!-- Upload Area -->
+	<div class="upload-section">
+		<div
+			class="drop-zone"
+			class:dragging={isDragging}
+			class:disabled={$isProcessing}
+			ondragover={handleDragOver}
+			ondragleave={handleDragLeave}
+			ondrop={handleDrop}
+			role="button"
+			tabindex="0"
+		>
+			{#if $isProcessing}
+				<div class="processing-state">
+					<div class="spinner"></div>
+					<p>{getStageLabel($uploadProgress.stage)}</p>
+				</div>
+			{:else}
+				<div class="upload-prompt">
+					<span class="icon">📁</span>
+					<p>Drop files here or click to upload</p>
+					<small>PDF, Images, Documents</small>
+					<input
+						type="file"
+						accept=".pdf,image/*,.doc,.docx"
+						onchange={handleFileSelect}
+						style="display: none"
+						id="file-input"
+					/>
+					<button onclick={() => document.getElementById('file-input')?.click()}>
+						Choose File
+					</button>
+				</div>
+			{/if}
+		</div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Left: Upload & Queue -->
-      <div class="lg:col-span-2 space-y-6">
-        <!-- Upload Section -->
-        <div class="card">
-          <h2 class="text-lg font-semibold text-legal-black mb-4">📤 Upload Evidence</h2>
+		<!-- Selected File Info -->
+		{#if selectedFile && !$isProcessing}
+			<div class="file-info">
+				<div class="file-details">
+					<span class="filename">{selectedFile.name}</span>
+					<span class="filesize">{formatFileSize(selectedFile.size)}</span>
+				</div>
+				<button class="upload-btn" onclick={startUpload}>
+					Start Upload
+				</button>
+			</div>
+		{/if}
 
-          <label class="block cursor-pointer">
-            <div class="border-2 border-dashed border-blueprint-grid rounded p-8 text-center hover:border-verdict-red transition">
-              <p class="text-legal-black font-mono mb-2">
-                {isUploading ? `Uploading... ${uploadProgress}%` : '📄 Click or drag to upload'}
-              </p>
-              <p class="text-charcoal-slate text-sm">PDF, images, documents</p>
-              <input
-                type="file"
-                on:change={handleFileUpload}
-                disabled={isUploading}
-                class="hidden"
-                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-              />
-            </div>
-          </label>
+		<!-- Error Message -->
+		{#if uploadError}
+			<div class="error-message">
+				<span class="icon">⚠️</span>
+				<p>{uploadError}</p>
+			</div>
+		{/if}
+	</div>
 
-          {#if uploadProgress > 0 && uploadProgress < 100}
-            <div class="mt-4 bg-charcoal-slate rounded overflow-hidden h-2">
-              <div
-                class="bg-verdict-red h-full transition-all"
-                style="width: {uploadProgress}%"
-              />
-            </div>
-          {/if}
-        </div>
+	<!-- Progress Bar -->
+	{#if $isProcessing}
+		<div class="progress-section">
+			<div class="progress-header">
+				<span class="stage-label">{getStageLabel($uploadProgress.stage)}</span>
+				<span class="percentage">{Math.round($uploadProgress.percentage)}%</span>
+			</div>
 
-        <!-- Pending Queue -->
-        <div class="card">
-          <h2 class="text-lg font-semibold text-legal-black mb-4">
-            ⏳ Pending Approval ({pendingEvidence.length})
-          </h2>
+			<div class="progress-bar">
+				<div
+					class="progress-fill {getProgressColor($uploadProgress.stage)}"
+					style="width: {$uploadProgress.percentage}%"
+				></div>
+			</div>
 
-          {#if isLoading}
-            <p class="text-charcoal-slate font-mono">Loading evidence...</p>
-          {:else if pendingEvidence.length === 0}
-            <p class="text-charcoal-slate font-mono">No pending evidence</p>
-          {:else}
-            <div class="space-y-3">
-              {#each pendingEvidence as evidence (evidence.id)}
-                <button
-                  on:click={() => (selectedEvidence = evidence)}
-                  class={`w-full text-left p-4 rounded border-2 transition ${
-                    selectedEvidence?.id === evidence.id
-                      ? 'border-verdict-red bg-verdict-red bg-opacity-5'
-                      : 'border-blueprint-grid hover:border-sapphire-link'
-                  }`}
-                >
-                  <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                      <p class="font-mono text-legal-black font-semibold">
-                        {evidence.fileName}
-                      </p>
-                      <p class="text-charcoal-slate text-sm mt-1 font-mono">
-                        {evidence.documentType} • {(evidence.inferenceConfidence * 100).toFixed(0)}% confidence
-                      </p>
-                      <p class="text-blueprint-grid text-xs mt-2 font-mono">
-                        Hash: {evidence.fileHash.substring(0, 16)}...
-                      </p>
-                    </div>
-                    <span class="status-chip pending">Pending</span>
-                  </div>
-                </button>
-              {/each}
-            </div>
-          {/if}
-        </div>
+			<div class="progress-details">
+				<span class="uploaded">
+					{formatFileSize($uploadProgress.uploadedBytes)} / {formatFileSize($uploadProgress.fileSize)}
+				</span>
+				<span class="timestamp">
+					{new Date($uploadProgress.timestamp).toLocaleTimeString()}
+				</span>
+			</div>
 
-        <!-- Approved Archive -->
-        <div class="card">
-          <h2 class="text-lg font-semibold text-legal-black mb-4">
-            ✓ Approved ({approvedEvidence.length})
-          </h2>
+			<!-- Stage Indicators -->
+			<div class="stage-indicators">
+				<div class="stage" class:active={$uploadProgress.stage === 'uploading'}>
+					<span class="dot"></span>
+					<span>Upload</span>
+				</div>
+				<div class="stage" class:active={$uploadProgress.stage === 'processing'}>
+					<span class="dot"></span>
+					<span>Process</span>
+				</div>
+				<div class="stage" class:active={$uploadProgress.stage === 'mirroring'}>
+					<span class="dot"></span>
+					<span>Mirror</span>
+				</div>
+				<div class="stage" class:active={$uploadProgress.stage === 'complete'}>
+					<span class="dot"></span>
+					<span>Complete</span>
+				</div>
+			</div>
+		</div>
+	{/if}
 
-          {#if approvedEvidence.length === 0}
-            <p class="text-charcoal-slate font-mono">No approved evidence yet</p>
-          {:else}
-            <div class="space-y-2">
-              {#each approvedEvidence as evidence (evidence.id)}
-                <div class="p-3 rounded border border-blueprint-grid bg-verdict-green bg-opacity-5">
-                  <p class="font-mono text-legal-black text-sm font-semibold">
-                    {evidence.fileName}
-                  </p>
-                  <p class="text-charcoal-slate text-xs mt-1 font-mono">
-                    Approved • {new Date(evidence.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              {/each}
-            </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Right: Evidence Details & Actions -->
-      <div class="space-y-6">
-        {#if selectedEvidence}
-          <div class="card border-verdict-red">
-            <h3 class="text-lg font-semibold text-legal-black mb-4">📋 Evidence Details</h3>
-
-            <div class="space-y-4 font-mono text-sm">
-              <div>
-                <p class="text-charcoal-slate">File Name</p>
-                <p class="text-legal-black font-semibold mt-1">{selectedEvidence.fileName}</p>
-              </div>
-
-              <div>
-                <p class="text-charcoal-slate">Classification</p>
-                <p class="text-legal-black font-semibold mt-1">{selectedEvidence.documentType}</p>
-              </div>
-
-              <div>
-                <p class="text-charcoal-slate">AI Confidence</p>
-                <div class="mt-2 bg-charcoal-slate rounded overflow-hidden h-2">
-                  <div
-                    class="bg-verdict-amber h-full"
-                    style="width: {selectedEvidence.inferenceConfidence * 100}%"
-                  />
-                </div>
-                <p class="text-legal-black font-semibold mt-1">
-                  {(selectedEvidence.inferenceConfidence * 100).toFixed(1)}%
-                </p>
-              </div>
-
-              <div>
-                <p class="text-charcoal-slate">SHA-256 Hash</p>
-                <p class="text-sapphire-link font-semibold mt-1 break-all text-xs">
-                  {selectedEvidence.fileHash}
-                </p>
-              </div>
-
-              <div>
-                <p class="text-charcoal-slate">Uploaded</p>
-                <p class="text-legal-black font-semibold mt-1">
-                  {new Date(selectedEvidence.createdAt).toLocaleString()}
-                </p>
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="mt-6 space-y-3">
-              <button
-                on:click={() => approveEvidence(selectedEvidence)}
-                class="w-full btn btn-success"
-              >
-                ✓ Approve & Index
-              </button>
-              <button
-                on:click={() => rejectEvidence(selectedEvidence)}
-                class="w-full btn btn-outline"
-              >
-                ✗ Reject
-              </button>
-            </div>
-
-            <!-- Chain of Custody -->
-            <div class="mt-6 pt-6 border-t border-blueprint-grid">
-              <p class="text-charcoal-slate text-xs font-mono mb-3">CHAIN OF CUSTODY</p>
-              <div class="bg-crt rounded p-3 text-crt-green text-xs font-mono leading-relaxed">
-                <p>[UPLOAD] {new Date(selectedEvidence.createdAt).toISOString()}</p>
-                <p>[PENDING] Awaiting prosecutor approval</p>
-                <p>[HASH] {selectedEvidence.fileHash.substring(0, 32)}...</p>
-              </div>
-            </div>
-          </div>
-        {:else}
-          <div class="card text-center text-charcoal-slate">
-            <p class="font-mono">Select evidence to review</p>
-          </div>
-        {/if}
-
-        <!-- Stats -->
-        <div class="card">
-          <h3 class="text-lg font-semibold text-legal-black mb-4">📊 Queue Stats</h3>
-          <div class="space-y-3 font-mono text-sm">
-            <div class="flex justify-between">
-              <span class="text-charcoal-slate">Pending</span>
-              <span class="text-verdict-amber font-semibold">{pendingEvidence.length}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-charcoal-slate">Approved</span>
-              <span class="text-verdict-green font-semibold">{approvedEvidence.length}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-charcoal-slate">Total</span>
-              <span class="text-legal-black font-semibold">
-                {pendingEvidence.length + approvedEvidence.length}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+	<!-- Info Panel -->
+	<div class="info-panel">
+		<h3>🚀 GPU Processing Pipeline</h3>
+		<ul>
+			<li>
+				<strong>DocLing GPU:</strong> Extracts text, layout, tables, and OCR from documents
+			</li>
+			<li>
+				<strong>EmbeddingGemma:</strong> Generates 768-dim embeddings with fp16 compression
+			</li>
+			<li>
+				<strong>Qdrant GPU:</strong> Indexes embeddings for fast cosine similarity search
+			</li>
+			<li>
+				<strong>Postgres pgvector:</strong> Stores metadata, citations, and case relationships
+			</li>
+			<li>
+				<strong>MiniLM Reranker:</strong> Reranks top-K results to top-5 for precision
+			</li>
+		</ul>
+	</div>
 </div>
 
 <style>
-  :global(body) {
-    background-color: var(--bone-white);
-  }
+	.evidence-container {
+		max-width: 900px;
+		margin: 0 auto;
+		padding: 2rem;
+		font-family: 'Inter', sans-serif;
+	}
+
+	.header {
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.header h1 {
+		font-size: 2rem;
+		color: #2d2d2d;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.header p {
+		color: #666;
+		margin: 0;
+	}
+
+	.upload-section {
+		margin-bottom: 2rem;
+	}
+
+	.drop-zone {
+		border: 2px dashed #ccc;
+		border-radius: 8px;
+		padding: 3rem;
+		text-align: center;
+		background: #f9f9f9;
+		transition: all 0.3s ease;
+		cursor: pointer;
+	}
+
+	.drop-zone.dragging {
+		border-color: #8b3a3a;
+		background: #f5f0f0;
+	}
+
+	.drop-zone.disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.upload-prompt {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.upload-prompt .icon {
+		font-size: 3rem;
+	}
+
+	.upload-prompt p {
+		margin: 0;
+		font-size: 1.1rem;
+		color: #2d2d2d;
+	}
+
+	.upload-prompt small {
+		color: #999;
+	}
+
+	.upload-prompt button {
+		padding: 0.75rem 1.5rem;
+		background: #8b3a3a;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 500;
+		transition: background 0.3s ease;
+	}
+
+	.upload-prompt button:hover {
+		background: #6b2a2a;
+	}
+
+	.processing-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #f3f3f3;
+		border-top: 4px solid #8b3a3a;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	.file-info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem;
+		background: #f5f5f5;
+		border-radius: 4px;
+		margin-top: 1rem;
+	}
+
+	.file-details {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.filename {
+		font-weight: 500;
+		color: #2d2d2d;
+	}
+
+	.filesize {
+		font-size: 0.9rem;
+		color: #999;
+	}
+
+	.upload-btn {
+		padding: 0.75rem 1.5rem;
+		background: #8b3a3a;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 500;
+		transition: background 0.3s ease;
+	}
+
+	.upload-btn:hover {
+		background: #6b2a2a;
+	}
+
+	.error-message {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem;
+		background: #fee;
+		border: 1px solid #fcc;
+		border-radius: 4px;
+		margin-top: 1rem;
+		color: #c33;
+	}
+
+	.error-message .icon {
+		font-size: 1.5rem;
+	}
+
+	.progress-section {
+		background: #f9f9f9;
+		padding: 2rem;
+		border-radius: 8px;
+		margin-bottom: 2rem;
+	}
+
+	.progress-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.stage-label {
+		font-weight: 500;
+		color: #2d2d2d;
+	}
+
+	.percentage {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #8b3a3a;
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 8px;
+		background: #e0e0e0;
+		border-radius: 4px;
+		overflow: hidden;
+		margin-bottom: 1rem;
+	}
+
+	.progress-fill {
+		height: 100%;
+		transition: width 0.3s ease;
+	}
+
+	.progress-details {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.9rem;
+		color: #666;
+		margin-bottom: 1.5rem;
+	}
+
+	.stage-indicators {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.stage {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+		opacity: 0.5;
+		transition: opacity 0.3s ease;
+	}
+
+	.stage.active {
+		opacity: 1;
+	}
+
+	.stage .dot {
+		width: 12px;
+		height: 12px;
+		background: #ccc;
+		border-radius: 50%;
+		transition: background 0.3s ease;
+	}
+
+	.stage.active .dot {
+		background: #8b3a3a;
+	}
+
+	.stage span:last-child {
+		font-size: 0.85rem;
+		color: #666;
+	}
+
+	.info-panel {
+		background: #f5f4f0;
+		padding: 1.5rem;
+		border-radius: 8px;
+		border-left: 4px solid #8b3a3a;
+	}
+
+	.info-panel h3 {
+		margin: 0 0 1rem 0;
+		color: #2d2d2d;
+	}
+
+	.info-panel ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.info-panel li {
+		padding: 0.5rem 0;
+		color: #666;
+		line-height: 1.6;
+	}
+
+	.info-panel strong {
+		color: #2d2d2d;
+	}
 </style>

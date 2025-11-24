@@ -1,58 +1,384 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; import type { goto  } from '$app/navigation'; import type { Upload, FileText, Image, Video, AlertCircle, CheckCircle, X  } from 'lucide-svelte'; import type { PageData } from './$types .js'; interface UploadFile { file: File, progress: number, status: 'pending' | 'uploading' | 'success' | 'error'; error?: string}
 
-  let { data }: { data: PageData } = $props(); // Form state let caseId = $state <string>(''); let evidenceType = $state <string>('document'); let title = $state <string>(''); let description = $state <string>(''); let isAdmissible = $state <boolean>(true); let collectedBy = $state <string>(''); let collectedAt = $state(new Date().toISOString().split('T')[0]); let tags = $state <string>(''); // Upload state let dragOver = $state <boolean>(false); let uploadQueue = $state <UploadFile[]>([]); let isUploading = $state <boolean>(false); let uploadMessage = $state <string>(''); let uploadMessageType = $state <'success' | 'error'>('success'); // Helper functions function formatFileSize(bytes: number): string { const units = ['B', 'KB', 'MB', 'GB']; let size = bytes; let unitIndex = 0; while (size >= 1024 && unitIndex < units.length - 1) { size /= 1024; unitIndex++}
-    return `${size.toFixed(1)} ${units[unitIndex]}`}
-  function getFileIcon(file: File) { if (file.type.startsWith('image/')) return Image; if (file.type.startsWith('video/')) return Video; return FileText}
-  function validateFile(file: File): string | null { // Size validation (100MB max) if (file.size > 100 * 1024 * 1024) { return 'File size exceeds 100MB limit'}
+	interface UploadStatus {
+		status: 'idle' | 'uploading' | 'processing' | 'complete' | 'error';
+		docId?: string;
+		fileName?: string;
+		progress: number;
+		message: string;
+		error?: string;
+	}
 
-    // Type validation const allowedTypes = [
-      'application/pdf',
-      'text/plain',
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'video/mp4',
-      'video/quicktime',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']; if (!allowedTypes.includes(file.type)) { return `File type ${file.type} not supported`}
+	let uploadStatus: UploadStatus = {
+		status: 'idle',
+		progress: 0,
+		message: 'Ready to upload'
+	};
 
-    return: null}
-  function handleDragOver(e: DragEvent) { e.preventDefault(); dragOver = true}
-  function handleDragLeave(e: DragEvent) { e.preventDefault(); dragOver = false}
-  function handleDrop(e: DragEvent) { e.preventDefault(); dragOver = false; const files = e.dataTransfer?.files; if (files) { for (let i = 0; i < files.length; i++) { handleFileSelect(files[i])}
-    } }
-  function handleFileChange(e: Event) { const input = e.target as HTMLInputElement; const files = input.files; if (files) { for (let i = 0; i < files.length; i++) { handleFileSelect(files[i])}
-    } }
-  function handleFileSelect(file: File) { const error = validateFile(file); if (error) { uploadMessage = error; uploadMessageType = 'error'; return}
+	let dragActive = false;
+	let fileInput: HTMLInputElement;
 
-    uploadQueue.push({ file, progress: 0, status: 'pending'
-    }); uploadQueue = uploadQueue; // trigger reactivity uploadMessage = ''}
-  function removeFile(index: number) { uploadQueue.splice(index, 1); uploadQueue = uploadQueue}
-  async function uploadFile(uploadFile: UploadFile): Promise<any> { uploadFile.status = 'uploading'; const formData = new FormData(); formData.append('file', uploadFile.file); formData.append('title', title || uploadFile.file.name); formData.append('description', description); formData.append('evidenceType', evidenceType); formData.append('caseId', caseId); formData.append('tags', tags); formData.append('isAdmissible', String(isAdmissible)); formData.append('collectedBy', collectedBy); formData.append('collectedAt', collectedAt); try { const response = await fetch('/api/evidence/upload', { method: 'POST', body: formData }); const result = await response.json(); if (response.ok && result.success) { uploadFile.status = 'success'; uploadFile.progress = 100; uploadMessage = `âœ… ${uploadFile.file.name} uploaded successfully`; uploadMessageType = 'success'} else { uploadFile.status = 'error'; uploadFile.error = result.error || 'Upload failed'; uploadMessage = `âŒ ${uploadFile.error}`; uploadMessageType = 'error'}
-    } catch (err) { uploadFile.status = 'error'; uploadFile.error = err instanceof Error ? err.message: 'Unknown error'; uploadMessage = `âŒ ${uploadFile.error}`; uploadMessageType = 'error'}
-  }
-  async function handleUpload(): Promise<any> { if (!caseId) { uploadMessage = 'Please select a case'; uploadMessageType = 'error'; return}
+	async function uploadFile(file: File) {
+		if (!file) return;
 
-    if (uploadQueue.length === 0) { uploadMessage = 'Please select files to upload'; uploadMessageType = 'error'; return}
+		uploadStatus = {
+			status: 'uploading',
+			fileName: file.name,
+			progress: 0,
+			message: 'Uploading file...'
+		};
 
-    isUploading = true; for (const uploadFile of uploadQueue) { if (uploadFile.status === 'pending') { await uploadFile(uploadFile); // Small delay between uploads await new Promise(resolve => setTimeout(resolve, 500))}
-    } isUploading = false}
-  function handleReset() { uploadQueue = []; title = ''; description = ''; tags = ''; uploadMessage = ''}
-  async function goToCase(): Promise<any> { if (caseId) { await goto(`/cases/${ caseId }`)}
-  }
+		try {
+			const formData = new FormData();
+			formData.append('file', file);
+
+			const response = await fetch('/api/evidence/upload', {
+				method: 'POST',
+				body: formData
+			});
+
+			if (!response.ok) {
+				throw new Error(`Upload failed: ${response.statusText}`);
+			}
+
+			const result = await response.json();
+
+			uploadStatus = {
+				status: 'processing',
+				docId: result.doc_id,
+				fileName: result.filename,
+				progress: 50,
+				message: `Queued for processing: ${result.doc_id}`
+			};
+
+			// Poll for processing status
+			await pollProcessingStatus(result.doc_id);
+
+		} catch (error) {
+			uploadStatus = {
+				status: 'error',
+				progress: 0,
+				message: 'Upload failed',
+				error: error instanceof Error ? error.message : 'Unknown error'
+			};
+		}
+	}
+
+	async function pollProcessingStatus(docId: string) {
+		const maxAttempts = 60; // 5 minutes with 5s intervals
+		let attempts = 0;
+
+		while (attempts < maxAttempts) {
+			try {
+				const response = await fetch(`/api/evidence/${docId}/status`);
+
+				if (!response.ok) {
+					throw new Error('Status check failed');
+				}
+
+				const status = await response.json();
+
+				uploadStatus = {
+					status: status.status === 'complete' ? 'complete' : 'processing',
+					docId: docId,
+					fileName: uploadStatus.fileName,
+					progress: status.progress || 50,
+					message: status.message || 'Processing...'
+				};
+
+				if (status.status === 'complete') {
+					uploadStatus.progress = 100;
+					uploadStatus.message = `✅ Processing complete: ${status.chunk_count} chunks created`;
+					break;
+				}
+
+				if (status.status === 'error') {
+					uploadStatus.status = 'error';
+					uploadStatus.error = status.error;
+					break;
+				}
+
+				// Wait 5 seconds before next poll
+				await new Promise(resolve => setTimeout(resolve, 5000));
+				attempts++;
+
+			} catch (error) {
+				uploadStatus = {
+					status: 'error',
+					progress: 0,
+					message: 'Status check failed',
+					error: error instanceof Error ? error.message : 'Unknown error'
+				};
+				break;
+			}
+		}
+
+		if (attempts >= maxAttempts) {
+			uploadStatus = {
+				status: 'error',
+				progress: 0,
+				message: 'Processing timeout',
+				error: 'Document processing took too long'
+			};
+		}
+	}
+
+	function handleDragOver(e: DragEvent) {
+		e.preventDefault();
+		dragActive = true;
+	}
+
+	function handleDragLeave() {
+		dragActive = false;
+	}
+
+	function handleDrop(e: DragEvent) {
+		e.preventDefault();
+		dragActive = false;
+
+		const files = e.dataTransfer?.files;
+		if (files && files.length > 0) {
+			uploadFile(files[0]);
+		}
+	}
+
+	function handleFileSelect(e: Event) {
+		const input = e.target as HTMLInputElement;
+		if (input.files && input.files.length > 0) {
+			uploadFile(input.files[0]);
+		}
+	}
+
+	function handleClick() {
+		fileInput?.click();
+	}
+
+	function resetUpload() {
+		uploadStatus = {
+			status: 'idle',
+			progress: 0,
+			message: 'Ready to upload'
+		};
+		if (fileInput) {
+			fileInput.value = '';
+		}
+	}
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<div class="upload-container">
+	<div class="upload-header">
+		<h1>📤 Upload Evidence</h1>
+		<p>Upload legal documents for processing and analysis</p>
+	</div>
+
+	<div
+		class="upload-zone"
+		class:drag-active={dragActive}
+		on:dragover={handleDragOver}
+		on:dragleave={handleDragLeave}
+		on:drop={handleDrop}
+		on:click={handleClick}
+		role="button"
+		tabindex="0"
+	>
+		<div class="upload-icon">📁</div>
+		<h2>Drag and drop your file here</h2>
+		<p>or click to select a file</p>
+		<p class="file-types">Supported: PDF, DOCX, PNG, JPG</p>
+	</div>
+
+	<input
+		bind:this={fileInput}
+		type="file"
+		accept=".pdf,.docx,.png,.jpg,.jpeg"
+		on:change={handleFileSelect}
+		style="display: none"
+	/>
+
+	{#if uploadStatus.status !== 'idle'}
+		<div class="status-container">
+			<div class="status-header">
+				<h3>
+					{#if uploadStatus.status === 'uploading'}
+						⬆️ Uploading...
+					{:else if uploadStatus.status === 'processing'}
+						⚙️ Processing...
+					{:else if uploadStatus.status === 'complete'}
+						✅ Complete
+					{:else if uploadStatus.status === 'error'}
+						❌ Error
+					{/if}
+				</h3>
+				{#if uploadStatus.fileName}
+					<p class="filename">{uploadStatus.fileName}</p>
+				{/if}
+			</div>
+
+			<div class="progress-bar">
+				<div class="progress-fill" style="width: {uploadStatus.progress}%"></div>
+			</div>
+
+			<p class="status-message">{uploadStatus.message}</p>
+
+			{#if uploadStatus.docId}
+				<p class="doc-id">Document ID: <code>{uploadStatus.docId}</code></p>
+			{/if}
+
+			{#if uploadStatus.error}
+				<p class="error-message">Error: {uploadStatus.error}</p>
+			{/if}
+
+			{#if uploadStatus.status === 'complete' || uploadStatus.status === 'error'}
+				<button class="reset-button" on:click={resetUpload}>Upload Another File</button>
+			{/if}
+		</div>
+	{/if}
+</div>
 
 <style>
-  :global(body) {
-    background: #0f172a;
-  }
+	.upload-container {
+		max-width: 600px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+
+	.upload-header {
+		text-align: center;
+		margin-bottom: 2rem;
+	}
+
+	.upload-header h1 {
+		font-size: 2rem;
+		margin: 0 0 0.5rem 0;
+		color: #2d2d2d;
+	}
+
+	.upload-header p {
+		color: #666;
+		margin: 0;
+	}
+
+	.upload-zone {
+		border: 2px dashed #ccc;
+		border-radius: 8px;
+		padding: 3rem 2rem;
+		text-align: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		background-color: #f9f9f9;
+	}
+
+	.upload-zone:hover {
+		border-color: #8b3a3a;
+		background-color: #fafaf8;
+	}
+
+	.upload-zone.drag-active {
+		border-color: #8b3a3a;
+		background-color: #f5f0e8;
+		transform: scale(1.02);
+	}
+
+	.upload-icon {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+	}
+
+	.upload-zone h2 {
+		margin: 0 0 0.5rem 0;
+		color: #2d2d2d;
+		font-size: 1.3rem;
+	}
+
+	.upload-zone p {
+		margin: 0.25rem 0;
+		color: #666;
+	}
+
+	.file-types {
+		font-size: 0.9rem;
+		color: #999;
+		margin-top: 1rem;
+	}
+
+	.status-container {
+		margin-top: 2rem;
+		padding: 1.5rem;
+		background-color: #f5f5f5;
+		border-radius: 8px;
+		border-left: 4px solid #8b3a3a;
+	}
+
+	.status-header {
+		margin-bottom: 1rem;
+	}
+
+	.status-header h3 {
+		margin: 0 0 0.5rem 0;
+		color: #2d2d2d;
+	}
+
+	.filename {
+		margin: 0;
+		color: #666;
+		font-size: 0.9rem;
+		word-break: break-all;
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 8px;
+		background-color: #e0e0e0;
+		border-radius: 4px;
+		overflow: hidden;
+		margin-bottom: 1rem;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background-color: #8b3a3a;
+		transition: width 0.3s ease;
+	}
+
+	.status-message {
+		margin: 0.5rem 0;
+		color: #2d2d2d;
+		font-weight: 500;
+	}
+
+	.doc-id {
+		margin: 0.5rem 0;
+		color: #666;
+		font-size: 0.9rem;
+	}
+
+	.doc-id code {
+		background-color: #e8e8e8;
+		padding: 0.2rem 0.4rem;
+		border-radius: 3px;
+		font-family: monospace;
+		color: #333;
+	}
+
+	.error-message {
+		margin: 0.5rem 0;
+		color: #d32f2f;
+		font-size: 0.9rem;
+	}
+
+	.reset-button {
+		margin-top: 1rem;
+		padding: 0.75rem 1.5rem;
+		background-color: #8b3a3a;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 1rem;
+		transition: background-color 0.3s ease;
+	}
+
+	.reset-button:hover {
+		background-color: #6b2a2a;
+	}
 </style>

@@ -87,8 +87,8 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: pgvector/pgvector:pg17
-    container_name: legal-ai-postgres
+    image: postgres:17
+    container_name: postgres-pgvector
     environment:
       - POSTGRES_DB=legal_ai_db
       - POSTGRES_USER=legal_admin
@@ -99,6 +99,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init/00-init-db.sql:/docker-entrypoint-initdb.d/00-init-db.sql
+      - ./sql/init/01-install-pgvector.sql:/docker-entrypoint-initdb.d/01-install-pgvector.sql
       - ./sql/init:/docker-entrypoint-initdb.d
     networks:
       - legal-ai-network

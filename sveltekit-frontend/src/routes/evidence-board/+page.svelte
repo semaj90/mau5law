@@ -1,247 +1,421 @@
 <script lang="ts">
-  interface EvidenceNode {
-    id: string;
-    caseId: string;
-    type: string;
-    title: string;
-    description: string;
-    x: number;
-    y: number;
-    confidence: number;
-    metadata: Record<string, any>;
-  }
+	import EvidenceCard from '$lib/components/EvidenceCard.svelte';
+	import EvidenceConnections from '$lib/components/EvidenceConnections.svelte';
+	import { onMount } from 'svelte';
 
-  interface EvidenceConnection {
-    id: string;
-    caseId: string;
-    fromNodeId: string;
-    toNodeId: string;
-    type: string;
-  }
+	let evidence = [];
+	let selectedEvidence = null;
+	let zoom = 100;
+	let panX = 0;
+	let panY = 0;
+	let isDragging = false;
+	let dragStart = { x: 0, y: 0 };
 
-  import type { page  } from '$app/stores';
-  import ClientGemmaInference from '$lib/components/ClientGemmaInference.svelte';
-  import EvidenceAssistant from '$lib/components/evidence/EvidenceAssistant.svelte';
-  import EvidenceBoard from '$lib/components/evidence/EvidenceBoard.svelte';
-  import VictimStatementWizard from '$lib/components/evidence/VictimStatementWizard.svelte';
-  import Button from '$lib/components/ui/button';
-  import type { onMount  } from 'svelte';
+	function handleZoomIn() {
+		zoom = Math.min(zoom + 10, 200);
+	}
 
-  let caseId = $state ('');
-  let nodes = $state <EvidenceNode[]>([]);
-  let connections = $state <EvidenceConnection[]>([]);
-  let showAssistant = $state (false);
-  let selectedNode = $state <EvidenceNode | null>(null);
-  let showVictimWizard = $state (false);
-  let showClientInference = $state (false);
+	function handleZoomOut() {
+		zoom = Math.max(zoom - 10, 50);
+	}
 
-  onMount(async () => {
-    // Extract case ID from URL params
-    const urlParams = new URLSearchParams($page .url.search);
-    caseId = urlParams.get('caseId') || 'default-case';
+	function handleZoomReset() {
+		zoom = 100;
+		panX = 0;
+		panY = 0;
+	}
 
-    // Load existing evidence
-    await loadEvidence();
-  });
+	function handleMouseDown(e) {
+		isDragging = true;
+		dragStart = { x: e.clientX - panX, y: e.clientY - panY };
+	}
 
-  async function loadEvidence() {
-    try {
-      const [nodesResponse, connectionsResponse] = await Promise.all([
-        fetch(`/api/evidence/nodes?caseId=${caseId}`),
-        fetch(`/api/evidence/connections?caseId=${caseId}`),
-      ]);
+	function handleMouseMove(e) {
+		if (isDragging) {
+			panX = e.clientX - dragStart.x;
+			panY = e.clientY - dragStart.y;
+		}
+	}
 
-      nodes = await nodesResponse.json();
-      connections = await connectionsResponse.json();
-    } catch (error) {
-      console.error('Failed to load evidence:', error);
-    }
-  }
+	function handleMouseUp() {
+		isDragging = false;
+	}
 
-  async function addEvidenceNode() {
-    try {
-      const newNode = {
-        caseId,
-        type: 'other',
-        title: 'New Evidence',
-        description: '',
-        x: Math.random() * 800,
-        y: Math.random() * 600,
-        confidence: 0.5,
-        metadata: {},
-      };
+	function handleKeyDown(e) {
+		if (e.ctrlKey || e.metaKey) {
+			if (e.key === '+' || e.key === '=') {
+				e.preventDefault();
+				handleZoomIn();
+			} else if (e.key === '-') {
+				e.preventDefault();
+				handleZoomOut();
+			} else if (e.key === '0') {
+				e.preventDefault();
+				handleZoomReset();
+			}
+		}
+	}
 
-      const response = await fetch('/api/evidence/nodes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newNode),
-      });
-
-      const createdNode = await response.json();
-      nodes = [...nodes, createdNode];
-    } catch (error) {
-      console.error('Failed to add evidence node:', error);
-    }
-  }
-
-  function openEvidenceAssistant(node: EvidenceNode) {
-    selectedNode = node;
-    showAssistant = true;
-  }
-
-  function handleNodeUpdate(event: CustomEvent) {
-    const { nodeId, updates } = event.detail;
-
-    // Update local state
-    nodes = nodes.map(node =>
-      node.id === nodeId ? { ...node, ...updates } : node
-    );
-
-    // Update in database
-    fetch(`/api/evidence/nodes/${nodeId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updates),
-    });
-  }
-
-  function handleVictimStatementSave(event: CustomEvent) {
-    const { statement } = event.detail;
-    console.log('Victim statement saved:', statement);
-    showVictimWizard = false;
-    // TODO: Create evidence node from victim statement
-  }
+	onMount(() => {
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	});
 </script>
 
-<svelte:head>
-  <title>Evidence Board - Case {caseId}</title>
-</svelte:head>
+<div class="evidence-board-container">
+	<!-- Header -->
+	<div class="board-header">
+		<h1>Evidence Board</h1>
+		<div class="zoom-controls">
+			<button on:click={handleZoomOut} title="Zoom Out (Ctrl+-)">−</button>
+			<span class="zoom-level">{zoom}%</span>
+			<button on:click={handleZoomIn} title="Zoom In (Ctrl++)">+</button>
+			<button on:click={handleZoomReset} title="Reset (Ctrl+0)">Reset</button>
+		</div>
+	</div>
 
-<div class="evidence-board-page">
-  <header class="page-header">
-    <h1>Evidence Board</h1>
-    <div class="header-actions">
-      <Button variant="outline" onclick={addEvidenceNode}>
-        Add Evidence
-      </Button>
-      <Button variant="outline" onclick={() => showVictimWizard = true}>
-        Victim Statement
-      </Button>
-      <Button variant="outline" onclick={() => showClientInference = true}>
-        AI Analysis
-      </Button>
-      <Button variant="outline" onclick={() => loadEvidence()}>
-        Refresh
-      </Button>
-    </div>
-  </header>
+	<!-- Main Layout -->
+	<div class="board-layout">
+		<!-- Left Sidebar: Evidence List -->
+		<div class="sidebar left-sidebar">
+			<h2>Evidence Library</h2>
+			<div class="evidence-list">
+				{#each evidence as item (item.id)}
+					<div
+						class="list-item"
+						class:selected={selectedEvidence?.id === item.id}
+						on:click={() => (selectedEvidence = item)}
+					>
+						<div class="status-indicator" style="background: {item.status_color}"></div>
+						<div class="list-item-content">
+							<div class="list-item-title">{item.title}</div>
+							<div class="list-item-meta">{item.doc_id}</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
 
-  <main class="board-container">
-    <EvidenceBoard
-      {caseId}
-      initialNodes={nodes}
-      initialConnections={connections}
-      on:nodeSelect={(e) => openEvidenceAssistant(e.detail.node)}
-    />
-  </main>
+		<!-- Center Canvas: Evidence Cards -->
+		<div
+			class="canvas"
+			on:mousedown={handleMouseDown}
+			on:mousemove={handleMouseMove}
+			on:mouseup={handleMouseUp}
+			on:mouseleave={handleMouseUp}
+		>
+			<div class="canvas-content" style="transform: translate({panX}px, {panY}px) scale({zoom / 100})">
+				<!-- Connection Lines -->
+				<EvidenceConnections {evidence} />
 
-  <!-- Evidence Assistant Modal -->
-  {#if showAssistant && selectedNode}
-    <EvidenceAssistant
-      node={selectedNode}
-      bind:open={showAssistant}
-      on:update={handleNodeUpdate}
-    />
-  {/if}
+				<!-- Evidence Cards -->
+				<div class="cards-container">
+					{#each evidence as item (item.id)}
+						<EvidenceCard
+							{item}
+							selected={selectedEvidence?.id === item.id}
+							on:click={() => (selectedEvidence = item)}
+						/>
+					{/each}
+				</div>
+			</div>
+		</div>
 
-  <!-- Victim Statement Wizard -->
-  <VictimStatementWizard
-    bind:open={showVictimWizard}
-    {caseId}
-    on:save={handleVictimStatementSave}
-  />
-
-  <!-- Client Gemma Inference -->
-  {#if showClientInference}
-    <div class="inference-modal">
-      <div class="inference-modal-content">
-        <button class="close-btn" onclick={() => showClientInference = false}>×</button>
-        <ClientGemmaInference />
-      </div>
-    </div>
-  {/if}
+		<!-- Right Rail: Metadata -->
+		<div class="sidebar right-sidebar">
+			{#if selectedEvidence}
+				<div class="metadata-panel">
+					<h2>{selectedEvidence.title}</h2>
+					<div class="metadata-section">
+						<label>Document ID</label>
+						<span>{selectedEvidence.doc_id}</span>
+					</div>
+					<div class="metadata-section">
+						<label>Status</label>
+						<span class="status-badge" style="background: {selectedEvidence.status_color}">
+							{selectedEvidence.status}
+						</span>
+					</div>
+					<div class="metadata-section">
+						<label>Chunks</label>
+						<span>{selectedEvidence.chunk_count}</span>
+					</div>
+					<div class="metadata-section">
+						<label>Related Evidence</label>
+						<div class="related-list">
+							{#each selectedEvidence.related || [] as related}
+								<div class="related-item">{related}</div>
+							{/each}
+						</div>
+					</div>
+					<div class="actions">
+						<button>📌 Pin</button>
+						<button>💬 Chat</button>
+						<button>🔗 Link</button>
+					</div>
+				</div>
+			{:else}
+				<div class="empty-state">
+					<p>Select evidence to view details</p>
+				</div>
+			{/if}
+		</div>
+	</div>
 </div>
 
 <style>
-  .evidence-board-page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #f8f9fa;
-  }
+	.evidence-board-container {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		background: #f5f4f0;
+	}
 
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background: white;
-    border-bottom: 1px solid #e9ecef;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+	.board-header {
+		padding: 1rem 1.5rem;
+		background: white;
+		border-bottom: 1px solid #e0ddd8;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-  .page-header h1 {
-    margin: 0;
-    color: #1f2937;
-    font-size: 1.5rem;
-  }
+	.board-header h1 {
+		margin: 0;
+		font-size: 1.8rem;
+		color: #2d2d2d;
+		font-family: 'Crimson Text', serif;
+	}
 
-  .header-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
+	.zoom-controls {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
 
-  .board-container {
-    flex: 1;
-    overflow: hidden;
-  }
+	.zoom-controls button {
+		width: 32px;
+		height: 32px;
+		border: 1px solid #d0ccc7;
+		background: white;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 600;
+		transition: all 0.2s;
+	}
 
-  .inference-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
+	.zoom-controls button:hover {
+		background: #f0f0f0;
+	}
 
-  .inference-modal-content {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    max-width: 800px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-  }
+	.zoom-level {
+		min-width: 50px;
+		text-align: center;
+		font-size: 0.9rem;
+		color: #666;
+	}
 
-  .close-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #666;
-  }
+	.board-layout {
+		display: flex;
+		flex: 1;
+		gap: 1rem;
+		padding: 1rem;
+		overflow: hidden;
+	}
 
-  .close-btn:hover {
-    color: #000;
-  }
+	.sidebar {
+		background: white;
+		border: 1px solid #e0ddd8;
+		border-radius: 4px;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	.left-sidebar {
+		flex: 0 0 22%;
+	}
+
+	.right-sidebar {
+		flex: 0 0 23%;
+	}
+
+	.sidebar h2 {
+		margin: 0;
+		padding: 1rem;
+		font-size: 1rem;
+		border-bottom: 1px solid #e0ddd8;
+		background: #fafaf8;
+	}
+
+	.evidence-list {
+		flex: 1;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.list-item {
+		padding: 0.75rem 1rem;
+		border-bottom: 1px solid #e0ddd8;
+		cursor: pointer;
+		display: flex;
+		gap: 0.75rem;
+		align-items: center;
+		transition: background 0.2s;
+	}
+
+	.list-item:hover {
+		background: #fafaf8;
+	}
+
+	.list-item.selected {
+		background: #f0f0f0;
+		border-left: 3px solid #8b3a3a;
+	}
+
+	.status-indicator {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	.list-item-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.list-item-title {
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: #2d2d2d;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.list-item-meta {
+		font-size: 0.75rem;
+		color: #999;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.canvas {
+		flex: 1;
+		background: white;
+		border: 1px solid #e0ddd8;
+		border-radius: 4px;
+		overflow: hidden;
+		cursor: grab;
+		position: relative;
+	}
+
+	.canvas:active {
+		cursor: grabbing;
+	}
+
+	.canvas-content {
+		width: 100%;
+		height: 100%;
+		transform-origin: center;
+		transition: transform 0.1s;
+		position: relative;
+	}
+
+	.cards-container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	.metadata-panel {
+		flex: 1;
+		overflow-y: auto;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.metadata-panel h2 {
+		margin: 0;
+		font-size: 1rem;
+		color: #2d2d2d;
+	}
+
+	.metadata-section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.metadata-section label {
+		font-size: 0.75rem;
+		color: #999;
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+
+	.metadata-section span {
+		font-size: 0.9rem;
+		color: #2d2d2d;
+	}
+
+	.status-badge {
+		display: inline-block;
+		padding: 0.25rem 0.75rem;
+		border-radius: 12px;
+		color: white;
+		font-size: 0.8rem;
+		font-weight: 600;
+		width: fit-content;
+	}
+
+	.related-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.related-item {
+		padding: 0.5rem;
+		background: #fafaf8;
+		border: 1px solid #e0ddd8;
+		border-radius: 4px;
+		font-size: 0.85rem;
+		color: #2d2d2d;
+	}
+
+	.actions {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid #e0ddd8;
+	}
+
+	.actions button {
+		padding: 0.5rem 1rem;
+		background: #f0f0f0;
+		border: 1px solid #d0ccc7;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 0.9rem;
+		transition: background 0.2s;
+	}
+
+	.actions button:hover {
+		background: #e8e8e8;
+	}
+
+	.empty-state {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		color: #999;
+	}
 </style>
