@@ -10,6 +10,32 @@
   import analyzeCaseSimilarity from '$lib/server/case-similarity';
   import runGPUSimilarity from '$lib/webgpu/similarity-gpu';
 
+  interface EvidenceNode {
+    id: string;
+    label: string;
+    type: string;
+    x: number;
+    y: number;
+    size: number;
+    color: string;
+    data: any;
+    clusterId: any;
+    title: string;
+    content: string;
+    metadata: {
+      date?: string;
+      category?: string;
+      relevance?: number;
+      tags?: string[];
+      caseId?: string;
+      similarityVector?: number[];
+      graphRank?: number;
+      similarityScore?: number;
+      notes?: string;
+      ocrSummary?: string;
+    };
+  }
+
   interface EvidenceEdge {
     id: string;
     source: string;
@@ -471,7 +497,7 @@
       <div
         class="context-menu nes-container is-dark"
         style={`left:${contextMenu.x}px; top:${contextMenu.y}px`}
-        onclick|stopPropagation
+        on:click|stopPropagation
       >
         <p class="menu-title">{contextMenu.node?.label ?? 'Canvas'}</p>
         {#each contextActions as action}

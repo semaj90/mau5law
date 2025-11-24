@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import type { onMount  } from 'svelte';
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
-  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card'; // Changed import path
+  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from 'bits-ui';
+  import { onMount } from 'svelte';
 
   let showWebGPUDemo = $state <boolean>(false);
   let webGPUSupported = $state <boolean>(false);

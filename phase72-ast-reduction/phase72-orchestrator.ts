@@ -126,7 +126,7 @@ class Phase72Orchestrator {
         iteration++;
 
         // Save progress
-        await this.saveProgress(iteration, currentErrorCount, successfulPatches);
+        await this.saveProgress(iteration, currentErrorCount, successfulPatches, previousErrorCount);
 
       } catch (error) {
         console.error(`❌ Iteration ${iteration + 1} failed:`, error);
@@ -182,7 +182,7 @@ class Phase72Orchestrator {
     }
   }
 
-  private async saveProgress(iteration: number, errorCount: number, successfulPatches: number): Promise<void> {
+  private async saveProgress(iteration: number, errorCount: number, successfulPatches: number, previousErrorCount: number): Promise<void> {
     const progress = {
       timestamp: new Date().toISOString(),
       iteration,
