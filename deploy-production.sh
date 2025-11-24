@@ -1,233 +1,266 @@
 #!/bin/bash
+
+# Production Deployment Script for Legal AI Platform
+# This script deploys the complete production stack using Docker Compose
+
 set -e
-
-echo "🚀 TensorRT-LLM Legal AI Production Deployment"
-echo "=============================================="
-
-# Configuration
-COMPOSE_FILES="-f docker-compose.existing-stack.yml -f docker-compose.override.yml"
-SERVICES="redis-legal rabbitmq-legal minio-legal qdrant-legal legal-ai-tensorrt nginx-legal-tensorrt"
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-log_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+# Configuration
+COMPOSE_FILE="docker-compose.production.yml"
+PROJECT_NAME="legal-ai-production"
+ENV_FILE=".env.production"
+
+# Function to print colored output
+print_status() {
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
-log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
-log_error() {
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Check prerequisites
+# Function to check prerequisites
 check_prerequisites() {
-    log_info "Checking prerequisites..."
+    print_status "Checking prerequisites..."
 
+    # Check if Docker is installed
     if ! command -v docker &> /dev/null; then
-        log_error "Docker is not installed"
+        print_error "Docker is not installed. Please install Docker first."
         exit 1
     fi
 
-    if ! command -v docker-compose &> /dev/null; then
-        log_error "Docker Compose is not installed"
+    # Check if Docker Compose is installed
+    if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+        print_error "Docker Compose is not installed. Please install Docker Compose first."
         exit 1
     fi
 
-    if ! docker info &> /dev/null; then
-        log_error "Docker daemon is not running"
-        exit 1
+    # Check if .env.production file exists
+    if [ ! -f "$ENV_FILE" ]; then
+        print_warning "Environment file $ENV_FILE not found. Creating template..."
+        create_env_template
     fi
 
-    # Check for NVIDIA Docker support
-    if ! docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi &> /dev/null; then
-        log_warn "NVIDIA Docker support not detected - GPU acceleration may not work"
-    else
-        log_info "✅ NVIDIA Docker support detected"
-    fi
-
-    log_info "✅ Prerequisites check passed"
+    print_success "Prerequisites check passed"
 }
 
-# Build images
-build_images() {
-    log_info "Building TensorRT-LLM container..."
+# Function to create environment template
+create_env_template() {
+    cat > "$ENV_FILE" << EOF
+# Production Environment Configuration
+# Please update these values before deployment
 
-    if [ ! -d "TensorRT-LLM/tensorrt_env" ]; then
-        log_error "TensorRT-LLM environment not found at TensorRT-LLM/tensorrt_env"
-        log_error "Please run the TensorRT-LLM installation first"
-        exit 1
-    fi
+# Database Configuration
+POSTGRES_PASSWORD=secure_password_123
 
-    docker-compose $COMPOSE_FILES build legal-ai-tensorrt
-    log_info "✅ Container build completed"
+# MinIO Configuration
+MINIO_ROOT_USER=admin
+MINIO_ROOT_PASSWORD=password123
+
+# Grafana Configuration
+GRAFANA_PASSWORD=admin
+
+# AI API Configuration
+REDIS_URL=redis://redis:6379
+RAY_HEAD_NODE=ray-head:6379
+DISTRIBUTED_MODE=true
+NUM_WORKERS=4
+BATCH_SIZE=64
+CACHE_TTL=7200
+
+# Frontend Configuration
+PUBLIC_API_BASE=http://advanced-ai-api:8001
+PUBLIC_WS_URL=ws://advanced-ai-api:8001/ws/advanced-ai
+DATABASE_URL=postgresql://ai_user:\${POSTGRES_PASSWORD}@postgres:5432/legal_ai_prod
+REDIS_URL=redis://redis:6379
+MINIO_ENDPOINT=minio:9000
+EOF
+
+    print_warning "Created $ENV_FILE template. Please update the values before proceeding."
+    echo "Press Enter to continue after updating the environment file..."
+    read -r
 }
 
-# Deploy services
-deploy_services() {
-    log_info "Deploying services..."
+# Function to build and deploy
+deploy_stack() {
+    print_status "Starting production deployment..."
 
-    # Stop existing services
-    log_info "Stopping existing services..."
-    docker-compose $COMPOSE_FILES down --remove-orphans
+    # Load environment variables
+    if [ -f "$ENV_FILE" ]; then
+        export $(grep -v '^#' "$ENV_FILE" | xargs)
+    fi
 
-    # Start infrastructure services first
-    log_info "Starting infrastructure services..."
-    docker-compose $COMPOSE_FILES up -d redis-legal rabbitmq-legal minio-legal qdrant-legal
+    # Stop any existing containers
+    print_status "Stopping existing containers..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down || true
 
-    # Wait for infrastructure to be ready
-    log_info "Waiting for infrastructure services..."
+    # Remove old images (optional)
+    read -p "Remove old Docker images to free up space? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_status "Removing unused Docker images..."
+        docker image prune -f
+    fi
+
+    # Build and start services
+    print_status "Building and starting production stack..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up --build -d
+
+    # Wait for services to be healthy
+    print_status "Waiting for services to become healthy..."
     sleep 30
 
-    # Start TensorRT-LLM service
-    log_info "Starting TensorRT-LLM service..."
-    docker-compose $COMPOSE_FILES up -d legal-ai-tensorrt
+    # Check service health
+    check_services_health
 
-    # Wait for TensorRT service to initialize
-    log_info "Waiting for TensorRT-LLM service to initialize..."
-    sleep 60
-
-    # Start load balancer
-    log_info "Starting load balancer..."
-    docker-compose $COMPOSE_FILES up -d nginx-legal-tensorrt
-
-    log_info "✅ All services deployed"
+    print_success "Production deployment completed successfully!"
+    print_status "Access your application at:"
+    echo "  - Frontend: http://localhost"
+    echo "  - API: http://localhost/api/"
+    echo "  - Grafana: http://localhost:3001 (admin/admin)"
+    echo "  - Prometheus: http://localhost:9090"
+    echo "  - MinIO Console: http://localhost:9001"
 }
 
-# Health check
-health_check() {
-    log_info "Performing health checks..."
+# Function to check service health
+check_services_health() {
+    print_status "Checking service health..."
 
-    # Check service status
-    echo ""
-    docker-compose $COMPOSE_FILES ps
-    echo ""
+    services=("advanced-ai-api" "sveltekit-frontend" "postgres" "redis" "minio" "prometheus" "grafana")
 
-    # Wait for services to be fully ready
-    log_info "Waiting for services to be ready..."
-    sleep 30
-
-    # Test endpoints
-    max_retries=10
-    retry_count=0
-
-    while [ $retry_count -lt $max_retries ]; do
-        if curl -f http://localhost:8090/health > /dev/null 2>&1; then
-            log_info "✅ Health endpoint responding"
-            break
+    for service in "${services[@]}"; do
+        if docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" ps "$service" | grep -q "Up"; then
+            print_success "$service is running"
         else
-            retry_count=$((retry_count + 1))
-            log_warn "Health check attempt $retry_count/$max_retries failed, retrying..."
-            sleep 10
+            print_error "$service failed to start"
         fi
     done
-
-    if [ $retry_count -eq $max_retries ]; then
-        log_error "Health checks failed after $max_retries attempts"
-        return 1
-    fi
-
-    log_info "✅ Health checks passed"
 }
 
-# Run smoke tests
-run_smoke_tests() {
-    log_info "Running smoke tests..."
-
-    if [ -f "smoke-test.py" ]; then
-        python3 smoke-test.py
-    else
-        log_warn "smoke-test.py not found, skipping automated tests"
-        log_info "Manual test commands:"
-        echo "  curl http://localhost:8090/health"
-        echo "  curl -X POST http://localhost:8090/api/legal/query -H 'Content-Type: application/json' -d '{\"query\":\"What is contract law?\"}'"
-    fi
+# Function to show logs
+show_logs() {
+    print_status "Showing service logs..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" logs -f
 }
 
-# Show status
-show_status() {
-    echo ""
-    echo "🎉 Deployment Complete!"
-    echo "======================="
-    echo ""
-    echo "Services:"
-    echo "  - Legal AI API: http://localhost:8090"
-    echo "  - Health Check: http://localhost:8090/health"
-    echo "  - Metrics:      http://localhost:8090/metrics"
-    echo ""
-    echo "Infrastructure:"
-    echo "  - Redis:        localhost:6379"
-    echo "  - RabbitMQ:     localhost:5672 (Management: localhost:15672)"
-    echo "  - MinIO:        localhost:9000 (Console: localhost:9001)"
-    echo "  - Qdrant:       localhost:6333"
-    echo ""
-    echo "Your PostgreSQL 17 + pgvector containers:"
-    echo "  - Connected via host.docker.internal:5433"
-    echo ""
-    echo "Example API call:"
-    echo "  curl -X POST http://localhost:8090/api/legal/query \\"
-    echo "    -H 'Content-Type: application/json' \\"
-    echo "    -d '{\"query\": \"What is consideration in contract law?\", \"max_results\": 5}'"
-    echo ""
-    echo "Logs:"
-    echo "  docker logs legal-ai-tensorrt -f"
-    echo "  docker-compose $COMPOSE_FILES logs -f"
+# Function to stop stack
+stop_stack() {
+    print_status "Stopping production stack..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down
+    print_success "Production stack stopped"
 }
 
-# Cleanup function
-cleanup() {
-    if [ "$1" = "clean" ]; then
-        log_info "Cleaning up deployment..."
-        docker-compose $COMPOSE_FILES down --remove-orphans --volumes
-        docker system prune -f
-        log_info "✅ Cleanup completed"
-        exit 0
-    fi
+# Function to restart stack
+restart_stack() {
+    print_status "Restarting production stack..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" restart
+    print_success "Production stack restarted"
 }
 
-# Main deployment flow
+# Function to update stack
+update_stack() {
+    print_status "Updating production stack..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" pull
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d
+    print_success "Production stack updated"
+}
+
+# Function to backup data
+backup_data() {
+    print_status "Creating data backup..."
+
+    TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+    BACKUP_DIR="./backups/$TIMESTAMP"
+
+    mkdir -p "$BACKUP_DIR"
+
+    # Backup PostgreSQL
+    print_status "Backing up PostgreSQL data..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" exec -T postgres pg_dump -U ai_user legal_ai_prod > "$BACKUP_DIR/postgres_backup.sql"
+
+    # Backup Redis (if needed)
+    print_status "Backing up Redis data..."
+    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" exec -T redis redis-cli --rdb "$BACKUP_DIR/redis_backup.rdb"
+
+    print_success "Backup completed: $BACKUP_DIR"
+}
+
+# Main menu
+show_menu() {
+    echo
+    echo "========================================"
+    echo "  Legal AI Platform - Production Deployment"
+    echo "========================================"
+    echo "1. Deploy Production Stack"
+    echo "2. Check Service Health"
+    echo "3. Show Logs"
+    echo "4. Stop Stack"
+    echo "5. Restart Stack"
+    echo "6. Update Stack"
+    echo "7. Backup Data"
+    echo "8. Exit"
+    echo "========================================"
+    echo
+}
+
+# Main script logic
 main() {
-    case "${1:-deploy}" in
-        "clean")
-            cleanup clean
-            ;;
-        "deploy")
-            check_prerequisites
-            build_images
-            deploy_services
-            health_check
-            run_smoke_tests
-            show_status
-            ;;
-        "test")
-            run_smoke_tests
-            ;;
-        "status")
-            docker-compose $COMPOSE_FILES ps
-            echo ""
-            curl -s http://localhost:8090/health || echo "Health endpoint not responding"
-            ;;
-        *)
-            echo "Usage: $0 [deploy|test|status|clean]"
-            echo ""
-            echo "Commands:"
-            echo "  deploy  - Full deployment (default)"
-            echo "  test    - Run smoke tests only"
-            echo "  status  - Show service status"
-            echo "  clean   - Stop and remove all services"
-            exit 1
-            ;;
-    esac
-}
+    check_prerequisites
 
-# Handle Ctrl+C
-trap 'echo ""; log_warn "Deployment interrupted"; exit 1' INT
+    while true; do
+        show_menu
+        read -p "Choose an option (1-8): " choice
+
+        case $choice in
+            1)
+                deploy_stack
+                ;;
+            2)
+                check_services_health
+                ;;
+            3)
+                show_logs
+                ;;
+            4)
+                stop_stack
+                ;;
+            5)
+                restart_stack
+                ;;
+            6)
+                update_stack
+                ;;
+            7)
+                backup_data
+                ;;
+            8)
+                print_status "Exiting..."
+                exit 0
+                ;;
+            *)
+                print_error "Invalid option. Please choose 1-8."
+                ;;
+        esac
+
+        echo
+        read -p "Press Enter to continue..."
+    done
+}
 
 # Run main function
 main "$@"

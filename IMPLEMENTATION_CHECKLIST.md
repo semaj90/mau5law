@@ -13,7 +13,7 @@
 - [ ] Go 1.25+ installed
 - [ ] protoc compiler installed
 - [ ] Docker installed
-- [ ] PostgreSQL 16+ running
+- [ ] PostgreSQL 17+ running
 - [ ] Git configured
 
 ### Dependencies

@@ -19,6 +19,7 @@ require (
 	github.com/pgvector/pgvector-go v0.3.0
 	github.com/prometheus/client_golang v1.19.1
 	github.com/quic-go/quic-go v0.54.0
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.14.0
 	github.com/rs/cors v1.11.1
 	github.com/streadway/amqp v1.1.0

@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { browser  } from '$app/environment';
-import type { xstateIntegration  } from '$lib/services/xstate-integration';
-import type { Button  } from 'bits-ui';
-import type { onMount  } from 'svelte';
+import { browser } from '$app/environment';
+import { xstateIntegration } from '$lib/services/xstate-integration';
+import { Button } from 'bits-ui';
+import { onMount } from 'svelte';
 
   // ======================
   // SVELTE, 5 RUNES STATE
@@ -35,16 +35,23 @@ import type { onMount  } from 'svelte';
   let backendStatus = $state <{
     typescript: boolean
     pythonAI: boolean
+    advancedAI: boolean
     capabilities: string[]
   }>({ typescript: true,
     pythonAI: false,
+    advancedAI: false,
     capabilities: []
   });
 
   // AI streaming state
   let streamingTokens = $state <string>('');
   let isStreaming = $state <boolean>(false);
-  let aiSource = $state <'ollama' | 'tensorrt' | 'typescript-fallback' | null>(null);
+  let aiSource = $state <'ollama' | 'tensorrt' | 'typescript-fallback' | 'advanced-ai' | null>(null);
+
+  // Advanced AI state
+  let advancedAIMode = $state <boolean>(false);
+  let aiSystemStatus = $state <any>(null);
+  let advancedAnalysisResult = $state <any>(null);
 
   // Auto-tags state
   let extractedTags = $state <string[]>([]);
@@ -281,10 +288,14 @@ import type { onMount  } from 'svelte';
         // set aiSource from result.source (if provided)
         if (result.source === 'python-ai') aiSource = 'ollama';
         else if (result.source === 'tensorrt') aiSource = 'tensorrt';
+        else if (result.source === 'advanced-ai') aiSource = 'advanced-ai';
         else aiSource = 'typescript-fallback';
 
         if (result.aiProcessing && result.aiProcessing.file_id) {
-          if (ws && wsConnected) {
+          if (backendStatus.advancedAI && advancedAIMode) {
+            // Use advanced AI orchestration
+            await triggerAdvancedAnalysis(result.aiProcessing.file_id);
+          } else if (ws && wsConnected) {
             subscribeToWorkflow(result.aiProcessing.file_id);
             sendQuery(`Analyze this legal evidence document: ${selectedFile.name}`, result.aiProcessing.file_id);
           } else {
@@ -313,8 +324,63 @@ import type { onMount  } from 'svelte';
   }
 
   // ======================
-  // SEARCH FUNCTIONALITY
+  // ADVANCED AI FUNCTIONS
   // ======================
+
+  async function checkAdvancedAIStatus(): Promise<void> {
+    try {
+      const response = await fetch('http://localhost:8001/health');
+      const health = await response.json();
+      backendStatus.advancedAI = health.status === 'healthy';
+      aiSystemStatus = health.system_status;
+    } catch (error) {
+      console.warn('Advanced AI backend unavailable:', error);
+      backendStatus.advancedAI = false;
+    }
+  }
+
+  async function triggerAdvancedAnalysis(fileId: string): Promise<void> {
+    if (!backendStatus.advancedAI) {
+      console.warn('Advanced AI not available, falling back to basic analysis');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8001/api/v3/advanced-ai/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file_id: fileId,
+          prompt: `Perform comprehensive legal analysis of this evidence document using advanced AI orchestration: ${selectedFile?.name}`,
+          user_id: 'current_user'
+        })
+      });
+
+      const result = await response.json();
+      if (result.status === 'analyzing') {
+        advancedAIMode = true;
+        workflowStatus = {
+          stage: 'advanced_analysis',
+          progress: 10,
+          status: 'processing',
+          message: 'Advanced AI orchestration started - multi-agent coordination active'
+        };
+      }
+    } catch (error) {
+      console.error('Advanced analysis trigger failed:', error);
+    }
+  }
+
+  async function getAdvancedAIStatus(): Promise<void> {
+    if (!backendStatus.advancedAI) return;
+
+    try {
+      const response = await fetch('http://localhost:8001/api/v3/advanced-ai/status');
+      aiSystemStatus = await response.json();
+    } catch (error) {
+      console.error('Advanced AI status check failed:', error);
+    }
+  }
 
   // Use a platform-independent timeout type (works with DOM and Node types)
   let searchTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -390,8 +456,12 @@ import type { onMount  } from 'svelte';
         backendStatus = {
           typescript: !!(health.backends?.typescript?.status === 'healthy'),
           pythonAI: !!(health.backends?.pythonAI?.status === 'healthy'),
+          advancedAI: !!(health.backends?.advancedAI?.status === 'healthy'),
           capabilities: health.backends?.pythonAI?.capabilities || []
         };
+
+        // Check advanced AI status separately
+        await checkAdvancedAIStatus();
 
         if (backendStatus.pythonAI) connectWebSocket();
         else console.warn('⚠️ Python AI backend unavailable. Some features will be limited.');
@@ -433,6 +503,7 @@ import type { onMount  } from 'svelte';
       ocr: '📝',
       embedding: '🧠',
       analysis: '🤖',
+      advanced_analysis: '🧠',
       storage: '💾',
       complete: '✅',
       error: '❌'
@@ -473,22 +544,60 @@ import type { onMount  } from 'svelte';
             <span class="ml-2">WebSocket: {wsConnected ? 'Connected' : wsReconnecting ? 'Reconnecting...' : 'Disconnected'}</span>
           </div>
         {/if}
-      </div>
-      {#if backendStatus.capabilities.length > 0}
-        <div class="mt-2">
-          <span class="font-medium">Capabilities:</span> {backendStatus.capabilities.join(', ')}
+        <div class="flex items-center">
+          <span class="w-3 h-3 rounded-full {backendStatus.advancedAI ? 'bg-purple-500' : 'bg-gray-500'}"></span>
+          <span class="ml-2">Advanced AI Backend: {backendStatus.advancedAI ? 'Healthy' : 'Unavailable'}</span>
         </div>
-      {/if}
     </section>
+
+    <!-- Advanced AI Controls -->
+    {#if backendStatus.advancedAI}
+      <section class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-xl font-semibold mb-4">Advanced AI Mode</h2>
+        <div class="flex items-center space-x-4">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              bind:checked={advancedAIMode}
+              class="mr-2"
+            />
+            Enable Advanced AI Orchestration
+          </label>
+          {#if advancedAIMode}
+            <span class="text-sm text-purple-600 font-medium">🧠 Multi-Agent Coordination Active</span>
+          {/if}
+        </div>
+        {#if aiSystemStatus}
+          <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div class="bg-purple-50 p-3 rounded">
+              <div class="font-medium">NAS Engine</div>
+              <div class="text-purple-600">{aiSystemStatus.component_status?.nas_engine ? 'Active' : 'Inactive'}</div>
+            </div>
+            <div class="bg-blue-50 p-3 rounded">
+              <div class="font-medium">Multi-Agent</div>
+              <div class="text-blue-600">{aiSystemStatus.component_status?.agent_coordinator ? 'Active' : 'Inactive'}</div>
+            </div>
+            <div class="bg-green-50 p-3 rounded">
+              <div class="font-medium">Federated Learning</div>
+              <div class="text-green-600">{aiSystemStatus.component_status?.federated_coordinator ? 'Active' : 'Inactive'}</div>
+            </div>
+            <div class="bg-yellow-50 p-3 rounded">
+              <div class="font-medium">Quantum Interface</div>
+              <div class="text-yellow-600">{aiSystemStatus.component_status?.quantum_interface ? 'Active' : 'Inactive'}</div>
+            </div>
+          </div>
+        {/if}
+      </section>
+    {/if}
 
     <!-- File Upload Section -->
     <section class="bg-white rounded-lg shadow p-4">
       <h2 class="text-xl font-semibold mb-4">Upload Evidence Document</h2>
       <div
         class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
-        on:dragover={handleDragOver}
-        on:dragleave={handleDragLeave}
-        on:drop={handleDrop}
+        ondragover={handleDragOver}
+        ondragleave={handleDragLeave}
+        ondrop={handleDrop}
       >
         {#if selectedFile}
           <div class="space-y-2">
