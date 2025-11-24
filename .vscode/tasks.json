@@ -2,91 +2,425 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "🔍 Warden Inspector",
+      "label": "Deploy Qdrant with GPU Support",
       "type": "shell",
-      "command": "pwsh",
+      "command": "docker",
       "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/warden-inspector-advanced.ps1",
-        "-feature",
-        "${input:feature}"
+        "run",
+        "-d",
+        "--name",
+        "qdrant-gpu",
+        "--gpus",
+        "all",
+        "-p",
+        "6333:6333",
+        "-p",
+        "6334:6334",
+        "-v",
+        "qdrant_storage:/qdrant/storage",
+        "-v",
+        "qdrant_snapshots:/qdrant/snapshots",
+        "-e",
+        "QDRANT_API_KEY=your-api-key",
+        "qdrant/qdrant:latest-gpu"
       ],
-      "problemMatcher": [],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
       "presentation": {
         "echo": true,
         "reveal": "always",
         "focus": false,
-        "panel": "shared"
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
       }
     },
     {
-      "label": "📄 Export Top Svelte Errors",
+      "label": "Start Supervisord (MLP Workers)",
       "type": "shell",
-      "command": "pwsh",
+      "command": "supervisord",
       "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/export-svelte-errors.ps1"
+        "-c",
+        "backend/supervisord.conf"
       ],
-      "problemMatcher": [],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
       "presentation": {
         "echo": true,
         "reveal": "always",
-        "focus": false,
-        "panel": "shared"
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
       }
     },
     {
-      "label": "🔧 Log Svelte-Check Errors",
+      "label": "Check Supervisord Status",
       "type": "shell",
-      "command": "pwsh",
+      "command": "supervisorctl",
       "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}/scripts/svelte-check-logger.ps1",
-        "-limit",
-        "1000"
+        "-c",
+        "backend/supervisord.conf",
+        "status",
+        "all"
       ],
-      "problemMatcher": [],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
       "presentation": {
         "echo": true,
         "reveal": "always",
         "focus": false,
-        "panel": "shared"
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
       }
-    }
-  ],
-  "inputs": [
+    },
     {
-      "id": "feature",
-      "type": "pickString",
-      "description": "Choose Layer to Inspect",
-      "options": [
-        "API routes",
-        "DB schema",
-        "OCR pipeline",
-        "MiniLM reranker",
-        "Hybrid search",
-        "Autoencoder CUDA",
-        "Gemma legal summaries",
-        "Evidence ingestion",
-        "Timeline",
-        "Neo4j citations"
+      "label": "Restart All MLP Workers",
+      "type": "shell",
+      "command": "supervisorctl",
+      "args": [
+        "-c",
+        "backend/supervisord.conf",
+        "restart",
+        "all"
       ],
-      "default": "Hybrid search"
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Stop All MLP Workers",
+      "type": "shell",
+      "command": "supervisorctl",
+      "args": [
+        "-c",
+        "backend/supervisord.conf",
+        "stop",
+        "all"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "View DocLing Gateway Logs",
+      "type": "shell",
+      "command": "supervisorctl",
+      "args": [
+        "-c",
+        "backend/supervisord.conf",
+        "tail",
+        "-f",
+        "docling-gateway"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "View Mirror Service Logs",
+      "type": "shell",
+      "command": "supervisorctl",
+      "args": [
+        "-c",
+        "backend/supervisord.conf",
+        "tail",
+        "-f",
+        "mirror-service"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "View MLP Worker Logs",
+      "type": "shell",
+      "command": "supervisorctl",
+      "args": [
+        "-c",
+        "backend/supervisord.conf",
+        "tail",
+        "-f",
+        "mlp-worker:*"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Check Qdrant GPU Status",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-s",
+        "http://localhost:6333/health"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Deploy Full Stack (Qdrant + Supervisord)",
+      "type": "shell",
+      "dependsOn": [
+        "Deploy Qdrant with GPU Support",
+        "Start Supervisord (MLP Workers)"
+      ],
+      "dependsOrder": "sequence",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Setup Postgres 17 + pgvector",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run",
+        "-d",
+        "--name",
+        "postgres-pgvector",
+        "-e",
+        "POSTGRES_PASSWORD=password",
+        "-e",
+        "POSTGRES_DB=legal_db",
+        "-p",
+        "5432:5432",
+        "-v",
+        "postgres_data:/var/lib/postgresql/data",
+        "pgvector/pgvector:pg15"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Setup Redis",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run",
+        "-d",
+        "--name",
+        "redis-legal-ai",
+        "-p",
+        "6379:6379",
+        "-v",
+        "redis_data:/data",
+        "redis:7-alpine"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Setup Ollama Gemma-Legal",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run",
+        "-d",
+        "--name",
+        "ollama-gemma",
+        "--gpus",
+        "all",
+        "-p",
+        "11434:11434",
+        "-v",
+        "ollama_data:/root/.ollama",
+        "ollama/ollama:latest"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Deploy All Infrastructure (Full Setup)",
+      "type": "shell",
+      "dependsOn": [
+        "Setup Postgres 17 + pgvector",
+        "Setup Redis",
+        "Setup Ollama Gemma-Legal",
+        "Deploy Qdrant with GPU Support"
+      ],
+      "dependsOrder": "sequence",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Stop All Containers",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "stop",
+        "qdrant-gpu",
+        "postgres-pgvector",
+        "redis-legal-ai",
+        "ollama-gemma"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Clean Up All Containers",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "rm",
+        "-f",
+        "qdrant-gpu",
+        "postgres-pgvector",
+        "redis-legal-ai",
+        "ollama-gemma"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
     }
   ]
 }

@@ -1,19 +1,66 @@
 {
-    "version": "0.2.0",
+"version": "0.2.0",
+"configurations": [
+    {
+    "name": "Python: MLP Scheduler",
+    "type": "python",
+    "request": "launch",
+    "program": "${workspaceFolder}/backend/mlp_scheduler.py",
+    "console": "integratedTerminal",
+    "justMyCode": true,
+    "env": {
+        "PYTHONUNBUFFERED": "1"
+    },
+    "args": []
+},
+{
+    "name": "Python: Mirror Service",
+    "type": "python",
+    "request": "launch",
+    "program": "${workspaceFolder}/backend/mirror_service.py",
+    "console": "integratedTerminal",
+    "justMyCode": true,
+    "env": {
+        "PYTHONUNBUFFERED": "1"
+    },
+    "args": []
+},
+{
+    "name": "Python: DocLing Gateway",
+    "type": "python",
+    "request": "launch",
+    "module": "backend.docling_gateway.app",
+    "console": "integratedTerminal",
+    "justMyCode": true,
+    "env": {
+        "PYTHONUNBUFFERED": "1",
+        "CUDA_VISIBLE_DEVICES": "0"
+    },
+    "args": []
+},
+{
+    "name": "Python: Sync Worker",
+    "type": "python",
+    "request": "launch",
+    "program": "${workspaceFolder}/backend/sync_worker.py",
+    "console": "integratedTerminal",
+    "justMyCode": true,
+    "env": {
+        "PYTHONUNBUFFERED": "1"
+    },
+    "args": []
+}
+],
+"compounds": [
+    {
+    "name": "All MLP Workers",
     "configurations": [
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:5173",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Node Process",
-            "port": 9229,
-            "restart": true
-        }
-    ]
+        "Python: MLP Scheduler",
+        "Python: Mirror Service",
+        "Python: DocLing Gateway",
+        "Python: Sync Worker"
+    ],
+    "stopAll": true
+}
+]
 }

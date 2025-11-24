@@ -267,11 +267,11 @@ Message Types:
 ### ✅ Docker Setup
 - Location: `docker/`, `docker-compose*.yml`
 - Status: TensorRT-LLM container ready
-- GPU Support: CUDA 12.8 configured
+- GPU Support: CUDA 12.9 configured
 - Compose Files: 15+ configurations
 
 ### ✅ Database
-- Type: PostgreSQL 16
+- Type: PostgreSQL 17
 - Extensions: pgvector for embeddings
 - Schema: Existing and tested
 - Connection: Pooling configured

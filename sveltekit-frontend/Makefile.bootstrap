@@ -1,0 +1,87 @@
+# Infrastructure Bootstrap Makefile
+# Provides convenient targets for bootstrapping and recovering infrastructure
+
+.PHONY: bootstrap bootstrap-minio bootstrap-postgres bootstrap-rabbitmq bootstrap-redis health-check recovery-guide help
+
+# Default target
+help:
+	@echo "Infrastructure Bootstrap Targets"
+	@echo "================================"
+	@echo ""
+	@echo "make bootstrap              - Run full bootstrap (all services)"
+	@echo "make bootstrap-minio        - Bootstrap MinIO buckets and directories"
+	@echo "make bootstrap-postgres     - Run PostgreSQL migrations and create indexes"
+	@echo "make bootstrap-rabbitmq     - Configure RabbitMQ queues"
+	@echo "make bootstrap-redis        - Configure Redis"
+	@echo "make health-check           - Check all service connectivity"
+	@echo "make recovery-guide         - Show container recovery procedure"
+	@echo ""
+
+# Full bootstrap
+bootstrap: health-check bootstrap-minio bootstrap-postgres bootstrap-rabbitmq bootstrap-redis
+	@echo "✓ Full infrastructure bootstrap complete"
+
+# MinIO bootstrap
+bootstrap-minio:
+	@echo "Bootstrapping MinIO..."
+	@docker exec legal-ai-minio mc alias set minio http://minio:9000 minioadmin minioadmin123 --api S3v4 2>/dev/null || true
+	@docker exec legal-ai-minio mc mb minio/lawpdfs --ignore-existing 2>/dev/null || true
+	@docker exec legal-ai-minio mc mb minio/documents --ignore-existing 2>/dev/null || true
+	@echo "✓ MinIO buckets created"
+
+# PostgreSQL bootstrap
+bootstrap-postgres:
+	@echo "Running PostgreSQL migrations..."
+	@npm run db:migrate
+	@echo "Creating PostgreSQL indexes..."
+	@PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -f scripts/postgres-indexes.sql
+	@echo "✓ PostgreSQL bootstrap complete"
+
+# RabbitMQ bootstrap
+bootstrap-rabbitmq:
+	@echo "Configuring RabbitMQ..."
+	@docker exec legal-ai-rabbitmq rabbitmqctl eval 'rabbit_exchange:declare(<<"processing_events">>, <<"topic">>, true, false, false, []).' 2>/dev/null || true
+	@docker exec legal-ai-rabbitmq rabbitmqctl eval 'rabbit_amqqueue:declare(<<"document.process">>, true, false, [], []).' 2>/dev/null || true
+	@echo "✓ RabbitMQ queues configured"
+
+# Redis bootstrap
+bootstrap-redis:
+	@echo "Configuring Redis..."
+	@docker exec legal-ai-redis redis-cli ping > /dev/null && echo "✓ Redis is ready" || echo "✗ Redis is not responding"
+
+# Health check
+health-check:
+	@echo "Checking service connectivity..."
+	@echo -n "MinIO: "
+	@nc -z localhost 9000 && echo "✓" || echo "✗"
+	@echo -n "PostgreSQL: "
+	@nc -z localhost 5432 && echo "✓" || echo "✗"
+	@echo -n "RabbitMQ: "
+	@nc -z localhost 5672 && echo "✓" || echo "✗"
+	@echo -n "Redis: "
+	@nc -z localhost 6379 && echo "✓" || echo "✗"
+
+# Recovery guide
+recovery-guide:
+	@echo ""
+	@echo "╔════════════════════════════════════════════════════════════╗"
+	@echo "║     Container Recovery Procedure                           ║"
+	@echo "╚════════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "Step 1: Restart Docker Compose"
+	@echo "  docker-compose up -d"
+	@echo ""
+	@echo "Step 2: Wait for services to be ready (30-60 seconds)"
+	@echo "  make health-check"
+	@echo ""
+	@echo "Step 3: Run full bootstrap"
+	@echo "  make bootstrap"
+	@echo ""
+	@echo "Step 4: Verify all services"
+	@echo "  make health-check"
+	@echo ""
+	@echo "If services are still not responding:"
+	@echo "  - Check Docker logs: docker-compose logs"
+	@echo "  - Verify network: docker network ls"
+	@echo "  - Restart all services: docker-compose restart"
+	@echo ""
