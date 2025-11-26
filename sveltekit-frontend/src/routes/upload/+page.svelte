@@ -1,285 +1,317 @@
 <script lang="ts">
-  import type { goto  } from '$app/navigation';
-  import type { page  } from '$app/state';
-  import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
-  import type { PageData } from './$types ';
+	import { onMount } from 'svelte';
+	import UploadProgress from '$lib/components/UploadProgress.svelte';
+	import UploadHistory from '$lib/components/UploadHistory.svelte';
+	import { uploadService } from '$lib/services/uploadService';
 
-  // Define types for better clarity
-  interface UploadResult {
-    objectName?: string;
-    documentId?: string;
-    url?: string;
-  }
+	let caseId = '';
+	let isDragging = false;
+	let isUploading = false;
+	let uploadProgress = 0;
+	let uploadStatus = '';
+	let currentDocId = '';
+	let error = '';
+	let uploadHistory = [];
 
-  interface UploadEntry {
-    filename: string;
-    size?: number;
-    mimeType?: string;
-  }
+	async function handleFileSelect(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files?.[0]) {
+			await uploadFile(input.files[0]);
+		}
+	}
 
-  let { data } = $props <{ data: PageData & { recentUploads?: UploadEntry[] } }>();
+	async function handleDrop(event: DragEvent) {
+		event.preventDefault();
+		isDragging = false;
 
-  const caseId = page.url.searchParams.get('caseId') || ''; // Access value using page (reactive state in Svelte 5)
+		if (event.dataTransfer?.files?.[0]) {
+			await uploadFile(event.dataTransfer.files[0]);
+		}
+	}
 
-  // Use $state for reactive variables
-  let recentUploads = $state <UploadEntry[]>(data.recentUploads ?? []);
+	async function uploadFile(file: File) {
+		if (!caseId) {
+			error = 'Please enter a case ID';
+			return;
+		}
 
-  // Upload completion handler
-  function handleUploadComplete(event: CustomEvent<UploadResult>) {
-    const result = event.detail;
-    console.log('Upload completed:', result);
-    const notification = {
-      type: 'success',
-      title: 'Upload Successful',
-      message: `Document, "${result?.objectName ?? 'file'}" has been uploaded and is being processed.`,
-      documentId: result?.documentId,
-      url: result?.url,
-    };
-    sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
-    if (caseId) {
-      goto(`/cases/${caseId}/documents`);
-    } else {
-      goto('/documents');
-    }
-  }
+		if (!file) {
+			error = 'Please select a file';
+			return;
+		}
 
-  // Upload error handler
-  function handleUploadError(event: CustomEvent<string>) {
-    const error = event.detail;
-    console.error('Upload error:', error);
-    const notification = {
-      type: 'error',
-      title: 'Upload Failed',
-      message: error,
-    };
-    sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
-  }
+		error = '';
+		isUploading = true;
+		uploadProgress = 0;
+		uploadStatus = 'uploading';
+
+		try {
+			const result = await uploadService.uploadFile(file, caseId);
+			currentDocId = result.doc_id;
+
+			// Stream progress
+			await uploadService.streamProgress(result.doc_id, (event) => {
+				if (event.type === 'progress') {
+					uploadProgress = event.data.progress;
+					uploadStatus = event.data.status;
+				} else if (event.type === 'done') {
+					uploadProgress = 100;
+					uploadStatus = 'complete';
+					isUploading = false;
+					loadHistory();
+				} else if (event.type === 'error') {
+					error = event.data.error;
+					isUploading = false;
+				}
+			});
+		} catch (e) {
+			error = e.message || 'Upload failed';
+			isUploading = false;
+		}
+	}
+
+	async function loadHistory() {
+		if (!caseId) return;
+
+		try {
+			uploadHistory = await uploadService.getHistory(caseId);
+		} catch (e) {
+			console.error('Failed to load history:', e);
+		}
+	}
+
+	function handleCaseIdChange() {
+		loadHistory();
+	}
+
+	onMount(() => {
+		const input = document.querySelector('input[type="text"]');
+		if (input) (input as HTMLInputElement).focus();
+	});
 </script>
 
-<main class="upload-page">
-  <header class="page-header">
-    <h1>Upload Documents</h1>
-    <p class="page-description">
-      Drag and drop files here or click to select files for analysis. Your documents are secure and
-      processed confidentially.
-    </p>
-  </header>
+<div class="upload-container">
+	<div class="upload-header">
+		<h1>Upload Evidence</h1>
+		<p>Upload legal documents for processing and analysis</p>
+	</div>
 
-  <div class="upload-container">
-    <section class="upload-section">
-      <MinIOUpload on:complete={handleUploadComplete} on:error={handleUploadError} />
-    </section>
+	<div class="upload-main">
+		<!-- Configuration -->
+		<div class="config-section">
+			<label>Case ID</label>
+			<input
+				type="text"
+				bind:value={caseId}
+				on:change={handleCaseIdChange}
+				placeholder="Enter case ID"
+				disabled={isUploading}
+			/>
+		</div>
 
-    <aside class="info-sidebar">
-      <div class="info-card">
-        <div class="card-header">
-          <h3>Recent Uploads</h3>
-          <button class="text-button" onclick={() => (recentUploads = [])}>Clear</button>
-        </div>
-        <div class="recent-uploads">
-          {#if recentUploads.length > 0}
-            {#each recentUploads as upload (upload.filename)}
-              <div class="upload-item">
-                <span class="upload-icon">📄</span>
-                <div class="upload-details">
-                  <div class="upload-name">{upload.filename}</div>
-                  {#if upload.size}
-                    <div class="upload-meta">
-                      {(upload.size / 1024 / 1024).toFixed(2)} MB
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            {/each}
-          {:else}
-            <p class="no-uploads">No recent uploads.</p>
-          {/if}
-        </div>
-      </div>
+		<!-- Upload Area -->
+		<div
+			class="upload-area"
+			class:dragging={isDragging}
+			on:dragover|preventDefault={() => (isDragging = true)}
+			on:dragleave={() => (isDragging = false)}
+			on:drop={handleDrop}
+		>
+			<div class="upload-content">
+				<div class="upload-icon">📄</div>
+				<h2>Drag and drop your file here</h2>
+				<p>or</p>
+				<label class="upload-button">
+					<input
+						type="file"
+						on:change={handleFileSelect}
+						disabled={isUploading}
+						accept=".pdf,.doc,.docx,.jpg,.png,.tiff"
+					/>
+					Select File
+				</label>
+				<p class="file-info">Supported: PDF, DOC, DOCX, JPG, PNG, TIFF (max 100MB)</p>
+			</div>
+		</div>
 
-      <div class="info-card">
-        <h3>Supported Formats</h3>
-        <ul>
-          <li>PDF, DOCX, TXT</li>
-          <li>JPG, PNG (OCR will be applied)</li>
-          <li>ZIP archives containing supported files</li>
-        </ul>
-      </div>
-    </aside>
-  </div>
+		<!-- Error Message -->
+		{#if error}
+			<div class="error-message">
+				<span>⚠️ {error}</span>
+			</div>
+		{/if}
 
-  <section class="help-section">
-    <h2>Need Help?</h2>
-    <div class="help-grid">
-      <div class="help-card">
-        <h4>Secure Processing</h4>
-        <p>All documents are encrypted in transit and at rest. We prioritize your data security.</p>
-      </div>
-      <div class="help-card">
-        <h4>Batch Uploads</h4>
-        <p>You can upload multiple files at once. They will be processed in parallel.</p>
-      </div>
-      <div class="help-card">
-        <h4>Processing Time</h4>
-        <p>
-          Analysis time varies by document size and complexity. You'll be notified upon completion.
-        </p>
-      </div>
-    </div>
-  </section>
-</main>
+		<!-- Upload Progress -->
+		{#if isUploading}
+			<UploadProgress {uploadProgress} {uploadStatus} {currentDocId} />
+		{/if}
+
+		<!-- Upload History -->
+		{#if uploadHistory.length > 0}
+			<UploadHistory {uploadHistory} />
+		{/if}
+	</div>
+</div>
 
 <style>
-  .upload-page {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
+	.upload-container {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		background: #f5f4f0;
+	}
 
-  .page-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
+	.upload-header {
+		padding: 2rem;
+		background: white;
+		border-bottom: 1px solid #e0ddd8;
+	}
 
-  .page-header h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-  }
+	.upload-header h1 {
+		margin: 0;
+		font-size: 2rem;
+		color: #2d2d2d;
+		font-family: 'Crimson Text', serif;
+	}
 
-  .page-description {
-    font-size: 1.125rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-  }
+	.upload-header p {
+		margin: 0.5rem 0 0 0;
+		color: #666;
+		font-size: 0.95rem;
+	}
 
-  .upload-container {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 3rem;
-    margin-bottom: 4rem;
-  }
+	.upload-main {
+		flex: 1;
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		overflow-y: auto;
+	}
 
-  @media (max-width: 1024px) {
-    .upload-container {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-  }
+	.config-section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		max-width: 400px;
+	}
 
-  .upload-section {
-    min-height: 600px;
-  }
+	.config-section label {
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: #2d2d2d;
+		text-transform: uppercase;
+	}
 
-  .info-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
+	.config-section input {
+		padding: 0.75rem 1rem;
+		border: 1px solid #d0ccc7;
+		border-radius: 4px;
+		font-size: 1rem;
+		font-family: 'Source Sans 3', sans-serif;
+	}
 
-  .info-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
+	.config-section input:focus {
+		outline: none;
+		border-color: #8b3a3a;
+		box-shadow: 0 0 0 2px rgba(139, 58, 58, 0.1);
+	}
 
-  .info-card h3 {
-    margin: 0 0 1rem 0;
-    color: var(--text-primary);
-    font-size: 1.125rem;
-  }
+	.config-section input:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
 
-  .info-card p {
-    margin: 0 0 1rem 0;
-    color: var(--text-secondary);
-  }
+	.upload-area {
+		flex: 1;
+		border: 2px dashed #d0ccc7;
+		border-radius: 8px;
+		background: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.2s;
+		min-height: 300px;
+	}
 
-  .info-card ul {
-    margin: 0;
-    padding-left: 1.25rem;
-    color: var(--text-secondary);
-  }
+	.upload-area.dragging {
+		border-color: #8b3a3a;
+		background: rgba(139, 58, 58, 0.05);
+	}
 
-  .text-button {
-    background: none;
-    border: none;
-    color: var(--accent-primary);
-    cursor: pointer;
-    font-size: 0.875rem;
-    text-decoration: underline;
-  }
+	.upload-content {
+		text-align: center;
+		padding: 2rem;
+	}
 
-  .text-button:hover {
-    color: var(--accent-primary-dark);
-  }
+	.upload-icon {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+	}
 
-  .recent-uploads {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+	.upload-content h2 {
+		margin: 0 0 0.5rem 0;
+		font-size: 1.3rem;
+		color: #2d2d2d;
+	}
 
-  .upload-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: var(--bg-primary);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-  }
+	.upload-content p {
+		margin: 0.5rem 0;
+		color: #666;
+		font-size: 0.95rem;
+	}
 
-  .upload-icon {
-    font-size: 1.25rem;
-    opacity: 0.7;
-  }
+	.upload-button {
+		display: inline-block;
+		padding: 0.75rem 1.5rem;
+		background: #8b3a3a;
+		color: white;
+		border-radius: 4px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.2s;
+		margin: 1rem 0;
+	}
 
-  .upload-details {
-    flex: 1;
-    min-width: 0;
-  }
+	.upload-button:hover {
+		background: #6b2a2a;
+	}
 
-  .upload-name {
-    font-weight: 500;
-    font-size: 0.875rem;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+	.upload-button input {
+		display: none;
+	}
 
-  .upload-meta {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-top: 0.25rem;
-  }
+	.file-info {
+		font-size: 0.85rem;
+		color: #999;
+		margin-top: 1rem;
+	}
 
-  .no-uploads {
-    color: var(--text-secondary);
-    font-style: italic;
-    text-align: center;
-    margin: 1rem 0;
-  }
+	.error-message {
+		padding: 1rem;
+		background: #fee;
+		border: 1px solid #fcc;
+		border-radius: 4px;
+		color: #c33;
+	}
 
-  .help-section {
-    background: var(--bg-secondary);
-    border-radius: 16px;
-    padding: 3rem;
-    border: 1px solid var(--border-color);
-  }
+	@media (max-width: 768px) {
+		.upload-main {
+			padding: 1rem;
+			gap: 1rem;
+		}
 
-  .help-section h2 {
-    text-align: center;
-    margin: 0;
-  }
+		.upload-area {
+			min-height: 200px;
+		}
 
-  .help-section p {
-    margin-bottom: 1em;
-  }
+		.upload-content {
+			padding: 1rem;
+		}
+
+		.upload-icon {
+			font-size: 2rem;
+		}
+	}
 </style>
-
-<!-- The component already uses Svelte 5 runes like $props and $state for reactivity.
-     No changes are needed for this file to migrate from Svelte 4 to Svelte 5. -->

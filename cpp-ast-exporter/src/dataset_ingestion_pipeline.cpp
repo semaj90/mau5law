@@ -12,8 +12,6 @@
 #include <random>
 #include <numeric>
 #include <nlohmann/json.hpp>
-#include <grpcpp/grpcpp.h>
-#include "qlora_training.grpc.pb.h"
 
 // Phase AST: Dataset Ingestion Pipeline (JSON → tokenized → sharded)
 class DatasetIngestionPipeline {
@@ -121,9 +119,6 @@ public:
                 raw_texts_.reserve(json_data.size());
 
                 for (const auto& item : json_data) {
-                    if (item.contains("text")) {
-                        std::string text = item["text"];
-                        raw_texts_.push_back(text);
                     if (item.contains("text") && item["text"].is_string()) {
                         raw_texts_.emplace_back(item["text"].get<std::string>());
                     }
@@ -824,95 +819,18 @@ int main(int argc, char* argv[]) {
     }
 };
 
-// gRPC service implementation for dataset ingestion
-class DatasetIngestionService final : public legal_ai::qlora::QLoRATrainer::Service {
-public:
-    grpc::Status ProcessDataset(
-        grpc::ServerContext* context,
-        const legal_ai::qlora::DatasetIngestionRequest* request,
-        legal_ai::qlora::DatasetIngestionResponse* response) override {
-
-        try {
-            DatasetIngestionPipeline pipeline(
-                request->config().tokenizer_name(),
-                request->config().max_seq_length(),
-                8, // num_shards
-                "pt" // output_format
-            );
-
-            bool success = pipeline.process_dataset(
-                request->dataset_path(),
-                request->output_path()
-            );
-
-            if (success) {
-                response->set_success(true);
-                response->set_message("Dataset processing completed successfully");
-
-                // Fill response with statistics
-                auto stats = pipeline.get_statistics();
-                auto* response_stats = response->mutable_stats();
-                response_stats->set_total_samples(stats["total_samples"]);
-                response_stats->set_avg_seq_length(stats["avg_seq_length"]);
-                response_stats->set_max_seq_length(stats["max_seq_length"]);
-                response_stats->set_vocab_size(stats["vocab_size"]);
-
-                // Add token counts (simplified)
-                (*response_stats->mutable_token_counts())["total"] = stats["total_tokens"];
-    } else {
-        // Run as command-line tool
-        std::string input_json = argv[1];
-        std::string output_dir = argv[2];
-
-        DatasetIngestionPipeline pipeline;
-                response->set_success(false);
-                response->set_message("Dataset processing failed");
-            }
-
-        } catch (const std::exception& e) {
-            response->set_success(false);
-            response->set_message(std::string("Error: ") + e.what());
-        }
-
-        return grpc::Status::OK;
-    }
-};
-
 // Main function for dataset ingestion service
 int main(int argc, char* argv[]) {
     if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " <input_json> <output_dir>" << std::endl;
-        std::cerr << "Or run as gRPC service: " << argv[0] << " --grpc <port>" << std::endl;
         return 1;
     }
-    std::string mode = argv[1];
 
-    if (mode == "--grpc") {
-        // Run as gRPC service
-        int port = std::stoi(argv[2]);
+    std::string input_json = argv[1];
+    std::string output_dir = argv[2];
 
-        std::string server_address = "0.0.0.0:" + std::to_string(port);
-        DatasetIngestionService service;
+    DatasetIngestionPipeline pipeline;
+    bool success = pipeline.process_dataset(input_json, output_dir);
 
-        grpc::ServerBuilder builder;
-        builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-        builder.RegisterService(&service);
-
-        std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-        std::cout << "Phase AST Dataset Ingestion gRPC service listening on " << server_address << std::endl;
-
-        server->Wait();
-
-    } else {
-        // Run as command-line tool
-        std::string input_json = argv[1];
-        std::string output_dir = argv[2];
-
-        DatasetIngestionPipeline pipeline;
-        bool success = pipeline.process_dataset(input_json, output_dir);
-
-        return success ? 0 : 1;
-    }
-
-    return 0;
+    return success ? 0 : 1;
 }

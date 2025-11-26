@@ -12,9 +12,32 @@ Embeddings & vector storage	Qdrant-ready fields for legal RAG pipelines
 |-----------|------------|---------|
 | **Desktop UI** | Tauri + Rust + WebView | Bundles SvelteKit app, local file processing |
 | **Evidence Processing** | OpenCV, YOLOv8, CLIP, ffmpeg | MIT-licensed multimodal analysis |
-| **Scene Summarization** | User-provided GGUF models | Local LLM analysis (Gemma QAT, etc.) |
+| **Scene Summarization** | User-provided GGUF models | Local LLM analysis (Gemma etc.) |
 | **Data Layer** | SQLite (Drizzle ORM), Qdrant | Caching, embeddings, vector search |
 | **Frontend** | SvelteKit + SSR | Markdown rendering, interactive UI |
+
+#### 🎨 **Interactive Canvas (2 minutes)**
+5. **Canvas**: http://localhost:5173/interactive-canvas
+   - Add nodes, drag elements
+   - Test interaction features
+
+#### 📝 **Report Writing (5 minutes)**
+6. **Report Builder**: http://localhost:5173/report-builder
+   - Create new report
+   - Add content with WYSIWYG editor
+   - Add citations using citation manager
+   - Save report
+
+#### 📄 **PDF Export (1 minute)**
+7. **Export**: In report builder
+   - Click "Export to PDF"
+   - Download or view generated PDF
+
+#### 🔍 **Evidence Analysis (2 minutes)**
+8. **Evidence**: http://localhost:5173/evidence
+   - Upload any image file
+   - Click "Analyze Evidence"
+   - View AI analysis results
 ## 🚀 Quick Start: ### 1. Setup
 ```powershell
 # Run the setup script
@@ -32,7 +55,7 @@ cd python-nlp-service
 python main.py
 # Terminal 2: Qdrant (if not using Docker)
 docker run -p 6333:6333 qdrant/qdrant
-# Terminal 3: SvelteKit Frontend  
+# Terminal 3: SvelteKit Frontend
 cd web-app/sveltekit-frontend
 npm run dev
 # Terminal 4: Tauri Desktop App
@@ -61,7 +84,7 @@ npm run tauri dev
 **Endpoints:**
 ```python
 POST /evidence/process        # Process evidence file
-POST /evidence/analyze-scene  # Generate scene analysis  
+POST /evidence/analyze-scene  # Generate scene analysis
 POST /evidence/rag-query      # RAG search across evidence
 GET  /models/status          # Check model availability
 POST /models/load            # Load user-provided model
@@ -118,7 +141,7 @@ userModelPreferences       // LLM model management
 4. **Anchor Generation**: Interactive markers for detected elements
 5. **Scene Analysis**: LLM analyzes legal significance
 6. **Markdown Output**: Structured summary with findings
-### Video Evidence  
+### Video Evidence
 1. **Frame Extraction**: FFmpeg samples at specified intervals
 2. **Timeline Analysis**: Object tracking across frames
 3. **Audio Processing**: Whisper transcription if audio present
@@ -143,7 +166,7 @@ userModelPreferences       // LLM model management
 - **Format Checks**: GGUF extension required
 - **URL Blocking**: Remote URLs rejected
 - **Documentation**: Clear user requirements
-### Embeddings & RAG 
+### Embeddings & RAG
 - NLP legal bert?
 - **Sentence Transformers**: all-MiniLM-L6-v2 (default)
 - **Qdrant Integration**: Vector storage and similarity search
@@ -191,7 +214,7 @@ userModelPreferences       // LLM model management
 ```bash
 # Run multimodal tests
 ./test-multimodal.ps1
-# Python service tests  
+# Python service tests
 cd python-nlp-service
 python -m pytest tests/
 # Rust tests
@@ -233,7 +256,7 @@ npm test
 ### Planned Features
 - **Advanced Scene Understanding**: Emotion detection, intent analysis
 - **Multi-Evidence Correlation**: Cross-reference multiple files
-- **Timeline Reconstruction**: Automatic event sequencing  
+- **Timeline Reconstruction**: Automatic event sequencing
 - **Legal Template System**: Case-specific analysis templates
 - **Mobile Integration**: Flutter app with evidence capture
 ### Extension Points

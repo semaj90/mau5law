@@ -5,10 +5,10 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
-#include <grpcpp/grpcpp.h>
+// #include <grpcpp/grpcpp.h>  // Commented out - gRPC not available
 #include <NvInfer.h>
 #include <NvInferRuntime.h>
-#include "qlora_training.grpc.pb.h"
+// #include "qlora_training.grpc.pb.h"  // Commented out - gRPC not available
 
 // Phase AST: TensorRT-LLM Integration Stubs
 class TensorRTLLMIntegration {
@@ -311,7 +311,8 @@ private:
     }
 };
 
-// gRPC service for TensorRT-LLM integration
+// gRPC service for TensorRT-LLM integration (commented out - gRPC not available)
+/*
 class TensorRTLLMService final : public legal_ai::qlora::QLoRATrainer::Service {
 private:
     std::unique_ptr<TensorRTLLMIntegration> trt_integration_;
@@ -368,17 +369,20 @@ public:
         return grpc::Status::OK;
     }
 };
+*/
 
 // Main function for TensorRT-LLM service
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <engine_path>" << std::endl;
-        std::cerr << "Or run as gRPC service: " << argv[0] << " --grpc <port>" << std::endl;
+        // std::cerr << "Or run as gRPC service: " << argv[0] << " --grpc <port>" << std::endl;  // Commented out - gRPC not available
         return 1;
     }
 
     std::string mode = argv[1];
 
+    // Removed gRPC service mode - gRPC not available
+    /*
     if (mode == "--grpc") {
         // Run as gRPC service
         int port = std::stoi(argv[2]);
@@ -396,6 +400,7 @@ int main(int argc, char* argv[]) {
         server->Wait();
 
     } else {
+    */
         // Run inference demo
         std::string engine_path = argv[1];
 
@@ -420,7 +425,9 @@ int main(int argc, char* argv[]) {
             std::cerr << "TensorRT-LLM demo failed: " << e.what() << std::endl;
             return 1;
         }
+    /*
     }
+    */
 
     return 0;
 }
