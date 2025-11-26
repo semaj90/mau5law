@@ -1,0 +1,211 @@
+# Legal AI Evidence Processing System - GPU-Accelerated Stack
+# Docker Compose for CUDA acceleration with RTX 3060 Ti
+# Usage: docker-compose -f docker/docker-compose.gpu.yml up
+
+version: '3.8'
+
+services:
+  # ========================================================================
+  # Legal AI GPU Service (Main Application)
+  # ========================================================================
+  legal-ai-gpu:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cuda
+    container_name: legal-ai-gpu
+    image: legal-ai-gpu:latest
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/legal_ai
+      - REDIS_URL=redis://redis:6379
+      - QDRANT_URL=http://qdrant:6333
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    volumes:
+      - ./backend:/app/backend
+      - ./sveltekit-frontend:/app/frontend
+      - cuda_cache:/app/.cuda_cache
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # ========================================================================
+  # PostgreSQL Database
+  # ========================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: legal-ai-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: legal_ai
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # ========================================================================
+  # Redis Cache
+  # ========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: legal-ai-redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # ========================================================================
+  # Qdrant Vector Database
+  # ========================================================================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: legal-ai-qdrant
+    environment:
+      QDRANT_API_KEY: qdrant_key
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "6333:6333"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # ========================================================================
+  # MinIO Object Storage
+  # ========================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: legal-ai-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # ========================================================================
+  # RabbitMQ Message Queue
+  # ========================================================================
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: legal-ai-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # ========================================================================
+  # GPU Monitoring (Optional)
+  # ========================================================================
+  gpu-monitor:
+    image: nvidia/cuda:12.0-runtime-ubuntu22.04
+    container_name: legal-ai-gpu-monitor
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - /usr/local/cuda:/usr/local/cuda:ro
+    command: nvidia-smi -l 1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  minio_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  cuda_cache:
+    driver: local
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  legal-ai-network:
+    driver: bridge

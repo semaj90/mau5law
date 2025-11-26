@@ -1,0 +1,72 @@
+# Legal AI Evidence Processing System - CUDA GPU Runtime
+# RTX 3060 Ti (SM 86) Optimized
+# Build: docker build -f docker/Dockerfile.cuda -t legal-ai-gpu .
+
+FROM nvidia/cuda:12.0-devel-ubuntu22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    CUDA_HOME=/usr/local/cuda \
+    PATH=/usr/local/cuda/bin:${PATH} \
+    LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    cmake \
+    build-essential \
+    git \
+    wget \
+    curl \
+    python3.11 \
+    python3.11-dev \
+    python3-pip \
+    libpython3.11-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3.11 as default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+# Install CUTLASS (optional, for advanced optimization)
+RUN git clone https://github.com/NVIDIA/cutlass.git /opt/cutlass && \
+    cd /opt/cutlass && \
+    git checkout v3.4.0
+
+# Install Python build tools
+RUN pip3 install --upgrade pip setuptools wheel && \
+    pip3 install pybind11 numpy
+
+# Copy source code
+COPY . /app
+WORKDIR /app
+
+# Create build directory
+RUN mkdir -p build
+
+# Build CUDA components
+RUN cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCUDA_ARCHITECTURES=86 \
+          -DCUTLASS_DIR=/opt/cutlass \
+          -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc \
+          .. && \
+    make -j$(nproc) && \
+    make install
+
+# Install Python dependencies
+RUN pip3 install -r requirements.txt
+
+# Expose API port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/health || exit 1
+
+# Run FastAPI server with GPU support
+CMD ["python3", "-m", "uvicorn", "backend.main:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
+     "--workers", "4"]

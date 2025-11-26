@@ -17,13 +17,14 @@
 - ✅ **Case Management**: `/cases` - Create, edit, save functionality
 - ✅ **Interactive Canvas**: `/interactive-canvas` - Node-based workflow
 - ✅ **Report Builder**: `/report-builder` - WYSIWYG + citations
-- ✅ **PDF Export**: Playwright-based export system
+
 - ✅ **Evidence Analysis**: `/evidence` - AI-powered file analysis
+- ✅ **PDF Export**
 
 #### 3. 🎨 **UI/UX Modernization Complete**
 - ✅ CitationManager: Advanced multi-column layout, bulk operations
 - ✅ WYSIWYG Editor: Clean, error-free implementation
-- ✅ Melt UI Integration: Modern, accessible components
+- ✅ bits-ui v2 newer api svelte 5 UI Integration: Modern, accessible components
 - ✅ Responsive Design: Mobile and desktop optimization
 
 ## 🧪 READY TO TEST - IMMEDIATE NEXT STEPS

@@ -17,7 +17,7 @@ npm install svelte-tiptap
 
 **Pros:**
 - Built specifically for Svelte
-- Uses TipTap (MIT license) 
+- Uses TipTap (MIT license)
 - Excellent UnoCSS integration
 - No VDOM conflicts
 - Extensible with plugins
@@ -30,9 +30,9 @@ npm install svelte-tiptap
   import { Editor } from 'svelte-tiptap';
   import StarterKit from '@tiptap/starter-kit';
   import Placeholder from '@tiptap/extension-placeholder';
-  
+
   export let content = '';
-  
+
   const extensions = [
     StarterKit,
     Placeholder.configure({
@@ -46,7 +46,7 @@ npm install svelte-tiptap
 </div>
 ```
 
-### 2. **Milkdown** 
+### 2. **Milkdown**
 ```bash
 npm install @milkdown/core @milkdown/preset-commonmark @milkdown/theme-nord
 ```
@@ -75,36 +75,14 @@ npm install quill svelte-quill
 ```typescript
 // In your editor component
 <div class="
-  prose prose-lg 
+  prose prose-lg
   border border-gray-200 rounded-lg
-  focus-within:border-blue-500 
+  focus-within:border-blue-500
   transition-colors
 ">
   <Editor {extensions} />
 </div>
-```
-
-### bits-ui/melt-ui Integration
-```typescript
-// Custom toolbar with bits-ui components
-<script>
-  import { Button } from '$lib/components/ui/button';
-  import { Toggle } from '$lib/components/ui/toggle';
-  
-  let editor;
-  
-  const toggleBold = () => editor?.chain().focus().toggleBold().run();
-  const toggleItalic = () => editor?.chain().focus().toggleItalic().run();
-</script>
-
-<div class="border-b p-2 flex gap-2">
-  <Toggle pressed={editor?.isActive('bold')} onPressedChange={toggleBold}>
-    Bold
-  </Toggle>
-  <Toggle pressed={editor?.isActive('italic')} onPressedChange={toggleItalic}>
-    Italic
-  </Toggle>
-</div>
+``
 ```
 
 ## Legal Document Features
@@ -148,3 +126,74 @@ const extensions = [
 7. Works seamlessly with your current tech stack
 
 Would you like me to create a complete RichTextEditor.svelte component with your styling system?
+
+
+## bits-ui v2 Integration (Svelte 5)
+
+bits-ui v2.0.0 is fully compatible with Svelte 5 and uses the new runes API.
+
+### Key Changes from v1 to v2
+- Use `$state()` instead of `let` for reactive variables
+- Use `$props()` instead of `export let`
+- Components use `.Root`, `.Trigger`, `.Content` pattern
+- Use `{#snippet}` for render props instead of slots
+- Event handlers use `onclick` not `on:click`
+
+### Example: Custom Toolbar with bits-ui v2
+```svelte
+<script lang="ts">
+  import { Toggle, Button, Tooltip } from 'bits-ui';
+
+  let editor: any;
+  let isBold = $state(false);
+  let isItalic = $state(false);
+
+  function toggleBold() {
+    editor?.chain().focus().toggleBold().run();
+    isBold = editor?.isActive('bold') ?? false;
+  }
+
+  function toggleItalic() {
+    editor?.chain().focus().toggleItalic().run();
+    isItalic = editor?.isActive('italic') ?? false;
+  }
+</script>
+
+<div class="border-b p-2 flex gap-2">
+  <Toggle.Root pressed={isBold} onPressedChange={toggleBold}>
+    {#snippet children({ pressed })}
+      <span class={pressed ? 'font-bold' : ''}>B</span>
+    {/snippet}
+  </Toggle.Root>
+
+  <Toggle.Root pressed={isItalic} onPressedChange={toggleItalic}>
+    {#snippet children({ pressed })}
+      <span class={pressed ? 'italic' : ''}>I</span>
+    {/snippet}
+  </Toggle.Root>
+
+  <Tooltip.Root>
+    <Tooltip.Trigger>
+      <Button.Root onclick={() => editor?.chain().focus().undo().run()}>
+        Undo
+      </Button.Root>
+    </Tooltip.Trigger>
+    <Tooltip.Content>
+      Undo (Ctrl+Z)
+    </Tooltip.Content>
+  </Tooltip.Root>
+</div>
+```
+
+### Import from Barrel Export
+```typescript
+// Option 1: Direct bits-ui import
+import { Toggle, Button, Tooltip } from 'bits-ui';
+
+// Option 2: Via UI barrel export
+import { BitsToggle, BitsButton, BitsTooltip } from '$lib/components/ui';
+
+// Option 3: Namespace import
+import { Bits } from '$lib/components/ui';
+// Then use: Bits.Toggle, Bits.Button, etc.
+```

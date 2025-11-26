@@ -1,305 +1,334 @@
-# Kiro Spec + Infrastructure Index
+# 📚 Kiro Project Index - Phase 72 + CUDA Acceleration
 
-## Current Status
+## 🎯 Quick Navigation
 
-✅ **Spec Complete**: PHASE_3_RAG_CAG_TENSORRT with reranking
-✅ **Infrastructure Patched**: All 5 issues fixed
-✅ **Python Bundle Ready**: FP16 codec + Redis cache + Mirror service
-✅ **Scale Profile Defined**: S-M (500K-5M chunks)
+### Phase 72: AST Error Reduction
+- **Specification**: `.kiro/specs/phase-72-ast-error-reduction/`
+  - Requirements: `requirements.md` (8 EARS-compliant requirements)
+  - Design: `design.md` (complete architecture)
+  - Tasks: `tasks.md` (20 implementation tasks)
+- **Summary**: `.kiro/PHASE_72_SPEC_COMPLETE.md`
 
----
+### CUDA Acceleration
+- **Roadmap**: `CUDA_ACCELERATION_ROADMAP.md` (4-phase plan, 7x speedup)
+- **Quick Start**: `CUDA_QUICKSTART.md` (installation & setup)
+- **Summary**: `PHASE_72_AND_CUDA_SUMMARY.md` (combined overview)
 
-## Documentation Map
+### Getting Started
+- **Startup Guide**: `.kiro/STARTUP_GUIDE.md` (Kiro startup instructions)
+- **Implementation Ready**: `IMPLEMENTATION_READY.md` (final checklist)
 
-### Specs
-- **`.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/requirements.md`** - 11 requirements with reranking
-- **`.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/design.md`** - Architecture with MiniLM reranker
-- **`.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/tasks.md`** - 29 implementation tasks
-
-### Infrastructure
-- **`INFRASTRUCTURE_SETUP.md`** - Complete setup guide (400+ lines)
-- **`QUICK_START.md`** - Quick reference card (300+ lines)
-- **`DEPLOYMENT_CHECKLIST.md`** - Deployment checklist (300+ lines)
-- **`.kiro/INFRASTRUCTURE_PATCH_PLAN.md`** - Detailed patch documentation
-- **`.kiro/INFRASTRUCTURE_PATCHES_SUMMARY.md`** - Patch summary
-
-### Scale Profile
-- **`.kiro/SCALE_PROFILE_SM.md`** - S-M scale (500K-5M chunks) optimization
-
-### Patch Bundles
-- **`.kiro/PYTHON_PATCH_BUNDLE.md`** - Python bundle documentation
-- **`.kiro/PATCH_BUNDLES_READY.md`** - Status and next steps
-
-### Work Completed
-- **`.kiro/WORK_COMPLETED.md`** - Summary of all work done
+### Configuration
+- **Root CMake**: `CMakeLists.txt` (CUDA configuration)
+- **Backend CMake**: `backend/cuda/CMakeLists.txt` (backend services)
+- **Docker**: `docker/Dockerfile.cuda` (GPU runtime)
+- **Docker Compose**: `docker/docker-compose.gpu.yml` (GPU stack)
 
 ---
 
-## Code Files
+## 📊 Project Overview
 
-### Infrastructure Scripts
-- **`scripts/start_infrastructure.sh`** - Start Docker services (500+ lines)
-- **`scripts/start_workers.sh`** - Start Python workers (400+ lines)
-- **`backend/supervisord.conf`** - Worker process config (100+ lines)
-- **`sql/init/01-install-pgvector.sql`** - pgvector setup
+### Phase 72: AST Error Reduction
+**Goal**: Reduce 80k+ TypeScript/Svelte errors to <1k through self-healing
 
-### Python Patch Bundle
-- **`backend/fp16_codec.py`** - FP16 compression (300+ lines)
-- **`backend/redis_fp16_cache.py`** - Redis cache with 3 databases (500+ lines)
-- **`backend/mirror_service.py`** - Qdrant + Postgres sync (400+ lines)
+**Key Components**:
+- Error extraction and analysis
+- Neo4j graph-based relationships
+- GPU-accelerated clustering
+- AI patch generation
+- Patch application and validation
+- Self-healing loop
 
-### Modified Files
-- **`docker-compose.yml`** - Fixed Postgres image
-- **`scripts/bootstrap_rabbitmq.sh`** - Fixed container name + nc → curl
+**Expected Results**:
+- Error reduction: 95%+ (80k → <1k)
+- Success rate: 75-85%
+- Processing time: 15-30 min per cycle
+- GPU utilization: 70-90%
 
----
+**Timeline**: 6-9 days
 
-## Quick Navigation
+### CUDA Acceleration
+**Goal**: Achieve 7x end-to-end speedup through GPU acceleration
 
-### I want to...
+**4 Phases**:
+- Phase A: Tokenizer (5x: 100ms → 20ms)
+- Phase B: Embedding (10x: 500ms → 50ms)
+- Phase C: Vector Search (3x: 100ms → 30ms)
+- Phase D: Reranking (8x: 50ms → 6ms)
 
-**Deploy infrastructure today**
-→ Read: `QUICK_START.md`
-→ Run: `./scripts/start_infrastructure.sh start`
+**Expected Results**:
+- Total speedup: 7x (750ms → 106ms)
+- GPU utilization: 70-90%
+- Tensor Core optimization
 
-**Understand the scale profile**
-→ Read: `.kiro/SCALE_PROFILE_SM.md`
-
-**Deploy Python workers**
-→ Read: `.kiro/PYTHON_PATCH_BUNDLE.md`
-→ Copy: `backend/fp16_codec.py`, `backend/redis_fp16_cache.py`, `backend/mirror_service.py`
-
-**Understand the spec**
-→ Read: `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/requirements.md`
-→ Read: `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/design.md`
-
-**See implementation tasks**
-→ Read: `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/tasks.md`
-
-**Troubleshoot issues**
-→ Read: `INFRASTRUCTURE_SETUP.md` (troubleshooting section)
-→ Read: `QUICK_START.md` (troubleshooting section)
-
-**Check deployment status**
-→ Read: `DEPLOYMENT_CHECKLIST.md`
-
-**Understand what was done**
-→ Read: `.kiro/WORK_COMPLETED.md`
+**Timeline**: 4 weeks
 
 ---
 
-## Architecture Overview
+## 🚀 Implementation Roadmap
+
+### Week 1-2: Phase 72 Core Services
+- [ ] Task 1: Project setup
+- [ ] Task 2: Error extraction
+- [ ] Task 3: Embedding generation
+- [ ] Task 4: Neo4j graph service
+- [ ] Task 5: GPU clustering
+- [ ] Task 6: AI patch generation
+- [ ] Task 7: Patch application
+- [ ] Task 8: Progress tracking
+- [ ] Task 9: Error handling
+- [ ] Task 10: Orchestrator
+
+### Week 2-3: Phase 72 Frontend & Deployment
+- [ ] Task 11: Dashboard
+- [ ] Task 12: Docker Compose
+
+### Week 3-4: Phase 72 Testing & Documentation
+- [ ] Tasks 13-20: Tests, docs, monitoring
+
+### Week 5-8: CUDA Acceleration
+- [ ] Week 5: Phase A - Tokenizer
+- [ ] Week 6: Phase B - Embedding
+- [ ] Week 7: Phase C - Vector Search
+- [ ] Week 8: Phase D - Reranking
+
+---
+
+## 📁 File Structure
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    SvelteKit Frontend                        │
-│                   (http://localhost:5173)                    │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Go QUIC Server                             │
-│              (localhost:4433, 8095)                          │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
-   ┌─────────┐      ┌─────────┐      ┌─────────┐
-   │ Postgres│      │  Redis  │      │RabbitMQ │
-   │   17    │      │ (FP16)  │      │ (queue) │
-   │+pgvector│      │ (3 DB)  │      │         │
-   └─────────┘      └─────────┘      └────┬────┘
-                                           │
-                    ┌──────────────────────┼──────────────────────┐
-                    ▼                      ▼                      ▼
-            ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-            │ Embedding Worker │  │  Rerank Worker   │  │ Citation Worker  │
-            │  (2 processes)   │  │  (3 processes)   │  │  (1 process)     │
-            │  - GPU access    │  │  - MiniLM-L6-v2  │  │  - NER + matcher │
-            │  - TensorRT      │  │  - CPU-based     │  │  - Statute DB    │
-            └──────────────────┘  └──────────────────┘  └──────────────────┘
-                    │                      │                      │
-                    └──────────────────────┼──────────────────────┘
-                                           ▼
-                    ┌──────────────────────────────────────┐
-                    │      Mirror Service (New)            │
-                    │  - Decompress FP16 from Redis       │
-                    │  - Upsert to Qdrant (batch)         │
-                    │  - Store metadata in Postgres       │
-                    └──────────────────────────────────────┘
-                                           ▼
-                                    ┌─────────────┐
-                                    │   Qdrant    │
-                                    │  (vectors)  │
-                                    │ FAISS-GPU   │
-                                    └─────────────┘
+legal-ai/
+├── .kiro/
+│   ├── INDEX.md                           ← You are here
+│   ├── STARTUP_GUIDE.md                   ← Start here
+│   ├── PHASE_72_SPEC_COMPLETE.md
+│   └── specs/
+│       └── phase-72-ast-error-reduction/
+│           ├── requirements.md
+│           ├── design.md
+│           └── tasks.md
+│
+├── CMakeLists.txt                         ← CUDA config
+├── CUDA_ACCELERATION_ROADMAP.md           ← CUDA plan
+├── CUDA_QUICKSTART.md                     ← CUDA setup
+├── PHASE_72_AND_CUDA_SUMMARY.md          ← Combined summary
+├── IMPLEMENTATION_READY.md                ← Final checklist
+│
+├── backend/
+│   ├── cuda/
+│   │   └── CMakeLists.txt
+│   └── ... (existing services)
+│
+├── docker/
+│   ├── Dockerfile.cuda
+│   ├── docker-compose.gpu.yml
+│   └── ... (existing configs)
+│
+└── phase72-ast-reduction/
+    ├── phase72-orchestrator.ts
+    ├── ... (existing services)
+    └── ... (to be implemented)
 ```
 
 ---
 
-## Performance Targets
+## ✅ Verification Checklist
 
-| Component | Target | Status |
-|-----------|--------|--------|
-| Embedding latency | 35-50ms | ✅ |
-| Reranking latency | 35-60ms | ✅ |
-| Search latency | 40-90ms | ✅ |
-| Full pipeline | < 3 seconds | ✅ |
-| GPU memory | < 2GB | ✅ |
-| FP16 compression | 50% | ✅ |
-| Accuracy loss | < 0.01 | ✅ |
-| Throughput | 320 items/sec | ✅ |
+### Phase 72 Specification
+- [x] Requirements (8 EARS-compliant)
+- [x] Design (complete architecture)
+- [x] Tasks (20 implementation tasks)
+- [x] All requirements referenced
+- [x] Task dependencies documented
+- [x] Performance targets defined
+- [x] Success criteria established
 
----
-
-## Deployment Timeline
-
-### Today (Phase 1)
-- [x] Infrastructure patches complete
-- [x] Python patch bundle complete
-- [ ] Deploy infrastructure: `./scripts/start_infrastructure.sh start`
-- [ ] Deploy workers: `./scripts/start_workers.sh start`
-- [ ] Verify: `docker ps` + `supervisorctl status`
-
-### Tomorrow (Phase 2)
-- [ ] Deploy Python patch bundle
-- [ ] Update mlp_worker.py
-- [ ] Test embedding → Redis → Qdrant
-- [ ] Generate Go QUIC patch bundle
-- [ ] Update legal-ai-quic-server.go
-
-### This Week (Phase 3)
-- [ ] Generate frontend patch bundle
-- [ ] Update SvelteKit components
-- [ ] Test end-to-end pipeline
-- [ ] Load test with 500K chunks
-- [ ] Tune parameters
-
----
-
-## Key Files to Review
-
-### Must Read (Today)
-1. `QUICK_START.md` - 5 min read
-2. `.kiro/SCALE_PROFILE_SM.md` - 10 min read
-3. `.kiro/PYTHON_PATCH_BUNDLE.md` - 15 min read
-
-### Should Read (This Week)
-1. `INFRASTRUCTURE_SETUP.md` - 20 min read
-2. `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/requirements.md` - 15 min read
-3. `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/design.md` - 20 min read
-
-### Reference (As Needed)
-1. `DEPLOYMENT_CHECKLIST.md` - During deployment
-2. `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/tasks.md` - During implementation
-3. `INFRASTRUCTURE_SETUP.md` troubleshooting - When issues arise
-
----
-
-## Commands Cheat Sheet
-
-### Infrastructure
-```bash
-# Start all services
-./scripts/start_infrastructure.sh start
-
-# Stop all services
-./scripts/start_infrastructure.sh stop
-
-# Check status
-./scripts/start_infrastructure.sh status
-```
-
-### Workers
-```bash
-# Start all workers
-./scripts/start_workers.sh start
-
-# Stop all workers
-./scripts/start_workers.sh stop
-
-# Check status
-./scripts/start_workers.sh status
-
-# View logs
-./scripts/start_workers.sh logs embedding
-./scripts/start_workers.sh logs rerank
-```
-
-### Verification
-```bash
-# Docker
-docker ps
-docker logs postgres-pgvector
-docker logs legal-ai-redis
-docker logs rabbitmq-legal
-docker logs legal-ai-qdrant
-
-# Workers
-supervisorctl -c backend/supervisord.conf status
-
-# Database
-psql -h localhost -U legal_admin -d legal_ai_db -c "SELECT 1;"
-
-# Redis
-redis-cli ping
-
-# RabbitMQ
-curl -u guest:guest http://localhost:15672/api/overview
-
-# Qdrant
-curl http://localhost:6333/collections
-```
-
----
-
-## Support Resources
+### CUDA Configuration
+- [x] Root CMakeLists.txt
+- [x] Backend CMakeLists.txt
+- [x] Dockerfile.cuda
+- [x] docker-compose.gpu.yml
+- [x] RTX 3060 Ti optimization
+- [x] Tensor Core acceleration
+- [x] pybind11 integration
 
 ### Documentation
-- `QUICK_START.md` - Quick reference
-- `INFRASTRUCTURE_SETUP.md` - Detailed setup
-- `.kiro/SCALE_PROFILE_SM.md` - Scale profile
-- `.kiro/PYTHON_PATCH_BUNDLE.md` - Python bundle
-
-### Troubleshooting
-- `INFRASTRUCTURE_SETUP.md` (troubleshooting section)
-- `QUICK_START.md` (troubleshooting section)
-- Check logs: `tail -f /tmp/*.log`
-- Check Docker: `docker logs <container>`
-
-### Monitoring
-- RabbitMQ UI: http://localhost:15672
-- Redis CLI: `redis-cli`
-- Qdrant API: `curl http://localhost:6333/collections`
-- Supervisord: `supervisorctl -c backend/supervisord.conf status`
+- [x] CUDA_ACCELERATION_ROADMAP.md
+- [x] CUDA_QUICKSTART.md
+- [x] PHASE_72_AND_CUDA_SUMMARY.md
+- [x] .kiro/STARTUP_GUIDE.md
+- [x] IMPLEMENTATION_READY.md
+- [x] .kiro/INDEX.md (this file)
 
 ---
 
-## Summary
+## 🎯 Success Criteria
 
-✅ **Spec**: Complete with reranking (11 requirements, 29 tasks)
-✅ **Infrastructure**: Patched and ready (5 issues fixed)
-✅ **Python Bundle**: Complete (FP16 codec + Redis cache + Mirror service)
-✅ **Scale Profile**: Defined (S-M: 500K-5M chunks)
-✅ **Documentation**: Comprehensive (4000+ lines)
+### Phase 72
+- [ ] Error count: 80k+ → <1k
+- [ ] Success rate: >75%
+- [ ] Processing time: <5min/iteration
+- [ ] Dashboard: Real-time metrics
+- [ ] Services: All deployed
+- [ ] Loop: Self-healing working
+- [ ] Tracking: Progress accurate
+- [ ] Handling: Errors robust
 
-**Status**: Ready for deployment! 🚀
+### CUDA
+- [ ] Tokenizer: 5x speedup
+- [ ] Embedding: 10x speedup
+- [ ] Vector Search: 3x speedup
+- [ ] Reranking: 8x speedup
+- [ ] Total: 7x speedup
+- [ ] GPU: 70-90% utilization
+- [ ] Memory: No leaks
+- [ ] Fallback: CPU working
 
 ---
 
-## Next Action
+## 📊 Performance Targets
 
-Choose one:
+### Phase 72
+| Metric | Target |
+|--------|--------|
+| Error Extraction | <30s |
+| Embedding Generation | <2min |
+| Clustering | <5s |
+| Patch Generation | <2s/cluster |
+| Validation | <1min |
+| Total Iteration | <5min |
+| Error Reduction | 95%+ |
+| Success Rate | 75-85% |
 
-1. **Deploy Today**: `./scripts/start_infrastructure.sh start`
-2. **Review Spec**: Read `.kiro/specs/PHASE_3_RAG_CAG_TENSORRT/requirements.md`
-3. **Understand Scale**: Read `.kiro/SCALE_PROFILE_SM.md`
-4. **Deploy Python**: Copy Python patch bundle files
-
-**Recommendation**: Start with deployment today, then review spec tomorrow.
+### CUDA
+| Phase | Component | Current | GPU | Speedup |
+|-------|-----------|---------|-----|---------|
+| A | Tokenization | 100ms | 20ms | 5x |
+| B | Embedding | 500ms | 50ms | 10x |
+| C | Vector Search | 100ms | 30ms | 3x |
+| D | Reranking | 50ms | 6ms | 8x |
+| **Total** | **Pipeline** | **750ms** | **106ms** | **7x** |
 
 ---
 
-**Last Updated**: November 23, 2025
-**Status**: ✅ Complete and Ready
-**Next Patch Bundle**: Go QUIC (Option A) or Docker/Startup (Option B) or Frontend (Option C)
+## 🔗 Quick Links
+
+### Start Here
+1. **Startup Guide**: `.kiro/STARTUP_GUIDE.md`
+2. **Phase 72 Tasks**: `.kiro/specs/phase-72-ast-error-reduction/tasks.md`
+3. **CUDA Quick Start**: `CUDA_QUICKSTART.md`
+
+### Phase 72 Documentation
+- Requirements: `.kiro/specs/phase-72-ast-error-reduction/requirements.md`
+- Design: `.kiro/specs/phase-72-ast-error-reduction/design.md`
+- Tasks: `.kiro/specs/phase-72-ast-error-reduction/tasks.md`
+- Summary: `.kiro/PHASE_72_SPEC_COMPLETE.md`
+
+### CUDA Documentation
+- Roadmap: `CUDA_ACCELERATION_ROADMAP.md`
+- Quick Start: `CUDA_QUICKSTART.md`
+- Summary: `PHASE_72_AND_CUDA_SUMMARY.md`
+
+### Configuration
+- Root CMake: `CMakeLists.txt`
+- Backend CMake: `backend/cuda/CMakeLists.txt`
+- Docker: `docker/Dockerfile.cuda`
+- Docker Compose: `docker/docker-compose.gpu.yml`
+
+---
+
+## 💡 Key Technologies
+
+### Phase 72
+- **Neo4j**: Graph database
+- **Ollama**: LLM inference
+- **Qdrant**: Vector database
+- **ts-morph**: AST manipulation
+- **Redis**: Caching
+- **Postgres**: Tracking
+
+### CUDA
+- **NVIDIA CUDA 12.0**: GPU computing
+- **cuBLAS**: Matrix operations
+- **CUTLASS**: Tensor operations
+- **pybind11**: Python bindings
+- **CMake 3.18+**: Build system
+
+---
+
+## 🚀 Next Steps
+
+### Today
+1. [ ] Read `.kiro/STARTUP_GUIDE.md`
+2. [ ] Review Phase 72 specification
+3. [ ] Review CUDA roadmap
+4. [ ] Verify CMake configuration
+
+### This Week
+1. [ ] Start Phase 72 Task 1
+2. [ ] Set up Docker GPU environment
+3. [ ] Test CMake build
+4. [ ] Verify services start
+
+### This Month
+1. [ ] Complete Phase 72 core services
+2. [ ] Implement CUDA Phase A
+3. [ ] Deploy Phase 72 dashboard
+4. [ ] Begin CUDA Phase B
+
+---
+
+## 📞 Support
+
+### For Phase 72 Questions
+- Read: `.kiro/specs/phase-72-ast-error-reduction/design.md`
+- Check: `.kiro/specs/phase-72-ast-error-reduction/tasks.md`
+- Refer: `phase72-ast-reduction/` existing code
+
+### For CUDA Questions
+- Read: `CUDA_ACCELERATION_ROADMAP.md`
+- Check: `CUDA_QUICKSTART.md`
+- Refer: `CMakeLists.txt` configuration
+
+### For General Questions
+- Read: `.kiro/STARTUP_GUIDE.md`
+- Check: `IMPLEMENTATION_READY.md`
+- Refer: This index file
+
+---
+
+## 📋 Document Summary
+
+| Document | Purpose | Location |
+|----------|---------|----------|
+| INDEX | Navigation hub | `.kiro/INDEX.md` |
+| STARTUP_GUIDE | Getting started | `.kiro/STARTUP_GUIDE.md` |
+| PHASE_72_SPEC_COMPLETE | Phase 72 summary | `.kiro/PHASE_72_SPEC_COMPLETE.md` |
+| requirements.md | Phase 72 requirements | `.kiro/specs/phase-72-ast-error-reduction/requirements.md` |
+| design.md | Phase 72 design | `.kiro/specs/phase-72-ast-error-reduction/design.md` |
+| tasks.md | Phase 72 tasks | `.kiro/specs/phase-72-ast-error-reduction/tasks.md` |
+| CUDA_ACCELERATION_ROADMAP | CUDA plan | `CUDA_ACCELERATION_ROADMAP.md` |
+| CUDA_QUICKSTART | CUDA setup | `CUDA_QUICKSTART.md` |
+| PHASE_72_AND_CUDA_SUMMARY | Combined summary | `PHASE_72_AND_CUDA_SUMMARY.md` |
+| IMPLEMENTATION_READY | Final checklist | `IMPLEMENTATION_READY.md` |
+| CMakeLists.txt | Root CMake | `CMakeLists.txt` |
+| backend/cuda/CMakeLists.txt | Backend CMake | `backend/cuda/CMakeLists.txt` |
+| Dockerfile.cuda | GPU runtime | `docker/Dockerfile.cuda` |
+| docker-compose.gpu.yml | GPU stack | `docker/docker-compose.gpu.yml` |
+
+---
+
+## 🎉 Status
+
+✅ **All specifications complete**
+✅ **All documentation complete**
+✅ **All configuration complete**
+✅ **Ready for implementation**
+
+---
+
+**Start Here**: `.kiro/STARTUP_GUIDE.md`
+
+**Questions?** Refer to the appropriate document above.
+
+**Let's build!** 🚀
