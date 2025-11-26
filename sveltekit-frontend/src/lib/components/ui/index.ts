@@ -203,6 +203,15 @@ export { default as MarkdownSceneViewer } from './MarkdownSceneViewer.svelte';
 // Auto-populated case forms from uploaded data
 export { default as AutoPopulatedCaseForm } from './AutoPopulatedCaseForm.svelte';
 
+// Web search results display (Task 8)
+export { default as SearchResults } from './SearchResults.svelte';
+
+// Diff viewer for code changes (Task 10)
+export { default as DiffViewer } from './DiffViewer.svelte';
+
+// Theme toggle component (Task 13)
+export { default as ThemeToggle } from './ThemeToggle.svelte';
+
 // ============================================
 // Re-export store types for convenience
 // ============================================

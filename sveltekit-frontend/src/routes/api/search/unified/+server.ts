@@ -1,244 +1,163 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
-import type { z  } from 'zod';
-
-// Search result interface
-interface SearchResult {
-  id: string;
-  title: string;
-  type: string;
-  content: string;
-  score: number;
-  similarity?: number;
-  metadata?: Record<string, unknown>;
-  highlights?: string[];
-  createdAt?: string;
-}
-
-const unifiedSearchSchema = z.object({
-  query: z.string().min(1).max(1000),
-  categories: z
-    .array(
-      z.enum([
-        'cases',
-        'evidence',
-        'precedents',
-        'statutes',
-        'criminals',
-        'documents',
-        'services',
-        'components',
-      ])
-    )
-    .optional(),
-  enableVectorSearch: z.boolean().default(true),
-  aiSuggestions: z.boolean().default(true),
-  maxResults: z.number().min(1).max(100).default(20),
-  similarityThreshold: z.number().min(0).max(1).default(0.7),
-  includeMetadata: z.boolean().default(true),
-});
-
-/*
- * Reusable handler for the unified search flow.
- * Accepts validated search params and returns a Response via json(...)
+/**
+ * Unified Search API Endpoint
+ * Proxy to Phase 73 backend with fallback to local services
+ * Phase 74 Task 11.3: Create /api/search/unified endpoint
  */
-async function handleUnifiedSearch(
-  searchParams: z.infer<typeof unifiedSearchSchema>,
-  _locals: unknown
-): Promise<any> {
-  const { query, categories, enableVectorSearch, maxResults, similarityThreshold } = searchParams;
-  let results: SearchResult[] = [];
-  const startTime = Date.now();
 
-  // 1. Mock legal search results (since external dependencies are unavailable)
-  const mockLegalResults: SearchResult[] = [
-    {
-      id: 'case-001',
-      title: `Legal case ${query}`,
-      type: 'case',
-      content: `Legal case related to "${query}" with relevant precedents and statutes.`,
-      score: 0.95,
-      metadata: {
-        source: 'legal_database',
-        caseNumber: 'LGL-2024-001',
-        jurisdiction: 'Federal',
-        dateCreated: new Date().toISOString(),
-      },
-    },
-    {
-      id: 'evidence-001',
-      title: `Evidence: ${query}`,
-      type: 'evidence',
-      content: `Evidence documentation for "${query}" including forensic analysis and chain of custody.`,
-      score: 0.87,
-      metadata: {
-        source: 'evidence_vault',
-        evidenceType: 'documentary',
-        secured: true,
-      },
-    },
-    {
-      id: 'precedent-001',
-      title: `Legal Precedent: ${query}`,
-      type: 'precedent',
-      content: `Legal precedent case similar to "${query}" with applicable rulings and citations.`,
-      score: 0.82,
-      metadata: {
-        source: 'precedent_database',
-        court: 'Supreme Court',
-        year: '2023',
-      },
-    },
-  ];
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { getWebSearchService } from '$lib/services/web-search';
+import { getRAGCodebaseService } from '$lib/services/rag-codebase';
 
-  // 2. Simulate vector search if enabled
-  let vectorResults: SearchResult[] = [];
-  if (enableVectorSearch) {
-    vectorResults = [
-      {
-        id: 'vector-001',
-        title: `Vector Match: ${query}`,
-        type: 'document',
-        content: `Document found through semantic vector search for "${query}".`,
-        score: 0.78,
-        similarity: 0.78,
-        metadata: {
-          source: 'vector_database',
-          embedding_model: 'gemma-legal',
-          similarity_threshold: similarityThreshold,
-        },
-      },
-    ];
-  }
-
-  // 3. Combine results
-  results = [...mockLegalResults, ...vectorResults];
-
-  // Helper: map category tokens to expected item.type values or metadata.category
-  const categoryToTypes: Record<string, string[]> = {
-    cases: ['case', 'precedent'],
-    evidence: ['evidence'],
-    precedents: ['precedent'],
-    statutes: ['statute'],
-    criminals: ['criminal'],
-    documents: ['document'],
-    services: ['service'],
-    components: ['component'],
-  };
-
-  // 4. Filter by categories if specified
-  if (categories && categories.length > 0) {
-    results = results.filter((item) => {
-      // direct type match
-      for (const cat of categories) {
-        const allowedTypes = categoryToTypes[cat] || [];
-        if (allowedTypes.includes(item.type)) return true;
-        // metadata.category may be a string or array
-        const metaCat = item.metadata?.category;
-        if (typeof metaCat === 'string' && metaCat === cat) return true;
-        if (Array.isArray(metaCat) && metaCat.includes(cat)) return true;
-      }
-      return false;
-    });
-  }
-
-  // 5. Sort by relevance score and limit results
-  results = results.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, maxResults);
-
-  // 6. Generate search metadata
-  const processingTime = Date.now() - startTime;
-  const searchMetadata = {
-    query,
-    categories: categories || ['all'],
-    totalResults: results.length,
-    processingTime,
-    vectorSearchUsed: enableVectorSearch,
-    aiEnhanced: searchParams.aiSuggestions,
-    sourceBreakdown: {
-      legal: mockLegalResults.length,
-      vector: vectorResults.length,
-    },
-  };
-
-  return json(
-    {
-      success: true,
-      results,
-      metadata: searchMetadata,
-      suggestions: [
-        `Try searching for: "${query} case law"`,
-        `Look up: "${query} precedents"`,
-        `Find "${query} statutes"`,
-      ],
-    },
-    { status: 200 }
-  );
+interface UnifiedSearchRequest {
+  query: string;
+  type?: 'web' | 'codebase' | 'all';
+  limit?: number;
+  includeMetadata?: boolean;
 }
 
-export const POST: RequestHandler = async ({ request, locals: _locals }) => {
+interface UnifiedSearchResponse {
+  query: string;
+  results: {
+    web?: any[];
+    codebase?: any[];
+    combined?: any[];
+  };
+  metadata?: {
+    executionTime: number;
+    resultCount: number;
+    sources: string[];
+  };
+}
+
+const PHASE_73_BACKEND_URL = process.env.PHASE_73_BACKEND_URL || 'http://localhost:8000';
+const RETRY_ATTEMPTS = 3;
+const RETRY_DELAY = 1000; // ms
+
+/**
+ * POST /api/search/unified
+ * Unified search across web and codebase
+ */
+export const POST: RequestHandler = async ({ request }) => {
   try {
-    // Parse and validate request
-    const body = await request.json();
-    const searchParams = unifiedSearchSchema.parse(body);
-    return await handleUnifiedSearch(searchParams, _locals);
-  } catch (error: Error | unknown) {
-    console.error('Unified search error: ', error);
-    if (error instanceof z.ZodError) {
-      return json(
-        {
-          success: false,
-          error: 'Invalid search parameters',
-          details: error.errors,
-        },
-        { status: 400 }
-      );
+    const body: UnifiedSearchRequest = await request.json();
+    const { query, type = 'all', limit = 10, includeMetadata = true } = body;
+
+    if (!query || query.trim().length === 0) {
+      return json({ error: 'Query is required' }, { status: 400 });
     }
-    const message = error instanceof Error ? error.message : String(error);
+
+    const startTime = Date.now();
+    const results: UnifiedSearchResponse['results'] = {};
+    const sources: string[] = [];
+
+    // Search web
+    if (type === 'web' || type === 'all') {
+      try {
+        const webSearchService = getWebSearchService();
+        results.web = await webSearchService.search(query);
+        sources.push('web');
+      } catch (error) {
+        console.error('Web search error:', error);
+      }
+    }
+
+    // Search codebase
+    if (type === 'codebase' || type === 'all') {
+      try {
+        const ragService = getRAGCodebaseService();
+        results.codebase = await ragService.retrieveContext(query, limit);
+        sources.push('codebase');
+      } catch (error) {
+        console.error('Codebase search error:', error);
+      }
+    }
+
+    // Try Phase 73 backend
+    if (type === 'all') {
+      try {
+        const phase73Results = await searchPhase73Backend(query, limit);
+        if (phase73Results) {
+          results.combined = phase73Results;
+          sources.push('phase-73');
+        }
+      } catch (error) {
+        console.error('Phase 73 backend error:', error);
+      }
+    }
+
+    const executionTime = Date.now() - startTime;
+
+    return json({
+      query,
+      results,
+      metadata: includeMetadata
+        ? {
+            executionTime,
+            resultCount: Object.values(results).reduce((sum, arr) => sum + (arr?.length || 0), 0),
+            sources,
+          }
+        : undefined,
+    } as UnifiedSearchResponse);
+  } catch (error) {
+    console.error('Unified search error:', error);
     return json(
-      {
-        success: false,
-        error: 'Search failed',
-        message,
-      },
+      { error: 'Search failed', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
 };
 
-export const GET: RequestHandler = async ({ url, locals: _locals }) => {
-  try {
-    const query = url.searchParams.get('q');
-    const categories = url.searchParams.get('categories')?.split(',') || [];
-    const limit = parseInt(url.searchParams.get('limit') || '20');
-    const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
-    const vectorSearch = url.searchParams.get('vector') !== 'false';
-    if (!query) {
-      return json({ success: false, error: 'Query parameter (q) required' }, { status: 400 });
-    }
-    // Build body from GET parameters and validate using the same schema
-    const body = {
-      query,
-      categories: categories.length > 0 ? categories : undefined,
-      enableVectorSearch: vectorSearch,
-      maxResults: limit,
-      similarityThreshold: threshold,
-      aiSuggestions: true,
-      includeMetadata: true,
-    };
-    const searchParams = unifiedSearchSchema.parse(body);
-    return await handleUnifiedSearch(searchParams, _locals);
-  } catch (error: Error | unknown) {
-    console.error('Unified search GET error: ', error);
-    if (error instanceof z.ZodError) {
-      return json(
-        {
-          success: false,
-          error: 'Invalid search parameters',
-          details: error.errors,
+/**
+ * Search Phase 73 backend with retry logic
+ */
+async function searchPhase73Backend(query: string, limit: number): Promise<any[] | null> {
+  for (let attempt = 0; attempt < RETRY_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetch(`${PHASE_73_BACKEND_URL}/api/search/unified`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Request-ID': generateRequestId(),
         },
-        { status: 400 }
-      );
+        body: JSON.stringify({
+          query,
+          limit,
+          includeMetadata: true,
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          // Rate limited - wait and retry
+          await delay(RETRY_DELAY * (attempt + 1));
+          continue;
+        }
+        throw new Error(`Backend returned ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.results || [];
+    } catch (error) {
+      if (attempt === RETRY_ATTEMPTS - 1) {
+        throw error;
+      }
+      await delay(RETRY_DELAY * (attempt + 1));
     }
-    const message = error instanceof Error ? error.message : String(error);
-    return json({ success: false, error: 'Search failed', message }, { status: 500 });
   }
-};
+
+  return null;
+}
+
+/**
+ * Generate unique request ID
+ */
+function generateRequestId(): string {
+  return `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Delay helper
+ */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

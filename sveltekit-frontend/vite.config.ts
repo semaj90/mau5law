@@ -1,9 +1,8 @@
-import { sveltekit  } from '@sveltejs/kit/vite';
-import { defineConfig, loadEnv  } from 'vite';
-import UnoCSS from '@unocss/vite';
-import path from 'path';
+import { sveltekit } from '@sveltejs/kit/vite';
 import fs from 'fs';
-import { createRequire  } from 'module';
+import { createRequire } from 'module';
+import path from 'path';
+import { defineConfig, loadEnv } from 'vite';
 // import { bitsUiIntegrityPlugin } from './scripts/vite-plugin-bits-ui-integrity.mjs';
 
 const require = createRequire(import.meta.url);
@@ -87,6 +86,31 @@ export default defineConfig(({ mode }) => {
           target: 'http://localhost:8097',
           changeOrigin: true,
           secure: false,
+        },
+        // New service proxies for E2 repository
+        '/api/ingestion': {
+          target: 'http://localhost:3003',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api\/ingestion/, ''),
+        },
+        '/api/yolo-sam': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api\/yolo-sam/, ''),
+        },
+        '/api/ast-fixer': {
+          target: 'http://localhost:3002',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api\/ast-fixer/, ''),
+        },
+        '/api/playwright-auditor': {
+          target: 'http://localhost:8082',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api\/playwright-auditor/, ''),
         },
         // WebSocket proxy for legal AI services
         '/ws/rag': {

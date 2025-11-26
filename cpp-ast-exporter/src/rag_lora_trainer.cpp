@@ -16,7 +16,43 @@
 // #include <grpcpp/grpcpp.h>  // Commented out - gRPC not available
 // #include "qlora_training.grpc.pb.h"  // Commented out - gRPC not available
 
+// CUDA error checking macro
+#define CHECK_CUDA(call)                                                        \
+    {                                                                           \
+        cudaError_t status = call;                                              \
+        if (status != cudaSuccess) {                                            \
+            std::cerr << "CUDA Error: " << cudaGetErrorString(status)           \
+                      << " at line " << __LINE__ << std::endl;                  \
+            throw std::runtime_error("CUDA failure");                           \
+        }                                                                       \
+    }
+
 // Phase AST: QLoRA C++ Trainer Core with NF4, LoRA, and Fused Operations
+
+// Custom LoRA Adapter Module
+class LoRAAdapter : public torch::nn::Module {
+private:
+    torch::nn::Linear lora_A_{nullptr};
+    torch::nn::Linear lora_B_{nullptr};
+    float dropout_rate_;
+
+public:
+    LoRAAdapter(int in_features, int r, float dropout_rate = 0.0f)
+        : dropout_rate_(dropout_rate) {
+        lora_A_ = torch::nn::Linear(torch::nn::LinearOptions(in_features, r).bias(false));
+        lora_B_ = torch::nn::Linear(torch::nn::LinearOptions(r, in_features).bias(false));
+        register_module("lora_A", lora_A_);
+        register_module("lora_B", lora_B_);
+    }
+
+    torch::Tensor forward(torch::Tensor x) {
+        // LoRA forward: x @ A @ B
+        auto dropout = torch::nn::Dropout(dropout_rate_);
+        auto a_out = dropout(lora_A_->forward(x));
+        return lora_B_->forward(a_out);
+    }
+};
+
 class QLoRATrainer {
 private:
     // CUDA handles
@@ -24,8 +60,8 @@ private:
     cudnnHandle_t cudnn_handle_;
 
     // Model components - use proper torch::nn::ModuleHolder
-    torch::nn::Linear base_model_;
-    std::unordered_map<std::string, torch::nn::Sequential> lora_adapters_;
+    torch::nn::Linear base_model_{nullptr};
+    std::unordered_map<std::string, std::shared_ptr<LoRAAdapter>> lora_adapters_;
     std::shared_ptr<torch::optim::Optimizer> optimizer_;
 
     // NF4 quantization parameters
@@ -39,6 +75,13 @@ private:
     float lora_dropout_ = 0.05f;
     bool use_gradient_checkpointing_ = true;
 
+    // Optimizer hyperparameters
+    float learning_rate_ = 2e-4;
+    float weight_decay_ = 0.01f;
+    float beta1_ = 0.9f;
+    float beta2_ = 0.999f;
+    float eps_ = 1e-8f;
+
     // Performance metrics
     std::chrono::steady_clock::time_point training_start_;
     size_t tokens_processed_ = 0;
@@ -50,6 +93,7 @@ private:
     // CUfunction nf4_quantize_kernel_;
     // CUfunction nf4_dequantize_kernel_;
     bool cuda_kernels_available_ = false;
+    bool use_fp8_fallback_ = true;
 
 public:
     QLoRATrainer(const std::string& model_name, int lora_r = 16, int lora_alpha = 32)
@@ -66,6 +110,12 @@ public:
 
         // Load fused operation kernels
         load_fused_kernels();
+
+        // Initialize optimizer for LoRA parameters
+        initialize_optimizer();
+
+        // Start metrics timer
+        start_metrics_timer();
 
         std::cout << "Phase AST QLoRA Trainer initialized with " << lora_r << " rank, "
                   << lora_alpha << " alpha" << std::endl;
@@ -96,9 +146,22 @@ public:
     // Load base model (placeholder - integrate with actual model loading)
     void load_base_model(const std::string& model_name) {
         // This would load the actual transformer model
-        // For now, create a placeholder
+        // For now, create a placeholder language model head
         std::cout << "Loading base model: " << model_name << std::endl;
-        // base_model_ = load_transformer_model(model_name);
+
+        // Gemma 3 4B configuration
+        int hidden_size = 3072;  // Hidden dimension for Gemma 3 4B
+        int vocab_size = 32000;  // Vocabulary size
+
+        // Create language model head (final linear layer)
+        base_model_ = torch::nn::Linear(
+            torch::nn::LinearOptions(hidden_size, vocab_size).bias(false)
+        );
+        // Note: QLoRATrainer is not a Module, so we don't register_module here
+        // The base_model_ is used directly in forward passes
+
+        std::cout << "Initialized base model with hidden_size=" << hidden_size
+                  << ", vocab_size=" << vocab_size << std::endl;
     }
 
     // Initialize LoRA adapters for target modules
@@ -108,9 +171,9 @@ public:
             "gate_proj", "up_proj", "down_proj"
         };
 
-        // Assume standard transformer dimensions (can be made configurable)
-        const int hidden_size = 4096;  // Hidden dimension
-        const int intermediate_size = 11008;  // MLP intermediate size
+        // Gemma 3 4B dimensions
+        const int hidden_size = 3072;  // Hidden dimension for Gemma 3 4B
+        const int intermediate_size = 12288;  // MLP intermediate size (4 * hidden_size)
 
         for (const auto& module_name : target_modules) {
             int in_features, out_features;
@@ -130,14 +193,11 @@ public:
 
             // Create LoRA adapter: W = W0 + (A * B) * scale
             // A: [in_features, r], B: [r, out_features]
-            auto adapter = torch::nn::Sequential();
-            adapter->push_back(torch::nn::Linear(torch::nn::LinearOptions(in_features, lora_r_).bias(false)));
-            adapter->push_back(torch::nn::Dropout(torch::nn::DropoutOptions(lora_dropout_)));
-            adapter->push_back(torch::nn::Linear(torch::nn::LinearOptions(lora_r_, out_features).bias(false)));
+            auto adapter = std::make_shared<LoRAAdapter>(in_features, lora_r_, lora_dropout_);
 
             // Initialize with Kaiming uniform
             for (auto& param : adapter->parameters()) {
-                torch::nn::init::kaiming_uniform_(param);
+                torch::nn::init::kaiming_uniform_(param, /*a=*/sqrt(5.0));
             }
 
             lora_adapters_[module_name] = adapter;
@@ -167,6 +227,32 @@ public:
         // cuModuleGetFunction(&nf4_dequantize_kernel_, module, "nf4_dequantize");
         // cuda_kernels_available_ = true;
         // std::cout << "Loaded fused CUDA kernels for QLoRA operations" << std::endl;
+    }
+
+    // Initialize optimizer for LoRA parameters
+    void initialize_optimizer() {
+        // Collect all LoRA parameters
+        std::vector<torch::Tensor> lora_params;
+        for (const auto& pair : lora_adapters_) {
+            auto adapter_params = pair.second->parameters();
+            lora_params.insert(lora_params.end(), adapter_params.begin(), adapter_params.end());
+        }
+
+        // Also include base model parameters (though typically frozen in LoRA)
+        auto base_params = base_model_->parameters();
+        lora_params.insert(lora_params.end(), base_params.begin(), base_params.end());
+
+        // Create AdamW optimizer with LoRA-specific hyperparameters
+        optimizer_ = std::make_shared<torch::optim::AdamW>(
+            lora_params,
+            torch::optim::AdamWOptions(learning_rate_)
+                .weight_decay(weight_decay_)
+                .betas({beta1_, beta2_})
+                .eps(eps_)
+        );
+
+        std::cout << "Initialized AdamW optimizer with " << lora_params.size()
+                  << " LoRA parameters, lr=" << learning_rate_ << std::endl;
     }
 
     // NF4 quantization with double quantization
@@ -335,7 +421,7 @@ public:
     // Launch fused LoRA forward kernel
     torch::Tensor launch_fused_lora_forward(
         const torch::Tensor& input,
-        torch::nn::Sequential& adapter,
+        std::shared_ptr<LoRAAdapter> adapter,
         float scale) {
 
         // TODO: Implement CUDA kernel launch when Driver API is available
@@ -348,7 +434,7 @@ public:
     std::vector<torch::Tensor> launch_fused_lora_backward_checkpointed(
         const torch::Tensor& grad_output,
         const torch::Tensor& input,
-        torch::nn::Sequential& adapter,
+        std::shared_ptr<LoRAAdapter> adapter,
         float scale) {
 
         // TODO: Implement CUDA kernel launch when Driver API is available
@@ -369,6 +455,53 @@ public:
             {"tokens_per_second", tokens_per_sec},
             {"elapsed_seconds", elapsed_ms / 1000.0f}
         };
+    }
+
+    // Start metrics timer
+    void start_metrics_timer() {
+        training_start_ = std::chrono::steady_clock::now();
+        tokens_processed_ = 0;
+        current_loss_ = 0.0f;
+    }
+
+    // Safe matrix multiplication with FP8 fallback
+    torch::Tensor safe_matmul(const torch::Tensor& a, const torch::Tensor& b) {
+        try {
+            // Try standard matmul first
+            return torch::matmul(a, b);
+        } catch (const std::exception& e) {
+            std::cerr << "Standard matmul failed: " << e.what() << std::endl;
+
+            if (use_fp8_fallback_) {
+                try {
+                    // Fallback to FP8 computation if available
+                    std::cout << "Attempting FP8 fallback..." << std::endl;
+
+                    // Convert to FP8 for computation
+                    auto a_fp8 = a.to(torch::kFloat8_e4m3fn);
+                    auto b_fp8 = b.to(torch::kFloat8_e4m3fn);
+
+                    auto result_fp8 = torch::matmul(a_fp8, b_fp8);
+
+                    // Convert back to FP16/FP32
+                    return result_fp8.to(a.dtype());
+                } catch (const std::exception& e2) {
+                    std::cerr << "FP8 fallback also failed: " << e2.what() << std::endl;
+                }
+            }
+
+            // Final fallback: CPU computation
+            std::cout << "Falling back to CPU computation..." << std::endl;
+            auto a_cpu = a.cpu();
+            auto b_cpu = b.cpu();
+            auto result_cpu = torch::matmul(a_cpu, b_cpu);
+
+            // Move result back to original device
+            if (a.device().type() == torch::kCUDA) {
+                return result_cpu.cuda();
+            }
+            return result_cpu;
+        }
     }
 
     // Cleanup CUDA resources
@@ -430,31 +563,46 @@ __global__ void fused_lora_backward_kernel(const float* grad_output, const float
 
 // Main training function
 int main(int argc, char* argv[]) {
-    std::cout << "Phase AST: QLoRA C++ Trainer Core Starting..." << std::endl;
+    try {
+        std::cout << "Phase AST: QLoRA C++ Trainer Core Starting..." << std::endl;
 
-    // Initialize trainer
-    QLoRATrainer trainer("google/gemma-3-4b-it", 16, 32);
+        // Test PyTorch initialization
+        std::cout << "Testing PyTorch tensor creation..." << std::endl;
+        auto test_tensor = torch::randn({2, 2});
+        std::cout << "PyTorch tensor created: " << test_tensor << std::endl;
 
-    // Training loop (simplified)
-    for (int epoch = 0; epoch < 3; ++epoch) {
-        std::cout << "Epoch " << epoch + 1 << "/3" << std::endl;
+        // Initialize trainer
+        std::cout << "Creating QLoRATrainer..." << std::endl;
+        QLoRATrainer trainer("google/gemma-3-4b-it", 16, 32);
+        std::cout << "QLoRATrainer created successfully!" << std::endl;
 
-        // Simulate training steps
-        for (int step = 0; step < 100; ++step) {
-            // Create dummy tensors for demonstration
-            auto input_ids = torch::randint(0, 32000, {4, 512}, torch::kLong);
-            auto labels = torch::randint(0, 32000, {4, 512}, torch::kLong);
+        // Training loop (simplified)
+        for (int epoch = 0; epoch < 3; ++epoch) {
+            std::cout << "Epoch " << epoch + 1 << "/3" << std::endl;
 
-            float loss = trainer.training_step(input_ids, labels);
+            // Simulate training steps
+            for (int step = 0; step < 100; ++step) {
+                // Create dummy tensors for demonstration
+                auto input_ids = torch::randint(0, 32000, {4, 512}, torch::kLong);
+                auto labels = torch::randint(0, 32000, {4, 512}, torch::kLong);
 
-            if (step % 10 == 0) {
-                auto metrics = trainer.get_metrics();
-                std::cout << "Step " << step << ", Loss: " << loss
-                         << ", Tokens/sec: " << metrics["tokens_per_second"] << std::endl;
+                float loss = trainer.training_step(input_ids, labels);
+
+                if (step % 10 == 0) {
+                    auto metrics = trainer.get_metrics();
+                    std::cout << "Step " << step << ", Loss: " << loss
+                             << ", Tokens/sec: " << metrics["tokens_per_second"] << std::endl;
+                }
             }
         }
-    }
 
-    std::cout << "Phase AST QLoRA Training Complete!" << std::endl;
-    return 0;
+        std::cout << "Phase AST QLoRA Training Complete!" << std::endl;
+        return 0;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+        return 1;
+    } catch (...) {
+        std::cerr << "Unknown exception caught!" << std::endl;
+        return 1;
+    }
 }
