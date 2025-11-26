@@ -7,6 +7,7 @@
 #include <chrono>
 #include <thread>
 #include <future>
+#include <fstream>
 #include <nlohmann/json.hpp>
 
 // Phase AST: QLoRA Performance Benchmark Tool
@@ -70,7 +71,7 @@ public:
             run_training_iteration();
 
             auto end = std::chrono::steady_clock::now();
-            double duration_ms = std::chrono::duration<double, std::millis>(end - start).count();
+            double duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
             training_times_.push_back(duration_ms);
 
@@ -109,7 +110,7 @@ public:
             int tokens_generated = run_inference_iteration();
 
             auto end = std::chrono::steady_clock::now();
-            double duration_ms = std::chrono::duration<double, std::millis>(end - start).count();
+            double duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
             inference_times_.push_back(duration_ms);
 
