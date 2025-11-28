@@ -971,4 +971,21 @@
         }
       },
       "detail": "Test Gemma 3 VLM web search functionality"
+    },
+    {
+      "label": "🔥 Build TensorRT Inference Pipeline",
+      "type": "shell",
+      "command": "tensorrt-infer/build.bat",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "detail": "Build complete TensorRT (INT4 AWQ) → CUDA → Go inference pipeline for Windows"
     }
+  ]
+}

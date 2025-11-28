@@ -124,6 +124,61 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "≡ƒöì Comprehensive Error Pattern Analysis",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-error-analyzer-simple.mjs"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Comprehensive scan for syntax errors: TypeScript unions, CSS semicolons, object literals (5-10 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔧 AST-Based Error Fixer",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/ast-error-fixer.mjs"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Apply automated fixes to detected errors using AST-based analysis",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 Analyze & Fix Errors (Full Pipeline)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"node scripts/redis-error-analyzer-simple.mjs; if ($LASTEXITCODE -eq 0) { node scripts/ast-error-fixer.mjs }"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Complete error analysis and automated fixing pipeline",
+			"problemMatcher": []
+		},
+		{
 			"label": "🔄 Refresh Error Cache (Full Scan)",
 			"type": "shell",
 			"command": "node",
