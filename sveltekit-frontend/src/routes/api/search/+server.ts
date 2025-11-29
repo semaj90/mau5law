@@ -1,69 +1,37 @@
 /**
- * Search API Endpoint
- * Agentic RAG search with semantic + keyword + reranking
+ * SvelteKit proxy route for /api/search
+ *
+ * Forwards POST requests to backend /api/search endpoint
+ * Attaches user_id from session/locals if available
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { SearchOrchestrator } from '$lib/server/services/search/search-orchestrator';
+import type { RequestHandler } from './$types';
 
-// Initialize orchestrator (in production, use dependency injection)
-let orchestrator: SearchOrchestrator | null = null;
+const BACKEND_BASE = process.env.BACKEND_BASE ?? 'http://localhost:8000';
 
-async function getOrchestrator(): Promise<SearchOrchestrator> {
-  if (!orchestrator) {
-    const { createSearchOrchestrator } = await import(
-      '$lib/server/services/search/search-orchestrator'
-    );
-
-    const pgvectorUrl =
-      process.env.DATABASE_URL ||
-      'postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable';
-    const elasticsearchNode = process.env.ELASTICSEARCH_URL || 'http://localhost:9200';
-    const rerankerUrl = process.env.RERANKER_URL || 'http://localhost:8000';
-
-    orchestrator = await createSearchOrchestrator(pgvectorUrl, elasticsearchNode, rerankerUrl);
-  }
-
-  return orchestrator;
-}
-
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json();
-    const { query, embedding, top_k = 7 } = body;
 
-    if (!query || !embedding) {
-      return json({ error: 'Missing query or embedding' }, { status: 400 });
-    }
+    // Attach user_id from session if available
+    const user_id = (locals as any)?.user?.id ?? body.user_id ?? null;
 
-    if (!Array.isArray(embedding) || embedding.length !== 768) {
-      return json({ error: 'Embedding must be a 768-dimensional vector' }, { status: 400 });
-    }
+    const res = await fetch(`${BACKEND_BASE}/api/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, user_id }),
+    });
 
-    const orch = await getOrchestrator();
-    const results = await orch.search({ text: query, embedding }, top_k);
+    const data = await res.json();
 
-    return json(results);
-  } catch (error) {
-    console.error('Search error:', error);
-    return json(
-      { error: error instanceof Error ? error.message : 'Search failed' },
-      { status: 500 }
-    );
-  }
-};
-
-export const GET: RequestHandler = async () => {
-  try {
-    const orch = await getOrchestrator();
-    const stats = await orch.getStats();
-
-    return json({
-      status: 'healthy',
-      stats,
+    return new Response(JSON.stringify(data), {
+      status: res.status,
+      headers: { 'Content-Type': 'application/json' }
     });
   } catch (error) {
-    console.error('Stats error:', error);
-    return json({ error: 'Failed to get stats' }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: 'Search request failed' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 };
