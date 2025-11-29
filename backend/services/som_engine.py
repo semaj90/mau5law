@@ -1,333 +1,272 @@
 """
 Self-Organizing Map (SOM) Fallback Clustering Engine
 
-Provides fallback clustering when semantic recall is weak.
-Integrated from existing distributed_train.py SOM autoencoder.
+Implements SOM for unsupervised clustering when semantic recall is weak.
+Maps queries to nearest SOM nodes and returns cluster neighbors.
 
 Usage:
-    engine = SOMEngine()
-    som_nodes = engine.som_map(query_embedding)
+    som = SOMEngine(grid_size=10)
+    som.train(embeddings)
+    neighbors = som.get_cluster_neighbors(query_embedding)
 """
 
 import logging
-from typing import List, Dict, Optional, Tuple
 import numpy as np
-
-try:
-    import torch
-    import torch.nn as nn
-except ImportError:
-    torch = None
-    nn = None
+from typing import List, Dict, Tuple, Optional
+from dataclasses import dataclass
+import time
 
 logger = logging.getLogger(__name__)
 
 
-class SOMAutoEncoder(nn.Module):
-    """SOM-based autoencoder for latent encoding"""
+@dataclass
+class SOMNode:
+    """Self-organizing map node"""
 
-    def __init__(self, input_dim: int, latent_dim: int = 64):
-        """
-        Initialize SOM autoencoder.
-
-        Args:
-            input_dim: Input embedding dimension (768)
-            latent_dim: Latent dimension (64)
-        """
-        if nn is None:
-            raise RuntimeError("PyTorch not installed")
-
-        super().__init__()
-        self.encoder = nn.Sequential(
-            nn.Linear(input_dim, 512),
-            nn.ReLU(),
-            nn.Linear(512, latent_dim),
-        )
-        self.decoder = nn.Sequential(
-            nn.Linear(latent_dim, 512),
-            nn.ReLU(),
-            nn.Linear(512, input_dim),
-        )
-
-    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-        Forward pass.
-
-        Args:
-            x: Input tensor
-
-        Returns:
-            Tuple of (reconstruction, latent)
-        """
-        latent = self.encoder(x)
-        reconstruction = self.decoder(latent)
-        return reconstruction, latent
-
-    def encode(self, x: torch.Tensor) -> torch.Tensor:
-        """Encode to latent space."""
-        return self.encoder(x)
-
-    def decode(self, z: torch.Tensor) -> torch.Tensor:
-        """Decode from latent space."""
-        return self.decoder(z)
+    node_id: int
+    weights: np.ndarray
+    activation_count: int
+    last_activated: float
 
 
 class SOMEngine:
     """Self-Organizing Map for fallback clustering"""
 
-    def __init__(self, grid_size: int = 10, learning_rate: float = 0.1):
+    def __init__(self, grid_size: int = 10, embedding_dim: int = 768, learning_rate: float = 0.5):
         """
         Initialize SOM engine.
 
         Args:
-            grid_size: SOM grid size (10×10)
-            learning_rate: Learning rate for SOM updates
+            grid_size: Size of SOM grid (grid_size x grid_size)
+            embedding_dim: Dimension of embeddings
+            learning_rate: Initial learning rate
         """
         self.grid_size = grid_size
+        self.embedding_dim = embedding_dim
         self.learning_rate = learning_rate
-        self.som_weights: Optional[np.ndarray] = None
-        self.autoencoder: Optional[SOMAutoEncoder] = None
-        self.device = None
+        self.num_nodes = grid_size * grid_size
 
-        if torch is not None:
-            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # Initialize SOM nodes with random weights
+        self.nodes: List[SOMNode] = []
+        for i in range(self.num_nodes):
+            weights = np.random.randn(embedding_dim) * 0.1
+            self.nodes.append(
+                SOMNode(
+                    node_id=i,
+                    weights=weights,
+                    activation_count=0,
+                    last_activated=0.0,
+                )
+            )
 
-    def initialize_som(self, data: np.ndarray) -> None:
+        # Neighborhood function parameters
+        self.sigma = grid_size / 2.0
+        self.sigma_decay = 0.99
+
+        logger.info(f"SOMEngine initialized (grid={grid_size}x{grid_size}, dim={embedding_dim})")
+
+    def train(self, embeddings: np.ndarray, epochs: int = 10, batch_size: int = 32) -> None:
         """
-        Initialize SOM weights from data.
+        Train SOM using competitive learning.
 
         Args:
-            data: Training data (N × D)
+            embeddings: Training embeddings (N x embedding_dim)
+            epochs: Number of training epochs
+            batch_size: Batch size for training
         """
-        n_samples, n_features = data.shape
-
-        # Initialize weights randomly from data
-        indices = np.random.choice(n_samples, self.grid_size * self.grid_size, replace=True)
-        self.som_weights = data[indices].reshape(self.grid_size, self.grid_size, n_features)
-
-        logger.info(f"Initialized SOM: {self.grid_size}×{self.grid_size} grid, {n_features} features")
-
-    def train_autoencoder(self, data: np.ndarray, epochs: int = 5, batch_size: int = 32) -> None:
-        """
-        Train SOM autoencoder.
-
-        Args:
-            data: Training data (N × D)
-            epochs: Number of epochs
-            batch_size: Batch size
-        """
-        if torch is None or nn is None:
-            logger.warning("PyTorch not installed, skipping autoencoder training")
-            return
-
         try:
-            input_dim = data.shape[1]
-            self.autoencoder = SOMAutoEncoder(input_dim, latent_dim=64).to(self.device)
-
-            optimizer = torch.optim.Adam(self.autoencoder.parameters(), lr=1e-4)
-            criterion = nn.MSELoss()
-
-            data_tensor = torch.from_numpy(data).float().to(self.device)
+            N = embeddings.shape[0]
+            logger.info(f"Training SOM on {N} embeddings ({epochs} epochs)")
 
             for epoch in range(epochs):
-                total_loss = 0.0
-                n_batches = 0
+                # Shuffle embeddings
+                indices = np.random.permutation(N)
+                shuffled = embeddings[indices]
 
-                for i in range(0, len(data), batch_size):
-                    batch = data_tensor[i : i + batch_size]
+                # Process batches
+                for batch_start in range(0, N, batch_size):
+                    batch_end = min(batch_start + batch_size, N)
+                    batch = shuffled[batch_start:batch_end]
 
-                    # Forward pass
-                    reconstruction, _ = self.autoencoder(batch)
-                    loss = criterion(reconstruction, batch)
+                    # Train on batch
+                    for embedding in batch:
+                        self._train_step(embedding, epoch, epochs)
 
-                    # Backward pass
-                    optimizer.zero_grad()
-                    loss.backward()
-                    optimizer.step()
+                # Decay learning rate and neighborhood
+                self.learning_rate *= 0.95
+                self.sigma *= self.sigma_decay
 
-                    total_loss += loss.item()
-                    n_batches += 1
+                logger.debug(f"Epoch {epoch + 1}/{epochs} completed")
 
-                avg_loss = total_loss / n_batches
-                if (epoch + 1) % 2 == 0:
-                    logger.info(f"Epoch {epoch + 1}/{epochs}, Loss: {avg_loss:.6f}")
-
-            logger.info("Autoencoder training complete")
+            logger.info("SOM training completed")
 
         except Exception as e:
-            logger.error(f"Autoencoder training failed: {e}")
+            logger.error(f"SOM training failed: {e}")
 
-    def som_map(self, query_vec: np.ndarray) -> List[Dict]:
+    def _train_step(self, embedding: np.ndarray, epoch: int, total_epochs: int) -> None:
+        """Single training step"""
+        # Find best matching unit (BMU)
+        bmu_idx = self._find_bmu(embedding)
+
+        # Update weights in neighborhood
+        for i, node in enumerate(self.nodes):
+            distance = self._grid_distance(bmu_idx, i)
+            neighborhood = np.exp(-(distance**2) / (2 * self.sigma**2))
+
+            # Update weight
+            delta = self.learning_rate * neighborhood * (embedding - node.weights)
+            node.weights += delta
+
+    def _find_bmu(self, embedding: np.ndarray) -> int:
+        """Find best matching unit (BMU) for embedding"""
+        distances = np.array([np.linalg.norm(embedding - node.weights) for node in self.nodes])
+        return int(np.argmin(distances))
+
+    def _grid_distance(self, idx1: int, idx2: int) -> float:
+        """Compute grid distance between two nodes"""
+        row1, col1 = divmod(idx1, self.grid_size)
+        row2, col2 = divmod(idx2, self.grid_size)
+
+        return np.sqrt((row1 - row2) ** 2 + (col1 - col2) ** 2)
+
+    def get_cluster_neighbors(
+        self, query_embedding: np.ndarray, k: int = 5, radius: int = 2
+    ) -> List[Dict]:
         """
-        Map query to nearest SOM node.
+        Get cluster neighbors for query embedding.
 
         Args:
-            query_vec: Query embedding (D,)
+            query_embedding: Query embedding vector
+            k: Number of neighbors to return
+            radius: Neighborhood radius in grid
 
         Returns:
-            List of cluster neighbors ranked by distance
-        """
-        if self.som_weights is None:
-            logger.warning("SOM not initialized")
-            return []
-
-        try:
-            # Find nearest SOM node (BMU - Best Matching Unit)
-            distances = np.linalg.norm(self.som_weights - query_vec, axis=2)
-            bmu_idx = np.unravel_index(np.argmin(distances), distances.shape)
-
-            # Get neighbors in grid
-            neighbors = self._get_som_neighbors(bmu_idx, distances)
-
-            return neighbors
-
-        except Exception as e:
-            logger.error(f"SOM mapping failed: {e}")
-            return []
-
-    def _get_som_neighbors(self, bmu_idx: Tuple[int, int], distances: np.ndarray) -> List[Dict]:
-        """
-        Get SOM neighbors ranked by distance.
-
-        Args:
-            bmu_idx: Best matching unit index
-            distances: Distance matrix
-
-        Returns:
-            List of neighbors
-        """
-        neighbors = []
-
-        # Get all nodes with their distances
-        for i in range(self.grid_size):
-            for j in range(self.grid_size):
-                distance = distances[i, j]
-                neighbors.append(
-                    {
-                        "node_id": f"som_{i}_{j}",
-                        "position": (i, j),
-                        "distance": float(distance),
-                        "is_bmu": (i, j) == bmu_idx,
-                    }
-                )
-
-        # Sort by distance
-        neighbors.sort(key=lambda x: x["distance"])
-
-        # Return top-10
-        return neighbors[:10]
-
-    def get_som_neighbors(self, node_id: str) -> List[Dict]:
-        """
-        Get neighbors of a SOM node.
-
-        Args:
-            node_id: Node ID (e.g., "som_5_3")
-
-        Returns:
-            List of neighbors
+            List of neighbor nodes with distances
         """
         try:
-            # Parse node ID
-            parts = node_id.split("_")
-            if len(parts) != 3:
-                return []
+            start_time = time.time()
 
-            i, j = int(parts[1]), int(parts[2])
+            # Find BMU
+            bmu_idx = self._find_bmu(query_embedding)
+            bmu_node = self.nodes[bmu_idx]
 
-            # Get neighbors in grid (8-neighborhood)
+            # Update activation
+            bmu_node.activation_count += 1
+            bmu_node.last_activated = time.time()
+
+            # Get neighbors within radius
             neighbors = []
-            for di in [-1, 0, 1]:
-                for dj in [-1, 0, 1]:
-                    if di == 0 and dj == 0:
-                        continue
+            bmu_row, bmu_col = divmod(bmu_idx, self.grid_size)
 
-                    ni, nj = i + di, j + dj
-                    if 0 <= ni < self.grid_size and 0 <= nj < self.grid_size:
-                        neighbors.append(
-                            {
-                                "node_id": f"som_{ni}_{nj}",
-                                "position": (ni, nj),
-                                "distance": float(np.sqrt(di**2 + dj**2)),
-                            }
-                        )
+            for i, node in enumerate(self.nodes):
+                node_row, node_col = divmod(i, self.grid_size)
 
-            return neighbors
+                # Check if within radius
+                if (
+                    abs(node_row - bmu_row) <= radius
+                    and abs(node_col - bmu_col) <= radius
+                ):
+                    distance = np.linalg.norm(query_embedding - node.weights)
+                    neighbors.append(
+                        {
+                            "node_id": i,
+                            "distance": float(distance),
+                            "activation_count": node.activation_count,
+                            "weights": node.weights.tolist(),
+                        }
+                    )
+
+            # Sort by distance
+            neighbors.sort(key=lambda x: x["distance"])
+
+            # Return top-k
+            result = neighbors[:k]
+
+            elapsed_ms = int((time.time() - start_time) * 1000)
+            logger.debug(f"Found {len(result)} neighbors in {elapsed_ms}ms")
+
+            return result
 
         except Exception as e:
-            logger.error(f"Failed to get SOM neighbors: {e}")
+            logger.error(f"Getting cluster neighbors failed: {e}")
             return []
 
-    def encode_to_latent(self, embedding: np.ndarray) -> Optional[np.ndarray]:
+    def get_activation_map(self) -> np.ndarray:
+        """Get activation count map for visualization"""
+        activation_map = np.zeros((self.grid_size, self.grid_size))
+
+        for i, node in enumerate(self.nodes):
+            row, col = divmod(i, self.grid_size)
+            activation_map[row, col] = node.activation_count
+
+        return activation_map
+
+    def get_weight_map(self, dimension: int = 0) -> np.ndarray:
+        """Get weight map for specific dimension"""
+        weight_map = np.zeros((self.grid_size, self.grid_size))
+
+        for i, node in enumerate(self.nodes):
+            row, col = divmod(i, self.grid_size)
+            if dimension < len(node.weights):
+                weight_map[row, col] = node.weights[dimension]
+
+        return weight_map
+
+    def quantize(self, embeddings: np.ndarray) -> np.ndarray:
         """
-        Encode embedding to latent space using autoencoder.
+        Quantize embeddings to nearest SOM nodes.
 
         Args:
-            embedding: Input embedding
+            embeddings: Input embeddings (N x embedding_dim)
 
         Returns:
-            Latent vector or None
+            Quantized embeddings (N x embedding_dim)
         """
-        if self.autoencoder is None or torch is None:
-            return None
-
         try:
-            with torch.no_grad():
-                x = torch.from_numpy(embedding).float().unsqueeze(0).to(self.device)
-                latent = self.autoencoder.encode(x)
-                return latent.cpu().numpy().squeeze()
+            quantized = np.zeros_like(embeddings)
+
+            for i, embedding in enumerate(embeddings):
+                bmu_idx = self._find_bmu(embedding)
+                quantized[i] = self.nodes[bmu_idx].weights
+
+            logger.debug(f"Quantized {len(embeddings)} embeddings")
+            return quantized
 
         except Exception as e:
-            logger.error(f"Latent encoding failed: {e}")
-            return None
+            logger.error(f"Quantization failed: {e}")
+            return embeddings
 
-    def decode_from_latent(self, latent: np.ndarray) -> Optional[np.ndarray]:
-        """
-        Decode latent vector back to embedding space.
+    def get_stats(self) -> Dict:
+        """Get SOM statistics"""
+        activation_counts = [node.activation_count for node in self.nodes]
 
-        Args:
-            latent: Latent vector
+        return {
+            "grid_size": self.grid_size,
+            "num_nodes": self.num_nodes,
+            "embedding_dim": self.embedding_dim,
+            "total_activations": sum(activation_counts),
+            "avg_activations": np.mean(activation_counts),
+            "max_activations": max(activation_counts) if activation_counts else 0,
+            "learning_rate": float(self.learning_rate),
+            "sigma": float(self.sigma),
+        }
 
-        Returns:
-            Reconstructed embedding or None
-        """
-        if self.autoencoder is None or torch is None:
-            return None
+    def reset_activations(self) -> None:
+        """Reset activation counts"""
+        for node in self.nodes:
+            node.activation_count = 0
+            node.last_activated = 0.0
 
-        try:
-            with torch.no_grad():
-                z = torch.from_numpy(latent).float().unsqueeze(0).to(self.device)
-                reconstruction = self.autoencoder.decode(z)
-                return reconstruction.cpu().numpy().squeeze()
-
-        except Exception as e:
-            logger.error(f"Latent decoding failed: {e}")
-            return None
-
-
-# Convenience functions
-
-def som_map(query_vec: np.ndarray, grid_size: int = 10) -> List[Dict]:
-    """Map query to SOM (convenience function)."""
-    engine = SOMEngine(grid_size=grid_size)
-    return engine.som_map(query_vec)
+        logger.info("Reset SOM activations")
 
 
-if __name__ == "__main__":
-    # Example usage
-    logging.basicConfig(level=logging.INFO)
+# Singleton instance
+_som_engine = None
 
-    # Create sample data
-    np.random.seed(42)
-    data = np.random.randn(1000, 768)  # 1000 samples, 768-dim
 
-    engine = SOMEngine(grid_size=10)
-    engine.initialize_som(data)
-
-    # Map a query
-    query = np.random.randn(768)
-    neighbors = engine.som_map(query)
-
-    print(f"Found {len(neighbors)} SOM neighbors:")
-    for neighbor in neighbors[:5]:
-        print(f"  {neighbor['node_id']}: distance={neighbor['distance']:.3f}")
+def get_som_engine() -> SOMEngine:
+    """Get or create singleton SOM engine"""
+    global _som_engine
+    if _som_engine is None:
+        _som_engine = SOMEngine()
+    return _som_engine

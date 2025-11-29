@@ -28,7 +28,10 @@
 			"label": "Phase51: Start SIMD JSON Parser",
 			"type": "shell",
 			"command": "npm run simd:exe:start",
-			"presentation": { "reveal": "always", "panel": "dedicated" }
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
 		},
 		{
 			"label": "SIMD Markdown Parser Test",
@@ -52,9 +55,11 @@
 			"command": "node",
 			"args": [
 				"scripts/redis-error-analyzer.mjs",
-				"--top", "100",
+				"--top",
+				"100",
 				"--cache-only",
-				"--output", "error-top100.json"
+				"--output",
+				"error-top100.json"
 			],
 			"group": "test",
 			"presentation": {
@@ -72,9 +77,11 @@
 			"command": "node",
 			"args": [
 				"scripts/redis-error-analyzer.mjs",
-				"--top", "1000",
+				"--top",
+				"1000",
 				"--cache-only",
-				"--output", "error-top1000.json"
+				"--output",
+				"error-top1000.json"
 			],
 			"group": "test",
 			"presentation": {
@@ -92,9 +99,11 @@
 			"command": "node",
 			"args": [
 				"scripts/redis-error-analyzer.mjs",
-				"--top", "10000",
+				"--top",
+				"10000",
 				"--cache-only",
-				"--output", "error-top10000.json"
+				"--output",
+				"error-top10000.json"
 			],
 			"group": "test",
 			"presentation": {
@@ -185,10 +194,14 @@
 			"args": [
 				"scripts/redis-error-analyzer.mjs",
 				"--refresh",
-				"--top", "100",
-				"--batch-size", "50",
-				"--parallel", "4",
-				"--output", "error-cache-refreshed.json"
+				"--top",
+				"100",
+				"--batch-size",
+				"50",
+				"--parallel",
+				"4",
+				"--output",
+				"error-cache-refreshed.json"
 			],
 			"group": "build",
 			"presentation": {
@@ -207,8 +220,10 @@
 			"args": [
 				"scripts/redis-error-analyzer.mjs",
 				"--incremental",
-				"--top", "100",
-				"--output", "error-incremental.json"
+				"--top",
+				"100",
+				"--output",
+				"error-incremental.json"
 			],
 			"group": "build",
 			"presentation": {
@@ -1101,7 +1116,10 @@
 			"label": "🚀 Legal AI Platform - Start All Services",
 			"type": "shell",
 			"command": "docker-compose",
-			"args": ["up", "-d"],
+			"args": [
+				"up",
+				"-d"
+			],
 			"group": {
 				"kind": "build",
 				"isDefault": true
@@ -1113,7 +1131,10 @@
 			"label": "🧪 Test Full Stack Integration",
 			"type": "shell",
 			"command": "docker-compose",
-			"args": ["up", "-d"],
+			"args": [
+				"up",
+				"-d"
+			],
 			"detail": "🧪 Test Redis, Qdrant, pgvector, Ollama, Go RAG integration",
 			"problemMatcher": []
 		},
@@ -1121,7 +1142,10 @@
 			"label": "🔥 Full GPU Pipeline (Phase43→44→Fixer)",
 			"type": "shell",
 			"command": "docker-compose",
-			"args": ["up", "-d"],
+			"args": [
+				"up",
+				"-d"
+			],
 			"detail": "🔥 Complete automation: Embed → Cluster → Fix (17 – 22 min total)",
 			"problemMatcher": []
 		},
@@ -1232,6 +1256,18 @@
 				"panel": "shared"
 			},
 			"detail": "Search for Svelte component events and lifecycle methods"
+		},
+		{
+			"label": "CHR97: AST Agent Analysis",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"node",
+				"tools/yo-rha-agent.mjs",
+				"ast-session:frontend",
+				"Analyze and fix TypeScript AST errors using CHR97 agent"
+			],
+			"group": "build"
 		}
 	]
 }
