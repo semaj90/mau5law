@@ -1,9 +1,7 @@
-﻿import type { PageServerLoad } from './$types';
 import fs from 'fs';
 import path from 'path';
 
-// Configuration
-const ROUTES_DIR = 'src/routes';
+const ROUTES_DIR = 'sveltekit-frontend/src/routes';
 
 interface RouteInfo {
     id: string;
@@ -16,6 +14,10 @@ interface RouteInfo {
 
 function scanRoutes(dir: string, baseDir: string = ROUTES_DIR): RouteInfo[] {
     let results: RouteInfo[] = [];
+    if (!fs.existsSync(dir)) {
+        console.error(`Directory not found: ${dir}`);
+        return [];
+    }
     const list = fs.readdirSync(dir);
 
     for (const file of list) {
@@ -25,7 +27,6 @@ function scanRoutes(dir: string, baseDir: string = ROUTES_DIR): RouteInfo[] {
         if (stat && stat.isDirectory()) {
             results = results.concat(scanRoutes(fullPath, baseDir));
         } else {
-            // Analyze file
             const relativePath = path.relative(baseDir, fullPath);
             const pathParts = relativePath.split(path.sep);
             const fileName = pathParts.pop() || '';
@@ -37,22 +38,16 @@ function scanRoutes(dir: string, baseDir: string = ROUTES_DIR): RouteInfo[] {
             else if (fileName === '+error.svelte') type = 'ERROR';
 
             if (type) {
-                // Construct URL path
-                // Remove (groups) and handle [params]
                 let urlPath = '/' + pathParts
-                    .filter(p => !p.startsWith('(') && !p.endsWith(')')) // Remove groups
+                    .filter(p => !p.startsWith('(') && !p.endsWith(')'))
                     .join('/');
 
-                // Clean up double slashes
                 urlPath = urlPath.replace(/\/+/g, '/');
                 if (urlPath.length > 1 && urlPath.endsWith('/')) {
                     urlPath = urlPath.slice(0, -1);
                 }
 
-                // Extract group if present
                 const group = pathParts.find(p => p.startsWith('(') && p.endsWith(')'));
-
-                // Extract params
                 const params = pathParts
                     .filter(p => p.startsWith('[') && p.endsWith(']'))
                     .map(p => p.slice(1, -1));
@@ -71,25 +66,11 @@ function scanRoutes(dir: string, baseDir: string = ROUTES_DIR): RouteInfo[] {
     return results;
 }
 
-export const load: PageServerLoad = async () => {
-    const routes = scanRoutes(path.resolve(ROUTES_DIR));
-
-    // Sort: Pages first, then APIs, then Layouts
-    routes.sort((a, b) => {
-        const typeOrder = { PAGE: 0, API: 1, LAYOUT: 2, ERROR: 3 };
-        if (typeOrder[a.type] !== typeOrder[b.type]) {
-            return typeOrder[a.type] - typeOrder[b.type];
-        }
-        return a.path.localeCompare(b.path);
-    });
-
-    return {
-        routes,
-        stats: {
-            total: routes.length,
-            pages: routes.filter(r => r.type === 'PAGE').length,
-            apis: routes.filter(r => r.type === 'API').length,
-            layouts: routes.filter(r => r.type === 'LAYOUT').length
-        }
-    };
-};
+const routes = scanRoutes(path.resolve(ROUTES_DIR));
+console.log(`Found ${routes.length} routes.`);
+console.log('--- Sample Routes ---');
+routes.slice(0, 5).forEach(r => console.log(`${r.type}: ${r.path} (${r.file})`));
+console.log('--- Stats ---');
+console.log(`Pages: ${routes.filter(r => r.type === 'PAGE').length}`);
+console.log(`APIs: ${routes.filter(r => r.type === 'API').length}`);
+console.log(`Layouts: ${routes.filter(r => r.type === 'LAYOUT').length}`);
