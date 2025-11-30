@@ -320,3 +320,325 @@ class AlignmentRouter:
         self._redis_set_json(
             key, {"tokens": sorted(list(merged))}, ttl=30 * 24 * 3600
         )
+
+    # ---------- NEW: Low Confidence Restart ----------
+
+    def handle_low_confidence(
+        self,
+        query: str,
+        confidence: float,
+        session_id: str,
+        threshold: float = 0.5,
+    ) -> Dict[str, Any]:
+        """
+        If confidence is low, restart with web search + re-embed.
+
+        Args:
+            query: Original query
+            confidence: Current confidence score (0-1)
+            session_id: Session ID for context reset
+            threshold: Confidence threshold (default 0.5)
+
+        Returns:
+            Dict with restart results
+        """
+        if confidence >= threshold:
+            return {"status": "confident", "confidence": confidence}
+
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Low confidence ({confidence:.2f}) - restarting with web search")
+
+        # 1. Trigger web search
+        web_results = self._web_search(query)
+
+        # 2. Re-embed web results
+        embeddings = self._batch_embed(web_results)
+
+        # 3. Store in Qdrant
+        self._store_in_qdrant(embeddings, web_results, session_id)
+
+        # 4. Reset context
+        self._reset_session_context(session_id)
+
+        # 5. Return restart status
+        return {
+            "status": "restarted",
+            "original_confidence": confidence,
+            "web_results_count": len(web_results),
+            "new_embeddings_count": len(embeddings),
+            "session_reset": True
+        }
+
+    def _web_search(self, query: str, num_results: int = 5) -> list:
+        """
+        Perform web search and return snippets.
+
+        Args:
+            query: Search query
+            num_results: Number of results to return
+
+        Returns:
+            List of search result snippets
+        """
+        try:
+            import requests
+            import logging
+            logger = logging.getLogger(__name__)
+
+            # Use DuckDuckGo (no API key needed)
+            url = f"https://duckduckgo.com/search?q={query}&format=json"
+            response = requests.get(url, timeout=5)
+            data = response.json()
+
+            snippets = []
+            for result in data.get("Results", [])[:num_results]:
+                snippet = result.get("Text", "")
+                if snippet:
+                    snippets.append(snippet)
+
+            logger.info(f"Web search returned {len(snippets)} results")
+            return snippets
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Web search failed: {e}")
+            return []
+
+    def _batch_embed(self, texts: list, batch_size: int = 8) -> list:
+        """
+        Batch embed texts using Ollama.
+
+        Args:
+            texts: List of texts to embed
+            batch_size: Batch size (multiple of 8/16 for GPU)
+
+        Returns:
+            Embeddings array (N, 768)
+        """
+        try:
+            import numpy as np
+            embeddings = []
+
+            for i in range(0, len(texts), batch_size):
+                batch = texts[i:i+batch_size]
+
+                # Use Ollama embeddings
+                batch_embeddings = self._ollama_embed_batch(batch)
+                if len(batch_embeddings) > 0:
+                    embeddings.append(batch_embeddings)
+
+            if embeddings:
+                return np.vstack(embeddings)
+            return np.array([])
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Batch embedding failed: {e}")
+            return np.array([])
+
+    def _ollama_embed_batch(self, texts: list) -> list:
+        """Embed batch using Ollama"""
+        try:
+            import requests
+            import numpy as np
+
+            response = requests.post(
+                "http://localhost:11434/api/embeddings",
+                json={
+                    "model": "embeddinggemma:latest",
+                    "input": texts
+                },
+                timeout=30
+            )
+
+            data = response.json()
+            embeddings = data.get("embeddings", [])
+            return np.array(embeddings, dtype=np.float32)
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Ollama embedding failed: {e}")
+            return np.array([])
+
+    def _store_in_qdrant(
+        self,
+        embeddings: list,
+        texts: list,
+        session_id: str
+    ) -> None:
+        """Store embeddings in Qdrant"""
+        try:
+            from datetime import datetime
+            import logging
+            logger = logging.getLogger(__name__)
+
+            # Try to import qdrant client
+            try:
+                from qdrant_client.models import PointStruct
+                qdrant_available = True
+            except ImportError:
+                qdrant_available = False
+                logger.warning("Qdrant client not available")
+                return
+
+            if not qdrant_available or len(embeddings) == 0:
+                return
+
+            points = []
+            for i, (embedding, text) in enumerate(zip(embeddings, texts)):
+                points.append(
+                    PointStruct(
+                        id=hash(f"{session_id}:{text}") % (2**31),
+                        vector=embedding.tolist() if hasattr(embedding, 'tolist') else embedding,
+                        payload={
+                            "session_id": session_id,
+                            "text": text[:500],
+                            "source": "web_search",
+                            "timestamp": datetime.now().isoformat()
+                        }
+                    )
+                )
+
+            # Upsert to Qdrant (if client available)
+            if hasattr(self, 'qdrant_client') and self.qdrant_client:
+                self.qdrant_client.upsert(
+                    collection_name="legal_search",
+                    points=points
+                )
+
+            logger.info(f"Stored {len(points)} web search results")
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Qdrant storage failed: {e}")
+
+    def _reset_session_context(self, session_id: str) -> None:
+        """Reset session context after restart"""
+        try:
+            import logging
+            logger = logging.getLogger(__name__)
+
+            # Clear old timeline
+            self.redis.delete(f"agent:timeline:{session_id}")
+
+            # Reset plan
+            self.redis.delete(f"agent:plan:{session_id}")
+
+            # Reset summaries
+            self.redis.delete(f"agent:summary:{session_id}:*")
+
+            logger.info(f"Reset context for session {session_id}")
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Context reset failed: {e}")
+
+    # ---------- NEW: Matrix Transformation Fallback ----------
+
+    def matrix_transform_fallback(
+        self,
+        query: str,
+        primary_route: str,
+        session_id: str,
+    ) -> Dict[str, Any]:
+        """
+        If primary route fails, try alternatives in order.
+
+        Fallback chain:
+        1. legal_rag_plus_kag → legal_rag_safe → general_web
+        2. legal_rag_safe → general_web
+        3. general_web → web_search + re-embed
+
+        Args:
+            query: Search query
+            primary_route: Primary route to try first
+            session_id: Session ID
+
+        Returns:
+            Dict with results from successful route
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+
+        fallback_chain = {
+            "legal_rag_plus_kag": ["legal_rag_safe", "general_web"],
+            "legal_rag_safe": ["general_web"],
+            "general_web": ["web_search_with_reembed"]
+        }
+
+        routes_to_try = [primary_route] + fallback_chain.get(primary_route, [])
+
+        for route in routes_to_try:
+            try:
+                logger.info(f"Trying route: {route}")
+
+                if route == "web_search_with_reembed":
+                    # Last resort: web search + re-embed
+                    return self.handle_low_confidence(
+                        query=query,
+                        confidence=0.0,
+                        session_id=session_id,
+                        threshold=1.0  # Force restart
+                    )
+                else:
+                    # Try normal route
+                    results = self._execute_route(query, route)
+
+                    if results and len(results) > 0:
+                        logger.info(f"Success with route: {route}")
+                        return {
+                            "status": "success",
+                            "route": route,
+                            "results": results,
+                            "fallback_used": route != primary_route
+                        }
+
+            except Exception as e:
+                logger.warning(f"Route {route} failed: {e}")
+                continue
+
+        # All routes failed
+        logger.error(f"All routes failed for query: {query}")
+        return {
+            "status": "failed",
+            "error": "All routes exhausted",
+            "query": query
+        }
+
+    def _execute_route(self, query: str, route: str) -> list:
+        """Execute a specific route"""
+        if route == "legal_rag_plus_kag":
+            # RAG + KAG
+            return self._search_rag_plus_kag(query)
+
+        elif route == "legal_rag_safe":
+            # RAG only
+            return self._search_rag_safe(query)
+
+        elif route == "general_web":
+            # Web search
+            return self._search_general_web(query)
+
+        else:
+            raise ValueError(f"Unknown route: {route}")
+
+    def _search_rag_plus_kag(self, query: str) -> list:
+        """Search using RAG + KAG"""
+        # Placeholder - implement with actual RAG + KAG search
+        return []
+
+    def _search_rag_safe(self, query: str) -> list:
+        """Search using RAG only"""
+        # Placeholder - implement with actual RAG-only search
+        return []
+
+    def _search_general_web(self, query: str) -> list:
+        """Search using web search"""
+        snippets = self._web_search(query)
+        return [{"text": s, "source": "web"} for s in snippets]

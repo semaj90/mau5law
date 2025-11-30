@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { mergePromptCluster, mergeTransition  } from '$lib/server/graph-service';
 
 export async function POST({ request }): Promise<any> {

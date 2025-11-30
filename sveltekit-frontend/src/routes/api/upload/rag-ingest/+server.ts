@@ -1,5 +1,5 @@
 /** * RAG Ingestion Upload Endpoint * Handles file uploads, generates embeddings with embeddinggemma: latest, * stores in pgvector, and caches in Redis */ import type { RequestHandler } from '@sveltejs/kit';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { writeFile, mkdir  } from 'fs/promises';
 import type { join  } from 'path';
 import type { nanoid  } from 'nanoid';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { onMount  } from 'svelte';
+	import { onMount } from 'svelte';;
 
 	const BOARD_STORAGE_KEY = 'yorha:evidence-board-state';
 	const DEFAULT_CASE_ID = 'CASE-2024-001';

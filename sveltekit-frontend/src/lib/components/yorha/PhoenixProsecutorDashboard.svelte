@@ -1,6 +1,6 @@
 <script lang="ts">
   import GraphView from '$lib/components/GraphView.svelte';
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
   import ContradictionReveal from './ContradictionReveal.svelte';
   import EvidenceComparisonOverlay from './evidence/EvidenceComparisonOverlay.svelte';
   import LegalHUD from './LegalHUD.svelte';

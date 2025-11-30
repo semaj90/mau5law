@@ -13,7 +13,8 @@ export const load: PageServerLoad = async () => {
 // You would typically also define actions here to handle form submissions,
 // but for this fix, only the load function is necessary.
 /*
-import type { fail, message, type Actions  } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import type { message, type Actions } from '@sveltejs/kit';;
 
 export const actions: Actions = {
 	default: async ({ request }) => {

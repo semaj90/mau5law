@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Document } from '$lib/types';
-  import type { onMount, onDestroy  } from 'svelte';
-  import type { writable  } from 'svelte/store';
+  import { onMount, onDestroy } from 'svelte';;
+  import { writable } from 'svelte/store';;
 
   // Dashboard data store - initialize with safe defaults
   const dashboardData = writable({

@@ -1,5 +1,6 @@
 import type { createActor, type Snapshot  } from 'xstate';
-import type { writable, type Writable  } from 'svelte/store';
+import { writable } from 'svelte/store';
+import type { type Writable } from 'svelte/store';;
 import type { legalAIMachine,
   type LegalAIEvent,
   type LegalAIContext,

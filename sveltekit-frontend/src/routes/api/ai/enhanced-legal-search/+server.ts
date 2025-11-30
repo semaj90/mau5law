@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { enhancedLegalSearch,
   type LegalSearchResult,
  } from '../../../../lib/server/ai/enhanced-legal-search.js';

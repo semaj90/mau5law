@@ -2,7 +2,7 @@
 import type { Case } from '$lib/types';
   import  Button  from "$lib/components/ui/core.svelte";
   import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   interface Citation {
     id: string

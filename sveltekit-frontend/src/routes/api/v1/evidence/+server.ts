@@ -1,4 +1,4 @@
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db/client.js';
 import type { evidence  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm';

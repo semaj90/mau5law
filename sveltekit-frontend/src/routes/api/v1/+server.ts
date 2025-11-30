@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { MinIOService  } from '$lib/server/minio';
 import type { OCRService  } from '$lib/server/ocr';
 import type { EmbeddingService  } from '$lib/server/embeddings';

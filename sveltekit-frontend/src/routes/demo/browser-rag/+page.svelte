@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Document } from '$lib/types';
   import type { browserRAG  } from '$lib/ai/browser-rag-chain';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { Database, Lock, Zap, FileText, MessageSquare, AlertCircle  } from 'lucide-svelte';
 
   // State

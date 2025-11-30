@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // replaced `type` with `interface` to resolve parsing error
   interface PerformanceStats {

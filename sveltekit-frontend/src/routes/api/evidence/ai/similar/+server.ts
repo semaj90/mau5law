@@ -1,5 +1,5 @@
 // AI Evidence Analysis API Routes
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 
 // POST /api/evidence/ai/similar - Find similar evidence using Gemma3-Legal + Qdrant

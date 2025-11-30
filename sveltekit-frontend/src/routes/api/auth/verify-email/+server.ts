@@ -1,5 +1,5 @@
 import type { User } from '$lib/types';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { db  } from '$lib/server/db/connection';
 import type { emailVerificationCodes, users  } from '../../../../../drizzle/schema';

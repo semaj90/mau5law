@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { getNeo4jDriver  } from '$lib/server/neo4j-driver';
 import type { RequestHandler } from './$types ';
 import type { randomUUID  } from 'node:crypto';

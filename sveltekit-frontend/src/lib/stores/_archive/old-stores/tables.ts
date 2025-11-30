@@ -1,5 +1,6 @@
 // import type { Case } from '$lib/types'; // Removed: 'Case' is declared but its value is never read.
-import type { writable, derived, type Writable  } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
+import type { type Writable } from 'svelte/store';;
 
 export interface TableState {
   id: string; // Unique ID for the table instance

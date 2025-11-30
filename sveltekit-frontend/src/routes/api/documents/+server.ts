@@ -1,4 +1,4 @@
-/* * Documents API with pgvector integration * Handles document CRUD operations with vector embeddings */ import type { json  } from '@sveltejs/kit';
+/* * Documents API with pgvector integration * Handles document CRUD operations with vector embeddings */ import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from '@sveltejs/kit';
 import type { db  } from '$lib/server/db/connection';
 import type { documents, cases  } from '$lib/server/schema/documents';

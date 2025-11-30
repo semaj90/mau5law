@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import db from '$lib/server/db/unified-client'; // Changed from named import to default import
 import type { cases, evidence, criminals, legalDocuments  } from '$lib/server/db/schema-postgres';
 import type { eq, or, desc, ilike, and, SQL, sql  } from 'drizzle-orm';

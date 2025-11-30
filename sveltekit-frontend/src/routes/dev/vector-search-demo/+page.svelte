@@ -2,7 +2,7 @@
 `
 import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import type { onMount  } from 'svelte';
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';;
 </script>
 
 <main class="page-repair">

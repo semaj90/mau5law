@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { FileText  } from 'lucide-svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // Reactive state using Svelte 5 runes ($state )
   let submitting = $state (false);

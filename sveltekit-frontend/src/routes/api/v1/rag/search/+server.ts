@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RAGService  } from '$lib/server/rag';
 
 const rag = new RAGService();

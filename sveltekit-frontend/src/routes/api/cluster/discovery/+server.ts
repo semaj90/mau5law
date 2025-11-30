@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 /*
  * Service Discovery and Failover API
  * Automatic service discovery, health monitoring, and failover mechanisms

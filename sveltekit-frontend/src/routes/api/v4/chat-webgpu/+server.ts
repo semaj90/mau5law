@@ -4,7 +4,7 @@
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import * as webgpuAIModule from '$lib/webgpu/webgpu-ai-engine.js'; // Changed to namespace import
 import type { WebGPURedisOptimizer  } from '$lib/server/webgpu-redis-optimizer.js';
 import type { RequestHandler } from './$types.js';

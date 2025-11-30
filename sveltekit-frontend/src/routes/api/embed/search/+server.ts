@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types .js';
 import type { db, sql  } from '$lib/server/db';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { generateEmbedding  } from '$lib/server/services/vectorDBService';
 
 // Define types for better code quality

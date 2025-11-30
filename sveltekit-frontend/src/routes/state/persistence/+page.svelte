@@ -2,7 +2,7 @@
 <!-- @migration-task Error while migrating Svelte; code: Expected, token } -->
 <script lang="ts">
 import type { User } from '$lib/types';
-import type { onMount  } from 'svelte';
+import { onMount } from 'svelte';;
 
 // Simplified and valid state persistence page script while we repair more complex
 // serialized mock data that contained malformed tokens.

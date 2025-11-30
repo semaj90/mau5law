@@ -1,6 +1,6 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 
 // Document templates with pre-filled content

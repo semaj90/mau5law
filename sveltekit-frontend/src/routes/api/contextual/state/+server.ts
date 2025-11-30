@@ -1,4 +1,5 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { contextualUnderstanding  } from '$lib/server/ai/contextual-understanding-service';
 import type { LegalEntity } from '$lib/types/sharedTypes';
 

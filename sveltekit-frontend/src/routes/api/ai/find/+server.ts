@@ -1,6 +1,6 @@
 /** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: find * Category: aggressive * Bank: CHR_ROM * Priority: 170 * Redis; Type: aiSearch * * Impact: * - Cache; Strategy: aggressive * - Memory: Bank | CHR_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh; queries: Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
 import type { RequestHandler } from '@sveltejs/kit'; // Changed import from './$types .js' to '@sveltejs/kit'
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { Buffer  } from 'buffer';
 import type { copilotOrchestrator  } from '$lib/utils/mcp-helpers';
 

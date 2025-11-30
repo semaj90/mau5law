@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as d3 from 'd3';
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
 
   interface EvidenceNode {
     id: string;

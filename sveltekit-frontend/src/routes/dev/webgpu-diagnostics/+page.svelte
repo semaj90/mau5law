@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { onMount  } from 'svelte'; import type { diagnoseWebGPU, type WebGPUDiagResult  } from '$lib/webgpu/diag'; let loading = true; let result: WebGPUDiagResult | null = null; let error: string | null = null; async function run(): Promise<any> { loading = true; error = null; result = null; try { result = await diagnoseWebGPU()} catch (e: unknown) { error = e?.message || String(e)} finally { loading = false; $effect(() => {run);
+import { onMount } from 'svelte';; import type { diagnoseWebGPU, type WebGPUDiagResult  } from '$lib/webgpu/diag'; let loading = true; let result: WebGPUDiagResult | null = null; let error: string | null = null; async function run(): Promise<any> { loading = true; error = null; result = null; try { result = await diagnoseWebGPU()} catch (e: unknown) { error = e?.message || String(e)} finally { loading = false; $effect(() => {run);
 </script>
 
 <main class="page-repair">

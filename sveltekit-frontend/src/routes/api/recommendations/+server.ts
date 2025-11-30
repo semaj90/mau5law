@@ -1,5 +1,5 @@
 import type { User } from '$lib/types';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { enhancedSearchWithNeo4j  } from '$lib/ai/custom-reranker';
 import type { mcpContext72GetLibraryDocs  } from '$lib/mcp-context72-get-library-docs';
 import type { userRecommendationService  } from '$lib/server/services/user-recommendation-service';

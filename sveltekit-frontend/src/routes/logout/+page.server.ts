@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types ';
-import type { redirect  } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';;
 import type { invalidateSession, deleteSessionTokenCookie  } from '$lib/server/session';
 
 export const load: PageServerLoad = async ({ cookies, locals }) => {

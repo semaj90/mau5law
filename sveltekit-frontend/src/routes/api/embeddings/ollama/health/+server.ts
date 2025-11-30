@@ -1,4 +1,4 @@
-/** * Ollama Health Check Endpoint * * GET /api/embeddings/ollama/health */ import type { json  } from '@sveltejs/kit';
+/** * Ollama Health Check Endpoint * * GET /api/embeddings/ollama/health */ import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { getOllamaEndpoint  } from '$lib/server/ai/ollama-utils';
 

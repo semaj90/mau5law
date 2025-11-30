@@ -337,7 +337,7 @@ export const browserGemma = new BrowserGemma();
  * // In a Svelte component:
  * <script lang="ts">
  * import type { browserGemma  } from '$lib/ai/browser-gemma';
- * import type { onMount  } from 'svelte';
+ * import { onMount } from 'svelte';;
  *
  * let response = '';
  * let isGenerating = false;

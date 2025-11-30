@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
   import type { Document } from '$lib/types';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // Keep only icons actually used; remove unused ones to silence linter warnings.
   import type { Cpu, Brain, Zap, Database, Activity  } from 'lucide-svelte';

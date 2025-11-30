@@ -1,6 +1,6 @@
 import type { Case } from '$lib/types';
 /** * Redis-Optimized AI Analysis Endpoint * Demonstrates Redis orchestrator integration for document/evidence analysis */
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 import type { callOllamaApi  } from '$lib/services/ollama-client';

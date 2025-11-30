@@ -1,4 +1,4 @@
-/** * Enhanced RabbitMQ-CUDA Test API * Test endpoint for the enhanced RabbitMQ-CUDA bridge integration */ import type { json  } from '@sveltejs/kit';
+/** * Enhanced RabbitMQ-CUDA Test API * Test endpoint for the enhanced RabbitMQ-CUDA bridge integration */ import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { initializeBridge,
   submitCudaTensorJob,

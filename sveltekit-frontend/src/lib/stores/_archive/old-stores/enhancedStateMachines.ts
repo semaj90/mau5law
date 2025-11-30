@@ -14,7 +14,7 @@ export interface Evidence {
 // Building on existing autoTaggingMachine with advanced capabilities
 // ======================================================================
 import type { assign, setup, fromPromise, createActor  } from 'xstate';
-import type { writable, derived  } from 'svelte/store';
+import { writable, derived } from 'svelte/store';;
 import type { browser  } from '$app/environment';
 
 // ======================================================================

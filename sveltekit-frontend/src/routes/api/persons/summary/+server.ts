@@ -1,7 +1,7 @@
 import type { db  } from '$lib/server/db/drizzle';
 import type { personsOfInterest  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from "./$types ";
 import type { getOllamaEndpoint  } from '$lib/utils/ollama-helpers';
 

@@ -1,4 +1,5 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import ollamaService from '$lib/server/services/ollama-service';
 import type { getUserId  } from '$lib/server/utils/auth';

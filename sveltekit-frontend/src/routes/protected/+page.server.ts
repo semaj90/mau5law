@@ -1,5 +1,5 @@
 import type { requireAuth  } from '$lib/server/auth';
-import type { error  } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';;
 
 export async function load(event): Promise<any> {
   try {

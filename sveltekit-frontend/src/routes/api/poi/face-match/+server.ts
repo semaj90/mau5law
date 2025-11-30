@@ -1,4 +1,4 @@
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { db  } from '$lib/server/db/drizzle';
 import type { persons  } from '$lib/server/db/schema-poi';

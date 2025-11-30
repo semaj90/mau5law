@@ -2,8 +2,8 @@
   import Button from '$lib/components/ui/button';
   import Select from '$lib/components/ui/select';
   import type { evidence, evidenceConnections  } from '$lib/server/db/schema-postgres';
-  import type { onMount  } from 'svelte';
-  import type { get, writable  } from 'svelte/store';
+  import { onMount } from 'svelte';;
+  import { get, writable } from 'svelte/store';;
   import EvidenceConnections from './EvidenceConnections.svelte';
   import EvidenceNode from './EvidenceNode.svelte';
 

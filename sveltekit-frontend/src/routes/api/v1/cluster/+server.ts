@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types ';
 /* * Cluster API Endpoint - Service Orchestration & Health * to: cluster-http.exe: 8213, modular-cluster-service-production.exe: 8215 */
 import type { productionServiceClient  } from '$lib/services/productionServiceClient';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 
 // Add a minimal local interface for the methods we call and cast the imported client.
 // This fixes: "property does not exist on; type: 'ProductionServiceClient'" errors.

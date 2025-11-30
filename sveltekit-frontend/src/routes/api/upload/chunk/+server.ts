@@ -1,4 +1,4 @@
-import type { error, json  } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';;
 import type { tmpdir  } from 'os';
 import type { join  } from 'path';
 import type { appendFile, mkdir  } from 'fs/promises';

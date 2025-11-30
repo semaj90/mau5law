@@ -1,4 +1,5 @@
-import type { json, error, type RequestHandler  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { testVectorOperations,
   hybridSearch,
   generateSampleEmbedding,

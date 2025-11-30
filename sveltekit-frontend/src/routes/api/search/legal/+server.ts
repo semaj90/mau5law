@@ -1,6 +1,6 @@
 import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import type { RequestHandler } from './$types .js';
 import type { legalDocumentAnalyzer  } from '$lib/server/ai/legal-document-analyzer';

@@ -1,7 +1,7 @@
 // Telemetry Upload API Endpoint
 // Receives and processes structured upload telemetry events
 
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
 

@@ -1,5 +1,5 @@
 // AI Victim Statement Suggestions API Route
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 
 // POST /api/victim-statement/ai/suggestions - Generate AI suggestions for victim statements

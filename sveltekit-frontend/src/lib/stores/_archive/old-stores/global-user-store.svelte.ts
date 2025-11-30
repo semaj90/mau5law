@@ -1,6 +1,7 @@
 // Global User Store with PostgreSQL Integration + Svelte 5 Runes
 // Predictive Analytics, Chat History, and Real-time Synchronization
-import type { writable, derived, type Writable  } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
+import type { type Writable } from 'svelte/store';;
 import type { browser  } from '$app/environment';
 import type { User, Session } from 'lucia';
 import crypto from 'crypto';

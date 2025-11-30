@@ -1,5 +1,6 @@
 /** * Cognitive Cache Integration Service * Thread-safe JSONB/JSON operations with GPU acceleration support * Handles concurrent access patterns for legal AI database operations */
-import type { writable, type Writable  } from 'svelte/store';
+import { writable } from 'svelte/store';
+import type { type Writable } from 'svelte/store';;
 import type { browser  } from '$app/environment';
 import type { createHash  } from 'crypto'; // For SHA256 hashing on the server
 

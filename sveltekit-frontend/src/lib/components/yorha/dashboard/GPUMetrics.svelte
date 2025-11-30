@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { appStore  } from '$lib/stores/app-store';
   import type { webgpu  } from '$lib/webgpu/webgpu-init';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   let gpuMetrics = $state({
     utilization: 0,

@@ -1,9 +1,9 @@
 <script lang="ts" runes>
   import type { User } from '$lib/types';
   import type { PageData } from './$types ';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { browser  } from '$app/environment';
-  import type { get, writable  } from 'svelte/store';
+  import { get, writable } from 'svelte/store';;
   import * as userModule from '$lib/stores/user';
   import type { UserSession } from '$lib/stores/user';
 

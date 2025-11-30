@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { dev  } from '$app/environment';
 /** * ðŸš€ GPU-ACCELERATED RL-RAG ENDPOINT * * Features: * - CUDA-accelerated vector similarity search (RTX, 3060 Ti optimized) * - SIMD-optimized text preprocessing (AVX2/SSE4) * - Reinforcement Learning result ranking * - Real-time performance monitoring * - Redis caching with Nintendo-style memory banks * * GPU Stack: * - Client: WebAssembly + Gemma: 270m SIMD parser * - Server: RTX Tensor Cores + CUDA service worker + Gemma3: legal-latest * - Embeddings: Gemma embeddings for consistency * - Database: PostgreSQL 17 + pgvector + Drizzle ORM * - Cache: Redis (password: redis) */
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';

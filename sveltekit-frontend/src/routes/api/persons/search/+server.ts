@@ -1,7 +1,7 @@
 import db from "$lib/server/db/drizzle";
 import type { personsOfInterest  } from '$lib/server/db/schema-postgres';
 import type { sql, desc  } from 'drizzle-orm';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from "./$types ";
 
 export const GET: RequestHandler = async ({ url }) => {

@@ -1,6 +1,6 @@
 /** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: analyze-element * Category: conservative * Bank: PRG_ROM * Priority: 150 * Type: aiAnalysis * * Impact: * - Cache; Strategy: conservative * - Memory: Bank | PRG_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
 import type { RequestHandler } from '@sveltejs/kit';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 
 type Analysis = {

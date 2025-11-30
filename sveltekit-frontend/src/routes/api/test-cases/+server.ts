@@ -1,6 +1,6 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import type { db  } from '$lib/server/db';
 import type { cases, caseActivities  } from '$lib/server/db/schema';

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { onMount, onDestroy  } from 'svelte';
+import { onMount, onDestroy } from 'svelte';;
   import type { fade, scale  } from 'svelte/transition';
   let loading = $state <boolean>(false);
   let result: unknown = null

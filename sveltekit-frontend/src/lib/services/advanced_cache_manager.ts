@@ -1,7 +1,7 @@
 import type { Document } from '$lib/types';
 /** * Advanced Cache Manager - Legal AI Platform * Enterprise-grade caching with intelligent eviction, legal document optimization, * and multi-tier storage for enhanced performance and data security */
 
-import type { writable, get  } from 'svelte/store';
+import { writable, get } from 'svelte/store';;
 import type { browser  } from '$app/environment';
 
 export interface CacheItem<T = any> {

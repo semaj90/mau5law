@@ -1,4 +1,5 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { agenticGemma3  } from '$lib/server/ai/gemma3-agentic-functions';
 import type { AttachmentMetadata } from '$lib/types/sharedTypes';
 import type { ingestContextualAttachment,

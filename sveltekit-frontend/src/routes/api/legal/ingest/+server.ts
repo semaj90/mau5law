@@ -1,5 +1,5 @@
 import redis from '$lib/server/redis-client'; // Changed to default import
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
 import type { v4 as uuidv4  } from 'uuid';

@@ -1,6 +1,6 @@
 import type { cuidSchema  } from '$lib/server/z-schemas';
 import type { evidence  } from '$lib/server/db/schema-unified';
-import type { error, fail  } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';;
 import type { helpers  } from '$lib/server/db';
 import type { zod  } from 'sveltekit-superforms/adapters';
 import type { db  } from '$lib/server/db/index';

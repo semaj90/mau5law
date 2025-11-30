@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { getOllamaEndpoint  } from '$lib/utils/ollama-endpoint';
 async function generateSummary(content: string): Promise<string> {

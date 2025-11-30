@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { onDestroy  } from 'svelte';
+  import { onDestroy } from 'svelte';;
   // lucide-svelte exports named components — import them as named exports
   import type { Activity,
     AlertTriangle,

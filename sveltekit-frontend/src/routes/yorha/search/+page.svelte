@@ -5,7 +5,7 @@
   import type { Input  } from '$lib/components/ui/input';
   import type { appActions, appStore  } from '$lib/stores/app-store';
   import * as Lucide from 'lucide-svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // Reactive state from app store (plain locals to be updated via subscription)
   let searchResults: any[] = [];

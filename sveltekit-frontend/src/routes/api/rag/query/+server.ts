@@ -1,4 +1,4 @@
-/** * Enhanced RAG Query API Endpoint * * Provides RESTful access to the enhanced RAG pipeline with: * - Legal document retrieval with pgvector similarity search * - Custom legal reranking for improved relevance * - Contextual compression and advanced generation * - Comprehensive error handling and logging * * @route POST /api/rag/query */ import type { json  } from '@sveltejs/kit';
+/** * Enhanced RAG Query API Endpoint * * Provides RESTful access to the enhanced RAG pipeline with: * - Legal document retrieval with pgvector similarity search * - Custom legal reranking for improved relevance * - Contextual compression and advanced generation * - Comprehensive error handling and logging * * @route POST /api/rag/query */ import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { enhancedRAGPipeline  } from '$lib/services/enhanced-rag-pipeline';
 import type { RAGQuery, RAGResponse } from '$lib/services/enhanced-rag-pipeline';

@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { canvasStates  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm';
 import type { randomUUID  } from 'node:crypto';

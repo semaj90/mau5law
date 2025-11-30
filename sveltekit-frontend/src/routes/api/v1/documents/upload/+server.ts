@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { minioStorage  } from '$lib/server/storage/minio';
 import type { createId  } from '@paralleldrive/cuid2';
 import type { exec  } from 'child_process';

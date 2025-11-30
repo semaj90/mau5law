@@ -1,6 +1,6 @@
 <script lang="ts">
   import Navigation from '$lib/components/Navigation.svelte';
-  import type { setContext  } from 'svelte';
+  import { setContext } from 'svelte';;
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
 

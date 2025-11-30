@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import importedChatEngine from '../../../lib/services/user-chat-recommendation-engine.js';
 import importedMultiLayerCache from '../../../lib/services/multiLayerCache.js';
 import importedGoBinaryService from '../../../lib/services/go-binary-integration.js';

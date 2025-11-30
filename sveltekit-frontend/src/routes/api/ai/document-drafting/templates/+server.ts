@@ -24,7 +24,7 @@ import type { Document } from '$lib/types';
  * GET /api/ai/document-drafting/templates - Get available document templates
  */
 
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types .js';
 

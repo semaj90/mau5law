@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // import type { Case } from '$lib/types'; // 'Case' is declared but its value is never read.
-  // import type { onMount  } from 'svelte'; // onMount is not used.
+  // import { onMount } from 'svelte';; // onMount is not used.
 
   let caseData = $state <any>(null);
   let summary = $state <string>('');

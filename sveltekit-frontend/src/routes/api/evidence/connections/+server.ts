@@ -1,5 +1,5 @@
 // Evidence Connections API Routes
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { db  } from '$lib/server/db';
 import type { evidenceConnections  } from '$lib/server/db/schema';

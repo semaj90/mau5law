@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types .js';
 /* * QUIC AI Stream API - Real-time AI Streaming Service * Provides AI streaming with WebSocket + HTTP/3 support and session management * Port: 8447 (QUIC), 8448 (HTTP/2 fallback) * Backends: Ollama (11434), Enhanced RAG (8094) */
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import crypto from 'crypto';
 import type { getEnhancedRagUrl  } from '$lib/utils/enhanced-rag-endpoint'; // Import new helper
 

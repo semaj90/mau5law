@@ -1,4 +1,5 @@
-import type { pgTable, text, varchar, timestamp, jsonb  } from 'drizzle-orm/pg-core';
+import { text, jsonb } from 'drizzle-orm/pg-core';
+import type { pgTable, varchar, timestamp } from 'drizzle-orm/pg-core';;
 import type { sql  } from 'drizzle-orm';
 
 export const pois = pgTable("persons_of_interest", {

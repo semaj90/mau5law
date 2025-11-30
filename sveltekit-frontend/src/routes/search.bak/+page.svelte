@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { User } from '$lib/types';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { goto  } from '$app/navigation';
   import type { page  } from '$app/stores';
   import PgvectorSearchInterface from '$lib/components/search/PgvectorSearchInterface.svelte';

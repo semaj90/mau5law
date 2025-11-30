@@ -1,6 +1,7 @@
 import type { cuidSchema  } from '$lib/server/z-schemas';
 /** * Detective Mode API Routes * * Endpoints: * GET /api/v1/detective - Get detective insights for cases * POST /api/v1/detective - Run detective analysis */
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { db, sql  } from '$lib/server/db';
 import type { z  } from 'zod';
 

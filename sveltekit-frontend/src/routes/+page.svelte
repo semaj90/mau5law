@@ -4,7 +4,7 @@
   import * as unified from '$lib/stores/unified';
   import ContextualEvidenceChatModal from '$lib/components/ai/ContextualEvidenceChatModal.svelte';
   import type { createFileUploader  } from '$lib/utils/file-uploader';
-  import type { derived, writable  } from 'svelte/store';
+  import { derived, writable } from 'svelte/store';;
 
   let file = $state <File | null>(null);
   let result = $state <any>(null); // Use any for now, or define a proper interface for the result

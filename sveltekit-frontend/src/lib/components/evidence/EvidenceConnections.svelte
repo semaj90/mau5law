@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { EvidenceConnection, EvidenceNode } from '$lib/server/db/schema-postgres';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { Writable } from 'svelte/store';
 
   export let nodes: Writable<EvidenceNode[]>;

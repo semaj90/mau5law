@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types .js';
 

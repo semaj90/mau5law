@@ -1,6 +1,6 @@
 <script lang="ts">
   // Fixed imports and clean top-level declarations
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
   import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
   import type { PageData } from './$types ';

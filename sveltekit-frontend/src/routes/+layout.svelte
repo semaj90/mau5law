@@ -4,7 +4,7 @@
   import SystemStatus from '$lib/components/yorha/SystemStatus.svelte';
   import type { cpuFallback  } from '$lib/webgpu/webgpu-cpu-fallback';
   import type { webgpu  } from '$lib/webgpu/webgpu-init';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // Simple boolean flags
   let webgpuReady = $state(false);

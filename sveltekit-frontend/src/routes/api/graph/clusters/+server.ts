@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 
 const QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';

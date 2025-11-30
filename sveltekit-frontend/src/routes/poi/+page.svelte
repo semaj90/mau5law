@@ -8,7 +8,7 @@
     Search,
     Users
    } from 'lucide-svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   import type { Button  } from '$lib/components/ui/button';
   import type { Card, CardContent  } from '$lib/components/ui/card';

@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from './$types .js';
-import type { error, fail  } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';;
 import type { redisService  } from '$lib/server/redis-service';
 
 export const load: PageServerLoad = async ({ locals }) => {
