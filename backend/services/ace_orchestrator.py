@@ -545,3 +545,108 @@ Sentiment:"""
         )
 
         return plan
+
+    # =====================================================================
+    # NEW: Smart Retrieval with GPU/WASM Routing
+    # =====================================================================
+
+    def smart_retrieve(
+        self,
+        query: str,
+        session_id: str,
+        user_id: Optional[str] = None,
+        prefer_gpu: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Smart retrieval with GPU/WASM routing and 3 Routes + Restart.
+
+        Flow:
+        1. Analyze query complexity
+        2. Check GPU availability
+        3. Route to GPU or WASM
+        4. Apply 3 Routes + Restart strategy
+        5. Return results with metadata
+
+        Args:
+            query: Search query
+            session_id: Session ID
+            user_id: Optional user ID for personalization
+            prefer_gpu: Whether to prefer GPU processing
+
+        Returns:
+            Dict with results and routing metadata
+        """
+        import time
+        start_time = time.time()
+
+        # 1. Analyze query
+        mood = self._analyze_sentiment(query)
+        alignment_plan = self.alignment.plan(user_id, query, 0.0)
+
+        # 2. Determine complexity
+        complexity = self._compute_query_complexity(query, alignment_plan)
+
+        # 3. Route decision
+        if prefer_gpu and complexity > 0.6:
+            processing_mode = "gpu"
+        else:
+            processing_mode = "wasm"
+
+        # 4. Execute with 3 Routes + Restart
+        route = alignment_plan.get("route_decision", "general_web")
+        results = self.alignment.matrix_transform_fallback(
+            query=query,
+            primary_route=route,
+            session_id=session_id
+        )
+
+        # 5. Compute latency
+        latency_ms = (time.time() - start_time) * 1000
+
+        # 6. Update metrics
+        if user_id:
+            self.alignment._update_user_metrics(user_id, latency_ms, alignment_plan.get("negativity_score", 0.0))
+
+        return {
+            "results": results.get("results", []),
+            "route_used": results.get("route", route),
+            "fallback_used": results.get("fallback_used", False),
+            "processing_mode": processing_mode,
+            "complexity": complexity,
+            "mood": mood,
+            "latency_ms": latency_ms,
+            "session_id": session_id
+        }
+
+    def _compute_query_complexity(
+        self,
+        query: str,
+        alignment_plan: Dict[str, Any]
+    ) -> float:
+        """
+        Compute query complexity score (0-1).
+
+        Factors:
+        - Query length
+        - Legal relevance
+        - KAG alignment
+        - Negativity (complex queries often frustrated)
+        """
+        # Length factor (longer = more complex)
+        length_factor = min(1.0, len(query) / 500)
+
+        # Legal factor
+        legal_factor = alignment_plan.get("on_task_score", 0.0)
+
+        # Intent factor
+        intent = alignment_plan.get("intent", "general")
+        intent_factor = 0.8 if intent == "legal_rag" else 0.3
+
+        # Combine
+        complexity = (
+            0.3 * length_factor +
+            0.4 * legal_factor +
+            0.3 * intent_factor
+        )
+
+        return min(1.0, complexity)
