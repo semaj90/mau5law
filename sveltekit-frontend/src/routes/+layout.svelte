@@ -1,10 +1,12 @@
 <script lang="ts">
-  import type { page  } from '$app/stores';
+  import { page } from '$app/stores';
   import CommandCenterNav from '$lib/components/yorha/CommandCenterNav.svelte';
   import SystemStatus from '$lib/components/yorha/SystemStatus.svelte';
-  import type { cpuFallback  } from '$lib/webgpu/webgpu-cpu-fallback';
-  import type { webgpu  } from '$lib/webgpu/webgpu-init';
-  import { onMount } from 'svelte';;
+  import { onMount } from 'svelte';
+
+  // Import webgpu modules dynamically to avoid SSR issues
+  let webgpu: any = null;
+  let cpuFallback: any = null;
 
   // Simple boolean flags
   let webgpuReady = $state(false);
@@ -12,6 +14,8 @@
 
   onMount(async () => {
     try {
+      const webgpuModule = await import('$lib/webgpu/webgpu-init');
+      webgpu = webgpuModule.webgpu;
       await webgpu.initialize();
       webgpuReady = true;
     } catch (error) {
@@ -19,6 +23,8 @@
     }
 
     try {
+      const cpuFallbackModule = await import('$lib/webgpu/webgpu-cpu-fallback');
+      cpuFallback = cpuFallbackModule.cpuFallback;
       await cpuFallback.initialize();
       cpuFallbackReady = true;
     } catch (error) {
@@ -26,9 +32,9 @@
     }
   });
 
-  // Derived store based on the page store (runes-mode compatible)
-  let isCommandCenter = $derived(() => {
-    const path = $page.url.pathname;
+  // Derived value based on the page store (runes-mode compatible)
+  let isCommandCenter = $derived.by(() => {
+    const path = $page?.url?.pathname || '';
     return (
       path.startsWith('/yorha') ||
       path === '/' ||

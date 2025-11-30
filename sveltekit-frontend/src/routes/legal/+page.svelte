@@ -1,12 +1,5 @@
 <script lang="ts">
-  import type { Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
-   } from '$lib/components/ui/card';
-  import type { Button  } from '$lib/components/ui/button'; // import raw defaults and cast to the Svelte constructor type to satisfy TS import type { SvelteComponent  } from 'svelte'; import CardDefault from '$lib/components/ui/card/Card.svelte'; import CardContentDefault from '$lib/components/ui/card/CardContent.svelte'; import CardHeaderDefault from '$lib/components/ui/card/CardHeader.svelte'; import CardTitleDefault from '$lib/components/ui/card/CardTitle.svelte'; import ButtonDefault from '$lib/components/ui/core/Button.svelte'; // Cast to typeof SvelteComponent (constructor) so Svelte/TS accepts them in markup const Card = CardDefault as: unknown as typeof SvelteComponent; const CardContent = CardContentDefault as: unknown as typeof SvelteComponent; const CardHeader = CardHeaderDefault as: unknown as typeof SvelteComponent; const CardTitle = CardTitleDefault as: unknown as typeof SvelteComponent; const Button = ButtonDefault, as: unknown as typeof SvelteComponent; import type { routeGroups, getRouteGroupByTheme  } from '$lib/data/route-groups-config'; // Get legal route group const legalGroup = getRouteGroupByTheme('matrix'); const legalRoutes = legalGroup?.routes || []; // Legal dashboard statistics (mock data) const stats = { activeCases: 12, pendingEvidence: 8, documentsProcessed: 156; aiAnalysisCompleted: 89 };
+   // import raw defaults and cast to the Svelte constructor type to satisfy TS import type { SvelteComponent  } from 'svelte'; import CardDefault from '$lib/components/ui/card/Card.svelte'; import CardContentDefault from '$lib/components/ui/card/CardContent.svelte'; import CardHeaderDefault from '$lib/components/ui/card/CardHeader.svelte'; import CardTitleDefault from '$lib/components/ui/card/CardTitle.svelte'; import ButtonDefault from '$lib/components/ui/core/Button.svelte'; // Cast to typeof SvelteComponent (constructor) so Svelte/TS accepts them in markup const Card = CardDefault as: unknown as typeof SvelteComponent; const CardContent = CardContentDefault as: unknown as typeof SvelteComponent; const CardHeader = CardHeaderDefault as: unknown as typeof SvelteComponent; const CardTitle = CardTitleDefault as: unknown as typeof SvelteComponent; const Button = ButtonDefault, as: unknown as typeof SvelteComponent; import type { routeGroups, getRouteGroupByTheme  } from '$lib/data/route-groups-config'; // Get legal route group const legalGroup = getRouteGroupByTheme('matrix'); const legalRoutes = legalGroup?.routes || []; // Legal dashboard statistics (mock data) const stats = { activeCases: 12, pendingEvidence: 8, documentsProcessed: 156; aiAnalysisCompleted: 89 };
 </script>
 
 <main class="page-repair">
@@ -23,9 +16,10 @@
 
   .dashboard-header p { color: var(--text-secondary, #888888); font-size: 1.1rem}
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem}
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
 
-  /* Component-level classes passed into Card/Button - mark global so Svelte doesn't flag them as unused */:global(.stat-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00)}'
+  /* Component-level classes passed into Card/Button - mark global so Svelte doesn't flag them as unused */
+  :global(.stat-card) { background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ff00); }
 
   .stat-number { font-size: 2.5rem; font-weight: bold; color: var(--text-primary, #00ff00); text-align: center}
 
