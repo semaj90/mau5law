@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types .js';
 /* * PostgreSQL-First Worker Trigger API * Handles Redis events for auto-tagging and case processing */
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { redisService  } from '$lib/server/redis-service';
 import type { z  } from 'zod';
 import db from '$lib/server/db/index';

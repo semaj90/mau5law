@@ -5,7 +5,7 @@
  */
 
 import type { RequestHandler } from './$types .js';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { readBodyFast  } from '$lib/server/utils/json-fast';
 import type { ensureError  } from '$lib/utils/ensure-error';
 import type { dev  } from '$app/environment';

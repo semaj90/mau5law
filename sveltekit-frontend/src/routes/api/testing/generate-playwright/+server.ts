@@ -2,7 +2,7 @@ import type { writeFileSync  } from 'fs';
 import type { join  } from 'path';
 // import type { fileURLToPath  } from 'url';
 // import type { dirname  } from 'path'; // Keep dirname for use in generatePlaywrightTestFile's *generated* content
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 
 // Helper functions for test generation summary and todo file analysis

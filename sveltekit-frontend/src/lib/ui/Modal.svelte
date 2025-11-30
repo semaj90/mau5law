@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AlertCircle, AlertTriangle, CheckCircle, Info, X  } from 'lucide-svelte';
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
 
   interface Props {
     open: boolean;

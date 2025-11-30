@@ -4,7 +4,7 @@
   // import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
   // import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
 
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { goto  } from '$app/navigation';
   import type { PageData } from './$types ';
 

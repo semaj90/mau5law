@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Document } from '$lib/types';
-	import type { onMount  } from 'svelte';
+	import { onMount } from 'svelte';;
 	// UI components (existing bits-ui / enhanced-bits-ui)
 	import Card from '$lib/components/ui/card/Card.svelte';
 	import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
@@ -137,7 +137,7 @@ import type { Document } from '$lib/types';
 			</Card>
 
 			<!-- Future: metrics, recent, jobs, ingestion, status -->
-			<Card.Root class="mt">
+			<Card class="mt">
 				<CardHeader>
 					<CardTitle>Quick Insights</CardTitle>
 				</CardHeader>
@@ -177,7 +177,7 @@ import type { Document } from '$lib/types';
 				</CardContent>
 			</Card>
 
-			<Card.Root class="mt">
+			<Card class="mt">
 				<CardHeader>
 					<CardTitle>Support</CardTitle>
 				</CardHeader>

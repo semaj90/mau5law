@@ -5,7 +5,7 @@ import type { Document } from '$lib/types';
  * Connects enhanced reinforcement learning cache with brain graph topology
  * Implements AI-driven predictive asset discovery for legal 3D visualizations
  */
-import type { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types.js';
 import type { reinforcementLearningCache } from '$lib/csaching/reinforcement-learning-cache';
 import { reinforcementLearningCache as serverCache } from '$lib/caching/reinforcement-learning-cache.server';

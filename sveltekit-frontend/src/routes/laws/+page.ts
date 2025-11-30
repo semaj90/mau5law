@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types .js';
-import type { error  } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';;
 
 export interface QuickLink {
 	id: string;

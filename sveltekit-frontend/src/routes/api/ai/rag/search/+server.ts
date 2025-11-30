@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { requireAuth  } from '$lib/server/auth-helpers';
 import type { legalRAG  } from '$lib/ai/langchain-rag';

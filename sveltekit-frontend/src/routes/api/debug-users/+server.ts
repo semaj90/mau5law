@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { users  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm';
 import type { hashPassword  } from '$lib/server/auth';

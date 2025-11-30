@@ -1,4 +1,4 @@
-import type { writable  } from 'svelte/store';
+import { writable } from 'svelte/store';;
 // Mock imports to avoid resolution issues
 const aiRecommendationEngine = {
   generateRecommendations: async (context: any) => [],

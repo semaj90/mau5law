@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { onMount, onDestroy  } from 'svelte';
-  import type { writable, get  } from 'svelte/store';
+  import { onMount, onDestroy } from 'svelte';;
+  import { writable, get } from 'svelte/store';;
   // Assuming master-service-coordinator exports a singleton instance named 'masterServiceCoordinator'
   // and that instance has a 'status' store and a 'services' array.
   import type { MasterServiceCoordinator  } from '$lib/services/master-service-coordinator'; // Changed to named import

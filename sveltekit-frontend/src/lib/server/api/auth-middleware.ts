@@ -1,4 +1,5 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 
 export const authenticateUser = async (event: Parameters<RequestHandler>[0]) => {
     if (!event.locals.user) {

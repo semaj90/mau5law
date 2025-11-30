@@ -4,7 +4,8 @@ import type { Document } from '$lib/types';
  * SvelteKit → Go → CUDA Pipeline with FlashAttention2 + Tensor Core optimization
  * Achieves 150 GFLOPS with 4-bit 50:1 compression
  */
-import type { json, type Response  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type Response } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { rtxSystemMonitor, type RTXSystemStatus  } from '$lib/services/rtx-system-monitor';
 

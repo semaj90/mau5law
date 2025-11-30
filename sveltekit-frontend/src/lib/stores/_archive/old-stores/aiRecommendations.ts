@@ -1,4 +1,4 @@
-import type { writable  } from 'svelte/store';
+import { writable } from 'svelte/store';;
 import type { aiRecommendationEngine  } from '$lib/services/ai-recommendation-engine';
 export const recommendations = writable<any[]>([]);
 export const partialRecommendations = writable<any[]>([]);

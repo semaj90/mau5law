@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { chatContext  } from '$lib/stores/chat-context';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // Define interfaces locally since they are not exported from chat-context
   interface TopicNode {

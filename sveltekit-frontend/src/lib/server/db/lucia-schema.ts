@@ -1,5 +1,6 @@
 // Minimal Lucia-compatible schema following exact requirements
-import type { pgTable, text, timestamp, uuid, varchar  } from 'drizzle-orm/pg-core';
+import { text } from 'drizzle-orm/pg-core';
+import type { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';;
 
 // Users table - minimal for Lucia
 export const users = pgTable("users", {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { page  } from '$app/state';
 
   let hashInput = $state <string>(

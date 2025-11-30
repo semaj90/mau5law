@@ -1,6 +1,6 @@
 <script lang="ts">
 // Svelte, 5 runes are auto-imported
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib/components/ui/enhanced-bits.svelte";
   import type { LodCacheEngine  } from '$lib/gpu/lod-cache-engine.js';
   // import type { GpuVectorProcessor  } from '$lib/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues

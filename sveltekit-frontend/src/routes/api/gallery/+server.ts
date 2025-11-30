@@ -1,4 +1,4 @@
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit';
 import type { db, usersTable, cases, evidence, legalDocuments  } from '$lib/server/database';
 import type { eq, desc, asc, and, count, gte, lte, sql, type SQL  } from 'drizzle-orm';

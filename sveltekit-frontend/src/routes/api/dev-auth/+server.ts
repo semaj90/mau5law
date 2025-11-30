@@ -1,6 +1,6 @@
 import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { dev  } from '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming
 import type { db  } from '$lib/server/db/drizzle';

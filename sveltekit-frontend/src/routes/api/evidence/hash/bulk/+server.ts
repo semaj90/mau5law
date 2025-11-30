@@ -1,6 +1,7 @@
 import type { db } from '$lib/server/db/index';
 import type { cases, evidence } from '$lib/server/db/schema-postgres';
-import type { App, json, error as kitError } from '@sveltejs/kit';
+import { json, error as kitError } from '@sveltejs/kit';
+import type { App } from '@sveltejs/kit';;
 import type { desc, eq, inArray } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 

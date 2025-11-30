@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { clientGemmaInference  } from '$lib/ai/client-gemma-inference';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   let isInitialized = $state(false);
   let isInitializing = $state(false);

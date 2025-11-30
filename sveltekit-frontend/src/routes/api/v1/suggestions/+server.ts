@@ -2,7 +2,7 @@
 // "DID YOU MEAN" API ENDPOINT - QUIC-Optimized Suggestions
 // Ultra-low latency intelligent search suggestions with graph traversal
 // ======================================================================
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js'; // Added .js extension
 import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js';
 import type { z, type ZodError  } from 'zod';

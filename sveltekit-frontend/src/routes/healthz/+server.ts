@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { redis  } from '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();

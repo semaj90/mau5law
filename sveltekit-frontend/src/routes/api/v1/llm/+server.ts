@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { callTRTFP16, callTRTFP8, callTRTINT8  } from '$lib/server/trt-router';
 
 export async function POST({ request }) {

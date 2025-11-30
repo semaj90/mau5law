@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import type { sql  } from 'drizzle-orm';
 import type { RequestHandler } from './$types .js';

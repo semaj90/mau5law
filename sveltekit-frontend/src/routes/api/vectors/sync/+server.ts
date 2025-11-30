@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types ';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import createRedisInstance from '$lib/server/redis'; // default export
 import type { QdrantVectorService  } from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)

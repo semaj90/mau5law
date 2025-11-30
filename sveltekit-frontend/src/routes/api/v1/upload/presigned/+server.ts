@@ -1,5 +1,5 @@
 import type { cuidSchema  } from '$lib/server/z-schemas';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import type { Client  } from 'minio';
 import type { db  } from '$lib/db/client';

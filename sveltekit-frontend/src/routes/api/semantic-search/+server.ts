@@ -1,6 +1,6 @@
 /** * Semantic Search API - Production Ready with RAG * * Endpoint: /api/semantic-search * Category: rag * Priority: 160 * * Services: * - Qdrant: High-speed vector search (2-5ms HNSW) * - pgvector: Persistent fallback storage * - Ollama: Query embeddings via centralized service * - Redis: Search result caching * * Features: * - Hybrid search (Qdrant → pgvector fallback) * - Legal relevance re-ranking * - GPU-accelerated similarity (optional) * - Intelligent caching with TTL * - Multi-table search (evidence, cases, documents) */
 
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 // Removed: import type { withValidationAndRate  } from '$lib/server/middleware/validate-and-rate';
 // Removed: import type { readBodyFast  } from '$lib/server/utils/json-fast';

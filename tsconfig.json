@@ -5,8 +5,12 @@
     "allowImportingTsExtensions": true, // allow importing .ts extensions in ESM
     "sourceMap": false, // disable source maps for smaller production builds
     "inlineSources": false,
-    "target": "ES2023", // bump target for Node 22 features
-    "lib": ["DOM", "DOM.Iterable", "ES2023"], // align libs with target
+    "target": "ES2022", // bump target for Node 22 features
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ], // align libs with target
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

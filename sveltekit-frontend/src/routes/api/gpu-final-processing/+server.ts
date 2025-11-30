@@ -1,6 +1,6 @@
 import type { completeErrorPipeline  } from '$lib/services/complete-gpu-error-pipeline';
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 
 export const GET: RequestHandler = async () => {
 	try {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
 
   let summarizerRef: any;

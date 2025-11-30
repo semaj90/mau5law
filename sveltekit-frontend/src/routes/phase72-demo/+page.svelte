@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { EvidenceEdge, EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
   import type { EvidenceCanvas  } from '$lib/evidence-canvas/evidence-canvas.svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   let caseId = 'demo-case-001';
   let caseType = 'contract-dispute';

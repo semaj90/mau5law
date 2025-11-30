@@ -1,5 +1,5 @@
 /** * Worker Health Check API * Monitors status of background workers: OCR, Embedding, Legal Analysis */
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { redis  } from '$lib/server/redis';
 import type { RedisClientType } from 'redis';

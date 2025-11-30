@@ -1,4 +1,4 @@
-import type { writable, derived, get  } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';;
 
 export interface FormField<TValue = unknown> {
   name: string;

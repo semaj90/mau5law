@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { eq  } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type { RAGService } from '$lib/server/rag';

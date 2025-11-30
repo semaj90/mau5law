@@ -1,5 +1,6 @@
 import type { cuidSchema  } from '$lib/server/z-schemas';
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { db, sql, eq  } from '$lib/server/db';
 import type { personsOfInterest  } from '$lib/server/db/schema-postgres';
 import type { z  } from 'zod';

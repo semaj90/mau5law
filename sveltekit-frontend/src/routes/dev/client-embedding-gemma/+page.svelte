@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { findSimilar, getClientEmbeddingGemma, type ClientEmbeddingGemma  } from '$lib/ClientEmbeddingGemma';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   let service: ClientEmbeddingGemma;
   let isInitializing = $state(true);

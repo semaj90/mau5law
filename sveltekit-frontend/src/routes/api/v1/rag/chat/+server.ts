@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { OllamaService  } from '$lib/server/ollama';
 
 const ollama = new OllamaService();

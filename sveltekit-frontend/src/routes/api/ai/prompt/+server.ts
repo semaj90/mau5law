@@ -19,7 +19,7 @@ import type { Document } from '$lib/types';
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types .js';
 

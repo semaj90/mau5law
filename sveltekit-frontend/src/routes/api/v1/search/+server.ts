@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { orchestrator  } from '$lib/services/unified-legal-orchestrator';
 import type { qdrant  } from '$lib/server/vector/qdrant-manager';
 import type { db, vectorSearch  } from '$lib/server/database/connection';

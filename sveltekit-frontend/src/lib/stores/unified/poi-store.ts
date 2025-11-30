@@ -1,5 +1,5 @@
 /** * POIStore - Unified Persons of Interest Management * * Phase: Consolidation: Merges * - legal-poi.ts * - poi-network.ts * - poi-analysis.ts * - poi-timeline.ts * *, Usage: * import type { poiStore  } from '$lib/stores/unified'; * * poiStore.createPOI({ name: 'John Doe' }); * $: pois = $poiStore .personOfInterest; */
-import type { writable, derived  } from 'svelte/store';
+import { writable, derived } from 'svelte/store';;
 
 /** * Types */
 export type POIRole =

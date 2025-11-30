@@ -1,7 +1,5 @@
-/* * Cases API Routes with Lucia v3 Authentication * GET /api/v1/cases - List user's cases (with pagination)' * POST /api/v1/cases - Create new case */ import type { json,
-  error,
-  type RequestHandler,
- } from '@sveltejs/kit';
+/* * Cases API Routes with Lucia v3 Authentication * GET /api/v1/cases - List user's cases (with pagination)' * POST /api/v1/cases - Create new case */ import { json, error } from '@sveltejs/kit';
+import type { type RequestHandler,  } from '@sveltejs/kit';;
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import type { CasesCRUDService,
   CreateCaseSchema,

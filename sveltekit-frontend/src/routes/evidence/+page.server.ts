@@ -1,5 +1,5 @@
 import type { evidence  } from '$lib/server/db/schema-unified';
-import type { error  } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';;
 import type { eq, and  } from 'drizzle-orm';
 import type { db  } from '$lib/server/db/index';
 import type { PageServerLoad } from './$types .js';

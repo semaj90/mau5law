@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
-  import type { onMount, onDestroy  } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';;
   import type { Report } from '$lib/data/types'; // Corrected import path for Report
   import TauriAPI from '$lib/tauri';
 

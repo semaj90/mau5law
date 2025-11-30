@@ -1,4 +1,4 @@
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { getCudaServiceUrl, getEmbeddingModel  } from '$lib/config/pgvector-gpu-config.js';
 import type { MinIOService  } from '$lib/server/minio-service';

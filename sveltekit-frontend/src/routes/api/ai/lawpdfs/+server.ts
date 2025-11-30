@@ -1,6 +1,7 @@
 import type { Document } from '$lib/types';
 import type { redisOptimized, type RedisOptimizedMiddleware  } from '$lib/middleware/redis-orchestrator-middleware';
-import type { json, type RequestHandler  } from '@sveltejs/kit'; // Changed RequestHandler import and added json
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';; // Changed RequestHandler import and added json
 
 // Assuming App.Locals is globally available from src/app.d.ts
 // If not, you might need to define a minimal interface or import it.

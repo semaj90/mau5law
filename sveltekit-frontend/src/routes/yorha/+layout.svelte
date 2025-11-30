@@ -11,7 +11,7 @@
     Terminal,
    } from 'lucide-svelte';
   import type { SvelteComponent } from 'svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import '../../app.css';
  // Added: Top-level type import
 

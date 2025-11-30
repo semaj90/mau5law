@@ -4,7 +4,7 @@
   import Input from '$lib/components/ui/input';
   import type { appActions, appStore  } from '$lib/stores/app-store';
   import type { Cpu, Database, RefreshCw, Save, Server, Zap  } from 'lucide-svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // Reactive state from app store
   let systemMetrics = $state <any>(null);

@@ -10,7 +10,7 @@
   import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import * as Card from '$lib/components/ui/Card.svelte';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { goto  } from '$app/navigation';
   let isLoggingOut = $state <boolean>(false);
   async function handleLogout(): Promise<any> {

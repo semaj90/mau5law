@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestEvent } from '@sveltejs/kit';
 import type { v4 as uuidv4  } from 'uuid';
 import type { db  } from '$lib/database';

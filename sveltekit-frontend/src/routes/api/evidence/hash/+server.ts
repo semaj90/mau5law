@@ -1,5 +1,5 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { cases, evidence, users  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm';
 import type { db  } from '$lib/server/db/index';

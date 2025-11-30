@@ -2,7 +2,7 @@
  * Focus Mode Utility
  * Provides distraction-free writing experience by dimming non-essential UI elements
  */
-import type { writable  } from 'svelte/store';
+import { writable } from 'svelte/store';;
 
 export interface FocusSettings {
 	dimOpacity: number;

@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db/client';
 import type { legalDocuments  } from '$lib/server/db/schema-postgres';
 import type { MinIOService  } from '$lib/server/minio';

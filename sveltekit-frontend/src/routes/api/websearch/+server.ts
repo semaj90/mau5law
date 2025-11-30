@@ -1,7 +1,7 @@
 import type { getCachedSearch, setCachedSearch  } from '$lib/server/search/langCache';
 import type { cosineSearchWeb  } from '$lib/server/search/webVectorSearch';
 import type { logToolCall  } from '$lib/server/training/query-logger';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 
 export const POST: RequestHandler = async ({ request }) => {
   const { query, topK = 10, scope = 'web' } = await request.json();

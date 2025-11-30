@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-/** * RAG Document Indexing API Endpoint * * Provides API for indexing legal documents into the vector database: * - Automatic text chunking optimized for legal content * - Vector embedding generation with Gemma embeddings * - Metadata extraction and storage * - Bulk document processing support * * @route POST /api/rag/index-document */ import type { json  } from '@sveltejs/kit';
+/** * RAG Document Indexing API Endpoint * * Provides API for indexing legal documents into the vector database: * - Automatic text chunking optimized for legal content * - Vector embedding generation with Gemma embeddings * - Metadata extraction and storage * - Bulk document processing support * * @route POST /api/rag/index-document */ import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { randomUUID  } from 'crypto';
 import type { enhancedRAGPipeline  } from '$lib/services/enhanced-rag-pipeline';

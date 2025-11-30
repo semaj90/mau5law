@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { caseManagementService  } from '$lib/services/case-management-service.js';
 import type { enhancedEmbeddingWorker  } from '$lib/workers/embedding-worker-enhanced.js';
 import type { randomUUID  } from 'node:crypto';

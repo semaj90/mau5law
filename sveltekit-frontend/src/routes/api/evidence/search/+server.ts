@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import type { evidence  } from '$lib/server/db/schema-postgres-enhanced';
 import type { ilike, or  } from 'drizzle-orm';

@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { enhancedSearchWithNeo4j  } from '$lib/ai/custom-reranker';
 import type { mcpContext72GetLibraryDocs  } from '$lib/mcp-context72-get-library-docs';
 import type { RequestHandler } from './$types .js';

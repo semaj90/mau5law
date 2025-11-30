@@ -186,7 +186,7 @@ export const browserEmbeddings = new BrowserEmbeddings();
  * // In a Svelte component:
  * <script lang="ts">
  * import type { browserEmbeddings  } from '$lib/ai/browser-embeddings';
- * import type { onMount  } from 'svelte';
+ * import { onMount } from 'svelte';;
  *
  * let isReady = false;
  * let searchResults: any[] = [];

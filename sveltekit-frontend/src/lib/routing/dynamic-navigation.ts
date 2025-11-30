@@ -1,5 +1,6 @@
 /** Dynamic Navigation System - manages navigation state and programmatic utilities */
-import type { writable, derived, get, type Writable, type Readable  } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
+import type { type Writable, type Readable } from 'svelte/store';;
 import type { goto, afterNavigate  } from '$app/navigation';
 import type { browser  } from '$app/environment';
 

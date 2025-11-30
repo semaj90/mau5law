@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { dbPool  } from '$lib/server/database-pool-service';
 import type { embeddingCache  } from '$lib/server/embedding-cache-service';
 import type { redisService  } from '$lib/server/redis-service';

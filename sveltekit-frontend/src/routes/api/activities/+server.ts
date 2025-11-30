@@ -1,5 +1,5 @@
 import type { Case } from '$lib/types';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { caseActivities  } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
 import type { sql, desc  } from 'drizzle-orm';

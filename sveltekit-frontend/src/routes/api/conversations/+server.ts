@@ -1,6 +1,5 @@
-/* * Conversations API - GET and POST endpoints * Handles conversation creation and retrieval */ import type { json,
-  error,
- } from '@sveltejs/kit';
+/* * Conversations API - GET and POST endpoints * Handles conversation creation and retrieval */ import { json, error } from '@sveltejs/kit';
+import type {  } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { conversationService  } from '$lib/server/services/conversation-service';
 import type { getRequestId,

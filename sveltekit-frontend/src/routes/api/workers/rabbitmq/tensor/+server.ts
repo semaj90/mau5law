@@ -1,4 +1,4 @@
-/** * RabbitMQ-Tensor Integration API Endpoint * Provides HTTP interface for WASM-accelerated tensor processing via RabbitMQ */ import type { json  } from '@sveltejs/kit';
+/** * RabbitMQ-Tensor Integration API Endpoint * Provides HTTP interface for WASM-accelerated tensor processing via RabbitMQ */ import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { rabbitMQTensorIntegration,
   initializeIntegration,

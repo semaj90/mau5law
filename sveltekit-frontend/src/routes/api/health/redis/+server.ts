@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { createRedisConnection  } from '$lib/server/redis';
 
 // Helper: safely extract a message from unknown error values

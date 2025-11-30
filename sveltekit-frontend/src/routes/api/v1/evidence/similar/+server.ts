@@ -1,4 +1,5 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import type { env  } from '$env /dynamic/private';
 import getCudaEmbedding from '$lib/server/services/cuda-embedding-service';

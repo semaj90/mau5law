@@ -1,5 +1,5 @@
 import type { users  } from '$lib/server/db/schema-postgres';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { existsSync, mkdirSync, writeFileSync  } from 'fs';
 import type { join  } from 'path';
 import type { eq  } from 'drizzle-orm';

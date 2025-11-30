@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
   import type { fade  } from 'svelte/transition';
   import type { PageData } from './$types ';
 

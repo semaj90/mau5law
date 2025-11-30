@@ -1,4 +1,4 @@
-import type { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types.js';
 import type { db, evidence } from '$lib/server/db/client.js';
 import type { minioService } from '$lib/server/storage/minio-service.js';

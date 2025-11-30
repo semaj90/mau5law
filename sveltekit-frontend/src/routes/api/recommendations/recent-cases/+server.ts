@@ -1,6 +1,6 @@
 import type { Case } from '$lib/types';
 /** * ðŸŽ¯ Recent Cases Recommendation API * Returns the most recent, 5 cases with priority scoring */ import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { multiLayerCache  } from '$lib/cache/MultiLayerCacheSystem';
 import type { calculateDocumentPriority  } from '$lib/config/legal-priorities';
 import type { LegalDocument } from '$lib/config/legal-priorities'; // added import interface CaseRecommendation { id: string, title: string, status: 'active' | 'pending' | 'closed'; lastAccessed: string, confidence: number, priority: number, caseType: string, urgency: 'low' | 'medium' | 'high' | 'critical'; glyphSignature?: string; metadata: { clientName: string, practiceArea: string, daysOpen: number, documentCount: number, lastActivity: string}}

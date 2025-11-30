@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 
 /* * AI Integration Test Suite * Comprehensive testing of all AI/MCP API endpoints */
 import type { validateMCPRequest,

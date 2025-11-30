@@ -6,7 +6,7 @@
  * to the dashboard for display and approval.
  */
 
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { QdrantClient  } from '@qdrant/js-client-rest';
 

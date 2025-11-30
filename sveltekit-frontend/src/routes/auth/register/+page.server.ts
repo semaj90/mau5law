@@ -1,6 +1,6 @@
 import type { User } from '$lib/types';
 import type { PageServerLoad, Actions } from './$types .js';
-import type { fail, redirect  } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';;
 import type { auth  } from '$lib/server/auth';
 import type { Argon2id  } from 'oslo/password';
 import type { db  } from '$lib/server/db/drizzle';

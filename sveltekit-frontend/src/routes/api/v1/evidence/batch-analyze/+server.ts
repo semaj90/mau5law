@@ -1,4 +1,5 @@
-import type { json, type RequestHandler  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import type { type RequestHandler } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 // import type { getUserId  } from '$lib/server/auth/utils'; // Batch analysis schemas // Removed as per error
 const BatchAnalysisSchema = z.object({

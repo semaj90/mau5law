@@ -1,5 +1,5 @@
 import type { createMachine, assign, fromPromise, createActor  } from 'xstate';
-import type { writable  } from 'svelte/store';
+import { writable } from 'svelte/store';;
 import type { productionServiceClient  } from '$lib/api/production-service-client';
 
 // Define missing types

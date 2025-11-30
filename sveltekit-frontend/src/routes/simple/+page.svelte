@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { goto  } from '$app/navigation';
   import type { browser  } from '$app/environment';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   // client-only values to avoid SSR window access
   let currentUrl = 'SSR - Not available';

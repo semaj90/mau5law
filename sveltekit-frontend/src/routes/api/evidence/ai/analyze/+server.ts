@@ -1,5 +1,5 @@
 // AI Evidence Analysis API Route
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 
 // POST /api/evidence/ai/analyze - Analyze evidence node with AI

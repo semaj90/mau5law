@@ -1,13 +1,5 @@
-import type { pgTable,
-  text,
-  timestamp,
-  integer,
-  boolean,
-  jsonb,
-  uuid,
-  varchar,
-  real,
- } from 'drizzle-orm/pg-core';
+import { text, jsonb } from 'drizzle-orm/pg-core';
+import type { pgTable, timestamp, integer, boolean, uuid, varchar, real,  } from 'drizzle-orm/pg-core';;
 import type { vector  } from 'pgvector/drizzle-orm';
 
 // Enhanced Legal AI Database Schema with pgvector support

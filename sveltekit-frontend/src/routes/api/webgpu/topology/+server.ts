@@ -1,5 +1,5 @@
 /** * WebGPU QLoRA Topology Prediction API * SvelteKit API endpoint for legal AI topology optimization */
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { QLoRATopologyPredictor  } from '$lib/ai/qlora-topology-predictor';
 // Removed invalid import: import type { WebGPURAGService  } from '$lib/webgpu/webgpu-rag-service';

@@ -1,5 +1,5 @@
 import type { Message } from '$lib/types';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from '@sveltejs/kit';
 import type { readBodyFast  } from '$lib/server/utils/json-fast';
 import type { generateChatResponse  } from '$lib/server/services';

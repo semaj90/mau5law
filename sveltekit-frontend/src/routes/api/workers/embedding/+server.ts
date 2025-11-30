@@ -1,6 +1,5 @@
-/* * Embedding Worker Management API * Controls RabbitMQ embedding workers and job queuing */ import type { json,
-  type RequestHandler,
- } from '@sveltejs/kit';
+/* * Embedding Worker Management API * Controls RabbitMQ embedding workers and job queuing */ import { json } from '@sveltejs/kit';
+import type { type RequestHandler,  } from '@sveltejs/kit';;
 import type { rabbitmqEmbeddingWorker  } from '$lib/workers/rabbitmq-embedding-worker';
 import type { rabbitMQService  } from '$lib/services/rabbitmq-connection';
 import type { QUEUES  } from '$lib/config/rabbitmq-config';

@@ -1,5 +1,5 @@
 /** * Matrix Operations API - CUDA Parallel Processing for WebAssembly * Handles matrix computations, batch operations, and parallel processing */
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import type { getCudaServiceUrl  } from '$lib/config/pgvector-gpu-config.js';
 

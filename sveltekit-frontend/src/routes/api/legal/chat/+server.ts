@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 import type { db  } from '$lib/server/db/client'; // Corrected path for db client
 import type { legalAnalysisSessions, legalDocuments, legalPrecedents  } from '$lib/server/db/schema'; // Schema objects

@@ -4,7 +4,7 @@
   import EvidenceCanvas from '$lib/evidence-canvas/EvidenceCanvas.svelte';
   import GraphControlPanel from '$lib/evidence-canvas/GraphControlPanel.svelte';
   import type { initialize  } from '$lib/evidence-canvas/webgpu-init';
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
 
   import fetchEvidence from '$lib/api/evidence';
   import analyzeCaseSimilarity from '$lib/server/case-similarity';

@@ -2,7 +2,7 @@
   import type { goto  } from '$app/navigation';
   import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root  } from '$lib/components/ui/dialog';
   import type { appActions, appStore  } from '$lib/stores/app-store';
-  import type { onDestroy, onMount  } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';;
 
   // YoRHaModalComponent is being replaced by bits-ui Dialog
 

@@ -3,7 +3,7 @@
 	import type { appActions, appStore  } from '$lib/stores/app-store';
 	import type { Input as BitsInput, Badge as BitsBadge, Button as BitsButton, Card as BitsCard  } from 'bits-ui';
 	import type { AlertCircle, Edit, Eye, Plus, Search, Shield, Trash2  } from 'lucide-svelte';
-	import type { onDestroy, onMount  } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';;
 
 // Enhanced Person interface with AI analysis and photos
 interface Person {

@@ -6,7 +6,7 @@ import Textarea from '$lib/components/ui/Textarea.svelte';
 import type { cn  } from '$lib/utils.js';
 import type { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle  } from 'bits-ui/components/ui/dialog';
 import type { Edit, Funnel as Filter, Grid3x3 as Grid, List, Plus, Trash2  } from 'lucide-svelte';
-import type { onMount  } from 'svelte';
+import { onMount } from 'svelte';;
 import type { toast  } from 'svelte-sonner';
 
 interface PhysicalDescription {

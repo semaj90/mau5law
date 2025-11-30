@@ -3,7 +3,7 @@ import type { db  } from '$lib/server/db/client';
 import type { users  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm';
 import type { createUserSession, setSessionCookie, verifyPassword  } from '$lib/server/lucia';
-import type { fail, redirect  } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';;
 import type { superValidate  } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 

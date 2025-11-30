@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { onMount  } from 'svelte';
+import { onMount } from 'svelte';;
 import type { SvelteComponent } from 'svelte'; // Added import for SvelteComponent type
 
 // Some lucide-svelte installations/types export icons differently.

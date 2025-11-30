@@ -1,5 +1,5 @@
 import type { aiAssistant  } from '$lib/stores/unified';
-import type { get  } from 'svelte/store';
+import { get } from 'svelte/store';;
 
 // The aiAssistant store is a Svelte readable store but the runtime object
 // also exposes helper methods (setLoading, addMessage, etc.) via the

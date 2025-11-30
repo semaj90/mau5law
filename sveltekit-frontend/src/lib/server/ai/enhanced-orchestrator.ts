@@ -5,7 +5,8 @@ const logger = (loggerModule as any)?.logger ?? console;
 
 import type { drizzle  } from 'drizzle-orm/postgres-js';
 // Use only the widely-available column helpers to avoid missing/third-party exports.
-import type { pgTable, text, timestamp, uuid, integer, boolean, json  } from 'drizzle-orm/pg-core'; // added json
+import { text, json } from 'drizzle-orm/pg-core';
+import type { pgTable, timestamp, uuid, integer, boolean } from 'drizzle-orm/pg-core';; // added json
 import type { PoolConfig } from "pg";
 import type { sql, eq  } from 'drizzle-orm';
 import postgres from "postgres";

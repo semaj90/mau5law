@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { User } from '$lib/types';
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import type { onMount  } from 'svelte'; import type { goto  } from '$app/navigation'; import type { page  } from '$app/state'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import Button from '$lib/components/ui/Button.svelte'; // Type definitions interface User { email: string, name?: string}
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { goto  } from '$app/navigation'; import type { page  } from '$app/state'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import Button from '$lib/components/ui/Button.svelte'; // Type definitions interface User { email: string, name?: string}
   interface ApiResponse { success?: boolean; data?: unknown; user?: User; message?: string; error?: string; details?: unknown; documents?: unknown[]; activities?: unknown[]}
   interface HttpResponse { ok: boolean;, status: number, json(): Promise<ApiResponse>}
 

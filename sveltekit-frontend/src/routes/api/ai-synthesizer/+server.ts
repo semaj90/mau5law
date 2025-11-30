@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types .js';
 import type { aiOrchestrator  } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
 import type { monitoringService  } from '$lib/server/ai/monitoring-service';
 // --- added imports ---
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { logger  } from '$lib/server/logger';
 import * as caching from '$lib/server/cache';
 

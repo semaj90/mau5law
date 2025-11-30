@@ -1,4 +1,4 @@
-import type { error  } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types ';
 import * as protobuf from 'protobufjs';
 

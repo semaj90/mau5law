@@ -1,5 +1,5 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { getUser  } from '$lib/server/auth';
 import type { redisMiddleware  } from '$lib/middleware/redis-orchestrator-middleware';
 import type { getOllamaEndpoint, getEnhancedRagEndpoint  } from '$lib/server/endpoints';

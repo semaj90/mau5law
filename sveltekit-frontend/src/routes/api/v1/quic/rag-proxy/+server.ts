@@ -1,7 +1,7 @@
 import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types .js';
 /* * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching * Provides RAG operations with edge caching, metrics, and JSON optimization * Port: 8451 (QUIC), 8452 (HTTP/2 fallback) * Backend: Upload Service (8093), Enhanced RAG (8094) */
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { ensureError  } from '$lib/utils/ensure-error';
 
 const RAG_QUIC_CONFIG = {

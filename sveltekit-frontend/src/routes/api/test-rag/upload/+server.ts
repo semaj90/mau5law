@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types ';
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { withValidationAndRate  } from '$lib/server/middleware/validate-and-rate';
 import type { db  } from '$lib/server/database';
 import type { sql  } from 'drizzle-orm';

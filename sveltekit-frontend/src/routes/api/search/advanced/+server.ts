@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types .js';
 
 // Repaired advanced search route: previous file was heavily corrupted with concatenated import + code.

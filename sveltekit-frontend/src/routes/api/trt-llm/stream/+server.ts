@@ -1,4 +1,4 @@
-import type { error  } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';;
 import type { env  } from '$env /dynamic/private';
 
 export async function POST({ request }) {

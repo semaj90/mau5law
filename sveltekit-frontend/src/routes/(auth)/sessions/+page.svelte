@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
   import type { LogOut, Smartphone, Monitor  } from 'lucide-svelte';
 
   interface Session {

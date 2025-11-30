@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ClientEmbeddingService, getClientEmbeddingService  } from '$lib/ClientEmbeddingService';
-  import type { onMount  } from 'svelte';
+  import { onMount } from 'svelte';;
 
   let service: ClientEmbeddingService;
   let isInitializing = $state(true);

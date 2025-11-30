@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types .js';
-import type { json, error  } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';;
 import type { ensureError  } from '$lib/utils/ensure-error';
 import type { db  } from '$lib/server/db';
 import type { users,

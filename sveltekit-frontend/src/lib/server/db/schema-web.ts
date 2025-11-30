@@ -1,4 +1,5 @@
-import type { pgTable, text, timestamp, integer  } from 'drizzle-orm/pg-core';
+import { text } from 'drizzle-orm/pg-core';
+import type { pgTable, timestamp, integer } from 'drizzle-orm/pg-core';;
 import type { vector  } from 'drizzle-orm-pgvector';
 
 export const webPages = pgTable('web_pages', {

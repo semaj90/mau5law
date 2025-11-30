@@ -1,6 +1,6 @@
 import type { Document } from '$lib/types';
 /** * Enhanced Ingest Integration Service * Integrates with your existing ai-agent.ts store and production service architecture * Follows your established patterns and conventions */ import type { aiAgentStore  } from '$lib/stores/ai-agent';
-import type { get  } from 'svelte/store';
+import { get } from 'svelte/store';;
 import type {
   DocumentIngestRequest,
   BatchIngestRequest,

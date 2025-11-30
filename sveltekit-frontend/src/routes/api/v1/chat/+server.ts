@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import * as orchestrator from '$lib/services/unified-legal-orchestrator';
 import type { contextualMemoryChatService  } from '$lib/services/contextual-memory-chat-service';
 import type { parallelOrchestrationMaster  } from '$lib/services/parallel-orchestration-master';

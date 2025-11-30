@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import type { cases, evidence, legalDocuments, users  } from '$lib/server/db/schema';
 import type { sql, eq, ilike, and, or, desc  } from 'drizzle-orm';

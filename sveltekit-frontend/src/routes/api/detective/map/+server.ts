@@ -1,4 +1,4 @@
-import type { json  } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';;
 import type { neo4jDriver  } from '$lib/server/neo4j-driver';
 import type { db  } from '$lib/server/db/drizzle';
 import type { evidence, cases, poi  } from '$lib/server/db/schema-postgres';

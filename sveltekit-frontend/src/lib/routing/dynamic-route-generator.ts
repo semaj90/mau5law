@@ -1,5 +1,5 @@
 import type { allRoutes  } from '$lib/data/routes-config';
-import type { error  } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';;
 
 /**
  * Local (minimal) types to avoid hard coupling to external shape.

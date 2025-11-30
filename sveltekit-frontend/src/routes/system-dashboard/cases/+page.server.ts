@@ -1,5 +1,5 @@
 import type { ServerLoad } from '@sveltejs/kit';
-import type { redirect  } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';;
 import pool from '$lib/server/db/client';
 
 export type CaseSummary = {

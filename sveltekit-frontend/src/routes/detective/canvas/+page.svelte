@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import type { onMount  } from 'svelte'; import type { AdvancedEvidenceCanvas  } from '$lib/canvas/advanced-evidence-canvas.js'; let canvasElement: HTMLCanvasElement, let evidenceCanvas: AdvancedEvidenceCanva, let mounted = $state <boolean>(false); // Sample evidence data for the canvas let evidenceData = $state([ { id: 'item-1', type: 'video', title: 'Security Camera Footage', x: 50, y: 100, width: 200, height: 150, color: '#3b82f6'
+// Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { AdvancedEvidenceCanvas  } from '$lib/canvas/advanced-evidence-canvas.js'; let canvasElement: HTMLCanvasElement, let evidenceCanvas: AdvancedEvidenceCanva, let mounted = $state <boolean>(false); // Sample evidence data for the canvas let evidenceData = $state([ { id: 'item-1', type: 'video', title: 'Security Camera Footage', x: 50, y: 100, width: 200, height: 150, color: '#3b82f6'
     }, {
       id: 'item-2', type: 'document', title: 'Witness Statement', x: 300, y: 200, width: 180, height: 120, color: '#10b981'
     }, {

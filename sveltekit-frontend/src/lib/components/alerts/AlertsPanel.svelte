@@ -5,7 +5,7 @@
   // with `alerts` (a writable store of Alert[]) and `removeAlert` (a function to remove an alert by id).
   import type { alerts, removeAlert  } from '$lib/stores/alerts';
   import type { Alert } from '$lib/stores/alerts';
-  import type { onDestroy  } from 'svelte'; // Import onDestroy for cleanup
+  import { onDestroy } from 'svelte';; // Import onDestroy for cleanup
 
   const alertClasses: Record<Alert['type'], string> = {
     info: 'bg-blue-100 border-blue-500 text-blue-700',

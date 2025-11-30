@@ -1,4 +1,4 @@
-import type { redirect  } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';;
 import type { PageServerLoad } from './$types ';
 
 type DashboardStats = {
