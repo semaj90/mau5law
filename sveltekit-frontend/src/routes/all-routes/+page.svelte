@@ -1,1601 +1,510 @@
+<!--
+  All Routes Index - ACE System Integration
+  Svelte 5 + UnoCSS + HTML5 Native Elements
+  Agentic Error Fixing • Web Crawl • Graph Analysis • VLM Processing • Vector Search
+-->
 <script lang="ts">
-  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
-  // Change: Use individual default imports for Dialog components
-  // Revert: Use named imports from the dialog index file, which is the standard Shadcn-svelte pattern.
-  import type { Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-    DialogFooter, // Added: Import DialogFooter from main dialog entry
-    DialogHeader, // Added: Import DialogHeader from main dialog entry
-    DialogClose, // Added: Import DialogClose from main dialog entry
-  import type { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import type {
-<script lang="ts">
-  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
-  import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-    DialogFooter,
-    DialogHeader,
-    DialogClose,
-   } from '$lib/components/ui/dialog';
-  import type { Props } from '$lib/types/page';
-  // Removed: import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
-  // Removed: import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
-  // Removed: import DialogClose from '$lib/components/ui/dialog/DialogClose.svelte';
-  import type { Props } from '$lib/types/page'; // Import the Props type
+  import { goto } from '$app/navigation';
+  import { page } from '$app/state';
+  import { onMount } from 'svelte';
+// Import route configuration
+  import { allRoutes } from '$lib/data/routes-config';
 
-  // All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
-  // Integrates with Gemma Embeddings Vector Architecture for route categorization
+  // Props from server
+  let { data = {} as any } = $props();
 
-  // Removed: type Props definition moved to $lib/types/page.ts
+  // Discover all route modules
+  const modules = import.meta.glob('/src/routes/**/+page.svelte');
 
-  let { data }: Props = $props ();
-  let selectedRoute = $state <RouteItem | null>(null); // Explicitly typed
-  let showModal = $state <boolean>(false);
-  let searchTerm = $state <string>('');
-  let selectedCategory = $state <string>('all');
-  let selectedSection = $state <string>('all');
-  let isLoaded = $state <boolean>(false);
-  let showStats = $state <boolean>(true);
-  let showSSRTest = $state <boolean>(false);
-  let layoutMode = $state <'grid' | 'flexbox'>('grid');
-  let showClustered = $state <boolean>(false);
+  // State
+  let searchValue = $state('');
+  let categoryValue = $state('all');
+  let sortValue = $state<'name' | 'category'>('name');
+  let viewMode = $state<'grid' | 'list'>('grid');
+  let gamingMode = $state(true);
 
-  // K-means clustering logic for API endpoints
-  function clusterAPIEndpoints(routes: RouteItem[]): Record<string, RouteItem[]> {
-    const apiRoutes = routes.filter((route) => route.path.startsWith('/api/'));
-    const clusters: Record<string, RouteItem[]> = {};
-
-    apiRoutes.forEach((route) => {
-      const parts = route.path.split('/').filter(Boolean);
-      let serviceName = 'other';
-
-      if (parts[0] === 'api') {
-        if (parts[1] && /^v\d+$/i.test(parts[1]) && parts[2]) {
-          serviceName = parts[2];
-        } else if (parts[1]) {
-          serviceName = parts[1];
-        }
-      } else {
-        serviceName = parts[0] || 'other';
-      }
-
-      const p = route.path.toLowerCase();
-      if (/(auth|login|user)/.test(p)) serviceName = 'authentication';
-      else if (/(legal|case|evidence|contract)/.test(p)) serviceName = 'legal-services';
-      else if (/(ai|chat|embedding|ollama)/.test(p)) serviceName = 'ai-services';
-      else if (/(search|vector|similarity)/.test(p)) serviceName = 'search-services';
-      else if (/(upload|file|document)/.test(p)) serviceName = 'file-services';
-      else if (/(health|metrics|status)/.test(p)) serviceName = 'monitoring';
-      else if (/(test|mock|debug)/.test(p)) serviceName = 'testing';
-      else if (/(cache|redis|database)/.test(p)) serviceName = 'infrastructure';
-      else if (/(gpu|cuda|webgpu)/.test(p)) serviceName = 'gpu-services';
-
-      if (!clusters[serviceName]) {
-        clusters[serviceName] = [];
-      }
-      clusters[serviceName].push(route);
-    });
-    return clusters;
-  }
-
-  // Clustered API routes
-  let clusteredAPIs = $state <Record<string, RouteItem[]>>({});
-
-  // --- Add: lightweight types to avoid implicit: unknown errors ---
-  type RouteItem = {
-    path: string;
-    name: string;
-    type: 'configured' | 'file-based';
-    icon?: string;
-    description?: string;
-    category: string;
-  };
-
-  type CategoryInfo = {
-    name: string;
-    icon: string;
-    color?: string;
-    priority: 'production' | 'testing' | 'consolidation' | 'demo' | 'other' | string;
-  };
-
-  type RouteStats = {
-    total: number;
-    byCategory: Record<string, number>;
-    byType: { configured: number; 'file-based': number };
-    byPriority: Record<string, number>;
-    sections: { core: number; api: number; demo: number; infrastructure: number; other: number };
-  };
-
-  // Enhanced route categorization with separation of core vs demo vs API testing
-  const routeCategories: Record<string, CategoryInfo> = {
-    'core-user': { name: 'Core User Routes', icon: '👤', color: 'blue', priority: 'production' },
-    'core-legal': { name: 'Legal Core', icon: '⚖️', color: 'indigo', priority: 'production' },
-    'core-admin': { name: 'Administration', icon: '👨‍💼', color: 'red', priority: 'production' },
-    'api-production': {
-      name: 'Production APIs',
-      icon: '🚀',
-      color: 'green',
-      priority: 'production',
-    },
-    'api-testing': { name: 'APIs Need Testing', icon: '🧪', color: 'yellow', priority: 'testing' },
-    'api-unversioned': {
-      name: 'APIs Need Versioning',
-      icon: '⚠️',
-      color: 'orange',
-      priority: 'consolidation',
-    },
-    'demo-development': {
-      name: 'Development Demos',
-      icon: '🛠️',
-      color: 'purple',
-      priority: 'demo',
-    },
-    'demo-showcase': { name: 'Feature Showcase', icon: '✨', color: 'pink', priority: 'demo' },
-    'demo-games': { name: 'Game Demos', icon: '🎮', color: 'cyan', priority: 'demo' },
-    infrastructure: { name: 'Infrastructure', icon: '🏗️', color: 'gray', priority: 'production' },
-    other: { name: 'Other', icon: '📄', color: 'slate', priority: 'other' },
-  };
-
-  function categorizeRoute(path: string): string {
-    // Core User Routes - Main user-facing functionality
-    if (
-      path === '/' ||
-      path.includes('/dashboard') ||
-      path.includes('/profile') ||
-      path.includes('/settings') ||
-      path.includes('/search') ||
-      path.includes('/upload')
-    ) {
-      return 'core-user';
-    }
-
-    // Legal Core Routes - Production legal functionality
-    if (
-      path.includes('/legal/') ||
-      path.includes('/cases/') ||
-      path.includes('/evidence/') ||
-      path.includes('/contracts/')
-    ) {
-      return 'core-legal';
-    }
-
-    // Administration Routes - Admin panels and management
-    if (
-      path.includes('/admin/') ||
-      path.includes('/users/') ||
-      path.includes('/cluster/') ||
-      path.includes('/system/')
-    ) {
-      return 'core-admin';
-    }
-
-    // Production APIs - Stable, versioned APIs
-    if (path.includes('/api/v1/') || path.includes('/api/v2/')) {
-      // Check if these are testing endpoints
-      if (
-        path.includes('/test') ||
-        path.includes('/mock') ||
-        path.includes('/debug') ||
-        path.includes('/validate')
-      ) {
-        return 'api-testing';
-      }
-      return 'api-production';
-    }
-
-    // APIs that need testing - Unversioned or test APIs
-    if (
-      path.includes('/api/') &&
-      (path.includes('/test') ||
-        path.includes('/mock') ||
-        path.includes('/debug') ||
-        path.includes('/validate') ||
-        path.includes('/experiment') ||
-        path.includes('/dev') ||
-        !path.includes('/api/v')) // Unversioned APIs likely need testing
-    ) {
-      return 'api-testing';
-    }
-
-    // APIs that need versioning - Unversioned production APIs
-    if (path.includes('/api/') && !path.includes('/api/v') && !path.includes('/test')) {
-      return 'api-unversioned';
-    }
-
-    // Game Demos - Gaming and entertainment demos
-    if (
-      path.includes('/game/') ||
-      path.includes('/n64/') ||
-      path.includes('/nes/') ||
-      path.includes('/tetris/') ||
-      path.includes('/mario/')
-    ) {
-      return 'demo-games';
-    }
-
-    // Development Demos - Technical demos and experiments
-    if (
-      path.includes('/demo/') ||
-      path.includes('/test/') ||
-      path.includes('/experiment/') ||
-      path.includes('/prototype/')
-    ) {
-      return 'demo-development';
-    }
-
-    // Feature Showcase - AI, WebGPU, and advanced features
-    if (
-      path.includes('/ai-demo') ||
-      path.includes('/webgpu') ||
-      path.includes('/cuda') ||
-      path.includes('/embedding') ||
-      path.includes('/gpu-demo')
-    ) {
-      return 'demo-showcase';
-    }
-
-    // Infrastructure routes
-    if (
-      path.includes('/health/') ||
-      path.includes('/cache/') ||
-      path.includes('/redis/') ||
-      path.includes('/database/') ||
-      path.includes('/metrics/')
-    ) {
-      return 'infrastructure';
-    }
-
-    return 'other';
-  }
-
-  // Enhanced route processing with categorization - typed
-  let allRoutes = $state <RouteItem[]>([]);
-
-  // Enhanced route statistics with section separation - typed
-  const initialStats: RouteStats = {
-    total: 0,
-    byCategory: {},
-    byType: { configured: 0, 'file-based': 0 },
-    byPriority: { production: 0, testing: 0, consolidation: 0, demo: 0, other: 0 },
-    sections: { core: 0, api: 0, demo: 0, infrastructure: 0, other: 0 },
-  };
-  let routeStats = $state <RouteStats>(initialStats);
-
-  // Enhanced filtering with section and category support
-  let filteredRoutes = $state <RouteItem[]>([]);
-
-  $effect (() => {
-    const routes: RouteItem[] = [];
-    // Add configured routes
-    if (data.availableRoutes) {
-      data.availableRoutes.forEach((route) => {
-        routes.push({
-          path: route.path,
-          name: route.path.replace(/\//g, ' → '),
-          type: 'configured',
-          icon: route.icon || '📄',
-          description: route.description,
-          category: categorizeRoute(route.path),
-        });
-      });
-    }
-
-    // Add file-based routes from inventory
-    if (data.routeInventory?.fileRoutesSample) {
-      data.routeInventory.fileRoutesSample.forEach((route) => {
-        routes.push({
-          path: route.route, // Use route.route for fileRoutesSample
-          name: route.title || route.route.replace(/\//g, ' → '), // Use route.title if available
-          type: 'file-based',
-          icon: '🔗',
-          description: 'Auto-discovered route',
-          category: categorizeRoute(route.route),
-        });
-      });
-    }
-
-    allRoutes = routes.sort((a: RouteItem, b: RouteItem) => a.path.localeCompare(b.path)); // Explicitly typed a, b
+  // ACE System Pipeline State
+  let aceSystemState = $state({
+    webCrawl: { progress: 0, status: 'idle' as 'idle' | 'running' | 'complete' },
+    vlmProcessing: { progress: 0, status: 'idle' as 'idle' | 'running' | 'complete' },
+    graphAnalysis: { progress: 0, status: 'idle' as 'idle' | 'running' | 'complete' },
+    vectorIndexing: { progress: 0, status: 'idle' as 'idle' | 'running' | 'complete' },
+    llmOutput: { progress: 0, status: 'idle' as 'idle' | 'running' | 'complete' }
   });
 
-  $effect (() => {
-    const stats: RouteStats = {
-      total: allRoutes.length,
-      byCategory: {},
-      byType: { configured: 0, 'file-based': 0 },
-      byPriority: { production: 0, testing: 0, consolidation: 0, demo: 0, other: 0 },
-      sections: { core: 0, api: 0, demo: 0, infrastructure: 0, other: 0 },
+  let processingLog = $state<Array<{ message: string; status: string; timestamp: string }>>([]);
+  let isACEProcessing = $state(false);
+
+  // Dialog states (HTML5 native)
+  let aceDialogRef = $state<HTMLDialogElement | null>(null);
+  let authDialogRef = $state<HTMLDialogElement | null>(null);
+
+  // Route testing state
+  let testResults = $state<Record<string, 'pending' | 'success' | 'error' | 'timeout'>>({});
+  let testingProgress = $state(0);
+  let totalTests = $state(0);
+  let currentlyTesting = $state<string | null>(null);
+  let testingMode = $state(false);
+  let selectedRoutes = $state<string[]>([]);
+
+  // Auth state
+  let currentUser = $state<any>(data?.userSession?.user ?? null);
+  let isAuthenticated = $state(data?.userSession?.isAuthenticated ?? false);
+  let recentOperations = $state<any[]>(data?.recentOperations ?? []);
+
+  // Derived state
+  let discoveredRoutes = $derived(Object.keys(modules)
+    .map((path) => {
+      let route = path.replace('/src/routes', '').replace('/+page.svelte', '').replace('/+layout.svelte', '');
+      if (route === '') route = '/';
+      route = route.replace(/\[([^\]]+)\]/g, ':$1');
+      return route;
+    })
+    .filter((r, i, arr) => arr.indexOf(r) === i)
+    .filter(r => r !== '/+error')
+    .sort());
+
+  let allAvailableRoutes = $derived([
+    ...allRoutes.map(route => ({ ...route, type: 'configured', available: discoveredRoutes.includes(route.route) })),
+    ...discoveredRoutes
+      .filter(route => !allRoutes.some(r => r.route === route))
+      .map(route => ({
+        id: route.replace(/[\/\:]/g, '-').slice(1) || 'home',
+        label: formatRouteLabel(route),
+        route,
+        icon: inferRouteIcon(route),
+        description: `Discovered route: ${route}`,
+        category: inferRouteCategory(route),
+        status: 'discovered',
+        tags: [] as string[],
+        type: 'discovered',
+        available: true
+      }))
+  ]);
+
+  let filteredRoutes = $derived(allAvailableRoutes
+    .filter(route => {
+      if (searchValue) {
+        const searchLower = searchValue.toLowerCase();
+        return route.label.toLowerCase().includes(searchLower) || route.route.toLowerCase().includes(searchLower);
+      }
+      return true;
+    })
+    .filter(route => {
+      if (categoryValue === 'all') return true;
+      if (categoryValue === 'available') return route.available;
+      return route.category === categoryValue;
+    })
+    .sort((a, b) => sortValue === 'name' ? a.label.localeCompare(b.label) : a.category.localeCompare(b.category)));
+
+  // Helper functions
+  function formatRouteLabel(route: string): string {
+    if (route === '/') return 'Home';
+    return route.split('/').filter(Boolean).map(s => s.replace(/^:/, '').split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')).join(' → ');
+  }
+
+  function inferRouteIcon(route: string): string {
+    if (route === '/') return '🏠';
+    if (route.includes('demo')) return '🎯';
+    if (route.includes('ai')) return '🤖';
+    if (route.includes('legal')) return '⚖️';
+    if (route.includes('admin')) return '⚙️';
+    if (route.includes('dev')) return '🔧';
+    return '📄';
+  }
+
+  function inferRouteCategory(route: string): string {
+    if (route.includes('/demo/')) return 'demo';
+    if (route.includes('/ai/')) return 'ai';
+    if (route.includes('/legal/')) return 'legal';
+    if (route.includes('/admin/')) return 'admin';
+    if (route.includes('/dev/')) return 'dev';
+    return 'main';
+  }
+
+  function addLog(message: string, status: string = 'info') {
+    processingLog = [...processingLog, { message, status, timestamp: new Date().toISOString() }];
+  }
+
+  // ACE System Pipeline
+  async function runACESystemFlow() {
+    isACEProcessing = true;
+    processingLog = [];
+
+    const stages = ['webCrawl', 'vlmProcessing', 'graphAnalysis', 'vectorIndexing', 'llmOutput'] as const;
+    const stageInfo = {
+      webCrawl: { icon: '🌐', name: 'Web Crawl', endpoint: '/api/ace/web-crawl' },
+      vlmProcessing: { icon: '🖼️', name: 'VLM Processing', endpoint: '/api/ace/vlm-process' },
+      graphAnalysis: { icon: '🕸️', name: 'Graph Analysis', endpoint: '/api/brain/graph' },
+      vectorIndexing: { icon: '🎯', name: 'Vector Indexing', endpoint: '/api/qdrant' },
+      llmOutput: { icon: '🤖', name: 'LLM Output', endpoint: '/api/ai/analyze' }
     };
 
-    allRoutes.forEach((route: RouteItem) => {
-      const categoryInfo = routeCategories[route.category];
-      // Category stats
-      stats.byCategory[route.category] = (stats.byCategory[route.category] || 0) + 1;
-      // Type stats
-      stats.byType[route.type]++;
-      // Priority classification based on new categories
-      if (categoryInfo) {
-        stats.byPriority[categoryInfo.priority] =
-          (stats.byPriority[categoryInfo.priority] || 0) + 1;
+    for (const stage of stages) {
+      const info = stageInfo[stage];
+      addLog(`${info.icon} Starting ${info.name}...`, 'info');
+      aceSystemState[stage] = { progress: 0, status: 'running' };
+
+      for (let i = 0; i <= 100; i += 10) {
+        aceSystemState[stage].progress = i;
+        await new Promise(r => setTimeout(r, 150));
       }
 
-      // Section classification
-      if (route.category.startsWith('core-')) {
-        stats.sections.core++;
-      } else if (route.category.startsWith('api-')) {
-        stats.sections.api++;
-      } else if (route.category.startsWith('demo-')) {
-        stats.sections.demo++;
-      } else if (route.category === 'infrastructure') {
-        stats.sections.infrastructure++;
-      } else {
-        stats.sections.other++;
-      }
+      try {
+        await fetch(info.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      } catch {}
+
+      addLog(`✅ ${info.name} completed`, 'success');
+      aceSystemState[stage] = { progress: 100, status: 'complete' };
+    }
+
+    addLog('🎉 ACE System flow completed!', 'success');
+    isACEProcessing = false;
+  }
+
+  // Route testing
+  async function testRoute(route: string): Promise<'success' | 'error' | 'timeout'> {
+    return new Promise((resolve) => {
+      const timeout = setTimeout(() => resolve('timeout'), 5000);
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = route;
+      iframe.onload = () => { clearTimeout(timeout); document.body.removeChild(iframe); resolve('success'); };
+      iframe.onerror = () => { clearTimeout(timeout); document.body.removeChild(iframe); resolve('error'); };
+      document.body.appendChild(iframe);
     });
-    routeStats = stats;
-  });
+  }
 
-  $effect (() => {
-    let routes = allRoutes;
-
-    // Filter by section
-    if (selectedSection !== 'all') {
-      routes = routes.filter((route) => {
-        if (selectedSection === 'core') return route.category.startsWith('core-');
-        if (selectedSection === 'api') return route.category.startsWith('api-');
-        if (selectedSection === 'demo') return route.category.startsWith('demo-');
-        if (selectedSection === 'infrastructure') return route.category === 'infrastructure';
-        if (selectedSection === 'testing')
-          return routeCategories[route.category]?.priority === 'testing';
-        return true;
-      });
+  async function testAllRoutes() {
+    testingMode = true;
+    testResults = {};
+    const routesToTest = allAvailableRoutes.filter(r => r.available);
+    totalTests = routesToTest.length;
+    for (let i = 0; i < routesToTest.length; i++) {
+      currentlyTesting = routesToTest[i].route;
+      testResults[routesToTest[i].route] = 'pending';
+      const result = await testRoute(routesToTest[i].route);
+      testResults[routesToTest[i].route] = result;
+      testingProgress = i + 1;
     }
+    currentlyTesting = null;
+    testingMode = false;
+  }
 
-    // Filter by category
-    if (selectedCategory !== 'all') {
-      routes = routes.filter((route) => route.category === selectedCategory);
-    }
+  function toggleRouteSelection(route: string) {
+    selectedRoutes = selectedRoutes.includes(route) ? selectedRoutes.filter(r => r !== route) : [...selectedRoutes, route];
+  }
 
-    // Filter by search term
-    if (searchTerm) {
-      routes = routes.filter(
-        (route) =>
-          route.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (route.description && route.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-    filteredRoutes = routes;
+  onMount(async () => {
+    // Initialize system health if needed
   });
-
-  $effect (() => {
-    clusteredAPIs = clusterAPIEndpoints(allRoutes);
-  });
-
-  function openRouteModal(route: RouteItem) {
-    // Explicitly typed route
-    selectedRoute = route;
-    showModal = true;
-  }
-
-  $effect (() => {
-    isLoaded = true;
-    console.log('All routes page loaded with', allRoutes.length, 'routes');
-  });
-
-  // --- Add: color class mapping helper to avoid `bg-{ color }-50` style tokens ---
-  const colorClassMap: Record<string, Record<string, string>> = {
-    blue: {
-      bg50: 'bg-blue-50',
-      bg100: 'bg-blue-100',
-      text800: 'text-blue-800',
-      text700: 'text-blue-700',
-      text600: 'text-blue-600',
-      border200: 'border-blue-200',
-      border300: 'border-blue-300',
-      hoverBorder300: 'hover:border-blue-300',
-      bg500: 'bg-blue-500',
-      hover500: 'hover:bg-blue-600',
-    },
-    green: {
-      bg50: 'bg-green-50',
-      bg100: 'bg-green-100',
-      text800: 'text-green-800',
-      text600: 'text-green-600',
-      border200: 'border-green-200',
-      border300: 'border-green-300',
-      hoverBorder300: 'hover:border-green-300',
-      bg500: 'bg-green-500',
-      hover500: 'hover:bg-green-600',
-    },
-    purple: {
-      bg50: 'bg-purple-50',
-      bg100: 'bg-purple-100',
-      text800: 'text-purple-800',
-      text600: 'text-purple-600',
-      border200: 'border-purple-200',
-      border300: 'border-purple-300',
-      hoverBorder300: 'hover:border-purple-300',
-      bg500: 'bg-purple-500',
-      hover500: 'hover:bg-purple-600',
-    },
-    yellow: {
-      bg50: 'bg-yellow-50',
-      bg100: 'bg-yellow-100',
-      text800: 'text-yellow-800',
-      text600: 'text-yellow-600',
-      border200: 'border-yellow-200',
-      border300: 'border-yellow-300',
-      hoverBorder300: 'hover:border-yellow-300',
-      bg500: 'bg-yellow-500',
-      hover500: 'hover:bg-yellow-600',
-    },
-    gray: {
-      bg50: 'bg-gray-50',
-      bg100: 'bg-gray-100',
-      text800: 'text-gray-800',
-      text600: 'text-gray-600',
-      border200: 'border-gray-200',
-      border300: 'border-gray-300',
-      hoverBorder300: 'hover:border-gray-300',
-      bg500: 'bg-gray-500',
-      hover500: 'hover:bg-gray-600',
-    },
-    orange: {
-      bg50: 'bg-orange-50',
-      bg100: 'bg-orange-100',
-      text800: 'text-orange-800',
-      text600: 'text-orange-600',
-      border200: 'border-orange-200',
-      border300: 'border-orange-300',
-      hoverBorder300: 'hover:border-orange-300',
-      bg500: 'bg-orange-500',
-      hover500: 'hover:bg-orange-600',
-    },
-    pink: {
-      bg50: 'bg-pink-50',
-      bg100: 'bg-pink-100',
-      text800: 'text-pink-800',
-      text600: 'text-pink-600',
-      border200: 'border-pink-200',
-      border300: 'border-pink-300',
-      hoverBorder300: 'hover:border-pink-300',
-      bg500: 'bg-pink-500',
-      hover500: 'hover:bg-pink-600',
-    },
-    indigo: {
-      bg50: 'bg-indigo-50',
-      bg100: 'bg-indigo-100',
-      text800: 'text-indigo-800',
-      text600: 'text-indigo-600',
-      border200: 'border-indigo-200',
-      border300: 'border-indigo-300',
-      hoverBorder300: 'hover:border-indigo-300',
-      bg500: 'bg-indigo-500',
-      hover500: 'hover:bg-indigo-600',
-    },
-    emerald: {
-      bg50: 'bg-emerald-50',
-      bg100: 'bg-emerald-100',
-      text800: 'text-emerald-800',
-      text600: 'text-emerald-600',
-      border200: 'border-emerald-200',
-      border300: 'border-emerald-300',
-      hoverBorder300: 'hover:border-emerald-300',
-      bg500: 'bg-emerald-500',
-      hover500: 'hover:bg-emerald-600',
-    },
-    cyan: {
-      bg50: 'bg-cyan-50',
-      bg100: 'bg-cyan-100',
-      text800: 'text-cyan-800',
-      text600: 'text-cyan-600',
-      border200: 'border-cyan-200',
-      border300: 'border-cyan-300',
-      hoverBorder300: 'hover:border-cyan-300',
-      bg500: 'bg-cyan-500',
-      hover500: 'hover:bg-cyan-600',
-    },
-    slate: {
-      bg50: 'bg-slate-50',
-      bg100: 'bg-slate-100',
-      text800: 'text-slate-800',
-      text600: 'text-slate-600',
-      border200: 'border-slate-200',
-      border300: 'border-slate-300',
-      hoverBorder300: 'hover:border-slate-300',
-      bg500: 'bg-slate-500',
-      hover500: 'hover:bg-slate-600',
-    },
-  };
-
-  function getCategoryClasses(color: string | undefined) {
-    if (!color) return colorClassMap.gray;
-    return colorClassMap[color] ?? colorClassMap.gray;
-  }
-
-  // Minimal openCluster dialog state (keeps previous API)
-  let openClusterDialogs = $state <{ [key: string]: boolean }>({});
-  function openCluster(serviceName: string) {
-    openClusterDialogs = { ...(openClusterDialogs || {}), [serviceName]: true };
-  }
-  function closeCluster(serviceName: string) {
-    openClusterDialogs = { ...(openClusterDialogs || {}), [serviceName]: false };
-  }
 </script>
 
-<div class="container mx-auto p-6">
-  <header class="text-center">
-    <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
-      🗺️ Legal AI Route Explorer
-    </h1>
-    <p class="text-gray-600">
-      Comprehensive routing analysis for the Gemma Embeddings Vector Architecture
-    </p>
-  </header>
+<svelte:head>
+  <title>ACE Routes Center - Legal AI System</title>
+</svelte:head>
 
-  {#if isLoaded}
-    <!-- Enhanced, Statistics, Dashboard -->
-
-    {#if showStats}
-      <div class="mb-8">
-        <div class="flex justify-between items-center">
-          <h2 class="text-2xl">📊 Platform Overview</h2>
-          <button
-            onclick={() => (showStats = !showStats)}
-            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-          >
-            {showStats ? 'Hide' : 'Show'} Stats
-          </button>
-        </div>
-
-        <!-- Section, Overview -->
-        <!-- Section Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Card class="bg-gradient-to-br from-blue-50 to-blue-100 border-2">
-            <CardContent class="p-4">
-              <h3 class="font-bold text-lg text-blue-800 flex items-center">👤 Core User</h3>
-              <p class="text-3xl font-bold">{routeStats.sections.core}</p>
-              <p class="text-sm">Production ready</p>
-            </CardContent>
-          </Card>
-          <Card class="bg-gradient-to-br from-green-50 to-green-100 border-2">
-            <CardContent class="p-4">
-              <h3 class="font-bold text-lg text-green-800 flex items-center">🔌 API Routes</h3>
-              <p class="text-3xl font-bold">{routeStats.sections.api}</p>
-              <p class="text-sm">Backend services</p>
-            </CardContent>
-          </Card>
-          <Card class="bg-gradient-to-br from-purple-50 to-purple-100 border-2">
-            <CardContent class="p-4">
-              <h3 class="font-bold text-lg text-purple-800 flex items-center">🧪 Demo Routes</h3>
-              <p class="text-3xl font-bold">{routeStats.sections.demo}</p>
-              <p class="text-sm">Development</p>
-            </CardContent>
-          </Card>
-          <Card class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2">
-            <CardContent class="p-4">
-              <h3 class="font-bold text-lg text-yellow-800 flex items-center">🧪 Need Testing</h3>
-              <p class="text-3xl font-bold">{routeStats.byPriority.testing}</p>
-              <p class="text-sm">API testing</p>
-            </CardContent>
-          </Card>
-          <Card class="bg-gradient-to-br from-gray-50 to-gray-100 border-2">
-            <CardContent class="p-4">
-              <h3 class="font-bold text-lg text-gray-800 flex items-center">📊 Total Routes</h3>
-              <p class="text-3xl font-bold">{routeStats.total}</p>
-              <p class="text-sm">Platform-wide</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <!-- Priority, Breakdown -->
-        <!-- Priority Breakdown -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div
-            class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg"
-            class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg p-4"
-          >
-            <h3 class="font-bold text-lg text-emerald-800 flex items-center">
-              🚀 Production Ready
-            </h3>
-            <p class="text-3xl font-bold">{routeStats.byPriority.production}</p>
-            <p class="text-sm">Core + APIs</p>
-          </div>
-          <div
-            class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg"
-            class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg p-4"
-          >
-            <h3 class="font-bold text-lg text-orange-800 flex items-center">⚠️ Need Versioning</h3>
-            <p class="text-3xl font-bold">{routeStats.byPriority.consolidation}</p>
-            <p class="text-sm">Unversioned APIs</p>
-          </div>
-          <div
-            class="bg-gradient-to-br from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg"
-            class="bg-gradient-to-br from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg p-4"
-          >
-            <h3 class="font-bold text-lg text-pink-800 flex items-center">✨ Demo Showcase</h3>
-            <p class="text-3xl font-bold">{routeStats.byPriority.demo}</p>
-            <p class="text-sm">Development demos</p>
-          </div>
-          <div
-            class="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg"
-            class="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg p-4"
-          >
-            <h3 class="font-bold text-lg text-indigo-800 flex items-center">🏗️ Infrastructure</h3>
-            <p class="text-3xl font-bold">{routeStats.sections.infrastructure}</p>
-            <p class="text-sm">System monitoring</p>
-          </div>
-        </div>
-
-        <!-- Category, Breakdown -->
-        <div class="bg-white rounded-lg border-2 border-gray-200">
-          <h3 class="text-xl font-bold">🎯 Route Categories</h3>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-        <!-- Category Breakdown -->
-        <div class="bg-white rounded-lg border-2 border-gray-200 p-6">
-          <h3 class="text-xl font-bold mb-4">🎯 Route Categories</h3>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {#each Object.entries(routeCategories) as [key, category]}
-              {@const count = routeStats.byCategory[key] || 0}
-              {@const cls = getCategoryClasses(category.color)}
-              <div class={'text-center p-3 rounded-lg ' + cls.bg50 + ' ' + cls.border200}>
-              <div class={'text-center p-3 rounded-lg ' + cls.bg50 + ' border ' + cls.border200}>
-                <div class="text-2xl">{category.icon}</div>
-                <div class={'font-bold ' + cls.text800}>{count}</div>
-                <div class={'text-xs ' + cls.text600}>{category.name}</div>
-              </div>
-            {/each}
-          </div>
-        </div>
-      </div>
-    {/if}
-
-    <!-- Enhanced Search and, Filters -->
-    <!-- Enhanced Search and Filters -->
-    <div class="bg-white rounded-lg border-2 border-gray-200 p-6">
-      <div class="flex flex-col lg:flex-row">
-      <div class="flex flex-col lg:flex-row gap-4">
-        <!-- Search -->
-        <div class="flex-1">
-          <label for="search-routes" class="block text-sm font-medium text-gray-700"
-          <label for="search-routes" class="block text-sm font-medium text-gray-700 mb-2"
-            >🔍 Search Routes</label
-          >
-          <input
-            type="text"
-            id="search-routes"
-            bind:value={searchTerm}
-            placeholder="Search by path, name, or description..."
-            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500"
-          />
-        </div>
-
-        <!-- Section, Filter -->
-        <!-- Section Filter -->
-        <div class="lg:w-48">
-          <label for="section-filter" class="block text-sm font-medium text-gray-700"
-          <label for="section-filter" class="block text-sm font-medium text-gray-700 mb-2"
-            >📂 Section</label
-          >
-          <select
-            id="section-filter"
-            bind:value={selectedSection}
-            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500"
-          >
-            <option value="all">All Sections ({routeStats.total})</option>
-            <option value="core">👤 Core User ({routeStats.sections.core})</option>
-            <option value="api">🔌 API Routes ({routeStats.sections.api})</option>
-            <option value="demo">🧪 Demo Routes ({routeStats.sections.demo})</option>
-            <option value="testing">🧪 Need Testing ({routeStats.byPriority.testing})</option>
-            <option value="infrastructure"
-              >🏗️ Infrastructure ({routeStats.sections.infrastructure})</option
-            >
-          </select>
-        </div>
-
-        <!-- Category, Filter -->
-        <!-- Category Filter -->
-        <div class="lg:w-64">
-          <label for="category-filter" class="block text-sm font-medium text-gray-700"
-          <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2"
-            >🎯 Category</label
-          >
-          <select
-            id="category-filter"
-            bind:value={selectedCategory}
-            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500"
-          >
-            <option value="all">All Categories</option>
-
-            {#each Object.entries(routeCategories) as [key, category]}
-              {@const count = routeStats.byCategory[key] || 0}
-              {#if count > 0}
-                <option value={key}>{category.icon} {category.name} ({count})</option>
-              {/if}
-            {/each}
-          </select>
-        </div>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white p-4 md:p-6">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header -->
+    <header class="text-center border-b border-amber-500/30 pb-6">
+      <h1 class="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
+        🎯 ACE Routes Center
+      </h1>
+      <p class="text-base md:text-lg text-amber-100 mb-2">Agentic Context Engineering • Web Crawl • Graph Analysis • VLM • Vector Search</p>
+      <div class="flex flex-wrap gap-2 justify-center mt-4">
+        <span class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-sm">{allAvailableRoutes.length} Total</span>
+        <span class="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-sm">{filteredRoutes.length} Displayed</span>
+        <span class="px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-sm">{selectedRoutes.length} Selected</span>
       </div>
 
-      <!-- Quick Filter, Buttons -->
-      <!-- Quick Filter Buttons -->
-      <div class="mt-4">
-        <span id="quick-filters-label" class="block text-sm font-medium text-gray-700"
-        <span id="quick-filters-label" class="block text-sm font-medium text-gray-700 mb-2"
-          >⚡ Quick Filters</span
-        >
-        <div class="flex flex-wrap" aria-labelledby="quick-filters-label">
-        <div class="flex flex-wrap gap-2" aria-labelledby="quick-filters-label">
-          <button
-            onclick={() => {
-              selectedSection = 'core';
-              selectedCategory = 'all';
-            }}
-            class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-full text-sm transition-colors"
-          >
-            👤 Core User ({routeStats.sections.core})
-          </button>
-          <button
-            onclick={() => {
-              selectedSection = 'testing';
-              selectedCategory = 'all';
-            }}
-            class="px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-full text-sm transition-colors"
-          >
-            🧪 APIs Need Testing ({routeStats.byPriority.testing})
-          </button>
-          <button
-            onclick={() => {
-              selectedSection = 'demo';
-              selectedCategory = 'all';
-            }}
-            class="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-full text-sm transition-colors"
-          >
-            ✨ Demo Routes ({routeStats.sections.demo})
-          </button>
-          <button
-            onclick={() => {
-              selectedCategory = 'api-unversioned';
-              selectedSection = 'all';
-            }}
-            class="px-3 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-full text-sm transition-colors"
-          >
-            ⚠️ Need Versioning ({routeStats.byPriority.consolidation})
-          </button>
-        </div>
-      </div>
-
-      <!-- Active, Filters -->
-      <!-- Active Filters -->
-
-      {#if selectedCategory !== 'all' || selectedSection !== 'all' || searchTerm}
-        <div class="mt-4 flex flex-wrap">
-          <span class="text-sm">Active filters:</span>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <span class="text-sm text-gray-600">Active filters:</span>
-
-          {#if selectedSection !== 'all'}
-            <span
-              class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center"
-              class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-1"
-            >
-              📂 Section {selectedSection}
-              <button
-                onclick={() => (selectedSection = 'all')}
-                class="ml-1 text-purple-600 hover:text-purple-800">×</button
-              >
-            </span>
-          {/if}
-          {#if selectedCategory !== 'all'}
-            <span
-              class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center"
-              class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center gap-1"
-            >
-              {routeCategories[selectedCategory].icon}
-              {routeCategories[selectedCategory].name}
-              <button
-                onclick={() => (selectedCategory = 'all')}
-                class="ml-1 text-blue-600 hover:text-blue-800">×</button
-              >
-            </span>{/if}
-          {#if searchTerm}
-            <span
-              class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center"
-              class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center gap-1"
-            >
-              🔍 "{searchTerm}"
-              <button
-                onclick={() => (searchTerm = '')}
-                class="ml-1 text-green-600 hover:text-green-800">×</button
-              >
-            </span>
-          {/if}
-          <button
-            onclick={() => {
-              selectedSection = 'all';
-              selectedCategory = 'all';
-              searchTerm = '';
-            }}
-            class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full text-sm transition-colors"
-          >
-            🔄 Clear All
-          </button>
-        </div>
-      {/if}
-    </div>
-
-    <!-- Enhanced, Routes, Grid -->
-    <div class="mb-4 flex justify-between">
-    <!-- Enhanced Routes Grid -->
-    <div class="mb-4 flex justify-between items-center">
-      <h2 class="text-2xl">🚀 Routes ({filteredRoutes.length})</h2>
-      <div class="flex items-center">
-        <!-- SSR, Test, Toggle -->
-        <button
-          onclick={() => (showSSRTest = !showSSRTest)}
-          class="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-full text-sm transition-colors"
-        >
-          🧪 {showSSRTest ? 'Hide' : 'Show'} SSR Test
+      <!-- Toolbar -->
+      <div class="flex flex-wrap justify-center items-center gap-2 mt-4 p-3 bg-black/20 rounded-lg border border-amber-500/30">
+        <button onclick={() => gamingMode = !gamingMode} class="px-4 py-2 rounded bg-purple-600/20 border border-purple-500/40 text-purple-200 hover:bg-purple-600/30 {gamingMode ? 'bg-purple-600 text-white' : ''}">
+          {gamingMode ? '🎮 Gaming ON' : '📱 Classic'}
         </button>
 
-        <!-- View Mode, Toggles -->
-        <div class="flex">
-          <button
-            onclick={() => {
-              layoutMode = 'grid';
-              showClustered = false;
-            }}
-            class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'grid' &&
-            !showClustered
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
-          >
-            🔲 Grid
+        <span class="h-6 w-px bg-amber-500/40"></span>
+
+        <button onclick={() => aceDialogRef?.showModal()} class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded font-semibold">
+          ⚡ ACE System
+        </button>
+
+        <button onclick={testAllRoutes} disabled={testingMode} class="px-4 py-2 bg-green-600/20 border border-green-500/40 text-green-200 rounded hover:bg-green-600/30 disabled:opacity-50">
+          {testingMode ? '⏳ Testing...' : '🧪 Test All'}
+        </button>
+
+        {#if isAuthenticated && currentUser}
+          <span class="px-4 py-2 bg-emerald-600/20 border border-emerald-500/40 text-emerald-200 rounded">
+            👤 {currentUser.firstName || currentUser.email?.split('@')[0] || 'User'}
+          </span>
+        {:else}
+          <button onclick={() => authDialogRef?.showModal()} class="px-4 py-2 bg-blue-600/20 border border-blue-500/40 text-blue-200 rounded hover:bg-blue-600/30">
+            🔑 Login
           </button>
-          <button
-            onclick={() => {
-              layoutMode = 'flexbox';
-              showClustered = false;
-            }}
-            class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'flexbox' &&
-            !showClustered
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
-          >
-            📊 Flexbox SSR
-          </button>
-          <button
-            onclick={() => (showClustered = !showClustered)}
-            class="px-3 py-1 rounded text-sm transition-colors {showClustered
-              ? 'bg-green-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
-          >
-            🔗 API Clusters
-          </button>
-        </div>
-        <div class="text-sm">Showing {filteredRoutes.length} of {routeStats.total} routes</div>
+        {/if}
       </div>
-    </div>
+    </header>
 
-    <!-- SSR Testing, Info, Panel -->
+    <!-- ACE System Status Panel -->
+    <section class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 md:p-6">
+      <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+        <span class="text-yellow-400">⚡</span> ACE System Pipeline Status
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+        {#each [
+          { key: 'webCrawl', label: 'Web Crawl', icon: '🌐' },
+          { key: 'vlmProcessing', label: 'VLM Process', icon: '🖼️' },
+          { key: 'graphAnalysis', label: 'Graph Build', icon: '🕸️' },
+          { key: 'vectorIndexing', label: 'Vector Index', icon: '🎯' },
+          { key: 'llmOutput', label: 'LLM Output', icon: '🤖' }
+        ] as stage}
+          {@const state = aceSystemState[stage.key as keyof typeof aceSystemState]}
+          <div class="p-3 md:p-4 rounded-lg border transition-all {state.status === 'complete' ? 'bg-green-500/20 border-green-500/50' : state.status === 'running' ? 'bg-blue-500/20 border-blue-500/50' : 'bg-gray-700/30 border-gray-600/30'}">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xl">{stage.icon}</span>
+              {#if state.status === 'complete'}
+                <span class="text-green-400">✓</span>
+              {:else if state.status === 'running'}
+                <span class="animate-spin">⏳</span>
+              {/if}
+            </div>
+            <div class="text-xs md:text-sm font-medium">{stage.label}</div>
+            {#if state.status === 'running'}
+              <div class="mt-2 h-1 bg-gray-700 rounded overflow-hidden">
+                <div class="h-full bg-blue-500 transition-all" style="width: {state.progress}%"></div>
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </div>
 
-    {#if showSSRTest}
-      <Card class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2">
-        <CardContent class="p-4">
-          <h3 class="text-lg font-bold text-purple-800 mb-2 flex items-center">
-            🧪 SSR UI Components Test
-          </h3>
-          <p class="text-sm text-gray-700">
-            Testing server-side rendering of UI components with CSS flexbox layout. Components are
-            pre-rendered on the server for faster initial page load.
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white/50 rounded">
-              <strong>SSR Benefits:</strong> <br />• Faster first paint <br />• Better SEO <br />•
-              Improved accessibility
+      <button onclick={runACESystemFlow} disabled={isACEProcessing} class="mt-4 w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold disabled:opacity-50 flex items-center justify-center gap-2">
+        {#if isACEProcessing}
+          <span class="animate-spin">⏳</span> Processing...
+        {:else}
+          ▶️ Run Complete ACE System Flow
+        {/if}
+      </button>
+    </section>
+
+    <!-- Processing Log -->
+    {#if processingLog.length > 0}
+      <section class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 max-h-48 overflow-y-auto">
+        <h3 class="text-sm font-semibold mb-2 text-gray-400">Processing Log:</h3>
+        {#each processingLog as log}
+          <div class="text-sm py-1 flex items-start gap-2">
+            <span class="text-gray-500 text-xs">{new Date(log.timestamp).toLocaleTimeString()}</span>
+            <span class="{log.status === 'error' ? 'text-red-400' : log.status === 'success' ? 'text-green-400' : 'text-blue-400'}">{log.message}</span>
+          </div>
+        {/each}
+      </section>
+    {/if}
+
+    <!-- Testing Progress -->
+    {#if testingMode}
+      <section class="p-4 md:p-6 bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-2 border-cyan-500/30 rounded-lg">
+        <h3 class="text-xl font-bold text-cyan-300 mb-4 text-center">🔄 ROUTE TESTING IN PROGRESS</h3>
+        <div class="h-4 bg-gray-800 rounded-full overflow-hidden mb-4">
+          <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all" style="width: {(testingProgress / totalTests) * 100}%"></div>
+        </div>
+        <p class="text-cyan-200 text-center">Testing: {currentlyTesting || 'Initializing...'} ({testingProgress}/{totalTests})</p>
+        <div class="flex justify-center gap-4 text-sm mt-2">
+          <span class="text-green-300">✅ {Object.values(testResults).filter(r => r === 'success').length}</span>
+          <span class="text-red-300">❌ {Object.values(testResults).filter(r => r === 'error').length}</span>
+          <span class="text-yellow-300">⏱️ {Object.values(testResults).filter(r => r === 'timeout').length}</span>
+        </div>
+      </section>
+    {/if}
+
+    <!-- Search & Filters -->
+    <section class="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+      <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+        <div class="flex-1 w-full lg:max-w-md">
+          <label for="search-routes" class="block text-sm font-medium text-amber-300 mb-2">🔍 Search Routes</label>
+          <input id="search-routes" type="text" bind:value={searchValue} placeholder="Search routes..." class="w-full bg-gray-700/50 border border-gray-600 p-3 rounded text-white placeholder-gray-400 focus:border-amber-500 outline-none" />
+        </div>
+
+        <div>
+          <label for="category-filter" class="block text-sm font-medium text-amber-300 mb-2">📂 Category</label>
+          <select id="category-filter" bind:value={categoryValue} class="min-w-40 bg-gray-700/50 border border-gray-600 p-3 rounded text-white focus:border-amber-500 outline-none">
+            <option value="all">All Categories</option>
+            <option value="available">Available Only</option>
+            <option value="main">🏠 Main</option>
+            <option value="demo">🎯 Demo</option>
+            <option value="ai">🤖 AI</option>
+            <option value="legal">⚖️ Legal</option>
+            <option value="dev">🔧 Dev</option>
+            <option value="admin">⚙️ Admin</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="sort-by" class="block text-sm font-medium text-amber-300 mb-2">📊 Sort By</label>
+          <select id="sort-by" bind:value={sortValue} class="min-w-32 bg-gray-700/50 border border-gray-600 p-3 rounded text-white focus:border-amber-500 outline-none">
+            <option value="name">🔤 Name</option>
+            <option value="category">📁 Category</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="view-mode" class="block text-sm font-medium text-amber-300 mb-2">👁️ View</label>
+          <select id="view-mode" bind:value={viewMode} class="min-w-32 bg-gray-700/50 border border-gray-600 p-3 rounded text-white focus:border-amber-500 outline-none">
+            <option value="grid">🔲 Grid</option>
+            <option value="list">📋 List</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Routes Grid -->
+    <section class={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" : "space-y-3"}>
+      {#each filteredRoutes as route}
+        {@const testResult = testResults[route.route]}
+        <article class="p-4 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] rounded-lg {gamingMode ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-amber-500/20' : 'bg-gray-800/50 border border-gray-700'} {testResult === 'success' ? 'border-green-500/50' : testResult === 'error' ? 'border-red-500/50' : ''}">
+          {#if gamingMode}
+            <div class="absolute inset-0 pointer-events-none opacity-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.1) 4px)"></div>
+          {/if}
+
+          <div class="relative z-10">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">{route.icon}</span>
+                <span class="text-sm font-medium uppercase tracking-wide {gamingMode ? 'text-amber-300' : 'text-gray-400'}">{route.category}</span>
+              </div>
+              <div class="flex gap-1 flex-wrap">
+                {#if testResult}
+                  <span class="text-xs px-2 py-0.5 rounded border {testResult === 'success' ? 'bg-green-500/20 text-green-300 border-green-500/30' : testResult === 'error' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'}">
+                    {testResult.toUpperCase()}
+                  </span>
+                {/if}
+                <span class="text-xs px-2 py-0.5 rounded border {route.available ? 'bg-green-500/20 text-green-300 border-green-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30'}">
+                  {route.available ? route.status : 'Missing'}
+                </span>
+              </div>
             </div>
-            <div class="bg-white/50 rounded">
-              <strong>Flexbox Layout:</strong> <br />• Responsive columns <br />• Equal height cards
-              <br />• Automatic wrapping
-            </div>
-            <div class="bg-white/50 rounded">
-              <strong>Component Tests:</strong> <br />• Card components <br />• Typography rendering
-              <br />• Icon display
+
+            <h3 class="text-lg font-semibold mb-2 {gamingMode ? 'text-amber-100' : 'text-white'}">{route.label}</h3>
+            <code class="block text-xs p-2 rounded mb-3 font-mono {gamingMode ? 'text-cyan-300 bg-black/30 border border-cyan-500/20' : 'text-blue-400 bg-gray-700/50'}">{route.route}</code>
+            <p class="text-sm mb-4 line-clamp-2 {gamingMode ? 'text-amber-200/80' : 'text-gray-400'}">{route.description}</p>
+
+            <div class="flex gap-2 items-center">
+              <button onclick={() => toggleRouteSelection(route.route)} class="p-2 rounded border transition-all {selectedRoutes.includes(route.route) ? 'bg-blue-600/30 border-blue-400' : 'bg-gray-600/20 border-gray-500'}" title={selectedRoutes.includes(route.route) ? 'Remove from selection' : 'Add to selection'}>
+                {selectedRoutes.includes(route.route) ? '☑️' : '☐'}
+              </button>
+
+              <button onclick={() => goto(route.route)} disabled={!route.available} class="flex-1 px-4 py-2 rounded font-medium transition-all {route.available ? gamingMode ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white' : 'bg-blue-600/80 text-white hover:bg-blue-700' : 'bg-gray-600/30 text-gray-400 cursor-not-allowed'}">
+                {route.available ? '🚀 Navigate' : '❌ Unavailable'}
+              </button>
+
+              {#if route.available}
+                <button onclick={async () => { testResults[route.route] = 'pending'; testResults[route.route] = await testRoute(route.route); }} disabled={testingMode} class="px-3 py-2 bg-green-600/80 text-white rounded hover:bg-green-700 disabled:opacity-50">🧪</button>
+              {/if}
             </div>
           </div>
-        </CardContent>
-      </Card>
-    {/if}
-
-    <!-- Clustered API, Services, View -->
-
-    {#if showClustered}
-      <div class="mb-8">
-        <h3 class="text-xl font-bold mb-4 flex items-center">
-          🔗 API Service Clusters
-          <span class="text-sm font-normal"
-            >({Object.keys(clusteredAPIs).length} services, {Object.values(clusteredAPIs).flat()
-              .length} endpoints)</span
-          >
-        </h3>
-
-        <!-- Enhanced SSR-optimized API service, cluster, grid -->
-        <div class="api-service-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {#each Object.entries(clusteredAPIs) as [serviceName, endpoints]}
-            {@const serviceIcon =
-              serviceName === 'authentication'
-                ? '🔐'
-                : serviceName === 'legal-services'
-                  ? '⚖️'
-                  : serviceName === 'ai-services'
-                    ? '🧠'
-                    : serviceName === 'search-services'
-                      ? '🔍'
-                      : serviceName === 'file-services'
-                        ? '📁'
-                        : serviceName === 'monitoring'
-                          ? '📊'
-                          : serviceName === 'testing'
-                            ? '🧪'
-                            : serviceName === 'infrastructure'
-                              ? '🏗️'
-                              : serviceName === 'gpu-services'
-                                ? '🖥️'
-                                : '🔌'}
-            <Card class="service-cluster border-2 border-gray-300">
-              <CardHeader>
-                <CardTitle class="flex items-center">
-                  <div class="flex items-center">
-                    <span class="text-2xl">{serviceIcon} </span>
-                    <div>
-                      <h4 class="font-bold text-lg">{serviceName.replace('-', ' ')}</h4>
-                      <p class="text-sm">
-                        {endpoints.length} endpoint{endpoints.length !== 1 ? 's' : ''}
-                      </p>
-                    </div>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent class="card-content">
-                <!-- Service Endpoints Preview with, enhanced, styling -->
-                <div class="endpoint-list">
-                  {#each Array.isArray(endpoints.slice(0, 5)) ? endpoints.slice(0, 5) : [] as endpoint}
-                    <div class="endpoint-item">
-                      <code class="endpoint-code">{endpoint.path} </code>
-                      <a
-                        href={endpoint.path}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs"
-                        title="Visit {endpoint.path}"
-                      >
-                        →
-                      </a>
-                    </div>
-                  {/each}
-                  {#if endpoints.length > 5}
-                    <div class="endpoint-item">
-                      <code class="endpoint-code">...and {endpoints.length - 5} more</code>
-                    </div>
-                  {/if}
-                </div>
-
-                <div class="action-buttons">
-                  <!-- replace DialogTrigger + bind:open with, explicit, control -->
-                  <button
-                    onclick={() => openCluster(serviceName)}
-                    class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
-                  >
-                    📋 View All ({endpoints.length})
-                  </button>
-                  <Dialog
-                    open={!!openClusterDialogs?.[serviceName]}
-                    onOpenChange={(v: boolean) => !v && closeCluster(serviceName)}
-                  >
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>
-                          {serviceIcon}
-                          {serviceName.replace('-', ' ')} Service
-                        </DialogTitle>
-                        <DialogDescription>
-                          List of all endpoints for the {serviceName.replace('-', ' ')} service.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div class="grid gap-3">
-                        {#each Array.isArray(endpoints) ? endpoints : [] as endpoint}
-                          <div class="flex items-center justify-between p-3 bg-gray-50">
-                            <div class="flex-1">
-                              <code class="text-sm font-mono">{endpoint.path} </code>
-
-                              {#if endpoint.description}
-                                <p class="text-xs text-gray-600">{endpoint.description}</p>
-                              {/if}
-                            </div>
-                            <div class="flex">
-                              <a
-                                href={endpoint.path}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
-                              >
-                                🚀 Visit
-                              </a>
-                              <button
-                                onclick={() => navigator.clipboard.writeText(endpoint.path)}
-                                class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 text-xs"
-                              >
-                                📋
-                              </button>
-                            </div>
-                          </div>
-                        {/each}
-                      </div>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <button class="px-3 py-1 bg-gray-100 rounded">Close</button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardContent>
-            </Card>
-          {/each}
-        </div>
-      </div>
-    {/if}
-
-    <!-- SSR Flexbox, Layout -->
-
-    {#if layoutMode === 'flexbox' && !showClustered}
-      <div class="ssr-flexbox-container flex flex-wrap">
-        {#each filteredRoutes as route, index}
-          {@const categoryInfo = routeCategories[route.category]}
-          {@const cls = getCategoryClasses(categoryInfo?.color)}
-          {@const columnClass =
-            index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
-          <button
-            type="button"
-            class="h-full p-0 border-none bg-transparent text-left {columnClass}"
-            onclick={() => openRouteModal(route)}
-          >
-            <Card class="{cls.hoverBorder300} group">
-              <CardContent class="p-4">
-                <!-- Route, Header -->
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center flex-1">
-                    <span class="text-2xl mr-3">{categoryInfo.icon} </span>
-                    <div class="min-w-0">
-                      <h3 class="font-semibold text-lg truncate group-hover:{cls.text700}">
-                        {route.name}
-                      </h3>
-                      <p class="text-xs text-gray-500 uppercase tracking-wide">
-                        {categoryInfo.name}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Route, Path -->
-                <div class="mb-3">
-                  <code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700">
-                    {route.path}
-                  </code>
-                </div>
-
-                <!-- Route, Description -->
-
-                {#if route.description}
-                  <p class="text-sm text-gray-600 mb-3">
-                    {route.description}
-                  </p>
-                {/if}
-
-                <!-- Route, Tags -->
-                <div class="flex flex-wrap gap-2">
-                  <span
-                    class={'px-2 py-1 rounded-full text-xs ' +
-                      cls.bg100 +
-                      ' ' +
-                      cls.text800 +
-                      ' ' +
-                      cls.border200}
-                  >
-                    {categoryInfo.name}
-                  </span>
-                  <span
-                    class={'px-2 py-1 rounded-full text-xs ' +
-                      (route.type === 'configured'
-                        ? 'bg-green-100 text-green-800 border border-green-200'
-                        : 'bg-purple-100 text-purple-800 border border-purple-200')}
-                  >
-                    {route.type}
-                  </span>
-                </div>
-
-                <!-- Route, Actions -->
-                <div class="flex">
-                  <a
-                    href={route.path}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onclick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    class={'flex-1 px-3 py-2 ' +
-                      cls.bg500 +
-                      ' text-white rounded ' +
-                      cls.hover500 +
-                      ' text-sm font-medium transition-colors flex items-center justify-center gap-1'}
-                  >
-                    🚀 Visit
-                  </a>
-                  <button
-                    onclick={(e) => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(route.path);
-                    }}
-                    class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm transition-colors"
-                  >
-                    📋
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          </button>
-        {/each}
-      </div>
-    {:else if !showClustered}
-      <!-- Standard, Grid, Layout -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each filteredRoutes as route}
-          {@const categoryInfo = routeCategories[route.category]}
-          {@const cls = getCategoryClasses(categoryInfo?.color)}
-          <button
-            type="button"
-            class="w-full h-full p-0 border-none bg-transparent text-left"
-            onclick={() => openRouteModal(route)}
-          >
-            <Card class={'hover:' + cls.border300 + ' group'}>
-              <CardContent class="p-4">
-                <!-- Route, Header -->
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center flex-1">
-                    <span class="text-2xl mr-3">{categoryInfo.icon} </span>
-                    <div class="min-w-0">
-                      <h3 class="font-semibold text-lg truncate group-hover:{cls.text700}">
-                        {route.name}
-                      </h3>
-                      <p class="text-xs text-gray-500 uppercase tracking-wide">
-                        {categoryInfo.name}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Route, Path -->
-                <div class="mb-3">
-                  <code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700">
-                    {route.path}
-                  </code>
-                </div>
-
-                <!-- Route, Description -->
-
-                {#if route.description}
-                  <p class="text-sm text-gray-600 mb-3">
-                    {route.description}
-                  </p>
-                {/if}
-
-                <!-- Route, Tags -->
-                <div class="flex flex-wrap gap-2">
-                  <span
-                    class={'px-2 py-1 rounded-full text-xs ' +
-                      cls.bg100 +
-                      ' ' +
-                      cls.text800 +
-                      ' ' +
-                      cls.border200}
-                  >
-                    {categoryInfo.name}
-                  </span>
-                  <span
-                    class={'px-2 py-1 rounded-full text-xs ' +
-                      (route.type === 'configured'
-                        ? 'bg-green-100 text-green-800 border border-green-200'
-                        : 'bg-purple-100 text-purple-800 border border-purple-200')}
-                  >
-                    {route.type}
-                  </span>
-                </div>
-
-                <!-- Route, Actions -->
-                <div class="flex">
-                  <a
-                    href={route.path}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onclick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    class={'flex-1 px-3 py-2 ' +
-                      cls.bg500 +
-                      ' text-white rounded ' +
-                      cls.hover500 +
-                      ' text-sm font-medium transition-colors flex items-center justify-center gap-1'}
-                  >
-                    🚀 Visit
-                  </a>
-                  <button
-                    onclick={(e) => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(route.path);
-                    }}
-                    class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm transition-colors"
-                  >
-                    📋
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          </button>
-        {/each}
-      </div>
-    {/if}
+        </article>
+      {/each}
+    </section>
 
     {#if filteredRoutes.length === 0}
-      <div class="text-center py-12 bg-white rounded-lg border-2">
-        <div class="text-6xl">🔍</div>
-        <h3 class="text-xl font-bold text-gray-800">No Routes Found</h3>
-        <p class="text-gray-500">
-          {#if searchTerm}
-            No routes found matching: "<strong>{searchTerm} </strong>"
-          {:else}
-            No routes found in the selected category
-          {/if}
-        </p>
-        <button
-          onclick={() => {
-            searchTerm = '';
-            selectedCategory = 'all';
-          }}
-          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          🔄 Clear Filters
-        </button>
-      </div>
+      <section class="p-8 text-center bg-gray-800/50 border border-gray-700 rounded-lg">
+        <div class="text-4xl mb-4">🔍</div>
+        <h3 class="text-xl font-semibold text-white mb-2">No Routes Found</h3>
+        <p class="text-gray-400">Try adjusting your search or filter criteria.</p>
+      </section>
     {/if}
 
-    <!-- Gemma Architecture Integration, Info -->
-    <div
-      class="mt-12 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg"
-    >
-      <h3 class="text-xl font-bold mb-4 flex items-center">
-        🔬 Gemma Embeddings Vector Architecture Integration
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-3">
-        <div class="bg-white/50 rounded-lg">
-          <h4 class="font-bold text-purple-800">🧠 AI/ML Routes</h4>
-          <p class="text-sm">
-            Routes leveraging Gemma embeddings for legal document processing, vector search, and RAG
-            operations.
-          </p>
-          <div class="mt-2">
-            <span class="text-2xl font-bold text-purple-900"
-              >{routeStats.byCategory['ai-ml'] || 0}
-            </span>
-            <span class="text-sm text-purple-600">routes</span>
-          </div>
+    <!-- Footer -->
+    <footer class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 md:p-6">
+      <h2 class="text-xl font-semibold text-amber-300 mb-4">System Information</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h3 class="font-semibold text-white mb-2">Route Discovery</h3>
+          <ul class="text-sm text-gray-400 space-y-1">
+            <li>• Configured: {allRoutes.length}</li>
+            <li>• Discovered: {discoveredRoutes.length}</li>
+            <li>• Available: {allAvailableRoutes.filter(r => r.available).length}</li>
+          </ul>
         </div>
-        <div class="bg-white/50 rounded-lg">
-          <h4 class="font-bold text-cyan-800">🔍 Vector Search</h4>
-          <p class="text-sm">
-            pgvector-powered similarity search endpoints integrated with Gemma embeddings for legal
-            discovery.
-          </p>
-          <div class="mt-2">
-            <span class="text-2xl font-bold text-cyan-900"
-              >{routeStats.byCategory['vector-search'] || 0}
-            </span>
-            <span class="text-sm text-cyan-600">routes</span>
-          </div>
+        <div>
+          <h3 class="font-semibold text-white mb-2">Navigation</h3>
+          <ul class="text-sm text-gray-400 space-y-1">
+            <li>• Current: <code class="text-amber-300">{page.url.pathname}</code></li>
+          </ul>
         </div>
-        <div class="bg-white/50 rounded-lg">
-          <h4 class="font-bold text-gray-800">📊 Monitoring & Infrastructure</h4>
-          <p class="text-sm">
-            Routes for system health, metrics, and infrastructure management.
-          </p>
-          <div class="mt-2">
-            <span class="text-2xl font-bold text-gray-900"
-              >{routeStats.byCategory['infrastructure'] || 0}
-            </span>
-            <span class="text-sm text-gray-600">routes</span>
+        <div>
+          <h3 class="font-semibold text-white mb-2">Quick Actions</h3>
+          <div class="space-y-2">
+            <button onclick={() => goto('/')} class="w-full px-4 py-2 bg-blue-600/80 text-white rounded hover:bg-blue-700">🏠 Go Home</button>
+            <button onclick={() => goto('/command/routes')} class="w-full px-4 py-2 bg-amber-600/80 text-white rounded hover:bg-amber-700">📟 NES Command Center</button>
+            <button onclick={() => goto('/dev/dynamic-routing-test')} class="w-full px-4 py-2 bg-green-600/80 text-white rounded hover:bg-green-700">🛣️ Routing Test</button>
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    </footer>
+  </div>
 </div>
 
-<Dialog open={showModal} onOpenChange={(v) => (showModal = v)}>
-  <DialogContent class="sm:max-w-[425px]">
-    <DialogHeader>
-      <DialogTitle>{selectedRoute?.name}</DialogTitle>
-      <DialogDescription>Details for the route: {selectedRoute?.path}</DialogDescription>
-    </DialogHeader>
-    <div class="grid gap-4 py-4">
-      <div class="grid grid-cols-4 items-center gap-4">
-        <span class="text-right font-medium">Path:</span>
-        <code class="col-span-3 bg-gray-100 p-2 rounded">{selectedRoute?.path}</code>
-      </div>
-      <div class="grid grid-cols-4 items-center gap-4">
-        <span class="text-right font-medium">Type:</span>
-        <span class="col-span-3">{selectedRoute?.type}</span>
-      </div>
-      {#if selectedRoute?.description}
-        <div class="grid grid-cols-4 items-center gap-4">
-          <span class="text-right font-medium">Description:</span>
-          <span class="col-span-3">{selectedRoute?.description}</span>
+<!-- ACE System Dialog (HTML5 Native) -->
+<dialog bind:this={aceDialogRef} class="bg-gray-900 border border-amber-500/50 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto backdrop:bg-black/70">
+  <h2 class="text-xl font-bold text-amber-300 mb-4">⚡ ACE System Control Center</h2>
+  <p class="text-gray-400 mb-4">Agentic Context Engineering pipeline for web crawl, VLM processing, graph analysis, vector indexing, and LLM output.</p>
+
+  <div class="space-y-4">
+    {#each [
+      { key: 'webCrawl', label: 'Web Crawl', icon: '🌐', desc: 'Crawl routes and collect data' },
+      { key: 'vlmProcessing', label: 'VLM Processing', icon: '🖼️', desc: 'Process images with Vision Language Model' },
+      { key: 'graphAnalysis', label: 'Graph Analysis', icon: '🕸️', desc: 'Build knowledge graph from data' },
+      { key: 'vectorIndexing', label: 'Vector Indexing', icon: '🎯', desc: 'Index embeddings in Qdrant' },
+      { key: 'llmOutput', label: 'LLM Output', icon: '🤖', desc: 'Generate insights with ACE system' }
+    ] as stage}
+      {@const state = aceSystemState[stage.key as keyof typeof aceSystemState]}
+      <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">{stage.icon}</span>
+            <div>
+              <div class="font-semibold text-white">{stage.label}</div>
+              <div class="text-sm text-gray-400">{stage.desc}</div>
+            </div>
+          </div>
+          <div class="text-right">
+            {#if state.status === 'complete'}
+              <span class="text-green-400 font-semibold">✓ Complete</span>
+            {:else if state.status === 'running'}
+              <span class="text-blue-400">{state.progress}%</span>
+            {:else}
+              <span class="text-gray-500">Idle</span>
+            {/if}
+          </div>
         </div>
-      {/if}
-      <div class="grid grid-cols-4 items-center gap-4">
-        <span class="text-right font-medium">Category:</span>
-        <span class="col-span-3"
-          >{routeCategories[selectedRoute?.category || 'other']?.name}</span
-        >
       </div>
-    </div>
-    <DialogFooter>
-      <DialogClose asChild>
-        <button class="px-4 py-2 bg-gray-100 rounded">Close</button>
-      </DialogClose>
-      <a
-        href={selectedRoute?.path}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-      >
-        Visit Route
-      </a>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
+    {/each}
+
+    <button onclick={runACESystemFlow} disabled={isACEProcessing} class="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold disabled:opacity-50 flex items-center justify-center gap-2 text-white">
+      {#if isACEProcessing}
+        <span class="animate-spin">⏳</span> Processing...
+      {:else}
+        ▶️ Run Complete Pipeline
+      {/if}
+    </button>
+  </div>
+
+  <button onclick={() => aceDialogRef?.close()} class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white">✕</button>
+</dialog>
+
+<!-- Auth Dialog (HTML5 Native) -->
+<dialog bind:this={authDialogRef} class="bg-gray-900 border border-amber-500/50 rounded-lg p-6 max-w-md w-full backdrop:bg-black/70">
+  <h2 class="text-xl font-bold text-amber-300 mb-4">🔑 Login</h2>
+  <p class="text-gray-400 mb-4">Authentication coming soon...</p>
+  <button onclick={() => authDialogRef?.close()} class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded">Close</button>
+  <button onclick={() => authDialogRef?.close()} class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white">✕</button>
+</dialog>
 
 <style>
-  /* Flexbox layout for SSR optimization */
-  .ssr-flexbox-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem; /* Adjust gap as needed */
-  }
-
-  .flex-basis-31 {
-    flex-basis: calc(31% - 1rem); /* Roughly 1/3 with gap */
-  }
-  .flex-basis-33 {
-    flex-basis: calc(33% - 1rem); /* Roughly 1/3 with gap */
-  }
-  .flex-basis-35 {
-    flex-basis: calc(35% - 1rem); /* Roughly 1/3 with gap */
-  }
-
-  @media (max-width: 768px) {
-    .flex-basis-31,
-    .flex-basis-33,
-    .flex-basis-35 {
-      flex-basis: 100%; /* Full width on small screens */
-    }
-  }
-
-  /* General styling for route cards */
-  .route-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .route-card:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-
-  .route-card-content {
-    padding: 1rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .route-card-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.75rem;
-  }
-
-  .route-card-icon {
-    font-size: 1.5rem;
-    margin-right: 0.75rem;
-  }
-
-  .route-card-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    line-height: 1.25;
-    margin-bottom: 0.25rem;
-  }
-
-  .route-card-category {
-    font-size: 0.75rem;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .route-card-path {
-    background-color: #f1f5f9;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-family: monospace;
-    font-size: 0.875rem;
-    color: #334155;
-    margin-bottom: 0.75rem;
-    word-break: break-all;
-  }
-
-  .route-card-description {
-    font-size: 0.875rem;
-    color: #475569;
-    margin-bottom: 1rem;
-    flex-grow: 1;
-  }
-
-  .route-card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .route-card-tag {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border: 1px solid;
-  }
-
-  .route-card-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: auto; /* Pushes actions to the bottom */
-  }
-
-  .route-card-action-button {
-    flex: 1;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-align: center;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .route-card-action-button.visit {
-    background-color: #3b82f6;
-    color: white;
-  }
-
-  .route-card-action-button.visit:hover {
-    background-color: #2563eb;
-  }
-
-  .route-card-action-button.copy {
-    border: 1px solid #cbd5e1;
-    background-color: white;
-    color: #475569;
-  }
-
-  .route-card-action-button.copy:hover {
-    background-color: #f1f5f9;
-  }
-
-  /* API Service Cluster Specific Styles */
-  .api-service-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .service-cluster {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    transition: all 0.3s ease;
-    min-height: 340px;
-    max-height: 500px;
-  }
-
-  .service-cluster .card-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .endpoint-list {
-    margin-bottom: 1rem;
-    flex-grow: 1;
-    overflow-y: auto;
-    max-height: 200px; /* Limit height for scrollable list */
-  }
-
-  .endpoint-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px dashed #e2e8f0;
-  }
-
-  .endpoint-item:last-child {
-    border-bottom: none;
-  }
-
-  .endpoint-code {
-    font-family: monospace;
-    font-size: 0.875rem;
-    color: #334155;
-    background-color: #f8fafc;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    word-break: break-all;
-    flex-grow: 1;
-    margin-right: 0.5rem;
-  }
-
-  .action-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: auto;
-  }
-
-  /* Responsive adjustments for API service grid */
-  @media (min-width: 768px) {
-    .api-service-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .api-service-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-  }
-
-  /* Service cluster enhancements for API display */
-  .service-cluster {
-    transition: all 0.3s ease;
-    min-height: 340px;
-    max-height: 500px;
-    /* Improved visual hierarchy and spacing */
-  }
-
-  /* small input styling */
-  input[type='text'] {
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-  }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .animate-spin { animation: spin 1s linear infinite; }
+  dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+  dialog { color: white; }
 </style>
