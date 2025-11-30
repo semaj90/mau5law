@@ -3,6 +3,8 @@
 - [x] 1. Set up project structure and core interfaces
 
 
+
+
   - Create directory structure: `backend/services/retrieval/` with subdirectories for each component
   - Define base interfaces and data models in `backend/services/retrieval/models.py`
   - Set up configuration management for API keys (Google, Wikipedia, etc.)
