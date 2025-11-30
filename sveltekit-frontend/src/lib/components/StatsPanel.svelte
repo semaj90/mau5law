@@ -1,6 +1,5 @@
 <script lang="ts">
-
-  export let stats: {
+  type StatsType = {
     total: number;
     active: number;
     highRisk: number;
@@ -18,28 +17,30 @@
     };
   };
 
-  let showDetails = false;
+  let { stats }: { stats: StatsType } = $props();
+
+  let showDetails = $state(false);
 
   // Calculate percentages
-  $: total = stats.total;
-  $: activePercent = total > 0 ? Math.round((stats.active / total) * 100) : 0;
-  $: highRiskPercent = total > 0 ? Math.round((stats.highRisk / total) * 100) : 0;
-  $: aiGeneratedPercent = total > 0 ? Math.round((stats.aiGenerated / total) * 100) : 0;
+  let total = $derived(stats.total);
+  let activePercent = $derived(total > 0 ? Math.round((stats.active / total) * 100) : 0);
+  let highRiskPercent = $derived(total > 0 ? Math.round((stats.highRisk / total) * 100) : 0);
+  let aiGeneratedPercent = $derived(total > 0 ? Math.round((stats.aiGenerated / total) * 100) : 0);
 
   // Priority distribution
-  $: priorityData = [
+  let priorityData = $derived([
     { label: 'Critical', count: stats.byPriority.critical, color: '#ff4444' },
     { label: 'High', count: stats.byPriority.high, color: '#ff8844' },
     { label: 'Medium', count: stats.byPriority.medium, color: '#ffdd44' },
     { label: 'Low', count: stats.byPriority.low, color: '#44ff88' }
-  ];
+  ]);
 
   // Status distribution
-  $: statusData = [
+  let statusData = $derived([
     { label: 'Active', count: stats.byStatus.active, color: '#00d4ff' },
     { label: 'Inactive', count: stats.byStatus.inactive, color: '#888888' },
     { label: 'Archived', count: stats.byStatus.archived, color: '#444444' }
-  ];
+  ]);
 </script>
 
 <div class="stats-panel">
@@ -47,7 +48,7 @@
     <h3>Persons of Interest Statistics</h3>
     <button
       class="toggle-details"
-      on:click={() => showDetails = !showDetails}
+      onclick={() => showDetails = !showDetails}
     >
       {showDetails ? 'Hide Details' : 'Show Details'}
     </button>

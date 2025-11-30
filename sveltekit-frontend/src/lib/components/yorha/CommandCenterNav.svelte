@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { goto  } from '$app/navigation';
-  import type { page  } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   const navigation = [
     {
@@ -63,7 +63,7 @@
     goto(path);
   }
 
-  let currentPath = $derived(() => $page.url.pathname);
+  let currentPath = $derived.by(() => $page?.url?.pathname || '');
 </script>
 
 <div class="p-6">
