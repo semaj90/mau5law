@@ -1,9 +1,9 @@
-import type { db  } from '$lib/server/db'; // Consolidated import for db
-import type { users, sessions  } from '$lib/server/db/schema'; // Import users and sessions from schema
+import { db } from '$lib/server/db';
+import { users, sessions } from '$lib/server/db/schema';
 import bcrypt from 'bcryptjs';
 import type { Cookies } from '@sveltejs/kit';
-import type { Lucia  } from 'lucia';
-import type { DrizzlePostgreSQLAdapter  } from '@lucia-auth/adapter-drizzle';
+import { Lucia } from 'lucia';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 
 // Define the expected return type for createUserSession
 export interface CreateUserSessionResult {
@@ -25,9 +25,9 @@ export const lucia = new Lucia(adapter, {
     return {
       email: attributes.email,
       firstName: attributes.firstName, // Changed from first_name
-      lastName: attributes.lastName,   // Changed from last_name
+      lastName: attributes.lastName, // Changed from last_name
       role: attributes.role,
-      isActive: attributes.isActive,   // Added based on compiler error
+      isActive: attributes.isActive, // Added based on compiler error
       avatarUrl: attributes.avatarUrl, // Added based on compiler error
     };
   },
@@ -43,7 +43,7 @@ declare module 'lucia' {
 interface DatabaseUserAttributes {
   email: string;
   firstName: string; // Changed from first_name
-  lastName: string;  // Changed from last_name
+  lastName: string; // Changed from last_name
   role: string;
   isActive: boolean; // Added based on compiler error
   avatarUrl: string; // Added based on compiler error
@@ -126,15 +126,6 @@ export async function invalidateSession(sessionId: string): Promise<void> {
 export async function invalidateUserSessions(userId: string): Promise<void> {
   console.log(`[lucia] Invalidating all sessions for user: ${userId}`);
   await lucia.invalidateUserSessions(userId);
-}
-
-export function deleteSessionCookie(cookies: Cookies): void {
-  console.log(`[lucia] Deleting session cookie`);
-  const blankSessionCookie = lucia.createBlankSessionCookie();
-  cookies.set(blankSessionCookie.name, blankSessionCookie.value, blankSessionCookie.attributes);
-}
-
-export const clearSessionCookie = deleteSessionCookie;
 }
 
 export function deleteSessionCookie(cookies: Cookies): void {
