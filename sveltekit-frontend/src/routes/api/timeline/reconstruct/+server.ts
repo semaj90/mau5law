@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';;
-import type { getOllamaEndpoint  } from '$utils /ollama';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { json } from '@sveltejs/kit';
 
 export async function POST({ request }) {
   try {
@@ -9,7 +9,7 @@ export async function POST({ request }) {
       return json({ error: 'evidenceTexts array is required' }, { status: 400 });
     }
 
-    const base = await getOllamaEndpoint();
+    const base = getOllamaEndpoint();
 
     const evidenceContext = evidenceTexts.map((text: string, index: number) =>
       `EVIDENCE ${index + 1}: ${text}`

@@ -1,72 +1,292 @@
 /**
- * Phase 74: AST Analysis API Endpoint
- * POST /api/ast/analyze
+ * API Endpoint: GET /api/ast/analyze
+ * Analyzes route files using ts-morph to detect errors and deprecated patterns
  */
-
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { svelteCheckAnalyzer } from '$lib/ast/svelte-check-analyzer';
-import { suggestionEngine } from '$lib/ast/suggestion-engine';
+import { json } from '@sveltejs/kit';
+import { Project, SyntaxKind } from 'ts-morph';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 
-export interface AnalyzeRequest {
-  code: string;
-  language: 'typescript' | 'javascript' | 'svelte';
-  filename?: string;
-  includesuggestions?: boolean;
-}
+type ASTNode = {
+  id: string;
+  type: string;
+  name: string;
+  file: string;
+  line: number;
+  column: number;
+  children: string[];
+  imports: string[];
+  exports: string[];
+  errors: string[];
+  deprecated: boolean;
+};
 
-export interface AnalyzeResponse {
-  success: boolean;
-  analysis?: {
-    errors: any[];
-    functions: any[];
-    variables: any[];
-    types: any[];
-    imports: string[];
-    exports: string[];
-    complexity: number;
-  };
-  suggestions?: any[];
-  error?: string;
-}
+// Deprecated packages to flag
+const DEPRECATED_PACKAGES = [
+  'shadcn-svelte',
+  '@melt-ui/svelte',
+  'melt-ui'
+];
 
-export const POST: RequestHandler = async ({ request }) => {
+// Deprecated Svelte patterns
+const DEPRECATED_PATTERNS = {
+  'on:': 'Use onclick={} instead of on:click={}',
+  'bind:this': 'Consider using $state() runes',
+  'export let': 'Use let { prop } = $props() instead',
+  '$:': 'Use $derived() or $effect() instead of $: reactive statements'
+};
+
+export const GET: RequestHandler = async ({ url }) => {
+  const routePath = url.searchParams.get('route');
+
+  if (!routePath) {
+    return json({ error: 'Route path required' }, { status: 400 });
+  }
+
   try {
-    const body: AnalyzeRequest = await request.json();
-    const { code, language, filename, includesuggestions = true } = body;
+    const nodes: ASTNode[] = [];
+    const basePath = join(process.cwd(), 'src', 'routes');
+    const routeDir = join(basePath, routePath);
 
-    if (!code) {
-      return json({ success: false, error: 'Code is required' }, { status: 400 });
-    }
+    // Files to analyze
+    const filesToCheck = [
+      '+page.svelte',
+      '+page.ts',
+      '+page.server.ts',
+      '+layout.svelte',
+      '+layout.ts',
+      '+layout.server.ts',
+      '+server.ts'
+    ];
 
-    // Determine filename based on language
-    const file = filename || (language === 'svelte' ? 'Component.svelte' : 'temp.ts');
+    const project = new Project({
+      compilerOptions: {
+        target: 99, // ESNext
+        module: 99, // ESNext
+        allowJs: true
+      }
+    });
 
-    // Analyze code
-    const analysis = language === 'svelte'
-      ? svelteCheckAnalyzer.analyzeSvelte(code, file)
-      : svelteCheckAnalyzer.analyze(code, file);
+    for (const fileName of filesToCheck) {
+      const filePath = join(routeDir, fileName);
 
-    // Get suggestions for errors if requested
-    let suggestions: any[] = [];
-    if (includesuggestions && analysis.errors.length > 0) {
-      const suggestionPromises = analysis.errors.slice(0, 5).map(error =>
-        suggestionEngine.getSuggestions(error, code)
+      if (!existsSync(filePath)) continue;
+
+      const fileContent = readFileSync(filePath, 'utf-8');
+      const isSvelte = fileName.endsWith('.svelte');
+
+      // Extract script content from Svelte files
+      let scriptContent = fileContent;
+      if (isSvelte) {
+        const scriptMatch = fileContent.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+        if (scriptMatch) {
+          scriptContent = scriptMatch[1];
+        } else {
+          continue; // No script tag
+        }
+      }
+
+      // Create source file
+      const sourceFile = project.createSourceFile(
+        `temp-${fileName}.ts`,
+        scriptContent,
+        { overwrite: true }
       );
-      const allSuggestions = await Promise.all(suggestionPromises);
-      suggestions = allSuggestions.flat();
+
+      // Analyze imports
+      sourceFile.getImportDeclarations().forEach((importDecl, idx) => {
+        const moduleSpecifier = importDecl.getModuleSpecifierValue();
+        const importedNames = importDecl.getNamedImports().map(n => n.getName());
+        const errors: string[] = [];
+        let deprecated = false;
+
+        // Check for deprecated packages
+        if (DEPRECATED_PACKAGES.some(pkg => moduleSpecifier.includes(pkg))) {
+          errors.push(`Package "${moduleSpecifier}" is deprecated. Use bits-ui v2 instead.`);
+          deprecated = true;
+        }
+
+        nodes.push({
+          id: `import-${nodes.length}`,
+          type: 'import',
+          name: moduleSpecifier,
+          file: `${routePath}/${fileName}`,
+          line: importDecl.getStartLineNumber(),
+          column: importDecl.getStart(),
+          children: [],
+          imports: [moduleSpecifier],
+          exports: [],
+          errors,
+          deprecated
+        });
+      });
+
+      // Analyze functions
+      sourceFile.getFunctions().forEach((func) => {
+        const errors: string[] = [];
+        const funcName = func.getName() || 'anonymous';
+
+        nodes.push({
+          id: `function-${nodes.length}`,
+          type: 'function',
+          name: funcName,
+          file: `${routePath}/${fileName}`,
+          line: func.getStartLineNumber(),
+          column: func.getStart(),
+          children: [],
+          imports: [],
+          exports: func.isExported() ? [funcName] : [],
+          errors,
+          deprecated: false
+        });
+      });
+
+      // Analyze variables
+      sourceFile.getVariableDeclarations().forEach((varDecl) => {
+        const varName = varDecl.getName();
+        const errors: string[] = [];
+        let deprecated = false;
+
+        // Check for old Svelte patterns
+        const parent = varDecl.getParent()?.getParent();
+        if (parent && parent.getText().includes('export let')) {
+          errors.push('Using "export let" - migrate to let { prop } = $props()');
+          deprecated = true;
+        }
+
+        nodes.push({
+          id: `variable-${nodes.length}`,
+          type: 'variable',
+          name: varName,
+          file: `${routePath}/${fileName}`,
+          line: varDecl.getStartLineNumber(),
+          column: varDecl.getStart(),
+          children: [],
+          imports: [],
+          exports: [],
+          errors,
+          deprecated
+        });
+      });
+
+      // Check for deprecated patterns in Svelte files
+      if (isSvelte) {
+        // Check for on: event handlers
+        const onEventMatches = fileContent.match(/on:\w+=/g);
+        if (onEventMatches) {
+          nodes.push({
+            id: `pattern-on-events-${nodes.length}`,
+            type: 'pattern',
+            name: 'Event Handlers (on:)',
+            file: `${routePath}/${fileName}`,
+            line: 0,
+            column: 0,
+            children: [],
+            imports: [],
+            exports: [],
+            errors: [`Found ${onEventMatches.length} deprecated on: event handlers. Use onclick={}, onchange={}, etc.`],
+            deprecated: true
+          });
+        }
+
+        // Check for $: reactive statements
+        const reactiveMatches = fileContent.match(/\$:\s+/g);
+        if (reactiveMatches) {
+          nodes.push({
+            id: `pattern-reactive-${nodes.length}`,
+            type: 'pattern',
+            name: 'Reactive Statements ($:)',
+            file: `${routePath}/${fileName}`,
+            line: 0,
+            column: 0,
+            children: [],
+            imports: [],
+            exports: [],
+            errors: [`Found ${reactiveMatches.length} $: reactive statements. Migrate to $derived() or $effect()`],
+            deprecated: true
+          });
+        }
+
+        // Check for deprecated UI libraries in template
+        if (fileContent.includes('shadcn') || fileContent.includes('melt-ui')) {
+          nodes.push({
+            id: `pattern-deprecated-ui-${nodes.length}`,
+            type: 'pattern',
+            name: 'Deprecated UI Library',
+            file: `${routePath}/${fileName}`,
+            line: 0,
+            column: 0,
+            children: [],
+            imports: [],
+            exports: [],
+            errors: ['Using deprecated UI library (shadcn-svelte or melt-ui). Migrate to bits-ui v2'],
+            deprecated: true
+          });
+        }
+      }
     }
+
+    // Calculate summary
+    const summary = {
+      totalNodes: nodes.length,
+      errors: nodes.reduce((sum, n) => sum + n.errors.length, 0),
+      deprecated: nodes.filter(n => n.deprecated).length,
+      byType: nodes.reduce((acc, n) => {
+        acc[n.type] = (acc[n.type] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
+    };
 
     return json({
-      success: true,
-      analysis,
-      suggestions,
+      route: routePath,
+      nodes,
+      summary,
+      recommendations: generateRecommendations(nodes)
     });
-  } catch (err) {
-    console.error('AST analysis error:', err);
-    return json(
-      { success: false, error: err instanceof Error ? err.message : 'Analysis failed' },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('AST analysis error:', error);
+    return json({
+      error: 'Failed to analyze route',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 });
   }
 };
+
+function generateRecommendations(nodes: ASTNode[]): string[] {
+  const recommendations: string[] = [];
+
+  const hasDeprecatedImports = nodes.some(n =>
+    n.type === 'import' && n.deprecated
+  );
+  if (hasDeprecatedImports) {
+    recommendations.push('Replace deprecated packages: shadcn-svelte → bits-ui v2, @melt-ui/svelte → bits-ui v2');
+  }
+
+  const hasOnEvents = nodes.some(n =>
+    n.type === 'pattern' && n.name.includes('on:')
+  );
+  if (hasOnEvents) {
+    recommendations.push('Update event handlers: on:click → onclick, on:change → onchange');
+  }
+
+  const hasReactiveStatements = nodes.some(n =>
+    n.type === 'pattern' && n.name.includes('$:')
+  );
+  if (hasReactiveStatements) {
+    recommendations.push('Migrate reactive statements: $: → $derived() for computed values, $effect() for side effects');
+  }
+
+  const hasExportLet = nodes.some(n =>
+    n.errors.some(e => e.includes('export let'))
+  );
+  if (hasExportLet) {
+    recommendations.push('Update props: export let prop → let { prop } = $props()');
+  }
+
+  if (recommendations.length === 0) {
+    recommendations.push('✅ No major issues detected! Code follows Svelte 5 best practices.');
+  }
+
+  return recommendations;
+}

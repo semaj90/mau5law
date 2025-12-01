@@ -166,5 +166,29 @@ export default defineConfig({
     'yorha-screen': 'min-h-screen bg-yorha-beige text-yorha-noir font-mono',
     'yorha-panel': 'bg-yorha-noir border-4 border-yorha-noir text-yorha-beige',
     'yorha-panel-beige': 'bg-yorha-beige-dark border-4 border-yorha-noir text-yorha-noir',
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // POKÉMON WATERCOLOR FRAME (for modals)
+    // ═══════════════════════════════════════════════════════════════════════
+    // Outer frame: watercolor-ish RGB corners like Red / Blue / Green
+    'pkmn-water-frame':
+      'relative max-w-xl w-full mx-auto p-[3px] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] ' +
+      'bg-[radial-gradient(circle_at_0_0,#ff4d4d_0,#ff4d4d_20%,transparent_60%),' +
+      'radial-gradient(circle_at_100%_0,#4dd0ff_0,#4dd0ff_20%,transparent_60%),' +
+      'radial-gradient(circle_at_0_100%,#4dff7a_0,#4dff7a_20%,transparent_60%)]',
+
+    // Inner NES panel inside the watercolor border
+    'pkmn-water-inner':
+      'nes-panel rounded-lg border-4 border-nes-border bg-nes-panel/95 backdrop-blur-sm',
+
+    // Modal header / body styling
+    'pkmn-modal-header':
+      'flex items-center justify-between gap-3 mb-3 pb-2 border-b border-nes-border/60',
+    'pkmn-modal-title': 'screen-nes-title text-xs sm:text-sm',
+    'pkmn-modal-subtitle': 'screen-nes-subtitle',
+    'pkmn-modal-body': 'space-y-2 text-[10px] sm:text-[11px] leading-relaxed',
+    'pkmn-modal-grid':
+      'mt-2 grid grid-cols-[minmax(0,2.2fr)_minmax(0,2.4fr)_minmax(0,2fr)] gap-y-1 gap-x-3 text-[10px]',
+    'pkmn-modal-heading-row': 'font-bold uppercase tracking-[0.12em] text-[9px] opacity-80',
   },
 });
