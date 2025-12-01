@@ -17,7 +17,8 @@
     "dev:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite dev",
     "dev:auto": "node scripts/start-dev-with-ollama.mjs",
     "dev:trtllm": "concurrently -n \"TensorRT-LLM,Go-Service,ONNX-Export,Frontend\" -c \"yellow,green,magenta,cyan\" \"cd .. && pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/start-tensorrt-llm.ps1 -WaitForHealth\" \"cd ../go-trt-service && go run main.go\" \"python scripts/export-gemma3-onnx.py\" \"cross-env NODE_OPTIONS=--max-old-space-size=6144 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true TENSORRT_LLM_ENABLED=true TENSORRT_LLM_URL=http://localhost:8090 vite dev --host 0.0.0.0 --port 5174\"",
-    "dev:quic": "npm run simd:exe:start && concurrently -n \"Ollama,Vite-QUIC\" -c \"magenta,cyan\" \"node scripts/dev-ollama.mjs --quic\"",
+    "dev:quic": "npm run simd:exe:start && concurrently -n \"MinIO-SIMD,Ollama,ACE-Backend,WebASM,Vite-QUIC\" -c \"green,magenta,yellow,blue,cyan\" \"echo MinIO SIMD started\" \"node scripts/dev-ollama.mjs --quic\" \"cd ../backend && uvicorn main:app --reload --port 8000\" \"npm run webasm:watch\" \"vite dev --port 5173 --strictPort --host 127.0.0.1\"",
+    "dev:quic:full": "npm run simd:exe:start && npm run hmr:start && concurrently -n \"MinIO-SIMD,HMR-Bridge,Ollama,ACE-Backend,Vite-QUIC\" -c \"green,blue,magenta,yellow,cyan\" \"echo MinIO SIMD started\" \"cd ../go-services/vite-hmr-bridge && vite-hmr-bridge.exe\" \"node scripts/dev-ollama.mjs --quic\" \"cd ../backend && uvicorn main:app --reload --port 8000\" \"cross-env GO_HMR_BRIDGE=true vite dev --port 5173 --strictPort --host 127.0.0.1\"",
     "dev:quic:with-chat": "concurrently -n \"Ollama-Serve,Ollama-Chat,Vite-QUIC\" -c \"magenta,yellow,cyan\" \"ollama serve\" \"timeout /t 5 && ollama run gemma3-legal:latest\" \"node scripts/start-dev-quic.mjs\"",
     "dev:quic:minimal": "node scripts/start-dev-quic.mjs",
     "dev:quic:health": "npm-run-all -p -r dev:quic health:check:wait",
@@ -43,8 +44,16 @@
     "dev:quic:win": "scripts\\start-quic-enhanced.bat",
     "dev:quic:vite-only": "vite dev --port 5174 --strictPort --host 127.0.0.1",
     "dev:docker": "cross-env HOST=0.0.0.0 PORT=5174 REDIS_URL=redis://redis:6379 DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db OLLAMA_URL=http://ollama:11434 vite dev --host 0.0.0.0 --port 5174",
-    "simd:go:start": "cd ../go-services/ultra-json-simd && go run .",
-    "simd:exe:start": "start ../go-services/ultra-json-simd/ultra-json-simd.exe",
+    "simd:go:start": "cd ../go-services/simd-json-accelerator && set MINIO_SIMD_PORT=8096 && go run minio-simd-service.go",
+    "simd:exe:start": "cmd /c scripts\\start-simd-service.bat",
+    "simd:build": "cd ../go-services/simd-json-accelerator && go build -o minio-simd-service.exe minio-simd-service.go",
+    "hmr:start": "cd ../go-services/vite-hmr-bridge && vite-hmr-bridge.exe",
+    "hmr:build": "cd ../go-services/vite-hmr-bridge && ./build-avx2.bat",
+    "ace:tools": "node ../tools/yorha-agent.mjs tools",
+    "ace:plan": "node ../tools/yorha-agent.mjs plan",
+    "ace:execute": "node ../tools/yorha-agent.mjs execute",
+    "ace:interactive": "node ../tools/yorha-agent.mjs interactive deeds-web-app:main",
+    "ace:session": "node ../tools/yorha-agent.mjs session",
     "simd:test": "node ../scripts/test-simd-integration.mjs",
     "simd:markdown:test": "tsx scripts/test-markdown-parser.ts",
     "simd:build": "node-gyp rebuild",
@@ -117,6 +126,7 @@
     "rtx:upload": "curl -s http://localhost:8093/health",
     "rtx:test-all": "npm run rtx:health && npm run rtx:gateway && npm run rtx:upload",
     "gpu-wasm:test": "node scripts/test-gpu-wasm-integration.mjs",
+    "webasm:watch": "node scripts/watch-gpu-wasm.mjs",
     "gpu:monitor": "node scripts/gpu-monitor.mjs",
     "gpu:accelerated": "cross-env CUDA_VISIBLE_DEVICES=0 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true npm run dev",
     "health:watch": "powershell -NoProfile -Command \"while($true) { Write-Host ('Health Check: ' + (Get-Date).ToString('HH:mm:ss')); try { $r = Invoke-RestMethod -Uri http://localhost:5181/api/health -TimeoutSec 3; Write-Host 'OK' -ForegroundColor Green } catch { Write-Host 'ERROR' -ForegroundColor Red }; Start-Sleep 10 }\"",
@@ -702,3 +712,4 @@
     }
   }
 }
+

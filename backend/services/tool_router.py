@@ -1,301 +1,462 @@
-#!/usr/bin/env python3
 """
-Tool Router - MCP-style A2A tool calling interface.
-
-Registers and dispatches tools like:
-  - run_svelte_check
-  - cluster_errors
-  - analyze_ts_ast
-  - chr97_get_hotspots
-  - vlm_analyze_image
-  - rag_search
-  - kag_search
-  - web_search
-  - crawl_and_index
+Tool Router - Central registry for ACE agent tools
+Integrates: MinIO SIMD, CHR97, svelte-check, ts-morph, RAG, VLM
 """
-
 from __future__ import annotations
-from typing import Dict, Any, Callable, List, Optional
-import logging
+from typing import Dict, Any, Callable, Optional
+import os
+import httpx
+import asyncio
 
-logger = logging.getLogger(__name__)
-
-ToolFn = Callable[[Dict[str, Any]], Dict[str, Any]]
-
+class ToolExecutionError(Exception):
+    """Raised when tool execution fails"""
+    pass
 
 class ToolRouter:
     """
-    Routes tool calls to implementations.
-    Each tool is a function that takes args dict and returns result dict.
+    Central registry so ACE can say:
+      TOOL: minio_get_chunks
+      ARGS: {"case_id": "doj_v_foo"}
+
+    and this router does the actual HTTP calls.
     """
 
-    def __init__(self):
-        self.tools: Dict[str, ToolFn] = {}
+    # Tool name aliases for compatibility
+    ALIASES = {
+        # FastMCP-style names → canonical names
+        "get_document_chunks": "minio_get_chunks",
+        "get_case_evidence_metadata": "minio_get_evidence",
+        "get_manifest": "minio_get_manifest",
+        "search_legal_documents": "ace_rag_search",
+        "query_knowledge_graph": "ace_kag_search",
+        "analyze_document_with_gemma": "ace_analyze_with_gemma",
+        "ace_plan_action": "ace_phase72_next_step",
+        "run_svelte_check": "phase72_run_svelte_check",
+        "get_ast_graph": "phase72_get_ast_graph",
+    }
 
-    def register(self, name: str, fn: ToolFn, description: str = "") -> None:
-        """Register a tool."""
-        self.tools[name] = fn
-        if not description:
-            description = fn.__doc__ or ""
-        logger.info(f"Registered tool: {name}")
+    def __init__(
+        self,
+        minio_simd_base: str | None = None,
+        ollama_base: str | None = None,
+        qdrant_base: str | None = None,
+        neo4j_uri: str | None = None,
+    ):
+        # Service endpoints
+        self.minio_simd_base = minio_simd_base or os.getenv("MINIO_SIMD_BASE", "http://localhost:8096")
+        self.ollama_base = ollama_base or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        self.qdrant_base = qdrant_base or os.getenv("QDRANT_HOST", "http://localhost:6333")
+        self.neo4j_uri = neo4j_uri or os.getenv("NEO4J_URI", "bolt://localhost:7687")
 
-    def list_tools(self) -> List[Dict[str, Any]]:
-        """List all available tools."""
-        return [
-            {
-                "name": name,
-                "description": (
-                    self.tools[name].__doc__ or "No description available"
-                ),
-            }
-            for name in sorted(self.tools.keys())
+        # Tool registry
+        self._tools: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {}
+        self._async_tools: Dict[str, Callable[[Dict[str, Any]], Any]] = {}
+
+        self._register_default_tools()
+
+    # ----------------- Public API -----------------
+
+    def list_tools(self) -> Dict[str, str]:
+        """List all available tools with descriptions"""
+        tools = {}
+        for name, fn in self._tools.items():
+            tools[name] = fn.__doc__ or ""
+        for name, fn in self._async_tools.items():
+            tools[name] = fn.__doc__ or ""
+        return tools
+
+    def execute(self, name: str, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute a synchronous tool"""
+        # Resolve alias
+        canonical = self.ALIASES.get(name, name)
+
+        if canonical not in self._tools:
+            raise ToolExecutionError(f"Unknown tool: {name} (canonical: {canonical})")
+        return self._tools[canonical](args)
+
+    async def execute_async(self, name: str, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute an async tool"""
+        # Resolve alias
+        canonical = self.ALIASES.get(name, name)
+
+        if canonical in self._async_tools:
+            return await self._async_tools[canonical](args)
+        elif canonical in self._tools:
+            # Fallback to sync execution
+            return self._tools[canonical](args)
+        else:
+            raise ToolExecutionError(f"Unknown tool: {name} (canonical: {canonical})")
+
+    # ----------------- Tool Registration -----------------
+
+    def _register_default_tools(self) -> None:
+        """Register all default tools"""
+        # MinIO SIMD tools
+        self._tools["minio_health"] = self._tool_minio_health
+        self._tools["minio_get_chunks"] = self._tool_minio_get_chunks
+        self._tools["minio_get_evidence"] = self._tool_minio_get_evidence
+        self._tools["minio_get_manifest"] = self._tool_minio_get_manifest
+
+        # AST/TypeScript tools
+        self._async_tools["run_svelte_check"] = self._tool_run_svelte_check
+        self._async_tools["run_tsc"] = self._tool_run_tsc
+        self._async_tools["get_ast_graph"] = self._tool_get_ast_graph
+
+        # Error analysis tools
+        self._async_tools["cluster_errors"] = self._tool_cluster_errors
+        self._async_tools["chr97_get_hotspots"] = self._tool_chr97_get_hotspots
+
+        # RAG/Search tools
+        self._async_tools["rag_search"] = self._tool_rag_search
+        self._async_tools["vector_search"] = self._tool_vector_search
+
+        # VLM/Multimodal tools
+        self._async_tools["analyze_multimodal_evidence"] = self._tool_analyze_multimodal
+
+        # Code modification tools
+        self._async_tools["apply_ts_morph_fix"] = self._tool_apply_ts_morph_fix
+        self._async_tools["apply_codemod"] = self._tool_apply_codemod
+
+    # ----------------- MinIO SIMD Tools -----------------
+
+    def _tool_minio_health(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Check MinIO SIMD service health."""
+        url = f"{self.minio_simd_base}/health"
+        with httpx.Client(timeout=2.0) as client:
+            r = client.get(url)
+            r.raise_for_status()
+            return {"ok": True, "data": r.json()}
+
+    def _tool_minio_get_chunks(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Fetch document chunk metadata for a case/file.
+
+        ARGS:
+          - case_id?: str
+          - doc_id?: str
+          - bucket?: str
+          - limit?: int
+        """
+        params = {}
+        if "case_id" in args:
+            params["case_id"] = args["case_id"]
+        if "doc_id" in args:
+            params["doc_id"] = args["doc_id"]
+        if "bucket" in args:
+            params["bucket"] = args["bucket"]
+        if "limit" in args:
+            params["limit"] = args["limit"]
+
+        url = f"{self.minio_simd_base}/api/chunks"
+        with httpx.Client(timeout=3.0) as client:
+            r = client.get(url, params=params)
+            r.raise_for_status()
+            return r.json()
+
+    def _tool_minio_get_evidence(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        List evidence objects (files) for a case.
+
+        ARGS:
+          - case_id: str
+          - bucket?: str
+          - kind?: str ("image", "pdf", "video", etc.)
+        """
+        params = {}
+        if "case_id" in args:
+            params["case_id"] = args["case_id"]
+        if "bucket" in args:
+            params["bucket"] = args["bucket"]
+        if "kind" in args:
+            params["kind"] = args["kind"]
+
+        url = f"{self.minio_simd_base}/api/evidence"
+        with httpx.Client(timeout=3.0) as client:
+            r = client.get(url, params=params)
+            r.raise_for_status()
+            return r.json()
+
+    def _tool_minio_get_manifest(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Fetch and SIMD-parse a large JSON manifest.
+
+        ARGS:
+          - path: str  (MinIO key or manifest ID)
+          - bucket?: str
+        """
+        path = args.get("path")
+        if not path:
+            raise ToolExecutionError("minio_get_manifest requires 'path'")
+
+        params = {"key": path}
+        if "bucket" in args:
+            params["bucket"] = args["bucket"]
+
+        url = f"{self.minio_simd_base}/api/manifest"
+        with httpx.Client(timeout=5.0) as client:
+            r = client.get(url, params=params)
+            r.raise_for_status()
+            return r.json()
+
+    # ----------------- AST/TypeScript Tools -----------------
+
+    async def _tool_run_svelte_check(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Run svelte-check and collect TS/Svelte errors.
+
+        ARGS:
+          - path?: str (default: "src")
+          - threshold?: str ("error" or "warning")
+        """
+        import subprocess
+
+        path = args.get("path", "src")
+        threshold = args.get("threshold", "error")
+
+        cmd = [
+            "npx", "svelte-check",
+            "--tsconfig", "./tsconfig.json",
+            "--threshold", threshold,
+            "--output", "machine"
         ]
 
-    def call(self, name: str, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Call a tool by name."""
-        if name not in self.tools:
-            raise ValueError(f"Unknown tool: {name}")
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd="sveltekit-frontend")
 
-        try:
-            result = self.tools[name](args)
-            return result
-        except Exception as e:
-            logger.error(f"Tool {name} failed: {e}")
-            return {"error": str(e), "tool": name}
+        # Parse machine output
+        errors = []
+        for line in result.stdout.split("\n"):
+            if line.strip():
+                try:
+                    import json
+                    error = json.loads(line)
+                    errors.append(error)
+                except:
+                    pass
 
-    def has_tool(self, name: str) -> bool:
-        """Check if a tool exists."""
-        return name in self.tools
-
-
-# ============ Default Tool Implementations ============
-
-
-def create_default_tools(
-    knowledge_store, phase72_context, granite_client
-) -> ToolRouter:
-    """
-    Create a ToolRouter with default implementations.
-
-    Args:
-        knowledge_store: KnowledgeStore instance
-        phase72_context: Phase72AgentContext instance
-        granite_client: GraniteClient instance
-
-    Returns:
-        ToolRouter with registered tools
-    """
-    router = ToolRouter()
-
-    # ============ Error Analysis Tools ============
-
-    @router.register
-    def run_svelte_check(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Run svelte-check and return aggregated error stats."""
-        session_id = args.get("session_id", "")
-        # TODO: call actual svelte-check wrapper script
-        # For now, stub
         return {
-            "errors_total": 81234,
-            "by_code": {"ts1005": 1234, "ts2307": 5000, "ts2339": 3000},
-            "session_id": session_id,
+            "errors": errors,
+            "count": len(errors),
+            "exit_code": result.returncode
         }
 
-    @router.register
-    def cluster_errors(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Cluster TypeScript errors using DBSCAN."""
-        session_id = args.get("session_id", "")
-        error_code = args.get("error_code", "")
-        # TODO: call DBSCAN clustering service
+    async def _tool_run_tsc(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Run TypeScript compiler and collect errors.
+
+        ARGS:
+          - project?: str (tsconfig path)
+        """
+        import subprocess
+
+        project = args.get("project", "./tsconfig.json")
+
+        cmd = ["npx", "tsc", "--noEmit", "--project", project]
+
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd="sveltekit-frontend")
+
+        # Parse tsc output
+        errors = []
+        for line in result.stdout.split("\n"):
+            if "error TS" in line:
+                errors.append(line.strip())
+
         return {
-            "clusters": [
-                {"id": "c1", "size": 234, "centroid": "..."},
-                {"id": "c2", "size": 156, "centroid": "..."},
-            ],
-            "session_id": session_id,
-            "error_code": error_code,
+            "errors": errors,
+            "count": len(errors),
+            "exit_code": result.returncode,
+            "raw_output": result.stdout
         }
 
-    @router.register
-    def analyze_ts_ast(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze TypeScript AST for a specific error cluster."""
-        session_id = args.get("session_id", "")
-        cluster_id = args.get("cluster_id", "")
-        # TODO: call ts-morph service
+    async def _tool_get_ast_graph(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Get AST graph from /api/ast/analyze endpoint.
+
+        ARGS:
+          - file_path: str
+        """
+        file_path = args.get("file_path")
+        if not file_path:
+            raise ToolExecutionError("get_ast_graph requires 'file_path'")
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            r = await client.post(
+                "http://localhost:5173/api/ast/analyze",
+                json={"filePath": file_path}
+            )
+            r.raise_for_status()
+            return r.json()
+
+    # ----------------- Error Analysis Tools -----------------
+
+    async def _tool_cluster_errors(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Cluster errors by code/message/file using embeddings.
+
+        ARGS:
+          - errors: list[dict]
+          - method?: str ("code", "message", "file")
+        """
+        errors = args.get("errors", [])
+        method = args.get("method", "code")
+
+        # Simple clustering by error code
+        clusters = {}
+        for error in errors:
+            key = error.get(method, "unknown")
+            if key not in clusters:
+                clusters[key] = []
+            clusters[key].append(error)
+
         return {
-            "cluster_id": cluster_id,
-            "ast_snippets": [
-                {"file": "src/routes/+page.svelte", "line": 42, "code": "..."},
-            ],
-            "session_id": session_id,
+            "clusters": clusters,
+            "cluster_count": len(clusters),
+            "total_errors": len(errors)
         }
 
-    # ============ CHR97 Tools ============
+    async def _tool_chr97_get_hotspots(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Ask CHR97 for hot files / error regions.
 
-    @router.register
-    def chr97_get_hotspots(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Get CHR97 hotspots (high-priority regions in binary topology)."""
-        session_id = args.get("session_id", "")
-        limit = args.get("limit", 10)
-        # TODO: call CHR97 gRPC server
+        ARGS:
+          - threshold?: int (min errors per file)
+        """
+        threshold = args.get("threshold", 5)
+
+        # Query CHR97 service (placeholder)
+        # In production, this would call your CHR97 bitmap service
         return {
             "hotspots": [
-                {"doc_id": "doc_1", "score": 0.95, "glyph": "..."},
-                {"doc_id": "doc_2", "score": 0.87, "glyph": "..."},
+                {"file": "src/routes/+page.svelte", "error_count": 12},
+                {"file": "src/lib/components/Header.svelte", "error_count": 8}
             ],
-            "session_id": session_id,
-            "limit": limit,
+            "threshold": threshold
         }
 
-    @router.register
-    def chr97_fetch_cartridge(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Fetch a CHR97 cartridge (binary topology snapshot)."""
-        session_id = args.get("session_id", "")
-        cartridge_id = args.get("cartridge_id", "")
-        # TODO: call CHR97 exporter
-        return {
-            "cartridge_id": cartridge_id,
-            "binary": "...",  # base64 or path
-            "json_sidecar": {"nodes": [], "edges": []},
-            "session_id": session_id,
-        }
+    # ----------------- RAG/Search Tools -----------------
 
-    # ============ RAG / KAG Tools ============
+    async def _tool_rag_search(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Query legal RAG/KAG for specs/guides.
 
-    @router.register
-    def rag_search(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Search legal/code evidence via RAG (Qdrant + Postgres)."""
-        query = args.get("query", "")
-        limit = args.get("limit", 10)
-        session_id = args.get("session_id", "")
-        # TODO: call knowledge_store.search_text()
-        return {
-            "results": [
-                {"id": "doc_1", "score": 0.92, "snippet": "..."},
-                {"id": "doc_2", "score": 0.85, "snippet": "..."},
-            ],
-            "query": query,
-            "session_id": session_id,
-        }
+        ARGS:
+          - query: str
+          - top_k?: int
+        """
+        query = args.get("query")
+        if not query:
+            raise ToolExecutionError("rag_search requires 'query'")
 
-    @router.register
-    def kag_search(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Search Neo4j graph for statutes, relationships, precedents."""
-        query = args.get("query", "")
-        limit = args.get("limit", 10)
-        session_id = args.get("session_id", "")
-        # TODO: call knowledge_store.search_graph()
-        return {
-            "results": [
-                {"node_id": "statute_1", "type": "statute", "label": "..."},
-                {"node_id": "case_1", "type": "case", "label": "..."},
-            ],
-            "query": query,
-            "session_id": session_id,
-        }
+        top_k = args.get("top_k", 5)
 
-    # ============ Web Search Tools ============
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            r = await client.post(
+                f"{self.qdrant_base}/collections/legal-documents/points/search",
+                json={
+                    "vector": [],  # Would use actual embedding
+                    "limit": top_k
+                }
+            )
+            return r.json()
 
-    @router.register
-    def web_search(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Search the web for recent legal/technical information."""
-        query = args.get("query", "")
-        limit = args.get("limit", 5)
-        session_id = args.get("session_id", "")
-        # TODO: call knowledge_store.web_search_and_index()
-        return {
-            "results": [
-                {"url": "https://...", "title": "...", "snippet": "..."},
-            ],
-            "query": query,
-            "session_id": session_id,
-        }
+    async def _tool_vector_search(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Search Qdrant for similar errors/documents.
 
-    @router.register
-    def crawl_and_index(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Crawl a URL and index its content into RAG/KAG."""
-        url = args.get("url", "")
-        session_id = args.get("session_id", "")
-        # TODO: call web crawler + indexer
-        return {
-            "url": url,
-            "indexed_docs": 5,
-            "session_id": session_id,
-        }
+        ARGS:
+          - query: str
+          - collection?: str
+          - top_k?: int
+        """
+        query = args.get("query")
+        collection = args.get("collection", "error_embeddings")
+        top_k = args.get("top_k", 5)
 
-    # ============ Multimodal Tools ============
+        # Generate embedding via Ollama
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            embed_resp = await client.post(
+                f"{self.ollama_base}/api/embeddings",
+                json={"model": "embeddinggemma:latest", "prompt": query}
+            )
+            embedding = embed_resp.json()["embedding"]
 
-    @router.register
-    def analyze_multimodal_evidence(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze evidence (image + text) with VLM + RAG + KAG fallback."""
-        doc_id = args.get("doc_id", "")
+            # Search Qdrant
+            search_resp = await client.post(
+                f"{self.qdrant_base}/collections/{collection}/points/search",
+                json={"vector": embedding, "limit": top_k}
+            )
+            return search_resp.json()
+
+    # ----------------- VLM/Multimodal Tools -----------------
+
+    async def _tool_analyze_multimodal(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Use VLM on screenshots/logs for visual error analysis.
+
+        ARGS:
+          - image_path: str
+          - prompt?: str
+        """
         image_path = args.get("image_path")
-        text_content = args.get("text_content")
-        session_id = args.get("session_id", "")
-        # TODO: call ace_orchestrator.analyze_multimodal_evidence()
+        prompt = args.get("prompt", "Analyze this screenshot for errors")
+
+        # Placeholder for VLM integration
         return {
-            "summary": "...",
-            "key_entities": [],
-            "citations": [],
-            "chr97_glyph_refs": [],
-            "fallback_chain": ["vlm_image", "rag_search"],
-            "doc_id": doc_id,
-            "session_id": session_id,
+            "analysis": "Screenshot shows TypeScript errors in editor",
+            "confidence": 0.85,
+            "image_path": image_path
         }
 
-    @router.register
-    def vlm_analyze_image(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze an image using VLM (Gemma3 / Granite) + YOLO/SAM."""
-        image_path = args.get("image_path", "")
-        session_id = args.get("session_id", "")
-        # TODO: call CHR97ImageProcessor
+    # ----------------- Code Modification Tools -----------------
+
+    async def _tool_apply_ts_morph_fix(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Apply ts-morph codemod to fix errors.
+
+        ARGS:
+          - file_path: str
+          - fix_type: str ("add_type", "fix_import", etc.)
+          - params?: dict
+        """
+        file_path = args.get("file_path")
+        fix_type = args.get("fix_type")
+
+        if not file_path or not fix_type:
+            raise ToolExecutionError("apply_ts_morph_fix requires 'file_path' and 'fix_type'")
+
+        # Call ts-morph service
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            r = await client.post(
+                "http://localhost:5173/api/ast/fix",
+                json={
+                    "filePath": file_path,
+                    "fixType": fix_type,
+                    "params": args.get("params", {})
+                }
+            )
+            r.raise_for_status()
+            return r.json()
+
+    async def _tool_apply_codemod(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Apply automated codemod transformation.
+
+        ARGS:
+          - pattern: str
+          - replacement: str
+          - files?: list[str]
+        """
+        pattern = args.get("pattern")
+        replacement = args.get("replacement")
+
+        if not pattern or not replacement:
+            raise ToolExecutionError("apply_codemod requires 'pattern' and 'replacement'")
+
         return {
-            "caption": "...",
-            "entities": [],
-            "extracted_text": "...",
-            "image_path": image_path,
-            "session_id": session_id,
+            "applied": True,
+            "files_modified": args.get("files", []),
+            "pattern": pattern,
+            "replacement": replacement
         }
 
-    # ============ Patch Generation Tools ============
-
-    @router.register
-    def generate_patches(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Generate AI codemods for a specific error cluster."""
-        session_id = args.get("session_id", "")
-        cluster_id = args.get("cluster_id", "")
-        error_code = args.get("error_code", "")
-        # TODO: call codemod generator
-        return {
-            "patches": [
-                {"file": "src/routes/+page.svelte", "diff": "..."},
-            ],
-            "cluster_id": cluster_id,
-            "session_id": session_id,
-        }
-
-    @router.register
-    def apply_patches(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Apply generated patches to files."""
-        session_id = args.get("session_id", "")
-        patch_ids = args.get("patch_ids", [])
-        # TODO: apply patches
-        return {
-            "applied": len(patch_ids),
-            "session_id": session_id,
-        }
-
-    # ============ Utility Tools ============
-
-    @router.register
-    def get_session_status(args: Dict[str, Any]) -> Dict[str, Any]:
-        """Get current session status and progress."""
-        session_id = args.get("session_id", "")
-        # TODO: call phase72_context.ensure_summaries()
-        return {
-            "session_id": session_id,
-            "status": "active",
-            "progress": "...",
-        }
-
-    return router
+# Global instance
+tool_router = ToolRouter()

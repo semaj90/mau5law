@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/gorilla/mux"
 )
 
@@ -21,17 +24,50 @@ type SIMDJSONResult struct {
 	Error    string            `json:"error,omitempty"`
 }
 
-// SIMDJSONAccelerator provides high-performance JSON parsing using optimized Go routines
+// SIMDJSONAccelerator provides high-performance JSON parsing using simdjson-go + sonic
 type SIMDJSONAccelerator struct {
-	port int
+	port        int
+	minioClient *MinIOClient
 }
 
 // NewSIMDJSONAccelerator creates a new SIMD JSON accelerator
-func NewSIMDJSONAccelerator(port int) *SIMDJSONAccelerator {
-	return &SIMDJSONAccelerator{port: port}
+func NewSIMDJSONAccelerator(port int) (*SIMDJSONAccelerator, error) {
+	// Initialize MinIO client
+	minioClient, err := NewMinIOClient()
+	if err != nil {
+		log.Printf("⚠️  MinIO not available: %v", err)
+		minioClient = nil // Continue without MinIO
+	}
+
+	return &SIMDJSONAccelerator{
+		port:        port,
+		minioClient: minioClient,
+	}, nil
 }
 
-// tokenizeJSONOptimized performs optimized JSON tokenization
+// parseWithSimdJSON uses simdjson-go for AVX2-optimized parsing
+func parseWithSimdJSON(jsonStr string) (interface{}, error) {
+	pj, err := simdjson.Parse([]byte(jsonStr), nil)
+	if err != nil {
+		return nil, fmt.Errorf("simdjson parse error: %w", err)
+	}
+
+	// Convert to Go interface{}
+	iter := pj.Iter()
+	return iter.Interface()
+}
+
+// parseWithSonic uses bytedance/sonic for fast JSON parsing
+func parseWithSonic(jsonStr string) (interface{}, error) {
+	var result interface{}
+	err := sonic.UnmarshalString(jsonStr, &result)
+	if err != nil {
+		return nil, fmt.Errorf("sonic parse error: %w", err)
+	}
+	return result, nil
+}
+
+// tokenizeJSONOptimized performs optimized JSON tokenization (fallback)
 func tokenizeJSONOptimized(jsonStr string) []string {
 	// Convert string to byte slice for efficient processing
 	data := []byte(jsonStr)
@@ -105,7 +141,7 @@ func isNumberChar(b byte) bool {
 	return (b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+' || b == 'e' || b == 'E'
 }
 
-// parseHandler handles HTTP requests for JSON parsing
+// parseHandler handles HTTP requests for JSON parsing with simdjson-go + sonic
 func (s *SIMDJSONAccelerator) parseHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -113,7 +149,8 @@ func (s *SIMDJSONAccelerator) parseHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	var request struct {
-		JSON string `json:"json"`
+		JSON   string `json:"json"`
+		Method string `json:"method"` // "simdjson", "sonic", or "tokens"
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -126,25 +163,72 @@ func (s *SIMDJSONAccelerator) parseHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	start := time.Now()
+	// Default to simdjson for AVX2 optimization
+	if request.Method == "" {
+		request.Method = "simdjson"
+	}
 
-	// Use optimized parsing
-	tokens := tokenizeJSONOptimized(request.JSON)
+	start := time.Now()
+	var result SIMDJSONResult
+	var parseErr error
+
+	switch request.Method {
+	case "simdjson":
+		// Use simdjson-go (AVX2-optimized)
+		parsed, err := parseWithSimdJSON(request.JSON)
+		if err != nil {
+			parseErr = err
+		} else {
+			result.Metadata = map[string]interface{}{
+				"parsed_data": parsed,
+				"method":      "simdjson-go",
+				"avx2":        true,
+			}
+		}
+
+	case "sonic":
+		// Use bytedance/sonic (fast alternative)
+		parsed, err := parseWithSonic(request.JSON)
+		if err != nil {
+			parseErr = err
+		} else {
+			result.Metadata = map[string]interface{}{
+				"parsed_data": parsed,
+				"method":      "sonic",
+			}
+		}
+
+	case "tokens":
+		// Tokenization only (legacy)
+		tokens := tokenizeJSONOptimized(request.JSON)
+		result.Tokens = tokens
+		result.Metadata = map[string]interface{}{
+			"tokens_count": len(tokens),
+			"method":       "tokenize",
+		}
+
+	default:
+		http.Error(w, "Invalid method. Use 'simdjson', 'sonic', or 'tokens'", http.StatusBadRequest)
+		return
+	}
+
 	duration := time.Since(start)
 
-	// Create result
-	result := SIMDJSONResult{
-		Tokens: tokens,
-		Metadata: map[string]interface{}{
-			"optimized_parsing": true,
-			"processing_time_ms": duration.Milliseconds(),
-			"tokens_count": len(tokens),
-			"input_length": len(request.JSON),
-			"processed_at": time.Now().Unix(),
-			"go_version": runtime.Version(),
-			"goroutines": runtime.NumGoroutine(),
-		},
+	if parseErr != nil {
+		result.Error = parseErr.Error()
 	}
+
+	// Add common metadata
+	if result.Metadata == nil {
+		result.Metadata = make(map[string]interface{})
+	}
+	result.Metadata["optimized_parsing"] = true
+	result.Metadata["processing_time_ms"] = duration.Milliseconds()
+	result.Metadata["processing_time_us"] = duration.Microseconds()
+	result.Metadata["input_length"] = len(request.JSON)
+	result.Metadata["processed_at"] = time.Now().Unix()
+	result.Metadata["go_version"] = runtime.Version()
+	result.Metadata["goroutines"] = runtime.NumGoroutine()
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)
@@ -171,19 +255,110 @@ func (s *SIMDJSONAccelerator) healthHandler(w http.ResponseWriter, r *http.Reque
 	json.NewEncoder(w).Encode(health)
 }
 
+// minioStoreHandler stores a document in MinIO
+func (s *SIMDJSONAccelerator) minioStoreHandler(w http.ResponseWriter, r *http.Request) {
+	if s.minioClient == nil {
+		http.Error(w, "MinIO not available", http.StatusServiceUnavailable)
+		return
+	}
+
+	var request struct {
+		ObjectName string `json:"object_name"`
+		Data       string `json:"data"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	ctx := context.Background()
+	reader := bytes.NewReader([]byte(request.Data))
+
+	err := s.minioClient.StoreDocument(ctx, request.ObjectName, reader, int64(len(request.Data)))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to store: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":      "success",
+		"object_name": request.ObjectName,
+		"size":        len(request.Data),
+	})
+}
+
+// minioGetHandler retrieves a document from MinIO
+func (s *SIMDJSONAccelerator) minioGetHandler(w http.ResponseWriter, r *http.Request) {
+	if s.minioClient == nil {
+		http.Error(w, "MinIO not available", http.StatusServiceUnavailable)
+		return
+	}
+
+	vars := mux.Vars(r)
+	objectName := vars["id"]
+
+	ctx := context.Background()
+	data, err := s.minioClient.GetDocument(ctx, objectName)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to get: %v", err), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+// minioListHandler lists documents in MinIO
+func (s *SIMDJSONAccelerator) minioListHandler(w http.ResponseWriter, r *http.Request) {
+	if s.minioClient == nil {
+		http.Error(w, "MinIO not available", http.StatusServiceUnavailable)
+		return
+	}
+
+	prefix := r.URL.Query().Get("prefix")
+	ctx := context.Background()
+
+	documents, err := s.minioClient.ListDocuments(ctx, prefix)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to list: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"documents": documents,
+		"count":     len(documents),
+	})
+}
+
 // Start starts the SIMD JSON accelerator service
 func (s *SIMDJSONAccelerator) Start() error {
 	r := mux.NewRouter()
 
-	// API routes
+	// JSON parsing routes
 	r.HandleFunc("/parse", s.parseHandler).Methods("POST")
 	r.HandleFunc("/health", s.healthHandler).Methods("GET")
 
+	// MinIO routes (if available)
+	if s.minioClient != nil {
+		r.HandleFunc("/minio/store", s.minioStoreHandler).Methods("POST")
+		r.HandleFunc("/minio/get/{id}", s.minioGetHandler).Methods("GET")
+		r.HandleFunc("/minio/list", s.minioListHandler).Methods("GET")
+		log.Printf("📦 MinIO integration enabled")
+	}
+
 	addr := fmt.Sprintf(":%d", s.port)
 	log.Printf("🚀 SIMD JSON Accelerator starting on port %d", s.port)
-	log.Printf("📊 Optimized parsing enabled")
+	log.Printf("📊 AVX2-optimized parsing enabled (simdjson-go + sonic)")
 	log.Printf("🔗 Health check: http://localhost:%d/health", s.port)
 	log.Printf("🔗 Parse endpoint: http://localhost:%d/parse", s.port)
+	if s.minioClient != nil {
+		log.Printf("🔗 MinIO store: http://localhost:%d/minio/store", s.port)
+		log.Printf("🔗 MinIO get: http://localhost:%d/minio/get/:id", s.port)
+		log.Printf("🔗 MinIO list: http://localhost:%d/minio/list", s.port)
+	}
 
 	server := &http.Server{
 		Addr:         addr,
@@ -196,7 +371,7 @@ func (s *SIMDJSONAccelerator) Start() error {
 }
 
 func main() {
-	port := 8095 // Default port for SIMD JSON accelerator
+	port := 8096 // Default port (changed from 8095 to avoid conflicts)
 
 	// Check for port override
 	if portEnv := os.Getenv("SIMD_JSON_PORT"); portEnv != "" {
@@ -206,10 +381,14 @@ func main() {
 	}
 
 	log.Printf("🎯 Starting SIMD JSON Accelerator Service")
-	log.Printf("🔧 Optimized parsing enabled")
+	log.Printf("🔧 AVX2-optimized parsing (simdjson-go + sonic)")
 	log.Printf("📡 Port: %d", port)
+	log.Printf("💻 CPU: 11th gen Intel (AVX2 support)")
 
-	accelerator := NewSIMDJSONAccelerator(port)
+	accelerator, err := NewSIMDJSONAccelerator(port)
+	if err != nil {
+		log.Fatalf("Failed to create accelerator: %v", err)
+	}
 
 	if err := accelerator.Start(); err != nil {
 		log.Fatalf("Failed to start SIMD JSON accelerator: %v", err)

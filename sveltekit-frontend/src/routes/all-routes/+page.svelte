@@ -10,6 +10,10 @@
     tags: string[];
     kind: 'page' | 'endpoint' | 'layout';
     icon?: string;
+    packages?: string[];
+    relatedRoutes?: string[];
+    category?: string;
+    version?: string;
   };
 
   let dialog: HTMLDialogElement;
@@ -43,6 +47,125 @@
            route.tags.includes('demo');
   }
 
+  // Infer packages used by route
+  function inferPackages(route: RouteEntry): string[] {
+    const packages: string[] = [];
+    const path = route.path.toLowerCase();
+    const tags = route.tags.map(t => t.toLowerCase());
+
+    // AI/ML packages
+    if (tags.includes('ai') || path.includes('ai') || path.includes('chat')) {
+      packages.push('ollama', '@ai-sdk/svelte');
+    }
+    if (tags.includes('gpu') || path.includes('gpu')) {
+      packages.push('cuda', 'tensorrt');
+    }
+    if (tags.includes('vector') || path.includes('vector')) {
+      packages.push('pgvector', 'qdrant');
+    }
+    if (path.includes('rag') || tags.includes('rag')) {
+      packages.push('langchain', 'pgvector');
+    }
+
+    // UI packages
+    if (path.includes('yorha') || path.includes('nier')) {
+      packages.push('bits-ui', 'unocss');
+    }
+    if (path.includes('nes') || path.includes('gaming')) {
+      packages.push('nes.css');
+    }
+
+    // Data packages
+    if (tags.includes('legal') || path.includes('legal')) {
+      packages.push('drizzle-orm', 'lucia');
+    }
+    if (path.includes('evidence') || tags.includes('evidence')) {
+      packages.push('fabric.js', 'neo4j');
+    }
+    if (path.includes('graph')) {
+      packages.push('neo4j', 'd3');
+    }
+
+    // Storage
+    if (path.includes('upload') || path.includes('minio')) {
+      packages.push('minio', 'sharp');
+    }
+
+    // Always include core packages for pages
+    if (route.kind === 'page') {
+      packages.push('svelte', 'sveltekit');
+    }
+
+    return [...new Set(packages)];
+  }
+
+  // Find related routes
+  function findRelatedRoutes(route: RouteEntry, allRoutes: RouteEntry[]): string[] {
+    const related: string[] = [];
+    const pathParts = route.path.split('/').filter(Boolean);
+    const basePath = pathParts[0];
+
+    // Find routes with same base path
+    allRoutes.forEach(r => {
+      if (r.id === route.id) return;
+
+      // Same base path
+      if (r.path.startsWith(`/${basePath}`) && r.path !== route.path) {
+        related.push(r.path);
+      }
+
+      // Shared tags
+      const sharedTags = route.tags.filter(t => r.tags.includes(t));
+      if (sharedTags.length >= 2 && !related.includes(r.path)) {
+        related.push(r.path);
+      }
+    });
+
+    return related.slice(0, 5); // Limit to 5 related routes
+  }
+
+  // Categorize route
+  function categorizeRoute(route: RouteEntry): string {
+    const path = route.path.toLowerCase();
+
+    if (isDemo(route)) return 'Demo';
+    if (path.startsWith('/api')) return 'API';
+    if (path.startsWith('/admin') || route.tags.includes('admin')) return 'Admin';
+    if (route.tags.includes('auth') || path.includes('login') || path.includes('register')) return 'Auth';
+    if (route.tags.includes('ai')) return 'AI';
+    if (route.tags.includes('legal')) return 'Legal';
+    if (route.tags.includes('evidence')) return 'Evidence';
+    if (path.startsWith('/dev')) return 'Development';
+
+    return 'Core';
+  }
+
+  // Determine version (v1-v4 for demos)
+  function getVersion(route: RouteEntry): string {
+    if (!isDemo(route)) return '';
+
+    const path = route.path.toLowerCase();
+
+    // V1 - Basic demos
+    if (path.includes('/simple') || path.includes('/basic') || path === '/test') {
+      return 'v1';
+    }
+    // V2 - Feature demos
+    if (path.includes('agent') || path.includes('mcp') || path.includes('rag')) {
+      return 'v2';
+    }
+    // V3 - Advanced demos
+    if (path.includes('canvas') || path.includes('graph') || path.includes('yorha')) {
+      return 'v3';
+    }
+    // V4 - Integration demos
+    if (path.includes('integration') || path.includes('system') || path.includes('all-routes')) {
+      return 'v4';
+    }
+
+    return 'v1';
+  }
+
   let filteredRoutes = $derived.by(() => {
     let filtered = routes.filter(route => {
       const matchesSearch = route.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -72,10 +195,20 @@
     try {
       const res = await fetch('/api/routes/all');
       const data = await res.json();
-      // Assign icons to routes
-      routes = data.routes.map((route: RouteEntry, idx: number) => ({
+
+      // Enrich routes with metadata
+      const enrichedRoutes = data.routes.map((route: RouteEntry, idx: number) => ({
         ...route,
-        icon: routeIcons[idx % routeIcons.length]
+        icon: routeIcons[idx % routeIcons.length],
+        packages: inferPackages(route),
+        category: categorizeRoute(route),
+        version: getVersion(route)
+      }));
+
+      // Add related routes
+      routes = enrichedRoutes.map((route: RouteEntry) => ({
+        ...route,
+        relatedRoutes: findRelatedRoutes(route, enrichedRoutes)
       }));
 
       // Calculate demo count
@@ -134,6 +267,7 @@
           <p class="nes-text">Explore all {stats.total} routes</p>
         </div>
         <div class="header-actions">
+          <a href="/graph-mode" class="nes-btn is-success">📊 Graph Mode</a>
           <a href="/test-route-discovery" class="nes-btn is-warning">Test</a>
           <a href="/command/routes" class="nes-btn is-primary">Command</a>
         </div>
@@ -364,9 +498,65 @@
           </div>
         {/if}
 
+        <!-- Category & Version -->
+        <div class="modal-section">
+          <p class="nes-text is-primary">Metadata</p>
+          <div class="metadata-grid">
+            <div class="metadata-item">
+              <span class="metadata-label">Category:</span>
+              <span class="nes-badge is-warning">
+                <span>{selectedRoute.category}</span>
+              </span>
+            </div>
+            {#if selectedRoute.version}
+              <div class="metadata-item">
+                <span class="metadata-label">Version:</span>
+                <span class="nes-badge is-success">
+                  <span>{selectedRoute.version}</span>
+                </span>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Packages -->
+        {#if selectedRoute.packages && selectedRoute.packages.length > 0}
+          <div class="modal-section">
+            <p class="nes-text is-primary">Required Packages</p>
+            <div class="packages-list">
+              {#each selectedRoute.packages as pkg}
+                <span class="nes-badge is-primary">
+                  <span>{pkg}</span>
+                </span>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Related Routes -->
+        {#if selectedRoute.relatedRoutes && selectedRoute.relatedRoutes.length > 0}
+          <div class="modal-section">
+            <p class="nes-text is-primary">Related Routes</p>
+            <div class="related-routes-list">
+              {#each selectedRoute.relatedRoutes as relatedPath}
+                <button
+                  type="button"
+                  class="related-route-btn"
+                  onclick={() => {
+                    const related = routes.find(r => r.path === relatedPath);
+                    if (related) openModal(related);
+                  }}
+                >
+                  {relatedPath}
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
         <!-- Actions -->
-        {#if selectedRoute.kind === 'page'}
-          <div class="modal-actions">
+        <div class="modal-actions">
+          {#if selectedRoute.kind === 'page'}
             <button
               type="button"
               class="nes-btn is-primary"
@@ -374,8 +564,14 @@
             >
               Visit Page →
             </button>
-          </div>
-        {/if}
+          {/if}
+          <a
+            href="/dev/ast-graph?route={encodeURIComponent(selectedRoute.path)}"
+            class="nes-btn is-warning"
+          >
+            View AST Graph
+          </a>
+        </div>
       </div>
     </form>
   {/if}
@@ -617,8 +813,58 @@
     border-top: 2px solid #000;
   }
 
-  .modal-actions button {
-    width: 100%;
+  .modal-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .modal-actions button,
+  .modal-actions a {
+    flex: 1;
+  }
+
+  .metadata-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .metadata-label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  .packages-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .related-routes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .related-route-btn {
+    padding: 0.5rem;
+    text-align: left;
+    background: #f0f0f0;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+  }
+
+  .related-route-btn:hover {
+    background: #e0e0e0;
+    transform: translateX(4px);
   }
 
   /* Responsive */
