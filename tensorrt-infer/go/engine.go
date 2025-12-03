@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"tensorrt-infer/go/trt"
+	"tensorrt-infer/trt"
 )
 
-func main() {
+// demoInference shows basic inference example
+func demoInference() {
 	engine, err := trt.LoadPlan("gemma3_int4.plan")
 	if err != nil {
 		panic(err)

@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';;
+  import { onDestroy } from 'svelte';
   // lucide-svelte exports named components — import them as named exports
-  import type { Activity,
+  import type {
+    Activity,
     AlertTriangle,
     CheckCircle,
     Clock,
@@ -12,7 +13,7 @@
     Search,
     Server,
     TestTube,
-   } from 'lucide-svelte';
+  } from 'lucide-svelte';
 
   type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -131,7 +132,7 @@
     return Math.round(testResults.reduce((sum, item) => sum + item.durationMs, 0) / t);
   });
 
-  $effect(() => {() => {
+  $effect(() => {
     if (autoRefresh) {
       if (refreshTimer) clearInterval(refreshTimer);
       refreshTimer = setInterval(() => {

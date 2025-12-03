@@ -1,9 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as postgres from 'postgres';
+import postgres from 'postgres';
+import * as schema from './schema';
 
-// Assuming DATABASE_URL is set in environment variables
-const client = postgres(process.env.DATABASE_URL!);
-export const db = drizzle(client);
+const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai';
 
-
-
+const client = postgres(connectionString);
+export const db = drizzle(client, { schema });

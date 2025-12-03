@@ -13,6 +13,7 @@
   let currentTitle = $state(report?.title || 'New Report');
 
   function handleSave() {
+  async function handleSave() {
     const updatedReport: Report = {
       id: report?.id || crypto.randomUUID(), // Generate new ID if not present
       title: currentTitle,
@@ -22,6 +23,7 @@
       updatedAt: new Date(),
     };
     save(updatedReport);
+    await save(updatedReport);
   }
 </script>
 
@@ -71,3 +73,4 @@
     color: #666;
   }
 </style>
+

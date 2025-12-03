@@ -362,14 +362,15 @@
           <div
             class:drop-active={dropActive}
             class="drop-zone"
-            on:dragenter|preventDefault={() => (dropActive = true)}
-            on:dragover|preventDefault={() => (dropActive = true)}
-            on:dragleave|preventDefault={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+            ondragenter={(e: DragEvent) => { e.preventDefault(); dropActive = true; }}
+            ondragover={(e: DragEvent) => { e.preventDefault(); dropActive = true; }}
+            ondragleave={(e: DragEvent) => {
+              e.preventDefault();
+              if (!e.currentTarget?.contains(e.relatedTarget as Node)) {
                 dropActive = false;
               }
             }}
-            on:drop={onDrop}
+            ondrop={onDrop}
           >
             <p>Drag and drop files to add context or click to browse.</p>
             <input

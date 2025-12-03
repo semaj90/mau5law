@@ -1,5 +1,4 @@
 <script lang="ts">
-
 	type RouteDetail = {
 		path: string;
 		kind: 'page' | 'layout' | 'endpoint';
@@ -32,9 +31,13 @@
 		lastRun?: string;
 	};
 
-	// ✅ Props: bindable for two-way binding
-	let { open = $bindable(false), route = $bindable<RouteDetail | null>(null), onclose = () => {} } = $props();
+	// ✅ plain props, no runes here
+	let { open = false, route = null } = $props<{
+		open?: boolean;
+		route?: RouteDetail | null;
+	}>();
 
+	// ✅ runes only for internal state
 	let phase72Status = $state<Phase72Status>({ errorCount: 0 });
 	let phase82Status = $state<Phase82Status>({
 		status: 'not_started',
@@ -55,68 +58,37 @@
 		if (!route) return;
 
 		try {
-			// Load Phase 72 errors
-			const errRes = await fetch(`/api/phase72/errors?route=${encodeURIComponent(route.path)}`);
+			const errRes = await fetch(
+				`/api/phase72/errors?route=${encodeURIComponent(route.path)}`
+			);
+
 			if (errRes.ok) {
-				const data = await errRes.json();
-				phase72Status = {
-					errorCount: data.errors?.length ?? 0,
-					lastError: data.errors?.[0]
-						? {
-								code: data.errors[0].code,
-								message: data.errors[0].message,
-								count: data.errors[0].count ?? 1,
-								lastSeen: data.errors[0].last_seen ?? 'unknown'
-							}
-						: undefined
-				};
+				const data = (await errRes.json()) as Phase72Status;
+				phase72Status = data;
 			}
 
-			// Load Phase 82 status (mock for now)
-			phase82Status = {
-				status: 'not_started',
-				filesUpgraded: 0,
-				totalFiles: 1,
-				lastRun: undefined
-			};
+			const upgRes = await fetch(
+				`/api/phase82/status?route=${encodeURIComponent(route.path)}`
+			);
+
+			if (upgRes.ok) {
+				const data = (await upgRes.json()) as Phase82Status;
+				phase82Status = data;
+			}
 		} catch (err) {
-			console.error('Failed to load statuses:', err);
+			console.error('route inspector: loadStatuses failed', err);
 		}
 	}
 
-	async function visitPage() {
-		if (!route) return;
-		window.open(`http://127.0.0.1:5173${route.path}`, '_blank');
-	}
-
-	async function viewAstGraph() {
-		if (!route) return;
-		// This would open an AST visualization
-		console.log('View AST Graph for', route.file);
-	}
-
 	async function askErrorBrain() {
-		if (!route || !phase72Status.lastError) return;
-		actionInProgress = 'error-brain';
-
+		if (!route) return;
+		actionInProgress = 'error_brain';
 		try {
-			const res = await fetch('/api/phase72/suggest-fix', {
+			await fetch('/api/phase72/suggest-fix', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					route: route.path,
-					error_code: phase72Status.lastError.code,
-					error_message: phase72Status.lastError.message
-				})
+				body: JSON.stringify({ route: route.path })
 			});
-
-			if (res.ok) {
-				const data = await res.json();
-				console.log('Error Brain suggestion:', data);
-				alert('Error Brain suggestion:\n\n' + (data.suggestion || 'No suggestion available'));
-			}
-		} catch (err) {
-			console.error('Error Brain failed:', err);
 		} finally {
 			actionInProgress = null;
 		}
@@ -125,617 +97,345 @@
 	async function runCodemod() {
 		if (!route) return;
 		actionInProgress = 'codemod';
-
 		try {
 			const res = await fetch('/api/phase82/upgrade-route', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ route: route.path })
 			});
-
-			const data = await res.json();
-
-			if (data.ok) {
-				console.log('Codemod succeeded:', data);
-				alert(`✅ Svelte 5 upgrade complete for ${route.path}\n\nDuration: ${data.duration_ms}ms`);
-				phase82Status.status = 'complete';
-				phase82Status.filesUpgraded = phase82Status.totalFiles;
-			} else {
-				console.error('Codemod failed:', data);
-				alert(`❌ Codemod failed:\n\n${data.stderr || data.error}`);
+			if (res.ok) {
+				const data = await res.json();
+				phase82Status = {
+					status: 'complete',
+					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded,
+					totalFiles: data.totalFiles ?? phase82Status.totalFiles,
+					lastRun: new Date().toISOString()
+				};
 			}
-		} catch (err) {
-			console.error('Codemod error:', err);
-			alert('Codemod failed: ' + String(err));
 		} finally {
 			actionInProgress = null;
 		}
 	}
 
-	async function runHealthCheck() {
+	function visitPage() {
 		if (!route) return;
-		actionInProgress = 'health-check';
+		window.open(route.path || '/', '_blank');
+	}
 
+	function openAstGraph() {
+		if (!route) return;
+		window.open(`/phase78/ast?route=${encodeURIComponent(route.path)}`, '_blank');
+	}
+
+	async function runPlaywrightCheck() {
+		if (!route) return;
+		actionInProgress = 'playwright';
 		try {
-			const res = await fetch('/api/phase72/check-route', {
+			await fetch('/api/phase78/playwright-check', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ route: route.path })
 			});
-
-			const data = await res.json();
-			console.log('Health check result:', data);
-			alert('Health check complete. Check console for details.');
-		} catch (err) {
-			console.error('Health check failed:', err);
 		} finally {
 			actionInProgress = null;
 		}
 	}
-
-	function getHealthColor(health?: string) {
-		if (health === 'green') return '#1e8f3c';
-		if (health === 'yellow') return '#f6b73c';
-		if (health === 'red') return '#c41e3a';
-		return '#999';
-	}
-
-	function getPhase82Badge() {
-		if (phase82Status.status === 'complete') return '✅ COMPLETE';
-		if (phase82Status.status === 'in_progress') return '⏳ IN PROGRESS';
-		return '⭕ NOT STARTED';
-	}
 </script>
 
-{#if open}
+{#if open && route}
+<div class="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
 	<div
-		class="detective-board-overlay"
-		onclick={onclose}
-		onkeydown={(e) => e.key === 'Escape' && onclose()}
-		role="dialog"
-		aria-modal="true"
-		tabindex="-1"
+		class="w-[960px] max-w-[96vw] bg-[#f3eddc] text-[#111] border-[3px] border-[#262017] shadow-[0_0_0_2px_rgba(0,0,0,0.35)] rounded-xl overflow-hidden"
 	>
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<div
-			class="detective-board"
-			onclick={(e) => e.stopPropagation()}
-			onkeydown={(e) => e.stopPropagation()}
-			role="document"
+		<!-- Header -->
+		<header
+			class="flex items-center justify-between px-6 py-4 border-b border-[#262017]/50 bg-[#e8dec6]"
 		>
-			<!-- Header -->
-			<header class="board-header">
-				<div class="header-left">
-					<span class="route-icon">🎮</span>
-					<div class="header-title">
-						<div class="route-path">{route?.path ?? '/'}</div>
-						<div class="route-file">{route?.file ?? 'unknown'}</div>
-					</div>
+			<div class="flex items-center gap-4">
+				<div
+					class="h-10 w-10 rounded-full border-[3px] border-[#262017] flex items-center justify-center bg-[#262017]"
+				>
+					<span class="text-xl">🎮</span>
 				</div>
-				<div class="header-right">
-					<span
-						class="status-badge"
-						style="background-color: {getHealthColor(route?.health)}"
-					>
-						{route?.health?.toUpperCase() ?? 'UNKNOWN'}
-					</span>
-					<span class="badge-tag">{route?.kind ?? 'page'}</span>
-					<button class="close-btn" onclick={onclose}>✕</button>
-				</div>
-			</header>
-
-			<!-- Body: 2-column layout -->
-			<div class="board-body">
-				<!-- Left: Route Dossier -->
-				<section class="panel panel-left">
-					<h3 class="section-label">SUMMARY</h3>
-					<p class="summary-text">{route?.summary ?? 'No summary available'}</p>
-
-					<h3 class="section-label">METADATA</h3>
-					<div class="meta-grid">
-						{#if route?.category}
-							<div class="meta-item">
-								<div class="meta-label">Category</div>
-								<div class="meta-value">{route.category}</div>
-							</div>
-						{/if}
-						{#if route?.version}
-							<div class="meta-item">
-								<div class="meta-label">Version</div>
-								<div class="meta-value">{route.version}</div>
-							</div>
-						{/if}
+				<div class="leading-tight">
+					<div class="text-xs tracking-[0.25em] uppercase">
+						{route.kind}
 					</div>
-
-					{#if route?.requiredPackages && route.requiredPackages.length > 0}
-						<h3 class="section-label">REQUIRED PACKAGES</h3>
-						<div class="pill-row">
-							{#each route.requiredPackages as pkg}
-								<span class="pill">{pkg}</span>
-							{/each}
-						</div>
-					{/if}
-
-					{#if route?.relatedRoutes && route.relatedRoutes.length > 0}
-						<h3 class="section-label">RELATED ROUTES</h3>
-						<div class="pill-column">
-							{#each route.relatedRoutes as relRoute}
-								<button class="pill pill-ghost" onclick={() => console.log('Open', relRoute)}>
-									{relRoute}
-								</button>
-							{/each}
-						</div>
-					{/if}
-				</section>
-
-				<!-- Right: Diagnostics & Tools -->
-				<section class="panel panel-right">
-					<!-- Phase 72: Error Brain -->
-					<h3 class="section-label">PHASE 72 · ERROR BRAIN</h3>
-					{#if phase72Status.errorCount === 0}
-						<div class="status-card status-clean">
-							<div class="status-icon">✅</div>
-							<div class="status-text">No errors detected</div>
-						</div>
-					{:else if phase72Status.lastError}
-						<div class="status-card status-alert">
-							<div class="status-line">
-								<span class="badge badge-error">{phase72Status.lastError.code}</span>
-								<span class="status-message">{phase72Status.lastError.message}</span>
-							</div>
-							<div class="status-meta">
-								{phase72Status.lastError.count} hit{phase72Status.lastError.count === 1 ? '' : 's'}
-								· last seen {phase72Status.lastError.lastSeen}
-							</div>
-							<button
-								class="btn btn-neon"
-								disabled={actionInProgress === 'error-brain'}
-								onclick={askErrorBrain}
-							>
-								{actionInProgress === 'error-brain' ? '⏳ Asking...' : '🧠 Ask Error Brain'}
-							</button>
-						</div>
-					{/if}
-
-					<!-- Phase 82: Upgrade Brain -->
-					<h3 class="section-label">PHASE 82 · UPGRADE BRAIN</h3>
-					<div class="status-card status-upgrade">
-						<div class="status-line">
-							<span class="badge badge-upgrade">{getPhase82Badge()}</span>
-						</div>
-						<div class="status-meta">
-							{phase82Status.filesUpgraded}/{phase82Status.totalFiles} files upgraded
-						</div>
-						<button
-							class="btn btn-warning"
-							disabled={actionInProgress === 'codemod'}
-							onclick={runCodemod}
+					<div class="mt-1 inline-flex items-center gap-2">
+						<span
+							class="px-2 py-1 text-xs font-semibold tracking-[0.3em] uppercase bg-[#262017] text-[#f3eddc]"
 						>
-							{actionInProgress === 'codemod' ? '⏳ Running...' : '🔄 Run Svelte 5 Codemod'}
-						</button>
+							{route.path}
+						</span>
 					</div>
-				</section>
+					<div
+						class="mt-1 text-[11px] font-mono px-2 py-1 bg-[#111]/90 text-[#f3eddc] inline-block rounded-[3px]"
+					>
+						{route.file}
+					</div>
+				</div>
 			</div>
 
-			<!-- Footer: Action buttons -->
-			<footer class="board-footer">
-				<button class="btn btn-primary" onclick={visitPage}>
-					→ Visit Page
+			<div class="flex items-center gap-2">
+				{#if route.health}
+					<span
+						class={`px-2 py-[2px] text-[10px] font-mono tracking-[0.2em] uppercase border ${
+							route.health === 'green'
+								? 'bg-[#1d3b2a] text-[#d7f5dd] border-[#3f6b4e]'
+								: route.health === 'yellow'
+								? 'bg-[#5b4a1b] text-[#fff3bf] border-[#9f7f2e]'
+								: 'bg-[#5b1b1b] text-[#ffd7d7] border-[#a32929]'
+						}`}
+					>
+						{route.health}
+					</span>
+				{/if}
+				<button
+					class="ml-4 h-8 w-8 text-sm border-[2px] border-[#262017] bg-[#b64545] text-[#f3eddc] hover:bg-[#d15454] active:translate-y-[1px]"
+					on:click={() => (open = false)}
+				>
+					✕
 				</button>
-				<button class="btn btn-secondary" onclick={viewAstGraph}>
-					📊 View AST Graph
+			</div>
+		</header>
+
+		<!-- Body -->
+		<div class="grid grid-cols-2 gap-4 px-6 py-4 text-[12px]">
+			<!-- Left: Route dossier -->
+			<section class="space-y-3 pr-2 border-r border-[#262017]/40">
+				<h3 class="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase">
+					<span
+						class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+						>SUMMARY</span
+					>
+				</h3>
+				<p class="leading-snug">
+					{route.summary || 'No summary available for this route yet.'}
+				</p>
+
+				<h3 class="mt-3 inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase">
+					<span
+						class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+						>METADATA</span
+					>
+				</h3>
+				<div class="grid grid-cols-2 gap-2">
+					<div>
+						<div class="text-[10px] uppercase tracking-[0.2em] text-[#555]">
+							Category
+						</div>
+						<div class="font-mono">
+							{route.category ?? '—'}
+						</div>
+					</div>
+					<div>
+						<div class="text-[10px] uppercase tracking-[0.2em] text-[#555]">
+							Version
+						</div>
+						<div class="font-mono">
+							{route.version ?? 'v1'}
+						</div>
+					</div>
+				</div>
+
+				<h3 class="mt-3 inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase">
+					<span
+						class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+						>REQUIRED PACKAGES</span
+					>
+				</h3>
+				<div class="flex flex-wrap gap-1">
+					{#if route.requiredPackages?.length}
+						{#each route.requiredPackages as pkg}
+							<span
+								class="px-2 py-[2px] text-[11px] font-mono border border-[#262017] bg-[#f3eddc]"
+								>{pkg}</span
+							>
+						{/each}
+					{:else}
+						<span class="text-[#777]">None recorded</span>
+					{/if}
+				</div>
+
+				<h3 class="mt-3 inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase">
+					<span
+						class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+						>RELATED ROUTES</span
+					>
+				</h3>
+				<div class="flex flex-col gap-1">
+					{#if route.relatedRoutes?.length}
+						{#each route.relatedRoutes as rel}
+							<button
+								type="button"
+								class="text-left px-2 py-[3px] font-mono border border-dashed border-[#262017] bg-[#f9f4e4] hover:bg-[#262017] hover:text-[#f3eddc]"
+								on:click={() => window.open(rel, '_blank')}
+							>
+								{rel}
+							</button>
+						{/each}
+					{:else}
+						<span class="text-[#777]">No related routes linked</span>
+					{/if}
+				</div>
+			</section>
+
+			<!-- Right: Diagnostics & tools -->
+			<section class="space-y-4 pl-2">
+				<!-- Phase 72 -->
+				<div>
+					<h3
+						class="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase"
+					>
+						<span
+							class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+							>PHASE 72 · ERROR BRAIN</span
+						>
+					</h3>
+					<div
+						class="mt-2 border border-[#262017] bg-[#151515] text-[#f3eddc] px-3 py-2 space-y-1"
+					>
+						<div class="flex items-center justify-between gap-2">
+							<div class="flex items-center gap-2">
+								<span
+									class="px-2 py-[1px] text-[11px] font-mono uppercase tracking-[0.2em] bg-[#b64545] text-[#fff3f3]"
+								>
+									{phase72Status.errorCount ?? 0} ERRORS
+								</span>
+								{#if phase72Status.lastError}
+									<span class="text-[11px] font-mono truncate max-w-[220px]">
+										{phase72Status.lastError.code}: {phase72Status.lastError.message}
+									</span>
+								{:else}
+									<span class="text-[11px] text-[#aaa]">
+										No recent errors recorded.
+									</span>
+								{/if}
+							</div>
+						</div>
+						{#if phase72Status.lastError}
+							<div class="text-[10px] text-[#aaa] font-mono">
+								{phase72Status.lastError.count} hits · last seen
+								{phase72Status.lastError.lastSeen}
+							</div>
+						{/if}
+						<div class="pt-2 flex gap-2">
+							<button
+								class="px-3 py-[4px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#37b36a] bg-[#133822] text-[#d7fbe3] hover:bg-[#1a4e30] disabled:opacity-50"
+								on:click={askErrorBrain}
+								disabled={!!actionInProgress}
+							>
+								{#if actionInProgress === 'error_brain'}
+									… CONTACTING
+								{:else}
+									ASK ERROR BRAIN
+								{/if}
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Phase 82 -->
+				<div>
+					<h3
+						class="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase"
+					>
+						<span
+							class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+							>PHASE 82 · UPGRADE BRAIN</span
+						>
+					</h3>
+					<div
+						class="mt-2 border border-[#262017] bg-[#262017] text-[#f3eddc] px-3 py-2 space-y-1"
+					>
+						<div class="flex items-center justify-between gap-2">
+							<span
+								class="px-2 py-[1px] text-[11px] font-mono uppercase tracking-[0.2em] border border-[#f0c14b] bg-[#4b3b17]"
+							>
+								{phase82Status.status}
+							</span>
+							<div class="text-[11px] font-mono text-right">
+								{phase82Status.filesUpgraded}/{phase82Status.totalFiles} files
+								upgraded
+								{#if phase82Status.lastRun}
+									<div class="text-[10px] text-[#bbb]">
+										Last run {phase82Status.lastRun}
+									</div>
+								{/if}
+							</div>
+						</div>
+
+						<div class="pt-2 flex gap-2">
+							<button
+								class="px-3 py-[4px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#f0c14b] bg-[#8a6112] text-[#fff6dd] hover:bg-[#b87f19] disabled:opacity-50"
+								on:click={runCodemod}
+								disabled={!!actionInProgress}
+							>
+								{#if actionInProgress === 'codemod'}
+									… RUNNING
+								{:else}
+									RUN SVELTE 5 CODEMOD
+								{/if}
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Playwright / MCP hook -->
+				<div>
+					<h3
+						class="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase"
+					>
+						<span
+							class="px-2 py-[2px] border border-[#262017] bg-[#f3eddc] rounded-[3px]"
+							>ROUTE HEALTH CHECK</span
+						>
+					</h3>
+					<div
+						class="mt-2 border border-[#262017] bg-[#111] text-[#f3eddc] px-3 py-2 space-y-2"
+					>
+						<p class="text-[11px] leading-snug">
+							Requests a Playwright MCP agent to load this route, capture console
+							errors, and feed them back into Phase 72.
+						</p>
+						<button
+							class="px-3 py-[4px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#37b3a9] bg-[#104442] text-[#d4fbf7] hover:bg-[#16635f] disabled:opacity-50"
+							on:click={runPlaywrightCheck}
+							disabled={!!actionInProgress}
+						>
+							{#if actionInProgress === 'playwright'}
+								… CHECKING
+							{:else}
+								RUN ROUTE HEALTH CHECK
+							{/if}
+						</button>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<!-- Footer -->
+		<footer
+			class="flex items-center justify-between px-6 py-3 border-t border-[#262017]/40 bg-[#e8dec6]"
+		>
+			<div class="text-[10px] font-mono text-[#555]">
+				YoRHa Detective · Phase 72–78–82 Control Surface
+			</div>
+			<div class="flex gap-2">
+				<button
+					class="px-4 py-[6px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#262017] bg-[#1775c7] text-white hover:bg-[#1e86e3]"
+					on:click={visitPage}
+				>
+					VISIT PAGE →
 				</button>
 				<button
-					class="btn btn-outline"
-					disabled={actionInProgress === 'health-check'}
-					onclick={runHealthCheck}
+					class="px-4 py-[6px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#262017] bg-[#f8d24b] text-[#262017] hover:bg-[#ffe27b]"
+					on:click={openAstGraph}
 				>
-					{actionInProgress === 'health-check' ? '⏳ Checking...' : '🏥 Route Health Check'}
+					VIEW AST GRAPH
 				</button>
-			</footer>
-		</div>
+			</div>
+		</footer>
 	</div>
+</div>
 {/if}
-
-<style>
-	.detective-board-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.6);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 9999;
-		backdrop-filter: blur(2px);
-	}
-
-	.detective-board {
-		background: var(--yorha-bg, #f5f1e8);
-		color: var(--yorha-ink, #111);
-		font-family: var(--yorha-font, 'Courier New', monospace);
-		border: 3px solid var(--yorha-ink, #111);
-		border-radius: 0;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-		width: 90%;
-		max-width: 900px;
-		max-height: 85vh;
-		display: flex;
-		flex-direction: column;
-		overflow: hidden;
-	}
-
-	.board-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1.5rem;
-		border-bottom: 2px solid var(--yorha-ink, #111);
-		background: linear-gradient(135deg, var(--yorha-paper, #faf8f3) 0%, var(--yorha-bg, #f5f1e8) 100%);
-	}
-
-	.header-left {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.route-icon {
-		font-size: 2rem;
-	}
-
-	.header-title {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.route-path {
-		font-size: 1.3rem;
-		font-weight: bold;
-		color: var(--yorha-ink, #111);
-		text-transform: uppercase;
-		letter-spacing: 1px;
-	}
-
-	.route-file {
-		font-size: 0.75rem;
-		color: #666;
-		font-family: 'Courier New', monospace;
-	}
-
-	.header-right {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.status-badge {
-		padding: 0.5rem 1rem;
-		border-radius: 0;
-		font-size: 0.75rem;
-		font-weight: bold;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		color: white;
-		border: 1px solid rgba(0, 0, 0, 0.2);
-	}
-
-	.badge-tag {
-		padding: 0.5rem 0.75rem;
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		border-radius: 0;
-	}
-
-	.close-btn {
-		background: none;
-		border: 2px solid var(--yorha-ink, #111);
-		color: var(--yorha-ink, #111);
-		font-size: 1.5rem;
-		cursor: pointer;
-		padding: 0.25rem 0.5rem;
-		line-height: 1;
-		transition: all 0.2s ease;
-	}
-
-	.close-btn:hover {
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-	}
-
-	.board-body {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0;
-		flex: 1;
-		overflow-y: auto;
-		border-bottom: 2px solid var(--yorha-ink, #111);
-	}
-
-	.panel {
-		padding: 1.5rem;
-		overflow-y: auto;
-		border-right: 2px solid var(--yorha-ink, #111);
-	}
-
-	.panel-left {
-		background: var(--yorha-paper, #faf8f3);
-	}
-
-	.panel-right {
-		background: var(--yorha-bg-dark, #ede9de);
-		border-right: none;
-	}
-
-	.section-label {
-		font-size: 0.7rem;
-		font-weight: bold;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		color: var(--yorha-ink, #111);
-		margin: 1rem 0 0.5rem 0;
-		padding: 0;
-		border-bottom: 1px solid var(--yorha-ink, #111);
-		padding-bottom: 0.5rem;
-	}
-
-	.section-label:first-child {
-		margin-top: 0;
-	}
-
-	.summary-text {
-		font-size: 0.9rem;
-		line-height: 1.5;
-		color: #333;
-		margin: 0.5rem 0 1rem 0;
-	}
-
-	.meta-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
-
-	.meta-item {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.meta-label {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		color: #666;
-	}
-
-	.meta-value {
-		font-size: 0.9rem;
-		font-weight: bold;
-		color: var(--yorha-ink, #111);
-	}
-
-	.pill-row,
-	.pill-column {
-		display: flex;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-		margin-bottom: 1rem;
-	}
-
-	.pill-column {
-		flex-direction: column;
-	}
-
-	.pill {
-		display: inline-block;
-		padding: 0.4rem 0.8rem;
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-		font-size: 0.75rem;
-		border-radius: 0;
-		border: 1px solid var(--yorha-ink, #111);
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-	}
-
-	.pill-ghost {
-		background: transparent;
-		color: var(--yorha-ink, #111);
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.pill-ghost:hover {
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-	}
-
-	.status-card {
-		padding: 1rem;
-		border: 1px solid var(--yorha-ink, #111);
-		border-radius: 0;
-		margin-bottom: 1rem;
-		background: var(--yorha-paper, #faf8f3);
-	}
-
-	.status-clean {
-		background: #e8f5e9;
-		border-color: #1e8f3c;
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.status-icon {
-		font-size: 1.5rem;
-	}
-
-	.status-text {
-		font-weight: bold;
-		color: #1e8f3c;
-	}
-
-	.status-alert {
-		background: #fff3e0;
-		border-color: #c41e3a;
-	}
-
-	.status-upgrade {
-		background: #e3f2fd;
-		border-color: #1976d2;
-	}
-
-	.status-line {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.badge-error {
-		background: #c41e3a;
-		color: white;
-		padding: 0.3rem 0.6rem;
-		font-size: 0.7rem;
-		font-weight: bold;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		border-radius: 0;
-	}
-
-	.badge-upgrade {
-		background: #1976d2;
-		color: white;
-		padding: 0.3rem 0.6rem;
-		font-size: 0.7rem;
-		font-weight: bold;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		border-radius: 0;
-	}
-
-	.status-message {
-		font-size: 0.9rem;
-		color: var(--yorha-ink, #111);
-		flex: 1;
-	}
-
-	.status-meta {
-		font-size: 0.8rem;
-		color: #666;
-		margin-bottom: 0.75rem;
-	}
-
-	.board-footer {
-		display: flex;
-		gap: 0.75rem;
-		padding: 1rem 1.5rem;
-		border-top: 2px solid var(--yorha-ink, #111);
-		background: var(--yorha-paper, #faf8f3);
-		flex-wrap: wrap;
-	}
-
-	.btn {
-		padding: 0.6rem 1.2rem;
-		border: 2px solid var(--yorha-ink, #111);
-		border-radius: 0;
-		font-family: var(--yorha-font, 'Courier New', monospace);
-		font-size: 0.85rem;
-		font-weight: bold;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		white-space: nowrap;
-	}
-
-	.btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.btn-primary {
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-	}
-
-	.btn-primary:hover:not(:disabled) {
-		background: var(--yorha-paper, #faf8f3);
-		color: var(--yorha-ink, #111);
-	}
-
-	.btn-secondary {
-		background: transparent;
-		color: var(--yorha-ink, #111);
-	}
-
-	.btn-secondary:hover:not(:disabled) {
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-	}
-
-	.btn-outline {
-		background: transparent;
-		color: var(--yorha-ink, #111);
-		border-style: dashed;
-	}
-
-	.btn-outline:hover:not(:disabled) {
-		background: var(--yorha-ink, #111);
-		color: var(--yorha-paper, #faf8f3);
-		border-style: solid;
-	}
-
-	.btn-neon {
-		background: #00ff00;
-		color: #000;
-		border-color: #00ff00;
-		box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-	}
-
-	.btn-neon:hover:not(:disabled) {
-		box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
-	}
-
-	.btn-warning {
-		background: #f6b73c;
-		color: #111;
-		border-color: #f6b73c;
-	}
-
-	.btn-warning:hover:not(:disabled) {
-		background: #e8a82e;
-		border-color: #e8a82e;
-	}
-
-	@media (max-width: 768px) {
-		.board-body {
-			grid-template-columns: 1fr;
-		}
-
-		.panel {
-			border-right: none;
-			border-bottom: 2px solid var(--yorha-ink, #111);
-		}
-
-		.panel-right {
-			border-bottom: none;
-		}
-
-		.board-footer {
-			flex-direction: column;
-		}
-
-		.btn {
-			flex: 1;
-		}
-	}
-</style>

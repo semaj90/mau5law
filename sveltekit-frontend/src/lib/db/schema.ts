@@ -88,3 +88,6 @@ export const personsOfInterest = pgTable(
   caseIdsIndex: index('poi_case_ids_idx').on(table.caseIds)
 }));
 
+
+// Export YoRHa v2 Schema
+export * from './schema/yorha';
