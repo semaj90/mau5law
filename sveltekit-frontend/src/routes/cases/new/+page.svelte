@@ -1,569 +1,458 @@
 <script lang="ts">
-  import type { goto  } from '$app/navigation';
-  import type { ArrowLeft, Save, X  } from 'lucide-svelte';
+  import { goto } from '$app/navigation';
 
-  // Form state
-  let title = $state('');
-  let caseNumber = $state('');
-  let description = $state('');
-  let status = $state <'open' | 'pending' | 'closed'>('open');
-  let tags = $state('');
-  let assignedTo = $state('');
+  let narrative = $state('');
+  let who = $state('');
+  let what = $state('');
+  let when = $state('');
+  let where = $state('');
+  let why = $state('');
+  let how = $state('');
 
-  // UI state
   let loading = $state(false);
-  let error = $state <string | null>(null);
-  let tagInput = $state('');
+  let error = $state<string | null>(null);
+  let uploadedFiles = $state<File[]>([]);
 
-  // Computed properties
-  let tagList = $derived(tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0));
-
-  // Handle form submission
-  async function handleSubmit(e: Event) {
-    e.preventDefault();
-
-    if (!title.trim() || !caseNumber.trim()) {
-      error = 'Title and case number are required';
+  async function handleSubmit() {
+    if (!narrative.trim() || !what.trim()) {
+      error = 'Please fill in at least the narrative and "What happened" fields.';
       return;
     }
 
-    try {
-      loading = true;
-      error = null;
+    loading = true;
+    error = null;
 
-      const response = await fetch('/api/cases', {
+    try {
+      // Upload evidence files first (if any)
+      const uploadedEvidenceIds: string[] = [];
+      for (const file of uploadedFiles) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'document'); // TODO: infer from file type
+
+        const uploadRes = await fetch('/api/evidence/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          uploadedEvidenceIds.push(uploadData.evidenceId);
+        }
+      }
+
+      // Create case via intake endpoint
+      const res = await fetch('/api/intake/case', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: title.trim(),
-          case_number: caseNumber.trim(),
-          description: description.trim(),
-          status,
-          tags: tagList,
-          assigned_to: assignedTo.trim() || null,
-        }),
+          narrative,
+          who,
+          what,
+          when,
+          where,
+          why,
+          how,
+          uploadedEvidenceIds
+        })
       });
 
-      if (response.ok) {
-        const newCase = await response.json();
-        goto(`/cases/${newCase.id}`);
-      } else {
-        const errorData = await response.json();
-        error = errorData.error || 'Failed to create case';
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to create case');
       }
+
+      const data = await res.json();
+      console.log('Case created:', data);
+
+      // Redirect to case overview
+      await goto(`/cases/${data.caseId}/overview`);
     } catch (err) {
-      error = err instanceof Error ? err.message : 'An error occurred';
+      error = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Intake error:', err);
     } finally {
       loading = false;
     }
   }
 
-  // Handle cancel
-  function handleCancel() {
-    goto('/cases');
-  }
-
-  // Add tag
-  function addTag() {
-    if (tagInput.trim() && !tagList.includes(tagInput.trim())) {
-      const currentTags = tags ? tags.split(',').map(t => t.trim()) : [];
-      currentTags.push(tagInput.trim());
-      tags = currentTags.join(', ');
-      tagInput = '';
+  function handleFileDrop(e: DragEvent) {
+    e.preventDefault();
+    const files = e.dataTransfer?.files;
+    if (files) {
+      uploadedFiles = [...uploadedFiles, ...Array.from(files)];
     }
   }
 
-  // Remove tag
-  function removeTag(tagToRemove: string) {
-    const currentTags = tagList.filter(tag => tag !== tagToRemove);
-    tags = currentTags.join(', ');
-  }
-
-  // Handle tag input enter
-  function handleTagKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTag();
-    }
+  function removeFile(index: number) {
+    uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
   }
 </script>
 
-<svelte:head>
-  <title>Create New Case - Legal AI Platform</title>
-  <meta name="description" content="Create a new legal case" />
-</svelte:head>
-
-<div class="create-case">
-  <!-- Header -->
-  <header class="page-header">
-    <div class="header-nav">
-      <button class="btn btn-link" onclick={handleCancel}>
-        <ArrowLeft size={16} />
-        Back to Cases
-      </button>
-    </div>
-
-    <div class="header-content">
-      <h1 class="page-title">Create New Case</h1>
-      <p class="page-subtitle">Fill in the details to create a new legal case</p>
-    </div>
+<div class="intake-container">
+  <header class="intake-header">
+    <h1>New Case Intake</h1>
+    <p>Describe what happened. We'll auto-structure it into a prosecutable case.</p>
   </header>
 
-  <!-- Form -->
-  <div class="form-container">
+  <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="intake-form">
+    <!-- Main narrative -->
+    <div class="form-section">
+      <label for="narrative">
+        <h2>What Happened?</h2>
+        <p>Describe the incident in your own words. Include people, dates, locations, and key events.</p>
+      </label>
+      <textarea
+        id="narrative"
+        bind:value={narrative}
+        placeholder="On March 15, 2024, Officer Smith responded to a robbery at 7-Eleven on Main St..."
+        rows="8"
+        class="narrative-box"
+      ></textarea>
+
+      <!-- File upload -->
+      <div
+        class="file-drop-zone"
+        ondrop={handleFileDrop}
+        ondragover={(e) => e.preventDefault()}
+      >
+        <p>📎 Drag evidence files here (PDFs, photos, audio, video)</p>
+        <input
+          type="file"
+          multiple
+          onchange={(e) => {
+            const files = (e.target as HTMLInputElement).files;
+            if (files) {
+              uploadedFiles = [...uploadedFiles, ...Array.from(files)];
+            }
+          }}
+          class="file-input"
+        />
+      </div>
+
+      {#if uploadedFiles.length > 0}
+        <div class="uploaded-files">
+          <h3>Uploaded Files ({uploadedFiles.length})</h3>
+          <ul>
+            {#each uploadedFiles as file, i}
+              <li>
+                {file.name}
+                <button type="button" onclick={() => removeFile(i)}>✕</button>
+              </li>
+            {/each}
+          </ul>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Guided prompts -->
+    <div class="form-section guided-prompts">
+      <h2>Guided Questions</h2>
+      <p>Answer these to help structure the case:</p>
+
+      <div class="prompt-group">
+        <label for="who">
+          <strong>WHO</strong> — Who is involved?
+        </label>
+        <input
+          id="who"
+          type="text"
+          bind:value={who}
+          placeholder="Suspect: John Doe. Victim: Jane Smith. Witness: Officer Johnson."
+        />
+      </div>
+
+      <div class="prompt-group">
+        <label for="what">
+          <strong>WHAT</strong> — What happened?
+        </label>
+        <input
+          id="what"
+          type="text"
+          bind:value={what}
+          placeholder="Armed robbery of convenience store"
+        />
+      </div>
+
+      <div class="prompt-group">
+        <label for="when">
+          <strong>WHEN</strong> — When did it happen?
+        </label>
+        <input
+          id="when"
+          type="text"
+          bind:value={when}
+          placeholder="March 15, 2024, approximately 11:30 PM"
+        />
+      </div>
+
+      <div class="prompt-group">
+        <label for="where">
+          <strong>WHERE</strong> — Where did it happen?
+        </label>
+        <input
+          id="where"
+          type="text"
+          bind:value={where}
+          placeholder="7-Eleven, 456 Main St, Springfield"
+        />
+      </div>
+
+      <div class="prompt-group">
+        <label for="why">
+          <strong>WHY</strong> — Why is this conduct criminal?
+        </label>
+        <input
+          id="why"
+          type="text"
+          bind:value={why}
+          placeholder="Suspect needed money for drug habit"
+        />
+      </div>
+
+      <div class="prompt-group">
+        <label for="how">
+          <strong>HOW</strong> — How did the suspect act?
+        </label>
+        <input
+          id="how"
+          type="text"
+          bind:value={how}
+          placeholder="Displayed firearm, demanded cash, fled in vehicle"
+        />
+      </div>
+    </div>
+
+    <!-- Error message -->
     {#if error}
-      <div class="error-banner">
-        <X size={16} />
-        <span>{error}</span>
-        <button class="error-close" onclick={() => error = null} aria-label="Close error">
-          <X size={14} />
-        </button>
+      <div class="error-message">
+        <strong>❌ Error:</strong> {error}
       </div>
     {/if}
 
-    <form onsubmit={handleSubmit} class="case-form">
-      <div class="form-grid">
-        <!-- Basic Information -->
-        <div class="form-section">
-          <h2 class="section-title">Basic Information</h2>
-
-          <div class="form-group">
-            <label for="title" class="form-label required">Case Title</label>
-            <input
-              id="title"
-              type="text"
-              bind:value={title}
-              placeholder="Enter case title"
-              required
-              class="form-input"
-            />
-            <p class="form-help">A descriptive title for the case</p>
-          </div>
-
-          <div class="form-group">
-            <label for="caseNumber" class="form-label required">Case Number</label>
-            <input
-              id="caseNumber"
-              type="text"
-              bind:value={caseNumber}
-              placeholder="Enter case number"
-              required
-              class="form-input"
-            />
-            <p class="form-help">Official case reference number</p>
-          </div>
-
-          <div class="form-group">
-            <label for="status" class="form-label">Status</label>
-            <select id="status" bind:value={status} class="form-select">
-              <option value="open">Open</option>
-              <option value="pending">Pending</option>
-              <option value="closed">Closed</option>
-            </select>
-            <p class="form-help">Current status of the case</p>
-          </div>
-        </div>
-
-        <!-- Details -->
-        <div class="form-section">
-          <h2 class="section-title">Case Details</h2>
-
-          <div class="form-group">
-            <label for="description" class="form-label">Description</label>
-            <textarea
-              id="description"
-              bind:value={description}
-              placeholder="Enter case description"
-              rows="4"
-              class="form-textarea"
-            ></textarea>
-            <p class="form-help">Detailed description of the case</p>
-          </div>
-
-          <div class="form-group">
-            <label for="assignedTo" class="form-label">Assigned To</label>
-            <input
-              id="assignedTo"
-              type="text"
-              bind:value={assignedTo}
-              placeholder="Enter assignee name"
-              class="form-input"
-            />
-            <p class="form-help">Person responsible for this case</p>
-          </div>
-        </div>
-
-        <!-- Tags -->
-        <div class="form-section">
-          <h2 class="section-title">Tags</h2>
-
-          <div class="form-group">
-            <label for="tagInput" class="form-label">Add Tags</label>
-            <div class="tag-input-group">
-              <input
-                id="tagInput"
-                type="text"
-                bind:value={tagInput}
-                placeholder="Enter tag and press Enter"
-                onkeydown={handleTagKeydown}
-                class="form-input"
-              />
-              <button type="button" onclick={addTag} class="btn btn-secondary tag-add-btn">
-                Add
-              </button>
-            </div>
-            <p class="form-help">Tags help organize and find cases</p>
-          </div>
-
-          {#if tagList.length > 0}
-            <div class="tags-display">
-              <label class="form-label">Current Tags:</label>
-              <div class="tag-list">
-                {#each tagList as tag (tag)}
-                  <span class="tag">
-                    {tag}
-                    <button
-                      type="button"
-                      onclick={() => removeTag(tag)}
-                      class="tag-remove"
-                      aria-label="Remove {tag} tag"
-                    >
-                      <X size={12} />
-                    </button>
-                  </span>
-                {/each}
-              </div>
-            </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Form Actions -->
-      <div class="form-actions">
-        <button type="button" onclick={handleCancel} class="btn btn-secondary" disabled={loading}>
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" disabled={loading}>
-          {#if loading}
-            <div class="spinner"></div>
-          {:else}
-            <Save size={16} />
-          {/if}
-          Create Case
-        </button>
-      </div>
-    </form>
-  </div>
+    <!-- Submit button -->
+    <div class="form-actions">
+      <button type="submit" disabled={loading} class="btn-submit">
+        {#if loading}
+          ⏳ Analyzing with AI...
+        {:else}
+          🚀 Create Case
+        {/if}
+      </button>
+      <p class="help-text">
+        This will use AI to extract charges, persons, and evidence. You can edit everything after.
+      </p>
+    </div>
+  </form>
 </div>
 
 <style>
-  .create-case {
+  .intake-container {
+    background: var(--yorha-bg);
+    color: var(--yorha-ink);
+    font-family: var(--yorha-font);
+    padding: 2rem;
     min-height: 100vh;
-    background: #f8f9fa;
-    padding: 2rem;
   }
 
-  .page-header {
-    background: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  .intake-header {
     margin-bottom: 2rem;
+    border-bottom: 3px solid var(--yorha-crimson);
+    padding-bottom: 1rem;
   }
 
-  .header-nav {
-    margin-bottom: 1rem;
-  }
-
-  .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-    color: #212529;
-  }
-
-  .page-subtitle {
+  .intake-header h1 {
     margin: 0;
-    color: #6c757d;
+    font-size: 2rem;
+    color: var(--yorha-crimson);
+    font-weight: bold;
   }
 
-  .form-container {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+  .intake-header p {
+    margin: 0.5rem 0 0 0;
+    color: #666;
+    font-size: 0.875rem;
   }
 
-  .error-banner {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: #f8d7da;
-    color: #721c24;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f5c6cb;
-  }
-
-  .error-close {
-    background: none;
-    border: none;
-    color: #721c24;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    margin-left: auto;
-  }
-
-  .error-close:hover {
-    background: rgba(114, 28, 36, 0.1);
-  }
-
-  .case-form {
-    padding: 2rem;
-  }
-
-  .form-grid {
-    display: grid;
-    gap: 2rem;
+  .intake-form {
+    max-width: 900px;
+    margin: 0 auto;
   }
 
   .form-section {
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 2rem;
-  }
-
-  .form-section:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 1.5rem 0;
-    color: #212529;
-  }
-
-  .form-group {
+    background: var(--yorha-paper);
+    border: 2px solid var(--yorha-ink);
+    border-radius: 4px;
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
   }
 
-  .form-label {
-    display: block;
+  .form-section h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: var(--yorha-ink);
+  }
+
+  .form-section p {
+    margin: 0 0 1rem 0;
+    color: #666;
     font-size: 0.875rem;
-    font-weight: 500;
-    color: #212529;
-    margin-bottom: 0.5rem;
   }
 
-  .form-label.required::after {
-    content: ' *';
-    color: #dc3545;
-  }
-
-  .form-input,
-  .form-textarea,
-  .form-select {
+  .narrative-box {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .form-input:focus,
-  .form-textarea:focus,
-  .form-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
-
-  .form-textarea {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-family: var(--yorha-font);
+    font-size: 0.95rem;
+    line-height: 1.6;
     resize: vertical;
-    min-height: 100px;
+    color: var(--yorha-ink);
   }
 
-  .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.5rem center;
-    background-repeat: no-repeat;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
+  .narrative-box:focus {
+    outline: none;
+    border-color: var(--yorha-crimson);
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.1);
   }
 
-  .form-help {
-    margin: 0.25rem 0 0 0;
-    font-size: 0.75rem;
-    color: #6c757d;
-  }
-
-  .tag-input-group {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .tag-add-btn {
-    flex-shrink: 0;
-    padding: 0.75rem 1rem;
-  }
-
-  .tags-display {
+  .file-drop-zone {
     margin-top: 1rem;
+    padding: 2rem;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    text-align: center;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
-  .tag-list {
+  .file-drop-zone:hover {
+    border-color: var(--yorha-crimson);
+    background: #fff5f5;
+  }
+
+  .file-drop-zone p {
+    margin: 0;
+    color: #666;
+  }
+
+  .file-input {
+    display: none;
+  }
+
+  .uploaded-files {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 3px;
+  }
+
+  .uploaded-files h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .uploaded-files ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .uploaded-files li {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .tag {
-    display: inline-flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
-    background: #e9ecef;
-    color: #495057;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 500;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
   }
 
-  .tag-remove {
+  .uploaded-files button {
     background: none;
     border: none;
-    color: #6c757d;
+    color: var(--yorha-crimson);
     cursor: pointer;
-    padding: 0.125rem;
-    border-radius: 0.125rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: bold;
   }
 
-  .tag-remove:hover {
-    background: rgba(108, 117, 125, 0.2);
-    color: #495057;
+  .guided-prompts {
+    background: #f9f9f9;
+  }
+
+  .prompt-group {
+    margin-bottom: 1rem;
+  }
+
+  .prompt-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--yorha-ink);
+  }
+
+  .prompt-group strong {
+    color: var(--yorha-crimson);
+  }
+
+  .prompt-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-family: var(--yorha-font);
+    font-size: 0.9rem;
+    color: var(--yorha-ink);
+  }
+
+  .prompt-group input:focus {
+    outline: none;
+    border-color: var(--yorha-crimson);
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.1);
+  }
+
+  .error-message {
+    background: #ffe6e6;
+    border: 2px solid var(--yorha-crimson);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: var(--yorha-ink);
+    font-size: 0.9rem;
   }
 
   .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e9ecef;
+    text-align: center;
   }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+  .btn-submit {
+    padding: 1rem 2rem;
+    background: var(--yorha-crimson);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-family: var(--yorha-font);
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1px solid transparent;
-    text-decoration: none;
   }
 
-  .btn:disabled {
+  .btn-submit:hover:not(:disabled) {
+    background: #d32f2f;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
-    opacity: 0.5;
   }
 
-  .btn-link {
-    background: none;
-    color: #007bff;
-    border: none;
-    padding: 0;
-    text-decoration: underline;
-  }
-
-  .btn-link:hover {
-    color: #0056b3;
-  }
-
-  .btn-secondary {
-    background: #6c757d;
-    color: white;
-    border-color: #6c757d;
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background: #545b62;
-    border-color: #545b62;
-  }
-
-  .btn-primary {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background: #0056b3;
-    border-color: #0056b3;
-  }
-
-  .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .create-case {
-      padding: 1rem;
-    }
-
-    .page-header {
-      padding: 1.5rem;
-    }
-
-    .case-form {
-      padding: 1.5rem;
-    }
-
-    .form-grid {
-      gap: 1.5rem;
-    }
-
-    .form-section {
-      padding-bottom: 1.5rem;
-    }
-
-    .tag-input-group {
-      flex-direction: column;
-    }
-
-    .tag-add-btn {
-      align-self: flex-start;
-    }
-
-    .form-actions {
-      flex-direction: column-reverse;
-    }
-
-    .btn {
-      width: 100%;
-      justify-content: center;
-    }
+  .help-text {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #999;
   }
 </style>

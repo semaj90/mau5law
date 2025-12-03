@@ -6,7 +6,7 @@ import type { Case } from '$lib/types';
  * 1. Create case → 2. Upload evidence → 3. Canvas positioning → 4. Timeline reconstruction → 5. RAG chat
  */
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { db  } from '$lib/server/index.js';
 import * as schema from '$lib/server/db/schema.js';
 

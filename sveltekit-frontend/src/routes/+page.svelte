@@ -1,904 +1,824 @@
 <script lang="ts">
-  import type { browser  } from '$app/environment';
-  import LoginButton from '$lib/components/auth/LoginButton.svelte';
-  import * as unified from '$lib/stores/unified';
-  import ContextualEvidenceChatModal from '$lib/components/ai/ContextualEvidenceChatModal.svelte';
-  import type { createFileUploader  } from '$lib/utils/file-uploader';
-  import { derived, writable } from 'svelte/store';;
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
 
-  let file = $state <File | null>(null);
-  let result = $state <any>(null); // Use any for now, or define a proper interface for the result
-  let isUploading = $state <boolean>(false);
+  // State
+  let aiMode = $state('9S');
+  let assistantMessage = $state('Greetings, Detective! I am 9S, your AI investigation assistant.');
 
-  async function handleUpload() {
-    if (!file) {
-      alert('Please select a file to upload.');
-      return;
-    }
-
-    isUploading = true;
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload-analyze', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      result = data.data;
-      console.log('Analysis Complete:', result);
-    } catch (error) {
-      console.error('Upload and analysis failed:', error);
-      alert('Failed to upload and analyze document.');
-    } finally {
-      isUploading = false;
-    }
-  }
-
-  // Create safe local stores that fall back if unified exports are missing
-  const recommendations = (unified as any).recommendations ?? writable<any[]>([]);
-  const partialRecommendations = (unified as any).partialRecommendations ?? writable<any[]>([]);
-  const engineState =
-    (unified as any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
-  const errorMessage = (unified as any).errorMessage ?? writable<string>('');
-  const runQuery =
-    (unified as any).runQuery ??
-    (async (_q: string) => {
-      console.warn('runQuery stub called - unified.runQuery not available');
-    });
-
-  // Use svelte/store derived and coerce values into arrays to avoid type errors
-  let displayRecommendations = derived(
-    [recommendations, partialRecommendations, engineState],
-    ([$recs , $partial , $state ]) => {
-      // cast to unknown before accessing .items to satisfy TS
-      const recsArr = Array.isArray($recs ) ? $recs : (($recs as { items?: any[] })?.items ?? []);
-      const partialArr = Array.isArray($partial )
-        ? $partial : (($partial as { items?: any[] })?.items ?? []);
-      // show streaming partials while processing, otherwise final recommendations
-      if ($state === 'processing' && partialArr.length) return partialArr;
-      return recsArr.length ? recsArr : partialArr;
-    }
-  );
-
-  // --- Add missing reactive state used by the template / health checks ---
-  let systemStatus: Record<string, string> = {
-    database: 'checking',
-    redis: 'checking',
-    ollama: 'checking',
-    gpu: 'checking',
-    workers: 'checking',
-  };
-  let workerDetails = {
-    ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-    embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-    autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-  };
-  // typed stats and reactive primitives to silence 'unknown' type errors
-  let stats = $state <{ totalCases: number; totalEvidence: number; processingJobs: number }>({
-    totalCases: 0,
-    totalEvidence: 0,
-    processingJobs: 0,
+  let stats = $state({
+    activeCases: 3,
+    evidenceItems: 27,
+    personsOfInterest: 0,
+    recentActivity: 12
   });
-  let loading = $state <boolean>(true);
-  let userQuery = $state <string>('');
-  let registerOpen = $state <boolean>(false);
-  let registerDialogRef: HTMLDialogElement; // Reference to the native dialog element
-  let showAIChatModal = $state (false);
-  // ---------------------------------------------------------------
 
-  function openRegister() {
-    registerOpen = true;
-    registerDialogRef?.showModal(); // Use showModal() for native dialog
-  }
-
-  // Check system health on mount
-  $effect (() => {
-    if (browser) {
-      checkSystemHealth();
-      const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
-      return () => clearInterval(interval);
-    }
+  let systemStatus = $state({
+    database: 'online',
+    redis: 'online',
+    ollama: 'online',
+    assistant: 'online'
   });
-  // Type-safe system health check
-  async function checkSystemHealth(): Promise<void> {
-    try {
-      interface WorkerStatus {
-        name?: string;
-        status?: string;
-        healthy?: boolean;
-        queueDepth?: number;
-        processedJobs?: number;
-      }
 
-      // safe fetch helpers with Response fallback
-      const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }) as Response);
-      systemStatus.database = dbCheck.ok ? 'online' : 'offline';
-
-      const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false }) as Response);
-      systemStatus.redis = redisCheck.ok ? 'online' : 'offline';
-
-      const ollamaCheck = await fetch('/api/health/ollama').catch(
-        () => ({ ok: false }) as Response
-      );
-      systemStatus.ollama = ollamaCheck.ok ? 'online' : 'offline';
-
-      const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false }) as Response);
-      systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
-
-      const workersCheck = await fetch('/api/health/workers').catch(() => null);
-      if (workersCheck?.ok) {
-        const workersData = (await workersCheck.json()) as {
-          success?: boolean;
-          status?: string;
-          workers?: WorkerStatus[];
-        };
-
-        systemStatus.workers =
-          workersData.success && workersData.status === 'online'
-            ? 'online'
-            : workersData.status === 'degraded'
-              ? 'degraded'
-              : 'offline';
-
-        for (const worker of workersData.workers ?? []) {
-          const name = (worker.name ?? '').toLowerCase();
-          if (name.includes('ocr')) {
-            workerDetails.ocr = {
-              status: worker.status ?? 'offline',
-              healthy: !!worker.healthy,
-              queueDepth: worker.queueDepth ?? 0,
-              processedJobs: worker.processedJobs ?? 0,
-            };
-          } else if (name.includes('embed') || name.includes('embedding')) {
-            workerDetails.embedding = {
-              status: worker.status ?? 'offline',
-              healthy: !!worker.healthy,
-              queueDepth: worker.queueDepth ?? 0,
-              processedJobs: worker.processedJobs ?? 0,
-            };
-          } else if (name.includes('autotag')) {
-            workerDetails.autotag = {
-              status: worker.status ?? 'offline',
-              healthy: !!worker.healthy,
-              queueDepth: worker.queueDepth ?? 0,
-              processedJobs: worker.processedJobs ?? 0,
-            };
-          }
-        }
-      } else {
-        systemStatus.workers = 'offline';
-      }
-
-      const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
-      if (statsResponse?.ok) {
-        const data = (await statsResponse.json()) as {
-          success?: boolean;
-          data?: { totalCases?: number; totalEvidence?: number; activeJobs?: number };
-        };
-        if (data.success && data.data) {
-          stats.totalCases = data.data.totalCases ?? 0;
-          stats.totalEvidence = data.data.totalEvidence ?? 0;
-          stats.processingJobs = data.data.activeJobs ?? 0;
-        }
-      }
-
-      loading = false;
-    } catch (err) {
-      console.error('Health check error:', err);
-      loading = false;
+  let recentCases = $state([
+    {
+      id: 1,
+      title: 'CORPORATE ESPIONAGE INVESTIGATION',
+      items: 8,
+      hoursAgo: 2,
+      priority: 'high',
+      status: 'active'
+    },
+    {
+      id: 2,
+      title: 'MISSING PERSON: DR SARAH CHEN',
+      items: 16,
+      hoursAgo: 4,
+      priority: 'medium',
+      status: 'pending'
+    },
+    {
+      id: 3,
+      title: 'FINANCIAL FRAUD ANALYSIS',
+      items: 4,
+      hoursAgo: 24,
+      priority: 'medium',
+      status: 'pending'
     }
-  }
-  function getStatusColor(status: string) {
-    switch (status) {
-      case 'online': // Removed comma
-        return 'is-success'; // NES.css success color
-      case 'offline': // Removed comma
-        return 'is-error'; // NES.css error color
-      case 'degraded': // Removed comma
-        return 'is-warning'; // NES.css warning color
-      default:
-        return 'is-disabled'; // NES.css disabled/default color
-    }
-  }
-  function getStatusIcon(status: string) {
-    switch (status) {
-      case 'online': // Removed comma
-        return '✅';
-      case 'offline': // Removed comma
-        return '❌';
-      case 'degraded': // Removed comma
-        return '⚠️'; // Changed for degraded status
-      default:
-        return '🕒';
-    }
-  }
+  ]);
 
-  const handleSubmit = async () => {
-    if (userQuery.trim()) await runQuery(userQuery.trim());
-  };
+  function cycleAIMode() {
+    const modes = ['9S', 'A2', '2B'];
+    const current = modes.indexOf(aiMode);
+    aiMode = modes[(current + 1) % modes.length];
 
-  // nice keyboard shortcut
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') handleSubmit();
-  };
-
-  // lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
-  function escapeHtml(str: string) {
-    const s = String(str ?? '');
-    const map: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;', // Corrected string literal
+    const messages: Record<string, string> = {
+      '9S': 'Hello, Detective! 9S mode active.',
+      'A2': 'A2 combat mode engaged. Ready for aggressive analysis.',
+      '2B': '2B escort mode active. All evidence secured.'
     };
-    return s.replace(/[&<>"']/g, (m) => map[m as keyof typeof map]);
+    assistantMessage = messages[aiMode];
   }
 
-  const uploader = createFileUploader('/api/upload');
+  function getPriorityClass(priority: string) {
+    return priority === 'high' ? 'priority-high' :
+           priority === 'medium' ? 'priority-medium' : 'priority-low';
+  }
 
-  // annotate parameter to avoid implicit: unknown
-  uploader.on('success', (res: unknown) => {
-    console.log('Uploaded:', (res as { url?: string })?.url ?? res);
-  }); // Type assertion for res
+  function getStatusIcon(status: string) {
+    return status === 'online' ? '✓' :
+           status === 'checking' ? '⏳' : '✗';
+  }
+
+  onMount(() => {
+    if (browser) {
+       // Health check logic can be added here later
+    }
+  });
 </script>
 
-<!-- Replace placeholder main with markup that uses the script variables, components and many CSS classes -->
-<main class="home-page">
-  <section class="nes-container hero-section-custom">
-    <div class="hero">
-      <h1 class="nes-text is-primary">Legal AI Platform</h1>
-      <p class="nes-text is-success subtitle-custom">GPU · Ollama · Redis · Qdrant</p>
+<main class="yorha-command-center">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-text">YORHA</div>
+        <div class="logo-subtitle">DETECTIVE</div>
+      </div>
+      <div class="subtitle">Investigation Interface</div>
+    </div>
 
-      <div class="auth-buttons-flex">
-        <LoginButton />
-        <button class="card-button-custom" onclick={openRegister}>Register</button>
-        <button class="card-button-custom accent" onclick={() => (showAIChatModal = true)}>
-          Launch YoRHa AI Chat
+    <nav class="sidebar-nav">
+      <a href="/command" class="nav-item active">
+        <span class="nav-icon">📋</span> COMMAND CENTER
+      </a>
+      <a href="/" class="nav-item">
+        <span class="nav-icon">📁</span> ACTIVE CASES <span class="badge">{recentCases.length}</span>
+      </a>
+      <a href="/evidence" class="nav-item">
+        <span class="nav-icon">📊</span> EVIDENCE LIBRARY
+      </a>
+      <a href="/persons-of-interest" class="nav-item">
+        <span class="nav-icon">👤</span> PERSONS OF INTEREST
+      </a>
+      <a href="/analysis-center" class="nav-item">
+        <span class="nav-icon">🔍</span> ANALYSIS CENTER
+      </a>
+      <a href="/aichat" class="nav-item">
+        <span class="nav-icon">🤖</span> AI ASSISTANT
+      </a>
+      <a href="/all-routes" class="nav-item">
+        <span class="nav-icon">🔧</span> TERMINAL
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="/system-configuration" class="nav-item">
+        <span class="nav-icon">⚙️</span> SYSTEM CONFIGURATION
+      </a>
+    </div>
+
+    <div class="version-info">
+      <div>YoRHa</div>
+      <div class="version">v2.0</div>
+      <div class="subtitle">Detective Operations</div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-left">
+        <h1>COMMAND CENTER</h1>
+        <div class="header-subtitle">YoRHa <span class="dimmed">Detective Interface / 8/13.10</span></div>
+      </div>
+      <div class="header-right">
+        <button class="header-btn">
+          <span class="icon">🔔</span> HELP <span class="badge">0</span>
         </button>
-        <a class="card-button-custom link-button" href="/aichat">Open /aichat</a>
+        <button class="header-btn">
+          <span class="icon">⚙️</span> OPTIONS
+        </button>
+        <button class="header-btn">
+          <span class="icon">🔍</span> GLOBAL SEARCH
+        </button>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <section class="status-section-custom">
-    <div class="status-grid-custom">
-      <div class="status-item-custom card">
-        <div>
-          <div class="status-label-custom">Database</div>
-          <div class="status">{systemStatus.database} {getStatusIcon(systemStatus.database)}</div>
+    <!-- Quick Stats Grid -->
+    <section class="quick-stats">
+      <div class="stat-card">
+        <div class="stat-label">Active Cases</div>
+        <div class="stat-value">{stats.activeCases}</div>
+        <div class="stat-icon">📁</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Evidence Items</div>
+        <div class="stat-value">{stats.evidenceItems}</div>
+        <div class="stat-icon">📄</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Persons of Interest</div>
+        <div class="stat-value">{stats.personsOfInterest}</div>
+        <div class="stat-icon">👤</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Recent Activity</div>
+        <div class="stat-value">{stats.recentActivity}</div>
+        <div class="stat-icon">📊</div>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <div class="content-grid">
+      <!-- Active Cases Section -->
+      <section class="cases-section">
+        <div class="section-header">
+          <h2>ACTIVE CASES</h2>
+          <a href="/cases" class="view-all-btn">VIEW ALL →</a>
         </div>
-        <div class={getStatusColor(systemStatus.database)}></div>
-      </div>
 
-      <div class="status-item-custom card">
-        <div>
-          <div class="status-label-custom">Redis</div>
-          <div class="status">{systemStatus.redis} {getStatusIcon(systemStatus.redis)}</div>
-        </div>
-        <div class={getStatusColor(systemStatus.redis)}></div>
-      </div>
-
-      <div class="status-item-custom card">
-        <div>
-          <div class="status-label-custom">Workers</div>
-          <div class="status">{systemStatus.workers} {getStatusIcon(systemStatus.workers)}</div>
-        </div>
-        <div class={getStatusColor(systemStatus.workers)}></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="quick-stats-custom">
-    <div class="stat-card-custom card">
-      <div class="stat-icon-custom">📁</div>
-      <div class="stat-content-custom">
-        <h3>Total Cases</h3>
-        <div class="stat-value-custom">{stats.totalCases}</div>
-      </div>
-    </div>
-
-    <div class="stat-card-custom card">
-      <div class="stat-icon-custom">🧾</div>
-      <div class="stat-content-custom">
-        <h3>Evidence</h3>
-        <div class="stat-value-custom">{stats.totalEvidence}</div>
-      </div>
-    </div>
-
-    <div class="stat-card-custom card">
-      <div class="stat-icon-custom">⚙️</div>
-      <div class="stat-content-custom">
-        <h3>Processing Jobs</h3>
-        <div class="stat-value-custom">{stats.processingJobs}</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="yorha-preview card">
-    <div class="yorha-preview-info">
-      <p class="eyebrow">YoRHa Command Center</p>
-      <h2>Launch AI Legal Assistant</h2>
-      <p>
-        Drag evidence, spawn Phoenix-style reports, and sync to LangExtract memory. The assistant is also
-        available at <code>/aichat</code> for a full-screen experience.
-      </p>
-      <div class="preview-actions">
-        <button class="card-button-custom accent" onclick={() => (showAIChatModal = true)}>Open Chat</button>
-        <a class="card-button-custom" href="/dev/client-embedding-demo">Embedding Demo</a>
-      </div>
-      <ul class="preview-list">
-        <li>Evidence uploads flow through MinIO + Redis</li>
-        <li>Case briefs via <code>/api/case-theory</code></li>
-        <li>QUIC contextual chat with file attachments</li>
-      </ul>
-    </div>
-    <div class="yorha-preview-panel">
-      <div class="preview-panel-header">
-        <span>AI LEGAL ASSISTANT — 9S MODE</span>
-        <span class="status-dot"></span>
-      </div>
-      <ul>
-        <li>Assistant status: ACTIVE</li>
-        <li>Evidence analysis: running</li>
-        <li>Gemma3-Legal latency: 120ms</li>
-        <li>Redis streams: healthy</li>
-      </ul>
-      <p class="preview-panel-prompt">Detective, upload evidence or request a case theory...</p>
-    </div>
-  </section>
-
-  <section class="ai-query-section-custom">
-    <div class="query-box">
-      <input
-        type="text"
-        placeholder="Ask the legal assistant..."
-        value={userQuery}
-        oninput={(e) => (userQuery = (e.currentTarget as HTMLInputElement).value)}
-        onkeydown={onKey}
-      />
-      <button onclick={handleSubmit} disabled={loading}>{loading ? 'Waiting...' : 'Ask'}</button>
-      <input type="file" bind:files={file} />
-      <button
-        class="card-button-custom"
-        onclick={handleUpload}
-        disabled={isUploading}
-      >
-        {isUploading ? 'Uploading...' : 'Upload & Analyze'}
-      </button>
-    </div>
-
-    {#if $errorMessage }
-      <p class="nes-text is-error" style="margin-top: 1rem;">{$errorMessage }</p>
-    {/if}
-
-    {#if result}
-      <div class="nes-container with-title is-centered" style="margin-top: 2rem;">
-        <p class="title">Analysis Result</p>
-        <p><strong>Document ID:</strong> {result.documentId}</p>
-        <p><strong>Document Type:</strong> {result.parsed.document_type}</p>
-        <p><strong>Risk Level:</strong> {result.parsed.risk_level}</p>
-        <h4>Recommendations:</h4>
-        <ul>
-          {#each result.analysis.recommendations as rec}
-            <li>{rec.action} (confidence: {rec.confidence})</li>
+        <div class="cases-list">
+          {#each recentCases as case}
+            <div class="case-card">
+              <div class="case-header">
+                <h3>{case.title}</h3>
+                <div class="case-badges">
+                  <span class="badge {getPriorityClass(case.priority)}">{case.priority}</span>
+                  <span class="badge status-{case.status}">{case.status}</span>
+                </div>
+              </div>
+              <div class="case-meta">
+                <span>📦 {case.items} items</span>
+                <span>🕒 {case.hoursAgo} hours ago</span>
+              </div>
+              <button class="case-action-btn">→</button>
+            </div>
           {/each}
-        </ul>
-        <h4>Synthesis:</h4>
-        <p>{result.analysis.synthesis}</p>
-      </div>
-    {/if}
+        </div>
+      </section>
 
-    <div class="recommendation-cards" aria-live="polite">
-      {#if $displayRecommendations && $displayRecommendations .length}
-        {#each $displayRecommendations as rec (rec.id ?? rec.title ?? Math.random())}
-          <div class="card {rec.streaming ? 'streaming' : ''} {rec.dynamic ? 'dym' : ''}">
-            {@html escapeHtml(rec.title ?? rec.summary ?? '')}
-            <div class="meta">
-              <span>{rec.source ?? 'AI'}</span>
-              <span>{rec.score ? `${Math.round(rec.score * 100) / 100}` : ''}</span>
+      <!-- AI Assistant Panel -->
+      <aside class="ai-assistant-panel">
+        <div class="panel-header">
+          <span>AI LEGAL ASSISTANT — {aiMode} MODE ACTIVE</span>
+          <button class="mode-toggle" onclick={cycleAIMode}>
+            <span class="status-dot active"></span>
+          </button>
+        </div>
+
+        <div class="assistant-content">
+          <div class="assistant-avatar">
+            <div class="avatar-icon">🤖</div>
+            <div class="avatar-label">
+              AI {aiMode} Assistant:<br />
+              {aiMode} mode Active
             </div>
           </div>
-        {/each}
-      {:else}
-        <div class="card">No recommendations yet.</div>
-      {/if}
+
+          <div class="assistant-message">
+            {assistantMessage}
+          </div>
+
+          <ul class="assistant-status">
+            <li>Autocom: status check out 10 minutes ago</li>
+            <li>Evidence analysis queue processing slowly</li>
+            <li>1 hour ago</li>
+          </ul>
+
+          <div class="assistant-actions">
+            <div class="assistant-prompt">
+              AI analysis requested...
+            </div>
+          </div>
+        </div>
+
+        <div class="system-status-panel">
+          <h3>SYSTEM STATUS</h3>
+          <div class="status-buttons">
+            <a href="/evidence-board" class="status-btn">
+              <span class="icon">📊</span> EVIDENCE BOARD
+            </a>
+            <a href="/timeline-analysis" class="status-btn">
+              <span class="icon">⏱️</span> TIMELINE ANALYSIS
+            </a>
+            <a href="/quick-actions" class="status-btn">
+              <span class="icon">⚡</span> QUICK ACTIONS
+            </a>
+          </div>
+        </div>
+      </aside>
     </div>
-  </section>
 
-  <ContextualEvidenceChatModal
-    visible={showAIChatModal}
-    on:close={() => (showAIChatModal = false)}
-  />
-
-  <!-- Native HTML5 <dialog> for registration -->
-  <dialog
-    bind:this={registerDialogRef}
-    onclose={() => (registerOpen = false)}
-    class="nes-dialog is-rounded"
-  >
-    <form method="dialog">
-      <p class="title">Register for Legal AI Platform</p>
-      <p>This is a placeholder for the registration form.</p>
-      <div class="dialog-buttons">
-        <button class="nes-btn">Cancel</button>
-        <button class="nes-btn is-primary">Register</button>
+    <!-- System Health Footer -->
+    <footer class="system-health">
+      <div class="health-item">
+        <span class="health-icon">{getStatusIcon(systemStatus.database)}</span>
+        <span>Database: {systemStatus.database}</span>
       </div>
-    </form>
-  </dialog>
+      <div class="health-item">
+        <span class="health-icon">{getStatusIcon(systemStatus.redis)}</span>
+        <span>Redis: {systemStatus.redis}</span>
+      </div>
+      <div class="health-item">
+        <span class="health-icon">{getStatusIcon(systemStatus.ollama)}</span>
+        <span>Ollama: {systemStatus.ollama}</span>
+      </div>
+      <div class="health-item">
+        <span class="health-icon">{getStatusIcon(systemStatus.assistant)}</span>
+        <span>AI Assistant: {systemStatus.assistant}</span>
+      </div>
+      <div class="health-time">
+        <span>Last Updated: {new Date().toLocaleTimeString()}</span>
+      </div>
+    </footer>
+  </div>
 </main>
 
 <style>
-  /* @unocss-include */
-  /*
-    NES.css provides a strong retro aesthetic.
-    Custom styles are kept minimal, primarily for specific gradients, shadows,
-    and layout adjustments not directly covered by NES.css, or to override
-    NES.css defaults for a more specific: "YoRHa" feel.
-  */
-
-  .home-page {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem;
-    min-height: 100vh;
-    background-color: #212529; /* Dark background for NES.css theme */
-  }
-
-  .auth-buttons-flex {
+  /* YoRHa Detective Command Center Styles */
+  .yorha-command-center {
     display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    justify-content: center; /* Added semicolon */
-    flex-wrap: wrap;
+    min-height: 100vh;
+    background: #d4c9a9;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    color: #0f0f0f;
   }
 
-  /* Custom overrides for NES.css containers to match original gradients/shadows */
-  .nes-container.hero-section-custom {
-    text-align: center;
-    margin-bottom: 3rem;
-    padding: 3rem 1rem; /* Added semicolon */;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
-    border: 2px solid rgba(255, 215, 0, 0.3);
-  }
-
-  .hero-section-custom .nes-text.is-primary {
-    font-size: 3rem; /* Added semicolon */;
-    color: #ffd700; /* Override NES.css primary color */;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    font-weight: 800;
-  }
-
-  .hero-section-custom .nes-text.is-success.subtitle-custom {
-    font-size: 1.4rem;
-    color: #00ff41; /* Override NES.css success color */;
-    margin-bottom: 1rem;
-    font-weight: 600;
-  }
-
-  .status-section-custom,
-  .worker-details-custom,
-  .stats-section-custom,
-  .features-section-custom,
-  .quick-actions-custom {
-    margin-bottom: 3rem;
-  }
-
-  .yorha-preview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.25rem;
-    padding: 1.5rem;
-    border: 2px solid rgba(255, 255, 255, 0.08);
+  /* Sidebar */
+  .sidebar {
+    width: 280px;
     background: #2a2016;
     color: #f8f0d9;
-  }
-  .yorha-preview-info h2 {
-    margin: 0.35rem 0;
-  }
-  .preview-actions {
     display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin: 1rem 0;
-  }
-  .card-button-custom.accent {
-    background: #0f0f0f;
-    color: #fdf3d4;
-    border: 1px solid #fdf3d4;
-  }
-  .card-button-custom.link-button {
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .preview-list {
-    list-style: square;
-    padding-left: 1.25rem;
-    color: #d4c9a9;
-  }
-  .yorha-preview-panel {
-    border: 2px solid #0f0f0f;
-    background: #12100c;
-    padding: 1rem;
-    min-height: 220px;
-  }
-  .preview-panel-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    font-size: 0.85rem;
-  }
-  .status-dot {
-    width: 10px;
-    height: 10px;
-    background: #4ade80;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .preview-panel-prompt {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #cbd5f5;
+    flex-direction: column;
+    border-right: 4px solid #0f0f0f;
   }
 
-  .status-grid-custom {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+  .sidebar-header {
     padding: 1.5rem;
+    border-bottom: 2px solid #0f0f0f;
   }
 
-  .status-item-custom {
-    display: flex;
-    justify-content: space-between; /* Corrected typo */;
-    align-items: center;
-    padding: 1rem;
+  .logo {
+    margin-bottom: 0.5rem;
   }
 
-  .status-label-custom {
-    font-weight: 600;
+  .logo-text {
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: 2px;
   }
 
-  .workers-grid-custom {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+  .logo-subtitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 1px;
   }
 
-  .worker-card-custom {
-    padding: 1.5rem;
-  }
-
-  .worker-header-custom {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #333; /* Custom border */
-  }
-
-  .worker-icon-custom {
-    font-size: 1.5rem;
-  }
-
-  .worker-tech-custom {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .tech-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem; /* Added semicolon */;
-    background: rgba(168, 85, 247, 0.2);
-    border: 1px solid #a855f7;
-    border-radius: 12px;
+  .subtitle {
     font-size: 0.75rem;
-    color: #a855f7;
-    font-weight: 600;
-  }
-
-  .quick-stats-custom {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .stat-card-custom {
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem; /* Added semicolon */;
-    transition: all 0.3s ease;
-  }
-
-  .stat-card-custom:hover {
-    border-color: #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-    transform: translateY(-4px);
-  }
-
-  .stat-icon-custom {
-    font-size: 3rem; /* Added semicolon */;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); /* Corrected comma */
-  }
-
-  .stat-content-custom h3 {
-    margin: 0 0 0.5rem 0; /* Corrected comma */;
-    font-size: 0.9rem;
+    color: #b4a080;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
-  .stat-value-custom {
-    font-size: 2rem;
-    font-weight: bold; /* Added semicolon */;
-    margin: 0;
-    font-family: 'JetBrains Mono', monospace;
+  .sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
   }
 
-  .action-grid-custom {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .action-card-custom {
-    padding: 2rem;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+  .nav-item {
     display: flex;
-    flex-direction: column; /* Added semicolon */;
-    gap: 1rem;
-  }
-
-  .action-card-custom:hover {
-    border-color: #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-    transform: translateY(-4px);
-  }
-
-  .action-card-custom::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #ffd700, #00ff41);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .card-icon-custom {
-    font-size: 3rem; /* Added semicolon */;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)); /* Corrected comma */
-  }
-
-  .card-button-custom {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    font-weight: 700;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    margin-top: 0.5rem; /* Added semicolon */
-  }
-
-  .featured-section-custom {
-    margin-bottom: 3rem;
-  }
-
-  .featured-card-custom {
-    position: relative;
-    display: block;
-    padding: 3rem; /* Added semicolon */;
-    background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
-    border: 3px solid #00ff41;
-    border-radius: 16px;
+    align-items: center;
+    padding: 0.875rem 1.5rem;
+    color: #f8f0d9;
     text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-    overflow: hidden;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
   }
 
-  .featured-card-custom::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
-    background-size: 200% 100%;
-    animation: shimmer 3s linear infinite;
+  .nav-item:hover {
+    background: #1a160f;
+    border-left-color: #fdf3d4;
   }
 
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0; /* Added semicolon */
-    }
-    100% {
-      background-position: 200% 0; /* Added semicolon */
-    }
+  .nav-item.active {
+    background: #12100c;
+    border-left-color: #fdf3d4;
+    font-weight: 700;
   }
 
-  .featured-badge {
+  .nav-icon {
+    margin-right: 0.75rem;
+  }
+
+  .badge {
+    margin-left: auto;
+    background: #0f0f0f;
+    color: #fdf3d4;
+    padding: 0.125rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .sidebar-footer {
+    border-top: 2px solid #0f0f0f;
+    padding: 1rem 0;
+  }
+
+  .version-info {
+    padding: 1rem 1.5rem;
+    border-top: 2px solid #0f0f0f;
+    text-align: right;
+    font-size: 0.75rem;
+    color: #8a7a5a;
+  }
+
+  .version {
+    font-size: 0.7rem;
+  }
+
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #d4c9a9;
+  }
+
+  .page-header {
+    padding: 1.5rem 2rem;
+    background: #c4b99a;
+    border-bottom: 4px solid #0f0f0f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .page-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
+  .header-subtitle {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  .dimmed {
+    opacity: 0.6;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .header-btn {
+    padding: 0.5rem 1rem;
+    background: #2a2016;
+    color: #f8f0d9;
+    border: 2px solid #0f0f0f;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .header-btn:hover {
+    background: #1a160f;
+  }
+
+  .icon {
+    margin-right: 0.375rem;
+  }
+
+  /* Quick Stats */
+  .quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    padding: 1.5rem 2rem;
+	background: #c4b99a;
+  }
+
+  .stat-card {
+    background: #f8f0d9;
+    border: 3px solid #0f0f0f;
+    padding: 1.25rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .stat-icon {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    padding: 0.5rem 1rem; /* Added semicolon */;
-    background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
-    color: #000;
-    font-weight: 900;
-    font-size: 0.75rem;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-    animation: pulse 2s ease-in-out infinite;
+    font-size: 2rem;
+    opacity: 0.2;
   }
 
-  @keyframes pulse {
-    0%,
-    100% {
-      transform: scale(1);
-      opacity: 1; /* Added semicolon */
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.9; /* Added semicolon */
-    }
+  /* Content Grid */
+  .content-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
   }
 
-  .featured-icon-custom {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+  /* Cases Section */
+  .cases-section {
+    background: #c4b99a;
+    border: 3px solid #0f0f0f;
+    padding: 1.5rem;
   }
 
-  .featured-tech-custom {
+  .section-header {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #0f0f0f;
   }
 
-  .featured-button-custom {
-    display: inline-block;
-    padding: 1rem 2rem;
+  .section-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
     font-weight: 900;
-    font-size: 1.2rem;
-    border-radius: 8px; /* Added semicolon */;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
+    letter-spacing: 1px;
   }
 
-  /* AI Query Section */
-  .ai-query-section-custom {
-    margin-top: 3rem;
+  .view-all-btn {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0f0f0f;
+    text-decoration: none;
+    padding: 0.375rem 0.75rem;
+    border: 2px solid #0f0f0f;
+    transition: all 0.2s ease;
   }
 
-  .query-box {
+  .view-all-btn:hover {
+    background: #0f0f0f;
+    color: #f8f0d9;
+  }
+
+  .cases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .case-card {
+    background: #f8f0d9;
+    border: 3px solid #0f0f0f;
+    padding: 1.25rem;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .case-card:hover {
+    transform: translateX(4px);
+  }
+
+  .case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.75rem;
+  }
+
+  .case-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    flex: 1;
+  }
+
+  .case-badges {
     display: flex;
     gap: 0.5rem;
   }
 
-  input[type='text'] {
-    flex: 1;
-    padding: 0.6rem 0.8rem;
-    border-radius: 0.6rem;
-    border: 1px solid #e6e6ea;
-    font-size: 1rem;
+  .priority-high {
+    background: #d32f2f;
+    color: white;
   }
 
-  button {
-    padding: 0.6rem 0.9rem;
-    border-radius: 0.6rem;
-    background: #2b6cb0;
+  .priority-medium {
+    background: #ff9800;
     color: white;
+  }
+
+  .priority-low {
+    background: #4caf50;
+    color: white;
+  }
+
+  .status-active {
+    background: #00c853;
+    color: white;
+  }
+
+  .status-pending {
+    background: #ff9800;
+    color: white;
+  }
+
+  .case-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+
+  .case-action-btn {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: #0f0f0f;
+    color: #fdf3d4;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .case-action-btn:hover {
+    background: #2a2016;
+  }
+
+  /* AI Assistant Panel */
+  .ai-assistant-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .panel-header {
+    background: #12100c;
+    color: #fdf3d4;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 3px solid #0f0f0f;
+  }
+
+  .mode-toggle {
+    background: transparent;
     border: none;
     cursor: pointer;
+    padding: 0;
   }
 
-  .status {
-    margin-top: 0.5rem;
-    color: #6b7280;
-    font-size: 0.9rem;
+  .status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #4ade80;
+    display: inline-block;
   }
 
-  .recommendation-cards {
-    margin-top: 1rem;
-    display: grid;
-    gap: 0.6rem;
-  }
-
-  .card {
-    background: #ffffff;
-    border-radius: 12px; /* Added semicolon */;
-    padding: 1rem;
-    box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
-    transition:
-      transform 200ms ease,
-      opacity 200ms ease;
-    overflow: hidden;
-  }
-
-  .card.streaming {
-    opacity: 0.95;
-    animation: pulse 1.2s infinite alternate; /* Added semicolon */;
-    border: 1px dashed rgba(43, 108, 176, 0.12);
-  }
-
-  .card.dym {
-    color: #ff6600;
-    border-left: 4px solid #ff9a3c; /* Added semicolon */;
-    background: linear-gradient(90deg, #fffaf5, #fff);
+  .status-dot.active {
+    animation: pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    from {
-      transform: translateY(0); /* Added semicolon */
-    }
-    to {
-      transform: translateY(-3px); /* Added semicolon */
-    }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
   }
 
-  .meta {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin-top: 0.5rem;
-    display: flex; /* Added semicolon */;
-    gap: 1rem;
-    align-items: center;
+  .assistant-content {
+    background: #1a160f;
+    color: #f8f0d9;
+    border: 3px solid #0f0f0f;
+    padding: 1.5rem;
+    flex: 1;
+    min-height: 300px;
   }
 
-  /* Custom styles for the native dialog */
-  dialog {
-    padding: 2rem;
-    border: 2px solid #fff;
-    background-color: #212529;
-    color: #fff;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-    border-image: url('data:image/svg+xml;charset=utf-8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H10V10H0V0ZM1 1V9H9V1H1Z" fill="%2300FF41"/></svg>')
-      2;
-  }
-
-  dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(5px);
-  }
-
-  .nes-dialog .title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #ffd700;
-  }
-
-  .nes-dialog .dialog-buttons {
+  .assistant-avatar {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #2a2016;
   }
 
-  .nes-btn {
+  .avatar-icon {
+    font-size: 3rem;
+  }
+
+  .avatar-label {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .assistant-message {
+    background: #12100c;
+    border: 2px solid #2a2016;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .assistant-status {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+
+  .assistant-status li::before {
+    content: '▷ ';
+    opacity: 0.6;
+    margin-right: 0.5rem;
+  }
+
+  .assistant-prompt {
+    background: #12100c;
+    border: 2px solid #2a2016;
+    padding: 1rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .system-status-panel {
+    background: #f8f0d9;
+    border: 3px solid #0f0f0f;
+    padding: 1.5rem;
+  }
+
+  .system-status-panel h3 {
+    margin: 0 0 1rem 0;
     font-size: 1rem;
-    padding: 0.8rem 1.5rem;
+    font-weight: 900;
+    letter-spacing: 1px;
   }
 
-  /* @unocss-include */
-  /* ...existing code... */
+  .status-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .status-btn {
+    background: #2a2016;
+    color: #f8f0d9;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid #0f0f0f;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+
+  .status-btn:hover {
+    background: #1a160f;
+  }
+
+  /* System Health Footer */
+  .system-health {
+    background: #2a2016;
+    color: #f8f0d9;
+    padding: 1rem 2rem;
+    border-top: 3px solid #0f0f0f;
+    display: flex;
+    gap: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .health-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .health-icon {
+    font-weight: 900;
+  }
+
+  .health-time {
+    margin-left: auto;
+    opacity: 0.6;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-assistant-panel {
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .yorha-command-center {
+      flex-direction: column;
+    }
+
+    .sidebar {
+      width: 100%;
+      border-right: none;
+      border-bottom: 4px solid #0f0f0f;
+    }
+
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .header-right {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .quick-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 </style>

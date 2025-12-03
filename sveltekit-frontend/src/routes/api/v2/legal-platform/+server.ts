@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';;
 import db from '$lib/server/db/unified-client'; // Changed from named import to default import
 import type { cases, evidence, criminals, legalDocuments  } from '$lib/server/db/schema-postgres';

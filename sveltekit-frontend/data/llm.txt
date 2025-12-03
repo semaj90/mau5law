@@ -1,7 +1,0 @@
-# MCP server dataset
-ServerName: context7
-URL: https://mcp.context7.ai/api
-Region: us-west1
-LastUpdated: 2025-10-20
-Description: Context7 provides live code examples and docs for A2A agents.
-

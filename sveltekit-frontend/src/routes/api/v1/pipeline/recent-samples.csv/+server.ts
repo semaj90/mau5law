@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { getPipelineHistogram  } from '$lib/services/pipeline-metrics';
 
 export const GET: RequestHandler = async () => {

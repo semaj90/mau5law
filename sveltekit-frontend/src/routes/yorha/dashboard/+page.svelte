@@ -3,7 +3,7 @@
   import { onDestroy, onMount } from 'svelte';;
   import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
-  import type { PageData } from './$types ';
+  import type { PageData } from './$types';
 
   // runtime d3 namespace holder — use `any` to avoid TS namespace generics issues at compile time
   let d3: any = null;

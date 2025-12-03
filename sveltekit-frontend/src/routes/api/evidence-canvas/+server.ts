@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { db  } from '$lib/server/db/client.js'; // Corrected import path for db
 import type { sql  } from 'drizzle-orm'; // Corrected import path for sql
 import type { MinIOService  } from '$lib/server/minio-service'; // For handling MinIO URLs

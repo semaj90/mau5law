@@ -4,7 +4,7 @@ import type { existsSync, mkdirSync, writeFileSync  } from 'fs';
 import type { join  } from 'path';
 import type { eq  } from 'drizzle-orm';
 import type { db  } from '$lib/server/db/index';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 const UPLOAD_DIR = 'static/uploads/avatars';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

@@ -2,7 +2,7 @@
   import type { User } from '$lib/types';
   import type { Case } from '$lib/types';
   import type { Document } from '$lib/types';
-  import type { PageData } from './$types ';
+  import type { PageData } from './$types';
 
   // Prefer named exports from UI kit (safer for modern kits)
   import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';

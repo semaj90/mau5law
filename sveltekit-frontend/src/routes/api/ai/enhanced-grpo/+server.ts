@@ -2,7 +2,7 @@
  * Integrates with existing infrastructure and new GRPO database tables
  */
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { db  } from '$lib/db/connection';
 import type { sql  } from 'drizzle-orm';
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';

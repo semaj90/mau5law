@@ -1,6 +1,6 @@
 /** * Database Sync Test Page Server Load * Demonstrates SSR data loading for the database sync integration test * Extends the main legal-ai page loader with testing-specific data */
 
-import type { PageServerLoad } from './$types .js';
+import type { PageServerLoad } from './$types.js';
 import type { db  } from '$lib/server/db/index.js';
 import type { legalDocuments, ragSessions  } from '$lib/server/db/schema-postgres.js';
 import type { desc, eq, count, sql  } from 'drizzle-orm';

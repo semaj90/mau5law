@@ -2,7 +2,7 @@
 	import type { superForm  } from 'sveltekit-superforms/client';
 	import type { zodClient  } from 'sveltekit-superforms/adapters';
 	import type { uploadSchema  } from '$lib/schemas/upload';
-	import type { PageData } from './$types '; // Import the PageData type
+	import type { PageData } from './$types'; // Import the PageData type
 
 	export let data: PageData; // Apply the PageData type to the data prop
 

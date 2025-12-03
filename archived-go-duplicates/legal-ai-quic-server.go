@@ -17,10 +17,10 @@ import (
 	"math/big"
 	"net"
 	"net/http"
+	"os"
+	"strings"
 	"sync"
 	"time"
-	"strings"
-	"os"
 
 	"github.com/quic-go/quic-go/http3"
 	"github.com/redis/go-redis/v9"
@@ -56,7 +56,7 @@ type LegalDocumentResponse struct {
 	ComplexityScore  int32              `json:"complexity_score"`
 	Embedding        []float32          `json:"embedding,omitempty"`
 	SimilarCases     []SimilarCase      `json:"similar_cases,omitempty"`
-	RiskAssessment   *RiskAssessment    `json:"risk_assessment,omitempty"`
+	RiskAssessment   *SimpleRiskAssessment `json:"risk_assessment,omitempty"`
 	ProcessingTimeMs int64              `json:"processing_time_ms"`
 	Success          bool               `json:"success"`
 	Error            string             `json:"error,omitempty"`
@@ -178,18 +178,18 @@ func (vdb *SimpleVectorDatabase) Store(id string, vector []float32) {
 func (vdb *SimpleVectorDatabase) Search(queryVector []float32, topK int) []SimilarCase {
 	vdb.mu.RLock()
 	defer vdb.mu.RUnlock()
-	
+
 	type similarity struct {
 		id    string
 		score float32
 	}
-	
+
 	var similarities []similarity
 	for id, vector := range vdb.vectors {
 		score := cosineSimilarity(queryVector, vector)
 		similarities = append(similarities, similarity{id: id, score: score})
 	}
-	
+
 	// Sort by similarity (simplified)
 	// In production, use proper sorting
 	results := make([]SimilarCase, 0, topK)
@@ -206,7 +206,7 @@ func (vdb *SimpleVectorDatabase) Search(queryVector []float32, topK int) []Simil
 			RelevanceScore: sim.score,
 		})
 	}
-	
+
 	return results
 }
 
@@ -231,7 +231,7 @@ func NewSimpleLegalCaseDatabase() *SimpleLegalCaseDatabase {
 	db := &SimpleLegalCaseDatabase{
 		cases: make(map[string]SimpleLegalCase),
 	}
-	
+
 	// Add some mock cases
 	mockCases := []SimpleLegalCase{
 		{
@@ -245,7 +245,7 @@ func NewSimpleLegalCaseDatabase() *SimpleLegalCaseDatabase {
 			Outcome: "plaintiff_victory",
 		},
 		{
-			CaseID: "case_002", 
+			CaseID: "case_002",
 			Title: "Employment Discrimination Case",
 			Court: "Appeals Court",
 			Year: 2022,
@@ -255,11 +255,11 @@ func NewSimpleLegalCaseDatabase() *SimpleLegalCaseDatabase {
 			Outcome: "settlement",
 		},
 	}
-	
+
 	for _, case_ := range mockCases {
 		db.cases[case_.CaseID] = case_
 	}
-	
+
 	return db
 }
 
@@ -268,18 +268,18 @@ func cosineSimilarity(a, b []float32) float32 {
 	if len(a) != len(b) {
 		return 0
 	}
-	
+
 	var dotProduct, normA, normB float32
 	for i := 0; i < len(a); i++ {
 		dotProduct += a[i] * b[i]
 		normA += a[i] * a[i]
 		normB += b[i] * b[i]
 	}
-	
+
 	if normA == 0 || normB == 0 {
 		return 0
 	}
-	
+
 	// FIXED: Added proper square root for vector norms
 	return dotProduct / (float32(math.Sqrt(float64(normA))) * float32(math.Sqrt(float64(normB))))
 }
@@ -291,7 +291,7 @@ func NewLegalAIQuicServer() *LegalAIQuicServer {
 		Password: getEnvOrDefault("REDIS_PASSWORD", ""),
 		DB:       0,
 	})
-	
+
 	// Test Redis connection
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -314,7 +314,7 @@ func NewLegalAIQuicServer() *LegalAIQuicServer {
 	for i := 0; i < 10; i++ {
 		go server.legalWorker(i)
 	}
-	
+
 	// Start recommendation workers
 	for i := 0; i < 5; i++ {
 		go server.recommendationWorker(i)
@@ -341,13 +341,13 @@ func (s *LegalAIQuicServer) legalWorker(workerID int) {
 		// Process legal document
 		response := s.processLegalDocument(job.Request)
 		result.Response = response
-		
+
 		if response.Success {
 			result.Status = "completed"
 		} else {
 			result.Status = "error"
 		}
-		
+
 		result.Metadata["completed_at"] = time.Now()
 		result.Metrics["processing_time"] = time.Since(startTime).Seconds()
 
@@ -367,7 +367,7 @@ func (s *LegalAIQuicServer) legalWorker(workerID int) {
 			}
 		}
 
-		log.Printf("✅ Legal Worker %d completed job %s in %.2fs", 
+		log.Printf("✅ Legal Worker %d completed job %s in %.2fs",
 			workerID, job.JobID, time.Since(startTime).Seconds())
 	}
 }
@@ -376,9 +376,9 @@ func (s *LegalAIQuicServer) recommendationWorker(workerID int) {
 	for job := range s.recommendations {
 		startTime := time.Now()
 		log.Printf("🎯 Recommendation Worker %d processing job %s", workerID, job.JobID)
-		
+
 		response := s.processRecommendations(job.Request)
-		
+
 		// Store result in Redis with error handling
 		if s.redisClient != nil {
 			resultJSON, err := json.Marshal(response)
@@ -392,8 +392,8 @@ func (s *LegalAIQuicServer) recommendationWorker(workerID int) {
 				}
 			}
 		}
-			
-		log.Printf("✅ Recommendation Worker %d completed job %s in %.2fs", 
+
+		log.Printf("✅ Recommendation Worker %d completed job %s in %.2fs",
 			workerID, job.JobID, time.Since(startTime).Seconds())
 	}
 }
@@ -409,20 +409,20 @@ func (s *LegalAIQuicServer) processLegalDocument(req LegalDocumentRequest) Legal
 	if req.Options.ExtractEntities {
 		response.KeyEntities = []string{"plaintiff", "defendant", "contract", "damages"}
 	}
-	
+
 	if req.Options.ClassifyDomain {
 		response.LegalDomain = "contract_law"
 		response.Confidence = 0.85
 	}
-	
+
 	if req.Options.AnalyzeSentiment {
 		response.SentimentScore = 0.2 // Slightly negative (legal disputes tend to be)
 	}
-	
+
 	response.ComplexityScore = 7
 	response.Summary = fmt.Sprintf("Legal document analysis for %s completed", req.Filename)
 	response.LegalConcepts = []string{"breach of contract", "damages", "legal remedy"}
-	
+
 	if req.Options.GenerateEmbedding {
 		// Generate mock embedding
 		embedding := make([]float32, 384)
@@ -430,15 +430,15 @@ func (s *LegalAIQuicServer) processLegalDocument(req LegalDocumentRequest) Legal
 			embedding[i] = float32(i) * 0.001
 		}
 		response.Embedding = embedding
-		
+
 		// Store in vector DB
 		s.vectorDB.Store(req.DocumentID, embedding)
 	}
-	
+
 	if req.Options.FindSimilar && len(response.Embedding) > 0 {
 		response.SimilarCases = s.vectorDB.Search(response.Embedding, 5)
 	}
-	
+
 	if req.Options.RiskAssessment {
 		response.RiskAssessment = &SimpleRiskAssessment{
 			OverallRiskScore: 0.6,
@@ -455,14 +455,14 @@ func (s *LegalAIQuicServer) processLegalDocument(req LegalDocumentRequest) Legal
 			Confidence:          0.75,
 		}
 	}
-	
+
 	response.ProcessingTimeMs = time.Since(startTime).Milliseconds()
 	return response
 }
 
 func (s *LegalAIQuicServer) processRecommendations(req SimpleRecommendationRequest) SimpleRecommendationResponse {
 	startTime := time.Now()
-	
+
 	// Mock recommendation generation
 	recommendations := []SimpleLegalRecommendation{
 		{
@@ -477,7 +477,7 @@ func (s *LegalAIQuicServer) processRecommendations(req SimpleRecommendationReque
 			RecommendationType: "precedent",
 		},
 		{
-			ID:              "rec_002", 
+			ID:              "rec_002",
 			Title:           "Risk Mitigation Strategy",
 			Description:     "Proactive measures to reduce litigation risk",
 			ConfidenceScore: 0.72,
@@ -486,7 +486,7 @@ func (s *LegalAIQuicServer) processRecommendations(req SimpleRecommendationReque
 			RecommendationType: "strategy",
 		},
 	}
-	
+
 	return SimpleRecommendationResponse{
 		Recommendations:  recommendations,
 		TotalCount:      int32(len(recommendations)),
@@ -724,7 +724,7 @@ func main() {
 	// IMPROVED: Better port handling
 	preferredPort := getEnvOrDefault("QUIC_PORT", "4433")
 	port := findAvailablePort(preferredPort)
-	
+
 	// Start QUIC/HTTP3 server
 	quicServer := &http3.Server{
 		Handler:   mux,
@@ -740,10 +740,10 @@ func main() {
 	log.Printf("   - Recommendation workers: %d", cap(server.recommendations))
 	log.Println("🌐 API Endpoints:")
 	log.Printf("   - POST /legal/analyze    (Document Analysis)")
-	log.Printf("   - POST /legal/recommend  (Legal Recommendations)")  
+	log.Printf("   - POST /legal/recommend  (Legal Recommendations)")
 	log.Printf("   - GET  /legal/result     (Job Results)")
 	log.Printf("   - GET  /health           (Server Health)")
-	
+
 	if err := quicServer.ListenAndServe(); err != nil {
 		log.Fatal("❌ Failed to start Legal AI QUIC server:", err)
 	}

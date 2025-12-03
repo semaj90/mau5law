@@ -4,7 +4,7 @@ import type { eq  } from 'drizzle-orm';
 import type { randomUUID  } from 'node:crypto';
 import * as dbModule from '$lib/server/db/drizzle';
 const db = dbModule.default as any;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

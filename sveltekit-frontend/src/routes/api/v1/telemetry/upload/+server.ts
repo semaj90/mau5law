@@ -2,7 +2,7 @@
 // Receives and processes structured upload telemetry events
 
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
 
 interface TelemetryBatch {

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { PDFDocument  } from 'pdf-lib';
 import type { env  } from '$env /dynamic/private';
 

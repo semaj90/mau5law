@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import { json, error } from '@sveltejs/kit';;
 import type { ensureError  } from '$lib/utils/ensure-error';
 import dbHealthChecker from '$lib/server/db/health-check';

@@ -26,7 +26,7 @@ import type { Document } from '$lib/types';
 
 import { json } from '@sveltejs/kit';;
 import type { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {

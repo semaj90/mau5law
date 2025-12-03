@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';;
 
 /**

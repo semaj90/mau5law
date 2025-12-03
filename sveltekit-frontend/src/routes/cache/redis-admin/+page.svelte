@@ -2,7 +2,7 @@
 import type { Button  } from '$lib/components/ui/button';
   import type { Input  } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
-  import type { PageData, ActionData } from './$types .js';
+  import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';;
   import type { enhance  } from '$app/forms';
   import type { invalidateAll  } from '$app/navigation';

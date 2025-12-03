@@ -1,6 +1,6 @@
 import type { superValidate  } from 'sveltekit-superforms/server';
 import type { uploadSchema  } from '$lib/schemas/upload';
-import type { PageServerLoad } from './$types ';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	// Initialize the form with the upload schema

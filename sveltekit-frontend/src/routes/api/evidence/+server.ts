@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { caseManagementService  } from '$lib/services/case-management-service.js';
 import type { enhancedEmbeddingWorker  } from '$lib/workers/embedding-worker-enhanced.js';

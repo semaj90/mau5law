@@ -4,7 +4,7 @@ import type { caseActivities  } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
 import type { sql, desc  } from 'drizzle-orm';
 import type { eq, or as orExpr  } from '$lib/server/db/utils';
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { getUserId  } from '$lib/server/auth/utils';
 
 export const GET: RequestHandler = async ({ locals, url }) => {

@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { OllamaGetEndpoint } from '$lib/server/ollama/client';
+  import type { PageData } from './$types';
 
-  let analysisQuery = $state ('');
+  let { data }: { data: PageData } = $props();
+
+  let analysisQuery = $state('');
   let analysisResults: any[] = $state([]);
-  let isAnalyzing = $state (false);
+  let isAnalyzing = $state(false);
   let selectedEvidence: any = $state(null);
   let analysisMode: 'pattern' | 'correlation' | 'prediction' = $state('pattern');
-  let webgpuCapabilities = $state({hasWebGPU: typeof navigator !== 'undefined' && 'gpu' in navigator});
+  let webgpuCapabilities = $state({
+    hasWebGPU: typeof navigator !== 'undefined' && 'gpu' in navigator
+  });
 
   // Analysis modes
   const analysisModes = [
@@ -46,45 +50,10 @@
     }
   ]);
 
-  async function runAnalysis() {
-    if (!analysisQuery.trim()) return;
-
-    isAnalyzing = true;
-    try {
-      const endpoint = OllamaGetEndpoint();
-      const response = await fetch(`${endpoint}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'gemma3-legal:latest',
-          prompt: `Analyze the following legal evidence query using pattern recognition and correlation analysis: ${analysisQuery}. Provide structured analysis with confidence scores.`,
-          stream: false
-        })
-      });
-
-      const result = await response.json();
-      const analysis = {
-        id: `A${Date.now()}`,
-        query: analysisQuery,
-        result: result.response,
-        mode: analysisMode,
-        timestamp: new Date().toISOString(),
-        confidence: Math.random() * 0.3 + 0.7, // Mock confidence
-        correlations: generateCorrelations()
-      };
-
-      analysisResults = [analysis, ...analysisResults];
-    } catch (error) {
-      console.error('Analysis failed:', error);
-    } finally {
-      isAnalyzing = false;
-    }
-  }
-
   function generateCorrelations() {
     return evidencePool
       .filter(() => Math.random() > 0.5)
-      .map(evidence => ({
+      .map((evidence) => ({
         evidenceId: evidence.id,
         strength: Math.random() * 0.5 + 0.5,
         relationship: ['temporal', 'spatial', 'behavioral'][Math.floor(Math.random() * 3)]
@@ -92,7 +61,7 @@
   }
 
   function getEvidenceById(id: string) {
-    return evidencePool.find(e => e.id === id);
+    return evidencePool.find((e) => e.id === id);
   }
 </script>
 
@@ -129,24 +98,41 @@
       <div class="query-header">
         <h2>ANALYSIS QUERY</h2>
       </div>
-      <textarea
-        class="analysis-input"
-        placeholder="Enter analysis query (e.g., 'Find patterns in financial transactions linked to POI-001')..."
-        bind:value={analysisQuery}
-        rows="4"
-      ></textarea>
-      <button
-        class="analyze-btn {isAnalyzing ? 'analyzing' : ''}"
-        onclick={runAnalysis}
-        disabled={isAnalyzing || !analysisQuery.trim()}
+      <form
+        method="post"
+        action="?/analyze"
+        use:enhance={({ formData }) => {
+          isAnalyzing = true;
+          return async ({ result }) => {
+            isAnalyzing = false;
+            if (result.type === 'success' && result.data?.analysis) {
+              analysisResults = [result.data.analysis, ...analysisResults];
+              analysisQuery = '';
+            }
+          };
+        }}
       >
-        {#if isAnalyzing}
-          <span class="loading-spinner"></span>
-          ANALYZING...
-        {:else}
-          RUN ANALYSIS
-        {/if}
-      </button>
+        <textarea
+          class="analysis-input"
+          placeholder="Enter analysis query (e.g., 'Find patterns in financial transactions linked to POI-001')..."
+          bind:value={analysisQuery}
+          name="query"
+          rows="4"
+        ></textarea>
+        <input type="hidden" name="mode" value={analysisMode} />
+        <button
+          type="submit"
+          class="analyze-btn {isAnalyzing ? 'analyzing' : ''}"
+          disabled={isAnalyzing || !analysisQuery.trim()}
+        >
+          {#if isAnalyzing}
+            <span class="loading-spinner"></span>
+            ANALYZING...
+          {:else}
+            RUN ANALYSIS
+          {/if}
+        </button>
+      </form>
     </section>
 
     <!-- Results Panel -->

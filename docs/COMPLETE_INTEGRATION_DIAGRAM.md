@@ -257,16 +257,17 @@
 │ ├─ Output: 150 clusters                                                     │
 │ └─ Total Time: 2.5 minutes                                                  │
 │                                                                              │
-│ ACE Planning (Phase 73)                                                     │
+│ ACE Planning (Phase 73) - REALISTIC                                         │
 │ ├─ Context: Cluster with ~500 errors                                        │
-│ ├─ Guardrails: Similarity check (0.92/0.95 threshold)                      │
-│ ├─ Strategy: Fix entire cluster pattern                                     │
-│ ├─ Time: 5 seconds per cluster                                              │
-│ └─ Progress: 0.67% per fix (536x faster)                                    │
+│ ├─ Guardrails: Blocks ~30% of fixes (safety first!)                        │
+│ ├─ Auto-fixed: 100 clusters (3 hours)                                       │
+│ ├─ Manual review: 50 clusters (2 hours)                                     │
+│ └─ Progress: Systematic pattern fixing                                      │
 │                                                                              │
-│ Total Time to Fix All: ~30 minutes (with guardrails)                       │
+│ Total Time to Fix All: ~5 hours (realistic with review)                    │
 │                                                                              │
-│ Improvement: 554x faster (11.5 days → 30 minutes)                          │
+│ Improvement: 133x faster (11.5 days → 5 hours)                             │
+│ Theoretical max: 554x (if no guardrails/review needed)                     │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { dimensionalCache  } from '$lib/ai/dimensional-cache-engine';
 import type { DimensionalArray, CacheMetadata } from '$lib/ai/dimensional-cache-engine';

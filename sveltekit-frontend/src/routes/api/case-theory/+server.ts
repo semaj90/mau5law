@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { getOllamaBaseUrl  } from '$lib/utils/ollama';
 import type { eventBus  } from '$lib/server/event-bus';
 import type {

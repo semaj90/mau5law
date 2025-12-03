@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { redisMiddleware  } from '$lib/middleware/redis';
 import type { ollamaService  } from '$lib/services/ollama';
 

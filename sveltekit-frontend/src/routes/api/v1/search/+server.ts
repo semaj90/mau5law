@@ -3,7 +3,7 @@ import type { orchestrator  } from '$lib/services/unified-legal-orchestrator';
 import type { qdrant  } from '$lib/server/vector/qdrant-manager';
 import type { db, vectorSearch  } from '$lib/server/database/connection';
 import type { natsQuicSearchService  } from '$lib/server/search/nats-quic-search-service';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import * as enhancedEmbeddingSchema from '$lib/server/db/enhanced-embedding-schema'; // Import schema as a namespace
 import type { ilike, and, eq, type SQL  } from 'drizzle-orm'; // Import SQL type from drizzle-orm
 

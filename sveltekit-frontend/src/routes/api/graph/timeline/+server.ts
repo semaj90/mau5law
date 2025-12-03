@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { db  } from '$lib/server/db';
 import type { evidence  } from '$lib/server/db/schema-postgres';
 import type { asc  } from 'drizzle-orm';

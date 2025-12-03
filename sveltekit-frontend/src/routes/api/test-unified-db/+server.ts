@@ -1,7 +1,7 @@
 import unifiedClient from '$lib/server/db/unified-client'; // Changed to default import
 import type { sql  } from 'drizzle-orm';
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
 	try {

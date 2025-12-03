@@ -1,6 +1,6 @@
 /** * ðŸš€ FAISS 100K+ Scaling Demo API * Demonstrates the transition from pgvector to FAISS GPU at enterprise scale */
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'overview';

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { ollamaChatStream  } from '$lib/services/ollamaChatStream';
 import type { initializeChatEmbeddingsTable,

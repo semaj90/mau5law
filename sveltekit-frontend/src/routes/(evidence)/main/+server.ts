@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';;
 import type { randomUUID  } from 'node:crypto';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { uploadFile  } from '$lib/server/minio-client'; // Import the new MinIO utility
 
 // Allow GET requests to pass through to the page

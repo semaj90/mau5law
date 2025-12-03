@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { webgpuLangChainBridge, processLegalDocumentWithWebGPU, processBatchDocumentsWithWebGPU, getLangChainWebGPUStats, type LangChainWebGPUConfig  } from '$lib/server/webgpu-langchain-bridge.js';
 

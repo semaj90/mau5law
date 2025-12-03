@@ -10,9 +10,7 @@ const config = {
   kit: {
     adapter: adapter(),
     // preserve original vite config if present
-    vite: {
-      // placeholder — project-level vite config will override this
-    },
+
   },
 };
 

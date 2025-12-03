@@ -1,6 +1,6 @@
 /* Upload Completion Webhook - MinIO -> Ingestion Pipeline Trigger
  * Triggers document processing workflow after successful upload */
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { redisService  } from '$lib/server/redis-service';
 import db from '$lib/server/db/unified-client'; // Changed from named import to default import

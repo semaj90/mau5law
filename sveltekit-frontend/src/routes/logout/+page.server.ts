@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types ';
+import type { PageServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';;
 import type { invalidateSession, deleteSessionTokenCookie  } from '$lib/server/session';
 

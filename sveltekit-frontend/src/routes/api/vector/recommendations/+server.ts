@@ -1,6 +1,6 @@
 import type { User } from '$lib/types';
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 /* * Enhanced Vector Intelligence Recommendations API * Integrates GPU caching, reinforcement learning, and multi-protocol optimization * Provides intelligent recommendations using vector analysis and machine learning */
 

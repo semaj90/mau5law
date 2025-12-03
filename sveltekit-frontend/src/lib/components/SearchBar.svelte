@@ -1,8 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let placeholder: string = 'Search...';
-  export let value: string = '';
+  let { placeholder = 'Search...', value = '' } = $props();
 
   const dispatch = createEventDispatcher<{
     search: string;

@@ -1,6 +1,6 @@
 /** * Cached RAG API Endpoint * Provides cached RAG functionality with embeddinggemma and gemma3: legal-latest */
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import * as EnhancedRagModule from '$lib/services/enhanced-rag-semantic-analyzer';
 import type { cachedRAGService  } from '$lib/services/cached-rag-service';
 

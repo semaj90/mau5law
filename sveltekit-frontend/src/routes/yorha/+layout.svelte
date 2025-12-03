@@ -1,7 +1,8 @@
 <!-- YoRHa, Interface, Layout -->
 <script lang="ts">
-  import type { afterNavigate, goto  } from '$app/navigation';
-  import type { Bot,
+  import { afterNavigate, goto } from '$app/navigation';
+  import {
+    Bot,
     ChevronLeft,
     ChevronRight,
     Cpu,
@@ -9,9 +10,9 @@
     Monitor,
     Search,
     Terminal,
-   } from 'lucide-svelte';
+  } from 'lucide-svelte';
   import type { SvelteComponent } from 'svelte';
-  import { onMount } from 'svelte';;
+  import { onMount } from 'svelte';
   import '../../app.css';
  // Added: Top-level type import
 
@@ -27,9 +28,9 @@
   };
 
   // System status and navigation
-  let systemStatus = { connected: false, services: 0, errors: 0 };
-  let sidebarOpen = false;
-  let currentPath = '';
+  let systemStatus = $state({ connected: false, services: 0, errors: 0 });
+  let sidebarOpen = $state(false);
+  let currentPath = $state('');
 
   // Navigation structure
   const navItems: NavItem[] = [
@@ -266,7 +267,7 @@
               >
                 {#if item.icon}
                   <!-- render icon with svelte:component for dynamic components -->
-                  <item.icon size={16} / />
+                  <svelte:component this={item.icon} size={16} />
                 {/if}
                 <div class="yorha-nav-content">
                   <span class="yorha-nav-label">{item.label}</span>

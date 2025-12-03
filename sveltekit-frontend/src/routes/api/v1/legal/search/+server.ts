@@ -8,7 +8,7 @@
  * - Metadata filtering
  */
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { getLegalAIPipeline  } from '$lib/server/integrations';
 
 /**

@@ -4,7 +4,7 @@
  * Supports multi-protocol routing (HTTP, gRPC, QUIC) with automatic failover
  */
 
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';;
 import type { readBodyFast  } from '$lib/server/utils/json-fast';
 import type { ensureError  } from '$lib/utils/ensure-error';

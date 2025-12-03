@@ -1,6 +1,6 @@
 import type { Case } from '$lib/types';
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';;
 import type { ollamaConfig  } from '$lib/services/ollama-config-service.js';
 import type { ENV_CONFIG  } from '$lib/config/environment.js';

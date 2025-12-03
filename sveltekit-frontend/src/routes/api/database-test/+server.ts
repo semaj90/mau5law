@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';;
 import type { db, testConnection, healthCheck  } from '$lib/server/db';
 import type { sql  } from 'drizzle-orm';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
   const results: { [key: string]: unknown } = {};

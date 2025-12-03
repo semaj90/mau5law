@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import type { sql  } from 'drizzle-orm';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 // Fallback raw query (table created dynamically by summarization script)
 export const GET: RequestHandler = async () => {

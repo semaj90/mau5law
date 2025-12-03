@@ -4,7 +4,7 @@ import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
 import type { v4 as uuidv4  } from 'uuid';
 import type { RedisClientType } from 'redis';
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import neo4j from 'neo4j-driver'; // Add Neo4j driver import
 
 // Define PdfParseResult interface

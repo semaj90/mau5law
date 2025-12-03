@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { EvidenceEdge, EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
-  import type { EvidenceCanvas  } from '$lib/evidence-canvas/evidence-canvas.svelte';
-  import { onMount } from 'svelte';;
+  import type { EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
+  import EvidenceCanvas from '$lib/evidence-canvas/evidence-canvas.svelte';
+  import { onMount } from 'svelte';
 
-  let caseId = 'demo-case-001';
-  let caseType = 'contract-dispute';
-  let jurisdiction = 'federal';
+  let caseId = $state('demo-case-001');
+  let caseType = $state('contract-dispute');
+  let jurisdiction = $state('federal');
 
-  let demoNodes: EvidenceNode[] = [];
-  let demoEdges: EvidenceEdge[] = [];
+  let demoNodes = $state<EvidenceNode[]>([]);
+  let demoEdges = $state<any[]>([]);
 
   onMount(() => {
     // Generate demo data

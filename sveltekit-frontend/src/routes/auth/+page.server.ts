@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types .js';
+import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import type { PageServerLoad, Actions } from './$types.js';

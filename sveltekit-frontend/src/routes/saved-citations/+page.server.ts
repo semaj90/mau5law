@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types ';
+import type { PageServerLoad } from './$types';
 import type { db  } from '$lib/server/db/drizzle';
 import type { eq, desc  } from '$lib/server/db/utils';
 import type { citations  } from '$lib/server/db/schema';

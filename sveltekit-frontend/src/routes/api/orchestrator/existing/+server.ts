@@ -1,6 +1,6 @@
 // API using existing services - no new Docker downloads
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 interface QueryRequest {
   query: string;

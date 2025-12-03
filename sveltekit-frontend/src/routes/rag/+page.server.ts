@@ -1,4 +1,4 @@
-import type { Actions, PageServerLoad } from './$types ';
+import type { Actions, PageServerLoad } from './$types';
 import type { Client as MinioClient  } from 'minio'; // Corrected import and aliasing
 import type { Buffer  } from 'buffer';
 import type { db  } from '$lib/server/db/client'; // Corrected import path for db

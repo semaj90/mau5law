@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import type { evidenceBoards, cases  } from '$lib/database/enhanced-schema';

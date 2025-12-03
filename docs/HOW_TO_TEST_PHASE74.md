@@ -245,13 +245,26 @@ npm run phase74:test | grep "Clusters:"
 
 ## 🎯 Bottom Line
 
-**The 554x claim is conservative.**
+**The 554x claim is theoretical maximum.**
 
-- Actual results: 100x-3000x depending on project
-- Even worst case (50x) is still excellent
-- Typical case (500x) matches documentation
+- **Realistic results**: 50x-200x depending on project
+- **Best case**: 200x-500x with perfect conditions
+- **Worst case**: 10x-50x (still excellent!)
+- **Theoretical max**: 554x (rarely achieved)
+
+**Why the difference?**
+- Guardrails block ~30% of fixes (safety first!)
+- Human review takes time (quality matters!)
+- Complex fixes need more than 5 seconds
+- Testing and verification add overhead
+
+**Still worth it?** Absolutely! Even 50x means:
+- 667 hours → 13 hours (27.8 days → half a day)
+- That's transformative!
 
 **Run the test to see your actual numbers!**
+
+📚 **Read**: `PHASE_74_REALISTIC_EXPECTATIONS.md` for honest assessment
 
 ```bash
 npm run phase74:test

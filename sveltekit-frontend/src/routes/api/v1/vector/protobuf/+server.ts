@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import * as protobuf from 'protobufjs';
 
 // Protocol Buffer Implementation for High-Performance Vector Search

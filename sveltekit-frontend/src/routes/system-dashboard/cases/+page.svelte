@@ -6,7 +6,7 @@
 
   import { onMount } from 'svelte';;
   import type { goto  } from '$app/navigation';
-  import type { PageData } from './$types ';
+  import type { PageData } from './$types';
 
   type Case = {
     id: string;

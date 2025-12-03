@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';; // Added json import
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 // GPU-Accelerated TypeScript Error Processing
 // NVIDIA RTX, 3060 Ti optimized processing for high-performance TypeScript error fixing
 import type {

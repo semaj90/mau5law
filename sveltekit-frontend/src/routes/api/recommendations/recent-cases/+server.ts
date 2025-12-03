@@ -1,5 +1,5 @@
 import type { Case } from '$lib/types';
-/** * ðŸŽ¯ Recent Cases Recommendation API * Returns the most recent, 5 cases with priority scoring */ import type { RequestHandler } from './$types .js';
+/** * ðŸŽ¯ Recent Cases Recommendation API * Returns the most recent, 5 cases with priority scoring */ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { multiLayerCache  } from '$lib/cache/MultiLayerCacheSystem';
 import type { calculateDocumentPriority  } from '$lib/config/legal-priorities';

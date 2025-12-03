@@ -63,6 +63,48 @@ export interface User {
   emailVerified?: boolean;
 }
 
+// Person of Interest types for POI management
+export interface PhysicalDescription {
+  height?: string;
+  weight?: string;
+  hair?: string;
+  eyes?: string;
+  distinguishingMarks?: string;
+}
+
+export interface ProfileData {
+  modusOperandi?: string;
+  knownHabits?: string[];
+  associates?: string[];
+}
+
+export type PoiStatus = 'person_of_interest' | 'witness' | 'suspect' | 'victim' | 'informant' | 'active' | 'inactive' | 'archived';
+export type PoiPriority = 'low' | 'medium' | 'high' | 'critical';
+export type PoiThreatLevel = 'low' | 'medium' | 'high' | 'extreme';
+
+export interface PersonOfInterest {
+  id?: string;
+  name: string;
+  aliases?: string[];
+  dateOfBirth?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  status: PoiStatus;
+  priority: PoiPriority;
+  threatLevel: PoiThreatLevel;
+  physicalDescription?: PhysicalDescription;
+  profileData?: ProfileData;
+  lastKnownLocation?: string;
+  lastSeen?: string;
+  dangerLevel?: number;
+  notes?: string;
+  riskScore?: number;
+  aiGenerated?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 // --- Added Unified Types (API / AI / DB / Canvas / GPU / State Machine) ---
 export type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 

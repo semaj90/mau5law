@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
 import createRedisInstance from '$lib/server/redis'; // default export

@@ -6,7 +6,22 @@
     },
     {
       "name": "SvelteKit Frontend",
-      "path": "./sveltekit-frontend"
+      "path": "./sveltekit-frontend",
+      "settings": {
+        "cmake.sourceDirectory": "${workspaceFolder}",
+        "cmake.buildDirectory": "${workspaceFolder}/build",
+        "cmake.installPrefix": "${workspaceFolder}/install",
+        "cmake.configureSettings": {
+          "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+          "VCPKG_TARGET_TRIPLET": "x64-windows",
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_CUDA_ARCHITECTURES": "86",
+          "CMAKE_CUDA_FLAGS": "-use_fast_math -lineinfo",
+          "CMAKE_CXX_FLAGS_RELEASE": "/O2 /arch:AVX2"
+        },
+        "cmake.generator": "Visual Studio 17 2022",
+        "cmake.buildType": "Release"
+      }
     }
   ],
   "settings": {
@@ -82,7 +97,7 @@
     "github.copilot.chat.completionsFetcher": "node-fetch",
     "github.copilot.chat.languageContext.inline.typescript.enabled": true,
     "github.copilot.chat.editor.temporalContext.enabled": true,
-    "github.copilot.chat.languageContext.typescript.enabled": true
+    "github.copilot.chat.languageContext.typescript.enabled": true,
   },
 
   "extensions": {
