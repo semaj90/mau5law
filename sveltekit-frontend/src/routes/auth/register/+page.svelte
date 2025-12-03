@@ -122,7 +122,7 @@
               required
               disabled={isLoading}
               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none"
-              placeholder="District Attorney's Office"'
+              placeholder="District Attorney's Office"
             />
           </div>
           <div>

@@ -5,7 +5,7 @@ import (
 	"log"
 	"math/rand"
 
-	"tensorrt-infer/go/chr97"
+	"tensorrt-infer/trt"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	fmt.Println("===================================")
 
 	// Initialize GPU processor
-	processor, err := chr97.NewGPUTileProcessor()
+	processor, err := trt.NewGPUTileProcessor()
 	if err != nil {
 		log.Fatalf("Failed to initialize GPU processor: %v", err)
 	}

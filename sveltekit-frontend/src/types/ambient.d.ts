@@ -75,7 +75,7 @@ declare interface SimpleRedis {
 	/** Initialize client (custom wrapper) */
 	initialize?(...args: unknown[]): Promise<unknown> | void;
 	memory?(...args: unknown[]): Promise<unknown>;
-	type?(...args: unknown[]) => Promise<string>;
+	type?(...args: unknown[]): Promise<string>;
 }
 
 /** CommonJS-style redis module export (typings for legacy imports) */

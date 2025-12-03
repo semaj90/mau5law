@@ -289,7 +289,7 @@
     "phase72:gpu": "node scripts/phase72-with-progress.mjs",
     "phase72:iterate:x3": "node scripts/phase72-auto-iterate.mjs",
     "phase72:iterate:test": "node scripts/phase72-iterate-test.mjs",
-    "phase72:test": "node scripts/phase72-test-pipeline.mjs",
+    "phase72:test:pipeline": "node scripts/phase72-test-pipeline.mjs",
     "phase72:quick": "node scripts/phase72-quick-test.mjs",
     "phase72:detect": "node scripts/phase72-detect-libtorch.mjs",
     "phase72:fast-scan": "node scripts/phase72-fast-scanner.mjs",

@@ -29,8 +29,8 @@
   let recentCases = $state([]);
 
   // Subscribe to store
-  let appState = $state ();
-  $effect(() => {() => {
+  let appState = $state({});
+  $effect(() => {
     const unsubscribe = appStore.subscribe(state => {
       appState = state;
     });
