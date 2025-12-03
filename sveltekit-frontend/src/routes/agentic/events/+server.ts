@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { eventBus  } from '$lib/server/event-bus';
 
 export const GET: RequestHandler = ({ request }) => {

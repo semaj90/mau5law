@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';;
 import type { criminals  } from '$lib/server/db/schema-postgres';
 import type { db  } from '$lib/server/db/index';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { or, like, eq, and, desc, asc, sql  } from 'drizzle-orm'; // Added Drizzle ORM imports
 
 // Helper function to get user ID from locals

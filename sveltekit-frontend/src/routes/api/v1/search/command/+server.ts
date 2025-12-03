@@ -3,7 +3,7 @@ import type { db  } from '$lib/server/db';
 import type { cases, evidence, legalDocuments, users  } from '$lib/server/db/schema';
 import type { sql, eq, ilike, and, or, desc  } from 'drizzle-orm';
 import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
 type EvidenceResult = typeof evidence.$inferSelect & {

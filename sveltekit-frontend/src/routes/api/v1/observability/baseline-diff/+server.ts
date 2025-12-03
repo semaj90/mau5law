@@ -1,4 +1,4 @@
-/// <reference: types="vite/client" /> import type { RequestHandler } from './$types .js'; import type { loadObservabilityState, saveObservabilityState  } from '$lib/services/observability-persistence'; import { json } from '@sveltejs/kit';; export interface BaselineDiff { metric: string, current_value: number, baseline_value: number, difference: number, percentage_change: number, status: 'normal' | 'drift' | 'significant_drift'; threshold_breach: boolean}
+/// <reference: types="vite/client" /> import type { RequestHandler } from './$types.js'; import type { loadObservabilityState, saveObservabilityState  } from '$lib/services/observability-persistence'; import { json } from '@sveltejs/kit';; export interface BaselineDiff { metric: string, current_value: number, baseline_value: number, difference: number, percentage_change: number, status: 'normal' | 'drift' | 'significant_drift'; threshold_breach: boolean}
 export interface BaselineDiffResponse {
   timestamp: string;
   diffs: BaselineDiff[0];

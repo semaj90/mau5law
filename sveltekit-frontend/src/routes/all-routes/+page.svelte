@@ -1,920 +1,570 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
+	import RouteInspectorDetectiveBoard from '$lib/components/RouteInspectorDetectiveBoard.svelte';
+	import routeReport from '$lib/data/route-organization-report.json';
+	import { onMount } from 'svelte';
 
-  type RouteEntry = {
-    id: string;
-    path: string;
-    files: Record<string, string>;
-    methods: string[];
-    tags: string[];
-    kind: 'page' | 'endpoint' | 'layout';
-    icon?: string;
-    packages?: string[];
-    relatedRoutes?: string[];
-    category?: string;
-    version?: string;
-  };
+	interface RouteStatus {
+		path: string;
+		status: 'green' | 'yellow' | 'red';
+		errorCount: number;
+		lastError?: string;
+		lastErrorTime?: string;
+		category?: string;
+		priority?: 'high' | 'medium' | 'low';
+		functional?: boolean;
+	}
 
-  let dialog: HTMLDialogElement;
-  let routes = $state<RouteEntry[]>([]);
-  let stats = $state({ total: 0, pages: 0, endpoints: 0, layouts: 0, demos: 0 });
-  let loading = $state(true);
-  let searchQuery = $state('');
-  let selectedTag = $state<string>('all');
-  let selectedKind = $state<string>('all');
-  let selectedCategory = $state<string>('all');
-  let sortBy = $state<'path' | 'kind'>('path');
-  let selectedRoute = $state<RouteEntry | null>(null);
+	interface RouteDetail {
+		path: string;
+		kind: 'page' | 'layout' | 'endpoint';
+		file: string;
+		summary: string;
+		health?: 'green' | 'yellow' | 'red';
+		errorCount?: number;
+		lastErrorCode?: string | null;
+		lastErrorMessage?: string | null;
+		category?: string;
+		priority?: 'high' | 'medium' | 'low';
+		functional?: boolean;
+	}
 
-  // Icon mapping for routes
-  const routeIcons = [
-    '🏆', '⭐', '💰', '❤️', '👾', '🎮', '⚔️', '🛡️', '📜', '🔑',
-    '💎', '🎯', '🚀', '⚡', '🌟', '🎪', '🏰', '🗡️', '🎲', '🔮'
-  ];
+	let routes: RouteStatus[] = $state([]);
+	let loading = $state(true);
+	let filterCategory = $state<string | null>(null);
+	let filterPriority = $state<string | null>(null);
+	let showOnlyFunctional = $state(false);
 
-  let allTags = $derived.by(() => {
-    const tagSet = new Set<string>();
-    routes.forEach(r => r.tags.forEach(t => tagSet.add(t)));
-    return Array.from(tagSet).sort();
-  });
+	// Detective Board modal state
+	let modalOpen = $state(false);
+	let selectedRoute = $state<RouteDetail | null>(null);
 
-  // Check if route is a demo
-  function isDemo(route: RouteEntry): boolean {
-    return route.path.includes('demo') ||
-           route.path.includes('test') ||
-           route.path.includes('showcase') ||
-           route.tags.includes('demo');
-  }
+	// Build route metadata map from report
+	function buildRouteMetadata() {
+		const metadata = new Map<string, { category: string; priority: string; functional: boolean }>();
 
-  // Infer packages used by route
-  function inferPackages(route: RouteEntry): string[] {
-    const packages: string[] = [];
-    const path = route.path.toLowerCase();
-    const tags = route.tags.map(t => t.toLowerCase());
+		for (const [category, data] of Object.entries(routeReport.categories)) {
+			const priority = (data as any).priority || 'low';
+			for (const route of (data as any).routes || []) {
+				metadata.set(route.path, {
+					category,
+					priority,
+					functional: route.functional !== false
+				});
+			}
+		}
 
-    // AI/ML packages
-    if (tags.includes('ai') || path.includes('ai') || path.includes('chat')) {
-      packages.push('ollama', '@ai-sdk/svelte');
-    }
-    if (tags.includes('gpu') || path.includes('gpu')) {
-      packages.push('cuda', 'tensorrt');
-    }
-    if (tags.includes('vector') || path.includes('vector')) {
-      packages.push('pgvector', 'qdrant');
-    }
-    if (path.includes('rag') || tags.includes('rag')) {
-      packages.push('langchain', 'pgvector');
-    }
+		return metadata;
+	}
 
-    // UI packages
-    if (path.includes('yorha') || path.includes('nier')) {
-      packages.push('bits-ui', 'unocss');
-    }
-    if (path.includes('nes') || path.includes('gaming')) {
-      packages.push('nes.css');
-    }
+	const routeMetadata = buildRouteMetadata();
 
-    // Data packages
-    if (tags.includes('legal') || path.includes('legal')) {
-      packages.push('drizzle-orm', 'lucia');
-    }
-    if (path.includes('evidence') || tags.includes('evidence')) {
-      packages.push('fabric.js', 'neo4j');
-    }
-    if (path.includes('graph')) {
-      packages.push('neo4j', 'd3');
-    }
+	function getRouteCategory(path: string): string {
+		return routeMetadata.get(path)?.category || 'Uncategorized';
+	}
 
-    // Storage
-    if (path.includes('upload') || path.includes('minio')) {
-      packages.push('minio', 'sharp');
-    }
+	function getRoutePriority(path: string): 'high' | 'medium' | 'low' {
+		return (routeMetadata.get(path)?.priority as any) || 'low';
+	}
 
-    // Always include core packages for pages
-    if (route.kind === 'page') {
-      packages.push('svelte', 'sveltekit');
-    }
+	function isRouteFunctional(path: string): boolean {
+		return routeMetadata.get(path)?.functional ?? false;
+	}
 
-    return [...new Set(packages)];
-  }
+	function openDetectiveBoard(route: RouteStatus) {
+		selectedRoute = {
+			path: route.path,
+			kind: 'page',
+			file: `src/routes${route.path}/+page.svelte`,
+			summary: `Route ${route.path} with ${route.errorCount} errors`,
+			health: route.status,
+			errorCount: route.errorCount,
+			lastErrorCode: route.lastError || null,
+			lastErrorMessage: null,
+			category: route.category,
+			priority: route.priority,
+			functional: route.functional
+		};
+		modalOpen = true;
+	}
 
-  // Find related routes
-  function findRelatedRoutes(route: RouteEntry, allRoutes: RouteEntry[]): string[] {
-    const related: string[] = [];
-    const pathParts = route.path.split('/').filter(Boolean);
-    const basePath = pathParts[0];
+	function closeDetectiveBoard() {
+		modalOpen = false;
+		selectedRoute = null;
+	}
 
-    // Find routes with same base path
-    allRoutes.forEach(r => {
-      if (r.id === route.id) return;
+	function getFilteredRoutes() {
+		let filtered = routes;
 
-      // Same base path
-      if (r.path.startsWith(`/${basePath}`) && r.path !== route.path) {
-        related.push(r.path);
-      }
+		if (filterCategory) {
+			filtered = filtered.filter((r) => r.category === filterCategory);
+		}
 
-      // Shared tags
-      const sharedTags = route.tags.filter(t => r.tags.includes(t));
-      if (sharedTags.length >= 2 && !related.includes(r.path)) {
-        related.push(r.path);
-      }
-    });
+		if (filterPriority) {
+			filtered = filtered.filter((r) => r.priority === filterPriority);
+		}
 
-    return related.slice(0, 5); // Limit to 5 related routes
-  }
+		if (showOnlyFunctional) {
+			filtered = filtered.filter((r) => r.functional);
+		}
 
-  // Categorize route
-  function categorizeRoute(route: RouteEntry): string {
-    const path = route.path.toLowerCase();
+		return filtered;
+	}
 
-    if (isDemo(route)) return 'Demo';
-    if (path.startsWith('/api')) return 'API';
-    if (path.startsWith('/admin') || route.tags.includes('admin')) return 'Admin';
-    if (route.tags.includes('auth') || path.includes('login') || path.includes('register')) return 'Auth';
-    if (route.tags.includes('ai')) return 'AI';
-    if (route.tags.includes('legal')) return 'Legal';
-    if (route.tags.includes('evidence')) return 'Evidence';
-    if (path.startsWith('/dev')) return 'Development';
+	onMount(async () => {
+		try {
+			// Fetch route status from Phase 72
+			const res = await fetch('/api/phase72/errors');
+			if (res.ok) {
+				const data = await res.json();
+				// Transform phase72_error rows into route status
+				const routeMap = new Map<string, RouteStatus>();
 
-    return 'Core';
-  }
+				for (const error of data.errors || []) {
+					const route = error.route || '/';
+					if (!routeMap.has(route)) {
+						routeMap.set(route, {
+							path: route,
+							status: 'green',
+							errorCount: 0,
+							category: getRouteCategory(route),
+							priority: getRoutePriority(route),
+							functional: isRouteFunctional(route)
+						});
+					}
+					const r = routeMap.get(route)!;
+					r.errorCount++;
+					r.lastError = error.code;
+					r.lastErrorTime = error.created_at;
 
-  // Determine version (v1-v4 for demos)
-  function getVersion(route: RouteEntry): string {
-    if (!isDemo(route)) return '';
+					// Determine status
+					if (r.errorCount >= 5) r.status = 'red';
+					else if (r.errorCount >= 2) r.status = 'yellow';
+				}
 
-    const path = route.path.toLowerCase();
-
-    // V1 - Basic demos
-    if (path.includes('/simple') || path.includes('/basic') || path === '/test') {
-      return 'v1';
-    }
-    // V2 - Feature demos
-    if (path.includes('agent') || path.includes('mcp') || path.includes('rag')) {
-      return 'v2';
-    }
-    // V3 - Advanced demos
-    if (path.includes('canvas') || path.includes('graph') || path.includes('yorha')) {
-      return 'v3';
-    }
-    // V4 - Integration demos
-    if (path.includes('integration') || path.includes('system') || path.includes('all-routes')) {
-      return 'v4';
-    }
-
-    return 'v1';
-  }
-
-  let filteredRoutes = $derived.by(() => {
-    let filtered = routes.filter(route => {
-      const matchesSearch = route.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           route.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesTag = selectedTag === 'all' || route.tags.includes(selectedTag);
-      const matchesKind = selectedKind === 'all' || route.kind === selectedKind;
-      const matchesCategory = selectedCategory === 'all' ||
-                             (selectedCategory === 'demos' && isDemo(route)) ||
-                             (selectedCategory === 'production' && !isDemo(route));
-      return matchesSearch && matchesTag && matchesKind && matchesCategory;
-    });
-
-    // Sort routes
-    if (sortBy === 'path') {
-      filtered.sort((a, b) => a.path.localeCompare(b.path));
-    } else if (sortBy === 'kind') {
-      filtered.sort((a, b) => {
-        if (a.kind === b.kind) return a.path.localeCompare(b.path);
-        return a.kind.localeCompare(b.kind);
-      });
-    }
-
-    return filtered;
-  });
-
-  onMount(async () => {
-    try {
-      const res = await fetch('/api/routes/all');
-      const data = await res.json();
-
-      // Enrich routes with metadata
-      const enrichedRoutes = data.routes.map((route: RouteEntry, idx: number) => ({
-        ...route,
-        icon: routeIcons[idx % routeIcons.length],
-        packages: inferPackages(route),
-        category: categorizeRoute(route),
-        version: getVersion(route)
-      }));
-
-      // Add related routes
-      routes = enrichedRoutes.map((route: RouteEntry) => ({
-        ...route,
-        relatedRoutes: findRelatedRoutes(route, enrichedRoutes)
-      }));
-
-      // Calculate demo count
-      const demoCount = routes.filter(r => isDemo(r)).length;
-      stats = { ...data.stats, demos: demoCount };
-      loading = false;
-    } catch (e) {
-      console.error('Failed to load routes:', e);
-      loading = false;
-    }
-  });
-
-  function openModal(route: RouteEntry) {
-    selectedRoute = route;
-    dialog?.showModal();
-  }
-
-  function closeModal() {
-    dialog?.close();
-    selectedRoute = null;
-  }
-
-  function navigateToRoute(path: string) {
-    closeModal();
-    goto(path);
-  }
-
-  function getRouteSummary(route: RouteEntry): string {
-    const hasPage = route.files.page;
-    const hasServer = route.files.server || route.files.page_server;
-
-    if (route.kind === 'endpoint') {
-      return `API endpoint supporting ${route.methods.join(', ')} methods.`;
-    } else if (route.kind === 'layout') {
-      return `Layout component providing shared UI structure.`;
-    } else if (hasPage && hasServer) {
-      return `Interactive page with server-side data loading and processing.`;
-    } else if (hasPage) {
-      return `Client-side rendered page component.`;
-    }
-    return `Route component in the application.`;
-  }
+				routes = Array.from(routeMap.values()).sort((a, b) =>
+					a.path.localeCompare(b.path)
+				);
+			}
+		} catch (err) {
+			console.error('Failed to fetch route status:', err);
+		} finally {
+			loading = false;
+		}
+	});
 </script>
 
-<svelte:head>
-  <title>NES Route Explorer</title>
-</svelte:head>
+<div class="all-routes-container">
+	<header class="all-routes-header">
+		<h1>ALL ROUTES</h1>
+		<p>Phase 72 Route Health Dashboard + Route Organization Report</p>
+		<div class="header-stats">
+			<span>Total: {routeReport.metadata.totalRoutes}</span>
+			<span>Functional: {routeReport.metadata.functionalRoutes}</span>
+			<span>Lore: {routeReport.metadata.emptyStubs}</span>
+		</div>
+	</header>
 
-<div class="page-wrapper">
-  <!-- Header -->
-  <header class="header-section">
-    <div class="nes-container is-dark with-title">
-      <p class="title">Route Explorer</p>
-      <div class="header-content">
-        <div class="header-info">
-          <p class="nes-text">Explore all {stats.total} routes</p>
-        </div>
-        <div class="header-actions">
-          <a href="/graph-mode" class="nes-btn is-success">📊 Graph Mode</a>
-          <a href="/test-route-discovery" class="nes-btn is-warning">Test</a>
-          <a href="/command/routes" class="nes-btn is-primary">Command</a>
-        </div>
-      </div>
-    </div>
-  </header>
+	<div class="filters">
+		<div class="filter-group">
+			<label for="category-filter">Category:</label>
+			<select id="category-filter" bind:value={filterCategory}>
+				<option value={null}>All</option>
+				<option value="AI">AI</option>
+				<option value="Core">Core</option>
+				<option value="Auth">Auth</option>
+				<option value="Utility">Utility</option>
+				<option value="Demo">Demo</option>
+				<option value="Legacy">Legacy</option>
+				<option value="Uncategorized">Uncategorized</option>
+			</select>
+		</div>
 
-  <div class="main-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="nes-container is-rounded with-title">
-        <p class="title">Filters</p>
+		<div class="filter-group">
+			<label for="priority-filter">Priority:</label>
+			<select id="priority-filter" bind:value={filterPriority}>
+				<option value={null}>All</option>
+				<option value="high">High</option>
+				<option value="medium">Medium</option>
+				<option value="low">Low</option>
+			</select>
+		</div>
 
-        <!-- Search -->
-        <div class="filter-group">
-          <label for="search-input" class="nes-text">Search</label>
-          <input
-            id="search-input"
-            type="text"
-            class="nes-input"
-            bind:value={searchQuery}
-            placeholder="Search..."
-          />
-        </div>
+		<div class="filter-group">
+			<label for="functional-toggle">
+				<input
+					id="functional-toggle"
+					type="checkbox"
+					bind:checked={showOnlyFunctional}
+				/>
+				Real Routes Only
+			</label>
+		</div>
 
-        <!-- Category Filter (Demos) -->
-        <div class="filter-group">
-          <label for="category-select" class="nes-text">Category</label>
-          <div class="nes-select">
-            <select id="category-select" bind:value={selectedCategory}>
-              <option value="all">All Routes</option>
-              <option value="demos">🎮 Demos ({stats.demos})</option>
-              <option value="production">⚙️ Production</option>
-            </select>
-          </div>
-        </div>
+		<div class="filter-stats">
+			Showing {getFilteredRoutes().length} of {routes.length} routes
+		</div>
+	</div>
 
-        <!-- Kind Filter -->
-        <div class="filter-group">
-          <label for="kind-select" class="nes-text">Type</label>
-          <div class="nes-select">
-            <select id="kind-select" bind:value={selectedKind}>
-              <option value="all">All Types</option>
-              <option value="page">Pages ({stats.pages})</option>
-              <option value="endpoint">Endpoints ({stats.endpoints})</option>
-              <option value="layout">Layouts ({stats.layouts})</option>
-            </select>
-          </div>
-        </div>
+	{#if loading}
+		<div class="loading">Loading route status...</div>
+	{:else}
+		<table data-phase72-routes class="routes-table">
+			<thead>
+				<tr>
+					<th>Route</th>
+					<th>Category</th>
+					<th>Priority</th>
+					<th>Type</th>
+					<th>Status</th>
+					<th>Errors</th>
+					<th>Last Error</th>
+					<th>Last Seen</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each getFilteredRoutes() as route (route.path)}
+					<tr
+						data-route={route.path}
+						data-status={route.status}
+						data-error-count={route.errorCount}
+						data-category={route.category}
+						data-priority={route.priority}
+						data-functional={route.functional}
+						class="route-row status-{route.status} priority-{route.priority} {route.functional ? 'real' : 'lore'}"
+						onclick={() => openDetectiveBoard(route)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && openDetectiveBoard(route)}
+					>
+						<td class="route-path">{route.path}</td>
+						<td class="route-category">
+							<span class="category-badge category-{route.category?.toLowerCase()}">
+								{route.category || 'Uncategorized'}
+							</span>
+						</td>
+						<td class="route-priority">
+							<span class="priority-badge priority-{route.priority}">
+								{route.priority?.toUpperCase() || 'LOW'}
+							</span>
+						</td>
+						<td class="route-type">
+							{#if route.functional}
+								<span class="type-badge real">✓ Real</span>
+							{:else}
+								<span class="type-badge lore">◇ Lore</span>
+							{/if}
+						</td>
+						<td class="route-status">
+							<span class="status-badge status-{route.status}">
+								{route.status.toUpperCase()}
+							</span>
+						</td>
+						<td class="route-error-count">{route.errorCount}</td>
+						<td class="route-last-error">{route.lastError || '—'}</td>
+						<td class="route-last-time">
+							{route.lastErrorTime
+								? new Date(route.lastErrorTime).toLocaleTimeString()
+								: '—'}
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 
-        <!-- Tag Filter -->
-        <div class="filter-group">
-          <label for="tag-select" class="nes-text">Tags</label>
-          <div class="nes-select">
-            <select id="tag-select" bind:value={selectedTag}>
-              <option value="all">All Tags</option>
-              {#each allTags as tag}
-                <option value={tag}>{tag}</option>
-              {/each}
-            </select>
-          </div>
-        </div>
-
-        <!-- Sort By -->
-        <div class="filter-group">
-          <label for="sort-select" class="nes-text">Sort By</label>
-          <div class="nes-select">
-            <select id="sort-select" bind:value={sortBy}>
-              <option value="path">Path (A-Z)</option>
-              <option value="kind">Type</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats-box">
-          <p class="nes-text is-primary">Statistics</p>
-          <div class="stat-row">
-            <span>Total</span>
-            <span class="nes-text is-success">{stats.total}</span>
-          </div>
-          <div class="stat-row">
-            <span>Demos</span>
-            <span class="nes-text is-warning">{stats.demos}</span>
-          </div>
-          <div class="stat-row">
-            <span>Filtered</span>
-            <span class="nes-text is-success">{filteredRoutes.length}</span>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-          <button
-            type="button"
-            class="nes-btn is-warning btn-small"
-            onclick={() => selectedCategory = 'demos'}
-          >
-            Show Demos
-          </button>
-          <button
-            type="button"
-            class="nes-btn btn-small"
-            onclick={() => { selectedCategory = 'all'; selectedTag = 'all'; selectedKind = 'all'; searchQuery = ''; }}
-          >
-            Reset
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      {#if loading}
-        <div class="loading-state">
-          <i class="nes-icon is-large heart"></i>
-          <p class="nes-text is-primary">Loading routes...</p>
-        </div>
-      {:else}
-        <div class="routes-grid">
-          {#each filteredRoutes as route (route.id)}
-            <button
-              onclick={() => openModal(route)}
-              class="route-card nes-container is-rounded"
-            >
-              <div class="card-icon">{route.icon}</div>
-              <div class="card-badge">
-                <span class="nes-badge {route.kind === 'page' ? 'is-success' : route.kind === 'endpoint' ? 'is-primary' : 'is-warning'}">
-                  <span>{route.kind}</span>
-                </span>
-              </div>
-              <div class="card-path">{route.path}</div>
-              {#if route.methods.length > 0}
-                <div class="card-methods">
-                  {route.methods.slice(0, 2).join(' • ')}
-                </div>
-              {/if}
-              {#if route.tags.length > 0}
-                <div class="card-tags">
-                  {#each route.tags.slice(0, 2) as tag}
-                    <span class="tag-item">{tag}</span>
-                  {/each}
-                  {#if route.tags.length > 2}
-                    <span class="tag-item">+{route.tags.length - 2}</span>
-                  {/if}
-                </div>
-              {/if}
-            </button>
-          {/each}
-        </div>
-
-        {#if filteredRoutes.length === 0}
-          <div class="no-results">
-            <i class="nes-icon is-large close"></i>
-            <p class="nes-text is-error">No routes found!</p>
-            <p>Try adjusting your filters</p>
-          </div>
-        {/if}
-      {/if}
-    </main>
-  </div>
+		{#if getFilteredRoutes().length === 0}
+			<div class="no-routes">No routes match your filters. Try adjusting them.</div>
+		{/if}
+	{/if}
 </div>
 
-<!-- Modal -->
-<dialog bind:this={dialog} class="nes-dialog route-modal">
-  {#if selectedRoute}
-    <form method="dialog">
-      <div class="modal-header">
-        <div class="modal-title-section">
-          <div class="modal-icon">{selectedRoute.icon}</div>
-          <div>
-            <span class="nes-badge {selectedRoute.kind === 'page' ? 'is-success' : selectedRoute.kind === 'endpoint' ? 'is-primary' : 'is-warning'}">
-              <span>{selectedRoute.kind}</span>
-            </span>
-            <h2 class="modal-path">{selectedRoute.path}</h2>
-          </div>
-        </div>
-        <button type="button" class="nes-btn is-error" onclick={closeModal}>✕</button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Summary -->
-        <div class="modal-section">
-          <p class="nes-text is-primary">Summary</p>
-          <p>{getRouteSummary(selectedRoute)}</p>
-        </div>
-
-        <!-- Files -->
-        {#if Object.keys(selectedRoute.files).length > 0}
-          <div class="modal-section">
-            <p class="nes-text is-primary">Files</p>
-            <div class="files-list">
-              {#each Object.entries(selectedRoute.files) as [type, path]}
-                <div class="nes-container is-rounded file-item">
-                  <p class="file-type">{type}</p>
-                  <p class="file-path">{path}</p>
-                </div>
-              {/each}
-            </div>
-          </div>
-        {/if}
-
-        <!-- Methods -->
-        {#if selectedRoute.methods.length > 0}
-          <div class="modal-section">
-            <p class="nes-text is-primary">HTTP Methods</p>
-            <div class="methods-list">
-              {#each selectedRoute.methods as method}
-                <span class="nes-badge is-success">
-                  <span>{method}</span>
-                </span>
-              {/each}
-            </div>
-          </div>
-        {/if}
-
-        <!-- Tags -->
-        {#if selectedRoute.tags.length > 0}
-          <div class="modal-section">
-            <p class="nes-text is-primary">Tags</p>
-            <div class="tags-list">
-              {#each selectedRoute.tags as tag}
-                <span class="nes-badge">
-                  <span>{tag}</span>
-                </span>
-              {/each}
-            </div>
-          </div>
-        {/if}
-
-        <!-- Category & Version -->
-        <div class="modal-section">
-          <p class="nes-text is-primary">Metadata</p>
-          <div class="metadata-grid">
-            <div class="metadata-item">
-              <span class="metadata-label">Category:</span>
-              <span class="nes-badge is-warning">
-                <span>{selectedRoute.category}</span>
-              </span>
-            </div>
-            {#if selectedRoute.version}
-              <div class="metadata-item">
-                <span class="metadata-label">Version:</span>
-                <span class="nes-badge is-success">
-                  <span>{selectedRoute.version}</span>
-                </span>
-              </div>
-            {/if}
-          </div>
-        </div>
-
-        <!-- Packages -->
-        {#if selectedRoute.packages && selectedRoute.packages.length > 0}
-          <div class="modal-section">
-            <p class="nes-text is-primary">Required Packages</p>
-            <div class="packages-list">
-              {#each selectedRoute.packages as pkg}
-                <span class="nes-badge is-primary">
-                  <span>{pkg}</span>
-                </span>
-              {/each}
-            </div>
-          </div>
-        {/if}
-
-        <!-- Related Routes -->
-        {#if selectedRoute.relatedRoutes && selectedRoute.relatedRoutes.length > 0}
-          <div class="modal-section">
-            <p class="nes-text is-primary">Related Routes</p>
-            <div class="related-routes-list">
-              {#each selectedRoute.relatedRoutes as relatedPath}
-                <button
-                  type="button"
-                  class="related-route-btn"
-                  onclick={() => {
-                    const related = routes.find(r => r.path === relatedPath);
-                    if (related) openModal(related);
-                  }}
-                >
-                  {relatedPath}
-                </button>
-              {/each}
-            </div>
-          </div>
-        {/if}
-
-        <!-- Actions -->
-        <div class="modal-actions">
-          {#if selectedRoute.kind === 'page'}
-            <button
-              type="button"
-              class="nes-btn is-primary"
-              onclick={() => navigateToRoute(selectedRoute.path)}
-            >
-              Visit Page →
-            </button>
-          {/if}
-          <a
-            href="/dev/ast-graph?route={encodeURIComponent(selectedRoute.path)}"
-            class="nes-btn is-warning"
-          >
-            View AST Graph
-          </a>
-        </div>
-      </div>
-    </form>
-  {/if}
-</dialog>
+<!-- Phase 82 Detective Board Modal -->
+{#if modalOpen && selectedRoute}
+	<RouteInspectorDetectiveBoard
+		bind:open={modalOpen}
+		bind:route={selectedRoute}
+		onclose={closeDetectiveBoard}
+	/>
+{/if}
 
 <style>
-  .page-wrapper {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 2rem;
-  }
+	.all-routes-container {
+		background: var(--yorha-bg);
+		color: var(--yorha-ink);
+		font-family: var(--yorha-font);
+		padding: 2rem;
+		min-height: 100vh;
+	}
 
-  .header-section {
-    margin-bottom: 2rem;
-  }
+	.all-routes-header {
+		margin-bottom: 2rem;
+		border-bottom: 3px solid var(--yorha-crimson);
+		padding-bottom: 1rem;
+	}
 
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-  }
+	.all-routes-header h1 {
+		margin: 0;
+		font-size: 2rem;
+		color: var(--yorha-crimson);
+		font-weight: bold;
+	}
 
-  .header-actions {
-    display: flex;
-    gap: 1rem;
-  }
+	.all-routes-header p {
+		margin: 0.5rem 0 0 0;
+		color: #666;
+		font-size: 0.875rem;
+	}
 
-  .main-layout {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 2rem;
-  }
+	.header-stats {
+		display: flex;
+		gap: 2rem;
+		margin-top: 1rem;
+		font-size: 0.875rem;
+		color: #666;
+	}
 
-  .sidebar {
-    position: sticky;
-    top: 2rem;
-    height: fit-content;
-  }
+	.header-stats span {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
 
-  .filter-group {
-    margin-bottom: 1.5rem;
-  }
+	.filters {
+		display: flex;
+		gap: 1rem;
+		margin-bottom: 2rem;
+		padding: 1rem;
+		background: var(--yorha-paper);
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		flex-wrap: wrap;
+		align-items: center;
+	}
 
-  .filter-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-  }
+	.filter-group {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
 
-  .stats-box {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid #000;
-  }
+	.filter-group label {
+		font-size: 0.875rem;
+		font-weight: bold;
+		color: var(--yorha-ink);
+	}
 
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 0.5rem 0;
-  }
+	.filter-group select,
+	.filter-group input[type='checkbox'] {
+		padding: 0.5rem;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		font-family: var(--yorha-font);
+		background: white;
+		color: var(--yorha-ink);
+	}
 
-  .quick-actions {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+	.filter-group input[type='checkbox'] {
+		width: 1rem;
+		height: 1rem;
+		cursor: pointer;
+	}
 
-  .btn-small {
-    font-size: 0.75rem;
-    padding: 0.5rem;
-  }
+	.filter-stats {
+		margin-left: auto;
+		font-size: 0.875rem;
+		color: #666;
+	}
 
-  .loading-state {
-    text-align: center;
-    padding: 4rem;
-  }
+	.loading,
+	.no-routes {
+		padding: 2rem;
+		text-align: center;
+		background: var(--yorha-paper);
+		border: 2px solid var(--yorha-ink);
+		border-radius: 4px;
+	}
 
-  .loading-state i {
-    margin-bottom: 1rem;
-  }
+	.routes-table {
+		width: 100%;
+		border-collapse: collapse;
+		background: var(--yorha-paper);
+		border: 2px solid var(--yorha-ink);
+		font-size: 0.875rem;
+	}
 
-  /* Routes Grid - 3 Columns */
-  .routes-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
+	.routes-table thead {
+		background: var(--yorha-bg-dark);
+		color: var(--yorha-paper);
+	}
 
-  .route-card {
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: white;
-  }
+	.routes-table th {
+		padding: 0.75rem;
+		text-align: left;
+		font-weight: bold;
+		border-bottom: 2px solid var(--yorha-ink);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
 
-  .route-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
+	.routes-table td {
+		padding: 0.5rem 0.75rem;
+		border-bottom: 1px solid #ddd;
+	}
 
-  .card-icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
+	.route-row {
+		transition: background-color 0.2s ease;
+		cursor: pointer;
+	}
 
-  .card-badge {
-    margin: 0.5rem 0;
-  }
+	.route-row:hover {
+		background-color: #f5f0e8;
+		box-shadow: inset 0 0 0 2px var(--yorha-crimson);
+	}
 
-  .card-path {
-    font-size: 0.875rem;
-    font-weight: bold;
-    margin: 0.75rem 0;
-    word-break: break-word;
-    min-height: 2.5rem;
-  }
+	.route-row:focus {
+		outline: 2px solid var(--yorha-crimson);
+		outline-offset: -2px;
+	}
 
-  .card-methods {
-    font-size: 0.75rem;
-    opacity: 0.7;
-    margin: 0.5rem 0;
-  }
+	.route-row.status-red {
+		background-color: #ffe6e6;
+	}
 
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    justify-content: center;
-    margin-top: 0.5rem;
-  }
+	.route-row.status-yellow {
+		background-color: #fff9e6;
+	}
 
-  .tag-item {
-    font-size: 0.7rem;
-    opacity: 0.7;
-  }
+	.route-row.status-green {
+		background-color: #e6ffe6;
+	}
 
-  .no-results {
-    text-align: center;
-    padding: 4rem;
-  }
+	.route-row.lore {
+		opacity: 0.7;
+	}
 
-  .no-results i {
-    margin-bottom: 1rem;
-  }
+	.route-path {
+		font-weight: bold;
+		font-family: var(--yorha-font);
+		color: var(--yorha-ink);
+	}
 
-  .no-results p {
-    margin: 0.5rem 0;
-  }
+	.category-badge,
+	.priority-badge,
+	.type-badge,
+	.status-badge {
+		display: inline-block;
+		padding: 0.25rem 0.5rem;
+		border-radius: 3px;
+		font-size: 0.65rem;
+		font-weight: bold;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		white-space: nowrap;
+	}
 
-  /* Modal Styles */
-  .route-modal {
-    max-width: 800px;
-    width: 90vw;
-    max-height: 80vh;
-    padding: 0;
-    border: 4px solid #000;
-  }
+	.category-badge {
+		background: #e0e0e0;
+		color: #333;
+	}
 
-  dialog::backdrop {
-    backdrop-filter: blur(4px);
-    background: rgba(0, 0, 0, 0.7);
-  }
+	.category-badge.category-ai {
+		background: #c8e6c9;
+		color: #1b5e20;
+	}
 
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 1.5rem;
-    border-bottom: 2px solid #000;
-    background: #f7f7f7;
-  }
+	.category-badge.category-core {
+		background: #bbdefb;
+		color: #0d47a1;
+	}
 
-  .modal-title-section {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
+	.category-badge.category-auth {
+		background: #ffe0b2;
+		color: #e65100;
+	}
 
-  .modal-icon {
-    font-size: 2.5rem;
-  }
+	.category-badge.category-utility {
+		background: #f8bbd0;
+		color: #880e4f;
+	}
 
-  .modal-path {
-    font-size: 1rem;
-    margin: 0.5rem 0 0 0;
-    word-break: break-word;
-  }
+	.category-badge.category-demo {
+		background: #d1c4e9;
+		color: #311b92;
+	}
 
-  .modal-body {
-    padding: 1.5rem;
-    max-height: calc(80vh - 150px);
-    overflow-y: auto;
-    background: #fff;
-  }
+	.category-badge.category-legacy {
+		background: #cfd8dc;
+		color: #37474f;
+	}
 
-  .modal-section {
-    margin-bottom: 1.5rem;
-  }
+	.priority-badge {
+		background: #e0e0e0;
+		color: #333;
+	}
 
-  .modal-section > p:first-child {
-    margin-bottom: 0.75rem;
-  }
+	.priority-badge.priority-high {
+		background: #ef5350;
+		color: white;
+	}
 
-  .files-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+	.priority-badge.priority-medium {
+		background: #ffa726;
+		color: white;
+	}
 
-  .file-item {
-    padding: 0.75rem;
-  }
+	.priority-badge.priority-low {
+		background: #66bb6a;
+		color: white;
+	}
 
-  .file-type {
-    font-size: 0.75rem;
-    opacity: 0.7;
-    margin: 0 0 0.25rem 0;
-  }
+	.type-badge {
+		background: #e0e0e0;
+		color: #333;
+	}
 
-  .file-path {
-    font-size: 0.875rem;
-    word-break: break-all;
-    margin: 0;
-  }
+	.type-badge.real {
+		background: #4caf50;
+		color: white;
+	}
 
-  .methods-list,
-  .tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
+	.type-badge.lore {
+		background: #9e9e9e;
+		color: white;
+	}
 
-  .modal-actions {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid #000;
-  }
+	.status-badge {
+		background: #e0e0e0;
+		color: #333;
+	}
 
-  .modal-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
+	.status-badge.status-green {
+		background: #00c853;
+		color: white;
+	}
 
-  .modal-actions button,
-  .modal-actions a {
-    flex: 1;
-  }
+	.status-badge.status-yellow {
+		background: #ff9800;
+		color: white;
+	}
 
-  .metadata-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+	.status-badge.status-red {
+		background: var(--yorha-crimson);
+		color: white;
+	}
 
-  .metadata-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+	.route-error-count {
+		text-align: center;
+		font-weight: bold;
+	}
 
-  .metadata-label {
-    font-size: 0.875rem;
-    opacity: 0.8;
-  }
+	.route-last-error {
+		font-family: var(--yorha-font);
+		font-size: 0.75rem;
+		color: #666;
+	}
 
-  .packages-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .related-routes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .related-route-btn {
-    padding: 0.5rem;
-    text-align: left;
-    background: #f0f0f0;
-    border: 2px solid #000;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
-  }
-
-  .related-route-btn:hover {
-    background: #e0e0e0;
-    transform: translateX(4px);
-  }
-
-  /* Responsive */
-  @media (max-width: 1200px) {
-    .routes-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .main-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-      position: static;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .routes-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .header-content {
-      flex-direction: column;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-
-    .page-wrapper {
-      padding: 1rem;
-    }
-  }
-
-  /* Custom Scrollbar */
-  .modal-body::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .modal-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  .modal-body::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-
-  .modal-body::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+	.route-last-time {
+		font-size: 0.7rem;
+		color: #999;
+	}
 </style>

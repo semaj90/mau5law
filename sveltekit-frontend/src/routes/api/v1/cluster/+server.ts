@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 /* * Cluster API Endpoint - Service Orchestration & Health * to: cluster-http.exe: 8213, modular-cluster-service-production.exe: 8215 */
 import type { productionServiceClient  } from '$lib/services/productionServiceClient';
 import { json, error } from '@sveltejs/kit';;

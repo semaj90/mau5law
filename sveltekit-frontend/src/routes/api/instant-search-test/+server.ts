@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { redisService  } from '$lib/server/redis-service.js';
 import type { lokiRedisCache  } from '$lib/cache/loki-redis-integration.js'; // Assuming named export
 import type { instantSearchEngine  } from '$lib/services/instant-search-engine.js'; // Assuming named export

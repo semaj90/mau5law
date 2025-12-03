@@ -1,6 +1,6 @@
 /** * Vector Similarity API - Client WebAssembly to Server CUDA Bridge * Handles cosine similarity, euclidean distance, and batch operations */
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { PGVECTOR_CONFIG, getCudaServiceUrl  } from '$lib/config/pgvector-gpu-config.js';
 
 interface VectorSimilarityRequest {

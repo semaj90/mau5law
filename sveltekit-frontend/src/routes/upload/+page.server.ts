@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types .js';
+import type { PageServerLoad, Actions } from './$types.js';
 import { fail } from '@sveltejs/kit';;
 import type { fileUploadSchema  } from '$lib/schemas/fileUploadSchema';
 import type { xstateIntegration  } from '$lib/services/xstate-integration'; // Changed to named import

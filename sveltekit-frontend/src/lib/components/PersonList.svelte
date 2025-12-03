@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Button  } from 'bits-ui/components/ui/button';
+	import type { Button } from 'bits-ui/components/ui/button';
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {
@@ -32,6 +33,9 @@
 		<!-- Person Entries -->
 		<div class="person-entries max-h-96 overflow-y-auto">
 			{#each persons.filter(p =>
+
+	// Computed filtered persons
+	$: filteredPersons = persons.filter(p =>
 				p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				p.alias.toLowerCase().includes(searchQuery.toLowerCase())
 			) as person}
@@ -43,9 +47,50 @@
 					<div class="text-left">
 						<p class="text-white font-bold text-sm">{person.name}</p>
 						<p class="text-xs opacity-60">{person.alias}</p>
+	);
+
+	// Filter states
+	let statusFilter = 'ALL';
+	let priorityFilter = 'ALL';
+
+	const statusOptions = ['ALL', 'WANTED', 'MONITORING', 'COOPERATIVE'];
+	const priorityOptions = ['ALL', 'HIGH', 'MEDIUM', 'LOW'];
+</script>
+
+<div class="nes-container with-title bg-gray-900 text-white rounded-xl">
+	<p class="title text-amber-300">Persons of Interest</p>
+
+	<div class="space-y-4">
+		<!-- Search Input -->
+		<input
+			type="text"
+			placeholder="SEARCH PERSONS..."
+			class="nes-input w-full"
+			bind:value={searchQuery}
+		/>
+
+		<!-- Person Matches Count -->
+		<div class="person-matches">
+			<p class="text-xs opacity-60">{filteredPersons.length} MATCHES FOUND</p>
 					</div>
 				</Button>
 			{/each}
+
+		<!-- Person Entries -->
+		<div class="person-entries max-h-96 overflow-y-auto">
+			{#each filteredPersons as person (person.id)}
+				<Button
+					class="person-entry w-full p-3 bg-gray-800 hover:bg-gray-700 transition rounded flex items-center gap-3 cursor-pointer border border-gray-600 {selectedPerson?.id === person.id ? 'selected' : ''}"
+					onclick={() => onSelect(person)}
+				>
+					<img
+						src={person.photo || '/placeholder-person.jpg'}
+						alt={person.name}
+						class="w-14 h-14 rounded shadow object-cover"
+					/>
+					<div class="text-left">
+						<p class="text-white font-bold text-sm">{person.name}</p>
+						<p class="text-xs opacity-60">{person.alias}</p>
 		</div>
 
 		<!-- Filter Section -->
@@ -58,18 +103,49 @@
 					<Button class="nes-btn text-xs">WANTED</Button>
 					<Button class="nes-btn text-xs">MONITORING</Button>
 					<Button class="nes-btn text-xs">COOPERATIVE</Button>
+				</Button>
+			{/each}
 				</div>
 			</div>
 			<div class="filter-group mt-3">
 				<label class="text-xs opacity-70 block mb-1">PRIORITY</label>
+
+		<!-- Filter Section -->
+		<div class="filter-section">
+			<h4 class="text-amber-300 text-sm mb-2">FILTERS</h4>
+
+			<div class="filter-group">
+				<label class="text-xs opacity-70 block mb-1">STATUS</label>
 				<div class="flex gap-1 flex-wrap">
 					<Button class="nes-btn is-primary text-xs">ALL</Button>
 					<Button class="nes-btn text-xs">HIGH</Button>
 					<Button class="nes-btn text-xs">MEDIUM</Button>
 					<Button class="nes-btn text-xs">LOW</Button>
+					{#each statusOptions as status}
+						<Button
+							class="nes-btn text-xs {statusFilter === status ? 'is-primary' : ''}"
+							onclick={() => statusFilter = status}
+						>
+							{status}
+						</Button>
+					{/each}
 				</div>
 			</div>
+
+			<div class="filter-group mt-3">
+				<label class="text-xs opacity-70 block mb-1">PRIORITY</label>
+				<div class="flex gap-1 flex-wrap">
+					{#each priorityOptions as priority}
+						<Button
+							class="nes-btn text-xs {priorityFilter === priority ? 'is-primary' : ''}"
+							onclick={() => priorityFilter = priority}
+						>
+							{priority}
+						</Button>
+					{/each}
 		</div>
+	</div>
+</div>
 	</div>
 </div>
 

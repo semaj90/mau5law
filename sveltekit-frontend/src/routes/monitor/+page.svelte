@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';;
   import type { fade  } from 'svelte/transition';
-  import type { PageData } from './$types ';
+  import type { PageData } from './$types';
 
   export let data: PageData;
 

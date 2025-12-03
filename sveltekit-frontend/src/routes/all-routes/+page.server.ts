@@ -1,6 +1,6 @@
-﻿import type { PageServerLoad } from './$types';
-import fs from 'fs';
+﻿import fs from 'fs';
 import path from 'path';
+import type { ServerLoad } from '@sveltejs/kit';
 
 // Configuration
 const ROUTES_DIR = 'src/routes';
@@ -71,7 +71,7 @@ function scanRoutes(dir: string, baseDir: string = ROUTES_DIR): RouteInfo[] {
     return results;
 }
 
-export const load: PageServerLoad = async () => {
+export const load: ServerLoad = async () => {
     const routes = scanRoutes(path.resolve(ROUTES_DIR));
 
     // Sort: Pages first, then APIs, then Layouts

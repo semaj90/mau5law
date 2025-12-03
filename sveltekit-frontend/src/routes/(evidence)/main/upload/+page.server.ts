@@ -9,7 +9,7 @@ import path from 'path';
 import crypto from 'node:crypto';
 import type { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType  } from '$lib/schemas/evidence-upload.js';
 import type { db, cases, evidence, helpers  } from '$lib/server/db';
-import type { PageServerLoad, Actions } from './$types .js';
+import type { PageServerLoad, Actions } from './$types.js';
 import type { getUserId  } from '$lib/server/auth/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {

@@ -1,6 +1,6 @@
 /* * Configuration Sync API Endpoint * Tests and validates all system connections and configurations */
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 // Add small explicit types to avoid `any` type
 type PostgresConnection = {

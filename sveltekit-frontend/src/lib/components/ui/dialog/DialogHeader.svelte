@@ -1,15 +1,25 @@
 <script lang="ts">
-  // Truncated file - replaced with stub
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		children?: Snippet;
+		class?: string;
+	}
+
+	let { children, class: className = '' }: Props = $props();
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<div class="dialog-header {className}">
+	{#if children}
+		{@render children()}
+	{/if}
+</div>
 
 <style>
-  .page-repair {
-    padding: 2rem;
-    font-family: sans-serif;
-  }
+	.dialog-header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+		padding: 1rem 1.5rem 0;
+	}
 </style>

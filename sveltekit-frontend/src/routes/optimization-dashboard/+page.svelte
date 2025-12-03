@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { enhancedRAGStore  } from '$lib/stores/enhanced-rag-store.js';
+import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
 import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
-import { onMount } from 'svelte';;
+import { onMount } from 'svelte';
 
   type PerfPoint = { time: Date; value: number };
 
@@ -160,8 +160,57 @@ import { onMount } from 'svelte';;
 </script>
 
 <main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+  <h1>Optimization Dashboard</h1>
+
+  <section class="controls">
+    <button onclick={() => startMonitoring()} disabled={isMonitoring}>Start Monitoring</button>
+    <button onclick={() => stopMonitoring()} disabled={!isMonitoring}>Stop Monitoring</button>
+    <button onclick={() => testWorkerSystem()} disabled={isSubmittingJob}>
+      {isSubmittingJob ? 'Testing...' : 'Test Worker System'}
+    </button>
+    <button onclick={() => runRAGSearch()}>Run RAG Search</button>
+    <button onclick={() => optimizeCache()}>Optimize Cache</button>
+  </section>
+
+  <section class="metrics">
+    <h2>System Status</h2>
+    <div class="metric-card">
+      <h3>Neural Memory</h3>
+      <p>Current Usage: {systemStatus.neuralMemory.currentUsage.toFixed(2)}</p>
+      <p>Efficiency: {systemStatus.neuralMemory.efficiency.toFixed(2)}</p>
+    </div>
+    <div class="metric-card">
+      <h3>ML Caching</h3>
+      <p>Hit Rate: {(systemStatus.mlCaching.hitRate * 100).toFixed(1)}%</p>
+      <p>Compression Ratio: {systemStatus.mlCaching.compressionRatio.toFixed(2)}</p>
+    </div>
+    <div class="metric-card">
+      <h3>Worker System</h3>
+      <p>Active Workers: {systemStatus.workerSystem.activeWorkers}</p>
+      <p>Queued Jobs: {systemStatus.workerSystem.queuedJobs}</p>
+      <p>Health: {systemStatus.workerSystem.systemHealth}</p>
+    </div>
+  </section>
+
+  {#if testJobResult}
+    <section class="results">
+      <h2>Worker Test Result</h2>
+      <pre>{JSON.stringify(testJobResult, null, 2)}</pre>
+    </section>
+  {/if}
+
+  {#if systemStatus.recommendations.length > 0}
+    <section class="recommendations">
+      <h2>Recommendations</h2>
+      <ul>
+        {#each systemStatus.recommendations as rec}
+          <li>{rec}</li>
+        {/each}
+      </ul>
+    </section>
+  {/if}
+
+  <p class="last-update">Last updated: {lastUpdate.toLocaleTimeString()}</p>
 </main>
 
 <style>

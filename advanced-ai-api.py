@@ -327,7 +327,7 @@ async def broadcast_websocket_message(message: Dict[str, Any]):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8001))
     uvicorn.run(
-        "advanced_ai_api:app",
+        app,
         host="0.0.0.0",
         port=port,
         reload=True,

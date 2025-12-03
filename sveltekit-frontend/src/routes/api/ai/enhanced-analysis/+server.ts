@@ -22,7 +22,7 @@
  * }
  */
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { GRPCAIOrchestrator  } from '$lib/services/grpc-ai-orchestrator';
 
 interface LegalDocument {

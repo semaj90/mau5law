@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
  */
 import { json } from '@sveltejs/kit';
 import type { type Response } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { rtxSystemMonitor, type RTXSystemStatus  } from '$lib/services/rtx-system-monitor';
 
 // Pipeline configuration matching your architecture

@@ -4,7 +4,7 @@
   import PersonForm from '$lib/components/PersonForm.svelte';
   import SearchBar from '$lib/components/SearchBar.svelte';
   import StatsPanel from '$lib/components/StatsPanel.svelte';
-  import type { PersonOfInterest } from '$lib/db/schema';
+  import type { PersonOfInterest } from '$lib/types';
   import { onMount } from 'svelte';
 
   // State management with Svelte 5 runes
@@ -72,10 +72,10 @@
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(person =>
         person.name.toLowerCase().includes(query) ||
-        person.aliases?.some(alias => alias.toLowerCase().includes(query)) ||
-        person.description?.toLowerCase().includes(query) ||
-        person.aiProfile?.who?.toLowerCase().includes(query) ||
-        person.aiProfile?.what?.toLowerCase().includes(query)
+        person.aliases?.some((alias: string) => alias.toLowerCase().includes(query)) ||
+        (person as any).description?.toLowerCase().includes(query) ||
+        (person as any).aiProfile?.who?.toLowerCase().includes(query) ||
+        (person as any).aiProfile?.what?.toLowerCase().includes(query)
       );
     }
 
@@ -92,7 +92,7 @@
     // Apply tags filter
     if (filters.tags.length > 0) {
       filtered = filtered.filter(person =>
-        filters.tags.some(tag => person.tags?.includes(tag))
+        filters.tags.some(tag => (person as any).tags?.includes(tag))
       );
     }
 
@@ -145,7 +145,7 @@
 
     <button
       class="create-btn"
-      on:click={handleCreatePerson}
+      onclick={handleCreatePerson}
       disabled={loading}
     >
       <span class="btn-icon">🤖</span>
@@ -180,7 +180,7 @@
       <div class="error-icon">⚠️</div>
       <h3>Error Loading Data</h3>
       <p>{error}</p>
-      <button class="retry-btn" on:click={loadPersons}>
+      <button class="retry-btn" onclick={loadPersons}>
         Retry
       </button>
     </div>
@@ -195,7 +195,7 @@
             <div class="empty-icon">👥</div>
             <h3>No Persons of Interest</h3>
             <p>Get started by creating your first AI-powered POI profile.</p>
-            <button class="create-first-btn" on:click={handleCreatePerson}>
+            <button class="create-first-btn" onclick={handleCreatePerson}>
               <span class="btn-icon">🤖</span>
               Create First POI
             </button>
@@ -203,7 +203,7 @@
             <div class="empty-icon">🔍</div>
             <h3>No Results Found</h3>
             <p>No persons match your current search and filters.</p>
-            <button class="clear-filters-btn" on:click={() => { searchQuery = ''; filters = { status: '', priority: '', tags: [] }; }}>
+            <button class="clear-filters-btn" onclick={() => { searchQuery = ''; filters = { status: '', priority: '', tags: [] }; }}>
               Clear Filters
             </button>
           {/if}
@@ -218,8 +218,8 @@
 
   <!-- Create Person Modal -->
   {#if showCreateForm}
-    <div class="modal-overlay" on:click={handleFormCancel}>
-      <div class="modal-content" on:click|stopPropagation>
+    <div class="modal-overlay" role="dialog" aria-modal="true" onclick={handleFormCancel}>
+      <div class="modal-content" onclick={(e) => e.stopPropagation()}>
         <PersonForm
           on:created={handlePersonCreated}
           on:cancel={handleFormCancel}

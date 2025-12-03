@@ -1,6 +1,6 @@
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { withSSRHandler,
   createSSRResponse,
   createSSRErrorResponse,

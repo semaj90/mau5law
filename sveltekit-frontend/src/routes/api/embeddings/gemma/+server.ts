@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 
 const EMBEDDING_SERVICE_URL = 'http://localhost:8094';
 

@@ -3,7 +3,7 @@
   // evidenceUploadSchema only exports validateFileSize and getFileTypeFromMime
   import type { validateFileSize, getFileTypeFromMime  } from '$lib/schemas/evidence-upload.js';
 
-  import type { PageData } from './$types .js';
+  import type { PageData } from './$types.js';
   const { data }: { data: PageData } = $props();
 
   // Initialize Superform with a safe fallback when the server didn't include a form

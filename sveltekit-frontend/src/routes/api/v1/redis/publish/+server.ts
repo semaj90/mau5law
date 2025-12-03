@@ -1,5 +1,5 @@
 import type { getRedisService  } from '$lib/server/redis/redis-service';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { apiError,
   apiSuccess,
   validateRequest,

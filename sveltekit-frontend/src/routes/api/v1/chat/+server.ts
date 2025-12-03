@@ -8,7 +8,7 @@ import type { analytics  } from '$lib/server/database/connection';
 import type { dev  } from '$app/environment';
 import type { readBodyFastWithMetrics  } from '$lib/simd/simd-json-integration';
 import type { fastStringify  } from '$lib/utils/fast-json';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 
 // --- Added: lightweight types for parallel execution results ---
 type MultiEmbeddingResult = {

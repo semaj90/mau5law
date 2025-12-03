@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 /* * Copilot Self-Prompt API Endpoint * Enables Copilot to leverage comprehensive AI orchestration for autonomous problem-solving */
 import { json, error } from '@sveltejs/kit';;
 

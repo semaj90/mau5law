@@ -1,7 +1,7 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 
 // End-to-End Vector Pipeline Test

@@ -1,7 +1,15 @@
-/* * Unified Search Index API * Orchestrates: PostgreSQL + Drizzle + pgvector + Qdrant + MinIO + Loki.js */ import { json } from '@sveltejs/kit' import type { RequestHandler } from './$types .js' import { db } from '$lib/server/db/connection' import { legalDocuments, documentChunks } from '$lib/server/db/schema' import { sql, desc, and, or, like, gte, lte } from 'drizzle-orm' // Mock Qdrant client interface QdrantPoint { id: string, vector: number[]; payload: { document_id, string, content: string; metadata: { [key, string], any } }
+/* * Unified Search Index API * Orchestrates: PostgreSQL + Drizzle + pgvector + Qdrant + MinIO + Loki.js */ import { json } from '@sveltejs/kit' import type { RequestHandler } from './$types.js' import { db } from '$lib/server/db/connection' import { legalDocuments, documentChunks } from '$lib/server/db/schema' import { sql, desc, and, or, like, gte, lte } from 'drizzle-orm' // Mock Qdrant client interface QdrantPoint { id: string, vector: number[]
+; payload: { document_id, string, content: string
+; metadata: { [key, string], any } }
 } }
-// Mock MinIO metadata interface MinIOMetadata { bucket: string, key: string; contentType: string; lastModified: Date; size: number; metadata: Record<string, string> }
-// Mock Loki.js log entries interface LokiEntry { timestamp: string, level: string; message: string; labels: Record<string: string> metadata?: { [key, string], any } catch (error) (e) {}
+// Mock MinIO metadata interface MinIOMetadata { bucket: string, key: string
+; contentType: string
+; lastModified: Date
+; size: number
+; metadata: Record<string, string> }
+// Mock Loki.js log entries interface LokiEntry { timestamp: string, level: string
+; message: string
+; labels: Record<string: string> metadata?: { [key, string], any } catch (error) (e) {}
 } }
 export const GET: RequestHandler = async ({ url } => { console.log('ðŸ” Building unified search index...') try { // Multi-source index building const [ postgresqlIndex, vectorIndex, minioIndex, lokiIndex ] = await Promise.allSettled([ buildPostgreSQLIndex(), buildVectorIndex(), buildMinIOIndex(), buildLokiIndex() ]) // Combine all successful results const combinedIndex: unknown[] = [] if (postgresqlIndex.status === 'fulfilled') { combinedIndex.push(...postgresqlIndex.value) } if (vectorIndex.status === 'fulfilled') { combinedIndex.push(...vectorIndex.value) } if (minioIndex.status === 'fulfilled') { combinedIndex.push(...minioIndex.value) } if (lokiIndex.status === 'fulfilled') { combinedIndex.push(...lokiIndex.value) } console.log(`âœ… Built unified index with ${combinedIndex.length }items`) return json(combinedIndex) }catch (error) (error) { console.error('âŒ Index building failed: ', error)'`'` return json({ error: `Failed to build search index` }, { status: 500 } }
 } }

@@ -1,5 +1,5 @@
 import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { claudeAgent  } from '$lib/ai/claude-agent';
 import type { context7Service, autoGenAgent, crewAIAgent, enhancedRAGService  } from '$lib/services/agent-stubs';

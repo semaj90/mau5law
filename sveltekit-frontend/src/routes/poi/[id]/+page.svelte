@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { goto } from '$app // TODO: Verify store subscription is correct for Svelte 5/navigation';
-  import { page } from '$app // TODO: Verify store subscription is correct for Svelte 5/stores';
-  import POIPhotoModal from '$lib // TODO: Verify store subscription is correct for Svelte 5/client/ui/POIPhotoModal.svelte';
-  import POIPhotoUploader from '$lib // TODO: Verify store subscription is correct for Svelte 5/client/ui/POIPhotoUploader.svelte';
-  import POIThreatBadge from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/poi/POIThreatBadge.svelte';
-  import Button from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/button.svelte';
-  import CardContent from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card-content.svelte';
-  import CardHeader from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card-header.svelte';
-  import CardTitle from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card-title.svelte';
-  import Card from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/card.svelte';
-  import Separator from '$lib // TODO: Verify store subscription is correct for Svelte 5/components/ui/separator.svelte';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import POIPhotoModal from '$lib/client/ui/POIPhotoModal.svelte';
+  import POIPhotoUploader from '$lib/client/ui/POIPhotoUploader.svelte';
+  import POIThreatBadge from '$lib/components/poi/POIThreatBadge.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import CardContent from '$lib/components/ui/card-content.svelte';
+  import CardHeader from '$lib/components/ui/card-header.svelte';
+  import CardTitle from '$lib/components/ui/card-title.svelte';
+  import Card from '$lib/components/ui/Card.svelte';
+  import Separator from '$lib/components/ui/separator.svelte';
   import {
     ArrowLeft,
     Camera,
-    Edit,
     FileText,
     MapPin,
+    Pencil,
     TriangleAlert,
     User
   } from 'lucide-svelte';
@@ -36,17 +36,17 @@
     notes?: string;
   }
 
-  let poi = $state // TODO: Verify store subscription is correct for Svelte 5<POI | null>(null);
-  let photos = $state // TODO: Verify store subscription is correct for Svelte 5<Photo[]>([]);
-  let selectedPhoto = $state // TODO: Verify store subscription is correct for Svelte 5<Photo | null>(null);
-  let showPhotoModal = $state // TODO: Verify store subscription is correct for Svelte 5(false);
-  let loading = $state // TODO: Verify store subscription is correct for Svelte 5(true);
+  let poi: POI | null = $state(null);
+  let photos: Photo[] = $state([]);
+  let selectedPhoto: Photo | null = $state(null);
+  let showPhotoModal = $state(false);
+  let loading = $state(false);
 
   // Load POI data
   async function loadPOI() {
     try {
       loading = true;
-      const poiId = $page // TODO: Verify store subscription is correct for Svelte 5.params.id;
+      const poiId = $page.params.id;
 
       // Load POI details - use persons-of-interest API with search
       const poiResponse = await fetch(`/api/persons-of-interest?search=${encodeURIComponent(poiId)}&limit=1`);
@@ -84,12 +84,12 @@
     showPhotoModal = true;
   }
 
-  function handlePhotoUpload(data: any) {
+  function handlePhotoUpload() {
     // Refresh photos after upload
     loadPOI();
   }
 
-  function handlePhotoError(error: any) {
+  function handlePhotoError(error: unknown) {
     console.error('Photo upload error:', error);
   }
 
@@ -141,7 +141,7 @@
                 <p class="text-xl text-gray-600">"{poi.alias}"</p>
               {/if}
               <div class="flex items-center gap-2 mt-2">
-                <POIThreatBadge threatLevel={poi.threatLevel} />
+                <POIThreatBadge level={poi.threatLevel} />
                 <span class="text-sm text-gray-500">
                   Created {new Date(poi.createdAt).toLocaleDateString()}
                 </span>
@@ -150,7 +150,7 @@
           </div>
 
           <Button onclick={handleEdit}>
-            <Edit class="w-4 h-4 mr-2" />
+            <Pencil class="w-4 h-4 mr-2" />
             Edit POI
           </Button>
         </div>
@@ -198,8 +198,8 @@
 
               <POIPhotoUploader
                 poiId={parseInt(poi.id)}
-                on:upload={handlePhotoUpload}
-                on:error={handlePhotoError}
+                onUpload={handlePhotoUpload}
+                onError={handlePhotoError}
               />
             </CardContent>
           </Card>
@@ -234,7 +234,7 @@
               <div>
                 <p class="text-sm font-medium text-gray-600">Threat Level</p>
                 <div class="mt-1">
-                  <POIThreatBadge threatLevel={poi.threatLevel} />
+                  <POIThreatBadge level={poi.threatLevel} />
                 </div>
               </div>
 

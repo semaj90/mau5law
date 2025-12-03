@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { db  } from '$lib/server/db/client'; // Corrected path for db client
 import type { legalAnalysisSessions, legalDocuments, legalPrecedents  } from '$lib/server/db/schema'; // Schema objects
 import type { eq, like, and, desc  } from 'drizzle-orm'; // Drizzle ORM functions

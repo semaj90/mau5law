@@ -2,7 +2,7 @@ import type { evidence  } from '$lib/server/db/schema-unified';
 import { error } from '@sveltejs/kit';;
 import type { eq, and  } from 'drizzle-orm';
 import type { db  } from '$lib/server/db/index';
-import type { PageServerLoad } from './$types .js';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const user = locals.user;

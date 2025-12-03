@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import db from '$lib/server/database';
 import * as schema from '$lib/server/db/schema-postgres';
 import { json, error } from '@sveltejs/kit';;

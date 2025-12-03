@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit' import type { RequestHandler } from './$types .js' /** * Cache manifest endpoint for headless UI cache sync * GET /api/cache/manifest - Get cache manifest for synchronization */ // Mock implementation - would integrate with actual Redis tensor cache const mockCache = new Map<string, { value: unknown, timestamp: number
+import { json } from '@sveltejs/kit' import type { RequestHandler } from './$types.js' /** * Cache manifest endpoint for headless UI cache sync * GET /api/cache/manifest - Get cache manifest for synchronization */ // Mock implementation - would integrate with actual Redis tensor cache const mockCache = new Map<string, { value: unknown, timestamp: number
 ; ttl: number
 ; version: string
 ; source: string

@@ -8,19 +8,19 @@ from fastapi import FastAPI
 
 # Import routers
 try:
-    from backend.api.similarity_api import router as similarity_router
+    from .similarity_api import router as similarity_router
 except ImportError:
     similarity_router = None
 
-from backend.api.search_api import router as search_router
+from .search_api import router as search_router
 
 try:
-    from backend.api.agent_api import router as agent_router
+    from .agent_api import router as agent_router
 except ImportError:
     agent_router = None
 
 try:
-    from backend.api.phase72_agent_api import router as phase72_agent_router
+    from .phase72_agent_api import router as phase72_agent_router
 except ImportError:
     phase72_agent_router = None
 

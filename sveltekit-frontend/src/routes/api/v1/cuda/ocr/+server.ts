@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { exec  } from 'child_process';
 import type { promisify  } from 'util';
 import type { writeFile, unlink  } from 'fs/promises';

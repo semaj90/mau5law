@@ -1,0 +1,34 @@
+#!/bin/sh
+# YoRHa Legal AI - Pre-commit Error Check
+# Prevents commits with critical C++ or TypeScript errors
+
+echo "🔍 Running pre-commit error analysis..."
+
+# Run TypeScript check
+npm run check:svelte > /dev/null 2>&1
+TS_EXIT=$?
+
+# Run C++ check
+npm run cpp:check:json > /dev/null 2>&1
+CPP_EXIT=$?
+
+# Check for critical errors
+if [ $TS_EXIT -ne 0 ] || [ $CPP_EXIT -ne 0 ]; then
+  echo "❌ Critical errors detected - commit blocked"
+  echo ""
+
+  if [ $TS_EXIT -ne 0 ]; then
+    echo "   TypeScript errors found. Run: npm run check:svelte"
+  fi
+
+  if [ $CPP_EXIT -ne 0 ]; then
+    echo "   C++ errors found. Run: npm run cpp:check"
+  fi
+
+  echo ""
+  echo "Fix errors or use 'git commit --no-verify' to bypass"
+  exit 1
+fi
+
+echo "✅ No critical errors - proceeding with commit"
+exit 0

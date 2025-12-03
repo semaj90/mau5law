@@ -1,6 +1,6 @@
 /** * Worker Health Check API * Monitors status of background workers: OCR, Embedding, Legal Analysis */
 import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { redis  } from '$lib/server/redis';
 import type { RedisClientType } from 'redis';
 import * as amqp from 'amqplib';

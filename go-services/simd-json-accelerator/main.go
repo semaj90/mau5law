@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"runtime"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/gorilla/mux"
+	"github.com/minio/simdjson-go"
 )
 
 // SIMDJSONResult represents the result of SIMD JSON parsing
@@ -370,20 +372,52 @@ func (s *SIMDJSONAccelerator) Start() error {
 	return server.ListenAndServe()
 }
 
-func main() {
-	port := 8096 // Default port (changed from 8095 to avoid conflicts)
+// findAvailablePort attempts to bind to a port, trying fallbacks if needed
+func findAvailablePort(basePort int, maxRetries int) (int, error) {
+	for i := 0; i <= maxRetries; i++ {
+		port := basePort + i
+		addr := fmt.Sprintf(":%d", port)
 
-	// Check for port override
-	if portEnv := os.Getenv("SIMD_JSON_PORT"); portEnv != "" {
-		if p, err := strconv.Atoi(portEnv); err == nil {
-			port = p
+		// Quick check using net.Listen
+		listener, err := net.Listen("tcp", addr)
+		if err == nil {
+			listener.Close()
+			if i > 0 {
+				log.Printf("⚠️  Port %d busy, using port %d instead", basePort, port)
+			}
+			return port, nil
 		}
+
+		log.Printf("Port %d unavailable, trying next...", port)
+	}
+
+	return 0, fmt.Errorf("could not find available port in range %d-%d", basePort, basePort+maxRetries)
+}
+
+func main() {
+	// Default port with environment variable override
+	defaultPort := 8103 // Changed to match Context7/FastMCP standard
+	portEnv := os.Getenv("SIMD_JSON_ACCEL_PORT")
+	if portEnv != "" {
+		if p, err := strconv.Atoi(portEnv); err == nil {
+			defaultPort = p
+		} else {
+			log.Printf("⚠️  Invalid SIMD_JSON_ACCEL_PORT '%s', using default %d", portEnv, defaultPort)
+		}
+	}
+
+	// Find available port with fallback (tries up to 10 ports)
+	port, err := findAvailablePort(defaultPort, 10)
+	if err != nil {
+		log.Fatalf("Failed to find available port: %v", err)
 	}
 
 	log.Printf("🎯 Starting SIMD JSON Accelerator Service")
 	log.Printf("🔧 AVX2-optimized parsing (simdjson-go + sonic)")
 	log.Printf("📡 Port: %d", port)
 	log.Printf("💻 CPU: 11th gen Intel (AVX2 support)")
+	log.Printf("🔗 URL: http://127.0.0.1:%d", port)
+	log.Printf("💡 Set SIMD_JSON_ACCEL_URL=http://127.0.0.1:%d for clients", port)
 
 	accelerator, err := NewSIMDJSONAccelerator(port)
 	if err != nil {

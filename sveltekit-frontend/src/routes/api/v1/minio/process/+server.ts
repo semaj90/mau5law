@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { MinIOService as MinIOServiceClass  } from '$lib/server/minio-service'; // Corrected import: only named export MinIOService
 
 // Define types for AI analysis results

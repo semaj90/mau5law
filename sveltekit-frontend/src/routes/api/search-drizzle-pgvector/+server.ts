@@ -15,7 +15,7 @@
  * ✅ Performance optimized
  */
 import { json, error } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types';
 import type { z  } from 'zod';
 import type { db  } from '$lib/server/db';
 import type { sql  } from 'drizzle-orm';

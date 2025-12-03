@@ -1,13 +1,13 @@
 <script lang="ts">
 import Card from '$lib/components/ui/Card.svelte';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '$lib/components/ui/dialog';
 import Input from '$lib/components/ui/Input.svelte';
 import Select from '$lib/components/ui/Select.svelte';
 import Textarea from '$lib/components/ui/Textarea.svelte';
-import type { cn  } from '$lib/utils.js';
-import type { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle  } from 'bits-ui/components/ui/dialog';
-import type { Edit, Funnel as Filter, Grid3x3 as Grid, List, Plus, Trash2  } from 'lucide-svelte';
-import { onMount } from 'svelte';;
-import type { toast  } from 'svelte-sonner';
+import { cn } from '$lib/utils.js';
+import { toast } from '$lib/utils/toast';
+import { Edit, Funnel as Filter, Grid3x3 as Grid, List, Plus, Trash2 } from 'lucide-svelte';
+import { onMount } from 'svelte';
 
 interface PhysicalDescription {
   height: string;
@@ -42,27 +42,7 @@ interface Poi {
   notes: string;
 }
 
-interface FormData {
-  name: string;
-  aliases: string[];
-  dateOfBirth: string;
-  address: string;
-  phone: string;
-  email: string;
-  status: 'person_of_interest' | 'witness' | 'suspect' | 'victim' | 'informant';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  threatLevel: 'low' | 'medium' | 'high' | 'extreme';
-  physicalDescription: PhysicalDescription;
-  profileData: {
-    modusOperandi: string;
-    knownHabits: string[];
-    associates: string[];
-  };
-  lastKnownLocation: string;
-  lastSeen: string;
-  dangerLevel: number;
-  notes: string;
-}
+
 
 // State
 let searchQuery = $state<string>('');
@@ -109,10 +89,7 @@ let formData = $state<Poi>({ // Use Poi interface
   notes: ''
 });
 
-// String representations for array fields
-let aliasesString = $state<string>('');
-let knownHabitsString = $state<string>('');
-let associatesString = $state<string>('');
+
 
 // Load POIs from API
 async function loadPois(): Promise<any> {
@@ -447,7 +424,7 @@ const statusColors = {
         <DialogTitle>Create New POI</DialogTitle>
         <DialogDescription>Fill in the details for the new Person of Interest.</DialogDescription>
       </DialogHeader>
-      <form on:submit|preventDefault={createPoi} class="space-y-4">
+      <form onsubmit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />
@@ -515,7 +492,7 @@ const statusColors = {
         <DialogTitle>Edit POI</DialogTitle>
         <DialogDescription>Update the details for {selectedPoi?.name}.</DialogDescription>
       </DialogHeader>
-      <form on:submit|preventDefault={updatePoi} class="space-y-4">
+      <form onsubmit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />

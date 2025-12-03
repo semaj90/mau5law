@@ -1,6 +1,6 @@
 import type { SimpleAuthService  } from '$lib/server/auth-simple';
 import type { lucia  } from '$lib/server/auth'; // Changed to a named import
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { SimpleAuthService } from '$lib/server/auth-simple';
 import type { lucia } from '$lib/server/auth';
 import type { RequestHandler } from './$types.js';

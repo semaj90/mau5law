@@ -15,7 +15,7 @@ import type { db  } from '$lib/server/db'; // Adjust the import based on your pr
 import type { evidence, cases  } from '$lib/server/db/schema'; // Adjust the import based on your project structure
 import type { eq, type InferInsertModel  } from 'drizzle-orm';
 import type { resolveUser, getUserId, getMetaEnv  } from '$lib/server/auth/utils';
-import type { PageServerLoad, Actions } from './$types .js';
+import type { PageServerLoad, Actions } from './$types.js';
 import type { dev  } from '$app/environment'; // Get typed environment access
 
 const metaEnv = getMetaEnv();

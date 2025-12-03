@@ -1,6 +1,6 @@
 import type { canvasStates, cases, evidence  } from '$lib/server/db/schema-postgres';
 import type { eq  } from 'drizzle-orm'; // Changed from helpers import
-import type { PageServerLoad } from './$types .js';
+import type { PageServerLoad } from './$types.js';
 import { redirect } from '@sveltejs/kit';;
 import db from '$lib/server/db/client.js'; // Changed from index.js
 

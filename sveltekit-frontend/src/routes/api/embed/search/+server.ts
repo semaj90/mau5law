@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types .js';
+import type { RequestHandler } from './$types.js';
 import type { db, sql  } from '$lib/server/db';
 import { json, error } from '@sveltejs/kit';;
 import type { generateEmbedding  } from '$lib/server/services/vectorDBService';

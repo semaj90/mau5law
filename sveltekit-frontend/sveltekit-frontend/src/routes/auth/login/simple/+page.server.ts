@@ -1,10 +1,10 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import type { fail, redirect  } from '@sveltejs/kit';
-import type { superValidate  } from 'sveltekit-superforms/server';
-import type { zod  } from 'sveltekit-superforms/adapters';
-import type { z  } from 'zod';
-import type { SimpleAuthService  } from '$lib/server/auth-simple';
-import type { createUserSession, setSessionCookie  } from '$lib/server/lucia';
+import { SimpleAuthService } from '$lib/server/auth-simple';
+import { createUserSession, setSessionCookie } from '$lib/server/lucia';
+import { fail, redirect } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms/server';
+import { z } from 'zod';
+import type { Actions, PageServerLoad } from './$types.js';
 
 const loginSchema = z.object({
 	email: z.string().email(),
@@ -12,32 +12,28 @@ const loginSchema = z.object({
 });
 
 export const load: PageServerLoad = async () => {
-	// cast to any to avoid adapter typing mismatch
-	const form = await superValidate((zod(loginSchema) as unknown) as any);
+	const form = await superValidate(zod(loginSchema));
 	return { form };
 };
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
-		// cast to any to avoid adapter typing mismatch
-		const form = await superValidate(request, (zod(loginSchema) as unknown) as any);
+		const form = await superValidate(request, zod(loginSchema));
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
 		try {
-			const { email, password } = form.data as { email: string; password: string };
+			const { email, password } = form.data;
 
-			// Authenticate user (cast service to any if TS types differ)
-			const userRecord = await (SimpleAuthService as unknown as any).authenticate(email, password);
+			// Authenticate user
+			const userRecord = await SimpleAuthService.authenticate(email, password);
 
-			// Create session (cast return type to any to access expected props)
-			const session = await (createUserSession as unknown as any)(userRecord.id);
+			// Create session
+			const session = await createUserSession(userRecord.id);
 
-			// Set session cookie - tolerate different session property names via fallback
-			const sessionId = (session as any).id ?? (session as any).sessionId ?? '';
-			const expiresAt = (session as any).expiresAt ?? (session as any).expires ?? undefined;
-			setSessionCookie(cookies, sessionId, userRecord.id, expiresAt);
+			// Set session cookie
+			setSessionCookie(cookies, session.id, userRecord.id, session.expiresAt);
 
 			console.log('✅ Session created successfully for: ', userRecord.email);
 		} catch (error: Error | unknown) {

@@ -1268,6 +1268,100 @@
 				"Analyze and fix TypeScript AST errors using CHR97 agent"
 			],
 			"group": "build"
+		},
+		{
+			"label": "🔧 C++ Error Check",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"cpp:check"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": "absolute",
+				"pattern": {
+					"regexp": "^(.+)\\((\\d+),(\\d+)\\):\\s+(error|warning)\\s+(C\\d+):\\s+(.+)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"code": 5,
+					"message": 6
+				}
+			},
+			"detail": "Check C++ components for compile and runtime errors"
+		},
+		{
+			"label": "📊 Consolidate All Errors",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"errors:consolidate"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Merge TypeScript + C++ errors into unified report"
+		},
+		{
+			"label": "📈 Monitor Error Trends",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"errors:monitor"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Track error rate changes and detect anomalies"
+		},
+		{
+			"label": "🧠 Cluster Errors (AI)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"errors:cluster"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"detail": "Cluster errors with Ollama embeddings + WebGPU SOM"
+		},
+		{
+			"label": "🚀 Full Error Pipeline",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"errors:pipeline"
+			],
+			"group": "test",
+			"dependsOrder": "sequence",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Complete workflow: check → consolidate → monitor → cluster"
 		}
 	]
 }

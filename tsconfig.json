@@ -1,4 +1,5 @@
 {
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "nodenext", // use NodeNext for modern Node ESM behavior
     "module": "NodeNext", // match moduleResolution for proper ESM support
@@ -22,14 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "exactOptionalPropertyTypes": true,
     "noEmit": true, // prevent tsc from writing .js outputs that conflict with Svelte/Vite
-    "baseUrl": ".",
-    "paths": {
-      "$lib/*": ["src/lib/*"],
-      "$components/*": ["src/lib/components/*"],
-      "$services/*": ["src/lib/services/*"],
-      "$types/*": ["src/lib/types/*"],
-      "$utils/*": ["src/lib/utils/*"]
-    },
+
     "typeRoots": [
       "./node_modules/@types",
       "./sveltekit-frontend/src/lib/types",
