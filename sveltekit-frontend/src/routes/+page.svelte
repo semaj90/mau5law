@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
   // State
   let aiMode = $state('9S');
@@ -180,18 +180,18 @@
         </div>
 
         <div class="cases-list">
-          {#each recentCases as case}
+          {#each recentCases as caseItem}
             <div class="case-card">
               <div class="case-header">
-                <h3>{case.title}</h3>
+                <h3>{caseItem.title}</h3>
                 <div class="case-badges">
-                  <span class="badge {getPriorityClass(case.priority)}">{case.priority}</span>
-                  <span class="badge status-{case.status}">{case.status}</span>
+                  <span class="badge {getPriorityClass(caseItem.priority)}">{caseItem.priority}</span>
+                  <span class="badge status-{caseItem.status}">{caseItem.status}</span>
                 </div>
               </div>
               <div class="case-meta">
-                <span>📦 {case.items} items</span>
-                <span>🕒 {case.hoursAgo} hours ago</span>
+                <span>📦 {caseItem.items} items</span>
+                <span>🕒 {caseItem.hoursAgo} hours ago</span>
               </div>
               <button class="case-action-btn">→</button>
             </div>

@@ -55,6 +55,7 @@
     "hmr:start": "cd ../go-services/vite-hmr-bridge && vite-hmr-bridge.exe",
     "hmr:build": "cd ../go-services/vite-hmr-bridge && ./build-avx2.bat",
     "ace:tools": "node ../tools/yorha-agent.mjs tools",
+    "ace:execute": "node scripts/ace-executor-stub.mjs",
     "ace:interactive": "node ../tools/yorha-agent.mjs interactive deeds-web-app:main",
     "ace:session": "node ../tools/yorha-agent.mjs session",
     "simd:test": "node ../scripts/test-simd-integration.mjs",

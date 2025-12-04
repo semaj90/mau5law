@@ -318,7 +318,7 @@
                 bind:value={config.ai.ollamaEndpoint}
                 placeholder="http://localhost:11434"
               />
-            </div>aceholder="http://localhost:11434"
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="embedding-model">Embedding Model</label>
               <select id="embedding-model" class="setting-input" bind:value={config.ai.embeddingModel}>
@@ -332,9 +332,6 @@
               <label class="setting-label" for="enable-fallback">Enable Fallback</label>
               <label class="toggle" for="enable-fallback">
                 <input id="enable-fallback" type="checkbox" bind:checked={config.ai.enableFallback} />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>nput type="checkbox" bind:checked={config.ai.enableFallback} />
                 <span class="toggle-slider"></span>
               </label>
             </div>
@@ -354,8 +351,7 @@
                 <option value="mysql">MySQL</option>
                 <option value="mongodb">MongoDB</option>
               </select>
-            </div>ption value="mysql">MySQL</option>
-                <option value="mongodb">MongoDB</option>
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="db-host">Host</label>
               <input
@@ -365,8 +361,7 @@
                 bind:value={config.database.host}
                 placeholder="localhost"
               />
-            </div>nd:value={config.database.host}
-                placeholder="localhost"
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="db-port">Port</label>
               <input
@@ -377,7 +372,7 @@
                 min="1"
                 max="65535"
               />
-            </div>n="1"
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="db-name">Database Name</label>
               <input
@@ -387,16 +382,14 @@
                 bind:value={config.database.database}
                 placeholder="legal_ai_db"
               />
-            </div>ass="setting-input"
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="db-ssl">SSL Enabled</label>
               <label class="toggle" for="db-ssl">
                 <input id="db-ssl" type="checkbox" bind:checked={config.database.ssl} />
                 <span class="toggle-slider"></span>
               </label>
-            </div>el class="setting-label">SSL Enabled</label>
-              <label class="toggle">
-                <input type="checkbox" bind:checked={config.database.ssl} />
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="db-pool">Connection Pool Size</label>
               <input
@@ -404,10 +397,6 @@
                 type="number"
                 class="setting-input"
                 bind:value={config.database.connectionPool}
-                min="1"
-                max="100"
-              />
-            </div>nd:value={config.database.connectionPool}
                 min="1"
                 max="100"
               />
@@ -433,22 +422,24 @@
             </div>
             <div class="status-card">
               <h3>GPU Utilization</h3>
+              <span class="status active">{performanceMetrics.gpuUtilization}%</span>
+            </div>
+          </div>
+          <div class="settings-grid">
             <div class="setting-group">
               <label class="setting-label" for="enable-webgpu">Enable WebGPU</label>
               <label class="toggle" for="enable-webgpu">
                 <input id="enable-webgpu" type="checkbox" bind:checked={config.gpu.enableWebGPU} />
                 <span class="toggle-slider"></span>
               </label>
-            </div>el class="setting-label">Enable WebGPU</label>
-              <label class="toggle">
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="enable-cuda">Enable CUDA</label>
               <label class="toggle" for="enable-cuda">
                 <input id="enable-cuda" type="checkbox" bind:checked={config.gpu.enableCUDA} />
                 <span class="toggle-slider"></span>
               </label>
-            </div>el class="setting-label">Enable CUDA</label>
-              <label class="toggle">
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="memory-limit">Memory Limit (%)</label>
               <input
@@ -460,7 +451,7 @@
                 bind:value={config.gpu.memoryLimit}
               />
               <span class="slider-value">{config.gpu.memoryLimit}%</span>
-            </div>n="10"
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="batch-size">Batch Size</label>
               <input
