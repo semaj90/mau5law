@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+console.log('DEBUG: Script started');
 
 /**
  * Phase 72 Automated Iterative Error Fix Loop

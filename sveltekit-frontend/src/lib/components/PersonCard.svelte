@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  interface Props {
+    person: any;
+    onedit?: (id: string) => void;
+    ondelete?: (id: string) => void;
+  }
 
-  export let person: any;
-
-  const dispatch = createEventDispatcher<{
-    edit: string;
-    delete: string;
-  }>();
+  let { person, onedit, ondelete }: Props = $props();
 
   function getRiskColor(risk: string) {
     switch (risk?.toLowerCase()) {
@@ -150,13 +149,13 @@
     <div class="actions">
       <button
         class="action-btn view"
-        on:click={() => dispatch('edit', person.id)}
+        onclick={() => onedit?.(person.id)}
       >
         👁 View
       </button>
       <button
         class="action-btn delete"
-        on:click={() => dispatch('delete', person.id)}
+        onclick={() => ondelete?.(person.id)}
       >
         🗑️ Delete
       </button>

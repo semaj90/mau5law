@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-
   interface Query {
     id: string;
     query: string;
@@ -9,10 +7,13 @@
     functionCalls: Array<{ name: string; result: any }>;
   }
 
-  export let queryHistory: Query[] = [];
-  export let isLoading = false;
+  interface Props {
+    queryHistory?: Query[];
+    isLoading?: boolean;
+    onquery?: (query: string) => void;
+  }
 
-  const dispatch = createEventDispatcher();
+  let { queryHistory = [], isLoading = false, onquery }: Props = $props();
 
   let inputValue = $state('');
   let outputContainer: HTMLDivElement;
@@ -20,7 +21,7 @@
   const handleSubmit = () => {
     if (!inputValue.trim() || isLoading) return;
 
-    dispatch('query', inputValue);
+    onquery?.(inputValue);
     inputValue = '';
 
     // Scroll to bottom
