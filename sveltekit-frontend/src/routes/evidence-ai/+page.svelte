@@ -622,7 +622,7 @@ import { onMount } from 'svelte';
               type="file"
               class="hidden"
               id="file-input"
-              onchange={handleFileSelect}
+              on:change={handleFileSelect}
               accept=".pdf,.doc,.docx,.txt,.jpg,.png"
             />
             <Button onclick={() => document.getElementById('file-input')?.click()}>

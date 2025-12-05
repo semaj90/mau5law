@@ -51,7 +51,7 @@
   <div class="chat-input">
     <textarea
       bind:value={currentInput}
-      onkeydown={(e) => {
+      on:keydown={(e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
           sendMessage();

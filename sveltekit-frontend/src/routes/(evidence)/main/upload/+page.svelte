@@ -200,13 +200,13 @@
   >
     <p style="margin:0 0 0.5rem 0;">Drop a file here or choose a file</p>
     <label style="cursor:pointer; color:var(--accent, #0366d6);">
-      <input type="file" style="display:none" onchange={onFileChange} />
+      <input type="file" style="display:none" on:change={onFileChange} />
       Choose file…
     </label>
     <div style="margin-top:.5rem;">
       <label
         >Evidence type:
-        <select bind:value={$form .evidence_type} onchange={onEvidenceTypeChange}>
+        <select bind:value={$form .evidence_type} on:change={onEvidenceTypeChange}>
           <option value="DOCUMENT">Document</option>
           <option value="IMAGE">Image</option>
           <option value="AUDIO">Audio</option>

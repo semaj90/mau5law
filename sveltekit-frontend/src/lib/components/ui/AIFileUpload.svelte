@@ -255,14 +255,14 @@
     onclick={openFilePicker}
     role="button"
     tabindex="0"
-    onkeydown={(e) => e.key === 'Enter' && openFilePicker()}
+    on:keydown={(e) => e.key === 'Enter' && openFilePicker()}
   >
     <input
       bind:this={inputRef}
       type="file"
       {accept}
       {multiple}
-      onchange={handleFileSelect}
+      on:change={handleFileSelect}
       class="hidden-input"
     />
 

@@ -106,7 +106,7 @@
               onmousedown={() => handleSelectPOI(match.poi)}
               role="button"
               tabindex="0"
-              onkeydown={(e) => {
+              on:keydown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   handleSelectPOI(match.poi);
                 }

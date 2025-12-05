@@ -238,8 +238,8 @@ import Zap from 'lucide-svelte/icons/zap';;
   class:dragging={isDragging}
   class:drop-active={dropZoneActive}
   onmousedown={handleMouseDown}
-  onwheel={handleWheel}
-  onkeydown={handleKeyDown}
+  on:wheel={handleWheel}
+  on:keydown={handleKeyDown}
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
   ondrop={handleDrop}

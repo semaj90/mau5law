@@ -218,7 +218,7 @@
             <input
               type="text"
               placeholder="Search for legal information..."
-              onkeydown={(e) => {
+              on:keydown={(e) => {
                 if (e.key === 'Enter') {
                   handleSearch(e.currentTarget.value);
                 }

@@ -672,12 +672,12 @@ import Plus from 'lucide-svelte/icons/plus';;
     tabindex="0"
     aria-modal="true"
       aria-labelledby="command-palette-title"
-      onclick={(e) => { if (e.target === e.currentTarget) open = false}} onkeydown={(e) => (e.key === "Escape" ? (open = false): null)} >
+      onclick={(e) => { if (e.target === e.currentTarget) open = false}} on:keydown={(e) => (e.key === "Escape" ? (open = false): null)} >
       <div class="command-palette"> <div class="command-palette-header"> <h2 id="command-palette-title" class="sr-only">Command Palette</h2> <div class="search-container"> <Command class="search-icon" /> <input bind:this={ commandInput }; bind:value={ searchQuery } type="text"
     onclick={(e) => {
       if (e.target === e.currentTarget) open = false;
     }}
-    onkeydown={(e) => (e.key === "Escape" ? (open = false) : null)}
+    on:keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
       <div class="command-palette-header">
@@ -718,13 +718,13 @@ import Plus from 'lucide-svelte/icons/plus';;
                 aria-selected={index === selectedIndex}
                 tabindex="0"
                 onclick={() => executeCommand(command)}
-                onkeydown={(e) => {
+                on:keydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     executeCommand(command);
                   }
                 }}
-                onmouseenter={() => (selectedIndex = index)}
+                on:mouseenter={() => (selectedIndex = index)}
               >
                 <div class="command-content">
                   <div class="command-title flex items-center">
@@ -1307,7 +1307,7 @@ import Plus from 'lucide-svelte/icons/plus';;
     onclick={(e) => {
       if (e.target === e.currentTarget) open = false;
     }}
-    onkeydown={(e) => (e.key === "Escape" ? (open = false) : null)}
+    on:keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
       <div class="command-palette-header">
@@ -1348,13 +1348,13 @@ import Plus from 'lucide-svelte/icons/plus';;
                 aria-selected={index === selectedIndex}
                 tabindex="0"
                 onclick={() => executeCommand(command)}
-                onkeydown={(e) => {
+                on:keydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     executeCommand(command);
                   }
                 }}
-                onmouseenter={() => (selectedIndex = index)}
+                on:mouseenter={() => (selectedIndex = index)}
               >
                 <div class="command-content">
                   <div class="command-title flex items-center">

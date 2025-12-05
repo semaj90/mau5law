@@ -94,7 +94,7 @@
     <p>Describe what happened. We'll auto-structure it into a prosecutable case.</p>
   </header>
 
-  <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="intake-form">
+  <form on:submit={(e) => { e.preventDefault(); handleSubmit(); }} class="intake-form">
     <!-- Main narrative -->
     <div class="form-section">
       <label for="narrative">
@@ -119,7 +119,7 @@
         <input
           type="file"
           multiple
-          onchange={(e) => {
+          on:change={(e) => {
             const files = (e.target as HTMLInputElement).files;
             if (files) {
               uploadedFiles = [...uploadedFiles, ...Array.from(files)];

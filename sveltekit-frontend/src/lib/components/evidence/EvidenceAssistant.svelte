@@ -170,7 +170,7 @@
             <input
               type="text"
               bind:value={node.title}
-              onchange={(e) => updateNode({ title: e.currentTarget.value })}
+              on:change={(e) => updateNode({ title: e.currentTarget.value })}
             />
           </label>
 
@@ -178,7 +178,7 @@
             Description:
             <Textarea
               bind:value={node.description}
-              onchange={(e) => updateNode({ description: e.currentTarget.value })}
+              on:change={(e) => updateNode({ description: e.currentTarget.value })}
               rows={3}
             />
           </label>
@@ -191,7 +191,7 @@
               max="1"
               step="0.1"
               bind:value={node.confidence}
-              onchange={(e) => updateNode({ confidence: parseFloat(e.currentTarget.value) })}
+              on:change={(e) => updateNode({ confidence: parseFloat(e.currentTarget.value) })}
             />
           </label>
         </div>

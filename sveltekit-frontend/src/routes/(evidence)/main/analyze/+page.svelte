@@ -285,7 +285,7 @@
   <h1>Evidence Analysis</h1>
 
   <form
-    onsubmit={async (e: Event) => {
+    on:submit={async (e: Event) => {
       e.preventDefault();
       await startAnalysis();
     }}
@@ -297,7 +297,7 @@
       <input
         type="text"
         value={caseId}
-        oninput={(e) => (caseId = (e.target as HTMLInputElement).value)}
+        on:input={(e) => (caseId = (e.target as HTMLInputElement).value)}
         required
       />
     </label>
@@ -306,7 +306,7 @@
       Evidence Type
       <select
         value={evidenceType}
-        onchange={(e) => (evidenceType = (e.target as HTMLSelectElement).value)}
+        on:change={(e) => (evidenceType = (e.target as HTMLSelectElement).value)}
       >
         {#each evidenceTypes as t}
           <option value={t.value}>{t.label}</option>
@@ -316,7 +316,7 @@
 
     <label>
       Priority
-      <select value={priority} onchange={(e) => (priority = (e.target as HTMLSelectElement).value)}>
+      <select value={priority} on:change={(e) => (priority = (e.target as HTMLSelectElement).value)}>
         {#each priorityOptions as p}
           <option value={p.value}>{p.label}</option>
         {/each}
@@ -329,7 +329,7 @@
         id="evidence-content"
         rows="8"
         value={evidenceContent}
-        oninput={(e) => (evidenceContent = (e.target as HTMLTextAreaElement).value)}
+        on:input={(e) => (evidenceContent = (e.target as HTMLTextAreaElement).value)}
         placeholder="Paste or type evidence text here..."
         required
       ></textarea>
@@ -337,7 +337,7 @@
 
     <label>
       Or upload file
-      <input type="file" accept=".txt,.md,.pdf" onchange={handleFileUpload} />
+      <input type="file" accept=".txt,.md,.pdf" on:change={handleFileUpload} />
     </label>
 
     <div class="form-actions">

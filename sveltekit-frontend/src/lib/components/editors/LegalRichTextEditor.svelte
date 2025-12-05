@@ -152,7 +152,7 @@
         <select
           class="toolbar-select"
           value={currentHeading}
-          onchange={(e) => setHeading(parseInt((e.target as HTMLSelectElement).value))}
+          on:change={(e) => setHeading(parseInt((e.target as HTMLSelectElement).value))}
         >
           <option value="0">Paragraph</option>
           <option value="1">Heading 1</option>
@@ -211,7 +211,7 @@
     {#if !editor}
       <textarea
         bind:value={content}
-        oninput={handleTextareaInput}
+        on:input={handleTextareaInput}
         {placeholder}
         disabled={readonly}
         class="w-full h-full bg-transparent border-none outline-none resize-none"

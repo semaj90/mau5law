@@ -345,7 +345,7 @@
           aria-modal="true"
           tabindex="-1"
           onclick={(e) => e.stopPropagation()}
-          onkeydown={(e) => e.stopPropagation()}
+          on:keydown={(e) => e.stopPropagation()}
         >
           <h3>Modal Variant: {modalVariant}</h3>
           <p>Size: {modalSize}. This is a placeholder for an enhanced modal component.</p>

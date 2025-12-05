@@ -258,7 +258,7 @@
         placeholder="Search by keyword or description..."
         bind:value={searchQuery}
         class="search-input"
-        onkeydown={(e) => {
+        on:keydown={(e) => {
           if (e.key === 'Enter') performSearch();
         }}
       />
@@ -270,7 +270,7 @@
     <div class="filters-row">
       <div class="filter-group">
         <label for="operation-select">Operation</label>
-        <select id="operation-select" bind:value={selectedOperation} onchange={performSearch}>
+        <select id="operation-select" bind:value={selectedOperation} on:change={performSearch}>
           <option value="">All Operations</option>
           {#each availableOperations as op}
             <option value={op}>{op}</option>
@@ -280,7 +280,7 @@
 
       <div class="filter-group">
         <label for="shader-type-select">Shader Type</label>
-        <select id="shader-type-select" bind:value={selectedShaderType} onchange={performSearch}>
+        <select id="shader-type-select" bind:value={selectedShaderType} on:change={performSearch}>
           <option value="all">All Types</option>
           <option value="webgpu">WebGPU</option>
           <option value="webgl">WebGL</option>
@@ -289,7 +289,7 @@
 
       <div class="filter-group">
         <label for="sort-by-select">Sort By</label>
-        <select id="sort-by-select" bind:value={sortBy} onchange={performSearch}>
+        <select id="sort-by-select" bind:value={sortBy} on:change={performSearch}>
           <option value="relevance">Relevance</option>
           <option value="performance">Performance</option>
           <option value="usage">Usage</option>
@@ -305,7 +305,7 @@
           bind:value={limit}
           min="1"
           max="100"
-          onchange={performSearch}
+          on:change={performSearch}
           class="search-input"
         />
       </div>

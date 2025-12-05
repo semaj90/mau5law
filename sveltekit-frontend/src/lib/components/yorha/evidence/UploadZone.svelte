@@ -126,7 +126,7 @@
       accept=".pdf,.doc,.docx,.xls,.xlsx,.eml,.mp4,.avi,.mov,.jpg,.png,.gif"
       class="hidden"
       id="file-input"
-      onchange={handleFileSelect}
+      on:change={handleFileSelect}
     />
 
     <label

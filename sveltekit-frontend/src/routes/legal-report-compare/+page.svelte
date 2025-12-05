@@ -57,7 +57,7 @@ import AlertTriangle from 'lucide-svelte/icons/alert-triangle';; import Button f
       <form onsubmit|preventDefault={submitReport} class="space-y-4">
         <div>
           <label for="file" class="block text-sm font-medium">Select File</label>
-          <input type="file" id="file" onchange={handleFileUpload} accept=".pdf,.txt,.json,.png,.jpg,.jpeg,.mp4,.mp3" class="mt-1 block w-full" />
+          <input type="file" id="file" on:change={handleFileUpload} accept=".pdf,.txt,.json,.png,.jpg,.jpeg,.mp4,.mp3" class="mt-1 block w-full" />
           {#if uploadFile}
             <p class="text-sm text-gray-600">Selected: {uploadFile.name} ({fileSize})</p>
           {/if}

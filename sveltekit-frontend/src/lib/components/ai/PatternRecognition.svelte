@@ -147,7 +147,7 @@
 				type="text"
 				placeholder="Add specific pattern (e.g., indemnification, force majeure)"
 				class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-				onkeydown={(e) => { // Changed back to onkeydown
+				on:keydown={(e) => { // Changed back to onkeydown
 					if (e.key === 'Enter') {
 						e.preventDefault();
 						addPattern(e.currentTarget.value);

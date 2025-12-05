@@ -216,7 +216,7 @@
             class="search-input"
             placeholder="Enter search query (e.g., 'fraud investigation', 'wire transfer', 'John Doe')..."
             bind:value={searchQuery}
-            onkeydown={(e) => e.key === 'Enter' && performSearch()}
+            on:keydown={(e) => e.key === 'Enter' && performSearch()}
           />
           <button
             class="search-btn {isSearching ? 'searching' : ''}"

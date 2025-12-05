@@ -258,7 +258,7 @@
     onmousedown={handleMouseDown}
     onmousemove={handleMouseMove}
     onmouseup={handleMouseUp}
-    onwheel={handleWheel}
+    on:wheel={handleWheel}
     class="w-full h-full cursor-grab active:cursor-grabbing"
     style="display: block;"
   />

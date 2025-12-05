@@ -159,7 +159,7 @@
           class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
           checked={selectedCases.size === cases.length && cases.length > 0}
           indeterminate={selectedCases.size > 0 && selectedCases.size < cases.length}
-          onchange={selectAllCases}
+          on:change={selectAllCases}
         />
         <span class="text-sm text-slate-300">
           {selectedCases.size > 0 ? `${selectedCases.size} selected` : `${cases.length} cases`}
@@ -213,7 +213,7 @@
                 type="checkbox"
                 class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                 checked={selectedCases.has(caseItem.id)}
-                onchange={() => toggleCaseSelection(caseItem.id)}
+                on:change={() => toggleCaseSelection(caseItem.id)}
               />
             </td>
 

@@ -274,7 +274,7 @@
               <input
                 type="checkbox"
                 checked={form.deliverables[option.key]}
-                onchange={() => toggleDeliverable(option.key)}
+                on:change={() => toggleDeliverable(option.key)}
               />
               <span>{option.label}</span>
             </label>
