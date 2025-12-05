@@ -19,10 +19,23 @@ import type { Button  } from '$lib/components/ui/button';
     getConfidenceClass
    from "$lib/components/ui/orchestrated.svelte";
   // Icons for Redis admin
-  import type { Database, HardDrive, Activity, Zap, Trash2, Plus,
-    RefreshCw, AlertCircle, CheckCircle, Clock, BarChart3,
-    Settings, Eye, Key, Server, Cpu, Memory
-   } from 'lucide-svelte';
+  import Database from 'lucide-svelte/icons/database';
+import HardDrive from 'lucide-svelte/icons/hard-drive';
+import Activity from 'lucide-svelte/icons/activity';
+import Zap from 'lucide-svelte/icons/zap';
+import Trash2 from 'lucide-svelte/icons/trash2';
+import Plus from 'lucide-svelte/icons/plus';
+import RefreshCw from 'lucide-svelte/icons/refresh-cw';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import CheckCircle from 'lucide-svelte/icons/check-circle';
+import Clock from 'lucide-svelte/icons/clock';
+import BarChart3 from 'lucide-svelte/icons/bar-chart3';
+import Settings from 'lucide-svelte/icons/settings';
+import Eye from 'lucide-svelte/icons/eye';
+import Key from 'lucide-svelte/icons/key';
+import Server from 'lucide-svelte/icons/server';
+import Cpu from 'lucide-svelte/icons/cpu';
+import Memory from 'lucide-svelte/icons/memory';;
   let { data, form }: { data: PageData;, form: ActionData } = $props();
   // Svelte, 5 runes for admin interface state
   let selectedTab = $state <'overview' | 'keys' | 'performance' | 'tools'>('overview');

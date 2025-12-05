@@ -1,6 +1,7 @@
-<script lang="ts">
+<script lang="ts">let { onSearch } = $props();
+
   let { query = "" } = $props();
-  export let onSearch;
+  
 </script>
 
 <input

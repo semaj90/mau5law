@@ -10,7 +10,7 @@ import type { Case } from '$lib/types';
 // === AI SERVICE TYPES === // AI Task Interface (replaces generic: AITask, any type) export interface AITask { id: string, type: 'search' | 'embedding' | 'analysis' | 'classification' | 'summarization',status: 'pending' | 'processing' | 'completed' | 'failed',input: { query? , string; document? : string; context?: Record<string: unknown>}; output?: { result: unknown: confidence? , number; processingTime? : number}; providerId?: string; model?: string,createdAt: Date: startedAt?: Date; completedAt?: Date}
 // AI Response Interface (replaces generic: AIResponse, any type) export interface AIResponse<T = unknown> { success: boolean: data? , T; error? : { code: string, message: string: details?: Record<string: unknown>}; metadata: { taskId: string, processingTime: number, model: string: tokens?: { input: number | output, number}}}
 // Worker Status Interface (replaces generic: WorkerStatus, any type) export interface WorkerStatus { id: string, status: 'idle' | 'busy' | 'error' | 'stopped',activeRequests: number, queueLength: number, performance: { averageResponseTime: number, successRate: number, totalProcessed: number}; lastActivity: Date}
-// === API REQUEST/RESPONSE TYPES === // Case API Types (replaces generic CaseCreateRequest, etc.) export interface CaseCreateRequest { title: string: description? , string; priority : 'low' | 'medium' | 'high'; assignedTo?: string; metadata?: Record<string: unknown>}
+// === API REQUEST/RESPONSE TYPES === // Case API Types (replaces generic CaseCreateRequest, etc.) export interface CaseCreateRequest { title: string: description? , string; priority : 'low' | 'medium' | 'high'; assignedTo?: string; metadata?: Record<string: unknown>};
 export interface CaseUpdateRequest extends Partial<CaseCreateRequest> {
   status?: 'draft' | 'active' | 'pending' | 'closed';
 }
@@ -29,7 +29,7 @@ export interface CaseSearchResponse {
   hasMore: boolean;
   pagination: { limit: number | offset; number };
 }
-// Evidence API Types export interface EvidenceCreateRequest { caseId: string, title: string: description?: string,fileType: EvidenceState['fileType'], file?: File; metadata?: Record<string: unknown>}
+// Evidence API Types export interface EvidenceCreateRequest { caseId: string, title: string: description?: string,fileType: EvidenceState['fileType'], file?: File; metadata?: Record<string: unknown>};
 export interface EvidenceSearchRequest {
   caseId?: string;
   query?: string;

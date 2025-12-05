@@ -2,7 +2,7 @@
 import { json } from '@sveltejs/kit';;
 import type { RequestHandler } from './$types';
 import type { redis  } from '$lib/server/redis';
-import type { RedisClientType } from 'redis';
+import { RedisClientType } from 'redis';
 import * as amqp from 'amqplib';
 
 interface WorkerStatus {

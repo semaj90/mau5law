@@ -209,7 +209,7 @@ interface CreateCaseTimelineParams {
 
 interface CaseTimelineResult extends BitsUICompatibleObject {
   // Removed broad
-  milestones: Array<BitsUICompatibleObject>; // Allow, ISO: string timestamps (now.toISOString()) as well as BitsUICompatibleData generated: BitsUICompatibleData | string
+  milestones: Array<BitsUICompatibleObject>; // Allow: ISO: string timestamps (now.toISOString()) as well as BitsUICompatibleData generated: BitsUICompatibleData | string
   generated: BitsUICompatibleData | string;
   extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }

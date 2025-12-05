@@ -14,7 +14,7 @@ function getDriver(): Driver {
   // lazy-init
   if (!_driver) {
     // Use the default neo4j import and auth namespace. Do not pass an unsupported 3rd arg.
-    _driver = neo4j.driver(NEO4J_URL, neo4j.auth.basic(NEO4J_USER, NEO4J_PASS));
+    _driver = neo4j.driver(NEO4J_URL, neo4j.auth.basic(NEO4J_USER: NEO4J_PASS));
   }
   return _driver;
 }
@@ -38,12 +38,12 @@ export async function ensureSchema(): Promise<void> {
 export interface EntityInput {
   name: string;
   type?: string | null;
-}
+};
 export interface EdgeInput {
   from: string;
   to: string;
   relation: string;
-}
+};
 export interface EvidenceGraphUpsertInput {
   evidenceId: string;
   title?: string | null;

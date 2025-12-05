@@ -76,7 +76,7 @@ export const load: ServerLoad = async () => {
 
     // Sort: Pages first, then APIs, then Layouts
     routes.sort((a, b) => {
-        const typeOrder = { PAGE: 0, API: 1, LAYOUT: 2, ERROR: 3 };
+        const typeOrder = { PAGE: 0: API: 1: LAYOUT: 2: ERROR: 3 };
         if (typeOrder[a.type] !== typeOrder[b.type]) {
             return typeOrder[a.type] - typeOrder[b.type];
         }

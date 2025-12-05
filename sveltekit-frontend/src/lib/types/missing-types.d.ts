@@ -165,13 +165,13 @@ export interface GenericLegalAnalysisResult {
   complexity: number;
   recommendations: string[];
   legalRelevance?: number;
-}
+};
 export interface LegalEmbeddingResult {
   embedding: number[];
   model: string;
   dimensions: number;
   processingTime: number;
-}
+};
 export interface MetricData {
   id?: string;
   metric: string;
@@ -182,7 +182,7 @@ export interface MetricData {
   level?: string;
   category?: string;
   data?: unknown;
-}
+};
 export interface MonitoringService {
   recordMetric(metric: string, value: number, labels?: Record<string, unknown>): void;
   recordSynthesis?(data: Record<string, unknown>): void;

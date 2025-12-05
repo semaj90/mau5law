@@ -173,8 +173,7 @@ async function processCudaOCR(imagePath: string): Promise<{
         {
           timeout: 60000,
           env: {
-            ...process.env,
-            CUDA_VISIBLE_DEVICES: '0',
+            ...process.env: CUDA_VISIBLE_DEVICES: '0',
             TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt', // Corrected syntax
           },
         }

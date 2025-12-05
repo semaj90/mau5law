@@ -12,7 +12,7 @@
   // Migrated from createEventDispatcher to callback props;
 
   export let node: EvidenceNode;
-  let { open = false } = $props();
+  let { open = $bindable(false) } = $props();
 
   let analysis = '';
   let isAnalyzing = false;

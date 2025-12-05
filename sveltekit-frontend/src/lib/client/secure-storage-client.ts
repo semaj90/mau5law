@@ -7,7 +7,7 @@ export interface UploadResponse {
   size?: number;
   type?: string;
   error?: string;
-}
+};
 export interface DeleteResponse {
   ok: boolean;
   message?: string;
@@ -15,7 +15,7 @@ export interface DeleteResponse {
   hardDeleteScheduled?: boolean;
   hardDeleteAfter?: string;
   error?: string;
-}
+};
 export interface StorageFile {
   bucket: string;
   key: string;

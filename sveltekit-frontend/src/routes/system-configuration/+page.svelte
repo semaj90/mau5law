@@ -482,6 +482,13 @@
           </div>
         </div>
       {/if}
+      {/if}
+
+      <!-- Security Configuration -->
+      {#if activeTab === 'security'}
+        <div class="config-section">
+          <h2>SECURITY CONFIGURATION</h2>
+          <div class="settings-grid">
             <div class="setting-group">
               <label class="setting-label" for="encryption-select">Encryption</label>
               <select id="encryption-select" class="setting-input" bind:value={config.security.encryption}>
@@ -489,8 +496,7 @@
                 <option value="AES128">AES-128</option>
                 <option value="ChaCha20">ChaCha20</option>
               </select>
-            </div>el class="setting-label">Encryption</label>
-              <select class="setting-input" bind:value={config.security.encryption}>
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="session-timeout">Session Timeout (seconds)</label>
               <input
@@ -501,7 +507,7 @@
                 min="300"
                 max="86400"
               />
-            </div>pe="number"
+            </div>
             <div class="setting-group">
               <label class="setting-label" for="two-factor">Two-Factor Authentication</label>
               <label class="toggle" for="two-factor">
@@ -510,7 +516,6 @@
               </label>
             </div>
             <div class="setting-group">
-            <div class="setting-group">
               <label class="setting-label" for="audit-logging">Audit Logging</label>
               <label class="toggle" for="audit-logging">
                 <input id="audit-logging" type="checkbox" bind:checked={config.security.auditLogging} />
@@ -518,16 +523,8 @@
               </label>
             </div>
             <div class="setting-group">
-            <div class="setting-group">
               <label class="setting-label" for="backup-frequency">Backup Frequency</label>
               <select id="backup-frequency" class="setting-input" bind:value={config.security.backupFrequency}>
-                <option value="hourly">Hourly</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>el class="setting-label">Backup Frequency</label>
-              <select class="setting-input" bind:value={config.security.backupFrequency}>
                 <option value="hourly">Hourly</option>
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>

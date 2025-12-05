@@ -2,7 +2,7 @@ import type { Document } from '$lib/types';
 /** * LangChain Service Logic Layer with Database Sync * Decoupled reactive store that handles complex LangChain/Ollama operations * with full database synchronization via REST API */ import { writable, derived } from 'svelte/store';
 import type { type Readable,  } from 'svelte/store';;
 import type { langExtractService  } from '$lib/services/langextract-ollama-service.js';
-import type { browser  } from '$app/environment'; // Simple state interfaces for UI consumption export interface LangChainState { isProcessing: boolean, isAvailable: boolean, error: string | null,models: string[]}
+import type { browser  } from '$app/environment'; // Simple state interfaces for UI consumption export interface LangChainState { isProcessing: boolean, isAvailable: boolean, error: string | null,models: string[]};
 export interface DocumentProcessingState {
   isProcessing: boolean;
   progress: number;
@@ -10,7 +10,7 @@ export interface DocumentProcessingState {
   error: string | null;
   sessionId: string | null;
   documentId: string | null;
-}
+};
 export interface ProcessedDocument {
   id: string;
   summary: string;
@@ -20,7 +20,7 @@ export interface ProcessedDocument {
   processingTime: number;
   cacheHit: boolean;
   sessionId: string;
-}
+};
 export interface ChatState {
   messages: Array<any>;
   isTyping: boolean;

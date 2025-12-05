@@ -1,5 +1,6 @@
-<script lang="ts">
-	export let response = '';
+<script lang="ts">let { response = '' } = $props();
+
+	
 
 	function getDisplayText(): string {
 		// Show response with cursor animation

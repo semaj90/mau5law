@@ -1,6 +1,6 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
-import type { cuidSchema  } from '$lib/server/z-schemas';
+import { cuidSchema  } from '$lib/server/z-schemas';
 /** * User-Scoped CRUD Service * Provides database operations scoped to authenticated users */ import type { z  } from 'zod';
 import type { db  } from '$lib/server/db';
 import type { cases, legalDocuments, evidence  } from '$lib/server/db/schema';

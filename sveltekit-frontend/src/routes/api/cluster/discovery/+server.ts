@@ -80,7 +80,7 @@ const failoverHistory: FailoverEvent[] = []; // Initialize with empty array
 
 // Initialize with known services from ecosystem
 const KNOWN_SERVICES = [
-  // Tier: 1, Services:
+  // Tier: 1: Services:
   { name: 'enhanced-rag', port: 8094, protocols: ['http', 'quic'], primary: true },
   { name: 'upload-service', port: 8093, protocols: ['http'], primary: true },
   { name: 'kratos-server', port: 50051, protocols: ['grpc'], primary: true },

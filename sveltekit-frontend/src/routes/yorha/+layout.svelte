@@ -1,16 +1,14 @@
 <!-- YoRHa, Interface, Layout -->
 <script lang="ts">
   import { afterNavigate, goto } from '$app/navigation';
-  import {
-    Bot,
-    ChevronLeft,
-    ChevronRight,
-    Cpu,
-    Database,
-    Monitor,
-    Search,
-    Terminal,
-  } from 'lucide-svelte';
+  import Bot from 'lucide-svelte/icons/bot';
+import ChevronLeft from 'lucide-svelte/icons/chevron-left';
+import ChevronRight from 'lucide-svelte/icons/chevron-right';
+import Cpu from 'lucide-svelte/icons/cpu';
+import Database from 'lucide-svelte/icons/database';
+import Monitor from 'lucide-svelte/icons/monitor';
+import Search from 'lucide-svelte/icons/search';
+import Terminal from 'lucide-svelte/icons/terminal';;
   import type { SvelteComponent } from 'svelte';
   import { onMount } from 'svelte';
   import '../../app.css';

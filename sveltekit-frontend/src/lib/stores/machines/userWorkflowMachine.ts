@@ -11,12 +11,12 @@ export const userWorkflowMachine = createMachine({ id: 'userWorkflow', types: { 
 export type UserWorkflowMachine = typeof userWorkflowMachine export type UserWorkflowActor = ActorRefFrom<UserWorkflowMachine>; // Utility functions export function createUserWorkflowActor() { return userWorkflowMachine}
 export function isWorkflowActive(state, any): boolean { return state?.matches('authenticated.workflowActive')}
 export function isWorkflowCompleted(state, any): boolean { return state?.matches('authenticated.workflowCompleted')}
-export function getCurrentWorkflowStep(context, UserWorkflowContext): string { return context.workflow.steps[context.workflow.currentStepIndex] || 'unknown'}
-export function getWorkflowProgress(context, UserWorkflowContext): number { return context.progress}
-export function getUnreadNotifications(context, UserWorkflowContext): number { return context.notifications.filter((n, any) => !n.read).length}
-export function hasActiveCollaborators(context, UserWorkflowContext): boolean { return context.collaborators.length > 0}
-export function canProceedToNextStep(context, UserWorkflowContext): boolean { return context.workflow.currentStepIndex < context.workflow.totalSteps - 1}
-export function canGoToPreviousStep(context, UserWorkflowContext): boolean { return context.workflow.currentStepIndex > 0} 
+export function getCurrentWorkflowStep(context: UserWorkflowContext): string { return context.workflow.steps[context.workflow.currentStepIndex] || 'unknown'}
+export function getWorkflowProgress(context: UserWorkflowContext): number { return context.progress}
+export function getUnreadNotifications(context: UserWorkflowContext): number { return context.notifications.filter((n, any) => !n.read).length}
+export function hasActiveCollaborators(context: UserWorkflowContext): boolean { return context.collaborators.length > 0}
+export function canProceedToNextStep(context: UserWorkflowContext): boolean { return context.workflow.currentStepIndex < context.workflow.totalSteps - 1}
+export function canGoToPreviousStep(context: UserWorkflowContext): boolean { return context.workflow.currentStepIndex > 0} 
 
 
 

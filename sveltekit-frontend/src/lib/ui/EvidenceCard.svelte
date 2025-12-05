@@ -1,6 +1,14 @@
 <script lang="ts">
   import type { Evidence } from '$lib/types';
-  import type { Archive, Download, Eye, FileText, Image, Music, Trash2, Video, Zap  } from 'lucide-svelte';
+  import Archive from 'lucide-svelte/icons/archive';
+import Download from 'lucide-svelte/icons/download';
+import Eye from 'lucide-svelte/icons/eye';
+import FileText from 'lucide-svelte/icons/file-text';
+import Image from 'lucide-svelte/icons/image';
+import Music from 'lucide-svelte/icons/music';
+import Trash2 from 'lucide-svelte/icons/trash2';
+import Video from 'lucide-svelte/icons/video';
+import Zap from 'lucide-svelte/icons/zap';;
   // Migrated from createEventDispatcher to callback props;
   import Tooltip from './Tooltip.svelte';
 

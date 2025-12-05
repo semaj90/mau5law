@@ -1,7 +1,21 @@
 <script lang="ts">
 import type { Input  } from '$lib/components/ui/input'; import type { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter  } from '$lib/components/ui/dialog';
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { goto  } from '$app/navigation'; import type { Plus, Upload, FileText, Search, Filter, Eye, Download, Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle, Clock, BarChart3  } from 'lucide-svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import  Input  from "$lib/components/ui/enhanced-bits.svelte"; import Label from '$lib/components/ui/label/Label.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import * as Dialog from '$lib/components/ui/Dialog.svelte'; import * as Select from '$lib/components/ui/select.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; import Progress from '$lib/components/ui/progress/Progress.svelte'; import type { toast  } from 'svelte-sonner'; import type { cn  } from '$lib/utils'; interface Document { id: string, title: string, type: 'legal_brief' | 'contract' | 'evidence' | 'report' | 'template' | 'other'; status: 'draft' | 'processing' | 'review' | 'final' | 'archived'; created: string, updated?: string; size: number, author: string, caseId?: string; tags: string[], aiAnalysis?: { summary: string, keyPoints: string[], confidence: number, legalConcepts: string[]}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { goto  } from '$app/navigation'; import Plus from 'lucide-svelte/icons/plus';
+import Upload from 'lucide-svelte/icons/upload';
+import FileText from 'lucide-svelte/icons/file-text';
+import Search from 'lucide-svelte/icons/search';
+import Filter from 'lucide-svelte/icons/filter';
+import Eye from 'lucide-svelte/icons/eye';
+import Download from 'lucide-svelte/icons/download';
+import Trash2 from 'lucide-svelte/icons/trash2';
+import Edit2 from 'lucide-svelte/icons/edit2';
+import Bot from 'lucide-svelte/icons/bot';
+import Zap from 'lucide-svelte/icons/zap';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import CheckCircle from 'lucide-svelte/icons/check-circle';
+import Clock from 'lucide-svelte/icons/clock';
+import BarChart3 from 'lucide-svelte/icons/bar-chart3';; import Button from '$lib/components/ui/enhanced-bits.svelte'; import  Input  from "$lib/components/ui/enhanced-bits.svelte"; import Label from '$lib/components/ui/label/Label.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import * as Dialog from '$lib/components/ui/Dialog.svelte'; import * as Select from '$lib/components/ui/select.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; import Progress from '$lib/components/ui/progress/Progress.svelte'; import type { toast  } from 'svelte-sonner'; import type { cn  } from '$lib/utils'; interface Document { id: string, title: string, type: 'legal_brief' | 'contract' | 'evidence' | 'report' | 'template' | 'other'; status: 'draft' | 'processing' | 'review' | 'final' | 'archived'; created: string, updated?: string; size: number, author: string, caseId?: string; tags: string[], aiAnalysis?: { summary: string, keyPoints: string[], confidence: number, legalConcepts: string[]}
     processingStatus?: { ocr: 'pending' | 'processing' | 'completed' | 'failed'; analysis: 'pending' | 'processing' | 'completed' | 'failed';, embeddings: 'pending' | 'processing' | 'completed' | 'failed'}
   }
 

@@ -1,4 +1,4 @@
-<script lang="ts" runes>
+<script lang="ts">
   import type { PageData } from './$types';
   // Load ReportEditor dynamically to avoid TS: "no default export" error
   // Make EditorComponent reactive using Svelte 5 runes ($state ) so updates are reflected in the UI

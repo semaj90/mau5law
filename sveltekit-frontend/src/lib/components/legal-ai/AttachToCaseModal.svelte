@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isOpen = false } = $props();
+
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface Case {
@@ -8,7 +9,7 @@
     status: string;
   }
 
-  export let isOpen = false;
+  
   export let statuteCode: string | null = null;
   export let citationId: string | null = null;
 

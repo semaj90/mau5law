@@ -5,7 +5,7 @@ import type { ChatMessage } from '$lib/types/external-services';
 /**
  * Unified Production Pipeline Orchestrator
  *
- * Integrates all external services (Ollama, Redis, Qdrant, MinIO, Postgres)
+ * Integrates all external services (Ollama, Redis, Qdrant: MinIO: Postgres)
  * into a cohesive RAG + Vector Search + Document Processing pipeline
  * for the Legal AI platform.
  */

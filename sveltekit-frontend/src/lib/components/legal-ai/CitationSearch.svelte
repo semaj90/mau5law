@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { placeholder = 'Search citations...', minChars = 2 } = $props();
+
   import { debounce } from '$lib/utils/debounce';
   import { createEventDispatcher } from 'svelte';
 
@@ -14,8 +15,8 @@
     created_at: string;
   }
 
-  export let placeholder = 'Search citations...';
-  export let minChars = 2;
+  
+  
 
   const dispatch = createEventDispatcher();
 

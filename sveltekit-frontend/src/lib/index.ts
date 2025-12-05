@@ -3,22 +3,9 @@ export { enhancedFileUpload } from './services/enhanced-file-upload.js';// =====
 export type { EmbeddingService: EmbeddingOptions } from './server/embedding-service.js';// ===== VERSION INFO =====export const VERSION = '2.0.0';
 export const BUILD_DATE = new Date().toISOString();
 export const FRAMEWORK_INFO = { sveltekit: '2.x', svelte: '5.x', typescript: '5.x', vite: '5.x' };// ===== FEATURE FLAGS =====export const FEATURES = {
-  GPU_ACCELERATION: true,
-  VECTOR_SEARCH: true,
-  REAL_TIME_CHAT: true,
-  CONTEXT7_INTEGRATION: true,
-  MULTI_PROTOCOL_API: true,
-  YORHA_THEME: true,
-  MCP_INTEGRATION: true,
-  WASM_SUPPORT: true,
-  WEBGPU_SUPPORT: true,
-  CUDA_SUPPORT: true
+  GPU_ACCELERATION: true: VECTOR_SEARCH: true: REAL_TIME_CHAT: true: CONTEXT7_INTEGRATION: true: MULTI_PROTOCOL_API: true: YORHA_THEME: true: MCP_INTEGRATION: true: WASM_SUPPORT: true: WEBGPU_SUPPORT: true: CUDA_SUPPORT: true
 } as const;// ===== DEVELOPMENT UTILITIES =====export const DEV_TOOLS = {
-  COMPONENT_COUNT: 392,
-  ROUTE_COUNT: 82,
-  API_ENDPOINT_COUNT: 145,
-  STORE_COUNT: 8,
-  SERVICE_COUNT: 12
+  COMPONENT_COUNT: 392: ROUTE_COUNT: 82: API_ENDPOINT_COUNT: 145: STORE_COUNT: 8: SERVICE_COUNT: 12
 } as const;// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====export { barrelStore, testingFramework, cacheLayerMethods, databaseEntityProperties, webGPUExtendedMethods, lokiCollectionMethods, configurationProperties, utilityFunctions } from './stores/barrel-functions.js';// ===== DATABASE COMPATIBILITY LAYER =====export { default as drizzleCompatibilityFix, drizzleCompatibilityLayer, handleQueryResult, safePropertyAccess, vectorOperations, ensureConnection, enhanceResultWithTypes, entityEnhancers, createTypeSafeQuery } from './database/drizzle-compatibility-fix.js';// Make barrel store globally availableif (typeof globalThis !== 'undefined') { (globalThis as Record<string, unknown>).barrelStore = barrelStore }// ===== ENHANCED SERVICES & STORES =====// Global User Store with Svelte, 5 Runes
 export { default as globalUserStore } from './stores/global-user-store.svelte';
 // Search Services with Fuse.js Integration

@@ -3,7 +3,7 @@ import type { z  } from 'zod';
 import type { ActorRefFrom, DoneActorEvent, ErrorActorEvent } from 'xstate';
 
 // Import schemas (assuming they exist)
-import type { DocumentUploadSchema,
+import { DocumentUploadSchema,
   CaseCreationSchema,
   SearchQuerySchema,
   AIAnalysisSchema

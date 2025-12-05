@@ -6,7 +6,7 @@ export interface DemoCase {
   status: 'active' | 'pending' | 'closed',priority: 'low' | 'medium' | 'high' | 'urgent',
   createdAt: Date, updatedAt: Date
   assignedTo?: string
-  tags: string[]}
+  tags: string[]};
 export interface DemoEvidence {
   id: string
   caseId: string
@@ -21,7 +21,7 @@ export interface DemoEvidence {
     | 'expert_testimony',status: 'new' | 'reviewing' | 'approved',
   content: string
   uploadedAt: Date, fileSize: number
-  tags: string[]}
+  tags: string[]};
 export interface DemoPerson {
   id: string
   name: string

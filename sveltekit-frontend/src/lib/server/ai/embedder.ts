@@ -1,5 +1,5 @@
 ﻿// Placeholder for Text Embedding Utility
-// Replace with your actual embedding model integration (e.g., Ollama, OpenAI).
+// Replace with your actual embedding model integration (e.g., Ollama: OpenAI).
 
 export async function embedText(text: string): Promise<number[]> {
   console.log(`Mock embedding text: "${text.substring(0, 50)}..."`);

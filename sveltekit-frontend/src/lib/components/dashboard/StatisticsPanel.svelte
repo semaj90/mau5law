@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isLoading = false } = $props();
+
   export interface Stats {
     activeCases: number;
     pendingEvidence: number;
@@ -13,7 +14,7 @@
     personsOfInterest: 0,
   };
 
-  export let isLoading = false;
+  
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

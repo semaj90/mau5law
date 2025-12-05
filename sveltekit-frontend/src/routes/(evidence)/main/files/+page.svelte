@@ -1,6 +1,25 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected, token; https://svelte.dev/e/js_parse_error --> <script lang="ts">
 import type { Case } from '$lib/types'; interface Props { caseId: string}
-  let { caseId = '' }: Props = $props(); import type { page  } from '$app/state'; import Button from '$lib/components/ui/button/Button.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import type { notifications  } from '$lib/stores/unified'; import type { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video  } from 'lucide-svelte'; import { onMount } from 'svelte';; // Props // State let evidenceFiles: string | number[] = []; let filteredFiles: unknown[] = []; let loading = $state <boolean>(false); let error: string | null = null; let uploadProgress = 0; let uploading = $state <boolean>(false); let selectedFiles = new Set<string>(); let showBulkActions = $state <boolean>(false); // Filters and view options let searchQuery = ''; let selectedCategory = ''; let viewMode = 'grid'; // 'grid' | 'list'
+  let { caseId = '' }: Props = $props(); import type { page  } from '$app/state'; import Button from '$lib/components/ui/button/Button.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import type { notifications  } from '$lib/stores/unified'; import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import Archive from 'lucide-svelte/icons/archive';
+import CheckSquare from 'lucide-svelte/icons/check-square';
+import Download from 'lucide-svelte/icons/download';
+import Eye from 'lucide-svelte/icons/eye';
+import File from 'lucide-svelte/icons/file';
+import FileText from 'lucide-svelte/icons/file-text';
+import Folder from 'lucide-svelte/icons/folder';
+import Grid from 'lucide-svelte/icons/grid';
+import Image from 'lucide-svelte/icons/image';
+import List from 'lucide-svelte/icons/list';
+import MoreHorizontal from 'lucide-svelte/icons/more-horizontal';
+import Music from 'lucide-svelte/icons/music';
+import Plus from 'lucide-svelte/icons/plus';
+import RefreshCw from 'lucide-svelte/icons/refresh-cw';
+import Search from 'lucide-svelte/icons/search';
+import Square from 'lucide-svelte/icons/square';
+import Trash2 from 'lucide-svelte/icons/trash2';
+import Upload from 'lucide-svelte/icons/upload';
+import Video from 'lucide-svelte/icons/video';; import { onMount } from 'svelte';; // Props // State let evidenceFiles: string | number[] = []; let filteredFiles: unknown[] = []; let loading = $state <boolean>(false); let error: string | null = null; let uploadProgress = 0; let uploading = $state <boolean>(false); let selectedFiles = new Set<string>(); let showBulkActions = $state <boolean>(false); // Filters and view options let searchQuery = ''; let selectedCategory = ''; let viewMode = 'grid'; // 'grid' | 'list'
   let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state <boolean>(false); let dragActive = $state <boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ { value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive'; label: 'Archives', icon Archive }]; // Get caseId from URL if not provided as prop $effect(() => {() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''}
   }); onMount(() => { if (caseId) { loadEvidenceFiles()}
   });

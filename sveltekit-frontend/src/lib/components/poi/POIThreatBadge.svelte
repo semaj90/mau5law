@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { Badge  } from '$lib/components/ui/badge';
-  import type { AlertCircle, AlertTriangle, CheckCircle, Shield  } from 'lucide-svelte';
+  import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+import CheckCircle from 'lucide-svelte/icons/check-circle';
+import Shield from 'lucide-svelte/icons/shield';;
 
   export let threatLevel: string;
   export let size: 'sm' | 'md' | 'lg' = 'md';

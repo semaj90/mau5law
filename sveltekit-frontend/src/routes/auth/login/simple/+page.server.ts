@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';;
-import type { superValidate  } from 'sveltekit-superforms/server';
+import { superValidate  } from 'sveltekit-superforms/server';
 import type { zod  } from 'sveltekit-superforms/adapters';
 import type { z  } from 'zod';
 import type { authenticate  } from '$lib/server/auth-simple'; // Changed to named import

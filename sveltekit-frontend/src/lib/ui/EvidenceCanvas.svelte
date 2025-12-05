@@ -1,6 +1,12 @@
 <script lang="ts">
   import type { Evidence } from '$lib/types';
-  import type { Archive, FileText, Image, Music, Target, Video, Zap  } from 'lucide-svelte';
+  import Archive from 'lucide-svelte/icons/archive';
+import FileText from 'lucide-svelte/icons/file-text';
+import Image from 'lucide-svelte/icons/image';
+import Music from 'lucide-svelte/icons/music';
+import Target from 'lucide-svelte/icons/target';
+import Video from 'lucide-svelte/icons/video';
+import Zap from 'lucide-svelte/icons/zap';;
   // Migrated from createEventDispatcher to callback props;
   import EvidenceCard from './EvidenceCard.svelte';
 

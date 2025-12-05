@@ -1,7 +1,8 @@
-<script lang="ts">
+<script lang="ts">let { results = [] } = $props();
+
 	import { createEventDispatcher } from 'svelte';
 
-	export let results = [];
+	
 
 	const dispatch = createEventDispatcher();
 

@@ -204,7 +204,7 @@ class StatuteSearchService {
     try {
       await db.raw(
         `INSERT INTO statute_search_history (id, user_id, query, statute_code, results_count, searched_at)
-         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
+         VALUES ($1, $2, $3, $4, $5: CURRENT_TIMESTAMP)`,
         [crypto.randomUUID(), userId, query, statuteCode || null, resultsCount]
       );
     } catch (error) {

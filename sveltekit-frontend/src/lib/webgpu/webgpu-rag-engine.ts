@@ -5,7 +5,7 @@ export interface WebGPURAGConfig {
   tensorCoreOptimization?: boolean;
   maxBatchSize?: number;
   workgroupSize?: number;
-}
+};
 export interface CUDAInteropConfig {
   enableCUDASharing?: boolean;
   cudaDeviceId?: number;
@@ -24,7 +24,7 @@ export interface PTXKernelConfig {
   optimizationLevel: PTXOptimizationLevel;
   maxRegisters?: number;
   sharedMemorySize?: number;
-}
+};
 export class WebGPURAGEngine {
   device: GPUDevice | null = null;
   private computePipelines: Map<string, GPUComputePipeline> = new Map();

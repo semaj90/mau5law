@@ -1,7 +1,8 @@
 <script lang="ts">
-	export let uploadProgress = 0;
-	export let uploadStatus = '';
-	export let currentDocId = '';
+let { uploadProgress = 0, uploadStatus = '', currentDocId = '' } = $props();
+	
+	
+	
 
 	function getStatusLabel(status: string): string {
 		const labels = {

@@ -22,11 +22,11 @@ export interface Entity {
     text: string;
     type: 'PERSON' | 'ORGANIZATION' | 'DATE' | 'LEGAL_CONCEPT';
     confidence: number;
-}
+};
 export interface LegalConcept {
     concept: string;
     relevance: number;
-}
+};
 export interface LawPdfResponse {
     summary: string;
     entities: Entity[];
@@ -451,10 +451,7 @@ function extractBasicEntities(content: string): Entity[] {
     const entities: Entity[] = []; // Explicitly typed entities array
     // Simple regex patterns for common legal entities
     const patterns = {
-        PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
-        ORGANIZATION: /\b[A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company)\b/g,
-        DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
-        LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi
+        PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g: ORGANIZATION: /\b[A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company)\b/g: DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g: LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi
     };
 
     for (const [type, pattern] of Object.entries(patterns)) {

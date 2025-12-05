@@ -13,7 +13,7 @@ export interface VectorJob {
   attempts: number;
   maxAttempts: number;
   error?: string;
-}
+};
 export interface VectorJobResult {
   jobId: string;
   status: 'pending' | 'success' | 'failed';
@@ -37,13 +37,13 @@ export interface CUDAProcessingStatus {
   estimatedTimeRemainingMs?: number;
   gpuUtilization?: number;
   memoryUsage?: number;
-}
+};
 export interface WebGPUProcessingOptions {
   useFloat16: boolean;
   batchSize: number;
   workgroupSize: number;
   fallbackToWebGL: boolean;
-}
+};
 export interface VectorOperationRequest {
   ownerType: string;
   ownerId: string;
@@ -63,13 +63,13 @@ export interface VectorOperationResponse {
 export interface RedisStreamMessage {
   id: string | Record<string, string>;
   fields: Record<string, string>;
-}
+};
 export interface RedisStreamGroup {
   name: string;
   consumers: RedisStreamConsumer[];
   pending: number;
   lastDeliveredId: string;
-}
+};
 export interface RedisStreamConsumer {
   name: string;
   pending: number;
@@ -95,12 +95,12 @@ export interface WebGPUDevice {
   features: string[];
   limits: Record<string, number>;
   isAvailable: boolean;
-}
+};
 export interface WebGPUComputeShader {
   module: GPUShaderModule;
   pipeline: GPUComputePipeline;
   bindGroupLayout: GPUBindGroupLayout;
-}
+};
 export interface WebGPUVectorOperation {
   inputBuffer: GPUBuffer;
   outputBuffer: GPUBuffer;
@@ -118,7 +118,7 @@ export interface WASMLLMConfig {
   topP: number;
   useGPU: boolean;
   memoryLimit: number;
-}
+};
 export interface WASMLLMResponse {
   text: string;
   tokens: number;

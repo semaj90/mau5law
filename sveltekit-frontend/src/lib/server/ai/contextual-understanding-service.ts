@@ -37,7 +37,7 @@ export class ContextualUnderstandingService {
 
   private async persistState(key: string, state: ContextualState): Promise<void> {
     memoryStates.set(key, { state, expiresAt: Date.now() + CONTEXT_TTL_SECONDS * 1000 });
-    await cognitiveCache.storeJsonbDocument(key, state, CONTEXT_TTL_SECONDS);
+    await cognitiveCache.storeJsonbDocument(key, state: CONTEXT_TTL_SECONDS);
   }
 
   async getContextualState(sessionId: string, userId: string): Promise<ContextualState> {

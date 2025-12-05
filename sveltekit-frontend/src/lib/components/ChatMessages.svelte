@@ -1,7 +1,8 @@
-<script lang="ts">
+<script lang="ts">let { messages = [] } = $props();
+
 	import CitationLink from './CitationLink.svelte';
 
-	export let messages = [];
+	
 
 	function getRoleLabel(role: string): string {
 		const labels = {

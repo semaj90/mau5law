@@ -49,13 +49,13 @@ export interface NavigationHistoryEntry {
   routeId?: string;
   params?: Record<string, string>;
   state?: unknown;
-}
+};
 export interface BreadcrumbItem {
   label: string;
   path: string;
   routeId?: string;
   isActive: boolean;
-}
+};
 export interface NavigationState {
   currentPath: string;
   previousPath: string | null;
@@ -64,7 +64,7 @@ export interface NavigationState {
   canGoBack: boolean;
   canGoForward: boolean;
   isNavigating: boolean;
-}
+};
 export interface NavigationOptions {
   replaceState?: boolean;
   keepHistory?: boolean;
@@ -73,7 +73,7 @@ export interface NavigationOptions {
   noScroll?: boolean;
   preserveParams?: boolean;
   guardBypass?: boolean;
-}
+};
 export interface NavigationGuard {
   name: string;
   condition: (to: string, from: string) => boolean | Promise<boolean>;

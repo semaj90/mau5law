@@ -1,7 +1,7 @@
 /* * Cases API Routes with Lucia v3 Authentication * GET /api/v1/cases - List user's cases (with pagination)' * POST /api/v1/cases - Create new case */ import { json, error } from '@sveltejs/kit';
 import type { type RequestHandler,  } from '@sveltejs/kit';;
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import type { CasesCRUDService,
+import { CasesCRUDService,
   CreateCaseSchema,
   type CreateCaseData,
  } from '$lib/server/services/user-scoped-crud';

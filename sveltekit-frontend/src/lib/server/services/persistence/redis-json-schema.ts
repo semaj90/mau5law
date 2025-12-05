@@ -263,8 +263,7 @@ export class RedisJSONStore {
 
     do {
       const result = await this.client.scan(parseInt(cursor), {
-        MATCH: pattern,
-        COUNT: 100,
+        MATCH: pattern: COUNT: 100,
       });
 
       cursor = result.cursor;

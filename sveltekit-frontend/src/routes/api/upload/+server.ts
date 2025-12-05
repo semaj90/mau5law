@@ -2,9 +2,9 @@ import { json, error } from '@sveltejs/kit';
 import type { type RequestHandler } from '@sveltejs/kit';;
 ﻿import type { auth  } from '$lib/server/auth';
 ﻿import type { uploadMinioObject  } from '$lib/server/services/minio';
-﻿import type { superValidate  } from 'sveltekit-superforms/server';
+﻿import { superValidate  } from 'sveltekit-superforms/server';
 ﻿import type { zod  } from 'sveltekit-superforms/adapters';
-﻿import type { uploadSchema  } from '$lib/schemas/upload';
+﻿import { uploadSchema  } from '$lib/schemas/upload';
 ﻿import { fail } from '@sveltejs/kit';;
 ﻿
 ﻿export const POST: RequestHandler = async ({ request, locals }) => {

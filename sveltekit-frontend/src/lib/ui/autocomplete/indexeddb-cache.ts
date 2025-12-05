@@ -43,7 +43,7 @@ let fuse: Fuse<CachedStatute> | null = null;
  */
 export async function initIndexedDB(): Promise<void> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(DB_NAME: DB_VERSION);
 
     request.onerror = () => reject(request.error);
     request.onsuccess = () => {

@@ -1,7 +1,8 @@
-<script lang="ts">
+<script lang="ts">let { isOpen = false } = $props();
+
   import { createEventDispatcher } from 'svelte';
 
-  export let isOpen = false;
+  
   export let sourceUrl: string = '';
   export let domain: string = '';
 

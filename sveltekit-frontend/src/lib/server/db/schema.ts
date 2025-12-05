@@ -9,3 +9,4 @@ import type { Case;
 }) => ({ case: one(cases: { fields: [citations.caseId], references: [cases.id] }) })); export const notesRelations = relations(caseNotes, ({ one;
 }) => ({ case: one(cases: { fields: [caseNotes.caseId], references: [cases.id] }) })); // Export all types for use in application export type Case = typeof cases.$inferSelect; export type NewCase = typeof cases.$inferInsert; export type Evidence = typeof evidence.$inferSelect; export type NewEvidence = typeof evidence.$inferInsert; export type CaseTimelineEvent = typeof caseTimeline.$inferSelect; export type NewCaseTimelineEvent = typeof caseTimeline.$inferInsert; export type Citation = typeof citations.$inferSelect; export type NewCitation = typeof citations.$inferInsert; export type CaseNote = typeof caseNotes.$inferSelect; export type NewCaseNote = typeof caseNotes.$inferInsert
 
+;

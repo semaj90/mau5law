@@ -1,13 +1,12 @@
 <script lang="ts">
   import type { goto  } from '$app/navigation';
-  import type { AlertTriangle,
-    Camera,
-    Grid,
-    List,
-    Plus,
-    Search,
-    Users
-   } from 'lucide-svelte';
+  import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+import Camera from 'lucide-svelte/icons/camera';
+import Grid from 'lucide-svelte/icons/grid';
+import List from 'lucide-svelte/icons/list';
+import Plus from 'lucide-svelte/icons/plus';
+import Search from 'lucide-svelte/icons/search';
+import Users from 'lucide-svelte/icons/users';;
   import { onMount } from 'svelte';;
 
   import type { Button  } from '$lib/components/ui/button';

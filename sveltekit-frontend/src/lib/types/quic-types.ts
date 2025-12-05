@@ -52,7 +52,7 @@ export interface QUICMetrics {
   operationsPerSecond: number;
   cacheHitRatio: number;
   errorRate: number;
-}
+};
 export interface DocumentEmbedding {
   documentId: string;
   embedding: Float32Array;
@@ -63,7 +63,7 @@ export interface DocumentEmbedding {
   timestamp: number;
   chunkIndex?: number;
   content?: string;
-}
+};
 export interface AttentionHeatmap {
   scores: Float32Array;
   positions: { x: number; y: number; timestamp: number }[];
@@ -79,7 +79,7 @@ export interface AttentionRegion {
   type: 'mouse' | 'scroll' | 'focus' | 'click';
   confidence: number;
   elements?: string[]; // CSS selectors or element IDs
-}
+};
 export interface SOMCluster {
   id: string;
   position: [number, number];
@@ -90,7 +90,7 @@ export interface SOMCluster {
   lastUpdated: number;
   confidence: number;
   neighbors: string[];
-}
+};
 export interface SOMVisualization {
   somId: string;
   dimensions: [number, number];
@@ -108,7 +108,7 @@ export interface SOMNeuronViz {
   confidence: number;
   dominantLabel?: string;
   color?: string; // Hex color for visualization
-}
+};
 export interface SOMPerformanceMetrics {
   quantizationError: number;
   topographicError: number;
@@ -118,7 +118,7 @@ export interface SOMPerformanceMetrics {
   categoryDistribution: Record<string, number>;
   convergenceRate: number;
   trainingTime: number;
-}
+};
 export interface Tensor4D {
   id: string;
   shape: [number, number, number, number]; // [batch, depth, height, width]
@@ -129,7 +129,7 @@ export interface Tensor4D {
   updatedAt: number;
   documentId: string;
   status: 'initializing' | 'ready' | 'processing' | 'error';
-}
+};
 export interface TensorMetadata {
   documentType: string;
   practiceArea: string;
@@ -148,7 +148,7 @@ export interface TileConfiguration {
   tileLayout: [number, number, number, number];
   compressionLevel: number;
   cachingStrategy: 'lru' | 'lfu' | 'ttl';
-}
+};
 export interface TensorTile {
   id: string;
   tensorId: string;
@@ -161,7 +161,7 @@ export interface TensorTile {
   accessCount: number;
   lastAccessed: number;
   priority: number;
-}
+};
 export interface TricubicInterpolation {
   tensorId: string;
   coordinates: [number, number];
@@ -195,7 +195,7 @@ export interface GPUBufferInfo {
   usage: number; // use plain: number to avoid duplicate global type definitions
   mapped: boolean;
   destroyed: boolean;
-}
+};
 export interface ComputePipeline {
   id: string;
   pipeline: GPUComputePipeline; // GPUComputePipeline when WebGPU is available
@@ -204,7 +204,7 @@ export interface ComputePipeline {
   bindingLayout: GPUBindGroupLayout; // GPUBindGroupLayout when WebGPU is available
   lastUsed: number;
   usageCount: number;
-}
+};
 export interface LegalDocumentAnalysis {
   documentId: string;
   summary: string;
@@ -228,7 +228,7 @@ export interface LegalEntity {
   endIndex: number;
   linkedEntities?: string[];
   attributes?: Record<string, unknown>;
-}
+};
 export interface RiskFactor {
   type: 'COMPLIANCE' | 'FINANCIAL' | 'OPERATIONAL' | 'LEGAL' | 'REGULATORY';
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
@@ -249,7 +249,7 @@ export interface CitedCase {
   relevanceScore: number;
   precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHABLE';
   keyPoints: string[];
-}
+};
 export interface SearchResult {
   documentId: string;
   title: string;
@@ -264,7 +264,7 @@ export interface SearchResult {
   relevanceExplanation: string;
   citationCount?: number;
   lastUpdated: number;
-}
+};
 export interface VectorSearchRequest {
   query: string;
   filters?: {
@@ -308,7 +308,7 @@ export interface WebSocketEvent {
   timestamp: number;
   source: 'gpu' | 'cpu' | 'quic' | 'redis' | 'postgres';
   priority: 'low' | 'medium' | 'high' | 'critical';
-}
+};
 export interface SystemMetrics {
   timestamp: number;
   cpu: { usage: number; cores: number; frequency: number };
@@ -348,7 +348,7 @@ export interface WebGPUConfig {
   shaderOptimization: 'none' | 'basic' | 'aggressive';
   debugging: boolean;
   fallbackToCPU: boolean;
-}
+};
 export interface TensorConfig {
   defaultTileSize: [number, number, number, number];
   maxTensorSize: [number, number, number, number];

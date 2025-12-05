@@ -18,7 +18,7 @@ export interface DerivedRune<T> {
 }
 export interface EffectRune {
   (): void | (() => void);
-}
+};
 export interface PropsRune<T extends Record<string, unknown>> {
   (): T;
 }
@@ -146,7 +146,7 @@ export interface DatabaseConnection {
 export interface PostgresConnection {
   (options?: PostgresOptions): SQL<Record<string, unknown>>;
   (url: string, options?: PostgresOptions): SQL<Record<string, unknown>>;
-}
+};
 export interface PostgresOptions {
   host?: string;
   port?: number;
@@ -209,7 +209,7 @@ export interface DrizzleColumnHelpers {
   or: any;
   not: any;
   sql: any;
-}
+};
 export interface DrizzleTable<T extends Record<string, unknown> = Record<string, unknown>> {
   _: {
     name: string;
@@ -232,14 +232,14 @@ export interface EmbeddingVector {
   id: string;
   values: number[];
   metadata?: Record<string, unknown>;
-}
+};
 export interface VectorSearchResult {
   id: string;
   score: number;
   values?: number[];
   metadata?: Record<string, unknown>;
   document?: any;
-}
+};
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
@@ -282,16 +282,16 @@ export interface OllamaGenerateResponse {
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-}
+};
 export interface OllamaEmbeddingRequest {
   model: string;
   prompt: string;
   options?: any;
   keep_alive?: string;
-}
+};
 export interface OllamaEmbeddingResponse {
   embedding: number[];
-}
+};
 export interface OllamaModel {
   name: string;
   modified_at: string;
@@ -310,7 +310,7 @@ export interface RAGDocument {
   content: string;
   metadata: Record<string, unknown>;
   embedding?: number[];
-}
+};
 export interface RAGQuery {
   query: string;
   context?: RAGDocument[];
@@ -347,7 +347,7 @@ export interface CacheConfiguration {
   compressionThreshold?: number;
   metricsInterval?: number;
   analyticsInterval?: number;
-}
+};
 export interface CacheLayerConfig {
   type: 'memory' | 'redis' | 'postgres' | 'vector' | 'filesystem' | 'cdn' | 'browser';
   priority: number;
@@ -355,7 +355,7 @@ export interface CacheLayerConfig {
   ttl: number;
   enabled?: boolean;
   options?: Record<string, unknown>;
-}
+};
 export interface CacheEntry {
   value: any;
   metadata: Record<string, unknown>;
@@ -365,7 +365,7 @@ export interface CacheEntry {
   accessCount?: number;
   size?: number;
   compressed?: boolean;
-}
+};
 export interface CacheMetrics {
   hits: number;
   misses: number;
@@ -379,26 +379,26 @@ export interface CacheMetrics {
   writesByLayer?: Record<string, number>;
   hitRate?: number;
   averageOperationTime?: number;
-}
+};
 export interface CacheAnalytics {
   accessPatterns?: Map<string, unknown>;
   hotKeys?: Set<string>;
   coldKeys?: Set<string>;
   performanceMetrics?: Record<string, unknown>;
   usageStats?: Record<string, unknown>;
-}
+};
 export interface CacheStats {
   totalEntries: number;
   memoryUsage: number;
   hitRate: number;
   size?: number;
-}
+};
 export interface CacheStrategy {
   readStrategy?: 'cache-first' | 'network-first' | 'cache-only' | 'network-only';
   writeStrategy?: 'write-through' | 'write-behind' | 'write-around';
   evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
   replicationStrategy?: 'none' | 'master-slave' | 'peer-to-peer';
-}
+};
 export interface CachePolicy {
   evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
   maxSize: number;
@@ -423,7 +423,7 @@ export interface LokiMemoryAdapter {
   loadDatabase(dbname: string, callback: (data: any) => void): void;
   saveDatabase(dbname: string, dbstring: string, callback?: () => void): void;
   deleteDatabase(dbname: string, callback?: () => void): void;
-}
+};
 export interface Loki {
   addCollection<T>(name: string, options?: any): Collection<T>;
   getCollection<T>(name: string): Collection<T> | null;
@@ -459,11 +459,11 @@ export interface TestContext {
   timeout?: number;
   skip?: boolean;
   only?: boolean;
-}
+};
 export interface ExpectationResult {
   pass: boolean;
   message: string;
-}
+};
 export interface MockFunction<T extends (...args: any[]) => unknown = (...args: any[]) => unknown> {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;

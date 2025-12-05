@@ -1,6 +1,7 @@
-<script lang="ts">
-  export let filters;
-  export let onUpdate;
+<script lang="ts">let { filters, onUpdate } = $props();
+
+  
+  
 </script>
 
 <div class="flex flex-wrap gap-3 p-3 nes-container with-title bg-gray-900 text-white rounded-lg">

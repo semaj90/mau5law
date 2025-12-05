@@ -26,7 +26,7 @@ export interface Case {
   description?: string;
   assignedTo?: string;
   [key: string]: unknown;
-}
+};
 export interface Evidence {
   id: string;
   caseId: string;
@@ -43,7 +43,7 @@ export interface Source {
   relevance: number;
   snippet?: string;
   url?: string;
-}
+};
 export interface AIResponse {
   response: string;
   confidence: number;
@@ -51,20 +51,20 @@ export interface AIResponse {
   timestamp: string;
   model: string;
   metadata: Record<string, unknown>;
-}
+};
 export interface AuthResponse {
   id: string;
   email: string;
   role: string;
   permissions: string[];
-}
+};
 export interface RegistrationData {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
   [key: string]: unknown;
-}
+};
 export interface LegalAIContext {
   user: {
     id: string | null;

@@ -28,7 +28,7 @@ export interface FormIssue {
   message: string;
   element?: string;
   fix?: string;
-}
+};
 export interface ProgressiveEnhancementConfig {
   // Form
   enableClientValidation: boolean;
@@ -53,7 +53,7 @@ export interface ProgressiveEnhancementConfig {
   highlightRequiredFields: boolean;
   showCharacterCounts: boolean;
   enableKeyboardShortcuts: boolean;
-}
+};
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
   enableClientValidation: true,
   enableRealTimeValidation: false, // Can be enabled for specific fields

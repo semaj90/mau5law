@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isOpen = false } = $props();
+
   import { createEventDispatcher } from 'svelte';
 
   interface SaveCitationData {
@@ -12,7 +13,7 @@
     case_id?: string;
   }
 
-  export let isOpen = false;
+  
   export let caseId: string | null = null;
   export let highlightedText: string | null = null;
 

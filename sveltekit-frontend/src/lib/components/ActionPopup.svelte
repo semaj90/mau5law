@@ -1,7 +1,8 @@
-<script lang="ts">
+<script lang="ts">let { pendingFile } = $props();
+
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
-  export let pendingFile;
+  
 
   function choose(action) {
     dispatch('select', { file: pendingFile, action });

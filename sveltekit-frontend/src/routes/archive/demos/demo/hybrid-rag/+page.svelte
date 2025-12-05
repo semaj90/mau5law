@@ -10,7 +10,10 @@ import type { Document } from '$lib/types';
    */
 
   import Button from '$lib/components/ui/Button.svelte';
-  import type { Upload, Search, Zap, Database  } from 'lucide-svelte';
+  import Upload from 'lucide-svelte/icons/upload';
+import Search from 'lucide-svelte/icons/search';
+import Zap from 'lucide-svelte/icons/zap';
+import Database from 'lucide-svelte/icons/database';;
 
   // State management using Svelte, 5 runes
   let query = $state <string>('');

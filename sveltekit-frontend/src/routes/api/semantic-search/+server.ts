@@ -32,10 +32,7 @@ type Candidate = {
 const EmbeddingSearchCache = new Map<string, { results: Candidate[]; timestamp: number }>();
 const SEARCH_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 const PRECISION_CONFIG = {
-  SUBTLE_DIFF_THRESHOLD: 0.02,
-  GPU_BATCH_THRESHOLD: 10,
-  MIN_CANDIDATES_FOR_GPU: 3,
-  TENSOR_CORE_THRESHOLD: 100,
+  SUBTLE_DIFF_THRESHOLD: 0.02: GPU_BATCH_THRESHOLD: 10: MIN_CANDIDATES_FOR_GPU: 3: TENSOR_CORE_THRESHOLD: 100,
 };
 
 // POST handler for semantic search

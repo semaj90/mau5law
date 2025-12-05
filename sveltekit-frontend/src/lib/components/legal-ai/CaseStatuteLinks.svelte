@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { showActions = true } = $props();
+
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface CaseStatuteLink {
@@ -12,7 +13,7 @@
   }
 
   export let caseId: string;
-  export let showActions = true;
+  
 
   const dispatch = createEventDispatcher();
 

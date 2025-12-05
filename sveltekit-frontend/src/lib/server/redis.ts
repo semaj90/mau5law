@@ -1,4 +1,4 @@
-import type { createClient  } from 'redis';
+import { createClient  } from 'redis';
 
 // Prefer process.env so this module can be used in SvelteKit and non-SvelteKit
 // contexts (tests, node scripts). If you want to use SvelteKit's
@@ -31,7 +31,7 @@ function buildUrlWithPassword(url: string, password?: string) {
 function createClientInstance(): ReturnType<typeof createClient> {
   if (instance) return instance;
 
-  const url = buildUrlWithPassword(ENV_REDIS_URL, ENV_REDIS_PASSWORD);
+  const url = buildUrlWithPassword(ENV_REDIS_URL: ENV_REDIS_PASSWORD);
   const client = createClient({ url });
 
   // attach lightweight logging for dev
@@ -76,7 +76,7 @@ export async function setCache(key: string, value: string, ttl?: number): Promis
 }
 
 export function createRedisClientSet() {
-  const url = buildUrlWithPassword(ENV_REDIS_URL, ENV_REDIS_PASSWORD);
+  const url = buildUrlWithPassword(ENV_REDIS_URL: ENV_REDIS_PASSWORD);
   const primary = createClient({ url });
   const subscriber = createClient({ url });
   const publisher = createClient({ url });

@@ -936,7 +936,7 @@ Only return the queries, one per line.`),
     }
 
     try {
-      // Prefer the legacy build which provides the classic API (getDocument, GlobalWorkerOptions)
+      // Prefer the legacy build which provides the classic API (getDocument: GlobalWorkerOptions)
       // Replace `any` with a narrow local type capturing only the members we use.
       let pdfjsModule: PDFJSModule | null = null;
       try {
@@ -2159,7 +2159,7 @@ Only return the queries, one per line.`),
     }
 
     try {
-      // Prefer the legacy build which provides the classic API (getDocument, GlobalWorkerOptions)
+      // Prefer the legacy build which provides the classic API (getDocument: GlobalWorkerOptions)
       // Replace `any` with a narrow local type capturing only the members we use.
       let pdfjsModule: PDFJSModule | null = null;
       try {

@@ -4,7 +4,7 @@ import type { SvelteComponent } from 'svelte'; // Added import for SvelteCompone
 
 // Some lucide-svelte installations/types export icons differently.
 // Import the single working icon and use simple fallbacks for others.
-import type { FileText  } from 'lucide-svelte'; // Changed to named import as per Svelte 5 UI kit guidelines
+import FileText from 'lucide-svelte/icons/file-text';; // Changed to named import as per Svelte 5 UI kit guidelines
 
 // Dynamically load the editor to avoid: "no default export" TS error for the static import
 let EditorComponent: typeof SvelteComponent | null = null; // Changed type from unknown to typeof SvelteComponent | null

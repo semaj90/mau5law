@@ -37,20 +37,12 @@ export function classifyIntent(ctx: IntentContext): IntentResult {
 
   // Pattern matching for each intent
   const patterns: Record<LegalIntent, RegExp> = {
-    EXPLAIN_STATUTE: /explain|what does this mean|plain english|define|meaning|interpretation|elements|requirements/i,
-    LINK_CASES: /cases?|precedent|similar cases|case law|holdings|decided|court ruled|applied/i,
-    HIGHLIGHT_CLAUSE: /which (part|clause|section)|highlight|locate|find|where is|point to|show me/i,
-    TAXONOMY_EXPLORE: /browse|topics|map of law|categories|taxonomy|structure|organization|hierarchy/i,
-    MEMO_BUILDER: /memo|brief|argument|outline|analysis|summary|write|draft|prepare/i,
+    EXPLAIN_STATUTE: /explain|what does this mean|plain english|define|meaning|interpretation|elements|requirements/i: LINK_CASES: /cases?|precedent|similar cases|case law|holdings|decided|court ruled|applied/i: HIGHLIGHT_CLAUSE: /which (part|clause|section)|highlight|locate|find|where is|point to|show me/i: TAXONOMY_EXPLORE: /browse|topics|map of law|categories|taxonomy|structure|organization|hierarchy/i: MEMO_BUILDER: /memo|brief|argument|outline|analysis|summary|write|draft|prepare/i,
   };
 
   // Score each intent
   const scores: Record<LegalIntent, number> = {
-    EXPLAIN_STATUTE: 0,
-    LINK_CASES: 0,
-    HIGHLIGHT_CLAUSE: 0,
-    TAXONOMY_EXPLORE: 0,
-    MEMO_BUILDER: 0,
+    EXPLAIN_STATUTE: 0: LINK_CASES: 0: HIGHLIGHT_CLAUSE: 0: TAXONOMY_EXPLORE: 0: MEMO_BUILDER: 0,
   };
 
   for (const [intent, pattern] of Object.entries(patterns)) {

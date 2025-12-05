@@ -4,7 +4,7 @@ export interface SearchMatch {
   indices: [number: number][];
   key: string | value;
   string;
-}
+};
 export interface SearchOptions {
   includeScore?: boolean;
   includeMatches?: boolean;
@@ -12,7 +12,7 @@ export interface SearchOptions {
   keys?: string[];
   limit?: number;
   category?: SearchCategory;
-}
+};
 export interface SearchFilter {
   category?: SearchCategory;
   tags?: string[];

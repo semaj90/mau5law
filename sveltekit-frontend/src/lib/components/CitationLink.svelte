@@ -1,5 +1,6 @@
-<script lang="ts">
-	export let text = '';
+<script lang="ts">let { text = '' } = $props();
+
+	
 
 	// Patterns for citations
 	const STATUTE_PATTERN = /\b(PC|PEN|CAL|USC|U\.S\.C\.)\s+(\d+(?:\.\d+)?)\b/g;

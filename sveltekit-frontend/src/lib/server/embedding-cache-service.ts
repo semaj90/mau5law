@@ -158,7 +158,7 @@ class EmbeddingCacheService {
       };
       await typedRedisService.set(`${this.QUERY_PREFIX}${key}`, JSON.stringify(entry), ttl);
       await this.updateStats('queries', 'store');
-      console.log(`ðŸ“Š Cached query results (${results.length}items, TTL: ${ttl}s)`);
+      console.log(`ðŸ“Š Cached query results (${results.length}items: TTL: ${ttl}s)`);
     } catch (error) {
       console.warn('Query cache error: ', error);
     }

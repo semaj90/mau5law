@@ -1,6 +1,17 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
-  import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import { enhancedUploadStore } from '$lib/stores/unified'; import { recommendationStore } from '$lib/machines/recommendation-routing-machine'; import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool'; import { createSIMDJSONCache } from '$lib/utils/simd-json-cache'; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; // Changed from default import to named import from directory import  Progress  from "$lib/components/ui/progress/Progress.svelte"; import { Brain, Database, Network, Zap, Eye, FileText, Settings, Activity, Upload, MessageSquare, // BarChart, // Deprecated: Replaced with Activity } from 'lucide-svelte'; // Component state let selectedFiles = $state<FileList | null>(null); let caseId = $state<string>('case_' + Date.now()); let documentType = $state<'evidence' | 'contract' | 'brief' | 'deposition'>('evidence'); let isProcessing = $state<boolean>(false); let systemStats = $state<any>({});
+  import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import { enhancedUploadStore } from '$lib/stores/unified'; import { recommendationStore } from '$lib/machines/recommendation-routing-machine'; import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool'; import { createSIMDJSONCache } from '$lib/utils/simd-json-cache'; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; // Changed from default import to named import from directory import  Progress  from "$lib/components/ui/progress/Progress.svelte"; import Brain from 'lucide-svelte/icons/brain';
+import Database from 'lucide-svelte/icons/database';
+import Network from 'lucide-svelte/icons/network';
+import Zap from 'lucide-svelte/icons/zap';
+import Eye from 'lucide-svelte/icons/eye';
+import FileText from 'lucide-svelte/icons/file-text';
+import Settings from 'lucide-svelte/icons/settings';
+import Activity from 'lucide-svelte/icons/activity';
+import Upload from 'lucide-svelte/icons/upload';
+import MessageSquare from 'lucide-svelte/icons/message-square';
+import // BarChart from 'lucide-svelte/icons// -bar-chart';
+import // Deprecated: Replaced with Activity from 'lucide-svelte/icons// -deprecated: -replaced with -activity';; // Component state let selectedFiles = $state<FileList | null>(null); let caseId = $state<string>('case_' + Date.now()); let documentType = $state<'evidence' | 'contract' | 'brief' | 'deposition'>('evidence'); let isProcessing = $state<boolean>(false); let systemStats = $state<any>({});
     let recommendations = $state<any[]>([]); let processedResults = $state<any>({}); // System components let workerPool: any = null; let simdCache: any = null; //, Add: declare the dynamic component reference so TS + Svelte know about it let EnhancedUploadProgress = $state<any>(null); // Performance metrics let performanceMetrics = $state({ totalProcessingTime: 0, averageSpeed: 0, cacheHitRate: 0, workerUtilization: 0; simdPerformance: 0 });
     let aiStats = $state({ modelsActive: 0, inferencesPerHour: 0, gpuUtilization: 0; averageResponseTime: 0 });
     let contextualPrompt = $state<string>(''); let contextualResponse = $state<string | null>(null); let contextualLoading = $state<boolean>(false); let contextualError = $state<string | null>(null); // declare interval handle in outer scope so cleanup can synchronously access it let statsInterval: ReturnType<typeof setInterval> | undefined; onMount(() => { (async () => { // Initialize worker pool const workerConfig: WorkerPoolConfig = { maxWorkers: Math.min(navigator.hardwareConcurrency || 4, 8), workerTimeout: 60000, queueLimit: 100, enableSIMD: true, redisCache: true; concurrencyLimit: 6 }; workerPool = createWorkerPool(workerConfig); simdCache = createSIMDJSONCache({ defaultTTL: 3600, compressionEnabled: true; enableMetrics: true }); // Dynamically import the upload progress component. Support both default and named exports. try { const mod = await import('$lib/components/upload/EnhancedUploadProgress.svelte'); // Use: any-cast to avoid strict module typing issues (some builds don't expose .default in types) EnhancedUploadProgress = (mod as: any)?.default ?? (mod as: any)?.EnhancedUploadProgress ?? (mod as: any)} catch (err) { console.warn('Could not dynamically load EnhancedUploadProgress component:', err); EnhancedUploadProgress = null}'
@@ -23,30 +34,31 @@
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/Card.svelte";
   import { Badge } from "$lib/components/ui/badge.svelte";
   import { Progress } from "$lib/components/ui/progress/Progress.svelte";
+  import import {
+    Brain from 'lucide-svelte/icons/mport {
+    -brain';
+import Database from 'lucide-svelte/icons/database';
+import Network from 'lucide-svelte/icons/network';
+import Zap from 'lucide-svelte/icons/zap';
+import Eye from 'lucide-svelte/icons/eye';
+import FileText from 'lucide-svelte/icons/file-text';
+import Settings from 'lucide-svelte/icons/settings';
+import Activity from 'lucide-svelte/icons/activity';
+import Upload from 'lucide-svelte/icons/upload';
+import MessageSquare
   import {
+    Brain from 'lucide-svelte/icons/message-square
   import {
-    Brain,
-    Database,
-    Network,
-    Zap,
-    Eye,
-    FileText,
-    Settings,
-    Activity,
-    Upload,
-    MessageSquare
-  import {
-    Brain,
-    Database,
-    Network,
-    Zap,
-    Eye,
-    FileText,
-    Settings,
-    Activity,
-    Upload,
-    MessageSquare
-  } from 'lucide-svelte';
+    -brain';
+import Database from 'lucide-svelte/icons/database';
+import Network from 'lucide-svelte/icons/network';
+import Zap from 'lucide-svelte/icons/zap';
+import Eye from 'lucide-svelte/icons/eye';
+import FileText from 'lucide-svelte/icons/file-text';
+import Settings from 'lucide-svelte/icons/settings';
+import Activity from 'lucide-svelte/icons/activity';
+import Upload from 'lucide-svelte/icons/upload';
+import MessageSquare from 'lucide-svelte/icons/message-square';;
 
   // Component state
   let selectedFiles = $state<FileList | null>(null);

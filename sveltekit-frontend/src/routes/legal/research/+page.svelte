@@ -196,7 +196,7 @@ import type { Document } from '$lib/types';
         url: '/legal/documents/frcp-26-b-1'
       }, {
         id: '3',
-        title: 'Legal, Brief: Motion for Summary Judgment Template',
+        title: 'Legal: Brief: Motion for Summary Judgment Template',
         citation: 'Practice Guide Ch. 7',
         fullCitation: 'Federal Practice Guide, Chapter 7: Summary Judgment Motions (2023)',
         court: 'Practice Guide',

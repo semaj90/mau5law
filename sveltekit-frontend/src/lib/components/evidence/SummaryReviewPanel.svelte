@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isApproving = false } = $props();
+
 
   export let summaryId: string;
   export let holding: string;
@@ -13,7 +14,7 @@
     keywords: string[];
   }) => void;
   export let onReject: () => void;
-  export let isApproving = false;
+  
 
   let editedHolding = holding;
   let editedReasoning = reasoning;

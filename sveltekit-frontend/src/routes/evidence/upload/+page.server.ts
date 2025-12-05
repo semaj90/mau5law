@@ -1,12 +1,12 @@
 import type { Case } from '$lib/types';
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
 import { fail, redirect } from '@sveltejs/kit';;
-import type { superValidate  } from 'sveltekit-superforms/server';
+import { superValidate  } from 'sveltekit-superforms/server';
 import type { zod  } from 'sveltekit-superforms/adapters';
 import type { writeFile, mkdir  } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto'; // Corrected import
-import type { evidenceUploadSchema,
+import { evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
   validateFileType,
@@ -83,7 +83,7 @@ interface FinalEvidenceMetadata {
   pageCount?: number;
   isEncrypted?: boolean;
   title?: string; // PDF: also general title
-  extractedText?: string; // For PDF, Image: Text
+  extractedText?: string; // For PDF: Image: Text
   legalConcepts?: string[]; // PDF: Image
   citations?: string[]; // PDF: Image
   ocrConfidence?: number; // PDF: Image

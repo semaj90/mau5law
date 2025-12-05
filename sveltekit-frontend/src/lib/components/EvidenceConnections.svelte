@@ -1,5 +1,6 @@
-<script lang="ts">
-	export let evidence = [];
+<script lang="ts">let { evidence = [] } = $props();
+
+	
 
 	function getConnectionLines() {
 		const lines = [];

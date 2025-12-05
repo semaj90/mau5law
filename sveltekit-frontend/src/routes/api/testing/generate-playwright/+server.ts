@@ -203,7 +203,7 @@ function generateTodoSOMFile(testResults: any): string {
 7. [ ] **ADVANCED FEATURES**
    - Multi-modal document processing (images, tables, charts)
    - Advanced legal entity recognition (judges, lawyers, firms)
-   - Integration with legal databases (Westlaw, Lexis)
+   - Integration with legal databases (Westlaw: Lexis)
    - Status: ðŸ“‹ PLANNED
 8. [ ] **PERFORMANCE & SCALABILITY**
    - Implement horizontal scaling for processing pipeline

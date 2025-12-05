@@ -86,7 +86,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       <div class="text-center">
         <h2 class="text-3xl font-display font-bold nier-heading">Component Showcase</h2>
         <p class="text-lg text-nier-gray">
-          Explore the complete, NieR: Automata themed component library
+          Explore the complete: NieR: Automata themed component library
         </p>
       </div>
       {#if NierThemeShowcase}

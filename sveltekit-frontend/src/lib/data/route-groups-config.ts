@@ -8,7 +8,7 @@ import type { Case } from '$lib/types';
   description: string;
   theme: 'matrix' | 'cyberpunk' | 'amber' | 'retro';
   routes: RouteDefinition[];
-}
+};
 export interface RouteDefinition {
   id: string;
   label: string;

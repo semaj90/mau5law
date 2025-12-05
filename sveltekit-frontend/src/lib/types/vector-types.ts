@@ -9,7 +9,7 @@ export interface VectorSimilarityRequest {
   algorithm?: 0 | 1 | 2 | 3; // Algorithm selector for batch ops
   useCUDA?: boolean;
   parallel?: boolean;
-}
+};
 export interface VectorSimilarityResponse {
   success: boolean;
   result?: number | number[];
@@ -33,7 +33,7 @@ export interface EmbeddingRequest {
   chunkOverlap?: number;
   batchSize?: number;
   minioUrl?: string; // For large document processing
-}
+};
 export interface EmbeddingResponse {
   success: boolean;
   embeddings: number[][];
@@ -107,7 +107,7 @@ export interface SearchResult {
   similarity: number;
   metadata?: unknown;
   embedding?: number[];
-}
+};
 export interface VectorSearchResponse {
   success: boolean;
   results: SearchResult[];
@@ -130,7 +130,7 @@ export interface ChunkingRequest {
   chunkOverlap?: number;
   preserveParagraphs?: boolean;
   extractMetadata?: boolean;
-}
+};
 export interface ChunkingResponse {
   success: boolean;
   chunks: string[];
@@ -151,7 +151,7 @@ export interface RAGChunkingOptions {
   useSemanticChunking?: boolean;
   minChunkSize?: number;
   maxChunkSize?: number;
-}
+};
 export interface LegalDocumentMetadata {
   case: {
     id: string;
@@ -199,7 +199,7 @@ export interface PerformanceMetrics {
   parallelWorkers: number;
   flops?: number; // Floating point operations count
   throughput?: number; // operations per second
-}
+};
 export interface VectorOperationResult<T> {
   success: boolean;
   result: T;
@@ -235,7 +235,7 @@ export interface WasmVectorModule {
   freeVectorMemory: (ptr: number) => void;
   getMemoryStats: () => number;
   benchmarkOperation: (operation: number, dataSize: number, iterations: number) => number;
-}
+};
 export type VectorOperation = 'similarity' | 'embedding' | 'search' | 'matrix' | 'chunk';
 export type SimilarityAlgorithm = 'cosine' | 'euclidean' | 'dot' | 'manhattan';
 export type MatrixOperationType =

@@ -47,4 +47,4 @@ export interface DocStatusInfo {
   embeddedCount: number;
   totalChunks?: number;
   totalVectors?: number;
-}
+};

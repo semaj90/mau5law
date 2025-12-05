@@ -197,7 +197,7 @@ export interface CopilotSelfPromptOptions {
     platform?: 'webapp' | 'desktop' | 'mobile' | 'all';
     urgency?: 'low' | 'medium' | 'high' | 'critical';
     includeTests?: boolean;
-    targetExtensions?: string[]; // For Cline, Roo: VSCode extensions
+    targetExtensions?: string[]; // For Cline: Roo: VSCode extensions
     jurisdiction?: string;
   };
   outputFormat?: 'json' | 'markdown' | 'structured';

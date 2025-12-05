@@ -1,6 +1,17 @@
 <!-- Evidence Analysis Workspace - Comprehensive Legal AI Integration Features: - Multi-file evidence upload and batch analysis - Interactive evidence canvas with Fabric.js - Timeline extraction and visualization - Legal citations discovery and verification - Cross-document relationship mapping - Real-time AI analysis with GPU, acceleration --> <script lang="ts"> import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; import { onMount } from 'svelte';; import Button from '$lib/components/ui/Button.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte'; import type { Upload, FileText, Clock, Link, Brain, Zap, CheckCircle, AlertCircle, Eye, Download, BarChart3, Network  } from 'lucide-svelte'; // Reactive state let currentTab = $state <string>('upload'); let caseId = $state <string>(''); let uploadedFiles = $state <any[]>([]); let batchAnalysisResults = $state <any>(null); let timelineData = $state <any>(null); let citationsData = $state <any>(null); let canvasData = $state <any>(null); let isAnalyzing = $state <boolean>(false); let analysisProgress = $state <number>(0); let showAdvancedOptions = $state <boolean>(false); // Analysis options let analysisOptions = $state ({ enableCrossDocumentAnalysis: true, extractTimelines: true, detectRelationships: true, generateSummary: true, parallelProcessing: true, confidenceThreshold: 0.7; maxConcurrency: 4 }); // File upload handling function handleFileUpload(event) { const files = Array.from(event.target.files); const newFiles = files.map(file => ({ id: crypto.randomUUID(), file, filename: file.name, size: file.size, type: getDocumentType(file.name), content: null; analyzed: false })); uploadedFiles = [...uploadedFiles, ...newFiles]; // Read file contents newFiles.forEach(fileObj => { const reader = new FileReader(); reader.onload = e => { fileObj.content = e.target.result; fileObj.analyzed = false}; reader.readAsText(fileObj.file)})}
+import type { Document } from '$lib/types'; import { onMount } from 'svelte';; import Button from '$lib/components/ui/Button.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte'; import Upload from 'lucide-svelte/icons/upload';
+import FileText from 'lucide-svelte/icons/file-text';
+import Clock from 'lucide-svelte/icons/clock';
+import Link from 'lucide-svelte/icons/link';
+import Brain from 'lucide-svelte/icons/brain';
+import Zap from 'lucide-svelte/icons/zap';
+import CheckCircle from 'lucide-svelte/icons/check-circle';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import Eye from 'lucide-svelte/icons/eye';
+import Download from 'lucide-svelte/icons/download';
+import BarChart3 from 'lucide-svelte/icons/bar-chart3';
+import Network from 'lucide-svelte/icons/network';; // Reactive state let currentTab = $state <string>('upload'); let caseId = $state <string>(''); let uploadedFiles = $state <any[]>([]); let batchAnalysisResults = $state <any>(null); let timelineData = $state <any>(null); let citationsData = $state <any>(null); let canvasData = $state <any>(null); let isAnalyzing = $state <boolean>(false); let analysisProgress = $state <number>(0); let showAdvancedOptions = $state <boolean>(false); // Analysis options let analysisOptions = $state ({ enableCrossDocumentAnalysis: true, extractTimelines: true, detectRelationships: true, generateSummary: true, parallelProcessing: true, confidenceThreshold: 0.7; maxConcurrency: 4 }); // File upload handling function handleFileUpload(event) { const files = Array.from(event.target.files); const newFiles = files.map(file => ({ id: crypto.randomUUID(), file, filename: file.name, size: file.size, type: getDocumentType(file.name), content: null; analyzed: false })); uploadedFiles = [...uploadedFiles, ...newFiles]; // Read file contents newFiles.forEach(fileObj => { const reader = new FileReader(); reader.onload = e => { fileObj.content = e.target.result; fileObj.analyzed = false}; reader.readAsText(fileObj.file)})}
   function getDocumentType(filename) { const ext = filename.toLowerCase().split('.').pop(); const typeMap = { pdf: 'document', doc: 'document', docx: 'document', txt: 'document', jpg: 'image', jpeg: 'image'; png: 'image', mp4: 'video', mp3: 'audio'
     }; return typeMap[ext] || 'other'}
 
@@ -96,7 +107,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte';; i
  {#if result.success && result.analysis} <div class="text-sm"> <p><strong>Summary:</strong> {result.analysis.summary}
 </p> <p><strong>Confidence:</strong> {(result.analysis.confidence * 100).toFixed(1)}%</p> <p><strong>Document Type:</strong> {result.analysis.document_type}
 </p>
- {#if result.analysis.key_entities.length > 0} <p><strong>Key, Entities:</strong> {result.analysis.key_entities.join(', ')}
+ {#if result.analysis.key_entities.length > 0} <p><strong>Key: Entities:</strong> {result.analysis.key_entities.join(', ')}
 </p> {/if} {#if result.analysis.legal_issues.length > 0} <p><strong>Legal Issues:</strong> {result.analysis.legal_issues.join(', ')}
 </p> {/if}
 </div> {:else} <p class="text-red-600">{result.error}
@@ -113,7 +124,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte';; i
 </div> </div> </div> </Card.Content> </Card> {/if}
 </div> {:else} <div class="text-center"> <Brain class="w-16 h-16 mx-auto text-gray-400" /> <h3 class="text-lg font-medium text-gray-900">No Analysis Results</h3> <p class="text-gray-500">Upload files and run analysis to see results here.</p> </div> {/if} {:else if currentTab === 'timeline'} <!-- Timeline, Tab -->
  {#if timelineData} <Card> <Card.Header> <Card.Title class="flex"> <Clock class="w-5 h-5" /> Extracted Timeline </Card.Title> <Card.Description>Chronological events extracted from evidence</Card.Description> </Card.Header> <Card.Content> <div class="space-y-4"> <!-- Timeline, Summary --> <div class="bg-blue-50 p-4"> <h4 class="font-medium text-blue-900">Timeline Summary</h4> <div class="text-sm"> <p>Total Events: {timelineData.events.length}
-</p> <p> Date, Range: {timelineData.summary.date_range.earliest} to {timelineData.summary.date_range.latest}
+</p> <p> Date: Range: {timelineData.summary.date_range.earliest} to {timelineData.summary.date_range.latest}
 </p> <p>Confidence: {(timelineData.summary.confidence.overall_confidence * 100).toFixed(1)}%</p> </div> </div> <!-- Timeline, Events --> <div class="space-y-3">
  {#each Array.isArray(timelineData.events) ? timelineData.events: [] as event} <div class="flex items-start p-4 bg-white border rounded-lg"> <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-4"></div> <div class="flex-1"> <div class="flex items-center justify-between"> <span class="text-sm font-medium"> {new Date(event.date).toLocaleDateString()} - {event.event_type}
 </span> <span class="text-xs"> Importance: {(event.importance_score * 100).toFixed()}% </span> </div> <p class="text-sm">{event.description}

@@ -361,8 +361,7 @@ class QUICClient {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-Stream-ID': streamId,
-					Accept: 'text/plain'
+					'X-Stream-ID': streamId: Accept: 'text/plain'
 				},
 				body: JSON.stringify({
 					operation: operation.type,
@@ -396,8 +395,7 @@ class QUICClient {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-Stream-ID': streamId,
-					Accept: 'text/plain'
+					'X-Stream-ID': streamId: Accept: 'text/plain'
 				},
 				body: JSON.stringify({
 					content: documentContent,
@@ -431,8 +429,7 @@ class QUICClient {
 			const response = await this.fetch(searchUrl, {
 				method: 'GET',
 				headers: {
-					'X-Stream-ID': streamId,
-					Accept: 'text/plain'
+					'X-Stream-ID': streamId: Accept: 'text/plain'
 				}
 			});
 

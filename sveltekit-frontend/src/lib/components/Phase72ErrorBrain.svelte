@@ -8,32 +8,35 @@
 	import { onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 
-	export let routePath: string | null = null;
-	export let onClose: () => void = () => {};
+	const { routePath = null, onClose = () => {} } = $props<{
+		routePath?: string | null;
+		onClose?: () => void;
+	}>();
 
 	interface Phase72Error {
 		id: string;
 		error_hash: string;
+		error_code: string;
 		file_path: string;
-		line: number;
-		col: number;
-		code: string;
+		line_num: number;
+		column_num: number;
+		occurrence_count: number;
 		message: string;
 		severity: string;
-		cycle: number;
-		created_at: string;
+		last_seen: string;
+		cycle?: number;
+		created_at?: string;
 	}
 
-	interface ErrorStats {
-		code: string;
-		count: number;
-		first_seen: string;
-		last_seen: string;
+	interface StatsSummary {
+		total_errors: number;
+		unique_codes: number;
+		affected_files: number;
+		total_occurrences: number;
 	}
 
 	let errors: Phase72Error[] = [];
-	let stats: ErrorStats[] = [];
-	let total = 0;
+	let stats: StatsSummary | null = null;
 	let loading = true;
 	let selectedError: Phase72Error | null = null;
 	let similarErrors: any[] = [];
@@ -52,8 +55,7 @@
 			const data = await response.json();
 
 			errors = data.errors || [];
-			stats = data.stats || [];
-			total = data.total || 0;
+			stats = data.stats || null;
 		} catch (err) {
 			console.error('Failed to load errors:', err);
 		} finally {
@@ -124,7 +126,7 @@
 		}
 	}
 
-	function selectError(error: Error) {
+	function selectError(error: Phase72Error) {
 		selectedError = error;
 		showSimilar = false;
 		aiSuggestion = '';

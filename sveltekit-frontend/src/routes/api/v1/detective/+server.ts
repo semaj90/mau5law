@@ -1,4 +1,4 @@
-import type { cuidSchema  } from '$lib/server/z-schemas';
+import { cuidSchema  } from '$lib/server/z-schemas';
 /** * Detective Mode API Routes * * Endpoints: * GET /api/v1/detective - Get detective insights for cases * POST /api/v1/detective - Run detective analysis */
 import { json } from '@sveltejs/kit';
 import type { type RequestHandler } from '@sveltejs/kit';;

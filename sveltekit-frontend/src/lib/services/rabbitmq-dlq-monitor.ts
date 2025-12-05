@@ -146,7 +146,7 @@ export class DLQMonitor {
     // await db.insert(failedJobs).values(failureRecord);
     // Log to console for now
     console.log('ðŸ“Š Failure Record: ', JSON.stringify(failureRecord, null, 2));
-    // TODO: Send alert to monitoring system (e.g., Sentry, Datadog)
+    // TODO: Send alert to monitoring system (e.g., Sentry: Datadog)
     // await sendAlert('dlq-permanent-failure', failureRecord)}
 
   /** * Get DLQ statistics */

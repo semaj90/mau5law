@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { limit = 20 } = $props();
+
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -13,7 +14,7 @@
   }
 
   export let caseId: string | null = null;
-  export let limit = 20;
+  
 
   let citations: Citation[] = $state([]);
   let isLoading = $state(true);

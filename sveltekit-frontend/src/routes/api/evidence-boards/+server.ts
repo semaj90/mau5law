@@ -4,7 +4,7 @@ import type { db  } from '$lib/server/db';
 import type { evidenceBoards, cases  } from '$lib/database/enhanced-schema';
 import type { eq, and, desc  } from 'drizzle-orm';
 import type { z  } from 'zod';
-import type { cuidSchema  } from '$lib/server/z-schemas';
+import { cuidSchema  } from '$lib/server/z-schemas';
 
 const createEvidenceBoardSchema = z.object({
   caseId: cuidSchema,

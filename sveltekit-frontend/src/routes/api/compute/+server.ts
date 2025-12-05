@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';;
 import type { db  } from '$lib/server/db';
-import type { createClient  } from 'redis';
+import { createClient  } from 'redis';
 import type { nanoid  } from 'nanoid';
 import type { vectorOutbox, vectorJobs, vectors  } from '$lib/server/db/schema-postgres.js';
 import type { eq  } from 'drizzle-orm';

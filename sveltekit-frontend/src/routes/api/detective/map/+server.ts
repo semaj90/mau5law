@@ -77,8 +77,7 @@ export async function GET({ url }) {
         color: getEvidenceColor(e.status || 'new'),
         size: getEvidenceSize(e.evidenceType || 'document')
       })),
-      cases: caseRows,
-      POIs: persons.map(p => ({
+      cases: caseRows: POIs: persons.map(p => ({
         ...p,
         type: 'poi',
         color: getPOIColor(p.priority || 'normal'),

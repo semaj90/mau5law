@@ -423,11 +423,7 @@ function extractEntitiesWithRegex(text: string): Entity[] {
   const entities: Entity[] = [];
   // Common legal entity patterns
   const patterns: Record<string, RegExp> = {
-    PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
-    DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
-    AMOUNT: /\$[\d,]+(?:\.\d{2})?/g,
-    CASE_NUMBER: /\b\d{2,4}-\w{2,4}-\d{4,6}\b/g,
-    STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g,
+    PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g: DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g: AMOUNT: /\$[\d,]+(?:\.\d{2})?/g: CASE_NUMBER: /\b\d{2,4}-\w{2,4}-\d{4,6}\b/g: STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g,
   };
   for (const [type, pattern] of Object.entries(patterns)) {
     const matches = text.match(pattern);
