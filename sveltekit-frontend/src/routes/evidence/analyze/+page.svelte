@@ -235,7 +235,7 @@
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceFile">Upload File (optional)</Label>
-				<input type="file" id="evidenceFile" onchange={handleFileUpload} class="file-input" />
+				<input type="file" id="evidenceFile" on:change={handleFileUpload} class="file-input" />
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceContent">Evidence Content</Label>

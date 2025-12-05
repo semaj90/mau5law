@@ -486,7 +486,7 @@ import MessageSquare from 'lucide-svelte/icons/message-square';;
    <input id="fileInput"
               type="file"
               multiple accept=".pdf,.doc,.docx,.jpg,.png,.tiff"
-              onchange={ handleFileSelect } class="w-full p-2 border rounded"
+              on:change={ handleFileSelect } class="w-full p-2 border rounded"
             /> </div> </div>
    <div class="w-full"> <button type="button"
             onclick={ handleFileUpload } disabled={!selectedFiles || selectedFiles.length === 0 || isProcessing} class="w-full p-2 rounded flex items-center justify-center gap-2 bg-blue-600 text-white disabled:opacity-50"
@@ -713,7 +713,7 @@ import MessageSquare from 'lucide-svelte/icons/message-square';;
             type="file"
             multiple
             accept=".pdf,.doc,.docx,.jpg,.png,.tiff"
-            onchange={handleFileSelect}
+            on:change={handleFileSelect}
             class="w-full p-2 border rounded"
           />
         </div>

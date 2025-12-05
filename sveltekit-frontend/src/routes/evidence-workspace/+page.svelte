@@ -68,7 +68,7 @@ import Network from 'lucide-svelte/icons/network';; // Reactive state let curren
           <Eye class="w-4 h-4 inline" /> Evidence Canvas </button> </div> </div> </nav> <!-- Main, Content --> <main class="max-w-7xl mx-auto px-6">
  {#if currentTab === 'upload'} <!-- Upload and, Configuration, Tab --> <div class="grid lg:grid-cols-3"> <!-- File, Upload --> <div class="lg:col-span-2"> <Card> <Card.Header> <Card.Title class="flex"> <FileText class="w-5 h-5" /> Evidence Files </Card.Title> <Card.Description>Upload multiple evidence files for batch analysis</Card.Description> </Card.Header> <Card.Content> <div class="space-y-4"> <!-- File, Input --> <div class="border-2 border-dashed border-gray-300 rounded-lg p-6"> <input type="file"
                     multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.mp4,.mp3"
-                    onchange={ handleFileUpload } class="hidden"
+                    on:change={ handleFileUpload } class="hidden"
                     id="file-upload"
                   /> <label for="file-upload" class="cursor-pointer"> <Upload class="w-12 h-12 mx-auto text-gray-400" /> <p class="text-lg">Upload Evidence Files</p> <p class="text-gray-500">Drag & drop or click to browse</p> <p class="text-sm text-gray-400">Supports: PDF, DOC, TXT, Images, Audio, Video</p> </label> </div> <!-- Uploaded Files, List -->
  {#if uploadedFiles.length > 0} <div class="space-y-2"> <h4 class="font-medium">Uploaded Files ({uploadedFiles.length})</h4>

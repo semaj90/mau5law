@@ -21,7 +21,7 @@
 </script>
 
 {#if show && currentSuggestion}
-  <div class="modal-overlay" onclick={closeModal} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeModal(); }} role="button" tabindex="0">
+  <div class="modal-overlay" onclick={closeModal} on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeModal(); }} role="button" tabindex="0">
     <div class="modal-content" onclick={(e) => e.stopPropagation()} role="dialog">
       <!-- Modal Header -->
       <div class="modal-header">

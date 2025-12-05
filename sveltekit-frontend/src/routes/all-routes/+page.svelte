@@ -234,7 +234,7 @@
 						onclick={() => openDetectiveBoard(route)}
 						role="button"
 						tabindex="0"
-						onkeydown={(e) => e.key === 'Enter' && openDetectiveBoard(route)}
+						on:keydown={(e) => e.key === 'Enter' && openDetectiveBoard(route)}
 					>
 						<td class="route-path">{route.path}</td>
 						<td class="route-category">

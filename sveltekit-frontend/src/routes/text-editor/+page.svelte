@@ -95,7 +95,7 @@ function handleShare() {
         type="text"
         class="document-title-input"
         bind:value={documentTitle}
-        oninput={() => (isModified = true)}
+        on:input={() => (isModified = true)}
       />
       <span class="save-status">
         {#if lastSaved}
@@ -135,7 +135,7 @@ function handleShare() {
     <div class="editor-card">
       {#if EditorComponent}
         <EditorComponent bind:value={editorValue}
-          oninput={() => /> (isModified = true)}
+          on:input={() => /> (isModified = true)}
           class="editor-content"
         />
       {:else}

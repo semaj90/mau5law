@@ -187,7 +187,7 @@
           onclick={() => navigateToCase(caseItem.id)}
           role="link"
           tabindex="0"
-          onkeydown={(e) => {
+          on:keydown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               navigateToCase(caseItem.id);
             }

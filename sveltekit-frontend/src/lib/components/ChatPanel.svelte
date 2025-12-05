@@ -131,14 +131,14 @@ import Send from 'lucide-svelte/icons/send';;
   <footer class="p-3 border-t border-beige flex items-center gap-2">
     <label class="cursor-pointer opacity-70 hover:opacity-100">
       <Paperclip class="w-5 h-5" />
-      <input type="file" class="hidden" onchange={handleFile} />
+      <input type="file" class="hidden" on:change={handleFile} />
     </label>
 
     <input
       class="flex-1 bg-noir border border-beige p-2 text-sm"
       placeholder="Write message…"
       bind:value={text}
-      onkeydown={(e)=>e.key==='Enter' && sendMessage()} />
+      on:keydown={(e)=>e.key==='Enter' && sendMessage()} />
 
     <button class="px-3 py-2 border border-beige text-sm hover:bg-beige hover:text-noir" onclick={sendMessage}>
       <Send class="w-4 h-4" />

@@ -169,7 +169,7 @@
 </script>
 
     <div class="mode-selector">
-      <select bind:value={boardMode} onchange={(e) => changeMode(e.target.value as BoardMode)} class="mode-selector">
+      <select bind:value={boardMode} on:change={(e) => changeMode(e.target.value as BoardMode)} class="mode-selector">
         <option value="grid">Grid Mode</option>
         <option value="free">Free Mode</option>
         <option value="magnetic">Magnetic AI</option>

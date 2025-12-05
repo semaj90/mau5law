@@ -87,7 +87,7 @@ import ZoomOut from 'lucide-svelte/icons/zoom-out';;
             alt={currentPhoto.originalName}
             class="max-w-full max-h-full object-contain transition-transform duration-200"
             style="transform: scale({zoomLevel})"
-            onkeydown={(e) => {
+            on:keydown={(e) => {
               if (e.key === 'ArrowLeft') prevPhoto();
               if (e.key === 'ArrowRight') nextPhoto();
               if (e.key === '+') zoomIn();

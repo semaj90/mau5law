@@ -73,7 +73,7 @@
   <!-- Case Phase -->
   <div class="control-section">
     <h4>Case Phase</h4>
-    <select bind:value={currentPhase} onchange={handlePhaseChange}>
+    <select bind:value={currentPhase} on:change={handlePhaseChange}>
       {#each phases as phase}
         <option value={phase}>{phase.charAt(0).toUpperCase() + phase.slice(1)}</option>
       {/each}

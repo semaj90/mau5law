@@ -429,7 +429,7 @@ const statusColors = {
         <DialogTitle>Create New POI</DialogTitle>
         <DialogDescription>Fill in the details for the new Person of Interest.</DialogDescription>
       </DialogHeader>
-      <form onsubmit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
+      <form on:submit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />
@@ -497,7 +497,7 @@ const statusColors = {
         <DialogTitle>Edit POI</DialogTitle>
         <DialogDescription>Update the details for {selectedPoi?.name}.</DialogDescription>
       </DialogHeader>
-      <form onsubmit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
+      <form on:submit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />

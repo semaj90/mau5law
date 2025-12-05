@@ -353,7 +353,7 @@
       </div>
       <form
         class="space-y-4"
-        onsubmit={(e) => {
+        on:submit={(e) => {
           e.preventDefault();
           handleCreateCase(e as SubmitEvent);
         }}

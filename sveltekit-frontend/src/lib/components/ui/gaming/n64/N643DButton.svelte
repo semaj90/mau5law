@@ -58,8 +58,8 @@
   type="button"
   {disabled}
   onclick={handleClick}
-  onmouseenter={() => isHovered = true}
-  onmouseleave={() => isHovered = false}
+  on:mouseenter={() => isHovered = true}
+  on:mouseleave={() => isHovered = false}
   class="
     relative overflow-hidden rounded-lg font-bold uppercase tracking-wider
     bg-gradient-to-br {variantStyles[variant]}

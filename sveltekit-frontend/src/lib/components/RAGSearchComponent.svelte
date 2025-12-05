@@ -63,7 +63,7 @@
             </div>
         {/if}
     </header>
-   <!-- Search, Interface --> <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border"> <div class="space-y-4"> <!-- Search, Input --> <div class="flex"> <InputBits bind:value={ searchQuery } onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && performSearch()} placeholder="Search legal documents and cases..."
+   <!-- Search, Interface --> <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border"> <div class="space-y-4"> <!-- Search, Input --> <div class="flex"> <InputBits bind:value={ searchQuery } on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && performSearch()} placeholder="Search legal documents and cases..."
             label="Legal Document Search"
             variant="outlined"
             inputSize="lg"

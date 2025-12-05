@@ -410,7 +410,7 @@
           class="yorha-terminal-input"
           placeholder="Enter command..."
           bind:value={currentInput}
-          onkeydown={handleKeydown}
+          on:keydown={handleKeydown}
           disabled={isExecuting}
         />
       </div>

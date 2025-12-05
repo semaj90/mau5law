@@ -228,7 +228,7 @@ import Terminal from 'lucide-svelte/icons/terminal';;
     <div
       class="yorha-overlay"
       onclick={closeSidebar}
-      onkeydown={handleSidebarKeydown}
+      on:keydown={handleSidebarKeydown}
       role="button"
       tabindex="0"
       aria-label="Close sidebar overlay"
@@ -248,7 +248,7 @@ import Terminal from 'lucide-svelte/icons/terminal';;
             aria-label="Close sidebar"
             tabindex="0"
             onclick={closeSidebar}
-            onkeydown={handleSidebarKeydown}
+            on:keydown={handleSidebarKeydown}
           >
             <ChevronLeft size={16} />
           </button>

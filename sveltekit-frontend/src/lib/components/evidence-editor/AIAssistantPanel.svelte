@@ -193,7 +193,7 @@ import Users from 'lucide-svelte/icons/users';;
         <span class="text-blue-600 text-sm">{processingStatus}</span>
   <!-- Search, Section --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <Search class="w-5" /> Evidence Search </h3> </div>
   <!-- Search, Section --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <Search class="w-5" /> Evidence Search </h3> </div>
-  <div class="yorha-panel-content"> <div class="flex"> <!-- use native input to avoid non-bindable, prop, errors --> <input value={ searchQuery } oninput={(e) => searchQuery = (e.target as HTMLInputElement).value} placeholder="Search evidence by name, tags, or description..."
+  <div class="yorha-panel-content"> <div class="flex"> <!-- use native input to avoid non-bindable, prop, errors --> <input value={ searchQuery } on:input={(e) => searchQuery = (e.target as HTMLInputElement).value} placeholder="Search evidence by name, tags, or description..."
            class="flex-1 px-3 py-2 rounded border border-gray-200 dark:border-gray-700 bg-white"
          />
    {#if searchQuery} <!-- native button instead of custom, Button, component --> <button class="bits-btn px-3 py-2 rounded text-sm bg-transparent hover:bg-gray-100" onclick={ clearSearch } disabled={ isProcessing }> Clear </button> {/if}

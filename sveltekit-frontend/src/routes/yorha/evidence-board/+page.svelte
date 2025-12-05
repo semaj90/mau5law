@@ -803,7 +803,7 @@
 				<textarea
 					id="metadata-notes"
 					value={inspectorTarget.metadata.notes ?? ''}
-					oninput={(event) => updateMetadataNotes(inspectorTarget.id, (event.target as HTMLTextAreaElement).value)}
+					on:input={(event) => updateMetadataNotes(inspectorTarget.id, (event.target as HTMLTextAreaElement).value)}
 					placeholder="Add investigator notes..."
 				></textarea>
 			{/if}

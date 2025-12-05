@@ -181,7 +181,7 @@
             <Input
               id="victimName"
               value={statement.victimName}
-              oninput={(e) => statement.victimName = e.target.value}
+              on:input={(e) => statement.victimName = e.target.value}
               placeholder="Full name of the victim"
             />
           <div class="form-group">
@@ -189,7 +189,7 @@
             <Input
               id="victimContact"
               value={statement.victimContact}
-              oninput={(e) => statement.victimContact = e.target.value}
+              on:input={(e) => statement.victimContact = e.target.value}
               placeholder="Phone, email, or address"
             />
           </div>
@@ -204,21 +204,21 @@
               id="incidentDate"
               type="date"
               value={statement.incidentDate}
-              oninput={(e) => statement.incidentDate = e.target.value}
+              on:input={(e) => statement.incidentDate = e.target.value}
             />
           <div class="form-group">
             <label for="incidentLocation">Location:</label>
             <Input
               id="incidentLocation"
               value={statement.incidentLocation}
-              oninput={(e) => statement.incidentLocation = e.target.value}
+              on:input={(e) => statement.incidentLocation = e.target.value}
               placeholder="Where did the incident occur?"
             />
           <div class="form-group">
             <label for="incidentDescription">Description:</label>
             <Textarea
               value={statement.incidentDescription}
-              oninput={(e) => statement.incidentDescription = e.target.value}
+              on:input={(e) => statement.incidentDescription = e.target.value}
               placeholder="Detailed description of what happened"
               rows={6}
             />
@@ -250,7 +250,7 @@
             <label for="emotionalImpact">Emotional Impact:</label>
             <Textarea
               value={statement.emotionalImpact}
-              oninput={(e) => statement.emotionalImpact = e.target.value}
+              on:input={(e) => statement.emotionalImpact = e.target.value}
               placeholder="How has this affected you emotionally?"
               rows={4}
             />
@@ -258,7 +258,7 @@
             <label for="physicalImpact">Physical Impact:</label>
             <Textarea
               value={statement.physicalImpact}
-              oninput={(e) => statement.physicalImpact = e.target.value}
+              on:input={(e) => statement.physicalImpact = e.target.value}
               placeholder="Any physical effects or injuries?"
               rows={4}
             />
@@ -266,7 +266,7 @@
             <label for="financialImpact">Financial Impact:</label>
             <Textarea
               value={statement.financialImpact}
-              oninput={(e) => statement.financialImpact = e.target.value}
+              on:input={(e) => statement.financialImpact = e.target.value}
               placeholder="Any financial losses or costs incurred?"
               rows={4}
             />

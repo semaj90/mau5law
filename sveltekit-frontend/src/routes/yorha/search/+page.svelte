@@ -181,7 +181,7 @@
               type="text"
               placeholder="Search across cases, evidence, persons, and documents..."
               bind:value={searchQuery}
-              onkeydown={handleKeyDown}
+              on:keydown={handleKeyDown}
             />
           </div>
           <div class="search-btn">

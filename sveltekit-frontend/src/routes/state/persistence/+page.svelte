@@ -163,7 +163,7 @@ function getMachineDisplayName(machineId: string) {
                 role="button"
                 tabindex="0"
                 onclick={() => (selectedState = selectedState?.id === state.id ? null : state)}
-                onkeydown={(e) => {
+                on:keydown={(e) => {
                   // Activate on Enter or Space for keyboard users if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectedState = selectedState?.id === state.id ? null: state}
                 }}
               >
