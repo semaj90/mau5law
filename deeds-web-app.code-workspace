@@ -88,7 +88,7 @@
     "powershell.cwd": "Main Project",
     "powershell.codeFormatting.avoidSemicolonsAsLineTerminators": true,
     "powershell.developer.editorServicesWaitForDebugger": true,
-    "chat.agent.thinking.collapsedTools": "readOnly",
+    "chat.agent.thinking.collapsedTools": "all",
     "editor.inlineSuggest.edits.showCollapsed": false,
     "editor.inlineSuggest.showToolbar": "onHover",
     "notebook.diff.experimental.toggleInline": false,
@@ -98,6 +98,9 @@
     "github.copilot.chat.languageContext.inline.typescript.enabled": true,
     "github.copilot.chat.editor.temporalContext.enabled": true,
     "github.copilot.chat.languageContext.typescript.enabled": true,
+    "chat.customAgentInSubagent.enabled": true,
+    "chat.useNestedAgentsMdFiles": true,
+    "inlineChat.accessibleDiffView": "off",
   },
 
   "extensions": {

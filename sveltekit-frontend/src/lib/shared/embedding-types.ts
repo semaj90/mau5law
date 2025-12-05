@@ -6,4 +6,4 @@ export interface QuantizedEmbedding {
 export interface EmbeddingResult {
   float32: Float32Array;
   quant: QuantizedEmbedding;
-}
+};

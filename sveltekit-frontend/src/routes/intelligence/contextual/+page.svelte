@@ -1,5 +1,21 @@
 <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { page  } from '$app/state'; // Headless components from our enhanced architecture import type { HeadlessDialog  } from '$lib/headless'; import  OptimisticList, type Item  from "$lib/headless/OptimisticList.svelte"; import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte'; import type { LoadingButton  } from '$lib/headless'; import type { FormField  } from '$lib/headless'; // Enhanced UI components import * as Card from '$lib/components/ui/Card.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Progress from '$lib/components/ui/progress/Progress.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; // Icons import type { Brain, Network, Zap, Eye, Target, TrendingUp, Activity, FileSearch, MessageSquare, BarChart3, Users, Clock, Cpu, Database, Search, AlertCircle, CheckCircle  } from 'lucide-svelte'; // Intelligence data interfaces interface IntelligenceMetric { id: string, name: string, value: number; trend: 'up' | 'down' | 'stable'; confidence: number; lastUpdate: Date}
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { page  } from '$app/state'; // Headless components from our enhanced architecture import type { HeadlessDialog  } from '$lib/headless'; import  OptimisticList, type Item  from "$lib/headless/OptimisticList.svelte"; import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte'; import type { LoadingButton  } from '$lib/headless'; import type { FormField  } from '$lib/headless'; // Enhanced UI components import * as Card from '$lib/components/ui/Card.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Progress from '$lib/components/ui/progress/Progress.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; // Icons import Brain from 'lucide-svelte/icons/brain';
+import Network from 'lucide-svelte/icons/network';
+import Zap from 'lucide-svelte/icons/zap';
+import Eye from 'lucide-svelte/icons/eye';
+import Target from 'lucide-svelte/icons/target';
+import TrendingUp from 'lucide-svelte/icons/trending-up';
+import Activity from 'lucide-svelte/icons/activity';
+import FileSearch from 'lucide-svelte/icons/file-search';
+import MessageSquare from 'lucide-svelte/icons/message-square';
+import BarChart3 from 'lucide-svelte/icons/bar-chart3';
+import Users from 'lucide-svelte/icons/users';
+import Clock from 'lucide-svelte/icons/clock';
+import Cpu from 'lucide-svelte/icons/cpu';
+import Database from 'lucide-svelte/icons/database';
+import Search from 'lucide-svelte/icons/search';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import CheckCircle from 'lucide-svelte/icons/check-circle';; // Intelligence data interfaces interface IntelligenceMetric { id: string, name: string, value: number; trend: 'up' | 'down' | 'stable'; confidence: number; lastUpdate: Date}
   interface ContextualInsight { id: string; type: 'pattern' | 'anomaly' | 'prediction' | 'recommendation'; title: string, description: string, confidence: number, relevance: number, timestamp: Date; sources: string[]}
   interface ProcessingTask { id: string, name: string; status: 'pending' | 'processing' | 'completed' | 'failed'; progress: number, estimatedTime?: number;, context: { [key: string]: unknown } }
 

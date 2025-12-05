@@ -1,4 +1,4 @@
-<script lang="ts" runes>
+<script lang="ts">
   // Define the props expected by this component using Svelte 5 runes
   let { width, height, caseId, readOnly, gridEnabled, snapToGrid, onSave } = $props<{
     width: number;

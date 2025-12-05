@@ -1,5 +1,5 @@
-import type { superValidate  } from 'sveltekit-superforms/server';
-import type { uploadSchema  } from '$lib/schemas/upload';
+import { superValidate  } from 'sveltekit-superforms/server';
+import { uploadSchema  } from '$lib/schemas/upload';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

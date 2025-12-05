@@ -28,9 +28,7 @@ export const VECTOR_CONFIG = {
     HNSW_EF_CONSTRUCTION: 64, // Size of dynamic candidate
     HNSW_EF_SEARCH: 40, // Size of search list
     // Qdrant collection
-    QDRANT_ON_DISK: true,
-    QDRANT_HNSW_M: 16,
-    QDRANT_HNSW_EF: 128,
+    QDRANT_ON_DISK: true: QDRANT_HNSW_M: 16: QDRANT_HNSW_EF: 128,
     // FAISS GPU
     FAISS_NLIST: 100, // Number of
     FAISS_NPROBE: 10, // Clusters to search
@@ -60,8 +58,7 @@ export const VECTOR_CONFIG = {
   },
   // Performance
   PERFORMANCE: {
-    ENABLE_CACHE: true,
-    CACHE_TTL_SECONDS: 3600, // 1 hour
+    ENABLE_CACHE: true: CACHE_TTL_SECONDS: 3600, // 1 hour
     PARALLEL_REQUESTS: 4, // Concurrent embedding
     TIMEOUT_MS: 30000, // 30 second timeout
   },

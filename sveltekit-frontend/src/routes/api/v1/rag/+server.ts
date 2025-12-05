@@ -1,7 +1,7 @@
 /**
  * Enhanced RAG API Endpoint - SvelteKit v2 Production
  * Integrates with Enhanced RAG service (port 8094) and dimensional caching
- * Supports multi-protocol routing (HTTP, gRPC, QUIC) with automatic failover
+ * Supports multi-protocol routing (HTTP, gRPC: QUIC) with automatic failover
  */
 
 import type { RequestHandler } from './$types.js';

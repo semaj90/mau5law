@@ -12,11 +12,11 @@ export interface DocumentProcessingJob {
   content: string;
   options: unknown;
   metadata: Record<string, unknown>;
-}
+};
 export interface EmbeddingGenerationJob {
   documentId: string;
   chunks: any[0];
-}
+};
 export interface AIAnalysisJob {
   documentId: string;
   content: string;

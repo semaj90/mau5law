@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isGenerating = false } = $props();
+
   import { onMount } from 'svelte';
 
   export let evidenceId: string;
@@ -8,7 +9,7 @@
   export let metadata: Record<string, unknown>;
   export let onGenerateSummary: () => void;
   export let onReject: () => void;
-  export let isGenerating = false;
+  
 
   let extractedText = '';
   let showFullText = false;

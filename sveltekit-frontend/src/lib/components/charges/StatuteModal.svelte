@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isOpen = false } = $props();
+
 
 	interface BundledCharge {
 		statuteCode: string;
@@ -8,7 +9,7 @@
 		frequency: number;
 	}
 
-	export let isOpen = false;
+	
 	export let statute: any = null;
 	export let caseId: string = '';
 	export let onClose: () => void = () => {};

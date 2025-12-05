@@ -1,8 +1,9 @@
-<script lang="ts">
+<script lang="ts">let { placeholder = 'Search statutes by code or title...', isLoading = false } = $props();
+
   import { createEventDispatcher } from 'svelte';
 
-  export let placeholder = 'Search statutes by code or title...';
-  export let isLoading = false;
+  
+  
 
   const dispatch = createEventDispatcher();
 

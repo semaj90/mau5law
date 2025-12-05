@@ -3,7 +3,7 @@ import { json, error } from '@sveltejs/kit';;
 import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
 import type { v4 as uuidv4  } from 'uuid';
-import type { RedisClientType } from 'redis';
+import { RedisClientType } from 'redis';
 import type { RequestHandler } from './$types';
 import neo4j from 'neo4j-driver'; // Add Neo4j driver import
 
@@ -706,7 +706,7 @@ async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string):
   const NEO4J_USER = process.env.NEO4J_USER || 'neo4j';
   const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || 'password';
 
-  const driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD));
+  const driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER: NEO4J_PASSWORD));
   let session;
 
   try {

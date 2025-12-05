@@ -2,7 +2,12 @@
   import type { Document } from '$lib/types';
   import type { browserRAG  } from '$lib/ai/browser-rag-chain';
   import { onMount } from 'svelte';;
-  import type { Database, Lock, Zap, FileText, MessageSquare, AlertCircle  } from 'lucide-svelte';
+  import Database from 'lucide-svelte/icons/database';
+import Lock from 'lucide-svelte/icons/lock';
+import Zap from 'lucide-svelte/icons/zap';
+import FileText from 'lucide-svelte/icons/file-text';
+import MessageSquare from 'lucide-svelte/icons/message-square';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';;
 
   // State
   let isInitialized = $state <boolean>(false);
@@ -59,7 +64,7 @@
         error = null;
       } catch (err) {
         error = `Initialization failed: ${err}`;
-        console.error('RAG Init, Error:', err);
+        console.error('RAG Init: Error:', err);
       } finally {
         isLoading = false;
       }
@@ -86,7 +91,7 @@
       duration = result.duration;
     } catch (err) {
       error = `Query failed: ${err}`;
-      console.error('Query, Error:', err);
+      console.error('Query: Error:', err);
     } finally {
       isLoading = false;
     }
@@ -114,7 +119,7 @@
       }
     } catch (err) {
       error = `Streaming failed: ${err}`;
-      console.error('Streaming, Error:', err);
+      console.error('Streaming: Error:', err);
     } finally {
       isStreaming = false;
     }

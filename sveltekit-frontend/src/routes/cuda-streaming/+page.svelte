@@ -21,10 +21,25 @@ import type { Input  } from '$lib/components/ui/input';
     formatAnalysisDate
    from "$lib/components/ui/orchestrated.svelte";
   // Icons for CUDA streaming
-  import type { Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
-    Database, Clock, BarChart3, Thermometer, Power, Memory,
-    CheckCircle, AlertCircle, Eye, Download, Upload, Layers
-   } from 'lucide-svelte';
+  import Cpu from 'lucide-svelte/icons/cpu';
+import Zap from 'lucide-svelte/icons/zap';
+import Play from 'lucide-svelte/icons/play';
+import Square from 'lucide-svelte/icons/square';
+import Settings from 'lucide-svelte/icons/settings';
+import TrendingUp from 'lucide-svelte/icons/trending-up';
+import Activity from 'lucide-svelte/icons/activity';
+import Database from 'lucide-svelte/icons/database';
+import Clock from 'lucide-svelte/icons/clock';
+import BarChart3 from 'lucide-svelte/icons/bar-chart3';
+import Thermometer from 'lucide-svelte/icons/thermometer';
+import Power from 'lucide-svelte/icons/power';
+import Memory from 'lucide-svelte/icons/memory';
+import CheckCircle from 'lucide-svelte/icons/check-circle';
+import AlertCircle from 'lucide-svelte/icons/alert-circle';
+import Eye from 'lucide-svelte/icons/eye';
+import Download from 'lucide-svelte/icons/download';
+import Upload from 'lucide-svelte/icons/upload';
+import Layers from 'lucide-svelte/icons/layers';;
   let { data, form }: { data: PageData;, form: ActionData } = $props ();
   // Svelte, 5 runes for CUDA streaming state
   let selectedOperation = $state <string>('document_vectorization');

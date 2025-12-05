@@ -1,4 +1,4 @@
-import type { cuidSchema  } from '$lib/server/z-schemas';
+import { cuidSchema  } from '$lib/server/z-schemas';
 import type { evidence  } from '$lib/server/db/schema-unified';
 import { error, fail } from '@sveltejs/kit';;
 import type { helpers  } from '$lib/server/db';

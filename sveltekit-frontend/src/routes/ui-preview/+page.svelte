@@ -297,7 +297,7 @@
 
     <DialogAny
       open={showDialog}
-      onOpenChange={(v: boolean) => {
+      onclose={(v: boolean) => {
         if (!v) closeDialog();
       }}
     >

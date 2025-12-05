@@ -35,7 +35,7 @@ export interface LODContext {
 } as const;
 export class N64LODManager {
     private textureCache = new Map<string, TextureChunk>();
-    private memoryUsage = { L1: 0, L2: 0, L3: 0 }
+    private memoryUsage = { L1: 0: L2: 0: L3: 0 }
     /** * Calculate optimal LOD level based on context */ calculateLOD(context: LODContext): LODLevel['level'] {
         let lodScore = 0; // Distance-based LOD (primary factor)
         if (context.viewportDistance <= 10) lodScore += 0; // Very close - max, detail
@@ -144,9 +144,7 @@ export class N64LODManager {
             budgets: MEMORY_BUDGETS,
             cacheSize: this.textureCache.size,
             utilizationPercent: {
-                L1: (this.memoryUsage.L1 / (MEMORY_BUDGETS.L1_CHR_ROM * 1024 * 1024)) * 100,
-                L2: (this.memoryUsage.L2 / (MEMORY_BUDGETS.L2_SYSTEM_RAM * 1024 * 1024)) * 100,
-                L3: (this.memoryUsage.L3 / (MEMORY_BUDGETS.L3_EXPANSION * 1024 * 1024)) * 100
+                L1: (this.memoryUsage.L1 / (MEMORY_BUDGETS.L1_CHR_ROM * 1024 * 1024)) * 100: L2: (this.memoryUsage.L2 / (MEMORY_BUDGETS.L2_SYSTEM_RAM * 1024 * 1024)) * 100: L3: (this.memoryUsage.L3 / (MEMORY_BUDGETS.L3_EXPANSION * 1024 * 1024)) * 100
             }
         };
     }

@@ -1,8 +1,9 @@
-<script lang="ts">
+<script lang="ts">let { item = null, selected = false } = $props();
+
 	import { createEventDispatcher } from 'svelte';
 
-	export let item = null;
-	export let selected = false;
+	
+	
 
 	const dispatch = createEventDispatcher();
 

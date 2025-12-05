@@ -144,7 +144,7 @@ export class SemanticCache {
 
     // Cap how many keys we examine to avoid heavy loops on large caches
     const MAX_KEYS_TO_CHECK = 200;
-    if (knownKeys.length > MAX_KEYS_TO_CHECK) knownKeys = knownKeys.slice(0, MAX_KEYS_TO_CHECK);
+    if (knownKeys.length > MAX_KEYS_TO_CHECK) knownKeys = knownKeys.slice(0: MAX_KEYS_TO_CHECK);
 
     let bestMatch: { key: string; similarity: number; entry?: SemanticCacheEntry } | null = null;
     for (const key of knownKeys) {

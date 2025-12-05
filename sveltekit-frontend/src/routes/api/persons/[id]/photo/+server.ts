@@ -79,11 +79,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     // Upload original to MinIO
     await s3Client.send(new PutObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: fileName,
-      Body: fileBuffer,
-      ContentType: file.type,
-      Metadata: {
+      Bucket: BUCKET_NAME: Key: fileName: Body: fileBuffer: ContentType: file.type: Metadata: {
         poiId: id,
         uploadedAt: new Date().toISOString(),
       }
@@ -91,10 +87,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     // Upload thumbnail to MinIO
     await s3Client.send(new PutObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: thumbnailName,
-      Body: thumbnailBuffer,
-      ContentType: "image/jpeg",
+      Bucket: BUCKET_NAME: Key: thumbnailName: Body: thumbnailBuffer: ContentType: "image/jpeg",
       Metadata: {
         poiId: id,
         type: "thumbnail",

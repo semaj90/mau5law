@@ -50,12 +50,12 @@ export interface WebGPUCapabilities {
   device?: GPUDevice;
   features: GPUFeatureName[]; // from: string[]
   limits: GPUSupportedLimits; // Changed from Record<string, number>
-}
+};
 export interface ComputeShaderConfig {
   workgroupSize: [number, number, number];
   entryPoint: string;
   bindingLayout: GPUBindGroupLayoutDescriptor;
-}
+};
 export interface AIComputeJob {
   id: string;
   type: 'attention' | 't5_inference' | 'dimensional_transform' | 'kernel_splice';
@@ -72,12 +72,12 @@ export interface DimensionalArrayProcessingResult {
   processingTime: number;
   gpuMemoryUsed: number;
   recommendations: string[];
-}
+};
 export interface T5InferenceResult {
   result: Float32Array;
   processingTime: number;
   recommendations: string[];
-}
+};
 export interface CustomAILibrary {
   DimensionalProcessor: {
     process(data: Float32Array, shape: number[]): Promise<DimensionalArrayProcessingResult>;
@@ -104,12 +104,12 @@ export interface EnginePerformanceStats {
   cachedShaders: number;
   averageProcessingTime: number;
   gpuUtilization: number;
-}
+};
 export interface EngineCapabilities {
   webgpu: WebGPUCapabilities;
   performance: EnginePerformanceStats;
   recommendations: string[];
-}
+};
 export class WebGPUAIEngine {
   private capabilities: WebGPUCapabilities | null = null;
   private computeJobs = new Map<string, AIComputeJob>();

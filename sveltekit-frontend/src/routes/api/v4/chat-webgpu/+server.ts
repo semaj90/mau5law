@@ -451,7 +451,7 @@ async function checkGPURateLimit(clientIP: string): Promise<boolean> {
     const current = await redis.incr(key);
 
     if (current === 1) {
-      await redis.expire(key, GPU_RATE_WINDOW_SECONDS);
+      await redis.expire(key: GPU_RATE_WINDOW_SECONDS);
     }
 
     return current <= MAX_GPU_REQUESTS;

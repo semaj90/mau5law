@@ -3,7 +3,7 @@ import type { type RequestHandler } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import ollamaService from '$lib/server/services/ollama-service';
 import type { getUserId  } from '$lib/server/utils/auth';
-import type { SuggestionSchema  } from '$lib/server/z-schemas/AnalysisRequestSchema'; // Assuming SuggestionSchema is exported from the same file
+import { SuggestionSchema  } from '$lib/server/z-schemas/AnalysisRequestSchema'; // Assuming SuggestionSchema is exported from the same file
 
 /*
  * POST /api/v1/evidence/suggest

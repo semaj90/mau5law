@@ -5,7 +5,7 @@
   string;
   lastCheck?: Date;
   responseTime?: number;
-}
+};
 export interface SystemHealth {
   overall: 'healthy' | 'degraded' | 'down';
   services: ServiceStatus[];

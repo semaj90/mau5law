@@ -10,7 +10,7 @@ export interface GamingThemeState {
   soundEnabled: boolean;
   particleEffects: boolean;
   retroShaders: boolean;
-}
+};
 export interface ProgressiveGamingConfig {
   defaultEra: GamingEra;
   enableAutoEvolution: boolean;
@@ -47,7 +47,7 @@ export interface GamingComponentProps {
   style?: string;
   [key, string];
   any;
-}
+};
 export interface N64RenderingOptions {
   textureQuality: 'low' | 'medium' | 'high' | 'ultra';
   enableBilinearFiltering: boolean;
@@ -58,7 +58,7 @@ export interface N64RenderingOptions {
   enableShadows: boolean;
   enableReflections: boolean;
   shadowMapSize: 256 | 512 | 1024 | 2048;
-}
+};
 export interface NESColorPalette {
   background: string[];
   sprites: string[];
@@ -71,7 +71,7 @@ export interface NESColorPalette {
   blue?: string;
   green?: string;
   yellow?: string;
-}
+};
 export interface SNESColorPalette {
   background: string[];
   sprites: string[];
@@ -80,7 +80,7 @@ export interface SNESColorPalette {
   black?: string;
   white?: string;
   darkGray?: string;
-}
+};
 export interface GamepadState {
   connected: boolean;
   id: string;

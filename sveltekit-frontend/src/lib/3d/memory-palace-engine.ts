@@ -8,7 +8,7 @@ export interface MemoryRoom {
   size: [number, number, number];
   color: string;
   texture?: string;
-}
+};
 export interface LegalDocument {
   id: string;
   title: string;
@@ -18,21 +18,21 @@ export interface LegalDocument {
   priority: number;
   position: [number, number, number];
   embedding?: Float32Array;
-}
+};
 export interface Camera {
   position: [number, number, number];
   target: [number, number, number];
   fov: number;
   near: number;
   far: number;
-}
+};
 export interface PalaceSettings {
   renderDistance: number;
   lodLevels: number;
   textureResolution: number;
   memoryBudgetMB: number;
   consolePalette: string;
-}
+};
 export class MemoryPalaceEngine {
   private canvas: HTMLCanvasElement;
   private gl: WebGL2RenderingContext;

@@ -115,12 +115,12 @@ history: 'GET /api/v1/test?action=history'
 },
 testSuites: [
 'full - Complete system integration test',
-'core - Core services only (RAG, Upload, Document)',
+'core - Core services only (RAG: Upload: Document)',
 'api - API endpoints and routing',
 'services - Go microservices health'
 ],
 features: [
-'Multi-Protocol Testing (HTTP, gRPC, QUIC, WebSocket)',
+'Multi-Protocol Testing (HTTP, gRPC: QUIC: WebSocket)',
 'Service Health Validation',
 'API Endpoint Verification',
 'Database Connection Testing',

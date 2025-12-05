@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';;
-import type { JSONSchema7 } from 'json-schema';
-import type { message, superValidate  } from 'sveltekit-superforms';
+import { JSONSchema7 } from 'json-schema';
+import { message, superValidate  } from 'sveltekit-superforms';
 // rename adapter import to avoid collision with zod library
 import type { zod as zodAdapter  } from 'sveltekit-superforms/adapters';
 import type { z  } from 'zod';

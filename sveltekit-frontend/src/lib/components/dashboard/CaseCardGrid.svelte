@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isLoading = false } = $props();
+
   import { goto } from '$app/navigation';
 
   export interface Case {
@@ -11,7 +12,7 @@
   }
 
   export let cases: Case[] = [];
-  export let isLoading = false;
+  
 
   const getPendingCount = (caseItem: Case) => {
     return caseItem.evidence.filter((e) => e.status === 'pending').length;

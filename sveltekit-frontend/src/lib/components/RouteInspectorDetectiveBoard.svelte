@@ -32,7 +32,7 @@
 	};
 
 	// ✅ plain props, no runes here
-	let { open = false, route = null } = $props<{
+	let { open = $bindable(false), route = null } = $props<{
 		open?: boolean;
 		route?: RouteDetail | null;
 	}>();

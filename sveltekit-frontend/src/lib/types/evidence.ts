@@ -230,4 +230,4 @@ export interface AnalysisUpdate {
   autoTags?: string[];
   progress?: number;
   stage?: string;
-}
+};

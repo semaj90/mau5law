@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Step 2: Upload to MinIO
 		// Pass MINIO_ACCESS_KEY and MINIO_SECRET_KEY to the function
-		const minioResult = await uploadToMinIO(file, MINIO_ACCESS_KEY, MINIO_SECRET_KEY);
+		const minioResult = await uploadToMinIO(file: MINIO_ACCESS_KEY: MINIO_SECRET_KEY);
 		if (!minioResult.success) {
 			return json(
 				{ success: false, error: `MinIO upload failed: ${minioResult.error}` },

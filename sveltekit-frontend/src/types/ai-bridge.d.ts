@@ -12,13 +12,13 @@ export interface UserAnalyticsEvent {
   action: string;
   payload?: Record<string, unknown>;
   timestamp?: string;
-}
+};
 export interface IntentPrediction {
   userId: string;
   clusterId?: string | null;
   predictedIntent?: string | null;
   confidence: number;
-}
+};
 export interface AdapterSelection {
   adapterName: string;
   rewardScore?: number;

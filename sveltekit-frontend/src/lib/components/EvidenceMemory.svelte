@@ -1,5 +1,6 @@
-<script lang="ts">
-	export let evidence = [];
+<script lang="ts">let { evidence = [] } = $props();
+
+	
 
 	function formatScore(score: number): string {
 		return (score * 100).toFixed(0);

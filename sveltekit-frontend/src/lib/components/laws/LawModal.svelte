@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts">let { isOpen = false } = $props();
+
 
 	interface BundledCharge {
 		citation: string;
@@ -15,7 +16,7 @@
 		relevance: number;
 	}
 
-	export let isOpen = false;
+	
 	export let statute: any = null;
 	export let onClose: () => void = () => {};
 	export let onAttachToCase: (statute: any) => void = () => {};

@@ -71,7 +71,7 @@
       type: 'Contract'
     },
     {
-      content: `INCIDENT REPORT - Case #2024-CR-1892, Date: March 8, 2024 Location: 1425 Oak Street, Downtown District Reporting Officer: Detective Sarah Johnson SUMMARY: Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500. EVIDENCE COLLECTED: - Fingerprints from window frame - Footprint impressions in garden - Security camera footage from neighboring property - Witness statements from two neighbors. SUSPECTS: Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
+      content: `INCIDENT REPORT - Case #2024-CR-1892: Date: March 8, 2024 Location: 1425 Oak Street, Downtown District Reporting Officer: Detective Sarah Johnson SUMMARY: Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500. EVIDENCE COLLECTED: - Fingerprints from window frame - Footprint impressions in garden - Security camera footage from neighboring property - Witness statements from two neighbors. SUSPECTS: Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       description: 'Criminal incident report for analysis',
       type: 'Incident Report'
     }

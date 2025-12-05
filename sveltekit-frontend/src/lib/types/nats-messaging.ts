@@ -85,7 +85,7 @@ export interface NATSConnectionStatus {
   bytes_out?: number;
   msgs_in?: number;
   msgs_out?: number;
-}
+};
 export interface ConnectionInfo {
   server_id: string;
   server_name: string;
@@ -109,7 +109,7 @@ export interface SubscriptionOptions {
   max_deliver?: number;
   rate_limit_bps?: number;
   sample_frequency?: number;
-}
+};
 export interface Subscription {
   subject: string;
   queue_group?: string;
@@ -126,14 +126,14 @@ export interface MessageBatch {
   batch_id: string;
   created_at: string;
   total_size_bytes: number;
-}
+};
 export interface ProcessingResult {
   success: boolean;
   processed_count: number;
   error_count: number;
   processing_time_ms: number;
   errors?: ProcessingError[];
-}
+};
 export interface ProcessingError {
   message_id: string;
   error_type: string;
@@ -152,7 +152,7 @@ export interface MessageMetrics {
   connection_uptime: number;
   last_message_time: string | null;
   error_count: number;
-}
+};
 export interface PerformanceMetrics {
   throughput: {
     messages_per_second: number;
@@ -196,7 +196,7 @@ export interface StreamInfo {
   cluster?: ClusterInfo;
   mirror?: MirrorInfo;
   sources?: SourceInfo[];
-}
+};
 export interface StreamState {
   messages: number;
   bytes: number;
@@ -208,39 +208,39 @@ export interface StreamState {
   num_deleted: number;
   lost?: LostStreamData;
   consumers: number;
-}
+};
 export interface ClusterInfo {
   name?: string;
   leader?: string;
   replicas?: PeerInfo[];
-}
+};
 export interface PeerInfo {
   name: string;
   current: boolean;
   offline?: boolean;
   active: number;
   lag?: number;
-}
+};
 export interface MirrorInfo {
   name: string;
   lag: number;
   active: number;
   external?: ExternalStream;
-}
+};
 export interface SourceInfo {
   name: string;
   lag: number;
   active: number;
   external?: ExternalStream;
-}
+};
 export interface ExternalStream {
   api: string;
   deliver?: string;
-}
+};
 export interface LostStreamData {
   msgs?: number[];
   bytes: number;
-}
+};
 export interface ConsumerInfo {
   stream_name: string;
   name: string;
@@ -253,7 +253,7 @@ export interface ConsumerInfo {
   num_waiting: number;
   num_pending: number;
   cluster?: ClusterInfo;
-}
+};
 export interface DeliveryInfo {
   consumer_seq: number;
   stream_seq: number;
@@ -263,7 +263,7 @@ export interface NATSEvent {
   type: NATSEventType;
   timestamp: string;
   data: MessageData;
-}
+};
 export type NATSEventType =
   | 'connected'
   | 'disconnected'
@@ -288,7 +288,7 @@ export interface CaseEventData {
   created_by: string;
   updated_by?: string;
   metadata?: Record<string, unknown>;
-}
+};
 export interface DocumentEventData {
   document_id: string;
   case_id?: string;
@@ -300,7 +300,7 @@ export interface DocumentEventData {
   processing_status: 'uploaded' | 'processing' | 'processed' | 'indexed' | 'failed';
   extracted_text?: string;
   metadata?: Record<string, unknown>;
-}
+};
 export interface AIAnalysisEventData {
   analysis_id: string;
   case_id?: string;
@@ -317,7 +317,7 @@ export interface AIAnalysisEventData {
   processing_time_ms: number;
   gpu_used?: boolean;
   error_message?: string;
-}
+};
 export interface ChatEventData {
   message_id: string;
   session_id: string;
@@ -328,7 +328,7 @@ export interface ChatEventData {
   attachments?: string[];
   is_streaming?: boolean;
   streaming_complete?: boolean;
-}
+};
 export interface SearchEventData {
   query_id: string;
   user_id: string;
@@ -338,7 +338,7 @@ export interface SearchEventData {
   results?: SearchResult[];
   total_results?: number;
   processing_time_ms?: number;
-}
+};
 export interface SearchFilters {
   case_ids?: string[];
   document_types?: string[];
@@ -365,7 +365,7 @@ export interface WorkQueue {
   processing_messages: number;
   completed_messages: number;
   failed_messages: number;
-}
+};
 export interface WorkItem {
   id: string;
   queue_name: string;
@@ -386,23 +386,23 @@ export interface RequestOptions {
   priority?: MessagePriority;
   correlation_id?: string;
   reply_to?: string;
-}
+};
 export interface PublishOptions {
   expect?: ExpectedStream | ExpectedLastSeq | ExpectedLastMsgId;
   msg_id?: string;
   headers?: Record<string, string>;
   timeout_ms?: number;
-}
+};
 export interface ExpectedStream {
   name: string;
   seq?: number;
-}
+};
 export interface ExpectedLastSeq {
   stream_seq: number;
-}
+};
 export interface ExpectedLastMsgId {
   msg_id: string;
-}
+};
 export interface MessageAck {
   ack(): void;
   nak(delay?: number): void;
@@ -428,7 +428,7 @@ export interface MessageFlow {
   avg_latency_ms: number;
   error_rate: number;
   last_activity: string;
-}
+};
 export interface SubjectMetrics {
   subject: string;
   messages_published: number;
@@ -439,7 +439,7 @@ export interface SubjectMetrics {
   active_consumers: number;
   last_published: string | null;
   last_consumed: string | null;
-}
+};
 export interface ConnectionMetrics {
   client_connections: number;
   total_connections: number;

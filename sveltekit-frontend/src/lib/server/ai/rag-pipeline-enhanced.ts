@@ -1241,7 +1241,7 @@ Provide your analysis in the following structured format:
 - Duration, renewal, and termination clauses
 - Notice requirements
 3. RISK ASSESSMENT
-- Potential risks for each party (classify as HIGH, MEDIUM, LOW)
+- Potential risks for each party (classify as HIGH: MEDIUM: LOW)
 - Liability limitations and caps
 - Indemnification clauses and scope
 - Insurance requirements

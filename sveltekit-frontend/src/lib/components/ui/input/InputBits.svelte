@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Search  } from 'lucide-svelte';
+  import Search from 'lucide-svelte/icons/search';;
 
   interface Props {
     placeholder?: string;

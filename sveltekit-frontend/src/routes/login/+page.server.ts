@@ -1,10 +1,10 @@
-import type { LoginSchema as loginSchema  } from '$lib/schemas/auth';
-import type { db  } from '$lib/server/db/client';
-import type { users  } from '$lib/server/db/schema-postgres';
-import type { eq  } from 'drizzle-orm';
-import type { createUserSession, setSessionCookie, verifyPassword  } from '$lib/server/lucia';
-import { fail, redirect } from '@sveltejs/kit';;
-import type { superValidate  } from 'sveltekit-superforms/server';
+import { loginSchema } from '$lib/schemas/auth';
+import { db } from '$lib/server/db/client';
+import { users } from '$lib/server/db/schema-postgres';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
+import { fail, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
+import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 // Replace load to accept the full event and pass it to superValidate
@@ -53,9 +53,9 @@ export const actions: Actions = {
           .where(eq(users.email, email as string)) // Use eq directly
           .limit(1);
       } catch (e: unknown) {
-      } catch (e: unknown) {
         console.error('[Login] DB select failed: ', e);
         return fail(500, { form, message: 'Login failed (db error). Please try again.' });
+      }
       if (!Array.isArray(existingUser) || existingUser.length === 0) {
         return fail(400, { form, message: 'Incorrect email or password' });
       }

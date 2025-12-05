@@ -1,5 +1,6 @@
-<script lang="ts">
-	export let result = null;
+<script lang="ts">let { result = null } = $props();
+
+	
 
 	function formatScore(score) {
 		return (score * 100).toFixed(1);

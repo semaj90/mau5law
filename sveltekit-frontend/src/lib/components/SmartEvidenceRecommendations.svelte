@@ -1,10 +1,15 @@
-<script lang="ts">
+<script lang="ts">let { evidenceId } = $props();
+
 	// Migrated from createEventDispatcher to callback props;
-	import type { Brain, TriangleAlert, CircleCheck, Lightbulb, Target  } from 'lucide-svelte';
+	import Brain from 'lucide-svelte/icons/brain';
+import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
+import CircleCheck from 'lucide-svelte/icons/circle-check';
+import Lightbulb from 'lucide-svelte/icons/lightbulb';
+import Target from 'lucide-svelte/icons/target';;
 	import type { Recommendation } from '$lib/types/recommendation'; // Import the interface
 
 	/** @type {string} */
-	export let evidenceId;
+	
 	/** @type {string | undefined} */
 	let { caseId = undefined } = $props();
 	/** @type {any[]} */

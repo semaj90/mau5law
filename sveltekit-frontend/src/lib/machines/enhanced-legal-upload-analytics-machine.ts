@@ -17,7 +17,7 @@ export interface UploadContext {
   authSession?: AuthSession;
   dbConnection?: DatabaseConnection;
   ollamaConfig?: OllamaConfig;
-}
+};
 export interface LegalContext {
   practiceArea?: string;
   caseType?: string;
@@ -25,7 +25,7 @@ export interface LegalContext {
   jurisdiction?: string;
   clientId?: string;
   matterNumber?: string;
-}
+};
 export interface AIAnalysisResult {
   fileId: string;
   fileName: string;
@@ -39,20 +39,20 @@ export interface AIAnalysisResult {
   relevanceScore: number;
   suggestedTags: string[];
   riskFactors: string[];
-}
+};
 export interface EntityExtraction {
   type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'legal_term';
   value: string;
   confidence: number;
   startPos: number;
   endPos: number;
-}
+};
 export interface Citation {
   type: 'case' | 'statute' | 'regulation';
   citation: string;
   relevance: number;
   jurisdiction: string;
-}
+};
 export interface EvidenceMetadata {
   fileId: string;
   chain_of_custody: ChainOfCustodyEntry[];
@@ -60,38 +60,38 @@ export interface EvidenceMetadata {
   source: string;
   acquisition_date: string;
   authenticity_verified: boolean;
-}
+};
 export interface ChainOfCustodyEntry {
   timestamp: string;
   actor: string;
   action: string;
   details: string;
-}
+};
 export interface RiskAssessment {
   level: 'low' | 'medium' | 'high' | 'critical';
   factors: string[];
   privilegedMaterialDetected: boolean;
   redactionRequired: boolean;
   ethicalConcerns: string[];
-}
+};
 export interface AuthSession {
   userId: string;
   role: 'paralegal' | 'associate' | 'senior' | 'partner' | 'admin';
   permissions: string[];
   barNumber?: string;
   firmId: string;
-}
+};
 export interface DatabaseConnection {
   connected: boolean;
   lastSync: string;
   pendingOperations: number;
-}
+};
 export interface OllamaConfig {
   endpoint: string;
   model: string;
   connected: boolean;
   capabilities: string[];
-}
+};
 export interface UserAnalytics {
   userId: string;
   sessionId: string;
@@ -128,7 +128,7 @@ export interface ClickPattern {
   timestamp: number;
   element: string;
   legalContext?: string;
-}
+};
 export interface ContextualPrompt {
   id: string;
   content: string;
@@ -138,7 +138,7 @@ export interface ContextualPrompt {
   relevance: number;
   actionable: boolean;
   legalSpecific: boolean;
-}
+};
 export interface UploadResult {
   fileName: string;
   success: boolean;
@@ -481,7 +481,7 @@ export interface LegalInsights {
   legalExpertise: string;
   workflowOptimization: string;
   recommendations: string[];
-}
+};
 export function generateUserInsights(context: UploadContext): LegalInsights {
   const analytics = context.userAnalytics;
   const engagementScore = calculateUserEngagementScore(context);

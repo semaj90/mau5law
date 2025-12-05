@@ -1,7 +1,8 @@
-<script lang="ts">
+<script lang="ts">let { person } = $props();
+
   import type { Dialog  } from 'bits-ui/components/ui/dialog';
 
-  export let person;
+  
   let aiOpen = $state(false);
   let aiSummary = $state("…");
 

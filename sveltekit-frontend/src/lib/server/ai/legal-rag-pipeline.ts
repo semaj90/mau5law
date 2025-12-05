@@ -1,4 +1,4 @@
-import type { RedisClientType } from 'redis';
+import { RedisClientType } from 'redis';
 
 /** Ollama endpoint helper shared across services */
 export function getOllamaEndpoint(): string {

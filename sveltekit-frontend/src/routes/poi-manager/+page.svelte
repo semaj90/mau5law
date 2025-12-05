@@ -6,7 +6,12 @@ import Select from '$lib/components/ui/Select.svelte';
 import Textarea from '$lib/components/ui/Textarea.svelte';
 import { cn } from '$lib/utils.js';
 import { toast } from '$lib/utils/toast';
-import { Edit, Funnel as Filter, Grid3x3 as Grid, List, Plus, Trash2 } from 'lucide-svelte';
+import Edit from 'lucide-svelte/icons/edit';
+import Funnel as Filter from 'lucide-svelte/icons/funnel as -filter';
+import Grid3x3 as Grid from 'lucide-svelte/icons/grid3x3 as -grid';
+import List from 'lucide-svelte/icons/list';
+import Plus from 'lucide-svelte/icons/plus';
+import Trash2 from 'lucide-svelte/icons/trash2';;
 import { onMount } from 'svelte';
 
 interface PhysicalDescription {

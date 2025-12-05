@@ -1,4 +1,4 @@
-<script lang="ts" runes>
+<script lang="ts">
   import type { User } from '$lib/types';
   import type { PageData } from './$types';
   import { onMount } from 'svelte';;

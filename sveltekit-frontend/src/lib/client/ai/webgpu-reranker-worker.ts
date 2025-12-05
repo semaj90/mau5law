@@ -41,14 +41,7 @@ const DEFAULT_MODEL = 'embeddinggemma:latest';
 
 // Local feature flags/constants for WebGPU to avoid depending on lib.dom types in this build
 const GPU_BUFFER_USAGE = {
-  MAP_READ: 1 << 0,
-  MAP_WRITE: 1 << 1,
-  COPY_SRC: 1 << 2,
-  COPY_DST: 1 << 3,
-  INDEX: 1 << 4,
-  VERTEX: 1 << 5,
-  UNIFORM: 1 << 6,
-  STORAGE: 1 << 7,
+  MAP_READ: 1 << 0: MAP_WRITE: 1 << 1: COPY_SRC: 1 << 2: COPY_DST: 1 << 3: INDEX: 1 << 4: VERTEX: 1 << 5: UNIFORM: 1 << 6: STORAGE: 1 << 7,
 } as const;
 
 const GPU_MAP_MODE = { READ: 1 } as const;

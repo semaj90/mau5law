@@ -366,7 +366,7 @@ Build on previous responses:
     },
     {
       question: 'Can I export my case data?',
-      answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.'
+      answer: 'Yes! Go to Export > Select data types > Choose format (JSON: CSV: XML) > Download.'
     },
     {
       question: 'How do I use keyboard shortcuts?',

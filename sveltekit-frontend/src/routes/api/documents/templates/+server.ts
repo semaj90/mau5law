@@ -86,9 +86,9 @@ Respectfully submitted,
 This contract shall be governed by the laws of [Jurisdiction].
 ## Signatures
 **[Party 1 Name]**
-Signature: _________________________, Date: __________
+Signature: _________________________: Date: __________
 **[Party 2 Name]**
-Signature: _________________________, Date: __________
+Signature: _________________________: Date: __________
 `,
     documentType: 'contract',
     tags: ['contract', 'template'],

@@ -4,7 +4,7 @@ export interface EmbeddingResponse {
   model: string;
   prompt_tokens?: number;
   total_duration?: number;
-}
+};
 export interface GenerateResponse {
   response: string;
   model: string;
@@ -17,7 +17,7 @@ export interface GenerateResponse {
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-}
+};
 export interface OllamaModel {
   name: string;
   size: number;
@@ -71,7 +71,7 @@ export interface RAGResult {
   score: number;
   relevance: string;
   highlights?: string[];
-}
+};
 export interface RAGSearchResponse {
   results: RAGResult[];
   query: string;
@@ -94,7 +94,7 @@ export interface LegalCase {
   assignedTo?: string[];
   dueDate?: Date;
   tags?: string[];
-}
+};
 export interface Evidence {
   id: string;
   caseId: string;
@@ -128,7 +128,7 @@ export interface ChainOfCustodyEntry {
   notes?: string;
   ipAddress?: string;
   userAgent?: string;
-}
+};
 export interface LegalDocument {
   id: string;
   caseId: string;
@@ -145,7 +145,7 @@ export interface LegalDocument {
   createdAt: Date;
   processedAt?: Date;
   embeddingDimension?: number; // Added for clarity on embedding dimension in legal documents
-}
+};
 export interface LegalEntity {
   id: string;
   type: 'person' | 'organization' | 'location' | 'date' | 'monetary' | 'legal_reference';
@@ -184,11 +184,11 @@ export interface User {
   createdAt: Date;
   lastLogin?: Date;
   isActive: boolean;
-}
+};
 export interface Permission {
   resource: string;
   actions: ('read' | 'write' | 'delete' | 'admin')[];
-}
+};
 export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
   language: string;
@@ -231,7 +231,7 @@ export interface ValidationError {
   message: string;
   code: string;
   value?: unknown;
-}
+};
 export interface ApiError {
   code: string;
   message: string;
@@ -364,7 +364,7 @@ export interface BaseComponentProps {
   class?: string;
   id?: string;
   'data-testid'?: string;
-}
+};
 export interface DialogProps extends BaseComponentProps {
   open?: boolean;
   title?: string;

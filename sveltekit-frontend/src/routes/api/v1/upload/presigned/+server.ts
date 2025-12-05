@@ -1,4 +1,4 @@
-import type { cuidSchema  } from '$lib/server/z-schemas';
+import { cuidSchema  } from '$lib/server/z-schemas';
 import { json } from '@sveltejs/kit';;
 import type { z  } from 'zod';
 import type { Client  } from 'minio';
@@ -78,8 +78,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
     // Generate a simple presigned PUT URL. Avoid passing a broken options block here.
     const presignedUrl = await minioClient.presignedPutObject(
       BUCKET_NAME,
-      minioPath,
-      UPLOAD_EXPIRY
+      minioPath: UPLOAD_EXPIRY
     );
 
     // Create document record in database
