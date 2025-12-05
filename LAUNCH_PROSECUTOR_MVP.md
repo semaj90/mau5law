@@ -191,7 +191,7 @@ All tests must pass:
 **Solution:**
 ```bash
 # Check PostgreSQL is running
-psql -U legal_admin -d legal_ai -c "SELECT 1"
+psql -U legal_admin -d legal_ai_db -c "SELECT 1"
 
 # If not running, start PostgreSQL
 # Windows: services.msc → PostgreSQL → Start
@@ -262,9 +262,9 @@ Once all tests pass:
    - Real AI integration (replace mocks)
    - PDF export for reports
    - Mobile responsive design
-   - Real-time collaboration
    - Advanced search
    - Audit logging
+  - Real-time collaboration
 
 3. **Production Deployment:**
    - Set production DATABASE_URL

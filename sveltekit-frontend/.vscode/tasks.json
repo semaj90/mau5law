@@ -2,6 +2,137 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Phase 14: Apply env + Phase 6 core check",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Copy-Item ../.env.phase14 .env -Force; npm run phase6:core"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 14 env sync + Phase 6 core validation (10 machines + routes)",
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"label": "Dev: QUIC (Phase 14 env)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Copy-Item ../.env.phase14 .env -Force; npm run dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"detail": "Start dev server with Phase 14 env (auto-sync)",
+			"problemMatcher": {
+				"owner": "vite",
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "ready in"
+				},
+				"pattern": {
+					"regexp": "."
+				}
+			}
+		},
+		{
+			"label": "Phase 6: Core (machines + pages)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"phase6:core"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 6 – Core Routes & Machines: TypeScript + Svelte-check on 10 routes + 10 machines only",
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-stylish"
+			]
+		},
+		{
+			"label": "Dev: Core routes only",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev:quic"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"detail": "Start dev server for testing core routes (http://localhost:5173)",
+			"problemMatcher": {
+				"pattern": {
+					"regexp": "^([^\\s].*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "ready in"
+				}
+			}
+		},
+		{
 			"label": "Phase52: Clean & Verify",
 			"type": "shell",
 			"command": "powershell",

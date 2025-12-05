@@ -1,15 +1,19 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import {
-  prosecutorCases as cases,
-  prosecutorEvidence as evidence,
-  prosecutorCasePersons as casePersons,
-  prosecutorPersons as personsOfInterest,
-  prosecutorReports as reports
+    prosecutorCasePersons as casePersons,
+    prosecutorCases as cases,
+    prosecutorEvidence as evidence,
+    prosecutorPersons as personsOfInterest,
+    prosecutorReports as reports
 } from '$lib/server/db/schema-prosecutor';
-import { eq } from 'drizzle-orm';
 import { generateReportWithGemma, type ReportTemplate } from '$lib/server/llm/gemmaReports';
+import { json } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types';
+
+// Phase 14: Read AI model from environment
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
+const OLLAMA_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
 
 type GenerateBody = {
   caseId: string;
