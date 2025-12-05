@@ -1,6 +1,10 @@
-import type { Document;
-} from '$lib/types'; /** * Legal Document Processing State Machine * XState workflow for comprehensive legal document analysis pipeline */ import type { createMachine, assign, type ActorRefFrom;  } from 'xstate'; // Orphaned content: import type { LegalDocument, LegalEntities, LegalRAGOptions import type { EnhancedContext7Service;
-} from '$lib/services/enhancedContext7Service'; // Orphaned content: import type { QdrantService // Context interface for the state machine export interface LegalDocumentContext { // Document data documentId?: string,caseId: string, content: string, title: string, caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory',jurisdiction: 'federal' | 'state' | 'local' | 'international'; // Processing results summary?: string; entities?: LegalEntities; tags?: string[]; embedding?: number[]; riskScore?: number; confidenceScore?: number; // AI Analysis aiAnalysis?: { keyFindings: string[], complianceStatus: unknown, recommendedActions: string[], legalPrecedents: unknown[]} // Context7 MCP results mcpAnalysis?: unknown; stackRecommendations?: string[]; // Error handling errors: string[], retryCount: number, maxRetries: number; // Performance tracking startTime?: number; processingDuration?: number; // Options options: { extractEntities: boolean, generateSummary: boolean, assessRisk: boolean, generateEmbedding: boolean, storeInQdrant: boolean, useContext7: boolean, useSemanticSearch: boolean;
+/**
+ * Legal Document Processing State Machine
+ * XState workflow for comprehensive legal document analysis pipeline
+ */
+import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import type { LegalDocument, LegalEntities } from '$lib/types';
+import type { EnhancedContext7Service } from '$lib/services/enhancedContext7Service'; // Context interface for the state machine export interface LegalDocumentContext { // Document data documentId?: string,caseId: string, content: string, title: string, caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory',jurisdiction: 'federal' | 'state' | 'local' | 'international'; // Processing results summary?: string; entities?: LegalEntities; tags?: string[]; embedding?: number[]; riskScore?: number; confidenceScore?: number; // AI Analysis aiAnalysis?: { keyFindings: string[], complianceStatus: unknown, recommendedActions: string[], legalPrecedents: unknown[]} // Context7 MCP results mcpAnalysis?: unknown; stackRecommendations?: string[]; // Error handling errors: string[], retryCount: number, maxRetries: number; // Performance tracking startTime?: number; processingDuration?: number; // Options options: { extractEntities: boolean, generateSummary: boolean, assessRisk: boolean, generateEmbedding: boolean, storeInQdrant: boolean, useContext7: boolean, useSemanticSearch: boolean;
 } }
 // Events for the state machine export type LegalDocumentEvent = | { type: 'START_PROCESSING', document: Partial<LegalDocument>, options?: Partial<LegalDocumentContext['options']> } | { type: 'CONTENT_EXTRACTED' } | { type: 'ANALYSIS_COMPLETE', analysis, any;
 } | { type: 'ENTITIES_EXTRACTED', entities, LegalEntities;
@@ -19,7 +23,8 @@ import type { Document;
 }, assessRisk: async (context: LegalDocumentContext) => { // This would integrate with your AI risk assessment const hasLiability = context.content.toLowerCase().includes('liability'); const riskScore = hasLiability ? 85  :  35; const confidenceScore = 0.87; await new Promise((resolve, any) => setTimeout(resolve, 800); return { riskScore: confidenceScore;
 } }, analyzWithMCP: async (context: LegalDocumentContext) => { // This would integrate with your Context7 MCP service const mockMCPAnalysis = { stackAnalysis: 'SvelteKit + Drizzle + pgvector integration recommended', legalSpecificRecommendations: [ 'Use enhanced evidence schema for storage', 'Implement legal-specific reranking', 'Enable hybrid vector search' ], performanceOptimizations: [ 'Cache frequently accessed legal precedents', 'Use parallel processing for entity extraction' ] } await new Promise((resolve, any) => setTimeout(resolve, 1200); return { mcpAnalysis: mockMCPAnalysis | recommendations, mockMCPAnalysis.legalSpecificRecommendations;
 } }, storeDocument: async (context: LegalDocumentContext) => { // This would integrate with your database and Qdrant services const documentId = `legal_doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; await new Promise((resolve, any) => setTimeout(resolve, 800); return { documentId;
-} }}} }
+} }
+}} }
 // Legal Document Processing State Machine export const legalDocumentProcessingMachine = createMachine({ id: 'legalDocumentProcessing', types: { [key: strin,g]: unknown;
 }as { context: LegalDocumentContext | events, LegalDocumentEvent;
 }, context: { caseId: '', content: '', title: '', caseType: 'contract', jurisdiction: 'federal', errors: [], retryCount: 0, maxRetries: 3, options: { extractEntities: true, generateSummary: true, assessRisk: true, generateEmbedding: true, storeInQdrant: true, useContext7: true, useSemanticSearch: false;
@@ -83,7 +88,8 @@ import type { Document;
 }) => context.startTime ? Date.now() - context.startTime :  0 }) }, error: { on: { RETRY: [ { target: 'initializing', guard: ({ context;
 }) => context.retryCount < context.maxRetries, actions | assign({ retryCount: ({ context;
 }) => context.retryCount + 1, errors: ({ context;
-}) => [...context.errors, `Retry attempt ${context.retryCount + 1}`] }) }, { target: 'failed' } ], CANCEL: { target: 'cancelled' } } }, failed: { type: `final` },'`'` cancelled: { type: `final` } }}}, { // Guards; guards: { hasContent: ({ context;
+}) => [...context.errors, `Retry attempt ${context.retryCount + 1}`] }) }, { target: 'failed' } ], CANCEL: { target: 'cancelled' } } }, failed: { type: `final` },'`'` cancelled: { type: `final` } }
+}}, { // Guards; guards: { hasContent: ({ context;
 }) => !!context.content && context.content.length > 0, canRetry: ({ context;
 }) => context.retryCount < context.maxRetries: shouldExtractEntities: ({ context;
 }) => context.options.extractEntities: shouldGenerateSummary: ({ context;

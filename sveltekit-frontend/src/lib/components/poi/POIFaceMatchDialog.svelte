@@ -101,18 +101,19 @@
       {:else}
         <div class="grid gap-4">
           {#each matches as match (match.poi.id)}
-            <Card
-              class="cursor-pointer hover:shadow-md transition-shadow"
-              onmousedown={() => handleSelectPOI(match.poi)}
-              role="button"
-              tabindex="0"
-              on:keydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleSelectPOI(match.poi);
-                }
-              }}
-            >
+            <Card class="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent class="p-4">
+                <button
+                  type="button"
+                  class="w-full text-left"
+                  onclick={() => handleSelectPOI(match.poi)}
+                  onkeydown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleSelectPOI(match.poi);
+                    }
+                  }}
+                >
                 <div class="flex items-center gap-4">
                   <!-- POI Photo -->
                   <div class="flex-shrink-0">

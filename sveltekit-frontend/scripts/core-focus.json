@@ -1,0 +1,26 @@
+{
+  "routes": [
+    "/dashboard",
+    "/cases",
+    "/cases/new",
+    "/cases/[id]",
+    "/cases/[id]/evidence",
+    "/evidence",
+    "/evidence/upload",
+    "/evidence/analyze",
+    "/legal/documents",
+    "/legal-ai-suite"
+  ],
+  "machines": [
+    "src/lib/state/legalFormMachine.ts",
+    "src/lib/machines/caseManagementMachine.ts",
+    "src/lib/state/documentUploadMachine.ts",
+    "src/lib/state/legalDocumentProcessingMachine.ts",
+    "src/lib/state/evidenceProcessingMachine.ts",
+    "src/lib/state/appMachine.ts",
+    "src/lib/state/async-rabbitmq-state-manager.ts",
+    "src/lib/state/crewAIOrchestrationMachine.ts",
+    "src/lib/workers/embedding-worker.ts",
+    "src/lib/text/utf8-fp32-converter.ts"
+  ]
+}

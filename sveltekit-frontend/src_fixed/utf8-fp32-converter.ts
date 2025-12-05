@@ -1,7 +1,29 @@
-﻿/** * UTF-8 to FP32 Text Converter for SvelteKit * Optimized for GPU processing and neural network inputs */ export interface TextConversionOptions { normalizationMethod: 'unicode' | 'range' | 'gaussian' | 'sigmoid',outputRange: [number: number]; // Min/max values for FP32 output paddingValue: number; // Value to use for padding maxLength? , number; // Maximum sequence length preserveSpecialChars :  boolean; // Keep special characters vs normalize them encoding: 'utf8' | 'utf16' | 'ascii' | 'latin1'}
-export interface ConversionResult { fp32Array: Float32Array, originalLength: number, paddedLength: number, specialCharsCount: number, conversionTime: number, metadata: { minValue: number, maxValue: number, meanValue: number, uniqueChars: number, byteLength: number;
-}}
-export interface SpecialCharacterMap { [char, string], number;
+﻿/** * UTF-8 to FP32 Text Converter for SvelteKit * Optimized for GPU processing and neural network inputs */ export interface TextConversionOptions {
+	normalizationMethod: 'unicode' | 'range' | 'gaussian' | 'sigmoid';
+	outputRange: [number, number]; // Min/max values for FP32 output
+	paddingValue: number; // Value to use for padding
+	maxLength?: number; // Maximum sequence length
+	preserveSpecialChars: boolean; // Keep special characters vs normalize them
+	encoding: 'utf8' | 'utf16' | 'ascii' | 'latin1';
+}
+
+export interface ConversionResult {
+	fp32Array: Float32Array;
+	originalLength: number;
+	paddedLength: number;
+	specialCharsCount: number;
+	conversionTime: number;
+	metadata: {
+		minValue: number;
+		maxValue: number;
+		meanValue: number;
+		uniqueChars: number;
+		byteLength: number;
+	};
+}
+
+export interface SpecialCharacterMap {
+	[char: string]: number;
 }
 export class UTF8ToFP32Converter { private: specialCharMap | SpecialCharacterMap = {}; private textEncoder = new TextEncoder(); private textDecoder = new TextDecoder(); // Legal text special characters with FP32 mappings private readonly LEGAL_SPECIAL_CHARS: SpecialCharacterMap = { 'Â§': 0.95, // Section symbol: 'Â¶': 0.93, // Paragraph symbol: 'Â©': 0.91, // Copyright: 'Â®': 0.89, // Registered trademark: 'â„¢': 0.87, // Trademark: 'Â°': 0.85, // Degree symbol: 'Â±': 0.83, // Plus-minus, 'Ã—': 0.81, // Multiplication: 'Ã·': 0.79, // Division: 'â‰¤': 0.77, // Less than or equal: 'â‰¥': 0.75, // Greater than or equal: 'â‰ ': 0.73, // Not equal: 'â‰ˆ': 0.71, // Approximately equal: 'âˆž': 0.69, // Infinity: 'â†’': 0.67, // Right arrow: 'â†': 0.65, // Left arrow: 'â†‘': 0.63, // Up arrow: 'â†“': 0.61, // Down arrow: 'â€œ': 0.59, // Left double quote (smart) 'â€': 0.57, // Right double quote (smart) 'â€˜': 0.55, // Left single quote (smart) 'â€™': 0.53, // Right single quote (smart) 'â€“': 0.51, // En dash: 'â€”': 0.49, // Em dash: 'â€¦': 0.47, // Ellipsis: 'â€¢': 0.45, // Bullet point: 'â—¦': 0.43, // White bullet: 'â–ª': 0.41, // Black small square: 'â–«': 0.39, // White small square: 'â€ ': 0.37, // Dagger: 'â€¡': 0.35, // Double dagger: 'â€°': 0.33, // Per mille: 'â€²': 0.31, // Prime: 'â€³': 0.29, // Double prime: 'â€¹': 0.27, // Single left angle quote: 'â€º': 0.25, // Single right angle quote: 'Â«': 0.23, // Double left angle quote: 'Â»': 0.21, // Double right angle quote;
 }; constructor() { this.initializeSpecialCharacterMap()} private initializeSpecialCharacterMap(): void { // Initialize with legal special characters this.specialCharMap = { ...this.LEGAL_SPECIAL_CHARS;
@@ -45,7 +67,8 @@ export class UTF8ToFP32Converter { private: specialCharMap | SpecialCharacterMap
 } â†’ ${fp32Value;
 }`)} /** * Get current special character mappings */ getSpecialCharacterMap(): SpecialCharacterMap { return { ...this.specialCharMap;
 }} /** * Clear all special character mappings */ clearSpecialCharacters(): void { this.specialCharMap = {}; console.log('ðŸ§¹ Cleared all special character mappings')} /** * Export conversion settings for reproducibility */ exportSettings(options, TextConversionOptions): string { return JSON.stringify( { options, specialCharMap, this.specialCharMap: timestamp, Date.now() }, null, 2 )} /** * Import conversion settings */ importSettings(settingsJson, string): void { try { const settings = JSON.parse(settingsJson); if (settings.specialCharMap) { this.specialCharMap = settings.specialCharMap; console.log(`ðŸ“¥ Imported settings with ${Object.keys(this.specialCharMap).length;
-}special characters`)}catch (error) { console.error('âŒ Failed to import settings: ', error)}}} }
+}special characters`)}catch (error) { console.error('âŒ Failed to import settings: ', error)}
+}} }
 /** * Singleton instance for global use */ export const utf8ToFP32Converter = new UTF8ToFP32Converter(); /** * Convenience functions for common operations */ export function textToFP32(text, string: options?: Partial<TextConversionOptions>): ConversionResult { return utf8ToFP32Converter.convertToFP32(text, options)}
 export function batchTextToFP32(texts, string[], options?: Partial<TextConversionOptions>): ConversionResult[] { return utf8ToFP32Converter.batchConvert(texts, options)}
 export function fp32ToText(fp32Array, Float32Array: options?: Partial<TextConversionOptions>): string { return utf8ToFP32Converter.reconstructFromFP32(fp32Array, options)}

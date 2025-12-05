@@ -1,5 +1,9 @@
 export type ReportTemplate = 'charging_memo' | 'intake_summary';
 
+// Phase 14: Read AI configuration from environment
+const OLLAMA_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
+
 export async function generateReportWithGemma(opts: {
   caseTitle: string;
   caseId: string;
@@ -69,11 +73,11 @@ Requirements:
 - DO NOT include citations to real-world cases or statutes unless they are generic placeholders.
 `;
 
-  const res = await fetch('http://127.0.0.1:11434/api/generate', {
+  const res = await fetch(`${OLLAMA_URL}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gemma3-legal', // adjust to your actual tag
+      model: OLLAMA_MODEL,
       prompt,
       stream: false
     })

@@ -5,7 +5,11 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@tiptap/core": "^3.13.0",
+    "@tiptap/pm": "^3.13.0",
+    "@tiptap/starter-kit": "^3.13.0",
     "cross-env": "^10.1.0",
-    "ioredis": "^5.8.2"
+    "ioredis": "^5.8.2",
+    "svelte-tiptap": "^3.0.1"
   }
 }
