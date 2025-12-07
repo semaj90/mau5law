@@ -1493,6 +1493,33 @@
 				"panel": "shared"
 			},
 			"detail": "Complete workflow: check → consolidate → monitor → cluster"
+		},
+		{
+			"label": "Phase 74 – LangExtract FastAPI",
+			"type": "shell",
+			"command": "uvicorn",
+			"args": [
+				"langextract.main:app",
+				"--host",
+				"127.0.0.1",
+				"--port",
+				"8010",
+				"--reload"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../langextract-go"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"problemMatcher": [],
+			"detail": "Start FastAPI server for LangExtract text extraction service (http://127.0.0.1:8010/docs)"
 		}
 	]
 }

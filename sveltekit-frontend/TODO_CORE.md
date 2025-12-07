@@ -9,19 +9,22 @@
 
 - [x] `.env` file exists in `sveltekit-frontend/` with required vars
 - [x] Dev server running on http://localhost:5173
-- [ ] Run database migrations: `npm run db:push`
-- [ ] Verify PostgreSQL connection (port 5434)
-- [ ] Verify Redis connection (port 6379)
+- [ ] Run database migrations: `npx drizzle-kit push`
+- [x] Verify PostgreSQL connection (port 5434, shared Docker Desktop)
+- [x] Verify Redis connection (port 6379, shared Docker Desktop)
 
-**Environment Variables Required:**
+**Environment Variables Required (Shared Docker Desktop):**
 ```bash
 DATABASE_URL=postgresql://legal_admin:123456@localhost:5434/legal_ai_db
+POSTGRES_PASSWORD=123456
 REDIS_URL=redis://localhost:6379
 REDIS_PASSWORD=redis
 DEV_BYPASS_AUTH=true
 OLLAMA_MODEL=gemma3-legal:latest
 EMBEDDING_MODEL=embeddinggemma:latest
 ```
+
+**Note:** All containers are shared via Docker Desktop - DO NOT DELETE!
 
 ---
 

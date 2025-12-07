@@ -1,1 +1,340 @@
-/**\n * Ingestion Watcher Store\n * Svelte store for real-time pipeline status and metrics\n * HMR-safe with automatic reconnection\n */\n\nimport { writable, derived, type Readable } from 'svelte/store';\nimport { browser } from '$app/environment';\n\nexport interface PipelineStatus {\n  isRunning: boolean;\n  queueSize: number;\n  metrics: {\n    filesProcessed: number;\n    filesSkipped: number;\n    totalChunks: number;\n    embeddingsGenerated: number;\n    summariesGenerated: number;\n    duplicatesDetected: number;\n    errors: number;\n    totalProcessingTimeMs: number;\n    averageProcessingTimeMs: number;\n  };\n}\n\nexport interface ProcessingEvent {\n  type: 'fileProcessed' | 'fileError' | 'fileRemoved' | 'statusUpdate';\n  timestamp: number;\n  data: any;\n}\n\nconst DEFAULT_STATUS: PipelineStatus = {\n  isRunning: false,\n  queueSize: 0,\n  metrics: {\n    filesProcessed: 0,\n    filesSkipped: 0,\n    totalChunks: 0,\n    embeddingsGenerated: 0,\n    summariesGenerated: 0,\n    duplicatesDetected: 0,\n    errors: 0,\n    totalProcessingTimeMs: 0,\n    averageProcessingTimeMs: 0\n  }\n};\n\n// Main stores\nexport const pipelineStatus = writable<PipelineStatus>(DEFAULT_STATUS);\nexport const isConnected = writable<boolean>(false);\nexport const recentEvents = writable<ProcessingEvent[]>([]);\nexport const errorLog = writable<string[]>([]);\n\n// Derived stores\nexport const processingRate = derived(\n  pipelineStatus,\n  ($status) => {\n    if ($status.metrics.totalProcessingTimeMs === 0) return 0;\n    return (\n      ($status.metrics.filesProcessed / ($status.metrics.totalProcessingTimeMs / 1000)) *\n      60\n    ); // files per minute\n  }\n);\n\nexport const successRate = derived(\n  pipelineStatus,\n  ($status) => {\n    const total = $status.metrics.filesProcessed + $status.metrics.errors;\n    if (total === 0) return 100;\n    return (($status.metrics.filesProcessed / total) * 100).toFixed(1);\n  }\n);\n\nexport const duplicateRate = derived(\n  pipelineStatus,\n  ($status) => {\n    if ($status.metrics.totalChunks === 0) return 0;\n    return (($status.metrics.duplicatesDetected / $status.metrics.totalChunks) * 100).toFixed(1);\n  }\n);\n\n// WebSocket connection management\nlet ws: WebSocket | null = null;\nlet reconnectAttempts = 0;\nconst MAX_RECONNECT_ATTEMPTS = 5;\nconst RECONNECT_DELAY_MS = 3000;\n\n/**\n * Connect to pipeline WebSocket\n */\nexport function connectToPipeline(url: string = 'ws://localhost:3000/api/pipeline/ws'): void {\n  if (!browser) return;\n  if (ws && ws.readyState === WebSocket.OPEN) return;\n\n  try {\n    console.log('🔌 Connecting to pipeline WebSocket...');\n    ws = new WebSocket(url);\n\n    ws.onopen = () => {\n      console.log('✅ Connected to pipeline');\n      isConnected.set(true);\n      reconnectAttempts = 0;\n    };\n\n    ws.onmessage = (event) => {\n      try {\n        const message = JSON.parse(event.data);\n        handlePipelineMessage(message);\n      } catch (error) {\n        console.error('❌ Failed to parse message:', error);\n      }\n    };\n\n    ws.onerror = (error) => {\n      console.error('❌ WebSocket error:', error);\n      isConnected.set(false);\n      addError(`WebSocket error: ${error}`);\n    };\n\n    ws.onclose = () => {\n      console.log('🔌 Disconnected from pipeline');\n      isConnected.set(false);\n      attemptReconnect(url);\n    };\n  } catch (error) {\n    console.error('❌ Failed to connect:', error);\n    addError(`Connection failed: ${error}`);\n  }\n}\n\n/**\n * Disconnect from pipeline\n */\nexport function disconnectFromPipeline(): void {\n  if (ws) {\n    ws.close();\n    ws = null;\n  }\n  isConnected.set(false);\n}\n\n/**\n * Send command to pipeline\n */\nexport function sendPipelineCommand(command: string, data?: any): void {\n  if (!ws || ws.readyState !== WebSocket.OPEN) {\n    console.warn('⚠️ WebSocket not connected');\n    return;\n  }\n\n  try {\n    ws.send(\n      JSON.stringify({\n        command,\n        data,\n        timestamp: Date.now()\n      })\n    );\n  } catch (error) {\n    console.error('❌ Failed to send command:', error);\n    addError(`Send failed: ${error}`);\n  }\n}\n\n/**\n * Start pipeline\n */\nexport function startPipeline(): void {\n  sendPipelineCommand('start');\n}\n\n/**\n * Stop pipeline\n */\nexport function stopPipeline(): void {\n  sendPipelineCommand('stop');\n}\n\n/**\n * Reset metrics\n */\nexport function resetMetrics(): void {\n  sendPipelineCommand('resetMetrics');\n  pipelineStatus.set(DEFAULT_STATUS);\n  recentEvents.set([]);\n  errorLog.set([]);\n}\n\n/**\n * Handle incoming pipeline messages\n */\nfunction handlePipelineMessage(message: any): void {\n  const { type, data } = message;\n\n  switch (type) {\n    case 'statusUpdate':\n      pipelineStatus.set(data);\n      addEvent('statusUpdate', data);\n      break;\n\n    case 'fileProcessed':\n      pipelineStatus.update((status) => ({\n        ...status,\n        metrics: {\n          ...status.metrics,\n          filesProcessed: status.metrics.filesProcessed + 1,\n          totalChunks: status.metrics.totalChunks + (data.chunksCount || 0),\n          embeddingsGenerated: status.metrics.embeddingsGenerated + (data.embeddingsCount || 0),\n          summariesGenerated: status.metrics.summariesGenerated + (data.summariesCount || 0),\n          duplicatesDetected: status.metrics.duplicatesDetected + (data.duplicatesCount || 0)\n        }\n      }));\n      addEvent('fileProcessed', data);\n      break;\n\n    case 'fileError':\n      pipelineStatus.update((status) => ({\n        ...status,\n        metrics: {\n          ...status.metrics,\n          errors: status.metrics.errors + 1\n        }\n      }));\n      addEvent('fileError', data);\n      addError(`Error processing ${data.filePath}: ${data.error}`);\n      break;\n\n    case 'fileRemoved':\n      addEvent('fileRemoved', data);\n      break;\n\n    case 'error':\n      addError(data.message || 'Unknown error');\n      break;\n\n    default:\n      console.warn('⚠️ Unknown message type:', type);\n  }\n}\n\n/**\n * Add event to recent events\n */\nfunction addEvent(type: ProcessingEvent['type'], data: any): void {\n  recentEvents.update((events) => {\n    const newEvents = [\n      {\n        type,\n        timestamp: Date.now(),\n        data\n      },\n      ...events\n    ];\n    // Keep only last 50 events\n    return newEvents.slice(0, 50);\n  });\n}\n\n/**\n * Add error to error log\n */\nfunction addError(message: string): void {\n  errorLog.update((errors) => {\n    const newErrors = [\n      `[${new Date().toLocaleTimeString()}] ${message}`,\n      ...errors\n    ];\n    // Keep only last 100 errors\n    return newErrors.slice(0, 100);\n  });\n}\n\n/**\n * Attempt to reconnect\n */\nfunction attemptReconnect(url: string): void {\n  if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {\n    console.error('❌ Max reconnection attempts reached');\n    addError('Failed to reconnect after maximum attempts');\n    return;\n  }\n\n  reconnectAttempts++;\n  const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1);\n  console.log(`🔄 Reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);\n\n  setTimeout(() => {\n    connectToPipeline(url);\n  }, delay);\n}\n\n/**\n * Clear error log\n */\nexport function clearErrorLog(): void {\n  errorLog.set([]);\n}\n\n/**\n * Clear recent events\n */\nexport function clearRecentEvents(): void {\n  recentEvents.set([]);\n}\n\n/**\n * Export metrics as JSON\n */\nexport function exportMetrics(): string {\n  let status: PipelineStatus;\n  pipelineStatus.subscribe((s) => {\n    status = s;\n  })();\n\n  return JSON.stringify(\n    {\n      timestamp: new Date().toISOString(),\n      status,\n      processingRate: 0,\n      successRate: 0,\n      duplicateRate: 0\n    },\n    null,\n    2\n  );\n}\n\n// Auto-connect on browser load\nif (browser) {\n  // Delay connection to allow page to fully load\n  setTimeout(() => {\n    connectToPipeline();\n  }, 1000);\n\n  // Cleanup on page unload\n  window.addEventListener('beforeunload', () => {\n    disconnectFromPipeline();\n  });\n}\n"
+/**
+ * Ingestion Watcher Store
+ * Svelte store for real-time pipeline status and metrics
+ * HMR-safe with automatic reconnection
+ */
+
+import { browser } from '$app/environment';
+import { derived, writable } from 'svelte/store';
+
+export interface PipelineStatus {
+  isRunning: boolean;
+  queueSize: number;
+  metrics: {
+    filesProcessed: number;
+    filesSkipped: number;
+    totalChunks: number;
+    embeddingsGenerated: number;
+    summariesGenerated: number;
+    duplicatesDetected: number;
+    errors: number;
+    totalProcessingTimeMs: number;
+    averageProcessingTimeMs: number;
+  };
+}
+
+export interface ProcessingEvent {
+  type: 'fileProcessed' | 'fileError' | 'fileRemoved' | 'statusUpdate';
+  timestamp: number;
+  data: any;
+}
+
+const DEFAULT_STATUS: PipelineStatus = {
+  isRunning: false,
+  queueSize: 0,
+  metrics: {
+    filesProcessed: 0,
+    filesSkipped: 0,
+    totalChunks: 0,
+    embeddingsGenerated: 0,
+    summariesGenerated: 0,
+    duplicatesDetected: 0,
+    errors: 0,
+    totalProcessingTimeMs: 0,
+    averageProcessingTimeMs: 0
+  }
+};
+
+// Main stores
+export const pipelineStatus = writable<PipelineStatus>(DEFAULT_STATUS);
+export const isConnected = writable<boolean>(false);
+export const recentEvents = writable<ProcessingEvent[]>([]);
+export const errorLog = writable<string[]>([]);
+
+// Derived stores
+export const processingRate = derived(
+  pipelineStatus,
+  ($status) => {
+    if ($status.metrics.totalProcessingTimeMs === 0) return 0;
+    return (
+      ($status.metrics.filesProcessed / ($status.metrics.totalProcessingTimeMs / 1000)) *
+      60
+    ); // files per minute
+  }
+);
+
+export const successRate = derived(
+  pipelineStatus,
+  ($status) => {
+    const total = $status.metrics.filesProcessed + $status.metrics.errors;
+    if (total === 0) return 100;
+    return (($status.metrics.filesProcessed / total) * 100).toFixed(1);
+  }
+);
+
+export const duplicateRate = derived(
+  pipelineStatus,
+  ($status) => {
+    if ($status.metrics.totalChunks === 0) return 0;
+    return (($status.metrics.duplicatesDetected / $status.metrics.totalChunks) * 100).toFixed(1);
+  }
+);
+
+// WebSocket connection management
+let ws: WebSocket | null = null;
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY_MS = 3000;
+
+/**
+ * Connect to pipeline WebSocket
+ */
+export function connectToPipeline(url: string = 'ws://localhost:3000/api/pipeline/ws'): void {
+  if (!browser) return;
+  if (ws && ws.readyState === WebSocket.OPEN) return;
+
+  try {
+    console.log('🔌 Connecting to pipeline WebSocket...');
+    ws = new WebSocket(url);
+
+    ws.onopen = () => {
+      console.log('✅ Connected to pipeline');
+      isConnected.set(true);
+      reconnectAttempts = 0;
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        handlePipelineMessage(message);
+      } catch (error) {
+        console.error('❌ Failed to parse message:', error);
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error('❌ WebSocket error:', error);
+      isConnected.set(false);
+      addError(`WebSocket error: ${error}`);
+    };
+
+    ws.onclose = () => {
+      console.log('🔌 Disconnected from pipeline');
+      isConnected.set(false);
+      attemptReconnect(url);
+    };
+  } catch (error) {
+    console.error('❌ Failed to connect:', error);
+    addError(`Connection failed: ${error}`);
+  }
+}
+
+/**
+ * Disconnect from pipeline
+ */
+export function disconnectFromPipeline(): void {
+  if (ws) {
+    ws.close();
+    ws = null;
+  }
+  isConnected.set(false);
+}
+
+/**
+ * Send command to pipeline
+ */
+export function sendPipelineCommand(command: string, data?: any): void {
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    console.warn('⚠️ WebSocket not connected');
+    return;
+  }
+
+  try {
+    ws.send(
+      JSON.stringify({
+        command,
+        data,
+        timestamp: Date.now()
+      })
+    );
+  } catch (error) {
+    console.error('❌ Failed to send command:', error);
+    addError(`Send failed: ${error}`);
+  }
+}
+
+/**
+ * Start pipeline
+ */
+export function startPipeline(): void {
+  sendPipelineCommand('start');
+}
+
+/**
+ * Stop pipeline
+ */
+export function stopPipeline(): void {
+  sendPipelineCommand('stop');
+}
+
+/**
+ * Reset metrics
+ */
+export function resetMetrics(): void {
+  sendPipelineCommand('resetMetrics');
+  pipelineStatus.set(DEFAULT_STATUS);
+  recentEvents.set([]);
+  errorLog.set([]);
+}
+
+/**
+ * Handle incoming pipeline messages
+ */
+function handlePipelineMessage(message: any): void {
+  const { type, data } = message;
+
+  switch (type) {
+    case 'statusUpdate':
+      pipelineStatus.set(data);
+      addEvent('statusUpdate', data);
+      break;
+
+    case 'fileProcessed':
+      pipelineStatus.update((status) => ({
+        ...status,
+        metrics: {
+          ...status.metrics,
+          filesProcessed: status.metrics.filesProcessed + 1,
+          totalChunks: status.metrics.totalChunks + (data.chunksCount || 0),
+          embeddingsGenerated: status.metrics.embeddingsGenerated + (data.embeddingsCount || 0),
+          summariesGenerated: status.metrics.summariesGenerated + (data.summariesCount || 0),
+          duplicatesDetected: status.metrics.duplicatesDetected + (data.duplicatesCount || 0)
+        }
+      }));
+      addEvent('fileProcessed', data);
+      break;
+
+    case 'fileError':
+      pipelineStatus.update((status) => ({
+        ...status,
+        metrics: {
+          ...status.metrics,
+          errors: status.metrics.errors + 1
+        }
+      }));
+      addEvent('fileError', data);
+      addError(`Error processing ${data.filePath}: ${data.error}`);
+      break;
+
+    case 'fileRemoved':
+      addEvent('fileRemoved', data);
+      break;
+
+    case 'error':
+      addError(data.message || 'Unknown error');
+      break;
+
+    default:
+      console.warn('⚠️ Unknown message type:', type);
+  }
+}
+
+/**
+ * Add event to recent events
+ */
+function addEvent(type: ProcessingEvent['type'], data: any): void {
+  recentEvents.update((events) => {
+    const newEvents = [
+      {
+        type,
+        timestamp: Date.now(),
+        data
+      },
+      ...events
+    ];
+    // Keep only last 50 events
+    return newEvents.slice(0, 50);
+  });
+}
+
+/**
+ * Add error to error log
+ */
+function addError(message: string): void {
+  errorLog.update((errors) => {
+    const newErrors = [
+      `[${new Date().toLocaleTimeString()}] ${message}`,
+      ...errors
+    ];
+    // Keep only last 100 errors
+    return newErrors.slice(0, 100);
+  });
+}
+
+/**
+ * Attempt to reconnect
+ */
+function attemptReconnect(url: string): void {
+  if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+    console.error('❌ Max reconnection attempts reached');
+    addError('Failed to reconnect after maximum attempts');
+    return;
+  }
+
+  reconnectAttempts++;
+  const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1);
+  console.log(`🔄 Reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+
+  setTimeout(() => {
+    connectToPipeline(url);
+  }, delay);
+}
+
+/**
+ * Clear error log
+ */
+export function clearErrorLog(): void {
+  errorLog.set([]);
+}
+
+/**
+ * Clear recent events
+ */
+export function clearRecentEvents(): void {
+  recentEvents.set([]);
+}
+
+/**
+ * Export metrics as JSON
+ */
+export function exportMetrics(): string {
+  let status: PipelineStatus;
+  pipelineStatus.subscribe((s) => {
+    status = s;
+  })();
+
+  return JSON.stringify(
+    {
+      timestamp: new Date().toISOString(),
+      status,
+      processingRate: 0,
+      successRate: 0,
+      duplicateRate: 0
+    },
+    null,
+    2
+  );
+}
+
+// Auto-connect on browser load
+if (browser) {
+  // Delay connection to allow page to fully load
+  setTimeout(() => {
+    connectToPipeline();
+  }, 1000);
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    disconnectFromPipeline();
+  });
+}

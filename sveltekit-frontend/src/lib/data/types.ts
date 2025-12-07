@@ -57,7 +57,7 @@ export interface CitationPoint {
   page?: number;
   context: string;
   tags: string[];
-  caseId?: string;
+  caseId: string;
   reportId?: string;
   type: 'statute' | 'case_law' | 'evidence' | 'expert_opinion' | 'testimony';
   aiSummary?: string;
