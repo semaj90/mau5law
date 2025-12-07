@@ -164,6 +164,7 @@
                     </Button>
                   </div>
                 </div>
+                </button>
               </CardContent>
             </Card>
           {/each}

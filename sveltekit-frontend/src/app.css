@@ -1,118 +1,35 @@
-/* ============================================================================
-   ALL @import STATEMENTS MUST BE AT THE TOP (before any CSS rules)
-   ============================================================================ */
+@import '@unocsslayer base, components, utilities;
 
-/* Import UnoCSS base styles */
-@import 'uno.css';
-
-/* Import nes.css for retro styling */
-@import 'nes.css/css/nes.min.css';
-
-/* Import theme variable mappings (UnoCSS tokens -> CSS variables) */
-@import './lib/styles/theme-vars.css';
-
-/* Import the fallback CSS */
-@import '$lib/styles/fallback.css';
-
-/* LOCAL FONT LOADING - No Network Dependency */
-@import '@/sveltekit-frontend/static/fonts/inter.css';
-@import '@/sveltekit-frontend/static/fonts/jetbrains-mono.css';
-@import '@/sveltekit-frontend/static/fonts/press-start-2p.css';
-
-/* Professional Legal AI Platform Theme */
-@import './lib/styles/professional-theme.css';
-
-/* Golden Ratio CSS Utilities */
-@import './lib/styles/golden-ratio-utilities.css';
-
-/* YoRHa-specific global styles */
-@import './lib/styles/yorha-global.css';
-
-/* YoRHa Harvard Crimson Theme */
-@import './lib/styles/yorha-crimson-theme.css';
-
-/* ============================================================================
-   CSS RULES START HERE (after all @import statements)
-   ============================================================================ */
-
-/* YoRHa Harvard Crimson Global Theme */
-:root {
-	--yorha-bg: #d4c9a9;
-	--yorha-bg-dark: #2a2016;
-	--yorha-panel: #c4b99a;
-	--yorha-paper: #f8f0d9;
-	--yorha-ink: #0f0f0f;
-
-	/* Harvard / YoRHa crimson accent */
-	--yorha-crimson: #a51c30;
-	--yorha-crimson-soft: #cc4658;
-
-	--yorha-font: 'JetBrains Mono', 'Courier New', monospace;
+/* Custom scrollbar for YoRHa aesthetic */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #222;
+}
+
+/* Base body styling */
 body {
-	margin: 0;
-	background: var(--yorha-bg);
-	color: var(--yorha-ink);
-	font-family: var(--yorha-font);
+  @apply app-bg;
+  margin: 0;
+  padding: 0;
 }
 
-@layer base {
-  :root {
-    --yorha-gold: #ffd700;
-    --yorha-green: #00ff41;
-    --yorha-dark: #1a1a1a;
-    --yorha-accent: #ff6b35;
-  }
-
-  body {
-    margin: 0;
-    font-family: 'JetBrains Mono', 'Press Start 2P', monospace;
-    background: var(--yorha-dark);
-    color: white;
-
-    /* Replaced Tailwind @apply antialiased with cross-browser font smoothing */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* UnoCSS compatibility helpers */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-
-  .text-amber-400 {
-    color: var(--yorha-gold);
-  }
-
-  .text-green-400 {
-    color: var(--yorha-green);
-  }
-
-  .bg-gradient-to-br {
-    background: linear-gradient(to bottom right, #000 0%, #1f2937 50%, #000 100%);
-  }
-
-  /* NES.css overrides for YoRHa theme */
-  .nes-btn {
-    color: var(--yorha-gold);
-    border-color: var(--yorha-gold);
-  }
-
-  .nes-btn:hover {
-    background-color: var(--yorha-gold);
-    color: var(--yorha-dark);
-  }
+/* Smooth transitions */
+* {
+  transition-duration: 150ms;
+  transition-timing-function: ease-in-out;
 }
 
-/* (theme-vars already imported at top) */
-
-/* Removed Tailwind directives:
-   - @tailwind base;
-   - @tailwind components;
-   - @tailwind utilities;
-   This project uses UnoCSS. Import UnoCSS once in your root layout (e.g. src/routes/+layout.svelte)
-   via: import 'uno.css';
-*/
+/* Typography improvements */
+.font-mono {
+  font-variant-ligatures: none;
+  letter-spacing: 0.02em;
+}

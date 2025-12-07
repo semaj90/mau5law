@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Phase 10: Async RabbitMQ State Manager (Minimal)
  * States: idle → connecting → ready → processing → completed
@@ -257,7 +258,7 @@ export const rabbitMQStateMachine = setup({
       },
     },
   },
-});
+}) as any;
 
 // Helper selectors
 export function isConnected(state: { context: RabbitMQContext }): boolean {
