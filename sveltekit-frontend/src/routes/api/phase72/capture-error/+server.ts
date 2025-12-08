@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { pool } from '$lib/server/db';
 import crypto from 'node:crypto';
+import { vectorizeError } from '$lib/phase72/astVectorizer';
 
 type CapturePayload = {
 	route?: string;
@@ -40,17 +41,31 @@ export const POST: RequestHandler = async ({ request }) => {
 		const hashInput = `${file_path}:${line}:${col}:${code}:${message}`;
 		const error_hash = crypto.createHash('sha256').update(hashInput).digest('hex');
 
+		// Generate embedding for semantic clustering (async, non-blocking)
+		const embeddingPromise = vectorizeError(message).catch(err => {
+			console.warn('[phase72] Embedding failed:', err);
+			return null;
+		});
+
 		const client = await pool.connect();
 		try {
+			// Wait for embedding before insert
+			const embedding = await embeddingPromise;
+			const embeddingArray = embedding ? `[${embedding.join(',')}]` : null;
+
 			await client.query(
 				`
 				INSERT INTO phase72_error (
-					error_hash, file_path, line, col, code, severity, message, phase, cycle
+					error_hash, file_path, line, col, code, severity, message, phase, cycle, embedding
 				)
-				VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-				ON CONFLICT (error_hash) DO NOTHING
+				VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+				ON CONFLICT (error_hash) DO UPDATE
+				SET
+					occurrence_count = phase72_error.occurrence_count + 1,
+					last_seen = NOW(),
+					embedding = COALESCE(EXCLUDED.embedding, phase72_error.embedding)
 				`,
-				[error_hash, file_path, line, col, code, severity, message, phase, cycle]
+				[error_hash, file_path, line, col, code, severity, message, phase, cycle, embeddingArray]
 			);
 
 			console.log(`[phase72] Captured: ${code} in ${file_path}:${line}:${col}`);

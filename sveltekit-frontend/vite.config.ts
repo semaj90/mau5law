@@ -160,7 +160,7 @@ export default defineConfig(({ mode }) => {
       reportCompressedSize: false,
     },
     optimizeDeps: {
-      exclude: ['@webgpu/types'],
+      exclude: ['@webgpu/types', 'lucide-svelte'],
       include: [
         '@grpc/grpc-js',
         '@grpc/proto-loader',

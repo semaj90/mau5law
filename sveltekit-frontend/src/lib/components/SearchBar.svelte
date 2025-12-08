@@ -49,14 +49,14 @@
       type="text"
       {placeholder}
       bind:value
-      on:input={handleInput}
-      on:keydown={handleKeydown}
+      oninput={handleInput}
+      onkeydown={handleKeydown}
       class="search-input"
     />
     {#if value}
       <button
         class="clear-btn"
-        on:click={clearSearch}
+        onclick={clearSearch}
         aria-label="Clear search"
       >
         ✕

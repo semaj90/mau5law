@@ -4,15 +4,7 @@
  */
 
 import type { Handle, HandleServerError } from '@sveltejs/kit';
-
-// Try to import lucia, but handle gracefully if DB is not available
-let lucia: any = null;
-try {
-  const luciaModule = await import('$lib/server/lucia');
-  lucia = luciaModule.lucia;
-} catch (e) {
-  console.warn('[hooks] Lucia auth not available (DB may not be running)');
-}
+import { auth } from '$lib/server/auth/lucia';
 
 /**
  * Main request handler with Lucia v3 session validation
@@ -26,27 +18,27 @@ export const handle: Handle = async ({ event, resolve }) => {
   const startTime = Date.now();
 
   // === LUCIA V3 SESSION VALIDATION ===
-  // Skip auth if lucia is not available or DEV_BYPASS_AUTH is set
-  if (!lucia || process.env.DEV_BYPASS_AUTH === 'true') {
+  // Skip auth if DEV_BYPASS_AUTH is set
+  if (process.env.DEV_BYPASS_AUTH === 'true') {
     event.locals.user = null;
     event.locals.session = null;
   } else {
-    const sessionId = event.cookies.get(lucia.sessionCookieName);
+    const sessionId = event.cookies.get(auth.sessionCookieName);
     if (!sessionId) {
       event.locals.user = null;
       event.locals.session = null;
     } else {
       try {
-        const { session, user } = await lucia.validateSession(sessionId);
+        const { session, user } = await auth.validateSession(sessionId);
         if (session && session.fresh) {
-          const sessionCookie = lucia.createSessionCookie(session.id);
+          const sessionCookie = auth.createSessionCookie(session.id);
           event.cookies.set(sessionCookie.name, sessionCookie.value, {
             path: '/',
             ...sessionCookie.attributes,
           });
         }
         if (!session) {
-          const blankSessionCookie = lucia.createBlankSessionCookie();
+          const blankSessionCookie = auth.createBlankSessionCookie();
           event.cookies.set(blankSessionCookie.name, blankSessionCookie.value, {
             path: '/',
             ...blankSessionCookie.attributes,
