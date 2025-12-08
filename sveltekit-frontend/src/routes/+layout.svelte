@@ -32,16 +32,23 @@
     }
   });
 
+  import { browser } from '$app/environment';
+
   // Derived value based on the page store (runes-mode compatible)
-  let isCommandCenter = $derived.by(() => {
-    const path = $page?.url?.pathname || '';
-    return (
-      path.startsWith('/yorha') ||
-      path === '/' ||
-      ['/command-center', '/active-cases', '/evidence-library',
-       '/persons-of-interest', '/analysis-center', '/global-search',
-       '/terminal', '/system-configuration', '/gpu-evidence-graph'].includes(path)
-    );
+  // Use simple reactive statement for SSR compatibility
+  let isCommandCenter = $state(false);
+
+  $effect(() => {
+    if (browser) {
+      const path = $page?.url?.pathname || '';
+      isCommandCenter = (
+        path.startsWith('/yorha') ||
+        path === '/' ||
+        ['/command-center', '/active-cases', '/evidence-library',
+         '/persons-of-interest', '/analysis-center', '/global-search',
+         '/terminal', '/system-configuration', '/gpu-evidence-graph', '/all-routes'].includes(path)
+      );
+    }
   });
 
 </script>

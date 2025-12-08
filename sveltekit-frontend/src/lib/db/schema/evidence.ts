@@ -2,7 +2,7 @@ import { pgTable, text, timestamp, integer, uuid, json, pgEnum } from 'drizzle-o
 import { relations } from 'drizzle-orm';
 
 // Enums
-export const evidence TypeEnum = pgEnum('evidence_type', ['video', 'document', 'photo', 'note', 'audio', 'forensic']);
+export const evidenceTypeEnum = pgEnum('evidence_type', ['video', 'document', 'photo', 'note', 'audio', 'forensic']);
 export const relationshipStrengthEnum = pgEnum('relationship_strength', ['strong', 'medium', 'weak']);
 export const nodeTypeEnum = pgEnum('node_type', ['person', 'evidence', 'location', 'case']);
 export const timelineEventTypeEnum = pgEnum('timeline_event_type', ['evidence', 'person', 'location', 'action']);

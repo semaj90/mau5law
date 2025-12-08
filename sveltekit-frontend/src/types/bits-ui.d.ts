@@ -52,3 +52,8 @@
   // The original `export as namespace BitsUI}` was syntactically incorrect within a `declare module` block.
   // If a global namespace is desired, it should be declared outside this module block.
 }
+
+declare module 'bits-ui/dialog' {
+  import * as Dialog from 'bits-ui/dist/bits/dialog';
+  export = Dialog;
+}

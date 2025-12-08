@@ -64,6 +64,27 @@
       "when": 1763180854420,
       "tag": "0008_clammy_frightful_four",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1765136658286,
+      "tag": "0009_dark_typhoid_mary",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1765150402427,
+      "tag": "0010_friendly_nomad",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1765150467866,
+      "tag": "0011_chief_goliath",
+      "breakpoints": true
     }
   ]
 }

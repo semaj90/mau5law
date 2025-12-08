@@ -1,7 +1,7 @@
-import type { drizzle  } from 'drizzle-orm/node-postgres';
-import type { Pool  } from 'pg';
-import * as schema from './schema-postgres'; // Import all tables as schema
-import type { canvasAutosaves  } from './schema-canvas-autosaves';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+import * as schema from './schema'; // Changed from schema-postgres to schema
+import { canvasAutosaves } from './schema-canvas-autosaves';
 
 const DEFAULT_DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
@@ -27,7 +27,7 @@ export async function closeConnections(): Promise<void> {
   await adminPool.end();
 }
 
-export * from './schema-postgres';
+export * from './schema'; // Changed from schema-postgres
 export { canvasAutosaves } from './schema-canvas-autosaves';
 
 export default {

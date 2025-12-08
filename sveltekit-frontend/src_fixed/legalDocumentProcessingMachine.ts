@@ -2,7 +2,7 @@
  * Legal Document Processing State Machine
  * XState workflow for comprehensive legal document analysis pipeline
  */
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { assign, createMachine, type ActorRefFrom } from 'xstate';
 
 // TODO: Import types from proper location when available
 // import type { LegalDocument, LegalEntities } from '$lib/types';
@@ -93,14 +93,68 @@ const services = {
       content: context.content,
       title: context.title
     };
-  }, analyzeWithAI: async (context: LegalDocumentContext) => { // This would integrate with your Ollama service const mockAnalysis = { keyFindings: ['Contract terms identified', 'Liability clauses present'], complianceStatus: { gdpr: 'Under Review', contractLaw: 'Requires Review' }, recommendedActions: ['Legal review recommended', 'Compliance verification needed'], legalPrecedents: [] } await new Promise((resolve, any) => setTimeout(resolve, 2000); return mockAnalysis;
-}, extractEntities: async (context: LegalDocumentContext) => { // This would integrate with your Context7 MCP service const mockEntities: LegalEntities = { parties: ['John Smith', 'ABC Corporation'], dates: ['2023-01-15', '2023-12-31'], monetary: ['$50,000', '$10,000'], clauses: ['Section 3.1', 'Clause 7.2'], jurisdictions: [context.jurisdiction], caseTypes: [context.caseType] } await new Promise((resolve, any) => setTimeout(resolve, 1500); return mockEntities;
-}, generateSummary: async (context: LegalDocumentContext) => { // This would integrate with your Ollama service const mockSummary = `Legal document summary for ${context.caseType;
-}case in ${context.jurisdiction;
-}jurisdiction. Contains ${context.entities? .parties.length || 0 }parties and ${context.entities?.clauses.length || 0 }legal clauses.`; await new Promise((resolve, any) => setTimeout(resolve, 1000); return mockSummary;
-}, generateEmbedding :  async (context: LegalDocumentContext) => { // This would integrate with your embedding service (nomic-embed-text) const mockEmbedding = new Array(384).fill(0).map(() => Math.random(); await new Promise((resolve, any) => setTimeout(resolve, 500); return mockEmbedding;
-}, assessRisk: async (context: LegalDocumentContext) => { // This would integrate with your AI risk assessment const hasLiability = context.content.toLowerCase().includes('liability'); const riskScore = hasLiability ? 85  :  35; const confidenceScore = 0.87; await new Promise((resolve, any) => setTimeout(resolve, 800); return { riskScore: confidenceScore;
-} }, analyzWithMCP: async (context: LegalDocumentContext) => { // This would integrate with your Context7 MCP service const mockMCPAnalysis = { stackAnalysis: 'SvelteKit + Drizzle + pgvector integration recommended', legalSpecificRecommendations: [ 'Use enhanced evidence schema for storage', 'Implement legal-specific reranking', 'Enable hybrid vector search' ], performanceOptimizations: [ 'Cache frequently accessed legal precedents', 'Use parallel processing for entity extraction' ] } await new Promise((resolve, any) => setTimeout(resolve, 1200); return { mcpAnalysis: mockMCPAnalysis | recommendations, mockMCPAnalysis.legalSpecificRecommendations;
+  },
+  analyzeWithAI: async (context: LegalDocumentContext) => {
+    // This would integrate with your Ollama service
+    const mockAnalysis = {
+      keyFindings: ['Contract terms identified', 'Liability clauses present'],
+      complianceStatus: { gdpr: 'Under Review', contractLaw: 'Requires Review' },
+      recommendedActions: ['Legal review recommended', 'Compliance verification needed'],
+      legalPrecedents: []
+    };
+    await new Promise((resolve: any) => setTimeout(resolve, 2000));
+    return mockAnalysis;
+  },
+  extractEntities: async (context: LegalDocumentContext) => {
+    // This would integrate with your Context7 MCP service
+    const mockEntities: LegalEntities = {
+      parties: ['John Smith', 'ABC Corporation'],
+      dates: ['2023-01-15', '2023-12-31'],
+      monetary: ['$50,000', '$10,000'],
+      clauses: ['Section 3.1', 'Clause 7.2'],
+      jurisdictions: [context.jurisdiction],
+      caseTypes: [context.caseType]
+    };
+    await new Promise((resolve: any) => setTimeout(resolve, 1500));
+    return mockEntities;
+  },
+  generateSummary: async (context: LegalDocumentContext) => {
+    // This would integrate with your Ollama service
+    const mockSummary = `Legal document summary for ${context.caseType} case in ${context.jurisdiction} jurisdiction. Contains ${context.entities?.parties.length || 0} parties and ${context.entities?.clauses.length || 0} legal clauses.`;
+    await new Promise((resolve: any) => setTimeout(resolve, 1000));
+    return mockSummary;
+  },
+  generateEmbedding: async (context: LegalDocumentContext) => {
+    // This would integrate with your embedding service (nomic-embed-text)
+    const mockEmbedding = new Array(384).fill(0).map(() => Math.random());
+    await new Promise((resolve: any) => setTimeout(resolve, 500));
+    return mockEmbedding;
+  },
+  assessRisk: async (context: LegalDocumentContext) => {
+    // This would integrate with your AI risk assessment
+    const hasLiability = context.content.toLowerCase().includes('liability');
+    const riskScore = hasLiability ? 85 : 35;
+    const confidenceScore = 0.87;
+    await new Promise((resolve: any) => setTimeout(resolve, 800));
+    return { riskScore, confidenceScore };
+  },
+  analyzWithMCP: async (context: LegalDocumentContext) => {
+    // This would integrate with your Context7 MCP service
+    const mockMCPAnalysis = {
+      stackAnalysis: 'SvelteKit + Drizzle + pgvector integration recommended',
+      legalSpecificRecommendations: [
+        'Use enhanced evidence schema for storage',
+        'Implement legal-specific reranking',
+        'Enable hybrid vector search'
+      ],
+      performanceOptimizations: [
+        'Cache frequently accessed legal precedents',
+        'Use parallel processing for entity extraction'
+      ]
+    };
+    await new Promise((resolve: any) => setTimeout(resolve, 1200));
+    return { mcpAnalysis: mockMCPAnalysis, recommendations: mockMCPAnalysis.legalSpecificRecommendations };
+  },
   storeDocument: async (context: LegalDocumentContext) => {
     // This would integrate with your database and Qdrant services
     const documentId = `legal_doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;

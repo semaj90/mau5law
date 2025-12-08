@@ -27,7 +27,9 @@ EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
 
--- Evidence table
+-- Evidence table: Clean slate for MVP (Drop legacy incomplete table)
+DROP TABLE IF EXISTS evidence CASCADE;
+
 CREATE TABLE IF NOT EXISTS evidence (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   case_id UUID NOT NULL,
@@ -45,6 +47,7 @@ CREATE TABLE IF NOT EXISTS evidence (
   collected_at TIMESTAMP,
   collected_by TEXT,
   verified_at TIMESTAMP,
+  verified BOOLEAN DEFAULT false,
 
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()

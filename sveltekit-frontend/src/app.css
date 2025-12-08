@@ -1,4 +1,4 @@
-@import '@unocsslayer base, components, utilities;
+@layer base, components, utilities;
 
 /* Custom scrollbar for YoRHa aesthetic */
 .custom-scrollbar::-webkit-scrollbar {

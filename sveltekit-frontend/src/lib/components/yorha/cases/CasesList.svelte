@@ -153,19 +153,6 @@
   <!-- Table Header -->
   <div class="p-4 border-b border-slate-700/50">
     <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-4">
-        <input
-          type="checkbox"
-          class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
-          checked={selectedCases.size === cases.length && cases.length > 0}
-          indeterminate={selectedCases.size > 0 && selectedCases.size < cases.length}
-          on:change={selectAllCases}
-        />
-        <span class="text-sm text-slate-300">
-          {selectedCases.size > 0 ? `${selectedCases.size} selected` : `${cases.length} cases`}
-        </span>
-      </div>
-
       {#if selectedCases.size > 0}
         <div class="flex space-x-2">
           <button class="px-3 py-1 bg-cyan-400/20 hover:bg-cyan-400/30 text-cyan-400 text-sm rounded transition-colors">
@@ -213,7 +200,7 @@
                 type="checkbox"
                 class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                 checked={selectedCases.has(caseItem.id)}
-                on:change={() => toggleCaseSelection(caseItem.id)}
+                onchange={() => toggleCaseSelection(caseItem.id)}
               />
             </td>
 

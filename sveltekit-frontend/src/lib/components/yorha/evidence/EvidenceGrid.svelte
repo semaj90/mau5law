@@ -152,7 +152,7 @@
           class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
           checked={selectedEvidence.size === evidence.length && evidence.length > 0}
           indeterminate={selectedEvidence.size > 0 && selectedEvidence.size < evidence.length}
-          on:change={selectAll}
+          onchange={selectAll}
         />
         <span class="text-sm text-slate-300">
           {selectedEvidence.size > 0 ? `${selectedEvidence.size} selected` : `${evidence.length} items`}
@@ -205,7 +205,7 @@
                 type="checkbox"
                 class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                 checked={selectedEvidence.has(item.id)}
-                on:change={() => toggleSelection(item.id)}
+                onchange={() => toggleSelection(item.id)}
                 onclick={(e) => e.stopPropagation()}
               />
               <span class="text-2xl">{getFileIcon(item.format)}</span>

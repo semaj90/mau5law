@@ -1507,7 +1507,7 @@
 				"--reload"
 			],
 			"options": {
-				"cwd": "${workspaceFolder}/../langextract-go"
+				"cwd": "${workspaceFolder}/../../langextract"
 			},
 			"group": {
 				"kind": "build",
@@ -1520,6 +1520,30 @@
 			},
 			"problemMatcher": [],
 			"detail": "Start FastAPI server for LangExtract text extraction service (http://127.0.0.1:8010/docs)"
+		},
+		{
+			"label": "🔧 Fix SvelteKit route conflicts",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/fix-sveltekit-routes.mjs"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"problemMatcher": [
+				"$tsc"
+			],
+			"detail": "Scan SvelteKit 2 routes, detect conflicts (normalized URLs), disable legacy groups per llm.txt, run svelte-check"
 		}
 	]
 }
