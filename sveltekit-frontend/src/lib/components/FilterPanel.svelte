@@ -61,7 +61,7 @@
 <div class="filter-panel">
   <button
     class="filter-toggle"
-    on:click={() => showPanel = !showPanel}
+    onclick={() => showPanel = !showPanel}
     class:active={showPanel}
   >
     <span class="icon">⚙️</span>
@@ -81,7 +81,7 @@
     <div class="filter-dropdown">
       <div class="filter-header">
         <h3>Filter Persons of Interest</h3>
-        <button class="close-btn" on:click={() => showPanel = false}>✕</button>
+        <button class="close-btn" onclick={() => showPanel = false}>✕</button>
       </div>
 
       <div class="filter-content">
@@ -123,7 +123,7 @@
                 <button
                   class="tag-btn"
                   class:selected={localFilters.tags.includes(tag)}
-                  on:click={() => toggleTag(tag)}
+                  onclick={() => toggleTag(tag)}
                 >
                   #{tag}
                 </button>
@@ -139,7 +139,7 @@
                       #{tag}
                       <button
                         class="remove-tag"
-                        on:click={() => removeTag(tag)}
+                        onclick={() => removeTag(tag)}
                       >
                         ✕
                       </button>
@@ -153,10 +153,10 @@
       </div>
 
       <div class="filter-actions">
-        <button class="reset-btn" on:click={resetFilters}>
+        <button class="reset-btn" onclick={resetFilters}>
           Reset All
         </button>
-        <button class="apply-btn" on:click={applyFilters}>
+        <button class="apply-btn" onclick={applyFilters}>
           Apply Filters
         </button>
       </div>

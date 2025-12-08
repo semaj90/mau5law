@@ -10,6 +10,13 @@ export const auth = new Lucia(
     session: sessions,
   }),
   {
+    env: process.env.NODE_ENV === 'production' ? 'PROD' : 'DEV',
+    sessionCookie: {
+      name: process.env.AUTH_COOKIE_NAME ?? 'yorha_session',
+      attributes: {
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
     getUserAttributes: (user) => ({
       email: user.email,
       role: user.role,

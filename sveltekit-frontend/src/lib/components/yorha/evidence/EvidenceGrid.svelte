@@ -285,7 +285,7 @@
                   type="checkbox"
                   class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                   checked={selectedEvidence.has(item.id)}
-                  on:change={() => toggleSelection(item.id)}
+                  onchange={() => toggleSelection(item.id)}
                 />
               </td>
 

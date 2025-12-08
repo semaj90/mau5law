@@ -7,6 +7,7 @@
 	  type CommandCenterRoute
 	} from '$lib/command-center-manifest';
 	import ErrorModal from '$lib/components/phase78/ErrorModal.svelte';
+	import RouteInspectorDetectiveBoard from '$lib/components/RouteInspectorDetectiveBoard.svelte';
 	import { routeErrorAssistantMachine } from '$lib/phase78/routeErrorAssistantMachine';
 	import { computeRouteCluster, getAllKnownClusters } from '$lib/shared/phase80-route-metadata';
 	import { Dialog } from 'bits-ui';
@@ -166,10 +167,12 @@
 	// ─────────────────────────────────────
 	// Modal State
 	// ─────────────────────────────────────
-	let selectedRoute: CommandCenterRoute | null = null;
-	let modalOpen = false;
-	let errorBrainModalOpen = false;
-	let errorBrainRoutePath: string = '';
+	let selectedRoute = $state<CommandCenterRoute | null>(null);
+	let modalOpen = $state(false);
+	let errorBrainModalOpen = $state(false);
+	let errorBrainRoutePath = $state('');
+	let detectiveBoardOpen = $state(false);
+	let detectiveBoardRoute = $state<any>(null);
 
 	function openRouteModal(route: CommandCenterRoute) {
 		selectedRoute = route;
@@ -179,6 +182,24 @@
 	function closeModal() {
 		modalOpen = false;
 		selectedRoute = null;
+	}
+
+	function openDetectiveBoard(route: CommandCenterRoute) {
+		detectiveBoardRoute = {
+			path: route.href,
+			kind: route.kind as 'page' | 'layout' | 'endpoint',
+			file: `src/routes${route.href === '/' ? '/+page.svelte' : `${route.href.replace(/\/$/, '')}/+page.svelte`}`,
+			summary: route.description,
+			category: route.tab,
+			version: 'v1',
+			requiredPackages: route.badges || [],
+			relatedRoutes: route.relatedRoutes || [],
+			health: route.errorState === 'healthy' ? 'green' : route.errorState === 'flaky' ? 'yellow' : 'red',
+			errorCount: route.errorCount,
+			lastErrorCode: route.lastErrorCode || null,
+			lastErrorMessage: route.lastErrorMessage || null
+		};
+		detectiveBoardOpen = true;
 	}
 
 	function openErrorBrainForRoute(routePath: string) {
@@ -440,7 +461,7 @@
 					<button
 						type="button"
 						class="route-card {getHealthClass(route.errorState)}"
-						onclick={() => openRouteModal(route)}
+						onclick={() => openDetectiveBoard(route)}
 					>
 						<div class="card-header">
 							<span class="route-kind">{route.kind}</span>
@@ -763,6 +784,12 @@
 	bind:open={errorBrainModalOpen}
 	routePath={errorBrainRoutePath}
 	onClose={closeErrorBrain}
+/>
+
+<!-- YoRHa Detective Board (Phase 72/78/82 Integration) -->
+<RouteInspectorDetectiveBoard
+	bind:open={detectiveBoardOpen}
+	route={detectiveBoardRoute}
 />
 
 <style>

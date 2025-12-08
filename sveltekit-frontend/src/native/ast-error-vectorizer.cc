@@ -18,6 +18,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <algorithm>
 #include "error-logger.hpp"
 
@@ -68,11 +69,11 @@ public:
     // Initialize cuBLAS
     cublasStatus_t status = cublasCreate(&cublas_handle);
     if (status != CUBLAS_STATUS_SUCCESS) {
-      CPP_LOG_ERROR("CUBLAS", "Failed to create cuBLAS handle", "CUBLAS_INIT_ERROR");
+      CPP_LOG_ERROR(__FILE__, __LINE__, 0, "Failed to create cuBLAS handle", "CUBLAS_INIT_ERROR", "CUBLAS");
       use_gpu = false;
     } else {
       use_gpu = torch::cuda::is_available();
-      CPP_LOG_INFO("CUBLAS", use_gpu ? "GPU acceleration enabled" : "CPU fallback", "CUBLAS_INIT");
+      CPP_LOG_INFO(use_gpu ? "GPU acceleration enabled" : "CPU fallback", "CUBLAS");
     }
   }
 
@@ -94,11 +95,11 @@ public:
         model.to(torch::kCUDA);
       }
 
-      CPP_LOG_INFO("TORCH", "Loaded BERT model from " + model_path, "MODEL_LOAD");
+      CPP_LOG_INFO("Loaded BERT model from " + model_path, "TORCH");
       return true;
 
     } catch (const c10::Error& e) {
-      CPP_LOG_ERROR("TORCH", "Failed to load model: " + std::string(e.what()), "MODEL_LOAD_ERROR");
+      CPP_LOG_ERROR(__FILE__, __LINE__, 0, "Failed to load model: " + std::string(e.what()), "MODEL_LOAD_ERROR", "TORCH");
       return false;
     }
   }
@@ -146,7 +147,7 @@ public:
       return embedding;
 
     } catch (const c10::Error& e) {
-      CPP_LOG_ERROR("TORCH", "Embedding failed: " + std::string(e.what()), "EMBEDDING_ERROR");
+      CPP_LOG_ERROR(__FILE__, __LINE__, 0, "Embedding failed: " + std::string(e.what()), "EMBEDDING_ERROR", "TORCH");
       return std::vector<float>(EMBEDDING_DIM, 0.0f);
     }
   }
@@ -178,7 +179,7 @@ private:
     cublasStatus_t status = cublasSnrm2(cublas_handle, n, d_data, 1, &norm);
 
     if (status != CUBLAS_STATUS_SUCCESS || norm == 0.0f) {
-      CPP_LOG_ERROR("CUBLAS", "Normalization failed", "CUBLAS_NORM_ERROR");
+      CPP_LOG_ERROR(__FILE__, __LINE__, 0, "Normalization failed", "CUBLAS_NORM_ERROR", "CUBLAS");
       return input;
     }
 
@@ -187,7 +188,7 @@ private:
     status = cublasSscal(cublas_handle, n, &alpha, d_data, 1);
 
     if (status != CUBLAS_STATUS_SUCCESS) {
-      CPP_LOG_ERROR("CUBLAS", "Scaling failed", "CUBLAS_SCALE_ERROR");
+      CPP_LOG_ERROR(__FILE__, __LINE__, 0, "Scaling failed", "CUBLAS_SCALE_ERROR", "CUBLAS");
     }
 
     return input;
@@ -297,13 +298,17 @@ private:
 
   Napi::Value GetErrorCount(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    int count = ErrorLogger::Logger::getInstance().getErrorCount();
+    int count = ErrorLogger::getLogger().getErrorCount();
     return Napi::Number::New(env, count);
   }
 
   Napi::Value ExportErrors(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    std::string json = ErrorLogger::Logger::getInstance().toJSON();
+    // Export to temp file and read it back
+    std::string temp_file = "temp_errors.json";
+    ErrorLogger::getLogger().exportToJson(temp_file);
+    std::ifstream file(temp_file);
+    std::string json((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     return Napi::String::New(env, json);
   }
 };
