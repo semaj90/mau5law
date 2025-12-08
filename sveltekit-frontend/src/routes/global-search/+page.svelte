@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OllamaGetEndpoint  } from '$lib/server/ollama/client';
+  import type { OllamaGetEndpoint } from '$lib/server/ollama/client';
 
   let searchQuery = $state ('');
   let searchResults = $state <any[]>([]);
@@ -216,7 +216,7 @@
             class="search-input"
             placeholder="Enter search query (e.g., 'fraud investigation', 'wire transfer', 'John Doe')..."
             bind:value={searchQuery}
-            on:keydown={(e) => e.key === 'Enter' && performSearch()}
+            onkeydown={(e) => e.key === 'Enter' && performSearch()}
           />
           <button
             class="search-btn {isSearching ? 'searching' : ''}"

@@ -1,24 +1,24 @@
 // Updated PostgreSQL schema based on database introspection // This schema matches the actual database structure (drizzle/schema.ts)
 import { sql } from 'drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
 import {
-  bigint,
-  boolean,
-  integer,
-  jsonb,
-  pgTable,
-  real,
-  serial,
-  text,
-  timestamp,
-  uuid,
-  varchar,
-  unique,
-  foreignKey,
-  numeric,
-  pgEnum,
-  index
+    bigint,
+    boolean,
+    foreignKey,
+    index,
+    integer,
+    jsonb,
+    numeric,
+    pgEnum,
+    pgTable,
+    real,
+    serial,
+    text,
+    timestamp,
+    unique,
+    uuid,
+    varchar
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm/relations';
 
 // Note: vector type is handled via sql`` template in table definitions
 
@@ -53,6 +53,18 @@ export const evidenceTypeEnum = pgEnum("evidence_type", [
   "digital",
   "witness_statement",
   "forensic",
+]);
+export const evidenceRelationshipTypeEnum = pgEnum("evidence_relationship_type", [
+  "supports",
+  "contradicts",
+  "same_person",
+  "timeline",
+  "chain_of_custody",
+]);
+export const evidenceRelationshipStrengthEnum = pgEnum("evidence_relationship_strength", [
+  "low",
+  "medium",
+  "high",
 ]);
 export const threatLevelEnum = pgEnum("threat_level", ["low", "medium", "high", "critical"]);
 export const documentTypeEnum = pgEnum("document_type", [
@@ -101,6 +113,7 @@ export const caseRiskLevelEnum = pgEnum("case_risk_level", [
   "critical",
   "urgent",
 ]);
+export const patchStatusEnum = pgEnum('patch_status', ['suggested', 'applied', 'rejected']);
 
 // === TABLES FOR LEGAL AI APPLICATION ===
 
@@ -328,6 +341,51 @@ export const evidence = pgTable(
         foreignColumns: [users.id],
         name: "evidence_uploaded_by_users_id_fk",
       }).onDelete("set null"),
+    ],
+  })
+);
+
+// === EVIDENCE RELATIONSHIPS ===
+export const evidenceRelationships = pgTable(
+  "evidence_relationships",
+  {
+    id: uuid("id")
+      .default(sql`gen_random_uuid()`)
+      .primaryKey()
+      .notNull(),
+    caseId: uuid("case_id")
+      .notNull(),
+    fromEvidenceId: uuid("from_evidence_id")
+      .notNull(),
+    toEvidenceId: uuid("to_evidence_id")
+      .notNull(),
+    relationshipType: evidenceRelationshipTypeEnum("relationship_type").notNull(),
+    label: text("label"),
+    strength: evidenceRelationshipStrengthEnum("strength").default("medium").notNull(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+  },
+  (table) => ({
+    indexes: [
+      index("evidence_relationships_case_id_idx").on(table.caseId),
+      index("evidence_relationships_from_idx").on(table.fromEvidenceId),
+      index("evidence_relationships_to_idx").on(table.toEvidenceId),
+    ],
+    foreignKeys: [
+      foreignKey({
+        columns: [table.caseId],
+        foreignColumns: [cases.id],
+        name: "evidence_relationships_case_id_fk",
+      }).onDelete("cascade"),
+      foreignKey({
+        columns: [table.fromEvidenceId],
+        foreignColumns: [evidence.id],
+        name: "evidence_relationships_from_fk",
+      }).onDelete("cascade"),
+      foreignKey({
+        columns: [table.toEvidenceId],
+        foreignColumns: [evidence.id],
+        name: "evidence_relationships_to_fk",
+      }).onDelete("cascade"),
     ],
   })
 );
@@ -1773,3 +1831,297 @@ export type NewYoRHaChatMessage = typeof yorhaChatMessages.$inferInsert;
 
 export type YoRHaSystemMetrics = typeof yorhaSystemMetrics.$inferSelect;
 export type NewYoRHaSystemMetrics = typeof yorhaSystemMetrics.$inferInsert;
+
+// ============================================================================
+// PHASE 78: CUTLASS ERROR BRAIN SCHEMA
+// ============================================================================
+
+export const routeHealthStateEnum = pgEnum('route_health_state', [
+	'healthy',
+	'flaky',
+	'broken'
+]);
+
+export const errorSeverityEnum = pgEnum('error_severity', [
+	'info',
+	'warn',
+	'error',
+	'fatal'
+]);
+
+export const errorKindEnum = pgEnum('error_kind', [
+	'typescript',
+	'svelte',
+	'lint',
+	'build',
+	'runtime',
+	'api',
+	'other'
+]);
+
+export const suggestionStateEnum = pgEnum('suggestion_state', [
+	'pending',
+	'applied',
+	'dismissed',
+	'snoozed'
+]);
+
+/**
+ * route_health: Current health state of each route (HMM-style state tracking)
+ */
+export const routeHealth = pgTable(
+	'route_health',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		routePath: varchar('route_path', { length: 255 }).notNull().unique(),
+		file: varchar('file', { length: 500 }),
+		state: routeHealthStateEnum('state').notNull().default('healthy'),
+		recentErrorCount: integer('recent_error_count').notNull().default(0),
+		totalErrorCount: integer('total_error_count').notNull().default(0),
+		lastErrorAt: timestamp('last_error_at'),
+		lastErrorClusterId: uuid('last_error_cluster_id'),
+		lastErrorMessageShort: text('last_error_message_short'),
+		routeCluster: varchar('route_cluster', { length: 100 }),
+		routeOwner: varchar('route_owner', { length: 100 }),
+		updatedAt: timestamp('updated_at').notNull().defaultNow(),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxRoutePath: index('idx_route_health_path').on(table.routePath),
+		idxState: index('idx_route_health_state').on(table.state),
+		idxUpdatedAt: index('idx_route_health_updated').on(table.updatedAt),
+		idxCluster: index('idx_route_health_cluster').on(table.routeCluster)
+	})
+);
+
+/**
+ * error_events: Individual error occurrences
+ */
+export const errorEvents = pgTable(
+	'error_events',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		routePath: varchar('route_path', { length: 255 }).notNull(),
+		file: varchar('file', { length: 500 }),
+		kind: errorKindEnum('kind').notNull().default('other'),
+		severity: errorSeverityEnum('severity').notNull().default('warn'),
+		tsCode: varchar('ts_code', { length: 50 }),
+		message: text('message').notNull(),
+		stack: text('stack'),
+		lineNumber: integer('line_number'),
+		columnNumber: integer('column_number'),
+		clusterId: uuid('cluster_id'),
+		collectedAt: timestamp('collected_at').notNull().defaultNow(),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxRoutePath: index('idx_error_events_route').on(table.routePath),
+		idxKind: index('idx_error_events_kind').on(table.kind),
+		idxClusterId: index('idx_error_events_cluster').on(table.clusterId),
+		idxCollectedAt: index('idx_error_events_collected').on(table.collectedAt)
+	})
+);
+
+/**
+ * error_clusters: Grouped similar errors with embeddings
+ */
+export const errorClusters = pgTable(
+	'error_clusters',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		kind: errorKindEnum('kind').notNull(),
+		severity: errorSeverityEnum('severity').notNull().default('warn'),
+		pattern: text('pattern').notNull(),
+		errorCount: integer('error_count').notNull().default(1),
+		routePaths: text('route_paths').array(),
+		radius: numeric('radius'),
+		lastUpdated: timestamp('last_updated').notNull().defaultNow(),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxKind: index('idx_error_clusters_kind').on(table.kind),
+		idxSeverity: index('idx_error_clusters_severity').on(table.severity)
+	})
+);
+
+/**
+ * error_suggestions: LLM-generated fix suggestions
+ */
+export const errorSuggestions = pgTable(
+	'error_suggestions',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		clusterId: uuid('cluster_id').notNull().references(() => errorClusters.id),
+		title: varchar('title', { length: 255 }).notNull(),
+		explanation: text('explanation').notNull(),
+		patch: text('patch'),
+		confidence: numeric('confidence'),
+		hints: text('hints').array(),
+		generatedAt: timestamp('generated_at').notNull().defaultNow(),
+		appliedCount: integer('applied_count').notNull().default(0),
+		successCount: integer('success_count').notNull().default(0),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxClusterId: index('idx_error_suggestions_cluster').on(table.clusterId)
+	})
+);
+
+/**
+ * route_error_patches: Track patches applied to routes
+ */
+export const routeErrorPatches = pgTable(
+	'route_error_patches',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		routePath: varchar('route_path', { length: 255 }).notNull(),
+    routeFile: varchar('route_file', { length: 500 }),
+    errorCode: varchar('error_code', { length: 64 }).notNull(),
+    suggestionTitle: varchar('suggestion_title', { length: 255 }),
+    patchText: text('patch_text').notNull(),
+    patchExplanation: text('patch_explanation'),
+    confidence: numeric('confidence').notNull().default(sql`0.50`),
+    hints: text('hints').array(),
+    status: patchStatusEnum('status').notNull().default('suggested'),
+    source: varchar('source', { length: 64 }).notNull().default('phase78'),
+    metadata: jsonb('metadata').notNull().default({}),
+    createdBy: integer('created_by').references(() => users.id, { onDelete: 'set null' }),
+    appliedAt: timestamp('applied_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow()
+	},
+	(table) => ({
+    idxRoutePath: index('idx_route_patches_route').on(table.routePath),
+    idxStatus: index('idx_route_patches_status').on(table.status),
+    idxErrorCode: index('idx_route_patches_error_code').on(table.errorCode)
+	})
+);
+
+/**
+ * error_timeline: Timeline of error events for audit trail
+ */
+export const errorTimeline = pgTable(
+	'error_timeline',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		routePath: varchar('route_path', { length: 255 }).notNull(),
+		eventType: varchar('event_type', { length: 50 }).notNull(),
+		description: text('description'),
+		metadata: jsonb('metadata'),
+		occurredAt: timestamp('occurred_at').notNull().defaultNow(),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxRoutePath: index('idx_error_timeline_route').on(table.routePath),
+		idxEventType: index('idx_error_timeline_event').on(table.eventType)
+	})
+);
+
+/**
+ * error_suggestion_states: Track user feedback on AI suggestions (dismiss, snooze, apply)
+ */
+export const errorSuggestionStates = pgTable(
+	'error_suggestion_states',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		suggestionId: uuid('suggestion_id')
+			.notNull()
+			.references(() => errorSuggestions.id, { onDelete: 'cascade' }),
+		routePath: varchar('route_path', { length: 255 }).notNull(),
+		userId: uuid('user_id'),
+		state: suggestionStateEnum('state').notNull().default('pending'),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxSuggestionRoute: index('idx_error_suggestion_states_suggestion_route').on(
+			table.suggestionId,
+			table.routePath
+		),
+		uniqueSuggestionRouteUser: unique('uq_error_suggestion_states_suggestion_route_user').on(
+			table.suggestionId,
+			table.routePath,
+			table.userId
+		)
+	})
+);
+
+/**
+ * error_feedback: User feedback on suggestions
+ */
+export const errorFeedback = pgTable(
+	'error_feedback',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		suggestionId: uuid('suggestion_id').notNull().references(() => errorSuggestions.id),
+		routePath: varchar('route_path', { length: 255 }).notNull(),
+		helpful: boolean('helpful'),
+		accurate: boolean('accurate'),
+		worksSoon: boolean('works_soon'),
+		feedback: text('feedback'),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		idxSuggestionId: index('idx_error_feedback_suggestion').on(table.suggestionId),
+		idxRoutePath: index('idx_error_feedback_route').on(table.routePath)
+	})
+);
+
+// ============================================================================
+// PHASE 78 RELATIONS
+// ============================================================================
+
+export const errorEventsRelations = relations(errorEvents, ({ one }) => ({
+	cluster: one(errorClusters, {
+		fields: [errorEvents.clusterId],
+		references: [errorClusters.id]
+	})
+}));
+
+export const errorClustersRelations = relations(errorClusters, ({ many }) => ({
+	error_events: many(errorEvents),
+	suggestions: many(errorSuggestions)
+}));
+
+export const errorSuggestionsRelations = relations(errorSuggestions, ({ one, many }) => ({
+	cluster: one(errorClusters, {
+		fields: [errorSuggestions.clusterId],
+		references: [errorClusters.id]
+	}),
+	feedback: many(errorFeedback)
+}));
+
+export const errorFeedbackRelations = relations(errorFeedback, ({ one }) => ({
+	suggestion: one(errorSuggestions, {
+		fields: [errorFeedback.suggestionId],
+		references: [errorSuggestions.id]
+	})
+}));
+
+// ============================================================================
+// PHASE 78 TYPE EXPORTS
+// ============================================================================
+
+export type RouteHealth = typeof routeHealth.$inferSelect;
+export type NewRouteHealth = typeof routeHealth.$inferInsert;
+
+export type ErrorEvent = typeof errorEvents.$inferSelect;
+export type NewErrorEvent = typeof errorEvents.$inferInsert;
+
+export type ErrorCluster = typeof errorClusters.$inferSelect;
+export type NewErrorCluster = typeof errorClusters.$inferInsert;
+
+export type ErrorSuggestion = typeof errorSuggestions.$inferSelect;
+export type NewErrorSuggestion = typeof errorSuggestions.$inferInsert;
+
+export type RouteErrorPatch = typeof routeErrorPatches.$inferSelect;
+export type NewRouteErrorPatch = typeof routeErrorPatches.$inferInsert;
+
+export type ErrorTimeline = typeof errorTimeline.$inferSelect;
+export type NewErrorTimeline = typeof errorTimeline.$inferInsert;
+
+export type ErrorSuggestionState = typeof errorSuggestionStates.$inferSelect;
+export type NewErrorSuggestionState = typeof errorSuggestionStates.$inferInsert;
+
+export type ErrorFeedback = typeof errorFeedback.$inferSelect;
+export type NewErrorFeedback = typeof errorFeedback.$inferInsert;

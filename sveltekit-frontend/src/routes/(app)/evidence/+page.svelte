@@ -130,7 +130,7 @@
 					<input
 						type="file"
 						accept=".pdf,image/*,.doc,.docx"
-						on:change={handleFileSelect}
+						onchange={handleFileSelect}
 						style="display: none"
 						id="file-input"
 					/>

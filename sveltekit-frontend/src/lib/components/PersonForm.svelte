@@ -69,7 +69,7 @@
     </div>
 
     <!-- Form -->
-    <form class="form-content" on:submit={handleSubmit}>
+    <form class="form-content" onsubmit={handleSubmit}>
       {#if error}
         <div class="error-message">
           <span class="icon">⚠️</span>

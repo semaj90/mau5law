@@ -91,3 +91,4 @@ export const personsOfInterest = pgTable(
 
 // Export YoRHa v2 Schema
 export * from './schema/yorha';
+export * from './schema/cutlass';

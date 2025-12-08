@@ -1,7 +1,8 @@
 # TODO_CORE - YoRHa Legal AI MVP Launch Checklist
 
-**Date:** December 5, 2025
+**Date:** December 5, 2025 | **Last Updated:** December 7, 2025 ✅
 **Goal:** Get core routes (`/cases/*`, `/evidence/*`, `/legal/*`) functional with auth, AI, and error-free machines.
+**Status:** TypeScript error remediation complete (6/6 errors fixed). Ready for auth & route implementation.
 
 ---
 
@@ -97,21 +98,29 @@ EMBEDDING_MODEL=embeddinggemma:latest
 
 ## 3. Core Machines & Workers (10 Files)
 
-**All must parse without TypeScript errors.**
+**All must parse without TypeScript errors. ✅ ALL VERIFIED CLEAN - 6 ERRORS RESOLVED**
 
 ### State Machines
-- [x] `src/lib/state/legalFormMachine.ts` - Legal form state (previous session)
+- [x] `src/lib/state/legalFormMachine.ts` - Legal form state (verified clean)
 - [x] `src/lib/state/caseManagementMachine.ts` - Case CRUD (verified clean)
 - [x] `src/lib/state/documentUploadMachine.ts` - File upload workflow (verified clean)
 - [x] `src/lib/state/legalDocumentProcessingMachine.ts` - Document ingestion (verified clean)
 - [x] `src/lib/state/evidenceProcessingMachine.ts` - Evidence pipeline (verified clean)
 - [x] `src/lib/state/appMachine.ts` - Global app state (verified clean)
 - [x] `src/lib/state/async-rabbitmq-state-manager.ts` - Queue manager (verified clean)
-- [x] `src/lib/state/crewAIOrchestrationMachine.ts` - Multi-agent AI (verified clean)
+- [x] `src/lib/state/crewAIOrchestrationMachine.ts` - Multi-agent AI (verified clean - CrewAI orchestration)
 
 ### Workers & Utilities
 - [x] `src/lib/workers/embedding-worker.ts` - Web Worker manager (verified clean)
-- [x] `src/lib/text/utf8-fp32-converter.ts` - Text encoder (Unicode fix applied)
+- [x] `src/lib/text/utf8-fp32-converter.ts` - Text encoder (verified clean)
+
+### Pre-Existing TypeScript Errors (Fixed December 7, 2025)
+- [x] `src/routes/yorha/detective/$types.d.ts` - **3 errors fixed** - Interface property type annotations corrected
+- [x] `src/types/gpu.d.ts` - **1 error fixed** - GPU interface method signatures reformatted
+- [x] `src/wasm/legal-parser.ts` - **2 errors fixed** - File reformatted from single-line to proper TypeScript
+
+**Verification Status:** ✅ All 6 pre-existing errors resolved. All 10 core machines + utilities: **0 TypeScript errors**
+**CrewAI Orchestration:** ✅ Completely isolated - 0 errors maintained
 
 ### Verification Commands
 ```bash
@@ -397,4 +406,13 @@ npx tsc --noEmit FILE        # Check single file
 - **Embedding Model:** `embeddinggemma:latest`
 - **Dev Auth Bypass:** Set `DEV_BYPASS_AUTH=true` to skip login
 
-**Last Updated:** December 5, 2025
+**Project Status Summary:**
+- ✅ **Core Machines (Section 3):** 10/10 files verified clean, all XState v5 compliant
+- ✅ **TypeScript Errors (Section 5):** 6/6 pre-existing errors fixed (Dec 7, 2025)
+  - Fixed: `$types.d.ts` (3 errors - interface syntax)
+  - Fixed: `gpu.d.ts` (1 error - interface methods)
+  - Fixed: `legal-parser.ts` (2 errors - file formatting)
+- ⏳ **Next Priority:** Sections 0-2 (Preflight, Routes, Auth)
+- ⏳ **In Progress:** Section 7-10 (Testing, Database, Performance, Launch criteria)
+
+**Last Updated:** December 7, 2025 - TypeScript remediation complete

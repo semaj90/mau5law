@@ -94,7 +94,7 @@
     <p>Describe what happened. We'll auto-structure it into a prosecutable case.</p>
   </header>
 
-  <form on:submit={(e) => { e.preventDefault(); handleSubmit(); }} class="intake-form">
+  <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="intake-form">
     <!-- Main narrative -->
     <div class="form-section">
       <label for="narrative">

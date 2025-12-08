@@ -2,13 +2,13 @@
 <script lang="ts">
   import { afterNavigate, goto } from '$app/navigation';
   import Bot from 'lucide-svelte/icons/bot';
-import ChevronLeft from 'lucide-svelte/icons/chevron-left';
-import ChevronRight from 'lucide-svelte/icons/chevron-right';
-import Cpu from 'lucide-svelte/icons/cpu';
-import Database from 'lucide-svelte/icons/database';
-import Monitor from 'lucide-svelte/icons/monitor';
-import Search from 'lucide-svelte/icons/search';
-import Terminal from 'lucide-svelte/icons/terminal';;
+  import ChevronLeft from 'lucide-svelte/icons/chevron-left';
+  import ChevronRight from 'lucide-svelte/icons/chevron-right';
+  import Cpu from 'lucide-svelte/icons/cpu';
+  import Database from 'lucide-svelte/icons/database';
+  import Monitor from 'lucide-svelte/icons/monitor';
+  import Search from 'lucide-svelte/icons/search';
+  import Terminal from 'lucide-svelte/icons/terminal';
   import type { SvelteComponent } from 'svelte';
   import { onMount } from 'svelte';
   import '../../app.css';
@@ -228,7 +228,7 @@ import Terminal from 'lucide-svelte/icons/terminal';;
     <div
       class="yorha-overlay"
       onclick={closeSidebar}
-      on:keydown={handleSidebarKeydown}
+      onkeydown={handleSidebarKeydown}
       role="button"
       tabindex="0"
       aria-label="Close sidebar overlay"
@@ -248,7 +248,7 @@ import Terminal from 'lucide-svelte/icons/terminal';;
             aria-label="Close sidebar"
             tabindex="0"
             onclick={closeSidebar}
-            on:keydown={handleSidebarKeydown}
+            onkeydown={handleSidebarKeydown}
           >
             <ChevronLeft size={16} />
           </button>

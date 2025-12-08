@@ -377,7 +377,7 @@
               type="file"
               multiple
               aria-label="Attach files"
-              on:change={(event) => {
+              onchange={(event) => {
                 const files = (event.target as HTMLInputElement).files;
                 if (files && files.length) handleFiles(files);
               }}
@@ -469,7 +469,7 @@
                       type="checkbox"
                       value={deliverable}
                       checked={reportForm.deliverables.includes(deliverable)}
-                      on:change={(event) => {
+                      onchange={(event) => {
                         const checked = (event.target as HTMLInputElement).checked;
                         reportForm = {
                           ...reportForm,
@@ -580,7 +580,7 @@
                 <input
                   type="file"
                   aria-label="Evidence file"
-                  on:change={(event) => handleEvidenceFileInput((event.target as HTMLInputElement).files)}
+                  onchange={(event) => handleEvidenceFileInput((event.target as HTMLInputElement).files)}
                 />
               </div>
               <button type="button" class="primary" onclick={uploadEvidence} disabled={evidenceStatus.state === 'running'}>
