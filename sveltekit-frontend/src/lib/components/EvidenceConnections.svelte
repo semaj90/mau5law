@@ -1,6 +1,6 @@
 <script lang="ts">let { evidence = [] } = $props();
 
-	
+
 
 	function getConnectionLines() {
 		const lines = [];
@@ -40,14 +40,12 @@
 			top: `${y1}px`,
 			width: `${length}px`,
 			transform: `rotate(${angle}deg)`,
-			transformOrigin: '0 0'
-		};
-	}
+		transformOrigin: '0 0'
+	};
+}
 
-	$: lines = getConnectionLines();
-</script>
-
-<svg class="connections-svg" width="100%" height="100%">
+	let lines = $derived(getConnectionLines());
+</script><svg class="connections-svg" width="100%" height="100%">
 	{#each lines as line (line.from.id + '-' + line.to.id)}
 		<line
 			x1={line.from.x || 100}

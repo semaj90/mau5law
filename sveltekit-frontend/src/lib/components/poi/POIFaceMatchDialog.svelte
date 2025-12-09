@@ -35,17 +35,12 @@
     confidence: 'high' | 'medium' | 'low';
   }
 
-  let {
-    open = $bindable(false),
-    matches = [],
-    onClose,
-    onSelect
-  }: {
-    open: boolean;
-    matches?: Match[];
-    onClose?: () => void;
-    onSelect?: (poi: POI) => void;
-  } = $props();
+
+
+
+
+  let { open = $bindable(false), matches = [], onClose, onSelect } = $props();
+
 
   function handleClose() {
     open = false;
@@ -80,8 +75,9 @@
   }
 </script>
 
-<Dialog bind:open onclose={handleClose}>
-  <DialogContent class="max-w-4xl max-h-[80vh] overflow-y-auto">
+<Dialog bind:open>
+  <DialogContent>
+    <div class="max-w-4xl max-h-[80vh] overflow-y-auto">
     <DialogHeader>
       <div class="flex items-center gap-2">
         <Search class="w-5 h-5" />
@@ -172,6 +168,7 @@
         <X class="w-4 h-4 mr-2" />
         Close
       </Button>
+    </div>
     </div>
   </DialogContent>
 </Dialog>

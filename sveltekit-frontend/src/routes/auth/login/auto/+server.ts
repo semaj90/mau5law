@@ -1,8 +1,5 @@
-import type { SimpleAuthService  } from '$lib/server/auth-simple';
-import type { lucia  } from '$lib/server/auth'; // Changed to a named import
-import type { RequestHandler } from './$types.js';
+import type { lucia } from '$lib/server/auth'; // Changed to a named import
 import type { SimpleAuthService } from '$lib/server/auth-simple';
-import type { lucia } from '$lib/server/auth';
 import type { RequestHandler } from './$types.js';
 
 // Define the User interface for type safety
@@ -61,7 +58,6 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
                     role: user.role
                 },
                 redirectTo: '/dashboard' // Corrected string literal
-                redirectTo: '/dashboard'
             }),
             {
                 status: 200,
@@ -70,13 +66,10 @@ export const POST: RequestHandler = async ({ cookies, getClientAddress, request 
         );
     } catch (error: Error | unknown) {
         console.error('Demo auto-login error: ', error);
-        return new Response(JSON.stringify({ error: `Auto-login failed. Please try manual login.` }), {
         return new Response(JSON.stringify({ error: 'Auto-login failed. Please try manual login.' }), {
             status: 500,
-            headers: { 'Content-Type': `application/json` }
             headers: { 'Content-Type': 'application/json' }
         });
-    } // Added missing closing brace for the POST function
     }
 };
 

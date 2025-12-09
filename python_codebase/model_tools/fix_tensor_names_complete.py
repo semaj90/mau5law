@@ -1,103 +1,136 @@
 #!/usr/bin/env python3
 """
-Complete TensorRT-LLM tensor name mapping for Gemma3
-Loads all sharded safetensor files and creates proper mapping
+Complete TensorRT-LLM tensor name mapping for Gemma3.
+
+This script loads the HuggingFace checkpoints, normalises the tensor names, and
+emits a TensorRT-LLM ready checkpoint. The previous prototype hard-coded most
+paths which made it difficult to share checkpoints or audit exactly which
+weights were mapped. The refreshed version adds:
+  * CLI parameters for checkpoint, output and layer counts
+  * Robust shard loading with validation
+  * A JSON mapping report so we can prove coverage when debugging TensorRT-LLM
+  * Optional report path override for reproducible investigations
 """
 
-import os
+from __future__ import annotations
+
+import argparse
 import json
-from pathlib import Path
-from safetensors.torch import load_file, save_file
-import torch
+import os
 from collections import OrderedDict
+from pathlib import Path
+from typing import Dict, Iterable, List
 
-def load_all_shards():
-    """Load all sharded safetensor files from HuggingFace checkpoint"""
+import torch
+from safetensors.torch import load_file, save_file
 
-    checkpoint_dir = "/home/james/gemma3_checkpoint_fixed"
-    all_weights = OrderedDict()
 
-    # Load all 5 shards
-    shard_files = [
-        "model-00001-of-00005.safetensors",
-        "model-00002-of-00005.safetensors",
-        "model-00003-of-00005.safetensors",
-        "model-00004-of-00005.safetensors",
-        "model-00005-of-00005.safetensors"
-    ]
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Complete Gemma3 tensor mapping")
+    parser.add_argument(
+        "--checkpoint_dir",
+        type=Path,
+        default=Path("/home/james/gemma3_checkpoint_fixed"),
+        help="Directory that contains HuggingFace shard files",
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=Path,
+        default=Path("/home/james/gemma3_trtllm_complete"),
+        help="Directory for TensorRT-LLM checkpoint + config",
+    )
+    parser.add_argument(
+        "--num_layers",
+        type=int,
+        default=48,
+        help="Transformer layer count (Gemma3-27B = 48)",
+    )
+    parser.add_argument(
+        "--shards",
+        nargs="*",
+        default=[
+            "model-00001-of-00005.safetensors",
+            "model-00002-of-00005.safetensors",
+            "model-00003-of-00005.safetensors",
+            "model-00004-of-00005.safetensors",
+            "model-00005-of-00005.safetensors",
+        ],
+        help="List of shard file names relative to checkpoint_dir",
+    )
+    parser.add_argument(
+        "--report_file",
+        type=Path,
+        default=None,
+        help="Optional JSON file for the mapping audit report",
+    )
+    return parser.parse_args()
+
+
+def load_all_shards(checkpoint_dir: Path, shard_files: Iterable[str]) -> OrderedDict:
+    """Load every shard into an ordered dict matching the HuggingFace layout."""
+
+    all_weights: OrderedDict[str, torch.Tensor] = OrderedDict()
 
     for shard_file in shard_files:
-        shard_path = os.path.join(checkpoint_dir, shard_file)
+        shard_path = checkpoint_dir / shard_file
+        if not shard_path.exists():
+            raise FileNotFoundError(f"Missing shard: {shard_path}")
+
         print(f"📁 Loading {shard_file}...")
-
-        shard_weights = load_file(shard_path)
+        shard_weights = load_file(str(shard_path))
         print(f"   Loaded {len(shard_weights)} tensors")
-
-        # Merge into all_weights
         all_weights.update(shard_weights)
 
     print(f"📊 Total tensors loaded: {len(all_weights)}")
 
-    # Check layer distribution
-    layer_counts = {}
+    layer_counts: Dict[int, int] = {}
     for key in all_weights.keys():
-        if "layers." in key:
-            layer_num = key.split(".layers.")[1].split(".")[0]
-            if layer_num.isdigit():
-                layer_counts[int(layer_num)] = layer_counts.get(int(layer_num), 0) + 1
+        if ".layers." not in key:
+            continue
+        layer_num = key.split(".layers.")[1].split(".")[0]
+        if layer_num.isdigit():
+            idx = int(layer_num)
+            layer_counts[idx] = layer_counts.get(idx, 0) + 1
 
     if layer_counts:
-        min_layer = min(layer_counts.keys())
-        max_layer = max(layer_counts.keys())
-        print(f"📊 Layers found: {min_layer} to {max_layer} ({len(layer_counts)} layers)")
+        print(
+            f"📊 Layers found: {min(layer_counts.keys())} to {max(layer_counts.keys())} "
+            f"({len(layer_counts)} layers)"
+        )
 
     return all_weights
 
-def create_tensor_mapping():
-    """Create complete mapping from HuggingFace names to TensorRT-LLM names"""
 
-    mapping = {
-        # Embedding layer
+def create_tensor_mapping(num_layers: int) -> Dict[str, str]:
+    mapping: Dict[str, str] = {
         "language_model.model.embed_tokens.weight": "transformer.vocab_embedding.weight",
-
-        # Final layer norm
         "language_model.model.norm.weight": "transformer.ln_f.weight",
-
-        # LM head (will be shared with embeddings in TensorRT-LLM)
-        "language_model.lm_head.weight": "lm_head.weight"
+        "language_model.lm_head.weight": "lm_head.weight",
     }
 
-    # Generate layer mappings for all 48 layers
-    for i in range(48):
+    for i in range(num_layers):
         layer_prefix_hf = f"language_model.model.layers.{i}"
         layer_prefix_trt = f"transformer.layers.{i}"
 
-        # Layer norm mappings
         mapping[f"{layer_prefix_hf}.input_layernorm.weight"] = f"{layer_prefix_trt}.input_layernorm.weight"
         mapping[f"{layer_prefix_hf}.post_attention_layernorm.weight"] = f"{layer_prefix_trt}.post_layernorm.weight"
 
-        # MLP mappings
         mapping[f"{layer_prefix_hf}.mlp.gate_proj.weight"] = f"{layer_prefix_trt}.mlp.gate.weight"
         mapping[f"{layer_prefix_hf}.mlp.up_proj.weight"] = f"{layer_prefix_trt}.mlp.fc.weight"
         mapping[f"{layer_prefix_hf}.mlp.down_proj.weight"] = f"{layer_prefix_trt}.mlp.proj.weight"
 
-        # Attention projections (will be combined into qkv)
-        # Individual q,k,v projections will be combined in convert_checkpoint()
         mapping[f"{layer_prefix_hf}.self_attn.o_proj.weight"] = f"{layer_prefix_trt}.attention.dense.weight"
 
     return mapping
 
-def combine_qkv_weights(hf_weights, layer_idx):
-    """Combine separate q,k,v weights into single qkv weight for TensorRT-LLM"""
 
+def combine_qkv_weights(hf_weights: Dict[str, torch.Tensor], layer_idx: int) -> torch.Tensor | None:
     layer_prefix = f"language_model.model.layers.{layer_idx}.self_attn"
-
-    # Get individual projection weights
     q_key = f"{layer_prefix}.q_proj.weight"
     k_key = f"{layer_prefix}.k_proj.weight"
     v_key = f"{layer_prefix}.v_proj.weight"
 
-    if not all(key in hf_weights for key in [q_key, k_key, v_key]):
+    if not all(key in hf_weights for key in (q_key, k_key, v_key)):
         print(f"⚠️  Missing q/k/v weights for layer {layer_idx}")
         return None
 
@@ -105,76 +138,68 @@ def combine_qkv_weights(hf_weights, layer_idx):
     k_weight = hf_weights[k_key]
     v_weight = hf_weights[v_key]
 
-    # Combine into qkv format expected by TensorRT-LLM
-    # Format: [q_heads, k_heads, v_heads] concatenated along dim 0
-    qkv_weight = torch.cat([q_weight, k_weight, v_weight], dim=0)
+    if q_weight.shape != k_weight.shape or q_weight.shape != v_weight.shape:
+        raise ValueError(
+            f"QKV shape mismatch in layer {layer_idx}: "
+            f"{q_weight.shape} vs {k_weight.shape} vs {v_weight.shape}"
+        )
 
-    return qkv_weight
+    if q_weight.ndim < 2:
+        raise ValueError(f"Unexpected tensor rank for QKV in layer {layer_idx}: {q_weight.ndim}")
 
-def convert_checkpoint():
-    """Convert complete HuggingFace checkpoint to TensorRT-LLM format"""
+    return torch.cat([q_weight, k_weight, v_weight], dim=0)
 
-    TRT_CHECKPOINT_DIR = "/home/james/gemma3_trtllm_complete"
 
+def convert_checkpoint(args: argparse.Namespace) -> Path:
     print("🔹 Loading all HuggingFace checkpoint shards...")
-    hf_weights = load_all_shards()
+    hf_weights = load_all_shards(args.checkpoint_dir, args.shards)
 
-    # Create TensorRT-LLM weights dictionary
-    trt_weights = OrderedDict()
-
-    # Get mapping
-    mapping = create_tensor_mapping()
+    trt_weights: OrderedDict[str, torch.Tensor] = OrderedDict()
+    mapping = create_tensor_mapping(args.num_layers)
 
     print("🔄 Converting tensor names...")
+    direct_hits: List[str] = []
+    missing_expected: List[str] = []
 
-    # Apply direct mappings
-    converted_count = 0
     for hf_name, trt_name in mapping.items():
-        if hf_name in hf_weights:
-            trt_weights[trt_name] = hf_weights[hf_name]
-            print(f"✓ {hf_name} -> {trt_name}")
-            converted_count += 1
+        tensor = hf_weights.get(hf_name)
+        if tensor is None:
+            missing_expected.append(hf_name)
+            continue
+        trt_weights[trt_name] = tensor
+        direct_hits.append(hf_name)
+        print(f"✓ {hf_name} -> {trt_name}")
 
-    print(f"📊 Direct mappings applied: {converted_count}")
+    print(f"📊 Direct mappings applied: {len(direct_hits)}")
 
-    # Handle QKV combinations
     print("🔄 Combining QKV projections...")
-    qkv_count = 0
-    for i in range(48):
+    qkv_layers: List[int] = []
+    for i in range(args.num_layers):
         layer_prefix_trt = f"transformer.layers.{i}"
-
         qkv_weight = combine_qkv_weights(hf_weights, i)
-        if qkv_weight is not None:
-            trt_weights[f"{layer_prefix_trt}.attention.qkv.weight"] = qkv_weight
-            print(f"✓ Layer {i}: Combined q,k,v -> qkv ({qkv_weight.shape})")
-            qkv_count += 1
+        if qkv_weight is None:
+            continue
+        trt_weights[f"{layer_prefix_trt}.attention.qkv.weight"] = qkv_weight
+        qkv_layers.append(i)
+        print(f"✓ Layer {i}: Combined q,k,v -> qkv ({tuple(qkv_weight.shape)})")
 
-    print(f"📊 QKV combinations created: {qkv_count}")
+    print(f"📊 QKV combinations created: {len(qkv_layers)}")
 
-    # Check for any additional required tensors
-    print("🔍 Checking for additional tensor requirements...")
-
-    # Add final layer norm if missing but present in HF
-    if "language_model.model.norm.weight" in hf_weights and "transformer.ln_f.weight" not in trt_weights:
-        trt_weights["transformer.ln_f.weight"] = hf_weights["language_model.model.norm.weight"]
-        print("✓ Added final layer norm")
+    embedding_shared = configure_embedding_sharing(trt_weights, hf_weights)
+    if embedding_shared:
+        print("✓ Embedding sharing ready (lm_head uses vocab embedding)")
 
     print(f"📊 Total TensorRT-LLM tensors created: {len(trt_weights)}")
 
-    # Create output directory
-    os.makedirs(TRT_CHECKPOINT_DIR, exist_ok=True)
+    os.makedirs(args.output_dir, exist_ok=True)
+    save_file(trt_weights, str(args.output_dir / "rank0.safetensors"))
 
-    # Save converted weights
-    print("💾 Saving complete TensorRT-LLM checkpoint...")
-    save_file(trt_weights, f"{TRT_CHECKPOINT_DIR}/rank0.safetensors")
-
-    # Create TensorRT-LLM config
     config = {
         "architecture": "GemmaForCausalLM",
         "dtype": "float16",
         "hidden_size": 4096,
         "intermediate_size": 16384,
-        "num_hidden_layers": 48,
+        "num_hidden_layers": args.num_layers,
         "num_attention_heads": 32,
         "num_key_value_heads": 8,
         "vocab_size": 262208,
@@ -192,37 +217,116 @@ def convert_checkpoint():
             "max_output_len": 2048,
             "max_beam_width": 1,
             "vocab_size": 262208,
-            "num_layers": 48,
+            "num_layers": args.num_layers,
             "num_heads": 32,
             "num_kv_heads": 8,
             "hidden_size": 4096,
             "inter_size": 16384,
-            "head_size": 128
-        }
+            "head_size": 128,
+        },
     }
 
-    with open(f"{TRT_CHECKPOINT_DIR}/config.json", 'w') as f:
+    with open(args.output_dir / "config.json", "w") as f:
         json.dump(config, f, indent=2)
 
-    print(f"✅ Complete TensorRT-LLM checkpoint saved to: {TRT_CHECKPOINT_DIR}")
-
-    # File size info
-    checkpoint_size = os.path.getsize(f"{TRT_CHECKPOINT_DIR}/rank0.safetensors") / (1024**3)
-    print(f"📁 Files created:")
+    checkpoint_size = os.path.getsize(args.output_dir / "rank0.safetensors") / (1024**3)
+    print(f"✅ Complete TensorRT-LLM checkpoint saved to: {args.output_dir}")
+    print("📁 Files created:")
     print(f"   - rank0.safetensors ({checkpoint_size:.1f}GB)")
-    print(f"   - config.json")
+    print("   - config.json")
 
-    return TRT_CHECKPOINT_DIR
+    create_mapping_report(
+        args=args,
+        mapping=mapping,
+        hf_weights=hf_weights,
+        trt_weights=trt_weights,
+        direct_hits=direct_hits,
+        missing_expected=missing_expected,
+        qkv_layers=qkv_layers,
+        embedding_shared=embedding_shared,
+    )
+
+    return args.output_dir
+
+
+def configure_embedding_sharing(
+    trt_weights: OrderedDict[str, torch.Tensor], hf_weights: Dict[str, torch.Tensor]
+) -> bool:
+    """Ensure lm_head reuses the vocab embedding tensor."""
+
+    vocab_key = "transformer.vocab_embedding.weight"
+    lm_head_target = "lm_head.weight"
+
+    if vocab_key not in trt_weights:
+        print("⚠️  Cannot configure embedding sharing - vocab embedding missing")
+        return False
+
+    vocab_tensor = trt_weights[vocab_key]
+    lm_head_tensor = hf_weights.get("language_model.lm_head.weight")
+
+    if lm_head_tensor is not None and not torch.equal(lm_head_tensor, vocab_tensor):
+        print("⚠️  HF lm_head differs from embeddings - forcing share for TensorRT-LLM")
+
+    trt_weights[lm_head_target] = vocab_tensor
+    return True
+
+
+def create_mapping_report(
+    *,
+    args: argparse.Namespace,
+    mapping: Dict[str, str],
+    hf_weights: Dict[str, torch.Tensor],
+    trt_weights: Dict[str, torch.Tensor],
+    direct_hits: List[str],
+    missing_expected: List[str],
+    qkv_layers: List[int],
+    embedding_shared: bool,
+) -> None:
+    """Emit a JSON report so we know what was mapped and what was skipped."""
+
+    unmapped_hf = sorted(
+        set(hf_weights.keys())
+        - set(direct_hits)
+        - {
+            f"language_model.model.layers.{i}.self_attn.{proj}_proj.weight"
+            for i in range(args.num_layers)
+            for proj in ("q", "k", "v")
+        }
+    )
+
+    report = {
+        "hf_checkpoint_dir": str(args.checkpoint_dir),
+        "output_dir": str(args.output_dir),
+        "num_layers": args.num_layers,
+        "direct_mapped": len(direct_hits),
+        "expected_missing": missing_expected,
+        "qkv_layers": qkv_layers,
+        "total_trt_tensors": len(trt_weights),
+        "embedding_shared": embedding_shared,
+        "unmapped_hf_sample": unmapped_hf[:50],  # keep report readable
+    }
+
+    report_path = args.report_file or (args.output_dir / "mapping_report.json")
+    with open(report_path, "w") as f:
+        json.dump(report, f, indent=2)
+
+    print(f"📝 Mapping report saved to {report_path}")
+
 
 if __name__ == "__main__":
     print("Starting complete HuggingFace to TensorRT-LLM checkpoint conversion...")
+    cli_args = parse_args()
 
     try:
-        checkpoint_dir = convert_checkpoint()
+        checkpoint_dir = convert_checkpoint(cli_args)
         print("\n🎉 Complete conversion successful!")
         print("Next: Build TensorRT engine")
-        print(f"Command: trtllm-build --checkpoint_dir {checkpoint_dir} --output_dir /home/james/gemma3_engine_complete")
-    except Exception as e:
+        print(
+            "Command: trtllm-build --checkpoint_dir "
+            f"{checkpoint_dir} --output_dir /home/james/gemma3_engine_complete"
+        )
+    except Exception as e:  # pragma: no cover - runtime aid
         print(f"\n❌ Conversion failed: {e}")
         import traceback
+
         traceback.print_exc()

@@ -1,32 +1,32 @@
 [
   {
-    "name": "rag",
-    "uuid": "662c463c-aef3-4266-8762-8549143ff674",
-    "port": 5173,
-    "endpoint": "/ws/662c463c-aef3-4266-8762-8549143ff674"
-  },
-  {
-    "name": "chat",
-    "uuid": "e079c42b-66e6-4e59-b470-fd3678ef2e86",
-    "port": 5174,
-    "endpoint": "/ws/e079c42b-66e6-4e59-b470-fd3678ef2e86"
-  },
-  {
     "name": "canvas",
-    "uuid": "be6c6eff-42c5-4aaa-ae07-86e512650192",
-    "port": 5175,
-    "endpoint": "/ws/be6c6eff-42c5-4aaa-ae07-86e512650192"
+    "uuid": "f9018313-a43b-4392-87a8-b421fbe686bc",
+    "port": 5173,
+    "endpoint": "/ws/f9018313-a43b-4392-87a8-b421fbe686bc"
   },
   {
     "name": "notifications",
-    "uuid": "e6976b4d-6785-4d36-bf48-e805d5b0d0cf",
-    "port": 5176,
-    "endpoint": "/ws/e6976b4d-6785-4d36-bf48-e805d5b0d0cf"
+    "uuid": "20ab55af-ae1d-409a-8b72-5616f0684a8e",
+    "port": 5174,
+    "endpoint": "/ws/20ab55af-ae1d-409a-8b72-5616f0684a8e"
   },
   {
     "name": "enhanced-rag",
-    "uuid": "be2dbbbe-ddd2-4a9f-ba60-5c78e2e07c29",
+    "uuid": "d3823db4-a209-48cd-a40e-6eb195c5213c",
+    "port": 5175,
+    "endpoint": "/ws/d3823db4-a209-48cd-a40e-6eb195c5213c"
+  },
+  {
+    "name": "rag",
+    "uuid": "8668824a-7e76-4dde-8a7e-275616243350",
+    "port": 5176,
+    "endpoint": "/ws/8668824a-7e76-4dde-8a7e-275616243350"
+  },
+  {
+    "name": "chat",
+    "uuid": "22bef94c-6c0a-4e51-97a3-0ca32739f5ad",
     "port": 5177,
-    "endpoint": "/ws/be2dbbbe-ddd2-4a9f-ba60-5c78e2e07c29"
+    "endpoint": "/ws/22bef94c-6c0a-4e51-97a3-0ca32739f5ad"
   }
 ]

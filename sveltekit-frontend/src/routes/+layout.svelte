@@ -112,17 +112,6 @@
 
 <style>
   /* YoRHa Terminal Aesthetic */
-  .terminal-glow {
-    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
-  }
-
-  .cyber-grid {
-    background-image:
-      linear-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34, 211, 238, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
   /* Custom scrollbar for terminal aesthetic */
   ::-webkit-scrollbar {
     width: 8px;

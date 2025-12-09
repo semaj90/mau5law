@@ -1,41 +1,16 @@
-import type { Lucia  } from 'lucia';
-import type { drizzleAdapter  } from '@lucia-auth/adapter-drizzle';
-import type { User as LuciaUser } from 'lucia';
-import type { db  } from '$lib/server/db/client';
-import type { users, sessions  } from '$lib/server/db/schema-postgres';
+// PHASE 72 TESTING STUB - Auth completely disabled
+// DEV_BYPASS_AUTH=true in .env means no actual auth is needed
 
-export const auth = new Lucia(
-  drizzleAdapter(db, {
-    user: users,
-    session: sessions,
-  }),
-  {
-    env: process.env.NODE_ENV === 'production' ? 'PROD' : 'DEV',
-    sessionCookie: {
-      name: process.env.AUTH_COOKIE_NAME ?? 'yorha_session',
-      attributes: {
-        secure: process.env.NODE_ENV === 'production',
-      },
-    },
-    getUserAttributes: (user) => ({
-      email: user.email,
-      role: user.role,
-    }),
-  }
-);
+export const auth = {
+  sessionCookieName: 'yorha_session',
+  validateSession: async () => ({ session: null, user: null }),
+  createSessionCookie: () => ({ name: 'yorha_session', value: '', attributes: {} }),
+  createBlankSessionCookie: () => ({ name: 'yorha_session', value: '', attributes: {} })
+};
+
 export type Auth = typeof auth;
+export type User = any;
 
-interface DatabaseUserAttributes {
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  isActive: boolean;
-  avatarUrl: string;
-}
-
-// Augment the 'lucia' module to declare DatabaseUserAttributes
-declare module 'lucia' {
   interface Register {
     Lucia: typeof auth;
     DatabaseUserAttributes: DatabaseUserAttributes;

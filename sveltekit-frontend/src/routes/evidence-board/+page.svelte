@@ -67,10 +67,10 @@
 	<div class="board-header">
 		<h1>Evidence Board</h1>
 		<div class="zoom-controls">
-			<button on:click={handleZoomOut} title="Zoom Out (Ctrl+-)">−</button>
+			<button onclick={handleZoomOut} title="Zoom Out (Ctrl+-)">−</button>
 			<span class="zoom-level">{zoom}%</span>
-			<button on:click={handleZoomIn} title="Zoom In (Ctrl++)">+</button>
-			<button on:click={handleZoomReset} title="Reset (Ctrl+0)">Reset</button>
+			<button onclick={handleZoomIn} title="Zoom In (Ctrl++)">+</button>
+			<button onclick={handleZoomReset} title="Reset (Ctrl+0)">Reset</button>
 		</div>
 	</div>
 
@@ -84,7 +84,10 @@
 					<div
 						class="list-item"
 						class:selected={selectedEvidence?.id === item.id}
-						on:click={() => (selectedEvidence = item)}
+						onclick={() => (selectedEvidence = item)}
+						onkeydown={(e) => e.key === 'Enter' && (selectedEvidence = item)}
+						role="button"
+						tabindex="0"
 					>
 						<div class="status-indicator" style="background: {item.status_color}"></div>
 						<div class="list-item-content">
@@ -99,10 +102,12 @@
 		<!-- Center Canvas: Evidence Cards -->
 		<div
 			class="canvas"
-			on:mousedown={handleMouseDown}
-			on:mousemove={handleMouseMove}
-			on:mouseup={handleMouseUp}
-			on:mouseleave={handleMouseUp}
+			onmousedown={handleMouseDown}
+			onmousemove={handleMouseMove}
+			onmouseup={handleMouseUp}
+			onmouseleave={handleMouseUp}
+			role="application"
+			aria-label="Evidence board canvas"
 		>
 			<div class="canvas-content" style="transform: translate({panX}px, {panY}px) scale({zoom / 100})">
 				<!-- Connection Lines -->

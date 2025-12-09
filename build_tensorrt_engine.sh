@@ -13,24 +13,37 @@ echo "🚀 Building TensorRT-LLM Engine for Gemma3 Legal AI"
 echo "📋 Model: Gemma3 (24GB) -> TensorRT-LLM optimized"
 
 # Build configuration
-HF_MODEL_DIR="model_unsloth_hf_f16"
-ENGINE_DIR="gemma3_trt_engine_optimized"
-MAX_BATCH_SIZE=8
-MAX_INPUT_LEN=2048
-MAX_OUTPUT_LEN=1024
-MAX_BEAM_WIDTH=1
+HF_SHARD_DIR="${HF_SHARD_DIR:-/home/james/gemma3_checkpoint_fixed}"
+MAPPED_CHECKPOINT_DIR="${MAPPED_CHECKPOINT_DIR:-/home/james/gemma3_trtllm_complete}"
+ENGINE_DIR="${ENGINE_DIR:-gemma3_trt_engine_optimized}"
+MAX_BATCH_SIZE="${MAX_BATCH_SIZE:-4}"
+MAX_INPUT_LEN="${MAX_INPUT_LEN:-2048}"
+MAX_OUTPUT_LEN="${MAX_OUTPUT_LEN:-2048}"
+MAX_BEAM_WIDTH="${MAX_BEAM_WIDTH:-1}"
 
 echo "⚙️  Configuration:"
+echo "   - HF shards: $HF_SHARD_DIR"
+echo "   - TRT checkpoint: $MAPPED_CHECKPOINT_DIR"
+echo "   - Engine dir: $ENGINE_DIR"
 echo "   - Batch Size: $MAX_BATCH_SIZE"
 echo "   - Max Input: $MAX_INPUT_LEN tokens"
 echo "   - Max Output: $MAX_OUTPUT_LEN tokens"
 echo "   - Precision: FP16"
 
-# Method 1: Try direct HF -> TensorRT build (TensorRT-LLM 1.1.0rc5 supports this)
-echo "🔄 Method 1: Direct HuggingFace to TensorRT build..."
+# Step 1: ensure checkpoint directory for TensorRT-LLM naming exists
+CONVERT_SCRIPT="python_codebase/model_tools/fix_tensor_names_complete.py"
+echo "🔄 Running tensor name mapping via $CONVERT_SCRIPT..."
+python "$CONVERT_SCRIPT" \
+    --checkpoint_dir "$HF_SHARD_DIR" \
+    --output_dir "$MAPPED_CHECKPOINT_DIR"
 
+echo "🔍 Mapping report:"
+cat "$MAPPED_CHECKPOINT_DIR/mapping_report.json" | head -n 40 || true
+
+# Step 2: Build TensorRT engine from converted checkpoint
+echo "🔄 Building TensorRT engine from converted checkpoint..."
 trtllm-build \
-    --checkpoint_dir "$HF_MODEL_DIR" \
+    --checkpoint_dir "$MAPPED_CHECKPOINT_DIR" \
     --output_dir "$ENGINE_DIR" \
     --gemm_plugin float16 \
     --gpt_attention_plugin float16 \

@@ -203,7 +203,7 @@
       <aside class="ai-assistant-panel">
         <div class="panel-header">
           <span>AI LEGAL ASSISTANT — {aiMode} MODE ACTIVE</span>
-          <button class="mode-toggle" onclick={cycleAIMode}>
+          <button class="mode-toggle" onclick={cycleAIMode} aria-label="Toggle AI mode">
             <span class="status-dot active"></span>
           </button>
         </div>

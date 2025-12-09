@@ -1,81 +1,118 @@
 /**
- * Citation Collections API
- * GET: List user's collections
- * POST: Create collection
+ * Phase 2 Sprint S-A: Citation Collections API
+ * GET /api/citations/collections - List collections
+ * POST /api/citations/collections - Create collection
  */
 
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { getUser } from '$lib/server/auth/lucia';
-import { citationLibraryService } from '$lib/server/services/citation-library.service';
+import { db } from '$lib/server/db';
+import { AuditService } from '$lib/server/services/audit.service';
+import type { CitationCollection } from '$lib/types/citations';
+
+const auditService = new AuditService();
 
 /**
- * GET: List collections
+ * GET /api/citations/collections
+ * List user's citation collections
  */
-export const GET: RequestHandler = async ({ url, locals }) => {
+export const GET: RequestHandler = async ({ locals }) => {
   try {
-    const user = await getUser(locals);
-    if (!user) {
-      return json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    // Check authentication
+    if (!locals.user) {
+      return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const isPublic = url.searchParams.get('is_public');
-
-    const collections = await citationLibraryService.getCollections(
-      user.id,
-      isPublic === 'true' ? true : isPublic === 'false' ? false : undefined
+    const result = await db.query(
+      `SELECT
+        cc.*,
+        COUNT(DISTINCT cit.citation_id) as citation_count
+      FROM citation_collections cc
+      LEFT JOIN collection_citations cit ON cc.id = cit.collection_id
+      WHERE cc.user_id = $1
+      GROUP BY cc.id
+      ORDER BY cc.created_at DESC`,
+      [locals.user.id]
     );
 
-    return json({
-      success: true,
-      collections,
-      count: collections.length,
-    });
+    const collections = result.rows.map(row => ({
+      id: row.id,
+      userId: row.user_id,
+      name: row.name,
+      description: row.description,
+      color: row.color,
+      isPublic: row.is_public,
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at),
+      citationCount: parseInt(row.citation_count)
+    }));
+
+    return json(collections);
   } catch (error) {
     console.error('Error listing collections:', error);
     return json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to list collections',
-      },
+      { error: 'Failed to list collections' },
       { status: 500 }
     );
   }
 };
 
 /**
- * POST: Create collection
+ * POST /api/citations/collections
+ * Create a new collection
  */
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const user = await getUser(locals);
-    if (!user) {
-      return json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    // Check authentication
+    if (!locals.user) {
+      return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
-    const { name, description, is_public } = body;
 
-    if (!name) {
-      return json({ success: false, error: 'name is required' }, { status: 400 });
+    // Validate required fields
+    if (!body.name) {
+      return json(
+        { error: 'Collection name is required' },
+        { status: 400 }
+      );
     }
 
-    const collection = await citationLibraryService.createCollection(user.id, {
-      name,
-      description,
-      is_public,
+    const result = await db.query(
+      `INSERT INTO citation_collections (
+        user_id, name, description, color, is_public
+      ) VALUES ($1, $2, $3, $4, $5)
+      RETURNING *`,
+      [
+        locals.user.id,
+        body.name,
+        body.description || null,
+        body.color || null,
+        body.isPublic || false
+      ]
+    );
+
+    const collection: CitationCollection = {
+      id: result.rows[0].id,
+      userId: result.rows[0].user_id,
+      name: result.rows[0].name,
+      description: result.rows[0].description,
+      color: result.rows[0].color,
+      isPublic: result.rows[0].is_public,
+      createdAt: new Date(result.rows[0].created_at),
+      updatedAt: new Date(result.rows[0].updated_at)
+    };
+
+    // Log audit event
+    await auditService.logAction(locals.user.id, 'collection_created', {
+      collectionId: collection.id,
+      collectionName: collection.name
     });
 
-    return json({
-      success: true,
-      collection,
-    });
+    return json(collection, { status: 201 });
   } catch (error) {
     console.error('Error creating collection:', error);
     return json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to create collection',
-      },
+      { error: 'Failed to create collection' },
       { status: 500 }
     );
   }
