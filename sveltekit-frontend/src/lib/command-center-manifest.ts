@@ -1,4 +1,4 @@
-export type TabId = 'cases' | 'evidence' | 'persons' | 'system';
+export type TabId = 'cases' | 'evidence' | 'persons' | 'system' | 'routes';
 
 export type CommandCenterRoute = {
 	tab: TabId;
@@ -13,6 +13,29 @@ export type CommandCenterRoute = {
 	errorState?: 'healthy' | 'flaky' | 'broken';
 	errorCount?: number;
 	lastErrorAt?: string | null;
+};
+
+// Phase 72 Task Definition
+export type Phase72Task = {
+	id: string;
+	tab: TabId;
+	title: string;
+	description: string;
+	intent: string;
+	phase: number;
+	priority: 'high' | 'medium' | 'active' | 'complete';
+	tags: string[];
+	actions?: Array<{
+		label: string;
+		command: string;
+		expected: string;
+	}>;
+	validation?: {
+		command?: string;
+		query?: string;
+		expectation: string;
+	};
+	status?: Record<string, any>;
 };
 
 export const BADGE_DESCRIPTIONS: Record<string, string> = {
@@ -234,3 +257,15 @@ export function enrichRoutesWithPhase72(
 		};
 	});
 }
+
+// Import Phase 72 restructure tasks
+import {
+    phase6_72_restructure_tasks,
+    tasksByPriority,
+    tasksByTab
+} from './phase72/command-center-restructure-tasks';
+
+// Export Phase 72 tasks for NES modal integration
+export { phase6_72_restructure_tasks, tasksByPriority, tasksByTab };
+export type { Phase72Task };
+

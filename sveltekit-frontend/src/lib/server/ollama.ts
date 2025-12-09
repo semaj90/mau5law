@@ -4,9 +4,24 @@
  */
 
 export function getOllamaEndpoint(): string {
-  const endpoint = process.env.OLLAMA_ENDPOINT || 'http://localhost:11434';
-  return endpoint;
+	if (process.env.OLLAMA_URL && String(process.env.OLLAMA_URL).trim() !== '') {
+		return String(process.env.OLLAMA_URL);
+	}
+	const dockerFlag = process.env.OLLAMA_DOCKER || process.env.RUNNING_IN_DOCKER || process.env.IN_DOCKER;
+	if (dockerFlag && /^(1|true)$/i.test(String(dockerFlag))) {
+		return 'http://localhost:11435';
+	}
+	return 'http://localhost:11434';
 }
+
+// VLM model configurations
+export const VLM_MODELS = {
+	vision: 'gemma3-vision:latest',
+	embedding: 'embeddinggemma:latest',
+	legal: 'gemma3-legal:latest'
+} as const;
+
+export type VLMModel = typeof VLM_MODELS[keyof typeof VLM_MODELS];
 
 export interface OllamaMessage {
   role: 'user' | 'assistant' | 'system';

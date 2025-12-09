@@ -1,6 +1,6 @@
 <script lang="ts">
 	import StarterKit from '@tiptap/starter-kit';
-	import { EditorContent, useEditor } from 'svelte-tiptap';
+	import { Editor, EditorContent } from 'svelte-tiptap';
 
 	interface Props {
 		content?: string;
@@ -14,7 +14,7 @@
 	let editor = $state<any>(null);
 
 	$effect(() => {
-		editor = useEditor({
+		editor = new Editor({
 			extensions: [StarterKit],
 			content: content || '',
 			onUpdate: ({ editor: ed }) => {

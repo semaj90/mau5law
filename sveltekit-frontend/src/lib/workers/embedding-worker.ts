@@ -101,12 +101,18 @@ export class EmbeddingWorkerManager {
   private initializeWorker(): void {
     if (typeof Worker !== 'undefined') {
       // Create worker from external file instead of inline script
-      this.worker = new Worker(new URL('./embedding-worker-impl.ts', import.meta.url), {
-        type: 'module',
-      });
+      try {
+        // Use relative path instead of import.meta.url for better compatibility
+        this.worker = new Worker('./embedding-worker-impl.ts', {
+          type: 'module',
+        });
 
-      this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
-      this.worker.addEventListener('error', this.handleWorkerError.bind(this));
+        this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
+        this.worker.addEventListener('error', this.handleWorkerError.bind(this));
+      } catch (err) {
+        console.warn('[EmbeddingWorker] Worker initialization failed:', err);
+        // Fallback: use main thread
+      }
     }
   }
 
@@ -133,9 +139,9 @@ export class EmbeddingWorkerManager {
   private handleWorkerError(event: ErrorEvent): void {
     console.error('Worker error:', event.error);
 
-    for (const [_id, task] of this.pendingTasks) {
+    this.pendingTasks.forEach((task) => {
       task.reject(new Error(`Worker error: ${event.error?.message || 'Unknown error'}`));
-    }
+    });
 
     this.pendingTasks.clear();
   }
@@ -198,9 +204,9 @@ export class EmbeddingWorkerManager {
       this.worker = null;
     }
 
-    for (const [_id, task] of this.pendingTasks) {
+    this.pendingTasks.forEach((task) => {
       task.reject(new Error('Worker terminated'));
-    }
+    });
 
     this.pendingTasks.clear();
   }

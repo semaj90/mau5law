@@ -1,7 +1,6 @@
-import type { Document } from '$lib/types';
-import type { PageServerLoad, Actions } from './$types.js';
-import { error, fail, json } from '@sveltejs/kit';;
-import type { getUserId  } from '$lib/server/auth/utils';
+import type { getUserId } from '$lib/server/auth/utils';
+import { fail, json } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
   try {
@@ -117,6 +116,7 @@ export const actions: Actions = {
       console.error('CUDA document processing failed: ', err);
       return fail(500, { error: 'Document processing failed' });
     }
+  }
 };
 
 async function getGPUSystemInfo(): Promise<any> {

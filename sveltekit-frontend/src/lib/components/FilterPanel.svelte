@@ -1,18 +1,25 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let filters: {
-    status: string;
-    priority: string;
-    tags: string[];
-  };
+  let { filters }: {
+    filters: {
+      status: string;
+      priority: string;
+      tags: string[];
+    };
+  } = $props();
 
   const dispatch = createEventDispatcher<{
     filter: typeof filters;
   }>();
 
-  let showPanel = false;
-  let localFilters = { ...filters };
+  let showPanel = $state(false);
+  let localFilters = $state({ ...filters });
+
+  // Update local filters when props change
+  $effect(() => {
+    localFilters = { ...filters };
+  });
 
   function applyFilters() {
     dispatch('filter', { ...localFilters });

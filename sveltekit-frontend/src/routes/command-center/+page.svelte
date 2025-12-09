@@ -1,5 +1,7 @@
 <script lang="ts">
   import LegalAILayout from '$lib/components/legal-ai/LegalAILayout.svelte';
+  import NesModal from '$lib/components/NesModal.svelte';
+  import RoutesList from '$lib/components/RoutesList.svelte';
 
   interface ActiveCase {
     id: string;
@@ -34,9 +36,14 @@
     { action: 'Evidence Uploaded', case: 'CASE-2024-002', time: new Date(Date.now() - 3600000) },
     { action: 'Citation Extracted', case: 'CASE-2024-001', time: new Date(Date.now() - 7200000) },
   ]);
+
+  let modal: NesModal;
 </script>
 
 <LegalAILayout title="Command Center" subtitle="Manage cases, evidence, and legal analysis">
+    <div class="controls">
+        <button on:click={() => modal.open()}>Show Routes</button>
+    </div>
   <div class="dashboard-grid">
     <!-- Active Cases Section -->
     <section class="dashboard-section">
@@ -113,7 +120,15 @@
   </div>
 </LegalAILayout>
 
+<NesModal bind:this={modal}>
+    <h2 slot="header">App Routes</h2>
+    <RoutesList />
+</NesModal>
+
 <style>
+    .controls {
+        margin-bottom: 1rem;
+    }
   .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

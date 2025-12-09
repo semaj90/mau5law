@@ -1,4 +1,5 @@
 import pg from 'pg';
+import postgres from 'postgres';
 
 const { Pool } = pg;
 
@@ -10,4 +11,11 @@ if (!connectionString) {
 
 export const pool = new Pool({
 	connectionString
+});
+
+// Also export postgres client for template literals
+export const sql = postgres(connectionString, {
+	max: 10,
+	idle_timeout: 20,
+	connect_timeout: 10,
 });

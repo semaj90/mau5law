@@ -1,245 +1,377 @@
-# Phase 72 Deployment Checklist
+# Phase 72: Contextual Chat - Deployment Checklist
 
-**Date:** December 2, 2025
-**Status:** READY FOR PRODUCTION
-**Components:** 3 Layers Complete
+## Pre-Deployment
+
+### Prerequisites
+- [ ] PostgreSQL 14+ installed and running
+- [ ] Python 3.10+ installed
+- [ ] Go 1.21+ installed
+- [ ] Node.js 18+ installed
+- [ ] Qdrant running (port 6333)
+- [ ] Neo4j running (port 7687)
+- [ ] Ollama running with models:
+  - [ ] `embeddinggemma:latest`
+  - [ ] `gemma3-legal:latest`
+  - [ ] `gemma3-vision:latest` (optional)
+
+### Environment Setup
+- [ ] `.env.local` file created with all required variables
+- [ ] Database credentials verified
+- [ ] Service endpoints accessible
+- [ ] Network connectivity tested
+
+## Database Setup
+
+### Migration
+- [ ] Migration file exists: `sveltekit-frontend/drizzle/20251208_add_contextual_chat_tables.sql`
+- [ ] Migration applied successfully:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -f sveltekit-frontend/drizzle/20251208_add_contextual_chat_tables.sql
+  ```
+- [ ] Tables created:
+  - [ ] `chat_turns`
+  - [ ] `chat_turn_evidence`
+  - [ ] `chat_analytics`
+- [ ] Indexes created:
+  - [ ] `idx_chat_turns_case_id`
+  - [ ] `idx_chat_turns_user_id`
+  - [ ] `idx_chat_turns_created_at`
+  - [ ] `idx_chat_turns_llm_output` (GIN)
+  - [ ] `idx_chat_turns_rag_context` (GIN)
+  - [ ] `idx_chat_turns_kag_context` (GIN)
+  - [ ] `idx_chat_turns_did_you_mean` (GIN)
+
+### Verification
+- [ ] Tables exist:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "\dt chat_*"
+  ```
+- [ ] Indexes exist:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "\di chat_*"
+  ```
+- [ ] Foreign keys work:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "SELECT * FROM chat_turns LIMIT 1;"
+  ```
+
+## Python Service Setup
+
+### Installation
+- [ ] Python dependencies installed:
+  ```bash
+  pip install grpcio grpcio-tools qdrant-client neo4j psycopg minio requests
+  ```
+- [ ] gRPC code generated:
+  ```bash
+  python -m grpc_tools.protoc -I../../sveltekit-frontend/protos \
+    --python_out=. --grpc_python_out=. \
+    ../../sveltekit-frontend/protos/rag_kag.proto
+  ```
+
+### Configuration
+- [ ] Environment variables set:
+  - [ ] `QDRANT_HOST`
+  - [ ] `QDRANT_PORT`
+  - [ ] `NEO4J_URI`
+  - [ ] `NEO4J_USER`
+  - [ ] `NEO4J_PASSWORD`
+  - [ ] `DATABASE_URL`
+  - [ ] `MINIO_HOST`
+  - [ ] `MINIO_ACCESS_KEY`
+  - [ ] `MINIO_SECRET_KEY`
+  - [ ] `OLLAMA_ENDPOINT`
+
+### Testing
+- [ ] Service starts without errors:
+  ```bash
+  python backend/services/rag_kag_server.py
+  ```
+- [ ] Logs show successful connections:
+  - [ ] "✅ Connected to Qdrant"
+  - [ ] "✅ Connected to Neo4j"
+  - [ ] "✅ Connected to PostgreSQL"
+  - [ ] "✅ Connected to MinIO"
+  - [ ] "🚀 RAG/KAG gRPC server listening on [::]:50061"
+
+## Go Service Setup
+
+### Build
+- [ ] Go module initialized:
+  ```bash
+  cd go-services/yorha-context-orchestrator
+  go mod init yorha-context-orchestrator
+  ```
+- [ ] Dependencies installed:
+  ```bash
+  go get google.golang.org/grpc
+  ```
+- [ ] Service builds successfully:
+  ```bash
+  go build -o yorha-context-orchestrator main.go
+  ```
+
+### Configuration
+- [ ] Environment variables set:
+  - [ ] `RAG_KAG_SERVICE_ADDR`
+  - [ ] `GEMMA_ENDPOINT`
+  - [ ] `DATABASE_URL`
+  - [ ] `PORT`
+
+### Testing
+- [ ] Service starts without errors:
+  ```bash
+  ./yorha-context-orchestrator
+  ```
+- [ ] Health endpoint responds:
+  ```bash
+  curl http://localhost:8085/health
+  ```
+- [ ] Logs show successful startup:
+  - [ ] "🚀 YoRHa Context Orchestrator listening on :8085"
+
+## SvelteKit Setup
+
+### Installation
+- [ ] Dependencies installed:
+  ```bash
+  cd sveltekit-frontend
+  npm install
+  ```
+- [ ] API endpoint exists:
+  - [ ] `src/routes/api/ai/yorha/context-chat/+server.ts`
+
+### Configuration
+- [ ] Environment variables set in `.env.local`:
+  - [ ] `CONTEXT_ORCH_URL`
+  - [ ] `RAG_KAG_SERVICE_ADDR`
+  - [ ] `OLLAMA_ENDPOINT`
+  - [ ] `DATABASE_URL`
+
+### Testing
+- [ ] Dev server starts:
+  ```bash
+  npm run dev
+  ```
+- [ ] Frontend accessible at `http://localhost:5173`
+- [ ] API endpoint responds:
+  ```bash
+  curl -X POST http://localhost:5173/api/ai/yorha/context-chat \
+    -H "Content-Type: application/json" \
+    -d '{"message": "test"}'
+  ```
+
+## Integration Testing
+
+### Service Health
+- [ ] Go orchestrator health:
+  ```bash
+  curl http://localhost:8085/health
+  ```
+  Expected: `{"status":"ok"}`
+
+- [ ] Python service connectivity:
+  ```bash
+  python -c "import grpc; print('✅ gRPC OK')"
+  ```
+
+- [ ] Ollama models available:
+  ```bash
+  curl http://localhost:11434/api/tags | grep -E "embeddinggemma|gemma3"
+  ```
+
+- [ ] Database connectivity:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "SELECT 1;"
+  ```
+
+### API Testing
+- [ ] Send test message:
+  ```bash
+  curl -X POST http://localhost:5173/api/ai/yorha/context-chat \
+    -H "Content-Type: application/json" \
+    -d '{"message": "What evidence relates to the timeline?"}'
+  ```
+  Expected: JSON response with `turnId`, `answer`, `citations`, `didYouMean`
+
+- [ ] Verify database persistence:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "SELECT COUNT(*) FROM chat_turns;"
+  ```
+  Expected: Count > 0
+
+- [ ] Check analytics:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "SELECT * FROM chat_analytics LIMIT 1;"
+  ```
+  Expected: Analytics record with latency metrics
+
+### Performance Testing
+- [ ] Response time acceptable (< 3 seconds):
+  ```bash
+  time curl -X POST http://localhost:5173/api/ai/yorha/context-chat \
+    -H "Content-Type: application/json" \
+    -d '{"message": "test"}'
+  ```
+
+- [ ] Multiple concurrent requests:
+  ```bash
+  for i in {1..10}; do
+    curl -X POST http://localhost:5173/api/ai/yorha/context-chat \
+      -H "Content-Type: application/json" \
+      -d '{"message": "test"}' &
+  done
+  wait
+  ```
+
+## Production Deployment
+
+### Docker Setup
+- [ ] Dockerfile created for each service:
+  - [ ] `backend/services/Dockerfile.rag-kag`
+  - [ ] `go-services/yorha-context-orchestrator/Dockerfile`
+  - [ ] `sveltekit-frontend/Dockerfile`
+
+- [ ] Docker images built:
+  ```bash
+  docker build -t rag-kag-service backend/services
+  docker build -t yorha-context-orchestrator go-services/yorha-context-orchestrator
+  docker build -t sveltekit-frontend sveltekit-frontend
+  ```
+
+- [ ] Docker Compose configured:
+  - [ ] `docker-compose.yml` updated with new services
+  - [ ] All environment variables set
+  - [ ] Volume mounts configured
+  - [ ] Network connectivity verified
+
+### Kubernetes Setup (if applicable)
+- [ ] Deployment manifests created:
+  - [ ] `k8s/rag-kag-deployment.yaml`
+  - [ ] `k8s/yorha-context-orchestrator-deployment.yaml`
+  - [ ] `k8s/sveltekit-frontend-deployment.yaml`
+
+- [ ] ConfigMaps created for environment variables
+- [ ] Secrets created for sensitive data
+- [ ] Services exposed correctly
+- [ ] Ingress configured
+
+### Monitoring & Logging
+- [ ] Prometheus metrics configured
+- [ ] Grafana dashboards created:
+  - [ ] Response latency dashboard
+  - [ ] RAG/KAG effectiveness dashboard
+  - [ ] User engagement dashboard
+  - [ ] Error rate dashboard
+
+- [ ] ELK stack configured:
+  - [ ] Elasticsearch running
+  - [ ] Logstash configured
+  - [ ] Kibana dashboards created
+
+- [ ] Alerting rules configured:
+  - [ ] High latency alert (> 5s)
+  - [ ] Service unavailability alert
+  - [ ] Database connection failure alert
+  - [ ] gRPC error alert
+
+### Backup & Recovery
+- [ ] PostgreSQL backups configured:
+  ```bash
+  pg_dump -U legal_admin legal_ai_db > backup.sql
+  ```
+
+- [ ] Backup schedule set (daily)
+- [ ] Backup retention policy defined (30 days)
+- [ ] Recovery procedure tested
+- [ ] Disaster recovery plan documented
+
+### Security
+- [ ] SSL/TLS certificates installed
+- [ ] API authentication enabled
+- [ ] Rate limiting configured
+- [ ] CORS headers set correctly
+- [ ] SQL injection prevention verified
+- [ ] XSS protection enabled
+- [ ] CSRF tokens implemented
+
+## Post-Deployment
+
+### Verification
+- [ ] All services running:
+  ```bash
+  docker ps | grep -E "rag-kag|yorha-context|sveltekit"
+  ```
+
+- [ ] Database tables populated:
+  ```bash
+  psql -U legal_admin -d legal_ai_db -c "SELECT COUNT(*) FROM chat_turns;"
+  ```
+
+- [ ] Logs clean (no errors):
+  ```bash
+  docker logs rag-kag-service
+  docker logs yorha-context-orchestrator
+  docker logs sveltekit-frontend
+  ```
+
+- [ ] Performance metrics acceptable:
+  - [ ] Response latency < 2s (p95)
+  - [ ] Error rate < 0.1%
+  - [ ] Throughput > 50 req/s
+
+### Documentation
+- [ ] Deployment guide updated
+- [ ] Runbook created for common operations
+- [ ] Troubleshooting guide updated
+- [ ] Team trained on new system
+
+### Monitoring
+- [ ] Dashboards accessible
+- [ ] Alerts configured and tested
+- [ ] On-call rotation established
+- [ ] Escalation procedures defined
+
+## Rollback Plan
+
+If issues occur:
+
+1. [ ] Stop new services:
+   ```bash
+   docker-compose down
+   ```
+
+2. [ ] Restore database from backup:
+   ```bash
+   psql -U legal_admin legal_ai_db < backup.sql
+   ```
+
+3. [ ] Restart previous version:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. [ ] Verify system health:
+   ```bash
+   curl http://localhost:8085/health
+   ```
+
+5. [ ] Notify team and stakeholders
+
+## Sign-Off
+
+- [ ] Development team sign-off
+- [ ] QA team sign-off
+- [ ] Operations team sign-off
+- [ ] Security team sign-off
+- [ ] Product owner sign-off
 
 ---
 
-## ✅ Layer 1: Error Brain (Dev → DB → AI)
+**Deployment Date**: _______________
 
-- [x] Capture endpoint: `/api/phase72/capture-error`
-- [x] Dev wrapper: `scripts/phase72-dev-wrapper.mjs`
-- [x] Error parsing: TypeScript + SvelteKit patterns
-- [x] AI integration: Ollama (gemma3-legal)
-- [x] Database: phase72_error table (uses `col`)
-- [x] Terminal display: `🧠 Phase 72 Error Brain`
+**Deployed By**: _______________
 
-**Test:**
-```powershell
-npm run dev:quic
-# Introduce error, save, watch terminal
-```
+**Verified By**: _______________
 
----
-
-## ✅ Layer 2: Route Health Dashboard (/all-routes)
-
-- [x] Page: `src/routes/all-routes/+page.svelte`
-- [x] Data attributes: `[data-phase72-routes]`
-- [x] Status colors: green/yellow/red
-- [x] Error counts: displayed per route
-- [x] Last error: code + timestamp
-- [x] YoRHa theme: applied
-
-**Test:**
-```
-http://127.0.0.1:5173/all-routes
-```
-
----
-
-## ✅ Layer 3: Playwright MCP Tools
-
-- [x] Manifest: `PLAYWRIGHT_MCP_MANIFEST.md`
-- [x] Tool 1: `list_routes()` - scrape dashboard
-- [x] Tool 2: `open_route(route)` - navigate + capture
-- [x] Tool 3: `run_health_check(route)` - full check
-- [x] Integration: Captures errors to Phase 72
-- [x] LLM ready: Gemini/Claude compatible
-
-**Status:** Ready to implement MCP server
-
----
-
-## ✅ Layer 4: Svelte 5 Runes Migration
-
-- [x] Runbook: `SVELTE5_RUNES_RUNBOOK.md`
-- [x] Patterns: Props, State, Reactive, Effects
-- [x] Helper script: `find-migration-targets.ps1`
-- [x] Priority pages: Identified
-- [x] Gotchas: Documented
-- [x] Rollback plan: Git-based
-
-**Status:** Ready to start migration
-
----
-
-## 🎨 Global YoRHa Theme
-
-- [x] CSS variables: 8 colors + font
-- [x] Harvard crimson: `#a51c30`
-- [x] Beige palette: `#d4c9a9` - `#f8f0d9`
-- [x] Applied to: `src/app.css`
-- [x] Available globally: `var(--yorha-*)`
-
----
-
-## 📦 Files Created/Modified
-
-### New Files (8)
-```
-✅ sveltekit-frontend/scripts/phase72-dev-wrapper.mjs
-✅ sveltekit-frontend/src/routes/api/phase72/capture-error/+server.ts
-✅ sveltekit-frontend/src/routes/all-routes/+page.svelte
-✅ sveltekit-frontend/scripts/find-migration-targets.ps1
-✅ PLAYWRIGHT_MCP_MANIFEST.md
-✅ SVELTE5_RUNES_RUNBOOK.md
-✅ PHASE72_COMPLETE_INTEGRATION.md
-✅ DEPLOYMENT_CHECKLIST.md
-```
-
-### Modified Files (2)
-```
-✅ sveltekit-frontend/src/app.css (theme variables)
-✅ sveltekit-frontend/package.json (dev:quic:brain script)
-```
-
----
-
-## 🚀 Deployment Steps
-
-### Step 1: Verify Database
-```powershell
-$env:PGPASSWORD = "postgres"
-psql -h localhost -U postgres -d legal_ai_db -c "SELECT COUNT(*) FROM phase72_error;"
-```
-
-**Expected:** Returns a number (0 or more)
-
-### Step 2: Start Error Brain
-```powershell
-cd sveltekit-frontend
-npm run dev:quic
-```
-
-**Expected:** Vite starts, wrapper listens for errors
-
-### Step 3: Test Error Capture
-```
-1. Open src/routes/analysis-center/+page.svelte
-2. Add: import { client } from '$lib/server/ollama/client';
-3. Save
-4. Watch terminal for: 🧠 Phase 72 Error Brain
-```
-
-**Expected:** Error captured + AI suggestion displayed
-
-### Step 4: Check Route Dashboard
-```
-http://127.0.0.1:5173/all-routes
-```
-
-**Expected:** Page loads, shows route status table
-
-### Step 5: Verify Ollama
-```powershell
-curl http://127.0.0.1:11434/api/tags
-```
-
-**Expected:** Returns list of available models
-
----
-
-## ✅ Pre-Deployment Checklist
-
-- [ ] Database schema verified (uses `col`)
-- [ ] Ollama running: `curl http://127.0.0.1:11434/api/tags`
-- [ ] Dev server starts: `npm run dev:quic`
-- [ ] Error capture works (test with bad import)
-- [ ] /all-routes page loads
-- [ ] YoRHa theme colors visible
-- [ ] No TypeScript errors: `npm run check`
-- [ ] No console errors in browser
-- [ ] Git status clean: `git status`
-
----
-
-## 🎯 Success Criteria
-
-✅ **Error Brain:**
-- Dev errors captured in real-time
-- Stored in phase72_error table
-- AI suggestions displayed in terminal
-- Deduplication working (same error not repeated)
-
-✅ **Route Dashboard:**
-- /all-routes page loads
-- Shows all routes with status
-- Data attributes present for Playwright
-- YoRHa theme applied
-
-✅ **Playwright MCP:**
-- Manifest defined
-- Tools documented
-- Integration points clear
-- Ready for MCP server implementation
-
-✅ **Svelte 5 Migration:**
-- Runbook complete
-- Patterns documented
-- Helper scripts ready
-- Priority pages identified
-
----
-
-## 📊 Metrics to Track
-
-After deployment:
-
-| Metric | Target | Current |
-|--------|--------|---------|
-| Errors captured per day | > 10 | — |
-| Average error resolution time | < 5 min | — |
-| Routes with 0 errors | > 80% | — |
-| Svelte 5 migration progress | 100% | 0% |
-
----
-
-## 🐛 Rollback Plan
-
-If something breaks:
-
-```powershell
-# Revert last commit
-git revert HEAD
-
-# Or reset to last good state
-git reset --hard origin/main
-
-# Restart dev server
-npm run dev:quic
-```
-
----
-
-## 📞 Support
-
-### Common Issues
-
-**"Cannot connect to Ollama"**
-- Check: `curl http://127.0.0.1:11434/api/tags`
-- Fallback suggestions should still appear
-
-**"Errors not being captured"**
-- Check: `curl http://localhost:5173/api/phase72/capture-error`
-- Verify database connection
-
-**"/all-routes shows no routes"**
-- Check: `curl http://localhost:5173/api/phase72/errors`
-- Verify errors are being captured
-
----
-
-## 🎉 Ready to Deploy!
-
-All components verified and tested.
-
-**Next action:** `npm run dev:quic`
-
----
-
-**Status:** ✅ READY FOR PRODUCTION
-**Last Updated:** December 2, 2025
-**Deployed By:** Kiro IDE
-**Approval:** ✅ All checks passed
+**Notes**:
