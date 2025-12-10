@@ -1,89 +1,40 @@
-import type { User } from '$lib/types';
+// src/lib/server/embedding-service.ts
+// Simple wrapper around your embedding model (Ollama / Gemma / embeddinggemma, etc.)
 
-export interface OllamaEmbeddingResponse {
-  embedding: number[];
+// If you don't have a shared config file, you can inline:
+const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL ?? 'http://127.0.0.1:11434';
+
+const DEFAULT_EMBED_MODEL =
+  process.env.OLLAMA_EMBED_MODEL ?? 'embeddinggemma:latest';
+
+type OllamaEmbedResponse = {
+  embeddings: number[][];
+};
+
+export async function generateEmbedding(text: string): Promise<number[]> {
+  const baseUrl = OLLAMA_BASE_URL ?? 'http://127.0.0.1:11434';
+
+  const res = await fetch(`${baseUrl}/api/embeddings`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      model: DEFAULT_EMBED_MODEL,
+      prompt: text
+    })
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.error('❌ Ollama embeddings error:', res.status, body.slice(0, 200));
+    throw new Error(`Ollama embeddings failed: ${res.status}`);
+  }
+
+  const data = (await res.json()) as OllamaEmbedResponse;
+
+  if (!data.embeddings?.[0]) {
+    throw new Error('No embedding returned from Ollama');
+  }
+
+  // Return the first embedding (for a single text)
+  return data.embeddings[0];
 }
-
-export interface EmbeddingOptions {
-  model?: string;
-  dimensions?: number;
-  normalize?: boolean;
-}
-
-const DEFAULT_DIMENSIONS = 512;
-
-export class EmbeddingService {
-  constructor(
-    private readonly baseUrl = 'http://localhost:11434',
-    private readonly model = 'embeddinggemma:latest',
-    private readonly dimensions = DEFAULT_DIMENSIONS
-  ) {}
-
-  async generateEmbedding(text: string, options: EmbeddingOptions = {}): Promise<number[]> {
-    const dimension = options.dimensions ?? this.dimensions;
-    const raw = new Array(dimension)
-      .fill(0)
-      .map((_, index) => Math.sin((text.length + index) * 0.01));
-    return options.normalize === false ? raw : this.normalizeVector(raw);
-  }
-
-  async generateBatchEmbeddings(
-    texts: string[],
-    options: EmbeddingOptions = {}
-  ): Promise<number[][]> {
-    return Promise.all(texts.map((text) => this.generateEmbedding(text, options)));
-  }
-
-  async generateUserProfileEmbedding(_userId: User['id']): Promise<void> {
-    // no-op stub to keep API compatible
-  }
-
-  async generateUserPreferenceEmbedding(_userId: User['id']): Promise<void> {
-    // no-op stub to keep API compatible
-  }
-
-  async generateDocumentEmbedding(
-    _content: string,
-    _metadata: Record<string, unknown>
-  ): Promise<void> {
-    // no-op stub to keep API compatible
-  }
-
-  async generateCaseEmbedding(_caseId: string, _content: string): Promise<void> {
-    // no-op stub to keep API compatible
-  }
-
-  async healthCheck(): Promise<boolean> {
-    // Simple health check - always return true for stub implementation
-    return true;
-  }
-
-  async getAvailableModels(): Promise<string[]> {
-    // Return available models for stub implementation
-    return ['nomic-embed-text', 'embeddinggemma:latest'];
-  }
-
-  cosineSimilarity(vectorA: number[], vectorB: number[]): number {
-    if (vectorA.length !== vectorB.length) {
-      throw new Error('Vectors must have the same length');
-    }
-    let dot = 0;
-    let normA = 0;
-    let normB = 0;
-    for (let i = 0; i < vectorA.length; i += 1) {
-      dot += vectorA[i] * vectorB[i];
-      normA += vectorA[i] ** 2;
-      normB += vectorB[i] ** 2;
-    }
-    const denominator = Math.sqrt(normA) * Math.sqrt(normB);
-    return denominator === 0 ? 0 : dot / denominator;
-  }
-
-  private normalizeVector(vector: number[]): number[] {
-    const norm = Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
-    if (norm === 0) return vector;
-    return vector.map((value) => value / norm);
-  }
-}
-
-export const embeddingService = new EmbeddingService();

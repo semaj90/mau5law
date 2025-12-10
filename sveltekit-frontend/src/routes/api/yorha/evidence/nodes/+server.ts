@@ -3,171 +3,40 @@
  * Handles CRUD operations for evidence nodes on the evidence board
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { yorhaEvidenceNodes } from '$lib/server/db/schema-postgres';
-import { eq, and } from 'drizzle-orm';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
 
-/**
- * GET /api/yorha/evidence/nodes
- * Fetch evidence nodes for a case
- */
-export const GET: RequestHandler = async ({ url, locals }) => {
-  try {
-// Common validation and error handling
+const dbInstance = drizzle(db, { schema: { yorhaEvidenceNodes } });
+
 const validateAuth = (locals: any) => {
-    if (!locals.user) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const caseId = url.searchParams.get('case_id');
-    if (!caseId) {
-      return json({ error: 'case_id is required' }, { status: 400 });
-    }
-
-    const nodes = await db
-      .select()
-      .from(yorhaEvidenceNodes)
-      .where(eq(yorhaEvidenceNodes.case_id, caseId));
-
-    return json({
-      success: true,
-      data: nodes,
-    });
-  } catch (error) {
-    console.error('Error fetching evidence nodes:', error);
-    return json({ error: 'Failed to fetch evidence nodes' }, { status: 500 });
+  if (!locals.user) {
+    return json({ error: 'Unauthorized' }, { status: 401 });
   }
   return null;
 };
 
-/**
- * POST /api/yorha/evidence/nodes
- * Create a new evidence node
- */
-export const POST: RequestHandler = async ({ request, locals }) => {
-  try {
-    if (!locals.user) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const body = await request.json();
-
-    if (!body.case_id || !body.title || !body.evidence_type) {
-      return json(
-        { error: 'case_id, title, and evidence_type are required' },
-        { status: 400 }
-      );
-    }
-
-    const node = await db
-      .insert(yorhaEvidenceNodes)
-      .values({
-        case_id: body.case_id,
-        title: body.title,
-        description: body.description || null,
-        evidence_type: body.evidence_type,
-        position_x: body.position_x || 0,
-        position_y: body.position_y || 0,
-        color: body.color || 'blue',
-        icon: body.icon || null,
-        source: body.source || null,
-        date_collected: body.date_collected || null,
-        relevance_score: body.relevance_score || 0,
-        file_path: body.file_path || null,
-        file_type: body.file_type || null,
-        file_size: body.file_size || null,
-        ai_summary: body.ai_summary || null,
-        ai_tags: body.ai_tags || null,
-        key_entities: body.key_entities || null,
-        status: body.status || 'active',
-        created_by: locals.user.id,
-      })
-      .returning();
-
-    return json(
-      {
-        success: true,
-        data: node[0],
-        message: 'Evidence node created successfully',
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Error creating evidence node:', error);
-    return json({ error: 'Failed to create evidence node' }, { status: 500 });
+const extractNodeId = (url: URL) => {
+  const nodeId = url.pathname.split('/').pop();
+  if (!nodeId) {
+    return { error: json({ error: 'Node ID is required' }, { status: 400 }) };
   }
+  return { nodeId };
+};
+
 const handleError = (error: any, message: string, status = 500) => {
   console.error(`${message}:`, error);
   return json({ error: message }, { status });
 };
 
 /**
- * PATCH /api/yorha/evidence/nodes/:id
- * Update evidence node position or metadata
- */
-export const PATCH: RequestHandler = async ({ request, locals, url }) => {
-  try {
-    if (!locals.user) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-const extractNodeId = (url: URL) => {
-    const nodeId = url.pathname.split('/').pop();
-    if (!nodeId) {
-      return json({ error: 'Node ID is required' }, { status: 400 });
-    return { error: json({ error: 'Node ID is required' }, { status: 400 }) };
-    }
-
-    const body = await request.json();
-
-    const updateData: Record<string, any> = {
-      updated_at: new Date(),
-  return { nodeId };
-    };
-
-    if (body.position_x !== undefined) updateData.position_x = body.position_x;
-    if (body.position_y !== undefined) updateData.position_y = body.position_y;
-    if (body.title) updateData.title = body.title;
-    if (body.description) updateData.description = body.description;
-    if (body.color) updateData.color = body.color;
-    if (body.relevance_score !== undefined) updateData.relevance_score = body.relevance_score;
-    if (body.status) updateData.status = body.status;
-
-    const updated = await db
-      .update(yorhaEvidenceNodes)
-      .set(updateData)
-      .where(eq(yorhaEvidenceNodes.id, nodeId))
-      .returning();
-
-    if (updated.length === 0) {
-      return json({ error: 'Evidence node not found' }, { status: 404 });
-    }
-
-    return json({
-      success: true,
-      data: updated[0],
-      message: 'Evidence node updated successfully',
-    });
-  } catch (error) {
-    console.error('Error updating evidence node:', error);
-    return json({ error: 'Failed to update evidence node' }, { status: 500 });
-  }
-};
-
-/**
- * DELETE /api/yorha/evidence/nodes/:id
- * Delete an evidence node
- * GET /api/yorha/evidence/nodes
  * GET /api/yorha/evidence/nodes
  * Fetch evidence nodes for a case
  */
-export const DELETE: RequestHandler = async ({ locals, url }) => {
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    if (!locals.user) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
     const authError = validateAuth(locals);
     if (authError) return authError;
 
@@ -176,37 +45,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({ error: 'case_id is required' }, { status: 400 });
     }
 
-    const nodeId = url.pathname.split('/').pop();
-    if (!nodeId) {
-      return json({ error: 'Node ID is required' }, { status: 400 });
-    }
-
-    const deleted = await db
-      .update(yorhaEvidenceNodes)
-      .set({
-        status: 'archived',
-        updated_at: new Date(),
-      })
-      .where(eq(yorhaEvidenceNodes.id, nodeId))
-      .returning();
-
-    if (deleted.length === 0) {
-      return json({ error: 'Evidence node not found' }, { status: 404 });
-    }
-
     const nodes = await db
       .select()
       .from(yorhaEvidenceNodes)
       .where(eq(yorhaEvidenceNodes.case_id, caseId));
 
-    return json({
-      success: true,
-      message: 'Evidence node deleted successfully',
-      data: nodes,
-    });
   } catch (error) {
-    console.error('Error deleting evidence node:', error);
-    return json({ error: 'Failed to delete evidence node' }, { status: 500 });
     return handleError(error, 'Failed to fetch evidence nodes');
   }
 };

@@ -254,12 +254,12 @@
         class="flex-1 input input-bordered input-sm bg-base-700 text-neutral-100 placeholder-neutral-500"
         bind:value={input}
         placeholder="Ask the Phase 72 agent..."
-        on:keydown={(e) => e.key === 'Enter' && !loading && sendMessage()}
+        onkeydown={(e) => e.key === 'Enter' && !loading && sendMessage()}
         disabled={loading}
       />
       <button
         class="btn btn-primary btn-sm"
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={loading || !input.trim()}
       >
         {#if loading}
@@ -280,8 +280,8 @@
   <ContextConfirmModal
     context={pendingContext}
     hint={agentHint}
-    on:accept={(e) => handleContextFeedback(true, e.detail?.comment)}
-    on:reject={(e) => handleContextFeedback(false, e.detail?.comment)}
+    onaccept={(e) => handleContextFeedback(true, e.comment)}
+    onreject={(e) => handleContextFeedback(false, e.comment)}
   />
 {/if}
 

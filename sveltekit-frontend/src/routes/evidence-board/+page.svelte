@@ -2,14 +2,21 @@
 	import EvidenceCard from '$lib/components/EvidenceCard.svelte';
 	import EvidenceConnections from '$lib/components/EvidenceConnections.svelte';
 	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
-	let evidence = [];
-	let selectedEvidence = null;
-	let zoom = 100;
-	let panX = 0;
-	let panY = 0;
-	let isDragging = false;
-	let dragStart = { x: 0, y: 0 };
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
+
+	let evidence = $state(data.evidence || []);
+	let selectedEvidence = $state(null);
+	let zoom = $state(100);
+	let panX = $state(0);
+	let panY = $state(0);
+	let isDragging = $state(false);
+	let dragStart = $state({ x: 0, y: 0 });
 
 	function handleZoomIn() {
 		zoom = Math.min(zoom + 10, 200);
@@ -56,6 +63,35 @@
 		}
 	}
 
+	async function handleAskAI(evidence) {
+		try {
+			const response = await fetch('/api/ai/yorha/context-chat', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					query: `Analyze this evidence: ${evidence.file_name}`,
+					caseId: evidence.case_id
+				})
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				// Update the evidence with new chat turn
+				// For now, just log and refresh the page
+				console.log('AI Analysis:', result);
+				alert(`AI Analysis complete! Keywords: ${result.keywords?.join(', ') || 'None'}`);
+				// In a real app, you'd update the evidence state or refetch
+			} else {
+				alert('Failed to get AI analysis');
+			}
+		} catch (error) {
+			console.error('Error calling AI:', error);
+			alert('Error calling AI service');
+		}
+	}
+
 	onMount(() => {
 		window.addEventListener('keydown', handleKeyDown);
 		return () => window.removeEventListener('keydown', handleKeyDown);
@@ -65,7 +101,17 @@
 <div class="evidence-board-container">
 	<!-- Header -->
 	<div class="board-header">
-		<h1>Evidence Board</h1>
+		<div class="header-left">
+			<h1>Evidence Board</h1>
+			<button class="btn-ask-ai-header" onclick={() => {
+				const query = prompt('What would you like to ask the AI about this evidence?');
+				if (query) {
+					handleAskAI({ file_name: 'Evidence Board Analysis', case_id: selectedEvidence?.case_id || null });
+				}
+			}}>
+				Ask AI
+			</button>
+		</div>
 		<div class="zoom-controls">
 			<button onclick={handleZoomOut} title="Zoom Out (Ctrl+-)">−</button>
 			<span class="zoom-level">{zoom}%</span>
@@ -120,6 +166,7 @@
 							{item}
 							selected={selectedEvidence?.id === item.id}
 							on:click={() => (selectedEvidence = item)}
+							onAskAI={handleAskAI}
 						/>
 					{/each}
 				</div>

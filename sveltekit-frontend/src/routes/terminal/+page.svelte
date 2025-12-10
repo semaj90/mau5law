@@ -85,9 +85,12 @@
 
 		isLoadingHistory = true;
 		try {
+			const formData = new FormData();
+			formData.append('caseId', caseId);
+
 			const response = await fetch('/terminal?/loadHistory', {
 				method: 'POST',
-				body: new FormData([['caseId', caseId]]),
+				body: formData,
 				headers: {
 					'Accept': 'application/json'
 				}
@@ -95,7 +98,7 @@
 
 			const result = await response.json();
 			if (result.success && result.history) {
-				messages = result.history.flatMap(turn => [
+				messages = result.history.flatMap((turn: any) => [
 					{ role: 'user' as const, text: turn.userMessage, turnId: turn.turnId, timestamp: turn.timestamp },
 					{ role: 'assistant' as const, text: turn.assistantResponse, turnId: turn.turnId, timestamp: turn.timestamp }
 				]);

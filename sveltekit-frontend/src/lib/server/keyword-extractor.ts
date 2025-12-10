@@ -34,14 +34,11 @@ export async function extractKeywords(
     console.log(`🔍 Extracting keywords from ${documentType || 'document'}...`);
 
     // Build extraction prompt
-    const prompt = buildExtractionPrompt(content, documentType);
+    const systemPrompt = getSystemPrompt(documentType);
+    const userPrompt = buildExtractionPrompt(content, documentType);
 
-    // Call Ollama with gemma3-legal
-    const response = await generateText(prompt, getSystemPrompt(documentType), {
-      temperature: 0.3, // Lower temperature for more consistent extraction
-      top_k: 40,
-      top_p: 0.9,
-    });
+    // Call Ollama with gemma3-legal (generateText only takes prompt, no extra options)
+    const response = await generateText(userPrompt);
 
     // Parse response
     const result = parseExtractionResponse(response);

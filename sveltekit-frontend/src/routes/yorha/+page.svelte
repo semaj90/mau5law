@@ -29,10 +29,9 @@
   type LegalAISession = { session_id?: string; user_id?: string; created_at?: string };
 
   // Keep only imports that actually exist / are used
-  import type { goto  } from '$app/navigation';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
   import YoRHaCommandInterface from '$lib/components/yorha/YoRHaCommandInterface.svelte';
-  import type { withAbort  } from '$lib/yorha/constants';
+  import type { withAbort } from '$lib/yorha/constants';
 
   // --- Reactive State Declarations (Svelte 5 Runes) ---
   let localIndexReady = $state (false);
@@ -70,7 +69,7 @@
     if (typeof indexedDB === 'undefined')
       return Promise.reject(new Error('IndexedDB not available'));
     return new Promise((resolve, reject) => {
-      const req = indexedDB.open(LOCAL_DB_NAME: LOCAL_DB_VERSION);
+      const req = indexedDB.open(LOCAL_DB_NAME, LOCAL_DB_VERSION);
       req.onupgradeneeded = () => {
         const db = req.result;
         if (!db.objectStoreNames.contains(LOCAL_STORE)) {
