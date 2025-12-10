@@ -23,18 +23,30 @@
 
   export let hint: string | null = null;
 
+  // Callback props for Svelte 5
+  export let onaccept: ((detail: { comment: string }) => void) | undefined = undefined;
+  export let onreject: ((detail: { comment: string }) => void) | undefined = undefined;
+
   let userComment = '';
   let isSubmitting = false;
 
   async function accept() {
     isSubmitting = true;
-    dispatch('accept', { comment: userComment });
+    if (onaccept) {
+      onaccept({ comment: userComment });
+    } else {
+      dispatch('accept', { comment: userComment });
+    }
     isSubmitting = false;
   }
 
   async function reject() {
     isSubmitting = true;
-    dispatch('reject', { comment: userComment });
+    if (onreject) {
+      onreject({ comment: userComment });
+    } else {
+      dispatch('reject', { comment: userComment });
+    }
     isSubmitting = false;
   }
 

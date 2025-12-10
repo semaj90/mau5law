@@ -46,7 +46,7 @@
 		<!-- Toolbar -->
 		<div class="flex items-center gap-1 border-b border-neutral-800 bg-neutral-950/60 p-2 flex-wrap">
 			<button
-				on:click={() => editor.chain().focus().toggleBold().run()}
+				onclick={() => editor.chain().focus().toggleBold().run()}
 				class={`px-2 py-1 rounded text-xs font-medium transition-colors ${editor.isActive('bold') ? 'bg-neutral-700 text-neutral-100' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
 				disabled={disabled}
 			>
@@ -54,7 +54,7 @@
 			</button>
 
 			<button
-				on:click={() => editor.chain().focus().toggleItalic().run()}
+				onclick={() => editor.chain().focus().toggleItalic().run()}
 				class={`px-2 py-1 rounded text-xs font-medium transition-colors ${editor.isActive('italic') ? 'bg-neutral-700 text-neutral-100' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
 				disabled={disabled}
 			>
@@ -62,7 +62,7 @@
 			</button>
 
 			<button
-				on:click={() => editor.chain().focus().toggleStrike().run()}
+				onclick={() => editor.chain().focus().toggleStrike().run()}
 				class={`px-2 py-1 rounded text-xs font-medium transition-colors ${editor.isActive('strike') ? 'bg-neutral-700 text-neutral-100' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
 				disabled={disabled}
 			>
@@ -72,7 +72,7 @@
 			<div class="w-px h-5 bg-neutral-700 mx-1"></div>
 
 			<button
-				on:click={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+				onclick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
 				class={`px-2 py-1 rounded text-xs font-medium transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-neutral-700 text-neutral-100' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
 				disabled={disabled}
 			>
@@ -80,7 +80,7 @@
 			</button>
 
 			<button
-				on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+				onclick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
 				class={`px-2 py-1 rounded text-xs font-medium transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-neutral-700 text-neutral-100' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
 				disabled={disabled}
 			>
@@ -88,7 +88,7 @@
 			</button>
 
 			<button
-				on:click={() => editor.chain().focus().toggleBulletList().run()}
+				onclick={() => editor.chain().focus().toggleBulletList().run()}
 				class={`px-2 py-1 rounded text-xs font-medium transition-colors ${editor.isActive('bulletList') ? 'bg-neutral-700 text-neutral-100' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
 				disabled={disabled}
 			>
@@ -98,7 +98,7 @@
 			<div class="w-px h-5 bg-neutral-700 mx-1"></div>
 
 			<button
-				on:click={() => editor.chain().focus().clearNodes().run()}
+				onclick={() => editor.chain().focus().clearNodes().run()}
 				class="px-2 py-1 rounded text-xs font-medium bg-neutral-800 text-neutral-400 hover:bg-neutral-700 transition-colors"
 				disabled={disabled}
 			>

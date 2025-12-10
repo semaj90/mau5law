@@ -1,21 +1,29 @@
-import pg from 'pg';
+/**
+ * Database Connection Module
+ * Provides a singleton PostgreSQL connection using the postgres library
+ */
+
 import postgres from 'postgres';
 
-const { Pool } = pg;
+// Create a single connection instance
+const databaseUrl =
+  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
-const connectionString = process.env.DATABASE_URL;
+console.log(`📡 Initializing database connection to: ${databaseUrl.replace(/:[^:]*@/, ':***@')}`);
 
-if (!connectionString) {
-	throw new Error('DATABASE_URL is not set');
-}
-
-export const pool = new Pool({
-	connectionString
+export const sql = postgres(databaseUrl, {
+  max: 20,
+  idle_timeout: 30,
+  connect_timeout: 10,
 });
 
-// Also export postgres client for template literals
-export const sql = postgres(connectionString, {
-	max: 10,
-	idle_timeout: 20,
-	connect_timeout: 10,
-});
+// Health check
+sql`SELECT 1`
+  .then(() => {
+    console.log('✅ Database connection established');
+  })
+  .catch((err) => {
+    console.error('❌ Database connection failed:', err.message);
+  });
+
+export default sql;

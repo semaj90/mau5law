@@ -82,7 +82,7 @@
 
         <!-- Page Content -->
         <div class="flex-1 overflow-auto p-6">
-          <slot />
+          {@render children()}
         </div>
       </main>
     </div>
@@ -104,7 +104,7 @@
       </header>
 
       <main class="container mx-auto px-6 py-8">
-        <slot />
+        {@render children()}
       </main>
     </div>
   {/if}

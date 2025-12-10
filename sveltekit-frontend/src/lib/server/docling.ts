@@ -5,10 +5,11 @@
  */
 
 import { spawn } from 'node:child_process';
-import { tmpdir } from 'node:os';
 import { randomUUID } from 'node:crypto';
+import { promises as fs } from 'node:fs';
+import { readFile, unlink, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { writeFile, readFile, unlink } from 'node:fs/promises';
 
 export type DoclingBlock = {
 	type: 'paragraph' | 'heading' | 'table' | 'list' | 'equation' | 'image' | 'other';
@@ -178,4 +179,77 @@ export function getBlockStatistics(blocks: DoclingBlock[]): {
 		byType,
 		pageCount: maxPage
 	};
+}
+
+/**
+ * Check if Docling is available (Python script exists and can be executed)
+ */
+export async function isDoclingAvailable(): Promise<boolean> {
+	try {
+		const pyScript = join(process.cwd(), 'python', 'docling_analyze.py');
+		await fs.access(pyScript);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Process document with Docling (file path version for document processor)
+ * Returns standardized DocumentProcessingResult format
+ */
+export async function processWithDocling(filePath: string): Promise<{
+	text: string;
+	metadata: {
+		title?: string;
+		author?: string;
+		pages?: number;
+		language?: string;
+		confidence?: number;
+		processingTime: number;
+	};
+	tables?: Array<{
+		content: string[][];
+		bbox?: number[];
+	}>;
+	images?: Array<{
+		content: Buffer;
+		bbox?: number[];
+		caption?: string;
+	}>;
+	method: string;
+}> {
+	const startTime = Date.now();
+
+	try {
+		// Read file
+		const fileBuffer = await readFile(filePath);
+		const mimeType = 'application/pdf'; // Assume PDF for now, could be detected
+
+		// Use existing analyzeDocumentWithDocling function
+		const result = await analyzeDocumentWithDocling({ fileBuffer, mimeType });
+
+		// Convert to DocumentProcessingResult format
+		const processingTime = Date.now() - startTime;
+
+		// Extract tables from blocks
+		const tableBlocks = extractTablesFromBlocks(result.blocks);
+		const tables = tableBlocks.map(block => ({
+			content: [block.text.split('\n').map(line => [line])], // Simple table parsing
+			bbox: block.bbox
+		}));
+
+		return {
+			text: result.fullText,
+			metadata: {
+				pages: result.pageCount,
+				processingTime
+			},
+			tables: tables.length > 0 ? tables : undefined,
+			method: 'docling'
+		};
+	} catch (error) {
+		console.error('❌ Docling processing failed:', error);
+		throw error;
+	}
 }

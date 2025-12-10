@@ -7,11 +7,11 @@ import Textarea from '$lib/components/ui/Textarea.svelte';
 import { cn } from '$lib/utils.js';
 import { toast } from '$lib/utils/toast';
 import Edit from 'lucide-svelte/icons/edit';
-import Funnel as Filter from 'lucide-svelte/icons/funnel';
-import Grid3x3 as Grid from 'lucide-svelte/icons/grid3x3';
+import { Funnel as Filter } from 'lucide-svelte/icons/funnel';
+import { Grid3x3 as Grid } from 'lucide-svelte/icons/grid3x3';
 import List from 'lucide-svelte/icons/list';
 import Plus from 'lucide-svelte/icons/plus';
-import Trash2 from 'lucide-svelte/icons/trash2';;
+import Trash2 from 'lucide-svelte/icons/trash2';
 import { onMount } from 'svelte';
 
 interface PhysicalDescription {
@@ -429,7 +429,7 @@ const statusColors = {
         <DialogTitle>Create New POI</DialogTitle>
         <DialogDescription>Fill in the details for the new Person of Interest.</DialogDescription>
       </DialogHeader>
-      <form on:submit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
+      <form onsubmit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />
@@ -497,7 +497,7 @@ const statusColors = {
         <DialogTitle>Edit POI</DialogTitle>
         <DialogDescription>Update the details for {selectedPoi?.name}.</DialogDescription>
       </DialogHeader>
-      <form on:submit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
+      <form onsubmit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input bind:value={formData.name} placeholder="Name" required />
           <Input bind:value={formData.dateOfBirth} type="date" placeholder="Date of Birth" />

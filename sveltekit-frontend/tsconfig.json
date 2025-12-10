@@ -47,6 +47,7 @@
     "src/wasm/**",
     "**/*.worker.ts",
     "**/*.sw.ts",
-    "**/service-worker.ts"
+    "**/service-worker.ts",
+    "src/lib/stores/_archive/**"
   ]
 }
