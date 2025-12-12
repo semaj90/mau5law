@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 from backend.upload_service import UploadService, get_upload_service
 from backend.progress_tracker import ProgressTracker, get_progress_tracker
-from sse_starlette.responses import EventSourceResponse
+from sse_starlette import EventSourceResponse
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

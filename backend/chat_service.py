@@ -11,6 +11,7 @@ Provides:
 import asyncio
 import json
 import logging
+import os
 import time
 from dataclasses import dataclass, asdict
 from datetime import datetime
@@ -26,6 +27,12 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 Base = declarative_base()
+
+# Database DSN configuration
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
+)
 
 
 @dataclass
@@ -58,7 +65,7 @@ class ChatService:
 
     def __init__(
         self,
-        postgres_url: str = "postgresql://user:password@localhost:5432/legalai",
+        postgres_url: str = "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
         context_window_size: int = 10,
     ):
         self.postgres_url = postgres_url

@@ -3,7 +3,6 @@
   import AvatarFallback from '$lib/components/ui/avatar/AvatarFallback.svelte';
   import AvatarImage from '$lib/components/ui/avatar/AvatarImage.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
   import Card from '$lib/components/ui/Card/Card.svelte';
   import CardContent from '$lib/components/ui/Card/CardContent.svelte';
   import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
@@ -35,21 +34,28 @@
     confidence: 'high' | 'medium' | 'low';
   }
 
+  interface Props {
+    open: boolean;
+    matches: Match[];
+    onClose?: () => void;
+    onSelect?: (poi: POI) => void;
+  }
 
 
 
 
-  let { open = $bindable(false), matches = [], onClose, onSelect } = $props();
+
+  let { open = $bindable(false), matches = [], onClose, onSelect }: Props = $props();
 
 
-  function handleClose() {
+  const handleClose = (): void => {
     open = false;
     onClose?.();
-  }
+  };
 
-  function handleSelectPOI(poi: POI) {
+  const handleSelectPOI = (poi: POI): void => {
     onSelect?.(poi);
-  }
+  };
 
   function getConfidenceColor(confidence: string): string {
     switch (confidence) {
@@ -75,7 +81,7 @@
   }
 </script>
 
-<Dialog bind:open>
+<Dialog bind:open={open}>
   <DialogContent>
     <div class="max-w-4xl max-h-[80vh] overflow-y-auto">
     <DialogHeader>
@@ -97,15 +103,9 @@
       {:else}
         <div class="grid gap-4">
           {#each matches as match (match.poi.id)}
-            <Card class="cursor-pointer hover:shadow-md transition-shadow">
+            <Card>
               <CardContent class="p-4">
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <div
-                  class="w-full text-left"
-                  onclick={() => handleSelectPOI(match.poi)}
-                >
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow" on:click={() => handleSelectPOI(match.poi)}>
                   <!-- POI Photo -->
                   <div class="flex-shrink-0">
                     {#if match.poi.photos && match.poi.photos.length > 0}
@@ -147,14 +147,6 @@
                       </span>
                     </div>
                   </div>
-
-                  <!-- Action -->
-                  <div>
-                    <Button variant="outline" size="sm">
-                      View Profile
-                    </Button>
-                  </div>
-                </div>
                 </div>
               </CardContent>
             </Card>
@@ -164,10 +156,10 @@
     </div>
 
     <div class="flex justify-end pt-4 border-t">
-      <Button onclick={handleClose} variant="outline">
+      <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2" on:click={handleClose}>
         <X class="w-4 h-4 mr-2" />
         Close
-      </Button>
+      </button>
     </div>
     </div>
   </DialogContent>

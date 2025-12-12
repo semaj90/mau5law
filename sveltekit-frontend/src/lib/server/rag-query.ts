@@ -37,17 +37,21 @@ export interface RagQueryResponse {
 }
 
 /**
- * Query Qdrant for evidence relevant to a question, optionally filtered by case
+ * Query Qdrant for evidence relevant to a question, optionally filtered by case, tags, and jurisdiction
  *
  * @param opts.query - The question/search query
  * @param opts.caseId - Optional case ID to filter results
+ * @param opts.tags - Optional array of citation tags to filter/boost results
+ * @param opts.jurisdiction - Optional jurisdiction to filter results (CA, NY, TX, Fed-US, Other)
  * @returns Context text and citations
  */
 export async function getContextFromRag(opts: {
   query: string;
   caseId?: string | null;
+  tags?: string[] | null;
+  jurisdiction?: string | null;
 }): Promise<RagQueryResponse> {
-  const { query, caseId } = opts;
+  const { query, caseId, tags, jurisdiction } = opts;
 
   try {
     // 1. Generate embedding for the query
@@ -55,21 +59,40 @@ export async function getContextFromRag(opts: {
     const queryEmbedding = await generateEmbedding(query);
     console.log(`[RAG] Embedding generated (${queryEmbedding.length} dimensions)`);
 
-    // 2. Build Qdrant filter if caseId provided
-    const filter = caseId
-      ? {
-          must: [
-            {
-              field: 'payload.case_id',
-              match: { value: caseId },
-            },
-          ],
-        }
-      : undefined;
+    // 2. Build Qdrant filter for caseId, tags, and jurisdiction
+    const filterConditions: any[] = [];
 
     if (caseId) {
+      filterConditions.push({
+        key: 'case_id',
+        match: { value: caseId },
+      });
       console.log(`[RAG] Filtering by case_id: ${caseId}`);
     }
+
+    if (jurisdiction) {
+      filterConditions.push({
+        key: 'jurisdiction',
+        match: { value: jurisdiction },
+      });
+      console.log(`[RAG] Filtering by jurisdiction: ${jurisdiction}`);
+    }
+
+    if (tags && tags.length > 0) {
+      // Filter: results must have at least one of the specified tags
+      filterConditions.push({
+        key: 'tags',
+        match: { any: tags },
+      });
+      console.log(`[RAG] Filtering by tags: ${tags.join(', ')}`);
+    }
+
+    const filter =
+      filterConditions.length > 0
+        ? {
+            must: filterConditions,
+          }
+        : undefined;
 
     // 3. Search Qdrant
     console.log(`[RAG] Searching Qdrant collection: ${COLLECTION_NAME}`);
@@ -83,8 +106,9 @@ export async function getContextFromRag(opts: {
     const results = (searchResults as any) || [];
     console.log(`[RAG] Found ${results.length} results`);
 
-    // 4. Extract context and citations
-    const citations: Array<{ id: string; source: string; score: number }> = [];
+    // 4. Extract context and citations with tag-based weighting
+    const citations: Array<{ id: string; source: string; score: number; matchedTags?: string[] }> =
+      [];
     const contextChunks: string[] = [];
 
     for (const result of results) {
@@ -92,22 +116,39 @@ export async function getContextFromRag(opts: {
       const text = payload.text || payload.content || '';
       const evidenceId = payload.evidence_id || result.id;
       const fileName = payload.file_name || `Evidence ${evidenceId}`;
-      const score = result.score || 0;
+      let score = result.score || 0;
+
+      // Check if this result matches any of the requested tags
+      const resultTags = payload.tags || [];
+      const matchedTags =
+        tags && tags.length > 0 ? resultTags.filter((tag: string) => tags.includes(tag)) : [];
+
+      // Apply 1.5x weight boost if tags match (Requirement 3.3)
+      if (matchedTags.length > 0) {
+        score = score * 1.5;
+        console.log(
+          `[RAG] Tag boost applied: ${fileName} (${matchedTags.join(', ')}) - score: ${result.score.toFixed(3)} → ${score.toFixed(3)}`
+        );
+      }
 
       if (text) {
         // Add to context
         contextChunks.push(text);
 
-        // Add to citations
+        // Add to citations with matched tags
         citations.push({
           id: String(evidenceId),
           source: fileName,
           score,
+          ...(matchedTags.length > 0 && { matchedTags }),
         });
 
         console.log(`[RAG] Added citation: ${fileName} (score: ${score.toFixed(3)})`);
       }
     }
+
+    // Sort citations by score (descending) after applying tag boost
+    citations.sort((a, b) => b.score - a.score);
 
     // 5. Combine context chunks
     const contextText =

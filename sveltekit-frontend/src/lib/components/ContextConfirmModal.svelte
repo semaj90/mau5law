@@ -8,24 +8,24 @@
    * Emits 'accept' or 'reject' events based on user choice.
    */
 
-  import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher();
-
-  export let context: {
-    context_id: string;
-    source: string;
-    score: number;
-    snippet: string;
-    range?: { from_msg_id: number; to_msg_id: number };
-    timestamp?: string;
-  };
-
-  export let hint: string | null = null;
-
-  // Callback props for Svelte 5
-  export let onaccept: ((detail: { comment: string }) => void) | undefined = undefined;
-  export let onreject: ((detail: { comment: string }) => void) | undefined = undefined;
+  let {
+    context,
+    hint = null,
+    onaccept = undefined,
+    onreject = undefined
+  } = $props<{
+    context: {
+      context_id: string;
+      source: string;
+      score: number;
+      snippet: string;
+      range?: { from_msg_id: number; to_msg_id: number };
+      timestamp?: string;
+    };
+    hint?: string | null;
+    onaccept?: (detail: { comment: string }) => void;
+    onreject?: (detail: { comment: string }) => void;
+  }>();
 
   let userComment = '';
   let isSubmitting = false;
@@ -34,8 +34,6 @@
     isSubmitting = true;
     if (onaccept) {
       onaccept({ comment: userComment });
-    } else {
-      dispatch('accept', { comment: userComment });
     }
     isSubmitting = false;
   }
@@ -44,8 +42,6 @@
     isSubmitting = true;
     if (onreject) {
       onreject({ comment: userComment });
-    } else {
-      dispatch('reject', { comment: userComment });
     }
     isSubmitting = false;
   }

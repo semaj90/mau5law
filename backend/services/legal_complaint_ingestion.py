@@ -46,8 +46,19 @@ class Config:
         self.redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
         self.qdrant_host = os.getenv("QDRANT_HOST", "localhost")
         self.qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
+
+        # Database configuration with fallback to legal_ai_db
         self.pg_host = os.getenv("PG_HOST", "localhost")
-        self.pg_db = os.getenv("PG_DB", "legal_db")
+        self.pg_port = int(os.getenv("PG_PORT", "5432"))
+        self.pg_db = os.getenv("PG_DB", "legal_ai_db")
+        self.pg_user = os.getenv("PG_USER", "legal_admin")
+        self.pg_password = os.getenv("PG_PASSWORD", "123456")
+
+        # Alternative: use DATABASE_URL if provided
+        self.database_url = os.getenv(
+            "DATABASE_URL",
+            f"postgresql://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
+        )
         self.pg_user = os.getenv("PG_USER", "postgres")
         self.pg_password = os.getenv("PG_PASSWORD", "password")
         self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")

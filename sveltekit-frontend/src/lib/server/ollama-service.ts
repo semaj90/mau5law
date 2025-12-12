@@ -5,38 +5,41 @@ const OLLAMA_BASE_URL =
 
 const CHAT_MODEL = process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
 
-const REQUEST_TIMEOUT_MS =
-  Number(process.env.OLLAMA_TIMEOUT_MS ?? '120000'); // 120s
+const REQUEST_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? '300000'); // 300s (5 minutes)
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), ms);
-
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      console.error(`❌ Ollama request timed out after ${ms}ms`);
       reject(
-        new DOMException(
-          'The operation was aborted due to timeout',
-          'TimeoutError'
-        )
-      )
-    )
-  ]).finally(() => clearTimeout(timeout));
+        new DOMException(`The operation was aborted due to timeout (${ms}ms)`, 'TimeoutError')
+      );
+    }, ms);
+
+    promise
+      .then((result) => {
+        clearTimeout(timeoutId);
+        resolve(result);
+      })
+      .catch((error) => {
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+  });
 }
 
 export async function generateText(prompt: string): Promise<string> {
   const body = {
     model: CHAT_MODEL,
     messages: [{ role: 'user', content: prompt }],
-    stream: false
+    stream: false,
   };
 
   const res = await withTimeout(
     fetch(`${OLLAMA_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     }),
     REQUEST_TIMEOUT_MS
   );
@@ -54,37 +57,52 @@ export async function generateText(prompt: string): Promise<string> {
   return data.message?.content ?? '';
 }
 
-export async function callOllamaChat(
-  systemPrompt: string,
-  userPrompt: string
-): Promise<string> {
+export async function callOllamaChat(systemPrompt: string, userPrompt: string): Promise<string> {
+  console.log(`[Ollama] Calling chat with model: ${CHAT_MODEL}`);
+  console.log(`[Ollama] Timeout: ${REQUEST_TIMEOUT_MS}ms`);
+  console.log(`[Ollama] User prompt: "${userPrompt.substring(0, 100)}..."`);
+
   const body = {
     model: CHAT_MODEL,
     messages: [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt }
+      { role: 'user', content: userPrompt },
     ],
-    stream: false
+    stream: false,
   };
 
-  const res = await withTimeout(
-    fetch(`${OLLAMA_BASE_URL}/api/chat`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body)
-    }),
-    REQUEST_TIMEOUT_MS
-  );
+  const startTime = Date.now();
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    console.error('❌ Ollama /api/chat error:', res.status, text.slice(0, 200));
-    throw new Error(`Ollama chat failed: ${res.status}`);
+  try {
+    const res = await withTimeout(
+      fetch(`${OLLAMA_BASE_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      }),
+      REQUEST_TIMEOUT_MS
+    );
+
+    const duration = Date.now() - startTime;
+    console.log(`[Ollama] Chat response received in ${duration}ms`);
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      console.error('❌ Ollama /api/chat error:', res.status, text.slice(0, 200));
+      throw new Error(`Ollama chat failed: ${res.status}`);
+    }
+
+    const data = (await res.json()) as {
+      message?: { content: string };
+    };
+
+    const content = data.message?.content ?? '';
+    console.log(`✅ Ollama chat completed: ${content.length} chars`);
+
+    return content;
+  } catch (error) {
+    const duration = Date.now() - startTime;
+    console.error(`❌ Ollama chat failed after ${duration}ms:`, error);
+    throw error;
   }
-
-  const data = (await res.json()) as {
-    message?: { content: string };
-  };
-
-  return data.message?.content ?? '';
 }

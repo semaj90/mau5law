@@ -88,10 +88,10 @@
     </div>
   {/if}
 
-  {#if evidence.chat_turns && evidence.chat_turns.length > 0}
+  {#if (evidence as any).chat_turns && (evidence as any).chat_turns.length > 0}
     <div class="chat-insights">
       <h4>AI Analysis</h4>
-      {#each evidence.chat_turns as turn}
+      {#each (evidence as any).chat_turns as turn}
         {#if turn.keywords && turn.keywords.length > 0}
           <div class="keywords">
             <h5>Keywords</h5>

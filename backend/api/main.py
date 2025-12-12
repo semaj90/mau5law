@@ -24,6 +24,21 @@ try:
 except ImportError:
     phase72_agent_router = None
 
+try:
+    from .chat_routes import router as chat_router
+except ImportError:
+    chat_router = None
+
+try:
+    from .upload_routes import router as upload_router
+except ImportError:
+    upload_router = None
+
+try:
+    from .search_routes import router as search_router_extra
+except ImportError:
+    search_router_extra = None
+
 # Create FastAPI app
 app = FastAPI(
     title="Legal AI Backend",
@@ -42,6 +57,15 @@ if agent_router:
 
 if phase72_agent_router:
     app.include_router(phase72_agent_router)
+
+if chat_router:
+    app.include_router(chat_router)
+
+if upload_router:
+    app.include_router(upload_router)
+
+if search_router_extra:
+    app.include_router(search_router_extra)
 
 
 @app.get("/health")

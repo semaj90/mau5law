@@ -49,7 +49,7 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - Add all indexes and constraints
     - _Requirements: 1.1, 2.1, 6.1, 7.1_
 
-- [x] 2. Backend Validation and CRUD Routes
+- [ ] 2. Backend Validation and CRUD Routes
 
 
 
@@ -73,7 +73,9 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
 
 
-  - [ ] 2.3 Create FastAPI routes for evidence CRUD
+  - [x] 2.3 Create FastAPI routes for evidence CRUD
+
+
     - Implement GET /api/evidence (with pagination, filtering, sorting)
     - Implement POST /api/evidence (multipart/form-data, store in MinIO, create record)
     - Implement PATCH /api/evidence/{id} (with validation and audit logging)
@@ -103,15 +105,18 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - Implement function to update RAG index when embeddings regenerated
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 2.6 Create FastAPI routes for RAG search with tag filtering
+
+
+
+  - [x] 2.6 Create FastAPI routes for RAG search with tag filtering
     - Implement POST /api/rag/search (query, tags, jurisdiction)
-
-    - Apply tag filter to PGVector search
-    - Apply tag filter to Elasticsearch BM25 search
+    - Apply tag filter to Qdrant search
+    - Apply jurisdiction filter to Qdrant search
     - Apply 1.5x weight boost to results matching tags
-
-    - Return results with tag metadata
+    - Return results with tag metadata (matchedTags)
+    - Sort results by boosted score
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+    - _Completed: December 11, 2025_
 
 
 

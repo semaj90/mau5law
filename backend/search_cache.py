@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, List
 
 import redis
-from search_service import SearchResult
+from .search_service import SearchResult
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

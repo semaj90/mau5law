@@ -11,6 +11,7 @@ Provides:
 import asyncio
 import json
 import logging
+import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
@@ -21,6 +22,12 @@ import httpx
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+# Database DSN configuration
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
+)
 
 
 @dataclass
@@ -41,10 +48,10 @@ class ProgressTracker:
 
     def __init__(
         self,
-        postgres_url: str = "postgresql://user:password@localhost:5432/legalai",
+        postgres_url: Optional[str] = None,
         webhook_url: Optional[str] = None,
     ):
-        self.postgres_url = postgres_url
+        self.postgres_url = postgres_url or DATABASE_URL
         self.webhook_url = webhook_url
         self.pool: Optional[asyncpg.pool.Pool] = None
 

@@ -16,7 +16,7 @@ from typing import Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
-from sse_starlette.responses import EventSourceResponse
+from sse_starlette import EventSourceResponse
 
 from backend.chat_service import ChatService, get_chat_service
 from backend.gemma_service import GemmaService, get_gemma_service

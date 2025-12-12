@@ -3,36 +3,31 @@
    * Document Upload Component - XState v5 Integration Example
    * Demonstrates proper usage of documentUploadMachine with Svelte
    */
-  import type { DocumentUploadContext } from '$lib/ai/documentUploadMachine';
-  import { documentUploadMachine } from '$lib/ai/documentUploadMachine';
+  import documentUploadMachine from '$lib/ai/documentUploadMachine';
   import { machineContext, machineState, useMachine } from '$lib/stores/xstateIntegration';
   import { onMount } from 'svelte';
-
-  interface Props {
-    onUploadComplete?: (result: any) => void;
-    onError?: (error: string) => void;
-    maxFileSize?: number; // in MB
-  }
+  import type { AnyStateMachine } from 'xstate';
 
   let { onUploadComplete, onError, maxFileSize = 50 } = $props();
 
   // Initialize state machine
-  const { state$, send, actor, cleanup } = useMachine(documentUploadMachine, {
+  const { state$, send, cleanup } = useMachine(documentUploadMachine as AnyStateMachine, {
     autoStart: true
   });
 
   // Derived stores for easier access
-  const isUploading$ = machineState($state$, (s) => s.matches('uploading'));
-  const isValidating$ = machineState($state$, (s) => s.matches('validating'));
-  const isProcessing$ = machineState($state$, (s) => s.matches('processing'));
   const hasError$ = machineState($state$, (s) =>
     s.matches('validationError') || s.matches('uploadError') || s.matches('processingError')
   );
 
-  const context$ = machineContext($state$, (ctx: DocumentUploadContext) => ctx);
-  const currentFile$ = machineContext($state$, (ctx: DocumentUploadContext) => ctx.file);
-  const errorMessage$ = machineContext($state$, (ctx: DocumentUploadContext) => ctx.error);
-  const uploadProgress$ = machineContext($state$, (ctx: DocumentUploadContext) => ctx.uploadProgress);
+  const context$ = machineContext($state$, (ctx) => ctx);
+  const currentFile$ = machineContext($state$, (ctx) => ctx.file);
+  const errorMessage$ = machineContext($state$, (ctx) => ctx.error);
+  const uploadProgress$ = machineContext($state$, (ctx) => ctx.uploadProgress);
+
+  const isValidating$ = machineState($state$, (s) => s.matches('validating'));
+  const isUploading$ = machineState($state$, (s) => s.matches('uploading'));
+  const isProcessing$ = machineState($state$, (s) => s.matches('processing'));
 
   // Local state
   let dragOver = $state(false);

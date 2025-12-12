@@ -22,12 +22,12 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import ScoredPoint
 
-from backend.services.legal_complaint_ingestion import (
+from ..services.legal_complaint_ingestion import (
     CFG,
 )
-from backend.services.redis_cache import RedisCache
-from backend.services.granite_client import GraniteClient
-from backend.services.alignment_router import AlignmentRouter
+from ..services.redis_cache import RedisCache
+from ..services.granite_client import GraniteClient
+from ..services.alignment_router import AlignmentRouter
 
 router = APIRouter(prefix="/api")
 

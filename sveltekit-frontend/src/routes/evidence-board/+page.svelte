@@ -4,11 +4,7 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
-	interface Props {
-		data: PageData;
-	}
-
-	let { data }: Props = $props();
+	let { data } = $props();
 
 	let evidence = $state(data.evidence || []);
 	let selectedEvidence = $state(null);
@@ -146,6 +142,7 @@
 		</div>
 
 		<!-- Center Canvas: Evidence Cards -->
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div
 			class="canvas"
 			onmousedown={handleMouseDown}
@@ -162,12 +159,12 @@
 				<!-- Evidence Cards -->
 				<div class="cards-container">
 					{#each evidence as item (item.id)}
-						<EvidenceCard
-							{item}
-							selected={selectedEvidence?.id === item.id}
-							on:click={() => (selectedEvidence = item)}
-							onAskAI={handleAskAI}
-						/>
+						<div onclick={() => (selectedEvidence = item)}>
+							<EvidenceCard
+								evidence={item}
+								onAskAI={handleAskAI}
+							/>
+						</div>
 					{/each}
 				</div>
 			</div>
