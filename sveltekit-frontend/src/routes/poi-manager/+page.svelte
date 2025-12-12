@@ -94,6 +94,12 @@ let formData = $state<Poi>({ // Use Poi interface
   notes: ''
 });
 
+// String representations for form inputs
+let aliasesString = $state<string>('');
+let knownHabitsString = $state<string>('');
+let associatesString = $state<string>('');
+let dangerLevelString = $state<string>('0');
+
 
 
 // Load POIs from API

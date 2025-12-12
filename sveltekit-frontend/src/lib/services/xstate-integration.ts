@@ -1,10 +1,12 @@
-import type { createActor, type Snapshot  } from 'xstate';
+import type {
+    legalAIMachine,
+    type LegalAIContext,
+    type LegalAIEvent,
+} from '$lib/machines/legalAIMachine.v5';
+import type { type Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
-import type { type Writable } from 'svelte/store';;
-import type { legalAIMachine,
-  type LegalAIEvent,
-  type LegalAIContext,
- } from '$lib/machines/legalAIMachine.v5';
+import type { createActor, type Snapshot } from 'xstate';
+;
 
 // Create the actor for the legal AI machine
 let legalAIActor: ReturnType<typeof createActor<typeof legalAIMachine>> | undefined;
@@ -161,6 +163,15 @@ export const xstateIntegration = {
       console.warn('[XState] Failed to subscribe to state changes:', error);
       return () => {};
     }
+  },
+
+  /**
+   * Perform semantic search on legal notes
+   */
+  performSemanticSearch(query: string): Promise<any[]> {
+    // Simple implementation - in a real app this would use vector search
+    console.log('[XState] Performing semantic search for:', query);
+    return Promise.resolve([]);
   },
 
   /**

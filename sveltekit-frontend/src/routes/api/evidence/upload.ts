@@ -1,8 +1,8 @@
-import { evidence, db } from '$lib/server/db';
-import path from 'path';
+import { default as db, default as evidence } from '$lib/server/db';
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'crypto';
 import fs from 'fs/promises';
+import path from 'path';
 
 export interface EvidenceRecord {
   id: string;

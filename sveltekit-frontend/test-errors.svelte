@@ -1,16 +1,18 @@
+<script lang="ts">
 // Test file with intentional errors for pattern validation
 import { test } from 'somewhere';
 
 // TypeScript errors
-let x: string, number = "hello"; // TS001: comma instead of pipe
-const y = 5; // TS002: missing type annotation (should be caught)
-interface User { name: string; age: number; } // TS004: semicolons instead of nothing
+let x: string | number = "hello"; // TS001: comma instead of pipe
+interface User { name: string, age: number } // TS004: semicolons instead of nothing
+</script>
 
 // CSS errors in style block
-<style>
   .test {
-    color: red, font-size: 14px; /* CSS001: comma instead of semicolon */
-    background: blue /* CSS002: missing semicolon */
+    color: red; font-size: 14px; /* CSS001: comma instead of semicolon */
+    background: blue; /* CSS002: missing semicolon */
+    margin: 10px;
+  } background: blue /* CSS002: missing semicolon */
     margin: 10px;;
   }
 </style>

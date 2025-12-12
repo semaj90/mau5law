@@ -16,12 +16,12 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
-from sse_starlette.responses import EventSourceResponse
+from sse_starlette import EventSourceResponse
 
-from backend.search_service import SearchService, SearchResult, get_search_service
-from backend.search_cache import CacheManager, get_cache_manager
-from backend.reranker_service import RerankerService, get_reranker_service
-from backend.search_events import SearchEventEmitter, get_event_emitter
+from ..search_service import SearchService, SearchResult, get_search_service
+from ..search_cache import CacheManager, get_cache_manager
+from ..reranker_service import RerankerService, get_reranker_service
+from ..search_events import SearchEventEmitter, get_event_emitter
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

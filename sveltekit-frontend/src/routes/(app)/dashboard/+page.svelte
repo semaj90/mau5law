@@ -24,7 +24,6 @@
 		<div class="user-info">
 			<h2>Welcome, {data.user.email}!</h2>
 			<p>User ID: {data.user.id}</p>
-			<p>Role: {data.user.role || 'user'}</p>
 		</div>
 	{/if}
 

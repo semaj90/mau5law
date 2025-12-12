@@ -3,6 +3,10 @@
   import CommandCenterNav from '$lib/components/yorha/CommandCenterNav.svelte';
   import SystemStatus from '$lib/components/yorha/SystemStatus.svelte';
   import { onMount } from 'svelte';
+  import type { Snippet } from 'svelte';
+
+  // Svelte 5 children prop
+  let { children }: { children: Snippet } = $props();
 
   // Import webgpu modules dynamically to avoid SSR issues
   let webgpu: any = null;
