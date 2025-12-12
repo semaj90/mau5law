@@ -96,14 +96,14 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
 
 
-  - [ ] 2.5 Create RAG index sync service
+  - [x] 2.5 Create RAG index sync service
     - Implement function to add evidence chunks to RAG index with tag metadata
     - Implement function to update RAG index when tags change (apply 1.5x weight boost)
     - Implement function to remove chunks from RAG index when evidence deleted
-
-
     - Implement function to update RAG index when embeddings regenerated
+    - Implement health check for RAG sync service
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+    - _Completed: December 11, 2025_
 
 
 
