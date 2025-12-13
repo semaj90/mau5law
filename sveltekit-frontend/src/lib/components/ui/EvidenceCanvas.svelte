@@ -95,7 +95,7 @@
       tabindex="0"
       aria-label={item.title ?? 'Evidence item'}
       onclick={() => handleItemClick(item)}
-      on:keydown={(e) => (['Enter',' '].includes(e.key) && handleItemClick(item))}
+      onkeydown={(e) => (['Enter',' '].includes(e.key) && handleItemClick(item))}
     >
       {#if item.thumbnail}
         <img src={item.thumbnail} alt={item.title ?? 'Evidence'} class="rounded-md w-full aspect-video object-cover mb-2" />

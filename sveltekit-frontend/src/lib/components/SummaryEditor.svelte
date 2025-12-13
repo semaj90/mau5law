@@ -132,23 +132,23 @@
     <h2>Case Summary</h2>
     <div class="editor-actions">
       {#if !isEditing}
-        <button class="btn-secondary" on:click={() => (isEditing = true)}>
+        <button class="btn-secondary" onclick={() => (isEditing = true)}>
           Edit
         </button>
-        <button class="btn-secondary" on:click={exportPDF}>
+        <button class="btn-secondary" onclick={exportPDF}>
           Export PDF
         </button>
-        <button class="btn-secondary" on:click={() => {
+        <button class="btn-secondary" onclick={() => {
           showVersionHistory = !showVersionHistory;
           if (showVersionHistory) loadVersionHistory();
         }}>
           Version History
         </button>
       {:else}
-        <button class="btn-primary" on:click={saveSummary} disabled={isSaving}>
+        <button class="btn-primary" onclick={saveSummary} disabled={isSaving}>
           {isSaving ? 'Saving...' : 'Save'}
         </button>
-        <button class="btn-secondary" on:click={cancelEdit}>
+        <button class="btn-secondary" onclick={cancelEdit}>
           Cancel
         </button>
       {/if}
@@ -163,7 +163,7 @@
           <button
             class="version-item"
             class:active={version.version === selectedVersion}
-            on:click={() => loadVersion(version.version)}
+            onclick={() => loadVersion(version.version)}
           >
             <span class="version-number">v{version.version}</span>
             <span class="version-date">

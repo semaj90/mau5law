@@ -76,7 +76,7 @@
       type="text"
       bind:value={input}
       placeholder="Ask the AI assistant..."
-      on:keydown={(e) => e.key === 'Enter' && sendMessage()}
+      onkeydown={(e) => e.key === 'Enter' && sendMessage()}
       disabled={loading}
     />
     <button onclick={() => sendMessage()} disabled={loading || !input.trim()}>

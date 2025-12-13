@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
-	const { data } = $props();
+	const { data, children } = $props();
 	const { caseData } = data;
 
 	const tabs = [
@@ -50,13 +50,13 @@
                  origin-left scale-x-0 data-[active=true]:scale-x-100
                  bg-amber-400 transition-transform"
 					data-active={$page.url.pathname.endsWith(`/${tab.slug}`)}
-				/>
+				></span>
 			</a>
 		{/each}
 	</nav>
 
 	<!-- Child route content -->
 	<main class="flex-1 overflow-auto">
-		<slot />
+		{@render children?.()}
 	</main>
 </div>

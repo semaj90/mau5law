@@ -105,10 +105,10 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn-save" on:click={saveChanges} disabled={isSaving}>
+        <button class="btn-save" onclick={saveChanges} disabled={isSaving}>
           {isSaving ? 'Saving...' : 'Save'}
         </button>
-        <button class="btn-cancel" on:click={cancelEdit} disabled={isSaving}>
+        <button class="btn-cancel" onclick={cancelEdit} disabled={isSaving}>
           Cancel
         </button>
       </div>
@@ -137,7 +137,7 @@
         <span class="value">{new Date(link.updated_at).toLocaleString()}</span>
       </div>
 
-      <button class="btn-edit" on:click={startEdit}>Edit Link</button>
+      <button class="btn-edit" onclick={startEdit}>Edit Link</button>
     </div>
   {/if}
 </div>

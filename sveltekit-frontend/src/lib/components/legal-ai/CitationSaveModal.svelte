@@ -108,14 +108,14 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen}
-  <div class="modal-overlay" on:click={closeModal}>
+  <div class="modal-overlay" onclick={closeModal}>
     <div class="modal-content" on:click|stopPropagation>
       <div class="modal-header">
         <h2>Save Citation</h2>
-        <button class="close-btn" on:click={closeModal}>✕</button>
+        <button class="close-btn" onclick={closeModal}>✕</button>
       </div>
 
       <form on:submit|preventDefault={handleSubmit} class="citation-form">
@@ -207,7 +207,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-cancel" on:click={closeModal} disabled={isSaving}>
+          <button type="button" class="btn-cancel" onclick={closeModal} disabled={isSaving}>
             Cancel
           </button>
           <button type="submit" class="btn-save" disabled={isSaving}>

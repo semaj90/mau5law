@@ -22,7 +22,7 @@
 				This AI assistant cannot determine guilt or innocence. It provides legal analysis based on evidence and statutes.
 				Always verify conclusions with official sources and consult with qualified legal professionals.
 			</div>
-			<button class="dismiss-btn" on:click={handleDismiss}>✕</button>
+			<button class="dismiss-btn" onclick={handleDismiss}>✕</button>
 		</div>
 	</div>
 {/if}

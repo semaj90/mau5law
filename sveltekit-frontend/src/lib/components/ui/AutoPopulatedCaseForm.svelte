@@ -137,7 +137,7 @@
   };
 </script>
 
-<form class="case-form {className}" on:submit={(e) => { e.preventDefault(); handleSubmit(); }}>
+<form class="case-form {className}" onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
   <!-- Header -->
   <div class="form-header">
     <h2 class="form-title">Case Information</h2>
@@ -168,7 +168,7 @@
         id="caseNumber"
         class="form-input"
         value={localForm.caseNumber || ''}
-        on:input={(e) => handleFieldChange('caseNumber', e.currentTarget.value)}
+        oninput={(e) => handleFieldChange('caseNumber', e.currentTarget.value)}
         disabled={!editable}
         placeholder="e.g., 2025-CR-001234"
       />
@@ -182,7 +182,7 @@
         id="caseName"
         class="form-input"
         value={localForm.caseName || ''}
-        on:input={(e) => handleFieldChange('caseName', e.currentTarget.value)}
+        oninput={(e) => handleFieldChange('caseName', e.currentTarget.value)}
         disabled={!editable}
         placeholder="e.g., State v. Doe"
       />
@@ -201,7 +201,7 @@
         id="defendant"
         class="form-input"
         value={localForm.defendant || ''}
-        on:input={(e) => handleFieldChange('defendant', e.currentTarget.value)}
+        oninput={(e) => handleFieldChange('defendant', e.currentTarget.value)}
         disabled={!editable}
         placeholder="Defendant name"
       />
@@ -215,7 +215,7 @@
         id="plaintiff"
         class="form-input"
         value={localForm.plaintiff || ''}
-        on:input={(e) => handleFieldChange('plaintiff', e.currentTarget.value)}
+        oninput={(e) => handleFieldChange('plaintiff', e.currentTarget.value)}
         disabled={!editable}
         placeholder="Plaintiff name"
       />
@@ -234,7 +234,7 @@
         id="location"
         class="form-input"
         value={localForm.location || ''}
-        on:input={(e) => handleFieldChange('location', e.currentTarget.value)}
+        oninput={(e) => handleFieldChange('location', e.currentTarget.value)}
         disabled={!editable}
         placeholder="Incident location"
       />
@@ -253,7 +253,7 @@
         id="date"
         class="form-input"
         value={localForm.date || ''}
-        on:input={(e) => handleFieldChange('date', e.currentTarget.value)}
+        oninput={(e) => handleFieldChange('date', e.currentTarget.value)}
         disabled={!editable}
       />
     </div>
@@ -277,7 +277,7 @@
               type="text"
               class="form-input"
               value={charge}
-              on:input={(e) => updateCharge(index, e.currentTarget.value)}
+              oninput={(e) => updateCharge(index, e.currentTarget.value)}
               disabled={!editable}
               placeholder="Enter charge"
             />
@@ -312,7 +312,7 @@
               type="text"
               class="form-input"
               value={witness}
-              on:input={(e) => updateWitness(index, e.currentTarget.value)}
+              oninput={(e) => updateWitness(index, e.currentTarget.value)}
               disabled={!editable}
               placeholder="Witness name"
             />
@@ -336,7 +336,7 @@
       id="summary"
       class="form-textarea"
       value={localForm.summary || ''}
-      on:input={(e) => handleFieldChange('summary', e.currentTarget.value)}
+      oninput={(e) => handleFieldChange('summary', e.currentTarget.value)}
       disabled={!editable}
       rows="4"
       placeholder="Brief case summary..."

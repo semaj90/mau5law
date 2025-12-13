@@ -104,10 +104,10 @@
     <div class="space-y-3">
       {#each filtered as suggestion (suggestion.id)}
         <div class={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${getRiskColor(suggestion.riskLevel)}`}
-          on:click={() => selectedId === suggestion.id ? selectedId = null : selectedId = suggestion.id}
+          onclick={() => selectedId === suggestion.id ? selectedId = null : selectedId = suggestion.id}
           role="button"
           tabindex="0"
-          on:keydown={(e) => e.key === 'Enter' && (selectedId === suggestion.id ? selectedId = null : selectedId = suggestion.id)}
+          onkeydown={(e) => e.key === 'Enter' && (selectedId === suggestion.id ? selectedId = null : selectedId = suggestion.id)}
         >
           <!-- Header -->
           <div class="flex items-start justify-between gap-3">

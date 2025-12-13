@@ -30,7 +30,7 @@
 	<div
 		class="dialog-overlay"
 		onclick={handleClose}
-		on:keydown={handleKeydown}
+		onkeydown={handleKeydown}
 		role="dialog"
 		aria-modal="true"
 		tabindex="-1"
@@ -39,7 +39,7 @@
 		<div
 			class="dialog-container"
 			onclick={(e) => e.stopPropagation()}
-			on:keydown={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
 			role="document"
 		>
 			{#if children}

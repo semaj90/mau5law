@@ -96,7 +96,7 @@ import Zap from 'lucide-svelte/icons/zap';;
   role="button"
   tabindex="0"
   aria-label="Evidence: {evidence.title} - Drag to canvas for AI tagging"
-  on:keydown={(e) => {
+  onkeydown={(e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleCardClick();

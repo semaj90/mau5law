@@ -4,6 +4,9 @@
 
 export * from './schema-postgres';
 
+// Evidence CRUD + RAG Integration tables
+export * from './schema-evidence-crud';
+
 // Also export additional schema modules as needed
 // export * from './schema-route-errors';
 // export * from './schema-phase78';

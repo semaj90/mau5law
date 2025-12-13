@@ -586,14 +586,14 @@
         <h3>QUICK ACTIONS</h3>
           <label class="quick-action file-input" for="import-config">
             📥 IMPORT CONFIG
-            <input id="import-config" type="file" accept=".json" on:change={importConfig} style="display: none;" />
+            <input id="import-config" type="file" accept=".json" onchange={importConfig} style="display: none;" />
           </label>>
           <button class="quick-action" onclick={exportConfig}>
             📤 EXPORT CONFIG
           </button>
           <label class="quick-action file-input">
             📥 IMPORT CONFIG
-            <input type="file" accept=".json" on:change={importConfig} style="display: none;" />
+            <input type="file" accept=".json" onchange={importConfig} style="display: none;" />
           </label>
           <button class="quick-action" onclick={restartServices}>
             🔄 RESTART SERVICES

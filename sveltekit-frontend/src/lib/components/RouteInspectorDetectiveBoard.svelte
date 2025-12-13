@@ -192,7 +192,7 @@
 				{/if}
 				<button
 					class="ml-4 h-8 w-8 text-sm border-[2px] border-[#262017] bg-[#b64545] text-[#f3eddc] hover:bg-[#d15454] active:translate-y-[1px]"
-					on:click={() => (open = false)}
+					onclick={() => (open = false)}
 				>
 					✕
 				</button>
@@ -269,7 +269,7 @@
 							<button
 								type="button"
 								class="text-left px-2 py-[3px] font-mono border border-dashed border-[#262017] bg-[#f9f4e4] hover:bg-[#262017] hover:text-[#f3eddc]"
-								on:click={() => window.open(rel, '_blank')}
+								onclick={() => window.open(rel, '_blank')}
 							>
 								{rel}
 							</button>
@@ -322,7 +322,7 @@
 						<div class="pt-2 flex gap-2">
 							<button
 								class="px-3 py-[4px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#37b36a] bg-[#133822] text-[#d7fbe3] hover:bg-[#1a4e30] disabled:opacity-50"
-								on:click={askErrorBrain}
+								onclick={askErrorBrain}
 								disabled={!!actionInProgress}
 							>
 								{#if actionInProgress === 'error_brain'}
@@ -368,7 +368,7 @@
 						<div class="pt-2 flex gap-2">
 							<button
 								class="px-3 py-[4px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#f0c14b] bg-[#8a6112] text-[#fff6dd] hover:bg-[#b87f19] disabled:opacity-50"
-								on:click={runCodemod}
+								onclick={runCodemod}
 								disabled={!!actionInProgress}
 							>
 								{#if actionInProgress === 'codemod'}
@@ -400,7 +400,7 @@
 						</p>
 						<button
 							class="px-3 py-[4px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#37b3a9] bg-[#104442] text-[#d4fbf7] hover:bg-[#16635f] disabled:opacity-50"
-							on:click={runPlaywrightCheck}
+							onclick={runPlaywrightCheck}
 							disabled={!!actionInProgress}
 						>
 							{#if actionInProgress === 'playwright'}
@@ -424,13 +424,13 @@
 			<div class="flex gap-2">
 				<button
 					class="px-4 py-[6px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#262017] bg-[#1775c7] text-white hover:bg-[#1e86e3]"
-					on:click={visitPage}
+					onclick={visitPage}
 				>
 					VISIT PAGE →
 				</button>
 				<button
 					class="px-4 py-[6px] text-[11px] font-mono tracking-[0.2em] uppercase border border-[#262017] bg-[#f8d24b] text-[#262017] hover:bg-[#ffe27b]"
-					on:click={openAstGraph}
+					onclick={openAstGraph}
 				>
 					VIEW AST GRAPH
 				</button>

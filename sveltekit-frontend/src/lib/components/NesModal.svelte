@@ -13,11 +13,11 @@
 </script>
 
 {#if showModal}
-	<div class="modal-overlay" on:click={close} transition:fade>
+	<div class="modal-overlay" onclick={close} transition:fade>
 		<div class="modal-container" on:click|stopPropagation>
 			<div class="modal-header">
 				<slot name="header">Modal Title</slot>
-				<button class="close-button" on:click={close}>X</button>
+				<button class="close-button" onclick={close}>X</button>
 			</div>
 			<div class="modal-content">
 				<slot />

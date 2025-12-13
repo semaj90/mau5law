@@ -106,7 +106,7 @@
 				type="text"
 				placeholder="Search filename..."
 				value={searchQuery}
-				on:change={handleSearch}
+				onchange={handleSearch}
 				class="search-input"
 			/>
 			<span class="search-icon">🔍</span>
@@ -115,7 +115,7 @@
 		<div class="filter-group">
 			<select
 				value={filters.jurisdiction}
-				on:change={(e) => handleFilterChange('jurisdiction', (e.target as HTMLSelectElement).value)}
+				onchange={(e) => handleFilterChange('jurisdiction', (e.target as HTMLSelectElement).value)}
 				class="filter-select"
 			>
 				<option value="">All Jurisdictions</option>
@@ -126,7 +126,7 @@
 
 			<select
 				value={filters.status}
-				on:change={(e) => handleFilterChange('status', (e.target as HTMLSelectElement).value)}
+				onchange={(e) => handleFilterChange('status', (e.target as HTMLSelectElement).value)}
 				class="filter-select"
 			>
 				<option value="">All Statuses</option>
@@ -137,7 +137,7 @@
 
 			<select
 				value={filters.file_type}
-				on:change={(e) => handleFilterChange('file_type', (e.target as HTMLSelectElement).value)}
+				onchange={(e) => handleFilterChange('file_type', (e.target as HTMLSelectElement).value)}
 				class="filter-select"
 			>
 				<option value="">All Types</option>

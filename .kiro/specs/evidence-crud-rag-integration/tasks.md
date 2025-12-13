@@ -6,7 +6,8 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
 ## Implementation Tasks
 
-- [ ] 1. Database Schema and Migrations
+- [x] 1. Database Schema and Migrations
+
   - [x] 1.1 Create Drizzle ORM schema for evidence_files table
 
     - Define fields: filename, file_type, file_size, jurisdiction, processing_status, minio_path, metadata
@@ -15,32 +16,35 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
 
-  - [ ] 1.2 Create Drizzle ORM schema for citation_tags table
+  - [x] 1.2 Create Drizzle ORM schema for citation_tags table
+
+
     - Define fields: name, jurisdiction, description
     - Add unique constraint on (name, jurisdiction)
     - Add index for jurisdiction
     - _Requirements: 2.1, 2.2, 2.3_
 
 
-  - [ ] 1.3 Create Drizzle ORM schema for evidence_tags M2M table
+
+  - [x] 1.3 Create Drizzle ORM schema for evidence_tags M2M table
     - Define fields: evidence_id (FK), tag_id (FK)
     - Add composite primary key (evidence_id, tag_id)
     - Add indexes for both foreign keys
-
     - _Requirements: 2.1, 2.2, 2.3_
+    - _Completed: December 13, 2025_
 
-  - [ ] 1.4 Create Drizzle ORM schema for rag_index_metadata table
+  - [x] 1.4 Create Drizzle ORM schema for rag_index_metadata table
     - Define fields: chunk_id (FK), evidence_id (FK), tags (array), tag_weight
-
     - Add indexes for chunk_id, evidence_id, tags
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 7.1, 7.2, 7.3, 7.4, 7.5_
+    - _Completed: December 13, 2025_
 
-  - [ ] 1.5 Create Drizzle ORM schema for audit_log table
+  - [x] 1.5 Create Drizzle ORM schema for audit_log table
     - Define fields: user_id, resource_type, resource_id, operation, old_values, new_values, timestamp
-
     - Add indexes for resource_type, resource_id, user_id
     - Mark timestamp as immutable (no updates)
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+    - _Completed: December 13, 2025_
 
   - [x] 1.6 Create database migration for all new tables
 
@@ -49,31 +53,33 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - Add all indexes and constraints
     - _Requirements: 1.1, 2.1, 6.1, 7.1_
 
+
+
 - [ ] 2. Backend Validation and CRUD Routes
 
 
 
-  - [ ] 2.1 Create validation module for evidence constraints
+  - [x] 2.1 Create validation module for evidence constraints
     - Implement jurisdiction enum validation (CA, NY, TX, Fed-US, Other)
     - Implement file_type enum validation (pdf, docx, txt)
     - Implement processing_status enum validation (pending, processing, completed, failed)
-
-
     - Implement file_size validation (max 100MB)
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+    - _Completed: December 13, 2025_
 
-  - [ ] 2.2 Create audit logging service
+  - [x] 2.2 Create audit logging service
     - Implement function to log CREATE operations (user_id, timestamp, resource_id, new_values)
-
-
     - Implement function to log UPDATE operations (user_id, timestamp, resource_id, old_values, new_values)
     - Implement function to log DELETE operations (user_id, timestamp, resource_id, deleted_values)
     - Ensure audit log entries are immutable (no updates/deletes)
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+    - _Completed: December 13, 2025_
 
 
 
   - [x] 2.3 Create FastAPI routes for evidence CRUD
+
+
 
 
     - Implement GET /api/evidence (with pagination, filtering, sorting)
@@ -84,15 +90,13 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 6.1, 6.2, 6.3_
 
-  - [ ] 2.4 Create FastAPI routes for citation tags CRUD
+  - [x] 2.4 Create FastAPI routes for citation tags CRUD
     - Implement GET /api/tags (with jurisdiction filter)
     - Implement POST /api/tags (create new tag)
     - Implement PATCH /api/evidence/{id}/tags (update evidence_tags links)
-
-
-
     - Trigger RAG index update when tags change
     - _Requirements: 2.1, 2.2, 2.3, 7.2_
+    - _Completed: December 13, 2025_
 
 
 
@@ -110,6 +114,8 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
   - [x] 2.6 Create FastAPI routes for RAG search with tag filtering
     - Implement POST /api/rag/search (query, tags, jurisdiction)
+
+
     - Apply tag filter to Qdrant search
     - Apply jurisdiction filter to Qdrant search
     - Apply 1.5x weight boost to results matching tags
@@ -120,10 +126,12 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
 
 
-  - [ ] 2.7 Create FastAPI routes for audit log queries
+  - [x] 2.7 Create FastAPI routes for audit log queries
+
     - Implement GET /api/audit (with filtering by resource_type, resource_id, user_id, date_range)
     - Ensure audit log is read-only (no POST/PATCH/DELETE)
     - _Requirements: 6.4, 6.5_
+    - _Completed: December 13, 2025_
 
 - [ ] 3. Frontend Components - Navigation and Layout
   - [ ] 3.1 Create AdminSidebar component
@@ -131,6 +139,7 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - Highlight active section based on current route
     - Apply YoRHa-style dark theme (background #111, text #ddd, accent #9df)
     - _Requirements: 1.1_
+
 
   - [ ] 3.2 Create admin layout wrapper
     - Implement grid layout: sidebar (240px) + main content (1fr)
@@ -159,6 +168,7 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 
 
 
+
     - Implement text search across filename and metadata
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
@@ -168,6 +178,9 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
   - [ ] 5.1 Create EvidenceDrawer component
     - Display form fields: filename, file_type, jurisdiction, processing_status, minio_path, metadata
     - Implement real-time validation with error messages
+
+
+
     - Implement submit and cancel buttons
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
@@ -182,6 +195,7 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - Allow creating new tags inline
     - Show selected tags with remove button
     - _Requirements: 2.1, 2.2, 2.3_
+
 
 
 
@@ -209,6 +223,7 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - Display multi-select dropdown for citation tags
     - Show available tags for selected jurisdiction
     - Display tag count and boost factor (1.5x)
+
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
   - [ ] 7.2 Create RAGQueryInterface component
@@ -221,16 +236,21 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
 - [ ] 8. Frontend Pages - Admin Sections
   - [ ] 8.1 Create /admin/evidence page
     - Integrate AdminSidebar, JurisdictionSelector, EvidenceDataGrid, EvidenceDrawer
+
+
     - Implement data fetching with pagination and filtering
     - Wire up row click to open drawer
     - Wire up save/delete to update database
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 4.1, 4.2, 4.3, 4.4, 4.5_
+
+
 
   - [ ] 8.2 Create /rag/query page
     - Integrate RAGQueryInterface
     - Implement search functionality with tag filtering
     - Display results with tag metadata and highlights
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 4.1, 4.2, 4.3, 4.4, 4.5_
+
 
   - [ ] 8.3 Create /admin/audit page
     - Integrate AdminSidebar, DataGrid (read-only)
@@ -239,12 +259,13 @@ This implementation plan converts the Evidence Files CRUD + RAG Integration desi
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
 - [ ] 9. Integration and Testing
-  - [ ] 9.1 Create unit tests for validation functions
+  - [x] 9.1 Create unit tests for validation functions
     - Test jurisdiction enum validation
     - Test file_type enum validation
     - Test processing_status enum validation
     - Test file_size validation
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+    - _Completed: December 13, 2025 - 35 tests passing_
 
   - [ ] 9.2 Create unit tests for CRUD operations
     - Test create evidence with valid data

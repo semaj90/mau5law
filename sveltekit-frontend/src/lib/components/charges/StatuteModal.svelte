@@ -84,7 +84,7 @@
 						<p class="text-red-200 text-lg mt-1">{statute.title}</p>
 					</div>
 					<button
-						on:click={onClose}
+						onclick={onClose}
 						class="text-gray-400 hover:text-white text-3xl leading-none"
 					>
 						✕
@@ -166,13 +166,13 @@
 			<!-- Footer -->
 			<div class="bg-gray-800 border-t-2 border-red-700 p-4 flex gap-3 justify-end">
 				<button
-					on:click={onClose}
+					onclick={onClose}
 					class="px-4 py-2 text-gray-300 bg-gray-700 hover:bg-gray-600 rounded-lg transition border border-gray-600"
 				>
 					Close
 				</button>
 				<button
-					on:click={handleAttach}
+					onclick={handleAttach}
 					disabled={isAttaching}
 					class="px-6 py-2 bg-red-900 hover:bg-red-800 text-white rounded-lg transition font-bold border-2 border-red-700 disabled:opacity-50"
 				>

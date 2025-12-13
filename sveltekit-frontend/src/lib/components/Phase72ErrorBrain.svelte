@@ -148,7 +148,7 @@
 </script>
 
 <div class="phase72-modal" transition:fade={{ duration: 200 }}>
-	<div class="modal-backdrop" on:click={onClose}></div>
+	<div class="modal-backdrop" onclick={onClose}></div>
 
 	<div class="modal-content nes-container is-dark" transition:fly={{ y: 50, duration: 300 }}>
 		<!-- Header -->
@@ -156,7 +156,7 @@
 			<h2 class="nes-text is-primary">
 				🧠 Phase 72 Error Brain
 			</h2>
-			<button class="nes-btn is-error close-btn" on:click={onClose}>×</button>
+			<button class="nes-btn is-error close-btn" onclick={onClose}>×</button>
 		</div>
 
 		{#if routePath}
@@ -207,7 +207,7 @@
 							<button
 								class="error-item nes-container"
 								class:selected={selectedError?.id === error.id}
-								on:click={() => selectError(error)}
+								onclick={() => selectError(error)}
 							>
 								<div class="error-header">
 									<span
@@ -247,7 +247,7 @@
 					<div class="action-buttons">
 						<button
 							class="nes-btn is-warning"
-							on:click={() => loadSimilarErrors(selectedError.error_hash)}
+							onclick={() => loadSimilarErrors(selectedError.error_hash)}
 							disabled={showSimilar}
 						>
 							🔍 Find Similar ({similarErrors.length > 0 ? similarErrors.length : '?'})
@@ -255,7 +255,7 @@
 
 						<button
 							class="nes-btn is-success"
-							on:click={() => streamAIFix(selectedError.error_hash)}
+							onclick={() => streamAIFix(selectedError.error_hash)}
 							disabled={streamingFix}
 						>
 							{streamingFix ? '⏳ Generating...' : '🤖 AI Fix Suggestion'}

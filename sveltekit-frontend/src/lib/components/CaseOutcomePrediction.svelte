@@ -296,7 +296,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 	</div>
 
 	<div class="prediction-form">
-		<form on:submit={handleSubmit} use:enhance>
+		<form onsubmit={handleSubmit} use:enhance>
 			<div class="form-section">
 				<h3>Case Information</h3>
 

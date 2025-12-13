@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     // Validate relationship type
-    const validTypes = ['supports', 'contradicts', 'same_person', 'timeline', 'chain_of_custody'];
+    const validTypes = ['supports', 'contradicts', 'same_person', 'timeline', 'chain_of_custody', 'corroborates', 'alibi', 'motive', 'opportunity', 'means', 'witness_statement', 'physical_evidence', 'digital_evidence', 'circumstantial', 'direct_evidence', 'hearsay', 'privileged', 'inadmissible'];
     if (!validTypes.includes(relationshipType)) {
       return json(
         { error: `Invalid relationshipType. Must be one of: ${validTypes.join(', ')}` },

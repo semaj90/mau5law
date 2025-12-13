@@ -152,8 +152,8 @@
 			</div>
 
 			<div class="actions">
-				<button on:click={handleLoadHistory} disabled={!caseId}>Load History</button>
-				<button on:click={handleClearHistory} disabled={!caseId} class="danger">
+				<button onclick={handleLoadHistory} disabled={!caseId}>Load History</button>
+				<button onclick={handleClearHistory} disabled={!caseId} class="danger">
 					Clear History
 				</button>
 			</div>
@@ -187,11 +187,11 @@
 				<textarea
 					bind:value={messageInput}
 					placeholder="Type your message... (Shift+Enter for new line)"
-					on:keydown={handleKeydown}
+					onkeydown={handleKeydown}
 					disabled={isStreaming}
 					rows="3"
 				/>
-				<button on:click={handleSendMessage} disabled={isStreaming || !messageInput.trim()}>
+				<button onclick={handleSendMessage} disabled={isStreaming || !messageInput.trim()}>
 					{isStreaming ? 'Streaming...' : 'Send'}
 				</button>
 			</div>

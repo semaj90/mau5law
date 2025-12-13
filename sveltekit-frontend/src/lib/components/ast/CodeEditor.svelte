@@ -113,8 +113,8 @@
     <textarea
       bind:this={editorRef}
       bind:value={code}
-      on:input={handleInput}
-      on:keydown={handleKeyDown}
+      oninput={handleInput}
+      onkeydown={handleKeyDown}
       {readonly}
       {placeholder}
       spellcheck="false"

@@ -1,9 +1,8 @@
 // Evidence Board API Routes
-import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types';
-import type { db  } from '$lib/server/db';
-import type { evidenceNodes, evidenceConnections  } from '$lib/server/db/schema';
-import type { eq, and  } from 'drizzle-orm';
+import { db } from '$lib/server/db';
+import type { evidence as evidenceNodes } from '$lib/server/db/schema';
+import { json } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 
 // GET /api/evidence/nodes - Get all evidence nodes for a case
 export async function GET({ url }: { url: URL }) {
@@ -14,10 +13,17 @@ export async function GET({ url }: { url: URL }) {
   }
 
   try {
-    const nodes = await db
+    const rawNodes = await db
       .select()
       .from(evidenceNodes)
       .where(eq(evidenceNodes.caseId, caseId));
+
+    // Transform nodes to include x,y from canvasPosition
+    const nodes = rawNodes.map(node => ({
+      ...node,
+      x: node.canvasPosition?.x || 100,
+      y: node.canvasPosition?.y || 100,
+    }));
 
     return json({ nodes });
   } catch (error) {
@@ -37,12 +43,11 @@ export async function POST({ request }: { request: Request }) {
         caseId: data.caseId,
         title: data.title,
         description: data.description,
-        type: data.type,
-        thumbnailUrl: data.thumbnailUrl,
-        contentUrl: data.contentUrl,
-        x: data.x || 100,
-        y: data.y || 100,
-        embedding: data.embedding,
+        evidenceType: data.evidenceType || 'document',
+        fileType: data.fileType,
+        fileName: data.fileName,
+        fileUrl: data.fileUrl,
+        canvasPosition: { x: data.x || 100, y: data.y || 100 },
       })
       .returning();
 

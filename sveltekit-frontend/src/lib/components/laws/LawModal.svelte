@@ -84,7 +84,7 @@
 						<p class="text-gray-300 text-sm mt-1">{statute.citation}</p>
 					</div>
 					<button
-						on:click={handleClose}
+						onclick={handleClose}
 						class="text-gray-400 hover:text-white text-2xl leading-none"
 					>
 						✕
@@ -188,13 +188,13 @@
 			<!-- Footer -->
 			<div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-4 flex gap-3 justify-end">
 				<button
-					on:click={handleClose}
+					onclick={handleClose}
 					class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
 				>
 					Close
 				</button>
 				<button
-					on:click={handleAttach}
+					onclick={handleAttach}
 					class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
 				>
 					📎 Attach to Case

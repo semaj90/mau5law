@@ -26,8 +26,8 @@
   {#if isEditing}
     <textarea bind:value={editedText} class="editor" />
     <div class="editor-actions">
-      <button class="btn-save" on:click={() => (isEditing = false)}>Save</button>
-      <button class="btn-cancel" on:click={() => (isEditing = false)}>Cancel</button>
+      <button class="btn-save" onclick={() => (isEditing = false)}>Save</button>
+      <button class="btn-cancel" onclick={() => (isEditing = false)}>Cancel</button>
     </div>
   {:else}
     <div class="content">
@@ -60,8 +60,8 @@
     </div>
 
     <div class="actions">
-      <button class="btn-edit" on:click={() => (isEditing = true)}>Edit</button>
-      <button class="btn-citations" on:click={() => (showCitationPanel = !showCitationPanel)}>
+      <button class="btn-edit" onclick={() => (isEditing = true)}>Edit</button>
+      <button class="btn-citations" onclick={() => (showCitationPanel = !showCitationPanel)}>
         {showCitationPanel ? 'Hide' : 'Show'} Citations
       </button>
     </div>
@@ -70,13 +70,13 @@
       <div class="citation-panel">
         <div class="citation-panel-header">
           <h3>Citation Management</h3>
-          <button class="close-btn" on:click={() => (showCitationPanel = false)}>✕</button>
+          <button class="close-btn" onclick={() => (showCitationPanel = false)}>✕</button>
         </div>
 
         <div class="citation-panel-content">
           {#if selectedCitation}
             <div class="citation-detail-view">
-              <button class="back-btn" on:click={() => (selectedCitation = null)}>← Back</button>
+              <button class="back-btn" onclick={() => (selectedCitation = null)}>← Back</button>
               <CitationDetail
                 citation={selectedCitation}
                 showActions={true}

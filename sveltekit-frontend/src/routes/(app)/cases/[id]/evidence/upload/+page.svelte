@@ -173,7 +173,7 @@
 			<p>or</p>
 			<label class="file-input-label">
 				<span>Browse Files</span>
-				<input type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.tiff" on:change={handleFileSelect} />
+				<input type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.tiff" onchange={handleFileSelect} />
 			</label>
 			<p class="file-info">Supported: PDF, PNG, JPG, TIFF (max 50MB each)</p>
 		</div>
@@ -185,7 +185,7 @@
 			<div class="uploads-header">
 				<h3>Upload Progress</h3>
 				{#if uploads.some((u) => u.status === 'completed')}
-					<button class="clear-btn" on:click={clearCompleted}>Clear Completed</button>
+					<button class="clear-btn" onclick={clearCompleted}>Clear Completed</button>
 				{/if}
 			</div>
 

@@ -91,7 +91,7 @@
         bind:value={formData.citationText}
         placeholder="e.g., 42 U.S.C. § 1983"
         rows="3"
-        on:keydown={handleKeydown}
+        onkeydown={handleKeydown}
         disabled={isLoading}
       />
     </div>
@@ -119,12 +119,12 @@
           type="text"
           bind:value={tagInput}
           placeholder="Add tag and press Enter"
-          on:keydown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+          onkeydown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
           disabled={isLoading}
         />
         <button
           type="button"
-          on:click={addTag}
+          onclick={addTag}
           disabled={isLoading || !tagInput.trim()}
           class="btn-secondary"
         >
@@ -138,7 +138,7 @@
               {tag}
               <button
                 type="button"
-                on:click={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
                 disabled={isLoading}
                 class="tag-remove"
               >
@@ -153,7 +153,7 @@
     <!-- Advanced Options -->
     <button
       type="button"
-      on:click={() => (showAdvanced = !showAdvanced)}
+      onclick={() => (showAdvanced = !showAdvanced)}
       class="btn-link"
       disabled={isLoading}
     >

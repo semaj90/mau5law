@@ -18,34 +18,39 @@ describe('Legal-Aware Ranker', () => {
         fc.array(
           fc.record({
             id: fc.string({ minLength: 1, maxLength: 50 }),
-            score: fc.float({ min: 0, max: 1 }),
+            score: fc.float({ min: Math.fround(0), max: Math.fround(1), noNaN: true }),
             payload: fc.record({
               tag_ids: fc.array(fc.string({ minLength: 1, maxLength: 20 }), { maxLength: 5 }),
-              jurisdiction: fc.oneof(fc.constant('CA'), fc.constant('US-FED'), fc.constant('Other'), fc.constant(null))
-            })
+              jurisdiction: fc.oneof(
+                fc.constant('CA'),
+                fc.constant('US-FED'),
+                fc.constant('Other'),
+                fc.constant(null)
+              ),
+            }),
           }),
           { minLength: 1, maxLength: 10 }
         ),
         fc.array(fc.string({ minLength: 1, maxLength: 20 }), { maxLength: 5 }),
         fc.oneof(fc.constant('CA'), fc.constant('US-FED'), fc.constant('Other'), fc.constant(null)),
         fc.record({
-          cosine: fc.float({ min: 0, max: 1 }),
-          sharedTags: fc.float({ min: 0, max: 1 }),
-          sameJurisdiction: fc.float({ min: 0, max: 1 })
+          cosine: fc.float({ min: Math.fround(0), max: Math.fround(1), noNaN: true }),
+          sharedTags: fc.float({ min: Math.fround(0), max: Math.fround(1), noNaN: true }),
+          sameJurisdiction: fc.float({ min: Math.fround(0), max: Math.fround(1), noNaN: true }),
         }),
         (hits, queryTagIds, jurisdiction, weights) => {
           const ranked = rerankLegalAware({
             hits: hits as QdrantHit[],
             queryTagIds,
             jurisdiction,
-            weights
+            weights,
           });
 
           // Should return same number of results
           expect(ranked.length).toBe(hits.length);
 
           // Each result should have explainability data
-          ranked.forEach((result, index) => {
+          ranked.forEach((result) => {
             expect(result).toHaveProperty('finalScore');
             expect(result).toHaveProperty('explain');
 
@@ -55,8 +60,8 @@ describe('Legal-Aware Ranker', () => {
             expect(explain).toHaveProperty('sameJurisdiction');
             expect(explain).toHaveProperty('finalScore');
 
-            // Cosine score should match original
-            expect(explain.cosine).toBe(hits[index].score);
+            // Cosine score should match the result's original score (from payload)
+            expect(explain.cosine).toBe(result.score);
 
             // Shared tags should be non-negative integer
             expect(explain.sharedTags).toBeGreaterThanOrEqual(0);
@@ -67,9 +72,9 @@ describe('Legal-Aware Ranker', () => {
 
             // Final score should be calculated correctly
             const expectedFinalScore =
-              (weights.cosine * explain.cosine) +
-              (weights.sharedTags * explain.sharedTags) +
-              (weights.sameJurisdiction * explain.sameJurisdiction);
+              weights.cosine * explain.cosine +
+              weights.sharedTags * explain.sharedTags +
+              weights.sameJurisdiction * explain.sameJurisdiction;
 
             expect(Math.abs(explain.finalScore - expectedFinalScore)).toBeLessThan(0.0001);
             expect(Math.abs(result.finalScore - expectedFinalScore)).toBeLessThan(0.0001);
@@ -97,11 +102,11 @@ describe('Legal-Aware Ranker', () => {
         fc.array(
           fc.record({
             id: fc.string({ minLength: 1, maxLength: 50 }),
-            score: fc.float({ min: 0.1, max: 0.9 }), // Avoid edge cases
+            score: fc.float({ min: Math.fround(0.1), max: Math.fround(0.9), noNaN: true }), // Avoid edge cases
             payload: fc.record({
               tag_ids: fc.array(fc.string(), { maxLength: 3 }),
-              jurisdiction: fc.constantFrom('CA', 'US-FED', 'Other')
-            })
+              jurisdiction: fc.constantFrom('CA', 'US-FED', 'Other'),
+            }),
           }),
           { minLength: 2, maxLength: 5 }
         ),
@@ -111,39 +116,36 @@ describe('Legal-Aware Ranker', () => {
             hits: hits as QdrantHit[],
             queryTagIds: [],
             jurisdiction: targetJurisdiction,
-            weights: { cosine: 0.75, sharedTags: 0.15, sameJurisdiction: 0.10 }
+            weights: { cosine: 0.75, sharedTags: 0.15, sameJurisdiction: 0.1 },
           });
 
           // Find results with matching jurisdiction
-          const matchingJurisdiction = ranked.filter(r =>
-            r.payload?.jurisdiction === targetJurisdiction
+          const matchingJurisdiction = ranked.filter(
+            (r) => r.payload?.jurisdiction === targetJurisdiction
           );
 
-          const nonMatchingJurisdiction = ranked.filter(r =>
-            r.payload?.jurisdiction !== targetJurisdiction
+          const nonMatchingJurisdiction = ranked.filter(
+            (r) => r.payload?.jurisdiction !== targetJurisdiction
           );
 
           // All matching jurisdiction results should have sameJurisdiction = 1
-          matchingJurisdiction.forEach(result => {
+          matchingJurisdiction.forEach((result) => {
             expect(result.explain.sameJurisdiction).toBe(1);
           });
 
           // All non-matching jurisdiction results should have sameJurisdiction = 0
-          nonMatchingJurisdiction.forEach(result => {
+          nonMatchingJurisdiction.forEach((result) => {
             expect(result.explain.sameJurisdiction).toBe(0);
           });
 
           // If we have both types, matching jurisdiction should generally rank higher
           // (unless cosine or shared tags differences are very large)
           if (matchingJurisdiction.length > 0 && nonMatchingJurisdiction.length > 0) {
-            const avgMatchingScore = matchingJurisdiction.reduce((sum, r) => sum + r.finalScore, 0) / matchingJurisdiction.length;
-            const avgNonMatchingScore = nonMatchingJurisdiction.reduce((sum, r) => sum + r.finalScore, 0) / nonMatchingJurisdiction.length;
-
             // The boost should generally help (though not guaranteed due to other factors)
             // At minimum, the jurisdiction boost should be applied correctly
-            matchingJurisdiction.forEach(result => {
+            matchingJurisdiction.forEach((result) => {
               const withoutBoost = result.explain.cosine * 0.75 + result.explain.sharedTags * 0.15;
-              const withBoost = withoutBoost + 0.10; // jurisdiction boost
+              const withBoost = withoutBoost + 0.1; // jurisdiction boost
               expect(Math.abs(result.finalScore - withBoost)).toBeLessThan(0.0001);
             });
           }

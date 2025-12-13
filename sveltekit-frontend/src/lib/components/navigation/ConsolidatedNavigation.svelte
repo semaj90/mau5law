@@ -29,7 +29,7 @@
 </script>
 <nav class="consolidated-navigation" class:expanded={isExpanded}>
   <div class="nav-header">
-    <button type="button" on:click={() => (isExpanded = !isExpanded)} class="nav-toggle" aria-label="Toggle Navigation">
+    <button type="button" onclick={() => (isExpanded = !isExpanded)} class="nav-toggle" aria-label="Toggle Navigation">
       <span class="nav-icon">{isExpanded ? '✖' : '☰'}</span>
       <span class="nav-title">Legal AI Platform</span>
     </button>

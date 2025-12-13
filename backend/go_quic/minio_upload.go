@@ -32,6 +32,12 @@ type OCRTask struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type LegalAIQuicServer struct {
+	minioClient *MinIOClient
+	rabbitmqURL string
+	mux         *http.ServeMux
+}
+
 // MinIOClient wraps MinIO operations
 type MinIOClient struct {
 	client *minio.Client

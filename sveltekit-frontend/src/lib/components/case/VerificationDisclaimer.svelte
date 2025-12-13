@@ -20,11 +20,11 @@
 </script>
 
 {#if isOpen}
-  <div class="modal-overlay" on:click={handleCancel}>
+  <div class="modal-overlay" onclick={handleCancel}>
     <div class="modal-content" on:click|stopPropagation>
       <div class="modal-header">
         <h2>⚠️ Non-Government Legal Source Detected</h2>
-        <button class="close-btn" on:click={handleCancel}>×</button>
+        <button class="close-btn" onclick={handleCancel}>×</button>
       </div>
 
       <div class="modal-body">
@@ -53,8 +53,8 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn-cancel" on:click={handleCancel}>Cancel</button>
-        <button class="btn-acknowledge" on:click={handleAcknowledge}>
+        <button class="btn-cancel" onclick={handleCancel}>Cancel</button>
+        <button class="btn-acknowledge" onclick={handleAcknowledge}>
           Acknowledge & Continue
         </button>
       </div>

@@ -8,10 +8,9 @@ import { cn } from '$lib/utils.js';
 import { toast } from '$lib/utils/toast';
 import Edit from 'lucide-svelte/icons/edit';
 import { Funnel as Filter } from 'lucide-svelte/icons/funnel';
-import { Grid3x3 as Grid } from 'lucide-svelte/icons/grid3x3';
+import { Grid } from 'lucide-svelte/icons/grid';
 import List from 'lucide-svelte/icons/list';
 import Plus from 'lucide-svelte/icons/plus';
-import Trash2 from 'lucide-svelte/icons/trash2';
 import { onMount } from 'svelte';
 
 interface PhysicalDescription {
@@ -393,7 +392,7 @@ const statusColors = {
                 Edit
               </button>
               <button onclick={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                <Trash2 class="w-4 h-4" />
+                <Trash class="w-4 h-4" />
                 Delete
               </button>
             </div>
@@ -419,7 +418,7 @@ const statusColors = {
                 <Edit class="w-4 h-4" />
               </button>
               <button onclick={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                <Trash2 class="w-4 h-4" />
+                <Trash class="w-4 h-4" />
               </button>
             </div>
           </div>

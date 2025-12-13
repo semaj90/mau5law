@@ -89,10 +89,10 @@
 				type="text"
 				placeholder="Search evidence by meaning, statute, or case details..."
 				bind:value={query}
-				on:keydown={handleKeydown}
+				onkeydown={handleKeydown}
 				disabled={loading}
 			/>
-			<button on:click={handleSearch} disabled={loading || !query.trim()}>
+			<button onclick={handleSearch} disabled={loading || !query.trim()}>
 				{loading ? 'Searching...' : 'Search'}
 			</button>
 		</div>
@@ -128,7 +128,7 @@
 				</div>
 			</div>
 
-			<button class="clear-filters" on:click={handleClearFilters}>Clear Filters</button>
+			<button class="clear-filters" onclick={handleClearFilters}>Clear Filters</button>
 		</div>
 
 		<!-- Error Message -->

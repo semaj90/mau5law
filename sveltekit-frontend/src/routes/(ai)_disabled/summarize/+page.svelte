@@ -127,7 +127,7 @@ import Star from 'lucide-svelte/icons/star';;
 
     <section class="uploader">
       <label class="nes-field">
-        <input type="file" accept=".pdf,.doc,.docx,.txt" on:change={handleFileUpload} />
+        <input type="file" accept=".pdf,.doc,.docx,.txt" onchange={handleFileUpload} />
       </label>
 
       <!-- use the summaryTypes so it is not unused and allow user to pick summary type -->

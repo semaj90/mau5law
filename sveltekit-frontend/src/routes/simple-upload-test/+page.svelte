@@ -62,7 +62,7 @@
         type="search"
         bind:value={searchQuery}
         placeholder="Enter search query..."
-        on:keydown={(e) => e.key === 'Enter' && performSearch()}
+        onkeydown={(e) => e.key === 'Enter' && performSearch()}
       />
       <button onclick={performSearch} disabled={isSearching}>
         {#if isSearching}

@@ -54,10 +54,10 @@
       </div>
 
       <div class="fallback-alert-actions">
-        <button class="fallback-alert-button retry" on:click={handleRetry}>
+        <button class="fallback-alert-button retry" onclick={handleRetry}>
           Retry with GPU
         </button>
-        <button class="fallback-alert-button dismiss" on:click={dismissAlert}>
+        <button class="fallback-alert-button dismiss" onclick={dismissAlert}>
           Dismiss
         </button>
       </div>

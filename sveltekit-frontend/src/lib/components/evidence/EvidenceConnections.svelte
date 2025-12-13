@@ -1,10 +1,44 @@
 <script lang="ts">
-  import type { EvidenceConnection, EvidenceNode } from '$lib/server/db/schema-postgres';
-  import { onMount } from 'svelte';;
+  import { onMount } from 'svelte';
   import type { Writable } from 'svelte/store';
 
-  export let nodes: Writable<EvidenceNode[]>;
-  export let connections: Writable<EvidenceConnection[]>;
+  // Define types locally to avoid importing server schema in browser
+  type EvidenceNodeType = {
+    id: string;
+    caseId: string;
+    title: string;
+    description?: string;
+    evidenceType: string;
+    fileType?: string;
+    fileName?: string;
+    fileUrl?: string;
+    canvasPosition: { x: number; y: number };
+    uploadedBy?: number;
+    uploadedAt: string;
+    updatedAt: string;
+    x: number;
+    y: number;
+  };
+
+  type EvidenceConnection = {
+    id: string;
+    caseId: string;
+    fromEvidenceId: string;
+    toEvidenceId: string;
+    connectionType: string;
+    label?: string;
+    notes?: string;
+    strength: number;
+    isVisible: boolean;
+    createdBy?: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  let { nodes, connections }: {
+    nodes: Writable<EvidenceNodeType[]>;
+    connections: Writable<EvidenceConnection[]>;
+  } = $props();
 
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
@@ -24,8 +58,8 @@
 
     // Draw each connection
     $connections .forEach(connection => {
-      const fromNode = $nodes .find(n => n.id === connection.fromNodeId);
-      const toNode = $nodes .find(n => n.id === connection.toNodeId);
+      const fromNode = $nodes.find(n => n.id === connection.fromEvidenceId);
+      const toNode = $nodes.find(n => n.id === connection.toEvidenceId);
 
       if (!fromNode || !toNode) return;
 

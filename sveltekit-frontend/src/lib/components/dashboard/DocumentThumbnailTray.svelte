@@ -44,7 +44,7 @@
     <button
       class="page-thumbnail {page.status}"
       class:selected={selectedPage === page.pageNumber}
-      on:click={() => handlePageClick(page)}
+      onclick={() => handlePageClick(page)}
       title="Page {page.pageNumber} - {page.status}"
       aria-label="Page {page.pageNumber} status: {page.status}"
     >
@@ -54,11 +54,11 @@
 </div>
 
 {#if showErrorModal && selectedPageError}
-  <div class="error-modal-overlay" on:click={closeErrorModal}>
+  <div class="error-modal-overlay" onclick={closeErrorModal}>
     <div class="error-modal" on:click|stopPropagation>
       <div class="error-modal-header">
         <h3 class="error-modal-title">Page {selectedPageError.pageNumber} Error</h3>
-        <button class="error-modal-close" on:click={closeErrorModal}>✕</button>
+        <button class="error-modal-close" onclick={closeErrorModal}>✕</button>
       </div>
 
       <div class="error-modal-content">
@@ -72,8 +72,8 @@
         </div>
 
         <div class="error-modal-actions">
-          <button class="error-modal-button retry" on:click={closeErrorModal}>Retry Page</button>
-          <button class="error-modal-button close" on:click={closeErrorModal}>Close</button>
+          <button class="error-modal-button retry" onclick={closeErrorModal}>Retry Page</button>
+          <button class="error-modal-button close" onclick={closeErrorModal}>Close</button>
         </div>
       </div>
     </div>

@@ -391,7 +391,7 @@
               <Input
                 id="aliases"
                 value={newPerson.aliases.join(', ')}
-                on:input={(e: Event) => (newPerson.aliases = (e.target as HTMLInputElement).value.split(',').map(s => s.trim()).filter(Boolean))}
+                oninput={(e: Event) => (newPerson.aliases = (e.target as HTMLInputElement).value.split(',').map(s => s.trim()).filter(Boolean))}
                 class="col-span-3 bg-gray-800 border-gray-700 text-gray-100"
               />
             </div>

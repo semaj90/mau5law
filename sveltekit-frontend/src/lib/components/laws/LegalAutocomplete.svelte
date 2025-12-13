@@ -108,10 +108,10 @@
 		<input
 			type="text"
 			{query}
-			on:input={handleInput}
-			on:keydown={handleKeyDown}
-			on:focus={handleFocus}
-			on:blur={handleBlur}
+			oninput={handleInput}
+			onkeydown={handleKeyDown}
+			onfocus={handleFocus}
+			onblur={handleBlur}
 			placeholder="Search statutes, crimes, states..."
 			class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 		/>
@@ -128,7 +128,7 @@
 				{#each suggestions as suggestion, index (suggestion.value)}
 					<button
 						type="button"
-						on:click={() => selectSuggestion(suggestion)}
+						onclick={() => selectSuggestion(suggestion)}
 						class={`w-full text-left px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition ${
 							index === selectedIndex ? 'bg-blue-100' : ''
 						}`}

@@ -104,11 +104,11 @@
   <div class="header">
     <h1>Case {caseId}</h1>
     <div class="actions">
-      <button on:click={generateSummary} disabled={isGenerating} class="btn-primary">
+      <button onclick={generateSummary} disabled={isGenerating} class="btn-primary">
         {isGenerating ? 'Generating...' : 'Generate Summary'}
       </button>
       {#if summary}
-        <button on:click={exportPDF} class="btn-secondary">Export PDF</button>
+        <button onclick={exportPDF} class="btn-secondary">Export PDF</button>
       {/if}
     </div>
   </div>
@@ -116,7 +116,7 @@
   {#if error}
     <div class="error-message">
       <p>{error}</p>
-      <button on:click={() => (error = null)}>Dismiss</button>
+      <button onclick={() => (error = null)}>Dismiss</button>
     </div>
   {/if}
 

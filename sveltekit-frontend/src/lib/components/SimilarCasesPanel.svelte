@@ -87,7 +87,7 @@
     <div class="controls">
       <div class="control-group">
         <label for="limit">Limit:</label>
-        <select id="limit" bind:value={limit} on:change={loadSimilarCases}>
+        <select id="limit" bind:value={limit} onchange={loadSimilarCases}>
           <option value={3}>3</option>
           <option value={5}>5</option>
           <option value={10}>10</option>
@@ -104,7 +104,7 @@
           max="1"
           step="0.1"
           bind:value={minRelevance}
-          on:change={loadSimilarCases}
+          onchange={loadSimilarCases}
         />
         <span class="relevance-value">{(minRelevance * 100).toFixed(0)}%</span>
       </div>
@@ -127,7 +127,7 @@
   {:else if error}
     <div class="error">
       <p>{error}</p>
-      <button on:click={loadSimilarCases}>Retry</button>
+      <button onclick={loadSimilarCases}>Retry</button>
     </div>
   {:else if cases.length === 0}
     <div class="no-cases">
@@ -140,7 +140,7 @@
           <div class="card-header">
             <button
               class="case-number"
-              on:click={() => navigateToCase(caseItem.caseNumber)}
+              onclick={() => navigateToCase(caseItem.caseNumber)}
             >
               {caseItem.caseNumber}
             </button>
@@ -191,7 +191,7 @@
           <div class="card-footer">
             <button
               class="btn-view"
-              on:click={() => navigateToCase(caseItem.caseNumber)}
+              onclick={() => navigateToCase(caseItem.caseNumber)}
             >
               View Case
             </button>

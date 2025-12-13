@@ -219,7 +219,7 @@
 		bind:this={canvas}
 		onclick={handleCanvasClick}
 		onmousemove={handleCanvasMove}
-		on:mouseleave={() => {
+		onmouseleave={() => {
 			hoveredNode = null;
 			showTooltip = false;
 			renderGraph();

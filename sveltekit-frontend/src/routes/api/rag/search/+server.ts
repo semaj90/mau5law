@@ -1,12 +1,12 @@
 // src/routes/api/rag/search/+server.ts
 
-import { json } from '@sveltejs/kit';
-import type { RagSearchRequest } from '$lib/server/rag/rag-types';
-import { qdrantSearch } from '$lib/server/rag/qdrant';
-import { rerankLegalAware, createQdrantFilter } from '$lib/server/rag/ranker';
 import { sql } from '$lib/server/db';
 import { embedText } from '$lib/server/embedding-service';
-import { ragCacheKey, cacheGetJSON, cacheSetJSON } from '$lib/server/rag/cache';
+import { cacheGetJSON, cacheSetJSON, ragCacheKey } from '$lib/server/rag/cache';
+import { qdrantSearch } from '$lib/server/rag/qdrant';
+import type { RagSearchRequest } from '$lib/server/rag/rag-types';
+import { createQdrantFilter, rerankLegalAware } from '$lib/server/rag/ranker';
+import { json } from '@sveltejs/kit';
 
 const EMBEDDING_DIM = Number(process.env.EMBEDDING_DIM ?? 768);
 
@@ -45,12 +45,6 @@ export async function POST({ request }) {
         { error: `Embedding dim mismatch: expected ${EMBEDDING_DIM}, got ${vec?.length}` },
         { status: 500 }
       );
-    }
-
-    // Check semantic cache for similar queries
-    const semanticHit = await semanticCacheSearch(vec, 0.95);
-    if (semanticHit) {
-      return json({ ...semanticHit.result as any, cache: 'semantic' });
     }
 
     // Create Qdrant filter (optional - can filter by jurisdiction/case)
@@ -98,11 +92,10 @@ export async function POST({ request }) {
     }));
 
     // Cache the results
-    const resultData = { results, cache: 'miss' };
-    await setCached('search', cacheParams, resultData);
-    await semanticCacheSet(query, vec, resultData);
+    const response = { results, cache: { hit: false } };
+    await cacheSetJSON(cacheKey, response);
 
-    return json(resultData);
+    return json(response);
   } catch (error) {
     console.error('RAG search error:', error);
     return json(

@@ -124,14 +124,14 @@
     <div class="flex justify-end gap-3 pt-2">
       <button
         class="btn btn-ghost btn-sm"
-        on:click={reject}
+        onclick={reject}
         disabled={isSubmitting}
       >
         No, that's not it
       </button>
       <button
         class="btn btn-primary btn-sm"
-        on:click={accept}
+        onclick={accept}
         disabled={isSubmitting}
       >
         {#if isSubmitting}

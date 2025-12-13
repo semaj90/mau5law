@@ -94,7 +94,7 @@
     <div class="header-actions">
       <button class="btn-share">🔗 Share</button>
       <button class="btn-export">📥 Export</button>
-      <button class="btn-delete" on:click={deleteCollection}>🗑️ Delete</button>
+      <button class="btn-delete" onclick={deleteCollection}>🗑️ Delete</button>
     </div>
   </div>
 
@@ -124,7 +124,7 @@
             </div>
             <button
               class="btn-remove"
-              on:click={() => removeCitation(citation.id)}
+              onclick={() => removeCitation(citation.id)}
               title="Remove from collection"
             >
               ✕

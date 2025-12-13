@@ -46,11 +46,11 @@
       type="text"
       bind:value={query}
       {placeholder}
-      on:keydown={handleKeydown}
+      onkeydown={handleKeydown}
       disabled={isLoading}
       class="search-input"
     />
-    <button class="search-btn" on:click={handleSearch} disabled={isLoading || !query}>
+    <button class="search-btn" onclick={handleSearch} disabled={isLoading || !query}>
       {isLoading ? '⏳' : '🔍'} Search
     </button>
   </div>
@@ -87,7 +87,7 @@
     </div>
 
     {#if query || jurisdiction || severity || category}
-      <button class="clear-btn" on:click={handleClear} disabled={isLoading}>
+      <button class="clear-btn" onclick={handleClear} disabled={isLoading}>
         Clear Filters
       </button>
     {/if}

@@ -102,7 +102,7 @@
       <div class="error-content">
         <h2>Connection Error</h2>
         <p>{errorMessage}</p>
-        <button class="retry-button" on:click={() => window.location.reload()}>
+        <button class="retry-button" onclick={() => window.location.reload()}>
           Retry Connection
         </button>
       </div>

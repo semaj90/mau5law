@@ -12,15 +12,15 @@ import type { Handle, HandleServerError } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
   // Add request ID for tracing
   const requestId = crypto.randomUUID();
-  event.locals.requestId = requestId;
+  (event.locals as any).requestId = requestId;
 
   // Add timing information
   const startTime = Date.now();
 
   // === LUCIA V3 SESSION VALIDATION ===
   // Skip auth if DEV_BYPASS_AUTH is set (temporarily disabled for Phase 72 testing)
-  event.locals.user = null;
-  event.locals.session = null;
+  (event.locals as any).user = null;
+  (event.locals as any).session = null;
 
   /* DISABLED FOR PHASE 72 TESTING - Auth import causes module resolution error
   if (process.env.DEV_BYPASS_AUTH === 'true') {

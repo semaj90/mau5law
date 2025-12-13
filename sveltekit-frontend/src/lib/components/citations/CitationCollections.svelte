@@ -97,7 +97,7 @@
   <div class="collections-header">
     <h3>Collections</h3>
     <button
-      on:click={() => (showCreateForm = !showCreateForm)}
+      onclick={() => (showCreateForm = !showCreateForm)}
       class="btn-create"
       disabled={isLoading}
     >
@@ -115,7 +115,7 @@
           type="text"
           bind:value={newCollectionName}
           placeholder="e.g., Civil Rights Cases"
-          on:keydown={(e) => e.key === 'Enter' && handleCreateCollection()}
+          onkeydown={(e) => e.key === 'Enter' && handleCreateCollection()}
         />
       </div>
 
@@ -125,7 +125,7 @@
           {#each colors as color}
             <button
               type="button"
-              on:click={() => (newCollectionColor = color)}
+              onclick={() => (newCollectionColor = color)}
               class="color-option"
               class:selected={newCollectionColor === color}
               style="background-color: {color}"
@@ -136,10 +136,10 @@
       </div>
 
       <div class="form-actions">
-        <button on:click={handleCreateCollection} class="btn-primary">
+        <button onclick={handleCreateCollection} class="btn-primary">
           Create Collection
         </button>
-        <button on:click={() => (showCreateForm = false)} class="btn-secondary">
+        <button onclick={() => (showCreateForm = false)} class="btn-secondary">
           Cancel
         </button>
       </div>
@@ -167,7 +167,7 @@
       {#each collections as collection (collection.id)}
         <div class="collection-item">
           <button
-            on:click={() => onSelectCollection(collection)}
+            onclick={() => onSelectCollection(collection)}
             class="collection-button"
           >
             <div class="collection-color" style="background-color: {collection.color}" />
@@ -179,7 +179,7 @@
             </div>
           </button>
           <button
-            on:click={() => handleDeleteCollection(collection.id)}
+            onclick={() => handleDeleteCollection(collection.id)}
             class="btn-delete"
             title="Delete collection"
           >

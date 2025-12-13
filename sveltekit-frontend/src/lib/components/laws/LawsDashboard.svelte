@@ -114,7 +114,7 @@
 		<!-- Tabs -->
 		<div class="flex gap-4 mb-6 border-b border-gray-700">
 			<button
-				on:click={() => (activeTab = 'search')}
+				onclick={() => (activeTab = 'search')}
 				class={`px-4 py-3 font-semibold transition ${
 					activeTab === 'search'
 						? 'text-blue-400 border-b-2 border-blue-400'
@@ -124,7 +124,7 @@
 				🔍 Search
 			</button>
 			<button
-				on:click={() => (activeTab = 'timeline')}
+				onclick={() => (activeTab = 'timeline')}
 				class={`px-4 py-3 font-semibold transition ${
 					activeTab === 'timeline'
 						? 'text-blue-400 border-b-2 border-blue-400'
@@ -150,28 +150,28 @@
 				<!-- Quick Links -->
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 					<button
-						on:click={() => fetchStatute('273a')}
+						onclick={() => fetchStatute('273a')}
 						class="bg-red-900 hover:bg-red-800 text-white p-4 rounded-lg border border-red-700 transition"
 					>
 						<div class="font-semibold">273a PC</div>
 						<div class="text-sm text-red-200">Child Endangerment</div>
 					</button>
 					<button
-						on:click={() => fetchStatute('211')}
+						onclick={() => fetchStatute('211')}
 						class="bg-red-900 hover:bg-red-800 text-white p-4 rounded-lg border border-red-700 transition"
 					>
 						<div class="font-semibold">211 PC</div>
 						<div class="text-sm text-red-200">Robbery</div>
 					</button>
 					<button
-						on:click={() => fetchStatute('23153')}
+						onclick={() => fetchStatute('23153')}
 						class="bg-orange-900 hover:bg-orange-800 text-white p-4 rounded-lg border border-orange-700 transition"
 					>
 						<div class="font-semibold">23153 VC</div>
 						<div class="text-sm text-orange-200">DUI Causing Injury</div>
 					</button>
 					<button
-						on:click={() => fetchStatute('148')}
+						onclick={() => fetchStatute('148')}
 						class="bg-yellow-900 hover:bg-yellow-800 text-white p-4 rounded-lg border border-yellow-700 transition"
 					>
 						<div class="font-semibold">148 PC</div>

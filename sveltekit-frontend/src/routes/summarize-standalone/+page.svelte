@@ -235,7 +235,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
               id="file-input"
               type="file"
               accept=".txt,.md,.pdf,.docx"
-              on:change={handleFileUpload}
+              onchange={handleFileUpload}
               hidden
             />
           </div>

@@ -109,7 +109,7 @@
 <div class="yorha-command-center">
   <div class="header">
     <h1>YoRHa Detective Command Center</h1>
-    <button on:click={loadData} disabled={isLoading} class="refresh-btn">
+    <button onclick={loadData} disabled={isLoading} class="refresh-btn">
       {isLoading ? 'Loading...' : 'Refresh'}
     </button>
   </div>

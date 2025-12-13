@@ -1,9 +1,8 @@
 // Evidence Connections API Routes
-import { json } from '@sveltejs/kit';;
-import type { RequestHandler } from './$types';
-import type { db  } from '$lib/server/db';
-import type { evidenceConnections  } from '$lib/server/db/schema';
-import type { eq  } from 'drizzle-orm';
+import { db } from '$lib/server/db';
+import type { evidenceBoardConnections as evidenceConnections } from '$lib/server/db/schema';
+import { json } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 
 // GET /api/evidence/connections - Get all connections for a case
 export async function GET({ url }: { url: URL }) {
@@ -14,11 +13,11 @@ export async function GET({ url }: { url: URL }) {
   }
 
   try {
-    // Get connections where either source or target node belongs to the case
+    // Get connections for the case
     const connections = await db
       .select()
       .from(evidenceConnections)
-      .where(eq(evidenceConnections.sourceId, caseId)); // This needs to be updated to join with nodes
+      .where(eq(evidenceConnections.caseId, caseId));
 
     return json({ connections });
   } catch (error) {
@@ -35,9 +34,11 @@ export async function POST({ request }: { request: Request }) {
     const newConnection = await db
       .insert(evidenceConnections)
       .values({
-        sourceId: data.sourceId,
-        targetId: data.targetId,
-        relationship: data.relationship || 'related',
+        caseId: data.caseId,
+        fromEvidenceId: data.fromEvidenceId,
+        toEvidenceId: data.toEvidenceId,
+        connectionType: data.connectionType || 'related',
+        label: data.label,
         strength: data.strength || 0.5,
       })
       .returning();
