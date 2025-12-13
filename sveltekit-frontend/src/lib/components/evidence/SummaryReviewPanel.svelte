@@ -1,26 +1,28 @@
-<script lang="ts">let { isApproving = false } = $props();
-
-
-  export let summaryId: string;
-  export let holding: string;
-  export let reasoning: string;
-  export let citations: Array<{ text: string; caseId?: string }>;
-  export let keywords: string[];
-  export let confidence: number;
-  export let onApprove: (data: {
+<script lang="ts">
+  interface Props {
+    summaryId: string;
     holding: string;
     reasoning: string;
     citations: Array<{ text: string; caseId?: string }>;
     keywords: string[];
-  }) => void;
-  export let onReject: () => void;
-  
+    confidence: number;
+    onApprove: (data: {
+      holding: string;
+      reasoning: string;
+      citations: Array<{ text: string; caseId?: string }>;
+      keywords: string[];
+    }) => void;
+    onReject: () => void;
+    isApproving?: boolean;
+  }
 
-  let editedHolding = holding;
-  let editedReasoning = reasoning;
-  let editedCitations = citations;
-  let editedKeywords = keywords;
-  let showEditMode = false;
+  let { summaryId, holding, reasoning, citations, keywords, confidence, onApprove, onReject, isApproving = false }: Props = $props();
+
+  let editedHolding = $state(holding);
+  let editedReasoning = $state(reasoning);
+  let editedCitations = $state(citations);
+  let editedKeywords = $state(keywords);
+  let showEditMode = $state(false);
 
   const handleApprove = () => {
     onApprove({
@@ -115,7 +117,7 @@
           </div>
           {#if showEditMode}
             <button
-              on:click={() => removeCitation(index)}
+              onclick={() => removeCitation(index)}
               class="ml-2 text-red-600 hover:text-red-700 text-sm font-medium"
             >
               Remove
@@ -137,7 +139,7 @@
           <span class="text-sm text-gray-700">{keyword}</span>
           {#if showEditMode}
             <button
-              on:click={() => removeKeyword(index)}
+              onclick={() => removeKeyword(index)}
               class="text-gray-600 hover:text-gray-800 font-bold"
             >
               ×
@@ -151,7 +153,7 @@
   <!-- Edit Mode Toggle -->
   <div class="mb-6">
     <button
-      on:click={() => (showEditMode = !showEditMode)}
+      onclick={() => (showEditMode = !showEditMode)}
       class="text-sm text-blue-600 hover:text-blue-700 font-medium"
     >
       {showEditMode ? 'Done Editing' : 'Edit Summary'}
@@ -161,14 +163,14 @@
   <!-- Actions -->
   <div class="flex gap-3">
     <button
-      on:click={handleApprove}
+      onclick={handleApprove}
       disabled={isApproving}
       class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 font-medium transition"
     >
       {isApproving ? 'Approving...' : 'Approve & Save'}
     </button>
     <button
-      on:click={onReject}
+      onclick={onReject}
       class="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 font-medium transition"
     >
       Reject

@@ -100,7 +100,7 @@
 <div class="case-statute-links">
   <div class="list-header">
     <h3>Linked Statutes ({filteredLinks.length})</h3>
-    <button class="refresh-btn" on:click={loadLinks} disabled={isLoading}>
+    <button class="refresh-btn" onclick={loadLinks} disabled={isLoading}>
       {isLoading ? '⏳' : '🔄'} Refresh
     </button>
   </div>
@@ -108,7 +108,7 @@
   <div class="filters">
     <div class="filter-group">
       <label for="link-type-filter">Link Type:</label>
-      <select id="link-type-filter" bind:value={selectedLinkType} on:change={loadLinks}>
+      <select id="link-type-filter" bind:value={selectedLinkType} onchange={loadLinks}>
         <option value="">All</option>
         {#each Object.keys(stats.byLinkType) as linkType}
           <option value={linkType}>
@@ -128,14 +128,14 @@
     {:else if error}
       <div class="error">
         <p>{error}</p>
-        <button on:click={loadLinks}>Retry</button>
+        <button onclick={loadLinks}>Retry</button>
       </div>
     {:else if filteredLinks.length === 0}
       <div class="empty-state">
         <p>No linked statutes</p>
         {#if selectedLinkType}
           <button
-            on:click={() => {
+            onclick={() => {
               selectedLinkType = '';
               loadLinks();
             }}
@@ -156,21 +156,21 @@
               <div class="card-actions">
                 <button
                   class="action-btn view"
-                  on:click={() => viewLink(link)}
+                  onclick={() => viewLink(link)}
                   title="View details"
                 >
                   👁️
                 </button>
                 <button
                   class="action-btn edit"
-                  on:click={() => editLink(link)}
+                  onclick={() => editLink(link)}
                   title="Edit link"
                 >
                   ✏️
                 </button>
                 <button
                   class="action-btn delete"
-                  on:click={() => deleteLink(link.statute_code)}
+                  onclick={() => deleteLink(link.statute_code)}
                   title="Delete link"
                 >
                   🗑️

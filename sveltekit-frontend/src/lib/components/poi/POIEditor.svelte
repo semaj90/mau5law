@@ -85,7 +85,7 @@
         <Input
           id="name"
           value={formData.name}
-          on:input={(e) => formData.name = e.target.value}
+          oninput={(e) => formData.name = e.target.value}
           placeholder="Enter full name"
           required
         />
@@ -96,7 +96,7 @@
         <Input
           id="alias"
           value={formData.alias}
-          on:input={(e) => formData.alias = e.target.value}
+          oninput={(e) => formData.alias = e.target.value}
           placeholder="Known alias or nickname"
         />
       </div>
@@ -123,7 +123,7 @@
       <Textarea
         id="notes"
         value={formData.notes}
-        on:input={(e) => formData.notes = e.target.value}
+        oninput={(e) => formData.notes = e.target.value}
         placeholder="Additional notes, observations, or background information..."
         rows={4}
       />

@@ -177,7 +177,7 @@
 		on:dragover={handleDragOver}
 		on:dragleave={handleDragLeave}
 		on:drop={handleDrop}
-		on:click={handleClick}
+		onclick={handleClick}
 		role="button"
 		tabindex="0"
 	>
@@ -191,7 +191,7 @@
 		bind:this={fileInput}
 		type="file"
 		accept=".pdf,.docx,.png,.jpg,.jpeg"
-		on:change={handleFileSelect}
+		onchange={handleFileSelect}
 		style="display: none"
 	/>
 
@@ -229,7 +229,7 @@
 			{/if}
 
 			{#if uploadStatus.status === 'complete' || uploadStatus.status === 'error'}
-				<button class="reset-button" on:click={resetUpload}>Upload Another File</button>
+				<button class="reset-button" onclick={resetUpload}>Upload Another File</button>
 			{/if}
 		</div>
 	{/if}

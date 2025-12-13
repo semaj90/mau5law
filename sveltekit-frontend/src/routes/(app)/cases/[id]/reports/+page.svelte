@@ -30,7 +30,7 @@
 					class="w-full text-left px-3 py-2 rounded-xl border border-slate-800/60
                  hover:border-amber-400/60 hover:bg-slate-800/60 transition-colors
                  flex items-center justify-between gap-3 text-sm"
-					on:click={() => openResume(report)}
+					onclick={() => openResume(report)}
 				>
 					<div class="flex flex-col gap-0.5">
 						<span class="font-semibold">
@@ -72,7 +72,7 @@
 					<button
 						class="text-xs px-2 py-1 rounded-full border border-slate-700
                    hover:bg-slate-800/80"
-						on:click={() => (showResumeModal = false)}
+						onclick={() => (showResumeModal = false)}
 					>
 						Close
 					</button>
@@ -86,7 +86,7 @@
 					<button
 						class="text-xs px-3 py-1 rounded-full border border-slate-600
                    hover:bg-slate-800/80"
-						on:click={() => (showResumeModal = false)}
+						onclick={() => (showResumeModal = false)}
 					>
 						Cancel
 					</button>

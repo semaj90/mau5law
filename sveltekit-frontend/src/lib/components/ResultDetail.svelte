@@ -51,7 +51,7 @@
 				<div class="text-content">
 					{result.text}
 				</div>
-				<button class="copy-btn" on:click={() => copyToClipboard(result.text)}>
+				<button class="copy-btn" onclick={() => copyToClipboard(result.text)}>
 					📋 Copy Text
 				</button>
 			</div>

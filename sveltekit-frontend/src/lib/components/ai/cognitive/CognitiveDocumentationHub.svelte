@@ -508,7 +508,7 @@
   </script>
    <div class="bg-[#F7F6F2] border"> <div class="flex justify-between items-center"> <h2 class="text-xl">ðŸ“š COGNITIVE DOCUMENTATION HUB</h2>
    <div class="flex items-center"> <input type="text"
-          bind:value={ searchQuery } on:input={() => filterContent(searchQuery)} placeholder="Search documentation..."
+          bind:value={ searchQuery } oninput={() => filterContent(searchQuery)} placeholder="Search documentation..."
 
 <div class="bg-[#F7F6F2] border">
   <div class="flex justify-between items-center">
@@ -517,7 +517,7 @@
       <input
         type="text"
         bind:value={searchQuery}
-        on:input={() => filterContent(searchQuery)}
+        oninput={() => filterContent(searchQuery)}
         placeholder="Search documentation..."
           class="px-3 py-1 border border-[#D1CFC7] bg-white text-sm w-64"
         /> <span class="text-sm"> Consciousness Lv.{consciousness.level} </span> </div> </div>

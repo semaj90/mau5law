@@ -110,7 +110,7 @@
 		{:else if part.type === 'statute'}
 			<button
 				class="citation-link statute"
-				on:click={() => handleCitationClick(part.reference, 'statute')}
+				onclick={() => handleCitationClick(part.reference, 'statute')}
 				title="View statute: {part.reference}"
 			>
 				{part.content}
@@ -118,7 +118,7 @@
 		{:else if part.type === 'case'}
 			<button
 				class="citation-link case"
-				on:click={() => handleCitationClick(part.reference, 'case')}
+				onclick={() => handleCitationClick(part.reference, 'case')}
 				title="View case: {part.reference}"
 			>
 				{part.content}
@@ -126,7 +126,7 @@
 		{:else if part.type === 'evidence'}
 			<button
 				class="citation-link evidence"
-				on:click={() => handleCitationClick(part.reference, 'evidence')}
+				onclick={() => handleCitationClick(part.reference, 'evidence')}
 				title="View evidence: {part.reference}"
 			>
 				{part.content}

@@ -109,7 +109,7 @@
         type="file"
         accept="image/*"
         multiple
-        on:change={handleImageUpload}
+        onchange={handleImageUpload}
         disabled={isUploading}
         class="block w-full"
       />
@@ -121,7 +121,7 @@
         type="file"
         accept="video/*"
         multiple
-        on:change={handleVideoUpload}
+        onchange={handleVideoUpload}
         disabled={isUploading}
         class="block w-full"
       />

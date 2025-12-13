@@ -119,7 +119,7 @@
         <input
           type="file"
           multiple
-          on:change={(e) => {
+          onchange={(e) => {
             const files = (e.target as HTMLInputElement).files;
             if (files) {
               uploadedFiles = [...uploadedFiles, ...Array.from(files)];

@@ -122,7 +122,7 @@
 
 				<div class="flex items-end">
 					<button
-						on:click={runInspector}
+						onclick={runInspector}
 						disabled={loading}
 						class="w-full px-6 py-2 bg-red-900 hover:bg-red-800 text-white font-bold border-2 border-red-700 rounded transition disabled:opacity-50"
 					>
@@ -182,7 +182,7 @@
 					<div class="space-y-2 max-h-96 overflow-y-auto">
 						{#each results.files as file (file.path)}
 							<button
-								on:click={() => toggleFile(file.path)}
+								onclick={() => toggleFile(file.path)}
 								class="w-full text-left p-3 bg-gray-700 hover:bg-gray-600 border-l-4 border-red-700 rounded transition"
 							>
 								<div class="flex items-center justify-between">

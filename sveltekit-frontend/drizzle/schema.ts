@@ -1,12 +1,12 @@
-import { pgTable, uuid, varchar, text, numeric, jsonb, integer, boolean, timestamp, serial, real, index, unique, bigint, foreignKey, vector, check, inet, uniqueIndex, interval, doublePrecision, bigserial, pgView, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
+import { bigint, bigserial, boolean, check, doublePrecision, foreignKey, index, inet, integer, interval, jsonb, numeric, pgEnum, pgTable, pgView, real, serial, text, timestamp, unique, uniqueIndex, uuid, varchar, vector } from "drizzle-orm/pg-core"
 
 export const caseStatus = pgEnum("case_status", ['open', 'in_progress', 'pending_review', 'closed', 'archived'])
 export const documentStatus = pgEnum("document_status", ['draft', 'under_review', 'approved', 'rejected', 'archived'])
 export const errorKind = pgEnum("error_kind", ['typescript', 'svelte', 'lint', 'build', 'runtime', 'api', 'other'])
 export const errorSeverity = pgEnum("error_severity", ['info', 'warn', 'error', 'fatal'])
 export const evidenceRelationshipStrength = pgEnum("evidence_relationship_strength", ['low', 'medium', 'high'])
-export const evidenceRelationshipType = pgEnum("evidence_relationship_type", ['supports', 'contradicts', 'same_person', 'timeline', 'chain_of_custody'])
+export const evidenceRelationshipType = pgEnum("evidence_relationship_type", ['supports', 'contradicts', 'same_person', 'timeline', 'chain_of_custody', 'corroborates', 'alibi', 'motive', 'opportunity', 'means', 'witness_statement', 'physical_evidence', 'digital_evidence', 'circumstantial', 'direct_evidence', 'hearsay', 'privileged', 'inadmissible'])
 export const evidenceStatus = pgEnum("evidence_status", ['pending', 'verified', 'rejected', 'under_review'])
 export const evidenceType = pgEnum("evidence_type", ['physical', 'digital', 'testimonial', 'documentary', 'scientific', 'video', 'document', 'photo', 'note', 'audio', 'forensic'])
 export const nodeType = pgEnum("node_type", ['person', 'evidence', 'location', 'case'])

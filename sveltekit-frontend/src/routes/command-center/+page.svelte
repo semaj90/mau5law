@@ -42,7 +42,7 @@
 
 <LegalAILayout title="Command Center" subtitle="Manage cases, evidence, and legal analysis">
     <div class="controls">
-        <button on:click={() => modal.open()}>Show Routes</button>
+        <button onclick={() => modal.open()}>Show Routes</button>
     </div>
   <div class="dashboard-grid">
     <!-- Active Cases Section -->

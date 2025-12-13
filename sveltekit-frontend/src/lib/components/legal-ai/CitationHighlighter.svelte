@@ -83,12 +83,12 @@
 
   {#if showSaveButton}
     <div class="save-button-container">
-      <button class="save-citation-btn" on:click={saveCitation}>
+      <button class="save-citation-btn" onclick={saveCitation}>
         💾 Save Citation
       </button>
       <button
         class="cancel-btn"
-        on:click={() => {
+        onclick={() => {
           showSaveButton = false;
           selectedText = '';
         }}
@@ -107,7 +107,7 @@
             <span class="citation-text">{citation.text}</span>
             <button
               class="remove-btn"
-              on:click={() => {
+              onclick={() => {
                 dispatch('remove', citation);
               }}
             >

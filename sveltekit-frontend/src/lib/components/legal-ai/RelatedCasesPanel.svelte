@@ -65,7 +65,7 @@
 <div class="related-cases-panel">
   <div class="panel-header">
     <h3>Related Cases</h3>
-    <button class="refresh-btn" on:click={loadRelatedCases} disabled={isLoading}>
+    <button class="refresh-btn" onclick={loadRelatedCases} disabled={isLoading}>
       {isLoading ? '⏳' : '🔄'}
     </button>
   </div>
@@ -87,7 +87,7 @@
     {:else}
       <div class="cases-list">
         {#each cases as caseItem (caseItem.id)}
-          <button class="case-card" on:click={() => viewCase(caseItem)}>
+          <button class="case-card" onclick={() => viewCase(caseItem)}>
             <div class="case-header">
               <span class="case-number">{caseItem.caseNumber}</span>
               {#if caseItem.relevanceScore}

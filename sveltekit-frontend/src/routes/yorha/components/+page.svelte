@@ -383,14 +383,14 @@
                   id="text"
                   type="text"
                   bind:value={buttonConfig.text}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
                 <label for="variant">Variant</label><select
                   id="variant"
                   bind:value={buttonConfig.variant}
-                  on:change={onConfigChange}
+                  onchange={onConfigChange}
                 >
                   <option value="primary">Primary</option>
                   <option value="secondary">Secondary</option>
@@ -401,7 +401,7 @@
                 <label for="size">Size</label><select
                   id="size"
                   bind:value={buttonConfig.size}
-                  on:change={onConfigChange}
+                  onchange={onConfigChange}
                 >
                   <option value="small">Small</option> <option value="medium">Medium</option>
                   <option value="large">Large</option>
@@ -412,7 +412,7 @@
                   <input
                     type="checkbox"
                     bind:checked={buttonConfig.loading}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Loading</span>
                 </label>
@@ -422,7 +422,7 @@
                   <input
                     type="checkbox"
                     bind:checked={buttonConfig.disabled}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Disabled</span>
                 </label>
@@ -432,7 +432,7 @@
                   <input
                     type="checkbox"
                     bind:checked={buttonConfig.glowEffect}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Glow Effect</span>
                 </label>
@@ -444,7 +444,7 @@
                   id="title"
                   type="text"
                   bind:value={panelConfig.title}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
@@ -452,7 +452,7 @@
                   id="width"
                   type="number"
                   bind:value={panelConfig.width}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
@@ -460,7 +460,7 @@
                   id="height"
                   type="number"
                   bind:value={panelConfig.height}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
@@ -468,7 +468,7 @@
                   <input
                     type="checkbox"
                     bind:checked={panelConfig.scrollable}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Scrollable</span>
                 </label>
@@ -478,7 +478,7 @@
                   <input
                     type="checkbox"
                     bind:checked={panelConfig.collapsible}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Collapsible</span>
                 </label>
@@ -488,7 +488,7 @@
                   <input
                     type="checkbox"
                     bind:checked={panelConfig.borderGlow}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Border Glow</span>
                 </label>
@@ -500,14 +500,14 @@
                   id="placeholder"
                   type="text"
                   bind:value={inputConfig.placeholder}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
                 <label for="type">Type</label><select
                   id="type"
                   bind:value={inputConfig.type}
-                  on:change={onConfigChange}
+                  onchange={onConfigChange}
                 >
                   <option value="text">Text</option> <option value="password">Password</option>
                   <option value="email">Email</option> <option value="number">Number</option>
@@ -518,7 +518,7 @@
                   id="value"
                   type="text"
                   bind:value={inputConfig.value}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
@@ -526,7 +526,7 @@
                   <input
                     type="checkbox"
                     bind:checked={inputConfig.error}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Error State</span>
                 </label>
@@ -536,7 +536,7 @@
                   <input
                     type="checkbox"
                     bind:checked={inputConfig.scanlineEffect}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Scanline Effect</span>
                 </label>
@@ -548,14 +548,14 @@
                   id="title"
                   type="text"
                   bind:value={modalConfig.title}
-                  on:input={onConfigChange}
+                  oninput={onConfigChange}
                 />
               </div>
               <div class="yorha-config-group">
                 <label for="size">Size</label><select
                   id="size"
                   bind:value={modalConfig.size}
-                  on:change={onConfigChange}
+                  onchange={onConfigChange}
                 >
                   <option value="small">Small</option> <option value="medium">Medium</option>
                   <option value="large">Large</option>
@@ -567,7 +567,7 @@
                   <input
                     type="checkbox"
                     bind:checked={modalConfig.open}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   /> <span>Open</span>
                 </label>
               </div>
@@ -576,7 +576,7 @@
                   <input
                     type="checkbox"
                     bind:checked={modalConfig.closable}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Closable</span>
                 </label>
@@ -586,7 +586,7 @@
                   <input
                     type="checkbox"
                     bind:checked={modalConfig.hologramEffect}
-                    on:change={onConfigChange}
+                    onchange={onConfigChange}
                   />
                   <span>Hologram Effect</span>
                 </label>

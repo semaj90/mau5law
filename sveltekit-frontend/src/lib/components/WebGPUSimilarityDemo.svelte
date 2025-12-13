@@ -110,7 +110,7 @@ import Zap from 'lucide-svelte/icons/zap';;
         class="flex-1 bg-noir border border-beige p-3 text-sm rounded"
         placeholder="Enter search query..."
         bind:value={queryText}
-        on:keydown={(e) => e.key === 'Enter' && performSimilaritySearch()}
+        onkeydown={(e) => e.key === 'Enter' && performSimilaritySearch()}
       />
       <button
         class="px-4 py-3 border border-beige hover:bg-beige hover:text-noir rounded flex items-center gap-2"

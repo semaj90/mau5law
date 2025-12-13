@@ -1,18 +1,21 @@
-<script lang="ts">let { isGenerating = false } = $props();
-
+<script lang="ts">
   import { onMount } from 'svelte';
 
-  export let evidenceId: string;
-  export let fileName: string;
-  export let documentType: string;
-  export let confidence: number;
-  export let metadata: Record<string, unknown>;
-  export let onGenerateSummary: () => void;
-  export let onReject: () => void;
-  
+  interface Props {
+    evidenceId: string;
+    fileName: string;
+    documentType: string;
+    confidence: number;
+    metadata: Record<string, unknown>;
+    onGenerateSummary: () => void;
+    onReject: () => void;
+    isGenerating?: boolean;
+  }
 
-  let extractedText = '';
-  let showFullText = false;
+  let { evidenceId, fileName, documentType, confidence, metadata, onGenerateSummary, onReject, isGenerating = false }: Props = $props();
+
+  let extractedText = $state('');
+  let showFullText = $state(false);
 
   onMount(async () => {
     // Extract preview from metadata
@@ -60,7 +63,7 @@
     </div>
     {#if extractedText.length > 300}
       <button
-        on:click={() => (showFullText = !showFullText)}
+        onclick={() => (showFullText = !showFullText)}
         class="text-sm text-blue-600 hover:text-blue-700 mt-2"
       >
         {showFullText ? 'Show less' : 'Show more'}
@@ -87,14 +90,14 @@
   <!-- Actions -->
   <div class="flex gap-3">
     <button
-      on:click={onGenerateSummary}
+      onclick={onGenerateSummary}
       disabled={isGenerating}
       class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium transition"
     >
       {isGenerating ? 'Generating...' : 'Generate Suggested Summary'}
     </button>
     <button
-      on:click={onReject}
+      onclick={onReject}
       class="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 font-medium transition"
     >
       Reject

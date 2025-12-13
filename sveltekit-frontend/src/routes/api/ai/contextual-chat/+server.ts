@@ -1,22 +1,40 @@
 // src/routes/api/ai/contextual-chat/+server.ts
 
+import { cacheGetJSON, cacheSetJSON, ragCacheKey } from '$lib/server/rag/cache';
+import type { ChatCitation } from '$lib/server/rag/rag-types';
 import { json } from '@sveltejs/kit';
-import type { ChatResponse, ChatCitation } from '$lib/server/rag/rag-types';
-import { getCached, setCached, extractKeywords } from '$lib/server/rag/cache';
+import { generateCompletion, checkOllamaHealth } from '$lib/server/llm/ollama-client';
+import { buildCaseSynthesis, formatSynthesisForLLM } from '$lib/server/cases/caseSynthesis';
 
-// Placeholder LLM function - replace with your existing Ollama/Gemma3 integration
+// LLM integration using Ollama/Gemma3
 async function callLLM(prompt: string): Promise<string> {
-  // TODO: Replace with your existing LLM integration
-  // This should call your existing Ollama/Gemma3 endpoint
-  return `[LLM Integration Placeholder]
+  // Check if Ollama is available
+  const health = await checkOllamaHealth();
+  if (!health.available) {
+    // Fallback: return a helpful message when LLM is unavailable
+    return `[LLM Service Unavailable]
 
-This is where your existing Ollama/Gemma3 chat integration should be called.
-The prompt has been prepared with retrieved sources and proper instructions.
+The AI assistant is currently offline. The relevant sources have been retrieved and are shown in the citations below.
 
-Prompt preview (first 500 chars):
-${prompt.slice(0, 500)}${prompt.length > 500 ? '...' : ''}
+Please review the source documents directly, or try again later when the LLM service is available.
 
-To complete this integration, replace this function with your existing chat implementation.`;
+Error: ${health.error ?? 'Connection failed'}`;
+  }
+
+  try {
+    const response = await generateCompletion(prompt, {
+      temperature: 0.7,
+      maxTokens: 2048,
+    });
+    return response.content;
+  } catch (error) {
+    console.error('LLM generation error:', error);
+    return `[LLM Error]
+
+An error occurred while generating the response. The relevant sources have been retrieved and are shown in the citations below.
+
+Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+  }
 }
 
 export async function POST({ request, fetch }) {
@@ -32,22 +50,28 @@ export async function POST({ request, fetch }) {
     const caseId = (body.caseId ?? null) as string | null;
     const tagIds = (body.tagIds ?? []) as string[];
 
-    // Check cache first - include extracted keywords for better cache hits
-    const messageKeywords = extractKeywords(message);
-    const cacheParams = {
-      message,
-      messageKeywords: messageKeywords.sort(), // Sort for consistency
-      jurisdiction,
-      caseId,
-      tagIds: tagIds.sort(), // Sort for consistency
-      ragLimit: 12,
-      ragThreshold: 0.2,
-    };
-
-    const cached = await getCached<ChatResponse>('chat', cacheParams);
-    if (cached) {
-      return json({ ...cached, cache: 'hit' });
+    // If caseId is provided, build case synthesis for context
+    let caseSynthesisText = '';
+    if (caseId) {
+      try {
+        const synthesis = await buildCaseSynthesis(caseId);
+        caseSynthesisText = formatSynthesisForLLM(synthesis);
+      } catch (err) {
+        console.warn('Failed to build case synthesis:', err);
+        // Continue without case context
+      }
     }
+
+    const cacheKey = ragCacheKey({
+      kind: 'context_chat',
+      query: message,
+      caseId,
+      jurisdiction,
+      tagIds,
+    });
+
+    const cached = await cacheGetJSON<any>(cacheKey);
+    if (cached) return json({ ...cached, cache: { hit: true } });
 
     // Perform RAG search to find relevant chunks
     const ragRes = await fetch('/api/rag/search', {
@@ -69,6 +93,16 @@ export async function POST({ request, fetch }) {
     }
 
     const { results } = await ragRes.json();
+
+    if (!results?.length) {
+      const response = {
+        answer: `I don't have enough indexed sources to answer that yet (no relevant chunks found).`,
+        citations: [],
+        cache: { hit: false },
+      };
+      await cacheSetJSON(cacheKey, response);
+      return json(response);
+    }
 
     // Build structured citations
     const citations: ChatCitation[] = (results ?? []).map((r: any, i: number) => ({
@@ -98,30 +132,36 @@ export async function POST({ request, fetch }) {
       .join('\n\n');
 
     // Create prompt for LLM
-    const prompt = [
+    const promptParts = [
       `You are a legal-domain assistant.`,
       `Use ONLY the SOURCES below. If the sources don't support an answer, say you don't have enough evidence.`,
       `Cite sources using [#] markers that match the source numbers.`,
       `Be precise and accurate. Do not make assumptions beyond what the sources state.`,
       ``,
-      `SOURCES:`,
-      sourcesBlock,
-      ``,
-      `QUESTION: ${message}`,
-    ].join('\n');
+    ];
+
+    // Add case synthesis if available
+    if (caseSynthesisText) {
+      promptParts.push(`CASE CONTEXT:`);
+      promptParts.push(caseSynthesisText);
+      promptParts.push(``);
+    }
+
+    promptParts.push(`SOURCES:`);
+    promptParts.push(sourcesBlock);
+    promptParts.push(``);
+    promptParts.push(`QUESTION: ${message}`);
+
+    const prompt = promptParts.join('\n');
 
     // Generate response using LLM
     const answer = await callLLM(prompt);
 
-    const response: ChatResponse = {
-      answer,
-      citations,
-    };
+    const response = { answer, citations, cache: { hit: false } };
 
-    // Cache the response
-    await setCached('chat', cacheParams, response);
+    await cacheSetJSON(cacheKey, response);
 
-    return json({ ...response, cache: 'miss' });
+    return json(response);
   } catch (error) {
     console.error('Contextual chat error:', error);
     return json(

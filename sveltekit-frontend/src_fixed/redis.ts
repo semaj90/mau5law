@@ -1,7 +1,7 @@
 /** * Redis Cache Integration - Production-ready Cache Service * * Implements IRedisCacheService with connection pooling, * automatic serialization, TTL management, and health checks. */
 
+import type { CacheSetOptions, IRedisCacheService } from '$lib/types/external-services';
 import { createClient, type RedisClientType } from 'redis';
-import type { IRedisCacheService, CacheSetOptions } from '$lib/types/external-services';
 
 interface RedisConfig {
   url?: string;
@@ -12,7 +12,7 @@ interface RedisConfig {
 
 class RedisCacheService implements IRedisCacheService {
   private client: RedisClientType;
-  private connected: boolean = $state(false);
+  private connected = false;
   private connecting: Promise<void> | null = null;
   private config: Required<RedisConfig>;
 
@@ -38,7 +38,7 @@ class RedisCacheService implements IRedisCacheService {
     });
     this.client.on('error', (err) => {
       console.error('Redis Error: ', err);
-      this.connected = $state(false);
+      this.connected = false;
     });
     this.client.on('connect', () => {
       console.log('Redis connected');
@@ -46,7 +46,7 @@ class RedisCacheService implements IRedisCacheService {
     });
     this.client.on('disconnect', () => {
       console.log('Redis disconnected');
-      this.connected = $state(false);
+      this.connected = false;
     });
   }
 
@@ -194,7 +194,7 @@ class RedisCacheService implements IRedisCacheService {
   async disconnect(): Promise<void> {
     if (this.connected) {
       await this.client.disconnect();
-      this.connected = $state(false);
+      this.connected = false;
     }
   }
 
@@ -215,6 +215,5 @@ export function getRedisCache(config?: Partial<RedisConfig>): RedisCacheService 
   return redisInstance;
 }
 
-export { RedisCacheService }; 
-
+export { RedisCacheService };
 

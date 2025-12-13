@@ -300,7 +300,7 @@
       class="message-input"
       placeholder="Enter a message…"
       bind:value={currentMessage}
-      on:keydown={(e) => handleKeydown(e as KeyboardEvent)}
+      onkeydown={(e) => handleKeydown(e as KeyboardEvent)}
       rows="3"
     ></textarea>
 

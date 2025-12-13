@@ -69,7 +69,7 @@
 	<div class="flex items-center justify-between">
 		<h3 class="text-xl font-bold text-white">🕒 Case Timeline</h3>
 		<button
-			on:click={loadTimeline}
+			onclick={loadTimeline}
 			disabled={isLoading}
 			class="px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 text-gray-200 rounded transition disabled:opacity-50"
 		>

@@ -88,7 +88,7 @@
 <div class="citation-list-container">
   <div class="list-header">
     <h3>Saved Citations</h3>
-    <button class="refresh-btn" on:click={loadCitations} disabled={isLoading}>
+    <button class="refresh-btn" onclick={loadCitations} disabled={isLoading}>
       🔄
     </button>
   </div>
@@ -101,7 +101,7 @@
   {:else if error}
     <div class="error">
       <p>{error}</p>
-      <button on:click={loadCitations}>Retry</button>
+      <button onclick={loadCitations}>Retry</button>
     </div>
   {:else if citations.length === 0}
     <div class="empty-state">
@@ -113,7 +113,7 @@
         <div
           class="citation-card"
           class:selected={selectedCitation?.id === citation.id}
-          on:click={() => (selectedCitation = citation)}
+          onclick={() => (selectedCitation = citation)}
         >
           <div class="card-header">
             <span class="statute-code">{citation.statute_code}</span>
@@ -162,7 +162,7 @@
     <div class="detail-panel">
       <div class="detail-header">
         <h4>Citation Details</h4>
-        <button class="close-btn" on:click={() => (selectedCitation = null)}>✕</button>
+        <button class="close-btn" onclick={() => (selectedCitation = null)}>✕</button>
       </div>
 
       <div class="detail-content">

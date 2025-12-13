@@ -125,7 +125,7 @@ import X from 'lucide-svelte/icons/x';;
       </div>
     {/if}
 
-    <form on:submit={handleSubmit} class="case-form">
+    <form onsubmit={handleSubmit} class="case-form">
       <div class="form-grid">
         <!-- Basic Information -->
         <div class="form-section">
@@ -209,7 +209,7 @@ import X from 'lucide-svelte/icons/x';;
                 type="text"
                 bind:value={tagInput}
                 placeholder="Enter tag and press Enter"
-                on:keydown={handleTagKeydown}
+                onkeydown={handleTagKeydown}
                 class="form-input"
               />
               <button type="button" onclick={addTag} class="btn btn-secondary tag-add-btn">

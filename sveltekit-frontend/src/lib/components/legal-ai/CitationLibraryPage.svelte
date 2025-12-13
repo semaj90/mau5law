@@ -104,7 +104,7 @@
 <div class="citation-library-page">
   <div class="page-header">
     <h1>Citation Library</h1>
-    <button class="btn-create" on:click={() => (showCreateForm = !showCreateForm)}>
+    <button class="btn-create" onclick={() => (showCreateForm = !showCreateForm)}>
       {showCreateForm ? '✕ Cancel' : '+ New Collection'}
     </button>
   </div>
@@ -141,10 +141,10 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn-cancel" on:click={() => (showCreateForm = false)} disabled={isCreating}>
+        <button class="btn-cancel" onclick={() => (showCreateForm = false)} disabled={isCreating}>
           Cancel
         </button>
-        <button class="btn-submit" on:click={createCollection} disabled={isCreating}>
+        <button class="btn-submit" onclick={createCollection} disabled={isCreating}>
           {isCreating ? 'Creating...' : 'Create Collection'}
         </button>
       </div>
@@ -154,7 +154,7 @@
   <div class="content">
     {#if selectedCollection}
       <div class="detail-view">
-        <button class="back-btn" on:click={() => (selectedCollection = null)}>
+        <button class="back-btn" onclick={() => (selectedCollection = null)}>
           ← Back to Collections
         </button>
         <CollectionDetail

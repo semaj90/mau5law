@@ -1,8 +1,7 @@
 // Evidence Node CRUD Operations
+import { db } from '$lib/server/db';
+import { evidence as evidenceNodes } from '$lib/server/db/schema';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types // TODO: Verify store subscription is correct for Svelte 5';
-import { db } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db';
-import { evidenceNodes } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function GET({ params }: { params: { id: string } }) {

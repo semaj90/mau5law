@@ -36,7 +36,7 @@
 
     <div class="mt-3 flex gap-3">
       <button
-        on:click={toggleEnhance}
+        onclick={toggleEnhance}
         class="px-3 py-1 border border-black bg-yellow-200 hover:bg-yellow-300 transition-colors"
       >
         {enhanced ? 'Remove Enhance' : 'Enhance'}

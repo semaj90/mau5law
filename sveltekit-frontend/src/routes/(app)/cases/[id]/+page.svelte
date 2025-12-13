@@ -1,8 +1,11 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import CaseNotesEditor from '$lib/components/cases/CaseNotesEditor.svelte';
+  import ContextualChatModal from '$lib/components/cases/ContextualChatModal.svelte';
   import EvidenceUploadPreview from '$lib/components/evidence/EvidenceUploadPreview.svelte';
   import SummaryReviewPanel from '$lib/components/evidence/SummaryReviewPanel.svelte';
+  import NesModal from '$lib/components/nes/NesModal.svelte';
   import { onMount } from 'svelte';
 
   interface Evidence {
@@ -21,14 +24,18 @@
     createdAt: string;
   }
 
-  let caseData: Case | null = null;
-  let evidence: Evidence[] = [];
-  let isLoading = true;
-  let error = '';
-  let isUploading = false;
-  let selectedEvidence: Evidence | null = null;
-  let suggestedSummary: any = null;
-  let isGeneratingSummary = false;
+  let caseData = $state<Case | null>(null);
+  let evidence = $state<Evidence[]>([]);
+  let isLoading = $state(true);
+  let error = $state('');
+  let isUploading = $state(false);
+  let selectedEvidence = $state<Evidence | null>(null);
+  let suggestedSummary = $state<any>(null);
+  let isGeneratingSummary = $state(false);
+  let showNotesPanel = $state(false);
+  let showChatModal = $state(false);
+  let isExportingPacket = $state(false);
+  let exportPacketError = $state('');
 
   const caseId = $page.params.id;
 
@@ -162,18 +169,102 @@
 
   const getPendingCount = () => evidence.filter((e) => e.status === 'pending').length;
   const getApprovedCount = () => evidence.filter((e) => e.status === 'approved').length;
+
+  const handleExportPacket = async () => {
+    isExportingPacket = true;
+    exportPacketError = '';
+
+    try {
+      const response = await fetch(`/api/cases/${caseId}/export/pdf`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `case_${caseId}_packet_${Date.now()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      exportPacketError = err instanceof Error ? err.message : 'Export failed';
+    } finally {
+      isExportingPacket = false;
+    }
+  };
 </script>
 
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <header class="bg-white shadow">
     <div class="max-w-7xl mx-auto px-4 py-6">
-      <a href="/dashboard" class="text-blue-600 hover:text-blue-700 text-sm font-medium mb-2 block">
-        ← Back to Cases
-      </a>
+      <div class="flex items-center justify-between mb-2">
+        <a href="/dashboard" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+          ← Back to Cases
+        </a>
+        <div class="flex gap-2">
+          <button
+            onclick={() => showNotesPanel = !showNotesPanel}
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+            title="Open case notes editor"
+          >
+            📝 {showNotesPanel ? 'Hide Notes' : 'Case Notes'}
+          </button>
+          <button
+            onclick={() => showChatModal = true}
+            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
+            title="Open AI chat with case context"
+          >
+            🧠 AI Chat
+          </button>
+          <button
+            onclick={handleExportPacket}
+            disabled={isExportingPacket}
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2 disabled:opacity-50"
+            title="Export case packet as PDF"
+          >
+            📄 {isExportingPacket ? 'Exporting...' : 'Export Packet'}
+          </button>
+        </div>
+      </div>
       <h1 class="text-3xl font-bold text-gray-900">{caseData?.title || 'Loading...'}</h1>
     </div>
   </header>
+
+  <!-- Notes Panel (Slide-out) -->
+  {#if showNotesPanel}
+    <div class="fixed inset-y-0 right-0 w-[600px] bg-gray-900 shadow-2xl z-50 transform transition-transform">
+      <CaseNotesEditor {caseId} onClose={() => showNotesPanel = false} />
+    </div>
+    <button
+      class="fixed inset-0 bg-black/50 z-40"
+      onclick={() => showNotesPanel = false}
+      aria-label="Close notes panel"
+    ></button>
+  {/if}
+
+  <!-- Export Error Message -->
+  {#if exportPacketError}
+    <div class="fixed top-4 right-4 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+      <p>{exportPacketError}</p>
+    </div>
+  {/if}
+
+  <!-- AI Chat Modal -->
+  <NesModal
+    open={showChatModal}
+    title="🧠 AI CONTEXTUAL CHAT"
+    onClose={() => showChatModal = false}
+    widthClass="w-[900px]"
+  >
+    <ContextualChatModal {caseId} onClose={() => showChatModal = false} />
+  </NesModal>
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 py-8">
@@ -196,7 +287,7 @@
               <p class="text-sm text-gray-500">PDF, images, documents</p>
               <input
                 type="file"
-                on:change={handleFileUpload}
+                onchange={handleFileUpload}
                 disabled={isUploading}
                 class="hidden"
                 accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
@@ -221,7 +312,7 @@
             <div class="space-y-3">
               {#each evidence as item (item.id)}
                 <button
-                  on:click={() => (selectedEvidence = item)}
+                  onclick={() => (selectedEvidence = item)}
                   class={`w-full text-left p-4 rounded-lg border-2 transition ${
                     selectedEvidence?.id === item.id
                       ? 'border-blue-500 bg-blue-50'

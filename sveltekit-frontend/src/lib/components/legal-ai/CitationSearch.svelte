@@ -87,7 +87,7 @@
   }
 </script>
 
-<svelte:window on:click={handleClickOutside} />
+<svelte:window onclick={handleClickOutside} />
 
 <div class="citation-search">
   <div class="search-input-wrapper">
@@ -95,13 +95,13 @@
       type="text"
       {placeholder}
       value={searchQuery}
-      on:input={handleInput}
-      on:focus={() => (showResults = results.length > 0)}
+      oninput={handleInput}
+      onfocus={() => (showResults = results.length > 0)}
       class="search-input"
       disabled={isSearching}
     />
     {#if searchQuery}
-      <button class="clear-btn" on:click={clearSearch} title="Clear search">
+      <button class="clear-btn" onclick={clearSearch} title="Clear search">
         ✕
       </button>
     {/if}
@@ -125,7 +125,7 @@
           {#each results as citation (citation.id)}
             <button
               class="result-item"
-              on:click={() => selectCitation(citation)}
+              onclick={() => selectCitation(citation)}
             >
               <div class="result-code">{citation.statute_code}</div>
               {#if citation.statute_title}

@@ -110,7 +110,7 @@
 <div class="evidence-board">
   <div class="board-header">
     <h2>Evidence Board</h2>
-    <button on:click={loadEvidence} disabled={isLoading} class="refresh-btn">
+    <button onclick={loadEvidence} disabled={isLoading} class="refresh-btn">
       {isLoading ? 'Loading...' : 'Refresh'}
     </button>
   </div>
@@ -154,7 +154,7 @@
         <g
           class="node"
           class:selected={selectedNode?.id === node.id}
-          on:click={() => selectNode(node)}
+          onclick={() => selectNode(node)}
           on:mousemove={(e) => {
             if (e.buttons === 1) handleNodeDrag(node, e);
           }}
@@ -184,7 +184,7 @@
       <div class="node-details">
         <div class="details-header">
           <h3>{selectedNode.title}</h3>
-          <button on:click={() => (selectedNode = null)} class="close-btn">✕</button>
+          <button onclick={() => (selectedNode = null)} class="close-btn">✕</button>
         </div>
         <div class="details-content">
           <div class="detail-item">

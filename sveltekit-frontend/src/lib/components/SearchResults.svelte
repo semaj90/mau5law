@@ -24,7 +24,7 @@
 
 <div class="results-container">
 	{#each results as result (result.chunk_id)}
-		<div class="result-item" on:click={() => handleSelectResult(result)}>
+		<div class="result-item" onclick={() => handleSelectResult(result)}>
 			<div class="result-header">
 				<div class="rank-badge">#{result.rank}</div>
 				<div class="score-badge">

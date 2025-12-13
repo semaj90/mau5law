@@ -72,11 +72,11 @@
 				type="text"
 				placeholder="Search statute, code, title, segment…"
 				bind:value={query}
-				on:keydown={handleKeydown}
+				onkeydown={handleKeydown}
 				disabled={loading}
 				class="search-input"
 			/>
-			<button on:click={runSearch} disabled={loading} class="search-btn">
+			<button onclick={runSearch} disabled={loading} class="search-btn">
 				{#if loading}
 					<span class="spinner"></span> Searching...
 				{:else}
@@ -86,7 +86,7 @@
 		</div>
 
 		<!-- Filter Toggle -->
-		<button on:click={toggleFilters} class="filter-toggle">
+		<button onclick={toggleFilters} class="filter-toggle">
 			{showFilters ? '✕' : '⚙️'} Filters
 		</button>
 	</div>
@@ -101,7 +101,7 @@
 						<button
 							class="chip"
 							class:active={selectedJurisdiction === j}
-							on:click={() => (selectedJurisdiction = j === 'All' ? '' : j)}
+							onclick={() => (selectedJurisdiction = j === 'All' ? '' : j)}
 						>
 							{j}
 						</button>
@@ -116,7 +116,7 @@
 						<button
 							class="chip"
 							class:active={selectedChargeType === c}
-							on:click={() => (selectedChargeType = c === 'All' ? '' : c)}
+							onclick={() => (selectedChargeType = c === 'All' ? '' : c)}
 						>
 							{c}
 						</button>
@@ -141,8 +141,8 @@
 			</div>
 
 			{#each reranked as law (law.id)}
-				<div class="law-card" on:click={() => selectResult(law)}>
-				<div class="law-card" on:click={() => selectResult(law)} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && selectResult(law)}>
+				<div class="law-card" onclick={() => selectResult(law)}>
+				<div class="law-card" onclick={() => selectResult(law)} role="button" tabindex="0" onkeydown={(e) => e.key === 'Enter' && selectResult(law)}>
 					<div class="law-header">
 						<h4 class="law-title">{law.title}</h4>
 						<span class="score">

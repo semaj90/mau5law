@@ -69,9 +69,9 @@
     <input
       placeholder="Search cases, evidence, or help knowledge base…"
       bind:value={query}
-      on:keydown={(event) => event.key === 'Enter' && runSearch()}
+      onkeydown={(event) => event.key === 'Enter' && runSearch()}
     />
-    <button class="run" on:click={runSearch} disabled={loading}>
+    <button class="run" onclick={runSearch} disabled={loading}>
       {loading ? 'Scanning…' : 'Execute Search'}
     </button>
   </div>

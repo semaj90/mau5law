@@ -23,7 +23,7 @@ import Users from 'lucide-svelte/icons/users';;
   {#each tabs as { key, label, icon: Icon }}
     <button
       class="flex items-center gap-2 px-3 py-1 text-sm border-1 border-noir dark:border-beige hover:bg-noir/10 dark:hover:bg-beige/10"
-      on:click={() => WorkspaceStore.set(key)}>
+      onclick={() => WorkspaceStore.set(key)}>
         <Icon class="w-4 h-4" />
         <span>{label}</span>
     </button>

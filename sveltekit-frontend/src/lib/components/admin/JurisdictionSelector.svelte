@@ -45,7 +45,7 @@
 	<select
 		id="jurisdiction"
 		{value}
-		on:change={handleChange}
+		onchange={handleChange}
 		{disabled}
 		class="jurisdiction-select"
 		class:empty={!value}

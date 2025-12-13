@@ -69,8 +69,8 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-save" on:click={saveCitation}>💾 Save Citation</button>
-        <button class="btn-attach" on:click={attachToCase}>🔗 Attach to Case</button>
+        <button class="btn-save" onclick={saveCitation}>💾 Save Citation</button>
+        <button class="btn-attach" onclick={attachToCase}>🔗 Attach to Case</button>
       </div>
     </div>
 

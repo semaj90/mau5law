@@ -46,7 +46,7 @@
         </div>
 
         <button
-          on:click={refreshData}
+          onclick={refreshData}
           disabled={isLoading}
           class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 disabled:bg-gray-400 transition"
         >
@@ -79,7 +79,7 @@
       <div class="border-b border-gray-200 bg-white rounded-t-lg">
         <div class="flex">
           <button
-            on:click={() => (tab = 'errors')}
+            onclick={() => (tab = 'errors')}
             class={`flex-1 py-4 px-6 font-semibold border-b-2 transition text-center ${
               tab === 'errors'
                 ? 'border-blue-600 text-blue-600 bg-blue-50'
@@ -89,7 +89,7 @@
             🔴 Errors ({errors.length})
           </button>
           <button
-            on:click={() => (tab = 'suggestions')}
+            onclick={() => (tab = 'suggestions')}
             class={`flex-1 py-4 px-6 font-semibold border-b-2 transition text-center ${
               tab === 'suggestions'
                 ? 'border-blue-600 text-blue-600 bg-blue-50'

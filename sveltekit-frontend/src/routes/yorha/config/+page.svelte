@@ -259,7 +259,7 @@ import Zap from 'lucide-svelte/icons/zap';;
                 id="databaseUrl"
                 type="text"
                 value={config.databaseUrl}
-                on:input={(e) => config.databaseUrl = e.target.value}
+                oninput={(e) => config.databaseUrl = e.target.value}
                 placeholder="postgresql://user:pass@localhost:5432/db"
                 class="config-input"
               />
@@ -270,7 +270,7 @@ import Zap from 'lucide-svelte/icons/zap';;
                 id="redisUrl"
                 type="text"
                 value={config.redisUrl}
-                on:input={(e) => config.redisUrl = e.target.value}
+                oninput={(e) => config.redisUrl = e.target.value}
                 placeholder="redis://localhost:6379"
                 class="config-input"
               />
@@ -296,7 +296,7 @@ import Zap from 'lucide-svelte/icons/zap';;
                 id="ollamaUrl"
                 type="text"
                 value={config.ollamaUrl}
-                on:input={(e) => config.ollamaUrl = e.target.value}
+                oninput={(e) => config.ollamaUrl = e.target.value}
                 placeholder="http://localhost:11434"
                 class="config-input"
               />
@@ -307,7 +307,7 @@ import Zap from 'lucide-svelte/icons/zap';;
                 id="gpuLayers"
                 type="number"
                 value={config.gpuLayers.toString()}
-                on:input={(e) => config.gpuLayers = parseInt(e.target.value) || config.gpuLayers}
+                oninput={(e) => config.gpuLayers = parseInt(e.target.value) || config.gpuLayers}
                 min="1"
                 max="50"
                 class="config-input"
@@ -319,7 +319,7 @@ import Zap from 'lucide-svelte/icons/zap';;
                 id="maxBatchSize"
                 type="number"
                 value={config.maxBatchSize.toString()}
-                on:input={(e) => config.maxBatchSize = parseInt(e.target.value) || config.maxBatchSize}
+                oninput={(e) => config.maxBatchSize = parseInt(e.target.value) || config.maxBatchSize}
                 min="1"
                 max="1000"
                 class="config-input"

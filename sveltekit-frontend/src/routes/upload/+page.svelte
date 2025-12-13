@@ -103,7 +103,7 @@
 			<input
 				type="text"
 				bind:value={caseId}
-				on:change={handleCaseIdChange}
+				onchange={handleCaseIdChange}
 				placeholder="Enter case ID"
 				disabled={isUploading}
 			/>
@@ -124,7 +124,7 @@
 				<label class="upload-button">
 					<input
 						type="file"
-						on:change={handleFileSelect}
+						onchange={handleFileSelect}
 						disabled={isUploading}
 						accept=".pdf,.doc,.docx,.jpg,.png,.tiff"
 					/>

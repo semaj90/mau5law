@@ -163,7 +163,7 @@
   {#if activeTab === 'upload'}
     <section class="panel">
       <label>Choose file</label>
-      <input type="file" on:change={handleFileSelect} />
+      <input type="file" onchange={handleFileSelect} />
       <label>Tags (comma separated)</label>
       <input type="text" bind:value={tags} placeholder="contracts, NDA, evidence" />
       <div style="margin-top:0.75rem;">

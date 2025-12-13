@@ -408,7 +408,7 @@ import Brain from 'lucide-svelte/icons/brain';;
       </Dialog.Header>
       <form
         class="space-y-4"
-        on:submit={(e) => {
+        onsubmit={(e) => {
           e.preventDefault();
           handleCreateCase(e as SubmitEvent);
         }}

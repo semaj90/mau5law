@@ -143,14 +143,14 @@
   <div class="chat-input-area">
     <textarea
       bind:value={inputValue}
-      on:keydown={handleKeydown}
+      onkeydown={handleKeydown}
       placeholder="Ask a legal question about this case..."
       class="chat-input"
       disabled={isLoading}
     ></textarea>
     <button
       class="send-btn"
-      on:click={sendMessage}
+      onclick={sendMessage}
       disabled={isLoading || !inputValue.trim()}
     >
       {#if isLoading}

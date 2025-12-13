@@ -93,15 +93,15 @@
       type="text"
       bind:value={searchQuery}
       placeholder="Search citations..."
-      on:keydown={(e) => e.key === 'Enter' && handleSearch()}
+      onkeydown={(e) => e.key === 'Enter' && handleSearch()}
       disabled={isLoading}
     />
-    <select bind:value={sourceTypeFilter} on:change={handleSearch} disabled={isLoading}>
+    <select bind:value={sourceTypeFilter} onchange={handleSearch} disabled={isLoading}>
       {#each sourceTypes as type}
         <option value={type.value}>{type.label}</option>
       {/each}
     </select>
-    <button on:click={handleSearch} disabled={isLoading} class="btn-search">
+    <button onclick={handleSearch} disabled={isLoading} class="btn-search">
       {isLoading ? '⟳' : '🔍'}
     </button>
   </div>
@@ -148,7 +148,7 @@
               </span>
             </div>
             <button
-              on:click={() => handleDelete(citation.id)}
+              onclick={() => handleDelete(citation.id)}
               class="btn-delete"
               title="Delete citation"
             >
@@ -218,7 +218,7 @@
     <!-- Load More Button -->
     {#if hasMore}
       <div class="load-more">
-        <button on:click={handleLoadMore} disabled={isLoading} class="btn-load-more">
+        <button onclick={handleLoadMore} disabled={isLoading} class="btn-load-more">
           {isLoading ? 'Loading...' : 'Load More'}
         </button>
       </div>

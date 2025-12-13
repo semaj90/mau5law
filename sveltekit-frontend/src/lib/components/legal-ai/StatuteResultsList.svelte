@@ -51,7 +51,7 @@
 
     <div class="results-list">
       {#each statutes as statute (statute.id)}
-        <button class="result-item" on:click={() => selectStatute(statute)}>
+        <button class="result-item" onclick={() => selectStatute(statute)}>
           <div class="result-header">
             <span class="code">{statute.code}</span>
             {#if statute.relevance_score}

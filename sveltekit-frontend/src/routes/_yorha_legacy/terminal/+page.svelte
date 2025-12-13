@@ -3,7 +3,7 @@
   import ChatBubble from '$lib/ui/ChatBubble.svelte';
   import Button from '$lib/ui/Button.svelte';
 
-  let input = '';
+  let input = $state('');
 
   const messages = [
     {

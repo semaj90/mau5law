@@ -91,7 +91,7 @@
   <div class="results-section">
     {#if selectedStatute}
       <div class="detail-view">
-        <button class="back-btn" on:click={() => (selectedStatute = null)}>
+        <button class="back-btn" onclick={() => (selectedStatute = null)}>
           ← Back to Results
         </button>
 

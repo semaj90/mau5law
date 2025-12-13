@@ -55,7 +55,7 @@
   onclick={handleClick}
   onmousedown={() => isPressed = true}
   onmouseup={() => isPressed = false}
-  on:mouseleave={() => isPressed = false}
+  onmouseleave={() => isPressed = false}
   class="
     relative font-bold uppercase tracking-wider
     {sizeStyles[size]}

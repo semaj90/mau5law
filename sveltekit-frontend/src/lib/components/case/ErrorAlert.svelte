@@ -24,9 +24,9 @@
     </div>
     <div class="error-actions">
       {#if onRetry}
-        <button class="btn-retry" on:click={retry}>Retry</button>
+        <button class="btn-retry" onclick={retry}>Retry</button>
       {/if}
-      <button class="btn-dismiss" on:click={dismiss}>Dismiss</button>
+      <button class="btn-dismiss" onclick={dismiss}>Dismiss</button>
     </div>
   </div>
 {/if}

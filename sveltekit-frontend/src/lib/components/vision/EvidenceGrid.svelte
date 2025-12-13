@@ -20,7 +20,7 @@
   {#each selectedThumbs as thumb}
     <div
       class="cursor-pointer hover:scale-105 transition-transform border border-black bg-[#fff] aspect-square"
-      on:click={() => choose(thumb)}
+      onclick={() => choose(thumb)}
     >
       <img
         src={thumb}

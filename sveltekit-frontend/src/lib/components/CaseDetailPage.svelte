@@ -144,7 +144,7 @@
   {:else if error}
     <div class="error-banner">
       <p>{error}</p>
-      <button on:click={() => (error = null)}>Dismiss</button>
+      <button onclick={() => (error = null)}>Dismiss</button>
     </div>
   {/if}
 
@@ -181,21 +181,21 @@
       <button
         class="tab"
         class:active={activeTab === 'summary'}
-        on:click={() => (activeTab = 'summary')}
+        onclick={() => (activeTab = 'summary')}
       >
         Summary
       </button>
       <button
         class="tab"
         class:active={activeTab === 'similar'}
-        on:click={() => (activeTab = 'similar')}
+        onclick={() => (activeTab = 'similar')}
       >
         Similar Cases
       </button>
       <button
         class="tab"
         class:active={activeTab === 'details'}
-        on:click={() => (activeTab = 'details')}
+        onclick={() => (activeTab = 'details')}
       >
         Details
       </button>
@@ -211,7 +211,7 @@
               <p>No summary generated yet</p>
               <button
                 class="btn-primary"
-                on:click={generateSummary}
+                onclick={generateSummary}
                 disabled={isGenerating || jobId !== null}
               >
                 {#if isGenerating || jobId}

@@ -763,6 +763,7 @@
     "node-fetch": "^3.3.2",
     "ollama": "0.6.2",
     "onnxruntime-web": "1.23.2",
+    "pdf-lib": "1.17.1",
     "pdf-parse": "1.1.1",
     "pdf2pic": "3.2.0",
     "pdf2text": "1.1.0",

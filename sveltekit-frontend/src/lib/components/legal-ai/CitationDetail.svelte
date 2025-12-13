@@ -111,13 +111,13 @@
     </div>
     {#if showActions}
       <div class="header-actions">
-        <button class="action-btn attach" on:click={attachToCase} title="Attach to case">
+        <button class="action-btn attach" onclick={attachToCase} title="Attach to case">
           🔗 Attach to Case
         </button>
-        <button class="action-btn edit" on:click={startEdit} title="Edit notes">
+        <button class="action-btn edit" onclick={startEdit} title="Edit notes">
           ✏️ Edit
         </button>
-        <button class="action-btn delete" on:click={deleteCitation} title="Delete citation">
+        <button class="action-btn delete" onclick={deleteCitation} title="Delete citation">
           🗑️ Delete
         </button>
       </div>
@@ -185,10 +185,10 @@
             disabled={isSaving}
           ></textarea>
           <div class="editor-actions">
-            <button class="btn-primary" on:click={saveNotes} disabled={isSaving}>
+            <button class="btn-primary" onclick={saveNotes} disabled={isSaving}>
               {isSaving ? 'Saving...' : 'Save'}
             </button>
-            <button class="btn-secondary" on:click={cancelEdit} disabled={isSaving}>
+            <button class="btn-secondary" onclick={cancelEdit} disabled={isSaving}>
               Cancel
             </button>
           </div>
@@ -201,7 +201,7 @@
             <p class="no-notes">No notes added</p>
           {/if}
           {#if showActions}
-            <button class="edit-notes-btn" on:click={startEdit}>
+            <button class="edit-notes-btn" onclick={startEdit}>
               {citation.notes ? 'Edit Notes' : 'Add Notes'}
             </button>
           {/if}

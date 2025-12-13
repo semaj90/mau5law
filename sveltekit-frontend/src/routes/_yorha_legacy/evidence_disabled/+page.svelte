@@ -2,7 +2,7 @@
   import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  let { data }: { data: PageData } = $props();
 
   async function savePositions(items: any[]) {
     try {

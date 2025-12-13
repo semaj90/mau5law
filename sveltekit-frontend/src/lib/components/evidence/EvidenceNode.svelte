@@ -5,14 +5,30 @@
     id: string;
     x: number;
     y: number;
-    type: string;
+    evidenceType: string;
     title: string;
     confidence?: number;
     description?: string;
     metadata?: Record<string, any>;
   };
 
-  let { node, isSelected = false, onSelect, onMove } = $props<EvidenceNodeType & { isSelected?: boolean; onSelect: (data: { nodeId: string; multiSelect: boolean }) => void; onMove: (data: { nodeId: string; x: number; y: number }) => void; }>();
+  let {
+    node,
+    isSelected = false,
+    isPendingLinkSource = false,
+    linkMode = false,
+    onSelect,
+    onMove,
+    onLink
+  }: {
+    node: EvidenceNodeType;
+    isSelected?: boolean;
+    isPendingLinkSource?: boolean;
+    linkMode?: boolean;
+    onSelect: (data: { nodeId: string; multiSelect: boolean }) => void;
+    onMove: (data: { nodeId: string; x: number; y: number }) => void;
+    onLink?: (data: { nodeId: string }) => void;
+  } = $props();
 
   let isDragging = $state(false);
   let dragStart = $state({ x: 0, y: 0 });
@@ -51,73 +67,67 @@
   }
 
   // Global mouse event listeners for dragging
-  $effect(() => {() => {
   $effect(() => {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
   });
-  // Node type styling
-  function getNodeTypeColor(type: string): string {
-    const colors = {
-      person: '#3b82f6', // blue
-      document: '#10b981', // green
-      location: '#f59e0b', // amber
-      vehicle: '#ef4444', // red
-      weapon: '#8b5cf6', // purple
-      financial: '#06b6d4', // cyan
-      digital: '#ec4899', // pink
+  // Node type styling based on evidenceType
+  function getNodeTypeColor(evidenceType: string): string {
+    const colors: Record<string, string> = {
+      audio: '#3b82f6', // blue
+      video: '#10b981', // green
+      document: '#f59e0b', // amber
+      photo: '#ef4444', // red
+      physical: '#8b5cf6', // purple
+      digital: '#06b6d4', // cyan
+      witness_statement: '#ec4899', // pink
+      forensic: '#14b8a6', // teal
       other: '#6b7280', // gray
     };
-    return colors[type as keyof typeof colors] || colors.other;
+    return colors[evidenceType] ?? colors.other;
   }
 
-  function getNodeTypeIcon(type: string): string {
-    const icons = {
+  function getNodeTypeIcon(evidenceType: string): string {
     const icons: Record<string, string> = {
+      audio: '🎵',
+      video: '🎬',
       document: '📄',
-      location: '📍',
-      vehicle: '🚗',
-      weapon: '🔪',
-      financial: '💰',
+      photo: '📷',
+      physical: '📦',
       digital: '💻',
-      other: '📦',
-      person: '👤',
-      document: '📄',
-      location: '📍',
-      vehicle: '🚗',
-      weapon: '🔪',
-      financial: '💰',
-      digital: '💻',
-      other: '📦',
+      witness_statement: '👁️',
+      forensic: '🔬',
+      other: '❓',
     };
-    return icons[type as keyof typeof icons] || icons.other;
-    return icons[type] ?? icons.other;
+    return icons[evidenceType] ?? icons.other;
   }
 </script>
 
-<svelte:window on:mousemove={handleMouseMove} on:mouseup={handleMouseUp} />
+<svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
 
 <!-- Node Element -->
 <div
   bind:this={element}
   class="evidence-node"
   class:selected={isSelected}
+  class:pending-link-source={isPendingLinkSource}
   class:dragging={isDragging}
+  role="button"
+  tabindex="0"
   style="
     left: {node.x}px;
     top: {node.y}px;
-    --node-color: {getNodeTypeColor(node.type)};
+    --node-color: {getNodeTypeColor(node.evidenceType)};
   "
-  on:mousedown={handleMouseDown}
+  onmousedown={handleMouseDown}
 >
   <!-- Node Header -->
   <div class="node-header">
-    <span class="node-icon">{getNodeTypeIcon(node.type)}</span>
+    <span class="node-icon">{getNodeTypeIcon(node.evidenceType)}</span>
     <span class="node-title">{node.title}</span>
     {#if node.confidence}
       <span class="confidence-badge" class:low={node.confidence < 0.3} class:medium={node.confidence >= 0.3 && node.confidence < 0.7} class:high={node.confidence >= 0.7}>
@@ -146,9 +156,19 @@
 
   <!-- Node Actions -->
   <div class="node-actions">
-    <Button variant="ghost" size="sm" onclick={() => onSelect({ nodeId: node.id, multiSelect: false })}>
-      View Details
-    </Button>
+    {#if linkMode}
+      <Button
+        variant={isPendingLinkSource ? "default" : "outline"}
+        size="sm"
+        onclick={() => onLink?.({ nodeId: node.id })}
+      >
+        {isPendingLinkSource ? 'Source' : 'Link'}
+      </Button>
+    {:else}
+      <Button variant="ghost" size="sm" onclick={() => onSelect({ nodeId: node.id, multiSelect: false })}>
+        View Details
+      </Button>
+    {/if}
   </div>
 </div>
 
@@ -175,6 +195,12 @@
   .evidence-node.selected {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  }
+
+  .evidence-node.pending-link-source {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
+    animation: pulse 2s infinite;
   }
 
   .evidence-node.dragging {
@@ -266,5 +292,14 @@
     border-top: 1px solid #e5e7eb;
     display: flex;
     justify-content: flex-end;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 </style>

@@ -103,7 +103,7 @@
       <input
         type="text"
         bind:value={inputValue}
-        on:keydown={handleKeyDown}
+        onkeydown={handleKeyDown}
         disabled={isLoading}
         placeholder="Enter query or command..."
         class="flex-1 bg-black text-[#00FF00] font-mono text-sm focus:outline-none placeholder-[#004400]"

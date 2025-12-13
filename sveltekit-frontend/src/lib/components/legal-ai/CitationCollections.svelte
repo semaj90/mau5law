@@ -28,7 +28,7 @@
   <div class="collections-grid">
     {#each collections as collection (collection.id)}
       <div class="collection-card">
-        <button class="card-content" on:click={() => selectCollection(collection)}>
+        <button class="card-content" onclick={() => selectCollection(collection)}>
           <h3>{collection.name}</h3>
           {#if collection.description}
             <p class="description">{collection.description}</p>
@@ -42,7 +42,7 @@
         <div class="card-actions">
           <button
             class="btn-delete"
-            on:click={() => deleteCollection(collection)}
+            onclick={() => deleteCollection(collection)}
             title="Delete collection"
           >
             🗑️

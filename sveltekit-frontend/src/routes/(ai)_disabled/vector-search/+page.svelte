@@ -84,8 +84,8 @@
         <textarea
           class="query-textarea"
           placeholder="Enter a search query…"
-          on:input={(e) => (query = (e.target as HTMLTextAreaElement).value)}
-          on:keydown={handleKeydown}
+          oninput={(e) => (query = (e.target as HTMLTextAreaElement).value)}
+          onkeydown={handleKeydown}
         ></textarea>
 
         <div class="search-options">
@@ -94,7 +94,7 @@
             <select
               id="search-type-select"
               class="search-type-select"
-              on:change={(e) => (searchType = (e.target as HTMLSelectElement).value as any)}
+              onchange={(e) => (searchType = (e.target as HTMLSelectElement).value as any)}
             >
               <option value="content">Content</option>
               <option value="cases">Cases</option>
@@ -111,7 +111,7 @@
               min="1"
               max="100"
               bind:value={limit}
-              on:change={(e) => (limit = +(e.target as HTMLInputElement).value)}
+              onchange={(e) => (limit = +(e.target as HTMLInputElement).value)}
             />
           </div>
 
@@ -127,7 +127,7 @@
               max="1"
               step="0.01"
               value={threshold}
-              on:change={(e) => (threshold = +(e.target as HTMLInputElement).value)}
+              onchange={(e) => (threshold = +(e.target as HTMLInputElement).value)}
             />
           </div>
         </div>

@@ -45,7 +45,7 @@
       </div>
       <button
         class="sidebar-toggle"
-        on:click={() => (sidebarOpen = !sidebarOpen)}
+        onclick={() => (sidebarOpen = !sidebarOpen)}
         aria-label="Toggle sidebar"
       >
         ✕
@@ -166,7 +166,7 @@
   <!-- Mobile Sidebar Toggle -->
   <button
     class="mobile-toggle"
-    on:click={() => (sidebarOpen = !sidebarOpen)}
+    onclick={() => (sidebarOpen = !sidebarOpen)}
     aria-label="Toggle navigation"
   >
     ☰

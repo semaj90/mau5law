@@ -137,7 +137,7 @@ export async function addEvidenceToRagIndex(
       } else {
         console.log(`[RAG Sync] Citation tables not found - proceeding without tags`);
       }
-    } catch (tagErr) {
+    } catch {
       // Tags tables may not exist yet - continue without tags
       console.log(`[RAG Sync] Tags lookup skipped (tables may not exist)`);
     }
@@ -366,14 +366,22 @@ export async function updateRagIndexTags(
 
     for (const chunk of chunksResult) {
       try {
-        // Update Qdrant point payload
-        await qdrantClient.setPayload(COLLECTION_NAME, {
-          wait: true,
-          payload: {
-            tags: newTags,
-          },
-          points: [chunk.id],
-        } as any);
+        // Update Qdrant point payload using fetch
+        const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+        const setPayloadRes = await fetch(
+          `${QDRANT_URL}/collections/${COLLECTION_NAME}/points/payload?wait=true`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              payload: { tags: newTags },
+              points: [chunk.id],
+            }),
+          }
+        );
+        if (!setPayloadRes.ok) {
+          throw new Error(`Qdrant setPayload failed: ${setPayloadRes.status}`);
+        }
 
         // Update RAG index metadata
         await sql`
@@ -470,13 +478,22 @@ export async function removeEvidenceFromRagIndex(
     const chunkIds = chunksResult.map((row) => row.id);
     console.log(`[RAG Sync] Removing ${chunkIds.length} chunks from Qdrant...`);
 
-    // 2. Delete from Qdrant
+    // 2. Delete from Qdrant using fetch
     try {
-      await qdrantClient.delete(COLLECTION_NAME, {
-        wait: true,
-        points: chunkIds,
-      } as any);
-      console.log(`[RAG Sync] ✅ Removed ${chunkIds.length} points from Qdrant`);
+      const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+      const deleteRes = await fetch(
+        `${QDRANT_URL}/collections/${COLLECTION_NAME}/points/delete?wait=true`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ points: chunkIds }),
+        }
+      );
+      if (deleteRes.ok) {
+        console.log(`[RAG Sync] ✅ Removed ${chunkIds.length} points from Qdrant`);
+      } else {
+        console.warn(`[RAG Sync] Qdrant delete returned ${deleteRes.status}`);
+      }
     } catch (err) {
       console.error('[RAG Sync] Failed to delete from Qdrant:', err);
       // Continue anyway - database cleanup is more important

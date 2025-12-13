@@ -67,7 +67,7 @@ import Upload from 'lucide-svelte/icons/upload';;
             role="button"
             tabindex="0"
             onclick={() => handlePhotoClick(photo, index)}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { handlePhotoClick(photo, index); e.preventDefault(); } }}
+            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { handlePhotoClick(photo, index); e.preventDefault(); } }}
           >
             <img
               src={photo.thumbnailUrl}

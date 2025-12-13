@@ -315,9 +315,9 @@
 	<div class="header">
 		<h1>GRAPH MODE - ROUTING VISUALIZATION</h1>
 		<div class="controls">
-			<button on:click={resetView}>RESET VIEW</button>
-			<button on:click={exportGraph}>EXPORT PNG</button>
-			<button on:click={() => window.location.href = '/all-routes'}>ALL ROUTES</button>
+			<button onclick={resetView}>RESET VIEW</button>
+			<button onclick={exportGraph}>EXPORT PNG</button>
+			<button onclick={() => window.location.href = '/all-routes'}>ALL ROUTES</button>
 			<span class="zoom">ZOOM: {(zoom * 100).toFixed(0)}%</span>
 		</div>
 	</div>

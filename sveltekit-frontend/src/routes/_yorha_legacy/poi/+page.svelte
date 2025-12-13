@@ -1,8 +1,7 @@
 <script lang="ts">
+  import Button from '$lib/ui/Button.svelte';
   import Panel from '$lib/ui/Panel.svelte';
   import PersonCard from '$lib/ui/PersonCard.svelte';
-  import Button from '$lib/ui/Button.svelte';
-  import Tag from '$lib/ui/Tag.svelte';
 
   type PersonRole = 'suspect' | 'witness' | 'victim' | 'associate';
   type RiskLevel = 'high' | 'medium' | 'low';
@@ -75,15 +74,15 @@
     },
   ];
 
-  $: filteredPersons = persons.filter(p => {
+  let filteredPersons = $derived(persons.filter(p => {
     if (filterRole !== 'all' && p.role !== filterRole) return false;
     if (filterRisk !== 'all' && p.riskLevel !== filterRisk) return false;
     return true;
-  });
+  }));
 
-  $: suspectCount = persons.filter(p => p.role === 'suspect').length;
-  $: witnessCount = persons.filter(p => p.role === 'witness').length;
-  $: highRiskCount = persons.filter(p => p.riskLevel === 'high').length;
+  let suspectCount = $derived(persons.filter(p => p.role === 'suspect').length);
+  let witnessCount = $derived(persons.filter(p => p.role === 'witness').length);
+  let highRiskCount = $derived(persons.filter(p => p.riskLevel === 'high').length);
 </script>
 
 <svelte:head>
