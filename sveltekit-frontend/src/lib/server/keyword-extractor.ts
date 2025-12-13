@@ -225,6 +225,28 @@ Be precise and focus on legally significant terms.`;
 /**
  * Parse extraction response from Ollama
  */
+function safeJSON(text: string) {
+  if (!text) return null;
+
+  // Strip fences
+  text = text.replace(/```json/gi, "").replace(/```/g, "");
+
+  // Trim noise before first "{"
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+
+  if (start === -1 || end === -1) return null;
+
+  const sliced = text.slice(start, end + 1);
+
+  try {
+    return JSON.parse(sliced);
+  } catch (err) {
+    console.error("JSON extraction failed:", err, "RAW:", sliced);
+    return null;
+  }
+}
+
 function parseExtractionResponse(response: string): Omit<KeywordExtractionResult, 'method' | 'processingTimeMs'> {
   try {
     // Try to extract JSON from response
@@ -233,7 +255,10 @@ function parseExtractionResponse(response: string): Omit<KeywordExtractionResult
       throw new Error('No JSON found in response');
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
+    const parsed = safeJSON(jsonMatch[0]);
+    if (!parsed) {
+      throw new Error('Failed to parse JSON');
+    }
 
     return {
       keywords: parsed.keywords || [],
