@@ -17,6 +17,8 @@ This implementation plan converts the RAG enhancement system design into a serie
   - _Requirements: 1.1, 1.2, 1.3_
 
 - [ ] 1.2 Write property test for tag extraction
+
+
   - **Property 1: Legal Tag Extraction Consistency**
   - **Validates: Requirements 1.1, 1.2, 1.3**
 

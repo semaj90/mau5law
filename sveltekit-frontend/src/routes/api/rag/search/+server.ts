@@ -6,6 +6,7 @@ import { qdrantSearch } from '$lib/server/rag/qdrant';
 import { rerankLegalAware, createQdrantFilter } from '$lib/server/rag/ranker';
 import { sql } from '$lib/server/db';
 import { embedText } from '$lib/server/embedding-service';
+import { ragCacheKey, cacheGetJSON, cacheSetJSON } from '$lib/server/rag/cache';
 
 const EMBEDDING_DIM = Number(process.env.EMBEDDING_DIM ?? 768);
 
@@ -24,6 +25,19 @@ export async function POST({ request }) {
     const caseId = body.caseId ?? null;
     const queryTagIds = body.tagIds ?? [];
 
+    const cacheKey = ragCacheKey({
+      kind: 'rag_search',
+      query,
+      caseId,
+      jurisdiction,
+      tagIds: queryTagIds,
+      limit,
+      scoreThreshold,
+    });
+
+    const cached = await cacheGetJSON<any>(cacheKey);
+    if (cached) return json({ ...cached, cache: { hit: true } });
+
     // Embed the query
     const vec = await embedText(query);
     if (!Array.isArray(vec) || vec.length !== EMBEDDING_DIM) {
@@ -31,6 +45,12 @@ export async function POST({ request }) {
         { error: `Embedding dim mismatch: expected ${EMBEDDING_DIM}, got ${vec?.length}` },
         { status: 500 }
       );
+    }
+
+    // Check semantic cache for similar queries
+    const semanticHit = await semanticCacheSearch(vec, 0.95);
+    if (semanticHit) {
+      return json({ ...semanticHit.result as any, cache: 'semantic' });
     }
 
     // Create Qdrant filter (optional - can filter by jurisdiction/case)
@@ -77,7 +97,12 @@ export async function POST({ request }) {
       },
     }));
 
-    return json({ results });
+    // Cache the results
+    const resultData = { results, cache: 'miss' };
+    await setCached('search', cacheParams, resultData);
+    await semanticCacheSet(query, vec, resultData);
+
+    return json(resultData);
   } catch (error) {
     console.error('RAG search error:', error);
     return json(

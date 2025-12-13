@@ -15,9 +15,10 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { sql } from './db';
 import { generateEmbedding } from './embedding-service';
-import { extractLegalTags } from './rag/tag-extractor';
-import { upsertAndLinkChunkTags, getChunkTagIds } from './rag/tag-persist';
 import { qdrantUpsert } from './rag/qdrant';
+import { extractLegalTags } from './rag/tag-extractor';
+import { getChunkTagIds, upsertAndLinkChunkTags } from './rag/tag-persist';
+import { extractKeywords } from './rag/cache';
 
 // Initialize Qdrant client
 const qdrantClient = new QdrantClient({
@@ -27,21 +28,7 @@ const qdrantClient = new QdrantClient({
 const COLLECTION_NAME = 'phase72_evidence_embeddings';
 const TAG_BOOST_FACTOR = 1.5; // 1.5x weight for matching tags
 
-async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string, any>) {
-  const allowed = new Set(['chunk_count', 'indexed_at', 'processing_status']);
-  const entries = Object.entries(fields).filter(([k]) => allowed.has(k));
-  if (entries.length === 0) return;
-
-  const sets = entries.map(([k], i) => `${k} = $${i + 1}`).join(', ');
-  const values = entries.map(([, v]) => v);
-
-  // uses sql.unsafe pattern you already use elsewhere
-  // @ts-ignore
-  await sql.unsafe(
-    `UPDATE evidence_files SET ${sets} WHERE id = $${entries.length + 1}`,
-    [...values, evidenceId]
-  );
-}
+/**
  * Schema-safe database update function
  * Only updates allowed fields to prevent schema drift issues
  */
@@ -53,10 +40,10 @@ async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string,
   const sets = entries.map(([k], i) => `${k} = $${i + 1}`).join(', ');
   const values = entries.map(([, v]) => v);
 
-  await sql.unsafe(
-    `UPDATE evidence_files SET ${sets} WHERE id = $${entries.length + 1}`,
-    [...values, evidenceId]
-  );
+  await sql.unsafe(`UPDATE evidence_files SET ${sets} WHERE id = $${entries.length + 1}`, [
+    ...values,
+    evidenceId,
+  ]);
 }
 
 /**
@@ -177,32 +164,63 @@ export async function addEvidenceToRagIndex(
             chunkId: chunk.id,
             jurisdiction: jurisdiction,
             tags: legalEntities,
-            source: 'ai'
+            source: 'ai',
           });
           console.log(`[RAG Sync] ✅ Tags persisted for chunk ${chunk.chunk_index}`);
         } catch (err) {
-          console.warn(`[RAG Sync] Failed to persist tags for chunk ${chunk.chunk_index}: ${err instanceof Error ? err.message : String(err)}`);
+          console.warn(
+            `[RAG Sync] Failed to persist tags for chunk ${chunk.chunk_index}: ${err instanceof Error ? err.message : String(err)}`
+          );
         }
 
         // Get tag IDs for Qdrant payload
         const tagIds = await getChunkTagIds(chunk.id);
 
-        // Prepare Qdrant point with enhanced payload
+        // Prepare Qdrant point with enhanced payload including legal tag fields
         const payload = {
+          // Core identifiers
           evidence_id: evidenceId,
           case_id: evidence.case_id,
           chunk_id: chunk.id,
           chunk_index: chunk.chunk_index,
+
+          // File metadata
           file_name: evidence.filename,
           content_type: evidence.content_type,
+          page_number: chunk.page_number,
+
+          // Content
           text: chunk.content,
           content: chunk.content,
-          page_number: chunk.page_number,
-          tags: tags, // Legacy evidence-level tags
-          tag_ids: tagIds, // New: chunk-level tag IDs for filtering/reranking
+
+          // Legacy tags (evidence-level)
+          tags: tags,
+
+          // Enhanced legal tag fields for filtering and reranking
+          tag_ids: tagIds, // Chunk-level tag IDs for precise filtering
+          legal_entities: legalEntities, // Full extracted legal entities structure
+
+          // Flattened legal tag arrays for direct filtering
+          statutes: legalEntities.statutes, // Federal statutes
+          cases: legalEntities.cases, // Case citations
+          ca_codes: legalEntities.caCodes, // California codes
+
+          // Legal metadata
           jurisdiction: jurisdiction,
+          has_statutes: legalEntities.statutes.length > 0,
+          has_cases: legalEntities.cases.length > 0,
+          has_ca_codes: legalEntities.caCodes.length > 0,
+          legal_tag_count:
+            legalEntities.statutes.length +
+            legalEntities.cases.length +
+            legalEntities.caCodes.length,
+
+          // Additional metadata
           metadata: chunk.metadata,
-          legal_entities: legalEntities, // Use new extracted tags format
+          indexed_at: new Date().toISOString(),
+
+          // Keywords for enhanced search (safe extraction)
+          keywords: extractKeywords(chunk.content).slice(0, 20), // Limit to 20 keywords
         };
 
         // Validate embedding dimensions
@@ -212,12 +230,14 @@ export async function addEvidenceToRagIndex(
 
         // Upsert to Qdrant using new module
         await qdrantUpsert({
-          points: [{
-            id: chunk.id,
-            vector: embedding,
-            payload
-          }],
-          wait: true
+          points: [
+            {
+              id: chunk.id,
+              vector: embedding,
+              payload,
+            },
+          ],
+          wait: true,
         });
 
         // Create RAG chunk index record for health monitoring
@@ -235,13 +255,13 @@ export async function addEvidenceToRagIndex(
           `;
         } catch (err) {
           // Table might not exist yet - continue without failing
-          console.warn(`[RAG Sync] Could not update rag_chunk_index: ${err instanceof Error ? err.message : String(err)}`);
+          console.warn(
+            `[RAG Sync] Could not update rag_chunk_index: ${err instanceof Error ? err.message : String(err)}`
+          );
         }
 
         successCount++;
-        console.log(
-          `[RAG Sync] ✅ Chunk ${chunk.chunk_index} indexed (${embedding.length} dims)`
-        );
+        console.log(`[RAG Sync] ✅ Chunk ${chunk.chunk_index} indexed (${embedding.length} dims)`);
       } catch (err) {
         const errorMsg = `Failed to index chunk ${chunk.chunk_index}: ${err instanceof Error ? err.message : String(err)}`;
         console.error(`[RAG Sync] ❌ ${errorMsg}`);
@@ -254,7 +274,7 @@ export async function addEvidenceToRagIndex(
       chunk_count: successCount,
       indexed_at: new Date(),
       processing_status: 'indexed',
-      updated_at: new Date()
+      updated_at: new Date(),
     });
 
     // 6. Log audit trail (if requested)

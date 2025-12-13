@@ -2,6 +2,7 @@
 
 import { json } from '@sveltejs/kit';
 import type { ChatResponse, ChatCitation } from '$lib/server/rag/rag-types';
+import { getCached, setCached, extractKeywords } from '$lib/server/rag/cache';
 
 // Placeholder LLM function - replace with your existing Ollama/Gemma3 integration
 async function callLLM(prompt: string): Promise<string> {
@@ -30,6 +31,23 @@ export async function POST({ request, fetch }) {
     const jurisdiction = (body.jurisdiction ?? null) as string | null;
     const caseId = (body.caseId ?? null) as string | null;
     const tagIds = (body.tagIds ?? []) as string[];
+
+    // Check cache first - include extracted keywords for better cache hits
+    const messageKeywords = extractKeywords(message);
+    const cacheParams = {
+      message,
+      messageKeywords: messageKeywords.sort(), // Sort for consistency
+      jurisdiction,
+      caseId,
+      tagIds: tagIds.sort(), // Sort for consistency
+      ragLimit: 12,
+      ragThreshold: 0.2,
+    };
+
+    const cached = await getCached<ChatResponse>('chat', cacheParams);
+    if (cached) {
+      return json({ ...cached, cache: 'hit' });
+    }
 
     // Perform RAG search to find relevant chunks
     const ragRes = await fetch('/api/rag/search', {
@@ -70,12 +88,14 @@ export async function POST({ request, fetch }) {
     }));
 
     // Build sources block for LLM prompt
-    const sourcesBlock = citations.map((c) => {
-      const payload = results[c.n - 1]?.payload ?? {};
-      const text = payload.text ?? payload.content ?? '';
-      const header = `[#${c.n}] ${c.file_name ?? 'Unknown'} (page ${c.page_number ?? '?'})`;
-      return `${header}\n${text}`;
-    }).join('\n\n');
+    const sourcesBlock = citations
+      .map((c) => {
+        const payload = results[c.n - 1]?.payload ?? {};
+        const text = payload.text ?? payload.content ?? '';
+        const header = `[#${c.n}] ${c.file_name ?? 'Unknown'} (page ${c.page_number ?? '?'})`;
+        return `${header}\n${text}`;
+      })
+      .join('\n\n');
 
     // Create prompt for LLM
     const prompt = [
@@ -98,11 +118,17 @@ export async function POST({ request, fetch }) {
       citations,
     };
 
-    return json(response);
+    // Cache the response
+    await setCached('chat', cacheParams, response);
+
+    return json({ ...response, cache: 'miss' });
   } catch (error) {
     console.error('Contextual chat error:', error);
     return json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }

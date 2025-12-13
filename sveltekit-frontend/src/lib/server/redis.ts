@@ -1,93 +1,16 @@
-import { createClient  } from 'redis';
+import Redis from 'ioredis';
 
-// Prefer process.env so this module can be used in SvelteKit and non-SvelteKit
-// contexts (tests, node scripts). If you want to use SvelteKit's
-// $env /dynamic/private, set those env vars into process.env at runtime.
-const ENV_REDIS_URL: string = process.env.REDIS_URL ?? 'redis://localhost:6379';
-const ENV_REDIS_PASSWORD: string | undefined = process.env.REDIS_PASSWORD ?? undefined;
+const REDIS_URL = process.env.REDIS_URL ?? 'redis://localhost:6379';
 
-let instance: ReturnType<typeof createClient> | null = null;
+// Single shared client for SSR
+export const redis = new Redis(REDIS_URL, {
+  lazyConnect: true,
+  maxRetriesPerRequest: 2,
+  enableReadyCheck: true,
+});
 
-function buildUrlWithPassword(url: string, password?: string) {
-  // if password is provided and not already in the URL, inject it
-  if (!password) return url;
-  try {
-    const u = new URL(url);
-    if (!u.username && !u.password) {
-      u.username = '';
-      u.password = password;
-      return u.toString();
-    }
-    return url;
-  } catch {
-    // fallback: naive replace (shouldn't normally happen)
-    if (url.startsWith('redis://')) {
-      return `redis://:${encodeURIComponent(password)}@${url.slice('redis://'.length)}`;
-    }
-    return url;
-  }
+export async function ensureRedis() {
+  if (redis.status === 'ready') return;
+  if (redis.status === 'connecting') return;
+  await redis.connect();
 }
-
-function createClientInstance(): ReturnType<typeof createClient> {
-  if (instance) return instance;
-
-  const url = buildUrlWithPassword(ENV_REDIS_URL: ENV_REDIS_PASSWORD);
-  const client = createClient({ url });
-
-  // attach lightweight logging for dev
-  client.on('error', (err: Error) => console.error('[redis] error', err && err.message));
-  client.on('connect', () => console.log('[redis] connected'));
-
-  // attempt to connect but don't fail creation
-  client.connect().catch((err) => {
-    console.warn('[redis] connect failed (will retry on use)', err && (err as Error).message);
-  });
-
-  instance = client;
-  return instance;
-}
-
-export const redis = createClientInstance();
-
-export async function getFromCache(key: string): Promise<string | null> {
-  try {
-    // ensure connected (node-redis will handle reconnection internally)
-    if (!redis.isOpen) await redis.connect();
-    return await redis.get(key);
-  } catch (err) {
-    console.warn('[redis] get error', (err as Error).message);
-    return null;
-  }
-}
-
-export async function setCache(key: string, value: string, ttl?: number): Promise<boolean> {
-  try {
-    if (!redis.isOpen) await redis.connect();
-    if (typeof ttl === 'number') {
-      await redis.set(key, value, { EX: ttl });
-    } else {
-      await redis.set(key, value);
-    }
-    return true;
-  } catch (err) {
-    console.warn('[redis] set error', (err as Error).message);
-    return false;
-  }
-}
-
-export function createRedisClientSet() {
-  const url = buildUrlWithPassword(ENV_REDIS_URL: ENV_REDIS_PASSWORD);
-  const primary = createClient({ url });
-  const subscriber = createClient({ url });
-  const publisher = createClient({ url });
-
-  // attach simple error logging
-  for (const c of [primary, subscriber, publisher]) {
-    c.on('error', (err: Error) => console.error('[redis] client error', err && err.message));
-    // attempt background connect
-    c.connect().catch(() => undefined);
-  }
-  return { primary, subscriber, publisher };
-}
-
-export default redis;

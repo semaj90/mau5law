@@ -2,9 +2,21 @@
 
 import { json } from '@sveltejs/kit';
 import { sql } from '$lib/server/db';
+import { getCached, setCached, getCacheStats } from '$lib/server/rag/cache';
 
 export async function GET() {
   try {
+    // Check cache first (health data changes infrequently)
+    const cacheParams = {
+      operation: 'health_check',
+      timestamp: Math.floor(Date.now() / 60000), // Cache for 1 minute buckets
+    };
+
+    const cached = await getCached<any>('health', cacheParams);
+    if (cached) {
+      return json({ ...cached, cache: 'hit' });
+    }
+
     // Global health metrics
     const [global] = await sql`
       SELECT
@@ -43,15 +55,30 @@ export async function GET() {
       LIMIT 200
     `;
 
-    return json({
+    // Get cache statistics for additional health info
+    const cacheStats = await getCacheStats();
+
+    const healthData = {
       global,
       perDoc,
       failedChunks,
-    });
+      cache: {
+        ...cacheStats,
+        status: 'miss',
+      },
+    };
+
+    // Cache the results
+    await setCached('health', cacheParams, healthData);
+
+    return json(healthData);
   } catch (error) {
     console.error('RAG health error:', error);
     return json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }
