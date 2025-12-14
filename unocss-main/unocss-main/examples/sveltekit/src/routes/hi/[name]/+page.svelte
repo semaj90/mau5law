@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
 
-  $: name = decodeURIComponent($page.params.name || "");
+  let name = $derived(decodeURIComponent($page.params.name || ""));
 </script>
 
 <div><strong>/hi</strong> route</div>

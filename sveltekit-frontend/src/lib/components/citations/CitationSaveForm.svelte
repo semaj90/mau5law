@@ -1,9 +1,11 @@
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+<script>
+import { createEventDispatcher } from 'svelte';
   import type { CitationSaveRequest } from '$lib/types/citations';
 
-  export let caseId: string | undefined = undefined;
-  export let isLoading = false;
+  let { caseId = undefined, isLoading = false } = $props<{
+    caseId?: string;
+    isLoading?: boolean;
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -82,7 +84,7 @@
 </script>
 
 <div class="citation-save-form">
-  <form on:submit|preventDefault={handleSubmit}>
+  <form onsubmit={handleSubmit}>
     <!-- Citation Text -->
     <div class="form-group">
       <label for="citation-text">Citation Text *</label>

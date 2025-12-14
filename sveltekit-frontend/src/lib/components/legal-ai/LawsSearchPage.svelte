@@ -82,8 +82,8 @@
 <div class="laws-search-page">
   <div class="search-section">
     <StatuteSearchBar
-      on:search={handleSearch}
-      on:clear={handleClear}
+      onsearch={handleSearch}
+      onclear={handleClear}
       isLoading={isSearching}
     />
   </div>
@@ -110,7 +110,7 @@
         {statutes}
         isLoading={isSearching}
         error={searchError}
-        on:select={handleSelectStatute}
+        onselect={handleSelectStatute}
       />
     {/if}
   </div>

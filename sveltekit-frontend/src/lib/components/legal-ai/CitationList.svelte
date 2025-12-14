@@ -1,5 +1,4 @@
-<script lang="ts">let { limit = 20 } = $props();
-
+<script lang="ts">
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -13,8 +12,11 @@
     created_at: string;
   }
 
-  export let caseId: string | null = null;
-  
+  let { caseId = null, limit = 20 } = $props<{
+    caseId?: string | null;
+    limit?: number;
+  }>();
+
 
   let citations: Citation[] = $state([]);
   let isLoading = $state(true);
@@ -148,7 +150,7 @@
             </span>
             <button
               class="delete-btn"
-              on:click|stopPropagation={() => deleteCitation(citation.id)}
+              onclick={() => deleteCitation(citation.id)}
             >
               🗑️
             </button>

@@ -2,7 +2,9 @@
   import type { CitationCollection } from '$lib/types/citations';
   import { onMount } from 'svelte';
 
-  export let onSelectCollection: (collection: CitationCollection) => void = () => {};
+  let { onSelectCollection = () => {} } = $props<{
+    onSelectCollection?: (collection: CitationCollection) => void;
+  }>();
 
   let collections: CitationCollection[] = [];
   let isLoading = false;
@@ -170,7 +172,7 @@
             onclick={() => onSelectCollection(collection)}
             class="collection-button"
           >
-            <div class="collection-color" style="background-color: {collection.color}" />
+            <div class="collection-color" style="background-color: {collection.color}" ></div>
             <div class="collection-info">
               <p class="collection-name">{collection.name}</p>
               <p class="collection-count">

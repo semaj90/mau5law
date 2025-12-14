@@ -1,12 +1,12 @@
-<script lang="ts">let { person } = $props();
+<script lang="ts">
+  import * as Dialog from 'bits-ui/components/dialog';
 
-  import type { Dialog  } from 'bits-ui/components/ui/dialog';
+  let { person } = $props();
 
-  
   let aiOpen = $state(false);
   let aiSummary = $state("…");
 
-  $effect(() => {() => {
+  $effect(() => {
     if (aiOpen && aiSummary === "…") {
       fetch("/api/persons/summary", {
         method: "POST",
@@ -61,10 +61,13 @@
     AI ANALYSIS
   </button>
 
-  <Dialog bind:open={aiOpen}>
-    <Dialog.Content class="nes-container bg-gray-900 text-white w-[500px] rounded-xl">
-      <h2 class="text-xl mb-4">AI Legal Risk Summary</h2>
-      <p>{aiSummary}</p>
-    </Dialog.Content>
-  </Dialog>
+  <Dialog.Root bind:open={aiOpen}>
+    <Dialog.Portal>
+      <Dialog.Overlay />
+      <Dialog.Content class="nes-container bg-gray-900 text-white w-[500px] rounded-xl">
+        <h2 class="text-xl mb-4">AI Legal Risk Summary</h2>
+        <p>{aiSummary}</p>
+      </Dialog.Content>
+    </Dialog.Portal>
+  </Dialog.Root>
 </div>

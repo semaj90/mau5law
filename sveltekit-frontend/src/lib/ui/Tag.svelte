@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let color: 'default' | 'green' | 'red' | 'yellow' | 'blue' = 'default';
+  let { color = 'default' } = $props<{
+    color?: 'default' | 'green' | 'red' | 'yellow' | 'blue';
+  }>();
 </script>
 
 <span

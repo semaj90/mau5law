@@ -10,13 +10,13 @@
   import CardTitle from '$lib/components/ui/card-title.svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Separator from '$lib/components/ui/separator.svelte';
-  import ArrowLeft from 'lucide-svelte/icons/arrow-left';
-import Camera from 'lucide-svelte/icons/camera';
-import FileText from 'lucide-svelte/icons/file-text';
-import MapPin from 'lucide-svelte/icons/map-pin';
-import Pencil from 'lucide-svelte/icons/pencil';
-import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
-import User from 'lucide-svelte/icons/user';;
+  import { ArrowLeft } from "lucide-svelte";
+import { Camera } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { MapPin } from "lucide-svelte";
+import { Pencil } from "lucide-svelte";
+import { TriangleAlert } from "lucide-svelte";
+import { User } from "lucide-svelte";;
   import { onMount } from 'svelte';
 
   interface Photo {

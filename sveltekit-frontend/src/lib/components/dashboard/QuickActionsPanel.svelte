@@ -1,7 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
 
-  export let caseId: string | null = null;
+  let { caseId = null } = $props<{
+    caseId?: string | null;
+  }>();
 
   const handleTimelineAnalysis = () => {
     if (caseId) {

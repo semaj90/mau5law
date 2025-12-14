@@ -10,7 +10,9 @@
     created_at: string;
   }
 
-  export let collection: Collection;
+  let { collection } = $props<{
+    collection: Collection;
+  }>();
 
   const dispatch = createEventDispatcher();
 

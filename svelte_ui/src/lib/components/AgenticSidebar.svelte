@@ -11,9 +11,11 @@
 	let stepContainer: HTMLElement;
 
 	// Auto-scroll to bottom when new steps are added
-	$: if (autoScroll && stepContainer && agenticSteps.length > 0) {
-		stepContainer.scrollTop = stepContainer.scrollHeight;
-	}
+	$effect(() => {
+		if (autoScroll && stepContainer && agenticSteps.length > 0) {
+			stepContainer.scrollTop = stepContainer.scrollHeight;
+		}
+	});
 
 	function toggleSidebar() {
 		isOpen = !isOpen;

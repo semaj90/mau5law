@@ -1,8 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { onDestroy, onMount } from 'svelte';
   import * as d3 from 'd3';
-  import type { PageData } from './$types';
+  import { onDestroy, onMount } from 'svelte';
 
   export let data: PageData;
 
@@ -128,13 +127,13 @@ const graphError = data.error ?? (data.graph as any)?.error ?? null;
     );
   }
 
-  $: searchMatches = searchQuery.trim()
+  let searchMatches = $derived(searchQuery.trim()
     ? graph.nodes.filter((node) => matchesSearch(node, searchQuery))
-    : [];
+    : []);
 
-  $: matchedNodeIds = searchQuery.trim()
+  let matchedNodeIds = $derived(searchQuery.trim()
     ? new Set(searchMatches.map((n) => n.id))
-    : new Set(graph.nodes.map((n) => n.id));
+    : new Set(graph.nodes.map((n) => n.id)));
 
   function nodePassesFilters(node: GraphNode) {
     if (selectedTypeFilters.size && !selectedTypeFilters.has(node.type ?? 'evidence')) {
@@ -340,17 +339,19 @@ function toggleTag(tag: string) {
     goto(`/yorha/timeline?evidenceId=${encodeURIComponent(node.id)}`);
   }
 
-  onMount(() => {
+  $effect(() => {
     if (graph.nodes.length > 0) {
       renderGraph();
     }
+
+    return () => destroyGraph();
   });
 
-  onDestroy(() => destroyGraph());
-
-  $: if (nodeSelection && linkSelection) {
-    updateVisualState();
-  }
+  $effect(() => {
+    if (nodeSelection && linkSelection) {
+      updateVisualState();
+    }
+  });
 </script>
 
 <section class="graph-layout">

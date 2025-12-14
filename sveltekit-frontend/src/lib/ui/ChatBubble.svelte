@@ -1,7 +1,9 @@
 <script lang="ts">
-  export let role: 'assistant' | 'user' = 'assistant';
-  export let title = '';
-  export let timestamp = '';
+  let { title = '', timestamp = '', role = 'assistant' } = $props<{
+    title?: string;
+    timestamp?: string;
+    role?: 'assistant' | 'user';
+  }>();
 </script>
 
 <div class="max-w-3xl {role === 'assistant' ? 'self-start' : 'self-end'}">

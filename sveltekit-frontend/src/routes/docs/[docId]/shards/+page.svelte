@@ -131,7 +131,7 @@
             stroke="#3a352a"
             stroke-width="2"
             fill="none"
-          />
+          ></path>
         </svg>
       {/if}
     </div>

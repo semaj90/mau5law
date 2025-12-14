@@ -14,7 +14,7 @@
 
 {#if showModal}
 	<div class="modal-overlay" onclick={close} transition:fade>
-		<div class="modal-container" on:click|stopPropagation>
+		<div class="modal-container" onclick>
 			<div class="modal-header">
 				<slot name="header">Modal Title</slot>
 				<button class="close-button" onclick={close}>X</button>

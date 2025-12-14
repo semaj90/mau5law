@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Button  } from 'bits-ui/components/ui/button';
+	import * as Button from 'bits-ui/components/button';
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {
@@ -45,9 +45,9 @@
 		<div class="actions-section">
 			<h4 class="text-amber-300 text-sm mb-3">ACTIONS</h4>
 			<div class="space-y-2">
-				<Button class="nes-btn is-primary w-full text-xs">UPDATE INTEL</Button>
-				<Button class="nes-btn is-warning w-full text-xs">VIEW TIMELINE</Button>
-				<Button class="nes-btn w-full text-xs">EXPORT PROFILE</Button>
+				<Button.Root class="nes-btn is-primary w-full text-xs">UPDATE INTEL</Button.Root>
+				<Button.Root class="nes-btn is-warning w-full text-xs">VIEW TIMELINE</Button.Root>
+				<Button.Root class="nes-btn w-full text-xs">EXPORT PROFILE</Button.Root>
 			</div>
 		</div>
 	</div>
@@ -78,3 +78,4 @@
 		gap: 0.5rem;
 	}
 </style>
+

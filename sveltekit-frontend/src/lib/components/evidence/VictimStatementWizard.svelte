@@ -145,7 +145,7 @@
   });
 </script>
 
-<Dialog bind:open on:openChange={(e) => !e.detail && cancelWizard()}>
+<Dialog bind:open onopenChange={(e) => !e.detail && cancelWizard()}>
   <DialogContent class="victim-wizard-dialog">
     <DialogHeader>
       <DialogTitle>Victim Statement Wizard</DialogTitle>

@@ -1,5 +1,4 @@
-<script lang="ts">let { isLoading = false } = $props();
-
+<script lang="ts">
   import { goto } from '$app/navigation';
 
   export interface Case {
@@ -11,8 +10,11 @@
     evidence: Array<{ id: string; status: string }>;
   }
 
-  export let cases: Case[] = [];
-  
+  let { isLoading = false, cases = [] } = $props<{
+    isLoading?: boolean;
+    cases?: Case[];
+  }>();
+
 
   const getPendingCount = (caseItem: Case) => {
     return caseItem.evidence.filter((e) => e.status === 'pending').length;
@@ -53,11 +55,11 @@
   {#if isLoading}
     {#each Array(3) as _}
       <div class="bg-white border-2 border-gray-300 p-6 rounded animate-pulse">
-        <div class="h-6 bg-gray-200 rounded mb-3" />
-        <div class="h-4 bg-gray-200 rounded mb-4 w-1/2" />
+        <div class="h-6 bg-gray-200 rounded mb-3" ></div>
+        <div class="h-4 bg-gray-200 rounded mb-4 w-1/2" ></div>
         <div class="grid grid-cols-2 gap-3">
-          <div class="h-16 bg-gray-200 rounded" />
-          <div class="h-16 bg-gray-200 rounded" />
+          <div class="h-16 bg-gray-200 rounded" ></div>
+          <div class="h-16 bg-gray-200 rounded" ></div>
         </div>
       </div>
     {/each}

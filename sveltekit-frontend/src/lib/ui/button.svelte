@@ -1,8 +1,10 @@
 <script lang="ts">
-  export let variant: 'primary' | 'secondary' | 'danger' = 'primary';
-  export let disabled = false;
-  export let type: 'button' | 'submit' = 'button';
-  export let onclick: (() => void) | undefined = undefined;
+  let { disabled = false, variant = 'primary', type = 'button', onclick } = $props<{
+    disabled?: boolean;
+    variant?: 'primary' | 'secondary' | 'danger';
+    type?: 'button' | 'submit';
+    onclick?: (() => void) | undefined;
+  }>();
 </script>
 
 <button

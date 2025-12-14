@@ -99,7 +99,7 @@
     <TerminalWindow
       {queryHistory}
       {isLoading}
-      on:query={(e) => handleQuery(e.detail)}
+      onquery={(e) => handleQuery(e.detail)}
     />
   </main>
 </div>

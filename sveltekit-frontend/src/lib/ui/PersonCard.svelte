@@ -1,17 +1,19 @@
 <script lang="ts">
-  import Tag from './Tag.svelte';
   import Button from './Button.svelte';
+  import Tag from './Tag.svelte';
 
-  export let id: string;
-  export let name: string;
-  export let role: 'suspect' | 'witness' | 'victim' | 'associate' = 'witness';
-  export let riskLevel: 'high' | 'medium' | 'low' = 'medium';
-  export let photo: string | undefined = undefined;
-  export let summary: string;
-  export let lastSeen: string = 'Unknown';
-  export let connections: number = 0;
-  export let verified: boolean = false;
-  export let onclick: (() => void) | undefined = undefined;
+  let { id, name, role = 'witness', riskLevel = 'medium', photo, summary, lastSeen = 'Unknown', connections = 0, verified = false, onclick } = $props<{
+    id: string;
+    name: string;
+    role?: 'suspect' | 'witness' | 'victim' | 'associate';
+    riskLevel?: 'high' | 'medium' | 'low';
+    photo?: string | undefined;
+    summary: string;
+    lastSeen?: string;
+    connections?: number;
+    verified?: boolean;
+    onclick?: (() => void) | undefined;
+  }>();
 
   function roleLabel(r: typeof role) {
     if (r === 'suspect') return 'SUSPECT';
@@ -78,7 +80,7 @@
               {name}
             </h3>
             {#if verified}
-              <span class="i-heroicons-check-badge text-accent flex-shrink-0" title="Identity Verified" />
+              <span class="i-heroicons-check-badge text-accent flex-shrink-0" title="Identity Verified" ></span>
             {/if}
           </div>
           <div class="text-[10px] font-mono tracking-[0.16em] uppercase text-black/60">
@@ -107,11 +109,11 @@
   <!-- Action row -->
   <div class="mt-3 pt-3 border-t border-black/20 flex gap-2">
     <Button variant="secondary" onclick={(e) => { e?.stopPropagation(); }}>
-      <span class="i-heroicons-document-text mr-1" />
+      <span class="i-heroicons-document-text mr-1" ></span>
       View Profile
     </Button>
     <Button variant="secondary" onclick={(e) => { e?.stopPropagation(); }}>
-      <span class="i-heroicons-link mr-1" />
+      <span class="i-heroicons-link mr-1" ></span>
       Connections
     </Button>
   </div>

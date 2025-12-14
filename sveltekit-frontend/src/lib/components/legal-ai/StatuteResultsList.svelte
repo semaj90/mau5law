@@ -1,5 +1,4 @@
-<script lang="ts">let { isLoading = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   interface Statute {
@@ -12,9 +11,11 @@
     relevance_score?: number;
   }
 
-  export let statutes: Statute[] = [];
-  
-  export let error: string | null = null;
+  let { statutes = [], error = null, isLoading = false } = $props<{
+    statutes?: Statute[];
+    error?: string | null;
+    isLoading?: boolean;
+  }>();
 
   const dispatch = createEventDispatcher();
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import NESGraphRenderer from '$lib/components/NESGraphRenderer.svelte';
 	import { initializeNodePositions, forceDirectedLayout } from '$lib/utils/nesGraphLayout';
-	import { Dialog } from 'bits-ui';
+	import * as Dialog from 'bits-ui/components/dialog';
 	import type { PageData } from './$types';
 
 	let { data } = $props<{ data: PageData }>();
@@ -37,12 +37,12 @@
 
 <svelte:head>
 	<title>AST Graph Error Analysis | YoRHa Command Center</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" ></li>
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" ></li>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
 		rel="stylesheet"
-	/>
+	></li>
 </svelte:head>
 
 <div class="nes-admin-layout">
@@ -93,7 +93,7 @@
 
 		<!-- Center: NES Graph -->
 		<main class="nes-graph-main">
-			<NESGraphRenderer nodes={graphNodes} edges={data.astGraph.edges} on:nodeclick={handleNodeClick} />
+			<NESGraphRenderer nodes={graphNodes} edges={data.astGraph.edges} onnodeclick={handleNodeClick} />
 		</main>
 
 		<!-- Right: Controls -->

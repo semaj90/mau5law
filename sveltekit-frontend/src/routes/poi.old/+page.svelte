@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { goto  } from '$app/navigation';
-  import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import Camera from 'lucide-svelte/icons/camera';
-import Grid from 'lucide-svelte/icons/grid';
-import List from 'lucide-svelte/icons/list';
-import Plus from 'lucide-svelte/icons/plus';
-import Search from 'lucide-svelte/icons/search';
-import Users from 'lucide-svelte/icons/users';;
+  import { AlertTriangle } from "lucide-svelte";
+import { Camera } from "lucide-svelte";
+import { Grid } from "lucide-svelte";
+import { List } from "lucide-svelte";
+import { Plus } from "lucide-svelte";
+import { Search } from "lucide-svelte";
+import { Users } from "lucide-svelte";;
   import { onMount } from 'svelte';;
 
   import type { Button  } from '$lib/components/ui/button';
@@ -316,9 +316,9 @@ import Users from 'lucide-svelte/icons/users';;
         {#each filteredPOIs as poi (poi.id)}
           <POICard
             {poi}
-            on:view={handleView}
-            on:edit={handleEdit}
-            on:delete={() => handleDeletePOI(poi)}
+            onview={handleView}
+            onedit={handleEdit}
+            ondelete={() => handleDeletePOI(poi)}
           />
         {/each}
       </div>
@@ -334,10 +334,10 @@ import Users from 'lucide-svelte/icons/users';;
     </DialogHeader>
     <POIEditor
       isNew={true}
-      on:save={(e) => handleCreatePOI(e.detail)}
-      on:cancel={() => showCreateDialog = false}
-      on:uploadPhoto={handlePhotoUpload}
-      on:viewPhoto={handlePhotoView}
+      onsave={(e) => handleCreatePOI(e.detail)}
+      oncancel={() => showCreateDialog = false}
+      onuploadPhoto={handlePhotoUpload}
+      onviewPhoto={handlePhotoView}
     />
   </DialogContent>
 </Dialog>
@@ -352,10 +352,10 @@ import Users from 'lucide-svelte/icons/users';;
       <POIEditor
         poi={editingPOI}
         isNew={false}
-        on:save={(e) => handleUpdatePOI(e.detail)}
-        on:cancel={() => { showEditDialog = false; editingPOI = null; }}
-        on:uploadPhoto={handlePhotoUpload}
-        on:viewPhoto={handlePhotoView}
+        onsave={(e) => handleUpdatePOI(e.detail)}
+        oncancel={() => { showEditDialog = false; editingPOI = null; }}
+        onuploadPhoto={handlePhotoUpload}
+        onviewPhoto={handlePhotoView}
       />
     {/if}
   </DialogContent>
@@ -366,7 +366,7 @@ import Users from 'lucide-svelte/icons/users';;
   <POIPhotoModal
     bind:open={showPhotoModal}
     photo={selectedPhoto}
-    on:close={() => { showPhotoModal = false; selectedPhoto = null; }}
+    onclose={() => { showPhotoModal = false; selectedPhoto = null; }}
   />
 {/if}
 
@@ -374,6 +374,6 @@ import Users from 'lucide-svelte/icons/users';;
 <POIFaceMatchDialog
   bind:open={showFaceMatchDialog}
   matches={faceMatches}
-  on:close={() => showFaceMatchDialog = false}
-  on:select={(e) => goto(`/poi/${e.detail.id}`)}
+  onclose={() => showFaceMatchDialog = false}
+  onselect={(e) => goto(`/poi/${e.detail.id}`)}
 />

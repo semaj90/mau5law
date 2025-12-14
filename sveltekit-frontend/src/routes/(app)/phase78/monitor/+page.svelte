@@ -143,7 +143,7 @@
 
     {#if isLoading && !stats}
       <div class="flex items-center justify-center py-12">
-        <div class="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full" />
+        <div class="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full" ></div>
       </div>
     {:else if stats}
       <!-- Summary Cards -->
@@ -197,7 +197,7 @@
                       class="h-2 rounded-full transition-all"
                       style={`width: ${(item.count / stats.summary.totalErrors) * 100}%;
                         background-color: ${item.severity === 'fatal' ? '#dc2626' : item.severity === 'error' ? '#f97316' : item.severity === 'warn' ? '#eab308' : '#3b82f6'}`}
-                    />
+                    ></div>
                   </div>
                   <span class="font-semibold text-gray-900 w-12 text-right">{item.count}</span>
                 </div>
@@ -222,7 +222,7 @@
                       class="h-2 rounded-full transition-all"
                       style={`width: ${(item.count / stats.summary.totalRoutes) * 100}%;
                         background-color: ${item.state === 'healthy' ? '#22c55e' : item.state === 'flaky' ? '#f59e0b' : '#ef4444'}`}
-                    />
+                    ></div>
                   </div>
                   <span class="font-semibold text-gray-900 w-12 text-right">{item.count}</span>
                 </div>
@@ -330,7 +330,7 @@
               {@const maxCount = Math.max(...stats.errorVelocity.map((p) => p.count), 1)}
               {@const height = (point.count / maxCount) * 100}
               <div class="flex-1 flex flex-col items-center gap-2" title={point.date}>
-                <div class="w-full bg-blue-500 rounded-t transition-all" style={`height: ${height}%`} />
+                <div class="w-full bg-blue-500 rounded-t transition-all" style={`height: ${height}%`} ></div>
                 <div class="text-xs text-gray-600">{new Date(point.date).toLocaleDateString()}</div>
               </div>
             {/each}

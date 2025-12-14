@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Panel from './Panel.svelte';
   import Button from './Button.svelte';
+  import Panel from './Panel.svelte';
   import Tag from './Tag.svelte';
 
   type AggravatingFactor = {
@@ -36,12 +36,12 @@
     { id: 'MIT-4', description: 'Cooperation with authorities', points: -2, selected: false },
   ];
 
-  $: selectedAggravating = aggravatingFactors.filter(f => f.selected);
-  $: selectedMitigating = mitigatingFactors.filter(f => f.selected);
-  $: aggravatingPoints = selectedAggravating.reduce((sum, f) => sum + f.points, 0);
-  $: mitigatingPoints = selectedMitigating.reduce((sum, f) => sum + f.points, 0);
-  $: adjustedOffenseLevel = offenseLevel + aggravatingPoints + mitigatingPoints;
-  $: sentencingRange = calculateRange(adjustedOffenseLevel, criminalHistory);
+  let selectedAggravating = $derived(aggravatingFactors.filter(f => f.selected));
+  let selectedMitigating = $derived(mitigatingFactors.filter(f => f.selected));
+  let aggravatingPoints = $derived(selectedAggravating.reduce((sum, f) => sum + f.points, 0));
+  let mitigatingPoints = $derived(selectedMitigating.reduce((sum, f) => sum + f.points, 0));
+  let adjustedOffenseLevel = $derived(offenseLevel + aggravatingPoints + mitigatingPoints);
+  let sentencingRange = $derived(calculateRange(adjustedOffenseLevel, criminalHistory));
 
   function calculateRange(level: number, history: number): { min: number; max: number } {
     // Simplified Federal Sentencing Guidelines calculation (months)
@@ -113,7 +113,7 @@
             <div class="w-4 h-4 rounded border border-black/60 flex items-center justify-center
                        {factor.selected ? 'bg-danger' : 'bg-sandDark'}">
               {#if factor.selected}
-                <span class="i-heroicons-check text-white text-xs" />
+                <span class="i-heroicons-check text-white text-xs" ></span>
               {/if}
             </div>
             <div class="flex-1">
@@ -141,7 +141,7 @@
             <div class="w-4 h-4 rounded border border-black/60 flex items-center justify-center
                        {factor.selected ? 'bg-accent' : 'bg-sandDark'}">
               {#if factor.selected}
-                <span class="i-heroicons-check text-black text-xs" />
+                <span class="i-heroicons-check text-black text-xs" ></span>
               {/if}
             </div>
             <div class="flex-1">
@@ -205,11 +205,11 @@
 
       <div class="mt-3 flex flex-col gap-2">
         <Button variant="primary" onclick={generateMemo}>
-          <span class="i-heroicons-document-text mr-1" />
+          <span class="i-heroicons-document-text mr-1" ></span>
           Generate Sentencing Memo
         </Button>
         <Button variant="secondary">
-          <span class="i-heroicons-calculator mr-1" />
+          <span class="i-heroicons-calculator mr-1" ></span>
           Compare Alternatives
         </Button>
       </div>

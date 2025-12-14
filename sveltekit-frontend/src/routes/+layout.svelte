@@ -60,7 +60,7 @@
 <svelte:head>
   <title>YoRHa Legal AI Platform</title>
   <meta name="description" content="Advanced Legal AI Platform with GPU acceleration and evidence analysis" />
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" href="/favicon.ico" ></li>
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-mono">

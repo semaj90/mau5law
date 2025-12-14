@@ -99,8 +99,7 @@
 		console.log(`Clicked ${type}: ${reference}`);
 		// In production, would navigate to statute/case details
 	}
-
-	$: parts = parseText(text);
+let parts = $state(parseText(text));
 </script>
 
 <p class="citation-text">

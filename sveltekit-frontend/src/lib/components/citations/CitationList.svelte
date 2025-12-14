@@ -1,11 +1,15 @@
-<script lang="ts">
-  import type { CitationSearchResult, SavedCitation } from '$lib/types/citations';
+<script>
+let { searchQuery = '', sourceTypeFilter = '', limit = 20, caseId = undefined } = $props<{
+  searchQuery?: string;
+  sourceTypeFilter?: string;
+  limit?: number;
+  caseId?: string;
+}>();
+
+import type { CitationSearchResult, SavedCitation } from '$lib/types/citations';
   import { onMount } from 'svelte';
 
-  export let caseId: string | undefined = undefined;
-  export let searchQuery = '';
-  export let sourceTypeFilter = '';
-  export let limit = 20;
+
 
   let citations: SavedCitation[] = [];
   let isLoading = false;
@@ -81,9 +85,11 @@
     loadCitations();
   });
 
-  $: if (searchQuery !== undefined || sourceTypeFilter !== undefined) {
-    handleSearch();
-  }
+  $effect(() => {
+    if (searchQuery !== undefined || sourceTypeFilter !== undefined) {
+      handleSearch();
+    }
+  });
 </script>
 
 <div class="citation-list">
@@ -206,7 +212,7 @@
                 <div
                   class="relevance-fill"
                   style="width: {citation.relevanceScore * 100}%"
-                />
+                ></div>
               </div>
               <p class="relevance-value">{(citation.relevanceScore * 100).toFixed(0)}%</p>
             </div>

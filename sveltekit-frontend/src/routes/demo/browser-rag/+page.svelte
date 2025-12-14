@@ -2,12 +2,12 @@
   import type { Document } from '$lib/types';
   import type { browserRAG  } from '$lib/ai/browser-rag-chain';
   import { onMount } from 'svelte';;
-  import Database from 'lucide-svelte/icons/database';
-import Lock from 'lucide-svelte/icons/lock';
-import Zap from 'lucide-svelte/icons/zap';
-import FileText from 'lucide-svelte/icons/file-text';
-import MessageSquare from 'lucide-svelte/icons/message-square';
-import AlertCircle from 'lucide-svelte/icons/alert-circle';;
+  import { Database } from "lucide-svelte";
+import { Lock } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { MessageSquare } from "lucide-svelte";
+import { AlertCircle } from "lucide-svelte";;
 
   // State
   let isInitialized = $state <boolean>(false);

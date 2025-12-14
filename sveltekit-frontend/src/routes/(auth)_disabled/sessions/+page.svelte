@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';;
-  import LogOut from 'lucide-svelte/icons/log-out';
-import Smartphone from 'lucide-svelte/icons/smartphone';
-import Monitor from 'lucide-svelte/icons/monitor';;
+  import { LogOut } from "lucide-svelte";
+import { Smartphone } from "lucide-svelte";
+import { Monitor } from "lucide-svelte";;
 
   interface Session {
     id: string;

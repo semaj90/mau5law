@@ -6,12 +6,14 @@
     storageCapacity: number; // percentage 0-100
   }
 
-  export let status: SystemStatus = {
+  let { status = {
     database: 'unknown',
     elasticsearch: 'unknown',
     gemma: 'unknown',
     storageCapacity: 0,
-  };
+  } } = $props<{
+    status?: SystemStatus;
+  }>();
 
   const getStatusColor = (s: string) => {
     switch (s) {
@@ -49,7 +51,7 @@
     <!-- Database Status -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-3 h-3 rounded-full {getStatusDot(status.database)}" />
+        <div class="w-3 h-3 rounded-full {getStatusDot(status.database)}" ></div>
         <span class="font-mono text-sm text-gray-700">Database</span>
       </div>
       <span class="font-mono text-sm {getStatusColor(status.database)} uppercase">
@@ -60,7 +62,7 @@
     <!-- Elasticsearch Status -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-3 h-3 rounded-full {getStatusDot(status.elasticsearch)}" />
+        <div class="w-3 h-3 rounded-full {getStatusDot(status.elasticsearch)}" ></div>
         <span class="font-mono text-sm text-gray-700">Elasticsearch</span>
       </div>
       <span class="font-mono text-sm {getStatusColor(status.elasticsearch)} uppercase">
@@ -71,7 +73,7 @@
     <!-- Gemma Service Status -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-3 h-3 rounded-full {getStatusDot(status.gemma)}" />
+        <div class="w-3 h-3 rounded-full {getStatusDot(status.gemma)}" ></div>
         <span class="font-mono text-sm text-gray-700">Gemma Service</span>
       </div>
       <span class="font-mono text-sm {getStatusColor(status.gemma)} uppercase">
@@ -89,7 +91,7 @@
         <div
           class="h-2 rounded {getStorageColor(status.storageCapacity)}"
           style="width: {status.storageCapacity}%"
-        />
+        ></div>
       </div>
     </div>
   </div>

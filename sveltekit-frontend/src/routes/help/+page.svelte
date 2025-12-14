@@ -1,21 +1,21 @@
 <script lang="ts">
   import Button from "$lib/components/ui/enhanced-bits.svelte";
-  import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-  import ArrowRight from 'lucide-svelte/icons/arrow-right';
-  import Book from 'lucide-svelte/icons/book';
-  import Clock from 'lucide-svelte/icons/clock';
-  import Download from 'lucide-svelte/icons/download';
-  import ExternalLink from 'lucide-svelte/icons/external-link';
-  import HelpCircle from 'lucide-svelte/icons/help-circle';
-  import Info from 'lucide-svelte/icons/info';
-  import MessageSquare from 'lucide-svelte/icons/message-square';
-  import Play from 'lucide-svelte/icons/play';
-  import Search from 'lucide-svelte/icons/search';
-  import Star from 'lucide-svelte/icons/star';
-  import UserIcon from 'lucide-svelte/icons/user';
-  import Video from 'lucide-svelte/icons/video';
-  import Sparkles from 'lucide-svelte/icons/sparkles';
-  import Brain from 'lucide-svelte/icons/brain';
+  import { AlertTriangle } from "lucide-svelte";
+  import { ArrowRight } from "lucide-svelte";
+  import { Book } from "lucide-svelte";
+  import { Clock } from "lucide-svelte";
+  import { Download } from "lucide-svelte";
+  import { ExternalLink } from "lucide-svelte";
+  import { HelpCircle } from "lucide-svelte";
+  import { Info } from "lucide-svelte";
+  import { MessageSquare } from "lucide-svelte";
+  import { Play } from "lucide-svelte";
+  import { Search } from "lucide-svelte";
+  import { Star } from "lucide-svelte";
+  import { UserIcon } from "lucide-svelte";
+  import { Video } from "lucide-svelte";
+  import { Sparkles } from "lucide-svelte";
+  import { Brain } from "lucide-svelte";
 
   interface HelpArticle {
     id: string;
@@ -525,7 +525,7 @@ Build on previous responses:
           onclick={() => activeCategory = category.id}
           class="px-4 py-2 rounded-full text-sm font-medium transition {activeCategory === category.id ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'}"
         >
-          <svelte:component this={category.icon} class="h-4 w-4 inline mr-2" />
+          <category.icon class="h-4 w-4 inline mr-2" ></icon>
           {category.title}
         </button>
       {/each}
@@ -593,7 +593,7 @@ Build on previous responses:
             {#each filteredArticles as article}
               <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition">
                 <div class="flex items-start gap-4 mb-4">
-                  <svelte:component this={getTypeIcon(article.type)} class="h-6 w-6 {getTypeColor(article.type)} flex-shrink-0 mt-1" />
+                  <getTypeIcon(article.type) class="h-6 w-6 {getTypeColor(article.type)} flex-shrink-0 mt-1" ></type)>
                   <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">{article.title}</h3>
                     <p class="text-gray-600 text-sm mb-3">{article.description}</p>

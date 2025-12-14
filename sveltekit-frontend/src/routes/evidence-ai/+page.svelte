@@ -1,7 +1,7 @@
 <script lang="ts">
 import { browser } from '$app/environment';
 import { xstateIntegration } from '$lib/services/xstate-integration';
-import { Button } from 'bits-ui';
+import * as Button from 'bits-ui/components/button';
 import { onMount } from 'svelte';
 
   // ======================
@@ -604,14 +604,14 @@ import { onMount } from 'svelte';
             <p class="text-lg font-medium">{selectedFile.name}</p>
             <p class="text-gray-600">Size: {formatFileSize(selectedFile.size)}</p>
             <div class="flex justify-center space-x-2">
-              <Button onclick={uploadFile} disabled={workflowStatus.status === 'processing'}>
+              <Button.Root onclick={uploadFile} disabled={workflowStatus.status === 'processing'}>
                 {#if workflowStatus.status === 'processing'}
                   Uploading...
                 {:else}
                   Upload File
                 {/if}
-              </Button>
-              <Button variant="outline" onclick={() => selectedFile = null}>Clear</Button>
+              </Button.Root>
+              <Button.Root variant="outline" onclick={() => selectedFile = null}>Clear</Button.Root>
             </div>
           </div>
         {:else}
@@ -625,9 +625,9 @@ import { onMount } from 'svelte';
               onchange={handleFileSelect}
               accept=".pdf,.doc,.docx,.txt,.jpg,.png"
             />
-            <Button onclick={() => document.getElementById('file-input')?.click()}>
+            <Button.Root onclick={() => document.getElementById('file-input')?.click()}>
               Select File
-            </Button>
+            </Button.Root>
           </div>
         {/if}
       </div>

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import type { browser  } from '$app/environment';
-  import type { Button  } from 'bits-ui/components/ui/button';
-  import type { DialogBackdrop, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle  } from 'bits-ui/components/ui/dialog';
+  import type { browser } from '$app/environment';
+  import * as Button from 'bits-ui/components/button';
 
   // Define the structure for the AI analysis results
   export interface AnalysisResult {
@@ -121,7 +120,7 @@
             <div
               class="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 h-2 rounded-full"
               style="width:{Math.max(5,item.confidence*100)}%"
-            />
+            ></div>
           </div>
         </div>
       {/if}
@@ -139,14 +138,15 @@
 
 <!-- 🧠 Detail Dialog -->
 {#if selectedItem}
-  <DialogRoot bind:open={showModal}>
-    <DialogBackdrop class="backdrop-blur-sm" />
-    <DialogContent class="nes-container is-dark max-w-md mx-auto">
-      <DialogHeader>
-        <DialogTitle class="text-lg font-bold">{selectedItem.title ?? 'Evidence Details'}</DialogTitle>
-      </DialogHeader>
+  <Dialog.Root bind:open={showModal}>
+    <Dialog.Portal>
+      <Dialog.Overlay class="backdrop-blur-sm" />
+      <Dialog.Content class="nes-container is-dark max-w-md mx-auto">
+        <Dialog.Header>
+          <Dialog.Title class="text-lg font-bold">{selectedItem.title ?? 'Evidence Details'}</Dialog.Title>
+        </Dialog.Header>
 
-      <DialogBody class="space-y-4">
+        <div class="space-y-4">
         {#if selectedItem.thumbnail}
           <img src={selectedItem.thumbnail} alt={selectedItem.title ?? 'Evidence'} class="w-full rounded-md" />
         {/if}
@@ -237,31 +237,32 @@
             </div>
           </section>
         {/if}
-      </DialogBody>
+        </div>
 
-      <DialogFooter class="flex gap-2 justify-end">
-        {#if onEdit}<Button variant="secondary" type="button" onclick={() => safeAction(onEdit)}>Edit</Button>{/if}
-        {#if onAnalyze}
-          <Button
-            variant="primary"
-            type="button"
-            disabled={isAnalyzing}
-            onclick={() => handleAnalyze(selectedItem!)}
-          >
-            {#if isAnalyzing}
-              <span class="flex items-center gap-2">
-                <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Analyzing...
-              </span>
-            {:else}
-              Analyze
-            {/if}
-          </Button>
-        {/if}
-        {#if onDelete}<Button variant="danger" type="button" onclick={() => safeAction(onDelete)}>Delete</Button>{/if}
-      </DialogFooter>
-    </DialogContent>
-  </DialogRoot>
+        <div class="flex gap-2 justify-end">
+          {#if onEdit}<Button.Root variant="secondary" type="button" onclick={() => safeAction(onEdit)}>Edit</Button.Root>{/if}
+          {#if onAnalyze}
+            <Button.Root
+              variant="primary"
+              type="button"
+              disabled={isAnalyzing}
+              onclick={() => handleAnalyze(selectedItem!)}
+            >
+              {#if isAnalyzing}
+                <span class="flex items-center gap-2">
+                  <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Analyzing...
+                </span>
+              {:else}
+                Analyze
+              {/if}
+            </Button.Root>
+          {/if}
+          {#if onDelete}<Button.Root variant="danger" type="button" onclick={() => safeAction(onDelete)}>Delete</Button.Root>{/if}
+        </div>
+      </Dialog.Content>
+    </Dialog.Portal>
+  </Dialog.Root>
 {/if}
 
 <style>

@@ -48,7 +48,7 @@
 
   <section class="upload-section">
     <h2>Upload Document</h2>
-    <SimpleFileUpload on:uploadComplete={(e) => handleUploadComplete(e.detail)} />
+    <SimpleFileUpload onuploadComplete={(e) => handleUploadComplete(e.detail)} />
     {#if uploadResults.length > 0}
       <h3>Upload Results:</h3>
       <pre>{JSON.stringify(uploadResults, null, 2)}</pre>

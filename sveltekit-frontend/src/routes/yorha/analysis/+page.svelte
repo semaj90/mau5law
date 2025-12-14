@@ -3,12 +3,12 @@
   // Card removed to avoid slot typing issues; wrapper divs supply styling instead
   import { Progress } from '$lib/components/ui/progress';
   import { appActions, appStore } from '$lib/stores/app-store';
-  import Activity from 'lucide-svelte/icons/activity';
-import AlertCircle from 'lucide-svelte/icons/alert-circle';
-import Brain from 'lucide-svelte/icons/brain';
-import Clock from 'lucide-svelte/icons/clock';
-import Database from 'lucide-svelte/icons/database';
-import TrendingUp from 'lucide-svelte/icons/trending-up';;
+  import { Activity } from "lucide-svelte";
+import { AlertCircle } from "lucide-svelte";
+import { Brain } from "lucide-svelte";
+import { Clock } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { TrendingUp } from "lucide-svelte";;
   import { onMount } from 'svelte';
 
   // Reactive state from app store

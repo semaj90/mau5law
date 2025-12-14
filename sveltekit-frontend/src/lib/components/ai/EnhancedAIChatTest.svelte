@@ -1,7 +1,9 @@
 <script lang="ts">
   // Minimal fallback chat test component so the page import resolves.
-  export let open: boolean = false; // bind:open support
-  export let caseId: string = '';
+  let { open = false, caseId = '' } = $props<{
+    open?: boolean;
+    caseId?: string;
+  }>();
 
   function openModal() {
     open = true;

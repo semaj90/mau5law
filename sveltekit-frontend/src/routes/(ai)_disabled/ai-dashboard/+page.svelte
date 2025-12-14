@@ -26,11 +26,11 @@
   } as const;
 
   // Reactive derived values
-  $: stats = data?.stats ?? defaultStats;
-  $: recentCases = data?.recentCases ?? [];
+let stats = $state(data?.stats ?? defaultStats);
+let recentCases = $state(data?.recentCases ?? []);
 
   // aiStats derived from stats
-  $: aiStats = {
+let aiStats = $state({);
     activeChats: stats.activeChats ?? 0,
     ragQueries: stats.ragQueries ?? 0,
     documentsAnalyzed: stats.documentsAnalyzed ?? 0,

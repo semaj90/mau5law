@@ -72,7 +72,7 @@
 
     {#if isLoading}
       <div class="flex items-center justify-center py-12">
-        <div class="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full" />
+        <div class="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full" ></div>
       </div>
     {:else}
       <!-- Tabs -->

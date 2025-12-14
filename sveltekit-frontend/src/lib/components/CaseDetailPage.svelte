@@ -205,7 +205,7 @@
       {#if activeTab === 'summary'}
         <div class="summary-section">
           {#if summary}
-            <SummaryEditor {summary} on:update={handleSummaryUpdate} />
+            <SummaryEditor {summary} onupdate={handleSummaryUpdate} />
           {:else}
             <div class="no-summary">
               <p>No summary generated yet</p>

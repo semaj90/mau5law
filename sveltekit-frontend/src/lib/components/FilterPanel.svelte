@@ -62,7 +62,7 @@
   ];
 
   // Update local filters when prop changes
-  $: localFilters = { ...filters };
+let localFilters = $state({ ...filters });
 </script>
 
 <div class="filter-panel">

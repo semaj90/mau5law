@@ -13,12 +13,12 @@
    */
 
   import Button from '$lib/components/ui/Button.svelte';
-  import Bot from 'lucide-svelte/icons/bot';
-import Zap from 'lucide-svelte/icons/zap';
-import Tool from 'lucide-svelte/icons/tool';
-import Database from 'lucide-svelte/icons/database';
-import Search from 'lucide-svelte/icons/search';
-import Upload from 'lucide-svelte/icons/upload';;
+  import { Bot } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Tool } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { Search } from "lucide-svelte";
+import { Upload } from "lucide-svelte";;
 
   // State using Svelte, 5 runes
   let query = $state <string>('');

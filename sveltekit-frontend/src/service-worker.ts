@@ -32,7 +32,7 @@ const warmingQueue: CacheWarmingTask[] = [];
 const activeWarmingTasks: Map<string, Promise<void>> = new Map();
 
 // Service Worker Lifecycle: 'install' event
-self.addEventListener('install', (event) => {
+self.addEventListener('install', (event: ExtendableEvent) => {
   console.log('Service Worker: Installing...');
   event.waitUntil(
     (async () => {
@@ -97,7 +97,7 @@ self.addEventListener('install', (event) => {
 });
 
 // Service Worker Lifecycle: 'activate' event
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', (event: ExtendableEvent) => {
   console.log('Service Worker: Activating...');
   event.waitUntil(
     (async () => {
@@ -108,7 +108,7 @@ self.addEventListener('activate', (event) => {
       );
       console.log('Service Worker: Old caches cleared.');
       // Claim clients to ensure all pages are controlled by the new service worker
-      await self.clients.claim();
+      await (self.clients as any).claim();
       console.log('Service Worker: Clients claimed.');
       // Start initial cache warming and sync after activation
       startCacheWarming();
@@ -125,7 +125,7 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 /**
  * Handle background sync for cache warming and data sync
  */
-self.addEventListener('sync', (event: SyncEvent) => {
+self.addEventListener('sync', (event: any) => {
   console.log('Service Worker: Background sync; triggered: ', event.tag);
   switch (event.tag) {
     case 'cache-warming':

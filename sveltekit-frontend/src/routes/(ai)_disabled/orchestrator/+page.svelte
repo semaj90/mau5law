@@ -4,11 +4,11 @@
   import { onMount } from 'svelte';;
 
   // Keep only icons actually used; remove unused ones to silence linter warnings.
-  import Cpu from 'lucide-svelte/icons/cpu';
-import Brain from 'lucide-svelte/icons/brain';
-import Zap from 'lucide-svelte/icons/zap';
-import Database from 'lucide-svelte/icons/database';
-import Activity from 'lucide-svelte/icons/activity';;
+  import { Cpu } from "lucide-svelte";
+import { Brain } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { Activity } from "lucide-svelte";;
 
   // Removed unused UI imports (Button/Badge/Textarea/LLMSelector) to avoid "declared but never read".
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';

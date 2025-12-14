@@ -1,9 +1,10 @@
 <script lang="ts">
-  export let icon: string | null = null;
-  export let variant: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' =
-    'default';
-  export let disabled: boolean = false;
-  export let ariaLabel: string | undefined;
+  let { icon = null, variant = 'default', disabled = false, ariaLabel = undefined } = $props<{
+    icon?: string | null;
+    variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
+    disabled?: boolean;
+    ariaLabel?: string;
+  }>();
 </script>
 
 <button type="button" class={`quick-action ${variant}`} {disabled} aria-label={ariaLabel}>

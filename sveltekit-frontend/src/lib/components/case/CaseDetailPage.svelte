@@ -4,7 +4,9 @@
   import SimilarCasesPanel from './SimilarCasesPanel.svelte';
   import SummaryEditor from './SummaryEditor.svelte';
 
-  export let caseId: string;
+  let { caseId } = $props<{
+    caseId: string;
+  }>();
 
   let summary: CaseSummary | null = null;
   let similarCases: SimilarCase[] = [];

@@ -1,33 +1,30 @@
 <script lang="ts">
-  import { onMount } from 'svelte';;
-  import type { page  } from '$app/stores';
-
-  // NES UI Components
-  import StatsCard from '$lib/components/ui/StatsCard/StatsCard.svelte';
+  import type { page } from '$app/stores';
+  import { onMount } from 'svelte';
+// NES UI Components
   import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
   import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
   import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
   import DialogTitle from '$lib/components/ui/dialog/DialogTitle.svelte';
-
-  // Enhanced-Bits UI Components
+  import StatsCard from '$lib/components/ui/StatsCard/StatsCard.svelte';
+// Enhanced-Bits UI Components
   // Button is shipped as a default export in this kit — import from the lowercase path
   import Button from '$lib/components/ui/button/Button.svelte';
   import QuickActionButton from '$lib/components/ui/QuickActionButton/QuickActionButton.svelte';
-
-  // Global Components
+// Global Components
   import KeyboardShortcutProvider from '$lib/components/KeyboardShortcutProvider.svelte';
-
   // Stores and Utilities
   // NOTE: The following functions must be exported from '$lib/utils/formatting.ts'
   // for TypeScript errors to be fully resolved.
-  import type { formatRelativeTime,
+  import type {
     formatDetailedTimestamp,
-    truncateFilename,
-    truncateText,
+    formatRelativeTime,
     getFileIcon,
     getPriorityColor,
     getStatusColor,
-   } from '$lib/utils/formatting';
+    truncateFilename,
+    truncateText,
+  } from '$lib/utils/formatting';
 
   // Component state
   let showDialog = $state <boolean>(false);
@@ -234,7 +231,7 @@
         {/each}
         <ButtonAny variant="default" disabled>Disabled</ButtonAny>
       </div>
-      <h2 class="section" style="margin-top: 1.5rem;">Quick Action Buttons</h2>
+      <h2 class="section mt-6">Quick Action Buttons</h2>
       <div class="grid buttons">
         <QuickActionButtonAny
           icon="i-carbon-add"
@@ -311,8 +308,7 @@
         </div>
 
         <div
-          class="dialog-footer"
-          style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;"
+          class="dialog-footer flex gap-2 justify-end mt-4"
         >
           <ButtonAny variant="destructive" onclick={closeDialog}>Cancel</ButtonAny>
           <ButtonAny

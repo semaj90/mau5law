@@ -12,8 +12,10 @@
     personIds?: string[];
   };
 
-  export let events: TimelineEvent[] = [];
-  export let caseId: string = 'CASE-001';
+  let { events = [], caseId = 'CASE-001' } = $props<{
+    events?: TimelineEvent[];
+    caseId?: string;
+  }>();
 
   // Demo data if empty
   if (events.length === 0) {
@@ -62,7 +64,7 @@
   }
 
   // Sort by timestamp
-  $: sortedEvents = [...events].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+  let sortedEvents = $derived([...events].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
 
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -92,11 +94,11 @@
     <div class="heading-sub">Case Timeline – {caseId}</div>
     <div class="flex gap-2">
       <Button variant="secondary">
-        <span class="i-heroicons-funnel mr-1" />
+        <span class="i-heroicons-funnel mr-1" ></span>
         Filter
       </Button>
       <Button variant="primary">
-        <span class="i-heroicons-plus-20-solid mr-1" />
+        <span class="i-heroicons-plus-20-solid mr-1" ></span>
         Add Event
       </Button>
     </div>
@@ -124,7 +126,7 @@
           <!-- Dot -->
           <div class="relative z-10 flex-shrink-0">
             <div class="w-8 h-8 rounded-full bg-panel border-2 border-black flex items-center justify-center">
-              <span class="{typeIcon(event.type)} text-sand text-sm" />
+              <span class="{typeIcon(event.type)} text-sand text-sm" ></span>
             </div>
           </div>
 

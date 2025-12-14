@@ -191,7 +191,7 @@
 			</div>
 		{:else if currentComponent}
 			<div class="demo-wrapper">
-				<svelte:component this={currentComponent} {data} />
+				<currentComponent {data} ></currentComponent>
 			</div>
 		{:else}
 			<div class="demo-placeholder">

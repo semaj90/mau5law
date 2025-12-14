@@ -1,5 +1,4 @@
-<script lang="ts">let { isEditing = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   interface Link {
@@ -12,8 +11,11 @@
     updated_at: string;
   }
 
-  export let link: Link;
-  
+  let { link, isEditing = false } = $props<{
+    link: Link;
+    isEditing?: boolean;
+  }>();
+
 
   const dispatch = createEventDispatcher();
 

@@ -102,7 +102,7 @@
       </div>
     </div>
   </section>
-  <ContextualEvidenceChatModal visible={chatOpen} on:close={() => (chatOpen = false)} />
+  <ContextualEvidenceChatModal visible={chatOpen} onclose={() => (chatOpen = false)} />
 </main>
 
 <style>

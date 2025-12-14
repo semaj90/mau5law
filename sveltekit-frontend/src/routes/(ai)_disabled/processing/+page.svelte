@@ -8,7 +8,7 @@
   let nesGPUBridge: any = {};
   let glyphShaderCacheBridge: any = {};
 
-  import type { fade, fly  } from 'svelte/transition';
+  import { fade, fly   } from 'svelte/transition';
 
   // Add Job type so $state infers properly (prevents 'never' issues)
   type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';

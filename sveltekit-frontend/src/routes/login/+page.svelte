@@ -51,7 +51,7 @@
         </div>
       {/if}
 
-      <form on:submit|preventDefault={handleSubmit} class="space-y-4">
+      <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Email -->
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700 mb-1">

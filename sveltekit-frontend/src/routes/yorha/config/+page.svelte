@@ -3,12 +3,12 @@
   import Card from '$lib/components/ui/card';
   import Input from '$lib/components/ui/input';
   import type { appActions, appStore  } from '$lib/stores/app-store';
-  import Cpu from 'lucide-svelte/icons/cpu';
-import Database from 'lucide-svelte/icons/database';
-import RefreshCw from 'lucide-svelte/icons/refresh-cw';
-import Save from 'lucide-svelte/icons/save';
-import Server from 'lucide-svelte/icons/server';
-import Zap from 'lucide-svelte/icons/zap';;
+  import { Cpu } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { RefreshCw } from "lucide-svelte";
+import { Save } from "lucide-svelte";
+import { Server } from "lucide-svelte";
+import { Zap } from "lucide-svelte";;
   import { onMount } from 'svelte';;
 
   // Reactive state from app store

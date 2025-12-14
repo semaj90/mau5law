@@ -1,15 +1,15 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
-  import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import { enhancedUploadStore } from '$lib/stores/unified'; import { recommendationStore } from '$lib/machines/recommendation-routing-machine'; import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool'; import { createSIMDJSONCache } from '$lib/utils/simd-json-cache'; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; // Changed from default import to named import from directory import  Progress  from "$lib/components/ui/progress/Progress.svelte"; import Brain from 'lucide-svelte/icons/brain';
-import Database from 'lucide-svelte/icons/database';
-import Network from 'lucide-svelte/icons/network';
-import Zap from 'lucide-svelte/icons/zap';
-import Eye from 'lucide-svelte/icons/eye';
-import FileText from 'lucide-svelte/icons/file-text';
-import Settings from 'lucide-svelte/icons/settings';
-import Activity from 'lucide-svelte/icons/activity';
-import Upload from 'lucide-svelte/icons/upload';
-import MessageSquare from 'lucide-svelte/icons/message-square';
+  import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import { enhancedUploadStore } from '$lib/stores/unified'; import { recommendationStore } from '$lib/machines/recommendation-routing-machine'; import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool'; import { createSIMDJSONCache } from '$lib/utils/simd-json-cache'; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; // Changed from default import to named import from directory import  Progress  from "$lib/components/ui/progress/Progress.svelte"; import { Brain } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { Network } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { Settings } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { Upload } from "lucide-svelte";
+import { MessageSquare } from "lucide-svelte";
 import // BarChart from 'lucide-svelte/icons// -bar-chart';
 import // Deprecated: Replaced with Activity from 'lucide-svelte/icons// -deprecated: -replaced with -activity';; // Component state let selectedFiles = $state<FileList | null>(null); let caseId = $state<string>('case_' + Date.now()); let documentType = $state<'evidence' | 'contract' | 'brief' | 'deposition'>('evidence'); let isProcessing = $state<boolean>(false); let systemStats = $state<any>({});
     let recommendations = $state<any[]>([]); let processedResults = $state<any>({}); // System components let workerPool: any = null; let simdCache: any = null; //, Add: declare the dynamic component reference so TS + Svelte know about it let EnhancedUploadProgress = $state<any>(null); // Performance metrics let performanceMetrics = $state({ totalProcessingTime: 0, averageSpeed: 0, cacheHitRate: 0, workerUtilization: 0; simdPerformance: 0 });
@@ -37,28 +37,28 @@ import // Deprecated: Replaced with Activity from 'lucide-svelte/icons// -deprec
   import import {
     Brain from 'lucide-svelte/icons/mport {
     -brain';
-import Database from 'lucide-svelte/icons/database';
-import Network from 'lucide-svelte/icons/network';
-import Zap from 'lucide-svelte/icons/zap';
-import Eye from 'lucide-svelte/icons/eye';
-import FileText from 'lucide-svelte/icons/file-text';
-import Settings from 'lucide-svelte/icons/settings';
-import Activity from 'lucide-svelte/icons/activity';
-import Upload from 'lucide-svelte/icons/upload';
+import { Database } from "lucide-svelte";
+import { Network } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { Settings } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { Upload } from "lucide-svelte";
 import MessageSquare
   import {
     Brain from 'lucide-svelte/icons/message-square
   import {
     -brain';
-import Database from 'lucide-svelte/icons/database';
-import Network from 'lucide-svelte/icons/network';
-import Zap from 'lucide-svelte/icons/zap';
-import Eye from 'lucide-svelte/icons/eye';
-import FileText from 'lucide-svelte/icons/file-text';
-import Settings from 'lucide-svelte/icons/settings';
-import Activity from 'lucide-svelte/icons/activity';
-import Upload from 'lucide-svelte/icons/upload';
-import MessageSquare from 'lucide-svelte/icons/message-square';;
+import { Database } from "lucide-svelte";
+import { Network } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { Settings } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { Upload } from "lucide-svelte";
+import { MessageSquare } from "lucide-svelte";;
 
   // Component state
   let selectedFiles = $state<FileList | null>(null);
@@ -296,7 +296,7 @@ import MessageSquare from 'lucide-svelte/icons/message-square';;
       }; const jsonString = JSON.stringify(testData); console.time('SIMD JSON Parse'); await simdCache.parse(jsonString); console.timeEnd('SIMD JSON Parse'); console.time('Native JSON Parse'); JSON.parse(jsonString); console.timeEnd('Native JSON Parse'); updateSystemStats()}
 
     // small inline type to satisfy the subscriber shape we rely on type UploadStateLike = { matches: (s: string) => boolean; context?: any }; </script>
-   <!-- global style, frameworks (UnoCSS / NES.css) --> <!-- adjust these paths if your project uses different import entry, points --> <link rel="stylesheet" href="/src/lib/styles/uno.css" /> <link rel="stylesheet" href="/src/lib/styles/nes.css" /> <div class="space-y-6"> <!-- Header --> <div class="text-center"> <h1 class="text-3xl font-bold flex items-center justify-center"> <Brain class="h-8 w-8" /> Comprehensive Legal AI Platform </h1>
+   <!-- global style, frameworks (UnoCSS / NES.css) --> <!-- adjust these paths if your project uses different import entry, points --> <link rel="stylesheet" href="/src/lib/styles/uno.css" ></li> <link rel="stylesheet" href="/src/lib/styles/nes.css" ></li> <div class="space-y-6"> <!-- Header --> <div class="text-center"> <h1 class="text-3xl font-bold flex items-center justify-center"> <Brain class="h-8 w-8" /> Comprehensive Legal AI Platform </h1>
    <p class="text-muted-foreground"> OCR â€¢ AI Assistant â€¢ Neo4j â€¢ PostgreSQL â€¢ pgvector â€¢ RAG â€¢ XState â€¢ RabbitMQ â€¢ SIMD â€¢ Redis Cache </p> </div>
    <!-- System Status, Dashboard --> <div class="grid grid-cols-1 md:grid-cols-5"> <Card> <CardHeader class="pb-2"> <CardTitle class="text-sm flex items-center"> <Activity class="h-4" /> Worker Pool </CardTitle> </CardHeader>
    <CardContent> <div class="space-y-2"> <div class="flex justify-between"> <span>Active:</span>
@@ -400,8 +400,8 @@ import MessageSquare from 'lucide-svelte/icons/message-square';;
 </script>
 
 <!-- global style, frameworks (UnoCSS / NES.css) -->
-<link rel="stylesheet" href="/src/lib/styles/uno.css" />
-<link rel="stylesheet" href="/src/lib/styles/nes.css" />
+<link rel="stylesheet" href="/src/lib/styles/uno.css" ></li>
+<link rel="stylesheet" href="/src/lib/styles/nes.css" ></li>
 
 <div class="space-y-6">
   <!-- Header -->
@@ -552,7 +552,7 @@ import MessageSquare from 'lucide-svelte/icons/message-square';;
             type="button"
             onclick={testSIMDPerformance}
             class="w-full text-xs py-1 rounded mt-2 border bg-gray-100"
-    {#if isProcessing} <Activity class="h-4 w-4 mr-2" /> Processing... {:else} <Brain class="h-4 w-4" /> Start Legal AI Processing {/if}
+    {#if isProcessing} <Activity class="h-4 w-4 mr-2" ></button> Processing... {:else} <Brain class="h-4 w-4" /> Start Legal AI Processing {/if}
     </button> </div> </CardContent> </Card>
    <!-- Processing, Progress -->
     {#if isProcessing} {#if EnhancedUploadProgress} <EnhancedUploadProgress /> {:else} <!-- Fallback minimal progress UI while component is, unavailable --> <div class="p-3 border rounded">Processing... (progress component loading){/if} {/if}

@@ -469,9 +469,9 @@
         bind:nodeSize
         bind:edgeThreshold
         {stats}
-        on:layoutChange={handleLayoutChange}
-        on:nodeSizeChange={handleNodeSizeChange}
-        on:edgeThresholdChange={handleEdgeThresholdChange}
+        onlayoutChange={handleLayoutChange}
+        onnodeSizeChange={handleNodeSizeChange}
+        onedgeThresholdChange={handleEdgeThresholdChange}
       />
     </div>
     <!-- Canvas -->
@@ -479,8 +479,8 @@
       <!-- @ts-expect-error -->
       <EvidenceCanvas
         bind:this={canvas}
-        on:nodeSelect={handleNodeSelect}
-        on:nodeContext={handleNodeContext}
+        onnodeSelect={handleNodeSelect}
+        onnodeContext={handleNodeContext}
       />
     </div>
     <!-- AI Suggestion Modal -->
@@ -488,8 +488,8 @@
       <!-- @ts-expect-error -->
       <CaseSuggestionModal
         {suggestion}
-        on:action={handleSuggestionAction}
-        on:close={() => suggestion = null}
+        onaction={handleSuggestionAction}
+        onclose={() => suggestion = null}
       />
     {/if}
   {/if}
@@ -497,7 +497,7 @@
       <div
         class="context-menu nes-container is-dark"
         style={`left:${contextMenu.x}px; top:${contextMenu.y}px`}
-        on:click|stopPropagation
+        onclick
       >
         <p class="menu-title">{contextMenu.node?.label ?? 'Canvas'}</p>
         {#each contextActions as action}

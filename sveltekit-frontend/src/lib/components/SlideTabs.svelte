@@ -1,11 +1,11 @@
 <script lang="ts">
-  import BarChart from 'lucide-svelte/icons/bar-chart';
-import Bot from 'lucide-svelte/icons/bot';
-import FileText from 'lucide-svelte/icons/file-text';
-import Home from 'lucide-svelte/icons/home';
-import Library from 'lucide-svelte/icons/library';
-import Terminal from 'lucide-svelte/icons/terminal';
-import Users from 'lucide-svelte/icons/users';;
+  import { BarChart } from "lucide-svelte";
+import { Bot } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { Home } from "lucide-svelte";
+import { Library } from "lucide-svelte";
+import { Terminal } from "lucide-svelte";
+import { Users } from "lucide-svelte";;
   import { WorkspaceStore } from '../stores/WorkspaceStore';
 
   const tabs = [

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FileText from 'lucide-svelte/icons/file-text';;
+  import { FileText } from "lucide-svelte";;
   import { onMount } from 'svelte';;
 
   // Reactive state using Svelte 5 runes ($state )

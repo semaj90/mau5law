@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { Evidence } from '$lib/types';
-  import Archive from 'lucide-svelte/icons/archive';
-import FileText from 'lucide-svelte/icons/file-text';
-import Image from 'lucide-svelte/icons/image';
-import Music from 'lucide-svelte/icons/music';
-import Target from 'lucide-svelte/icons/target';
-import Video from 'lucide-svelte/icons/video';
-import Zap from 'lucide-svelte/icons/zap';;
+  import { Archive } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { Image } from "lucide-svelte";
+import { Music } from "lucide-svelte";
+import { Target } from "lucide-svelte";
+import { Video } from "lucide-svelte";
+import { Zap } from "lucide-svelte";;
   // Migrated from createEventDispatcher to callback props;
   import EvidenceCard from './EvidenceCard.svelte';
 
@@ -238,7 +238,7 @@ import Zap from 'lucide-svelte/icons/zap';;
   class:dragging={isDragging}
   class:drop-active={dropZoneActive}
   onmousedown={handleMouseDown}
-  on:wheel={handleWheel}
+  onwheel={handleWheel}
   onkeydown={handleKeyDown}
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
@@ -282,8 +282,8 @@ import Zap from 'lucide-svelte/icons/zap';;
             {isTagged}
             {isDropped}
             onclick={(e) => handleEvidenceClick(item.id, e)}
-            on:delete={(e) => handleDelete(item.id, e)}
-            on:download={(e) => handleDownload(item.id, e)}
+            ondelete={(e) => handleDelete(item.id, e)}
+            ondownload={(e) => handleDownload(item.id, e)}
           />
         </div>
       {/if}

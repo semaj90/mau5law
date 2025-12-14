@@ -3,7 +3,7 @@
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from 'bits-ui';
+  import * as Card from 'bits-ui/components/card';
   import { onMount } from 'svelte';
 
   let showWebGPUDemo = $state <boolean>(false);
@@ -144,17 +144,17 @@
 
     {#if webGPUSupported}
       {#if showWebGPUDemo}
-        <Card class="webgpu-demo mt-4">
-          <CardHeader>
-            <CardTitle>Interactive Evidence Graph</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card.Root class="webgpu-demo mt-4">
+          <Card.Header>
+            <Card.Title>Interactive Evidence Graph</Card.Title>
+          </Card.Header>
+          <Card.Content>
             <WebGPUEvidenceGraphVisualization analysis={sampleAnalysis} />
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       {:else}
-        <Card class="demo-placeholder mt-4">
-          <CardContent class="placeholder-content">
+        <Card.Root class="demo-placeholder mt-4">
+          <Card.Content class="placeholder-content">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -163,7 +163,7 @@
             >
               <path
                 d="M12 1.5a.75.75 0 01.75.75V7.5h-1.5V2.25a.75.75 0 01.75-.75zM11.25 7.5v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V7.5h3.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V10.5a3 3 0 013-3H11.25zM12.75 12h-1.5v-.75a.75.75 0 011.5 0v.75z"
-              />
+              ></p>
             </svg>
             <h3>Visualize Complex Relationships</h3>
             <p>
@@ -175,15 +175,15 @@
               <li>High-performance rendering</li>
               <li>Uncover hidden connections</li>
             </ul>
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       {/if}
     {:else}
-      <Card class="webgpu-warning mt-4">
-        <CardHeader>
-          <CardTitle>WebGPU Not Supported</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card.Root class="webgpu-warning mt-4">
+        <Card.Header>
+          <Card.Title>WebGPU Not Supported</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <p>
             Your browser or device does not support WebGPU. The advanced graph visualization cannot
             be displayed.
@@ -196,8 +196,8 @@
             <li>Check <code>chrome://flags/#enable-unsafe-webgpu</code> for Chrome.</li>
             <li>Check <code>about:config</code> for Firefox.</li>
           </ul>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     {/if}
   </section>
 
@@ -206,58 +206,58 @@
       Technical Specifications
     </h2>
     <div class="specs-grid">
-      <Card class="spec-item">
-        <CardHeader>
-          <CardTitle>Frontend</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card.Root class="spec-item">
+        <Card.Header>
+          <Card.Title>Frontend</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <ul>
             <li>SvelteKit 2</li>
             <li>Svelte 5 Runes</li>
             <li>TypeScript</li>
             <li>Bits-UI</li>
           </ul>
-        </CardContent>
-      </Card>
-      <Card class="spec-item">
-        <CardHeader>
-          <CardTitle>Backend</CardTitle>
-        </CardHeader>
-        <CardContent>
+        </Card.Content>
+      </Card.Root>
+      <Card.Root class="spec-item">
+        <Card.Header>
+          <Card.Title>Backend</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <ul>
             <li>Go Microservices (37+)</li>
             <li>XState v5</li>
             <li>RabbitMQ</li>
             <li>MinIO</li>
           </ul>
-        </CardContent>
-      </Card>
-      <Card class="spec-item">
-        <CardHeader>
-          <CardTitle>AI & Data</CardTitle>
-        </CardHeader>
-        <CardContent>
+        </Card.Content>
+      </Card.Root>
+      <Card.Root class="spec-item">
+        <Card.Header>
+          <Card.Title>AI & Data</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <ul>
             <li>Ollama (Gemma3)</li>
             <li>pgvector, Qdrant</li>
             <li>Drizzle ORM</li>
             <li>Redis Cache</li>
           </ul>
-        </CardContent>
-      </Card>
-      <Card class="spec-item">
-        <CardHeader>
-          <CardTitle>Acceleration</CardTitle>
-        </CardHeader>
-        <CardContent>
+        </Card.Content>
+      </Card.Root>
+      <Card.Root class="spec-item">
+        <Card.Header>
+          <Card.Title>Acceleration</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <ul>
             <li>WebGPU Compute</li>
             <li>CUDA (NVIDIA)</li>
             <li>WebAssembly</li>
             <li>QUIC Protocol</li>
           </ul>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </div>
   </section>
 </main>
@@ -271,3 +271,4 @@
     content: '⚡';
   }
 </style>
+

@@ -114,8 +114,8 @@
 			class="upload-area"
 			class:dragging={isDragging}
 			on:dragover|preventDefault={() => (isDragging = true)}
-			on:dragleave={() => (isDragging = false)}
-			on:drop={handleDrop}
+			ondragleave={() => (isDragging = false)}
+			ondrop={handleDrop}
 		>
 			<div class="upload-content">
 				<div class="upload-icon">📄</div>

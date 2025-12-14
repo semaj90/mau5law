@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { goto  } from '$app/navigation';
-  import ArrowLeft from 'lucide-svelte/icons/arrow-left';
-import Save from 'lucide-svelte/icons/save';
-import X from 'lucide-svelte/icons/x';;
+  import { ArrowLeft } from "lucide-svelte";
+import { Save } from "lucide-svelte";
+import { X } from "lucide-svelte";;
 
   // Form state with Svelte 5 runes
   let title = $state('');

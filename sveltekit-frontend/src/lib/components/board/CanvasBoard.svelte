@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   interface Evidence {
     id: string;
@@ -18,11 +18,13 @@
     confidence: number;
   }
 
-  export let evidence: Evidence[] = [];
-  export let relationships: Relationship[] = [];
-  export let zoomLevel: number = 1;
-  export let panX: number = 0;
-  export let panY: number = 0;
+  let { evidence = [], relationships = [], zoomLevel = 1, panX = 0, panY = 0 } = $props<{
+    evidence?: Evidence[];
+    relationships?: Relationship[];
+    zoomLevel?: number;
+    panX?: number;
+    panY?: number;
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -131,8 +133,8 @@
       ctx.fillStyle = '#FFFFFF';
       ctx.strokeStyle = '#9E0000';
       ctx.lineWidth = 2;
-      ctx.fillRect(x, y: NODE_WIDTH: NODE_HEIGHT);
-      ctx.strokeRect(x, y: NODE_WIDTH: NODE_HEIGHT);
+      ctx.fillRect(x, y, NODE_WIDTH, NODE_HEIGHT);
+      ctx.strokeRect(x, y, NODE_WIDTH, NODE_HEIGHT);
 
       // Draw status indicator
       const statusColor = getStatusColor(node.status);
@@ -258,7 +260,7 @@
     onmousedown={handleMouseDown}
     onmousemove={handleMouseMove}
     onmouseup={handleMouseUp}
-    on:wheel={handleWheel}
+    onwheel={handleWheel}
     class="w-full h-full cursor-grab active:cursor-grabbing"
     style="display: block;"
   />

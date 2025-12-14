@@ -1,18 +1,18 @@
 <script lang="ts">
 import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
-import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { auth  } from '$lib/stores/unified'; import type { mcpGPUOrchestrator  } from '$lib/services/mcp-gpu-orchestrator'; import type { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs  } from '$lib/mcp-context72-get-library-docs'; import LoginModal from '$lib/components/auth/LoginModal.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import * as Alert from '$lib/components/ui/alert.svelte'; import * as Tabs from '$lib/components/ui/tabs.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; import Separator from '$lib/components/ui/separator/Separator.svelte'; import Shield from 'lucide-svelte/icons/shield';
-import Zap from 'lucide-svelte/icons/zap';
-import Cpu from 'lucide-svelte/icons/cpu';
-import Database from 'lucide-svelte/icons/database';
-import Brain from 'lucide-svelte/icons/brain';
-import CheckCircle from 'lucide-svelte/icons/check-circle';
-import AlertCircle from 'lucide-svelte/icons/alert-circle';
-import Clock from 'lucide-svelte/icons/clock';
-import Users from 'lucide-svelte/icons/users';
-import Activity from 'lucide-svelte/icons/activity';
-import Server from 'lucide-svelte/icons/server';
-import Eye from 'lucide-svelte/icons/eye';
-import Code from 'lucide-svelte/icons/code';; // Test state let testResults = $state <{ [key: string]: unknown }('')>( ); let testRunning = $state <boolean>(false); let currentTab = $state <string>('auth'); // GPU cluster status let clusterStatus = $state <any>(null); let context7Docs = $state <any>(null); // Mock data for testing const testCredentials = { login: { email: 'prosecutor@legal-ai.com', password: 'SecurePass123!@#'
+import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { auth  } from '$lib/stores/unified'; import type { mcpGPUOrchestrator  } from '$lib/services/mcp-gpu-orchestrator'; import type { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs  } from '$lib/mcp-context72-get-library-docs'; import LoginModal from '$lib/components/auth/LoginModal.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import * as Alert from '$lib/components/ui/alert.svelte'; import * as Tabs from '$lib/components/ui/tabs.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; import Separator from '$lib/components/ui/separator/Separator.svelte'; import { Shield } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Cpu } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { Brain } from "lucide-svelte";
+import { CheckCircle } from "lucide-svelte";
+import { AlertCircle } from "lucide-svelte";
+import { Clock } from "lucide-svelte";
+import { Users } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { Server } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { Code } from "lucide-svelte";; // Test state let testResults = $state <{ [key: string]: unknown }('')>( ); let testRunning = $state <boolean>(false); let currentTab = $state <string>('auth'); // GPU cluster status let clusterStatus = $state <any>(null); let context7Docs = $state <any>(null); // Mock data for testing const testCredentials = { login: { email: 'prosecutor@legal-ai.com', password: 'SecurePass123!@#'
     }, register: { email: 'investigator@police.gov', firstName: 'Jane', lastName: 'Smith', password: 'SecurePass123!@#', confirmPassword: 'SecurePass123!@#', role: 'investigator', department: 'Metropolitan Police Department', jurisdiction: 'Washington DC', badgeNumber: 'MPD-4567', enableTwoFactor: true agreeToTerms: true, agreeToPrivacy: true }
   } $effect(() => {() => { (async () => { await runInitialTests()})()});
   async function runInitialTests(): Promise<void> { testRunning = true; testResults = {} try { // Test 1: GPU Cluster Status console.log('ðŸ§ª Testing GPU cluster status...'); const clusterTest = await mcpGPUOrchestrator.getClusterStatus(); testResults.cluster = { success: true, data: clusterTest;, timestamp: new Date().toISOString()}

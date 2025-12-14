@@ -72,7 +72,7 @@
 
     <!-- Upload Section -->
     <div class="mb-6">
-      <EvidenceUpload on:updated={handleEvidenceUpdated} />
+      <EvidenceUpload onupdated={handleEvidenceUpdated} />
     </div>
 
     <!-- Main Analysis Grid -->
@@ -81,7 +81,7 @@
       <div class="col-span-3">
         <EvidenceGrid
           selectedThumbs={evidenceItems.map(item => item.thumbUrl)}
-          on:select={handleGridSelect}
+          onselect={handleGridSelect}
         />
       </div>
 
@@ -93,8 +93,8 @@
       <!-- Phoenix Wright AI Search -->
       <div class="col-span-5">
         <PhoenixWrightSearch
-          on:search={handlePhoenixWrightSearch}
-          on:result={handlePhoenixWrightResult}
+          onsearch={handlePhoenixWrightSearch}
+          onresult={handlePhoenixWrightResult}
         />
       </div>
     </div>

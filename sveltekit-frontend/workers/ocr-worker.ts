@@ -10,12 +10,12 @@
  * - RabbitMQ job routing to embedding worker
  */
 
-import amqp from 'amqplib';
-import Tesseract from 'tesseract.js';
-import type { createWorker  } from 'tesseract.js';
-import sharp from 'sharp';
-import type { Pool  } from 'pg';
-import * as minioService from '../src/lib/server/storage/minio-service.js'; // Changed to namespace import
+import * as amqp from 'amqplib';
+import { Pool } from 'pg';
+// import * as sharp from 'sharp';
+import * as Tesseract from 'tesseract.js';
+import { createWorker } from 'tesseract.js';
+import { minioService } from '../src/lib/server/storage/minio-service.js';
 
 // Environment configuration
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
@@ -63,23 +63,9 @@ async function initializeTesseractWorkers(): Promise<void> {
   console.log('🚀 [OCR Worker] Initializing Tesseract with GPU acceleration...');
 
   for (let i = 0; i < WORKER_POOL_SIZE; i++) {
-    const worker = await createWorker('eng', 1, {
-      logger: (m) => {
-        if (m.status === 'recognizing text') {
-          console.log(`⚡ [Tesseract ${i}] Progress: ${Math.round(m.progress * 100)}%`);
-        }
-      },
-      // Enable GPU acceleration (requires Tesseract compiled with CUDA)
-      // This option is not directly supported by tesseract.js WorkerOptions.
-      // GPU acceleration relies on the underlying Tesseract engine being compiled with CUDA/OpenCL.
-      // gpuAcceleration: true, // Removed unsupported option
-      // Use LSTM neural network for better accuracy
-      tessedit_vars: {
-        tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
-        // Optimize for legal documents
-        tessedit_pageseg_mode: Tesseract.PSM.AUTO,
-      },
-    });
+    const worker = await createWorker('eng');
+
+    // Note: Tesseract parameters will be configured during recognition
 
     tesseractWorkers.push(worker);
     console.log(`✅ [OCR Worker ${i}] Tesseract worker initialized with GPU support`);
@@ -93,9 +79,12 @@ async function downloadFromMinIO(s3Key: string, s3Bucket: string): Promise<Buffe
   console.log(`📥 [OCR Worker] Downloading ${s3Key} from MinIO bucket: ${s3Bucket}`);
 
   try {
-    const buffer = await minioService.downloadFile(s3Bucket, s3Key);
-    console.log(`✅ [OCR Worker] Downloaded ${buffer.length} bytes from MinIO`);
-    return buffer;
+    const fileObject = await minioService.getFile(s3Bucket, s3Key);
+    if (!fileObject) {
+      throw new Error(`File not found: ${s3Key}`);
+    }
+    console.log(`✅ [OCR Worker] Downloaded ${fileObject.size} bytes from MinIO`);
+    return fileObject.buffer;
   } catch (error) {
     console.error(`❌ [OCR Worker] MinIO download failed:`, error);
     throw new Error(`Failed to download ${s3Key} from ${s3Bucket}: ${error}`);
@@ -111,7 +100,7 @@ async function extractTextFromPDF(buffer: Buffer): Promise<OCRResult> {
 
   try {
     // Dynamic import to avoid pdf-parse debug mode execution
-    const pdfParse = (await import('pdf-parse')).default;
+    const pdfParse = await import('pdf-parse');
 
     // First try native PDF text extraction
     const pdfData = await pdfParse(buffer);

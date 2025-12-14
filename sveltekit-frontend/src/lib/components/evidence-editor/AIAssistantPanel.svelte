@@ -1,8 +1,8 @@
 <script lang="ts">
   import Badge from "$lib/components/ui/badge.svelte";
-  import Search from 'lucide-svelte/icons/search';
-import FileText from 'lucide-svelte/icons/file-text';
-import Users from 'lucide-svelte/icons/users';;
+  import { Search } from "lucide-svelte";
+import { FileText } from "lucide-svelte";
+import { Users } from "lucide-svelte";;
   import Fuse from 'fuse.js';
 
   interface Props {

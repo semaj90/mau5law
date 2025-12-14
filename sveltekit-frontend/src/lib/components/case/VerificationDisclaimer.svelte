@@ -1,10 +1,11 @@
-<script lang="ts">let { isOpen = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  
-  export let sourceUrl: string = '';
-  export let domain: string = '';
+  let { isOpen = false, sourceUrl = '', domain = '' } = $props<{
+    isOpen?: boolean;
+    sourceUrl?: string;
+    domain?: string;
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -21,7 +22,7 @@
 
 {#if isOpen}
   <div class="modal-overlay" onclick={handleCancel}>
-    <div class="modal-content" on:click|stopPropagation>
+    <div class="modal-content" onclick>
       <div class="modal-header">
         <h2>⚠️ Non-Government Legal Source Detected</h2>
         <button class="close-btn" onclick={handleCancel}>×</button>

@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { Badge  } from '$lib/components/ui/badge';
-  import AlertCircle from 'lucide-svelte/icons/alert-circle';
-import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import CheckCircle from 'lucide-svelte/icons/check-circle';
-import Shield from 'lucide-svelte/icons/shield';;
+  import type { Badge } from '$lib/components/ui/badge';
+  import { AlertCircle, AlertTriangle, CheckCircle, Shield } from "lucide-svelte";
 
-  export let threatLevel: string;
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  let { showIcon = true } = $props();
+  let { threatLevel, size = 'md', showIcon = true } = $props<{
+    threatLevel: string;
+    size?: 'sm' | 'md' | 'lg';
+    showIcon?: boolean;
+  }>();
 
   function getThreatConfig(level: string) {
     switch (level) {
@@ -43,8 +42,7 @@ import Shield from 'lucide-svelte/icons/shield';;
         };
     }
   }
-
-  $: config = getThreatConfig(threatLevel);
+let config = $state(getThreatConfig(threatLevel));
 
   function getSizeClasses(size: string) {
     switch (size) {

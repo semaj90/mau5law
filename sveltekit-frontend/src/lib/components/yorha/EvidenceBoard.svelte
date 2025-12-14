@@ -138,7 +138,7 @@
             y2={targetNode.position_y}
             class="connection-line"
             style="stroke-width: {connection.strength / 10}px"
-          />
+          ></li>
           <text
             x={(sourceNode.position_x + targetNode.position_x) / 2}
             y={(sourceNode.position_y + targetNode.position_y) / 2}
@@ -155,7 +155,7 @@
           class="node"
           class:selected={selectedNode?.id === node.id}
           onclick={() => selectNode(node)}
-          on:mousemove={(e) => {
+          onmousemove={(e) => {
             if (e.buttons === 1) handleNodeDrag(node, e);
           }}
         >
@@ -218,27 +218,27 @@
 
   <div class="board-legend">
     <div class="legend-item">
-      <div class="legend-color" style="background: #00d4ff" />
+      <div class="legend-color" style="background: #00d4ff" ></div>
       <span>Document</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: #00ff00" />
+      <div class="legend-color" style="background: #00ff00" ></div>
       <span>Photo</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: #ff6600" />
+      <div class="legend-color" style="background: #ff6600" ></div>
       <span>Video</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: #ffaa00" />
+      <div class="legend-color" style="background: #ffaa00" ></div>
       <span>Audio</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: #ff00ff" />
+      <div class="legend-color" style="background: #ff00ff" ></div>
       <span>Testimony</span>
     </div>
     <div class="legend-item">
-      <div class="legend-color" style="background: #ff0000" />
+      <div class="legend-color" style="background: #ff0000" ></div>
       <span>Forensic</span>
     </div>
   </div>

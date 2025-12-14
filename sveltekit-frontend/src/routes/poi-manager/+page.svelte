@@ -6,11 +6,7 @@ import Select from '$lib/components/ui/Select.svelte';
 import Textarea from '$lib/components/ui/Textarea.svelte';
 import { cn } from '$lib/utils.js';
 import { toast } from '$lib/utils/toast';
-import Edit from 'lucide-svelte/icons/edit';
-import { Funnel as Filter } from 'lucide-svelte/icons/funnel';
-import { Grid } from 'lucide-svelte/icons/grid';
-import List from 'lucide-svelte/icons/list';
-import Plus from 'lucide-svelte/icons/plus';
+import { Edit, Funnel as Filter, Grid, List, Plus, Trash } from "lucide-svelte";
 import { onMount } from 'svelte';
 
 interface PhysicalDescription {
@@ -93,11 +89,7 @@ let formData = $state<Poi>({ // Use Poi interface
   notes: ''
 });
 
-// String representations for form inputs
-let aliasesString = $state<string>('');
-let knownHabitsString = $state<string>('');
-let associatesString = $state<string>('');
-let dangerLevelString = $state<string>('0');
+
 
 
 

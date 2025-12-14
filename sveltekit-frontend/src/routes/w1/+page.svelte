@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
-  import type { fly, fade  } from 'svelte/transition';
+  import { fly, fade   } from 'svelte/transition';
 
   // Mock user data (as if signed in)
   const mockUser = {
@@ -243,7 +243,7 @@
   <!-- Main Content -->
   <main class="platform-content">
     {#if activeView === 'dashboard'}
-      <div class="dashboard" transition:fade={{ duration: 300 }}>
+      <div class="dashboard" transitionfade={{ duration: 300 }}>
         <div class="stats-grid">
           <div class="stat-nier-bits-card">
             <div class="stat-icon">📂</div>
@@ -303,7 +303,7 @@
         </div>
       </div>
     {:else if activeView === 'cases'}
-      <div class="cases-view" transition:fade={{ duration: 300 }}>
+      <div class="cases-view" transitionfade={{ duration: 300 }}>
         <h2>📂 Case Management</h2>
         <div class="cases-grid">
           {#each cases as cse}
@@ -338,7 +338,7 @@
         </div>
       </div>
     {:else if activeView === 'detective'}
-      <div class="detective-mode" transition:fade={{ duration: 300 }}>
+      <div class="detective-mode" transitionfade={{ duration: 300 }}>
         <h2>🕵️ Detective Mode - "Who, What, Why, How"</h2>
         <div class="workflow-progress">
           {#each prosecutionWorkflow as step, index}
@@ -386,7 +386,7 @@
         {/if}
       </div>
     {:else}
-      <div class="feature-view" transition:fade={{ duration: 300 }}>
+      <div class="feature-view" transitionfade={{ duration: 300 }}>
         <h2>🏗️ {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
         <p>This feature is fully implemented in the platform. Click around to explore!</p>
         <div class="feature-grid">
@@ -458,7 +458,7 @@
       </div>
     {/if}
     {#if showQuickInput}
-      <div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
+      <div class="quick-input-panel" transitionfly={{ y: 20, duration: 300 }}>
         <textarea
           bind:value={quickInput}
           placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"

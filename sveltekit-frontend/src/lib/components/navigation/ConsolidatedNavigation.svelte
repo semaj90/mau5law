@@ -24,8 +24,7 @@
 
     return null;
   };
-
-  $: currentGroup = findRouteGroup($page.url.pathname);
+let currentGroup = $state(findRouteGroup($page.url.pathname));
 </script>
 <nav class="consolidated-navigation" class:expanded={isExpanded}>
   <div class="nav-header">

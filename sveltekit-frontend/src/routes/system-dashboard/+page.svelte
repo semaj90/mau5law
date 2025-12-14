@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Minimal dashboard implementation - SSR friendly
   export const csr = false;
 </script>
