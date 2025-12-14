@@ -1,65 +1,104 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
-import path from 'node:path';
+/**
+ * Codemod: Fix invalid self-closing non-void HTML elements
+ * Converts: <div /> → <div></div>
+ * Scope: All .svelte files in src/
+ */
 
-const ROOT = path.resolve('sveltekit-frontend/src');
-const exts = new Set(['.svelte']);
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-function walk(dir, out = []) {
-  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, ent.name);
-    if (ent.isDirectory()) {
-      if (!ent.name.startsWith('.') && ent.name !== 'node_modules') {
-        walk(p, out);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const srcDir = path.join(__dirname, '../sveltekit-frontend/src');
+
+// Non-void HTML elements that cannot be self-closed
+const nonVoidElements = [
+  'div', 'span', 'p', 'a', 'button', 'form', 'input', 'label', 'select', 'textarea',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th',
+  'thead', 'tbody', 'tfoot', 'section', 'article', 'nav', 'header', 'footer', 'main',
+  'aside', 'figure', 'figcaption', 'blockquote', 'pre', 'code', 'strong', 'em', 'i',
+  'b', 'u', 'small', 'sub', 'sup', 'mark', 'del', 'ins', 'kbd', 'samp', 'var',
+  'template', 'script', 'style', 'noscript', 'iframe', 'object', 'embed', 'video',
+  'audio', 'canvas', 'svg', 'details', 'summary', 'dialog', 'fieldset', 'legend',
+  'datalist', 'optgroup', 'option', 'meter', 'progress', 'output', 'time', 'address',
+];
+
+let totalFiles = 0;
+let changedFiles = 0;
+const results = [];
+
+function walkDir(dir) {
+  const files = fs.readdirSync(dir);
+
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+
+    if (stat.isDirectory()) {
+      if (!file.startsWith('.') && file !== 'node_modules') {
+        walkDir(filePath);
       }
-    } else if (exts.has(path.extname(ent.name))) {
-      out.push(p);
+    } else if (file.endsWith('.svelte')) {
+      totalFiles++;
+      processSvelteFile(filePath);
     }
   }
-  return out;
 }
 
-function fixTag(s, tag) {
-  // <div ... />  -> <div ...></div>
-  return s.replace(
-    new RegExp(`<${tag}([^>]*)\\/>`, 'g'),
-    `<${tag}$1></${tag}>`
-  );
-}
-
-const files = walk(ROOT);
-let changed = 0;
-let errors = [];
-
-console.log(`🔍 Found ${files.length} Svelte files to process...`);
-
-for (const file of files) {
+function processSvelteFile(filePath) {
   try {
-    const before = fs.readFileSync(file, 'utf8');
-    let after = before;
+    let content = fs.readFileSync(filePath, 'utf-8');
+    const originalContent = content;
 
-    // Fix common non-void elements
-    const nonVoidTags = ['div', 'span', 'section', 'article', 'header', 'footer', 'main', 'nav', 'aside', 'form', 'fieldset', 'label', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'table', 'tbody', 'thead', 'tfoot', 'tr', 'td', 'th'];
-
-    for (const tag of nonVoidTags) {
-      after = fixTag(after, tag);
+    // For each non-void element, convert self-closing tags
+    for (const element of nonVoidElements) {
+      // Match: <element ... /> but not <element ... >
+      // Pattern: <element(\s[^>]*)?\s*/>
+      const regex = new RegExp(`<${element}(\\s[^>]*)?>\\s*/>`, 'gi');
+      content = content.replace(regex, (match, attrs) => {
+        const trimmedAttrs = attrs ? attrs.trim() : '';
+        if (trimmedAttrs) {
+          return `<${element} ${trimmedAttrs}></${element}>`;
+        }
+        return `<${element}></${element}>`;
+      });
     }
 
-    if (after !== before) {
-      fs.writeFileSync(file, after, 'utf8');
-      changed++;
-      console.log(`✅ Updated: ${path.relative(ROOT, file)}`);
+    if (content !== originalContent) {
+      fs.writeFileSync(filePath, content, 'utf-8');
+      changedFiles++;
+      results.push({
+        file: path.relative(srcDir, filePath),
+        changed: true,
+        errors: [],
+      });
     }
-  } catch (err) {
-    errors.push(`❌ Error processing ${file}: ${err.message}`);
+  } catch (error) {
+    results.push({
+      file: path.relative(srcDir, filePath),
+      changed: false,
+      errors: [error.message],
+    });
   }
 }
 
-console.log(`\n📊 Summary:`);
-console.log(`   Files changed: ${changed}/${files.length}`);
-if (errors.length > 0) {
-  console.log(`   Errors: ${errors.length}`);
-  errors.forEach(e => console.log(`   ${e}`));
+console.log('🔄 Fixing invalid self-closing non-void HTML elements...\n');
+walkDir(srcDir);
+
+console.log(`✅ Conversion complete!`);
+console.log(`📊 Statistics:`);
+console.log(`   Total files scanned: ${totalFiles}`);
+console.log(`   Files changed: ${changedFiles}`);
+console.log(`\n📝 Changed files:`);
+results.filter(r => r.changed).forEach(r => {
+  console.log(`   ✓ ${r.file}`);
+});
+
+if (results.some(r => r.errors.length > 0)) {
+  console.log(`\n⚠️  Errors:`);
+  results.filter(r => r.errors.length > 0).forEach(r => {
+    console.log(`   ✗ ${r.file}: ${r.errors.join(', ')}`);
+  });
 }
-console.log(`\n✨ Self-closing tag migration complete!`);

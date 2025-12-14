@@ -31,8 +31,8 @@ function walk(dir, out = []) {
 }
 
 function replaceEventDirectives(s) {
-  // Replace all on: patterns with on (remove the colon)
-  return s.replaceAll(/on:([a-zA-Z_][a-zA-Z0-9_]*)=/g, 'on$1=');
+  // Replace all on: patterns with on (remove the colon), preserving modifiers
+  return s.replaceAll(/on:([a-zA-Z_][a-zA-Z0-9_]*)([^\s=]*)=/g, 'on$1$2=');
 }
 
 const files = walk(ROOT);

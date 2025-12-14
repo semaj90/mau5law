@@ -98,8 +98,8 @@
         <div class="detail-container">
           <StatuteDetail
             statute={selectedStatute}
-            on:attach-to-case={handleAttachToCase}
-            on:save-citation={handleSaveCitation}
+            onattach-to-case={handleAttachToCase}
+            onsave-citation={handleSaveCitation}
           />
 
           <RelatedCasesPanel statuteCode={selectedStatute.code} />

@@ -113,7 +113,7 @@
 		<div
 			class="upload-area"
 			class:dragging={isDragging}
-			on:dragover|preventDefault={() => (isDragging = true)}
+			ondragover|preventDefault={() => (isDragging = true)}
 			ondragleave={() => (isDragging = false)}
 			ondrop={handleDrop}
 		>
