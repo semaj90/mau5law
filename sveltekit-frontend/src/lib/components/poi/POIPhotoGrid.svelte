@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import Camera from 'lucide-svelte/icons/camera';
-import Eye from 'lucide-svelte/icons/eye';
-import Trash2 from 'lucide-svelte/icons/trash2';
-import Upload from 'lucide-svelte/icons/upload';;
+  import { Camera } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { Trash2 } from "lucide-svelte";
+import { Upload } from "lucide-svelte";;
   // Migrated from createEventDispatcher to callback props;
 
   let {

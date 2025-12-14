@@ -135,7 +135,7 @@
         disabled={isSubmitting}
       >
         {#if isSubmitting}
-          <span class="loading loading-spinner loading-xs" />
+          <span class="loading loading-spinner loading-xs" ></span>
         {/if}
         Yes, use this
       </button>

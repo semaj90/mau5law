@@ -1,5 +1,4 @@
-<script lang="ts">let { isLoading = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface Statute {
@@ -13,8 +12,11 @@
     year?: number;
   }
 
-  export let statute: Statute | null = null;
-  
+  let { statute = null, isLoading = false } = $props<{
+    statute?: Statute | null;
+    isLoading?: boolean;
+  }>();
+
 
   const dispatch = createEventDispatcher();
 

@@ -7,20 +7,20 @@ import type { Document } from '$lib/types';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte';
   // Icons (import only icons actually used to avoid type errors)
-  import Search from 'lucide-svelte/icons/search';
-  import BookOpen from 'lucide-svelte/icons/book-open';
-  import Brain from 'lucide-svelte/icons/brain';
-  import Filter from 'lucide-svelte/icons/filter';
-  import FileText from 'lucide-svelte/icons/file-text';
-  import Bookmark from 'lucide-svelte/icons/bookmark';
-  import Star from 'lucide-svelte/icons/star';
-  import Clock from 'lucide-svelte/icons/clock';
-  import Library from 'lucide-svelte/icons/library';
-  import Gavel from 'lucide-svelte/icons/gavel';
-  import Calendar from 'lucide-svelte/icons/calendar';
-  import Link from 'lucide-svelte/icons/link';
-  import ExternalLink from 'lucide-svelte/icons/external-link';
-  import Eye from 'lucide-svelte/icons/eye';
+  import { Search } from "lucide-svelte";
+  import { BookOpen } from "lucide-svelte";
+  import { Brain } from "lucide-svelte";
+  import { Filter } from "lucide-svelte";
+  import { FileText } from "lucide-svelte";
+  import { Bookmark } from "lucide-svelte";
+  import { Star } from "lucide-svelte";
+  import { Clock } from "lucide-svelte";
+  import { Library } from "lucide-svelte";
+  import { Gavel } from "lucide-svelte";
+  import { Calendar } from "lucide-svelte";
+  import { Link } from "lucide-svelte";
+  import { ExternalLink } from "lucide-svelte";
+  import { Eye } from "lucide-svelte";
   // Svelte, 5 runes
 
   // --- ADDED: explicit types to avoid `never` / `unknown` inference errors ---

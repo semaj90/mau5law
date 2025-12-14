@@ -19,7 +19,7 @@
   }
 
   // Use Svelte runes-style props() instead of `export let`.
-  const props = $props<{
+  let { nodes = [], links = [], width = undefined, height = undefined, onNodeClick = undefined, onNodeRightClick = undefined, caseId = null, query = null } = $props<{
     nodes?: GraphNode[];
     links?: GraphLink[];
     width?: number;
@@ -29,6 +29,8 @@
     caseId?: string | null;
     query?: string | null;
   }>();
+
+  const props = { nodes, links, width, height, onNodeClick, onNodeRightClick, caseId, query };
 
   // Provide defaults when props are missing
   const defaultWidth = 800;

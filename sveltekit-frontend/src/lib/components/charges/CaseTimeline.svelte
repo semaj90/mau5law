@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	export let caseId: string = '';
+	let { caseId = '' } = $props<{
+		caseId?: string;
+	}>();
 
 	interface TimelineEvent {
 		id: string;

@@ -1,11 +1,9 @@
-// src/routes/api/cases/[id]/notes/search/+server.ts
-
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { caseNotes } from '$lib/server/db/schema-postgres';
-import { eq, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 
-export async function GET({ params, url }) {
+export async function GET({ params, url }: { params: { id: string }; url: URL }) {
   try {
     const { id: caseId } = params;
     const query = url.searchParams.get('q')?.trim();
@@ -25,34 +23,34 @@ export async function GET({ params, url }) {
         id: caseNotes.id,
         title: caseNotes.title,
         content: caseNotes.content,
-        updated_at: caseNotes.updated_at,
-        is_pinned: caseNotes.is_pinned,
-        is_ai: caseNotes.is_ai,
+        updatedAt: caseNotes.updatedAt,
+        isPinned: caseNotes.isPinned,
+        isAI: caseNotes.isAI,
         // Calculate relevance score
         rank: sql<number>`ts_rank(content_tsv, plainto_tsquery('english', ${query}))`,
       })
       .from(caseNotes)
-      .where(
-        sql`case_id = ${caseId} AND content_tsv @@ plainto_tsquery('english', ${query})`
-      )
+      .where(sql`case_id = ${caseId} AND content_tsv @@ plainto_tsquery('english', ${query})`)
       .orderBy(
         sql`ts_rank(content_tsv, plainto_tsquery('english', ${query})) DESC`,
         sql`updated_at DESC`
       )
       .limit(50);
 
-    // Format results with preview
-    const hits = results.map(result => ({
+    // Format results to match CaseNote interface
+    const formattedResults = results.map((result) => ({
       id: result.id,
+      caseId,
       title: result.title || 'Untitled Note',
-      preview: result.content.substring(0, 240),
-      updated_at: result.updated_at?.toISOString(),
-      is_pinned: result.is_pinned,
-      is_ai: result.is_ai,
-      rank: result.rank,
+      content: result.content,
+      isAI: result.isAI,
+      isPinned: result.isPinned,
+      createdBy: null,
+      createdAt: result.updatedAt?.toISOString() || new Date().toISOString(),
+      updatedAt: result.updatedAt?.toISOString() || new Date().toISOString(),
     }));
 
-    return json({ hits, total: hits.length });
+    return json({ results: formattedResults, total: formattedResults.length });
   } catch (error) {
     console.error('Search error:', error);
     return json(

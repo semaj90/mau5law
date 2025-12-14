@@ -9,6 +9,7 @@ This implementation plan breaks down the evidence upload integration into discre
 ## Tasks
 
 - [ ] 0. Infrastructure bootstrap and recovery
+
   - [ ] 0.1 Create bootstrap script for MinIO buckets and directories
     - Create lawpdfs/cases directory structure
     - Create documents/evidence directory structure

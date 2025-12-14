@@ -1,6 +1,8 @@
 <script lang="ts">
-  export let clickable = false;
-  export let onclick: (() => void) | undefined = undefined;
+  let { clickable = false, onclick } = $props<{
+    clickable?: boolean;
+    onclick?: (() => void) | undefined;
+  }>();
 </script>
 
 <div

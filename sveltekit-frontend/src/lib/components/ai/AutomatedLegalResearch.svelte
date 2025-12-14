@@ -1,7 +1,23 @@
 <script lang="ts">
-	// Migrated from createEventDispatcher to callback props;
+	// Migrated to Svelte 5 $props
 
-	let { query = '', jurisdiction = 'general', caseType = 'civil', depth = 'comprehensive' } = $props();
+	let {
+		query = '',
+		jurisdiction = 'general',
+		caseType = 'civil',
+		depth = 'comprehensive',
+		research,
+		researchHistory = [],
+		error = null
+	} = $props<{
+		query?: string;
+		jurisdiction?: string;
+		caseType?: string;
+		depth?: string;
+		research: Research;
+		researchHistory?: ResearchHistoryItem[];
+		error?: string | null;
+	}>();
 
 	const dispatch = createEventDispatcher();
 
@@ -71,19 +87,15 @@
 		};
 	}
 
-	export let research: Research;
-	export let researchHistory: ResearchHistoryItem[] = [];
-	export let error: string | null = null;
-
 	// Reactive state
 	let isResearching = false;
-	let research: ResearchResult | null = null;
-	let error: string | null = null;
+	let currentResearch: ResearchResult | null = null;
+	let currentError: string | null = null;
 	let includePrecedents = true;
 	let includeStatutes = true;
 
 	// Research history
-	let researchHistory: ResearchHistoryItem[] = [];
+	let currentResearchHistory: ResearchHistoryItem[] = [];
 
 	// Perform legal research
 	async function performResearch() {
@@ -93,8 +105,8 @@
 		}
 
 		isResearching = true;
-		error = null;
-		research = null;
+		currentError = null;
+		currentResearch = null;
 
 		try {
 			const response = await fetch('/api/ai/legal-research', {
@@ -119,19 +131,19 @@
 			const result: ResearchResult = await response.json();
 
 			// Add to history
-			researchHistory = [{
+			currentResearchHistory = [{
 				query: query.trim(),
 				timestamp: new Date().toISOString(),
 				result
-			}, ...researchHistory.slice(0, 9)]; // Keep last 10
+			}, ...currentResearchHistory.slice(0, 9)]; // Keep last 10
 
-			research = result;
+			currentResearch = result;
 
 			// Dispatch event for parent components
 			dispatch('researchComplete', { research: result });
 
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Research failed';
+			currentError = err instanceof Error ? err.message : 'Research failed';
 			dispatch('researchError', { error: err });
 		} finally {
 			isResearching = false;
@@ -140,14 +152,14 @@
 
 	// Clear current research
 	function clearResearch() {
-		research = null;
-		error = null;
+		currentResearch = null;
+		currentError = null;
 	}
 
 	// Load previous research
 	function loadPreviousResearch(item: ResearchHistoryItem) {
 		query = item.query;
-		research = item.result;
+		currentResearch = item.result;
 		error = null;
 	}
 
@@ -155,10 +167,10 @@
 	function exportResearch() {
 		if (!research) return;
 
-		const dataStr = JSON.stringify(research, null, 2);
+		const dataStr = JSON.stringify(currentResearch, null, 2);
 		const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
-		const exportFileDefaultName = `legal-research-${research.query.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${new Date().toISOString().split('T')[0]}.json`;
+		const exportFileDefaultName = `legal-research-${currentResearch.query.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${new Date().toISOString().split('T')[0]}.json`;
 
 		const linkElement = document.createElement('a');
 		linkElement.setAttribute('href', dataUri);
@@ -285,7 +297,7 @@
 			{/if}
 		</button>
 
-		{#if research}
+		{#if currentResearch}
 			<button
 				type="button"
 				onclick={clearResearch}
@@ -305,11 +317,11 @@
 	</div>
 
 	<!-- Research History -->
-	{#if researchHistory.length > 0}
+	{#if currentResearchHistory.length > 0}
 		<div class="mb-6">
 			<h4 class="text-md font-semibold text-gray-900 mb-3">Recent Research</h4>
 			<div class="space-y-2 max-h-40 overflow-y-auto">
-				{#each researchHistory as item (item.timestamp)}
+				{#each currentResearchHistory as item (item.timestamp)}
 					<button
 						type="button"
 						onclick={() => loadPreviousResearch(item)}
@@ -324,52 +336,52 @@
 	{/if}
 
 	<!-- Error Display -->
-	{#if error}
+	{#if currentError}
 		<div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
 			<div class="flex">
 				<div class="flex-shrink-0">
 					<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" ></path>
 					</svg>
 				</div>
 				<div class="ml-3">
 					<h3 class="text-sm font-medium text-red-800">Research Error</h3>
-					<div class="mt-2 text-sm text-red-700">{error}</div>
+					<div class="mt-2 text-sm text-red-700">{currentError}</div>
 				</div>
 			</div>
 		</div>
 	{/if}
 
 	<!-- Research Results -->
-	{#if research}
+	{#if currentResearch}
 		<div class="space-y-6">
 			<!-- Research Summary -->
 			<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
 				<h4 class="text-md font-semibold text-blue-900 mb-2">Research Summary</h4>
 				<div class="text-sm text-blue-800">
-					<strong>Query:</strong> {research.query}<br>
-					<strong>Jurisdiction:</strong> {research.jurisdiction} |
-					<strong>Case Type:</strong> {research.case_type} |
-					<strong>Depth:</strong> {research.research_depth}
+					<strong>Query:</strong> {currentResearch.query}<br>
+					<strong>Jurisdiction:</strong> {currentResearch.jurisdiction} |
+					<strong>Case Type:</strong> {currentResearch.case_type} |
+					<strong>Depth:</strong> {currentResearch.research_depth}
 				</div>
-				{#if research.metadata?.confidence_level}
+				{#if currentResearch.metadata?.confidence_level}
 					<div class="mt-2">
 						<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-							{research.metadata.confidence_level === 'high' ? 'bg-green-100 text-green-800' :
-							 research.metadata.confidence_level === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+							{currentResearch.metadata.confidence_level === 'high' ? 'bg-green-100 text-green-800' :
+							 currentResearch.metadata.confidence_level === 'medium' ? 'bg-yellow-100 text-yellow-800' :
 							 'bg-red-100 text-red-800'}">
-							{research.metadata.confidence_level.toUpperCase()} CONFIDENCE
+							{currentResearch.metadata.confidence_level.toUpperCase()} CONFIDENCE
 						</span>
 					</div>
 				{/if}
 			</div>
 
 			<!-- Legal Principles -->
-			{#if research.legal_principles?.length}
+			{#if currentResearch.legal_principles?.length}
 				<div class="bg-white border rounded-lg p-4">
 					<h4 class="text-md font-semibold text-gray-900 mb-3">Legal Principles & Doctrines</h4>
 					<div class="space-y-4">
-						{#each research.legal_principles ?? [] as principle}
+						{#each currentResearch.legal_principles ?? [] as principle}
 							<div class="border-l-4 border-blue-500 pl-4">
 								<h5 class="font-medium text-gray-900">{principle.principle}</h5>
 								<p class="text-sm text-gray-700 mt-1">{principle.explanation}</p>
@@ -390,11 +402,11 @@
 			{/if}
 
 			<!-- Statutory Analysis -->
-			{#if research.statutory_analysis?.length}
+			{#if currentResearch.statutory_analysis?.length}
 				<div class="bg-white border rounded-lg p-4">
 					<h4 class="text-md font-semibold text-gray-900 mb-3">Statutory Analysis</h4>
 					<div class="space-y-3">
-						{#each research.statutory_analysis ?? [] as statute}
+						{#each currentResearch.statutory_analysis ?? [] as statute}
 							<div class="border rounded-lg p-3">
 								<h5 class="font-medium text-gray-900">{statute.statute}</h5>
 								<p class="text-sm text-gray-700">{statute.provision}</p>
@@ -415,11 +427,11 @@
 			{/if}
 
 			<!-- Case Law -->
-			{#if research.case_law?.length}
+			{#if currentResearch.case_law?.length}
 				<div class="bg-white border rounded-lg p-4">
 					<h4 class="text-md font-semibold text-gray-900 mb-3">Case Law & Precedents</h4>
 					<div class="space-y-3">
-						{#each research.case_law ?? [] as caseItem}
+						{#each currentResearch.case_law ?? [] as caseItem}
 							<div class="border rounded-lg p-3">
 								<div class="flex justify-between items-start mb-2">
 									<h5 class="font-medium text-gray-900">{caseItem.case_name}</h5>
@@ -439,15 +451,15 @@
 			{/if}
 
 			<!-- Practical Analysis -->
-			{#if research.practical_analysis}
+			{#if currentResearch.practical_analysis}
 				<div class="bg-white border rounded-lg p-4">
 					<h4 class="text-md font-semibold text-gray-900 mb-3">Practical Analysis</h4>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-						{#if research.practical_analysis.key_considerations?.length}
+						{#if currentResearch.practical_analysis.key_considerations?.length}
 							<div>
 								<h5 class="font-medium text-gray-900 mb-2">Key Considerations</h5>
 								<ul class="text-sm text-gray-700 space-y-1">
-									{#each research.practical_analysis.key_considerations ?? [] as consideration}
+									{#each currentResearch.practical_analysis.key_considerations ?? [] as consideration}
 										<li class="flex items-start">
 											<span class="text-blue-500 mr-2">•</span>
 											{consideration}
@@ -457,11 +469,11 @@
 							</div>
 						{/if}
 
-						{#if research.practical_analysis.potential_arguments?.length}
+						{#if currentResearch.practical_analysis.potential_arguments?.length}
 							<div>
 								<h5 class="font-medium text-gray-900 mb-2">Potential Arguments</h5>
 								<ul class="text-sm text-gray-700 space-y-1">
-									{#each research.practical_analysis.potential_arguments ?? [] as argument}
+									{#each currentResearch.practical_analysis.potential_arguments ?? [] as argument}
 										<li class="flex items-start">
 											<span class="text-green-500 mr-2">•</span>
 											{argument}
@@ -471,11 +483,11 @@
 							</div>
 						{/if}
 
-						{#if research.practical_analysis.risk_factors?.length}
+						{#if currentResearch.practical_analysis.risk_factors?.length}
 							<div>
 								<h5 class="font-medium text-gray-900 mb-2">Risk Factors</h5>
 								<ul class="text-sm text-gray-700 space-y-1">
-									{#each research.practical_analysis.risk_factors ?? [] as risk}
+									{#each currentResearch.practical_analysis.risk_factors ?? [] as risk}
 										<li class="flex items-start">
 											<span class="text-red-500 mr-2">•</span>
 											{risk}
@@ -485,11 +497,11 @@
 							</div>
 						{/if}
 
-						{#if research.practical_analysis.strategic_recommendations?.length}
+						{#if currentResearch.practical_analysis.strategic_recommendations?.length}
 							<div>
 								<h5 class="font-medium text-gray-900 mb-2">Strategic Recommendations</h5>
 								<ul class="text-sm text-gray-700 space-y-1">
-									{#each research.practical_analysis.strategic_recommendations ?? [] as recommendation}
+									{#each currentResearch.practical_analysis.strategic_recommendations ?? [] as recommendation}
 										<li class="flex items-start">
 											<span class="text-purple-500 mr-2">•</span>
 											{recommendation}
@@ -503,15 +515,15 @@
 			{/if}
 
 			<!-- Research Gaps -->
-			{#if research.research_gaps}
+			{#if currentResearch.research_gaps}
 				<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
 					<h4 class="text-md font-semibold text-yellow-900 mb-3">Research Gaps & Recommendations</h4>
 					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-						{#if research.research_gaps.additional_research_needed?.length}
+						{#if currentResearch.research_gaps.additional_research_needed?.length}
 							<div>
 								<h5 class="font-medium text-yellow-900 mb-2">Additional Research Needed</h5>
 								<ul class="text-sm text-yellow-800 space-y-1">
-									{#each research.research_gaps.additional_research_needed ?? [] as item}
+									{#each currentResearch.research_gaps.additional_research_needed ?? [] as item}
 										<li class="flex items-start">
 											<span class="mr-2">📋</span>
 											{item}
@@ -521,11 +533,11 @@
 							</div>
 						{/if}
 
-						{#if research.research_gaps.key_search_terms?.length}
+						{#if currentResearch.research_gaps.key_search_terms?.length}
 							<div>
 								<h5 class="font-medium text-yellow-900 mb-2">Key Search Terms</h5>
 								<div class="flex flex-wrap gap-1">
-									{#each research.research_gaps.key_search_terms ?? [] as term}
+									{#each currentResearch.research_gaps.key_search_terms ?? [] as term}
 										<span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-200 text-yellow-800">
 											{term}
 										</span>
@@ -534,11 +546,11 @@
 							</div>
 						{/if}
 
-						{#if research.research_gaps.related_topics?.length}
+						{#if currentResearch.research_gaps.related_topics?.length}
 							<div>
 								<h5 class="font-medium text-yellow-900 mb-2">Related Topics</h5>
 								<ul class="text-sm text-yellow-800 space-y-1">
-									{#each research.research_gaps.related_topics ?? [] as topic}
+									{#each currentResearch.research_gaps.related_topics ?? [] as topic}
 										<li class="flex items-start">
 											<span class="mr-2">🔗</span>
 											{topic}
@@ -552,37 +564,37 @@
 			{/if}
 
 			<!-- Disclaimer -->
-			{#if research.metadata?.disclaimer}
+			{#if currentResearch.metadata?.disclaimer}
 				<div class="bg-red-50 border border-red-200 rounded-lg p-4">
 					<div class="flex">
 						<div class="flex-shrink-0">
 							<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-								<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+								<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" ></path>
 							</svg>
 						</div>
 						<div class="ml-3">
 							<h3 class="text-sm font-medium text-red-800">Legal Disclaimer</h3>
-							<div class="mt-2 text-sm text-red-700">{research.metadata.disclaimer}</div>
+							<div class="mt-2 text-sm text-red-700">{currentResearch.metadata.disclaimer}</div>
 						</div>
 					</div>
 				</div>
 			{/if}
 
 			<!-- Metadata -->
-			{#if research.metadata}
+			{#if currentResearch.metadata}
 				<div class="text-xs text-gray-500 bg-gray-50 rounded-lg p-3">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 						<div>
 							<strong>Research Time:</strong><br>
-							{new Date(research.metadata.research_timestamp).toLocaleString()}
+							{new Date(currentResearch.metadata.research_timestamp).toLocaleString()}
 						</div>
 						<div>
 							<strong>Model:</strong><br>
-							{research.metadata.model_used}
+							{currentResearch.metadata.model_used}
 						</div>
 						<div>
 							<strong>Confidence:</strong><br>
-							{research.metadata.confidence_level?.toUpperCase()}
+							{currentResearch.metadata.confidence_level?.toUpperCase()}
 						</div>
 						<div>
 							<strong>Status:</strong><br>

@@ -151,7 +151,7 @@
 					<div class="results-header">
 						<h2>Results ({results.length})</h2>
 					</div>
-					<SearchResults {results} on:select={(e) => handleSelectResult(e.detail)} />
+					<SearchResults {results} onselect={(e) => handleSelectResult(e.detail)} />
 				{:else if query && !loading}
 					<div class="no-results">
 						<p>No results found</p>

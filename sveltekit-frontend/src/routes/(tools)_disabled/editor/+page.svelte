@@ -4,11 +4,11 @@
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import type { Card, CardHeader, CardTitle, CardContent  } from '$lib/components/ui/card'; // Assuming enhanced-bits.svelte exports these as named exports from card
   import type { Badge  } from '$lib/components/ui/badge'; // Assuming badge.svelte exports as named export
-  import FileText from 'lucide-svelte/icons/file-text';
-import Save from 'lucide-svelte/icons/save';
-import Download from 'lucide-svelte/icons/download';
-import Share2 from 'lucide-svelte/icons/share2';
-import Settings from 'lucide-svelte/icons/settings';;
+  import { FileText } from "lucide-svelte";
+import { Save } from "lucide-svelte";
+import { Download } from "lucide-svelte";
+import { Share2 } from "lucide-svelte";
+import { Settings } from "lucide-svelte";;
   import NesCard from "$lib/components/ui/nes-ui.svelte"; // Assuming nes-ui.svelte exports as default, but using named import for consistency if possible, otherwise keep default.
 
   // Editor state

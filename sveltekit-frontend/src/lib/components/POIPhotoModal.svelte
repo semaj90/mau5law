@@ -1,29 +1,23 @@
 <script lang="ts">
-  import type { Badge  } from '$lib/components/ui/badge';
-  import type { Button  } from '$lib/components/ui/button';
-  import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
-  import type { Dialog, DialogContent  } from '$lib/components/ui/dialog';
-  import type { Tabs, TabsContent, TabsList, TabsTrigger  } from '$lib/components/ui/tabs';
-  import Camera from 'lucide-svelte/icons/camera';
-import ChevronLeft from 'lucide-svelte/icons/chevron-left';
-import ChevronRight from 'lucide-svelte/icons/chevron-right';
-import Download from 'lucide-svelte/icons/download';
-import Eye from 'lucide-svelte/icons/eye';
-import X from 'lucide-svelte/icons/x';
-import ZoomIn from 'lucide-svelte/icons/zoom-in';
-import ZoomOut from 'lucide-svelte/icons/zoom-out';;
+  import type { Badge } from '$lib/components/ui/badge';
+  import type { Button } from '$lib/components/ui/button';
+  import type { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import type { Dialog, DialogContent } from '$lib/components/ui/dialog';
+  import type { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
+  import { Camera, ChevronLeft, ChevronRight, Download, Eye, X, ZoomIn, ZoomOut } from "lucide-svelte";
   // Migrated from createEventDispatcher to callback props;
 
-  export let photos: any[] = [];
-  export let currentIndex: number = 0;
-  export let open: boolean = false;
+  let { photos = [], currentIndex = 0, open = false } = $props<{
+    photos?: any[];
+    currentIndex?: number;
+    open?: boolean;
+  }>();
 
   const dispatch = createEventDispatcher();
 
   let zoomLevel = 1;
   let imageRef: HTMLImageElement;
-
-  $: currentPhoto = photos[currentIndex];
+let currentPhoto = $state(photos[currentIndex]);
 
   function close() {
     open = false;

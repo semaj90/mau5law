@@ -239,7 +239,7 @@
       <div class="flex justify-start">
         <div class="bg-base-700 text-neutral-100 px-4 py-2 rounded-lg">
           <div class="flex gap-2 items-center">
-            <span class="loading loading-dots loading-sm" />
+            <span class="loading loading-dots loading-sm" ></span>
             <span class="text-sm">Agent is thinking...</span>
           </div>
         </div>
@@ -263,7 +263,7 @@
         disabled={loading || !input.trim()}
       >
         {#if loading}
-          <span class="loading loading-spinner loading-xs" />
+          <span class="loading loading-spinner loading-xs" ></span>
         {:else}
           Send
         {/if}

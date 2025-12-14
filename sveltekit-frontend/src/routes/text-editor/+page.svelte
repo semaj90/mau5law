@@ -4,7 +4,7 @@ import type { SvelteComponent } from 'svelte'; // Added import for SvelteCompone
 
 // Some lucide-svelte installations/types export icons differently.
 // Import the single working icon and use simple fallbacks for others.
-import FileText from 'lucide-svelte/icons/file-text';; // Changed to named import as per Svelte 5 UI kit guidelines
+import { FileText } from "lucide-svelte";; // Changed to named import as per Svelte 5 UI kit guidelines
 
 // Dynamically load the editor to avoid: "no default export" TS error for the static import
 let EditorComponent: typeof SvelteComponent | null = null; // Changed type from unknown to typeof SvelteComponent | null
@@ -31,14 +31,15 @@ let isModified: boolean = false;
 
 // initialize a documentStats: object and update reactively when editorValue changes
 let documentStats = { words: 0, characters: 0, charactersNoSpaces: 0, paragraphs: 0 };
+$effect(() => {
 
-$: {
 	const trimmed = editorValue.trim();
 	documentStats = {
 		words: trimmed ? trimmed.split(/\s+/).length : 0,
 		characters: editorValue.length,
 		charactersNoSpaces: editorValue.replace(/\s+/g, '').length, // Changed ; to ,
-		paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra }
+		paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra 
+});
 	};
 } // Added missing closing brace for reactive statement
 

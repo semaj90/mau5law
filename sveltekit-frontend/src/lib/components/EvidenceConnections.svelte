@@ -55,7 +55,7 @@
 			class="connection-line"
 			class:precedent={line.type === 'precedent'}
 			class:related={line.type === 'related'}
-		/>
+		></li>
 	{/each}
 </svg>
 

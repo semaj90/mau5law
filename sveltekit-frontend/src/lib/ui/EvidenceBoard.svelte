@@ -20,9 +20,11 @@
     label?: string;
   };
 
-  export let items: EvidenceItem[] = [];
-  export let connections: EvidenceConnection[] = [];
-  export let onSave: ((items: EvidenceItem[]) => void) | undefined = undefined;
+  let { items = [], connections = [], onSave } = $props<{
+    items?: EvidenceItem[];
+    connections?: EvidenceConnection[];
+    onSave?: ((items: EvidenceItem[]) => void) | undefined;
+  }>();
 
   // ---- Demo data (if not provided) ----
   if (items.length === 0) {
@@ -171,15 +173,15 @@
         variant={showConnections ? 'primary' : 'secondary'}
         onclick={() => showConnections = !showConnections}
       >
-        <span class="i-heroicons-link mr-1" />
+        <span class="i-heroicons-link mr-1" ></span>
         {showConnections ? 'Hide' : 'Show'} Lines
       </Button>
       <Button variant="secondary" onclick={resetBoard}>
-        <span class="i-heroicons-arrow-path mr-1" />
+        <span class="i-heroicons-arrow-path mr-1" ></span>
         Reset
       </Button>
       <Button variant="primary" onclick={addEvidence}>
-        <span class="i-heroicons-plus-20-solid mr-1" />
+        <span class="i-heroicons-plus-20-solid mr-1" ></span>
         Add
       </Button>
     </div>
@@ -213,7 +215,7 @@
             stroke="#111"
             stroke-width="2"
             stroke-linecap="round"
-          />
+          ></li>
 
           <!-- Pin circles at ends -->
           <circle cx={from.x} cy={from.y} r="4" fill="#d4c7a3" stroke="#111" stroke-width="2" />

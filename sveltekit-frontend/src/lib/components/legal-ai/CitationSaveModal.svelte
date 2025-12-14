@@ -1,5 +1,4 @@
-<script lang="ts">let { isOpen = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   interface SaveCitationData {
@@ -13,9 +12,11 @@
     case_id?: string;
   }
 
-  
-  export let caseId: string | null = null;
-  export let highlightedText: string | null = null;
+  let { isOpen = false, caseId = null, highlightedText = null } = $props<{
+    isOpen?: boolean;
+    caseId?: string | null;
+    highlightedText?: string | null;
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -112,13 +113,13 @@
 
 {#if isOpen}
   <div class="modal-overlay" onclick={closeModal}>
-    <div class="modal-content" on:click|stopPropagation>
+    <div class="modal-content" onclick>
       <div class="modal-header">
         <h2>Save Citation</h2>
         <button class="close-btn" onclick={closeModal}>✕</button>
       </div>
 
-      <form on:submit|preventDefault={handleSubmit} class="citation-form">
+      <form onsubmit={handleSubmit} class="citation-form">
         {#if error}
           <div class="error-message">
             <p>{error}</p>

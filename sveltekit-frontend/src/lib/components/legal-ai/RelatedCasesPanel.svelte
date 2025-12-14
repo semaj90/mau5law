@@ -1,5 +1,4 @@
-<script lang="ts">let { isLoading = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface RelatedCase {
@@ -11,8 +10,11 @@
     relevanceScore?: number;
   }
 
-  export let statuteCode: string | null = null;
-  
+  let { statuteCode = null, isLoading = false } = $props<{
+    statuteCode?: string | null;
+    isLoading?: boolean;
+  }>();
+
 
   const dispatch = createEventDispatcher();
 

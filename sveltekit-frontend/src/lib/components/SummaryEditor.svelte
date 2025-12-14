@@ -1,20 +1,22 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let summary: {
-    id: string;
-    caseId: string;
-    text: string;
-    holding: string;
-    citations: Array<{
-      code: string;
-      title: string;
-      jurisdiction: string;
-    }>;
-    version: number;
-    createdAt: string;
-    updatedAt: string;
-  };
+  let { summary } = $props<{
+    summary: {
+      id: string;
+      caseId: string;
+      text: string;
+      holding: string;
+      citations: Array<{
+        code: string;
+        title: string;
+        jurisdiction: string;
+      }>;
+      version: number;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }>();
 
   const dispatch = createEventDispatcher();
 

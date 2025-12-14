@@ -1,6 +1,4 @@
-<script lang="ts">let { isOpen = false } = $props();
-
-
+<script lang="ts">
 	interface BundledCharge {
 		citation: string;
 		title: string;
@@ -16,20 +14,24 @@
 		relevance: number;
 	}
 
-	
-	export let statute: any = null;
-	export let onClose: () => void = () => {};
-	export let onAttachToCase: (statute: any) => void = () => {};
+	let { isOpen = false, statute = null, onClose = () => {}, onAttachToCase = (statute: any) => {} } = $props<{
+		isOpen?: boolean;
+		statute?: any;
+		onClose?: () => void;
+		onAttachToCase?: (statute: any) => void;
+	}>();
 
 	let bundledCharges: BundledCharge[] = [];
 	let precedents: Precedent[] = [];
 	let relatedStatutes: string[] = [];
 
-	$: if (statute) {
-		bundledCharges = statute.bundledCharges || [];
-		precedents = statute.precedents || [];
-		relatedStatutes = statute.relatedStatutes || [];
-	}
+	$effect(() => {
+		if (statute) {
+			bundledCharges = statute.bundledCharges || [];
+			precedents = statute.precedents || [];
+			relatedStatutes = statute.relatedStatutes || [];
+		}
+	});
 
 	function getSeverityColor(severity: string): string {
 		const colors: Record<string, string> = {

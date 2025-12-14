@@ -175,9 +175,9 @@ https://svelte.dev/e/js_parse_error -->
   const stateColor = (s: string) =>
     s === 'completed' ? 'text-green-600' : s === 'error' ? 'text-red-600' : 'text-blue-600';
   // Cleanup if you have services to stop on destroy
-  $: {
+  $effect(() => {
     // no-op; add cleanup logic if you attach background services
-  }
+  });
 </script>
 <div class="evidence-upload-container p-6 border rounded-lg bg-white shadow-sm">
   <h2 class="text-2xl font-semibold mb-6 text-gray-900">Evidence Upload & Processing</h2>

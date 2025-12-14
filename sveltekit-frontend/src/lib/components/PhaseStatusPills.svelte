@@ -21,7 +21,7 @@
         class="w-2 h-2 rounded-full"
         class:bg-[#7bd77b]={group.status === 'wired'}
         class:bg-[#f9b233]={group.status === 'todo'}
-      />
+      ></span>
       <span>{group.label}</span>
       <span class="opacity-70">{group.status === 'wired' ? 'wired' : 'todo'}</span>
     </span>

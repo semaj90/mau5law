@@ -3,11 +3,11 @@
   import type { Badge  } from '$lib/components/ui/badge';
   import type { Button  } from '$lib/components/ui/button';
   import type { Card, CardContent, CardHeader, CardTitle  } from '$lib/components/ui/card';
-  import Camera from 'lucide-svelte/icons/camera';
-import Edit from 'lucide-svelte/icons/edit';
-import Eye from 'lucide-svelte/icons/eye';
-import Trash2 from 'lucide-svelte/icons/trash2';
-import User from 'lucide-svelte/icons/user';;
+  import { Camera } from "lucide-svelte";
+import { Edit } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { Trash2 } from "lucide-svelte";
+import { User } from "lucide-svelte";;
 
   let {
     poi,

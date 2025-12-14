@@ -1,14 +1,14 @@
 <!-- YoRHa, Interface, Layout -->
 <script lang="ts">
   import { afterNavigate, goto } from '$app/navigation';
-  import Bot from 'lucide-svelte/icons/bot';
-  import ChevronLeft from 'lucide-svelte/icons/chevron-left';
-  import ChevronRight from 'lucide-svelte/icons/chevron-right';
-  import Cpu from 'lucide-svelte/icons/cpu';
-  import Database from 'lucide-svelte/icons/database';
-  import Monitor from 'lucide-svelte/icons/monitor';
-  import Search from 'lucide-svelte/icons/search';
-  import Terminal from 'lucide-svelte/icons/terminal';
+  import { Bot } from "lucide-svelte";
+  import { ChevronLeft } from "lucide-svelte";
+  import { ChevronRight } from "lucide-svelte";
+  import { Cpu } from "lucide-svelte";
+  import { Database } from "lucide-svelte";
+  import { Monitor } from "lucide-svelte";
+  import { Search } from "lucide-svelte";
+  import { Terminal } from "lucide-svelte";
   import type { SvelteComponent } from 'svelte';
   import { onMount } from 'svelte';
   import '../../app.css';
@@ -265,7 +265,7 @@
               >
                 {#if item.icon}
                   <!-- render icon with svelte:component for dynamic components -->
-                  <svelte:component this={item.icon} size={16} />
+                  <item.icon size={16} ></icon>
                 {/if}
                 <div class="yorha-nav-content">
                   <span class="yorha-nav-label">{item.label}</span>

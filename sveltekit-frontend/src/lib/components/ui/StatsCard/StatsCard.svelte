@@ -1,7 +1,9 @@
 <script lang="ts">
-  export let title: string = '';
-  export let value: string | number | undefined;
-  export let subtitle: string | undefined;
+  let { title = '', value = undefined, subtitle = undefined } = $props<{
+    title?: string;
+    value?: string | number;
+    subtitle?: string;
+  }>();
 </script>
 
 <article class="stats-card" role="group" aria-label={title}>

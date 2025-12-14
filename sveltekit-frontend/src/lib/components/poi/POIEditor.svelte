@@ -4,9 +4,9 @@
   import Input from '$lib/components/ui/input/Input.svelte';
   import Label from '$lib/components/ui/label/Label.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-  import Save from 'lucide-svelte/icons/save';
-  import X from 'lucide-svelte/icons/x';
+  import { AlertTriangle } from "lucide-svelte";
+  import { Save } from "lucide-svelte";
+  import { X } from "lucide-svelte";
 // Migrated from createEventDispatcher to callback props;
   import POIPhotoGrid from './POIPhotoGrid.svelte';
 

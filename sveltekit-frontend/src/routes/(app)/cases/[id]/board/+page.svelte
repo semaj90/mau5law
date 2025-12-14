@@ -147,7 +147,7 @@
         {zoomLevel}
         {panX}
         {panY}
-        on:updatePosition={(e) => {
+        onupdatePosition={(e) => {
           const idx = evidence.findIndex((ev) => ev.id === e.detail.id);
           if (idx >= 0) {
             evidence[idx].boardPosition = e.detail.position;

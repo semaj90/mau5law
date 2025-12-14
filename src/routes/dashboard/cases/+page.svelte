@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { createWorkflowStore } from '$lib/client/workflow-event-stream';
 	import { browser } from '$app/environment';
-	import { onMount, onDestroy } from 'svelte';
+	import { createWorkflowStore } from '$lib/client/workflow-event-stream';
 
 	// Minimal local types to satisfy TypeScript / IDE without the generated $types
 	type CaseItem = {
@@ -37,22 +36,23 @@
 	const workflowStore = createWorkflowStore(sessionId);
 
 	// Connect/disconnect workflow store using standard lifecycle hooks
-	onMount(() => {
+	$effect(() => {
 		if (browser) {
 			workflowStore.connect();
 		}
-	});
-	onDestroy(() => {
-		if (browser) {
-			workflowStore.disconnect();
-		}
+
+		return () => {
+			if (browser) {
+				workflowStore.disconnect();
+			}
+		};
 	});
 
 	// Reactive filtered array computed from local variables
-	$: filteredCases = cases.filter(c =>
+	let filteredCases = $derived(cases.filter(c =>
 		(c.title || '').toLowerCase().includes((searchQuery || '').toLowerCase()) ||
 		(c.case_number || '').toLowerCase().includes((searchQuery || '').toLowerCase())
-	);
+	));
 
 	// Handle new case creation
 	async function createNewCase() {

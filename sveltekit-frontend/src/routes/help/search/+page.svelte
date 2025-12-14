@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Search from 'lucide-svelte/icons/search';
-  import AlertCircle from 'lucide-svelte/icons/alert-circle';
+  import { Search } from "lucide-svelte";
+  import { AlertCircle } from "lucide-svelte";
 
   let query = '';
   let results: Array<{

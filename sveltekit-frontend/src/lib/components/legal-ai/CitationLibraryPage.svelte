@@ -159,7 +159,7 @@
         </button>
         <CollectionDetail
           collection={selectedCollection}
-          on:deleted={handleCollectionDeleted}
+          ondeleted={handleCollectionDeleted}
         />
       </div>
     {:else}
@@ -176,8 +176,8 @@
         {:else}
           <CitationCollections
             {collections}
-            on:select={(e) => selectCollection(e.detail)}
-            on:deleted={handleCollectionDeleted}
+            onselect={(e) => selectCollection(e.detail)}
+            ondeleted={handleCollectionDeleted}
           />
         {/if}
       </div>

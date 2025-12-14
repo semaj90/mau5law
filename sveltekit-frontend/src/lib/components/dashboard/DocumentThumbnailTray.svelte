@@ -55,7 +55,7 @@
 
 {#if showErrorModal && selectedPageError}
   <div class="error-modal-overlay" onclick={closeErrorModal}>
-    <div class="error-modal" on:click|stopPropagation>
+    <div class="error-modal" onclick>
       <div class="error-modal-header">
         <h3 class="error-modal-title">Page {selectedPageError.pageNumber} Error</h3>
         <button class="error-modal-close" onclick={closeErrorModal}>✕</button>

@@ -347,8 +347,8 @@
 
   // Compute displayed services reactively (works with template bindings)
   let displayServicesArray: ServiceHealth[] = [];
+$effect(() => {
 
-  $: {
     const hd = get(healthData);
     if (!hd) {
       displayServicesArray = [];
@@ -357,7 +357,8 @@
       if (selectedTier !== 'all') {
         const tierNum = Number(selectedTier);
         services = services.filter((s: ServiceHealth) => (s.details as any)?.tier === tierNum);
-      }
+
+});
       if (showOnlyIssues) {
         services = services.filter((s: ServiceHealth) => s.status !== 'online');
       }
@@ -365,18 +366,18 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     void fetchHealth();
     if (autoRefresh) {
       refreshInterval = setInterval(fetchHealth, refreshRate);
     }
-  });
 
-  onDestroy(() => {
-    if (refreshInterval) {
-      clearInterval(refreshInterval);
-      refreshInterval = null;
-    }
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+        refreshInterval = null;
+      }
+    };
   });
 </script>
 

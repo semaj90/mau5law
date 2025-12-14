@@ -1,6 +1,4 @@
-<script lang="ts">let { isOpen = false } = $props();
-
-
+<script lang="ts">
 	interface BundledCharge {
 		statuteCode: string;
 		title: string;
@@ -9,11 +7,13 @@
 		frequency: number;
 	}
 
-	
-	export let statute: any = null;
-	export let caseId: string = '';
-	export let onClose: () => void = () => {};
-	export let onAttach: (charge: any) => void = () => {};
+	let { isOpen = false, statute = null, caseId = '', onClose = () => {}, onAttach = (charge: any) => {} } = $props<{
+		isOpen?: boolean;
+		statute?: any;
+		caseId?: string;
+		onClose?: () => void;
+		onAttach?: (charge: any) => void;
+	}>();
 
 	let isAttaching = false;
 	let attachError = '';

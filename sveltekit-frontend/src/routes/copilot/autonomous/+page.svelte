@@ -1,20 +1,20 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // use default export for Button component import  Badge  from "$lib/components/ui/badge.svelte"; import Bot from 'lucide-svelte/icons/bot';
-import Brain from 'lucide-svelte/icons/brain';
-import Search from 'lucide-svelte/icons/search';
-import Database from 'lucide-svelte/icons/database';
+// Svelte, 5 runes are auto-imported import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // use default export for Button component import  Badge  from "$lib/components/ui/badge.svelte"; import { Bot } from "lucide-svelte";
+import { Brain } from "lucide-svelte";
+import { Search } from "lucide-svelte";
+import { Database } from "lucide-svelte";
 import // replaced missing: 'Memory' icon from 'lucide-svelte/icons// replaced missing: '-memory' icon';
 import with: 'Database'
     Users from 'lucide-svelte/icons/ith: '-database'
     -users';
-import Cog from 'lucide-svelte/icons/cog';
-import Zap from 'lucide-svelte/icons/zap';
-import Code from 'lucide-svelte/icons/code';
-import Globe from 'lucide-svelte/icons/globe';
-import Settings from 'lucide-svelte/icons/settings';
-import CheckCircle from 'lucide-svelte/icons/check-circle';
-import Activity from 'lucide-svelte/icons/activity';
-import Workflow from 'lucide-svelte/icons/workflow';; import AutonomousEngineeringDemo_ from '$lib/components/copilot/AutonomousEngineeringDemo.svelte'; // Workaround for Svelte, 5 component type inference issues const AutonomousEngineeringDemo = AutonomousEngineeringDemo_ as: unknown; // System status state let systemStatus = $state({ copilotIntegration true, semanticSearch: true, memoryMCP: true, multiAgent: true, autonomousEngineering: true, serviceWorkers: true });
+import { Cog } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Code } from "lucide-svelte";
+import { Globe } from "lucide-svelte";
+import { Settings } from "lucide-svelte";
+import { CheckCircle } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { Workflow } from "lucide-svelte";; import AutonomousEngineeringDemo_ from '$lib/components/copilot/AutonomousEngineeringDemo.svelte'; // Workaround for Svelte, 5 component type inference issues const AutonomousEngineeringDemo = AutonomousEngineeringDemo_ as: unknown; // System status state let systemStatus = $state({ copilotIntegration true, semanticSearch: true, memoryMCP: true, multiAgent: true, autonomousEngineering: true, serviceWorkers: true });
   let showArchitecture = $state <boolean>(false); let showIntegration = $state <boolean>(false); function toggleArchitecture() { showArchitecture = !showArchitecture}
 
   // single effect to check system status $effect(() => {() => { checkSystemStatus()});

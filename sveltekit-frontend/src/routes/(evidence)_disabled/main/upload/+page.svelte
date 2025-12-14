@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { superForm  } from 'sveltekit-superforms/client';
+  import type { superForm } from 'sveltekit-superforms/client';
   // evidenceUploadSchema only exports validateFileSize and getFileTypeFromMime
-  import type { validateFileSize, getFileTypeFromMime  } from '$lib/schemas/evidence-upload.js';
+  import type { getFileTypeFromMime, validateFileSize } from '$lib/schemas/evidence-upload.js';
 
   import type { PageData } from './$types.js';
   const { data }: { data: PageData } = $props();
@@ -195,15 +195,14 @@
 
   <!-- Minimal dropzone / input that wires the handlers and prevents "declared but never used" warnings -->
   <div
-    class="dropzone"
-    style="border:2px dashed #ccc; padding:1rem; border-radius:8px; margin-bottom:1rem;"
+    class="dropzone border-2 border-dashed border-gray-300 p-4 rounded-lg mb-4"
   >
-    <p style="margin:0 0 0.5rem 0;">Drop a file here or choose a file</p>
-    <label style="cursor:pointer; color:var(--accent, #0366d6);">
-      <input type="file" style="display:none" onchange={onFileChange} />
+    <p class="mb-2">Drop a file here or choose a file</p>
+    <label class="cursor-pointer text-accent">
+      <input type="file" class="hidden" onchange={onFileChange} />
       Choose file…
     </label>
-    <div style="margin-top:.5rem;">
+    <div class="mt-2">
       <label
         >Evidence type:
         <select bind:value={$form .evidence_type} onchange={onEvidenceTypeChange}>
@@ -218,17 +217,17 @@
   </div>
 
   {#if filePreview}
-    <div style="margin-bottom:1rem;">
+    <div class="mb-4">
       <img
         src={filePreview}
         alt="preview"
-        style="max-width:100%; height:auto; border-radius:4px;"
+        class="max-w-full h-auto rounded"
       />
     </div>
   {/if}
 
   {#if selectedFile}
-    <div style="margin-bottom:1rem;">
+    <div class="mb-4">
       <strong>{selectedFile.name}</strong> — {formatFileSize(selectedFile.size)}
     </div>
   {/if}
@@ -236,7 +235,7 @@
   <div>
     <h3>Metadata preview</h3>
     <pre
-      style="background:#f7f7f7;padding:0.5rem;border-radius:4px;max-height:240px;overflow:auto;">{JSON.stringify(
+      class="bg-gray-100 p-2 rounded max-h-60 overflow-auto">{JSON.stringify(
         metadata,
         null,
         2

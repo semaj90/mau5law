@@ -1,11 +1,11 @@
 <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import MonacoEditor from "$lib/components/MonacoEditor.svelte"; import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte"; import Button from '$lib/components/ui/enhanced-bits.svelte'; import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte"; import type { evidenceStore  } from '$lib/stores/unified'; import type { lokiEvidenceService  } from '$lib/utils/loki-evidence'; import Activity from 'lucide-svelte/icons/activity';
-import BarChart3 from 'lucide-svelte/icons/bar-chart3';
-import Clock from 'lucide-svelte/icons/clock';
-import Database from 'lucide-svelte/icons/database';
-import RefreshCw from 'lucide-svelte/icons/refresh-cw';
-import Wifi from 'lucide-svelte/icons/wifi';
-import WifiOff from 'lucide-svelte/icons/wifi-off';; import { onMount } from 'svelte';; // Demo state let selectedCaseId: string | undefined = undefined; let searchQuery = $state <string>(""); let selectedTypes: string[] = $state([]); let showAdvancedFilters = $state <boolean>(false); let demoMode = $state <boolean>(false); // Store values - Access individual store properties correctly const { isConnected, evidence, isLoading, error } = evidenceStor; // Analytics data let stats = $state({ total: 0, byType: , byCase: , recentCount: 0 });
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import MonacoEditor from "$lib/components/MonacoEditor.svelte"; import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte"; import Button from '$lib/components/ui/enhanced-bits.svelte'; import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte"; import type { evidenceStore  } from '$lib/stores/unified'; import type { lokiEvidenceService  } from '$lib/utils/loki-evidence'; import { Activity } from "lucide-svelte";
+import { BarChart3 } from "lucide-svelte";
+import { Clock } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { RefreshCw } from "lucide-svelte";
+import { Wifi } from "lucide-svelte";
+import { WifiOff } from "lucide-svelte";; import { onMount } from 'svelte';; // Demo state let selectedCaseId: string | undefined = undefined; let searchQuery = $state <string>(""); let selectedTypes: string[] = $state([]); let showAdvancedFilters = $state <boolean>(false); let demoMode = $state <boolean>(false); // Store values - Access individual store properties correctly const { isConnected, evidence, isLoading, error } = evidenceStor; // Analytics data let stats = $state({ total: 0, byType: , byCase: , recentCount: 0 });
   let syncStatus: { pending: number, failed: number, total: number, inProgress: boolean} = $state({ pending: 0, failed: 0, total: 0, inProgress: false }); $effect(() => {() => { // Update stats when evidence changes const unsubscribe = evidenceStore.evidence.subscribe(() => { updateStats()}); // Monitor sync status const syncInterval = setInterval(updateSyncStatus, 2000); return () => { unsubscribe(); clearInterval(syncInterval)}'"
   }); function updateStats() { if (lokiEvidenceService.isReady()) { stats = lokiEvidenceService.getEvidenceStats()}}
   function updateSyncStatus() { if (lokiEvidenceService.isReady()) { const status = lokiEvidenceService.getSyncStatus(); syncStatus = { pending: status.pending, failed: status.failed, total: status.total, inProgress: status.inProgress ?? false }

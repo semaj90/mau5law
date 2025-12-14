@@ -14,8 +14,7 @@
     { label: 'Terminal', href: '/terminal', key: 'terminal' },
     { label: 'System Config', href: '/settings', key: 'settings' },
   ];
-
-  $: currentPath = $page.url.pathname;
+let currentPath = $state($page.url.pathname);
 </script>
 
 <aside class="w-64 h-screen border-r border-black/40 bg-sandDark flex flex-col">

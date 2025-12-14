@@ -160,10 +160,10 @@
   <div class="controls-bar">
     <SearchBar
       placeholder="Search persons by name, aliases, or description..."
-      on:search={handleSearch}
+      onsearch={handleSearch}
     />
 
-    <FilterPanel {filters} on:filter={handleFilter} />
+    <FilterPanel {filters} onfilter={handleFilter} />
   </div>
 
   <!-- Loading State -->
@@ -221,8 +221,8 @@
     <div class="modal-overlay" role="dialog" aria-modal="true" onclick={handleFormCancel}>
       <div class="modal-content" onclick={(e) => e.stopPropagation()}>
         <PersonForm
-          on:created={handlePersonCreated}
-          on:cancel={handleFormCancel}
+          oncreated={handlePersonCreated}
+          oncancel={handleFormCancel}
         />
       </div>
     </div>

@@ -171,7 +171,7 @@
   });
 
   // call init/cleanup from Svelte lifecycle to avoid: "declared but never read"
-  onMount(() => {
+  $effect(() => {
     initD3();
 
     // dynamic import of data viz component (safe, non-blocking)
@@ -190,10 +190,6 @@
       // also ensure cleanup if Svelte calls the returned cleanup
       cleanupD3();
     };
-  });
-
-  onDestroy(() => {
-    cleanupD3();
   });
 
   // react to graphData updates and re-render D3 when data changes

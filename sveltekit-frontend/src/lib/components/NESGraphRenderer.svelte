@@ -1,6 +1,6 @@
 <script lang="ts">
+	import * as Tooltip from 'bits-ui/components/tooltip';
 	import { onMount } from 'svelte';
-	import { Tooltip } from 'bits-ui';
 
 	type GraphNode = {
 		id: string;

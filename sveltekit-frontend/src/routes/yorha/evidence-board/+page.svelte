@@ -636,7 +636,7 @@
 					class="board-evidence-item nes-container is-rounded {selectedItem?.id === item.id ? 'selected' : ''} {item.pinned ? 'pinned' : ''}"
 					style="left: {item.x}px; top: {item.y}px;"
 					onclick={() => selectItem(item)}
-					on:contextmenu={(event) => handleContextMenu(event, item)}
+					oncontextmenu={(event) => handleContextMenu(event, item)}
 					ontouchstart={(event) => handleTouchStart(event, item)}
 					ontouchend={handleTouchEnd}
 					ontouchcancel={handleTouchEnd}

@@ -10,7 +10,7 @@
 	import RouteInspectorDetectiveBoard from '$lib/components/RouteInspectorDetectiveBoard.svelte';
 	import { routeErrorAssistantMachine } from '$lib/phase78/routeErrorAssistantMachine';
 	import { computeRouteCluster, getAllKnownClusters } from '$lib/shared/phase80-route-metadata';
-	import { Dialog } from 'bits-ui';
+	import * as Dialog from 'bits-ui/components/dialog';
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
 	import type { PageData } from './$types';
@@ -566,7 +566,7 @@
 					<span class="err-count">8,200</span>
 				</li>
 				<li>
-					<span class="err-code">on:click syntax</span>
+					<span class="err-code">onclick syntax</span>
 					<span class="err-count">5,100</span>
 				</li>
 				<li>

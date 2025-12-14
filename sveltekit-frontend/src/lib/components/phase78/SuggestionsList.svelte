@@ -1,14 +1,15 @@
-<script lang="ts">
-  import type { ErrorSuggestion } from '$lib/server/db/schema/index.js';
+<script>
+import type { ErrorSuggestion } from '$lib/server/db/schema/index.js';
 
-  export let suggestions: ErrorSuggestion[] = [];
-  export let isLoading = false;
+  let { suggestions = [], isLoading = false } = $props<{
+    suggestions?: ErrorSuggestion[];
+    isLoading?: boolean;
+  }>();
 
   let filterRisk: string | null = null;
   let filterApplied: string | null = null;
   let selectedId: string | null = null;
-
-  $: filtered = suggestions
+let filtered = $state(suggestions);
     .filter(s => !filterRisk || s.riskLevel === filterRisk)
     .filter(s => filterApplied === null || (filterApplied === 'true' ? s.applied : !s.applied));
 
@@ -140,13 +141,13 @@
               <div class="flex gap-2 pt-2">
                 {#if !suggestion.applied}
                   <button
-                    on:click|stopPropagation={() => applySuggestion(suggestion.id)}
+                    onclick={() => applySuggestion(suggestion.id)}
                     class="px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition"
                   >
                     Apply Fix
                   </button>
                   <button
-                    on:click|stopPropagation={() => dismissSuggestion(suggestion.id)}
+                    onclick={() => dismissSuggestion(suggestion.id)}
                     class="px-3 py-1.5 bg-gray-300 text-gray-700 text-xs font-semibold rounded hover:bg-gray-400 transition"
                   >
                     Dismiss

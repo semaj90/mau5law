@@ -1,7 +1,9 @@
 <script lang="ts">
-  export let error: string | null = null;
-  export let onDismiss: (() => void) | null = null;
-  export let onRetry: (() => void) | null = null;
+  let { error = null, onDismiss = null, onRetry = null } = $props<{
+    error?: string | null;
+    onDismiss?: (() => void) | null;
+    onRetry?: (() => void) | null;
+  }>();
 
   function dismiss() {
     error = null;

@@ -1,17 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   // lucide-svelte exports named components — import them as named exports
-  import Activity from 'lucide-svelte/icons/activity';
-import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import CheckCircle from 'lucide-svelte/icons/check-circle';
-import Clock from 'lucide-svelte/icons/clock';
-import Cpu from 'lucide-svelte/icons/cpu';
-import Database from 'lucide-svelte/icons/database';
-import Play from 'lucide-svelte/icons/play';
-import RefreshCw from 'lucide-svelte/icons/refresh-cw';
-import Search from 'lucide-svelte/icons/search';
-import Server from 'lucide-svelte/icons/server';
-import TestTube from 'lucide-svelte/icons/test-tube';;
+  import { Activity, AlertTriangle, CheckCircle, Clock, Cpu, Database, Play, RefreshCw, Search, Server, TestTube } from "lucide-svelte";
 
   type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -336,7 +326,7 @@ import TestTube from 'lucide-svelte/icons/test-tube';;
             class="flex flex-col justify-between gap-3 rounded-lg border border-gray-800 bg-black/60 p-4"
           >
             <div class="flex items-center gap-3">
-              <svelte:component this={endpoint.icon} class="h-6 w-6" />
+              <endpoint.icon class="h-6 w-6" />
               <div>
                 <h3 class="font-semibold">{endpoint.name}</h3>
                 <p class="text-sm">{endpoint.description}</p>

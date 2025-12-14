@@ -422,8 +422,8 @@
           stroke-linejoin="round"
           class="h-4 w-4"
         >
-          <path d="M18 6L6 18" />
-          <path d="M6 6L18 18" />
+          <path d="M18 6L6 18" ></path>
+          <path d="M6 6L18 18" ></path>
         </svg>
         <span class="sr-only">Close</span>
       </Close>

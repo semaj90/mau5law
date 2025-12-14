@@ -1,5 +1,4 @@
-<script lang="ts">let { showActions = true } = $props();
-
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   interface Citation {
@@ -16,8 +15,11 @@
     updated_at: string;
   }
 
-  export let citation: Citation;
-  
+  let { citation, showActions = true } = $props<{
+    citation: Citation;
+    showActions?: boolean;
+  }>();
+
 
   const dispatch = createEventDispatcher();
 

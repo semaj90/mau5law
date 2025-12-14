@@ -1,7 +1,7 @@
-<script lang="ts">
-  import Button from './Button.svelte';
+<script>
+let { title = 'YORHA COMMAND CENTER' } = $props();
 
-  export let title = 'YORHA COMMAND CENTER';
+import Button from './Button.svelte';
 </script>
 
 <header class="h-14 border-b border-black/40 bg-sand flex items-center px-4 gap-4">
@@ -15,7 +15,7 @@
         placeholder="Search cases, evidence, persons..."
         type="search"
       />
-      <span class="i-heroicons-magnifying-glass-20-solid absolute right-2 top-1.5 text-black/70" />
+      <span class="i-heroicons-magnifying-glass-20-solid absolute right-2 top-1.5 text-black/70" ></span>
     </div>
 
     <Button variant="secondary">Login</Button>

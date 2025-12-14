@@ -145,7 +145,7 @@
                 clusterHealth.thresholds.cpu_warning,
                 clusterHealth.thresholds.cpu_critical
               ) === 'critical'}
-            />
+            ></div>
           </div>
           <div class="metric-cores">
             {clusterHealth.metrics.cpu_cores || 0} cores
@@ -172,7 +172,7 @@
                 clusterHealth.thresholds.memory_warning,
                 clusterHealth.thresholds.memory_critical
               ) === 'critical'}
-            />
+            ></div>
           </div>
           <div class="metric-details">
             {clusterHealth.metrics.memory_used_gb || 0} GB / {clusterHealth.metrics.memory_total_gb || 0} GB
@@ -199,7 +199,7 @@
                 clusterHealth.thresholds.gpu_warning,
                 clusterHealth.thresholds.gpu_critical
               ) === 'critical'}
-            />
+            ></div>
           </div>
           <div class="metric-temp">
             {clusterHealth.metrics.gpu_temperature || 0}°C

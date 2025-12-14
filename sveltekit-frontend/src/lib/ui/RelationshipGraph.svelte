@@ -18,8 +18,10 @@
     strength: 'strong' | 'medium' | 'weak';
   };
 
-  export let nodes: GraphNode[] = [];
-  export let edges: GraphEdge[] = [];
+  let { nodes = [], edges = [] } = $props<{
+    nodes?: GraphNode[];
+    edges?: GraphEdge[];
+  }>();
 
   // Demo data
   if (nodes.length === 0) {
@@ -108,11 +110,11 @@
     <div class="heading-sub">Relationship Graph</div>
     <div class="flex gap-2">
       <Button variant="secondary">
-        <span class="i-heroicons-arrow-path mr-1" />
+        <span class="i-heroicons-arrow-path mr-1" ></span>
         Auto Layout
       </Button>
       <Button variant="primary">
-        <span class="i-heroicons-plus-20-solid mr-1" />
+        <span class="i-heroicons-plus-20-solid mr-1" ></span>
         Add Node
       </Button>
     </div>
@@ -145,7 +147,7 @@
           stroke-width={style.width}
           stroke-dasharray={style.dash}
           stroke-linecap="round"
-        />
+        ></li>
 
         {#if edge.label}
           <rect
@@ -194,7 +196,7 @@
                         {node.type === 'person' ? 'i-heroicons-user' :
                           node.type === 'evidence' ? 'i-heroicons-document-text' :
                           node.type === 'location' ? 'i-heroicons-map-pin' :
-                          'i-heroicons-folder-open'}" />
+                          'i-heroicons-folder-open'}" ></span>
 
             <!-- ID -->
             <div class="text-[8px] font-mono text-white uppercase tracking-wider">
@@ -220,34 +222,34 @@
     <div class="text-[10px] font-mono uppercase tracking-wider text-black/60 mb-2">Legend</div>
     <div class="grid grid-cols-4 gap-2 text-xs">
       <div class="flex items-center gap-2">
-        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #ef4444;" />
+        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #ef4444;" ></div>
         <span class="text-[10px] font-mono">Person</span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #38bdf8;" />
+        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #38bdf8;" ></div>
         <span class="text-[10px] font-mono">Evidence</span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #facc15;" />
+        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #facc15;" ></div>
         <span class="text-[10px] font-mono">Location</span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #4ade80;" />
+        <div class="w-4 h-4 rounded-full border border-black" style="background-color: #4ade80;" ></div>
         <span class="text-[10px] font-mono">Case</span>
       </div>
     </div>
 
     <div class="mt-2 flex gap-4 text-[10px] font-mono text-black/70">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-0.5 bg-black" />
+        <div class="w-8 h-0.5 bg-black" ></div>
         <span>Strong</span>
       </div>
       <div class="flex items-center gap-2">
-        <svg width="32" height="2"><line x1="0" y1="1" x2="32" y2="1" stroke="#000" stroke-width="2" stroke-dasharray="4 2" /></svg>
+        <svg width="32" height="2"><line x1="0" y1="1" x2="32" y2="1" stroke="#000" stroke-width="2" stroke-dasharray="4 2" ></li></svg>
         <span>Medium</span>
       </div>
       <div class="flex items-center gap-2">
-        <svg width="32" height="2"><line x1="0" y1="1" x2="32" y2="1" stroke="#000" stroke-width="1" stroke-dasharray="2 2" /></svg>
+        <svg width="32" height="2"><line x1="0" y1="1" x2="32" y2="1" stroke="#000" stroke-width="1" stroke-dasharray="2 2" ></li></svg>
         <span>Weak</span>
       </div>
     </div>

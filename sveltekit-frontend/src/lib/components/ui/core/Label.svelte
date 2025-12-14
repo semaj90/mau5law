@@ -1,7 +1,9 @@
 <script lang="ts">
-  export let forId: string | undefined = undefined;
-  export let className: string = '';
-  export let text: string = '';
+  let { forId = undefined, className = '', text = '' } = $props<{
+    forId?: string;
+    className?: string;
+    text?: string;
+  }>();
 </script>
 
 <label {...forId ? { for: forId } : {}} class={className}>

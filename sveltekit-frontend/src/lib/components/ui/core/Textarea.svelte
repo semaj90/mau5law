@@ -2,11 +2,13 @@
   // Migrated from createEventDispatcher to callback props;
   const dispatch = createEventDispatcher();
 
-  export let value: string = '';
-  export let placeholder: string = '';
-  export let rows: number = 4;
-  export let className: string = '';
-  export let id: string | undefined = undefined;
+  let { value = '', placeholder = '', rows = 4, className = '', id = undefined } = $props<{
+    value?: string;
+    placeholder?: string;
+    rows?: number;
+    className?: string;
+    id?: string;
+  }>();
 
   function onInput(e: Event) {
     const target = e.target as HTMLTextAreaElement;

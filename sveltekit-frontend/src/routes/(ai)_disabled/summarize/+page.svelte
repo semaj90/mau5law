@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FileText from 'lucide-svelte/icons/file-text';
-import Download from 'lucide-svelte/icons/download';
-import Brain from 'lucide-svelte/icons/brain';
-import Clock from 'lucide-svelte/icons/clock';
-import Star from 'lucide-svelte/icons/star';;
+  import { FileText } from "lucide-svelte";
+import { Download } from "lucide-svelte";
+import { Brain } from "lucide-svelte";
+import { Clock } from "lucide-svelte";
+import { Star } from "lucide-svelte";;
 
   // Fallback summary template
   const FALLBACK_SUMMARY = `This legal document: "{filename}" outlines key provisions, procedural requirements, and compliance standards. Main points: statutory obligations, evidence handling rules, timelines, and recommended next steps.`;

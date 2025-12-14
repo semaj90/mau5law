@@ -1,23 +1,19 @@
-<script lang="ts">let { evidenceId } = $props();
-
+<script lang="ts">
 	// Migrated from createEventDispatcher to callback props;
-	import Brain from 'lucide-svelte/icons/brain';
-import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
-import CircleCheck from 'lucide-svelte/icons/circle-check';
-import Lightbulb from 'lucide-svelte/icons/lightbulb';
-import Target from 'lucide-svelte/icons/target';;
+	import { Brain } from "lucide-svelte";
+import { TriangleAlert } from "lucide-svelte";
+import { CircleCheck } from "lucide-svelte";
+import { Lightbulb } from "lucide-svelte";
+import { Target } from "lucide-svelte";;
 	import type { Recommendation } from '$lib/types/recommendation'; // Import the interface
 
-	/** @type {string} */
-	
-	/** @type {string | undefined} */
-	let { caseId = undefined } = $props();
-	/** @type {any[]} */
-	export let recommendations: Recommendation[] = [];
-	/** @type {boolean} */
-	let { isLoading = false } = $props();
-	/** @type {string | null} */
-	let { error = null } = $props();
+	let { evidenceId, caseId = undefined, recommendations = [], isLoading = false, error = null } = $props<{
+		evidenceId: string;
+		caseId?: string;
+		recommendations?: Recommendation[];
+		isLoading?: boolean;
+		error?: string | null;
+	}>();
 
 	const dispatch = createEventDispatcher<{
 		generate: { evidenceId: string; caseId?: string };

@@ -4,8 +4,10 @@
   import CitationList from '../legal-ai/CitationList.svelte';
   import CitationSearch from '../legal-ai/CitationSearch.svelte';
 
-  export let summary: CaseSummary;
-  export let caseId: string | null = null;
+  let { summary, caseId = null } = $props<{
+    summary: CaseSummary;
+    caseId?: string | null;
+  }>();
 
   let isEditing = false;
   let editedText = summary.text;
@@ -80,8 +82,8 @@
               <CitationDetail
                 citation={selectedCitation}
                 showActions={true}
-                on:updated={() => (selectedCitation = null)}
-                on:delete={() => (selectedCitation = null)}
+                onupdated={() => (selectedCitation = null)}
+                ondelete={() => (selectedCitation = null)}
               />
             </div>
           {:else}
@@ -89,7 +91,7 @@
               <div class="search-section">
                 <h4>Search Citations</h4>
                 <CitationSearch
-                  on:select={(e) => (selectedCitation = e.detail)}
+                  onselect={(e) => (selectedCitation = e.detail)}
                 />
               </div>
 
@@ -98,9 +100,9 @@
                   {caseId}
                   limit={10}
                   showFilters={true}
-                  on:view={(e) => (selectedCitation = e.detail)}
-                  on:edit={(e) => (selectedCitation = e.detail)}
-                  on:deleted={() => {}}
+                  onview={(e) => (selectedCitation = e.detail)}
+                  onedit={(e) => (selectedCitation = e.detail)}
+                  ondeleted={() => {}}
                 />
               </div>
             </div>

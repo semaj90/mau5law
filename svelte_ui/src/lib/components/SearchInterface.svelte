@@ -47,9 +47,9 @@
 		dispatch('filterChange', { filters: searchFilters });
 	}
 
-	$: hasActiveFilters = Object.values(searchFilters).some(value =>
+	let hasActiveFilters = $derived(Object.values(searchFilters).some(value =>
 		value !== 'all' && value !== 0
-	);
+	));
 </script>
 
 <div class="search-interface" transition:fade={{ duration: 300 }}>

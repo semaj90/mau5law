@@ -582,6 +582,8 @@
     "asbuild:release": "asc assembly/index.ts --target release",
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "qa:nightly": "node scripts/phase53-report.mjs",
+    "svelte5:fix-events": "node scripts/fix-events.mjs",
+    "svelte5:check-events": "rg \"\\bon:\" src --glob \"*.svelte\"",
     "analyze:build": "ts-node scripts/analyze-build-logs.ts",
     "check:all:json": "svelte-check --output json > .svelte-check-output.json && npm run analyze:build",
     "parse:svelte-errors": "tsx ../tools/parse-svelte-errors.ts .svelte-errors-raw.log .svelte-errors.jsonl",

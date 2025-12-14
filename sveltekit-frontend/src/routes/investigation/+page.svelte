@@ -9,17 +9,17 @@
   // import type { Badge  } from '$lib/components/ui/badge'; // Not used
   // import type { Card, CardHeader, CardTitle, CardDescription, CardContent  } from '$lib/components/ui/card'; // Corrected casing
   // import type { Tabs, TabsList, TabsTrigger, TabsContent  } from '$lib/components/ui/tabs'; // Not exported, not used
-  // import FileText from 'lucide-svelte/icons/file-text'; // Not used
-  // import Search from 'lucide-svelte/icons/search'; // Not used
-  // import Brain from 'lucide-svelte/icons/brain'; // Not used
-  // import Zap from 'lucide-svelte/icons/zap'; // Not used
-  // import MessageSquare from 'lucide-svelte/icons/message-square'; // Not used
-  // import Camera from 'lucide-svelte/icons/camera'; // Not used
-  // import Shield from 'lucide-svelte/icons/shield'; // Not used
-  // import Database from 'lucide-svelte/icons/database'; // Not used
-  // import Cpu from 'lucide-svelte/icons/cpu'; // Not used
-  // import Save from 'lucide-svelte/icons/save'; // Not used
-  // import Upload from 'lucide-svelte/icons/upload'; // Not used
+  // import { FileText } from "lucide-svelte"; // Not used
+  // import { Search } from "lucide-svelte"; // Not used
+  // import { Brain } from "lucide-svelte"; // Not used
+  // import { Zap } from "lucide-svelte"; // Not used
+  // import { MessageSquare } from "lucide-svelte"; // Not used
+  // import { Camera } from "lucide-svelte"; // Not used
+  // import { Shield } from "lucide-svelte"; // Not used
+  // import { Database } from "lucide-svelte"; // Not used
+  // import { Cpu } from "lucide-svelte"; // Not used
+  // import { Save } from "lucide-svelte"; // Not used
+  // import { Upload } from "lucide-svelte"; // Not used
 
   interface Case {
     id: string;

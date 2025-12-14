@@ -1,14 +1,14 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte';; import Button from '$lib/components/ui/enhanced-bits.svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import Activity from 'lucide-svelte/icons/activity';
-import Cpu from 'lucide-svelte/icons/cpu';
-import MemoryStick from 'lucide-svelte/icons/memory-stick';
-import Users from 'lucide-svelte/icons/users';
-import Zap from 'lucide-svelte/icons/zap';
-import RefreshCw from 'lucide-svelte/icons/refresh-cw';
-import TrendingUp from 'lucide-svelte/icons/trending-up';
-import TrendingDown from 'lucide-svelte/icons/trending-down';
-import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import CheckCircle from 'lucide-svelte/icons/check-circle';; import type { ClusterHealth, WorkerMetrics } from '$lib/services/nodejs-cluster-architecture'; // Cluster state let clusterHealth = $state <ClusterHealth>({ totalWorkers: 0, healthyWorkers: 0, totalRequests: 0, averageResponseTime: 0, memoryUsage: { total: 0, average: 0, peak: 0 }, cpuUsage: { total: 0, average: 0 }, errors: { total: 0, rate: 0 } });
+// Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte';; import Button from '$lib/components/ui/enhanced-bits.svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import { Activity } from "lucide-svelte";
+import { Cpu } from "lucide-svelte";
+import { MemoryStick } from "lucide-svelte";
+import { Users } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { RefreshCw } from "lucide-svelte";
+import { TrendingUp } from "lucide-svelte";
+import { TrendingDown } from "lucide-svelte";
+import { AlertTriangle } from "lucide-svelte";
+import { CheckCircle } from "lucide-svelte";; import type { ClusterHealth, WorkerMetrics } from '$lib/services/nodejs-cluster-architecture'; // Cluster state let clusterHealth = $state <ClusterHealth>({ totalWorkers: 0, healthyWorkers: 0, totalRequests: 0, averageResponseTime: 0, memoryUsage: { total: 0, average: 0, peak: 0 }, cpuUsage: { total: 0, average: 0 }, errors: { total: 0, rate: 0 } });
   let workerMetrics = $state <WorkerMetrics[]>([]); let isConnected = $state <boolean>(false); let lastUpdate = $state <string>(''); // Control state let isScaling = $state <boolean>(false); let isRestarting = $state <boolean>(false); let targetWorkers = $state <number>(4); // Real-time updates let updateInterval = $state <NodeJS.Timeout | null>(null); let eventSource = $state <EventSource | null>(null); $effect(() => {() => { initializeClusterMonitoring()}); onDestroy(() => { if (updateInterval) clearInterval(updateInterval); if (eventSource) eventSource.close()});
   async function initializeClusterMonitoring(): Promise<void> { try { // Initial data load await fetchClusterStatus(); // Setup real-time updates via Server-Sent Events eventSource = new EventSource('/api/admin/cluster/events'); eventSource.onopen = () => { isConnected = true; console.log('ðŸ”— Connected to cluster monitoring')}; eventSource.onmessage = event => { const data = JSON.parse(event.data); if (data.type === 'health') { clusterHealth = data.payload} else if (data.type === 'workers') { workerMetrics = data.payload}
         lastUpdate = new Date().toLocaleTimeString()}; eventSource.onerror = () => { isConnected = false; console.error('âŒ Cluster monitoring connection lost')}; // Fallback polling updateInterval = setInterval(fetchClusterStatus, 10000)} catch (error) { console.error('Failed to initialize cluster monitoring:', error)}

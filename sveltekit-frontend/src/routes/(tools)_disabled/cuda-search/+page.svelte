@@ -8,14 +8,15 @@ import type { Document } from '$lib/types';
 
   // Handle search errors
   function handleError(error) {
-    console.error('Search error:', error);'
+    console.error('Search error:', error);
+'
   }
 </script>
 
 <svelte:head>
   <title>CUDA Legal AI Search - Test</title>
-  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
+  <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" ></li>
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" ></li>
 </svelte:head>
 <main class="container">
   <section class="hero nes-container">

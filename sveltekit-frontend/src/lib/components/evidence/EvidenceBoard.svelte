@@ -270,7 +270,7 @@
 
   let canvasElement: HTMLDivElement;
 
-  onMount(() => {
+  $effect(() => {
     // Periodic magnetic force application
     const magneticInterval = setInterval(() => {
       if (boardMode === 'magnetic') {

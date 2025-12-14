@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { fly  } from 'svelte/transition';
-  import type { X  } from '$lib/components/icons';
-  // This component assumes an alert store exists, e.g., at $lib/stores/alertStore.ts
+  import type { X } from '$lib/components/icons';
+// This component assumes an alert store exists, e.g., at $lib/stores/alertStore.ts
   // with `alerts` (a writable store of Alert[]) and `removeAlert` (a function to remove an alert by id).
-  import type { alerts, removeAlert  } from '$lib/stores/alerts';
-  import type { Alert } from '$lib/stores/alerts';
-  import { onDestroy } from 'svelte';; // Import onDestroy for cleanup
+  import type { Alert, alerts, removeAlert } from '$lib/stores/alerts';
+  import { onDestroy } from 'svelte';
+ // Import onDestroy for cleanup
 
   const alertClasses: Record<Alert['type'], string> = {
     info: 'bg-blue-100 border-blue-500 text-blue-700',
@@ -17,28 +16,38 @@
   const alertTimers = new Map<string, NodeJS.Timeout>();
 
   // Auto-dismiss alerts and manage timers
-  $: if ($alerts ) {
-    // Clear timers for alerts that are no longer present
-    const currentAlertIds = new Set($alerts .map((a) => a.id));
-    for (const [id, timer] of alertTimers.entries()) {
-      if (!currentAlertIds.has(id)) {
-        clearTimeout(timer);
-        alertTimers.delete(id);
+  $effect(() => {
+    if ($alerts ) {
+      // Clear timers for alerts that are no longer present
+      const currentAlertIds = new Set($alerts .map((a) => a.id));
+      for (const [id, timer] of alertTimers.entries()) {
+        if (!currentAlertIds.has(id)) {
+          clearTimeout(timer);
+          alertTimers.delete(id);
+        }
       }
+
+      // Set new timers for new alerts
+      $alerts .forEach((alert) => {
+        // Only set timer if not explicitly disabled (timeout === 0) and not already set
+        if (alert.timeout !== 0 && !alertTimers.has(alert.id)) {
+          const timer = setTimeout(() => {
+            removeAlert(alert.id);
+            alertTimers.delete(alert.id); // Clean up map after removal
+          }, alert.timeout || 5000); // Default to 5 seconds if timeout is undefined/null
+          alertTimers.set(alert.id, timer);
+        }
+      });
     }
 
-    // Set new timers for new alerts
-    $alerts .forEach((alert) => {
-      // Only set timer if not explicitly disabled (timeout === 0) and not already set
-      if (alert.timeout !== 0 && !alertTimers.has(alert.id)) {
-        const timer = setTimeout(() => {
-          removeAlert(alert.id);
-          alertTimers.delete(alert.id); // Clean up map after removal
-        }, alert.timeout || 5000); // Default to 5 seconds if timeout is undefined/null
-        alertTimers.set(alert.id, timer);
+    return () => {
+      // Clear all timers when component is destroyed
+      for (const timer of alertTimers.values()) {
+        clearTimeout(timer);
       }
-    });
-  }
+      alertTimers.clear();
+    };
+  });
 
   onDestroy(() => {
     // Clear all timers when component is destroyed
@@ -55,7 +64,7 @@
       class="p-4 border-l-4 rounded shadow-lg flex items-center justify-between {alertClasses[
         alert.type
       ]}"
-      transition:fly={{ y: 20, duration: 300 }}
+      transitionfly={{ y: 20, duration: 300 }}
     >
       <p class="flex-grow">{alert.message}</p>
       <button

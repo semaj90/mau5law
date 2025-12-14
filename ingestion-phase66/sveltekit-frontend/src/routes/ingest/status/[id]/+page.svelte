@@ -8,7 +8,7 @@
   let isLoading = true;
   let error: string | null = null;
 
-  $: jobId = $page.params.id;
+  let jobId = $derived($page.params.id);
 
   onMount(async () => {
     await loadJobStatus();

@@ -187,7 +187,7 @@
       <DetectiveEvidenceMap
         {caseEvidence}
         {witnesses}
-        on:evidenceUpdate={handleEvidenceUpdate}
+        onevidenceUpdate={handleEvidenceUpdate}
       />
     {:else if activeModule === 'police'}
       <PoliceReportGenerator

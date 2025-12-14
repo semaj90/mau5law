@@ -1,9 +1,9 @@
 <script lang="ts">
-  import AlertCircle from 'lucide-svelte/icons/alert-circle';
-import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import CheckCircle from 'lucide-svelte/icons/check-circle';
-import Info from 'lucide-svelte/icons/info';
-import X from 'lucide-svelte/icons/x';;
+  import { AlertCircle } from "lucide-svelte";
+import { AlertTriangle } from "lucide-svelte";
+import { CheckCircle } from "lucide-svelte";
+import { Info } from "lucide-svelte";
+import { X } from "lucide-svelte";;
   import { onDestroy, onMount } from 'svelte';;
 
   interface Props {
@@ -99,12 +99,12 @@ import X from 'lucide-svelte/icons/x';;
   });
 
   // Event listeners
-  onMount(() => {
+  $effect(() => {
     document.addEventListener('keydown', handleKeydown);
-  });
 
-  onDestroy(() => {
-    document.removeEventListener('keydown', handleKeydown);
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+    };
   });
 </script>
 

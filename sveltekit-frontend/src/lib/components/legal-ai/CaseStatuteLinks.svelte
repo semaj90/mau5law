@@ -1,5 +1,4 @@
-<script lang="ts">let { showActions = true } = $props();
-
+<script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface CaseStatuteLink {
@@ -12,8 +11,11 @@
     updated_at: string;
   }
 
-  export let caseId: string;
-  
+  let { caseId, showActions = true } = $props<{
+    caseId: string;
+    showActions?: boolean;
+  }>();
+
 
   const dispatch = createEventDispatcher();
 
@@ -89,12 +91,12 @@
     dispatch('view', link);
   }
 
-  $: filteredLinks = links.filter((link) => {
+  let filteredLinks = $derived(links.filter((link) => {
     if (selectedLinkType && link.link_type !== selectedLinkType) {
       return false;
     }
     return true;
-  });
+  }));
 </script>
 
 <div class="case-statute-links">

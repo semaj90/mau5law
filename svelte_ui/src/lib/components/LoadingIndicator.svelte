@@ -14,17 +14,19 @@
 	let dotInterval: number;
 
 	// Animate dots for dot type
-	$: if (type === 'dots' && isLoading) {
-		if (!dotInterval) {
-			dotInterval = setInterval(() => {
-				dots = dots.length >= 3 ? '' : dots + '.';
-			}, 500);
+	$effect(() => {
+		if (type === 'dots' && isLoading) {
+			if (!dotInterval) {
+				dotInterval = setInterval(() => {
+					dots = dots.length >= 3 ? '' : dots + '.';
+				}, 500);
+			}
+		} else if (dotInterval) {
+			clearInterval(dotInterval);
+			dotInterval = 0;
+			dots = '';
 		}
-	} else if (dotInterval) {
-		clearInterval(dotInterval);
-		dotInterval = 0;
-		dots = '';
-	}
+	});
 
 	onMount(() => {
 		return () => {

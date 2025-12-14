@@ -2,28 +2,28 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';;
   import type { goto  } from '$app/navigation';
-  import FileText from 'lucide-svelte/icons/file-text';
-import Users from 'lucide-svelte/icons/users';
-import Activity from 'lucide-svelte/icons/activity';
-import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import CheckCircle2 from 'lucide-svelte/icons/check-circle2';
-import Search from 'lucide-svelte/icons/search';
-import Plus from 'lucide-svelte/icons/plus';
-import BarChart3 from 'lucide-svelte/icons/bar-chart3';
-import Clock from 'lucide-svelte/icons/clock';
-import Eye from 'lucide-svelte/icons/eye';
-import Shield from 'lucide-svelte/icons/shield';
-import Database from 'lucide-svelte/icons/database';
-import Settings from 'lucide-svelte/icons/settings';
-import ChevronRight from 'lucide-svelte/icons/chevron-right';
-import Folder from 'lucide-svelte/icons/folder';
-import UserCheck from 'lucide-svelte/icons/user-check';
-import TrendingUp from 'lucide-svelte/icons/trending-up';
-import Terminal from 'lucide-svelte/icons/terminal';
-import Cpu from 'lucide-svelte/icons/cpu';
-import Monitor from 'lucide-svelte/icons/monitor';
-import Zap from 'lucide-svelte/icons/zap';
-import Brain from 'lucide-svelte/icons/brain';;
+  import { FileText } from "lucide-svelte";
+import { Users } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { AlertTriangle } from "lucide-svelte";
+import { CheckCircle2 } from "lucide-svelte";
+import { Search } from "lucide-svelte";
+import { Plus } from "lucide-svelte";
+import { BarChart3 } from "lucide-svelte";
+import { Clock } from "lucide-svelte";
+import { Eye } from "lucide-svelte";
+import { Shield } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { Settings } from "lucide-svelte";
+import { ChevronRight } from "lucide-svelte";
+import { Folder } from "lucide-svelte";
+import { UserCheck } from "lucide-svelte";
+import { TrendingUp } from "lucide-svelte";
+import { Terminal } from "lucide-svelte";
+import { Cpu } from "lucide-svelte";
+import { Monitor } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Brain } from "lucide-svelte";;
   import * as Dialog from '$lib/components/ui/dialog'; // Import bits-ui Dialog components
 
   // Dashboard data
@@ -477,8 +477,8 @@ import Brain from 'lucide-svelte/icons/brain';;
           stroke-linejoin="round"
           class="h-4 w-4"
         >
-          <path d="M18 6L6 18" />
-          <path d="M6 6L18 18" />
+          <path d="M18 6L6 18" ></path>
+          <path d="M6 6L18 18" ></path>
         </svg>
         <span class="sr-only">Close</span>
       </Dialog.Close>

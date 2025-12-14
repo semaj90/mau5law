@@ -1,19 +1,19 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import type { goto  } from '$app/navigation'; import Button from '$lib/components/ui/Button.svelte'; import  Badge  from "$lib/components/ui/badge.svelte"; // Icons import Users from 'lucide-svelte/icons/users';
-import Activity from 'lucide-svelte/icons/activity';
-import Database from 'lucide-svelte/icons/database';
-import Cpu from 'lucide-svelte/icons/cpu';
-import HardDrive from 'lucide-svelte/icons/hard-drive';
-import Shield from 'lucide-svelte/icons/shield';
-import BarChart3 from 'lucide-svelte/icons/bar-chart3';
-import Clock from 'lucide-svelte/icons/clock';
-import CheckCircle from 'lucide-svelte/icons/check-circle';
-import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-import RefreshCw from 'lucide-svelte/icons/refresh-cw';
-import Zap from 'lucide-svelte/icons/zap';
-import Server from 'lucide-svelte/icons/server';
-import Network from 'lucide-svelte/icons/network';
-import Monitor from 'lucide-svelte/icons/monitor';; // Svelte, 5 runes let systemStats = $state ({ totalUsers: 0, activeUsers: 0, totalCases: 0, activeCases: 0, totalDocuments: 0, processedDocuments: 0, aiAnalyses: 0, uptime: '0d 0h 0m'
+// Svelte, 5 runes are auto-imported import type { goto  } from '$app/navigation'; import Button from '$lib/components/ui/Button.svelte'; import  Badge  from "$lib/components/ui/badge.svelte"; // Icons import { Users } from "lucide-svelte";
+import { Activity } from "lucide-svelte";
+import { Database } from "lucide-svelte";
+import { Cpu } from "lucide-svelte";
+import { HardDrive } from "lucide-svelte";
+import { Shield } from "lucide-svelte";
+import { BarChart3 } from "lucide-svelte";
+import { Clock } from "lucide-svelte";
+import { CheckCircle } from "lucide-svelte";
+import { AlertTriangle } from "lucide-svelte";
+import { RefreshCw } from "lucide-svelte";
+import { Zap } from "lucide-svelte";
+import { Server } from "lucide-svelte";
+import { Network } from "lucide-svelte";
+import { Monitor } from "lucide-svelte";; // Svelte, 5 runes let systemStats = $state ({ totalUsers: 0, activeUsers: 0, totalCases: 0, activeCases: 0, totalDocuments: 0, processedDocuments: 0, aiAnalyses: 0, uptime: '0d 0h 0m'
   });
   let systemHealth = $state ({ database: true, redis: true, aiService: true, fileSystem: true, gpu: false, vectorSearch: true });
   let recentActivity = $state <any[]>([]); let isLoading = $state <boolean>(true); let lastUpdated = $state (new Date()); $effect (() => { (async () => { await loadSystemStats(); await loadSystemHealth(); await loadRecentActivity()})(); // Auto-refresh every, 30 seconds const interval = setInterval(refreshData, 30000); return () => clearInterval(interval)});

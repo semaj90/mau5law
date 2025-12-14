@@ -96,7 +96,7 @@
       <div class="flex items-center justify-between mb-3">
         <div class="heading-sub">Persons of Interest</div>
         <Button variant="primary">
-          <span class="i-heroicons-plus-20-solid mr-1" />
+          <span class="i-heroicons-plus-20-solid mr-1" ></span>
           Add Person
         </Button>
       </div>
@@ -148,7 +148,7 @@
 
         {#if filteredPersons.length === 0}
           <div class="panel-soft p-8 text-center text-black/60">
-            <span class="i-heroicons-user-group text-4xl mb-2 block" />
+            <span class="i-heroicons-user-group text-4xl mb-2 block" ></span>
             <div class="text-sm">No persons match the current filters</div>
           </div>
         {/if}
@@ -197,15 +197,15 @@
 
       <div class="flex flex-col gap-2">
         <Button variant="secondary">
-          <span class="i-heroicons-map mr-1" />
+          <span class="i-heroicons-map mr-1" ></span>
           Relationship Map
         </Button>
         <Button variant="secondary">
-          <span class="i-heroicons-clock mr-1" />
+          <span class="i-heroicons-clock mr-1" ></span>
           Timeline View
         </Button>
         <Button variant="secondary">
-          <span class="i-heroicons-document-chart-bar mr-1" />
+          <span class="i-heroicons-document-chart-bar mr-1" ></span>
           Generate Report
         </Button>
       </div>
@@ -217,7 +217,7 @@
       <div class="flex flex-col gap-2 text-xs">
         <div class="panel-soft px-3 py-2">
           <div class="flex items-center gap-2 mb-1">
-            <span class="i-heroicons-user-plus text-accent" />
+            <span class="i-heroicons-user-plus text-accent" ></span>
             <span class="font-mono">POI-005 added</span>
           </div>
           <div class="text-[10px] text-black/60">2 hours ago</div>
@@ -225,7 +225,7 @@
 
         <div class="panel-soft px-3 py-2">
           <div class="flex items-center gap-2 mb-1">
-            <span class="i-heroicons-check-badge text-info" />
+            <span class="i-heroicons-check-badge text-info" ></span>
             <span class="font-mono">POI-001 verified</span>
           </div>
           <div class="text-[10px] text-black/60">5 hours ago</div>
@@ -233,7 +233,7 @@
 
         <div class="panel-soft px-3 py-2">
           <div class="flex items-center gap-2 mb-1">
-            <span class="i-heroicons-link text-warning" />
+            <span class="i-heroicons-link text-warning" ></span>
             <span class="font-mono">3 new connections</span>
           </div>
           <div class="text-[10px] text-black/60">1 day ago</div>

@@ -8,12 +8,12 @@
 	let searchQuery = '';
 	let filterType = 'all';
 
-	$: filteredEvidence = evidence.filter(item => {
+	let filteredEvidence = $derived(evidence.filter(item => {
 		const matchesSearch = item.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
 							 item.content?.toLowerCase().includes(searchQuery.toLowerCase());
 		const matchesType = filterType === 'all' || item.type === filterType;
 		return matchesSearch && matchesType;
-	});
+	}));
 
 	function selectEvidence(item: any) {
 		selectedEvidence = item;

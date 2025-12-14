@@ -1,6 +1,6 @@
 <script lang="ts">
   import GamingEvidenceBoard from '$lib/components/custom/GamingEvidenceBoard.svelte';
-  import type { fade  } from 'svelte/transition';
+  import { fade   } from 'svelte/transition';
   let isLoading = $state <boolean>(true); // Simulate loading setTimeout(() => { isLoading = false}, 1500);
 </script>
 

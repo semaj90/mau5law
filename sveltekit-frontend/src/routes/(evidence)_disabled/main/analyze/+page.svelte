@@ -103,11 +103,13 @@
 
   // Current step tracking (derived from progress)
   let currentStep: number = 0;
-  $: {
+$effect(() => {
+
     const total = steps.length || 1;
     const perStep = 100 / total;
     currentStep = Math.max(0, Math.min(total - 1, Math.floor(progress / perStep)));
-  }
+  
+});
 
   // File upload handler
   function handleFileUpload(event: Event): void {

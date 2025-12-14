@@ -1,6 +1,8 @@
 <script lang="ts">
-  export let risk: 'low' | 'medium' | 'high' = 'medium';
-  export let status: 'active' | 'pending' | 'closed' = 'active';
+  let { risk = 'medium', status = 'active' } = $props<{
+    risk?: 'low' | 'medium' | 'high';
+    status?: 'active' | 'pending' | 'closed';
+  }>();
 </script>
 
 <div class="flex gap-1">

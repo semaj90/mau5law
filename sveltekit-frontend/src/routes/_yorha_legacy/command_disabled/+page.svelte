@@ -110,11 +110,11 @@
         {#each systemStatus as s}
           <div class="panel-soft px-3 py-2 flex items-center gap-2">
             {#if s.type === 'ok'}
-              <span class="i-heroicons-check-circle text-green-400" />
+              <span class="i-heroicons-check-circle text-green-400" ></span>
             {:else if s.type === 'warn'}
-              <span class="i-heroicons-exclamation-triangle text-yellow-300" />
+              <span class="i-heroicons-exclamation-triangle text-yellow-300" ></span>
             {:else}
-              <span class="i-heroicons-information-circle text-blue-300" />
+              <span class="i-heroicons-information-circle text-blue-300" ></span>
             {/if}
             <div class="flex-1">
               <div>{s.message}</div>
@@ -131,7 +131,7 @@
         <Button variant="secondary">Open Evidence Board</Button>
         <Button variant="secondary">Timeline Analysis</Button>
         <Button variant="secondary">
-          <span class="i-heroicons-chat-bubble-left-right mr-2" />
+          <span class="i-heroicons-chat-bubble-left-right mr-2" ></span>
           AI Sentencing Assistant
         </Button>
       </div>

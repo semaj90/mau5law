@@ -1,5 +1,4 @@
-<script lang="ts">let { isOpen = false } = $props();
-
+<script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface Case {
@@ -9,9 +8,11 @@
     status: string;
   }
 
-  
-  export let statuteCode: string | null = null;
-  export let citationId: string | null = null;
+  let { isOpen = false, statuteCode = null, citationId = null } = $props<{
+    isOpen?: boolean;
+    statuteCode?: string | null;
+    citationId?: string | null;
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -115,13 +116,13 @@
 
 {#if isOpen}
   <div class="modal-overlay" onclick={closeModal}>
-    <div class="modal-content" on:click|stopPropagation>
+    <div class="modal-content" onclick>
       <div class="modal-header">
         <h2>Attach to Case</h2>
         <button class="close-btn" onclick={closeModal}>✕</button>
       </div>
 
-      <form on:submit|preventDefault={handleSubmit} class="attach-form">
+      <form onsubmit={handleSubmit} class="attach-form">
         {#if error}
           <div class="error-message">
             <p>{error}</p>

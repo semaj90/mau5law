@@ -7,8 +7,10 @@
     endIndex: number;
   }
 
-  export let content: string = '';
-  export let citations: HighlightedCitation[] = [];
+  let { content = '', citations = [] } = $props<{
+    content?: string;
+    citations?: HighlightedCitation[];
+  }>();
 
   const dispatch = createEventDispatcher();
 
@@ -75,8 +77,8 @@
 <div class="citation-highlighter">
   <div
     class="content"
-    on:mouseup={handleTextSelection}
-    on:touchend={handleTextSelection}
+    onmouseup={handleTextSelection}
+    ontouchend={handleTextSelection}
   >
     {@html renderContent()}
   </div>

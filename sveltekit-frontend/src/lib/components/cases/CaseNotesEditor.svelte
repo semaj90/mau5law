@@ -9,9 +9,17 @@
     content: string;
     isAI: boolean;
     isPinned: boolean;
-    createdBy: number | null;
+    createdBy: string | null; // Changed from number to string for UUID
     createdAt: string;
     updatedAt: string;
+  }
+
+  interface EvidenceRef {
+    id: string;
+    evidenceId: string;
+    title: string;
+    evidenceType: string;
+    fileName?: string;
   }
 
   interface Props {
@@ -21,16 +29,103 @@
 
   let { caseId, onClose }: Props = $props();
 
+  type NoteHit = {
+    id: string;
+    title?: string | null;
+    contentPreview?: string | null;
+    createdAt?: string;
+    updatedAt?: string;
+    pinned?: boolean;
+    score?: number;
+  };
+
+  let searchQuery = $state("");
+  let searching = $state(false);
+  let searchHits = $state<NoteHit[]>([]);
+  let searchError = $state<string | null>(null);
+  let searchMode = $derived(() => searchQuery.trim().length > 0);
+  let _searchTimer: any = null;
+
+  async function runSearch(q: string) {
+    const query = q.trim();
+    if (!query) {
+      searchHits = [];
+      searchError = null;
+      searching = false;
+      return;
+    }
+
+    searching = true;
+    searchError = null;
+
+    try {
+      const res = await fetch(
+        `/api/cases/${caseId}/notes/search?q=${encodeURIComponent(query)}`
+      );
+      if (!res.ok) throw new Error(`Search failed: ${res.status}`);
+      const data = await res.json();
+
+      searchHits = (data?.hits ?? data ?? []).map((x: any) => ({
+        id: String(x.id),
+        title: x.title ?? null,
+        contentPreview: x.contentPreview ?? x.preview ?? x.snippet ?? null,
+        createdAt: x.createdAt ?? null,
+        updatedAt: x.updatedAt ?? null,
+        pinned: !!x.pinned,
+        score: typeof x.score === "number" ? x.score : undefined
+      }));
+    } catch (e: any) {
+      searchError = e?.message ?? "Search error";
+      searchHits = [];
+    } finally {
+      searching = false;
+    }
+  }
+
+  function onSearchInput(e: Event) {
+    searchQuery = (e.target as HTMLInputElement).value;
+    if (_searchTimer) clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(() => runSearch(searchQuery), 200);
+  }
+
+  async function onSelectHit(hit: NoteHit) {
+    // Hook into your existing selection logic here.
+    // Common patterns:
+    // selectedNoteId = hit.id
+    // openNote(hit.id)
+    // loadNote(hit.id)
+    // If you already have a function, call it.
+    //
+    // Minimal fallback (non-breaking): just put the title in query for now
+    // (remove this fallback once wired):
+    // searchQuery = "";
+  }
+
   let notes = $state<CaseNote[]>([]);
   let selectedNote = $state<CaseNote | null>(null);
   let isLoading = $state(true);
   let isSaving = $state(false);
   let error = $state<string | null>(null);
 
+  // Evidence references state
+  let evidenceRefs = $state<EvidenceRef[]>([]);
+  let isLoadingRefs = $state(false);
+
+  // Export state
+  let isExportingMemo = $state(false);
+  let isExportingPDF = $state(false);
+
   // Editor state
   let noteTitle = $state('');
   let noteContent = $state('');
   let isNewNote = $state(false);
+
+  // Search state
+  let searchQuery = $state('');
+  let isSearching = $state(false);
+  let searchResults = $state<CaseNote[]>([]);
+  let showSearchResults = $state(false);
+  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Autosave debounce
   let saveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -47,6 +142,35 @@
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   }
+
+  // Search effect - debounced search
+  $effect(() => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    if (!searchQuery.trim()) {
+      showSearchResults = false;
+      searchResults = [];
+      return;
+    }
+
+    isSearching = true;
+    searchTimeout = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/api/cases/${caseId}/notes/search?q=${encodeURIComponent(searchQuery)}`
+        );
+        if (!response.ok) throw new Error('Search failed');
+        const data = await response.json();
+        searchResults = sortNotes(data.results || []);
+        showSearchResults = true;
+      } catch (err) {
+        console.error('Search error:', err);
+        searchResults = [];
+      } finally {
+        isSearching = false;
+      }
+    }, 300);
+  });
 
   // Autosave effect - reacts to content changes
   $effect(() => {
@@ -97,6 +221,9 @@
     // Set baselines to prevent autosave on select
     lastSavedTitle = note.title || '';
     lastSavedContent = note.content;
+
+    // Load evidence references for this note
+    loadEvidenceRefs(note.id);
   }
 
   function startNewNote() {
@@ -200,6 +327,116 @@
     }
   }
 
+  // Evidence references functions
+  async function loadEvidenceRefs(noteId: string) {
+    isLoadingRefs = true;
+    try {
+      const response = await fetch(`/api/cases/${caseId}/notes/${noteId}/refs`);
+      if (!response.ok) throw new Error('Failed to load evidence references');
+      const data = await response.json();
+      evidenceRefs = data.refs || [];
+    } catch (err) {
+      console.error('Failed to load evidence refs:', err);
+      evidenceRefs = [];
+    } finally {
+      isLoadingRefs = false;
+    }
+  }
+
+  async function removeEvidenceRef(noteId: string, evidenceId: string) {
+    try {
+      const response = await fetch(`/api/cases/${caseId}/notes/${noteId}/refs/${evidenceId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to remove evidence reference');
+      evidenceRefs = evidenceRefs.filter(ref => ref.evidenceId !== evidenceId);
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Failed to remove evidence reference';
+    }
+  }
+
+  // Export functions
+  async function exportAIMemo() {
+    if (notes.length === 0) {
+      error = 'No notes to export';
+      return;
+    }
+
+    isExportingMemo = true;
+    error = null;
+
+    try {
+      const response = await fetch(`/api/cases/${caseId}/export/memo`, {
+        method: 'POST',
+      });
+      if (!response.ok) throw new Error('Failed to generate AI memo');
+
+      const data = await response.json();
+
+      // Create a new window/tab with the memo
+      const memoWindow = window.open('', '_blank');
+      if (memoWindow) {
+        memoWindow.document.write(`
+          <html>
+            <head>
+              <title>AI Legal Memo</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+                h1 { color: #333; }
+                pre { white-space: pre-wrap; background: #f5f5f5; padding: 20px; border-radius: 5px; }
+              </style>
+            </head>
+            <body>
+              <h1>AI Legal Memo</h1>
+              <p><strong>Generated:</strong> ${new Date(data.generatedAt).toLocaleString()}</p>
+              <p><strong>Notes Analyzed:</strong> ${data.noteCount}</p>
+              <hr>
+              <pre>${data.memo}</pre>
+            </body>
+          </html>
+        `);
+        memoWindow.document.close();
+      }
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Failed to export AI memo';
+    } finally {
+      isExportingMemo = false;
+    }
+  }
+
+  async function exportPDF() {
+    if (notes.length === 0) {
+      error = 'No notes to export';
+      return;
+    }
+
+    isExportingPDF = true;
+    error = null;
+
+    try {
+      const response = await fetch(`/api/cases/${caseId}/export/pdf`, {
+        method: 'POST',
+      });
+      if (!response.ok) throw new Error('Failed to generate PDF');
+
+      // Create download link
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `case-notes-${caseId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Failed to export PDF';
+    } finally {
+      isExportingPDF = false;
+    }
+  }
+
   function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-US', {
       month: 'short',
@@ -209,78 +446,6 @@
       minute: '2-digit',
     });
   }
-
-  // Export functions
-  let isExporting = $state(false);
-  let exportStatus = $state<string | null>(null);
-
-  async function exportMemo() {
-    isExporting = true;
-    exportStatus = 'Generating AI memo...';
-    error = null;
-
-    try {
-      const response = await fetch(`/api/cases/${caseId}/export/memo`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ saveAsNote: true })
-      });
-
-      if (!response.ok) throw new Error('Failed to generate memo');
-
-      const data = await response.json();
-      exportStatus = 'Memo generated and saved!';
-
-      // Reload notes to show the new AI memo
-      await loadNotes();
-
-      // Select the new AI note if it was saved
-      if (data.savedNote) {
-        selectNote(data.savedNote);
-      }
-
-      setTimeout(() => { exportStatus = null; }, 3000);
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to generate memo';
-      exportStatus = null;
-    } finally {
-      isExporting = false;
-    }
-  }
-
-  async function exportPdf() {
-    isExporting = true;
-    exportStatus = 'Generating PDF...';
-    error = null;
-
-    try {
-      const response = await fetch(`/api/cases/${caseId}/export/pdf`, {
-        method: 'POST'
-      });
-
-      if (!response.ok) throw new Error('Failed to generate PDF');
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-
-      // Open in new tab or download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `case_${caseId}_export.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      exportStatus = 'Export downloaded!';
-      setTimeout(() => { exportStatus = null; }, 3000);
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to generate PDF';
-      exportStatus = null;
-    } finally {
-      isExporting = false;
-    }
-  }
 </script>
 
 <div class="case-notes-editor">
@@ -288,11 +453,21 @@
   <div class="notes-header">
     <h2>📝 Case Notes</h2>
     <div class="header-actions">
-      <button class="btn-export" onclick={exportMemo} disabled={isExporting || notes.length === 0} title="Generate AI memo from notes">
-        🧠 AI Memo
+      <button
+        class="btn-export"
+        onclick={exportAIMemo}
+        disabled={isExportingMemo || notes.length === 0}
+        title="Generate AI Legal Memo"
+      >
+        {isExportingMemo ? '🤖...' : '🤖 AI Memo'}
       </button>
-      <button class="btn-export" onclick={exportPdf} disabled={isExporting} title="Export case to file">
-        📄 Export
+      <button
+        class="btn-export"
+        onclick={exportPDF}
+        disabled={isExportingPDF || notes.length === 0}
+        title="Export as PDF"
+      >
+        {isExportingPDF ? '📄...' : '📄 PDF'}
       </button>
       <button class="btn-new" onclick={startNewNote}>+ New Note</button>
       {#if onClose}
@@ -301,10 +476,6 @@
     </div>
   </div>
 
-  {#if exportStatus}
-    <div class="status-banner">{exportStatus}</div>
-  {/if}
-
   {#if error}
     <div class="error-banner">{error}</div>
   {/if}
@@ -312,8 +483,118 @@
   <div class="notes-content">
     <!-- Notes List -->
     <div class="notes-list">
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="🔍 Search notes..."
+          bind:value={searchQuery}
+        />
+        {#if isSearching}
+          <span class="search-spinner">⟳</span>
+        {/if}
+      </div>
+
+      <!-- New API-based Search UI -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <input
+            class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm outline-none"
+            placeholder="Search notes with AI..."
+            value={searchQuery}
+            oninput={onSearchInput}
+          />
+
+          {#if searchMode}
+            <button
+              class="rounded-lg border border-slate-700 px-3 py-2 text-sm"
+              onclick={() => { searchQuery = ""; searchHits = []; searchError = null; }}
+            >
+              Clear
+            </button>
+          {/if}
+        </div>
+
+        {#if searchMode}
+          <div class="rounded-lg border border-slate-800 bg-slate-950/40 p-2">
+            {#if searching}
+              <div class="text-xs opacity-80">Searching...</div>
+            {:else if searchError}
+              <div class="text-xs text-red-300">{searchError}</div>
+            {:else if searchHits.length === 0}
+              <div class="text-xs opacity-80">No matches.</div>
+            {:else}
+              <div class="space-y-1">
+                {#each searchHits as hit (hit.id)}
+                  <button
+                    class="w-full rounded-md border border-slate-800 p-2 text-left hover:bg-slate-900/50"
+                    onclick={() => onSelectHit(hit)}
+                  >
+                    <div class="flex items-center justify-between gap-2">
+                      <div class="text-sm font-medium">{hit.title ?? "Untitled note"}</div>
+                      {#if hit.pinned}
+                        <span class="text-xs opacity-80">Pinned</span>
+                      {/if}
+                    </div>
+                    {#if hit.contentPreview}
+                      <div class="mt-1 text-xs opacity-80 line-clamp-2">{hit.contentPreview}</div>
+                    {/if}
+                  </button>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
+
       {#if isLoading}
         <div class="loading">Loading notes...</div>
+      {:else if showSearchResults}
+        <!-- Search Results -->
+        <div class="search-results-header">
+          <span class="results-count">{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</span>
+          <button
+            class="clear-search"
+            onclick={() => { searchQuery = ''; showSearchResults = false; }}
+            title="Clear search"
+          >
+            ✕
+          </button>
+        </div>
+        {#if searchResults.length === 0}
+          <div class="no-results">No notes match your search</div>
+        {:else}
+          {#each searchResults as note (note.id)}
+            <div
+              class="note-item"
+              class:selected={selectedNote?.id === note.id}
+              class:pinned={note.isPinned}
+              role="button"
+              tabindex="0"
+              onclick={() => selectNote(note)}
+              onkeydown={(e) => e.key === 'Enter' && selectNote(note)}
+            >
+              <div class="note-item-header">
+                <span class="note-title">{note.title || 'Untitled Note'}</span>
+                <button
+                  class="pin-btn"
+                  class:active={note.isPinned}
+                  aria-pressed={note.isPinned}
+                  onclick={(e) => { e.stopPropagation(); togglePin(note); }}
+                  title={note.isPinned ? 'Unpin' : 'Pin'}
+                >
+                  📌
+                </button>
+              </div>
+              <p class="note-preview">{note.content.slice(0, 100)}{note.content.length > 100 ? '...' : ''}</p>
+              <span class="note-date">{formatDate(note.updatedAt)}</span>
+              {#if note.isAI}
+                <span class="ai-badge">AI</span>
+              {/if}
+            </div>
+          {/each}
+        {/if}
       {:else if notes.length === 0 && !isNewNote}
         <div class="empty-state">
           <p>No notes yet</p>
@@ -385,12 +666,47 @@
             bind:value={noteContent}
             placeholder="Write your case notes here..."
             {caseId}
-            autosave={true}
           />
         </div>
         {#if selectedNote}
           <div class="editor-footer">
             <span>Last updated: {formatDate(selectedNote.updatedAt)}</span>
+          </div>
+        {/if}
+
+        <!-- Evidence References -->
+        {#if selectedNote}
+          <div class="evidence-refs">
+            <h4>🔗 Linked Evidence</h4>
+            {#if isLoadingRefs}
+              <div class="loading-refs">Loading references...</div>
+            {:else if evidenceRefs.length === 0}
+              <div class="no-refs">
+                <p>No evidence linked to this note</p>
+                <small>Drag evidence from the board to link it here</small>
+              </div>
+            {:else}
+              <div class="refs-list">
+                {#each evidenceRefs as ref (ref.id)}
+                  <div class="ref-item">
+                    <div class="ref-info">
+                      <span class="ref-title">{ref.title}</span>
+                      <span class="ref-type">{ref.evidenceType}</span>
+                      {#if ref.fileName}
+                        <span class="ref-file">{ref.fileName}</span>
+                      {/if}
+                    </div>
+                    <button
+                      class="ref-remove"
+                      onclick={() => removeEvidenceRef(selectedNote.id, ref.evidenceId)}
+                      title="Remove link"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                {/each}
+              </div>
+            {/if}
           </div>
         {/if}
       {:else}
@@ -444,38 +760,27 @@
     font-weight: 500;
   }
 
-  .btn-new:hover {
-    background: var(--yorha-accent-hover, #5cd0ff);
-  }
-
   .btn-export {
     padding: 0.5rem 0.75rem;
-    background: var(--yorha-bg-tertiary, #2a2a2a);
+    background: var(--yorha-bg-secondary, #2a2a2a);
     color: var(--yorha-text-primary, #e0e0e0);
     border: 1px solid var(--yorha-border, #606060);
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.85rem;
+    font-weight: 500;
     transition: all 0.2s;
   }
 
   .btn-export:hover:not(:disabled) {
-    background: var(--yorha-bg-secondary, #1a1a1a);
+    background: var(--yorha-accent, #3cbcfc);
+    color: #000;
     border-color: var(--yorha-accent, #3cbcfc);
   }
 
   .btn-export:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  .status-banner {
-    padding: 0.5rem 1rem;
-    background: rgba(60, 188, 252, 0.2);
-    color: var(--yorha-accent, #3cbcfc);
-    border-bottom: 1px solid var(--yorha-accent, #3cbcfc);
-    font-size: 0.85rem;
-    text-align: center;
   }
 
   .btn-close {
@@ -505,6 +810,83 @@
     border-right: 1px solid var(--yorha-border, #606060);
     overflow-y: auto;
     background: var(--yorha-bg-secondary, #1a1a1a);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .search-container {
+    position: relative;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--yorha-border, #606060);
+    background: var(--yorha-bg-secondary, #1a1a1a);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--yorha-bg-primary, #0a0a0a);
+    border: 1px solid var(--yorha-border, #606060);
+    border-radius: 4px;
+    color: inherit;
+    font-size: 0.85rem;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--yorha-accent, #3cbcfc);
+  }
+
+  .search-spinner {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: spin 1s linear infinite;
+    color: var(--yorha-accent, #3cbcfc);
+  }
+
+  @keyframes spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: rgba(60, 188, 252, 0.1);
+    border-bottom: 1px solid var(--yorha-border, #606060);
+    font-size: 0.8rem;
+    color: var(--yorha-text-secondary, #a0a0a0);
+    flex-shrink: 0;
+  }
+
+  .results-count {
+    font-weight: 500;
+  }
+
+  .clear-search {
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    border: 1px solid var(--yorha-border, #606060);
+    border-radius: 3px;
+    cursor: pointer;
+    color: var(--yorha-text-secondary, #a0a0a0);
+    font-size: 0.75rem;
+  }
+
+  .clear-search:hover {
+    background: rgba(60, 188, 252, 0.1);
+    border-color: var(--yorha-accent, #3cbcfc);
+  }
+
+  .no-results {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--yorha-text-secondary, #a0a0a0);
+    font-size: 0.85rem;
   }
 
   .loading, .empty-state, .no-selection {
@@ -682,5 +1064,91 @@
     border-top: 1px solid var(--yorha-border, #606060);
     font-size: 0.75rem;
     color: var(--yorha-text-tertiary, #707070);
+  }
+
+  /* Evidence References Styles */
+  .evidence-refs {
+    border-top: 1px solid var(--yorha-border, #606060);
+    background: var(--yorha-bg-secondary, #1a1a1a);
+  }
+
+  .evidence-refs h4 {
+    margin: 0;
+    padding: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--yorha-text-primary, #e0e0e0);
+  }
+
+  .loading-refs, .no-refs {
+    padding: 1rem;
+    text-align: center;
+    color: var(--yorha-text-secondary, #a0a0a0);
+    font-size: 0.85rem;
+  }
+
+  .no-refs small {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--yorha-text-tertiary, #707070);
+  }
+
+  .refs-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .ref-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--yorha-border, #606060);
+    background: rgba(60, 188, 252, 0.05);
+  }
+
+  .ref-item:hover {
+    background: rgba(60, 188, 252, 0.1);
+  }
+
+  .ref-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .ref-title {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--yorha-text-primary, #e0e0e0);
+  }
+
+  .ref-type {
+    font-size: 0.75rem;
+    color: var(--yorha-accent, #3cbcfc);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .ref-file {
+    font-size: 0.75rem;
+    color: var(--yorha-text-secondary, #a0a0a0);
+    font-style: italic;
+  }
+
+  .ref-remove {
+    padding: 0.25rem;
+    background: transparent;
+    border: 1px solid #ef4444;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #ef4444;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+
+  .ref-remove:hover {
+    background: rgba(239, 68, 68, 0.2);
   }
 </style>

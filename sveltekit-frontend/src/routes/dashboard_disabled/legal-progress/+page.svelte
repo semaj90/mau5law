@@ -79,7 +79,7 @@
 
 <svelte:head>
   <title>Legal Document Processing Dashboard</title>
-  <link rel="stylesheet" href="/styles/courthouse-theme.css" />
+  <link rel="stylesheet" href="/styles/courthouse-theme.css" ></li>
 </svelte:head>
 
 <div class="courthouse-dashboard">

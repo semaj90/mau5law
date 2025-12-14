@@ -174,9 +174,9 @@
 	<div
 		class="upload-zone"
 		class:drag-active={dragActive}
-		on:dragover={handleDragOver}
-		on:dragleave={handleDragLeave}
-		on:drop={handleDrop}
+		ondragover={handleDragOver}
+		ondragleave={handleDragLeave}
+		ondrop={handleDrop}
 		onclick={handleClick}
 		role="button"
 		tabindex="0"
