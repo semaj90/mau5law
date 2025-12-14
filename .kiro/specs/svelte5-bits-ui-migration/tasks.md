@@ -17,13 +17,17 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - _Requirements: 5.1-5.3_
 
 
-- [ ] 2. Create Codemod Scripts Directory
+- [x] 2. Create Codemod Scripts Directory
+
+
   - Create `scripts/` directory if not exists
   - Create `scripts/codemod-svelte5-events.mjs` for event handler conversion
   - Create `scripts/codemod-svelte5-dynamic-components.mjs` for dynamic component conversion
   - Create `scripts/codemod-svelte5-nonvoid-selfclose.mjs` for self-closing tag fixes
   - Create `scripts/codemod-svelte5-import-type.mjs` for import type fixes
   - _Requirements: 2.1-2.8_
+
+
 
 
 - [ ] 3. Create Backup & Test Environment
@@ -33,6 +37,8 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - _Requirements: 7.1-7.4_
 
 ---
+
+
 
 
 ## Phase 2: Automated Codemods
@@ -46,12 +52,16 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - Convert all `on:keydown` → `onkeydown`
   - Convert all `on:keyup` → `onkeyup`
   - Convert all `on:focus` → `onfocus`
+
+
   - Convert all `on:blur` → `onblur`
 
   - Log all changed files
   - _Requirements: 2.1-2.8_
 
-- [ ] 5. Run Dynamic Component Codemod
+- [x] 5. Run Dynamic Component Codemod
+
+
   - Execute `node scripts/codemod-svelte5-dynamic-components.mjs`
   - Convert `<svelte:component this={X} />` → `<X />`
 
@@ -73,6 +83,8 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
 
 
 
+
+
   - Execute `node scripts/codemod-svelte5-import-type.mjs`
   - Convert `import type { fade }` → `import { fade }`
   - Handle all transition/animation imports
@@ -90,7 +102,9 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
 
 ## Phase 3: Manual Fixes - Runes Migration
 
+
 - [x] 9. Fix export let → $props Conversion
+
 
 
 
@@ -98,6 +112,7 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - For each file, convert to `let { prop } = $props<Type>()`
   - Add TypeScript types for all props
   - Verify component still compiles
+
   - _Requirements: 1.1_
 
 - [ ]* 9.1 Write property test for export let conversion
@@ -108,6 +123,7 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - Search for all `$: variable = ...` patterns
   - Convert to `let variable = $derived(...)`
   - Ensure dependencies are captured
+
   - Verify computed values update correctly
   - _Requirements: 1.2_
 
@@ -143,6 +159,7 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - Run `npm run build`
   - Capture svelte-check error count
   - Should be significantly lower than Phase 2
+
   - Document remaining errors
   - _Requirements: 7.1-7.4_
 
@@ -156,6 +173,7 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - Update all Dialog usage patterns
   - Verify dialogs render and function correctly
   - _Requirements: 3.2_
+
   - **Status**: Dialog components already using v2 API (Dialog.Root, Dialog.Portal, Dialog.Overlay, Dialog.Content, Dialog.Title, Dialog.Close). Import statements updated to use namespace import pattern.
 
 - [ ]* 15.1 Write property test for Dialog component migration
@@ -169,6 +187,7 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
   - _Requirements: 3.3_
   - **Status**: COMPLETE
     - Updated imports to use namespace pattern: `import * as Button from 'bits-ui/components/button'`
+
     - Updated Button usage in: evidence-ai, terminal, command-center, EvidenceCanvas, PersonList, PersonStatsPanel
     - All Button components now use v2 API (Button.Root)
 
@@ -223,6 +242,7 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
     - Updated imports to use namespace pattern for all components
     - Build errors encountered are pre-existing (esbuild commonjs resolver issue, unrelated to Bits-UI migration)
     - All Bits-UI component migrations complete and ready for Phase 5
+
 
 ---
 
@@ -299,19 +319,27 @@ This is the implementation plan for migrating the YoRHa Legal AI frontend from S
 All styling tasks have been successfully completed:
 - ✅ Task 21: Inline styles converted to UnoCSS classes
 - ✅ Task 22: Tailwind compatibility verified
+
 - ✅ Task 23: Spacing classes standardized
+
 - ✅ Task 24: Flexbox/Grid classes verified
 - ✅ Task 25: Build checkpoint completed
 
 The codebase now uses consistent UnoCSS classes throughout, with full Tailwind CSS compatibility. All layout and spacing follows UnoCSS patterns, and dynamic styles are appropriately preserved as inline styles.
 
+
+
 ---
 
 ## Phase 6: Verification & Testing
 
+
 ## Phase 6: Verification & Testing
 
-- [ ] 26. Run Full Build & svelte-check
+
+
+- [-] 26. Run Full Build & svelte-check
+
   - Execute `npm run build`
   - Run `npm run svelte-check`
   - Verify error count < 500

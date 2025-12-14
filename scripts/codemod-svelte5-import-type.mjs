@@ -1,81 +1,106 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
-import path from 'node:path';
+/**
+ * Codemod: Fix import type for runtime values (transitions, animations)
+ * Converts: import type { fade } → import { fade }
+ * Scope: All .svelte files in src/
+ */
 
-const ROOT = path.resolve('sveltekit-frontend/src');
-const exts = new Set(['.svelte']);
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Transitions and animations that must be runtime imports
-const runtimeImports = [
-  'fade', 'fly', 'slide', 'blur', 'scale', 'draw', 'crossfade',
-  'elasticIn', 'elasticOut', 'elasticInOut',
-  'backIn', 'backOut', 'backInOut',
-  'bounceIn', 'bounceOut', 'bounceInOut',
-  'circIn', 'circOut', 'circInOut',
-  'cubicIn', 'cubicOut', 'cubicInOut',
-  'expoIn', 'expoOut', 'expoInOut',
-  'quadIn', 'quadOut', 'quadInOut',
-  'quartIn', 'quartOut', 'quartInOut',
-  'quintIn', 'quintOut', 'quintInOut',
-  'sineIn', 'sineOut', 'sineInOut',
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const srcDir = path.join(__dirname, '../sveltekit-frontend/src');
+
+// Runtime values that should not be imported as types
+const runtimeValues = [
+  'fade', 'fly', 'slide', 'scale', 'draw', 'crossfade', 'blur', 'bounce',
+  'elasticIn', 'elasticOut', 'elasticInOut', 'backIn', 'backOut', 'backInOut',
+  'circIn', 'circOut', 'circInOut', 'cubicIn', 'cubicOut', 'cubicInOut',
+  'expoIn', 'expoOut', 'expoInOut', 'quadIn', 'quadOut', 'quadInOut',
+  'quartIn', 'quartOut', 'quartInOut', 'quintIn', 'quintOut', 'quintInOut',
+  'sineIn', 'sineOut', 'sineInOut', 'linear',
 ];
 
-function walk(dir, out = []) {
-  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, ent.name);
-    if (ent.isDirectory()) {
-      if (!ent.name.startsWith('.') && ent.name !== 'node_modules') {
-        walk(p, out);
+let totalFiles = 0;
+let changedFiles = 0;
+const results = [];
+
+function walkDir(dir) {
+  const files = fs.readdirSync(dir);
+
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+
+    if (stat.isDirectory()) {
+      if (!file.startsWith('.') && file !== 'node_modules') {
+        walkDir(filePath);
       }
-    } else if (exts.has(path.extname(ent.name))) {
-      out.push(p);
+    } else if (file.endsWith('.svelte')) {
+      totalFiles++;
+      processSvelteFile(filePath);
     }
   }
-  return out;
 }
 
-function codemod(s) {
-  let out = s;
+function processSvelteFile(filePath) {
+  try {
+    let content = fs.readFileSync(filePath, 'utf-8');
+    const originalContent = content;
 
-  // Fix import type for transitions and animations
-  for (const imp of runtimeImports) {
-    // Match: import type { fade } from 'svelte/transition'
-    out = out.replace(
-      new RegExp(`import\\s+type\\s+\\{\\s*([^}]*\\b${imp}\\b[^}]*)\\s*\\}\\s+from\\s+['"]svelte/(transition|animate)['"]`, 'g'),
-      (match, imports, module) => {
+    // Match: import type { ... } from 'svelte/transition' or 'svelte/animate'
+    // Pattern: import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+['"]svelte\/(transition|animate)['"]
+    const regex = /import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+['"]svelte\/(transition|animate)['"]/g;
+
+    content = content.replace(regex, (match, imports, module) => {
+      // Check if any of the imported values are runtime values
+      const importList = imports.split(',').map(i => i.trim());
+      const hasRuntimeValues = importList.some(imp => {
+        const name = imp.split(' as ')[0].trim();
+        return runtimeValues.includes(name);
+      });
+
+      if (hasRuntimeValues) {
         return `import { ${imports} } from 'svelte/${module}'`;
       }
-    );
-  }
+      return match;
+    });
 
-  return out;
-}
-
-const files = walk(ROOT);
-let changed = 0;
-let errors = [];
-
-console.log(`🔍 Found ${files.length} Svelte files to process...`);
-
-for (const file of files) {
-  try {
-    const before = fs.readFileSync(file, 'utf8');
-    const after = codemod(before);
-    if (after !== before) {
-      fs.writeFileSync(file, after, 'utf8');
-      changed++;
-      console.log(`✅ Updated: ${path.relative(ROOT, file)}`);
+    if (content !== originalContent) {
+      fs.writeFileSync(filePath, content, 'utf-8');
+      changedFiles++;
+      results.push({
+        file: path.relative(srcDir, filePath),
+        changed: true,
+        errors: [],
+      });
     }
-  } catch (err) {
-    errors.push(`❌ Error processing ${file}: ${err.message}`);
+  } catch (error) {
+    results.push({
+      file: path.relative(srcDir, filePath),
+      changed: false,
+      errors: [error.message],
+    });
   }
 }
 
-console.log(`\n📊 Summary:`);
-console.log(`   Files changed: ${changed}/${files.length}`);
-if (errors.length > 0) {
-  console.log(`   Errors: ${errors.length}`);
-  errors.forEach(e => console.log(`   ${e}`));
+console.log('🔄 Fixing import type for runtime values (transitions, animations)...\n');
+walkDir(srcDir);
+
+console.log(`✅ Conversion complete!`);
+console.log(`📊 Statistics:`);
+console.log(`   Total files scanned: ${totalFiles}`);
+console.log(`   Files changed: ${changedFiles}`);
+console.log(`\n📝 Changed files:`);
+results.filter(r => r.changed).forEach(r => {
+  console.log(`   ✓ ${r.file}`);
+});
+
+if (results.some(r => r.errors.length > 0)) {
+  console.log(`\n⚠️  Errors:`);
+  results.filter(r => r.errors.length > 0).forEach(r => {
+    console.log(`   ✗ ${r.file}: ${r.errors.join(', ')}`);
+  });
 }
-console.log(`\n✨ Import type migration complete!`);

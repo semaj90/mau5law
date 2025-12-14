@@ -620,7 +620,7 @@
 			ondragover={handleDragOver}
 			ondrop={handleDrop}
 			onclick={handleBoardCanvasClick}
-			on:contextmenu|preventDefault={handleBoardCanvasClick}
+			oncontextmenu|preventDefault={handleBoardCanvasClick}
 		>
 			{#if board.length === 0}
 				<div class="empty-board">
