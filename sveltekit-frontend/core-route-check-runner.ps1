@@ -67,9 +67,57 @@ foreach ($route in $routes) {
 
     Write-Host "🎯 Target: $target" -ForegroundColor Blue
 
+    # Create temporary tsconfig for this specific route
+    $tempTsConfig = "tsconfig-route-check.json"
+
+    # Get all files in the target directory
+    $targetFiles = Get-ChildItem -Path $target -Recurse -File | Where-Object {
+        $_.Extension -in @('.ts', '.tsx', '.js', '.jsx', '.svelte', '.d.ts')
+    } | ForEach-Object {
+        $_.FullName -replace [regex]::Escape((Get-Location).Path + '\'), '' -replace '\\', '/'
+    }
+
+    if ($targetFiles.Count -eq 0) {
+        Write-Host "SKIP (no TypeScript/Svelte files): $route" -ForegroundColor Yellow
+        $report += [PSCustomObject]@{
+            Route = $route
+            Status = "Skipped"
+            Target = $target
+            Errors = 0
+            Duration = 0
+        }
+        continue
+    }
+
+    $includePaths = $targetFiles | ForEach-Object { "`"$_`"" } | Join-String -Separator ",`n    "
+    $routeConfig = @"
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "checkJs": false,
+    "isolatedModules": true
+  },
+  "include": [
+    $includePaths
+  ],
+  "exclude": [
+    "node_modules/**",
+    ".svelte-kit/**",
+    "dist/**",
+    "build/**"
+  ]
+}
+"@
+    $routeConfig | Out-File -FilePath $tempTsConfig -Encoding UTF8
+
     $routeStart = Get-Date
-    $output = & npx svelte-check --tsconfig $TsConfig $target 2>&1
+    $output = & npx svelte-check --tsconfig $tempTsConfig 2>&1
     $duration = [math]::Round(((Get-Date) - $routeStart).TotalSeconds, 2)
+
+    # Clean up temp config
+    Remove-Item $tempTsConfig -ErrorAction SilentlyContinue
 
     # Parse output for errors
     $errorLines = $output | Where-Object { $_ -match 'error|Error' }

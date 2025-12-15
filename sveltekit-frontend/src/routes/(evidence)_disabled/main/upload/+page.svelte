@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { superForm } from 'sveltekit-superforms/client';
+  import { superForm } from 'sveltekit-superforms/client';
   // evidenceUploadSchema only exports validateFileSize and getFileTypeFromMime
-  import type { getFileTypeFromMime, validateFileSize } from '$lib/schemas/evidence-upload.js';
+  import { getFileTypeFromMime, validateFileSize } from '$lib/schemas/evidence-upload.js';
 
   import type { PageData } from './$types.js';
-  const { data }: { data: PageData } = $props();
+  let data: PageData = $props().data;
 
   // Initialize Superform with a safe fallback when the server didn't include a form
   const serverForm = (data as any)?.form ?? {};
@@ -88,7 +88,7 @@
   async function handleFileSelect(file: File): Promise<any> {
     selectedFile = file;
     // Validate file size (100MB limit)
-    if (!validateFileSize(file, 100 * 1024 * 1024)) {
+    if (!validateFileSize(file)) {
       $errors .file = ['File size exceeds 100MB limit'];
       selectedFile = null;
       return;
@@ -195,7 +195,7 @@
 
   <!-- Minimal dropzone / input that wires the handlers and prevents "declared but never used" warnings -->
   <div
-    class="dropzone border-2 border-dashed border-gray-300 p-4 rounded-lg mb-4"
+    class="dropzone border-2 border-dashed p-4 rounded-lg mb-4 {dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
   >
     <p class="mb-2">Drop a file here or choose a file</p>
     <label class="cursor-pointer text-accent">

@@ -101,6 +101,7 @@
     "chat.customAgentInSubagent.enabled": true,
     "chat.useNestedAgentsMdFiles": true,
     "inlineChat.accessibleDiffView": "off",
+    "chatgpt.runCodexInWindowsSubsystemForLinux": true,
   },
 
   "extensions": {

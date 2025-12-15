@@ -32,6 +32,12 @@
     "src/routes/api/reports/**",
     "src/routes/api/redis-orchestrator/**",
     "src/routes/api/security/**",
-    "src/routes/api/test/**"
+    "src/routes/api/test/**",
+    // Exclude junk/backup folders during migration
+    "src/**/*.bak.*",
+    "src/**/_disabled/**",
+    "src/**/_yorha_legacy/**",
+    "**/*.any-backup",
+    "error-files/**"
   ]
 }

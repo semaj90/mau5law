@@ -8,10 +8,11 @@ package main
 
 import (
 	"context"
-	"encoding/binary"
 	"fmt"
 	"log"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 // Execution Runtime handles .gbin file execution
@@ -96,7 +97,7 @@ type CallFrame struct {
 }
 
 // Execution result
-type ExecutionResult struct {
+type RuntimeExecutionResult struct {
 	Success      bool                   `json:"success"`
 	Result       map[string]interface{} `json:"result"`
 	VMState      *VMState               `json:"vm_state"`
@@ -153,12 +154,12 @@ func NewExecutionRuntime(redisClient *redis.Client) *ExecutionRuntime {
 }
 
 // Execute a compiled glyph binary
-func (rt *ExecutionRuntime) ExecuteGlyph(ctx context.Context, binary *GlyphBinary, inputs map[string]interface{}) (*ExecutionResult, error) {
+func (rt *ExecutionRuntime) ExecuteGlyph(ctx context.Context, binary *GlyphBinary, inputs map[string]interface{}) (*RuntimeExecutionResult, error) {
 	start := time.Now()
-	
-	log.Printf("🚀 Starting glyph execution: %d instructions, %d cache keys", 
+
+	log.Printf("🚀 Starting glyph execution: %d instructions, %d cache keys",
 		binary.Header.InstructionCount, binary.Header.CacheKeyCount)
-	
+
 	// Initialize VM state
 	vmState := &VMState{
 		PC:        0,
@@ -170,12 +171,12 @@ func (rt *ExecutionRuntime) ExecuteGlyph(ctx context.Context, binary *GlyphBinar
 		CacheMisses: 0,
 		Instructions: 0,
 	}
-	
+
 	// Load inputs into registers
 	for key, value := range inputs {
 		vmState.Registers[key] = value
 	}
-	
+
 	// Preload cache keys
 	cacheStart := time.Now()
 	err := rt.preloadCacheKeys(ctx, binary.CacheKeys)
@@ -183,21 +184,21 @@ func (rt *ExecutionRuntime) ExecuteGlyph(ctx context.Context, binary *GlyphBinar
 		log.Printf("⚠️ Cache preload warning: %v", err)
 	}
 	cacheTime := time.Since(cacheStart)
-	
+
 	// Execute instructions
 	computeStart := time.Now()
 	result, err := rt.executeInstructions(ctx, binary.Instructions, vmState)
 	if err != nil {
-		return &ExecutionResult{
+		return &RuntimeExecutionResult{
 			Success: false,
 			Error:   err.Error(),
 			VMState: vmState,
 		}, err
 	}
 	computeTime := time.Since(computeStart)
-	
+
 	totalTime := time.Since(start)
-	
+
 	// Calculate performance metrics
 	performance := ExecutionPerformance{
 		TotalTimeMs:      totalTime.Milliseconds(),
@@ -208,14 +209,14 @@ func (rt *ExecutionRuntime) ExecuteGlyph(ctx context.Context, binary *GlyphBinar
 		CacheHitRatio:    rt.tensorCache.GetHitRatio(),
 		MemoryUsageKB:    int64(len(vmState.Memory)) / 1024,
 	}
-	
+
 	// Generate legal execution result
 	legalResult := rt.generateLegalResult(binary, result)
-	
-	log.Printf("✅ Glyph execution complete in %dms (%d instructions, %.2f%% cache hits)", 
+
+	log.Printf("✅ Glyph execution complete in %dms (%d instructions, %.2f%% cache hits)",
 		totalTime.Milliseconds(), vmState.Instructions, performance.CacheHitRatio*100)
-	
-	return &ExecutionResult{
+
+	return &RuntimeExecutionResult{
 		Success:     true,
 		Result:      result,
 		VMState:     vmState,
@@ -236,78 +237,78 @@ func (rt *ExecutionRuntime) preloadCacheKeys(ctx context.Context, cacheKeys []st
 			rt.tensorCache.hits++
 		}
 	}
-	
-	log.Printf("📦 Preloaded %d cache keys (%d hits, %d misses)", 
+
+	log.Printf("📦 Preloaded %d cache keys (%d hits, %d misses)",
 		len(cacheKeys), rt.tensorCache.hits, rt.tensorCache.misses)
-	
+
 	return nil
 }
 
 // Execute the instruction sequence
 func (rt *ExecutionRuntime) executeInstructions(ctx context.Context, instructions []BinaryInstr, vmState *VMState) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
-	
+
 	for vmState.PC < uint32(len(instructions)) {
 		instruction := instructions[vmState.PC]
 		vmState.Instructions++
-		
+
 		err := rt.executeInstruction(ctx, &instruction, vmState, result)
 		if err != nil {
 			return nil, fmt.Errorf("instruction execution failed at PC=%d: %w", vmState.PC, err)
 		}
-		
+
 		// Check for halt instruction
 		if instruction.OpCode == OP_HALT {
 			log.Printf("🛑 HALT instruction reached at PC=%d", vmState.PC)
 			break
 		}
-		
+
 		vmState.PC++
-		
+
 		// Prevent infinite loops
 		if vmState.Instructions > 10000 {
 			return nil, fmt.Errorf("instruction limit exceeded (10000)")
 		}
 	}
-	
+
 	return result, nil
 }
 
 // Execute a single instruction
 func (rt *ExecutionRuntime) executeInstruction(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	switch instr.OpCode {
-		
+
 	case OP_LOAD_FROM_CACHE:
 		return rt.execLoadFromCache(ctx, instr, vmState, result)
-		
+
 	case OP_STORE_TO_CACHE:
 		return rt.execStoreToCache(ctx, instr, vmState, result)
-		
+
 	case OP_EVIDENCE_ANALYSIS:
 		return rt.execEvidenceAnalysis(ctx, instr, vmState, result)
-		
+
 	case OP_CONTRACT_PARSING:
 		return rt.execContractParsing(ctx, instr, vmState, result)
-		
+
 	case OP_RISK_ASSESSMENT:
 		return rt.execRiskAssessment(ctx, instr, vmState, result)
-		
+
 	case OP_SEMANTIC_SEARCH:
 		return rt.execSemanticSearch(ctx, instr, vmState, result)
-		
+
 	case OP_TENSOR_ADD:
 		return rt.execTensorAdd(ctx, instr, vmState, result)
-		
+
 	case OP_MATRIX_MUL:
 		return rt.execMatrixMultiply(ctx, instr, vmState, result)
-		
+
 	case OP_STORE_RESULT:
 		return rt.execStoreResult(ctx, instr, vmState, result)
-		
+
 	case OP_HALT:
 		// No-op, handled by main loop
 		return nil
-		
+
 	default:
 		return fmt.Errorf("unknown opcode: 0x%02X", instr.OpCode)
 	}
@@ -317,7 +318,7 @@ func (rt *ExecutionRuntime) executeInstruction(ctx context.Context, instr *Binar
 
 func (rt *ExecutionRuntime) execEvidenceAnalysis(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("🔍 Executing evidence analysis instruction")
-	
+
 	// Mock evidence analysis processing
 	analysis := map[string]interface{}{
 		"classification": "legal_document",
@@ -327,16 +328,16 @@ func (rt *ExecutionRuntime) execEvidenceAnalysis(ctx context.Context, instr *Bin
 		"sentiment":      0.1, // Neutral legal document
 		"processed_at":   time.Now(),
 	}
-	
+
 	result["evidence_analysis"] = analysis
 	vmState.CacheHits++
-	
+
 	return nil
 }
 
 func (rt *ExecutionRuntime) execContractParsing(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("📄 Executing contract parsing instruction")
-	
+
 	parsing := map[string]interface{}{
 		"parties": []string{"Party A", "Party B"},
 		"clauses": []string{"Payment Terms", "Liability", "Termination"},
@@ -345,16 +346,16 @@ func (rt *ExecutionRuntime) execContractParsing(ctx context.Context, instr *Bina
 		"jurisdiction":   "California",
 		"parsed_at":      time.Now(),
 	}
-	
+
 	result["contract_parsing"] = parsing
 	vmState.CacheHits++
-	
+
 	return nil
 }
 
 func (rt *ExecutionRuntime) execRiskAssessment(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("⚠️ Executing risk assessment instruction")
-	
+
 	// Calculate risk based on previous analysis
 	var confidence float64 = 0.85
 	if evidenceAnalysis, exists := result["evidence_analysis"]; exists {
@@ -364,7 +365,7 @@ func (rt *ExecutionRuntime) execRiskAssessment(ctx context.Context, instr *Binar
 			}
 		}
 	}
-	
+
 	var riskLevel string
 	if confidence > 0.9 {
 		riskLevel = "low"
@@ -373,7 +374,7 @@ func (rt *ExecutionRuntime) execRiskAssessment(ctx context.Context, instr *Binar
 	} else {
 		riskLevel = "high"
 	}
-	
+
 	assessment := map[string]interface{}{
 		"risk_level":       riskLevel,
 		"confidence":       confidence,
@@ -381,16 +382,16 @@ func (rt *ExecutionRuntime) execRiskAssessment(ctx context.Context, instr *Binar
 		"recommendations": []string{"legal_review_required", "additional_documentation"},
 		"assessed_at":     time.Now(),
 	}
-	
+
 	result["risk_assessment"] = assessment
 	vmState.CacheHits++
-	
+
 	return nil
 }
 
 func (rt *ExecutionRuntime) execSemanticSearch(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("🔍 Executing semantic search instruction")
-	
+
 	search := map[string]interface{}{
 		"query":     "legal evidence analysis",
 		"results": []map[string]interface{}{
@@ -401,7 +402,7 @@ func (rt *ExecutionRuntime) execSemanticSearch(ctx context.Context, instr *Binar
 				"relevance":   0.89,
 			},
 			{
-				"document_id": "doc_002", 
+				"document_id": "doc_002",
 				"title":       "Evidence Chain of Custody",
 				"similarity":  0.87,
 				"relevance":   0.82,
@@ -411,10 +412,10 @@ func (rt *ExecutionRuntime) execSemanticSearch(ctx context.Context, instr *Binar
 		"search_time":   45, // milliseconds
 		"searched_at":   time.Now(),
 	}
-	
+
 	result["semantic_search"] = search
 	vmState.CacheHits++
-	
+
 	return nil
 }
 
@@ -422,7 +423,7 @@ func (rt *ExecutionRuntime) execSemanticSearch(ctx context.Context, instr *Binar
 
 func (rt *ExecutionRuntime) execTensorAdd(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("➕ Executing tensor addition instruction")
-	
+
 	// Mock tensor addition
 	tensorResult := map[string]interface{}{
 		"operation":   "tensor_add",
@@ -431,14 +432,14 @@ func (rt *ExecutionRuntime) execTensorAdd(ctx context.Context, instr *BinaryInst
 		"result":      "tensor_sum_cached",
 		"computed_at": time.Now(),
 	}
-	
+
 	result["tensor_operation"] = tensorResult
 	return nil
 }
 
 func (rt *ExecutionRuntime) execMatrixMultiply(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("✖️ Executing matrix multiplication instruction")
-	
+
 	matmul := map[string]interface{}{
 		"operation": "matrix_multiply",
 		"input_a_shape": []int{768, 512},
@@ -447,7 +448,7 @@ func (rt *ExecutionRuntime) execMatrixMultiply(ctx context.Context, instr *Binar
 		"result":        "matmul_result_cached",
 		"computed_at":   time.Now(),
 	}
-	
+
 	result["matrix_operation"] = matmul
 	return nil
 }
@@ -457,13 +458,13 @@ func (rt *ExecutionRuntime) execMatrixMultiply(ctx context.Context, instr *Binar
 func (rt *ExecutionRuntime) execLoadFromCache(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	cacheKey := fmt.Sprintf("cache_key_%d", instr.CacheKeyRef)
 	log.Printf("📥 Loading from cache: %s", cacheKey)
-	
+
 	tensorData, err := rt.tensorCache.Load(ctx, cacheKey)
 	if err != nil {
 		vmState.CacheMisses++
 		return fmt.Errorf("cache load failed: %w", err)
 	}
-	
+
 	vmState.CacheHits++
 	result["cached_tensor"] = tensorData
 	return nil
@@ -472,7 +473,7 @@ func (rt *ExecutionRuntime) execLoadFromCache(ctx context.Context, instr *Binary
 func (rt *ExecutionRuntime) execStoreToCache(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	cacheKey := fmt.Sprintf("cache_key_%d", instr.CacheKeyRef)
 	log.Printf("📤 Storing to cache: %s", cacheKey)
-	
+
 	// Create mock tensor data to store
 	tensorData := &TensorData{
 		ID:    cacheKey,
@@ -486,19 +487,19 @@ func (rt *ExecutionRuntime) execStoreToCache(ctx context.Context, instr *BinaryI
 		CachedAt:    time.Now(),
 		AccessCount: 1,
 	}
-	
+
 	err := rt.tensorCache.Store(ctx, cacheKey, tensorData)
 	if err != nil {
 		return fmt.Errorf("cache store failed: %w", err)
 	}
-	
+
 	result["stored_to_cache"] = cacheKey
 	return nil
 }
 
 func (rt *ExecutionRuntime) execStoreResult(ctx context.Context, instr *BinaryInstr, vmState *VMState, result map[string]interface{}) error {
 	log.Printf("💾 Storing final result")
-	
+
 	result["execution_complete"] = true
 	result["final_result"] = map[string]interface{}{
 		"success":        true,
@@ -507,7 +508,7 @@ func (rt *ExecutionRuntime) execStoreResult(ctx context.Context, instr *BinaryIn
 		"cache_misses":   vmState.CacheMisses,
 		"completed_at":   time.Now(),
 	}
-	
+
 	return nil
 }
 
@@ -521,18 +522,18 @@ func (rt *ExecutionRuntime) generateLegalResult(binary *GlyphBinary, result map[
 		Artifacts:         []LegalArtifact{},
 		AuditTrail:        []AuditEntry{},
 	}
-	
+
 	// Extract legal context from binary metadata
 	if binary.Metadata.LegalContext != nil {
 		legalResult.RiskAssessment = binary.Metadata.LegalContext.RiskAssessment
 		legalResult.Classification = binary.Metadata.LegalContext.Classification
 	}
-	
+
 	// Add audit trail entry
 	auditEntry := AuditEntry{
 		Action:    "glyph_execution",
 		Timestamp: time.Now(),
-		User:      binary.Metadata.UserID,
+		User:      "system",
 		Details: map[string]interface{}{
 			"glyph_id":         binary.Metadata.OriginalGlyphID,
 			"instructions":     len(binary.Instructions),
@@ -541,15 +542,15 @@ func (rt *ExecutionRuntime) generateLegalResult(binary *GlyphBinary, result map[
 		},
 	}
 	legalResult.AuditTrail = append(legalResult.AuditTrail, auditEntry)
-	
+
 	return legalResult
 }
 
 // Collect artifacts from execution result
 func (rt *ExecutionRuntime) collectArtifacts(result map[string]interface{}) []string {
 	artifacts := []string{}
-	
-	for key, value := range result {
+
+	for _, value := range result {
 		if valueMap, ok := value.(map[string]interface{}); ok {
 			if url, exists := valueMap["artifact_url"]; exists {
 				if urlStr, ok := url.(string); ok {
@@ -558,7 +559,7 @@ func (rt *ExecutionRuntime) collectArtifacts(result map[string]interface{}) []st
 			}
 		}
 	}
-	
+
 	return artifacts
 }
 
@@ -579,7 +580,7 @@ func (tc *TensorCache) Load(ctx context.Context, key string) (*TensorData, error
 		tc.hits++
 		return data, nil
 	}
-	
+
 	// Mock tensor data for development
 	tc.misses++
 	mockData := &TensorData{
@@ -593,7 +594,7 @@ func (tc *TensorCache) Load(ctx context.Context, key string) (*TensorData, error
 		CachedAt:    time.Now(),
 		AccessCount: 1,
 	}
-	
+
 	tc.localCache[key] = mockData
 	return mockData, nil
 }

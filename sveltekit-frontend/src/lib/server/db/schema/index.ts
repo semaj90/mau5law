@@ -10,3 +10,6 @@ export * from './error_timeline';
 export * from './route_error_patches';
 export * from './route_health';
 
+// Phase 9 (Error Brain Analysis) tables
+export * from './error_brain_analysis';
+

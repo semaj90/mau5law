@@ -24,7 +24,13 @@ public:
 
       // Convert to string representation for Node.js
       std::stringstream ss;
-      ss << result.value();
+      simdjson::dom::element element;
+      auto error = result.get(element);
+      if (error != simdjson::SUCCESS) {
+        SetError(std::string("Failed to get element from result: ") + simdjson::error_message(error));
+        return;
+      }
+      ss << element;
       parsed_json_ = ss.str();
 
     } catch (const std::exception& e) {
@@ -82,7 +88,14 @@ Napi::Value ParseSync(const Napi::CallbackInfo& info) {
 
     // Convert parsed document to string
     std::stringstream ss;
-    ss << result.value();
+    simdjson::dom::element element;
+    auto error = result.get(element);
+    if (error != simdjson::SUCCESS) {
+      Napi::Error::New(env, std::string("Failed to get element from result: ") + simdjson::error_message(error))
+          .ThrowAsJavaScriptException();
+      return env.Null();
+    }
+    ss << element;
 
     Napi::Object response = Napi::Object::New(env);
     response.Set("success", Napi::Boolean::New(env, true));

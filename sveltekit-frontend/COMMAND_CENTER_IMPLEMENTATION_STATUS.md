@@ -199,41 +199,14 @@
 
 ### Immediate (Before Testing)
 1. **Server Load Update** (`src/routes/(app)/all-routes/+page.server.ts`)
-   ```typescript
-   // Add Phase 72 graph loading
-   let graph = { nodes: [], edges: [] };
-   try {
-     const graphData = fs.readFileSync('static/phase72/route-ast-graph.json', 'utf-8');
-     graph = JSON.parse(graphData);
-   } catch (err) {
-     console.warn('Phase 72 graph not found');
-   }
-
-   // Add Phase 90 shield loading (optional)
-   let shieldData = {};
-   try {
-     const shieldFile = fs.readFileSync('static/phase90/state-machine-shield.json', 'utf-8');
-     shieldData = JSON.parse(shieldFile);
-   } catch (err) {
-     console.warn('Phase 90 shield not found');
-   }
-
-   // Add error summary loading (optional)
-   let errorSummary = {};
-   try {
-     const errorFile = fs.readFileSync('static/errors/error-summary.json', 'utf-8');
-     errorSummary = JSON.parse(errorFile);
-   } catch (err) {
-     console.warn('Error summary not found');
-   }
-
-   return { graph, shieldData, errorSummary };
-   ```
+   - [x] Added shared `readJsonFile` helper with `fs/promises` + `path`
+   - [x] Live adapter fallback to `static/phase72/route-ast-graph.json`
+   - [x] Phase 90 shield + error summary wiring (warn when missing)
 
 2. **Verify Data Files Exist**
-   - [ ] Check if `static/phase72/route-ast-graph.json` exists
-   - [ ] Check if `static/phase90/state-machine-shield.json` exists
-   - [ ] Check if error summary is available
+   - [x] `static/phase72/route-ast-graph.json` (present)
+   - [ ] `static/phase90/state-machine-shield.json` (missing)
+   - [ ] `static/errors/error-summary.json` (missing)
 
 ### Phase 1: Core UI Testing (30 min)
 - Run testing checklist Phase 1-4 above
