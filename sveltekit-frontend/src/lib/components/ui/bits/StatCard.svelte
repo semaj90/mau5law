@@ -2,19 +2,19 @@
   import type { Snippet } from 'svelte';
 
   type Variant = 'default' | 'success' | 'warning' | 'danger';
-  type Size = 'sm' | 'md' | 'lg';
+  type Size = 'lg' | '2xl' | '3xl';
 
   export let value: string | number;
   export let label: string;
   export let icon: Snippet | null = null;
   export let variant: Variant = 'default';
-  export let size: Size = 'md';
-  export let hoverable = true;
+  export let size: Size = 'lg';
+  export let hoverable = false;
 
   const sizeClasses: Record<Size, string> = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-3xl'
+    lg: 'text-lg',
+    '2xl': 'text-2xl',
+    '3xl': 'text-3xl'
   };
 </script>
 

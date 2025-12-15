@@ -48,6 +48,12 @@
     "**/*.worker.ts",
     "**/*.sw.ts",
     "**/service-worker.ts",
+    // Exclude junk/backup folders during migration
+    "src/**/*.bak.*",
+    "src/**/_disabled/**",
+    "src/**/_yorha_legacy/**",
+    "**/*.any-backup",
+    "error-files/**",
     "src/lib/stores/_archive/**"
   ]
 }

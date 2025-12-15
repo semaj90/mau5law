@@ -9,7 +9,7 @@ import {
 /**
  * Route Error Patches
  * Proposed or applied patches (diffs) to fix errors on routes
- * Linked to error_clusters and route_health
+ * Linked to error_clusters, route_health, and error_brain_analysis
  */
 export const routeErrorPatchesTable = pgTable(
 	'route_error_patches',
@@ -22,6 +22,9 @@ export const routeErrorPatchesTable = pgTable(
 
 		// Which error cluster this patch addresses
 		clusterId: text('cluster_id'),
+
+		// Link to error brain analysis that generated this patch
+		analysisId: uuid('analysis_id'),
 
 		// The patch itself (unified diff format or code block)
 		patchContent: text('patch_content').notNull(),
@@ -36,6 +39,11 @@ export const routeErrorPatchesTable = pgTable(
 		appliedAt: timestamp('applied_at', { withTimezone: true }),
 		appliedByUserId: text('applied_by_user_id'),
 
+		// Verification tracking (Phase 9)
+		verificationStatus: text('verification_status').default('pending'), // "pending" | "passed" | "failed"
+		verificationTimestamp: timestamp('verification_timestamp', { withTimezone: true }),
+		verificationMessage: text('verification_message'),
+
 		// Audit
 		createdByUserId: text('created_by_user_id'),
 		createdAt: timestamp('created_at', { withTimezone: true })
@@ -49,7 +57,9 @@ export const routeErrorPatchesTable = pgTable(
 		return {
 			routePathIdx: index('route_error_patches_route_path_idx').on(table.routePath),
 			clusterIdIdx: index('route_error_patches_cluster_id_idx').on(table.clusterId),
+			analysisIdIdx: index('route_error_patches_analysis_id_idx').on(table.analysisId),
 			statusIdx: index('route_error_patches_status_idx').on(table.status),
+			verificationStatusIdx: index('route_error_patches_verification_status_idx').on(table.verificationStatus),
 			createdAtIdx: index('route_error_patches_created_at_idx').on(table.createdAt)
 		};
 	}

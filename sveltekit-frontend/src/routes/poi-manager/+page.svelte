@@ -5,9 +5,10 @@ import Input from '$lib/components/ui/Input.svelte';
 import Select from '$lib/components/ui/Select.svelte';
 import { cn } from '$lib/utils.js';
 import { toast } from '$lib/utils/toast';
-import { Edit, Funnel as Filter, Grid, List, Plus, Trash } from "lucide-svelte";
+import { Edit, Funnel, Grid, List, Plus, Trash } from 'lucide-svelte';
+const Filter = Funnel;
 import { onMount } from 'svelte';
-import PersonOfInterestDetailView from '$lib/components/poi/PersonOfInterestDetailView.svelte';
+import { PersonOfInterestDetailView } from '$lib/components/poi/PersonOfInterestDetailView.svelte';
 
 interface PhysicalDescription {
   height: string;
@@ -90,6 +91,11 @@ let formData = $state<Poi>({ // Use Poi interface
   dangerLevel: 0,
   notes: ''
 });
+
+// Temporary strings for comma-separated fields
+let aliasesString = $state<string>('');
+let knownHabitsString = $state<string>('');
+let associatesString = $state<string>('');
 
 
 
@@ -383,26 +389,28 @@ const statusColors = {
     {#if viewMode === 'grid'}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each filteredPois as poi}
-          <Card class="p-4 shadow cursor-pointer hover:shadow-lg transition-shadow" onclick={() => openDetailView(poi)}>
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="text-xl font-semibold">{poi.name}</h3>
-              <span class={cn("px-2 py-1 text-xs rounded", priorityColors[poi.priority])}>{poi.priority}</span>
-            </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{poi.status.replace('_', ' ')}</p>
-            <p class="text-sm mb-2"><strong>Threat:</strong> {poi.threatLevel}</p>
-            <p class="text-sm mb-2"><strong>Last Seen:</strong> {poi.lastSeen || 'Unknown'}</p>
-            <p class="text-sm mb-4 truncate">{poi.notes || 'No notes'}</p>
-            <div class="flex gap-2" onclick|stopPropagation>
-              <button onclick={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-                <Edit class="w-4 h-4" />
-                Edit
-              </button>
-              <button onclick={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                <Trash class="w-4 h-4" />
-                Delete
-              </button>
-            </div>
-          </Card>
+          <div onclick={() => openDetailView(poi)}>
+            <Card class="p-4 shadow cursor-pointer hover:shadow-lg transition-shadow">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-xl font-semibold">{poi.name}</h3>
+                <span class={cn("px-2 py-1 text-xs rounded", priorityColors[poi.priority])}>{poi.priority}</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{poi.status.replace('_', ' ')}</p>
+              <p class="text-sm mb-2"><strong>Threat:</strong> {poi.threatLevel}</p>
+              <p class="text-sm mb-2"><strong>Last Seen:</strong> {poi.lastSeen || 'Unknown'}</p>
+              <p class="text-sm mb-4 truncate">{poi.notes || 'No notes'}</p>
+              <div class="flex gap-2" onclick|stopPropagation>
+                <button onclick={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                  <Edit class="w-4 h-4" />
+                  Edit
+                </button>
+                <button onclick={() => deletePoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                  <Trash class="w-4 h-4" />
+                  Delete
+                </button>
+              </div>
+            </Card>
+          </div>
         {/each}
       </div>
     {:else}
