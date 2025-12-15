@@ -18,8 +18,8 @@
     verified: boolean;
   };
 
-  let filterRole: PersonRole | 'all' = 'all';
-  let filterRisk: RiskLevel | 'all' = 'all';
+  let filterRole: PersonRole | 'all' = $state('all');
+  let filterRisk: RiskLevel | 'all' = $state('all');
 
   const persons: Person[] = [
     {

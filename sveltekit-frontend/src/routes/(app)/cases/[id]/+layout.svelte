@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 
 	const { data, children } = $props();
-	const { caseData } = data;
+	const caseData = $derived(data?.caseData);
 
 	const tabs = [
 		{ slug: 'overview', label: 'Overview' },

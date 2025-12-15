@@ -8,19 +8,67 @@
 
 import fs from 'fs';
 import path from 'path';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { dirname, join, isAbsolute, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const srcDir = path.join(__dirname, '../sveltekit-frontend/src');
+
+// Accept CLI arguments for target directories
+const args = process.argv.slice(2);
+let targetDirs = [];
+
+if (args.length > 0) {
+  // If arguments provided, use them as target directories
+  targetDirs = args.map((arg) => {
+    if (path.isAbsolute(arg)) {
+      return arg;
+    }
+    return path.join(process.cwd(), arg);
+  });
+} else {
+  // Default to src directory
+  targetDirs = [path.join(__dirname, '../sveltekit-frontend/src')];
+}
 
 // Runtime values that should not be imported as types
 const runtimeValues = [
-  'fade', 'fly', 'slide', 'scale', 'draw', 'crossfade', 'blur', 'bounce',
-  'elasticIn', 'elasticOut', 'elasticInOut', 'backIn', 'backOut', 'backInOut',
-  'circIn', 'circOut', 'circInOut', 'cubicIn', 'cubicOut', 'cubicInOut',
-  'expoIn', 'expoOut', 'expoInOut', 'quadIn', 'quadOut', 'quadInOut',
-  'quartIn', 'quartOut', 'quartInOut', 'quintIn', 'quintOut', 'quintInOut',
-  'sineIn', 'sineOut', 'sineInOut', 'linear',
+  'fade',
+  'fly',
+  'slide',
+  'scale',
+  'draw',
+  'crossfade',
+  'blur',
+  'bounce',
+  'elasticIn',
+  'elasticOut',
+  'elasticInOut',
+  'backIn',
+  'backOut',
+  'backInOut',
+  'circIn',
+  'circOut',
+  'circInOut',
+  'cubicIn',
+  'cubicOut',
+  'cubicInOut',
+  'expoIn',
+  'expoOut',
+  'expoInOut',
+  'quadIn',
+  'quadOut',
+  'quadInOut',
+  'quartIn',
+  'quartOut',
+  'quartInOut',
+  'quintIn',
+  'quintOut',
+  'quintInOut',
+  'sineIn',
+  'sineOut',
+  'sineInOut',
+  'linear',
 ];
 
 let totalFiles = 0;
@@ -52,12 +100,13 @@ function processSvelteFile(filePath) {
 
     // Match: import type { ... } from 'svelte/transition' or 'svelte/animate'
     // Pattern: import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+['"]svelte\/(transition|animate)['"]
-    const regex = /import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+['"]svelte\/(transition|animate)['"]/g;
+    const regex =
+      /import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+['"]svelte\/(transition|animate)['"]/g;
 
     content = content.replace(regex, (match, imports, module) => {
       // Check if any of the imported values are runtime values
-      const importList = imports.split(',').map(i => i.trim());
-      const hasRuntimeValues = importList.some(imp => {
+      const importList = imports.split(',').map((i) => i.trim());
+      const hasRuntimeValues = importList.some((imp) => {
         const name = imp.split(' as ')[0].trim();
         return runtimeValues.includes(name);
       });
@@ -87,7 +136,15 @@ function processSvelteFile(filePath) {
 }
 
 console.log('🔄 Fixing import type for runtime values (transitions, animations)...\n');
-walkDir(srcDir);
+console.log(`📁 Target directories: ${targetDirs.join(', ')}\n`);
+
+for (const dir of targetDirs) {
+  if (fs.existsSync(dir)) {
+    walkDir(dir);
+  } else {
+    console.warn(`⚠️  Directory not found: ${dir}`);
+  }
+}
 
 console.log(`✅ Conversion complete!`);
 console.log(`📊 Statistics:`);

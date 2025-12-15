@@ -93,7 +93,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
       console.log('Service Worker: Cache opened.');
     })()
   );
-  self.skipWaiting(); // Activate new service worker immediately
+  (self as unknown as ServiceWorkerGlobalScope).skipWaiting(); // Activate new service worker immediately
 });
 
 // Service Worker Lifecycle: 'activate' event
@@ -108,7 +108,7 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
       );
       console.log('Service Worker: Old caches cleared.');
       // Claim clients to ensure all pages are controlled by the new service worker
-      await (self.clients as any).claim();
+      await (self as unknown as ServiceWorkerGlobalScope).clients.claim();
       console.log('Service Worker: Clients claimed.');
       // Start initial cache warming and sync after activation
       startCacheWarming();

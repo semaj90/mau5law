@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { CaseSummary } from '$lib/types/case-summary';
   import CitationDetail from '../legal-ai/CitationDetail.svelte';
   import CitationList from '../legal-ai/CitationList.svelte';
@@ -26,7 +26,7 @@
   </div>
 
   {#if isEditing}
-    <textarea bind:value={editedText} class="editor" />
+    <textarea bind:value={editedText} class="editor" ></textarea>
     <div class="editor-actions">
       <button class="btn-save" onclick={() => (isEditing = false)}>Save</button>
       <button class="btn-cancel" onclick={() => (isEditing = false)}>Cancel</button>

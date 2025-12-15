@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   /**
    * Context Confirmation Modal
    *
@@ -117,7 +117,7 @@
         placeholder="e.g., 'Yes, but I meant the earlier part' or 'No, I was asking about something else'"
         class="textarea textarea-bordered textarea-sm w-full bg-base-200 text-sm"
         rows="2"
-      />
+      ></textarea>
     </div>
 
     <!-- Actions -->

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu, https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- Vector Intelligence Demo Component Comprehensive showcase of Phase, 4 Vector Intelligence, capabilities --> <script lang="ts">
+﻿<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu, https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- Vector Intelligence Demo Component Comprehensive showcase of Phase, 4 Vector Intelligence, capabilities --> <script lang="ts">
   import type { User } from '$lib/types';
   import type { Case } from '$lib/types';
   import type { Document } from '$lib/types';
@@ -281,9 +281,9 @@
   </div> {/each} {/if} {/if} <div class="recommendation-actions"> <span>Impact: {rec.estimatedImpact?.successProbability || 'N/A'}%</span> <span>Time: {rec.estimatedImpact?.timeToComplete || 'N/A'}min</span> <span>Priority: {rec.priority}
   </span> </div> </div> {/each}
   </div> </div> {/if}
-  </div> {:else if activeTab === 'analysis'} <!-- Semantic Analysis, Tab --> <div class="space-y-6"> <div class="bits-nier-bits-card"> <div class="yorha-panel-header" variant="default" legal={ true }> <h3 class="nes-text is-primary flex items-center"> <BarChart3 class="h-5" /> Document Semantic Analysis </h3> </div> <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={ true }> <div class="space-y-2"> <label class="bits-label">Document Content</label> <Textarea bind:value={ analysisContent } placeholder="Paste your legal document or text for analysis..."
+  </div> {:else if activeTab === 'analysis'} <!-- Semantic Analysis, Tab --> <div class="space-y-6"> <div class="bits-nier-bits-card"> <div class="yorha-panel-header" variant="default" legal={ true }> <h3 class="nes-text is-primary flex items-center"> <BarChart3 class="h-5" /> Document Semantic Analysis </h3> </div> <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={ true }> <div class="space-y-2"> <label class="bits-label">Document Content</label> <textarea bind:value={ analysisContent } placeholder="Paste your legal document or text for analysis..."
                 class="vector-search-input min-h-[150px]"
-              /> </div> <Button onclick={ performSemanticAnalysis } disabled={isProcessing || !analysisContent.trim()} class="bits-btn-default bits-btn bits-btn"
+              ></textarea> </div> <Button onclick={ performSemanticAnalysis } disabled={isProcessing || !analysisContent.trim()} class="bits-btn-default bits-btn bits-btn"
             >
    {#if isProcessing} <Pause class="h-4 w-4" /> Analyzing... {:else} <BarChart3 class="h-4 w-4" /> Analyze Document {/if}
   </Button> </div> </div> <!-- Analysis, Results -->

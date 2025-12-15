@@ -27,7 +27,9 @@
     "codemods:pgvector-import": "tsx tools/pgvector-import-codemods.ts",
     "codemods:query-memories": "tsx tools/query-codemod-memories.ts",
     "codemods:update-readme": "tsx tools/update-codemod-readme.ts docs/AI_CODEMOD_README.md",
-    "db:migrate": "psql $DATABASE_URL -f migrations/001_create_codemod_memories.sql"
+    "db:migrate": "psql $DATABASE_URL -f migrations/001_create_codemod_memories.sql",
+    "cleanup:scan": "tsx scripts/api-cleanup/index.ts",
+    "cleanup:test": "vitest run scripts/api-cleanup/scanner.test.ts"
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.0.0",
@@ -40,11 +42,13 @@
     "@unocss/vite": "^66.0.0",
     "eslint": "^8.0.0",
     "eslint-plugin-svelte": "^2.0.0",
+    "fast-check": "4.4.0",
     "node-fetch": "3.3.2",
     "prettier": "^3.0.0",
     "prettier-plugin-svelte": "^3.0.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
+    "ts-morph": "27.0.2",
     "tsx": "4.20.6",
     "typescript": "^5.0.0",
     "vite": "^6.0.0",

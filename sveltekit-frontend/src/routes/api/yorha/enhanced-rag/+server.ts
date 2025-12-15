@@ -98,6 +98,7 @@ async function performYoRHaAnalysis(
 ): Promise<AnalysisResult[]> {
 	// Combine all results
 	const allResults: AnalysisResult[] = [
+;
 		...rerankedResults.map((r: ExternalRerankResult) => ({
 			...(r as unknown as Record<string, unknown>),
 			source: 'enhanced-rag',
@@ -115,6 +116,7 @@ async function performYoRHaAnalysis(
 
 	// Apply YoRHa-specific scoring and analysis
 	const enhancedResults = await Promise.all(
+;
 		allResults.map(async result => {
 			const enhancedResult = {
 				...result,
@@ -176,6 +178,7 @@ async function generateYoRHaRecommendations(
 ): Promise<Recommendation[]> {
 	// Basic recommendation logic (would be enhanced with actual AI)
 	const recommendations: Recommendation[] = [
+;
 		{
 			id: `REC-${Date.now()}-1`,
 			type: 'INVESTIGATE',
@@ -248,6 +251,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Enhanced RAG search with reranking
 		const rerankedResults = await (enhancedSearchWithNeo4j as any)(
+;
 			query,
 			`Analyzing ${dataType} for legal insights with ${enableVLM ? 'VLM' : 'text'} processing`,
 			undefined, // neo4jContext omitted for basic search
@@ -297,6 +301,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		// Combine and analyze results including processed files
 		const analysisResults = await performYoRHaAnalysis(
+;
 			query,
 			[...rerankedResults, ...processedFiles],
 			dbResults,
@@ -638,6 +643,7 @@ async function extractTextWithLegalVLM(imageData: Buffer | string): Promise<{
 		}
 
 		const prompt = `Extract all visible text from this legal document image. Focus on:
+;
 - Contract terms and clauses
 - Legal citations and references
 - Names, dates, and signatures
@@ -721,6 +727,7 @@ async function generateEmbeddings(text: string): Promise<number[]> {
 // Helper functions for parsing VLM responses
 function extractSection(text: string, sectionName: string): string | null {
 	const patterns = [
+;
 		new RegExp(`${sectionName}:\\s*([^\\n]+)`, 'i'),
 		new RegExp(`${sectionName}\\s*:\\s*([\\s\\S]*?)(?=\\n\\n|$)`, 'i')
 	];
@@ -736,6 +743,7 @@ function extractSection(text: string, sectionName: string): string | null {
 
 function extractEntities(text: string): string[] {
 	const entityPatterns = [
+;
 		/(?:persons?|individuals?|people):?\s*([^\\n]+)/gi,
 		/(?:organizations?|companies?|entities):?\s*([^\\n]+)/gi,
 		/(?:dates?|times?):?\s*([^\\n]+)/gi,
@@ -757,6 +765,7 @@ function extractEntities(text: string): string[] {
 function extractTextContent(text: string): string {
 	// Extract text between quotes or after "text:" markers
 	const textPatterns = [
+;
 		/"([^"]+)"/g,
 		/'([^']+)'/g,
 		/text:?\s*([^\\n]+)/gi
@@ -776,6 +785,7 @@ function extractTextContent(text: string): string {
 
 function extractLegalEntities(text: string): string[] {
 	const legalPatterns = [
+;
 		/(?:case|file)\s+(?:no\.?|number)?:?\s*([A-Z0-9\-]+)/gi,
 		/(?:citation|cite):?\s*([^\\n]+)/gi,
 		/(?:contract|agreement)\s+(?:no\.?|number)?:?\s*([^\\n]+)/gi,

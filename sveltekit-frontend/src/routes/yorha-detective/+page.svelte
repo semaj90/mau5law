@@ -1,9 +1,9 @@
 <script lang="ts">
   import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
-  let isBooting = $state <boolean>(true);
-  let bootProgress = $state <number>(0);
-  let bootMessages = $state <string[]>([]);
+  let isBooting = $state(true);
+  let bootProgress = $state(0);
+  let bootMessages = $state<string[]>([]);
   const bootSequence = [
     'Initializing YoRHa OS...',
     'Loading Neural Network Protocols...',
@@ -29,7 +29,7 @@
 </script>
 
 {#if isBooting}
-  <div class="boot-screen" transitionfade={{ duration: 500 }}>
+  <div class="boot-screen" transition:fade={{ duration: 500 }}>
     <div class="boot-logo">
       <span class="logo-symbol">Y</span>
       <span class="logo-main">oRHa</span>

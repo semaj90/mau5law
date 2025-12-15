@@ -1,82 +1,104 @@
-// POI Types - Comprehensive Person of Interest Schema
+/**
+ * Person of Interest (POI) Types
+ * TypeScript interfaces for POI management
+ */
+
+export type POIStatus = 'person_of_interest' | 'witness' | 'suspect' | 'victim' | 'informant';
+export type POIPriority = 'low' | 'medium' | 'high' | 'critical';
+export type POIThreatLevel = 'low' | 'medium' | 'high' | 'extreme';
+export type RelationshipType = 'family' | 'colleague' | 'friend' | 'suspect' | 'unknown';
+
 export interface PersonOfInterest {
   id: string;
-  caseId?: string | null; // Links to cases table
-  createdBy?: string | null; // Links to users table
+  caseId: string;
   name: string;
-  aliases: string[];
-  threatLevel: "low" | "medium" | "high" | "critical";
-  status: "surveillance" | "wanted" | "active" | "cleared";
-  description: string;
-  lastSeen: string | null;
-  lastLocation: string | null;
-  cases: string[];
-  // Multiple photos with forensic metadata
-  photos: PersonPhoto[];
-  // Legacy single photo URL for backward compatibility
-  photoUrl: string | null;
-  ai: PersonAIAnalysis | null;
+  dateOfBirth?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  status: POIStatus;
+  priority: POIPriority;
+  threatLevel: POIThreatLevel;
+  occupation?: string;
+  lastKnownLocation?: string;
+  physicalDescription?: string;
+  embedding?: number[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface PersonPhoto {
+export interface KnownAssociate {
   id: string;
-  url: string;
-  filename: string;
-  uploadedAt: string;
-  metadata: PhotoMetadata;
-  ai: PhotoAIAnalysis;
+  poiId: string;
+  associateId: string;
+  relationshipType: RelationshipType;
+  notes?: string;
+  createdAt: string;
+  associate?: PersonOfInterest;
 }
 
-export interface PhotoMetadata {
-  exif?: Record<string, any>;
-  gps?: { lat: number; lng: number };
-  timestamp?: string;
-  deviceModel?: string;
-  resolution?: { width: number; height: number };
+export interface POIAlias {
+  id: string;
+  poiId: string;
+  aliasName: string;
+  createdAt: string;
 }
 
-export interface PhotoAIAnalysis {
-  faceEmbedding?: number[]; // Face recognition vector (pgvector)
-  quality: number; // Photo quality score 0-100
-  landmarks?: number[][]; // Facial landmarks coordinates
-}
-
-export interface PersonAIAnalysis {
-  riskScore: number; // 0-100 risk assessment
-  patterns: string[]; // Detected behavioral patterns
-  recommendations: string[]; // AI-generated recommendations
-  lastUpdated: string;
-}
-
-// Threat level enum for consistency
-export type ThreatLevel = "low" | "medium" | "high" | "critical";
-
-// Status enum for consistency
-export type PersonStatus = "surveillance" | "wanted" | "active" | "cleared";
-
-// Photo upload interface for forms
-export interface PhotoUploadData {
-  file: File;
-  metadata?: Partial<PhotoMetadata>;
-}
-
-// POI creation/update interfaces
-export interface CreatePersonOfInterest {
+export interface POISearchResult {
+  poiId: string;
   name: string;
-  aliases?: string[];
-  threatLevel?: ThreatLevel;
-  status?: PersonStatus;
-  description?: string;
-  lastSeen?: string | null;
-  lastLocation?: string | null;
-  cases?: string[];
-  photoUrl?: string | null;
+  status: POIStatus;
+  priority: POIPriority;
+  threatLevel: POIThreatLevel;
+  similarityScore: number;
 }
 
-export interface UpdatePersonOfInterest extends Partial<CreatePersonOfInterest> {
-  id: string;
-  photos?: PersonPhoto[];
-  ai?: PersonAIAnalysis;
+export interface POIListResponse {
+  pois: PersonOfInterest[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface POICreateRequest {
+  caseId: string;
+  name: string;
+  dateOfBirth?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  status: POIStatus;
+  priority: POIPriority;
+  threatLevel: POIThreatLevel;
+  occupation?: string;
+  lastKnownLocation?: string;
+  physicalDescription?: string;
+}
+
+export interface POIUpdateRequest {
+  name?: string;
+  dateOfBirth?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  status?: POIStatus;
+  priority?: POIPriority;
+  threatLevel?: POIThreatLevel;
+  occupation?: string;
+  lastKnownLocation?: string;
+  physicalDescription?: string;
+}
+
+export interface AssociateCreateRequest {
+  associateId: string;
+  relationshipType: RelationshipType;
+  notes?: string;
+}
+
+export interface POISearchRequest {
+  query: string;
+  caseId?: string;
+  status?: POIStatus;
+  priority?: POIPriority;
+  limit?: number;
 }

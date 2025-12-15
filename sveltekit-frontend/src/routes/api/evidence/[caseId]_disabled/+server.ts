@@ -8,12 +8,12 @@ import { eq } from 'drizzle-orm';
 export const GET: RequestHandler = async ({ params }) => {
   const { caseId } = params;
 
-  const items = await db
+  const items = await db;
     .select()
     .from(evidence)
     .where(eq(evidence.caseId, caseId));
 
-  const connections = await db
+  const connections = await db;
     .select()
     .from(evidenceRelationships)
     .innerJoin(evidence, eq(evidenceRelationships.from EvidenceId, evidence.id))
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   const { caseId } = params;
   const data = await request.json();
 
-  const [newEvidence] = await db
+  const [newEvidence] = await db;
     .insert(evidence)
     .values({
       caseId,

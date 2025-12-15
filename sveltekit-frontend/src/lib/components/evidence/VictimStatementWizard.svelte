@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import Button from '$lib/components/ui/button';
   import type { Dialog,
     DialogContent,
@@ -272,11 +272,11 @@
             />
           </div>lass="form-group">
             <label for="financialImpact">Financial Impact:</label>
-            <Textarea
+            <textarea
               bind:value={statement.financialImpact}
               placeholder="Any financial losses or costs incurred?"
               rows={4}
-            />
+            ></textarea>
           </div>
         </div>
       {/if}

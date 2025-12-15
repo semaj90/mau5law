@@ -89,16 +89,30 @@
   }
 
   async function onSelectHit(hit: NoteHit) {
-    // Hook into your existing selection logic here.
-    // Common patterns:
-    // selectedNoteId = hit.id
-    // openNote(hit.id)
-    // loadNote(hit.id)
-    // If you already have a function, call it.
-    //
-    // Minimal fallback (non-breaking): just put the title in query for now
-    // (remove this fallback once wired):
-    // searchQuery = "";
+    const existing = notes.find((n) => n.id === hit.id);
+    if (existing) {
+      selectNote(existing);
+      searchQuery = "";
+      searchHits = [];
+      searchError = null;
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/cases/${caseId}/notes/${hit.id}`);
+      if (!res.ok) throw new Error(`Failed to load note ${hit.id}`);
+      const data = await res.json();
+      if (data?.note) {
+        notes = sortNotes([data.note, ...notes]);
+        selectNote(data.note);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      searchQuery = "";
+      searchHits = [];
+      searchError = null;
+    }
   }
 
   let notes = $state<CaseNote[]>([]);
@@ -120,13 +134,6 @@
   let noteContent = $state('');
   let isNewNote = $state(false);
 
-  // Search state
-  let searchQuery = $state('');
-  let isSearching = $state(false);
-  let searchResults = $state<CaseNote[]>([]);
-  let showSearchResults = $state(false);
-  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
-
   // Autosave debounce
   let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -142,35 +149,6 @@
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   }
-
-  // Search effect - debounced search
-  $effect(() => {
-    if (searchTimeout) clearTimeout(searchTimeout);
-
-    if (!searchQuery.trim()) {
-      showSearchResults = false;
-      searchResults = [];
-      return;
-    }
-
-    isSearching = true;
-    searchTimeout = setTimeout(async () => {
-      try {
-        const response = await fetch(
-          `/api/cases/${caseId}/notes/search?q=${encodeURIComponent(searchQuery)}`
-        );
-        if (!response.ok) throw new Error('Search failed');
-        const data = await response.json();
-        searchResults = sortNotes(data.results || []);
-        showSearchResults = true;
-      } catch (err) {
-        console.error('Search error:', err);
-        searchResults = [];
-      } finally {
-        isSearching = false;
-      }
-    }, 300);
-  });
 
   // Autosave effect - reacts to content changes
   $effect(() => {
@@ -483,20 +461,7 @@
   <div class="notes-content">
     <!-- Notes List -->
     <div class="notes-list">
-      <!-- Search Bar -->
-      <div class="search-container">
-        <input
-          type="text"
-          class="search-input"
-          placeholder="🔍 Search notes..."
-          bind:value={searchQuery}
-        />
-        {#if isSearching}
-          <span class="search-spinner">⟳</span>
-        {/if}
-      </div>
-
-      <!-- New API-based Search UI -->
+      <!-- API-based Search UI -->
       <div class="space-y-2">
         <div class="flex items-center gap-2">
           <input
@@ -550,47 +515,30 @@
 
       {#if isLoading}
         <div class="loading">Loading notes...</div>
-      {:else if showSearchResults}
-        <!-- Search Results -->
-        <div class="search-results-header">
-          <span class="results-count">{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</span>
-          <button
-            class="clear-search"
-            onclick={() => { searchQuery = ''; showSearchResults = false; }}
-            title="Clear search"
-          >
-            ✕
-          </button>
-        </div>
-        {#if searchResults.length === 0}
+      {:else if searchMode}
+        {#if searching}
+          <div class="loading">Searching…</div>
+        {:else if searchHits.length === 0}
           <div class="no-results">No notes match your search</div>
         {:else}
-          {#each searchResults as note (note.id)}
+          {#each searchHits as note (note.id)}
             <div
               class="note-item"
               class:selected={selectedNote?.id === note.id}
-              class:pinned={note.isPinned}
+              class:pinned={note.pinned}
               role="button"
               tabindex="0"
-              onclick={() => selectNote(note)}
-              onkeydown={(e) => e.key === 'Enter' && selectNote(note)}
+              onclick={() => onSelectHit(note)}
+              onkeydown={(e) => e.key === 'Enter' && onSelectHit(note)}
             >
               <div class="note-item-header">
                 <span class="note-title">{note.title || 'Untitled Note'}</span>
-                <button
-                  class="pin-btn"
-                  class:active={note.isPinned}
-                  aria-pressed={note.isPinned}
-                  onclick={(e) => { e.stopPropagation(); togglePin(note); }}
-                  title={note.isPinned ? 'Unpin' : 'Pin'}
-                >
-                  📌
-                </button>
+                {#if note.pinned}
+                  <span class="ai-badge">Pinned</span>
+                {/if}
               </div>
-              <p class="note-preview">{note.content.slice(0, 100)}{note.content.length > 100 ? '...' : ''}</p>
-              <span class="note-date">{formatDate(note.updatedAt)}</span>
-              {#if note.isAI}
-                <span class="ai-badge">AI</span>
+              {#if note.contentPreview}
+                <p class="note-preview">{note.contentPreview}</p>
               {/if}
             </div>
           {/each}

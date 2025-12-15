@@ -1,4 +1,4 @@
-<script>
+﻿<script>
 import { createEventDispatcher } from 'svelte';
   import type { CitationSaveRequest } from '$lib/types/citations';
 
@@ -95,7 +95,7 @@ import { createEventDispatcher } from 'svelte';
         rows="3"
         onkeydown={handleKeydown}
         disabled={isLoading}
-      />
+      ></textarea>
     </div>
 
     <!-- Source Type -->
@@ -197,7 +197,7 @@ import { createEventDispatcher } from 'svelte';
             placeholder="Surrounding text for context"
             rows="2"
             disabled={isLoading}
-          />
+          ></textarea>
         </div>
 
         <!-- Notes -->
@@ -209,7 +209,7 @@ import { createEventDispatcher } from 'svelte';
             placeholder="Additional notes about this citation"
             rows="2"
             disabled={isLoading}
-          />
+          ></textarea>
         </div>
 
         <!-- Relevance Score -->

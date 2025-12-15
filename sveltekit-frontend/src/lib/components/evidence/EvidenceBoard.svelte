@@ -4,6 +4,7 @@
   import { get, writable } from 'svelte/store';
   import EvidenceConnections from './EvidenceConnections.svelte';
   import EvidenceNode from './EvidenceNode.svelte';
+  import EvidenceBoardToolbar from './EvidenceBoardToolbar.svelte';
   import RelationshipInspector from './RelationshipInspector.svelte';
 
   // Define types locally to avoid importing server schema in browser
@@ -55,6 +56,7 @@
   let pendingLinkSource: string | null = $state(null);
   let selectedEvidenceForInspector = $state<string | null>(null);
   let selectedRelationshipType = $state('supports');
+  let activeCaseId = $state<string | null>(caseId ?? null);
 
   // Relationship types for the selector
   const relationshipTypes = [
@@ -268,6 +270,36 @@
     }
   }
 
+  function handleToolbarAction(action: string) {
+    switch (action) {
+      case 'analyze':
+        applyMagneticForces();
+        break;
+      case 'attach':
+        console.log('attach selected nodes', Array.from(get(selectedNodes)));
+        break;
+      case 'pin':
+        console.log('pin selected nodes', Array.from(get(selectedNodes)));
+        break;
+      case 'connect':
+        linkMode = !linkMode;
+        pendingLinkSource = null;
+        selectedNodes.set(new Set());
+        break;
+      case 'exportPacket':
+        if (caseId || activeCaseId) {
+          const target = caseId || activeCaseId;
+          window.location.href = `/api/cases/${target}/export/packet`;
+        }
+        break;
+      case 'delete':
+        deleteSelectedNodes();
+        break;
+      default:
+        break;
+    }
+  }
+
   let canvasElement: HTMLDivElement;
 
   $effect(() => {
@@ -283,6 +315,8 @@
 </script>
 
 <div class="evidence-board-container">
+  <EvidenceBoardToolbar onAction={handleToolbarAction} />
+
   <div class="board-toolbar">
     <div class="mode-selector">
       <select bind:value={boardMode} onchange={(e) => changeMode((e.target as HTMLSelectElement).value as BoardMode)} class="mode-selector">

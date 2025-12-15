@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Badge } from '$lib/components/ui/badge';
   import type { Button } from '$lib/components/ui/button';
   import type {
@@ -137,12 +137,12 @@
 
         {#if analysis}
           <div class="analysis-content">
-            <Textarea
+            <textarea
               bind:value={analysis}
               placeholder="AI analysis will appear here..."
               rows={6}
               readonly
-            />
+            ></textarea>
           </div>
         {/if}
 
