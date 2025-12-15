@@ -1,13 +1,13 @@
-<script lang="ts">
+﻿<script lang="ts">
 import Card from '$lib/components/ui/Card.svelte';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '$lib/components/ui/dialog';
 import Input from '$lib/components/ui/Input.svelte';
 import Select from '$lib/components/ui/Select.svelte';
-import Textarea from '$lib/components/ui/Textarea.svelte';
 import { cn } from '$lib/utils.js';
 import { toast } from '$lib/utils/toast';
 import { Edit, Funnel as Filter, Grid, List, Plus, Trash } from "lucide-svelte";
 import { onMount } from 'svelte';
+import PersonOfInterestDetailView from '$lib/components/poi/PersonOfInterestDetailView.svelte';
 
 interface PhysicalDescription {
   height: string;
@@ -50,7 +50,9 @@ let viewMode = $state<'grid' | 'list'>('grid');
 let showFilters = $state<boolean>(false);
 let showCreateDialog = $state<boolean>(false);
 let showEditDialog = $state<boolean>(false);
+let showDetailView = $state<boolean>(false);
 let selectedPoi = $state<Poi | null>(null); // Use Poi interface
+let selectedPoiForDetail = $state<Poi | null>(null);
 let isLoading = $state<boolean>(false);
 let isSubmitting = $state<boolean>(false);
 // Filter state
@@ -288,6 +290,18 @@ onMount(() => {
   loadPois();
 });
 
+// Open detail view
+function openDetailView(poi: Poi) {
+  selectedPoiForDetail = poi;
+  showDetailView = true;
+}
+
+// Handle edit from detail view
+function handleEditFromDetail(poi: Poi) {
+  showDetailView = false;
+  editPoi(poi);
+}
+
 // Priority colors
 const priorityColors = {
   low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -369,7 +383,7 @@ const statusColors = {
     {#if viewMode === 'grid'}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each filteredPois as poi}
-          <Card class="p-4 shadow">
+          <Card class="p-4 shadow cursor-pointer hover:shadow-lg transition-shadow" onclick={() => openDetailView(poi)}>
             <div class="flex justify-between items-start mb-2">
               <h3 class="text-xl font-semibold">{poi.name}</h3>
               <span class={cn("px-2 py-1 text-xs rounded", priorityColors[poi.priority])}>{poi.priority}</span>
@@ -378,7 +392,7 @@ const statusColors = {
             <p class="text-sm mb-2"><strong>Threat:</strong> {poi.threatLevel}</p>
             <p class="text-sm mb-2"><strong>Last Seen:</strong> {poi.lastSeen || 'Unknown'}</p>
             <p class="text-sm mb-4 truncate">{poi.notes || 'No notes'}</p>
-            <div class="flex gap-2">
+            <div class="flex gap-2" onclick|stopPropagation>
               <button onclick={() => editPoi(poi)} class="flex items-center gap-1 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                 <Edit class="w-4 h-4" />
                 Edit
@@ -456,25 +470,49 @@ const statusColors = {
           <Input bind:value={formData.lastSeen} type="date" placeholder="Last Seen" />
           <Input bind:value={formData.dangerLevel} type="number" min="0" max="10" placeholder="Danger Level" />
         </div>
-        <Textarea bind:value={formData.notes} placeholder="Notes" rows="3" />
+        <textarea bind:value={formData.notes} placeholder="Notes" rows="3" ></textarea>
         <div class="space-y-2">
-          <label class="block text-sm font-medium">Aliases (comma-separated)</label>
-          <Input bind:value={formData.aliases} placeholder="Aliases" />
+          <label for="create-aliases" class="block text-sm font-medium">Aliases (comma-separated)</label>
+          <Input id="create-aliases" bind:value={formData.aliases} placeholder="Aliases" />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <label class="block text-sm font-medium">Physical Description</label>
-            <Input bind:value={formData.physicalDescription.height} placeholder="Height" />
-            <Input bind:value={formData.physicalDescription.weight} placeholder="Weight" />
-            <Input bind:value={formData.physicalDescription.hair} placeholder="Hair" />
-            <Input bind:value={formData.physicalDescription.eyes} placeholder="Eyes" />
-            <Textarea bind:value={formData.physicalDescription.distinguishingMarks} placeholder="Distinguishing Marks" rows="2" />
+          <div class="space-y-4">
+            <p class="text-sm font-medium text-slate-300">Physical Description</p>
+            <div class="space-y-2">
+              <label for="create-height" class="sr-only">Height</label>
+              <Input id="create-height" bind:value={formData.physicalDescription.height} placeholder="Height" />
+            </div>
+            <div class="space-y-2">
+              <label for="create-weight" class="sr-only">Weight</label>
+              <Input id="create-weight" bind:value={formData.physicalDescription.weight} placeholder="Weight" />
+            </div>
+            <div class="space-y-2">
+              <label for="create-hair" class="sr-only">Hair</label>
+              <Input id="create-hair" bind:value={formData.physicalDescription.hair} placeholder="Hair" />
+            </div>
+            <div class="space-y-2">
+              <label for="create-eyes" class="sr-only">Eyes</label>
+              <Input id="create-eyes" bind:value={formData.physicalDescription.eyes} placeholder="Eyes" />
+            </div>
+            <div class="space-y-2">
+              <label for="create-marks" class="sr-only">Distinguishing Marks</label>
+              <textarea id="create-marks" bind:value={formData.physicalDescription.distinguishingMarks} placeholder="Distinguishing Marks" rows="2" ></textarea>
+            </div>
           </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-medium">Profile Data</label>
-            <Textarea bind:value={formData.profileData.modusOperandi} placeholder="Modus Operandi" rows="2" />
-            <Textarea bind:value={formData.profileData.knownHabits} placeholder="Known Habits (comma-separated)" rows="2" />
-            <Textarea bind:value={formData.profileData.associates} placeholder="Associates (comma-separated)" rows="2" />
+          <div class="space-y-4">
+            <p class="text-sm font-medium text-slate-300">Profile Data</p>
+            <div class="space-y-2">
+              <label for="create-modus" class="sr-only">Modus Operandi</label>
+              <textarea id="create-modus" bind:value={formData.profileData.modusOperandi} placeholder="Modus Operandi" rows="2" ></textarea>
+            </div>
+            <div class="space-y-2">
+              <label for="create-habits" class="sr-only">Known Habits</label>
+              <textarea id="create-habits" bind:value={formData.profileData.knownHabits} placeholder="Known Habits (comma-separated)" rows="2" ></textarea>
+            </div>
+            <div class="space-y-2">
+              <label for="create-associates" class="sr-only">Associates</label>
+              <textarea id="create-associates" bind:value={formData.profileData.associates} placeholder="Associates (comma-separated)" rows="2" ></textarea>
+            </div>
           </div>
         </div>
         <DialogFooter>
@@ -524,25 +562,49 @@ const statusColors = {
           <Input bind:value={formData.lastSeen} type="date" placeholder="Last Seen" />
           <Input bind:value={formData.dangerLevel} type="number" min="0" max="10" placeholder="Danger Level" />
         </div>
-        <Textarea bind:value={formData.notes} placeholder="Notes" rows="3" />
+        <textarea bind:value={formData.notes} placeholder="Notes" rows="3" ></textarea>
         <div class="space-y-2">
-          <label class="block text-sm font-medium">Aliases (comma-separated)</label>
-          <Input bind:value={formData.aliases} placeholder="Aliases" />
+          <label for="edit-aliases" class="block text-sm font-medium">Aliases (comma-separated)</label>
+          <Input id="edit-aliases" bind:value={formData.aliases} placeholder="Aliases" />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <label class="block text-sm font-medium">Physical Description</label>
-            <Input bind:value={formData.physicalDescription.height} placeholder="Height" />
-            <Input bind:value={formData.physicalDescription.weight} placeholder="Weight" />
-            <Input bind:value={formData.physicalDescription.hair} placeholder="Hair" />
-            <Input bind:value={formData.physicalDescription.eyes} placeholder="Eyes" />
-            <Textarea bind:value={formData.physicalDescription.distinguishingMarks} placeholder="Distinguishing Marks" rows="2" />
+          <div class="space-y-4">
+            <p class="text-sm font-medium text-slate-300">Physical Description</p>
+            <div class="space-y-2">
+              <label for="edit-height" class="sr-only">Height</label>
+              <Input id="edit-height" bind:value={formData.physicalDescription.height} placeholder="Height" />
+            </div>
+            <div class="space-y-2">
+              <label for="edit-weight" class="sr-only">Weight</label>
+              <Input id="edit-weight" bind:value={formData.physicalDescription.weight} placeholder="Weight" />
+            </div>
+            <div class="space-y-2">
+              <label for="edit-hair" class="sr-only">Hair</label>
+              <Input id="edit-hair" bind:value={formData.physicalDescription.hair} placeholder="Hair" />
+            </div>
+            <div class="space-y-2">
+              <label for="edit-eyes" class="sr-only">Eyes</label>
+              <Input id="edit-eyes" bind:value={formData.physicalDescription.eyes} placeholder="Eyes" />
+            </div>
+            <div class="space-y-2">
+              <label for="edit-marks" class="sr-only">Distinguishing Marks</label>
+              <textarea id="edit-marks" bind:value={formData.physicalDescription.distinguishingMarks} placeholder="Distinguishing Marks" rows="2" ></textarea>
+            </div>
           </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-medium">Profile Data</label>
-            <Textarea bind:value={formData.profileData.modusOperandi} placeholder="Modus Operandi" rows="2" />
-            <Textarea bind:value={formData.profileData.knownHabits} placeholder="Known Habits (comma-separated)" rows="2" />
-            <Textarea bind:value={formData.profileData.associates} placeholder="Associates (comma-separated)" rows="2" />
+          <div class="space-y-4">
+            <p class="text-sm font-medium text-slate-300">Profile Data</p>
+            <div class="space-y-2">
+              <label for="edit-modus" class="sr-only">Modus Operandi</label>
+              <textarea id="edit-modus" bind:value={formData.profileData.modusOperandi} placeholder="Modus Operandi" rows="2" ></textarea>
+            </div>
+            <div class="space-y-2">
+              <label for="edit-habits" class="sr-only">Known Habits</label>
+              <textarea id="edit-habits" bind:value={formData.profileData.knownHabits} placeholder="Known Habits (comma-separated)" rows="2" ></textarea>
+            </div>
+            <div class="space-y-2">
+              <label for="edit-associates" class="sr-only">Associates</label>
+              <textarea id="edit-associates" bind:value={formData.profileData.associates} placeholder="Associates (comma-separated)" rows="2" ></textarea>
+            </div>
           </div>
         </div>
         <DialogFooter>
@@ -554,4 +616,12 @@ const statusColors = {
       </form>
     </DialogContent>
   </Dialog>
+
+  <!-- Person of Interest Detail View -->
+  <PersonOfInterestDetailView
+    {poi}={selectedPoiForDetail}
+    open={showDetailView}
+    onOpenChange={(open) => showDetailView = open}
+    onEdit={handleEditFromDetail}
+  />
 </main>

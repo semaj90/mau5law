@@ -1,6 +1,7 @@
 <script lang="ts">
 	const { data } = $props();
-	const { caseData, evidence } = data;
+	const caseData = $derived(data?.caseData);
+	const evidence = $derived(data?.evidence);
 </script>
 
 <section class="p-4 space-y-4">

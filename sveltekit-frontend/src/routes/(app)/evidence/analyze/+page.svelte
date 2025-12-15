@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
 	import type { Dialog, DialogContent, DialogTitle, DialogDescription  } from '$lib/components/ui/dialog';
 	import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
@@ -239,7 +239,7 @@
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceContent">Evidence Content</Label>
-				<Textarea id="evidenceContent" bind:value={evidenceContent} placeholder="Paste or upload evidence content here..." rows="6" />
+				<textarea id="evidenceContent" bind:value={evidenceContent} placeholder="Paste or upload evidence content here..." rows="6" ></textarea>
 			</div>
 			<div class="mb-4">
 				<Label for="priority">Priority</Label>

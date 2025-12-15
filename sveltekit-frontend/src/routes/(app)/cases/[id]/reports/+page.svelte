@@ -1,6 +1,7 @@
 <script lang="ts">
 	const { data } = $props();
-	const { caseData, reports } = data;
+	const caseData = $derived(data?.caseData);
+	const reports = $derived(data?.reports);
 
 	let showResumeModal = $state(false);
 	let selectedReport = $state<any>(null);

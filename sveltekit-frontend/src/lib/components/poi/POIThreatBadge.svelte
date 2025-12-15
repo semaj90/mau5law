@@ -55,7 +55,7 @@ let config = $state(getThreatConfig(threatLevel));
 
 <Badge class="{config.color} border font-semibold {getSizeClasses(size)}">
   {#if showIcon}
-    <config.icon class="w-3 h-3 mr-1" / />
+    <svelte:component this={config.icon} class="w-3 h-3 mr-1" />
   {/if}
   {config.label}
 </Badge>

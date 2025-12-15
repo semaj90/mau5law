@@ -2,7 +2,6 @@
   import type { ProcessingEvent } from '$lib/services/types';
   import { uploadEvidence, validateFile } from '$lib/services/uploadEvidenceService';
   import { uploadActions, uploadStore } from '$lib/stores/uploadStore';
-  import { fade } from 'svelte/transition';
 
   interface Props {
     caseId: string;
@@ -113,7 +112,7 @@
 
 {#if isOpen}
   <div class="modal-overlay" transitionfade={{ duration: 200 }} onclick={handleCancel}>
-    <div class="modal-content" on:click|stopPropagation>
+    <div class="modal-content" onclick={(e) => e.stopPropagation()}>
       <div class="modal-header">
         <h2>Upload Evidence</h2>
         <button class="close-btn" onclick={handleCancel}>×</button>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '../app.css';
+  import '$lib/../app.css';
   import LayoutShell from '$lib/ui/LayoutShell.svelte';
 
   const { children } = $props();

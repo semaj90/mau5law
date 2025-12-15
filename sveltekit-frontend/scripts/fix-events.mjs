@@ -12,13 +12,6 @@ const map = [
   ["on:keyup", "onkeyup"],
   ["on:focus", "onfocus"],
   ["on:blur", "onblur"],
-  ["on:mouseenter", "onmouseenter"],
-  ["on:mouseleave", "onmouseleave"],
-  ["on:mousedown", "onmousedown"],
-  ["on:mouseup", "onmouseup"],
-  ["on:mousemove", "onmousemove"],
-  ["on:contextmenu", "oncontextmenu"],
-  ["on:wheel", "onwheel"],
 ];
 
 function walk(dir, out = []) {
@@ -31,8 +24,11 @@ function walk(dir, out = []) {
 }
 
 function replaceEventDirectives(s) {
-  // Replace all on: patterns with on (remove the colon), preserving modifiers
-  return s.replaceAll(/on:([a-zA-Z_][a-zA-Z0-9_]*)([^\s=]*)=/g, 'on$1$2=');
+  let out = s;
+  for (const [from, to] of map) {
+    out = out.replaceAll(new RegExp(`\\b${from}=`, "g"), `${to}=`);
+  }
+  return out;
 }
 
 const files = walk(ROOT);

@@ -9,7 +9,7 @@
   import type { Badge  } from '$lib/components/ui/badge';
 
   // Receive data from SvelteKit load function
-  export let data: PageData;
+  let { data } = $props<{ data: PageData }>();
 
   // Default stats fallback
   const defaultStats = {

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   interface Props {
     summaryId: string;
     holding: string;
@@ -75,7 +75,7 @@
         bind:value={editedHolding}
         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         rows="3"
-      />
+      ></textarea>
     {:else}
       <div class="bg-gray-50 rounded p-4 border border-gray-200">
         <p class="text-sm text-gray-700">{editedHolding}</p>
@@ -93,7 +93,7 @@
         bind:value={editedReasoning}
         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         rows="4"
-      />
+      ></textarea>
     {:else}
       <div class="bg-gray-50 rounded p-4 border border-gray-200">
         <p class="text-sm text-gray-700 whitespace-pre-wrap">{editedReasoning}</p>

@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';;
-  import { fade   } from 'svelte/transition';
+  import { onDestroy, onMount } from 'svelte';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  let { data } = $props<{ data: PageData }>();
 
   // Service health and metrics state
   let services = $state ([

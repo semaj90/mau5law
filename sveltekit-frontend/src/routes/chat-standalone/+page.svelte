@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import ChatMessages from '$lib/components/ChatMessages.svelte';
 	import EvidenceMemory from '$lib/components/EvidenceMemory.svelte';
 	import LegalDisclaimer from '$lib/components/LegalDisclaimer.svelte';
@@ -190,7 +190,7 @@
 					onkeydown={handleKeydown}
 					disabled={isStreaming}
 					rows="3"
-				/>
+				></textarea>
 				<button onclick={handleSendMessage} disabled={isStreaming || !messageInput.trim()}>
 					{isStreaming ? 'Streaming...' : 'Send'}
 				</button>

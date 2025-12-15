@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-12-14T21:19:40.478Z",
+  "totalUnfixable": 0,
+  "neededRoutes": [],
+  "notNeededRoutes": [],
+  "recoveryAttempts": {
+    "successful": 0,
+    "failed": 0,
+    "total": 0
+  },
+  "recommendations": [
+    "❌ No routes recovered - manual intervention needed",
+    "✅ All needed routes recovered (0/0)"
+  ]
+}

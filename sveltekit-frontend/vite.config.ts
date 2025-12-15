@@ -17,6 +17,29 @@ const generatedDir = path.resolve(__dirname, '.svelte-kit/generated');
 const serverInternals = path.resolve(generatedDir, 'server');
 const publicInternals = path.resolve(generatedDir, 'client');
 
+// Workaround for Windows esbuild CommonJS resolver issue with scoped packages
+const esbuildCommonJsResolverPatch = {
+  name: 'esbuild-commonjs-resolver-patch',
+  resolveId(id) {
+    // Intercept the problematic @sveltejs/kit internal file
+    if (id.includes('@sveltejs/kit') && id.includes('paths/internal/server')) {
+      return id;
+    }
+  },
+  load(id) {
+    // Return the file content directly to bypass esbuild's CommonJS resolver
+    if (id.includes('@sveltejs/kit') && id.includes('paths/internal/server')) {
+      try {
+        const content = fs.readFileSync(id, 'utf-8');
+        return content;
+      } catch (e) {
+        // Fallback if file doesn't exist
+        return null;
+      }
+    }
+  },
+};
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const wsPort = env.VITE_WS_PORT || '5173';
@@ -30,12 +53,10 @@ export default defineConfig(({ mode }) => {
   return {
     assetsInclude: ['**/*.woff2'], // Added for font assets
     plugins: [
+      esbuildCommonJsResolverPatch,
       sveltekit({
         compilerOptions: {
-          runes: true, // 👈 enables rune transformer
-        },
-        ssr: {
-          noExternal: ['bits-ui', '@internationalized/date'], // Temporarily disabled
+          runes: false, // Disable runes mode due to lucide-svelte incompatibility
         },
       }),
       // UnoCSS(), // Temporarily disabled for testing
@@ -112,6 +133,12 @@ export default defineConfig(({ mode }) => {
           secure: false,
           rewrite: (path) => path.replace(/^\/api\/playwright-auditor/, ''),
         },
+        // POI API proxy (Phase 8)
+        '/api/persons-of-interest': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          secure: false,
+        },
         // WebSocket proxy for legal AI services
         '/ws/rag': {
           target: `ws://localhost:${wsPort}`, // enhanced-rag Go service
@@ -142,15 +169,15 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'ES2022',
-      minify: 'esbuild',
+      minify: 'terser',
       sourcemap: false,
       rollupOptions: {
         output: {
           manualChunks: {
-            'webgpu-ai': ['$lib/webgpu/webgpu-ai-engine'],
-            'cognitive-router': ['$lib/ai/cognitive-smart-router'],
-            'gpu-inference': ['$lib/services/cuda-vector-integration'],
-            'bits-ui': ['bits-ui'],
+            webgpuAi: ['$lib/webgpu/webgpu-ai-engine'],
+            cognitiveRouter: ['$lib/ai/cognitive-smart-router'],
+            gpuInference: ['$lib/services/cuda-vector-integration'],
+            bitsUi: ['bits-ui'],
             drizzle: ['drizzle-orm'],
             langchain: ['langchain', '@langchain/core'],
           },
@@ -177,7 +204,15 @@ export default defineConfig(({ mode }) => {
     esbuild: {
       target: 'esnext',
       legalComments: 'none',
-      treeShaking: true,
+      treeShaking: false,
+      // Work around esbuild issue with scoped packages containing hyphens
+      banner: '',
+      footer: '',
+      define: {
+        'process.env.NODE_ENV': JSON.stringify(
+          mode === 'production' ? 'production' : 'development'
+        ),
+      },
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode === 'production' ? 'production' : 'development'),

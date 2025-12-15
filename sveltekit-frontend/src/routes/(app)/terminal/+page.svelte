@@ -3,9 +3,21 @@
   import * as Textarea from 'bits-ui/components/textarea';
   import { Send, Bot, User, Loader2 } from 'lucide-svelte';
 
-  let messages = $state<Array<{role: 'user' | 'assistant', content: string, timestamp: Date}>>([]);
+  type ChatMessage = {
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: Date;
+    keywords?: string[];
+    keyPhrases?: string[];
+    suggestions?: string[];
+  };
+
+  let messages = $state<ChatMessage[]>([]);
   let currentMessage = $state('');
   let isTyping = $state(false);
+  let sessionId = $state('local-session-' + Date.now());
+  let caseId = $state<string | null>(null);
 
   // Send message function
   async function sendMessage() {
@@ -15,22 +27,62 @@
     currentMessage = '';
 
     // Add user message
+    const userMsgId = crypto.randomUUID();
     messages = [...messages, {
+      id: userMsgId,
       role: 'user',
       content: userMessage,
       timestamp: new Date()
     }];
 
-    // Simulate AI response (replace with actual API call)
+    // Call backend API
     isTyping = true;
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/ai/yorha/context-chat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          userId: 'test-user-001',
+          caseId,
+          message: userMessage
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Add assistant message with keywords and suggestions
+      const assistantMsgId = crypto.randomUUID();
       messages = [...messages, {
+        id: assistantMsgId,
         role: 'assistant',
-        content: `I understand you asked: "${userMessage}". This is a simulated response. In the full implementation, this would connect to your AI backend for contextual legal analysis.`,
+        content: data.answer || 'No response received',
+        timestamp: new Date(),
+        keywords: data.keywords ?? [],
+        keyPhrases: data.keyPhrases ?? [],
+        suggestions: data.suggestions ?? []
+      }];
+    } catch (error) {
+      console.error('Error calling API:', error);
+      const errorMsgId = crypto.randomUUID();
+      messages = [...messages, {
+        id: errorMsgId,
+        role: 'assistant',
+        content: `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`,
         timestamp: new Date()
       }];
+    } finally {
       isTyping = false;
-    }, 1500);
+    }
+  }
+
+  // Use suggestion
+  function useSuggestion(suggestion: string) {
+    currentMessage = suggestion;
   }
 
   // Handle Enter key
@@ -106,7 +158,7 @@
         </div>
       {/if}
 
-      {#each messages as message}
+      {#each messages as message (message.id)}
         <div class="flex gap-3 {message.role === 'user' ? 'justify-end' : 'justify-start'}">
           {#if message.role === 'assistant'}
             <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -114,11 +166,43 @@
             </div>
           {/if}
 
-          <div class="max-w-md lg:max-w-lg xl:max-w-xl {message.role === 'user' ? 'bg-green-600 text-black' : 'bg-gray-800 border border-green-500 text-green-400'} rounded-lg p-3">
-            <p class="text-sm leading-relaxed">{message.content}</p>
-            <p class="text-xs opacity-60 mt-2">
-              {message.timestamp.toLocaleTimeString()}
-            </p>
+          <div class="max-w-md lg:max-w-lg xl:max-w-xl">
+            <div class="{message.role === 'user' ? 'bg-green-600 text-black' : 'bg-gray-800 border border-green-500 text-green-400'} rounded-lg p-3">
+              <p class="text-sm leading-relaxed">{message.content}</p>
+              <p class="text-xs opacity-60 mt-2">
+                {message.timestamp.toLocaleTimeString()}
+              </p>
+
+              {#if message.role === 'assistant'}
+                {#if message.keywords && message.keywords.length > 0}
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    {#each message.keywords as keyword}
+                      <button
+                        type="button"
+                        class="text-xs px-2 py-1 rounded-full border border-green-400 bg-green-400/10 hover:bg-green-400/20 text-green-300 transition-colors"
+                        onclick={() => useSuggestion(`Show me more evidence about: ${keyword}`)}
+                      >
+                        #{keyword}
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+
+                {#if message.suggestions && message.suggestions.length > 0}
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    {#each message.suggestions as suggestion}
+                      <button
+                        type="button"
+                        class="text-xs px-2 py-1 rounded border border-green-500 bg-green-500/10 hover:bg-green-500/20 text-green-300 transition-colors"
+                        onclick={() => useSuggestion(suggestion)}
+                      >
+                        {suggestion}
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+              {/if}
+            </div>
           </div>
 
           {#if message.role === 'user'}

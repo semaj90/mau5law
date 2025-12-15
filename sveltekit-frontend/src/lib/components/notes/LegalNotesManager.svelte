@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { xstateIntegration } from '$lib/services/xstate-integration';
 	import { clearNoteFilters, exportLegalNotes, filteredNotes, loadLegalNotes, noteFilters, noteStats, removeLegalNote, saveLegalNote, setNoteFilter } from '$lib/stores/notes';
 	import type { LegalNote, NoteFilters } from '$lib/types/notes';
@@ -13,23 +13,23 @@
 	import Input from "$lib/components/ui/Input.svelte";
 	import Textarea from "$lib/components/ui/Textarea.svelte";
 	import Brain from "lucide-svelte/icdons/brain";
-	import AlertTriangle from "lucide-svelte/icons/alert-triangle";
-	import Calendar from "lucide-svelte/icons/calendar";
-	import Database from "lucide-svelte/icons/database";
-	import Download from "lucide-svelte/icons/download";
-	import Edit3 from "lucide-svelte/icons/edit-3";
-	import Eye from "lucide-svelte/icons/eye";
-	import FileText from "lucide-svelte/icons/file-text";
-	import Filter from "lucide-svelte/icons/filter";
-	import Gavel from "lucide-svelte/icons/gavel";
-	import Plus from "lucide-svelte/icons/plus";
-	import Save from "lucide-svelte/icons/save";
-	import Search from "lucide-svelte/icons/search";
-	import Star from "lucide-svelte/icons/star";
-	import StarOff from "lucide-svelte/icons/star-off";
-	import Tag from "lucide-svelte/icons/tag";
-	import Trash2 from "lucide-svelte/icons/trash-2";
-	import X from "lucide-svelte/icons/x";
+	import { AlertTriangle } from "lucide-svelte"";
+	import { Calendar } from "lucide-svelte"";
+	import { Database } from "lucide-svelte"";
+	import { Download } from "lucide-svelte"";
+	import { Edit3 } from "lucide-svelte"";
+	import { Eye } from "lucide-svelte"";
+	import { FileText } from "lucide-svelte"";
+	import { Filter } from "lucide-svelte"";
+	import { Gavel } from "lucide-svelte"";
+	import { Plus } from "lucide-svelte"";
+	import { Save } from "lucide-svelte"";
+	import { Search } from "lucide-svelte"";
+	import { Star } from "lucide-svelte"";
+	import { StarOff } from "lucide-svelte"";
+	import { Tag } from "lucide-svelte"";
+	import { Trash2 } from "lucide-svelte"";
+	import { X } from "lucide-svelte"";
 
 	// Component state
 	let searchQuery: string = '';
@@ -246,7 +246,7 @@
    <option value="high">High</option>
    <option value="urgent">Urgent</option> </select> </div> </div>
    <div> <label for="newnote-content" class="block text-sm font-medium">Content</label>
-   <Textarea id="newnote-content" placeholder="Note, content..." bind:value={newNote.content} rows={ 6 } /> </div>
+   <textarea id="newnote-content" placeholder="Note, content..." bind:value={newNote.content} rows={ 6 } ></textarea> </div>
    <div> <label for="newnote-tags" class="block text-sm font-medium">Tags</label>
    <div class="flex flex-wrap gap-2">
     {#each newNote.tags as tag, index} <Badge variant="outline" class="flex items-center"> { tag } <button type="button" class="ml-1" onclick={() => removeTag(index)}> <X class="h-3" /> </button> </Badge> {/each}
@@ -279,7 +279,7 @@
     </div> </CardContent> </Card> {/if}
     <!-- Notes, List --> <div class="space-y-4">
     {#each notes as note (note.id)} <Card> <CardContent class="p-4">
-    {#if editingNote?.id === note.id} <!-- Edit, Mode --> <div class="space-y-4"> <Input type="text" bind:value={editingNote.title} class="font-semibold" /> <Textarea bind:value={editingNote.content} rows={ 6 } /> <div class="flex"> <button type="button"
+    {#if editingNote?.id === note.id} <!-- Edit, Mode --> <div class="space-y-4"> <Input type="text" bind:value={editingNote.title} class="font-semibold" /> <textarea bind:value={editingNote.content} rows={ 6 } ></textarea> <div class="flex"> <button type="button"
                     class="inline-flex items-center px-2 py-1 rounded-md bg-blue-600 text-white text-sm"
                     onclick={ saveEditedNote } >
                     <Save class="h-4 w-4" /> Save </button>
