@@ -2,10 +2,12 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 
-	export let isOpen = false;
-	export let currentAnalysis: any = null;
-	export let agenticSteps: any[] = [];
-	export let isAnalyzing = false;
+	let {
+		isOpen = $bindable(false),
+		currentAnalysis = $bindable(null as any),
+		agenticSteps = $bindable([] as any[]),
+		isAnalyzing = $bindable(false)
+	} = $props();
 
 	let autoScroll = true;
 	let stepContainer: HTMLElement;
@@ -129,7 +131,7 @@
 				>
 					🗑️
 				</button>
-				<button class="close-btn" on:click={toggleSidebar} title="Close sidebar">
+				<button class="close-btn" onclick={toggleSidebar} title="Close sidebar">
 					×
 				</button>
 			</div>
@@ -143,8 +145,8 @@
 						<div class="empty-icon">🧠</div>
 						<h4>Ready for Analysis</h4>
 						<p>Start an agentic analysis to automatically process evidence and generate insights.</p>
-						<button class="start-analysis-btn" on:click={simulateAnalysis}>
-							Start Analysis
+						<button class="start-analysis-btn" onclick={simulateAnalysis}>
+							🚀 Start Analysis
 						</button>
 					</div>
 				{:else}

@@ -497,7 +497,7 @@ export const documentUploadMachine: any = (setup({
 			states: {
 				analyzing: {
 					entry: assign({ uploadProgress: 25 }),
-					after: { 2000: 'embedding' }
+					after: { $1, $2 }
 				},
 				embedding: {
 					entry: assign({ uploadProgress: 50 }),

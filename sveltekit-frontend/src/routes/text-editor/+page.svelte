@@ -8,20 +8,22 @@ import { FileText } from "lucide-svelte";; // Changed to named import as per Sve
 
 // Dynamically load the editor to avoid: "no default export" TS error for the static import
 let EditorComponent: typeof SvelteComponent | null = null; // Changed type from unknown to typeof SvelteComponent | null
-onMount(async () => {
-			try {
-				// Dynamically import the module.
-				// We expect it to either have a default export that is a SvelteComponent,
-				// or a named export 'NierRichTextEditor' that is a SvelteComponent,
-				// or the module itself exports the SvelteComponent directly.
-				const mod = await import('$lib/components/editors/NierRichTextEditor.svelte');
-				// Safely assign, asserting the final type to satisfy TypeScript.
-				EditorComponent = (mod?.default ?? (mod as any)?.NierRichTextEditor ?? mod) as typeof SvelteComponent;
-			} catch (err) {
-				console.error('Failed to load NierRichTextEditor:', err);
-				EditorComponent = null;
-			}
-		});
+onMount(() => {
+    (async () => {
+  			try {
+  				// Dynamically import the module.
+  				// We expect it to either have a default export that is a SvelteComponent,
+  				// or a named export 'NierRichTextEditor' that is a SvelteComponent,
+  				// or the module itself exports the SvelteComponent directly.
+  				const mod = await import('$lib/components/editors/NierRichTextEditor.svelte');
+  				// Safely assign, asserting the final type to satisfy TypeScript.
+  				EditorComponent = (mod?.default ?? (mod as any)?.NierRichTextEditor ?? mod) as typeof SvelteComponent;
+  			} catch (err) {
+  				console.error('Failed to load NierRichTextEditor:', err);
+  				EditorComponent = null;
+  			}
+    })();
+  });
 
 // --- CHANGED: Replace Svelte runes ($state / $derived ) with plain variables + reactive statement ---
 let editorValue: string = '';

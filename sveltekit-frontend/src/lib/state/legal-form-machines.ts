@@ -452,7 +452,7 @@ export const caseCreationMachine = createMachine({
         SUBMIT: 'validating'
       },
       after: {
-        5000: 'autoSaving' // Auto-save every 5 seconds
+        $1, $2 // Auto-save every 5 seconds
       }
     },
     autoSaving: {

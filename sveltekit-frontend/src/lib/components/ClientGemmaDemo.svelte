@@ -14,18 +14,20 @@
   let embeddingResult = $state <{embedding: number[], dimensions: number} | null>(null);
   let isGeneratingEmbedding = $state(false);
 
-  onMount(async () => {
-    isInitializing = true;
-    try {
-      await clientGemmaInference.initialize();
-      isInitialized = true;
-      console.log('✅ Client Gemma Inference ready');
-    } catch (error) {
-      initializationError = error instanceof Error ? error.message : 'Unknown error';
-      console.error('❌ Failed to initialize:', error);
-    } finally {
-      isInitializing = false;
-    }
+  onMount(() => {
+    (async () => {
+      isInitializing = true;
+      try {
+        await clientGemmaInference.initialize();
+        isInitialized = true;
+        console.log('✅ Client Gemma Inference ready');
+      } catch (error) {
+        initializationError = error instanceof Error ? error.message : 'Unknown error';
+        console.error('❌ Failed to initialize:', error);
+      } finally {
+        isInitializing = false;
+      }
+    })();
   });
 
   async function generateText() {

@@ -4,16 +4,18 @@
   let routes: string[] = [];
   let error: string | null = null;
 
-  onMount(async () => {
-    try {
-      const response = await fetch('/api/routes');
-      if (!response.ok) {
-        throw new Error('Failed to fetch routes');
+  onMount(() => {
+    (async () => {
+      try {
+        const response = await fetch('/api/routes');
+        if (!response.ok) {
+          throw new Error('Failed to fetch routes');
+        }
+        routes = await response.json();
+      } catch (e: any) {
+        error = e.message;
       }
-      routes = await response.json();
-    } catch (e: any) {
-      error = e.message;
-    }
+    })();
   });
 </script>
 

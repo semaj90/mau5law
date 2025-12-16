@@ -16,8 +16,10 @@
   let loading = $state(true);
   let error = $state<string | null>(null);
 
-  onMount(async () => {
-    await loadStats();
+  onMount(() => {
+    (async () => {
+      await loadStats();
+    })();
   });
 
   async function loadStats() {

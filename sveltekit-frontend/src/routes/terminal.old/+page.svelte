@@ -15,10 +15,12 @@
   let isLoading = $state(false);
   let error = $state('');
 
-  onMount(async () => {
-    // Load case ID from URL params if available
-    const params = new URLSearchParams(window.location.search);
-    caseId = params.get('caseId') || '';
+  onMount(() => {
+    (async () => {
+      // Load case ID from URL params if available
+      const params = new URLSearchParams(window.location.search);
+      caseId = params.get('caseId') || '';
+    })();
   });
 
   const handleQuery = async (query: string) => {

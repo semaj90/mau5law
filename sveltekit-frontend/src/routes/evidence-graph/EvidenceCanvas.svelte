@@ -73,16 +73,18 @@
   let metadataNode = $state <EvidenceNode | null>(null);
   let pinnedNodeIds = $state <string[]>([]);
 
-  onMount(async () => {
-    try {
-      await initializeCanvas();
-      await setupLiveUpdates();
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to initialize evidence canvas';
-      console.error('Evidence canvas initialization failed:', err);
-    } finally {
-      isLoading = false;
-    }
+  onMount(() => {
+    (async () => {
+      try {
+        await initializeCanvas();
+        await setupLiveUpdates();
+      } catch (err) {
+        error = err instanceof Error ? err.message : 'Failed to initialize evidence canvas';
+        console.error('Evidence canvas initialization failed:', err);
+      } finally {
+        isLoading = false;
+      }
+    })();
   });
 
   onMount(() => {

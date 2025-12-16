@@ -109,21 +109,23 @@ import { TrendingUp } from "lucide-svelte";;
     return unsubscribe;
   });
 
-  onMount(async () => {
-    await appActions.loadCases();
-    await appActions.loadEvidence();
-    await appActions.loadPOIs();
-    await appActions.loadSystemMetrics();
-
-    // Refresh data periodically
-    const interval = setInterval(async () => {
+  onMount(() => {
+    (async () => {
       await appActions.loadCases();
       await appActions.loadEvidence();
       await appActions.loadPOIs();
       await appActions.loadSystemMetrics();
-    }, 30000); // Refresh every 30 seconds
 
-    return () => clearInterval(interval);
+      // Refresh data periodically
+      const interval = setInterval(async () => {
+        await appActions.loadCases();
+        await appActions.loadEvidence();
+        await appActions.loadPOIs();
+        await appActions.loadSystemMetrics();
+      }, 30000); // Refresh every 30 seconds
+
+      return () => clearInterval(interval);
+    })();
   });
 </script>
 

@@ -7,18 +7,20 @@
 	let filter = $state<'all' | 'phase72' | 'phase82' | 'high' | 'medium' | 'low'>('all');
 	let selectedCategory = $state<string | null>(null);
 
-	onMount(async () => {
-		try {
-			const res = await fetch('/api/route-operations/log');
-			if (res.ok) {
-				report = await res.json();
-			}
-		} catch (err) {
-			console.error('Failed to load operations log:', err);
-		} finally {
-			loading = false;
-		}
-	});
+	onMount(() => {
+    (async () => {
+  		try {
+  			const res = await fetch('/api/route-operations/log');
+  			if (res.ok) {
+  				report = await res.json();
+  			}
+  		} catch (err) {
+  			console.error('Failed to load operations log:', err);
+  		} finally {
+  			loading = false;
+  		}
+    })();
+  });
 
 	function getFilteredOperations() {
 		if (!report) return [];

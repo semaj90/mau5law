@@ -10,21 +10,23 @@
 
   let docId = $derived($page.params.docId);
 
-  onMount(async () => {
-    try {
-      const response = await fetch(`/api/docs/${docId}/shards`);
-      const data = await response.json();
+  onMount(() => {
+    (async () => {
+      try {
+        const response = await fetch(`/api/docs/${docId}/shards`);
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch shards');
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch shards');
+        }
+
+        shards = data.shards || [];
+      } catch (err) {
+        error = err instanceof Error ? err.message : 'Unknown error';
+      } finally {
+        loading = false;
       }
-
-      shards = data.shards || [];
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown error';
-    } finally {
-      loading = false;
-    }
+    })();
   });
 
   function selectShard(shard: ShardNode) {

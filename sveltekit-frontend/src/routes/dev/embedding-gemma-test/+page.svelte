@@ -11,8 +11,10 @@
   let isLoading = $state(false);
   let error = $state <string | null>(null);
 
-  onMount(async () => {
-    await checkServiceStatus();
+  onMount(() => {
+    (async () => {
+      await checkServiceStatus();
+    })();
   });
 
   async function checkServiceStatus() {

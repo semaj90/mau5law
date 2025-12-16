@@ -4,15 +4,17 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let isSearching = false;
-	export let searchResults: any[] = [];
-	export let searchQuery = '';
-	export let searchFilters = {
-		type: 'all',
-		dateRange: 'all',
-		source: 'all',
-		minConfidence: 0
-	};
+	let {
+		isSearching = $bindable(false),
+		searchResults = $bindable<any[]>([]),
+		searchQuery = $bindable(''),
+		searchFilters = $bindable({
+			type: 'all',
+			dateRange: 'all',
+			source: 'all',
+			minConfidence: 0
+		})
+	} = $props();
 
 	let advancedMode = false;
 	let searchInput: HTMLInputElement;
@@ -60,19 +62,19 @@
 			<input
 				bind:this={searchInput}
 				bind:value={searchQuery}
-				on:keypress={handleKeyPress}
+				onkeypress={handleKeyPress}
 				placeholder="Search legal evidence, documents, cases..."
 				class="search-input"
 				disabled={isSearching}
 			/>
 			{#if searchQuery}
-				<button class="clear-btn" on:click={clearSearch} title="Clear search">×</button>
+				<button class="clear-btn" onclick={clearSearch} title="Clear search">×</button>
 			{/if}
 		</div>
 		<div class="search-actions">
 			<button
 				class="search-btn"
-				on:click={performSearch}
+				onclick={performSearch}
 				disabled={!searchQuery.trim() || isSearching}
 			>
 				{#if isSearching}
@@ -82,7 +84,7 @@
 					Search
 				{/if}
 			</button>
-			<button class="advanced-toggle" on:click={toggleAdvanced}>
+			<button class="advanced-toggle" onclick={toggleAdvanced}>
 				Advanced
 				<span class="toggle-icon">{advancedMode ? '▼' : '▶'}</span>
 			</button>
@@ -98,7 +100,7 @@
 					<select
 						id="type-filter"
 						bind:value={searchFilters.type}
-						on:change={(e) => updateFilter('type', e.target.value)}
+						onchange={(e) => updateFilter('type', e.target.value)}
 					>
 						<option value="all">All Types</option>
 						<option value="document">Documents</option>
@@ -116,7 +118,7 @@
 					<select
 						id="date-filter"
 						bind:value={searchFilters.dateRange}
-						on:change={(e) => updateFilter('dateRange', e.target.value)}
+						onchange={(e) => updateFilter('dateRange', e.target.value)}
 					>
 						<option value="all">All Time</option>
 						<option value="today">Today</option>
@@ -133,7 +135,7 @@
 					<select
 						id="source-filter"
 						bind:value={searchFilters.source}
-						on:change={(e) => updateFilter('source', e.target.value)}
+						onchange={(e) => updateFilter('source', e.target.value)}
 					>
 						<option value="all">All Sources</option>
 						<option value="internal">Internal</option>
@@ -154,7 +156,7 @@
 							max="100"
 							step="5"
 							bind:value={searchFilters.minConfidence}
-							on:input={(e) => updateFilter('minConfidence', parseInt(e.target.value))}
+							oninput={(e) => updateFilter('minConfidence', parseInt(e.target.value))}
 						/>
 						<span class="confidence-value">{searchFilters.minConfidence}%</span>
 					</div>
@@ -164,27 +166,27 @@
 			{#if hasActiveFilters}
 				<div class="active-filters">
 					<span class="filters-label">Active Filters:</span>
-					{#if searchFilters.type !== 'all'}
-						<span class="filter-tag" on:click={() => updateFilter('type', 'all')}>
-							Type: {searchFilters.type} ×
-						</span>
-					{/if}
-					{#if searchFilters.dateRange !== 'all'}
-						<span class="filter-tag" on:click={() => updateFilter('dateRange', 'all')}>
-							Date: {searchFilters.dateRange} ×
-						</span>
-					{/if}
-					{#if searchFilters.source !== 'all'}
-						<span class="filter-tag" on:click={() => updateFilter('source', 'all')}>
-							Source: {searchFilters.source} ×
-						</span>
-					{/if}
-					{#if searchFilters.minConfidence > 0}
-						<span class="filter-tag" on:click={() => updateFilter('minConfidence', 0)}>
-							Confidence: {searchFilters.minConfidence}% ×
-						</span>
-					{/if}
-					<button class="clear-all-btn" on:click={() => {
+				{#if searchFilters.type !== 'all'}
+					<span class="filter-tag" onclick={() => updateFilter('type', 'all')}>
+						Type: {searchFilters.type} ×
+					</span>
+				{/if}
+				{#if searchFilters.dateRange !== 'all'}
+					<span class="filter-tag" onclick={() => updateFilter('dateRange', 'all')}>
+						Date: {searchFilters.dateRange} ×
+					</span>
+				{/if}
+				{#if searchFilters.source !== 'all'}
+					<span class="filter-tag" onclick={() => updateFilter('source', 'all')}>
+						Source: {searchFilters.source} ×
+					</span>
+				{/if}
+				{#if searchFilters.minConfidence > 0}
+					<span class="filter-tag" onclick={() => updateFilter('minConfidence', 0)}>
+						Confidence: {searchFilters.minConfidence}% ×
+					</span>
+				{/if}
+					<button class="clear-all-btn" onclick={() => {
 						searchFilters = { type: 'all', dateRange: 'all', source: 'all', minConfidence: 0 };
 						dispatch('filterChange', { filters: searchFilters });
 					}}>

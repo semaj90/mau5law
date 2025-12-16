@@ -39,9 +39,11 @@
 
   const caseId = $page.params.id;
 
-  onMount(async () => {
-    await loadCase();
-    await loadEvidence();
+  onMount(() => {
+    (async () => {
+      await loadCase();
+      await loadEvidence();
+    })();
   });
 
   const loadCase = async () => {

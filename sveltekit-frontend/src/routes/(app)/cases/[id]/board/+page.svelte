@@ -29,9 +29,11 @@
   let panX = $state(0);
   let panY = $state(0);
 
-  onMount(async () => {
-    caseId = $page.params.id;
-    await loadEvidenceBoard();
+  onMount(() => {
+    (async () => {
+      caseId = $page.params.id;
+      await loadEvidenceBoard();
+    })();
   });
 
   const loadEvidenceBoard = async () => {

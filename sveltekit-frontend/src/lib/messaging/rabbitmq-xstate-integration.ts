@@ -1327,7 +1327,7 @@ export const selfPromptingMachine = createMachine(
       error: {
         entry: "logConnectionError",
         after: {
-          60000: "initializing",
+          $1, $2,
         },
       },
     },

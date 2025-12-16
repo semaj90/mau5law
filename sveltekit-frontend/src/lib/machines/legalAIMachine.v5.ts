@@ -221,13 +221,13 @@ export const legalAIMachine = createMachine(
         },
       },
       registering: {
-        after: { 1000: 'idle' },
+        after: { $1, $2 },
       },
       creatingCase: {
-        after: { 1000: 'authenticated' },
+        after: { $1, $2 },
       },
       checkingStatus: {
-        after: { 500: 'idle' },
+        after: { $1, $2 },
       },
     },
   },

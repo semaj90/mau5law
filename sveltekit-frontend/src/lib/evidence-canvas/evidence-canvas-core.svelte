@@ -64,7 +64,8 @@
   let nodeColors: Float32Array;
   let edgeColors: Float32Array;
 
-  onMount(async () => {
+  onMount(() => {
+    (async () => {
     if (!canvas) return;
 
     // Initialize rendering context
@@ -79,7 +80,9 @@
 
     // Start render loop
     render();
-  });
+  
+    })();
+  }));
 
   onDestroy(() => {
     if (animationFrame) {

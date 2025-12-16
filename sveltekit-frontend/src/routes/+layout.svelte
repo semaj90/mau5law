@@ -16,24 +16,26 @@
   let webgpuReady = $state(false);
   let cpuFallbackReady = $state(false);
 
-  onMount(async () => {
-    try {
-      const webgpuModule = await import('$lib/webgpu/webgpu-init');
-      webgpu = webgpuModule.webgpu;
-      await webgpu.initialize();
-      webgpuReady = true;
-    } catch (error) {
-      console.warn('WebGPU initialization failed:', error);
-    }
+  onMount(() => {
+    (async () => {
+      try {
+        const webgpuModule = await import('$lib/webgpu/webgpu-init');
+        webgpu = webgpuModule.webgpu;
+        await webgpu.initialize();
+        webgpuReady = true;
+      } catch (error) {
+        console.warn('WebGPU initialization failed:', error);
+      }
 
-    try {
-      const cpuFallbackModule = await import('$lib/webgpu/webgpu-cpu-fallback');
-      cpuFallback = cpuFallbackModule.cpuFallback;
-      await cpuFallback.initialize();
-      cpuFallbackReady = true;
-    } catch (error) {
-      console.warn('CPU fallback initialization failed:', error);
-    }
+      try {
+        const cpuFallbackModule = await import('$lib/webgpu/webgpu-cpu-fallback');
+        cpuFallback = cpuFallbackModule.cpuFallback;
+        await cpuFallback.initialize();
+        cpuFallbackReady = true;
+      } catch (error) {
+        console.warn('CPU fallback initialization failed:', error);
+      }
+    })();
   });
 
   import { browser } from '$app/environment';

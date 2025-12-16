@@ -14,10 +14,12 @@
 		return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 	}
 
-	onMount(async () => {
-		// Register service worker for background uploads
-		await registerServiceWorker();
-	});
+	onMount(() => {
+    (async () => {
+  		// Register service worker for background uploads
+  		await registerServiceWorker();
+    })();
+  });
 
 	async function handleFileSelect(event: Event) {
 		const input = event.target as HTMLInputElement;

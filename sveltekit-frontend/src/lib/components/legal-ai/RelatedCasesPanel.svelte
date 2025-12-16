@@ -21,10 +21,12 @@
   let cases: RelatedCase[] = [];
   let error: string | null = null;
 
-  onMount(async () => {
-    if (statuteCode) {
-      await loadRelatedCases();
-    }
+  onMount(() => {
+    (async () => {
+      if (statuteCode) {
+        await loadRelatedCases();
+      }
+    })();
   });
 
   async function loadRelatedCases() {

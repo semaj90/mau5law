@@ -311,6 +311,9 @@ This implementation plan converts the design into actionable coding tasks. Each 
 ## Phase 8: Client-Side Integration - Error Display
 
 - [x] 8. Update route cards to display error information
+
+
+
   - Modify `sveltekit-frontend/src/routes/(app)/all-routes/+page.svelte`
   - Display error count on route cards
   - Display health status emoji (✅ 🟡 ❌)
@@ -362,6 +365,8 @@ This implementation plan converts the design into actionable coding tasks. Each 
 
 ---
 
+
+
 ## Phase 10: Real-Time Updates
 
 - [ ] 10. Implement real-time health status updates
@@ -370,9 +375,9 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - Update route cards in real-time without page reload
   - _Requirements: 9.4, 9.5_
 
-- [ ] 10.1 Create WebSocket endpoint
+- [ ] 10.1 Create sse fallback to WebSocket endpoint
   - Create `sveltekit-frontend/src/routes/api/routes/ws/+server.ts`
-  - Accept WebSocket connections
+  - Accept sse fallback to WebSocket connections
   - Subscribe clients to route health updates
   - _Requirements: 9.4_
 
@@ -382,7 +387,7 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - _Requirements: 9.4_
 
 - [ ] 10.3 Update UI on health change
-  - Listen for WebSocket messages in all-routes page
+  - Listen for see fallback to WebSocket messages in all-routes page
   - Update route card health indicator
   - Update error count if changed
   - Don't reload page
@@ -426,6 +431,8 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - _Requirements: 10.4, 10.5_
 
 ---
+
+
 
 ## Phase 12: Integration Testing
 

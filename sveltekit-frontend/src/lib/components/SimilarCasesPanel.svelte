@@ -22,8 +22,10 @@
   let minRelevance = 0.5;
   let sortBy: 'relevance' | 'rank' = 'relevance';
 
-  onMount(async () => {
-    await loadSimilarCases();
+  onMount(() => {
+    (async () => {
+      await loadSimilarCases();
+    })();
   });
 
   async function loadSimilarCases() {

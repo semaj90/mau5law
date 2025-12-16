@@ -30,10 +30,12 @@
   let showNewCaseModal = $state(false);
   let newCaseTitle = $state('');
 
-  onMount(async () => {
-    await loadDashboard();
-    // Set up SSE for real-time updates
-    setupSSE();
+  onMount(() => {
+    (async () => {
+      await loadDashboard();
+      // Set up SSE for real-time updates
+      setupSSE();
+    })();
   });
 
   const loadDashboard = async () => {

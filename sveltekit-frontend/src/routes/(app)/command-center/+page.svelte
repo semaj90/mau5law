@@ -70,18 +70,20 @@
 	}
 
 	// Add click outside listener
-	onMount(async () => {
-		await loadAllData();
-		// Set up real-time updates every 30 seconds
-		refreshInterval = setInterval(async () => {
-			await loadAllData();
-		}, 30000);
+	onMount(() => {
+    (async () => {
+  		await loadAllData();
+  		// Set up real-time updates every 30 seconds
+  		refreshInterval = setInterval(async () => {
+  			await loadAllData();
+  		}, 30000);
 
-		// Keyboard shortcuts
-		document.addEventListener('keydown', handleKeydown);
-		// Click outside handler
-		document.addEventListener('click', handleClickOutside);
-	});
+  		// Keyboard shortcuts
+  		document.addEventListener('keydown', handleKeydown);
+  		// Click outside handler
+  		document.addEventListener('click', handleClickOutside);
+    })();
+  });
 
 	onDestroy(() => {
 		if (refreshInterval) {

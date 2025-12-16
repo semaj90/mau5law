@@ -17,11 +17,13 @@
   let extractedText = $state('');
   let showFullText = $state(false);
 
-  onMount(async () => {
-    // Extract preview from metadata
-    if (metadata?.extractedText) {
-      extractedText = metadata.extractedText as string;
-    }
+  onMount(() => {
+    (async () => {
+      // Extract preview from metadata
+      if (metadata?.extractedText) {
+        extractedText = metadata.extractedText as string;
+      }
+    })();
   });
 
   const confidenceColor = (conf: number) => {

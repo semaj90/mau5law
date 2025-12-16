@@ -23,8 +23,10 @@
   let error: string | null = $state(null);
   let selectedCitation: Citation | null = $state(null);
 
-  onMount(async () => {
-    await loadCitations();
+  onMount(() => {
+    (async () => {
+      await loadCitations();
+    })();
   });
 
   async function loadCitations() {

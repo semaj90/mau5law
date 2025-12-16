@@ -333,7 +333,7 @@ export const ragWorkflowMachine = setup({
 				CACHE_HIT: { target: 'completed', actions: 'setCachedResponse' },
 				SEARCH_COMPLETED: { target: 'searching', actions: 'setSearchResults' }
 			},
-			after: { 100: 'searching' } // Fallback if cache check takes too long
+			after: { $1, $2 } // Fallback if cache check takes too long
 		},
 		searching: {
 			on: {

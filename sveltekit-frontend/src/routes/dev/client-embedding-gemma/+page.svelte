@@ -25,16 +25,18 @@
   let similarities = $state <any[]>([]);
   let isGenerating = $state(false);
 
-  onMount(async () => {
-    try {
-      service = getClientEmbeddingGemma();
-      await service.initialize();
-      isReady = service.isReady();
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Initialization failed';
-    } finally {
-      isInitializing = false;
-    }
+  onMount(() => {
+    (async () => {
+      try {
+        service = getClientEmbeddingGemma();
+        await service.initialize();
+        isReady = service.isReady();
+      } catch (err) {
+        error = err instanceof Error ? err.message : 'Initialization failed';
+      } finally {
+        isInitializing = false;
+      }
+    })();
   });
 
   async function generateEmbeddings() {
