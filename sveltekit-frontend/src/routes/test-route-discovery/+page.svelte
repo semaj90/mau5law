@@ -6,18 +6,20 @@
   let tagCounts = $state<Record<string, number>>({});
   let loading = $state(true);
 
-  onMount(async () => {
-    try {
-      const res = await fetch('/api/routes/all');
-      const data = await res.json();
-      stats = data.stats;
-      routes = data.routes.slice(0, 50);
-      tagCounts = data.stats.byTag;
-      loading = false;
-    } catch (e) {
-      console.error('Failed to load routes:', e);
-      loading = false;
-    }
+  onMount(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/routes/all');
+        const data = await res.json();
+        stats = data.stats;
+        routes = data.routes.slice(0, 50);
+        tagCounts = data.stats.byTag;
+        loading = false;
+      } catch (e) {
+        console.error('Failed to load routes:', e);
+        loading = false;
+      }
+    })();
   });
 </script>
 

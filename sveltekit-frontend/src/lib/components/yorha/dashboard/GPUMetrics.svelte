@@ -83,21 +83,23 @@
     }
   }
 
-  onMount(async () => {
-    try {
-      const capabilities = await webgpu.initialize();
-    } catch (error) {
-      console.warn('WebGPU initialization failed:', error);
-    }
+  onMount(() => {
+    (async () => {
+      try {
+        const capabilities = await webgpu.initialize();
+      } catch (error) {
+        console.warn('WebGPU initialization failed:', error);
+      }
 
-    await loadGPUMetrics();
-
-    // Update metrics periodically
-    const interval = setInterval(async () => {
       await loadGPUMetrics();
-    }, 5000); // Update every 5 seconds
 
-    return () => clearInterval(interval);
+      // Update metrics periodically
+      const interval = setInterval(async () => {
+        await loadGPUMetrics();
+      }, 5000); // Update every 5 seconds
+
+      return () => clearInterval(interval);
+    })();
   });
 
   function getMetricColor(value: number, thresholds: { low: number; high: number }): string {

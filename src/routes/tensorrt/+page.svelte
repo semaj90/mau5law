@@ -42,7 +42,7 @@
 				<button
 					class="tab-btn"
 					class:active={activeTab === tab.id}
-					on:click={($event: any) => ($event: any) => () => activeTab = tab.id}
+					onclick={() => activeTab = tab.id}
 				>
 					<span class="tab-icon">{tab.icon}</span>
 					{tab.label}

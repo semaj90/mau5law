@@ -96,11 +96,11 @@
 	<!-- Evidence Detail Modal -->
 	{#if selectedEvidence}
 		<div class="evidence-modal" transition:fade={{ duration: 200 }}>
-			<div class="modal-backdrop" on:click={closeEvidence}></div>
+			<div class="modal-backdrop" onclick={closeEvidence}></div>
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3>{selectedEvidence.title}</h3>
-					<button class="close-btn" on:click={closeEvidence}>×</button>
+				<h3>{selectedEvidence.title}</h3>
+				<button class="close-btn" onclick={closeEvidence}>×</button>
 				</div>
 				<div class="modal-body">
 					<div class="evidence-details">

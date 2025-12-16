@@ -28,7 +28,8 @@
   let selectedNodes = $state <EvidenceNode[]>([]);
   let currentPhase = $state('initial');
 
-  onMount(async () => {
+  onMount(() => {
+    (async () => {
     // Initialize WebGPU support
     webgpuSupported = await webgpuInitService.isWebGPUSupported();
     gpuAccelerationEnabled = webgpuSupported;
@@ -40,7 +41,9 @@
 
     // Load initial case data
     await loadCaseData();
-  });
+  
+    })();
+  }));
 
   onDestroy(() => {
     if (gpuAccelerationEnabled) {

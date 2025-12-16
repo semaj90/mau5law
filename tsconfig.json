@@ -35,6 +35,7 @@
     "sveltekit-frontend/src/**/*",
     "sveltekit-frontend/**/*.svelte",
     "src/**/*",
+    "tests/**/*",
     "uno.config.ts",
     "playwright.config.ts",
     "types.d.ts",

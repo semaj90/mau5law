@@ -34,12 +34,27 @@ $logPath = Join-Path $PSScriptRoot ".." $OutputLog
 
 # Change to the sveltekit directory and run the command
 Push-Location $sveltekitDir
-try {
+$job = Start-Job -ScriptBlock {
+    param($logPath)
+    $env:NODE_OPTIONS="--max-old-space-size=8192"
     & npm run check *>&1 | Out-File -FilePath $logPath -Encoding UTF8
-    $exitCode = $LASTEXITCODE
-} finally {
-    Pop-Location
+} -ArgumentList $logPath
+
+$job | Wait-Job -Timeout 900 # Wait for 15 minutes
+if ($job.State -eq 'Completed') {
+    Receive-Job $job
+    $exitCode = $job.ChildJobs[0].ExitCode
+} elseif ($job.State -eq 'Failed') {
+    Write-Error "svelte-check job failed."
+    Receive-Job $job
+    $exitCode = 1 # Indicate an error
+} else {
+    Write-Warning "svelte-check job timed out after 15 minutes and was stopped."
+    Stop-Job $job
+    $exitCode = 1 # Indicate an error
 }
+Remove-Job $job
+Pop-Location
 
 if ($VerboseOutput) {
     Write-Host ""

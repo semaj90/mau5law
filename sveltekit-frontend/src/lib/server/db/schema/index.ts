@@ -13,3 +13,6 @@ export * from './route_health';
 // Phase 9 (Error Brain Analysis) tables
 export * from './error_brain_analysis';
 
+// Phase 27 (Error Brain Diffs) tables
+export * from './errorBrainDiffs';
+

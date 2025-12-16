@@ -26,8 +26,10 @@
 
   const linkTypes = ['CHARGED_UNDER', 'CITED_IN', 'RELATED_TO', 'OVERRULED_BY', 'AFFIRMED_BY'];
 
-  onMount(async () => {
-    await loadCases();
+  onMount(() => {
+    (async () => {
+      await loadCases();
+    })();
   });
 
   async function loadCases() {

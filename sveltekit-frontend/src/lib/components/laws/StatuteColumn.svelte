@@ -14,16 +14,18 @@
   let isExplaining = $state(false);
   let explanation = $state('');
 
-  onMount(async () => {
-    try {
-      // Silently prefetch context
-      const response = await fetch(`/api/laws/prefetch-context?sectionId=${statuteId}`);
-      if (response.ok) {
-        context = await response.json();
+  onMount(() => {
+    (async () => {
+      try {
+        // Silently prefetch context
+        const response = await fetch(`/api/laws/prefetch-context?sectionId=${statuteId}`);
+        if (response.ok) {
+          context = await response.json();
+        }
+      } catch (error) {
+        console.error('Prefetch failed:', error);
       }
-    } catch (error) {
-      console.error('Prefetch failed:', error);
-    }
+    })();
   });
 
   async function explainSection() {

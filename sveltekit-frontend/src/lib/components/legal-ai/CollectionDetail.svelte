@@ -20,8 +20,10 @@
   let isLoading = true;
   let error: string | null = null;
 
-  onMount(async () => {
-    await loadCitations();
+  onMount(() => {
+    (async () => {
+      await loadCitations();
+    })();
   });
 
   async function loadCitations() {

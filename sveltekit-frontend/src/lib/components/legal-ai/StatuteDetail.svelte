@@ -24,10 +24,12 @@
   let relatedCases: any[] = [];
   let contextLoading = false;
 
-  onMount(async () => {
-    if (statute) {
-      await loadContext();
-    }
+  onMount(() => {
+    (async () => {
+      if (statute) {
+        await loadContext();
+      }
+    })();
   });
 
   async function loadContext() {

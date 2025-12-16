@@ -31,35 +31,37 @@
   let reportsUnsub: (() => void) | null = null;
   let unsubActive: (() => void) | null = null;
 
-  onMount(async () => {
-    loading = true;
-    try {
-      // Prefer the centralized store loader
-      await loadReports();
+  onMount(() => {
+    (async () => {
+      loading = true;
+      try {
+        // Prefer the centralized store loader
+        await loadReports();
 
-      // subscribe to the reports store to keep local list in sync
-      // normalize incoming items (ReportDraft) into a safe Report[] shape
-      reportsUnsub = reportsStore.subscribe((r: ReportDraft[] | undefined) => {
-        reportList = (r ?? []).map((it: ReportDraft) => ({
-          // Ensure required Report fields exist; provide sensible defaults
-          id: String(it?.id ?? ''),
-          title: it?.title ?? '',
-          // Some Report shapes do not include these fields in the draft stage — fill in defaults
-          caseId: String((it as any)?.caseId ?? ''),
-          summary: (it as any)?.summary ?? '',
-          reportType: (it as any)?.reportType ?? 'general',
-          createdAt: it?.createdAt ? new Date(it.createdAt) : new Date(),
-          updatedAt: it?.updatedAt ? new Date(it.updatedAt) : new Date(),
-          wordCount: typeof (it as any)?.wordCount === 'number' ? (it as any).wordCount : undefined,
-          estimatedReadTime:
-            typeof (it as any)?.estimatedReadTime === 'number'
-              ? (it as any).estimatedReadTime
-              : undefined,
-          status: (it as any)?.status ?? 'draft',
-          tags: Array.isArray((it as any)?.tags) ? (it as any).tags : [],
-          content: it?.content ?? '',
-        }));
-      });
+        // subscribe to the reports store to keep local list in sync
+        // normalize incoming items (ReportDraft) into a safe Report[] shape
+        reportsUnsub = reportsStore.subscribe((r: ReportDraft[] | undefined) => {
+          reportList = (r ?? []).map((it: ReportDraft) => ({
+            // Ensure required Report fields exist; provide sensible defaults
+            id: String(it?.id ?? ''),
+            title: it?.title ?? '',
+            // Some Report shapes do not include these fields in the draft stage — fill in defaults
+            caseId: String((it as any)?.caseId ?? ''),
+            summary: (it as any)?.summary ?? '',
+            reportType: (it as any)?.reportType ?? 'general',
+            createdAt: it?.createdAt ? new Date(it.createdAt) : new Date(),
+            updatedAt: it?.updatedAt ? new Date(it.updatedAt) : new Date(),
+            wordCount: typeof (it as any)?.wordCount === 'number' ? (it as any).wordCount : undefined,
+            estimatedReadTime:
+              typeof (it as any)?.estimatedReadTime === 'number'
+                ? (it as any).estimatedReadTime
+                : undefined,
+            status: (it as any)?.status ?? 'draft',
+            tags: Array.isArray((it as any)?.tags) ? (it as any).tags : [],
+            content: it?.content ?? '',
+          }));
+    })();
+  });
 
       // Tauri fallback: if store was empty, try to fetch directly (non-blocking)
       try {

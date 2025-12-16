@@ -39,11 +39,13 @@
   let jobId: string | null = null;
   let pollInterval: NodeJS.Timeout | null = null;
 
-  onMount(async () => {
-    caseId = $page.params.id;
-    await loadCaseDetail();
-    await loadSummary();
-    isLoading = false;
+  onMount(() => {
+    (async () => {
+      caseId = $page.params.id;
+      await loadCaseDetail();
+      await loadSummary();
+      isLoading = false;
+    })();
   });
 
   async function loadCaseDetail() {

@@ -21,8 +21,10 @@
   let newCollectionDescription = '';
   let isCreating = false;
 
-  onMount(async () => {
-    await loadCollections();
+  onMount(() => {
+    (async () => {
+      await loadCollections();
+    })();
   });
 
   async function loadCollections() {

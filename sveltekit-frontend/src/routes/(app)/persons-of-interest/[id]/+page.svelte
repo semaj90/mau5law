@@ -14,8 +14,10 @@
   let activeTab = $state<'details' | 'associates' | 'search'>('details');
 
   // Load POI on mount
-  onMount(async () => {
-    await loadPOI();
+  onMount(() => {
+    (async () => {
+      await loadPOI();
+    })();
   });
 
   async function loadPOI() {

@@ -36,7 +36,6 @@ const graphError = data.error ?? (data.graph as any)?.error ?? null;
   let height = 0;
 
   let searchQuery = '';
-  let matchedNodeIds = new Set<string>();
   let focusedNodeId: string | null = null;
 
   let minScore = 0.45;
@@ -364,13 +363,13 @@ function toggleTag(tag: string) {
           class="nes-input search-input"
           placeholder="Search evidence, tags, OCR..."
           bind:value={searchQuery}
-          on:keydown={(event) => {
+          onkeydown={(event) => {
             if (event.key === 'Enter') {
               handleSearchSubmit();
             }
           }}
         />
-        <button class="nes-btn is-primary" on:click={handleSearchSubmit}>Focus</button>
+        <button class="nes-btn is-primary" onclick={handleSearchSubmit}>Focus</button>
       </div>
       {#if searchQuery && searchMatches.length === 0}
         <p class="muted">No evidence matches “{searchQuery}”.</p>
@@ -384,9 +383,9 @@ function toggleTag(tag: string) {
                 <p class="result-meta">{node.type}{nodeCase(node) ? ` • Case ${nodeCase(node)}` : ''}</p>
               </div>
               <div class="result-actions">
-                <button class="nes-btn is-warning" on:click={() => openEvidence(node)}>Open</button>
-                <button class="nes-btn is-primary" on:click={() => compareEvidence(node)}>Compare</button>
-                <button class="nes-btn is-success" on:click={() => openTimeline(node)}>Timeline</button>
+                <button class="nes-btn is-warning" onclick={() => openEvidence(node)}>Open</button>
+                <button class="nes-btn is-primary" onclick={() => compareEvidence(node)}>Compare</button>
+                <button class="nes-btn is-success" onclick={() => openTimeline(node)}>Timeline</button>
               </div>
             </div>
           {/each}
@@ -404,7 +403,7 @@ function toggleTag(tag: string) {
           max="1"
           step="0.05"
           value={minScore}
-          on:input={(event) => {
+          oninput={(event) => {
             const target = event.currentTarget as HTMLInputElement;
             minScore = Number(target.value);
           }}
@@ -418,7 +417,7 @@ function toggleTag(tag: string) {
           {#each availableTypes as type}
             <button
               class={`pill ${selectedTypeFilters.has(type) ? 'active' : ''}`}
-              on:click={() => toggleType(type)}
+              onclick={() => toggleType(type)}
             >
               {type}
             </button>
@@ -433,7 +432,7 @@ function toggleTag(tag: string) {
             {#each availableCases as caseId}
               <button
                 class={`pill ${selectedCaseFilters.has(caseId) ? 'active' : ''}`}
-                on:click={() => toggleCase(caseId)}
+                onclick={() => toggleCase(caseId)}
               >
                 Case {caseId}
               </button>
@@ -449,7 +448,7 @@ function toggleTag(tag: string) {
             {#each availableTags as tag}
               <button
                 class={`pill ${selectedTags.has(tag) ? 'active' : ''}`}
-                on:click={() => toggleTag(tag)}
+                onclick={() => toggleTag(tag)}
               >
                 {tag}
               </button>

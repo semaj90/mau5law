@@ -63,12 +63,14 @@
     }
   };
 
-  onMount(async () => {
-    if (show && !data) {
-      await loadData();
-    } else if (data) {
-      initializeVisualization();
-    }
+  onMount(() => {
+    (async () => {
+      if (show && !data) {
+        await loadData();
+      } else if (data) {
+        initializeVisualization();
+      }
+    })();
   });
 
   onDestroy(() => {

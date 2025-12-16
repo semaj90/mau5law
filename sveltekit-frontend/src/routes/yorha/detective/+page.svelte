@@ -186,13 +186,15 @@
 
   let intervalId: ReturnType<typeof setInterval>;
 
-  onMount(async () => {
-    await loadData();
-
-    // Refresh data periodically
-    intervalId = setInterval(async () => {
+  onMount(() => {
+    (async () => {
       await loadData();
-    }, 60000); // Refresh every minute
+
+      // Refresh data periodically
+      intervalId = setInterval(async () => {
+        await loadData();
+      }, 60000); // Refresh every minute
+    })();
   });
 
   onDestroy(() => {

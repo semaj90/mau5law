@@ -13,19 +13,21 @@
   let timeline: any[] = [];
   let selectedChunk: any = null;
 
-  onMount(async () => {
-    scene = new MemoryPalaceScene(container);
+  onMount(() => {
+    (async () => {
+      scene = new MemoryPalaceScene(container);
 
-    try {
-      // Load cartridge from MinIO (adjust URL as needed)
-      const cartridge = await loadChr97Cartridge('/topology/doj_v_foo/complaint.chr97.json');
-      scene.loadCartridge(cartridge);
-    } catch (e) {
-      console.error('Failed to load cartridge:', e);
-    }
+      try {
+        // Load cartridge from MinIO (adjust URL as needed)
+        const cartridge = await loadChr97Cartridge('/topology/doj_v_foo/complaint.chr97.json');
+        scene.loadCartridge(cartridge);
+      } catch (e) {
+        console.error('Failed to load cartridge:', e);
+      }
 
-    // Load user chat history for timeline
-    loadTimeline();
+      // Load user chat history for timeline
+      loadTimeline();
+    })();
   });
 
   onDestroy(() => {

@@ -15,8 +15,10 @@
   let selectedPriority = $state<string>('');
 
   // Load POIs on mount
-  onMount(async () => {
-    await loadPOIs();
+  onMount(() => {
+    (async () => {
+      await loadPOIs();
+    })();
   });
 
   async function loadPOIs() {

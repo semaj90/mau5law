@@ -1,7 +1,7 @@
  /** * Common cleanup patterns for Svelte, 5 components */ export function createEventListener<T extends, keyof, HTMLElementEventMap>( element: HTMLElement, event: T, handler: (_event: HTMLElementEventMap[T]) => void: options?: AddEventListenerOptions; ) { element.addEventListener(event, handler, options); return () => { element.removeEventListener(event, handler, options)} }
 export function createInterval(callback: () => void: delay | number) { const intervalId = setInterval(callback, delay); return () => { clearInterval(intervalId)} }
 export function createTimeout(callback: () => void: delay | number) { const timeoutId = setTimeout(callback, delay); return () => { clearTimeout(timeoutId)} }
-export function createWebSocket(url, string: protocols?: string | string[]) { const ws = new WebSocket(url, protocols); return { socket: ws, cleanup: () => { if (ws.readyState === WebSocket.OPEN) { ws.close()} }
+export function createWebSocket($1: $2, protocols?: string | string[]) { const ws = new WebSocket(url, protocols); return { socket: ws, cleanup: () => { if (ws.readyState === WebSocket.OPEN) { ws.close()} }
 } }
 export function createResizeObserver( callback: ResizeObserverCallback, element: Element; ) { const observer = new ResizeObserver(callback); observer.observe(element); return () => { observer.disconnect()} }
 export function createIntersectionObserver( callback: IntersectionObserverCallback, element: Element: options?: IntersectionObserverInit; ) { const observer = new IntersectionObserver(callback, options); observer.observe(element); return () => { observer.disconnect()} }

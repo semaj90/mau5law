@@ -30,8 +30,10 @@
   // Filters
   let selectedLinkType = '';
 
-  onMount(async () => {
-    await loadLinks();
+  onMount(() => {
+    (async () => {
+      await loadLinks();
+    })();
   });
 
   async function loadLinks() {

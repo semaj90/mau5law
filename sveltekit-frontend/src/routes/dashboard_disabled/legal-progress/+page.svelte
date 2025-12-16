@@ -13,11 +13,13 @@
   let showLoadingState = true;
   let errorMessage: string | null = null;
 
-  onMount(async () => {
-    // Subscribe to connection status
-    const unsubscribeStatus = connectionStatus.subscribe((value) => {
-      connectionStatusText = value;
-    });
+  onMount(() => {
+    (async () => {
+      // Subscribe to connection status
+      const unsubscribeStatus = connectionStatus.subscribe((value) => {
+        connectionStatusText = value;
+    })();
+  });
 
     const unsubscribeConnected = isConnected.subscribe((value) => {
       isConnectedValue = value;

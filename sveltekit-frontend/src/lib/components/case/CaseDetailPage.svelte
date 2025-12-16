@@ -14,9 +14,11 @@
   let isGenerating = false;
   let error: string | null = null;
 
-  onMount(async () => {
-    await loadSummary();
-    await loadSimilarCases();
+  onMount(() => {
+    (async () => {
+      await loadSummary();
+      await loadSimilarCases();
+    })();
   });
 
   async function loadSummary() {

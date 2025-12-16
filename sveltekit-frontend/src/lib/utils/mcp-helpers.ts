@@ -520,7 +520,7 @@ export async function mcpReadDirectory(path: string): Promise<string[]> { // Add
 }
 // Production: Autogen agent orchestration (stub, replace with real API integration if available)
 // const autogenServiceFallback = {
-// async runAgents(prompt, string: context?: unknown) {
+// async runAgents($1: $2, context?: unknown) {
 // // TODO: Replace with real Autogen API call
 // return { agent: "autogen", result: `AutoGen agent result,for: ${prompt}` }
 // }
