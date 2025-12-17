@@ -1,4 +1,4 @@
-import type { test, expect  } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // Test all major routes with NES.css UI components
 const routes = [
@@ -12,13 +12,15 @@ const routes = [
   { path: '/cases', title: 'Cases' },
   { path: '/demo/vector-intelligence', title: 'Vector' },
   { path: '/demo/ui-components', title: 'Components' },
+  { path: '/error-brain', title: 'Error-Brain Dashboard' },
+  { path: '/error-brain/runs', title: 'Error-Brain Runs' },
 ];
 
 test.describe('NES.css UI Routes', () => {
   routes.forEach(({ path, title }) => {
     test(`should load ${title} page at ${path}`, async ({ page }) => {
       // Navigate to route
-      await page.goto(`http://localhost:5174${path}`);
+      await page.goto(`http://localhost:5173${path}`);
 
       // Wait for page to load
       await page.waitForLoadState('networkidle');
@@ -45,7 +47,7 @@ test.describe('NES.css UI Routes', () => {
   });
 
   test('NES.css buttons should be interactive', async ({ page }) => {
-    await page.goto('http://localhost:5174/demo/nes-bits-ui');
+    await page.goto('http://localhost:5173/demo/nes-bits-ui');
 
     // Test button click
     const primaryButton = await page.locator('.nes-btn.is-primary').first();
@@ -57,7 +59,7 @@ test.describe('NES.css UI Routes', () => {
   });
 
   test('NES.css dialogs should open and close', async ({ page }) => {
-    await page.goto('http://localhost:5174/demo/nes-bits-ui');
+    await page.goto('http://localhost:5173/demo/nes-bits-ui');
 
     // Look for dialog trigger
     const dialogTrigger = await page.locator('button:has-text("Open Dialog")').first();
@@ -80,7 +82,7 @@ test.describe('NES.css UI Routes', () => {
   });
 
   test('NES.css forms should accept input', async ({ page }) => {
-    await page.goto('http://localhost:5174/demo/nes-bits-ui');
+    await page.goto('http://localhost:5173/demo/nes-bits-ui');
 
     // Test input field
     const input = await page.locator('.nes-input').first();
@@ -100,7 +102,7 @@ test.describe('NES.css UI Routes', () => {
 
 test.describe('Protobuffer Integration', () => {
   test('should have protobuf support configured', async ({ page }) => {
-    await page.goto('http://localhost:5174/api/proto/test', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:5173/api/proto/test', { waitUntil: 'domcontentloaded' });
 
     // Check if protobuf endpoint exists
     const response = await page.evaluate(async () => {

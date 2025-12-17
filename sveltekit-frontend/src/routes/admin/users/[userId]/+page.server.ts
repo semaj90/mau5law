@@ -1,8 +1,10 @@
 import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types // TODO: Verify store subscription is correct for Svelte 5.js';
-import db from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/drizzle';
-import { users, cases, evidence, sessions /*, aiHistory, profileTable */ } from '$lib // TODO: Verify store subscription is correct for Svelte 5/server/db/schema';
+import type { PageServerLoad, Actions } from './$types.js';
+import db from '$lib/server/db/drizzle';
+import { users, cases, evidence, sessions } from '$lib/server/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
+
+// TODO: Verify store subscription is correct for Svelte 5
 
 export const load: PageServerLoad = async ({ params, locals }) => {
     // Check authentication using Lucia v3

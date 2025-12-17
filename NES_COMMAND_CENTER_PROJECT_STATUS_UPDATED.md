@@ -195,11 +195,11 @@ Open: `.kiro/specs/nes-command-center-db-wiring/PHASE_9_QUICK_REFERENCE.md`
 ### Short Term (Next 2 weeks)
 1. Complete Phase 9 implementation
 2. Begin Phase 10 (Real-Time Updates)
-3. Implement WebSocket integration
+3. Implement sse/WebSocket integration
 4. Test real-time health updates
 
 ### Medium Term (Next 4 weeks)
-1. Complete Phase 10
+1. Complete Phase 10 sse
 2. Begin Phase 11 (Data Archival)
 3. Implement background jobs
 4. Test data archival

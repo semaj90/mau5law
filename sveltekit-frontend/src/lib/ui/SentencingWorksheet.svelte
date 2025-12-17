@@ -18,23 +18,23 @@
   };
 
   let caseId = 'CASE-002';
-  let offenseLevel = 24;
-  let criminalHistory = 3;
+  let offenseLevel = $state(24);
+  let criminalHistory = $state(3);
 
-  let aggravatingFactors: AggravatingFactor[] = [
+  let aggravatingFactors = $state<AggravatingFactor[]>([
     { id: 'AG-1', description: 'Multiple victims (15+)', points: 4, selected: true },
     { id: 'AG-2', description: 'Vulnerable victims (economic distress)', points: 2, selected: true },
     { id: 'AG-3', description: 'Extended duration (2+ years)', points: 3, selected: true },
     { id: 'AG-4', description: 'Use of coercion and threats', points: 2, selected: true },
     { id: 'AG-5', description: 'Leadership/management role', points: 4, selected: false },
-  ];
+  ]);
 
-  let mitigatingFactors: MitigatingFactor[] = [
+  let mitigatingFactors = $state<MitigatingFactor[]>([
     { id: 'MIT-1', description: 'Acceptance of responsibility', points: -3, selected: false },
     { id: 'MIT-2', description: 'Minimal role in offense', points: -4, selected: false },
     { id: 'MIT-3', description: 'Mental health condition', points: -2, selected: false },
     { id: 'MIT-4', description: 'Cooperation with authorities', points: -2, selected: false },
-  ];
+  ]);
 
   let selectedAggravating = $derived(aggravatingFactors.filter(f => f.selected));
   let selectedMitigating = $derived(mitigatingFactors.filter(f => f.selected));

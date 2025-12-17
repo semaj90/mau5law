@@ -17,8 +17,26 @@
    - **Wave 3**: Fix `Event Handler` deprecations (on:click -> onclick).
 4. **Verify**: Re-run `scripts/advanced-check.ps1` after each wave.
 
+// ...existing code...
 ### Fix Rules
 - **Never** delete a file unless explicitly instructed.
 - **If a fix is complex**, wrap it in `// @ts-ignore` with a TODO comment: `// TODO: Phase 75 fix`.
 - **Core Routes** take precedence over everything else.
+
+## 🗺️ Route Structure & Command Center
+- **Core Routes Location**: `src/routes/(app)/` contains the authenticated core application routes.
+- **Public Routes**: Root level `src/routes/` contains public/marketing pages.
+- **Command Center**: The main dashboard is at `src/routes/(app)/command-center/`.
+- **Navigation**: Defined in `src/lib/components/yorha/CommandCenterNav.svelte`.
+
+### Route Status
+The following routes have been migrated to `(app)`:
+- `active-cases`
+- `evidence-library`
+- `analysis-center`
+- `global-search`
+- `system-configuration`
+- `gpu-evidence-graph`
+- `persons-of-interest`
+
 

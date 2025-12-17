@@ -1,39 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ErrorBrainAPI } from './error-brain-api';
 import type { Error as AnalysisError } from './types';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
-import fc from 'fast-check';
 import fc from 'fast-check';
 
 describe('ErrorBrainAPI', () => {
@@ -414,219 +381,143 @@ describe('ErrorBrainAPI', () => {
   describe('Property: API Request Validation', () => {
     it(
       'for any valid error array, analyzeErrors should return success or error message',
-      fc.asyncProperty(
-        fc.array(
-          fc.record({
-            file: fc.string(),
-            line: fc.integer({ min: 1, max: 10000 }),
-            column: fc.integer({ min: 1, max: 1000 }),
-            message: fc.string(),
-            type: fc.constantFrom('typescript', 'svelte'),
-            severity: fc.constantFrom('error', 'warning'),
+      async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.array(
+              fc.record({
+                file: fc.string(),
+                line: fc.integer({ min: 1, max: 10000 }),
+                column: fc.integer({ min: 1, max: 1000 }),
+                message: fc.string(),
+                type: fc.constantFrom('typescript', 'svelte'),
+                severity: fc.constantFrom('error', 'warning'),
+              }),
+              { minLength: 1, maxLength: 10 }
+            ),
+            async (errors) => {
+              const result = await api.analyzeErrors(errors as unknown as AnalysisError[]);
+
+              expect(result).toHaveProperty('success');
+              expect(result).toHaveProperty('analyses');
+              expect(typeof result.success).toBe('boolean');
+
+              if (result.success) {
+                expect(result).toHaveProperty('analyses');
+                expect(Array.isArray(result.analyses)).toBe(true);
+              }
+            }
+          ),
+          { numRuns: 100 }
+        );
+      }
+    );
+  });
+
+  describe('Property: Status Consistency', () => {
+    it(
+      'status should always have all required fields',
+      async () => {
+        await fc.assert(
+          fc.asyncProperty(fc.constant(null), async () => {
+            const status = await api.getStatus();
+
+            expect(status).toHaveProperty('enabled');
+            expect(status).toHaveProperty('status');
+            expect(status).toHaveProperty('features');
+            expect(status).toHaveProperty('timestamp');
+
+            expect(typeof status.enabled).toBe('boolean');
+            expect(typeof status.status).toBe('string');
+            expect(typeof status.features).toBe('object');
+            expect(typeof status.timestamp).toBe('string');
           }),
-          { minLength: 1, maxLength: 10 }
-        ),
-        async (errors) => {
-          const result = await api.analyzeErrors(errors);
-
-          expect(result).toHaveProperty('success');
-          expect(result).toHaveProperty('analyses');
-          expect(typeof result.success).toBe('boolean');
-
-          if (result.success) {
-            expect(result).toHaveProperty('analyses');
-          expect(Array.isArray(result.analyses)).toBe(true);
-        }
-      )
-    );
-  });
-
-  describe('Property: Status Consistency', () => {
-    it(
-      'status should always have all required fields',
-      fc.asyncProperty(fc.constant(null), async () => {
-        const status = await api.getStatus();
-
-        expect(status).toHaveProperty('enabled');
-        expect(status).toHaveProperty('status');
-        expect(status).toHaveProperty('features');
-        expect(status).toHaveProperty('timestamp');
-
-        expect(typeof status.enabled).toBe('boolean');
-        expect(typeof status.status).toBe('string');
-        expect(typeof status.features).toBe('object');
-        expect(typeof status.timestamp).toBe('string');
-      })
+          { numRuns: 100 }
+        );
+      }
     );
   });
 
   describe('Property: Feature Flag Persistence', () => {
     it(
       'setting a feature flag should persist across getFeatures calls',
-      fc.asyncProperty(
-        fc.constantFrom(
-          'error-brain',
-          'diff-generation',
-          'diff-application',
-          'validation'
-        ),
-        fc.boolean(),
-        async (flag, value) => {
-          await api.setFeature(flag, value);
-          const features = await api.getFeatures();
+      async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.constantFrom(
+              'error-brain',
+              'diff-generation',
+              'diff-application',
+              'validation'
+            ),
+            fc.boolean(),
+            async (flag, value) => {
+              await api.setFeature(flag, value);
+              const features = await api.getFeatures();
 
-          expect(features.features[flag]).toBe(value);
-        }
-      )
+              expect(features.features[flag]).toBe(value);
+            }
+          ),
+          { numRuns: 100 }
+        );
+      }
     );
   });
 
   describe('Property: Enable/Disable Idempotence', () => {
     it(
       'enabling error-brain multiple times should be idempotent',
-      fc.asyncProperty(fc.constant(null), async () => {
-        await api.enableErrorBrain();
-        await api.enableErrorBrain();
-        const status = await api.getStatus();
+      async () => {
+        await fc.assert(
+          fc.asyncProperty(fc.constant(null), async () => {
+            await api.enableErrorBrain();
+            await api.enableErrorBrain();
+            const status = await api.getStatus();
 
-        expect(status.enabled).toBe(true);
-      })
+            expect(status.enabled).toBe(true);
+          }),
+          { numRuns: 100 }
+        );
+      }
     );
 
     it(
       'disabling error-brain multiple times should be idempotent',
-      fc.asyncProperty(fc.constant(null), async () => {
-        await api.disableErrorBrain();
-        await api.disableErrorBrain();
-        const status = await api.getStatus();
+      async () => {
+        await fc.assert(
+          fc.asyncProperty(fc.constant(null), async () => {
+            await api.disableErrorBrain();
+            await api.disableErrorBrain();
+            const status = await api.getStatus();
 
-        expect(status.enabled).toBe(false);
-      })
+            expect(status.enabled).toBe(false);
+          }),
+          { numRuns: 100 }
+        );
+      }
     );
   });
 
   describe('Property: Error Response Consistency', () => {
     it(
       'failed requests should always return error message',
-      fc.asyncProperty(
-        fc.array(fc.object(), { maxLength: 0 }),
-        async (errors) => {
-          const result = await api.analyzeErrors(errors as unknown as AnalysisError[]);
+      async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.array(fc.object(), { maxLength: 0 }),
+            async (errors) => {
+              const result = await api.analyzeErrors(errors as unknown as AnalysisError[]);
 
-          if (!result.success) {
-          } else {
-            expect(result).toHaveProperty('error');
-            expect(typeof result.error).toBe('string');
-            expect(result.error.length).toBeGreaterThan(0);
-          }
-        }
-      )
-    );
-  });
-
-  describe('Integration: Full API Workflow', () => {
-    it('should handle complete workflow', async () => {
-      // Get initial status
-      let status = await api.getStatus();
-      expect(status).toBeDefined();
-  describe('Property: Status Consistency', () => {
-    it(
-      'status should always have all required fields',
-      fc.asyncProperty(fc.constant(null), async () => {
-        const status = await api.getStatus();
-
-        expect(status).toHaveProperty('enabled');
-        expect(status).toHaveProperty('status');
-        expect(status).toHaveProperty('features');
-        expect(status).toHaveProperty('timestamp');
-
-      // Enable error-brain
-      let result = await api.enableErrorBrain();
-      expect(result.success).toBe(true);
-
-      // Verify enabled
-      status = await api.getStatus();
-        expect(typeof status.enabled).toBe('boolean');
-        expect(typeof status.status).toBe('string');
-        expect(typeof status.features).toBe('object');
-        expect(typeof status.timestamp).toBe('string');
-      })
-    );
-  });
-
-  describe('Property: Feature Flag Persistence', () => {
-    it(
-      'setting a feature flag should persist across getFeatures calls',
-      fc.asyncProperty(
-        fc.constantFrom(
-          'error-brain',
-          'diff-generation',
-          'diff-application',
-          'validation'
-        ),
-        fc.boolean(),
-        async (flag, value) => {
-          await api.setFeature(flag, value);
-          const features = await api.getFeatures();
-
-          expect(features.features[flag]).toBe(value);
-        }
-      )
-    );
-  });
-
-  describe('Property: Enable/Disable Idempotence', () => {
-    it(
-      'enabling error-brain multiple times should be idempotent',
-      fc.asyncProperty(fc.constant(null), async () => {
-        await api.enableErrorBrain();
-        await api.enableErrorBrain();
-        const status = await api.getStatus();
-
-      expect(status.enabled).toBe(true);
-      })
-    );
-
-      // Analyze errors
-    it(
-      'disabling error-brain multiple times should be idempotent',
-      fc.asyncProperty(fc.constant(null), async () => {
-        await api.disableErrorBrain();
-        await api.disableErrorBrain();
-        const status = await api.getStatus();
-
-        expect(status.enabled).toBe(false);
-      })
-    );
-  });
-
-  describe('Property: Error Response Consistency', () => {
-    it(
-      'failed requests should always return error message',
-      fc.asyncProperty(
-        fc.array(fc.object(), { maxLength: 0 }),
-        async (errors) => {
-          const result = await api.analyzeErrors(errors as unknown as AnalysisError[]);
-
-          if (!result.success) {
-            expect(typeof result.error).toBe('string');
-            expect(result.error.length).toBeGreaterThan(0);
-            expect(result).toHaveProperty('error');
-            expect(typeof result.error).toBe('string');
-            expect(result).toHaveProperty('error');
-            expect(typeof result.error).toBe('string');
-            expect(result.error.length).toBeGreaterThan(0);
-            expect(result).toHaveProperty('error');
-            expect(typeof result.error).toBe('string');
-            expect(result.error.length).toBeGreaterThan(0);
-          }
-        }
-            expect(result).toHaveProperty('error');
-            expect(typeof result.error).toBe('string');
-            expect(result.error.length).toBeGreaterThan(0);
-          }
-        }
-      )
+              if (!result.success) {
+                expect(typeof result.error).toBe('string');
+                expect(result.error!.length).toBeGreaterThan(0);
+                expect(result).toHaveProperty('error');
+              }
+            }
+          ),
+          { numRuns: 100 }
+        );
+      }
     );
   });
 
@@ -673,4 +564,3 @@ describe('ErrorBrainAPI', () => {
     });
   });
 });
-

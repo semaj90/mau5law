@@ -346,6 +346,10 @@ describe('AuditTrail', () => {
           expect(entry.status).toBe('success');
           expect(entry).toHaveProperty('timestamp');
           expect(entry).toHaveProperty('id');
+          expect(entry.operation).toBe(operation);
+          expect(entry.status).toBe('success');
+          expect(entry).toHaveProperty('timestamp');
+          expect(entry).toHaveProperty('id');
         }
       )
     );
@@ -388,7 +392,6 @@ describe('AuditTrail', () => {
       )
     );
   });
-
   describe('Integration: Full Audit Workflow', () => {
     it('should handle complete audit workflow', async () => {
       // Log analysis

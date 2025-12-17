@@ -21,9 +21,7 @@
 <div class="tab-content">
   {#each tabs as tab, index}
     {#if activeTab === index}
-      <slot name="content" {tab} {index}>
-        {@render tab.content?.()}
-      </slot>
+      {@render tab.content?.()}
     {/if}
   {/each}
 </div>

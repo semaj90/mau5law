@@ -1,175 +1,44 @@
-/**
- * Error Brain: Diff Generator
- *
- * Turns LLM-suggested changes into deterministic, hash-guarded unified diffs.
- *
- * Key invariants:
- * - One patch = one file
- * - Include 3-5 context lines
- * - Include beforeSha256 + afterSha256
- * - Add confidence + reason
- * - Enforce MAX_PATCH_LINES
- */
-
-import { randomUUID } from 'node:crypto';
-import type {
-    DiffGenerationResult,
-    DiffGeneratorConfig,
-    DiffPatch
-} from './diffTypes.js';
-import { DEFAULT_DIFF_CONFIG } from './diffTypes.js';
-import {
-    computeSha256,
-    contentsEqual,
-    countLinesChanged,
-    generateUnifiedDiff
-} from './unifiedDiff.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { unifiedDiffFromTexts } from './unifiedDiff';
+import type { PatchCandidate } from './diffTypes';
 
 export class DiffGenerator {
-	private config: DiffGeneratorConfig;
+  constructor(private readonly repoRoot: string) {}
 
-	constructor(config: Partial<DiffGeneratorConfig> = {}) {
-		this.config = {
-			...DEFAULT_DIFF_CONFIG,
-			...config
-		};
-	}
+  readText(repoRelPath: string): string {
+    const abs = path.join(this.repoRoot, repoRelPath);
+    return fs.readFileSync(abs, 'utf8');
+  }
 
-	/**
-	 * Generate a patch from before/after content
-	 *
-	 * @param runId - Run ID this patch belongs to
-	 * @param filePath - File path relative to project root
-	 * @param before - Original file content
-	 * @param after - Proposed file content
-	 * @param reason - Human-readable explanation
-	 * @param confidence - Confidence score (0..1)
-	 * @param ruleId - Optional rule ID that generated this patch
-	 * @returns Generation result with patch or error
-	 */
-	generatePatch(
-		runId: string,
-		filePath: string,
-		before: string,
-		after: string,
-		reason: string,
-		confidence: number,
-		ruleId?: string
-	): DiffGenerationResult {
-		// Guard: Check if contents are identical
-		if (contentsEqual(before, after)) {
-			return {
-				patch: null,
-				reason: 'No changes needed - contents identical',
-				success: false
-			};
-		}
+  createPatchCandidate(opts: {
+    runId: string;
+    filePath: string; // repo-relative
+    beforeText?: string; // optional override
+    afterText: string;
+    reason: string;
+    confidence: number;
+    contextLines?: number; // default 3-5
+  }): PatchCandidate {
+    const beforeText = opts.beforeText ?? this.readText(opts.filePath);
+    const { diffText, beforeSha256, afterSha256 } = unifiedDiffFromTexts({
+      filePath: opts.filePath,
+      beforeText,
+      afterText: opts.afterText,
+      contextLines: opts.contextLines ?? 3,
+    });
 
-		// Guard: Check confidence threshold
-		if (confidence < this.config.minConfidence) {
-			return {
-				patch: null,
-				reason: `Confidence ${confidence} below threshold ${this.config.minConfidence}`,
-				success: false
-			};
-		}
-
-		// Guard: Check line count
-		const linesChanged = countLinesChanged(before, after);
-		if (linesChanged > this.config.maxPatchLines) {
-			return {
-				patch: null,
-				reason: `Lines changed (${linesChanged}) exceeds limit (${this.config.maxPatchLines})`,
-				success: false
-			};
-		}
-
-		// Generate hashes
-		const beforeSha256 = computeSha256(before);
-		const afterSha256 = computeSha256(after);
-
-		// Generate unified diff
-		const diffText = generateUnifiedDiff(filePath, before, after, this.config.contextLines);
-
-		// Create patch
-		const patch: DiffPatch = {
-			id: randomUUID(),
-			runId,
-			filePath,
-			beforeSha256,
-			afterSha256,
-			diffText,
-			linesChanged,
-			confidence,
-			reason,
-			ruleId,
-			createdAt: new Date()
-		};
-
-		return {
-			patch,
-			reason: 'Patch generated successfully',
-			success: true
-		};
-	}
-
-	/**
-	 * Generate multiple patches (one per file, enforced)
-	 *
-	 * @param runId - Run ID for all patches
-	 * @param changes - Array of change requests
-	 * @returns Array of generation results
-	 */
-	generatePatches(
-		runId: string,
-		changes: Array<{
-			filePath: string;
-			before: string;
-			after: string;
-			reason: string;
-			confidence: number;
-			ruleId?: string;
-		}>
-	): DiffGenerationResult[] {
-		// Enforce: one patch per file
-		const seenFiles = new Set<string>();
-		const results: DiffGenerationResult[] = [];
-
-		for (const change of changes) {
-			if (seenFiles.has(change.filePath)) {
-				results.push({
-					patch: null,
-					reason: `Duplicate file in batch: ${change.filePath}`,
-					success: false
-				});
-				continue;
-			}
-
-			seenFiles.add(change.filePath);
-			const result = this.generatePatch(
-				runId,
-				change.filePath,
-				change.before,
-				change.after,
-				change.reason,
-				change.confidence,
-				change.ruleId
-			);
-			results.push(result);
-		}
-
-		return results;
-	}
-
-	/**
-	 * Validate a patch's hashes match expected content
-	 *
-	 * @param patch - Patch to validate
-	 * @param currentContent - Current file content
-	 * @returns True if beforeSha256 matches current content
-	 */
-	validatePatchHash(patch: DiffPatch, currentContent: string): boolean {
-		const currentHash = computeSha256(currentContent);
-		return currentHash === patch.beforeSha256;
-	}
+    return {
+      runId: opts.runId,
+      filePath: opts.filePath,
+      reason: opts.reason,
+      confidence: Math.max(0, Math.min(1, opts.confidence)),
+      beforeSha256,
+      afterSha256,
+      afterText: opts.afterText,
+      diffText,
+      contextLines: opts.contextLines ?? 3,
+      createdAt: Date.now(),
+    };
+  }
 }

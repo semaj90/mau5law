@@ -10,7 +10,7 @@
  *   3. Run this script: node scripts/test-error-brain-http.mjs
  */
 
-const BASE_URL = 'http://localhost:5173';
+const BASE_URL = 'http://localhost:5175';
 
 async function testEndpoint(method, path, body = null, description) {
   try {

@@ -9,7 +9,8 @@
  * - ERROR_BRAIN_APPLY_MODE: off|safe|full
  */
 
-import { env } from '$env/dynamic/private';
+// Use process.env directly instead of $env/dynamic/private to avoid SVELTEKIT_PATHS_BASE issues
+const env = process.env;
 
 export type ErrorBrainTransport = 'none' | 'sse' | 'redis' | 'both';
 export type ErrorBrainApplyMode = 'off' | 'safe' | 'full';

@@ -11,10 +11,22 @@ export const auth = {
 export type Auth = typeof auth;
 export type User = any;
 
+// Lucia type augmentation (disabled for Phase 72 testing)
+declare module 'lucia' {
   interface Register {
     Lucia: typeof auth;
     DatabaseUserAttributes: DatabaseUserAttributes;
   }
 }
 
-export type User = LuciaUser<typeof auth>;
+interface DatabaseUserAttributes {
+  email: string;
+  role?: string;
+}
+
+// Placeholder type for when Lucia is disabled
+type LuciaUser<T> = {
+  id: string;
+  email: string;
+  role?: string;
+};

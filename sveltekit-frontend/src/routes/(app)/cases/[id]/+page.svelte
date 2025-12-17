@@ -3,8 +3,10 @@
   import { page } from '$app/stores';
   import CaseNotesEditor from '$lib/components/cases/CaseNotesEditor.svelte';
   import ContextualChatModal from '$lib/components/cases/ContextualChatModal.svelte';
-  import EvidenceUploadPreview from '$lib/components/evidence/EvidenceUploadPreview.svelte';
-  import SummaryReviewPanel from '$lib/components/evidence/SummaryReviewPanel.svelte';
+// Evidence components temporarily disabled for core build
+  // TODO: Re-enable after de-minification tool runs
+  // import EvidenceUploadPreview from '$lib/components/evidence/EvidenceUploadPreview.svelte';
+  // import SummaryReviewPanel from '$lib/components/evidence/SummaryReviewPanel.svelte';
   import NesModal from '$lib/components/nes/NesModal.svelte';
   import { onMount } from 'svelte';
 

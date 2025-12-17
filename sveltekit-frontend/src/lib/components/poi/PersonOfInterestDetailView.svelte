@@ -1,25 +1,25 @@
 <script lang="ts">
-  import { Dialog, DialogContent } from '$lib/components/ui/dialog';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Dialog, DialogContent } from '$lib/components/ui/dialog';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
   import {
+    AlertTriangle,
+    BarChart3,
     Calendar,
+    Clock,
     Edit,
     Eye,
-    MapPin,
-    Phone,
-    Mail,
-    AlertTriangle,
-    Users,
     FileText,
+    Mail,
+    MapPin,
+    Network,
+    Phone,
     Tag,
     TrendingUp,
-    Clock,
-    Network,
-    BarChart3
+    Users
   } from 'lucide-svelte';
 
   interface PhysicalDescription {
@@ -125,8 +125,8 @@
     return (baseScores[threatLevel as keyof typeof baseScores] || 1) * (dangerLevel / 10);
   }
 
-  $: age = poi ? calculateAge(poi.dateOfBirth) : null;
-  $: threatScore = poi ? getThreatScore(poi.threatLevel, poi.dangerLevel) : 0;
+  let age = $derived(poi ? calculateAge(poi.dateOfBirth) : null);
+  let threatScore = $derived(poi ? getThreatScore(poi.threatLevel, poi.dangerLevel) : 0);
 </script>
 
 <Dialog bind:open={open} onOpenChange={onOpenChange}>
@@ -154,12 +154,12 @@
                   <p class="text-slate-400 mb-3">
                     <span class="font-medium">Also known as:</span> {poi.aliases.join(', ')}
                   </p>
-                {/if>
+                {/if}
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                onclick={() => onEdit(poi)}
+                on:click={() => onEdit(poi)}
                 class="bg-slate-700 border-slate-600 hover:bg-slate-600"
               >
                 <Edit class="w-4 h-4 mr-2" />
@@ -465,5 +465,4 @@
       </div>
     {/if}
   </DialogContent>
-</Dialog></content>
-<parameter name="filePath">c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\components\poi\PersonOfInterestDetailView.svelte
+</Dialog>
