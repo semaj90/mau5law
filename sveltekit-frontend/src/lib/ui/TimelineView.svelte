@@ -17,54 +17,55 @@
     caseId?: string;
   }>();
 
-  // Demo data if empty
-  if (events.length === 0) {
-    events = [
-      {
-        id: 'T-001',
-        timestamp: new Date('2024-12-05T20:00:00'),
-        title: 'Suspect Arrives at Building',
-        description: 'Security footage shows suspect entering lobby',
-        type: 'evidence',
-        evidenceIds: ['EV-001'],
-      },
-      {
-        id: 'T-002',
-        timestamp: new Date('2024-12-05T21:15:00'),
-        title: 'Badge Access to Server Room',
-        description: 'Stolen credentials used to access restricted area',
-        type: 'action',
-        evidenceIds: ['EV-003'],
-      },
-      {
-        id: 'T-003',
-        timestamp: new Date('2024-12-05T21:34:00'),
-        title: 'Physical Evidence Created',
-        description: 'Forced entry marks photographed',
-        type: 'evidence',
-        evidenceIds: ['EV-004'],
-      },
-      {
-        id: 'T-004',
-        timestamp: new Date('2024-12-05T21:45:00'),
-        title: 'Witness Observation',
-        description: 'K. Ito hears suspicious activity',
-        type: 'person',
-        personIds: ['POI-002'],
-      },
-      {
-        id: 'T-005',
-        timestamp: new Date('2024-12-05T22:10:00'),
-        title: 'Suspect Exits Building',
-        description: 'Final security camera footage',
-        type: 'evidence',
-        evidenceIds: ['EV-001'],
-      },
-    ];
-  }
+  // Demo data - don't mutate props, use derived
+  const demoEvents: TimelineEvent[] = [
+    {
+      id: 'T-001',
+      timestamp: new Date('2024-12-05T20:00:00'),
+      title: 'Suspect Arrives at Building',
+      description: 'Security footage shows suspect entering lobby',
+      type: 'evidence',
+      evidenceIds: ['EV-001'],
+    },
+    {
+      id: 'T-002',
+      timestamp: new Date('2024-12-05T21:15:00'),
+      title: 'Badge Access to Server Room',
+      description: 'Stolen credentials used to access restricted area',
+      type: 'action',
+      evidenceIds: ['EV-003'],
+    },
+    {
+      id: 'T-003',
+      timestamp: new Date('2024-12-05T21:34:00'),
+      title: 'Physical Evidence Created',
+      description: 'Forced entry marks photographed',
+      type: 'evidence',
+      evidenceIds: ['EV-004'],
+    },
+    {
+      id: 'T-004',
+      timestamp: new Date('2024-12-05T21:45:00'),
+      title: 'Witness Observation',
+      description: 'K. Ito hears suspicious activity',
+      type: 'person',
+      personIds: ['POI-002'],
+    },
+    {
+      id: 'T-005',
+      timestamp: new Date('2024-12-05T22:10:00'),
+      title: 'Suspect Exits Building',
+      description: 'Final security camera footage',
+      type: 'evidence',
+      evidenceIds: ['EV-001'],
+    },
+  ];
+
+  // Use demo data if events is empty
+  const viewEvents = $derived(events.length > 0 ? events : demoEvents);
 
   // Sort by timestamp
-  let sortedEvents = $derived([...events].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
+  let sortedEvents = $derived([...viewEvents].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
 
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });

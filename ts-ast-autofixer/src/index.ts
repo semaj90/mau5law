@@ -3,7 +3,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
 import chokidar from 'chokidar';
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import WebSocket from 'ws';
 import chalk from 'chalk';
@@ -40,55 +40,54 @@ interface BatchFixResult {
   results: FixResult[];
 }
 
+interface WebSocketMessage {
+  type: string;
+  filePath?: string;
+  applyFixes?: boolean;
+  [key: string]: unknown;
+}
+
 class TSASTAutofixer {
   private eslint: ESLint;
-  private prettierConfig: prettier.Options;
+  private prettierConfig: prettier.Options = {
+    semi: true,
+    singleQuote: true,
+    tabWidth: 2,
+    trailingComma: 'es5',
+    printWidth: 80,
+  };
   private app: express.Application;
   private wss: WebSocket.Server;
-  private watcher: chokidar.FSWatcher | null = null;
+  private watcher: ReturnType<typeof chokidar.watch> | null = null;
 
   constructor() {
-    this.initializeESLint();
+    this.app = express();
+    this.wss = new WebSocket.Server({ port: 8084 });
+    this.eslint = new ESLint({
+      fix: true,
+    } as ConstructorParameters<typeof ESLint>[0]);
     this.initializePrettier();
     this.initializeExpress();
     this.initializeWebSocket();
   }
 
-  private initializeESLint() {
-    this.eslint = new ESLint({
-      fix: true,
-      useEslintrc: true,
-      resolvePluginsRelativeTo: process.cwd(),
-    });
-  }
-
-  private async initializePrettier() {
+  private async initializePrettier(): Promise<void> {
     try {
-      this.prettierConfig = await prettier.resolveConfig(process.cwd()) || {
-        semi: true,
-        singleQuote: true,
-        tabWidth: 2,
-        trailingComma: 'es5',
-        printWidth: 80,
-      };
+      const config = await prettier.resolveConfig(process.cwd());
+      if (config) {
+        this.prettierConfig = config;
+      }
     } catch (error) {
-      this.prettierConfig = {
-        semi: true,
-        singleQuote: true,
-        tabWidth: 2,
-        trailingComma: 'es5',
-        printWidth: 80,
-      };
+      // Use default config
     }
   }
 
-  private initializeExpress() {
-    this.app = express();
+  private initializeExpress(): void {
     this.app.use(cors());
     this.app.use(express.json());
 
     // Health check
-    this.app.get('/health', (req, res) => {
+    this.app.get('/health', (_req: Request, res: Response) => {
       res.json({ status: 'ok', service: 'ts-ast-autofixer' });
     });
 
@@ -105,21 +104,22 @@ class TSASTAutofixer {
     this.app.post('/watch', this.handleWatchMode.bind(this));
   }
 
-  private initializeWebSocket() {
-    this.wss = new WebSocket.Server({ port: 8084 });
-
-    this.wss.on('connection', (ws) => {
+  private initializeWebSocket(): void {
+    this.wss.on('connection', (ws: WebSocket) => {
       console.log('WebSocket client connected to TS AST Autofixer');
 
-      ws.on('message', (message) => {
+      ws.on('message', (message: WebSocket.Data) => {
         try {
-          const data = JSON.parse(message.toString());
+          const data = JSON.parse(message.toString()) as WebSocketMessage;
           this.handleWebSocketMessage(ws, data);
         } catch (error) {
-          ws.send(JSON.stringify({
-            type: 'error',
-            error: error.message
-          }));
+          const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+          ws.send(
+            JSON.stringify({
+              type: 'error',
+              error: errorMsg,
+            })
+          );
         }
       });
     });
@@ -133,12 +133,7 @@ class TSASTAutofixer {
       const content = await fs.readFile(filePath, 'utf-8');
 
       // Parse with TypeScript
-      const sourceFile = ts.createSourceFile(
-        filePath,
-        content,
-        ts.ScriptTarget.Latest,
-        true
-      );
+      const sourceFile = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
 
       // Run ESLint
       const eslintResults = await this.eslint.lintFiles([filePath]);
@@ -148,15 +143,18 @@ class TSASTAutofixer {
         for (const message of result.messages) {
           issues.push({
             file: filePath,
-            line: message.line,
-            column: message.column,
+            line: message.line || 1,
+            column: message.column || 1,
             message: message.message,
-            severity: message.severity === 2 ? 'error' : message.severity === 1 ? 'warning' : 'info',
+            severity:
+              message.severity === 2 ? 'error' : message.severity === 1 ? 'warning' : 'info',
             rule: message.ruleId || undefined,
-            fix: message.fix ? {
-              range: [message.fix.range[0], message.fix.range[1]],
-              text: message.fix.text
-            } : undefined
+            fix: message.fix
+              ? {
+                  range: [message.fix.range[0], message.fix.range[1]],
+                  text: message.fix.text,
+                }
+              : undefined,
           });
         }
       }
@@ -170,14 +168,14 @@ class TSASTAutofixer {
         const svelteIssues = await this.analyzeSvelteFile(filePath, content);
         issues.push(...svelteIssues);
       }
-
     } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       issues.push({
         file: filePath,
         line: 1,
         column: 1,
-        message: `Analysis failed: ${error.message}`,
-        severity: 'error'
+        message: `Analysis failed: ${errorMsg}`,
+        severity: 'error',
       });
     }
 
@@ -187,7 +185,7 @@ class TSASTAutofixer {
   private analyzeTypeScriptAST(sourceFile: ts.SourceFile): ASTIssue[] {
     const issues: ASTIssue[] = [];
 
-    function visit(node: ts.Node) {
+    const visit = (node: ts.Node): void => {
       // Check for common TypeScript issues
       if (ts.isVariableDeclaration(node) && node.name && ts.isIdentifier(node.name)) {
         // Check for implicit any
@@ -198,22 +196,13 @@ class TSASTAutofixer {
             column: sourceFile.getLineAndCharacterOfPosition(node.getStart()).character + 1,
             message: `Variable '${node.name.text}' implicitly has 'any' type`,
             severity: 'warning',
-            rule: 'typescript/no-implicit-any'
+            rule: 'typescript/no-implicit-any',
           });
         }
       }
 
-      // Check for unused variables
-      if (ts.isIdentifier(node) && node.parent) {
-        // This is a simplified check - in practice, you'd need symbol table analysis
-        const parent = node.parent;
-        if (ts.isVariableDeclaration(parent) && !parent.type) {
-          // Already handled above
-        }
-      }
-
       ts.forEachChild(node, visit);
-    }
+    };
 
     visit(sourceFile);
     return issues;
@@ -243,10 +232,10 @@ class TSASTAutofixer {
           fix: {
             range: [
               content.indexOf(match[0], match.index),
-              content.indexOf(match[0], match.index) + match[0].length
+              content.indexOf(match[0], match.index) + match[0].length,
             ],
-            text: match[1]
-          }
+            text: match[1],
+          },
         });
       }
 
@@ -258,13 +247,8 @@ class TSASTAutofixer {
           column: line.indexOf('$:') + 1,
           message: 'Svelte 5: Use reactive statements with proper syntax',
           severity: 'warning',
-          rule: 'svelte5/reactive-statements'
+          rule: 'svelte5/reactive-statements',
         });
-      }
-
-      // Check for old store syntax
-      if (line.includes('import {') && line.includes('writable') && line.includes('from "svelte/store"')) {
-        // This is generally okay, but check for old usage patterns
       }
     }
 
@@ -273,14 +257,14 @@ class TSASTAutofixer {
 
   async fixFile(filePath: string, applyFixes: boolean = false): Promise<FixResult> {
     const issues = await this.analyzeFile(filePath);
-    const fixableIssues = issues.filter(issue => issue.fix);
+    const fixableIssues = issues.filter((issue) => issue.fix);
 
     if (!applyFixes || fixableIssues.length === 0) {
       return {
         file: filePath,
         issuesFixed: 0,
         issuesRemaining: issues.length,
-        appliedFixes: []
+        appliedFixes: [],
       };
     }
 
@@ -289,7 +273,7 @@ class TSASTAutofixer {
       const appliedFixes: ASTIssue[] = [];
 
       // Sort fixes by range (end to start to avoid offset issues)
-      fixableIssues.sort((a, b) => b.fix!.range[0] - a.fix!.range[0]);
+      fixableIssues.sort((a, b) => (b.fix?.range[0] ?? 0) - (a.fix?.range[0] ?? 0));
 
       for (const issue of fixableIssues) {
         if (issue.fix) {
@@ -302,7 +286,7 @@ class TSASTAutofixer {
       // Format with Prettier
       content = await prettier.format(content, {
         ...this.prettierConfig,
-        filepath: filePath
+        filepath: filePath,
       });
 
       // Write back to file
@@ -312,15 +296,14 @@ class TSASTAutofixer {
         file: filePath,
         issuesFixed: appliedFixes.length,
         issuesRemaining: issues.length - appliedFixes.length,
-        appliedFixes
+        appliedFixes,
       };
-
     } catch (error) {
       return {
         file: filePath,
         issuesFixed: 0,
         issuesRemaining: issues.length,
-        appliedFixes: []
+        appliedFixes: [],
       };
     }
   }
@@ -332,7 +315,7 @@ class TSASTAutofixer {
     const files: string[] = [];
     for (const pattern of patterns) {
       const matches = await glob(pattern, {
-        ignore: ['node_modules/**', 'dist/**', '.git/**']
+        ignore: ['node_modules/**', 'dist/**', '.git/**'],
       });
       files.push(...matches);
     }
@@ -364,7 +347,7 @@ class TSASTAutofixer {
       filesFixed,
       totalIssuesFixed,
       totalIssuesRemaining,
-      results
+      results,
     };
   }
 
@@ -375,136 +358,164 @@ class TSASTAutofixer {
 
     this.watcher = chokidar.watch(patterns, {
       ignored: ['node_modules/**', 'dist/**', '.git/**'],
-      persistent: true
+      persistent: true,
     });
 
     console.log(chalk.blue('🔍 Starting watch mode for TS AST autofixing...'));
 
-    this.watcher.on('change', async (filePath) => {
+    this.watcher.on('change', async (filePath: string) => {
       console.log(chalk.yellow(`📝 File changed: ${path.relative(process.cwd(), filePath)}`));
 
       const result = await this.fixFile(filePath, true);
 
       if (result.issuesFixed > 0) {
-        console.log(chalk.green(`✅ Fixed ${result.issuesFixed} issues in ${path.relative(process.cwd(), filePath)}`));
+        console.log(
+          chalk.green(
+            `✅ Fixed ${result.issuesFixed} issues in ${path.relative(process.cwd(), filePath)}`
+          )
+        );
       }
 
       // Notify WebSocket clients
       this.broadcastToClients({
         type: 'file_fixed',
         file: filePath,
-        result
+        result,
       });
     });
 
-    this.watcher.on('add', (filePath) => {
+    this.watcher.on('add', (filePath: string) => {
       console.log(chalk.blue(`📄 New file: ${path.relative(process.cwd(), filePath)}`));
     });
   }
 
-  private broadcastToClients(data: any): void {
-    this.wss.clients.forEach(client => {
+  private broadcastToClients(data: unknown): void {
+    this.wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(data));
       }
     });
   }
 
-  private async handleAnalyzeFile(req: express.Request, res: express.Response) {
+  private async handleAnalyzeFile(req: Request, res: Response): Promise<void> {
     try {
-      const { filePath } = req.body;
+      const { filePath } = req.body as { filePath?: string };
 
       if (!filePath) {
-        return res.status(400).json({ error: 'filePath is required' });
+        res.status(400).json({ error: 'filePath is required' });
+        return;
       }
 
       const issues = await this.analyzeFile(filePath);
       res.json({ file: filePath, issues });
-
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: errorMsg });
     }
   }
 
-  private async handleFixFile(req: express.Request, res: express.Response) {
+  private async handleFixFile(req: Request, res: Response): Promise<void> {
     try {
-      const { filePath, applyFixes = false } = req.body;
+      const { filePath, applyFixes = false } = req.body as {
+        filePath?: string;
+        applyFixes?: boolean;
+      };
 
       if (!filePath) {
-        return res.status(400).json({ error: 'filePath is required' });
+        res.status(400).json({ error: 'filePath is required' });
+        return;
       }
 
       const result = await this.fixFile(filePath, applyFixes);
       res.json(result);
-
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: errorMsg });
     }
   }
 
-  private async handleBatchFix(req: express.Request, res: express.Response) {
+  private async handleBatchFix(req: Request, res: Response): Promise<void> {
     try {
-      const { patterns, applyFixes = false } = req.body;
+      const { patterns, applyFixes = false } = req.body as {
+        patterns?: string[];
+        applyFixes?: boolean;
+      };
 
       if (!patterns || !Array.isArray(patterns)) {
-        return res.status(400).json({ error: 'patterns array is required' });
+        res.status(400).json({ error: 'patterns array is required' });
+        return;
       }
 
       const result = await this.batchFix(patterns, applyFixes);
       res.json(result);
-
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: errorMsg });
     }
   }
 
-  private async handleWatchMode(req: express.Request, res: express.Response) {
+  private async handleWatchMode(req: Request, res: Response): Promise<void> {
     try {
-      const { patterns } = req.body;
+      const { patterns } = req.body as { patterns?: string[] };
 
       if (!patterns || !Array.isArray(patterns)) {
-        return res.status(400).json({ error: 'patterns array is required' });
+        res.status(400).json({ error: 'patterns array is required' });
+        return;
       }
 
       await this.startWatchMode(patterns);
       res.json({ status: 'watch_mode_started', patterns });
-
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      res.status(500).json({ error: errorMsg });
     }
   }
 
-  private async handleWebSocketMessage(ws: WebSocket, data: any) {
+  private async handleWebSocketMessage(ws: WebSocket, data: WebSocketMessage): Promise<void> {
     try {
       switch (data.type) {
-        case 'analyze_file':
-          const issues = await this.analyzeFile(data.filePath);
-          ws.send(JSON.stringify({
-            type: 'analysis_result',
-            file: data.filePath,
-            issues
-          }));
+        case 'analyze_file': {
+          const filePath = data.filePath as string;
+          const issues = await this.analyzeFile(filePath);
+          ws.send(
+            JSON.stringify({
+              type: 'analysis_result',
+              file: filePath,
+              issues,
+            })
+          );
           break;
+        }
 
-        case 'fix_file':
-          const result = await this.fixFile(data.filePath, data.applyFixes);
-          ws.send(JSON.stringify({
-            type: 'fix_result',
-            result
-          }));
+        case 'fix_file': {
+          const filePath = data.filePath as string;
+          const applyFixes = data.applyFixes as boolean;
+          const result = await this.fixFile(filePath, applyFixes);
+          ws.send(
+            JSON.stringify({
+              type: 'fix_result',
+              result,
+            })
+          );
           break;
+        }
 
         default:
-          ws.send(JSON.stringify({
-            type: 'error',
-            error: `Unknown message type: ${data.type}`
-          }));
+          ws.send(
+            JSON.stringify({
+              type: 'error',
+              error: `Unknown message type: ${data.type}`,
+            })
+          );
       }
     } catch (error) {
-      ws.send(JSON.stringify({
-        type: 'error',
-        error: error.message
-      }));
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      ws.send(
+        JSON.stringify({
+          type: 'error',
+          error: errorMsg,
+        })
+      );
     }
   }
 
@@ -524,7 +535,7 @@ class TSASTAutofixer {
 }
 
 // CLI Interface
-async function runCLI() {
+async function runCLI(): Promise<void> {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
@@ -545,7 +556,7 @@ async function runCLI() {
 
   try {
     switch (command) {
-      case 'analyze':
+      case 'analyze': {
         if (!args[1]) {
           console.error('Please specify a file to analyze');
           process.exit(1);
@@ -553,46 +564,49 @@ async function runCLI() {
         const issues = await fixer.analyzeFile(args[1]);
         console.log(JSON.stringify(issues, null, 2));
         break;
+      }
 
-      case 'fix':
+      case 'fix': {
         if (!args[1]) {
           console.error('Please specify a file to fix');
           process.exit(1);
         }
-        const { applyFixes } = await inquirer.prompt([
+        const answers = await inquirer.prompt([
           {
             type: 'confirm',
             name: 'applyFixes',
             message: 'Apply fixes to the file?',
-            default: false
-          }
+            default: false,
+          },
         ]);
-        const result = await fixer.fixFile(args[1], applyFixes);
+        const result = await fixer.fixFile(args[1], answers.applyFixes as boolean);
         console.log(JSON.stringify(result, null, 2));
         break;
+      }
 
-      case 'batch':
+      case 'batch': {
         const patterns = args.slice(1);
         if (patterns.length === 0) {
           console.error('Please specify file patterns');
           process.exit(1);
         }
-        const { applyBatchFixes } = await inquirer.prompt([
+        const answers = await inquirer.prompt([
           {
             type: 'confirm',
             name: 'applyBatchFixes',
             message: 'Apply fixes to all matching files?',
-            default: false
-          }
+            default: false,
+          },
         ]);
-        const batchResult = await fixer.batchFix(patterns, applyBatchFixes);
+        const batchResult = await fixer.batchFix(patterns, answers.applyBatchFixes as boolean);
         console.log(JSON.stringify(batchResult, null, 2));
         break;
+      }
 
-      case 'watch':
-        const watchPatterns = args.slice(1);
+      case 'watch': {
+        let watchPatterns = args.slice(1);
         if (watchPatterns.length === 0) {
-          watchPatterns.push('**/*.{ts,tsx,js,jsx,svelte}');
+          watchPatterns = ['**/*.{ts,tsx,js,jsx,svelte}'];
         }
         await fixer.startWatchMode(watchPatterns);
         // Keep the process running
@@ -602,6 +616,7 @@ async function runCLI() {
           process.exit(0);
         });
         break;
+      }
 
       case 'server':
         await fixer.start();
@@ -612,7 +627,8 @@ async function runCLI() {
         process.exit(1);
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error:', errorMsg);
     process.exit(1);
   }
 }
@@ -620,9 +636,11 @@ async function runCLI() {
 // Main execution
 if (require.main === module) {
   runCLI().catch((error) => {
-    console.error('Fatal error:', error);
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Fatal error:', errorMsg);
     process.exit(1);
   });
 }
 
-export { TSASTAutofixer, ASTIssue, FixResult, BatchFixResult };
+export type { ASTIssue, FixResult, BatchFixResult };
+export { TSASTAutofixer };

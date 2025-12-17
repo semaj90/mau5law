@@ -4,12 +4,23 @@
   type Variant = 'default' | 'success' | 'warning' | 'danger';
   type Size = 'lg' | '2xl' | '3xl';
 
-  export let value: string | number;
-  export let label: string;
-  export let icon: Snippet | null = null;
-  export let variant: Variant = 'default';
-  export let size: Size = 'lg';
-  export let hoverable = false;
+  interface Props {
+    value: string | number;
+    label: string;
+    icon?: Snippet | null;
+    variant?: Variant;
+    size?: Size;
+    hoverable?: boolean;
+  }
+
+  let {
+    value,
+    label,
+    icon = null,
+    variant = 'default',
+    size = 'lg',
+    hoverable = false
+  }: Props = $props();
 
   const sizeClasses: Record<Size, string> = {
     lg: 'text-lg',

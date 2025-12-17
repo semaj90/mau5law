@@ -200,13 +200,13 @@ export class ValidationService {
 		const applyResults = await this.applier.applyPatches(patches, contentMap, false);
 
 		// Check if any patches failed
-		const failedPatches = applyResults.filter((r) => !r.success);
+		const failedPatches = applyResults.filter((r) => !r.ok);
 		if (failedPatches.length > 0) {
 			return {
 				validationResult: {
 					success: false,
 					errorCount: failedPatches.length,
-					errors: failedPatches.map((r) => r.reason || 'Unknown error'),
+					errors: failedPatches.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
 					validatedFiles: touchedFiles,
 					duration: 0,
 					reason: 'Patch application failed'

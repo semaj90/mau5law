@@ -2,7 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import fs from 'fs';
 import { createRequire } from 'module';
 import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 // import { bitsUiIntegrityPlugin } from './scripts/vite-plugin-bits-ui-integrity.mjs';
 
 const require = createRequire(import.meta.url);
@@ -40,9 +40,35 @@ const esbuildCommonJsResolverPatch = {
   },
 };
 
+// Strip dashed define keys that cause esbuild errors
+const stripDashedDefineKeys = {
+  name: 'strip-dashed-define-keys',
+  enforce: 'post',
+  configResolved(config) {
+    const originalDefine = config.define || {};
+    const badKeys = Object.keys(originalDefine).filter((k) => k.includes('-'));
+    if (badKeys.length > 0) {
+      console.warn('[vite] Stripping invalid define keys with hyphens:', badKeys);
+      badKeys.forEach((k) => delete config.define[k]);
+    }
+
+    // Also check esbuild.define
+    if (config.esbuild?.define) {
+      const esbuildBadKeys = Object.keys(config.esbuild.define).filter((k) => k.includes('-'));
+      if (esbuildBadKeys.length > 0) {
+        console.warn('[vite] Stripping invalid esbuild.define keys with hyphens:', esbuildBadKeys);
+        esbuildBadKeys.forEach((k) => delete config.esbuild.define[k]);
+      }
+    }
+  },
+};
+
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  const wsPort = env.VITE_WS_PORT || '5173';
+  // Don't load env vars with loadEnv - let SvelteKit handle it naturally
+  const wsPort = '5173';
+
+  // Feature flag to enable/disable CommonJS resolver patch
+  const ENABLE_CJS_RESOLVER_PATCH = process.env.ENABLE_CJS_RESOLVER_PATCH === 'true';
 
   // Ensure logs directory exists
   const logsDir = path.resolve(__dirname, '..', 'logs');
@@ -52,11 +78,13 @@ export default defineConfig(({ mode }) => {
 
   return {
     assetsInclude: ['**/*.woff2'], // Added for font assets
+    // Removed problematic define block - SvelteKit handles env vars naturally
     plugins: [
-      esbuildCommonJsResolverPatch,
+      stripDashedDefineKeys,
+      ENABLE_CJS_RESOLVER_PATCH && esbuildCommonJsResolverPatch,
       sveltekit({
         compilerOptions: {
-          runes: false, // Disable runes mode due to lucide-svelte incompatibility
+          runes: true, // Enable runes mode for Svelte 5
         },
       }),
       // UnoCSS(), // Temporarily disabled for testing
@@ -91,7 +119,7 @@ export default defineConfig(({ mode }) => {
           });
         },
       },
-    ],
+    ].filter(Boolean),
     server: {
       port: 5173,
       strictPort: true,
@@ -208,23 +236,8 @@ export default defineConfig(({ mode }) => {
       // Work around esbuild issue with scoped packages containing hyphens
       banner: '',
       footer: '',
-      define: {
-        'process.env.NODE_ENV': JSON.stringify(
-          mode === 'production' ? 'production' : 'development'
-        ),
-      },
-    },
-    define: {
-      'process.env.NODE_ENV': JSON.stringify(mode === 'production' ? 'production' : 'development'),
-      'process.env.DATABASE_URL': JSON.stringify(
-        env.DATABASE_URL || process.env.DATABASE_URL || ''
-      ),
-      'process.env.DEV_BYPASS_AUTH': JSON.stringify(
-        env.DEV_BYPASS_AUTH ?? process.env.DEV_BYPASS_AUTH ?? 'false'
-      ),
-      'import.meta.env.VITE_DEV_BYPASS_AUTH': JSON.stringify(
-        env.VITE_DEV_BYPASS_AUTH ?? process.env.DEV_BYPASS_AUTH ?? 'false'
-      ),
+      // Force esbuild to skip transforming problematic define statements
+      define: {},
     },
     clearScreen: false,
     resolve: {

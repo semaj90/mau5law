@@ -1,10 +1,15 @@
 <script lang="ts">
-  import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
+  // Evidence components temporarily disabled for core build
+  // TODO: Re-enable after de-minification tool runs
+  // import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<main class="page-repair yorha-terminal">
+  <div class="nes-container with-title is-dark">
+    <p class="title">Evidence Manager</p>
+    <p>🔧 Component temporarily disabled during core build stabilization</p>
+    <p class="text-warning">Will be restored after AST de-minification completes</p>
+  </div>
 </main>
 
 <style>

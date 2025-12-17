@@ -183,7 +183,7 @@ export const routeInteractionLog = pgTable(
 export const errorClusterArchive = pgTable(
   'error_cluster_archive',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: uuid('id').primaryKey(), // Keep original ID
     routeId: varchar('route_id', { length: 255 }).notNull(),
     tool: varchar('tool', { length: 100 }).notNull(),
     code: varchar('code', { length: 100 }).notNull(),
@@ -216,6 +216,23 @@ export const routeInteractionLogArchive = pgTable(
   (table) => ({
     routeIdIdx: index('idx_archive_interaction_route_id').on(table.routeId),
     archivedAtIdx: index('idx_archive_interaction_archived_at').on(table.archivedAt)
+  })
+);
+
+export const routeHealthEventArchive = pgTable(
+  'route_health_event_archive',
+  {
+    id: uuid('id').primaryKey(), // Keep original ID
+    routeId: varchar('route_id', { length: 255 }).notNull(),
+    oldStatus: varchar('old_status', { length: 50 }),
+    newStatus: varchar('new_status', { length: 50 }).notNull(),
+    reason: varchar('reason', { length: 255 }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+    archivedAt: timestamp('archived_at', { withTimezone: true }).notNull().defaultNow()
+  },
+  (table) => ({
+    routeIdIdx: index('idx_archive_health_route_id').on(table.routeId),
+    archivedAtIdx: index('idx_archive_health_archived_at').on(table.archivedAt)
   })
 );
 

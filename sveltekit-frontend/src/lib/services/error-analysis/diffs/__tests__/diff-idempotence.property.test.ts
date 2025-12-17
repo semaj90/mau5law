@@ -14,8 +14,9 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { DiffApplier } from '../DiffApplier.js';
 import { DiffGenerator } from '../DiffGenerator.js';
-import { computeSha256 } from '../unifiedDiff.js';
+import { sha256 } from '../unifiedDiff.js';
 import { ValidationService } from '../ValidationService.js';
+import { FileSnapshotStore } from '../FileSnapshotStore.js';
 
 const TEST_DIR = join(tmpdir(), 'diff-idempotence-tests');
 
@@ -23,17 +24,14 @@ describe('Diff Idempotence Property Tests', () => {
 	let applier: DiffApplier;
 	let validator: ValidationService;
 	let generator: DiffGenerator;
+    let snapshotStore: FileSnapshotStore;
 
 	beforeEach(async () => {
-		applier = new DiffApplier(80);
+        await mkdir(TEST_DIR, { recursive: true });
+        snapshotStore = new FileSnapshotStore(TEST_DIR);
+		applier = new DiffApplier(TEST_DIR, snapshotStore, 80);
 		validator = new ValidationService(applier, TEST_DIR);
-		generator = new DiffGenerator({
-			maxPatchLines: 80,
-			contextLines: 3,
-			minConfidence: 0.7
-		});
-
-		await mkdir(TEST_DIR, { recursive: true });
+		generator = new DiffGenerator(TEST_DIR);
 	});
 
 	afterEach(async () => {
@@ -53,22 +51,21 @@ describe('Diff Idempotence Property Tests', () => {
 			await writeFile(testFile, original, 'utf8');
 
 			// Generate patch
-			const patch = await generator.generatePatch({
+			const patch = generator.createPatchCandidate({
+				runId: 'run-1',
 				filePath: testFile,
-				originalContent: original,
-				proposedContent: modified,
-				ruleId: 'test-rule',
+				beforeText: original,
+				afterText: modified,
 				reason: 'test change',
-				confidence: 1.0,
-				runId: 'run-1'
+				confidence: 1.0
 			});
 
 			expect(patch).toBeDefined();
 			if (!patch) return;
 
 			// Apply patch
-			const applyResult = await applier.applyPatch(patch, modified);
-			expect(applyResult.success).toBe(true);
+			const applyResult = await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
+			expect(applyResult.ok).toBe(true);
 
 			const afterApply = await readFile(testFile, 'utf8');
 			expect(afterApply).toBe(modified);
@@ -76,10 +73,10 @@ describe('Diff Idempotence Property Tests', () => {
 			// Rollback
 			const rolledBack = await applier.rollback(testFile);
 			expect(rolledBack).toBe(true);
-
 			const afterRollback = await readFile(testFile, 'utf8');
 			expect(afterRollback).toBe(original);
-			expect(computeSha256(afterRollback)).toBe(computeSha256(original));
+			expect(sha256(afterRollback)).toBe(sha256(original));
+		});pect(computeSha256(afterRollback)).toBe(computeSha256(original));
 		});
 
 		it('applying same patch twice produces identical result', async () => {
@@ -90,31 +87,30 @@ describe('Diff Idempotence Property Tests', () => {
 			await writeFile(testFile, original, 'utf8');
 
 			// Generate patch
-			const patch = await generator.generatePatch({
+			const patch = generator.createPatchCandidate({
+				runId: 'run-1',
 				filePath: testFile,
-				originalContent: original,
-				proposedContent: modified,
-				ruleId: 'test-rule',
+				beforeText: original,
+				afterText: modified,
 				reason: 'test',
-				confidence: 1.0,
-				runId: 'run-1'
+				confidence: 1.0
 			});
 
 			expect(patch).toBeDefined();
 			if (!patch) return;
 
 			// Apply first time
-			await applier.applyPatch(patch, modified);
+			await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
 			const firstApply = await readFile(testFile, 'utf8');
-			const firstHash = computeSha256(firstApply);
+			const firstHash = sha256(firstApply);
 
 			// Rollback
 			await applier.rollback(testFile);
 
 			// Apply second time
-			await applier.applyPatch(patch, modified);
+			await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
 			const secondApply = await readFile(testFile, 'utf8');
-			const secondHash = computeSha256(secondApply);
+			const secondHash = sha256(secondApply);
 
 			expect(firstHash).toBe(secondHash);
 			expect(firstApply).toBe(secondApply);
@@ -179,21 +175,20 @@ describe('Diff Idempotence Property Tests', () => {
 
 			await writeFile(testFile, original, 'utf8');
 
-			// Generate
-			const patch = await generator.generatePatch({
+			// Generate patch
+			const patch = generator.createPatchCandidate({
+				runId: 'run-1',
 				filePath: testFile,
-				originalContent: original,
-				proposedContent: modified,
-				ruleId: 'test-rule',
+				beforeText: original,
+				afterText: modified,
 				reason: 'test',
-				confidence: 1.0,
-				runId: 'run-1'
+				confidence: 1.0
 			});
 
 			expect(patch).toBeDefined();
 			if (!patch) return;
 
-			// Apply
+			// Apply patch
 			const contentMap = new Map([[testFile, modified]]);
 			const result = await validator.applyWithValidation([patch], contentMap, true);
 
@@ -212,17 +207,16 @@ describe('Diff Idempotence Property Tests', () => {
 			const modified = 'const value = 2;\n';
 
 			await writeFile(testFile, original, 'utf8');
-			const originalHash = computeSha256(original);
+			const originalHash = sha256(original);
 
 			// Generate patch
-			const patch = await generator.generatePatch({
+			const patch = generator.createPatchCandidate({
+				runId: 'run-1',
 				filePath: testFile,
-				originalContent: original,
-				proposedContent: modified,
-				ruleId: 'test-rule',
+				beforeText: original,
+				afterText: modified,
 				reason: 'test',
-				confidence: 1.0,
-				runId: 'run-1'
+				confidence: 1.0
 			});
 
 			expect(patch).toBeDefined();
@@ -230,11 +224,11 @@ describe('Diff Idempotence Property Tests', () => {
 
 			// Apply and rollback multiple times
 			for (let i = 0; i < 3; i++) {
-				await applier.applyPatch(patch, modified);
+				await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
 				await applier.rollback(testFile);
 
 				const content = await readFile(testFile, 'utf8');
-				expect(computeSha256(content)).toBe(originalHash);
+				expect(sha256(content)).toBe(originalHash);
 			}
 		});
 	});
