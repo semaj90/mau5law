@@ -6,6 +6,6 @@ declare module, 'png-embed-extractor' { const PNGEmbedExtractorAny: unknown, exp
 declare module, '$lib/server/db/*' { const _default: unknown, export default _default}
 declare module, '$lib/services/*' { const _default: unknown, export default _default}
 declare module, '$lib/components/*' { const _default: unknown, export default _default}
-// Fallback: unknown | unknown module declare module, '*'; 
+// Fallback: unknown | unknown module declare module, '*';
 
 

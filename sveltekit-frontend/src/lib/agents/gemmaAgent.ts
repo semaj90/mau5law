@@ -15,13 +15,13 @@ const SYSTEM_PROMPT = `You are an agentic legal/developer assistant running insi
 
 You MUST ALWAYS respond as a single JSON object with this exact structure:
 {
-  "response": "your natural language response to the user",
-  "toolCalls": [
-    {
-      "tool": "tool_name",
-      "arguments": { "arg1": "value1", ... }
-    }
-  ]
+ "response": "your natural language response to the user",
+ "toolCalls": [
+ {
+ "tool": "tool_name",
+ "arguments": { "arg1": "value1", ... }
+ }
+ ]
 }
 
 Available tools:
@@ -43,72 +43,70 @@ Always be concise but helpful. Use tools proactively when they would help.`;
  * Run Gemma3-Legal agent with tool calling
  */
 export async function runGemmaAgent(userPrompt: string): Promise<AgentResponse> {
-  const endpoint = getOllamaEndpoint();
-  const model = getOllamaModel();
+ const endpoint = getOllamaEndpoint();
+ const model = getOllamaModel();
 
-  try {
-    const response = await fetch(`${endpoint}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        prompt: `${SYSTEM_PROMPT}\n\nUser: ${userPrompt}`,
-        stream: false,
-        format: 'json'
-      })
-    });
+ try {
+ const response = await fetch(`${endpoint}/api/generate`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ model,
+ prompt: `${SYSTEM_PROMPT}\n\nUser: ${userPrompt}`,
+ stream: false,
+ format: 'json',
+ }),
+ });
 
-    if (!response.ok) {
-      throw new Error(`Ollama error: ${response.statusText}`);
-    }
+ if (!response.ok) {
+ throw new Error(`Ollama error: ${response.statusText}`);
+ }
 
-    const data = await response.json();
+ const data = await response.json();
 
-    // Parse the JSON response
-    let parsed: AgentResponse;
-    try {
-      parsed = JSON.parse(data.response);
-    } catch (parseError) {
-      console.error('Failed to parse agent response:', data.response);
-      // Fallback response if parsing fails
-      parsed = {
-        response: data.response ?? 'Unable to process request',
-        toolCalls: []
-      };
-    }
+ // Parse the JSON response
+ let parsed: AgentResponse;
+ try {
+ parsed = JSON.parse(data.response);
+ } catch (parseError) {
+ console.error('Failed to parse agent response:', data.response);
+ // Fallback response if parsing fails
+ parsed = {
+ response: data.response ?? 'Unable to process request',
+ toolCalls: [],
+ };
+ }
 
-    return {
-      response: parsed.response ?? '',
-      toolCalls: parsed.toolCalls ?? []
-    };
-  } catch (error) {
-    console.error('Agent execution error:', error);
-    throw error;
-  }
+ return {
+ response: parsed.response ?? '',
+ toolCalls: parsed.toolCalls ?? [],
+ };
+ } catch (error) {
+ console.error('Agent execution error:', error);
+ throw error;
+ }
 }
 
 /**
  * Execute agent with tool calling
  * Runs the agent and executes any tool calls it makes
  */
-export async function executeAgentWithTools(
-  userPrompt: string
-): Promise<AgentExecutionResult> {
-  // 1. Run agent to get response and tool calls
-  const agentResponse = await runGemmaAgent(userPrompt);
+export async function executeAgentWithTools(userPrompt: string): Promise<AgentExecutionResult> {
+ // 1. Run agent to get response and tool calls
+ const agentResponse = await runGemmaAgent(userPrompt);
 
-  // 2. Execute tool calls
-  const toolResults = [];
-  for (const toolCall of agentResponse.toolCalls) {
-    const result = await executeToolCall(toolCall);
-    toolResults.push(result);
-  }
+ // 2. Execute tool calls
+ const toolResults = [];
+ for (const toolCall of agentResponse.toolCalls) {
+ const result = await executeToolCall(toolCall);
+ toolResults.push(result);
+ }
 
-  // 3. Return combined response
-  return {
-    response: agentResponse.response,
-    toolResults
-  };
+ // 3. Return combined response
+ return {
+ response: agentResponse.response,
+ toolResults,
+ };
 }
 
 /**
@@ -116,21 +114,21 @@ export async function executeAgentWithTools(
  * Allows passing additional context to the agent
  */
 export async function executeAgentWithContext(
-  userPrompt: string,
-  context?: Record<string, any>
+ userPrompt: string,
+ context?: Record<string, any>
 ): Promise<AgentExecutionResult> {
-  // Build enhanced prompt with context
-  let enhancedPrompt = userPrompt;
+ // Build enhanced prompt with context
+ let enhancedPrompt = userPrompt;
 
-  if (context) {
-    const contextStr = Object.entries(context)
-      .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
-      .join('\n');
+ if (context) {
+ const contextStr = Object.entries(context)
+ .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+ .join('\n');
 
-    enhancedPrompt = `Context:\n${contextStr}\n\nUser Query:\n${userPrompt}`;
-  }
+ enhancedPrompt = `Context:\n${contextStr}\n\nUser Query:\n${userPrompt}`;
+ }
 
-  return executeAgentWithTools(enhancedPrompt);
+ return executeAgentWithTools(enhancedPrompt);
 }
 
 /**
@@ -138,97 +136,91 @@ export async function executeAgentWithContext(
  * For real-time streaming of agent responses
  */
 export async function* streamAgentResponse(
-  userPrompt: string
+ userPrompt: string
 ): AsyncGenerator<string, void, unknown> {
-  const endpoint = getOllamaEndpoint();
-  const model = getOllamaModel();
+ const endpoint = getOllamaEndpoint();
+ const model = getOllamaModel();
 
-  try {
-    const response = await fetch(`${endpoint}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        prompt: `${SYSTEM_PROMPT}\n\nUser: ${userPrompt}`,
-        stream: true
-      })
-    });
+ try {
+ const response = await fetch(`${endpoint}/api/generate`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ model,
+ prompt: `${SYSTEM_PROMPT}\n\nUser: ${userPrompt}`,
+ stream: true,
+ }),
+ });
 
-    if (!response.ok) {
-      throw new Error(`Ollama error: ${response.statusText}`);
-    }
+ if (!response.ok) {
+ throw new Error(`Ollama error: ${response.statusText}`);
+ }
 
-    const reader = response.body?.getReader();
-    if (!reader) {
-      throw new Error('No response body');
-    }
+ const reader = response.body?.getReader();
+ if (!reader) {
+ throw new Error('No response body');
+ }
 
-    const decoder = new TextDecoder();
-    let buffer = '';
+ const decoder = new TextDecoder();
+ let buffer = '';
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+ while (true) {
+ const { done, value } = await reader.read();
+ if (done) break;
 
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
+ buffer += decoder.decode(value, { stream: true });
+ const lines = buffer.split('\n');
 
-      // Process all complete lines
-      for (let i = 0; i < lines.length - 1; i++) {
-        const line = lines[i].trim();
-        if (line) {
-          try {
-            const data = JSON.parse(line);
-            if (data.response) {
-              yield data.response;
-            }
-          } catch (e) {
-            // Skip invalid JSON lines
-          }
-        }
-      }
+ // Process all complete lines
+ for (let i = 0; i < lines.length - 1; i++) {
+ const line = lines[i].trim();
+ if (line) {
+ try {
+ const data = JSON.parse(line);
+ if (data.response) {
+ yield data.response;
+ }
+ } catch (e) {
+ // Skip invalid JSON lines
+ }
+ }
+ }
 
-      // Keep the last incomplete line in the buffer
-      buffer = lines[lines.length - 1];
-    }
+ // Keep the last incomplete line in the buffer
+ buffer = lines[lines.length - 1];
+ }
 
-    // Process any remaining buffer
-    if (buffer.trim()) {
-      try {
-        const data = JSON.parse(buffer);
-        if (data.response) {
-          yield data.response;
-        }
-      } catch (e) {
-        // Skip invalid JSON
-      }
-    }
-  } catch (error) {
-    console.error('Stream error:', error);
-    throw error;
-  }
+ // Process any remaining buffer
+ if (buffer.trim()) {
+ try {
+ const data = JSON.parse(buffer);
+ if (data.response) {
+ yield data.response;
+ }
+ } catch (e) {
+ // Skip invalid JSON
+ }
+ }
+ } catch (error) {
+ console.error('Stream error:', error);
+ throw error;
+ }
 }
 
 /**
  * Get agent capabilities
  */
 export function getAgentCapabilities() {
-  return {
-    model: getOllamaModel(),
-    endpoint: getOllamaEndpoint(),
-    tools: [
-      'rag_lookup',
-      'web_crawl',
-      'web_doc_summary',
-      'web_search',
-      'code_search'
-    ],
-    capabilities: [
-      'Tool calling',
-      'Knowledge base grounding',
-      'Web integration',
-      'Code analysis',
-      'Document summarization'
-    ]
-  };
+ return {
+ model: getOllamaModel(),
+ endpoint: getOllamaEndpoint(),
+ tools: ['rag_lookup', 'web_crawl', 'web_doc_summary', 'web_search', 'code_search'],
+ capabilities: [
+ 'Tool calling',
+ 'Knowledge base grounding',
+ 'Web integration',
+ 'Code analysis',
+ 'Document summarization',
+ ],
+ };
 }

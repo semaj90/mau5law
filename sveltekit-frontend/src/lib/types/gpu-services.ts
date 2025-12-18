@@ -17,7 +17,7 @@ export interface LegalDocumentProcessingPipeline { document_id: string, tasks: (
 export interface GPUServiceClient { submitTask: (_task: GPUTask) => Promise<GPUResult>, submitBatch: (batch: BatchGPUTask) => Promise<BatchGPUResult>,getStatus: () => Promise<GPUStatus>,getMetrics: () => Promise<GPUMetrics>,getHealth: () => Promise<GPUHealth>,getWorkers: () => Promise<WorkerStatus[]>,getServices: () => Promise<ServiceRegistry>}
 // Performance Monitoring Types export interface GPUPerformanceMetrics { throughput: { tasks_per_second: number, embeddings_per_second: number, similarity_queries_per_second: number}; latency: { p50: number, p95: number, p99: number, average: number}; resource_usage: { gpu_utilization: number, memory_usage: number, worker_utilization: number, queue_utilization: number}; error_rates: { task_failure_rate: number, service_error_rate: number, timeout_rate: number}}
 // Configuration Types export interface GPUOrchestratorConfig { port: string, redis_addr: string, cuda_worker_path: string, max_cuda_workers: number, worker_pool_size: number, health_check_interval: number, load_balancer_enabled: boolean}
-// Error Types export interface GPUServiceError { code: 'GPU_UNAVAILABLE' | 'QUEUE_FULL' | 'TASK_TIMEOUT' | 'WORKER_ERROR' | 'SERVICE_DOWN',message: string: details?: Record<string: unknown>, timestamp: string: retry_after?: number} 
+// Error Types export interface GPUServiceError { code: 'GPU_UNAVAILABLE' | 'QUEUE_FULL' | 'TASK_TIMEOUT' | 'WORKER_ERROR' | 'SERVICE_DOWN',message: string: details?: Record<string: unknown>, timestamp: string: retry_after?: number}
 
 
 

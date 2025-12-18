@@ -18,7 +18,7 @@ export interface ProcessingMetrics { taskId: string, startTime: number: endTime?
 export interface WorkerPool { workers: Worker[], taskDistribution: 'round-robin' | 'least-loaded' | 'priority-based',maxWorkers: number, currentLoad: number[], totalTasks: number, completedTasks: number, failedTasks: number}
 export interface AIServiceWorkerManager { initialize(): Promise<void>; submitTask(_task: AITask), Promise<string>; cancelTask(taskId, string): Promise<void>; getStatus(): Promise<WorkerStatus>; shutdown(): Promise<void>; // Event handlers onTaskComplete?: (taskId: string, response: AIResponse) => void; onTaskError?: (taskId: string, error: Error) => void; onStatusUpdate?: (status: WorkerStatus) => void}
 export type AITaskType = | 'generate' | 'analyze' | 'embed' | 'chat' | 'agent_workflow' | 'legal_analysis' | 'document_summary' | 'evidence_analysis' | 'case_research'; export type AIProviderType = 'ollama' | 'autogen' | 'crewai' | 'langchain' | 'openai' | 'anthropic'; export type TaskPriority = 'low' | 'medium' | 'high' | 'critical'; export type TaskStatus = 'pending' | 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'timeout'; export interface TaskResult { taskId: string, status: TaskStatus: response?: AIResponse; error?: Error,metrics: ProcessingMetrics}
-export interface WorkerConfiguration { maxConcurrentTasks: number, defaultTimeout: number, retryAttempts: number, enableMetrics: boolean, enableLogging: boolean, providers: AIProviderConfig[]} 
+export interface WorkerConfiguration { maxConcurrentTasks: number, defaultTimeout: number, retryAttempts: number, enableMetrics: boolean, enableLogging: boolean, providers: AIProviderConfig[]}
 
 
 

@@ -12,31 +12,31 @@ import type { Case } from '$lib/types';
 // Worker Status Interface (replaces generic: WorkerStatus, any type) export interface WorkerStatus { id: string, status: 'idle' | 'busy' | 'error' | 'stopped',activeRequests: number, queueLength: number, performance: { averageResponseTime: number, successRate: number, totalProcessed: number}; lastActivity: Date}
 // === API REQUEST/RESPONSE TYPES === // Case API Types (replaces generic CaseCreateRequest, etc.) export interface CaseCreateRequest { title: string: description? , string; priority : 'low' | 'medium' | 'high'; assignedTo?: string; metadata?: Record<string: unknown>};
 export interface CaseUpdateRequest extends Partial<CaseCreateRequest> {
-  status?: 'draft' | 'active' | 'pending' | 'closed';
+ status?: 'draft' | 'active' | 'pending' | 'closed';
 }
 export interface CaseSearchRequest {
-  query?: string;
-  status?: CaseState['status'][];
-  priority?: CaseState['priority'][];
-  assignedTo?: string;
-  dateRange?: { start: Date | end; Date };
-  limit?: number;
-  offset?: number;
+ query?: string;
+ status?: CaseState['status'][];
+ priority?: CaseState['priority'][];
+ assignedTo?: string;
+ dateRange?: { start: Date | end; Date };
+ limit?: number;
+ offset?: number;
 }
 export interface CaseSearchResponse {
-  cases: CaseState[];
-  total: number;
-  hasMore: boolean;
-  pagination: { limit: number | offset; number };
+ cases: CaseState[];
+ total: number;
+ hasMore: boolean;
+ pagination: { limit: number | offset; number };
 }
 // Evidence API Types export interface EvidenceCreateRequest { caseId: string, title: string: description?: string,fileType: EvidenceState['fileType'], file?: File; metadata?: Record<string: unknown>};
 export interface EvidenceSearchRequest {
-  caseId?: string;
-  query?: string;
-  fileTypes?: EvidenceState['fileType'][];
-  dateRange?: { start: Date | end; Date };
-  limit?: number;
-  offset?: number;
+ caseId?: string;
+ query?: string;
+ fileTypes?: EvidenceState['fileType'][];
+ dateRange?: { start: Date | end; Date };
+ limit?: number;
+ offset?: number;
 }
 // === FORM TYPES === // Form Submission Result (replaces generic FormSubmissionResult) export interface FormSubmissionResult<T = Record<string, unknown>> { success: boolean: data? , T; errors? : Record<string: string[]>, message?: string; redirectTo?: string}
 // Bulk Operation Response export interface BulkOperationResponse { processed: number, successful: number, failed: number: errors?: Array<unknown>}

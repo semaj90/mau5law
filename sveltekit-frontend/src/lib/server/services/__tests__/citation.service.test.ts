@@ -3,179 +3,177 @@ import { citationService, type Citation, type SaveCitationRequest } from '../cit
 
 // Mock dependencies
 vi.mock('$lib/server/db', () => ({
-  db: {
-    insert: vi.fn(),
-    raw: vi.fn(),
-  },
+ db: {
+ insert: vi.fn(),
+ raw: vi.fn(),
+ },
 }));
 
 vi.mock('$lib/server/redis', () => ({
-  redis: {
-    get: vi.fn(),
-    setex: vi.fn(),
-    del: vi.fn(),
-    keys: vi.fn(),
-  },
+ redis: {
+ get: vi.fn(),
+ setex: vi.fn(),
+ del: vi.fn(),
+ keys: vi.fn(),
+ },
 }));
 
 vi.mock('../audit.service', () => ({
-  auditService: {
-    logSummaryOperation: vi.fn(),
-    logCitationExtraction: vi.fn(),
-  },
+ auditService: {
+ logSummaryOperation: vi.fn(),
+ logCitationExtraction: vi.fn(),
+ },
 }));
 
 describe('CitationService', () => {
-  const mockUserId = 'user-123';
-  const mockCaseId = 'case-456';
+ const mockUserId = 'user-123';
+ const mockCaseId = 'case-456';
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+ beforeEach(() => {
+ vi.clearAllMocks();
+ });
 
-  describe('saveCitation', () => {
-    it('should save a citation with all fields', async () => {
-      const citationData: SaveCitationRequest = {
-        statute_code: '18 U.S.C. § 1001',
-        statute_title: 'Fraud and false statements',
-        jurisdiction: 'Federal',
-        severity: 'Felony',
-        year: 2023,
-        highlighted_text: 'Fraud and false statements',
-        notes: 'Important statute',
-        case_id: mockCaseId,
-        source_type: 'manual',
-      };
+ describe('saveCitation', () => {
+ it('should save a citation with all fields', async () => {
+ const citationData: SaveCitationRequest = {
+ statute_code: '18 U.S.C. § 1001',
+ statute_title: 'Fraud and false statements',
+ jurisdiction: 'Federal',
+ severity: 'Felony',
+ year: 2023,
+ highlighted_text: 'Fraud and false statements',
+ notes: 'Important statute',
+ case_id: mockCaseId,
+ source_type: 'manual',
+ };
 
-      const result = await citationService.saveCitation(mockUserId, citationData);
+ const result = await citationService.saveCitation(mockUserId, citationData);
 
-      expect(result).toBeDefined();
-      expect(result.user_id).toBe(mockUserId);
-      expect(result.statute_code).toBe(citationData.statute_code);
-      expect(result.source_type).toBe('manual');
-    });
+ expect(result).toBeDefined();
+ expect(result.user_id).toBe(mockUserId);
+ expect(result.statute_code).toBe(citationData.statute_code);
+ expect(result.source_type).toBe('manual');
+ });
 
-    it('should save a citation with minimal fields', async () => {
-      const citationData: SaveCitationRequest = {
-        statute_code: '18 U.S.C. § 1001',
-      };
+ it('should save a citation with minimal fields', async () => {
+ const citationData: SaveCitationRequest = {
+ statute_code: '18 U.S.C. § 1001',
+ };
 
-      const result = await citationService.saveCitation(mockUserId, citationData);
+ const result = await citationService.saveCitation(mockUserId, citationData);
 
-      expect(result).toBeDefined();
-      expect(result.statute_code).toBe(citationData.statute_code);
-      expect(result.source_type).toBe('manual');
-    });
+ expect(result).toBeDefined();
+ expect(result.statute_code).toBe(citationData.statute_code);
+ expect(result.source_type).toBe('manual');
+ });
 
-    it('should set default source_type to manual', async () => {
-      const citationData: SaveCitationRequest = {
-        statute_code: '18 U.S.C. § 1001',
-      };
+ it('should set default source_type to manual', async () => {
+ const citationData: SaveCitationRequest = {
+ statute_code: '18 U.S.C. § 1001',
+ };
 
-      const result = await citationService.saveCitation(mockUserId, citationData);
+ const result = await citationService.saveCitation(mockUserId, citationData);
 
-      expect(result.source_type).toBe('manual');
-    });
-  });
+ expect(result.source_type).toBe('manual');
+ });
+ });
 
-  describe('searchCitations', () => {
-    it('should search citations by statute code', async () => {
-      const query = '18 U.S.C.';
+ describe('searchCitations', () => {
+ it('should search citations by statute code', async () => {
+ const query = '18 U.S.C.';
 
-      const results = await citationService.searchCitations(mockUserId, query);
+ const results = await citationService.searchCitations(mockUserId, query);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
+ expect(Array.isArray(results)).toBe(true);
+ });
 
-    it('should return empty array for short query', async () => {
-      const query = 'a';
+ it('should return empty array for short query', async () => {
+ const query = 'a';
 
-      const results = await citationService.searchCitations(mockUserId, query);
+ const results = await citationService.searchCitations(mockUserId, query);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
+ expect(Array.isArray(results)).toBe(true);
+ });
 
-    it('should apply jurisdiction filter', async () => {
-      const query = '18 U.S.C.';
-      const filters = { jurisdiction: 'Federal' };
+ it('should apply jurisdiction filter', async () => {
+ const query = '18 U.S.C.';
+ const filters = { jurisdiction: 'Federal' };
 
-      const results = await citationService.searchCitations(mockUserId, query, filters);
+ const results = await citationService.searchCitations(mockUserId, query, filters);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
+ expect(Array.isArray(results)).toBe(true);
+ });
 
-    it('should apply severity filter', async () => {
-      const query = '18 U.S.C.';
-      const filters = { severity: 'Felony' };
+ it('should apply severity filter', async () => {
+ const query = '18 U.S.C.';
+ const filters = { severity: 'Felony' };
 
-      const results = await citationService.searchCitations(mockUserId, query, filters);
+ const results = await citationService.searchCitations(mockUserId, query, filters);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
-  });
+ expect(Array.isArray(results)).toBe(true);
+ });
+ });
 
-  describe('getCitationsByUser', () => {
-    it('should get citations for a user', async () => {
-      const results = await citationService.getCitationsByUser(mockUserId);
+ describe('getCitationsByUser', () => {
+ it('should get citations for a user', async () => {
+ const results = await citationService.getCitationsByUser(mockUserId);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
+ expect(Array.isArray(results)).toBe(true);
+ });
 
-    it('should support pagination', async () => {
-      const results = await citationService.getCitationsByUser(mockUserId, 10, 0);
+ it('should support pagination', async () => {
+ const results = await citationService.getCitationsByUser(mockUserId, 10, 0);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
-  });
+ expect(Array.isArray(results)).toBe(true);
+ });
+ });
 
-  describe('getCitationsByCase', () => {
-    it('should get citations for a case', async () => {
-      const results = await citationService.getCitationsByCase(mockCaseId);
+ describe('getCitationsByCase', () => {
+ it('should get citations for a case', async () => {
+ const results = await citationService.getCitationsByCase(mockCaseId);
 
-      expect(Array.isArray(results)).toBe(true);
-    });
-  });
+ expect(Array.isArray(results)).toBe(true);
+ });
+ });
 
-  describe('updateCitationNotes', () => {
-    it('should update citation notes', async () => {
-      const citationId = 'citation-123';
-      const newNotes = 'Updated notes';
+ describe('updateCitationNotes', () => {
+ it('should update citation notes', async () => {
+ const citationId = 'citation-123';
+ const newNotes = 'Updated notes';
 
-      const result = await citationService.updateCitationNotes(citationId, newNotes);
+ const result = await citationService.updateCitationNotes(citationId, newNotes);
 
-      expect(result).toBeDefined();
-      expect(result.notes).toBe(newNotes);
-    });
-  });
+ expect(result).toBeDefined();
+ expect(result.notes).toBe(newNotes);
+ });
+ });
 
-  describe('deleteCitation', () => {
-    it('should delete a citation', async () => {
-      const citationId = 'citation-123';
+ describe('deleteCitation', () => {
+ it('should delete a citation', async () => {
+ const citationId = 'citation-123';
 
-      await expect(
-        citationService.deleteCitation(citationId, mockUserId)
-      ).resolves.not.toThrow();
-    });
-  });
+ await expect(citationService.deleteCitation(citationId, mockUserId)).resolves.not.toThrow();
+ });
+ });
 
-  describe('getCitationCount', () => {
-    it('should get citation count for user', async () => {
-      const count = await citationService.getCitationCount(mockUserId);
+ describe('getCitationCount', () => {
+ it('should get citation count for user', async () => {
+ const count = await citationService.getCitationCount(mockUserId);
 
-      expect(typeof count).toBe('number');
-      expect(count).toBeGreaterThanOrEqual(0);
-    });
-  });
+ expect(typeof count).toBe('number');
+ expect(count).toBeGreaterThanOrEqual(0);
+ });
+ });
 
-  describe('getCitationStats', () => {
-    it('should get citation statistics', async () => {
-      const stats = await citationService.getCitationStats(mockUserId);
+ describe('getCitationStats', () => {
+ it('should get citation statistics', async () => {
+ const stats = await citationService.getCitationStats(mockUserId);
 
-      expect(stats).toBeDefined();
-      expect(stats.total).toBeGreaterThanOrEqual(0);
-      expect(typeof stats.byJurisdiction).toBe('object');
-      expect(typeof stats.bySeverity).toBe('object');
-      expect(typeof stats.bySourceType).toBe('object');
-    });
-  });
+ expect(stats).toBeDefined();
+ expect(stats.total).toBeGreaterThanOrEqual(0);
+ expect(typeof stats.byJurisdiction).toBe('object');
+ expect(typeof stats.bySeverity).toBe('object');
+ expect(typeof stats.bySourceType).toBe('object');
+ });
+ });
 });

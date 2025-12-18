@@ -15,26 +15,26 @@ import { getSSETransport } from './sse';
  * Create transport instance based on config
  */
 export function createTransport(type: TransportType): ErrorBrainTransport {
-	switch (type) {
-		case 'none':
-			return new NoneTransport();
+ switch (type) {
+ case 'none':
+ return new NoneTransport();
 
-		case 'sse':
-			return getSSETransport(); // Singleton
+ case 'sse':
+ return getSSETransport(); // Singleton
 
-		case 'redis':
-			return new RedisTransport();
+ case 'redis':
+ return new RedisTransport();
 
-		case 'both': {
-			const sse = getSSETransport();
-			const redis = new RedisTransport();
-			return new MuxTransport([sse, redis]);
-		}
+ case 'both': {
+ const sse = getSSETransport();
+ const redis = new RedisTransport();
+ return new MuxTransport([sse, redis]);
+ }
 
-		default:
-			console.warn(`Unknown transport type: ${type}, using 'none'`);
-			return new NoneTransport();
-	}
+ default:
+ console.warn(`Unknown transport type: ${type}, using 'none'`);
+ return new NoneTransport();
+ }
 }
 
 /**
@@ -43,21 +43,21 @@ export function createTransport(type: TransportType): ErrorBrainTransport {
 let currentTransport: ErrorBrainTransport | null = null;
 
 export function getTransport(): ErrorBrainTransport {
-	if (!currentTransport) {
-		// Will be initialized when first used
-		const { getErrorBrainConfig } = require('../feature-flags');
-		const config = getErrorBrainConfig();
-		currentTransport = createTransport(config.transport);
-	}
-	return currentTransport;
+ if (!currentTransport) {
+ // Will be initialized when first used
+ const { getErrorBrainConfig } = require('../feature-flags');
+ const config = getErrorBrainConfig();
+ currentTransport = createTransport(config.transport);
+ }
+ return currentTransport;
 }
 
 /**
  * Reset transport (useful for testing)
  */
 export function resetTransport(): void {
-	if (currentTransport?.close) {
-		currentTransport.close();
-	}
-	currentTransport = null;
+ if (currentTransport?.close) {
+ currentTransport.close();
+ }
+ currentTransport = null;
 }

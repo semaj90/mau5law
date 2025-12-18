@@ -9,8 +9,8 @@ An overview of what you need to know to use simdjson, with examples.
 * [C++17 Support](#c17-support)
 * [JSON Pointer](#json-pointer)
 * [Error Handling](#error-handling)
-  * [Error Handling Example](#error-handling-example)
-  * [Exceptions](#exceptions)
+ * [Error Handling Example](#error-handling-example)
+ * [Exceptions](#exceptions)
 * [Tree Walking and JSON Element Types](#tree-walking-and-json-element-types)
 * [Reusing the parser for maximum efficiency](#reusing-the-parser-for-maximum-efficiency)
 * [Server Loops: Long-Running Processes and Memory Capacity](#server-loops-long-running-processes-and-memory-capacity)
@@ -64,7 +64,7 @@ You cannot copy a `parser` instance, you may only move it.
 
 If you need to keep a document around long term, you can keep or move the parser instance. Note that moving a parser instance, or keeping one in a movable data structure like vector or map, can cause any outstanding `element`, `object` or `array` instances to be invalidated. The `element`, `object` or `array` instances are mere thin wrappers akin to an `std::vector<int>::iterator`: they are invalid when default constructed, they must be tied to a valid document instance. If you need to store a parser in a movable data structure, you should use a `std::unique_ptr` to avoid this invalidation(e.g., `std::unique_ptr<dom::parser> parser(new dom::parser{})`).
 
-During the`load` or `parse` calls, neither the input file nor the input string are ever modified. After calling `load` or `parse`, the source (either a file or a string) can be safely discarded. All of the JSON data is stored in the `parser` instance.  The parsed document is also immutable in simdjson: you do not modify it by accessing it.
+During the`load` or `parse` calls, neither the input file nor the input string are ever modified. After calling `load` or `parse`, the source (either a file or a string) can be safely discarded. All of the JSON data is stored in the `parser` instance. The parsed document is also immutable in simdjson: you do not modify it by accessing it.
 
 For best performance, a `parser` instance should be reused over several files: otherwise you will needlessly reallocate memory, an expensive process. It is also possible to avoid entirely memory allocations during parsing when using simdjson. [See our performance notes for details](performance.md).
 
@@ -78,33 +78,33 @@ Using the Parsed JSON
 Once you have an element, you can navigate it with idiomatic C++ iterators, operators and casts.
 
 * **Extracting Values (with exceptions):** You can cast a JSON element to a native type: `double(element)` or
-  `double x = json_element`. This works for double, uint64_t, int64_t, bool,
-  dom::object and dom::array. An exception (`simdjson::simdjson_error`) is thrown if the cast is not possible.
+ `double x = json_element`. This works for double, uint64_t, int64_t, bool,
+ dom::object and dom::array. An exception (`simdjson::simdjson_error`) is thrown if the cast is not possible.
 * **Extracting Values (without exceptions):** You can use a variant usage of `get()` with error codes to avoid exceptions. You first declare the variable of the appropriate type (`double`, `uint64_t`, `int64_t`, `bool`, `std::string_view`,
-  `dom::object` and `dom::array`) and pass it by reference to `get()` which gives you back an error code: e.g.,
-  ```c++
-  simdjson::error_code error;
-  simdjson::padded_string numberstring = "1.2"_padded; // our JSON input ("1.2")
-  simdjson::dom::parser parser;
-  double value; // variable where we store the value to be parsed
-  error = parser.parse(numberstring).get(value);
-  if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
-  std::cout << "I parsed " << value << " from " << numberstring.data() << std::endl;
-  ```
-  The strings contain unescaped valid UTF-8 strings: no unmatched surrogate is allowed.
+ `dom::object` and `dom::array`) and pass it by reference to `get()` which gives you back an error code: e.g.,
+ ```c++
+ simdjson::error_code error;
+ simdjson::padded_string numberstring = "1.2"_padded; // our JSON input ("1.2")
+ simdjson::dom::parser parser;
+ double value; // variable where we store the value to be parsed
+ error = parser.parse(numberstring).get(value);
+ if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
+ std::cout << "I parsed " << value << " from " << numberstring.data() << std::endl;
+ ```
+ The strings contain unescaped valid UTF-8 strings: no unmatched surrogate is allowed.
 * **Field Access:** To get the value of the "foo" field in an object, use `object["foo"]`.
 * **Array Iteration:** To iterate through an array, use `for (auto value : array) { ... }`. If you
-  know the type of the value, you can cast it right there, too! `for (double value : array) { ... }`
+ know the type of the value, you can cast it right there, too! `for (double value : array) { ... }`
 * **Object Iteration:** You can iterate through an object's fields, too: `for (auto [key, value] : object)`
 * **Array Index:** To get at an array value by index, use the at() method: `array.at(0)` gets the
-  first element. The at() method has linear-time complexity so it should not be used to iterate over the values of an array.
-  > Note that array[0] does not compile, because implementing [] gives the impression indexing is a
-  > O(1) operation, which it is not presently in simdjson. Instead, you should iterate over the elements
-  > using a for-loop, as in our examples.
+ first element. The at() method has linear-time complexity so it should not be used to iterate over the values of an array.
+ > Note that array[0] does not compile, because implementing [] gives the impression indexing is a
+ > O(1) operation, which it is not presently in simdjson. Instead, you should iterate over the elements
+ > using a for-loop, as in our examples.
 * **Array and Object size** Given an array or an object, you can get its size (number of elements or keys)
-  with the `size()` method.
+ with the `size()` method.
 * **Checking an Element Type:** You can check an element's type with `element.type()`. It
-  returns an `element_type` with values such as `simdjson::dom::element_type::ARRAY`, `simdjson::dom::element_type::OBJECT`, `simdjson::dom::element_type::INT64`,  `simdjson::dom::element_type::UINT64`,`simdjson::dom::element_type::DOUBLE`, `simdjson::dom::element_type::STRING`, `simdjson::dom::element_type::BOOL` or, `simdjson::dom::element_type::NULL_VALUE`.
+ returns an `element_type` with values such as `simdjson::dom::element_type::ARRAY`, `simdjson::dom::element_type::OBJECT`, `simdjson::dom::element_type::INT64`, `simdjson::dom::element_type::UINT64`,`simdjson::dom::element_type::DOUBLE`, `simdjson::dom::element_type::STRING`, `simdjson::dom::element_type::BOOL` or, `simdjson::dom::element_type::NULL_VALUE`.
 * **Output to streams and strings:** Given a document or an element (or node) out of a JSON document, you can output a minified string version using the C++ stream idiom (`out << element`). You can also request the construction of a minified string version (`simdjson::minify(element)`) or a prettified string version (`simdjson::prettify(element)`). Numbers are serialized as 64-bit floating-point numbers (`double`).
 
 ### Examples
@@ -113,32 +113,32 @@ The following code illustrates all of the above:
 
 ```c++
 auto cars_json = R"( [
-  { "make": "Toyota", "model": "Camry",  "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
-  { "make": "Kia",    "model": "Soul",   "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
-  { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
+ { "make": "Toyota", "model": "Camry", "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
+ { "make": "Kia", "model": "Soul", "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
+ { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
 ] )"_padded;
 dom::parser parser;
 
 // Iterating through an array of objects
 for (dom::object car : parser.parse(cars_json)) {
-  // Accessing a field by name
-  cout << "Make/Model: " << car["make"] << "/" << car["model"] << endl;
+ // Accessing a field by name
+ cout << "Make/Model: " << car["make"] << "/" << car["model"] << endl;
 
-  // Casting a JSON element to an integer
-  uint64_t year = car["year"];
-  cout << "- This car is " << 2020 - year << "years old." << endl;
+ // Casting a JSON element to an integer
+ uint64_t year = car["year"];
+ cout << "- This car is " << 2020 - year << "years old." << endl;
 
-  // Iterating through an array of floats
-  double total_tire_pressure = 0;
-  for (double tire_pressure : car["tire_pressure"]) {
-    total_tire_pressure += tire_pressure;
-  }
-  cout << "- Average tire pressure: " << (total_tire_pressure / 4) << endl;
+ // Iterating through an array of floats
+ double total_tire_pressure = 0;
+ for (double tire_pressure : car["tire_pressure"]) {
+ total_tire_pressure += tire_pressure;
+ }
+ cout << "- Average tire pressure: " << (total_tire_pressure / 4) << endl;
 
-  // Writing out all the information about the car
-  for (auto field : car) {
-    cout << "- " << field.key << ": " << field.value << endl;
-  }
+ // Writing out all the information about the car
+ for (auto field : car) {
+ cout << "- " << field.key << ": " << field.value << endl;
+ }
 }
 ```
 
@@ -146,20 +146,20 @@ Here is a different example illustrating the same ideas:
 
 ```C++
 auto abstract_json = R"( [
-    {  "12345" : {"a":12.34, "b":56.78, "c": 9998877}   },
-    {  "12545" : {"a":11.44, "b":12.78, "c": 11111111}  }
-  ] )"_padded;
+ { "12345" : {"a":12.34, "b":56.78, "c": 9998877} },
+ { "12545" : {"a":11.44, "b":12.78, "c": 11111111} }
+ ] )"_padded;
 dom::parser parser;
 
 // Parse and iterate through an array of objects
 for (dom::object obj : parser.parse(abstract_json)) {
-    for(const auto key_value : obj) {
-      cout << "key: " << key_value.key << " : ";
-      dom::object innerobj = key_value.value;
-      cout << "a: " << double(innerobj["a"]) << ", ";
-      cout << "b: " << double(innerobj["b"]) << ", ";
-      cout << "c: " << int64_t(innerobj["c"]) << endl;
-    }
+ for(const auto key_value : obj) {
+ cout << "key: " << key_value.key << " : ";
+ dom::object innerobj = key_value.value;
+ cout << "a: " << double(innerobj["a"]) << ", ";
+ cout << "b: " << double(innerobj["b"]) << ", ";
+ cout << "c: " << int64_t(innerobj["c"]) << endl;
+ }
 }
 ```
 
@@ -167,11 +167,11 @@ And another one:
 
 
 ```C++
-  auto abstract_json = R"(
-    {  "str" : { "123" : {"abc" : 3.14 } } } )"_padded;
-  dom::parser parser;
-  double v = parser.parse(abstract_json)["str"]["123"]["abc"];
-  cout << "number: " << v << endl;
+ auto abstract_json = R"(
+ { "str" : { "123" : {"abc" : 3.14 } } } )"_padded;
+ dom::parser parser;
+ double v = parser.parse(abstract_json)["str"]["123"]["abc"];
+ cout << "number: " << v << endl;
 ```
 
 
@@ -181,13 +181,13 @@ C++17 Support
 While the simdjson library can be used in any project using C++ 11 and above, field iteration has special support C++ 17's destructuring syntax. For example:
 
 ```c++
-padded_string json = R"(  { "foo": 1, "bar": 2 }  )"_padded;
+padded_string json = R"( { "foo": 1, "bar": 2 } )"_padded;
 dom::parser parser;
 dom::object object; // invalid until the get() succeeds
 auto error = parser.parse(json).get(object);
 if (error) { cerr << error << endl; return; }
 for (auto [key, value] : object) {
-  cout << key << " = " << value << endl;
+ cout << key << " = " << value << endl;
 }
 ```
 
@@ -195,13 +195,13 @@ For comparison, here is the C++ 11 version of the same code:
 
 ```c++
 // C++ 11 version for comparison
-padded_string json = R"(  { "foo": 1, "bar": 2 }  )"_padded;
+padded_string json = R"( { "foo": 1, "bar": 2 } )"_padded;
 dom::parser parser;
 dom::object object; // invalid until the get() succeeds
 auto error = parser.parse(json).get(object);
 if (error) { cerr << error << endl; return; }
 for (dom::key_value_pair field : object) {
-  cout << field.key << " = " << field.value << endl;
+ cout << field.key << " = " << field.value << endl;
 }
 ```
 
@@ -214,9 +214,9 @@ The simdjson library also supports [JSON pointer](https://tools.ietf.org/html/rf
 
 ```c++
 auto cars_json = R"( [
-  { "make": "Toyota", "model": "Camry",  "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
-  { "make": "Kia",    "model": "Soul",   "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
-  { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
+ { "make": "Toyota", "model": "Camry", "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
+ { "make": "Kia", "model": "Soul", "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
+ { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
 ] )"_padded;
 dom::parser parser;
 dom::element cars = parser.parse(cars_json);
@@ -235,19 +235,19 @@ Consider the following example:
 
 ```c++
 auto cars_json = R"( [
-  { "make": "Toyota", "model": "Camry",  "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
-  { "make": "Kia",    "model": "Soul",   "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
-  { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
+ { "make": "Toyota", "model": "Camry", "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
+ { "make": "Kia", "model": "Soul", "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
+ { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
 ] )"_padded;
 dom::parser parser;
 dom::element cars = parser.parse(cars_json);
 cout << cars.at_pointer("/0/tire_pressure/1") << endl; // Prints 39.9
 for (dom::element car_element : cars) {
-    dom::object car; // invalid until the get() succeeds
-    simdjson::error_code error;
-    if ((error = car_element.get(car))) { std::cerr << error << std::endl; return; }
-    double x = car.at_pointer("/tire_pressure/1");
-    cout << x << endl; // Prints 39.9, 31 and 30
+ dom::object car; // invalid until the get() succeeds
+ simdjson::error_code error;
+ if ((error = car_element.get(car))) { std::cerr << error << std::endl; return; }
+ double x = car.at_pointer("/tire_pressure/1");
+ cout << x << endl; // Prints 39.9, 31 and 30
 }
 ```
 
@@ -276,17 +276,17 @@ behavior.
 We can write a "quick start" example where we attempt to parse the following JSON file and access some data, without triggering exceptions:
 ```JavaScript
 {
-  "statuses": [
-    {
-      "id": 505874924095815700
-    },
-    {
-      "id": 505874922023837700
-    }
-  ],
-  "search_metadata": {
-    "count": 100
-  }
+ "statuses": [
+ {
+ "id": 505874924095815700
+ },
+ {
+ "id": 505874922023837700
+ }
+ ],
+ "search_metadata": {
+ "count": 100
+ }
 }
 ```
 
@@ -298,17 +298,17 @@ it selects the key "count" within that object.
 #include "simdjson.h"
 
 int main(void) {
-  simdjson::dom::parser parser;
-  simdjson::dom::element tweets; // invalid until the get() succeeds
-  auto error = parser.load("twitter.json").get(tweets);
-  if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
+ simdjson::dom::parser parser;
+ simdjson::dom::element tweets; // invalid until the get() succeeds
+ auto error = parser.load("twitter.json").get(tweets);
+ if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
 
-  simdjson::dom::element res; // invalid until the get() succeeds
-  if ((error = tweets["search_metadata"]["count"].get(res))) {
-    std::cerr << "could not access keys" << std::endl;
-    return EXIT_FAILURE;
-  }
-  std::cout << res << " results." << std::endl;
+ simdjson::dom::element res; // invalid until the get() succeeds
+ if ((error = tweets["search_metadata"]["count"].get(res))) {
+ std::cerr << "could not access keys" << std::endl;
+ return EXIT_FAILURE;
+ }
+ std::cout << res << " results." << std::endl;
 }
 ```
 
@@ -326,15 +326,15 @@ Observe how we use the `at` method when querying an index into an array, and not
 #include "simdjson.h"
 
 int main(void) {
-  simdjson::dom::parser parser;
-  simdjson::dom::element tweets; // invalid until the get() succeeds
-  auto error = parser.load("twitter.json").get(tweets);
-  if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
-  uint64_t identifier;
-  error = tweets["statuses"].at(0)["id"].get(identifier);
-  if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
-  std::cout << identifier << std::endl;
-  return EXIT_SUCCESS;
+ simdjson::dom::parser parser;
+ simdjson::dom::element tweets; // invalid until the get() succeeds
+ auto error = parser.load("twitter.json").get(tweets);
+ if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
+ uint64_t identifier;
+ error = tweets["statuses"].at(0)["id"].get(identifier);
+ if (error) { std::cerr << error << std::endl; return EXIT_FAILURE; }
+ std::cout << identifier << std::endl;
+ return EXIT_SUCCESS;
 }
 ```
 
@@ -347,9 +347,9 @@ This is how the example in "Using the Parsed JSON" could be written using only e
 
 ```c++
 auto cars_json = R"( [
-  { "make": "Toyota", "model": "Camry",  "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
-  { "make": "Kia",    "model": "Soul",   "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
-  { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
+ { "make": "Toyota", "model": "Camry", "year": 2018, "tire_pressure": [ 40.1, 39.9, 37.7, 40.4 ] },
+ { "make": "Kia", "model": "Soul", "year": 2012, "tire_pressure": [ 30.1, 31.0, 28.6, 28.7 ] },
+ { "make": "Toyota", "model": "Tercel", "year": 1999, "tire_pressure": [ 29.8, 30.0, 30.2, 30.5 ] }
 ] )"_padded;
 dom::parser parser;
 dom::array cars; // invalid until the get() succeeds
@@ -358,35 +358,35 @@ if (error) { cerr << error << endl; exit(1); }
 
 // Iterating through an array of objects
 for (dom::element car_element : cars) {
-    dom::object car;
-    if ((error = car_element.get(car))) { cerr << error << endl; exit(1); }
+ dom::object car;
+ if ((error = car_element.get(car))) { cerr << error << endl; exit(1); }
 
-    // Accessing a field by name
-    std::string_view make, model;
-    if ((error = car["make"].get(make))) { cerr << error << endl; exit(1); }
-    if ((error = car["model"].get(model))) { cerr << error << endl; exit(1); }
-    cout << "Make/Model: " << make << "/" << model << endl;
+ // Accessing a field by name
+ std::string_view make, model;
+ if ((error = car["make"].get(make))) { cerr << error << endl; exit(1); }
+ if ((error = car["model"].get(model))) { cerr << error << endl; exit(1); }
+ cout << "Make/Model: " << make << "/" << model << endl;
 
-    // Casting a JSON element to an integer
-    uint64_t year;
-    if ((error = car["year"].get(year))) { cerr << error << endl; exit(1); }
-    cout << "- This car is " << 2020 - year << "years old." << endl;
+ // Casting a JSON element to an integer
+ uint64_t year;
+ if ((error = car["year"].get(year))) { cerr << error << endl; exit(1); }
+ cout << "- This car is " << 2020 - year << "years old." << endl;
 
-    // Iterating through an array of floats
-    double total_tire_pressure = 0;
-    dom::array tire_pressure_array;
-    if ((error = car["tire_pressure"].get(tire_pressure_array))) { cerr << error << endl; exit(1); }
-    for (dom::element tire_pressure_element : tire_pressure_array) {
-        double tire_pressure;
-        if ((error = tire_pressure_element.get(tire_pressure))) { cerr << error << endl; exit(1); }
-        total_tire_pressure += tire_pressure;
-    }
-    cout << "- Average tire pressure: " << (total_tire_pressure / 4) << endl;
+ // Iterating through an array of floats
+ double total_tire_pressure = 0;
+ dom::array tire_pressure_array;
+ if ((error = car["tire_pressure"].get(tire_pressure_array))) { cerr << error << endl; exit(1); }
+ for (dom::element tire_pressure_element : tire_pressure_array) {
+ double tire_pressure;
+ if ((error = tire_pressure_element.get(tire_pressure))) { cerr << error << endl; exit(1); }
+ total_tire_pressure += tire_pressure;
+ }
+ cout << "- Average tire pressure: " << (total_tire_pressure / 4) << endl;
 
-    // Writing out all the information about the car
-    for (auto field : car) {
-        cout << "- " << field.key << ": " << field.value << endl;
-    }
+ // Writing out all the information about the car
+ for (auto field : car) {
+ cout << "- " << field.key << ": " << field.value << endl;
+ }
 }
 ```
 
@@ -394,48 +394,48 @@ Here is another example:
 
 ```C++
 auto abstract_json = R"( [
-    {  "12345" : {"a":12.34, "b":56.78, "c": 9998877}   },
-    {  "12545" : {"a":11.44, "b":12.78, "c": 11111111}  }
-  ] )"_padded;
+ { "12345" : {"a":12.34, "b":56.78, "c": 9998877} },
+ { "12545" : {"a":11.44, "b":12.78, "c": 11111111} }
+ ] )"_padded;
 dom::parser parser;
 dom::array array; // invalid until after the next line
 auto error = parser.parse(abstract_json).get(array);
 if (error) { cerr << error << endl; exit(1); }
 // Iterate through an array of objects
 for (dom::element elem : array) {
-    dom::object obj;
-    if ((error = elem.get(obj))) { cerr << error << endl; exit(1); }
-    for (auto & key_value : obj) {
-        cout << "key: " << key_value.key << " : ";
-        dom::object innerobj;
-        if ((error = key_value.value.get(innerobj))) { cerr << error << endl; exit(1); }
+ dom::object obj;
+ if ((error = elem.get(obj))) { cerr << error << endl; exit(1); }
+ for (auto & key_value : obj) {
+ cout << "key: " << key_value.key << " : ";
+ dom::object innerobj;
+ if ((error = key_value.value.get(innerobj))) { cerr << error << endl; exit(1); }
 
-        double va, vb;
-        if ((error = innerobj["a"].get(va))) { cerr << error << endl; exit(1); }
-        cout << "a: " << va << ", ";
-        if ((error = innerobj["b"].get(vc))) { cerr << error << endl; exit(1); }
-        cout << "b: " << vb << ", ";
+ double va, vb;
+ if ((error = innerobj["a"].get(va))) { cerr << error << endl; exit(1); }
+ cout << "a: " << va << ", ";
+ if ((error = innerobj["b"].get(vc))) { cerr << error << endl; exit(1); }
+ cout << "b: " << vb << ", ";
 
-        int64_t vc;
-        if ((error = innerobj["c"].get(vc))) { cerr << error << endl; exit(1); }
-        cout << "c: " << vc << endl;
-    }
+ int64_t vc;
+ if ((error = innerobj["c"].get(vc))) { cerr << error << endl; exit(1); }
+ cout << "c: " << vc << endl;
+ }
 }
 ```
 
 And another one:
 
 ```C++
-  auto abstract_json = R"(
-    {  "str" : { "123" : {"abc" : 3.14 } } } )"_padded;
-  dom::parser parser;
-  double v;
-  auto error = parser.parse(abstract_json)["str"]["123"]["abc"].get(v);
-  if (error) { cerr << error << endl; exit(1); }
-  cout << "number: " << v << endl;
+ auto abstract_json = R"(
+ { "str" : { "123" : {"abc" : 3.14 } } } )"_padded;
+ dom::parser parser;
+ double v;
+ auto error = parser.parse(abstract_json)["str"]["123"]["abc"].get(v);
+ if (error) { cerr << error << endl; exit(1); }
+ cout << "number: " << v << endl;
 ```
 
-Notice how we can string several operations (`parser.parse(abstract_json)["str"]["123"]["abc"].get(v)`) and only check for the error once, a strategy we call  *error chaining*.
+Notice how we can string several operations (`parser.parse(abstract_json)["str"]["123"]["abc"].get(v)`) and only check for the error once, a strategy we call *error chaining*.
 
 The next two functions will take as input a JSON document containing an array with a single element, either a string or a number. They return true upon success.
 
@@ -443,21 +443,21 @@ The next two functions will take as input a JSON document containing an array wi
 simdjson::dom::parser parser{};
 
 bool parse_double(const char *j, double &d) {
-  auto error = parser.parse(j, std::strlen(j))
-        .at(0)
-        .get(d, error);
-  if (error) { return false; }
-  return true;
+ auto error = parser.parse(j, std::strlen(j))
+ .at(0)
+ .get(d, error);
+ if (error) { return false; }
+ return true;
 }
 
 bool parse_string(const char *j, std::string &s) {
-  std::string_view answer;
-  auto error = parser.parse(j, strlen(j))
-        .at(0)
-        .get(answer, error);
-  if (error) { return false; }
-  s.assign(answer.data(), answer.size());
-  return true;
+ std::string_view answer;
+ auto error = parser.parse(j, strlen(j))
+ .at(0)
+ .get(answer, error);
+ if (error) { return false; }
+ s.assign(answer.data(), answer.size());
+ return true;
 }
 ```
 
@@ -486,10 +486,10 @@ If one is willing to trigger exceptions, it is possible to write simpler code:
 #include "simdjson.h"
 
 int main(void) {
-  simdjson::dom::parser parser;
-  simdjson::dom::element tweets = parser.load("twitter.json");
-  std::cout << "ID: " << tweets["statuses"].at(0)["id"] << std::endl;
-  return EXIT_SUCCESS;
+ simdjson::dom::parser parser;
+ simdjson::dom::element tweets = parser.load("twitter.json");
+ std::cout << "ID: " << tweets["statuses"].at(0)["id"] << std::endl;
+ return EXIT_SUCCESS;
 }
 ```
 
@@ -504,47 +504,47 @@ example, here's a quick and dirty recursive function that verbosely prints the J
 
 ```c++
 void print_json(dom::element element) {
-  switch (element.type()) {
-    case dom::element_type::ARRAY:
-      cout << "[";
-      for (dom::element child : dom::array(element)) {
-        print_json(child);
-        cout << ",";
-      }
-      cout << "]";
-      break;
-    case dom::element_type::OBJECT:
-      cout << "{";
-      for (dom::key_value_pair field : dom::object(element)) {
-        cout << "\"" << field.key << "\": ";
-        print_json(field.value);
-      }
-      cout << "}";
-      break;
-    case dom::element_type::INT64:
-      cout << int64_t(element) << endl;
-      break;
-    case dom::element_type::UINT64:
-      cout << uint64_t(element) << endl;
-      break;
-    case dom::element_type::DOUBLE:
-      cout << double(element) << endl;
-      break;
-    case dom::element_type::STRING:
-      cout << std::string_view(element) << endl;
-      break;
-    case dom::element_type::BOOL:
-      cout << bool(element) << endl;
-      break;
-    case dom::element_type::NULL_VALUE:
-      cout << "null" << endl;
-      break;
-  }
+ switch (element.type()) {
+ case dom::element_type::ARRAY:
+ cout << "[";
+ for (dom::element child : dom::array(element)) {
+ print_json(child);
+ cout << ",";
+ }
+ cout << "]";
+ break;
+ case dom::element_type::OBJECT:
+ cout << "{";
+ for (dom::key_value_pair field : dom::object(element)) {
+ cout << "\"" << field.key << "\": ";
+ print_json(field.value);
+ }
+ cout << "}";
+ break;
+ case dom::element_type::INT64:
+ cout << int64_t(element) << endl;
+ break;
+ case dom::element_type::UINT64:
+ cout << uint64_t(element) << endl;
+ break;
+ case dom::element_type::DOUBLE:
+ cout << double(element) << endl;
+ break;
+ case dom::element_type::STRING:
+ cout << std::string_view(element) << endl;
+ break;
+ case dom::element_type::BOOL:
+ cout << bool(element) << endl;
+ break;
+ case dom::element_type::NULL_VALUE:
+ cout << "null" << endl;
+ break;
+ }
 }
 
 void basics_treewalk_1() {
-  dom::parser parser;
-  print_json(parser.load("twitter.json"));
+ dom::parser parser;
+ print_json(parser.load("twitter.json"));
 }
 ```
 
@@ -601,35 +601,35 @@ without bound:
 
 * You can set a *max capacity* when constructing a parser:
 
-  ```c++
-  dom::parser parser(1000*1000); // Never grow past documents > 1MB
-  for (web_request request : listen()) {
-    dom::element doc;
-    auto error = parser.parse(request.body).get(doc);
-    // If the document was above our limit, emit 413 = payload too large
-    if (error == CAPACITY) { request.respond(413); continue; }
-    // ...
-  }
-  ```
+ ```c++
+ dom::parser parser(1000*1000); // Never grow past documents > 1MB
+ for (web_request request : listen()) {
+ dom::element doc;
+ auto error = parser.parse(request.body).get(doc);
+ // If the document was above our limit, emit 413 = payload too large
+ if (error == CAPACITY) { request.respond(413); continue; }
+ // ...
+ }
+ ```
 
-  This parser will grow normally as it encounters larger documents, but will never pass 1MB.
+ This parser will grow normally as it encounters larger documents, but will never pass 1MB.
 
 * You can set a *fixed capacity* that never grows, as well, which can be excellent for
-  predictability and reliability, since simdjson will never call malloc after startup!
+ predictability and reliability, since simdjson will never call malloc after startup!
 
-  ```c++
-  dom::parser parser(0); // This parser will refuse to automatically grow capacity
-  auto error = parser.allocate(1000*1000); // This allocates enough capacity to handle documents <= 1MB
-  if (error) { cerr << error << endl; exit(1); }
+ ```c++
+ dom::parser parser(0); // This parser will refuse to automatically grow capacity
+ auto error = parser.allocate(1000*1000); // This allocates enough capacity to handle documents <= 1MB
+ if (error) { cerr << error << endl; exit(1); }
 
-  for (web_request request : listen()) {
-    dom::element doc;
-    error = parser.parse(request.body).get(doc);
-    // If the document was above our limit, emit 413 = payload too large
-    if (error == CAPACITY) { request.respond(413); continue; }
-    // ...
-  }
-  ```
+ for (web_request request : listen()) {
+ dom::element doc;
+ error = parser.parse(request.body).get(doc);
+ // If the document was above our limit, emit 413 = payload too large
+ if (error == CAPACITY) { request.respond(413); continue; }
+ // ...
+ }
+ ```
 
 
 Best Use of the DOM API
@@ -640,16 +640,16 @@ The simdjson API provides access to the JSON DOM (document-object-model) content
 Padding and Temporary Copies
 --------------
 
-The simdjson function `parser.parse` reads data from a padded  buffer, containing SIMDJSON_PADDING extra bytes added at the end.
+The simdjson function `parser.parse` reads data from a padded buffer, containing SIMDJSON_PADDING extra bytes added at the end.
 If you are passing a `padded_string` to `parser.parse` or loading the JSON directly from
-disk (`parser.load`), padding is automatically  handled.
-When calling `parser.parse` on a pointer (e.g., `parser.parse(my_char_pointer, my_length_in_bytes)`) a temporary copy  is made by default with adequate padding and you, again, do not need to be concerned with padding.
+disk (`parser.load`), padding is automatically handled.
+When calling `parser.parse` on a pointer (e.g., `parser.parse(my_char_pointer, my_length_in_bytes)`) a temporary copy is made by default with adequate padding and you, again, do not need to be concerned with padding.
 
-Some users may not be able use our `padded_string` class or to load the data directly from disk (`parser.load`). They may need to pass data pointers to the library.  If these users wish to avoid temporary copies and corresponding temporary memory allocations, they may want to call `parser.parse` with the `realloc_if_needed` parameter set to false (e.g., `parser.parse(my_char_pointer, my_length_in_bytes, false)`). In such cases, they need to ensure that there are at least SIMDJSON_PADDING extra bytes at the end that can be safely accessed and read. They do not need to initialize the padded bytes to any value in particular. The following example is safe:
+Some users may not be able use our `padded_string` class or to load the data directly from disk (`parser.load`). They may need to pass data pointers to the library. If these users wish to avoid temporary copies and corresponding temporary memory allocations, they may want to call `parser.parse` with the `realloc_if_needed` parameter set to false (e.g., `parser.parse(my_char_pointer, my_length_in_bytes, false)`). In such cases, they need to ensure that there are at least SIMDJSON_PADDING extra bytes at the end that can be safely accessed and read. They do not need to initialize the padded bytes to any value in particular. The following example is safe:
 
 
 ```C++
-const char *json      = R"({"key":"value"})";
+const char *json = R"({"key":"value"})";
 const size_t json_len = std::strlen(json);
 std::unique_ptr<char[]> padded_json_copy{new char[json_len + SIMDJSON_PADDING]};
 memcpy(padded_json_copy.get(), json, json_len);

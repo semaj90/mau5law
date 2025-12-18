@@ -1,13 +1,13 @@
-import { superValidate  } from 'sveltekit-superforms/server';
-import { uploadSchema  } from '$lib/schemas/upload';
+import { superValidate } from 'sveltekit-superforms/server';
+import { uploadSchema } from '$lib/schemas/upload';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	// Initialize the form with the upload schema
-	const form = await superValidate(uploadSchema);
+ // Initialize the form with the upload schema
+ const form = await superValidate(uploadSchema);
 
-	// Return the form data to the Svelte page
-	return { form };
+ // Return the form data to the Svelte page
+ return { form };
 };
 
 // You would typically also define actions here to handle form submissions,

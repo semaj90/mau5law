@@ -4,12 +4,15 @@ import type { RequestHandler } from './$types';
 
 // Vector-focused health endpoint reusing Phase13 integration status
 export const GET: RequestHandler = async () => {
-  try {
-    const init = await initializePhase13();
-    const health = await getSystemHealth();
-    return json({ success: true, init, health });
-  } catch (error) {
-    console.error('Vector health endpoint error', error);
-    return json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
+ try {
+ const init = await initializePhase13();
+ const health = await getSystemHealth();
+ return json({ success: true, init, health });
+ } catch (error) {
+ console.error('Vector health endpoint error', error);
+ return json(
+ { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
+ { status: 500 }
+ );
+ }
 };

@@ -11,26 +11,26 @@ import { citationLibraryService } from '$lib/server/services/citation-library.se
  * DELETE: Remove tag from citation
  */
 export const DELETE: RequestHandler = async ({ params, locals }) => {
-  try {
-    const user = await getUser(locals);
-    if (!user) {
-      return json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    }
+ try {
+ const user = await getUser(locals);
+ if (!user) {
+ return json({ success: false, error: 'Unauthorized' }, { status: 401 });
+ }
 
-    await citationLibraryService.removeTag(params.id, params.tag, user.id);
+ await citationLibraryService.removeTag(params.id, params.tag, user.id);
 
-    return json({
-      success: true,
-      message: 'Tag removed',
-    });
-  } catch (error) {
-    console.error('Error removing tag:', error);
-    return json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to remove tag',
-      },
-      { status: 500 }
-    );
-  }
+ return json({
+ success: true,
+ message: 'Tag removed',
+ });
+ } catch (error) {
+ console.error('Error removing tag:', error);
+ return json(
+ {
+ success: false,
+ error: error instanceof Error ? error.message : 'Failed to remove tag',
+ },
+ { status: 500 }
+ );
+ }
 };

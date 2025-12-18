@@ -1,35 +1,35 @@
-﻿/** * ðŸŽ® Retro Console Color Palettes for Legal AI * Authentic color palettes from classic gaming consoles with legal AI integration */ export interface ConsolePalette {
-  name: string;
-  era: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    tertiary: string;
-    success: string;
-    warning: string;
-    error: string;
-    background: string;
-    foreground: string;
-    accent: string[];
-    // Legal AI specific colors
-    evidence: string;
-    classification: string;
-    confidence: string;
-    priority: string;
-  };
-  gradients: {
-    main: string;
-    modal: string;
-    card: string;
-    evidence: string;
-    priority: string;
-  };
-  constraints: {
-    maxColors: number;
-    bitDepth: number;
-    memoryKB: number;
-  };
-  cssVariables: Record<string, string>;
+/** * ðŸŽ® Retro Console Color Palettes for Legal AI * Authentic color palettes from classic gaming consoles with legal AI integration */ export interface ConsolePalette {
+ name: string;
+ era: string;
+ colors: {
+ primary: string;
+ secondary: string;
+ tertiary: string;
+ success: string;
+ warning: string;
+ error: string;
+ background: string;
+ foreground: string;
+ accent: string[];
+ // Legal AI specific colors
+ evidence: string;
+ classification: string;
+ confidence: string;
+ priority: string;
+ };
+ gradients: {
+ main: string;
+ modal: string;
+ card: string;
+ evidence: string;
+ priority: string;
+ };
+ constraints: {
+ maxColors: number;
+ bitDepth: number;
+ memoryKB: number;
+ };
+ cssVariables: Record<string, string>;
 }
 // NES (Nintendo Entertainment System) - 1985 export const NES_PALETTE: ConsolePalette = { name: 'NES Classic', era: '8-bit', colors: { primary: '#E52521', // Nintendo Red secondary: '#0084FF', // Classic Blue tertiary: '#4CAF50', // Green success: '#5CB85C', // Light Green warning: '#FFC107', // Yellow error: '#DC3545', // Red background: '#000000', // Black foreground: '#FCFCFC', // White evidence: '#8B4513', // Saddle brown classification: '#6B8E23', // Olive drab confidence: '#32CD32', // Lime green priority: '#FF6347', // Tomato accent: [ '#7C7C7C', // Gray: '#0000FC', // Blue: '#BC0000', // Dark Red: '#BC00BC', // Purple: '#00BC00', // Green: '#00BCBC', // Cyan: '#BCBC00', // Yellow: '#BCBCBC', // Light Gray ] }, gradients: { main: 'linear-gradient(0deg, #000000, #1C1C1C, #383838)', modal: 'linear-gradient(135deg, #000000, #0000FC, #000000)', card: 'linear-gradient(45deg, #1C1C1C, #383838)', evidence: 'linear-gradient(90deg, #8B4513, #CD853F)', priority: 'linear-gradient(45deg, #FF6347, #DC3545)' }, constraints: { maxColors: 54, bitDepth: 2, memoryKB: 2 }, cssVariables: { '--nes-primary': '#E52521', '--nes-secondary': '#0084FF', '--nes-tertiary': '#4CAF50', '--nes-success': '#5CB85C', '--nes-warning': '#FFC107', '--nes-error': '#DC3545', '--nes-background': '#000000', '--nes-foreground': '#FCFCFC', '--nes-evidence': '#8B4513', '--nes-classification': '#6B8E23', '--nes-confidence': '#32CD32', '--nes-priority': '#FF6347' }
 }; // SNES (Super Nintendo) - 1990 export const SNES_PALETTE: ConsolePalette = { name: 'SNES Mode 7', era: '16-bit', colors: { primary: '#B266FF', // Purple secondary: '#00C8FF', // Cyan tertiary: '#FFD700', // Gold success: '#00FF00', // Bright Green warning: '#FFAA00', // Orange error: '#FF0066', // Hot Pink background: '#1A0033', // Deep Purple foreground: '#F8F8F8', // Off White evidence: '#9C88FF', // Light purple classification: '#706FD3', // Medium light purple confidence: '#00D2D3', // Cyan priority: '#FF5252', // Red accent: [ '#FF6B9D', // Pink: '#C44569', // Rose: '#524A7B', // Dark Purple: '#2D3561', // Navy: '#0E7490', // Teal: '#FFC857', // Amber: '#119DA4', // Ocean: '#6A0572', // Violet ] }, gradients: { main: 'linear-gradient(180deg, #1A0033, #524A7B, #B266FF)', modal: 'linear-gradient(135deg, #1A0033 0%, #524A7B 50%, #B266FF 100%)', card: 'radial-gradient(circle, #524A7B, #1A0033)', evidence: 'linear-gradient(135deg, #9C88FF, #706FD3)', priority: 'linear-gradient(90deg, #FF5252, #FF0066)' }, constraints: { maxColors: 32768, bitDepth: 15, memoryKB: 128 }, cssVariables: { '--snes-primary': '#B266FF', '--snes-secondary': '#00C8FF', '--snes-tertiary': '#FFD700', '--snes-success': '#00FF00', '--snes-warning': '#FFAA00', '--snes-error': '#FF0066', '--snes-background': '#1A0033', '--snes-foreground': '#F8F8F8', '--snes-evidence': '#9C88FF', '--snes-classification': '#706FD3', '--snes-confidence': '#00D2D3', '--snes-priority': '#FF5252' }

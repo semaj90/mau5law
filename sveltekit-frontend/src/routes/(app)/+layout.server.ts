@@ -6,19 +6,19 @@ import type { LayoutServerLoad } from './$types';
  * Ensures user is authenticated before accessing any route in this group
  */
 export const load: LayoutServerLoad = async ({ locals, url }) => {
-	// Check if DEV_BYPASS_AUTH is enabled
-	const devBypass = process.env.DEV_BYPASS_AUTH === 'true';
+ // Check if DEV_BYPASS_AUTH is enabled
+ const devBypass = process.env.DEV_BYPASS_AUTH === 'true';
 
-	if (!devBypass && !locals.user) {
-		// User is not authenticated, redirect to login with return URL
-		const returnTo = url.pathname + url.search;
-		throw redirect(302, `/login?redirect=${encodeURIComponent(returnTo)}`);
-	}
+ if (!devBypass && !locals.user) {
+ // User is not authenticated, redirect to login with return URL
+ const returnTo = url.pathname + url.search;
+ throw redirect(302, `/login?redirect=${encodeURIComponent(returnTo)}`);
+ }
 
-	// User is authenticated or dev bypass is enabled
-	return {
-		user: locals.user,
-		session: locals.session,
-		devBypass,
-	};
+ // User is authenticated or dev bypass is enabled
+ return {
+ user: locals.user,
+ session: locals.session,
+ devBypass,
+ };
 };

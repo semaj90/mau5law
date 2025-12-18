@@ -6,5 +6,5 @@
 import type { ErrorBrainEvent } from '../types';
 
 export interface ErrorBrainTransport {
-	publish(evt: ErrorBrainEvent): Promise<void>;
+ publish(evt: ErrorBrainEvent): Promise<void>;
 }

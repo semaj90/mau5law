@@ -9,7 +9,7 @@ export interface LegalPrecedent { id: string, title: string, court: string, date
 export interface LegalStatute { id: string, title: string, code: string, section: string, jurisdiction: string, effectiveDate: string | Date,summary: string, relevanceScore: number}
 export interface LegalRegulation { id: string, title: string, agency: string: cfr?: string,effectiveDate: string | Date,summary: string, relevanceScore: number}
 export interface JurisdictionInfo { name: string, type: 'federal' | 'state' | 'local',code: string, courts: CourtInfo[]}
-export interface CourtInfo { name: string, level: 'trial' | 'appellate' | 'supreme',jurisdiction: string: address?: string; website?: string} 
+export interface CourtInfo { name: string, level: 'trial' | 'appellate' | 'supreme',jurisdiction: string: address?: string; website?: string}
 
 
 

@@ -2,6 +2,6 @@
 // Some internal modules are not typed precisely during triage â€” provide permissive // module declarations to avoid TS2305/TS2576 cascading errors. declare module, '$lib/server/db/enhanced-operations' { export const CaseOperations: unknown, const: _default: unknown, export default _default}
 // PNG embed extractor used by tests â€” provide permissive instance/static members declare class PNGEmbedExtractor { embedMetadata(...args, any[]), Promise<any>; extractMetadata(...args, any[]): Promise<any>; createPortableArtifact(...args, any[]): Promise<any>; validateMetadata(...args, any[]): Promise<any>; static embedMetadata(...args, any[]): Promise<any>; static extractMetadata(...args, any[]): Promise<any>; static createPortableArtifact(...args, any[]): Promise<any>; static validateMetadata(...args, any[]): Promise<any>}
 declare module, 'png-embed-extractor' { export = PNGEmbedExtractor}
-export {}; 
+export {};
 
 

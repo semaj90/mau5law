@@ -28,7 +28,7 @@ export interface WebGPUResourcePool { acquireBuffer(size, number), Promise<WebGP
 export interface WebGPUValidationError extends WebGPUError { shaderSource?: string; line?: number; column?: number}
 export interface WebGPUOutOfMemoryError extends WebGPUError { requestedSize: number, availableSize: number, totalSize: number}
 // Event interfaces export interface WebGPUEventHandler { onDeviceLost(callback: (_event: GPUDeviceLostInfo) => void): void; onUncapturedError(callback: (_event: GPUUncapturedErrorEvent) => void): void; onPerformanceWarning(callback: (warning, string) => void): void}
-// Utility types export type WebGPUDataType = 'f32' | 'i32' | 'u32' | 'f16'; export type WebGPUOperationType = 'compute' | 'render' | 'copy'; export type WebGPUShaderStage = 'vertex' | 'fragment' | 'compute'; // NOTE: Avoid re-declaring native GPU types here to prevent conflicts // with the official `@webgpu/types` package when it is installed. // The project should rely on `@webgpu/types` (installed via npm) for // low-level type declarations. This file exports higher-level, project // specific interfaces used across the frontend. 
+// Utility types export type WebGPUDataType = 'f32' | 'i32' | 'u32' | 'f16'; export type WebGPUOperationType = 'compute' | 'render' | 'copy'; export type WebGPUShaderStage = 'vertex' | 'fragment' | 'compute'; // NOTE: Avoid re-declaring native GPU types here to prevent conflicts // with the official `@webgpu/types` package when it is installed. // The project should rely on `@webgpu/types` (installed via npm) for // low-level type declarations. This file exports higher-level, project // specific interfaces used across the frontend.
 
 
 

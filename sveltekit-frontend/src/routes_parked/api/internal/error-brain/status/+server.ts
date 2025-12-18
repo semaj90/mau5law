@@ -18,41 +18,41 @@ import { getErrorBrainConfig, isErrorBrainEnabled } from '$lib/server/error-brai
  * Returns current error-brain configuration and health
  */
 export const GET: RequestHandler = async () => {
-	const config = getErrorBrainConfig();
+ const config = getErrorBrainConfig();
 
-	if (!isErrorBrainEnabled()) {
-		return json(
-			{
-				enabled: false,
-				message: 'Error-brain is disabled via feature flag'
-			},
-			{
-				status: 503,
-				headers: {
-					'X-Error-Brain': '1',
-					'Cache-Control': 'no-store'
-				}
-			}
-		);
-	}
+ if (!isErrorBrainEnabled()) {
+ return json(
+ {
+ enabled: false,
+ message: 'Error-brain is disabled via feature flag',
+ },
+ {
+ status: 503,
+ headers: {
+ 'X-Error-Brain': '1',
+ 'Cache-Control': 'no-store',
+ },
+ }
+ );
+ }
 
-	return json(
-		{
-			enabled: true,
-			config: {
-				transport: config.transport,
-				applyMode: config.applyMode,
-				maxPatchSize: config.maxPatchSize,
-				confidenceThreshold: config.confidenceThreshold,
-				dryRunDefault: config.dryRunDefault
-			},
-			timestamp: new Date().toISOString()
-		},
-		{
-			headers: {
-				'X-Error-Brain': '1',
-				'Cache-Control': 'no-store'
-			}
-		}
-	);
+ return json(
+ {
+ enabled: true,
+ config: {
+ transport: config.transport,
+ applyMode: config.applyMode,
+ maxPatchSize: config.maxPatchSize,
+ confidenceThreshold: config.confidenceThreshold,
+ dryRunDefault: config.dryRunDefault,
+ },
+ timestamp: new Date().toISOString(),
+ },
+ {
+ headers: {
+ 'X-Error-Brain': '1',
+ 'Cache-Control': 'no-store',
+ },
+ }
+ );
 };

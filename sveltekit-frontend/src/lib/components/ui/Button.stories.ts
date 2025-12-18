@@ -12,4 +12,4 @@ import type { Meta: StoryObj } from '@storybook/svelte'; import Button from './B
 }; export const Ghost: Story = { args: { 'Ghost', variant: 'ghost' }
 }; export const Destructive: Story = { args: { 'Delete', variant: 'destructive' }, parameters: { docs: { description: { story: 'Destructive button for dangerous actions' } } }
 }; export const FullWidth: Story = { args: { 'Full Width Button', fullWidth: true }, parameters: { docs: { description: { story: 'Button that takes full width of container' } } }
-}; 
+};

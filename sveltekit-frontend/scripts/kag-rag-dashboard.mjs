@@ -25,6 +25,7 @@ import { kagFixStore } from './kag-fix-store.mjs';
 const FLAGS = {
 	WATCH: process.argv.includes('--watch'),
 	EXPORT: process.argv.includes('--export'),
+	SELFTEST: process.argv.includes('--selftest'),
 	INTERVAL: parseInt(process.argv.find((a) => a.startsWith('--interval='))?.split('=')[1] || '5')
 };
 
@@ -61,6 +62,16 @@ function truncate(str, maxLen) {
 }
 
 async function displayDashboard() {
+	if (FLAGS.SELFTEST) {
+		const health = await kagFixStore.health();
+		if (!health.ok) {
+			console.error('[KAG Dashboard] ❌ Self-test failed:', health.message || health.redis?.message || 'unhealthy');
+			process.exit(1);
+		}
+		console.log('[KAG Dashboard] ✅ Self-test passed');
+		process.exit(0);
+	}
+
 	const stats = await kagFixStore.getStats();
 
 	console.log('╔════════════════════════════════════════════════════════════════╗');

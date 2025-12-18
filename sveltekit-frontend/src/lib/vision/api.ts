@@ -4,61 +4,66 @@
  */
 
 export interface ImageAnalysisResult {
-  qdrant_id: string;
-  object_key: string;
-  vector?: number[];
-  thumbnail_url?: string;
+ qdrant_id: string;
+ object_key: string;
+ vector?: number[];
+ thumbnail_url?: string;
 }
 
 export interface VideoAnalysisResult {
-  frames: Array<{
-    qdrant_id: string;
-    thumb_key: string;
-    frame_index: number;
-    timestamp_ms: number;
-  }>;
+ frames: Array<{
+ qdrant_id: string;
+ thumb_key: string;
+ frame_index: number;
+ timestamp_ms: number;
+ }>;
 }
 
 export async function uploadEvidenceImage(formData: FormData): Promise<ImageAnalysisResult> {
-  const response = await fetch('/api/vision/image/analyze', {
-    method: 'POST',
-    body: formData
-  });
+ const response = await fetch('/api/vision/image/analyze', {
+ method: 'POST',
+ body: formData,
+ });
 
-  if (!response.ok) {
-    throw new Error(`Image analysis failed: ${response.statusText}`);
-  }
+ if (!response.ok) {
+ throw new Error(`Image analysis failed: ${response.statusText}`);
+ }
 
-  return response.json();
+ return response.json();
 }
 
 export async function uploadEvidenceVideo(formData: FormData): Promise<VideoAnalysisResult> {
-  const response = await fetch('/api/vision/video/analyze', {
-    method: 'POST',
-    body: formData
-  });
+ const response = await fetch('/api/vision/video/analyze', {
+ method: 'POST',
+ body: formData,
+ });
 
-  if (!response.ok) {
-    throw new Error(`Video analysis failed: ${response.statusText}`);
-  }
+ if (!response.ok) {
+ throw new Error(`Video analysis failed: ${response.statusText}`);
+ }
 
-  return response.json();
+ return response.json();
 }
 
-export async function getSimilaritySearch(queryVector: number[], limit: number = 10): Promise<Array<{
-  id: string;
-  score: number;
-  payload?: any;
-}>> {
-  const response = await fetch('/api/vision/similarity/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ vector: queryVector, limit })
-  });
+export async function getSimilaritySearch(
+ queryVector: number[],
+ limit: number = 10
+): Promise<
+ Array<{
+ id: string;
+ score: number;
+ payload?: any;
+ }>
+> {
+ const response = await fetch('/api/vision/similarity/search', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ vector: queryVector, limit }),
+ });
 
-  if (!response.ok) {
-    throw new Error(`Similarity search failed: ${response.statusText}`);
-  }
+ if (!response.ok) {
+ throw new Error(`Similarity search failed: ${response.statusText}`);
+ }
 
-  return response.json();
+ return response.json();
 }

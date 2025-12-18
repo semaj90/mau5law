@@ -11,10 +11,10 @@ simdjson : Parsing gigabytes of JSON per second
 <img src="images/logo.png" width="10%" style="float: right">
 JSON is everywhere on the Internet. Servers spend a *lot* of time parsing it. We need a fresh
 approach. The simdjson library uses commonly available SIMD instructions and microparallel algorithms
-to parse JSON 4x  faster than RapidJSON and 25x faster than JSON for Modern C++.
+to parse JSON 4x faster than RapidJSON and 25x faster than JSON for Modern C++.
 
 * **Fast:** Over 4x faster than commonly used production-grade JSON parsers.
-* **Record Breaking Features:** Minify JSON  at 6 GB/s, validate UTF-8  at 13 GB/s,  NDJSON at 3.5 GB/s.
+* **Record Breaking Features:** Minify JSON at 6 GB/s, validate UTF-8 at 13 GB/s, NDJSON at 3.5 GB/s.
 * **Easy:** First-class, easy to use and carefully documented APIs.
 * **Strict:** Full JSON and UTF-8 validation, lossless parsing. Performance with no compromises.
 * **Automatic:** Selects a CPU-tailored parser at runtime. No configuration needed.
@@ -67,14 +67,14 @@ Quick Start
 The simdjson library is easily consumable with a single .h and .cpp file.
 
 0. Prerequisites: `g++` (version 7 or better) or `clang++` (version 6 or better), and a 64-bit
-   system with a command-line shell (e.g., Linux, macOS, freeBSD). We also support programming
-   environments like Visual Studio and Xcode, but different steps are needed.
+ system with a command-line shell (e.g., Linux, macOS, freeBSD). We also support programming
+ environments like Visual Studio and Xcode, but different steps are needed.
 1. Pull [simdjson.h](singleheader/simdjson.h) and [simdjson.cpp](singleheader/simdjson.cpp) into a
-   directory, along with the sample file [twitter.json](jsonexamples/twitter.json).
+ directory, along with the sample file [twitter.json](jsonexamples/twitter.json).
 
-   ```
-   wget https://raw.githubusercontent.com/simdjson/simdjson/master/singleheader/simdjson.h https://raw.githubusercontent.com/simdjson/simdjson/master/singleheader/simdjson.cpp https://raw.githubusercontent.com/simdjson/simdjson/master/jsonexamples/twitter.json
-   ```
+ ```
+ wget https://raw.githubusercontent.com/simdjson/simdjson/master/singleheader/simdjson.h https://raw.githubusercontent.com/simdjson/simdjson/master/singleheader/simdjson.cpp https://raw.githubusercontent.com/simdjson/simdjson/master/jsonexamples/twitter.json
+ ```
 2. Create `quickstart.cpp`:
 
 ```c++
@@ -82,18 +82,18 @@ The simdjson library is easily consumable with a single .h and .cpp file.
 #include "simdjson.h"
 using namespace simdjson;
 int main(void) {
-    ondemand::parser parser;
-    padded_string json = padded_string::load("twitter.json");
-    ondemand::document tweets = parser.iterate(json);
-    std::cout << uint64_t(tweets["search_metadata"]["count"]) << " results." << std::endl;
+ ondemand::parser parser;
+ padded_string json = padded_string::load("twitter.json");
+ ondemand::document tweets = parser.iterate(json);
+ std::cout << uint64_t(tweets["search_metadata"]["count"]) << " results." << std::endl;
 }
 ```
 3. `c++ -o quickstart quickstart.cpp simdjson.cpp`
 4. `./quickstart`
 
-  ```
-   100 results.
-  ```
+ ```
+ 100 results.
+ ```
 
 Documentation
 -------------
@@ -103,7 +103,7 @@ Usage documentation is available:
 * [Basics](doc/basics.md) is an overview of how to use simdjson and its APIs.
 * [Performance](doc/performance.md) shows some more advanced scenarios and how to tune for them.
 * [Implementation Selection](doc/implementation-selection.md) describes runtime CPU detection and
-  how you can work with it.
+ how you can work with it.
 * [API](https://simdjson.github.io/simdjson/) contains the automatically generated API documentation.
 
 
@@ -135,7 +135,7 @@ speed for [synthetic files over various sizes generated with a script](https://g
 [All our experiments are reproducible](https://github.com/simdjson/simdjson_experiments_vldb2019).
 
 
-For NDJSON files, we can exceed 3 GB/s with [our  multithreaded parsing functions](https://github.com/simdjson/simdjson/blob/master/doc/parse_many.md).
+For NDJSON files, we can exceed 3 GB/s with [our multithreaded parsing functions](https://github.com/simdjson/simdjson/blob/master/doc/parse_many.md).
 
 
 

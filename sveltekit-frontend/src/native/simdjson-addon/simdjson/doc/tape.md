@@ -29,39 +29,39 @@ It is sometimes useful to start with an example. Consider the following JSON doc
 The following is a dump of the content of the tape, with the first number of each line representing the index of a tape element.
 
 ### The Tape
-| index | element (64 bit word)                                               |
+| index | element (64 bit word) |
 | ----- | ------------------------------------------------------------------- |
-| 0     | r	// pointing to 39 (right after last node)                         |
-| 1     | {	// pointing to next tape location 38 (first node after the scope) |
-| 2     | string "Image"                                                      |
-| 3     | {	// pointing to next tape location 37 (first node after the scope) |
-| 4     | string "Width"                                                      |
-| 5     | integer 800                                                         |
-| 7     | string "Height"                                                     |
-| 8     | integer 600                                                         |
-| 10    | string "Title"                                                      |
-| 11    | string "View from 15th Floor"                                       |
-| 12    | string "Thumbnail"                                                  |
-| 13    | {	// pointing to next tape location 23 (first node after the scope) |
-| 14    | string "Url"                                                        |
-| 15    | string "http://www.example.com/image/481989943"                     |
-| 16    | string "Height"                                                     |
-| 17    | integer 125                                                         |
-| 19    | string "Width"                                                      |
-| 20    | integer 100                                                         |
-| 22    | }	// pointing to previous tape location 13 (start of the scope)     |
-| 23    | string "Animated"                                                   |
-| 24    | false                                                               |
-| 25    | string "IDs"                                                        |
-| 26    | [	// pointing to next tape location 36 (first node after the scope) |
-| 27    | integer 116                                                         |
-| 29    | integer 943                                                         |
-| 31    | integer 234                                                         |
-| 33    | integer 38793                                                       |
-| 35    | ]	// pointing to previous tape location 26 (start of the scope)     |
-| 36    | }	// pointing to previous tape location 3 (start of the scope)      |
-| 37    | }	// pointing to previous tape location 1 (start of the scope)      |
-| 38    | r	// pointing to 0 (start root)                                     |
+| 0 | r	// pointing to 39 (right after last node) |
+| 1 | {	// pointing to next tape location 38 (first node after the scope) |
+| 2 | string "Image" |
+| 3 | {	// pointing to next tape location 37 (first node after the scope) |
+| 4 | string "Width" |
+| 5 | integer 800 |
+| 7 | string "Height" |
+| 8 | integer 600 |
+| 10 | string "Title" |
+| 11 | string "View from 15th Floor" |
+| 12 | string "Thumbnail" |
+| 13 | {	// pointing to next tape location 23 (first node after the scope) |
+| 14 | string "Url" |
+| 15 | string "http://www.example.com/image/481989943" |
+| 16 | string "Height" |
+| 17 | integer 125 |
+| 19 | string "Width" |
+| 20 | integer 100 |
+| 22 | }	// pointing to previous tape location 13 (start of the scope) |
+| 23 | string "Animated" |
+| 24 | false |
+| 25 | string "IDs" |
+| 26 | [	// pointing to next tape location 36 (first node after the scope) |
+| 27 | integer 116 |
+| 29 | integer 943 |
+| 31 | integer 234 |
+| 33 | integer 38793 |
+| 35 | ]	// pointing to previous tape location 26 (start of the scope) |
+| 36 | }	// pointing to previous tape location 3 (start of the scope) |
+| 37 | }	// pointing to previous tape location 1 (start of the scope) |
+| 38 | r	// pointing to 0 (start root) |
 
 
 
@@ -76,9 +76,9 @@ Performance consideration: We believe that accessing the tape in regular units o
 
 Simple JSON nodes are represented with one tape element:
 
-- null is  represented as the 64-bit value `('n' << 56)` where `'n'` is the 8-bit code point values (in ASCII) corresponding to the letter `'n'`.
-- true is  represented as the 64-bit value `('t' << 56)`.
-- false is  represented as the 64-bit value `('f' << 56)`.
+- null is represented as the 64-bit value `('n' << 56)` where `'n'` is the 8-bit code point values (in ASCII) corresponding to the letter `'n'`.
+- true is represented as the 64-bit value `('t' << 56)`.
+- false is represented as the 64-bit value `('f' << 56)`.
 
 
 ## Integer and Double values
@@ -115,7 +115,7 @@ We store string values using UTF-8 encoding with null termination on a separate 
 
 JSON arrays are represented using two 64-bit tape elements.
 
-- The first 64-bit tape element contains the value `('[' << 56) + (c << 32) + x` where the payload `x` is 1 + the index of the second 64-bit tape element on the tape  as a 32-bit integer and where `c` is the count of the number of elements (immediate children) in the array, satured to a 24-bit value (meaning that it cannot exceed 16777215 and if the real count exceeds 16777215, 16777215 is stored).  Note that the exact count of elements can always be computed by iterating (e.g., when it is 16777215 or higher).
+- The first 64-bit tape element contains the value `('[' << 56) + (c << 32) + x` where the payload `x` is 1 + the index of the second 64-bit tape element on the tape as a 32-bit integer and where `c` is the count of the number of elements (immediate children) in the array, satured to a 24-bit value (meaning that it cannot exceed 16777215 and if the real count exceeds 16777215, 16777215 is stored). Note that the exact count of elements can always be computed by iterating (e.g., when it is 16777215 or higher).
 - The second 64-bit tape element contains the value `(']' << 56) + x` where the payload `x` contains the index of the first 64-bit tape element on the tape.
 
 All the content of the array is located between these two tape elements, including arrays and objects.

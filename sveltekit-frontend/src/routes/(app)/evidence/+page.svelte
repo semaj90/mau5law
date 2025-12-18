@@ -15,11 +15,11 @@
 	}
 
 	onMount(() => {
-    (async () => {
-  		// Register service worker for background uploads
-  		await registerServiceWorker();
-    })();
-  });
+ (async () => {
+ 		// Register service worker for background uploads
+ 		await registerServiceWorker();
+ })();
+ });
 
 	async function handleFileSelect(event: Event) {
 		const input = event.target as HTMLInputElement;

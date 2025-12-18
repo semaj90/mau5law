@@ -11,21 +11,21 @@ import type { Document } from '$lib/types';
 // Svelte 5 Compatible UI Store (NEW)
 // ============================================
 export {
-  createUIStore,
-  setUIStore,
-  getUIStore,
-  getGlobalUIStore,
-  type UIStore,
-  type UIState,
-  type TypewriterPrompt,
-  type UploadedFile,
-  type AIMetadata,
-  type TimelineEvent,
-  type EmotionAnalysis,
-  type SceneAnalysis,
-  type ExtractedEntity,
-  type AutoPopulatedForm,
-  type MarkdownScene
+ createUIStore,
+ setUIStore,
+ getUIStore,
+ getGlobalUIStore,
+ type UIStore,
+ type UIState,
+ type TypewriterPrompt,
+ type UploadedFile,
+ type AIMetadata,
+ type TimelineEvent,
+ type EmotionAnalysis,
+ type SceneAnalysis,
+ type ExtractedEntity,
+ type AutoPopulatedForm,
+ type MarkdownScene,
 } from './ui-store';
 
 // Core UI stores

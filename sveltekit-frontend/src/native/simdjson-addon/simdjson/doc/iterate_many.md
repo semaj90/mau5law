@@ -17,9 +17,9 @@ Contents
 
 - [Motivations](#motivations)
 - [How it works](#how-it-works)
-  - [Context](#context)
-  - [Design](#design)
-  - [Threads](#threads)
+ - [Context](#context)
+ - [Design](#design)
+ - [Threads](#threads)
 - [Support](#support)
 - [API](#api)
 - [Use cases](#use-cases)
@@ -33,12 +33,12 @@ The main motivation for this piece of software is to achieve maximum speed and o
 better quality of life in parsing files containing multiple small JSON documents.
 
 The JavaScript Object Notation (JSON) [RFC7159](https://tools.ietf.org/html/rfc7159) is a handy
-serialization format.  However, when serializing a large sequence of
+serialization format. However, when serializing a large sequence of
 values as an array, or a possibly indeterminate-length or never-
 ending sequence of values, JSON may be inconvenient.
 
 Consider a sequence of one million values, each possibly one kilobyte
-when encoded -- roughly one gigabyte.  It is often desirable to process such a dataset incrementally
+when encoded -- roughly one gigabyte. It is often desirable to process such a dataset incrementally
 without having to first read all of it before beginning to produce results.
 
 
@@ -57,15 +57,15 @@ key component to make parsing work.
 
 Prior to iterate_many, most people who had to parse a multiline JSON file would proceed by reading the
 file line by line, using a utility function like `std::getline` or equivalent, and would then use
-the `parse` on each of those lines.  From a performance point of view, this process is highly
-inefficient,  in that it requires a lot of unnecessary memory allocation and makes use of the
+the `parse` on each of those lines. From a performance point of view, this process is highly
+inefficient, in that it requires a lot of unnecessary memory allocation and makes use of the
 `getline` function, which is fundamentally slow, slower than the act of parsing with simdjson
 [(more on this here)](https://lemire.me/blog/2019/06/18/how-fast-is-getline-in-c/).
 
 Unlike the popular parser RapidJson, our DOM does not require the buffer once the parsing job is
-completed,  the DOM and the buffer are completely independent. The drawback of this architecture is
+completed, the DOM and the buffer are completely independent. The drawback of this architecture is
 that we need to allocate some additional memory to store our ParsedJson data, for every document
-inside a given file.  Memory allocation can be slow and become a bottleneck, therefore, we want to
+inside a given file. Memory allocation can be slow and become a bottleneck, therefore, we want to
 minimize it as much as possible.
 
 ### Design
@@ -80,7 +80,7 @@ The bigger the batch size, the fewer we need to make allocations. We found that 
 sweet spot.
 
 1. When the user calls `iterate_many`, we return a `document_stream` which the user can iterate over
-   to receive parsed documents.
+ to receive parsed documents.
 2. We call stage 1 on the first batch_size bytes of JSON in the buffer, detecting structural
 	indexes for all documents in that batch.
 3. The `document_stream` owns a `document` instance that keeps track of the current document position
@@ -89,12 +89,12 @@ sweet spot.
 4. Each time the user calls `++` to read the next document, the JSON iterator moves to the start the
 	next document.
 5. When we reach the end of the batch, we call stage 1 on the next batch, starting from the end of
-   the last document, and go to step 3.
+ the last document, and go to step 3.
 
 ### Threads
 
-But how can we make use of threads if they are available?  We found a pretty cool algorithm that allows
-us to quickly identify the  position of the last JSON document in a given batch. Knowing exactly where
+But how can we make use of threads if they are available? We found a pretty cool algorithm that allows
+us to quickly identify the position of the last JSON document in a given batch. Knowing exactly where
 the end of the last document in the batch is, we can safely parse through the last document without any
 worries that it might be incomplete. Therefore, we can run stage 1 on the next batch concurrently while
 parsing the documents in the current batch. Running stage 1 in a different thread can, in best cases,
@@ -102,7 +102,7 @@ remove almost entirely its cost and replaces it by the overhead of a thread, whi
 cheaper. Ain't that awesome!
 
 Thread support is only active if thread supported is detected in which case the macro
-SIMDJSON_THREADS_ENABLED is set. Otherwise the library runs in  single-thread mode.
+SIMDJSON_THREADS_ENABLED is set. Otherwise the library runs in single-thread mode.
 
 A `document_stream` instance uses at most two threads: there is a main thread and a worker thread.
 
@@ -139,7 +139,7 @@ auto json = R"({ "foo": 1 } { "foo": 2 } { "foo": 3 } )"_padded;
 ondemand::parser parser;
 ondemand::document_stream docs = parser.iterate_many(json);
 for (auto doc : docs) {
-  std::cout << doc["foo"] << std::endl;
+ std::cout << doc["foo"] << std::endl;
 }
 // Prints 1 2 3
 ```
@@ -151,32 +151,32 @@ See [basics.md](basics.md#newline-delimited-json-ndjson-and-json-lines) for an o
 From [jsonlines.org](http://jsonlines.org/examples/):
 
 - **Better than CSV**
-    ```json
-    ["Name", "Session", "Score", "Completed"]
-    ["Gilbert", "2013", 24, true]
-    ["Alexa", "2013", 29, true]
-    ["May", "2012B", 14, false]
-    ["Deloise", "2012A", 19, true]
-    ```
-    CSV seems so easy that many programmers have written code to generate it themselves, and almost every implementation is
-    different. Handling broken CSV files is a common and frustrating task. CSV has no standard encoding, no standard column
-    separator and multiple character escaping standards. String is the only type supported for cell values, so some programs
-     attempt to guess the correct types.
+ ```json
+ ["Name", "Session", "Score", "Completed"]
+ ["Gilbert", "2013", 24, true]
+ ["Alexa", "2013", 29, true]
+ ["May", "2012B", 14, false]
+ ["Deloise", "2012A", 19, true]
+ ```
+ CSV seems so easy that many programmers have written code to generate it themselves, and almost every implementation is
+ different. Handling broken CSV files is a common and frustrating task. CSV has no standard encoding, no standard column
+ separator and multiple character escaping standards. String is the only type supported for cell values, so some programs
+ attempt to guess the correct types.
 
-    JSON Lines handles tabular data cleanly and without ambiguity. Cells may use the standard JSON types.
+ JSON Lines handles tabular data cleanly and without ambiguity. Cells may use the standard JSON types.
 
-    The biggest missing piece is an import/export filter for popular spreadsheet programs so that non-programmers can use
-    this format.
+ The biggest missing piece is an import/export filter for popular spreadsheet programs so that non-programmers can use
+ this format.
 
 - **Easy Nested Data**
-    ```json
-    {"name": "Gilbert", "wins": [["straight", "7♣"], ["one pair", "10♥"]]}
-    {"name": "Alexa", "wins": [["two pair", "4♠"], ["two pair", "9♠"]]}
-    {"name": "May", "wins": []}
-    {"name": "Deloise", "wins": [["three of a kind", "5♣"]]}
-    ```
-    JSON Lines' biggest strength is in handling lots of similar nested data structures. One .jsonl file is easier to
-    work with than a directory full of XML files.
+ ```json
+ {"name": "Gilbert", "wins": [["straight", "7♣"], ["one pair", "10♥"]]}
+ {"name": "Alexa", "wins": [["two pair", "4♠"], ["two pair", "9♠"]]}
+ {"name": "May", "wins": []}
+ {"name": "Deloise", "wins": [["three of a kind", "5♣"]]}
+ ```
+ JSON Lines' biggest strength is in handling lots of similar nested data structures. One .jsonl file is easier to
+ work with than a directory full of XML files.
 
 
 Tracking your position
@@ -192,24 +192,24 @@ Let us illustrate the idea with code:
 
 
 ```C++
-    auto json = R"([1,2,3]  {"1":1,"2":3,"4":4} [1,2,3]  )"_padded;
-    simdjson::ondemand::parser parser;
-    simdjson::ondemand::document_stream stream;
-    auto error = parser.iterate_many(json).get(stream);
-    if (error) { /* do something */ }
-    auto i = stream.begin();
+ auto json = R"([1,2,3] {"1":1,"2":3,"4":4} [1,2,3] )"_padded;
+ simdjson::ondemand::parser parser;
+ simdjson::ondemand::document_stream stream;
+ auto error = parser.iterate_many(json).get(stream);
+ if (error) { /* do something */ }
+ auto i = stream.begin();
 	 size_t count{0};
-    for(; i != stream.end(); ++i) {
-        auto doc = *i;
-        if (!i.error()) {
-          std::cout << "got full document at " << i.current_index() << std::endl;
-          std::cout << i.source() << std::endl;
-          count++;
-        } else {
-          std::cout << "got broken document at " << i.current_index() << std::endl;
-          return false;
-        }
-    }
+ for(; i != stream.end(); ++i) {
+ auto doc = *i;
+ if (!i.error()) {
+ std::cout << "got full document at " << i.current_index() << std::endl;
+ std::cout << i.source() << std::endl;
+ count++;
+ } else {
+ std::cout << "got broken document at " << i.current_index() << std::endl;
+ return false;
+ }
+ }
 
 ```
 
@@ -230,18 +230,18 @@ Incomplete streams
 Some users may need to work with truncated streams. The simdjson may truncate documents at the very end of the stream that cannot possibly be valid JSON (e.g., they contain unclosed strings, unmatched brackets, unmatched braces). After iterating through the stream, you may query the `truncated_bytes()` method which tells you how many bytes were truncated. If the stream is made of full (whole) documents, then you should expect `truncated_bytes()` to return zero.
 
 
-Consider the following example where a truncated document (`{"key":"intentionally unclosed string  `) containing 39 bytes has been left within the stream. In such cases, the first two whole documents are parsed and returned, and the `truncated_bytes()` method returns 39.
+Consider the following example where a truncated document (`{"key":"intentionally unclosed string `) containing 39 bytes has been left within the stream. In such cases, the first two whole documents are parsed and returned, and the `truncated_bytes()` method returns 39.
 
 ```C++
-    auto json = R"([1,2,3]  {"1":1,"2":3,"4":4} {"key":"intentionally unclosed string  )"_padded;
-    simdjson::ondemand::parser parser;
-    simdjson::ondemand::document_stream stream;
-    auto error = parser.iterate_many(json,json.size()).get(stream);
-    if (error) { std::cerr << error << std::endl; return; }
-    for(auto i = stream.begin(); i != stream.end(); ++i) {
-       std::cout << i.source() << std::endl;
-    }
-    std::cout << stream.truncated_bytes() << " bytes "<< std::endl; // returns 39 bytes
+ auto json = R"([1,2,3] {"1":1,"2":3,"4":4} {"key":"intentionally unclosed string )"_padded;
+ simdjson::ondemand::parser parser;
+ simdjson::ondemand::document_stream stream;
+ auto error = parser.iterate_many(json,json.size()).get(stream);
+ if (error) { std::cerr << error << std::endl; return; }
+ for(auto i = stream.begin(); i != stream.end(); ++i) {
+ std::cout << i.source() << std::endl;
+ }
+ std::cout << stream.truncated_bytes() << " bytes "<< std::endl; // returns 39 bytes
 ```
 
 This will print:
@@ -256,23 +256,23 @@ Importantly, you should only call `truncated_bytes()` after iterating through al
 Comma-separated documents
 -----------
 
-We also support comma-separated documents, but with some performance limitations. The `iterate_many` function  takes in an option to allow parsing of comma separated documents (which defaults on false). In this mode, the entire buffer is processed in one batch. Therefore, the total size of the document should not exceed the maximal capacity of the parser (4 GB). This mode also effectively disallow multithreading. It is therefore mostly suitable for not "very large" inputs. In this mode, the batch_size parameter
+We also support comma-separated documents, but with some performance limitations. The `iterate_many` function takes in an option to allow parsing of comma separated documents (which defaults on false). In this mode, the entire buffer is processed in one batch. Therefore, the total size of the document should not exceed the maximal capacity of the parser (4 GB). This mode also effectively disallow multithreading. It is therefore mostly suitable for not "very large" inputs. In this mode, the batch_size parameter
 is effectively ignored, as it is set to at least the document size.
 
 Example:
 
 ```C++
-    auto json = R"( 1, 2, 3, 4, "a", "b", "c", {"hello": "world"} , [1, 2, 3])"_padded;
-    ondemand::parser parser;
-    ondemand::document_stream doc_stream;
-    // We pass '32' as the batch size, but it is a bogus parameter because, since
-    // we pass 'true' to the allow_comma parameter, the batch size will be set to at least
-    // the document size.
-    auto error = parser.iterate_many(json, 32, true).get(doc_stream);
-    if (error) { std::cerr << error << std::endl; return; }
-    for (auto doc : doc_stream) {
-        std::cout << doc.type() << std::endl;
-    }
+ auto json = R"( 1, 2, 3, 4, "a", "b", "c", {"hello": "world"} , [1, 2, 3])"_padded;
+ ondemand::parser parser;
+ ondemand::document_stream doc_stream;
+ // We pass '32' as the batch size, but it is a bogus parameter because, since
+ // we pass 'true' to the allow_comma parameter, the batch size will be set to at least
+ // the document size.
+ auto error = parser.iterate_many(json, 32, true).get(doc_stream);
+ if (error) { std::cerr << error << std::endl; return; }
+ for (auto doc : doc_stream) {
+ std::cout << doc.type() << std::endl;
+ }
  ```
 
  This will print:

@@ -41,7 +41,7 @@
 
 ```svelte
 <script>
-  import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
+ import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
 </script>
 
 <EvidenceBoard />
@@ -53,12 +53,12 @@
 
 ```typescript
 type EvidenceItem = {
-  id: string;          // EV-001, EV-002, etc.
-  title: string;       // "Security Camera – Lobby"
-  type: 'video' | 'document' | 'photo' | 'note';
-  summary: string;     // Brief description
-  x: number;           // Position on board
-  y: number;
+ id: string; // EV-001, EV-002, etc.
+ title: string; // "Security Camera – Lobby"
+ type: 'video' | 'document' | 'photo' | 'note';
+ summary: string; // Brief description
+ x: number; // Position on board
+ y: number;
 };
 ```
 
@@ -71,10 +71,10 @@ To load saved positions on mount:
 import { onMount } from 'svelte';
 
 onMount(() => {
-  const saved = localStorage.getItem('yorha_evidence_board');
-  if (saved) {
-    items = JSON.parse(saved);
-  }
+ const saved = localStorage.getItem('yorha_evidence_board');
+ if (saved) {
+ items = JSON.parse(saved);
+ }
 });
 ```
 
@@ -119,7 +119,7 @@ onMount(() => {
 
 ```svelte
 <script>
-  import SentencingWorksheet from '$lib/ui/SentencingWorksheet.svelte';
+ import SentencingWorksheet from '$lib/ui/SentencingWorksheet.svelte';
 </script>
 
 <SentencingWorksheet />
@@ -155,23 +155,23 @@ To wire to your database:
 
 ```typescript
 type SentencingCalculation = {
-  caseId: string;
-  offenseLevel: number;
-  criminalHistory: number;
-  aggravatingFactorIds: string[];
-  mitigatingFactorIds: string[];
-  adjustedLevel: number;
-  rangeMin: number;
-  rangeMax: number;
-  createdAt: Date;
+ caseId: string;
+ offenseLevel: number;
+ criminalHistory: number;
+ aggravatingFactorIds: string[];
+ mitigatingFactorIds: string[];
+ adjustedLevel: number;
+ rangeMin: number;
+ rangeMax: number;
+ createdAt: Date;
 };
 
 async function saveCalculation(calc: SentencingCalculation) {
-  await fetch('/api/sentencing-calculations', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(calc),
-  });
+ await fetch('/api/sentencing-calculations', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(calc),
+ });
 }
 ```
 
@@ -190,13 +190,13 @@ async function saveCalculation(calc: SentencingCalculation) {
 
 ```
 src/lib/ui/
-├── EvidenceBoard.svelte          # Drag-and-drop evidence organizer
-├── SentencingWorksheet.svelte    # Interactive guideline calculator
-└── README_ADVANCED.md            # This file
+├── EvidenceBoard.svelte # Drag-and-drop evidence organizer
+├── SentencingWorksheet.svelte # Interactive guideline calculator
+└── README_ADVANCED.md # This file
 
 src/routes/(yorha)/
-├── evidence/+page.svelte         # Evidence board page
-└── sentencing/+page.svelte       # Sentencing worksheet page
+├── evidence/+page.svelte # Evidence board page
+└── sentencing/+page.svelte # Sentencing worksheet page
 ```
 
 ---
@@ -207,15 +207,15 @@ src/routes/(yorha)/
 
 ```css
 .evidence-grid {
-  background-color: #d4c7a3;  /* Sand */
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(0, 0, 0, 0.25) 1px,
-    transparent 0
-  );
-  background-size: 24px 24px;
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 0 2px #000;
+ background-color: #d4c7a3; /* Sand */
+ background-image: radial-gradient(
+ circle at 1px 1px,
+ rgba(0, 0, 0, 0.25) 1px,
+ transparent 0
+ );
+ background-size: 24px 24px;
+ border: 1px solid rgba(0, 0, 0, 0.6);
+ box-shadow: 0 0 0 2px #000;
 }
 ```
 
@@ -224,18 +224,18 @@ src/routes/(yorha)/
 ```svelte
 <!-- Aggravating (Red) -->
 <div class="w-4 h-4 rounded border
-            {selected ? 'bg-danger ring-2 ring-danger/50' : 'bg-sandDark'}">
-  {#if selected}
-    <span class="i-heroicons-check text-white" />
-  {/if}
+ {selected ? 'bg-danger ring-2 ring-danger/50' : 'bg-sandDark'}">
+ {#if selected}
+ <span class="i-heroicons-check text-white" />
+ {/if}
 </div>
 
 <!-- Mitigating (Green) -->
 <div class="w-4 h-4 rounded border
-            {selected ? 'bg-accent ring-2 ring-accent/50' : 'bg-sandDark'}">
-  {#if selected}
-    <span class="i-heroicons-check text-black" />
-  {/if}
+ {selected ? 'bg-accent ring-2 ring-accent/50' : 'bg-sandDark'}">
+ {#if selected}
+ <span class="i-heroicons-check text-black" />
+ {/if}
 </div>
 ```
 
@@ -269,24 +269,24 @@ npm run dev
 
 ```svelte
 <script lang="ts">
-  import { page } from '$app/stores';
-  import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
+ import { page } from '$app/stores';
+ import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
 
-  $: caseId = $page.params.caseId;
+ $: caseId = $page.params.caseId;
 
-  // Load evidence for specific case
-  async function loadCaseEvidence(id: string) {
-    const res = await fetch(`/api/cases/${id}/evidence`);
-    return await res.json();
-  }
+ // Load evidence for specific case
+ async function loadCaseEvidence(id: string) {
+ const res = await fetch(`/api/cases/${id}/evidence`);
+ return await res.json();
+ }
 </script>
 
 {#await loadCaseEvidence(caseId)}
-  <p>Loading evidence...</p>
+ <p>Loading evidence...</p>
 {:then items}
-  <EvidenceBoard {items} />
+ <EvidenceBoard {items} />
 {:catch error}
-  <p>Error: {error.message}</p>
+ <p>Error: {error.message}</p>
 {/await}
 ```
 
@@ -294,22 +294,22 @@ npm run dev
 
 ```typescript
 async function generateSentencingMemo() {
-  const data = {
-    caseId,
-    offenseLevel: adjustedOffenseLevel,
-    aggravatingFactors: selectedAggravating,
-    mitigatingFactors: selectedMitigating,
-    sentencingRange,
-  };
+ const data = {
+ caseId,
+ offenseLevel: adjustedOffenseLevel,
+ aggravatingFactors: selectedAggravating,
+ mitigatingFactors: selectedMitigating,
+ sentencingRange,
+ };
 
-  const res = await fetch('/api/sentencing/generate-memo', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+ const res = await fetch('/api/sentencing/generate-memo', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data),
+ });
 
-  const { memoUrl } = await res.json();
-  window.open(memoUrl, '_blank');
+ const { memoUrl } = await res.json();
+ window.open(memoUrl, '_blank');
 }
 ```
 
@@ -319,17 +319,17 @@ To draw lines between evidence cards:
 
 ```svelte
 <svg class="absolute inset-0 pointer-events-none">
-  {#each connections as conn}
-    <line
-      x1={items.find(i => i.id === conn.from)?.x + 130}
-      y1={items.find(i => i.id === conn.from)?.y + 60}
-      x2={items.find(i => i.id === conn.to)?.x + 130}
-      y2={items.find(i => i.id === conn.to)?.y + 60}
-      stroke="#4ade80"
-      stroke-width="2"
-      stroke-dasharray="4 4"
-    />
-  {/each}
+ {#each connections as conn}
+ <line
+ x1={items.find(i => i.id === conn.from)?.x + 130}
+ y1={items.find(i => i.id === conn.from)?.y + 60}
+ x2={items.find(i => i.id === conn.to)?.x + 130}
+ y2={items.find(i => i.id === conn.to)?.y + 60}
+ stroke="#4ade80"
+ stroke-width="2"
+ stroke-dasharray="4 4"
+ />
+ {/each}
 </svg>
 ```
 
@@ -342,8 +342,8 @@ To draw lines between evidence cards:
 ```svelte
 <!-- In EvidenceBoard.svelte -->
 <div
-  class="absolute w-[300px] ..."  <!-- Change from 260px -->
-  ...
+ class="absolute w-[300px] ..." <!-- Change from 260px -->
+ ...
 >
 ```
 
@@ -351,13 +351,13 @@ To draw lines between evidence cards:
 
 ```typescript
 type EvidenceType =
-  | 'video'
-  | 'document'
-  | 'photo'
-  | 'note'
-  | 'audio'        // New
-  | 'forensic'     // New
-  | 'testimony';   // New
+ | 'video'
+ | 'document'
+ | 'photo'
+ | 'note'
+ | 'audio' // New
+ | 'forensic' // New
+ | 'testimony'; // New
 ```
 
 ### Customize Sentencing Factors
@@ -365,8 +365,8 @@ type EvidenceType =
 ```typescript
 // Add your own factors
 let customAggravatingFactors: AggravatingFactor[] = [
-  { id: 'AG-CUSTOM-1', description: 'Repeat offender', points: 5, selected: false },
-  { id: 'AG-CUSTOM-2', description: 'Destruction of evidence', points: 3, selected: false },
+ { id: 'AG-CUSTOM-1', description: 'Repeat offender', points: 5, selected: false },
+ { id: 'AG-CUSTOM-2', description: 'Destruction of evidence', points: 3, selected: false },
 ];
 ```
 

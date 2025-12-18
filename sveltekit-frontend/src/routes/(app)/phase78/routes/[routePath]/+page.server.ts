@@ -6,23 +6,23 @@ import type { PageServerLoad } from './$types';
  */
 
 export const load: PageServerLoad = async ({ params, fetch, url }) => {
-	const { routePath } = params;
+ const { routePath } = params;
 
-	// Decode the route path from URL encoding
-	const decodedRoutePath = decodeURIComponent(routePath);
+ // Decode the route path from URL encoding
+ const decodedRoutePath = decodeURIComponent(routePath);
 
-	// Initial empty state - data will be fetched client-side from the API
-	// This approach keeps the page interactive even during DB migration
-	return {
-		routePath: decodedRoutePath,
-		initialData: null,
-		errors: [],
-		suggestions: [],
-		health: null,
-		summary: {
-			errorCount: 0,
-			suggestionCount: 0,
-			lastErrorAt: null
-		}
-	};
+ // Initial empty state - data will be fetched client-side from the API
+ // This approach keeps the page interactive even during DB migration
+ return {
+ routePath: decodedRoutePath,
+ initialData: null,
+ errors: [],
+ suggestions: [],
+ health: null,
+ summary: {
+ errorCount: 0,
+ suggestionCount: 0,
+ lastErrorAt: null,
+ },
+ };
 };

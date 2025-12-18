@@ -6,8 +6,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 </script>
 
 <main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+ <h1>Page under reconstruction</h1>
+ <p>This placeholder replaces corrupted or missing markup for now.</p>
 </main>
 
 <style>

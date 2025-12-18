@@ -11,6 +11,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"image"
 	"image/png"
@@ -71,7 +72,7 @@ type GlyphBinary struct {
 
 // Binary header for .gbin files
 type BinaryHeader struct {
-	MagicNumber    uint32    // 0x474C5950 ("GLYP")  
+	MagicNumber    uint32    // 0x474C5950 ("GLYP")
 	Version        uint16    // Binary format version
 	Flags          uint16    // Feature flags
 	InstructionCount uint32  // Number of instructions
@@ -100,10 +101,30 @@ type BinaryMeta struct {
 	RecognitionTime  int64                  `json:"recognition_time_ms"`
 }
 
+// Contour analyzer for shape contour detection
+type ContourAnalyzer struct {
+	threshold float64
+}
+
+// Edge detector for boundary detection
+type EdgeDetector struct {
+	method string
+}
+
 // Shape detector for geometric analysis
 type ShapeDetector struct {
 	contourAnalyzer *ContourAnalyzer
 	edgeDetector    *EdgeDetector
+}
+
+// Grid analyzer for QR grid detection
+type GridAnalyzer struct {
+	gridSize int
+}
+
+// Data decoder for extracting QR data
+type DataDecoder struct {
+	format string
 }
 
 // QR data extractor for embedded cache keys
@@ -117,30 +138,30 @@ const (
 	// Cache operations
 	OP_LOAD_FROM_CACHE    uint8 = 0x01
 	OP_STORE_TO_CACHE     uint8 = 0x02
-	
+
 	// Tensor operations
 	OP_TENSOR_ADD         uint8 = 0x10
 	OP_MATRIX_MUL         uint8 = 0x11
 	OP_CONVOLUTION        uint8 = 0x12
 	OP_UPSCALE           uint8 = 0x13
-	
+
 	// Legal AI operations
 	OP_EVIDENCE_ANALYSIS  uint8 = 0x20
 	OP_CONTRACT_PARSING   uint8 = 0x21
 	OP_RISK_ASSESSMENT    uint8 = 0x22
 	OP_SEMANTIC_SEARCH    uint8 = 0x23
-	
+
 	// Control flow
 	OP_BRANCH            uint8 = 0x30
 	OP_LOOP              uint8 = 0x31
 	OP_CALL              uint8 = 0x32
 	OP_RETURN            uint8 = 0x33
-	
+
 	// Data movement
 	OP_LOAD_IMMEDIATE    uint8 = 0x40
 	OP_STORE_RESULT      uint8 = 0x41
 	OP_COPY              uint8 = 0x42
-	
+
 	// Termination
 	OP_HALT              uint8 = 0xFF
 )
@@ -153,7 +174,7 @@ func NewAIReader() *AIReader {
 		shapePatterns: initializeShapePatterns(),
 		colorPatterns: initializeColorPatterns(),
 	}
-	
+
 	compiler := &GlyphCompiler{
 		opcodeMap: initializeOpcodeMap(),
 		binaryFormat: &BinaryFormat{
@@ -161,7 +182,7 @@ func NewAIReader() *AIReader {
 			Version:     1,
 		},
 	}
-	
+
 	return &AIReader{
 		visionModel:   visionModel,
 		compiler:      compiler,
@@ -173,52 +194,52 @@ func NewAIReader() *AIReader {
 // Main transpilation function: Visual Glyph → .gbin Binary
 func (r *AIReader) TranspileGlyph(ctx context.Context, glyphData []byte) (*GlyphBinary, error) {
 	start := time.Now()
-	
+
 	log.Printf("🧠 Starting glyph transpilation (size: %d bytes)", len(glyphData))
-	
+
 	// Step 1: Parse PNG and extract visual elements
 	glyphImage, err := r.parseGlyphImage(glyphData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse glyph image: %w", err)
 	}
-	
+
 	// Step 2: Detect shapes and their properties using Vision Transformer
 	recognizedElements, err := r.visionModel.RecognizeElements(glyphImage)
 	if err != nil {
 		return nil, fmt.Errorf("vision recognition failed: %w", err)
 	}
-	
+
 	// Step 3: Extract QR data blocks containing cache keys
 	cacheKeys, metadata, err := r.dataExtractor.ExtractCacheKeys(glyphImage)
 	if err != nil {
 		return nil, fmt.Errorf("cache key extraction failed: %w", err)
 	}
-	
+
 	// Step 4: Analyze data flow and dependencies
 	dataFlow, err := r.analyzeDataFlow(recognizedElements)
 	if err != nil {
 		return nil, fmt.Errorf("data flow analysis failed: %w", err)
 	}
-	
+
 	// Step 5: Compile to binary instructions
 	instructions, err := r.compiler.CompileInstructions(recognizedElements, dataFlow, cacheKeys)
 	if err != nil {
 		return nil, fmt.Errorf("instruction compilation failed: %w", err)
 	}
-	
+
 	// Step 6: Create binary format
 	binary, err := r.createBinaryFormat(instructions, cacheKeys, metadata)
 	if err != nil {
 		return nil, fmt.Errorf("binary format creation failed: %w", err)
 	}
-	
+
 	processingTime := time.Since(start)
-	log.Printf("✅ Glyph transpilation complete in %dms (%d instructions, %d cache keys)", 
+	log.Printf("✅ Glyph transpilation complete in %dms (%d instructions, %d cache keys)",
 		processingTime.Milliseconds(), len(instructions), len(cacheKeys))
-	
+
 	binary.Metadata.RecognitionTime = processingTime.Milliseconds()
 	binary.Metadata.Confidence = r.calculateOverallConfidence(recognizedElements)
-	
+
 	return binary, nil
 }
 
@@ -229,7 +250,7 @@ func (r *AIReader) parseGlyphImage(glyphData []byte) (image.Image, error) {
 	if err != nil {
 		return nil, fmt.Errorf("PNG decode failed: %w", err)
 	}
-	
+
 	// Convert to RGBA for consistent processing
 	bounds := img.Bounds()
 	rgba := image.NewRGBA(bounds)
@@ -238,7 +259,7 @@ func (r *AIReader) parseGlyphImage(glyphData []byte) (image.Image, error) {
 			rgba.Set(x, y, img.At(x, y))
 		}
 	}
-	
+
 	return rgba, nil
 }
 
@@ -246,7 +267,7 @@ func (r *AIReader) parseGlyphImage(glyphData []byte) (image.Image, error) {
 func (vt *VisionTransformer) RecognizeElements(img image.Image) ([]*RecognizedElement, error) {
 	// In production, this would use a real Vision Transformer model
 	// For now, we'll create mock recognized elements
-	
+
 	elements := []*RecognizedElement{
 		{
 			ID:         "element_1",
@@ -258,7 +279,7 @@ func (vt *VisionTransformer) RecognizeElements(img image.Image) ([]*RecognizedEl
 			Operation:  OpLoadModel,
 		},
 		{
-			ID:         "element_2", 
+			ID:         "element_2",
 			Shape:      ShapeHexagon,
 			Color:      Color{R: 220, G: 53, B: 69},
 			Position:   Position{X: 250, Y: 100},
@@ -276,10 +297,10 @@ func (vt *VisionTransformer) RecognizeElements(img image.Image) ([]*RecognizedEl
 			Operation:  OpRiskAssessment,
 		},
 	}
-	
-	log.Printf("🔍 Vision model recognized %d elements (avg confidence: %.2f)", 
+
+	log.Printf("🔍 Vision model recognized %d elements (avg confidence: %.2f)",
 		len(elements), vt.calculateAverageConfidence(elements))
-	
+
 	return elements, nil
 }
 
@@ -303,16 +324,16 @@ func (qr *QRDataExtractor) ExtractCacheKeys(img image.Image) ([]string, map[stri
 		"tensor:a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890",
 		"tensor:b2c3d4e5f6789012345678901234567890123456789012345678901234567890a1",
 	}
-	
+
 	metadata := map[string]interface{}{
 		"glyph_version":    1,
 		"legal_context":    "evidence_analysis",
 		"operation_count":  3,
 		"extracted_at":     time.Now().Unix(),
 	}
-	
+
 	log.Printf("📦 Extracted %d cache keys from QR data blocks", len(cacheKeys))
-	
+
 	return cacheKeys, metadata, nil
 }
 
@@ -322,7 +343,7 @@ func (r *AIReader) analyzeDataFlow(elements []*RecognizedElement) (*DataFlowGrap
 		Nodes: make(map[string]*DataNode),
 		Edges: []DataEdge{},
 	}
-	
+
 	// Create nodes for each element
 	for _, element := range elements {
 		node := &DataNode{
@@ -334,7 +355,7 @@ func (r *AIReader) analyzeDataFlow(elements []*RecognizedElement) (*DataFlowGrap
 		}
 		graph.Nodes[element.ID] = node
 	}
-	
+
 	// Analyze spatial relationships to infer data flow
 	for i, elementA := range elements {
 		for j, elementB := range elements {
@@ -348,16 +369,16 @@ func (r *AIReader) analyzeDataFlow(elements []*RecognizedElement) (*DataFlowGrap
 						Weight: 1.0 / distance, // Closer = stronger connection
 					}
 					graph.Edges = append(graph.Edges, edge)
-					
+
 					graph.Nodes[elementA.ID].Outputs = append(graph.Nodes[elementA.ID].Outputs, elementB.ID)
 					graph.Nodes[elementB.ID].Inputs = append(graph.Nodes[elementB.ID].Inputs, elementA.ID)
 				}
 			}
 		}
 	}
-	
+
 	log.Printf("📊 Analyzed data flow: %d nodes, %d edges", len(graph.Nodes), len(graph.Edges))
-	
+
 	return graph, nil
 }
 
@@ -384,11 +405,11 @@ type DataEdge struct {
 // Compile recognized elements to binary instructions
 func (gc *GlyphCompiler) CompileInstructions(elements []*RecognizedElement, dataFlow *DataFlowGraph, cacheKeys []string) ([]BinaryInstr, error) {
 	instructions := []BinaryInstr{}
-	
+
 	// Create instruction for each recognized element
 	for i, element := range elements {
 		opcode := gc.opcodeMap[element.Operation]
-		
+
 		instruction := BinaryInstr{
 			OpCode:      opcode,
 			Flags:       0x00,
@@ -397,10 +418,10 @@ func (gc *GlyphCompiler) CompileInstructions(elements []*RecognizedElement, data
 			IntArgs:     []uint32{uint32(element.Size.Width), uint32(element.Size.Height)},
 			CacheKeyRef: uint16(i % len(cacheKeys)), // Reference to cache key
 		}
-		
+
 		instructions = append(instructions, instruction)
 	}
-	
+
 	// Add termination instruction
 	haltInstruction := BinaryInstr{
 		OpCode:   OP_HALT,
@@ -410,9 +431,9 @@ func (gc *GlyphCompiler) CompileInstructions(elements []*RecognizedElement, data
 		IntArgs:  []uint32{},
 	}
 	instructions = append(instructions, haltInstruction)
-	
+
 	log.Printf("🔧 Compiled %d instructions from %d visual elements", len(instructions), len(elements))
-	
+
 	return instructions, nil
 }
 
@@ -420,10 +441,10 @@ func (gc *GlyphCompiler) CompileInstructions(elements []*RecognizedElement, data
 func (r *AIReader) createBinaryFormat(instructions []BinaryInstr, cacheKeys []string, metadata map[string]interface{}) (*GlyphBinary, error) {
 	// Serialize data section
 	dataSection := r.serializeDataSection(cacheKeys, metadata)
-	
+
 	// Calculate checksum
 	checksum := r.calculateChecksum(instructions, dataSection)
-	
+
 	// Create header
 	header := BinaryHeader{
 		MagicNumber:      0x474C5950, // "GLYP"
@@ -435,7 +456,7 @@ func (r *AIReader) createBinaryFormat(instructions []BinaryInstr, cacheKeys []st
 		CreatedAt:        time.Now().Unix(),
 		Checksum:         checksum,
 	}
-	
+
 	binary := &GlyphBinary{
 		Header:       header,
 		Instructions: instructions,
@@ -446,37 +467,37 @@ func (r *AIReader) createBinaryFormat(instructions []BinaryInstr, cacheKeys []st
 			Confidence:      0.90, // Will be calculated later
 		},
 	}
-	
+
 	return binary, nil
 }
 
 // Serialize cache keys and metadata to data section
 func (r *AIReader) serializeDataSection(cacheKeys []string, metadata map[string]interface{}) []byte {
 	var buf bytes.Buffer
-	
+
 	// Write number of cache keys
 	binary.Write(&buf, binary.LittleEndian, uint32(len(cacheKeys)))
-	
+
 	// Write each cache key with length prefix
 	for _, key := range cacheKeys {
 		keyBytes := []byte(key)
 		binary.Write(&buf, binary.LittleEndian, uint32(len(keyBytes)))
 		buf.Write(keyBytes)
 	}
-	
+
 	// Write metadata as JSON
 	if metadataBytes, err := json.Marshal(metadata); err == nil {
 		binary.Write(&buf, binary.LittleEndian, uint32(len(metadataBytes)))
 		buf.Write(metadataBytes)
 	}
-	
+
 	return buf.Bytes()
 }
 
 // Calculate checksum for binary integrity
 func (r *AIReader) calculateChecksum(instructions []BinaryInstr, dataSection []byte) [32]byte {
 	hasher := sha256.New()
-	
+
 	// Hash instructions
 	for _, instr := range instructions {
 		binary.Write(hasher, binary.LittleEndian, instr.OpCode)
@@ -489,10 +510,10 @@ func (r *AIReader) calculateChecksum(instructions []BinaryInstr, dataSection []b
 			binary.Write(hasher, binary.LittleEndian, arg)
 		}
 	}
-	
+
 	// Hash data section
 	hasher.Write(dataSection)
-	
+
 	var checksum [32]byte
 	copy(checksum[:], hasher.Sum(nil))
 	return checksum
@@ -510,7 +531,7 @@ func (vt *VisionTransformer) calculateAverageConfidence(elements []*RecognizedEl
 	if len(elements) == 0 {
 		return 0.0
 	}
-	
+
 	total := 0.0
 	for _, element := range elements {
 		total += element.Confidence
@@ -523,20 +544,20 @@ func (r *AIReader) calculateOverallConfidence(elements []*RecognizedElement) flo
 	if len(elements) == 0 {
 		return 0.0
 	}
-	
+
 	totalWeight := 0.0
 	weightedSum := 0.0
-	
+
 	for _, element := range elements {
 		weight := 1.0
 		if element.Operation == OpLoadModel || element.Operation == OpEvidenceAnalysis {
 			weight = 2.0 // Critical operations get higher weight
 		}
-		
+
 		totalWeight += weight
 		weightedSum += element.Confidence * weight
 	}
-	
+
 	return weightedSum / totalWeight
 }
 

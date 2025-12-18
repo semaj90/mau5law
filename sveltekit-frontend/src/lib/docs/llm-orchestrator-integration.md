@@ -8,25 +8,25 @@ The LLM Orchestrator Integration provides a unified interface for managing multi
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    LLM Orchestrator Bridge                  │
+│ LLM Orchestrator Bridge │
 ├─────────────────────────────────────────────────────────────┤
-│  • Intelligent Routing                                     │
-│  • Load Balancing                                          │
-│  • Performance Monitoring                                  │
-│  • Fallback Handling                                       │
+│ • Intelligent Routing │
+│ • Load Balancing │
+│ • Performance Monitoring │
+│ • Fallback Handling │
 └─────────────┬─────────────┬─────────────┬─────────────────┘
-              │             │             │
-              ▼             ▼             ▼
-    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-    │   Server    │ │   Client    │ │     MCP     │
-    │Orchestrator │ │Orchestrator │ │ Multi-Core  │
-    ├─────────────┤ ├─────────────┤ ├─────────────┤
-    │ • XState    │ │ • Gemma270M │ │ • Parallel  │
-    │ • Ollama    │ │ • Legal-BERT│ │ • Workers   │
-    │ • pgvector  │ │ • ONNX.js   │ │ • Load Bal. │
-    │ • Neo4j     │ │ • WASM      │ │ • Scaling   │
-    │ • Redis     │ │ • GPU       │ │ • MCP API   │
-    └─────────────┘ └─────────────┘ └─────────────┘
+ │ │ │
+ ▼ ▼ ▼
+ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+ │ Server │ │ Client │ │ MCP │
+ │Orchestrator │ │Orchestrator │ │ Multi-Core │
+ ├─────────────┤ ├─────────────┤ ├─────────────┤
+ │ • XState │ │ • Gemma270M │ │ • Parallel │
+ │ • Ollama │ │ • Legal-BERT│ │ • Workers │
+ │ • pgvector │ │ • ONNX.js │ │ • Load Bal. │
+ │ • Neo4j │ │ • WASM │ │ • Scaling │
+ │ • Redis │ │ • GPU │ │ • MCP API │
+ └─────────────┘ └─────────────┘ └─────────────┘
 ```
 
 ## Components
@@ -78,30 +78,30 @@ Enhanced chat endpoint with automatic orchestrator routing.
 // Request
 POST /api/ai/chat
 {
-  "messages": [
-    {"role": "user", "content": "What are the key elements of a valid contract?"}
-  ],
-  "model": "auto",  // or "gemma3-legal", "gemma270m", etc.
-  "temperature": 0.3,
-  "stream": false
+ "messages": [
+ {"role": "user", "content": "What are the key elements of a valid contract?"}
+ ],
+ "model": "auto", // or "gemma3-legal", "gemma270m", etc.
+ "temperature": 0.3,
+ "stream": false
 }
 
 // Response
 {
-  "choices": [{
-    "message": {
-      "role": "assistant", 
-      "content": "A valid contract requires..."
-    },
-    "finish_reason": "stop"
-  }],
-  "usage": {...},
-  "model": "gemma3-legal:latest",
-  "orchestrator": {
-    "used": "server",
-    "confidence": 0.9,
-    "executionMetrics": {...}
-  }
+ "choices": [{
+ "message": {
+ "role": "assistant",
+ "content": "A valid contract requires..."
+ },
+ "finish_reason": "stop"
+ }],
+ "usage": {...},
+ "model": "gemma3-legal:latest",
+ "orchestrator": {
+ "used": "server",
+ "confidence": 0.9,
+ "executionMetrics": {...}
+ }
 }
 ```
 
@@ -112,32 +112,32 @@ Direct access to the orchestrator bridge with full control.
 // Request
 POST /api/ai/unified-orchestrator
 {
-  "content": "Analyze this contract clause...",
-  "type": "legal_analysis",
-  "context": {
-    "legalDomain": "contract",
-    "documentType": "agreement"
-  },
-  "options": {
-    "model": "auto",
-    "priority": "high",
-    "useGPU": true
-  }
+ "content": "Analyze this contract clause...",
+ "type": "legal_analysis",
+ "context": {
+ "legalDomain": "contract",
+ "documentType": "agreement"
+ },
+ "options": {
+ "model": "auto",
+ "priority": "high",
+ "useGPU": true
+ }
 }
 
-// Response  
+// Response
 {
-  "success": true,
-  "response": "Analysis of the contract clause...",
-  "orchestratorUsed": "server",
-  "modelUsed": "gemma3-legal:latest",
-  "executionMetrics": {
-    "totalLatency": 1250,
-    "routingTime": 15,
-    "processingTime": 1200,
-    "gpuAccelerated": true
-  },
-  "confidence": 0.92
+ "success": true,
+ "response": "Analysis of the contract clause...",
+ "orchestratorUsed": "server",
+ "modelUsed": "gemma3-legal:latest",
+ "executionMetrics": {
+ "totalLatency": 1250,
+ "routingTime": 15,
+ "processingTime": 1200,
+ "gpuAccelerated": true
+ },
+ "confidence": 0.92
 }
 ```
 
@@ -148,28 +148,28 @@ Comprehensive testing and diagnostics.
 // Health Check
 GET /api/ai/test-orchestrator
 {
-  "type": "health_check",
-  "healthy": true,
-  "status": {...},
-  "performance": {...}
+ "type": "health_check",
+ "healthy": true,
+ "status": {...},
+ "performance": {...}
 }
 
 // Full Integration Test
 GET /api/ai/test-orchestrator?test=full
 {
-  "type": "full_integration_test",
-  "success": true,
-  "results": [...],
-  "summary": "5/5 tests passed (100%)"
+ "type": "full_integration_test",
+ "success": true,
+ "results": [...],
+ "summary": "5/5 tests passed (100%)"
 }
 
 // Specific Orchestrator Test
 GET /api/ai/test-orchestrator?test=specific&orchestrator=server
 POST /api/ai/test-orchestrator
 {
-  "type": "chat",
-  "content": "Test message",
-  "orchestrator": "server"
+ "type": "chat",
+ "content": "Test message",
+ "orchestrator": "server"
 }
 ```
 
@@ -206,11 +206,11 @@ import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js
 
 // Simple chat request
 const response = await llmOrchestratorBridge.processRequest({
-  id: 'chat-1',
-  type: 'chat',
-  content: 'What is tort law?',
-  context: { userId: 'user123' },
-  options: { model: 'auto', priority: 'normal' }
+ id: 'chat-1',
+ type: 'chat',
+ content: 'What is tort law?',
+ context: { userId: 'user123' },
+ options: { model: 'auto', priority: 'normal' }
 });
 
 console.log(`Response from ${response.orchestratorUsed}: ${response.response}`);
@@ -221,24 +221,24 @@ console.log(`Response from ${response.orchestratorUsed}: ${response.response}`);
 ```typescript
 // Complex legal analysis
 const analysis = await llmOrchestratorBridge.processRequest({
-  id: 'analysis-1',
-  type: 'legal_analysis',
-  content: 'Analyze this employment contract...',
-  context: {
-    legalDomain: 'employment',
-    documentType: 'contract'
-  },
-  options: {
-    model: 'auto',
-    priority: 'high',
-    temperature: 0.2,
-    maxTokens: 1000
-  }
+ id: 'analysis-1',
+ type: 'legal_analysis',
+ content: 'Analyze this employment contract...',
+ context: {
+ legalDomain: 'employment',
+ documentType: 'contract'
+ },
+ options: {
+ model: 'auto',
+ priority: 'high',
+ temperature: 0.2,
+ maxTokens: 1000
+ }
 });
 
 if (analysis.success) {
-  console.log('Analysis confidence:', analysis.confidence);
-  console.log('Citations:', analysis.citations);
+ console.log('Analysis confidence:', analysis.confidence);
+ console.log('Citations:', analysis.citations);
 }
 ```
 
@@ -247,14 +247,14 @@ if (analysis.success) {
 ```typescript
 // Optimized for low latency
 const realtimeResponse = await llmOrchestratorBridge.processRequest({
-  id: 'realtime-1',
-  type: 'chat',
-  content: 'Quick legal question...',
-  options: {
-    priority: 'realtime',
-    maxLatency: 300,
-    model: 'gemma270m' // Force client-side
-  }
+ id: 'realtime-1',
+ type: 'chat',
+ content: 'Quick legal question...',
+ options: {
+ priority: 'realtime',
+ maxLatency: 300,
+ model: 'gemma270m' // Force client-side
+ }
 });
 ```
 
@@ -263,12 +263,12 @@ const realtimeResponse = await llmOrchestratorBridge.processRequest({
 ```typescript
 // Generate embeddings for legal text
 const embedding = await llmOrchestratorBridge.processRequest({
-  id: 'embed-1',
-  type: 'embedding',
-  content: 'Contract law principles and applications',
-  options: {
-    model: 'auto' // Will prefer ONNX client-side
-  }
+ id: 'embed-1',
+ type: 'embedding',
+ content: 'Contract law principles and applications',
+ options: {
+ model: 'auto' // Will prefer ONNX client-side
+ }
 });
 ```
 
@@ -280,7 +280,7 @@ const embedding = await llmOrchestratorBridge.processRequest({
 # Ollama Configuration
 OLLAMA_URL=http://localhost:11434
 
-# Database Configuration  
+# Database Configuration
 POSTGRES_URL=postgresql://user:pass@localhost:5432/legal_ai
 NEO4J_URL=bolt://localhost:7687
 REDIS_URL=redis://localhost:6379
@@ -297,15 +297,15 @@ CUDA_VISIBLE_DEVICES=0
 ```typescript
 // Server orchestrator models
 const serverModels = {
-  legal: 'gemma3-legal:latest',
-  embedding: 'nomic-embed-text:latest'
+ legal: 'gemma3-legal:latest',
+ embedding: 'nomic-embed-text:latest'
 };
 
-// Client orchestrator models  
+// Client orchestrator models
 const clientModels = {
-  gemma: 'gemma270m',
-  bert: 'legal-bert', 
-  embeddings: 'onnx-embeddings'
+ gemma: 'gemma270m',
+ bert: 'legal-bert',
+ embeddings: 'onnx-embeddings'
 };
 ```
 
@@ -336,24 +336,24 @@ console.log('Client models loaded:', status.clientOrchestrator.modelsLoaded);
 ### Common Issues
 
 1. **Bridge Status: 'offline'**
-   - Check Ollama is running: `ollama serve`
-   - Verify database connections
-   - Ensure required models are pulled
+ - Check Ollama is running: `ollama serve`
+ - Verify database connections
+ - Ensure required models are pulled
 
 2. **High Latency**
-   - Check GPU availability
-   - Monitor system resources
-   - Consider client-side routing for simple queries
+ - Check GPU availability
+ - Monitor system resources
+ - Consider client-side routing for simple queries
 
 3. **Low Confidence Scores**
-   - Verify legal domain context is provided
-   - Check model specialization for task type
-   - Review prompt engineering
+ - Verify legal domain context is provided
+ - Check model specialization for task type
+ - Review prompt engineering
 
 4. **MCP Integration Issues**
-   - Verify MCP server is running on port 3002
-   - Check worker core availability
-   - Monitor load balancing metrics
+ - Verify MCP server is running on port 3002
+ - Check worker core availability
+ - Monitor load balancing metrics
 
 ### Debug Mode
 

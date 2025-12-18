@@ -28,6 +28,17 @@ import readline from 'readline';
 import { fileURLToPath } from 'url';
 import { createSafeProgress, validatePatch, writePatchedFile } from './patch-safety-gate.mjs';
 
+// Phase 72 KAG Integration
+let kagFixStore = null;
+try {
+  const kagModule = await import('./kag-fix-store.mjs');
+  kagFixStore = kagModule.kagFixStore;
+  console.log('[KAG] KAG storage layer loaded successfully');
+} catch (error) {
+  console.warn('[KAG] KAG storage layer not available:', error.message);
+  console.warn('[KAG] Continuing without KAG caching (Tier rules only)');
+}
+
 // KAG/RAG Integration (Phase 72)
 
 // Phase 72 RAG Integration: SIMD Parser + Redis Cache + RAG Query
@@ -120,39 +131,8 @@ async function queryRAGForFixes(error) {
  * Store successful fix in RAG knowledge base for future learning
  */
 async function storeFixInRAG(error, fix, success) {
-  // Phase 72 KAG Integration: Store in local Redis-based KAG
-  if (success && kagFixStore) {
-    try {
-      const errorSig = kagFixStore.computeSignature({
-        message: error.message,
-        file: error.file,
-        code: error.code,
-        tool: error.tool || 'svelte-check',
-        position: error.position
-      });
-
-      await kagFixStore.storeFix(errorSig, {
-        sig: errorSig.sig,
-        patchId: fix.patternId,
-        patch: fix.patch,
-        appliedAt: new Date().toISOString(),
-        verified: true,
-        successCount: 1,
-        failureCount: 0,
-        confidence: fix.confidence || 0.9,
-        tier: error.tier || 2
-      });
-
-      if (FLAGS.VERBOSE) {
-        console.log(`✅ Stored fix in KAG: ${errorSig.sig.substring(0, 8)}...`);
-      }
-    } catch (kagError) {
-      // Silent fail - KAG storage is optional
-      if (FLAGS.VERBOSE) {
-        console.warn(`⚠️ KAG storage failed: ${kagError.message}`);
-      }
-    }
-  }
+  // NOTE: KAG persistence is intentionally handled AFTER verification passes.
+  // Do not store unverified outcomes here.
 
   // Legacy RAG service integration (remote HTTP endpoint)
   if (!ragServiceAvailable || !FLAGS.TRACK_RAG || !success) {
@@ -255,6 +235,9 @@ const FLAGS = {
   VERBOSE: process.argv.includes("--verbose"),
   DRY_RUN: process.argv.includes("--dry-run"),
   FORCE: process.argv.includes("--force"),
+  ENABLE_KAG: process.argv.includes("--kag") || !process.argv.includes("--no-kag"),
+  KAG_THRESHOLD: parseFloat(process.argv.find(a => a.startsWith("--kag-threshold="))?.split("=")[1] || "0.8"),
+  SHOW_LEARNING: process.argv.includes("--show-learning"),
   TRACK_RAG: !process.argv.includes("--no-rag")
 };
 
@@ -285,6 +268,10 @@ FLAGS:
   --verbose              Show detailed progress
   --dry-run              Simulate apply without writing files
   --force                Skip safety checks (dangerous!)
+  --kag                  Enable KAG replay (default: enabled)
+  --no-kag               Disable KAG (no learning / no replay)
+  --kag-threshold=<n>    Minimum confidence for KAG replay (default: 0.8)
+  --show-learning        Print KAG learning stats after verified apply
   --no-rag               Disable RAG confidence tracking
 
 EXAMPLES:
@@ -609,6 +596,8 @@ function generateFixPlan(events, tier) {
           column: event.col,
           message: event.message,
           code: event.code,
+          tool: event.tool || 'svelte-check',
+          position: event.position,
           patternId: pattern.id,
           category: pattern.category,
           confidence: pattern.confidence,
@@ -699,7 +688,8 @@ function applyFixes(plan, runDir) {
     skipped: 0,
     errors: 0,
     rejected: 0, // Patches rejected by safety gate
-    filesModified: new Set()
+    filesModified: new Set(),
+    kagCandidates: []
   };
 
   // Group by file
@@ -731,6 +721,7 @@ function applyFixes(plan, runDir) {
       if (!FLAGS.DRY_RUN) {
         let content = fs.readFileSync(absPath, 'utf-8');
         const lines = content.split('\n');
+        const fileKagCandidates = [];
 
         // Sort fixes by line number (descending) to avoid offset issues
         fixes.sort((a, b) => b.line - a.line);
@@ -749,17 +740,32 @@ function applyFixes(plan, runDir) {
           if (lineMatch) {
             const newLine = pattern.fix(originalLine, errorMatch, lineMatch);
 
+            console.log('[KAG DEBUG] Fix executed:', fix.patternId, 'result:', newLine === null ? 'DELETE' : newLine === originalLine ? 'UNCHANGED' : 'REPLACED');
+
             if (newLine === null) {
               // Delete line
               lines.splice(lineIdx, 1);
+              console.log('[KAG DEBUG] FLAGS.ENABLE_KAG:', FLAGS.ENABLE_KAG, 'pushing fix to candidates');
+              if (FLAGS.ENABLE_KAG) fileKagCandidates.push(fix);
+              stats.applied++;
+              if (FLAGS.VERBOSE) {
+                console.log(`✅ ${file}:${fix.line} - ${fix.patternId} (deleted)`);
+              }
             } else if (newLine !== originalLine) {
               // Replace line
               lines[lineIdx] = newLine;
-            }
-
-            stats.applied++;
-            if (FLAGS.VERBOSE) {
-              console.log(`✅ ${file}:${fix.line} - ${fix.patternId}`);
+              console.log('[KAG DEBUG] FLAGS.ENABLE_KAG:', FLAGS.ENABLE_KAG, 'pushing fix to candidates');
+              if (FLAGS.ENABLE_KAG) fileKagCandidates.push(fix);
+              stats.applied++;
+              if (FLAGS.VERBOSE) {
+                console.log(`✅ ${file}:${fix.line} - ${fix.patternId} (replaced)`);
+              }
+            } else {
+              // Line unchanged (already fixed or no-op)
+              stats.skipped++;
+              if (FLAGS.VERBOSE) {
+                console.log(`⏭️  ${file}:${fix.line} - ${fix.patternId} (unchanged)`);
+              }
             }
           } else {
             stats.skipped++;
@@ -771,19 +777,14 @@ function applyFixes(plan, runDir) {
 
         // PATCH SAFETY GATE: Validate before writing
         const patchedContent = lines.join('\n');
+        console.log('[KAG DEBUG] Before validatePatch, fileKagCandidates.length:', fileKagCandidates.length);
         try {
           validatePatch(patchedContent, file);
           writePatchedFile(absPath, patchedContent);
           stats.filesModified.add(file);
-
-          // Phase 72 RAG Integration: Store successful fixes for learning
-          fixes.forEach(fix => {
-            storeFixInRAG(fix, {
-              patternId: fix.patternId,
-              patch: patchedContent,
-              confidence: fix.confidence
-            }, true).catch(() => {}); // Silent fail
-          });
+          console.log('[KAG DEBUG] Pushing fileKagCandidates to stats:', fileKagCandidates.length);
+          stats.kagCandidates.push(...fileKagCandidates);
+          console.log('[KAG DEBUG] Total kagCandidates:', stats.kagCandidates.length);
         } catch (gateError) {
           console.error(`\n❌ PATCH REJECTED: ${file}`);
           console.error(`   ${gateError.message.split('\n')[0]}`);
@@ -791,6 +792,8 @@ function applyFixes(plan, runDir) {
           stats.errors++;
           // Restore from backup
           fs.copyFileSync(backupPath, absPath);
+          progress.tick(fileIdx, fileArray.length, `${path.basename(file)}`);
+          continue; // Skip KAG storage for rejected patches
         }
       } else {
         stats.applied += fixes.length;
@@ -824,10 +827,10 @@ function runVerification(command) {
     });
 
     console.log('✅ Verification PASSED');
-    return { success: true };
+    return { success: true, skipped: false };
   } catch (error) {
     console.error('❌ Verification FAILED');
-    return { success: false, error: error.message };
+    return { success: false, skipped: false, error: error.message };
   }
 }
 
@@ -1122,13 +1125,61 @@ async function main() {
       }
     }
 
+    // KAG persistence: only store outcomes after verification PASSES (never on plan/apply intent).
+    console.log('[KAG DEBUG] Checking KAG storage conditions...');
+    console.log('[KAG DEBUG] FLAGS.ENABLE_KAG:', FLAGS.ENABLE_KAG);
+    console.log('[KAG DEBUG] FLAGS.DRY_RUN:', FLAGS.DRY_RUN);
+    console.log('[KAG DEBUG] FLAGS.VERIFY:', FLAGS.VERIFY);
+    console.log('[KAG DEBUG] verificationResult:', verificationResult);
+    console.log('[KAG DEBUG] stats.kagCandidates.length:', stats.kagCandidates?.length || 0);
+
+    if (
+      FLAGS.ENABLE_KAG &&
+      !FLAGS.DRY_RUN &&
+      FLAGS.VERIFY &&
+      verificationResult.success &&
+      !verificationResult.skipped
+    ) {
+      console.log('[KAG DEBUG] All conditions met - storing fixes...');
+      const unique = new Map();
+      for (const fix of stats.kagCandidates || []) {
+        if (!fix?.message || !fix?.file || !fix?.patternId) continue;
+        const sig = kagFixStore.computeSignature({
+          message: fix.message,
+          file: fix.file,
+          code: fix.code,
+          tool: fix.tool || 'svelte-check',
+          position: typeof fix.position === 'number' ? fix.position : undefined
+        });
+        unique.set(`${sig.sig}:${fix.patternId}`, { sig, fix });
+      }
+
+      for (const { sig, fix } of unique.values()) {
+        await kagFixStore.storeFix(sig, {
+          patchId: fix.patternId,
+          patch: fix.patternId,
+          appliedAt: new Date().toISOString(),
+          verified: true,
+          tier: plan.tier
+        });
+      }
+    }
+
     updateLatestPointer(timestamp);
 
     console.log(`\n✅ Run complete: ${timestamp}`);
     console.log(`📄 Manifest: ${runDir}/manifest.json`);
     console.log(`💾 Backups: ${runDir}/backups/`);
 
-    // Phase 72 RAG Integration: Show learning stats
+    // Phase 72 learning stats (optional)
+    if (FLAGS.SHOW_LEARNING && FLAGS.ENABLE_KAG) {
+      const kagStats = await kagFixStore.getStats();
+      console.log(`\n🧠 KAG Learning:`);
+      console.log(`   Signatures: ${kagStats.totalSignatures}`);
+      console.log(`   Fixes:      ${kagStats.totalFixes}`);
+      console.log(`   Hit rate:   ${kagStats.hitRate.toFixed(1)}%`);
+    }
+
     if (ragServiceAvailable && verificationResult.success) {
       console.log(`\n🧠 RAG Learning: ${stats.applied} fixes stored for future reference`);
     }

@@ -5,14 +5,14 @@ import { solveTimelineContradictions } from './solver';
 import { describeTimelineContradictions } from './contradictions';
 
 export function analyzeTimeline(clusters: FactCluster[]) {
-  const extracted = extractTimelineFacts(clusters);
-  const normalized = normalizeTimelineFacts(extracted);
-  const contradictions = solveTimelineContradictions(normalized);
-  const descriptions = describeTimelineContradictions(contradictions);
+ const extracted = extractTimelineFacts(clusters);
+ const normalized = normalizeTimelineFacts(extracted);
+ const contradictions = solveTimelineContradictions(normalized);
+ const descriptions = describeTimelineContradictions(contradictions);
 
-  return {
-    timelineFacts: normalized,
-    timelineContradictions: contradictions,
-    timelineDescriptions: descriptions
-  };
+ return {
+ timelineFacts: normalized,
+ timelineContradictions: contradictions,
+ timelineDescriptions: descriptions,
+ };
 }

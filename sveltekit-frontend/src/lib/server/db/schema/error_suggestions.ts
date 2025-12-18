@@ -1,11 +1,4 @@
-import {
-    boolean,
-    index,
-    pgTable,
-    text,
-    timestamp,
-    uuid
-} from 'drizzle-orm/pg-core';
+import { boolean, index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 /**
  * Error Suggestions
@@ -13,43 +6,39 @@ import {
  * Tracks which suggestions have been applied
  */
 export const errorSuggestionsTable = pgTable(
-	'error_suggestions',
-	{
-		id: uuid('id').defaultRandom().primaryKey(),
+ 'error_suggestions',
+ {
+ id: uuid('id').defaultRandom().primaryKey(),
 
-		routePath: text('route_path').notNull(),
+ routePath: text('route_path').notNull(),
 
-		// Either tie to a specific event or just the cluster
-		errorEventId: uuid('error_event_id'),
-		clusterId: text('cluster_id'),
+ // Either tie to a specific event or just the cluster
+ errorEventId: uuid('error_event_id'),
+ clusterId: text('cluster_id'),
 
-		// LLM output / suggested fix
-		summary: text('summary').notNull(),
-		patch: text('patch'),          // unified diff or code block
-		riskLevel: text('risk_level'), // "low" | "medium" | "high"
+ // LLM output / suggested fix
+ summary: text('summary').notNull(),
+ patch: text('patch'), // unified diff or code block
+ riskLevel: text('risk_level'), // "low" | "medium" | "high"
 
-		// Lucia user who generated or approved it
-		createdByUserId: text('created_by_user_id'),
-		appliedByUserId: text('applied_by_user_id'),
+ // Lucia user who generated or approved it
+ createdByUserId: text('created_by_user_id'),
+ appliedByUserId: text('applied_by_user_id'),
 
-		// Track application
-		applied: boolean('applied').notNull().default(false),
-		appliedAt: timestamp('applied_at', { withTimezone: true }),
+ // Track application
+ applied: boolean('applied').notNull().default(false),
+ appliedAt: timestamp('applied_at', { withTimezone: true }),
 
-		createdAt: timestamp('created_at', { withTimezone: true })
-			.notNull()
-			.defaultNow(),
-		updatedAt: timestamp('updated_at', { withTimezone: true })
-			.notNull()
-			.defaultNow()
-	},
-	(table) => {
-		return {
-			routePathIdx: index('error_suggestions_route_path_idx').on(table.routePath),
-			appliedIdx: index('error_suggestions_applied_idx').on(table.applied),
-			createdAtIdx: index('error_suggestions_created_at_idx').on(table.createdAt)
-		};
-	}
+ createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+ updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+ },
+ (table) => {
+ return {
+ routePathIdx: index('error_suggestions_route_path_idx').on(table.routePath),
+ appliedIdx: index('error_suggestions_applied_idx').on(table.applied),
+ createdAtIdx: index('error_suggestions_created_at_idx').on(table.createdAt),
+ };
+ }
 );
 
 export type ErrorSuggestion = typeof errorSuggestionsTable.$inferSelect;

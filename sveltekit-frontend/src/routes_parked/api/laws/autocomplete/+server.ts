@@ -3,18 +3,18 @@ import type { RequestHandler } from './$types';
 import { getLegalAutocomplete } from '$lib/server/legal-autocomplete';
 
 export const GET: RequestHandler = async ({ url }) => {
-	const query = url.searchParams.get('q')?.trim() || '';
-	const limit = Math.min(parseInt(url.searchParams.get('limit') || '8'), 20);
+ const query = url.searchParams.get('q')?.trim() || '';
+ const limit = Math.min(parseInt(url.searchParams.get('limit') || '8'), 20);
 
-	if (!query || query.length < 1) {
-		return json({ suggestions: [] });
-	}
+ if (!query || query.length < 1) {
+ return json({ suggestions: [] });
+ }
 
-	try {
-		const suggestions = getLegalAutocomplete(query, limit);
-		return json({ suggestions });
-	} catch (error) {
-		console.error('Autocomplete error:', error);
-		return json({ suggestions: [], error: 'Failed to fetch suggestions' }, { status: 500 });
-	}
+ try {
+ const suggestions = getLegalAutocomplete(query, limit);
+ return json({ suggestions });
+ } catch (error) {
+ console.error('Autocomplete error:', error);
+ return json({ suggestions: [], error: 'Failed to fetch suggestions' }, { status: 500 });
+ }
 };

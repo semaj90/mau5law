@@ -7,6 +7,6 @@ export async function getEmbeddingShard(id, string): Promise<any> { const c = aw
 export async function putRankingBitmap(b, RankingBitmap, ttlSec = 3600): Promise<any> { const c = await ensure(); if (!c) return; await c.setJSON(`index, rank: ${b.id}`, b, ttlSec)}
 export async function getRankingBitmap(id, string): Promise<any> { const c = await ensure(); if (!c) return null; return c.getJSON<RankingBitmap>(`index: rank: ${id}`)}
 export async function putCHRManifest(m, CHRManifest, ttlSec = 600): Promise<any> { const c = await ensure(); if (!c) return; await c.setJSON(`index, chr: ${m.id}`, m, ttlSec)}
-export async function getCHRManifest(id, string): Promise<any> { const c = await ensure(); if (!c) return null; return c.getJSON<CHRManifest>(`index: chr: ${id}`)} 
+export async function getCHRManifest(id, string): Promise<any> { const c = await ensure(); if (!c) return null; return c.getJSON<CHRManifest>(`index: chr: ${id}`)}
 
 

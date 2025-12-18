@@ -9,22 +9,22 @@
  *
  * Response:
  * {
- *   success: boolean,
- *   filename: string,
- *   analysis: {
- *     fullText: string,
- *     blocks: DoclingBlock[],
- *     pageCount: number,
- *     processingTimeMs: number
- *   },
- *   keywords: {
- *     keywords: string[],
- *     keyPhrases: string[],
- *     entities: Entity[],
- *     topics: string[],
- *     confidence: number
- *   },
- *   error?: string
+ * success: boolean,
+ * filename: string,
+ * analysis: {
+ * fullText: string,
+ * blocks: DoclingBlock[],
+ * pageCount: number,
+ * processingTimeMs: number
+ * },
+ * keywords: {
+ * keywords: string[],
+ * keyPhrases: string[],
+ * entities: Entity[],
+ * topics: string[],
+ * confidence: number
+ * },
+ * error?: string
  * }
  */
 
@@ -33,65 +33,65 @@ import { analyzeDocumentWithDocling } from '$lib/server/docling';
 import { extractKeywords } from '$lib/server/keyword-extractor';
 
 export const POST: RequestHandler = async ({ request }) => {
-	try {
-		// Parse multipart form data
-		const formData = await request.formData();
-		const file = formData.get('file') as File;
+ try {
+ // Parse multipart form data
+ const formData = await request.formData();
+ const file = formData.get('file') as File;
 
-		if (!file) {
-			return json({ success: false, error: 'No file provided' }, { status: 400 });
-		}
+ if (!file) {
+ return json({ success: false, error: 'No file provided' }, { status: 400 });
+ }
 
-		console.log(`📄 Testing Docling with: ${file.name} (${file.type})`);
+ console.log(`📄 Testing Docling with: ${file.name} (${file.type})`);
 
-		// Convert file to buffer
-		const fileBuffer = Buffer.from(await file.arrayBuffer());
+ // Convert file to buffer
+ const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-		// Analyze with Docling
-		const analysis = await analyzeDocumentWithDocling({
-			fileBuffer,
-			mimeType: file.type
-		});
+ // Analyze with Docling
+ const analysis = await analyzeDocumentWithDocling({
+ fileBuffer,
+ mimeType: file.type,
+ });
 
-		console.log(`✅ Docling analysis complete: ${analysis.blocks.length} blocks`);
+ console.log(`✅ Docling analysis complete: ${analysis.blocks.length} blocks`);
 
-		// Extract keywords from the full text
-		let keywords = null;
-		try {
-			keywords = await extractKeywords(analysis.fullText, 'evidence');
-			console.log(`✅ Keywords extracted: ${keywords.keywords.length} keywords`);
-		} catch (err) {
-			console.warn('⚠️ Keyword extraction failed:', err);
-		}
+ // Extract keywords from the full text
+ let keywords = null;
+ try {
+ keywords = await extractKeywords(analysis.fullText, 'evidence');
+ console.log(`✅ Keywords extracted: ${keywords.keywords.length} keywords`);
+ } catch (err) {
+ console.warn('⚠️ Keyword extraction failed:', err);
+ }
 
-		return json({
-			success: true,
-			filename: file.name,
-			analysis: {
-				fullText: analysis.fullText.substring(0, 500) + '...', // Truncate for response
-				blockCount: analysis.blocks.length,
-				pageCount: analysis.pageCount,
-				processingTimeMs: analysis.processingTimeMs,
-				blocks: analysis.blocks.slice(0, 5) // Return first 5 blocks as sample
-			},
-			keywords: keywords
-				? {
-						keywords: keywords.keywords,
-						keyPhrases: keywords.keyPhrases,
-						entities: keywords.entities,
-						topics: keywords.topics,
-						confidence: keywords.confidence
-					}
-				: null
-		});
-	} catch (error) {
-		console.error('❌ Docling test failed:', error);
-		return json(
-			{
-				success: false,
-				error: error instanceof Error ? error.message : 'Unknown error'
-			},
-			{ status: 500 }
-		);
-	}
+ return json({
+ success: true,
+ filename: file.name,
+ analysis: {
+ fullText: analysis.fullText.substring(0, 500) + '...', // Truncate for response
+ blockCount: analysis.blocks.length,
+ pageCount: analysis.pageCount,
+ processingTimeMs: analysis.processingTimeMs,
+ blocks: analysis.blocks.slice(0, 5), // Return first 5 blocks as sample
+ },
+ keywords: keywords
+ ? {
+ keywords: keywords.keywords,
+ keyPhrases: keywords.keyPhrases,
+ entities: keywords.entities,
+ topics: keywords.topics,
+ confidence: keywords.confidence,
+ }
+ : null,
+ });
+ } catch (error) {
+ console.error('❌ Docling test failed:', error);
+ return json(
+ {
+ success: false,
+ error: error instanceof Error ? error.message : 'Unknown error',
+ },
+ { status: 500 }
+ );
+ }
 };

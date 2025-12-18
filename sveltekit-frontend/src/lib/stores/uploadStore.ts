@@ -7,21 +7,21 @@ import type { UploadState, ProcessingEvent } from '../services/types';
 
 // Initial state
 const initialState: UploadState = {
-  evidenceId: null,
-  jobId: null,
-  filename: null,
-  fileSize: null,
-  uploadProgress: 0,
-  processingStage: null,
-  processingPercentage: 0,
-  eta: null,
-  status: 'idle',
-  error: null,
-  metrics: {
-    cpu: 0,
-    memory: 0,
-    gpu: 0
-  }
+ evidenceId: null,
+ jobId: null,
+ filename: null,
+ fileSize: null,
+ uploadProgress: 0,
+ processingStage: null,
+ processingPercentage: 0,
+ eta: null,
+ status: 'idle',
+ error: null,
+ metrics: {
+ cpu: 0,
+ memory: 0,
+ gpu: 0,
+ },
 };
 
 // Create writable store
@@ -35,86 +35,86 @@ export const hasError = derived(uploadStore, ($state) => $state.status === 'fail
 
 // Store actions
 export const uploadActions = {
-  /**
-   * Start upload
-   */
-  startUpload(evidenceId: string, jobId: string, filename: string, fileSize: number) {
-    uploadStore.update((state) => ({
-      ...state,
-      evidenceId,
-      jobId,
-      filename,
-      fileSize,
-      status: 'uploading',
-      uploadProgress: 0,
-      error: null
-    }));
-  },
+ /**
+ * Start upload
+ */
+ startUpload(evidenceId: string, jobId: string, filename: string, fileSize: number) {
+ uploadStore.update((state) => ({
+ ...state,
+ evidenceId,
+ jobId,
+ filename,
+ fileSize,
+ status: 'uploading',
+ uploadProgress: 0,
+ error: null,
+ }));
+ },
 
-  /**
-   * Update upload progress
-   */
-  updateUploadProgress(progress: number) {
-    uploadStore.update((state) => ({
-      ...state,
-      uploadProgress: Math.min(100, progress)
-    }));
-  },
+ /**
+ * Update upload progress
+ */
+ updateUploadProgress(progress: number) {
+ uploadStore.update((state) => ({
+ ...state,
+ uploadProgress: Math.min(100, progress),
+ }));
+ },
 
-  /**
-   * Start processing
-   */
-  startProcessing(jobId: string) {
-    uploadStore.update((state) => ({
-      ...state,
-      jobId,
-      status: 'processing',
-      processingPercentage: 0,
-      processingStage: 'classification',
-      error: null
-    }));
-  },
+ /**
+ * Start processing
+ */
+ startProcessing(jobId: string) {
+ uploadStore.update((state) => ({
+ ...state,
+ jobId,
+ status: 'processing',
+ processingPercentage: 0,
+ processingStage: 'classification',
+ error: null,
+ }));
+ },
 
-  /**
-   * Update processing event
-   */
-  updateProcessingEvent(event: ProcessingEvent) {
-    uploadStore.update((state) => ({
-      ...state,
-      processingStage: event.stage,
-      processingPercentage: event.percentage,
-      eta: event.eta_seconds,
-      metrics: event.metrics || state.metrics
-    }));
-  },
+ /**
+ * Update processing event
+ */
+ updateProcessingEvent(event: ProcessingEvent) {
+ uploadStore.update((state) => ({
+ ...state,
+ processingStage: event.stage,
+ processingPercentage: event.percentage,
+ eta: event.eta_seconds,
+ metrics: event.metrics || state.metrics,
+ }));
+ },
 
-  /**
-   * Complete processing
-   */
-  completeProcessing() {
-    uploadStore.update((state) => ({
-      ...state,
-      status: 'completed',
-      processingPercentage: 100,
-      eta: null
-    }));
-  },
+ /**
+ * Complete processing
+ */
+ completeProcessing() {
+ uploadStore.update((state) => ({
+ ...state,
+ status: 'completed',
+ processingPercentage: 100,
+ eta: null,
+ }));
+ },
 
-  /**
-   * Handle error
-   */
-  setError(error: string) {
-    uploadStore.update((state) => ({
-      ...state,
-      status: 'failed',
-      error
-    }));
-  },
+ /**
+ * Handle error
+ */
+ setError(error: string) {
+ uploadStore.update((state) => ({
+ ...state,
+ status: 'failed',
+ error,
+ }));
+ },
 
-  /**
-   * Reset state
-   */
-  reset() {
-    uploadStore.set(initialState);
-  }
+ /**
+ * Reset state
+ */
+ reset() {
+ uploadStore.set(initialState);
+ },
 };

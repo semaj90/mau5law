@@ -7,148 +7,148 @@ import { writable, derived } from 'svelte/store';
 import type { LegalIntent } from '$lib/ai/intents';
 
 export interface AIMessage {
-  id: string;
-  intent: LegalIntent;
-  query: string;
-  response: string;
-  isStreaming: boolean;
-  error?: string;
-  createdAt: Date;
-  executionTimeMs?: number;
+ id: string;
+ intent: LegalIntent;
+ query: string;
+ response: string;
+ isStreaming: boolean;
+ error?: string;
+ createdAt: Date;
+ executionTimeMs?: number;
 }
 
 export interface AIState {
-  messages: AIMessage[];
-  currentMessage: AIMessage | null;
-  isLoading: boolean;
-  error: string | null;
+ messages: AIMessage[];
+ currentMessage: AIMessage | null;
+ isLoading: boolean;
+ error: string | null;
 }
 
 /**
  * Create AI store
  */
 function createAIStore() {
-  const initialState: AIState = {
-    messages: [],
-    currentMessage: null,
-    isLoading: false,
-    error: null,
-  };
+ const initialState: AIState = {
+ messages: [],
+ currentMessage: null,
+ isLoading: false,
+ error: null,
+ };
 
-  const { subscribe, set, update } = writable<AIState>(initialState);
+ const { subscribe, set, update } = writable<AIState>(initialState);
 
-  return {
-    subscribe,
+ return {
+ subscribe,
 
-    /**
-     * Start a new AI interaction
-     */
-    startMessage(intent: LegalIntent, query: string) {
-      const message: AIMessage = {
-        id: `msg-${Date.now()}`,
-        intent,
-        query,
-        response: '',
-        isStreaming: true,
-        createdAt: new Date(),
-      };
+ /**
+ * Start a new AI interaction
+ */
+ startMessage(intent: LegalIntent, query: string) {
+ const message: AIMessage = {
+ id: `msg-${Date.now()}`,
+ intent,
+ query,
+ response: '',
+ isStreaming: true,
+ createdAt: new Date(),
+ };
 
-      update((state) => ({
-        ...state,
-        currentMessage: message,
-        isLoading: true,
-        error: null,
-      }));
+ update((state) => ({
+ ...state,
+ currentMessage: message,
+ isLoading: true,
+ error: null,
+ }));
 
-      return message.id;
-    },
+ return message.id;
+ },
 
-    /**
-     * Append chunk to current message
-     */
-    appendChunk(chunk: string) {
-      update((state) => {
-        if (!state.currentMessage) return state;
+ /**
+ * Append chunk to current message
+ */
+ appendChunk(chunk: string) {
+ update((state) => {
+ if (!state.currentMessage) return state;
 
-        return {
-          ...state,
-          currentMessage: {
-            ...state.currentMessage,
-            response: state.currentMessage.response + chunk,
-          },
-        };
-      });
-    },
+ return {
+ ...state,
+ currentMessage: {
+ ...state.currentMessage,
+ response: state.currentMessage.response + chunk,
+ },
+ };
+ });
+ },
 
-    /**
-     * Complete current message
-     */
-    completeMessage(executionTimeMs: number) {
-      update((state) => {
-        if (!state.currentMessage) return state;
+ /**
+ * Complete current message
+ */
+ completeMessage(executionTimeMs: number) {
+ update((state) => {
+ if (!state.currentMessage) return state;
 
-        const completed = {
-          ...state.currentMessage,
-          isStreaming: false,
-          executionTimeMs,
-        };
+ const completed = {
+ ...state.currentMessage,
+ isStreaming: false,
+ executionTimeMs,
+ };
 
-        return {
-          ...state,
-          messages: [...state.messages, completed],
-          currentMessage: null,
-          isLoading: false,
-        };
-      });
-    },
+ return {
+ ...state,
+ messages: [...state.messages, completed],
+ currentMessage: null,
+ isLoading: false,
+ };
+ });
+ },
 
-    /**
-     * Set error
-     */
-    setError(error: string) {
-      update((state) => ({
-        ...state,
-        error,
-        isLoading: false,
-        currentMessage: state.currentMessage
-          ? {
-              ...state.currentMessage,
-              isStreaming: false,
-              error,
-            }
-          : null,
-      }));
-    },
+ /**
+ * Set error
+ */
+ setError(error: string) {
+ update((state) => ({
+ ...state,
+ error,
+ isLoading: false,
+ currentMessage: state.currentMessage
+ ? {
+ ...state.currentMessage,
+ isStreaming: false,
+ error,
+ }
+ : null,
+ }));
+ },
 
-    /**
-     * Clear messages
-     */
-    clearMessages() {
-      update((state) => ({
-        ...state,
-        messages: [],
-        currentMessage: null,
-        error: null,
-      }));
-    },
+ /**
+ * Clear messages
+ */
+ clearMessages() {
+ update((state) => ({
+ ...state,
+ messages: [],
+ currentMessage: null,
+ error: null,
+ }));
+ },
 
-    /**
-     * Remove message by ID
-     */
-    removeMessage(id: string) {
-      update((state) => ({
-        ...state,
-        messages: state.messages.filter((m) => m.id !== id),
-      }));
-    },
+ /**
+ * Remove message by ID
+ */
+ removeMessage(id: string) {
+ update((state) => ({
+ ...state,
+ messages: state.messages.filter((m) => m.id !== id),
+ }));
+ },
 
-    /**
-     * Reset store
-     */
-    reset() {
-      set(initialState);
-    },
-  };
+ /**
+ * Reset store
+ */
+ reset() {
+ set(initialState);
+ },
+ };
 }
 
 export const aiStore = createAIStore();
@@ -161,7 +161,10 @@ export const messageCount = derived(aiStore, ($state) => $state.messages.length)
 /**
  * Derived store for last message
  */
-export const lastMessage = derived(aiStore, ($state) => $state.messages[$state.messages.length - 1] || null);
+export const lastMessage = derived(
+ aiStore,
+ ($state) => $state.messages[$state.messages.length - 1] || null
+);
 
 /**
  * Derived store for is loading

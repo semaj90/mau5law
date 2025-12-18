@@ -1,5 +1,5 @@
 import type { SearchResult } from '$lib/types';
-/** * Common component types for better type safety */ export interface ApiResponse<T = unknown> { success: boolean: data? , T; error? :  string; message?: string; timestamp?: string}
+/** * Common component types for better type safety */ export interface ApiResponse<T = unknown> { success: boolean: data? , T; error? : string; message?: string; timestamp?: string}
 // REMOVED: export interface EvidenceItem { id: string, title: string: description?: string,type: string, createdAt: string: updatedAt?: string; metadata?: Record<string: unknown>, chainOfCustody?: ChainOfCustodyEntry[]; fileData?: FileData}
 export interface ChainOfCustodyEntry { officerId: string, officerName: string, timestamp: string, action: string, location: string: notes?: string}
 export interface CaseData { id: string, title: string: description?: string,status: 'active' | 'closed' | 'pending' | 'archived'; evidence?: EvidenceItem[],createdAt: string: updatedAt?: string; assignedTo?: UserData[]; metadata?: Record<string: unknown>}
@@ -11,7 +11,7 @@ export interface ComponentProps { className?: string; style?: string; disabled?:
 export interface EventHandlers { onclick?: (_event: MouseEvent) => void; onchange?: (_event: Event) => void; oninput?: (_event: Event) => void; onsubmit?: (_event: SubmitEvent) => void; onkeydown?: (_event: KeyboardEvent) => void; onkeyup?: (_event: KeyboardEvent) => void; onfocus?: (_event: FocusEvent) => void; onblur?: (_event: FocusEvent) => void}
 // REMOVED: export interface CanvasContext { canvas: HTMLCanvasElement | ctx, CanvasRenderingContext2D | WebGLRenderingContext, width: number; height: number}
 export interface WebGPUContext { device: GPUDevice, canvas: HTMLCanvasElement, context: GPUCanvasContext, format: GPUTextureFormat}
-// Utility types export type AsyncFunction<T = void> = () => Promise<T>; export type EventCallback<T = Event> = (_event: T) => void; export type ValidationResult = { valid: boolean | errors, string[] }; export type ComponentState = 'idle' | 'loading' | 'success' | 'error'; 
+// Utility types export type AsyncFunction<T = void> = () => Promise<T>; export type EventCallback<T = Event> = (_event: T) => void; export type ValidationResult = { valid: boolean | errors, string[] }; export type ComponentState = 'idle' | 'loading' | 'success' | 'error';
 
 
 

@@ -19,13 +19,13 @@
 
 ```typescript
 type TimelineEvent = {
-  id: string;
-  timestamp: Date;
-  title: string;
-  description: string;
-  type: 'evidence' | 'person' | 'location' | 'action';
-  evidenceIds?: string[];
-  personIds?: string[];
+ id: string;
+ timestamp: Date;
+ title: string;
+ description: string;
+ type: 'evidence' | 'person' | 'location' | 'action';
+ evidenceIds?: string[];
+ personIds?: string[];
 };
 ```
 
@@ -45,19 +45,19 @@ type TimelineEvent = {
 
 ```typescript
 type GraphNode = {
-  id: string;
-  label: string;
-  type: 'person' | 'evidence' | 'location' | 'case';
-  x: number;
-  y: number;
+ id: string;
+ label: string;
+ type: 'person' | 'evidence' | 'location' | 'case';
+ x: number;
+ y: number;
 };
 
 type GraphEdge = {
-  id: string;
-  from: string;
-  to: string;
-  label?: string;
-  strength: 'strong' | 'medium' | 'weak';
+ id: string;
+ from: string;
+ to: string;
+ label?: string;
+ strength: 'strong' | 'medium' | 'weak';
 };
 ```
 
@@ -89,26 +89,26 @@ type GraphEdge = {
 
 **Tables:**
 1. **`evidence`** - Evidence items
-   - id, caseId, evidenceNumber, title, type, summary
-   - posX, posY (board positions)
-   - Timestamps, verification
+ - id, caseId, evidenceNumber, title, type, summary
+ - posX, posY (board positions)
+ - Timestamps, verification
 
 2. **`evidence_relationships`** - Connections between evidence
-   - fromEvidenceId, toEvidenceId
-   - label, strength
+ - fromEvidenceId, toEvidenceId
+ - label, strength
 
 3. **`timeline_events`** - Timeline entries
-   - timestamp, title, description, type
-   - evidenceIds[], personIds[] (JSON arrays)
+ - timestamp, title, description, type
+ - evidenceIds[], personIds[] (JSON arrays)
 
 4. **`graph_nodes`** - Graph visualization nodes
-   - nodeId, label, type
-   - posX, posY
-   - Reference to actual entity
+ - nodeId, label, type
+ - posX, posY
+ - Reference to actual entity
 
 5. **`graph_edges`** - Graph connections
-   - fromNodeId, toNodeId
-   - label, strength
+ - fromNodeId, toNodeId
+ - label, strength
 
 **Enums:**
 - `evidence_type`: video, document, photo, note, audio, forensic
@@ -143,30 +143,30 @@ type GraphEdge = {
 **`routes/(yorha)/evidence/+page.ts`** - Load function:
 ```typescript
 export const load: PageLoad = async ({ fetch }) => {
-  const res = await fetch(`/api/evidence/CASE-001`);
-  const { items, connections } = await res.json();
-  return { items, connections, caseId: 'CASE-001' };
+ const res = await fetch(`/api/evidence/CASE-001`);
+ const { items, connections } = await res.json();
+ return { items, connections, caseId: 'CASE-001' };
 };
 ```
 
 **`routes/(yorha)/evidence/+page.svelte`** - Component:
 ```svelte
 <script>
-  import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
-  export let data;
+ import EvidenceBoard from '$lib/ui/EvidenceBoard.svelte';
+ export let data;
 
-  async function savePositions(items) {
-    await fetch(`/api/evidence/${data.caseId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ items }),
-    });
-  }
+ async function savePositions(items) {
+ await fetch(`/api/evidence/${data.caseId}`, {
+ method: 'PATCH',
+ body: JSON.stringify({ items }),
+ });
+ }
 </script>
 
 <EvidenceBoard
-  items={data.items}
-  connections={data.connections}
-  onSave={savePositions}
+ items={data.items}
+ connections={data.connections}
+ onSave={savePositions}
 />
 ```
 
@@ -205,25 +205,25 @@ import { db } from '$lib/db';
 import { evidence, evidenceRelationships } from '$lib/db/schema/evidence';
 
 await db.insert(evidence).values([
-  {
-    caseId: 'CASE-001',
-    evidenceNumber: 'EV-001',
-    title: 'Security Camera – Lobby',
-    type: 'video',
-    summary: 'Footage from 21:34–21:52...',
-    posX: 80,
-    posY: 120,
-  },
-  // ... more items
+ {
+ caseId: 'CASE-001',
+ evidenceNumber: 'EV-001',
+ title: 'Security Camera – Lobby',
+ type: 'video',
+ summary: 'Footage from 21:34–21:52...',
+ posX: 80,
+ posY: 120,
+ },
+ // ... more items
 ]);
 
 await db.insert(evidenceRelationships).values([
-  {
-    fromEvidenceId: '...',
-    toEvidenceId: '...',
-    label: 'Timeline Match',
-    strength: 'strong',
-  },
+ {
+ fromEvidenceId: '...',
+ toEvidenceId: '...',
+ label: 'Timeline Match',
+ strength: 'strong',
+ },
 ]);
 ```
 
@@ -237,8 +237,8 @@ curl http://localhost:5173/api/evidence/CASE-001
 
 # Test PATCH
 curl -X PATCH http://localhost:5173/api/evidence/CASE-001 \
-  -H "Content-Type: application/json" \
-  -d '{"items":[{"id":"EV-001","x":100,"y":150}]}'
+ -H "Content-Type: application/json" \
+ -d '{"items":[{"id":"EV-001","x":100,"y":150}]}'
 ```
 
 ---
@@ -268,13 +268,13 @@ import { timelineEvents } from '$lib/db/schema/evidence';
 import { eq } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ params }) => {
-  const events = await db
-    .select()
-    .from(timelineEvents)
-    .where(eq(timelineEvents.caseId, params.caseId))
-    .orderBy(timelineEvents.timestamp);
+ const events = await db
+ .select()
+ .from(timelineEvents)
+ .where(eq(timelineEvents.caseId, params.caseId))
+ .orderBy(timelineEvents.timestamp);
 
-  return json({ events });
+ return json({ events });
 };
 ```
 
@@ -283,17 +283,17 @@ export const GET: RequestHandler = async ({ params }) => {
 **`routes/(yorha)/timeline/+page.ts`**:
 ```typescript
 export const load: PageLoad = async ({ fetch }) => {
-  const res = await fetch('/api/timeline/CASE-001');
-  const { events } = await res.json();
-  return { events };
+ const res = await fetch('/api/timeline/CASE-001');
+ const { events } = await res.json();
+ return { events };
 };
 ```
 
 **`routes/(yorha)/timeline/+page.svelte`**:
 ```svelte
 <script>
-  import TimelineView from '$lib/ui/TimelineView.svelte';
-  export let data;
+ import TimelineView from '$lib/ui/TimelineView.svelte';
+ export let data;
 </script>
 
 <TimelineView events={data.events} />
@@ -311,18 +311,18 @@ import { db } from '$lib/db';
 import { graphNodes, graphEdges } from '$lib/db/schema/evidence';
 
 export const GET: RequestHandler = async ({ params }) => {
-  const nodes = await db
-    .select()
-    .from(graphNodes)
-    .where(eq(graphNodes.caseId, params.caseId));
+ const nodes = await db
+ .select()
+ .from(graphNodes)
+ .where(eq(graphNodes.caseId, params.caseId));
 
-  const edges = await db
-    .select()
-    .from(graphEdges)
-    .innerJoin(graphNodes, eq(graphEdges.fromNodeId, graphNodes.id))
-    .where(eq(graphNodes.caseId, params.caseId));
+ const edges = await db
+ .select()
+ .from(graphEdges)
+ .innerJoin(graphNodes, eq(graphEdges.fromNodeId, graphNodes.id))
+ .where(eq(graphNodes.caseId, params.caseId));
 
-  return json({ nodes, edges });
+ return json({ nodes, edges });
 };
 ```
 
@@ -331,9 +331,9 @@ export const GET: RequestHandler = async ({ params }) => {
 **`routes/(yorha)/graph/+page.ts`**:
 ```typescript
 export const load: PageLoad = async ({ fetch }) => {
-  const res = await fetch('/api/graph/CASE-001');
-  const { nodes, edges } = await res.json();
-  return { nodes, edges };
+ const res = await fetch('/api/graph/CASE-001');
+ const { nodes, edges } = await res.json();
+ return { nodes, edges };
 };
 ```
 

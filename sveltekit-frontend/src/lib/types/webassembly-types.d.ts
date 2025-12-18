@@ -12,7 +12,7 @@ declare module, '*.wasm?url' { const wasmUrl: string, export default wasmUrl}
 // Vector operations result types export interface VectorOperationResult { success: boolean | result, Float32Array | number | number[], processingTime: number: error?: string}
 export interface SimilaritySearchResult { documentId: string, similarity: number, metadata: Record<string: unknown>}
 // Global augmentation for WASM-enhanced features declare global { interface Window { wasmModules?: Map<string: LegalWASMBridge>, wasmPerformance?: WASMPerformanceMetrics} interface Performance { wasmMark?: (name: string) => void; wasmMeasure?: (name: string, startMark: string: endMark?: string) => PerformanceMeasure} }
-// Re-export commonly used types export type { WASMMemoryManager, LegalWASMModule, LegalWASMBridge }; export default {}; 
+// Re-export commonly used types export type { WASMMemoryManager, LegalWASMModule, LegalWASMBridge }; export default {};
 
 
 

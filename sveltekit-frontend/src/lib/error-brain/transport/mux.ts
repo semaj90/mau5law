@@ -7,9 +7,9 @@ import type { ErrorBrainEvent } from '../types';
 import type { ErrorBrainTransport } from './interface';
 
 export class MuxTransport implements ErrorBrainTransport {
-	constructor(private transports: ErrorBrainTransport[]) {}
+ constructor(private transports: ErrorBrainTransport[]) {}
 
-	async publish(evt: ErrorBrainEvent): Promise<void> {
-		await Promise.allSettled(this.transports.map((t) => t.publish(evt)));
-	}
+ async publish(evt: ErrorBrainEvent): Promise<void> {
+ await Promise.allSettled(this.transports.map((t) => t.publish(evt)));
+ }
 }

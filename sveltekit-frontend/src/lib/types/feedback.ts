@@ -10,7 +10,7 @@ export interface FeedbackInsight { id: string; insightType: string; title: strin
 // Component Props export interface FeedbackWidgetProps { interactionId: string; sessionId: string; userId: string; context?: { [key: string]: any }; show: boolean; ratingType?: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance'; onSubmitted?: (data: { rating: number; feedback?: string; interactionId: string }) => void; onError?: (error: Error | unknown) => void; onClosed?: () => void}
 // API Response Types export interface FeedbackAPIResponse { success: boolean; message: string; data?: unknown}
 export interface FeedbackBatchResponse extends FeedbackAPIResponse { data: { processed: number; failed: number; insights: FeedbackInsight[]} }export interface RecommendationsResponse extends FeedbackAPIResponse { data: { recommendations: FeedbackRecommendation[]; metrics: FeedbackMetrics; insights: string[]} }export interface AnalyticsResponse extends FeedbackAPIResponse { data: { overview: { totalRatings: number; averageRating: number; completionRate: number; trendDirection: 'up' | 'down' | 'stable'}; breakdown: { ratingType: string; count: number; avgRating: number; improvement: number}[]; insights: FeedbackInsight[]; recommendations: FeedbackRecommendation[]} }// Events export interface FeedbackSubmittedEvent { interactionId: string; rating: number; feedback?: string; ratingType: string; timestamp: Date}
-export interface FeedbackErrorEvent { error: Error; context: unknown; timestamp: Date} 
+export interface FeedbackErrorEvent { error: Error; context: unknown; timestamp: Date}
 
 
 

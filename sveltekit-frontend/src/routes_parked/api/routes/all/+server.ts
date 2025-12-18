@@ -6,25 +6,25 @@ import type { RequestHandler } from './$types';
 import { collectRoutes } from '$lib/server/routesIndex';
 
 export const GET: RequestHandler = async () => {
-  const routes = collectRoutes();
+ const routes = collectRoutes();
 
-  // Add summary stats
-  const stats = {
-    total: routes.length,
-    pages: routes.filter(r => r.kind === 'page').length,
-    endpoints: routes.filter(r => r.kind === 'endpoint').length,
-    layouts: routes.filter(r => r.kind === 'layout').length,
-    byTag: {} as Record<string, number>
-  };
+ // Add summary stats
+ const stats = {
+ total: routes.length,
+ pages: routes.filter((r) => r.kind === 'page').length,
+ endpoints: routes.filter((r) => r.kind === 'endpoint').length,
+ layouts: routes.filter((r) => r.kind === 'layout').length,
+ byTag: {} as Record<string, number>,
+ };
 
-  // Count by tag
-  for (const route of routes) {
-    for (const tag of route.tags) {
-      stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
-    }
-  }
+ // Count by tag
+ for (const route of routes) {
+ for (const tag of route.tags) {
+ stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
+ }
+ }
 
-  return new Response(JSON.stringify({ routes, stats }), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+ return new Response(JSON.stringify({ routes, stats }), {
+ headers: { 'Content-Type': 'application/json' },
+ });
 };

@@ -45,12 +45,12 @@ Extends `ThinkingProcessor` with:
 
 **Scoring Formula:**
 ```typescript
-final_score = 
-  semantic_similarity * 0.35 +
-  temporal_score * 0.20 +
-  context_relevance * 0.25 +
-  user_preference * 0.20 +
-  usage_popularity * 0.05
+final_score =
+ semantic_similarity * 0.35 +
+ temporal_score * 0.20 +
+ context_relevance * 0.25 +
+ user_preference * 0.20 +
+ usage_popularity * 0.05
 ```
 
 ### 4. API Integration (`enhanced-grpo/+server.ts`)
@@ -68,15 +68,15 @@ final_score =
 import { ThinkingProcessor } from '$lib/ai/thinking-processor';
 
 const analysis = await ThinkingProcessor.analyzeDocument(
-  "What are the key elements of a valid contract?",
-  {
-    useGRPO: true,
-    enableRecommendations: true,
-    userId: "user-123",
-    userRole: "lawyer",
-    documentType: "legal_document",
-    analysisType: "reasoning"
-  }
+ "What are the key elements of a valid contract?",
+ {
+ useGRPO: true,
+ enableRecommendations: true,
+ userId: "user-123",
+ userRole: "lawyer",
+ documentType: "legal_document",
+ analysisType: "reasoning"
+ }
 );
 
 // Enhanced response includes:
@@ -91,19 +91,19 @@ console.log(analysis.metadata.temporal_score); // Recency factor
 import { LegalRecommendationEngine } from '$lib/services/recommendation-engine';
 
 const recommendations = await LegalRecommendationEngine.getRecommendations({
-  query: "Contract formation requirements",
-  userId: "user-123",
-  legalDomain: "contract",
-  jurisdiction: "federal",
-  userRole: "lawyer",
-  maxResults: 10,
-  algorithmPreference: "hybrid"
+ query: "Contract formation requirements",
+ userId: "user-123",
+ legalDomain: "contract",
+ jurisdiction: "federal",
+ userRole: "lawyer",
+ maxResults: 10,
+ algorithmPreference: "hybrid"
 });
 
 recommendations.forEach(rec => {
-  console.log(`Score: ${rec.score}, Confidence: ${rec.confidence}`);
-  console.log(`Reasoning: ${rec.reasoning.explanation}`);
-  console.log(`Factors: ${rec.reasoning.factors.map(f => f.name).join(', ')}`);
+ console.log(`Score: ${rec.score}, Confidence: ${rec.confidence}`);
+ console.log(`Reasoning: ${rec.reasoning.explanation}`);
+ console.log(`Factors: ${rec.reasoning.factors.map(f => f.name).join(', ')}`);
 });
 ```
 
@@ -113,14 +113,14 @@ recommendations.forEach(rec => {
 import { EnhancedGRPOProcessor } from '$lib/ai/enhanced-grpo-processor';
 
 await EnhancedGRPOProcessor.recordFeedback(responseId, {
-  userRating: 4, // 1-5 scale
-  accuracy: 5,
-  clarity: 4,
-  completeness: 4,
-  relevance: 5,
-  feedbackText: "Very helpful analysis with good case law citations",
-  userId: "user-123",
-  userRole: "lawyer"
+ userRating: 4, // 1-5 scale
+ accuracy: 5,
+ clarity: 4,
+ completeness: 4,
+ relevance: 5,
+ feedbackText: "Very helpful analysis with good case law citations",
+ userId: "user-123",
+ userRole: "lawyer"
 });
 ```
 
@@ -130,62 +130,62 @@ await EnhancedGRPOProcessor.recordFeedback(responseId, {
 
 ```bash
 curl -X POST http://localhost:5177/api/ai/enhanced-grpo \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "What are the essential elements of contract formation?",
-    "userId": "user-123",
-    "userRole": "lawyer",
-    "documentType": "legal_document",
-    "analysisType": "reasoning",
-    "enableRecommendations": true,
-    "enableFeedback": true,
-    "maxRecommendations": 5
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "query": "What are the essential elements of contract formation?",
+ "userId": "user-123",
+ "userRole": "lawyer",
+ "documentType": "legal_document",
+ "analysisType": "reasoning",
+ "enableRecommendations": true,
+ "enableFeedback": true,
+ "maxRecommendations": 5
+ }'
 ```
 
 **Response Structure:**
 ```json
 {
-  "success": true,
-  "analysis": {
-    "thinking": "<|thinking|>...detailed legal reasoning...",
-    "response": "Contract formation requires four essential elements...",
-    "confidence": 0.92,
-    "structured_reasoning": {
-      "premises": ["Contract law requires mutual assent", "..."],
-      "inferences": ["Therefore, offer and acceptance are crucial", "..."],
-      "conclusions": ["The four elements are: offer, acceptance, consideration, capacity"],
-      "legal_principles": ["Restatement (Second) of Contracts § 17", "..."],
-      "counter_arguments": ["Some jurisdictions recognize additional requirements", "..."],
-      "confidence_factors": ["Well-established legal doctrine", "..."]
-    },
-    "recommendations": [
-      {
-        "id": "rec-456",
-        "score": 0.89,
-        "confidence": 0.85,
-        "snippet": "Offer and acceptance in contract law require...",
-        "metadata": {
-          "similarity": 0.91,
-          "temporal_factor": 0.78,
-          "context_relevance": 0.95,
-          "legal_domain": "contract",
-          "created_at": "2024-01-15T10:30:00Z"
-        }
-      }
-    ],
-    "trending_topics": [
-      {"topic": "contract", "count": 45, "avgRating": 4.2},
-      {"topic": "tort", "count": 23, "avgRating": 4.1}
-    ]
-  },
-  "metadata": {
-    "processing_time": 1250,
-    "grpo_id": "grpo-789",
-    "algorithm": "enhanced-grpo",
-    "recommendation_count": 5,
-    "capabilities": ["structured_reasoning", "temporal_scoring", "vector_recommendations"]
-  }
+ "success": true,
+ "analysis": {
+ "thinking": "<|thinking|>...detailed legal reasoning...",
+ "response": "Contract formation requires four essential elements...",
+ "confidence": 0.92,
+ "structured_reasoning": {
+ "premises": ["Contract law requires mutual assent", "..."],
+ "inferences": ["Therefore, offer and acceptance are crucial", "..."],
+ "conclusions": ["The four elements are: offer, acceptance, consideration, capacity"],
+ "legal_principles": ["Restatement (Second) of Contracts § 17", "..."],
+ "counter_arguments": ["Some jurisdictions recognize additional requirements", "..."],
+ "confidence_factors": ["Well-established legal doctrine", "..."]
+ },
+ "recommendations": [
+ {
+ "id": "rec-456",
+ "score": 0.89,
+ "confidence": 0.85,
+ "snippet": "Offer and acceptance in contract law require...",
+ "metadata": {
+ "similarity": 0.91,
+ "temporal_factor": 0.78,
+ "context_relevance": 0.95,
+ "legal_domain": "contract",
+ "created_at": "2024-01-15T10:30:00Z"
+ }
+ }
+ ],
+ "trending_topics": [
+ {"topic": "contract", "count": 45, "avgRating": 4.2},
+ {"topic": "tort", "count": 23, "avgRating": 4.1}
+ ]
+ },
+ "metadata": {
+ "processing_time": 1250,
+ "grpo_id": "grpo-789",
+ "algorithm": "enhanced-grpo",
+ "recommendation_count": 5,
+ "capabilities": ["structured_reasoning", "temporal_scoring", "vector_recommendations"]
+ }
 }
 ```
 
@@ -199,18 +199,18 @@ curl "http://localhost:5177/api/ai/enhanced-grpo?operation=personalized&userId=u
 
 ```bash
 curl -X PATCH http://localhost:5177/api/ai/enhanced-grpo \
-  -H "Content-Type: application/json" \
-  -d '{
-    "responseId": "grpo-789",
-    "userRating": 5,
-    "accuracy": 5,
-    "clarity": 4,
-    "completeness": 5,
-    "relevance": 5,
-    "userId": "user-123",
-    "userRole": "lawyer",
-    "feedbackText": "Excellent analysis with comprehensive reasoning"
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "responseId": "grpo-789",
+ "userRating": 5,
+ "accuracy": 5,
+ "clarity": 4,
+ "completeness": 5,
+ "relevance": 5,
+ "userId": "user-123",
+ "userRole": "lawyer",
+ "feedbackText": "Excellent analysis with comprehensive reasoning"
+ }'
 ```
 
 ## Integration with Existing Components
@@ -222,22 +222,22 @@ Your existing `EnhancedLegalAIChatWithSynthesis.svelte` can be enhanced:
 ```typescript
 // Enable GRPO in existing chat
 const enhancedAnalysis = await ThinkingProcessor.analyzeDocument(userQuery, {
-  useGRPO: true,
-  enableRecommendations: true,
-  userId: currentUserId,
-  userRole: currentUserRole,
-  caseId: currentCaseId
+ useGRPO: true,
+ enableRecommendations: true,
+ userId: currentUserId,
+ userRole: currentUserRole,
+ caseId: currentCaseId
 });
 
 // Display structured reasoning
 if (enhancedAnalysis.metadata.structured_reasoning) {
-  const reasoning = enhancedAnalysis.metadata.structured_reasoning;
-  // Show premises, inferences, conclusions in UI
+ const reasoning = enhancedAnalysis.metadata.structured_reasoning;
+ // Show premises, inferences, conclusions in UI
 }
 
 // Display recommendations
 if (enhancedAnalysis.metadata.recommendations_count > 0) {
-  // Show recommendation cards with scores and explanations
+ // Show recommendation cards with scores and explanations
 }
 ```
 
@@ -257,7 +257,7 @@ await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
 ## Performance Considerations
 
 1. **Vector Indexing**: Use HNSW indexes for pgvector columns
-2. **Caching**: Similarity calculations are cached in `similarity_cache` table  
+2. **Caching**: Similarity calculations are cached in `similarity_cache` table
 3. **Batch Processing**: Recommendation scores can be pre-computed for popular queries
 4. **Temporal Optimization**: Recent content (< 24 hours) gets boosted scoring
 

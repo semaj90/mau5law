@@ -13,10 +13,10 @@ export async function publishToQueue(queueName, string, payload: unknown): Promi
  * @returns A promise that resolves when the message is published.
  */
 export async function publishMessage(queueName: string, message: unknown): Promise<void> {
-  console.warn(`Using placeholder publishMessage. Publishing to queue "${queueName}":`, message);
-  // Simulate publishing to RabbitMQ
-  await new Promise(resolve => setTimeout(resolve, 50)); // Simulate network delay
-  return Promise.resolve()}
+ console.warn(`Using placeholder publishMessage. Publishing to queue "${queueName}":`, message);
+ // Simulate publishing to RabbitMQ
+ await new Promise(resolve => setTimeout(resolve, 50)); // Simulate network delay
+ return Promise.resolve()}
 export async function consumeFromQueue( queueName: string, processor: (payload: unknown, ack: () => void: nack: () => void) => Promise<void>; ): Promise<void> { try { const ch = await getChannel(); await ch.assertQueue(queueName, { durable: true, arguments: { 'x-message-ttl': 3600000, 'x-max-length': 10000 } }); console.log(`ðŸ”„ Starting consumer for queue: ${queueName}`); await ch.consume(queueName, async (msg) => { if (!msg) return); try { const payload = JSON.parse(msg.content.toString()); await processor( payload, () => ch.ack(msg), () => ch.nack(msg, false, false) )}catch (error: Error | unknown) { console.error(`âŒ Error processing message from ${queueName}: ', error);'` ch.nack(msg, false, false); // Don't requeue on parse errors` }` })}catch (error: Error | unknown) { console.error(`âŒ Failed to consume from queue ${queueName}: ', error);'` throw error} }
 export async function setupQueues(): Promise<void> { try { const ch = await getChannel(); // Setup main processing queues const queues = [ 'evidence.process.queue', 'evidence.process.control', 'evidence.ocr.queue', 'evidence.embedding.queue', 'evidence.rag.queue' ]; for (const queueName of queues) { await ch.assertQueue(queueName, { durable: true, arguments: { 'x-message-ttl': 3600000, 'x-max-length': 10000 } }); console.log(`âœ… Queue setup: ${queueName}`)} // Setup dead letter exchange for failed messages await ch.assertExchange('evidence.dlx', 'direct', { durable: true }); await ch.assertQueue('evidence.failed', { durable: true, arguments: { 'x-message-ttl': 86400000, // 24 hours } }); await ch.bindQueue('evidence.failed', 'evidence.dlx', 'failed'); console.log('âœ… RabbitMQ setup complete')}catch (error: Error | unknown) { console.error('âŒ Failed to setup RabbitMQ queues: ', error); throw error} }
 // Graceful shutdown export async function closeRabbitMQ(): Promise<void> { try { if (channel) { await channel.close(); channel = null} if (connection) { await (connection as any).close(); connection = null} console.log('âœ… RabbitMQ connections closed gracefully')}catch (error: Error | unknown) { console.error('âŒ Error closing RabbitMQ connections: ', error)} }

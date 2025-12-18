@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Migrated from createEventDispatcher to callback props;
-	import type { enhance  } from '$app/forms';
+	import type { enhance } from '$app/forms';
 	import { writable } from 'svelte/store';;
 
 	const dispatch = createEventDispatcher();

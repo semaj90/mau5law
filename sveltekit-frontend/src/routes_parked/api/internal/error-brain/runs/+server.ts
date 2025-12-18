@@ -15,43 +15,43 @@ import { RunTracker } from '$lib/server/error-brain/run-tracker';
  * GET /api/internal/error-brain/runs
  */
 export const GET: RequestHandler = async (event) => {
-	requireErrorBrain(event);
+ requireErrorBrain(event);
 
-	const runs = RunTracker.listRuns();
+ const runs = RunTracker.listRuns();
 
-	return createErrorBrainResponse({
-		runs: runs.map((r) => ({
-			runId: r.runId,
-			state: r.state,
-			startTime: r.startTime,
-			endTime: r.endTime,
-			counters: r.counters,
-			errorCount: r.errors.length
-		})),
-		total: runs.length
-	});
+ return createErrorBrainResponse({
+ runs: runs.map((r) => ({
+ runId: r.runId,
+ state: r.state,
+ startTime: r.startTime,
+ endTime: r.endTime,
+ counters: r.counters,
+ errorCount: r.errors.length,
+ })),
+ total: runs.length,
+ });
 };
 
 /**
  * POST /api/internal/error-brain/runs
  */
 export const POST: RequestHandler = async (event) => {
-	requireErrorBrain(event);
+ requireErrorBrain(event);
 
-	const body = await event.request.json().catch(() => ({}));
+ const body = await event.request.json().catch(() => ({}));
 
-	const tracker = new RunTracker(undefined, {
-		dryRun: body.dryRun ?? true,
-		maxPatchSize: body.maxPatchSize ?? 100,
-		confidenceThreshold: body.confidenceThreshold ?? 0.7
-	});
+ const tracker = new RunTracker(undefined, {
+ dryRun: body.dryRun ?? true,
+ maxPatchSize: body.maxPatchSize ?? 100,
+ confidenceThreshold: body.confidenceThreshold ?? 0.7,
+ });
 
-	return createErrorBrainResponse(
-		{
-			runId: tracker.getRunId(),
-			state: tracker.getMetadata().state,
-			message: 'Run created successfully'
-		},
-		201
-	);
+ return createErrorBrainResponse(
+ {
+ runId: tracker.getRunId(),
+ state: tracker.getMetadata().state,
+ message: 'Run created successfully',
+ },
+ 201
+ );
 };

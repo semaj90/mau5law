@@ -12,67 +12,64 @@ const LLM_MODEL = env.OLLAMA_LLM_MODEL || 'gemma3-legal:latest';
  * Only when user explicitly asks
  */
 export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const ctx: IntentContext = await request.json();
+ try {
+ const ctx: IntentContext = await request.json();
 
-    console.log('[Explain Statute] Processing:', {
-      statute: ctx.statute,
-      question: ctx.userQuestion || ctx.query,
-    });
+ console.log('[Explain Statute] Processing:', {
+ statute: ctx.statute,
+ question: ctx.userQuestion || ctx.query,
+ });
 
-    // TODO: Fetch statute context from database
-    // For now, use placeholder
-    const additionalContext = {
-      sectionText: `18 U.S.C. § ${ctx.statute?.section || '1201'} - Kidnapping`,
-      relatedStatutes: [
-        { title: 'Kidnapping', section: '1201' },
-        { title: 'Interstate Commerce', section: '1202' },
-      ],
-    };
+ // TODO: Fetch statute context from database
+ // For now, use placeholder
+ const additionalContext = {
+ sectionText: `18 U.S.C. § ${ctx.statute?.section || '1201'} - Kidnapping`,
+ relatedStatutes: [
+ { title: 'Kidnapping', section: '1201' },
+ { title: 'Interstate Commerce', section: '1202' },
+ ],
+ };
 
-    // Build prompts
-    const systemPrompt = getSystemPromptForIntent('EXPLAIN_STATUTE');
-    const userPrompt = buildUserPromptForIntent('EXPLAIN_STATUTE', ctx, additionalContext);
+ // Build prompts
+ const systemPrompt = getSystemPromptForIntent('EXPLAIN_STATUTE');
+ const userPrompt = buildUserPromptForIntent('EXPLAIN_STATUTE', ctx, additionalContext);
 
-    console.log('[Explain Statute] Calling Ollama...');
+ console.log('[Explain Statute] Calling Ollama...');
 
-    // Call Ollama with streaming
-    const response = await fetch(`${OLLAMA_URL}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: LLM_MODEL,
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-          {
-            role: 'user',
-            content: userPrompt,
-          },
-        ],
-        stream: true,
-      }),
-    });
+ // Call Ollama with streaming
+ const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ model: LLM_MODEL,
+ messages: [
+ {
+ role: 'system',
+ content: systemPrompt,
+ },
+ {
+ role: 'user',
+ content: userPrompt,
+ },
+ ],
+ stream: true,
+ }),
+ });
 
-    if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status}`);
-    }
+ if (!response.ok) {
+ throw new Error(`Ollama error: ${response.status}`);
+ }
 
-    // Stream response back to client
-    return new Response(response.body, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    });
-  } catch (error) {
-    console.error('[Explain Statute] Error:', error);
-    return json(
-      { error: 'Failed to explain statute', details: String(error) },
-      { status: 500 }
-    );
-  }
+ // Stream response back to client
+ return new Response(response.body, {
+ headers: {
+ 'Content-Type': 'text/event-stream',
+ 'Cache-Control': 'no-cache',
+ Connection: 'keep-alive',
+ },
+ });
+ } catch (error) {
+ console.error('[Explain Statute] Error:', error);
+ return json({ error: 'Failed to explain statute', details: String(error) }, { status: 500 });
+ }
 };

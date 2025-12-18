@@ -3,25 +3,25 @@ import { createAstVectorizer } from './astVectorizer';
 let gpuVectorizer: ReturnType<typeof createAstVectorizer> | null = null;
 
 function ensureGpuVectorizer() {
-  if (gpuVectorizer) return gpuVectorizer;
+ if (gpuVectorizer) return gpuVectorizer;
 
-  const modelPath = 'models/phase72/bert_error_encoder.pt';
-  gpuVectorizer = createAstVectorizer(modelPath);
+ const modelPath = 'models/phase72/bert_error_encoder.pt';
+ gpuVectorizer = createAstVectorizer(modelPath);
 
-  return gpuVectorizer;
+ return gpuVectorizer;
 }
 
 export function vectorizeErrorsGPU(errors: string[]): number[][] {
-  const v = ensureGpuVectorizer();
-  return v.generateBatch(errors);
+ const v = ensureGpuVectorizer();
+ return v.generateBatch(errors);
 }
 
 export function vectorizeErrorGPU(error: string): number[] {
-  const v = ensureGpuVectorizer();
-  return v.generateEmbedding(error);
+ const v = ensureGpuVectorizer();
+ return v.generateEmbedding(error);
 }
 
 export function getErrorCountGPU(): number {
-  const v = ensureGpuVectorizer();
-  return v.getErrorCount();
+ const v = ensureGpuVectorizer();
+ return v.getErrorCount();
 }

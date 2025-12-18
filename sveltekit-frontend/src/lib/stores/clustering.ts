@@ -5,10 +5,10 @@
 
 import { writable, derived } from 'svelte/store';
 import type {
-  ClusterCategory,
-  StatuteClusterMetadata,
-  ClusterSearchFilter,
-  ClusterStatistics,
+ ClusterCategory,
+ StatuteClusterMetadata,
+ ClusterSearchFilter,
+ ClusterStatistics,
 } from '$lib/taxonomy/types';
 import { DEFAULT_CATEGORIES } from '$lib/taxonomy/types';
 
@@ -36,42 +36,42 @@ export const statuteClusterMap = writable<Map<string, StatuteClusterMetadata>>(n
  * Current search filter
  */
 export const clusterFilter = writable<ClusterSearchFilter>({
-  clusterIds: [],
-  minConfidence: 0.7,
-  includeReviewFlagged: false,
+ clusterIds: [],
+ minConfidence: 0.7,
+ includeReviewFlagged: false,
 });
 
 /**
  * Cluster statistics
  */
 export const clusterStats = writable<ClusterStatistics>({
-  totalStatutes: 0,
-  totalClusters: 0,
-  avgConfidence: 0,
-  flaggedCount: 0,
-  lastUpdated: new Date(),
-  version: 0,
+ totalStatutes: 0,
+ totalClusters: 0,
+ avgConfidence: 0,
+ flaggedCount: 0,
+ lastUpdated: new Date(),
+ version: 0,
 });
 
 /**
  * Derived: Get selected categories
  */
 export const selectedCategories = derived(
-  [clusterCategories, selectedClusters],
-  ([$categories, $selected]) => $categories.filter((c) => $selected.has(c.id))
+ [clusterCategories, selectedClusters],
+ ([$categories, $selected]) => $categories.filter((c) => $selected.has(c.id))
 );
 
 /**
  * Derived: Get cluster by ID
  */
 export const getClusterById = (id: string) =>
-  derived(clusterCategories, ($categories) => $categories.find((c) => c.id === id));
+ derived(clusterCategories, ($categories) => $categories.find((c) => c.id === id));
 
 /**
  * Derived: Get metadata for statute
  */
 export const getStatuteMetadata = (statuteId: string) =>
-  derived(statuteClusterMap, ($map) => $map.get(statuteId));
+ derived(statuteClusterMap, ($map) => $map.get(statuteId));
 
 /**
  * Derived: Count of selected clusters
@@ -87,103 +87,103 @@ export const hasSelectedClusters = derived(selectedClusters, ($selected) => $sel
  * Derived: Flagged statutes count
  */
 export const flaggedCount = derived(statuteClusterMap, ($map) => {
-  let count = 0;
-  for (const metadata of $map.values()) {
-    if (metadata.flaggedForReview) count++;
-  }
-  return count;
+ let count = 0;
+ for (const metadata of $map.values()) {
+ if (metadata.flaggedForReview) count++;
+ }
+ return count;
 });
 
 /**
  * Toggle cluster selection
  */
 export function toggleCluster(clusterId: string) {
-  selectedClusters.update((set) => {
-    const newSet = new Set(set);
-    if (newSet.has(clusterId)) {
-      newSet.delete(clusterId);
-    } else {
-      newSet.add(clusterId);
-    }
-    return newSet;
-  });
+ selectedClusters.update((set) => {
+ const newSet = new Set(set);
+ if (newSet.has(clusterId)) {
+ newSet.delete(clusterId);
+ } else {
+ newSet.add(clusterId);
+ }
+ return newSet;
+ });
 }
 
 /**
  * Clear all selections
  */
 export function clearClusterSelection() {
-  selectedClusters.set(new Set());
+ selectedClusters.set(new Set());
 }
 
 /**
  * Set cluster metadata for statute
  */
 export function setStatuteMetadata(statuteId: string, metadata: StatuteClusterMetadata) {
-  statuteClusterMap.update((map) => {
-    const newMap = new Map(map);
-    newMap.set(statuteId, metadata);
-    return newMap;
-  });
+ statuteClusterMap.update((map) => {
+ const newMap = new Map(map);
+ newMap.set(statuteId, metadata);
+ return newMap;
+ });
 }
 
 /**
  * Batch set metadata
  */
 export function setStatuteMetadataBatch(entries: Array<[string, StatuteClusterMetadata]>) {
-  statuteClusterMap.update((map) => {
-    const newMap = new Map(map);
-    for (const [id, metadata] of entries) {
-      newMap.set(id, metadata);
-    }
-    return newMap;
-  });
+ statuteClusterMap.update((map) => {
+ const newMap = new Map(map);
+ for (const [id, metadata] of entries) {
+ newMap.set(id, metadata);
+ }
+ return newMap;
+ });
 }
 
 /**
  * Update cluster categories
  */
 export function updateClusterCategories(categories: ClusterCategory[]) {
-  clusterCategories.set(categories);
+ clusterCategories.set(categories);
 }
 
 /**
  * Update cluster statistics
  */
 export function updateClusterStats(stats: Partial<ClusterStatistics>) {
-  clusterStats.update((current) => ({
-    ...current,
-    ...stats,
-    lastUpdated: new Date(),
-  }));
+ clusterStats.update((current) => ({
+ ...current,
+ ...stats,
+ lastUpdated: new Date(),
+ }));
 }
 
 /**
  * Set cluster filter
  */
 export function setClusterFilter(filter: ClusterSearchFilter) {
-  clusterFilter.set(filter);
+ clusterFilter.set(filter);
 }
 
 /**
  * Reset all clustering state
  */
 export function resetClusteringState() {
-  clusterCategories.set(DEFAULT_CATEGORIES);
-  selectedClusters.set(new Set());
-  hoveredCluster.set(null);
-  statuteClusterMap.set(new Map());
-  clusterFilter.set({
-    clusterIds: [],
-    minConfidence: 0.7,
-    includeReviewFlagged: false,
-  });
-  clusterStats.set({
-    totalStatutes: 0,
-    totalClusters: 0,
-    avgConfidence: 0,
-    flaggedCount: 0,
-    lastUpdated: new Date(),
-    version: 0,
-  });
+ clusterCategories.set(DEFAULT_CATEGORIES);
+ selectedClusters.set(new Set());
+ hoveredCluster.set(null);
+ statuteClusterMap.set(new Map());
+ clusterFilter.set({
+ clusterIds: [],
+ minConfidence: 0.7,
+ includeReviewFlagged: false,
+ });
+ clusterStats.set({
+ totalStatutes: 0,
+ totalClusters: 0,
+ avgConfidence: 0,
+ flaggedCount: 0,
+ lastUpdated: new Date(),
+ version: 0,
+ });
 }

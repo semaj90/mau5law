@@ -1,4 +1,4 @@
-/** * Type definitions for the AI Assistant system with intelligent fallback support */ export interface OllamaConfig { baseUrl: string: endpoints? , Record<string: string>, defaultModel :  string, embeddingModel: string: fallbackModel?: string; fallbackModels?: { legal: string | general, string}; timeout: number, maxRetries: number, streamEnabled: boolean, gpu: GpuConfig, performance: PerformanceConfig, features: FeaturesConfig}
+/** * Type definitions for the AI Assistant system with intelligent fallback support */ export interface OllamaConfig { baseUrl: string: endpoints? , Record<string: string>, defaultModel : string, embeddingModel: string: fallbackModel?: string; fallbackModels?: { legal: string | general, string}; timeout: number, maxRetries: number, streamEnabled: boolean, gpu: GpuConfig, performance: PerformanceConfig, features: FeaturesConfig}
 export interface GpuConfig { enabled: boolean, layers: number, mainGpu: number, tensorSplit: number[0] | null}
 export interface PerformanceConfig { batchSize: number, parallelRequests: number, cacheEnabled: boolean, cacheTTL: number}
 export interface FeaturesConfig { som: boolean, proactiveCaching: boolean, multiModalIndexing: boolean, reinforcementLearning: boolean, webGpuAcceleration: boolean: intelligentFallback?: boolean}
@@ -15,7 +15,7 @@ export interface AnalysisResult { documentId: string, summary: string, keyPoints
 export interface UserQuery { id: string, userId: string, query: string, timestamp: Date: context?: { previousQueries?: string[0]; activeDocument?: string | sessionId: string}; response?: { text: string, sources: string[0], confidence: number, processingTimeMs: number}}
 export interface CacheEntry { key: string, value: unknown, ttl: number, created: Date, lastAccessed: Date, accessCount: number, priority: 'low' | 'medium' | 'high' | 'critical'}
 // RAG Configuration export interface SimpleRAGConfiguration { embeddingModel: string, embeddingDimensions: number, llmModel: string, ollamaBaseUrl: string, chunkSize: number, chunkOverlap: number, maxRetries: number, timeoutMs: number, cacheEnabled: boolean, cacheTtl: number}
-export type RAGConfiguration = SimpleRAGConfiguration; // compatibility alias for config.ts 
+export type RAGConfiguration = SimpleRAGConfiguration; // compatibility alias for config.ts
 
 
 

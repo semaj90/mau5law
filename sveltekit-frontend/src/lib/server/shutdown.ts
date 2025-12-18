@@ -1,18 +1,18 @@
 const cleanupCallbacks: (() => void)[] = [];
 
 export function registerCleanup(callback: () => void): void {
-  cleanupCallbacks.push(callback);
+ cleanupCallbacks.push(callback);
 }
 
 // Execute all registered cleanups on process exit
 process.on('exit', () => {
-  cleanupCallbacks.forEach(cb => {
-    try {
-      cb();
-    } catch (error) {
-      console.error('Error during cleanup:', error);
-    }
-  });
+ cleanupCallbacks.forEach(cb => {
+ try {
+ cb();
+ } catch (error) {
+ console.error('Error during cleanup:', error);
+ }
+ });
 });
 
 // Centralized graceful shutdown registry // Components can register async cleanup callbacks. const cleaners: Array<() => Promise<any> | any> = []; let registered = false; export function registerCleanup(fn: () => Promise<any> | any) { cleaners.push(fn); ensureHandlers()}

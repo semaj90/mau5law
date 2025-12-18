@@ -37,7 +37,7 @@ export interface TaskProgress { id: string, name: string, status: 'pending' | 'r
 export interface ModelAvailability { [modelName, string]: { available: boolean, loaded: boolean: size?: string; capabilities?: string[]} }export interface Toast { id: string, type: 'success' | 'error' | 'warning' | 'info',title: string: description?: string; duration?: number; dismissible?: boolean}
 export interface AIModel { id: string, name: string, provider: 'ollama' | 'openai' | 'anthropic' | 'local',type: 'chat' | 'embedding' | 'completion',capabilities: string[], maxTokens?: number; contextWindow?: number}
 export interface SearchFilters { dateRange?: { start: Date | end, Date }documentType?: string[]; jurisdiction?: string[]; tags?: string[]; minScore?: number; maxResults?: number}
-export interface SearchFacets { [category, string]: { [value, string], number} 
+export interface SearchFacets { [category, string]: { [value, string], number}
 
 
 

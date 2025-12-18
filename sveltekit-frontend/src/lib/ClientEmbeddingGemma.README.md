@@ -18,9 +18,9 @@ Browser Client
 ├── SimpleTokenizer.ts (Lightweight tokenization)
 ├── ONNX Runtime Web (Inference engine)
 └── Static Assets (/static/models/embeddinggemma_300m_onnx/)
-    ├── model.onnx (291MB quantized model)
-    ├── tokenizer.json (HuggingFace tokenizer config)
-    └── special_tokens_map.json
+ ├── model.onnx (291MB quantized model)
+ ├── tokenizer.json (HuggingFace tokenizer config)
+ └── special_tokens_map.json
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ await embeddingService.initialize();
 
 // Check if ready
 if (embeddingService.isReady()) {
-  // Service is ready for inference
+ // Service is ready for inference
 }
 ```
 
@@ -47,10 +47,10 @@ if (embeddingService.isReady()) {
 ```typescript
 // Single text
 const result = await embeddingService.generateEmbeddings([
-  "This contract establishes binding legal obligations."
+ "This contract establishes binding legal obligations."
 ], {
-  normalize: true,    // L2 normalize vectors
-  maxLength: 512     // Maximum token length
+ normalize: true, // L2 normalize vectors
+ maxLength: 512 // Maximum token length
 });
 
 console.log(result.embeddings[0]); // 384-dimensional vector
@@ -67,14 +67,14 @@ const docEmbeddings = await embeddingService.generateEmbeddings(documents);
 // Find similar documents to a query
 const queryEmbedding = await embeddingService.generateEmbeddings([query]);
 const similarities = findSimilar(
-  queryEmbedding.embeddings[0],
-  docEmbeddings.embeddings,
-  5  // Top 5 results
+ queryEmbedding.embeddings[0],
+ docEmbeddings.embeddings,
+ 5 // Top 5 results
 );
 
 // Results include index and similarity score
 similarities.forEach(sim => {
-  console.log(`Document ${sim.index}: ${sim.similarity * 100}% similar`);
+ console.log(`Document ${sim.index}: ${sim.similarity * 100}% similar`);
 });
 ```
 
@@ -119,8 +119,8 @@ const similarDocs = findSimilar(embeddings.embeddings[0], docCollection);
 
 // Use Gemma3 for generation
 const response = await gemma3Service.generate({
-  prompt: `Answer based on these documents: ${similarDocs.join(' ')}`,
-  context: query
+ prompt: `Answer based on these documents: ${similarDocs.join(' ')}`,
+ context: query
 });
 ```
 

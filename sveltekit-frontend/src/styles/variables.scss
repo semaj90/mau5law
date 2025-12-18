@@ -37,12 +37,12 @@ $border-color-alt: #f3f4f6;
 
 // Typography
 $font-family:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "Segoe UI",
-  Roboto,
-  sans-serif;
+ "Inter",
+ -apple-system,
+ BlinkMacSystemFont,
+ "Segoe UI",
+ Roboto,
+ sans-serif;
 $font-family-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
 
 $font-size: 0.875rem; // 14px base
@@ -73,17 +73,17 @@ $border-radius-xl: 0.75rem; // 12px
 // Shadows
 $box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 $box-shadow:
-  0 1px 3px 0 rgba(0, 0, 0, 0.1),
-  0 1px 2px 0 rgba(0, 0, 0, 0.06);
+ 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+ 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 $box-shadow-md:
-  0 4px 6px -1px rgba(0, 0, 0, 0.1),
-  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+ 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+ 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 $box-shadow-lg:
-  0 10px 15px -3px rgba(0, 0, 0, 0.1),
-  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+ 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+ 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 $box-shadow-xl:
-  0 20px 25px -5px rgba(0, 0, 0, 0.1),
-  0 10px 10px -5px rgba(0, 0, 0, 0.04);
+ 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+ 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
 // Transitions
 $transition-duration: 150ms;
@@ -138,113 +138,113 @@ $masonry-breakpoint-xl: 1280px;
 // === Mixins for Common Patterns ===
 
 @mixin focus-ring($color: $primary-color) {
-  outline: 2px solid $color;
-  outline-offset: 2px;
+ outline: 2px solid $color;
+ outline-offset: 2px;
 }
 
 @mixin button-base {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: $spacing-sm $spacing-lg;
-  border: 1px solid transparent;
-  border-radius: $border-radius;
-  font-weight: 500;
-  font-size: $font-size;
-  line-height: 1.5;
-  cursor: pointer;
-  transition: all $transition-duration $transition-timing-function;
-  text-decoration: none;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ padding: $spacing-sm $spacing-lg;
+ border: 1px solid transparent;
+ border-radius: $border-radius;
+ font-weight: 500;
+ font-size: $font-size;
+ line-height: 1.5;
+ cursor: pointer;
+ transition: all $transition-duration $transition-timing-function;
+ text-decoration: none;
 
-  &:focus-visible {
-    @include focus-ring;
-  }
+ &:focus-visible {
+ @include focus-ring;
+ }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+ &:disabled {
+ opacity: 0.5;
+ cursor: not-allowed;
+ }
 }
 
 @mixin button-primary {
-  @include button-base;
-  background-color: $primary-color;
-  border-color: $primary-color;
-  color: $primary-inverse;
+ @include button-base;
+ background-color: $primary-color;
+ border-color: $primary-color;
+ color: $primary-inverse;
 
-  &:hover:not(:disabled) {
-    background-color: $primary-hover;
-    border-color: $primary-hover;
-  }
+ &:hover:not(:disabled) {
+ background-color: $primary-hover;
+ border-color: $primary-hover;
+ }
 }
 
 @mixin button-secondary {
-  @include button-base;
-  background-color: transparent;
-  border-color: $border-color;
-  color: $color;
+ @include button-base;
+ background-color: transparent;
+ border-color: $border-color;
+ color: $color;
 
-  &:hover:not(:disabled) {
-    background-color: $background-color-alt;
-    border-color: $muted-border-color;
-  }
+ &:hover:not(:disabled) {
+ background-color: $background-color-alt;
+ border-color: $muted-border-color;
+ }
 }
 
 @mixin card {
-  background-color: $card-background-color;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-lg;
-  box-shadow: $box-shadow-sm;
-  transition: box-shadow $transition-duration $transition-timing-function;
+ background-color: $card-background-color;
+ border: 1px solid $border-color;
+ border-radius: $border-radius-lg;
+ box-shadow: $box-shadow-sm;
+ transition: box-shadow $transition-duration $transition-timing-function;
 
-  &:hover {
-    box-shadow: $box-shadow-md;
-  }
+ &:hover {
+ box-shadow: $box-shadow-md;
+ }
 }
 
 @mixin input-base {
-  width: 100%;
-  padding: $spacing-sm $spacing-md;
-  border: 1px solid $border-color;
-  border-radius: $border-radius;
-  background-color: $background-color;
-  color: $color;
-  font-size: $font-size;
-  line-height: $line-height;
-  transition: border-color $transition-duration $transition-timing-function;
+ width: 100%;
+ padding: $spacing-sm $spacing-md;
+ border: 1px solid $border-color;
+ border-radius: $border-radius;
+ background-color: $background-color;
+ color: $color;
+ font-size: $font-size;
+ line-height: $line-height;
+ transition: border-color $transition-duration $transition-timing-function;
 
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 3px $primary-focus;
-  }
+ &:focus {
+ outline: none;
+ border-color: $primary-color;
+ box-shadow: 0 0 0 3px $primary-focus;
+ }
 
-  &::placeholder {
-    color: $muted-color;
-  }
+ &::placeholder {
+ color: $muted-color;
+ }
 }
 
 @mixin scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: $muted-border-color transparent;
+ scrollbar-width: thin;
+ scrollbar-color: $muted-border-color transparent;
 
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+ &::-webkit-scrollbar {
+ width: 6px;
+ height: 6px;
+ }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+ &::-webkit-scrollbar-track {
+ background: transparent;
+ }
 
-  &::-webkit-scrollbar-thumb {
-    background-color: $muted-border-color;
-    border-radius: 3px;
+ &::-webkit-scrollbar-thumb {
+ background-color: $muted-border-color;
+ border-radius: 3px;
 
-    &:hover {
-      background-color: $muted-color;
-    }
-  }
+ &:hover {
+ background-color: $muted-color;
+ }
+ }
 }
 
 // === Responsive Breakpoints ===
@@ -255,46 +255,46 @@ $breakpoint-xl: 1280px;
 $breakpoint-2xl: 1536px;
 
 @mixin respond-to($breakpoint) {
-  @if $breakpoint == sm {
-    @media (min-width: $breakpoint-sm) {
-      @content;
-    }
-  }
-  @if $breakpoint == md {
-    @media (min-width: $breakpoint-md) {
-      @content;
-    }
-  }
-  @if $breakpoint == lg {
-    @media (min-width: $breakpoint-lg) {
-      @content;
-    }
-  }
-  @if $breakpoint == xl {
-    @media (min-width: $breakpoint-xl) {
-      @content;
-    }
-  }
-  @if $breakpoint == 2xl {
-    @media (min-width: $breakpoint-2xl) {
-      @content;
-    }
-  }
+ @if $breakpoint == sm {
+ @media (min-width: $breakpoint-sm) {
+ @content;
+ }
+ }
+ @if $breakpoint == md {
+ @media (min-width: $breakpoint-md) {
+ @content;
+ }
+ }
+ @if $breakpoint == lg {
+ @media (min-width: $breakpoint-lg) {
+ @content;
+ }
+ }
+ @if $breakpoint == xl {
+ @media (min-width: $breakpoint-xl) {
+ @content;
+ }
+ }
+ @if $breakpoint == 2xl {
+ @media (min-width: $breakpoint-2xl) {
+ @content;
+ }
+ }
 }
 
 // === Dark Theme Variables ===
 @mixin dark-theme {
-  --color-text: #{#f9fafb};
-  --color-text-inverse: #{#111827};
-  --color-text-muted: #{#9ca3af};
-  --color-background: #{#111827};
-  --color-background-alt: #{#1f2937};
-  --color-surface: #{#374151};
-  --color-border: #{#374151};
-  --color-primary: #{#3b82f6};
-  --color-primary-hover: #{#2563eb};
+ --color-text: #{#f9fafb};
+ --color-text-inverse: #{#111827};
+ --color-text-muted: #{#9ca3af};
+ --color-background: #{#111827};
+ --color-background-alt: #{#1f2937};
+ --color-surface: #{#374151};
+ --color-border: #{#374151};
+ --color-primary: #{#3b82f6};
+ --color-primary-hover: #{#2563eb};
 }
 
 [data-theme="dark"] {
-  @include dark-theme;
+ @include dark-theme;
 }

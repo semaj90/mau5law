@@ -24,11 +24,11 @@ describe('Diff Idempotence Property Tests', () => {
 	let applier: DiffApplier;
 	let validator: ValidationService;
 	let generator: DiffGenerator;
-    let snapshotStore: FileSnapshotStore;
+ let snapshotStore: FileSnapshotStore;
 
 	beforeEach(async () => {
-        await mkdir(TEST_DIR, { recursive: true });
-        snapshotStore = new FileSnapshotStore(TEST_DIR);
+ await mkdir(TEST_DIR, { recursive: true });
+ snapshotStore = new FileSnapshotStore(TEST_DIR);
 		applier = new DiffApplier(TEST_DIR, snapshotStore, 80);
 		validator = new ValidationService(applier, TEST_DIR);
 		generator = new DiffGenerator(TEST_DIR);

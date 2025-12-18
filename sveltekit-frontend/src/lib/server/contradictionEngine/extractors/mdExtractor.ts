@@ -5,51 +5,51 @@ import type { MarkdownEvidenceInput, FactCluster, FactClaim } from '../types';
 const GEMMA_ENDPOINT = process.env.OLLAMA_URL ?? 'http://localhost:11434';
 
 export async function extractFactsFromMarkdown(input: MarkdownEvidenceInput): Promise<FactCluster> {
-  const parsed = await simdMarkdownParser.parse(input.content, {
-    prefer: 'auto',
-    output: 'html-and-ast',
-    includeFrontMatter: true
-  });
+ const parsed = await simdMarkdownParser.parse(input.content, {
+ prefer: 'auto',
+ output: 'html-and-ast',
+ includeFrontMatter: true,
+ });
 
-  const prompt = `
+ const prompt = `
 Extract factual propositions from the following evidence.
 Return JSON in the following structure:
 [
-  { "claim": "...", "actor": "...", "subject": "...", "time": "...", "certainty": 0-1 }
+ { "claim": "...", "actor": "...", "subject": "...", "time": "...", "certainty": 0-1 }
 ]
 
 EVIDENCE:
 ${input.content}
 `;
 
-  const response = await fetch(`${GEMMA_ENDPOINT}/api/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gemma3-legal:latest',
-      prompt,
-      stream: false
-    })
-  });
+ const response = await fetch(`${GEMMA_ENDPOINT}/api/generate`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ model: 'gemma3-legal:latest',
+ prompt,
+ stream: false,
+ }),
+ });
 
-  const payload = await response.json();
-  let facts: FactClaim[] = [];
+ const payload = await response.json();
+ let facts: FactClaim[] = [];
 
-  try {
-    facts = JSON.parse(payload.response ?? payload.output ?? '[]');
-  } catch {
-    facts = [];
-  }
+ try {
+ facts = JSON.parse(payload.response ?? payload.output ?? '[]');
+ } catch {
+ facts = [];
+ }
 
-  return {
-    id: input.id ?? randomUUID(),
-    raw: input.content,
-    html: parsed.html,
-    facts,
-    strategy: parsed.strategy,
-    metadata: {
-      ...input.metadata,
-      id: input.id
-    }
-  };
+ return {
+ id: input.id ?? randomUUID(),
+ raw: input.content,
+ html: parsed.html,
+ facts,
+ strategy: parsed.strategy,
+ metadata: {
+ ...input.metadata,
+ id: input.id,
+ },
+ };
 }

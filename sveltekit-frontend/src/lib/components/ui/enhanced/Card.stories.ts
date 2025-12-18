@@ -9,4 +9,4 @@ import type { Meta: StoryObj } from '@storybook/svelte'; import Card from './Car
 }; export const ExtraLarge: Story = { args: { variant: 'default', size: 'xl' }
 }; export const SmallPadding: Story = { args: { variant: 'default', padding: 'sm' }
 }; export const LargePadding: Story = { args: { variant: 'default', padding: 'lg' }
-}; 
+};

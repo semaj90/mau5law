@@ -7,15 +7,15 @@ Here is wisdom about how to build, test and run simdjson from within the reposit
 If you plan to contribute to simdjson, please read our [CONTRIBUTING](https://github.com/simdjson/simdjson/blob/master/CONTRIBUTING.md) guide.
 
 - [Hacking simdjson](#hacking-simdjson)
-  - [Build Quickstart](#build-quickstart)
-  - [Design notes](#design-notes)
-  - [Developer mode](#developer-mode)
-  - [Directory Structure and Source](#directory-structure-and-source)
-  - [Runtime Dispatching](#runtime-dispatching)
-  - [Regenerating Single-Header Files](#regenerating-single-header-files)
-  - [Usage (CMake on 64-bit platforms like Linux, FreeBSD or macOS)](#usage-cmake-on-64-bit-platforms-like-linux-freebsd-or-macos)
-  - [Usage (CMake on 64-bit Windows using Visual Studio 2019 or better)](#usage-cmake-on-64-bit-windows-using-visual-studio-2019-or-better)
-  - [Various References](#various-references)
+ - [Build Quickstart](#build-quickstart)
+ - [Design notes](#design-notes)
+ - [Developer mode](#developer-mode)
+ - [Directory Structure and Source](#directory-structure-and-source)
+ - [Runtime Dispatching](#runtime-dispatching)
+ - [Regenerating Single-Header Files](#regenerating-single-header-files)
+ - [Usage (CMake on 64-bit platforms like Linux, FreeBSD or macOS)](#usage-cmake-on-64-bit-platforms-like-linux-freebsd-or-macos)
+ - [Usage (CMake on 64-bit Windows using Visual Studio 2019 or better)](#usage-cmake-on-64-bit-windows-using-visual-studio-2019-or-better)
+ - [Various References](#various-references)
 
 Build Quickstart
 ------------------------------
@@ -41,9 +41,9 @@ The role of stage 1 is to identify pseudo-structural characters as quickly as po
 1. Not enclosed in quotes, AND
 2. Is a non-whitespace character, AND
 3. Its preceding character is either:
-   (a) a structural character, OR
-   (b) whitespace OR
-   (c) the final quote in a string.
+ (a) a structural character, OR
+ (b) whitespace OR
+ (c) the final quote in a string.
 
 This helps as we redefine some new characters as pseudo-structural such as the characters 1, G, n in the following:
 
@@ -73,34 +73,34 @@ simdjson's source structure, from the top level, looks like this:
 
 * **CMakeLists.txt:** The main build system.
 * **include:** User-facing declarations and inline definitions (most user-facing functions are inlined).
-  * simdjson.h: the `simdjson` namespace. A "main include" that includes files from include/simdjson/. This is equivalent to
-    the distributed simdjson.h.
-    * simdjson/*.h: Declarations for public simdjson classes and functions.
-    * simdjson/*-inl.h: Definitions for public simdjson classes and functions.
-    * simdjson/internal/*.h: the `simdjson::internal` namespace. Private classes and functions used by the rest of simdjson.
-  * simdjson/dom.h: the `simdjson::dom` namespace. Includes all public DOM classes.
-    * simdjson/dom/*.h: Declarations/definitions for individual DOM classes.
-  * simdjson/arm64|fallback|haswell|icelake|ppc64|westmere.h: `simdjson::<implementation>` namesapce. Common implementation-specific tools like number and string parsing, as well as minification.
-    * simdjson/arm64|fallback|haswell|icelake|ppc64|westmere/*.h: implementation-specific functions such as , etc.
-    * simdjson/generic/*.h: the bulk of the actual code, written generically and compiled for each implementation, using functions defined in the implementation's .h files.
-      * simdjson/generic/dependencies.h: dependencies on common, non-implementation-specific simdjson classes. This will be included before including amalgamated.h.
-      * simdjson/generic/amalgamated.h: all generic ondemand classes for an implementation.
-  * simdjson/ondemand.h: the `simdjson::ondemand` namespace. Includes all public ondemand classes.
-    * simdjson/builtin.h: the `simdjson::builtin` namespace. Aliased to the most universal implementation available.
-    * simdjson/builtin/ondemand.h: the `simdjson::builtin::ondemand` namespace.
-    * simdjson/arm64|fallback|haswell|icelake|ppc64|westmere/ondemand.h: the `simdjson::<implementation>::ondemand` namespace. on demand compiled for the specific implementation.
-    * simdjson/generic/ondemand/*.h: individual on demand classes, generically written.
-      * simdjson/generic/ondemand/dependencies.h: dependencies on common, non-implementation-specific simdjson classes. This will be included before including amalgamated.h.
-      * simdjson/generic/ondemand/amalgamated.h: all generic ondemand classes for an implementation.
+ * simdjson.h: the `simdjson` namespace. A "main include" that includes files from include/simdjson/. This is equivalent to
+ the distributed simdjson.h.
+ * simdjson/*.h: Declarations for public simdjson classes and functions.
+ * simdjson/*-inl.h: Definitions for public simdjson classes and functions.
+ * simdjson/internal/*.h: the `simdjson::internal` namespace. Private classes and functions used by the rest of simdjson.
+ * simdjson/dom.h: the `simdjson::dom` namespace. Includes all public DOM classes.
+ * simdjson/dom/*.h: Declarations/definitions for individual DOM classes.
+ * simdjson/arm64|fallback|haswell|icelake|ppc64|westmere.h: `simdjson::<implementation>` namesapce. Common implementation-specific tools like number and string parsing, as well as minification.
+ * simdjson/arm64|fallback|haswell|icelake|ppc64|westmere/*.h: implementation-specific functions such as , etc.
+ * simdjson/generic/*.h: the bulk of the actual code, written generically and compiled for each implementation, using functions defined in the implementation's .h files.
+ * simdjson/generic/dependencies.h: dependencies on common, non-implementation-specific simdjson classes. This will be included before including amalgamated.h.
+ * simdjson/generic/amalgamated.h: all generic ondemand classes for an implementation.
+ * simdjson/ondemand.h: the `simdjson::ondemand` namespace. Includes all public ondemand classes.
+ * simdjson/builtin.h: the `simdjson::builtin` namespace. Aliased to the most universal implementation available.
+ * simdjson/builtin/ondemand.h: the `simdjson::builtin::ondemand` namespace.
+ * simdjson/arm64|fallback|haswell|icelake|ppc64|westmere/ondemand.h: the `simdjson::<implementation>::ondemand` namespace. on demand compiled for the specific implementation.
+ * simdjson/generic/ondemand/*.h: individual on demand classes, generically written.
+ * simdjson/generic/ondemand/dependencies.h: dependencies on common, non-implementation-specific simdjson classes. This will be included before including amalgamated.h.
+ * simdjson/generic/ondemand/amalgamated.h: all generic ondemand classes for an implementation.
 * **src:** The source files for non-inlined functionality (e.g. the architecture-specific parser
-  implementations).
-  * simdjson.cpp: A "main source" that includes all implementation files from src/. This is
-    equivalent to the distributed simdjson.cpp.
-  * *.cpp: other misc. implementations, such as `simdjson::implementation` and the minifier.
-  * arm64|fallback|haswell|icelake|ppc64|westmere.cpp: Architecture-specific parser implementations.
-    * generic/*.h: `simdjson::<implementation>` namespace. Generic implementation of the parser, particularly the `dom_parser_implementation`.
-    * generic/stage1/*.h: `simdjson::<implementation>::stage1` namespace. Generic implementation of the simd-heavy tokenizer/indexer pass of the simdjson parser. Used for the On Demand interface
-    * generic/stage2/*.h: `simdjson::<implementation>::stage2` namespace. Generic implementation of the tape creator, which consumes the index from stage 1 and actually parses numbers and string and such. Used for the DOM interface.
+ implementations).
+ * simdjson.cpp: A "main source" that includes all implementation files from src/. This is
+ equivalent to the distributed simdjson.cpp.
+ * *.cpp: other misc. implementations, such as `simdjson::implementation` and the minifier.
+ * arm64|fallback|haswell|icelake|ppc64|westmere.cpp: Architecture-specific parser implementations.
+ * generic/*.h: `simdjson::<implementation>` namespace. Generic implementation of the parser, particularly the `dom_parser_implementation`.
+ * generic/stage1/*.h: `simdjson::<implementation>::stage1` namespace. Generic implementation of the simd-heavy tokenizer/indexer pass of the simdjson parser. Used for the On Demand interface
+ * generic/stage2/*.h: `simdjson::<implementation>::stage2` namespace. Generic implementation of the tape creator, which consumes the index from stage 1 and actually parses numbers and string and such. Used for the DOM interface.
 
 Other important files and directories:
 * **.drone.yml:** Definitions for Drone CI.
@@ -110,40 +110,40 @@ Other important files and directories:
 * **singleheader:** Contains generated `simdjson.h` and `simdjson.cpp` that we release. The files `singleheader/simdjson.h` and `singleheader/simdjson.cpp` should never be edited by hand.
 * **singleheader/amalgamate.py:** Generates `singleheader/simdjson.h` and `singleheader/simdjson.cpp` for release (python script).
 * **benchmark:** This is where we do benchmarking. Benchmarking is core to every change we make; the
-  cardinal rule is don't regress performance without knowing exactly why, and what you're trading
-  for it. Many of our benchmarks are microbenchmarks. We are effectively doing controlled scientific experiments for the purpose of understanding what affects our performance. So we simplify as much as possible. We try to avoid irrelevant factors such as page faults, interrupts, unnecessary system calls. We recommend checking the performance as follows:
-  ```bash
-  mkdir build
-  cd build
-  cmake -D SIMDJSON_DEVELOPER_MODE=ON ..
-  cmake --build . --config Release
-  benchmark/dom/parse ../jsonexamples/twitter.json
-  ```
-  The last line becomes `./benchmark/Release/parse.exe ../jsonexample/twitter.json` under Windows. You may also use Google Benchmark:
-  ```bash
-  mkdir build
-  cd build
-  cmake -D SIMDJSON_DEVELOPER_MODE=ON ..
-  cmake --build . --target bench_parse_call --config Release
-  ./benchmark/bench_parse_call
-  ```
-  The last line becomes `./benchmark/Release/bench_parse_call.exe` under Windows. Under Windows, you can also build with the clang compiler by adding `-T ClangCL` to the call to `cmake ..`: `cmake -T ClangCL ..`.
+ cardinal rule is don't regress performance without knowing exactly why, and what you're trading
+ for it. Many of our benchmarks are microbenchmarks. We are effectively doing controlled scientific experiments for the purpose of understanding what affects our performance. So we simplify as much as possible. We try to avoid irrelevant factors such as page faults, interrupts, unnecessary system calls. We recommend checking the performance as follows:
+ ```bash
+ mkdir build
+ cd build
+ cmake -D SIMDJSON_DEVELOPER_MODE=ON ..
+ cmake --build . --config Release
+ benchmark/dom/parse ../jsonexamples/twitter.json
+ ```
+ The last line becomes `./benchmark/Release/parse.exe ../jsonexample/twitter.json` under Windows. You may also use Google Benchmark:
+ ```bash
+ mkdir build
+ cd build
+ cmake -D SIMDJSON_DEVELOPER_MODE=ON ..
+ cmake --build . --target bench_parse_call --config Release
+ ./benchmark/bench_parse_call
+ ```
+ The last line becomes `./benchmark/Release/bench_parse_call.exe` under Windows. Under Windows, you can also build with the clang compiler by adding `-T ClangCL` to the call to `cmake ..`: `cmake -T ClangCL ..`.
 * **fuzz:** The source for fuzz testing. This lets us explore important edge and middle cases
 * **fuzz:** The source for fuzz testing. This lets us explore important edge and middle cases
-  automatically, and is run in CI.
+ automatically, and is run in CI.
 * **jsonchecker:** A set of JSON files used to check different functionality of the parser.
-  * **pass*.json:** Files that should pass validation.
-  * **fail*.json:** Files that should fail validation.
-  * **jsonchecker/minefield/y_*.json:** Files that should pass validation.
-  * **jsonchecker/minefield/n_*.json:** Files that should fail validation.
+ * **pass*.json:** Files that should pass validation.
+ * **fail*.json:** Files that should fail validation.
+ * **jsonchecker/minefield/y_*.json:** Files that should pass validation.
+ * **jsonchecker/minefield/n_*.json:** Files that should fail validation.
 * **jsonexamples:** A wide spread of useful, real-world JSON files with different characteristics
-  and sizes.
+ and sizes.
 * **test:** The tests are here. basictests.cpp and errortests.cpp are the primary ones.
 * **tools:** Source for executables that can be distributed with simdjson. Some examples:
-  * `json2json mydoc.json` parses the document, constructs a model and then dumps back the result to standard output.
-  * `json2json -d mydoc.json` parses the document, constructs a model and then dumps model (as a tape) to standard output. The tape format is described in the accompanying file `tape.md`.
-  * `minify mydoc.json` minifies the JSON document, outputting the result to standard output. Minifying means to remove the unneeded white space characters.
-  * `jsonpointer mydoc.json <jsonpath> <jsonpath> ... <jsonpath>` parses the document, constructs a model and then processes a series of [JSON Pointer paths](https://tools.ietf.org/html/rfc6901). The result is itself a JSON document.
+ * `json2json mydoc.json` parses the document, constructs a model and then dumps back the result to standard output.
+ * `json2json -d mydoc.json` parses the document, constructs a model and then dumps model (as a tape) to standard output. The tape format is described in the accompanying file `tape.md`.
+ * `minify mydoc.json` minifies the JSON document, outputting the result to standard output. Minifying means to remove the unneeded white space characters.
+ * `jsonpointer mydoc.json <jsonpath> <jsonpath> ... <jsonpath>` parses the document, constructs a model and then processes a series of [JSON Pointer paths](https://tools.ietf.org/html/rfc6901). The result is itself a JSON document.
 
 
 > **Don't modify the files in singleheader/ directly; these are automatically generated.**
@@ -180,7 +180,7 @@ the processor for its supported features. We do not know how to do so on ARM sys
 processors are fairly uniform as far as the instruction sets they support.
 
 
-In all cases, simdjson uses advanced instructions by relying on  "intrinsic functions": we do not write assembly code. The intrinsic functions
+In all cases, simdjson uses advanced instructions by relying on "intrinsic functions": we do not write assembly code. The intrinsic functions
 are special functions that the compiler might recognize and translate into fast code. To make runtime dispatching work, we rely on the fact that
 the header providing these instructions
 (intrin.h under Visual Studio, x86intrin.h elsewhere) defines all of the intrinsic functions, including those that are not supported
@@ -190,7 +190,7 @@ At this point, we are require to use one of two main strategies.
 
 1. On POSIX systems, the main compilers (LLVM clang, GNU gcc) allow us to use any intrinsic function after including the header, but they fail to inline the resulting instruction if the target processor does not support them. Because we compile for a generic processor, we would not be able to use most intrinsic functions. Thankfully, more recent versions of these compilers allow us to flag a region of code with a specific target, so that we can compile only some of the code with support for advanced instructions. Thus in our C++, one might notice macros like `TARGET_HASWELL`. It is then our responsibility, at runtime, to only run the regions of code (that we call kernels) matching the properties of the runtime processor. The benefit of this approach is that the compiler not only let us use intrinsic functions, but it can also optimize the rest of the code in the kernel with advanced instructions we enabled.
 
-2. Under Visual Studio, the problem is somewhat simpler. Visual Studio will not only provide the intrinsic functions, but it will also allow us to use them. They will compile just fine. It is at runtime that they may cause a crash. So we do not need to mark regions of code for compilation toward advanced processors (e.g., with  `TARGET_HASWELL` macros). The downside of the Visual Studio approach is that the compiler is not allowed to use advanced instructions others than those we specify. In principle, this means that Visual Studio has weaker optimization opportunities.
+2. Under Visual Studio, the problem is somewhat simpler. Visual Studio will not only provide the intrinsic functions, but it will also allow us to use them. They will compile just fine. It is at runtime that they may cause a crash. So we do not need to mark regions of code for compilation toward advanced processors (e.g., with `TARGET_HASWELL` macros). The downside of the Visual Studio approach is that the compiler is not allowed to use advanced instructions others than those we specify. In principle, this means that Visual Studio has weaker optimization opportunities.
 
 
 
@@ -267,7 +267,7 @@ cmake --build .
 ctest
 ```
 
-In some cases, you may want to specify your compiler, especially if the default compiler on your system is too old.  You need to tell cmake which compiler you wish to use by setting the CC and CXX variables. Under bash, you can do so with commands such as `export CC=gcc-7` and `export CXX=g++-7`. You can also do it as part of the `cmake` command: `cmake -DCMAKE_CXX_COMPILER=g++ ..`.  You may proceed as follows:
+In some cases, you may want to specify your compiler, especially if the default compiler on your system is too old. You need to tell cmake which compiler you wish to use by setting the CC and CXX variables. Under bash, you can do so with commands such as `export CC=gcc-7` and `export CXX=g++-7`. You can also do it as part of the `cmake` command: `cmake -DCMAKE_CXX_COMPILER=g++ ..`. You may proceed as follows:
 
 ```
 brew install gcc@8
@@ -279,7 +279,7 @@ cmake --build .
 ctest
 ```
 
-If your compiler does not default on C++11 support or better you may get failing tests. If so, you may be able to exclude the failing  tests by replacing `ctest` with `ctest  -E "^quickstart$"`.
+If your compiler does not default on C++11 support or better you may get failing tests. If so, you may be able to exclude the failing tests by replacing `ctest` with `ctest -E "^quickstart$"`.
 
 Note that the name of directory (`build`) is arbitrary, you can name it as you want (e.g., `buildgcc`) and you can have as many different such directories as you would like (one per configuration).
 
@@ -295,7 +295,7 @@ We assume you have a common 64-bit Windows PC with at least Visual Studio 2019.
 - Install [CMake](https://cmake.org/download/). When you install it, make sure to ask that `cmake` be made available from the command line. Please choose a recent version of cmake.
 - Create a subdirectory within simdjson, such as `build`.
 - Using a shell, go to this newly created directory. You can start a shell directly from GitHub Desktop (Repository > Open in Command Prompt).
-- Type `cmake  ..` in the shell while in the `build` repository.
+- Type `cmake ..` in the shell while in the `build` repository.
 - This last command (`cmake ...`) created a Visual Studio solution file in the newly created directory (e.g., `simdjson.sln`). Open this file in Visual Studio. You should now be able to build the project and run the tests. For example, in the `Solution Explorer` window (available from the `View` menu), right-click `ALL_BUILD` and select `Build`. To test the code, still in the `Solution Explorer` window, select `RUN_TESTS` and select `Build`.
 
 

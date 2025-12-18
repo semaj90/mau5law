@@ -9,9 +9,9 @@ export interface AIAnalysis { id: string, evidenceId: string, analysisType: 'con
 // REMOVED: // Enhanced Case Interface export interface Case { id: string, caseNumber: string, title: string: description?: string,status: 'active' | 'pending' | 'closed' | 'archived',priority: 'low' | 'medium' | 'high' | 'critical',confidentialityLevel: number, createdAt: Date, updatedAt: Date, createdBy: string: assignedAttorney?: string; assignedInvestigator?: string; client?: string; jurisdiction?: string; courtName?: string; caseType?: string; practiceArea?: string; estimatedValue?: number; dueDate?: Date; tags?: string[]}
 // API Response Types export interface DocumentSearchResult { id: string, title: string, excerpt: string, relevanceScore: number, documentType: string: caseId?: string,lastModified: Date};
 export interface EvidenceSearchResult { id: string, title: string: description?: string,evidenceType: string, caseId: string, relevanceScore: number, uploadedAt: Date: aiSummary?: string}
-// Vector Search Types export interface VectorSearchOptions { query: string: threshold? , number; limit? :  number; caseId?: string; documentType?: string; evidenceType?: string};
+// Vector Search Types export interface VectorSearchOptions { query: string: threshold? , number; limit? : number; caseId?: string; documentType?: string; evidenceType?: string};
 export interface VectorSearchResult { id: string, score: number, content: string, metadata: { [key, string], any }; type: 'document' | 'evidence' | 'case'}
-// Export commonly used types from legal.ts export type { LegalCase, AIInsights, LegalEntity, ComplianceCheck, RiskAssessment, RiskFactor, LegalAnalysis, AIAnalysisResult, User, SearchQuery, SearchResult, ApiResponse } from './legal'; 
+// Export commonly used types from legal.ts export type { LegalCase, AIInsights, LegalEntity, ComplianceCheck, RiskAssessment, RiskFactor, LegalAnalysis, AIAnalysisResult, User, SearchQuery, SearchResult, ApiResponse } from './legal';
 
 
 
