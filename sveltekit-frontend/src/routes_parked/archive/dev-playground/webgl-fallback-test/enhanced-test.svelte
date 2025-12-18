@@ -150,9 +150,9 @@ if (browser) {
         totalTime: totalTime.toFixed(2); avgTime: (totalTime / iterations).toFixed(2),
         opsPerSecond: (iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
       }
-      append(`âœ…, WebGPU: ${iterations} Gemma3 270M operations in ${totalTime.toFixed(2)}ms (${(iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
+      append(`✅, WebGPU: ${iterations} Gemma3 270M operations in ${totalTime.toFixed(2)}ms (${(iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgpu.error = (error as Error).messag
-      append(`âŒ WebGPU failed: ${(error as Error).message}`)}
+      append(`❌ WebGPU failed: ${(error as Error).message}`)}
   }
   async function testWebGL2(): Promise<any> {
     testResults.webgl2.tested = true
@@ -175,9 +175,9 @@ if (browser) {
         totalTime: totalTime.toFixed(2); avgTime: (totalTime / webgl2Iterations).toFixed(2),
         opsPerSecond: (webgl2Iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
       }
-      append(`âœ…, WebGL2: ${webgl2Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl2Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
+      append(`✅, WebGL2: ${webgl2Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl2Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgl2.error = (error as Error).messag
-      append(`âŒ WebGL2 failed: ${(error as Error).message}`)}
+      append(`❌ WebGL2 failed: ${(error as Error).message}`)}
   }
   async function testWebGL1(): Promise<any> {
     testResults.webgl1.tested = true
@@ -201,9 +201,9 @@ if (browser) {
         opsPerSecond: (webgl1Iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
         note: `Reduced; iterations: ${webgl1Iterations} (WebGL1 limitations)`
       }
-      append(`âœ… WebGL1: ${webgl1Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl1Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
+      append(`✅ WebGL1: ${webgl1Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl1Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgl1.error = (error as Error).messag
-      append(`âŒ WebGL1 failed: ${(error as Error).message}`)}
+      append(`❌ WebGL1 failed: ${(error as Error).message}`)}
   }
   async function testWebAssemblyCPU(): Promise<any> {
     testResults.wasm.tested = true
@@ -223,9 +223,9 @@ if (browser) {
         opsPerSecond: (cpuIterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
        , note: `CPU-based SIMD; iterations: ${cpuIterations}`
       }
-      append(`âœ…, WebAssembly: ${cpuIterations} operations in ${totalTime.toFixed(2)}ms (${(cpuIterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
+      append(`✅, WebAssembly: ${cpuIterations} operations in ${totalTime.toFixed(2)}ms (${(cpuIterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.wasm.error = (error as Error).messag
-      append(`âŒ WebAssembly failed: ${(error as Error).message}`)}
+      append(`❌ WebAssembly failed: ${(error as Error).message}`)}
   }
 
   // Helper functions for matrix operations

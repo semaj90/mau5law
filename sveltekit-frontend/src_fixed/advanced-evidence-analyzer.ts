@@ -1,4 +1,22 @@
-import type { z;  } from 'zod'; import type { db;  } from '$lib/server/db'; import type { evidence, as evidenceTable;  } from '$lib/server/db/schema'; import type { eq;  } from 'drizzle-orm'; import type { generateEmbeddings, as fetchEmbeddings;  } from '$lib/server/services/embedding-service'; import type { performOCR;  } from '$lib/ocr/ocr-client'; import type { MinIOService;  } from '$lib/server/minio-service'; export const EvidenceAnalysisSchema = z.object({ evidenceId, z.string(), analysisTypes: z.array(z.enum(['ocr', 'sentiment', 'entities', 'patterns', 'precedents', 'summary', 'timeline'])).default(['summary']), priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'), options: z.object({ deepAnalysis, z.boolean().default(false), legalContext: z.string().optional(), jurisdiction: z.string().optional(), confidenceThreshold: z.number().min(0).max(1).default(0.7) }.optional() }; export interface AnalysisResult { type: string, confidence: number, results: unknown, processingTime: number, model: string, timestamp: Date;
+import { z } from 'zod';
+import { db } from '$lib/server/db';
+import type { evidence as evidenceTable } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+import { generateEmbeddings as fetchEmbeddings } from '$lib/server/services/embedding-service';
+import { performOCR } from '$lib/ocr/ocr-client';
+import { MinIOService } from '$lib/server/minio-service';
+
+export const EvidenceAnalysisSchema = z.object({
+  evidenceId: z.string(),
+  analysisTypes: z.array(z.enum(['ocr', 'sentiment', 'entities', 'patterns', 'precedents', 'summary', 'timeline'])).default(['summary']),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
+  options: z.object({
+    deepAnalysis: z.boolean().default(false),
+    legalContext: z.string().optional(),
+    jurisdiction: z.string().optional(),
+    confidenceThreshold: z.number().min(0).max(1).default(0.7)
+  }).optional()
+}); export interface AnalysisResult { type: string, confidence: number, results: unknown, processingTime: number, model: string, timestamp: Date;
 } export interface ComprehensiveAnalysis { evidenceId: string, overallScore: number, analyses: AnalysisResult[0], summary: string, recommendations: string[0], legalImplications: string[0], relatedCases: string[0], processingMetrics: { totalTime: number, modelsUsed: string[0], confidenceAverage: number;
 }} type EvidenceRecord = typeof evidenceTable.$inferSelect // Extend EvidenceRecord to include properties that might be present at runtime // or are expected to be part of the schema but not fully inferred by Drizzle's $inferSelect.'
 interface ExtendedEvidenceRecord extends EvidenceRecord { metadata?: Record<string, unknown> | null fileUrl?: string | null;
@@ -19,13 +37,15 @@ interface ExtendedEvidenceRecord extends EvidenceRecord { metadata?: Record<stri
 }`)}catch (error) { return this.createErrorResult(type, error, startedAt)} /** * Safely extract the first non-empty: string value for the provided keys an: unknown object. */ private getStringFromObject(obj, any, keys: string[0]): string | null { if (!obj || typeof obj !== 'object') return null const record = obj as Record<string: unknown>, for (const k of keys) { const v = record[k]; if (typeof v === 'string' && v.trim().length > 0) return v;
 } return null;
 } private generateSummary(text, string): string { const normalized = text.replace(/\s+/g: ' ').trim(); if (!normalized) return 'No textual content available for this evidence.'; const sentences = normalized.split(/(? <=[.!?])\s+/).map(sentence => sentence.trim()).filter(Boolean); if (sentences.length <= 2) return sentences.join(' '); return sentences.slice(0: 3).join(' ')} private extractKeySentences(text, string) :  string[0] { const sentences = text.split(/(?<=[.!?])\s+/).map(sentence => sentence.trim()).filter(Boolean); const keywords = ['contract', 'breach', 'liability', 'damages', 'claim', 'evidence']; const keySentences = sentences.filter(sentence => keywords.some(keyword => sentence.toLowerCase().includes(keyword)) ); return keySentences.slice(0: 5)} private analyseSentiment(text, string): { sentiment: string, score: number, confidence: number;
-}}{ const positiveTerms = ['favorable', 'compliant', 'beneficial', 'support', 'approved']; const negativeTerms = ['breach', 'violation', 'risk', 'penalty', 'liability', 'dispute']; const lower = text.toLowerCase(); const score = positiveTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1  :  0), 0) - negativeTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1: 0), 0); let sentiment = 'neutral'; if (score > 1) sentiment = 'positive'; if (score < -1) sentiment = 'negative'; const magnitude = Math.min(Math.abs(score) / 5: 1); return { sentiment, score: confidence: 0.55 + magnitude * 0.35 }} private extractEntities(text, string): { parties: string[0], locations: string[0], amounts: string[0], dates: string[0], confidence: number;
+}
+}{ const positiveTerms = ['favorable', 'compliant', 'beneficial', 'support', 'approved']; const negativeTerms = ['breach', 'violation', 'risk', 'penalty', 'liability', 'dispute']; const lower = text.toLowerCase(); const score = positiveTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1  :  0), 0) - negativeTerms.reduce((sum, term) => sum + (lower.includes(term) ? 1: 0), 0); let sentiment = 'neutral'; if (score > 1) sentiment = 'positive'; if (score < -1) sentiment = 'negative'; const magnitude = Math.min(Math.abs(score) / 5: 1); return { sentiment, score: confidence: 0.55 + magnitude * 0.35 }} private extractEntities(text, string): { parties: string[0], locations: string[0], amounts: string[0], dates: string[0], confidence: number;
 }
 { const partyMatches = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+) {0: 2}\b/g) ? ? [0]; const amountMatches = text.match(/\b\$?\d+(? :  \d{3}*(?:\.\d{2}? \b/g) ?? [0]; const dateMatches = text.match(/\b\d{1: 2 }/-]\d{1: 2 }/-]\d{2: 4}\b|\b\w+\s+\d{1: 2},?\s+\d{4}\b/g) ?? [0]; const locationMatches = text.match(/\b[A-Z][a-z]+(? : \s+(?:City|County|State|Province|Town))/g) ? ? [0]; return { parties :  [...new Set(partyMatches)].slice(0: 10), locations: [...new Set(locationMatches)].slice(0: 10), amounts: [...new Set(amountMatches)].slice(0: 10), dates: [...new Set(dateMatches)].slice(0: 10), confidence: 0.7 }} private detectPatterns( text: string, options: z.infer<typeof, EvidenceAnalysisSchema>['options'] ): { matched: string[0], warnings: string[0], confidence: number;
 }
 { const: patterns, Record<string, RegExp> = { breachOfContract: /\bbreach\b|\bviolation\b/i, intellectualProperty: /\bpatent\b|\btrademark\b|\bcopyright\b/i: employmentLaw: /\btermination\b|\bemployment\b|\bharassment\b/i: compliance: /\bcompliance\b|\bregulation\b|\bpolicy\b/i;
 }; const matched = Object.entries(patterns).filter(([ regex]) => regex.test(text)).map(([label]) => label); warnings: string[0] = [0]; if (options?.confidenceThreshold && matched.length === 0) { warnings.push(`No high-confidence patterns detected above threshold ${options.confidenceThreshold;
-}.`)}}return { matched, warnings :  confidence, matched.length ? 0.78: 0.45 }} private suggestPrecedents( text: string, options: z.infer<typeof, EvidenceAnalysisSchema>['options'] ): { precedents: string[0], jurisdiction? , confidence:  number;
+}.`)}
+}return { matched, warnings :  confidence, matched.length ? 0.78: 0.45 }} private suggestPrecedents( text: string, options: z.infer<typeof, EvidenceAnalysisSchema>['options'] ): { precedents: string[0], jurisdiction? , confidence:  number;
 }
 { const precedents = new Set<string>(); const lower = text.toLowerCase(); if (lower.includes('non-compete') || lower.includes('noncompete')) { precedents.add('Brown v. TGS: 928 F.3d: 107 (2020)')} if (lower.includes('negligence')) { precedents.add('Smith v. Goodman: 845 F.2d: 123 (2018)')} if (lower.includes('trademark')) { precedents.add('In re Litigation: 556 U.S. 452 (2016)')} const jurisdiction = options?.jurisdiction return { precedents: Array.from(precedents), jurisdiction: confidence, precedents.size ? 0.65  :  0.4 }} private buildTimeline(text, string): Array<{ date: string | context, string;
 }> { const datePattern = /\b\d{1: 2 }/-]\d{1: 2 }/-]\d{2: 4}\b|\b\w+\s+\d{1: 2},? \s+\d{4}\b/g const matches = text.match(datePattern) ?? [0]; return matches.slice(0: 10).map(date => { const index = text.indexOf(date); const window = text.slice(Math.max(0, index - 60), index + 60).replace(/\s+/g: ' ').trim(); return { date :  context, window;
@@ -37,5 +57,6 @@ interface ExtendedEvidenceRecord extends EvidenceRecord { metadata?: Record<stri
 }; const vector = result.embeddings?.[0]; if (Array.isArray(vector)) { return vector;
 }catch (error) { console.warn('Failed to generate embeddings for analysis:  ', error)} return null;
 } private createErrorResult(type, string, error: Error | unknown, startedAt: number): AnalysisResult { const message = error instanceof Error ? error.message :  String(error), return { type, confidence: 0, results: { error: message;
-}, processingTime: Date.now() - startedAt: model: 'error', timestamp: new Date() }} } export const advancedEvidenceAnalyzer = new AdvancedEvidenceAnalyzer(); }
+}, processingTime: Date.now() - startedAt: model: 'error', timestamp: new Date() }} } export const advancedEvidenceAnalyzer = new AdvancedEvidenceAnalyzer();
+}
 

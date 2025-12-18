@@ -1,21 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { type RequestHandler } from '@sveltejs/kit';;
 import type { z  } from 'zod';
-import type { analyzeEvidence  } from '$lib/server/api/v1/evidence-handlers';
-import type { getUserId  } from '$lib/server/utils/auth';
-import type { EvidenceItem } from '$lib/components/ui/EvidenceCanvas';
+import type { env  } from '$env /dynamic/private';
+import getCudaEmbedding from '$lib/server/services/cuda-embedding-service';
+import getUserId from '$lib/server/utils/auth';
+import SimilarEvidenceSchema from '$lib/server/z-schemas/SimilarEvidenceSchema';
 
-// Schema for evidence analysis request
-const EvidenceAnalysisSchema = z.object({
-  id: z.string(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  metadata: z.record(z.unknown()).optional(),
-});
-
-/* * Evidence AI Analysis API Routes - Connects with Ollama and CUDA services
- * POST /api/v1/evidence/analyze - Analyze evidence with AI
+/*
+ * POST /api/v1/evidence/similar
+ * Find similar evidence using vector search
  */
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
@@ -25,29 +18,59 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     const body = await request.json();
-    const evidenceItem = EvidenceAnalysisSchema.parse(body) as EvidenceItem;
+    const { evidenceId, embedding, content, limit } = SimilarEvidenceSchema.parse(body);
 
-    // Use the analyzeEvidence function from handlers
-    const analysis = await analyzeEvidence(evidenceItem);
+    let queryEmbedding: number[] | null = embedding || null;
+
+    // If no embedding provided, generate one from content
+    if (!queryEmbedding && content) {
+      queryEmbedding = await getCudaEmbedding(content);
+    }
+
+    if (!queryEmbedding) {
+      return json({ message: 'No embedding or content provided for similarity search' }, { status: 400 });
+    }
+
+    // Call CUDA service for similarity search
+    const response = await fetch(`${env.CUDA_SERVICE_URL}/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query_embedding: queryEmbedding,
+        limit,
+        exclude_id: evidenceId // Exclude the evidence itself from results
+      })
+    });
+
+    if (!response.ok) {
+      const bodyText = await response.text().catch(() => '');
+      throw new Error(`CUDA similarity search failed: ${response.status} ${response.statusText} ${bodyText}`);
+    }
+
+    const result = await response.json();
 
     return json({
       success: true,
       data: {
-        evidenceId: evidenceItem.id,
-        analysis,
+        evidenceId,
+        similar_results: result.results || [],
         processed_at: new Date().toISOString(),
-        userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals),
-      },
+        userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals)
+      }
     });
   } catch (error: Error | unknown) {
-    console.error('Evidence analysis failed: ', error);
+    console.error('Similar evidence search failed: ', error);
     if (error instanceof z.ZodError) {
-      return json({ message: 'Invalid evidence data', details: error.errors }, { status: 400 });
+      return json(
+        { message: 'Invalid similarity search request', details: error.errors },
+        { status: 400 }
+      );
     }
     const details = (error as Error)?.message ?? 'Unknown error';
-    return json({ message: 'Analysis failed', details }, { status: 500 });
+    return json(
+      { message: 'Similarity search failed', details },
+      { status: 500 }
+    );
   }
 };
-
-
 

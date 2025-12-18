@@ -19,14 +19,23 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { Pool } = pg;
 
-// CLI Arguments
+// CLI Arguments (safe parsing: flags separate from values)
 const args = process.argv.slice(2);
-const inputFile = args.find(a => a.startsWith('--input='))?.split('=')[1] ||
-                  args[args.indexOf('--input') + 1] ||
-                  'reports/error-clusters.json';
+const FLAGS = new Set(args.filter(a => a.startsWith('--')));
+const parseArg = (name, defaultVal) => {
+  const idx = args.indexOf(`--${name}`);
+  if (idx === -1) return defaultVal;
+  const next = args[idx + 1];
+  return next && !next.startsWith('--') ? next : defaultVal;
+};
+
+const positionalInput = args.find(a => !a.startsWith('--'));
+const inputFile = parseArg('input', positionalInput || 'reports/errors.jsonl');
 const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
 const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:4005';
-const batchSize = parseInt(args.find(a => a.startsWith('--batch='))?.split('=')[1] || '100');
+const batchSize = parseInt(parseArg('batch', '100'));
+const SHOW_STATS = FLAGS.has('--stats');
+const VERBOSE = FLAGS.has('--verbose');
 
 console.log('💾 Error Persistence to legal_ai_db\n');
 console.log('═'.repeat(70));
@@ -501,4 +510,51 @@ async function main() {
   }
 }
 
-main();
+// ============================================================================
+// --stats MODE: SHOW STATISTICS ONLY (NO PERSIST)
+// ============================================================================
+
+async function showStats() {
+  console.log('📊 ERROR STATISTICS (--stats mode)\n');
+  console.log('═'.repeat(70));
+
+  if (!fs.existsSync(inputFile)) {
+    console.error(`❌ Input file not found: ${inputFile}`);
+    process.exit(1);
+  }
+
+  const data = JSON.parse(fs.readFileSync(inputFile, 'utf-8'));
+  const clusters = data.clusters || [];
+  const metadata = data.metadata || {};
+
+  console.log(`Input file: ${inputFile}`);
+  console.log(`Clusters: ${clusters.length}`);
+  console.log(`Total errors: ${metadata.totalErrors || 'unknown'}`);
+  console.log('═'.repeat(70) + '\n');
+
+  // Cluster distribution
+  console.log('📈 DISTRIBUTION:\n');
+  const clusterStats = {};
+  clusters.forEach(c => {
+    clusterStats[c.errorType || 'unknown'] = (clusterStats[c.errorType || 'unknown'] || 0) + (c.errorEvents?.length || 0);
+  });
+
+  Object.entries(clusterStats)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([type, count], i) => {
+      const pct = ((count / metadata.totalErrors) * 100).toFixed(1);
+      console.log(`  ${String(i + 1).padStart(2)}) ${type.padEnd(40)} ${String(count).padStart(6)} (${pct}%)`);
+    });
+
+  console.log('\n✓ Statistics displayed (no changes made)\n');
+}
+
+// ============================================================================
+// MAIN ENTRY POINT
+// ============================================================================
+
+if (SHOW_STATS) {
+  await showStats();
+} else {
+  await main();
+}

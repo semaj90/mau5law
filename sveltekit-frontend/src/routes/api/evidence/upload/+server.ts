@@ -54,32 +54,18 @@ export async function POST({ request }: RequestEvent) {
 
     const job = result.rows[0];
 
-    return json({
-      jobId: job.id,
-      status: job.status,
-      minioKey,
-      createdAt: job.created_at,
-      nextStep: `POST /api/evidence/${job.id}/sanitize to strip metadata`
-    }, { status: 201 });
+    return json(
+      {
+        jobId: job.id,
+        status: job.status,
+        minioKey,
+        createdAt: job.created_at,
+        nextStep: `POST /api/evidence/${job.id}/sanitize to strip metadata`,
+      },
+      { status: 201 }
+    );
   } catch (e) {
     console.error('❌ Evidence upload error:', e);
     return error(500, e instanceof Error ? e.message : 'Unknown error');
   }
 }
-        }
-
-        // TODO: Implement actual file storage (MinIO or local)
-        // For now, just acknowledge receipt
-
-        return json({
-            success: true,
-            filename: file.name,
-            size: file.size,
-            type: file.type,
-            message: 'File received (storage pending implementation)'
-        });
-    } catch (err) {
-        console.error('Upload error:', err);
-        return json({ error: 'Upload failed' }, { status: 500 });
-    }
-};

@@ -137,25 +137,25 @@ export interface ValidationReport {
 
 // REMOVED: **Environment:** Node.js ${report.environment.node_version}, ${report.environment.cpu_cores} cores, ${report.environment.memory_limit} memory
 
-## Overall Results
+//# Overall Results
 // REMOVED: - **Tests:** ${overall_results.total_tests} total, ${overall_results.passed_tests} passed, ${overall_results.failed_tests} failed
 - **Success Rate:** ${overall_results.success_rate.toFixed(1)}%
 - **Duration:** ${(overall_results.total_duration_ms / 1000).toFixed(2)} seconds
 
-## Performance Benchmarks
+//# Performance Benchmarks
 - **VS Code Commands:** ${performance_benchmarks.vs_code_commands} successful
 - **Cache Operations:** ${performance_benchmarks.cache_operations_per_second.toLocaleString()} ops/sec
 - **JSON Processing:** ${performance_benchmarks.json_parse_speed_mb_per_second} MB/sec
 - **Docker Optimization:** ${performance_benchmarks.docker_optimization_time_ms} ms
 - **Memory Usage:** ${performance_benchmarks.memory_usage_mb} MB
 
-## Test Suite Results
+//# Test Suite Results
 ${report.test_suites.map((suite: TestSuite) => `### ${suite.name} ${suite.overall_passed ? '✅' : '❌'}
 - Passed: ${suite.passed}/${suite.tests.length} tests
 - Duration: ${(suite.total_duration_ms / 1000).toFixed(2)} s
 ${suite.tests.filter((t: TestResult) => !t.passed).map((t: TestResult) => ` - ❌ ${t.name}: ${t.error}`).join('\n')}`).join('\n\n')}
 
-## Recommendations
+//# Recommendations
 ${report.recommendations.map((rec: string) => `- ${rec}`).join('\n')}
 `; }
 }
