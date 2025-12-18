@@ -10,10 +10,20 @@
  */
 
 import { createHash } from 'crypto';
+import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Redis namespace prefix
-const REDIS_PREFIX = 'phase72:kag';
+// Load .env.phase72 (standardized Dec 18, Session 3)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '..', '.env.phase72') });
+
+// Redis namespace prefix - from environment, fallback to hardcoded
+const PREFIX = process.env.KAG_PREFIX || 'phase72:kag';
+const REDIS_DB = parseInt(process.env.KAG_REDIS_DB || '0', 10);
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
+const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379', 10);
 
 // Redis client - lazy initialized
 let redis = null;
@@ -35,13 +45,12 @@ async function initRedis() {
 		// Try to import ioredis (may not be installed)
 		const { default: Redis } = await import('ioredis');
 
-		const redisHost = process.env.REDIS_HOST || '127.0.0.1';
-		const redisPort = parseInt(process.env.REDIS_PORT || '4005', 10);
-		console.log('[KAG DEBUG] Connecting to Redis at', redisHost, ':', redisPort);
+		console.log('[KAG DEBUG] Connecting to Redis at', REDIS_HOST, ':', REDIS_PORT);
+		console.log('[KAG DEBUG] Prefix:', PREFIX, '| DB:', REDIS_DB);
 
 		redis = new Redis({
-			host: redisHost,
-			port: redisPort,
+			host: REDIS_HOST,
+			port: REDIS_PORT,
 			retryStrategy: (times) => {
 				if (times > 3) return null; // Stop retrying after 3 attempts
 				return Math.min(times * 50, 200);
@@ -140,12 +149,13 @@ async function queryBestFix(errorSig) {
 		const client = await initRedis();
 		if (!client) return null;
 
-		const key = `phase72:kag:sig:${errorSig.sig}`;
+		const key = `${PREFIX}:sig:${errorSig.sig}`;
+		const statsKey = `${PREFIX}:stats`;
 		const fixesJson = await client.get(key);
 
 		if (!fixesJson) {
-			// Update miss stats
-			await updateStats('miss');
+			// Update miss stats atomically
+			await client.hincrby(statsKey, 'misses', 1);
 			return null;
 		}
 
@@ -155,8 +165,8 @@ async function queryBestFix(errorSig) {
 		const bestFix = fixes[0] || null;
 
 		if (bestFix) {
-			// Update hit stats
-			await updateStats('hit');
+			// Update hit stats atomically
+			await client.hincrby(statsKey, 'hits', 1);
 		}
 
 		return bestFix;
@@ -178,18 +188,20 @@ async function storeFix(errorSig, fix) {
 		const client = await initRedis();
 		if (!client) {
 			console.log('[KAG DEBUG] initRedis returned null - Redis not available');
-			return;
+			return { fixKey: null, exists: false };
 		}
 
-		const key = `phase72:kag:sig:${errorSig.sig}`;
-		console.log('[KAG DEBUG] Storing fix with key:', key);
+		const fixKey = `${PREFIX}:sig:${errorSig.sig}`;
+		const statsKey = `${PREFIX}:stats`;
+		console.log('[KAG DEBUG] Storing fix with key:', fixKey);
 
 		// Get existing fixes
-		const existingJson = await client.get(key);
+		const existingJson = await client.get(fixKey);
 		const existing = existingJson ? JSON.parse(existingJson) : [];
 
 		// Check if this exact patch already exists
 		const matchIndex = existing.findIndex((f) => f.patch === fix.patch);
+		const isNewFix = matchIndex < 0;
 
 		if (matchIndex >= 0) {
 			// Update existing fix
@@ -232,18 +244,43 @@ async function storeFix(errorSig, fix) {
 		// Sort by confidence descending
 		existing.sort((a, b) => b.confidence - a.confidence);
 
+		// Use pipeline for atomic operations
+		const pipeline = client.pipeline();
+
 		// Store with 30-day TTL
 		const ttlSeconds = 30 * 24 * 60 * 60;
-		await client.set(key, JSON.stringify(existing), 'EX', ttlSeconds);
+		pipeline.set(fixKey, JSON.stringify(existing), 'EX', ttlSeconds);
 
 		// Also index by patch ID for reverse lookup
-		const patchKey = `phase72:kag:patch:${fix.patchId}`;
-		await client.set(patchKey, JSON.stringify(errorSig), 'EX', ttlSeconds);
+		const patchKey = `${PREFIX}:patch:${fix.patchId}`;
+		pipeline.set(patchKey, JSON.stringify(errorSig), 'EX', ttlSeconds);
 
-		// Update global stats
-		await updateStats('store', { fix, errorSig });
+		// Increment stats atomically
+		if (isNewFix) {
+			pipeline.hincrby(statsKey, 'totalFixesStored', 1);
+			pipeline.hincrby(statsKey, 'totalSignatures', 1);
+		}
+
+		// Execute pipeline
+		const results = await pipeline.exec();
+		console.log('[KAG DEBUG] Pipeline executed:', results?.length, 'commands');
+
+		// Check for errors in pipeline
+		const errors = results?.filter(([err]) => err);
+		if (errors?.length > 0) {
+			console.error('[KAG ERROR] Pipeline errors:', errors);
+			throw new Error(`Pipeline failed: ${errors[0][0].message}`);
+		}
+
+		// Verify storage
+		const exists = await client.exists(fixKey);
+		console.log('[KAG DEBUG] Fix stored, exists check:', exists === 1);
+
+		return { fixKey, exists: exists === 1 };
 	} catch (error) {
-		console.warn('[KAG] Store error:', error.message);
+		console.error('[KAG ERROR] Store error:', error.message);
+		console.error('[KAG ERROR] Stack:', error.stack);
+		throw error; // Re-throw to surface errors
 	}
 }
 
@@ -257,7 +294,7 @@ async function getAllFixes(errorSig) {
 		const client = await initRedis();
 		if (!client) return [];
 
-		const key = `phase72:kag:sig:${errorSig.sig}`;
+		const key = `${PREFIX}:sig:${errorSig.sig}`;
 		const fixesJson = await client.get(key);
 
 		return fixesJson ? JSON.parse(fixesJson) : [];
@@ -287,93 +324,30 @@ async function getStats() {
 		const client = await initRedis();
 		if (!client) return getDefaultStats();
 
-		const statsKey = 'phase72:kag:stats';
-		const statsJson = await client.get(statsKey);
+		const statsKey = `${PREFIX}:stats`;
 
-		if (!statsJson) return getDefaultStats();
-
-		const stats = JSON.parse(statsJson);
+		// Read atomic counters from hash
+		const stats = await client.hgetall(statsKey);
 
 		// Calculate hit/miss rates
-		const total = (stats.hits || 0) + (stats.misses || 0);
-		const hitRate = total > 0 ? ((stats.hits || 0) / total) * 100 : 0;
-		const missRate = total > 0 ? ((stats.misses || 0) / total) * 100 : 0;
+		const hits = parseInt(stats.hits || '0', 10);
+		const misses = parseInt(stats.misses || '0', 10);
+		const total = hits + misses;
+		const hitRate = total > 0 ? (hits / total) * 100 : 0;
+		const missRate = total > 0 ? (misses / total) * 100 : 0;
 
 		return {
-			totalSignatures: stats.totalSignatures || 0,
-			totalFixes: stats.totalFixes || 0,
-			avgConfidence: stats.avgConfidence || 0,
-			topFixes: stats.topFixes || [],
-			recentFixes: stats.recentFixes || [],
+			totalSignatures: parseInt(stats.totalSignatures || '0', 10),
+			totalFixes: parseInt(stats.totalFixesStored || '0', 10),
+			avgConfidence: parseFloat(stats.avgConfidence || '0'),
+			topFixes: [], // TODO: Scan sig:* keys for top performers
+			recentFixes: [], // TODO: Use sorted set with timestamps
 			hitRate,
 			missRate
 		};
 	} catch (error) {
 		console.warn('[KAG] Stats error:', error.message);
 		return getDefaultStats();
-	}
-}
-
-/**
- * Update global stats (internal)
- */
-async function updateStats(action, data = {}) {
-	if (!redisAvailable) return;
-
-	try {
-		const client = await initRedis();
-		if (!client) return;
-
-		const statsKey = 'phase72:kag:stats';
-		const statsJson = await client.get(statsKey);
-		const stats = statsJson ? JSON.parse(statsJson) : getDefaultStats();
-
-		switch (action) {
-			case 'store':
-				stats.totalFixes++;
-				if (data.errorSig) {
-					stats.seenSignatures = stats.seenSignatures || [];
-					if (!stats.seenSignatures.includes(data.errorSig.sig)) {
-						stats.seenSignatures.push(data.errorSig.sig);
-						stats.totalSignatures = stats.seenSignatures.length;
-					}
-				}
-
-				// Update top fixes
-				if (data.fix) {
-					stats.topFixes = stats.topFixes || [];
-					stats.topFixes.push(data.fix);
-					stats.topFixes.sort((a, b) => (b.successCount || 0) - (a.successCount || 0));
-					stats.topFixes = stats.topFixes.slice(0, 10);
-
-					// Update recent fixes
-					stats.recentFixes = stats.recentFixes || [];
-					stats.recentFixes.unshift(data.fix);
-					stats.recentFixes = stats.recentFixes.slice(0, 10);
-
-					// Update average confidence
-					const totalConfidence = stats.topFixes.reduce(
-						(sum, f) => sum + (f.confidence || 0),
-						0
-					);
-					stats.avgConfidence =
-						stats.topFixes.length > 0 ? totalConfidence / stats.topFixes.length : 0;
-				}
-				break;
-
-			case 'hit':
-				stats.hits = (stats.hits || 0) + 1;
-				break;
-
-			case 'miss':
-				stats.misses = (stats.misses || 0) + 1;
-				break;
-		}
-
-		const ttlSeconds = 30 * 24 * 60 * 60;
-		await client.set(statsKey, JSON.stringify(stats), 'EX', ttlSeconds);
-	} catch (error) {
-		console.warn('[KAG] UpdateStats error:', error.message);
 	}
 }
 
@@ -387,9 +361,8 @@ function getDefaultStats() {
 		avgConfidence: 0,
 		topFixes: [],
 		recentFixes: [],
-		hits: 0,
-		misses: 0,
-		seenSignatures: []
+		hitRate: 0,
+		missRate: 0
 	};
 }
 

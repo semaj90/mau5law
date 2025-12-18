@@ -316,7 +316,7 @@ export class SIMDJSONParserBridge {
  return {
  write: async (
  chunk: Buffer | string,
- encoding: string,
+ encoding: BufferEncoding,
  callback: (error?: Error | null) => void
  ) => {
  buffer += typeof chunk === 'string' ? chunk : chunk.toString(encoding || 'utf-8');

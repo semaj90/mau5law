@@ -16,7 +16,7 @@ async function main() {
     const Redis = (await import('ioredis')).default;
     const redis = new Redis({
       host: '127.0.0.1',
-      port: 4005,
+      port: 6379,
       lazyConnect: true,
       retryStrategy: () => null
     });

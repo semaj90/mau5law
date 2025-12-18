@@ -7,7 +7,7 @@ finally { if (timeoutId) clearTimeout(timeoutId)} // small helper to centralize 
 - **Risk Score**: ${riskScore}/100 ## Key Findings - Contract terms identified ${hasLiability ? '- Liability clauses present' : `- Standard contract language' }`
 //# GDPR Compliance - **GDPR Compliance**: Under Review - **Contract Law**: Requires Review - **Liability Assessment**: ${hasLiability ? 'High Priority Review Needed' : `Standard Processing` }
 //# Recommended Actions - Legal review recommended - Compliance verification needed ## Integration Notes - Integrate with evidence pipeline` }} private simulateComplianceReport(args, Record<string, unknown>): unknown { const evidence = Array.isArray(args? .evidence) ? (args.evidence as unknown[]) : []; const regulations = Array.isArray(args?.regulations) ? (args.regulations as unknown[]): []; const score = Math.min(100, evidence.length * 10 + 50); return { text: `# Compliance Report`
-## Executive Summary - **Evidence Items Analyzed**: ${evidence.length }
+//# Executive Summary - **Evidence Items Analyzed**: ${evidence.length }
 - **Applicable Regulations**: ${regulations.length }
 - **Compliance Score**: ${score}` }} private simulateLegalPrecedents(_: Record<string, unknown>): unknown { return { text: `# Legal Precedent Analysis`
 //## Sample v. Case (2023) - **Relevance Score**: 85% - **Jurisdiction**: federal - **Summary**: Relevant legal precedent for contract disputes` };` } private simulateLegalEntities(_: Record<string, unknown>): unknown { return { text: `# Legal Entity Extraction`
