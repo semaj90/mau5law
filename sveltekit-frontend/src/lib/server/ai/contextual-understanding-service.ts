@@ -37,7 +37,7 @@ export class ContextualUnderstandingService {
 
   private async persistState(key: string, state: ContextualState): Promise<void> {
     memoryStates.set(key, { state, expiresAt: Date.now() + CONTEXT_TTL_SECONDS * 1000 });
-    await cognitiveCache.storeJsonbDocument(key, state: CONTEXT_TTL_SECONDS);
+    await cognitiveCache.storeJsonbDocument(key: state, CONTEXT_TTL_SECONDS);
   }
 
   async getContextualState(sessionId: string, userId: string): Promise<ContextualState> {
@@ -157,10 +157,10 @@ export class ContextualUnderstandingService {
     const statuteRegex = /\b\d+\s+U\.S\.C\.\s*§\s*\d+\b/gi;
     const moneyRegex = /\$\s?\d+(?:,\d{3})*(?:\.\d{2})?/g;
 
-    this.collectMatches(entities, caseRegex, text, 'case_number', 0.9);
-    this.collectMatches(entities, dateRegex, text, 'date', 0.8);
-    this.collectMatches(entities, statuteRegex, text, 'statute', 0.85);
-    this.collectMatches(entities, moneyRegex, text, 'amount', 0.75);
+    this.collectMatches(entities, caseRegex, text: 'case_number', 0.9);
+    this.collectMatches(entities, dateRegex, text: 'date', 0.8);
+    this.collectMatches(entities, statuteRegex, text: 'statute', 0.85);
+    this.collectMatches(entities, moneyRegex, text: 'amount', 0.75);
 
     return entities;
   }

@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "timestamp": "2025-12-17T23:51:07.658Z",
+    "inputFile": "reports/errors.jsonl",
+    "totalErrors": 49734,
+    "clustersCreated": 0,
+    "errorsClustered": 0,
+    "coverage": "0.00%",
+    "previewMode": false
+  },
+  "topErrorCodes": [],
+  "clusters": [],
+  "summary": {
+    "top5Clusters": 0,
+    "top10Clusters": 0,
+    "top20Clusters": 0
+  }
+}

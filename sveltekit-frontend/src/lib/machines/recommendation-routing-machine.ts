@@ -458,14 +458,14 @@ export const recommendationRoutingMachine = setup({
               actions: assign({
                 rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
-                  // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                   // @ts-expect-error - workaround: event.output type needs full actor definition
                   routingKeys: (event.output as RoutingAnalysisResponse).routingKeys,
-                  // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                   // @ts-expect-error - workaround: event.output type needs full actor definition
                   currentQueue: (event.output as RoutingAnalysisResponse).recommendedQueue,
                 }),
                 aiModels: ({ context, event }) => ({
                   ...context.aiModels,
-                  // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                   // @ts-expect-error - workaround: event.output type needs full actor definition
                   currentModel: (event.output as RoutingAnalysisResponse).recommendedModel,
                 }),
               }),
@@ -500,7 +500,7 @@ export const recommendationRoutingMachine = setup({
               actions: assign({
                 rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
-                  // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                   // @ts-expect-error - workaround: event.output type needs full actor definition
                   messageId: (event.output as QueuePublishResponse).messageId,
                 }),
               }),
@@ -526,16 +526,16 @@ export const recommendationRoutingMachine = setup({
             onDone: [
               {
                 target: 'serving_cached_recommendations',
-                // @ts-expect-error - Temporary workaround, event.output type needs full actor definition
+// REMOVED:                 // @ts-expect-error - Temporary workaround, event.output type needs full actor definition
                 guard: ({ event }) => (event.output as CacheCheckResponse).cacheHit,
                 actions: assign({
-                  // @ts-expect-error - Temporary workaround, event.output type needs full actor definition
+// REMOVED:                   // @ts-expect-error - Temporary workaround, event.output type needs full actor definition
                   recommendations: ({ event }) => (event.output as CacheCheckResponse).cachedData,
                   cache: ({ context, event }) => ({
                     ...context.cache,
-                    // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                     // @ts-expect-error - workaround: event.output type needs full actor definition
                     hitRate: (event.output as CacheCheckResponse).hitRate,
-                    // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                     // @ts-expect-error - workaround: event.output type needs full actor definition
                     redisKeys: (event.output as CacheCheckResponse).keys,
                     lastUpdate: new Date(),
                   }),
@@ -546,7 +546,7 @@ export const recommendationRoutingMachine = setup({
                 actions: assign({
                   cache: ({ context, event }) => ({
                     ...context.cache,
-                    // @ts-expect-error - workaround: event.output type needs full actor definition
+// REMOVED:                     // @ts-expect-error - workaround: event.output type needs full actor definition
                     hitRate: (event.output as CacheCheckResponse).hitRate,
                     lastUpdate: new Date(),
                   }),

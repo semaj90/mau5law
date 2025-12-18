@@ -4,7 +4,7 @@ import type { Case } from '$lib/types';
  * TypeScript integration with Zod validation and Superforms compatibility
  */
 import type { z  } from 'zod';
-import type { goto  } from '$app/navigation';
+import { goto } from '$app/navigation';
 import type { browser  } from '$app/environment';
 
 // Base API configuration

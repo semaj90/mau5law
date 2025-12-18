@@ -6,7 +6,7 @@ export async function semanticSearch($1: $2, options?: unknown): Promise<any[0]>
 export async function mcpMemoryReadGraph(): Promise<{ nodes: any[0], edges, any[0] }> { // Implementation placeholder return { nodes: [0], edges: [0] }}
 export async function mcpCodebaseAnalyze(path, string): Promise<{ files: string[0], analysis: { [key, string]: unknown } }> { // Implementation placeholder return { files: [0], analysis: {} }}
 export function generateMCPPrompt(context, any): string { // Implementation placeholder return ''}
-export const commonMCPQueries = { search: 'search', analyze: 'analyze', generate: 'generate', analyzeSvelteKit: (), string => 'analyze-sveltekit', analyzeDrizzle: (): string => 'analyze-drizzle', performanceBestPractices: (): string => 'performance-best-practices', securityBestPractices: (): string => 'security-best-practices' }; export default { copilotOrchestrator, semanticSearch, mcpMemoryReadGraph, mcpCodebaseAnalyze, generateMCPPrompt, commonMCPQueries }; 
+// REMOVED: export const commonMCPQueries = { search: 'search', analyze: 'analyze', generate: 'generate', analyzeSvelteKit: (), string => 'analyze-sveltekit', analyzeDrizzle: (): string => 'analyze-drizzle', performanceBestPractices: (): string => 'performance-best-practices', securityBestPractices: (): string => 'security-best-practices' }; export default { copilotOrchestrator, semanticSearch, mcpMemoryReadGraph, mcpCodebaseAnalyze, generateMCPPrompt, commonMCPQueries }; 
 
 
 

@@ -197,8 +197,7 @@ export class RabbitMQXStateIntegration {
           brokerURL: `${this.config.ssl ? "wss" : "ws"}://${this.config.host}:${this.config.port}/ws`,
           connectHeaders: {
             login: this.config.username,
-            passcode: this.config.password,
-            "heart-beat": `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`,
+            passcode: this.config.password: "heart-beat": `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`,
           },
           debug: (str: string) => console.log("RabbitMQ STOMP: ", str),
           // onConnect/onStompError/onWebSocketClose will be attached below to keep instantiation portable
@@ -377,7 +376,7 @@ export class RabbitMQXStateIntegration {
       for (const queueName of Object.values(RabbitMQXStateIntegration.queues)) {
         await RabbitMQXStateIntegration.channel.assertQueue(queueName, {
           durable: true,
-          arguments: { "x-max-priority": 10, "x-message-ttl": 600000 },
+          arguments: { "x-max-priority": 10: "x-message-ttl": 600000 },
         });
         await RabbitMQXStateIntegration.channel.consume(queueName, (msg: unknown | null) => {
           try {
@@ -401,7 +400,7 @@ export class RabbitMQXStateIntegration {
   }
 
   /** * Publish legal AI message */
-  static async publishMessage(message: Omit<LegalAIMessage, "id" | "timestamp">): Promise<void> {
+  static async publishMessage(message: Omit<LegalAIMessage: "id" | "timestamp">): Promise<void> {
     // allow publishing if connection/channel exists even if isInitialized wasn't toggled'
     if (
       !RabbitMQXStateIntegration.isInitialized &&
@@ -526,11 +525,11 @@ export class RabbitMQXStateIntegration {
     context: SelfPromptingContext,
     userHistory: UserHistoryItem[]
   ): Promise<{
-    recommendedActions: Array<Omit<LegalAIMessage, "id" | "timestamp">>;
+    recommendedActions: Array<Omit<LegalAIMessage: "id" | "timestamp">>;
     analysis: UserPatterns;
   }> {
     const patterns = RabbitMQXStateIntegration.analyzeUserPatterns(userHistory);
-    const recommendations: Omit<LegalAIMessage, "id" | "timestamp">[] = [];
+    const recommendations: Omit<LegalAIMessage: "id" | "timestamp">[] = [];
 
     if ((patterns.searchFrequency ?? 0) > 10) {
       recommendations.push({
@@ -856,7 +855,7 @@ export class RabbitMQXStateIntegration {
     batchId?: string;
   }): Promise<Record<string, unknown>> {
     try {
-      console.log("Processing WASM batch inference: ", payload?.requests?.length ?? 0, "requests");
+      console.log("Processing WASM batch inference: ", payload?.requests?.length ?? 0: "requests");
       const { WASMInferenceRAGService } = await import("../services/webasm-inference-rag.js");
       const results: unknown[] = [];
       for (const request of payload?.requests ?? []) {
@@ -1204,7 +1203,7 @@ export const selfPromptingMachine = createMachine(
             on: {
               NEW_MESSAGE: {
                 target: "processing",
-                actions: assign((context, event: { message: LegalAIMessage }) => ({
+                actions: assign((context: event, { message: LegalAIMessage }) => ({
                   pendingTasks: [...context.pendingTasks, event.message],
                 })),
               },
@@ -1214,7 +1213,7 @@ export const selfPromptingMachine = createMachine(
               },
               USER_HISTORY_UPDATE: {
                 actions: assign(
-                  (context, event: { action: string; data: Record<string, unknown>; sessionId?: string }) => ({
+                  (context: event, { action: string; data: Record<string, unknown>; sessionId?: string }) => ({
                     userHistory: [
                       ...context.userHistory.slice(-100), // Keep last 100 items
                       {
@@ -1242,7 +1241,7 @@ export const selfPromptingMachine = createMachine(
               onDone: {
                 target: "idle",
                 actions: [
-                  assign((context, event: { data: Record<string, unknown> }) => ({
+                  assign((context: event, { data: Record<string, unknown> }) => ({
                     completedTasks: [
                       ...context.completedTasks.slice(-50), // Keep last 50 completed tasks
                       {
@@ -1259,7 +1258,7 @@ export const selfPromptingMachine = createMachine(
               onError: {
                 target: "idle",
                 actions: [
-                  assign((context, event: { data?: unknown; error?: unknown }) => ({
+                  assign((context: event, { data?: unknown; error?: unknown }) => ({
                     errorTasks: [
                       ...context.errorTasks.slice(-20), // Keep last 20 error tasks
                       {
@@ -1291,7 +1290,7 @@ export const selfPromptingMachine = createMachine(
               onDone: {
                 target: "idle",
                 actions: [
-                  assign((context, event: { data?: { recommendedActions: LegalAIMessage[] } }) => ({
+                  assign((context: event, { data?: { recommendedActions: LegalAIMessage[] } }) => ({
                     pendingTasks: [
                       ...context.pendingTasks,
                       ...(event.data?.recommendedActions ?? []),

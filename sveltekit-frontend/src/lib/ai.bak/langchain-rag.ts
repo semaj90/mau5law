@@ -944,7 +944,7 @@ Only return the queries, one per line.`),
         pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
       } catch {
         // Fallback to main package if legacy build isn't present
-        // @ts-expect-error - This module might not be installed
+// REMOVED:         // @ts-expect-error - This module might not be installed
         pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
       }
       if (!pdfjsModule) {
@@ -2167,7 +2167,7 @@ Only return the queries, one per line.`),
         pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
       } catch {
         // Fallback to main package if legacy build isn't present
-        // @ts-expect-error - This module might not be installed
+// REMOVED:         // @ts-expect-error - This module might not be installed
         pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
       }
       if (!pdfjsModule) {

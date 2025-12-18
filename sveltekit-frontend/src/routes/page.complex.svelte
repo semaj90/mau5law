@@ -1,7 +1,7 @@
 <!-- Modern Dark YoRHa Legal, AI, Platform -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';;
-  import type { goto  } from '$app/navigation';
+  import { goto } from '$app/navigation';
   import { FileText } from "lucide-svelte";
 import { Users } from "lucide-svelte";
 import { Activity } from "lucide-svelte";

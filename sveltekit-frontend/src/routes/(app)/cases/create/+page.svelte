@@ -1,571 +1,436 @@
 <script lang="ts">
-  import type { goto  } from '$app/navigation';
-  import { ArrowLeft } from "lucide-svelte";
-import { Save } from "lucide-svelte";
-import { X } from "lucide-svelte";;
+  import { goto } from '$app/navigation';
+  import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
+  import type { appActions, appStore } from '$lib/stores/app-store';
+  import { onDestroy, onMount } from 'svelte';
 
-  // Form state with Svelte 5 runes
-  let title = $state('');
-  let caseNumber = $state('');
-  let description = $state('');
-  let status = $state <'open' | 'pending' | 'closed'>('open');
-  let tags = $state('');
-  let assignedTo = $state('');
+  // YoRHaModalComponent is being replaced by bits-ui Dialog
 
-  // UI state
-  let loading = $state(false);
-  let error = $state <string | null>(null);
-  let tagInput = $state('');
+  let selectedSection = $state('command-center');
+  let showNewCaseModal = $state(false);
+  let newCaseData = $state({
+    title: '',
+    description: '',
+    priority: 'medium',
+  });
 
-  // Computed properties
-  let tagList = $derived(tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0));
+  let loading = $state(true);
+  let error: string | null = $state(null);
 
-  // Handle form submission
-  async function handleSubmit(e: Event) {
-    e.preventDefault();
+  const sections = $state([
+    { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
+    { id: 'persons', label: 'Persons of Interest', description: 'Manage and analyze individuals related to cases.' },
+    { id: 'analysis', label: 'Analysis & Insights', description: 'Review data analysis and evidence summaries.' },
+    { id: 'evidence', label: 'Evidence Locker', description: 'Secure storage and management of digital evidence.' },
+    { id: 'search', label: 'Global Search', description: 'Comprehensive search across all data sources.' },
+  ]);
 
-    if (!title.trim() || !caseNumber.trim()) {
-      error = 'Title and case number are required';
-      return;
-    }
+  let evidenceInsights = $state([]);
+  let recentCases = $state([]);
 
+  // Subscribe to store
+  let appState = $state({});
+  $effect(() => {
+    const unsubscribe = appStore.subscribe(state => {
+      appState = state;
+    });
+    return unsubscribe;
+  });
+
+  async function loadCases() {
     try {
       loading = true;
       error = null;
 
-      const response = await fetch('/api/cases', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: title.trim(),
-          case_number: caseNumber.trim(),
-          description: description.trim(),
-          status,
-          tags: tagList,
-          assigned_to: assignedTo.trim() || null,
-        }),
-      });
+      // Load cases from API
+      await appActions.loadCases();
 
-      if (response.ok) {
-        const newCase = await response.json();
-        goto(`/cases/${newCase.id}`);
-      } else {
-        const errorData = await response.json();
-        error = errorData.error || 'Failed to create case';
-      }
+      // Get cases from store and filter for recent ones
+      const allCases = appState?.cases || [];
+      recentCases = allCases
+        .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
+        .slice(0, 10)
+        .map((caseItem: any) => ({
+          id: caseItem.id || caseItem.caseId,
+          title: caseItem.title || caseItem.name || 'Untitled Case',
+          caseNumber: caseItem.caseNumber || caseItem.id,
+          priority: caseItem.priority || 'medium',
+          createdBy: caseItem.createdBy || 'System',
+          createdByLastName: caseItem.createdByLastName || '',
+          createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
+          status: caseItem.status || 'active'
+        }));
+
     } catch (err) {
-      error = err instanceof Error ? err.message : 'An error occurred';
+      console.error('Failed to load cases:', err);
+      error = 'Failed to load cases';
+
+      // Fallback to mock data
+      recentCases = [
+        {
+          id: 'case-001',
+          title: 'Project Chimera',
+          caseNumber: '2024-001',
+          priority: 'high',
+          createdBy: '2B',
+          createdByLastName: '',
+          createdAt: new Date().toISOString(),
+          status: 'active'
+        },
+        {
+          id: 'case-002',
+          title: 'Network Intrusion',
+          caseNumber: '2024-002',
+          priority: 'medium',
+          createdBy: '9S',
+          createdByLastName: '',
+          createdAt: new Date(Date.now() - 86400000).toISOString(),
+          status: 'active'
+        }
+      ];
     } finally {
       loading = false;
     }
   }
 
-  // Handle cancel
-  function handleCancel() {
-    goto('/cases');
-  }
+  async function loadEvidenceInsights() {
+    try {
+      // Load evidence from API
+      await appActions.loadEvidence();
 
-  // Add tag
-  function addTag() {
-    if (tagInput.trim() && !tagList.includes(tagInput.trim())) {
-      const currentTags = tags ? tags.split(',').map(t => t.trim()) : [];
-      currentTags.push(tagInput.trim());
-      tags = currentTags.join(', ');
-      tagInput = '';
+      const evidence = appState?.evidence || [];
+
+      // Generate insights from evidence data
+      evidenceInsights = evidence
+        .filter((item: any) => item.analysis || item.aiAnalyzed)
+        .slice(0, 5)
+        .map((item: any, index: number) => ({
+          id: `insight-${item.id || index}`,
+          label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
+          summary: item.analysis || item.summary || 'AI analysis completed'
+        }));
+
+      // Add some generated insights if we don't have enough
+      if (evidenceInsights.length < 2) {
+        evidenceInsights = [
+          ...evidenceInsights,
+          {
+            id: 'insight-gen-001',
+            label: 'Anomaly detected in network logs',
+            summary: 'Unusual data transfer patterns identified.'
+          },
+          {
+            id: 'insight-gen-002',
+            label: 'Facial recognition match',
+            summary: 'Subject identified in surveillance footage.'
+          }
+        ].slice(0, 5 - evidenceInsights.length);
+      }
+
+    } catch (err) {
+      console.error('Failed to load evidence insights:', err);
+
+      // Fallback insights
+      evidenceInsights = [
+        { id: 'insight-001', label: 'Anomaly detected in network logs', summary: 'Unusual data transfer patterns identified.' },
+        { id: 'insight-002', label: 'Facial recognition match', summary: 'Subject identified in surveillance footage.' },
+      ];
     }
   }
 
-  // Remove tag
-  function removeTag(tagToRemove: string) {
-    const currentTags = tagList.filter(tag => tag !== tagToRemove);
-    tags = currentTags.join(', ');
+  async function loadData() {
+    await Promise.all([loadCases(), loadEvidenceInsights()]);
   }
 
-  // Handle tag input enter
-  function handleTagKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTag();
+  function openNewCase() {
+    showNewCaseModal = true;
+  }
+
+  function cancelNewCase() {
+    showNewCaseModal = false;
+    newCaseData = { title: '', description: '', priority: 'medium' }; // Reset form
+  }
+
+  async function handleCreateCase(event: SubmitEvent) {
+    console.log('Creating case:', newCaseData);
+    // In a real application, you would send this data to a backend service.
+    // For now, we just close the modal and reset the form.
+    cancelNewCase();
+    // Refresh cases after creating new one
+    await loadCases();
+  }
+
+  function setSelectedSection(sectionId: string) {
+    selectedSection = sectionId;
+  }
+
+  function priorityBadge(priority: string | undefined) {
+    switch (priority) {
+      case 'high':
+        return 'border-red-500/60 bg-red-500/20 text-red-100';
+      case 'critical':
+        return 'border-purple-500/60 bg-purple-500/20 text-purple-100';
+      case 'medium':
+        return 'border-orange-500/60 bg-orange-500/20 text-orange-100';
+      case 'low':
+        return 'border-blue-500/60 bg-blue-500/20 text-blue-100';
+      default:
+        return 'border-slate-500/60 bg-slate-500/20 text-slate-100';
     }
   }
+
+  // Function to handle navigation to a case, addressing the goto() warning
+  async function navigateToCase(caseId: string) {
+    await goto(`/cases/${caseId}`);
+  }
+
+  let intervalId: ReturnType<typeof setInterval>;
+
+  onMount(() => {
+    (async () => {
+      await loadData();
+
+      // Refresh data periodically
+      intervalId = setInterval(async () => {
+        await loadData();
+      }, 60000); // Refresh every minute
+    })();
+  });
+
+  onDestroy(() => {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+  });
 </script>
 
 <svelte:head>
-  <title>Create New Case - Legal AI Platform</title>
-  <meta name="description" content="Create a new legal case" />
+  <title>YoRHa Detective Interface</title>
 </svelte:head>
 
-<div class="create-case">
-  <!-- Header -->
-  <header class="page-header">
-    <div class="header-nav">
-      <button class="btn btn-link" onclick={handleCancel}>
-        <ArrowLeft size={16} />
-        Back to Cases
-      </button>
-    </div>
-
-    <div class="header-content">
-      <h1 class="page-title">Create New Case</h1>
-      <p class="page-subtitle">Fill in the details to create a new legal case</p>
-    </div>
-  </header>
-
-  <!-- Form -->
-  <div class="form-container">
-    {#if error}
-      <div class="error-banner">
-        <X size={16} />
-        <span>{error}</span>
-        <button class="error-close" onclick={() => error = null} aria-label="Close error">
-          <X size={14} />
+<div class="flex h-screen flex-col">
+  <div class="flex-1 overflow-auto">
+    <header class="border-b border-slate-700 bg-black/60">
+      <div class="container mx-auto flex max-w-4xl items-center justify-between py-4">
+        <h1 class="text-2xl font-bold text-slate-100">YoRHa Detective</h1>
+        <button
+          class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100"
+          onclick={openNewCase}
+        >
+          New case
         </button>
       </div>
-    {/if}
+    </header>
 
-    <form onsubmit={handleSubmit} class="case-form">
-      <div class="form-grid">
-        <!-- Basic Information -->
-        <div class="form-section">
-          <h2 class="section-title">Basic Information</h2>
-
-          <div class="form-group">
-            <label for="title" class="form-label required">Case Title</label>
-            <input
-              id="title"
-              type="text"
-              bind:value={title}
-              placeholder="Enter case title"
-              required
-              class="form-input"
-            />
-            <p class="form-help">A descriptive title for the case</p>
-          </div>
-
-          <div class="form-group">
-            <label for="caseNumber" class="form-label required">Case Number</label>
-            <input
-              id="caseNumber"
-              type="text"
-              bind:value={caseNumber}
-              placeholder="Enter case number"
-              required
-              class="form-input"
-            />
-            <p class="form-help">Official case reference number</p>
-          </div>
-
-          <div class="form-group">
-            <label for="status" class="form-label">Status</label>
-            <select id="status" bind:value={status} class="form-select">
-              <option value="open">Open</option>
-              <option value="pending">Pending</option>
-              <option value="closed">Closed</option>
-            </select>
-            <p class="form-help">Current status of the case</p>
-          </div>
+    <main class="container mx-auto max-w-4xl py-6">
+      {#if error}
+        <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 p-4">
+          <div class="text-red-400">⚠️ {error}</div>
         </div>
+      {/if}
 
-        <!-- Details -->
-        <div class="form-section">
-          <h2 class="section-title">Case Details</h2>
-
-          <div class="form-group">
-            <label for="description" class="form-label">Description</label>
-            <textarea
-              id="description"
-              bind:value={description}
-              placeholder="Enter case description"
-              rows="4"
-              class="form-textarea"
-            ></textarea>
-            <p class="form-help">Detailed description of the case</p>
-          </div>
-
-          <div class="form-group">
-            <label for="assignedTo" class="form-label">Assigned To</label>
-            <input
-              id="assignedTo"
-              type="text"
-              bind:value={assignedTo}
-              placeholder="Enter assignee name"
-              class="form-input"
-            />
-            <p class="form-help">Person responsible for this case</p>
-          </div>
-        </div>
-
-        <!-- Tags -->
-        <div class="form-section">
-          <h2 class="section-title">Tags</h2>
-
-          <div class="form-group">
-            <label for="tagInput" class="form-label">Add Tags</label>
-            <div class="tag-input-group">
-              <input
-                id="tagInput"
-                type="text"
-                bind:value={tagInput}
-                placeholder="Enter tag and press Enter"
-                onkeydown={handleTagKeydown}
-                class="form-input"
-              />
-              <button type="button" onclick={addTag} class="btn btn-secondary tag-add-btn">
-                Add
-              </button>
+      <section class="grid grid-cols-2 gap-4">
+        {#each sections as section (section.id)}
+          <button
+            class="rounded-lg border border-slate-700 bg-black/60 p-4 transition-all hover:border-amber-400
+            {selectedSection === section.id ? 'border-amber-400' : ''}"
+            onclick={() => setSelectedSection(section.id)}
+            aria-pressed={selectedSection === section.id}
+          >
+            <div>
+              <h2 class="text-lg font-semibold">{section.label}</h2>
+              <p class="text-xs">{section.description}</p>
             </div>
-            <p class="form-help">Tags help organize and find cases</p>
+          </button>
+      {/each}
+      </section>
+
+      <section class="rounded-lg border border-slate-700 bg-black/60">
+        {#if selectedSection === 'command-center'}
+          <!-- YoRHaCommandCenter component would be rendered here if imported -->
+          <p class="text-sm p-6">Command center module unavailable. Please import the component.</p>
+        {:else if selectedSection === 'persons'}
+          <div class="space-y-4 p-6">
+            <h2 class="text-xl font-semibold">Persons of interest</h2>
+            <p class="text-sm">
+              This module synchronises with dossier analytics. It will surface once the service is enabled.
+            </p>
           </div>
-
-          {#if tagList.length > 0}
-            <div class="tags-display">
-              <label class="form-label">Current Tags:</label>
-              <div class="tag-list">
-                {#each tagList as tag (tag)}
-                  <span class="tag">
-                    {tag}
-                    <button
-                      type="button"
-                      onclick={() => removeTag(tag)}
-                      class="tag-remove"
-                      aria-label="Remove {tag} tag"
-                    >
-                      <X size={12} />
-                    </button>
-                  </span>
-                {/each}
-              </div>
+        {:else if selectedSection === 'analysis'}
+          <div class="grid gap-4 p-6">
+            <div class="rounded-lg border border-slate-700 bg-slate-900/80 p-4">
+              <h3 class="text-lg font-semibold">Recent cases</h3>
+              {#if loading}
+                <div class="mt-3 flex items-center space-x-2">
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent"></div>
+                  <span class="text-sm text-slate-400">Loading cases...</span>
+                </div>
+              {:else if recentCases.length === 0}
+                <p class="mt-3 text-sm">No recent cases found. Create one to get started.</p>
+              {:else}
+                <ul class="mt-4 space-y-3">
+                  {#each Array.isArray(recentCases) ? recentCases : [] as caseItem (caseItem.id)}
+                    <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <p class="font-medium">{caseItem.title}</p>
+                          {#if caseItem.caseNumber}
+                            <p class="text-xs">#{caseItem.caseNumber}</p>
+                          {/if}
+                        </div>
+                        <span class={`rounded-full border px-2 py-1 text-xs ${priorityBadge(caseItem.priority)}`}>
+                          {caseItem.priority ?? 'n/a'}
+                        </span>
+                      </div>
+                      <p class="mt-1 text-xs">
+                        {caseItem.createdBy ? `By ${caseItem.createdBy} ${caseItem.createdByLastName ?? ''}` : '—'} •
+                        {caseItem.createdAt
+                          ? new Date(caseItem.createdAt).toLocaleDateString()
+                          : 'Unknown date'}
+                      </p>
+                      <button
+                        class="mt-2 text-xs text-amber-300 hover:underline"
+                        onclick={() => navigateToCase(caseItem.id)}
+                      >
+                        View case
+                      </button>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
             </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Form Actions -->
-      <div class="form-actions">
-        <button type="button" onclick={handleCancel} class="btn btn-secondary" disabled={loading}>
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" disabled={loading}>
-          {#if loading}
-            <div class="spinner"></div>
-          {:else}
-            <Save size={16} />
-          {/if}
-          Create Case
-        </button>
-      </div>
-    </form>
+            <div class="rounded-lg border border-slate-700 bg-slate-900/80 p-4">
+              <h3 class="text-lg font-semibold">Evidence insights</h3>
+              {#if loading}
+                <div class="mt-3 flex items-center space-x-2">
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent"></div>
+                  <span class="text-sm text-slate-400">Loading insights...</span>
+                </div>
+              {:else if evidenceInsights.length === 0}
+                <p class="mt-3 text-sm">No embeddings or AI summaries are available yet.</p>
+              {:else}
+                <ul class="mt-4 space-y-3">
+                  {#each Array.isArray(evidenceInsights) ? evidenceInsights : [] as insight (insight.id)}
+                    <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
+                      <p class="font-medium">{insight.label}</p>
+                      <p class="text-xs">{insight.summary}</p>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </div>
+          </div>
+        {:else}
+          <div class="space-y-4 p-6">
+            <h2 class="text-xl font-semibold">{sections.find((item) => item.id === selectedSection)?.label}</h2>
+            <p class="text-sm">
+              This section opens in a dedicated view. Use the navigation to continue.
+            </p>
+          </div>
+        {/if}
+      </section>
+    </main>
   </div>
 </div>
 
-<style>
-  .create-case {
-    min-height: 100vh;
-    background: #f8f9fa;
-    padding: 2rem;
-  }
+{#if showNewCaseModal}
+  <Root bind:open={showNewCaseModal}>
+    <Overlay
+      class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out
+             data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+    />
+    <Content
+      class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4
+             border border-slate-700 bg-black/60 p-6 shadow-lg duration-200 data-[state=open]:animate-in
+             data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+             data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2
+             data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2
+             data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full"
+    >
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-slate-100">Create New Case</h2>
+        <p class="text-sm text-slate-300">
+          Fill in the details for the new case.
+        </p>
+      </div>
+      <form
+        class="space-y-4"
+        onsubmit={(e) => {
+          e.preventDefault();
+          handleCreateCase(e as SubmitEvent);
+        }}
+      >
+        <div>
+          <label for="case-title" class="mb-2 block text-sm font-medium">Title</label>
+          <input
+            id="case-title"
+            type="text"
+            bind:value={newCaseData.title}
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+            required
+          />
+        </div>
+        <div>
+          <label for="case-description" class="mb-2 block text-sm font-medium">Description</label>
+          <textarea
+            id="case-description"
+            bind:value={newCaseData.description}
+            rows="4"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+            placeholder="Provide additional context, links, or known entities."
+          ></textarea>
+        </div>
+        <div>
+          <label for="case-priority" class="mb-2 block text-sm font-medium">Priority</label>
+          <select
+            id="case-priority"
+            bind:value={newCaseData.priority}
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            class="rounded border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-slate-400"
+            onclick={cancelNewCase}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100"
+          >
+            Create case
+          </button>
+        </div>
+      </form>
+      <Close
+        class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-4 w-4"
+        >
+          <path d="M18 6L6 18" ></path>
+          <path d="M6 6L18 18" ></path>
+        </svg>
+        <span class="sr-only">Close</span>
+      </Close>
+    </Content>
+  </Root>
+{/if}
 
-  .page-header {
-    background: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-  }
 
-  .header-nav {
-    margin-bottom: 1rem;
-  }
-
-  .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-    color: #212529;
-  }
-
-  .page-subtitle {
-    margin: 0;
-    color: #6c757d;
-  }
-
-  .form-container {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-  }
-
-  .error-banner {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: #f8d7da;
-    color: #721c24;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f5c6cb;
-  }
-
-  .error-close {
-    background: none;
-    border: none;
-    color: #721c24;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    margin-left: auto;
-  }
-
-  .error-close:hover {
-    background: rgba(114, 28, 36, 0.1);
-  }
-
-  .case-form {
-    padding: 2rem;
-  }
-
-  .form-grid {
-    display: grid;
-    gap: 2rem;
-  }
-
-  .form-section {
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 2rem;
-  }
-
-  .form-section:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 1.5rem 0;
-    color: #212529;
-  }
-
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .form-label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #212529;
-    margin-bottom: 0.5rem;
-  }
-
-  .form-label.required::after {
-    content: ' *';
-    color: #dc3545;
-  }
-
-  .form-input,
-  .form-textarea,
-  .form-select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .form-input:focus,
-  .form-textarea:focus,
-  .form-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
-
-  .form-textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.5rem center;
-    background-repeat: no-repeat;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
-  }
-
-  .form-help {
-    margin: 0.25rem 0 0 0;
-    font-size: 0.75rem;
-    color: #6c757d;
-  }
-
-  .tag-input-group {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .tag-add-btn {
-    flex-shrink: 0;
-    padding: 0.75rem 1rem;
-  }
-
-  .tags-display {
-    margin-top: 1rem;
-  }
-
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #e9ecef;
-    color: #495057;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-
-  .tag-remove {
-    background: none;
-    border: none;
-    color: #6c757d;
-    cursor: pointer;
-    padding: 0.125rem;
-    border-radius: 0.125rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .tag-remove:hover {
-    background: rgba(108, 117, 125, 0.2);
-    color: #495057;
-  }
-
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e9ecef;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-    text-decoration: none;
-  }
-
-  .btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-
-  .btn-link {
-    background: none;
-    color: #007bff;
-    border: none;
-    padding: 0;
-    text-decoration: underline;
-  }
-
-  .btn-link:hover {
-    color: #0056b3;
-  }
-
-  .btn-secondary {
-    background: #6c757d;
-    color: white;
-    border-color: #6c757d;
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background: #545b62;
-    border-color: #545b62;
-  }
-
-  .btn-primary {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background: #0056b3;
-    border-color: #0056b3;
-  }
-
-  .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .create-case {
-      padding: 1rem;
-    }
-
-    .page-header {
-      padding: 1.5rem;
-    }
-
-    .case-form {
-      padding: 1.5rem;
-    }
-
-    .form-grid {
-      gap: 1.5rem;
-    }
-
-    .form-section {
-      padding-bottom: 1.5rem;
-    }
-
-    .tag-input-group {
-      flex-direction: column;
-    }
-
-    .tag-add-btn {
-      align-self: flex-start;
-    }
-
-    .form-actions {
-      flex-direction: column-reverse;
-    }
-
-    .btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-</style>

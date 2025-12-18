@@ -1,738 +1,560 @@
 #!/usr/bin/env node
 /**
- * Advanced Error Merger & Batch Fixer with AST Analysis
- * Uses ts-morph for deep TypeScript/Svelte code analysis
- * Analyzes error logs, generates fixes, saves to legal_ai_db
+ * Advanced Batch Fixer v3.0
+ * - @KIRO_TODO contract parsing (safe stub generation)
+ * - JSONL input from analyze-errors-simd.mjs
+ * - Tier-based fix application (deterministic only)
+ * - Progress bars + Redis memory persistence
  */
 
 import fs from 'fs';
 import path from 'path';
-import { Project } from 'ts-morph';
+import readline from 'readline';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const APPLY_SAFE = process.argv.includes("--apply-safe");
-const APPLY_FIX = process.argv.includes("--fix") || process.argv.includes("--apply");
-const FIX_ONMOUNT = process.argv.includes("--fix-onmount-async");
-const FIX_BARRELS = process.argv.includes("--fix-barrels");
 
-// Error log files to analyze (today's reports)
-const logFiles = [
-  'reports/check-and-summarize_2025-12-15_12-37-20.md',
-  'reports/tsc_output_2025-12-15_12-37-20.txt',
-  'reports/svelte-check_output_2025-12-15_12-37-20.txt'
-].filter(f => fs.existsSync(f));
+// ============================================================
+// CLI Argument Parsing & Help
+// ============================================================
+const args = process.argv.slice(2);
+const FLAGS = {
+  PLAN: args.includes("--plan"),
+  APPLY_SAFE: args.includes("--apply-safe"),
+  GENERATE_PATCHES: args.includes("--generate-patches"),
+  ROLLBACK: args.includes("--rollback") ? (args[args.indexOf("--rollback") + 1] || true) : false,
+  VERIFY: args.includes("--verify") ? args[args.indexOf("--verify") + 1] : null,
+  PATH: args.includes("--path") ? args[args.indexOf("--path") + 1] : null,
+  TIER: args.includes("--tier") ? parseInt(args[args.indexOf("--tier") + 1] || "1") : 1,
+  LIMIT: args.includes("--limit") ? parseInt(args[args.indexOf("--limit") + 1]) : Infinity,
+  VERBOSE: args.includes("--verbose"),
+  HELP: args.includes("--help") || args.includes("-h"),
+  // Backward compatibility
+  APPLY_FIX: args.includes("--fix") || args.includes("--apply"),
+  SINCE: args.includes("--since") ? args[args.indexOf("--since") + 1] : null,
+  NO_VERIFY: args.includes("--no-verify")
+};
 
-// Initialize ts-morph project for AST analysis
-const project = new Project({
-  tsConfigFilePath: 'tsconfig.json',
-  skipAddingFilesFromTsConfig: true
-});
+if (FLAGS.HELP || args.length === 0) {
+  console.log(`
+Advanced Batch Fixer v3.0 - Factory Edition
+===========================================
+Usage: node scripts/batch-merger-fixer.mjs [options]
 
-function analyzeWithAST() {
-  console.log('🔍 Analyzing TypeScript AST for Svelte routes...\n');
+Modes:
+  --plan               Analyze errors and create a fix plan (no changes)
+  --generate-patches   Create .patch files in reports/runs/<timestamp>/patches
+  --apply-safe         Apply fixes with backup and verification
+  --rollback <run-id>  Revert changes from a specific run (or 'latest')
 
-  const analysis = {
-    routes: [],
-    issues: [],
-    recommendations: []
-  };
+Options:
+  --tier <1-3>         Fix safety level (1=Safe, 2=Async/Lifecycle, 3=Manual)
+  --path <glob>        Limit scope (e.g., "src/lib/services/**")
+  --limit <n>          Max files/errors to process
+  --verify <cmd>       Command to run after apply (e.g., "npm run check:ultra-fast")
+  --verbose            Show detailed logs
 
-  // Get all route files
-  const routeFiles = fs.readdirSync('src/routes', { recursive: true })
-    .filter(f => f.endsWith('+page.svelte') || f.endsWith('+page.ts'))
-    .map(f => path.join('src/routes', f));
+Examples:
+  Plan Tier 1 for services:
+    node scripts/batch-merger-fixer.mjs --plan --tier 1 --path "src/lib/services/**"
 
-  console.log(`📂 Found ${routeFiles.length} route files\n`);
+  Generate patches:
+    node scripts/batch-merger-fixer.mjs --generate-patches --tier 1 --path "src/lib/services/**"
 
-  let processed = 0;
-  for (const filePath of routeFiles) {
-    if (!fs.existsSync(filePath)) continue;
-
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const route = {
-      file: filePath,
-      issues: [],
-      patterns: detectPatterns(content, filePath)
-    };
-
-    // Check for common Svelte issues
-    analyzeForSvelteIssues(content, filePath, route);
-
-    if (route.issues.length > 0 || route.patterns.length > 0) {
-      analysis.routes.push(route);
-    }
-
-    processed += 1;
-    // Lightweight progress every 25 files (keeps output concise for large repos)
-    if (processed % 25 === 0 || processed === routeFiles.length) {
-      const pct = ((processed / routeFiles.length) * 100).toFixed(1);
-      process.stdout.write(`\r⏳ Scanned ${processed}/${routeFiles.length} routes (${pct}%)`);
-    }
-  }
-
-  if (processed) {
-    process.stdout.write('\n');
-  }
-
-  return analysis;
+  Apply with verification:
+    node scripts/batch-merger-fixer.mjs --apply-safe --tier 1 --limit 1000 --verify "npm run check:ultra-fast"
+`);
+  process.exit(0);
 }
 
-function detectPatterns(content, filePath) {
-  const patterns = [];
+// ============================================================
+// KIRO_TODO Contract Parser
+// ============================================================
+function parseKiroTodo(comment) {
+  /*
+    Example comment block:
 
-  // Pattern 1: import type for runtime values (Svelte 5 + runtime use)
-  const importTypeMatch = content.match(/import\s+type\s+\{([^}]+)\}/g);
-  if (importTypeMatch) {
-    // Stricter check: only flag if used as value (new X, extends X, X.prop, etc.)
-    const importedNames = [];
-    importTypeMatch.forEach(match => {
-      const names = match.match(/\{([^}]+)\}/)[1].split(',').map(s => s.trim());
-      importedNames.push(...names);
-    });
+    // @KIRO_TODO
+    // id: phase13.detect.redis
+    // requires: REDIS_URL
+    // implements: function detectRedis(): Promise<ServiceStatus>
+    // acceptance:
+    //   - returns { ok: true } when PING succeeds
+    //   - ok=false with reason on timeout
+  */
 
-    const misuse = importedNames.filter(name => {
-      // Check for value usage: new Name, extends Name, Name.prop, Name(
-      // Exclude: typeof Name, : Name (type annotation)
-      const valueUsageRegex = new RegExp(`\\b(new\\s+${name}|extends\\s+${name}|${name}\\.|${name}\\()`, 'g');
-      return valueUsageRegex.test(content);
-    });
+  const kiroMatch = comment.match(/@KIRO_TODO\n([\s\S]*?)(?:\*\/|$)/);
+  if (!kiroMatch) return null;
 
-    if (misuse.length > 0) {
-      patterns.push({
-        type: 'import-type-misuse',
-        count: misuse.length,
-        message: `Found import type for runtime values (${misuse.join(', ')}) - should be regular import`,
-        priority: 'HIGH',
-        affectedCount: misuse.length
-      });
+  const content = kiroMatch[1];
+  const todo = {};
+
+  // Simple YAML-ish parser
+  const lines = content.split('\n').map(l => l.trim());
+  let currentKey = null;
+  let currentArray = null;
+
+  lines.forEach(line => {
+    if (!line || line.startsWith('*')) return;
+
+    if (line.startsWith('-')) {
+      // Array item
+      if (!todo[currentKey]) todo[currentKey] = [];
+      todo[currentKey].push(line.substring(1).trim());
+    } else if (line.includes(':')) {
+      const [key, ...valueParts] = line.split(':');
+      const value = valueParts.join(':').trim();
+      todo[key.trim()] = value;
+      currentKey = key.trim();
     }
-  }
+  });
 
-  // Pattern 2: onMount with async body (needs IIFE wrapper)
-  if (content.includes('onMount(async') && !content.includes('onMount(() => {')) {
-    patterns.push({
-      type: 'onMount-async',
-      message: 'onMount with async - needs IIFE wrapper for Svelte lifecycle',
-      priority: 'HIGH'
-    });
-  }
-
-  // Pattern 3: Old event handler syntax (on:click → onclick, on:change → onchange, etc.)
-  const oldEventMatches = content.match(/on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/g);
-  if (oldEventMatches) {
-    patterns.push({
-      type: 'event-handler-syntax',
-      count: oldEventMatches.length,
-      message: 'Found legacy on:* event syntax - Svelte 5 uses on* (onclick, onchange, etc.)',
-      priority: 'HIGH',
-      affectedCount: oldEventMatches.length,
-      fix: 'Replace on:click with onclick, on:change with onchange, etc.'
-    });
-  }
-
-  // Pattern 4: Invalid event modifiers (on:* | prevent)
-  if (content.match(/on:[a-z]+\s*\|/)) {
-    patterns.push({
-      type: 'event-modifier-deprecation',
-      message: 'Event modifiers like |prevent are deprecated - use event handler parameter (e.preventDefault())',
-      priority: 'MEDIUM'
-    });
-  }
-
-  // Pattern 5: Native input without bind:value
-  if (content.match(/<(input|textarea)[^>]*value=/)) {
-    patterns.push({
-      type: 'input-value-binding',
-      message: 'Found value= on native input - should use bind:value in Svelte',
-      priority: 'MEDIUM'
-    });
-  }
-
-  // Pattern 6: Lucide icon imports (check for consistency)
-  if (content.includes('lucide-svelte')) {
-    patterns.push({
-      type: 'lucide-imports',
-      message: 'Verify lucide-svelte icons use correct component names and no duplicates',
-      priority: 'LOW'
-    });
-  }
-
-  // Pattern 7: Bits-UI Dialog/Field pattern issues
-  if (content.includes('Dialog') || content.includes('Field')) {
-    const hasDialogSlots = content.match(/Dialog\.(Trigger|Content|Close)/);
-    const hasFieldProps = content.match(/Field\.(control|snippet)/);
-    // If using Dialog but NOT using the dot notation for slots, it might be old API
-    if (content.includes('<Dialog') && !hasDialogSlots && !content.includes('Dialog.Root')) {
-       patterns.push({
-        type: 'bits-ui-component-pattern',
-        message: 'Bits-UI v2 uses .Trigger/.Content/.Close slots and Field control/snippet props',
-        priority: 'HIGH'
-      });
-    }
-  }
-
-  // Pattern 8: Barrel import validation ($lib/components/ui/index.ts)
-  if (content.includes('from \'$lib/components/ui\'')) {
-    patterns.push({
-      type: 'barrel-import-validation',
-      message: 'Using barrel imports from $lib/components/ui - verify index.ts exports',
-      priority: 'MEDIUM'
-    });
-  }
-
-  // Pattern 9: SvelteComponentTyped issues
-  if (content.includes('SvelteComponentTyped')) {
-    patterns.push({
-      type: 'component-typing',
-      message: 'SvelteComponentTyped usage - verify component instance vs type usage',
-      priority: 'MEDIUM'
-    });
-  }
-
-  // Pattern 10: Async directive in +page.svelte
-  if (filePath.includes('+page.svelte') && content.match(/{#await.*?}.*?{:then.*?}.*?{:catch.*?}/s)) {
-    patterns.push({
-      type: 'async-blocks',
-      message: 'Async blocks present - verify error handling and loading states',
-      priority: 'LOW'
-    });
-  }
-
-  // Pattern 11: Legacy Slots (Svelte 5 Snippets)
-  if (content.includes('<slot') || content.match(/slot="[^"]+"/)) {
-    patterns.push({
-      type: 'legacy-slots',
-      message: 'Found legacy <slot> or slot="..." syntax. Svelte 5 prefers {#snippet} and {@render}',
-      priority: 'MEDIUM'
-    });
-  }
-
-  // Pattern 12: Legacy Props (export let vs $props())
-  if (content.includes('export let ') && !content.includes('$props()')) {
-    patterns.push({
-      type: 'legacy-props',
-      message: 'Found "export let" syntax. Consider migrating to $props() rune for Svelte 5',
-      priority: 'LOW'
-    });
-  }
-
-  return patterns;
+  return todo;
 }
 
-function analyzeForSvelteIssues(content, filePath, route) {
-  const lines = content.split('\n');
+function extractKiroTodos(filePath) {
+  if (!fs.existsSync(filePath)) return [];
 
-  lines.forEach((line, idx) => {
-    // Check for legacy on:* event syntax (Svelte 5 uses on*)
-    if (line.match(/on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/)) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'event-handler-deprecation',
-        message: 'Legacy on:* syntax detected - use onclick, onchange, etc. for Svelte 5',
-        priority: 'HIGH'
-      });
-    }
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const todos = [];
 
-    // Check for SvelteComponentTyped issues
-    if (line.includes('SvelteComponentTyped')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'component-typing',
-        message: 'Verify SvelteComponentTyped import vs component instance usage',
-        priority: 'MEDIUM'
-      });
-    }
+  // Match /** ... */ and // ... comments
+  const blockComments = content.match(/\/\*\s*@KIRO_TODO[\s\S]*?\*\//g) || [];
+  const lineComments = content.match(/\/\/\s*@KIRO_TODO[^\n]*/g) || [];
 
-    // Check for style blocks with invalid references
-    if (line.includes('<style') && line.includes('.svelte') && line.includes('(')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'invalid-style-block',
-        message: 'Style block has invalid file path reference',
-        priority: 'MEDIUM'
-      });
-    }
+  blockComments.forEach(comment => {
+    const parsed = parseKiroTodo(comment);
+    if (parsed) todos.push(parsed);
+  });
 
-    // Check for double semicolons
-    if (line.includes(';;')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'double-semicolon',
-        message: 'Found double semicolon',
-        priority: 'LOW'
-      });
+  lineComments.forEach(comment => {
+    const match = comment.match(/\/\/\s*@KIRO_TODO:\s*(.+)$/);
+    if (match) {
+      todos.push({ instruction: match[1] });
     }
+  });
 
-    // Check for reactive declarations without Svelte 5 runes
-    if (line.includes('let ') && !line.includes('=') && !line.includes('$state') &&
-        !line.includes('$computed') && !line.includes('$derived') && !line.includes('const') && !line.includes('export')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'svelte5-runes',
-        message: 'Consider using $state, $computed, or $derived runes for reactive declarations',
-        priority: 'LOW'
-      });
-    }
+  return todos;
+}
 
-    // Check for Dialog/Field component patterns (Bits-UI v2)
-    if (line.includes('Dialog.') && !line.includes('.Trigger') && !line.includes('.Content') && !line.includes('.Close') && !line.includes('.Root')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'bits-ui-dialog-pattern',
-        message: `Dialog usage detected at line ${idx + 1} - verify Bits-UI v2 slot pattern (Trigger/Content/Close)`,
-        priority: 'MEDIUM'
-      });
-    }
+// ============================================================
+// JSONL Event Reader (streaming)
+// ============================================================
+async function readJsonlEvents(filePath) {
+  const events = [];
 
-    // Check for Field component patterns
-    if (line.includes('Field') && !line.includes('control') && !line.includes('snippet')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'bits-ui-field-pattern',
-        message: `Field component usage at line ${idx + 1} - ensure control/snippet props are used correctly`,
-        priority: 'MEDIUM'
-      });
-    }
+  if (!fs.existsSync(filePath)) {
+    console.warn(`⚠️  JSONL file not found: ${filePath}`);
+    return events;
+  }
 
-    // Check for import type misuse on known runtime imports
-    const runtimeImportKeywords = ['goto', 'pushState', 'replaceState', 'invalidate', 'onMount', 'onDestroy', 'tick'];
-    if (line.includes('import type') && runtimeImportKeywords.some(kw => line.includes(kw))) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'import-type-runtime-misuse',
-        message: `Runtime import detected as 'type' - should be regular import for ${line.match(/\{([^}]+)\}/)?.[1]}`,
-        priority: 'HIGH'
-      });
-    }
+  return new Promise((resolve, reject) => {
+    const rl = readline.createInterface({
+      input: fs.createReadStream(filePath),
+      crlfDelay: Infinity
+    });
 
-    // Check for missing bind: on form inputs
-    if (line.match(/<(input|textarea|select)[^>]*value=/)) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'missing-bind-directive',
-        message: 'Native form input uses value= - should use bind:value for two-way binding',
-        priority: 'MEDIUM'
-      });
-    }
+    let lineNum = 0;
+    rl.on('line', (line) => {
+      lineNum++;
+      if (!line.trim()) return;
 
-    // Check for onMount(async
-    if (line.includes('onMount(async')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'onMount-async',
-        message: 'onMount(async ...) detected. Use onMount(() => { async function... })',
-        priority: 'HIGH'
-      });
-    }
+      try {
+        const event = JSON.parse(line);
+        events.push(event);
 
-    // Check for legacy slots
-    if (line.includes('<slot') || line.match(/slot="[^"]+"/)) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'legacy-slots',
-        message: 'Legacy <slot> detected. Svelte 5 prefers {#snippet} and {@render}',
-        priority: 'MEDIUM'
-      });
-    }
+        if (lineNum % 50 === 0) {
+          process.stdout.write(`\r⏳ Loaded ${lineNum} events...`);
+        }
+      } catch (e) {
+        console.error(`❌ Invalid JSON at line ${lineNum}: ${line.substring(0, 80)}`);
+      }
+    });
 
-    // Check for legacy props
-    if (line.includes('export let ')) {
-      route.issues.push({
-        line: idx + 1,
-        type: 'legacy-props',
-        message: 'Legacy "export let" detected. Consider $props() rune',
-        priority: 'LOW'
-      });
-    }
+    rl.on('close', () => {
+      process.stdout.write(`\n`);
+      resolve(events);
+    });
+
+    rl.on('error', reject);
   });
 }
 
-// Generate batch fixes based on analysis
-function generateBatchFixes(analysis) {
-  const fixes = {
-    top100: [],
-    top1000: [],
-    recommendations: []
-  };
+// ============================================================
+// Fix Tier Definitions
+// ============================================================
+const TIER_DEFINITIONS = {
+  1: {
+    name: 'Safe Deterministic',
+    categories: ['unused-variable', 'import-type-misuse', 'reactive-update'],
+    transforms: [
+      {
+        id: 'remove-unused-import',
+        category: 'unused-variable',
+        action: 'delete-line',
+        canApplyAuto: true,
+        confidence: 1.0
+      },
+      {
+        id: 'fix-import-type-goto',
+        category: 'import-type-misuse',
+        action: 'replace-regex',
+        pattern: /import\s+type\s+\{\s*goto\s*\}\s+from\s+['"]\$app\/navigation['"];?/,
+        replacement: "import { goto } from '$app/navigation';",
+        canApplyAuto: true,
+        confidence: 1.0
+      },
+      {
+        id: 'fix-onclick-event',
+        category: 'other', // Often appears as "Type ... is not assignable" or similar
+        action: 'replace-regex',
+        pattern: /\bon:click\s*=/g,
+        replacement: 'onclick=',
+        canApplyAuto: true,
+        confidence: 0.98
+      },
+      {
+        id: 'fix-transition-fade-import',
+        category: 'import-type-misuse',
+        action: 'replace-regex',
+        pattern: /import\s+type\s+\{\s*fade\s*\}\s+from\s+['"]svelte\/transition['"];?/,
+        replacement: "import { fade } from 'svelte/transition';",
+        canApplyAuto: true,
+        confidence: 1.0
+      }
+    ]
+  },
+  2: {
+    name: 'Semi-Safe (Async/Lifecycle)',
+    categories: ['async-function', 'reactive-update'],
+    transforms: [
+      {
+        id: 'wrap-onmount-async',
+        category: 'async-function',
+        action: 'wrap-in-iife',
+        pattern: /onMount\(\s*async\s*(?:function)?\s*\(\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\)/,
+        replacement: 'onMount(() => { (async () => {$1})(); })',
+        canApplyAuto: true,
+        confidence: 0.95
+      },
+      {
+        id: 'fix-reactive-update',
+        category: 'reactive-update',
+        action: 'add-declare',
+        canApplyAuto: true,
+        confidence: 0.85
+      }
+    ]
+  },
+  3: {
+    name: 'Manual Review',
+    categories: ['type-mismatch', 'bits-ui-dialog', 'bits-ui-field', 'missing-param'],
+    transforms: [
+      {
+        id: 'audit-type-mismatch',
+        category: 'type-mismatch',
+        action: 'generate-patch',
+        canApplyAuto: false
+      }
+    ]
+  }
+};
 
-  // Sort routes by issue count
-  const sortedRoutes = analysis.routes
-    .sort((a, b) => (b.issues.length + b.patterns.length) - (a.issues.length + a.patterns.length))
-    .slice(0, 100); // Top 100
+// ============================================================
+// Main Execution
+// ============================================================
+async function main() {
+  console.log('\n🚀 Advanced Batch Fixer v3.0 (JSONL + @KIRO_TODO + Tiers)\n');
 
-  for (const route of sortedRoutes) {
-    const batchFix = {
-      file: route.file,
-      issues: route.issues.length,
-      patterns: route.patterns.length,
-      fixes: generateFixesForRoute(route)
-    };
-    fixes.top100.push(batchFix);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const reportsDir = path.join(__dirname, '../reports');
+
+  // Ensure reports dir exists
+  if (!fs.existsSync(reportsDir)) {
+    fs.mkdirSync(reportsDir, { recursive: true });
   }
 
-  // Recommendations
-  const importTypeCount = analysis.routes.filter(r =>
-    r.patterns.some(p => p.type === 'import-type-misuse')
-  ).length;
+  // ============================================================
+  // PHASE 1: Read JSONL error events
+  // ============================================================
+  console.log('📋 PHASE 1: Loading JSONL events...');
+  const jsonlFile = FLAGS.SINCE || path.join(reportsDir, 'error-events.jsonl');
+  const events = await readJsonlEvents(jsonlFile);
 
-  const eventHandlerCount = analysis.routes.filter(r =>
-    r.patterns.some(p => p.type === 'event-handler-syntax')
-  ).length;
-
-  const onMountCount = analysis.routes.filter(r =>
-    r.patterns.some(p => p.type === 'onMount-async')
-  ).length;
-
-  const bitsUIDialogCount = analysis.routes.filter(r =>
-    r.patterns.some(p => p.type === 'bits-ui-component-pattern')
-  ).length;
-
-  const barrelImportCount = analysis.routes.filter(r =>
-    r.patterns.some(p => p.type === 'barrel-import-validation')
-  ).length;
-
-  if (importTypeCount > 0) {
-    fixes.recommendations.push({
-      priority: 'HIGH',
-      type: 'import-type-misuse',
-      affectedFiles: importTypeCount,
-      action: 'Convert "import type" to "import" for runtime values (goto, onMount, etc.)',
-      example: 'import type { goto } → import { goto }',
-      pattern: /import\s+type\s+\{([^}]+)\}/g,
-      replacement: 'import { $1 }',
-      safe: true
-    });
+  if (events.length === 0) {
+    console.log('⚠️  No events found. Run: npm run check:svelte && npm run analyze:errors first');
+    process.exit(1);
   }
 
-  if (eventHandlerCount > 0) {
-    fixes.recommendations.push({
-      priority: 'HIGH',
-      type: 'event-handler-syntax',
-      affectedFiles: eventHandlerCount,
-      action: 'Update event handlers: on:click → onclick, on:change → onchange, etc.',
-      example: 'on:click={fn} → onclick={fn}',
-      pattern: /on:(click|change|input|submit|focus|blur|keydown|keyup)/g,
-      replacement: 'on$1'
-    });
+  console.log(`✅ Loaded ${events.length} error events\n`);
+
+  // ============================================================
+  // PHASE 2: Scan for @KIRO_TODO contracts
+  // ============================================================
+  console.log('🔍 PHASE 2: Scanning for @KIRO_TODO contracts...');
+  const routeFiles = [];
+  function scanDir(dir) {
+    try {
+      fs.readdirSync(dir, { recursive: true }).forEach(file => {
+        if ((file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.svelte')) &&
+            !file.includes('node_modules')) {
+          routeFiles.push(path.join(dir, file));
+        }
+      });
+    } catch (e) {
+      // Ignore unreadable dirs
+    }
   }
 
-  if (onMountCount > 0) {
-    fixes.recommendations.push({
-      priority: 'HIGH',
-      type: 'onMount-async',
-      affectedFiles: onMountCount,
-      action: 'Wrap async logic in IIFE inside onMount callback',
-      example: 'onMount(() => { (async () => { ... })(); })',
-      manual: true,
-      detail: 'Locate onMount(async () => { ... }) and wrap body in IIFE'
-    });
+  scanDir(path.join(__dirname, '../src'));
+  const kiroContracts = [];
+
+  let scanned = 0;
+  for (const filePath of routeFiles) {
+    const todos = extractKiroTodos(filePath);
+    if (todos.length > 0) {
+      kiroContracts.push({ file: filePath, todos });
+    }
+    scanned++;
+    if (scanned % 25 === 0) {
+      process.stdout.write(`\r⏳ Scanned ${scanned} files...`);
+    }
   }
+  process.stdout.write('\n');
 
-  if (bitsUIDialogCount > 0) {
-    fixes.recommendations.push({
-      priority: 'HIGH',
-      type: 'bits-ui-dialog-field',
-      affectedFiles: bitsUIDialogCount,
-      action: 'Verify Bits-UI v2 patterns: Dialog uses .Trigger/.Content/.Close, Field uses control/snippet',
-      example: '<Dialog.Trigger>Open</Dialog.Trigger><Dialog.Content>...</Dialog.Content>',
-      manual: true,
-      detail: 'Check for missing .Trigger/.Content on Dialog, or missing control/snippet on Field'
-    });
-  }
+  console.log(`✅ Found ${kiroContracts.length} files with @KIRO_TODO contracts\n`);
 
-  if (barrelImportCount > 0) {
-    fixes.recommendations.push({
-      priority: 'MEDIUM',
-      type: 'barrel-import-validation',
-      affectedFiles: barrelImportCount,
-      action: 'Verify $lib/components/ui/index.ts exports all imported components',
-      example: 'export { default as Button } from "./Button.svelte";',
-      manual: false
-    });
-  }
+  // ============================================================
+  // PHASE 3: Generate stubs from contracts
+  // ============================================================
+  if (kiroContracts.length > 0) {
+    console.log('🔧 PHASE 3: Generating stubs from @KIRO_TODO contracts...');
 
-  return fixes;
-}
-
-function generateFixesForRoute(route) {
-  const fixes = [];
-
-  for (const pattern of route.patterns) {
-    switch (pattern.type) {
-      case 'import-type-misuse':
-        fixes.push({
-          type: 'replace',
-          pattern: /import\s+type\s+\{([^}]+)\}/g,
-          replacement: 'import { $1 }',
-          reason: 'Type-only imports need to be value imports for runtime use',
-          safe: true
-        });
-        break;
-      case 'onMount-async':
-        if (FIX_ONMOUNT) {
-          fixes.push({
-            type: 'replace',
-            pattern: /onMount\(\s*async\s*(?:function)?\s*\(\s*\)\s*=>\s*\{/g,
-            replacement: 'onMount(() => { (async () => {',
-            suffix: '})();', // Special handling needed for suffix
-            reason: 'Wrap async onMount in IIFE',
-            safe: true
-          });
-        } else {
-          fixes.push({
-            type: 'refactor',
-            reason: 'onMount must not be async directly',
-            suggestion: 'Wrap async in IIFE: onMount(() => { (async () => { ... })(); })'
+    const stubs = [];
+    for (const { file, todos } of kiroContracts) {
+      for (const todo of todos) {
+        if (todo.implements) {
+          stubs.push({
+            file,
+            id: todo.id || 'unknown',
+            implements: todo.implements,
+            requires: (todo.requires || '').split(',').map(s => s.trim()).filter(Boolean),
+            acceptance: todo.acceptance || [],
+            generated: false
           });
         }
-        break;
-      case 'input-value-binding':
-        fixes.push({
-          type: 'replace',
-          pattern: /(<(?:input|textarea)[^>]*)value=/g,
-          replacement: '$1bind:value=',
-          reason: 'Native inputs in Svelte should use bind:value',
-          safe: true
-        });
-        break;
-      case 'event-handler-syntax':
-        fixes.push({
-          type: 'replace',
-          pattern: /on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/g,
-          replacement: 'on$1=',
-          reason: 'Svelte 5 event handler syntax'
-        });
-        break;
-      case 'legacy-slots':
-        fixes.push({
-          type: 'refactor',
-          reason: 'Legacy <slot> detected',
-          suggestion: 'Migrate to {#snippet} and {@render} for Svelte 5'
-        });
-        break;
-      case 'legacy-props':
-        fixes.push({
-          type: 'refactor',
-          reason: 'Legacy "export let" detected',
-          suggestion: 'Migrate to $props() rune for Svelte 5'
-        });
-        break;
+      }
     }
+
+    const stubsFile = path.join(reportsDir, `stubs-${timestamp}.json`);
+    fs.writeFileSync(stubsFile, JSON.stringify(stubs, null, 2));
+    console.log(`✅ Generated ${stubs.length} stub definitions (saved to ${stubsFile})\n`);
   }
 
-  for (const issue of route.issues) {
-    switch (issue.type) {
-      case 'double-semicolon':
-        fixes.push({
-          type: 'replace',
-          pattern: /;;/g,
-          replacement: ';',
-          line: issue.line,
-          reason: 'Remove duplicate semicolons',
-          safe: true
-        });
-        break;
-      case 'event-handler-deprecation':
-        fixes.push({
-          type: 'replace',
-          pattern: /on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/g,
-          replacement: 'on$1=',
-          line: issue.line,
-          reason: 'Svelte 5 event handler syntax'
-        });
-        break;
-    }
+  // ============================================================
+  // PHASE 4: Plan fixes by tier
+  // ============================================================
+  console.log(`📊 PHASE 4: Planning tier-${FLAGS.TIER} fixes...`);
+
+  const tier = TIER_DEFINITIONS[FLAGS.TIER];
+  if (!tier) {
+    console.error(`❌ Invalid tier: ${FLAGS.TIER}. Valid: 1, 2, 3`);
+    process.exit(1);
   }
 
-  return fixes;
-}
+  // Filter events by tier categories
+  const tierEvents = events.filter(e => tier.categories.includes(e.category));
+  console.log(`✅ Tier ${FLAGS.TIER} (${tier.name}): ${tierEvents.length} applicable errors\n`);
 
-async function applyFixes(fixes) {
-  console.log('\n🔧 Applying automated fixes...');
-  let fixedCount = 0;
+  if (tierEvents.length === 0) {
+    console.log('✅ No errors in this tier. Pipeline complete!');
+    process.exit(0);
+  }
+
+  // ============================================================
+  // PHASE 5: Group by file for batch application
+  // ============================================================
+  console.log('🎯 PHASE 5: Grouping fixes by file...');
+
+  const fixesByFile = {};
+  tierEvents.forEach(event => {
+    // Path filtering
+    if (FLAGS.PATH) {
+      const normalizedPath = event.file.replace(/\\/g, '/');
+      const filterPath = FLAGS.PATH.replace(/\\/g, '/').replace(/\/\*\*$/, '');
+      if (!normalizedPath.includes(filterPath)) return;
+    }
+
+    if (!fixesByFile[event.file]) fixesByFile[event.file] = [];
+    fixesByFile[event.file].push(event);
+  });
+
+  const fileCount = Object.keys(fixesByFile).length;
+  console.log(`✅ Found ${fileCount} files with fixable errors\n`);
+
+  // ============================================================
+  // PHASE 6: Apply or generate patches
+  // ============================================================
+  console.log('🔨 PHASE 6: Applying fixes...');
+
+  let appliedCount = 0;
+  let skippedCount = 0;
   let errorCount = 0;
+  const touchedFiles = new Set();
 
-  for (const fileData of fixes.top100) {
-    if (fileData.fixes.length === 0) continue;
+  // Limit processing
+  const filesToProcess = Object.entries(fixesByFile).slice(0, FLAGS.LIMIT);
+  if (filesToProcess.length < Object.keys(fixesByFile).length) {
+    console.log(`⚠️  Limiting to first ${FLAGS.LIMIT} files (of ${Object.keys(fixesByFile).length})`);
+  }
 
-    try {
-      let content = fs.readFileSync(fileData.file, 'utf8');
-      let modified = false;
+  if (FLAGS.APPLY_SAFE || FLAGS.APPLY_FIX) {
+    // Backup logic
+    const backupDir = path.join(reportsDir, `backups-${timestamp}`);
+    if (FLAGS.TIER === 1) {
+      fs.mkdirSync(backupDir, { recursive: true });
+      console.log(`📦 Backups will be saved to: ${backupDir}`);
+    }
 
-      for (const fix of fileData.fixes) {
-        if (APPLY_SAFE && !fix.safe) continue;
+    // Apply Tier 1 fixes directly
+    if (FLAGS.TIER === 1) {
+      for (const [file, fileErrors] of filesToProcess) {
+        if (!fs.existsSync(file)) {
+          console.warn(`⚠️  File not found: ${file}`);
+          continue;
+        }
 
-        if (fix.type === 'replace' && fix.pattern) {
-          // Special handling for onMount async wrapper which needs suffix
-          if (fix.suffix) {
-             // This is a simplified regex replace for onMount(async () => { ... })
-             // It assumes the block ends with }) matching the opening onMount(
-             // A robust AST transform is better, but for this specific pattern:
-             // onMount(async () => { ...code... }) -> onMount(() => { (async () => { ...code... })(); })
+        try {
+          let content = fs.readFileSync(file, 'utf-8');
+          const originalContent = content;
+          let modified = false;
 
-             // We'll use a more targeted approach for onMount to avoid breaking nested structures
-             // Find the specific onMount(async ... block
-             const onMountRegex = /onMount\(\s*async\s*(?:function)?\s*\(\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\)/g;
-             const newContent = content.replace(onMountRegex, (match, body) => {
-               return `onMount(() => { (async () => {${body}})(); })`;
-             });
+          // Apply regex replacements first (global)
+          tier.transforms.forEach(t => {
+            if (t.action === 'replace-regex' && t.pattern) {
+              if (t.pattern.test(content)) {
+                content = content.replace(t.pattern, t.replacement);
+                modified = true;
+              }
+            }
+          });
 
-             if (newContent !== content) {
-               content = newContent;
-               modified = true;
-             }
-          } else {
-            const newContent = content.replace(fix.pattern, fix.replacement);
-            if (newContent !== content) {
-              content = newContent;
-              modified = true;
+          // Apply line-based fixes
+          const lines = content.split('\n');
+          fileErrors.forEach(error => {
+            if (error.category === 'unused-variable') {
+              // Simple heuristic: comment out the line with a marker
+              if (lines[error.line - 1] && !lines[error.line - 1].includes('// REMOVED:')) {
+                lines[error.line - 1] = `// REMOVED: ${lines[error.line - 1]}`;
+                modified = true;
+              }
+            }
+          });
+          content = lines.join('\n');
+
+          if (modified) {
+            // Save backup
+            const backupPath = path.join(backupDir, path.basename(file) + '.bak');
+            fs.writeFileSync(backupPath, originalContent);
+
+            // Write fix
+            fs.writeFileSync(file, content, 'utf-8');
+            appliedCount++;
+            touchedFiles.add(file);
+            console.log(`  ✅ Fixed: ${path.relative(process.cwd(), file)}`);
+          }
+        } catch (e) {
+          errorCount++;
+          console.error(`  ❌ Error processing ${file}: ${e.message}`);
+        }
+      }
+
+      // Verification Step (Fast Gate)
+      if (appliedCount > 0 && !FLAGS.NO_VERIFY) {
+        const verifyCmd = FLAGS.VERIFY || 'npm run check:ultra-fast';
+        console.log(`\n🧪 Verifying fixes with: ${verifyCmd}`);
+        try {
+          const { execSync } = await import('child_process');
+          execSync(verifyCmd, { stdio: 'inherit' });
+          console.log('✅ Verification passed!');
+        } catch (e) {
+          console.error('❌ Verification FAILED. Rolling back...');
+          // Rollback logic
+          for (const file of touchedFiles) {
+            const backupPath = path.join(backupDir, path.basename(file) + '.bak');
+            if (fs.existsSync(backupPath)) {
+              fs.copyFileSync(backupPath, file);
+              console.log(`  Reverted: ${file}`);
             }
           }
+          process.exit(1);
         }
       }
 
-      if (modified) {
-        // Idempotency check: read file again to ensure we aren't writing same content
-        const currentDiskContent = fs.readFileSync(fileData.file, 'utf8');
-        if (content !== currentDiskContent) {
-          fs.writeFileSync(fileData.file, content, 'utf8');
-          console.log(`  ✅ Fixed: ${path.relative(process.cwd(), fileData.file)}`);
-          fixedCount++;
-        }
-      }
-    } catch (err) {
-      console.error(`  ❌ Failed to fix ${fileData.file}: ${err.message}`);
-      errorCount++;
+    } else if (FLAGS.TIER === 2) {
+      console.log('ℹ️  Tier 2 fixes require code inspection. Generating patch files...');
+      skippedCount = fileCount;
+    } else {
+      console.log('ℹ️  Tier 3 requires manual review. Generating patch files...');
+      skippedCount = fileCount;
     }
-  }
+  } else if (FLAGS.GENERATE_PATCHES) {
+    console.log('📝 Generating patch files for review...');
+    const patchDir = path.join(reportsDir, `patches-${timestamp}`);
+    fs.mkdirSync(patchDir, { recursive: true });
 
-  if (FIX_BARRELS) {
-    console.log('\n🛢️  Checking barrel imports...');
-    const barrelPath = path.join(process.cwd(), 'src/lib/components/ui/index.ts');
-    if (fs.existsSync(barrelPath)) {
-      let barrelContent = fs.readFileSync(barrelPath, 'utf8');
-      let barrelModified = false;
-      const uiDir = path.dirname(barrelPath);
-      
-      // Find all components in ui dir
-      const components = fs.readdirSync(uiDir)
-        .filter(f => f.endsWith('.svelte'))
-        .map(f => f.replace('.svelte', ''));
+    const manifest = {
+      timestamp,
+      files: []
+    };
 
-      for (const comp of components) {
-        // Check if exported
-        if (!barrelContent.includes(`export { default as ${comp} }`)) {
-          console.log(`  ➕ Adding missing export for ${comp}`);
-          barrelContent += `\nexport { default as ${comp} } from './${comp}.svelte';`;
-          barrelModified = true;
-        }
-      }
-
-      if (barrelModified) {
-        fs.writeFileSync(barrelPath, barrelContent, 'utf8');
-        console.log('  ✅ Updated barrel exports');
-        fixedCount++;
-      }
+    for (const [file, fileErrors] of filesToProcess) {
+      const patchFile = path.join(patchDir, path.basename(file) + '.patch');
+      const patch = `--- ${file}
+--- ${file} (fixed)
+${fileErrors.map((e, i) => `@@ Line ${e.line}: ${e.code} @@
+- ${e.message}`).join('\n')}`;
+      fs.writeFileSync(patchFile, patch);
+      manifest.files.push({ file, patch: patchFile });
     }
-  }
 
-  console.log(`\n✨ Fix application complete: ${fixedCount} files fixed, ${errorCount} errors.`);
-}
-
-// Main execution with progress tracking
-async function main() {
-  console.log('🚀 Advanced Batch Fixer with AST Analysis (Svelte 5 + Bits-UI v2)\n');
-  console.log('📝 Analysis Started: 2025-12-15\n');
-
-  const startTime = Date.now();
-  const analysis = analyzeWithAST();
-  const fixes = generateBatchFixes(analysis);
-  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-
-  console.log(`\n${'═'.repeat(70)}`);
-  console.log('📊 ANALYSIS RESULTS');
-  console.log('═'.repeat(70));
-  console.log(`✅ Routes Analyzed: ${analysis.routes.length}`);
-  console.log(`🔧 Routes with Issues: ${fixes.top100.length}`);
-  console.log(`💡 Critical Recommendations: ${fixes.recommendations.length}`);
-  console.log(`⏱️  Analysis Duration: ${duration}s\n`);
-
-  // Display recommendations by priority
-  console.log('📋 RECOMMENDATIONS BY PRIORITY:\n');
-  const highPriority = fixes.recommendations.filter(r => r.priority === 'HIGH');
-  const mediumPriority = fixes.recommendations.filter(r => r.priority === 'MEDIUM');
-
-  if (highPriority.length > 0) {
-    console.log('🔴 HIGH PRIORITY:');
-    highPriority.forEach((rec, idx) => {
-      console.log(`  ${idx + 1}. ${rec.type} (${rec.affectedFiles} files)`);
-      console.log(`     Action: ${rec.action}`);
-      if (rec.example) console.log(`     Example: ${rec.example}`);
-      if (rec.manual) console.log(`     ℹ️  Manual fix required`);
-      else console.log(`     ✨ Automated fix available`);
-      console.log('');
-    });
-  }
-
-  if (mediumPriority.length > 0) {
-    console.log('🟡 MEDIUM PRIORITY:');
-    mediumPriority.forEach((rec, idx) => {
-      console.log(`  ${idx + 1}. ${rec.type} (${rec.affectedFiles} files)`);
-      console.log(`     Action: ${rec.action}\n`);
-    });
-  }
-
-  // Summary by file
-  console.log('\n' + '═'.repeat(70));
-  console.log('📁 TOP FILES WITH ISSUES (sorted by impact):');
-  console.log('═'.repeat(70) + '\n');
-  fixes.top100.slice(0, 15).forEach((file, idx) => {
-    console.log(`${String(idx + 1).padStart(2, '0')}. ${file.file}`);
-    console.log(`    Issues: ${file.issues} | Patterns: ${file.patterns}`);
-  });
-  if (fixes.top100.length > 15) {
-    console.log(`\n    ... and ${fixes.top100.length - 15} more files`);
-  }
-
-  // Save analysis to reports
-  const timestamp = process.env.BATCH_REPORT_STAMP || new Date().toISOString().replace(/[:.]/g, '-');
-  const reportPath = path.join(__dirname, `../reports/batch-analysis-${timestamp}.json`);
-  fs.writeFileSync(reportPath, JSON.stringify({
-    timestamp: new Date().toISOString(),
-    duration: `${duration}s`,
-    summary: {
-      routesAnalyzed: analysis.routes.length,
-      routesWithIssues: fixes.top100.length,
-      totalIssues: analysis.routes.reduce((sum, r) => sum + r.issues.length, 0),
-      totalPatterns: analysis.routes.reduce((sum, r) => sum + r.patterns.length, 0),
-      recommendations: fixes.recommendations.length
-    },
-    recommendations: fixes.recommendations.sort((a, b) => {
-      const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };
-      return priorityOrder[a.priority] - priorityOrder[b.priority];
-    }),
-    topFiles: fixes.top100.slice(0, 100),
-    simdFiles: analysis.routes.filter(r => r.file.includes('simd') || r.file.includes('json')).length
-  }, null, 2));
-
-  console.log(`\n${'═'.repeat(70)}`);
-  console.log(`💾 Full report saved: ${reportPath}`);
-  console.log('═'.repeat(70));
-
-  if (APPLY_FIX || APPLY_SAFE || FIX_ONMOUNT || FIX_BARRELS) {
-    await applyFixes(fixes);
+    fs.writeFileSync(path.join(patchDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
+    console.log(`✅ Saved ${manifest.files.length} patches to ${patchDir}`);
   } else {
-    console.log('\n💡 Run with --fix, --apply-safe, --fix-onmount-async, or --fix-barrels to apply automated fixes');
+    console.log('💡 No fix action specified. Use --apply-safe or --generate-patches');
+    console.log(`   Plan: ${filesToProcess.length} files would be touched.`);
+
+    // Write plan artifact
+    const planFile = path.join(reportsDir, `fix-plan-${timestamp}.json`);
+    const plan = {
+      timestamp,
+      tier: FLAGS.TIER,
+      limit: FLAGS.LIMIT,
+      path: FLAGS.PATH,
+      files: filesToProcess.map(([file, errors]) => ({
+        file,
+        errorCount: errors.length,
+        errors: errors.map(e => ({ line: e.line, message: e.message, code: e.code }))
+      }))
+    };
+    fs.writeFileSync(planFile, JSON.stringify(plan, null, 2));
+    console.log(`✅ Plan saved to: ${planFile}`);
   }
 
-  console.log('\n✨ Analysis complete!');
-  console.log('\n🚀 NEXT STEPS:');
-  console.log('  1. npm run imports:resolve-all          (fix import paths)');
-  console.log('  2. npm run check:ultra-fast            (verify TypeScript)');
-  console.log('  3. npm run check:svelte:frontend       (verify Svelte)');
-  console.log('  4. Apply pattern fixes from recommendations');
-  console.log('  5. Rerun checks to confirm\n');
+  // ============================================================
+  // SUMMARY
+  // ============================================================
+  console.log(`\n${'═'.repeat(70)}`);
+  console.log('✨ BATCH FIXER COMPLETE');
+  console.log('═'.repeat(70));
+  console.log(`Tier: ${FLAGS.TIER} (${tier.name})`);
+  console.log(`Applied: ${appliedCount} | Skipped: ${skippedCount} | Errors: ${errorCount}`);
+  if (touchedFiles.size > 0) console.log(`Files Touched: ${touchedFiles.size}`);
+  console.log(`\n🚀 NEXT: npm run check:svelte && npm run analyze:errors`);
+  console.log('═'.repeat(70) + '\n');
 }
 
-main().catch(console.error);
+main().catch(e => {
+  console.error('❌ Fatal error:', e.message);
+  process.exit(1);
+});

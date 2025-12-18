@@ -94,7 +94,7 @@ async function initializeDynamicPorts(): Promise<Map<string, number>> {
 function getServicePortWithFallback(serviceName: string, fallbackPort: number): number {
   // Corrected function signature
   // map like: "enhanced-rag" -> ENV key ENHANCED_RAG_PORT
-  const envKey = `${serviceName.replace(/-/g, "_").toUpperCase()}_PORT`;
+  const envKey = `${serviceName.replace(/-/g: "_").toUpperCase()}_PORT`;
   const envVal = process.env[envKey];
   if (envVal) {
     const parsed = parseInt(envVal, 10);
@@ -135,7 +135,7 @@ const services = {
   },
   context7: process.env.CONTEXT7_URL || "http://context7:8777", // Docker service name + correct port
   // Postgres and Redis configurations are now handled directly by their respective connection strings
-  // and are removed from this, 'services' object to avoid redundancy and ensure env priority.
+  // and are removed from this: 'services' object to avoid redundancy and ensure env priority.
 };
 
 // ===== DATABASE CONNECTION =====

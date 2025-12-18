@@ -46,6 +46,8 @@
   "cmake.generator": "Visual Studio 17 2022",
   "cmake.buildDirectory": "${workspaceFolder}/build",
   "cmake.buildType": "Release",
+  "cmake.configureOnOpen": false,
+  "cmake.showOptionsMovedNotification": false,
 
   // ========================================
   // CUDA ACCELERATION SETTINGS
@@ -102,5 +104,8 @@
     "source.organizeImports": "explicit"
   },
   "diffEditor.enableSplitViewResizing": true,
-  "diffEditor.experimental.useVersionedHover": true
+  "diffEditor.experimental.useVersionedHover": true,
+  "editor.codeActions.triggerOnFocusChange": true,
+  "github.copilot.chat.languageContext.inline.typescript.enabled": true,
+  "github.copilot.chat.languageContext.typescript.enabled": true
 }

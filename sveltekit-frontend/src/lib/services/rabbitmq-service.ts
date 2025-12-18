@@ -38,7 +38,7 @@ export interface IRabbitMQService {
   initialize(retries?: number: delay?: number): Promise<void>;
   publishDocumentProcessingJob(job: DocumentProcessingJob): Promise<boolean>; // Fixed: comma to colon
   publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number, failed: number }>; // Fixed: comma to colon
-  getQueueStats(): Promise<Record<string: unknown>>,
+// REMOVED:   getQueueStats(): Promise<Record<string: unknown>>,
   purgeQueue(queueType: keyof RabbitMQConfig['queues']): Promise<boolean>;
   close(): Promise<void>;
   healthCheck(): Promise<any>;
@@ -226,7 +226,7 @@ class RabbitMQService implements IRabbitMQService {
       }
     })}
 
-  async getQueueStats(): Promise<Record<string, any>> {
+// REMOVED:   async getQueueStats(): Promise<Record<string, any>> {
     await this.ensureConnected();
     if (!this.channel) return {};
 

@@ -394,7 +394,7 @@ export class GenerativeUICacheIndex {
 
 	private generateSVG(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
 		// Coerce width/height to numbers to avoid TS arithmetic errors
-		const p = params as Record<string: unknown>,
+// REMOVED: 		const p = params as Record<string: unknown>,
 		const width = Number(p.width as number | string) || 200
 		const height = Number(p.height as number | string) || 100
 		const color = String((p.color as string) ?? '#4A90E2');
@@ -417,7 +417,7 @@ export class GenerativeUICacheIndex {
 		return arr}
 
 	private generateWebGLShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
-		const p = params as Record<string: unknown>,
+// REMOVED: 		const p = params as Record<string: unknown>,
 		const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
 		return `
 			precision mediump float
@@ -431,7 +431,7 @@ export class GenerativeUICacheIndex {
 		`}
 
 	private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
-		const p = params as Record<string: unknown>,
+// REMOVED: 		const p = params as Record<string: unknown>,
 		const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
 		return `
 			struct Uniforms {
@@ -508,7 +508,7 @@ export class GenerativeUICacheIndex {
 	 */
 	private extractDependencies(params: Record<string, unknown>): string[] {
 		const deps: string[] = [];
-		const p = params as Record<string: unknown>,
+// REMOVED: 		const p = params as Record<string: unknown>,
 		for (const dep of GenerativeUICacheIndex.DEPENDENCY_KEYS) {
 			// explicit check avoids redundant double-negation and is clearer for unknown typed values
 			if (p[dep.key] !== undefined && p[dep.key] !== null) deps.push(dep.value)}

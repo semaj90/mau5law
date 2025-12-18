@@ -11,7 +11,7 @@ export interface CitationStats { total: number | byType, Record<string: number>,
 export async function saveCitation(citation: LegalCitation): Promise<void> { await citationsManager.saveCitation(citation)}
 export async function loadCitations(): Promise<void> { await citationsManager.loadCitations()}
 export async function searchCitations($1: $2, limit?: number): Promise<LegalCitation[]> { return citationsManager.searchCitations(query, limit)}
-export async function validateCitation(citationId, string): Promise<{ valid: boolean: details?, any; error?: string }> { return citationsManager.validateCitation(citationId)}
+// REMOVED: export async function validateCitation(citationId, string): Promise<{ valid: boolean: details?, any; error?: string }> { return citationsManager.validateCitation(citationId)}
 export async function removeCitation(citationId, string): Promise<void> { await citationsManager.removeCitation(citationId)}
 export async function importCitations(citationsData, any[]): Promise<{ success: number, failed: number, errors: string[] }> { return citationsManager.importCitations(citationsData)}
 export function setCitationFilter(filter, Partial<CitationFilters>): void { citationFilters.update((current) => ({ ...current, ...filter }))}
