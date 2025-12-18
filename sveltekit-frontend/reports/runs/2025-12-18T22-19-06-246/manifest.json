@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-12-18T22-29-25-771",
+  "timestamp": "2025-12-18T22-19-06-246",
   "tier": 2,
   "stats": {
-    "applied": 0,
-    "skipped": 100,
+    "applied": 17,
+    "skipped": 351,
     "errors": 0,
     "filesModified": [
       "src/lib/caching/multi-dimensional-image-cache.ts",
@@ -32,7 +32,21 @@
       "src/lib/services/context7-orchestration-integration.ts",
       "src/lib/services/embeddings-service.ts",
       "src/lib/services/enhancedContext7Service.ts",
-      "src/lib/services/go-microservice-client.ts"
+      "src/lib/services/go-microservice-client.ts",
+      "src/lib/services/gpu-ai-service.ts",
+      "src/lib/services/gpu-typescript-error-processor.ts",
+      "src/lib/services/langchain-config-service.ts",
+      "src/lib/services/legal-ai-acceleration-pipeline.ts",
+      "src/lib/services/legal-document-stream.ts",
+      "src/lib/services/minio-upload-service.ts",
+      "src/lib/services/nats-messaging-service.ts",
+      "src/lib/services/ocr-integration-service.ts",
+      "src/lib/services/ocrService.ts",
+      "src/lib/services/ollama-embedding-client.ts",
+      "src/lib/services/ollama-legal-ai.ts",
+      "src/lib/services/parallel-error-analyzer.ts",
+      "src/lib/services/pipeline-visualizer.ts",
+      "src/lib/services/webgpu-ai-service.ts"
     ]
   },
   "verificationPassed": true,
