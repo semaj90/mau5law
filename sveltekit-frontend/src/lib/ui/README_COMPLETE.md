@@ -65,26 +65,26 @@
 **Implementation Details:**
 ```svelte
 type Connection = {
-  from: string;  // Evidence ID
-  to: string;    // Evidence ID
-  label?: string; // "Timeline Match", etc.
+ from: string; // Evidence ID
+ to: string; // Evidence ID
+ label?: string; // "Timeline Match", etc.
 };
 
 // Connections auto-calculate card centers
 function getCardCenter(id: string) {
-  const item = items.find(i => i.id === id);
-  return {
-    x: item.x + 130,  // Center X
-    y: item.y + 70    // Center Y
-  };
+ const item = items.find(i => i.id === id);
+ return {
+ x: item.x + 130, // Center X
+ y: item.y + 70 // Center Y
+ };
 }
 ```
 
 **Usage:**
 ```typescript
 let connections: Connection[] = [
-  { from: 'EV-001', to: 'EV-002', label: 'Timeline Match' },
-  { from: 'EV-002', to: 'EV-003', label: 'Corroborates' },
+ { from: 'EV-001', to: 'EV-002', label: 'Timeline Match' },
+ { from: 'EV-002', to: 'EV-003', label: 'Corroborates' },
 ];
 ```
 
@@ -114,15 +114,15 @@ let connections: Connection[] = [
 **Data Structure:**
 ```typescript
 type Person = {
-  id: string;
-  name: string;
-  role: 'suspect' | 'witness' | 'victim' | 'associate';
-  riskLevel: 'high' | 'medium' | 'low';
-  photo?: string;
-  summary: string;
-  lastSeen: string;
-  connections: number;
-  verified: boolean;
+ id: string;
+ name: string;
+ role: 'suspect' | 'witness' | 'victim' | 'associate';
+ riskLevel: 'high' | 'medium' | 'low';
+ photo?: string;
+ summary: string;
+ lastSeen: string;
+ connections: number;
+ verified: boolean;
 };
 ```
 
@@ -132,14 +132,14 @@ type Person = {
 
 ### Color Palette
 ```typescript
-sand: '#d4c7a3'        // Main background
-sandDark: '#b9aa86'    // Sidebar, inputs
-panel: '#24211b'       // Dark panels
-panelSoft: '#2f2a22'   // Softer panels
-accent: '#4ade80'      // Green (primary actions, connections)
-danger: '#ef4444'      // Red (suspects, high risk)
-warning: '#facc15'     // Yellow (medium risk, pending)
-info: '#38bdf8'        // Blue (witnesses, info)
+sand: '#d4c7a3' // Main background
+sandDark: '#b9aa86' // Sidebar, inputs
+panel: '#24211b' // Dark panels
+panelSoft: '#2f2a22' // Softer panels
+accent: '#4ade80' // Green (primary actions, connections)
+danger: '#ef4444' // Red (suspects, high risk)
+warning: '#facc15' // Yellow (medium risk, pending)
+info: '#38bdf8' // Blue (witnesses, info)
 ```
 
 ### Typography
@@ -200,29 +200,29 @@ npm run dev
 
 ```
 src/lib/ui/
-├── Button.svelte                # ✅ Core
-├── Tag.svelte                   # ✅ Core
-├── StatusPill.svelte            # ✅ Core
-├── Card.svelte                  # ✅ Core
-├── Panel.svelte                 # ✅ Core
-├── Sidebar.svelte               # ✅ Layout
-├── TopBar.svelte                # ✅ Layout
-├── ChatBubble.svelte            # ✅ Core
-├── LayoutShell.svelte           # ✅ Layout
-├── EvidenceBoard.svelte         # ✅ Advanced (with SVG) ⭐
-├── SentencingWorksheet.svelte   # ✅ Advanced ⭐
-├── PersonCard.svelte            # ✅ Advanced ⭐
-├── README.md                    # Basic components docs
-├── README_ADVANCED.md           # Evidence & Sentencing docs
-└── README_COMPLETE.md           # This file
+├── Button.svelte # ✅ Core
+├── Tag.svelte # ✅ Core
+├── StatusPill.svelte # ✅ Core
+├── Card.svelte # ✅ Core
+├── Panel.svelte # ✅ Core
+├── Sidebar.svelte # ✅ Layout
+├── TopBar.svelte # ✅ Layout
+├── ChatBubble.svelte # ✅ Core
+├── LayoutShell.svelte # ✅ Layout
+├── EvidenceBoard.svelte # ✅ Advanced (with SVG) ⭐
+├── SentencingWorksheet.svelte # ✅ Advanced ⭐
+├── PersonCard.svelte # ✅ Advanced ⭐
+├── README.md # Basic components docs
+├── README_ADVANCED.md # Evidence & Sentencing docs
+└── README_COMPLETE.md # This file
 
 src/routes/(yorha)/
 ├── +layout.svelte
 ├── command/+page.svelte
 ├── terminal/+page.svelte
-├── evidence/+page.svelte        # ⭐
-├── sentencing/+page.svelte      # ⭐
-└── poi/+page.svelte             # ⭐
+├── evidence/+page.svelte # ⭐
+├── sentencing/+page.svelte # ⭐
+└── poi/+page.svelte # ⭐
 ```
 
 ---
@@ -234,32 +234,32 @@ src/routes/(yorha)/
 ```typescript
 // Load evidence from API
 async function loadEvidence(caseId: string) {
-  const res = await fetch(`/api/cases/${caseId}/evidence`);
-  return await res.json();
+ const res = await fetch(`/api/cases/${caseId}/evidence`);
+ return await res.json();
 }
 
 // Save evidence positions
 async function saveEvidencePositions(items: EvidenceItem[]) {
-  await fetch('/api/evidence/positions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items }),
-  });
+ await fetch('/api/evidence/positions', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ items }),
+ });
 }
 
 // Generate sentencing memo
 async function generateMemo(data: SentencingData) {
-  const res = await fetch('/api/sentencing/memo', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  });
-  return await res.blob();  // PDF
+ const res = await fetch('/api/sentencing/memo', {
+ method: 'POST',
+ body: JSON.stringify(data),
+ });
+ return await res.blob(); // PDF
 }
 
 // Get POI with connections
 async function getPersonWithGraph(id: string) {
-  const res = await fetch(`/api/poi/${id}?include=connections`);
-  return await res.json();
+ const res = await fetch(`/api/poi/${id}?include=connections`);
+ return await res.json();
 }
 ```
 
@@ -268,17 +268,17 @@ async function getPersonWithGraph(id: string) {
 ```svelte
 <!-- Evidence Board showing POI connections -->
 <script>
-  let evidenceItems = [...];
-  let persons = [...];
+ let evidenceItems = [...];
+ let persons = [...];
 
-  // Generate connections based on shared persons
-  let connections = evidenceItems
-    .flatMap(e => e.personIds || [])
-    .map(personId => ({
-      from: findEvidenceByPerson(personId)[0],
-      to: findEvidenceByPerson(personId)[1],
-      label: persons.find(p => p.id === personId)?.name
-    }));
+ // Generate connections based on shared persons
+ let connections = evidenceItems
+ .flatMap(e => e.personIds || [])
+ .map(personId => ({
+ from: findEvidenceByPerson(personId)[0],
+ to: findEvidenceByPerson(personId)[1],
+ label: persons.find(p => p.id === personId)?.name
+ }));
 </script>
 ```
 
@@ -290,17 +290,17 @@ async function getPersonWithGraph(id: string) {
 
 ```typescript
 type EvidenceType =
-  | 'video'
-  | 'document'
-  | 'photo'
-  | 'note'
-  | 'audio'        // New
-  | 'forensic';    // New
+ | 'video'
+ | 'document'
+ | 'photo'
+ | 'note'
+ | 'audio' // New
+ | 'forensic'; // New
 
 function typeColor(t: EvidenceType) {
-  if (t === 'audio') return 'purple';
-  if (t === 'forensic') return 'orange';
-  // ...
+ if (t === 'audio') return 'purple';
+ if (t === 'forensic') return 'orange';
+ // ...
 }
 ```
 
@@ -308,12 +308,12 @@ function typeColor(t: EvidenceType) {
 
 ```typescript
 let customFactors: AggravatingFactor[] = [
-  {
-    id: 'AG-CUSTOM',
-    description: 'International trafficking',
-    points: 6,
-    selected: false
-  }
+ {
+ id: 'AG-CUSTOM',
+ description: 'International trafficking',
+ points: 6,
+ selected: false
+ }
 ];
 ```
 
@@ -321,14 +321,14 @@ let customFactors: AggravatingFactor[] = [
 
 ```typescript
 function calculateRisk(person: Person): RiskLevel {
-  let score = 0;
-  if (person.role === 'suspect') score += 3;
-  if (person.connections > 10) score += 2;
-  if (!person.verified) score += 1;
+ let score = 0;
+ if (person.role === 'suspect') score += 3;
+ if (person.connections > 10) score += 2;
+ if (!person.verified) score += 1;
 
-  if (score >= 5) return 'high';
-  if (score >= 3) return 'medium';
-  return 'low';
+ if (score >= 5) return 'high';
+ if (score >= 3) return 'medium';
+ return 'low';
 }
 ```
 

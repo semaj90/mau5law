@@ -34,6 +34,14 @@ if (process.argv.includes('--selftest')) {
 	}
 }
 
+// This repo now wires KAG directly in factory-fixer-v2.mjs.
+// Keep this script as a non-destructive guardrail (selftest + sanity checks).
+if (!process.argv.includes('--selftest')) {
+	console.log('[KAG Integration] No action needed: KAG is integrated directly in scripts/factory-fixer-v2.mjs');
+	console.log('[KAG Integration] Use: node scripts/integrate-kag-into-fixer.mjs --selftest');
+	process.exit(0);
+}
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

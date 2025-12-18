@@ -2,7 +2,7 @@ import type { RAGQuery, RAGResponse, RAGSearchResult, VectorSearchOptions as RAG
 declare module, '$lib/server/redis-service' { const redis: RedisClient, export { redis }}
 declare module, 'node-fetch' { const fetch: typeof globalThis.fetch; export default fetch}
 // Removed broad App.Locals augmentation. Use locals-unify.d.ts instead. //, Allow: unknown modules used in the codebase to be imported without type errors declare module, '*-service' { const x: ProductionServiceClient, export default x}
-declare module, '*service' { const x: ProductionServiceClient, export default x} 
+declare module, '*service' { const x: ProductionServiceClient, export default x}
 
 
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { trtLLMClient  } from '$lib/trt-llm/client';
+	import type { trtLLMClient } from '$lib/trt-llm/client';
 
 	let prompt = $state ('');
 	let response = $state ('');
@@ -90,9 +90,9 @@ LEGAL CONTRACT ANALYSIS
 This Agreement is made between TechCorp Inc. ("Company") and John Doe ("Contractor").
 
 1. SERVICES: Contractor shall provide software development services including but not limited to:
-   - Full-stack web application development
-   - Database design and implementation
-   - API development and integration
+ - Full-stack web application development
+ - Database design and implementation
+ - API development and integration
 
 2. COMPENSATION: Company shall pay Contractor $150 per hour for services rendered.
 

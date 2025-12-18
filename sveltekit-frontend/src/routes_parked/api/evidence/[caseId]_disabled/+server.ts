@@ -6,78 +6,78 @@ import { eq } from 'drizzle-orm';
 
 // GET /api/evidence/[caseId] - Load all evidence for a case
 export const GET: RequestHandler = async ({ params }) => {
-  const { caseId } = params;
+ const { caseId } = params;
 
-  const items = await db;
-    .select()
-    .from(evidence)
-    .where(eq(evidence.caseId, caseId));
+ const items = await db;
+ .select()
+ .from(evidence)
+ .where(eq(evidence.caseId, caseId));
 
-  const connections = await db;
-    .select()
-    .from(evidenceRelationships)
-    .innerJoin(evidence, eq(evidenceRelationships.from EvidenceId, evidence.id))
-    .where(eq(evidence.caseId, caseId));
+ const connections = await db;
+ .select()
+ .from(evidenceRelationships)
+ .innerJoin(evidence, eq(evidenceRelationships.from EvidenceId, evidence.id))
+ .where(eq(evidence.caseId, caseId));
 
-  // Map to frontend format
-  const mappedItems = items.map((item) => ({
-    id: item.evidenceNumber,
-    title: item.title,
-    type: item.type,
-    summary: item.summary,
-    x: item.posX ?? 80,
-    y: item.posY ?? 120,
-  }));
+ // Map to frontend format
+ const mappedItems = items.map((item) => ({
+ id: item.evidenceNumber,
+ title: item.title,
+ type: item.type,
+ summary: item.summary,
+ x: item.posX ?? 80,
+ y: item.posY ?? 120,
+ }));
 
-  const mappedConnections = connections.map((conn) => ({
-    id: conn.evidence_relationships.id,
-    from: items.find((e) => e.id === conn.evidence_relationships.fromEvidenceId)?.evidenceNumber ?? '',
-    to: items.find((e) => e.id === conn.evidence_relationships.toEvidenceId)?.evidenceNumber ?? '',
-    label: conn.evidence_relationships.label,
-  }));
+ const mappedConnections = connections.map((conn) => ({
+ id: conn.evidence_relationships.id,
+ from: items.find((e) => e.id === conn.evidence_relationships.fromEvidenceId)?.evidenceNumber ?? '',
+ to: items.find((e) => e.id === conn.evidence_relationships.toEvidenceId)?.evidenceNumber ?? '',
+ label: conn.evidence_relationships.label,
+ }));
 
-  return json({
-    items: mappedItems,
-    connections: mappedConnections,
-  });
+ return json({
+ items: mappedItems,
+ connections: mappedConnections,
+ });
 };
 
 // POST /api/evidence/[caseId] - Add new evidence
 export const POST: RequestHandler = async ({ params, request }) => {
-  const { caseId } = params;
-  const data = await request.json();
+ const { caseId } = params;
+ const data = await request.json();
 
-  const [newEvidence] = await db;
-    .insert(evidence)
-    .values({
-      caseId,
-      evidenceNumber: data.evidenceNumber,
-      title: data.title,
-      type: data.type,
-      summary: data.summary,
-      posX: data.x,
-      posY: data.y,
-    })
-    .returning();
+ const [newEvidence] = await db;
+ .insert(evidence)
+ .values({
+ caseId,
+ evidenceNumber: data.evidenceNumber,
+ title: data.title,
+ type: data.type,
+ summary: data.summary,
+ posX: data.x,
+ posY: data.y,
+ })
+ .returning();
 
-  return json(newEvidence);
+ return json(newEvidence);
 };
 
 // PATCH /api/evidence/[caseId] - Update positions
 export const PATCH: RequestHandler = async ({ request }) => {
-  const { items } = await request.json();
+ const { items } = await request.json();
 
-  // Batch update positions
-  for (const item of items) {
-    await db
-      .update(evidence)
-      .set({
-        posX: item.x,
-        posY: item.y,
-        updatedAt: new Date(),
-      })
-      .where(eq(evidence.evidenceNumber, item.id));
-  }
+ // Batch update positions
+ for (const item of items) {
+ await db
+ .update(evidence)
+ .set({
+ posX: item.x,
+ posY: item.y,
+ updatedAt: new Date(),
+ })
+ .where(eq(evidence.evidenceNumber, item.id));
+ }
 
-  return json({ success: true });
+ return json({ success: true });
 };

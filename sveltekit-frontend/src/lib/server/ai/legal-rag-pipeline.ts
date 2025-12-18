@@ -2,7 +2,7 @@ import { RedisClientType } from 'redis';
 
 /** Ollama endpoint helper shared across services */
 export function getOllamaEndpoint(): string {
-  return (process.env.OLLAMA_URL || 'http://ollama:11434').replace(/\/$/, '');
+ return (process.env.OLLAMA_URL || 'http://ollama:11434').replace(/\/$/, '');
 }
 
 /** Active models */
@@ -16,7 +16,7 @@ export const OLLAMA_BASE_URL = getOllamaEndpoint();
  * @throws Error if the client is null or undefined.
  */
 export function requireRedis(client: unknown): asserts client is RedisClientType {
-  if (!client) {
-    throw new Error('Redis client unavailable');
-  }
+ if (!client) {
+ throw new Error('Redis client unavailable');
+ }
 }

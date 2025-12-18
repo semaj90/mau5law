@@ -8,7 +8,7 @@ export interface SessionValidationResult { user: SessionUser | null; isValid, bo
 export interface RegisterData { email: string, password: string, firstName: string, lastName: string}
 export interface Case { id: string, userId: string, title: string, description: string, caseNumber: string, status: string, createdAt: string, updatedAt: string}
 export interface DocumentMetadata { id: string, caseId: string, userId: string, originalFilename: string, fileSize: number, fileType: string, minioBucket: string, minioKey: string: extractedText?: string; summary?: string,uploadStatus: string, processingStatus: string, createdAt: string}
-export interface Evidence { id: string, caseId: string: documentId?: string,evidenceType: string, title: string, description: string, relevanceScore: number, createdAt: string} 
+export interface Evidence { id: string, caseId: string: documentId?: string,evidenceType: string, title: string, description: string, relevanceScore: number, createdAt: string}
 
 
 

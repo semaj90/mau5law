@@ -11,16 +11,13 @@ import { json, type RequestHandler } from '@sveltejs/kit';
  * Get knowledge base statistics
  */
 export const GET: RequestHandler = async () => {
-	try {
-		const stats = await knowledgeBase.getStats();
-		return json(stats);
-	} catch (error) {
-		console.error('Failed to get knowledge stats:', error);
-		return json(
-			{ error: 'Failed to retrieve knowledge base statistics' },
-			{ status: 500 }
-		);
-	}
+ try {
+ const stats = await knowledgeBase.getStats();
+ return json(stats);
+ } catch (error) {
+ console.error('Failed to get knowledge stats:', error);
+ return json({ error: 'Failed to retrieve knowledge base statistics' }, { status: 500 });
+ }
 };
 
 /**
@@ -28,29 +25,23 @@ export const GET: RequestHandler = async () => {
  * Search for similar errors and patches
  */
 export const POST: RequestHandler = async ({ request }) => {
-	try {
-		const context: LearningContext = await request.json();
+ try {
+ const context: LearningContext = await request.json();
 
-		if (!context.errorMessage || !context.filePath) {
-			return json(
-				{ error: 'errorMessage and filePath are required' },
-				{ status: 400 }
-			);
-		}
+ if (!context.errorMessage || !context.filePath) {
+ return json({ error: 'errorMessage and filePath are required' }, { status: 400 });
+ }
 
-		const suggestions = await knowledgeBase.getSuggestions(context);
+ const suggestions = await knowledgeBase.getSuggestions(context);
 
-		return json({
-			similarErrors: suggestions.similarErrors,
-			suggestedPatches: suggestions.suggestedPatches,
-			confidence: suggestions.confidence,
-			timestamp: new Date().toISOString()
-		});
-	} catch (error) {
-		console.error('Knowledge search failed:', error);
-		return json(
-			{ error: 'Failed to search knowledge base' },
-			{ status: 500 }
-		);
-	}
+ return json({
+ similarErrors: suggestions.similarErrors,
+ suggestedPatches: suggestions.suggestedPatches,
+ confidence: suggestions.confidence,
+ timestamp: new Date().toISOString(),
+ });
+ } catch (error) {
+ console.error('Knowledge search failed:', error);
+ return json({ error: 'Failed to search knowledge base' }, { status: 500 });
+ }
 };

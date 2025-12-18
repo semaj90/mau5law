@@ -41,12 +41,12 @@ getSimilaritySearch(queryVector: number[], limit: number): Promise<SimilarityRes
 
 ```svelte
 <script lang="ts">
-  import {
-    EvidenceUpload,
-    EvidenceGrid,
-    ZoomEnhanceViewer,
-    SimilarityHeatmap
-  } from '$lib/components/vision';
+ import {
+ EvidenceUpload,
+ EvidenceGrid,
+ ZoomEnhanceViewer,
+ SimilarityHeatmap
+ } from '$lib/components/vision';
 </script>
 
 <!-- Full Detective Vision Interface -->
@@ -60,9 +60,9 @@ getSimilaritySearch(queryVector: number[], limit: number): Promise<SimilarityRes
 
 - `/detective/vision` - Complete vision analysis interface
 - API endpoints expected:
-  - `POST /api/vision/image/analyze`
-  - `POST /api/vision/video/analyze`
-  - `POST /api/vision/similarity/search`
+ - `POST /api/vision/image/analyze`
+ - `POST /api/vision/video/analyze`
+ - `POST /api/vision/similarity/search`
 
 ## Styling
 

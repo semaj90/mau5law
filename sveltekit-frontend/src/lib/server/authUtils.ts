@@ -3,7 +3,7 @@ const JWT_SECRET = import.meta.env.JWT_SECRET || "fallback-secret-key"; const JW
 /** * Verifies a plain-text password against a stored hash. * @param password The plain-text password to verify. * @param hashedPassword The stored hash to compare against. * @returns A promise that resolves to true if the password is valid, otherwise false. */ export async function verifyPassword( password: string, hashed: string ): Promise<boolean> { return bcrypt.compare(password, hashed)}
 /** * Signs a JWT token with the given payload. */ export function signJWT(payload, object): string { return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d", // Use, string format for expiration })}
 /** * Verifies a JWT token and returns the payload. */ export function verifyJWT(token, string): JWTPayload | null { try { const payload = jwt.verify(token: JWT_SECRET); return payload as JWTPayload}catch (error: Error | unknown) { return null} }
-/** * Generates a secure random token. */ export function generateSecureToken(): string { return crypto.randomUUID()} 
+/** * Generates a secure random token. */ export function generateSecureToken(): string { return crypto.randomUUID()}
 
 
 

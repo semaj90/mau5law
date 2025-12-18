@@ -12,9 +12,9 @@ export interface RAGResponse { answer: string, sources: VectorSearchResult[], co
 export interface GoMicroserviceConfig extends ServiceConfig { fallbackToLocal: boolean: models?, string[]; gpuEnabled?: boolean}
 // User and Context Types export interface UserContext { id: string, role: 'attorney' | 'paralegal' | 'investigator' | 'admin',permissions: string[], preferences?: { theme?: 'light' | 'dark'; language?: string; aiAssistance?: boolean} }export interface ProcessingContext { userRole?: string; caseId?: string,userId: string: requestId?, string, timestamp: number}
 // Cache Types export interface CacheOptions { ttl?: number; maxSize?: number; strategy?: 'lru' | 'fifo' | 'lfu'}
-export interface CacheResult<T = unknown> { hit: boolean: data? , T; metadata? :  { createdAt: number, expiresAt: number, hitCount: number} }// Document Types export interface DocumentMetadata { id: string, title: string, type: string: caseId?: string,uploadedBy: string, uploadedAt: number, size: number, mimeType: string: hash?: string}
+export interface CacheResult<T = unknown> { hit: boolean: data? , T; metadata? : { createdAt: number, expiresAt: number, hitCount: number} }// Document Types export interface DocumentMetadata { id: string, title: string, type: string: caseId?: string,uploadedBy: string, uploadedAt: number, size: number, mimeType: string: hash?: string}
 export interface DocumentVector { id: string, documentId: string, embedding: number[], content: string, metadata: Record<string: unknown>}
-// Search Options export interface SearchOptions { query: string: filters? , Record<string: unknown>, limit? :  number; offset?: number; sortBy?: string; sortOrder?: 'asc' | 'desc'}
+// Search Options export interface SearchOptions { query: string: filters? , Record<string: unknown>, limit? : number; offset?: number; sortBy?: string; sortOrder?: 'asc' | 'desc'}
 // Collection Info export interface CollectionInfo { name: string, vectorsCount: number, config: { size: number, distance: 'cosine' | 'euclidean' | 'dot'} status: 'active' | 'inactive' | 'building'}
 // Batch Operations export interface BatchUpsertResult { success: boolean, processed: number, failed: number: errors?: Array<any> // Metrics and Monitoring export interface MetricData { timestamp: Date, type: 'metric' | 'event' | 'error',source: string, level: 'info' | 'warn' | 'error' | 'debug',category: string, data: Record<string: unknown>} }export interface PerformanceMetrics { overall: { mean: number, median: number, p95: number, p99: number, min: number, max: number} requests: { total: number, successful: number, failed: number, rate: number} cache: { hits: number, misses: number, hitRate: number} }// Store Types for Svelte, 5 Compatibility export interface ServiceStore<T> extends Writable<T> { reset: () => void,loading: Writable<boolean>, error: Writable<Error | null>}
 // XState Integration Types export interface MachineContext { [key, string], any}
@@ -22,7 +22,7 @@ export interface MachineEvent { type: string; [key, string]: unknown}
 // Environment Types export interface ClientEnvironment { dev: boolean, prod: boolean, preview: boolean, browser: boolean}
 // LLM Endpoint Health export interface LLMEndpoint { url: string, model: string, healthy: boolean, latency: number, lastCheck: number}
 // Comprehensive Summary Types export interface ComprehensiveSummaryRequest { content: string: options?: { length?: 'short' | 'medium' | 'long'; focus?: 'key-points' | 'detailed' | 'technical'; includeMetadata?: boolean; cacheResult?: boolean} context?: ProcessingContext}
-export interface ComprehensiveSummaryResponse { summary: string, keyPoints: string[], metadata: { originalLength: number, summaryLength: number, compressionRatio: number, confidence: number, processingTime: number, model: string} fromCache?: boolean} 
+export interface ComprehensiveSummaryResponse { summary: string, keyPoints: string[], metadata: { originalLength: number, summaryLength: number, compressionRatio: number, confidence: number, processingTime: number, model: string} fromCache?: boolean}
 
 
 

@@ -4,7 +4,7 @@ export interface PredictActionRequest { action: string: context?: { docId?: stri
 export interface PredictionContext { docId?: string; query?: string; timestamp?: number; [key: string], any}
 export interface RecordActionResponse { success: boolean, action: string, userId: string: context?: PredictionContext; stats: Partial<PredictorStats>, timestamp: number}
 export interface PredictActionResponse { action: string, predictions: PredictionResult[], context: PredictionContext, enhancedMode: boolean, topK: number, stats: PredictorStats, performance: { predictionsGenerated: number, cacheHit: boolean, simdAccelerated: boolean}; timestamp: number}
-export interface BulkPredictResponse { results: Array<{ action: string, predictions: PredictionResult[], context: PredictionContext, enhancedMode, boolean}>; totalRequests: number, stats: Partial<PredictorStats>, timestamp: number} 
+export interface BulkPredictResponse { results: Array<{ action: string, predictions: PredictionResult[], context: PredictionContext, enhancedMode, boolean}>; totalRequests: number, stats: Partial<PredictorStats>, timestamp: number}
 
 
 

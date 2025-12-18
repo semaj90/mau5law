@@ -1,4 +1,3 @@
-
 /**
  * SSE Endpoint for Real-Time Health Updates
  * Path: /api/routes/ws
@@ -8,57 +7,57 @@
  * one-way health status updates.
  */
 export function POST() {
-  return new Response('Method Not Allowed', { status: 405 });
+ return new Response('Method Not Allowed', { status: 405 });
 }
 
 export function GET() {
-  let controller: ReadableStreamDefaultController;
-  let interval: NodeJS.Timeout;
+ let controller: ReadableStreamDefaultController;
+ let interval: NodeJS.Timeout;
 
-  const stream = new ReadableStream({
-    start(c) {
-      controller = c;
+ const stream = new ReadableStream({
+ start(c) {
+ controller = c;
 
-      // Send initial connection status
-      const initialData = JSON.stringify({
-        type: 'connection',
-        status: 'connected',
-        timestamp: new Date().toISOString()
-      });
-      controller.enqueue(`data: ${initialData}\n\n`);
+ // Send initial connection status
+ const initialData = JSON.stringify({
+ type: 'connection',
+ status: 'connected',
+ timestamp: new Date().toISOString(),
+ });
+ controller.enqueue(`data: ${initialData}\n\n`);
 
-      // Simulate health updates every 5 seconds
-      let counter = 0;
-      interval = setInterval(() => {
-        counter++;
+ // Simulate health updates every 5 seconds
+ let counter = 0;
+ interval = setInterval(() => {
+ counter++;
 
-        const healthData = JSON.stringify({
-          type: 'health_update',
-          system_status: Math.random() > 0.9 ? 'degraded' : 'healthy',
-          active_connections: 10 + Math.floor(Math.random() * 5),
-          error_rate: Math.random() * 2,
-          timestamp: new Date().toISOString(),
-          seq: counter
-        });
+ const healthData = JSON.stringify({
+ type: 'health_update',
+ system_status: Math.random() > 0.9 ? 'degraded' : 'healthy',
+ active_connections: 10 + Math.floor(Math.random() * 5),
+ error_rate: Math.random() * 2,
+ timestamp: new Date().toISOString(),
+ seq: counter,
+ });
 
-        try {
-            controller.enqueue(`data: ${healthData}\n\n`);
-        } catch (e) {
-            // Controller likely closed
-            clearInterval(interval);
-        }
-      }, 5000);
-    },
-    cancel() {
-      clearInterval(interval);
-    }
-  });
+ try {
+ controller.enqueue(`data: ${healthData}\n\n`);
+ } catch (e) {
+ // Controller likely closed
+ clearInterval(interval);
+ }
+ }, 5000);
+ },
+ cancel() {
+ clearInterval(interval);
+ },
+ });
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
-    }
-  });
+ return new Response(stream, {
+ headers: {
+ 'Content-Type': 'text/event-stream',
+ 'Cache-Control': 'no-cache',
+ Connection: 'keep-alive',
+ },
+ });
 }

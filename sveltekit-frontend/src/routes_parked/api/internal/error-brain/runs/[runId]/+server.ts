@@ -11,14 +11,14 @@ import { RunTracker } from '$lib/server/error-brain/run-tracker';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async (event) => {
-	requireErrorBrain(event);
+ requireErrorBrain(event);
 
-	const { runId } = event.params;
-	const tracker = RunTracker.load(runId);
+ const { runId } = event.params;
+ const tracker = RunTracker.load(runId);
 
-	if (!tracker) {
-		throw error(404, `Run ${runId} not found`);
-	}
+ if (!tracker) {
+ throw error(404, `Run ${runId} not found`);
+ }
 
-	return createErrorBrainResponse(tracker.getMetadata());
+ return createErrorBrainResponse(tracker.getMetadata());
 };

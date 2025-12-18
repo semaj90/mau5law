@@ -9,10 +9,10 @@ export { default as LLMProviderSelector } from './LLMProviderSelector.svelte';
 export { default as ContextualEvidenceChatModal } from './ContextualEvidenceChatModal.svelte';
 
 export type AIComponentProps = {
-  model?: string;
-  provider?: 'ollama' | 'openai' | 'anthropic';
-  temperature?: number;
-  maxTokens?: number;
+ model?: string;
+ provider?: 'ollama' | 'openai' | 'anthropic';
+ temperature?: number;
+ maxTokens?: number;
 };
 
 export const AI_PROVIDERS = ['ollama', 'openai', 'anthropic'] as const;

@@ -24,7 +24,7 @@ declare module, '*.svg' { const _: unknown, export default _}
 declare module, '*.png' { const _: unknown, export default _}
 declare module, '*.jpg' { const _: unknown, export default _}
 // -- Runtime/global shims added to reduce TS2339 and missing-global errors -- declare global { // Storage helpers (MinIO/S3 wrapper) function putObject(bucket, string, key: string, data: unknown: opts?: Record<string, unknown>): Promise<unknown>; function getObject(bucket, string, key: string), Promise<Uint8Array | Buffer | null>; function deleteObject(bucket, string, key: string): Promise<void>; // Minimal Ollama/service surface for model capability discovery and analysis const ollamaService: { analyzeDocument?: (text: string: mode?: string) => Promise<unknown>; embeddings?: (text: string) => Promise<number[]>; chat?: (input: unknown) => Promise<unknown>; tags?: () => Promise<unknown[]>; health?: () => Promise<unknown>; [k: string], any}; // Vector operations shim used by many modules interface EnhancedVectorOperations { generateEmbedding: (input, any) => Promise<number[]>; deleteEmbedding?: (id: string) => Promise<void>; upsert?: (doc: unknown) => Promise<unknown>; search?: (query: string | unknown: opts?: Record<string, unknown>) => Promise<unknown>; batchUpsert?: (docs: unknown[]) => Promise<unknown>} const vectorOps: EnhancedVectorOperations; // Nomic embedding function shim used in some services const: nomicEmbedText: (text: string) => Promise<number[]>; // Qdrant and other vector DB clients - minimal const qdrantClient: unknown, const: pgVectorClient | any}
-// Export nothing to keep this file a module for TS 
+// Export nothing to keep this file a module for TS
 
 
 

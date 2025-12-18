@@ -34,7 +34,7 @@ these implementations at compile time with `-DSIMDJSON_IMPLEMENTATION_X=0` (wher
 WESTMERE, ARM64, PPC64 and FALLBACK).
 
 The simdjson library automatically sets header flags for each implementation as it compiles; there
-is no need to set architecture-specific flags yourself (e.g., `-mavx2`, `/AVX2`  or
+is no need to set architecture-specific flags yourself (e.g., `-mavx2`, `/AVX2` or
 `-march=haswell`), and it may even break runtime dispatch and your binaries will fail to run on
 older processors. _Note:_ for POWER9 processors make sure you compile it with `-mcpu=power9` and `-mtune=power9` to
 get maximum performance.
@@ -66,7 +66,7 @@ You can list all available implementations, regardless of which one was selected
 
 ```c++
 for (auto implementation : simdjson::get_available_implementations()) {
-  cout << implementation->name() << ": " << implementation->description() << endl;
+ cout << implementation->name() << ": " << implementation->description() << endl;
 }
 ```
 
@@ -113,11 +113,11 @@ You should call `supported_by_runtime_system()` to compare the processor's featu
 
 ```c++
 for (auto implementation : simdjson::get_available_implementations()) {
-  if (implementation->supported_by_runtime_system()) {
-    cout << implementation->name() << ": " << implementation->description() << endl;
-  }
+ if (implementation->supported_by_runtime_system()) {
+ cout << implementation->name() << ": " << implementation->description() << endl;
+ }
 }
 ```
 
-The call to `supported_by_runtime_system()` may be relatively expensive. Do not call  `supported_by_runtime_system()` each
+The call to `supported_by_runtime_system()` may be relatively expensive. Do not call `supported_by_runtime_system()` each
 time you parse a JSON input (for example). It is meant to be called a handful of times at most in the life of a program.

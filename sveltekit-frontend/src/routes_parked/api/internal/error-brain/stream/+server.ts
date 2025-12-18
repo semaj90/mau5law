@@ -19,71 +19,71 @@ import { error, type RequestHandler } from '@sveltejs/kit';
  * Server-Sent Events stream for error-brain events
  */
 export const GET: RequestHandler = async (event) => {
-	requireErrorBrain(event);
+ requireErrorBrain(event);
 
-	// Security: Validate request is internal
-	if (!validateInternalRequest(event)) {
-		throw error(403, {
-			message: 'Access denied - internal requests only',
-			code: 'FORBIDDEN'
-		});
-	}
+ // Security: Validate request is internal
+ if (!validateInternalRequest(event)) {
+ throw error(403, {
+ message: 'Access denied - internal requests only',
+ code: 'FORBIDDEN',
+ });
+ }
 
-	const transport = getSSETransport();
-	const encoder = new TextEncoder();
+ const transport = getSSETransport();
+ const encoder = new TextEncoder();
 
-	// Create SSE stream
-	const stream = new ReadableStream({
-		async start(controller) {
-			// Send initial connection event
-			const connectionEvent = {
-				type: 'connection',
-				message: 'Error-brain event stream connected',
-				timestamp: new Date().toISOString(),
-				subscriberCount: transport.getSubscriberCount() + 1
-			};
+ // Create SSE stream
+ const stream = new ReadableStream({
+ async start(controller) {
+ // Send initial connection event
+ const connectionEvent = {
+ type: 'connection',
+ message: 'Error-brain event stream connected',
+ timestamp: new Date().toISOString(),
+ subscriberCount: transport.getSubscriberCount() + 1,
+ };
 
-			controller.enqueue(encoder.encode(`data: ${JSON.stringify(connectionEvent)}\n\n`));
+ controller.enqueue(encoder.encode(`data: ${JSON.stringify(connectionEvent)}\n\n`));
 
-			// Subscribe to events
-			const unsubscribe = await transport.subscribe((evt: ErrorBrainEvent) => {
-				try {
-					const message = `data: ${JSON.stringify(evt)}\n\n`;
-					controller.enqueue(encoder.encode(message));
-				} catch (err) {
-					console.error(`SSE send error: ${err}`);
-				}
-			});
+ // Subscribe to events
+ const unsubscribe = await transport.subscribe((evt: ErrorBrainEvent) => {
+ try {
+ const message = `data: ${JSON.stringify(evt)}\n\n`;
+ controller.enqueue(encoder.encode(message));
+ } catch (err) {
+ console.error(`SSE send error: ${err}`);
+ }
+ });
 
-			// Heartbeat to keep connection alive
-			const heartbeatInterval = setInterval(() => {
-				try {
-					controller.enqueue(encoder.encode(': heartbeat\n\n'));
-				} catch (err) {
-					// Connection closed
-					clearInterval(heartbeatInterval);
-				}
-			}, 30000); // Every 30 seconds
+ // Heartbeat to keep connection alive
+ const heartbeatInterval = setInterval(() => {
+ try {
+ controller.enqueue(encoder.encode(': heartbeat\n\n'));
+ } catch (err) {
+ // Connection closed
+ clearInterval(heartbeatInterval);
+ }
+ }, 30000); // Every 30 seconds
 
-			// Cleanup on close
-			return () => {
-				clearInterval(heartbeatInterval);
-				unsubscribe();
-			};
-		},
+ // Cleanup on close
+ return () => {
+ clearInterval(heartbeatInterval);
+ unsubscribe();
+ };
+ },
 
-		cancel() {
-			// Stream cancelled by client
-		}
-	});
+ cancel() {
+ // Stream cancelled by client
+ },
+ });
 
-	return new Response(stream, {
-		headers: {
-			'Content-Type': 'text/event-stream',
-			'Cache-Control': 'no-cache, no-transform',
-			Connection: 'keep-alive',
-			'X-Error-Brain': '1',
-			'X-Accel-Buffering': 'no' // Disable nginx buffering
-		}
-	});
+ return new Response(stream, {
+ headers: {
+ 'Content-Type': 'text/event-stream',
+ 'Cache-Control': 'no-cache, no-transform',
+ Connection: 'keep-alive',
+ 'X-Error-Brain': '1',
+ 'X-Accel-Buffering': 'no', // Disable nginx buffering
+ },
+ });
 };

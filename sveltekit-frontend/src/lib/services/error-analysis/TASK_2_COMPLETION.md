@@ -17,28 +17,28 @@ Successfully implemented the error extraction service that integrates with svelt
 
 **Features Implemented**:
 1. **Svelte Error Extraction** (`extractSvelteErrors()`)
-   - Runs `npx svelte-check --tsconfig ./tsconfig.json`
-   - Parses output format: `file.svelte:line:column - message (code)`
-   - Extracts error/warning severity
-   - Normalizes file paths
+ - Runs `npx svelte-check --tsconfig ./tsconfig.json`
+ - Parses output format: `file.svelte:line:column - message (code)`
+ - Extracts error/warning severity
+ - Normalizes file paths
 
 2. **TypeScript Error Extraction** (`extractTypeScriptErrors()`)
-   - Runs `npx tsc --noEmit`
-   - Parses output format: `file.ts(line,column): error/warning TSxxxx: message`
-   - Extracts TypeScript error codes
-   - Normalizes file paths
+ - Runs `npx tsc --noEmit`
+ - Parses output format: `file.ts(line,column): error/warning TSxxxx: message`
+ - Extracts TypeScript error codes
+ - Normalizes file paths
 
 3. **Main Extraction Method** (`extractErrors()`)
-   - Combines Svelte and TypeScript errors
-   - Implements retry logic with exponential backoff
-   - Generates unique IDs for each error
-   - Sets initial status to 'new'
-   - Logs extraction progress
+ - Combines Svelte and TypeScript errors
+ - Implements retry logic with exponential backoff
+ - Generates unique IDs for each error
+ - Sets initial status to 'new'
+ - Logs extraction progress
 
 4. **Error Normalization**
-   - Converts absolute paths to relative paths
-   - Trims whitespace from messages
-   - Preserves all metadata (file, line, column, code, severity)
+ - Converts absolute paths to relative paths
+ - Trims whitespace from messages
+ - Preserves all metadata (file, line, column, code, severity)
 
 ### Task 2.1: Unit Tests
 
@@ -49,64 +49,64 @@ Successfully implemented the error extraction service that integrates with svelt
 **Test Categories**:
 
 1. **Svelte Error Parsing** (2 tests)
-   - Parse svelte-check output correctly
-   - Normalize file paths correctly
+ - Parse svelte-check output correctly
+ - Normalize file paths correctly
 
 2. **TypeScript Error Parsing** (2 tests)
-   - Parse tsc output correctly
-   - Handle both error and warning severity levels
+ - Parse tsc output correctly
+ - Handle both error and warning severity levels
 
 3. **Error Metadata Extraction** (3 tests)
-   - Preserve all error metadata during extraction
-   - Include error code when available
-   - Handle errors without code gracefully
+ - Preserve all error metadata during extraction
+ - Include error code when available
+ - Handle errors without code gracefully
 
 4. **Error Normalization** (2 tests)
-   - Normalize file paths to relative paths
-   - Trim whitespace from error messages
+ - Normalize file paths to relative paths
+ - Trim whitespace from error messages
 
 5. **Mixed Error Types** (1 test)
-   - Extract both Svelte and TypeScript errors together
+ - Extract both Svelte and TypeScript errors together
 
 6. **Error Handling** (2 tests)
-   - Handle extraction failures gracefully
-   - Log errors during extraction
+ - Handle extraction failures gracefully
+ - Log errors during extraction
 
 7. **Empty Results** (1 test)
-   - Return empty array when no errors exist
+ - Return empty array when no errors exist
 
 ## Test Results
 
 ```
-Test Files  2 passed (2)
-Tests       18 passed (18)
-  - 5 property tests (error-extractor.test.ts)
-  - 13 unit tests (error-extractor.unit.test.ts)
-Duration    4.28s
+Test Files 2 passed (2)
+Tests 18 passed (18)
+ - 5 property tests (error-extractor.test.ts)
+ - 13 unit tests (error-extractor.unit.test.ts)
+Duration 4.28s
 ```
 
 ## Key Design Decisions
 
 1. **Command Execution**: Uses `execSync` to run svelte-check and tsc directly
-   - Captures both stdout and stderr
-   - Handles non-zero exit codes gracefully (errors are expected)
+ - Captures both stdout and stderr
+ - Handles non-zero exit codes gracefully (errors are expected)
 
 2. **Error Parsing**: Regex-based parsing of compiler output
-   - Svelte: `^(.+?):(\d+):(\d+)\s*-\s*(.+?)(?:\s*\(([^)]+)\))?$`
-   - TypeScript: `^(.+?)\((\d+),(\d+)\):\s*(error|warning)\s*(TS\d+):\s*(.+)$`
+ - Svelte: `^(.+?):(\d+):(\d+)\s*-\s*(.+?)(?:\s*\(([^)]+)\))?$`
+ - TypeScript: `^(.+?)\((\d+),(\d+)\):\s*(error|warning)\s*(TS\d+):\s*(.+)$`
 
 3. **Path Normalization**: Converts absolute paths to relative paths
-   - Finds project root by looking for package.json
-   - Strips project root prefix from file paths
+ - Finds project root by looking for package.json
+ - Strips project root prefix from file paths
 
 4. **Retry Logic**: Inherited from BaseService
-   - Exponential backoff: `delay * 2^attempt`
-   - Default: 3 retries with 100ms initial delay
+ - Exponential backoff: `delay * 2^attempt`
+ - Default: 3 retries with 100ms initial delay
 
 5. **Error Model**: Follows Error interface from types.ts
-   - Unique ID generation using timestamp + random string
-   - Status set to 'new' for all extracted errors
-   - Timestamps set to current time
+ - Unique ID generation using timestamp + random string
+ - Status set to 'new' for all extracted errors
+ - Timestamps set to current time
 
 ## Integration Points
 

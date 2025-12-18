@@ -15,33 +15,33 @@ import type { RequestHandler } from './$types';
  * List all patches with optional filtering
  */
 export const GET: RequestHandler = async ({ url }) => {
-  const runId = url.searchParams.get('runId');
-  const applied = url.searchParams.get('applied');
-  const limit = parseInt(url.searchParams.get('limit') || '50');
+ const runId = url.searchParams.get('runId');
+ const applied = url.searchParams.get('applied');
+ const limit = parseInt(url.searchParams.get('limit') || '50');
 
-  let query = db
-    .select()
-    .from(errorBrainDiffs)
-    .orderBy(desc(errorBrainDiffs.createdAt))
-    .limit(limit);
+ let query = db
+ .select()
+ .from(errorBrainDiffs)
+ .orderBy(desc(errorBrainDiffs.createdAt))
+ .limit(limit);
 
-  // Apply filters
-  if (runId) {
-    query = query.where(eq(errorBrainDiffs.runId, runId)) as typeof query;
-  }
+ // Apply filters
+ if (runId) {
+ query = query.where(eq(errorBrainDiffs.runId, runId)) as typeof query;
+ }
 
-  if (applied === 'true') {
-    query = query.where(eq(errorBrainDiffs.applied, true)) as typeof query;
-  } else if (applied === 'false') {
-    query = query.where(eq(errorBrainDiffs.applied, false)) as typeof query;
-  }
+ if (applied === 'true') {
+ query = query.where(eq(errorBrainDiffs.applied, true)) as typeof query;
+ } else if (applied === 'false') {
+ query = query.where(eq(errorBrainDiffs.applied, false)) as typeof query;
+ }
 
-  const patches = await query;
+ const patches = await query;
 
-  return json({
-    patches,
-    total: patches.length
-  });
+ return json({
+ patches,
+ total: patches.length,
+ });
 };
 
 /**
@@ -49,30 +49,31 @@ export const GET: RequestHandler = async ({ url }) => {
  * Create a new patch manually (for testing)
  */
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json();
+ const body = await request.json();
 
-  const { runId, filePath, diffText, beforeSha256, afterSha256, afterText, reason, confidence } = body;
+ const { runId, filePath, diffText, beforeSha256, afterSha256, afterText, reason, confidence } =
+ body;
 
-  if (!runId || !filePath || !diffText || !beforeSha256 || !afterSha256 || !afterText) {
-    return json({ error: 'Missing required fields' }, { status: 400 });
-  }
+ if (!runId || !filePath || !diffText || !beforeSha256 || !afterSha256 || !afterText) {
+ return json({ error: 'Missing required fields' }, { status: 400 });
+ }
 
-  const [inserted] = await db
-    .insert(errorBrainDiffs)
-    .values({
-      runId,
-      filePath,
-      diffText,
-      beforeSha256,
-      afterSha256,
-      afterText,
-      reason: reason || 'Manual patch',
-      confidence: confidence || 0.5,
-      appliedAt: null,
-      validationResult: null,
-      createdAt: new Date()
-    })
-    .returning();
+ const [inserted] = await db
+ .insert(errorBrainDiffs)
+ .values({
+ runId,
+ filePath,
+ diffText,
+ beforeSha256,
+ afterSha256,
+ afterText,
+ reason: reason || 'Manual patch',
+ confidence: confidence || 0.5,
+ appliedAt: null,
+ validationResult: null,
+ createdAt: new Date(),
+ })
+ .returning();
 
-  return json({ patch: inserted }, { status: 201 });
+ return json({ patch: inserted }, { status: 201 });
 };

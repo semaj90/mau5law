@@ -1,11 +1,11 @@
-﻿// Minimal shim for bits-ui exports used by the app. Expand as needed.
+// Minimal shim for bits-ui exports used by the app. Expand as needed.
 import ComponentFallback from './ComponentFallback.svelte.js';
 // Re-export a default object for `import bits from 'bits-ui'` patterns
 export default {
-  Button: ComponentFallback, Dialog: ComponentFallback
-  Badge: ComponentFallback, Card: ComponentFallback
-  ScrollAreaViewport: ComponentFallback
-  // add more named mappings as you find usages
+ Button: ComponentFallback, Dialog: ComponentFallback
+ Badge: ComponentFallback, Card: ComponentFallback
+ ScrollAreaViewport: ComponentFallback
+ // add more named mappings as you find usages
 };
 // Named exports
 export const Button = ComponentFallback

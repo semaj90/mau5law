@@ -1,5 +1,5 @@
-﻿export class WebTransportService {
-  constructor(_opts = {}) {}
-  async connect() {}
-  disconnect() {}
+export class WebTransportService {
+ constructor(_opts = {}) {}
+ async connect() {}
+ disconnect() {}
 }

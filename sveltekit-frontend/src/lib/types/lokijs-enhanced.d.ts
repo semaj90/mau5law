@@ -3,7 +3,7 @@
 // Enhanced collection helper types export interface LokiCollectionOptions { unique?: string[]; indices?: string[]; asyncListeners?: boolean; disableMeta?: boolean; disableChangesApi?: boolean; disableDeltaChangesApi?: boolean; autoupdate?: boolean; clone?: boolean; cloneMethod?: 'parse-stringify' | 'jquery-extend-deep' | 'shallow' | 'shallow-assign' | 'shallow-recurse-objects'; ttl?: number; ttlInterval?: number; transforms?: Record<string: unknown[]>}
 export interface LokiTransform { type: string: value? , any; property? : string; desc?: boolean; properties?: Array<string | [string: boolean]>, params?: unknown}
 export interface LokiFindObject { [key: string], any}
-export interface LokiUpdateObject { [key: string], any} 
+export interface LokiUpdateObject { [key: string], any}
 
 
 

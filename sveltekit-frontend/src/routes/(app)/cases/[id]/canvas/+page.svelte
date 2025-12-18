@@ -9,7 +9,7 @@
 		<h2 class="text-sm uppercase tracking-[0.25em] text-slate-400">Evidence Canvas</h2>
 		<button
 			class="text-xs px-3 py-1 rounded-full border border-amber-400/60
-             hover:bg-amber-400/10 transition-colors"
+ hover:bg-amber-400/10 transition-colors"
 		>
 			Auto-Arrange Nodes
 		</button>
@@ -17,7 +17,7 @@
 
 	<div
 		class="relative border border-slate-800 rounded-2xl bg-slate-900/60
-           min-h-[420px] overflow-hidden"
+ min-h-[420px] overflow-hidden"
 	>
 		<!-- Placeholder grid background -->
 		<div class="pointer-events-none absolute inset-0 opacity-20">
@@ -31,7 +31,7 @@
 				{#each evidence as item (item.id)}
 					<div
 						class="border border-slate-700 rounded-xl bg-slate-950/80
-                   px-3 py-2 max-w-xs text-xs text-slate-100"
+ px-3 py-2 max-w-xs text-xs text-slate-100"
 					>
 						<div class="font-semibold truncate mb-1">
 							{item.label ?? item.filename ?? `Evidence #${item.id}`}

@@ -41,24 +41,24 @@ The Legal Dashboard is a professional, courthouse-themed interface that displays
 ```
 sveltekit-frontend/
 ├── src/
-│   ├── lib/
-│   │   ├── components/dashboard/
-│   │   │   ├── ProgressCard.svelte          # Main progress display
-│   │   │   ├── DocumentThumbnailTray.svelte # Page status indicators
-│   │   │   └── FallbackAlert.svelte         # GPU fallback alert
-│   │   ├── stores/dashboard/
-│   │   │   ├── SSEStatusStore.ts            # SSE connection management
-│   │   │   ├── DocumentProgressStore.ts     # Progress state management
-│   │   │   └── GrpcStatusAdapter.ts         # Event normalization
-│   │   ├── services/dashboard/
-│   │   │   └── DocumentProcessingAPI.ts     # Backend API client
-│   │   └── utils/dashboard/
-│   │       ├── ErrorHandler.ts              # Error handling utilities
-│   │       └── Accessibility.ts             # Accessibility utilities
-│   ├── styles/
-│   │   └── courthouse-theme.css             # Courthouse color palette & styling
-│   └── routes/dashboard/legal-progress/
-│       └── +page.svelte                     # Main dashboard page
+│ ├── lib/
+│ │ ├── components/dashboard/
+│ │ │ ├── ProgressCard.svelte # Main progress display
+│ │ │ ├── DocumentThumbnailTray.svelte # Page status indicators
+│ │ │ └── FallbackAlert.svelte # GPU fallback alert
+│ │ ├── stores/dashboard/
+│ │ │ ├── SSEStatusStore.ts # SSE connection management
+│ │ │ ├── DocumentProgressStore.ts # Progress state management
+│ │ │ └── GrpcStatusAdapter.ts # Event normalization
+│ │ ├── services/dashboard/
+│ │ │ └── DocumentProcessingAPI.ts # Backend API client
+│ │ └── utils/dashboard/
+│ │ ├── ErrorHandler.ts # Error handling utilities
+│ │ └── Accessibility.ts # Accessibility utilities
+│ ├── styles/
+│ │ └── courthouse-theme.css # Courthouse color palette & styling
+│ └── routes/dashboard/legal-progress/
+│ └── +page.svelte # Main dashboard page
 ```
 
 ## Installation
@@ -81,7 +81,7 @@ Or import in your Svelte component:
 
 ```svelte
 <script>
-  import '$lib/styles/courthouse-theme.css';
+ import '$lib/styles/courthouse-theme.css';
 </script>
 ```
 
@@ -102,28 +102,28 @@ VITE_EVENT_DEBOUNCE_MS=500
 
 ```svelte
 <script>
-  import { onMount } from 'svelte';
-  import ProgressCard from '$lib/components/dashboard/ProgressCard.svelte';
-  import DocumentThumbnailTray from '$lib/components/dashboard/DocumentThumbnailTray.svelte';
-  import FallbackAlert from '$lib/components/dashboard/FallbackAlert.svelte';
-  import { sseStatusStore } from '$lib/stores/dashboard/SSEStatusStore';
-  import { documentProgressStore } from '$lib/stores/dashboard/DocumentProgressStore';
+ import { onMount } from 'svelte';
+ import ProgressCard from '$lib/components/dashboard/ProgressCard.svelte';
+ import DocumentThumbnailTray from '$lib/components/dashboard/DocumentThumbnailTray.svelte';
+ import FallbackAlert from '$lib/components/dashboard/FallbackAlert.svelte';
+ import { sseStatusStore } from '$lib/stores/dashboard/SSEStatusStore';
+ import { documentProgressStore } from '$lib/stores/dashboard/DocumentProgressStore';
 
-  onMount(async () => {
-    // Connect to SSE stream
-    await sseStatusStore.connect('/api/document-processing/stream');
+ onMount(async () => {
+ // Connect to SSE stream
+ await sseStatusStore.connect('/api/document-processing/stream');
 
-    // Listen for events
-    sseStatusStore.onMessage((event) => {
-      documentProgressStore.updateFromEvent(event);
-    });
-  });
+ // Listen for events
+ sseStatusStore.onMessage((event) => {
+ documentProgressStore.updateFromEvent(event);
+ });
+ });
 </script>
 
 <div class="courthouse-dashboard">
-  <ProgressCard />
-  <DocumentThumbnailTray />
-  <FallbackAlert />
+ <ProgressCard />
+ <DocumentThumbnailTray />
+ <FallbackAlert />
 </div>
 ```
 
@@ -134,9 +134,9 @@ import { documentProgressStore } from '$lib/stores/dashboard/DocumentProgressSto
 
 // Initialize with document info
 documentProgressStore.initializeDocument(
-  'doc-123',           // documentId
-  'Evidence Document', // documentTitle
-  12                   // totalPages
+ 'doc-123', // documentId
+ 'Evidence Document', // documentTitle
+ 12 // totalPages
 );
 ```
 
@@ -146,21 +146,21 @@ documentProgressStore.initializeDocument(
 import { GrpcStatusAdapter } from '$lib/stores/dashboard/GrpcStatusAdapter';
 
 sseStatusStore.onMessage((event) => {
-  const normalized = GrpcStatusAdapter.processEvent(event);
+ const normalized = GrpcStatusAdapter.processEvent(event);
 
-  if (normalized) {
-    documentProgressStore.updateFromEvent(normalized);
+ if (normalized) {
+ documentProgressStore.updateFromEvent(normalized);
 
-    // Check for fallback
-    if (GrpcStatusAdapter.isFallbackEvent(normalized)) {
-      documentProgressStore.setFallbackActive(true, normalized.confidence);
-    }
+ // Check for fallback
+ if (GrpcStatusAdapter.isFallbackEvent(normalized)) {
+ documentProgressStore.setFallbackActive(true, normalized.confidence);
+ }
 
-    // Check for completion
-    if (GrpcStatusAdapter.isCompletionEvent(normalized)) {
-      documentProgressStore.complete();
-    }
-  }
+ // Check for completion
+ if (GrpcStatusAdapter.isCompletionEvent(normalized)) {
+ documentProgressStore.complete();
+ }
+ }
 });
 ```
 
@@ -188,15 +188,15 @@ Events from the Go gRPC Gateway should follow this format:
 
 ```json
 {
-  "stage": "granite_docling",
-  "status": "Parsing document layout",
-  "page": 4,
-  "pages_total": 12,
-  "percent": 62,
-  "eta": 31,
-  "details": "1 stamp, 3 tables, 42 text blocks",
-  "timestamp": "2025-11-23T10:30:45Z",
-  "confidence": 0.95
+ "stage": "granite_docling",
+ "status": "Parsing document layout",
+ "page": 4,
+ "pages_total": 12,
+ "percent": 62,
+ "eta": 31,
+ "details": "1 stamp, 3 tables, 42 text blocks",
+ "timestamp": "2025-11-23T10:30:45Z",
+ "confidence": 0.95
 }
 ```
 
@@ -213,13 +213,13 @@ Events from the Go gRPC Gateway should follow this format:
 
 ```css
 :root {
-  --noir: #1a1a1a;           /* Primary text */
-  --beige: #f5f1e8;          /* Background */
-  --bronze: #b8860b;         /* Progress fill */
-  --navy: #1a3a52;           /* Progress background */
-  --court-red: #8b3a3a;      /* Alert background */
-  --burgundy: #6b2c2c;       /* Accent */
-  --gold-accent: #d4af37;    /* Highlights */
+ --noir: #1a1a1a; /* Primary text */
+ --beige: #f5f1e8; /* Background */
+ --bronze: #b8860b; /* Progress fill */
+ --navy: #1a3a52; /* Progress background */
+ --court-red: #8b3a3a; /* Alert background */
+ --burgundy: #6b2c2c; /* Accent */
+ --gold-accent: #d4af37; /* Highlights */
 }
 ```
 
@@ -245,11 +245,11 @@ All interactive elements include proper ARIA labels:
 
 ```svelte
 <div
-  role="progressbar"
-  aria-valuenow={percentage}
-  aria-valuemin="0"
-  aria-valuemax="100"
-  aria-label="Document processing progress: {percentage}% complete"
+ role="progressbar"
+ aria-valuenow={percentage}
+ aria-valuemin="0"
+ aria-valuemax="100"
+ aria-label="Document processing progress: {percentage}% complete"
 >
 ```
 
@@ -338,9 +338,9 @@ Content-Type: application/json
 Authorization: Bearer {token}
 
 {
-  "action": "pause|resume|cancel|retry",
-  "documentId": "doc-123",
-  "pageNumber": 5
+ "action": "pause|resume|cancel|retry",
+ "documentId": "doc-123",
+ "pageNumber": 5
 }
 ```
 

@@ -8,25 +8,25 @@
  * Represents a citation saved by a user
  */
 export interface SavedCitation {
-  id: string;
-  userId: string;
-  caseId?: string;
-  citationText: string;
-  statuteCode?: string;
-  statuteTitle?: string;
-  statuteSection?: string;
-  statuteSubsection?: string;
-  statuteUrl?: string;
-  sourceType: 'statute' | 'case_law' | 'regulation' | 'manual';
-  sourceDocumentId?: string;
-  pageNumber?: number;
-  contextText?: string;
-  relevanceScore: number;
-  notes?: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  createdBy: string;
+ id: string;
+ userId: string;
+ caseId?: string;
+ citationText: string;
+ statuteCode?: string;
+ statuteTitle?: string;
+ statuteSection?: string;
+ statuteSubsection?: string;
+ statuteUrl?: string;
+ sourceType: 'statute' | 'case_law' | 'regulation' | 'manual';
+ sourceDocumentId?: string;
+ pageNumber?: number;
+ contextText?: string;
+ relevanceScore: number;
+ notes?: string;
+ tags: string[];
+ createdAt: Date;
+ updatedAt: Date;
+ createdBy: string;
 }
 
 /**
@@ -34,18 +34,18 @@ export interface SavedCitation {
  * Parameters for searching citations
  */
 export interface CitationSearchRequest {
-  query: string;
-  filters?: {
-    sourceType?: 'statute' | 'case_law' | 'regulation' | 'manual';
-    statuteCode?: string;
-    caseId?: string;
-    tags?: string[];
-    dateFrom?: Date;
-    dateTo?: Date;
-    minRelevance?: number;
-  };
-  limit?: number;
-  offset?: number;
+ query: string;
+ filters?: {
+ sourceType?: 'statute' | 'case_law' | 'regulation' | 'manual';
+ statuteCode?: string;
+ caseId?: string;
+ tags?: string[];
+ dateFrom?: Date;
+ dateTo?: Date;
+ minRelevance?: number;
+ };
+ limit?: number;
+ offset?: number;
 }
 
 /**
@@ -53,10 +53,10 @@ export interface CitationSearchRequest {
  * Result from citation search
  */
 export interface CitationSearchResult {
-  citations: SavedCitation[];
-  total: number;
-  limit: number;
-  offset: number;
+ citations: SavedCitation[];
+ total: number;
+ limit: number;
+ offset: number;
 }
 
 /**
@@ -64,15 +64,15 @@ export interface CitationSearchResult {
  * Tracks statute searches for user
  */
 export interface StatuteSearchHistory {
-  id: string;
-  userId: string;
-  searchQuery: string;
-  statuteCode?: string;
-  statuteTitle?: string;
-  resultsCount: number;
-  searchType: 'keyword' | 'code' | 'title';
-  filters: Record<string, any>;
-  createdAt: Date;
+ id: string;
+ userId: string;
+ searchQuery: string;
+ statuteCode?: string;
+ statuteTitle?: string;
+ resultsCount: number;
+ searchType: 'keyword' | 'code' | 'title';
+ filters: Record<string, any>;
+ createdAt: Date;
 }
 
 /**
@@ -80,15 +80,15 @@ export interface StatuteSearchHistory {
  * Collection of citations organized by user
  */
 export interface CitationCollection {
-  id: string;
-  userId: string;
-  name: string;
-  description?: string;
-  color?: string;
-  isPublic: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  citationCount?: number;
+ id: string;
+ userId: string;
+ name: string;
+ description?: string;
+ color?: string;
+ isPublic: boolean;
+ createdAt: Date;
+ updatedAt: Date;
+ citationCount?: number;
 }
 
 /**
@@ -96,12 +96,12 @@ export interface CitationCollection {
  * Tag for organizing citations
  */
 export interface CitationTag {
-  id: string;
-  userId: string;
-  tagName: string;
-  tagColor?: string;
-  usageCount: number;
-  createdAt: Date;
+ id: string;
+ userId: string;
+ tagName: string;
+ tagColor?: string;
+ usageCount: number;
+ createdAt: Date;
 }
 
 /**
@@ -109,10 +109,10 @@ export interface CitationTag {
  * Junction between collection and citation
  */
 export interface CollectionCitation {
-  id: string;
-  collectionId: string;
-  citationId: string;
-  addedAt: Date;
+ id: string;
+ collectionId: string;
+ citationId: string;
+ addedAt: Date;
 }
 
 /**
@@ -120,12 +120,12 @@ export interface CollectionCitation {
  * Audit trail for citation actions
  */
 export interface CitationAuditLog {
-  id: string;
-  userId: string;
-  citationId?: string;
-  action: 'created' | 'updated' | 'deleted' | 'tagged' | 'shared';
-  actionDetails?: Record<string, any>;
-  createdAt: Date;
+ id: string;
+ userId: string;
+ citationId?: string;
+ action: 'created' | 'updated' | 'deleted' | 'tagged' | 'shared';
+ actionDetails?: Record<string, any>;
+ createdAt: Date;
 }
 
 /**
@@ -133,12 +133,12 @@ export interface CitationAuditLog {
  * Statistics about user's citations
  */
 export interface CitationStatistics {
-  userId: string;
-  totalCitations: number;
-  casesWithCitations: number;
-  uniqueStatutes: number;
-  totalCollections: number;
-  lastCitationDate?: Date;
+ userId: string;
+ totalCitations: number;
+ casesWithCitations: number;
+ uniqueStatutes: number;
+ totalCollections: number;
+ lastCitationDate?: Date;
 }
 
 /**
@@ -146,14 +146,14 @@ export interface CitationStatistics {
  * Information about a statute
  */
 export interface StatuteInfo {
-  code: string;
-  title: string;
-  section?: string;
-  subsection?: string;
-  text?: string;
-  url?: string;
-  relatedCases?: string[];
-  lastUpdated?: Date;
+ code: string;
+ title: string;
+ section?: string;
+ subsection?: string;
+ text?: string;
+ url?: string;
+ relatedCases?: string[];
+ lastUpdated?: Date;
 }
 
 /**
@@ -161,20 +161,20 @@ export interface StatuteInfo {
  * Request to save a citation
  */
 export interface CitationSaveRequest {
-  citationText: string;
-  statuteCode?: string;
-  statuteTitle?: string;
-  statuteSection?: string;
-  statuteSubsection?: string;
-  statuteUrl?: string;
-  sourceType: 'statute' | 'case_law' | 'regulation' | 'manual';
-  sourceDocumentId?: string;
-  pageNumber?: number;
-  contextText?: string;
-  relevanceScore?: number;
-  notes?: string;
-  tags?: string[];
-  caseId?: string;
+ citationText: string;
+ statuteCode?: string;
+ statuteTitle?: string;
+ statuteSection?: string;
+ statuteSubsection?: string;
+ statuteUrl?: string;
+ sourceType: 'statute' | 'case_law' | 'regulation' | 'manual';
+ sourceDocumentId?: string;
+ pageNumber?: number;
+ contextText?: string;
+ relevanceScore?: number;
+ notes?: string;
+ tags?: string[];
+ caseId?: string;
 }
 
 /**
@@ -182,12 +182,12 @@ export interface CitationSaveRequest {
  * Request to update a citation
  */
 export interface CitationUpdateRequest {
-  citationText?: string;
-  notes?: string;
-  tags?: string[];
-  relevanceScore?: number;
-  statuteCode?: string;
-  statuteTitle?: string;
+ citationText?: string;
+ notes?: string;
+ tags?: string[];
+ relevanceScore?: number;
+ statuteCode?: string;
+ statuteTitle?: string;
 }
 
 /**
@@ -195,11 +195,11 @@ export interface CitationUpdateRequest {
  * Request to export citations
  */
 export interface CitationExportRequest {
-  citationIds: string[];
-  format: 'pdf' | 'json' | 'csv';
-  includeNotes?: boolean;
-  includeTags?: boolean;
-  includeMetadata?: boolean;
+ citationIds: string[];
+ format: 'pdf' | 'json' | 'csv';
+ includeNotes?: boolean;
+ includeTags?: boolean;
+ includeMetadata?: boolean;
 }
 
 /**
@@ -207,10 +207,10 @@ export interface CitationExportRequest {
  * Result of citation export
  */
 export interface CitationExportResult {
-  format: 'pdf' | 'json' | 'csv';
-  data: string | Buffer;
-  filename: string;
-  mimeType: string;
+ format: 'pdf' | 'json' | 'csv';
+ data: string | Buffer;
+ filename: string;
+ mimeType: string;
 }
 
 /**
@@ -218,16 +218,16 @@ export interface CitationExportResult {
  * Request to search statutes
  */
 export interface StatuteSearchRequest {
-  query: string;
-  searchType?: 'keyword' | 'code' | 'title';
-  filters?: {
-    jurisdiction?: string;
-    category?: string;
-    dateFrom?: Date;
-    dateTo?: Date;
-  };
-  limit?: number;
-  offset?: number;
+ query: string;
+ searchType?: 'keyword' | 'code' | 'title';
+ filters?: {
+ jurisdiction?: string;
+ category?: string;
+ dateFrom?: Date;
+ dateTo?: Date;
+ };
+ limit?: number;
+ offset?: number;
 }
 
 /**
@@ -235,10 +235,10 @@ export interface StatuteSearchRequest {
  * Result from statute search
  */
 export interface StatuteSearchResult {
-  statutes: StatuteInfo[];
-  total: number;
-  limit: number;
-  offset: number;
+ statutes: StatuteInfo[];
+ total: number;
+ limit: number;
+ offset: number;
 }
 
 /**
@@ -246,8 +246,8 @@ export interface StatuteSearchResult {
  * Citation with associated collection information
  */
 export interface CitationWithCollections extends SavedCitation {
-  collections: CitationCollection[];
-  collectionCount: number;
+ collections: CitationCollection[];
+ collectionCount: number;
 }
 
 /**
@@ -255,7 +255,7 @@ export interface CitationWithCollections extends SavedCitation {
  * Collection with associated citations
  */
 export interface CollectionWithCitations extends CitationCollection {
-  citations: SavedCitation[];
+ citations: SavedCitation[];
 }
 
 /**
@@ -263,13 +263,13 @@ export interface CollectionWithCitations extends CitationCollection {
  * Metadata about a citation
  */
 export interface CitationMetadata {
-  citationId: string;
-  sourceType: string;
-  sourceDocument?: string;
-  pageNumber?: number;
-  relevanceScore: number;
-  extractedAt: Date;
-  extractedBy?: string;
+ citationId: string;
+ sourceType: string;
+ sourceDocument?: string;
+ pageNumber?: number;
+ relevanceScore: number;
+ extractedAt: Date;
+ extractedBy?: string;
 }
 
 /**
@@ -277,12 +277,12 @@ export interface CitationMetadata {
  * Relationship between statute and case
  */
 export interface StatuteRelationship {
-  id: string;
-  caseId: string;
-  statuteCode: string;
-  statuteTitle: string;
-  relationshipType: 'cited' | 'violated' | 'applied' | 'referenced';
-  notes?: string;
-  createdAt: Date;
-  createdBy: string;
+ id: string;
+ caseId: string;
+ statuteCode: string;
+ statuteTitle: string;
+ relationshipType: 'cited' | 'violated' | 'applied' | 'referenced';
+ notes?: string;
+ createdAt: Date;
+ createdBy: string;
 }

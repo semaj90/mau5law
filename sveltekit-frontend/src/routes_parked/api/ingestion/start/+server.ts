@@ -8,44 +8,46 @@ import type { RequestHandler } from './$types';
 import { createOrchestrator } from '$lib/server/services/ingestion/ingestion-orchestrator';
 
 export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const body = await request.json();
-    const { limit = 100, skipEmbedding = false, skipIndexing = false } = body;
+ try {
+ const body = await request.json();
+ const { limit = 100, skipEmbedding = false, skipIndexing = false } = body;
 
-    console.log(`Starting ingestion: limit=${limit}, skipEmbedding=${skipEmbedding}, skipIndexing=${skipIndexing}`);
+ console.log(
+ `Starting ingestion: limit=${limit}, skipEmbedding=${skipEmbedding}, skipIndexing=${skipIndexing}`
+ );
 
-    // Create orchestrator
-    const orchestrator = await createOrchestrator({
-      batchSize: 50,
-      fetchMissingText: false,
-      skipEmbedding,
-      skipIndexing,
-    });
+ // Create orchestrator
+ const orchestrator = await createOrchestrator({
+ batchSize: 50,
+ fetchMissingText: false,
+ skipEmbedding,
+ skipIndexing,
+ });
 
-    // Run limited ingestion
-    const result = await orchestrator.runLimited(limit);
+ // Run limited ingestion
+ const result = await orchestrator.runLimited(limit);
 
-    return json({
-      success: result.success,
-      stats: {
-        totalDocuments: result.totalDocuments,
-        processedDocuments: result.processedDocuments,
-        indexedDocuments: result.indexedDocuments,
-        totalChunks: result.totalChunks,
-        totalEmbeddings: result.totalEmbeddings,
-        executionTimeMs: result.executionTimeMs,
-        executionTimeSec: (result.executionTimeMs / 1000).toFixed(2),
-      },
-      errors: result.errors,
-    });
-  } catch (error) {
-    console.error('Ingestion error:', error);
-    return json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    );
-  }
+ return json({
+ success: result.success,
+ stats: {
+ totalDocuments: result.totalDocuments,
+ processedDocuments: result.processedDocuments,
+ indexedDocuments: result.indexedDocuments,
+ totalChunks: result.totalChunks,
+ totalEmbeddings: result.totalEmbeddings,
+ executionTimeMs: result.executionTimeMs,
+ executionTimeSec: (result.executionTimeMs / 1000).toFixed(2),
+ },
+ errors: result.errors,
+ });
+ } catch (error) {
+ console.error('Ingestion error:', error);
+ return json(
+ {
+ success: false,
+ error: error instanceof Error ? error.message : 'Unknown error',
+ },
+ { status: 500 }
+ );
+ }
 };

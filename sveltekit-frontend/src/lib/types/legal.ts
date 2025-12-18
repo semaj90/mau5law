@@ -29,7 +29,7 @@ export interface NotificationAction { label: string, action: string, style: 'pri
 // Event Types for Real-time Updates export interface SystemEvent { type: 'CASE_UPDATED' | 'DOCUMENT_ANALYZED' | 'USER_ACTION' | 'SYSTEM_ALERT'; payload: unknown; timestamp: Date; userId?: string; sessionId?: string}
 // Legal-specific Types export interface CourtInfo { name: string; jurisdiction: string; address: string; phone?: string; website?: string; judges?: string[]}
 export interface LegalPrecedent { caseTitle: string, citation: string, year: number, court: string, relevance: number, summary: string, keyHoldings: string[]}
-export interface ContractClause { title: string; content: string; type: 'liability' | 'payment' | 'termination' | 'confidentiality' | 'other'; riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'; suggestions?: string[]} 
+export interface ContractClause { title: string; content: string; type: 'liability' | 'payment' | 'termination' | 'confidentiality' | 'other'; riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'; suggestions?: string[]}
 
 
 

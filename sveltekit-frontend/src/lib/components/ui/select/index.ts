@@ -6,9 +6,9 @@ export { default as SelectValue } from './SelectValue.svelte';
 
 // TypeScript interface definition
 export interface SelectOption {
-  value: string;
-  label: string;
-  description?: string;
-  disabled?: boolean;
-  category?: string;
+ value: string;
+ label: string;
+ description?: string;
+ disabled?: boolean;
+ category?: string;
 }

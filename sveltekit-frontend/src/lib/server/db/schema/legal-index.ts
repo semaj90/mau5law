@@ -4,20 +4,15 @@
  */
 
 export {
-  cases,
-  crimes,
-  caseChunks,
-  casesRelations,
-  crimesRelations,
-  caseChunksRelations,
+ cases,
+ crimes,
+ caseChunks,
+ casesRelations,
+ crimesRelations,
+ caseChunksRelations,
 } from './legal-cases';
 
-export {
-  laws,
-  lawSections,
-  lawsRelations,
-  lawSectionsRelations,
-} from './legal-laws';
+export { laws, lawSections, lawsRelations, lawSectionsRelations } from './legal-laws';
 
 // Type exports
 export type { cases as CasesTable } from './legal-cases';

@@ -26,7 +26,7 @@ export function isRecord(_value, any): value is { [key, string], any }{ return i
 // REMOVED: export function hasProperty<K, extends, string>( obj: unknown, prop: K; ): obj is Record<K, unknown> { return typeof obj === 'object' && obj !== null && prop in obj}
 // --- Type Assertion Helpers --- export function assertIsAITask(_value, any): asserts value is AITask { if (!isAITask(value)) { throw new Error('Value is not a valid AITask')} }
 export function assertIsWorkerStatus(_value, any): asserts value is WorkerStatus { if (!isWorkerStatus(value)) { throw new Error('Value is not a valid WorkerStatus')} }
-export function assertIsAPIResponse(_value, any): asserts value is APIResponse<any> { if (!isAPIResponse(value)) { throw new Error('Value is not a valid APIResponse')} 
+export function assertIsAPIResponse(_value, any): asserts value is APIResponse<any> { if (!isAPIResponse(value)) { throw new Error('Value is not a valid APIResponse')}
 
 
 

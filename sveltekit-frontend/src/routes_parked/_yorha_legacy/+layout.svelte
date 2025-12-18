@@ -1,10 +1,10 @@
 <script lang="ts">
-  import '$lib/../app.css';
-  import LayoutShell from '$lib/ui/LayoutShell.svelte';
+ import '$lib/../app.css';
+ import LayoutShell from '$lib/ui/LayoutShell.svelte';
 
-  const { children } = $props();
+ const { children } = $props();
 </script>
 
 <LayoutShell>
-  {@render children?.()}
+ {@render children?.()}
 </LayoutShell>

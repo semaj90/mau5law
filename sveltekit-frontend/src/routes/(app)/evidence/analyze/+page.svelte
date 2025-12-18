@@ -1,13 +1,13 @@
-﻿<script lang="ts">
-	import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
-	import type { Dialog, DialogContent, DialogTitle, DialogDescription  } from '$lib/components/ui/dialog';
+<script lang="ts">
+	import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+	import type { Dialog, DialogContent, DialogTitle, DialogDescription } from '$lib/components/ui/dialog';
 	import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
 	import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Label from '$lib/components/ui/Label.svelte';
 	import Progress from '$lib/components/ui/progress/Progress.svelte';
-	import type { Textarea  } from '$lib/components/ui/textarea';
+	import type { Textarea } from '$lib/components/ui/textarea';
 
 	// Define missing types
 	type SearchResult = {

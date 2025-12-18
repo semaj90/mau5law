@@ -3,28 +3,28 @@
  */
 
 export interface FileValidationResult {
-  valid: boolean;
-  error?: string;
-  mimeType?: string;
-  size?: number;
+ valid: boolean;
+ error?: string;
+ mimeType?: string;
+ size?: number;
 }
 
 export interface FileProcessingOptions {
-  maxSize?: number; // in bytes
-  allowedTypes?: string[];
-  allowedExtensions?: string[];
-  maxFiles?: number;
+ maxSize?: number; // in bytes
+ allowedTypes?: string[];
+ allowedExtensions?: string[];
+ maxFiles?: number;
 }
 
 export interface ProcessedFile {
-  file: File;
-  preview?: string;
-  metadata: {
-    name: string;
-    size: number;
-    type: string;
-    lastModified: number;
-  };
+ file: File;
+ preview?: string;
+ metadata: {
+ name: string;
+ size: number;
+ type: string;
+ lastModified: number;
+ };
 }
 
 /**
@@ -33,13 +33,13 @@ export interface ProcessedFile {
  * @returns Formatted size string
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
+ if (bytes === 0) return '0 B';
 
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+ const k = 1024;
+ const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+ const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+ return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
 /**
@@ -48,7 +48,7 @@ export function formatFileSize(bytes: number): string {
  * @returns File extension (lowercase)
  */
 export function getFileExtension(filename: string): string {
-  return filename.split('.').pop()?.toLowerCase() || '';
+ return filename.split('.').pop()?.toLowerCase() || '';
 }
 
 /**
@@ -57,58 +57,58 @@ export function getFileExtension(filename: string): string {
  * @returns MIME type or null if unknown
  */
 export function getMimeTypeFromExtension(extension: string): string | null {
-  const mimeTypes: Record<string, string> = {
-    // Documents
-    'pdf': 'application/pdf',
-    'doc': 'application/msword',
-    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'xls': 'application/vnd.ms-excel',
-    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'ppt': 'application/vnd.ms-powerpoint',
-    'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    'txt': 'text/plain',
-    'rtf': 'application/rtf',
+ const mimeTypes: Record<string, string> = {
+ // Documents
+ pdf: 'application/pdf',
+ doc: 'application/msword',
+ docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+ xls: 'application/vnd.ms-excel',
+ xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+ ppt: 'application/vnd.ms-powerpoint',
+ pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+ txt: 'text/plain',
+ rtf: 'application/rtf',
 
-    // Images
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'gif': 'image/gif',
-    'bmp': 'image/bmp',
-    'webp': 'image/webp',
-    'svg': 'image/svg+xml',
-    'tiff': 'image/tiff',
-    'ico': 'image/x-icon',
+ // Images
+ jpg: 'image/jpeg',
+ jpeg: 'image/jpeg',
+ png: 'image/png',
+ gif: 'image/gif',
+ bmp: 'image/bmp',
+ webp: 'image/webp',
+ svg: 'image/svg+xml',
+ tiff: 'image/tiff',
+ ico: 'image/x-icon',
 
-    // Videos
-    'mp4': 'video/mp4',
-    'avi': 'video/x-msvideo',
-    'mov': 'video/quicktime',
-    'wmv': 'video/x-ms-wmv',
-    'flv': 'video/x-flv',
-    'webm': 'video/webm',
+ // Videos
+ mp4: 'video/mp4',
+ avi: 'video/x-msvideo',
+ mov: 'video/quicktime',
+ wmv: 'video/x-ms-wmv',
+ flv: 'video/x-flv',
+ webm: 'video/webm',
 
-    // Audio
-    'mp3': 'audio/mpeg',
-    'wav': 'audio/wav',
-    'ogg': 'audio/ogg',
-    'aac': 'audio/aac',
-    'flac': 'audio/flac',
+ // Audio
+ mp3: 'audio/mpeg',
+ wav: 'audio/wav',
+ ogg: 'audio/ogg',
+ aac: 'audio/aac',
+ flac: 'audio/flac',
 
-    // Archives
-    'zip': 'application/zip',
-    'rar': 'application/x-rar-compressed',
-    '7z': 'application/x-7z-compressed',
-    'tar': 'application/x-tar',
-    'gz': 'application/gzip',
+ // Archives
+ zip: 'application/zip',
+ rar: 'application/x-rar-compressed',
+ '7z': 'application/x-7z-compressed',
+ tar: 'application/x-tar',
+ gz: 'application/gzip',
 
-    // Other
-    'json': 'application/json',
-    'xml': 'application/xml',
-    'csv': 'text/csv',
-  };
+ // Other
+ json: 'application/json',
+ xml: 'application/xml',
+ csv: 'text/csv',
+ };
 
-  return mimeTypes[extension.toLowerCase()] || null;
+ return mimeTypes[extension.toLowerCase()] || null;
 }
 
 /**
@@ -117,42 +117,45 @@ export function getMimeTypeFromExtension(extension: string): string | null {
  * @param options - Validation options
  * @returns Validation result
  */
-export function validateFile(file: File, options: FileProcessingOptions = {}): FileValidationResult {
-  const { maxSize, allowedTypes = [], allowedExtensions = [] } = options;
+export function validateFile(
+ file: File,
+ options: FileProcessingOptions = {}
+): FileValidationResult {
+ const { maxSize, allowedTypes = [], allowedExtensions = [] } = options;
 
-  // Check file size
-  if (maxSize && file.size > maxSize) {
-    return {
-      valid: false,
-      error: `File size exceeds maximum allowed size of ${formatFileSize(maxSize)}`,
-      size: file.size
-    };
-  }
+ // Check file size
+ if (maxSize && file.size > maxSize) {
+ return {
+ valid: false,
+ error: `File size exceeds maximum allowed size of ${formatFileSize(maxSize)}`,
+ size: file.size,
+ };
+ }
 
-  // Check MIME type
-  if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-    return {
-      valid: false,
-      error: `File type "${file.type}" is not allowed. Allowed types: ${allowedTypes.join(', ')}`,
-      mimeType: file.type
-    };
-  }
+ // Check MIME type
+ if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
+ return {
+ valid: false,
+ error: `File type "${file.type}" is not allowed. Allowed types: ${allowedTypes.join(', ')}`,
+ mimeType: file.type,
+ };
+ }
 
-  // Check file extension
-  const extension = getFileExtension(file.name);
-  if (allowedExtensions.length > 0 && !allowedExtensions.includes(extension)) {
-    return {
-      valid: false,
-      error: `File extension ".${extension}" is not allowed. Allowed extensions: ${allowedExtensions.map(ext => `.${ext}`).join(', ')}`,
-      mimeType: file.type
-    };
-  }
+ // Check file extension
+ const extension = getFileExtension(file.name);
+ if (allowedExtensions.length > 0 && !allowedExtensions.includes(extension)) {
+ return {
+ valid: false,
+ error: `File extension ".${extension}" is not allowed. Allowed extensions: ${allowedExtensions.map((ext) => `.${ext}`).join(', ')}`,
+ mimeType: file.type,
+ };
+ }
 
-  return {
-    valid: true,
-    mimeType: file.type,
-    size: file.size
-  };
+ return {
+ valid: true,
+ mimeType: file.type,
+ size: file.size,
+ };
 }
 
 /**
@@ -161,18 +164,21 @@ export function validateFile(file: File, options: FileProcessingOptions = {}): F
  * @param options - Validation options
  * @returns Array of validation results
  */
-export function validateFiles(files: File[], options: FileProcessingOptions = {}): FileValidationResult[] {
-  const { maxFiles } = options;
+export function validateFiles(
+ files: File[],
+ options: FileProcessingOptions = {}
+): FileValidationResult[] {
+ const { maxFiles } = options;
 
-  // Check number of files
-  if (maxFiles && files.length > maxFiles) {
-    return files.map((_, index) => ({
-      valid: false,
-      error: `Maximum ${maxFiles} files allowed`
-    }));
-  }
+ // Check number of files
+ if (maxFiles && files.length > maxFiles) {
+ return files.map((_, index) => ({
+ valid: false,
+ error: `Maximum ${maxFiles} files allowed`,
+ }));
+ }
 
-  return files.map(file => validateFile(file, options));
+ return files.map((file) => validateFile(file, options));
 }
 
 /**
@@ -181,21 +187,21 @@ export function validateFiles(files: File[], options: FileProcessingOptions = {}
  * @returns Promise resolving to preview URL
  */
 export function createImagePreview(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) {
-      reject(new Error('File is not an image'));
-      return;
-    }
+ return new Promise((resolve, reject) => {
+ if (!file.type.startsWith('image/')) {
+ reject(new Error('File is not an image'));
+ return;
+ }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      resolve(e.target?.result as string);
-    };
-    reader.onerror = () => {
-      reject(new Error('Failed to read file'));
-    };
-    reader.readAsDataURL(file);
-  });
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ resolve(e.target?.result as string);
+ };
+ reader.onerror = () => {
+ reject(new Error('Failed to read file'));
+ };
+ reader.readAsDataURL(file);
+ });
 }
 
 /**
@@ -205,25 +211,25 @@ export function createImagePreview(file: File): Promise<string> {
  * @returns Promise resolving to processed file data
  */
 export async function processFile(file: File, createPreview = false): Promise<ProcessedFile> {
-  const processed: ProcessedFile = {
-    file,
-    metadata: {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified
-    }
-  };
+ const processed: ProcessedFile = {
+ file,
+ metadata: {
+ name: file.name,
+ size: file.size,
+ type: file.type,
+ lastModified: file.lastModified,
+ },
+ };
 
-  if (createPreview && file.type.startsWith('image/')) {
-    try {
-      processed.preview = await createImagePreview(file);
-    } catch (error) {
-      console.warn('Failed to create preview for file:', file.name, error);
-    }
-  }
+ if (createPreview && file.type.startsWith('image/')) {
+ try {
+ processed.preview = await createImagePreview(file);
+ } catch (error) {
+ console.warn('Failed to create preview for file:', file.name, error);
+ }
+ }
 
-  return processed;
+ return processed;
 }
 
 /**
@@ -232,9 +238,12 @@ export async function processFile(file: File, createPreview = false): Promise<Pr
  * @param createPreviews - Whether to create previews for images
  * @returns Promise resolving to array of processed files
  */
-export async function processFiles(files: File[], createPreviews = false): Promise<ProcessedFile[]> {
-  const promises = files.map(file => processFile(file, createPreviews));
-  return Promise.all(promises);
+export async function processFiles(
+ files: File[],
+ createPreviews = false
+): Promise<ProcessedFile[]> {
+ const promises = files.map((file) => processFile(file, createPreviews));
+ return Promise.all(promises);
 }
 
 /**
@@ -243,13 +252,13 @@ export async function processFiles(files: File[], createPreviews = false): Promi
  * @param filename - Optional filename for download
  */
 export function downloadFile(url: string, filename?: string): void {
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename || '';
-  link.target = '_blank';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+ const link = document.createElement('a');
+ link.href = url;
+ link.download = filename || '';
+ link.target = '_blank';
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
 }
 
 /**
@@ -258,9 +267,9 @@ export function downloadFile(url: string, filename?: string): void {
  * @param filename - Filename for download
  */
 export function downloadBlob(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  downloadFile(url, filename);
-  URL.revokeObjectURL(url);
+ const url = URL.createObjectURL(blob);
+ downloadFile(url, filename);
+ URL.revokeObjectURL(url);
 }
 
 /**
@@ -270,16 +279,16 @@ export function downloadBlob(blob: Blob, filename: string): void {
  * @returns Promise resolving to file content as string
  */
 export function readFileAsText(file: File, encoding = 'utf-8'): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      resolve(e.target?.result as string);
-    };
-    reader.onerror = () => {
-      reject(new Error('Failed to read file as text'));
-    };
-    reader.readAsText(file, encoding);
-  });
+ return new Promise((resolve, reject) => {
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ resolve(e.target?.result as string);
+ };
+ reader.onerror = () => {
+ reject(new Error('Failed to read file as text'));
+ };
+ reader.readAsText(file, encoding);
+ });
 }
 
 /**
@@ -288,16 +297,16 @@ export function readFileAsText(file: File, encoding = 'utf-8'): Promise<string> 
  * @returns Promise resolving to array buffer
  */
 export function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      resolve(e.target?.result as ArrayBuffer);
-    };
-    reader.onerror = () => {
-      reject(new Error('Failed to read file as array buffer'));
-    };
-    reader.readAsArrayBuffer(file);
-  });
+ return new Promise((resolve, reject) => {
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ resolve(e.target?.result as ArrayBuffer);
+ };
+ reader.onerror = () => {
+ reject(new Error('Failed to read file as array buffer'));
+ };
+ reader.readAsArrayBuffer(file);
+ });
 }
 
 /**
@@ -306,15 +315,15 @@ export function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
  * @returns Promise resolving to simple hash string
  */
 export async function getFileChecksum(file: File): Promise<string> {
-  try {
-    const buffer = await readFileAsArrayBuffer(file);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  } catch (error) {
-    console.error('Failed to calculate file checksum:', error);
-    return '';
-  }
+ try {
+ const buffer = await readFileAsArrayBuffer(file);
+ const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+ const hashArray = Array.from(new Uint8Array(hashBuffer));
+ return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+ } catch (error) {
+ console.error('Failed to calculate file checksum:', error);
+ return '';
+ }
 }
 
 /**
@@ -323,7 +332,7 @@ export async function getFileChecksum(file: File): Promise<string> {
  * @returns true if file is an image
  */
 export function isImageFile(file: File): boolean {
-  return file.type.startsWith('image/');
+ return file.type.startsWith('image/');
 }
 
 /**
@@ -332,7 +341,7 @@ export function isImageFile(file: File): boolean {
  * @returns true if file is a video
  */
 export function isVideoFile(file: File): boolean {
-  return file.type.startsWith('video/');
+ return file.type.startsWith('video/');
 }
 
 /**
@@ -341,7 +350,7 @@ export function isVideoFile(file: File): boolean {
  * @returns true if file is an audio file
  */
 export function isAudioFile(file: File): boolean {
-  return file.type.startsWith('audio/');
+ return file.type.startsWith('audio/');
 }
 
 /**
@@ -350,16 +359,16 @@ export function isAudioFile(file: File): boolean {
  * @returns true if file is a document
  */
 export function isDocumentFile(file: File): boolean {
-  const documentTypes = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'text/plain',
-    'application/rtf'
-  ];
-  return documentTypes.includes(file.type);
+ const documentTypes = [
+ 'application/pdf',
+ 'application/msword',
+ 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+ 'application/vnd.ms-excel',
+ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+ 'text/plain',
+ 'application/rtf',
+ ];
+ return documentTypes.includes(file.type);
 }
 
 /**
@@ -368,12 +377,13 @@ export function isDocumentFile(file: File): boolean {
  * @returns File category string
  */
 export function getFileCategory(file: File): string {
-  if (isImageFile(file)) return 'image';
-  if (isVideoFile(file)) return 'video';
-  if (isAudioFile(file)) return 'audio';
-  if (isDocumentFile(file)) return 'document';
-  if (file.type.includes('zip') || file.type.includes('rar') || file.type.includes('7z')) return 'archive';
-  return 'other';
+ if (isImageFile(file)) return 'image';
+ if (isVideoFile(file)) return 'video';
+ if (isAudioFile(file)) return 'audio';
+ if (isDocumentFile(file)) return 'document';
+ if (file.type.includes('zip') || file.type.includes('rar') || file.type.includes('7z'))
+ return 'archive';
+ return 'other';
 }
 
 /**
@@ -382,10 +392,10 @@ export function getFileCategory(file: File): string {
  * @returns Sanitized filename
  */
 export function sanitizeFilename(filename: string): string {
-  return filename
-    .replace(/[^a-zA-Z0-9.\-_]/g, '_') // Replace special chars with underscore
-    .replace(/_{2,}/g, '_') // Replace multiple underscores with single
-    .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
+ return filename
+ .replace(/[^a-zA-Z0-9.\-_]/g, '_') // Replace special chars with underscore
+ .replace(/_{2,}/g, '_') // Replace multiple underscores with single
+ .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
 }
 
 /**
@@ -395,11 +405,11 @@ export function sanitizeFilename(filename: string): string {
  * @returns Unique filename with timestamp
  */
 export function generateUniqueFilename(originalName: string, prefix = ''): string {
-  const extension = getFileExtension(originalName);
-  const baseName = originalName.replace(/\.[^/.]+$/, '');
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 8);
+ const extension = getFileExtension(originalName);
+ const baseName = originalName.replace(/\.[^/.]+$/, '');
+ const timestamp = Date.now();
+ const random = Math.random().toString(36).substring(2, 8);
 
-  const uniqueName = `${prefix}${baseName}_${timestamp}_${random}`;
-  return extension ? `${uniqueName}.${extension}` : uniqueName;
+ const uniqueName = `${prefix}${baseName}_${timestamp}_${random}`;
+ return extension ? `${uniqueName}.${extension}` : uniqueName;
 }

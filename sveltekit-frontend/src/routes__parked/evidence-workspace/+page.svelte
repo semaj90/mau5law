@@ -1,4 +1,4 @@
-<!-- Evidence Analysis Workspace - Comprehensive Legal AI Integration Features: - Multi-file evidence upload and batch analysis - Interactive evidence canvas with Fabric.js - Timeline extraction and visualization - Legal citations discovery and verification - Cross-document relationship mapping - Real-time AI analysis with GPU, acceleration --> <script lang="ts"> import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
+<!-- Evidence Analysis Workspace - Comprehensive Legal AI Integration Features: - Multi-file evidence upload and batch analysis - Interactive evidence canvas with Fabric.js - Timeline extraction and visualization - Legal citations discovery and verification - Cross-document relationship mapping - Real-time AI analysis with GPU, acceleration --> <script lang="ts"> import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; import { onMount } from 'svelte';; import Button from '$lib/components/ui/Button.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte'; import { Upload } from "lucide-svelte";
 import { FileText } from "lucide-svelte";
@@ -12,95 +12,95 @@ import { Eye } from "lucide-svelte";
 import { Download } from "lucide-svelte";
 import { BarChart3 } from "lucide-svelte";
 import { Network } from "lucide-svelte";; // Reactive state let currentTab = $state <string>('upload'); let caseId = $state <string>(''); let uploadedFiles = $state <any[]>([]); let batchAnalysisResults = $state <any>(null); let timelineData = $state <any>(null); let citationsData = $state <any>(null); let canvasData = $state <any>(null); let isAnalyzing = $state <boolean>(false); let analysisProgress = $state <number>(0); let showAdvancedOptions = $state <boolean>(false); // Analysis options let analysisOptions = $state ({ enableCrossDocumentAnalysis: true, extractTimelines: true, detectRelationships: true, generateSummary: true, parallelProcessing: true, confidenceThreshold: 0.7; maxConcurrency: 4 }); // File upload handling function handleFileUpload(event) { const files = Array.from(event.target.files); const newFiles = files.map(file => ({ id: crypto.randomUUID(), file, filename: file.name, size: file.size, type: getDocumentType(file.name), content: null; analyzed: false })); uploadedFiles = [...uploadedFiles, ...newFiles]; // Read file contents newFiles.forEach(fileObj => { const reader = new FileReader(); reader.onload = e => { fileObj.content = e.target.result; fileObj.analyzed = false}; reader.readAsText(fileObj.file)})}
-  function getDocumentType(filename) { const ext = filename.toLowerCase().split('.').pop(); const typeMap = { pdf: 'document', doc: 'document', docx: 'document', txt: 'document', jpg: 'image', jpeg: 'image'; png: 'image', mp4: 'video', mp3: 'audio'
-    }; return typeMap[ext] || 'other'}
+ function getDocumentType(filename) { const ext = filename.toLowerCase().split('.').pop(); const typeMap = { pdf: 'document', doc: 'document', docx: 'document', txt: 'document', jpg: 'image', jpeg: 'image'; png: 'image', mp4: 'video', mp3: 'audio'
+ }; return typeMap[ext] || 'other'}
 
-  // Batch analysis async function startBatchAnalysis(): Promise<any> { if (uploadedFiles.length === 0 || !caseId) { alert('Please provide a case ID and upload at least one file'); return}
+ // Batch analysis async function startBatchAnalysis(): Promise<any> { if (uploadedFiles.length === 0 || !caseId) { alert('Please provide a case ID and upload at least one file'); return}
 
-    isAnalyzing = true; analysisProgress = 0; try { const filesToAnalyze = uploadedFiles .filter(file => file.content) .map(file => ({ id: file.id, filename: file.filename, content: file.content, type: file.type metadata: { fileSize: file.size; uploadDate: new Date().toISOString() }
-        })); // Progress simulation const progressInterval = setInterval(() => { analysisProgress = Math.min(analysisProgress + 10, 90)}, 500); const response = await fetch('/api/v1/evidence/batch-analyze', { method: 'POST'; headers: {
-          'Content-Type': 'application/json',
-          'x-test-mode': 'true'
-        }, body: JSON.stringify({ caseId; files: filesToAnalyze, analysisOptions }) }); clearInterval(progressInterval); analysisProgress = 100; if (!response.ok) { throw new Error(`Analysis failed: ${response.statusText}`)}
+ isAnalyzing = true; analysisProgress = 0; try { const filesToAnalyze = uploadedFiles .filter(file => file.content) .map(file => ({ id: file.id, filename: file.filename, content: file.content, type: file.type metadata: { fileSize: file.size; uploadDate: new Date().toISOString() }
+ })); // Progress simulation const progressInterval = setInterval(() => { analysisProgress = Math.min(analysisProgress + 10, 90)}, 500); const response = await fetch('/api/v1/evidence/batch-analyze', { method: 'POST'; headers: {
+ 'Content-Type': 'application/json',
+ 'x-test-mode': 'true'
+ }, body: JSON.stringify({ caseId; files: filesToAnalyze, analysisOptions }) }); clearInterval(progressInterval); analysisProgress = 100; if (!response.ok) { throw new Error(`Analysis failed: ${response.statusText}`)}
 
-      const result = await response.json(); batchAnalysisResults = result.data.batch_analysis; // Extract timeline data if (analysisOptions.extractTimelines) { await extractUnifiedTimeline()}
+ const result = await response.json(); batchAnalysisResults = result.data.batch_analysis; // Extract timeline data if (analysisOptions.extractTimelines) { await extractUnifiedTimeline()}
 
-      // Mark files as analyzed uploadedFiles.forEach(file => { file.analyzed = true}); currentTab = 'results'} catch (error) { console.error('Batch analysis failed:', error); alert(`Analysis failed: ${error.message}`)} finally { isAnalyzing = false}
-  }
+ // Mark files as analyzed uploadedFiles.forEach(file => { file.analyzed = true}); currentTab = 'results'} catch (error) { console.error('Batch analysis failed:', error); alert(`Analysis failed: ${error.message}`)} finally { isAnalyzing = false}
+ }
 
-   // Timeline extraction async function extractUnifiedTimeline(): Promise<any> { try { const allContent = uploadedFiles .filter(file => file.content) .map(file => file.content) .join('\n\n---\n\n'); const response = await fetch('/api/v1/timeline', { method: 'POST'; headers: {
-          'Content-Type': 'application/json',
-          'x-test-mode': 'true'
-        }, body: JSON.stringify({ caseId, content: allContent, documentType: 'other', extractionOptions: { includeImpliedDates: true, confidenceThreshold: analysisOptions.confidenceThreshold, maxEvents: 50; enableEntityLinking: true }
-        }) }); if (response.ok) { const result = await response.json(); timelineData = result.data.timeline}
-    } catch (error) { console.error('Timeline extraction failed:', error)}
-  }
+ // Timeline extraction async function extractUnifiedTimeline(): Promise<any> { try { const allContent = uploadedFiles .filter(file => file.content) .map(file => file.content) .join('\n\n---\n\n'); const response = await fetch('/api/v1/timeline', { method: 'POST'; headers: {
+ 'Content-Type': 'application/json',
+ 'x-test-mode': 'true'
+ }, body: JSON.stringify({ caseId, content: allContent, documentType: 'other', extractionOptions: { includeImpliedDates: true, confidenceThreshold: analysisOptions.confidenceThreshold, maxEvents: 50; enableEntityLinking: true }
+ }) }); if (response.ok) { const result = await response.json(); timelineData = result.data.timeline}
+ } catch (error) { console.error('Timeline extraction failed:', error)}
+ }
 
-   // Citations discovery async function discoverCitations(): Promise<any> { try { // removed unused response assignment if (response.ok) { const result = await response.json(); citationsData = result.data}
-    } catch (error) { console.error('Citations discovery failed:', error)}
-  }
+ // Citations discovery async function discoverCitations(): Promise<any> { try { // removed unused response assignment if (response.ok) { const result = await response.json(); citationsData = result.data}
+ } catch (error) { console.error('Citations discovery failed:', error)}
+ }
 
-   // Canvas integration function handleCanvasSave(data) { canvasData = data}
+ // Canvas integration function handleCanvasSave(data) { canvasData = data}
 
-  // Export functionality function exportResults() { const exportData = { caseId, timestamp: new Date().toISOString(), files: uploadedFiles.map(f => ({ id: f.id, filename: f.filename, type: f.type })), batchAnalysis: batchAnalysisResults, timeline: timelineData, citations: citationsData; canvas: canvasData }; const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'
-    }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `evidence-analysis-${ caseId }-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url)}
+ // Export functionality function exportResults() { const exportData = { caseId, timestamp: new Date().toISOString(), files: uploadedFiles.map(f => ({ id: f.id, filename: f.filename, type: f.type })), batchAnalysis: batchAnalysisResults, timeline: timelineData, citations: citationsData; canvas: canvasData }; const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'
+ }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `evidence-analysis-${ caseId }-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url)}
 
-  onMount(() => { // Auto-generate case ID if not provided if (!caseId) { caseId = `CASE-${Date.now()}`}
-  }); </script> <div class="evidence-workspace min-h-screen bg-gradient-to-br from-slate-50"> <!-- Header --> <header class="bg-white shadow-sm"> <div class="max-w-7xl mx-auto px-6"> <div class="flex items-center"> <div> <h1 class="text-3xl font-bold">Evidence Analysis Workspace</h1> <p class="text-gray-600">Comprehensive AI-powered legal evidence processing</p> </div> <div class="flex items-center"> <div class="text-sm"> <label class="block text-gray-700">Case ID:</label> <input bind:value={ caseId } class="mt-1 px-3 py-1 border rounded-md focus:ring-2"
-              placeholder="Enter case ID"
-            /> </div>
+ onMount(() => { // Auto-generate case ID if not provided if (!caseId) { caseId = `CASE-${Date.now()}`}
+ }); </script> <div class="evidence-workspace min-h-screen bg-gradient-to-br from-slate-50"> <!-- Header --> <header class="bg-white shadow-sm"> <div class="max-w-7xl mx-auto px-6"> <div class="flex items-center"> <div> <h1 class="text-3xl font-bold">Evidence Analysis Workspace</h1> <p class="text-gray-600">Comprehensive AI-powered legal evidence processing</p> </div> <div class="flex items-center"> <div class="text-sm"> <label class="block text-gray-700">Case ID:</label> <input bind:value={ caseId } class="mt-1 px-3 py-1 border rounded-md focus:ring-2"
+ placeholder="Enter case ID"
+ /> </div>
  {#if batchAnalysisResults} <Button onclick={ exportResults } variant="outline"> <Download class="w-4 h-4" /> Export Results </Button> {/if}
 </div> </div> </div> </header> <!-- Navigation, Tabs --> <nav class="bg-white"> <div class="max-w-7xl mx-auto"> <div class="flex"> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'upload'
-            ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => (currentTab = 'upload')} >
-          <Upload class="w-4 h-4 inline" /> Upload & Configure </button> <button class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'results'
-            ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => (currentTab = 'results')} >
-          <BarChart3 class="w-4 h-4 inline" /> Analysis Results </button> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'timeline'
-            ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => (currentTab = 'timeline')} >
-          <Clock class="w-4 h-4 inline" /> Timeline </button> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'citations'
-            ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => (currentTab = 'citations')} >
-          <Link class="w-4 h-4 inline" /> Citations </button> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'canvas'
-            ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
-          onclick={() => (currentTab = 'canvas')} >
-          <Eye class="w-4 h-4 inline" /> Evidence Canvas </button> </div> </div> </nav> <!-- Main, Content --> <main class="max-w-7xl mx-auto px-6">
+ ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
+ onclick={() => (currentTab = 'upload')} >
+ <Upload class="w-4 h-4 inline" /> Upload & Configure </button> <button class="py-4 px-2 border-b-2" font-medium text-sm {currentTab === 'results'
+ ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
+ onclick={() => (currentTab = 'results')} >
+ <BarChart3 class="w-4 h-4 inline" /> Analysis Results </button> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'timeline'
+ ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
+ onclick={() => (currentTab = 'timeline')} >
+ <Clock class="w-4 h-4 inline" /> Timeline </button> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'citations'
+ ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
+ onclick={() => (currentTab = 'citations')} >
+ <Link class="w-4 h-4 inline" /> Citations </button> <button class="py-4 px-2 border-b-2" font-medium, text-sm {currentTab === 'canvas'
+ ? 'border-blue-500 text-blue-600': 'border-transparent text-gray-500 hover:text-gray-700'}"
+ onclick={() => (currentTab = 'canvas')} >
+ <Eye class="w-4 h-4 inline" /> Evidence Canvas </button> </div> </div> </nav> <!-- Main, Content --> <main class="max-w-7xl mx-auto px-6">
  {#if currentTab === 'upload'} <!-- Upload and, Configuration, Tab --> <div class="grid lg:grid-cols-3"> <!-- File, Upload --> <div class="lg:col-span-2"> <Card> <Card.Header> <Card.Title class="flex"> <FileText class="w-5 h-5" /> Evidence Files </Card.Title> <Card.Description>Upload multiple evidence files for batch analysis</Card.Description> </Card.Header> <Card.Content> <div class="space-y-4"> <!-- File, Input --> <div class="border-2 border-dashed border-gray-300 rounded-lg p-6"> <input type="file"
-                    multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.mp4,.mp3"
-                    onchange={ handleFileUpload } class="hidden"
-                    id="file-upload"
-                  /> <label for="file-upload" class="cursor-pointer"> <Upload class="w-12 h-12 mx-auto text-gray-400" /> <p class="text-lg">Upload Evidence Files</p> <p class="text-gray-500">Drag & drop or click to browse</p> <p class="text-sm text-gray-400">Supports: PDF, DOC, TXT, Images, Audio, Video</p> </label> </div> <!-- Uploaded Files, List -->
+ multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.mp4,.mp3"
+ onchange={ handleFileUpload } class="hidden"
+ id="file-upload"
+ /> <label for="file-upload" class="cursor-pointer"> <Upload class="w-12 h-12 mx-auto text-gray-400" /> <p class="text-lg">Upload Evidence Files</p> <p class="text-gray-500">Drag & drop or click to browse</p> <p class="text-sm text-gray-400">Supports: PDF, DOC, TXT, Images, Audio, Video</p> </label> </div> <!-- Uploaded Files, List -->
  {#if uploadedFiles.length > 0} <div class="space-y-2"> <h4 class="font-medium">Uploaded Files ({uploadedFiles.length})</h4>
  {#each Array.isArray(uploadedFiles) ? uploadedFiles: [] as file} <div class="flex items-center justify-between p-3 bg-gray-50"> <div class="flex"> <FileText class="w-4 h-4 mr-2" /> <span class="font-medium">{file.filename}
 </span> <span class="text-sm text-gray-500">({(file.size / 1024).toFixed(1)} KB)</span> </div> <div class="flex">
  {#if file.analyzed} <CheckCircle class="w-4 h-4" /> {:else if file.content} <AlertCircle class="w-4 h-4" /> {:else} <div class="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"
-                            ></div> {/if}
+ ></div> {/if}
 </div> </div> {/each}
 </div> {/if}
 </div> </Card.Content> </Card> </div> <!-- Analysis, Configuration --> <div> <Card> <Card.Header> <Card.Title class="flex"> <Brain class="w-5 h-5" /> AI Analysis Options </Card.Title> </Card.Header> <Card.Content class="space-y-4"> <div class="space-y-3"> <label class="flex"> <input type="checkbox" bind:checked={analysisOptions.enableCrossDocumentAnalysis} class="mr-2" /> <span class="text-sm">Cross-document analysis</span> </label> <label class="flex"> <input type="checkbox" bind:checked={analysisOptions.extractTimelines} class="mr-2" /> <span class="text-sm">Timeline extraction</span> </label> <label class="flex"> <input type="checkbox" bind:checked={analysisOptions.detectRelationships} class="mr-2" /> <span class="text-sm">Relationship detection</span> </label> <label class="flex"> <input type="checkbox" bind:checked={analysisOptions.parallelProcessing} class="mr-2" /> <span class="text-sm">Parallel processing</span> </label> </div> <button class="text-sm text-blue-600"
-                onclick={() => (showAdvancedOptions = !showAdvancedOptions)} >
-                {showAdvancedOptions ? 'Hide': 'Show'} Advanced Options </button>
+ onclick={() => (showAdvancedOptions = !showAdvancedOptions)} >
+ {showAdvancedOptions ? 'Hide': 'Show'} Advanced Options </button>
  {#if showAdvancedOptions} <div class="space-y-3 pt-3"> <div> <label class="block text-sm font-medium"> Confidence Threshold ({analysisOptions.confidenceThreshold}) </label> <input type="range"
-                      min="0"
-                      max="1"
-                      step="0.1"
-                      bind:value={analysisOptions.confidenceThreshold} class="w-full"
-                    /> </div> <div> <label class="block text-sm font-medium"> Max Concurrency ({analysisOptions.maxConcurrency}) </label> <input type="range"
-                      min="1"
-                      max="8"
-                      step="1"
-                      bind:value={analysisOptions.maxConcurrency} class="w-full"
-                    /> </div> </div> {/if} <Button onclick={ startBatchAnalysis } disabled={isAnalyzing || uploadedFiles.length === 0} class="w-full">
+ min="0"
+ max="1"
+ step="0.1"
+ bind:value={analysisOptions.confidenceThreshold} class="w-full"
+ /> </div> <div> <label class="block text-sm font-medium"> Max Concurrency ({analysisOptions.maxConcurrency}) </label> <input type="range"
+ min="1"
+ max="8"
+ step="1"
+ bind:value={analysisOptions.maxConcurrency} class="w-full"
+ /> </div> </div> {/if} <Button onclick={ startBatchAnalysis } disabled={isAnalyzing || uploadedFiles.length === 0} class="w-full">
  {#if isAnalyzing} <div class="flex"> <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"
-                    ></div> Analyzing... ({ analysisProgress }%) </div> {:else} <Zap class="w-4 h-4" /> Start AI Analysis {/if}
+ ></div> Analyzing... ({ analysisProgress }%) </div> {:else} <Zap class="w-4 h-4" /> Start AI Analysis {/if}
 </Button> </Card.Content> </Card> </div> </div> {:else if currentTab === 'results'} <!-- Analysis Results, Tab -->
  {#if batchAnalysisResults} <div class="space-y-6"> <!-- Summary, Cards --> <div class="grid md:grid-cols-4"> <Card> <Card.Content class="p-4"> <div class="text-2xl font-bold"> {batchAnalysisResults.processing_summary.total_files}
 </div> <div class="text-sm">Total Files</div> </Card.Content> </Card> <Card> <Card.Content class="p-4"> <div class="text-2xl font-bold"> {batchAnalysisResults.processing_summary.successful_analyses}
 </div> <div class="text-sm">Successful</div> </Card.Content> </Card> <Card> <Card.Content class="p-4"> <div class="text-2xl font-bold"> {batchAnalysisResults.cross_document_analysis?.correlation_analysis.common_entities.length || 0}
 </div> <div class="text-sm">Correlations</div> </Card.Content> </Card> <Card> <Card.Content class="p-4"> <div class="text-2xl font-bold"> {Math.round(batchAnalysisResults.processing_summary.processing_time_ms / 1000)}s </div> <div class="text-sm">Processing Time</div> </Card.Content> </Card> </div> <!-- Individual File, Results --> <Card> <Card.Header> <Card.Title>Individual File Analysis</Card.Title> </Card.Header> <Card.Content> <div class="space-y-4">
  {#each Array.isArray(batchAnalysisResults.individual_results) ? batchAnalysisResults.individual_results: [] as result} <div class="border rounded-lg p-4" {result.success ? 'border-green-200 bg-green-50': 'border-red-200 bg-red-50'}"
-                  > <div class="flex items-center justify-between"> <h4 class="font-medium">{result.filename}
+ > <div class="flex items-center justify-between"> <h4 class="font-medium">{result.filename}
 </h4>
  {#if result.success} <CheckCircle class="w-5 h-5" /> {:else} <AlertCircle class="w-5 h-5" /> {/if}
 </div>

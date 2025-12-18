@@ -13,15 +13,15 @@ Inspired by NieR:Automata's YoRHa aesthetic with sand/beige colors, monospace fo
 ### Colors
 
 ```typescript
-sand: '#d4c7a3'        // Main background
-sandDark: '#b9aa86'    // Sidebar, inputs
-panel: '#24211b'       // Dark panels
-panelSoft: '#2f2a22'   // Softer dark panels
-accent: '#4ade80'      // Primary actions (green)
-accentSoft: '#a3e635'  // Hover state
-danger: '#ef4444'      // Destructive actions
-warning: '#facc15'     // Warnings, pending
-info: '#38bdf8'        // Info messages
+sand: '#d4c7a3' // Main background
+sandDark: '#b9aa86' // Sidebar, inputs
+panel: '#24211b' // Dark panels
+panelSoft: '#2f2a22' // Softer dark panels
+accent: '#4ade80' // Primary actions (green)
+accentSoft: '#a3e635' // Hover state
+danger: '#ef4444' // Destructive actions
+warning: '#facc15' // Warnings, pending
+info: '#38bdf8' // Info messages
 ```
 
 ### Typography
@@ -60,8 +60,8 @@ info: '#38bdf8'        // Info messages
 
 ```svelte
 <Card clickable onclick={() => console.log('clicked')}>
-  <h3>Case Title</h3>
-  <p>Case details...</p>
+ <h3>Case Title</h3>
+ <p>Case details...</p>
 </Card>
 ```
 
@@ -71,8 +71,8 @@ info: '#38bdf8'        // Info messages
 
 ```svelte
 <Panel>
-  <h2>Section Title</h2>
-  <p>Content in a dark panel...</p>
+ <h2>Section Title</h2>
+ <p>Content in a dark panel...</p>
 </Panel>
 ```
 
@@ -80,11 +80,11 @@ info: '#38bdf8'        // Info messages
 
 ```svelte
 <ChatBubble role="assistant" timestamp="19:03:15">
-  Analyzing case evidence...
+ Analyzing case evidence...
 </ChatBubble>
 
 <ChatBubble role="user" timestamp="19:03:10">
-  What are the aggravating factors?
+ What are the aggravating factors?
 </ChatBubble>
 ```
 
@@ -101,11 +101,11 @@ Combines Sidebar + TopBar + main content area:
 ```svelte
 <!-- +layout.svelte -->
 <script>
-  import LayoutShell from '$lib/ui/LayoutShell.svelte';
+ import LayoutShell from '$lib/ui/LayoutShell.svelte';
 </script>
 
 <LayoutShell>
-  <slot />
+ <slot />
 </LayoutShell>
 ```
 
@@ -154,17 +154,17 @@ AI chat interface with:
 Common patterns for quick styling:
 
 ```html
-<div class="app-bg">           <!-- Sand background + UI font -->
-<div class="panel">            <!-- Dark panel with border + shadow -->
-<div class="panel-soft">       <!-- Softer dark panel -->
-<div class="btn-primary">      <!-- Green accent button -->
-<div class="btn-secondary">    <!-- Dark gray button -->
-<div class="btn-danger">       <!-- Red destructive button -->
-<div class="tag">              <!-- Small pill/badge -->
-<div class="pill-green">       <!-- Green status indicator -->
-<div class="heading-main">     <!-- Large uppercase heading -->
-<div class="heading-sub">      <!-- Small uppercase subheading -->
-<div class="scroll-panel">     <!-- Scrollable panel with custom scrollbar -->
+<div class="app-bg"> <!-- Sand background + UI font -->
+<div class="panel"> <!-- Dark panel with border + shadow -->
+<div class="panel-soft"> <!-- Softer dark panel -->
+<div class="btn-primary"> <!-- Green accent button -->
+<div class="btn-secondary"> <!-- Dark gray button -->
+<div class="btn-danger"> <!-- Red destructive button -->
+<div class="tag"> <!-- Small pill/badge -->
+<div class="pill-green"> <!-- Green status indicator -->
+<div class="heading-main"> <!-- Large uppercase heading -->
+<div class="heading-sub"> <!-- Small uppercase subheading -->
+<div class="scroll-panel"> <!-- Scrollable panel with custom scrollbar -->
 ```
 
 ---
@@ -173,22 +173,22 @@ Common patterns for quick styling:
 
 ```
 src/
-├── app.css                    # Global styles + UnoCSS
+├── app.css # Global styles + UnoCSS
 ├── lib/ui/
-│   ├── Button.svelte
-│   ├── Tag.svelte
-│   ├── StatusPill.svelte
-│   ├── Card.svelte
-│   ├── Panel.svelte
-│   ├── Sidebar.svelte
-│   ├── TopBar.svelte
-│   ├── ChatBubble.svelte
-│   └── LayoutShell.svelte
+│ ├── Button.svelte
+│ ├── Tag.svelte
+│ ├── StatusPill.svelte
+│ ├── Card.svelte
+│ ├── Panel.svelte
+│ ├── Sidebar.svelte
+│ ├── TopBar.svelte
+│ ├── ChatBubble.svelte
+│ └── LayoutShell.svelte
 ├── routes/(yorha)/
-│   ├── +layout.svelte         # Applies LayoutShell
-│   ├── command/+page.svelte   # Command Center dashboard
-│   └── terminal/+page.svelte  # AI Chat interface
-└── unocss.config.ts           # Theme + shortcuts
+│ ├── +layout.svelte # Applies LayoutShell
+│ ├── command/+page.svelte # Command Center dashboard
+│ └── terminal/+page.svelte # AI Chat interface
+└── unocss.config.ts # Theme + shortcuts
 ```
 
 ---
@@ -208,10 +208,10 @@ npm install -D @iconify-json/heroicons
 import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
-  plugins: [
-    UnoCSS(),
-    sveltekit()
-  ]
+ plugins: [
+ UnoCSS(),
+ sveltekit()
+ ]
 })
 ```
 
@@ -219,8 +219,8 @@ export default defineConfig({
 
 ```html
 <head>
-  <!-- ... -->
-  <link rel="stylesheet" href="/@unocss.css">
+ <!-- ... -->
+ <link rel="stylesheet" href="/@unocss.css">
 </head>
 ```
 
@@ -242,25 +242,25 @@ Then navigate to:
 
 ```svelte
 <script>
-  import Panel from '$lib/ui/Panel.svelte';
-  import Button from '$lib/ui/Button.svelte';
-  import StatusPill from '$lib/ui/StatusPill.svelte';
+ import Panel from '$lib/ui/Panel.svelte';
+ import Button from '$lib/ui/Button.svelte';
+ import StatusPill from '$lib/ui/StatusPill.svelte';
 </script>
 
 <div class="grid grid-cols-[2fr_1fr] gap-4">
-  <Panel>
-    <div class="heading-sub mb-3">Case Overview</div>
-    <StatusPill risk="high" status="active" />
-    <p class="mt-3 text-sm leading-relaxed">
-      Investigation into corporate espionage...
-    </p>
-    <Button variant="primary" class="mt-4">View Evidence</Button>
-  </Panel>
+ <Panel>
+ <div class="heading-sub mb-3">Case Overview</div>
+ <StatusPill risk="high" status="active" />
+ <p class="mt-3 text-sm leading-relaxed">
+ Investigation into corporate espionage...
+ </p>
+ <Button variant="primary" class="mt-4">View Evidence</Button>
+ </Panel>
 
-  <Panel>
-    <div class="heading-sub mb-3">Related Cases</div>
-    <!-- ... -->
-  </Panel>
+ <Panel>
+ <div class="heading-sub mb-3">Related Cases</div>
+ <!-- ... -->
+ </Panel>
 </div>
 ```
 
@@ -268,15 +268,15 @@ Then navigate to:
 
 ```svelte
 <div class="grid grid-cols-3 gap-3">
-  {#each evidenceItems as item}
-    <Card clickable onclick={() => viewEvidence(item.id)}>
-      <div class="text-xs font-mono uppercase text-black/60">{item.type}</div>
-      <div class="mt-1 text-sm font-semibold">{item.title}</div>
-      <Tag color={item.verified ? 'green' : 'yellow'}>
-        {item.verified ? 'Verified' : 'Pending'}
-      </Tag>
-    </Card>
-  {/each}
+ {#each evidenceItems as item}
+ <Card clickable onclick={() => viewEvidence(item.id)}>
+ <div class="text-xs font-mono uppercase text-black/60">{item.type}</div>
+ <div class="mt-1 text-sm font-semibold">{item.title}</div>
+ <Tag color={item.verified ? 'green' : 'yellow'}>
+ {item.verified ? 'Verified' : 'Pending'}
+ </Tag>
+ </Card>
+ {/each}
 </div>
 ```
 
@@ -284,21 +284,21 @@ Then navigate to:
 
 ```svelte
 <Panel>
-  <div class="heading-sub mb-3">AI Sentencing Recommendation</div>
+ <div class="heading-sub mb-3">AI Sentencing Recommendation</div>
 
-  <ChatBubble role="assistant" timestamp={currentTime}>
-    Based on Federal Guidelines §2L2.1, recommended range: 15-25 years.
+ <ChatBubble role="assistant" timestamp={currentTime}>
+ Based on Federal Guidelines §2L2.1, recommended range: 15-25 years.
 
-    Aggravating factors:
-    - Multiple victims
-    - Use of coercion
-    - Extended duration
-  </ChatBubble>
+ Aggravating factors:
+ - Multiple victims
+ - Use of coercion
+ - Extended duration
+ </ChatBubble>
 
-  <div class="mt-4 flex gap-2">
-    <Button variant="primary">Accept Recommendation</Button>
-    <Button variant="secondary">Request Analysis</Button>
-  </div>
+ <div class="mt-4 flex gap-2">
+ <Button variant="primary">Accept Recommendation</Button>
+ <Button variant="secondary">Request Analysis</Button>
+ </div>
 </Panel>
 ```
 
@@ -312,11 +312,11 @@ Edit `unocss.config.ts`:
 
 ```typescript
 theme: {
-  colors: {
-    sand: '#YOUR_SAND_COLOR',
-    panel: '#YOUR_PANEL_COLOR',
-    accent: '#YOUR_ACCENT_COLOR',
-  }
+ colors: {
+ sand: '#YOUR_SAND_COLOR',
+ panel: '#YOUR_PANEL_COLOR',
+ accent: '#YOUR_ACCENT_COLOR',
+ }
 }
 ```
 
@@ -324,7 +324,7 @@ theme: {
 
 ```typescript
 shortcuts: {
-  'my-custom-class': 'bg-panel text-sand px-4 py-2 rounded',
+ 'my-custom-class': 'bg-panel text-sand px-4 py-2 rounded',
 }
 ```
 
@@ -334,7 +334,7 @@ All components accept `class` prop for additional styling:
 
 ```svelte
 <Button variant="primary" class="w-full">
-  Full Width Button
+ Full Width Button
 </Button>
 ```
 

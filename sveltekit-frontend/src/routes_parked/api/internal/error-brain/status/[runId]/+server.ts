@@ -10,27 +10,27 @@ import { getRunState } from '$lib/error-brain/state';
 import { readRunProgress } from '$lib/error-brain/report-writer';
 
 export const GET: RequestHandler = async ({ params }) => {
-	if (!ERROR_BRAIN_ENABLED) {
-		return json({ error: 'Error brain disabled' }, { status: 503 });
-	}
+ if (!ERROR_BRAIN_ENABLED) {
+ return json({ error: 'Error brain disabled' }, { status: 503 });
+ }
 
-	const { runId } = params;
+ const { runId } = params;
 
-	// Try in-memory state first
-	let state = getRunState(runId);
+ // Try in-memory state first
+ let state = getRunState(runId);
 
-	// Fall back to disk
-	if (!state) {
-		state = await readRunProgress(runId);
-	}
+ // Fall back to disk
+ if (!state) {
+ state = await readRunProgress(runId);
+ }
 
-	if (!state) {
-		return json({ error: 'Run not found' }, { status: 404 });
-	}
+ if (!state) {
+ return json({ error: 'Run not found' }, { status: 404 });
+ }
 
-	return json(state, {
-		headers: {
-			'X-Error-Brain': '1'
-		}
-	});
+ return json(state, {
+ headers: {
+ 'X-Error-Brain': '1',
+ },
+ });
 };

@@ -11,29 +11,29 @@ import { initializeRun } from '$lib/error-brain/state';
 import { writeRunProgress } from '$lib/error-brain/report-writer';
 
 export const POST: RequestHandler = async ({ request }) => {
-	if (!ERROR_BRAIN_ENABLED) {
-		return json({ error: 'Error brain disabled' }, { status: 503 });
-	}
+ if (!ERROR_BRAIN_ENABLED) {
+ return json({ error: 'Error brain disabled' }, { status: 503 });
+ }
 
-	const runId = generateRunId();
-	const state = initializeRun(runId);
+ const runId = generateRunId();
+ const state = initializeRun(runId);
 
-	// Write initial state
-	await writeRunProgress(state);
+ // Write initial state
+ await writeRunProgress(state);
 
-	// TODO: Kick off async analysis pipeline
+ // TODO: Kick off async analysis pipeline
 
-	return json(
-		{
-			runId,
-			createdAt: state.createdAt,
-			step: state.step,
-			pct: state.pct
-		},
-		{
-			headers: {
-				'X-Error-Brain': '1'
-			}
-		}
-	);
+ return json(
+ {
+ runId,
+ createdAt: state.createdAt,
+ step: state.step,
+ pct: state.pct,
+ },
+ {
+ headers: {
+ 'X-Error-Brain': '1',
+ },
+ }
+ );
 };

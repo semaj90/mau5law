@@ -49,29 +49,29 @@
 	};
 
 	onMount(() => {
-    (async () => {
-  		ctx = canvas.getContext('2d')!;
-  		canvas.width = window.innerWidth;
-  		canvas.height = window.innerHeight - 100;
+ (async () => {
+ 		ctx = canvas.getContext('2d')!;
+ 		canvas.width = window.innerWidth;
+ 		canvas.height = window.innerHeight - 100;
 
-  		// Fetch graph data
-  		await loadGraphData();
+ 		// Fetch graph data
+ 		await loadGraphData();
 
-  		// Initial render
-  		render();
+ 		// Initial render
+ 		render();
 
-  		// Event listeners
-  		canvas.addEventListener('mousedown', handleMouseDown);
-  		canvas.addEventListener('mousemove', handleMouseMove);
-  		canvas.addEventListener('mouseup', handleMouseUp);
-  		canvas.addEventListener('wheel', handleWheel);
-  		canvas.addEventListener('click', handleClick);
+ 		// Event listeners
+ 		canvas.addEventListener('mousedown', handleMouseDown);
+ 		canvas.addEventListener('mousemove', handleMouseMove);
+ 		canvas.addEventListener('mouseup', handleMouseUp);
+ 		canvas.addEventListener('wheel', handleWheel);
+ 		canvas.addEventListener('click', handleClick);
 
-  		// Auto-refresh every 5 seconds
-  		const interval = setInterval(loadGraphData, 5000);
-  		return () => clearInterval(interval);
-    })();
-  });
+ 		// Auto-refresh every 5 seconds
+ 		const interval = setInterval(loadGraphData, 5000);
+ 		return () => clearInterval(interval);
+ })();
+ });
 
 	async function loadGraphData() {
 		try {

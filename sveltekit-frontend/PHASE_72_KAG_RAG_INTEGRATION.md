@@ -84,7 +84,7 @@ Based on codebase reconnaissance, you have **extensive production infrastructure
 
 **Purpose**: Hash-based "what worked" memory for instant replay
 
-**Location**: `src/lib/services/kag-fix-store.ts` (NEW FILE - 150 lines)
+**Location**: `scripts/kag-fix-store.mjs` (Node-native, no `$lib/*` aliases)
 
 ```typescript
 /**
@@ -243,7 +243,7 @@ export const kagFixStore = new KAGFixStore();
 
 Add to imports:
 ```javascript
-import { kagFixStore } from '../src/lib/services/kag-fix-store.ts';
+import { kagFixStore } from './kag-fix-store.mjs';
 ```
 
 Modify `generateFixPlan()`:
@@ -539,8 +539,8 @@ node scripts/factory-fixer-v2.mjs --plan --tier 2
 
 1. **Create KAG store** (15 min)
    ```bash
-   # Create kag-fix-store.ts
-   code src/lib/services/kag-fix-store.ts
+   # Create kag-fix-store.mjs
+   code scripts/kag-fix-store.mjs
    # Copy implementation from above
    ```
 
@@ -659,7 +659,7 @@ node scripts/factory-fixer-v2.mjs --status --show-learning
 Create `scripts/kag-rag-dashboard.mjs`:
 ```javascript
 #!/usr/bin/env node
-import { kagFixStore } from '../src/lib/services/kag-fix-store.ts';
+import { kagFixStore } from './kag-fix-store.mjs';
 
 async function showDashboard() {
   const stats = await kagFixStore.getStats();

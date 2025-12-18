@@ -8,9 +8,9 @@ import type { ErrorBrainEvent } from '../events';
 import type { ErrorBrainTransport } from './interface';
 
 export class NoneTransport implements ErrorBrainTransport {
-	name = 'none';
+ name = 'none';
 
-	async publish(_evt: ErrorBrainEvent): Promise<void> {
-		// No-op
-	}
+ async publish(_evt: ErrorBrainEvent): Promise<void> {
+ // No-op
+ }
 }

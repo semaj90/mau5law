@@ -163,10 +163,10 @@
 		{#if messages.length === 0}
 			<div class="welcome-message">
 				<pre class="ascii-art">
-  ╔═══════════════════════════════════════╗
-  ║   YoRHa Intelligence Network - 9S    ║
-  ║   Detective AI Assistant Ready       ║
-  ╚═══════════════════════════════════════╝
+ ╔═══════════════════════════════════════╗
+ ║ YoRHa Intelligence Network - 9S ║
+ ║ Detective AI Assistant Ready ║
+ ╚═══════════════════════════════════════╝
 				</pre>
 				<p class="hint">
 					Upload evidence images or documents and ask me anything about your investigation.

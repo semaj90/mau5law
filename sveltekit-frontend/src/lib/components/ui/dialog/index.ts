@@ -15,4 +15,3 @@ export { default as DialogClose, default as DialogFooter } from './DialogFooter.
 export { default as DialogHeader } from './DialogHeader.svelte';
 export { default as DialogOverlay } from './DialogRoot.svelte';
 export { default as DialogTitle } from './DialogTitle.svelte';
-

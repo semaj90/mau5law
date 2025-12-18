@@ -29,13 +29,13 @@ export const POST: RequestHandler = async ({ request }) => {
         edgesCreated: routesProcessed * 5,
         componentNodes: Math.floor(routesProcessed * 1.5),
         apiNodes: Math.floor(routesProcessed * 0.8),
-        relationshipTypes: ['IMPORTS', 'CALLS', 'RENDERS', 'DEPENDS_ON', 'ROUTES_TO']
+        relationshipTypes: ['IMPORTS', 'CALLS', 'RENDERS', 'DEPENDS_ON', 'ROUTES_TO'],
       },
       metadata: {
         graphDb: 'neo4j',
         algorithm: 'pagerank',
-        clusteringCoefficient: 0.72
-      }
+        clusteringCoefficient: 0.72,
+      },
     });
   } catch (error) {
     console.error('Graph build error:', error);

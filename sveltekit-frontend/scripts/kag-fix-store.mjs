@@ -12,6 +12,9 @@
 import { createHash } from 'crypto';
 import path from 'path';
 
+// Redis namespace prefix
+const REDIS_PREFIX = 'phase72:kag';
+
 // Redis client - lazy initialized
 let redis = null;
 let redisAvailable = false;
@@ -21,14 +24,20 @@ let redisAvailable = false;
  * Uses same environment variables as factory-fixer-v2.mjs
  */
 async function initRedis() {
-	if (redis) return redis;
+	console.log('[KAG DEBUG] initRedis called, redis object:', redis ? 'exists' : 'null');
+	if (redis) {
+		console.log('[KAG DEBUG] Returning existing Redis client');
+		return redis;
+	}
 
 	try {
+		console.log('[KAG DEBUG] Creating new Redis client...');
 		// Try to import ioredis (may not be installed)
 		const { default: Redis } = await import('ioredis');
 
 		const redisHost = process.env.REDIS_HOST || '127.0.0.1';
 		const redisPort = parseInt(process.env.REDIS_PORT || '4005', 10);
+		console.log('[KAG DEBUG] Connecting to Redis at', redisHost, ':', redisPort);
 
 		redis = new Redis({
 			host: redisHost,
@@ -37,11 +46,25 @@ async function initRedis() {
 				if (times > 3) return null; // Stop retrying after 3 attempts
 				return Math.min(times * 50, 200);
 			},
-			enableOfflineQueue: false
+			enableOfflineQueue: true,  // FIXED: Allow queueing while connecting
+			lazyConnect: false,         // Connect immediately
+			connectTimeout: 5000        // 5 second timeout
 		});
 
+		// Wait for ready event
+		console.log('[KAG DEBUG] Waiting for Redis connection...');
+		await new Promise((resolve, reject) => {
+			redis.once('ready', resolve);
+			redis.once('error', reject);
+			setTimeout(() => reject(new Error('Connection timeout')), 5000);
+		});
+
+		console.log('[KAG DEBUG] Redis connection ready!');
+
 		// Test connection
+		console.log('[KAG DEBUG] Testing Redis connection with PING...');
 		await redis.ping();
+		console.log('[KAG DEBUG] Redis PING successful!');
 		redisAvailable = true;
 
 		redis.on('error', (err) => {
@@ -51,7 +74,8 @@ async function initRedis() {
 
 		return redis;
 	} catch (error) {
-		console.warn('[KAG] Redis not available:', error.message);
+		console.warn('[KAG] Redis init FAILED:', error.message);
+		console.warn('[KAG] Error stack:', error.stack);
 		console.warn('[KAG] KAG features disabled - fixes will not be cached');
 		redisAvailable = false;
 		return null;
@@ -147,13 +171,18 @@ async function queryBestFix(errorSig) {
  * Updates existing fix if patch already exists, otherwise adds new
  */
 async function storeFix(errorSig, fix) {
-	if (!redisAvailable) return;
+	console.log('[KAG DEBUG] storeFix called');
 
 	try {
+		console.log('[KAG DEBUG] Calling initRedis...');
 		const client = await initRedis();
-		if (!client) return;
+		if (!client) {
+			console.log('[KAG DEBUG] initRedis returned null - Redis not available');
+			return;
+		}
 
 		const key = `phase72:kag:sig:${errorSig.sig}`;
+		console.log('[KAG DEBUG] Storing fix with key:', key);
 
 		// Get existing fixes
 		const existingJson = await client.get(key);
@@ -445,8 +474,10 @@ export { computeSignature, exportData, getAllFixes, getStats, health, queryBestF
 
 // CLI self-test handler
 // Check if this script was invoked directly (works cross-platform)
-const isMainModule = import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` ||
-                      import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
+const isMainModule = process.argv[1] && (
+  import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` ||
+  import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'))
+);
 
 if (isMainModule && process.argv.includes('--selftest')) {
 	console.log('[KAG Store] Running self-test...');

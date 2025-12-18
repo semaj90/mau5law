@@ -21,7 +21,7 @@ export const metricsState = writable(metricsActor.getSnapshot());
 
 // Subscribe to actor changes
 metricsActor.subscribe((state) => {
-  metricsState.set(state);
+ metricsState.set(state);
 });
 
 /**
@@ -36,23 +36,23 @@ export const isFailed = derived(metricsState, ($state) => $state.value === 'fail
  * Send events to the actor
  */
 export function fetchMetrics() {
-  metricsActor.send({ type: 'FETCH' });
+ metricsActor.send({ type: 'FETCH' });
 }
 
 export function retryMetrics() {
-  metricsActor.send({ type: 'RETRY' });
+ metricsActor.send({ type: 'RETRY' });
 }
 
 export function resetMetrics() {
-  metricsActor.send({ type: 'RESET' });
+ metricsActor.send({ type: 'RESET' });
 }
 
 export function setMetricsSuccess(data: any) {
-  metricsActor.send({ type: 'FETCH_SUCCESS', data });
+ metricsActor.send({ type: 'FETCH_SUCCESS', data });
 }
 
 export function setMetricsError(error: string) {
-  metricsActor.send({ type: 'FETCH_ERROR', error });
+ metricsActor.send({ type: 'FETCH_ERROR', error });
 }
 
 /**

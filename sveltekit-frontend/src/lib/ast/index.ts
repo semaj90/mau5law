@@ -5,12 +5,29 @@
 
 // Original AST processor
 export { ASTProcessor } from './ast-processor';
-export type { ASTNode, AutosuggestContext, AutosuggestResult, Autosuggestion } from './ast-processor';
+export type {
+ ASTNode,
+ AutosuggestContext,
+ AutosuggestResult,
+ Autosuggestion,
+} from './ast-processor';
 
 // Svelte-check analyzer
 export { SvelteCheckAnalyzer, svelteCheckAnalyzer } from './svelte-check-analyzer';
-export type { ASTError, FunctionInfo, VariableInfo, TypeInfo, ASTAnalysisResult } from './svelte-check-analyzer';
+export type {
+ ASTError,
+ FunctionInfo,
+ VariableInfo,
+ TypeInfo,
+ ASTAnalysisResult,
+} from './svelte-check-analyzer';
 
 // Suggestion engine
 export { SuggestionEngine, suggestionEngine } from './suggestion-engine';
-export type { Suggestion, ClusterInfo, SuggestionSource, CodebaseContext, WebSearchResult } from './suggestion-engine';
+export type {
+ Suggestion,
+ ClusterInfo,
+ SuggestionSource,
+ CodebaseContext,
+ WebSearchResult,
+} from './suggestion-engine';

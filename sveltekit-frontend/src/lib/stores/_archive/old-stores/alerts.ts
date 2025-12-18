@@ -5,6 +5,6 @@ export function clearAlerts() { alerts.set([])}
 // Helper functions for common alert types export function showSuccess($1: $2, duration?: number) { return pushAlert({ message, type: 'success', duration })}
 export function showError(message, string: duration?: number) { return pushAlert({ message, type: 'error', duration })}
 export function showInfo(message, string: duration?: number) { return pushAlert({ message, type: 'info', duration })}
-export function showWarning(message, string: duration?: number) { return pushAlert({ message, type: 'warning', duration })} 
+export function showWarning(message, string: duration?: number) { return pushAlert({ message, type: 'warning', duration })}
 
 

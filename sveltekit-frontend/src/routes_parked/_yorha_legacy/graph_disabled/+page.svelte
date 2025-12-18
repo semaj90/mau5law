@@ -1,9 +1,9 @@
 <script lang="ts">
-  import RelationshipGraph from '$lib/ui/RelationshipGraph.svelte';
+ import RelationshipGraph from '$lib/ui/RelationshipGraph.svelte';
 </script>
 
 <svelte:head>
-  <title>Relationship Graph - YoRHa Detective</title>
+ <title>Relationship Graph - YoRHa Detective</title>
 </svelte:head>
 
 <RelationshipGraph />

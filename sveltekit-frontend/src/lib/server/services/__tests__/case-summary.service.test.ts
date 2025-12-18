@@ -12,224 +12,220 @@ vi.mock('$lib/server/redis');
 vi.mock('$lib/server/db');
 
 describe('CaseSummaryService', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+ beforeEach(() => {
+ vi.clearAllMocks();
+ });
 
-  describe('generateSummary', () => {
-    it('should generate and store a new summary', async () => {
-      const caseId = 'case-123';
-      const userId = 'user-456';
-      const text = 'Test summary text';
-      const citations = [{ code: '42 U.S.C. § 1983', title: 'Civil Rights', jurisdiction: 'Federal' }];
-      const holding = 'Test holding statement';
+ describe('generateSummary', () => {
+ it('should generate and store a new summary', async () => {
+ const caseId = 'case-123';
+ const userId = 'user-456';
+ const text = 'Test summary text';
+ const citations = [
+ { code: '42 U.S.C. § 1983', title: 'Civil Rights', jurisdiction: 'Federal' },
+ ];
+ const holding = 'Test holding statement';
 
-      const result = await caseSummaryService.generateSummary(
-        caseId,
-        text,
-        citations,
-        holding,
-        userId
-      );
+ const result = await caseSummaryService.generateSummary(
+ caseId,
+ text,
+ citations,
+ holding,
+ userId
+ );
 
-      expect(result).toBeDefined();
-      expect(result.caseId).toBe(caseId);
-      expect(result.text).toBe(text);
-      expect(result.holding).toBe(holding);
-      expect(result.citations).toEqual(citations);
-    });
+ expect(result).toBeDefined();
+ expect(result.caseId).toBe(caseId);
+ expect(result.text).toBe(text);
+ expect(result.holding).toBe(holding);
+ expect(result.citations).toEqual(citations);
+ });
 
-    it('should increment version on subsequent summaries', async () => {
-      const caseId = 'case-123';
-      const userId = 'user-456';
+ it('should increment version on subsequent summaries', async () => {
+ const caseId = 'case-123';
+ const userId = 'user-456';
 
-      const summary1 = await caseSummaryService.generateSummary(
-        caseId,
-        'First summary',
-        [],
-        'First holding',
-        userId
-      );
+ const summary1 = await caseSummaryService.generateSummary(
+ caseId,
+ 'First summary',
+ [],
+ 'First holding',
+ userId
+ );
 
-      const summary2 = await caseSummaryService.generateSummary(
-        caseId,
-        'Second summary',
-        [],
-        'Second holding',
-        userId
-      );
+ const summary2 = await caseSummaryService.generateSummary(
+ caseId,
+ 'Second summary',
+ [],
+ 'Second holding',
+ userId
+ );
 
-      expect(summary2.version).toBeGreaterThan(summary1.version);
-    });
+ expect(summary2.version).toBeGreaterThan(summary1.version);
+ });
 
-    it('should cache the generated summary', async () => {
-      const caseId = 'case-123';
-      const userId = 'user-456';
+ it('should cache the generated summary', async () => {
+ const caseId = 'case-123';
+ const userId = 'user-456';
 
-      await caseSummaryService.generateSummary(
-        caseId,
-        'Test summary',
-        [],
-        'Test holding',
-        userId
-      );
+ await caseSummaryService.generateSummary(caseId, 'Test summary', [], 'Test holding', userId);
 
-      // Verify cache was called
-      expect(redis.setex).toHaveBeenCalled();
-    });
-  });
+ // Verify cache was called
+ expect(redis.setex).toHaveBeenCalled();
+ });
+ });
 
-  describe('getSummary', () => {
-    it('should retrieve summary from cache if available', async () => {
-      const caseId = 'case-123';
-      const cachedSummary = {
-        id: 'summary-1',
-        caseId,
-        text: 'Cached summary',
-        version: 1,
-      };
+ describe('getSummary', () => {
+ it('should retrieve summary from cache if available', async () => {
+ const caseId = 'case-123';
+ const cachedSummary = {
+ id: 'summary-1',
+ caseId,
+ text: 'Cached summary',
+ version: 1,
+ };
 
-      vi.mocked(redis.get).mockResolvedValueOnce(JSON.stringify(cachedSummary));
+ vi.mocked(redis.get).mockResolvedValueOnce(JSON.stringify(cachedSummary));
 
-      const result = await caseSummaryService.getSummary(caseId);
+ const result = await caseSummaryService.getSummary(caseId);
 
-      expect(result).toEqual(cachedSummary);
-      expect(redis.get).toHaveBeenCalledWith(`summary:${caseId}`);
-    });
+ expect(result).toEqual(cachedSummary);
+ expect(redis.get).toHaveBeenCalledWith(`summary:${caseId}`);
+ });
 
-    it('should retrieve summary from database if not in cache', async () => {
-      const caseId = 'case-123';
-      const dbSummary = {
-        id: 'summary-1',
-        caseId,
-        text: 'Database summary',
-        version: 1,
-      };
+ it('should retrieve summary from database if not in cache', async () => {
+ const caseId = 'case-123';
+ const dbSummary = {
+ id: 'summary-1',
+ caseId,
+ text: 'Database summary',
+ version: 1,
+ };
 
-      vi.mocked(redis.get).mockResolvedValueOnce(null);
-      vi.mocked(db.select).mockReturnValueOnce({
-        from: vi.fn().mockReturnValueOnce({
-          where: vi.fn().mockResolvedValueOnce([dbSummary]),
-        }),
-      });
+ vi.mocked(redis.get).mockResolvedValueOnce(null);
+ vi.mocked(db.select).mockReturnValueOnce({
+ from: vi.fn().mockReturnValueOnce({
+ where: vi.fn().mockResolvedValueOnce([dbSummary]),
+ }),
+ });
 
-      const result = await caseSummaryService.getSummary(caseId);
+ const result = await caseSummaryService.getSummary(caseId);
 
-      expect(result).toEqual(dbSummary);
-    });
+ expect(result).toEqual(dbSummary);
+ });
 
-    it('should return null if summary not found', async () => {
-      const caseId = 'case-nonexistent';
+ it('should return null if summary not found', async () => {
+ const caseId = 'case-nonexistent';
 
-      vi.mocked(redis.get).mockResolvedValueOnce(null);
-      vi.mocked(db.select).mockReturnValueOnce({
-        from: vi.fn().mockReturnValueOnce({
-          where: vi.fn().mockResolvedValueOnce([]),
-        }),
-      });
+ vi.mocked(redis.get).mockResolvedValueOnce(null);
+ vi.mocked(db.select).mockReturnValueOnce({
+ from: vi.fn().mockReturnValueOnce({
+ where: vi.fn().mockResolvedValueOnce([]),
+ }),
+ });
 
-      const result = await caseSummaryService.getSummary(caseId);
+ const result = await caseSummaryService.getSummary(caseId);
 
-      expect(result).toBeNull();
-    });
-  });
+ expect(result).toBeNull();
+ });
+ });
 
-  describe('getSummaryVersion', () => {
-    it('should retrieve a specific version of summary', async () => {
-      const caseId = 'case-123';
-      const version = 2;
-      const versionedSummary = {
-        id: 'summary-1',
-        caseId,
-        text: 'Version 2 summary',
-        version,
-      };
+ describe('getSummaryVersion', () => {
+ it('should retrieve a specific version of summary', async () => {
+ const caseId = 'case-123';
+ const version = 2;
+ const versionedSummary = {
+ id: 'summary-1',
+ caseId,
+ text: 'Version 2 summary',
+ version,
+ };
 
-      vi.mocked(db.select).mockReturnValueOnce({
-        from: vi.fn().mockReturnValueOnce({
-          where: vi.fn().mockResolvedValueOnce([versionedSummary]),
-        }),
-      });
+ vi.mocked(db.select).mockReturnValueOnce({
+ from: vi.fn().mockReturnValueOnce({
+ where: vi.fn().mockResolvedValueOnce([versionedSummary]),
+ }),
+ });
 
-      const result = await caseSummaryService.getSummaryVersion(caseId, version);
+ const result = await caseSummaryService.getSummaryVersion(caseId, version);
 
-      expect(result).toEqual(versionedSummary);
-    });
-  });
+ expect(result).toEqual(versionedSummary);
+ });
+ });
 
-  describe('updateSummary', () => {
-    it('should update summary and invalidate cache', async () => {
-      const caseId = 'case-123';
-      const userId = 'user-456';
-      const newText = 'Updated summary text';
+ describe('updateSummary', () => {
+ it('should update summary and invalidate cache', async () => {
+ const caseId = 'case-123';
+ const userId = 'user-456';
+ const newText = 'Updated summary text';
 
-      await caseSummaryService.updateSummary(caseId, newText, userId);
+ await caseSummaryService.updateSummary(caseId, newText, userId);
 
-      // Verify cache was invalidated
-      expect(redis.del).toHaveBeenCalledWith(`summary:${caseId}`);
-    });
-  });
+ // Verify cache was invalidated
+ expect(redis.del).toHaveBeenCalledWith(`summary:${caseId}`);
+ });
+ });
 
-  describe('deleteSummary', () => {
-    it('should delete summary and clear cache', async () => {
-      const caseId = 'case-123';
-      const userId = 'user-456';
+ describe('deleteSummary', () => {
+ it('should delete summary and clear cache', async () => {
+ const caseId = 'case-123';
+ const userId = 'user-456';
 
-      await caseSummaryService.deleteSummary(caseId, userId);
+ await caseSummaryService.deleteSummary(caseId, userId);
 
-      // Verify cache was cleared
-      expect(redis.del).toHaveBeenCalledWith(`summary:${caseId}`);
-    });
-  });
+ // Verify cache was cleared
+ expect(redis.del).toHaveBeenCalledWith(`summary:${caseId}`);
+ });
+ });
 
-  describe('getSummaryVersionHistory', () => {
-    it('should retrieve all versions of a summary', async () => {
-      const caseId = 'case-123';
-      const versions = [
-        { version: 1, text: 'Version 1', createdAt: new Date() },
-        { version: 2, text: 'Version 2', createdAt: new Date() },
-      ];
+ describe('getSummaryVersionHistory', () => {
+ it('should retrieve all versions of a summary', async () => {
+ const caseId = 'case-123';
+ const versions = [
+ { version: 1, text: 'Version 1', createdAt: new Date() },
+ { version: 2, text: 'Version 2', createdAt: new Date() },
+ ];
 
-      vi.mocked(db.select).mockReturnValueOnce({
-        from: vi.fn().mockReturnValueOnce({
-          where: vi.fn().mockResolvedValueOnce(versions),
-        }),
-      });
+ vi.mocked(db.select).mockReturnValueOnce({
+ from: vi.fn().mockReturnValueOnce({
+ where: vi.fn().mockResolvedValueOnce(versions),
+ }),
+ });
 
-      const result = await caseSummaryService.getSummaryVersionHistory(caseId);
+ const result = await caseSummaryService.getSummaryVersionHistory(caseId);
 
-      expect(result).toEqual(versions);
-      expect(result.length).toBe(2);
-    });
-  });
+ expect(result).toEqual(versions);
+ expect(result.length).toBe(2);
+ });
+ });
 
-  describe('error handling', () => {
-    it('should handle database errors gracefully', async () => {
-      const caseId = 'case-123';
-      const userId = 'user-456';
+ describe('error handling', () => {
+ it('should handle database errors gracefully', async () => {
+ const caseId = 'case-123';
+ const userId = 'user-456';
 
-      vi.mocked(db.insert).mockRejectedValueOnce(new Error('Database error'));
+ vi.mocked(db.insert).mockRejectedValueOnce(new Error('Database error'));
 
-      await expect(
-        caseSummaryService.generateSummary(caseId, 'Test', [], 'Test', userId)
-      ).rejects.toThrow('Database error');
-    });
+ await expect(
+ caseSummaryService.generateSummary(caseId, 'Test', [], 'Test', userId)
+ ).rejects.toThrow('Database error');
+ });
 
-    it('should handle cache errors gracefully', async () => {
-      const caseId = 'case-123';
+ it('should handle cache errors gracefully', async () => {
+ const caseId = 'case-123';
 
-      vi.mocked(redis.get).mockRejectedValueOnce(new Error('Cache error'));
+ vi.mocked(redis.get).mockRejectedValueOnce(new Error('Cache error'));
 
-      // Should fall back to database
-      vi.mocked(db.select).mockReturnValueOnce({
-        from: vi.fn().mockReturnValueOnce({
-          where: vi.fn().mockResolvedValueOnce([{ id: 'summary-1', caseId }]),
-        }),
-      });
+ // Should fall back to database
+ vi.mocked(db.select).mockReturnValueOnce({
+ from: vi.fn().mockReturnValueOnce({
+ where: vi.fn().mockResolvedValueOnce([{ id: 'summary-1', caseId }]),
+ }),
+ });
 
-      const result = await caseSummaryService.getSummary(caseId);
+ const result = await caseSummaryService.getSummary(caseId);
 
-      expect(result).toBeDefined();
-    });
-  });
+ expect(result).toBeDefined();
+ });
+ });
 });

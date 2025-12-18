@@ -10,32 +10,32 @@ import { statuteSearchService } from '$lib/server/services/statute-search.servic
  * GET: Get statute detail
  */
 export const GET: RequestHandler = async ({ params }) => {
-  try {
-    const statute = await statuteSearchService.getStatuteDetail(params.code);
-    if (!statute) {
-      return json({ success: false, error: 'Statute not found' }, { status: 404 });
-    }
+ try {
+ const statute = await statuteSearchService.getStatuteDetail(params.code);
+ if (!statute) {
+ return json({ success: false, error: 'Statute not found' }, { status: 404 });
+ }
 
-    // Get context using RAG
-    const context = await statuteSearchService.getStatuteContext(params.code);
+ // Get context using RAG
+ const context = await statuteSearchService.getStatuteContext(params.code);
 
-    // Get related cases
-    const relatedCases = await statuteSearchService.getRelatedCases(params.code);
+ // Get related cases
+ const relatedCases = await statuteSearchService.getRelatedCases(params.code);
 
-    return json({
-      success: true,
-      statute,
-      context,
-      relatedCases,
-    });
-  } catch (error) {
-    console.error('Error getting statute detail:', error);
-    return json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to get statute',
-      },
-      { status: 500 }
-    );
-  }
+ return json({
+ success: true,
+ statute,
+ context,
+ relatedCases,
+ });
+ } catch (error) {
+ console.error('Error getting statute detail:', error);
+ return json(
+ {
+ success: false,
+ error: error instanceof Error ? error.message : 'Failed to get statute',
+ },
+ { status: 500 }
+ );
+ }
 };

@@ -4,6 +4,7 @@
  */
 
 export {
-    computeRouteCluster, getAllKnownClusters, inferRouteOwner
+ computeRouteCluster,
+ getAllKnownClusters,
+ inferRouteOwner,
 } from '../shared/phase80-route-metadata';
-

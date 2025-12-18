@@ -2,42 +2,42 @@
 // Uses Gemma 3 Legal model for structured JSON output
 
 export interface PersonOfInterestData {
-  name: string;
-  aliases: string[];
-  description: string;
-  who: {
-    identity: string;
-    background: string;
-    occupation: string;
-    affiliations: string[];
-  };
-  what: {
-    activities: string[];
-    knownActions: string[];
-    patterns: string[];
-  };
-  why: {
-    motivations: string[];
-    objectives: string[];
-    drivingFactors: string[];
-  };
-  how: {
-    methods: string[];
-    resources: string[];
-    capabilities: string[];
-  };
-  risk: {
-    threatLevel: 'low' | 'medium' | 'high' | 'critical';
-    riskFactors: string[];
-    mitigationStrategies: string[];
-    legalImplications: string[];
-  };
-  metadata: {
-    confidence: number;
-    sources: string[];
-    lastUpdated: string;
-    generatedBy: string;
-  };
+ name: string;
+ aliases: string[];
+ description: string;
+ who: {
+ identity: string;
+ background: string;
+ occupation: string;
+ affiliations: string[];
+ };
+ what: {
+ activities: string[];
+ knownActions: string[];
+ patterns: string[];
+ };
+ why: {
+ motivations: string[];
+ objectives: string[];
+ drivingFactors: string[];
+ };
+ how: {
+ methods: string[];
+ resources: string[];
+ capabilities: string[];
+ };
+ risk: {
+ threatLevel: 'low' | 'medium' | 'high' | 'critical';
+ riskFactors: string[];
+ mitigationStrategies: string[];
+ legalImplications: string[];
+ };
+ metadata: {
+ confidence: number;
+ sources: string[];
+ lastUpdated: string;
+ generatedBy: string;
+ };
 }
 
 export const PERSON_OF_INTEREST_PROMPT = `You are a specialized Legal AI Assistant for Person of Interest (POI) analysis and profiling.
@@ -52,39 +52,39 @@ Input Information:
 Generate a structured POI profile with the following JSON schema:
 
 {
-  "who": {
-    "identity": "Primary identification and legal status",
-    "background": "Personal and professional background summary",
-    "occupation": "Current or primary occupation/role",
-    "affiliations": ["List of known organizations, groups, or associates"]
-  },
-  "what": {
-    "activities": ["List of known activities or behaviors"],
-    "knownActions": ["Specific documented actions or incidents"],
-    "patterns": ["Identified behavioral or operational patterns"]
-  },
-  "why": {
-    "motivations": ["Underlying motivations or drivers"],
-    "objectives": ["Goals or intended outcomes"],
-    "drivingFactors": ["Key factors influencing behavior"]
-  },
-  "how": {
-    "methods": ["Techniques, approaches, or methodologies used"],
-    "resources": ["Available resources, tools, or assets"],
-    "capabilities": ["Skills, knowledge, or abilities demonstrated"]
-  },
-  "risk": {
-    "threatLevel": "low|medium|high|critical",
-    "riskFactors": ["Factors that increase risk or concern"],
-    "mitigationStrategies": ["Recommended risk mitigation approaches"],
-    "legalImplications": ["Potential legal consequences or considerations"]
-  },
-  "metadata": {
-    "confidence": 0.0-1.0,
-    "sources": ["Information sources used"],
-    "lastUpdated": "ISO date string",
-    "generatedBy": "Gemma3-Legal"
-  }
+ "who": {
+ "identity": "Primary identification and legal status",
+ "background": "Personal and professional background summary",
+ "occupation": "Current or primary occupation/role",
+ "affiliations": ["List of known organizations, groups, or associates"]
+ },
+ "what": {
+ "activities": ["List of known activities or behaviors"],
+ "knownActions": ["Specific documented actions or incidents"],
+ "patterns": ["Identified behavioral or operational patterns"]
+ },
+ "why": {
+ "motivations": ["Underlying motivations or drivers"],
+ "objectives": ["Goals or intended outcomes"],
+ "drivingFactors": ["Key factors influencing behavior"]
+ },
+ "how": {
+ "methods": ["Techniques, approaches, or methodologies used"],
+ "resources": ["Available resources, tools, or assets"],
+ "capabilities": ["Skills, knowledge, or abilities demonstrated"]
+ },
+ "risk": {
+ "threatLevel": "low|medium|high|critical",
+ "riskFactors": ["Factors that increase risk or concern"],
+ "mitigationStrategies": ["Recommended risk mitigation approaches"],
+ "legalImplications": ["Potential legal consequences or considerations"]
+ },
+ "metadata": {
+ "confidence": 0.0-1.0,
+ "sources": ["Information sources used"],
+ "lastUpdated": "ISO date string",
+ "generatedBy": "Gemma3-Legal"
+ }
 }
 
 Guidelines:
@@ -128,28 +128,39 @@ Source Information: {sourceInfo}
 
 Provide validation results in JSON format:
 {
-  "isValid": boolean,
-  "confidence": 0.0-1.0,
-  "issues": ["List of any concerns or issues found"],
-  "recommendations": ["Suggested improvements or corrections"],
-  "legalFlags": ["Any legal compliance flags or warnings"]
+ "isValid": boolean,
+ "confidence": 0.0-1.0,
+ "issues": ["List of any concerns or issues found"],
+ "recommendations": ["Suggested improvements or corrections"],
+ "legalFlags": ["Any legal compliance flags or warnings"]
 }`;
 
-export function generatePersonPrompt(name: string, alias: string = '', description: string): string {
-  return PERSON_OF_INTEREST_PROMPT
-    .replace('{name}', name)
-    .replace('{alias}', alias || 'None provided')
-    .replace('{description}', description);
+export function generatePersonPrompt(
+ name: string,
+ alias: string = '',
+ description: string
+): string {
+ return PERSON_OF_INTEREST_PROMPT.replace('{name}', name)
+ .replace('{alias}', alias || 'None provided')
+ .replace('{description}', description);
 }
 
-export function generateFollowupPrompt(existingProfile: PersonOfInterestData, newInfo: string): string {
-  return PERSON_OF_INTEREST_FOLLOWUP_PROMPT
-    .replace('{existingProfile}', JSON.stringify(existingProfile, null, 2))
-    .replace('{newInfo}', newInfo);
+export function generateFollowupPrompt(
+ existingProfile: PersonOfInterestData,
+ newInfo: string
+): string {
+ return PERSON_OF_INTEREST_FOLLOWUP_PROMPT.replace(
+ '{existingProfile}',
+ JSON.stringify(existingProfile, null, 2)
+ ).replace('{newInfo}', newInfo);
 }
 
-export function generateValidationPrompt(profile: PersonOfInterestData, sourceInfo: string): string {
-  return PERSON_OF_INTEREST_VALIDATION_PROMPT
-    .replace('{profile}', JSON.stringify(profile, null, 2))
-    .replace('{sourceInfo}', sourceInfo);
+export function generateValidationPrompt(
+ profile: PersonOfInterestData,
+ sourceInfo: string
+): string {
+ return PERSON_OF_INTEREST_VALIDATION_PROMPT.replace(
+ '{profile}',
+ JSON.stringify(profile, null, 2)
+ ).replace('{sourceInfo}', sourceInfo);
 }

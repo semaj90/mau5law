@@ -23,10 +23,10 @@ The benchmark will be called with `run(padded_string &json, int64_t max_retweet_
 The benchmark must:
 - Find the tweet with the highest retweet_count at the top level of the "statuses" array.
 - Find the *last* such tweet: if multiple tweets have the same top retweet_count, the last one
-  should be returned.
+ should be returned.
 - Exclude tweets with retweet_count above max_retweet_count. This restriction is solely here because
-  the default twitter.json has a rather high retweet count in the third tweet, and to test laziness
-  the matching tweet needs to be further down in the file.
+ the default twitter.json has a rather high retweet count in the third tweet, and to test laziness
+ the matching tweet needs to be further down in the file.
 - Fill in top_tweet_result with the corresponding fields from the matching tweet.
 
 ### Abridged Schema
@@ -35,15 +35,15 @@ The abridged schema (objects contain more fields than listed here):
 
 ```json
 {
-  "statuses": [
-    {
-      "text": "i like to tweet", // text containing UTF-8 and escape characters
-      "user": {
-        "screen_name": "AlexanderHamilton" // string containing UTF-8 (and escape characters?)
-      },
-      "retweet_count": 2, // uint32
-    },
-    ...
-  ]
+ "statuses": [
+ {
+ "text": "i like to tweet", // text containing UTF-8 and escape characters
+ "user": {
+ "screen_name": "AlexanderHamilton" // string containing UTF-8 (and escape characters?)
+ },
+ "retweet_count": 2, // uint32
+ },
+ ...
+ ]
 }
 ```

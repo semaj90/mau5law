@@ -38,18 +38,18 @@ you can parse terabytes of JSON data without doing any new allocation.
 ```c++
 ondemand::parser parser;
 
-// This initializes buffers  big enough to handle this JSON.
+// This initializes buffers big enough to handle this JSON.
 auto json = "[ true, false ]"_padded;
 auto doc = parser.iterate(json);
 for(bool i : doc.get_array()) {
-  cout << i << endl;
+ cout << i << endl;
 }
 
 // This reuses the existing buffers
 auto number_json = "[1, 2, 3]"_padded;
 doc = parser.iterate(number_json);
 for(int64_t i : doc.get_array()) {
-  cout << i << endl;
+ cout << i << endl;
 }
 ```
 
@@ -57,7 +57,7 @@ for(int64_t i : doc.get_array()) {
 Reusing string buffers
 -----------------------------------------
 
-We recommend against creating many `std::string` or `simdjson::padded_string` instances to store the JSON content in your application. [Creating many non-trivial objects is convenient but often surprisingly slow](https://lemire.me/blog/2020/08/08/performance-tip-constructing-many-non-trivial-objects-is-slow/). Instead, as much as possible, you should allocate (once or a few times) reusable memory buffers where you write your JSON content. If you have a buffer `json_str` (of type `char*`) allocated for  `capacity` bytes and you store a JSON document spanning `length` bytes, you can pass it to simdjson as follows:
+We recommend against creating many `std::string` or `simdjson::padded_string` instances to store the JSON content in your application. [Creating many non-trivial objects is convenient but often surprisingly slow](https://lemire.me/blog/2020/08/08/performance-tip-constructing-many-non-trivial-objects-is-slow/). Instead, as much as possible, you should allocate (once or a few times) reusable memory buffers where you write your JSON content. If you have a buffer `json_str` (of type `char*`) allocated for `capacity` bytes and you store a JSON document spanning `length` bytes, you can pass it to simdjson as follows:
 
 ```c++
  auto doc = parser.iterate(padded_string_view(json_str, length, capacity));
@@ -78,33 +78,33 @@ The On Demand approach also automatically expands its memory capacity when large
 
 * You can set an upper bound (*max_capacity*) when construction the parser:
 ```C++
-    ondemand::parser parser(1000*1000);  // Never grows past documents > 1 MB
-    auto doc = parser.iterate(json);
-    for (web_request request : listen()) {
-      padded_string json;
-      padded_string json = padded_string::load(request.body);
-      auto error = parser.iterate(json);
-      // If the document was above our limit, emit 413 = payload too large
-      if (error == CAPACITY) { request.respond(413); continue; }
-      // ...
-    }
+ ondemand::parser parser(1000*1000); // Never grows past documents > 1 MB
+ auto doc = parser.iterate(json);
+ for (web_request request : listen()) {
+ padded_string json;
+ padded_string json = padded_string::load(request.body);
+ auto error = parser.iterate(json);
+ // If the document was above our limit, emit 413 = payload too large
+ if (error == CAPACITY) { request.respond(413); continue; }
+ // ...
+ }
 ```
 
 The capacity will grow as the parser encounters larger documents up to 1 MB.
 
 * You can also allocate a *fixed capacity* that will never grow:
 ```C++
-    ondemand::parser parser(1000*1000);
-    parser.allocate(1000*1000)  // Fix the capacity to 1 MB
-    auto doc = parser.iterate(json);
-    for (web_request request : listen()) {
-      padded_string json;
-      padded_string json = padded_string::load(request.body);
-      auto error = parser.iterate(json);
-      // If the document was above our limit, emit 413 = payload too large
-      if (error == CAPACITY) { request.respond(413); continue; }
-      // ...
-    }
+ ondemand::parser parser(1000*1000);
+ parser.allocate(1000*1000) // Fix the capacity to 1 MB
+ auto doc = parser.iterate(json);
+ for (web_request request : listen()) {
+ padded_string json;
+ padded_string json = padded_string::load(request.body);
+ auto error = parser.iterate(json);
+ // If the document was above our limit, emit 413 = payload too large
+ if (error == CAPACITY) { request.respond(413); continue; }
+ // ...
+ }
 ```
 You can also manually set the maximal capacity using the method `set_max_capacity()`.
 
@@ -155,9 +155,9 @@ Visual Studio
 
 On Intel and AMD Windows platforms, Microsoft Visual Studio enables programmers to build either 32-bit (x86) or 64-bit (x64 or ARM64) binaries. We urge you to always use 64-bit mode. Visual Studio 2019 should default on 64-bit builds when you have a 64-bit version of Windows, which we recommend.
 
-When compiling with Visual Studio, we recommend the flags `/Ob2 /O2` or better. We do not recommend that you compile simdjson with architecture-specific flags such as  `arch:AVX2`. The simdjson library automatically selects the best execution kernel at runtime.
+When compiling with Visual Studio, we recommend the flags `/Ob2 /O2` or better. We do not recommend that you compile simdjson with architecture-specific flags such as `arch:AVX2`. The simdjson library automatically selects the best execution kernel at runtime.
 
-Recent versions of Microsoft Visual Studio on Windows provides support for the LLVM Clang compiler. You  only need to install the "Clang compiler" optional component (ClangCL). You may also get a copy of the 64-bit LLVM CLang compiler for [Windows directly from LLVM](https://releases.llvm.org/download.html). The simdjson library fully supports the LLVM Clang compiler under Windows. In fact, you may get better performance out of simdjson with the LLVM Clang compiler than with the regular Visual Studio compiler. Meanwhile the [LLVM CLang compiler is binary compatible with Visual Studio](https://clang.llvm.org/docs/MSVCCompatibility.html) which means that you can combine their binaries (executables and libraries).
+Recent versions of Microsoft Visual Studio on Windows provides support for the LLVM Clang compiler. You only need to install the "Clang compiler" optional component (ClangCL). You may also get a copy of the 64-bit LLVM CLang compiler for [Windows directly from LLVM](https://releases.llvm.org/download.html). The simdjson library fully supports the LLVM Clang compiler under Windows. In fact, you may get better performance out of simdjson with the LLVM Clang compiler than with the regular Visual Studio compiler. Meanwhile the [LLVM CLang compiler is binary compatible with Visual Studio](https://clang.llvm.org/docs/MSVCCompatibility.html) which means that you can combine their binaries (executables and libraries).
 
 Under Windows, we also support the GNU GCC compiler via MSYS2. The performance of 64-bit MSYS2 under Windows excellent (on par with Linux).
 
@@ -178,4 +178,4 @@ You should not expect the simdjson library to cause *downclocking* of your recen
 The simdjson library does not generally make use of heavy 256-bit instructions. On AVX2 kernels, we use vectorized multiplications, but only using 128-bit registers. On recent processors (Ice Lake/Tiger Lake or better, AMD Zen 4 or better) [no frequency throttling is found](https://travisdowns.github.io/blog/2020/08/19/icl-avx512-freq.html) due to SIMD instructions: we are thus more aggressive with SIMD on these machines. If you can still concerned, you can easily disable AVX-512 with the CMake option `SIMDJSON_AVX512_ALLOWED` set to `OFF` (e.g., `cmake -D SIMDJSON_AVX512_ALLOWED=OFF -B build && cmake --build build`) or by setting
 the macro `SIMDJSON_AVX512_ALLOWED` to `0` in C++ prior to importing the headers.
 
-You may still be worried about which SIMD instruction set is used by simdjson.  Thankfully,  [you can always determine and change which architecture-specific implementation is used](implementation-selection.md) by simdjson. Thus even if your CPU supports AVX2, you do not need to use AVX2. You are in control.
+You may still be worried about which SIMD instruction set is used by simdjson. Thankfully, [you can always determine and change which architecture-specific implementation is used](implementation-selection.md) by simdjson. Thus even if your CPU supports AVX2, you do not need to use AVX2. You are in control.

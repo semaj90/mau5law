@@ -27,11 +27,11 @@ A code example illustrates our API from a programmer's point of view:
 ondemand::parser parser;
 auto doc = parser.iterate(json);
 for (auto tweet : doc["statuses"]) {
-  std::string_view text        = tweet["text"];
-  std::string_view screen_name = tweet["user"]["screen_name"];
-  uint64_t         retweets    = tweet["retweet_count"];
-  uint64_t         favorites   = tweet["favorite_count"];
-  cout << screen_name << " (" << retweets << " retweets / " << favorites << " favorites): " << text << endl;
+ std::string_view text = tweet["text"];
+ std::string_view screen_name = tweet["user"]["screen_name"];
+ uint64_t retweets = tweet["retweet_count"];
+ uint64_t favorites = tweet["favorite_count"];
+ cout << screen_name << " (" << retweets << " retweets / " << favorites << " favorites): " << text << endl;
 }
 ```
 
@@ -61,10 +61,10 @@ Such code would be apply to a JSON document such as the following JSON mimicking
 			"retweet_count": 82,
 			"favorite_count": 42
 		}
-  ],
-  "search_metadata": {
-    "count": 100,
-  }
+ ],
+ "search_metadata": {
+ "count": 100,
+ }
 }
 ```
 
@@ -113,10 +113,10 @@ it calls `parse` instead of `iterate`:
 dom::parser parser;
 auto doc = parser.parse(json);
 for (auto tweet : doc["statuses"]) {
-  std::string_view text        = tweet["text"];
-  std::string_view screen_name = tweet["user"]["screen_name"];
-  uint64_t         retweets    = tweet["retweet_count"];
-  cout << screen_name << " (" << retweets << " retweets): " << text << endl;
+ std::string_view text = tweet["text"];
+ std::string_view screen_name = tweet["user"]["screen_name"];
+ uint64_t retweets = tweet["retweet_count"];
+ cout << screen_name << " (" << retweets << " retweets): " << text << endl;
 }
 ```
 
@@ -159,40 +159,40 @@ in a tweet at all), and it uses a theoretical, simple event-based API that minim
 
 ```c++
 struct twitter_callbacks {
-  bool in_statuses;
-  bool in_tweet;
-  std::string_view text;
-  uint64_t         retweets;
-  uint64_t         favorites;
-  void start_object_field(std::string_view key) {
-    if (key == "statuses") { in_statuses = true; }
-  }
-  void start_object() {
-    if (in_statuses) { in_tweet = true; }
-  }
-  void string_field(std::string_view key, std::string_view value) {
-    if (in_tweet && key == "text") { text = value; }
-  }
-  void number_field(std::string_view key, uint64_t value) {
-    if (in_tweet) {
-      if (key == "retweet_count") { retweets = value; }
-      if (key == "favorite_count") { favorites = value; }
-    }
-  }
-  void end_object() {
-    if (in_tweet) {
-      cout << "[redacted] (" << retweets << " retweets / " << favorites << " favorites): " << text << endl;
-      in_tweet = false;
-    } else if (in_statuses) {
-      in_statuses = false;
-    }
-  }
+ bool in_statuses;
+ bool in_tweet;
+ std::string_view text;
+ uint64_t retweets;
+ uint64_t favorites;
+ void start_object_field(std::string_view key) {
+ if (key == "statuses") { in_statuses = true; }
+ }
+ void start_object() {
+ if (in_statuses) { in_tweet = true; }
+ }
+ void string_field(std::string_view key, std::string_view value) {
+ if (in_tweet && key == "text") { text = value; }
+ }
+ void number_field(std::string_view key, uint64_t value) {
+ if (in_tweet) {
+ if (key == "retweet_count") { retweets = value; }
+ if (key == "favorite_count") { favorites = value; }
+ }
+ }
+ void end_object() {
+ if (in_tweet) {
+ cout << "[redacted] (" << retweets << " retweets / " << favorites << " favorites): " << text << endl;
+ in_tweet = false;
+ } else if (in_statuses) {
+ in_statuses = false;
+ }
+ }
 };
 sax::parser parser;
 parser.parse(twitter_callbacks());
 ```
 
-This is a large amount of code, requiring mental gymnastics even to read. An actual implementation is  harder to write
+This is a large amount of code, requiring mental gymnastics even to read. An actual implementation is harder to write
 and to maintain.
 
 
@@ -268,338 +268,338 @@ To help visualize the algorithm, we'll walk through the example C++ given at the
 
 ```json
 {
-  "statuses": [
-    { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-    { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-  ],
-  "search_metadata": { "count": 2 }
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
 }
 ```
 
 ### Starting the iteration
 
 1. First, we declare a parser object that keeps internal buffers necessary for parsing. This can be
-   reused to parse multiple JSON files, so you do not pay the high cost of allocating memory every
-   time (and so it can stay in cache!).
+ reused to parse multiple JSON files, so you do not pay the high cost of allocating memory every
+ time (and so it can stay in cache!).
 
-   This declaration does not allocate any memory; that will happen in the next step.
+ This declaration does not allocate any memory; that will happen in the next step.
 
-   ```c++
-   ondemand::parser parser;
-   ```
+ ```c++
+ ondemand::parser parser;
+ ```
 
 2. We then start iterating the JSON document by allocating internal parser buffers, preprocessing
-   the JSON, and initializing the iterator.
+ the JSON, and initializing the iterator.
 
-   ```c++
-   auto doc = parser.iterate(json);
-   ```
+ ```c++
+ auto doc = parser.iterate(json);
+ ```
 
-   Since this is the first time this parser has been used, `iterate()` first allocates internal
-   parser buffers if this is the first time through. When reusing an existing parser, allocation
-   only happens if the new document is bigger than internal buffers can handle. The On Demand
-   API only ever allocates memory in the `iterate()` function call.
+ Since this is the first time this parser has been used, `iterate()` first allocates internal
+ parser buffers if this is the first time through. When reusing an existing parser, allocation
+ only happens if the new document is bigger than internal buffers can handle. The On Demand
+ API only ever allocates memory in the `iterate()` function call.
 
-   The simdjson library then preprocesses the JSON text at high speed, finding all tokens (i.e. the starting
-   position of any JSON value, as well as any important operators like `,`, `:`, `]` or `}`).
+ The simdjson library then preprocesses the JSON text at high speed, finding all tokens (i.e. the starting
+ position of any JSON value, as well as any important operators like `,`, `:`, `]` or `}`).
 
-   Finally, a `document` iterator is created, initialized at the position of the first value in the
-   `json` text input. The document iterator is bumped forward by array / object iterators and
-   object[] lookup, and must be kept around until iteration is complete.
+ Finally, a `document` iterator is created, initialized at the position of the first value in the
+ `json` text input. The document iterator is bumped forward by array / object iterators and
+ object[] lookup, and must be kept around until iteration is complete.
 
-   This operation can fail as this stage if the document in invalid! The result type is `simdjson_result<document>`.
-   The simdjson library uses `simdjson_result` when a value needs to be returned by a function that can fail given improper inputs.
-   The `simdjson_result` value contain an `error_code` and a `document`, and it was designed to allow you to use either error code
-   checking or C++ exceptions via a direct cast `document(parser.iterate(json))` you can use `get()`
-   to check the error and cast to a value, or cast directly to a value. However, the simdjson library
-   rely on error chaining, so it is possible to delay error checks: we shall shortly explain error
-   chaining more fully.
+ This operation can fail as this stage if the document in invalid! The result type is `simdjson_result<document>`.
+ The simdjson library uses `simdjson_result` when a value needs to be returned by a function that can fail given improper inputs.
+ The `simdjson_result` value contain an `error_code` and a `document`, and it was designed to allow you to use either error code
+ checking or C++ exceptions via a direct cast `document(parser.iterate(json))` you can use `get()`
+ to check the error and cast to a value, or cast directly to a value. However, the simdjson library
+ rely on error chaining, so it is possible to delay error checks: we shall shortly explain error
+ chaining more fully.
 
-   > NOTE: You should always have such a `document` instance (here `doc`) and it should remain in scope for the duration
-   > of your parsing function. E.g., you should not use the returned document as a temporary (e.g., `auto x = parser.iterate(json).get_object();`)
-   > followed by other operations as the destruction of the `document` instance makes all of the derived instances
-   > ill-defined.
+ > NOTE: You should always have such a `document` instance (here `doc`) and it should remain in scope for the duration
+ > of your parsing function. E.g., you should not use the returned document as a temporary (e.g., `auto x = parser.iterate(json).get_object();`)
+ > followed by other operations as the destruction of the `document` instance makes all of the derived instances
+ > ill-defined.
 
-   At this point, the iterator is at the start of the JSON:
+ At this point, the iterator is at the start of the JSON:
 
-   ```json
-   {
-   ^ (depth 1)
+ ```json
+ {
+ ^ (depth 1)
 
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 3. We iterate over the "statuses" field using a typical C++ iterator, reading past the initial
-   `{ "statuses": [ {`.
+ `{ "statuses": [ {`.
 
-   ```c++
-   for (ondemand::object tweet : doc["statuses"]) {
-   ```
+ ```c++
+ for (ondemand::object tweet : doc["statuses"]) {
+ ```
 
-   This shorthand does a lot, and it is helpful to see what it expands to.
-   Comments in front of each one explain what's going on:
+ This shorthand does a lot, and it is helpful to see what it expands to.
+ Comments in front of each one explain what's going on:
 
-   ```c++
-   // Validate that the top-level value is an object: check for {. Increase depth to 2 (root > field).
-   ondemand::object top = doc.get_object();
+ ```c++
+ // Validate that the top-level value is an object: check for {. Increase depth to 2 (root > field).
+ ondemand::object top = doc.get_object();
 
-   // Find the field statuses by:
-   // 1. Check whether the object is empty (check for }). (We do not really need to do this unless
-   //    the key lookup fails!)
-   // 2. Check if we're at the field by looking for the string "statuses" using byte-by-byte comparison.
-   // 3. Validate that there is a `:` after it.
-   auto tweets_field = top["statuses"];
+ // Find the field statuses by:
+ // 1. Check whether the object is empty (check for }). (We do not really need to do this unless
+ // the key lookup fails!)
+ // 2. Check if we're at the field by looking for the string "statuses" using byte-by-byte comparison.
+ // 3. Validate that there is a `:` after it.
+ auto tweets_field = top["statuses"];
 
-   // - Validate that the field value is an array: check for [
-   // - If the array is empty (if there is a ] next), decrease depth back to 0.
-   // - If not, increase depth to 3 (root > statuses > tweet).
-   ondemand::array tweets = tweets_field.get_array();
-   // These three method calls do nothing substantial (the real checking happens in get_array() and ++)
-   // != checks whether the array is finished (if we found a ] and decreased depth back to 0).
-   ondemand::array_iterator tweets_iter = tweets.begin();
-   while (tweets_iter != tweets.end()) {
-     auto tweet_value = *tweets_iter;
+ // - Validate that the field value is an array: check for [
+ // - If the array is empty (if there is a ] next), decrease depth back to 0.
+ // - If not, increase depth to 3 (root > statuses > tweet).
+ ondemand::array tweets = tweets_field.get_array();
+ // These three method calls do nothing substantial (the real checking happens in get_array() and ++)
+ // != checks whether the array is finished (if we found a ] and decreased depth back to 0).
+ ondemand::array_iterator tweets_iter = tweets.begin();
+ while (tweets_iter != tweets.end()) {
+ auto tweet_value = *tweets_iter;
 
-     // - Validate that the array element is an object: check for {
-     // - If the object is empty (if there is a } next), decrease depth back to 1.
-     // - If not, increase depth to 4 (root > statuses > tweet > field).
-     ondemand::object tweet = tweet_value.get_object();
-     ...
-   }
-   ```
+ // - Validate that the array element is an object: check for {
+ // - If the object is empty (if there is a } next), decrease depth back to 1.
+ // - If not, increase depth to 4 (root > statuses > tweet > field).
+ ondemand::object tweet = tweet_value.get_object();
+ ...
+ }
+ ```
 
-   > NOTE: What is not explained in this code expansion is *error chaining*.
-   > Generally, you can use `document` methods on a `simdjson_result<...>` value; any errors will
-   > just be passed down the chain. Many method calls
-   > can be chained in this manner. So `for (object tweet : doc["statuses"])`, which is the equivalent of
-   > `object tweet = *(doc.get_object()["statuses"].get_array().begin()).get_object()`, could fail in any of
-   > 6 method calls, and the error will only be checked at the end,
-   > when you attempt to cast the final `simdjson_result<object>` to object. Upon casting, an exception is
-   > thrown if there was an error.
+ > NOTE: What is not explained in this code expansion is *error chaining*.
+ > Generally, you can use `document` methods on a `simdjson_result<...>` value; any errors will
+ > just be passed down the chain. Many method calls
+ > can be chained in this manner. So `for (object tweet : doc["statuses"])`, which is the equivalent of
+ > `object tweet = *(doc.get_object()["statuses"].get_array().begin()).get_object()`, could fail in any of
+ > 6 method calls, and the error will only be checked at the end,
+ > when you attempt to cast the final `simdjson_result<object>` to object. Upon casting, an exception is
+ > thrown if there was an error.
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-         ^ (depth 4 - root > statuses > tweet > field)
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ ^ (depth 4 - root > statuses > tweet > field)
 
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 4. We get the `"text"` field as a string.
 
-   ```c++
-   std::string_view text        = tweet["text"];
-   ```
+ ```c++
+ std::string_view text = tweet["text"];
+ ```
 
-   First, `["text"]` skips the `"id"` field because it does not match: skips the key, `:` and
-   value (`1`). We then check whether there are more fields by looking for either `,`
-   or `}`.
+ First, `["text"]` skips the `"id"` field because it does not match: skips the key, `:` and
+ value (`1`). We then check whether there are more fields by looking for either `,`
+ or `}`.
 
-   The second field is matched (`"text"`), so we validate the `:` and move to the actual value.
+ The second field is matched (`"text"`), so we validate the `:` and move to the actual value.
 
-   > NOTE: `["text"]` does a *raw match*, comparing the key directly against the raw JSON. This
-   > allows simdjson to do field lookup very, very quickly when the keys you want to match have
-   > letters, numbers and punctuation. However, this means that fields with escapes in them will not
-   > be matched.
+ > NOTE: `["text"]` does a *raw match*, comparing the key directly against the raw JSON. This
+ > allows simdjson to do field lookup very, very quickly when the keys you want to match have
+ > letters, numbers and punctuation. However, this means that fields with escapes in them will not
+ > be matched.
 
-   To convert to a string, we check for `"` and use simdjson's fast unescaping algorithm to copy
-   `first!` (plus a terminating `\0`) into a buffer managed by the `document`. This buffer stores
-   all strings from a single iteration. The next string will be written after the `\0`.
+ To convert to a string, we check for `"` and use simdjson's fast unescaping algorithm to copy
+ `first!` (plus a terminating `\0`) into a buffer managed by the `document`. This buffer stores
+ all strings from a single iteration. The next string will be written after the `\0`.
 
-   A `string_view` is returned which points to that buffer, and contains the length.
+ A `string_view` is returned which points to that buffer, and contains the length.
 
-   We advance to the comma, and decrease depth to 3 (root > statuses > tweet).
+ We advance to the comma, and decrease depth to 3 (root > statuses > tweet).
 
-   At this point, we are here in the JSON:
+ At this point, we are here in the JSON:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-                                  ^ (depth 2 - root > statuses > tweet)
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ ^ (depth 2 - root > statuses > tweet)
 
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 4. We get the `"screen_name"` from the `"user"` object.
 
-   ```c++
-      ondemand::object user        = tweet["user"];
-      screen_name                  = user["screen_name"];
-   ```
+ ```c++
+ ondemand::object user = tweet["user"];
+ screen_name = user["screen_name"];
+ ```
 
-   First, `["user"]` finds the `,`, discovers the next key is `"user"`, validates that the `:`
-   is there, and increases depth to 4 (root > statuses > tweet > field).
+ First, `["user"]` finds the `,`, discovers the next key is `"user"`, validates that the `:`
+ is there, and increases depth to 4 (root > statuses > tweet > field).
 
-   Next, the cast to ondemand::object checks for `{` and increases depth to 5 (root > statuses >
-   tweet > user > field).
+ Next, the cast to ondemand::object checks for `{` and increases depth to 5 (root > statuses >
+ tweet > user > field).
 
-   `["screen_name"]` finds the first field `"screen_name"` and validates the `:`.
+ `["screen_name"]` finds the first field `"screen_name"` and validates the `:`.
 
-   To convert the result to usable string (i.e., the screen name `lemire`), the characters are written to the document's
-   string buffer (after possibly escaping them), which now has *two* string_views pointing into it, and looks like `first!\0lemire\0`.
+ To convert the result to usable string (i.e., the screen name `lemire`), the characters are written to the document's
+ string buffer (after possibly escaping them), which now has *two* string_views pointing into it, and looks like `first!\0lemire\0`.
 
-   The iterator advances to the comma and decreases depth back to 4 (root > statuses > tweet > user).
+ The iterator advances to the comma and decreases depth back to 4 (root > statuses > tweet > user).
 
-   At this point, the iterator is here in the JSON:
+ At this point, the iterator is here in the JSON:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-                                                                     ^ (depth 4 - root > statuses > tweet > user)
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ ^ (depth 4 - root > statuses > tweet > user)
 
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 5. We get `"retweet_count"` as an unsigned integer.
 
-   ```c++
-   uint64_t         retweets    = tweet["retweet_count"];
-   ```
+ ```c++
+ uint64_t retweets = tweet["retweet_count"];
+ ```
 
-   First, `["retweet_count"]` checks whether the previous field value is finished (if it was, depth
-   would be 3 (root > statuses > tweet). Since it's not, we skip JSON until depth is 3. This brings
-   the iterator to the `,` after the user object:
+ First, `["retweet_count"]` checks whether the previous field value is finished (if it was, depth
+ would be 3 (root > statuses > tweet). Since it's not, we skip JSON until depth is 3. This brings
+ the iterator to the `,` after the user object:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-                                                                     ^ (depth 4 - root > statuses > tweet > user)
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ ^ (depth 4 - root > statuses > tweet > user)
 
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
-   Because of the cast to uint64_t, simdjson knows it's parsing an unsigned integer. This lets
-   us use a fast parser which *only* knows how to parse digits. It validates that it is an integer
-   by rejecting negative numbers, strings, and other values based on the fact that they are not the
-   digits 0-9. This type specificity is part of why parsing with on demand is so fast: you lose all
-   the code that has to understand those other types.
+ Because of the cast to uint64_t, simdjson knows it's parsing an unsigned integer. This lets
+ us use a fast parser which *only* knows how to parse digits. It validates that it is an integer
+ by rejecting negative numbers, strings, and other values based on the fact that they are not the
+ digits 0-9. This type specificity is part of why parsing with on demand is so fast: you lose all
+ the code that has to understand those other types.
 
-   The iterator is advanced to the `}`, and depth decreased back to 3 (root > statuses > tweet).
+ The iterator is advanced to the `}`, and depth decreased back to 3 (root > statuses > tweet).
 
-   At this point, we are here in the JSON:
+ At this point, we are here in the JSON:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-                                                                                                               ^ (depth 3 - root > statuses > tweet)
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ ^ (depth 3 - root > statuses > tweet)
 
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 6. We loop to the next tweet.
 
-   ```c++
-   for (ondemand::object tweet : doc["statuses"]) {
-     ...
-   }
-   ```
+ ```c++
+ for (ondemand::object tweet : doc["statuses"]) {
+ ...
+ }
+ ```
 
-   The relevant parts of the loop  are:
+ The relevant parts of the loop are:
 
-   ```c++
-   while (iter != statuses.end()) {
-     ondemand::object tweet = *iter;
-     ...
-     iter++;
-   }
-   ```
+ ```c++
+ while (iter != statuses.end()) {
+ ondemand::object tweet = *iter;
+ ...
+ iter++;
+ }
+ ```
 
-   First, `iter++` (remember, this is the array of tweets) checks whether the previous object was
-   fully iterated. It was not--depth is 3 (root > statuses > tweet), so we skip until it's 2--which
-   in this case just means consuming the `}`, leaving the iterator at the next comma. Depth is now 2
-   (root > statuses).
+ First, `iter++` (remember, this is the array of tweets) checks whether the previous object was
+ fully iterated. It was not--depth is 3 (root > statuses > tweet), so we skip until it's 2--which
+ in this case just means consuming the `}`, leaving the iterator at the next comma. Depth is now 2
+ (root > statuses).
 
-   Next, `iter++` finds the `,` and advances past it to the `{`, increasing depth to 3 (root >
-   statuses > tweet).
+ Next, `iter++` finds the `,` and advances past it to the `{`, increasing depth to 3 (root >
+ statuses > tweet).
 
-   Finally, `ondemand::object tweet = *iter` validates the `{` and increases depth to 4 (root >
-   statuses > tweet > field). This leaves the iterator here:
+ Finally, `ondemand::object tweet = *iter` validates the `{` and increases depth to 4 (root >
+ statuses > tweet > field). This leaves the iterator here:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-                                                                                                               ^ (depth 3 - root > statuses > tweet)
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ^ (depth 3 - root > statuses > tweet)
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 7. This tweet is processed just like the previous one, leaving the iterator here:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-                                                                                                               ^ (depth 3 - root > statuses > tweet)
-     ],
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ^ (depth 3 - root > statuses > tweet)
+ ],
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 8. The loop ends. Recall the relevant parts of the statuses loop:
 
-   ```c++
-   while (iter != statuses.end()) {
-     ondemand::object tweet = *iter;
-     ...
-     iter++;
-   }
-   ```
+ ```c++
+ while (iter != statuses.end()) {
+ ondemand::object tweet = *iter;
+ ...
+ iter++;
+ }
+ ```
 
-   First, `iter++` finishes up any children, consuming the `}` and leaving depth at 2 (root > statuses).
+ First, `iter++` finishes up any children, consuming the `}` and leaving depth at 2 (root > statuses).
 
-   Next, `iter++` notices the `]` and ends the array by decreasing depth to 1. This leaves the iterator
-   here in the JSON:
+ Next, `iter++` notices the `]` and ends the array by decreasing depth to 1. This leaves the iterator
+ here in the JSON:
 
-   ```json
-   {
-     "statuses": [
-       { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
-       { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
-     ],
-      ^ (depth 1 - root)
-     "search_metadata": { "count": 2 }
-   }
-   ```
+ ```json
+ {
+ "statuses": [
+ { "id": 1, "text": "first!", "user": { "screen_name": "lemire", "name": "Daniel" }, "retweet_count": 40 },
+ { "id": 2, "text": "second!", "user": { "screen_name": "jkeiser2", "name": "John" }, "retweet_count": 3 }
+ ],
+ ^ (depth 1 - root)
+ "search_metadata": { "count": 2 }
+ }
+ ```
 
 9. The remainder of the file is skipped.
 
-   Because no more action is taken, JSON processing stops: processing only occurs when you ask for
-   values.
+ Because no more action is taken, JSON processing stops: processing only occurs when you ask for
+ values.
 
-   This means you can very efficiently do things like read a single value from a JSON file, or take
-   the top N, for example. It also means the things you don't use won't be fully validated. This is
-   a general principle of On Demand: don't validate what you don't use. We still fully validate
-   values you do use, however, as well as the objects and arrays that lead to them, so that you can
-   be sure you get the information you need.
+ This means you can very efficiently do things like read a single value from a JSON file, or take
+ the top N, for example. It also means the things you don't use won't be fully validated. This is
+ a general principle of On Demand: don't validate what you don't use. We still fully validate
+ values you do use, however, as well as the objects and arrays that lead to them, so that you can
+ be sure you get the information you need.
 
 Design Features
 ---------------
@@ -611,17 +611,17 @@ so that users enjoy the same string performance as the core simdjson. We do not 
 string buffer, however; that is stored in the `string_view` instance we return to the user.
 
 ```C++
-  ondemand::parser parser;
-  auto doc = parser.iterate(json);
-  std::set<std::string_view> default_users;
-  ondemand::array tweets = doc["statuses"].get_array();
-  for (auto tweet_value : tweets) {
-    auto tweet = tweet_value.get_object();
-    ondemand::object user = tweet["user"].get_object();
-    std::string_view screen_name = user["screen_name"].get_string();
-    bool default_profile = user["default_profile"].get_bool();
-    if (default_profile) { default_users.insert(screen_name); }
-  }
+ ondemand::parser parser;
+ auto doc = parser.iterate(json);
+ std::set<std::string_view> default_users;
+ ondemand::array tweets = doc["statuses"].get_array();
+ for (auto tweet_value : tweets) {
+ auto tweet = tweet_value.get_object();
+ ondemand::object user = tweet["user"].get_object();
+ std::string_view screen_name = user["screen_name"].get_string();
+ bool default_profile = user["default_profile"].get_bool();
+ if (default_profile) { default_users.insert(screen_name); }
+ }
 ```
 
 By using `string_view` instances, we avoid the high cost of allocating many small strings (as would be the
@@ -647,8 +647,8 @@ is destroyed or reused with another document, the `std::string_view` instance be
 
 ```C++
 auto doc = parser.iterate(json);
-for(auto field : doc.get_object())  {
-      std::string_view keyv = field.unescaped_key();
+for(auto field : doc.get_object()) {
+ std::string_view keyv = field.unescaped_key();
 }
 ```
 
@@ -657,56 +657,56 @@ for(auto field : doc.get_object())  {
 The On Demand API is powerful. To compensate, we add some safeguards to ensure that it can be used without fear
 in production systems:
 
-  - If the value fails to be parsed as one type, the program can try to parse it as something else until the program succeeds. Thus
-    the programmer can engineer fall back routines.
-  - If the value succeeds in being parsed or converted to a type, the program cannot try again. An attempt to parse the same node twice will
-    cause the program to abort. We put this safety measure in the API to prevent double iteration of an array which
-    would cause inconsistent iterator state or double-unescaping a string which may cause memory
-    overruns if done.
-  - Guaranteed Iteration: If you discard a value without using it--perhaps you just wanted to know
-    if it was `nullptr` but did not care what the actual value was--it will iterate. The destructor automates
-    the iteration.
+ - If the value fails to be parsed as one type, the program can try to parse it as something else until the program succeeds. Thus
+ the programmer can engineer fall back routines.
+ - If the value succeeds in being parsed or converted to a type, the program cannot try again. An attempt to parse the same node twice will
+ cause the program to abort. We put this safety measure in the API to prevent double iteration of an array which
+ would cause inconsistent iterator state or double-unescaping a string which may cause memory
+ overruns if done.
+ - Guaranteed Iteration: If you discard a value without using it--perhaps you just wanted to know
+ if it was `nullptr` but did not care what the actual value was--it will iterate. The destructor automates
+ the iteration.
 
-  Some care is needed when using the On Demand API in scenarios where you need to access several sibling arrays or objects because
-  only one object or array can be active at any one time. Let us consider the following example:
+ Some care is needed when using the On Demand API in scenarios where you need to access several sibling arrays or objects because
+ only one object or array can be active at any one time. Let us consider the following example:
 
 ```C++
-    ondemand::parser parser;
-    const padded_string json = R"({ "parent": {"child1": {"name": "John"} , "child2": {"name": "Daniel"}} })"_padded;
-    auto doc = parser.iterate(json);
-    ondemand::object parent = doc["parent"];
-    // parent owns the focus
-    ondemand::object c1 = parent["child1"];
-    // c1 owns the focus
-    //
-    if (std::string_view(c1["name"]) != "John") { ... }
-    // c2 attempts to grab the focus from parent but fails
-    ondemand::object c2 = parent["child2"];
-    // c2 is now in an unsafe state and the following line would be unsafe
-    // if (std::string_view(c2["name"]) != "Daniel") { return false; }
+ ondemand::parser parser;
+ const padded_string json = R"({ "parent": {"child1": {"name": "John"} , "child2": {"name": "Daniel"}} })"_padded;
+ auto doc = parser.iterate(json);
+ ondemand::object parent = doc["parent"];
+ // parent owns the focus
+ ondemand::object c1 = parent["child1"];
+ // c1 owns the focus
+ //
+ if (std::string_view(c1["name"]) != "John") { ... }
+ // c2 attempts to grab the focus from parent but fails
+ ondemand::object c2 = parent["child2"];
+ // c2 is now in an unsafe state and the following line would be unsafe
+ // if (std::string_view(c2["name"]) != "Daniel") { return false; }
 ```
 
-    A correct usage is given by the following example:
+ A correct usage is given by the following example:
 
 ```C++
-    ondemand::parser parser;
-    const padded_string json = R"({ "parent": {"child1": {"name": "John"} , "child2": {"name": "Daniel"}} })"_padded;
-    auto doc = parser.iterate(json);
-    ondemand::object parent = doc["parent"];
-    // At this point, parent owns the focus
-    {
-      ondemand::object c1 = parent["child1"];
-      // c1 grabbed the focus from parent
-      if (std::string_view(c1["name"]) != "John") { return false; }
-    }
-    // c1 went out of scope, so its destructor was called and the focus
-    // was handed back to parent.
-    {
-      ondemand::object c2 = parent["child2"];
-      // c2 grabbed the focus from parent
-      // the following is safe:
-      if (std::string_view(c2["name"]) != "Daniel") { return false; }
-    }
+ ondemand::parser parser;
+ const padded_string json = R"({ "parent": {"child1": {"name": "John"} , "child2": {"name": "Daniel"}} })"_padded;
+ auto doc = parser.iterate(json);
+ ondemand::object parent = doc["parent"];
+ // At this point, parent owns the focus
+ {
+ ondemand::object c1 = parent["child1"];
+ // c1 grabbed the focus from parent
+ if (std::string_view(c1["name"]) != "John") { return false; }
+ }
+ // c1 went out of scope, so its destructor was called and the focus
+ // was handed back to parent.
+ {
+ ondemand::object c2 = parent["child2"];
+ // c2 grabbed the focus from parent
+ // the following is safe:
+ if (std::string_view(c2["name"]) != "Daniel") { return false; }
+ }
 ```
 
 ### Benefits of the On Demand Approach
@@ -755,7 +755,7 @@ Some users wish to run at the best possible speed. Under recent Intel and AMD pr
 Given that the On Demand API offer limited runtime dispatching, it matters that your code is compiled against a specific CPU target. You should verify that the code is compiled against the target you expect. Thankfully, the simdjson library will tell you exactly what it detects as an implementation: `icelake` (AVX512 x64 processors), `haswell` (AVX2 x64 processors), `westmere` (SSE4 x64 processors), `arm64` (64-bit ARM), `ppc64` (64-bit POWER), `fallback` (others). Under x64 processors, many programmers will want to target `haswell` whereas under ARM, most programmers will want to target `arm64` (and it should do so automatically). The `fallback` is probably only good for testing purposes, not for deployment.
 
 ```C++
-  std::cout << simdjson::builtin_implementation()->name() << std::endl;
+ std::cout << simdjson::builtin_implementation()->name() << std::endl;
 ```
 
 If the `simdjson::builtin_implementation()->name()` call does not return the architecture you wish to target, you may need to pass flags to your compiler.
@@ -763,7 +763,7 @@ If the `simdjson::builtin_implementation()->name()` call does not return the arc
 If you are using CMake for your C++ project, then you can pass compilation flags to your compiler by using the `CMAKE_CXX_FLAGS` variable:
 
 ```
-cmake  -DCMAKE_CXX_FLAGS="-march=haswell" -B build_haswell
+cmake -DCMAKE_CXX_FLAGS="-march=haswell" -B build_haswell
 cmake --build build_haswell
 ```
 
