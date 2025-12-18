@@ -28,7 +28,7 @@ const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const OLLAMA_EMBEDDING_MODEL = process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 const QDRANT_COLLECTION = process.env.QDRANT_COLLECTION || 'phase72_error_patterns';
-const BATCH_SIZE = parseInt(process.env.PHASE72_BATCH_SIZE || '100', 10);
+let BATCH_SIZE = parseInt(process.env.PHASE72_BATCH_SIZE || '100', 10);
 
 // Parse arguments
 const args = process.argv.slice(2);
@@ -36,6 +36,9 @@ let limit = 16444;
 for (let i = 0; i < args.length; i++) {
 	if (args[i] === '--limit' && args[i + 1]) {
 		limit = parseInt(args[i + 1], 10);
+	}
+	if (args[i] === '--batch' && args[i + 1]) {
+		BATCH_SIZE = parseInt(args[i + 1], 10);
 	}
 }
 

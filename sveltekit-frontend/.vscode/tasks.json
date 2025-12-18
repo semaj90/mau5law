@@ -1721,6 +1721,450 @@
 				"panel": "dedicated"
 			},
 			"detail": "Phase 72: Fix lucide-svelte named imports → default imports (~600 errors, deterministic)"
+		},
+		{
+			"label": "📝 Phase 72: Generate errors.jsonl (TypeScript)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/generate-errors-jsonl.mjs",
+				"--tool",
+				"tsc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Run tsc --noEmit and generate errors.jsonl for embedding",
+			"problemMatcher": []
+		},
+		{
+			"label": "📝 Phase 72: Generate errors.jsonl (Svelte)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/generate-errors-jsonl.mjs",
+				"--tool",
+				"svelte-check"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Run svelte-check and generate errors.jsonl for embedding",
+			"problemMatcher": []
+		},
+		{
+			"label": "📝 Phase 72: Generate errors.jsonl (Both)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/generate-errors-jsonl.mjs",
+				"--tool",
+				"both"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Run both tsc and svelte-check, generate unified errors.jsonl",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧠 Phase 72: Generate Embeddings (Test 100)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/embed-errors-phase72.mjs",
+				"--limit",
+				"100"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Test embedding generation with 100 errors (~1 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧠 Phase 72: Generate Embeddings (Full Scale)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/embed-errors-phase72.mjs",
+				"--limit",
+				"20000"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Full scale embedding generation for all 19,821+ errors (15-20 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 Phase 72: Test Semantic Search",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/test-error-search.mjs",
+				"Cannot find name"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Test vector search - find similar errors in Qdrant",
+			"problemMatcher": []
+		},
+		{
+			"label": "📊 Phase 72: Verify Infrastructure",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase72-quickstart.mjs"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Check Redis, Ollama, Qdrant status + KAG stats",
+			"problemMatcher": []
+		},
+		{
+			"label": "📝 Phase 72: Generate Errors (TypeScript Only)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/generate-errors-jsonl.mjs",
+				"--tool",
+				"tsc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=8192"
+				}
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Generate errors.jsonl from TypeScript check (8GB memory, progress bars)",
+			"problemMatcher": []
+		},
+		{
+			"label": "📝 Phase 72: Generate Errors (Svelte Only)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/generate-errors-jsonl.mjs",
+				"--tool",
+				"svelte-check"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=8192"
+				}
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Generate errors.jsonl from Svelte check (8GB memory)",
+			"problemMatcher": []
+		},
+		{
+			"label": "📝 Phase 72: Generate Errors (Both TypeScript + Svelte)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/generate-errors-jsonl.mjs",
+				"--tool",
+				"both"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=8192"
+				}
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Generate errors.jsonl from both TypeScript and Svelte checks (8GB memory, ~90s)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧠 Phase 72: Generate Embeddings (Test - 100 errors)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/embed-errors-phase72.mjs",
+				"--limit",
+				"100"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Test embedding generation with 100 errors (~1 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧠 Phase 72: Generate Embeddings (Full Scale - All Errors)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/embed-errors-phase72.mjs",
+				"--limit",
+				"20000"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Full-scale embedding generation for all 16,436+ errors (~2 hours)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🚀 Phase 72: Optimized Batch Embedding (2000 chunks)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/embed-errors-batch-optimized.mjs",
+				"--batch",
+				"2000",
+				"--limit",
+				"16436"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: OPTIMIZED - 2000 errors/batch, auto-resume, copilot.md summaries",
+			"problemMatcher": []
+		},
+		{
+			"label": "⚡ Phase 72: CUDA Accelerated Embedding",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/embed-errors-batch-optimized.mjs",
+				"--cuda",
+				"--batch",
+				"2000",
+				"--limit",
+				"16436"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: CUDA/GPU acceleration if available (fallback to Ollama)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 AST: Analyze Single File",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/ast-error-analyzer.mjs",
+				"--file",
+				"${relativeFile}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "AST analysis of currently open file (imports, exports, types, symbols)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 AST: Analyze Directory (src/lib/services)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/ast-error-analyzer.mjs",
+				"--dir",
+				"src/lib/services"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "AST analysis of entire src/lib/services directory",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 AST: Full Project Analysis",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/ast-error-analyzer.mjs",
+				"--graph",
+				"full-project-ast.json"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Complete AST analysis: import graph, circular deps, unused exports",
+			"problemMatcher": []
 		}
 	]
 }
