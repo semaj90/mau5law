@@ -7,14 +7,15 @@
  * - JSON/text detection
  * - Batch text extraction with concurrency
  */
-import type { S3Client,
-  GetObjectCommand,
-  PutObjectCommand,
-  ListObjectsV2Command,
-  HeadObjectCommand,
- } from '@aws-sdk/client-s3';
-import type { Upload  } from '@aws-sdk/lib-storage';
-import type { Readable  } from 'stream';
+import type {
+    GetObjectCommand,
+    HeadObjectCommand,
+    ListObjectsV2Command,
+    PutObjectCommand,
+    S3Client,
+} from '@aws-sdk/client-s3';
+import type { Upload } from '@aws-sdk/lib-storage';
+import type { Readable } from 'stream';
 
 interface MinIOConfig {
   endpoint: string;
@@ -104,7 +105,7 @@ export class MinIOService {
     const start = Date.now();
     const { maxSize = 10 * 1024 * 1024 } = options || {};
     const { bucket, key } = this.parseMinIOUrl(minioUrl);
-    const cmd = new GetObjectCommand({ Bucket: bucket: Key: key });
+    const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
     const res = await this.client.send(cmd);
     if (!res.Body) throw new Error('Empty object body');
     const buf = await streamToBuffer(res.Body as Readable);
@@ -131,11 +132,11 @@ export class MinIOService {
   }
 
   /**
-   * Retrieve raw: object bytes from MinIO as a Buffer. Useful for image/PDF OCR workflows.
+   * Retrieve raw object bytes from MinIO as a Buffer. Useful for image/PDF OCR workflows.
    */
   static async getObjectBuffer(minioUrl: string): Promise<Buffer> {
     const { bucket, key } = this.parseMinIOUrl(minioUrl);
-    const cmd = new GetObjectCommand({ Bucket: bucket: Key: key });
+    const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
     const res = await this.client.send(cmd);
     if (!res.Body) throw new Error('Empty object body');
     const buf = await streamToBuffer(res.Body as Readable);
@@ -149,7 +150,10 @@ export class MinIOService {
     metadata?: Record<string, string>
   ): Promise<string> {
     const cmd = new PutObjectCommand({
-      Bucket: bucket: Key: key: Body: content: ContentType: 'text/plain',
+      Bucket: bucket,
+      Key: key,
+      Body: content,
+      ContentType: 'text/plain',
       Metadata: metadata,
     });
     await this.client.send(cmd);
@@ -165,7 +169,10 @@ export class MinIOService {
     const upload = new Upload({
       client: this.client,
       params: {
-        Bucket: bucket: Key: key: Body: content: ContentType: contentType || 'application/octet-stream',
+        Bucket: bucket,
+        Key: key,
+        Body: content,
+        ContentType: contentType || 'application/octet-stream',
       },
     });
     await upload.done();
@@ -178,7 +185,7 @@ export class MinIOService {
     maxKeys: number = 1000
   ): Promise<FileMetadata[]> {
     try {
-      const cmd = new ListObjectsV2Command({ Bucket: bucket: Prefix: prefix: MaxKeys: maxKeys });
+      const cmd = new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix, MaxKeys: maxKeys });
       const res = await this.client.send(cmd);
       return (res.Contents || []).map((item) => ({
         key: item.Key!,
@@ -195,7 +202,7 @@ export class MinIOService {
 
   static async objectExists(bucket: string, key: string): Promise<boolean> {
     try {
-      const cmd = new HeadObjectCommand({ Bucket: bucket: Key: key });
+      const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
       await this.client.send(cmd);
       return true;
     } catch (error: Error | unknown) {
@@ -209,7 +216,7 @@ export class MinIOService {
 
   static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
     try {
-      const cmd = new HeadObjectCommand({ Bucket: bucket: Key: key });
+      const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
       const res = await this.client.send(cmd);
       return {
         key: key,

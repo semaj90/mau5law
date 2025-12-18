@@ -11,13 +11,13 @@
   let newCaseData = $state({
     title: '',
     description: '',
-    priority: 'medium',
-// REMOVED:   });
+    priority: 'medium'
+  });
 
-// REMOVED:   let loading = $state(true);
-  let error: string | null = $state(null);
-// REMOVED: 
-  const sections = $state([
+  let loading = $state(true);
+  let error = $state<string | null>(null);
+
+  let sections = $state([
     { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
     { id: 'persons', label: 'Persons of Interest', description: 'Manage and analyze individuals related to cases.' },
     { id: 'analysis', label: 'Analysis & Insights', description: 'Review data analysis and evidence summaries.' },
@@ -25,8 +25,8 @@
     { id: 'search', label: 'Global Search', description: 'Comprehensive search across all data sources.' },
   ]);
 
-  let evidenceInsights = $state([]);
-  let recentCases = $state([]);
+  let evidenceInsights = $state<any[]>([]);
+  let recentCases = $state<any[]>([]);
 
   // Subscribe to store
   let appState = $state({});

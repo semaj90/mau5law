@@ -368,7 +368,7 @@
 			</div>
 			<div class="header-actions">
 				<!-- Refresh Button -->
-				<Button.Root.Root
+				<Button.Root
 					variant="outline"
 					size="sm"
 					onclick={loadAllData}
@@ -380,7 +380,7 @@
 				</Button.Root>
 
 				<!-- Global Search -->
-				<Button.Root.Root variant="outline" size="sm">
+				<Button.Root variant="outline" size="sm">
 					<Search class="h-4 w-4 mr-2" />
 					Global Search
 					<span class="keyboard-shortcut">⌘K</span>
@@ -388,7 +388,7 @@
 
 				<!-- Quick Actions -->
 				<div class="relative">
-					<Button.Root.Root
+					<Button.Root
 						variant="outline"
 						size="sm"
 						onclick={() => showQuickActions = !showQuickActions}
@@ -600,7 +600,7 @@
 						<Card.Content>
 							<div class="metric-value">{metrics.totalCases}</div>
 							<div class="metric-trend">
-								<getTrendIcon(metrics.trends.totalCases) class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.totalCases)}`}  />
+								<svelte:component this={getTrendIcon(metrics.trends.totalCases)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.totalCases)}`}  />
 								<span class={`${getTrendColor(metrics.trends.totalCases)}`}>
 									{metrics.trends.totalCases >= 0 ? '+' : ''}{metrics.trends.totalCases.toFixed(1)}%
 								</span>
@@ -619,7 +619,7 @@
 						<Card.Content>
 							<div class="metric-value">{metrics.activeCases}</div>
 							<div class="metric-trend">
-								<getTrendIcon(metrics.trends.activeCases) class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.activeCases)}`}  />
+								<svelte:component this={getTrendIcon(metrics.trends.activeCases)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.activeCases)}`}  />
 								<span class={`${getTrendColor(metrics.trends.activeCases)}`}>
 									{metrics.trends.activeCases >= 0 ? '+' : ''}{metrics.trends.activeCases.toFixed(1)}%
 								</span>
@@ -638,7 +638,7 @@
 						<Card.Content>
 							<div class="metric-value">{metrics.evidenceProcessed.toLocaleString()}</div>
 							<div class="metric-trend">
-								<getTrendIcon(metrics.trends.evidenceProcessed) class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.evidenceProcessed)}`}  />
+								<svelte:component this={getTrendIcon(metrics.trends.evidenceProcessed)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.evidenceProcessed)}`}  />
 								<span class={`${getTrendColor(metrics.trends.evidenceProcessed)}`}>
 									{metrics.trends.evidenceProcessed >= 0 ? '+' : ''}{metrics.trends.evidenceProcessed.toFixed(1)}%
 								</span>
@@ -657,7 +657,7 @@
 						<Card.Content>
 							<div class="metric-value">{metrics.aiQueries.toLocaleString()}</div>
 							<div class="metric-trend">
-								<getTrendIcon(metrics.trends.aiQueries) class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.aiQueries)}`}  />
+								<svelte:component this={getTrendIcon(metrics.trends.aiQueries)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.aiQueries)}`}  />
 								<span class={`${getTrendColor(metrics.trends.aiQueries)}`}>
 									{metrics.trends.aiQueries >= 0 ? '+' : ''}{metrics.trends.aiQueries.toFixed(1)}%
 								</span>

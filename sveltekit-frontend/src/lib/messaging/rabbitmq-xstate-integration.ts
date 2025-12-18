@@ -36,8 +36,8 @@ type WASMRuntimeContext = {
     batchSize: number;
     quantization: string;
   };
-  activeRequests: Map<string: unknown>;
-  results: Map<string: unknown>;
+  activeRequests: Map<string, unknown>;
+  results: Map<string, unknown>;
   performanceMetrics: {
     totalInferences: number;
     averageLatency: number;

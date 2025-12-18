@@ -162,7 +162,7 @@ async function streamFromTensorRT(
 
 // AI tool execution (for agentic workflows)
 export async function executeAITool(toolName, string, params: Record<string, unknown>): Promise<unknown> {
-  console.log(`[AI] ðŸ”§ Executing tool: ${toolName}`, params);
+  console.log(`[AI] 🔧 Executing tool: ${toolName}`, params);
 
   switch (toolName) {
     case 'web_search':
