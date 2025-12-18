@@ -24,7 +24,8 @@ New-Item -ItemType Directory -Force -Path $quarantineRoot | Out-Null
 function Move-WithBackup($srcPath, $destPath) {
   if (!(Test-Path $srcPath)) { return }
 
-  $name = Split-Path $srcPath -Leaf
+  $item = Get-Item $srcPath
+  $name = $item.Name
   $backupPath = Join-Path $backupRoot $name
   $destFull = Join-Path $destPath $name
 
@@ -33,9 +34,28 @@ function Move-WithBackup($srcPath, $destPath) {
 
   if ($DryRun) { return }
 
-  Copy-Item -Recurse -Force $srcPath $backupPath
-  New-Item -ItemType Directory -Force -Path $destPath | Out-Null
-  Move-Item -Force $srcPath $destFull
+  # Ensure destination directory exists
+  if (!(Test-Path $destPath)) { New-Item -ItemType Directory -Force -Path $destPath | Out-Null }
+
+  if ($item.PSIsContainer) {
+      # Directory: Use Robocopy for robust handling of deep paths/locks
+      # 1. Backup
+      robocopy $srcPath $backupPath /E /NFL /NDL /NJH /NJS | Out-Null
+
+      # 2. Move
+      robocopy $srcPath $destFull /MOVE /E /NFL /NDL /NJH /NJS | Out-Null
+
+      # Cleanup source if left behind (Robocopy /MOVE deletes files but sometimes leaves root)
+      if (Test-Path $srcPath) { Remove-Item $srcPath -Force -Recurse -ErrorAction SilentlyContinue }
+  } else {
+      # File
+      # 1. Backup
+      Copy-Item -Force $srcPath $backupPath
+
+      # 2. Move
+      $parent = $item.DirectoryName
+      robocopy $parent $destPath $name /MOV /NFL /NDL /NJH /NJS | Out-Null
+  }
 }
 
 # 1) Quarantine known legacy/disabled route trees.

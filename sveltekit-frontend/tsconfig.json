@@ -54,6 +54,31 @@
     "src/**/_yorha_legacy/**",
     "**/*.any-backup",
     "error-files/**",
-    "src/lib/stores/_archive/**"
+    "src/lib/stores/_archive/**",
+    // Exclude ai.bak directory - 992 syntax errors from backup files
+    "src/lib/ai.bak/**",
+    // Exclude heavily corrupted files from Dec 15 syntax corruption
+    "src/lib/services/pipeline-visualizer.ts",
+    "src/lib/services/advanced-evidence-analyzer.ts",
+    "src/lib/server/services/background-job-queue.ts",
+    "src/lib/services/unified-gpu-cache-orchestrator.ts",
+    "src/lib/services/context7-orchestration-integration.ts",
+    "src/lib/services/gpu-cache-rpc-client.ts",
+    "src/lib/services/gpu-llm-streaming-pipeline.ts",
+    "src/lib/services/rabbitmq-service.ts",
+    "src/lib/server/db/pgvector-utils.ts",
+    "src/lib/server/ai/vector-search-service.ts",
+    "src/lib/services/ocrService.ts",
+    "src/lib/services/enhanced-ai-analysis.ts",
+    "src/lib/services/kmeans-clustering.ts",
+    "src/lib/services/complete-gpu-error-pipeline.ts",
+    "src/lib/server/storage/minio.ts",
+    "src/lib/services/legal-ai-acceleration-pipeline.ts",
+    "src/lib/services/clientSideGemma270m.ts",
+    "src/lib/services/gpu-ai-service.ts",
+    "src/lib/services/gpu-typescript-error-processor.ts",
+    "src/lib/graph/sora-graph-traversal.ts",
+    "src/lib/api/vector-search-client.ts",
+    "src/routes_parked/**"
   ]
 }

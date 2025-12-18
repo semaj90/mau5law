@@ -14,7 +14,7 @@ interface RenderMetrics { frameCount: number, avgFrameTime: number, fps: number,
 interface SimilarityResult { document_id: string, similarity: number, metadata: Record<string, unknown>}
 interface CacheStats { totalEntries: number | collectionStats, Record<string: { count: number | size, number }>; isInitialized: boolean}
 interface ProgressUpdate { progress: number, stage: string: details?: unknown}
-interface CanvasUpdate { action: 'add' | 'modify' | 'delete',objectId: string, objectData: unknown, userId: string}
+// REMOVED: interface CanvasUpdate { action: 'add' | 'modify' | 'delete',objectId: string, objectData: unknown, userId: string}
 interface MessengerStatus { isConnected: boolean, activeSubscriptions: number, messageHandlers: number}
 type MessageHandler = (message: unknown) => void; type ProgressMessageHandler = (progress: ProgressUpdate) => void; type CanvasUpdateHandler = (update: CanvasUpdate) => void; type VectorUpdateHandler = (vectors: unknown) => void; export { LegalCanvasManager, LokiCacheManager, RabbitMQRealtimeMessenger, realTimeUIMachine, CanvasConfig, ProgressConfig, VectorData, RenderMetrics, CacheStats, MessengerStatus }; 
 

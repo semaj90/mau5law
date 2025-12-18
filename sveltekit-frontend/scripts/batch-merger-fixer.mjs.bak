@@ -1,0 +1,766 @@
+#!/usr/bin/env node
+/**
+ * Advanced Error Merger & Batch Fixer with AST Analysis
+ * Uses ts-morph for deep TypeScript/Svelte code analysis
+ * Analyzes error logs, generates fixes, saves to legal_ai_db
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { Project } from 'ts-morph';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const APPLY_SAFE = process.argv.includes("--apply-safe");
+const APPLY_FIX = process.argv.includes("--fix") || process.argv.includes("--apply");
+const FIX_ONMOUNT = process.argv.includes("--fix-onmount-async");
+const FIX_BARRELS = process.argv.includes("--fix-barrels");
+
+// Error log files to analyze (today's reports)
+const logFiles = [
+  'reports/check-and-summarize_2025-12-15_12-37-20.md',
+  'reports/tsc_output_2025-12-15_12-37-20.txt',
+  'reports/svelte-check_output_2025-12-15_12-37-20.txt'
+].filter(f => fs.existsSync(f));
+
+// Initialize ts-morph project for AST analysis
+const project = new Project({
+  tsConfigFilePath: 'tsconfig.json',
+  skipAddingFilesFromTsConfig: true
+});
+
+function analyzeWithAST() {
+  console.log('🔍 Analyzing TypeScript AST for Svelte routes...\n');
+
+  const analysis = {
+    routes: [],
+    issues: [],
+    recommendations: []
+  };
+
+  // Get all route files
+  const routeFiles = fs.readdirSync('src/routes', { recursive: true })
+    .filter(f => f.endsWith('+page.svelte') || f.endsWith('+page.ts'))
+    .map(f => path.join('src/routes', f));
+
+  console.log(`📂 Found ${routeFiles.length} route files\n`);
+
+  let processed = 0;
+  for (const filePath of routeFiles) {
+    if (!fs.existsSync(filePath)) continue;
+
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const route = {
+      file: filePath,
+      issues: [],
+      patterns: detectPatterns(content, filePath)
+    };
+
+    // Check for common Svelte issues
+    analyzeForSvelteIssues(content, filePath, route);
+
+    // Check for @KIRO_TODO comments
+    const kiroTodos = scanForKiroTodos(content, filePath);
+    if (kiroTodos.length > 0) {
+        route.kiroTodos = kiroTodos;
+        analysis.issues.push(...kiroTodos.map(t => ({
+            file: t.file,
+            line: t.line,
+            message: `KIRO_TODO: ${t.instruction}`,
+            severity: 'info'
+        })));
+    }
+
+    if (route.issues.length > 0 || route.patterns.length > 0) {
+      analysis.routes.push(route);
+    }
+
+    processed += 1;
+    // Lightweight progress every 25 files (keeps output concise for large repos)
+    if (processed % 25 === 0 || processed === routeFiles.length) {
+      const pct = ((processed / routeFiles.length) * 100).toFixed(1);
+      process.stdout.write(`\r⏳ Scanned ${processed}/${routeFiles.length} routes (${pct}%)`);
+    }
+  }
+
+  if (processed) {
+    process.stdout.write('\n');
+  }
+
+  return analysis;
+}
+
+function scanForKiroTodos(content, filePath) {
+  const todos = [];
+  const lines = content.split('\n');
+  lines.forEach((line, idx) => {
+    const match = line.match(/\/\/\s*@KIRO_TODO:\s*(.+)$/);
+    if (match) {
+      todos.push({
+        line: idx + 1,
+        instruction: match[1].trim(),
+        file: filePath
+      });
+    }
+  });
+  return todos;
+}
+
+function detectPatterns(content, filePath) {
+  const patterns = [];
+
+  // Pattern 1: import type for runtime values (Svelte 5 + runtime use)
+  const importTypeMatch = content.match(/import\s+type\s+\{([^}]+)\}/g);
+  if (importTypeMatch) {
+    // Stricter check: only flag if used as value (new X, extends X, X.prop, etc.)
+    const importedNames = [];
+    importTypeMatch.forEach(match => {
+      const names = match.match(/\{([^}]+)\}/)[1].split(',').map(s => s.trim());
+      importedNames.push(...names);
+    });
+
+    const misuse = importedNames.filter(name => {
+      // Check for value usage: new Name, extends Name, Name.prop, Name(
+      // Exclude: typeof Name, : Name (type annotation)
+      const valueUsageRegex = new RegExp(`\\b(new\\s+${name}|extends\\s+${name}|${name}\\.|${name}\\()`, 'g');
+      return valueUsageRegex.test(content);
+    });
+
+    if (misuse.length > 0) {
+      patterns.push({
+        type: 'import-type-misuse',
+        count: misuse.length,
+        message: `Found import type for runtime values (${misuse.join(', ')}) - should be regular import`,
+        priority: 'HIGH',
+        affectedCount: misuse.length
+      });
+    }
+  }
+
+  // Pattern 2: onMount with async body (needs IIFE wrapper)
+  if (content.includes('onMount(async') && !content.includes('onMount(() => {')) {
+    patterns.push({
+      type: 'onMount-async',
+      message: 'onMount with async - needs IIFE wrapper for Svelte lifecycle',
+      priority: 'HIGH'
+    });
+  }
+
+  // Pattern 3: Old event handler syntax (on:click → onclick, on:change → onchange, etc.)
+  const oldEventMatches = content.match(/on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/g);
+  if (oldEventMatches) {
+    patterns.push({
+      type: 'event-handler-syntax',
+      count: oldEventMatches.length,
+      message: 'Found legacy on:* event syntax - Svelte 5 uses on* (onclick, onchange, etc.)',
+      priority: 'HIGH',
+      affectedCount: oldEventMatches.length,
+      fix: 'Replace on:click with onclick, on:change with onchange, etc.'
+    });
+  }
+
+  // Pattern 4: Invalid event modifiers (on:* | prevent)
+  if (content.match(/on:[a-z]+\s*\|/)) {
+    patterns.push({
+      type: 'event-modifier-deprecation',
+      message: 'Event modifiers like |prevent are deprecated - use event handler parameter (e.preventDefault())',
+      priority: 'MEDIUM'
+    });
+  }
+
+  // Pattern 5: Native input without bind:value
+  if (content.match(/<(input|textarea)[^>]*value=/)) {
+    patterns.push({
+      type: 'input-value-binding',
+      message: 'Found value= on native input - should use bind:value in Svelte',
+      priority: 'MEDIUM'
+    });
+  }
+
+  // Pattern 6: Lucide icon imports (check for consistency)
+  if (content.includes('lucide-svelte')) {
+    patterns.push({
+      type: 'lucide-imports',
+      message: 'Verify lucide-svelte icons use correct component names and no duplicates',
+      priority: 'LOW'
+    });
+  }
+
+  // Pattern 7: Bits-UI Dialog/Field pattern issues
+  if (content.includes('Dialog') || content.includes('Field')) {
+    const hasDialogSlots = content.match(/Dialog\.(Trigger|Content|Close)/);
+    const hasFieldProps = content.match(/Field\.(control|snippet)/);
+    // If using Dialog but NOT using the dot notation for slots, it might be old API
+    if (content.includes('<Dialog') && !hasDialogSlots && !content.includes('Dialog.Root')) {
+       patterns.push({
+        type: 'bits-ui-component-pattern',
+        message: 'Bits-UI v2 uses .Trigger/.Content/.Close slots and Field control/snippet props',
+        priority: 'HIGH'
+      });
+    }
+  }
+
+  // Pattern 8: Barrel import validation ($lib/components/ui/index.ts)
+  if (content.includes('from \'$lib/components/ui\'')) {
+    patterns.push({
+      type: 'barrel-import-validation',
+      message: 'Using barrel imports from $lib/components/ui - verify index.ts exports',
+      priority: 'MEDIUM'
+    });
+  }
+
+  // Pattern 9: SvelteComponentTyped issues
+  if (content.includes('SvelteComponentTyped')) {
+    patterns.push({
+      type: 'component-typing',
+      message: 'SvelteComponentTyped usage - verify component instance vs type usage',
+      priority: 'MEDIUM'
+    });
+  }
+
+  // Pattern 10: Async directive in +page.svelte
+  if (filePath.includes('+page.svelte') && content.match(/{#await.*?}.*?{:then.*?}.*?{:catch.*?}/s)) {
+    patterns.push({
+      type: 'async-blocks',
+      message: 'Async blocks present - verify error handling and loading states',
+      priority: 'LOW'
+    });
+  }
+
+  // Pattern 11: Legacy Slots (Svelte 5 Snippets)
+  if (content.includes('<slot') || content.match(/slot="[^"]+"/)) {
+    patterns.push({
+      type: 'legacy-slots',
+      message: 'Found legacy <slot> or slot="..." syntax. Svelte 5 prefers {#snippet} and {@render}',
+      priority: 'MEDIUM'
+    });
+  }
+
+  // Pattern 12: Legacy Props (export let vs $props())
+  if (content.includes('export let ') && !content.includes('$props()')) {
+    patterns.push({
+      type: 'legacy-props',
+      message: 'Found "export let" syntax. Consider migrating to $props() rune for Svelte 5',
+      priority: 'LOW'
+    });
+  }
+
+  return patterns;
+}
+
+function analyzeForSvelteIssues(content, filePath, route) {
+  const lines = content.split('\n');
+
+  lines.forEach((line, idx) => {
+    // Check for legacy on:* event syntax (Svelte 5 uses on*)
+    if (line.match(/on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/)) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'event-handler-deprecation',
+        message: 'Legacy on:* syntax detected - use onclick, onchange, etc. for Svelte 5',
+        priority: 'HIGH'
+      });
+    }
+
+    // Check for SvelteComponentTyped issues
+    if (line.includes('SvelteComponentTyped')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'component-typing',
+        message: 'Verify SvelteComponentTyped import vs component instance usage',
+        priority: 'MEDIUM'
+      });
+    }
+
+    // Check for style blocks with invalid references
+    if (line.includes('<style') && line.includes('.svelte') && line.includes('(')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'invalid-style-block',
+        message: 'Style block has invalid file path reference',
+        priority: 'MEDIUM'
+      });
+    }
+
+    // Check for double semicolons
+    if (line.includes(';;')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'double-semicolon',
+        message: 'Found double semicolon',
+        priority: 'LOW'
+      });
+    }
+
+    // Check for reactive declarations without Svelte 5 runes
+    if (line.includes('let ') && !line.includes('=') && !line.includes('$state') &&
+        !line.includes('$computed') && !line.includes('$derived') && !line.includes('const') && !line.includes('export')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'svelte5-runes',
+        message: 'Consider using $state, $computed, or $derived runes for reactive declarations',
+        priority: 'LOW'
+      });
+    }
+
+    // Check for Dialog/Field component patterns (Bits-UI v2)
+    if (line.includes('Dialog.') && !line.includes('.Trigger') && !line.includes('.Content') && !line.includes('.Close') && !line.includes('.Root')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'bits-ui-dialog-pattern',
+        message: `Dialog usage detected at line ${idx + 1} - verify Bits-UI v2 slot pattern (Trigger/Content/Close)`,
+        priority: 'MEDIUM'
+      });
+    }
+
+    // Check for Field component patterns
+    if (line.includes('Field') && !line.includes('control') && !line.includes('snippet')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'bits-ui-field-pattern',
+        message: `Field component usage at line ${idx + 1} - ensure control/snippet props are used correctly`,
+        priority: 'MEDIUM'
+      });
+    }
+
+    // Check for import type misuse on known runtime imports
+    const runtimeImportKeywords = ['goto', 'pushState', 'replaceState', 'invalidate', 'onMount', 'onDestroy', 'tick'];
+    if (line.includes('import type') && runtimeImportKeywords.some(kw => line.includes(kw))) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'import-type-runtime-misuse',
+        message: `Runtime import detected as 'type' - should be regular import for ${line.match(/\{([^}]+)\}/)?.[1]}`,
+        priority: 'HIGH'
+      });
+    }
+
+    // Check for missing bind: on form inputs
+    if (line.match(/<(input|textarea|select)[^>]*value=/)) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'missing-bind-directive',
+        message: 'Native form input uses value= - should use bind:value for two-way binding',
+        priority: 'MEDIUM'
+      });
+    }
+
+    // Check for onMount(async
+    if (line.includes('onMount(async')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'onMount-async',
+        message: 'onMount(async ...) detected. Use onMount(() => { async function... })',
+        priority: 'HIGH'
+      });
+    }
+
+    // Check for legacy slots
+    if (line.includes('<slot') || line.match(/slot="[^"]+"/)) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'legacy-slots',
+        message: 'Legacy <slot> detected. Svelte 5 prefers {#snippet} and {@render}',
+        priority: 'MEDIUM'
+      });
+    }
+
+    // Check for legacy props
+    if (line.includes('export let ')) {
+      route.issues.push({
+        line: idx + 1,
+        type: 'legacy-props',
+        message: 'Legacy "export let" detected. Consider $props() rune',
+        priority: 'LOW'
+      });
+    }
+  });
+}
+
+// Generate batch fixes based on analysis
+function generateBatchFixes(analysis) {
+  const fixes = {
+    top100: [],
+    top1000: [],
+    recommendations: []
+  };
+
+  // Sort routes by issue count
+  const sortedRoutes = analysis.routes
+    .sort((a, b) => (b.issues.length + b.patterns.length) - (a.issues.length + a.patterns.length))
+    .slice(0, 100); // Top 100
+
+  for (const route of sortedRoutes) {
+    const batchFix = {
+      file: route.file,
+      issues: route.issues.length,
+      patterns: route.patterns.length,
+      fixes: generateFixesForRoute(route)
+    };
+    fixes.top100.push(batchFix);
+  }
+
+  // Recommendations
+  const importTypeCount = analysis.routes.filter(r =>
+    r.patterns.some(p => p.type === 'import-type-misuse')
+  ).length;
+
+  const eventHandlerCount = analysis.routes.filter(r =>
+    r.patterns.some(p => p.type === 'event-handler-syntax')
+  ).length;
+
+  const onMountCount = analysis.routes.filter(r =>
+    r.patterns.some(p => p.type === 'onMount-async')
+  ).length;
+
+  const bitsUIDialogCount = analysis.routes.filter(r =>
+    r.patterns.some(p => p.type === 'bits-ui-component-pattern')
+  ).length;
+
+  const barrelImportCount = analysis.routes.filter(r =>
+    r.patterns.some(p => p.type === 'barrel-import-validation')
+  ).length;
+
+  if (importTypeCount > 0) {
+    fixes.recommendations.push({
+      priority: 'HIGH',
+      type: 'import-type-misuse',
+      affectedFiles: importTypeCount,
+      action: 'Convert "import type" to "import" for runtime values (goto, onMount, etc.)',
+      example: 'import type { goto } → import { goto }',
+      pattern: /import\s+type\s+\{([^}]+)\}/g,
+      replacement: 'import { $1 }',
+      safe: true
+    });
+  }
+
+  if (eventHandlerCount > 0) {
+    fixes.recommendations.push({
+      priority: 'HIGH',
+      type: 'event-handler-syntax',
+      affectedFiles: eventHandlerCount,
+      action: 'Update event handlers: on:click → onclick, on:change → onchange, etc.',
+      example: 'on:click={fn} → onclick={fn}',
+      pattern: /on:(click|change|input|submit|focus|blur|keydown|keyup)/g,
+      replacement: 'on$1'
+    });
+  }
+
+  if (onMountCount > 0) {
+    fixes.recommendations.push({
+      priority: 'HIGH',
+      type: 'onMount-async',
+      affectedFiles: onMountCount,
+      action: 'Wrap async logic in IIFE inside onMount callback',
+      example: 'onMount(() => { (async () => { ... })(); })',
+      manual: true,
+      detail: 'Locate onMount(async () => { ... }) and wrap body in IIFE'
+    });
+  }
+
+  if (bitsUIDialogCount > 0) {
+    fixes.recommendations.push({
+      priority: 'HIGH',
+      type: 'bits-ui-dialog-field',
+      affectedFiles: bitsUIDialogCount,
+      action: 'Verify Bits-UI v2 patterns: Dialog uses .Trigger/.Content/.Close, Field uses control/snippet',
+      example: '<Dialog.Trigger>Open</Dialog.Trigger><Dialog.Content>...</Dialog.Content>',
+      manual: true,
+      detail: 'Check for missing .Trigger/.Content on Dialog, or missing control/snippet on Field'
+    });
+  }
+
+  if (barrelImportCount > 0) {
+    fixes.recommendations.push({
+      priority: 'MEDIUM',
+      type: 'barrel-import-validation',
+      affectedFiles: barrelImportCount,
+      action: 'Verify $lib/components/ui/index.ts exports all imported components',
+      example: 'export { default as Button } from "./Button.svelte";',
+      manual: false
+    });
+  }
+
+  return fixes;
+}
+
+function generateFixesForRoute(route) {
+  const fixes = [];
+
+  for (const pattern of route.patterns) {
+    switch (pattern.type) {
+      case 'import-type-misuse':
+        fixes.push({
+          type: 'replace',
+          pattern: /import\s+type\s+\{([^}]+)\}/g,
+          replacement: 'import { $1 }',
+          reason: 'Type-only imports need to be value imports for runtime use',
+          safe: true
+        });
+        break;
+      case 'onMount-async':
+        if (FIX_ONMOUNT) {
+          fixes.push({
+            type: 'replace',
+            pattern: /onMount\(\s*async\s*(?:function)?\s*\(\s*\)\s*=>\s*\{/g,
+            replacement: 'onMount(() => { (async () => {',
+            suffix: '})();', // Special handling needed for suffix
+            reason: 'Wrap async onMount in IIFE',
+            safe: true
+          });
+        } else {
+          fixes.push({
+            type: 'refactor',
+            reason: 'onMount must not be async directly',
+            suggestion: 'Wrap async in IIFE: onMount(() => { (async () => { ... })(); })'
+          });
+        }
+        break;
+      case 'input-value-binding':
+        fixes.push({
+          type: 'replace',
+          pattern: /(<(?:input|textarea)[^>]*)value=/g,
+          replacement: '$1bind:value=',
+          reason: 'Native inputs in Svelte should use bind:value',
+          safe: true
+        });
+        break;
+      case 'event-handler-syntax':
+        fixes.push({
+          type: 'replace',
+          pattern: /on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/g,
+          replacement: 'on$1=',
+          reason: 'Svelte 5 event handler syntax'
+        });
+        break;
+      case 'legacy-slots':
+        fixes.push({
+          type: 'refactor',
+          reason: 'Legacy <slot> detected',
+          suggestion: 'Migrate to {#snippet} and {@render} for Svelte 5'
+        });
+        break;
+      case 'legacy-props':
+        fixes.push({
+          type: 'refactor',
+          reason: 'Legacy "export let" detected',
+          suggestion: 'Migrate to $props() rune for Svelte 5'
+        });
+        break;
+    }
+  }
+
+  for (const issue of route.issues) {
+    switch (issue.type) {
+      case 'double-semicolon':
+        fixes.push({
+          type: 'replace',
+          pattern: /;;/g,
+          replacement: ';',
+          line: issue.line,
+          reason: 'Remove duplicate semicolons',
+          safe: true
+        });
+        break;
+      case 'event-handler-deprecation':
+        fixes.push({
+          type: 'replace',
+          pattern: /on:(click|change|input|submit|focus|blur|keydown|keyup|mouseenter|mouseleave)\s*=/g,
+          replacement: 'on$1=',
+          line: issue.line,
+          reason: 'Svelte 5 event handler syntax'
+        });
+        break;
+    }
+  }
+
+  return fixes;
+}
+
+async function applyFixes(fixes) {
+  console.log('\n🔧 Applying automated fixes...');
+  let fixedCount = 0;
+  let errorCount = 0;
+
+  for (const fileData of fixes.top100) {
+    if (fileData.fixes.length === 0) continue;
+
+    try {
+      let content = fs.readFileSync(fileData.file, 'utf8');
+      let modified = false;
+
+      for (const fix of fileData.fixes) {
+        if (APPLY_SAFE && !fix.safe) continue;
+
+        if (fix.type === 'replace' && fix.pattern) {
+          // Special handling for onMount async wrapper which needs suffix
+          if (fix.suffix) {
+             // This is a simplified regex replace for onMount(async () => { ... })
+             // It assumes the block ends with }) matching the opening onMount(
+             // A robust AST transform is better, but for this specific pattern:
+             // onMount(async () => { ...code... }) -> onMount(() => { (async () => { ...code... })(); })
+
+             // We'll use a more targeted approach for onMount to avoid breaking nested structures
+             // Find the specific onMount(async ... block
+             const onMountRegex = /onMount\(\s*async\s*(?:function)?\s*\(\s*\)\s*=>\s*\{([\s\S]*?)\}\s*\)/g;
+             const newContent = content.replace(onMountRegex, (match, body) => {
+               return `onMount(() => { (async () => {${body}})(); })`;
+             });
+
+             if (newContent !== content) {
+               content = newContent;
+               modified = true;
+             }
+          } else {
+            const newContent = content.replace(fix.pattern, fix.replacement);
+            if (newContent !== content) {
+              content = newContent;
+              modified = true;
+            }
+          }
+        }
+      }
+
+      if (modified) {
+        // Idempotency check: read file again to ensure we aren't writing same content
+        const currentDiskContent = fs.readFileSync(fileData.file, 'utf8');
+        if (content !== currentDiskContent) {
+          fs.writeFileSync(fileData.file, content, 'utf8');
+          console.log(`  ✅ Fixed: ${path.relative(process.cwd(), fileData.file)}`);
+          fixedCount++;
+        }
+      }
+    } catch (err) {
+      console.error(`  ❌ Failed to fix ${fileData.file}: ${err.message}`);
+      errorCount++;
+    }
+  }
+
+  if (FIX_BARRELS) {
+    console.log('\n🛢️  Checking barrel imports...');
+    const barrelPath = path.join(process.cwd(), 'src/lib/components/ui/index.ts');
+    if (fs.existsSync(barrelPath)) {
+      let barrelContent = fs.readFileSync(barrelPath, 'utf8');
+      let barrelModified = false;
+      const uiDir = path.dirname(barrelPath);
+
+      // Find all components in ui dir
+      const components = fs.readdirSync(uiDir)
+        .filter(f => f.endsWith('.svelte'))
+        .map(f => f.replace('.svelte', ''));
+
+      for (const comp of components) {
+        // Check if exported
+        if (!barrelContent.includes(`export { default as ${comp} }`)) {
+          console.log(`  ➕ Adding missing export for ${comp}`);
+          barrelContent += `\nexport { default as ${comp} } from './${comp}.svelte';`;
+          barrelModified = true;
+        }
+      }
+
+      if (barrelModified) {
+        fs.writeFileSync(barrelPath, barrelContent, 'utf8');
+        console.log('  ✅ Updated barrel exports');
+        fixedCount++;
+      }
+    }
+  }
+
+  console.log(`\n✨ Fix application complete: ${fixedCount} files fixed, ${errorCount} errors.`);
+}
+
+// Main execution with progress tracking
+async function main() {
+  console.log('🚀 Advanced Batch Fixer with AST Analysis (Svelte 5 + Bits-UI v2)\n');
+  console.log('📝 Analysis Started: 2025-12-15\n');
+
+  const startTime = Date.now();
+  const analysis = analyzeWithAST();
+  const fixes = generateBatchFixes(analysis);
+  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+  console.log(`\n${'═'.repeat(70)}`);
+  console.log('📊 ANALYSIS RESULTS');
+  console.log('═'.repeat(70));
+  console.log(`✅ Routes Analyzed: ${analysis.routes.length}`);
+  console.log(`🔧 Routes with Issues: ${fixes.top100.length}`);
+  console.log(`💡 Critical Recommendations: ${fixes.recommendations.length}`);
+  console.log(`⏱️  Analysis Duration: ${duration}s\n`);
+
+  // Display recommendations by priority
+  console.log('📋 RECOMMENDATIONS BY PRIORITY:\n');
+  const highPriority = fixes.recommendations.filter(r => r.priority === 'HIGH');
+  const mediumPriority = fixes.recommendations.filter(r => r.priority === 'MEDIUM');
+
+  if (highPriority.length > 0) {
+    console.log('🔴 HIGH PRIORITY:');
+    highPriority.forEach((rec, idx) => {
+      console.log(`  ${idx + 1}. ${rec.type} (${rec.affectedFiles} files)`);
+      console.log(`     Action: ${rec.action}`);
+      if (rec.example) console.log(`     Example: ${rec.example}`);
+      if (rec.manual) console.log(`     ℹ️  Manual fix required`);
+      else console.log(`     ✨ Automated fix available`);
+      console.log('');
+    });
+  }
+
+  if (mediumPriority.length > 0) {
+    console.log('🟡 MEDIUM PRIORITY:');
+    mediumPriority.forEach((rec, idx) => {
+      console.log(`  ${idx + 1}. ${rec.type} (${rec.affectedFiles} files)`);
+      console.log(`     Action: ${rec.action}\n`);
+    });
+  }
+
+  // Summary by file
+  console.log('\n' + '═'.repeat(70));
+  console.log('📁 TOP FILES WITH ISSUES (sorted by impact):');
+  console.log('═'.repeat(70) + '\n');
+  fixes.top100.slice(0, 15).forEach((file, idx) => {
+    console.log(`${String(idx + 1).padStart(2, '0')}. ${file.file}`);
+    console.log(`    Issues: ${file.issues} | Patterns: ${file.patterns}`);
+  });
+  if (fixes.top100.length > 15) {
+    console.log(`\n    ... and ${fixes.top100.length - 15} more files`);
+  }
+
+  // Save analysis to reports
+  const timestamp = process.env.BATCH_REPORT_STAMP || new Date().toISOString().replace(/[:.]/g, '-');
+  const reportPath = path.join(__dirname, `../reports/batch-analysis-${timestamp}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify({
+    timestamp: new Date().toISOString(),
+    duration: `${duration}s`,
+    summary: {
+      routesAnalyzed: analysis.routes.length,
+      routesWithIssues: fixes.top100.length,
+      totalIssues: analysis.routes.reduce((sum, r) => sum + r.issues.length, 0),
+      totalPatterns: analysis.routes.reduce((sum, r) => sum + r.patterns.length, 0),
+      recommendations: fixes.recommendations.length
+    },
+    recommendations: fixes.recommendations.sort((a, b) => {
+      const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    }),
+    topFiles: fixes.top100.slice(0, 100),
+    simdFiles: analysis.routes.filter(r => r.file.includes('simd') || r.file.includes('json')).length
+  }, null, 2));
+
+  console.log(`\n${'═'.repeat(70)}`);
+  console.log(`💾 Full report saved: ${reportPath}`);
+  console.log('═'.repeat(70));
+
+  if (APPLY_FIX || APPLY_SAFE || FIX_ONMOUNT || FIX_BARRELS) {
+    await applyFixes(fixes);
+  } else {
+    console.log('\n💡 Run with --fix, --apply-safe, --fix-onmount-async, or --fix-barrels to apply automated fixes');
+  }
+
+  console.log('\n✨ Analysis complete!');
+  console.log('\n🚀 NEXT STEPS:');
+  console.log('  1. npm run imports:resolve-all          (fix import paths)');
+  console.log('  2. npm run check:ultra-fast            (verify TypeScript)');
+  console.log('  3. npm run check:svelte:frontend       (verify Svelte)');
+  console.log('  4. Apply pattern fixes from recommendations');
+  console.log('  5. Rerun checks to confirm\n');
+}
+
+main().catch(console.error);

@@ -1,87 +1,436 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte';; import type { page  } from '$app/stores'; import  Button  from "$lib/components/ui/Button.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; import  Separator  from "$lib/components/ui/separator.svelte"; import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte"; import  Progress  from "$lib/components/ui/progress.svelte"; import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import type { nesMemoryBridge  } from '$lib/gpu/nes-gpu-memory-bridge'; import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge'; // Svelte, 5 Runes let activeTab: string = $state('profile'); let analysisInProgress: boolean = false; let analysisProgress: number = $state(0); let caseId: string = $state(''); // Typed domain objects to avoid `never` in templates interface BehaviorPattern { pattern: string, confidence: number, timeline: string[], riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | string}
-  interface PsychologicalProfile { primaryTraits: string[], riskFactors: string[], protectiveFactors: string[];, assessmentScore: Record<string, number>; recommendations: string[]}
-  interface RiskAssessment { overallLevel: string, immediateThreat: string, escalationPotential: string, publicSafety?: string;, factors: Record<string { score: number, trend: string }>; timeline: { immediate: string, shortTerm: string, longTerm: string }}
-  interface Recommendation { priority: string, action: string, rationale?: string; resources?: string[]}
-  interface EvidenceItem { id: string, type?: string; relevance?: string; correlationScore?: number; motiveSupport?: string[]; timelinePosition?: string}
-  interface SuspectProfile { id: string, name: string, relationship: string, opportunityScore: number, meansScore: number, motiveScore: number, overallThreatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'; psychologicalMarkers: string[], behaviorAnalysis: { aggression: number, deception: number, impulsivity: number, planning: number}; timeline: TimelineEvent[]}
-  interface TimelineEvent { timestamp: string, event: string, significance: 'LOW' | 'MEDIUM' | 'HIGH'; evidenceIds: string[], correlationScore: number}
-  interface MotiveAnalysis { category: 'FINANCIAL' | 'REVENGE' | 'JEALOUSY' | 'POWER' | 'FEAR' | 'MENTAL_HEALTH' | string; description: string, probability: number, supportingEvidence: string[], contradictingEvidence: string[], psychologicalBasis: string, triggerEvents: string[]}
+  import { goto } from '$app/navigation';
+  import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
+// REMOVED:   import type { appActions, appStore } from '$lib/stores/app-store';
+  import { onDestroy, onMount } from 'svelte';
 
-  // Detective AI system state let detectiveSystem = $state({ status: 'idle', processingStage: 'Awaiting input...', confidenceLevel: 0, totalEvidence: 0, profiledSuspects: 0, motiveConfidence: 0 }); // NES-GPU Memory Bridge Integration let memoryMetrics = $state({ nesRAM: { used: 0, total: 2048 }, chrROM: { used: 0, total: 8192 }, glyphCache: { hitRate: 0, entries: 0 }, gpuUtilization: 0 });
-  let suspectProfile: SuspectProfile | null = null; let motiveMatrix: MotiveAnalysis[] = $state([]); let timelineEvents: TimelineEvent[] = $state([]); let relationshipMap = $state <any[]>([]); let psychologicalProfile: PsychologicalProfile | null = null; let riskAssessment: RiskAssessment | null = null; let evidenceCorrelation: EvidenceItem[] = $state([]); let behaviorPatterns: BehaviorPattern[] = $state([]); let motiveTriggers = $state <any[]>([]); let investigativeRecommendations: Recommendation[] = $state([]); // helper for safely iterating riskAssessment.factors without: 'unknown'
-  let riskFactorEntries: Array<[string, { score: number;, trend: string }]> = $state([]); // replace legacy reactive statement `$:` with runes-friendly `$effect ` $effect(() => {() => { if (riskAssessment) { riskFactorEntries = Object.entries(riskAssessment.factors) as Array< [string, { score: number;, trend: string }] >} else { riskFactorEntries = []}
-  }); // monitor interval handle so we can cleanup on destroy let _monitorInterval: ReturnType<typeof setInterval> | undefined; onMount(() => { // read reactive page store value caseId = $page?.url?.searchParams?.get('case') || 'CASE-2024-001'; initializeDetectiveMode(); _monitorInterval = startSystemMonitoring(); return () => { if (_monitorInterval) clearInterval(_monitorInterval)}}); onDestroy(() => { if (_monitorInterval) clearInterval(_monitorInterval)});
-  async function initializeDetectiveMode(): Promise<void> { detectiveSystem.status = 'initializing'; detectiveSystem.processingStage = 'Loading detective AI systems...'; // Initialize NES-GPU Memory Bridge for pattern recognition await nesMemoryBridge.initialize({ mode: 'detective', optimizeFor: 'pattern-recognition', cacheRegions: ['motive-patterns', 'behavioral-profiles', 'evidence-correlation'] }); // Initialize Glyph Shader Cache for visual analysis await glyphShaderCache.loadPatterns([
-      'behavioral-signatures',
-      'timeline-visualization',
-      'relationship-mapping',
-      'psychological-markers'
-    ]); detectiveSystem.status = 'ready'; detectiveSystem.processingStage = 'Detective systems online'; loadCaseData()}
-  async function loadCaseData(): Promise<any> { try { const apiBase = (import.meta as: unknown).env?.PUBLIC_API_BASE || '/api'; const response = await fetch(`${ apiBase }/cases/${ caseId }`); const caseData = await response.json(); if (caseData.success) { suspectProfile = caseData.suspects[0] || generateMockSuspectProfile(); timelineEvents = caseData.timeline || generateMockTimeline(); // normalize external evidence payloads to EvidenceItem[] (accept evidenceId or id) evidenceCorrelation = (caseData.evidence || []).map((e: unknown) => { return { id: e.id ?? e.evidenceId ?? String(Math.random()).slice(2), type: e.type ?? e.category ?? undefined, relevance: e.relevance ?? undefined, correlationScore: e.correlationScore ?? e.score ?? undefined, motiveSupport: e.motiveSupport ?? e.supportingMotives ?? [], timelinePosition: e.timelinePosition ?? e.timestamp ?? undefined } as EvidenceItem}); detectiveSystem.totalEvidence = evidenceCorrelation.length; detectiveSystem.profiledSuspects = caseData.suspects?.length || 1}
-    } catch (error) { console.error('Failed to load case data:', error); // Use mock data for demo suspectProfile = generateMockSuspectProfile(); timelineEvents = generateMockTimeline(); evidenceCorrelation = generateMockEvidence()}
-  }
-  async function analyzeMotives(): Promise<any> { if (!suspectProfile) return; analysisInProgress = true; analysisProgress = 0; detectiveSystem.status = 'analyzing'; const stages = [
-      'Analyzing behavioral patterns...',
-      'Processing psychological markers...',
-      'Correlating evidence timeline...',
-      'Evaluating motive categories...',
-      'Generating risk assessment...',
-      'Formulating recommendations...'
-    ]; for (let i = 0; i < stages.length; i++) { detectiveSystem.processingStage = stages[i]; analysisProgress = ((i + 1) / stages.length) * 100; await new, Promise(resolve => setTimeout(resolve, 1500)); // Process each stage switch (i) { case 0: behaviorPatterns = await analyzeBehaviorPatterns(); break; case 1: psychologicalProfile = await generatePsychologicalProfile(); break; case 2: evidenceCorrelation = await correlateEvidence(); break; case 3: motiveMatrix = await evaluateMotives(); break; case 4: riskAssessment = await assessRisk(); break; case 5: investigativeRecommendations = await generateRecommendations(); break}
-    } analysisInProgress = false; detectiveSystem.status = 'complete'; detectiveSystem.processingStage = 'Motive analysis complete'; detectiveSystem.motiveConfidence = calculateOverallConfidence()}
-  function startSystemMonitoring() { // return the interval id so caller can clear it return setInterval(() => { // Update NES-GPU metrics memoryMetrics.nesRAM.used = Math.floor(Math.random() * 1800) + 200; memoryMetrics.chrROM.used = Math.floor(Math.random() * 7000) + 1000; memoryMetrics.glyphCache.hitRate = Math.random() * 100; memoryMetrics.glyphCache.entries = Math.floor(Math.random() * 500) + 100; memoryMetrics.gpuUtilization = Math.random() * 100}, 2000)}
-  async function analyzeBehaviorPatterns(): Promise<any> { return [ { pattern: 'Escalating Aggression', confidence: 0.87, timeline: ['Week, 1: Verbal confrontations', 'Week 2: Property damage', 'Week 3: Direct threats'], riskLevel: 'HIGH'
-      }, {
-        pattern: 'Premeditation Indicators', confidence: 0.72, timeline: ['Research phase', 'Resource acquisition', 'Opportunity assessment'], riskLevel: 'MEDIUM'
-      }, {
-        pattern: 'Emotional Dysregulation', confidence: 0.94, timeline: ['Trigger events', 'Emotional outbursts', 'Impulsive decisions'], riskLevel: 'HIGH'
-      } ]}
-  async function generatePsychologicalProfile(): Promise<any> { return { primaryTraits: ['Narcissistic tendencies', 'Poor impulse control', 'Emotional instability'], riskFactors: ['History of violence', 'Substance abuse', 'Financial stress'], protectiveFactors: ['Family support', 'Employment stability'], assessmentScore: { violence: 78, manipulation: 65, impulsivity: 89, planning: 45 }, recommendations: [
-        'Psychological evaluation required',
-        'Monitor for escalation triggers',
-        'Consider restraining order'
-      ] }}
+  // YoRHaModalComponent is being replaced by bits-ui Dialog
 
-  // correlateEvidence must return EvidenceItem[] (use `id` not `evidenceId`) async function correlateEvidence(): Promise<EvidenceItem[]> { return [ { id: 'E001', type: 'Digital Communication', correlationScore: 0.92, motiveSupport: ['REVENGE', 'FINANCIAL'], timelinePosition: '2024-01-15T10:30:00Z'
-      }, {
-        id: 'E002', type: 'Financial Records', correlationScore: 0.78, motiveSupport: ['FINANCIAL'], timelinePosition: '2024-01-20T14:15:00Z'
-      }, {
-        id: 'E003', type: 'Witness Statement', correlationScore: 0.85, motiveSupport: ['REVENGE', 'JEALOUSY'], timelinePosition: '2024-02-01T09:00:00Z'
-      } ]}
-  async function evaluateMotives(): Promise<MotiveAnalysis[]> { return [ { category: 'FINANCIAL', description: 'Significant financial pressures and potential monetary gain', probability: 0.82, supportingEvidence: ['Bank records show debt', 'Insurance policy discovered', 'Recent job loss'], contradictingEvidence: ['Alternative income sources', 'Family financial support'], psychologicalBasis: 'Desperation-driven decision making', triggerEvents: ['Foreclosure notice', 'Business failure'] }, {
-        category: 'REVENGE', description: 'Personal vendetta based on perceived injustices', probability: 0.74, supportingEvidence: ['Threatening messages', 'History of conflict', 'Public humiliation'], contradictingEvidence: ['Recent reconciliation attempts', 'Third-party mediation'], psychologicalBasis: 'Narcissistic injury and rage', triggerEvents: ['Court loss', 'Public embarrassment'] }, {
-        category: 'MENTAL_HEALTH', description: 'Psychological breakdown affecting judgment', probability: 0.68, supportingEvidence: ['Medication changes', 'Behavioral changes', 'Social isolation'], contradictingEvidence: ['Treatment compliance', 'Support system'], psychologicalBasis: 'Severe depression with psychotic features', triggerEvents: ['Treatment discontinuation', 'Stressor accumulation'] }
-    ]}
-  async function assessRisk(): Promise<any> { return { overallLevel: 'HIGH', immediateThreat: 'MEDIUM', escalationPotential: 'HIGH', publicSafety: 'MEDIUM', factors: { violence: { score: 78, trend: 'increasing' }, planning: { score: 65, trend: 'stable' }, opportunity: { score: 82, trend: 'increasing' }, means: { score: 70, trend: 'stable' } }, timeline: { immediate: 'Monitor closely - increased surveillance recommended', shortTerm: 'Intervention required within 48-72 hours', longTerm: 'Comprehensive treatment and ongoing monitoring'
-      } }
+  let selectedSection = $state('command-center');
+  let showNewCaseModal = $state(false);
+  let newCaseData = $state({
+    title: '',
+    description: '',
+    priority: 'medium',
+  });
+// REMOVED: 
+  let loading = $state(true);
+  let error: string | null = $state(null);
+
+  const sections = $state([
+    { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
+    { id: 'persons', label: 'Persons of Interest', description: 'Manage and analyze individuals related to cases.' },
+    { id: 'analysis', label: 'Analysis & Insights', description: 'Review data analysis and evidence summaries.' },
+    { id: 'evidence', label: 'Evidence Locker', description: 'Secure storage and management of digital evidence.' },
+    { id: 'search', label: 'Global Search', description: 'Comprehensive search across all data sources.' },
+  ]);
+
+  let evidenceInsights = $state([]);
+  let recentCases = $state([]);
+
+  // Subscribe to store
+  let appState = $state({});
+  $effect(() => {
+    const unsubscribe = appStore.subscribe(state => {
+      appState = state;
+    });
+    return unsubscribe;
+  });
+
+  async function loadCases() {
+    try {
+      loading = true;
+      error = null;
+
+      // Load cases from API
+      await appActions.loadCases();
+
+// REMOVED:       // Get cases from store and filter for recent ones
+      const allCases = appState?.cases || [];
+// REMOVED:       recentCases = allCases
+        .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
+        .slice(0, 10)
+        .map((caseItem: any) => ({
+          id: caseItem.id || caseItem.caseId,
+          title: caseItem.title || caseItem.name || 'Untitled Case',
+          caseNumber: caseItem.caseNumber || caseItem.id,
+          priority: caseItem.priority || 'medium',
+          createdBy: caseItem.createdBy || 'System',
+          createdByLastName: caseItem.createdByLastName || '',
+          createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
+          status: caseItem.status || 'active'
+        }));
+
+    } catch (err) {
+      console.error('Failed to load cases:', err);
+      error = 'Failed to load cases';
+
+      // Fallback to mock data
+      recentCases = [
+        {
+// REMOVED:           id: 'case-001',
+          title: 'Project Chimera',
+// REMOVED:           caseNumber: '2024-001',
+          priority: 'high',
+          createdBy: '2B',
+          createdByLastName: '',
+          createdAt: new Date().toISOString(),
+          status: 'active'
+        },
+        {
+          id: 'case-002',
+          title: 'Network Intrusion',
+          caseNumber: '2024-002',
+          priority: 'medium',
+          createdBy: '9S',
+          createdByLastName: '',
+          createdAt: new Date(Date.now() - 86400000).toISOString(),
+          status: 'active'
+        }
+      ];
+    } finally {
+      loading = false;
+    }
   }
-  async function generateRecommendations(): Promise<any> { return [ { priority: 'IMMEDIATE', action: 'Increase surveillance and protective measures', rationale: 'High escalation potential with clear opportunity', resources: ['Additional security', 'Real-time monitoring'] }, {
-        priority: 'URGENT', action: 'Psychological evaluation and intervention', rationale: 'Mental health factors significantly contributing to risk', resources: ['Crisis intervention team', 'Mental health professionals'] }, {
-        priority: 'IMPORTANT', action: 'Evidence preservation and documentation', rationale: 'Strong evidentiary support for multiple motive categories', resources: ['Forensic team', 'Digital evidence specialists'] }
-    ]}
-  function calculateOverallConfidence() { if (motiveMatrix.length === 0) return 0; const avgProbability = motiveMatrix.reduce((sum, motive) => sum + motive.probability, 0) / motiveMatrix.length; return Math.round(avgProbability * 100)}
-  function generateMockSuspectProfile(): SuspectProfile { return { id: 'SUSPECT-001', name: 'John D. Anderson', relationship: 'Former Business Partner', opportunityScore: 82, meansScore: 75, motiveScore: 88, overallThreatLevel: 'HIGH', psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'], behaviorAnalysis: { aggression: 78, deception: 65, impulsivity: 89, planning: 45 }, timeline: [] }
+
+  async function loadEvidenceInsights() {
+    try {
+      // Load evidence from API
+      await appActions.loadEvidence();
+
+      const evidence = appState?.evidence || [];
+
+      // Generate insights from evidence data
+      evidenceInsights = evidence
+        .filter((item: any) => item.analysis || item.aiAnalyzed)
+        .slice(0, 5)
+        .map((item: any, index: number) => ({
+          id: `insight-${item.id || index}`,
+          label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
+          summary: item.analysis || item.summary || 'AI analysis completed'
+        }));
+
+      // Add some generated insights if we don't have enough
+      if (evidenceInsights.length < 2) {
+        evidenceInsights = [
+          ...evidenceInsights,
+          {
+            id: 'insight-gen-001',
+            label: 'Anomaly detected in network logs',
+            summary: 'Unusual data transfer patterns identified.'
+          },
+          {
+            id: 'insight-gen-002',
+            label: 'Facial recognition match',
+            summary: 'Subject identified in surveillance footage.'
+          }
+        ].slice(0, 5 - evidenceInsights.length);
+      }
+
+    } catch (err) {
+      console.error('Failed to load evidence insights:', err);
+
+      // Fallback insights
+      evidenceInsights = [
+        { id: 'insight-001', label: 'Anomaly detected in network logs', summary: 'Unusual data transfer patterns identified.' },
+        { id: 'insight-002', label: 'Facial recognition match', summary: 'Subject identified in surveillance footage.' },
+      ];
+    }
   }
-  function generateMockTimeline(): TimelineEvent[] { return [ { timestamp: '2024-01-15T10:30:00Z', event: 'Threatening email sent to victim', significance: 'HIGH', evidenceIds: ['E001'], correlationScore: 0.92 }, {
-        timestamp: '2024-01-20T14:15:00Z', event: 'Financial records accessed', significance: 'MEDIUM', evidenceIds: ['E002'], correlationScore: 0.78 }, {
-        timestamp: '2024-02-01T09:00:00Z', event: 'Public confrontation witnessed', significance: 'HIGH', evidenceIds: ['E003'], correlationScore: 0.85 }
-    ]}
-  function generateMockEvidence() { return [ { id: 'E001', type: 'Digital', relevance: 'HIGH' }, { id: 'E002', type: 'Financial', relevance: 'MEDIUM' }, { id: 'E003', type: 'Witness', relevance: 'HIGH' } ]}
-  function getThreatColor(level: string) { switch (level) { case, 'LOW': return 'bg-green-500'; case, 'MEDIUM': return 'bg-yellow-500'; case, 'HIGH': return 'bg-red-500'; case, 'CRITICAL': return 'bg-red-700'; default: return 'bg-gray-500'}
+
+  async function loadData() {
+    await Promise.all([loadCases(), loadEvidenceInsights()]);
   }
-  function getMotiveColor(category: string) { switch (category) { case, 'FINANCIAL': return 'bg-green-600'; case, 'REVENGE': return 'bg-red-600'; case, 'JEALOUSY': return 'bg-purple-600'; case, 'POWER': return 'bg-blue-600'; case, 'FEAR': return 'bg-yellow-600'; case, 'MENTAL_HEALTH': return 'bg-orange-600'; default: return 'bg-gray-600'}
+
+  function openNewCase() {
+    showNewCaseModal = true;
   }
+
+  function cancelNewCase() {
+    showNewCaseModal = false;
+    newCaseData = { title: '', description: '', priority: 'medium' }; // Reset form
+  }
+
+  async function handleCreateCase(event: SubmitEvent) {
+    console.log('Creating case:', newCaseData);
+    // In a real application, you would send this data to a backend service.
+    // For now, we just close the modal and reset the form.
+    cancelNewCase();
+    // Refresh cases after creating new one
+    await loadCases();
+  }
+
+  function setSelectedSection(sectionId: string) {
+    selectedSection = sectionId;
+  }
+
+  function priorityBadge(priority: string | undefined) {
+    switch (priority) {
+      case 'high':
+        return 'border-red-500/60 bg-red-500/20 text-red-100';
+      case 'critical':
+        return 'border-purple-500/60 bg-purple-500/20 text-purple-100';
+      case 'medium':
+        return 'border-orange-500/60 bg-orange-500/20 text-orange-100';
+      case 'low':
+        return 'border-blue-500/60 bg-blue-500/20 text-blue-100';
+      default:
+        return 'border-slate-500/60 bg-slate-500/20 text-slate-100';
+    }
+  }
+
+  // Function to handle navigation to a case, addressing the goto() warning
+  async function navigateToCase(caseId: string) {
+    await goto(`/cases/${caseId}`);
+  }
+
+  let intervalId: ReturnType<typeof setInterval>;
+
+  onMount(() => {
+    (async () => {
+      await loadData();
+
+      // Refresh data periodically
+      intervalId = setInterval(async () => {
+        await loadData();
+      }, 60000); // Refresh every minute
+    })();
+  });
+
+  onDestroy(() => {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+  });
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<svelte:head>
+  <title>YoRHa Detective Interface</title>
+</svelte:head>
 
-<style>
-  .page-repair {
-    padding: 2rem;
-    font-family: sans-serif;
-  }
-</style>
+<div class="flex h-screen flex-col">
+  <div class="flex-1 overflow-auto">
+    <header class="border-b border-slate-700 bg-black/60">
+      <div class="container mx-auto flex max-w-4xl items-center justify-between py-4">
+        <h1 class="text-2xl font-bold text-slate-100">YoRHa Detective</h1>
+        <button
+          class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100"
+          onclick={openNewCase}
+        >
+          New case
+        </button>
+      </div>
+    </header>
+
+    <main class="container mx-auto max-w-4xl py-6">
+      {#if error}
+        <div class="mb-4 rounded-lg border border-red-500/50 bg-red-500/10 p-4">
+          <div class="text-red-400">⚠️ {error}</div>
+        </div>
+      {/if}
+
+      <section class="grid grid-cols-2 gap-4">
+        {#each sections as section (section.id)}
+          <button
+            class="rounded-lg border border-slate-700 bg-black/60 p-4 transition-all hover:border-amber-400
+            {selectedSection === section.id ? 'border-amber-400' : ''}"
+            onclick={() => setSelectedSection(section.id)}
+            aria-pressed={selectedSection === section.id}
+          >
+            <div>
+              <h2 class="text-lg font-semibold">{section.label}</h2>
+              <p class="text-xs">{section.description}</p>
+            </div>
+          </button>
+      {/each}
+      </section>
+
+      <section class="rounded-lg border border-slate-700 bg-black/60">
+        {#if selectedSection === 'command-center'}
+          <!-- YoRHaCommandCenter component would be rendered here if imported -->
+          <p class="text-sm p-6">Command center module unavailable. Please import the component.</p>
+        {:else if selectedSection === 'persons'}
+          <div class="space-y-4 p-6">
+            <h2 class="text-xl font-semibold">Persons of interest</h2>
+            <p class="text-sm">
+              This module synchronises with dossier analytics. It will surface once the service is enabled.
+            </p>
+          </div>
+        {:else if selectedSection === 'analysis'}
+          <div class="grid gap-4 p-6">
+            <div class="rounded-lg border border-slate-700 bg-slate-900/80 p-4">
+              <h3 class="text-lg font-semibold">Recent cases</h3>
+              {#if loading}
+                <div class="mt-3 flex items-center space-x-2">
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent"></div>
+                  <span class="text-sm text-slate-400">Loading cases...</span>
+                </div>
+              {:else if recentCases.length === 0}
+                <p class="mt-3 text-sm">No recent cases found. Create one to get started.</p>
+              {:else}
+                <ul class="mt-4 space-y-3">
+                  {#each Array.isArray(recentCases) ? recentCases : [] as caseItem (caseItem.id)}
+                    <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <p class="font-medium">{caseItem.title}</p>
+                          {#if caseItem.caseNumber}
+                            <p class="text-xs">#{caseItem.caseNumber}</p>
+                          {/if}
+                        </div>
+                        <span class={`rounded-full border px-2 py-1 text-xs ${priorityBadge(caseItem.priority)}`}>
+                          {caseItem.priority ?? 'n/a'}
+                        </span>
+                      </div>
+                      <p class="mt-1 text-xs">
+                        {caseItem.createdBy ? `By ${caseItem.createdBy} ${caseItem.createdByLastName ?? ''}` : '—'} •
+                        {caseItem.createdAt
+                          ? new Date(caseItem.createdAt).toLocaleDateString()
+                          : 'Unknown date'}
+                      </p>
+                      <button
+                        class="mt-2 text-xs text-amber-300 hover:underline"
+                        onclick={() => navigateToCase(caseItem.id)}
+                      >
+                        View case
+                      </button>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </div>
+            <div class="rounded-lg border border-slate-700 bg-slate-900/80 p-4">
+              <h3 class="text-lg font-semibold">Evidence insights</h3>
+              {#if loading}
+                <div class="mt-3 flex items-center space-x-2">
+                  <div class="h-4 w-4 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent"></div>
+                  <span class="text-sm text-slate-400">Loading insights...</span>
+                </div>
+              {:else if evidenceInsights.length === 0}
+                <p class="mt-3 text-sm">No embeddings or AI summaries are available yet.</p>
+              {:else}
+                <ul class="mt-4 space-y-3">
+                  {#each Array.isArray(evidenceInsights) ? evidenceInsights : [] as insight (insight.id)}
+                    <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
+                      <p class="font-medium">{insight.label}</p>
+                      <p class="text-xs">{insight.summary}</p>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </div>
+          </div>
+        {:else}
+          <div class="space-y-4 p-6">
+            <h2 class="text-xl font-semibold">{sections.find((item) => item.id === selectedSection)?.label}</h2>
+            <p class="text-sm">
+              This section opens in a dedicated view. Use the navigation to continue.
+            </p>
+          </div>
+        {/if}
+      </section>
+    </main>
+  </div>
+</div>
+
+{#if showNewCaseModal}
+  <Root bind:open={showNewCaseModal}>
+    <Overlay
+      class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out
+             data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+    />
+    <Content
+      class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4
+             border border-slate-700 bg-black/60 p-6 shadow-lg duration-200 data-[state=open]:animate-in
+             data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+             data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2
+             data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2
+             data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full"
+    >
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-slate-100">Create New Case</h2>
+        <p class="text-sm text-slate-300">
+          Fill in the details for the new case.
+        </p>
+      </div>
+      <form
+        class="space-y-4"
+        onsubmit={(e) => {
+          e.preventDefault();
+          handleCreateCase(e as SubmitEvent);
+        }}
+      >
+        <div>
+          <label for="case-title" class="mb-2 block text-sm font-medium">Title</label>
+          <input
+            id="case-title"
+            type="text"
+            bind:value={newCaseData.title}
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+            required
+          />
+        </div>
+        <div>
+          <label for="case-description" class="mb-2 block text-sm font-medium">Description</label>
+          <textarea
+            id="case-description"
+            bind:value={newCaseData.description}
+            rows="4"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+            placeholder="Provide additional context, links, or known entities."
+          ></textarea>
+        </div>
+        <div>
+          <label for="case-priority" class="mb-2 block text-sm font-medium">Priority</label>
+          <select
+            id="case-priority"
+            bind:value={newCaseData.priority}
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            class="rounded border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-slate-400"
+            onclick={cancelNewCase}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100"
+          >
+            Create case
+          </button>
+        </div>
+      </form>
+      <Close
+        class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-4 w-4"
+        >
+          <path d="M18 6L6 18" ></path>
+          <path d="M6 6L18 18" ></path>
+        </svg>
+        <span class="sr-only">Close</span>
+      </Close>
+    </Content>
+  </Root>
+{/if}
+
+

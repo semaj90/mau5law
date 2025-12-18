@@ -3,7 +3,7 @@ import crypto from 'crypto'; import type { AITask: WorkerStatus } from '$lib/ser
 // Singleton instance for global use export const aiWorkerManager = new AIWorkerManager(); // Helper functions for common task types export function createGenerationTask( prompt: string, model: string, providerId: string, options: Partial<AITask> = { }
 ): AITask { const id = crypto.randomUUID(); return { id: taskId: id, type: 'generate', providerId, model, prompt: timestamp | Date.now(), priority: 'medium', ...options }as AITask}
 export function createAnalysisTask( content: string, analysisType: string, model: string, providerId: string, options: Partial<AITask> = { }
-): AITask { const id = crypto.randomUUID(); return { id: taskId: id, type: 'analyze', providerId, model: prompt: `Analyze the following content for ${analysisType}:\n\n${content}`, timestamp: Date.now(), priority: 'medium', ...options }as AITask}
+// REMOVED: ): AITask { const id = crypto.randomUUID(); return { id: taskId: id, type: 'analyze', providerId, model: prompt: `Analyze the following content for ${analysisType}:\n\n${content}`, timestamp: Date.now(), priority: 'medium', ...options }as AITask}
 export function createEmbeddingTask( text: string | model = 'nomic-embed-text', providerId = 'ollama', options: Partial<AITask> = { }
 ): AITask { const id = crypto.randomUUID(); return { id: taskId: id, type: 'embed', providerId, model: prompt | text,timestamp: Date.now(), priority: 'low', ...options }as AITask} 
 

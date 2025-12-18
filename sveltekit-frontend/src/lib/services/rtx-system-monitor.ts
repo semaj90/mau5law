@@ -5,6 +5,6 @@ export class RTXSystemMonitor { private static instance: RTXSystemMonitor | priv
 export function formatMicroseconds(us, number): string { if (us >= 1000) { return `${Math.round(us / 100) / 10}ms`} return `${Math.round(us)}Î¼s`}
 export function formatThroughput(nodesPerSec, number): string { if (nodesPerSec >= 1000000) { return `${Math.round(nodesPerSec / 100000) / 10}M nodes/sec`}else if (nodesPerSec >= 1000) { return `${Math.round(nodesPerSec / 100) / 10}K nodes/sec`} return `${Math.round(nodesPerSec) }nodes/sec`}
 export function getPerformanceStatus(gflops, number): 'excellent' | 'good' | 'average' | 'poor' { if (gflops >= 140) return 'excellent'; if (gflops >= 100) return 'good'; if (gflops >= 60) return 'average'; return 'poor'}
-export function getPipelineHealthColor(status: RTXSystemStatus): string { switch (status.pipelineStatus) { case 'active': return status.gpuUtilization > 80 ? '#00ff88' :  '#ffcc00'; case 'idle': return '#666666'; case 'error': return '#ff6b35',default: return '#333333'} 
+// REMOVED: export function getPipelineHealthColor(status: RTXSystemStatus): string { switch (status.pipelineStatus) { case 'active': return status.gpuUtilization > 80 ? '#00ff88' :  '#ffcc00'; case 'idle': return '#666666'; case 'error': return '#ff6b35',default: return '#333333'} 
 
 

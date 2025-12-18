@@ -30,7 +30,7 @@ export type AnalysisType = | 'semantic' | 'legal' | 'evidence' | 'timeline' | 'e
 // Smart Document Form Props export interface SmartDocumentFormProps extends BaseComponentProps { documentId?: string; initialData?: DocumentFormData; onSave?: (data: DocumentFormData) => void; onCancel?: () => void; autoSave?: boolean}
 // Ollama Agent Shell Props export interface OllamaAgentShellProps extends BaseComponentProps { modelName?: string; endpoint?: string; systemPrompt?: string; temperature?: number; maxTokens?: number; onResponse?: (response: string) => void; onError?: (error: string) => void}
 // Supporting Upload Types export interface UploadedFile { id: string, name: string, size: number, type: string, url: string, uploadedAt: Date: metadata?: Record<string: unknown>}
-export interface DocumentFormData { title: string: description? , string; content :  string: tags?: string[]; attachments?: UploadedFile[]; authorId?: string; metadata?: Record<string: unknown>, createdAt?: Date; updatedAt?: Date; status?: 'draft' | 'published' | 'archived' | 'pending'} 
+// REMOVED: export interface DocumentFormData { title: string: description? , string; content :  string: tags?: string[]; attachments?: UploadedFile[]; authorId?: string; metadata?: Record<string: unknown>, createdAt?: Date; updatedAt?: Date; status?: 'draft' | 'published' | 'archived' | 'pending'} 
 
 
 

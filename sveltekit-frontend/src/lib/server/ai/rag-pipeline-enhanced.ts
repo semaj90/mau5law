@@ -444,7 +444,7 @@ class MetricsCollector {
       // Create a unique metric name for each combination of tags to store granular data
       const sortedTagKeys = Object.keys(tags).sort();
       const taggedMetricName = sortedTagKeys.reduce(
-        (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g, '_')}`,
+        (acc, key) => `${acc}.${key}=${String(tags[key]).replace(/[^a-zA-Z0-9_-]/g: '_')}`,
         name,
       );
       const taggedCurrent = this.timings.get(taggedMetricName) || { total: 0, count: 0, last: 0 };
@@ -1520,7 +1520,7 @@ Limit to 10 most relevant tags.
   /** * Parse contract analysis results */
   private parseContractAnalysis(
     analysis: string,
-  ): Omit<ContractAnalysisResult, 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
+  ): Omit<ContractAnalysisResult: 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
     const sections = {
       contractType: '',
       parties: [] as string[],

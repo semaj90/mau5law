@@ -1544,6 +1544,183 @@
 				"$tsc"
 			],
 			"detail": "Scan SvelteKit 2 routes, detect conflicts (normalized URLs), disable legacy groups per llm.txt, run svelte-check"
+		},
+		{
+			"label": "Phase 72.0: Factory Pipeline (immutable runs)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/factory-runner.mjs",
+				"run",
+				"--tier",
+				"1"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72.0: Full pipeline (svelte-check → parse → analyze → plan) with immutable runs/ folder"
+		},
+		{
+			"label": "Phase 72.1: Apply Tier 1 (services only)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/factory-runner.mjs",
+				"apply",
+				"--tier",
+				"1",
+				"--path=src/lib/services/**",
+				"--limit=3000"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72.1: Apply Tier 1 safe fixes to lib/services (21,035 errors, chunked to 3000)"
+		},
+		{
+			"label": "Phase 72.2: Apply Tier 1 (server only)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/factory-runner.mjs",
+				"apply",
+				"--tier",
+				"1",
+				"--path=src/lib/server/**",
+				"--limit=2000"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72.2: Apply Tier 1 safe fixes to lib/server (3,248 errors, chunked to 2000)"
+		},
+		{
+			"label": "Phase 72: Verify (ultra-fast)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/factory-runner.mjs",
+				"verify",
+				"npm run check:ultra-fast"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Fast verification gate (< 30s) after applying fixes"
+		},
+		{
+			"label": "Phase 72: Rollback Last Run",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"$runs = Get-ChildItem reports/runs | Sort-Object Name -Descending | Select-Object -First 1; node scripts/factory-runner.mjs rollback $runs.Name"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Rollback most recent run from backups/ folder"
+		},
+		{
+			"label": "Phase 72: Show Status",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/factory-runner.mjs",
+				"status"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Show recent runs and their metadata"
+		},
+		{
+			"label": "🎯 Phase 72: Fix Lucide Imports (Tier 1)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/fix-lucide-imports.mjs",
+				"--apply",
+				"--limit",
+				"100"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Phase 72: Fix lucide-svelte named imports → default imports (~600 errors, deterministic)"
 		}
 	]
 }
