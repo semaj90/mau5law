@@ -2165,6 +2165,224 @@
 			},
 			"detail": "Complete AST analysis: import graph, circular deps, unused exports",
 			"problemMatcher": []
+		},
+		{
+			"label": "🔧 Phase 73: Build Go Services (CMake)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/../go-microservice/BUILD-PHASE73-CMAKE.bat"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../go-microservice"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "CMake build: SIMD parser + MinIO service + Redis KAG manager",
+			"problemMatcher": []
+		},
+		{
+			"label": "🚀 Phase 73: Start All Services",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/../go-microservice/start-phase73-services.bat"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/../go-microservice"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"isBackground": true,
+			"detail": "Start Redis + SIMD Parser (8096) + MinIO Service (8095)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🤖 Phase 73: Run AI Fixer Agent",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/fixer-agent-phase73.mjs"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "AI-powered error fixer: Qdrant search → Redis cache → AST fixes",
+			"problemMatcher": []
+		},
+		{
+			"label": "🤖 Phase 73: Run Fixer (Dry Run)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/fixer-agent-phase73.mjs",
+				"--dry-run"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"DRY_RUN": "true"
+				}
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Preview fixes without modifying files",
+			"problemMatcher": []
+		},
+		{
+			"label": "📊 Phase 73: Redis Cache Stats",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-cache-helper.mjs",
+				"stats"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Show Redis KAG cache statistics",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 Phase 73: Ripgrep Search Codebase",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-cache-helper.mjs",
+				"search",
+				"${input:ripgrepQuery}",
+				"--context=3"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Search codebase with ripgrep + 3 lines context",
+			"problemMatcher": []
+		},
+		{
+			"label": "🗑️ Phase 73: Clear Redis Cache",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-cache-helper.mjs",
+				"clear"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Clear all fix patterns from Redis KAG cache",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧪 Phase 73: Health Check All Services",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '🔍 Checking Phase 73 Services...' -ForegroundColor Cyan; Write-Host ''; $services = @(@{Name='Redis';URL='redis://localhost:6379'}, @{Name='SIMD Parser';URL='http://localhost:8096/health'}, @{Name='MinIO Service';URL='http://localhost:8095/health'}, @{Name='Qdrant';URL='http://localhost:6333/collections/phase72_error_patterns'}, @{Name='Ollama';URL='http://localhost:11434/api/tags'}); foreach ($s in $services) { try { if ($s.URL -like 'redis://*') { $redis = New-Object System.Net.Sockets.TcpClient; $redis.Connect('localhost', 6379); $redis.Close(); Write-Host \"✅ $($s.Name): ONLINE\" -ForegroundColor Green } else { $response = Invoke-WebRequest -Uri $s.URL -Method GET -TimeoutSec 5 -UseBasicParsing; Write-Host \"✅ $($s.Name): ONLINE\" -ForegroundColor Green } } catch { Write-Host \"❌ $($s.Name): OFFLINE\" -ForegroundColor Red } }; Write-Host ''"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Check Redis, SIMD Parser, MinIO, Qdrant, Ollama status",
+			"problemMatcher": []
+		}
+	],
+	"inputs": [
+		{
+			"id": "ripgrepQuery",
+			"type": "promptString",
+			"description": "Enter search query for ripgrep",
+			"default": "on:click"
 		}
 	]
 }

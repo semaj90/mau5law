@@ -159,7 +159,30 @@ node scripts/ast-error-analyzer.mjs --dir src/lib/services
 **Solution:**
 ```bash
 node scripts/ast-error-analyzer.mjs --graph import-graph.json
-# Visualize importGraph object
+# Generates 5 files for graph-to-tree analysis:
+#   - import-graph.json       (Full analysis with knowledge base)
+#   - import-graph.cypher     (Neo4j import script)
+#   - import-graph.d3.json    (D3.js visualization format)
+#   - import-graph.dot        (Graphviz diagram)
+#   - import-graph.tree.json  (Tree adapter for RAG/KAG)
+```
+
+**Knowledge Base Structure:**
+- **Nodes:** File entities with metadata (import/export counts, errors)
+- **Edges:** Import relationships with directionality
+- **Trees:** Hierarchical directory structure
+- **Clusters:** Semantic groupings by domain/feature
+
+**Adapter Integration:**
+```javascript
+// Tree adapter format for RAG/KAG systems
+{
+  "version": "1.0",
+  "metadata": { "nodeCount": 458, "edgeCount": 2341 },
+  "tree": { /* hierarchical structure */ },
+  "clusters": [ /* semantic groupings */ ],
+  "graph": { "nodes": [...], "edges": [...] }
+}
 ```
 
 ### 4. Find Missing Imports
@@ -205,6 +228,167 @@ node scripts/ast-error-analyzer.mjs --dir src/lib/types
 | Single File | 1 | <1s | ~10 KB |
 | Directory (services) | ~30 | ~5s | ~500 KB |
 | Full Project | 458 | ~30s | ~5 MB |
+
+---
+
+## 📊 Knowledge Base Export Formats
+
+The AST analyzer automatically generates **4 additional formats** for graph-to-tree analysis and adapter integration:
+
+### 1. Neo4j Cypher (`.cypher`)
+**Purpose:** Direct import into Neo4j graph database
+**Format:**
+```cypher
+CREATE (n0:File {id: 0, path: "src/lib/auth/auth-store.ts", imports: 5, exports: 2});
+CREATE (n1:File {id: 1, path: "src/lib/services/auth-service.ts", imports: 8, exports: 3});
+MATCH (a:File {id: 0}), (b) WHERE b.path = "src/lib/services/auth-service" CREATE (a)-[:IMPORTS]->(b);
+```
+
+**Use Case:** Query dependency relationships with Cypher
+```cypher
+// Find all files that import auth-service
+MATCH (f:File)-[:IMPORTS]->(s:File {path: "src/lib/services/auth-service.ts"})
+RETURN f.path
+
+// Find circular dependencies
+MATCH path = (a:File)-[:IMPORTS*2..]->(a)
+RETURN path
+```
+
+### 2. D3.js Format (`.d3.json`)
+**Purpose:** Web-based interactive graph visualization
+**Format:**
+```json
+{
+  "nodes": [
+    {"id": 0, "type": "file", "label": "auth-store.ts", "metadata": {...}},
+    {"id": 1, "type": "file", "label": "auth-service.ts", "metadata": {...}}
+  ],
+  "links": [
+    {"source": 0, "target": "src/lib/services/auth-service", "type": "imports"}
+  ],
+  "tree": {"name": "src", "children": [...]}
+}
+```
+
+**Use Case:** Create force-directed graph in browser
+```html
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+  d3.json('import-graph.d3.json').then(data => {
+    // Render interactive graph visualization
+  });
+</script>
+```
+
+### 3. Graphviz DOT (`.dot`)
+**Purpose:** Generate static dependency diagrams
+**Format:**
+```dot
+digraph ImportGraph {
+  rankdir=LR;
+  node [shape=box];
+  n0 [label="auth-store.ts"];
+  n1 [label="auth-service.ts"];
+  n0 -> n1;
+}
+```
+
+**Use Case:** Generate PNG/SVG diagrams
+```bash
+# Install Graphviz: https://graphviz.org/download/
+dot -Tpng import-graph.dot -o dependency-graph.png
+dot -Tsvg import-graph.dot -o dependency-graph.svg
+```
+
+### 4. Tree Adapter (`.tree.json`)
+**Purpose:** RAG/KAG integration for AI-powered analysis
+**Format:**
+```json
+{
+  "version": "1.0",
+  "metadata": {
+    "timestamp": "2025-12-18T23:30:00.000Z",
+    "nodeCount": 458,
+    "edgeCount": 2341
+  },
+  "tree": {
+    "name": "src",
+    "children": [
+      {"name": "lib", "type": "directory", "children": [...]},
+      {"name": "routes", "type": "directory", "children": [...]}
+    ]
+  },
+  "clusters": [
+    {
+      "name": "src/lib/services",
+      "files": ["auth-service.ts", "ai-service.ts", ...],
+      "type": "semantic-cluster"
+    }
+  ],
+  "graph": {
+    "nodes": [...],
+    "edges": [...]
+  }
+}
+```
+
+**Use Case:** Feed into LLM for intelligent refactoring
+```javascript
+// Load tree adapter format
+const kb = JSON.parse(fs.readFileSync('import-graph.tree.json'));
+
+// Extract semantic clusters for RAG context
+const serviceClusters = kb.clusters.filter(c => c.name.includes('services'));
+
+// Build prompt for LLM
+const prompt = `Analyze these ${serviceClusters.length} service modules and suggest refactoring...`;
+```
+
+---
+
+## 🔗 Adapter Integration Examples
+
+### Example 1: Build Dependency Graph for RAG
+```javascript
+import fs from 'fs';
+
+const kb = JSON.parse(fs.readFileSync('reports/latest/import-graph.tree.json'));
+
+// Find all services with high import counts
+const heavilyUsedServices = kb.graph.nodes
+  .filter(n => n.metadata.importCount > 10)
+  .map(n => n.path);
+
+console.log('Most depended-on services:', heavilyUsedServices);
+// Use for RAG context prioritization
+```
+
+### Example 2: Generate Refactoring Plan
+```javascript
+// Load tree structure
+const kb = JSON.parse(fs.readFileSync('reports/latest/import-graph.tree.json'));
+
+// Find tightly coupled clusters
+const tightlyCoupled = kb.clusters
+  .filter(c => c.files.length > 20)
+  .map(c => ({ dir: c.name, fileCount: c.files.length }));
+
+// Suggest splitting large clusters
+tightlyCoupled.forEach(cluster => {
+  console.log(`Consider splitting ${cluster.dir} (${cluster.fileCount} files)`);
+});
+```
+
+### Example 3: Neo4j Query for Circular Deps
+```cypher
+// After importing .cypher file into Neo4j
+MATCH path = (a:File)-[:IMPORTS*2..5]->(a)
+WHERE length(path) > 1
+RETURN [node in nodes(path) | node.path] as cycle
+ORDER BY length(path)
+LIMIT 10
+```
 
 ---
 
