@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "timestamp": "2025-12-19T01:35:13.200Z",
+    "nodeCount": 0,
+    "edgeCount": 0
+  },
+  "tree": {
+    "type": "directory",
+    "root": {
+      "name": "src",
+      "children": []
+    }
+  },
+  "clusters": [],
+  "graph": {
+    "nodes": [],
+    "edges": []
+  }
+}

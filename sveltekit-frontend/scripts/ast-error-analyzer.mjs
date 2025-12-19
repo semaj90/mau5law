@@ -47,14 +47,211 @@ const analysis = {
 	circularDependencies: [],
 	unusedExports: [],
 	undeclaredImports: [],
+	// Knowledge base formats for graph-to-tree analysis
+	knowledgeBase: {
+		nodes: [],        // Graph nodes (files, types, symbols)
+		edges: [],        // Relationships (imports, extends, implements)
+		trees: [],        // Hierarchical structures (directory tree, type hierarchy)
+		clusters: []      // Semantic groupings (by domain, by feature)
+	},
 	stats: {
 		totalFiles: 0,
 		totalImports: 0,
 		totalExports: 0,
 		totalSymbols: 0,
-		circularDeps: 0
+		circularDeps: 0,
+		totalNodes: 0,
+		totalEdges: 0
 	}
 };
+
+/**
+ * Build knowledge base graph structure
+ */
+function buildKnowledgeBaseGraph() {
+	console.log('\n🧠 Building knowledge base graph...');
+
+	const nodeMap = new Map();
+	let nodeId = 0;
+
+	// Create nodes for each file
+	Object.entries(analysis.files).forEach(([filePath, fileData]) => {
+		const node = {
+			id: nodeId++,
+			type: 'file',
+			label: filePath,
+			path: filePath,
+			metadata: {
+				importCount: fileData.imports.length,
+				exportCount: fileData.exports.length,
+				symbolCount: fileData.symbols.length,
+				errorCount: fileData.errors.length
+			}
+		};
+		nodeMap.set(filePath, node);
+		analysis.knowledgeBase.nodes.push(node);
+	});
+
+	// Create edges for imports
+	Object.entries(analysis.importGraph).forEach(([source, targets]) => {
+		targets.forEach(target => {
+			if (nodeMap.has(source)) {
+				analysis.knowledgeBase.edges.push({
+					source: nodeMap.get(source).id,
+					target: target,
+					type: 'imports',
+					weight: 1
+				});
+			}
+		});
+	});
+
+	// Build directory tree structure
+	const tree = buildDirectoryTree(Array.from(nodeMap.keys()));
+	analysis.knowledgeBase.trees.push({
+		type: 'directory',
+		root: tree
+	});
+
+	// Create semantic clusters by directory
+	const clusters = clusterByDirectory(Array.from(nodeMap.keys()));
+	analysis.knowledgeBase.clusters = clusters;
+
+	analysis.stats.totalNodes = analysis.knowledgeBase.nodes.length;
+	analysis.stats.totalEdges = analysis.knowledgeBase.edges.length;
+
+	console.log(`✅ Built knowledge graph: ${analysis.stats.totalNodes} nodes, ${analysis.stats.totalEdges} edges`);
+}
+
+/**
+ * Build hierarchical directory tree
+ */
+function buildDirectoryTree(filePaths) {
+	const root = { name: 'src', children: [] };
+
+	filePaths.forEach(filePath => {
+		const parts = filePath.split('/');
+		let current = root;
+
+		parts.forEach((part, idx) => {
+			if (idx === parts.length - 1) {
+				current.children = current.children || [];
+				current.children.push({ name: part, path: filePath, type: 'file' });
+			} else {
+				let child = (current.children || []).find(c => c.name === part);
+				if (!child) {
+					child = { name: part, children: [], type: 'directory' };
+					current.children = current.children || [];
+					current.children.push(child);
+				}
+				current = child;
+			}
+		});
+	});
+
+	return root;
+}
+
+/**
+ * Cluster files by directory structure
+ */
+function clusterByDirectory(filePaths) {
+	const clusters = {};
+
+	filePaths.forEach(filePath => {
+		const dir = path.dirname(filePath);
+		if (!clusters[dir]) {
+			clusters[dir] = {
+				name: dir,
+				files: [],
+				type: 'semantic-cluster'
+			};
+		}
+		clusters[dir].files.push(filePath);
+	});
+
+	return Object.values(clusters);
+}
+
+/**
+ * Export graph in multiple formats for adapters
+ */
+function exportKnowledgeBaseFormats(baseOutputPath) {
+	const outputDir = path.dirname(baseOutputPath);
+	const baseName = path.basename(baseOutputPath, '.json');
+
+	// 1. Neo4j Cypher format
+	const cypherPath = path.join(outputDir, `${baseName}.cypher`);
+	const cypherStatements = [];
+
+	analysis.knowledgeBase.nodes.forEach(node => {
+		cypherStatements.push(
+			`CREATE (n${node.id}:File {id: ${node.id}, path: "${node.path}", imports: ${node.metadata.importCount}, exports: ${node.metadata.exportCount}})`
+		);
+	});
+
+	analysis.knowledgeBase.edges.forEach(edge => {
+		cypherStatements.push(
+			`MATCH (a:File {id: ${edge.source}}), (b) WHERE b.path = "${edge.target}" CREATE (a)-[:IMPORTS]->(b)`
+		);
+	});
+
+	fs.writeFileSync(cypherPath, cypherStatements.join(';\n'));
+	console.log(`   📊 Neo4j: ${cypherPath}`);
+
+	// 2. D3.js hierarchical format
+	const d3Path = path.join(outputDir, `${baseName}.d3.json`);
+	const d3Format = {
+		nodes: analysis.knowledgeBase.nodes,
+		links: analysis.knowledgeBase.edges.map(e => ({
+			source: e.source,
+			target: e.target,
+			type: e.type
+		})),
+		tree: analysis.knowledgeBase.trees[0]?.root
+	};
+	fs.writeFileSync(d3Path, JSON.stringify(d3Format, null, 2));
+	console.log(`   🌳 D3.js: ${d3Path}`);
+
+	// 3. Graphviz DOT format
+	const dotPath = path.join(outputDir, `${baseName}.dot`);
+	const dotLines = ['digraph ImportGraph {', '  rankdir=LR;', '  node [shape=box];'];
+
+	analysis.knowledgeBase.nodes.forEach(node => {
+		const label = node.path.split('/').pop();
+		dotLines.push(`  n${node.id} [label="${label}"];`);
+	});
+
+	analysis.knowledgeBase.edges.forEach(edge => {
+		const targetNode = analysis.knowledgeBase.nodes.find(n => n.path === edge.target);
+		if (targetNode) {
+			dotLines.push(`  n${edge.source} -> n${targetNode.id};`);
+		}
+	});
+
+	dotLines.push('}');
+	fs.writeFileSync(dotPath, dotLines.join('\n'));
+	console.log(`   📈 Graphviz: ${dotPath}`);
+
+	// 4. Tree adapter format (for RAG/KAG integration)
+	const treePath = path.join(outputDir, `${baseName}.tree.json`);
+	const treeFormat = {
+		version: '1.0',
+		metadata: {
+			timestamp: analysis.timestamp,
+			nodeCount: analysis.stats.totalNodes,
+			edgeCount: analysis.stats.totalEdges
+		},
+		tree: analysis.knowledgeBase.trees[0],
+		clusters: analysis.knowledgeBase.clusters,
+		graph: {
+			nodes: analysis.knowledgeBase.nodes,
+			edges: analysis.knowledgeBase.edges
+		}
+	};
+	fs.writeFileSync(treePath, JSON.stringify(treeFormat, null, 2));
+	console.log(`   🔗 Tree Adapter: ${treePath}`);
+}
 
 /**
  * Analyze a single source file
@@ -338,10 +535,17 @@ async function main() {
 		detectCircularDependencies();
 		findUnusedExports();
 
+		// Build knowledge base graph
+		buildKnowledgeBaseGraph();
+
 		// Save results
 		const outputPath = path.join(__dirname, '..', 'reports', 'latest', graphOutput);
 		fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 		fs.writeFileSync(outputPath, JSON.stringify(analysis, null, 2));
+
+		// Export knowledge base in multiple formats
+		console.log('\n📦 Exporting knowledge base formats...');
+		exportKnowledgeBaseFormats(outputPath);
 
 		console.log('\n═'.repeat(60));
 		console.log('\n✅ AST Analysis Complete!\n');
@@ -351,8 +555,11 @@ async function main() {
 		console.log(`   Total exports: ${analysis.stats.totalExports}`);
 		console.log(`   Unique symbols: ${analysis.stats.totalSymbols}`);
 		console.log(`   Circular deps: ${analysis.stats.circularDeps}`);
-		console.log(`   Unused exports: ${analysis.unusedExports.length}\n`);
-		console.log(`📁 Results saved to: ${outputPath}\n`);
+		console.log(`   Unused exports: ${analysis.unusedExports.length}`);
+		console.log(`   Graph nodes: ${analysis.stats.totalNodes}`);
+		console.log(`   Graph edges: ${analysis.stats.totalEdges}\n`);
+		console.log(`📁 Results saved to: ${outputPath}`);
+		console.log(`📊 Knowledge base formats exported (Neo4j, D3.js, Graphviz, Tree)\n`);
 		console.log('═'.repeat(60) + '\n');
 
 	} catch (error) {
