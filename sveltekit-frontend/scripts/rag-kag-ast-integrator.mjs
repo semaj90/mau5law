@@ -58,9 +58,20 @@ const stats = {
  * Load knowledge base from file
  */
 function loadKnowledgeBase() {
-	const kbPath = path.join(__dirname, '..', 'reports', 'latest', kbFile);
+	// Handle absolute path or relative path
+	let kbPath;
+	if (path.isAbsolute(kbFile)) {
+		kbPath = kbFile;
+	} else if (kbFile.startsWith('reports/') || kbFile.startsWith('reports\\')) {
+		// If already includes reports/, use from project root
+		kbPath = path.join(__dirname, '..', kbFile);
+	} else {
+		// Otherwise, assume it's in reports/latest/
+		kbPath = path.join(__dirname, '..', 'reports', 'latest', kbFile);
+	}
+
 	if (!fs.existsSync(kbPath)) {
-		throw new Error(`Knowledge base not found: ${kbPath}\nRun: node scripts/ast-error-analyzer.mjs --graph ${kbFile}`);
+		throw new Error(`Knowledge base not found: ${kbPath}\nRun: node scripts/ast-error-analyzer.mjs --graph ${kbFile.replace('.tree.json', '.json')}`);
 	}
 
 	console.log(`📖 Loading knowledge base from: ${kbPath}`);
@@ -141,8 +152,18 @@ async function embedKnowledgeBase(kb) {
 	console.log('🔄 Embedding knowledge base into Qdrant...\n');
 
 	const points = [];
+	const totalNodes = kb.graph.nodes.length;
+	let processed = 0;
+
+	if (totalNodes === 0) {
+		console.log('⚠️  No nodes to embed (empty knowledge base)\n');
+		return;
+	}
 
 	for (const node of kb.graph.nodes) {
+		processed++;
+		const percent = ((processed / totalNodes) * 100).toFixed(1);
+
 		// Create contextual description
 		const context = `File: ${node.path}
 Type: ${node.type}
@@ -153,7 +174,13 @@ Errors: ${node.metadata.errorCount}
 
 This file is part of the codebase structure and has dependencies on other modules.`;
 
-		console.log(`   📄 Embedding: ${node.label}`);
+		// Progress bar
+		const barWidth = 30;
+		const filled = Math.floor((processed / totalNodes) * barWidth);
+		const empty = barWidth - filled;
+		const bar = '█'.repeat(filled) + '░'.repeat(empty);
+		process.stdout.write(`\r   [${bar}] ${percent}% (${processed}/${totalNodes}) ${node.label.slice(0, 40).padEnd(40)}`);
+
 		const embedding = await generateEmbedding(context);
 
 		if (embedding) {
@@ -186,6 +213,8 @@ This file is part of the codebase structure and has dependencies on other module
 	if (points.length > 0) {
 		await insertToQdrant(points);
 	}
+
+	console.log('\n');
 
 	console.log(`\n✅ Embedded ${stats.nodesEmbedded} nodes into Qdrant\n`);
 }
