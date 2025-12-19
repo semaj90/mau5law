@@ -2375,6 +2375,59 @@
 			},
 			"detail": "Check Redis, SIMD Parser, MinIO, Qdrant, Ollama status",
 			"problemMatcher": []
+		},
+		{
+			"label": "🧠 Phase 72: RAG/KAG Integrator (Services)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/rag-kag-ast-integrator.mjs",
+				"--kb",
+				"reports/latest/services-kb.tree.json",
+				"--auto-recommendations"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Embed AST knowledge base into Qdrant and generate recommendations",
+			"problemMatcher": []
+		},
+		{
+			"label": "🤖 Phase 72: Contextual Prompt Engineer",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/contextual-prompt-engineer.mjs",
+				"--task",
+				"Analyze codebase and suggest refactoring",
+				"--iterations",
+				"2"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Run LangChain-style agent for codebase analysis",
+			"problemMatcher": []
 		}
 	],
 	"inputs": [
@@ -2383,6 +2436,98 @@
 			"type": "promptString",
 			"description": "Enter search query for ripgrep",
 			"default": "on:click"
+		},
+		{
+			"id": "agentTask",
+			"type": "promptString",
+			"description": "Enter task for self-prompting agent",
+			"default": "Fix circular dependencies"
+		}
+	],
+	"tasks": [
+		{
+			"label": "🧠 Phase 72: RAG/KAG Integration (Full)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/rag-kag-ast-integrator.mjs",
+				"--kb",
+				"project-knowledge-base.tree.json",
+				"--auto-recommendations"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"NODE_OPTIONS": "--max-old-space-size=8192"
+				}
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Phase 72: Load AST knowledge base → Qdrant → Generate AI recommendations"
+		},
+		{
+			"label": "🤖 Phase 72: Self-Prompting Agent",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--expose-gc",
+				"--max-old-space-size=8192",
+				"scripts/contextual-prompt-engineer.mjs",
+				"--task",
+				"${input:agentTask}",
+				"--iterations",
+				"2"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Phase 72: LangChain-style self-prompting agent with tool calling"
+		},
+		{
+			"label": "🚀 Phase 72: Full RAG Pipeline",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '🔄 Phase 72: Complete RAG/KAG Pipeline' -ForegroundColor Cyan; Write-Host ''; node scripts/rag-kag-ast-integrator.mjs --auto-recommendations; if ($LASTEXITCODE -eq 0) { Write-Host ''; Write-Host '🤖 Running Self-Prompting Agent...' -ForegroundColor Green; node --expose-gc --max-old-space-size=8192 scripts/contextual-prompt-engineer.mjs --task 'Prioritize fixing high-error files' --iterations 2 }"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Phase 72: Complete pipeline - RAG integration → Self-prompting → Recommendations"
+		},
+		{
+			"label": "📊 Phase 72: Quick Status Check",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '📊 Phase 72 - RAG/KAG Status Check' -ForegroundColor Cyan; Write-Host ''; Write-Host '1. AST Knowledge Base:' -ForegroundColor Yellow; if (Test-Path 'reports/latest/project-knowledge-base.tree.json') { $kb = Get-Item 'reports/latest/project-knowledge-base.tree.json'; Write-Host \"   ✅ Found: $($kb.Name) ($([math]::Round($kb.Length/1MB, 2)) MB)\" -ForegroundColor Green } else { Write-Host '   ⏳ Not generated yet' -ForegroundColor Yellow }; Write-Host ''; Write-Host '2. Qdrant Collection:' -ForegroundColor Yellow; try { $qdrant = Invoke-RestMethod -Uri 'http://localhost:6333/collections/phase72_ast_knowledge_base' -Method GET -TimeoutSec 5; Write-Host \"   ✅ Collection exists: $($qdrant.result.points_count) vectors\" -ForegroundColor Green } catch { Write-Host '   ⏳ Not loaded yet' -ForegroundColor Yellow }; Write-Host ''; Write-Host '3. Recommendations:' -ForegroundColor Yellow; if (Test-Path 'reports/latest/ast-rag-recommendations.md') { Write-Host '   ✅ Generated' -ForegroundColor Green } else { Write-Host '   ⏳ Not generated yet' -ForegroundColor Yellow }; Write-Host ''"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"detail": "Phase 72: Check AST KB, Qdrant, and recommendations status"
 		}
 	]
 }

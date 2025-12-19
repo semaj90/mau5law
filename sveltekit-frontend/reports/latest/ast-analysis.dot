@@ -1,0 +1,5 @@
+digraph ImportGraph {
+  rankdir=LR;
+  node [shape=box];
+  n0 [label="enhanced-ingest-integration.ts"];
+}

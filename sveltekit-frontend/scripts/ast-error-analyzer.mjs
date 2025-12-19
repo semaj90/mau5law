@@ -260,7 +260,7 @@ function analyzeFile(sourceFile) {
 	const filePath = sourceFile.getFilePath().replace(/\\/g, '/');
 	const relativePath = path.relative(path.join(__dirname, '..'), filePath).replace(/\\/g, '/');
 
-	console.log(`📄 Analyzing: ${relativePath}`);
+	// console.log(`📄 Analyzing: ${relativePath}`);
 
 	const fileAnalysis = {
 		path: relativePath,
@@ -274,22 +274,34 @@ function analyzeFile(sourceFile) {
 	// Extract imports
 	const importDeclarations = sourceFile.getImportDeclarations();
 	importDeclarations.forEach(imp => {
-		const moduleSpecifier = imp.getModuleSpecifierValue();
-		const namedImports = imp.getNamedImports().map(ni => ni.getName());
-		const defaultImport = imp.getDefaultImport()?.getText();
+		try {
+			// Handle dynamic imports gracefully
+			let moduleSpecifier;
+			try {
+				moduleSpecifier = imp.getModuleSpecifierValue();
+			} catch (e) {
+				// Dynamic import (e.g., import(variable)) - skip it
+				return;
+			}
 
-		fileAnalysis.imports.push({
-			module: moduleSpecifier,
-			named: namedImports,
-			default: defaultImport,
-			line: imp.getStartLineNumber()
-		});
+			const namedImports = imp.getNamedImports().map(ni => ni.getName());
+			const defaultImport = imp.getDefaultImport()?.getText();
 
-		// Track import graph
-		if (!analysis.importGraph[relativePath]) {
-			analysis.importGraph[relativePath] = [];
+			fileAnalysis.imports.push({
+				module: moduleSpecifier,
+				named: namedImports,
+				default: defaultImport,
+				line: imp.getStartLineNumber()
+			});
+
+			// Track import graph
+			if (!analysis.importGraph[relativePath]) {
+				analysis.importGraph[relativePath] = [];
+			}
+			analysis.importGraph[relativePath].push(moduleSpecifier);
+		} catch (e) {
+			// Skip invalid imports
 		}
-		analysis.importGraph[relativePath].push(moduleSpecifier);
 	});
 
 	// Extract exports
@@ -397,11 +409,11 @@ function detectCircularDependencies() {
 	const recursionStack = new Set();
 	const cycles = [];
 
-	function dfs(node, path = []) {
+	function dfs(node, traversalPath = []) {
 		if (recursionStack.has(node)) {
 			// Found cycle
-			const cycleStart = path.indexOf(node);
-			const cycle = path.slice(cycleStart).concat(node);
+			const cycleStart = traversalPath.indexOf(node);
+			const cycle = traversalPath.slice(cycleStart).concat(node);
 			cycles.push(cycle);
 			return;
 		}
@@ -410,17 +422,17 @@ function detectCircularDependencies() {
 
 		visited.add(node);
 		recursionStack.add(node);
-		path.push(node);
+		traversalPath.push(node);
 
 		const dependencies = analysis.importGraph[node] || [];
 		dependencies.forEach(dep => {
 			// Resolve relative paths
 			const resolvedDep = dep.startsWith('.')
-				? path.resolve(path.dirname(node), dep).replace(/\\/g, '/')
+				? path.resolve(path.dirname(String(node)), dep).replace(/\\/g, '/')
 				: dep;
 
 			if (analysis.importGraph[resolvedDep]) {
-				dfs(resolvedDep, [...path]);
+				dfs(resolvedDep, [...traversalPath]);
 			}
 		});
 
@@ -520,7 +532,14 @@ async function main() {
 		} else if (dirArg) {
 			// Analyze directory
 			const absPath = path.resolve(path.join(__dirname, '..', dirArg));
-			targetFiles = project.getSourceFiles(`${absPath}/**/*.ts`);
+			// Normalize path for ts-morph (replace backslashes with forward slashes)
+			const normalizedPath = absPath.replace(/\\/g, '/');
+			const globPattern = `${normalizedPath}/**/*.ts`;
+
+			// Ensure files are added to the project
+			project.addSourceFilesAtPaths(globPattern);
+
+			targetFiles = project.getSourceFiles(globPattern);
 			console.log(`📂 Found ${targetFiles.length} TypeScript files in ${dirArg}\n`);
 		} else {
 			// Analyze all project files
@@ -529,7 +548,20 @@ async function main() {
 		}
 
 		// Analyze each file
-		targetFiles.forEach(analyzeFile);
+		console.log('🚀 Starting analysis...');
+		let processed = 0;
+		const total = targetFiles.length;
+		const updateInterval = Math.max(1, Math.floor(total / 20)); // Update every 5%
+
+		targetFiles.forEach(file => {
+			analyzeFile(file);
+			processed++;
+			if (processed % updateInterval === 0 || processed === total) {
+				const percent = Math.round((processed / total) * 100);
+				process.stdout.write(`\r⏳ Analyzing files: ${processed}/${total} (${percent}%)`);
+			}
+		});
+		process.stdout.write('\n');
 
 		// Post-analysis
 		detectCircularDependencies();
