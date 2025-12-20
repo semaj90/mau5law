@@ -378,6 +378,118 @@
         "clear": true
       }
     },
+    // ============================================
+    // Phase 76: ACP Tool Tasks
+    // ============================================
+    {
+      "label": "🔧 Phase 76: ACP - List All Tools",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs tools",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🔧 Phase 76: ACP - Execute Tool",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute ${input:acpTool} --query \"${input:acpArgs}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📊 Phase 76: ACP - System Statistics",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs stats",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🤖 Phase 76: ACP - Interactive Mode",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs interactive",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🚀 Phase 76: ACP - Start All Servers",
+      "type": "shell",
+      "command": "npm run phase76:full-stack",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🏥 Phase 76: ACP - System Health Check",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute system:health",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
     {
       "label": "📊 Phase 76: ACE Interactive CLI",
       "type": "shell",
@@ -479,6 +591,135 @@
         "showReuseMessage": false,
         "clear": true
       }
+    },
+    // ============================================
+    // Phase 76: Database & Cache Tools
+    // ============================================
+    {
+      "label": "🗄️ Phase 76: Query Database",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute db:query --query \"${input:sqlQuery}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "📊 Phase 76: List Database Tables",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute db:tables",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "💾 Phase 76: Redis Cache - Get",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute cache:get --key \"${input:cacheKey}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "📈 Phase 76: Cache Statistics",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute cache:stats",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "📦 Phase 76: MinIO - List Objects",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-cli.mjs execute minio:list --bucket \"legal-documents\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔄 Phase 76: Batch Execute - Health Check",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-batch.mjs --template health-check --verbose",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "⚡ Phase 76: Batch Execute - Database Overview",
+      "type": "shell",
+      "command": "node scripts/phase76-acp-batch.mjs --template database-overview --parallel --verbose",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
     }
   ],
   "inputs": [
@@ -493,6 +734,50 @@
       "type": "promptString",
       "description": "Enter a prompt to compare across all LLM providers",
       "default": "Explain the difference between Svelte 5 runes and Svelte 4 reactivity"
+    },
+    {
+      "id": "acpTool",
+      "type": "pickString",
+      "description": "Select an ACP tool to execute",
+      "options": [
+        "knowledge:search",
+        "knowledge:stats",
+        "llm:generate",
+        "llm:embed",
+        "llm:models",
+        "code:analyze",
+        "code:search",
+        "db:query",
+        "db:tables",
+        "cache:get",
+        "cache:set",
+        "cache:stats",
+        "minio:list",
+        "minio:stats",
+        "agent:discover",
+        "agent:delegate",
+        "fix:svelte5",
+        "system:health"
+      ],
+      "default": "knowledge:search"
+    },
+    {
+      "id": "acpArgs",
+      "type": "promptString",
+      "description": "Enter tool arguments (e.g., query for knowledge:search, prompt for llm:generate)",
+      "default": "Svelte 5 runes"
+    },
+    {
+      "id": "sqlQuery",
+      "type": "promptString",
+      "description": "Enter a SQL SELECT query",
+      "default": "SELECT table_name FROM information_schema.tables WHERE table_schema='public' LIMIT 10"
+    },
+    {
+      "id": "cacheKey",
+      "type": "promptString",
+      "description": "Enter a Redis cache key",
+      "default": "knowledge:graph"
     }
   ]
 }

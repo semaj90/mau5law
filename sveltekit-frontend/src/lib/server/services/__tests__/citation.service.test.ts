@@ -1,37 +1,18 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { citationService, type Citation, type SaveCitationRequest } from '../citation.service';
-
-// Mock dependencies
-vi.mock('$lib/server/db', () => ({
- db: {
- insert: vi.fn(),
- raw: vi.fn(),
- },
-}));
-
-vi.mock('$lib/server/redis', () => ({
- redis: {
- get: vi.fn(),
- setex: vi.fn(),
- del: vi.fn(),
- keys: vi.fn(),
- },
-}));
-
-vi.mock('../audit.service', () => ({
- auditService: {
- logSummaryOperation: vi.fn(),
- logCitationExtraction: vi.fn(),
- },
-}));
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';
+import { citationService } from '../citation.service';
 
 describe('CitationService', () => {
- const mockUserId = 'user-123';
- const mockCaseId = 'case-456';
+	const mockUserId = 'user-123';
+	const mockCaseId = 'case-456';
 
- beforeEach(() => {
- vi.clearAllMocks();
- });
+	beforeEach(async () => {
+		await setupTest();
+	});
+
+	afterEach(async () => {
+		await cleanupTest();
+	});
 
  describe('saveCitation', () => {
  it('should save a citation with all fields', async () => {
@@ -67,9 +48,7 @@ describe('CitationService', () => {
  expect(result.source_type).toBe('manual');
  });
 
- it('should set default source_type to manual', async () => {
- const citationData: SaveCitationRequest = {
- statute_code: '18 U.S.C. § 1001',
+import { citationService } from '../citation.service';
  };
 
  const result = await citationService.saveCitation(mockUserId, citationData);

@@ -32,7 +32,10 @@
     "cleanup:test": "vitest run scripts/api-cleanup/scanner.test.ts",
     "phase76:setup": "psql $DATABASE_URL -f scripts/setup-pgvector.sql",
     "phase76:kb:crawl": "node scripts/phase76-knowledge-builder.mjs",
-    "phase76:ace": "node scripts/phase76-ace-prompt-engineer.mjs"
+    "phase76:ace": "node scripts/phase76-ace-prompt-engineer.mjs",
+    "phase76:mcp": "node scripts/phase76-mcp-server.mjs",
+    "phase76:mcp:health": "curl http://localhost:3002/health",
+    "phase76:mcp:tools": "curl http://localhost:3002/tools"
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.0.0",

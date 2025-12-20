@@ -1,5 +1,0 @@
-2025/10/03 19:37:43 WARN Failed to rotate log older=C:\Users\james\AppData\Local\Ollama\app-1.log newer=C:\Users\james\AppData\Local\Ollama\app.log error="rename C:\\Users\\james\\AppData\\Local\\Ollama\\app.log C:\\Users\\james\\AppData\\Local\\Ollama\\app-1.log: The process cannot access the file because it is being used by another process."
-time=2025-10-03T19:37:43.475-07:00 level=INFO source=app_windows.go:272 msg="starting Ollama" app=C:\Users\james\AppData\Local\Programs\Ollama version=0.12.3 OS=Windows/10.0.19045
-time=2025-10-03T19:37:43.497-07:00 level=INFO source=eventloop.go:324 msg="sent focus request to existing instance"
-time=2025-10-03T19:37:43.497-07:00 level=INFO source=app_windows.go:79 msg="existing instance found and focused, exiting"
-Error: ollama server not responding - timed out waiting for server to start

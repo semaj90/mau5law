@@ -40,7 +40,9 @@ export class KnowledgeSearcher {
       threshold = 0.5,
       filters,
       includeContent = false,
-      useCache = true
+      useCache = true,
+      synthesize = false,
+      llmProvider = 'ollama',
     } = options;
 
     // Check cache first
@@ -72,8 +74,8 @@ export class KnowledgeSearcher {
           scores: {
             semantic: result.score || 0,
             tfidf: 0,
-            combined: result.score || 0
-          }
+            combined: result.score || 0,
+          },
         });
         continue;
       }
@@ -95,8 +97,8 @@ export class KnowledgeSearcher {
         scores: {
           semantic: semanticScore,
           tfidf: tfidfScore,
-          combined: combinedScore
-        }
+          combined: combinedScore,
+        },
       });
     }
 
@@ -125,6 +127,19 @@ export class KnowledgeSearcher {
     // Cache results
     if (useCache) {
       await this.cache.cacheSearchResults(query, topResults);
+    }
+
+    // Synthesize answer with LLM if requested
+    if (synthesize && topResults.length > 0) {
+      try {
+        const synthesizedAnswer = await this.synthesizeAnswer(query, topResults, llmProvider);
+        // Add synthesized answer to first result as a special field
+        if (topResults[0]) {
+          (topResults[0] as any).synthesizedAnswer = synthesizedAnswer;
+        }
+      } catch (error) {
+        console.warn('Failed to synthesize answer:', error);
+      }
     }
 
     return topResults;
@@ -205,6 +220,96 @@ export class KnowledgeSearcher {
    */
   async invalidateCache(queryHash?: string): Promise<void> {
     await this.cache.invalidateCache(queryHash);
+  }
+
+  /**
+   * Synthesize answer using LLM with search results as context
+   * Property 16: LLM Synthesis Context Injection
+   * Requirement 2.1: Support multiple LLM providers
+   */
+  private async synthesizeAnswer(
+    query: string,
+    results: SearchResult[],
+    provider: 'ollama' | 'gemini' | 'claude' = 'ollama'
+  ): Promise<string> {
+    // Build context from top results
+    const context = results
+      .slice(0, 5) // Use top 5 results
+      .map((r, idx) => {
+        const content = r.content || r.summary;
+        return `[${idx + 1}] ${r.title}\nURL: ${r.url}\n${content}\n`;
+      })
+      .join('\n---\n\n');
+
+    // Build prompt
+    const prompt = `You are a helpful AI assistant. Answer the following question using ONLY the provided context. If the context doesn't contain enough information, say so.
+
+Context:
+${context}
+
+Question: ${query}
+
+Answer:`;
+
+    // Call LLM based on provider
+    switch (provider) {
+      case 'ollama':
+        return await this.callOllama(prompt);
+      case 'gemini':
+        return await this.callGemini(prompt);
+      case 'claude':
+        return await this.callClaude(prompt);
+      default:
+        throw new Error(`Unsupported LLM provider: ${provider}`);
+    }
+  }
+
+  /**
+   * Call Ollama API (gemma3-legal:latest)
+   */
+  private async callOllama(prompt: string): Promise<string> {
+    try {
+      const response = await fetch('http://localhost:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemma3-legal:latest',
+          prompt,
+          stream: false,
+          options: {
+            temperature: 0.7,
+            top_p: 0.9,
+            max_tokens: 500
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ollama API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.response || 'No response generated';
+    } catch (error) {
+      console.error('Ollama API error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Call Google Gemini API
+   */
+  private async callGemini(prompt: string): Promise<string> {
+    // TODO: Implement Gemini API integration
+    throw new Error('Gemini provider not yet implemented');
+  }
+
+  /**
+   * Call Anthropic Claude API
+   */
+  private async callClaude(prompt: string): Promise<string> {
+    // TODO: Implement Claude API integration
+    throw new Error('Claude provider not yet implemented');
   }
 }
 

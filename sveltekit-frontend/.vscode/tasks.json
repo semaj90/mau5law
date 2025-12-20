@@ -170,6 +170,51 @@
 			"label": "Run ACE Demo",
 			"type": "shell",
 			"command": "powershell -ExecutionPolicy Bypass -File scripts/run-ace-demo.ps1"
+		},
+		{
+			"label": "🔌 Phase 76: ACP MCP Server",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase76-acp-server.mjs"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"MCP_PORT": "3003",
+					"ACP_API_URL": "http://localhost:5175/api/acp"
+				}
+			},
+			"isBackground": true,
+			"group": "build",
+			"detail": "Phase 76: Start ACP MCP Server for VS Code integration (14 unified tools)",
+			"problemMatcher": {
+				"pattern": {
+					"regexp": "^$"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*Phase 76.*",
+					"endsPattern": ".*Server running.*"
+				}
+			}
+		},
+		{
+			"label": "🧪 Phase 76: Test ACP Tools",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '🧪 Phase 76: Testing ACP Tool Registry' -ForegroundColor Cyan; Write-Host ''; Write-Host '1. List all tools:' -ForegroundColor Yellow; $tools = Invoke-RestMethod -Uri 'http://localhost:5175/api/acp/tools'; Write-Host \"   ✅ Found $($tools.count) tools\" -ForegroundColor Green; Write-Host ''; Write-Host '2. Test knowledge:search:' -ForegroundColor Yellow; $body = @{ tool = 'knowledge:search'; args = @{ query = 'Svelte 5 runes'; topK = 3 } } | ConvertTo-Json -Compress; $result = Invoke-RestMethod -Uri 'http://localhost:5175/api/acp/execute' -Method POST -Body $body -ContentType 'application/json'; if ($result.success) { Write-Host \"   ✅ Search successful: $($result.result.results.Count) results\" -ForegroundColor Green } else { Write-Host \"   ❌ Search failed: $($result.error)\" -ForegroundColor Red }; Write-Host ''; Write-Host '3. Test llm:generate:' -ForegroundColor Yellow; $body = @{ tool = 'llm:generate'; args = @{ prompt = 'Hello, world!'; provider = 'ollama'; maxTokens = 50 } } | ConvertTo-Json -Compress; $result = Invoke-RestMethod -Uri 'http://localhost:5175/api/acp/execute' -Method POST -Body $body -ContentType 'application/json'; if ($result.success) { Write-Host \"   ✅ Generation successful\" -ForegroundColor Green; Write-Host \"   Response: $($result.result.text.Substring(0, [Math]::Min(100, $result.result.text.Length)))...\" } else { Write-Host \"   ❌ Generation failed: $($result.error)\" -ForegroundColor Red }; Write-Host ''"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 76: Run comprehensive tests on ACP Tool Registry"
 		}
 	],
 	"inputs": [

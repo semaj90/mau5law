@@ -2,82 +2,94 @@
  * Unit Tests for RAGService
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ragService } from '../rag.service';
-import { redis } from '$lib/server/redis';
-import { db } from '$lib/server/db';
+
+// Create proper mock chains
+const createDbSelectMock = (data: any) => ({
+	from: vi.fn(() => ({
+		where: vi.fn().mockResolvedValue(data)
+	}))
+});
 
 // Mock dependencies
-vi.mock('$lib/server/redis');
-vi.mock('$lib/server/db');
+vi.mock('$lib/server/redis', () => ({
+	redis: {
+		get: vi.fn().mockResolvedValue(null),
+		setex: vi.fn().mockResolvedValue('OK'),
+		del: vi.fn().mockResolvedValue(1),
+	}
+}));
+
+vi.mock('$lib/server/db', () => ({
+	db: {
+		select: vi.fn(),
+	}
+}));
+
+// Import after mocking
+import { db } from '$lib/server/db';
+import { redis } from '$lib/server/redis';
 
 describe('RAGService', () => {
- beforeEach(() => {
- vi.clearAllMocks();
- });
+	beforeEach(() => {
+		vi.clearAllMocks();
+		// Reset redis mocks
+		vi.mocked(redis.get).mockResolvedValue(null);
+		vi.mocked(redis.setex).mockResolvedValue('OK');
+		vi.mocked(redis.del).mockResolvedValue(1);
+	});
 
- describe('retrieveStatutes', () => {
- it('should retrieve statutes for given charges', async () => {
- const charges = ['42 U.S.C. § 1983', 'Cal. Penal Code § 187'];
- const statutes = [
- {
- code: '42 U.S.C. § 1983',
- title: 'Civil Rights',
- text: 'Every person who...',
- relevance: 0.95,
- },
- {
- code: 'Cal. Penal Code § 187',
- title: 'Murder',
- text: 'Murder is the unlawful killing...',
- relevance: 0.92,
- },
- ];
+	describe('retrieveStatutes', () => {
+		it('should retrieve statutes for given charges', async () => {
+			const charges = ['42 U.S.C. § 1983', 'Cal. Penal Code § 187'];
+			const statutes = [
+				{
+					code: '42 U.S.C. § 1983',
+					title: 'Civil Rights',
+					text: 'Every person who...',
+					relevance: 0.95,
+				},
+				{
+					code: 'Cal. Penal Code § 187',
+					title: 'Murder',
+					text: 'Murder is the unlawful killing...',
+					relevance: 0.92,
+				},
+			];
 
- vi.mocked(db.select).mockReturnValueOnce({
- from: vi.fn().mockReturnValueOnce({
- where: vi.fn().mockResolvedValueOnce(statutes),
- }),
- });
+			vi.mocked(db.select).mockReturnValue(createDbSelectMock(statutes));
 
- const result = await ragService.retrieveStatutes(charges);
+			const result = await ragService.retrieveStatutes(charges);
 
- expect(result).toEqual(statutes);
- expect(result.length).toBe(2);
- });
+			expect(result).toEqual(statutes);
+			expect(result.length).toBe(2);
+		});
 
- it('should return empty array if no statutes found', async () => {
- const charges = ['Unknown Statute'];
+		it('should return empty array if no statutes found', async () => {
+			const charges = ['Unknown Statute'];
 
- vi.mocked(db.select).mockReturnValueOnce({
- from: vi.fn().mockReturnValueOnce({
- where: vi.fn().mockResolvedValueOnce([]),
- }),
- });
+			vi.mocked(db.select).mockReturnValue(createDbSelectMock([]));
 
- const result = await ragService.retrieveStatutes(charges);
+			const result = await ragService.retrieveStatutes(charges);
 
- expect(result).toEqual([]);
- });
+			expect(result).toEqual([]);
+		});
 
- it('should cache statute results', async () => {
- const charges = ['42 U.S.C. § 1983'];
- const statutes = [
- {
- code: '42 U.S.C. § 1983',
- title: 'Civil Rights',
- text: 'Every person who...',
- relevance: 0.95,
- },
- ];
+		it('should cache statute results', async () => {
+			const charges = ['42 U.S.C. § 1983'];
+			const statutes = [
+				{
+					code: '42 U.S.C. § 1983',
+					title: 'Civil Rights',
+					text: 'Every person who...',
+					relevance: 0.95,
+				},
+			];
 
- vi.mocked(db.select).mockReturnValueOnce({
- from: vi.fn().mockReturnValueOnce({
- where: vi.fn().mockResolvedValueOnce(statutes),
- }),
- });
+			vi.mocked(db.select).mockReturnValue(createDbSelectMock(statutes));
 
- await ragService.retrieveStatutes(charges);
+			await ragService.retrieveStatutes(charges);
 
  // Verify cache was called
  expect(redis.setex).toHaveBeenCalled();

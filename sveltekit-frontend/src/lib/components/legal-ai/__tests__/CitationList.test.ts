@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import CitationList from '../CitationList.svelte';
+import { setupTest, cleanupTest, mockQdrant, mockRedis, mockOllama, mockPostgres, mockMinio } from '$lib/test-utils/setup';
 
 // Mock fetch
-global.fetch = vi.fn();
-
 describe('CitationList Component', () => {
  const mockCitations = [
  {

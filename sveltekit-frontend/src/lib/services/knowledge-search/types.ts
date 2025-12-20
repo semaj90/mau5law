@@ -52,6 +52,8 @@ export interface SearchOptions {
   filters?: SearchFilters;
   includeContent?: boolean; // Fetch from MinIO
   useCache?: boolean; // Default: true
+  synthesize?: boolean; // Generate LLM answer
+  llmProvider?: 'ollama' | 'gemini' | 'claude'; // Default: ollama
 }
 
 export interface SearchFilters {
@@ -74,6 +76,7 @@ export interface SearchResult {
   };
   snippet?: string; // Highlighted excerpt
   content?: string; // Full content if requested
+  synthesizedAnswer?: string; // LLM-generated answer (if synthesize=true)
 }
 
 export interface CollectionStats {

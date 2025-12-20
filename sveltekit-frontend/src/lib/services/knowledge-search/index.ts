@@ -19,6 +19,8 @@ export { PostgresKnowledgeStore, getPostgresKnowledgeStore } from './PostgresKno
 export { MinioKnowledgeStore, getMinioKnowledgeStore } from './MinioKnowledgeStore';
 export { RedisCacheService, getRedisCacheService } from './RedisCacheService';
 export { KnowledgeSearcher, getKnowledgeSearcher } from './KnowledgeSearcher';
+export { TagExtractor, getTagExtractor } from './TagExtractor';
+export { ACPToolRegistry, getACPToolRegistry, executeACPTool, getACPTools, getACPToolsByCategory, getACPToolSchema } from './ACPToolRegistry';
 
 // Services to be implemented:
 // export { QdrantKnowledgeStore } from './QdrantKnowledgeStore';

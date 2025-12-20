@@ -1,1 +1,0 @@
-This is a test document for RAG upload testing. It contains information about user authentication, error handling, and Svelte 5 patterns.
