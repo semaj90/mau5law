@@ -1,4 +1,4 @@
-/** * XState v5 Actor for Embedding Generation * Uses fromPromise for async embedding operations with legal AI context */ import type { fromPromise } from 'xstate/actors';
+/** * XState v5 Actor for Embedding Generation * Uses x.x.fromPromise for async embedding operations with legal AI context */ import type { x.x.fromPromise } from 'xstate/actors';
 import type { createActor } from 'xstate';
 import type { ollamaGenerateEmbedding } from '$lib/services/ollamaService'; // Changed to named import
 export interface EmbeddingInput {
@@ -32,7 +32,7 @@ export interface EmbeddingError {
  details?: any; // Changed from comma to semicolon, and added '?' for optional
 }
 /** * XState v5 actor for generating embeddings with legal context */ export const embeddingActor =
- fromPromise(async ({ input }: { input: EmbeddingInput }): Promise<EmbeddingOutput> => {
+ x.x.fromPromise(async ({ input }: { input: EmbeddingInput }): Promise<EmbeddingOutput> => {
  // Changed input type annotation
  const startTime = Date.now();
  try {
@@ -105,7 +105,7 @@ export interface EmbeddingError {
  } satisfies EmbeddingError; // Fixed string interpolation
  }
  });
-/** * Batch embedding actor for multiple texts */ export const batchEmbeddingActor = fromPromise(
+/** * Batch embedding actor for multiple texts */ export const batchEmbeddingActor = x.x.fromPromise(
  async ({ input }: { input: EmbeddingInput[] }): Promise<EmbeddingOutput[]> => {
  // Changed input type annotation
  try {
@@ -119,7 +119,7 @@ export interface EmbeddingError {
  const actor = createActor(embeddingActor, { input: item });
  actor.start();
  const snapshot = actor.getSnapshot();
- // For fromPromise actors, the result is in snapshot.output
+ // For x.x.fromPromise actors, the result is in snapshot.output
  return (snapshot.output as EmbeddingOutput) || null; // Changed snapshot.data to snapshot.output
  });
  const batchResults = await Promise.all(batchPromises);
@@ -149,7 +149,7 @@ export interface EmbeddingError {
  const actor = createActor(embeddingActor, { input });
  actor.start();
  const snapshot = actor.getSnapshot();
- // For fromPromise actors, the result is in snapshot.output
+ // For x.x.fromPromise actors, the result is in snapshot.output
  if (!snapshot.output) throw new Error('Embedding actor returned no output'); // Changed snapshot.data to snapshot.output
  return snapshot.output as EmbeddingOutput; // Changed snapshot.data to snapshot.output
 }
@@ -160,7 +160,7 @@ export interface EmbeddingError {
  const actor = createActor(batchEmbeddingActor, { input: inputs });
  actor.start();
  const snapshot = actor.getSnapshot();
- // For fromPromise actors, the result is in snapshot.output
+ // For x.x.fromPromise actors, the result is in snapshot.output
  if (!snapshot.output) throw new Error('Batch embedding actor returned no output'); // Changed snapshot.data to snapshot.output
  return snapshot.output as EmbeddingOutput[]; // Changed snapshot.data to snapshot.output
 }

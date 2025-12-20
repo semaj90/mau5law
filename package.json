@@ -29,7 +29,10 @@
     "codemods:update-readme": "tsx tools/update-codemod-readme.ts docs/AI_CODEMOD_README.md",
     "db:migrate": "psql $DATABASE_URL -f migrations/001_create_codemod_memories.sql",
     "cleanup:scan": "tsx scripts/api-cleanup/index.ts",
-    "cleanup:test": "vitest run scripts/api-cleanup/scanner.test.ts"
+    "cleanup:test": "vitest run scripts/api-cleanup/scanner.test.ts",
+    "phase76:setup": "psql $DATABASE_URL -f scripts/setup-pgvector.sql",
+    "phase76:kb:crawl": "node scripts/phase76-knowledge-builder.mjs",
+    "phase76:ace": "node scripts/phase76-ace-prompt-engineer.mjs"
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.0.0",

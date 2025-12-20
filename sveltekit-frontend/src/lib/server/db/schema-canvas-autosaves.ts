@@ -1,7 +1,7 @@
-import type { index, integer, jsonb, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
-import type { vector } from 'pgvector/drizzle-orm';
+import { { index, integer, jsonb, pgTable, timestamp, uuid } } from 'drizzle-orm/pg-core';;
+import { { vector } } from 'pgvector/drizzle-orm';;
 
-import type { canvasStates, users } from './schema-postgres';
+import { { canvasStates, users } } from './schema-postgres';;
 
 export const canvasAutosaves = pgTable(
  'canvas_autosaves',

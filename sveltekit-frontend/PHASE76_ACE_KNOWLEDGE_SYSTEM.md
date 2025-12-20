@@ -53,16 +53,62 @@ npm run phase76:consolidate
 
 ### 3. Use ACE Prompt Engineer
 
+**NEW: Multi-LLM Support with Gemini 3 Search Grounding**
+
+The ACE system now supports automatic provider fallback and Google Search grounding:
+
 ```bash
-# Example: Fix missing imports
+# Use automatic provider selection (Ollama → Gemini → Claude → OpenAI)
 npm run phase76:ace -- --task "Fix all missing imports in evidence/analyze route" --iterations 2
 
-# Example: Route consolidation
-npm run phase76:ace -- --task "Consolidate duplicate route paths" --iterations 3
+# Force Gemini 3 with web search for current documentation
+LLM_PROVIDER=gemini GEMINI_ENABLE_SEARCH=true npm run phase76:ace -- --task "Fix TypeScript 5.6 compatibility" --iterations 2
 
-# Example: File-specific task
+# Use Claude for high-quality code generation
+LLM_PROVIDER=claude npm run phase76:ace -- --task "Refactor route structure" --iterations 3
+
+# File-specific task with auto-provider
 npm run phase76:ace -- --task "Resolve type errors" --file src/routes/(app)/cases/[id]/+page.svelte
 ```
+
+**Environment Variables:**
+```bash
+# Provider selection
+LLM_PROVIDER=auto          # auto, ollama, gemini, claude, openai
+LLM_MODEL=gemini-2.0-flash-exp-1206  # Override default model
+
+# Gemini 3 Search Grounding
+GEMINI_API_KEY=your-key-here
+GEMINI_ENABLE_SEARCH=true  # Enable Google Search
+GEMINI_MODEL=gemini-3-pro-preview  # Or gemini-2.0-flash-exp-1206
+
+# Other providers
+CLAUDE_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+```
+
+**Use Cases:**
+
+1. **Error Fixing with Current Context** (Gemini 3 Search):
+   ```bash
+   LLM_PROVIDER=gemini GEMINI_ENABLE_SEARCH=true npm run phase76:ace -- \
+     --task "Fix errors related to latest SvelteKit 2.0 changes"
+   ```
+   → Gemini searches for current SvelteKit docs and migration guides
+
+2. **Route Consolidation** (Claude for quality):
+   ```bash
+   LLM_PROVIDER=claude npm run phase76:ace -- \
+     --task "Consolidate duplicate route paths" --iterations 3
+   ```
+   → Claude provides high-quality refactoring with explanations
+
+3. **Fast Local Processing** (Ollama):
+   ```bash
+   LLM_PROVIDER=ollama npm run phase76:ace -- \
+     --task "Add missing type annotations"
+   ```
+   → Fast, free, runs locally
 
 ### 4. View Enhanced Knowledge Graph
 
@@ -148,8 +194,11 @@ This executes:
 │      │                                                        │
 │      ▼                                                        │
 │  ┌────────────────────┐                                     │
-│  │  4. Call LLM       │────→ Ollama (gemma2:27b)           │
-│  │  (Gemma2:27B)      │      Temp: 0.3, Max: 8K tokens     │
+│  │  4. Multi-LLM Call │────→ Auto-Fallback Chain:          │
+│  │  (with fallback)   │      1. Ollama (local, fast)       │
+│  │                    │      2. Gemini 3 (web search) 🔍   │
+│  │                    │      3. Claude (high quality)      │
+│  │                    │      4. OpenAI (GPT-4)             │
 │  └────────────────────┘                                     │
 │      │                                                        │
 │      ▼                                                        │
@@ -318,9 +367,28 @@ CONFIG.qdrant.collections = {
 
 ## 🎨 Prompt Templates
 
-ACE uses pre-built prompt templates for common tasks:
+ACE uses pre-built prompt templates for common tasks, powered by **Multi-LLM Router with automatic fallback**.
 
-### Error Fixing Prompt
+### Multi-LLM Provider Selection
+
+ACE automatically selects the best LLM provider based on task requirements:
+
+| Task Type | Recommended Provider | Why |
+|-----------|---------------------|-----|
+| **Error Fixing** | Gemini 3 (search enabled) | Searches current docs for API changes |
+| **Code Generation** | Claude Sonnet 4.5 | Highest quality code output |
+| **Documentation** | Gemini 3 (search enabled) | Cites official sources |
+| **Fast Iterations** | Ollama (local) | No API costs, low latency |
+| **General Tasks** | Auto (fallback chain) | Tries all providers in order |
+
+**Automatic Fallback Chain:**
+```
+Ollama (local) → Gemini 3 (search) → Claude (quality) → OpenAI (GPT-4)
+     ↓ fails          ↓ fails           ↓ fails         ↓ final
+  Try next         Try next          Try next       Error reported
+```
+
+### Error Fixing Prompt (with Gemini 3 Search)
 
 ```
 You are an expert TypeScript/Svelte error remediation agent with access to:
@@ -328,6 +396,7 @@ You are an expert TypeScript/Svelte error remediation agent with access to:
 - 75 route files
 - 1,154 reusable components
 - 10 missing import issues
+- **Google Search for current documentation** 🔍
 
 Top errors to address:
 1. src/routes/(app)/evidence/analyze/+page.svelte:42 - Cannot find name 'Button'
@@ -336,9 +405,15 @@ Top errors to address:
 Your task:
 1. Analyze error patterns using RAG semantic search
 2. Query knowledge graph for related entities
-3. Generate high-confidence fixes (≥85%)
-4. Use tools: tsc, svelte-check, ast-analyzer
-5. Validate fixes don't break existing functionality
+3. **Search for latest TypeScript/Svelte documentation if needed**
+4. Generate high-confidence fixes (≥85%)
+5. Use tools: tsc, svelte-check, ast-analyzer
+6. Validate fixes don't break existing functionality
+
+If fixing errors related to new library versions, search for:
+- Migration guides
+- Breaking changes documentation
+- Official API references
 ```
 
 ### Route Consolidation Prompt

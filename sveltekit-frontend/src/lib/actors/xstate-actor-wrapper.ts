@@ -1,5 +1,5 @@
-/** * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues * Proper fromPromise usage with typed context and error handling */
-import type { fromPromise, createActor, type ActorRefFrom } from 'xstate';
+/** * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues * Proper x.x.x.fromPromise usage with typed context and error handling */
+import type { x.x.x.fromPromise, createActor, type ActorRefFrom } from 'xstate';
 import type { fetchWithTimeout } from '$lib/utils';
 
 // ===== EMBEDDING ACTOR =====
@@ -18,7 +18,7 @@ export interface EmbeddingActorOutput {
  tokenCount?: number;
 }
 
-export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingActorInput }) => {
+export const embeddingActor = x.x.x.fromPromise(async ({ input }: { input: EmbeddingActorInput }) => {
  const startTime = Date.now();
  try {
  const response = await fetchWithTimeout('/api/ai/embed', {
@@ -65,7 +65,7 @@ export interface DocumentProcessingOutput {
  success: boolean;
 }
 
-export const documentProcessingActor = fromPromise(
+export const documentProcessingActor = x.x.x.fromPromise(
  async ({ input }: { input: DocumentProcessingInput }) => {
  const startTime = Date.now();
  try {
@@ -112,7 +112,7 @@ export interface LegalAnalysisOutput {
  processingTime: number;
 }
 
-export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
+export const legalAnalysisActor = x.x.x.fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
  const startTime = Date.now();
  try {
  const response = await fetchWithTimeout('/api/ai/legal-analysis', {
@@ -156,7 +156,7 @@ export interface RAGSearchOutput {
  model: string;
 }
 
-export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
+export const ragSearchActor = x.x.x.fromPromise(async ({ input }: { input: RAGSearchInput }) => {
  const startTime = Date.now();
  try {
  const response = await fetchWithTimeout('/api/ai/rag-search', {
@@ -216,7 +216,7 @@ export interface WorkflowOutput {
  errors: Array<any>;
 }
 
-export const workflowActor = fromPromise(
+export const workflowActor = x.x.x.fromPromise(
  async ({ input }: { input: WorkflowInput }): Promise<WorkflowOutput> => {
  // Fixed arrow function and added return type
  const startTime = Date.now();

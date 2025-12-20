@@ -225,15 +225,15 @@
 
  <div class="metadata">
  <div class="meta-item">
- <label>Version:</label>
+ <label for="$1">$1</label>
  <span>{summary.version}</span>
  </div>
  <div class="meta-item">
- <label>Created:</label>
+ <label for="$1">$1</label>
  <span>{new Date(summary.createdAt).toLocaleString()}</span>
  </div>
  <div class="meta-item">
- <label>Updated:</label>
+ <label for="$1">$1</label>
  <span>{new Date(summary.updatedAt).toLocaleString()}</span>
  </div>
  </div>

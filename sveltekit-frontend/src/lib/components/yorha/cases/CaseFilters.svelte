@@ -5,11 +5,11 @@
 
  const dispatch = createEventDispatcher();
 
- let searchQuery = '';
- let statusFilter = 'all';
- let priorityFilter = 'all';
- let assigneeFilter = 'all';
- let dateRange = 'all';
+ let searchQuery = $state('');
+ let statusFilter = $state('all');
+ let priorityFilter = $state('all');
+ let assigneeFilter = $state('all');
+ let dateRange = $state('all');
 
  const statusOptions = [
  { value: 'all', label: 'All Status' },

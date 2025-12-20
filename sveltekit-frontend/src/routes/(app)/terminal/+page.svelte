@@ -1,7 +1,7 @@
 <script lang="ts">
- import * as Button from 'bits-ui/components/button';
- import * as Textarea from 'bits-ui/components/textarea';
- import { Send, Bot, User, Loader2 } from 'lucide-svelte';
+	import * as Button from '$lib/components/ui/button';
+	import * as Textarea from '$lib/components/ui/textarea';
+	import { Bot, Loader2, Send, User } from 'lucide-svelte';
 
  type ChatMessage = {
  id: string;
@@ -324,3 +324,4 @@
  :global(.ai-chat textarea::placeholder) {
  color: #065f46 !important;
  }
+</style>

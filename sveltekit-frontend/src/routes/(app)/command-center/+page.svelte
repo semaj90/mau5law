@@ -1,7 +1,25 @@
 <script lang="ts">
-	import * as Button from 'bits-ui/components/button';
-	import * as Card from 'bits-ui/components/card';
-	import { Activity, AlertTriangle, Brain, Database, FileText, Gavel, Search, Users, Zap } from 'lucide-svelte';
+	import { Button } from '$lib/components/ui/button';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import Activity from 'lucide-svelte/icons/activity';
+	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
+	import Bell from 'lucide-svelte/icons/bell';
+	import Brain from 'lucide-svelte/icons/brain';
+	import ChevronDown from 'lucide-svelte/icons/chevron-down';
+	import Database from 'lucide-svelte/icons/database';
+	import FileText from 'lucide-svelte/icons/file-text';
+	import Gavel from 'lucide-svelte/icons/gavel';
+	import Moon from 'lucide-svelte/icons/moon';
+	import RefreshCw from 'lucide-svelte/icons/refresh-cw';
+	import Search from 'lucide-svelte/icons/search';
+	import Settings from 'lucide-svelte/icons/settings';
+	import Sun from 'lucide-svelte/icons/sun';
+	import TrendingDown from 'lucide-svelte/icons/trending-down';
+	import TrendingUp from 'lucide-svelte/icons/trending-up';
+	import Users from 'lucide-svelte/icons/users';
+	import X from 'lucide-svelte/icons/x';
+	import Zap from 'lucide-svelte/icons/zap';
 	import { onDestroy, onMount } from 'svelte';
 
 	// Svelte 5 runes state
@@ -56,7 +74,7 @@
 	let lastRefresh = $state(new Date());
 
 	// Real-time update interval
-	let refreshInterval: number;
+	let refreshInterval: ReturnType<typeof setInterval> | undefined;
 
 	// Click outside handler
 	function handleClickOutside(event: MouseEvent) {
@@ -368,7 +386,7 @@
 			</div>
 			<div class="header-actions">
 				<!-- Refresh Button -->
-				<Button.Root
+				<Button
 					variant="outline"
 					size="sm"
 					onclick={loadAllData}
@@ -377,18 +395,18 @@
 				>
 					<RefreshCw class={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
 					Refresh
-				</Button.Root>
+				</Button>
 
 				<!-- Global Search -->
-				<Button.Root variant="outline" size="sm">
+				<Button variant="outline" size="sm">
 					<Search class="h-4 w-4 mr-2" />
 					Global Search
 					<span class="keyboard-shortcut">⌘K</span>
-				</Button.Root>
+				</Button>
 
 				<!-- Quick Actions -->
 				<div class="relative">
-					<Button.Root
+					<Button
 						variant="outline"
 						size="sm"
 						onclick={() => showQuickActions = !showQuickActions}
@@ -396,33 +414,33 @@
 						<Zap class="h-4 w-4 mr-2" />
 						Quick Actions
 						<ChevronDown class="h-4 w-4 ml-2" />
-					</Button.Root>
+					</Button>
 
 					{#if showQuickActions}
 						<div class="quick-actions-dropdown">
-							<Button.Root onclick={createNewCase} class="quick-action-item">
+							<Button onclick={createNewCase} class="quick-action-item">
 								<Gavel class="h-4 w-4" />
 								Create New Case
-							</Button.Root>
-							<Button.Root onclick={uploadEvidence} class="quick-action-item">
+							</Button>
+							<Button onclick={uploadEvidence} class="quick-action-item">
 								<FileText class="h-4 w-4" />
 								Upload Evidence
-							</Button.Root>
-							<Button.Root onclick={runAIAnalysis} class="quick-action-item">
+							</Button>
+							<Button onclick={runAIAnalysis} class="quick-action-item">
 								<Brain class="h-4 w-4" />
 								Run AI Analysis
-							</Button.Root>
-							<Button.Root onclick={generateReport} class="quick-action-item">
+							</Button>
+							<Button onclick={generateReport} class="quick-action-item">
 								<BarChart3 class="h-4 w-4" />
 								Generate Report
-							</Button.Root>
+							</Button>
 						</div>
 					{/if}
 				</div>
 
 				<!-- Notifications -->
 				<div class="relative">
-					<Button.Root
+					<Button
 						variant="outline"
 						size="sm"
 						onclick={() => showNotifications = !showNotifications}
@@ -433,19 +451,19 @@
 						{#if unreadNotificationsCount > 0}
 							<span class="notification-badge">{unreadNotificationsCount}</span>
 						{/if}
-					</Button.Root>
+					</Button>
 
 					{#if showNotifications}
 						<div class="notifications-dropdown">
 							<div class="notifications-header">
 								<h3 class="notifications-title">Notifications</h3>
-								<Button.Root
+								<Button
 									variant="ghost"
 									size="sm"
 									onclick={() => showNotifications = false}
 								>
 									<X class="h-4 w-4" />
-								</Button.Root>
+								</Button>
 							</div>
 							<div class="notifications-list">
 								{#each notifications as notification}
@@ -457,21 +475,21 @@
 										</div>
 										<div class="notification-actions">
 											{#if !notification.read}
-												<Button.Root
+												<Button
 													variant="ghost"
 													size="sm"
 													onclick={() => markNotificationRead(notification.id)}
 												>
 													Mark Read
-												</Button.Root>
+												</Button>
 											{/if}
-											<Button.Root
+											<Button
 												variant="ghost"
 												size="sm"
 												onclick={() => dismissNotification(notification.id)}
 											>
 												<X class="h-4 w-4" />
-											</Button.Root>
+											</Button>
 										</div>
 									</div>
 								{/each}
@@ -487,18 +505,18 @@
 				</div>
 
 				<!-- Theme Toggle -->
-				<Button.Root variant="outline" size="sm" onclick={toggleTheme}>
+				<Button variant="outline" size="sm" onclick={toggleTheme}>
 					{#if isDarkTheme}
 						<Sun class="h-4 w-4" />
 					{:else}
 						<Moon class="h-4 w-4" />
 					{/if}
-				</Button.Root>
+				</Button>
 
 				<!-- Settings -->
-				<Button.Root variant="outline" size="sm">
+				<Button variant="outline" size="sm">
 					<Settings class="h-4 w-4" />
-				</Button.Root>
+				</Button>
 			</div>
 		</div>
 
@@ -528,28 +546,28 @@
 				<h3 class="nav-title">Operations</h3>
 				<ul class="nav-list">
 					<li class="nav-item" class:active={currentView === 'dashboard'}>
-						<Button.Root onclick={() => currentView = 'dashboard'} class="nav-link">
+						<Button onclick={() => currentView = 'dashboard'} class="nav-link">
 							<Activity class="h-4 w-4" />
 							Dashboard
-						</Button.Root>
+						</Button>
 					</li>
 					<li class="nav-item" class:active={currentView === 'cases'}>
-						<Button.Root onclick={() => currentView = 'cases'} class="nav-link">
+						<Button onclick={() => currentView = 'cases'} class="nav-link">
 							<Gavel class="h-4 w-4" />
 							Cases
-						</Button.Root>
+						</Button>
 					</li>
 					<li class="nav-item" class:active={currentView === 'evidence'}>
-						<Button.Root onclick={() => currentView = 'evidence'} class="nav-link">
+						<Button onclick={() => currentView = 'evidence'} class="nav-link">
 							<FileText class="h-4 w-4" />
 							Evidence
-						</Button.Root>
+						</Button>
 					</li>
 					<li class="nav-item" class:active={currentView === 'ai'}>
-						<Button.Root onclick={() => currentView = 'ai'} class="nav-link">
+						<Button onclick={() => currentView = 'ai'} class="nav-link">
 							<Brain class="h-4 w-4" />
 							AI Chat
-						</Button.Root>
+						</Button>
 					</li>
 				</ul>
 			</div>
@@ -558,16 +576,16 @@
 				<h3 class="nav-title">Intelligence</h3>
 				<ul class="nav-list">
 					<li class="nav-item" class:active={currentView === 'persons'}>
-						<Button.Root onclick={() => currentView = 'persons'} class="nav-link">
+						<Button onclick={() => currentView = 'persons'} class="nav-link">
 							<Users class="h-4 w-4" />
 							Persons
-						</Button.Root>
+						</Button>
 					</li>
 					<li class="nav-item" class:active={currentView === 'analysis'}>
-						<Button.Root onclick={() => currentView = 'analysis'} class="nav-link">
+						<Button onclick={() => currentView = 'analysis'} class="nav-link">
 							<Search class="h-4 w-4" />
 							Analysis
-						</Button.Root>
+						</Button>
 					</li>
 				</ul>
 			</div>
@@ -576,10 +594,10 @@
 				<h3 class="nav-title">System</h3>
 				<ul class="nav-list">
 					<li class="nav-item" class:active={currentView === 'system'}>
-						<Button.Root onclick={() => currentView = 'system'} class="nav-link">
+						<Button onclick={() => currentView = 'system'} class="nav-link">
 							<Database class="h-4 w-4" />
 							System
-						</Button.Root>
+						</Button>
 					</li>
 				</ul>
 			</div>
@@ -590,115 +608,111 @@
 			{#if currentView === 'dashboard'}
 				<!-- Metrics Grid -->
 				<div class="metrics-grid">
-					<Card.Root class="metric-card">
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm flex items-center">
+					<Card class="metric-card">
+						<CardHeader class="pb-2">
+							<CardTitle class="text-sm flex items-center">
 								<Gavel class="h-4 w-4 mr-2" />
 								Total Cases
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="metric-value">{metrics.totalCases}</div>
 							<div class="metric-trend">
-								{@const TrendIconTotal = getTrendIcon(metrics.trends.totalCases)}
-								<TrendIconTotal class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.totalCases)}`} />
+								<svelte:component this={getTrendIcon(metrics.trends.totalCases)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.totalCases)}`} />
 								<span class={`${getTrendColor(metrics.trends.totalCases)}`}>
 									{metrics.trends.totalCases >= 0 ? '+' : ''}{metrics.trends.totalCases.toFixed(1)}%
 								</span>
 								<span class="text-xs text-muted-foreground ml-2">vs last month</span>
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 
-					<Card.Root class="metric-card">
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm flex items-center">
+					<Card class="metric-card">
+						<CardHeader class="pb-2">
+							<CardTitle class="text-sm flex items-center">
 								<Activity class="h-4 w-4 mr-2" />
 								Active Cases
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="metric-value">{metrics.activeCases}</div>
 							<div class="metric-trend">
-								{@const TrendIconActive = getTrendIcon(metrics.trends.activeCases)}
-								<TrendIconActive class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.activeCases)}`} />
+								<svelte:component this={getTrendIcon(metrics.trends.activeCases)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.activeCases)}`} />
 								<span class={`${getTrendColor(metrics.trends.activeCases)}`}>
 									{metrics.trends.activeCases >= 0 ? '+' : ''}{metrics.trends.activeCases.toFixed(1)}%
 								</span>
 								<span class="text-xs text-muted-foreground ml-2">vs last week</span>
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 
-					<Card.Root class="metric-card">
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm flex items-center">
+					<Card class="metric-card">
+						<CardHeader class="pb-2">
+							<CardTitle class="text-sm flex items-center">
 								<FileText class="h-4 w-4 mr-2" />
 								Evidence Processed
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="metric-value">{metrics.evidenceProcessed.toLocaleString()}</div>
 							<div class="metric-trend">
-								{@const TrendIconEvidence = getTrendIcon(metrics.trends.evidenceProcessed)}
-								<TrendIconEvidence class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.evidenceProcessed)}`} />
+								<svelte:component this={getTrendIcon(metrics.trends.evidenceProcessed)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.evidenceProcessed)}`} />
 								<span class={`${getTrendColor(metrics.trends.evidenceProcessed)}`}>
 									{metrics.trends.evidenceProcessed >= 0 ? '+' : ''}{metrics.trends.evidenceProcessed.toFixed(1)}%
 								</span>
 								<span class="text-xs text-muted-foreground ml-2">{metrics.ocrAccuracy}% OCR accuracy</span>
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 
-					<Card.Root class="metric-card">
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm flex items-center">
+					<Card class="metric-card">
+						<CardHeader class="pb-2">
+							<CardTitle class="text-sm flex items-center">
 								<Brain class="h-4 w-4 mr-2" />
 								AI Queries
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="metric-value">{metrics.aiQueries.toLocaleString()}</div>
 							<div class="metric-trend">
-								{@const TrendIconAI = getTrendIcon(metrics.trends.aiQueries)}
-								<TrendIconAI class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.aiQueries)}`} />
+								<svelte:component this={getTrendIcon(metrics.trends.aiQueries)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.aiQueries)}`} />
 								<span class={`${getTrendColor(metrics.trends.aiQueries)}`}>
 									{metrics.trends.aiQueries >= 0 ? '+' : ''}{metrics.trends.aiQueries.toFixed(1)}%
 								</span>
 								<span class="text-xs text-muted-foreground ml-2">this month</span>
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 
-					<Card.Root class="metric-card system-health-card">
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm flex items-center">
+					<Card class="metric-card system-health-card">
+						<CardHeader class="pb-2">
+							<CardTitle class="text-sm flex items-center">
 								<Database class="h-4 w-4 mr-2" />
 								System Health
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="metric-value {getStatusColor(metrics.systemHealth)}">
 								{metrics.systemHealth}
 							</div>
 							<div class="text-xs text-muted-foreground">
 								GPU: {metrics.gpuStatus}
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 				</div>
 
 				<!-- Active Cases & System Status -->
 				<div class="content-grid">
 					<!-- Active Cases -->
-					<Card.Root>
-						<Card.Header>
-							<Card.Title class="flex items-center">
+					<Card>
+						<CardHeader>
+							<CardTitle class="flex items-center">
 								<Gavel class="h-5 w-5 mr-2" />
 								Active Cases
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="space-y-3">
 								{#each activeCases as caseItem}
 									<div class="case-item">
@@ -718,18 +732,18 @@
 									</div>
 								{/each}
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 
 					<!-- System Status & Alerts -->
-					<Card.Root>
-						<Card.Header>
-							<Card.Title class="flex items-center">
+					<Card>
+						<CardHeader>
+							<CardTitle class="flex items-center">
 								<Activity class="h-5 w-5 mr-2" />
 								System Status
-							</Card.Title>
-						</Card.Header>
-						<Card.Content>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
 							<div class="space-y-4">
 								<!-- System Metrics -->
 								<div class="system-metrics">
@@ -753,18 +767,18 @@
 										<h4 class="alerts-title">Recent Alerts</h4>
 										<div class="alerts-list">
 											{#each systemAlerts.filter(a => !a.dismissed) as alert}
+												{@const AlertIcon = getAlertIcon(alert.type)}
 												<div class="alert-item alert-{alert.type}">
-													{@const AlertIcon = getAlertIcon(alert.type)}
 													<AlertIcon class="h-4 w-4" />
 													<span class="alert-message">{alert.message}</span>
 													<span class="alert-time">{alert.timestamp}</span>
-													<Button.Root
+													<Button
 														onclick={() => dismissAlert(alert.id)}
 														class="alert-dismiss"
 														aria-label="Dismiss alert"
 													>
 														<X class="h-3 w-3" />
-													</Button.Root>
+													</Button>
 												</div>
 											{/each}
 										</div>
@@ -776,19 +790,19 @@
 									</div>
 								{/if}
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</CardContent>
+					</Card>
 				</div>
 			{:else}
 				<!-- Placeholder for other views -->
-				<Card.Root>
-					<Card.Content class="p-8 text-center">
+				<Card>
+					<CardContent class="p-8 text-center">
 						<div class="text-muted-foreground">
 							<h3 class="text-lg font-semibold mb-2">{currentView.charAt(0).toUpperCase() + currentView.slice(1)} View</h3>
 							<p>This section is under development. Check back soon!</p>
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</CardContent>
+				</Card>
 			{/if}
 		</main>
 	</div>
@@ -1351,4 +1365,6 @@
 		}
 	}
 </style>
+
+
 
