@@ -94,6 +94,82 @@
 			"label": "Phase 75: ACE Agent Analysis",
 			"type": "shell",
 			"command": "node scripts/phase75-ace-agent.mjs"
+		},
+		{
+			"label": "🧠 LLM: Gemini Web Search",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/llm-router.mjs",
+				"--provider",
+				"gemini",
+				"--prompt",
+				"${input:llmPrompt}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"GEMINI_MODEL": "gemini-2.0-flash-exp-1206",
+					"GEMINI_ENABLE_SEARCH": "true"
+				}
+			},
+			"group": "test",
+			"detail": "Test Gemini 3 with Google Search grounding"
+		},
+		{
+			"label": "🔍 LLM: Health Check",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/llm-router.mjs",
+				"--health-check"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Check status of all LLM providers"
+		},
+		{
+			"label": "⚡ LLM: Compare Providers",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/llm-router.mjs",
+				"--compare",
+				"--prompt",
+				"${input:llmPrompt}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Test same prompt across all available LLM providers"
+		},
+		{
+			"label": "🧪 LLM: Test Runner (CLI)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/test-llm.mjs",
+				"--model=${input:llmModel}",
+				"--prompt=${input:llmPrompt}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Run LLM test with specific model"
+		},
+		{
+			"label": "Phase 76: ACE Agent (TS 5.6)",
+			"type": "shell",
+			"command": "node scripts/phase76-ace-prompt-engineer.mjs --task \"Fix TypeScript 5.6 compatibility\" --iterations 2"
+		},
+		{
+			"label": "Run ACE Demo",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File scripts/run-ace-demo.ps1"
 		}
 	],
 	"inputs": [
@@ -108,6 +184,24 @@
 			"type": "promptString",
 			"description": "Enter task for self-prompting agent",
 			"default": "Fix circular dependencies"
+		},
+		{
+			"id": "llmPrompt",
+			"type": "promptString",
+			"description": "Enter prompt for LLM testing",
+			"default": "What are the latest features in TypeScript 5.6?"
+		},
+		{
+			"id": "llmModel",
+			"type": "pickString",
+			"description": "Select LLM Model",
+			"options": [
+				"ollama",
+				"gemini",
+				"claude",
+				"openai"
+			],
+			"default": "ollama"
 		}
 	]
 }

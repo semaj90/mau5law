@@ -34,6 +34,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { fileURLToPath } from 'url';
+import { callLLM as callMultiLLM } from './llm-router.mjs';
+import { fetchDeepDoc } from './phase76-storage-layer.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,9 +45,17 @@ const rootDir = path.dirname(__dirname);
 // Configuration
 // ============================================
 const CONFIG = {
+	llm: {
+		provider: process.env.LLM_PROVIDER || 'auto',  // auto, ollama, gemini, claude, openai
+		model: process.env.LLM_MODEL || undefined,  // Provider-specific model override
+		temperature: 0.3,
+		topP: 0.9,
+		maxTokens: 8192,
+		useSearch: process.env.GEMINI_ENABLE_SEARCH === 'true'  // Enable Gemini 3 web search
+	},
 	ollama: {
 		url: process.env.OLLAMA_URL || 'http://localhost:11434',
-		model: process.env.OLLAMA_MODEL || 'gemma3-legal:latest',  // Updated to use available model
+		model: process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
 		embeddingModel: 'embeddinggemma:latest',
 		temperature: 0.3,
 		topP: 0.9,
@@ -53,9 +63,15 @@ const CONFIG = {
 	},
 	qdrant: {
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
-		collection: 'phase72_error_patterns',
+		errorCollection: 'phase72_error_patterns',
+		knowledgeCollection: 'phase76_knowledge_base',
 		topK: 10,
-		scoreThreshold: 0.7
+		scoreThreshold: 0.4,     // Lowered further to ensure retrieval
+		knowledgeThreshold: 0.3  // Lowered further to ensure Svelte 5 docs are retrieved
+	},
+	mcp: {
+		url: process.env.MCP_CONTEXT7_URL || 'http://localhost:3002',
+		enabled: true
 	},
 	neo4j: {
 		enabled: false, // Set to true if Neo4j is running
@@ -76,7 +92,11 @@ const CONFIG = {
 			'file-write',
 			'ast-analyzer',
 			'web-search',
-			'test-runner'
+			'test-runner',
+			'postgres-query',
+			'minio-fetch',
+			'mcp:server:func:args',
+			'migrate-svelte-component'
 		]
 	},
 	confidence: {
@@ -161,7 +181,8 @@ class ACEPromptEngineer {
 
 			// Step 1: RAG retrieval
 			const ragContext = await this.performRAGRetrieval();
-			iteration.steps.push({ name: 'RAG Retrieval', results: ragContext.length, time: performance.now() - startTime });
+			const ragCount = (ragContext.errors?.length || 0) + (ragContext.knowledge?.length || 0);
+			iteration.steps.push({ name: 'RAG Retrieval', results: ragCount, time: performance.now() - startTime });
 
 			// Step 2: KAG traversal (optional)
 			const kagContext = await this.performKAGTraversal();
@@ -220,39 +241,101 @@ class ACEPromptEngineer {
 			// Generate embedding for the task query
 			const embedding = await this.generateEmbedding(this.task);
 
-			// Search Qdrant
-			const searchUrl = `${CONFIG.qdrant.url}/collections/${CONFIG.qdrant.collection}/points/search`;
+			// Query BOTH collections in parallel
+			const [errorResults, knowledgeResults] = await Promise.all([
+				this.queryQdrantCollection(
+					CONFIG.qdrant.errorCollection,
+					embedding,
+					CONFIG.qdrant.topK,
+					CONFIG.qdrant.scoreThreshold
+				),
+				this.queryQdrantCollection(
+					CONFIG.qdrant.knowledgeCollection,
+					embedding,
+					CONFIG.qdrant.topK,
+					CONFIG.qdrant.knowledgeThreshold
+				)
+			]);
+
+			console.log(chalk.green(`   ✅ Found ${errorResults.length} error patterns, ${knowledgeResults.length} docs\n`));
+
+			return {
+				errors: errorResults.map(r => ({
+					score: r.score,
+					file: r.payload.file || 'unknown',
+					message: r.payload.message || '',
+					category: r.payload.category || 'general'
+				})),
+				knowledge: knowledgeResults.map(r => ({
+					score: r.score,
+					title: r.payload.title || 'Documentation',
+					url: r.payload.url || '',
+					summary: r.payload.summary || ''
+				}))
+			};
+
+		} catch (error) {
+			console.log(chalk.yellow(`   ⚠️  RAG error: ${error.message}, using fallback`));
+			return { errors: this.fallbackRAGRetrieval(), knowledge: [] };
+		}
+	}
+
+	/**
+	 * Query a Qdrant collection (reusable helper)
+	 */
+	async queryQdrantCollection(collection, embedding, limit, scoreThreshold) {
+		const searchUrl = `${CONFIG.qdrant.url}/collections/${collection}/points/search`;
+
+		try {
 			const response = await fetch(searchUrl, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					vector: embedding,
-					limit: CONFIG.qdrant.topK,
-					score_threshold: CONFIG.qdrant.scoreThreshold,
+					limit: limit,
+					score_threshold: scoreThreshold,
 					with_payload: true
 				})
 			});
 
 			if (!response.ok) {
-				console.log(chalk.yellow('   ⚠️  Qdrant not available, using local knowledge base'));
-				return this.fallbackRAGRetrieval();
+				console.log(chalk.yellow(`   ⚠️  ${collection} not available`));
+				return [];
 			}
 
 			const data = await response.json();
 			const results = data.result || [];
 
-			console.log(chalk.green(`   ✅ Found ${results.length} relevant errors/entities\n`));
+			// Hydrate from MinIO if needed
+			for (const hit of results) {
+				if (hit.payload && hit.payload.minio_key) {
+					try {
+						console.log(chalk.cyan(`   📦 [Agent] Hydrating deep context from MinIO: ${hit.payload.minio_key}`));
 
-			return results.map(r => ({
-				score: r.score,
-				file: r.payload.file,
-				message: r.payload.message,
-				category: r.payload.category
-			}));
+						// Use fetchDeepDoc helper for cleaner code
+						const deepData = await fetchDeepDoc(hit.payload.minio_key);
+
+						if (deepData) {
+							// Replace short summary with FULL documentation text
+							hit.payload.summary = deepData.full_text || deepData.content || deepData.summary || hit.payload.summary;
+							hit.payload.fullText = deepData.full_text;
+							hit.payload.url = deepData.url;
+
+							console.log(chalk.green(`      ✅ Loaded ${(hit.payload.summary?.length || 0).toLocaleString()} chars of deep context`));
+						} else {
+							console.log(chalk.yellow(`      ⚠️  No deep context available, using summary`));
+						}
+					} catch (err) {
+						console.warn(chalk.yellow(`   ⚠️  MinIO hydration failed: ${err.message}`));
+					}
+				}
+			}
+
+			return results;
 
 		} catch (error) {
-			console.log(chalk.yellow(`   ⚠️  RAG error: ${error.message}, using fallback`));
-			return this.fallbackRAGRetrieval();
+			console.warn(chalk.yellow(`   ⚠️  ${collection} query error: ${error.message}`));
+			return [];
 		}
 	}
 
@@ -313,30 +396,97 @@ class ACEPromptEngineer {
 	buildContextualPrompt(ragContext, kagContext) {
 		console.log(chalk.cyan('   ✍️  Step 3: Building Contextual Prompt'));
 
+		// ========================================
+		// AGENTIC DETECTION: Check for Svelte 4 patterns
+		// ========================================
+		const svelte4Patterns = [
+			/on:[a-z]+/gi,            // on:change, on:click, etc. (with or without =)
+			/export\s+let\s+\w+/gi,   // export let prop
+			/\$:\s*\w+\s*=/g,         // $: reactive statements
+			/beforeUpdate\(/gi,       // lifecycle hooks
+			/afterUpdate\(/gi,
+			/\$:\s*{/g                // $: reactive blocks
+		];
+
+		const taskText = this.task + ' ' + (this.file || '');
+		const isLegacySvelte = svelte4Patterns.some(pattern => pattern.test(taskText));
+
+		let migrationContext = '';
+		if (isLegacySvelte) {
+			console.log(chalk.yellow('   🤔 [Agent] Detected Legacy Svelte 4 Syntax!'));
+			console.log(chalk.cyan('   🔄 [Agent] Activating Svelte 5 Migration Protocols...'));
+
+			migrationContext = `\n\n## 🔴 CRITICAL MIGRATION ALERT 🔴\n\nThe task contains DEPRECATED Svelte 4 syntax. You MUST refactor to Svelte 5:\n\n### Svelte 4 → Svelte 5 Migration Rules:\n\n1. **Event Handlers**: NO more \`on:\` prefix\n   - OLD: \`<input on:change={handler} />\`\n   - NEW: \`<input onchange={handler} />\`\n\n2. **Reactive State**: Use \`$state()\` rune\n   - OLD: \`let count = 0;\`\n   - NEW: \`let count = $state(0);\`\n\n3. **Derived Values**: Use \`$derived()\` rune\n   - OLD: \`$: doubled = count * 2;\`\n   - NEW: \`let doubled = $derived(count * 2);\`\n\n4. **Component Props**: Use \`$props()\` rune\n   - OLD: \`export let title;\`\n   - NEW: \`let { title } = $props();\`\n\n5. **Lifecycle Hooks**: Use \`$effect\` runes\n   - OLD: \`beforeUpdate(() => {})\`\n   - NEW: \`$effect.pre(() => {})\`\n   - OLD: \`afterUpdate(() => {})\`\n   - NEW: \`$effect(() => {})\`\n\n**YOU MUST APPLY THESE RULES TO ALL CODE YOU GENERATE.**\n`;
+		}
+
 		const templatePrompt = this.selectPromptTemplate();
 
-		const prompt = `${templatePrompt.prompt}
+		let prompt = `${templatePrompt.prompt}\n\n`;
 
-## Retrieved Context (RAG):
-${ragContext.map((ctx, i) => `${i + 1}. [Score: ${(ctx.score * 100).toFixed(0)}%] ${ctx.file}: ${ctx.message}`).join('\n')}
+		// Add error patterns from RAG
+		if (ragContext.errors && ragContext.errors.length > 0) {
+			prompt += `## Similar Error Patterns (from codebase):\n`;
+			prompt += ragContext.errors.map((ctx, i) =>
+				`${i + 1}. [Score: ${(ctx.score * 100).toFixed(0)}%] ${ctx.file}: ${ctx.message}`
+			).join('\n');
+			prompt += '\n\n';
+		}
 
-## Graph Relationships (KAG):
-${kagContext.map((kg, i) => {
-	if (kg.from && kg.to) return `${i + 1}. ${kg.from} → ${kg.type} → ${kg.to}`;
-	if (kg.category) return `${i + 1}. Error Category: ${kg.category}`;
-	return '';
-}).join('\n')}
+		// Add documentation knowledge (NEW!)
+		if (ragContext.knowledge && ragContext.knowledge.length > 0) {
+			prompt += `## Official Documentation (from knowledge base):\n`;
+			prompt += ragContext.knowledge.map((doc, i) => {
+				// Use full text if hydrated from MinIO, otherwise use summary
+				const content = doc.fullText || doc.summary;
+				const preview = content.substring(0, 300);
+				return `${i + 1}. [Relevance: ${(doc.score * 100).toFixed(0)}%] ${doc.title}\n   📄 ${doc.url}\n   ${preview}${content.length > 300 ? '...' : ''}`;
+			}).join('\n\n');
+			prompt += '\n\n';
 
-## Your Task:
-${this.task}
+			// Log if we successfully hydrated deep context
+			const hydratedCount = ragContext.knowledge.filter(doc => doc.fullText).length;
+			if (hydratedCount > 0) {
+				console.log(chalk.green(`   ✅ Hydrated ${hydratedCount}/${ragContext.knowledge.length} docs from MinIO (deep context)`));
+			}
+		}
+		// Add Postgres/Minio Context Hints
+		prompt += `## Available Data Sources:\n`;
+		prompt += `- **PostgreSQL 17**: Use tool 'postgres-query' or 'mcp:postgres:query' to fetch structured data.\n`;
+		prompt += `- **Minio Object Storage**: Use tool 'minio-fetch' or 'mcp:minio:fetch' to retrieve text summaries.\n`;
+		prompt += `- **Qdrant Vector DB**: Already queried for RAG context above.\n\n`;
 
-${this.file ? `## Target File:\n${this.file}\n` : ''}
+		if (this.task.toLowerCase().includes('postgres') || this.task.toLowerCase().includes('database')) {
+			prompt += `IMPORTANT: You MUST query the database to verify the schema before proposing a solution. Use 'mcp:postgres:query' first. Do not hallucinate table names. Set confidence to 0.5 until you have data.\n\n`;
+		}
 
-## Instructions:
+		prompt += `## Special Instructions for Svelte Migration:\n`;
+		prompt += `IF the task is to migrate a component to Svelte 5, you MUST call the 'migrate-svelte-component' tool. Do not output the code yourself. Set confidence to 0.5 and add 'migrate-svelte-component' to suggestedTools.\n\n`;
+
+		// Add KAG context
+		// Add KAG context
+		prompt += `## Graph Relationships (KAG):\n`;
+		prompt += kagContext.map((kg, i) => {
+			if (kg.from && kg.to) return `${i + 1}. ${kg.from} → ${kg.type} → ${kg.to}`;
+			if (kg.category) return `${i + 1}. Error Category: ${kg.category}`;
+			return '';
+		}).join('\n');
+
+		prompt += `\n\n## Your Task:\n${this.task}\n\n`;
+
+		if (this.file) {
+			prompt += `## Target File:\n${this.file}\n\n`;
+		}
+
+		// Inject migration context if detected
+		if (migrationContext) {
+			prompt += migrationContext;
+		}
+
+		prompt += `## Instructions:
 1. Analyze the retrieved context carefully
 2. Use graph relationships to understand dependencies
 3. Generate a high-confidence solution (aim for ≥85%)
-4. If confidence <85%, suggest tools to gather more information
+4. If you need external data (Postgres/Minio) or verification, you MUST suggest tools and set confidence < 85%
 5. Provide step-by-step implementation plan
 6. Include validation steps
 
@@ -355,33 +505,46 @@ ${this.file ? `## Target File:\n${this.file}\n` : ''}
 	}
 
 	/**
-	 * Step 4: Call Ollama LLM
+	 * Step 4: Call Multi-LLM Router (with Gemini 3 search grounding)
 	 */
 	async callLLM(prompt) {
-		console.log(chalk.cyan('   🧠 Step 4: Calling Ollama LLM'));
+		const provider = CONFIG.llm.provider;
+		console.log(chalk.cyan('   🧠 Step 4: Calling Multi-LLM Router'));
+		console.log(chalk.gray(`      Provider: ${provider}`));
+		if (provider === 'gemini' && CONFIG.llm.useSearch) {
+			console.log(chalk.green(`      🔍 Google Search grounding enabled`));
+		}
+		console.log(chalk.gray(`      Prompt length: ${prompt.length} chars`));
 
 		try {
-			const response = await fetch(`${CONFIG.ollama.url}/api/generate`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					model: CONFIG.ollama.model,
-					prompt: prompt,
-					stream: false,
-					options: {
-						temperature: CONFIG.ollama.temperature,
-						top_p: CONFIG.ollama.topP,
-						num_predict: CONFIG.ollama.maxTokens
-					}
-				})
-			});
+			// Use multi-provider LLM router with automatic fallback
+			const llmOptions = {
+				provider: provider,
+				model: CONFIG.llm.model,
+				temperature: CONFIG.llm.temperature,
+				maxTokens: CONFIG.llm.maxTokens,
+				useSearch: CONFIG.llm.useSearch,  // Enable Gemini 3 search if configured
+				verbose: true
+			};
 
-			if (!response.ok) {
-				throw new Error(`Ollama error: ${response.status}`);
+			console.log(chalk.gray(`      Options: ${JSON.stringify(llmOptions)}`));
+
+			// Call multi-provider router
+			const response = await callMultiLLM(prompt, llmOptions);
+
+			console.log(chalk.gray(`      Provider used: ${response.provider}`));
+			if (response.searchUsed) {
+				console.log(chalk.green(`      🔍 Google Search was used!`));
+				if (response.searchQueries) {
+					console.log(chalk.gray(`      Search queries: ${response.searchQueries}`));
+				}
+				if (response.sources?.length > 0) {
+					console.log(chalk.gray(`      Sources cited: ${response.sources.length}`));
+				}
 			}
 
-			const data = await response.json();
-			const responseText = data.response || '';
+			const responseText = response.text || '';
+			console.log(chalk.gray(`      Response text length: ${responseText.length} chars`));
 
 			// Try to parse JSON response
 			let parsedResponse;
@@ -389,6 +552,7 @@ ${this.file ? `## Target File:\n${this.file}\n` : ''}
 				const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 				parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : { solution: responseText, confidence: 0.5 };
 			} catch (e) {
+				console.log(chalk.yellow(`      Could not parse JSON from response, using raw text`));
 				parsedResponse = { solution: responseText, confidence: 0.5 };
 			}
 
@@ -396,13 +560,14 @@ ${this.file ? `## Target File:\n${this.file}\n` : ''}
 			return parsedResponse;
 
 		} catch (error) {
-			console.log(chalk.red(`   ❌ LLM error: ${error.message}\n`));
+			console.log(chalk.red(`   ❌ LLM error: ${error.message}`));
+			console.log(chalk.red(`      Stack: ${error.stack}`));
 			return { solution: 'Error calling LLM', confidence: 0, error: error.message };
 		}
 	}
 
 	/**
-	 * Step 5: Invoke tools if needed
+	 * Step 5: Invoke tools if needed (Enhanced with MCP)
 	 */
 	async invokeTools(tools) {
 		console.log(chalk.cyan(`   🛠️  Step 5: Invoking Tools: ${tools.join(', ')}`));
@@ -413,27 +578,84 @@ ${this.file ? `## Target File:\n${this.file}\n` : ''}
 			try {
 				let output = '';
 
-				switch (tool) {
-					case 'tsc':
-						output = execSync('npx tsc --noEmit', { cwd: rootDir, encoding: 'utf-8', stdio: 'pipe' });
-						break;
-					case 'svelte-check':
-						output = execSync('npx svelte-check --threshold warning', { cwd: rootDir, encoding: 'utf-8', stdio: 'pipe' });
-						break;
-					case 'file-read':
-						if (this.file && existsSync(path.join(rootDir, this.file))) {
-							output = await fs.readFile(path.join(rootDir, this.file), 'utf-8');
-						}
-						break;
-					case 'grep-search':
-						// Search for related imports
-						output = execSync(`grep -r "import.*Button\\|Card\\|Input" src/lib/components`, { cwd: rootDir, encoding: 'utf-8', stdio: 'pipe' });
-						break;
-					default:
-						output = `Tool ${tool} not implemented yet`;
+				// Check if it's an MCP tool call (format: mcp:server:tool:args)
+				if (tool.startsWith('mcp:')) {
+					output = await this.callMcpTool(tool);
+				} else {
+					switch (tool) {
+						case 'tsc':
+							output = execSync('npx tsc --noEmit', { cwd: rootDir, encoding: 'utf-8', stdio: 'pipe' });
+							break;
+						case 'svelte-check':
+							output = execSync('npx svelte-check --threshold warning', { cwd: rootDir, encoding: 'utf-8', stdio: 'pipe' });
+							break;
+						case 'file-read':
+							if (this.file && existsSync(path.join(rootDir, this.file))) {
+								output = await fs.readFile(path.join(rootDir, this.file), 'utf-8');
+							}
+							break;
+						case 'grep-search':
+							// Search for related imports
+							output = execSync(`grep -r "import.*Button\\|Card\\|Input" src/lib/components`, { cwd: rootDir, encoding: 'utf-8', stdio: 'pipe' });
+							break;
+						case 'minio-fetch':
+							// Placeholder for Minio integration
+							output = "Minio integration ready. Use mcp:minio:fetch for actual execution.";
+							break;
+						case 'migrate-svelte-component':
+							// Specialized Svelte 5 Migration Tool
+							if (this.file && existsSync(path.join(rootDir, this.file))) {
+								const filePath = path.join(rootDir, this.file);
+								console.log(chalk.magenta(`   🛠️  Agent is migrating: ${this.file}`));
+
+								// 1. Read the legacy file
+								const legacyCode = await fs.readFile(filePath, 'utf-8');
+
+								// 2. Retrieve SPECIFIC Svelte 5 docs (Runes, Events)
+								const migrationDocs = await this.queryQdrantCollection(
+									CONFIG.qdrant.knowledgeCollection,
+									await this.generateEmbedding("svelte 5 migration guide runes events"),
+									3,
+									0.4
+								);
+
+								// 3. Create a "Strict Mode" Prompt
+								const migrationPrompt = `
+									You are a Svelte 5 Migration Engine.
+									Convert the following Svelte 4 code to Svelte 5 Runes mode.
+
+									RULES:
+									1. Replace 'export let' with '$props()'.
+									2. Replace 'let x' (reactive) with '$state(x)'.
+									3. Replace '$:' with '$derived()' or '$effect()'.
+									4. Replace 'on:click' with 'onclick'.
+									5. Do NOT output markdown code blocks, just the raw code.
+
+									REFERENCE DOCS:
+									${migrationDocs.map(d => d.payload.summary).join('\n')}
+
+									CODE TO MIGRATE:
+									${legacyCode}
+								`;
+
+								// 4. Call LLM specifically for this sub-task
+								const result = await callMultiLLM(migrationPrompt, {
+									provider: CONFIG.llm.provider,
+									model: CONFIG.llm.model,
+									temperature: 0.1 // Very strict
+								});
+
+								output = result.text || result.solution || "Migration failed";
+							} else {
+								output = "File not found for migration";
+							}
+							break;
+						default:
+							output = `Tool ${tool} not implemented yet`;
+					}
 				}
 
-				results.push({ tool, output: output.substring(0, 500) }); // Truncate long outputs
+				results.push({ tool, output: output.substring(0, 1000) }); // Truncate long outputs
 				this.session.toolsCalled.push(tool);
 
 			} catch (error) {
@@ -443,6 +665,58 @@ ${this.file ? `## Target File:\n${this.file}\n` : ''}
 
 		console.log(chalk.green(`   ✅ Tools executed: ${results.length}\n`));
 		return results;
+	}
+
+	/**
+	 * Call an MCP tool via HTTP (Agentic Tool Calling)
+	 * Format: mcp:serverName:functionName:jsonArgs
+	 */
+	async callMcpTool(toolString) {
+		// Parse tool string
+		const parts = toolString.split(':');
+		if (parts.length < 3) return "Invalid MCP tool format. Use mcp:server:function:args";
+
+		const serverName = parts[1]; // e.g., 'context7' or 'postgres'
+		const functionName = parts[2]; // e.g., 'summarize' or 'query'
+		const argsJson = parts.slice(3).join(':') || '{}';
+
+		let args = {};
+		try {
+			args = JSON.parse(argsJson);
+		} catch (e) {
+			return `Invalid JSON arguments for MCP tool: ${e.message}`;
+		}
+
+		// Determine MCP server URL based on name (can be extended)
+		let mcpUrl = CONFIG.mcp?.url || 'http://localhost:3002';
+
+		// Example: Route to different servers if needed
+		// if (serverName === 'postgres') mcpUrl = process.env.MCP_POSTGRES_URL || 'http://localhost:3003';
+		// if (serverName === 'minio') mcpUrl = process.env.MCP_MINIO_URL || 'http://localhost:3004';
+
+		console.log(chalk.gray(`      Calling MCP ${serverName}/${functionName}...`));
+
+		try {
+			const response = await fetch(`${mcpUrl}/function-call`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					functionName,
+					input: args,
+					model: CONFIG.ollama.qaModel
+				})
+			});
+
+			if (!response.ok) {
+				return `MCP Call Failed: ${response.statusText}`;
+			}
+
+			const data = await response.json();
+			return typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+
+		} catch (error) {
+			return `MCP Connection Error: ${error.message}`;
+		}
 	}
 
 	/**

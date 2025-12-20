@@ -155,12 +155,12 @@
 
  <div class="card-content">
  <div class="info-row">
- <label>Rank:</label>
+ <label for="$1">$1</label>
  <span class="rank-badge">#{caseItem.precedentRank}</span>
  </div>
 
  <div class="info-row">
- <label>Outcome:</label>
+ <label for="$1">$1</label>
  <span
  class="outcome-badge"
  style="background-color: {getOutcomeColor(caseItem.outcome)}"
@@ -171,7 +171,7 @@
 
  {#if caseItem.charges && caseItem.charges.length > 0}
  <div class="info-row">
- <label>Charges:</label>
+ <label for="$1">$1</label>
  <div class="charges">
  {#each caseItem.charges as charge}
  <span class="charge-tag">{charge}</span>
@@ -182,7 +182,7 @@
 
  {#if caseItem.matchedCharges && caseItem.matchedCharges.length > 0}
  <div class="info-row">
- <label>Matched Charges:</label>
+ <label for="$1">$1</label>
  <div class="matched-charges">
  {#each caseItem.matchedCharges as charge}
  <span class="matched-charge-tag">{charge}</span>

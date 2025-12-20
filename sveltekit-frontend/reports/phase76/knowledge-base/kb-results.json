@@ -1,0 +1,14 @@
+{
+  "sources": [],
+  "documents": [],
+  "embeddings": [],
+  "stats": {
+    "totalSources": 0,
+    "totalDocuments": 0,
+    "totalEmbeddings": 0,
+    "searchQueries": 2,
+    "pagesScraped": 0,
+    "mcpCalls": 0,
+    "processingTime": 994.8309999999999
+  }
+}

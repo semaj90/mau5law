@@ -1,6 +1,9 @@
 {
   "version": "2.0.0",
   "tasks": [
+    // ============================================
+    // Phase 14: Legacy Tasks (Keep for compatibility)
+    // ============================================
     {
       "label": "Phase 14: Apply env + Phase 6 core check",
       "type": "shell",
@@ -86,6 +89,410 @@
         "showReuseMessage": true,
         "clear": false
       }
+    },
+    // ============================================
+    // Phase 76: Agentic IDE - MCP & RAG/KAG
+    // ============================================
+    {
+      "label": "🔌 Phase 76: Start MCP Server",
+      "type": "shell",
+      "command": "node scripts/phase76-mcp-server.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "MCP_PORT": "3002"
+        }
+      },
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🔌 Phase 76: Start FastMCP Server",
+      "type": "shell",
+      "command": "node scripts/fastmcp-server.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "MCP_PORT": "3003"
+        }
+      },
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🤖 Phase 76: ACE Agent (Ollama)",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-prompt-engineer.mjs --task \"${input:aceTask}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "LLM_PROVIDER": "ollama",
+          "OLLAMA_MODEL": "gemma3-legal:latest"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🤖 Phase 76: ACE Agent (Gemini + Search)",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-prompt-engineer.mjs --task \"${input:aceTask}\" --iterations 3",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "LLM_PROVIDER": "gemini",
+          "GEMINI_MODEL": "gemini-2.0-flash-exp",
+          "GEMINI_ENABLE_SEARCH": "true"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🧠 Phase 76: ACE Agent (Gemini 3.0 Thinking)",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-prompt-engineer.mjs --task \"${input:aceTask}\" --iterations 3",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "LLM_PROVIDER": "gemini",
+          "GEMINI_MODEL": "gemini-3-pro-preview",
+          "GEMINI_ENABLE_SEARCH": "true",
+          "GEMINI_THINKING_LEVEL": "HIGH"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🤖 Phase 76: ACE Agent (Claude)",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-prompt-engineer.mjs --task \"${input:aceTask}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "LLM_PROVIDER": "claude"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🤖 Phase 76: ACE Agent (GPT-4)",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-prompt-engineer.mjs --task \"${input:aceTask}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "LLM_PROVIDER": "openai"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🧠 Phase 76: Knowledge Builder",
+      "type": "shell",
+      "command": "node scripts/phase76-knowledge-builder.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "🧠 Phase 76: Knowledge Consolidator",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-knowledge-consolidator.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔍 Phase 76: Test Knowledge Query",
+      "type": "shell",
+      "command": "node scripts/test-knowledge-query.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔬 Phase 76: LLM Health Check",
+      "type": "shell",
+      "command": "node scripts/llm-router.mjs --health-check",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔬 Phase 76: Compare All LLM Providers",
+      "type": "shell",
+      "command": "node scripts/llm-router.mjs --compare --prompt \"${input:llmPrompt}\"",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🌐 Phase 76: Open Knowledge UI",
+      "type": "shell",
+      "command": "Start-Process 'http://localhost:5175/knowledge'",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "none",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "🚀 Phase 76: Full Agent Stack",
+      "type": "shell",
+      "command": "npm run phase76:mcp",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "isBackground": true,
+      "dependsOn": [
+        "Dev: QUIC (Phase 14 env)"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📊 Phase 76: ACE Interactive CLI",
+      "type": "shell",
+      "command": "node scripts/phase76-ace-cli.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    // ============================================
+    // Phase 72: Error Vectorization & GPU Pipeline
+    // ============================================
+    {
+      "label": "🔮 Phase 72: GPU Error Pipeline",
+      "type": "shell",
+      "command": "node scripts/phase72-gpu-pipeline.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "PHASE72_PYTHON": "C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔮 Phase 72: Auto-Iterate (3 cycles)",
+      "type": "shell",
+      "command": "node scripts/phase72-auto-iterate.mjs",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "PHASE72_PYTHON": "C:\\Users\\james\\Videos\\deeds-web-app\\.venv\\Scripts\\python.exe"
+        }
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    // ============================================
+    // Phase 78: Error Collection & Suggestions
+    // ============================================
+    {
+      "label": "📋 Phase 78: Collect Errors",
+      "type": "shell",
+      "command": "npx tsx scripts/phase78-collect-errors.mts",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "📋 Phase 78: Full Pipeline",
+      "type": "shell",
+      "command": "npm run phase78:full",
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "aceTask",
+      "type": "promptString",
+      "description": "Enter the task for the ACE Agent (e.g., 'Analyze Postgres login errors', 'Fix TypeScript import errors')",
+      "default": "Analyze the most common TypeScript errors and suggest fixes"
+    },
+    {
+      "id": "llmPrompt",
+      "type": "promptString",
+      "description": "Enter a prompt to compare across all LLM providers",
+      "default": "Explain the difference between Svelte 5 runes and Svelte 4 reactivity"
     }
   ]
 }

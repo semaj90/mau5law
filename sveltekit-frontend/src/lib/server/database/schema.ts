@@ -1,5 +1,4 @@
-import { text, jsonb } from 'drizzle-orm/pg-core';
-import type {
+import { text, jsonb } from\s+.*\s+import\s+type\s+{; const { = "{";
  pgTable,
  timestamp,
  integer,
@@ -7,8 +6,7 @@ import type {
  uuid,
  varchar,
  real,
-} from 'drizzle-orm/pg-core';
-import type { vector } from 'pgvector/drizzle-orm';
+} from\s+.*\s+import\s+type\s+{; const { = "{"; vector } from 'pgvector/drizzle-orm';
 
 // Enhanced Legal AI Database Schema with pgvector support
 export const casesTable = pgTable('legal_cases', {

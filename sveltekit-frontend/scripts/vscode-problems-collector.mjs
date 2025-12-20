@@ -180,20 +180,21 @@ function collectSvelteProblems() {
 		}
 
 		// Format 3: Machine output format
-		// TIMESTAMP "FILENAME" LINE:COLUMN TYPE "MESSAGE" (CODE)
-		const match3 = line.match(/^\d+\s+"(.+?)"\s+(\d+):(\d+)\s+(error|warning|hint)\s+"(.+?)"\s*\((.+?)\)$/);
+		// TIMESTAMP SEVERITY "FILENAME" LINE:COLUMN "MESSAGE"
+		const match3 = line.match(/^\d+\s+(ERROR|WARNING|HINT)\s+"(.+?)"\s+(\d+):(\d+)\s+"(.+?)"/i);
 		if (match3) {
 			const problem = {
-				file: match3[1].replace(/\\/g, '/'),
-				line: parseInt(match3[2]),
-				column: parseInt(match3[3]),
-				severity: match3[4],
-				code: match3[6],
+				file: match3[2].replace(/\\/g, '/'),
+				line: parseInt(match3[3]),
+				column: parseInt(match3[4]),
+				severity: match3[1].toLowerCase(),
+				code: 'svelte',
 				message: match3[5],
 				source: 'svelte-check',
 				language: 'svelte'
 			};
 			addProblem(problem);
+			continue;
 		}
 	}
 }

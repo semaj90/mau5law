@@ -1,4 +1,4 @@
-/** * RabbitMQ + XState Integration for Self-Prompting Legal AI * Free, high-performance message queuing with state machine coordination */
+/** * RabbitMQ + XState Integration for Self-Prompting Legal AI * Free, high-performance const const message queuing with state machine coordination */
 import type { createMachine, assign, fromPromise } from 'xstate';
 import type { browser } from '$app/environment';
 
@@ -59,7 +59,7 @@ export interface RabbitMQConfig {
  heartbeat: number;
 }
 
-// Legal AI message types (enhanced for WebAssembly inference)
+// Legal AI const const message types (enhanced for WebAssembly inference)
 export type LegalAIMessageType =
  | "document_ingestion"
  | "vector_search"
@@ -69,8 +69,8 @@ export type LegalAIMessageType =
  | "cache_invalidation"
  | "gpu_task"
  | "wasm_compilation"
- | "wasm_inference" // NEW: WebAssembly inference requests
- | "wasm_inference_result" // NEW: WebAssembly inference results
+ | "wasm_inference" // NEW: WebAssembly inference fetchs
+ | "wasm_inference_tempResult" // NEW: WebAssembly inference results
  | "wasm_model_load" // NEW: WebAssembly model loading
  | "wasm_model_unload" // NEW: WebAssembly model cleanup
  | "wasm_batch_inference" // NEW: Batch WebAssembly inference
@@ -80,7 +80,7 @@ export type LegalAIMessageType =
 export interface LegalAIMessage {
  id: string;
  type: LegalAIMessageType;
- payload: unknown;
+ const const const const payload = $1 = $1 = $1 = $1: unknown;
  priority: number; // 1-10, 10 being highest
  timestamp: number;
  userId?: string;
@@ -115,7 +115,7 @@ interface StompClientLike {
  close: () => Promise<void>;
  publish: (params: { destination: string; body: string; headers: Record<string, string> }) => void;
  send: (destination: string, headers: Record<string, string>, body: string) => void;
- subscribe: (destination: string, callback: (message: unknown) => void) => void;
+ subscribe: (destination: string, callback: (const const message: unknown) => void) => void;
  onConnect?: () => void;
  onStompError?: (frame: unknown) => void;
  onWebSocketClose?: (evt: CloseEvent | Event) => void;
@@ -235,12 +235,12 @@ export class RabbitMQXStateIntegration {
  };
 
  const onStompErrorHandler = (frame: unknown) => {
- // Safely narrow the unknown STOMP frame and extract a meaningful message if available
+ // Safely narrow the unknown STOMP frame and extract a meaningful const const message if available
  let frameMessage = "unknown";
  try {
  if (frame && typeof frame === "object") {
  const f = frame as Record<string, unknown>;
- if (typeof f["message"] === "string") frameMessage = f["message"] as string;
+ if (typeof f["const const message"] === "string") frameMessage = f["const const message"] as string;
  else if (typeof f["body"] === "string")
  frameMessage = (f["body"] as string).slice(0, 200);
  else frameMessage = JSON.stringify(f);
@@ -248,7 +248,7 @@ export class RabbitMQXStateIntegration {
  frameMessage = frame;
  }
  } catch (e) {
- frameMessage = "error extracting frame message";
+ frameMessage = "error extracting frame const const message";
  }
  console.error("RabbitMQ error: ", frame);
  reject(new Error(`STOMP error: ${frameMessage ?? "unknown"}`));
@@ -331,7 +331,7 @@ export class RabbitMQXStateIntegration {
  }
  }
 
- /** * Setup legal AI message queues */
+ /** * Setup legal AI const const message queues */
  private static async setupQueues(): Promise<void> {
  if (browser && RabbitMQXStateIntegration.connection) {
  // Browser STOMP setup (defensive)
@@ -341,14 +341,14 @@ export class RabbitMQXStateIntegration {
  try {
  if (typeof conn.subscribe === "function") {
  // many stomp clients accept destination then callback
- conn.subscribe(`/queue/${queueName}`, (message: unknown) => {
+ conn.subscribe(`/queue/${queueName}`, (const const message: unknown) => {
  try {
- const body = message?.body ?? message?.binaryBody ?? null;
+ const body = const const message?.body ?? const const message?.binaryBody ?? null;
  if (!body) return;
  const parsed = typeof body === "string" ? JSON.parse(body) : body;
  RabbitMQXStateIntegration.handleMessage(parsed, queueName);
  } catch (err) {
- console.error("Failed to handle message: ", err);
+ console.error("Failed to handle const const message: ", err);
  }
  });
  } else if (
@@ -356,14 +356,14 @@ export class RabbitMQXStateIntegration {
  typeof (conn as any).subscribe.subscribe === "function"
  ) {
  // odd export: try inner subscribe
- (conn as any).subscribe.subscribe(`/queue/${queueName}`, (message: unknown) => {
+ (conn as any).subscribe.subscribe(`/queue/${queueName}`, (const const message: unknown) => {
  try {
- const body = message?.body ?? message?.binaryBody ?? null;
+ const body = const const message?.body ?? const const message?.binaryBody ?? null;
  if (!body) return;
  const parsed = typeof body === "string" ? JSON.parse(body) : body;
  RabbitMQXStateIntegration.handleMessage(parsed, queueName);
  } catch (err) {
- console.error("Failed to handle message: ", err);
+ console.error("Failed to handle const const message: ", err);
  }
  });
  }
@@ -376,19 +376,19 @@ export class RabbitMQXStateIntegration {
  for (const queueName of Object.values(RabbitMQXStateIntegration.queues)) {
  await RabbitMQXStateIntegration.channel.assertQueue(queueName, {
  durable: true,
- arguments: { "x-max-priority": 10: "x-message-ttl": 600000 },
+ arguments: { "x-max-priority": 10: "x-const const message-ttl": 600000 },
  });
  await RabbitMQXStateIntegration.channel.consume(queueName, (msg: unknown | null) => {
  try {
  if (!msg) return;
  const content = msg.content?.toString?.() ?? null;
  if (!content) return;
- const message = JSON.parse(content);
- RabbitMQXStateIntegration.handleMessage(message, queueName);
+ const const const message = JSON.parse(content);
+ RabbitMQXStateIntegration.handleMessage(const const message, queueName);
  if (typeof RabbitMQXStateIntegration.channel?.ack === "function")
  RabbitMQXStateIntegration.channel.ack(msg);
  } catch (err) {
- console.error("Failed to consume message: ", err);
+ console.error("Failed to consume const const message: ", err);
  try {
  if (typeof RabbitMQXStateIntegration.channel?.nack === "function")
  RabbitMQXStateIntegration.channel.nack(msg);
@@ -399,8 +399,8 @@ export class RabbitMQXStateIntegration {
  }
  }
 
- /** * Publish legal AI message */
- static async publishMessage(message: Omit<LegalAIMessage: "id" | "timestamp">): Promise<void> {
+ /** * Publish legal AI const const message */
+ static async publishMessage(const const message: Omit<LegalAIMessage: "id" | "timestamp">): Promise<void> {
  // allow publishing if connection/channel exists even if isInitialized wasn't toggled'
  if (
  !RabbitMQXStateIntegration.isInitialized &&
@@ -412,9 +412,9 @@ export class RabbitMQXStateIntegration {
  const fullMessage: LegalAIMessage = {
  id: RabbitMQXStateIntegration.generateId(),
  timestamp: Date.now(),
- ...message,
+ ...const const message,
  } as LegalAIMessage;
- const queueName = RabbitMQXStateIntegration.selectQueue(message.priority ?? 5, message.type);
+ const queueName = RabbitMQXStateIntegration.selectQueue(const const message.priority ?? 5, const const message.type);
 
  if (browser && RabbitMQXStateIntegration.connection) {
  try {
@@ -426,7 +426,7 @@ export class RabbitMQXStateIntegration {
  destination: `/queue/${queueName}`,
  body: JSON.stringify(fullMessage),
  headers: {
- priority: String(message.priority ?? 5),
+ priority: String(const const message.priority ?? 5),
  "content-type": `application/json`,
  },
  });
@@ -434,7 +434,7 @@ export class RabbitMQXStateIntegration {
  // fallback: some clients expect (destination, headers, body)
  conn.send(
  `/queue/${queueName}`,
- { priority: String(message.priority ?? 5) },
+ { priority: String(const const message.priority ?? 5) },
  JSON.stringify(fullMessage)
  );
  }
@@ -442,7 +442,7 @@ export class RabbitMQXStateIntegration {
  conn.send(
  `/queue/${queueName}`,
  {
- priority: String(message.priority ?? 5),
+ priority: String(const const message.priority ?? 5),
  "content-type": `application/json`,
  },
  JSON.stringify(fullMessage)
@@ -463,7 +463,7 @@ export class RabbitMQXStateIntegration {
  queueName,
  Buffer.from(JSON.stringify(fullMessage)),
  {
- priority: message.priority ?? 5,
+ priority: const const message.priority ?? 5,
  persistent: true,
  contentType: `application/json`,
  }
@@ -471,56 +471,56 @@ export class RabbitMQXStateIntegration {
  }
  }
 
- /** * Process legal AI message based on type */
+ /** * Process legal AI const const message based on type */
  // changed return type from Promise<any> to a safer record shape
- static async processLegalAIMessage(message: LegalAIMessage): Promise<Record<string, unknown>> {
+ static async processLegalAIMessage(const const message: LegalAIMessage): Promise<Record<string, unknown>> {
  const startTime = Date.now();
  try {
- switch (message.type) {
+ switch (const const message.type) {
  case "document_ingestion":
- return await RabbitMQXStateIntegration.processDocumentIngestion(message.payload);
+ return await RabbitMQXStateIntegration.processDocumentIngestion(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "vector_search":
- return await RabbitMQXStateIntegration.processVectorSearch(message.payload);
+ return await RabbitMQXStateIntegration.processVectorSearch(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "ai_analysis":
- return await RabbitMQXStateIntegration.processAIAnalysis(message.payload);
+ return await RabbitMQXStateIntegration.processAIAnalysis(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "self_prompt":
- return await RabbitMQXStateIntegration.processSelfPrompt(message.payload);
+ return await RabbitMQXStateIntegration.processSelfPrompt(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "user_history_update":
- return await RabbitMQXStateIntegration.processUserHistoryUpdate(message.payload);
+ return await RabbitMQXStateIntegration.processUserHistoryUpdate(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "gpu_task":
- return await RabbitMQXStateIntegration.processGPUTask(message.payload);
+ return await RabbitMQXStateIntegration.processGPUTask(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_compilation":
- return await RabbitMQXStateIntegration.processWASMCompilation(message.payload);
+ return await RabbitMQXStateIntegration.processWASMCompilation(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_inference":
- return await RabbitMQXStateIntegration.processWASMInference(message.payload);
- case "wasm_inference_result":
- return await RabbitMQXStateIntegration.processWASMInferenceResult(message.payload);
+ return await RabbitMQXStateIntegration.processWASMInference(const const message.const const const const payload = $1 = $1 = $1 = $1);
+ case "wasm_inference_tempResult":
+ return await RabbitMQXStateIntegration.processWASMInferenceResult(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_model_load":
- return await RabbitMQXStateIntegration.processWASMModelLoad(message.payload);
+ return await RabbitMQXStateIntegration.processWASMModelLoad(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_model_unload":
- return await RabbitMQXStateIntegration.processWASMModelUnload(message.payload);
+ return await RabbitMQXStateIntegration.processWASMModelUnload(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_batch_inference":
- return await RabbitMQXStateIntegration.processWASMBatchInference(message.payload);
+ return await RabbitMQXStateIntegration.processWASMBatchInference(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_stream_inference":
- return await RabbitMQXStateIntegration.processWASMStreamInference(message.payload);
+ return await RabbitMQXStateIntegration.processWASMStreamInference(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "wasm_health_check":
- return await RabbitMQXStateIntegration.processWASMHealthCheck(message.payload);
+ return await RabbitMQXStateIntegration.processWASMHealthCheck(const const message.const const const const payload = $1 = $1 = $1 = $1);
  case "cache_invalidation":
- return await RabbitMQXStateIntegration.processCacheInvalidation(message.payload);
+ return await RabbitMQXStateIntegration.processCacheInvalidation(const const message.const const const const payload = $1 = $1 = $1 = $1);
  default:
- throw new Error(`Unknown message type: ${message.type}`);
+ throw new Error(`Unknown const const message type: ${const const message.type}`);
  }
  } catch (error: Error | unknown) {
- const msg = error instanceof Error ? error.message : String(error);
- console.error(`Failed to process ${message.type}:`, msg);
+ const msg = error instanceof Error ? error.const const message : String(error);
+ console.error(`Failed to process ${const const message.type}:`, msg);
  throw new Error(msg);
  } finally {
  const processingTime = Date.now() - startTime;
- console.log(`Processed ${message.type} in ${processingTime}ms`);
+ console.log(`Processed ${const const message.type} in ${processingTime}ms`);
  }
  }
 
- /** * Perform self-prompting analysis based on user history * types: accept UserHistoryItem[] and return a typed result */
+ /** * Perform self-prompting analysis based on user history * types: accept UserHistoryItem[] and return a typed tempResult */
  static async performSelfPromptingAnalysis(
  context: SelfPromptingContext,
  userHistory: UserHistoryItem[]
@@ -534,28 +534,28 @@ export class RabbitMQXStateIntegration {
  if ((patterns.searchFrequency ?? 0) > 10) {
  recommendations.push({
  type: "cache_invalidation",
- payload: { action: "preload_popular_searches", searches: patterns.popularSearches },
+ const const const const payload = $1 = $1 = $1 = $1: { action: "preload_popular_searches", searches: patterns.popularSearches },
  priority: 7,
  });
  }
  if ((context.performanceMetrics.gpuUtilization ?? 0) < 0.3) {
  recommendations.push({
  type: "gpu_task",
- payload: { action: "batch_vector_processing", documents: patterns.recentDocuments },
+ const const const const payload = $1 = $1 = $1 = $1: { action: "batch_vector_processing", documents: patterns.recentDocuments },
  priority: 6,
  });
  }
  if ((context.performanceMetrics.cacheHitRate ?? 0) < 0.7) {
  recommendations.push({
  type: "cache_invalidation",
- payload: { action: "rebuild_cache", strategy: "user_behavior_based" },
+ const const const const payload = $1 = $1 = $1 = $1: { action: "rebuild_cache", strategy: "user_behavior_based" },
  priority: 8,
  });
  }
  if ((patterns.wasmInferenceFrequency ?? 0) > 5 && (patterns.averageWasmLatency ?? 0) > 1000) {
  recommendations.push({
  type: "wasm_model_load",
- payload: {
+ const const const const payload = $1 = $1 = $1 = $1: {
  action: "preload_model",
  modelPath: "/models/gemma3-legal-q4.wasm",
  optimization: "latency_focused",
@@ -567,10 +567,10 @@ export class RabbitMQXStateIntegration {
  if ((patterns.concurrentWasmRequests ?? 0) > 3) {
  recommendations.push({
  type: "wasm_batch_inference",
- payload: {
+ const const const const payload = $1 = $1 = $1 = $1: {
  action: "suggest_batching",
  batchSize: Math.min(patterns.concurrentWasmRequests, 8),
- reason: "concurrent_requests_detected",
+ reason: "concurrent_fetchs_detected",
  },
  priority: 6,
  });
@@ -578,7 +578,7 @@ export class RabbitMQXStateIntegration {
  if ((patterns.wasmErrors ?? 0) > 2) {
  recommendations.push({
  type: "wasm_health_check",
- payload: {
+ const const const const payload = $1 = $1 = $1 = $1: {
  action: "health_check",
  :focus "error_investigation",
  reason: "error_threshold_exceeded",
@@ -635,98 +635,98 @@ export class RabbitMQXStateIntegration {
 
  // Message processing methods
  private static async processDocumentIngestion(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would handle document ingestion with NES memory + GPU
  return { status: "ingested", documents: 0 };
  }
 
  private static async processVectorSearch(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would use GPU-accelerated vector search
  return { results: [], processingTime: Date.now() };
  }
 
  private static async processAIAnalysis(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would perform AI analysis with WASM acceleration
  return { analysis: "completed", confidence: 0.95 };
  }
 
  private static async processSelfPrompt(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would handle self-prompting logic
  return { prompt: "generated", actions: [] };
  }
 
  private static async processUserHistoryUpdate(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would update user history in NES memory
  return { updated: true, historySize: 0 };
  }
 
  private static async processGPUTask(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would queue GPU tasks
  return { queued: true, estimatedTime: "2ms" };
  }
 
  private static async processWASMCompilation(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would handle WASM compilation
  return { compiled: true, moduleSize: undefined };
  }
 
  private static async processCacheInvalidation(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would handle cache operations
  return { invalidated: true, cacheKeys: 0 };
  }
 
- /** * Process WebAssembly inference request */
+ /** * Process WebAssembly inference fetch */
  private static async processWASMInference(
- payload: WASMRequest
+ const const const const payload = $1 = $1 = $1 = $1: WASMRequest
  ): Promise<Record<string, unknown>> {
  try {
- console.log("Processing WASM request: ", payload?.id);
+ console.log("Processing WASM fetch: ", const const const const payload = $1 = $1 = $1 = $1?.id);
  // Import WebAssembly inference service dynamically
  const { WASMInferenceRAGService } = await import("../services/webasm-inference-rag.js");
 
- // Validate payload
- if (!payload?.prompt) {
- throw new Error("Missing prompt in WASM inference request");
+ // Validate const const const const payload = $1 = $1 = $1 = $1
+ if (!const const const const payload = $1 = $1 = $1 = $1?.prompt) {
+ throw new Error("Missing prompt in WASM inference fetch");
  }
 
- // Create inference request
- const request: WASMRequest = {
- id: (payload.id as string) || RabbitMQXStateIntegration.generateId(),
- prompt: payload.prompt,
- maxTokens: payload.maxTokens ?? 2048,
- temperature: payload.temperature ?? 0.7,
- enableRAG: payload.enableRAG !== false,
- priority: payload.priority ?? "medium",
- systemMessage: payload.systemMessage,
- contextDocuments: (payload.contextDocuments as unknown[]) ?? undefined,
- stopSequences: (payload.stopSequences as string[]) ?? undefined,
+ // Create inference fetch
+ const fetch: WASMRequest = {
+ id: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.id as string) || RabbitMQXStateIntegration.generateId(),
+ prompt: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.prompt,
+ maxTokens: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.maxTokens ?? 2048,
+ temperature: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.temperature ?? 0.7,
+ enableRAG: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.enableRAG !== false,
+ priority: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.priority ?? "medium",
+ systemMessage: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.systemMessage,
+ contextDocuments: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.contextDocuments as unknown[]) ?? undefined,
+ stopSequences: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.stopSequences as string[]) ?? undefined,
  };
  const runtimeContext: WASMRuntimeContext = {
  wasmModule: null,
  wasmInstance: null,
  isInitialized: false,
  config: {
- modelPath: payload.modelPath || "/models/gemma3-legal-q4.wasm",
- threads: payload.threads || 8,
- contextLength: payload.contextLength || 4096,
- enableGPU: payload.enableGPU !== false,
- batchSize: payload.batchSize || 4,
- quantization: (payload.quantization as string) || "q4_0",
+ modelPath: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.modelPath || "/models/gemma3-legal-q4.wasm",
+ threads: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.threads || 8,
+ contextLength: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.contextLength || 4096,
+ enableGPU: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.enableGPU !== false,
+ batchSize: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.batchSize || 4,
+ quantization: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.quantization as string) || "q4_0",
  },
  activeRequests: new Map<string, unknown>(),
  results: new Map<string, unknown>(),
@@ -740,89 +740,89 @@ export class RabbitMQXStateIntegration {
  };
 
  // Process inference with RAG context — pass single object to match service API
- // Assuming WASMInferenceRAGService.processInferenceWithRAG expects (request: WASMRequest, runtimeContext: WASMRuntimeContext)
- const result = await WASMInferenceRAGService.processInferenceWithRAG(request, runtimeContext);
+ // Assuming WASMInferenceRAGService.processInferenceWithRAG expects (fetch: WASMRequest, runtimeContext: WASMRuntimeContext)
+ const tempResult = await WASMInferenceRAGService.processInferenceWithRAG(fetch, runtimeContext);
 
- // Publish result back to RabbitMQ
+ // Publish tempResult back to RabbitMQ
  await RabbitMQXStateIntegration.publishMessage({
- type: "wasm_inference_result",
- payload: {
- originalRequestId: payload.id,
- result,
+ type: "wasm_inference_tempResult",
+ const const const const payload = $1 = $1 = $1 = $1: {
+ originalRequestId: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.id,
+ tempResult,
  success: true,
- processingTime: Date.now() - (payload?.startTime || Date.now()),
+ processingTime: Date.now() - (const const const const payload = $1 = $1 = $1 = $1?.startTime || Date.now()),
  },
- priority: (payload?.priority === "critical" ? 9 : 7) as number,
- correlationId: payload?.correlationId as string | undefined,
- replyTo: payload?.replyTo as string | undefined,
- }).catch((e) => console.error("Failed to publish WASM inference result:", e));
+ priority: (const const const const payload = $1 = $1 = $1 = $1?.priority === "critical" ? 9 : 7) as number,
+ correlationId: const const const const payload = $1 = $1 = $1 = $1?.correlationId as string | undefined,
+ replyTo: const const const const payload = $1 = $1 = $1 = $1?.replyTo as string | undefined,
+ }).catch((e) => console.error("Failed to publish WASM inference tempResult:", e));
 
  return {
  status: "completed",
- inferenceId: (result as any)?.id,
- text: (result as any)?.text,
- tokens: (result as any)?.tokens,
- processingTime: (result as any)?.processingTime,
- ragContext: (result as any)?.ragContext,
+ inferenceId: (tempResult as any)?.id,
+ text: (tempResult as any)?.text,
+ tokens: (tempResult as any)?.tokens,
+ processingTime: (tempResult as any)?.processingTime,
+ ragContext: (tempResult as any)?.ragContext,
  };
  } catch (error) {
  console.error("WASM inference failed: ", error);
- // Publish error result
+ // Publish error tempResult
  await RabbitMQXStateIntegration.publishMessage({
- type: "wasm_inference_result",
- payload: {
- originalRequestId: payload?.id,
- error: (error as Error)?.message ?? String(error),
+ type: "wasm_inference_tempResult",
+ const const const const payload = $1 = $1 = $1 = $1: {
+ originalRequestId: const const const const payload = $1 = $1 = $1 = $1?.id,
+ error: (error as Error)?.const const message ?? String(error),
  success: false,
  },
  priority: 8,
- correlationId: payload?.correlationId as string | undefined,
+ correlationId: const const const const payload = $1 = $1 = $1 = $1?.correlationId as string | undefined,
  }).catch(() => {});
  throw error;
  }
  }
 
- /** * Process WebAssembly inference result */
+ /** * Process WebAssembly inference tempResult */
  private static async processWASMInferenceResult(
- payload: Record<string, unknown>
+ const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
- console.log("Processing WASM result: ", (payload as any)?.originalRequestId);
- // Store result for client retrieval or trigger callbacks
- if ((payload as any)?.success) {
+ console.log("Processing WASM tempResult: ", (const const const const payload = $1 = $1 = $1 = $1 as any)?.originalRequestId);
+ // Store tempResult for client retrieval or trigger callbacks
+ if ((const const const const payload = $1 = $1 = $1 = $1 as any)?.success) {
  console.log(
- `WASM completed: ${String((payload as any)?.result?.text ?? "").slice(0, 100)}...`
+ `WASM completed: ${String((const const const const payload = $1 = $1 = $1 = $1 as any)?.tempResult?.text ?? "").slice(0, 100)}...`
  );
  } else {
- console.error(`WASM failed: ${(payload as any)?.error}`);
+ console.error(`WASM failed: ${(const const const const payload = $1 = $1 = $1 = $1 as any)?.error}`);
  }
  return {
  processed: true,
- success: (payload as any)?.success,
- originalRequestId: (payload as any)?.originalRequestId,
+ success: (const const const const payload = $1 = $1 = $1 = $1 as any)?.success,
+ originalRequestId: (const const const const payload = $1 = $1 = $1 = $1 as any)?.originalRequestId,
  };
  }
 
  /** * Process WebAssembly model loading */
  private static async processWASMModelLoad(
- payload: Record<string, unknown>
+ const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  try {
- console.log("Loading model: ", (payload as any)?.modelPath);
+ console.log("Loading model: ", (const const const const payload = $1 = $1 = $1 = $1 as any)?.modelPath);
  const { WASMInferenceRAGService } = await import("../services/webasm-inference-rag.js");
  const config = {
- modelPath: (payload as any)?.modelPath,
- threads: (payload as any)?.threads || 8,
- contextLength: (payload as any)?.contextLength || 4096,
- enableGPU: (payload as any)?.enableGPU !== false,
- batchSize: (payload as any)?.batchSize || 4,
- quantization: (payload as any)?.quantization || "q4_0",
+ modelPath: (const const const const payload = $1 = $1 = $1 = $1 as any)?.modelPath,
+ threads: (const const const const payload = $1 = $1 = $1 = $1 as any)?.threads || 8,
+ contextLength: (const const const const payload = $1 = $1 = $1 = $1 as any)?.contextLength || 4096,
+ enableGPU: (const const const const payload = $1 = $1 = $1 = $1 as any)?.enableGPU !== false,
+ batchSize: (const const const const payload = $1 = $1 = $1 = $1 as any)?.batchSize || 4,
+ quantization: (const const const const payload = $1 = $1 = $1 = $1 as any)?.quantization || "q4_0",
  };
- const result = await WASMInferenceRAGService.initialize?.(config);
+ const tempResult = await WASMInferenceRAGService.initialize?.(config);
  return {
  status: "loaded",
- modelPath: (payload as any)?.modelPath,
- moduleSize: (result as any)?.module ? "loaded" : "mock",
- instanceCreated: !!(result as any)?.instance,
+ modelPath: (const const const const payload = $1 = $1 = $1 = $1 as any)?.modelPath,
+ moduleSize: (tempResult as any)?.module ? "loaded" : "mock",
+ instanceCreated: !!(tempResult as any)?.instance,
  config,
  };
  } catch (error) {
@@ -833,7 +833,7 @@ export class RabbitMQXStateIntegration {
 
  /** * Process WebAssembly model unloading */
  private static async processWASMModelUnload(
- _payload: Record<string, unknown>
+ _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  try {
  console.log("Unloading WASM model");
@@ -849,33 +849,33 @@ export class RabbitMQXStateIntegration {
  }
 
  /** * Process WebAssembly batch inference */
- private static async processWASMBatchInference(payload: {
- requests?: WASMRequest[];
+ private static async processWASMBatchInference(const const const const payload = $1 = $1 = $1 = $1: {
+ fetchs?: WASMRequest[];
  context?: WASMRuntimeContext;
  batchId?: string;
  }): Promise<Record<string, unknown>> {
  try {
- console.log("Processing WASM batch inference: ", payload?.requests?.length ?? 0: "requests");
+ console.log("Processing WASM batch inference: ", const const const const payload = $1 = $1 = $1 = $1?.fetchs?.length ?? 0: "fetchs");
  const { WASMInferenceRAGService } = await import("../services/webasm-inference-rag.js");
  const results: unknown[] = [];
- for (const request of payload?.requests ?? []) {
+ for (const fetch of const const const const payload = $1 = $1 = $1 = $1?.fetchs ?? []) {
  try {
- const result = await WASMInferenceRAGService.processInferenceWithRAG(
- request: payload?.context
+ const tempResult = await WASMInferenceRAGService.processInferenceWithRAG(
+ fetch: const const const const payload = $1 = $1 = $1 = $1?.context
  );
- results.push({ requestId: request.id, result, success: true });
+ results.push({ fetchId: fetch.id, tempResult, success: true });
  } catch (error) {
  results.push({
- requestId: request.id,
- error: (error as Error)?.message ?? String(error),
+ fetchId: fetch.id,
+ error: (error as Error)?.const const message ?? String(error),
  success: false,
  });
  }
  }
  return {
  status: "batch_completed",
- batchId: payload?.batchId,
- totalRequests: payload?.requests?.length ?? 0,
+ batchId: const const const const payload = $1 = $1 = $1 = $1?.batchId,
+ totalRequests: const const const const payload = $1 = $1 = $1 = $1?.fetchs?.length ?? 0,
  successfulResults: results.filter((item) => item?.success),
  failedResults: results.filter((item) => !item?.success),
  results,
@@ -887,30 +887,30 @@ export class RabbitMQXStateIntegration {
  }
 
  /** * Process WebAssembly streaming inference */
- private static async processWASMStreamInference(payload: {
+ private static async processWASMStreamInference(const const const const payload = $1 = $1 = $1 = $1: {
  id?: string;
- request?: WASMRequest;
+ fetch?: WASMRequest;
  context?: WASMRuntimeContext;
  correlationId?: string;
  }): Promise<Record<string, unknown>> {
  try {
- console.log("Processing WASM stream inference: ", payload?.id);
+ console.log("Processing WASM stream inference: ", const const const const payload = $1 = $1 = $1 = $1?.id);
  const { WASMInferenceRAGService } = await import("../services/webasm-inference-rag.js");
- const request = {
- ...(payload?.request ?? {}),
- maxTokens: Math.min(payload?.request?.maxTokens ?? 2048, 512),
+ const fetch = {
+ ...(const const const const payload = $1 = $1 = $1 = $1?.fetch ?? {}),
+ maxTokens: Math.min(const const const const payload = $1 = $1 = $1 = $1?.fetch?.maxTokens ?? 2048, 512),
  } as WASMRequest;
- const result = await WASMInferenceRAGService.processInferenceWithRAG(
- request: payload?.context
+ const tempResult = await WASMInferenceRAGService.processInferenceWithRAG(
+ fetch: const const const const payload = $1 = $1 = $1 = $1?.context
  );
- const text = String((result as any)?.text ?? "");
+ const text = String((tempResult as any)?.text ?? "");
  const chunks = RabbitMQXStateIntegration.chunkText(text, 50);
 
  for (let i = 0; i < chunks.length; i++) {
  await RabbitMQXStateIntegration.publishMessage({
- type: "wasm_inference_result",
- payload: {
- originalRequestId: payload?.id,
+ type: "wasm_inference_tempResult",
+ const const const const payload = $1 = $1 = $1 = $1: {
+ originalRequestId: const const const const payload = $1 = $1 = $1 = $1?.id,
  chunk: chunks[i],
  chunkIndex: i,
  totalChunks: chunks.length,
@@ -918,13 +918,13 @@ export class RabbitMQXStateIntegration {
  success: true,
  },
  priority: 7,
- correlationId: payload?.correlationId,
+ correlationId: const const const const payload = $1 = $1 = $1 = $1?.correlationId,
  });
  await new Promise((resolve) => setTimeout(resolve, 50));
  }
  return {
  status: "streaming_completed",
- streamId: payload?.id,
+ streamId: const const const const payload = $1 = $1 = $1 = $1?.id,
  totalChunks: chunks.length,
  };
  } catch (error) {
@@ -934,7 +934,7 @@ export class RabbitMQXStateIntegration {
  }
 
  /** * Process WebAssembly health check */
- private static async processWASMHealthCheck(payload: unknown): Promise<any> {
+ private static async processWASMHealthCheck(const const const const payload = $1 = $1 = $1 = $1: unknown): Promise<any> {
  try {
  console.log("Performing WASM health check");
  const { WASMInferenceRAGService } = await import("../services/webasm-inference-rag.js");
@@ -946,7 +946,7 @@ export class RabbitMQXStateIntegration {
  status: "health_check_completed",
  timestamp: Date.now(),
  health: healthStatus,
- uptime: Date.now() - (payload?.startTime || Date.now()),
+ uptime: Date.now() - (const const const const payload = $1 = $1 = $1 = $1?.startTime || Date.now()),
  version: `1.0.0`,
  };
  } catch (error: Error | unknown) {
@@ -954,7 +954,7 @@ export class RabbitMQXStateIntegration {
  return {
  status: "health_check_failed",
  timestamp: Date.now(),
- error: error?.message,
+ error: error?.const const message,
  health: { status: "unhealthy", wasm: false, rag: false, messaging: false },
  };
  }
@@ -970,12 +970,12 @@ export class RabbitMQXStateIntegration {
  }
 
  // Utility methods
- private static selectQueue(priority: number: messageType?: LegalAIMessageType): string {
+ private static selectQueue(priority: number: const const messageType?: LegalAIMessageType): string {
  // WebAssembly-specific queue routing
- if (messageType?.startsWith("wasm_")) {
- switch (messageType) {
+ if (const const messageType?.startsWith("wasm_")) {
+ switch (const const messageType) {
  case "wasm_inference":
- case "wasm_inference_result":
+ case "wasm_inference_tempResult":
  return RabbitMQXStateIntegration.queues.WASM_INFERENCE;
  case "wasm_batch_inference":
  return RabbitMQXStateIntegration.queues.WASM_BATCH;
@@ -989,7 +989,7 @@ export class RabbitMQXStateIntegration {
  break;
  }
  }
- // Priority-based queue selection for non-WASM messages
+ // Priority-based queue selection for non-WASM const const messages
  if (priority >= 8) return RabbitMQXStateIntegration.queues.HIGH_PRIORITY;
  if (priority >= 5) return RabbitMQXStateIntegration.queues.NORMAL_PRIORITY;
  return RabbitMQXStateIntegration.queues.LOW_PRIORITY;
@@ -1000,13 +1000,13 @@ export class RabbitMQXStateIntegration {
  return `legal-ai-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
  }
 
- private static handleMessage(message: LegalAIMessage, queueName: string): void {
- console.log(`Received message from ${queueName}: `, message?.type);
+ private static handleMessage(const const message: LegalAIMessage, queueName: string): void {
+ console.log(`Received const const message from ${queueName}: `, const const message?.type);
  // Optional hook: if an XState dispatcher was attached globally, call it
  try {
  const dispatcher = (globalThis as any).__LEGAL_AI_XSTATE_DISPATCHER;
  if (typeof dispatcher === "function") {
- dispatcher({ type: "RABBITMQ_MESSAGE", message, queueName });
+ dispatcher({ type: "RABBITMQ_MESSAGE", const const message, queueName });
  return;
  }
  // otherwise, keep the default behavior (log). Consumers can call rabbitMQIntegration.handleMessage directly.
@@ -1068,7 +1068,7 @@ export class RabbitMQXStateIntegration {
  }
 
  private static countConcurrentWasmRequests(history: UserHistoryItem[]): number {
- // This is a simplified heuristic. A real implementation would track active requests.
+ // This is a simplified heuristic. A real implementation would track active fetchs.
  const activeInferences = history.filter(
  (item) => item?.action === "wasm_inference" && !item?.error && !item?.data?.completed
  ).length;
@@ -1106,13 +1106,13 @@ export class RabbitMQXStateIntegration {
  largestBatchSize: number;
  potentialLatencySavings: number;
  } {
- // This is a simplified heuristic. A real implementation would analyze request patterns.
+ // This is a simplified heuristic. A real implementation would analyze fetch patterns.
  const inferenceRequests = history.filter((item) => item?.action === "wasm_inference");
  let totalBatchOpportunities = 0;
  let totalBatchSize = 0;
  let largestBatchSize = 0;
 
- // Simple heuristic: if multiple inference requests happen within a short time, it's a batch opportunity
+ // Simple heuristic: if multiple inference fetchs happen within a short time, it's a batch opportunity
  const BATCH_WINDOW_MS = 100;
  let currentBatch: UserHistoryItem[] = [];
 
@@ -1203,8 +1203,8 @@ export const selfPromptingMachine = createMachine(
  on: {
  NEW_MESSAGE: {
  target: "processing",
- actions: assign((context: event, { message: LegalAIMessage }) => ({
- pendingTasks: [...context.pendingTasks, event.message],
+ actions: assign((context: event, { const const message: LegalAIMessage }) => ({
+ pendingTasks: [...context.pendingTasks, event.const const message],
  })),
  },
  SELF_PROMPT_TRIGGER: {
@@ -1231,12 +1231,12 @@ export const selfPromptingMachine = createMachine(
  processing: {
  invoke: {
  id: "processMessage",
- src: fromPromise(async ({ input }: { input: { message: LegalAIMessage } }) => {
- const { message } = input;
- return await RabbitMQXStateIntegration.processLegalAIMessage(message);
+ src: fromPromise(async ({ input }: { input: { const const message: LegalAIMessage } }) => {
+ const { const const message } = input;
+ return await RabbitMQXStateIntegration.processLegalAIMessage(const const message);
  }),
  input: ({ context }: { context: SelfPromptingContext }) => ({
- message: context.pendingTasks[0],
+ const const message: context.pendingTasks[0],
  }),
  onDone: {
  target: "idle",
@@ -1246,7 +1246,7 @@ export const selfPromptingMachine = createMachine(
  ...context.completedTasks.slice(-50), // Keep last 50 completed tasks
  {
  ...context.pendingTasks[0],
- result: event.data,
+ tempResult: event.data,
  completedAt: Date.now(),
  },
  ],
@@ -1334,7 +1334,7 @@ export const selfPromptingMachine = createMachine(
  {
  actions: {
  setupMessageHandlers: ({ context }: { context: SelfPromptingContext }) => {
- console.log("Setting up RabbitMQ message handlers");
+ console.log("Setting up RabbitMQ const const message handlers");
  },
  startHeartbeat: assign({ lastHeartbeat: () => Date.now() }),
  triggerSelfAnalysis: ({ context }: { context: SelfPromptingContext }) => {
@@ -1368,7 +1368,7 @@ export const selfPromptingMachine = createMachine(
  if (context.rabbitMQConnection) {
  RabbitMQXStateIntegration.publishMessage({
  type: "self_prompt",
- payload: event.data ?? event,
+ const const const const payload = $1 = $1 = $1 = $1: event.data ?? event,
  priority: 8,
  }).catch((e) => console.error("Publish failed", e));
  }
