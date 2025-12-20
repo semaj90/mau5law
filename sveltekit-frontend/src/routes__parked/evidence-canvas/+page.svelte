@@ -1,5 +1,9 @@
 <script lang="ts">
- // Svelte, 5 runes are auto-imported import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte'; import type { page } from '$app/stores'; let title = $state <string>('Evidence Canvas - Legal AI Platform'); let description = $state <string>('Interactive evidence analysis and annotation canvas with AI-powered analysis capabilities');
+	// Svelte 5 runes are auto-imported
+	import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
+
+	let title = $state<string>('Evidence Canvas - Legal AI Platform');
+	let description = $state<string>('Interactive evidence analysis and annotation canvas with AI-powered analysis capabilities');
 </script>
 
 <svelte:head>
@@ -11,7 +15,14 @@
  <h1>Evidence Canvas</h1>
  <p>Interactive evidence analysis and annotation with AI-powered insights</p>
  </header>
- <main class="main-content"><FabricCanvas /></main>
+ <main class="main-content">
+		<FabricCanvas
+			width={1000}
+			height={600}
+			caseId="evidence-canvas"
+			readOnly={false}
+		/>
+	</main>
 </div>
 
 <style>

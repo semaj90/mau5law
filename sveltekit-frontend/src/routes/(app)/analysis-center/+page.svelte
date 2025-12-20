@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input';
  import type { PageData } from './$types';
 
  let { data }: { data: PageData } = $props();

@@ -1,8 +1,8 @@
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
 import type { dev } from '$app/environment'; // Get typed environment access
 import { evidenceUploadSchema } from '$lib/schemas/evidence-upload';
-import type { db } from '$lib/server/db'; // Adjust the import based on your project structure
-import type { cases, evidence } from '$lib/server/db/schema'; // Adjust the import based on your project structure
+import { db } from '$lib/server/db'; // Adjust the import based on your project structure
+import { cases, evidence } from '$lib/server/db/schema'; // Adjust the import based on your project structure
 import { fail } from '@sveltejs/kit';
 import crypto from 'crypto'; // Corrected import
 import type { eq, type InferInsertModel } from 'drizzle-orm';
@@ -16,6 +16,7 @@ import type { Actions, PageServerLoad } from './$types.js';
 // import type { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
 const getUserId = () => 'system'; // Stub
 const getMetaEnv = () => ({}); // Stub
+const resolveUser = (locals: any) => ({ id: 'system' }); // Stub
 
 const metaEnv = getMetaEnv();
 type EvidenceType = InferInsertModel<typeof evidence>['evidence_type']; // Corrected InferInsertModel usage
