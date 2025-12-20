@@ -1,6 +1,7 @@
 // scripts/phase76-ace-prompt-engineer.mjs
 // Phase 76 Level 2: ACE Prompt Engineer with Agentic Detection
 // Detects legacy code patterns and injects relevant context from deep storage
+// Now with MCP tool integration and HTTP API fallback
 
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { fetchDeepContext, getCachedResult, cacheResult } from './phase76-storage-layer.mjs';
@@ -13,6 +14,33 @@ const qdrant = new QdrantClient({
 });
 
 const COLLECTION_NAME = 'phase76_knowledge_base';
+const MCP_SERVER_URL = process.env.MCP_SERVER_URL || 'http://localhost:3002';
+
+/**
+ * Call MCP tool with fallback to direct implementation
+ * @param {string} toolName - MCP tool name
+ * @param {object} args - Tool arguments
+ * @returns {Promise<any>} Tool result
+ */
+async function callMCPTool(toolName, args) {
+  try {
+    const response = await fetch(`${MCP_SERVER_URL}/function-call`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: toolName, arguments: args }),
+      signal: AbortSignal.timeout(5000) // 5s timeout
+    });
+
+    if (!response.ok) {
+      throw new Error(`MCP call failed: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn(`⚠️  MCP tool '${toolName}' unavailable, using fallback:`, error.message);
+    return null;
+  }
+}
 
 /**
  * Build contextual prompt with agentic detection
@@ -35,11 +63,24 @@ async function buildContextualPrompt(userTask, previousContext = '') {
     additionalContext += `\n\nCRITICAL INSTRUCTION: The user is using Svelte 4 syntax (on:event, export let). You MUST refactor this to Svelte 5 Runes ($state, $props, onchange).`;
   }
 
-  // 2. Check cache first
+  // 2. Try Redis cache first (via MCP or direct)
   const cacheKey = `ace:prompt:${Buffer.from(userTask).toString('base64').slice(0, 32)}`;
+
+  // Try MCP redis-cache tool first
+  const cachedViaMCP = await callMCPTool('redis-cache', {
+    operation: 'get',
+    key: cacheKey
+  });
+
+  if (cachedViaMCP?.success && cachedViaMCP.value) {
+    console.log('⚡ [Agent] Using cached context (via MCP)');
+    return cachedViaMCP.value;
+  }
+
+  // Fallback to direct Redis
   const cached = await getCachedResult(cacheKey);
   if (cached) {
-    console.log('⚡ [Agent] Using cached context');
+    console.log('⚡ [Agent] Using cached context (direct)');
     return cached;
   }
 

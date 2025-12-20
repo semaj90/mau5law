@@ -1,15 +1,24 @@
 // src/lib/server/rag/integration.test.ts
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { extractLegalTags } from './tag-extractor';
-import { upsertAndLinkChunkTags, getChunkTagIds } from './tag-persist';
+import { sql } from '$lib/server/db';
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { qdrantSearch, qdrantUpsert } from './qdrant';
 import { rerankLegalAware } from './ranker';
-import { sql } from '$lib/server/db';
+import { extractLegalTags } from './tag-extractor';
+import { getChunkTagIds, upsertAndLinkChunkTags } from './tag-persist';
 
 describe('RAG System Integration Tests', () => {
  const testChunkId = crypto.randomUUID();
  const testJurisdiction = 'test-integration';
+
+ beforeEach(async () => {
+ await setupTest();
+ });
+
+ afterEach(async () => {
+ await cleanupTest();
+ });
 
  afterAll(async () => {
  // Cleanup test data

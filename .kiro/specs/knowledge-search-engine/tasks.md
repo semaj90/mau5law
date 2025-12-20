@@ -90,59 +90,59 @@
 
 ## Phase 3: Search and Synthesis
 
-- [ ] 9. Implement KnowledgeSearcher
-  - [ ] 9.1 Create KnowledgeSearcher class
+- [x] 9. Implement KnowledgeSearcher
+  - [x] 9.1 Create KnowledgeSearcher class
     - Implement search() with Qdrant + TF-IDF hybrid ranking
     - Implement getDocument() with MinIO content fetch
     - Implement getStats() for collection statistics
     - _Requirements: 1.2, 1.3, 3.3, 3.4_
-  - [ ] 9.2 Implement LLM synthesis integration
+  - [x] 9.2 Implement LLM synthesis integration
     - Add synthesize option to search
     - Inject top-K results as context
     - Support multiple LLM providers (ollama, gemini, claude)
     - _Requirements: 2.1_
-  - [ ] 9.3 Write property test for LLM context injection
+  - [x] 9.3 Write property test for LLM context injection
     - **Property 16: LLM Synthesis Context Injection**
     - **Validates: Requirements 2.1**
 
-- [ ] 10. Implement auto-tagging
-  - [ ] 10.1 Create TagExtractor class
+- [x] 10. Implement auto-tagging
+  - [x] 10.1 Create TagExtractor class
     - Parse entities field for technologies, frameworks, languages
     - Fallback to URL domain when no entities
     - Store tags in Qdrant payload
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
-  - [ ] 10.2 Write property test for tag extraction and filtering
+  - [x] 10.2 Write property test for tag extraction and filtering
     - **Property 10: Tag Extraction and Filtering**
     - **Validates: Requirements 9.1, 9.3, 9.4**
 
-- [ ] 11. Checkpoint - Ensure all tests pass
+- [x] 11. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Phase 4: API Layer
 
-- [ ] 12. Create REST API endpoints
-  - [ ] 12.1 Create POST /api/knowledge/search endpoint
+- [x] 12. Create REST API endpoints
+  - [x] 12.1 Create POST /api/knowledge/search endpoint
     - Accept query, topK, filters, synthesize options
     - Return ranked results with scores
     - _Requirements: 8.1_
-  - [ ] 12.2 Write property test for API response schema
+  - [x] 12.2 Write property test for API response schema
     - **Property 11: API Response Schema Validation**
     - **Validates: Requirements 8.1**
-  - [ ] 12.3 Create GET /api/knowledge/document/:id endpoint
+  - [x] 12.3 Create GET /api/knowledge/document/:id endpoint
     - Fetch full content from MinIO
     - Return complete document with metadata
     - _Requirements: 8.2_
-  - [ ] 12.4 Create GET /api/knowledge/stats endpoint
+  - [x] 12.4 Create GET /api/knowledge/stats endpoint
     - Return collection statistics from all stores
     - _Requirements: 8.3_
 
-- [ ] 13. Implement FastMCP server
-  - [ ] 13.1 Create phase76-mcp-server.mjs
+- [x] 13. Implement FastMCP server
+  - [x] 13.1 Create phase76-mcp-server.mjs
     - Register knowledge-search tool
     - Implement qdrant_search, postgres_query, minio_fetch, redis_cache tools
     - Start on port 3002
     - _Requirements: 7.1, 7.2, 7.3_
-  - [ ] 13.2 Add MCP tool to ACE agent
+  - [x] 13.2 Add MCP tool to ACE agent
     - Update phase76-ace-prompt-engineer.mjs to use MCP tools
     - Implement fallback to HTTP API when MCP unavailable
     - _Requirements: 7.4_

@@ -16,6 +16,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import ErrorBrainModal from './ErrorBrainModal.svelte';
+import { setupTest, cleanupTest, mockQdrant, mockRedis, mockOllama, mockPostgres, mockMinio } from '$lib/test-utils/setup';
 
 // ─────────────────────────────────────────────────────────────────────────
 // Test Configuration
@@ -24,8 +25,6 @@ import ErrorBrainModal from './ErrorBrainModal.svelte';
 const TEST_ROUTE_PATH = 'test-route';
 
 // Mock fetch
-global.fetch = vi.fn();
-
 // ─────────────────────────────────────────────────────────────────────────
 // Test Suite: Component Rendering
 // ─────────────────────────────────────────────────────────────────────────

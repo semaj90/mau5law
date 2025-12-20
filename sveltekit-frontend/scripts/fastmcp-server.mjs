@@ -38,7 +38,7 @@ const CONFIG = {
 /**
  * Tool: Search Qdrant knowledge base
  */
-async function qdrantSearch(args: { query: string; limit?: number; threshold?: number }) {
+async function qdrantSearch(args) {
 	const { query, limit = 5, threshold = 0.5 } = args;
 
 	// Generate embedding
@@ -72,7 +72,7 @@ async function qdrantSearch(args: { query: string; limit?: number; threshold?: n
 	const searchData = await searchResponse.json();
 
 	return {
-		results: searchData.result.map((item: any) => ({
+		results: searchData.result.map((item) => ({
 			score: item.score,
 			title: item.payload.title,
 			url: item.payload.url,
@@ -84,7 +84,7 @@ async function qdrantSearch(args: { query: string; limit?: number; threshold?: n
 /**
  * Tool: Query PostgreSQL
  */
-async function postgresQuery(args: { query: string }) {
+async function postgresQuery(args) {
 	const { query } = args;
 
 	// Import pg dynamically
@@ -105,7 +105,7 @@ async function postgresQuery(args: { query: string }) {
 /**
  * Tool: Fetch from MinIO
  */
-async function minioFetch(args: { key: string }) {
+async function minioFetch(args) {
 	const { key } = args;
 
 	// Import minio dynamically
@@ -119,7 +119,7 @@ async function minioFetch(args: { key: string }) {
 	});
 
 	return new Promise((resolve, reject) => {
-		const chunks: Buffer[] = [];
+		const chunks = [];
 
 		minioClient.getObject(CONFIG.minio.bucket, key, (err, dataStream) => {
 			if (err) return reject(err);
@@ -137,7 +137,7 @@ async function minioFetch(args: { key: string }) {
 /**
  * Tool: Redis cache operations
  */
-async function redisCache(args: { operation: 'get' | 'set' | 'delete'; key: string; value?: string; ttl?: number }) {
+async function redisCache(args) {
 	const { operation, key, value, ttl = 3600 } = args;
 
 	// Import redis dynamically
@@ -159,14 +159,14 @@ async function redisCache(args: { operation: 'get' | 'set' | 'delete'; key: stri
 				throw new Error(`Unknown operation: ${operation}`);
 		}
 	} finally {
-		await client.disconnect();
+		await client.quit();
 	}
 }
 
 /**
  * MCP Function Call Handler
  */
-async function handleFunctionCall(functionName: string, args: any) {
+async function handleFunctionCall(functionName, args) {
 	console.log(`🔧 MCP Tool Call: ${functionName}`, args);
 
 	switch (functionName) {

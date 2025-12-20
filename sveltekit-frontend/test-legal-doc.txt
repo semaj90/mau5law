@@ -1,1 +1,0 @@
-This is a legal test document for RAG ingestion with vector embeddings.

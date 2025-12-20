@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "phase76-knowledge-ace": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\james\\Videos\\deeds-web-app\\sveltekit-frontend\\scripts\\phase76-fastmcp-server.mjs"
+      ],
+      "env": {
+        "QDRANT_URL": "http://localhost:6333",
+        "OLLAMA_URL": "http://localhost:11434",
+        "OLLAMA_MODEL": "gemma3-legal:latest"
+      }
+    }
+  }
+}

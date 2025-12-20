@@ -2306,3 +2306,28 @@ export type NewErrorSuggestionState = typeof errorSuggestionStates.$inferInsert;
 
 export type ErrorFeedback = typeof errorFeedback.$inferSelect;
 export type NewErrorFeedback = typeof errorFeedback.$inferInsert;
+
+// === CASE REPORTS ===
+export const caseReports = pgTable('case_reports', {
+	id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+	caseId: uuid('case_id').notNull(),
+	version: integer('version').notNull(),
+	isCurrent: boolean('is_current').default(true).notNull(),
+	summaryText: text('summary_text').notNull(),
+	citations: jsonb('citations').default([]).notNull(),
+	holding: text('holding'),
+	createdBy: varchar('created_by', { length: 255 }),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+});
+
+// === AUDIT LOG ===
+export const auditLog = pgTable('audit_log', {
+	id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+	userId: varchar('user_id', { length: 255 }).notNull(),
+	action: varchar('action', { length: 100 }).notNull(),
+	resourceType: varchar('resource_type', { length: 100 }).notNull(),
+	resourceId: varchar('resource_id', { length: 255 }).notNull(),
+	details: jsonb('details').default({}).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+});

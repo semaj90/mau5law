@@ -1,0 +1,326 @@
+#!/usr/bin/env node
+/**
+ * Phase 76 FastMCP Server
+ * Knowledge Search Engine MCP Integration
+ *
+ * Provides MCP tools for:
+ * - knowledge-search: Semantic search with hybrid ranking
+ * - qdrant-search: Direct Qdrant vector search
+ * - postgres-query: PostgreSQL vector queries
+ * - minio-fetch: Fetch documents from MinIO
+ * - redis-cache: Cache operations
+ *
+ * Requirements: 7.1, 7.2, 7.3
+ * Port: 3002
+ */
+
+import { createServer } from 'http';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { Client as MinioClient } from 'minio';
+import Redis from 'ioredis';
+import pg from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const PORT = process.env.MCP_PORT || 3002;
+
+// Initialize clients
+const qdrant = new QdrantClient({
+  url: process.env.QDRANT_URL || 'http://localhost:6333'
+});
+
+const minio = new MinioClient({
+  endPoint: process.env.MINIO_ENDPOINT || 'localhost',
+  port: parseInt(process.env.MINIO_PORT || '9000'),
+  useSSL: process.env.MINIO_USE_SSL === 'true',
+  accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+  secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin'
+});
+
+const redis = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: parseInt(process.env.REDIS_PORT || '6379'),
+  enableOfflineQueue: false
+});
+
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+});
+
+// MCP Tool Registry
+const tools = {
+  'knowledge-search': {
+    name: 'knowledge-search',
+    description: 'Search knowledge base with hybrid semantic + TF-IDF ranking',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Search query' },
+        topK: { type: 'number', default: 10, description: 'Number of results' },
+        threshold: { type: 'number', default: 0.5, description: 'Similarity threshold' },
+        synthesize: { type: 'boolean', default: false, description: 'Generate LLM answer' }
+      },
+      required: ['query']
+    },
+    handler: async (args) => {
+      const { query, topK = 10, threshold = 0.5, synthesize = false } = args;
+
+      // Call the HTTP API endpoint
+      const response = await fetch('http://localhost:5173/api/knowledge/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, topK, threshold, synthesize })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.statusText}`);
+      }
+
+      return await response.json();
+    }
+  },
+
+  'qdrant-search': {
+    name: 'qdrant-search',
+    description: 'Direct Qdrant vector search with cosine similarity',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        collection: { type: 'string', default: 'phase76_knowledge_base', description: 'Collection name' },
+        vector: { type: 'array', items: { type: 'number' }, description: '768-dim embedding vector' },
+        limit: { type: 'number', default: 10, description: 'Max results' },
+        scoreThreshold: { type: 'number', default: 0.5, description: 'Min similarity score' }
+      },
+      required: ['vector']
+    },
+    handler: async (args) => {
+      const { collection = 'phase76_knowledge_base', vector, limit = 10, scoreThreshold = 0.5 } = args;
+
+      const results = await qdrant.search(collection, {
+        vector,
+        limit,
+        score_threshold: scoreThreshold,
+        with_payload: true
+      });
+
+      return {
+        success: true,
+        results: results.map((r) => ({
+          id: r.id,
+          score: r.score,
+          payload: r.payload
+        }))
+      };
+    }
+  },
+
+  'postgres-query': {
+    name: 'postgres-query',
+    description: 'Query PostgreSQL with pgvector similarity search',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        vector: { type: 'array', items: { type: 'number' }, description: '768-dim embedding vector' },
+        limit: { type: 'number', default: 10, description: 'Max results' },
+        table: { type: 'string', default: 'doc_references', description: 'Table name' }
+      },
+      required: ['vector']
+    },
+    handler: async (args) => {
+      const { vector, limit = 10, table = 'doc_references' } = args;
+
+      const vectorStr = `[${vector.join(',')}]`;
+      const result = await pgPool.query(
+        `SELECT url, minio_key,
+                1 - (embedding <=> $1::vector) as similarity
+         FROM ${table}
+         ORDER BY embedding <=> $1::vector
+         LIMIT $2`,
+        [vectorStr, limit]
+      );
+
+      return {
+        success: true,
+        results: result.rows
+      };
+    }
+  },
+
+  'minio-fetch': {
+    name: 'minio-fetch',
+    description: 'Fetch document content from MinIO storage',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        bucket: { type: 'string', default: 'phase76-summaries', description: 'Bucket name' },
+        key: { type: 'string', description: 'Object key' }
+      },
+      required: ['key']
+    },
+    handler: async (args) => {
+      const { bucket = 'phase76-summaries', key } = args;
+
+      try {
+        const dataStream = await minio.getObject(bucket, key);
+        let data = '';
+        for await (const chunk of dataStream) {
+          data += chunk;
+        }
+
+        return {
+          success: true,
+          content: JSON.parse(data)
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: error.message
+        };
+      }
+    }
+  },
+
+  'redis-cache': {
+    name: 'redis-cache',
+    description: 'Cache operations (get/set/delete)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        operation: { type: 'string', enum: ['get', 'set', 'delete'], description: 'Cache operation' },
+        key: { type: 'string', description: 'Cache key' },
+        value: { type: 'string', description: 'Value to set (for set operation)' },
+        ttl: { type: 'number', default: 3600, description: 'TTL in seconds (for set operation)' }
+      },
+      required: ['operation', 'key']
+    },
+    handler: async (args) => {
+      const { operation, key, value, ttl = 3600 } = args;
+
+      try {
+        switch (operation) {
+          case 'get': {
+            const result = await redis.get(key);
+            return {
+              success: true,
+              value: result ? JSON.parse(result) : null
+            };
+          }
+          case 'set': {
+            if (!value) {
+              throw new Error('Value required for set operation');
+            }
+            await redis.setex(key, ttl, JSON.stringify(value));
+            return {
+              success: true,
+              message: 'Value cached'
+            };
+          }
+          case 'delete': {
+            await redis.del(key);
+            return {
+              success: true,
+              message: 'Key deleted'
+            };
+          }
+          default:
+            throw new Error(`Unknown operation: ${operation}`);
+        }
+      } catch (error) {
+        return {
+          success: false,
+          error: error.message
+        };
+      }
+    }
+  }
+};
+
+// HTTP Server for MCP protocol
+const server = createServer(async (req, res) => {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+
+  // Handle GET /tools - List available tools
+  if (req.method === 'GET' && req.url === '/tools') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(
+      JSON.stringify({
+        tools: Object.values(tools).map((t) => ({
+          name: t.name,
+          description: t.description,
+          inputSchema: t.inputSchema
+        }))
+      })
+    );
+    return;
+  }
+
+  // Handle POST /function-call - Execute tool
+  if (req.method === 'POST' && req.url === '/function-call') {
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on('end', async () => {
+      try {
+        const { name, arguments: args } = JSON.parse(body);
+
+        if (!tools[name]) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `Tool not found: ${name}` }));
+          return;
+        }
+
+        const result = await tools[name].handler(args);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(result));
+      } catch (error) {
+        console.error('MCP error:', error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: error.message }));
+      }
+    });
+    return;
+  }
+
+  // Handle GET /health - Health check
+  if (req.method === 'GET' && req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'healthy', tools: Object.keys(tools).length }));
+    return;
+  }
+
+  // 404 for unknown routes
+  res.writeHead(404, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: 'Not found' }));
+});
+
+// Start server
+server.listen(PORT, () => {
+  console.log(`🚀 Phase 76 MCP Server running on port ${PORT}`);
+  console.log(`📋 Available tools: ${Object.keys(tools).join(', ')}`);
+  console.log(`🔗 Endpoints:`);
+  console.log(`   GET  http://localhost:${PORT}/tools`);
+  console.log(`   POST http://localhost:${PORT}/function-call`);
+  console.log(`   GET  http://localhost:${PORT}/health`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\n🛑 Shutting down MCP server...');
+  await pgPool.end();
+  redis.disconnect();
+  server.close();
+  process.exit(0);
+});

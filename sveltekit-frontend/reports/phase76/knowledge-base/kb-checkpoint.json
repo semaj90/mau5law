@@ -5,9 +5,9 @@
   "stats": {
     "totalSources": 0,
     "totalDocuments": 0,
-    "totalEmbeddings": 1,
+    "totalEmbeddings": 7,
     "searchQueries": 0,
-    "pagesScraped": 1,
+    "pagesScraped": 7,
     "mcpCalls": 0,
     "processingTime": 0
   }

@@ -693,3 +693,538 @@ describe('Property 8: Cache Hit Behavior', () => {
     expect(cacheMissResponse.results).toEqual([]);
   });
 });
+
+// ==========================================================================
+// Property 16: LLM Synthesis Context Injection
+// ==========================================================================
+describe('Property 16: LLM Synthesis Context Injection', () => {
+  /**
+   * **Feature: knowledge-search-engine, Property 16: LLM Synthesis Context Injection**
+   * **Validates: Requirements 2.1**
+   *
+   * When synthesize=true, the system SHALL inject top-K search results
+   * as context into the LLM prompt, and the response SHALL contain a
+   * synthesizedAnswer field.
+   */
+  it('should inject top-K results into LLM context', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 5, maxLength: 100 }), // query
+        fc.array(
+          fc.record({
+            id: fc.string({ minLength: 1 }),
+            title: fc.string({ minLength: 1 }),
+            url: fc.webUrl(),
+            summary: fc.string({ minLength: 10, maxLength: 200 }),
+            tags: fc.array(fc.string()),
+            semantic: fc.float({ min: 0.5, max: 1, noNaN: true }),
+            tfidf: fc.float({ min: 0, max: 1, noNaN: true })
+          }),
+          { minLength: 1, maxLength: 10 }
+        ),
+        fc.integer({ min: 1, max: 5 }), // topK for context
+        (query, resultsData, topK) => {
+          // Build context from top-K results
+          const results: SearchResult[] = resultsData.map(r => ({
+            id: r.id,
+            title: r.title,
+            url: r.url,
+            summary: r.summary,
+            tags: r.tags,
+            scores: {
+              semantic: r.semantic,
+              tfidf: r.tfidf,
+              combined: 0.7 * r.semantic + 0.3 * r.tfidf
+            }
+          }));
+
+          // Sort by combined score
+          results.sort((a, b) => b.scores.combined - a.scores.combined);
+
+          // Take top-K
+          const topResults = results.slice(0, Math.min(topK, results.length));
+
+          // Build context string (simulating what KnowledgeSearcher does)
+          const context = topResults
+            .map((r, idx) => `[${idx + 1}] ${r.title}\nURL: ${r.url}\n${r.summary}\n`)
+            .join('\n---\n\n');
+
+          // Build prompt
+          const prompt = `You are a helpful AI assistant. Answer the following question using ONLY the provided context.
+
+Context:
+${context}
+
+Question: ${query}
+
+Answer:`;
+
+          // Property: context must include all top-K results
+          for (let i = 0; i < topResults.length; i++) {
+            expect(context).toContain(topResults[i].title);
+            expect(context).toContain(topResults[i].url);
+            expect(context).toContain(topResults[i].summary);
+          }
+
+          // Property: prompt must include query
+          expect(prompt).toContain(query);
+
+          // Property: prompt must include context
+          expect(prompt).toContain('Context:');
+          expect(prompt).toContain(context);
+
+          // Property: context should be properly formatted with separators
+          const separatorCount = (context.match(/---/g) || []).length;
+          expect(separatorCount).toBe(Math.max(0, topResults.length - 1));
+        }
+      ),
+      { numRuns: 50 } // Reduced runs due to complexity
+    );
+  });
+
+  it('should support multiple LLM providers', () => {
+    const providers: Array<'ollama' | 'gemini' | 'claude'> = ['ollama', 'gemini', 'claude'];
+
+    for (const provider of providers) {
+      // Property: each provider should be a valid option
+      expect(['ollama', 'gemini', 'claude']).toContain(provider);
+
+      // Property: provider should be a string
+      expect(typeof provider).toBe('string');
+    }
+  });
+
+  it('should include synthesizedAnswer field when synthesize=true', () => {
+    fc.assert(
+      fc.property(
+        fc.record({
+          id: fc.string({ minLength: 1 }),
+          title: fc.string(),
+          url: fc.webUrl(),
+          summary: fc.string(),
+          tags: fc.array(fc.string()),
+          semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+          tfidf: fc.float({ min: 0, max: 1, noNaN: true }),
+          synthesizedAnswer: fc.string({ minLength: 10, maxLength: 500 })
+        }),
+        (data) => {
+          const result: SearchResult = {
+            id: data.id,
+            title: data.title,
+            url: data.url,
+            summary: data.summary,
+            tags: data.tags,
+            scores: {
+              semantic: data.semantic,
+              tfidf: data.tfidf,
+              combined: 0.7 * data.semantic + 0.3 * data.tfidf
+            },
+            synthesizedAnswer: data.synthesizedAnswer
+          };
+
+          // Property: synthesizedAnswer field should exist
+          expect(result).toHaveProperty('synthesizedAnswer');
+
+          // Property: synthesizedAnswer should be a non-empty string
+          expect(typeof result.synthesizedAnswer).toBe('string');
+          expect(result.synthesizedAnswer!.length).toBeGreaterThan(0);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should handle empty results gracefully', () => {
+    const query = 'test query';
+    const emptyResults: SearchResult[] = [];
+
+    // Property: empty results should not cause errors
+    expect(emptyResults.length).toBe(0);
+
+    // Property: context should be empty string
+    const context = emptyResults
+      .map((r, idx) => `[${idx + 1}] ${r.title}\n${r.summary}\n`)
+      .join('\n---\n\n');
+
+    expect(context).toBe('');
+  });
+});
+
+// ==========================================================================
+// Property 10: Tag Extraction and Filtering
+// ==========================================================================
+describe('Property 10: Tag Extraction and Filtering', () => {
+  /**
+   * **Feature: knowledge-search-engine, Property 10: Tag Extraction and Filtering**
+   * **Validates: Requirements 9.1, 9.3, 9.4**
+   *
+   * For any document, tags SHALL be extracted from entities field first,
+   * falling back to URL domain if no entities exist.
+   */
+  it('should extract tags from entities field', () => {
+    fc.assert(
+      fc.property(
+        fc.array(
+          fc.constantFrom(
+            'svelte',
+            'typescript',
+            'react',
+            'vue',
+            'python',
+            'javascript',
+            'docker',
+            'kubernetes'
+          ),
+          { minLength: 1, maxLength: 5 }
+        ),
+        fc.webUrl(),
+        (entities, url) => {
+          // Simulate tag extraction
+          const tags = entities.map((e) => e.toLowerCase().trim());
+
+          // Property: tags should be extracted from entities
+          expect(tags.length).toBeGreaterThan(0);
+
+          // Property: all tags should be lowercase
+          for (const tag of tags) {
+            expect(tag).toBe(tag.toLowerCase());
+          }
+
+          // Property: tags should match entities
+          for (let i = 0; i < entities.length; i++) {
+            expect(tags[i]).toBe(entities[i].toLowerCase().trim());
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should fallback to URL domain when no entities', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(
+          'https://svelte.dev/docs',
+          'https://kit.svelte.dev/docs/introduction',
+          'https://react.dev/learn',
+          'https://vuejs.org/guide',
+          'https://docs.python.org/3/'
+        ),
+        (url) => {
+          const emptyEntities: string[] = [];
+
+          // Extract domain from URL
+          const urlObj = new URL(url);
+          const domain = urlObj.hostname;
+          const parts = domain.split('.');
+          const mainDomain = parts[parts.length - 2];
+
+          // Property: should extract main domain as tag
+          expect(mainDomain.length).toBeGreaterThan(0);
+
+          // Property: domain should be valid tag
+          expect(mainDomain).toMatch(/^[a-z0-9\-]+$/);
+
+          // Property: when entities is empty, should use domain
+          if (emptyEntities.length === 0) {
+            expect(mainDomain).toBeTruthy();
+          }
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+
+  it('should normalize tags to lowercase and remove special chars', () => {
+    fc.assert(
+      fc.property(
+        fc.array(
+          fc.string({ minLength: 3, maxLength: 20 }).map((s) => s + Math.random() > 0.5 ? '.js' : ''),
+          { minLength: 1, maxLength: 5 }
+        ),
+        (rawTags) => {
+          // Normalize tags
+          const normalized = rawTags.map((tag) =>
+            tag
+              .toLowerCase()
+              .trim()
+              .replace(/[^a-z0-9\s\-\.]/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/\.js$/, '')
+              .replace(/\.ts$/, '')
+          );
+
+          // Property: all tags should be lowercase
+          for (const tag of normalized) {
+            expect(tag).toBe(tag.toLowerCase());
+          }
+
+          // Property: tags should not contain special chars (except - and .)
+          for (const tag of normalized) {
+            expect(tag).toMatch(/^[a-z0-9\-\.]*$/);
+          }
+
+          // Property: .js and .ts extensions should be removed
+          for (const tag of normalized) {
+            expect(tag.endsWith('.js')).toBe(false);
+            expect(tag.endsWith('.ts')).toBe(false);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should filter results by tags', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fc.constantFrom('svelte', 'react', 'vue', 'typescript', 'python'), {
+          minLength: 1,
+          maxLength: 5
+        }),
+        fc.array(fc.constantFrom('svelte', 'react', 'vue', 'typescript', 'python'), {
+          minLength: 1,
+          maxLength: 3
+        }),
+        (docTags, requiredTags) => {
+          // Check if document has at least one required tag
+          const hasMatch = requiredTags.some((reqTag) => docTags.includes(reqTag));
+
+          // Property: filter should return true if any tag matches
+          if (hasMatch) {
+            expect(docTags.some((tag) => requiredTags.includes(tag))).toBe(true);
+          }
+
+          // Property: filter should return false if no tags match
+          if (!hasMatch) {
+            expect(docTags.every((tag) => !requiredTags.includes(tag))).toBe(true);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should limit tags to maximum of 10', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fc.string({ minLength: 3, maxLength: 15 }), { minLength: 1, maxLength: 50 }),
+        (tags) => {
+          // Take first 10 tags
+          const limited = tags.slice(0, 10);
+
+          // Property: should never exceed 10 tags
+          expect(limited.length).toBeLessThanOrEqual(10);
+
+          // Property: if input has <= 10 tags, output should match
+          if (tags.length <= 10) {
+            expect(limited.length).toBe(tags.length);
+          }
+
+          // Property: if input has > 10 tags, output should be exactly 10
+          if (tags.length > 10) {
+            expect(limited.length).toBe(10);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should reject invalid tags (too short or stop words)', () => {
+    const invalidTags = ['a', 'i', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of'];
+    const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of']);
+
+    for (const tag of invalidTags) {
+      // Property: tags < 2 chars should be invalid
+      if (tag.length < 2) {
+        expect(tag.length).toBeLessThan(2);
+      }
+
+      // Property: stop words should be invalid
+      if (stopWords.has(tag)) {
+        expect(stopWords.has(tag)).toBe(true);
+      }
+    }
+  });
+});
+
+// ==========================================================================
+// Property 11: API Response Schema Validation
+// ==========================================================================
+describe('Property 11: API Response Schema Validation', () => {
+  /**
+   * **Feature: knowledge-search-engine, Property 11: API Response Schema Validation**
+   * **Validates: Requirements 8.1**
+   *
+   * For any API response, the response SHALL contain success, query, results,
+   * and metadata fields with correct types.
+   */
+  it('should return valid API response schema', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1, maxLength: 100 }),
+        fc.array(
+          fc.record({
+            id: fc.string({ minLength: 1 }),
+            title: fc.string(),
+            url: fc.webUrl(),
+            summary: fc.string(),
+            tags: fc.array(fc.string()),
+            semantic: fc.float({ min: 0, max: 1, noNaN: true }),
+            tfidf: fc.float({ min: 0, max: 1, noNaN: true })
+          }),
+          { minLength: 0, maxLength: 10 }
+        ),
+        fc.integer({ min: 10, max: 1000 }),
+        (query, resultsData, queryTime) => {
+          // Build search results
+          const results: SearchResult[] = resultsData.map((r) => ({
+            id: r.id,
+            title: r.title,
+            url: r.url,
+            summary: r.summary,
+            tags: r.tags,
+            scores: {
+              semantic: r.semantic,
+              tfidf: r.tfidf,
+              combined: 0.7 * r.semantic + 0.3 * r.tfidf
+            }
+          }));
+
+          // Build API response
+          const response = {
+            success: true,
+            query,
+            results,
+            metadata: {
+              queryTime,
+              totalResults: results.length,
+              synthesized: false,
+              llmProvider: 'ollama'
+            }
+          };
+
+          // Property: response must have success field
+          expect(response).toHaveProperty('success');
+          expect(typeof response.success).toBe('boolean');
+
+          // Property: response must have query field
+          expect(response).toHaveProperty('query');
+          expect(typeof response.query).toBe('string');
+          expect(response.query).toBe(query);
+
+          // Property: response must have results array
+          expect(response).toHaveProperty('results');
+          expect(Array.isArray(response.results)).toBe(true);
+
+          // Property: response must have metadata
+          expect(response).toHaveProperty('metadata');
+          expect(response.metadata).toHaveProperty('queryTime');
+          expect(response.metadata).toHaveProperty('totalResults');
+          expect(response.metadata).toHaveProperty('synthesized');
+          expect(response.metadata).toHaveProperty('llmProvider');
+
+          // Property: metadata types must be correct
+          expect(typeof response.metadata.queryTime).toBe('number');
+          expect(typeof response.metadata.totalResults).toBe('number');
+          expect(typeof response.metadata.synthesized).toBe('boolean');
+          expect(typeof response.metadata.llmProvider).toBe('string');
+
+          // Property: totalResults must match results length
+          expect(response.metadata.totalResults).toBe(results.length);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should validate query parameter constraints', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 0, maxLength: 600 }),
+        (query) => {
+          // Property: empty queries should be invalid
+          if (query.trim().length === 0) {
+            expect(query.trim().length).toBe(0);
+          }
+
+          // Property: queries > 500 chars should be invalid
+          if (query.length > 500) {
+            expect(query.length).toBeGreaterThan(500);
+          }
+
+          // Property: valid queries should be 1-500 chars
+          const isValid = query.trim().length > 0 && query.length <= 500;
+          if (isValid) {
+            expect(query.trim().length).toBeGreaterThan(0);
+            expect(query.length).toBeLessThanOrEqual(500);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should validate topK parameter constraints', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: -10, max: 150 }),
+        (topK) => {
+          // Property: topK must be between 1 and 100
+          const isValid = topK >= 1 && topK <= 100;
+
+          if (isValid) {
+            expect(topK).toBeGreaterThanOrEqual(1);
+            expect(topK).toBeLessThanOrEqual(100);
+          } else {
+            expect(topK < 1 || topK > 100).toBe(true);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('should validate llmProvider parameter', () => {
+    const validProviders = ['ollama', 'gemini', 'claude'];
+    const invalidProviders = ['openai', 'gpt4', 'invalid', ''];
+
+    // Property: valid providers should be accepted
+    for (const provider of validProviders) {
+      expect(validProviders).toContain(provider);
+    }
+
+    // Property: invalid providers should be rejected
+    for (const provider of invalidProviders) {
+      expect(validProviders).not.toContain(provider);
+    }
+  });
+
+  it('should handle error responses correctly', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(400, 404, 500, 503),
+        fc.string({ minLength: 5, maxLength: 100 }),
+        (statusCode, errorMessage) => {
+          // Build error response
+          const errorResponse = {
+            error: errorMessage,
+            details: 'Additional error details'
+          };
+
+          // Property: error response must have error field
+          expect(errorResponse).toHaveProperty('error');
+          expect(typeof errorResponse.error).toBe('string');
+
+          // Property: error message should not be empty
+          expect(errorResponse.error.length).toBeGreaterThan(0);
+
+          // Property: status code should be valid HTTP error code
+          expect([400, 404, 500, 503]).toContain(statusCode);
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+});

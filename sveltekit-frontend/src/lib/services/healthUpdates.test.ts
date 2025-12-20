@@ -8,6 +8,7 @@ import {
  reconnect,
 } from './healthUpdates';
 import type { HealthUpdateMessage } from './healthUpdates';
+import { setupTest, cleanupTest, mockQdrant, mockRedis, mockOllama, mockPostgres, mockMinio } from '$lib/test-utils/setup';
 
 /**
  * Phase 10.3: Client-Side Health Updates Service Tests
@@ -53,7 +54,6 @@ describe('Phase 10.3: Health Updates Service', () => {
  })) as any;
 
  // Mock fetch for SSE
- global.fetch = vi.fn();
  });
 
  afterEach(() => {

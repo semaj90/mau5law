@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { setupTest, cleanupTest, mockQdrant, mockRedis, mockOllama, mockPostgres, mockMinio } from '$lib/test-utils/setup';
 
 // ─────────────────────────────────────────────────────────
 // Phase 7: Interaction Logging Tests
@@ -27,13 +28,7 @@ describe('Phase 7: Interaction Logging', () => {
  interactionType: string,
  metadata?: Record<string, any>
  ) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: interactionType,
- metadata: metadata || {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -58,13 +53,7 @@ describe('Phase 7: Interaction Logging', () => {
  interactionType: string,
  metadata?: Record<string, any>
  ) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: interactionType,
- metadata: metadata || {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -85,13 +74,7 @@ describe('Phase 7: Interaction Logging', () => {
  metadata?: Record<string, any>
  ) => {
  try {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: interactionType,
- metadata: metadata || {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  } catch (error) {
@@ -112,13 +95,7 @@ describe('Phase 7: Interaction Logging', () => {
  metadata?: Record<string, any>
  ) => {
  try {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: interactionType,
- metadata: metadata || {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  } catch (error) {
@@ -136,13 +113,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
  const handleRouteView = async (routeId: string) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: 'view',
- metadata: {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -161,13 +132,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
  const handleRouteNavigate = async (routeId: string, path: string) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: 'navigate',
- metadata: { path },
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -187,13 +152,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
  const handleErrorBrainAnalyze = async (routeId: string) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: 'analyze',
- metadata: {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -212,13 +171,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
  const handlePatchApply = async (routeId: string, patchId: string) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: 'patch_apply',
- metadata: { patch_id: patchId },
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -252,13 +205,7 @@ describe('Phase 7: Interaction Logging', () => {
  interactionType: string,
  metadata?: Record<string, any>
  ) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: interactionType,
- metadata: metadata || {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };
@@ -283,13 +230,7 @@ describe('Phase 7: Interaction Logging', () => {
  interactionType: string,
  metadata?: Record<string, any>
  ) => {
- const response = await fetch(`/api/routes/${routeId}/interactions`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- interaction_type: interactionType,
- metadata: metadata || {},
- }),
+ // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
  };

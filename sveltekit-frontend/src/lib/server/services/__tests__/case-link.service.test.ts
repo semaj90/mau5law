@@ -1,39 +1,19 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { caseLinkService, type LinkCaseStatuteRequest } from '../case-link.service';
-
-// Mock dependencies
-vi.mock('$lib/server/db', () => ({
- db: {
- raw: vi.fn(),
- },
-}));
-
-vi.mock('$lib/server/redis', () => ({
- redis: {
- del: vi.fn(),
- },
-}));
-
-vi.mock('../graph.service', () => ({
- graphService: {
- createCaseStatuteRelationship: vi.fn(),
- deleteCaseStatuteRelationship: vi.fn(),
- },
-}));
-
-vi.mock('../audit.service', () => ({
- auditService: {
- logSummaryOperation: vi.fn(),
- },
-}));
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { caseLinkService } from '../case-link.service';
 
 describe('CaseLinkService', () => {
  const mockCaseId = 'case-123';
  const mockUserId = 'user-456';
  const mockStatuteCode = '18 U.S.C. § 1001';
 
- beforeEach(() => {
+ beforeEach(async () => {
+ await setupTest();
  vi.clearAllMocks();
+ });
+
+ afterEach(async () => {
+ await cleanupTest();
  });
 
  describe('linkStatuteToCase', () => {
