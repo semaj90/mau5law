@@ -78,7 +78,33 @@ export default defineConfig(({ mode }) => {
 
   return {
     assetsInclude: ['**/*.woff2'], // Added for font assets
-    // Removed problematic define block - SvelteKit handles env vars naturally
+    // Fix for Vite 6 SSR compatibility with SvelteKit 2.49+
+    // These globals are normally injected by SvelteKit but Vite 6 SSR needs them explicitly
+    define: {
+      // Path configuration
+      SVELTEKIT_PATHS_BASE: '""',
+      SVELTEKIT_PATHS_ASSETS: '""',
+      SVELTEKIT_APP_DIR: '"_app"',
+      SVELTEKIT_PATHS_RELATIVE: 'false',
+      // Client-side variants (with double underscore)
+      SVELTEKIT_PATHS_BASE__: '""',
+      SVELTEKIT_PATHS_ASSETS__: '""',
+      SVELTEKIT_APP_DIR__: '"_app"',
+      SVELTEKIT_HASH_ROUTING__: 'false',
+      // Feature flags
+      SVELTEKIT_SERVER_TRACING_ENABLED__: 'false',
+      SVELTEKIT_CLIENT_ROUTING__: 'true',
+      SVELTEKIT_EMBEDDED__: 'false',
+      SVELTEKIT_HAS_SERVER_LOAD__: 'true',
+      SVELTEKIT_HAS_UNIVERSAL_LOAD__: 'true',
+      // App version polling
+      SVELTEKIT_APP_VERSION_FILE__: '"_app/version.json"',
+      SVELTEKIT_APP_VERSION_POLL_INTERVAL__: '0',
+      // Adapter info
+      SVELTEKIT_ADAPTER_NAME__: '"@sveltejs/adapter-node"',
+      // Dev mode flag
+      SVELTEKIT_dev: mode === 'development' ? 'true' : 'false',
+    },
     plugins: [
       stripDashedDefineKeys,
       ENABLE_CJS_RESOLVER_PATCH && esbuildCommonJsResolverPatch,

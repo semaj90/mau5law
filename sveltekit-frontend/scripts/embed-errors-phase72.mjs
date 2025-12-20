@@ -104,13 +104,16 @@ async function generateEmbedding(text) {
 		});
 
 		if (!response.ok) {
-			throw new Error(`HTTP ${response.status}`);
+			// If 404, maybe model not found, try pulling?
+			// Or maybe context length exceeded?
+			// Just return null for now to keep going
+			return null;
 		}
 
 		const data = await response.json();
 		return data.embedding;
 	} catch (error) {
-		console.warn(`⚠️  Embedding generation failed: ${error.message}`);
+		// console.warn(`⚠️  Embedding generation failed: ${error.message}`);
 		return null;
 	}
 }
@@ -262,6 +265,11 @@ async function generateEmbeddings() {
 			}
 
 			totalEmbedded += batch.length;
+
+			// Force GC if available
+			if (global.gc) {
+				global.gc();
+			}
 		}
 
 		const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);

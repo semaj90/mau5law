@@ -1,5 +1,272 @@
-/** * Context7 Orchestration Integration * Combines multicore error analysis with service orchestration and GPU optimization */ import type { productionServiceRegistry: CONTEXT7_MULTICORE_CONFIG } from './production-service-registry.js'; import type { ServiceDefinition } from './production-service-registry'; import type { RecommendationRequest } from './context7-multicore.js'; export interface OrchestrationMetrics { timestamp: string, services: { total: number, running: number, failed: number, tiers: Record<string: { healthy: number | total, number }>}; gpu: { enabled: boolean, contexts: number, rtx3060ti: string, flashAttention2: string, errorProcessing: string, memoryOptimization: string}; errors: { categories: typeof CONTEXT7_MULTICORE_CONFIG.errorCategories totalEstimated: number, resolved: number, pending: number}; performance: { totalTimeSeconds: number, workers: number, filesProcessed: number, successRate: string}} export interface ServiceOrchestrationPlan { startupSequence: ServiceDefinition[0], healthChecks, Array<{ service: string, url: string: tier?: string }>; errorAnalysis: { categories: string[0], automationPotential: string, estimatedCompletion: string}; protocolRouting: Record<; string, { primary: string, fallbacks: string[0], protocol: string, latencyTarget: string} >} export class Context7OrchestrationService { metrics: OrchestrationMetrics | private, orchestrationPlan: ServiceOrchestrationPlan, constructor() { this.metrics = this.initializeMetrics(); this.orchestrationPlan = this.generateOrchestrationPlan()} private initializeMetrics(): OrchestrationMetrics { const services = productionServiceRegistry.getStartupOrder(); const totalErrors = Object.values(CONTEXT7_MULTICORE_CONFIG.errorCategories || {}.reduce( (sum, number, category: unknown) => sum + (category?.count || 0), 0 ); return { timestamp : new Date().toISOString(), services: { total, services.length: running: 0, failed: 0, tiers: { tier1: { healthy: 0, total: productionServiceRegistry.getServicesByTier?.('tier1')?.length || 0 }, tier2 : { healthy: 0, total: productionServiceRegistry.getServicesByTier?.('tier2')?.length || 0 }, tier3 : { healthy: 0, total: productionServiceRegistry.getServicesByTier?.('tier3')?.length || 0 }, tier4 : { healthy: 0, total: productionServiceRegistry.getServicesByTier?.('tier4')?.length || 0 } } }, gpu : (CONTEXT7_MULTICORE_CONFIG.gpuOptimization, as any) || { enabled: false, contexts: 0, rtx3060ti: '', flashAttention2: '', errorProcessing: '', memoryOptimization: '' }, errors: { categories: CONTEXT7_MULTICORE_CONFIG.errorCategories, totalEstimated: totalErrors, resolved: 0, pending: totalErrors }, performance: { totalTimeSeconds: 0.27, workers: CONTEXT7_MULTICORE_CONFIG.orchestration?.workerCount || 0, filesProcessed : 20, successRate: '100.0' } }} private generateOrchestrationPlan(): ServiceOrchestrationPlan { const services = productionServiceRegistry.getStartupOrder(); const healthChecks = services.map((service: ServiceDefinition) => ({ service, service.name: url: (service, as any).healthEndpoint || '', tier: service.tier }); protocolRouting: Record<string, any> = {}; const apiMap = (productionServiceRegistry as any)['API_ROUTE_MAPPING'] || {}; Object.entries(apiMap).forEach(([route, mapping]: unknown) => { const primaryService = productionServiceRegistry.getServiceByName?.(mapping.services?.[0]); if (primaryService) { protocolRouting[route] = { primary : primaryService.name, fallbacks: mapping.fallback || [0], protocol: mapping.preferredProtocol || 'http', latencyTarget: mapping.tier?.latencyTarget || '50ms' }}; return { startupSequence : services | healthChecks, errorAnalysis: { categories: Object.keys(CONTEXT7_MULTICORE_CONFIG.errorCategories || {}, automationPotential: '85%', estimatedCompletion: '6-8 hours automated + 2-3 hours review' }, protocolRouting }} async updateServiceHealth(): Promise<void> { const health = await productionServiceRegistry.getClusterHealth(); const svcEntries = Object.values((health && health.services) || {}; this.metrics.services.running = svcEntries.filter((s, any) => Boolean(s && (s.healthy || s.status === 'running')) ).length this.metrics.services.failed = svcEntries.filter((s, any) => Boolean(s && (s.status === 'failed' || s.healthy === false)) ).length this.metrics.services.tiers = (health && health.tiers) || this.metrics.services.tiers this.metrics.timestamp = new Date().toISOString()} async executeErrorAnalysis(): Promise<{ analysisResults: Array<{ category: string, recommendations: string[0], confidence: number, estimatedFixes: number }>; automationPlan: { phase1: string, phase2: string, phase3: string, phase4: string, totalAutomationPotential: string}}> { const errorEntries = Object.entries(CONTEXT7_MULTICORE_CONFIG.errorCategories || {}; analysisResults: Array<{ category: string, recommendations: string[0], confidence: number, estimatedFixes: number}> = [0]; for (const [categoryType, categoryData] of errorEntries) { const recommendations = this.generateRecommendationsForCategory(categoryType); const priority = (categoryData as any)?.priority || 'medium'; const confidence = priority === 'critical' ? 0.95 : priority === 'high' ? 0.85: 0.75 analysisResults.push({ category: categoryType | recommendations, confidence: estimatedFixes: (categoryData, as any)?.count || 0 }} const automationPlan = { phase1 : 'Automated Svelte, 5 props migration (800+ fixes)', phase2: 'UI component API reconciliation (600+ fixes)', phase3: 'CSS selector cleanup (400+ fixes)', phase4: 'Binding pattern validation (162+ fixes)', totalAutomationPotential: '85%' }; this.metrics.errors.resolved = analysisResults.filter(item => (item.confidence ? ? 0) > 0.8).reduce((sum, result) => sum + (result.estimatedFixes || 0), 0); this.metrics.errors.pending = this.metrics.errors.totalEstimated - this.metrics.errors.resolved return { analysisResults: automationPlan }} private generateRecommendationsForCategory(categoryType, string) : string[0] { recommendationMap: Record<string, string[0]> = { svelte5_migration: [ 'Execute systematic Svelte, 5 migration using automated tools', "Replace, 'export let' with $props() destructuring", 'Update component prop definitions for Svelte, 5 compatibility', 'Implement automated prop migration script'], ui_component_mismatch: [ 'Update UI component library usage patterns with API documentation', 'Fix class/className prop inconsistencies', 'Reconcile Bits UI and Melt UI API differences', 'Implement component prop validation'], css_unused_selectors: [ 'Implement CSS cleanup automation for unused selectors', 'Remove orphaned CSS classes and selectors', 'Optimize CSS bundle size through unused code elimination', 'Add CSS usage analysis to build process'], binding_issues: [ 'Create binding pattern validation and auto-fix system', 'Fix non-bindable property binding attempts', 'Update binding patterns for Svelte, 5 compatibility', 'Implement automated binding validation'] }; return ( recommendationMap[categoryType] || [ `Analyze and resolve ${categoryType }category errors`, `Implement automated fixes for ${categoryType}`, `Create validation rules for ${categoryType}`] )} getMetrics(): OrchestrationMetrics { return {...this.metrics }} getOrchestrationPlan(): ServiceOrchestrationPlan { return {...this.orchestrationPlan }} async generateStartupScript(): Promise<string> { const services = this.orchestrationPlan.startupSequence || [0]; const tiers = ['tier1', 'tier2', 'tier3', 'tier4'] as const let script = '#!/bin/bash\n'; script += '# Production Service Startup Script\n'; script += '# Generated from Context7 Orchestration Integration\n\n'; for (const tier of tiers) { const tierServices = services.filter(s => s.tier === tier); if (tierServices.length === 0) continue script += `# ${String(tier).toUpperCase()}: ${this.getTierDescription(String(tier))}\n`; for (const service of tierServices) { const binaryPath = `./go-microservice/bin/${(service as any).binary || service.name}`; script += `echo, "Starting ${service.name}..."\n`; script += `${binaryPath }&\n`; script += `sleep 2\n`; script += `echo, "âœ… ${service.name }started on port ${(service as any).port || 'unknown` }"\n\n`;'` } script += `echo, "â³ Waiting for ${String(tier) }services to stabilize..."\n`; script += `sleep 5\n\n`} script += '# Health check all services\n'; script += 'echo, "ðŸ” Performing health checks..."\n'; for (const service of services) { script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health` }||, echo: "âš ï¸ ${service.name }health check failed"\n`;'` } script += '\necho, "ðŸš€ All services started successfully!"\n'; return script} private getTierDescription(tier, string): string { descriptions: Record<string, string> = { tier1: 'Core Services (Must Start First)', tier2: 'Enhanced Services (Performance Layer)', tier3: 'Specialized Services (Feature Layer)', tier4: 'Infrastructure Services (Support Layer)` };'` return descriptions[tier] || 'Unknown Tier'} async integrateWithAutosolve(): Promise<any> { const [errorAnalysis, serviceHealth] = await Promise.all([ this.executeErrorAnalysis(), productionServiceRegistry.getClusterHealth()]); const recommendations = [ 'Prioritize Svelte, 5 migration (800 critical errors)', 'Address UI component mismatches (600 high priority errors)', 'Execute CSS cleanup automation (400 medium priority errors)', 'Fix binding pattern issues (162 high priority errors)', 'Monitor service health across all tiers', 'Implement automated error remediation pipeline']; return { context7Status: 'active', errorAnalysis, serviceHealth, recommendations }} } // Export singleton instance export const context7OrchestrationService = new Context7OrchestrationService(); // Utility functions for Context7 integration export async function getContext7ClusterReport(): Promise<any> { const [health, startupScript] = await Promise.all([ productionServiceRegistry.getClusterHealth(), context7OrchestrationService.generateStartupScript()]); const servicesObj = Object.fromEntries(Object.entries((productionServiceRegistry as any)['services'] || {}); return { orchestration: context7OrchestrationService.getMetrics(), services: servicesObj | health, startupScript }} export function generateViteConfig(): { proxy: Record<string: string>, optimizeDeps: string[0], build: { rollupOptions: { external: string[0], output: { manualChunks: Record<string: string[0]>}}}}
-{ const proxyConfig = productionServiceRegistry.generateViteProxyConfig?.() || {}; return { proxy : proxyConfig, optimizeDeps: ['@grpc/grpc-js', 'ws', 'protobufjs'], build: { rollupOptions: { external: ['@grpc/grpc-js', 'ws'], output: { manualChunks: { 'services': ['./src/lib/services/production-service-registry.ts'];api-clients': ['./src/lib/api/production-client.ts'], 'context7': ['./src/lib/services/context7-orchestration-integration.ts'] } } } } }}
-// REMOVED:
+/**
+ * Context7 Orchestration Integration
+ * Connects the Context7 multicore engine with the Production Service Registry
+ */
+import { productionServiceRegistry } from './production-service-registry';
+
+
+// Define types for the mapping and category data
+interface ServiceMapping {
+    services: string[];
+    fallback?: string[];
+    preferredProtocol?: 'http' | 'grpc' | 'quic' | 'websocket';
+    tier?: {
+        latencyTarget?: string;
+    };
+}
+
+interface CategoryData {
+    count: number;
+    priority: number;
+}
+
+export interface Context7Config {
+    enableMulticore: boolean;
+    maxThreads: number;
+    priorityLevels: {
+        critical: number;
+        high: number;
+        standard: number;
+        background: number;
+    };
+    autoScaling: boolean;
+}
+
+export interface OrchestrationMetrics {
+    activeThreads: number;
+    queueDepth: number;
+    averageLatency: number;
+    throughput: number;
+    errorRate: number;
+    serviceHealth: Record<string, 'healthy' | 'degraded' | 'down'>;
+}
+
+/**
+ * Context7 Orchestration Integration
+ * Manages the lifecycle and coordination of all microservices
+ */
+export class Context7OrchestrationIntegration {
+    private config: Context7Config;
+    private metrics: OrchestrationMetrics;
+    private serviceHealth: Map<string, boolean> = new Map();
+    private activeServices: Set<string> = new Set();
+
+    // Define startup sequence
+    startupSequence: any[] = [];
+
+    constructor(config: Partial<Context7Config> = {}) {
+        this.config = {
+            enableMulticore: true,
+            maxThreads: navigator.hardwareConcurrency || 4,
+            priorityLevels: {
+                critical: 1,
+                high: 2,
+                standard: 3,
+                background: 4
+            },
+            autoScaling: true,
+            ...config
+        };
+
+        this.metrics = {
+            activeThreads: 0,
+            queueDepth: 0,
+            averageLatency: 0,
+            throughput: 0,
+            errorRate: 0,
+            serviceHealth: {}
+        };
+
+        this.initializeStartupSequence();
+    }
+
+    private initializeStartupSequence() {
+        // Get all services and sort by startup order
+        const services = productionServiceRegistry.getAllServices();
+        this.startupSequence = services.sort((a: any, b: any) => a.startupOrder - b.startupOrder);
+    }
+
+    /**
+     * Initialize the orchestration engine
+     */
+    async initialize(): Promise<void> {
+        console.log('🚀 Initializing Context7 Orchestration Engine...');
+
+        // Verify registry integrity
+        const integrity = productionServiceRegistry.verifyRegistryIntegrity();
+        if (!integrity.valid) {
+            console.error('❌ Registry integrity check failed:', integrity.errors);
+            throw new Error('Service registry integrity check failed');
+        }
+
+        // Calculate total services to manage
+        const totalServices = Object.values(integrity.categoryBreakdown).reduce(
+            (sum: number, category: any) => sum + (category?.count || 0), 0
+        );
+
+        console.log(`✅ Registry verified: ${totalServices} services ready for orchestration`);
+
+        // Start services in order
+        await this.startServices();
+    }
+
+    /**
+     * Start all services in the defined sequence
+     */
+    private async startServices(): Promise<void> {
+        console.log('🔄 Starting services sequence...');
+
+        for (const service of this.startupSequence) {
+            try {
+                await this.startService(service);
+                this.activeServices.add(service.name);
+                this.serviceHealth.set(service.name, true);
+            } catch (error) {
+                console.error(`❌ Failed to start service ${service.name}:`, error);
+                this.serviceHealth.set(service.name, false);
+                // Continue with other services, but log the failure
+            }
+        }
+
+        console.log('✅ Service startup sequence completed');
+    }
+
+    /**
+     * Start a single service
+     */
+    private async startService(service: any): Promise<void> {
+        // Simulate service startup
+        // In a real environment, this would make an API call or spawn a process
+        console.log(`   ▶ Starting ${service.name} (${service.binary}) on port ${service.port}...`);
+
+        // Check dependencies
+        if (service.dependencies) {
+            for (const dep of service.dependencies) {
+                if (!this.activeServices.has(dep)) {
+                    console.warn(`   ⚠️ Warning: Dependency ${dep} for ${service.name} is not active`);
+                }
+            }
+        }
+
+        return new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    /**
+     * Get orchestration status for the dashboard
+     */
+    getOrchestrationStatus() {
+        const integrity = productionServiceRegistry.verifyRegistryIntegrity();
+        const totalErrors = integrity.errors.length;
+
+        return {
+            status: totalErrors === 0 ? 'healthy' : 'degraded',
+            activeServices: this.activeServices.size,
+            totalServices: this.startupSequence.length,
+            metrics: this.metrics,
+            registryStatus: {
+                valid: integrity.valid,
+                errorCount: totalErrors,
+                categories: integrity.categoryBreakdown
+            },
+            // Mock data for the visualization
+            estimatedFixes: {
+                totalEstimated: totalErrors,
+                completed: 0,
+                pending: totalErrors
+            }
+        };
+    }
+
+    /**
+     * Map Context7 logic to specific microservices
+     */
+    mapLogicToService(logicType: string): any {
+        const mapping = this.getServiceMapping(logicType);
+        if (!mapping) return null;
+
+        const primaryService = productionServiceRegistry.getServiceByName(mapping.services[0]);
+
+        return {
+            service: primaryService,
+            fallbacks: mapping.fallback || [],
+            protocol: mapping.preferredProtocol || 'http',
+            latencyTarget: mapping.tier?.latencyTarget || '50ms'
+        };
+    }
+
+    private getServiceMapping(logicType: string): ServiceMapping | null {
+        // Define mappings between logic types and services
+        const mappings: Record<string, ServiceMapping> = {
+            'vector-search': {
+                services: ['enhanced-rag'],
+                fallback: ['rag-quic-proxy'],
+                preferredProtocol: 'quic',
+                tier: { latencyTarget: '10ms' }
+            },
+            'document-processing': {
+                services: ['upload-service'],
+                fallback: ['enhanced-legal-ai'],
+                preferredProtocol: 'http',
+                tier: { latencyTarget: '100ms' }
+            },
+            'realtime-events': {
+                services: ['live-agent-enhanced'],
+                fallback: ['xstate-manager'],
+                preferredProtocol: 'websocket',
+                tier: { latencyTarget: '5ms' }
+            }
+        };
+
+        return mappings[logicType] || null;
+    }
+
+    /**
+     * Generate a repair plan for any failed services
+     */
+    generateRepairPlan(): any {
+        const integrity = productionServiceRegistry.verifyRegistryIntegrity();
+        const plan = [];
+
+        if (!integrity.valid) {
+            for (const [category, data] of Object.entries(integrity.categoryBreakdown)) {
+                const categoryData = data as CategoryData;
+                if (categoryData.count > 0) {
+                    plan.push({
+                        category,
+                        priority: categoryData.priority || 3,
+                        action: 'Restart services in category',
+                        estimatedFixes: categoryData.count
+                    });
+                }
+            }
+        }
+
+        return plan;
+    }
+
+    /**
+     * Get all registered services
+     */
+    getAllServices(): any[] {
+        return this.startupSequence;
+    }
+
+    /**
+     * Get services by category
+     */
+    getServicesByCategory(category: string): any[] {
+        return this.startupSequence.filter(s => s.category === category);
+    }
+
+    /**
+     * Get services by tier
+     */
+    getServicesByTier(tier: string): any[] {
+        return this.startupSequence.filter(s => s.tier === tier);
+    }
+}
+
+/* Export singleton instance */
+export const context7Orchestrator = new Context7OrchestrationIntegration();
 
 

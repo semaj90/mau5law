@@ -1,13 +1,9 @@
 <script lang="ts">
-	import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
-	import type { Dialog, DialogContent, DialogTitle, DialogDescription } from '$lib/components/ui/dialog';
-	import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
-	import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import Label from '$lib/components/ui/Label.svelte';
-	import Progress from '$lib/components/ui/progress/Progress.svelte';
-	import type { Textarea } from '$lib/components/ui/textarea';
+	import { Button } from '$lib/components/ui/button';
+	import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { Progress } from '$lib/components/ui/progress';
 
 	// Define missing types
 	type SearchResult = {
@@ -225,7 +221,7 @@
 				</div>
 				<div>
 					<Label for="evidenceType">Evidence Type</Label>
-					<select id="evidenceType" bind:value={evidenceType} class="select-input">
+					<select id="evidenceType" bind:value={evidenceType} class="w-full p-3 bg-[#0a0d10] border border-gray-700 rounded text-white focus:border-[#ffd700] focus:outline-none">
 						<option value="" disabled>Select type</option>
 						{#each evidenceTypes as type}
 							<option value={type.value}>{type.label}</option>
@@ -235,7 +231,7 @@
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceFile">Upload File (optional)</Label>
-				<input type="file" id="evidenceFile" onchange={handleFileUpload} class="file-input" />
+				<input type="file" id="evidenceFile" onchange={handleFileUpload} class="w-full p-3 my-2 bg-[#0a0d10] border-2 border-dashed border-gray-700 rounded-lg text-white cursor-pointer transition-all duration-300 hover:border-[#ffd700]" />
 			</div>
 			<div class="mb-4">
 				<Label for="evidenceContent">Evidence Content</Label>
@@ -243,7 +239,7 @@
 			</div>
 			<div class="mb-4">
 				<Label for="priority">Priority</Label>
-				<select id="priority" bind:value={priority} class="select-input">
+				<select id="priority" bind:value={priority} class="w-full p-3 bg-[#0a0d10] border border-gray-700 rounded text-white focus:border-[#ffd700] focus:outline-none">
 					<option value="" disabled>Select priority</option>
 					{#each priorityOptions as option}
 						<option value={option.value}>{option.label}</option>
@@ -252,10 +248,10 @@
 			</div>
 		</CardContent>
 		<CardFooter>
-			<Button onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent} class="upload-btn">
+			<Button onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent} class="bg-[#ffd700] text-[#0a0a0a] hover:bg-[#ffed4a] disabled:opacity-50 disabled:cursor-not-allowed">
 				{analyzing ? 'Analyzing...' : 'Start Analysis'}
 			</Button>
-			<Button onclick={resetForm} variant="outline" class="reset-btn">Reset</Button>
+			<Button onclick={resetForm} variant="outline" class="bg-[#f7d51d] text-[#0a0a0a] hover:bg-[#e5c51b]">Reset</Button>
 		</CardFooter>
 	</Card>
 
@@ -355,45 +351,5 @@
 	}
 
 	/* Consistent with evidence page styles */
-	.upload-btn {
-		background: #ffd700;
-		color: #0a0a0a;
-	}
-	.upload-btn:hover {
-		background: #ffed4a;
-	}
-	.upload-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-	.reset-btn {
-		background: #f7d51d;
-		color: #0a0a0a;
-	}
-	.file-input {
-		width: 100%;
-		padding: 0.75rem;
-		margin: 0.5rem 0;
-		background: #0a0d10;
-		border: 2px dashed #444;
-		border-radius: 8px;
-		color: white;
-		cursor: pointer;
-		transition: all 0.3s ease;
-	}
-	.file-input:hover {
-		border-color: #ffd700;
-	}
-	.select-input {
-		width: 100%;
-		padding: 0.75rem;
-		background: #0a0d10;
-		border: 1px solid #444;
-		border-radius: 4px;
-		color: white;
-	}
-	.select-input:focus {
-		border-color: #ffd700;
-		outline: none;
-	}
+
 </style>

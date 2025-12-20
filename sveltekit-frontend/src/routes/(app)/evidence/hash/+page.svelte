@@ -1,9 +1,8 @@
 <script lang="ts">
  import { goto } from '$app/navigation';
  import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
-// REMOVED: import type { appActions, appStore } from '$lib/stores/app-store';
-// REMOVED: import { onDestroy, onMount } from 'svelte';
-// REMOVED:
+ import appStore, { appActions } from '$lib/stores/app-store';
+ import { onDestroy, onMount } from 'svelte';
  // YoRHaModalComponent is being replaced by bits-ui Dialog
 
  let selectedSection = $state('command-center');

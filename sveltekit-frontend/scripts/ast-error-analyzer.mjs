@@ -29,6 +29,7 @@ const __dirname = path.dirname(__filename);
 const args = process.argv.slice(2);
 const fileArg = args.includes('--file') ? args[args.indexOf('--file') + 1] : null;
 const dirArg = args.includes('--dir') ? args[args.indexOf('--dir') + 1] : null;
+const errorsArg = args.includes('--errors') ? args[args.indexOf('--errors') + 1] : null;
 const graphOutput = args.includes('--graph') ? args[args.indexOf('--graph') + 1] : 'ast-analysis.json';
 
 console.log('🔍 Phase 72 - AST-Based Error Analyzer\n');
@@ -38,6 +39,131 @@ const project = new Project({
 	tsConfigFilePath: path.join(__dirname, '..', 'tsconfig.json'),
 	skipAddingFilesFromTsConfig: false
 });
+
+/**
+ * Recursively find Svelte files
+ */
+function findSvelteFiles(dir, fileList = []) {
+	const files = fs.readdirSync(dir);
+	files.forEach(file => {
+		const filePath = path.join(dir, file);
+		const stat = fs.statSync(filePath);
+		if (stat.isDirectory()) {
+			if (file !== 'node_modules' && file !== '.svelte-kit' && file !== '.git') {
+				findSvelteFiles(filePath, fileList);
+			}
+		} else {
+			if (file.endsWith('.svelte')) {
+				fileList.push(filePath);
+			}
+		}
+	});
+	return fileList;
+}
+
+/**
+ * Add Svelte files to project as virtual TS files
+ */
+function addSvelteFiles(project, searchDir) {
+	const svelteFiles = findSvelteFiles(searchDir);
+	let added = 0;
+	svelteFiles.forEach(file => {
+		try {
+			const content = fs.readFileSync(file, 'utf-8');
+			// Extract script content
+			const scriptMatch = content.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+			if (scriptMatch) {
+				const scriptContent = scriptMatch[1];
+				// Create virtual file with .ts extension so ts-morph processes it
+				// We append .ts to the original path
+				project.createSourceFile(file + '.ts', scriptContent, { overwrite: true });
+				added++;
+			}
+		} catch (e) {
+			// Ignore read errors
+		}
+	});
+	if (added > 0) {
+		console.log(`   ➕ Added ${added} Svelte files (virtual TS)`);
+	}
+}
+
+/**
+ * Load external errors from JSONL file
+ */
+function loadExternalErrors(filePath) {
+	if (!fs.existsSync(filePath)) return;
+
+	const absPath = path.isAbsolute(filePath) ? filePath : path.join(__dirname, '..', filePath);
+	if (!fs.existsSync(absPath)) return;
+
+	console.log(`   📥 Loading external errors from ${filePath}`);
+	const content = fs.readFileSync(absPath, 'utf-8');
+	const lines = content.split('\n');
+	let count = 0;
+
+	lines.forEach(line => {
+		if (!line.trim()) return;
+		try {
+			const error = JSON.parse(line);
+			// Normalize path
+			let normalizedPath = error.file.replace(/\\/g, '/');
+
+			// Handle relative paths
+			if (!path.isAbsolute(normalizedPath) && !normalizedPath.startsWith('src')) {
+				// Try to resolve relative to project root
+			}
+
+			// If it's a svelte file, our analysis key might have .ts appended
+			// But wait, analyzeFile uses sourceFile.getFilePath() which comes from ts-morph
+			// If we created it as file.svelte.ts, the key is file.svelte.ts
+
+			// Try exact match first
+			let targetKey = null;
+
+			// Check if we have this file in our analysis
+			// We need to check relative paths
+			const projectRoot = path.join(__dirname, '..').replace(/\\/g, '/');
+
+			// Convert error path to absolute if needed, then relative to root
+			let absErrorPath = path.isAbsolute(normalizedPath)
+				? normalizedPath
+				: path.join(projectRoot, normalizedPath).replace(/\\/g, '/');
+
+			// Try to find a matching key in analysis.files
+			// analysis.files keys are absolute paths from ts-morph
+
+			// Direct match
+			if (analysis.files[absErrorPath]) {
+				targetKey = absErrorPath;
+			}
+			// Svelte match (error says .svelte, analysis says .svelte.ts)
+			else if (analysis.files[absErrorPath + '.ts']) {
+				targetKey = absErrorPath + '.ts';
+			}
+			// Try relative match
+			else {
+				// Iterate keys to find suffix match
+				const keys = Object.keys(analysis.files);
+				const match = keys.find(k => k.endsWith(normalizedPath) || k.endsWith(normalizedPath + '.ts'));
+				if (match) targetKey = match;
+			}
+
+			if (targetKey && analysis.files[targetKey]) {
+				analysis.files[targetKey].errors.push({
+					line: error.line,
+					code: error.code || 'EXTERNAL',
+					message: error.message,
+					category: 1,
+					source: error.tool
+				});
+				count++;
+			}
+		} catch (e) {}
+	});
+	console.log(`   ✅ Mapped ${count} external errors to graph`);
+}
+
 
 const analysis = {
 	timestamp: new Date().toISOString(),
@@ -534,15 +660,22 @@ async function main() {
 			const absPath = path.resolve(path.join(__dirname, '..', dirArg));
 			// Normalize path for ts-morph (replace backslashes with forward slashes)
 			const normalizedPath = absPath.replace(/\\/g, '/');
+
+			// Add Svelte files first
+			addSvelteFiles(project, absPath);
+
 			const globPattern = `${normalizedPath}/**/*.ts`;
 
 			// Ensure files are added to the project
 			project.addSourceFilesAtPaths(globPattern);
 
 			targetFiles = project.getSourceFiles(globPattern);
-			console.log(`📂 Found ${targetFiles.length} TypeScript files in ${dirArg}\n`);
+			console.log(`📂 Found ${targetFiles.length} files (TS + Svelte) in ${dirArg}\n`);
 		} else {
 			// Analyze all project files
+			const srcPath = path.join(__dirname, '..', 'src');
+			addSvelteFiles(project, srcPath);
+
 			targetFiles = project.getSourceFiles();
 			console.log(`📂 Analyzing entire project (${targetFiles.length} files)\n`);
 		}
@@ -562,6 +695,11 @@ async function main() {
 			}
 		});
 		process.stdout.write('\n');
+
+		// Load external errors
+		if (errorsArg) {
+			loadExternalErrors(errorsArg);
+		}
 
 		// Post-analysis
 		detectCircularDependencies();
