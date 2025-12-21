@@ -11,7 +11,7 @@
  let {
  type = 'text',
  placeholder = '',
- value = '',
+ value = $bindable(''),
  class: className = '',
  disabled = false,
  ...rest
@@ -21,7 +21,7 @@
 <input
  {type}
  {placeholder}
- {value}
+ bind:value
  {disabled}
  class={`
  flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm

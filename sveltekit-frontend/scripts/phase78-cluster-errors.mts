@@ -14,12 +14,17 @@
  *   npm run phase78:cluster -- --verbose # Detailed logging
  */
 
+import dotenv from 'dotenv';
 import { isNull, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import * as path from 'path';
 import postgres from 'postgres';
+
+// Load environment variables
+dotenv.config();
+
 import { fileURLToPath } from 'url';
-import { errorEventsTable } from '../src/lib/server/db/schema/index.js';
+import { errorClustersTable, errorEventsTable } from '../src/lib/server/db/schema/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +54,61 @@ const client = postgres(DATABASE_URL, {
 const db = drizzle(client);
 
 /**
+ * Infer cluster kind from error code and message
+ */
+function inferClusterKind(tsCode: string | null, message: string): string {
+  if (!tsCode && !message) return 'typing';
+
+  const code = tsCode || '';
+  const msg = message.toLowerCase();
+
+  // Type errors
+  if (code.startsWith('TS23') || code.startsWith('TS24')) return 'typing';
+
+  // Nullability errors
+  if (code.startsWith('TS27') || msg.includes('null') || msg.includes('undefined')) return 'nullability';
+
+  // Import errors
+  if (code === 'TS2307' || msg.includes('cannot find module') || msg.includes('import')) return 'import';
+
+  // Svelte runes (Svelte 5 migration)
+  if (msg.includes('$props') || msg.includes('$state') || msg.includes('$derived') || msg.includes('$effect')) {
+    return 'svelte-rune';
+  }
+
+  // Binding errors
+  if (msg.includes('bind:') || msg.includes('binding')) return 'binding';
+
+  // Syntax/formatting
+  if (code.startsWith('TS1') || msg.includes('expected')) return 'formatting';
+
+  // Schema/database
+  if (msg.includes('schema') || msg.includes('drizzle')) return 'schema';
+
+  // Default
+  return 'typing';
+}
+
+/**
+ * Normalize severity to match database enum: info|warn|error|fatal
+ */
+function normalizeSeverity(s: string | null | undefined): 'info' | 'warn' | 'error' | 'fatal' {
+  const v = (s ?? 'warn').toLowerCase();
+
+  // Direct matches
+  if (v === 'info' || v === 'warn' || v === 'error' || v === 'fatal') {
+    return v as 'info' | 'warn' | 'error' | 'fatal';
+  }
+
+  // Map common alternatives
+  if (v === 'low') return 'info';
+  if (v === 'medium') return 'warn';
+  if (v === 'high') return 'error';
+  if (v === 'critical') return 'fatal';
+
+  // Default to error for safety
+  return 'error';
+}/**
  * Get unclustered errors from database
  */
 async function getUnclusteredErrors() {
@@ -301,6 +361,44 @@ async function clusterErrors(): Promise<void> {
     let updateCount = 0;
     for (const [clusterId, errorIds] of clusters.entries()) {
       const clusterIdStr = `cluster-${clusterId}`;
+
+      // Infer kind and severity from first error in cluster
+      const firstErrorId = errorIds[0];
+      const firstError = errors.find(e => e.id === firstErrorId);
+      const inferredKind = firstError
+        ? inferClusterKind(firstError.tsCode, firstError.message)
+        : 'typing';
+      const inferredSeverity = normalizeSeverity(firstError?.severity);
+
+      console.log(`   🔍 Cluster ${clusterId}: kind="${inferredKind}", severity="${inferredSeverity}", members=${errorIds.length}`);
+      if (isVerbose && firstError) {
+        console.log(`      First error: tsCode="${firstError.tsCode}", message="${firstError.message.substring(0, 60)}..."`);
+      }
+
+      // Insert cluster record first with all required fields
+      await db
+        .insert(errorClustersTable)
+        .values({
+          id: clusterIdStr,
+          kind: inferredKind,
+          severity: inferredSeverity,
+          errorPattern: `Cluster ${clusterId}`,
+          memberCount: errorIds.length,
+          lastSeenAt: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: errorClustersTable.id,
+          set: {
+            kind: inferredKind,
+            severity: inferredSeverity,
+            memberCount: errorIds.length,
+            lastSeenAt: new Date(),
+            updatedAt: new Date(),
+          },
+        });
+
       for (const errorId of errorIds) {
         await db
           .update(errorEventsTable)

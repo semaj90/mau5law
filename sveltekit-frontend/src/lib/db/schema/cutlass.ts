@@ -1,13 +1,22 @@
-import { pgTable, text, timestamp, integer, uuid, serial, jsonb } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const routeHealthTable = pgTable('route_health', {
- id: serial('id').primaryKey(),
+ id: uuid('id').defaultRandom().primaryKey(),
  routePath: text('route_path').notNull().unique(),
- errorState: text('error_state').notNull(), // 'healthy', 'broken', 'flaky'
- lastChecked: timestamp('last_checked').defaultNow(),
- errorCount: integer('error_count').default(0),
- healthScore: integer('health_score').default(100),
- metadata: jsonb('metadata'),
+ file: text('file'),
+ state: text('state').notNull().default('healthy'), // 'healthy', 'broken', 'flaky'
+ recentErrorCount: integer('recent_error_count').default(0),
+ totalErrorCount: integer('total_error_count').default(0),
+ lastErrorAt: timestamp('last_error_at'),
+ lastErrorClusterId: uuid('last_error_cluster_id'),
+ lastErrorMessageShort: text('last_error_message_short'),
+ updatedAt: timestamp('updated_at').defaultNow(),
+ createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const errorClustersTable = pgTable('error_clusters', {
+ id: uuid('id').defaultRandom().primaryKey(),
+ createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const errorEventsTable = pgTable('error_events', {
@@ -17,6 +26,8 @@ export const errorEventsTable = pgTable('error_events', {
  message: text('message').notNull(),
  stackTrace: text('stack_trace'),
  tsCode: text('ts_code'), // TypeScript error code
+ severity: text('severity').notNull().default('error'),
+ clusterId: uuid('cluster_id').references(() => errorClustersTable.id, { onDelete: 'set null' }),
  createdAt: timestamp('created_at').defaultNow(),
 });
 

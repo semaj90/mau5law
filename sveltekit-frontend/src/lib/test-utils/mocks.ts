@@ -568,15 +568,20 @@ class MockFetchClient {
 				try {
 					// Extract collection name from URL
 					const collectionMatch = urlString.match(/\/collections\/([^/]+)\/points\/search/);
-					const collectionName = collectionMatch ? collectionMatch[1] : 'knowledge';
+					const collectionName = collectionMatch ? collectionMatch[1] : 'codemod_memories';
 
-					// Parse request body to get search vector and limit
-					const body = options?.body ? JSON.parse(options.body as string) : {};
-					const vector = body.vector || [];
-					const limit = body.limit || 5;
+          // Parse request body to get search vector and limit
+          const body = options?.body ? JSON.parse(options.body as string) : {};
+          const vector = body.vector || [];
+          const limit = body.limit || 5;
+          const scoreThreshold = body.score_threshold || 0;
 
-					// Query mockQdrant
-					const results = await mockQdrant.search(collectionName, vector, limit);
+          // Query mockQdrant with correct options object
+          const results = await mockQdrant.search(collectionName, {
+            vector,
+            limit,
+            scoreThreshold,
+          });
 
 					// Format response to match Qdrant API
 					return new Response(JSON.stringify({

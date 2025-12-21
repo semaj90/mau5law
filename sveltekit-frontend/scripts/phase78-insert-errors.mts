@@ -11,12 +11,17 @@
  *   npm run phase78:insert -- --dry-run # Preview what would be inserted
  */
 
+import dotenv from 'dotenv';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import * as fs from 'fs';
 import * as path from 'path';
 import postgres from 'postgres';
 import { fileURLToPath } from 'url';
+
+// Load environment variables
+dotenv.config();
+
 import { errorEventsTable, routeHealthTable } from '../src/lib/server/db/schema/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -152,11 +157,8 @@ async function insertErrors(errors: ErrorEntry[]): Promise<void> {
           routePath: error.routePath,
           filePath: error.filePath,
           tsCode: error.tsCode,
-          severity: error.severity,
           message: error.message,
-          stack: error.stack,
-          clusterId: error.clusterId,
-          metaJson: error.metaJson ? JSON.stringify(error.metaJson) : null,
+          stackTrace: error.stack ?? null,
         })
         .returning();
 
@@ -192,19 +194,15 @@ async function insertErrors(errors: ErrorEntry[]): Promise<void> {
             errorState: healthState,
             recentErrorCount: errorCount,
             lastErrorAt: new Date(),
-            lastErrorMessageShort: lastErrorMessageShort,
-            updatedAt: new Date(),
           })
           .where(eq(routeHealthTable.routePath, routePath));
       } else {
         // Create new record
         await db.insert(routeHealthTable).values({
           routePath,
-          filePath: lastError.filePath,
           errorState: healthState,
           recentErrorCount: errorCount,
           lastErrorAt: new Date(),
-          lastErrorMessageShort: lastErrorMessageShort,
         });
       }
 

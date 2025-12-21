@@ -12,9 +12,10 @@
  *   import { suggestFixForError } from './phase78-suggest-fix.mjs'
  */
 
-import fetch from 'node-fetch'
 import { QdrantClient } from '@qdrant/js-client-rest'
+import crypto from 'crypto'
 import 'dotenv/config'
+import fetch from 'node-fetch'
 
 const OLLAMA_ENDPOINT = process.env.OLLAMA_ENDPOINT ?? 'http://127.0.0.1:11434'
 const QDRANT_URL = process.env.QDRANT_URL ?? 'http://127.0.0.1:6333'
@@ -130,6 +131,43 @@ export async function suggestFixForError(error) {
 }
 
 /**
+ * Record the result of a applied fix to the knowledge base
+ */
+export async function recordFixResult(error, fix, success) {
+  const qdrant = new QdrantClient({ url: QDRANT_URL })
+
+  const text = `[${error.code}] ${error.message} in ${error.file_path}`
+  const vec = await embed(text)
+
+  const payload = {
+    code: error.code,
+    message: error.message,
+    file_path: error.file_path,
+    fix_suggestion: fix.suggestion,
+    success: success,
+    timestamp: new Date().toISOString()
+  }
+
+  try {
+    // Store in a feedback collection - assuming 'phase78_feedback' exists or auto-created
+    // If not, we might need to create it. For now, let's try to upsert.
+    // Using a random UUID for point ID
+    const pointId = crypto.randomUUID()
+
+    await qdrant.upsert('phase78_feedback', {
+      points: [{
+        id: pointId,
+        vector: vec,
+        payload: payload
+      }]
+    })
+    log(`Recorded fix result: ${success ? 'SUCCESS' : 'FAILURE'}`)
+  } catch (err) {
+    log(`Failed to record fix result: ${err.message}`)
+  }
+}
+
+/**
  * CLI usage
  */
 async function main() {
@@ -167,4 +205,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   })
 }
 
-export default { suggestFixForError }
+export default { suggestFixForError, recordFixResult }

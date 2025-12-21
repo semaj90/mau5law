@@ -1,7 +1,10 @@
 <script lang="ts">
-	import * as Button from '$lib/components/ui/button';
-	import * as Textarea from '$lib/components/ui/textarea';
-	import { Bot, Loader2, Send, User } from 'lucide-svelte';
+	import Button from '$lib/components/ui/button/Button.svelte';
+	import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+	import Bot from 'lucide-svelte';
+	import Loader2 from 'lucide-svelte';
+	import Send from 'lucide-svelte';
+	import Users from 'lucide-svelte';
 
  type ChatMessage = {
  id: string;
@@ -104,19 +107,19 @@
  <div class="mb-6">
  <h2 class="text-green-300 text-lg font-bold mb-4">YoRHa Terminal</h2>
  <div class="space-y-2">
- <Button.Root variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
+ <Button variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
  <Bot class="w-4 h-4 mr-2" />
  AI Assistant
- </Button.Root>
- <Button.Root variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
+ </Button>
+ <Button variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
  Command Center
- </Button.Root>
- <Button.Root variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
+ </Button>
+ <Button variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
  Evidence Board
- </Button.Root>
- <Button.Root variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
+ </Button>
+ <Button variant="outline" class="w-full justify-start text-green-400 border-green-500 hover:bg-green-500 hover:text-black">
  Global Search
- </Button.Root>
+ </Button>
  </div>
  </div>
 
@@ -207,7 +210,7 @@
 
  {#if message.role === 'user'}
  <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
- <User class="w-4 h-4 text-black" />
+ <Users class="w-4 h-4 text-black" />
  </div>
  {/if}
  </div>
@@ -231,14 +234,14 @@
  <!-- Chat Input -->
  <div class="bg-gray-800 border-t border-green-500 p-4">
  <div class="flex gap-3">
- <Textarea.Root
+ <Textarea
  bind:value={currentMessage}
  placeholder="Ask about your case, request evidence analysis, or get legal guidance..."
  class="flex-1 bg-gray-900 border-green-500 text-green-400 placeholder-green-600 focus:border-green-400 focus:ring-green-400 resize-none"
- rows="2"
+ rows={2}
  onkeydown={handleKeydown}
  />
- <Button.Root
+ <Button
  onclick={sendMessage}
  disabled={!currentMessage.trim() || isTyping}
  class="bg-green-600 hover:bg-green-500 text-black border-green-500 px-6"
@@ -248,43 +251,43 @@
  {:else}
  <Send class="w-4 h-4" />
  {/if}
- </Button.Root>
+ </Button>
  </div>
 
  <!-- Quick Actions -->
  <div class="flex gap-2 mt-3 flex-wrap">
- <Button.Root
+ <Button
  variant="outline"
  size="sm"
  class="text-xs text-green-400 border-green-500 hover:bg-green-500 hover:text-black"
  onclick={() => currentMessage = "Analyze evidence for case #"}
  >
  Analyze Evidence
- </Button.Root>
- <Button.Root
+ </Button>
+ <Button
  variant="outline"
  size="sm"
  class="text-xs text-green-400 border-green-500 hover:bg-green-500 hover:text-black"
  onclick={() => currentMessage = "Generate legal summary for "}
  >
  Legal Summary
- </Button.Root>
- <Button.Root
+ </Button>
+ <Button
  variant="outline"
  size="sm"
  class="text-xs text-green-400 border-green-500 hover:bg-green-500 hover:text-black"
  onclick={() => currentMessage = "Find similar cases to "}
  >
  Similar Cases
- </Button.Root>
- <Button.Root
+ </Button>
+ <Button
  variant="outline"
  size="sm"
  class="text-xs text-green-400 border-green-500 hover:bg-green-500 hover:text-black"
  onclick={() => currentMessage = "Risk assessment for "}
  >
  Risk Assessment
- </Button.Root>
+ </Button>
  </div>
  </div>
  </div>

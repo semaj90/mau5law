@@ -5,12 +5,19 @@ import { index, integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
  * Groups similar errors from CUDA embedding + k-means clustering (Phase 78)
  * One cluster per unique error pattern; helps identify systemic issues
  */
+
+/**
+ * Error Clusters
+ * Groups similar errors from CUDA embedding + k-means clustering (Phase 78)
+ * One cluster per unique error pattern; helps identify systemic issues
+ */
 export const errorClustersTable = pgTable(
  'error_clusters',
  {
  id: text('id').primaryKey(), // cluster ID from CUDA/k-means (e.g., "cluster_0_ts1005")
 
  // Cluster metadata
+ kind: text('kind').notNull().default('typing'), // Structural class of error (e.g., "typing", "import", "svelte-rune")
  errorPattern: text('error_pattern').notNull(), // Short pattern name (e.g., "TypeScript type mismatch")
  description: text('description'), // Longer description of the cluster
  severity: text('severity').notNull().default('medium'), // "low" | "medium" | "high"
@@ -39,4 +46,5 @@ export const errorClustersTable = pgTable(
 );
 
 export type ErrorCluster = typeof errorClustersTable.$inferSelect;
+export type ErrorClusterInsert = typeof errorClustersTable.$inferInsert;export type ErrorCluster = typeof errorClustersTable.$inferSelect;
 export type ErrorClusterInsert = typeof errorClustersTable.$inferInsert;

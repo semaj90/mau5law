@@ -1,7 +1,7 @@
-import { db } from './drizzle';
-import { users, cases } from './schema';
-import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
+import { db } from './drizzle';
+import { cases, users } from './schema';
 
 async function seed() {
 	console.log('🌱 Starting database seed...');

@@ -13,24 +13,26 @@ export const routeHealthTable = pgTable(
  // SvelteKit route path, e.g. "/cases/[id]/overview"
  routePath: text('route_path').notNull(),
 
- // Source file path, e.g. "src/routes/cases/[id]/overview/+page.svelte"
- filePath: text('file_path').notNull(),
-
  // "healthy" | "flaky" | "broken"
  errorState: text('error_state').notNull().default('healthy'),
 
- // Number of recent errors (sliding window that code maintains)
- recentErrorCount: integer('recent_error_count').notNull().default(0),
+ // Number of recent errors
+ recentErrorCount: integer('error_count').notNull().default(0),
 
- // Last observed error cluster ID (from Phase 78 CUDA clustering)
- lastErrorClusterId: text('last_error_cluster_id'),
+ // Last checked timestamp
+ lastErrorAt: timestamp('last_checked', { withTimezone: true }),
 
- lastErrorMessageShort: text('last_error_message_short'),
+ // Health score (0-100)
+ healthScore: integer('health_score').default(100),
 
- lastErrorAt: timestamp('last_error_at', { withTimezone: true }),
+ // Metadata JSON
+ metadata: text('metadata'),
 
- createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
- updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+ // Route cluster
+ lastErrorClusterId: text('route_cluster'),
+
+ // Route owner
+ routeOwner: text('route_owner'),
  },
  (table) => {
  return {
