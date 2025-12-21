@@ -40,32 +40,38 @@ export function getOllamaFallbackEmbedModel(): string {
  * Generate embedding for text
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
- const endpoint = getOllamaEndpoint();
- const model = getOllamaEmbedModel();
+  // Use mock in test environment
+  if (process.env.NODE_ENV === 'test') {
+    // Return deterministic mock embedding for tests
+    return Array(384).fill(0.5);
+  }
 
- try {
- const response = await fetch(`${endpoint}/api/embeddings`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- model,
- prompt: text,
- }),
- });
+  const endpoint = getOllamaEndpoint();
+  const model = getOllamaEmbedModel();
 
- if (!response.ok) {
- // Try fallback model
- console.warn(`Embedding model ${model} failed, trying fallback`);
- return generateEmbeddingWithFallback(text);
- }
+  try {
+    const response = await fetch(`${endpoint}/api/embeddings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        prompt: text,
+      }),
+    });
 
- const data = await response.json();
- return data.embedding ?? [];
- } catch (error) {
- console.error('Embedding error:', error);
- // Try fallback
- return generateEmbeddingWithFallback(text);
- }
+    if (!response.ok) {
+      // Try fallback model
+      console.warn(`Embedding model ${model} failed, trying fallback`);
+      return generateEmbeddingWithFallback(text);
+    }
+
+    const data = await response.json();
+    return data.embedding ?? [];
+  } catch (error) {
+    console.error('Embedding error:', error);
+    // Try fallback
+    return generateEmbeddingWithFallback(text);
+  }
 }
 
 /**

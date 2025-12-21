@@ -2,14 +2,29 @@
  * Performance tests for Case Reporter Summarizer
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { caseSummaryService } from '../case-summary.service';
 import { ragService } from '../rag.service';
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';
+
+// Mock cacheService module
+vi.mock('../cache.service', () => ({
+ cacheService: {
+ getOrSet: vi.fn(),
+ invalidate: vi.fn(),
+ }
+}));
+
 import { cacheService } from '../cache.service';
 
 describe('Performance Tests', () => {
- beforeEach(() => {
+ beforeEach(async () => {
+ await setupTest();
  vi.clearAllMocks();
+ });
+
+ afterEach(async () => {
+ await cleanupTest();
  });
 
  describe('Summary generation performance', () => {
@@ -71,7 +86,7 @@ describe('Performance Tests', () => {
  isCurrent: true,
  };
 
- vi.mocked(cacheService.getOrSet).mockResolvedValue(cachedSummary);
+ (cacheService.getOrSet as any).mockResolvedValue(cachedSummary);
 
  const startTime = Date.now();
 
@@ -88,7 +103,7 @@ describe('Performance Tests', () => {
  .fill(0)
  .map((_, i) => `case-${i}`);
 
- vi.mocked(cacheService.getOrSet).mockResolvedValue({
+ (cacheService.getOrSet as any).mockResolvedValue({
  id: 'summary-1',
  caseId: 'case-1',
  text: 'Cached',

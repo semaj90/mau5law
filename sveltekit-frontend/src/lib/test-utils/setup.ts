@@ -102,179 +102,189 @@ export function restoreTestEnv(): void {
  * Initialize Qdrant with test collections
  */
 export async function initializeQdrantMocks(): Promise<void> {
-	// Create knowledge collection
-	await mockQdrant.createCollection('knowledge', {
-		vectors: { size: 384 }
-	});
+  // Create codemod_memories collection (used by rag_lookup tool)
+  await mockQdrant.createCollection('codemod_memories', {
+    vectors: { size: 384 },
+  });
 
-	// Seed with sample data
-	await mockQdrant.upsert('knowledge', {
-		points: [
-			{
-				id: 1,
-				vector: Array(384).fill(0.5),
-				payload: {
-					title: 'Svelte 5 Runes',
-					content: '$state and $derived are the new reactive primitives',
-					url: 'https://svelte.dev/docs/runes',
-					tags: ['svelte5', 'runes']
-				}
-			},
-			{
-				id: 2,
-				vector: Array(384).fill(0.6),
-				payload: {
-					title: 'Svelte 5 Migration',
-					content: 'Replace export let with $props()',
-					url: 'https://svelte.dev/docs/migration',
-					tags: ['svelte5', 'migration']
-				}
-			}
-		]
-	});
+  // Create error_patterns collection (used by rag-retriever)
+  await mockQdrant.createCollection('error_patterns', {
+    vectors: { size: 384 },
+  });
+
+  // Seed with sample data
+  await mockQdrant.upsert('codemod_memories', {
+    points: [
+      {
+        id: 1,
+        vector: Array(384).fill(0.5),
+        payload: {
+          title: 'Svelte 5 Runes',
+          content: '$state and $derived are the new reactive primitives',
+          url: 'https://svelte.dev/docs/runes',
+          tags: ['svelte5', 'runes'],
+        },
+      },
+      {
+        id: 2,
+        vector: Array(384).fill(0.6),
+        payload: {
+          title: 'Svelte 5 Migration',
+          content: 'Replace export let with $props()',
+          url: 'https://svelte.dev/docs/migration',
+          tags: ['svelte5', 'migration'],
+        },
+      },
+    ],
+  });
 }
 
 /**
  * Initialize Redis with test data
  */
 export async function initializeRedisMocks(): Promise<void> {
-	// Seed with sample cache entries
-	await mockRedis.set('test:key1', 'value1', { EX: 3600 });
-	await mockRedis.set('test:key2', 'value2', { EX: 3600 });
-	await mockRedis.set('cache:search:svelte5', JSON.stringify({
-		results: ['result1', 'result2'],
-		timestamp: Date.now()
-	}), { EX: 300 });
+  // Seed with sample cache entries
+  await mockRedis.set('test:key1', 'value1', { EX: 3600 });
+  await mockRedis.set('test:key2', 'value2', { EX: 3600 });
+  await mockRedis.set(
+    'cache:search:svelte5',
+    JSON.stringify({
+      results: ['result1', 'result2'],
+      timestamp: Date.now(),
+    }),
+    { EX: 300 }
+  );
 }
 
 /**
  * Initialize Ollama with test responses
  */
 export async function initializeOllamaMocks(): Promise<void> {
-	// Set up common responses
-	mockOllama.setResponse(
-		'What are Svelte 5 runes?',
-		'Svelte 5 runes are reactive primitives like $state, $derived, and $effect.'
-	);
+  // Set up common responses
+  mockOllama.setResponse(
+    'What are Svelte 5 runes?',
+    'Svelte 5 runes are reactive primitives like $state, $derived, and $effect.'
+  );
 
-	mockOllama.setResponse(
-		'How to migrate to Svelte 5?',
-		'Replace export let with $props(), on:click with onclick, and $: with $derived.'
-	);
+  mockOllama.setResponse(
+    'How to migrate to Svelte 5?',
+    'Replace export let with $props(), on:click with onclick, and $: with $derived.'
+  );
 }
 
 /**
  * Initialize PostgreSQL with test tables
  */
 export async function initializePostgreSQLMocks(): Promise<void> {
-	// Seed cases table
-	mockPostgreSQL.seedTable('cases', [
-		{
-			id: 1,
-			title: 'Test Case 1',
-			status: 'active',
-			created_at: new Date().toISOString()
-		},
-		{
-			id: 2,
-			title: 'Test Case 2',
-			status: 'closed',
-			created_at: new Date().toISOString()
-		}
-	]);
+  // Seed cases table
+  mockPostgreSQL.seedTable('cases', [
+    {
+      id: 1,
+      title: 'Test Case 1',
+      status: 'active',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 2,
+      title: 'Test Case 2',
+      status: 'closed',
+      created_at: new Date().toISOString(),
+    },
+  ]);
 
-	// Seed evidence table
-	mockPostgreSQL.seedTable('evidence', [
-		{
-			id: 1,
-			case_id: 1,
-			title: 'Evidence 1',
-			type: 'document',
-			created_at: new Date().toISOString()
-		}
-	]);
+  // Seed evidence table
+  mockPostgreSQL.seedTable('evidence', [
+    {
+      id: 1,
+      case_id: 1,
+      title: 'Evidence 1',
+      type: 'document',
+      created_at: new Date().toISOString(),
+    },
+  ]);
 }
 
 /**
  * Initialize MinIO with test buckets
  */
 export async function initializeMinIOMocks(): Promise<void> {
-	// Upload sample objects
-	await mockMinIO.putObject(
-		'documents',
-		'test-doc.txt',
-		'This is a test document',
-		{ 'Content-Type': 'text/plain' }
-	);
+  // Upload sample objects
+  await mockMinIO.putObject('documents', 'test-doc.txt', 'This is a test document', {
+    'Content-Type': 'text/plain',
+  });
 
-	await mockMinIO.putObject(
-		'evidence',
-		'case-1/evidence-1.pdf',
-		Buffer.from('PDF content'),
-		{ 'Content-Type': 'application/pdf' }
-	);
+  await mockMinIO.putObject('evidence', 'case-1/evidence-1.pdf', Buffer.from('PDF content'), {
+    'Content-Type': 'application/pdf',
+  });
 }
 
 /**
  * Initialize fetch mocks for HTTP endpoints
  */
 export function initializeFetchMocks(): void {
-	// Qdrant search endpoint - dynamically query mockQdrant
-	mockFetch.setResponse('localhost:6333/collections', {
-		status: 200,
-		data: {} // Will be populated dynamically
-	});
+  // Qdrant search endpoint - dynamically query mockQdrant
+  mockFetch.setResponse('localhost:6333/collections', {
+    status: 200,
+    data: {}, // Will be populated dynamically
+  });
 
-	// Knowledge MCP endpoint
-	mockFetch.setResponse('localhost:3004/invoke', {
-		status: 200,
-		data: {
-			result: {
-				results: [
-					{ title: 'Result 1', score: 0.9 },
-					{ title: 'Result 2', score: 0.8 }
-				],
-				synthesized: 'This is a synthesized response'
-			}
-		}
-	});
+  // Knowledge MCP endpoint
+  mockFetch.setResponse('localhost:3004/invoke', {
+    status: 200,
+    data: {
+      result: {
+        results: [
+          { title: 'Result 1', score: 0.9 },
+          { title: 'Result 2', score: 0.8 },
+        ],
+        synthesized: 'This is a synthesized response',
+      },
+    },
+  });
 
-	// ACE MCP endpoint
-	mockFetch.setResponse('localhost:3002/function-call', {
-		status: 200,
-		data: {
-			errors: [],
-			warnings: []
-		}
-	});
+  // ACE MCP endpoint
+  mockFetch.setResponse('localhost:3002/function-call', {
+    status: 200,
+    data: {
+      errors: [],
+      warnings: [],
+    },
+  });
 
-	// A2A Protocol endpoint
-	mockFetch.setResponse('localhost:3005/a2a/', {
-		status: 200,
-		data: {
-			agents: [
-				{ id: 'agent1', name: 'Test Agent 1', capabilities: ['search'] }
-			]
-		}
-	});
+  // A2A Protocol endpoint
+  mockFetch.setResponse('localhost:3005/a2a/', {
+    status: 200,
+    data: {
+      agents: [{ id: 'agent1', name: 'Test Agent 1', capabilities: ['search'] }],
+    },
+  });
 
-	// Ollama endpoints
-	mockFetch.setResponse('localhost:11434/api/embeddings', {
-		status: 200,
-		data: {
-			embedding: Array(384).fill(0.5)
-		}
-	});
+  // Ollama endpoints
+  // /api/embed endpoint (used by EmbeddingService) - returns { embeddings: [[...]] }
+  mockFetch.setResponse('localhost:11434/api/embed', {
+    status: 200,
+    data: {
+      embeddings: [Array(384).fill(0.5)],
+    },
+  });
 
-	mockFetch.setResponse('localhost:11434/api/generate', {
-		status: 200,
-		data: {
-			response: 'Mock LLM response'
-		}
-	});
+  // /api/embeddings endpoint (alternative format) - returns { embedding: [...] }
+  mockFetch.setResponse('localhost:11434/api/embeddings', {
+    status: 200,
+    data: {
+      embedding: Array(384).fill(0.5),
+    },
+  });
 
-	// Replace global fetch with mock
-	global.fetch = mockFetch.getMockFetch();
+  mockFetch.setResponse('localhost:11434/api/generate', {
+    status: 200,
+    data: {
+      response: 'Mock LLM response',
+    },
+  });
+
+  // Replace global fetch with mock
+  global.fetch = mockFetch.getMockFetch();
 }
 
 // ═══════════════════════════════════════════════════════════════════════
