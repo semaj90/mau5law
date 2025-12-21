@@ -1,4 +1,5 @@
 import { index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { errorClustersTable } from './error_clusters';
 
 /**
  * Error Events
@@ -12,7 +13,7 @@ export const errorEventsTable = pgTable(
 
  // Route path & file path (denormalized for easy querying)
  routePath: text('route_path').notNull(),
- filePath: text('file_path').notNull(),
+ filePath: text('file_path'),
 
  // TS/JS error code, e.g. "TS1005" or runtime "ReferenceError"
  tsCode: text('ts_code'),
@@ -22,21 +23,18 @@ export const errorEventsTable = pgTable(
 
  // Raw message and optional stack trace
  message: text('message').notNull(),
- stack: text('stack'),
+ stackTrace: text('stack_trace'),
 
  // Cluster ID from CUDA embedding+clustering (Phase 78)
- clusterId: text('cluster_id'),
+ clusterId: text('cluster_id').references(() => errorClustersTable.id),
 
- // Extra metadata JSON string (LangExtract output, source, etc.)
- metaJson: text('meta_json'),
-
- createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+ createdAt: timestamp('created_at').defaultNow(),
  },
  (table) => {
  return {
- routePathIdx: index('error_events_route_path_idx').on(table.routePath),
- clusterIdIdx: index('error_events_cluster_id_idx').on(table.clusterId),
- createdAtIdx: index('error_events_created_at_idx').on(table.createdAt),
+ routePathIdx: index('idx_error_events_route').on(table.routePath),
+ clusterIdIdx: index('idx_error_events_cluster').on(table.clusterId),
+ createdAtIdx: index('idx_error_events_created').on(table.createdAt),
  };
  }
 );

@@ -15,10 +15,15 @@
  *   npm run phase78:suggest -- --verbose # Detailed logging
  */
 
+import dotenv from 'dotenv';
 import { eq, isNotNull } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import * as path from 'path';
 import postgres from 'postgres';
+
+// Load environment variables
+dotenv.config();
+
 import { fileURLToPath } from 'url';
 import { errorEventsTable, errorSuggestionsTable } from '../src/lib/server/db/schema/index.js';
 
@@ -32,7 +37,7 @@ const isVerbose = args.includes('--verbose');
 
 // Configuration
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
-const SUGGESTION_MODEL = process.env.SUGGESTION_MODEL || 'gemma3:latest';
+const SUGGESTION_MODEL = process.env.SUGGESTION_MODEL || 'gemma3-legal:latest';
 const TIMEOUT = parseInt(process.env.SUGGESTION_TIMEOUT || '30000', 10);
 
 // Get database URL from environment

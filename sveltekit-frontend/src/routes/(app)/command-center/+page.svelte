@@ -1,25 +1,25 @@
 <script lang="ts">
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui';
 	import { Button } from '$lib/components/ui/button';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import Activity from 'lucide-svelte/icons/activity';
-	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
-	import BarChart3 from 'lucide-svelte/icons/bar-chart-3';
-	import Bell from 'lucide-svelte/icons/bell';
-	import Brain from 'lucide-svelte/icons/brain';
-	import ChevronDown from 'lucide-svelte/icons/chevron-down';
-	import Database from 'lucide-svelte/icons/database';
-	import FileText from 'lucide-svelte/icons/file-text';
-	import Gavel from 'lucide-svelte/icons/gavel';
-	import Moon from 'lucide-svelte/icons/moon';
-	import RefreshCw from 'lucide-svelte/icons/refresh-cw';
-	import Search from 'lucide-svelte/icons/search';
-	import Settings from 'lucide-svelte/icons/settings';
-	import Sun from 'lucide-svelte/icons/sun';
-	import TrendingDown from 'lucide-svelte/icons/trending-down';
-	import TrendingUp from 'lucide-svelte/icons/trending-up';
-	import Users from 'lucide-svelte/icons/users';
-	import X from 'lucide-svelte/icons/x';
-	import Zap from 'lucide-svelte/icons/zap';
+	import Activity from 'lucide-svelte';
+	import AlertTriangle from 'lucide-svelte';
+	import BarChart3 from 'lucide-svelte';
+	import Bell from 'lucide-svelte';
+	import Brain from 'lucide-svelte';
+	import ChevronDown from 'lucide-svelte';
+	import Database from 'lucide-svelte';
+	import FileText from 'lucide-svelte';
+	import Gavel from 'lucide-svelte';
+	import Moon from 'lucide-svelte';
+	import RefreshCw from 'lucide-svelte';
+	import Search from 'lucide-svelte';
+	import Settings from 'lucide-svelte';
+	import Sun from 'lucide-svelte';
+	import TrendingDown from 'lucide-svelte';
+	import TrendingUp from 'lucide-svelte';
+	import Users from 'lucide-svelte';
+	import X from 'lucide-svelte';
+	import Zap from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 
 	// Svelte 5 runes state

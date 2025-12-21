@@ -1,9 +1,9 @@
 /** * Unified Drizzle + Vector + Storage utilities * Generates a small integration layer over the existing db client, qdrant and minio helpers */ /* eslint-disable @typescript-eslint/no-explicit-any */
+import qdrantClient from '$lib/services/qdrant-client'; // Corrected: qdrantClient is a default export
+import type { eq, sql } from 'drizzle-orm'; // Corrected: Import eq from drizzle-orm
+import type { Client } from 'minio'; // Corrected: MinioClient is not exported, use Client
 import lazyDb from './client.js'; // Corrected: lazyDb is a default export
 import * as schema from './schema-unified.js';
-import type { sql, eq } from 'drizzle-orm'; // Corrected: Import eq from drizzle-orm
-import qdrantClient from '$lib/services/qdrant-client'; // Corrected: qdrantClient is a default export
-import type { Client } from 'minio'; // Corrected: MinioClient is not exported, use Client
 
 const _CFG: unknown = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
 
@@ -27,7 +27,8 @@ async function getCache(): Promise<any | undefined> {
 }
 
 export const schemaDb = schema;
-export const db = lazyDb; // db is lazy-loaded proxy from client.ts
+export const db = lazyDb.db; // Extract db instance from lazy-loaded object
+export const adminDb = lazyDb.adminDb; // Extract adminDb instance
 
 // Cached query helper using Redis
 export async function cachedQuery<T>(

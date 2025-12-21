@@ -10,7 +10,7 @@
 
  let {
  placeholder = '',
- value = '',
+ value = $bindable(''),
  class: className = '',
  disabled = false,
  rows = 3,
@@ -20,7 +20,7 @@
 
 <textarea
  {placeholder}
- {value}
+ bind:value
  {disabled}
  {rows}
  class={`
