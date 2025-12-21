@@ -300,9 +300,9 @@ sveltekit-frontend/
 <script lang="ts">
   import ComponentA from './A.svelte';
   import ComponentB from './B.svelte';
-  
+
   let active = $state('A');
-  
+
   // ❌ Avoid <svelte:component> for static references
   // ✅ Use $derived for dynamic selection
   let Component = $derived(active === 'A' ? ComponentA : ComponentB);
@@ -374,11 +374,11 @@ import { generateChat } from '$lib/server/ai/ollama';
 
 export const POST: RequestHandler = async ({ request }) => {
   const { message, context } = await request.json();
-  
+
   try {
     const prompt = `Context: ${context}\n\nUser: ${message}\n\nAssistant:`;
     const result = await generateChat(prompt);
-    
+
     return json({
       success: true,
       response: result.response
@@ -403,14 +403,14 @@ import { searchVectors } from '$lib/server/vector/qdrant';
 
 export const POST: RequestHandler = async ({ request }) => {
   const { query, limit = 10 } = await request.json();
-  
+
   try {
     // Generate embedding
     const { embedding } = await getEmbedding(query);
-    
+
     // Search Qdrant
     const results = await searchVectors(embedding, limit);
-    
+
     return json({
       success: true,
       results
@@ -436,9 +436,9 @@ export const POST: RequestHandler = async ({ request }) => {
   import 'uno.css';
   import 'nes.css';
   import { onMount } from 'svelte';
-  
+
   let { children } = $props();
-  
+
   onMount(() => {
     // Client-side only initializations
     console.log('App mounted');
@@ -488,7 +488,7 @@ export default defineConfig({
 <!-- src/lib/components/ui/button/Button.svelte -->
 <script lang="ts">
   import { Button as ButtonPrimitive } from 'bits-ui';
-  
+
   let {
     variant = 'default',
     size = 'md',
@@ -502,7 +502,7 @@ export default defineConfig({
     onclick?: (e: MouseEvent) => void;
     [key: string]: any;
   } = $props();
-  
+
   const variants = {
     default: 'btn',
     outline: 'px-4 py-2 rounded border border-blue-600 text-blue-600',
@@ -574,17 +574,17 @@ export const authMachine = createMachine({
 <script lang="ts">
   import { createActor } from 'xstate';
   import { authMachine } from '$lib/state/auth.machine';
-  
+
   let actor = $state(createActor(authMachine).start());
   let snapshot = $state(actor.getSnapshot());
-  
+
   $effect(() => {
     const subscription = actor.subscribe((state) => {
       snapshot = state;
     });
     return () => subscription.unsubscribe();
   });
-  
+
   function login() {
     actor.send({ type: 'LOGIN' });
   }
@@ -713,9 +713,9 @@ export const GET: RequestHandler = async () => {
   } catch {}
 
   // Test other services...
-  
+
   const allHealthy = Object.values(health.services).every(s => s);
-  
+
   return json(health, {
     status: allHealthy ? 200 : 503
   });
@@ -744,7 +744,7 @@ export const GET: RequestHandler = async () => {
 - [ ] Environment variables configured
 - [ ] Docker services running
 - [ ] Database migrations applied
-- [ ] Ollama models pulled
+- [ ] Ollama models served
 - [ ] WASM modules compiled
 - [ ] UnoCSS presets installed
 - [ ] Bits-UI components SSR-tested
@@ -758,5 +758,5 @@ export const GET: RequestHandler = async () => {
 
 ---
 
-**Status:** ✅ Production Ready  
+**Status:** ✅ Production Ready
 **Last Updated:** November 3, 2025

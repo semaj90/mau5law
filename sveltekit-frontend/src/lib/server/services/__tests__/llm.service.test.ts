@@ -2,8 +2,9 @@
  * Unit Tests for LLMService
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { llmService } from '../llm.service';
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 
 // Mock the Ollama API
 vi.mock('$lib/server/ollama', () => ({
@@ -12,13 +13,24 @@ vi.mock('$lib/server/ollama', () => ({
  },
 }));
 
+import { ollamaClient } from '$lib/server/ollama';
+
 describe('LLMService', () => {
- beforeEach(() => {
+ beforeEach(async () => {
+ await setupTest();
  vi.clearAllMocks();
+ });
+
+ afterEach(async () => {
+ await cleanupTest();
  });
 
  describe('generateSummary', () => {
  it('should generate a summary from context', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: 'Mocked summary: The defendant was charged with murder and assault.'
+ });
+
  const context = {
  caseId: 'case-123',
  charges: ['murder', 'assault'],
@@ -46,6 +58,10 @@ describe('LLMService', () => {
  });
 
  it('should handle empty context gracefully', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: 'No context provided.'
+ });
+
  const context = {
  caseId: 'case-123',
  charges: [],
@@ -62,6 +78,10 @@ describe('LLMService', () => {
 
  describe('extractCitations', () => {
  it('should extract citations from text', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: JSON.stringify([{ code: '42 U.S.C. § 1983', type: 'statute' }])
+ });
+
  const text = `
  The defendant was charged under 42 U.S.C. § 1983 and Cal. Penal Code § 187.
  The court cited 123 F.3d 456 (9th Cir. 2000) as precedent.
@@ -75,6 +95,10 @@ describe('LLMService', () => {
  });
 
  it('should identify citation types correctly', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: JSON.stringify([{ code: '42 U.S.C. § 1983', type: 'statute' }])
+ });
+
  const text = '42 U.S.C. § 1983 and Cal. Penal Code § 187';
 
  const citations = await llmService.extractCitations(text);
@@ -84,6 +108,10 @@ describe('LLMService', () => {
  });
 
  it('should handle text with no citations', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: JSON.stringify([])
+ });
+
  const text = 'This is plain text with no legal citations.';
 
  const citations = await llmService.extractCitations(text);
@@ -94,6 +122,10 @@ describe('LLMService', () => {
 
  describe('extractHolding', () => {
  it('should extract holding statement from summary', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: 'Such violations require strict liability.'
+ });
+
  const summary = `
  The court found that the defendant violated the statute.
  The holding is that such violations require strict liability.
@@ -107,6 +139,10 @@ describe('LLMService', () => {
  });
 
  it('should identify key legal principles', async () => {
+ (ollamaClient.generate as any).mockResolvedValue({
+ response: 'Strict liability applies.'
+ });
+
  const summary = 'The court established that strict liability applies.';
 
  const holding = await llmService.extractHolding(summary);

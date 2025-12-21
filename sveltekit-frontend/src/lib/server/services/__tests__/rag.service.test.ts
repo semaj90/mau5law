@@ -2,7 +2,10 @@
  * Unit Tests for RAGService
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { db } from '$lib/server/db';
+import { redis } from '$lib/server/redis';
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ragService } from '../rag.service';
 
 // Create proper mock chains
@@ -12,32 +15,14 @@ const createDbSelectMock = (data: any) => ({
 	}))
 });
 
-// Mock dependencies
-vi.mock('$lib/server/redis', () => ({
-	redis: {
-		get: vi.fn().mockResolvedValue(null),
-		setex: vi.fn().mockResolvedValue('OK'),
-		del: vi.fn().mockResolvedValue(1),
-	}
-}));
-
-vi.mock('$lib/server/db', () => ({
-	db: {
-		select: vi.fn(),
-	}
-}));
-
-// Import after mocking
-import { db } from '$lib/server/db';
-import { redis } from '$lib/server/redis';
-
 describe('RAGService', () => {
-	beforeEach(() => {
+	beforeEach(async () => {
+		await setupTest();
 		vi.clearAllMocks();
-		// Reset redis mocks
-		vi.mocked(redis.get).mockResolvedValue(null);
-		vi.mocked(redis.setex).mockResolvedValue('OK');
-		vi.mocked(redis.del).mockResolvedValue(1);
+	});
+
+	afterEach(async () => {
+		await cleanupTest();
 	});
 
 	describe('retrieveStatutes', () => {

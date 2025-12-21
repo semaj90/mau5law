@@ -5,7 +5,7 @@
  * Validates: Requirements 1.1
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fc from 'fast-check';
 import { AgenticAnalyzer } from './agentic-analyzer';
 import type { ServiceConfig, Error, Pattern, LLMResponse, Analysis } from './types';
@@ -15,18 +15,22 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  let analyzer: AgenticAnalyzer;
  let config: ServiceConfig;
 
- beforeEach(() => {
- config = {
- ollamaUrl: 'http://localhost:11434',
- qdrantUrl: 'http://localhost:6333',
- postgresUrl: 'postgresql://localhost/error_analysis',
- maxRetries: 3,
- retryDelayMs: 100,
- contextLines: 5,
- };
- analyzer = new AgenticAnalyzer(config);
+ beforeEach(async () => {
+   await setupTest();
 
- // Mock fetch for LLM calls
+   config = {
+     ollamaUrl: mockOllama.url,
+     qdrantUrl: mockQdrant.url,
+     postgresUrl: mockPostgres.url,
+     maxRetries: 3,
+     retryDelayMs: 100,
+     contextLines: 5,
+   };
+   analyzer = new AgenticAnalyzer(config);
+ });
+
+ afterEach(async () => {
+   await cleanupTest();
  });
  /**
  * Property 1: Error Extraction Completeness

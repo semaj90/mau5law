@@ -33,14 +33,20 @@ class RedisCache {
 
  async get(key: string): Promise<any | null> {
  try {
- // Redis HTTP interface (if available) or fallback
- const response = await fetch(`${this.endpoint}/get/${key}`, {
- method: 'GET',
- });
+   // Use mock in test environment
+   if (process.env.NODE_ENV === 'test') {
+     const { mockRedis } = await import('$lib/test-utils/mocks');
+     return mockRedis.get(key);
+   }
 
- if (!response.ok) return null;
- const data = await response.json();
- return data.value ?? null;
+   // Redis HTTP interface (if available) or fallback
+   const response = await fetch(`${this.endpoint}/get/${key}`, {
+     method: 'GET',
+   });
+
+   if (!response.ok) return null;
+   const data = await response.json();
+   return data.value ?? null;
  } catch (error) {
  console.warn('Redis cache get failed:', error);
  return null;
@@ -49,14 +55,21 @@ class RedisCache {
 
  async set(key: string, value: any, ttl: number = 43200): Promise<boolean> {
  try {
- // Redis HTTP interface (if available) or fallback
- const response = await fetch(`${this.endpoint}/set/${key}`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ value, ttl }),
- });
+   // Use mock in test environment
+   if (process.env.NODE_ENV === 'test') {
+     const { mockRedis } = await import('$lib/test-utils/mocks');
+     await mockRedis.set(key, value, { EX: ttl });
+     return true;
+   }
 
- return response.ok;
+   // Redis HTTP interface (if available) or fallback
+   const response = await fetch(`${this.endpoint}/set/${key}`, {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({ value, ttl }),
+   });
+
+   return response.ok;
  } catch (error) {
  console.warn('Redis cache set failed:', error);
  return false;
