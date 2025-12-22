@@ -51,8 +51,28 @@ Every generated patch runs through a scoring algorithm to prevent file corruptio
 **Passing Threshold**: 50/100
 
 ### 6. Ranking & Composite Score
-Patches are ranked so Phase 72 applies the best ones first.
-`Composite Score = Validation Score (100%)` (RAG similarity will be added in v2).
+Patches are ranked using **dual-metric scoring** so Phase 72 applies the best ones first:
+
+**Metrics:**
+- **Validation Score (0-100%)**: Code quality from safety gate
+- **Cosine Similarity (0-1)**: RAG/KAG knowledge base match quality
+- **Cosine Rank (1-10)**: Scaled similarity (10 = best match)
+- **Inverse Search Rank (1-10)**: Flipped scale (1 = best, 10 = worst)
+
+**Formula:**
+```
+Composite Score = (Validation × 60%) + (Similarity × 100 × 40%)
+Confidence Level = HIGH (≥80) | MEDIUM (≥60) | LOW (<60)
+```
+
+**Example:**
+```
+Validation: 95/100
+Similarity: 0.87 (8.7/10)
+Composite: (95 × 0.6) + (87 × 0.4) = 91.8
+Rank: 9/10 (apply this patch early)
+Confidence: HIGH
+```
 
 ### 7. JSONL Output
 Results are saved to `data/recommendations.jsonl`. This format is streamable and crash-resistant.
@@ -93,6 +113,56 @@ for (const rec of recommendations) {
 - **Throughput**: Processes batches of 50 files.
 - **Safety**: Blocks ~98% of hallucinatory/conversational responses.
 
+## ✅ RAG/KAG Integration (IMPLEMENTED)
+
+The Cognitive Engine now includes **full RAG/KAG integration** via Qdrant vector search:
+
+### How It Works
+1. **File Summarization**: Reads actual file content and extracts:
+   - Imports (top 10)
+   - Exports (top 10)
+   - Types/Interfaces (top 5)
+   - Functions (top 10)
+   - Keywords (async, await, svelte, component, etc.)
+
+2. **Rich Query Construction**: Combines file analysis + error context:
+   ```
+   File: src/lib/utils.ts
+   Imports: import { x } from 'y', ...
+   Exports: export const foo, ...
+   Types: interface Bar, type Baz
+   Keywords: async, Promise, fetch
+   Errors: TS2307, TS1005
+   Error Messages: Cannot find module...
+   ```
+
+3. **Vector Search**: Generates embedding (embeddinggemma:latest) and queries Qdrant:
+   - Collection: `phase79_knowledge_base` (343 vectors)
+   - Threshold: 0.7 cosine similarity
+   - Limit: Top 5 matches
+
+4. **Composite Ranking**:
+   ```
+   Cosine Similarity Rank (1-10) = ceil(avgSimilarity × 10)
+   Inverse Search Rank = 11 - CosineSimilarityRank
+   Composite Score = (validation × 60%) + (similarity × 40%)
+   ```
+
+### Example Output
+```json
+{
+  "file_path": "src/lib/utils.ts",
+  "validation_score": 95,
+  "cosine_similarity": 0.87,
+  "cosine_rank_1_10": 9,
+  "inverse_search_rank": 2,
+  "composite_score": 91.8,
+  "confidence_level": "HIGH",
+  "rag_matches": 4
+}
+```
+
 ## 🔜 Future Improvements (v2)
-- **RAG Integration**: Use Qdrant to find similar *past* fixes to boost the prompt context. (Currently placeholder).
 - **Deep Syntax Check**: Use AST parsing instead of Regex for validation.
+- **Redis Caching**: Cache embeddings to reduce Ollama API calls.
+- **Knowledge Base Expansion**: Crawl TypeScript/Svelte docs (Phase 80).

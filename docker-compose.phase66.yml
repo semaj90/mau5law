@@ -224,6 +224,26 @@ services:
       retries: 3
       start_period: 30s
 
+  # CouchDB for Topological/Document storage
+  couchdb:
+    image: couchdb:3.3
+    container_name: phase66-couchdb
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    ports:
+      - "5984:5984"
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+    networks:
+      - phase66-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   postgres_data:
     driver: local
@@ -234,6 +254,8 @@ volumes:
   minio_data:
     driver: local
   rabbitmq_data:
+    driver: local
+  couchdb_data:
     driver: local
   tensorrt_models:
     driver: local
