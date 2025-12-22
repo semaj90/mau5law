@@ -172,13 +172,22 @@ async function getASTRecommendations(errorCode: string, filePath: string) {
 async function documentFixAttempt(attempt: any): Promise<void> {
   console.log(`   📝 [DOCS] Recording attempt #${attempt.attempt_number}...`);
 
+  const fingerprint = crypto.createHash('md5').update(attempt.error_code + attempt.file_path).digest('hex').substring(0, 32);
+
+  // First ensure the error_pattern exists
+  await sql`
+    INSERT INTO error_patterns (fingerprint, error_code, file_path, first_seen)
+    VALUES (${fingerprint}, ${attempt.error_code}, ${attempt.file_path}, NOW())
+    ON CONFLICT (fingerprint) DO NOTHING
+  `.catch(() => {}); // Ignore if error_patterns table doesn't exist
+
   // Store in database using EXISTING fix_attempts schema
   await sql`
     INSERT INTO fix_attempts (
       pattern_fingerprint, fix_type, fix_description, fix_diff,
       success, metadata
     ) VALUES (
-      ${crypto.createHash('md5').update(attempt.error_code + attempt.file_path).digest('hex').substring(0, 32)},
+      ${fingerprint},
       ${attempt.strategy},
       ${`Attempt #${attempt.attempt_number} for ${attempt.error_code}`},
       ${attempt.patch_applied},
