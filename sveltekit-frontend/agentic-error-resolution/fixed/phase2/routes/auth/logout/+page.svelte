@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <!--
 Logout Route - Handles user logout
 TODO: Implement logout functionality, clear session, redirect to login

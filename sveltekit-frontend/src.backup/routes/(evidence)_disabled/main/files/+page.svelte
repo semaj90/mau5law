@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected, token; https://svelte.dev/e/js_parse_error --> <script lang="ts">
 import type { Case } from '$lib/types'; interface Props { caseId: string}
   let { caseId = '' }: Props = $props(); import type { page  } from '$app/state'; import Button from '$lib/components/ui/button/Button.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import type { notifications  } from '$lib/stores/unified'; import { AlertCircle } from "lucide-svelte";

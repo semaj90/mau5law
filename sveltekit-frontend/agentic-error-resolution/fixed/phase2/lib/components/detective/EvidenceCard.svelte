@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
   import  Button  from "$lib/components/ui/Button.svelte";

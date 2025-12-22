@@ -1,5 +1,5 @@
 import { getContext7MulticoreService } from '$lib/services/context7-multicore';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 const startTime = Date.now();

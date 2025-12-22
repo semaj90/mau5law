@@ -1,8 +1,8 @@
 <script lang="ts">
  import { onMount } from 'svelte';
 
- let routes: string[] = [];
- let error: string | null = null;
+ let routes: string[] = $state([]);
+ let error: string | null = $state(null);
 
  onMount(() => {
  (async () => {

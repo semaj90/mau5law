@@ -11,7 +11,7 @@ dis Cache Service
  * Property 8: Cache Hit Behavior
  */
 
-import type { SearchResult } from './types';
+import type { SearchResult } from './types.js';
 
 export interface RedisCacheConfig {
   url: string;

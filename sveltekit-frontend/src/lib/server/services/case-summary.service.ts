@@ -6,8 +6,8 @@
 import { db } from '$lib/server/db';
 import { caseReports, auditLog } from '$lib/server/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { cacheService } from './cache.service';
-import { verificationService } from './verification.service';
+import { cacheService } from './cache.service.js';
+import { verificationService } from './verification.service.js';
 import type { CaseSummary, CaseSummaryVersion } from '$lib/types/case-summary';
 
 export class CaseSummaryService {

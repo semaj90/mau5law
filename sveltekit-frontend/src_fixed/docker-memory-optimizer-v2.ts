@@ -1,4 +1,4 @@
-﻿// Minimal Windows-safe placeholder (no real Docker dependency) to satisfy imports export interface DockerMemoryConfig { maxMemoryMB?: number; cacheStrategy?: string;
+// Minimal Windows-safe placeholder (no real Docker dependency) to satisfy imports export interface DockerMemoryConfig { maxMemoryMB?: number; cacheStrategy?: string;
 }
 export interface ContainerMetrics { name: string, memoryMB: number, cpu: number;
 }

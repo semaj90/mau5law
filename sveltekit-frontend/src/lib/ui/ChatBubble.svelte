@@ -1,5 +1,5 @@
 <script lang="ts">
- let { title = '', timestamp = '', role = 'assistant' } = $props<{
+ let { children, title = '', timestamp = '', role = 'assistant' } = $props<{
  title?: string;
  timestamp?: string;
  role?: 'assistant' | 'user';
@@ -19,7 +19,7 @@
  <div class="font-mono text-xs mb-1 uppercase tracking-[0.16em]">{title}</div>
  {/if}
  <div class="text-sm leading-relaxed">
- <slot />
+ {@render children?.()}
  </div>
  </div>
 </div>

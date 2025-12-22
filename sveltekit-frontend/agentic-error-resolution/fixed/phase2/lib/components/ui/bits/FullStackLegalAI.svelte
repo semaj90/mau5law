@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <!--
 🚀 Full-Stack Legal AI Integration
 Svelte 5 + GPU-accelerated backend + YoRHa theme + Enhanced UX

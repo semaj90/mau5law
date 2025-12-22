@@ -3,7 +3,7 @@
  * Handles both case and law searches with streaming support
  */
 
-import { fetchWithStreaming, type StreamingOptions } from './streaming-handler';
+import { fetchWithStreaming, type StreamingOptions } from './streaming-handler.js';
 
 export interface SearchQuery {
  query: string;

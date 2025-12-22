@@ -1,4 +1,4 @@
-import type { FactContradiction } from '../types';
+import type { FactContradiction } from '../types.js';
 
 export interface EvidenceBoard {
  addLink(link: {

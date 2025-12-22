@@ -1,4 +1,4 @@
-﻿// Minimal k-means worker for Node.js worker_threads and browser workers
+// Minimal k-means worker for Node.js worker_threads and browser workers
 self.onmessage = (ev) => {
   const msg = ev.data || ev
   if (msg?.type === 'run') {

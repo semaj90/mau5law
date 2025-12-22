@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { sha256 } from './unifiedDiff';
-import type { PatchCandidate } from './diffTypes';
-import { FileSnapshotStore, type FileSnapshot } from './FileSnapshotStore';
+import { sha256 } from './unifiedDiff.js';
+import type { PatchCandidate } from './diffTypes.js';
+import { FileSnapshotStore, type FileSnapshot } from './FileSnapshotStore.js';
 
 export type ApplyResult =
  | { ok: true; applied: boolean; reason?: string }

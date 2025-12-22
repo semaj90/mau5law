@@ -1,9 +1,9 @@
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
-import type { caseScoringService } from '../services/CaseScoringService';
-import type { cognitiveCache } from '../ai/cache';
-import type { aiService } from './index';
-import type { contextualUnderstanding } from '../ai/contextual-understanding-service';
+import type { caseScoringService } from '../services/CaseScoringService.js';
+import type { cognitiveCache } from '../ai/cache.js';
+import type { aiService } from './index.js';
+import type { contextualUnderstanding } from '../ai/contextual-understanding-service.js';
 import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from '$lib/types/sharedTypes';
 import type { CaseScoringRequest as BaseCaseScoringRequest } from '$lib/types/scoring';
 import getOllamaEndpoint from '$lib/server/utils/env';
@@ -130,7 +130,7 @@ async function summarizeWithGemma(params: {
 	await cognitiveCache.set(cacheKey, out, { ttl: 3600 });
 	return out;
 }
-// removed unused import import type { transcribeBuffer } from './voice/recognizer'; /** * ðŸ¤– Gemma3 Multimodal Agentic Functions Orchestrator * * Integrates complete multimodal pipeline: * - ðŸŽ™ï¸ Voice-to-text (Whisper.cpp / WebGPU fallback) * - ðŸ§© LangExtract entity parsing * - ðŸ§  RAG vector retrieval (PostgreSQL + Qdrant) * - âš–ï¸ MMR + Cross-Encoder reranking * - ðŸ§¾ Summarization (Gemma3 / TensorRT-LLM / Triton) * - ðŸ”Š Text-to-speech (Piper) * - ðŸ” Redis caching + parallel processing * - ðŸ•¸ï¸ Agentic function chaining * - âš™ï¸ WebGPU fallback for client-side inference * - HMM state machine * - Contextual understanding service * - Next-step predictions */ /**
+// removed unused import import type { transcribeBuffer } from './voice/recognizer.js'; /** * ðŸ¤– Gemma3 Multimodal Agentic Functions Orchestrator * * Integrates complete multimodal pipeline: * - ðŸŽ™ï¸ Voice-to-text (Whisper.cpp / WebGPU fallback) * - ðŸ§© LangExtract entity parsing * - ðŸ§  RAG vector retrieval (PostgreSQL + Qdrant) * - âš–ï¸ MMR + Cross-Encoder reranking * - ðŸ§¾ Summarization (Gemma3 / TensorRT-LLM / Triton) * - ðŸ”Š Text-to-speech (Piper) * - ðŸ” Redis caching + parallel processing * - ðŸ•¸ï¸ Agentic function chaining * - âš™ï¸ WebGPU fallback for client-side inference * - HMM state machine * - Contextual understanding service * - Next-step predictions */ /**
  * Represents a document record used in retrieval and reranking.
  */
 export interface DocumentRecord {

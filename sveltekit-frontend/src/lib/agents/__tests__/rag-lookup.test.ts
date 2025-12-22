@@ -7,8 +7,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { toolRegistry } from '../tools';
-import type { RagLookupResult } from '../types';
+import { toolRegistry } from '../tools.js';
+import type { RagLookupResult } from '../types.js';
 import { setupTest, cleanupTest, mockQdrant, mockOllama } from '$lib/test-utils/setup';
 
 describe('RAG Lookup Tool - Property 6: RAG Search Results', () => {

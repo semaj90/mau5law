@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Expected a valid CSS identifier
+https://svelte.dev/e/css_expected_identifier -->
+<!-- @migration-task Error while migrating Svelte code: Expected a valid CSS identifier
+https://svelte.dev/e/css_expected_identifier -->
 <script lang="ts">
   import { onMount } from 'svelte';
 

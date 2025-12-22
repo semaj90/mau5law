@@ -4,17 +4,17 @@
 	import { searchService } from '$lib/services/searchService';
 	import { onMount } from 'svelte';
 
-	let query = '';
-	let filters = {
+	let query = $state('');
+	let filters = $state({
 		jurisdiction: '',
 		statute: '',
 		dateRange: ['', '']
-	};
+	});
 
-	let results = [];
-	let selectedResult = null;
-	let loading = false;
-	let error = '';
+	let results = $state([]);
+	let selectedResult = $state(null);
+	let loading = $state(false);
+	let error = $state('');
 	let searchId = '';
 
 	const jurisdictions = ['CA', 'NY', 'TX', 'FL', 'IL'];

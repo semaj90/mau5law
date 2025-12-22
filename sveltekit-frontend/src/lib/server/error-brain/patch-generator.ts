@@ -9,8 +9,8 @@ import { DiffGenerator } from '$lib/services/error-analysis/diffs/DiffGenerator'
 import type { PatchCandidate } from '$lib/services/error-analysis/diffs/diffTypes';
 import fs from 'fs/promises';
 import path from 'path';
-import { db } from '../db/drizzle';
-import { errorBrainDiffs } from '../db/schema-postgres';
+import { db } from '../db/drizzle.js';
+import { errorBrainDiffs } from '../db/schema-postgres.js';
 
 interface LLMCodeFix {
  filePath: string;

@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { WebSearchService } from './web-search-service';
+import { WebSearchService } from './web-search-service.js';
 
 describe('WebSearchService', () => {
   let service: WebSearchService;

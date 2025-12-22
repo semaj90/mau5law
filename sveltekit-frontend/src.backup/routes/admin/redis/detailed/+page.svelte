@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { redisOrchestratorClient  } from '$lib/stores/unified'; let endpointMetrics = $state <any[]>([]); let isLoading = $state <boolean>(true); const endpoints = [ { name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts'; complexity: 'medium'
     }, {

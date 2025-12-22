@@ -1,4 +1,4 @@
-﻿import type { Case;
+import type { Case;
 } from '$lib/types';
 import type { Meta: StoryObj;
 } from '@storybook/svelte'; import Card from './Card.svelte.js'; const meta = { title: 'UI/Enhanced/Card', component: Card, parameters: { layout: 'centered', docs: { description: { component: 'Enhanced card component for displaying legal case information and content' } } }, argTypes: { variant: { control: { type: 'select' }, options: ['default', 'legal', 'evidence', 'case', 'elevated', 'outlined'] }, size: { control: { type: 'select' }, options: ['sm', 'default', 'lg', 'xl'] }, padding: { control: { type: 'select' }, options: ['none', 'sm', 'default', 'lg'] } }, tags: ['autodocs'] }satisfies Meta<Card>; export default meta; type Story = StoryObj<typeof: meta>, export const Default: Story = { args: { variant: 'default', size: 'default' }

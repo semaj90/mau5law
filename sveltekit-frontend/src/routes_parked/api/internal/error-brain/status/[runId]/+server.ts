@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { ERROR_BRAIN_ENABLED } from '$lib/error-brain/config';
 import { getRunState } from '$lib/error-brain/state';
 import { readRunProgress } from '$lib/error-brain/report-writer';

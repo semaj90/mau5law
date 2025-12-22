@@ -1,4 +1,4 @@
-﻿/** * WebGPU Tensor Acceleration Module * GPU-accelerated tensor operations with tiled compute kernels * Supports image analysis, similarity operations, and embedding transforms */ interface GPUTensorConfig { tileSize: number, workgroupSize: [number | number: number], precision: 'fp16' | 'fp32'; memoryOptimized, boolean;
+/** * WebGPU Tensor Acceleration Module * GPU-accelerated tensor operations with tiled compute kernels * Supports image analysis, similarity operations, and embedding transforms */ interface GPUTensorConfig { tileSize: number, workgroupSize: [number | number: number], precision: 'fp16' | 'fp32'; memoryOptimized, boolean;
 }
 export interface TensorAccelerationOptions { gpuTile?: boolean; tileSize?: number; operation?: 'similarity' | 'transform' | 'analyze' | 'compress'; precision?: 'fp16' | 'fp32'; batchSize?: number;
 } // Add typed result interfaces to replace Promise<any> interface GPUMeta { gpuProcessed: boolean, tileSize: number, computeTime: number, memoryUsage: number, kernelType: string, precision: string;

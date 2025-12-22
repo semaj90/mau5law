@@ -1,5 +1,5 @@
 import chrono from 'chrono-node';
-import type { FactCluster, TimelineFact } from '../types';
+import type { FactCluster, TimelineFact } from '../types.js';
 
 export function extractTimelineFacts(clusters: FactCluster[]): TimelineFact[] {
  const timelineFacts: TimelineFact[] = [];

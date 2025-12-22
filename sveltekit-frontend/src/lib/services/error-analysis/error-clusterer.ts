@@ -3,9 +3,9 @@
  * Groups similar errors for batch processing using K-means clustering
  */
 
-import { BaseService } from './base-service';
-import { EmbeddingService } from './embedding-service';
-import type { Error, Cluster, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import { EmbeddingService } from './embedding-service.js';
+import type { Error, Cluster, ServiceConfig } from './types.js';
 
 export interface IErrorClusterer {
  clusterErrors(errors: Error[]): Promise<Cluster[]>;

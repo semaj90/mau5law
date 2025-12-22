@@ -1,4 +1,4 @@
-﻿/** * Component Texture Registry - NES-Inspired GPU Memory Management * Prevents component conflicts and manages texture allocation across memory banks */ import type { MemoryBank;
+/** * Component Texture Registry - NES-Inspired GPU Memory Management * Prevents component conflicts and manages texture allocation across memory banks */ import type { MemoryBank;
 } from '$lib/config/legal-priorities'; export interface TextureSlot { slotId: string, textureId: string, memoryBank: MemoryBank, size: number; // bytes lastAccessed: number, lockCount: number; // Reference counting;
 }
 export interface ComponentManifest { componentName: string, textureSlots: string[], memoryBank: MemoryBank, sharingPolicy: 'exclusive' | 'shared' | 'pooled',updateFrequency: 'static' | 'periodic' | 'realtime',priority: number; // 0-255 maxTextureSize?: number; estimatedUsage?: number; // bytes;

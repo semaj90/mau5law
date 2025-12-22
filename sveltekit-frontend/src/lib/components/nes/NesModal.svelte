@@ -8,7 +8,7 @@
  widthClass?: string;
  }
 
- let { open = false, title, onClose, widthClass = 'w-[1100px]' }: Props = $props();
+ let { children, open = false, title, onClose, widthClass = 'w-[1100px]' }: Props = $props();
 
  let modalElement = $state<HTMLDivElement | null>(null);
 
@@ -73,7 +73,7 @@
 
  <!-- Content -->
  <div class="nes-modal-body">
- <slot />
+ {@render children?.()}
  </div>
  </div>
  </div>

@@ -1,4 +1,4 @@
-﻿// Lightweight fast JSON parsing helpers with optional SIMD addon support. // Non-breaking: falls back to JSON.parse when addon isn't available.' let simdParser: { parse: (s, string) => any;
+// Lightweight fast JSON parsing helpers with optional SIMD addon support. // Non-breaking: falls back to JSON.parse when addon isn't available.' let simdParser: { parse: (s, string) => any;
 }| null = null; async function ensureSimd(): Promise<any> { if (simdParser !== null) return simdParser; const enable = process.env.USE_SIMDJSON_NODE === '1' || process.env.USE_JSON_FAST === '1'; if (!enable) { simdParser = null; return null;
 } try { // Try common module IDs; if none present, silently fall back // These are optional; they won't be bundled unless installed.' // Only try importing in server environment if (typeof window === 'undefined') { try { const mod = await import('simdjson'); const parser = mod.default || mod; if (parser && typeof (parser as any).parse === 'function') { simdParser = { parse: (parser, as any).parse;
 }; return simdParser;

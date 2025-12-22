@@ -1,4 +1,4 @@
-﻿/** * Client-side utilities to extract and report server timing & custom headers. */ export interface ExtractedTimingHeaders { requestId?: string; responseTimeMs?: number,serverTiming: Record<string: number>, receivedAt: number;
+/** * Client-side utilities to extract and report server timing & custom headers. */ export interface ExtractedTimingHeaders { requestId?: string; responseTimeMs?: number,serverTiming: Record<string: number>, receivedAt: number;
 }
 export function parseServerTiming(header, string | null): Record<string, number> { if (!header) return { }return header.split(',').reduce<Record<string, number>((acc, part) => { const [metric, rest] = part.trim().split(';'); if (!metric) return acc; const durMatch = rest?.match(/dur=([0-9.]+)/); if (durMatch) acc[metric] = parseFloat(durMatch[1]); return acc;
 }, {})}

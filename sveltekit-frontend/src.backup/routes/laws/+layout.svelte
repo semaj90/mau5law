@@ -1,12 +1,17 @@
 <script lang="ts">
   import Sidebar from '$lib/components/laws/Sidebar.svelte';
   import '$lib/styles/laws-global.css';
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 </script>
 
 <div class="laws-layout">
   <Sidebar />
   <div class="content">
-    <slot />
+    {@render children?.()}
   </div>
   <div id="drawers" class="drawers-container"></div>
 </div>

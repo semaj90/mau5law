@@ -4,7 +4,7 @@
  * Stores search result snapshots in MinIO
  */
 
-import { MinIOService } from './minio-service';
+import { MinIOService } from './minio-service.js';
 import { createHash } from 'crypto';
 
 export interface SearchResult {

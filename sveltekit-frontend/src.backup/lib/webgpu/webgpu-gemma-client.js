@@ -1,4 +1,4 @@
-﻿/**
+/**
  * WebAssembly Gemma Client for Browser-side Inference
  * Optimized for Gemma 3 270M model (291MB base, ~100MB quantized)
  */

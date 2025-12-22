@@ -1,4 +1,4 @@
-﻿/** * Demo Data Generator for Legal AI System Testing */
+/** * Demo Data Generator for Legal AI System Testing */
 export interface DemoCase {
   id: string
   title: string

@@ -5,7 +5,7 @@
  */
 
 import type { Citation } from '$lib/types/case-summary';
-import { verificationService } from './verification.service';
+import { verificationService } from './verification.service.js';
 
 interface SummaryContext {
  caseId: string;

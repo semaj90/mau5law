@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { AuditTrail, type AuditEntry } from './audit-trail';
-import type { ServiceConfig } from './types';
+import { AuditTrail, type AuditEntry } from './audit-trail.js';
+import type { ServiceConfig } from './types.js';
 
 describe('AuditTrail', () => {
   beforeEach(async () => {

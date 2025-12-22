@@ -3,7 +3,7 @@
  * Implements recovery strategies for feature-disabled scenarios
  */
 
-import { featureLogger } from './featureLogger';
+import { featureLogger } from './featureLogger.js';
 
 /**
  * Retry configuration

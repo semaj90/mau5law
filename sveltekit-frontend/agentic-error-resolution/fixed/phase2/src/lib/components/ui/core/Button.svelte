@@ -1,14 +1,21 @@
 <script lang="ts">
-  // Minimal, dependency-free Button component.
-  export let disabled: boolean = false;
-  export let onclick: ((e: Event) => void) | undefined;
+  
+  interface Props {
+    // Minimal, dependency-free Button component.
+    disabled?: boolean;
+    onclick: ((e: Event) => void) | undefined; // Allow consumers to pass class, aria-*, data-*, etc. via $$restProps
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
 
-  // Allow consumers to pass class, aria-*, data-*, etc. via $$restProps
+  let { disabled = false, onclick, children, ...rest }: Props = $props();
+
+  
   // (Svelte forwards those to the root element below).
 </script>
 
-<button {...$$restProps} {onclick} {disabled} class="ui-button">
-  <slot />
+<button {...rest} {onclick} {disabled} class="ui-button">
+  {@render children?.()}
 </button>
 
 <style>

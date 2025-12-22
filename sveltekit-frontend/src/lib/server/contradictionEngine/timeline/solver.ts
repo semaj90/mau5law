@@ -1,4 +1,4 @@
-import type { TimelineFact, TimelineContradiction } from '../types';
+import type { TimelineFact, TimelineContradiction } from '../types.js';
 
 function estimateTravelTimeMs(loc1?: string, loc2?: string): number {
  if (!loc1 || !loc2) return 0;

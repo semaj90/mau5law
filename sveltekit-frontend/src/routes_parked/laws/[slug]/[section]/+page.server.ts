@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { redirect } from '@sveltejs/kit';
 import { findStateBySlug, findTitleBySlug } from '$lib/server/law-mapping';
 

@@ -10,8 +10,8 @@ import bcrypt from 'bcryptjs';
 import type { eq } from 'drizzle-orm';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Session, User } from 'lucia'; // Corrected import: import both Session and User types
-import db from './db/drizzle'; // Changed to default import for 'db'
-import * as schema from './db/schema'; // Changed to import all as 'schema'
+import db from './db/drizzle.js'; // Changed to default import for 'db'
+import * as schema from './db/schema.js'; // Changed to import all as 'schema'
 import type {
  RegistrationError,
  SessionError,
@@ -19,8 +19,8 @@ import type {
  PasswordError,
  ProfileError,
  MicroserviceError,
-} from './errors'; // Removed ERROR_CODES
-import type { getLegalGatewayUrl } from './utils/endpoints'; // Import the new endpoint helper
+} from './errors.js'; // Removed ERROR_CODES
+import type { getLegalGatewayUrl } from './utils/endpoints.js'; // Import the new endpoint helper
 
 // ============================================================================
 // LUCIA v3 INITIALIZATION (Corrected for v3 API)

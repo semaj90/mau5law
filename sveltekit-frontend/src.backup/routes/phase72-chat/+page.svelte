@@ -26,13 +26,13 @@
     timestamp?: string;
   };
 
-  let messages: Message[] = [];
-  let input = '';
-  let loading = false;
+  let messages: Message[] = $state([]);
+  let input = $state('');
+  let loading = $state(false);
   let messageId = 0;
 
-  let pendingContext: CandidateContext | null = null;
-  let agentHint: string | null = null;
+  let pendingContext: CandidateContext | null = $state(null);
+  let agentHint: string | null = $state(null);
 
   const sessionId = 'phase72:deeds-web-app:main'; // or derive from URL/store
 

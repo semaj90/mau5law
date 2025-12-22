@@ -8,7 +8,7 @@
  rightRailContent?: any;
  }
 
- let { title, subtitle, showRightRail = true, rightRailContent }: Props = $props();
+ let { children, title, subtitle, showRightRail = true, rightRailContent }: Props = $props();
 
  let sidebarOpen = $state(false);
  let systemStatus = $state({
@@ -103,7 +103,7 @@
  {/if}
 
  <div class="content-area">
- <slot />
+ {@render children?.()}
  </div>
  </main>
 

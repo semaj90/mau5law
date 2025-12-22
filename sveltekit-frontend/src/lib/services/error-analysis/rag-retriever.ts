@@ -4,9 +4,9 @@
  * Property 2: RAG Context Relevance - patterns must be ranked by similarity
  */
 
-import { BaseService } from './base-service';
-import { EmbeddingService } from './embedding-service';
-import type { Error, Pattern, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import { EmbeddingService } from './embedding-service.js';
+import type { Error, Pattern, ServiceConfig } from './types.js';
 
 export interface IRAGRetriever {
  queryPatterns(error: Error, topK?: number): Promise<Pattern[]>;

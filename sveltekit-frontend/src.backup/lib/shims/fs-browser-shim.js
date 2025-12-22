@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Filesystem Browser Shim
  * Provides empty stubs for Node.js fs module in browser
  */

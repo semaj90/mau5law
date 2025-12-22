@@ -1,4 +1,4 @@
-﻿// Minimal frontend logging helper to standardize structure and allow future trace context injection.
+// Minimal frontend logging helper to standardize structure and allow future trace context injection.
 export interface LogFields {
   [k: string]: any;
 }

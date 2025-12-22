@@ -3,10 +3,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { caseSummaryService } from '../case-summary.service';
-import { ragService } from '../rag.service';
-import { llmService } from '../llm.service';
-import { graphService } from '../graph.service';
+import { caseSummaryService } from '../case-summary.service.js';
+import { ragService } from '../rag.service.js';
+import { llmService } from '../llm.service.js';
+import { graphService } from '../graph.service.js';
 import { db } from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 

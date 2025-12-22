@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import type { browser  } from '$app/environment'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; // Prefer the single canonical Button entry (keeps casing consistent) import Button from '$lib/components/ui/Button.svelte'; import type { notifications  } from '$lib/stores/unified'; import { AlertCircle } from "lucide-svelte";
 import { CheckCircle } from "lucide-svelte";

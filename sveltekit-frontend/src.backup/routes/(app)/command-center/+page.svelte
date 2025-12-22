@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</Button.Root>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</Button.Root>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
 	import * as Button from 'bits-ui/components/button';
 	import * as Card from 'bits-ui/components/card';

@@ -6,8 +6,8 @@ import {
  disconnect,
  cleanup,
  reconnect,
-} from './healthUpdates';
-import type { HealthUpdateMessage } from './healthUpdates';
+} from './healthUpdates.js';
+import type { HealthUpdateMessage } from './healthUpdates.js';
 import { setupTest, cleanupTest, mockQdrant, mockRedis, mockOllama, mockPostgres, mockMinio } from '$lib/test-utils/setup';
 
 /**

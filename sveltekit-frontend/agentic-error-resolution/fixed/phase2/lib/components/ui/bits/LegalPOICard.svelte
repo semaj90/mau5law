@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced-Bits POI Card Component -->
 <!-- Integrates with legal-poi.ts store for Persons of Interest management -->
 <script lang="ts">

@@ -9,10 +9,10 @@ import type { ChatMessage } from '$lib/types/external-services';
  * into a cohesive RAG + Vector Search + Document Processing pipeline
  * for the Legal AI platform.
  */
-import type { getOllamaService, OllamaService } from './ollama';
-import type { getRedisCache, RedisCacheService } from './redis';
-import type { getQdrantService, QdrantVectorService } from './qdrant';
-import type { getMinIOStorage, MinIOStorageService } from './minio';
+import type { getOllamaService, OllamaService } from './ollama.js';
+import type { getRedisCache, RedisCacheService } from './redis.js';
+import type { getQdrantService, QdrantVectorService } from './qdrant.js';
+import type { getMinIOStorage, MinIOStorageService } from './minio.js';
 
 interface PipelineConfig {
  ollama?: {

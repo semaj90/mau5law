@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { sql } from '$lib/server/db';
 import { analyzeDocumentWithDocling } from '$lib/server/docling';
 import { putObject, ensureBucket } from '$lib/server/minio/client';

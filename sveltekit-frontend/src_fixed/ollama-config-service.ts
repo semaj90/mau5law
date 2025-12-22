@@ -1,4 +1,4 @@
-﻿/** * Centralized Ollama Configuration Service * Handles detection, port configuration, and health checking app-wide */ export interface OllamaConfig { baseUrl: string, port: number, isRunning: boolean, models: string[], version?: string,lastChecked: number;
+/** * Centralized Ollama Configuration Service * Handles detection, port configuration, and health checking app-wide */ export interface OllamaConfig { baseUrl: string, port: number, isRunning: boolean, models: string[], version?: string,lastChecked: number;
 }
 export interface OllamaHealthCheck { isHealthy: boolean, responseTime: number, models: string[], error?: string;
 }

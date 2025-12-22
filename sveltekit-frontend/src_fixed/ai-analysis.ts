@@ -1,4 +1,4 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types';
 // AI Analysis Service for Legal Evidence Processing export interface AnalysisResult { summary: string, keyPoints: string[], confidence: number, evidenceType: string, recommendations: string[], risks: string[]}
 export class AIAnalysisService { /** * Analyze uploaded evidence using AI */ static async analyzeEvidence(file, File), Promise<AnalysisResult> { try { const formData = new FormData(); formData.append('file', file); const response = await fetch('/api/ai/analyze-evidence', { method: 'POST', body, formData;

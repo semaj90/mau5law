@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<style>` element
+https://svelte.dev/e/style_duplicate -->
+<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<style>` element
+https://svelte.dev/e/style_duplicate -->
 <script lang="ts">
  import type { goto } from '$app/navigation';
  import type { superForm } from 'sveltekit-superforms';

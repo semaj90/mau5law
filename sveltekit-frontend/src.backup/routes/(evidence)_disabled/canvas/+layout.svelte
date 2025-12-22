@@ -1,6 +1,11 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';;
+  import { onMount } from 'svelte';
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();;
   // Use runes-style local state for mount flag
   let mounted = $state <boolean>(false);
 
@@ -14,7 +19,7 @@
   <p>This placeholder replaces corrupted or missing markup for now.</p>
 
   <!-- render child routes/content (Svelte 5) -->
-  <slot />
+  {@render children?.()}
 </main>
 
 <style>

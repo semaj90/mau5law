@@ -15,9 +15,9 @@ import {
  getChunksPendingQdrantSync,
  markChunkQdrantError,
  markChunkQdrantSynced,
-} from './phase90-helpers';
-import type { DocumentChunk } from './schema-phase90-hardened';
-import * as schema from './schema-phase90-hardened';
+} from './phase90-helpers.js';
+import type { DocumentChunk } from './schema-phase90-hardened.js';
+import * as schema from './schema-phase90-hardened.js';
 
 interface QdrantSyncConfig {
  qdrantUrl: string;

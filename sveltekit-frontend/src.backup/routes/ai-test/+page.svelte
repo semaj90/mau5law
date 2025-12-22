@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import Button from '$lib/components/ui/Button.svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; // Badge replaced with span - not available in enhanced-bits import EnhancedAIChatTest from '$lib/components/ai/EnhancedAIChatTest.svelte'; import { Bot } from "lucide-svelte";
 import { MessageCircle } from "lucide-svelte";

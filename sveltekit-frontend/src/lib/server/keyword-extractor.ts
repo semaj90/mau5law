@@ -4,7 +4,7 @@
  * Supports text, images, and multimodal content
  */
 
-import { generateText } from './ollama-service';
+import { generateText } from './ollama-service.js';
 
 export interface KeywordExtractionResult {
  keywords: string[];

@@ -1,4 +1,4 @@
-﻿export type VideoMetadata = {
+export type VideoMetadata = {
   id?: string;
   filename?: string;
   duration?: number;

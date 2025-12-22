@@ -4,7 +4,7 @@ import vectorService from '$lib/server/vector/EnhancedVectorService';
 import { getOllamaEndpoint } from '$lib/utils/endpoints';
 import { LokiEvidenceService } from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
-// import type { StreamingResult } from './advanced-simd-pipeline';
+// import type { StreamingResult } from './advanced-simd-pipeline.js';
 
 // ============================================================================
 // Types & Interfaces

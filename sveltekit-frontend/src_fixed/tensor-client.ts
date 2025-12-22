@@ -1,4 +1,4 @@
-﻿// Minimal client helper to send text for embedding/tensorization and optional SW SIMD parse // and optional GPU tiling (WebGPU) post-processing on the embedding. // Inputs: text | string; options { simdParse?: boolean; gpuTile?: boolean;
+// Minimal client helper to send text for embedding/tensorization and optional SW SIMD parse // and optional GPU tiling (WebGPU) post-processing on the embedding. // Inputs: text | string; options { simdParse?: boolean; gpuTile?: boolean;
 }
 // Output: { embedding|tensor: number[], tensorMeta?, any; gpuMeta?: unknown;
 }

@@ -14,7 +14,7 @@
  *   const rootCause = await kag.identifyRootCause(errorId);
  */
 
-import type { ErrorReport, ErrorRelationship, FixStrategy, SimilarError } from './types';
+import type { ErrorReport, ErrorRelationship, FixStrategy, SimilarError } from './types.js';
 
 export interface KAGConfig {
 	neo4jUrl: string;

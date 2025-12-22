@@ -3,8 +3,8 @@
  * Integrates Gemma3-Vision with document processing for contextual chat
  */
 
-import { analyzeImageWithVision, generateText, embedText } from './ollama-service';
-import type { VisionAnalysisResponse } from './ollama-service';
+import { analyzeImageWithVision, generateText, embedText } from './ollama-service.js';
+import type { VisionAnalysisResponse } from './ollama-service.js';
 
 export interface DocumentAnalysisResult {
  documentId: string;

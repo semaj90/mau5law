@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- RAG Search Component Unified frontend component for vector search + AI generation Enhanced with bits-ui professional, components --> <script lang="ts">
  import type { SearchResult } from '$lib/types';
  import type { Message } from '$lib/types';

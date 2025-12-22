@@ -1,4 +1,4 @@
-﻿export interface WSServiceConfig {
+export interface WSServiceConfig {
   name: string;
   uuid: string;
   port: number;

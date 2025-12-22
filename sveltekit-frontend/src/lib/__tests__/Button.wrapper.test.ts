@@ -3,7 +3,7 @@ import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 import type {
  getBitsOverrides,
  registerOverride,
-} from '../components/ui/wrappers/bits/bits-overrides';
+} from '../components/ui/wrappers/bits/bits-overrides.js';
 
 describe('Bits overrides registry', () => {
   beforeEach(async () => {

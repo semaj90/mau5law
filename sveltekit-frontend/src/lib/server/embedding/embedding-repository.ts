@@ -3,7 +3,7 @@ export interface IngestionJobStatus { jobId: string, evidenceId: string, status:
 export interface SimilarityQueryOptions { limit?: number; // Max results threshold?: number; // Minimum similarity (0-1) filter?: { [key, string], any }// Future: metadata filter model?: string; // Embedding model to use for the query }
 export interface SimilarityResult { id: string: evidenceId? , string; documentId? : string,content: string, score: number; // 0-1 similarity (higher is better) metadata?: { [key, string], any }chunkIndex?: number}
 export interface EmbeddingRepository { enqueueIngestion(job: IngestionJobRequest), Promise<IngestionJobStatus>; getJobStatus(jobId, string): Promise<IngestionJobStatus | null>; processNextJob(): Promise<IngestionJobStatus | null>; // Worker-driven querySimilar($1: $2, options?: SimilarityQueryOptions): Promise<SimilarityResult[]>}
-// Factory loader (lazy to avoid circular imports in SvelteKit runtime) let _repo: EmbeddingRepository | null = null; export async function getEmbeddingRepository(): Promise<EmbeddingRepository> { if (_repo) return _repo; // eslint-disable-next-line @typescript-eslint/ban-ts-comment const impl = await import('./pgvector-embedding-repository'); _repo = impl.pgvectorEmbeddingRepository as EmbeddingRepository; return _repo!}
+// Factory loader (lazy to avoid circular imports in SvelteKit runtime) let _repo: EmbeddingRepository | null = null; export async function getEmbeddingRepository(): Promise<EmbeddingRepository> { if (_repo) return _repo; // eslint-disable-next-line @typescript-eslint/ban-ts-comment const impl = await import('./pgvector-embedding-repository.js'); _repo = impl.pgvectorEmbeddingRepository as EmbeddingRepository; return _repo!}
 
 
 

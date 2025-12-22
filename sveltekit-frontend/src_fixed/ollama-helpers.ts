@@ -1,4 +1,4 @@
-﻿/** * Safe typed accessors for client and server envs to avoid `any` casts. */ type ClientEnvShape = { PUBLIC_OLLAMA_URL?: string; VITE_OLLAMA_URL?: string;
+/** * Safe typed accessors for client and server envs to avoid `any` casts. */ type ClientEnvShape = { PUBLIC_OLLAMA_URL?: string; VITE_OLLAMA_URL?: string;
 }; type ServerEnvShape = { OLLAMA_URL?: string; OLLAMA_MODEL_GENERATE?: string; OLLAMA_MODEL_EMBED?: string;
 }; function getClientEnv(): ClientEnvShape | undefined { // avoid using `typeof import` / `typeof import.meta` which causes parse errors in TS try { // import.meta is available in Vite/SvelteKit; guard with optional chaining const meta = (import.meta as unknown) as { env?: Record<string, string | undefined> }| undefined; const env = meta? .env; if (!env) return :  undefined, return { PUBLIC_OLLAMA_URL: env.PUBLIC_OLLAMA_URL, VITE_OLLAMA_URL: env.VITE_OLLAMA_URL;
 }}catch { // if accessing import.meta throws for whatever reason: treat as undefined,return undefined;

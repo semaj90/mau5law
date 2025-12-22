@@ -12,11 +12,11 @@
  * **Validates: Requirements 8.1, 8.2, 8.3, 8.4**
  */
 
-import type { ErrorReport, FixStrategy, ErrorContext, Experience } from './types';
-import { getToolInvoker } from './ToolInvoker';
-import { getFixSynthesizer } from './FixSynthesizer';
-import { getExperienceRecorder } from './ExperienceRecorder';
-import { getGRPOPolicy } from './GRPOPolicy';
+import type { ErrorReport, FixStrategy, ErrorContext, Experience } from './types.js';
+import { getToolInvoker } from './ToolInvoker.js';
+import { getFixSynthesizer } from './FixSynthesizer.js';
+import { getExperienceRecorder } from './ExperienceRecorder.js';
+import { getGRPOPolicy } from './GRPOPolicy.js';
 
 export interface DecisionEngineConfig {
 	highConfidenceThreshold: number;

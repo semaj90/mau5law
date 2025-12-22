@@ -6,8 +6,8 @@
  * Validates: Requirements 1.1
  */
 
-import { BaseService } from './base-service';
-import type { Error, Analysis, LLMResponse, Pattern, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Error, Analysis, LLMResponse, Pattern, ServiceConfig } from './types.js';
 
 export interface IAgenticAnalyzer {
  analyzeError(error: Error, context: string): Promise<Analysis>;

@@ -1,4 +1,4 @@
-import { vectorizeErrorsGPU } from './vectorizeErrors';
+import { vectorizeErrorsGPU } from './vectorizeErrors.js';
 
 export interface ErrorCluster {
  id: string;

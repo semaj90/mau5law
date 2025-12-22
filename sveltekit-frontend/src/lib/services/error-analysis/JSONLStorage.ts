@@ -23,7 +23,7 @@ import * as path from 'path';
 import * as readline from 'readline';
 import * as zlib from 'zlib';
 import { promisify } from 'util';
-import type { ErrorPattern, JSONLRecord, Experience, FixStrategy, ErrorReport } from './types';
+import type { ErrorPattern, JSONLRecord, Experience, FixStrategy, ErrorReport } from './types.js';
 
 const gzip = promisify(zlib.gzip);
 const gunzip = promisify(zlib.gunzip);

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * PHASE 2 MIGRATION GUIDE & COMPATIBILITY MATRIX
  * ==============================================
  *

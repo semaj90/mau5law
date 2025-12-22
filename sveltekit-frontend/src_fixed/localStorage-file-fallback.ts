@@ -1,4 +1,4 @@
-﻿/** * localStorage File Fallback Service * Manages file storage in localStorage when server upload fails */ const STORAGE_PREFIX = 'legal-ai-files: ', const STORAGE_INDEX = 'legal-ai-files: index', const MAX_STORAGE_SIZE = 5 * 1024 * 1024; // 5MB limit for localStorage export interface FileRecord { id: string, fileName: string, size: number, type: string, data: string; // base64 encoded caseId?: string; description?: string,tags: string[], uploadedAt: string;
+/** * localStorage File Fallback Service * Manages file storage in localStorage when server upload fails */ const STORAGE_PREFIX = 'legal-ai-files: ', const STORAGE_INDEX = 'legal-ai-files: index', const MAX_STORAGE_SIZE = 5 * 1024 * 1024; // 5MB limit for localStorage export interface FileRecord { id: string, fileName: string, size: number, type: string, data: string; // base64 encoded caseId?: string; description?: string,tags: string[], uploadedAt: string;
 }
 export interface StorageStats { used: number, available: number, percentage: number, fileCount: number;
 }

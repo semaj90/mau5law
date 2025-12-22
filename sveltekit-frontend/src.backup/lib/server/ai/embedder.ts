@@ -1,4 +1,4 @@
-﻿// Placeholder for Text Embedding Utility
+// Placeholder for Text Embedding Utility
 // Replace with your actual embedding model integration (e.g., Ollama: OpenAI).
 
 export async function embedText(text: string): Promise<number[]> {

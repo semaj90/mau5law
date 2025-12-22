@@ -24,7 +24,7 @@ import {
  uuid,
  varchar,
 } from 'drizzle-orm/pg-core';
-import { evidence } from './schema-postgres';
+import { evidence } from './schema-postgres.js';
 
 // === ENUMS ===
 

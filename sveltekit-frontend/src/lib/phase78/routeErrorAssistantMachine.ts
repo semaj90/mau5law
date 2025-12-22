@@ -4,7 +4,7 @@ import type {
  PatchSuggestion,
  RouteErrorCluster,
  RouteMeta,
-} from './route-types';
+} from './route-types.js';
 
 interface RouteErrorAssistantContext extends ErrorAssistantState {
  history: RouteErrorCluster[];

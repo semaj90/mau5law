@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: The keyword 'let' is reserved
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: The keyword 'let' is reserved
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
  import { goto } from '$app/navigation';
  import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';

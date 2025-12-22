@@ -1,8 +1,8 @@
 import type { Message } from '$lib/types';
 import type { pipeline } from '@xenova/transformers';
 import type { TransformersLLM } from 'langchain/llms/transformers';
-import type { cudaServiceWorker } from '../ai/cuda-service-worker';
-import type { HeavyInferenceResponse } from '../ai/cuda-service-worker';
+import type { cudaServiceWorker } from '../ai/cuda-service-worker.js';
+import type { HeavyInferenceResponse } from '../ai/cuda-service-worker.js';
 import type { unifiedRuntime } from '../webgpu/unified-runtime-abstraction.js';
 import type { InferenceRequest, InferenceResponse } from '../webgpu/unified-runtime-abstraction.js';
 import type { browser } from '$app/environment';

@@ -1,5 +1,5 @@
 import { minioService } from '$lib/server/storage/minio-service';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Lightweight MinIO direct upload endpoint
 // Accepts multipart/form-data with field name: "file". Optional ?bucket= override.

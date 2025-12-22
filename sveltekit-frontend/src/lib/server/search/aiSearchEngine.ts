@@ -1,6 +1,6 @@
-import type { HelpArticle } from '../../../../routes/help/articles.data';
-import { computeBM25Scores } from './rankers';
-import { GEMMA_TOC_DISCLAIMER } from './disclaimer';
+import type { HelpArticle } from '../../../../routes/help/articles.data.js';
+import { computeBM25Scores } from './rankers.js';
+import { GEMMA_TOC_DISCLAIMER } from './disclaimer.js';
 
 // Lazily import heavy services to avoid circular deps in dev mode.
 let embeddingService: any;

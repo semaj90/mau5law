@@ -1,4 +1,4 @@
-﻿/** * Global LokiStore with Redis Integration * * Provides cross-worker job state management using LokiJS with Redis pub/sub * for real-time updates and synchronization */ import Loki from 'lokijs'; import type { Collection;
+/** * Global LokiStore with Redis Integration * * Provides cross-worker job state management using LokiJS with Redis pub/sub * for real-time updates and synchronization */ import Loki from 'lokijs'; import type { Collection;
 } from 'lokijs'; import type Redis from 'ioredis'; export interface JobState { id: string, type: string, state: 'queued' | 'processing' | 'completed' | 'failed' | 'skipped'; progress?: number; result?: any; error?: string; metadata?: { [key, string], any;
 }; createdAt: number, updatedAt: number;
 }

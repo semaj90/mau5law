@@ -3,10 +3,10 @@
  * Orchestrates the complete document ingestion pipeline
  */
 
-import { DocumentLoader } from './document-loader';
-import { EmbeddingIndexer } from './embedding-indexer';
-import { processDocument } from './document-processor';
-import type { ProcessedDocument } from './document-processor';
+import { DocumentLoader } from './document-loader.js';
+import { EmbeddingIndexer } from './embedding-indexer.js';
+import { processDocument } from './document-processor.js';
+import type { ProcessedDocument } from './document-processor.js';
 
 export interface IngestionConfig {
  localBasePath?: string;

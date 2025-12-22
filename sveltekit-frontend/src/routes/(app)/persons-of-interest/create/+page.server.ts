@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zodClient } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types.js';
 
 const poiSchema = z.object({
  name: z.string().min(1, 'Name is required'),

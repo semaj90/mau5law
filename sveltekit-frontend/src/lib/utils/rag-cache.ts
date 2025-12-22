@@ -4,7 +4,7 @@
  */
 
 import type { Redis } from 'ioredis';
-import { getRedisClient } from './redis-helper';
+import { getRedisClient } from './redis-helper.js';
 
 export interface RAGCacheEntry {
  query: string;

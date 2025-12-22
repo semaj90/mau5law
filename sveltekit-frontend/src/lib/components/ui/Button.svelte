@@ -1,6 +1,6 @@
 <script lang="ts">
  type Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'; // Example variants, adjust as needed
- let {
+ let { children,
  onclick,
  variant = 'default',
  class: className = '',
@@ -23,7 +23,7 @@
  class="{className} {variant === 'outline' ? 'border border-gray-300' : ''}"
  {...rest}
 >
- <slot />
+ {@render children?.()}
 </button>
 
 <style>

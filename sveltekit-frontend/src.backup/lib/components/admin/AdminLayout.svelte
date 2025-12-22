@@ -6,7 +6,7 @@
 		subtitle?: string;
 	}
 
-	let { title = '', subtitle = '' }: AdminLayoutProps = $props();
+	let { children, title = '', subtitle = '' }: AdminLayoutProps = $props();
 </script>
 
 <div class="admin-layout">
@@ -25,7 +25,7 @@
 		{/if}
 
 		<div class="admin-content">
-			<slot />
+			{@render children?.()}
 		</div>
 	</main>
 </div>

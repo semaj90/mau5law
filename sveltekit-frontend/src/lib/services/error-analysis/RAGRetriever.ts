@@ -14,7 +14,7 @@
  *   const similar = await rag.querySimilarErrors(embedding, 5);
  */
 
-import type { ErrorReport, SimilarError, FixStrategy, CachedResult } from './types';
+import type { ErrorReport, SimilarError, FixStrategy, CachedResult } from './types.js';
 
 export interface RAGConfig {
 	qdrantUrl: string;

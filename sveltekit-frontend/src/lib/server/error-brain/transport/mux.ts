@@ -4,8 +4,8 @@
  * PHASE 36: Multiplexer transport (both SSE + Redis)
  */
 
-import type { ErrorBrainEvent } from '../events';
-import type { ErrorBrainTransport } from './interface';
+import type { ErrorBrainEvent } from '../events.js';
+import type { ErrorBrainTransport } from './interface.js';
 
 export class MuxTransport implements ErrorBrainTransport {
  name = 'mux';

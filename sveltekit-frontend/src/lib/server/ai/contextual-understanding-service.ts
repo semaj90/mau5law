@@ -7,7 +7,7 @@ import type {
  NextStepPrediction,
 } from '$lib/types/sharedTypes';
 import type { cognitiveCache, getRedisClient } from '$lib/server/cache';
-import type { hmmStateMachine, LegalConversationState } from './hmm-state-machine';
+import type { hmmStateMachine, LegalConversationState } from './hmm-state-machine.js';
 
 const CONTEXT_TTL_SECONDS = Number(process.env.CONTEXT_STATE_TTL ?? 3600);
 const MAX_HISTORY_LENGTH = Number(process.env.CONTEXT_MAX_HISTORY ?? 50);

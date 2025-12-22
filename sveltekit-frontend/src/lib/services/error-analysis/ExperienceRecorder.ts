@@ -17,9 +17,9 @@ import type {
 	FixStrategy,
 	ErrorContext,
 	ErrorGroup
-} from './types';
-import { getJSONLStorage } from './JSONLStorage';
-import { getOllamaService } from './OllamaService';
+} from './types.js';
+import { getJSONLStorage } from './JSONLStorage.js';
+import { getOllamaService } from './OllamaService.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface ExperienceRecorderConfig {

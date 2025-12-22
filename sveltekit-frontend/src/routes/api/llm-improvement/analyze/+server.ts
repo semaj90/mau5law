@@ -7,7 +7,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getRAGRetriever } from '$lib/services/error-analysis/RAGRetriever';
 import { getKAGTraverser } from '$lib/services/error-analysis/KAGTraverser';
 import { getGRPOPolicy } from '$lib/services/error-analysis/GRPOPolicy';

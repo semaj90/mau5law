@@ -1,4 +1,4 @@
-﻿import type { Message;
+import type { Message;
 } from '$lib/types';
 // src/lib/server/rabbitmq.ts import * as amqp from 'amqplib'; import type { Channel;
 } from 'amqplib';

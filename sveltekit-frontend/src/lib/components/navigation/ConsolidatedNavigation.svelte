@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'currentGroup' has already been declared
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Identifier 'currentGroup' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
 <script lang="ts">
  import { getStores } from '$app/stores';

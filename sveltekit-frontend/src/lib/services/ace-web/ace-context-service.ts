@@ -7,9 +7,9 @@
 import { db } from '$lib/db';
 import { aceChunks, aceEdges, aceEntities, aceDocs } from '$lib/db/schema/ace-web';
 import { sql, inArray } from 'drizzle-orm';
-import { EmbeddingService } from '../error-analysis/embedding-service';
-import { QdrantService } from './qdrant-service';
-import type { ServiceConfig } from '../error-analysis/types';
+import { EmbeddingService } from '../error-analysis/embedding-service.js';
+import { QdrantService } from './qdrant-service.js';
+import type { ServiceConfig } from '../error-analysis/types.js';
 
 export interface ContextFilters {
   domain?: string;

@@ -3,8 +3,8 @@
  * Generates contextual diffs with surrounding code
  */
 
-import { BaseService } from './base-service';
-import type { Diff, Error, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Diff, Error, ServiceConfig } from './types.js';
 
 export interface IDiffGenerator {
  generateDiff(error: Error, fix: string, originalCode: string): Promise<Diff>;

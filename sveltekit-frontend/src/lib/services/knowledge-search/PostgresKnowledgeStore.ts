@@ -16,8 +16,8 @@ import type {
   SearchFilters,
   FullDocument,
   IndexResult
-} from './types';
-import { getQdrantKnowledgeStore } from './QdrantKnowledgeStore';
+} from './types.js';
+import { getQdrantKnowledgeStore } from './QdrantKnowledgeStore.js';
 
 export interface PostgresConfig {
   connectionString: string;

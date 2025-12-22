@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { ErrorBrainAPI } from './error-brain-api';
-import type { Error as AnalysisError } from './types';
+import { ErrorBrainAPI } from './error-brain-api.js';
+import type { Error as AnalysisError } from './types.js';
 import fc from 'fast-check';
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 

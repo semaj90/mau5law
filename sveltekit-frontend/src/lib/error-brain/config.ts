@@ -3,7 +3,7 @@
  * Feature flags and safety limits
  */
 
-import type { ApplyMode } from './types';
+import type { ApplyMode } from './types.js';
 
 export const ERROR_BRAIN_ENABLED = process.env.ERROR_BRAIN_ENABLED === '1';
 

@@ -263,7 +263,7 @@
  onwheel={handleWheel}
  class="w-full h-full cursor-grab active:cursor-grabbing"
  style="display: block;"
- />
+></canvas>
 </div>
 
 <style>

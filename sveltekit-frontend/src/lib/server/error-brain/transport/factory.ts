@@ -4,12 +4,12 @@
  * PHASE 36: Transport factory (creates correct transport based on config)
  */
 
-import type { ErrorBrainTransport as TransportType } from '../feature-flags';
-import type { ErrorBrainTransport } from './interface';
-import { MuxTransport } from './mux';
-import { NoneTransport } from './none';
-import { RedisTransport } from './redis';
-import { getSSETransport } from './sse';
+import type { ErrorBrainTransport as TransportType } from '../feature-flags.js';
+import type { ErrorBrainTransport } from './interface.js';
+import { MuxTransport } from './mux.js';
+import { NoneTransport } from './none.js';
+import { RedisTransport } from './redis.js';
+import { getSSETransport } from './sse.js';
 
 /**
  * Create transport instance based on config

@@ -15,7 +15,7 @@ import type {
  CitationStatistics,
  StatuteSearchHistory,
 } from '$lib/types/citations';
-import { AuditService } from './audit.service';
+import { AuditService } from './audit.service.js';
 
 export class CitationManagementService {
  private auditService: AuditService;

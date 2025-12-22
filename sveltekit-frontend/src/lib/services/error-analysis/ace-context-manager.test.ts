@@ -7,8 +7,8 @@
 
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { AceContextManager } from './ace-context-manager';
-import type { ServiceConfig, Analysis, Diff } from './types';
+import { AceContextManager } from './ace-context-manager.js';
+import type { ServiceConfig, Analysis, Diff } from './types.js';
 
 describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
   beforeEach(async () => {

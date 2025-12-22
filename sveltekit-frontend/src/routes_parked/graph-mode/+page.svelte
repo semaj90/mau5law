@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	let canvas: HTMLCanvasElement;
+	let canvas: HTMLCanvasElement = $state();
 	let ctx: CanvasRenderingContext2D;
 	let nodes: GraphNode[] = [];
 	let edges: GraphEdge[] = [];
-	let selectedNode: GraphNode | null = null;
+	let selectedNode: GraphNode | null = $state(null);
 	let isDragging = false;
 	let dragNode: GraphNode | null = null;
 	let offsetX = 0;
 	let offsetY = 0;
-	let zoom = 1;
+	let zoom = $state(1);
 	let panX = 0;
 	let panY = 0;
 

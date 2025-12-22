@@ -380,7 +380,7 @@ export class SvelteCheckAnalyzer {
  const match = error.message.match(/Cannot find name '(\w+)'/);
  if (match) {
  const name = match[1];
- fixes.push(`import { ${name} } from './${name.toLowerCase()}';`);
+ fixes.push(`import { ${name} } from './${name.toLowerCase()}.js';`);
  fixes.push(`const ${name} = /* TODO: define ${name} */;`);
  }
  }

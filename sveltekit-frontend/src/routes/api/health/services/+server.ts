@@ -16,7 +16,7 @@
  */
 import { getServiceAdapters, healthCheckServices } from '$lib/server/adapters/service-integrations';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
  const startTime = Date.now();

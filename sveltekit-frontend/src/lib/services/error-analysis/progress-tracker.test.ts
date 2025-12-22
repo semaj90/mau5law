@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { ProgressTracker } from './progress-tracker';
-import type { ServiceConfig } from './types';
+import { ProgressTracker } from './progress-tracker.js';
+import type { ServiceConfig } from './types.js';
 
 describe('ProgressTracker', () => {
   beforeEach(async () => {

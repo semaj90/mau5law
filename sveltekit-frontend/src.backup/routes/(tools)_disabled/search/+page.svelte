@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Document } from '$lib/types'; import type { superForm  } from 'sveltekit-superforms'; import type { zod  } from 'sveltekit-superforms/adapters'; import { SearchFormSchema  } from './+page.server'; import type { PageData } from './$types'; const { data } = $props<{ data: PageData }>() const { searchState } = $props<{ searchState: { results: Array<{ id: string }>() title: string, content: string; similarity: number }>; query: string; responseTime: number;, timestamp: string} | null = null; const { form, errors, isSubmitting, constraints, enhance } = superForm( data.form, {
       validators: zod(SearchFormSchema); taintedMessage: 'Update search to apply changes'

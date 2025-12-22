@@ -19,7 +19,7 @@ describe('Phase 9 Integration Tests', () => {
  {
  title: 'Fix import',
  description: 'Change import statement',
- code: "import { Type } from './types';",
+ code: "import { Type } from './types.js';",
  },
  {
  title: 'Add type annotation',
@@ -49,7 +49,7 @@ describe('Phase 9 Integration Tests', () => {
  // Step 2: Create patch from analysis
  const patchRequest = {
  file_path: 'src/routes/test/+page.svelte',
- patch_content: "import { Type } from './types';",
+ patch_content: "import { Type } from './types.js';",
  description: 'Patch from error brain analysis',
  analysis_id: analysisId,
  risk_level: 'medium',

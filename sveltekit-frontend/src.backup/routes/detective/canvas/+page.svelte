@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { AdvancedEvidenceCanvas  } from '$lib/canvas/advanced-evidence-canvas.js'; let canvasElement: HTMLCanvasElement, let evidenceCanvas: AdvancedEvidenceCanva, let mounted = $state <boolean>(false); // Sample evidence data for the canvas let evidenceData = $state([ { id: 'item-1', type: 'video', title: 'Security Camera Footage', x: 50, y: 100, width: 200, height: 150, color: '#3b82f6'
     }, {

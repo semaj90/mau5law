@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { spawn } from 'node:child_process';
 
 export const POST: RequestHandler = async ({ request }) => {

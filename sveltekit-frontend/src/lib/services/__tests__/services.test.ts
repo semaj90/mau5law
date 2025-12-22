@@ -5,9 +5,9 @@
 
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { WebSearchService } from '../web-search';
-import { RAGCodebaseService, type CodebaseFile } from '../rag-codebase';
-import { Phase73Client } from '../phase73-client';
+import { WebSearchService } from '../web-search.js';
+import { RAGCodebaseService, type CodebaseFile } from '../rag-codebase.js';
+import { Phase73Client } from '../phase73-client.js';
 
 describe('WebSearchService', () => {
   beforeEach(async () => {
@@ -87,7 +87,7 @@ describe('RAGCodebaseService', () => {
  name: 'search.ts',
  language: 'typescript',
  content: `
- import { analyzeCase } from './utils';
+ import { analyzeCase } from './utils.js';
 
  export async function searchCases(query: string) {
  return analyzeCase(query);

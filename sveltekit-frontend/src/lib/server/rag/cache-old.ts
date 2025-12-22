@@ -1,6 +1,6 @@
 // src/lib/server/rag/cache.ts
 
-import { getRedisClient, isRedisAvailable } from '../redis';
+import { getRedisClient, isRedisAvailable } from '../redis.js';
 import { createHash } from 'crypto';
 
 // Cache TTL configuration from environment (in seconds)

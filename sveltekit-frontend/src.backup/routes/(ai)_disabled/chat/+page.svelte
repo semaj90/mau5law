@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import type { getOllamaEndpoint  } from '$lib/utils/ollama-endpoint';
   import type { ChatMessage } from '$lib/types/chat';

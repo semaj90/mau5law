@@ -1,4 +1,4 @@
-﻿declare module 'chart.js' {
+declare module 'chart.js' {
   // Minimal declarations to satisfy TypeScript during build.
   // Runtime imports remain intact; refine these types later if you add full type support.
   export const registerables: unknown;

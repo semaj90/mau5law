@@ -398,15 +398,22 @@ This implementation plan converts the design into actionable coding tasks. Each 
 - [ ] 10. Implement real-time health status updates using Server-Sent Events
   - Create SSE endpoint for route health updates
   - Broadcast health changes to connected clients
+
+
+
   - Update route cards in real-time without page reload
   - _Requirements: 9.4, 9.5_
 
 - [ ] 10.1 Create SSE endpoint for health updates
   - Create `sveltekit-frontend/src/routes/api/routes/events/+server.ts`
   - Implement GET handler that returns EventSource stream
+
+
   - Set headers: `Content-Type: text/event-stream`, `Cache-Control: no-cache`
   - Keep connection alive with heartbeat every 30 seconds
   - _Requirements: 9.4_
+
+
 
 - [ ] 10.2 Broadcast health changes via SSE
   - When route_health_event is created, send SSE message to all connected clients
@@ -415,9 +422,13 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - Handle client disconnections gracefully
   - _Requirements: 9.4_
 
+
+
 - [ ] 10.3 Update UI on health change
   - Create EventSource connection in all-routes page
   - Listen for 'message' events from SSE endpoint
+
+
   - Update route card health indicator in real-time
   - Update error count if changed
   - Auto-reconnect on connection loss
@@ -467,42 +478,48 @@ This implementation plan converts the design into actionable coding tasks. Each 
 
 ## Phase 12: Integration Testing
 
-- [ ] 12. Write end-to-end integration tests
-  - Create `tests/nes-command-center-db-wiring.spec.ts` with Playwright
+- [x] 12. Write end-to-end integration tests
+  - Create `tests/nes-command-center-integration.spec.ts` with Playwright
   - Test full flow: create route → create error → verify health update
   - Test API endpoints with real database
-  - Test real-time updates via WebSocket
+  - Test real-time updates via SSE
   - _Requirements: All_
 
-- [ ] 12.1 Test route creation and metadata persistence
+- [x] 12.1 Test route creation and metadata persistence
   - Create a new route via API
   - Verify it appears in database
   - Verify it appears on all-routes page
   - _Requirements: 1.2, 7.1_
 
-- [ ] 12.2 Test error cluster creation and health calculation
+- [x] 12.2 Test error cluster creation and health calculation
   - Create error clusters for a route
   - Verify health status changes from healthy to broken
   - Verify error count updates on UI
   - _Requirements: 2.1, 2.5, 3.1, 8.4_
 
-- [ ] 12.3 Test error brain analysis persistence
+- [x] 12.3 Test error brain analysis persistence
   - Run error brain analysis on a route
   - Verify analysis is saved to database
   - Verify patch is saved when applied
   - _Requirements: 4.1, 4.2_
 
-- [ ] 12.4 Test interaction logging
+- [x] 12.4 Test interaction logging
   - Perform various interactions (view, navigate, analyze, patch_apply)
   - Verify all interactions are logged to database
   - Verify interaction history is retrievable
   - _Requirements: 5.1-5.5_
 
-- [ ] 12.5 Test real-time health updates via SSE
+- [x] 12.5 Test real-time health updates via SSE
   - Create error cluster for a route
   - Verify SSE broadcasts health change
   - Verify UI updates without page reload
   - _Requirements: 9.4, 9.5_
+
+- [x] 12.6 Test data archival
+  - Archive old error clusters (90+ days)
+  - Archive old interactions (180+ days)
+  - Query archived data via API
+  - _Requirements: 10.1-10.5_
 
 ---
 

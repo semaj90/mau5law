@@ -1,4 +1,4 @@
-import type { ProcessingEvent } from './SSEStatusStore';
+import type { ProcessingEvent } from './SSEStatusStore.js';
 
 /**
  * Stage name mapping for human-readable labels

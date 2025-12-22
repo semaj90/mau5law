@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { caseScoringService } from '$lib/server/services/CaseScoringService';
 import type { PhoenixWrightSearchRequest } from '$lib/types/scoring';
 

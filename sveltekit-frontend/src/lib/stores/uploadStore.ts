@@ -3,7 +3,7 @@
  */
 
 import { writable, derived } from 'svelte/store';
-import type { UploadState, ProcessingEvent } from '../services/types';
+import type { UploadState, ProcessingEvent } from '../services/types.js';
 
 // Initial state
 const initialState: UploadState = {

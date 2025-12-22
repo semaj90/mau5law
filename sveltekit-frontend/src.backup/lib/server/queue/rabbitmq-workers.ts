@@ -1,2 +1,2 @@
-﻿const rabbitWorkers: unknown = {};
+const rabbitWorkers: unknown = {};
 export default rabbitWorkers;

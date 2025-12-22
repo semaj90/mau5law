@@ -1,4 +1,4 @@
-﻿declare module 'lucide-svelte' {
+declare module 'lucide-svelte' {
   // minimal untyped stubs for icons used in the app
   export const Activity: unknown;
   export const BarChart3: unknown;

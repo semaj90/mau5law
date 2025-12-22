@@ -1,4 +1,4 @@
-﻿// @ts-nocheck - XState v5 assign() typing is overly restrictive
+// @ts-nocheck - XState v5 assign() typing is overly restrictive
 /**
  * XState State Machine for Evidence Processing Workflow
  * Handles the complete lifecycle of evidence from upload to AI analysis

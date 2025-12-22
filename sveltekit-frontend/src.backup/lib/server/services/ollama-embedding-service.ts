@@ -1,4 +1,4 @@
-﻿// Replace SvelteKit env import with process.env-based fallbacks and add a local interface
+// Replace SvelteKit env import with process.env-based fallbacks and add a local interface
 
 // Local minimal interface to avoid depending on a missing external type
 interface IOllamaEmbeddingService {

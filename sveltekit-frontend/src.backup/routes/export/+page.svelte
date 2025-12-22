@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import Button from '$lib/components/ui/enhanced-bits.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import TooltipContent from '$lib/components/ui/TooltipContent.svelte'; import TooltipTrigger from '$lib/components/ui/TooltipTrigger.svelte'; import type { Case } from '$lib/types/index'; import { AlertTriangle } from "lucide-svelte";
 import { Calendar } from "lucide-svelte";

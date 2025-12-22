@@ -1,5 +1,5 @@
 <script lang="ts">
- let { title = '', value = undefined, subtitle = undefined } = $props<{
+ let { children, title = '', value = undefined, subtitle = undefined } = $props<{
  title?: string;
  value?: string | number;
  subtitle?: string;
@@ -12,7 +12,7 @@
  {#if subtitle}
  <div class="card-sub">{subtitle}</div>
  {/if}
- <slot />
+ {@render children?.()}
 </article>
 
 <style>

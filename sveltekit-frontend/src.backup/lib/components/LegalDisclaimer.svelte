@@ -1,5 +1,5 @@
 <script lang="ts">
-	let isDismissed = false;
+	let isDismissed = $state(false);
 
 	function handleDismiss() {
 		isDismissed = true;

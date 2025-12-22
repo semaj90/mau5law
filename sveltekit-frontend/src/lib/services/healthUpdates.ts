@@ -26,7 +26,7 @@ import {
  recordConnectionEnd,
  startMemoryMonitoring,
  stopMemoryMonitoring,
-} from './healthUpdatesPerformance';
+} from './healthUpdatesPerformance.js';
 
 // Message format for health updates
 export interface HealthUpdateMessage {

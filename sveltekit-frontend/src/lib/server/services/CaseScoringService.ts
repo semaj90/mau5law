@@ -8,8 +8,8 @@ import type {
  CaseScoringResult,
  ScoringCriteria,
 } from '../../../lib/types/scoring.js';
-import { ollamaService } from '../ai/ollama-adapter';
-import { cognitiveCache } from '../ai/cache';
+import { ollamaService } from '../ai/ollama-adapter.js';
+import { cognitiveCache } from '../ai/cache.js';
 
 // Logger implementation
 const logger = {

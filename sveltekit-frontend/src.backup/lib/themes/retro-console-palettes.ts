@@ -1,4 +1,4 @@
-﻿/** * ðŸŽ® Retro Console Color Palettes for Legal AI * Authentic color palettes from classic gaming consoles with legal AI integration */ export interface ConsolePalette {
+/** * ðŸŽ® Retro Console Color Palettes for Legal AI * Authentic color palettes from classic gaming consoles with legal AI integration */ export interface ConsolePalette {
   name: string;
   era: string;
   colors: {

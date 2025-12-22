@@ -1,6 +1,6 @@
 import { parseFast } from '$lib/server/utils/json-fast';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // POST /api/bench/json - micro-benchmark JSON parse speed with and without SIMD
 export const POST: RequestHandler = async ({ request }) => {

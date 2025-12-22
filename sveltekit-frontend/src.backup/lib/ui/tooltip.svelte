@@ -1,9 +1,9 @@
-<script>
-  let { text = '' } = $props ();
+<script lang="ts">
+  let { children, text = '' } = $props ();
 </script>
 
 <div class="tooltip">
-  <slot />
+  {@render children?.()}
   <span class="tooltiptext nes-text">{text}</span>
 </div>
 

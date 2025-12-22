@@ -7,7 +7,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getDecisionEngine } from '$lib/services/error-analysis/DecisionEngine';
 import { getFixSynthesizer } from '$lib/services/error-analysis/FixSynthesizer';
 import type { ErrorReport, FixStrategy, ErrorContext } from '$lib/services/error-analysis/types';

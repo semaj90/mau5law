@@ -17,10 +17,10 @@ import type {
 	ErrorContext,
 	EscalationTicket,
 	DiagnosticResult
-} from './types';
-import { getExperienceRecorder } from './ExperienceRecorder';
-import { getGRPOPolicy } from './GRPOPolicy';
-import { getJSONLStorage } from './JSONLStorage';
+} from './types.js';
+import { getExperienceRecorder } from './ExperienceRecorder.js';
+import { getGRPOPolicy } from './GRPOPolicy.js';
+import { getJSONLStorage } from './JSONLStorage.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface EscalationServiceConfig {

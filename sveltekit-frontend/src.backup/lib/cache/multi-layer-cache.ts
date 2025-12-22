@@ -1,4 +1,4 @@
-﻿/** * Multi-Layer Cache System for Legal AI Platform * Implements gaming-inspired memory management with console constraints */
+/** * Multi-Layer Cache System for Legal AI Platform * Implements gaming-inspired memory management with console constraints */
 
 export interface CacheLayer {
   name: string;

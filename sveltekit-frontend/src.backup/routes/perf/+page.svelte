@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import PerfChart from '$lib/components/PerfChart.svelte'; import { writable } from 'svelte/store';; const runtime = writable<any>(null); const signatures = writable<any>(null); const error = writable<string | null>(null); const loading = writable<boolean>(true); let interval: unknown, let fastAlertInterval: unknown, let fastPolling = $state <boolean>(false); function toggleFastPolling(){ fastPolling = !fastPolling; if (fastPolling){ if (fastAlertInterval) clearInterval(fastAlertInterval); fastAlertInterval = setInterval(async ()=>{ try { const res = await fetch('/api/cuda/metrics/alerts'); if (res.ok){ const aData = await res.json(); serverAlerts = aData.alerts || []; serverAlertCounts = aData.counts || serverAlertCounts; if (serverAlerts.some(a=>a.Level==='crit'||a.level==='crit')) highestAlertLevel='crit'; else if (serverAlerts.some(a=>a.Level==='warn'||a.level==='warn')) highestAlertLevel='warn'; else highestAlertLevel='none'}
         } catch (error) { console.error('Alert fetch failed:', error)}

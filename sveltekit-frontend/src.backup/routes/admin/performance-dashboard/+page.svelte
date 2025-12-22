@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import type { legalPerformanceMonitor, currentMetrics, systemHealth, cacheEfficiency, averageLatency, gpuUtilization, formatMetric, type PerformanceSnapshot  } from '$lib/monitoring/legal-performance-metrics.js'; let metricsHistory: PerformanceSnapshot[] = $state([]); let refreshInterval: ReturnType<typeof setInterval>; $effect(() => {() => { // Refresh metrics every, 5 seconds refreshInterval = setInterval(() => { metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10)}, 5000); // Initial load metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10); return () => { if (refreshInterval) clearInterval(refreshInterval)}}); function getHealthColor(health: string): string { switch (health) { case, 'optimal': return 'text-green-500'; case, 'degraded': return 'text-yellow-500'; case, 'critical': return 'text-red-500'; default: return 'text-gray-500'}
   }

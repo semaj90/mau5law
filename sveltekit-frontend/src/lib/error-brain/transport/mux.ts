@@ -3,8 +3,8 @@
  * Publish to multiple transports
  */
 
-import type { ErrorBrainEvent } from '../types';
-import type { ErrorBrainTransport } from './interface';
+import type { ErrorBrainEvent } from '../types.js';
+import type { ErrorBrainTransport } from './interface.js';
 
 export class MuxTransport implements ErrorBrainTransport {
  constructor(private transports: ErrorBrainTransport[]) {}

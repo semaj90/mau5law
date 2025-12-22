@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import CaseChatPanel from '$lib/components/legal-ai/CaseChatPanel.svelte';
   import LegalAILayout from '$lib/components/legal-ai/LegalAILayout.svelte';
 
-  let caseId = $derived($page.params.id);
+  let caseId = $derived(page.params.id);
 </script>
 
 <LegalAILayout title="Case Analysis" subtitle="Chat with AI Legal Assistant about this case">

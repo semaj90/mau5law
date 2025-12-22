@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</section>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</section>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported

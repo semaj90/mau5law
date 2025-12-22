@@ -3,7 +3,7 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { qdrantSearch, qdrantUpsert } from './qdrant';
+import { qdrantSearch, qdrantUpsert } from './qdrant.js';
 
 describe('Qdrant Operations', () => {
   beforeEach(async () => {

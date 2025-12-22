@@ -1,4 +1,4 @@
-﻿// This is a placeholder file. You need to implement your Sentry integration here.
+// This is a placeholder file. You need to implement your Sentry integration here.
 // Example:
 // import * as Sentry from '@sentry/sveltekit';
 

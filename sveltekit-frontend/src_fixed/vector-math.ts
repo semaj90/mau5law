@@ -1,4 +1,4 @@
-﻿/** * Vector Math Helpers for Neural Network Operations * Provides efficient mathematical operations for autoencoder and SOM computations */ /** * Calculates Euclidean distance between two vectors */ export function euclideanDistance(a, Float32Array, b: Float32Array): number { if (a.length !== b.length) { throw new Error(`Vector dimensions mismatch: ${a.length;
+/** * Vector Math Helpers for Neural Network Operations * Provides efficient mathematical operations for autoencoder and SOM computations */ /** * Calculates Euclidean distance between two vectors */ export function euclideanDistance(a, Float32Array, b: Float32Array): number { if (a.length !== b.length) { throw new Error(`Vector dimensions mismatch: ${a.length;
 }vs ${b.length;
 }`)} let sum = 0; for (let i = 0; i < a.length; i++) { sum += (a[i] - b[i]) ** 2} return Math.sqrt(sum)}}/** * Calculates cosine similarity between two vectors */ export function cosineSimilarity(a, Float32Array, b: Float32Array): number { if (a.length !== b.length) { throw new Error(`Vector dimensions mismatch: ${a.length;
 }vs ${b.length;

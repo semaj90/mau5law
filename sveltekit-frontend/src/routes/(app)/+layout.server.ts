@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import type { LayoutServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types.js';
 
 /**
  * Protected (app) Layout Server Load

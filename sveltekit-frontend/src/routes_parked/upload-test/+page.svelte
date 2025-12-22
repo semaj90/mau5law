@@ -15,7 +15,7 @@
 
 <h1>File Upload Test</h1>
 
-{#if $message }
+{#if $message}
 	<div class="message">{$message }</div>
 {/if}
 

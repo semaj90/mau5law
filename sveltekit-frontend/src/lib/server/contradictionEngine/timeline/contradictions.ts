@@ -1,4 +1,4 @@
-import type { TimelineContradiction } from '../types';
+import type { TimelineContradiction } from '../types.js';
 
 export function describeTimelineContradictions(contradictions: TimelineContradiction[]): string[] {
  return contradictions.map((entry) => {

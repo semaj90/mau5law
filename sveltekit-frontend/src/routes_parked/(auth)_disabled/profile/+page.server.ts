@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import type { db } from '$lib/server/db/drizzle'; // Changed to named import
 import type { sql, eq, not, inArray } from 'drizzle-orm'; // Corrected import: notIn -> not, inArray
 import type { users, cases, evidence, criminals } from '$lib/server/db/schema';

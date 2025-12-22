@@ -2,7 +2,7 @@ import type { env } from '$env /dynamic/private';
 import type { evidence } from '$lib/server/db/schema-postgres';
 import type { db } from '$lib/server/db/client.js';
 import type { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types ';
+import type { RequestHandler } from './$types .js';
 
 const FASTAPI_BASE_URL = env.FASTAPI_BASE_URL || 'http://localhost:8005';
 

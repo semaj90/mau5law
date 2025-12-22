@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Ollama Integration Service
  * Handles communication with local Ollama instance for Gemma model
  */

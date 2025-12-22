@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
   import type { createEventDispatcher  } from 'svelte';

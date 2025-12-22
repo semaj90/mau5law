@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot use keyword 'await' outside an async function
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Cannot use keyword 'await' outside an async function
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
  import DocumentThumbnailTray from '$lib/components/dashboard/DocumentThumbnailTray.svelte';
  import FallbackAlert from '$lib/components/dashboard/FallbackAlert.svelte';

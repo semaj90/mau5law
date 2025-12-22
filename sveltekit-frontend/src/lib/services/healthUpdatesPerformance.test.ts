@@ -17,7 +17,7 @@ import {
  getMetrics,
  resetMetrics,
  getMetricsSummary,
-} from './healthUpdatesPerformance';
+} from './healthUpdatesPerformance.js';
 
 describe('Phase 10.6: Performance Monitoring', () => {
  beforeEach(() => {

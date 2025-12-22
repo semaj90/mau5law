@@ -3,15 +3,15 @@
   import { MemoryPalaceScene } from '$lib/memory-palace/MemoryPalaceScene';
   import { onDestroy, onMount } from 'svelte';
 
-  let container: HTMLDivElement;
+  let container: HTMLDivElement = $state();
   let scene: MemoryPalaceScene | null = null;
-  let query = '';
-  let loading = false;
-  let chunks: any[] = [];
-  let alignment: any = null;
-  let reasoning: string | null = null;
-  let timeline: any[] = [];
-  let selectedChunk: any = null;
+  let query = $state('');
+  let loading = $state(false);
+  let chunks: any[] = $state([]);
+  let alignment: any = $state(null);
+  let reasoning: string | null = $state(null);
+  let timeline: any[] = $state([]);
+  let selectedChunk: any = $state(null);
 
   onMount(async () => {
     scene = new MemoryPalaceScene(container);

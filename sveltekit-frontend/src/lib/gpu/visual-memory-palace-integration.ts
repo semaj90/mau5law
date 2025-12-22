@@ -1,4 +1,4 @@
-import { topKSimilar } from './webgl-shader-cache';
+import { topKSimilar } from './webgl-shader-cache.js';
 
 export interface PalaceNode {
  id: string;

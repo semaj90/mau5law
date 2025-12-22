@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { createONNXService } from '$lib/server/onnx';
 
 // ONNX Runtime Inference API

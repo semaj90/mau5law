@@ -1,4 +1,4 @@
-﻿/* * Lightweight AdvancedSimilarityEngine implementation * Provides performSimilaritySearch used by unified evidence analysis route. * This is a mock / placeholder; replace with real vector DB + embedding logic. */ export interface PerformSimilaritySearchArgs { query: string, evidenceIds: string[], algorithms: string[], clustering?: boolean; threshold?: number; // 0..1 }
+/* * Lightweight AdvancedSimilarityEngine implementation * Provides performSimilaritySearch used by unified evidence analysis route. * This is a mock / placeholder; replace with real vector DB + embedding logic. */ export interface PerformSimilaritySearchArgs { query: string, evidenceIds: string[], algorithms: string[], clustering?: boolean; threshold?: number; // 0..1 }
 interface ClusterResult { evidenceIds: string[], coherenceScore: number; // 0..1 themes: string[]}
 interface SimilaritySearchResult { clusters?: ClusterResult[]; algorithms: string[], totalEvidence: number, timings: { totalMs: number;
 }}

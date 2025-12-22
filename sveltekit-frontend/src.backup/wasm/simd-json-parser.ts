@@ -1,4 +1,4 @@
-﻿// WebAssembly SIMD-accelerated JSON parser for browser
+// WebAssembly SIMD-accelerated JSON parser for browser
 // Compiles to WASM for browser-side legal document processing
 // Legal document structure for WASM processing
 export class LegalDocumentWASM {

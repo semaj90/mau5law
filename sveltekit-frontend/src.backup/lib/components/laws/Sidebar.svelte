@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
 
   interface Title {
     id: string;
@@ -38,7 +38,7 @@
   }
 
   function isActive(titleId: string, sectionId: string): boolean {
-    return $page.params.title === titleId && $page.params.section === sectionId;
+    return page.params.title === titleId && page.params.section === sectionId;
   }
 </script>
 

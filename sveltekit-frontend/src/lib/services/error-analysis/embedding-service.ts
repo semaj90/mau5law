@@ -4,8 +4,8 @@
  * Stores embeddings in memory for clustering
  */
 
-import { BaseService } from './base-service';
-import type { Error, Embedding, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Error, Embedding, ServiceConfig } from './types.js';
 
 export interface IEmbeddingService {
  generateEmbeddings(errors: Error[]): Promise<Embedding[]>;

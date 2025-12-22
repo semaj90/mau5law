@@ -3,8 +3,8 @@
 	import LawSearchPanel from '$lib/components/laws/LawSearchPanel.svelte';
 	import MiniChatLegal from '$lib/components/laws/MiniChatLegal.svelte';
 
-	let selectedLaw: any = null;
-	let citations: any[] = [];
+	let selectedLaw: any = $state(null);
+	let citations: any[] = $state([]);
 	let reranked: any[] = [];
 	let loading = false;
 

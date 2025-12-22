@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { evidence } from '$lib/server/db/schema';
 import { error, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
  // Only authenticated users can claim

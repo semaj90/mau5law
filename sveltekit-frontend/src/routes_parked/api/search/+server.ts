@@ -5,7 +5,7 @@
  * Attaches user_id from session/locals if available
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const BACKEND_BASE = process.env.BACKEND_BASE ?? 'http://localhost:8000';
 

@@ -1,4 +1,4 @@
-﻿/** * Accessibility-First Svelte Actions * Clean separation of logic, presentation, and accessibility concerns * Complements the decoupled architecture pattern */ // removed unused imports // Action parameter types
+/** * Accessibility-First Svelte Actions * Clean separation of logic, presentation, and accessibility concerns * Complements the decoupled architecture pattern */ // removed unused imports // Action parameter types
 export interface AccessibleClickParams {
   handler: (_event: Event) => void;
   label?: string;

@@ -1,4 +1,4 @@
-﻿// Graph Worker - TinyGo WASM + IndexedDB + Background Refresh
+// Graph Worker - TinyGo WASM + IndexedDB + Background Refresh
 // Implements the recommended runtime flow with instant cached results
 class GraphWorker {
     constructor() {

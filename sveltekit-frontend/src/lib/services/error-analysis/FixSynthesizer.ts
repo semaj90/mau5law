@@ -15,8 +15,8 @@
  *   if (valid) await synthesizer.applyFix(fix);
  */
 
-import type { ErrorReport, FixStrategy, SimilarError, ValidationRule } from './types';
-import { getOllamaService } from './OllamaService';
+import type { ErrorReport, FixStrategy, SimilarError, ValidationRule } from './types.js';
+import { getOllamaService } from './OllamaService.js';
 
 export interface FixSynthesizerConfig {
 	maxRetries: number;

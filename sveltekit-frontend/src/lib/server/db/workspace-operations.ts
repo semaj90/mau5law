@@ -4,7 +4,7 @@
  * Manages workspaces, evidence, statutes, notes, and citations
  */
 
-import { db } from './index';
+import { db } from './index.js';
 import {
  workspaces,
  workspaceSessions,
@@ -15,7 +15,7 @@ import {
  ragMessages,
  evidence,
  statutes,
-} from './schema-postgres';
+} from './schema-postgres.js';
 import { eq, desc } from 'drizzle-orm';
 
 export interface WorkspaceContext {

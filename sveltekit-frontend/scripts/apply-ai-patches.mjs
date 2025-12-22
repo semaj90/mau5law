@@ -32,13 +32,14 @@ async function getSuggestions(riskLevel = null) {
     SELECT
       id,
       cluster_id,
-      suggestion_type,
-      affected_files,
-      suggested_fix,
+      route_path,
+      summary,
+      patch,
       risk_level,
-      created_at
+      created_at,
+      source
     FROM error_suggestions
-    WHERE applied_at IS NULL
+    WHERE applied = false
   `;
 
   if (riskLevel) {
@@ -59,18 +60,18 @@ async function getSuggestions(riskLevel = null) {
 
 async function applyPatch(suggestion) {
   console.log(`\n${'='.repeat(80)}`);
-  console.log(`📝 Suggestion #${suggestion.id}`);
-  console.log(`📂 Files: ${suggestion.affected_files.join(', ')}`);
-  console.log(`🎯 Type: ${suggestion.suggestion_type}`);
+  console.log(`📝 Suggestion #${suggestion.id.substring(0, 8)}...`);
+  console.log(`📂 Route: ${suggestion.route_path}`);
+  console.log(`📋 Summary: ${suggestion.summary}`);
   console.log(`⚠️  Risk: ${suggestion.risk_level}`);
   console.log(`${'='.repeat(80)}\n`);
 
   // Parse the JSON patch
   let patch;
   try {
-    patch = typeof suggestion.suggested_fix === 'string'
-      ? JSON.parse(suggestion.suggested_fix)
-      : suggestion.suggested_fix;
+    patch = typeof suggestion.patch === 'string'
+      ? JSON.parse(suggestion.patch)
+      : suggestion.patch;
   } catch (err) {
     console.error('❌ Failed to parse patch JSON:', err.message);
     return false;
@@ -150,7 +151,9 @@ async function applyPatch(suggestion) {
     // Mark as applied
     await sql`
       UPDATE error_suggestions
-      SET applied_at = NOW()
+      SET applied = true,
+          applied_at = NOW(),
+          updated_at = NOW()
       WHERE id = ${suggestion.id}
     `;
 

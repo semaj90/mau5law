@@ -6,7 +6,7 @@ import {
  enforceTableAccess,
  getAllowedTablesForFeature,
  validateDataAccess,
-} from './dataIsolation';
+} from './dataIsolation.js';
 
 describe('DataIsolationLayer', () => {
   beforeEach(async () => {

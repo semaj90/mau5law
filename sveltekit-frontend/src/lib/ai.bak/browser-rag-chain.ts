@@ -14,8 +14,8 @@
  * const answer = await rag.query('What is the legal precedent for...?');
  */
 
-import { BrowserGemma } from './browser-gemma';
-import { BrowserEmbeddings } from './browser-embeddings';
+import { BrowserGemma } from './browser-gemma.js';
+import { BrowserEmbeddings } from './browser-embeddings.js';
 import type { Document } from '@langchain/core/documents';
 import type { PromptTemplate } from '@langchain/core/prompts';
 

@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 /**
  * Server-side data loading for Phase 78 Error Details Page

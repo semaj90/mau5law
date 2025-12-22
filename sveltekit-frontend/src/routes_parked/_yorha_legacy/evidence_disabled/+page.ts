@@ -1,4 +1,4 @@
-import type { PageLoad } from './$types';
+import type { PageLoad } from './$types.js';
 
 export const load: PageLoad = async ({ fetch }) => {
  // Load evidence for case (replace 'CASE-001' with actual case ID from route)

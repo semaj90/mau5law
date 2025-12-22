@@ -1,5 +1,5 @@
-import { db } from './db';
-import { userTimeline } from './db/schema-timeline';
+import { db } from './db.js';
+import { userTimeline } from './db/schema-timeline.js';
 
 interface TimelineLogData {
  citation: string;

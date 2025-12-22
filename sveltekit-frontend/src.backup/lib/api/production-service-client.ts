@@ -1,4 +1,4 @@
-﻿// src/lib/api/production-service-client.ts
+// src/lib/api/production-service-client.ts
 /** * Production Service Client for Integration Testing * Simplified wrapper around the main production client for testing purposes */
 
 // Minimal ServiceResponse used by this module (replace or extend if you have a shared type)

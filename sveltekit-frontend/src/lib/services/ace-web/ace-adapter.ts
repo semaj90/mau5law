@@ -12,9 +12,9 @@
  * 7. Se LLM (Gemma3/Claude/Gemini)
  */
 
-import { AceContextService } from './ace-context-service';
-import { WebSearchService } from './web-search-service';
-import type { ContextBundle, ToolPlan } from './ace-context-service';
+import { AceContextService } from './ace-context-service.js';
+import { WebSearchService } from './web-search-service.js';
+import type { ContextBundle, ToolPlan } from './ace-context-service.js';
 
 export interface AceRequest {
   userRequest: string;

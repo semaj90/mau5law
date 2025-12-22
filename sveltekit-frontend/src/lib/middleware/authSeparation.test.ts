@@ -5,7 +5,7 @@ import {
  isRequestAuthenticated,
  getAuthResult,
  createAuthErrorResponse,
-} from './authSeparation';
+} from './authSeparation.js';
 
 describe('AuthSeparation', () => {
   beforeEach(async () => {

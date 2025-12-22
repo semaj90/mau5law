@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; import Card from '$lib/components/ui/card/Card.svelte'; import CardContent from '$lib/components/ui/card/CardContent.svelte'; import CardHeader from '$lib/components/ui/card/CardHeader.svelte'; import CardTitle from '$lib/components/ui/card/CardTitle.svelte'; import Button from '$lib/components/ui/button/Button.svelte'; // Types interface LegalStats { activeCases: number, documentsAnalyzed: number, citationsFound: number; complianceScore: number}

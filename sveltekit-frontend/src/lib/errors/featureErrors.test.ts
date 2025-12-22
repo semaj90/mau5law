@@ -10,7 +10,7 @@ import {
  createFeatureError,
  handleFeatureError,
  createErrorResponse,
-} from './featureErrors';
+} from './featureErrors.js';
 
 // Mock the feature logger
 vi.mock('../services/featureLogger', () => ({
@@ -20,7 +20,7 @@ vi.mock('../services/featureLogger', () => ({
  },
 }));
 
-import { featureLogger } from '../services/featureLogger';
+import { featureLogger } from '../services/featureLogger.js';
 
 describe('Feature Error Handlers', () => {
   beforeEach(async () => {

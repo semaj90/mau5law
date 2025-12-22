@@ -13,7 +13,7 @@
  */
 
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { generateEmbedding } from './embedding-service';
+import { generateEmbedding } from './embedding-service.js';
 
 // Initialize Qdrant client
 const qdrantClient = new QdrantClient({

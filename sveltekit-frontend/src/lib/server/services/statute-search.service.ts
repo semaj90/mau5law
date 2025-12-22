@@ -5,8 +5,8 @@
 
 import { db } from '$lib/server/db';
 import { redis } from '$lib/server/redis';
-import { ragService } from './rag.service';
-import { graphService } from './graph.service';
+import { ragService } from './rag.service.js';
+import { graphService } from './graph.service.js';
 
 export interface Statute {
  id: string;

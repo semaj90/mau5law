@@ -1,4 +1,4 @@
-﻿export class CognitiveRoutingOrchestrator {
+export class CognitiveRoutingOrchestrator {
   async processRoute(route, string, context: unknown) {
     console.log('ðŸ§  Cognitive routing orchestrator processing route: ', route);
     return { processed: true | route, context };

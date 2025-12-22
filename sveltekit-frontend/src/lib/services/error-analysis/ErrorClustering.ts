@@ -18,9 +18,9 @@ import type {
 	ClusterMetadata,
 	FixStrategy,
 	ErrorGroup
-} from './types';
-import { getOllamaService } from './OllamaService';
-import { getJSONLStorage } from './JSONLStorage';
+} from './types.js';
+import { getOllamaService } from './OllamaService.js';
+import { getJSONLStorage } from './JSONLStorage.js';
 
 export interface ClusteringConfig {
 	numClusters: number;

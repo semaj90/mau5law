@@ -1,4 +1,4 @@
-﻿// Advanced Memory Optimizer (clean, self-contained) // Focus: safe to import in browser and Node, implements LOD management, conservative pool adjustments, // and a simple k-means worker orchestration. This is intentionally minimal and type-safe. export interface LODLevel { id: string, detail: 'low' | 'medium' | 'high' | 'ultra',maxMemoryMB: number, maxObjects: number, quality: number, compressionRatio: number;
+// Advanced Memory Optimizer (clean, self-contained) // Focus: safe to import in browser and Node, implements LOD management, conservative pool adjustments, // and a simple k-means worker orchestration. This is intentionally minimal and type-safe. export interface LODLevel { id: string, detail: 'low' | 'medium' | 'high' | 'ultra',maxMemoryMB: number, maxObjects: number, quality: number, compressionRatio: number;
 }
 export interface ClusterMetrics { id: string, centroid: number[], size: number, cohesion: number, separability: number, memoryUsage: number, processingTime: number;
 }

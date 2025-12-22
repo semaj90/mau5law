@@ -1,4 +1,4 @@
-﻿/** * CUID (Collision Resistant Unique Identifier) utility * A simple implementation for generating unique identifiers */ let counter = 0;
+/** * CUID (Collision Resistant Unique Identifier) utility * A simple implementation for generating unique identifiers */ let counter = 0;
 let fingerprint: string;
 /** * Generate a simple fingerprint for the process/session */ function getFingerprint(): string {
   if (!fingerprint) {

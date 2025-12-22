@@ -100,4 +100,4 @@ export { default as AISearchBar } from './AISearchBar.svelte';
 export { default as AIAssistantTest } from './AIAssistantTest.svelte';
 
 // Export types
-export * from './types';
+export * from './types.js';

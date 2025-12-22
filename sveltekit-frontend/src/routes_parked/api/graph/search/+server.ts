@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import type { vectorSearchService } from '$lib/services/real-vector-search-service';
 
 export const POST: RequestHandler = async ({ request }) => {

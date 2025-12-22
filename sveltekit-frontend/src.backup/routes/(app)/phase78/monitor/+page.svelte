@@ -38,10 +38,10 @@
     }>;
   }
 
-  let stats: MonitoringStats | null = null;
-  let isLoading = true;
-  let error: string | null = null;
-  let lastUpdated: Date | null = null;
+  let stats: MonitoringStats | null = $state(null);
+  let isLoading = $state(true);
+  let error: string | null = $state(null);
+  let lastUpdated: Date | null = $state(null);
 
   async function loadStats() {
     isLoading = true;

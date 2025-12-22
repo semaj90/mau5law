@@ -1,4 +1,4 @@
-﻿declare module 'fabric';
+declare module 'fabric';
 
 interface MemoryInfo {
   totalJSHeapSize: number;

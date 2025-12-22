@@ -19,7 +19,7 @@ import {
  FILE_TYPES,
  PROCESSING_STATUSES,
  MAX_FILE_SIZE_BYTES,
-} from './evidence-validators';
+} from './evidence-validators.js';
 
 describe('Evidence Validators', () => {
   beforeEach(async () => {

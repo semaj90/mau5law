@@ -3,7 +3,7 @@
  * Uses GPU-accelerated embeddings and similarity computation
  */
 
-import type { gpuGraphLayout } from './graph-layout-gpu';
+import type { gpuGraphLayout } from './graph-layout-gpu.js';
 
 export interface EvidenceNode {
  id: string;

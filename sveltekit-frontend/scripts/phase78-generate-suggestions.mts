@@ -46,6 +46,14 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 // Initialize Redis
 const redis = new Redis(REDIS_URL);
 
+// Log Redis connection status
+redis.on('connect', () => {
+  if (isVerbose) console.log('✅ Redis connected');
+});
+redis.on('error', (err) => {
+  console.error('❌ Redis connection error:', err);
+});
+
 // Get database URL from environment
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
@@ -73,6 +81,7 @@ interface ClusterData {
   message: string;
   code: string;
   rawLogSnippet?: string | null;
+  filePath?: string | null;
   count: number;
 }
 
@@ -107,6 +116,7 @@ async function getClustersWithoutSuggestions(): Promise<ClusterData[]> {
       message: c.message,
       code: c.code,
       rawLogSnippet: c.rawLogSnippet,
+      filePath: c.filePath,
       count: c.count,
     }));
 
@@ -181,6 +191,43 @@ function extractPatch(llmText: string): { patch: string | null; why: string } {
   return { patch: null, why: "no_patch_found" };
 }
 
+function getFileContext(filePath: string, rawLogSnippet: string | null): string | null {
+  try {
+    // Handle relative paths
+    const absolutePath = path.isAbsolute(filePath) ? filePath : path.join(process.cwd(), filePath);
+
+    if (!fs.existsSync(absolutePath)) return null;
+
+    const content = fs.readFileSync(absolutePath, 'utf-8');
+    const lines = content.split('\n');
+
+    let lineNum = 0;
+    // Try to extract line number from rawLogSnippet
+    if (rawLogSnippet) {
+      const match = rawLogSnippet.match(/[:\(](\d+)[:,\)]/);
+      if (match) {
+        lineNum = parseInt(match[1], 10);
+      }
+    }
+
+    if (lineNum > 0) {
+      const start = Math.max(0, lineNum - 6);
+      const end = Math.min(lines.length, lineNum + 5);
+      const contextLines = lines.slice(start, end).map((l, i) => {
+        const currentLine = start + i + 1;
+        const marker = currentLine === lineNum ? '> ' : '  ';
+        return `${marker}${currentLine}: ${l}`;
+      });
+      return contextLines.join('\n');
+    }
+
+    // If no line number, return first 20 lines
+    return lines.slice(0, 20).map((l, i) => `  ${i + 1}: ${l}`).join('\n');
+  } catch (e) {
+    return null;
+  }
+}
+
 /**
  * Generate fix suggestion using LLM
  */
@@ -197,6 +244,14 @@ async function generateSuggestion(
       return JSON.parse(cached);
     }
 
+    let fileContext = '';
+    if (cluster.filePath) {
+      const context = getFileContext(cluster.filePath, cluster.rawLogSnippet || null);
+      if (context) {
+        fileContext = `\nFile Content (${cluster.filePath}):\n\`\`\`typescript\n${context}\n\`\`\`\n`;
+      }
+    }
+
     // Create prompt for LLM
     const prompt = `You are a TypeScript/JavaScript error analysis expert. Analyze this error and provide a detailed, actionable fix suggestion.
 
@@ -205,7 +260,8 @@ ${cluster.message}
 
 Error Code: ${cluster.code}
 
-${cluster.rawLogSnippet ? `Context:\n${cluster.rawLogSnippet}\n` : ''}
+${cluster.rawLogSnippet ? `Log Snippet:\n${cluster.rawLogSnippet}\n` : ''}
+${fileContext}
 
 Return format:
 

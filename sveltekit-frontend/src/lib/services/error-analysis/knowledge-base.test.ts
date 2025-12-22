@@ -8,8 +8,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { KnowledgeBase } from './knowledge-base';
-import type { ServiceConfig, Pattern } from './types';
+import { KnowledgeBase } from './knowledge-base.js';
+import type { ServiceConfig, Pattern } from './types.js';
 
 describe('KnowledgeBase - Unit Tests (Task 7.1)', () => {
   beforeEach(async () => {

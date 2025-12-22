@@ -132,7 +132,7 @@
  class:selected={newCollectionColor === color}
  style="background-color: {color}"
  title={color}
- />
+></button>
  {/each}
  </div>
  </div>

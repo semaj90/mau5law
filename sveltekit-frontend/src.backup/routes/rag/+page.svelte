@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</style>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</style>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
   import { FileText } from "lucide-svelte";;
   import { onMount } from 'svelte';;

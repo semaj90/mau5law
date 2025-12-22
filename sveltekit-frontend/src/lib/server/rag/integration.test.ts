@@ -3,10 +3,10 @@
 import { sql } from '$lib/server/db';
 import { cleanupTest, setupTest } from '$lib/test-utils/setup';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { qdrantSearch, qdrantUpsert } from './qdrant';
-import { rerankLegalAware } from './ranker';
-import { extractLegalTags } from './tag-extractor';
-import { getChunkTagIds, upsertAndLinkChunkTags } from './tag-persist';
+import { qdrantSearch, qdrantUpsert } from './qdrant.js';
+import { rerankLegalAware } from './ranker.js';
+import { extractLegalTags } from './tag-extractor.js';
+import { getChunkTagIds, upsertAndLinkChunkTags } from './tag-persist.js';
 
 describe('RAG System Integration Tests', () => {
  const testChunkId = crypto.randomUUID();

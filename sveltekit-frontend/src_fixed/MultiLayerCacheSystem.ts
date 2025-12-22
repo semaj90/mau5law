@@ -1,4 +1,4 @@
-﻿/** * ðŸš€ Multi-Layer Caching System for Legal AI * Implements Loki.js (memory), Fuse.js (search), IndexedDB (browser), Redis (server) */ import Loki from 'lokijs'; import type { Collection;
+/** * ðŸš€ Multi-Layer Caching System for Legal AI * Implements Loki.js (memory), Fuse.js (search), IndexedDB (browser), Redis (server) */ import Loki from 'lokijs'; import type { Collection;
 } from 'lokijs'; import Fuse from 'fuse.js'; interface CacheEntry<T = any> { key: string, value: T, timestamp: number, ttl: number, priority: number, accessCount: number, sizeBytes: number;
 }
 interface CacheLayer { name: string, maxSize: number, currentSize: number, hitRate: number, missRate: number;

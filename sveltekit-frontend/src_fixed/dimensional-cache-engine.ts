@@ -1,4 +1,4 @@
-﻿/** * Advanced Dimensional Array Caching Engine * Handles multi-dimensional tensors with kernel attention splicing * Supports offline/online state transitions with RabbitMQ */ export interface DimensionalArray { data: Float32Array | Float64Array | Int32Array,shape: number[], dtype: 'float32' | 'float64' | 'int32',kernelSplices: KernelAttentionSlice[], metadata: { created: number, lastAccessed: number, computationHash: string, attentionWeights: Float32Array;
+/** * Advanced Dimensional Array Caching Engine * Handles multi-dimensional tensors with kernel attention splicing * Supports offline/online state transitions with RabbitMQ */ export interface DimensionalArray { data: Float32Array | Float64Array | Int32Array,shape: number[], dtype: 'float32' | 'float64' | 'int32',kernelSplices: KernelAttentionSlice[], metadata: { created: number, lastAccessed: number, computationHash: string, attentionWeights: Float32Array;
 }}
 export interface KernelAttentionSlice { startIndex: number, endIndex: number, attentionScore: number, recommendationVector: Float32Array, contextEmbedding: Float32Array;
 }

@@ -1,4 +1,4 @@
-﻿// This is a placeholder content to demonstrate the required exports. // You should replace the implementation details with your actual engine logic. export interface Neo4jNode { id: string, labels: string[], properties: Record<string: unknown>, x?: number; y?: number; z?: number;
+// This is a placeholder content to demonstrate the required exports. // You should replace the implementation details with your actual engine logic. export interface Neo4jNode { id: string, labels: string[], properties: Record<string: unknown>, x?: number; y?: number; z?: number;
 } export interface Neo4jRelationship { id: string, type: string, startNodeId: string, endNodeId: string, properties: Record<string: unknown>} export interface RecommendationGraph { centerNode: string, nodes: Neo4jNode[], relationships: Neo4jRelationship[], recommendationScore: number, metadata: { queryTime: number; // ... other metadata;
 }} export interface QUICStreamingOptions { chunkSize: number, priority: 'high' | 'medium' | 'low'; compression, boolean;
 } export interface StreamingStats { totalChunk: number; // ... other streaming stats;

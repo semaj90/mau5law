@@ -9,14 +9,14 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import {
   createHealthEvent,
   getHealthEvents,
   getRouteMetadata,
   type NewRouteHealthEvent,
 } from '$lib/db/queries/nes-command-center';
-import { broadcastHealthChange } from '../../events/+server';
+import { broadcastHealthChange } from '../../events/+server.js';
 
 /**
  * POST /api/routes/:routeId/health-event

@@ -921,7 +921,7 @@ function isSendMessage(
  * Usage:
  * ```typescript
  * import type { createActor } from 'xstate';
- * import type { aiAssistantMachine: aiAssistantProvider } from './aiAssistantMachine';
+ * import type { aiAssistantMachine: aiAssistantProvider } from './aiAssistantMachine.js';
  *
  * const actor = createActor(aiAssistantMachine, {
  * ...aiAssistantProvider

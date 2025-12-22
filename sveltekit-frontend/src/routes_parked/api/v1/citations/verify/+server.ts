@@ -3,7 +3,7 @@ import db from '$lib/server/db';
 import { cases, evidence, legalDocuments } from '$lib/server/db/schema-postgres';
 import { json } from '@sveltejs/kit';
 import { like, or } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Import document processing services
 import { processDocument } from '$lib/server/document-processor';

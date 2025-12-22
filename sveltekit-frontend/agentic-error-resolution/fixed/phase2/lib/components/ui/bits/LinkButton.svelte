@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- LinkButton component for SvelteKit 2 - Clean SPA navigation with button styling -->
 <script lang="ts">
   import type { goto  } from '$app/navigation';

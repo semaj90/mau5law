@@ -5,7 +5,7 @@
   // For now, we'll assume it's a self-contained button.
 
   // Use $props() to capture all passed props in Svelte 5 runes mode
-  let {
+  let { children,
     class: className = '',
     variant = 'default',
     size = 'default',
@@ -60,5 +60,5 @@
 
 <!-- The button element itself, forwarding all props -->
 <button class={combinedClasses} {...rest}>
-  <slot />
+  {@render children?.()}
 </button>

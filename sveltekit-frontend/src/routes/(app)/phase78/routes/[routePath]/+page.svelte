@@ -1,5 +1,5 @@
 <script lang="ts">
- import { page } from '$app/stores';
+ import { page } from '$app/state';
  import ErrorEventsList from '$lib/components/phase78/ErrorEventsList.svelte';
  import SuggestionsList from '$lib/components/phase78/SuggestionsList.svelte';
  import type { ErrorEvent, ErrorSuggestion } from '$lib/server/db/schema/index.js';

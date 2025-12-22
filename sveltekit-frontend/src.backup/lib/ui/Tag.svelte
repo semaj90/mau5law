@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { color = 'default' } = $props<{
+  let { children, color = 'default' } = $props<{
     color?: 'default' | 'green' | 'red' | 'yellow' | 'blue';
   }>();
 </script>
@@ -15,5 +15,5 @@
           ? 'pill-blue'
           : 'tag'}
 >
-  <slot />
+  {@render children?.()}
 </span>

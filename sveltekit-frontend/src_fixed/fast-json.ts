@@ -1,4 +1,4 @@
-﻿import type { Case;
+import type { Case;
 } from '$lib/types';
 /** * High-Performance JSON Utilities for Legal AI * * Provides fast JSON parsing and stringification for: * - Legal document processing * - Case data serialization * - Real-time chat responses * - Vector search results */ // Type definitions export interface JSONOptions { replacer?: (_key: string, value: unknown) => any; space?, string | number;
 }

@@ -1,17 +1,17 @@
 // Prosecutor MVP tables (separate from existing schema)
-export * from '../schema-prosecutor';
+export * from '../schema-prosecutor.js';
 
 // Phase 78 (Cutlass) error tracking tables
-export * from './error_clusters';
-export * from './error_events';
-export * from './error_feedback';
-export * from './error_suggestions';
-export * from './error_timeline';
-export * from './route_error_patches';
-export * from './route_health';
+export * from './error_clusters.js';
+export * from './error_events.js';
+export * from './error_feedback.js';
+export * from './error_suggestions.js';
+export * from './error_timeline.js';
+export * from './route_error_patches.js';
+export * from './route_health.js';
 
 // Phase 9 (Error Brain Analysis) tables
-export * from './error_brain_analysis';
+export * from './error_brain_analysis.js';
 
 // Phase 27 (Error Brain Diffs) tables
-export * from './errorBrainDiffs';
+export * from './errorBrainDiffs.js';

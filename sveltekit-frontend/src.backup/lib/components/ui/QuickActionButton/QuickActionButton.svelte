@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { icon = null, variant = 'default', disabled = false, ariaLabel = undefined } = $props<{
+  let { children, icon = null, variant = 'default', disabled = false, ariaLabel = undefined } = $props<{
     icon?: string | null;
     variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
     disabled?: boolean;
@@ -11,7 +11,7 @@
   {#if icon}
     <span class={`icon ${icon}`} aria-hidden="true"></span>
   {/if}
-  <span class="label"><slot /></span>
+  <span class="label">{@render children?.()}</span>
 </button>
 
 <style>

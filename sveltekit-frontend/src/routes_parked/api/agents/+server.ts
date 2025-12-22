@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { executeAgentWithTools, executeAgentWithContext } from '$lib/agents/gemmaAgent';
 import { executeToolCall } from '$lib/agents/tools';
 import { checkOllamaHealth } from '$lib/ai/ollama-config';

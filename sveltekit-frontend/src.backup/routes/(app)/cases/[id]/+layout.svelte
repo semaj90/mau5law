@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const { data, children } = $props();
 	const { caseData } = data;
@@ -42,14 +42,14 @@
                hover:text-amber-300
                data-[active=true]:text-amber-300
                data-[active=true]:font-semibold"
-				data-active={$page.url.pathname.endsWith(`/${tab.slug}`)}
+				data-active={page.url.pathname.endsWith(`/${tab.slug}`)}
 			>
 				{tab.label}
 				<span
 					class="pointer-events-none absolute left-0 bottom-0 h-[2px] w-full
                  origin-left scale-x-0 data-[active=true]:scale-x-100
                  bg-amber-400 transition-transform"
-					data-active={$page.url.pathname.endsWith(`/${tab.slug}`)}
+					data-active={page.url.pathname.endsWith(`/${tab.slug}`)}
 				></span>
 			</a>
 		{/each}

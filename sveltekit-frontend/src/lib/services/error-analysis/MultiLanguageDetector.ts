@@ -11,7 +11,7 @@
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import type { ErrorReport } from './types';
+import type { ErrorReport } from './types.js';
 
 const execAsync = promisify(exec);
 

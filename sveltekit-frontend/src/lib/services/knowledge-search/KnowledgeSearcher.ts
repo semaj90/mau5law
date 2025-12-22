@@ -16,11 +16,11 @@ import type {
   SearchResult,
   FullDocument,
   CollectionStats
-} from './types';
-import { getQdrantKnowledgeStore } from './QdrantKnowledgeStore';
-import { getTfIdfRanker } from './TfIdfRanker';
-import { getMinioKnowledgeStore } from './MinioKnowledgeStore';
-import { getRedisCacheService } from './RedisCacheService';
+} from './types.js';
+import { getQdrantKnowledgeStore } from './QdrantKnowledgeStore.js';
+import { getTfIdfRanker } from './TfIdfRanker.js';
+import { getMinioKnowledgeStore } from './MinioKnowledgeStore.js';
+import { getRedisCacheService } from './RedisCacheService.js';
 
 export class KnowledgeSearcher {
   private qdrant = getQdrantKnowledgeStore();

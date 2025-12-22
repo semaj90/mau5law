@@ -1,9 +1,9 @@
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types.js';
 import type { Client as MinioClient } from 'minio'; // Corrected import and aliasing
 import type { Buffer } from 'buffer';
 import type { db } from '$lib/server/db/client'; // Corrected import path for db
 import * as enhancedEmbeddingSchema from '$lib/server/db/enhanced-embedding-schema'; // Import schema as a namespace
-import { DocumentUploadSchema, type UploadData } from './schema';
+import { DocumentUploadSchema, type UploadData } from './schema.js';
 import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {

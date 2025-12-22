@@ -1,4 +1,4 @@
-﻿node:internal/modules/cjs/loader:1404
+node:internal/modules/cjs/loader:1404
   throw err
   ^
 

@@ -3,8 +3,8 @@
  * Implements fallback strategies for service failures
  */
 
-import { cacheService } from './cache.service';
-import { errorHandlerService } from './error-handler.service';
+import { cacheService } from './cache.service.js';
+import { errorHandlerService } from './error-handler.service.js';
 
 export interface FallbackStrategy {
  name: string;

@@ -9,7 +9,7 @@ import { crewAIOrchestrationMachine } from '$lib/state/crewAIOrchestrationMachin
 import { documentUploadMachine } from '$lib/state/documentUploadMachine';
 import { evidenceProcessingMachine } from '$lib/state/evidenceProcessingMachine';
 import { legalDocumentProcessingMachine } from '$lib/state/legalDocumentProcessingMachine';
-import { machineContext, machineState, useMachine } from './xstateIntegration';
+import { machineContext, machineState, useMachine } from './xstateIntegration.js';
 
 /**
  * Document Upload Store

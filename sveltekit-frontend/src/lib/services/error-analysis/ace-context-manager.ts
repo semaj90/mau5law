@@ -6,8 +6,8 @@
  * Validates: Requirements 6.1, 6.2, 6.3, 6.4
  */
 
-import { BaseService } from './base-service';
-import type { ACEContext, Analysis, Diff, Metrics, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { ACEContext, Analysis, Diff, Metrics, ServiceConfig } from './types.js';
 
 export interface IAceContextManager {
  createContext(sessionId: string): Promise<ACEContext>;

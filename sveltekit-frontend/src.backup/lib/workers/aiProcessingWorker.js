@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AI Processing Worker
  * Handles AI tasks in separate threads for better performance
  */

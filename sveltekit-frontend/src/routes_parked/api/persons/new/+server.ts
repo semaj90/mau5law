@@ -1,7 +1,7 @@
 import { createValidatedPersonProfile, gemmaPersonClient } from '$lib/ai/gemmaClient';
 import { createPerson } from '$lib/db/persons';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
  try {

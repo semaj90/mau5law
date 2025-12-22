@@ -26,4 +26,4 @@ Test if the ACE Agent can generate a Svelte 5 component using Runes after loweri
 ## 🚀 Recommendations
 1. **Prompt Engineering**: Update `phase76-ace-prompt-engineer.mjs` to explicitly forbid Svelte 4 syntax when "Svelte 5" is requested.
 2. **Context Filtering**: Exclude "Error Patterns" from the prompt when the task is "Create" or "Generate".
-3. **Model Upgrade**: Consider using a model with better Svelte 5 knowledge (e.g., `claude-3-opus` or `gpt-4o`) for synthesis.
+3. **Model Upgrade**: Consider using a model with better Svelte 5 knowledge (e.g., `claude-4.5-opus` or `gpt5.2') for synthesis.

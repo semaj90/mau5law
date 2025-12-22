@@ -42,7 +42,8 @@ function parseErrorLine(line) {
       message,
       tool: 'ts',
       errorCode: errorCode.replace('TS', ''),
-      category
+      category,
+      rawLog: line
     };
   }
 
@@ -70,7 +71,39 @@ function parseErrorLine(line) {
       message,
       tool,
       errorCode,
-      category
+      category,
+      rawLog: line
+    };
+  }
+
+  // Try svelte-check machine format: TIMESTAMP LEVEL "FILE" LINE:COL "MESSAGE"
+  // 1766372799223 ERROR "src\\test-error.svelte" 2:9 "Type 'string' is not assignable to type 'number'."
+  const machinePattern = /^\d+\s+(ERROR|WARNING|HINT)\s+"(.+?)"\s+(\d+):(\d+)\s+"(.+)"$/;
+  const machineMatch = line.match(machinePattern);
+
+  if (machineMatch) {
+    const [, severity, filepathRaw, lineNum, colNum, message] = machineMatch;
+    const filepath = filepathRaw.replace(/\\\\/g, '/').replace(/\\/g, '/');
+
+    // Extract error code from message if present
+    let errorCode = null;
+    const codeMatch = message.match(/TS(\d+)/i);
+    if (codeMatch) {
+      errorCode = codeMatch[1];
+    }
+
+    const category = categorizeError(message, 'svelte-check');
+
+    return {
+      filepath,
+      lineNum: parseInt(lineNum, 10),
+      colNum: parseInt(colNum, 10),
+      severity: severity.toLowerCase(),
+      message,
+      tool: 'svelte-check',
+      errorCode,
+      category,
+      rawLog: line
     };
   }
 
@@ -145,11 +178,75 @@ function extractRouteId(filepath) {
 
 /**
  * Generate cluster ID from error characteristics
+ * STABLE ACROSS RUNS - does not include line/col/paths
  */
-function generateClusterId(tool, errorCode, category, message) {
-  // Use first 50 chars of message as part of ID
-  const msgHash = message.substring(0, 50).replace(/[^a-zA-Z0-9]/g, '_');
-  return `${tool}_${errorCode || category}_${msgHash}`;
+function generateClusterId(tool, errorCode, category, routeId) {
+  // Use only stable identifiers: tool, code, category, route
+  const code = errorCode || 'NONE';
+  const cat = category || 'other';
+  const route = routeId || '__non_route__';
+
+  // Create stable cluster ID that doesn't change when code moves
+  return `${tool}_${code}_${cat}_${route.replace(/[^a-zA-Z0-9]/g, '_')}`;
+}
+
+/**
+ * Generate human-readable cluster title from error characteristics
+ */
+function generateClusterTitle(tool, errorCode, category, message) {
+  // TypeScript error code descriptions
+  const tsCodeDescriptions = {
+    '1005': 'Missing Semicolon',
+    '1109': 'Expression Expected',
+    '1127': 'Invalid Character',
+    '1128': 'Declaration Expected',
+    '1131': 'Invalid Property Name',
+    '1136': 'Property Assignment Expected',
+    '1351': 'Cannot Be Used In Module',
+    '1357': 'Module Not Found',
+    '1389': 'Constructor Not Callable',
+    '1390': 'Invalid Type Arguments',
+    '1434': 'Cannot Find Module',
+    '1435': 'Unknown File Extension',
+    '1442': 'Invalid Import',
+    '2304': 'Cannot Find Name',
+    '2305': 'Module Has No Export',
+    '2307': 'Cannot Find Module',
+    '2322': 'Type Assignment Error',
+    '2339': 'Property Does Not Exist',
+    '2345': 'Argument Type Mismatch',
+    '2457': 'Variable Used Before Assigned',
+    '2531': 'Object Possibly Null',
+    '2571': 'Object Is Possibly Unknown',
+    '2769': 'No Overload Matches',
+    '7006': 'Parameter Implicitly Has Any',
+    '17004': 'Cannot Access This',
+  };
+
+  const categoryDescriptions = {
+    'type-mismatch': 'Type Mismatch',
+    'missing-import': 'Missing Import',
+    'missing-property': 'Missing Property',
+    'unused-code': 'Unused Code',
+    'deprecated': 'Deprecated API',
+    'svelte5-migration': 'Svelte 5 Migration',
+    'async-issue': 'Async/Promise Issue',
+    'null-safety': 'Null Safety Check',
+  };
+
+  // Try to get description from code first
+  if (errorCode && tsCodeDescriptions[errorCode]) {
+    return `TS${errorCode}: ${tsCodeDescriptions[errorCode]}`;
+  }
+
+  // Fall back to category description
+  if (category && categoryDescriptions[category]) {
+    return `${tool.toUpperCase()}: ${categoryDescriptions[category]}`;
+  }
+
+  // Extract first meaningful part of message (up to 50 chars)
+  const shortMessage = message.substring(0, 50).replace(/\s+/g, ' ').trim();
+  return `TS${errorCode || 'ERR'}: ${shortMessage}...`;
 }
 
 /**
@@ -162,11 +259,14 @@ async function upsertErrorCluster(cluster) {
     severity,
     message,
     affectedRoutes,
-    occurrenceCount
+    occurrenceCount,
+    filepath,
+    rawLogSnippet,
+    routeId
   } = cluster;
 
   const code = errorCode || 'UNKNOWN';
-  const clusterId = generateClusterId(tool, code, cluster.category || 'typing', message);
+  const clusterId = generateClusterId(tool, code, cluster.category || 'typing', routeId);
 
   // Filter out null route IDs (backup files)
   const validRoutes = Array.from(affectedRoutes).filter(r => r !== null);
@@ -178,10 +278,21 @@ async function upsertErrorCluster(cluster) {
   const primaryRouteId = finalRoutes[0];
 
   try {
+    // Check if cluster already exists
+    const existing = await sql`
+      SELECT cluster_id FROM error_cluster WHERE cluster_id = ${clusterId}
+    `;
+
+    const isUpdate = existing.length > 0;
+
+    // Generate human-readable title
+    const title = generateClusterTitle(tool, code, cluster.category, message);
+
     await sql`
       INSERT INTO error_cluster (
         route_id, tool, code, message, severity, count,
         cluster_id, error_code, category, affected_routes,
+        file_path, raw_log_snippet, title,
         first_seen_at, last_seen_at, updated_at
       )
       VALUES (
@@ -195,6 +306,9 @@ async function upsertErrorCluster(cluster) {
         ${code},
         ${cluster.category || 'typing'},
         ${JSON.stringify(finalRoutes)}::jsonb,
+        ${filepath},
+        ${rawLogSnippet},
+        ${title},
         NOW(),
         NOW(),
         NOW()
@@ -203,6 +317,8 @@ async function upsertErrorCluster(cluster) {
       SET count = error_cluster.count + EXCLUDED.count,
           last_seen_at = NOW(),
           updated_at = NOW(),
+          file_path = EXCLUDED.file_path,
+          raw_log_snippet = EXCLUDED.raw_log_snippet,
           affected_routes = (
             SELECT jsonb_agg(DISTINCT v)
             FROM (
@@ -222,7 +338,12 @@ async function upsertErrorCluster(cluster) {
             ) s
           )
     `;
-    return { action: 'inserted', count: 1, skipped: 0 };
+
+    return {
+      action: isUpdate ? 'updated' : 'inserted',
+      count: 1,
+      skipped: 0
+    };
   } catch (err) {
     console.error(`Error inserting cluster ${clusterId}:`, err.message);
     return { action: 'skipped', count: 0, skipped: 1 };
@@ -279,11 +400,14 @@ async function main() {
     const clusters = new Map();
 
     for (const error of errors) {
+      // Extract route first so we can use it for clustering
+      const routeId = extractRouteId(error.filepath) || '/__non_route__#internal';
+
       const clusterId = generateClusterId(
         error.tool,
         error.errorCode,
         error.category,
-        error.message
+        routeId
       );
 
       if (!clusters.has(clusterId)) {
@@ -294,6 +418,9 @@ async function main() {
           category: error.category,
           severity: error.severity,
           message: error.message,
+          filepath: error.filepath,
+          rawLogSnippet: error.rawLog,
+          routeId,
           affectedRoutes: new Set(),
           occurrenceCount: 0,
           firstSeenAt: new Date().toISOString(),
@@ -304,7 +431,6 @@ async function main() {
       const cluster = clusters.get(clusterId);
       cluster.occurrenceCount++;
 
-      const routeId = extractRouteId(error.filepath);
       if (routeId) {
         cluster.affectedRoutes.add(routeId);
       }

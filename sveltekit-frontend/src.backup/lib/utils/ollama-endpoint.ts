@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Centralized utility to get the Ollama API endpoint.
  * Prioritizes Docker service names from environment variables,
  * with a localhost fallback for local development without Docker Compose.

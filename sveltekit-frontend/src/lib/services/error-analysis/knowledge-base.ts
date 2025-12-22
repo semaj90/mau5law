@@ -4,8 +4,8 @@
  * Implements similarity scoring and metadata filtering
  */
 
-import { BaseService } from './base-service';
-import type { Pattern, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Pattern, ServiceConfig } from './types.js';
 
 export interface IKnowledgeBase {
  storePattern(pattern: Pattern): Promise<void>;

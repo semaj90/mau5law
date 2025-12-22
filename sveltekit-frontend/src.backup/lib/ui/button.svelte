@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { disabled = false, variant = 'primary', type = 'button', onclick } = $props<{
+  let { children, disabled = false, variant = 'primary', type = 'button', onclick } = $props<{
     disabled?: boolean;
     variant?: 'primary' | 'secondary' | 'danger';
     type?: 'button' | 'submit';
@@ -17,5 +17,5 @@
       ? 'btn-secondary'
       : 'btn-danger'}
 >
-  <slot />
+  {@render children?.()}
 </button>

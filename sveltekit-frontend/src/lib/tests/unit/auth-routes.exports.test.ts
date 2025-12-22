@@ -6,5 +6,5 @@ import type { describe, it, expect, vi } from 'vitest'; // Mocks for heavy modul
   afterEach(async () => {
     await cleanupTest();
   });
- it('exports GET handler from /api/auth/me', async () => { const mod = await import('../../../routes/api/auth/me/+server'); expect(typeof mod.GET).toBe('function')}); it('exports POST handler from /api/auth/logout', async () => { const mod = await import('../../../routes/api/auth/logout/+server');
+ it('exports GET handler from /api/auth/me', async () => { const mod = await import('../../../routes/api/auth/me/+server.js'); expect(typeof mod.GET).toBe('function')}); it('exports POST handler from /api/auth/logout', async () => { const mod = await import('../../../routes/api/auth/logout/+server.js');
 import { setupTest, cleanupTest } from '$lib/test-utils/setup'; expect(typeof mod.POST).toBe('function')})})

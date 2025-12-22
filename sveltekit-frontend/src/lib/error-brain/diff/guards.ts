@@ -5,8 +5,8 @@
 
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { MAX_PATCH_LINES } from '../config';
-import type { PatchCandidate } from '../types';
+import { MAX_PATCH_LINES } from '../config.js';
+import type { PatchCandidate } from '../types.js';
 
 export type GuardResult = { ok: true } | { ok: false; reason: string; code: string };
 

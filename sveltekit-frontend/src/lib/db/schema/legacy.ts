@@ -1,5 +1,5 @@
-import { pgTable, uuid, varchar, text, numeric, jsonb, integer, boolean, timestamp, serial, real, index, unique, bigint, foreignKey, vector, check, inet, uniqueIndex, interval, doublePrecision, bigserial, date, primaryKey, pgView, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
+import { bigint, bigserial, boolean, check, date, doublePrecision, foreignKey, index, inet, integer, interval, jsonb, numeric, pgEnum, pgTable, pgView, primaryKey, real, serial, text, timestamp, unique, uniqueIndex, uuid, varchar, vector } from "drizzle-orm/pg-core"
 
 export const caseStatus = pgEnum("case_status", ['open', 'in_progress', 'pending_review', 'closed', 'archived'])
 export const documentStatus = pgEnum("document_status", ['draft', 'under_review', 'approved', 'rejected', 'archived'])
@@ -1620,7 +1620,7 @@ export const errorFeedback = pgTable("error_feedback", {
 ]);
 
 export const errorClusters = pgTable("error_clusters", {
-	id: text().default(gen_random_uuid()).notNull(),
+	id: text().default(sql`gen_random_uuid()::text`).notNull(),
 	severity: text().default('medium').notNull(),
 	errorPattern: text("error_pattern").notNull(),
 	memberCount: integer("member_count").default(1).notNull(),
@@ -1960,7 +1960,7 @@ export const legalDocumentsJsonb = pgTable("legal_documents_jsonb", {
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	// TODO: failed to parse database type 'tsvector'
-	searchVector: unknown("search_vector").generatedAlwaysAs(sql`to_tsvector('english'::regconfig, ((title || ' '::text) || content))`),
+	// searchVector: unknown("search_vector").generatedAlwaysAs(sql`to_tsvector('english'::regconfig, ((title || ' '::text) || content))`),
 }, (table) => [
 	index("idx_legal_docs_confidentiality").using("btree", table.confidentialityLevel.asc().nullsLast().op("text_ops")),
 	index("idx_legal_docs_content_embedding").using("ivfflat", table.contentEmbedding.asc().nullsLast().op("vector_cosine_ops")).with({lists: "100"}),
@@ -2518,11 +2518,11 @@ export const chunkTagLinks = pgTable("chunk_tag_links", {
 	primaryKey({ columns: [table.chunkId, table.tagId], name: "chunk_tag_links_pkey"}),
 ]);
 export const vectorIndexStats = pgView("vector_index_stats", {	// TODO: failed to parse database type 'name'
-	schemaname: unknown("schemaname"),
+	schemaname: text("schemaname"),
 	// TODO: failed to parse database type 'name'
-	tablename: unknown("tablename"),
+	tablename: text("tablename"),
 	// TODO: failed to parse database type 'name'
-	indexname: unknown("indexname"),
+	indexname: text("indexname"),
 	indexSize: text("index_size"),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	scans: bigint({ mode: "number" }),

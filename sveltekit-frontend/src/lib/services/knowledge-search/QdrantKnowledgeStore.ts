@@ -17,7 +17,7 @@ import type {
   SearchFilters,
   CollectionStats,
   FullDocument
-} from './types';
+} from './types.js';
 
 export interface QdrantConfig {
   url: string;
