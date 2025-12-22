@@ -3,7 +3,8 @@
  * Task 16.1: Write unit tests for diff application
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffApplicator } from './diff-applicator';
 import type { Diff, ServiceConfig } from './types';
 
@@ -17,6 +18,14 @@ const mockConfig: ServiceConfig = {
 };
 
 describe('DiffApplicator', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let applicator: DiffApplicator;
 
  beforeEach(() => {

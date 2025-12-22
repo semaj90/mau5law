@@ -5,7 +5,8 @@
  * PHASE13: Comprehensive testing of AgentChat component
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 
 /**
  * Mock component state for testing
@@ -27,6 +28,14 @@ interface MockComponentState {
 }
 
 describe('AgentChat Component', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let componentState: MockComponentState;
 
  beforeEach(() => {

@@ -1,10 +1,19 @@
 // src/lib/server/rag/qdrant.test.ts
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { qdrantSearch, qdrantUpsert } from './qdrant';
 
 describe('Qdrant Operations', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  /**
  * **Feature: rag-enhancement-system, Property 4: Embedding Dimension Consistency**
  * For any search query, the embedding service should return exactly 768 dimensions,

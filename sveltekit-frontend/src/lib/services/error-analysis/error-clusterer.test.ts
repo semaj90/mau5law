@@ -5,12 +5,21 @@
  * Validates: Requirements 5.1, 5.2
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { ErrorClusterer } from './error-clusterer';
 import type { ServiceConfig, Error } from './types';
 
 describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let clusterer: ErrorClusterer;
  let config: ServiceConfig;
 
@@ -26,16 +35,6 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  clusterer = new ErrorClusterer(config);
 
  // Mock fetch for embedding generation
- vi.spyOn(global, 'fetch').mockResolvedValue({
- ok: true,
- json: async () => ({
- embeddings: [
- Array(384)
- .fill(0)
- .map(() => Math.random()),
- ],
- }),
- } as Response);
  });
 
  /**

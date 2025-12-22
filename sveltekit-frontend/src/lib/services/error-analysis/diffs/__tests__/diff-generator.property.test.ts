@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { unifiedDiffFromTexts } from '../unifiedDiff';
 
 describe('DiffGenerator / unified diff properties', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  it('produces deterministic output for same inputs', () => {
  const before = 'a\nb\nc\n';
  const after = 'a\nb\nC\n';

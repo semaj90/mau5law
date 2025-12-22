@@ -4,7 +4,8 @@
  * Requirements: 1.1, 1.2, 1.3, 1.4, 1.5
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  validateJurisdiction,
  validateFileType,
@@ -21,6 +22,14 @@ import {
 } from './evidence-validators';
 
 describe('Evidence Validators', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  describe('validateJurisdiction', () => {
  it('should accept valid jurisdictions', () => {
  for (const jurisdiction of JURISDICTIONS) {

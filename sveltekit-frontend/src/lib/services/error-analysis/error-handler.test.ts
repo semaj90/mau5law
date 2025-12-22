@@ -1,8 +1,17 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { ErrorHandler } from './error-handler';
 import fc from 'fast-check';
 
 describe('ErrorHandler', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let handler: ErrorHandler;
 
  beforeEach(() => {

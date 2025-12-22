@@ -5,12 +5,21 @@
  * Validates: Requirements 3.1, 3.3
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { ContextFormatter } from './context-formatter';
 import type { ServiceConfig, Error, Pattern } from './types';
 
 describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let formatter: ContextFormatter;
  let config: ServiceConfig;
 

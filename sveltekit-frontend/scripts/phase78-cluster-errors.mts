@@ -36,7 +36,7 @@ const isVerbose = args.includes('--verbose');
 
 // Configuration
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
-const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text';
+const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest';
 const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '32', 10);
 const CLUSTER_COUNT = parseInt(process.env.CLUSTER_COUNT || '10', 10);
 

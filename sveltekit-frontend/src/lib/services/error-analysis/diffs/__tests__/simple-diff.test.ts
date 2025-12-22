@@ -1,8 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffGenerator } from '../DiffGenerator';
 import { sha256, unifiedDiffFromTexts } from '../unifiedDiff';
 
 describe('Error Brain Diff Logic', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  it('should generate correct SHA256', () => {
  const hash = sha256('hello\nworld');
  expect(hash).toBe('26c60a61d01db5836ca70fefd44a6a016620413c8ef5f259a6c5612d4f79d3b8');

@@ -28,7 +28,7 @@ dotenv.config();
 
 // Configuration
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
-const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text';
+const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest';
 const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '10', 10);
 
 // Parse args
@@ -73,26 +73,22 @@ async function generateEmbedding(text: string): Promise<number[] | null> {
 }
 
 /**
- * Create embedding table if it doesn't exist
+ * Verify embedding table exists (created via SQL migration)
+ * Note: Table uses vector(768) to match embeddinggemma:latest output
  */
 async function ensureEmbeddingTable() {
-  await client`
-    CREATE TABLE IF NOT EXISTS error_cluster_embeddings (
-      cluster_id TEXT PRIMARY KEY REFERENCES error_clusters(id) ON DELETE CASCADE,
-      embedding vector(768),
-      model TEXT NOT NULL,
-      dimensions INTEGER NOT NULL,
-      updated_at TIMESTAMPTZ DEFAULT NOW()
+  // Check if table exists
+  const result = await client`
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables
+      WHERE table_schema = 'public'
+      AND table_name = 'error_cluster_embeddings'
     )
   `;
 
-  // Create index for cosine similarity search
-  await client`
-    CREATE INDEX IF NOT EXISTS idx_cluster_embeddings_cosine
-    ON error_cluster_embeddings
-    USING ivfflat (embedding vector_cosine_ops)
-    WITH (lists = 100)
-  `;
+  if (!result[0]?.exists) {
+    throw new Error('error_cluster_embeddings table not found. Run: psql -f scripts/create-phase78-embeddings-table.sql');
+  }
 
   console.log('✅ error_cluster_embeddings table ready');
 }/**

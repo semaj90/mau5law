@@ -3,12 +3,21 @@
  * Test WebSearchService, RAGCodebaseService, and Phase73Client
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { WebSearchService } from '../web-search';
 import { RAGCodebaseService, type CodebaseFile } from '../rag-codebase';
 import { Phase73Client } from '../phase73-client';
 
 describe('WebSearchService', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let service: WebSearchService;
 
  beforeEach(() => {

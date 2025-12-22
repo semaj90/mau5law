@@ -3,7 +3,8 @@
  * Comprehensive test suite for citation management functionality
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { CitationManagementService } from '../citation-management.service';
 import type { CitationSaveRequest, CitationUpdateRequest } from '$lib/types/citations';
 
@@ -22,6 +23,14 @@ vi.mock('../audit.service', () => ({
 }));
 
 describe('CitationManagementService', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let service: CitationManagementService;
  const userId = 'test-user-id';
  const citationId = 'test-citation-id';

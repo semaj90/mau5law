@@ -1,9 +1,18 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { ProgressTracker } from './progress-tracker';
 import type { ServiceConfig } from './types';
 
 describe('ProgressTracker', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let tracker: ProgressTracker;
  const config: ServiceConfig = {
  maxRetries: 3,

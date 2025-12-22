@@ -69,6 +69,9 @@
     "phase77:generate": "node scripts/phase77-generate-master.mjs",
     "phase77:merge": "powershell -Command \"Get-Content training-data/combined_training_data.jsonl, training-data/phase77-master-dataset.jsonl | Set-Content training-data/complete-training-dataset.jsonl\"",
     "phase78:pipeline": "node scripts/phase78-repair-pipeline.mjs",
+    "phase2:scan": "tsx scripts/phase2-route-scanner-clean.mts",
+    "phase2:scan:dry-run": "tsx scripts/phase2-route-scanner-clean.mts --dry-run",
+    "phase2:scan:verbose": "tsx scripts/phase2-route-scanner-clean.mts --verbose",
     "dev:docker": "cross-env HOST=0.0.0.0 PORT=5174 REDIS_URL=redis://redis:6379 DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db OLLAMA_URL=http://ollama:11434 vite dev --host 0.0.0.0 --port 5174",
     "simd:go:start": "cd ../go-services/simd-json-accelerator && set MINIO_SIMD_PORT=8096 && go run minio-simd-service.go",
     "simd:exe:start": "cmd /c scripts\\start-simd-service.bat",
@@ -668,7 +671,9 @@
     "phase76:knowledge:mcp": "node scripts/phase76-knowledge-mcp-server.mjs",
     "phase76:a2a": "node scripts/phase76-a2a-protocol.mjs",
     "phase76:full-stack": "concurrently -n \"MCP,Knowledge,A2A,Dev\" -c \"yellow,cyan,magenta,green\" \"npm run phase76:mcp\" \"npm run phase76:knowledge:mcp\" \"npm run phase76:a2a\" \"npm run dev\"",
-    "embed:resume": "node --expose-gc --max-old-space-size=8192 scripts/embed-errors-phase72.mjs --resume"
+    "embed:resume": "node --expose-gc --max-old-space-size=8192 scripts/embed-errors-phase72.mjs --resume",
+    "scan:routes": "node scripts/scan-and-populate-routes.mjs",
+    "import:errors": "node scripts/import-error-logs.mjs"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",

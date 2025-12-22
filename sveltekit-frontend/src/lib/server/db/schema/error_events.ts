@@ -1,5 +1,4 @@
 import { index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { errorClustersTable } from './error_clusters';
 
 /**
  * Error Events
@@ -25,11 +24,11 @@ export const errorEventsTable = pgTable(
  message: text('message').notNull(),
  stackTrace: text('stack_trace'),
 
- // Cluster ID from CUDA embedding+clustering (Phase 78)
- clusterId: text('cluster_id').references(() => errorClustersTable.id),
+    // Cluster ID from CUDA embedding+clustering (Phase 78)
+    clusterId: text('cluster_id').references(() => errorClusterTable.clusterId),
 
- createdAt: timestamp('created_at').defaultNow(),
- },
+    createdAt: timestamp('created_at').defaultNow(),
+  },
  (table) => {
  return {
  routePathIdx: index('idx_error_events_route').on(table.routePath),

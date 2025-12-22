@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import CitationDetail from '../CitationDetail.svelte';
 
@@ -6,6 +7,14 @@ import CitationDetail from '../CitationDetail.svelte';
 global.fetch = vi.fn();
 
 describe('CitationDetail Component', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  const mockCitation = {
  id: 'citation-123',
  statute_code: '18 U.S.C. § 1001',

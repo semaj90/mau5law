@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import LinkMetadataForm from '../LinkMetadataForm.svelte';
 
@@ -6,6 +7,14 @@ import LinkMetadataForm from '../LinkMetadataForm.svelte';
 global.fetch = vi.fn();
 
 describe('LinkMetadataForm Component', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  const mockLink = {
  id: 'link-123',
  case_id: 'case-456',

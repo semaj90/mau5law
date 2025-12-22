@@ -1,10 +1,11 @@
-import { superValidate } from 'sveltekit-superforms/server';
+import { superValidate } from 'sveltekit-superforms/server'
+import { zod } from 'sveltekit-superforms/adapters';;
 import { uploadSchema } from '$lib/schemas/upload';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
  // Initialize the form with the upload schema
- const form = await superValidate(uploadSchema);
+ const form = await superValidate(zod(uploadSchema));
 
  // Return the form data to the Svelte page
  return { form };
@@ -19,7 +20,7 @@ import type { message, type Actions } from '@sveltejs/kit';;
 export const actions: Actions = {
 	default: async ({ request }) => {
 		const formData = await request.formData();
-		const form = await superValidate(formData, uploadSchema);
+		const form = await superValidate(formData, zod(uploadSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });

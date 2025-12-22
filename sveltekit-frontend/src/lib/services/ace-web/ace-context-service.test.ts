@@ -3,7 +3,8 @@
  * Tests for RAG+KAG hybrid scoring and context bundle assembly
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { AceContextService } from './ace-context-service';
 import type { ContextBundle } from './ace-context-service';
 

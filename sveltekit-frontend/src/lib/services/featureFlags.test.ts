@@ -1,7 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { FeatureFlagManager, type FeatureFlags } from './featureFlags';
 
 describe('FeatureFlagManager', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let manager: FeatureFlagManager;
 
  beforeEach(() => {

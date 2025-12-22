@@ -3,7 +3,8 @@
  * Property 4: Diff Context Preservation
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { DiffGenerator } from './diff-generator';
 import type { Diff, Error, ServiceConfig } from './types';
@@ -18,6 +19,14 @@ const mockConfig: ServiceConfig = {
 };
 
 describe('DiffGenerator', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let generator: DiffGenerator;
 
  beforeEach(() => {

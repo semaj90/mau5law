@@ -1,11 +1,20 @@
 // src/lib/server/rag/ranker.test.ts
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { rerankLegalAware, createQdrantFilter } from './ranker';
 import type { QdrantHit } from './qdrant';
 
 describe('Legal-Aware Ranker', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  /**
  * **Feature: rag-enhancement-system, Property 5: Reranking Score Calculation**
  * For any search results with legal metadata, the reranking algorithm should apply

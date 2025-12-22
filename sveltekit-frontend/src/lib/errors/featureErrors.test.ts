@@ -2,7 +2,8 @@
  * Feature Error Handlers Tests
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  FeatureError,
  FeatureErrorHandler,
@@ -22,6 +23,14 @@ vi.mock('../services/featureLogger', () => ({
 import { featureLogger } from '../services/featureLogger';
 
 describe('Feature Error Handlers', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  beforeEach(() => {
  vi.clearAllMocks();
  });
