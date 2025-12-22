@@ -2,7 +2,8 @@
  * Unit Tests for GraphService
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { graphService } from '../graph.service';
 
 // Mock Neo4j driver
@@ -14,6 +15,14 @@ vi.mock('neo4j-driver', () => ({
 }));
 
 describe('GraphService', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  beforeEach(() => {
  vi.clearAllMocks();
  });

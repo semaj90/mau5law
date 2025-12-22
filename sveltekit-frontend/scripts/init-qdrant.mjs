@@ -1,30 +1,42 @@
-// Initialize Qdrant collection for RAG
+// Initialize Qdrant collections for Phase 72/76/78
 import { QdrantClient } from '@qdrant/js-client-rest';
 
-const client = new QdrantClient({ url: 'http://localhost:6333' });
-const collectionName = 'phase72_evidence_embeddings';
+const client = new QdrantClient({ url: 'http://127.0.0.1:6333' });
 
-async function initCollection() {
-	try {
-		// Check if collection exists
-		const collections = await client.getCollections();
-		const exists = collections.collections.some(c => c.name === collectionName);
+const collections = [
+  'phase72_evidence_embeddings',
+  'phase72_summaries',
+  'phase76_knowledge_base',
+  'phase72_error_patterns'
+];
 
-		if (!exists) {
-			console.log(`Creating collection: ${collectionName}`);
-			await client.createCollection(collectionName, {
-				vectors: {
-					size: 384, // embeddinggemma dimension
-					distance: 'Cosine'
-				}
-			});
-			console.log('Collection created successfully');
-		} else {
-			console.log(`Collection ${collectionName} already exists`);
-		}
-	} catch (error) {
-		console.error('Error initializing collection:', error);
-	}
+async function initCollections() {
+  console.log("🔌 Connecting to Qdrant at http://127.0.0.1:6333...\n");
+
+  for (const name of collections) {
+    try {
+      const collections = await client.getCollections();
+      const exists = collections.collections.some(c => c.name === name);
+
+      if (!exists) {
+        console.log(`✨ Creating collection: ${name}`);
+        // CRITICAL: Using 768 to match embeddinggemma:latest model
+        await client.createCollection(name, {
+          vectors: {
+            size: 768,
+            distance: 'Cosine'
+          }
+        });
+        console.log(`   ✅ Created successfully\n`);
+      } else {
+        console.log(`✅ Collection already exists: ${name}\n`);
+      }
+    } catch (error) {
+      console.error(`❌ Error processing ${name}:`, error.message);
+    }
+  }
+
+  console.log("✅ Qdrant initialization complete!");
 }
 
-initCollection();
+initCollections().catch(console.error);

@@ -3,7 +3,8 @@
  * Task 18.1: Write unit tests for diff storage
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffStorage } from './diff-storage';
 import type { Diff, ServiceConfig } from './types';
 
@@ -17,6 +18,14 @@ const mockConfig: ServiceConfig = {
 };
 
 describe('DiffStorage', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let storage: DiffStorage;
 
  beforeEach(async () => {

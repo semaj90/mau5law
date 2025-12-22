@@ -4,11 +4,20 @@
  * Validates: Requirements 1.1
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { ErrorExtractor } from './error-extractor';
 import type { Error, ServiceConfig } from './types';
 
 describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let extractor: ErrorExtractor;
  let config: ServiceConfig;
 

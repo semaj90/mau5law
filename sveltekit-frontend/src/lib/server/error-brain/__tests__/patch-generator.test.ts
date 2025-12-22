@@ -8,12 +8,21 @@ import { PatchGenerator } from '$lib/server/error-brain/patch-generator';
 import { sha256 } from '$lib/services/error-analysis/diffs/unifiedDiff';
 import fs from 'fs/promises';
 import path from 'path';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 
 const TEST_WORKSPACE = process.cwd();
 const TEST_FILE = path.join(TEST_WORKSPACE, 'test-patch-file.ts');
 
 describe('Error Brain Patch Integration', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  beforeAll(async () => {
  // Clean up any existing test file
  try {

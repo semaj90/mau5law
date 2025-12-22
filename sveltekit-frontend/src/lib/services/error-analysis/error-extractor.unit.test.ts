@@ -4,7 +4,8 @@
  * Tests: error extraction, normalization, and metadata extraction
  */
 
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { ErrorExtractor } from './error-extractor';
 import type { ServiceConfig } from './types';
 

@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { KnowledgeBaseLearning, type StoredFix, type FixResult } from './knowledge-base-learning';
 import type { ServiceConfig, Diff, Error as ErrorType } from './types';
@@ -13,6 +14,14 @@ const mockConfig: ServiceConfig = {
 };
 
 describe('KnowledgeBaseLearning', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let service: KnowledgeBaseLearning;
 
  beforeEach(() => {

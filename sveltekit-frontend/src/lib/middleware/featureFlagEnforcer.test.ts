@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  FeatureFlagEnforcer,
  isRequestAllowed,
@@ -8,6 +9,14 @@ import {
 import { featureFlagManager } from '../services/featureFlags';
 
 describe('FeatureFlagEnforcer', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  beforeEach(() => {
  vi.clearAllMocks();
  });

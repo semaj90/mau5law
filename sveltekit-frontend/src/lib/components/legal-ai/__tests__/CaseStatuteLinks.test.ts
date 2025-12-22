@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import CaseStatuteLinks from '../CaseStatuteLinks.svelte';
 
@@ -6,6 +7,14 @@ import CaseStatuteLinks from '../CaseStatuteLinks.svelte';
 global.fetch = vi.fn();
 
 describe('CaseStatuteLinks Component', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  const mockCaseId = 'case-123';
  const mockLinks = [
  {

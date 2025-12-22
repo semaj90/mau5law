@@ -34,6 +34,8 @@ services:
   gpu-workers:
     build: ./gpu-workers
     container_name: phase66-gpu-workers
+    entrypoint: []
+    command: ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
     deploy:
       resources:
         reservations:

@@ -5,7 +5,8 @@
  * Tests for performance monitoring and metrics collection
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  recordMessageLatency,
  recordBatchProcessingTime,

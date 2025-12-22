@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { KnowledgeBase } from './knowledge-base';
 import { ContextFormatter } from './context-formatter';
 import { ProgressTracker } from './progress-tracker';
@@ -17,6 +18,14 @@ const mockConfig: ServiceConfig = {
 };
 
 describe('Error Analysis Pipeline - Integration Tests', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let knowledgeBase: KnowledgeBase;
  let contextFormatter: ContextFormatter;
  let progressTracker: ProgressTracker;

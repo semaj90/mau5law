@@ -4,7 +4,8 @@ import { users } from '$lib/server/db/schema-postgres';
 import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import { superValidate } from 'sveltekit-superforms/server';
+import { superValidate } from 'sveltekit-superforms/server'
+import { zod } from 'sveltekit-superforms/adapters';;
 import type { Actions, PageServerLoad } from './$types';
 
 // Replace load to accept the full event and pass it to superValidate
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async (event) => {
 
  // Initialize SuperForms form for initial page render.
  // Use schema-only overload for initial render
- const form = await superValidate(loginSchema);
+ const form = await superValidate(zod(loginSchema));
 
  return { registrationSuccess, form };
 };

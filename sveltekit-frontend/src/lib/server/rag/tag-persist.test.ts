@@ -1,7 +1,8 @@
 // src/lib/server/rag/tag-persist.test.ts
 
 import fc from 'fast-check';
-import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest';
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { getChunkTagIds, getChunkTags, upsertAndLinkChunkTags } from './tag-persist';
 
 // Mock sql with in-memory state
@@ -95,6 +96,14 @@ let chunkCounter = 0;
 const generateMockChunkId = () => `chunk-${chunkCounter++}-${crypto.randomUUID()}`;
 
 describe('Tag Persistence', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
 	afterEach(async () => {
          const { sql } = await import('$lib/server/db');
          try {

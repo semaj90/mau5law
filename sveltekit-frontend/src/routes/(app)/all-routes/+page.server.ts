@@ -93,38 +93,28 @@ function astNodeToRouteNode(astNode: any): RouteNode {
 // Phase 6: Database Enrichment Functions
 // ─────────────────────────────────────────────────────────
 
+import { getAllEnrichedRouteMetadata } from '$lib/db/queries/nes-command-center';
+
 /**
- * 6.1: Query database for route metadata via API
- * Loads all non-archived route metadata from the database
+ * 6.1: Query database for route metadata directly
+ * Loads all non-archived route metadata from the database using Drizzle ORM
  */
 async function loadRouteMetadataFromDatabase(): Promise<Map<string, any>> {
- try {
- // Call API endpoint to get all route metadata
- const response = await fetch('/api/routes/metadata', {
- method: 'GET',
- headers: { 'Content-Type': 'application/json' },
- });
+  try {
+    // Query database directly using our query helpers
+    const enrichedRoutes = await getAllEnrichedRouteMetadata();
 
- if (!response.ok) {
- console.warn(`[Phase 6.1] API returned ${response.status}`);
- return new Map();
- }
+    const metadataMap = new Map();
+    for (const route of enrichedRoutes) {
+      metadataMap.set(route.routeId, route);
+    }
 
- const data = await response.json();
- const metadataMap = new Map();
-
- if (Array.isArray(data)) {
- for (const m of data) {
- metadataMap.set(m.routeId, m);
- }
- }
-
- console.log(`[Phase 6.1] Loaded ${metadataMap.size} route metadata records from database`);
- return metadataMap;
- } catch (error) {
- console.error('[Phase 6.1] Database query error:', error);
- return new Map();
- }
+    console.log(`[Phase 6.1] Loaded ${metadataMap.size} route metadata records from database`);
+    return metadataMap;
+  } catch (error) {
+    console.error('[Phase 6.1] Database query error:', error);
+    return new Map();
+  }
 }
 
 /**
@@ -132,150 +122,54 @@ async function loadRouteMetadataFromDatabase(): Promise<Map<string, any>> {
  * Combines database metadata with AST graph routes
  */
 function mergeRoutesWithDatabase(
- astRoutes: RouteNode[],
- dbMetadata: Map<string, any>
+  astRoutes: RouteNode[],
+  dbMetadata: Map<string, any>
 ): RouteNode[] {
- return astRoutes.map((route) => {
- const dbMeta = dbMetadata.get(route.id);
- if (dbMeta) {
- // Prefer database values for status, priority, badges
- return {
- ...route,
- status: dbMeta.status || route.status,
- tags: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags,
- };
- }
- return route;
- });
-}
+  return astRoutes.map((route) => {
+    const dbMeta = dbMetadata.get(route.id) || dbMetadata.get(route.path);
+    if (dbMeta) {
+      // Compute error state from health status or error count
+      let errorState: 'healthy' | 'flaky' | 'broken' = 'healthy';
+      if (dbMeta.healthStatus) {
+        errorState = dbMeta.healthStatus;
+      } else if (dbMeta.errorCount > 0) {
+        errorState = dbMeta.errorCount > 10 ? 'broken' : 'flaky';
+      }
 
-/**
- * 6.3: Enrich routes with error count information via API
- * Queries error_cluster table for each route
- */
-async function enrichWithErrorCounts(routes: RouteNode[]): Promise<RouteNode[]> {
- const enriched = [...routes];
-
- for (const route of enriched) {
- try {
- const response = await fetch(`/api/routes/${route.id}/errors?limit=100&resolved=false`, {
- method: 'GET',
- headers: { 'Content-Type': 'application/json' },
- });
-
- if (!response.ok) continue;
-
- const data = await response.json();
- const errors = Array.isArray(data) ? data : data.errors || [];
-
- const errorCount = errors.filter((e: any) => e.severity === 'error').length;
- const warningCount = errors.filter((e: any) => e.severity === 'warning').length;
- const infoCount = errors.filter((e: any) => e.severity === 'info').length;
-
- route.errorCount = errorCount;
- route.warningCount = warningCount;
- route.infoCount = infoCount;
-
- if (errors.length > 0) {
- const lastError = errors[0];
- route.lastErrorAt =
- lastError.createdAt?.toISOString?.() || new Date(lastError.createdAt).toISOString();
- route.lastErrorMessage = lastError.message;
- }
- } catch (error) {
- console.error(`[Phase 6.3] Error enriching route ${route.id}:`, error);
- }
- }
-
- return enriched;
-}
-
-/**
- * 6.4: Enrich routes with health status via API
- * Calculates health from error clusters
- */
-async function enrichWithHealthStatus(routes: RouteNode[]): Promise<RouteNode[]> {
- const enriched = [...routes];
-
- for (const route of enriched) {
- try {
- // Get unresolved errors to calculate health
- const response = await fetch(`/api/routes/${route.id}/errors?limit=100&resolved=false`, {
- method: 'GET',
- headers: { 'Content-Type': 'application/json' },
- });
-
- if (!response.ok) continue;
-
- const data = await response.json();
- const errors = Array.isArray(data) ? data : data.errors || [];
-
- // Calculate health: broken if errors, flaky if warnings, healthy otherwise
- const hasErrors = errors.some((e: any) => e.severity === 'error');
- const hasWarnings = errors.some((e: any) => e.severity === 'warning');
-
- if (hasErrors) {
- route.errorState = 'broken';
- route.status = 'error';
- } else if (hasWarnings) {
- route.errorState = 'flaky';
- route.status = 'warning';
- } else {
- route.errorState = 'healthy';
- route.status = 'ok';
- }
- } catch (error) {
- console.error(`[Phase 6.4] Error enriching health for route ${route.id}:`, error);
- }
- }
-
- return enriched;
-}
-
-/**
- * 6.5: Enrich routes with suggestion count via API
- * Queries error_brain_analysis table for each route
- */
-async function enrichWithSuggestionCounts(routes: RouteNode[]): Promise<RouteNode[]> {
- const enriched = [...routes];
-
- for (const route of enriched) {
- try {
- // This would call an API endpoint for error brain analyses
- // For now, set to 0 as the endpoint may not exist yet
- route.suggestionCount = 0;
- } catch (error) {
- console.error(`[Phase 6.5] Error enriching suggestions for route ${route.id}:`, error);
- }
- }
-
- return enriched;
+      // Merge database enrichment data with AST route data
+      return {
+        ...route,
+        status: dbMeta.status || route.status,
+        tags: dbMeta.badges ? [...(route.tags || []), ...dbMeta.badges] : route.tags,
+        errorCount: dbMeta.errorCount || 0,
+        warningCount: dbMeta.warningCount || 0,
+        infoCount: dbMeta.infoCount || 0,
+        suggestionCount: dbMeta.suggestionCount || 0,
+        lastErrorAt: dbMeta.lastHealthChange?.toISOString?.() || undefined,
+        lastErrorMessage: dbMeta.lastErrorMessage || undefined,
+        errorState,
+        patchSuccessRate: dbMeta.patchSuccessRate || undefined,
+      };
+    }
+    return route;
+  });
 }
 
 /**
  * Main enrichment orchestrator
- * Combines all enrichment steps
+ * Combines all enrichment steps using direct database queries
  */
 async function enrichRoutesWithDatabase(routes: RouteNode[]): Promise<RouteNode[]> {
- console.log('[Phase 6] Starting database enrichment...');
+  console.log('[Phase 6] Starting database enrichment...');
 
- // Step 1: Load metadata from database
- const dbMetadata = await loadRouteMetadataFromDatabase();
+  // Load enriched metadata from database (includes error counts, health status, suggestions)
+  const dbMetadata = await loadRouteMetadataFromDatabase();
 
- // Step 2: Merge with database metadata
- let enriched = mergeRoutesWithDatabase(routes, dbMetadata);
+  // Merge with database metadata
+  const enriched = mergeRoutesWithDatabase(routes, dbMetadata);
 
- // Step 3: Enrich with error counts
- enriched = await enrichWithErrorCounts(enriched);
-
- // Step 4: Enrich with health status
- enriched = await enrichWithHealthStatus(enriched);
-
- // Step 5: Enrich with suggestion counts
- enriched = await enrichWithSuggestionCounts(enriched);
-
- console.log('[Phase 6] Database enrichment complete');
- return enriched;
+  console.log('[Phase 6] Database enrichment complete');
+  return enriched;
 }
 
 // ─────────────────────────────────────────────────────────

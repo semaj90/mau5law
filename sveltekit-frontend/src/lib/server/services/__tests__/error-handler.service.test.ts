@@ -2,10 +2,19 @@
  * Unit tests for ErrorHandlerService
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { errorHandlerService } from '../error-handler.service';
 
 describe('ErrorHandlerService', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  beforeEach(() => {
  vi.clearAllMocks();
  });

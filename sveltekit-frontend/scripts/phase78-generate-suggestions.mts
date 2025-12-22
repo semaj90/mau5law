@@ -16,8 +16,10 @@
  */
 
 import dotenv from 'dotenv';
-import { eq, isNotNull } from 'drizzle-orm';
+import { isNotNull } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import fs from 'fs';
+import { Redis } from 'ioredis';
 import * as path from 'path';
 import postgres from 'postgres';
 
@@ -25,7 +27,7 @@ import postgres from 'postgres';
 dotenv.config();
 
 import { fileURLToPath } from 'url';
-import { errorEventsTable, errorSuggestionsTable } from '../src/lib/server/db/schema/index.js';
+import { errorClusterTable, errorSuggestionsTable } from '../src/lib/server/db/schema/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +41,10 @@ const isVerbose = args.includes('--verbose');
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
 const SUGGESTION_MODEL = process.env.SUGGESTION_MODEL || 'gemma3-legal:latest';
 const TIMEOUT = parseInt(process.env.SUGGESTION_TIMEOUT || '30000', 10);
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+
+// Initialize Redis
+const redis = new Redis(REDIS_URL);
 
 // Get database URL from environment
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -53,60 +59,69 @@ const client = postgres(DATABASE_URL, {
 });
 const db = drizzle(client);
 
-interface ErrorCluster {
+// Ensure logs directory exists
+const LOGS_DIR = path.join(__dirname, '../logs');
+if (!fs.existsSync(LOGS_DIR)) {
+  fs.mkdirSync(LOGS_DIR, { recursive: true });
+}
+const LOG_FILE_TXT = path.join(LOGS_DIR, 'suggestions.txt');
+const LOG_FILE_JSON = path.join(LOGS_DIR, 'suggestions.json');
+
+interface ClusterData {
   clusterId: string;
-  errors: Array<{
-    id: string;
-    message: string;
-    tsCode?: string;
-  }>;
+  routeId: string;
+  message: string;
+  code: string;
+  rawLogSnippet?: string | null;
+  count: number;
 }
 
 /**
- * Get clustered errors that don't have suggestions yet
+ * Get clusters that don't have suggestions yet
  */
-async function getClusteredErrorsWithoutSuggestions(): Promise<ErrorCluster[]> {
+async function getClustersWithoutSuggestions(): Promise<ClusterData[]> {
   if (isVerbose) {
-    console.log('📚 Fetching clustered errors without suggestions...');
+    console.log('📚 Fetching clusters without suggestions...');
   }
 
-  const errors = await db
+  // Get all active clusters
+  const clusters = await db
     .select()
-    .from(errorEventsTable)
-    .where(isNotNull(errorEventsTable.clusterId));
+    .from(errorClusterTable)
+    .where(isNotNull(errorClusterTable.clusterId));
 
-  // Group by cluster_id
-  const clusterMap = new Map<string, ErrorCluster>();
+  // Get existing suggestions
+  const existingSuggestions = await db
+    .select({ clusterId: errorSuggestionsTable.clusterId })
+    .from(errorSuggestionsTable)
+    .where(isNotNull(errorSuggestionsTable.clusterId));
 
-  for (const error of errors) {
-    const clusterId = error.clusterId!;
-    if (!clusterMap.has(clusterId)) {
-      clusterMap.set(clusterId, {
-        clusterId,
-        errors: [],
-      });
-    }
-    clusterMap.get(clusterId)!.errors.push({
-      id: error.id,
-      message: error.message,
-      tsCode: error.tsCode || undefined,
-    });
-  }
+  const existingClusterIds = new Set(existingSuggestions.map(s => s.clusterId));
 
-  const clusters = Array.from(clusterMap.values());
+  // Filter out clusters that already have suggestions
+  const clustersToProcess = clusters
+    .filter(c => c.clusterId && !existingClusterIds.has(c.clusterId))
+    .map(c => ({
+      clusterId: c.clusterId!,
+      routeId: c.routeId,
+      message: c.message,
+      code: c.code,
+      rawLogSnippet: c.rawLogSnippet,
+      count: c.count,
+    }));
 
   if (isVerbose) {
-    console.log(`   Found ${clusters.length} clusters with ${errors.length} total errors`);
+    console.log(`   Found ${clustersToProcess.length} clusters needing suggestions (out of ${clusters.length} total)`);
   }
 
-  return clusters;
+  return clustersToProcess;
 }
 
 /**
  * Assess risk level based on error characteristics
  */
-function assessRiskLevel(messages: string[], tsCode?: string): 'low' | 'medium' | 'high' {
-  const allText = messages.join(' ').toLowerCase();
+function assessRiskLevel(message: string, code?: string): 'low' | 'medium' | 'high' {
+  const text = message.toLowerCase();
 
   // High risk: Runtime, type safety, breaking changes
   const highRiskPatterns = [
@@ -121,7 +136,7 @@ function assessRiskLevel(messages: string[], tsCode?: string): 'low' | 'medium' 
     'TS2345', // Argument not assignable
   ];
 
-  if (highRiskPatterns.some(p => allText.includes(p) || tsCode?.includes(p))) {
+  if (highRiskPatterns.some(p => text.includes(p) || code?.includes(p))) {
     return 'high';
   }
 
@@ -135,7 +150,7 @@ function assessRiskLevel(messages: string[], tsCode?: string): 'low' | 'medium' 
     'TS1005', // ';' expected
   ];
 
-  if (mediumRiskPatterns.some(p => allText.includes(p) || tsCode?.includes(p))) {
+  if (mediumRiskPatterns.some(p => text.includes(p) || code?.includes(p))) {
     return 'medium';
   }
 
@@ -143,30 +158,68 @@ function assessRiskLevel(messages: string[], tsCode?: string): 'low' | 'medium' 
 }
 
 /**
+ * Extract patch from LLM response
+ */
+function extractPatch(llmText: string): { patch: string | null; why: string } {
+  const t = (llmText ?? "").trim();
+
+  // 1) Prefer fenced code blocks (typescript/ts/js)
+  const fence = t.match(/```(?:typescript|ts|javascript|js)?\s*([\s\S]*?)\s*```/i);
+  if (fence?.[1]) {
+    const patch = fence[1].trim();
+    if (patch.length) return { patch, why: "fenced_code_block" };
+  }
+
+  // 2) PATCH: ... until END PATCH or end of string (multiline)
+  const patchSection = t.match(/(?:^|\n)\s*PATCH:\s*([\s\S]*?)(?:\n\s*END\s*PATCH\b|$)/i);
+  if (patchSection?.[1]) {
+    const patch = patchSection[1].trim();
+    if (patch.length) return { patch, why: "patch_section" };
+  }
+
+  // 3) As a fallback, return null so we can store the raw text + debug
+  return { patch: null, why: "no_patch_found" };
+}
+
+/**
  * Generate fix suggestion using LLM
  */
 async function generateSuggestion(
-  clusterId: string,
-  errors: Array<{ message: string; tsCode?: string }>
+  cluster: ClusterData
 ): Promise<{ summary: string; patch: string; riskLevel: 'low' | 'medium' | 'high' } | null> {
+  const cacheKey = `suggestion:${cluster.clusterId}`;
+
   try {
+    // 1. Check Redis Cache
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      if (isVerbose) console.log(`   ⚡ Cache hit for cluster ${cluster.clusterId}`);
+      return JSON.parse(cached);
+    }
+
     // Create prompt for LLM
-    const uniqueMessages = Array.from(new Set(errors.map(e => e.message))).slice(0, 5);
-    const uniqueCodes = Array.from(new Set(errors.map(e => e.tsCode).filter(Boolean)));
+    const prompt = `You are a TypeScript/JavaScript error analysis expert. Analyze this error and provide a detailed, actionable fix suggestion.
 
-    const prompt = `
-You are a TypeScript/JavaScript error fixer. Analyze these errors and provide a concise fix suggestion.
+Error Message:
+${cluster.message}
 
-Error Messages:
-${uniqueMessages.map((m, i) => `${i + 1}. ${m}`).join('\n')}
+Error Code: ${cluster.code}
 
-${uniqueCodes.length > 0 ? `Error Codes: ${uniqueCodes.join(', ')}\n` : ''}
+${cluster.rawLogSnippet ? `Context:\n${cluster.rawLogSnippet}\n` : ''}
 
-Provide your response in this exact format:
-SUMMARY: [One-line summary of the fix, under 100 chars]
-PATCH: [Code fix or explanation in valid code format, under 200 chars]
+Return format:
 
-Be specific and actionable.
+PATCH code block
+
+RATIONALE 1–4 bullets
+
+RISK one of low/medium/high
+
+Requirements:
+- Return a complete patch in a fenced code block.
+- Do NOT truncate.
+- If you cannot produce a valid patch, explain why.
+- Include 3-5 lines of context before and after the change.
 `.trim();
 
     const response = await Promise.race([
@@ -191,25 +244,37 @@ Be specific and actionable.
     const data = await response.json() as { response?: string };
     const responseText = data.response || '';
 
-    // Parse response
-    const summaryMatch = responseText.match(/SUMMARY:\s*(.+?)(?=\n|$)/i);
-    const patchMatch = responseText.match(/PATCH:\s*(.+?)(?=\n|$)/is);
+    // Parse response from LLM
+    const { patch, why } = extractPatch(responseText);
 
-    const summary = summaryMatch?.[1]?.trim() || `Fix cluster ${clusterId}: ${uniqueMessages[0]?.substring(0, 80) || 'unknown error'}`;
-    const patch = patchMatch?.[1]?.trim() || 'See error messages for details.';
+    // Extract summary (RATIONALE)
+    const summaryMatch = responseText.match(/RATIONALE\s*([\s\S]*?)(?:\n\s*RISK|$)/i);
+    const summary = summaryMatch?.[1]?.trim().split('\n')[0].replace(/^[•-]\s*/, '') || `Fix cluster ${cluster.clusterId}`;
+
+    // Extract risk level
+    const riskMatch = responseText.match(/RISK\s*(low|medium|high)/i);
+    const riskLevel = (riskMatch?.[1]?.toLowerCase() as 'low' | 'medium' | 'high') || assessRiskLevel(cluster.message, cluster.code);
 
     if (isVerbose) {
-      console.log(`   ✅ Generated suggestion for cluster ${clusterId}`);
+      console.log(`   ✅ Generated suggestion for cluster ${cluster.clusterId}`);
+      console.log(`      Summary: ${summary.substring(0, 80)}...`);
+      console.log(`      Patch extraction: ${why}`);
+      console.log(`      Patch length: ${patch?.length || 0} chars`);
     }
 
-    return {
-      summary: summary.substring(0, 200),
-      patch: patch.substring(0, 500),
-      riskLevel: assessRiskLevel(uniqueMessages, uniqueCodes[0]),
+    const result = {
+      summary: summary.substring(0, 250),
+      patch: (patch || '// See error messages for details.').substring(0, 5000),
+      riskLevel,
     };
+
+    // Cache result in Redis (24 hours)
+    await redis.set(cacheKey, JSON.stringify(result), 'EX', 86400);
+
+    return result;
   } catch (err) {
     if (isVerbose) {
-      console.warn(`   ⚠️  Failed to generate suggestion for cluster ${clusterId}:`, err);
+      console.warn(`   ⚠️  Failed to generate suggestion for cluster ${cluster.clusterId}:`, err);
     }
     return null;
   }
@@ -222,10 +287,10 @@ async function generateSuggestions(): Promise<void> {
   console.log('🤖 Phase 78 - Generate LLM-Based Fix Suggestions\n');
 
   try {
-    const clusters = await getClusteredErrorsWithoutSuggestions();
+    const clusters = await getClustersWithoutSuggestions();
 
     if (clusters.length === 0) {
-      console.log('✅ No clustered errors without suggestions');
+      console.log('✅ No clusters without suggestions');
       return;
     }
 
@@ -234,7 +299,7 @@ async function generateSuggestions(): Promise<void> {
     if (isDryRun) {
       console.log('🔍 DRY RUN: Would generate suggestions for:');
       clusters.slice(0, 3).forEach(c => {
-        console.log(`   - Cluster ${c.clusterId}: ${c.errors.length} errors`);
+        console.log(`   - Cluster ${c.clusterId}: ${c.count} errors`);
       });
       if (clusters.length > 3) {
         console.log(`   ... and ${clusters.length - 3} more clusters`);
@@ -247,31 +312,39 @@ async function generateSuggestions(): Promise<void> {
 
     for (let i = 0; i < clusters.length; i++) {
       const cluster = clusters[i];
-      console.log(`⏳ Processing cluster ${i + 1}/${clusters.length} (${cluster.errors.length} errors)...`);
+      console.log(`⏳ Processing cluster ${i + 1}/${clusters.length} (${cluster.count} errors)...`);
 
-      const suggestion = await generateSuggestion(cluster.clusterId, cluster.errors);
+      const suggestion = await generateSuggestion(cluster);
 
       if (suggestion) {
-        // Insert suggestion for the first error in the cluster
-        const firstError = cluster.errors[0];
-        const routePath = await db
-          .select({ routePath: errorEventsTable.routePath })
-          .from(errorEventsTable)
-          .where(eq(errorEventsTable.id, firstError.id))
-          .limit(1);
+        await db.insert(errorSuggestionsTable).values({
+          routePath: cluster.routeId,
+          clusterId: cluster.clusterId,
+          summary: suggestion.summary,
+          patch: suggestion.patch,
+          riskLevel: suggestion.riskLevel,
+        });
 
-        if (routePath.length > 0) {
-          await db.insert(errorSuggestionsTable).values({
-            routePath: routePath[0].routePath,
-            errorEventId: firstError.id,
-            clusterId: cluster.clusterId,
-            summary: suggestion.summary,
-            patch: suggestion.patch,
-            riskLevel: suggestion.riskLevel,
-          });
+        // Log to files
+        const logEntry = {
+          timestamp: new Date().toISOString(),
+          clusterId: cluster.clusterId,
+          routeId: cluster.routeId,
+          ...suggestion
+        };
 
-          successCount++;
-        }
+        fs.appendFileSync(LOG_FILE_TXT,
+          `[${logEntry.timestamp}] Cluster: ${cluster.clusterId}\n` +
+          `Route: ${cluster.routeId}\n` +
+          `Summary: ${suggestion.summary}\n` +
+          `Risk: ${suggestion.riskLevel}\n` +
+          `Patch:\n${suggestion.patch}\n` +
+          `----------------------------------------\n`
+        );
+
+        fs.appendFileSync(LOG_FILE_JSON, JSON.stringify(logEntry) + '\n');
+
+        successCount++;
       } else {
         failCount++;
       }
@@ -293,7 +366,7 @@ async function generateSuggestions(): Promise<void> {
     // Risk distribution
     const riskCounts = { low: 0, medium: 0, high: 0 };
     for (const cluster of clusters) {
-      const level = assessRiskLevel(cluster.errors.map(e => e.message), cluster.errors[0].tsCode);
+      const level = assessRiskLevel(cluster.message, cluster.code);
       riskCounts[level]++;
     }
 
@@ -310,6 +383,7 @@ async function generateSuggestions(): Promise<void> {
     process.exit(1);
   } finally {
     await client.end();
+    redis.disconnect();
   }
 }
 

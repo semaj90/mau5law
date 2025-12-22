@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  DataIsolationLayer,
  canAccessTable,
@@ -8,6 +9,14 @@ import {
 } from './dataIsolation';
 
 describe('DataIsolationLayer', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let layer: DataIsolationLayer;
 
  beforeEach(() => {

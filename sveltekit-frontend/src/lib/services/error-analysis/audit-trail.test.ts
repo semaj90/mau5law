@@ -1,9 +1,18 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { AuditTrail, type AuditEntry } from './audit-trail';
 import type { ServiceConfig } from './types';
 
 describe('AuditTrail', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let auditTrail: AuditTrail;
  const config: ServiceConfig = {
  maxRetries: 3,

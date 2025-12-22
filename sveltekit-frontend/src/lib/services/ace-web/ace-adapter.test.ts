@@ -3,7 +3,8 @@
  * Validates integration with contextual web ingestion
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { AceAdapter } from './ace-adapter';
 import type { AceRequest } from './ace-adapter';
 

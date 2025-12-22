@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS "citations";
 CREATE TABLE "citations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"case_id" uuid,
@@ -14,6 +15,7 @@ CREATE TABLE "citations" (
 	"metadata" jsonb DEFAULT '{}'
 );
 --> statement-breakpoint
+DROP TABLE IF EXISTS "code_embeddings";
 CREATE TABLE "code_embeddings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"path" text NOT NULL,
@@ -27,6 +29,7 @@ CREATE TABLE "code_embeddings" (
 	CONSTRAINT "code_embeddings_path_unique" UNIQUE("path")
 );
 --> statement-breakpoint
+DROP TABLE IF EXISTS "document_processing_tasks";
 CREATE TABLE "document_processing_tasks" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"document_id" uuid NOT NULL,
@@ -46,6 +49,7 @@ CREATE TABLE "document_processing_tasks" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+DROP TABLE IF EXISTS "embedding_cache";
 CREATE TABLE "embedding_cache" (
 	"text_hash" text PRIMARY KEY NOT NULL,
 	"embedding" vector(1536) NOT NULL,

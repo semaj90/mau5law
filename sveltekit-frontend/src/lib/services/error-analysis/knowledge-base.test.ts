@@ -5,12 +5,21 @@
  * Validates: Requirements 10.1, 10.4
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { KnowledgeBase } from './knowledge-base';
 import type { ServiceConfig, Pattern } from './types';
 
 describe('KnowledgeBase - Unit Tests (Task 7.1)', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let kb: KnowledgeBase;
  let config: ServiceConfig;
 

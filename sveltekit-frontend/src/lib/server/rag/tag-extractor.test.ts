@@ -1,10 +1,19 @@
 // src/lib/server/rag/tag-extractor.test.ts
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { extractLegalTags, type ExtractedLegalTags } from './tag-extractor';
 
 describe('Legal Tag Extraction', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  /**
  * **Feature: rag-enhancement-system, Property 1: Legal Tag Extraction Consistency**
  * For any document text containing legal citations, the tag extractor should consistently

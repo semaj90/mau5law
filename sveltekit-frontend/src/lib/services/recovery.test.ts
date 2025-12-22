@@ -2,7 +2,8 @@
  * Recovery Strategy Tests
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  RecoveryStrategy,
  createRetryConfig,
@@ -22,6 +23,14 @@ vi.mock('./featureLogger', () => ({
 import { featureLogger } from './featureLogger';
 
 describe('Recovery Strategy', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  beforeEach(() => {
  vi.clearAllMocks();
  });

@@ -15,6 +15,8 @@ export const errorSuggestionsTable = pgTable(
  riskLevel: text('risk_level').default('medium'),
  source: text('source').default('synthesized'),
  createdAt: timestamp('created_at', { withTimezone: false }).defaultNow(),
+ errorEventId: uuid('error_event_id'),
+ clusterId: text('cluster_id'),
  },
  (table) => {
  return {

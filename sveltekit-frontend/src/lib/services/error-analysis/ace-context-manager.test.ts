@@ -5,11 +5,20 @@
  * Validates: Requirements 6.1, 6.2
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { AceContextManager } from './ace-context-manager';
 import type { ServiceConfig, Analysis, Diff } from './types';
 
 describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let manager: AceContextManager;
  let config: ServiceConfig;
 

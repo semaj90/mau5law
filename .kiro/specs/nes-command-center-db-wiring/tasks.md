@@ -20,6 +20,8 @@ This implementation plan converts the design into actionable coding tasks. Each 
 
 
 
+
+
 - [ ] 1.1 Implement Drizzle migration generator
   - Create `backend/db/migrations.ts` with Drizzle migration runner
   - Use `drizzle-kit` to generate migrations from schema
@@ -28,9 +30,13 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - Ensure migrations preserve existing data (no drops)
   - _Requirements: 6.1_
 
+
+
 - [ ] 1.2 Write property test for migration execution
   - **Property 15: Migration Table Creation**
   - **Validates: Requirements 6.1**
+
+
 
 - [ ] 1.3 Create database connection pool
   - Create `backend/db/pool.ts` with PostgreSQL connection pool using Drizzle
@@ -46,7 +52,9 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - Use Drizzle ORM query builder
   - _Requirements: 6.1_
 
-- [ ] 1.5 Write unit tests for database queries
+- [x] 1.5 Write unit tests for database queries
+
+
   - Create `backend/db/queries.test.ts` with Vitest
   - Test all query helper functions with test database
   - Test error handling and edge cases
@@ -218,52 +226,62 @@ This implementation plan converts the design into actionable coding tasks. Each 
 
 ## Phase 6: Server-Side Data Loading
 
-- [ ] 6. Update +page.server.ts to load from database
+
+- [x] 6. Update +page.server.ts to load from database
   - Modify `sveltekit-frontend/src/routes/(app)/all-routes/+page.server.ts`
   - Implement enrichRoutesWithDatabase() function
   - Load route_metadata from database
   - Merge with COMMAND_CENTER_MANIFEST
+
   - Enrich with error counts, health status, suggestion counts
   - Return enriched routes to client
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 6.1 Implement database query for route metadata
+- [x] 6.1 Implement database query for route metadata
   - Query route_metadata table for all non-archived routes
+
   - Handle database connection errors gracefully
   - Return empty array if database unavailable
   - _Requirements: 8.1_
 
-- [ ] 6.2 Implement route merge logic
+- [x] 6.2 Implement route merge logic
+
   - Merge database routes with COMMAND_CENTER_MANIFEST
   - Prefer database values for status, error_count, etc.
   - Keep manifest values for label, description, badges
   - Return complete route definitions
   - _Requirements: 8.2_
 
-- [ ] 6.3 Implement error count enrichment
+
+
+- [x] 6.3 Implement error count enrichment
   - For each route, query error_cluster for unresolved errors
   - Count errors by severity
   - Add errorCount, lastErrorAt, lastErrorMessage to route
   - _Requirements: 8.4, 8.5_
 
-- [ ] 6.4 Implement health status enrichment
+- [x] 6.4 Implement health status enrichment
   - For each route, query route_health_event for most recent status
   - If no event, compute from error_cluster
   - Add errorState (healthy/flaky/broken) to route
   - _Requirements: 8.3_
 
-- [ ] 6.5 Implement suggestion count enrichment
+- [x] 6.5 Implement suggestion count enrichment
   - For each route, query error_brain_analysis for count
   - Add suggestionCount to route
   - _Requirements: 8.6_
 
 - [ ] 6.6 Write property test for server-side enrichment
   - **Property 22: Server-Side Data Enrichment**
+
+
+
   - **Validates: Requirements 8.1, 8.2**
 
 - [ ] 6.7 Write property test for health status enrichment
   - **Property 23: Health Status Enrichment**
   - **Validates: Requirements 8.3**
+
 
 - [ ] 6.8 Write unit tests for server-side data loading
   - Create `sveltekit-frontend/src/routes/(app)/all-routes/+page.server.test.ts`
@@ -272,16 +290,20 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - Test error count and health status enrichment
   - _Requirements: 8.1-8.6_
 
+
 ---
 
 ## Phase 7: Client-Side Integration - Interaction Logging
 
+
 - [ ] 7. Add interaction logging to all-routes page
   - Modify `sveltekit-frontend/src/routes/(app)/all-routes/+page.svelte`
   - Create logInteraction() helper function
+
   - Log interactions on route view, navigate, analyze, patch_apply
   - Handle logging errors gracefully
   - _Requirements: 5.1, 5.2, 5.3, 5.4_
+
 
 - [ ] 7.1 Implement logInteraction() helper
   - Create async function that POSTs to /api/routes/:routeId/interactions
@@ -371,29 +393,34 @@ This implementation plan converts the design into actionable coding tasks. Each 
 
 
 
-## Phase 10: Real-Time Updates
+## Phase 10: Real-Time Updates (SSE)
 
-- [ ] 10. Implement real-time health status updates
-  - Create WebSocket endpoint for route health updates
+- [ ] 10. Implement real-time health status updates using Server-Sent Events
+  - Create SSE endpoint for route health updates
   - Broadcast health changes to connected clients
   - Update route cards in real-time without page reload
   - _Requirements: 9.4, 9.5_
 
-- [ ] 10.1 Create sse fallback to WebSocket endpoint
-  - Create `sveltekit-frontend/src/routes/api/routes/ws/+server.ts`
-  - Accept sse fallback to WebSocket connections
-  - Subscribe clients to route health updates
+- [ ] 10.1 Create SSE endpoint for health updates
+  - Create `sveltekit-frontend/src/routes/api/routes/events/+server.ts`
+  - Implement GET handler that returns EventSource stream
+  - Set headers: `Content-Type: text/event-stream`, `Cache-Control: no-cache`
+  - Keep connection alive with heartbeat every 30 seconds
   - _Requirements: 9.4_
 
-- [ ] 10.2 Broadcast health changes
-  - When route_health_event is created, broadcast to subscribed clients
-  - Include route_id, old_status, new_status
+- [ ] 10.2 Broadcast health changes via SSE
+  - When route_health_event is created, send SSE message to all connected clients
+  - Message format: `data: {"type":"health_change","routeId":"...","oldStatus":"...","newStatus":"..."}`
+  - Include route_id, old_status, new_status, timestamp
+  - Handle client disconnections gracefully
   - _Requirements: 9.4_
 
 - [ ] 10.3 Update UI on health change
-  - Listen for see fallback to WebSocket messages in all-routes page
-  - Update route card health indicator
+  - Create EventSource connection in all-routes page
+  - Listen for 'message' events from SSE endpoint
+  - Update route card health indicator in real-time
   - Update error count if changed
+  - Auto-reconnect on connection loss
   - Don't reload page
   - _Requirements: 9.5_
 
@@ -471,9 +498,9 @@ This implementation plan converts the design into actionable coding tasks. Each 
   - Verify interaction history is retrievable
   - _Requirements: 5.1-5.5_
 
-- [ ] 12.5 Test real-time health updates
+- [ ] 12.5 Test real-time health updates via SSE
   - Create error cluster for a route
-  - Verify WebSocket broadcasts health change
+  - Verify SSE broadcasts health change
   - Verify UI updates without page reload
   - _Requirements: 9.4, 9.5_
 

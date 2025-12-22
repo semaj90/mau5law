@@ -4,7 +4,8 @@
  * Validates: Requirements 11.1, 11.4
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import {
  classifyError,
  determineRecoveryStrategy,
@@ -19,6 +20,14 @@ import {
 } from '../error-recovery';
 
 describe('Error Handling - Property 3: Error Handling', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  /**
  * Property 3: Error Handling
  * For any tool execution that fails, the system SHALL return an error message without crashing.

@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffRepository } from '../DiffRepository';
 
 // Mock the db module
@@ -23,6 +24,14 @@ vi.mock('$lib/server/db/schema/errorBrainDiffs', () => ({
 }));
 
 describe('DiffRepository', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  it('should be defined', () => {
  const repo = new DiffRepository();
  expect(repo).toBeDefined();

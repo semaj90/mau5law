@@ -2,11 +2,20 @@
  * Unit tests for metrics state machine
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { createActor } from 'xstate';
 import { createMetricsMachine } from '../metrics';
 
 describe('Metrics State Machine', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  it('should start in idle state', () => {
  const machine = createMetricsMachine();
  const actor = createActor(machine);

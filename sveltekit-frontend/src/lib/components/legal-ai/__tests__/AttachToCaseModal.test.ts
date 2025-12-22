@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import AttachToCaseModal from '../AttachToCaseModal.svelte';
 
@@ -6,6 +7,14 @@ import AttachToCaseModal from '../AttachToCaseModal.svelte';
 global.fetch = vi.fn();
 
 describe('AttachToCaseModal Component', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  const mockCases = [
  {
  id: 'case-1',

@@ -1,11 +1,127 @@
 <script lang="ts">
 	// @ts-nocheck
+	import { onDestroy, onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	// ─────────────────────────────────────
 	// Props & Data
 	// ─────────────────────────────────────
 	const { data }: { data: PageData } = $props();
+
+	// Make routes reactive so SSE updates trigger re-renders
+	// Initialize from server data
+	let routes = $state<any[]>([]);
+
+	// Initialize routes from data on mount
+	$effect(() => {
+		if (data.routes) {
+			routes = data.routes;
+		}
+	});
+
+	// ─────────────────────────────────────
+	// Phase 10: Real-Time Updates (SSE)
+	// ─────────────────────────────────────
+
+	let eventSource: EventSource | null = null;
+
+	/**
+	 * Task 10.3: Update UI on health change
+	 * Create EventSource connection in all-routes page
+	 * Listen for 'message' events from SSE endpoint
+	 * Update route card health indicator in real-time
+	 */
+	onMount(() => {
+		// Connect to SSE endpoint
+		eventSource = new EventSource('/api/routes/events');
+
+		eventSource.addEventListener('message', (event) => {
+			try {
+				const data = JSON.parse(event.data);
+
+				if (data.type === 'connected') {
+					console.log('[SSE] Connected to real-time updates');
+				} else if (data.type === 'health_change') {
+					console.log(`[SSE] Health change: ${data.routeId} → ${data.newStatus}`);
+					updateRouteHealth(data.routeId, data.newStatus, data.reason);
+				} else if (data.type === 'error_count_change') {
+					console.log(`[SSE] Error count change: ${data.routeId} → ${data.errorCount} errors`);
+					updateRouteErrorCount(data.routeId, data.errorCount, data.warningCount, data.infoCount);
+				}
+			} catch (error) {
+				console.error('[SSE] Error parsing message:', error);
+			}
+		});
+
+		eventSource.addEventListener('error', (error) => {
+			console.error('[SSE] Connection error - will auto-reconnect:', error);
+		});
+
+		console.log('[SSE] EventSource connection established');
+	});
+
+	onDestroy(() => {
+		if (eventSource) {
+			eventSource.close();
+			console.log('[SSE] EventSource connection closed');
+		}
+	});
+
+	/**
+	 * Update route health status in real-time
+	 */
+	function updateRouteHealth(routeId: string, newStatus: string, reason?: string): void {
+		const routeIndex = routes.findIndex((r) => r.id === routeId);
+		if (routeIndex === -1) {
+			console.warn(`[SSE] Route ${routeId} not found in routes array`);
+			return;
+		}
+
+		// Map status to errorState
+		const errorState =
+			newStatus === 'healthy' ? 'healthy' : newStatus === 'flaky' ? 'flaky' : 'broken';
+
+		// Update route
+		routes[routeIndex] = {
+			...routes[routeIndex],
+			status: newStatus,
+			errorState: errorState
+		};
+
+		// Trigger reactivity
+		routes = routes;
+
+		console.log(`[SSE] Updated route ${routeId} health to ${newStatus}`);
+	}
+
+	/**
+	 * Update route error counts in real-time
+	 */
+	function updateRouteErrorCount(
+		routeId: string,
+		errorCount: number,
+		warningCount?: number,
+		infoCount?: number
+	): void {
+		const routeIndex = routes.findIndex((r) => r.id === routeId);
+		if (routeIndex === -1) {
+			console.warn(`[SSE] Route ${routeId} not found in routes array`);
+			return;
+		}
+
+		// Update route
+		routes[routeIndex] = {
+			...routes[routeIndex],
+			errorCount,
+			warningCount: warningCount || routes[routeIndex].warningCount,
+			infoCount: infoCount || routes[routeIndex].infoCount
+		};
+
+		// Trigger reactivity
+		routes = routes;
+
+		console.log(`[SSE] Updated route ${routeId} error count to ${errorCount}`);
+	}
 
 	// ─────────────────────────────────────
 	// Phase 7: Interaction Logging
@@ -91,11 +207,11 @@
 		<p><strong>Error summary:</strong> {data.errorSummary ? 'Loaded' : 'Not found'}</p>
 	</div>
 
-	{#if data.routes && data.routes.length > 0}
+	{#if routes && routes.length > 0}
 		<div class="routes-list">
-			<h2>Routes ({data.routes.length})</h2>
+			<h2>Routes ({routes.length})</h2>
 			<ul>
-				{#each data.routes.slice(0, 10) as route}
+				{#each routes.slice(0, 10) as route}
 					<li class="route-item" class:has-errors={route.errorCount && route.errorCount > 0}>
 						<button
 							class="route-info-btn"
@@ -152,8 +268,8 @@
 					</li>
 				{/each}
 			</ul>
-			{#if data.routes.length > 10}
-				<p>... and {data.routes.length - 10} more routes</p>
+			{#if routes.length > 10}
+				<p>... and {routes.length - 10} more routes</p>
 			{/if}
 		</div>
 	{:else}

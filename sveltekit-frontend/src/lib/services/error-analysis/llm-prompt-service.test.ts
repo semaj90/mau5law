@@ -5,11 +5,20 @@
  * Validates: Requirements 3.1, 3.3, 3.4
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { LLMPromptService } from './llm-prompt-service';
 import type { ServiceConfig, LLMResponse } from './types';
 
 describe('LLMPromptService - Unit Tests (Task 11.1)', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let service: LLMPromptService;
  let config: ServiceConfig;
 

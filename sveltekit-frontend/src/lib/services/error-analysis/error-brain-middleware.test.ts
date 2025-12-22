@@ -4,7 +4,8 @@
  * Property 7: Feature Flag Enforcement
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { ErrorBrainMiddleware } from './error-brain-middleware';
 import type { ServiceConfig } from './types';
 
@@ -18,6 +19,14 @@ const mockConfig: ServiceConfig = {
 };
 
 describe('ErrorBrainMiddleware', () => {
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    await cleanupTest();
+  });
+
  let middleware: ErrorBrainMiddleware;
 
  beforeEach(() => {
