@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
   import type { browser  } from '$app/environment';

@@ -1,4 +1,4 @@
-﻿export const sessionMachine = {
+export const sessionMachine = {
   id: 'sessionStub',
   initial: 'idle',
   states: { idle: {} },

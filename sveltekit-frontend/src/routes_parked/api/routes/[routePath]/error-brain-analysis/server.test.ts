@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import { POST } from './+server';
+import { POST } from './+server.js';
 
 // Mock the database
 vi.mock('$lib/server/db', () => ({
@@ -19,7 +19,7 @@ describe('POST /api/routes/:routePath/error-brain-analysis', () => {
  {
  title: 'Fix import',
  description: 'Change import statement',
- code: "import { Type } from './types';",
+ code: "import { Type } from './types.js';",
  },
  ],
  selected_suggestion_index: 0,

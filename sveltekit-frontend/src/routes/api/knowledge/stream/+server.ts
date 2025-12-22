@@ -8,7 +8,7 @@
  * Requirements: Task 13 - Real-time streaming
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getKnowledgeSearcher } from '$lib/services/knowledge-search';
 
 export const POST: RequestHandler = async ({ request }) => {

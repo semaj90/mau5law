@@ -8,7 +8,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getKnowledgeSearcher } from '$lib/services/knowledge-search';
 
 export const GET: RequestHandler = async () => {

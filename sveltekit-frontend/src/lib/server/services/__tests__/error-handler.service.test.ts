@@ -4,7 +4,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { errorHandlerService } from '../error-handler.service';
+import { errorHandlerService } from '../error-handler.service.js';
 
 describe('ErrorHandlerService', () => {
   beforeEach(async () => {

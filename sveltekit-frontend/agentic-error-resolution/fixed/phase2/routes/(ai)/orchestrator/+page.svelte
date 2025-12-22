@@ -282,7 +282,7 @@ Showcases the service worker-based AI orchestration system
                       </div>
                     {:else}
                       <!-- safe fallback if no icon is returned -->
-                      <div class="h-3 w-3" />
+                      <div class="h-3 w-3"></div>
                     {/if}
                     <span class="text-gray-600 dark:text-gray-400">{task.focus}</span>
                   </div>
@@ -385,7 +385,7 @@ Showcases the service worker-based AI orchestration system
                           <ProviderIcon class="h-4 w-4 text-blue-500" />
                         </div>
                       {:else}
-                        <div class="h-4 w-4" />
+                        <div class="h-4 w-4"></div>
                       {/if}
                       <span class="font-medium text-sm">
                         {result.task.providerId} - {result.task.model}

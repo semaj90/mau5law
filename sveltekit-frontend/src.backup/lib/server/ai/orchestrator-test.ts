@@ -1,4 +1,4 @@
-﻿import * as bridgeModule from './llm-orchestrator-bridge.js';
+import * as bridgeModule from './llm-orchestrator-bridge.js';
 
 /** Minimal local request type to avoid hard dependency on external named types. */
 type LLMBridgeRequest = {

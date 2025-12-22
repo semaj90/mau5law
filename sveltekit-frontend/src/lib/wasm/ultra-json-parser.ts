@@ -1,5 +1,5 @@
 /** * Ultra JSON Parser - Client-side SIMD JSON Acceleration* Integrates with server-side SIMD body parser for complete pipeline optimizationComplex experimental service with external dependencies * Integrates with server-side SIMD body parser for complete pipeline optimization * Complex experimental service with external dependencies * Optimized for legal AI document processing and RTX, 3060 Ti WebGPU acceleration */ import type { browser } from '$app/environment';
-import type { nesGPUBridge } from '../gpu/nes-gpu-memory-bridge';
+import type { nesGPUBridge } from '../gpu/nes-gpu-memory-bridge.js';
 import type { LegalDocument } from '../memory/nes-memory-architecture.js';
 import type { wasmClusteringService } from './clustering-wasm.js';
 import type { createWasmGpuService } from './gpu-wasm-init.js'; // Browser SIMD detection and capabilities export interface BrowserSIMDCapabilities { wasmSIMD: boolean, webgpuCompute: boolean, sharedArrayBuffer: boolean, atomics: boolean, bigInt64Array: boolean, supportLevel: 'none' | 'basic' | 'advanced' | 'optimal'}

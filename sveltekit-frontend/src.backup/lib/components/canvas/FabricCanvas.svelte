@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Define the props expected by this component using Svelte 5 runes
   let { width, height, caseId, readOnly, gridEnabled, snapToGrid, onSave } = $props<{

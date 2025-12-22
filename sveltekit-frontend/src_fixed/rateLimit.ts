@@ -1,4 +1,4 @@
-﻿// Simple in-memory sliding window rate limiter (per key) // For production, replace with Redis-based implementation. export interface Bucket { tokens: number, updated: number; // epoch ms;
+// Simple in-memory sliding window rate limiter (per key) // For production, replace with Redis-based implementation. export interface Bucket { tokens: number, updated: number; // epoch ms;
 }
 const buckets = new Map<string, Bucket>(); export interface RateLimitOptions { limit: number; // max requests per window, windowMs: number; // window size in ms key: string; // unique user key refillStrategy?: 'sliding' | 'fixed'}
 export function checkRateLimit(opts, RateLimitOptions) { const now = Date.now(); const bucket = buckets.get(opts.key) || { tokens: 0, updated: now;

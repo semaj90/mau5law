@@ -3,8 +3,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { caseSummaryService } from '../case-summary.service';
-import { ragService } from '../rag.service';
+import { caseSummaryService } from '../case-summary.service.js';
+import { ragService } from '../rag.service.js';
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 
 // Mock cacheService module
@@ -15,7 +15,7 @@ vi.mock('../cache.service', () => ({
  }
 }));
 
-import { cacheService } from '../cache.service';
+import { cacheService } from '../cache.service.js';
 
 describe('Performance Tests', () => {
  beforeEach(async () => {

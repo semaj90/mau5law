@@ -1,4 +1,4 @@
-﻿export const concurrentSearch = {
+export const concurrentSearch = {
   initialize: async () => {
     console.log('concurrentSearch initialized');
   },

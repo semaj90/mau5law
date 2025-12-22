@@ -2,9 +2,9 @@
 // CRUD operations with Drizzle ORM integration
 
 import { and, eq, ilike, or } from 'drizzle-orm';
-import type { PersonOfInterestData } from '../ai/prompts/persons';
-import { db } from '../server/db/drizzle';
-import { personsOfInterest } from '../server/db/schema';
+import type { PersonOfInterestData } from '../ai/prompts/persons.js';
+import { db } from '../server/db/drizzle.js';
+import { personsOfInterest } from '../server/db/schema.js';
 
 export interface CreatePersonInput {
  name: string;

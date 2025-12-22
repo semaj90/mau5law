@@ -12,14 +12,14 @@
     created_at: string;
   }
 
-  let collections: Collection[] = [];
-  let selectedCollection: Collection | null = null;
-  let isLoading = true;
-  let error: string | null = null;
-  let showCreateForm = false;
-  let newCollectionName = '';
-  let newCollectionDescription = '';
-  let isCreating = false;
+  let collections: Collection[] = $state([]);
+  let selectedCollection: Collection | null = $state(null);
+  let isLoading = $state(true);
+  let error: string | null = $state(null);
+  let showCreateForm = $state(false);
+  let newCollectionName = $state('');
+  let newCollectionDescription = $state('');
+  let isCreating = $state(false);
 
   onMount(async () => {
     await loadCollections();

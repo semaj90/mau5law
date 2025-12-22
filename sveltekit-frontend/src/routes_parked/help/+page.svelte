@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</icon>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</icon>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
  import Button from "$lib/components/ui/enhanced-bits.svelte";
  import { AlertTriangle } from "lucide-svelte";

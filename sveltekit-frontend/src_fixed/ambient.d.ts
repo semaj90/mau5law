@@ -1,4 +1,4 @@
-﻿// Minimal, forgiving ambient declarations to reduce noisy type errors during iterative fixes.
+// Minimal, forgiving ambient declarations to reduce noisy type errors during iterative fixes.
 // Add more specific typings progressively as files are stabilized.
 
 declare module '$lib/shims/xstate' {

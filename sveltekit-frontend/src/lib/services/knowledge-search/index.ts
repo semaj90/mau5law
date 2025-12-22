@@ -9,30 +9,30 @@
  */
 
 // Export all types
-export * from './types';
+export * from './types.js';
 
 // Export services
-export { KnowledgeIndexer, getKnowledgeIndexer } from './KnowledgeIndexer';
-export { TfIdfRanker, getTfIdfRanker } from './TfIdfRanker';
-export { QdrantKnowledgeStore, getQdrantKnowledgeStore } from './QdrantKnowledgeStore';
-export { PostgresKnowledgeStore, getPostgresKnowledgeStore } from './PostgresKnowledgeStore';
-export { MinioKnowledgeStore, getMinioKnowledgeStore } from './MinioKnowledgeStore';
-export { RedisCacheService, getRedisCacheService } from './RedisCacheService';
-export { KnowledgeSearcher, getKnowledgeSearcher } from './KnowledgeSearcher';
-export { TagExtractor, getTagExtractor } from './TagExtractor';
-export { ACPToolRegistry, getACPToolRegistry, executeACPTool, getACPTools, getACPToolsByCategory, getACPToolSchema } from './ACPToolRegistry';
+export { KnowledgeIndexer, getKnowledgeIndexer } from './KnowledgeIndexer.js';
+export { TfIdfRanker, getTfIdfRanker } from './TfIdfRanker.js';
+export { QdrantKnowledgeStore, getQdrantKnowledgeStore } from './QdrantKnowledgeStore.js';
+export { PostgresKnowledgeStore, getPostgresKnowledgeStore } from './PostgresKnowledgeStore.js';
+export { MinioKnowledgeStore, getMinioKnowledgeStore } from './MinioKnowledgeStore.js';
+export { RedisCacheService, getRedisCacheService } from './RedisCacheService.js';
+export { KnowledgeSearcher, getKnowledgeSearcher } from './KnowledgeSearcher.js';
+export { TagExtractor, getTagExtractor } from './TagExtractor.js';
+export { ACPToolRegistry, getACPToolRegistry, executeACPTool, getACPTools, getACPToolsByCategory, getACPToolSchema } from './ACPToolRegistry.js';
 
 // Services to be implemented:
-// export { QdrantKnowledgeStore } from './QdrantKnowledgeStore';
-// export { PostgresKnowledgeStore } from './PostgresKnowledgeStore';
-// export { MinioKnowledgeStore } from './MinioKnowledgeStore';
-// export { RedisCacheService } from './RedisCacheService';
-// export { TagExtractor } from './TagExtractor';
-// export { A2AProtocolHandler } from './A2AProtocolHandler';
-// export { ACPToolRegistry } from './ACPToolRegistry';
-// export { WebSearchAgent } from './WebSearchAgent';
-// export { RouteInferenceEngine } from './RouteInferenceEngine';
-// export { CodebaseIndexer } from './CodebaseIndexer';
-// export { ErrorCodeCorrelator } from './ErrorCodeCorrelator';
-// export { ContextualEngineeringService } from './ContextualEngineeringService';
-// export { ProductionValidator } from './ProductionValidator';
+// export { QdrantKnowledgeStore } from './QdrantKnowledgeStore.js';
+// export { PostgresKnowledgeStore } from './PostgresKnowledgeStore.js';
+// export { MinioKnowledgeStore } from './MinioKnowledgeStore.js';
+// export { RedisCacheService } from './RedisCacheService.js';
+// export { TagExtractor } from './TagExtractor.js';
+// export { A2AProtocolHandler } from './A2AProtocolHandler.js';
+// export { ACPToolRegistry } from './ACPToolRegistry.js';
+// export { WebSearchAgent } from './WebSearchAgent.js';
+// export { RouteInferenceEngine } from './RouteInferenceEngine.js';
+// export { CodebaseIndexer } from './CodebaseIndexer.js';
+// export { ErrorCodeCorrelator } from './ErrorCodeCorrelator.js';
+// export { ContextualEngineeringService } from './ContextualEngineeringService.js';
+// export { ProductionValidator } from './ProductionValidator.js';

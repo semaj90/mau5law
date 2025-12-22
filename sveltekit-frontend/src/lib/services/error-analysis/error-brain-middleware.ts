@@ -3,9 +3,9 @@
  * Enforces feature flag checks and namespace routing for error-brain endpoints
  */
 
-import { BaseService } from './base-service';
-import { FeatureFlags } from './feature-flags';
-import type { ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import { FeatureFlags } from './feature-flags.js';
+import type { ServiceConfig } from './types.js';
 
 export interface IErrorBrainMiddleware {
  checkErrorBrainEnabled(): boolean;

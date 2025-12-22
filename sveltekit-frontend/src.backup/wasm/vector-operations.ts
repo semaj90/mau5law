@@ -1,4 +1,4 @@
-﻿/**
+/**
  * High-Performance Vector Operations in AssemblyScript
  * Compiles to WebAssembly for client-side acceleration
  * Optimized for legal document embeddings and similarity search

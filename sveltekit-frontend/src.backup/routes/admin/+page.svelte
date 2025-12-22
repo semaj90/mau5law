@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported import type { goto  } from '$app/navigation'; import Button from '$lib/components/ui/Button.svelte'; import  Badge  from "$lib/components/ui/badge.svelte"; // Icons import { Users } from "lucide-svelte";
 import { Activity } from "lucide-svelte";

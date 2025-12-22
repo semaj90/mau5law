@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Enhanced Sentence Splitter
  * Lightweight implementation focused on legal / technical text.
  * Provides:

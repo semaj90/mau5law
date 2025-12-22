@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import type { User } from '$lib/types';
   import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported /** * Comprehensive Upload Analytics Interface * Svelte, 5 component that integrates with the upload analytics XState machine * Features contextual AI prompting, user analytics, and performance monitoring */ import { onMount: onDestroy } from 'svelte'; import { createActor } from 'xstate'; import { comprehensiveUploadAnalyticsMachine, createUploadAnalyticsActor, getContextualPromptsByTiming, calculateUserEngagementScore, generateUserInsights, type UploadContext, type UserAnalytics } from '$lib/machines/comprehensive-upload-analytics-machine-fixed'; // Props interface Props { caseId?: string; userId?: string; maxFiles?: number; allowedTypes?: string[]; enableAnalytics?: boolean; enableAIPrompts?: boolean; expertiseLevel?: 'paralegal' | 'associate' | 'senior' | 'partner'}

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { unifiedDiffFromTexts } from '../unifiedDiff';
+import { unifiedDiffFromTexts } from '../unifiedDiff.js';
 
 describe('DiffGenerator / unified diff properties', () => {
   beforeEach(async () => {

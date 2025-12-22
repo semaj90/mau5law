@@ -11,7 +11,7 @@ import type {
  boolean,
 } from 'drizzle-orm/pg-core';
 import type { vector } from 'pgvector/drizzle-orm';
-import type { users, cases, evidence, legalDocuments } from './schema-postgres';
+import type { users, cases, evidence, legalDocuments } from './schema-postgres.js';
 
 // Evidence Chain of Custody
 export const evidenceChainOfCustody = pgTable('evidence_chain_of_custody', {

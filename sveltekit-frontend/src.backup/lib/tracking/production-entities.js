@@ -1,4 +1,4 @@
-﻿// #memory #create_entities - Production tracking with MCP integration
+// #memory #create_entities - Production tracking with MCP integration
 console.log("Creating memory entities for production tracking...");
 const productionEntities = [ {
     name: "LegalAI_Production_Project", entityType: "project", observations: [

@@ -1,10 +1,5 @@
 import { index, integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-
-/**
- * Error Clusters
- * Groups similar errors from CUDA embedding + k-means clustering (Phase 78)
- * One cluster per unique error pattern; helps identify systemic issues
- */
+import { vector } from 'drizzle-orm/pg-vector';
 
 /**
  * Error Clusters
@@ -29,6 +24,9 @@ export const errorClusterTable = pgTable(
     errorCode: text('error_code'),
     category: text('category'),
     affectedRoutes: jsonb('affected_routes'),
+    
+    // Vector embedding (384 dimensions for embeddinggemma)
+    embedding: vector('embedding', { dimensions: 384 }),
 
     // Timestamps
     firstSeenAt: timestamp('first_seen_at', { withTimezone: false }).defaultNow(),

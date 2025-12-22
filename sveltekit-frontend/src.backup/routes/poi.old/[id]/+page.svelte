@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import POIPhotoModal from '$lib/client/ui/POIPhotoModal.svelte';
   import POIPhotoUploader from '$lib/client/ui/POIPhotoUploader.svelte';
   import POIThreatBadge from '$lib/components/poi/POIThreatBadge.svelte';
@@ -44,7 +44,7 @@ import { User } from "lucide-svelte";;
   async function loadPOI() {
     try {
       loading = true;
-      const poiId = $page.params.id;
+      const poiId = page.params.id;
 
       // Load POI details - use persons-of-interest API with search
       const poiResponse = await fetch(`/api/persons-of-interest?search=${encodeURIComponent(poiId)}&limit=1`);

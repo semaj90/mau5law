@@ -4,7 +4,7 @@
  * Supports hybrid quantization: INT8 vision tower + NF4 text tower
  */
 
-import { generateText } from './ollama-service';
+import { generateText } from './ollama-service.js';
 
 export interface VLMEmbeddingResult {
  embedding: number[];

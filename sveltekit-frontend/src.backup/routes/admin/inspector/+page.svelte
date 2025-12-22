@@ -25,11 +25,11 @@
 		'Neo4j citations'
 	];
 
-	let selectedFeature = 'Hybrid search';
-	let results: InspectorResult | null = null;
-	let loading = false;
-	let error = '';
-	let expandedFiles: Set<string> = new Set();
+	let selectedFeature = $state('Hybrid search');
+	let results: InspectorResult | null = $state(null);
+	let loading = $state(false);
+	let error = $state('');
+	let expandedFiles: Set<string> = $state(new Set());
 
 	async function runInspector() {
 		loading = true;

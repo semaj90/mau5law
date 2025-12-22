@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { llmService } from '../llm.service';
+import { llmService } from '../llm.service.js';
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 
 // Mock the Ollama API

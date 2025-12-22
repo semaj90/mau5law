@@ -5,8 +5,8 @@
 
 import { db } from '$lib/server/db';
 import { redis } from '$lib/server/redis';
-import { graphService } from './graph.service';
-import { auditService } from './audit.service';
+import { graphService } from './graph.service.js';
+import { auditService } from './audit.service.js';
 
 export interface CaseStatuteLink {
  id: string;

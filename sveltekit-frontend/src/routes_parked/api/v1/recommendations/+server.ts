@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Minimal recommendations endpoint to restore route integrity
 export const GET: RequestHandler = async ({ url }) => {

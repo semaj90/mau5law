@@ -5,7 +5,7 @@
 
 import { db } from '$lib/server/db';
 import { redis } from '$lib/server/redis';
-import { auditService } from './audit.service';
+import { auditService } from './audit.service.js';
 
 export interface CitationCollection {
  id: string;

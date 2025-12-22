@@ -1,4 +1,4 @@
-﻿/** * Gaming Types - Minimal Working Version */ export type GamingEra = '8bit' | '16bit' | 'n64';
+/** * Gaming Types - Minimal Working Version */ export type GamingEra = '8bit' | '16bit' | 'n64';
 export interface GamingThemeState {
   currentEra: GamingEra;
   availableEras: GamingEra[];

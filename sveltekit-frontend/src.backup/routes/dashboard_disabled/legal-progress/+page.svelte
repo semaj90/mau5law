@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</li>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</li>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
   import DocumentThumbnailTray from '$lib/components/dashboard/DocumentThumbnailTray.svelte';
   import FallbackAlert from '$lib/components/dashboard/FallbackAlert.svelte';

@@ -1,4 +1,4 @@
-﻿export const unifiedRuntime = {
+export const unifiedRuntime = {
   initialize: async () => {
     console.log('[Unified Runtime] Initializing mock runtime...');
     // Simulate WebGPU device detection

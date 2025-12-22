@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Can only bind to state or props
+https://svelte.dev/e/bind_invalid_value -->
+<!-- @migration-task Error while migrating Svelte code: Can only bind to state or props
+https://svelte.dev/e/bind_invalid_value -->
 <script lang="ts">
  import { goto } from '$app/navigation';
  import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';

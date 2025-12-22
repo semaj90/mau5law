@@ -6,8 +6,8 @@
  * Validates: Requirements 3.1, 3.3, 3.4
  */
 
-import { BaseService } from './base-service';
-import type { LLMPrompt, LLMResponse, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { LLMPrompt, LLMResponse, ServiceConfig } from './types.js';
 
 export interface ILLMPromptService {
  storePrompt(errorId: string, prompt: string, response: LLMResponse): Promise<LLMPrompt>;

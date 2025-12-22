@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { createOrchestrator } from '$lib/server/services/ingestion/ingestion-orchestrator';
 
 export const POST: RequestHandler = async ({ request }) => {

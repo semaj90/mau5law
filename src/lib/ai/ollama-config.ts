@@ -53,9 +53,123 @@ export function getOllamaModel(tag: OllamaModelTag = 'default'): string {
 }
 
 export function getOllamaEmbedModel(): string {
+
   return getOllamaModel('embed');
+
 }
 
+
+
 export function getOllamaFallbackEmbedModel(): string {
+
   return 'nomic-embed-text';
+
+}
+
+
+
+/**
+
+ * Robust cached embedding generator that uses Redis if available.
+
+ */
+
+export async function generateCachedEmbedding(text: string, options: { 
+
+  model?: string, 
+
+  baseUrl?: string,
+
+  forceRefresh?: boolean
+
+} = {}): Promise<number[]> {
+
+  const { 
+
+    model = getOllamaEmbedModel(), 
+
+    baseUrl = getOllamaEndpoint(),
+
+    forceRefresh = false
+
+  } = options;
+
+
+
+  // Try to get from cache first
+
+  if (!forceRefresh) {
+
+    try {
+
+      const { cache } = await import('../lib/server/cache/redis');
+
+      const cached = await cache.getEmbedding(text, model);
+
+      if (cached) return cached;
+
+    } catch (e) {
+
+      // Redis might not be available or we are in a context where it's not supported
+
+      // Silently fail and fallback to direct call
+
+    }
+
+  }
+
+
+
+  // Direct call to Ollama
+
+  const response = await fetch(`${baseUrl}/api/embed`, {
+
+    method: 'POST',
+
+    headers: { 'Content-Type': 'application/json' },
+
+    body: JSON.stringify({
+
+      model,
+
+      input: [text]
+
+    })
+
+  });
+
+
+
+  if (!response.ok) {
+
+    throw new Error(`Ollama returned ${response.status}`);
+
+  }
+
+
+
+  const data = await response.json() as { embeddings: number[][] };
+
+  const embedding = data.embeddings[0];
+
+
+
+  // Store in cache for next time
+
+  try {
+
+    const { cache } = await import('../lib/server/cache/redis');
+
+    await cache.setEmbedding(text, embedding, model);
+
+  } catch (e) {
+
+    // Ignore cache errors
+
+  }
+
+
+
+  return embedding;
+
 }

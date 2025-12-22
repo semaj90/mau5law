@@ -3,7 +3,7 @@
  * Handles errors for feature-disabled scenarios
  */
 
-import { featureLogger } from '../services/featureLogger';
+import { featureLogger } from '../services/featureLogger.js';
 
 /**
  * Feature error types

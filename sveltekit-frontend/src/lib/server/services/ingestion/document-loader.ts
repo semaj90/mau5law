@@ -3,8 +3,8 @@
  * Loads documents from local filesystem or MinIO bucket
  */
 
-import { PDFFileLoader, type RawDocument } from './pdf-file-loader';
-import { processDocument, type ProcessedDocument } from './document-processor';
+import { PDFFileLoader, type RawDocument } from './pdf-file-loader.js';
+import { processDocument, type ProcessedDocument } from './document-processor.js';
 
 export type { RawDocument };
 

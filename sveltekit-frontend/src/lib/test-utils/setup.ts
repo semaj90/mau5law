@@ -28,7 +28,7 @@ import {
 	mockMinIO,
 	mockFetch,
 	resetAllMocks
-} from './mocks';
+} from './mocks.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // Environment Variables

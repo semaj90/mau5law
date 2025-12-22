@@ -1,5 +1,5 @@
 import { RedisClientType } from 'redis';
-import { formatErrorResponse } from './errors';
+import { formatErrorResponse } from './errors.js';
 let _redis: RedisClientType | null = null; // Changed type to RedisClientType
 // Redis client initialization removed - module not found
 export async function logStructuredError(payload: {
@@ -30,7 +30,7 @@ export async function logStructuredError(payload: {
  console.warn('[logger] Redis logging failed:', e);
  }
  try {
- const sentryAdapter = await import('./log-adapters/sentry');
+ const sentryAdapter = await import('./log-adapters/sentry.js');
  const captureException = (sentryAdapter as any).captureException;
  const isEnabled = (sentryAdapter as any).isEnabled;
  if (payload.level === 'error' && typeof captureException === 'function' && isEnabled) {

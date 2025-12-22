@@ -7,7 +7,7 @@
  * Task 10.1: Create SSE endpoint for health updates
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Store active SSE connections
 const connections = new Set<ReadableStreamDefaultController>();

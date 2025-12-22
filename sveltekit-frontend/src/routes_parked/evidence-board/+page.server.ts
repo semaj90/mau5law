@@ -1,5 +1,5 @@
 import { sql } from '$lib/server/db';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ params }) => {
  try {

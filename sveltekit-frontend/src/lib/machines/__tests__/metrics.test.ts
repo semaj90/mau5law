@@ -5,7 +5,7 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { createActor } from 'xstate';
-import { createMetricsMachine } from '../metrics';
+import { createMetricsMachine } from '../metrics.js';
 
 describe('Metrics State Machine', () => {
   beforeEach(async () => {

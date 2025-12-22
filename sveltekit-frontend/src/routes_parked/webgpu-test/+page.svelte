@@ -8,17 +8,17 @@
  userAgent: string;
  };
 
- let statusMessage = 'Not checked yet';
+ let statusMessage = $state('Not checked yet');
  // removed Svelte 5 runes ($state ) usage — use plain reactive vars instead
- let isSuccess: boolean = false;
- let errors: string[] = [];
- let recommendations: string[] = [];
+ let isSuccess: boolean = $state(false);
+ let errors: string[] = $state([]);
+ let recommendations: string[] = $state([]);
  let performanceStats: PerformanceStats = {
  webgpuAvailable: false,
  webglAvailable: false,
  userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
  };
- let checking: boolean = false;
+ let checking: boolean = $state(false);
 
  function checkWebGL(): boolean {
  try {

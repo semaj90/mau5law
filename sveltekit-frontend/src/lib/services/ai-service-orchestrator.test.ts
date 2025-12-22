@@ -1,4 +1,4 @@
-/** * Integration Tests for AI Service Orchestrator * Tests provider registration, health monitoring, and fallback routing */ import type { describe, it, expect, beforeEach } from 'vitest'; import type { AIServiceOrchestrator } from './ai-service-orchestrator'; describe('AI Service Orchestrator', () => {
+/** * Integration Tests for AI Service Orchestrator * Tests provider registration, health monitoring, and fallback routing */ import type { describe, it, expect, beforeEach } from 'vitest'; import type { AIServiceOrchestrator } from './ai-service-orchestrator.js'; describe('AI Service Orchestrator', () => {
   beforeEach(async () => {
     await setupTest();
   });

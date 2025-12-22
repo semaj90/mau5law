@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { KnowledgeBaseLearning, type StoredFix, type FixResult } from './knowledge-base-learning';
-import type { ServiceConfig, Diff, Error as ErrorType } from './types';
+import { KnowledgeBaseLearning, type StoredFix, type FixResult } from './knowledge-base-learning.js';
+import type { ServiceConfig, Diff, Error as ErrorType } from './types.js';
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

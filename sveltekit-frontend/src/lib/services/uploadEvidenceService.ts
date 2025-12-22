@@ -3,7 +3,7 @@
  * Handles file upload, progress tracking, and processing for legal evidence
  */
 
-import type { ProcessingEvent } from './types';
+import type { ProcessingEvent } from './types.js';
 
 export interface UploadInitiation {
  evidence_id: string;

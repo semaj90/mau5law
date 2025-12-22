@@ -1,6 +1,6 @@
 import type { QuantizedEmbedding } from '$lib/shared/embedding-types';
 import { quantizedCosineSimilarity } from '$lib/shared/quantize';
-import { WebGPUSimilarityEngine, type SimilarityResult } from './webgpu-similarity-engine';
+import { WebGPUSimilarityEngine, type SimilarityResult } from './webgpu-similarity-engine.js';
 
 export interface SimilaritySearchOptions {
  topK: number;

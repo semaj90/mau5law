@@ -1,4 +1,4 @@
-﻿import type { LLMOutput;
+import type { LLMOutput;
 } from '$lib/types/sharedTypes'; const DEFAULT_URLS = { GEMMA3: process.env.GEMMA3_URL || process.env.TRITON_URL || 'http://localhost: 8000' }; export interface Gemma3Options { temperature?: number; maxTokens?: number; model?: string;
 }
 export async function callGemma3(prompt, string, opts: Gemma3Options = {): Promise<LLMOutput> { const url = DEFAULT_URLS.GEMMA3; // Build payload shape compatible with common Triton/Gemma3 HTTP wrappers. const body = { inputs: [ { name: 'text', shape: [1], datatype: 'BYTES', data: [prompt] } ], parameters: { temperature: opts.temperature ? ? 0.7, max_tokens :  opts.maxTokens ?? 512, model: opts.model ? ? 'gemma3 :  270m' } }; // @ts-ignore node global fetch assumed const resp = await fetch(`${url;

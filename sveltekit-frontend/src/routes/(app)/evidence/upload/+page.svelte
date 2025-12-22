@@ -9,14 +9,14 @@
 		error?: string;
 	}
 
-	let uploadStatus: UploadStatus = {
+	let uploadStatus: UploadStatus = $state({
 		status: 'idle',
 		progress: 0,
 		message: 'Ready to upload'
-	};
+	});
 
-	let dragActive = false;
-	let fileInput: HTMLInputElement;
+	let dragActive = $state(false);
+	let fileInput: HTMLInputElement = $state();
 
 	async function uploadFile(file: File) {
 		if (!file) return;

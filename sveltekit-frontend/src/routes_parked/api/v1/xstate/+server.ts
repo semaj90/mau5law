@@ -1,6 +1,6 @@
 import { productionServiceClient } from '$lib/services/productionServiceClient';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * XState API Endpoint - State Management & Orchestration

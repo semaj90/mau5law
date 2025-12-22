@@ -7,8 +7,8 @@
 
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { LLMPromptService } from './llm-prompt-service';
-import type { ServiceConfig, LLMResponse } from './types';
+import { LLMPromptService } from './llm-prompt-service.js';
+import type { ServiceConfig, LLMResponse } from './types.js';
 
 describe('LLMPromptService - Unit Tests (Task 11.1)', () => {
   beforeEach(async () => {

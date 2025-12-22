@@ -6,15 +6,15 @@
 	import { chatService } from '$lib/services/chatService';
 	import { onMount } from 'svelte';
 
-	let caseId = '';
-	let userId = '';
-	let userRole = 'prosecutor';
-	let messages = [];
-	let messageInput = '';
-	let isStreaming = false;
-	let error = '';
-	let evidenceMemory = [];
-	let streamingResponse = '';
+	let caseId = $state('');
+	let userId = $state('');
+	let userRole = $state('prosecutor');
+	let messages = $state([]);
+	let messageInput = $state('');
+	let isStreaming = $state(false);
+	let error = $state('');
+	let evidenceMemory = $state([]);
+	let streamingResponse = $state('');
 
 	const roles = ['prosecutor', 'detective', 'user'];
 
@@ -190,7 +190,7 @@
 					onkeydown={handleKeydown}
 					disabled={isStreaming}
 					rows="3"
-				/>
+				></textarea>
 				<button onclick={handleSendMessage} disabled={isStreaming || !messageInput.trim()}>
 					{isStreaming ? 'Streaming...' : 'Send'}
 				</button>

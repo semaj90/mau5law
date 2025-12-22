@@ -1,4 +1,4 @@
-﻿// ranking_wasm_stub.js
+// ranking_wasm_stub.js
 // Placeholder JS module emulating WASM interface so worker can dynamically import it.
 // Replace with generated wasm-pack bundle exporting pack_rankings / unpack_rankings.
 export default {

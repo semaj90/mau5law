@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Retrieves the Ollama endpoint URL from environment variables with a fallback for local development.
  * Prefers Docker service name `http://ollama:11434` in production environments.
  * @returns The Ollama endpoint URL.

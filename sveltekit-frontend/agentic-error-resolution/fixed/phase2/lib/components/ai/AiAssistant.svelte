@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import  ErrorBoundary  from "$lib/components/ErrorBoundary.svelte"; -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;

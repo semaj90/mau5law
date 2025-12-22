@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { processWithDocling } from '$lib/server/docling';
 import { createYOLOService } from '$lib/server/yolo';
 import { promises as fs } from 'fs';

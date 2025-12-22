@@ -1,7 +1,7 @@
 import { similarCasesRequestSchema, similarCasesResponseSchema } from '$lib/schemas/vector';
 import { safeFetchJson } from '$lib/server/fetch-wrapper';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const VECTOR_BASE = process.env.VECTOR_SERVICE_URL || 'http://localhost:8095';
 

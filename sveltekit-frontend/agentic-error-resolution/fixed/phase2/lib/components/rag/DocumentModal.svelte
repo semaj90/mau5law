@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <script lang="ts">
   import type { X, Download, Trash2, Clock, FileText, Zap  } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";

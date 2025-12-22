@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
 	interface UploadProgress {
@@ -10,12 +10,12 @@
 	}
 
 	let caseId: string;
-	let uploads: UploadProgress[] = [];
-	let isDragging = false;
+	let uploads: UploadProgress[] = $state([]);
+	let isDragging = $state(false);
 	let isUploading = false;
 
 	onMount(() => {
-		caseId = $page.params.id;
+		caseId = page.params.id;
 	});
 
 	function handleDragOver(e: DragEvent) {

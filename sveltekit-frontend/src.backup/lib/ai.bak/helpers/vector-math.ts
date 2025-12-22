@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Vector Math Helpers for Neural Network Operations
  * Provides efficient mathematical operations for autoencoder and SOM computations
  */

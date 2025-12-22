@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GPU-Accelerated Cache with Self-Organizing Map Clustering
  * 3-tier cache hierarchy with CUDA acceleration for intelligent document placement
  */

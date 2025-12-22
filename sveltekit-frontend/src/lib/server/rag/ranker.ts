@@ -1,6 +1,6 @@
 // src/lib/server/rag/ranker.ts
 
-import type { QdrantHit } from './qdrant';
+import type { QdrantHit } from './qdrant.js';
 
 export type RankExplain = {
  cosine: number; // Semantic similarity score

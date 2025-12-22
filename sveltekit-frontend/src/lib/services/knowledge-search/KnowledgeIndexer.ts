@@ -16,7 +16,7 @@ import type {
   IndexResult,
   ReindexStats,
   SearchResult
-} from './types';
+} from './types.js';
 
 export interface KnowledgeIndexerConfig {
   qdrantUrl: string;

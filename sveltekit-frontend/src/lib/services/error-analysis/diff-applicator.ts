@@ -3,8 +3,8 @@
  * Applies diffs to code using AST manipulation
  */
 
-import { BaseService } from './base-service';
-import type { Diff, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Diff, ServiceConfig } from './types.js';
 
 export interface IDiffApplicator {
  applyDiff(diff: Diff, fileContent: string): Promise<string>;

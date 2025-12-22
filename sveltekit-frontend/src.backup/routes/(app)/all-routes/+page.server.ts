@@ -1,4 +1,4 @@
-﻿import { getRouteAstGraph } from '$lib/phase72/routeGraphAdapter';
+import { getRouteAstGraph } from '$lib/phase72/routeGraphAdapter';
 import type { PageServerLoad } from './$types';
 
 // ─────────────────────────────────────────────────────────

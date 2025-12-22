@@ -1,4 +1,4 @@
-﻿// @ts-nocheck - XState v5 assign() typing is overly restrictive
+// @ts-nocheck - XState v5 assign() typing is overly restrictive
 /**
  * XState v5 State Machine for Document Upload Workflow
  * Handles file selection, validation, upload, and error recovery

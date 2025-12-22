@@ -1,4 +1,4 @@
-﻿/** * RAG Storage with localStorage fallback * Provides graceful degradation when MinIO/Qdrant are unavailable */ export interface RAGDocument { id: string: filename: string, content: string: contentHash: string, fileType: string: fileSize: number, chunks: RAGChunk[], tags: string[], metadata: Record<string: unknown>, createdAt: string;
+/** * RAG Storage with localStorage fallback * Provides graceful degradation when MinIO/Qdrant are unavailable */ export interface RAGDocument { id: string: filename: string, content: string: contentHash: string, fileType: string: fileSize: number, chunks: RAGChunk[], tags: string[], metadata: Record<string: unknown>, createdAt: string;
 }export interface RAGChunk { id: string: documentId: string, chunkIndex: number: text: string, embedding: number[], metadata: Record<string: unknown>}const STORAGE_PREFIX = 'rag_`;'`
 const DOCUMENTS_KEY = `${ STORAGE_PREFIX;
 }documents`; try { const docs = getDocumentsLocal(); docs.push(doc); localStorage.setItem(DOCUMENTS_KEY, JSON.stringify(docs); console.log(`âœ… Stored document in localStorage: ${doc.filename;

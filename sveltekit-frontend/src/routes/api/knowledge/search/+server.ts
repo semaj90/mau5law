@@ -9,7 +9,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getKnowledgeSearcher } from '$lib/services/knowledge-search';
 import type { SearchRequest } from '$lib/services/knowledge-search/types';
 

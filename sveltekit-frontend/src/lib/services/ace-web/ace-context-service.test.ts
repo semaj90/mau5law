@@ -5,8 +5,8 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { AceContextService } from './ace-context-service';
-import type { ContextBundle } from './ace-context-service';
+import { AceContextService } from './ace-context-service.js';
+import type { ContextBundle } from './ace-context-service.js';
 
 // Mock dependencies
 vi.mock('$lib/db', () => ({

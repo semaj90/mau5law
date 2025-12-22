@@ -1,5 +1,5 @@
 import { encoding_for_model } from 'js-tiktoken';
-import type { LangExtractSection, SectionType } from './langextract-service';
+import type { LangExtractSection, SectionType } from './langextract-service.js';
 
 /**
  * Chunk configuration

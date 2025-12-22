@@ -3,7 +3,7 @@
  * Manages error handling, retry logic, and recovery strategies
  */
 
-import { cacheService } from './cache.service';
+import { cacheService } from './cache.service.js';
 
 export interface RetryOptions {
  maxRetries?: number;

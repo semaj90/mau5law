@@ -3,8 +3,8 @@
  * Manages feature flags for error-brain and other features
  */
 
-import { BaseService } from './base-service';
-import type { ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { ServiceConfig } from './types.js';
 
 export interface IFeatureFlags {
  isEnabled(flagName: string): boolean;

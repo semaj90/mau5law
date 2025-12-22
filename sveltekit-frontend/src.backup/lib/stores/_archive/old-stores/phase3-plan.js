@@ -1,4 +1,4 @@
-﻿/**
+/**
  * PHASE 3 AI CORE INTEGRATION PLAN
  * ===============================
  *

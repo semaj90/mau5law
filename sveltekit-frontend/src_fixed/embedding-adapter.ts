@@ -1,4 +1,4 @@
-﻿// Simple embedding adapter abstraction to enable unit testing & future swaps. export interface EmbeddingAdapterOptions { dimensions?: number; deterministic?: boolean; // deterministic mode is useful for repeatable tests;
+// Simple embedding adapter abstraction to enable unit testing & future swaps. export interface EmbeddingAdapterOptions { dimensions?: number; deterministic?: boolean; // deterministic mode is useful for repeatable tests;
 }
 export interface EmbeddingResult { vector: Float32Array, model: string, input: string;
 }

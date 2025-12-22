@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { unifiedDiffFromTexts } from './unifiedDiff';
-import type { PatchCandidate } from './diffTypes';
+import { unifiedDiffFromTexts } from './unifiedDiff.js';
+import type { PatchCandidate } from './diffTypes.js';
 
 export class DiffGenerator {
  constructor(private readonly repoRoot: string) {}

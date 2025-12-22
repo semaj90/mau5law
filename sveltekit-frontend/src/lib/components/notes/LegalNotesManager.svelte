@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 	import { xstateIntegration } from '$lib/services/xstate-integration';
 	import { clearNoteFilters, exportLegalNotes, filteredNotes, loadLegalNotes, noteFilters, noteStats, removeLegalNote, saveLegalNote, setNoteFilter } from '$lib/stores/notes';

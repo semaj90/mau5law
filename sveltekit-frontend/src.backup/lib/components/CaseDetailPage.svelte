@@ -29,14 +29,14 @@
     updatedAt: string;
   }
 
-  let caseId: string;
-  let caseDetail: CaseDetail | null = null;
-  let summary: Summary | null = null;
-  let isGenerating = false;
-  let isLoading = true;
-  let error: string | null = null;
-  let activeTab: 'summary' | 'similar' | 'details' = 'summary';
-  let jobId: string | null = null;
+  let caseId: string = $state();
+  let caseDetail: CaseDetail | null = $state(null);
+  let summary: Summary | null = $state(null);
+  let isGenerating = $state(false);
+  let isLoading = $state(true);
+  let error: string | null = $state(null);
+  let activeTab: 'summary' | 'similar' | 'details' = $state('summary');
+  let jobId: string | null = $state(null);
   let pollInterval: NodeJS.Timeout | null = null;
 
   onMount(async () => {

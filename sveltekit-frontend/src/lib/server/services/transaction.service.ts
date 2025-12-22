@@ -4,7 +4,7 @@
  */
 
 import { db } from '$lib/server/db';
-import { auditService } from './audit.service';
+import { auditService } from './audit.service.js';
 
 export interface TransactionOptions {
  isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';

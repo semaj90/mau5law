@@ -2,7 +2,7 @@
  * Context7 Orchestration Integration
  * Connects the Context7 multicore engine with the Production Service Registry
  */
-import { productionServiceRegistry } from './production-service-registry';
+import { productionServiceRegistry } from './production-service-registry.js';
 
 
 // Define types for the mapping and category data

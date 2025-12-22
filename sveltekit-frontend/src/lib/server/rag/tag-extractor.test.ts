@@ -3,7 +3,7 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { extractLegalTags, type ExtractedLegalTags } from './tag-extractor';
+import { extractLegalTags, type ExtractedLegalTags } from './tag-extractor.js';
 
 describe('Legal Tag Extraction', () => {
   beforeEach(async () => {

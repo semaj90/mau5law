@@ -1,6 +1,6 @@
 /** * Dead Letter Queue Monitor and Retry Service * Handles failed jobs with exponential backoff retry logic */
-import type { rabbitMQService } from './rabbitmq-service';
-import type { DocumentProcessingJob } from './rabbitmq-service';
+import type { rabbitMQService } from './rabbitmq-service.js';
+import type { DocumentProcessingJob } from './rabbitmq-service.js';
 
 interface RetryAttempt {
  attemptNumber: number

@@ -1,7 +1,7 @@
 // src/lib/server/rag/tag-persist.ts
 
 import { sql } from '$lib/server/db';
-import type { ExtractedLegalTags } from './tag-extractor';
+import type { ExtractedLegalTags } from './tag-extractor.js';
 
 type TagNamespace = 'statute' | 'case';
 type LinkSource = 'ai' | 'user' | 'system';

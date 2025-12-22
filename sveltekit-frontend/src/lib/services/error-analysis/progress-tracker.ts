@@ -1,5 +1,5 @@
-import { BaseService } from './base-service';
-import type { ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { ServiceConfig } from './types.js';
 
 /**
  * Progress Metrics

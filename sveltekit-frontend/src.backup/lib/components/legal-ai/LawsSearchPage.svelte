@@ -14,10 +14,10 @@
     relevance_score?: number;
   }
 
-  let statutes: Statute[] = [];
-  let selectedStatute: Statute | null = null;
-  let isSearching = false;
-  let searchError: string | null = null;
+  let statutes: Statute[] = $state([]);
+  let selectedStatute: Statute | null = $state(null);
+  let isSearching = $state(false);
+  let searchError: string | null = $state(null);
 
   async function handleSearch(event: CustomEvent) {
     const { query, jurisdiction, severity, category } = event.detail;

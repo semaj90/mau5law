@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import { errorBrainDiffs } from '$lib/server/db/schema/errorBrainDiffs';
 import { eq } from 'drizzle-orm';
-import type { PatchCandidate } from './diffTypes';
+import type { PatchCandidate } from './diffTypes.js';
 
 export class DiffRepository {
  async insert(patch: PatchCandidate): Promise<void> {

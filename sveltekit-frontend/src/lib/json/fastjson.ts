@@ -105,7 +105,7 @@ function trySIMDNode(input: string): FastJSONResult {
 async function tryUltraJSON(input: string): Promise<FastJSONResult> {
  try {
  // Dynamic import to avoid bundling issues
- const { UltraJSONParser } = await import('../utils/ultra-json-parser');
+ const { UltraJSONParser } = await import('../utils/ultra-json-parser.js');
 
  const t0 = performance.now();
  const data = UltraJSONParser.parse(input);

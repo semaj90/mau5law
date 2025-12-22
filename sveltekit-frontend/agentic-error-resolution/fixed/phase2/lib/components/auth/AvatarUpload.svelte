@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <script lang="ts">
   import type { updateUserProfile  } from '$lib/stores/user';
   import  Button  from "$lib/components/ui/button/Button.svelte";

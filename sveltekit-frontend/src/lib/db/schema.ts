@@ -104,6 +104,6 @@ export const personsOfInterest = pgTable(
 );
 
 // Export YoRHa v2 Schema
-export * from './schema/yorha';
-export * from './schema/cutlass';
-export * from './schema/nes-command-center';
+export * from './schema/yorha.js';
+export * from './schema/cutlass.js';
+export * from './schema/nes-command-center.js';

@@ -1,4 +1,4 @@
-import type { RouteSpecInput, UISpec } from '../types';
+import type { RouteSpecInput, UISpec } from '../types.js';
 
 export async function extractUISpec(route: RouteSpecInput): Promise<UISpec> {
  return {

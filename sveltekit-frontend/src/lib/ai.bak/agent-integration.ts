@@ -35,7 +35,7 @@ export async function triggerAgentAction(auditResult: any): Promise<any> {
  const libId = await resolveLibraryId(auditResult.step);
 
  // Dynamic import to avoid circular dependencies
- const { createMemoryRelation } = await import('./mcp-helpers');
+ const { createMemoryRelation } = await import('./mcp-helpers.js');
  await createMemoryRelation(auditResult.id, 'needs_fix', libId);
 
  // TODO: Call CrewAI/Autogen API to trigger code review/fix

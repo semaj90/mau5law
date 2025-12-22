@@ -1,6 +1,6 @@
 import { cleanupTest, setupTest } from '$lib/test-utils/setup';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { caseLinkService } from '../case-link.service';
+import { caseLinkService } from '../case-link.service.js';
 
 describe('CaseLinkService', () => {
  const mockCaseId = 'case-123';
@@ -33,7 +33,7 @@ describe('CaseLinkService', () => {
  });
 
  it('should create Neo4j relationship', async () => {
- const { graphService } = await import('../graph.service');
+ const { graphService } = await import('../graph.service.js');
  const linkData: LinkCaseStatuteRequest = {
  statute_code: mockStatuteCode,
  link_type: 'CHARGED_UNDER',
@@ -67,7 +67,7 @@ describe('CaseLinkService', () => {
  });
 
  it('should delete Neo4j relationship', async () => {
- const { graphService } = await import('../graph.service');
+ const { graphService } = await import('../graph.service.js');
 
  await caseLinkService.unlinkStatute(mockCaseId, mockStatuteCode, mockUserId);
 

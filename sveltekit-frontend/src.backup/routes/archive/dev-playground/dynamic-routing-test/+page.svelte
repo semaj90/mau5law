@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import { writable } from 'svelte/store';; import type { goto  } from '$app/navigation'; import type { page  } from '$app/stores'; import Button from '$lib/components/ui/Button.svelte'; import  Card  from "$lib/components/ui/enhanced-bits.svelte"; import type { allRoutes, getRoutesByCategory, searchRoutes  } from '$lib/data/routes-config'; // State management const testResults = writable<string[]>([]); const routeStats = writable<any>({});
   let isLoading = $state <boolean>(false); let currentPath = $state <string>(''); // Provide a typed, const category list so TS knows the exact union type const categoryList = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'] as const; type Category = (typeof categoryList)[number]; // Test configuration const testCases = [ { name: 'Route Configuration Load', test: async () => { const routes = allRoutes; return `âœ… Loaded ${routes.length} routes from configuration`}

@@ -4,8 +4,8 @@
  * PHASE 36: SSE transport (in-memory fanout for current process)
  */
 
-import type { ErrorBrainEvent } from '../events';
-import type { ErrorBrainTransport } from './interface';
+import type { ErrorBrainEvent } from '../events.js';
+import type { ErrorBrainTransport } from './interface.js';
 
 export class SSETransport implements ErrorBrainTransport {
  name = 'sse';

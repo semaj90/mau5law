@@ -1,4 +1,4 @@
-﻿import type { User;
+import type { User;
 } from '$lib/types';
 /** * HTTP Cache Headers Utility * Provides optimal caching strategies for different endpoint types * Maximizes browser cache efficiency while ensuring data freshness */ export interface CacheConfig { maxAge?: number // Cache-Control max-age in seconds staleWhileRevalidate?: number // stale-while-revalidate in seconds staleIfError?: number // stale-if-error in seconds mustRevalidate?: boolean // must-revalidate flag noCache?: boolean // no-cache flag private?: boolean // private vs public cache etag?: string // ETag for conditional requests lastModified?: Date // Last-Modified header;
 }

@@ -1,4 +1,4 @@
-﻿// sveltekit-frontend/src/lib/server/rabbitmq-service.ts
+// sveltekit-frontend/src/lib/server/rabbitmq-service.ts
 
 // Minimal, stable surface that matches existing imports across the app.
 

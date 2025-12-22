@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { db } from './drizzle';
+import { db } from './drizzle.js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 

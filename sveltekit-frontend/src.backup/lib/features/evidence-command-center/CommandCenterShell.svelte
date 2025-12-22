@@ -7,7 +7,7 @@
 		caseTitle?: string | null;
 	}
 
-	const { caseId, caseTitle = null }: Props = $props();
+	const { children, caseId, caseTitle = null }: Props = $props();
 
 	const views: { id: CommandCenterView; label: string; icon: string }[] = [
 		{ id: 'board', icon: '📁', label: 'Evidence' },
@@ -96,7 +96,7 @@
 
 		<!-- Main panel: slot for active view content -->
 		<main class="border-[3px] border-[#f5f5f5] bg-[#15151f] p-2 shadow-[4px_4px_0_0_#000]">
-			<slot />
+			{@render children?.()}
 		</main>
 	</div>
 </div>

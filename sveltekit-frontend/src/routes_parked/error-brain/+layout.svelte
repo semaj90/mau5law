@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let { children } = $props();
 
@@ -19,8 +19,8 @@
 					{#each navItems as item}
 						<a
 							href={item.href}
-							class:text-primary={$page.url.pathname === item.href}
-							class:text-muted-foreground={$page.url.pathname !== item.href}
+							class:text-primary={page.url.pathname === item.href}
+							class:text-muted-foreground={page.url.pathname !== item.href}
 							class="text-sm font-medium hover:text-primary transition-colors"
 						>
 							{item.label}

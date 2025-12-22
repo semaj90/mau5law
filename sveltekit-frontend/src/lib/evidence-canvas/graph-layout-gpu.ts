@@ -3,13 +3,13 @@
  * Uses WebGPU compute shaders for force-directed graph layout
  */
 
-import type { webgpu } from './webgpu-init';
+import type { webgpu } from './webgpu-init.js';
 import type {
  createForceLayoutPipeline,
  createSimilarityPipeline,
  createReductionPipeline,
  createHighlightPipeline,
-} from './webgpu-kernels.wgsl';
+} from './webgpu-kernels.wgsl.js';
 
 export interface GraphNode {
  id: string;

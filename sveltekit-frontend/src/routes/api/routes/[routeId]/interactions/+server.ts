@@ -9,7 +9,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import {
   logInteraction,
   getInteractions,
@@ -83,6 +83,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
  * - Join with user information if available
  * - Order by timestamp descending
  * - Return paginated results with total count
+ *
+ * Task 11.4: Add archive query support
+ * - Accept archived query parameter (true/false)
+ * - When archived=true, query archive tables
+ * - When archived=false (default), query main tables
  */
 export const GET: RequestHandler = async ({ params, url }) => {
   const { routeId } = params;
@@ -91,6 +96,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     // Parse query parameters
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = parseInt(url.searchParams.get('offset') || '0');
+    const includeArchived = url.searchParams.get('archived') === 'true';
 
     // Validate route exists
     const route = await getRouteMetadata(routeId);
@@ -100,18 +106,40 @@ export const GET: RequestHandler = async ({ params, url }) => {
       });
     }
 
-    // Get interactions
-    const result = await getInteractions(routeId, { limit, offset });
+    // Get interactions (with or without archived data)
+    let result;
+    if (includeArchived) {
+      // Import archive query helper
+      const { getCombinedInteractions } = await import(
+        '$lib/db/queries/nes-command-center-archive.js'
+      );
+      result = await getCombinedInteractions(routeId, { limit, offset, includeArchived: true });
 
-    return json({
-      interactions: result.interactions,
-      pagination: {
-        total: result.total,
-        limit: result.limit,
-        offset: result.offset,
-        hasMore: result.offset + result.limit < result.total,
-      },
-    });
+      return json({
+        interactions: result.data,
+        pagination: {
+          total: result.total,
+          limit: result.limit,
+          offset: result.offset,
+          hasMore: result.hasMore,
+        },
+        includesArchived: true,
+      });
+    } else {
+      // Query only main table
+      result = await getInteractions(routeId, { limit, offset });
+
+      return json({
+        interactions: result.interactions,
+        pagination: {
+          total: result.total,
+          limit: result.limit,
+          offset: result.offset,
+          hasMore: result.offset + result.limit < result.total,
+        },
+        includesArchived: false,
+      });
+    }
   } catch (err) {
     console.error('[GET /api/routes/:routeId/interactions] Error:', err);
     return error(500, {

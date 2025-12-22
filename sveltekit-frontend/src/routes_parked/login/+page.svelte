@@ -1,10 +1,10 @@
 <script lang="ts">
  import { goto } from '$app/navigation';
 
- let email = '';
- let password = '';
- let isLoading = false;
- let error = '';
+ let email = $state('');
+ let password = $state('');
+ let isLoading = $state(false);
+ let error = $state('');
 
  const handleSubmit = async () => {
  isLoading = true;

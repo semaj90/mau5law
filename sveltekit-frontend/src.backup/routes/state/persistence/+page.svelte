@@ -7,10 +7,10 @@ import { onMount } from 'svelte';;
 // Simplified and valid state persistence page script while we repair more complex
 // serialized mock data that contained malformed tokens.
 let mounted = false;
-let persistedStates: Array<any> = [];
-let loading = true;
-let selectedState: any = null;
-let restoring = false;
+let persistedStates: Array<any> = $state([]);
+let loading = $state(true);
+let selectedState: any = $state(null);
+let restoring = $state(false);
 
 const mockPersistedStates = [
   {

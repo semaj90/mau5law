@@ -7,8 +7,8 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fc from 'fast-check';
-import { EmbeddingService } from './embedding-service';
-import type { ServiceConfig } from './types';
+import { EmbeddingService } from './embedding-service.js';
+import type { ServiceConfig } from './types.js';
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';
 
 describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {

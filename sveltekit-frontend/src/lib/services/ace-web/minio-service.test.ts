@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { MinIOService } from './minio-service';
+import { MinIOService } from './minio-service.js';
 
 // Mock AWS SDK
 vi.mock('@aws-sdk/client-s3', () => {

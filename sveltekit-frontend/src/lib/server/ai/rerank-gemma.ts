@@ -1,5 +1,5 @@
-import type { generateEmbedding } from './embeddings';
-import type { SearchResult } from '../search/webVectorSearch';
+import type { generateEmbedding } from './embeddings.js';
+import type { SearchResult } from '../search/webVectorSearch.js';
 
 // TODO: Implement Gemma-based reranking
 // For now, this is a placeholder that returns the original order

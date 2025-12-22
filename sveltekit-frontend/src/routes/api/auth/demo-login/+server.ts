@@ -3,7 +3,7 @@ import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema-unified';
 import { error, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /**
  * POST /api/auth/demo-login

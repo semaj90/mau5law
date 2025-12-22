@@ -13,12 +13,12 @@
  */
 
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { sql } from './db';
-import { generateEmbedding } from './embedding-service';
-import { qdrantUpsert } from './rag/qdrant';
-import { extractLegalTags } from './rag/tag-extractor';
-import { getChunkTagIds, upsertAndLinkChunkTags } from './rag/tag-persist';
-import { extractKeywords } from './rag/cache';
+import { sql } from './db.js';
+import { generateEmbedding } from './embedding-service.js';
+import { qdrantUpsert } from './rag/qdrant.js';
+import { extractLegalTags } from './rag/tag-extractor.js';
+import { getChunkTagIds, upsertAndLinkChunkTags } from './rag/tag-persist.js';
+import { extractKeywords } from './rag/cache.js';
 
 // Initialize Qdrant client
 const qdrantClient = new QdrantClient({

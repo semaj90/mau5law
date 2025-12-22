@@ -225,7 +225,7 @@
 			renderGraph();
 		}}
 		class="nes-graph-canvas"
-	/>
+	></canvas>
 
 	{#if showTooltip && hoveredNode}
 		<Tooltip.Root open={showTooltip}>

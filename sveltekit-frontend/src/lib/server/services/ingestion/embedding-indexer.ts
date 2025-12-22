@@ -3,9 +3,9 @@
  * Generates embeddings and indexes documents in Qdrant + Elasticsearch
  */
 
-import { getDualQdrantStrategy, type DualEmbedding } from '../qdrant/dual-collection-strategy';
-import { getRedisJSONStore } from '../persistence/redis-json-schema';
-import type { ProcessedDocument, DocumentChunk } from './document-processor';
+import { getDualQdrantStrategy, type DualEmbedding } from '../qdrant/dual-collection-strategy.js';
+import { getRedisJSONStore } from '../persistence/redis-json-schema.js';
+import type { ProcessedDocument, DocumentChunk } from './document-processor.js';
 
 export interface IndexingResult {
  documentId: string;

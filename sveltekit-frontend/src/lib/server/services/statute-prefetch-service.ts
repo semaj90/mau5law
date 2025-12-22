@@ -4,10 +4,10 @@
  * No unsolicited advice - only data retrieval until user explicitly requests explanation
  */
 
-import { generateEmbedding } from './embedding-service';
-import { searchStatuteChunks } from './statute-ingestion-service';
-import { db } from '../db/index';
-import { statutes, statuteChunks } from '../db/schema-postgres';
+import { generateEmbedding } from './embedding-service.js';
+import { searchStatuteChunks } from './statute-ingestion-service.js';
+import { db } from '../db/index.js';
+import { statutes, statuteChunks } from '../db/schema-postgres.js';
 import { eq } from 'drizzle-orm';
 
 export interface PrefetchContext {

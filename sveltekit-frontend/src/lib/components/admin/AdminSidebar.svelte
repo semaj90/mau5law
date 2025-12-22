@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	interface NavSection {
 		label: string;
@@ -17,7 +17,7 @@
 	];
 
 	function isActive(path: string): boolean {
-		return $page.url.pathname.startsWith(path);
+		return page.url.pathname.startsWith(path);
 	}
 </script>
 

@@ -15,10 +15,10 @@
     };
   }
 
-  let cases: YoRHaCase[] = [];
-  let clusterHealth: ClusterHealth | null = null;
-  let isLoading = true;
-  let error: string | null = null;
+  let cases: YoRHaCase[] = $state([]);
+  let clusterHealth: ClusterHealth | null = $state(null);
+  let isLoading = $state(true);
+  let error: string | null = $state(null);
   let refreshInterval: NodeJS.Timeout | null = null;
 
   /**

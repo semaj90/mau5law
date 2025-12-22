@@ -1,4 +1,4 @@
-﻿// Temporary legacy ambient declarations
+// Temporary legacy ambient declarations
 declare global {
   interface Window {
     __DEBUG__?: boolean;

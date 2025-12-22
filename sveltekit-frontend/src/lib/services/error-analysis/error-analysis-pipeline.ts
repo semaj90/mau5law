@@ -6,17 +6,17 @@
  * Validates: Requirements 1.1, 1.2, 1.3, 1.4
  */
 
-import { BaseService } from './base-service';
-import { ErrorExtractor } from './error-extractor';
-import { EmbeddingService } from './embedding-service';
-import { ErrorClusterer } from './error-clusterer';
-import { RAGRetriever } from './rag-retriever';
-import { KnowledgeBase } from './knowledge-base';
-import { ContextFormatter } from './context-formatter';
-import { AgenticAnalyzer } from './agentic-analyzer';
-import { LLMPromptService } from './llm-prompt-service';
-import { AceContextManager } from './ace-context-manager';
-import type { Error, Analysis, Cluster, ServiceConfig, ACEContext } from './types';
+import { BaseService } from './base-service.js';
+import { ErrorExtractor } from './error-extractor.js';
+import { EmbeddingService } from './embedding-service.js';
+import { ErrorClusterer } from './error-clusterer.js';
+import { RAGRetriever } from './rag-retriever.js';
+import { KnowledgeBase } from './knowledge-base.js';
+import { ContextFormatter } from './context-formatter.js';
+import { AgenticAnalyzer } from './agentic-analyzer.js';
+import { LLMPromptService } from './llm-prompt-service.js';
+import { AceContextManager } from './ace-context-manager.js';
+import type { Error, Analysis, Cluster, ServiceConfig, ACEContext } from './types.js';
 
 export interface IErrorAnalysisPipeline {
  analyzeErrors(sessionId: string, errors: Error[]): Promise<ACEContext>;

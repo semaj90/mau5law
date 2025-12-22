@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import CanvasBoard from '$lib/components/board/CanvasBoard.svelte';
   import { onMount } from 'svelte';
 
@@ -30,7 +30,7 @@
   let panY = $state(0);
 
   onMount(async () => {
-    caseId = $page.params.id;
+    caseId = page.params.id;
     await loadEvidenceBoard();
   });
 

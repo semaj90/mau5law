@@ -3,9 +3,9 @@
  * Enforces feature flag checks before allowing requests
  */
 
-import { featureFlagManager } from '../services/featureFlags';
-import { NamespaceRouter, type NamespaceContext } from './namespaceRouter';
-import { featureLogger } from '../services/featureLogger';
+import { featureFlagManager } from '../services/featureFlags.js';
+import { NamespaceRouter, type NamespaceContext } from './namespaceRouter.js';
+import { featureLogger } from '../services/featureLogger.js';
 
 export interface EnforcementResult {
  allowed: boolean;

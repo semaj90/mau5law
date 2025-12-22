@@ -5,8 +5,8 @@
 
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { DiffApplicator } from './diff-applicator';
-import type { Diff, ServiceConfig } from './types';
+import { DiffApplicator } from './diff-applicator.js';
+import type { Diff, ServiceConfig } from './types.js';
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

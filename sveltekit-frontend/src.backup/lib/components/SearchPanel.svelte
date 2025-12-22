@@ -9,9 +9,9 @@
     searchResults,
   } from '$lib/stores/search';
 
-  let query = '';
-  let includeKag = true;
-  let includeReasoning = true;
+  let query = $state('');
+  let includeKag = $state(true);
+  let includeReasoning = $state(true);
 
   async function handleSearch() {
     if (!query.trim()) return;

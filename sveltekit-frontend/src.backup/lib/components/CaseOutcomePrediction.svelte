@@ -351,7 +351,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 					<span class="toggle-icon">{$showAdvanced ? '▼' : '▶'}</span>
 				</div>
 
-				{#if $showAdvanced }
+				{#if $showAdvanced}
 					<div class="advanced-options">
 						<div class="form-group">
 							<label for="historicalData">

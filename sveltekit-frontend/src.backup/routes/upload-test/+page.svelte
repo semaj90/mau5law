@@ -4,7 +4,11 @@
 	import { uploadSchema  } from '$lib/schemas/upload';
 	import type { PageData } from './$types'; // Import the PageData type
 
-	export let data: PageData; // Apply the PageData type to the data prop
+	interface Props {
+		data: PageData; // Apply the PageData type to the data prop
+	}
+
+	let { data }: Props = $props();
 
 	const { form, errors, message, enhance } = superForm(data.form, {
 		validators: zodClient(uploadSchema),
@@ -14,7 +18,7 @@
 
 <h1>File Upload Test</h1>
 
-{#if $message }
+{#if $message}
 	<div class="message">{$message }</div>
 {/if}
 

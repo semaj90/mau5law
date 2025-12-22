@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { enrichStatute } from '$lib/server/statute-enrichment';
 import { logStatuteView } from '$lib/server/timeline-logger';
 

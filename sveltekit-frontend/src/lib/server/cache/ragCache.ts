@@ -1,4 +1,4 @@
-import { getRedisClient } from '../redis/client';
+import { getRedisClient } from '../redis/client.js';
 
 interface RAGCacheEntry {
  query: string;

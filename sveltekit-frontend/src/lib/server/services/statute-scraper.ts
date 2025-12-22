@@ -4,7 +4,7 @@
  * Supports multiple jurisdictions and sources
  */
 
-import { ingestStatuteWithChunks } from './statute-ingestion-service';
+import { ingestStatuteWithChunks } from './statute-ingestion-service.js';
 
 export interface ScraperSource {
  name: string;

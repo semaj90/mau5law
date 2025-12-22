@@ -3,8 +3,8 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { rerankLegalAware, createQdrantFilter } from './ranker';
-import type { QdrantHit } from './qdrant';
+import { rerankLegalAware, createQdrantFilter } from './ranker.js';
+import type { QdrantHit } from './qdrant.js';
 
 describe('Legal-Aware Ranker', () => {
   beforeEach(async () => {

@@ -10,13 +10,13 @@
  * - Performance metrics (latency, throughput)
  */
 
-import type { SystemMetrics } from './types';
-import { getCacheService } from './CacheService';
-import { getDecisionEngine } from './DecisionEngine';
-import { getEscalationService } from './EscalationService';
-import { getLearningPipeline } from './LearningPipeline';
-import { getGRPOPolicy } from './GRPOPolicy';
-import { getExperienceRecorder } from './ExperienceRecorder';
+import type { SystemMetrics } from './types.js';
+import { getCacheService } from './CacheService.js';
+import { getDecisionEngine } from './DecisionEngine.js';
+import { getEscalationService } from './EscalationService.js';
+import { getLearningPipeline } from './LearningPipeline.js';
+import { getGRPOPolicy } from './GRPOPolicy.js';
+import { getExperienceRecorder } from './ExperienceRecorder.js';
 
 export interface MetricsConfig {
 	collectionIntervalMs: number;

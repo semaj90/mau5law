@@ -1,5 +1,5 @@
 <script lang="ts">
- let dialog: HTMLDialogElement;
+ let dialog: HTMLDialogElement = $state();
 
  const systemChecks = [
  { name: 'Test Page', status: 'PASS', icon: '✅' },

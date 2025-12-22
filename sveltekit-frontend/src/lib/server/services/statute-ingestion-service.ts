@@ -4,9 +4,9 @@
  * Integrates with public APIs and government portals
  */
 
-import { db } from '../db/index';
-import { statutes, statuteChunks } from '../db/schema-postgres';
-import { generateEmbedding } from './embedding-service';
+import { db } from '../db/index.js';
+import { statutes, statuteChunks } from '../db/schema-postgres.js';
+import { generateEmbedding } from './embedding-service.js';
 import { eq } from 'drizzle-orm';
 
 export interface StatuteSource {

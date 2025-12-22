@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Vector Configuration - Standardized to 384 dimensions
  *
  * Purpose: Centralize vector dimension configuration for:

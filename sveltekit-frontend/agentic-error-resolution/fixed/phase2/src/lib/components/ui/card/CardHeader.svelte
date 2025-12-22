@@ -1,9 +1,15 @@
 <script lang="ts">
-  export let className = '';
+  interface Props {
+    className?: string;
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
+
+  let { className = '', children, ...rest }: Props = $props();
 </script>
 
-<header {...$$restProps} class={`ui-card-header ${className}`}>
-  <slot />
+<header {...rest} class={`ui-card-header ${className}`}>
+  {@render children?.()}
 </header>
 
 <style>

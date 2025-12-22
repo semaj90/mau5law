@@ -1,4 +1,4 @@
-import type { TimelineFact } from '../types';
+import type { TimelineFact } from '../types.js';
 
 export function normalizeTimelineFact(fact: TimelineFact): TimelineFact {
  return {

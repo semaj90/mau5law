@@ -15,7 +15,7 @@
  *   const embedding = await ollama.generateEmbedding("error message");
  */
 
-import type { ErrorReport } from './types';
+import type { ErrorReport } from './types.js';
 
 export interface OllamaConfig {
 	url: string;

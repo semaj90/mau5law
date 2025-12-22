@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { createYOLOService } from '$lib/server/yolo';
 
 // YOLO Object Detection API

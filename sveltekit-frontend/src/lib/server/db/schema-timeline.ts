@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid, jsonb } from 'drizzle-orm/pg-core';
-import { users } from './schema';
+import { users } from './schema.js';
 
 export const userTimeline = pgTable('user_timeline', {
  id: uuid('id').primaryKey().defaultRandom(),

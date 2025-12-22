@@ -1,4 +1,4 @@
-﻿/** * Accessibility Validator for Legal AI Platform * Validates UX patterns and accessibility compliance */ interface AccessibilityRule { name: string, description: string, severity: 'error' | 'warning' | 'info',validate: (element: Element) => boolean; fix?: string;
+/** * Accessibility Validator for Legal AI Platform * Validates UX patterns and accessibility compliance */ interface AccessibilityRule { name: string, description: string, severity: 'error' | 'warning' | 'info',validate: (element: Element) => boolean; fix?: string;
 }
 interface AccessibilityReport { element: Element, rule: AccessibilityRule, passed: boolean, message: string;
 }

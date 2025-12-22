@@ -1,7 +1,7 @@
 <script lang="ts">
- import { page } from '$app/stores';
+ import { page } from '$app/state';
 
- let id = $derived($page.params.id);
+ let id = $derived(page.params.id);
  let persons = $state<any[]>([]);
  let loading = $state(true);
  let showAddModal = $state(false);

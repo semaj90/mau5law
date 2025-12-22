@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { healthUpdates, healthUpdatesState, cleanup } from './healthUpdates';
+import { healthUpdates, healthUpdatesState, cleanup } from './healthUpdates.js';
 
 describe('Phase 10.6: Message Batching', () => {
  beforeEach(() => {

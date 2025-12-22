@@ -617,8 +617,9 @@
 						</CardHeader>
 						<CardContent>
 							<div class="metric-value">{metrics.totalCases}</div>
+							{@const SvelteComponent = getTrendIcon(metrics.trends.totalCases)}
 							<div class="metric-trend">
-								<svelte:component this={getTrendIcon(metrics.trends.totalCases)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.totalCases)}`} />
+								<SvelteComponent class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.totalCases)}`} />
 								<span class={`${getTrendColor(metrics.trends.totalCases)}`}>
 									{metrics.trends.totalCases >= 0 ? '+' : ''}{metrics.trends.totalCases.toFixed(1)}%
 								</span>
@@ -636,8 +637,9 @@
 						</CardHeader>
 						<CardContent>
 							<div class="metric-value">{metrics.activeCases}</div>
+							{@const SvelteComponent_1 = getTrendIcon(metrics.trends.activeCases)}
 							<div class="metric-trend">
-								<svelte:component this={getTrendIcon(metrics.trends.activeCases)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.activeCases)}`} />
+								<SvelteComponent_1 class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.activeCases)}`} />
 								<span class={`${getTrendColor(metrics.trends.activeCases)}`}>
 									{metrics.trends.activeCases >= 0 ? '+' : ''}{metrics.trends.activeCases.toFixed(1)}%
 								</span>
@@ -655,8 +657,9 @@
 						</CardHeader>
 						<CardContent>
 							<div class="metric-value">{metrics.evidenceProcessed.toLocaleString()}</div>
+							{@const SvelteComponent_2 = getTrendIcon(metrics.trends.evidenceProcessed)}
 							<div class="metric-trend">
-								<svelte:component this={getTrendIcon(metrics.trends.evidenceProcessed)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.evidenceProcessed)}`} />
+								<SvelteComponent_2 class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.evidenceProcessed)}`} />
 								<span class={`${getTrendColor(metrics.trends.evidenceProcessed)}`}>
 									{metrics.trends.evidenceProcessed >= 0 ? '+' : ''}{metrics.trends.evidenceProcessed.toFixed(1)}%
 								</span>
@@ -674,8 +677,9 @@
 						</CardHeader>
 						<CardContent>
 							<div class="metric-value">{metrics.aiQueries.toLocaleString()}</div>
+							{@const SvelteComponent_3 = getTrendIcon(metrics.trends.aiQueries)}
 							<div class="metric-trend">
-								<svelte:component this={getTrendIcon(metrics.trends.aiQueries)} class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.aiQueries)}`} />
+								<SvelteComponent_3 class={`h-3 w-3 mr-1 ${getTrendColor(metrics.trends.aiQueries)}`} />
 								<span class={`${getTrendColor(metrics.trends.aiQueries)}`}>
 									{metrics.trends.aiQueries >= 0 ? '+' : ''}{metrics.trends.aiQueries.toFixed(1)}%
 								</span>

@@ -4,7 +4,7 @@
     class?: string;
   }
 
-  let { title, class: className = '' }: Props = $props();
+  let { children, title, class: className = '' }: Props = $props();
 </script>
 
 <div class="evidence-board-layout {className}">
@@ -15,7 +15,7 @@
   {/if}
 
   <main class="evidence-board-content">
-    <slot />
+    {@render children?.()}
   </main>
 </div>
 

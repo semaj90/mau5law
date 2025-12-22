@@ -5,8 +5,8 @@ import {
  isRequestAllowed,
  getEnforcementResult,
  createDenialResponse,
-} from './featureFlagEnforcer';
-import { featureFlagManager } from '../services/featureFlags';
+} from './featureFlagEnforcer.js';
+import { featureFlagManager } from '../services/featureFlags.js';
 
 describe('FeatureFlagEnforcer', () => {
   beforeEach(async () => {

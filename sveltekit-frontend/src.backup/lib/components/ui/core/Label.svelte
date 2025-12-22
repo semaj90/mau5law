@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { forId = undefined, className = '', text = '' } = $props<{
+  let { children, forId = undefined, className = '', text = '' } = $props<{
     forId?: string;
     className?: string;
     text?: string;
@@ -10,6 +10,6 @@
   {#if text}
     {text}
   {:else}
-    <slot />
+    {@render children?.()}
   {/if}
 </label>

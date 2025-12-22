@@ -7,8 +7,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
-import { FeatureFlags } from './feature-flags';
-import type { ServiceConfig } from './types';
+import { FeatureFlags } from './feature-flags.js';
+import type { ServiceConfig } from './types.js';
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

@@ -1,4 +1,4 @@
-﻿// This is a placeholder for the advanced-result-cache service.
+// This is a placeholder for the advanced-result-cache service.
 // In a real application, this would integrate with Redis or another caching mechanism.
 
 export const legalAIResultCache = {

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * K-means Clustering Worker Thread
  * Offloads CPU-intensive clustering operations from main thread
  */

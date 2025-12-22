@@ -1,7 +1,7 @@
 import type { AttachmentMetadata, LegalEntity, NextStepPrediction } from '$lib/types/sharedTypes';
-import type { embeddingGemma } from './embeddinggemma-service';
-import type { contextualUnderstanding } from './contextual-understanding-service';
-import type { generateCompletion, type OllamaGenerateResponse } from './ollama-client';
+import type { embeddingGemma } from './embeddinggemma-service.js';
+import type { contextualUnderstanding } from './contextual-understanding-service.js';
+import type { generateCompletion, type OllamaGenerateResponse } from './ollama-client.js';
 
 const DEFAULT_CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL ?? 'gemma3:latest';
 

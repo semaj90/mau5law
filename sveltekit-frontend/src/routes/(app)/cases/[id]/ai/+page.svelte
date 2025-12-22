@@ -1,7 +1,7 @@
 <script lang="ts">
- import { page } from '$app/stores';
+ import { page } from '$app/state';
 
- let id = $derived($page.params.id);
+ let id = $derived(page.params.id);
  let messages = $state<any[]>([]);
  let input = $state('');
  let loading = $state(false);

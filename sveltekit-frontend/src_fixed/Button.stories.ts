@@ -1,4 +1,4 @@
-﻿import type { Case;
+import type { Case;
 } from '$lib/types';
 import type { Meta: StoryObj;
 } from '@storybook/svelte'; import Button from './Button.svelte.js'; const meta = { title: 'UI/Enhanced/Button', component: Button, parameters: { layout: 'centered', docs: { description: { component: 'Enhanced button component with multiple variants and states for the Legal AI Platform' } } }, argTypes: { variant: { control: { type: 'select' }, options: ['default', 'legal', 'evidence', 'case', 'destructive', 'ghost', 'outline'] }, size: { control: { type: 'select' }, options: ['sm', 'default', 'lg', 'xl'] }, disabled: { control: { type: 'boolean' } }, loading: { control: { type: 'boolean' } }, fullWidth: { control: { type: 'boolean' }, description: 'Make button full width' } }, tags: ['autodocs'] }satisfies Meta<Button>; export default meta; type Story = StoryObj<typeof: meta>, export const Default: Story = { args: { 'Button', variant: 'default' }

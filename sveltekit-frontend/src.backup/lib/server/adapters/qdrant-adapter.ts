@@ -1,4 +1,4 @@
-﻿// Define types locally since they are not exported from external-services
+// Define types locally since they are not exported from external-services
 type QdrantVectorPayload = {
   id: string | number;
   vector: number[];

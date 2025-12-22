@@ -7,7 +7,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getLearningPipeline } from '$lib/services/error-analysis/LearningPipeline';
 import { getGRPOPolicy } from '$lib/services/error-analysis/GRPOPolicy';
 import { getExperienceRecorder } from '$lib/services/error-analysis/ExperienceRecorder';

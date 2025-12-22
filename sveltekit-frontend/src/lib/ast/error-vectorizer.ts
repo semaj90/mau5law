@@ -3,7 +3,7 @@
  * Converts AST errors to vectors for WebGPU clustering
  */
 
-import type { ASTError } from './svelte-check-analyzer';
+import type { ASTError } from './svelte-check-analyzer.js';
 
 export interface ErrorVector {
  id: string;

@@ -1,4 +1,4 @@
-import { createAstVectorizer } from './astVectorizer';
+import { createAstVectorizer } from './astVectorizer.js';
 
 let gpuVectorizer: ReturnType<typeof createAstVectorizer> | null = null;
 

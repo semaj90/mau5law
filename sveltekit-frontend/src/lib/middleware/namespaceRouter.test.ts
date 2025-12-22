@@ -5,8 +5,8 @@ import {
  createNamespaceContext,
  isFeatureEnabledForRequest,
  getDisabledFeatureResponse,
-} from './namespaceRouter';
-import { featureFlagManager } from '../services/featureFlags';
+} from './namespaceRouter.js';
+import { featureFlagManager } from '../services/featureFlags.js';
 
 describe('NamespaceRouter', () => {
   beforeEach(async () => {

@@ -18,10 +18,10 @@
  lowPriority: number;
  }
 
- let errors: Map<string, ErrorEvent> = new Map();
- let summary: Summary | null = null;
- let connected = false;
- let error: string | null = null;
+ let errors: Map<string, ErrorEvent> = $state(new Map());
+ let summary: Summary | null = $state(null);
+ let connected = $state(false);
+ let error: string | null = $state(null);
 
  onMount(() => {
  connect();

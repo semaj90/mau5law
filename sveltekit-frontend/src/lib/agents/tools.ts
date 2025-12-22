@@ -5,20 +5,20 @@
 
 import { generateEmbedding } from '$lib/ai/ollama-config';
 import {
- logError,
- ToolErrorHandler,
- validateNonEmpty,
- validateUrl,
- withRetry,
- withTimeout,
-} from './error-handler';
+    logError,
+    ToolErrorHandler,
+    validateNonEmpty,
+    validateUrl,
+    withRetry,
+    withTimeout,
+} from './error-handler.js';
 import type {
- RagLookupResult,
- ToolCall,
- ToolResult,
- WebCrawlResult,
- WebDocSummaryResult,
-} from './types';
+    RagLookupResult,
+    ToolCall,
+    ToolResult,
+    WebCrawlResult,
+    WebDocSummaryResult,
+} from './types.js';
 
 /**
  * Redis cache client for tool results
@@ -490,6 +490,168 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  };
  }
  },
+
+ /**
+ * Apply Patch: Modify files with backup and rollback capability
+ * PHASE79: Core tool for autonomous error fixing
+ */
+ apply_patch: async (args: {
+ filePath: string;
+ patchContent: string;
+ createBackup?: boolean;
+ dryRun?: boolean;
+ }) => {
+ const { filePath, patchContent, createBackup = true, dryRun = false } = args;
+
+ try {
+ validateNonEmpty(filePath, 'File path');
+ validateNonEmpty(patchContent, 'Patch content');
+
+ // Import fs dynamically (only needed server-side)
+ const fs = await import('fs/promises');
+ const path = await import('path');
+
+ const absolutePath = path.isAbsolute(filePath)
+ ? filePath
+ : path.join(process.cwd(), filePath);
+
+ // Check file exists
+ try {
+ await fs.access(absolutePath);
+ } catch {
+ return {
+ filePath,
+ success: false,
+ error: 'File not found',
+ backup: null,
+ };
+ }
+
+ if (dryRun) {
+ return {
+ filePath,
+ success: true,
+ dryRun: true,
+ message: 'Dry run - no changes made',
+ patchPreview: patchContent.substring(0, 200),
+ backup: null,
+ };
+ }
+
+ // Create backup if requested
+ let backupPath: string | null = null;
+ if (createBackup) {
+ backupPath = `${absolutePath}.phase79.bak`;
+ const originalContent = await fs.readFile(absolutePath, 'utf-8');
+ await fs.writeFile(backupPath, originalContent, 'utf-8');
+ }
+
+ // Apply patch (V1: simple content replacement)
+ // Future: Support unified diff format, JSON patch, or AST transformations
+ await fs.writeFile(absolutePath, patchContent, 'utf-8');
+
+ return {
+ filePath,
+ success: true,
+ backup: backupPath,
+ message: 'Patch applied successfully',
+ };
+
+ } catch (error) {
+ const toolError = ToolErrorHandler.handleExecutionError(error, 'Apply patch');
+ logError(toolError, 'apply_patch');
+
+ return {
+ filePath: args.filePath,
+ success: false,
+ error: ToolErrorHandler.formatErrorMessage(toolError),
+ backup: null,
+ };
+ }
+ },
+
+ /**
+ * Verify Fix: Run svelte-check on specific file to verify no errors
+ * PHASE79: Verification step in autonomous repair loop
+ */
+ verify_fix: async (args: { filePath: string; }) => {
+ const { filePath } = args;
+
+ try {
+ validateNonEmpty(filePath, 'File path');
+
+ // Import dependencies dynamically
+ const { exec } = await import('child_process');
+ const { promisify } = await import('util');
+ const path = await import('path');
+
+ const execAsync = promisify(exec);
+
+ const absolutePath = path.isAbsolute(filePath)
+ ? filePath
+ : path.join(process.cwd(), filePath);
+
+ // Run svelte-check and parse output
+ try {
+ const { stdout, stderr } = await execAsync(
+ 'npx svelte-check --fail-on-warnings false --output human',
+ {
+ cwd: process.cwd(),
+ maxBuffer: 10 * 1024 * 1024
+ }
+ );
+
+ const output = stdout + stderr;
+ const fileName = path.basename(absolutePath);
+
+ // Check if this file appears in error output
+ const fileErrorLines = output.split('\n').filter(line =>
+ line.includes(fileName) && /Error:|Warning:/.test(line)
+ );
+
+ const errorCount = fileErrorLines.length;
+
+ return {
+ filePath,
+ success: errorCount === 0,
+ errors: errorCount,
+ errorDetails: fileErrorLines.slice(0, 10), // First 10 errors
+ message: errorCount === 0
+ ? 'No errors found'
+ : `Found ${errorCount} error(s)`,
+ };
+
+ } catch (execError: any) {
+ // svelte-check exits with non-zero on errors
+ const output = (execError.stdout || '') + (execError.stderr || '');
+ const fileName = path.basename(absolutePath);
+
+ const fileErrorLines = output.split('\n').filter(line =>
+ line.includes(fileName) && /Error:|Warning:/.test(line)
+ );
+
+ return {
+ filePath,
+ success: false,
+ errors: fileErrorLines.length,
+ errorDetails: fileErrorLines.slice(0, 10),
+ message: `Found ${fileErrorLines.length} error(s)`,
+ };
+ }
+
+ } catch (error) {
+ const toolError = ToolErrorHandler.handleExecutionError(error, 'Verify fix');
+ logError(toolError, 'verify_fix');
+
+ return {
+ filePath: args.filePath,
+ success: false,
+ errors: -1,
+ errorDetails: [],
+ error: ToolErrorHandler.formatErrorMessage(toolError),
+ };
+ }
+ },
 };
 
 /**
@@ -545,6 +707,8 @@ function getToolDescription(toolName: string): string {
  web_doc_summary: 'Summarize web documentation into README-ready markdown',
  web_search: 'Search the web (ready for API integration)',
  code_search: 'Search codebase using ripgrep patterns (ready for Go service integration)',
+ apply_patch: 'Apply code patches to files with backup and rollback (Phase 79)',
+ verify_fix: 'Verify file has no errors using svelte-check (Phase 79)',
  };
 
  return descriptions[toolName] ?? 'Unknown tool';

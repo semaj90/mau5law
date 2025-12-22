@@ -2,7 +2,7 @@
  * API Endpoint: GET /api/routes/all
  * Returns all discovered SvelteKit routes for the Command Center
  */
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { collectRoutes } from '$lib/server/routesIndex';
 
 export const GET: RequestHandler = async () => {

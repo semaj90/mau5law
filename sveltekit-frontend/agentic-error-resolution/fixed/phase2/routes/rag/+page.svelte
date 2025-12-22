@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: `</p>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
+<!-- @migration-task Error while migrating Svelte code: `</p>` attempted to close an element that was not open
+https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
   // Removed superForm / zod / Zod types imports (client-side superforms caused invalid bindings)
   import type { Search, Upload, Tag, FileText, Database  } from 'lucide-svelte';

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const PHASE72_BACKEND_URL = process.env.PHASE72_BACKEND_URL ?? 'http://127.0.0.1:8000';
 

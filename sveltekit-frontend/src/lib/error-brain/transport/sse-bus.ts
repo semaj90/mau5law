@@ -3,8 +3,8 @@
  * In-memory fanout for this process
  */
 
-import type { ErrorBrainEvent } from '../types';
-import type { ErrorBrainTransport } from './interface';
+import type { ErrorBrainEvent } from '../types.js';
+import type { ErrorBrainTransport } from './interface.js';
 
 type Listener = (evt: ErrorBrainEvent) => void;
 

@@ -6,7 +6,7 @@ import { db } from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 import { cleanupTest, setupTest } from '$lib/test-utils/setup';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ragService } from '../rag.service';
+import { ragService } from '../rag.service.js';
 
 // Create proper mock chains
 const createDbSelectMock = (data: any) => ({

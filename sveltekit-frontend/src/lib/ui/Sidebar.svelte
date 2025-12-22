@@ -1,5 +1,5 @@
 <script lang="ts">
- import { page } from '$app/stores';
+ import { page } from '$app/state';
 
  const navItems = [
  { label: 'Command Center', href: '/command', key: 'command' },
@@ -14,7 +14,7 @@
  { label: 'Terminal', href: '/terminal', key: 'terminal' },
  { label: 'System Config', href: '/settings', key: 'settings' },
  ];
-let currentPath = $state($page.url.pathname);
+let currentPath = $state(page.url.pathname);
 </script>
 
 <aside class="w-64 h-screen border-r border-black/40 bg-sandDark flex flex-col">

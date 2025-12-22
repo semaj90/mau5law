@@ -3,7 +3,7 @@
  * Generates stable, deterministic unified diffs
  */
 
-import { sha256 } from './guards';
+import { sha256 } from './guards.js';
 
 /**
  * Generate unified diff between two strings

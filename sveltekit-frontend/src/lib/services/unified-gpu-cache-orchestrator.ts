@@ -3,10 +3,10 @@
  * Integrates WebASM inference, GPU bridge, MinIO cache, and performance monitoring
  */
 import { gpuSummaryStore } from '../stores/gpu-summary-store.svelte';
-import * as minioGPUCache from './minio-gpu-cache-integration';
-import { vectorSearchPipeline } from './vector-search-webasm-integration';
-import { webASMGPUBridge } from './webasm-gpu-bridge';
-import { webASMInferenceService } from './webasm-inference-service';
+import * as minioGPUCache from './minio-gpu-cache-integration.js';
+import { vectorSearchPipeline } from './vector-search-webasm-integration.js';
+import { webASMGPUBridge } from './webasm-gpu-bridge.js';
+import { webASMInferenceService } from './webasm-inference-service.js';
 
 export interface UnifiedCacheConfig {
     webasm: {

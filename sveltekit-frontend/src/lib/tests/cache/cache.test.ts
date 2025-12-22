@@ -1,4 +1,4 @@
-import type { describe, it, expect, beforeEach, vi } from 'vitest'; import type { memoryCache, getFromMemoryCache, setCache, checkApiKey, checkRateLimit, redisRateLimit } from '../../server/cache'; describe('cache helpers (memory)', () => {
+import type { describe, it, expect, beforeEach, vi } from 'vitest'; import type { memoryCache, getFromMemoryCache, setCache, checkApiKey, checkRateLimit, redisRateLimit } from '../../server/cache.js'; describe('cache helpers (memory)', () => {
   beforeEach(async () => {
     await setupTest();
   });

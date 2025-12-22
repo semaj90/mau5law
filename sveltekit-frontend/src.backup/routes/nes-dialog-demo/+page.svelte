@@ -1,5 +1,5 @@
 <script lang="ts">
-  let dialog: HTMLDialogElement;
+  let dialog: HTMLDialogElement = $state();
 
   function openDialog() {
     dialog?.showModal();

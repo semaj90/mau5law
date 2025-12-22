@@ -18,7 +18,7 @@
 import type {
     ACPTool,
     ToolResult
-} from './types';
+} from './types.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // Configuration

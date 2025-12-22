@@ -27,7 +27,7 @@ import type {
 	PolicyState,
 	SimilarError,
 	ErrorGroup
-} from './types';
+} from './types.js';
 
 export interface GRPOConfig {
 	learningRate: number;

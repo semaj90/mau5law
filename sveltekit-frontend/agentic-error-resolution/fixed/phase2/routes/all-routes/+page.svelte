@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!--
 All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
 Integrates with Gemma Embeddings Vector Architecture for route categorization

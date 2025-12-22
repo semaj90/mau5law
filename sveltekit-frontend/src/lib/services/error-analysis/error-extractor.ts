@@ -4,8 +4,8 @@
  * Task 2: Implement error extraction service
  */
 
-import { BaseService } from './base-service';
-import type { Error, Embedding, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Error, Embedding, ServiceConfig } from './types.js';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';

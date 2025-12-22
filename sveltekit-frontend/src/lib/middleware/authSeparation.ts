@@ -3,8 +3,8 @@
  * Enforces different authentication requirements for error-brain and legal-ai
  */
 
-import { NamespaceRouter, type NamespaceContext } from './namespaceRouter';
-import { featureLogger } from '../services/featureLogger';
+import { NamespaceRouter, type NamespaceContext } from './namespaceRouter.js';
+import { featureLogger } from '../services/featureLogger.js';
 
 export interface AuthContext {
  feature: 'errorBrain' | 'legalAi' | null;

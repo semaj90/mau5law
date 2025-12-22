@@ -12,7 +12,7 @@
 // bits-ui v2 Components (Svelte 5 API)
 // Uses default exports, not named exports
 // ============================================
-export * as Bits from './bits';
+export * as Bits from './bits.js';
 
 // bits-ui v2 uses default exports - import them correctly
 import {
@@ -39,12 +39,12 @@ export const BitsAvatar = BitsAvatarPrimitive;
 // ============================================
 // Core Components (Custom implementations)
 // ============================================
-export * from './core';
+export * from './core.js';
 
 // ============================================
 // NES Gaming Style Components
 // ============================================
-export * as NES from './nes';
+export * as NES from './nes.js';
 
 // ============================================
 // Custom UI Components

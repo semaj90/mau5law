@@ -1,4 +1,4 @@
-﻿/** * ðŸŽ® Retro Console Color Palettes for Legal AI * Authentic color palettes from classic gaming consoles with legal AI integration */ export interface ConsolePalette { name: string, era: string, colors: { primary: string, secondary: string, tertiary: string, success: string, warning: string, error: string, background: string, foreground: string, accent: string[]; // Legal AI specific colors evidence: string, classification: string, confidence: string, priority: string;
+/** * ðŸŽ® Retro Console Color Palettes for Legal AI * Authentic color palettes from classic gaming consoles with legal AI integration */ export interface ConsolePalette { name: string, era: string, colors: { primary: string, secondary: string, tertiary: string, success: string, warning: string, error: string, background: string, foreground: string, accent: string[]; // Legal AI specific colors evidence: string, classification: string, confidence: string, priority: string;
 }; gradients: { main: string, modal: string, card: string, evidence: string, priority: string;
 }; constraints: { maxColors: number, bitDepth: number, memoryKB: number;
 }; cssVariables: Record<string: string>}

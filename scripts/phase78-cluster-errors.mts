@@ -16,6 +16,7 @@
 import postgres from 'postgres';
 import { existsSync, writeFileSync } from 'fs';
 import path from 'path';
+import { generateCachedEmbedding } from '../src/lib/ai/ollama-config';
 
 // ============================================================================
 // TYPES
@@ -60,25 +61,13 @@ const OLLAMA_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
 
 async function generateEmbedding(text: string): Promise<number[]> {
 	/**
-	 * Call Ollama embedding endpoint.
-	 * Assumes /api/embed with { model, prompt } → { embedding }
+	 * Call Ollama embedding endpoint with Redis caching.
 	 */
 	try {
-		const response = await fetch(`${OLLAMA_URL}/api/embed`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				model: 'gemma:latest',
-				prompt: text
-			})
+		return await generateCachedEmbedding(text, {
+			baseUrl: OLLAMA_URL,
+			forceRefresh: FORCE_RECOMPUTE
 		});
-
-		if (!response.ok) {
-			throw new Error(`Ollama returned ${response.status}`);
-		}
-
-		const data = await response.json() as { embedding: number[] };
-		return data.embedding;
 	} catch (error) {
 		console.warn(`   ⚠️  Embedding failed for: "${text.substring(0, 50)}..."`, error);
 		// Return zero vector as fallback

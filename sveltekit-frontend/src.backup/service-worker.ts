@@ -1,4 +1,4 @@
-﻿/// <reference lib="webworker" />
+/// <reference lib="webworker" />
 
 // Define SyncEvent interface, as it might not be fully provided by lib="webworker" in all environments
 interface SyncEvent extends Event {

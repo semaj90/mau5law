@@ -8,8 +8,8 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import * as fc from 'fast-check';
-import { TfIdfRanker } from './TfIdfRanker';
-import type { SearchResult } from './types';
+import { TfIdfRanker } from './TfIdfRanker.js';
+import type { SearchResult } from './types.js';
 
 describe('Knowledge Search Engine', () => {
   beforeEach(async () => {

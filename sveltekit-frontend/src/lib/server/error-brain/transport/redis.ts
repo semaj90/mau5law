@@ -4,8 +4,8 @@
  * PHASE 36: Redis transport (pub/sub + stream)
  */
 
-import type { ErrorBrainEvent } from '../events';
-import type { ErrorBrainTransport } from './interface';
+import type { ErrorBrainEvent } from '../events.js';
+import type { ErrorBrainTransport } from './interface.js';
 
 /**
  * Redis transport implementation

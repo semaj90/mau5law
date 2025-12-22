@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { DiffRepository } from '../DiffRepository';
+import { DiffRepository } from '../DiffRepository.js';
 
 // Mock the db module
 vi.mock('$lib/server/db', () => ({

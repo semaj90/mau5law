@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import  ErrorBoundary  from "$lib/components/ErrorBoundary.svelte"; -->

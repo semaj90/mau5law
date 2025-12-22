@@ -10,7 +10,7 @@ import {
  retryWithBackoff,
  getSafeDefaults,
  gracefulDegrade,
-} from './recovery';
+} from './recovery.js';
 
 // Mock the feature logger
 vi.mock('./featureLogger', () => ({
@@ -20,7 +20,7 @@ vi.mock('./featureLogger', () => ({
  },
 }));
 
-import { featureLogger } from './featureLogger';
+import { featureLogger } from './featureLogger.js';
 
 describe('Recovery Strategy', () => {
   beforeEach(async () => {

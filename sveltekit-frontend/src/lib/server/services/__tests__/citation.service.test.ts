@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';
-import { citationService } from '../citation.service';
+import { citationService } from '../citation.service.js';
 
 describe('CitationService', () => {
 	const mockUserId = 'user-123';
@@ -48,7 +48,7 @@ describe('CitationService', () => {
  expect(result.source_type).toBe('manual');
  });
 
-import { citationService } from '../citation.service';
+import { citationService } from '../citation.service.js';
  };
 
  const result = await citationService.saveCitation(mockUserId, citationData);

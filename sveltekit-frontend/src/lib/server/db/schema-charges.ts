@@ -8,7 +8,7 @@ import {
  timestamp,
  boolean,
 } from 'drizzle-orm/pg-core';
-import { cases } from './schema';
+import { cases } from './schema.js';
 
 export const charges = pgTable('charges', {
  id: uuid('id').primaryKey().defaultRandom(),

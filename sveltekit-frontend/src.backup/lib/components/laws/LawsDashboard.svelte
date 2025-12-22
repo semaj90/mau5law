@@ -12,11 +12,11 @@
 	}
 
 	let searchQuery = '';
-	let selectedStatute: any = null;
-	let isModalOpen = false;
-	let timelineEvents: TimelineEvent[] = [];
-	let isLoadingTimeline = false;
-	let activeTab: 'search' | 'timeline' = 'search';
+	let selectedStatute: any = $state(null);
+	let isModalOpen = $state(false);
+	let timelineEvents: TimelineEvent[] = $state([]);
+	let isLoadingTimeline = $state(false);
+	let activeTab: 'search' | 'timeline' = $state('search');
 
 	onMount(() => {
 		loadTimeline();

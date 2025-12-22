@@ -8,11 +8,11 @@
 		confidence: number;
 	}
 
-	let query = '';
-	let suggestions: Suggestion[] = [];
-	let isLoading = false;
-	let selectedIndex = -1;
-	let showSuggestions = false;
+	let query = $state('');
+	let suggestions: Suggestion[] = $state([]);
+	let isLoading = $state(false);
+	let selectedIndex = $state(-1);
+	let showSuggestions = $state(false);
 
 	const typeColors: Record<string, string> = {
 		statute: 'bg-blue-50 border-blue-200',

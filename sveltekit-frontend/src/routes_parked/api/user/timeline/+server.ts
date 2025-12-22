@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getUserTimeline, formatTimelineEvent } from '$lib/server/timeline-logger';
 
 export const GET: RequestHandler = async ({ url, locals }) => {

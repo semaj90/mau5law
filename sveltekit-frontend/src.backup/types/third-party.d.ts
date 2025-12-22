@@ -1,4 +1,4 @@
-﻿declare module 'dompurify' {
+declare module 'dompurify' {
   const DOMPurify: unknown;
   export default DOMPurify;
 }

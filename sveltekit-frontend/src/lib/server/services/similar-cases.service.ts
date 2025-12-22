@@ -3,7 +3,7 @@
  * Retrieves and caches similar cases using vector similarity and Neo4j relationships
  */
 
-import { cacheService } from './cache.service';
+import { cacheService } from './cache.service.js';
 
 export interface SimilarCase {
  caseId: string;

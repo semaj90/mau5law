@@ -19,6 +19,7 @@ import { isNull, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import * as path from 'path';
 import postgres from 'postgres';
+import { generateCachedEmbedding } from '../src/lib/ai/ollama-config';
 
 // Load environment variables
 dotenv.config();
@@ -129,37 +130,20 @@ async function getUnclusteredErrors() {
 }
 
 /**
- * Call Ollama embedding API
+ * Call Ollama embedding API with Redis caching
  */
 async function generateEmbedding(text: string, retries = 3): Promise<number[] | null> {
-  for (let attempt = 0; attempt < retries; attempt++) {
-    try {
-      const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: EMBEDDING_MODEL,
-          prompt: text.substring(0, 512), // Limit input
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = await response.json() as { embedding?: number[] };
-      return data.embedding || null;
-    } catch (err) {
-      if (attempt === retries - 1) {
-        if (isVerbose) {
-          console.warn(`   ⚠️  Failed to embed after ${retries} attempts:`, err);
-        }
-        return null;
-      }
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  try {
+    return await generateCachedEmbedding(text, {
+      model: EMBEDDING_MODEL,
+      baseUrl: OLLAMA_BASE_URL
+    });
+  } catch (err) {
+    if (isVerbose) {
+      console.warn(`   ⚠️  Failed to generate cached embedding:`, err);
     }
+    return null;
   }
-  return null;
 }
 
 /**

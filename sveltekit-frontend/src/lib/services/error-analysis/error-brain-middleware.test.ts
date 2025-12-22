@@ -6,8 +6,8 @@
 
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { ErrorBrainMiddleware } from './error-brain-middleware';
-import type { ServiceConfig } from './types';
+import { ErrorBrainMiddleware } from './error-brain-middleware.js';
+import type { ServiceConfig } from './types.js';
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

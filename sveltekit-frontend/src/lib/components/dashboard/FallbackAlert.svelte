@@ -2,9 +2,9 @@
  import { fallbackActive, fallbackConfidence } from '$lib/stores/dashboard/DocumentProgressStore';
  import { onMount } from 'svelte';
 
- let isActive = false;
- let confidence = 0;
- let showAlert = false;
+ let isActive = $state(false);
+ let confidence = $state(0);
+ let showAlert = $state(false);
 
  onMount(() => {
  const unsubscribeFallback = fallbackActive.subscribe((value) => {

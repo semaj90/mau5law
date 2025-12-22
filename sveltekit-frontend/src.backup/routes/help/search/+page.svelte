@@ -2,7 +2,7 @@
   import { Search } from "lucide-svelte";
   import { AlertCircle } from "lucide-svelte";
 
-  let query = '';
+  let query = $state('');
   let results: Array<{
     id: string;
     title: string;
@@ -14,10 +14,10 @@
       contradiction: number;
       fused: number;
     };
-  }> = [];
-  let disclaimer = '';
-  let loading = false;
-  let errorMessage = '';
+  }> = $state([]);
+  let disclaimer = $state('');
+  let loading = $state(false);
+  let errorMessage = $state('');
 
   async function runSearch() {
     const trimmed = query.trim();

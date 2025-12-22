@@ -1,4 +1,4 @@
-﻿// BVH Accelerator WebAssembly Module Stub
+// BVH Accelerator WebAssembly Module Stub
 // This is a placeholder that will be replaced by the actual WASM build output
 console.log('ðŸš§ BVH Accelerator stub loaded - WASM not yet built');
 

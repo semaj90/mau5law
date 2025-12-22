@@ -4,7 +4,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { graphService } from '../graph.service';
+import { graphService } from '../graph.service.js';
 
 // Mock Neo4j driver
 vi.mock('neo4j-driver', () => ({

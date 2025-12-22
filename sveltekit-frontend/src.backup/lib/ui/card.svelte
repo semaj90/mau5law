@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { clickable = false, onclick } = $props<{
+  let { children, clickable = false, onclick } = $props<{
     clickable?: boolean;
     onclick?: (() => void) | undefined;
   }>();
@@ -17,5 +17,5 @@
     }
   }}
 >
-  <slot />
+  {@render children?.()}
 </div>

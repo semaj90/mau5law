@@ -1,7 +1,7 @@
 import { superValidate } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters';;
 import { uploadSchema } from '$lib/schemas/upload';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async () => {
  // Initialize the form with the upload schema

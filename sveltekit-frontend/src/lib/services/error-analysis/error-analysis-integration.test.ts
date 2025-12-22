@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { KnowledgeBase } from './knowledge-base';
-import { ContextFormatter } from './context-formatter';
-import { ProgressTracker } from './progress-tracker';
-import { ErrorHandler } from './error-handler';
-import { KnowledgeBaseLearning } from './knowledge-base-learning';
-import { AceContextManager } from './ace-context-manager';
-import type { ServiceConfig, Diff, Error as ErrorType } from './types';
+import { KnowledgeBase } from './knowledge-base.js';
+import { ContextFormatter } from './context-formatter.js';
+import { ProgressTracker } from './progress-tracker.js';
+import { ErrorHandler } from './error-handler.js';
+import { KnowledgeBaseLearning } from './knowledge-base-learning.js';
+import { AceContextManager } from './ace-context-manager.js';
+import type { ServiceConfig, Diff, Error as ErrorType } from './types.js';
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

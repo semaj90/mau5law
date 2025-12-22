@@ -263,7 +263,7 @@ import {
  phase6_72_restructure_tasks,
  tasksByPriority,
  tasksByTab,
-} from './phase72/command-center-restructure-tasks';
+} from './phase72/command-center-restructure-tasks.js';
 
 // Export Phase 72 tasks for NES modal integration
 export { phase6_72_restructure_tasks, tasksByPriority, tasksByTab };

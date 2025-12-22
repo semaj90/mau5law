@@ -1,4 +1,4 @@
-﻿declare module 'drizzle-orm/expressions' {
+declare module 'drizzle-orm/expressions' {
   // lightweight ambient signatures to satisfy TS until proper types are available
   export const eq: unknown;
   export const and: unknown;

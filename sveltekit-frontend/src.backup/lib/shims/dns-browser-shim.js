@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DNS Browser Shim
  * Provides empty stubs for Node.js dns module in browser
  */

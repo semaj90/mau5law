@@ -1,8 +1,8 @@
-import type { FactCluster } from '../types';
-import { extractTimelineFacts } from './extractTimelineFacts';
-import { normalizeTimelineFacts } from './normalizeTime';
-import { solveTimelineContradictions } from './solver';
-import { describeTimelineContradictions } from './contradictions';
+import type { FactCluster } from '../types.js';
+import { extractTimelineFacts } from './extractTimelineFacts.js';
+import { normalizeTimelineFacts } from './normalizeTime.js';
+import { solveTimelineContradictions } from './solver.js';
+import { describeTimelineContradictions } from './contradictions.js';
 
 export function analyzeTimeline(clusters: FactCluster[]) {
  const extracted = extractTimelineFacts(clusters);

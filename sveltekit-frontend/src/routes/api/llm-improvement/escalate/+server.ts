@@ -7,7 +7,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getEscalationService } from '$lib/services/error-analysis/EscalationService';
 import type {
 	ErrorReport,

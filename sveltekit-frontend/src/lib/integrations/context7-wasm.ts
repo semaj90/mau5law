@@ -3,7 +3,7 @@
 // Always prefer mock unless a future real binding is added to dependencies.
 // This avoids build-time unresolved module errors for: '@context7/wasm'.
 
-const impl = await import('./context7-wasm-mock').then((m) => m.default);
+const impl = await import('./context7-wasm-mock.js').then((m) => m.default);
 
 // Placeholder: if a real wasm package is later installed, this conditional
 // can be reintroduced with proper try/catch.

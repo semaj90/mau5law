@@ -1,4 +1,4 @@
-import { GemmaVectorStore } from './uiComplianceRag';
+import { GemmaVectorStore } from './uiComplianceRag.js';
 
 let evidenceStore: GemmaVectorStore | null = null;
 

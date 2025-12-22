@@ -1,5 +1,5 @@
 <script lang="ts">
- let { variant = 'primary', size = 'medium', disabled = false, onClick = undefined } = $props<{
+ let { children, variant = 'primary', size = 'medium', disabled = false, onClick = undefined } = $props<{
  variant?: 'primary' | 'secondary' | 'danger';
  size?: 'small' | 'medium' | 'large';
  disabled?: boolean;
@@ -12,7 +12,7 @@
  {disabled}
  onclick={onClick}
 >
- <slot />
+ {@render children?.()}
 </button>
 
 <style>

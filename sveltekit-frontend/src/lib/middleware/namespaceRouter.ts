@@ -3,7 +3,7 @@
  * Routes requests to error-brain or legal-ai based on URL path
  */
 
-import { featureFlagManager } from '../services/featureFlags';
+import { featureFlagManager } from '../services/featureFlags.js';
 
 export type Feature = 'errorBrain' | 'legalAi';
 

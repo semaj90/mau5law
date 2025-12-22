@@ -4,7 +4,7 @@
  * Priority order: Statutes (1.0) → Evidence (0.85) → Notes (0.75) → Recent Chat (0.65) → Summary (0.55)
  */
 
-import { db } from '../db/index';
+import { db } from '../db/index.js';
 import {
  workspaceStatutes,
  workspaceEvidence,
@@ -14,10 +14,10 @@ import {
  evidence,
  statutes,
  statuteChunks,
-} from '../db/schema-postgres';
+} from '../db/schema-postgres.js';
 import { eq, desc } from 'drizzle-orm';
-import { cosineSimilarity } from './embedding-service';
-import { searchStatuteChunks } from './statute-ingestion-service';
+import { cosineSimilarity } from './embedding-service.js';
+import { searchStatuteChunks } from './statute-ingestion-service.js';
 
 export interface RAGSource {
  type: 'statute' | 'evidence' | 'note' | 'message' | 'summary';
@@ -172,10 +172,10 @@ async function retrieveRecentMessages(workspaceId: string, topK: number = 5): Pr
  .select()
  .from(ragSessions)
  .innerJoin(
- (await import('../db/schema-postgres')).workspaceSessions,
- eq(ragSessions.id, (await import('../db/schema-postgres')).workspaceSessions.sessionId)
+ (await import('../db/schema-postgres.js')).workspaceSessions,
+ eq(ragSessions.id, (await import('../db/schema-postgres.js')).workspaceSessions.sessionId)
  )
- .where(eq((await import('../db/schema-postgres')).workspaceSessions.workspaceId, workspaceId));
+ .where(eq((await import('../db/schema-postgres.js')).workspaceSessions.workspaceId, workspaceId));
 
  const sources: RAGSource[] = [];
 
@@ -213,10 +213,10 @@ async function retrieveSummary(workspaceId: string): Promise<RAGSource[]> {
  .select()
  .from(ragSessions)
  .innerJoin(
- (await import('../db/schema-postgres')).workspaceSessions,
- eq(ragSessions.id, (await import('../db/schema-postgres')).workspaceSessions.sessionId)
+ (await import('../db/schema-postgres.js')).workspaceSessions,
+ eq(ragSessions.id, (await import('../db/schema-postgres.js')).workspaceSessions.sessionId)
  )
- .where(eq((await import('../db/schema-postgres')).workspaceSessions.workspaceId, workspaceId));
+ .where(eq((await import('../db/schema-postgres.js')).workspaceSessions.workspaceId, workspaceId));
 
  const sources: RAGSource[] = [];
 

@@ -6,8 +6,8 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { ErrorExtractor } from './error-extractor';
-import type { ServiceConfig } from './types';
+import { ErrorExtractor } from './error-extractor.js';
+import type { ServiceConfig } from './types.js';
 
 describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  let extractor: ErrorExtractor;

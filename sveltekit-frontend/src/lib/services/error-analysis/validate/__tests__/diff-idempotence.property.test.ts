@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { sha256 } from '../../diffs/unifiedDiff';
+import { sha256 } from '../../diffs/unifiedDiff.js';
 
 describe('Diff idempotence property', () => {
   beforeEach(async () => {

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';;
   import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
 
-  let summarizerRef: any;
+  let summarizerRef: any = $state();
 
   // Type the event payload later; use 'any' for now to resolve compile issues
   function handleSummaryGenerated(event: CustomEvent<any>) {

@@ -3,8 +3,8 @@
  * Manages diff persistence and retrieval from database
  */
 
-import { BaseService } from './base-service';
-import type { Diff, ServiceConfig } from './types';
+import { BaseService } from './base-service.js';
+import type { Diff, ServiceConfig } from './types.js';
 
 export interface IDiffStorage {
  saveDiff(diff: Diff): Promise<Diff>;

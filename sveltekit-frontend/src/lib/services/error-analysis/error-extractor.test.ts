@@ -6,8 +6,8 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { ErrorExtractor } from './error-extractor';
-import type { Error, ServiceConfig } from './types';
+import { ErrorExtractor } from './error-extractor.js';
+import type { Error, ServiceConfig } from './types.js';
 
 describe('ErrorExtractor - Property 1: Error Extraction Completeness', () => {
   beforeEach(async () => {

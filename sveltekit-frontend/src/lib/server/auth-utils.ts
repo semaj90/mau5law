@@ -1,4 +1,4 @@
-import type { App } from '../../../app.d'; // Correct path to app.d.ts
+import type { App } from '../../../app.d.js'; // Correct path to app.d.ts
 
 /**
  * A utility function to retrieve the authenticated user from SvelteKit locals.

@@ -5,8 +5,8 @@
 
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { RUN_DIR } from './config';
-import type { RunProgress } from './types';
+import { RUN_DIR } from './config.js';
+import type { RunProgress } from './types.js';
 
 /**
  * Write run progress to disk (idempotent: only writes if content changed)

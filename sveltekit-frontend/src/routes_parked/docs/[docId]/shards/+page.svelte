@@ -1,5 +1,5 @@
 <script lang="ts">
- import { page } from '$app/stores';
+ import { page } from '$app/state';
  import type { ShardNode } from '$lib/types/evidence-board';
  import { onMount } from 'svelte';
 
@@ -8,7 +8,7 @@
  let loading = $state(true);
  let error = $state('');
 
- let docId = $derived($page.params.docId);
+ let docId = $derived(page.params.docId);
 
  onMount(() => {
  (async () => {

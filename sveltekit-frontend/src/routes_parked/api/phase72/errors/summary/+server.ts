@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
  // TODO: Query Phase 72 database for real error data

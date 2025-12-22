@@ -1,4 +1,4 @@
-﻿export interface CacheConfiguration {
+export interface CacheConfiguration {
   maxSize: number;
   ttl: number;
   compression: boolean;

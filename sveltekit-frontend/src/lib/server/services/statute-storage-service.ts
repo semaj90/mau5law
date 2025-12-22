@@ -40,7 +40,7 @@ export async function storeStatuteXML(
 ): Promise<string> {
  try {
  // Dynamic import to avoid build-time issues
- const { MinioClient } = await import('../minio');
+ const { MinioClient } = await import('../minio.js');
 
  const path = buildStoragePath(title, 'xml', config);
  const fileName = `title${title}.xml`;
@@ -68,7 +68,7 @@ export async function storeStatutePDF(
 ): Promise<string> {
  try {
  // Dynamic import to avoid build-time issues
- const { MinioClient } = await import('../minio');
+ const { MinioClient } = await import('../minio.js');
 
  // Read PDF file
  const pdfBuffer = fs.readFileSync(pdfPath);
@@ -96,7 +96,7 @@ export async function retrieveStatuteXML(
 ): Promise<string> {
  try {
  // Dynamic import to avoid build-time issues
- const { MinioClient } = await import('../minio');
+ const { MinioClient } = await import('../minio.js');
 
  const path = buildStoragePath(title, 'xml', config);
  const fileName = `title${title}.xml`;
@@ -141,7 +141,7 @@ export async function storeParsedStatutes(
 ): Promise<string> {
  try {
  // Dynamic import to avoid build-time issues
- const { MinioClient } = await import('../minio');
+ const { MinioClient } = await import('../minio.js');
 
  const jsonContent = JSON.stringify(statutes, null, 2);
  const buffer = Buffer.from(jsonContent, 'utf-8');
@@ -169,7 +169,7 @@ export async function listStatuteSources(
 ): Promise<{ xml: string | null; pdf: string | null }> {
  try {
  // Dynamic import to avoid build-time issues
- const { MinioClient } = await import('../minio');
+ const { MinioClient } = await import('../minio.js');
 
  const xmlPath = buildStoragePath(title, 'xml', config);
  const pdfPath = buildStoragePath(title, 'pdf', config);

@@ -13,17 +13,17 @@
  import { formatETA, getStageIcon, getStageLabelLabel } from '$lib/stores/dashboard/GrpcStatusAdapter';
  import { onMount } from 'svelte';
 
- let documentTitle = '';
- let percentage = 0;
- let eta = '';
+ let documentTitle = $state('');
+ let percentage = $state(0);
+ let eta = $state('');
  let etaSecondsValue = 0;
- let currentPageNum = 0;
- let totalPagesNum = 0;
- let stageLabel = '';
- let statusMessage = '';
- let details = '';
- let isProcessingValue = false;
- let stageIcon = '';
+ let currentPageNum = $state(0);
+ let totalPagesNum = $state(0);
+ let stageLabel = $state('');
+ let statusMessage = $state('');
+ let details = $state('');
+ let isProcessingValue = $state(false);
+ let stageIcon = $state('');
 
  onMount(() => {
  // Subscribe to stores

@@ -1,4 +1,4 @@
-﻿/** * WebGPU-accelerated RAG Engine * Optimized for Ampere architecture with CUDA interoperability */
+/** * WebGPU-accelerated RAG Engine * Optimized for Ampere architecture with CUDA interoperability */
 export interface WebGPURAGConfig {
   deviceType: 'discrete' | 'integrated';
   enableDebug?: boolean;

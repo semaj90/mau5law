@@ -2,7 +2,7 @@
  * Base service class with common utilities
  */
 
-import type { ServiceConfig } from './types';
+import type { ServiceConfig } from './types.js';
 
 export class BaseService {
  protected config: ServiceConfig;

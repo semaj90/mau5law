@@ -1,4 +1,4 @@
-﻿/**
+/**
  * OS Browser Shim
  * Provides browser-compatible stubs for Node.js os module
  */

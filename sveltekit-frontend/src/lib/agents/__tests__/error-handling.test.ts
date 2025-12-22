@@ -17,7 +17,7 @@ import {
  ErrorCategory,
  RecoveryStrategy,
  type ErrorRecoveryContext,
-} from '../error-recovery';
+} from '../error-recovery.js';
 
 describe('Error Handling - Property 3: Error Handling', () => {
   beforeEach(async () => {

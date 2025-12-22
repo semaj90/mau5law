@@ -4,7 +4,7 @@
  * POST /api/v1/cases - Create new case
  */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import {
  CasesCRUDService,

@@ -4,7 +4,7 @@
  * Implements caching for performance optimization
  */
 
-import { cacheService } from './cache.service';
+import { cacheService } from './cache.service.js';
 
 export interface Statute {
  id: string;

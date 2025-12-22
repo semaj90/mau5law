@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token >
+https://svelte.dev/e/expected_token -->
+<!-- @migration-task Error while migrating Svelte code: Expected token >
+https://svelte.dev/e/expected_token -->
 <script lang="ts">
 	// Removed createEventDispatcher, enhance, writable as they are deprecated or unused.
 	// // Migrated from createEventDispatcher to callback props;

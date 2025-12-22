@@ -1,4 +1,4 @@
-﻿// Lucide-Svelte shim for Svelte 5 compatibility export const Search = () => null export const Plus = () => null export
+// Lucide-Svelte shim for Svelte 5 compatibility export const Search = () => null export const Plus = () => null export
 const Edit = () => null export const Trash2 = () => null export const Save = () => null export const X = () => null
 export const ChevronDown = () => null export const ChevronUp = () => null export const ChevronLeft = () => null export
 const ChevronRight = () => null export const Menu = () => null export const User = () => null export const Settings = ()

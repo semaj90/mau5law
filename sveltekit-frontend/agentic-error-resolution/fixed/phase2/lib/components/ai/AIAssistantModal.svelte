@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import type { getContext  } from 'svelte';
   import type { Button, Card, CardHeader, CardTitle, CardContent  } from '$lib/components/ui/enhanced-bits.svelte';

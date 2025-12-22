@@ -26,7 +26,7 @@ describe('POST /api/routes/:routePath/error-brain-patch', () => {
  method: 'POST',
  body: JSON.stringify({
  file_path: 'src/routes/test/+page.svelte',
- patch_content: 'import { Type } from "./types";',
+ patch_content: 'import { Type } from './types.js';',
  description: 'Fix import statement',
  risk_level: 'low',
  }),
@@ -34,7 +34,7 @@ describe('POST /api/routes/:routePath/error-brain-patch', () => {
 
  const body = await request.json();
  expect(body.file_path).toBe('src/routes/test/+page.svelte');
- expect(body.patch_content).toBe('import { Type } from "./types";');
+ expect(body.patch_content).toBe('import { Type } from './types.js';');
  });
 
  it('should handle optional fields', async () => {
@@ -94,7 +94,7 @@ describe('POST /api/routes/:routePath/error-brain-patch', () => {
 +++ b/src/test.ts
 @@ -1,3 +1,3 @@
 -import { Type } from 'types';
-+import { Type } from './types';
++import { Type } from './types.js';
 
  export const test = () => {};`;
 

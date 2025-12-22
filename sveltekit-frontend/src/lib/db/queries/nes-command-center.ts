@@ -9,7 +9,7 @@
  */
 
 import { eq, desc, and, isNull, sql } from 'drizzle-orm';
-import { getDb } from '../pool';
+import { getDb } from '../pool.js';
 import {
   routeMetadata,
   errorCluster,
@@ -23,7 +23,7 @@ import {
   type NewErrorBrainAnalysis,
   type NewErrorBrainPatch,
   type NewRouteInteractionLog,
-} from '../schema/nes-command-center';
+} from '../schema/nes-command-center.js';
 
 // ============================================================================
 // Route Metadata Queries

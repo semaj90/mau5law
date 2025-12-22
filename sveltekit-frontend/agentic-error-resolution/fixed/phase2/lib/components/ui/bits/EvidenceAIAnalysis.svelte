@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle  } from 'lucide-svelte';

@@ -1,15 +1,15 @@
-import { extractFactsFromMarkdown } from './extractors/mdExtractor';
-import { extractDOMSemantics } from './extractors/domExtractor';
-import { extractUISpec } from './extractors/uiSpecExtractor';
-import { compareFacts } from './semantic/compareFacts';
-import { compareUI } from './semantic/compareUI';
-import { runReasoningPass } from './llm/reasoningPass';
-import { emitObjection } from './llm/objectionEmitter';
-import { searchEvidence } from '../rag/evidenceRag';
-import { fetchUISpecForRoute } from '../rag/uiComplianceRag';
-import { timelineCrosscheck } from './integration/timelineCrosscheck';
-import { analyzeTimeline } from './timeline';
-import type { ContradictionEngineInput, ContradictionEngineResult, UISpec } from './types';
+import { extractFactsFromMarkdown } from './extractors/mdExtractor.js';
+import { extractDOMSemantics } from './extractors/domExtractor.js';
+import { extractUISpec } from './extractors/uiSpecExtractor.js';
+import { compareFacts } from './semantic/compareFacts.js';
+import { compareUI } from './semantic/compareUI.js';
+import { runReasoningPass } from './llm/reasoningPass.js';
+import { emitObjection } from './llm/objectionEmitter.js';
+import { searchEvidence } from '../rag/evidenceRag.js';
+import { fetchUISpecForRoute } from '../rag/uiComplianceRag.js';
+import { timelineCrosscheck } from './integration/timelineCrosscheck.js';
+import { analyzeTimeline } from './timeline.js';
+import type { ContradictionEngineInput, ContradictionEngineResult, UISpec } from './types.js';
 
 export async function analyzeContradictions(
  input: ContradictionEngineInput
@@ -89,4 +89,4 @@ export async function analyzeContradictions(
  };
 }
 
-export * from './types';
+export * from './types.js';

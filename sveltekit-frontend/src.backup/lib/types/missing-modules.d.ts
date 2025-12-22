@@ -1,4 +1,4 @@
-﻿/** * Type declarations for missing modules and dependencies */ // Common missing modules
+/** * Type declarations for missing modules and dependencies */ // Common missing modules
 declare module 'simdjson' {
   export function parse(json: string): unknown;
   export function stringify(obj: unknown): string;

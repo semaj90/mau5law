@@ -10,9 +10,9 @@
   }
 
   let aiHealthy: boolean = true;
-  let formData: PersonFormData = { name: '', alias: '', description: '', caseId: '' };
-  let error: string = '';
-  let loading: boolean = false;
+  let formData: PersonFormData = $state({ name: '', alias: '', description: '', caseId: '' });
+  let error: string = $state('');
+  let loading: boolean = $state(false);
 
   const resetForm = (): void => {
     formData = { name: '', alias: '', description: '', caseId: '' };

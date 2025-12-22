@@ -1,4 +1,4 @@
-﻿/** * Gaming Audio Effects * Retro gaming sound effects for UI components */
+/** * Gaming Audio Effects * Retro gaming sound effects for UI components */
 export class RetroAudioEngine {
   audioContext: AudioContext | null = null;
 

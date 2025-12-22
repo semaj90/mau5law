@@ -5,8 +5,8 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { AceAdapter } from './ace-adapter';
-import type { AceRequest } from './ace-adapter';
+import { AceAdapter } from './ace-adapter.js';
+import type { AceRequest } from './ace-adapter.js';
 
 describe('AceAdapter', () => {
   let adapter: AceAdapter;

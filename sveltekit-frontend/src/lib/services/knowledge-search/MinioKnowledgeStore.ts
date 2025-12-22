@@ -11,7 +11,7 @@
  * Property 9: MinIO Object Key Format
  */
 
-import type { FullDocument } from './types';
+import type { FullDocument } from './types.js';
 
 export interface MinioConfig {
   endpoint: string;

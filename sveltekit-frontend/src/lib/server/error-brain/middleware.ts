@@ -10,7 +10,7 @@
  */
 
 import { error, type RequestEvent } from '@sveltejs/kit';
-import { isErrorBrainEnabled } from './feature-flags';
+import { isErrorBrainEnabled } from './feature-flags.js';
 
 /**
  * Guard: Ensure error-brain is enabled

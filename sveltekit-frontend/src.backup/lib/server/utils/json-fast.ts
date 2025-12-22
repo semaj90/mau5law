@@ -1,4 +1,4 @@
-﻿// src/lib/server/utils/json-fast.ts
+// src/lib/server/utils/json-fast.ts
 /**
  * Fast JSON parsing with optional SIMD acceleration.
  * Falls back to JSON.parse if simdjson / node-simdjson not found.

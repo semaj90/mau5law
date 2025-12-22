@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Dynamic Parallax Helper - WebGPU Enhanced
  * Handles mouse, gyroscope, and pointer input for multi-layer parallax effects
  * with optional WebGPU acceleration for complex transformations

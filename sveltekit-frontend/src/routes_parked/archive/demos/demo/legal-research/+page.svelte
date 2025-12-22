@@ -1,3 +1,7 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types'; import type { PageData } from './$types'; import { onMount } from 'svelte';; // âœ… SVELTE 5: Props let { data }: { data: PageData } = $props(); // âœ… SVELTE 5: State let selectedFeature = $state <string | null>(null); let searchQuery = $state <string>(''); let demoResults = $state <any[]>([]); // âœ… SVELTE 5: Derived let activeFeatures = $derived(data.features.filter(f => f.status === 'active')); // Demo data const mockLegalCases = [ { id: '1', title: 'Smith v. Johnson - Contract Dispute', summary: 'Breach of contract case involving commercial real estate transaction', date: '2024-03-15', outcome: 'Settled', relevance: 95 }, {
  id: '2', title: 'State v. Anderson - Criminal Defense', summary: 'Fourth Amendment search and seizure violation', date: '2024-02-20', outcome: 'Dismissed', relevance: 88 }, {

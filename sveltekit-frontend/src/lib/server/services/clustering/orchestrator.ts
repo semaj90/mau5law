@@ -8,8 +8,8 @@ import {
  clusteringMachineDef,
  type ClusteringContext,
  type ClusteringSnapshot,
-} from './xstate-machine';
-import { redisClient } from '../persistence/redis-state';
+} from './xstate-machine.js';
+import { redisClient } from '../persistence/redis-state.js';
 
 export interface OrchestrationResult {
  jobId: string;

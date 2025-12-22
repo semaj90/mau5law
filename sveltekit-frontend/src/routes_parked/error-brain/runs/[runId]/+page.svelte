@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 	import { onMount } from 'svelte';
 
-	const runId = $derived($page.params.runId);
+	const runId = $derived(page.params.runId);
 	let run = $state<any>(null);
 	let loading = $state(true);
 	let eventSource = $state<EventSource | null>(null);

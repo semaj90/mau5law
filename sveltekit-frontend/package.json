@@ -673,7 +673,14 @@
     "phase76:full-stack": "concurrently -n \"MCP,Knowledge,A2A,Dev\" -c \"yellow,cyan,magenta,green\" \"npm run phase76:mcp\" \"npm run phase76:knowledge:mcp\" \"npm run phase76:a2a\" \"npm run dev\"",
     "embed:resume": "node --expose-gc --max-old-space-size=8192 scripts/embed-errors-phase72.mjs --resume",
     "scan:routes": "node scripts/scan-and-populate-routes.mjs",
-    "import:errors": "node scripts/import-error-logs.mjs"
+    "import:errors": "node scripts/import-error-logs.mjs",
+    "phase79:agent": "npx tsx scripts/phase79-agentic-repair.mts 10",
+    "phase79:agent:dry": "npx tsx scripts/phase79-agentic-repair.mts 1",
+    "phase79:agent:x5": "npx tsx scripts/phase79-agentic-repair.mts 5",
+    "phase79:agent:full": "npx tsx scripts/phase79-agentic-repair.mts 50",
+    "phase79:enhanced": "npx tsx scripts/phase79-agentic-repair-enhanced.mts 10",
+    "phase79:enhanced:dry": "npx tsx scripts/phase79-agentic-repair-enhanced.mts 1",
+    "phase79:enhanced:full": "npx tsx scripts/phase79-agentic-repair-enhanced.mts 50"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",
@@ -844,6 +851,7 @@
     "express": "^4.18.2",
     "fuse.js": "7.1.0",
     "idb": "8.0.3",
+    "ignore": "7.0.5",
     "ioredis": "5.8.2",
     "jose": "^4.11.0",
     "langchain": "1.0.4",

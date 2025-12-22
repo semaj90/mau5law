@@ -2,7 +2,7 @@ import { db } from '$lib/server/db/drizzle.js';
 import { errorClusters, errorSuggestions, routeMetadata } from '$lib/server/db/schema/index.js';
 import { error, json } from '@sveltejs/kit';
 import { desc, eq, sql as sqlOp } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /**
  * Phase 78 System Status API

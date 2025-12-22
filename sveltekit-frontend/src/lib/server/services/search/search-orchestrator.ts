@@ -3,9 +3,9 @@
  * Coordinates semantic search, keyword search, and reranking
  */
 
-import { PGVectorSearch, type SearchResult as VectorSearchResult } from './pgvector-search';
-import { ElasticsearchSearch, type KeywordSearchResult } from './elasticsearch-search';
-import { RerankerClient, type RerankResponse } from './reranker-client';
+import { PGVectorSearch, type SearchResult as VectorSearchResult } from './pgvector-search.js';
+import { ElasticsearchSearch, type KeywordSearchResult } from './elasticsearch-search.js';
+import { RerankerClient, type RerankResponse } from './reranker-client.js';
 
 export interface SearchQuery {
  text: string;

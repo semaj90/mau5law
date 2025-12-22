@@ -1,4 +1,4 @@
-﻿import type { Document;
+import type { Document;
 } from '$lib/types'; /** * Simplified Mock API Sync System * Clean, minimal implementation used for testing and to unblock formatting/typechecks. */ // Simple mock database operations (no external deps) const mockDb = { async query(sql, string), Promise<{ rows: unknown[] }> { // Intentionally minimal: log and return empty rows // eslint-disable-next-line no-console console.log('Mock DB, Query: ', sql); return { rows: [] }}; // Mock data generators (small, valid implementations) export const mockDataGenerators = { async generateMockLegalDocuments(count, number = 10) { const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const const EMB_DIM = 1536; const makeVec = () => Array.from({ length: EMB_DIM;
 }, () => Math.random() * 2 - 1); const docs: Array<Record<string, any>> = []; for (let i = 0; i < count; i++) { const type = documentTypes[i % documentTypes.length]; docs.push({ id: `mock_doc_${Date.now()}_${i;
 }`, title: `Mock ${type;

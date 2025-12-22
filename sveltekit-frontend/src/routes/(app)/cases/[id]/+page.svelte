@@ -1,6 +1,6 @@
 <script lang="ts">
  import { goto } from '$app/navigation';
- import { page } from '$app/stores';
+ import { page } from '$app/state';
  import CaseNotesEditor from '$lib/components/cases/CaseNotesEditor.svelte';
  import ContextualChatModal from '$lib/components/cases/ContextualChatModal.svelte';
 // Evidence components temporarily disabled for core build
@@ -39,7 +39,7 @@
  let isExportingPacket = $state(false);
  let exportPacketError = $state('');
 
- const caseId = $page.params.id;
+ const caseId = page.params.id;
 
  onMount(() => {
  (async () => {

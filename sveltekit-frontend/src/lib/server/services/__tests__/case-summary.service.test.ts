@@ -4,10 +4,10 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { caseSummaryService } from '../case-summary.service';
+import { caseSummaryService } from '../case-summary.service.js';
 import { redis } from '$lib/server/redis';
 import { db } from '$lib/server/db';
-import { verificationService } from '../verification.service';
+import { verificationService } from '../verification.service.js';
 
 // Mock dependencies
 vi.mock('$lib/server/db', async () => {
