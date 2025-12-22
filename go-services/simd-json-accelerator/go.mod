@@ -6,6 +6,7 @@ require (
 	github.com/bytedance/sonic v1.10.2
 	github.com/gorilla/mux v1.8.1
 	github.com/minio/minio-go/v7 v7.0.66
+	github.com/minio/simdjson-go v0.4.5
 )
 
 require (

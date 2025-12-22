@@ -396,7 +396,7 @@ func findAvailablePort(basePort int, maxRetries int) (int, error) {
 
 func main() {
 	// Default port with environment variable override
-	defaultPort := 8103 // Changed to match Context7/FastMCP standard
+	defaultPort := 8104 // Avoid conflict with phase66-langextract on 8095
 	portEnv := os.Getenv("SIMD_JSON_ACCEL_PORT")
 	if portEnv != "" {
 		if p, err := strconv.Atoi(portEnv); err == nil {

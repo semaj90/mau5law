@@ -215,6 +215,116 @@
 			},
 			"group": "test",
 			"detail": "Phase 76: Run comprehensive tests on ACP Tool Registry"
+		},
+		{
+			"label": "📚 Svelte 5: Download Docs",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/mcp/contextual-prompt-engineer.mjs",
+				"--force-download"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "none",
+			"detail": "Phase 76: Download/refresh Svelte 5 documentation cache (svelte.txt + sveltekit.txt)"
+		},
+		{
+			"label": "🔍 Svelte 5: Contextual Query",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/mcp/contextual-prompt-engineer.mjs",
+				"${input:svelteQuery}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 76: Query Gemma3 with Svelte docs context (ripgrep-based extraction)"
+		},
+		{
+			"label": "🔧 Svelte 5: Detect Migrations",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/mcp/svelte5-migration-tools.mjs",
+				"--file",
+				"${input:filePath}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 76: Detect Svelte 5 migration patterns (export let, $:, new Component())"
+		},
+		{
+			"label": "🛡️ Svelte 5: Audit Standards",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/mcp/svelte5-migration-tools.mjs",
+				"--audit",
+				"${input:filePath}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 76: Check for jQuery, eval(), and legacy library violations"
+		},
+		{
+			"label": "🔒 Svelte 5: Check SSR Safety",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/mcp/svelte5-migration-tools.mjs",
+				"--ssr-check",
+				"${input:filePath}"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "test",
+			"detail": "Phase 76: Verify no browser globals in server-side code"
+		},
+		{
+			"label": "🚀 Svelte 5: Full Migration Pipeline",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Write-Host '🚀 Svelte 5: Full Migration Pipeline' -ForegroundColor Cyan; Write-Host ''; $file = Read-Host 'Enter file path'; Write-Host ''; Write-Host '1️⃣ Detecting migration patterns...' -ForegroundColor Yellow; node scripts/mcp/svelte5-migration-tools.mjs --file $file; Write-Host ''; Write-Host '2️⃣ Auditing web standards...' -ForegroundColor Yellow; node scripts/mcp/svelte5-migration-tools.mjs --audit $file; Write-Host ''; Write-Host '3️⃣ Checking SSR safety...' -ForegroundColor Yellow; node scripts/mcp/svelte5-migration-tools.mjs --ssr-check $file; Write-Host ''; Write-Host '✅ Pipeline complete!' -ForegroundColor Green"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"detail": "Phase 76: Run all migration tools (detect + audit + SSR check)"
+		},
+		{
+			"label": "🧠 Phase 79: With Contextual Prompting",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase79-cognitive-engine.mjs",
+				"--use-context",
+				"--batch-size",
+				"20"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"CONTEXT_ENGINE": "true",
+					"SVELTE_DOCS_PATH": "data/svelte-docs"
+				}
+			},
+			"group": "build",
+			"detail": "Phase 79: Run cognitive engine with Svelte docs context injection"
 		}
 	],
 	"inputs": [
@@ -247,6 +357,18 @@
 				"openai"
 			],
 			"default": "ollama"
+		},
+		{
+			"id": "svelteQuery",
+			"type": "promptString",
+			"description": "Enter Svelte 5 question (context will be auto-extracted)",
+			"default": "How do I replace export let with $props()?"
+		},
+		{
+			"id": "filePath",
+			"type": "promptString",
+			"description": "Enter file path (relative to workspace)",
+			"default": "src/lib/components/MyComponent.svelte"
 		}
 	]
 }

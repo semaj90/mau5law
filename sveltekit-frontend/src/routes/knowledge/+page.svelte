@@ -1,52 +1,74 @@
 <script lang="ts">
 
-	interface SearchResult {
-		id: number;
-		score: number;
-		title: string;
-		url: string;
-		summary: string;
-		entities: string;
-	}
+  interface UploadResult {
+    file: string;
+    chunks: number;
+    points: number;
+    status: string;
+    error?: string;
+  }
 
-	interface WebSource {
-		title?: string;
-		uri?: string;
-	}
+  interface SearchResult {
+    id: number;
+    score: number;
+    document: string;
+    chunk: number;
+    content: string;
+    source: string;
+  }
 
-	interface SearchResponse {
-		query: string;
-		results: SearchResult[];
-		synthesized?: string;
-		webSources?: WebSource[];
-		searchUsed?: boolean;
-		metadata: {
-			totalResults: number;
-			processingTime: number;
-			cached: boolean;
-			provider?: string;
-		};
-	}
+  interface ResultItem {
+    id: number;
+    score: number;
+    title: string;
+    url: string;
+    summary: string;
+    entities?: string;
+  }
 
-	let query = $state('');
-	let results = $state<SearchResult[]>([]);
-	let synthesized = $state<string>('');
-	let webSources = $state<WebSource[]>([]);
-	let searchUsed = $state<boolean>(false);
-	let metadata = $state<any>(null);
-	let loading = $state(false);
-	let error = $state('');
-	let synthesizeEnabled = $state(true);
-	let useWebSearch = $state(false);
-	let provider = $state<'ollama' | 'gemini' | 'claude' | 'openai'>('ollama');
+  interface SearchResponse {
+    results: ResultItem[];
+    synthesized?: string;
+    webSources?: Array<{ uri?: string; title?: string }>;
+    searchUsed?: boolean;
+    metadata?: {
+      totalResults?: number;
+      processingTime?: number;
+      provider?: string;
+    };
+  }
 
-	// Sample queries
-	const sampleQueries = [
-		'TypeScript 5.6 breaking changes',
-		'SvelteKit 2.0 migration guide',
-		'Svelte 5 runes best practices',
-		'Form actions and validation'
-	];
+  let files: FileList;
+  let uploading = false;
+  let uploadResults: UploadResult[] = [];
+  let searching = false;
+  let searchQuery = '';
+  let searchResults: SearchResult[] = [];
+  let generating = false;
+  let generationPrompt = '';
+  let generationResponse = '';
+  let ragContext: any = null;
+  let useGemini = false;
+  let activeTab = 'upload';
+
+  // Search-related state
+  let query = '';
+  let loading = false;
+  let error = '';
+  let results: ResultItem[] = [];
+  let synthesized = '';
+  let webSources: Array<{ uri?: string; title?: string }> = [];
+  let searchUsed = false;
+  let metadata: SearchResponse['metadata'] | undefined;
+  let synthesizeEnabled = false;
+  let provider: 'ollama' | 'gemini' | 'claude' | 'openai' = 'ollama';
+  let useWebSearch = false;
+
+  const sampleQueries = [
+    'How does TypeScript improve code quality?',
+    'What are SvelteKit best practices?',
+    'Explain reactive declarations in Svelte'
+  ];
 
 	// Web search sample queries (for Gemini)
 	const webSearchQueries = [
@@ -55,6 +77,102 @@
 		'How to implement OAuth2 in modern SvelteKit apps?',
 		'Best practices for pg_vector embeddings 2024'
 	];
+
+	async function streamSearch() {
+		let currentProvider = provider;
+		let attempts = 0;
+
+		while (attempts < 2) {
+			try {
+				const response = await fetch('/api/knowledge/stream', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						query,
+						topK: 10,
+						llmProvider: currentProvider
+					})
+				});
+
+				if (!response.ok) {
+					// Handle Gemini quota error
+					if ((response.status === 429 || response.status === 403) && currentProvider === 'gemini' && attempts === 0) {
+						console.warn('⚠️ Gemini quota exceeded, falling back to Ollama');
+						currentProvider = 'ollama';
+						error = '📝 Note: Using Ollama fallback (Gemini quota exceeded)';
+						attempts++;
+						continue;
+					}
+					throw new Error(response.statusText);
+				}
+
+				const reader = response.body?.getReader();
+				if (!reader) throw new Error('No response body');
+
+				const decoder = new TextDecoder();
+				let buffer = '';
+
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
+
+					buffer += decoder.decode(value, { stream: true });
+					const lines = buffer.split('\n\n');
+					buffer = lines.pop() || '';
+
+					for (const line of lines) {
+						const eventMatch = line.match(/^event: (.*)$/m);
+						const dataMatch = line.match(/^data: (.*)$/m);
+
+						if (eventMatch && dataMatch) {
+							const event = eventMatch[1];
+							const data = JSON.parse(dataMatch[1]);
+							handleStreamEvent(event, data);
+						}
+					}
+				}
+				break; // Success
+			} catch (err) {
+				// If Gemini failed and we haven't tried fallback
+				if (currentProvider === 'gemini' && attempts === 0) {
+					console.warn('⚠️ Gemini error, trying Ollama fallback');
+					currentProvider = 'ollama';
+					error = '📝 Note: Using Ollama fallback (Gemini error)';
+					attempts++;
+					continue;
+				}
+
+				error = err instanceof Error ? err.message : String(err);
+				loading = false;
+				break;
+			}
+		}
+	}
+
+	function handleStreamEvent(event: string, data: any) {
+		switch (event) {
+			case 'search_results':
+				results = data.results.map((r: any) => ({
+					id: r.id,
+					score: r.score,
+					title: r.title,
+					url: r.url,
+					summary: 'View document for details...', // Summary not available in stream metadata
+					entities: ''
+				}));
+				break;
+			case 'synthesis_chunk':
+				synthesized += data.text;
+				break;
+			case 'complete':
+				loading = false;
+				break;
+			case 'error':
+				error = data.message;
+				loading = false;
+				break;
+		}
+	}
 
 	async function search() {
 		if (!query.trim()) return;
@@ -66,32 +184,82 @@
 		webSources = [];
 		searchUsed = false;
 
-		try {
-			const response = await fetch('/api/knowledge/search', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					query,
-					limit: 10,
-					threshold: 0.3,
-					synthesize: synthesizeEnabled,
-					provider,
-					useWebSearch: provider === 'gemini' && useWebSearch
-				})
-			});
+		// Use streaming (SSE) if synthesis is enabled
+		if (synthesizeEnabled) {
+			await streamSearch();
+			return;
+		}
 
-			if (!response.ok) {
-				throw new Error(`Search failed: ${response.statusText}`);
+		try {
+			// Try with selected provider first
+			let searchProvider = provider;
+			let searchAttempts = 0;
+			let lastError: Error | null = null;
+
+			while (searchAttempts < 2) {
+				try {
+					const response = await fetch('/api/knowledge/search', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							query,
+							limit: 10,
+							threshold: 0.3,
+							synthesize: synthesizeEnabled,
+							provider: searchProvider,
+							useWebSearch: searchProvider === 'gemini' && useWebSearch
+						})
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json().catch(() => ({}));
+
+						// Check if it's a quota/rate limit error
+						if ((response.status === 429 || response.status === 403) && searchProvider === 'gemini' && searchAttempts === 0) {
+							console.warn('⚠️ Gemini quota exceeded, falling back to Ollama');
+							searchProvider = 'ollama';
+							useWebSearch = false;
+							searchAttempts++;
+							continue;
+						}
+
+						throw new Error(errorData.error || `Search failed: ${response.statusText}`);
+					}
+
+					const data: SearchResponse = await response.json();
+					results = data.results;
+					synthesized = data.synthesized || '';
+					webSources = data.webSources || [];
+					searchUsed = data.searchUsed || false;
+					metadata = data.metadata;
+
+					// Show fallback message if we switched providers
+					if (searchProvider !== provider && synthesizeEnabled) {
+						error = `📝 Note: Using Ollama fallback (${provider} quota exceeded)`;
+					}
+					break;
+				} catch (err) {
+					lastError = err instanceof Error ? err : new Error(String(err));
+
+					// If this was Gemini and we haven't tried Ollama yet, try fallback
+					if (searchProvider === 'gemini' && searchAttempts === 0) {
+						console.warn('⚠️ Gemini error, trying Ollama fallback:', lastError.message);
+						searchProvider = 'ollama';
+						useWebSearch = false;
+						searchAttempts++;
+						continue;
+					}
+
+					// If we've tried both or this was already Ollama, throw error
+					throw lastError;
+				}
 			}
 
-			const data: SearchResponse = await response.json();
-			results = data.results;
-			synthesized = data.synthesized || '';
-			webSources = data.webSources || [];
-			searchUsed = data.searchUsed || false;
-			metadata = data.metadata;
+			if (lastError && results.length === 0 && !synthesized) {
+				throw lastError;
+			}
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Unknown error';
+			error = `❌ ${err instanceof Error ? err.message : 'Unknown error'}`;
 		} finally {
 			loading = false;
 		}
@@ -149,10 +317,10 @@
 
 		{#if synthesizeEnabled}
 			<select value={provider} onchange={handleProviderChange} class="provider-select">
-				<option value="ollama">🦙 Ollama (Local)</option>
-				<option value="gemini">🔮 Gemini 3 (Search)</option>
-				<option value="claude">🧠 Claude</option>
-				<option value="openai">🤖 GPT-4</option>
+				<option value="ollama">🦙 Ollama (Local) - Recommended</option>
+				<option value="gemini">🔮 Gemini 3 (Web Search) - Limited Quota</option>
+				<option value="claude">🧠 Claude - Not configured</option>
+				<option value="openai">🤖 GPT-4 - Not configured</option>
 			</select>
 
 			{#if provider === 'gemini'}
@@ -160,6 +328,11 @@
 					<input type="checkbox" bind:checked={useWebSearch} />
 					<span>🌐 Enable Google Search Grounding</span>
 				</label>
+			{:else}
+				<span class="fallback-notice">
+					<span class="icon">✅</span>
+					Using Local Ollama (stable & always available)
+				</span>
 			{/if}
 		{/if}
 	</div>
@@ -582,5 +755,23 @@
 	.web-sources a:hover {
 		text-decoration: underline;
 		color: #764ba2;
+	}
+
+	/* Fallback Notice Styles */
+	.fallback-notice {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: linear-gradient(135deg, #48bb7815 0%, #38a16915 100%);
+		border: 1px solid #48bb7850;
+		border-radius: 8px;
+		font-size: 0.9rem;
+		color: #276749;
+		font-weight: 500;
+	}
+
+	.fallback-notice .icon {
+		font-size: 1.1rem;
 	}
 </style>
