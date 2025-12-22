@@ -897,33 +897,107 @@ async function processOneSuggestion(suggestion: Suggestion): Promise<boolean> {
   // 4. Query knowledge base for similar fixes (RAG)
   const knowledge = await queryKnowledgeBase(suggestion.error_code || '', suggestion.summary);
 
-  // 5. 🧠 COGNITIVE: Route to appropriate LLM based on complexity
+  // 5. 📖 COGNITIVE: Read and summarize file content for LLM context
+  let fileContent = '';
+  let fileSummary = '';
+  try {
+    fileContent = await fs.readFile(filePath, 'utf-8');
+    console.log(`   📖 Read file: ${fileContent.length} chars`);
+
+    // Extract first 50 lines for context
+    const lines = fileContent.split('\n').slice(0, 50);
+
+    // Generate a quick summary of what this file does
+    const imports = lines.filter(l => l.includes('import ')).slice(0, 5).join('\n');
+    const exports = lines.filter(l => l.includes('export ')).slice(0, 3).join('\n');
+    fileSummary = `// FILE: ${path.basename(filePath)}\n// IMPORTS:\n${imports}\n// EXPORTS:\n${exports}\n\n// CONTENT (first 30 lines):\n${lines.slice(0, 30).join('\n')}`;
+    console.log(`   📖 Summarized: ${imports.split('\n').length} imports, ${exports.split('\n').length} exports`);
+  } catch (e) {
+    console.log(`   ⚠️ Could not read file for context: ${(e as Error).message}`);
+  }
+
+  // 6. 🧠 COGNITIVE: Route to appropriate LLM based on complexity
   let enhancedPatch = suggestion.patch;
-  if (knowledge.length > 0 || contextFiles.length > 0 || suggestion.patch.length < 500) {
+  if (knowledge.length > 0 || contextFiles.length > 0 || suggestion.patch.length < 500 || fileSummary) {
     const contextInfo = contextFiles.length > 0
       ? `\nRelated files: ${contextFiles.join(', ')}`
       : '';
 
     const knowledgeInfo = knowledge.length > 0
-      ? `\nSimilar past fixes:\n${knowledge.slice(0, 3).map(k => `- ${k.patchTemplate.substring(0, 200)}`).join('\n')}`
+      ? `\nSimilar past fixes (use as reference):\n${knowledge.slice(0, 3).map(k => `- ${k.patchTemplate.substring(0, 200)}`).join('\n')}`
       : '';
 
-    const prompt = `Fix this TypeScript/Svelte error:
-Error: ${suggestion.error_code}: ${suggestion.summary}
-File: ${path.basename(filePath)}
+    const prompt = `You are a TypeScript/Svelte expert. Fix this error by providing ONLY valid code.
+
+ERROR: ${suggestion.error_code}: ${suggestion.summary}
+FILE: ${path.basename(filePath)}
+
+CURRENT FILE CONTENT:
+\`\`\`typescript
+${fileSummary}
+\`\`\`
 ${knowledgeInfo}
 ${contextInfo}
 
-Current suggested patch:
-${suggestion.patch.substring(0, 500)}
+ORIGINAL SUGGESTED PATCH:
+\`\`\`typescript
+${suggestion.patch.substring(0, 800)}
+\`\`\`
 
-Return ONLY the corrected code patch, no explanation.`;
+INSTRUCTIONS:
+1. Output ONLY the corrected TypeScript/Svelte code
+2. Do NOT include explanations, comments about what you're doing, or markdown
+3. The output must be valid code that can directly replace the file content
+4. If you cannot fix it, output the original code unchanged
+
+CORRECTED CODE:`;
 
     // Use smart routing: simple errors → Gemma3 (free), complex → Gemini
     const llmResponse = await routeLLM(prompt, suggestion.error_code || '', suggestion.summary).catch(() => null);
+
     if (llmResponse?.content && llmResponse.content.length > 50) {
-      enhancedPatch = llmResponse.content;
-      console.log(`   🧠 Enhanced patch via ${llmResponse.provider} (${llmResponse.latencyMs}ms)`);
+      // 🛡️ VALIDATION: Check if output is actual code, not explanatory text
+      const output = llmResponse.content.trim();
+
+      // Red flags for non-code output
+      const nonCodePatterns = [
+        /^#\s+/m,                          // Markdown headers
+        /^The\s+error\s+/im,               // Explanatory text
+        /^This\s+file\s+/im,               // Explanatory text
+        /^To\s+fix\s+this/im,              // Explanatory text
+        /^I\s+cannot\s+/im,                // Refusal
+        /^Unfortunately/im,                 // Refusal
+        /^Here\s+is\s+/im,                 // Preamble
+        /^Based\s+on\s+/im,                // Analysis
+        /No\s+code\s+fix\s+needed/im,      // No fix
+        /trigger\s+a\s+full\s+rebuild/im,  // Build suggestion
+      ];
+
+      const isExplanatoryText = nonCodePatterns.some(p => p.test(output));
+
+      // Check for code indicators
+      const hasCodeIndicators =
+        output.includes('import ') ||
+        output.includes('export ') ||
+        output.includes('function ') ||
+        output.includes('const ') ||
+        output.includes('let ') ||
+        output.includes('interface ') ||
+        output.includes('type ') ||
+        output.includes('class ') ||
+        output.includes('<script') ||
+        output.includes('</script') ||
+        output.includes('<template');
+
+      if (isExplanatoryText || !hasCodeIndicators) {
+        console.log(`   ⚠️ LLM returned explanatory text, not code. Keeping original patch.`);
+        // Don't update enhancedPatch - keep the original suggestion
+      } else {
+        // Extract code from markdown blocks if present
+        const codeBlockMatch = output.match(/```(?:typescript|ts|javascript|js|svelte)?\s*([\s\S]*?)\s*```/);
+        enhancedPatch = codeBlockMatch ? codeBlockMatch[1].trim() : output;
+        console.log(`   🧠 Enhanced patch via ${llmResponse.provider} (${llmResponse.latencyMs}ms)`);
+      }
     }
   }
 
