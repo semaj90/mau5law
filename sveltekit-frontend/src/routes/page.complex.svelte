@@ -1,34 +1,33 @@
 <!-- Modern Dark YoRHa Legal, AI, Platform -->
 <script lang="ts">
- // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';;
- import { goto } from '$app/navigation';
- import { FileText } from "lucide-svelte";
-import { Users } from "lucide-svelte";
-import { Activity } from "lucide-svelte";
-import { AlertTriangle } from "lucide-svelte";
-import { CheckCircle2 } from "lucide-svelte";
-import { Search } from "lucide-svelte";
-import { Plus } from "lucide-svelte";
-import { BarChart3 } from "lucide-svelte";
-import { Clock } from "lucide-svelte";
-import { Eye } from "lucide-svelte";
-import { Shield } from "lucide-svelte";
-import { Database } from "lucide-svelte";
-import { Settings } from "lucide-svelte";
-import { ChevronRight } from "lucide-svelte";
-import { Folder } from "lucide-svelte";
-import { UserCheck } from "lucide-svelte";
-import { TrendingUp } from "lucide-svelte";
-import { Terminal } from "lucide-svelte";
-import { Cpu } from "lucide-svelte";
-import { Monitor } from "lucide-svelte";
-import { Zap } from "lucide-svelte";
-import { Brain } from "lucide-svelte";;
- import * as Dialog from '$lib/components/ui/dialog'; // Import bits-ui Dialog components
+	import { goto } from '$app/navigation';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import {
+	  AlertTriangle,
+	  BarChart3,
+	  Brain,
+	  CheckCircle2,
+	  ChevronRight,
+	  Clock,
+	  Cpu,
+	  Database,
+	  Eye,
+	  Folder,
+	  Monitor,
+	  Plus,
+	  Search,
+	  Settings,
+	  Terminal,
+	  TrendingUp,
+	  UserCheck,
+	  Users,
+	  Zap
+	} from 'lucide-svelte';
+ // Import bits-ui Dialog components
 
- // Dashboard data
- let stats = $state ({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
- let activeCases = $state ([
+	// Dashboard data
+	let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
+	let activeCases = $state([
  {
  id: 1,
  title: 'CORPORATE ESPIONAGE INVESTIGATION',
