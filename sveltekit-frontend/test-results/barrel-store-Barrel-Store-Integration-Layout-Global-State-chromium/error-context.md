@@ -1,0 +1,168 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - heading "Legal AI Status" [level=3] [ref=e6]
+      - paragraph [ref=e7]: "Tokens: 0.0% used"
+      - progressbar [ref=e8]
+    - button "Toggle Dark Mode" [active] [ref=e9] [cursor=pointer]
+  - main [ref=e10]:
+    - generic [ref=e11]:
+      - button "☰" [ref=e12] [cursor=pointer]
+      - generic [ref=e13]: YoRHa Legal AI
+    - main [ref=e15]:
+      - complementary [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - generic [ref=e19]: YORHA
+            - generic [ref=e20]: DETECTIVE
+          - generic [ref=e21]: Investigation Interface
+        - navigation [ref=e22]:
+          - link "📋 COMMAND CENTER" [ref=e23]:
+            - /url: /command
+            - generic [ref=e24]: 📋
+            - text: COMMAND CENTER
+          - link "📁 ACTIVE CASES 3" [ref=e25]:
+            - /url: /
+            - generic [ref=e26]: 📁
+            - text: ACTIVE CASES
+            - generic [ref=e27]: "3"
+          - link "📊 EVIDENCE LIBRARY" [ref=e28]:
+            - /url: /evidence
+            - generic [ref=e29]: 📊
+            - text: EVIDENCE LIBRARY
+          - link "👤 PERSONS OF INTEREST" [ref=e30]:
+            - /url: /persons-of-interest
+            - generic [ref=e31]: 👤
+            - text: PERSONS OF INTEREST
+          - link "🔍 ANALYSIS CENTER" [ref=e32]:
+            - /url: /analysis-center
+            - generic [ref=e33]: 🔍
+            - text: ANALYSIS CENTER
+          - link "🤖 AI ASSISTANT" [ref=e34]:
+            - /url: /aichat
+            - generic [ref=e35]: 🤖
+            - text: AI ASSISTANT
+          - link "🔧 TERMINAL" [ref=e36]:
+            - /url: /all-routes
+            - generic [ref=e37]: 🔧
+            - text: TERMINAL
+        - link "⚙️ SYSTEM CONFIGURATION" [ref=e39]:
+          - /url: /system-configuration
+          - generic [ref=e40]: ⚙️
+          - text: SYSTEM CONFIGURATION
+        - generic [ref=e41]:
+          - generic [ref=e42]: YoRHa
+          - generic [ref=e43]: v2.0
+          - generic [ref=e44]: Detective Operations
+      - generic [ref=e45]:
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - heading "COMMAND CENTER" [level=1] [ref=e48]
+            - generic [ref=e49]: YoRHa Detective Interface / 8/13.10
+          - generic [ref=e50]:
+            - button "🔔 HELP 0" [ref=e51] [cursor=pointer]
+            - button "⚙️ OPTIONS" [ref=e52] [cursor=pointer]
+            - button "🔍 GLOBAL SEARCH" [ref=e53] [cursor=pointer]
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]: Active Cases
+            - generic [ref=e57]: "3"
+            - generic [ref=e58]: 📁
+          - generic [ref=e59]:
+            - generic [ref=e60]: Evidence Items
+            - generic [ref=e61]: "27"
+            - generic [ref=e62]: 📄
+          - generic [ref=e63]:
+            - generic [ref=e64]: Persons of Interest
+            - generic [ref=e65]: "0"
+            - generic [ref=e66]: 👤
+          - generic [ref=e67]:
+            - generic [ref=e68]: Recent Activity
+            - generic [ref=e69]: "12"
+            - generic [ref=e70]: 📊
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - heading "ACTIVE CASES" [level=2] [ref=e74]
+              - link "VIEW ALL →" [ref=e75]:
+                - /url: /cases
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - generic [ref=e78]:
+                  - heading "CORPORATE ESPIONAGE INVESTIGATION" [level=3] [ref=e79]
+                  - generic [ref=e80]:
+                    - generic [ref=e81]: high
+                    - generic [ref=e82]: active
+                - generic [ref=e83]:
+                  - generic [ref=e84]: 📦 8 items
+                  - generic [ref=e85]: 🕒 2 hours ago
+                - button "→" [ref=e86] [cursor=pointer]
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - 'heading "MISSING PERSON: DR SARAH CHEN" [level=3] [ref=e89]'
+                  - generic [ref=e90]:
+                    - generic [ref=e91]: medium
+                    - generic [ref=e92]: pending
+                - generic [ref=e93]:
+                  - generic [ref=e94]: 📦 16 items
+                  - generic [ref=e95]: 🕒 4 hours ago
+                - button "→" [ref=e96] [cursor=pointer]
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - heading "FINANCIAL FRAUD ANALYSIS" [level=3] [ref=e99]
+                  - generic [ref=e100]:
+                    - generic [ref=e101]: medium
+                    - generic [ref=e102]: pending
+                - generic [ref=e103]:
+                  - generic [ref=e104]: 📦 4 items
+                  - generic [ref=e105]: 🕒 24 hours ago
+                - button "→" [ref=e106] [cursor=pointer]
+          - complementary [ref=e107]:
+            - generic [ref=e108]:
+              - generic [ref=e109]: AI LEGAL ASSISTANT — 9S MODE ACTIVE
+              - button "Toggle AI mode" [ref=e110] [cursor=pointer]
+            - generic [ref=e112]:
+              - generic [ref=e113]:
+                - generic [ref=e114]: 🤖
+                - generic [ref=e115]:
+                  - text: "AI 9S Assistant:"
+                  - text: 9S mode Active
+              - generic [ref=e116]: Greetings, Detective! I am 9S, your AI investigation assistant.
+              - list [ref=e117]:
+                - listitem [ref=e118]: "▷ Autocom: status check out 10 minutes ago"
+                - listitem [ref=e119]: ▷ Evidence analysis queue processing slowly
+                - listitem [ref=e120]: ▷ 1 hour ago
+              - generic [ref=e122]: AI analysis requested...
+            - generic [ref=e123]:
+              - heading "SYSTEM STATUS" [level=3] [ref=e124]
+              - generic [ref=e125]:
+                - link "📊 EVIDENCE BOARD" [ref=e126]:
+                  - /url: /evidence-board
+                  - generic [ref=e127]: 📊
+                  - text: EVIDENCE BOARD
+                - link "⏱️ TIMELINE ANALYSIS" [ref=e128]:
+                  - /url: /timeline-analysis
+                  - generic [ref=e129]: ⏱️
+                  - text: TIMELINE ANALYSIS
+                - link "⚡ QUICK ACTIONS" [ref=e130]:
+                  - /url: /quick-actions
+                  - generic [ref=e131]: ⚡
+                  - text: QUICK ACTIONS
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - generic [ref=e134]: ✓
+            - generic [ref=e135]: "Database: online"
+          - generic [ref=e136]:
+            - generic [ref=e137]: ✓
+            - generic [ref=e138]: "Redis: online"
+          - generic [ref=e139]:
+            - generic [ref=e140]: ✓
+            - generic [ref=e141]: "Ollama: online"
+          - generic [ref=e142]:
+            - generic [ref=e143]: ✓
+            - generic [ref=e144]: "AI Assistant: online"
+          - generic [ref=e145]: "Last Updated: 11:25:08 AM"
+```

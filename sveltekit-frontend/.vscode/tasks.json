@@ -325,6 +325,138 @@
 			},
 			"group": "build",
 			"detail": "Phase 79: Run cognitive engine with Svelte docs context injection"
+		},
+		{
+			"label": "Temp Server",
+			"type": "shell",
+			"command": "npx vite",
+			"args": [
+				"dev",
+				"--port",
+				"5175"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Temp Server 2",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"vite",
+				"dev",
+				"--port",
+				"5175"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Temp Test",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/architecture-demo.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Barrel Store Test",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Barrel Store Test 2",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Barrel Store Test 3",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Barrel Store Test 4",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Barrel Store Test 5",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run All Tests",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts",
+				"tests/legal-ai.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Barrel Store Test Debug",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"test",
+				"tests/barrel-store.spec.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
 		}
 	],
 	"inputs": [

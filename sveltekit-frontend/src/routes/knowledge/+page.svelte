@@ -1,296 +1,57 @@
 <script lang="ts">
+  import { KnowledgeSearchStore } from '$lib/stores/knowledge-search.svelte';
 
-  interface UploadResult {
-    file: string;
-    chunks: number;
-    points: number;
-    status: string;
-    error?: string;
-  }
+  // Svelte 5: Create reactive store instance
+  const search = new KnowledgeSearchStore();
 
-  interface SearchResult {
-    id: number;
-    score: number;
-    document: string;
-    chunk: number;
-    content: string;
-    source: string;
-  }
-
-  interface ResultItem {
-    id: number;
-    score: number;
-    title: string;
-    url: string;
-    summary: string;
-    entities?: string;
-  }
-
-  interface SearchResponse {
-    results: ResultItem[];
-    synthesized?: string;
-    webSources?: Array<{ uri?: string; title?: string }>;
-    searchUsed?: boolean;
-    metadata?: {
-      totalResults?: number;
-      processingTime?: number;
-      provider?: string;
-    };
-  }
-
-  let files: FileList;
-  let uploading = false;
-  let uploadResults: UploadResult[] = [];
-  let searching = false;
-  let searchQuery = '';
-  let searchResults: SearchResult[] = [];
-  let generating = false;
-  let generationPrompt = '';
-  let generationResponse = '';
-  let ragContext: any = null;
-  let useGemini = false;
-  let activeTab = 'upload';
-
-  // Search-related state
-  let query = '';
-  let loading = false;
-  let error = '';
-  let results: ResultItem[] = [];
-  let synthesized = '';
-  let webSources: Array<{ uri?: string; title?: string }> = [];
-  let searchUsed = false;
-  let metadata: SearchResponse['metadata'] | undefined;
-  let synthesizeEnabled = false;
-  let provider: 'ollama' | 'gemini' | 'claude' | 'openai' = 'ollama';
-  let useWebSearch = false;
-
+  // Sample queries
   const sampleQueries = [
     'How does TypeScript improve code quality?',
     'What are SvelteKit best practices?',
     'Explain reactive declarations in Svelte'
   ];
 
-	// Web search sample queries (for Gemini)
-	const webSearchQueries = [
-		'Latest TypeScript 5.7 features December 2024',
-		'What are the newest SvelteKit 2.0 breaking changes?',
-		'How to implement OAuth2 in modern SvelteKit apps?',
-		'Best practices for pg_vector embeddings 2024'
-	];
+  const webSearchQueries = [
+    'Latest TypeScript 5.7 features December 2024',
+    'What are the newest SvelteKit 2.0 breaking changes?',
+    'How to implement OAuth2 in modern SvelteKit apps?',
+    'Best practices for pg_vector embeddings 2024'
+  ];
 
-	async function streamSearch() {
-		let currentProvider = provider;
-		let attempts = 0;
+  // Event handlers
+  async function handleSearch() {
+    if (search.synthesizeEnabled) {
+      // Use streaming for synthesis
+      for await (const { event, data } of search.streamSearch()) {
+        // Stream updates happen automatically via reactive state
+      }
+    } else {
+      await search.search();
+    }
+  }
 
-		while (attempts < 2) {
-			try {
-				const response = await fetch('/api/knowledge/stream', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						query,
-						topK: 10,
-						llmProvider: currentProvider
-					})
-				});
+  function handleKeyPress(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  }
 
-				if (!response.ok) {
-					// Handle Gemini quota error
-					if ((response.status === 429 || response.status === 403) && currentProvider === 'gemini' && attempts === 0) {
-						console.warn('⚠️ Gemini quota exceeded, falling back to Ollama');
-						currentProvider = 'ollama';
-						error = '📝 Note: Using Ollama fallback (Gemini quota exceeded)';
-						attempts++;
-						continue;
-					}
-					throw new Error(response.statusText);
-				}
+  function useSampleQuery(sample: string) {
+    search.query = sample;
+    handleSearch();
+  }
 
-				const reader = response.body?.getReader();
-				if (!reader) throw new Error('No response body');
-
-				const decoder = new TextDecoder();
-				let buffer = '';
-
-				while (true) {
-					const { done, value } = await reader.read();
-					if (done) break;
-
-					buffer += decoder.decode(value, { stream: true });
-					const lines = buffer.split('\n\n');
-					buffer = lines.pop() || '';
-
-					for (const line of lines) {
-						const eventMatch = line.match(/^event: (.*)$/m);
-						const dataMatch = line.match(/^data: (.*)$/m);
-
-						if (eventMatch && dataMatch) {
-							const event = eventMatch[1];
-							const data = JSON.parse(dataMatch[1]);
-							handleStreamEvent(event, data);
-						}
-					}
-				}
-				break; // Success
-			} catch (err) {
-				// If Gemini failed and we haven't tried fallback
-				if (currentProvider === 'gemini' && attempts === 0) {
-					console.warn('⚠️ Gemini error, trying Ollama fallback');
-					currentProvider = 'ollama';
-					error = '📝 Note: Using Ollama fallback (Gemini error)';
-					attempts++;
-					continue;
-				}
-
-				error = err instanceof Error ? err.message : String(err);
-				loading = false;
-				break;
-			}
-		}
-	}
-
-	function handleStreamEvent(event: string, data: any) {
-		switch (event) {
-			case 'search_results':
-				results = data.results.map((r: any) => ({
-					id: r.id,
-					score: r.score,
-					title: r.title,
-					url: r.url,
-					summary: 'View document for details...', // Summary not available in stream metadata
-					entities: ''
-				}));
-				break;
-			case 'synthesis_chunk':
-				synthesized += data.text;
-				break;
-			case 'complete':
-				loading = false;
-				break;
-			case 'error':
-				error = data.message;
-				loading = false;
-				break;
-		}
-	}
-
-	async function search() {
-		if (!query.trim()) return;
-
-		loading = true;
-		error = '';
-		results = [];
-		synthesized = '';
-		webSources = [];
-		searchUsed = false;
-
-		// Use streaming (SSE) if synthesis is enabled
-		if (synthesizeEnabled) {
-			await streamSearch();
-			return;
-		}
-
-		try {
-			// Try with selected provider first
-			let searchProvider = provider;
-			let searchAttempts = 0;
-			let lastError: Error | null = null;
-
-			while (searchAttempts < 2) {
-				try {
-					const response = await fetch('/api/knowledge/search', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							query,
-							limit: 10,
-							threshold: 0.3,
-							synthesize: synthesizeEnabled,
-							provider: searchProvider,
-							useWebSearch: searchProvider === 'gemini' && useWebSearch
-						})
-					});
-
-					if (!response.ok) {
-						const errorData = await response.json().catch(() => ({}));
-
-						// Check if it's a quota/rate limit error
-						if ((response.status === 429 || response.status === 403) && searchProvider === 'gemini' && searchAttempts === 0) {
-							console.warn('⚠️ Gemini quota exceeded, falling back to Ollama');
-							searchProvider = 'ollama';
-							useWebSearch = false;
-							searchAttempts++;
-							continue;
-						}
-
-						throw new Error(errorData.error || `Search failed: ${response.statusText}`);
-					}
-
-					const data: SearchResponse = await response.json();
-					results = data.results;
-					synthesized = data.synthesized || '';
-					webSources = data.webSources || [];
-					searchUsed = data.searchUsed || false;
-					metadata = data.metadata;
-
-					// Show fallback message if we switched providers
-					if (searchProvider !== provider && synthesizeEnabled) {
-						error = `📝 Note: Using Ollama fallback (${provider} quota exceeded)`;
-					}
-					break;
-				} catch (err) {
-					lastError = err instanceof Error ? err : new Error(String(err));
-
-					// If this was Gemini and we haven't tried Ollama yet, try fallback
-					if (searchProvider === 'gemini' && searchAttempts === 0) {
-						console.warn('⚠️ Gemini error, trying Ollama fallback:', lastError.message);
-						searchProvider = 'ollama';
-						useWebSearch = false;
-						searchAttempts++;
-						continue;
-					}
-
-					// If we've tried both or this was already Ollama, throw error
-					throw lastError;
-				}
-			}
-
-			if (lastError && results.length === 0 && !synthesized) {
-				throw lastError;
-			}
-		} catch (err) {
-			error = `❌ ${err instanceof Error ? err.message : 'Unknown error'}`;
-		} finally {
-			loading = false;
-		}
-	}
-
-	function handleKeyPress(e: KeyboardEvent) {
-		if (e.key === 'Enter') {
-			search();
-		}
-	}
-
-	function useSampleQuery(sample: string) {
-		query = sample;
-		search();
-	}
-
-	function handleProviderChange(e: Event) {
-		const target = e.target as HTMLSelectElement;
-		provider = target.value as 'ollama' | 'gemini' | 'claude' | 'openai';
-		// Auto-disable web search for non-Gemini providers
-		if (provider !== 'gemini') {
-			useWebSearch = false;
-		}
-	}
+  function handleProviderChange(e: Event) {
+    const target = e.target as HTMLSelectElement;
+    search.setProvider(target.value as any);
+  }
 </script>
 
 <div class="knowledge-search-container">
 	<div class="header">
 		<h1>🧠 Phase 76: Knowledge Base Search</h1>
 		<p class="subtitle">
-			Search across {metadata?.totalResults ?? 13} documentation sources with AI-powered synthesis
+			Search across {search.metadata?.totalResults ?? 13} documentation sources with AI-powered synthesis
 		</p>
 	</div>
 
@@ -298,34 +59,34 @@
 	<div class="search-bar">
 		<input
 			type="text"
-			bind:value={query}
+			bind:value={search.query}
 			onkeypress={handleKeyPress}
 			placeholder="Ask a question about TypeScript, SvelteKit, or Svelte 5..."
 			class="search-input"
 		/>
-		<button onclick={search} disabled={loading || !query.trim()} class="search-button">
-			{loading ? '🔄 Searching...' : '🔍 Search'}
+		<button onclick={handleSearch} disabled={search.loading || !search.query.trim()} class="search-button">
+			{search.loading ? '🔄 Searching...' : '🔍 Search'}
 		</button>
 	</div>
 
 	<!-- Options -->
 	<div class="options">
 		<label class="checkbox-label">
-			<input type="checkbox" bind:checked={synthesizeEnabled} />
+			<input type="checkbox" bind:checked={search.synthesizeEnabled} />
 			<span>AI Synthesis (generate answer)</span>
 		</label>
 
-		{#if synthesizeEnabled}
-			<select value={provider} onchange={handleProviderChange} class="provider-select">
+		{#if search.synthesizeEnabled}
+			<select value={search.provider} onchange={handleProviderChange} class="provider-select">
 				<option value="ollama">🦙 Ollama (Local) - Recommended</option>
 				<option value="gemini">🔮 Gemini 3 (Web Search) - Limited Quota</option>
 				<option value="claude">🧠 Claude - Not configured</option>
 				<option value="openai">🤖 GPT-4 - Not configured</option>
 			</select>
 
-			{#if provider === 'gemini'}
+			{#if search.isGemini}
 				<label class="checkbox-label web-search-toggle">
-					<input type="checkbox" bind:checked={useWebSearch} />
+					<input type="checkbox" bind:checked={search.useWebSearch} />
 					<span>🌐 Enable Google Search Grounding</span>
 				</label>
 			{:else}
@@ -340,7 +101,7 @@
 	<!-- Sample Queries -->
 	<div class="samples">
 		<span class="samples-label">Try:</span>
-		{#each (provider === 'gemini' && useWebSearch ? webSearchQueries : sampleQueries) as sample}
+		{#each (search.canUseWebSearch ? webSearchQueries : sampleQueries) as sample}
 			<button onclick={() => useSampleQuery(sample)} class="sample-button">
 				{sample}
 			</button>
@@ -348,31 +109,31 @@
 	</div>
 
 	<!-- Error -->
-	{#if error}
+	{#if search.error}
 		<div class="error-banner">
-			❌ {error}
+			{search.error}
 		</div>
 	{/if}
 
 	<!-- Synthesized Answer -->
-	{#if synthesized}
-		<div class="synthesized-answer" class:web-grounded={searchUsed}>
+	{#if search.synthesized}
+		<div class="synthesized-answer" class:web-grounded={search.searchUsed}>
 			<h2>
-				{#if searchUsed}
+				{#if search.searchUsed}
 					🌐 AI Answer (Web Grounded)
 				{:else}
 					🤖 AI-Generated Answer
 				{/if}
 			</h2>
 			<div class="answer-content">
-				{synthesized}
+				{search.synthesized}
 			</div>
 
-			{#if webSources && webSources.length > 0}
+			{#if search.webSources && search.webSources.length > 0}
 				<div class="web-sources">
 					<h3>📚 Web Sources</h3>
 					<ul>
-						{#each webSources as source}
+						{#each search.webSources as source}
 							<li>
 								{#if source.uri}
 									<a href={source.uri} target="_blank" rel="noopener noreferrer">
@@ -387,10 +148,10 @@
 				</div>
 			{/if}
 
-			{#if metadata?.provider}
+			{#if search.metadata?.provider}
 				<div class="answer-meta">
-					Provider: {metadata.provider} | Time: {metadata.processingTime}ms
-					{#if searchUsed}
+					Provider: {search.metadata.provider} | Time: {search.metadata.processingTime}ms
+					{#if search.searchUsed}
 						| 🌐 Web Search Used
 					{/if}
 				</div>
@@ -399,16 +160,16 @@
 	{/if}
 
 	<!-- Search Results -->
-	{#if results.length > 0}
+	{#if search.hasResults}
 		<div class="results-container">
 			<h2>
-				📚 Found {results.length} Documentation Sources
-				{#if metadata}
-					<span class="results-meta">({metadata.processingTime}ms)</span>
+				📚 Found {search.resultCount} Documentation Sources
+				{#if search.metadata}
+					<span class="results-meta">({search.metadata.processingTime}ms)</span>
 				{/if}
 			</h2>
 
-			{#each results as result, idx (result.id)}
+			{#each search.results as result, idx (result.id)}
 				<div class="result-card">
 					<div class="result-header">
 						<span class="result-rank">#{idx + 1}</span>
@@ -435,9 +196,9 @@
 				</div>
 			{/each}
 		</div>
-	{:else if !loading && query}
+	{:else if !search.loading && search.query}
 		<div class="no-results">
-			No results found for "<strong>{query}</strong>"
+			No results found for "<strong>{search.query}</strong>"
 		</div>
 	{/if}
 </div>

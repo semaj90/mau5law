@@ -4,8 +4,8 @@
  import { onMount } from 'svelte';;
  import type { browser } from '$app/environment';
  import { get, writable } from 'svelte/store';;
- import * as userModule from '$lib/stores/user';
- import type { UserSession } from '$lib/stores/user';
+ import * as userModule from '$lib/stores/user.svelte';
+ import type { UserSession } from '$lib/stores/user.svelte';
 
  // Accept SvelteKit page data in runes-mode via $props()
  // (replaces `export let data: unknown;` which is invalid in runes mode)

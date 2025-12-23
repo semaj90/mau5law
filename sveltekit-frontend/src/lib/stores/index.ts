@@ -1,6 +1,3 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-
 /**
  * Enhanced Store Barrel Exports - TypeScript Store Pattern
  * Centralized store management with XState integration
@@ -11,25 +8,40 @@ import type { Document } from '$lib/types';
 // Svelte 5 Compatible UI Store (NEW)
 // ============================================
 export {
- createUIStore,
- setUIStore,
- getUIStore,
- getGlobalUIStore,
- type UIStore,
- type UIState,
- type TypewriterPrompt,
- type UploadedFile,
- type AIMetadata,
- type TimelineEvent,
- type EmotionAnalysis,
- type SceneAnalysis,
- type ExtractedEntity,
- type AutoPopulatedForm,
- type MarkdownScene,
+    createUIStore, getGlobalUIStore, getUIStore, setUIStore, type AIMetadata, type AutoPopulatedForm, type EmotionAnalysis, type ExtractedEntity, type MarkdownScene, type SceneAnalysis, type TimelineEvent, type TypewriterPrompt, type UIState, type UIStore, type UploadedFile
 } from './ui-store.js';
+export { userStore };
 
-// Core UI stores
-export { contextMenuStore as contextMenuActions } from './ui.js';
-export { uiStore } from './ui.js';
-export { default as modalStore } from './modal.js';
-export { notifications as notificationStore } from './notification.js'; // Authentication & User stores (Consolidated) export { authService, as auth, type User, type AuthState } from './auth.svelte'; export { default, as userStore } from './user.js'; export { avatarStore } from './avatarStore.js'; // Legacy auth compatibility (gradual migration) export { default, as authStore } from './auth.js'; export { authService } from './auth.svelte'; // Session Management with XState export { sessionManager, isSessionActive, currentUser, sessionPermissions, sessionHealth, sessionAnalytics, securityLevel, hasPermission, requirePermission, recordActivity } from './sessionManager.svelte'; // Data stores export { default, as casesStore } from './cases.js'; export { default, as citationsStore } from './citations.js'; export { report, as reportStore } from './report.js'; // AI & Machine Learning stores export { aiStore, parseAICommand, applyAIClasses, aiCommandService, recentCommands, isAIActive } from './ai-unified.js'; export { aiHistory, as aiHistoryStore } from './aiHistoryStore.js'; export { chatStore } from './chatStore.js'; export { enhancedRAGStore } from './enhanced-rag-store.js'; // AI Assistant with Ollama Cluster + Context7 (Consolidated) export { aiAssistant, type AIMessage, type Backend, type CaseAIContext, type AssistantConfig } from './ai-assistant.svelte'; // Legacy compatibility (for gradual migration) export { aiAssistantManager, isAIActive as isAIAssistantActive, isProcessing as isAIProcessing, currentResponse, conversationHistory, currentModel, currentTemperature, aiError, clusterHealth, context7Analysis, aiUsage, sendAIMessage, setAIModel, setAITemperature, clearAIConversation, checkAIClusterHealth } from './aiAssistant.svelte'; // Evidence & Document stores export { evidenceStore, evidenceById, evidenceByCase, type Evidence } from './evidence-unified.js'; // Form handling stores export { createFormStore, as formStore } from './form.js'; // Database & Caching stores export { lokiStore } from './lokiStore.js'; export { enhancedLokiStore } from './enhancedLokiStore.js'; // XState machines and state management export { autoTaggingMachine } from './autoTaggingMachine.js'; export { evidenceProcessingMachine, evidenceProcessingStore, streamingStore } from './enhancedStateMachines.js'; export { aiCommandMachine } from './ai-command-machine.js'; // Production XState Machines export { sessionMachine: sessionActions } from '../machines/sessionMachine.js'; export { agentShellMachine, agentShellServices, agentShellActions } from '../machines/agentShellMachine.js'; export { aiAssistantMachine: aiAssistantActions } from '../machines/aiAssistantMachine.js'; // New XState + Go microservice integration export * from './machines.js'; // Canvas & Visual stores export { canvasStore } from './canvas.js'; // Utility stores export { enhancedErrorHandler, as errorHandler } from './error-handler.js'; export { default, as savedNotesStore } from './saved-notes.js'; export * from './keyboardShortcuts.js'; // UI Integration utilities export * from './melt-ui-integration.js'; // Demo and testing export { runPhase2Demo, phase2HealthCheck, demoEvidenceUpload, demoEnhancedButton } from './phase2-demo.js'; // Legacy compatibility aliases export { aiStore, as aiCommands } from './ai-unified.js'; export { evidenceStore, as evidence } from './evidence-unified.js'; // Types and interfaces // Note: local ./types does not export StoreState/Action/Context consistently; omit to avoid TS errors
+// ============================================
+// Phase 76: Barrel Store Pattern (Local-First Architecture)
+// ============================================
+    import { LocalLegalStore } from '../db/clientDB.svelte';
+    import { chatStore } from './chat-store.svelte';
+    import { UserPreferences } from './preferences.svelte';
+    import { TokenTracker } from './tokenUsage.svelte';
+    import { userStore } from './user.svelte';
+
+// 1. Instantiate Singletons (Global Services)
+export const tokenTracker = new TokenTracker();
+export const localDb = new LocalLegalStore();
+export const userPrefs = new UserPreferences();
+export { chatStore };
+
+// 2. Re-export Classes
+    export { CaseManager as CaseWorkflow } from '../logic/caseWorkflow.svelte';
+    export { ChatSession } from '../models/ChatSession.svelte';
+    export { LegalDocument } from '../models/LegalDocument.svelte';
+
+// 3. Define a Global App State
+export { appState } from './appState.svelte';
+
+// 4. Initialize all stores (call from layout)
+export function initializeStores() {
+    if (typeof window === 'undefined') return; // SSR guard
+    console.log('[Barrel Store] Initialized: tokenTracker, localDb, userPrefs, appState');
+}
+
+// 5. Cleanup (call from layout onDestroy)
+export function cleanupStores() {
+    console.log('[Barrel Store] Cleanup complete');
+}

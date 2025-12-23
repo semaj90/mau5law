@@ -1,25 +1,27 @@
 <script lang="ts">
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui';
 	import { Button } from '$lib/components/ui/button';
-	import Activity from 'lucide-svelte';
-	import AlertTriangle from 'lucide-svelte';
-	import BarChart3 from 'lucide-svelte';
-	import Bell from 'lucide-svelte';
-	import Brain from 'lucide-svelte';
-	import ChevronDown from 'lucide-svelte';
-	import Database from 'lucide-svelte';
-	import FileText from 'lucide-svelte';
-	import Gavel from 'lucide-svelte';
-	import Moon from 'lucide-svelte';
-	import RefreshCw from 'lucide-svelte';
-	import Search from 'lucide-svelte';
-	import Settings from 'lucide-svelte';
-	import Sun from 'lucide-svelte';
-	import TrendingDown from 'lucide-svelte';
-	import TrendingUp from 'lucide-svelte';
-	import Users from 'lucide-svelte';
-	import X from 'lucide-svelte';
-	import Zap from 'lucide-svelte';
+	import {
+	  Activity,
+	  AlertTriangle,
+	  BarChart3,
+	  Bell,
+	  Brain,
+	  ChevronDown,
+	  Database,
+	  FileText,
+	  Gavel,
+	  Moon,
+	  RefreshCw,
+	  Search,
+	  Settings,
+	  Sun,
+	  TrendingDown,
+	  TrendingUp,
+	  Users,
+	  X,
+	  Zap
+	} from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 
 	// Svelte 5 runes state
