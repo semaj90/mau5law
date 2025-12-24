@@ -1,4 +1,5 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
+// @ts-ignore
 import postgres from 'postgres';
 import * as schema from './schema.js';
 

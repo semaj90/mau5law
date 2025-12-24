@@ -1,5 +1,18 @@
 import { browser } from '$app/environment';
-import type { AttentionData, ChatMessage, ChatSession, ConnectionStatus, MessageAnalysis, RAGContext, Recommendation, UserActivity } from "$lib/types";
+import type { ChatMessage, ChatSession, ConnectionStatus, MessageAnalysis, RAGContext, Recommendation } from '$lib/types/chat';
+
+// Re-export for UserActivity type
+export interface UserActivity {
+  lastSeen: Date;
+  messageCount: number;
+  sessionDuration: number;
+}
+
+export interface AttentionData {
+  layer: number;
+  head: number;
+  scores: number[];
+}
 
 export class ChatStore {
     // Core chat state
