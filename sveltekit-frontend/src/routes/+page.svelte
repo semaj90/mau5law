@@ -1,81 +1,87 @@
 <script lang="ts">
- import { browser } from '$app/environment';
- import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
- // State
- let aiMode = $state('9S');
- let assistantMessage = $state('Greetings, Detective! I am 9S, your AI investigation assistant.');
+	let { data }: { data: PageData } = $props();
 
- let stats = $state({
- activeCases: 3,
- evidenceItems: 27,
- personsOfInterest: 0,
- recentActivity: 12
- });
+	// Derived state from server data
+	let user = $derived(data.user);
+	let stats = $derived(data.stats);
+	let recentCases = $derived(data.recentCases);
+	let recentActivity = $derived(data.recentActivity);
 
- let systemStatus = $state({
- database: 'online',
- redis: 'online',
- ollama: 'online',
- assistant: 'online'
- });
+	// Local state
+	let aiMode = $state('9S');
+	let assistantMessage = $state('Greetings, Detective! I am 9S, your AI investigation assistant.');
 
- let recentCases = $state([
- {
- id: 1,
- title: 'CORPORATE ESPIONAGE INVESTIGATION',
- items: 8,
- hoursAgo: 2,
- priority: 'high',
- status: 'active'
- },
- {
- id: 2,
- title: 'MISSING PERSON: DR SARAH CHEN',
- items: 16,
- hoursAgo: 4,
- priority: 'medium',
- status: 'pending'
- },
- {
- id: 3,
- title: 'FINANCIAL FRAUD ANALYSIS',
- items: 4,
- hoursAgo: 24,
- priority: 'medium',
- status: 'pending'
- }
- ]);
+	let systemStatus = $state({
+		database: 'online',
+		redis: 'online',
+		ollama: 'online',
+		assistant: 'online'
+	});
 
- function cycleAIMode() {
- const modes = ['9S', 'A2', '2B'];
- const current = modes.indexOf(aiMode);
- aiMode = modes[(current + 1) % modes.length];
+	function cycleAIMode() {
+		const modes = ['9S', 'A2', '2B'];
+		const current = modes.indexOf(aiMode);
+		aiMode = modes[(current + 1) % modes.length];
 
- const messages: Record<string, string> = {
- '9S': 'Hello, Detective! 9S mode active.',
- 'A2': 'A2 combat mode engaged. Ready for aggressive analysis.',
- '2B': '2B escort mode active. All evidence secured.'
- };
- assistantMessage = messages[aiMode];
- }
+		const messages: Record<string, string> = {
+			'9S': 'Hello, Detective! 9S mode active.',
+			'A2': 'A2 combat mode engaged. Ready for aggressive analysis.',
+			'2B': '2B escort mode active. All evidence secured.'
+		};
+		assistantMessage = messages[aiMode];
+	}
 
- function getPriorityClass(priority: string) {
- return priority === 'high' ? 'priority-high' :
- priority === 'medium' ? 'priority-medium' : 'priority-low';
- }
+	function getPriorityClass(priority: string) {
+		return priority === 'high' ? 'priority-high' :
+			priority === 'medium' ? 'priority-medium' : 'priority-low';
+	}
 
- function getStatusIcon(status: string) {
- return status === 'online' ? '✓' :
- status === 'checking' ? '⏳' : '✗';
- }
+	function getStatusIcon(status: string) {
+		return status === 'online' ? '✓' :
+			status === 'checking' ? '⏳' : '✗';
+	}
 
- onMount(() => {
- if (browser) {
- // Health check logic can be added here later
- }
- });
+	onMount(() => {
+		if (browser) {
+			// Health check logic can be added here later
+		}
+	});
 </script>
+
+{#snippet caseCard(caseItem: any)}
+	<div class="case-card">
+		<div class="case-header">
+			<h3>{caseItem.title}</h3>
+			<div class="case-badges">
+				<span class="badge {getPriorityClass(caseItem.priority)}">{caseItem.priority}</span>
+				<span class="badge status-{caseItem.status}">{caseItem.status}</span>
+			</div>
+		</div>
+	<div class="case-meta">
+		<span>🕒 {new Date(caseItem.updatedAt).toLocaleDateString()}</span>
+	</div>
+	<a href="/cases/{caseItem.id}" class="case-action-btn">→</a>
+</div>
+{/snippet}
+
+{#snippet activityItem(activity: any)}
+	<div class="activity-item">
+		<div class="activity-icon">{activity.action === 'create' ? '➕' : '✏️'}</div>
+		<div class="activity-details">
+			<div class="activity-text">
+				<span class="activity-user">{activity.userId}</span>
+				{activity.action}
+				<span class="activity-target">{activity.resourceType}</span>
+			</div>
+			<div class="activity-time">{new Date(activity.createdAt).toLocaleString()}</div>
+		</div>
+	</div>
+{/snippet}
+
 
 <main class="yorha-command-center">
  <!-- Sidebar -->
@@ -129,10 +135,10 @@
  <div class="main-content">
  <!-- Header -->
  <header class="page-header">
- <div class="header-left">
- <h1>COMMAND CENTER</h1>
- <div class="header-subtitle">YoRHa <span class="dimmed">Detective Interface / 8/13.10</span></div>
- </div>
+		<div class="header-left">
+			<h1>COMMAND CENTER {user ? `// ${user.username}` : ''}</h1>
+			<div class="header-subtitle">YoRHa <span class="dimmed">Detective Interface / 8/13.10</span></div>
+		</div>
  <div class="header-right">
  <button class="header-btn">
  <span class="icon">🔔</span> HELP <span class="badge">0</span>
@@ -179,27 +185,27 @@
  <a href="/cases" class="view-all-btn">VIEW ALL →</a>
  </div>
 
- <div class="cases-list">
- {#each recentCases as caseItem}
- <div class="case-card">
- <div class="case-header">
- <h3>{caseItem.title}</h3>
- <div class="case-badges">
- <span class="badge {getPriorityClass(caseItem.priority)}">{caseItem.priority}</span>
- <span class="badge status-{caseItem.status}">{caseItem.status}</span>
- </div>
- </div>
- <div class="case-meta">
- <span>📦 {caseItem.items} items</span>
- <span>🕒 {caseItem.hoursAgo} hours ago</span>
- </div>
- <button class="case-action-btn">→</button>
- </div>
- {/each}
- </div>
- </section>
+		<div class="cases-list">
+			{#each recentCases as caseItem}
+				{@render caseCard(caseItem)}
+			{/each}
+		</div>
+		</section>
 
- <!-- AI Assistant Panel -->
+		<!-- Recent Activity Section -->
+		<section class="activity-section">
+			<div class="section-header">
+				<h2>RECENT ACTIVITY</h2>
+				<a href="/activity" class="view-all-btn">VIEW LOG →</a>
+			</div>
+			<div class="activity-list">
+				{#each recentActivity as activity}
+					{@render activityItem(activity)}
+				{/each}
+			</div>
+		</section>
+
+		<!-- AI Assistant Panel -->
  <aside class="ai-assistant-panel">
  <div class="panel-header">
  <span>AI LEGAL ASSISTANT — {aiMode} MODE ACTIVE</span>
@@ -616,6 +622,60 @@
  .case-action-btn:hover {
  background: #2a2016;
  }
+
+ /* Activity Section */
+	.activity-section {
+		background: #c4b99a;
+		border: 3px solid #0f0f0f;
+		padding: 1.5rem;
+		margin-top: 1.5rem;
+	}
+
+	.activity-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.activity-item {
+		display: flex;
+		gap: 1rem;
+		padding: 0.75rem;
+		background: #f8f0d9;
+		border: 2px solid #0f0f0f;
+		align-items: center;
+	}
+
+	.activity-icon {
+		font-size: 1.25rem;
+	}
+
+	.activity-details {
+		flex: 1;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.activity-text {
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.activity-user {
+		color: #8a7a5a;
+		margin-right: 0.25rem;
+	}
+
+	.activity-target {
+		font-weight: 700;
+		margin-left: 0.25rem;
+	}
+
+	.activity-time {
+		font-size: 0.75rem;
+		opacity: 0.7;
+	}
 
  /* AI Assistant Panel */
  .ai-assistant-panel {

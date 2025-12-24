@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'searchQuery' has already been declared
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Identifier 'searchQuery' has already been declared
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Identifier 'searchQuery' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import { onMount } from 'svelte';

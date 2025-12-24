@@ -1,25 +1,19 @@
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
-import type { dev } from '$app/environment'; // Get typed environment access
+import type { dev } from '$app/environment';
 import { evidenceUploadSchema } from '$lib/schemas/evidence-upload';
-import { db } from '$lib/server/db'; // Adjust the import based on your project structure
-import { cases, evidence } from '$lib/server/db/schema'; // Adjust the import based on your project structure
+import { db } from '$lib/server/db';
+import { cases, evidence } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
-import crypto from 'crypto'; // Corrected import
+import crypto from 'crypto';
 import type { eq, type InferInsertModel } from 'drizzle-orm';
 import type { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
 import type { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types.js';
-// Auth temporarily disabled for core build
-// TODO: Re-enable after auth library de-minification
-// import type { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
-const getUserId = () => 'system'; // Stub
-const getMetaEnv = () => ({}); // Stub
-const resolveUser = (locals: any) => ({ id: 'system' }); // Stub
 
-const metaEnv = getMetaEnv();
-type EvidenceType = InferInsertModel<typeof evidence>['evidence_type']; // Corrected InferInsertModel usage
+const metaEnv = import.meta.env;
+type EvidenceType = InferInsertModel<typeof evidence>['evidence_type'];
 
 // 1. Define the structure of the OCR service response
 interface OcrResultData {
@@ -109,57 +103,47 @@ type IntermediateEvidenceMetadata = {
 } & Partial<FinalEvidenceMetadata>; // All other fields are optional
 
 export const load: PageServerLoad = async ({ locals }) => {
- // Corrected 'load:' to 'export const load:' and arrow function syntax
- // Initialize the form with default values
- const form = await superValidate(zod(evidenceUploadSchema));
+	// Initialize the form with default values
+	const form = await superValidate(zod(evidenceUploadSchema));
 
- // Resolve user (supports DEV_BYPASS_AUTH in dev)
- const user = resolveUser(locals);
+	const user = locals.user;
 
- // If no user and dev bypass enabled, return demo data
- if (
- !user &&
- dev &&
- (process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.DEV_BYPASS_AUTH === 'true')
- ) {
- console.warn('DEV_BYPASS_AUTH, returning demo cases for evidence upload');
- return {
- form,
- cases: [
- {
- id: 'dev-case-001',
- title: 'Development Case',
- case_number: 'DEV-0001',
- status: 'active',
- },
- {
- id: 'dev-case-002',
- title: 'Sample Evidence Case',
- case_number: 'DEV-0002',
- status: 'active',
- },
- ],
- };
- }
+	// If no user, return empty cases (client will handle fallback)
+	if (!user) {
+		return {
+			form,
+			cases: [],
+			user: null
+		};
+	}
 
- // Get available cases for the current user
- try {
- const userCases = await db
- .select({
- id: cases.id, // Corrected object literal syntax
- title: cases.title,
+	// Get available cases for the current user
+	try {
+		const userCases = await db
+			.select({
+				id: cases.id,
+				title: cases.title,
  case_number: cases.case_number,
  status: cases.status,
  })
  .from(cases)
- .where(eq(cases.status, 'active'))
- .orderBy(cases.created_at);
+			.from(cases)
+			.where(eq(cases.status, 'active'))
+			.orderBy(cases.createdAt);
 
- return { form, userCases }; // Corrected 'form: cases' to 'form'
- } catch (error: Error | unknown) {
- console.error('Failed to load cases: ', error);
- return { form, userCases: [] }; // Corrected 'form: cases: []' to 'form, userCases: []'
- }
+		return {
+			form,
+			cases: userCases,
+			user
+		};
+	} catch (error) {
+		console.error('Error fetching cases:', error);
+		return {
+			form,
+			cases: [],
+			user
+		};
+	}
 };
 
 export const actions: Actions = {

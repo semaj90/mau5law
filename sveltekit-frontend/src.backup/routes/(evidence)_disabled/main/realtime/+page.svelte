@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import MonacoEditor from "$lib/components/MonacoEditor.svelte"; import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte"; import Button from '$lib/components/ui/enhanced-bits.svelte'; import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte"; import type { evidenceStore  } from '$lib/stores/unified'; import type { lokiEvidenceService  } from '$lib/utils/loki-evidence'; import { Activity } from "lucide-svelte";
 import { BarChart3 } from "lucide-svelte";

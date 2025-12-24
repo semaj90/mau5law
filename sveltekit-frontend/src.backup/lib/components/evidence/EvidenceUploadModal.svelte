@@ -2,6 +2,10 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:click) and new syntaxes for event handling is not allowed. Use only the onclick syntax
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:click) and new syntaxes for event handling is not allowed. Use only the onclick syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:click) and new syntaxes for event handling is not allowed. Use only the onclick syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <script lang="ts">
   import type { ProcessingEvent } from '$lib/services/types';
   import { uploadEvidence, validateFile } from '$lib/services/uploadEvidenceService';

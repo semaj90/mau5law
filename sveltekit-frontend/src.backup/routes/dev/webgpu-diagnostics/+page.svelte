@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: The 'type' modifier cannot be used on a named import when 'import type' is used on its import statement.
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: The 'type' modifier cannot be used on a named import when 'import type' is used on its import statement.
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: The 'type' modifier cannot be used on a named import when 'import type' is used on its import statement.
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import { onMount } from 'svelte';; import type { diagnoseWebGPU, type WebGPUDiagResult  } from '$lib/webgpu/diag'; let loading = true; let result: WebGPUDiagResult | null = null; let error: string | null = null; async function run(): Promise<any> { loading = true; error = null; result = null; try { result = await diagnoseWebGPU()} catch (e: unknown) { error = e?.message || String(e)} finally { loading = false; $effect(() => {run);
 </script>

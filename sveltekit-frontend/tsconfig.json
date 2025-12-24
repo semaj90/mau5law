@@ -37,6 +37,7 @@
     "src/lib/components/gpu/**",
     "src/lib/engines/**",
     "src/lib/gpu/**",
+    "src/routes__parked/**",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/node_modules/**",

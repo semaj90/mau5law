@@ -2,6 +2,10 @@
 https://svelte.dev/e/state_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `$state(...)` can only be used as a variable declaration initializer, a class field declaration, or the first assignment to a class field at the top level of the constructor.
 https://svelte.dev/e/state_invalid_placement -->
+<!-- @migration-task Error while migrating Svelte code: `$state(...)` can only be used as a variable declaration initializer, a class field declaration, or the first assignment to a class field at the top level of the constructor.
+https://svelte.dev/e/state_invalid_placement -->
+<!-- @migration-task Error while migrating Svelte code: `$state(...)` can only be used as a variable declaration initializer, a class field declaration, or the first assignment to a class field at the top level of the constructor.
+https://svelte.dev/e/state_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { onMount  } from 'svelte';

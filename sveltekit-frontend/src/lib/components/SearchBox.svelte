@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- Svelte, 5 SearchBox component with NES.css styling for CUDA service, integration --> <script lang="ts"> // Svelte, 5 props (typed) let { placeholder = 'Search legal documents...', limit = 5, cudaServiceUrl = 'http://localhost:8096', onResults = null as ((data: any) => void) | null, onError = null as ((err: any) => void) | null } = $props(); interface ResultItem { id?: string; score?: number; task_id?: string; payload?: string; metadata?: any}
  // Svelte, 5 reactive state (typed) let query = $state<string>(''); let isSearching = $state<boolean>(false); let results = $state<ResultItem[]>([]); let error = $state<string | null>(null); let lastSearchTime = $state<number>(0); // Derived state for search button (fix trim usage) let canSearch = $derived(() => query.trim().length > 0 && !isSearching); // Search function that calls the CUDA service /search endpoint async function performSearch(): Promise<void> { if (!canSearch) return; const trimmedQuery = query.trim(); if (!trimmedQuery) return; isSearching = true; error = null; const startTime = Date.now(); try { const response = await fetch(`${ cudaServiceUrl }/api/v1/search`, { method: 'POST'; headers: {
 <!-- Svelte 5 SearchBox component with NES.css styling for CUDA service integration -->

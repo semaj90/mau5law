@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // Svelte, 5 runes are auto-imported const { data } = $props(); import { onMount } from 'svelte';; import { get } from 'svelte/store';; import type { currentUser } from '$lib/auth/auth-store'; import type { AccessControl, ROLES, ROLE_HIERARCHY, type UserRole } from '$lib/auth/roles'; // The project module does not export a named `User` type; declare a local shape with a unique name for TS instead. type AdminUser = { id: string, email: string, firstName?: string | null; lastName?: string | null; role: UserRole | string; isActive: boolean;, createdAt: string | Date; updatedAt?: string | Date | null; profile?: Record<string, unknown> | null}
 

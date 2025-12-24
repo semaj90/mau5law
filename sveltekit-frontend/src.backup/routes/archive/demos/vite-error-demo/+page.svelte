@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <!-- Vite Error Logger, Demo, Page --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { logCustomError  } from '$lib/vite/vscode-error-logger'; import type { vscodeIntegration, errorNavigator  } from '$lib/vite/vscode-extension'; let errorLog: Error | unknown[] = $state([]); let errorStats = $state({ total: 0, errors: 0, warnings: 0, info: 0 });
   let isWatching = $state <boolean>(false); // Demo error generators const demoErrors = [ { level: 'error' as const message: 'Cannot find, module: "@/components/NonExistentComponent"', file: 'src/routes/demo/+page.svelte', line: 42, suggestion: 'Check if the import path is correct and the module exists.'
     }, {

@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 // onMount not used; Svelte, 5 runes are used instead import  YoRHaAPIClient  from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte"; import * as THREE from 'three'; let layout = $state <any>(null) as: unknown; // --- added types to make node/link shapes explicit --- type GraphNode = { id: string, type?: string; [key: string]: unknown }; type GraphLink = { source: string, target: string, kind?: string; [key: string]: unknown }; type GraphData = { nodes: GraphNode[], links: GraphLink[] }; // CHANGED: narrow graphData typing let graphData = $state ({ nodes: [], links: [] }) as GraphData; const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene()}
     } });

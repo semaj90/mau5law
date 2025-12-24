@@ -1,4 +1,8 @@
 <script lang="ts">
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+	let user = $derived(data.user);
 
 	interface UploadStatus {
 		status: 'idle' | 'uploading' | 'processing' | 'complete' | 'error';
@@ -27,6 +31,11 @@
 			progress: 0,
 			message: 'Uploading file...'
 		};
+
+		if (!user) {
+			await saveToLocalStorage(file);
+			return;
+		}
 
 		try {
 			const formData = new FormData();
@@ -60,6 +69,41 @@
 				progress: 0,
 				message: 'Upload failed',
 				error: error instanceof Error ? error.message : 'Unknown error'
+			};
+		}
+	}
+
+	async function saveToLocalStorage(file: File) {
+		try {
+			// Store metadata
+			const pendingUpload = {
+				id: crypto.randomUUID(),
+				fileName: file.name,
+				fileSize: file.size,
+				fileType: file.type,
+				timestamp: Date.now(),
+				status: 'pending'
+			};
+
+			const uploads = JSON.parse(localStorage.getItem('pending_uploads') || '[]');
+			uploads.push(pendingUpload);
+			localStorage.setItem('pending_uploads', JSON.stringify(uploads));
+
+			// Simulate processing delay
+			await new Promise(resolve => setTimeout(resolve, 1000));
+
+			uploadStatus = {
+				status: 'complete',
+				fileName: file.name,
+				progress: 100,
+				message: 'Saved locally (Offline Mode). Will upload when online.'
+			};
+		} catch (e) {
+			uploadStatus = {
+				status: 'error',
+				progress: 0,
+				message: 'Local save failed',
+				error: e instanceof Error ? e.message : 'Unknown error'
 			};
 		}
 	}

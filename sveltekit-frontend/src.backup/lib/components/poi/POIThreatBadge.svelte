@@ -2,6 +2,10 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token >
 https://svelte.dev/e/expected_token -->
+<!-- @migration-task Error while migrating Svelte code: Expected token >
+https://svelte.dev/e/expected_token -->
+<!-- @migration-task Error while migrating Svelte code: Expected token >
+https://svelte.dev/e/expected_token -->
 <script lang="ts">
   import type { Badge } from '$lib/components/ui/badge';
   import { AlertCircle, AlertTriangle, CheckCircle, Shield } from "lucide-svelte";
