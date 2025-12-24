@@ -4,12 +4,12 @@
  * Enqueues URLs for web crawling and ingestion into ACE knowledge base
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/db';
 import { aceSources } from '$lib/db/schema/ace-web';
+import { db } from '$lib/server/db/client';
+import { json } from '@sveltejs/kit';
+import * as amqp from 'amqplib';
 import { eq } from 'drizzle-orm';
-import amqp from 'amqplib';
+import type { RequestHandler } from './$types.js';
 
 interface IngestRequest {
   urls: string[];
@@ -42,8 +42,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Connect to RabbitMQ
-    let connection: amqp.Connection;
-    let channel: amqp.Channel;
+    let connection: any;
+    let channel: any;
 
     try {
       const rabbitmqUrl = process.env.RABBITMQ_URL || 'amqp://localhost:5672';

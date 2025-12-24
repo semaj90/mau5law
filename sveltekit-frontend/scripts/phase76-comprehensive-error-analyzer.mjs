@@ -32,7 +32,7 @@ const CONFIG = {
 	qdrant: {
 		url: 'http://localhost:6333',
 		errorCollection: 'phase72_error_patterns',
-		knowledgeCollection: 'phase76_knowledge_base',
+		knowledgeCollection: 'knowledge_base',
 		analysisCollection: 'phase76_error_analysis' // NEW: Comprehensive analysis
 	},
 	redis: {

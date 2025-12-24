@@ -390,6 +390,20 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
   return json({ success: true, data: persons });
 };
+
+### Ingestion API (`src/routes/api/ingest/+server.ts`)
+```typescript
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+
+export const POST: RequestHandler = async ({ request, locals }) => {
+  if (!locals.user) return json({ error: 'Unauthorized' }, { status: 401 });
+
+  const formData = await request.formData();
+  // Handles Docling-258m, LangExtract, and Qdrant indexing
+  // ...
+};
+```
 ```
 
 ---

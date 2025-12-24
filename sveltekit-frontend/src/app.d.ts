@@ -3,14 +3,16 @@
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-declare namespace App {
+ declare namespace App {
  // interface Locals {}
  // interface PageData {}
- // interface Error {}
+ interface Error {
+ message: string;
+ code?: string;
+ details?: string;
+ }
  // interface Platform {}
-}
-
-import type { User, Session } from 'lucia';
+ }import type { Session } from 'lucia';
 
 declare global {
  namespace App {
@@ -18,6 +20,8 @@ declare global {
  interface User {
  id: string;
  email: string;
+ username?: string;
+ role?: string;
  // Add any other user properties you expect, e.g., name, roles
  }
 
@@ -45,4 +49,5 @@ declare global {
  }
 }
 
-export {};
+export { };
+

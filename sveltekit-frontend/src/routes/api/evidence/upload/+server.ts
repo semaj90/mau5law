@@ -1,6 +1,7 @@
-import { json, error } from '@sveltejs/kit';
+import { db } from '$lib/server/db/client';
 import type { RequestEvent } from '@sveltejs/kit';
-import { getDb } from '$lib/server/db';
+import { error, json } from '@sveltejs/kit';
+import { sql } from 'drizzle-orm';
 
 /**
  * POST /api/evidence/upload
@@ -41,16 +42,14 @@ export async function POST({ request }: RequestEvent) {
  // const minio = getMinioClient();
  // await minio.putObject('legal-evidence', minioKey, file.stream());
 
- // Create DB row
- const db = getDb();
+  // Create DB row
  const jobId = `job-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
- const result = await db.query(
- `INSERT INTO evidence_ingest_jobs (id, case_id, artifact_type, minio_key, status, created_at)
- VALUES ($1, $2, $3, $4, $5, NOW())
- RETURNING id, status, created_at`,
- [jobId, caseId, artifactType, minioKey, 'staged']
- );
+ const result = await db.execute(sql`
+ INSERT INTO evidence_ingest_jobs (id, case_id, artifact_type, minio_key, status, created_at)
+ VALUES (${jobId}, ${caseId}, ${artifactType}, ${minioKey}, 'pending', NOW())
+ RETURNING id
+ `);
 
  const job = result.rows[0];
 

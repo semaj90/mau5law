@@ -1,5 +1,4 @@
-import { db } from '$lib/server/db';
-import { personsOfInterest } from '$lib/server/db/schema-postgres';
+import { db, personsOfInterest } from '$lib/server/db/client';
 import { error, json } from '@sveltejs/kit';
 import { and, desc, eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
@@ -73,12 +72,14 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newPerson = await db
 			.insert(personsOfInterest)
 			.values({
-				caseId: Number(body.caseId),
+				caseId: body.caseId,
 				name: body.name,
-				alias: body.alias || null,
-				role: body.role || 'suspect',
+				aliases: body.alias ? [body.alias] : [],
+				description: body.notes || null,
 				threatLevel: body.threatLevel || 'low',
-				notes: body.notes || null,
+				metadata: {
+					role: body.role || 'suspect'
+				},
 				createdAt: new Date(),
 				updatedAt: new Date()
 			})
@@ -121,9 +122,9 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			updatedAt: new Date()
 		};
 
-		if (body.threatLevel) updates.threatLevel = body.threatLevel;
-		if (body.role) updates.role = body.role;
-		if (body.notes !== undefined) updates.notes = body.notes;
+		// if (body.threatLevel) updates.threatLevel = body.threatLevel;
+		// if (body.role) updates.role = body.role;
+		if (body.notes !== undefined) updates.description = body.notes;
 
 		const updated = await db
 			.update(personsOfInterest)

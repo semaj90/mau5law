@@ -797,7 +797,7 @@ export const reports = pgTable('reports', {
  .primaryKey()
  .notNull(),
  caseId: uuid('case_id'), // FK to cases.id
- createdBy: integer('created_by'), // FK to users.id
+ createdBy: uuid('created_by'), // FK to users.id
  title: varchar('title', { length: 255 }).notNull(),
  content: text('content'),
  status: reportStatusEnum('status').default('draft').notNull(),
@@ -840,7 +840,7 @@ export const personsOfInterest = pgTable('persons', {
  .primaryKey()
  .notNull(),
  caseId: uuid('case_id'),
- createdBy: integer('created_by'),
+ createdBy: uuid('created_by'),
  name: text('name').notNull(),
  aliases: jsonb('aliases').$type<string[]>().default([]),
  threatLevel: varchar('threat_level', { enum: ['low', 'medium', 'high', 'critical'] })

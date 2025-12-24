@@ -125,6 +125,12 @@ async function withRetry(fn, retries = 3, delay = 1000) {
 	throw lastError;
 }
 
+// Global state to track provider health
+const providerHealth = {
+	gemini: 'healthy', // healthy | disabled
+	ollama: 'healthy'
+};
+
 /**
  * Main LLM call router
  */
@@ -138,22 +144,39 @@ export async function callLLM(prompt, options = {}) {
 		console.log(chalk.gray(`   Prompt length: ${prompt.length} chars`));
 	}
 
+	// Check if provider is disabled
+	let activeProvider = provider === 'auto' ? 'ollama' : provider;
+	if (activeProvider === 'gemini' && providerHealth.gemini === 'disabled') {
+		if (verbose) console.log(chalk.yellow('   ⚠️  Gemini disabled due to quota; using Ollama'));
+		activeProvider = 'ollama';
+	}
+
 	try {
 		return await withRetry(async () => {
-			// Handle 'auto' provider by defaulting to Ollama
-			const activeProvider = provider === 'auto' ? 'ollama' : provider;
+			try {
+				switch (activeProvider) {
+					case 'ollama':
+						return await callOllama(prompt, options);
+					case 'gemini':
+						return await callGemini(prompt, options);
+					case 'claude':
+						return await callClaude(prompt, options);
+					case 'openai':
+						return await callOpenAI(prompt, options);
+					default:
+						throw new Error(`Unknown provider: ${provider}`);
+				}
+			} catch (err) {
+				// Auto-fallback for Gemini Quota Exceeded
+				const msg = String(err?.message ?? err);
+				const isQuota = msg.includes('Quota exceeded') || msg.includes('limit: 0') || msg.includes('429');
 
-			switch (activeProvider) {
-				case 'ollama':
+				if (activeProvider === 'gemini' && isQuota) {
+					console.warn(chalk.yellow('   ⚠️  Gemini quota blocked; disabling for this session and falling back to ollama...'));
+					providerHealth.gemini = 'disabled';
 					return await callOllama(prompt, options);
-				case 'gemini':
-					return await callGemini(prompt, options);
-				case 'claude':
-					return await callClaude(prompt, options);
-				case 'openai':
-					return await callOpenAI(prompt, options);
-				default:
-					throw new Error(`Unknown provider: ${provider}`);
+				}
+				throw err;
 			}
 		}, retries);
 	} catch (error) {
@@ -161,7 +184,9 @@ export async function callLLM(prompt, options = {}) {
 		if (verbose) {
 			console.error(chalk.red(`      Stack: ${error.stack}`));
 		}
-		throw error;
+		// Don't throw, just exit with error code so pipeline stops cleanly
+		process.exitCode = 1;
+		return { text: '', provider: 'error', error: error.message, ok: false, fallback: 'none' };
 	}
 }
 

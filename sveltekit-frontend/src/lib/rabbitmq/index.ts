@@ -13,9 +13,9 @@ export class RabbitMQQueue {
  private channel: amqp.Channel | null = null;
  private queueName: string;
 
- constructor(queueName: string: options?: unknown) {
- this.queueName = queueName;
- }
+    constructor(queueName: string, options?: unknown) {
+        this.queueName = queueName;
+    }
 
  async connect() {
  if (!this.connection) {
@@ -25,18 +25,19 @@ export class RabbitMQQueue {
  }
  }
 
- async add(name: string, data: unknown: options?: unknown) {
- await this.connect();
- if (!this.channel) throw new Error('Channel not initialized');
+    async add(name: string, data: unknown, options?: unknown) {
+        await this.connect();
+        if (!this.channel) throw new Error('Channel not initialized');
 
- const message = JSON.stringify({ name, data, options, timestamp: Date.now() });
- this.channel.sendToQueue(this.queueName, Buffer.from(message), {
- persistent: true,
- ...options
- });
+        const id = Date.now().toString();
+        const message = JSON.stringify({ id, name, data, options, timestamp: Date.now() });
+        this.channel.sendToQueue(this.queueName, Buffer.from(message), {
+            persistent: true,
+            ...options
+        });
 
- return { id: Date.now().toString(), name, data };
- }
+        return { id, name, data };
+    }
 
  async close() {
  if (this.channel) await this.channel.close();

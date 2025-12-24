@@ -3,7 +3,7 @@
  * Email/password authentication using Lucia v3 API
  */
 
-import { db } from '$lib/server/db';
+import { db } from '$lib/server/db/client';
 import { users } from '$lib/server/db/schema';
 import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { json, type RequestHandler } from '@sveltejs/kit';

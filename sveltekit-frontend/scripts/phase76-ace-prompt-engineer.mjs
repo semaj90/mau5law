@@ -64,7 +64,7 @@ const CONFIG = {
 	qdrant: {
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
 		errorCollection: 'phase72_error_patterns',
-		knowledgeCollection: 'phase76_knowledge_base',
+		knowledgeCollection: 'knowledge_base',
 		topK: 10,
 		scoreThreshold: 0.4,     // Lowered further to ensure retrieval
 		knowledgeThreshold: 0.3  // Lowered further to ensure Svelte 5 docs are retrieved

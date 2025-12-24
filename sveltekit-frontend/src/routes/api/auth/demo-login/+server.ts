@@ -1,6 +1,5 @@
-import { lucia } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema-unified';
+import { auth as lucia } from '$lib/server/auth/lucia';
+import { db, users } from '$lib/server/db/client';
 import { error, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
@@ -22,44 +21,40 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
  });
  }
 
- const body = await request.json();
- const { email = 'demo@legal.ai.dev', role = 'user' } = body;
+	const body = await request.json();
+	const { email = 'demo@legal.ai.dev', role = 'prosecutor' } = body;
 
- // Get or create demo user
- let user = await db
- .select()
- .from(users)
- .where(eq(users.email, email))
- .then((rows) => rows[0]);
+	// Get or create demo user
+	let user = await db
+		.select()
+		.from(users)
+		.where(eq(users.email, email))
+		.then((rows) => rows[0]);
 
- if (!user) {
- // Create demo user if it doesn't exist
- const [newUser] = await db
- .insert(users)
- .values({
- id: crypto.randomUUID(),
- email: email,
- username: email.split('@')[0],
- role: role,
- isActive: true,
- emailVerified: true,
- passwordHash: 'demo-mode-no-password',
- createdAt: new Date(),
- updatedAt: new Date(),
- })
- .returning();
- user = newUser;
- } else if (user.role !== role && role !== 'user') {
- // Update role if different
- const [updated] = await db
- .update(users)
- .set({ role, updatedAt: new Date() })
- .where(eq(users.id, user.id))
- .returning();
- user = updated;
- }
-
- // Create Lucia session
+	if (!user) {
+		// Create demo user if it doesn't exist
+		const [newUser] = await db
+			.insert(users)
+			.values({
+				email: email,
+				name: email.split('@')[0],
+				role: role as any,
+				isActive: true,
+				passwordHash: 'demo-mode-no-password',
+				createdAt: new Date().toISOString(),
+				updatedAt: new Date().toISOString(),
+			})
+			.returning();
+		user = newUser;
+	} else if (user.role !== role) {
+		// Update role if different
+		const [updated] = await db
+			.update(users)
+			.set({ role: role as any, updatedAt: new Date().toISOString() })
+			.where(eq(users.id, user.id))
+			.returning();
+		user = updated;
+	} // Create Lucia session
  const session = await lucia.createSession(user.id, {});
  const sessionCookie = lucia.createSessionCookie(session.id);
  cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -73,7 +68,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
  user: {
  id: user.id,
  email: user.email,
- username: user.username,
+ name: user.name,
  role: user.role,
  isActive: user.isActive,
  },

@@ -1,6 +1,7 @@
-import { error, json } from '@sveltejs/kit';
 import { getRedisClient } from '$lib/server/cache/redis';
-import { getDb } from '$lib/server/db';
+import { db } from '$lib/server/db/client';
+import { json } from '@sveltejs/kit';
+import { sql } from 'drizzle-orm';
 
 /**
  * GET /api/system/phase13
@@ -8,7 +9,7 @@ import { getDb } from '$lib/server/db';
  * No side effects
  */
 export async function GET() {
- const health = {
+ const health: any = {
  timestamp: new Date().toISOString(),
  services: {},
  };
@@ -27,16 +28,15 @@ export async function GET() {
  }
 
  // Check PostgreSQL + pgvector
- const db = getDb();
  try {
- const result = await db.query('SELECT version(), current_database()');
+ const result = await db.execute(sql`SELECT version(), current_database()`);
  health.services.postgres = {
  ok: result.rows.length > 0,
- version: result.rows[0]?.version?.substring(0, 40) || 'unknown',
- database: result.rows[0]?.current_database || 'unknown',
+ version: (result.rows[0] as any)?.version?.substring(0, 40) || 'unknown',
+ database: (result.rows[0] as any)?.current_database || 'unknown',
  };
  } catch (e) {
- health.services.postgres = { ok: false, message: e.message };
+ health.services.postgres = { ok: false, message: (e as Error).message };
  }
 
  // Check Qdrant (if configured)

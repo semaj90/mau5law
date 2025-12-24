@@ -18,11 +18,11 @@
  * Port: 3004 (configurable via MCP_KNOWLEDGE_PORT)
  */
 
-import express from 'express';
-import cors from 'cors';
-import chalk from 'chalk';
-import dotenv from 'dotenv';
 import { QdrantClient } from '@qdrant/js-client-rest';
+import chalk from 'chalk';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
 import fetch from 'node-fetch';
 
 dotenv.config();
@@ -32,7 +32,7 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 const PORT = parseInt(process.env.MCP_KNOWLEDGE_PORT || '3004');
-const COLLECTION = 'phase76_knowledge_base';
+const COLLECTION = 'knowledge_base';
 
 // ═══════════════════════════════════════════════════════════════════════
 // Configuration

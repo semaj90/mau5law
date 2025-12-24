@@ -4,7 +4,7 @@
  */
 
 import { fail } from '@sveltejs/kit';
-import amqp from 'amqplib';
+import * as amqp from 'amqplib';
 import { createClient } from 'redis';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const chatId = params.id;
 	const redisKey = `chat:${chatId}`;
 
-	const rawHistory = await redis.get(redisKey);
+	const rawHistory = await (redis as any).get(redisKey);
 	const history = rawHistory ? JSON.parse(rawHistory) : [];
 
 	await redis.disconnect();
@@ -47,7 +47,7 @@ export const actions: Actions = {
 
 		try {
 			// Send job to RabbitMQ worker
-			const conn = await amqp.connect(RABBITMQ_URL);
+			const conn = await (amqp as any).connect(RABBITMQ_URL);
 			const channel = await conn.createChannel();
 			await channel.assertQueue(QUEUE, { durable: true });
 

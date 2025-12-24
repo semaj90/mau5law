@@ -36,7 +36,7 @@ const __dirname = path.dirname(__filename);
 const CONFIG = {
 	qdrant: {
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
-		collection: 'phase76_knowledge_base'
+		collection: 'knowledge_base'
 	},
 	knowledgeAPI: 'http://localhost:5175/api/knowledge',
 	ollama: {
