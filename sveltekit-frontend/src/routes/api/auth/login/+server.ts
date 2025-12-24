@@ -1,50 +1,70 @@
 /**
- * Login API
- * Lucia v3 email/password authentication
+ * Login API - Lucia v3
+ * Email/password authentication using Lucia v3 API
  */
 
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth/lucia';
+import { eq } from 'drizzle-orm';
 
 interface LoginRequest {
- email: string;
- password: string;
+	email: string;
+	password: string;
 }
 
-export const POST: RequestHandler = async ({ request, locals }) => {
- try {
- const body = (await request.json()) as LoginRequest;
+export const POST: RequestHandler = async ({ request, cookies }) => {
+	try {
+		const body = (await request.json()) as LoginRequest;
 
- if (!body.email || !body.password) {
- return json({ error: 'Email and password required' }, { status: 400 });
- }
+		if (!body.email || !body.password) {
+			return json({ error: 'Email and password required' }, { status: 400 });
+		}
 
- // Authenticate with Lucia
- const key = await auth.useKey('email', body.email, body.password);
- const session = await auth.createSession({
- userId: key.userId,
- attributes: {},
- });
+		// Find user by email
+		const [user] = await db
+			.select()
+			.from(users)
+			.where(eq(users.email, body.email))
+			.limit(1);
 
- // Set session cookie
- locals.auth.setSession(session);
+		if (!user) {
+			return json({ error: 'Invalid email or password' }, { status: 401 });
+		}
 
- return json({
- success: true,
- userId: key.userId,
- });
- } catch (error) {
- console.error('Login error:', error);
+		// Check if user is active
+		if (!user.isActive) {
+			return json({ error: 'Account is inactive' }, { status: 403 });
+		}
 
- if (error instanceof Error) {
- if (error.message.includes('AUTH_INVALID_KEY_ID')) {
- return json({ error: 'Invalid email or password' }, { status: 401 });
- }
- if (error.message.includes('AUTH_INVALID_PASSWORD')) {
- return json({ error: 'Invalid email or password' }, { status: 401 });
- }
- }
+		// Verify password
+		const validPassword = await verifyPassword(user.passwordHash, body.password);
+		if (!validPassword) {
+			return json({ error: 'Invalid email or password' }, { status: 401 });
+		}
 
- return json({ error: 'Login failed' }, { status: 500 });
- }
+		// Create session using Lucia v3
+		const session = await createUserSession(user.id);
+
+		// Set session cookie
+		setSessionCookie(cookies, session.sessionId);
+
+		return json({
+			success: true,
+			userId: user.id,
+			sessionId: session.sessionId,
+			user: {
+				id: user.id,
+				email: user.email,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				role: user.role,
+				avatarUrl: user.avatarUrl
+			}
+		});
+	} catch (error) {
+		console.error('[Auth] Login error:', error);
+		return json({ error: 'Login failed' }, { status: 500 });
+	}
 };

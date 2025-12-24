@@ -5,21 +5,25 @@
  */
 
 // ============================================
-// Svelte 5 Compatible UI Store (NEW)
+// Svelte 5 Compatible Stores
 // ============================================
-export {
-    createUIStore, getGlobalUIStore, getUIStore, setUIStore, type AIMetadata, type AutoPopulatedForm, type EmotionAnalysis, type ExtractedEntity, type MarkdownScene, type SceneAnalysis, type TimelineEvent, type TypewriterPrompt, type UIState, type UIStore, type UploadedFile
-} from './ui-store.js';
+export { routeRegistry } from '../routing/route-registry.svelte.js';
+export { authStore } from './auth-store.svelte.js';
 export { userStore };
+
+// ============================================
+// Generic Stores (Svelte 5 Runes)
+// ============================================
+    export { AsyncStore, GenericStore } from './generic.svelte';
 
 // ============================================
 // Phase 76: Barrel Store Pattern (Local-First Architecture)
 // ============================================
     import { LocalLegalStore } from '../db/clientDB.svelte';
-    import { chatStore } from './chat-store.svelte';
-    import { UserPreferences } from './preferences.svelte';
-    import { TokenTracker } from './tokenUsage.svelte';
-    import { userStore } from './user.svelte';
+import { chatStore } from './chat-store.svelte';
+import { UserPreferences } from './preferences.svelte';
+import { TokenTracker } from './tokenUsage.svelte';
+import { userStore } from './user.svelte';
 
 // 1. Instantiate Singletons (Global Services)
 export const tokenTracker = new TokenTracker();

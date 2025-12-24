@@ -462,7 +462,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
 }
 
 // Initialize on import (only in non-production)
-if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+if (typeof process !== 'undefined' && import.meta.env?.NODE_ENV !== 'production') {
     initializePgVector().catch(error => {
         console.warn('pgvector initialization failed: ', error);
     });

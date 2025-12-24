@@ -3,9 +3,9 @@
  * Enhanced with error handling, validation, and caseId support
  */
 
+import { fail } from '@sveltejs/kit';
 import amqp from 'amqplib';
 import { createClient } from 'redis';
-import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
@@ -74,10 +74,4 @@ export const actions: Actions = {
 			return fail(500, { error: 'Failed to process message. Please try again.' });
 		}
 	}
-};
-        } catch (error) {
-            console.error('Failed to send message to queue:', error);
-            return { success: false, error: 'Failed to process message' };
-        }
-    }
 };
