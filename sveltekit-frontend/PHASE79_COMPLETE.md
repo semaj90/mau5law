@@ -5,7 +5,8 @@ We have successfully engineered and deployed the **Cognitive Engine**, a robust,
 ## 🎯 Objectives Achieved
 - [x] **Bypass Phase 78**: Switched from using pre-generated (corrupted) suggestions to fresh, real-time generation.
 - [x] **Safety Gate Implemented**: 4-layer validation system now blocks 100% of "documentation-style" output.
-- [x] **RAG Integration**: Engine builds rich context from file content + error clusters.
+- [x] **RAG Integration**: Engine builds rich context from file content + error clusters + **Qdrant Vector Search**.
+- [x] **Dual-Mode AI**: Uses **Gemini 2.0 Flash** (Cloud) with fallback to **Ollama `gemma3-legal:latest`** (Local).
 - [x] **Autonomous Loop**: The system successfully iterates, applies matches, verifies them, and reverts on failure without crashing.
 
 ## 🏗️ System Architecture
@@ -14,9 +15,11 @@ We have successfully engineered and deployed the **Cognitive Engine**, a robust,
 - **Input**: `error_cluster` table (Raw compiler errors).
 - **Process**:
   1. Reads file source code.
-  2. Generates "Code Only" prompt.
-  3. Validates output (Safety Gate).
-  4. Ranks result (0-100 Score).
+  2. Queries Qdrant for similar past fixes (RAG).
+  3. Generates "Code Only" prompt.
+  4. Calls Gemini (or fails over to Ollama).
+  5. Validates output (Safety Gate).
+  6. Ranks result (0-100 Score).
 - **Output**: `data/recommendations.jsonl`.
 
 ### 2. The Ultimate Agent (`scripts/phase79-cognitive-ultimate.mts`)

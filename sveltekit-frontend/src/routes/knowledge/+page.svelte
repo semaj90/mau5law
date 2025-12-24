@@ -2,7 +2,7 @@
   import { KnowledgeSearchStore } from '$lib/stores/knowledge-search.svelte';
 
   // Svelte 5: Create reactive store instance
-  const search = new KnowledgeSearchStore();
+  const search = $state(new KnowledgeSearchStore());
 
   // Sample queries
   const sampleQueries = [

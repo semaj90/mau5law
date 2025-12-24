@@ -2,6 +2,10 @@
 https://svelte.dev/e/css_empty_declaration -->
 <!-- @migration-task Error while migrating Svelte code: Declaration cannot be empty
 https://svelte.dev/e/css_empty_declaration -->
+<!-- @migration-task Error while migrating Svelte code: Declaration cannot be empty
+https://svelte.dev/e/css_empty_declaration -->
+<!-- @migration-task Error while migrating Svelte code: Declaration cannot be empty
+https://svelte.dev/e/css_empty_declaration -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 

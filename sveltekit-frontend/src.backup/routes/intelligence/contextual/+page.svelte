@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { page  } from '$app/state'; // Headless components from our enhanced architecture import type { HeadlessDialog  } from '$lib/headless'; import  OptimisticList, type Item  from "$lib/headless/OptimisticList.svelte"; import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte'; import type { LoadingButton  } from '$lib/headless'; import type { FormField  } from '$lib/headless'; // Enhanced UI components import * as Card from '$lib/components/ui/Card.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Progress from '$lib/components/ui/progress/Progress.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; // Icons import { Brain } from "lucide-svelte";
 import { Network } from "lucide-svelte";

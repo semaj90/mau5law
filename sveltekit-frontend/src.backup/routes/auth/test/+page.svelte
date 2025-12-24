@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter  } from '$lib/components/ui/card';
 import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';; import type { auth  } from '$lib/stores/unified'; import type { mcpGPUOrchestrator  } from '$lib/services/mcp-gpu-orchestrator'; import type { getSvelte5Docs, getBitsUIv2Docs, getXStateDocs  } from '$lib/mcp-context72-get-library-docs'; import LoginModal from '$lib/components/auth/LoginModal.svelte'; import * as Card from '$lib/components/ui/Card.svelte'; import * as Alert from '$lib/components/ui/alert.svelte'; import * as Tabs from '$lib/components/ui/tabs.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; import Separator from '$lib/components/ui/separator/Separator.svelte'; import { Shield } from "lucide-svelte";

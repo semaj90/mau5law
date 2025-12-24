@@ -2,6 +2,10 @@
 https://svelte.dev/e/global_reference_invalid -->
 <!-- @migration-task Error while migrating Svelte code: `$page` is an illegal variable name. To reference a global variable called `$page`, use `globalThis.$page`
 https://svelte.dev/e/global_reference_invalid -->
+<!-- @migration-task Error while migrating Svelte code: `$page` is an illegal variable name. To reference a global variable called `$page`, use `globalThis.$page`
+https://svelte.dev/e/global_reference_invalid -->
+<!-- @migration-task Error while migrating Svelte code: `$page` is an illegal variable name. To reference a global variable called `$page`, use `globalThis.$page`
+https://svelte.dev/e/global_reference_invalid -->
 <script lang="ts">
  import { goto } from '$app/navigation';
  import { onMount } from 'svelte';

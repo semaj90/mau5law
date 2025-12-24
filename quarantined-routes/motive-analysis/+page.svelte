@@ -1,21 +1,40 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import type { DialogClose as Close, DialogContent as Content, DialogOverlay as Overlay, Dialog as Root } from '$lib/components/ui/dialog';
-// REMOVED:   import type { appActions, appStore } from '$lib/stores/app-store';
+  import Dialog from '$lib/components/ui/dialog?Dialog';
+  import DialogClose from '$lib/components/ui/dialog?DialogClose';
+  import DialogContent from '$lib/components/ui/dialog?DialogContent';
+  import DialogOverlay from '$lib/components/ui/dialog?DialogOverlay';
   import { onDestroy, onMount } from 'svelte';
 
-  // YoRHaModalComponent is being replaced by bits-ui Dialog
+  interface PageData {
+    session?: any;
+    cases?: any[];
+    insights?: any[];
+  }
+
+  interface Props {
+    data: PageData & { session: any };
+  }
+
+  let { data }: Props = $props();
+
+  const Close = DialogClose;
+  const Content = DialogContent;
+  const Overlay = DialogOverlay;
+  const Root = Dialog;
 
   let selectedSection = $state('command-center');
   let showNewCaseModal = $state(false);
+  let loading = $state(false);
+  let error: string | null = $state(null);
+  let recentCases = $state(data?.cases || []);
+  let evidenceInsights = $state(data?.insights || []);
+
   let newCaseData = $state({
     title: '',
     description: '',
-    priority: 'medium',
+    priority: 'medium' as const,
   });
-// REMOVED: 
-  let loading = $state(true);
-  let error: string | null = $state(null);
 
   const sections = $state([
     { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
@@ -25,13 +44,13 @@
     { id: 'search', label: 'Global Search', description: 'Comprehensive search across all data sources.' },
   ]);
 
-  let evidenceInsights = $state([]);
-  let recentCases = $state([]);
+  let evidenceInsights: Array<{ id: string; label: string; summary: string }> = $state([]);
+  let recentCases: Array<{ id: string; title: string; caseNumber?: string; priority?: string; createdBy?: string; createdByLastName?: string; createdAt: string; status: string }> = $state([]);
 
   // Subscribe to store
-  let appState = $state({});
+  let appState: any = $state({});
   $effect(() => {
-    const unsubscribe = appStore.subscribe(state => {
+    const unsubscribe = appStore.subscribe((state: any) => {
       appState = state;
     });
     return unsubscribe;
@@ -45,9 +64,9 @@
       // Load cases from API
       await appActions.loadCases();
 
-// REMOVED:       // Get cases from store and filter for recent ones
+      // Get cases from store and filter for recent ones
       const allCases = appState?.cases || [];
-// REMOVED:       recentCases = allCases
+      recentCases = allCases
         .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
         .slice(0, 10)
         .map((caseItem: any) => ({
@@ -68,9 +87,9 @@
       // Fallback to mock data
       recentCases = [
         {
-// REMOVED:           id: 'case-001',
+          id: 'case-001',
           title: 'Project Chimera',
-// REMOVED:           caseNumber: '2024-001',
+          caseNumber: '2024-001',
           priority: 'high',
           createdBy: '2B',
           createdByLastName: '',
@@ -96,7 +115,7 @@
   async function loadEvidenceInsights() {
     try {
       // Load evidence from API
-      await appActions.loadEvidence();
+      await appActions.loadEvidence?.();
 
       const evidence = appState?.evidence || [];
 

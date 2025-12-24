@@ -2,6 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Input' has already been declared
 https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Input' has already been declared
+https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Input' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Input  } from '$lib/components/ui/input'; import type { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter  } from '$lib/components/ui/dialog';
 import type { Case } from '$lib/types';

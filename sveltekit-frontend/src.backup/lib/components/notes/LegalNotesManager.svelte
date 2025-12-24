@@ -2,6 +2,10 @@
 https://svelte.dev/e/block_unexpected_close -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
 https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected block closing tag
+https://svelte.dev/e/block_unexpected_close -->
 <script lang="ts">
 	import { xstateIntegration } from '$lib/services/xstate-integration';
 	import { clearNoteFilters, exportLegalNotes, filteredNotes, loadLegalNotes, noteFilters, noteStats, removeLegalNote, saveLegalNote, setNoteFilter } from '$lib/stores/notes';

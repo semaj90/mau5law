@@ -1,22 +1,22 @@
 // Updated PostgreSQL schema based on database introspection // This schema matches the actual database structure (drizzle/schema.ts)
 import { sql } from 'drizzle-orm';
 import {
- bigint,
- boolean,
- foreignKey,
- index,
- integer,
- jsonb,
- numeric,
- pgEnum,
- pgTable,
- real,
- serial,
- text,
- timestamp,
- unique,
- uuid,
- varchar,
+    bigint,
+    boolean,
+    foreignKey,
+    index,
+    integer,
+    jsonb,
+    numeric,
+    pgEnum,
+    pgTable,
+    real,
+    serial,
+    text,
+    timestamp,
+    unique,
+    uuid,
+    varchar,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
 
@@ -146,13 +146,15 @@ export const patchStatusEnum = pgEnum('patch_status', ['suggested', 'applied', '
 // === TABLES FOR LEGAL AI APPLICATION ===
 
 export const users = pgTable('users', {
- id: integer('id').primaryKey().notNull(),
+ id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
  email: varchar('email', { length: 255 }).unique().notNull(),
- hashedPassword: varchar('hashed_password', { length: 255 }).notNull(),
+ passwordHash: varchar('password_hash', { length: 255 }).notNull(),
  name: varchar('name', { length: 255 }),
  firstName: varchar('first_name', { length: 255 }),
  lastName: varchar('last_name', { length: 255 }),
  role: userRoleEnum('role').notNull().default('prosecutor'),
+ isActive: boolean('is_active').default(true).notNull(),
+ avatarUrl: text('avatar_url'),
  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 });
@@ -234,7 +236,7 @@ export const cases = pgTable(
  court: varchar('court', { length: 200 }),
  clientName: varchar('client_name', { length: 200 }),
  opposingParty: varchar('opposing_party', { length: 200 }),
- assignedAttorney: integer('assigned_attorney'), // Foreign key to users.id
+ assignedAttorney: uuid('assigned_attorney'), // Foreign key to users.id
  filingDate: timestamp('filing_date', { withTimezone: true }),
  dueDate: timestamp('due_date', { withTimezone: true }),
  closedDate: timestamp('closed_date', { withTimezone: true }),
@@ -297,7 +299,7 @@ export const criminals = pgTable(
  notes: text('notes'),
  aiSummary: text('ai_summary'),
  aiTags: jsonb('ai_tags').default([]).notNull().$type<string[]>(),
- createdBy: integer('created_by'), // Foreign key to users.id
+ createdBy: uuid('created_by'), // Foreign key to users.id
  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
  },
@@ -339,7 +341,7 @@ export const evidence = pgTable(
  fileUrl: text('file_url'),
  fileName: varchar('file_name', { length: 255 }),
  canvasPosition: jsonb('canvas_position').default({}).notNull(),
- uploadedBy: integer('uploaded_by'), // Foreign key to users.id
+ uploadedBy: uuid('uploaded_by'), // Foreign key to users.id
  uploadedAt: timestamp('uploaded_at', { mode: 'string' }).defaultNow().notNull(),
  updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
  },
@@ -2164,7 +2166,7 @@ export const routeErrorPatches = pgTable(
  status: patchStatusEnum('status').notNull().default('suggested'),
  source: varchar('source', { length: 64 }).notNull().default('phase78'),
  metadata: jsonb('metadata').notNull().default({}),
- createdBy: integer('created_by').references(() => users.id, { onDelete: 'set null' }),
+ createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
  appliedAt: timestamp('applied_at'),
  createdAt: timestamp('created_at').notNull().defaultNow(),
  updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -2324,7 +2326,7 @@ export const caseReports = pgTable('case_reports', {
 // === AUDIT LOG ===
 export const auditLog = pgTable('audit_log', {
 	id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-	userId: varchar('user_id', { length: 255 }).notNull(),
+	userId: uuid('user_id').notNull(),
 	action: varchar('action', { length: 100 }).notNull(),
 	resourceType: varchar('resource_type', { length: 100 }).notNull(),
 	resourceId: varchar('resource_id', { length: 255 }).notNull(),

@@ -2,6 +2,10 @@
 https://svelte.dev/e/element_unclosed -->
 <!-- @migration-task Error while migrating Svelte code: `<script>` was left open
 https://svelte.dev/e/element_unclosed -->
+<!-- @migration-task Error while migrating Svelte code: `<script>` was left open
+https://svelte.dev/e/element_unclosed -->
+<!-- @migration-task Error while migrating Svelte code: `<script>` was left open
+https://svelte.dev/e/element_unclosed -->
 
 <script lang="ts">
   import type { ContextMenu  } from 'bits-ui/components/ui/context-menu';
