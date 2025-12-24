@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db/client';
-import { errorClusters } from '$lib/server/db/schema';
+import { errorClusters } from '$lib/server/db/schema-phase78';
+import { desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -13,13 +14,13 @@ export const load: PageServerLoad = async ({ locals }) => {
   // 2. Fetch Data (Direct DB or via Service)
   // We fetch high-priority errors to display on the dashboard
   const stats = await db.select({
-    error_code: errorClusters.name, // Using name as error_code proxy or just name
-    message: errorClusters.description,
-    count: errorClusters.errorCount,
-    // file_path: errorClusters.metadata // metadata might contain file info
+    error_code: errorClusters.id,
+    message: errorClusters.canonicalMessage,
+    count: errorClusters.eventCount,
+    // file_path: errorClusters.affectedRoutes // Using affectedRoutes count as proxy or remove if not needed
   })
   .from(errorClusters)
-  .orderBy(errorClusters.errorCount) // descending? need sql desc
+  .orderBy(desc(errorClusters.eventCount))
   .limit(10);
 
   // Mock user for consistent UI if auth is bypassed
@@ -31,8 +32,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   return {
     user,
-    role: user.role,
     caseId: 'ODIN-8842-XC',
-    stats: stats.reverse() // hack for desc sort if sql helper missing
+    stats
   };
 };

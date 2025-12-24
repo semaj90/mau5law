@@ -1,7 +1,6 @@
-import { db } from '$lib/server/db';
-import { cases } from '$lib/server/db/schema-postgres';
+import { cases, db } from '$lib/server/db/client';
 import { error, json } from '@sveltejs/kit';
-import { and, eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 /**

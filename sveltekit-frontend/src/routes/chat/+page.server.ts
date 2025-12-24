@@ -1,4 +1,4 @@
-import amqp from 'amqplib';
+import * as amqp from 'amqplib';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
@@ -13,7 +13,7 @@ export const actions: Actions = {
 
         // Push to RabbitMQ
         try {
-            const conn = await amqp.connect('amqp://localhost');
+            const conn = await (amqp as any).connect('amqp://localhost');
             const ch = await conn.createChannel();
             await ch.assertQueue('ai_jobs');
             await ch.sendToQueue('ai_jobs', Buffer.from(JSON.stringify({

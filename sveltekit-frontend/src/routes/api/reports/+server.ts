@@ -1,5 +1,4 @@
-import { db } from '$lib/server/db';
-import { reports } from '$lib/server/db/schema-postgres';
+import { db, reports } from '$lib/server/db/client';
 import { error, json } from '@sveltejs/kit';
 import { and, desc, eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
@@ -71,9 +70,12 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newReport = await db
 			.insert(reports)
 			.values({
-				caseId: Number(body.caseId),
+				caseId: body.caseId,
 				content: body.content,
-				reportType: body.reportType || 'general',
+				title: body.title || 'Untitled Report',
+				metadata: {
+					reportType: body.reportType || 'general'
+				},
 				createdBy: locals.user.id,
 				createdAt: new Date(),
 				updatedAt: new Date()
@@ -118,7 +120,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		};
 
 		if (body.content) updates.content = body.content;
-		if (body.reportType) updates.reportType = body.reportType;
+		// if (body.reportType) updates.reportType = body.reportType;
 
 		const updated = await db
 			.update(reports)

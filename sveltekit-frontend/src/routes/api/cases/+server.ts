@@ -1,5 +1,4 @@
-import { db } from '$lib/server/db';
-import { cases } from '$lib/server/db/schema-postgres';
+import { cases, db } from '$lib/server/db/client';
 import { error, json } from '@sveltejs/kit';
 import { and, desc, eq, like } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
@@ -124,7 +123,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		}
 
 		const updates: Partial<typeof cases.$inferSelect> = {
-			updatedAt: new Date()
+			updatedAt: new Date().toISOString()
 		};
 
 		if (body.status) updates.status = body.status;
@@ -178,7 +177,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.update(cases)
 			.set({
 				status: 'archived',
-				updatedAt: new Date()
+				updatedAt: new Date().toISOString()
 			})
 			.where(
 				and(

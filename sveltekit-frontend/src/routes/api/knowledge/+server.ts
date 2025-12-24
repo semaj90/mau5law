@@ -21,7 +21,7 @@ async function extractDocumentText(file: File): Promise<string> {
   const ext = file.name.split('.').pop()?.toLowerCase();
 
   if (ext === 'pdf') {
-    const pdf = await pdfParse(buffer);
+    const pdf = await pdfParse(Buffer.from(buffer));
     return pdf.text;
   } else if (ext === 'txt') {
     return new TextDecoder().decode(buffer);
@@ -74,7 +74,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
  */
 async function ensureQdrantCollection() {
   try {
-    await qdrant.getCollection('knowledge_base');
+    await (qdrant as any).getCollection('knowledge_base');
   } catch {
     await qdrant.createCollection('knowledge_base', {
       vectors: {
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
           };
 
           // Store in Qdrant
-          await qdrant.upsertPoints('knowledge_base', {
+          await (qdrant as any).upsert('knowledge_base', {
             points: [
               {
                 id: pointId,
@@ -201,13 +201,13 @@ export const GET: RequestHandler = async ({ url }) => {
     const queryEmbedding = await generateEmbedding(query);
 
     // Search Qdrant
-    const results = await qdrant.search('knowledge_base', {
+    const results = await (qdrant as any).search('knowledge_base', {
       vector: queryEmbedding,
       limit,
       score_threshold: 0.6
     });
 
-    const matches = results.map(r => ({
+    const matches = (results as any[]).map(r => ({
       id: r.id,
       score: r.score,
       document: r.payload?.document_name,
@@ -254,18 +254,18 @@ export const PATCH: RequestHandler = async ({ request }) => {
 
     // 1. Search knowledge base for context
     const queryEmbedding = await generateEmbedding(prompt);
-    const searchResults = await qdrant.search('knowledge_base', {
+    const searchResults = await (qdrant as any).search('knowledge_base', {
       vector: queryEmbedding,
       limit: max_context_chunks,
       score_threshold: 0.6
     });
 
-    const context = searchResults
+    const context = (searchResults as any[])
       .map(r => `[${r.payload?.document_name}] ${r.payload?.content}`)
       .join('\n\n');
 
-    const avgSimilarity = searchResults.length > 0
-      ? searchResults.reduce((sum, r) => sum + r.score, 0) / searchResults.length
+    const avgSimilarity = (searchResults as any[]).length > 0
+      ? (searchResults as any[]).reduce((sum, r) => sum + r.score, 0) / (searchResults as any[]).length
       : 0;
 
     // 2. Build augmented prompt
@@ -323,9 +323,9 @@ Provide a clear, detailed answer based on the knowledge base. If the knowledge b
       response,
       llm: llmUsed,
       rag_context: {
-        matches: searchResults.length,
+        matches: (searchResults as any[]).length,
         avg_similarity: avgSimilarity.toFixed(2),
-        documents: searchResults.map(r => r.payload?.document_name)
+        documents: (searchResults as any[]).map(r => r.payload?.document_name)
       }
     });
   } catch (err) {

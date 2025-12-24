@@ -48,7 +48,7 @@ const CONFIG = {
 	},
 	qdrant: {
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
-		collection: 'phase76_knowledge_base',
+		collection: process.env.QDRANT_COLLECTION || 'knowledge_base',
 		dimension: 768
 	},
 	mcp: {

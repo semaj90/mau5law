@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
 import { lucia } from '$lib/server/auth/lucia';
-import { db } from '$lib/server/db/drizzle';
-import { users, sessions } from '$lib/server/db/schema-postgres';
-import { sql, desc } from 'drizzle-orm';
+import { db } from '$lib/server/db/client';
+import { sessions, users } from '$lib/server/db/schema';
+import { json } from '@sveltejs/kit';
+import { sql } from 'drizzle-orm';
 import type { Lucia } from 'lucia';
+import type { RequestHandler } from './$types.js';
 
 // Declare global types for HMR detection
 declare global {
@@ -23,9 +23,8 @@ interface HealthWarning {
 
 interface RecentSession {
  id: string;
- user_id: string;
- created_at: Date;
- expires_at: Date;
+ userId: string;
+ expiresAt: Date;
 }
 
 export const GET: RequestHandler = async () => {
@@ -76,12 +75,10 @@ export const GET: RequestHandler = async () => {
  recentSessions = await db
  .select({
  id: sessions.id,
- user_id: sessions.user_id,
- created_at: sessions.created_at,
- expires_at: sessions.expires_at,
+ userId: sessions.userId,
+ expiresAt: sessions.expiresAt,
  })
  .from(sessions)
- .orderBy(desc(sessions.created_at))
  .limit(5);
  } catch (e: unknown) {
  status = status === 'healthy' ? 'degraded' : status;

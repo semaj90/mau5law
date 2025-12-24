@@ -63,10 +63,10 @@ const TOOLS = {
 		category: 'knowledge',
 		execute: async () => {
 			try {
-				const res = await fetch(`${CONFIG.endpoints.qdrant}/collections/phase76_knowledge_base`);
+				const res = await fetch(`${CONFIG.endpoints.qdrant}/collections/knowledge_base`);
 				const data = await res.json();
 				return {
-					collection: 'phase76_knowledge_base',
+					collection: 'knowledge_base',
 					points: data.result?.points_count || 0,
 					vectors: data.result?.vectors_count || 0,
 					status: data.result?.status || 'unknown'
@@ -382,7 +382,7 @@ const TOOLS = {
 				if (!embedRes.ok) return { error: 'Embedding failed' };
 				const embedData = await embedRes.json();
 
-				const searchRes = await fetch(`${CONFIG.endpoints.qdrant}/collections/phase76_knowledge_base/points/search`, {
+				const searchRes = await fetch(`${CONFIG.endpoints.qdrant}/collections/knowledge_base/points/search`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ vector: embedData.embedding, limit: topK, with_payload: true })

@@ -1,4 +1,6 @@
+import { db } from '$lib/server/db/client';
 import { json } from '@sveltejs/kit';
+import { sql } from 'drizzle-orm';
 
 /**
  * GET /api/system/services
@@ -6,7 +8,7 @@ import { json } from '@sveltejs/kit';
  * No side effects
  */
 export async function GET() {
- const services = {};
+ const services: Record<string, any> = {};
 
  // Redis health
  if (process.env.REDIS_URL) {
@@ -70,9 +72,7 @@ export async function GET() {
  // PostgreSQL
  if (process.env.DATABASE_URL) {
  try {
- const { getDb } = await import('$lib/server/db');
- const db = getDb();
- const result = await db.query('SELECT 1');
+ const result = await db.execute(sql`SELECT 1`);
  services.postgres = {
  url: process.env.DATABASE_URL?.substring(0, 40) + '...',
  reachable: result.rows.length > 0,

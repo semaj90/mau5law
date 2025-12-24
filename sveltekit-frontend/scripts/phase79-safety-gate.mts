@@ -4,8 +4,8 @@
  * Blocks: Markdown, Explanatory text, Invalid Syntax, Truncated code.
  */
 
-import ts from 'typescript';
 import { parse } from 'svelte/compiler';
+import ts from 'typescript';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -74,18 +74,19 @@ export async function validateContent(
 }
 
 function validateTypeScript(code: string) {
-  const sourceFile = ts.createSourceFile(
-    'temp.ts',
-    code,
-    ts.ScriptTarget.Latest,
-    true
-  );
+  const result = ts.transpileModule(code, {
+    reportDiagnostics: true,
+    compilerOptions: {
+      noEmit: true,
+      target: ts.ScriptTarget.Latest
+    }
+  });
 
-  const diagnostics = sourceFile.getSyntacticDiagnostics(); // Internal TS method shim
-  // Since we can't easily run full TS compiler in limited env, we check basic structure
-  // This simplistic check ensures we at least have valid tokens
-  if (sourceFile.statements.length === 0 && code.trim().length > 0) {
-    // Empty usually means parse failure or just comments
+  if (result.diagnostics && result.diagnostics.length > 0) {
+    const msg = typeof result.diagnostics[0].messageText === 'string'
+      ? result.diagnostics[0].messageText
+      : (result.diagnostics[0].messageText as any).messageText || 'Syntax Error';
+    throw new Error(msg);
   }
 }
 
