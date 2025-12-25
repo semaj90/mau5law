@@ -1,8 +1,7 @@
+import { db } from '$lib/server/db/drizzle';
+import { cases, evidence, sessions, users } from '$lib/server/db/schema';
 import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types.js';
-import db from '$lib/server/db/drizzle';
-import { users, cases, evidence, sessions } from '$lib/server/db/schema';
-import { eq, desc, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 
 // TODO: Verify store subscription is correct for Svelte 5
 

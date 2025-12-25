@@ -11,7 +11,6 @@ import { FileSnapshotStore } from '$lib/services/error-analysis/diffs/FileSnapsh
 import { ValidationService } from '$lib/services/error-analysis/validate/ValidationService';
 import { json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
 
 const workspaceRoot = process.cwd();
 const applier = new DiffApplier(workspaceRoot);
