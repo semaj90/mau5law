@@ -1,18 +1,18 @@
-import { db } from '$lib/server/db';
-import { users, sessions } from '$lib/server/db/schema';
-import bcrypt from 'bcryptjs';
-import type { Cookies } from '@sveltejs/kit';
-import { Lucia } from 'lucia';
+import { db } from '$lib/server/db/client';
+import { sessions, users } from '$lib/server/db/schema';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import type { Cookies } from '@sveltejs/kit';
+import bcrypt from 'bcryptjs';
+import { Lucia } from 'lucia';
 
 // Define the expected return type for createUserSession
 export interface CreateUserSessionResult {
- sessionId: string;
- userId: string;
- expiresAt: Date;
+	sessionId: string;
+	userId: string;
+	expiresAt: Date;
 }
 
-const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
+const adapter = new DrizzlePostgreSQLAdapter(db as any, sessions, users);
 
 export const lucia = new Lucia(adapter, {
  sessionCookie: {
