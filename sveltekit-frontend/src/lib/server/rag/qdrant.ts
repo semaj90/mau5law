@@ -1,6 +1,6 @@
 // src/lib/server/rag/qdrant.ts
 
-const QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';
+const process.env.QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';
 const COLLECTION = process.env.QDRANT_COLLECTION ?? 'phase72_evidence_embeddings';
 
 export type QdrantHit = {
@@ -28,7 +28,7 @@ export async function qdrantSearch(opts: {
  if (opts.scoreThreshold != null) body.score_threshold = opts.scoreThreshold;
  if (opts.filter) body.filter = opts.filter;
 
- const r = await fetch(`${QDRANT_URL}/collections/${COLLECTION}/points/search`, {
+ const r = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTION}/points/search`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify(body),
@@ -51,7 +51,7 @@ export async function qdrantUpsert(opts: {
  wait?: boolean;
 }): Promise<any> {
  const r = await fetch(
- `${QDRANT_URL}/collections/${COLLECTION}/points?wait=${opts.wait ? 'true' : 'false'}`,
+ `${process.env.QDRANT_URL}/collections/${COLLECTION}/points?wait=${opts.wait ? 'true' : 'false'}`,
  {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
@@ -71,7 +71,7 @@ export async function qdrantUpsert(opts: {
  * Get collection info from Qdrant
  */
 export async function qdrantCollectionInfo(): Promise<any> {
- const r = await fetch(`${QDRANT_URL}/collections/${COLLECTION}`);
+ const r = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTION}`);
 
  if (!r.ok) {
  const errorText = await r.text();
@@ -98,7 +98,7 @@ export async function qdrantScroll(opts: {
 
  if (opts.offset) body.offset = opts.offset;
 
- const r = await fetch(`${QDRANT_URL}/collections/${COLLECTION}/points/scroll`, {
+ const r = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTION}/points/scroll`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify(body),

@@ -54,7 +54,7 @@ export const actions: Actions = {
  operationType,
  inputData,
  batchSize,
- userId: getUserId(locals),
+ userId: locals.user?.id,
  });
 
  return json({
@@ -101,7 +101,7 @@ export const actions: Actions = {
  const processingResult = await processCudaDocument(documentData, {
  processingType,
  useGpu,
- userId: getUserId(locals),
+ userId: locals.user?.id,
  });
  const processingTime = Date.now() - startTime;
 

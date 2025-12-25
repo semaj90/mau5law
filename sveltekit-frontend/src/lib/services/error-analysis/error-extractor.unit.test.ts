@@ -59,7 +59,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue(mockSvelteErrors);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue([]);
@@ -88,7 +88,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue(mockSvelteErrors);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue([]);
@@ -116,7 +116,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([]);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue(mockTsErrors);
@@ -157,7 +157,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([]);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue(mockTsErrors);
@@ -216,7 +216,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([]);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue(mockTsErrors);
@@ -240,7 +240,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue(mockSvelteErrors);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue([]);
@@ -266,7 +266,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([]);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue(mockTsErrors);
@@ -291,7 +291,7 @@ describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  createdAt: new Date(),
  updatedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.spyOn(extractor as any, 'extractSvelteErrors').mockResolvedValue([]);
  vi.spyOn(extractor as any, 'extractTypeScriptErrors').mockResolvedValue(mockTsErrors);

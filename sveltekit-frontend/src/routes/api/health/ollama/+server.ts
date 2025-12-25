@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
+import { getOllamaEndpoint } from '$lib/server/endpoints.js';
 import { json } from '@sveltejs/kit';
-import type { getOllamaEndpoint } from '$lib/server/endpoints.js';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
  const ollamaUrl = getOllamaEndpoint();

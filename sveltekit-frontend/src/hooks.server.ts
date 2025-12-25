@@ -12,7 +12,7 @@ import type { Handle, HandleServerError } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
 	// Add request ID for tracing
 	const requestId = crypto.randomUUID();
-	(event.locals as any).requestId = requestId;
+	event.locals.requestId = requestId;
 
 	// Add timing information
 	const startTime = Date.now();
@@ -21,8 +21,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get('auth_session');
 
 	if (!sessionId) {
-		(event.locals as any).user = null;
-		(event.locals as any).session = null;
+		event.locals.user = null;
+		event.locals.session = null;
 	} else {
 		const { session, user } = await validateSession(sessionId);
 
@@ -34,8 +34,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			deleteSessionCookie(event.cookies);
 		}
 
-		(event.locals as any).user = user;
-		(event.locals as any).session = session;
+		event.locals.user = user;
+		event.locals.session = session;
 	}
 
 	// Resolve the request

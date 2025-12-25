@@ -29,7 +29,7 @@
  risk: 'medium' as const,
  status: 'pending' as const,
  },
- ];
+ ] as const;
 
  const systemStatus = [
  {

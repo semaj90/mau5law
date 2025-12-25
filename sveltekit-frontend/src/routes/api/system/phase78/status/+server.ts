@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db/drizzle.js';
+import db from '$lib/server/db/drizzle.js';
 import { errorClusters, errorSuggestions, routeMetadata } from '$lib/server/db/schema/index.js';
 import { error, json } from '@sveltejs/kit';
 import { desc, eq, sql as sqlOp } from 'drizzle-orm';
@@ -114,9 +114,9 @@ export const GET: RequestHandler = async ({ locals }) => {
 		});
 	} catch (err) {
 		console.error('Phase 78 API Error:', err);
-		throw error(500, {
+		return json({
 			message: 'Failed to fetch system status',
 			details: err instanceof Error ? err.message : 'Unknown error'
-		});
+		}, { status: 500 });
 	}
 };

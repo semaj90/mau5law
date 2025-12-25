@@ -8,6 +8,7 @@
  * POST /api/indexing/search-errors - Search indexed error patterns
  */
 
+import { MINIO_ACCESS_KEY, MINIO_SECRET_KEY } from '$env/static/private';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import crypto from 'crypto';
 import fs from 'fs/promises';
@@ -150,9 +151,10 @@ function chunkFileContent(content: string, chunkSize: number = 500, overlap: num
 
 export const POST: RequestHandler = async ({ request, url }) => {
   const pathname = url.pathname;
+  const action = url.searchParams.get('action');
 
   // Index Codebase
-  if (pathname === '/api/indexing/codebase') {
+  if (pathname === '/api/indexing/codebase' || action === 'codebase') {
     try {
       const body = await request.json();
       const rootPath = body.rootPath || './src';
@@ -283,7 +285,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 
   // Index Errors
-  if (pathname === '/api/indexing/errors') {
+  if (pathname === '/api/indexing/errors' || action === 'errors') {
     try {
       const sql = postgres(CONFIG.postgres.url);
 
@@ -400,7 +402,7 @@ Phase: Phase 66-79 Error Analysis
   }
 
   // Search Codebase
-  if (pathname === '/api/indexing/search') {
+  if (pathname === '/api/indexing/search' || action === 'search') {
     try {
       const body = await request.json();
       const { query, limit = 5 } = body;
@@ -452,7 +454,7 @@ Phase: Phase 66-79 Error Analysis
   }
 
   // Search Error Patterns
-  if (pathname === '/api/indexing/search-errors') {
+  if (pathname === '/api/indexing/search-errors' || action === 'search-errors') {
     try {
       const body = await request.json();
       const { query, limit = 5 } = body;

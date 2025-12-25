@@ -289,7 +289,7 @@ describe('GET /api/routes/:routeId/interactions', () => {
  metadata: null,
  createdAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
  vi.mocked(queries.getInteractionLogs).mockResolvedValue(mockInteractions as any);
@@ -326,7 +326,7 @@ describe('GET /api/routes/:routeId/interactions', () => {
  metadata: null,
  createdAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
  vi.mocked(queries.getInteractionLogs).mockResolvedValue(mockInteractions as any);

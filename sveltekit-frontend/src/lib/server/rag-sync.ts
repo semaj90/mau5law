@@ -367,9 +367,9 @@ export async function updateRagIndexTags(
  for (const chunk of chunksResult) {
  try {
  // Update Qdrant point payload using fetch
- const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+ const process.env.QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
  const setPayloadRes = await fetch(
- `${QDRANT_URL}/collections/${COLLECTION_NAME}/points/payload?wait=true`,
+ `${process.env.QDRANT_URL}/collections/${COLLECTION_NAME}/points/payload?wait=true`,
  {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -480,9 +480,9 @@ export async function removeEvidenceFromRagIndex(
 
  // 2. Delete from Qdrant using fetch
  try {
- const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+ const process.env.QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
  const deleteRes = await fetch(
- `${QDRANT_URL}/collections/${COLLECTION_NAME}/points/delete?wait=true`,
+ `${process.env.QDRANT_URL}/collections/${COLLECTION_NAME}/points/delete?wait=true`,
  {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },

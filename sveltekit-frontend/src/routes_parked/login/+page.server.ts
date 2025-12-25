@@ -1,5 +1,5 @@
 import { loginSchema } from '$lib/schemas/auth';
-import { db } from '$lib/server/db/client';
+import db from '$lib/server/db/client';
 import { users } from '$lib/server/db/schema-postgres';
 import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';

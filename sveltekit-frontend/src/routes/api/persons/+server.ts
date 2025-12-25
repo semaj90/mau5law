@@ -75,11 +75,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				caseId: body.caseId,
 				name: body.name,
 				aliases: body.alias ? [body.alias] : [],
-				description: body.notes || null,
+				description: body.notes || '',
 				threatLevel: body.threatLevel || 'low',
-				metadata: {
-					role: body.role || 'suspect'
-				},
 				createdAt: new Date(),
 				updatedAt: new Date()
 			})

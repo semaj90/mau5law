@@ -94,7 +94,7 @@ export async function searchEvidence(
  snippet:
  'Call records show communication with victim 2 hours before incident. Location data places suspect within 500m of scene.',
  },
- ];
+ ] as const;
 
  return {
  query,

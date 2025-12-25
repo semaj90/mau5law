@@ -1,3 +1,4 @@
+import { CUDA_SERVICE_URL } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import type { type RequestHandler } from '@sveltejs/kit';
 import type { z } from 'zod';

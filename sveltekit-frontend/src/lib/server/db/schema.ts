@@ -14,6 +14,12 @@ export {
     type CitationTag, type EvidenceTag, type Jurisdiction, type NewAuditLogEntry, type NewCitationTag, type NewEvidenceTag, type NewRAGIndexMetadata, type RAGIndexMetadata
 } from './schema-evidence-crud.js';
 
+// Phase 80: Chat Messages Schema
+export {
+    chatMessageRoleEnum, chatMessages,
+    chatMetadata, type ChatMessage, type ChatMetadata, type NewChatMessage, type NewChatMetadata
+} from './schema-chat.js';
+
 // Also export additional schema modules as needed
 // export * from './schema-route-errors.js';
 // export * from './schema-phase78.js';

@@ -3,7 +3,7 @@
  * Manages case-statute linking and relationships
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 import { graphService } from './graph.service.js';
 import { auditService } from './audit.service.js';

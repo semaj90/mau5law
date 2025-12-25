@@ -7,7 +7,7 @@ import postgres from 'postgres';
 const sql = postgres(process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db');
 const qdrant = new QdrantClient({ url: 'http://localhost:6333' });
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_URL_VAR = process.env.OLLAMA_URL || 'http://localhost:11434';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const EMBEDDING_MODEL = 'embeddinggemma:latest';
@@ -52,7 +52,7 @@ function chunkText(text: string, chunkSize = 500, overlap = 100): string[] {
  */
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
+    const response = await fetch(`${OLLAMA_URL_VAR}/api/embeddings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -304,7 +304,7 @@ Provide a clear, detailed answer based on the knowledge base. If the knowledge b
       response = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
     } else {
       llmUsed = 'gemma3-legal:latest';
-      const ollamaRes = await fetch(`${OLLAMA_URL}/api/generate`, {
+      const ollamaRes = await fetch(`${OLLAMA_URL_VAR}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

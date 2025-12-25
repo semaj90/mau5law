@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db/client';
+import db from '$lib/server/db/client';
 import type { RequestEvent } from '@sveltejs/kit';
 import { error, json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';

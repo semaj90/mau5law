@@ -219,7 +219,7 @@ describe('GET /api/routes/:routeId/health-history', () => {
  reason: 'error_resolved',
  createdAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
  vi.mocked(queries.getHealthEvents).mockResolvedValue(mockEvents as any);
@@ -256,7 +256,7 @@ describe('GET /api/routes/:routeId/health-history', () => {
  reason: 'error_cluster_created',
  createdAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
  vi.mocked(queries.getHealthEvents).mockResolvedValue(mockEvents as any);

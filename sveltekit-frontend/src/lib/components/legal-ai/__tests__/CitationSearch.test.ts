@@ -36,7 +36,7 @@ describe('CitationSearch Component', () => {
  source_type: 'manual' as const,
  created_at: new Date().toISOString(),
  },
- ];
+ ] as const;
 
  beforeEach(() => {
  vi.clearAllMocks();

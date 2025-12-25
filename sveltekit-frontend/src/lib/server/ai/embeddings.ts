@@ -6,7 +6,7 @@ import type { Case } from '../../types.js';
 import type { db } from '../db/index.js';
 import type { cases, evidence } from '../db/schema-postgres.js';
 import type { eq } from 'drizzle-orm';
-import type { getOllamaEndpoint } from './endpoints.js';
+import { getOllamaEndpoint } from './endpoints.js';
 
 export interface EmbeddingOptions {
  model?: string;

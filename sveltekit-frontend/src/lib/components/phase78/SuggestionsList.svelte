@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
-<script>
+<script lang="ts">
 import type { ErrorSuggestion } from '$lib/server/db/schema/index.js';
 
  let { suggestions = [], isLoading = false } = $props<{
@@ -14,12 +14,13 @@ import type { ErrorSuggestion } from '$lib/server/db/schema/index.js';
  isLoading?: boolean;
  }>();
 
- let filterRisk: string | null = null;
- let filterApplied: string | null = null;
- let selectedId: string | null = null;
-let filtered = $state(suggestions);
- .filter(s => !filterRisk || s.riskLevel === filterRisk)
- .filter(s => filterApplied === null || (filterApplied === 'true' ? s.applied : !s.applied));
+ let filterRisk = $state<string | null>(null);
+ let filterApplied = $state<string | null>(null);
+ let selectedId = $state<string | null>(null);
+ let filtered = $derived(suggestions
+  .filter(s => !filterRisk || s.riskLevel === filterRisk)
+  .filter(s => filterApplied === null || (filterApplied === 'true' ? s.applied : !s.applied))
+ );
 
  const getRiskIcon = (risk: string) => {
  const icons: Record<string, string> = {

@@ -155,7 +155,7 @@ describe('GET /api/routes/metadata', () => {
  createdAt: new Date(),
  resolvedAt: null,
  },
- ];
+ ] as const;
 
  const mockHealthEvent = {
  id: 'health1',

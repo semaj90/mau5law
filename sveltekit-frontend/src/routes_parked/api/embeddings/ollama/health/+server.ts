@@ -1,6 +1,6 @@
 /** * Ollama Health Check Endpoint * * GET /api/embeddings/ollama/health */ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import type { getOllamaEndpoint } from '$lib/server/ai/ollama-utils';
+import { getOllamaEndpoint } from '$lib/server/ai/ollama-utils';
 
 function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 2000) {
  // AbortSignal.timeout may not be available in all runtimes, use AbortController for compatibility

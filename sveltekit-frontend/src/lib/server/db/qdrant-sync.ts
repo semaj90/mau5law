@@ -13,7 +13,7 @@
  */
 
 import { CONFIG } from '$lib/config/env.server';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import {
     getDocumentsNeedingSync,
@@ -22,12 +22,12 @@ import {
 } from './postgres-knowledge';
 
 // Qdrant Configuration
-const QDRANT_URL = CONFIG.QDRANT_URL || 'http://localhost:6333';
+const process.env.QDRANT_URL = CONFIG.QDRANT_URL || 'http://localhost:6333';
 const COLLECTION_NAME = 'knowledge_graph';
 const VECTOR_SIZE = 384; // all-MiniLM-L6-v2 or similar
 
 // Initialize Qdrant client
-const qdrant = new QdrantClient({ url: QDRANT_URL });
+const qdrant = new QdrantClient({ url: process.env.QDRANT_URL });
 
 /**
  * Initialize Qdrant collection for knowledge graph

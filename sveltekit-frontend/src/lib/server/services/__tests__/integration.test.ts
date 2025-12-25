@@ -7,7 +7,7 @@ import { caseSummaryService } from '../case-summary.service.js';
 import { ragService } from '../rag.service.js';
 import { llmService } from '../llm.service.js';
 import { graphService } from '../graph.service.js';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 
 describe('Integration Tests', () => {

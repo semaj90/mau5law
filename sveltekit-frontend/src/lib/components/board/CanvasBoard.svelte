@@ -139,7 +139,7 @@
  // Draw status indicator
  const statusColor = getStatusColor(node.status);
  ctx.fillStyle = statusColor;
- ctx.fillRect(x, y, 4: NODE_HEIGHT);
+ ctx.fillRect(x, y, 4, NODE_HEIGHT);
 
  // Draw title
  ctx.fillStyle = '#1F2937';

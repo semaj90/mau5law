@@ -1,4 +1,4 @@
-import type { getOllamaEndpoint } from '$lib/server/helpers/ollama';
+import { getOllamaEndpoint } from '$lib/server/helpers/ollama';
 /**
  * Gemma3 Legal Model Configuration
  * Optimized for RTX, 3060 Ti and legal document analysis
@@ -212,7 +212,7 @@ const OLLAMA_BASE = (() => {
  const ep = getOllamaEndpoint();
  if (typeof ep === 'string' && ep.length) return ep} catch (e) {
  // Log but continue to env fallback
- console.warn('getOllamaEndpoint() failed, falling back to OLLAMA_URL env var: ', e)}
+ console.warn('getOllamaEndpoint() failed, falling back to process.env.OLLAMA_URL env var: ', e)}
  // Fallback to environment variable or an empty string if neither is available.
  return process.env.OLLAMA_URL || ''})(); // Fix: semicolon after IIFE
 

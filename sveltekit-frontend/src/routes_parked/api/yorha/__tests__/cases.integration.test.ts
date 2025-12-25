@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { yorhaCases } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 

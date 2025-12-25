@@ -1,6 +1,6 @@
 <script lang="ts">
- import type { chatContext } from '$lib/stores/chat-context';
- import { onMount } from 'svelte';;
+ import chatContextRaw from '$lib/stores/chat-context';
+ import { onMount } from 'svelte';
 
  // Define interfaces locally since they are not exported from chat-context
  interface TopicNode {
@@ -12,6 +12,8 @@
  chunkCount: number;
  status: string;
  }
+
+ const chatContext = chatContextRaw as any;
 
  onMount(() => {
  // Listen for topic/shard events from evidence board

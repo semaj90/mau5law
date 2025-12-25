@@ -1,3 +1,4 @@
+import { MINIO_ACCESS_KEY, MINIO_SECRET_KEY } from '$env/static/private';
 import type { Actions, PageServerLoad } from './$types.js';
 import type { Client as MinioClient } from 'minio'; // Corrected import and aliasing
 import type { Buffer } from 'buffer';

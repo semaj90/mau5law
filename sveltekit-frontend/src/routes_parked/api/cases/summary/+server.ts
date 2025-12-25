@@ -9,7 +9,7 @@ import { getUser } from '$lib/server/auth/lucia';
 import { caseSummaryService } from '$lib/server/services/case-summary.service';
 import { summaryGenerationWorker } from '$lib/server/workers/summary-generation-worker';
 import { auditService } from '$lib/server/services/audit.service';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { caseCharges } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import type { CaseSummaryRequest, CaseSummaryResponse } from '$lib/types/case-summary';

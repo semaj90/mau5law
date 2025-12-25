@@ -1,6 +1,7 @@
-import type { RequestHandler } from './$types.js';
+import { REDIS_URL } from '$env/static/private';
+import { createRedisConnection } from '$lib/server/redis';
 import { json } from '@sveltejs/kit';
-import type { createRedisConnection } from '$lib/server/redis';
+import type { RequestHandler } from './$types.js';
 
 // Helper: safely extract a message from unknown error values
 function extractMessage(e: unknown): string {

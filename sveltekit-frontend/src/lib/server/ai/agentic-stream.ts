@@ -241,7 +241,7 @@ export async function chatCompletion(
 // can import getOllamaEndpoint() instead of hardcoding Ollama URLs.
 export function getOllamaEndpoint(): string {
  // Preference order:
- // 1. OLLAMA_URL (preferred)
+ // 1. process.env.OLLAMA_URL (preferred)
  // 2. OLLAMA_BASE_URL (legacy name)
  // 3. Docker service host (when running in compose)
  // 4. Localhost fallback for single-machine dev

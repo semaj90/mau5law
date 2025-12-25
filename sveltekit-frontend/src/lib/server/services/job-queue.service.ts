@@ -4,7 +4,7 @@
  */
 
 import amqp, { type Connection, type Channel } from 'amqplib';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { processingJobs } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 

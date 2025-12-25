@@ -446,7 +446,7 @@ describe('Phase 8: Error Display', () => {
  { id: 'r2', errorCount: 5, errorState: 'broken' as const },
  { id: 'r3', errorCount: 10, errorState: 'broken' as const },
  { id: 'r4', errorCount: 0, errorState: 'healthy' as const },
- ];
+ ] as const;
 
  for (const route of routes) {
  if (route.errorCount > 0) {
@@ -492,7 +492,7 @@ describe('Phase 8: Error Display', () => {
  lastErrorAt: now.toISOString(),
  lastErrorMessage: 'Error 2',
  },
- ];
+ ] as const;
 
  for (const route of routes) {
  if (route.lastErrorMessage) {

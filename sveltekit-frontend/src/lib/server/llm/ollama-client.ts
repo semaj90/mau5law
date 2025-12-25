@@ -12,7 +12,7 @@
  * Requirements: 4.2
  */
 
-const OLLAMA_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
+const process.env.OLLAMA_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
 const DEFAULT_MODEL =
  process.env.OLLAMA_MODEL_CHAT ?? process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
 
@@ -47,7 +47,7 @@ export async function generateCompletion(
 ): Promise<LLMResponse> {
  const model = options.model ?? DEFAULT_MODEL;
 
- const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+ const response = await fetch(`${process.env.OLLAMA_URL}/api/generate`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -88,7 +88,7 @@ export async function chatCompletion(
 ): Promise<LLMResponse> {
  const model = options.model ?? DEFAULT_MODEL;
 
- const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+ const response = await fetch(`${process.env.OLLAMA_URL}/api/chat`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
@@ -192,7 +192,7 @@ export async function checkOllamaHealth(): Promise<{
  error?: string;
 }> {
  try {
- const response = await fetch(`${OLLAMA_URL}/api/tags`, {
+ const response = await fetch(`${process.env.OLLAMA_URL}/api/tags`, {
  method: 'GET',
  signal: AbortSignal.timeout(5000),
  });
@@ -218,7 +218,7 @@ export async function checkOllamaHealth(): Promise<{
  */
 export function getModelConfig() {
  return {
- url: OLLAMA_URL,
+ url: process.env.OLLAMA_URL,
  model: DEFAULT_MODEL,
  chatModel: process.env.OLLAMA_MODEL_CHAT ?? DEFAULT_MODEL,
  embedModel: process.env.OLLAMA_MODEL_EMBED ?? 'nomic-embed-text',

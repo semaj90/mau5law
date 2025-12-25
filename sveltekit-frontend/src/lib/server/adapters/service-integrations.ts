@@ -12,27 +12,25 @@
  *
  * All configurations are loaded from environment variables.
  */
-import type {
- OllamaClient,
- OllamaConfig,
- QdrantClient,
- QdrantConfig,
- QdrantVectorPayload,
- QdrantSearchResult,
- RedisCacheService,
- RedisConfig,
- PostgresConfig,
- PgVectorClient,
- MinIOConfig,
- MinIOClient,
- Neo4jConfig,
- Neo4jClient,
- RabbitMQConfig,
- RabbitMQClient,
- ServiceEnvironment,
- ServiceUrls,
-} from '$lib/types/external-services';
 import { dev } from '$app/environment';
+import type {
+    MinIOClient,
+    MinIOConfig,
+    Neo4jClient,
+    Neo4jConfig,
+    OllamaClient,
+    OllamaConfig,
+    PgVectorClient,
+    PostgresConfig,
+    QdrantClient,
+    QdrantConfig,
+    QdrantSearchResult,
+    QdrantVectorPayload,
+    RedisCacheService,
+    RedisConfig,
+    ServiceEnvironment,
+    ServiceUrls
+} from '$lib/types/external-services';
 
 // ===== Environment Configuration Loader =====
 /**
@@ -40,7 +38,7 @@ import { dev } from '$app/environment';
  * Compatible with both Docker and native Windows services
  */
 export function loadServiceEnvironment(): ServiceEnvironment {
- // Parse DATABASE_URL or construct from components
+ // Parse process.env.DATABASE_URL or construct from components
  const databaseUrl =
  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
  const dbUrl = new URL(databaseUrl.replace('postgres://', 'postgresql://'));
@@ -565,4 +563,90 @@ export class Neo4jAdapter implements Neo4jClient {
  this.driver = null;
  }
  }
+}
+
+// ===== Service Factory & Health Checks =====
+
+export function getServiceAdapters() {
+ const env = loadServiceEnvironment();
+ const urls = getServiceUrls(env);
+
+ return {
+ env,
+ urls,
+ ollama: new OllamaAdapter(env.ollama),
+ redis: new RedisAdapter(env.redis),
+ qdrant: new QdrantAdapter(env.qdrant),
+ pgvector: new PgVectorAdapter(env.pgvector),
+ minio: new MinIOAdapter(env.minio),
+ neo4j: new Neo4jAdapter(env.neo4j),
+ rabbitmq: {} // Placeholder as RabbitMQAdapter is not implemented yet
+ };
+}
+
+export async function healthCheckServices() {
+ const adapters = getServiceAdapters();
+ const services: Record<string, boolean> = {};
+
+ // Check Redis
+ try {
+ await adapters.redis.get('health_check');
+ services.redis = true;
+ } catch (e) {
+ services.redis = false;
+ }
+
+ // Check Ollama
+ try {
+ await adapters.ollama.listModels();
+ services.ollama = true;
+ } catch (e) {
+ services.ollama = false;
+ }
+
+ // Check Qdrant
+ try {
+ await adapters.qdrant.getCollections();
+ services.qdrant = true;
+ } catch (e) {
+ services.qdrant = false;
+ }
+
+ // Check Postgres
+ try {
+ await adapters.pgvector.checkHealth();
+ services.pgvector = true;
+ } catch (e) {
+ services.pgvector = false;
+ }
+
+ // Check MinIO
+ try {
+ // bucketExists might throw if connection fails
+ try {
+ await adapters.minio.bucketExists('health-check-bucket');
+ services.minio = true;
+ } catch (err: any) {
+ // If bucket doesn't exist, it's still connected
+ if (err.code === 'NoSuchBucket') {
+ services.minio = true;
+ } else {
+ // Try listing buckets as fallback
+ await adapters.minio.listBuckets();
+ services.minio = true;
+ }
+ }
+ } catch (e) {
+ services.minio = false;
+ }
+
+ // Check Neo4j
+ try {
+ await adapters.neo4j.verifyConnectivity();
+ services.neo4j = true;
+ } catch (e) {
+ services.neo4j = false;
+ }
+
+ return { services };
 }

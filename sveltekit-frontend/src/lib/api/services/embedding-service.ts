@@ -1,5 +1,5 @@
 import type { apiFetch } from '../clients/api-client.js';
-import type { getOllamaEndpoint } from '$lib/utils/endpoints'; // Import the new utility
+import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Import the new utility
 
 export interface EmbedRequest {
  text: string;

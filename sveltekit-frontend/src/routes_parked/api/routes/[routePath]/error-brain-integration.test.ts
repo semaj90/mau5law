@@ -158,7 +158,7 @@ describe('Phase 9 Integration Tests', () => {
  patch_content: 'patch 3',
  verification_status: 'pending',
  },
- ];
+ ] as const;
 
  // Verify all patches link to analysis
  expect(patches.every((p) => p.analysis_id === analysisId)).toBe(true);
@@ -329,7 +329,7 @@ describe('Phase 9 Integration Tests', () => {
  { id: '1', created_at: new Date('2025-01-01').toISOString() },
  { id: '2', created_at: new Date('2025-01-02').toISOString() },
  { id: '3', created_at: new Date('2025-01-03').toISOString() },
- ];
+ ] as const;
 
  // Sort by created_at descending (most recent first)
  const sorted = [...analyses].sort(
@@ -373,7 +373,7 @@ describe('Phase 9 Integration Tests', () => {
  route_path: routePath,
  phase: 'verifying',
  },
- ];
+ ] as const;
 
  // All should have same route path
  expect(analyses.every((a) => a.route_path === routePath)).toBe(true);

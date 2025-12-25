@@ -3,7 +3,7 @@
  * User registration with email/password
  */
 
-import { db } from '$lib/server/db/client';
+import db from '$lib/server/db/client';
 import { users } from '$lib/server/db/schema';
 import { createUserSession, hashPassword, setSessionCookie } from '$lib/server/lucia';
 import { json, type RequestHandler } from '@sveltejs/kit';
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				isActive: true,
 				createdAt: new Date(),
 				updatedAt: new Date()
-			})
+			} as any)
 			.returning();
 
 		// Create session

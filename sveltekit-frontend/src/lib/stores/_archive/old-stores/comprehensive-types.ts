@@ -484,11 +484,11 @@ export interface EnvironmentConfig {
  POSTGRES_URL?: string;
  REDIS_URL?: string;
  // AI services
- OLLAMA_URL?: string;
+ process.env.OLLAMA_URL?: string;
  OPENAI_API_KEY?: string;
  ANTHROPIC_API_KEY?: string;
  // Vector databases
- QDRANT_URL?: string;
+ process.env.QDRANT_URL?: string;
  QDRANT_API_KEY?: string;
  // Object storage
  MINIO_URL?: string;

@@ -23,7 +23,7 @@ try {
   console.log('No .env file found, using system environment variables');
 }
 
-const DATABASE_URL =
+const process.env.DATABASE_URL =
   process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5433/prosecutor_db';
 
 async function validateFullSystem() {
@@ -31,8 +31,8 @@ async function validateFullSystem() {
   console.log('========================================');
 
   const pool = new Pool({
-    connectionString: DATABASE_URL,
-    ssl: DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {

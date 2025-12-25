@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const file = formData.get('file') as File;
 
  if (!file) {
- throw error(400, { message: 'No file provided' });
+ return json({ message: 'No file provided' }, { status: 400 });
  }
 
  console.log('Upload and analyze called with file:', file.name);
@@ -39,6 +39,6 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({ success: true, data: result });
  } catch (err) {
  console.error('Upload and analyze error:', err);
- throw error(500, { message: 'Failed to upload and analyze document' });
+ return json({ message: 'Failed to upload and analyze document' }, { status: 500 });
  }
 };

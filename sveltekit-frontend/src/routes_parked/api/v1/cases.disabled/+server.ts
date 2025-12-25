@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
  const validatedQuery = CasesQuerySchema.parse(queryParams);
 
  // Create service instance
- const casesService = new CasesCRUDService(getUserId(locals)!);
+ const casesService = new CasesCRUDService(const userId = locals.user?.id; if (!userId) throw error(401);!);
 
  // Get cases with pagination
  const result = await casesService.list({
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
  hasPrev: (result as any).pagination.hasPrev
  },
  meta: {
- userId: getUserId(locals),
+ userId: locals.user?.id,
  timestamp: new Date().toISOString()
  }
  };
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  const validatedData = CreateCaseSchema.parse(body) as CreateCaseData;
 
  // Create service instance
- const casesService = new CasesCRUDService(getUserId(locals)!);
+ const casesService = new CasesCRUDService(const userId = locals.user?.id; if (!userId) throw error(401);!);
 
  // Create case
  const caseId = await casesService.create(validatedData);
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
  // Queue background synthesis
  try {
- const jobId = await queueCaseSynthesis(caseId, getUserId(locals)!);
+ const jobId = await queueCaseSynthesis(caseId, const userId = locals.user?.id; if (!userId) throw error(401);!);
  console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
  } catch (queueError) {
  console.error('Failed to queue case synthesis: ', queueError);
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  data: createdCase,
  meta: {
  caseId,
- userId: getUserId(locals),
+ userId: locals.user?.id,
  timestamp: new Date().toISOString(),
  synthesisQueued: true
  }

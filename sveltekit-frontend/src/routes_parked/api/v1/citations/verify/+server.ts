@@ -1,3 +1,4 @@
+import { OLLAMA_URL } from '$env/static/private';
 import enhancedSearchWithNeo4j from '$lib/ai/custom-reranker';
 import db from '$lib/server/db';
 import { cases, evidence, legalDocuments } from '$lib/server/db/schema-postgres';

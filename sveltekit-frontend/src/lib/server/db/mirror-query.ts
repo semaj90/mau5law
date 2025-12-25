@@ -12,7 +12,7 @@
  */
 
 import { CONFIG } from '$lib/config/env.server';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getNeighbors, traverseGraph, type KnowledgeNode } from './couchdb';
 import { searchQdrant } from './qdrant-sync';

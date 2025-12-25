@@ -3,6 +3,7 @@
  * Enhanced with heartbeat, error handling, and proper cleanup
  */
 
+// import { REDIS_URL } from '$env/static/private';
 import { createClient } from 'redis';
 import type { RequestHandler } from './$types';
 
@@ -58,7 +59,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			}
 
 			// Unsubscribe and close Redis connection
-			await redisSubscriber.unsubscribe(`updates:${chatId}`);
+			await (redisSubscriber as any).unsubscribe(`updates:${chatId}`);
 			await redisSubscriber.quit();
 		}
 	});

@@ -1,7 +1,6 @@
 <script lang="ts">
  import type { browser } from '$app/environment';
- import * as Button from 'bits-ui/components/button';
-
+ import { Button } from 'bits-ui';
  // Define the structure for the AI analysis results
  export interface AnalysisResult {
  summary: string;

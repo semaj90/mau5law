@@ -1,4 +1,4 @@
-import type { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 export interface ChatMessage {
  role: 'system' | 'user' | 'assistant';

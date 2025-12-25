@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db/client';
+import db from '$lib/server/db/client';
 import { routeHealth } from '$lib/server/db/schema';
 // @ts-ignore
 import routeGraph from '$lib/phase72/route-ast-graph.json';

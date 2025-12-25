@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
  priority: 'low',
  confidence: 0.4,
  },
- ];
+ ] as const;
 
  return json({
  data,

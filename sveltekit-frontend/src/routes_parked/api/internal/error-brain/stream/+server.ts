@@ -11,7 +11,7 @@
 import type { ErrorBrainEvent } from '$lib/server/error-brain/events';
 import { requireErrorBrain, validateInternalRequest } from '$lib/server/error-brain/middleware';
 import { getSSETransport } from '$lib/server/error-brain/transport/sse';
-import { error, type RequestHandler } from '@sveltejs/kit';
+import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 /**
  * GET /api/internal/error-brain/stream
@@ -23,10 +23,10 @@ export const GET: RequestHandler = async (event) => {
 
  // Security: Validate request is internal
  if (!validateInternalRequest(event)) {
- throw error(403, {
+ return json({
  message: 'Access denied - internal requests only',
  code: 'FORBIDDEN',
- });
+ }, { status: 403 });
  }
 
  const transport = getSSETransport();

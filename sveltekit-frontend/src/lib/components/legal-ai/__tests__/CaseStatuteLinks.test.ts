@@ -35,7 +35,7 @@ describe('CaseStatuteLinks Component', () => {
  created_at: new Date().toISOString(),
  updated_at: new Date().toISOString(),
  },
- ];
+ ] as const;
 
  const mockStats = {
  total: 2,

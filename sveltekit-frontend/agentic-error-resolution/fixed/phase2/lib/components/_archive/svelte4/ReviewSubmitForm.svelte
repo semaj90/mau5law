@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
     { id: 'evidence', label: 'Evidence Analysis Complete', description: 'Key facts and legal issues identified', weight: 25 },
     { id: 'ai_analysis', label: 'AI Analysis Generated', description: 'Case strength and recommendations provided', weight: 20 },
     { id: 'review', label: 'Final Review Completed', description: 'All sections reviewed and quality checked', weight: 10 }
-  ];
+  ] as const;
   let sectionScores = writable<Record<string number>( );
   function calculateQualityScore() {
     let totalScore = 0;

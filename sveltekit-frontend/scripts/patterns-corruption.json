@@ -1,0 +1,92 @@
+[
+  {
+    "id": "zod-key-comma",
+    "regex": "(\\w+),\\s*z\\.",
+    "fixTemplate": "$1: z.",
+    "priority": 100
+  },
+  {
+    "id": "zod-arg-colon",
+    "regex": "\\.(min|max)\\((\\d+):\\s*",
+    "fixTemplate": ".$1($2, ",
+    "priority": 100
+  },
+  {
+    "id": "zod-type-def",
+    "regex": "type\\s+(\\w+)\\s*=\\s*z\\.(input|output)<typeof:\\s*(\\w+)>,",
+    "fixTemplate": "type $1 = z.$2<typeof $3>;",
+    "priority": 100
+  },
+  {
+    "id": "drizzle-key-comma",
+    "regex": "(\\w+),\\s*(uuid|text|varchar|integer|boolean|timestamp|jsonb|serial|vector)\\(",
+    "fixTemplate": "$1: $2(",
+    "priority": 100
+  },
+  {
+    "id": "drizzle-garbage-type-metadata",
+    "regex": "metadata:\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('metadata'\\)",
+    "fixTemplate": "metadata: jsonb('metadata')",
+    "priority": 95
+  },
+  {
+    "id": "drizzle-garbage-type-embedding",
+    "regex": "embedding:\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('embedding'\\)",
+    "fixTemplate": "embedding: vector('embedding', { dimensions: 768 })",
+    "priority": 95
+  },
+  {
+    "id": "drizzle-garbage-type-generic",
+    "regex": "(\\w+):\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('(\\w+)'\\)",
+    "fixTemplate": "$1: text('$2')",
+    "priority": 90
+  },
+  {
+    "id": "import-double-braces",
+    "regex": "import\\s+\\{\\s+\\{\\s*(.*?)\\s*\\}\\s+\\}\\s+from",
+    "fixTemplate": "import { $1 } from",
+    "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-1",
+      "regex": "(\\w+)\\?\\s*,\\s*string",
+      "fixTemplate": "$1?: string",
+      "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-2",
+      "regex": "(\\w+)\\?\\s*:\\s*unknown",
+      "fixTemplate": "$1?: unknown",
+      "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-3",
+      "regex": "(\\w+)\\s*\\|\\s*undefined",
+      "fixTemplate": "$1: undefined",
+      "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-4",
+      "regex": "(\\w+)\\s*\\|\\s*false",
+      "fixTemplate": "$1: false",
+      "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-5",
+      "regex": "(\\w+)\\s*\\|\\s*true",
+      "fixTemplate": "$1: true",
+      "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-6",
+      "regex": "(\\w+)\\s*\\|\\s*null",
+      "fixTemplate": "$1: null",
+      "priority": 100
+  },
+  {
+      "id": "auth-machine-garbage-7",
+      "regex": "(\\w+)\\s*,\\s*(\\w+)\\s*:\\s*(\\w+)",
+      "fixTemplate": "$1: $2, $3: $3",
+      "priority": 50
+  }
+]

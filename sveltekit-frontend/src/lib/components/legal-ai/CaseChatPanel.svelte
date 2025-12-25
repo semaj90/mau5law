@@ -112,7 +112,7 @@ https://svelte.dev/e/css_expected_identifier -->
  <!-- Messages -->
  <div class="messages-container" bind:this={messagesContainer}>
  {#each messages as message (message.id)}
- <div class="message" class:system={message.role === 'system'}>
+ <div class="message" class:system={message.role === 'system'} class:prosecutor={message.role === 'prosecutor'} class:ai={message.role === 'ai'}>
  <div class="message-header">
  <span class="message-role">
  {#if message.role === 'prosecutor'}
@@ -298,12 +298,12 @@ https://svelte.dev/e/css_expected_identifier -->
  border-left: 3px solid #d4a574;
  }
 
- .message:has(.message-role:contains('Prosecutor')) .message-content {
+ .message.prosecutor .message-content {
  background-color: #e8f4f8;
  border-left-color: #0066cc;
  }
 
- .message:has(.message-role:contains('AI')) .message-content {
+ .message.ai .message-content {
  background-color: #f0ebe0;
  border-left-color: #8b4513;
  }

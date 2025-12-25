@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
     { id: '1', title: 'Contract Amendment #3', type: 'document', priority: 'critical' as const confidence: 'high' as const description: 'Modified terms regarding liability clauses' },
     { id: '2', title: 'Security Camera Footage', type: 'video', priority: 'high' as const confidence: 'medium' as const description: 'Incident recording from 2024-01-15' },
     { id: '3', title: 'Expert Witness Statement', type: 'document', priority: 'medium' as const confidence: 'high' as const description: 'Technical analysis by Dr. Smith' },
-  ];
+  ] as const;
   // Demo functions
   async function runAIAnalysis() {
     aiAnalysisLoading = true;

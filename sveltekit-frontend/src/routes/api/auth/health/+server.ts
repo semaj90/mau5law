@@ -1,5 +1,5 @@
-import { lucia } from '$lib/server/auth/lucia';
-import { db } from '$lib/server/db/client';
+import { auth as lucia } from '$lib/server/auth/lucia';
+import db from '$lib/server/db/client';
 import { sessions, users } from '$lib/server/db/schema';
 import { json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';

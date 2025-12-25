@@ -41,7 +41,7 @@
       description: 'Final tensor processing and clustering', color: 'bg-amber-500' },
     { id: 'completed', name: 'Complete', icon CheckCircle;
       description: 'All processing completed successfully', color: 'bg-green-600' }
-  ];
+  ] as const;
   // Get current stage info
   let currentStage = $derived(getCurrentStage(uploadState?.value));
   let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage));

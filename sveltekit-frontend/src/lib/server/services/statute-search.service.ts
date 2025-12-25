@@ -3,7 +3,7 @@
  * Manages statute searching, retrieval, and related case discovery
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 import { ragService } from './rag.service.js';
 import { graphService } from './graph.service.js';
