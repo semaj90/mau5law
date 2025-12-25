@@ -17,10 +17,10 @@ function getOllamaEndpoint(): string {
 const EMBEDDING_MODEL = process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
 const LLM_MODEL = process.env.OLLAMA_LLM_MODEL || 'gemma3-legal:latest';
 const OLLAMA_BASE_URL = getOllamaEndpoint();
-const DATABASE_URL =
+const process.env.DATABASE_URL =
  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
-const sql = postgres(DATABASE_URL, { max: 20, idle_timeout: 10, prepare: true });
+const sql = postgres(process.env.DATABASE_URL, { max: 20, idle_timeout: 10, prepare: true });
 
 const redis = new Redis(process.env.REDIS_URL || 'redis://:redis@localhost:6379/0', {
  maxRetriesPerRequest: 3,
@@ -235,13 +235,13 @@ Answer:
  }): Promise<LangChainDocument[]> {
  const { query, caseId, limit = 5 } = options;
  const queryEmbedding = await this.generateEmbedding(query);
- const QDRANT_URL = process.env.QDRANT_URL;
+ const process.env.QDRANT_URL = process.env.QDRANT_URL;
 
- if (QDRANT_URL) {
+ if (process.env.QDRANT_URL) {
  try {
  const collection = process.env.QDRANT_COLLECTION || 'documents';
  const filter = caseId ? { must: [{ key: 'caseId', match: { value: caseId } }] } : undefined;
- const res = await fetch(`${QDRANT_URL}/collections/${collection}/points/search`, {
+ const res = await fetch(`${process.env.QDRANT_URL}/collections/${collection}/points/search`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({

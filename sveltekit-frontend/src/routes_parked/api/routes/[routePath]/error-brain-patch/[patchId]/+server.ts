@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { routeErrorPatchesTable } from '$lib/server/db/schema/route_error_patches';
 import { eq } from 'drizzle-orm';
 

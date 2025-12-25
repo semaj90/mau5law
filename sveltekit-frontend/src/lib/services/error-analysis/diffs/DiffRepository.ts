@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { errorBrainDiffs } from '$lib/server/db/schema/errorBrainDiffs';
 import { eq } from 'drizzle-orm';
 import type { PatchCandidate } from './diffTypes.js';

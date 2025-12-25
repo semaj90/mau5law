@@ -3,7 +3,7 @@
  * Enforces legal constraints and source verification for AI-generated content
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { sourceVerification, citationMetadata } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 

@@ -1,5 +1,4 @@
 <script lang="ts">
- import type { WebGPUCapabilities } from '$lib/webgpu/webgpu-init';
  import { onMount } from 'svelte';
 
  let activeTab = $state <'general' | 'ai' | 'database' | 'gpu' | 'security'>('general');
@@ -69,7 +68,7 @@
  { id: 'database', label: 'DATABASE', icon: '🗄️' },
  { id: 'gpu', label: 'GPU', icon: '🔋' },
  { id: 'security', label: 'SECURITY', icon: '🔒' }
- ];
+ ] as const;
 
  function saveConfig() {
  // Mock save functionality
@@ -452,37 +451,29 @@
  />
  <span class="slider-value">{config.gpu.memoryLimit}%</span>
  </div>
- <div class="setting-group">
- <label class="setting-label" for="batch-size">Batch Size</label>
- <input
- id="batch-size"
- type="number"
- class="setting-input"
- bind:value={config.gpu.batchSize}
- min="1"
- max="256"
- />
- </div>pe="number"
- class="setting-input"
- <div class="setting-group">
- <label class="setting-label" for="precision-select">Precision</label>
- <select id="precision-select" class="setting-input" bind:value={config.gpu.precision}>
- <option value="fp32">FP32 (High Precision)</option>
- <option value="fp16">FP16 (Balanced)</option>
- <option value="int8">INT8 (Fast)</option>
- <option value="int4">INT4 (Fastest)</option>
- </select>
- </div>ect class="setting-input" bind:value={config.gpu.precision}>
- <option value="fp32">FP32 (High Precision)</option>
- <option value="fp16">FP16 (Balanced)</option>
- <option value="int8">INT8 (Fast)</option>
- <option value="int4">INT4 (Fastest)</option>
- </select>
- </div>
- </div>
- </div>
- {/if}
- {/if}
+          <div class="setting-group">
+            <label class="setting-label" for="batch-size">Batch Size</label>
+            <input
+              id="batch-size"
+              type="number"
+              class="setting-input"
+              bind:value={config.gpu.batchSize}
+              min="1"
+              max="256"
+            />
+          </div>
+          <div class="setting-group">
+            <label class="setting-label" for="precision-select">Precision</label>
+            <select id="precision-select" class="setting-input" bind:value={config.gpu.precision}>
+              <option value="fp32">FP32 (High Precision)</option>
+              <option value="fp16">FP16 (Balanced)</option>
+              <option value="int8">INT8 (Fast)</option>
+              <option value="int4">INT4 (Fastest)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    {/if}
 
  <!-- Security Configuration -->
  {#if activeTab === 'security'}
@@ -584,24 +575,19 @@
 
  <div class="panel-section">
  <h3>QUICK ACTIONS</h3>
- <label class="quick-action file-input" for="import-config">
- 📥 IMPORT CONFIG
- <input id="import-config" type="file" accept=".json" onchange={importConfig} style="display: none;" />
- </label>>
- <button class="quick-action" onclick={exportConfig}>
- 📤 EXPORT CONFIG
- </button>
- <label class="quick-action file-input">
- 📥 IMPORT CONFIG
- <input type="file" accept=".json" onchange={importConfig} style="display: none;" />
- </label>
+        <label class="quick-action file-input" for="import-config">
+          📥 IMPORT CONFIG
+          <input id="import-config" type="file" accept=".json" onchange={importConfig} style="display: none;" />
+        </label>
+        <button class="quick-action" onclick={exportConfig}>
+          📤 EXPORT CONFIG
+        </button>
  <button class="quick-action" onclick={restartServices}>
  🔄 RESTART SERVICES
  </button>
  <button class="quick-action" onclick={backupDatabase}>
  💾 BACKUP DATABASE
  </button>
- </div>
  </div>
  </aside>
  </div>

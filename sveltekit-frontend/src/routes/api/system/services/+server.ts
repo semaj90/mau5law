@@ -1,4 +1,5 @@
-import { db } from '$lib/server/db/client';
+import { REDIS_URL } from '$env/static/private';
+import db from '$lib/server/db/client';
 import { json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
 
@@ -13,11 +14,14 @@ export async function GET() {
  // Redis health
  if (process.env.REDIS_URL) {
  try {
- const url = new URL(process.env.REDIS_URL);
- const resp = await fetch(`http://${url.hostname}:${url.port || 6379}/ping`, {
- timeout: 5000,
- });
- services.redis = {
+			const url = new URL(process.env.REDIS_URL);
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), 5000);
+			const resp = await fetch(`http://${url.hostname}:${url.port || 6379}/ping`, {
+				signal: controller.signal
+			});
+			clearTimeout(timeoutId);
+			services.redis = {
  url: process.env.REDIS_URL.substring(0, 30) + '...',
  reachable: resp?.ok || false,
  purpose: 'Error cache, session storage, fix memory',

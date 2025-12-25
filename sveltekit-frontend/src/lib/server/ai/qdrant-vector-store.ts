@@ -108,7 +108,7 @@ interface SummaryPayload {
 // --- end revised types ---
 
 // Environment variables
-const QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
+const process.env.QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 
 // Collection names
@@ -127,7 +127,7 @@ export class QdrantVectorStore {
  private initialized = false;
 
  constructor() {
- const config: QdrantClientParams = { url: QDRANT_URL };
+ const config: QdrantClientParams = { url: process.env.QDRANT_URL };
  if (QDRANT_API_KEY) config.apiKey = QDRANT_API_KEY;
  this.client = new QdrantClient(config);
  }

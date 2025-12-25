@@ -201,7 +201,7 @@ describe('GET /api/routes/:routeId/errors', () => {
  createdAt: new Date(),
  resolvedAt: null,
  },
- ];
+ ] as const;
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
  vi.mocked(queries.getErrorClusters).mockResolvedValue(mockErrors as any);
@@ -242,7 +242,7 @@ describe('GET /api/routes/:routeId/errors', () => {
  createdAt: new Date(),
  resolvedAt: new Date(),
  },
- ];
+ ] as const;
 
  vi.mocked(queries.getRouteMetadata).mockResolvedValue(mockRoute as any);
  vi.mocked(queries.getErrorClusters).mockResolvedValue(mockResolvedErrors as any);

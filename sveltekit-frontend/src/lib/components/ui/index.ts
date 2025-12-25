@@ -12,18 +12,18 @@
 // bits-ui v2 Components (Svelte 5 API)
 // Uses default exports, not named exports
 // ============================================
-export * as Bits from './bits.js';
+export * as Bits from 'bits-ui';
 
 // bits-ui v2 uses default exports - import them correctly
 import {
- Button as BitsButtonPrimitive,
- Dialog as BitsDialogPrimitive,
- Select as BitsSelectPrimitive,
- Checkbox as BitsCheckboxPrimitive,
- Tabs as BitsTabsPrimitive,
- Tooltip as BitsTooltipPrimitive,
- Popover as BitsPopoverPrimitive,
- Avatar as BitsAvatarPrimitive,
+    Avatar as BitsAvatarPrimitive,
+    Button as BitsButtonPrimitive,
+    Checkbox as BitsCheckboxPrimitive,
+    Dialog as BitsDialogPrimitive,
+    Popover as BitsPopoverPrimitive,
+    Select as BitsSelectPrimitive,
+    Tabs as BitsTabsPrimitive,
+    Tooltip as BitsTooltipPrimitive,
 } from 'bits-ui';
 
 // Re-export bits-ui primitives with Bits prefix
@@ -39,70 +39,68 @@ export const BitsAvatar = BitsAvatarPrimitive;
 // ============================================
 // Core Components (Custom implementations)
 // ============================================
-export * from './core.js';
+export * from './core/index.js';
 
 // ============================================
 // NES Gaming Style Components
 // ============================================
-export * as NES from './nes.js';
-
-// ============================================
+export * as NES from './nes/index.js'; // ============================================
 // Custom UI Components
 // ============================================
 
 // Button
-export { default as Button } from './button/Button.svelte';
 export { default as LegacyButton } from './Button.svelte';
+export { default as Button } from './button/Button.svelte';
 export { default as EnhancedButton } from './EnhancedButton.svelte';
 
 // Input & Form
+export { default as Checkbox } from './checkbox/Checkbox.svelte';
 export { default as Input } from './input/Input.svelte';
 export { default as Label } from './label/Label.svelte';
-export { default as Textarea } from './textarea/Textarea.svelte';
-export { default as Checkbox } from './checkbox/Checkbox.svelte';
 export { default as Select } from './select/Select.svelte';
 export { default as SelectContent } from './select/SelectContent.svelte';
 export { default as SelectItem } from './select/SelectItem.svelte';
 export { default as SelectTrigger } from './select/SelectTrigger.svelte';
 export { default as SelectValue } from './select/SelectValue.svelte';
+export { default as Textarea } from './textarea/Textarea.svelte';
 
 // Card
 export { default as Card } from './Card/Card.svelte';
 export { default as CardContent } from './Card/CardContent.svelte';
-export { default as CardHeader } from './Card/CardHeader.svelte';
-export { default as CardTitle } from './Card/CardTitle.svelte';
 export { default as CardDescription } from './Card/CardDescription.svelte';
 export { default as CardFooter } from './Card/CardFooter.svelte';
+export { default as CardHeader } from './Card/CardHeader.svelte';
+export { default as CardTitle } from './Card/CardTitle.svelte';
 
 // Dialog
 export { default as Dialog } from './dialog/Dialog.svelte';
 export { default as DialogContent } from './dialog/DialogContent.svelte';
+export { default as DialogDescription } from './dialog/DialogDescription.svelte';
 export { default as DialogHeader } from './dialog/DialogHeader.svelte';
 export { default as DialogTitle } from './dialog/DialogTitle.svelte';
-export { default as DialogDescription } from './dialog/DialogDescription.svelte';
 export { default as DialogTrigger } from './dialog/DialogTrigger.svelte';
 
 // Avatar
 export { default as Avatar } from './avatar/Avatar.svelte';
-export { default as AvatarImage } from './avatar/AvatarImage.svelte';
 export { default as AvatarFallback } from './avatar/AvatarFallback.svelte';
+export { default as AvatarImage } from './avatar/AvatarImage.svelte';
 
 // Badge
 export { default as Badge } from './badge/Badge.svelte';
 
 // Search
 export { default as Search } from './search/Search.svelte';
-export { default as SearchBox } from './SearchBox.svelte';
 export { default as SearchBar } from './SearchBar.svelte';
+export { default as SearchBox } from './SearchBox.svelte';
 
 // User
 export { default as User } from './user/User.svelte';
 
 // Modal
+export { default as DiamondModal } from './DiamondModal.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as ModalManager } from './ModalManager.svelte';
 export { default as RetroModal } from './RetroModal.svelte';
-export { default as DiamondModal } from './DiamondModal.svelte';
 
 // Tooltip
 export { default as Tooltip } from './Tooltip.svelte';
@@ -110,9 +108,9 @@ export { default as TooltipContent } from './TooltipContent.svelte';
 export { default as TooltipTrigger } from './TooltipTrigger.svelte';
 
 // Dropdown
+export { default as AIDropdown } from './AIDropdown.svelte';
 export { default as Dropdown } from './Dropdown.svelte';
 export { default as DropdownMenu } from './DropdownMenu.svelte';
-export { default as AIDropdown } from './AIDropdown.svelte';
 
 // Context Menu
 export { default as ContextMenuContent } from './ContextMenuContent.svelte';
@@ -121,15 +119,15 @@ export { default as ContextMenuSeparator } from './ContextMenuSeparator.svelte';
 export { default as ContextMenuTrigger } from './ContextMenuTrigger.svelte';
 
 // Progress & Loading
+export { default as AILoadingIndicator } from './AILoadingIndicator.svelte';
+export { default as GlobalLoadingIndicator } from './GlobalLoadingIndicator.svelte';
+export { default as GPULoadingProgress } from './GPULoadingProgress.svelte';
 export { default as Progress } from './Progress.svelte';
 export { default as ProgressBitsUI } from './ProgressBitsUI.svelte';
-export { default as GlobalLoadingIndicator } from './GlobalLoadingIndicator.svelte';
-export { default as AILoadingIndicator } from './AILoadingIndicator.svelte';
-export { default as GPULoadingProgress } from './GPULoadingProgress.svelte';
 
 // Toast & Notifications
-export { default as ToastContainer } from './ToastContainer.svelte';
 export { default as Notifications } from './Notifications.svelte';
+export { default as ToastContainer } from './ToastContainer.svelte';
 
 // Data Display
 export { default as DataGrid } from './DataGrid.svelte';
@@ -137,10 +135,10 @@ export { default as StatsCard } from './StatsCard.svelte';
 export { default as SystemStatusCard } from './SystemStatusCard.svelte';
 
 // Layout
-export { default as Portal } from './Portal.svelte';
-export { default as GoldenLayout } from './GoldenLayout.svelte';
 export { default as ExpandGrid } from './ExpandGrid.svelte';
+export { default as GoldenLayout } from './GoldenLayout.svelte';
 export { default as LazyLoader } from './LazyLoader.svelte';
+export { default as Portal } from './Portal.svelte';
 
 // Theme
 export { default as ThemeProvider } from './ThemeProvider.svelte';
@@ -148,22 +146,22 @@ export { default as ThemeSelector } from './ThemeSelector.svelte';
 
 // Specialized
 export { default as CommandPalette } from './CommandPalette.svelte';
+export { default as DragDropZone } from './DragDropZone.svelte';
 export { default as MarkdownRenderer } from './MarkdownRenderer.svelte';
 export { default as RichTextEditor } from './RichTextEditor.svelte';
-export { default as SmartTextarea } from './SmartTextarea.svelte';
-export { default as DragDropZone } from './DragDropZone.svelte';
 export { default as SimpleDragDrop } from './SimpleDragDrop.svelte';
+export { default as SmartTextarea } from './SmartTextarea.svelte';
 
 // Evidence & Case
-export { default as EvidenceCard } from './EvidenceCard.svelte';
-export { default as EvidenceCanvas } from './EvidenceCanvas.svelte';
 export { default as CaseForm } from './CaseForm.svelte';
 export { default as CaseItem } from './CaseItem.svelte';
 export { default as ChatMessage } from './ChatMessage.svelte';
+export { default as EvidenceCanvas } from './EvidenceCanvas.svelte';
+export { default as EvidenceCard } from './EvidenceCard.svelte';
 
 // AI Components
-export { default as AIDialog } from './AIDialog.svelte';
 export { default as AIAccessibilityWrapper } from './AIAccessibilityWrapper.svelte';
+export { default as AIDialog } from './AIDialog.svelte';
 export { default as GPUInferenceDemo } from './GPUInferenceDemo.svelte';
 
 // Gaming Style
@@ -180,8 +178,8 @@ export { default as BitsUIAccessibilityWrapper } from './BitsUIAccessibilityWrap
 export { default as ErrorBoundary } from './ErrorBoundary.svelte';
 
 // Performance
-export { default as PerformanceMonitor } from './PerformanceMonitor.svelte';
 export { default as AdaptiveRenderingEngine } from './AdaptiveRenderingEngine.svelte';
+export { default as PerformanceMonitor } from './PerformanceMonitor.svelte';
 export { default as ZeroLatencyInteraction } from './ZeroLatencyInteraction.svelte';
 
 // Quick Actions
@@ -216,15 +214,9 @@ export { default as ThemeToggle } from './ThemeToggle.svelte';
 // Re-export store types for convenience
 // ============================================
 export type {
- TypewriterPrompt as TypewriterPromptType,
- UploadedFile,
- AIMetadata,
- TimelineEvent,
- EmotionAnalysis,
- SceneAnalysis,
- ExtractedEntity,
- AutoPopulatedForm,
- MarkdownScene,
+    AIMetadata, AutoPopulatedForm, EmotionAnalysis, ExtractedEntity, MarkdownScene, SceneAnalysis, TimelineEvent, TypewriterPrompt as TypewriterPromptType,
+    UploadedFile
 } from '$lib/stores/ui-store';
 
 export { default as Field } from './Field.svelte';
+

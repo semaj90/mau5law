@@ -13,7 +13,7 @@ html
   let isLoading = $state(false);
 
   // Use an env fallback instead of hardcoded localhost
-  const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || 'http://localhost:11434';
+  const process.env.OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL || 'http://localhost:11434';
 
   async function sendMessage() {
     if (!String(input).trim()) return;
@@ -25,7 +25,7 @@ html
     isLoading = true;
 
     try {
-      const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+      const response = await fetch(`${process.env.OLLAMA_URL}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

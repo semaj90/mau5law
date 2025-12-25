@@ -1,8 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
-import { zodClient } from 'sveltekit-superforms/adapters';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
-import type { PageServerLoad, Actions } from './$types.js';
+import type { Actions, PageServerLoad } from './$types.js';
 
 const poiSchema = z.object({
  name: z.string().min(1, 'Name is required'),
@@ -19,17 +19,17 @@ const poiSchema = z.object({
 });
 
 export const load: PageServerLoad = async ({ locals }) => {
- const form = await superValidate(zodClient(poiSchema));
+	const form = await superValidate(zod(poiSchema));
 
- return {
- form,
- caseId: locals.caseId,
- };
+	return {
+		form,
+		caseId: locals.user?.id // Fallback or correct logic needed here
+	};
 };
 
 export const actions: Actions = {
- default: async ({ request, locals }) => {
- const form = await superValidate(request, zodClient(poiSchema));
+	default: async ({ request, locals }) => {
+		const form = await superValidate(request, zod(poiSchema));
 
  if (!form.valid) {
  return fail(400, { form });

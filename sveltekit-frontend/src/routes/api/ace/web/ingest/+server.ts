@@ -5,7 +5,7 @@
  */
 
 import { aceSources } from '$lib/db/schema/ace-web';
-import { db } from '$lib/server/db/client';
+import db from '$lib/server/db/client';
 import { json } from '@sveltejs/kit';
 import * as amqp from 'amqplib';
 import { eq } from 'drizzle-orm';

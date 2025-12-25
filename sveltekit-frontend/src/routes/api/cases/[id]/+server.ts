@@ -1,6 +1,6 @@
 import { cases, db } from '$lib/server/db/client';
 import { error, json } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 /**

@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let { data, caseId = '' }: Props = $props();
   const { form, errors, enhance, submitting, delayed, message } = superForm(data.form, {
-    validators: zodClient(fileUploadSchema),
+    validators: zod(...)fileUploadSchema),
     multipleSubmits: 'prevent',
     onSubmit: ({ formData }) => {
       // Set the file in formData

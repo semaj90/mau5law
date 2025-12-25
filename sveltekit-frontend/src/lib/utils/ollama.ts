@@ -1,6 +1,6 @@
 import type { browser, dev } from '$app/environment'; // Corrected import: 'browser' and 'dev' are separate booleans
 import type { PUBLIC_OLLAMA_URL } from '$env /static/public';
-import type { OLLAMA_URL } from '$lib/server/env.server';
+import type { process.env.OLLAMA_URL } from '$lib/server/env.server';
 
 /**
  * Returns the base URL for the Ollama service.
@@ -13,7 +13,7 @@ export function getOllamaBaseUrl(): string {
  // In production, PUBLIC_OLLAMA_URL should be set to the publicly accessible URL (e.g., via Caddy proxy).
  return PUBLIC_OLLAMA_URL || 'http://localhost:11434'; // Fixed URL, simplified fallback for client
  } else {
- // Server-side: Use OLLAMA_URL from server environment.
+ // Server-side: Use process.env.OLLAMA_URL from server environment.
  // In a Docker Compose setup, process.env.OLLAMA_URL should be: 'http://ollama:11434'.
  // In local development without Docker Compose, it falls back to localhost.
  return process.env.OLLAMA_URL || (dev ? 'http://localhost:11434' : 'http://ollama:11434'); // Fixed URL, refined server-side fallback
@@ -48,7 +48,7 @@ export function getOllamaEndpoint(path: string = ''): string {
  * Supports paths like 'api/version', 'api/generate', etc.
  */
 export function getOllamaEndpoint(path: string): string {
- return `${OLLAMA_URL}/${path}`;
+ return `${process.env.OLLAMA_URL}/${path}`;
 }
 
 /**

@@ -29,9 +29,12 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		const filters = [];
 		filters.push(eq(cases.assignedAttorney, locals.user.id));
 
-	if (status) {
-		filters.push(eq(cases.status, status as typeof cases.status.enumValues[number]));
-	}	if (priority) {
+		if (status) {
+			// Map 'active' to 'open' to handle legacy frontend requests
+			const statusValue = status === 'active' ? 'open' : status;
+			filters.push(eq(cases.status, statusValue as typeof cases.status.enumValues[number]));
+		}
+		if (priority) {
 		filters.push(eq(cases.priority, priority as typeof cases.priority.enumValues[number]));
 	}		if (search) {
 			filters.push(like(cases.title, `%${search}%`));
@@ -86,7 +89,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				priority: body.priority || 'medium',
 				createdAt: new Date(),
 				updatedAt: new Date()
-			})
+			} as any)
 			.returning();
 
 		return json(

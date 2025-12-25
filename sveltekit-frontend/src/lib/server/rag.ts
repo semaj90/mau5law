@@ -1,5 +1,5 @@
 import type { QdrantClient } from '@qdrant/js-client-rest';
-// import type { QDRANT_URL, OLLAMA_URL, EMBEDDING_MODEL } from '$env /static/private';
+// import type { process.env.QDRANT_URL, process.env.OLLAMA_URL, EMBEDDING_MODEL } from '$env /static/private';
 
 const qdrant = new QdrantClient({ url: 'http://localhost:6333' });
 

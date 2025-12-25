@@ -16,10 +16,10 @@ import {
 // Load environment variables
 dotenv.config();
 
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
+const process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 
 console.log(`🔌 Connecting to database...`);
-const client = postgres(DATABASE_URL);
+const client = postgres(process.env.DATABASE_URL);
 const db = drizzle(client);
 
 async function main() {

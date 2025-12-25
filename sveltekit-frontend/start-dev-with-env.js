@@ -4,7 +4,7 @@ import os from 'os';
 
 const env = { ...process.env };
 
-// Fix the DATABASE_URL for authentication system
+// Fix the process.env.DATABASE_URL for authentication system
 env.DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 env.VITE_DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 env.DEV_DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
@@ -27,7 +27,7 @@ const isWin = os.platform() === 'win32';
 const npmCmd = isWin ? 'npm.cmd' : 'npm';
 
 console.log('🚀 Starting SvelteKit with proper environment:');
-console.log('  DATABASE_URL =', env.DATABASE_URL);
+console.log('  process.env.DATABASE_URL =', env.DATABASE_URL);
 console.log('  REDIS_URL =', env.REDIS_URL);
 console.log('  NODE_ENV =', env.NODE_ENV);
 

@@ -3,7 +3,7 @@
  * Orchestrates summary generation, retrieval, and versioning
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { caseReports, auditLog } from '$lib/server/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { cacheService } from './cache.service.js';

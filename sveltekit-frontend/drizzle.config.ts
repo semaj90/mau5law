@@ -11,11 +11,11 @@ const connectionString =
   '';
 
 if (!connectionString) {
-  throw new Error('DATABASE_URL_MIGRATOR or DATABASE_URL is not set in .env file');
+  throw new Error('DATABASE_URL_MIGRATOR or process.env.DATABASE_URL is not set in .env file');
 }
 
 export default {
-  schema: './src/lib/db/schema.ts',
+  schema: './src/lib/server/db/schema.ts',
   out: './drizzle', // Directory for migrations
   dialect: 'postgresql',
   dbCredentials: {

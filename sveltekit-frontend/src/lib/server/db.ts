@@ -12,7 +12,7 @@ const databaseUrl =
  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
 console.log(`📡 Initializing database connection to: ${databaseUrl.replace(/:[^:]*@/, ':***@')}`);
-console.log(`📡 DATABASE_URL env var: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}`);
+console.log(`📡 process.env.DATABASE_URL env var: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}`);
 
 export const sql = postgres(databaseUrl, {
  max: 20,

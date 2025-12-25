@@ -230,5 +230,5 @@ export class QdrantClient {
 }
 
 // Temporarily commenting out the Qdrant client to unblock other tasks.
-// export const qdrantClient = new QdrantClient('http');
-// export default qdrantClient;
+export const qdrantClient = new QdrantClient('http');
+export default qdrantClient;

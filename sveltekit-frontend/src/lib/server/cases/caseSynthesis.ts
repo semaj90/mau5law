@@ -4,7 +4,7 @@
  * for use in AI contextual chat and PDF export
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { caseNotes, evidenceFiles, chatTurns } from '$lib/server/db/schema-postgres';
 import { eq, desc, limit } from 'drizzle-orm';
 

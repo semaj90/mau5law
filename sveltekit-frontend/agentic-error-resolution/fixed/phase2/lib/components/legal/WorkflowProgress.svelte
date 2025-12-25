@@ -30,7 +30,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     { id: 'awaiting-approval', name: 'Awaiting Approval', description: 'Waiting for supervisor approval' },
     { id: 'finalization', name: 'Finalization', description: 'Finalizing custody workflow' },
     { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' },
-  ];
+  ] as const;
   function getStageIndex(stageId: string): number {
     return workflowStages.findIndex(s => s.id === stageId);
   }

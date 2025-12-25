@@ -135,7 +135,7 @@ safeFix('Environment configuration', () => {
       envPath,
       `# Safe development environment
 NODE_ENV=development
-DATABASE_URL=sqlite:./dev.db
+process.env.DATABASE_URL=sqlite:./dev.db
 VITE_APP_ENV=development
 `
     );

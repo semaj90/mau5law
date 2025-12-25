@@ -200,12 +200,11 @@ export const COMMAND_CENTER_MANIFEST: Record<TabId, CommandCenterRoute[]> = {
  description: 'Developer view of all SvelteKit routes',
  kind: 'page',
  group: 'System',
- badges: ['experimental', 'system'],
- },
- ],
-};
-
-export function getRoutesByTab(tab: TabId): CommandCenterRoute[] {
+		badges: ['experimental', 'system'],
+		},
+	],
+	routes: []
+};export function getRoutesByTab(tab: TabId): CommandCenterRoute[] {
  return COMMAND_CENTER_MANIFEST[tab] ?? [];
 }
 
@@ -260,11 +259,11 @@ export function enrichRoutesWithPhase72(
 
 // Import Phase 72 restructure tasks
 import {
- phase6_72_restructure_tasks,
- tasksByPriority,
- tasksByTab,
+    phase6_72_restructure_tasks,
+    tasksByPriority,
+    tasksByTab,
 } from './phase72/command-center-restructure-tasks.js';
 
 // Export Phase 72 tasks for NES modal integration
 export { phase6_72_restructure_tasks, tasksByPriority, tasksByTab };
-export type { Phase72Task };
+

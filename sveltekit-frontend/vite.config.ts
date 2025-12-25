@@ -271,10 +271,10 @@ export default defineConfig(({ mode }) => {
         __SERVER__: serverInternals,
         __PUBLIC__: publicInternals,
         // Shim node-postgres imports to use postgres-js adapter (conservative)
-        'drizzle-orm/node-postgres': path.resolve(
-          __dirname,
-          'src/lib/shims/drizzle-node-postgres.ts'
-        ),
+        // 'drizzle-orm/node-postgres': path.resolve(
+        //   __dirname,
+        //   'src/lib/shims/drizzle-node-postgres.ts'
+        // ),
       },
       dedupe: ['svelte'],
     },

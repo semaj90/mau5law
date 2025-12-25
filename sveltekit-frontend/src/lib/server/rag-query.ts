@@ -6,7 +6,7 @@
  * Usage:
  * 1. Copy this to: sveltekit-frontend/src/lib/server/rag-query.ts
  * 2. Run: npm install @qdrant/js-client-rest
- * 3. Verify QDRANT_URL in .env (default: http://localhost:6333)
+ * 3. Verify process.env.QDRANT_URL in .env (default: http://localhost:6333)
  * 4. Test: curl -X POST http://localhost:5173/api/ai/yorha/context-chat \
  * -H "Content-Type: application/json" \
  * -d '{"message":"What are the key issues?","caseId":"case-123"}'

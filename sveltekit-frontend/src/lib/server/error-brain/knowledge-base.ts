@@ -11,7 +11,7 @@
  */
 
 import { env } from '$env/dynamic/private';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { sql } from 'drizzle-orm';
 
 // Types

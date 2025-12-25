@@ -1,5 +1,5 @@
 /**
- * Returns the Ollama API endpoint, prioritizing the OLLAMA_URL environment variable
+ * Returns the Ollama API endpoint, prioritizing the process.env.OLLAMA_URL environment variable
  * and falling back to a default localhost address.
  */
 export function getOllamaEndpoint(): string {

@@ -17,7 +17,7 @@ const ollama = new Ollama({ host: process.env.OLLAMA_URL || 'http://localhost:11
 const QUEUE = 'ai_chat_queue';
 const TTL_7_DAYS = 60 * 60 * 24 * 7;
 const OLLAMA_TIMEOUT_MS = 30000;
-const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+const process.env.QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 const COUCHDB_URL = process.env.COUCHDB_URL || 'http://admin:password@localhost:5984';
 const MIN_CONFIDENCE = 0.65;
 
@@ -43,7 +43,7 @@ async function fetchGraphContext(query: string, caseId?: string): Promise<string
         });
         const embedding = embeddingRes.embedding;
 
-        const qdrantRes = await axios.post(`${QDRANT_URL}/collections/legal_docs/points/search`, {
+        const qdrantRes = await axios.post(`${process.env.QDRANT_URL}/collections/legal_docs/points/search`, {
             vector: embedding,
             limit: 5,
             with_payload: true
@@ -132,7 +132,7 @@ async function startWorker() {
 
     console.log("🚀 Phase 76: Legal AI Worker listening...");
     console.log(`  - Ollama: ${ollama.host}`);
-    console.log(`  - Qdrant: ${QDRANT_URL}`);
+    console.log(`  - Qdrant: ${process.env.QDRANT_URL}`);
     console.log(`  - CouchDB: ${COUCHDB_URL}`);
     console.log(`  - Min Confidence: ${MIN_CONFIDENCE}\n`);
 

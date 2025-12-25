@@ -2,7 +2,7 @@
  * Unit Tests for RAGService
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 import { cleanupTest, setupTest } from '$lib/test-utils/setup';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -133,7 +133,7 @@ describe('RAGService', () => {
  { id: '1', relevance: 0.75 },
  { id: '2', relevance: 0.95 },
  { id: '3', relevance: 0.85 },
- ];
+ ] as const;
 
  const ranked = ragService.rankByRelevance(results);
 

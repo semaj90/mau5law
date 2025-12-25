@@ -43,7 +43,7 @@ console.log('\n🗄️ Database Configuration:');
 if (fs.existsSync('.env')) {
   const envContent = fs.readFileSync('.env', 'utf8');
 
-  const dbUrl = envContent.match(/DATABASE_URL=(.+)/)?.[1];
+  const dbUrl = envContent.match(/process.env.DATABASE_URL=(.+)/)?.[1];
   const dbName = envContent.match(/POSTGRES_DB=(.+)/)?.[1];
 
   console.log('📡 DATABASE_URL:', dbUrl || 'Not found');

@@ -1,4 +1,4 @@
-const QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';
+const process.env.QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';
 const COLLECTION = process.env.QDRANT_COLLECTION ?? 'citations';
 
 /**
@@ -19,7 +19,7 @@ export async function qdrantSearch(
  embedding: number[],
  topK = 10
 ): Promise<{ result: QdrantSearchResult[] }> {
- const url = `${QDRANT_URL}/collections/${COLLECTION}/points/search`;
+ const url = `${process.env.QDRANT_URL}/collections/${COLLECTION}/points/search`;
  const body = { vector: embedding, top: topK, include_payload: true };
 
  const res = await fetch(url, {

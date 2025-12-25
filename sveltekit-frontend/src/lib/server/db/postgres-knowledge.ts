@@ -11,7 +11,7 @@
  * - Read: Qdrant (fast search) → Fetch metadata from Postgres
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 
 export interface KnowledgeDocument {
     id?: number;

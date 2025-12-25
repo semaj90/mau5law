@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 
-const QDRANT_URL = env.QDRANT_URL || 'http://localhost:6333';
+const process.env.QDRANT_URL = env.QDRANT_URL || 'http://localhost:6333';
 const QDRANT_API_KEY = env.QDRANT_API_KEY || '';
 
 /**
@@ -84,7 +84,7 @@ export async function createCollection(
  try {
  console.log(`[Qdrant] Creating collection: ${collectionName}`);
 
- const response = await fetch(`${QDRANT_URL}/collections/${collectionName}`, {
+ const response = await fetch(`${process.env.QDRANT_URL}/collections/${collectionName}`, {
  method: 'PUT',
  headers: {
  'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export async function indexCaseChunk(
  try {
  console.log(`[Qdrant] Indexing case chunk: ${chunkId}`);
 
- const response = await fetch(`${QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points`, {
+ const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points`, {
  method: 'PUT',
  headers: {
  'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export async function indexLawSection(
  try {
  console.log(`[Qdrant] Indexing law section: ${sectionId}`);
 
- const response = await fetch(`${QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points`, {
+ const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points`, {
  method: 'PUT',
  headers: {
  'Content-Type': 'application/json',
@@ -224,7 +224,7 @@ export async function batchIndexCaseChunks(
  payload: chunk.payload,
  }));
 
- const response = await fetch(`${QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points`, {
+ const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points`, {
  method: 'PUT',
  headers: {
  'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ export async function batchIndexLawSections(
  payload: section.payload,
  }));
 
- const response = await fetch(`${QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points`, {
+ const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points`, {
  method: 'PUT',
  headers: {
  'Content-Type': 'application/json',
@@ -316,7 +316,7 @@ export async function searchCaseChunks(
  console.log(`[Qdrant] Searching case chunks (limit: ${limit})`);
 
  const response = await fetch(
- `${QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points/search`,
+ `${process.env.QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points/search`,
  {
  method: 'POST',
  headers: {
@@ -370,7 +370,7 @@ export async function searchLawSections(
  console.log(`[Qdrant] Searching law sections (limit: ${limit})`);
 
  const response = await fetch(
- `${QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points/search`,
+ `${process.env.QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points/search`,
  {
  method: 'POST',
  headers: {
@@ -414,7 +414,7 @@ export async function deletePoint(collectionName: string, pointId: string): Prom
  console.log(`[Qdrant] Deleting point ${pointId} from ${collectionName}`);
 
  const response = await fetch(
- `${QDRANT_URL}/collections/${collectionName}/points/${hashStringToNumber(pointId)}`,
+ `${process.env.QDRANT_URL}/collections/${collectionName}/points/${hashStringToNumber(pointId)}`,
  {
  method: 'DELETE',
  headers: {
@@ -440,7 +440,7 @@ export async function deletePoint(collectionName: string, pointId: string): Prom
  */
 export async function getCollectionInfo(collectionName: string): Promise<Record<string, any>> {
  try {
- const response = await fetch(`${QDRANT_URL}/collections/${collectionName}`, {
+ const response = await fetch(`${process.env.QDRANT_URL}/collections/${collectionName}`, {
  headers: {
  ...(QDRANT_API_KEY && { 'api-key': QDRANT_API_KEY }),
  },
@@ -462,7 +462,7 @@ export async function getCollectionInfo(collectionName: string): Promise<Record<
  */
 export async function checkQdrantHealth(): Promise<boolean> {
  try {
- const response = await fetch(`${QDRANT_URL}/health`);
+ const response = await fetch(`${process.env.QDRANT_URL}/health`);
  return response.ok;
  } catch (error) {
  console.error('[Qdrant] Health check failed:', error);

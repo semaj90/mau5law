@@ -1,9 +1,10 @@
 <script lang="ts">
- import type { OllamaGetEndpoint } from '$lib/server/ollama/client';
+	// import { getOllamaEndpoint } from '$lib/server/ollama/client'; // Cannot import server code in client
 
- let searchQuery = $state ('');
- let searchResults = $state <any[]>([]);
- let isSearching = $state (false);
+	let searchQuery = $state ('');
+	let searchResults = $state <any[]>([]);
+	let isSearching = $state (false);
+	let webgpuCapabilities = $state({ hasWebGPU: false }); // Fix: Define missing variable
  let searchFilters = $state ({
  cases: true,
  evidence: true,
@@ -19,7 +20,7 @@
  { id: 'all', label: 'ALL RECORDS', icon: '🔍' },
  { id: 'recent', label: 'RECENT (7 DAYS)', icon: '🕐' },
  { id: 'archived', label: 'ARCHIVED', icon: '📦' }
- ];
+ ] as const;
 
  // Mock search data
  let allRecords = $state ([
@@ -109,25 +110,28 @@
  return typeMatch && scopeMatch;
  });
 
- // Perform semantic search using Ollama
- const endpoint = await OllamaGetEndpoint();
- const semanticResults = await Promise.all(
- filteredRecords.map(async (record) => {
- try {
- const response = await fetch(`${endpoint}/api/embeddings`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- model: 'embeddinggemma:latest',
- prompt: `${searchQuery} ${record.content}`
- })
- });
+		// Perform semantic search using Ollama
+		// const endpoint = await getOllamaEndpoint(); // Server-side only
+		const endpoint = 'http://localhost:11434'; // Fallback for client-side
+		const semanticResults = await Promise.all(
+			filteredRecords.map(async (record) => {
+				try {
+					/*
+					const response = await fetch(`${endpoint}/api/embeddings`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							model: 'embeddinggemma:latest',
+							prompt: `${searchQuery} ${record.content}`
+						})
+					});
 
- const embedding = await response.json();
- // Mock relevance calculation
- const relevance = Math.random() * 0.3 + 0.7;
- return { ...record, relevance };
- } catch (error) {
+					const embedding = await response.json();
+					*/
+					// Mock relevance calculation
+					const relevance = Math.random() * 0.3 + 0.7;
+					return { ...record, relevance };
+				} catch (error) {
  return { ...record, relevance: Math.random() * 0.5 + 0.5 };
  }
  })

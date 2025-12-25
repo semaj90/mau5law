@@ -3,7 +3,7 @@
  * Manages database transactions with automatic rollback on errors
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { auditService } from './audit.service.js';
 
 export interface TransactionOptions {

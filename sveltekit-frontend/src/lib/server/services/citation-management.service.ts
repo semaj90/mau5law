@@ -3,7 +3,7 @@
  * Handles all citation management operations
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import type {
  SavedCitation,
  CitationSearchRequest,

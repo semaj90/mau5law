@@ -24,7 +24,7 @@
  const { form, errors, enhance, submitting } = superForm(
  poi || {},
  {
- validators: zodClient(poiSchema),
+ validators: zod(...)poiSchema),
  onSubmit: async ({ formData }) => {
  if (onSubmit) {
  await onSubmit(formData);

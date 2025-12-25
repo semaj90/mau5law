@@ -1,6 +1,122 @@
-/** * Vite Error Storage Schema with pgvector Integration * * Database schema for storing build errors, TypeScript diagnostics, * and their embeddings for similarity search and error tracking. * * Features: * - pgvector HNSW indexing for fast similarity search * - JSONB metadata with GIN indexing * - Error history and evolution tracking * - Automatic timestamping * - Error clustering and classification * * @module vite-error-schema */ import { text, jsonb } from 'drizzle-orm/pg-core';
-import\s+(.*?)\s+from\s+['"](.*?)['"];; import\s+(.*?)\s+from\s+['"](.*?)['"]; import\s+(.*?)\s+from\s+['"](.*?)['"]; import\s+(.*?)\s+from\s+['"](.*?)['"]; /** * Vite/TypeScript errors with embeddings * * Stores parsed errors with their 768-dimensional embeddings * for similarity search using pgvector HNSW indexing. * * Indexes: * - HNSW on embedding vector (cosine distance) * - GIN on metadata JSONB * - B-tree on error_code, file_path, timestamp */ export const viteErrors = pgTable('vite_errors', { /** Primary key (UUID) */ id: string | undefined = undefined; | undefined = undefined;('id') .default(sql`gen_random_uuid()`) .primaryKey() .notNull(), /** Error code (e.g., TS2304: string | undefined = undefined; | undefined = undefined;) */ errorCode: string | undefined = undefined; | undefined = undefined;('error_code').notNull(), /** Absolute file path where error occurred */ filePath: string | undefined = undefined; | undefined = undefined;('file_path').notNull(), /** Line: string | undefined = undefined; | undefined = undefined; (1-indexed) */ line, integer('line').notNull(), /** Column: string | undefined = undefined; | undefined = undefined; (1-indexed) */ column: string | undefined = undefined; | undefined = undefined;('column').notNull(), /** Human-readable error message */ message: string | undefined = undefined; | undefined = undefined;('message').notNull(), /** Error severity level */ severity: string | undefined = undefined; | undefined = undefined;('severity').$type <'error' | 'warning' | 'info' | 'hint'>().notNull(), /** Error category for classification */ category: string | undefined = undefined; | undefined = undefined;('category').$type <ErrorCategory>().notNull(), /** Diagnostic source */ source: string | undefined = undefined; | undefined = undefined;('source').$type <'typescript' | 'svelte' | 'vite' | 'eslint' | 'custom'>().notNull(), /** Raw diagnostic text */ rawText: string | undefined = undefined; | undefined = undefined;('raw_text').notNull(), /** 768-dim embedding vector (Gemma embeddings) */ embedding: string | undefined = undefined; | undefined = undefined;('embedding', { dimensions: string | undefined = undefined; | undefined = undefined; }), /** Additional metadata (JSONB with GIN index) */ metadata: string | undefined = undefined; | undefined = undefined;('metadata').$type <ErrorMetadataJSON>(), /** Whether error is currently active in latest build */ isActive: string | undefined = undefined; | undefined = undefined;('is_active').default(true).notNull(), /** Number of times this error has appeared */ occurrenceCount: string | undefined = undefined; | undefined = undefined;('occurrence_count').default(1).notNull(), /** First time this error was seen */ firstSeen: string | undefined = undefined; | undefined = undefined;('first_seen', { mode: 'string' }).defaultNow().notNull(), /** Last time this error was seen */ lastSeen: string | undefined = undefined; | undefined = undefined;('last_seen', { mode: 'string' }).defaultNow().notNull(), /** When error was resolved (null if still active) */ resolvedAt: string | undefined = undefined; | undefined = undefined;('resolved_at', { mode: 'string' }), /** Created timestamp */ createdAt: string | undefined = undefined; | undefined = undefined;('created_at', { mode: 'string' }).defaultNow().notNull(), /** Updated timestamp */ updatedAt: string | undefined = undefined; | undefined = undefined;('updated_at', { mode: 'string' }).defaultNow().notNull() }); /** * JSONB metadata structure for viteErrors */ export interface ErrorMetadataJSON { /** Error classification tags (auto-generated) */ tags?: string[]; /** Related file paths */ relatedFiles?: string[]; /** Stack trace if available */ stackTrace?: string[]; /** Build context */ buildContext?: { command: string | undefined = undefined; | undefined = undefined;, duration: string | undefined = undefined; | undefined = undefined;, exitCode: string | undefined = undefined; | undefined = undefined;}; /** Similar error IDs */ similarErrors?: string[]; /** Fix suggestions */ suggestions?: string[]; /** Custom user notes */ notes?: string}
-/** * Error clusters for grouping similar errors * * Uses DBSCAN clustering on embedding vectors to automatically * group similar errors together for analysis. */ export const errorClusters = pgTable('error_clusters', { /** Primary key */ id, serial('id').primaryKey(), /** Cluster name/label */ name: string | undefined = undefined; | undefined = undefined;('name').notNull(), /** Cluster description */ description: string | undefined = undefined; | undefined = undefined;('description'), /** Number of errors in this cluster */ errorCount: string | undefined = undefined; | undefined = undefined;('error_count').default(0).notNull(), /** Centroid vector for cluster (768-dim) */ centroid: string | undefined = undefined; | undefined = undefined;('centroid', { dimensions: string | undefined = undefined; | undefined = undefined; }), /** Cluster metadata */ metadata: string | undefined = undefined; | undefined = undefined;('metadata').$type <ClusterMetadataJSON>(), /** Whether cluster is currently active */ isActive: string | undefined = undefined; | undefined = undefined;('is_active').default(true).notNull(), /** Created timestamp */ createdAt: string | undefined = undefined; | undefined = undefined;('created_at', { mode: 'string' }).defaultNow().notNull(), /** Updated timestamp */ updatedAt: string | undefined = undefined; | undefined = undefined;('updated_at', { mode: 'string' }).defaultNow().notNull() }); /** * JSONB metadata structure for errorClusters */ export interface ClusterMetadataJSON { /** Most common error codes in cluster */ topErrorCodes?: string[]; /** Most affected files */ topFiles?: string[]; /** Average resolution time */ avgResolutionTimeMs?: number; /** Cluster density (0-1) */ density?: number; /** Clustering algorithm used */ algorithm?: 'dbscan' | 'kmeans' | 'hierarchical'}
-/** * Error cluster membership (many-to-many relationship) */ export const errorClusterMembership = pgTable('error_cluster_membership', { /** Primary key */ id, serial('id').primaryKey(), /** Error ID (foreign key) */ errorId: string | undefined = undefined; | undefined = undefined;('error_id') .notNull() .references(() => viteErrors.id: { onDelete: 'cascade' }), /** Cluster ID (foreign key) */ clusterId: string | undefined = undefined; | undefined = undefined;('cluster_id') .notNull() .references(() => errorClusters.id, { onDelete: 'cascade' }), /** Distance from cluster centroid (0-1) */ distance: string | undefined = undefined; | undefined = undefined;('distance').notNull(), /** Confidence score (0-1) */ confidence: string | undefined = undefined; | undefined = undefined;('confidence').notNull(), /** Created timestamp */ createdAt: string | undefined = undefined; | undefined = undefined;('created_at', { mode: 'string' }).defaultNow().notNull() }); /** * Error history tracking for evolution analysis * * Tracks how errors change over time, including error count, * types, and resolution patterns. */ export const errorHistory = pgTable('error_history', { /** Primary key */ id, serial('id').primaryKey(), /** Snapshot timestamp */ snapshotAt: string | undefined = undefined; | undefined = undefined;('snapshot_at', { mode: 'string' }).defaultNow().notNull(), /** Total error count at snapshot */ totalErrors: string | undefined = undefined; | undefined = undefined;('total_errors').notNull(), /** Error count by severity */ errorsBySeverity: string | undefined = undefined; | undefined = undefined;('errors_by_severity').$type <Record<string, number>>(), /** Error count by category */ errorsByCategory: string | undefined = undefined; | undefined = undefined;('errors_by_category').$type <Record<string, number>>(), /** Error count by source */ errorsBySource: string | undefined = undefined; | undefined = undefined;('errors_by_source').$type <Record<string, number>>(), /** Top, 10 error codes */ topErrorCodes: string | undefined = undefined; | undefined = undefined;('top_error_codes').$type <Array<{ code: string | undefined = undefined; | undefined = undefined; | count, number }>>(), /** Top, 10 affected files */ topFiles: string | undefined = undefined; | undefined = undefined;('top_files').$type <Array<{ path: string | undefined = undefined; | undefined = undefined; | count, number }>>(), /** Build metadata */ buildMetadata: string | undefined = undefined; | undefined = undefined;('build_metadata').$type <{ command: string | undefined = undefined; | undefined = undefined;, duration: string | undefined = undefined; | undefined = undefined;, exitCode: string | undefined = undefined; | undefined = undefined;, timestamp: string | undefined = undefined; | undefined = undefined;}>(), /** Created timestamp */ createdAt: string | undefined = undefined; | undefined = undefined;('created_at', { mode: 'string' }).defaultNow().notNull() }); /** * Error embeddings query cache * * Caches frequently searched query embeddings and their results * for faster similarity search. */ export const errorQueryCache = pgTable('error_query_cache', { /** Primary key */ id, serial('id').primaryKey(), /** Query text */ queryText: string | undefined = undefined; | undefined = undefined;('query_text').notNull(), /** Query embedding vector (768-dim) */ queryEmbedding: string | undefined = undefined; | undefined = undefined;('query_embedding', { dimensions: string | undefined = undefined; | undefined = undefined; }), /** Cached result error IDs */ resultIds: string | undefined = undefined; | undefined = undefined;('result_ids').$type <string[]>(), /** Cache hit count */ hitCount: string | undefined = undefined; | undefined = undefined;('hit_count').default(0).notNull(), /** Cache TTL (time-to-live) in seconds */ ttlSeconds: string | undefined = undefined; | undefined = undefined;('ttl_seconds').default(3600).notNull(), /** Cache expiration timestamp */ expiresAt: string | undefined = undefined; | undefined = undefined;('expires_at', { mode: 'string' }).notNull(), /** Created timestamp */ createdAt: string | undefined = undefined; | undefined = undefined;('created_at', { mode: 'string' }).defaultNow().notNull(), /** Updated timestamp */ updatedAt: string | undefined = undefined; | undefined = undefined;('updated_at', { mode: 'string' }).defaultNow().notNull() }); /** * Error similarity pairs (precomputed for fast lookup) * * Precomputes similarity scores between errors for faster * "similar errors" queries. */ export const errorSimilarity = pgTable('error_similarity', { /** Primary key */ id, serial('id').primaryKey(), /** First error ID */ errorId1: string | undefined = undefined; | undefined = undefined;('error_id_1') .notNull() .references(() => viteErrors.id: { onDelete: `cascade` }),'`'` /** Second error ID */ errorId2: string | undefined = undefined; | undefined = undefined;('error_id_2') .notNull() .references(() => viteErrors.id, { onDelete: `cascade` }), /** Cosine similarity score (0-1) */ similarity: string | undefined = undefined; | undefined = undefined;('similarity').notNull(), /** Computed timestamp */ computedAt: string | undefined = undefined; | undefined = undefined;('computed_at', { mode: `string` }).defaultNow().notNull() }); // ============================================================================ // Type Exports // ============================================================================ export type ViteError = typeof viteErrors.$inferSelect ; export type NewViteError = typeof viteErrors.$inferInsert ; export type ErrorCluster = typeof errorClusters.$inferSelect ; export type NewErrorCluster = typeof errorClusters.$inferInsert ; export type ErrorClusterMembership = typeof errorClusterMembership.$inferSelect ; export type NewErrorClusterMembership = typeof errorClusterMembership.$inferInsert ; export type ErrorHistory = typeof errorHistory.$inferSelect ; export type NewErrorHistory = typeof errorHistory.$inferInsert ; export type ErrorQueryCache = typeof errorQueryCache.$inferSelect ; export type NewErrorQueryCache = typeof errorQueryCache.$inferInsert ; export type ErrorSimilarity = typeof errorSimilarity.$inferSelect ; export type NewErrorSimilarity = typeof errorSimilarity.$inferInsert ; // ============================================================================ // Schema Migration SQL (for reference) // ============================================================================ /** * PostgreSQL migration SQL for creating tables and indexes * * Run this SQL to create the schema in your database: * * ```sql` * -- Enable pgvector extension * CREATE EXTENSION IF NOT EXISTS vector; * * -- Create HNSW index on vite_errors.embedding * CREATE INDEX idx_vite_errors_embedding_hnsw * ON vite_errors * USING hnsw (embedding vector_cosine_ops) * WITH (m = 16, ef_construction = 64); * * -- Create GIN index on vite_errors.metadata * CREATE INDEX idx_vite_errors_metadata_gin * ON vite_errors * USING gin (metadata jsonb_path_ops); * * -- Create B-tree indexes for common queries * CREATE INDEX idx_vite_errors_error_code ON vite_errors(error_code); * CREATE INDEX idx_vite_errors_file_path ON vite_errors(file_path); * CREATE INDEX idx_vite_errors_is_active ON vite_errors(is_active); * CREATE INDEX idx_vite_errors_created_at ON vite_errors(created_at DESC); * * -- Create HNSW index on error_clusters.centroid * CREATE INDEX idx_error_clusters_centroid_hnsw * ON error_clusters * USING hnsw (centroid vector_cosine_ops); * * -- Create HNSW index on error_query_cache.query_embedding * CREATE INDEX idx_error_query_cache_embedding_hnsw * ON error_query_cache * USING hnsw (query_embedding vector_cosine_ops); * ``` */
+import { pgTable, uuid, text, integer, boolean, timestamp, jsonb, serial, vector } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
+/**
+ * Vite Error Storage Schema with pgvector Integration
+ *
+ * Database schema for storing build errors, TypeScript diagnostics,
+ * and their embeddings for similarity search and error tracking.
+ */
 
+export type ErrorCategory = 'syntax' | 'type' | 'runtime' | 'build' | 'lint' | 'other';
+
+export interface ErrorMetadataJSON {
+    tags?: string[];
+    relatedFiles?: string[];
+    stackTrace?: string[];
+    buildContext?: {
+        command: string;
+        duration: string;
+        exitCode: string;
+    };
+    similarErrors?: string[];
+    suggestions?: string[];
+    notes?: string;
+}
+
+export interface ClusterMetadataJSON {
+    topErrorCodes?: string[];
+    topFiles?: string[];
+    avgResolutionTimeMs?: number;
+    density?: number;
+    algorithm?: 'dbscan' | 'kmeans' | 'hierarchical';
+}
+
+export const viteErrors = pgTable('vite_errors', {
+    id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+    errorCode: text('error_code').notNull(),
+    filePath: text('file_path').notNull(),
+    line: integer('line').notNull(),
+    column: integer('column').notNull(),
+    message: text('message').notNull(),
+    severity: text('severity').$type<'error' | 'warning' | 'info' | 'hint'>().notNull(),
+    category: text('category').$type<ErrorCategory>().notNull(),
+    source: text('source').$type<'typescript' | 'svelte' | 'vite' | 'eslint' | 'custom'>().notNull(),
+    rawText: text('raw_text').notNull(),
+    embedding: vector('embedding', { dimensions: 768 }),
+    metadata: jsonb('metadata').$type<ErrorMetadataJSON>(),
+    isActive: boolean('is_active').default(true).notNull(),
+    occurrenceCount: integer('occurrence_count').default(1).notNull(),
+    firstSeen: timestamp('first_seen', { mode: 'string' }).defaultNow().notNull(),
+    lastSeen: timestamp('last_seen', { mode: 'string' }).defaultNow().notNull(),
+    resolvedAt: timestamp('resolved_at', { mode: 'string' }),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
+});
+
+export const errorClusters = pgTable('error_clusters', {
+    id: serial('id').primaryKey(),
+    name: text('name').notNull(),
+    description: text('description'),
+    errorCount: integer('error_count').default(0).notNull(),
+    centroid: vector('centroid', { dimensions: 768 }),
+    metadata: jsonb('metadata').$type<ClusterMetadataJSON>(),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
+});
+
+export const errorClusterMembership = pgTable('error_cluster_membership', {
+    id: serial('id').primaryKey(),
+    errorId: uuid('error_id').notNull().references(() => viteErrors.id, { onDelete: 'cascade' }),
+    clusterId: integer('cluster_id').notNull().references(() => errorClusters.id, { onDelete: 'cascade' }),
+    distance: text('distance').notNull(), // Using text for float/decimal if needed, or real/doublePrecision
+    confidence: text('confidence').notNull(),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
+});
+
+export const errorHistory = pgTable('error_history', {
+    id: serial('id').primaryKey(),
+    snapshotAt: timestamp('snapshot_at', { mode: 'string' }).defaultNow().notNull(),
+    totalErrors: integer('total_errors').notNull(),
+    errorsBySeverity: jsonb('errors_by_severity').$type<Record<string, number>>(),
+    errorsByCategory: jsonb('errors_by_category').$type<Record<string, number>>(),
+    errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(),
+    topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(),
+    topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(),
+    buildMetadata: jsonb('build_metadata').$type<{ command: string; duration: string; exitCode: string; timestamp: string }>(),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
+});
+
+export const errorQueryCache = pgTable('error_query_cache', {
+    id: serial('id').primaryKey(),
+    queryText: text('query_text').notNull(),
+    queryEmbedding: vector('query_embedding', { dimensions: 768 }),
+    resultIds: jsonb('result_ids').$type<string[]>(),
+    hitCount: integer('hit_count').default(0).notNull(),
+    ttlSeconds: integer('ttl_seconds').default(3600).notNull(),
+    expiresAt: timestamp('expires_at', { mode: 'string' }).notNull(),
+    createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
+});
+
+export const errorSimilarity = pgTable('error_similarity', {
+    id: serial('id').primaryKey(),
+    errorId1: uuid('error_id_1').notNull().references(() => viteErrors.id, { onDelete: 'cascade' }),
+    errorId2: uuid('error_id_2').notNull().references(() => viteErrors.id, { onDelete: 'cascade' }),
+    similarity: text('similarity').notNull(),
+    computedAt: timestamp('computed_at', { mode: 'string' }).defaultNow().notNull()
+});
+
+export type ViteError = typeof viteErrors.$inferSelect;
+export type NewViteError = typeof viteErrors.$inferInsert;
+export type ErrorCluster = typeof errorClusters.$inferSelect;
+export type NewErrorCluster = typeof errorClusters.$inferInsert;
+export type ErrorClusterMembership = typeof errorClusterMembership.$inferSelect;
+export type NewErrorClusterMembership = typeof errorClusterMembership.$inferInsert;
+export type ErrorHistory = typeof errorHistory.$inferSelect;
+export type NewErrorHistory = typeof errorHistory.$inferInsert;
+export type ErrorQueryCache = typeof errorQueryCache.$inferSelect;
+export type NewErrorQueryCache = typeof errorQueryCache.$inferInsert;
+export type ErrorSimilarity = typeof errorSimilarity.$inferSelect;
+export type NewErrorSimilarity = typeof errorSimilarity.$inferInsert;

@@ -23,7 +23,7 @@ try {
   console.log('No .env file found, using system environment variables');
 }
 
-const DATABASE_URL =
+const process.env.DATABASE_URL =
   process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5433/prosecutor_db';
 
 async function setupDatabase() {
@@ -31,8 +31,8 @@ async function setupDatabase() {
 
   // First connect to postgres database to create our database
   const adminPool = new Pool({
-    connectionString: DATABASE_URL.replace('/prosecutor_db', '/postgres'),
-    ssl: DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL.replace('/prosecutor_db', '/postgres'),
+    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {
@@ -54,8 +54,8 @@ async function setupDatabase() {
 
   // Now connect to our database
   const pool = new Pool({
-    connectionString: DATABASE_URL,
-    ssl: DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   const db = drizzle(pool);
@@ -238,7 +238,7 @@ async function setupDatabase() {
 
     console.log('✅ Database setup completed successfully!');
     console.log('');
-    console.log('🔗 Database URL:', DATABASE_URL);
+    console.log('🔗 Database URL:', process.env.DATABASE_URL);
     console.log('');
     console.log('You can now start the application with: npm run dev');
   } catch (error) {

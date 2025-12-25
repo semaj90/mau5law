@@ -19,7 +19,7 @@ import type { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 // import type { AIAssistantInputSynthesizer } from './ai-assistant-input-synthesizer.js';
 // import type { legalBERT } from './legalbert-middleware.js';
 // import type { monitoringService } from './monitoring-service.js';
-import type { getOllamaEndpoint } from './endpoints.js'; // keep as-is
+import { getOllamaEndpoint } from './endpoints.js'; // keep as-is
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable("legal_documents", {
@@ -139,7 +139,7 @@ const services = {
 };
 
 // ===== DATABASE CONNECTION =====
-// Use DATABASE_URL environment variable first, then fallback to individual components with Docker service name
+// Use process.env.DATABASE_URL environment variable first, then fallback to individual components with Docker service name
 const pgConnection = process.env.DATABASE_URL
  ? postgres(process.env.DATABASE_URL)
  : postgres({

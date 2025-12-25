@@ -19,12 +19,12 @@ import { minioService } from '../src/lib/server/storage/minio-service.js';
 
 // Environment configuration
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
-const DATABASE_URL =
+const process.env.DATABASE_URL =
   process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 
 // PostgreSQL connection pool
 const pgPool = new Pool({
-  connectionString: DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   max: 10,
   idleTimeoutMillis: 30000,
 });

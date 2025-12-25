@@ -31,7 +31,7 @@
     { id: 'yorha', title: 'YoRHa Theme', icon: '🤖' },
     { id: 'evidence', title: 'Evidence Board', icon: '📋' },
     { id: 'integration', title: 'Integration', icon: '🔧' },
-  ];
+  ] as const;
   function handleSearchDemo(_event: CustomEvent) {
     const { query } = e(vent as CustomEvent).detail;
     console.log('Search demo:', query);

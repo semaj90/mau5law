@@ -1,5 +1,5 @@
-import { db } from '$lib/server/db/drizzle.js';
-import { errorSuggestions } from '$lib/server/db/schema/index.js';
+import db from '$lib/server/db/drizzle.js';
+import { errorSuggestionsTable } from '$lib/server/db/schema/index.js';
 import { error, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import { readFile, writeFile } from 'fs/promises';
@@ -38,8 +38,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		// 1. Fetch the suggestion from database
 		const [suggestion] = await db
 			.select()
-			.from(errorSuggestions)
-			.where(eq(errorSuggestions.id, suggestionId))
+			.from(errorSuggestionsTable)
+			.where(eq(errorSuggestionsTable.id, suggestionId))
 			.limit(1);
 
 		if (!suggestion) {

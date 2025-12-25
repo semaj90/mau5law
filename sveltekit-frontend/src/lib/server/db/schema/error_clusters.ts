@@ -1,5 +1,5 @@
-import { index, integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { vector } from 'drizzle-orm/pg-vector';
+import { index, integer, jsonb, pgTable, text, timestamp, uuid, vector } from 'drizzle-orm/pg-core';
+// import { vector } from 'drizzle-orm/pg-vector';
 
 /**
  * Error Clusters
@@ -24,7 +24,7 @@ export const errorClusterTable = pgTable(
     errorCode: text('error_code'),
     category: text('category'),
     affectedRoutes: jsonb('affected_routes'),
-    
+
     // Vector embedding (384 dimensions for embeddinggemma)
     embedding: vector('embedding', { dimensions: 384 }),
 

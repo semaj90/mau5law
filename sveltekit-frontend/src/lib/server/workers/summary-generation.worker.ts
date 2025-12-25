@@ -10,7 +10,7 @@ import { llmService } from '$lib/server/services/llm.service';
 import { graphService } from '$lib/server/services/graph.service';
 import { verificationService } from '$lib/server/services/verification.service';
 import { errorHandlerService } from '$lib/server/services/error-handler.service';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { caseCharges } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import * as fs from 'fs';

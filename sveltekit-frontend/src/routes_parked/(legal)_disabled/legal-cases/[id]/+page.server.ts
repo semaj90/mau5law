@@ -1,3 +1,4 @@
+import { REDIS_URL } from '$env/static/private';
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { fileUploadSchema } from '$lib/schemas/fileUploadSchema';

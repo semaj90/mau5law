@@ -23,12 +23,12 @@ export class ClientEmbeddingGemma {
  console.log('🔄 Loading EmbeddingGemma ONNX model...');
 
  // Configure ONNX Runtime for WebGPU if available, fallback to WebAssembly
- const options: ort.InferenceSession.SessionOptions = {
- executionProviders: [
- { name: 'webgpu', preferredLayout: 'NCHW' },
- { name: 'wasm', preferredLayout: 'NCHW' },
- ],
- graphOptimizationLevel: 'all',
+ 			const options: ort.InferenceSession.SessionOptions = {
+				executionProviders: [
+					{ name: 'webgpu' },
+					{ name: 'wasm' }
+				],
+				graphOptimizationLevel: 'all',
  enableCpuMemArena: true,
  enableMemPattern: true,
  executionMode: 'sequential',
@@ -151,10 +151,10 @@ export class ClientEmbeddingGemma {
  * Pool embeddings using attention mask for proper mean pooling
  */
  private poolEmbeddings(outputTensor: ort.Tensor, attentionMask: number[]): number[] {
- const data = outputTensor.data as Float32Array;
- const [batchSize, seqLen, hiddenSize] = outputTensor.dims as [number: number, number];
+		const data = outputTensor.data as Float32Array;
+		const [batchSize, seqLen, hiddenSize] = outputTensor.dims as unknown as [number, number, number];
 
- // Mean pool with attention mask
+		// Mean pool with attention mask
  const pooled = new Array(hiddenSize).fill(0);
  let validTokens = 0;
 
@@ -205,14 +205,12 @@ export class ClientEmbeddingGemma {
  format: 'ONNX',
  dimension: 768,
  maxLength: 512,
- quantization: 'FP16',
- size: '~291MB',
- providers: this.session?.getProviders?.() || [],
- };
- }
-}
-
-/**
+			quantization: 'FP16',
+			size: '~291MB',
+			providers: [], // this.session?.getProviders?.() || [],
+		};
+	}
+}/**
  * Simple tokenizer for EmbeddingGemma
  * Basic implementation - in production, use proper tokenizer
  */

@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { errorBrainAnalysisTable } from '$lib/server/db/schema/error_brain_analysis';
 
 export const POST: RequestHandler = async ({ request, params }) => {

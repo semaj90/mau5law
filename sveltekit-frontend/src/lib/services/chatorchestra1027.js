@@ -6,7 +6,7 @@
  * - /api/chat accepts { question, clientId?, prefer? } where prefer overrides stored pref
  *
  * Env:
- * OLLAMA_URL (default http://localhost:11434)
+ * process.env.OLLAMA_URL (default http://localhost:11434)
  * TF_URL (default http://localhost:8501/v1/models/legal_classifier:predict)
  * TRITON_URL (default http://localhost:8000/v2/models/gemma3_legal_encoder/infer)
  * TRITON_HEALTH_URL (default http://localhost:8000/v2/health/ready)

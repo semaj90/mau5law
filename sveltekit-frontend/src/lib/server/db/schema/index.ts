@@ -9,6 +9,7 @@ export * from './error_suggestions.js';
 export * from './error_timeline.js';
 export * from './route_error_patches.js';
 export * from './route_health.js';
+export * from './route_metadata.js';
 
 // Phase 9 (Error Brain Analysis) tables
 export * from './error_brain_analysis.js';

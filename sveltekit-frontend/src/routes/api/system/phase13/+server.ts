@@ -1,5 +1,6 @@
+import { QDRANT_URL, OLLAMA_URL } from '$env/static/private';
 import { getRedisClient } from '$lib/server/cache/redis';
-import { db } from '$lib/server/db/client';
+import db from '$lib/server/db/client';
 import { json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
 
@@ -16,7 +17,7 @@ export async function GET() {
 
  try {
  // Check Redis
- const redis = getRedisClient();
+ const redis = await getRedisClient();
  try {
  const pingResult = await redis.ping();
  health.services.redis = {

@@ -166,7 +166,7 @@ export interface SecuritySettings {
 /** * Default configuration with environment variable overrides */
 const createDefaultConfig = (): RAGConfig => ({
  database: {
- // Prioritize DATABASE_URL for Docker compatibility, fallback to individual components
+ // Prioritize process.env.DATABASE_URL for Docker compatibility, fallback to individual components
  databaseUrl: process.env.DATABASE_URL || `postgresql://${process.env.DATABASE_USER || 'legal_admin'}:${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db'}`,
  max: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20'),
  idle_timeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '20'),
@@ -188,7 +188,7 @@ const createDefaultConfig = (): RAGConfig => ({
  lazyConnect: false,
  },
  ollama: {
- // Prioritize OLLAMA_URL for Docker compatibility
+ // Prioritize process.env.OLLAMA_URL for Docker compatibility
  baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl,
  embeddingModel: OLLAMA_CONFIG.embeddingModel,
  llmModel: OLLAMA_CONFIG.llmModel,

@@ -3,7 +3,7 @@
  * Manages citation collections, tags, and exports
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { redis } from '$lib/server/redis';
 import { auditService } from './audit.service.js';
 

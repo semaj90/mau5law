@@ -1,0 +1,219 @@
+[
+	{
+		"id": "db-import",
+		"description": "Fix import { db } to import db (default export)",
+		"regex": "import\\s+\\{\\s*db\\s*\\}\\s+from\\s+['\"](\\$lib\\/server\\/db[^'\"]*)['\"]",
+		"fixTemplate": "import db from '$lib/server/db...'",
+		"priority": 1,
+		"domains": ["backend", "db"]
+	},
+	{
+		"id": "drizzle-enum",
+		"description": "Fix Drizzle enum mismatches (active→open, done→closed)",
+		"regex": "eq\\(cases\\.status,\\s*['\"](active|done|reviewing|completed)['\"]\\)",
+		"fixTemplate": "eq(cases.status, 'open'|'closed'|'pending_review')",
+		"priority": 2,
+		"domains": ["backend", "db"]
+	},
+	{
+		"id": "drizzle-active-cases",
+		"description": "Fix eq(cases.status, \"active\") to proper not-closed/archived logic",
+		"regex": "eq\\(cases\\.status,\\s*['\"]active['\"]\\)",
+		"fixTemplate": "ne(cases.status, 'closed'), ne(cases.status, 'archived')",
+		"priority": 2,
+		"domains": ["backend", "db"]
+	},
+	{
+		"id": "get-user-id",
+		"description": "Replace getUserId(locals) with locals.user?.id guard",
+		"regex": "getUserId\\(locals\\)",
+		"fixTemplate": "const userId = locals.user?.id; if (!userId) throw error(401);",
+		"priority": 3,
+		"domains": ["backend", "auth"]
+	},
+	{
+		"id": "get-ollama-endpoint-import",
+		"description": "Fix import type { getOllamaEndpoint } -> import { getOllamaEndpoint }",
+		"regex": "import\\s+type\\s+\\{\\s*getOllamaEndpoint\\s*\\}\\s+from",
+		"fixTemplate": "import { getOllamaEndpoint } from ...",
+		"priority": 3,
+		"domains": ["backend", "ai"]
+	},
+	{
+		"id": "svelte-rest-route",
+		"description": "Fix [[...path]] in Svelte <style> blocks",
+		"regex": "\\[\\[\\.\\.\\.path\\]\\]",
+		"fixTemplate": "[...path]",
+		"priority": 4,
+		"domains": ["frontend", "svelte"]
+	},
+	{
+		"id": "env-vars-global",
+		"description": "Fix missing process.env prefix for known environment variables",
+		"regex": "(?<![\\w.'\"])(DATABASE_URL|OLLAMA_URL|QDRANT_URL|AUTH_COOKIE_NAME)(?![\\w:])",
+		"fixTemplate": "process.env.$1",
+		"priority": 4,
+		"domains": ["backend", "config"]
+	},
+	{
+		"id": "superforms-adapter",
+		"description": "Fix zodClient → zod adapter on server files",
+		"regex": "zodClient\\(",
+		"fixTemplate": "zod(...)",
+		"priority": 5,
+		"domains": ["backend", "forms"]
+	},
+
+	{
+		"id": "sveltekit-error",
+		"description": "Fix error() object literals to json() or string",
+		"regex": "throw\\s+error\\(\\d+,\\s*\\{[^}]*message:",
+		"fixTemplate": "return json({ ... }, { status: ... })",
+		"priority": 6,
+		"domains": ["backend", "api"]
+	},
+	{
+		"id": "lucia-session-adapter",
+		"description": "Fix Lucia PostgreSQLSessionTable type mismatch",
+		"regex": "new\\s+Lucia\\([^)]*DrizzlePostgreSQLAdapter",
+		"fixTemplate": "new DrizzlePostgreSQLAdapter(db, sessions as any, ...)",
+		"priority": 6,
+		"domains": ["backend", "auth"]
+	},
+	{
+		"id": "union-const",
+		"description": "Add \"as const\" to union-typed arrays",
+		"regex": "const\\s+\\w+\\s*=\\s*\\[\\s*\\{\\s*id:\\s*['\"][^'\"]+['\"]",
+		"fixTemplate": "const ... = [...] as const;",
+		"priority": 7,
+		"domains": ["frontend", "typescript"]
+	},
+	{
+		"id": "type-import-runtime",
+		"description": "Fix import type used as runtime value",
+		"regex": "import\\s+type\\s+\\{\\s*[^}]*(webgpuCapabilities|OllamaGetEndpoint)[^}]*\\}",
+		"fixTemplate": "import { ... }",
+		"priority": 8,
+		"domains": ["frontend", "backend"]
+	},
+	{
+		"id": "zod-key-comma",
+		"description": "Fix Zod key definition corruption (comma instead of colon)",
+		"regex": "(\\w+),\\s*z\\.",
+		"fixTemplate": "$1: z.",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "zod-arg-colon",
+		"description": "Fix Zod argument corruption (colon instead of comma)",
+		"regex": "\\.(min|max)\\((\\d+):\\s*",
+		"fixTemplate": ".$1($2, ",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "zod-type-def",
+		"description": "Fix Zod type definition corruption",
+		"regex": "type\\s+(\\w+)\\s*=\\s*z\\.(input|output)<typeof:\\s*(\\w+)>,",
+		"fixTemplate": "type $1 = z.$2<typeof $3>;",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "drizzle-key-comma",
+		"description": "Fix Drizzle key definition corruption",
+		"regex": "(\\w+),\\s*(uuid|text|varchar|integer|boolean|timestamp|jsonb|serial|vector)\\(",
+		"fixTemplate": "$1: $2(",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "drizzle-garbage-type-metadata",
+		"description": "Fix Drizzle metadata column corruption",
+		"regex": "metadata:\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('metadata'\\)",
+		"fixTemplate": "metadata: jsonb('metadata')",
+		"priority": 95,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "drizzle-garbage-type-embedding",
+		"description": "Fix Drizzle embedding column corruption",
+		"regex": "embedding:\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('embedding'\\)",
+		"fixTemplate": "embedding: vector('embedding', { dimensions: 768 })",
+		"priority": 95,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "drizzle-garbage-type-generic",
+		"description": "Fix Drizzle generic column corruption",
+		"regex": "(\\w+):\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('(\\w+)'\\)",
+		"fixTemplate": "$1: text('$2')",
+		"priority": 90,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "import-double-braces",
+		"description": "Fix double braces in imports",
+		"regex": "import\\s+\\{\\s+\\{\\s*(.*?)\\s*\\}\\s+\\}\\s+from",
+		"fixTemplate": "import { $1 } from",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-1",
+		"description": "Fix Auth Machine garbage 1",
+		"regex": "(\\w+)\\?\\s*,\\s*string",
+		"fixTemplate": "$1?: string",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-2",
+		"description": "Fix Auth Machine garbage 2",
+		"regex": "(\\w+)\\?\\s*:\\s*unknown",
+		"fixTemplate": "$1?: unknown",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-3",
+		"description": "Fix Auth Machine garbage 3",
+		"regex": "(\\w+)\\s*\\|\\s*undefined",
+		"fixTemplate": "$1: undefined",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-4",
+		"description": "Fix Auth Machine garbage 4",
+		"regex": "(\\w+)\\s*\\|\\s*false",
+		"fixTemplate": "$1: false",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-5",
+		"description": "Fix Auth Machine garbage 5",
+		"regex": "(\\w+)\\s*\\|\\s*true",
+		"fixTemplate": "$1: true",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-6",
+		"description": "Fix Auth Machine garbage 6",
+		"regex": "(\\w+)\\s*\\|\\s*null",
+		"fixTemplate": "$1: null",
+		"priority": 100,
+		"domains": ["corruption"]
+	},
+	{
+		"id": "auth-machine-garbage-7",
+		"description": "Fix Auth Machine garbage 7",
+		"regex": "(\\w+)\\s*,\\s*(\\w+)\\s*:\\s*(\\w+)",
+		"fixTemplate": "$1: $2, $3: $3",
+		"priority": 50,
+		"domains": ["corruption"]
+	}
+]

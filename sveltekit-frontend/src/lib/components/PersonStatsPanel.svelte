@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Button from 'bits-ui/components/button';
+	import { Button } from 'bits-ui';
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {

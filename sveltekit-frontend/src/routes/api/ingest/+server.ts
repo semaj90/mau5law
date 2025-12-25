@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit';
+import crypto from 'crypto';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {

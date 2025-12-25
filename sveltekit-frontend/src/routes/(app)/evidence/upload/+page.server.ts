@@ -1,14 +1,14 @@
 /** * Evidence Upload Server Actions * Integrates with Superforms + Zod + Rich Evidence Schema */
-import type { dev } from '$app/environment';
+import { dev } from '$app/environment';
 import { evidenceUploadSchema } from '$lib/schemas/evidence-upload';
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { cases, evidence } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
 import crypto from 'crypto';
-import type { eq, type InferInsertModel } from 'drizzle-orm';
-import type { mkdir, writeFile } from 'fs/promises';
+import { eq, type InferInsertModel } from 'drizzle-orm';
+import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
-import type { zod } from 'sveltekit-superforms/adapters';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types.js';
 
@@ -123,12 +123,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 			.select({
 				id: cases.id,
 				title: cases.title,
- case_number: cases.case_number,
- status: cases.status,
- })
- .from(cases)
+				case_number: cases.case_number,
+				status: cases.status
+			})
 			.from(cases)
-			.where(eq(cases.status, 'active'))
+			.where(eq(cases.status, 'open'))
 			.orderBy(cases.createdAt);
 
 		return {
@@ -336,11 +335,11 @@ export const actions: Actions = {
  : null,
  };
 
- // 10) Insert evidence record into DB - Use secure getUserId from session
- const secureUserId = getUserId(locals);
- const inserted = await db
- .insert(evidence)
- .values({
+		// 10) Insert evidence record into DB - Use secure getUserId from session
+		const secureUserId = locals.user?.id;
+		const inserted = await db
+			.insert(evidence)
+			.values({
  case_id: caseId ?? null,
  uploader_id: secureUserId, // Corrected colon
  title: title || fileName,

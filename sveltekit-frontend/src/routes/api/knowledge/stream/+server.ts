@@ -8,8 +8,8 @@
  * Requirements: Task 13 - Real-time streaming
  */
 
-import type { RequestHandler } from './$types.js';
 import { getKnowledgeSearcher } from '$lib/services/knowledge-search';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -130,10 +130,10 @@ async function streamOllamaResponse(
 	encoder: TextEncoder,
 	sendEvent: (event: string, data: unknown) => void
 ): Promise<void> {
-	const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+	const process.env.OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 	const MODEL = process.env.OLLAMA_MODEL || 'gemma3-legal:latest';
 
-	const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+	const response = await fetch(`${process.env.OLLAMA_URL}/api/generate`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({

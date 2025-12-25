@@ -70,7 +70,7 @@
       icon: AlertTriangle,
       description: 'Common issues and solutions',
     },
-  ];
+  ] as const;
   // Help articles
   const articles = [
     // Getting Started

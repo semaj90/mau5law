@@ -100,7 +100,7 @@ declare global {
 declare namespace NodeJS {
  interface ProcessEnv {
  // Primary DBs & infra (Docker-first, local fallback allowed)
- DATABASE_URL?: string; // e.g. postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+ process.env.DATABASE_URL?: string; // e.g. postgresql://legal_admin:123456@postgres:5432/legal_ai_db
  ADMIN_DATABASE_URL?: string;
  // Redis
  REDIS_URL?: string; // e.g. redis://:redis@redis:6379/0
@@ -108,8 +108,8 @@ declare namespace NodeJS {
  REDIS_PORT?: string;
  REDIS_PASSWORD?: string;
  // Qdrant / Ollama / MinIO / Neo4j
- QDRANT_URL?: string; // e.g. http://qdrant:6333
- OLLAMA_URL?: string; // e.g. http://ollama:11434
+ process.env.QDRANT_URL?: string; // e.g. http://qdrant:6333
+ process.env.OLLAMA_URL?: string; // e.g. http://ollama:11434
  MINIO_ENDPOINT?: string;
  MINIO_ACCESS_KEY?: string;
  MINIO_SECRET_KEY?: string;
@@ -147,7 +147,7 @@ declare module '$lib/server/messaging/rabbitmq-service.js' {
 // Lightweight db client helper signature (centralized factory pattern)
 declare module '$lib/server/db/client' {
  /**
- * Returns the effective DATABASE_URL (reads process.env with safe fallback).
+ * Returns the effective process.env.DATABASE_URL (reads process.env with safe fallback).
  */
  export function getDatabaseUrl(): string;
  /**

@@ -3,7 +3,7 @@
  * Comprehensive logging for all operations, authorization checks, and security events
  */
 
-import { db } from '$lib/server/db';
+import db from '$lib/server/db';
 import { auditLog } from '$lib/server/db/schema';
 
 export interface AuditLogEntry {

@@ -33,7 +33,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     { id: '1', name: 'Smith vs. Johnson', type: 'Civil Litigation', status: 'Active' },
     { id: '2', name: 'Corporate Merger - TechCorp', type: 'Corporate Law', status: 'Pending' },
     { id: '3', name: 'Patent Dispute - Innovation Inc', type: 'Intellectual Property', status: 'Active' }
-  ];
+  ] as const;
   function handleCreateCase() {
     console.log('Creating caseItem:', { caseName, clientName, selectedCaseType });
     showDialog = $state(false);

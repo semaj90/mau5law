@@ -66,7 +66,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     { id: 'security-audit', title: 'Security Audit', prompt: 'Perform a comprehensive security audit of our legal document management system, including authentication, authorization, and data protection.', mode: 'comprehensive' as const platform: 'webapp' as const urgency: 'high' as const description: 'Multi-agent security analysis' },
     { id: 'deployment-pipeline', title: 'CI/CD Pipeline Issues', prompt: 'Our deployment pipeline is failing intermittently. Analyze the CI/CD configuration, identify failure points, and create a robust deployment strategy.', mode: 'autonomous' as const platform: 'all' as const urgency: 'medium' as const description: 'DevOps automation and pipeline optimization' },
     { id: 'api-integration', title: 'API Integration Help', prompt: 'How can I integrate the multi-agent AI system with external legal databases and ensure proper error handling and rate limiting?', mode: 'quick' as const platform: 'webapp' as const urgency: 'medium' as const description: 'Quick semantic search for integration patterns' }
-  ];
+  ] as const;
   $effect(() => {
     if (autoExecuteExamples) {
       executeExample(demoExamples[0]);

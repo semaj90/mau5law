@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals }) => {
  createdAt: new Date('2024-01-16T14:20:00'),
  priority: 'medium',
  },
- ];
+ ] as const;
 
  const recentEvidence = [
  {
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ locals }) => {
  createdAt: new Date('2024-01-16T14:20:00'),
  caseTitle: 'Missing Person, Dr. Sarah Chen',
  },
- ];
+ ] as const;
 
  const systemData = {
  activeCases: 12,

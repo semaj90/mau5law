@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/private';
 import { getSystemPromptForIntent, buildUserPromptForIntent } from '$lib/ai/intents';
 import type { IntentContext } from '$lib/ai/intents';
 
-const OLLAMA_URL = env.OLLAMA_URL || 'http://localhost:11434';
+const process.env.OLLAMA_URL = env.OLLAMA_URL || 'http://localhost:11434';
 const LLM_MODEL = env.OLLAMA_LLM_MODEL || 'gemma3-legal:latest';
 
 /**
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.log('[Explain Statute] Calling Ollama...');
 
  // Call Ollama with streaming
- const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+ const response = await fetch(`${process.env.OLLAMA_URL}/api/chat`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({

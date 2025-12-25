@@ -1,5 +1,5 @@
 import { getPersons, getPersonStats } from '$lib/db/persons';
-import { error, json } from '@sveltejs/kit';
+import { error, json, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -54,10 +54,10 @@ export const GET: RequestHandler = async ({ url }) => {
  } catch (err) {
  console.error('Error fetching persons:', err);
 
- throw error(500, {
+ return json({
  message: 'Failed to fetch Persons of Interest',
  code: 'FETCH_FAILED',
  details: err instanceof Error ? err.message : 'Unknown error',
- });
+ }, { status: 500 });
  }
 };

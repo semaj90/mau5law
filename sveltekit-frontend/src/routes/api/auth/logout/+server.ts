@@ -2,8 +2,8 @@
  * Logout endpoint - invalidate session and clear cookies (Lucia v3)
  */
 
-import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 import { lucia } from '$lib/server/lucia';
+import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async (event) => {
  try {
