@@ -162,10 +162,7 @@ export const users = pgTable('users', {
 export const sessions = pgTable(
  'sessions',
  {
- id: uuid('id')
- .default(sql`gen_random_uuid()`)
- .primaryKey()
- .notNull(), // Assuming session ID is UUID
+ id: text('id').primaryKey().notNull(),
  userId: uuid('user_id').notNull(),
  expiresAt: timestamp('expires_at', { mode: 'date' }).notNull(),
  },
@@ -451,9 +448,9 @@ export const legalDocuments = pgTable(
  mimeType: text('mime_type').notNull(),
  fileSize: bigint('file_size', { mode: 'number' }).notNull().default(0),
  caseId: uuid('case_id'), // Foreign key to cases table
- userId: integer('user_id'), // Foreign key to users table
+ userId: uuid('user_id'), // Foreign key to users table
  evidenceId: uuid('evidence_id'), // Added: Foreign key to evidence table
- createdBy: integer('created_by'), // Added: Foreign key to users table
+ createdBy: uuid('created_by'), // Added: Foreign key to users table
  status: documentStatusEnum('status').notNull().default('queued'),
  documentType: documentTypeEnum('document_type'), // Specific legal document type
  practiceArea: varchar('practice_area', { length: 100 }),
@@ -518,7 +515,7 @@ export const storageFiles = pgTable(
  key: text('key').notNull(),
  original_name: text('original_name'),
  bucket: text('bucket').notNull(),
- userId: integer('user_id'), // Changed to integer and named userId for consistency
+ userId: uuid('user_id'), // Foreign key to users table
  size: bigint('size', { mode: 'bigint' }).notNull(),
  mime: text('mime'),
  uploadedAt: timestamp('uploaded_at').defaultNow().notNull(), // Changed to uploadedAt for consistency
