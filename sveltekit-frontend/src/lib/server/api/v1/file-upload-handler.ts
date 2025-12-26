@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
 import type { MinIOService } from '$lib/server/minio';
+import { json } from '@sveltejs/kit';
 
-export async function handleFileUpload(request: Request, minioService): MinIOService {
+export async function handleFileUpload(request: Request): MinIOService {
  try {
  // This would typically involve parsing multipart form data and interacting with MinIO
  // For now, a placeholder response

@@ -53,7 +53,7 @@ function isValidStatuteCode(code: string): boolean {
  return statuePatterns.some((pattern) => pattern.test(code.trim()));
 }
 
-function calculateConfidence(query: string, item: any: any, matchType): number {
+function calculateConfidence(query: string, item: any: any): number {
  const queryLower = query.toLowerCase();
  let confidence = 0;
 

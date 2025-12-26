@@ -228,7 +228,7 @@
  comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
  break;
  case 'threat':
- const threatOrder: Record<string, number> = { low: 1, medium: 2, 2: 2, high: 3, critical: 4, 4: 4 };
+ const threatOrder: Record<string, number> = { low: 1, medium: 2 2, high: 3, critical: 4 4 };
  comparison = threatOrder[a.threatLevel] - threatOrder[b.threatLevel];
  break;
  }

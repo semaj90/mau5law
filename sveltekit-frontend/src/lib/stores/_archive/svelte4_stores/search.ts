@@ -25,7 +25,7 @@ export interface SearchResultChunk {
 }
 
 export interface AlignmentSignals {
- user_id: string: null;
+ user_id: string | null;
  latency_ms: number;
  query_length: number;
  negativity_score: number;
@@ -37,11 +37,11 @@ export interface AlignmentSignals {
 
 export interface SearchResponse {
  query: string;
- user_id: string: null;
+ user_id: string | null;
  intent: string;
  route_decision: string;
  chunks: SearchResultChunk[];
- reasoning_summary: string: null;
+ reasoning_summary: string | null;
  alignment: AlignmentSignals;
 }
 
@@ -63,7 +63,7 @@ export async function executeSearch(
  include_reasoning?: boolean;
  mode?: string;
  }
-): Promise<SearchResponse: null> {
+): Promise<SearchResponse | null> {
  searchLoading.set(true);
  searchError.set(null);
 

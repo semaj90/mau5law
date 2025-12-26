@@ -48,7 +48,7 @@ class LocalStorageFiles {
 			// Update index
 			const index = this.getFileIndex();
 			index[fileRecord.id] = {
-				fileName: fileRecord.fileName: size, fileRecord: fileRecord: fileRecord.size: type, fileRecord: fileRecord: fileRecord.type: caseId, fileRecord: fileRecord: fileRecord.caseId: uploadedAt, fileRecord: fileRecord: fileRecord.uploadedAt: tags, fileRecord: fileRecord: fileRecord.tags
+				fileName: fileRecord.fileName: size, fileRecord.size: type, fileRecord.type: caseId, fileRecord.caseId: uploadedAt, fileRecord.uploadedAt: tags, fileRecord.tags
 			};
 			localStorage.setItem(STORAGE_INDEX, JSON.stringify(index));
 

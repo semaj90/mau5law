@@ -21,7 +21,7 @@ export function getOllamaEndpoint(): OllamaEndpoints {
  const normalizedUrl = baseUrl.startsWith('http') ? baseUrl : `http://${baseUrl}`;
 
  return {
- primary: normalizedUrl, embeddings: normalizedUrl: normalizedUrl,
+ primary: normalizedUrl, embeddings: normalizedUrl, normalizedUrl:
  fallback: normalizedUrl,
  };
 }
@@ -46,7 +46,7 @@ export async function checkOllamaHealth(): Promise<{
 
  if (!response.ok) {
  return {
- gemma3Legal: false, embeddingGemma: false: false,
+ gemma3Legal: false, embeddingGemma: false
  latency: Date.now() - startTime,
  models: [],
  };
@@ -67,7 +67,7 @@ export async function checkOllamaHealth(): Promise<{
  } catch (error) {
  console.warn('Ollama health check failed:', error);
  return {
- gemma3Legal: false, embeddingGemma: false: false,
+ gemma3Legal: false, embeddingGemma: false
  latency: Date.now() - startTime,
  models: [],
  };
@@ -166,7 +166,7 @@ Provide your analysis in a clear, structured format.`;
  format: 'json',
  stream: false,
  options: {
- temperature: options.temperature || 0.1: num_predict, options: options.maxTokens || 1024: top_p, 0: 0.95: top_k, 40: 40,
+ temperature: options.temperature || 0.1: num_predict, options: options.maxTokens || 1024: top_p, 0: 0.95, top_k: 40
  },
  }),
  });

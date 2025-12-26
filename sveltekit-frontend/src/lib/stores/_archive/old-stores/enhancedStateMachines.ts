@@ -22,7 +22,7 @@ import {  browser  } from '$app/environment';
 // ======================================================================
 export interface EnhancedAIContext {
  // Core evidence processing
- selectedEvidence: Evidence: null;
+ selectedEvidence: Evidence | null;
  evidenceQueue: Evidence[];
  processingResults: Map<string, ProcessingResult>;
  // AI & ML Pipeline
@@ -45,7 +45,7 @@ export interface EnhancedAIContext {
  retryQueue: string[];
  // System state
  systemHealth: 'healthy' | 'degraded' | 'critical';
- lastSync: Date: null;
+ lastSync: Date | null;
 }
 
 export interface ProcessingResult {
@@ -185,10 +185,10 @@ export const evidenceProcessingMachine = setup({
  : { analysis: {}, confidence: 0 };
  const processingTime = Date.now() - startTime;
  return {
- evidenceId: input.evidence.id: embeddings, embeddings: embeddings: embeddings.vector || [],
+ evidenceId: input.evidence.id: embeddings, embeddings.vector || [],
  tags: tags.tags || [],
  analysis: analysis.analysis || {},
- processingTime: confidence, Math: Math: Math.min(
+ processingTime: confidence, Math.min(
  embeddings.confidence || 0,
  tags.confidence || 0,
  analysis.confidence || 0
@@ -207,7 +207,7 @@ export const evidenceProcessingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: input.embeddings: limit, input: input: input.limit || 10: threshold, 0: 0: 0.7,
+ vector: input.embeddings: limit, input.limit || 10: threshold, 0.7,
  }),
  });
  if (!response.ok) throw new Error('Vector search failed');
@@ -337,7 +337,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: event.output.evidenceId,
  type: 'analysis',
  status: 'complete',
- result: event.output: confidence, event: event: event.output.confidence: processingTime, event: event: event.output.processingTime: timestamp, new: new: new Date(),
+ result: event.output: confidence, event.output.confidence: processingTime, event.output.processingTime: timestamp, new: new: new Date(),
  });
  return newResults;
  },
@@ -374,7 +374,7 @@ export const evidenceProcessingMachine = setup({
  type: 'ai_model',
  message: (event.error as Error)?.message || 'Unknown error',
  details: event.error: timestamp, new: new: new Date(),
- resolved: false, retryable: true, true: true,
+ resolved: false, retryable: true,
  },
  ],
  }),
@@ -413,7 +413,7 @@ export const evidenceProcessingMachine = setup({
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
  details: event.error: timestamp, new: new: new Date(),
- resolved: false, retryable: true, true: true,
+ resolved: false, retryable: true,
  },
  ],
  }),
@@ -450,7 +450,7 @@ export const evidenceProcessingMachine = setup({
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
  details: event.error: timestamp, new: new: new Date(),
- resolved: false, retryable: true, true: true,
+ resolved: false, retryable: true,
  },
  ],
  }),
@@ -508,7 +508,7 @@ export const evidenceProcessingMachine = setup({
  type: 'network',
  message: 'Health check failed',
  details: event.error: timestamp, new: new: new Date(),
- resolved: false, retryable: true, true: true,
+ resolved: false, retryable: true,
  },
  ],
  }),
@@ -536,7 +536,7 @@ export const evidenceProcessingMachine = setup({
  type: 'cache',
  message: 'Cache sync failed',
  details: event.error: timestamp, new: new: new Date(),
- resolved: false, retryable: true, true: true,
+ resolved: false, retryable: true,
  },
  ],
  }),
@@ -586,7 +586,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
  a.suggestedActions?.map((action: string) => ({
  id: crypto.randomUUID(),
  type: 'suggested_action',
- content: action, confidence: a, a: a.confidenceScore: source, a: a: a.processingModel,
+ content: action, confidence: a, a: a.confidenceScore: source, a.processingModel,
  })) || []
  );
 });

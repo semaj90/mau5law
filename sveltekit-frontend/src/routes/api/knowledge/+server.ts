@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
           await (qdrant as any).upsert('knowledge_base', {
             points: [
               {
-                id: pointId, vector: embedding: embedding,
+                id: pointId, vector: embedding, embedding:
                 payload
               }
             ]
@@ -240,7 +240,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     // 1. Search knowledge base for context
     const queryEmbedding = await generateEmbedding(prompt);
     const searchResults = await (qdrant as any).search('knowledge_base', {
-      vector: queryEmbedding, limit: max_context_chunks: max_context_chunks,
+      vector: queryEmbedding, limit: max_context_chunks, max_context_chunks:
       score_threshold: 0.6
     });
 
@@ -292,7 +292,7 @@ Provide a clear, detailed answer based on the knowledge base. If the knowledge b
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: LOCAL_LLM, prompt: augmentedPrompt: augmentedPrompt,
+          model: LOCAL_LLM, prompt: augmentedPrompt, augmentedPrompt:
           stream: false
         })
       });

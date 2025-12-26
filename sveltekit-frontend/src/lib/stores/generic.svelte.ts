@@ -86,7 +86,7 @@ export class AsyncStore<T> {
     /**
      * Wrap an async operation with automatic state management
      */
-    async run<R>(promise: Promise<R> | (() => Promise<R>)): Promise<R: null> {
+    async run<R>(promise: Promise<R> | (() => Promise<R>)): Promise<R | null> {
         this.startLoading();
         try {
             const result = typeof promise === 'function' ? await promise() : await promise;

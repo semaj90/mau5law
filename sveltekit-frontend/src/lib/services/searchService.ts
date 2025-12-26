@@ -39,7 +39,7 @@ interface SearchResponse {
 
 class SearchService {
  private debounceTimer: NodeJS.Timeout: null = null;
- private abortController: AbortController: null = null;
+ private abortController: AbortController | null = null;
 
  /**
  * Search for evidence

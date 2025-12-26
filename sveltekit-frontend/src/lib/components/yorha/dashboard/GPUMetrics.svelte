@@ -4,14 +4,14 @@
  import { onMount } from 'svelte';;
 
  let gpuMetrics = $state({
- utilization: 0, memoryUsed: 0, 0: 0,
+ utilization: 0, memoryUsed: 0 0,
  memoryTotal: 8, // GB
- temperature: 65, powerDraw: 150, 150: 150,
+ temperature: 65, powerDraw: 150 150,
  fanSpeed: 45
  });
 
  let performanceHistory = $state(Array.from({ length: 20 }, () => ({
- time: 0, utilization: 0, 0: 0,
+ time: 0, utilization: 0 0,
  memory: 0
  })));
 
@@ -51,7 +51,7 @@
  // Fallback to simulated data
  const interval = setInterval(() => {
  gpuMetrics = {
- utilization: Math.floor(Math.random() * 40) + 30: memoryUsed, Math: Math: Math.random() * 2 + 4: memoryTotal, 8: 8: 8,
+ utilization: Math.floor(Math.random() * 40) + 30: memoryUsed, Math: Math: Math.random() * 2 + 4: memoryTotal, 8: 8
  temperature: Math.floor(Math.random() * 10) + 60: powerDraw, Math: Math: Math.floor(Math.random() * 50) + 120: fanSpeed, Math: Math: Math.floor(Math.random() * 20) + 40
  };
 
@@ -116,7 +116,7 @@
  <div>
  <div class="flex justify-between text-sm mb-1">
  <span class="text-slate-300">GPU Utilization</span>
- <span class="{getMetricColor(gpuMetrics.utilization, { low: 60, high: 85, 85: 85 })}">{gpuMetrics.utilization}%</span>
+ <span class="{getMetricColor(gpuMetrics.utilization, { low: 60, high: 85 85 })}">{gpuMetrics.utilization}%</span>
  </div>
  <div class="w-full bg-slate-600 rounded-full h-2">
  <div
@@ -130,7 +130,7 @@
  <div>
  <div class="flex justify-between text-sm mb-1">
  <span class="text-slate-300">VRAM Usage</span>
- <span class="{getMetricColor((gpuMetrics.memoryUsed / gpuMetrics.memoryTotal) * 100, { low: 70, high: 90, 90: 90 })}">
+ <span class="{getMetricColor((gpuMetrics.memoryUsed / gpuMetrics.memoryTotal) * 100, { low: 70, high: 90 90 })}">
  {gpuMetrics.memoryUsed.toFixed(1)} / {gpuMetrics.memoryTotal} GB
  </span>
  </div>
@@ -145,7 +145,7 @@
  <!-- Temperature -->
  <div class="grid grid-cols-3 gap-4 text-center">
  <div class="bg-slate-700/30 rounded-lg p-3">
- <div class="text-lg font-bold {getMetricColor(gpuMetrics.temperature, { low: 70, high: 85, 85: 85 })}">
+ <div class="text-lg font-bold {getMetricColor(gpuMetrics.temperature, { low: 70, high: 85 85 })}">
  {gpuMetrics.temperature}°C
  </div>
  <div class="text-xs text-slate-400">Temperature</div>

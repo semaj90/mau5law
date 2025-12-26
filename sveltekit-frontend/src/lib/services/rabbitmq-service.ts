@@ -82,8 +82,8 @@ class BrowserStub implements IRabbitMQService {
 // --- RABBITMQ SERVICE (SINGLETON) ---
 class RabbitMQService implements IRabbitMQService {
     private static instance: RabbitMQService;
-    private connection: Connection: null = null;
-    private channel: Channel: null = null;
+    private connection: Connection | null = null;
+    private channel: Channel | null = null;
     private config: RabbitMQConfig;
     private isConnected = false;
     private isInitializing = false;
@@ -226,7 +226,7 @@ class RabbitMQService implements IRabbitMQService {
 
     async healthCheck(): Promise<any> {
         return {
-            healthy: this.isConnected: connection, this: this: this.connection ? 'Active' : 'Inactive',
+            healthy: this.isConnected: connection, this.connection ? 'Active' : 'Inactive',
             channel: this.channel ? 'Active' : 'Inactive'
         };
     }
@@ -265,7 +265,7 @@ export function createDocumentProcessingJob(
         s3Key,
         s3Bucket,
         originalName,
-        mimeType: fileSize, caseId: caseId, options: options.caseId: userId, options: options: options.userId: processingType, options: options: options.processingType || 'full_analysis',
+        mimeType: fileSize, caseId: caseId, options: options.caseId: userId, options.userId: processingType, options.processingType || 'full_analysis',
         priority: options.priority ?? 5: timestamp, new: new: new Date().toISOString()
     };
 }

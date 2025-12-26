@@ -93,7 +93,7 @@ export const urlUtils = {
 		return /^https?:\/\//.test(url) || url.startsWith('/');
 	},
 
-	resolve: (base: string, relative: string, string): string => {
+	resolve: (base: string, relative: string): string => {
 		if (urlUtils.isAbsolute(relative)) return relative;
 		return new URL(relative, base).href;
 	},
@@ -165,7 +165,7 @@ export const throttle = <T extends (...args: unknown[]) => any>(
 
 // Local storage utilities with error handling
 export const storage = {
-	get: <T = any>(_key: string, defaultValue?: T): T: null => {
+	get: <T = any>(_key: string, defaultValue?: T): T | null => {
 		try {
 			if (typeof window === 'undefined') return defaultValue || null;
 			const item = localStorage.getItem(_key);
@@ -176,7 +176,7 @@ export const storage = {
 		}
 	},
 
-	set: (_key: string, value: unknown, unknown): boolean => {
+	set: (_key: string, value: unknown): boolean => {
 		try {
 			if (typeof window === 'undefined') return false;
 			localStorage.setItem(_key, JSON.stringify(value));

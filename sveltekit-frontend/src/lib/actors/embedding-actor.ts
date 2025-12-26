@@ -173,7 +173,7 @@ export async function generateBatchEmbeddings(inputs: EmbeddingInput[]): Promise
  * Legal document specific embedding helper
  */
 export async function generateLegalDocumentEmbedding(
-  text: string, caseId: string: string,
+  text: string, caseId: string, string:
   documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence',
   evidenceId?: string
 ): Promise<EmbeddingOutput> {

@@ -448,7 +448,7 @@ export async function createErrorBrainPatch(data: NewErrorBrainPatch) {
  * @returns Updated patch
  */
 export async function updatePatchVerificationStatus(
-  patchId: string, status: string: string,
+  patchId: string, status: string, string:
   message?: string
 ) {
   const db = getDb();

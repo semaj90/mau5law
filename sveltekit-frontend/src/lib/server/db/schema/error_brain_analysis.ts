@@ -1,4 +1,4 @@
-import { index, jsonb, pgTable, text, timestamp, uuid, integer } from 'drizzle-orm/pg-core';
+import { index, integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 /**
  * Error Brain Analysis

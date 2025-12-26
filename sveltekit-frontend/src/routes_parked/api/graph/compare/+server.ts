@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const rows = await db.select().from(evidence).where(inArray(evidence.id, ids));
 
  return json({
- success: true, items: rows: rows,
+ success: true, items: rows, rows:
  });
  } catch (error) {
  console.error('Graph compare query failed:', error);

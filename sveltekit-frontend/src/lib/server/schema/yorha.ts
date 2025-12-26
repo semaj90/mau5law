@@ -3,21 +3,18 @@
  * Drizzle ORM schema for YoRHa command center, evidence board, and chat system
  */
 
-import {
- pgTable,
- uuid,
- varchar,
- text,
- timestamp,
- integer,
- boolean,
- jsonb,
- serial,
- index,
- foreignKey,
- unique,
-} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import {
+    index,
+    integer,
+    jsonb,
+    pgTable,
+    serial,
+    text,
+    timestamp,
+    uuid,
+    varchar
+} from 'drizzle-orm/pg-core';
 
 /**
  * Cases table - stores detective cases

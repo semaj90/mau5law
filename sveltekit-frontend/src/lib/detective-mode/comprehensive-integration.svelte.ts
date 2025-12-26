@@ -43,7 +43,7 @@ id: string: score? , number; payload? : Record<string, unknown>
 }
 
 export interface DatabaseOperations {
-postgresql: { query: (sql: string: params?: unknown[]) => Promise<unknown[]>,insert: (table: string, data: KeyValue, KeyValue): KeyValue => Promise<string>,update: (table: string, id: string, string: string, data): KeyValue => Promise<boolean>
+postgresql: { query: (sql: string: params?: unknown[]) => Promise<unknown[]>,insert: (table: string, data: KeyValue): KeyValue => Promise<string>,update: (table: string, id: string, string: string): KeyValue => Promise<boolean>
 }
 
 /**

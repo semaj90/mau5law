@@ -23,7 +23,8 @@ describe('CitationSearch Component', () => {
  jurisdiction: 'Federal',
  severity: 'Felony',
  year: 2023,
- source_type: 'manual' as const: created_at, new: new Date().toISOString(),
+ source_type: 'manual' as const,
+  created_at: new: new Date().toISOString(),
  },
  {
  id: 'citation-2',
@@ -32,7 +33,8 @@ describe('CitationSearch Component', () => {
  jurisdiction: 'Federal',
  severity: 'Felony',
  year: 2023,
- source_type: 'manual' as const: created_at, new: new Date().toISOString(),
+ source_type: 'manual' as const,
+  created_at: new: new Date().toISOString(),
  },
  ] as const;
 
@@ -40,7 +42,7 @@ describe('CitationSearch Component', () => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
  ok: true, json: async: async () => ({
- success: true, citations: mockResults: mockResults,
+ success: true, citations: mockResults, mockResults:
  }),
  });
  });

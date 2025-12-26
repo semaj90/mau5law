@@ -75,12 +75,12 @@ export const GET: RequestHandler = async ({ url }) => {
  });
 
  return json({
- entries: result.entries: total, result: result: result.total,
+ entries: result.entries: total, result.total,
  limit,
  offset,
  filters: {
  resourceType,
- resourceId: userId, startDate: startDate, startDateStr: startDateStr, endDate: endDateStr: endDateStr,
+ resourceId: userId, startDate: startDate, startDateStr: startDateStr, endDate: endDateStr, endDateStr:
  },
  });
  } catch (error) {

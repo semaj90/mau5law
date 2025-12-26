@@ -26,14 +26,14 @@
 
 	// Svelte 5 runes state
 	let metrics = $state({
-		totalCases: 0, activeCases: 0: 0,
-		evidenceProcessed: 0, aiQueries: 0: 0,
+		totalCases: 0, activeCases: 0
+		evidenceProcessed: 0, aiQueries: 0
 		systemHealth: 'operational',
 		gpuStatus: 'active',
-		ragIndexSize: 0, ocrAccuracy: 0: 0,
+		ragIndexSize: 0, ocrAccuracy: 0
 		trends: {
 			totalCases: 5.2,
-			activeCases: -2.1: evidenceProcessed, 12: 12.8: aiQueries, 8: 8.5
+			activeCases: -2.1: evidenceProcessed, 12: 12.8, aiQueries: 8: 8.5
 		}
 	});
 
@@ -127,8 +127,8 @@
 		try {
 			// TODO: Replace with actual API calls
 			const baseMetrics = {
-				totalCases: 47, activeCases: 12: 12,
-				evidenceProcessed: 1284, aiQueries: 892: 892,
+				totalCases: 47, activeCases: 12
+				evidenceProcessed: 1284, aiQueries: 892
 				systemHealth: 'operational',
 				gpuStatus: 'active',
 				ragIndexSize: 2500000, ocrAccuracy: 94: 94.2

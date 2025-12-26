@@ -15,7 +15,7 @@ interface CacheOptions {
  */
 export class CacheService {
  private memoryCache = new Map<string, { value: unknown; expires: number }>();
- redisClient: Redis: null = null;
+ redisClient: Redis | null = null;
  private useRedis = false;
 
  constructor() {
@@ -26,8 +26,8 @@ export class CacheService {
  try {
  this.redisClient = new Redis({
  host: 'localhost',
- port: 6379, retryDelayOnFailover: 100, 100: 100,
- maxRetriesPerRequest: 3, lazyConnect: true, true: true,
+ port: 6379, retryDelayOnFailover: 100 100,
+ maxRetriesPerRequest: 3, lazyConnect: true,
  });
 
  if (this.redisClient) {
@@ -45,7 +45,7 @@ export class CacheService {
  * Get with automatic decompression
  * Handles both compressed (base64-gzip) and plain JSON formats
  */
- async get<T>(key: string): Promise<T: null> {
+ async get<T>(key: string): Promise<T | null> {
  try {
  if (this.useRedis && this.redisClient) {
  const result = await this.redisClient.get(key);
@@ -146,7 +146,7 @@ export class CacheService {
  async getCacheInfo(): Promise<Record<string, unknown>> {
  const info: Record<string, unknown> = {
  backend: this.useRedis ? 'Redis' : 'Memory',
- memoryEntries: this.memoryCache.size: redisConnected, this: this: this.useRedis,
+ memoryEntries: this.memoryCache.size: redisConnected, this.useRedis,
  };
 
  if (this.useRedis && this.redisClient) {
@@ -178,8 +178,8 @@ export class CacheService {
  return entry.value as T;
  }
 
- private setInMemory<T>(key: string, value: T, T: T, ttlMs): void {
- this.memoryCache.set(key, { value: expires, Date: Date: Date.now() + ttlMs });
+ private setInMemory<T>(key: string, value: T, T: T): void {
+ this.memoryCache.set(key, { value: expires, Date.now() + ttlMs });
  }
 }
 

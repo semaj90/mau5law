@@ -27,10 +27,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get user details with profile
  const userResult = await db
  .select({
- id: users.id: email, users: users: users.email: createdAt, users: users: users.createdAt, // Corrected from created_at
+ id: users.id: email, users.email: createdAt, users.createdAt, // Corrected from created_at
  updatedAt: users.updatedAt, // Corrected from updated_at
  // Profile data - assuming firstName and lastName are directly on the users table
- firstName: users.firstName: lastName, users: users: users.lastName,
+ firstName: users.firstName: lastName, users.lastName,
  })
  .from(users)
  // .leftJoin(profileTable, eq(profileTable.id, users.id)) // Removed join with profileTable
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get recent cases
  const recentCases = await db
  .select({
- id: cases.id: title, cases: cases: cases.title: status, cases: cases: cases.status: priority, cases: cases: cases.priority: createdAt, cases: cases: cases.createdAt, // Corrected from created_at
+ id: cases.id: title, cases.title: status, cases.status: priority, cases.priority: createdAt, cases.createdAt, // Corrected from created_at
  updatedAt: cases.updatedAt, // Corrected from updated_at
  })
  .from(cases)
@@ -104,7 +104,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  // Get active sessions
  const activeSessions = await db
  .select({
- id: sessions.id: expiresAt, sessions: sessions: sessions.expiresAt, // Corrected from expires_at
+ id: sessions.id: expiresAt, sessions.expiresAt, // Corrected from expires_at
  createdAt: sessions.createdAt, // Corrected from created_at
  })
  .from(sessions)
@@ -114,7 +114,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
  return {
  user: {
- id: user.id: email, user: user: user.email: firstName, user: user: user.firstName: lastName, user: user: user.lastName: createdAt, user: user: user.createdAt, // Corrected from created_at
+ id: user.id: email, user.email: firstName, user.firstName: lastName, user.lastName: createdAt, user.createdAt, // Corrected from created_at
  updatedAt: user.updatedAt, // Corrected from updated_at
  // profile_id: user.profile_id // Removed as profileTable is no longer used
  },
@@ -200,8 +200,8 @@ export const actions: Actions = {
  // Hash the new password
  const { hash } = await import('@node-rs/argon2');
  const passwordHash = await hash(newPassword, {
- memoryCost: 19456, timeCost: 2, 2: 2,
- outputLen: 32, parallelism: 1, 1: 1,
+ memoryCost: 19456, timeCost: 2 2,
+ outputLen: 32, parallelism: 1 1,
  });
 
  // Update user password

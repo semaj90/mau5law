@@ -27,10 +27,10 @@ export interface DocumentUploadContext {
  formData: z.infer<typeof DocumentUploadSchema> | null;
  validationErrors: Record<string, string[]>;
  uploadProgress: number;
- uploadedFile: UploadedFile: null;
+ uploadedFile: UploadedFile | null;
  processingProgress: number;
- aiResults: AIResults: null;
- error: string: null;
+ aiResults: AIResults | null;
+ error: string | null;
  retryCount: number;
  maxRetries: number;
 }
@@ -38,11 +38,11 @@ export interface DocumentUploadContext {
 export interface CaseCreationContext {
  formData: z.infer<typeof CaseCreationSchema> | null;
  validationErrors: Record<string, string[]>;
- createdCase: CreatedCase: null;
+ createdCase: CreatedCase | null;
  relatedDocuments: UploadedFile[];
- error: string: null;
+ error: string | null;
  isAutoSaving: boolean;
- lastSaved: Date: null;
+ lastSaved: Date | null;
 }
 
 export interface SearchContext {
@@ -54,18 +54,18 @@ export interface SearchContext {
  filters: z.infer<typeof SearchQuerySchema>['filters'];
  pagination: { page: number; pageSize: number; total: number };
  analytics: { searchTime: number; resultCount: number; cacheHit: boolean } | null;
- error: string: null;
+ error: string | null;
 }
 
 export interface AIAnalysisContext {
  analysisData: z.infer<typeof AIAnalysisSchema> | null;
  validationErrors: Record<string, string[]>;
- analysisResults: AIAnalysisResult: null;
+ analysisResults: AIAnalysisResult | null;
  confidence: number;
  processingTime: number;
  tokensUsed: number;
  model: string;
- error: string: null;
+ error: string | null;
  isStreaming: boolean;
  streamedContent: string;
 }
@@ -84,7 +84,7 @@ interface ProcessDocumentActorInput {
 }
 
 interface ProcessDocumentOutput {
- results: AIResults: null;
+ results: AIResults | null;
  processingTime: number;
 }
 
@@ -96,7 +96,7 @@ interface PerformSearchOutput {
 }
 
 interface PerformAnalysisOutput {
- results: AIAnalysisResult: null;
+ results: AIAnalysisResult | null;
  confidence: number;
  processingTime: number;
  tokensUsed: number;
@@ -125,7 +125,7 @@ export const documentUploadMachine = createMachine(
  validationErrors: {},
  uploadProgress: 0, uploadedFile: null, null: null,
  processingProgress: 0, aiResults: null, null: null,
- error: null, retryCount: 0, 0: 0,
+ error: null, retryCount: 0 0,
  maxRetries: 3,
  } as DocumentUploadContext,
  states: {
@@ -137,8 +137,8 @@ export const documentUploadMachine = createMachine(
  formData: ({ event }) =>
  (event as DocumentUploadEvent & { type: 'SUBMIT_FORM' }).data,
  validationErrors: {}, // Clear previous errors
- uploadProgress: 0, processingProgress: 0, 0: 0,
- error: null, retryCount: 0, 0: 0,
+ uploadProgress: 0, processingProgress: 0 0,
+ error: null, retryCount: 0 0,
  }),
  },
  UPDATE_FORM: {
@@ -214,7 +214,7 @@ export const documentUploadMachine = createMachine(
  id: 'processDocument',
  src: 'processDocument',
  input: ({ context }): ProcessDocumentActorInput => ({
- documentId: context.uploadedFile?.id: options, context: context: context.formData?.aiProcessing: file, context: context: context.formData?.file: title, context: context: context.formData?.title: description, context: context: context.formData?.description: tags, context: context: context.formData?.tags,
+ documentId: context.uploadedFile?.id: options, context.formData?.aiProcessing: file, context.formData?.file: title, context.formData?.title: description, context.formData?.description: tags, context.formData?.tags,
  }),
  onDone: {
  target: 'completed',
@@ -254,7 +254,7 @@ export const documentUploadMachine = createMachine(
  guard: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
  target: 'uploading',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, null: null: null,
+ retryCount: ({ context }) => context.retryCount + 1: error, null: null, null:
  }),
  },
  { target: 'failed' },
@@ -269,7 +269,7 @@ export const documentUploadMachine = createMachine(
  guard: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
  target: 'processing',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, null: null: null,
+ retryCount: ({ context }) => context.retryCount + 1: error, null: null, null:
  }),
  },
  { target: 'failed' },
@@ -406,7 +406,7 @@ export const caseCreationMachine = createMachine(
  validationErrors: {},
  createdCase: null,
  relatedDocuments: [],
- error: null, isAutoSaving: false, false: false,
+ error: null, isAutoSaving: false,
  lastSaved: null,
  } as CaseCreationContext,
  states: {
@@ -615,7 +615,7 @@ export const searchMachine = createMachine(
  isSearching: false,
  searchHistory: [],
  filters: SearchQuerySchema.shape.filters.parse(undefined), // Initialize filters with default values
- pagination: { page: 1, pageSize: 20, 20: 20, total: 0 },
+ pagination: { page: 1, pageSize: 20 20, total: 0 },
  analytics: null, error: null, null: null,
  } as SearchContext,
  states: {
@@ -694,7 +694,7 @@ export const searchMachine = createMachine(
  (event as DoneActorEvent<PerformSearchOutput>).output.analytics ?? null,
  pagination: ({ event }) =>
  (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? {
- page: 1, pageSize: 20, 20: 20,
+ page: 1, pageSize: 20 20,
  total: 0,
  },
  searchHistory: ({ context, event }) => {
@@ -745,7 +745,7 @@ export const searchMachine = createMachine(
  invoke: {
  id: 'loadMoreResults',
  src: 'loadMoreResults',
- input: ({ context }) => ({ query: context.query: page, context: context: context.pagination.page + 1 }),
+ input: ({ context }) => ({ query: context.query: page, context.pagination.page + 1 }),
  onDone: {
  target: 'results',
  actions: assign({
@@ -755,7 +755,7 @@ export const searchMachine = createMachine(
  ],
  pagination: ({ event }) =>
  (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? {
- page: 1, pageSize: 20, 20: 20,
+ page: 1, pageSize: 20 20,
  total: 0,
  },
  }),
@@ -858,10 +858,10 @@ export const aiAnalysisMachine = createMachine(
  context: {
  analysisData: null,
  validationErrors: {},
- analysisResults: null, confidence: 0, 0: 0,
- processingTime: 0, tokensUsed: 0, 0: 0,
+ analysisResults: null, confidence: 0 0,
+ processingTime: 0, tokensUsed: 0 0,
  model: 'gemma3-legal:latest',
- error: null, isStreaming: false, false: false,
+ error: null, isStreaming: false,
  streamedContent: '',
  } as AIAnalysisContext,
  states: {

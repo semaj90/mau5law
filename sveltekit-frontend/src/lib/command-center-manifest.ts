@@ -233,7 +233,7 @@ export function enrichRoutesWithPhase72(
  string,
  {
  totalErrors: number;
- lastSeen: string: null;
+ lastSeen: string | null;
  }
  >
 ): CommandCenterRoute[] {

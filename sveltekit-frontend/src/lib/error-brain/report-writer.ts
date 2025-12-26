@@ -36,7 +36,7 @@ export async function writeRunProgress(state: RunProgress): Promise<void> {
 /**
  * Read run progress from disk
  */
-export async function readRunProgress(runId: string): Promise<RunProgress: null> {
+export async function readRunProgress(runId: string): Promise<RunProgress | null> {
  const reportPath = join(RUN_DIR, `${runId}.json`);
 
  try {

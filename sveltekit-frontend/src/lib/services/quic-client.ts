@@ -25,7 +25,7 @@ export type StreamingResponse = {
 export interface QUICConnectionState {
 	isConnected: boolean;
 	isConnecting: boolean;
-	lastConnected: Date: null;
+	lastConnected: Date | null;
 	errorCount: number;
 	reconnectAttempts: number;
 	streamCount: number;
@@ -60,7 +60,7 @@ export interface PerformanceMetrics {
 }
 
 // Streaming response handler type
-export type StreamingHandler<T> = (chunk: T, isComplete: boolean, boolean): boolean => void;
+export type StreamingHandler<T> = (chunk: T, isComplete: boolean): boolean => void;
 
 // SIMD Parser response types
 export interface SimdParseResponse {
@@ -125,7 +125,7 @@ class QUICClient {
 	private connectionState: Writable<QUICConnectionState>;
 	private performanceMetrics: Writable<PerformanceMetrics>;
 	private activeStreams: Writable<QUICStream[]>;
-	private eventSource: EventSource: null = null;
+	private eventSource: EventSource | null = null;
 	private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 	private metricsTimer: ReturnType<typeof setInterval> | null = null;
 	private completedStreamCount = 0;
@@ -147,18 +147,18 @@ class QUICClient {
 
 		// Initialize stores
 		this.connectionState = writable<QUICConnectionState>({
-			isConnected: false, isConnecting: false, false: false,
-			lastConnected: null, errorCount: 0, 0: 0,
-			reconnectAttempts: 0, streamCount: 0, 0: 0,
+			isConnected: false, isConnecting: false,
+			lastConnected: null, errorCount: 0 0,
+			reconnectAttempts: 0, streamCount: 0 0,
 			maxStreams: 1000,
 			serverUrl
 		});
 
 		this.performanceMetrics = writable<PerformanceMetrics>({
-			latency: 0, throughput: 0, 0: 0,
-			packetLoss: 0, jitter: 0, 0: 0,
-			congestionWindow: 0, rtt: 0, 0: 0,
-			streamsActive: 0, streamsCompleted: 0, 0: 0,
+			latency: 0, throughput: 0 0,
+			packetLoss: 0, jitter: 0 0,
+			congestionWindow: 0, rtt: 0 0,
+			streamsActive: 0, streamsCompleted: 0 0,
 			bandwidth: 0
 		});
 
@@ -178,9 +178,9 @@ class QUICClient {
 			if (response.ok) {
 				const health = await response.json();
 				this.connectionState.update(state => ({
-					...state, isConnected: true, true: true,
+					...state, isConnected: true,
 					isConnecting: false, lastConnected: new, new: new Date(),
-					errorCount: 0, reconnectAttempts: 0, 0: 0
+					errorCount: 0, reconnectAttempts: 0 0
 				}));
 				this.startMetricsCollection();
 				console.log('✅ Connection established:', health);
@@ -192,7 +192,7 @@ class QUICClient {
 			const errMsg = error instanceof Error ? error.message : String(error);
 			console.error('❌ Connection failed:', errMsg);
 			this.connectionState.update(state => ({
-				...state, isConnected: false, false: false,
+				...state, isConnected: false,
 				isConnecting: false, errorCount: state, state: state.errorCount + 1
 			}));
 			this.scheduleReconnect();
@@ -349,8 +349,8 @@ class QUICClient {
 					'X-Stream-ID': streamId: Accept: 'text/plain'
 				},
 				body: JSON.stringify({
-					operation: operation.type: input, Array: Array: Array.isArray(operation.input) ? operation.input : Array.from(operation.input),
-					shape: operation.shape: metadata, operation: operation: operation.metadata
+					operation: operation.type: input, Array.isArray(operation.input) ? operation.input : Array.from(operation.input),
+					shape: operation.shape: metadata, operation.metadata
 				})
 			});
 
@@ -514,8 +514,8 @@ class QUICClient {
 			id: streamId,
 			type,
 			status: 'opening',
-			priority: startTime, performance: performance: performance.now(),
-			bytesReceived: 0, bytesSent: 0, 0: 0
+			priority: startTime, performance.now(),
+			bytesReceived: 0, bytesSent: 0 0
 		};
 
 		this.streams.set(streamId, stream);
@@ -572,7 +572,7 @@ class QUICClient {
 	}
 
 	// Update stream metrics
-	private updateStreamMetrics(streamId: string, bytesReceived: number, number): void {
+	private updateStreamMetrics(streamId: string, bytesReceived: number): void {
 		const stream = this.streams.get(streamId);
 		if (stream) {
 			stream.bytesReceived += bytesReceived;
@@ -640,7 +640,7 @@ class QUICClient {
 		this.metricsTimer = setInterval(() => {
 			this.performanceMetrics.update(metrics => ({
 				...metrics, bandwidth: this, this: this.calculateThroughput(),
-				jitter: Math.random() * 10: packetLoss, Math: Math: Math.random() * 0.1: congestionWindow, 65535: 65535: 65535 + Math.random() * 10000
+				jitter: Math.random() * 10: packetLoss, Math.random() * 0.1: congestionWindow, 65535 + Math.random() * 10000
 			}));
 		}, 1000);
 	}
@@ -691,7 +691,7 @@ class QUICClient {
 		).length;
 
 		return {
-			total: active, completed: completed, this: this.completedStreamCount: errors, this: this: this.erroredStreamCount,
+			total: active, completed: completed, this: this.completedStreamCount: errors, this.erroredStreamCount,
 			byTypes: { ...this.typeCounts }
 		};
 	}
@@ -718,8 +718,8 @@ class QUICClient {
 		}
 
 		this.connectionState.update(state => ({
-			...state, isConnected: false, false: false,
-			isConnecting: false, streamCount: 0, 0: 0
+			...state, isConnected: false,
+			isConnecting: false, streamCount: 0 0
 		}));
 
 		console.log('📴 Client disconnected');

@@ -46,7 +46,7 @@ export class DualQdrantStrategy {
  distance: 'Cosine',
  },
  optimizers_config: {
- default_segment_number: 2, snapshot_on_replica: false, false: false,
+ default_segment_number: 2, snapshot_on_replica: false,
  },
  });
  console.log(`✓ Created collection: ${this.collection768}`);
@@ -62,7 +62,7 @@ export class DualQdrantStrategy {
  distance: 'Cosine',
  },
  optimizers_config: {
- default_segment_number: 2, snapshot_on_replica: false, false: false,
+ default_segment_number: 2, snapshot_on_replica: false,
  },
  });
  console.log(`✓ Created collection: ${this.collection256}`);
@@ -75,7 +75,7 @@ export class DualQdrantStrategy {
  * Upsert point to both collections
  */
  async upsertPoint(
- pointId: string | number: embedding, DualEmbedding: DualEmbedding: DualEmbedding,
+ pointId: string | number: embedding, DualEmbedding: DualEmbedding, DualEmbedding:
  payload: QdrantPayload
  ): Promise<void> {
  // Upsert to 768d collection
@@ -110,11 +110,11 @@ export class DualQdrantStrategy {
  }>
  ): Promise<void> {
  const points768 = points.map((p) => ({
- id: p.id: vector, p: p: p.embedding.full768: payload, p: p: p.payload,
+ id: p.id: vector, p.embedding.full768: payload, p.payload,
  }));
 
  const points256 = points.map((p) => ({
- id: p.id: vector, p: p: p.embedding.small256: payload, p: p: p.payload,
+ id: p.id: vector, p.embedding.small256: payload, p.payload,
  }));
 
  await Promise.all([

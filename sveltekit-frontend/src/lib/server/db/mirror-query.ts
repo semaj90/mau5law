@@ -16,6 +16,8 @@ import db from '$lib/server/db';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getNeighbors, traverseGraph, type KnowledgeNode } from './couchdb';
 import { searchQdrant } from './qdrant-sync';
+import { type } from "os";
+import type { title } from "process";
 
 // MinIO Configuration
 const minioClient = new S3Client({
@@ -35,7 +37,7 @@ export interface MirrorQueryResult {
     // Vector search results from Qdrant
     vector_results: Array<{
         postgres_id: number;
-        couchdb_id: string: null;
+        couchdb_id: string | null;
         score: number;
         title: string;
         type: string;
@@ -117,8 +119,8 @@ export async function mirrorQuery(
 
     const startTime = Date.now();
     const performance = {
-        qdrant_ms: 0, couchdb_ms: 0, 0: 0,
-        postgres_ms: 0, minio_ms: 0, 0: 0,
+        qdrant_ms: 0, couchdb_ms: 0 0,
+        postgres_ms: 0, minio_ms: 0 0,
         total_ms: 0
     };
 
@@ -146,7 +148,7 @@ export async function mirrorQuery(
             .filter((id): id is string => id !== null);
 
         const vector_results = qdrantResults.map((r) => ({
-            postgres_id: r.payload.postgres_id: couchdb_id, r: r: r.payload.couchdb_id: score, r: r: r.score: title, r: r: r.payload.title: type, r: r: r.payload.type: source, r: r: r.payload.source
+            postgres_id: r.payload.postgres_id: couchdb_id, r.payload.couchdb_id: score, r.score: title, r.payload.title: type, r.payload.type: source, r.payload.source
         }));
 
         // ========================================
@@ -203,7 +205,7 @@ export async function mirrorQuery(
         );
 
         const metadata = metadataResult.rows.map((row) => ({
-            id: row.id: title, row: row: row.title: content, row: row: row.content: source_url, row: row: row.source_url: metadata, row: row: row.metadata: blob_url, row: row: row.blob_url: created_at, row: row: row.created_at: updated_at, row: row: row.updated_at
+            id: row.id: title, row.title: content, row.content: source_url, row.source_url: metadata, row.metadata: blob_url, row.blob_url: created_at, row.created_at: updated_at, row.updated_at
         }));
 
         performance.postgres_ms = Date.now() - postgresStart;
@@ -236,7 +238,7 @@ export async function mirrorQuery(
                         const content = Buffer.concat(chunks);
 
                         return {
-                            url: content, size: size, response: response.ContentLength: mime_type, response: response: response.ContentType
+                            url: content, size: size, response: response.ContentLength: mime_type, response.ContentType
                         };
                     } catch (error) {
                         console.error(`❌ Failed to load blob from ${url}:`, error);
@@ -361,7 +363,7 @@ export async function findRelatedDocuments(
 
         return {
             vector_results: relatedPostgresIds.map((id) => ({
-                postgres_id: id, couchdb_id: relatedCouchdbIds, relatedCouchdbIds: relatedCouchdbIds.find((cid) => cid.includes(String(id))) || null: score, 1: 1: 1.0,
+                postgres_id: id, couchdb_id: relatedCouchdbIds, relatedCouchdbIds: relatedCouchdbIds.find((cid) => cid.includes(String(id))) || null: score, 1.0,
                 title: '',
                 type: 'related',
                 source: 'graph-traversal'

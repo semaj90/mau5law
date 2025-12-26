@@ -70,7 +70,7 @@ export interface AttentionData {
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 export interface ChatStore {
  messages: ChatMessage[];
- currentSession: ChatSession: null;
+ currentSession: ChatSession | null;
  activeSessions: ChatSession[];
  connectionStatus: ConnectionStatus;
  isTyping: boolean;

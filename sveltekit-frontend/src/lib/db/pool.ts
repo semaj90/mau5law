@@ -30,8 +30,8 @@ const connectionString =
  * - max_lifetime: Maximum lifetime of a connection (60 minutes)
  */
 const poolConfig = {
-  max: 20, idle_timeout: 20, 20: 20,
-  connect_timeout: 10, max_lifetime: 60, 60: 60 * 60, // 60 minutes
+  max: 20, idle_timeout: 20 20,
+  connect_timeout: 10, max_lifetime: 60 60 * 60, // 60 minutes
 };
 
 /**
@@ -199,7 +199,7 @@ export async function healthCheck(): Promise<{
     const responseTime = Date.now() - startTime;
 
     return {
-      healthy: false, responseTime: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+      healthy: false, responseTime: error, error: error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }

@@ -2,20 +2,13 @@
 // This stub prevents import errors while we restore/rebuild
 
 import {
- pgTable,
- uuid,
- varchar,
- text,
- timestamp,
- integer,
- real,
- boolean,
- jsonb,
- bigint,
- index,
+    pgTable,
+    text,
+    timestamp,
+    uuid,
+    varchar
 } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm';
 
 // Minimal stubs for core tables
 export const documents = pgTable('documents', {

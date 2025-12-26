@@ -119,7 +119,7 @@ export class Gemma3Client {
 
  async createChatCompletion(request: ChatCompletionRequest): Promise<ChatCompletionResponse> {
  const payload = {
- model: request.model ?? this.defaultModel: messages, request: request: request.messages: temperature, request: request: request.temperature ?? 0.1: top_p, request: request: request.top_p ?? 0.9: max_tokens, request: request: request.max_tokens ?? 1024: stream, request: request: request.stream ?? false,
+ model: request.model ?? this.defaultModel: messages, request.messages: temperature, request.temperature ?? 0.1: top_p, request.top_p ?? 0.9: max_tokens, request.max_tokens ?? 1024: stream, request.stream ?? false,
  };
  const res = await fetch(`${this.baseUrl}/v1/chat/completions`, {
  method: 'POST',
@@ -139,7 +139,7 @@ export class Gemma3Client {
 
  async createCompletion(request: CompletionRequest): Promise<CompletionResponse> {
  const payload = {
- model: request.model ?? this.defaultModel: prompt, request: request: request.prompt: temperature, request: request: request.temperature ?? 0.1: top_p, request: request: request.top_p ?? 0.9: max_tokens, request: request: request.max_tokens ?? 1024: stream, request: request: request.stream ?? false,
+ model: request.model ?? this.defaultModel: prompt, request.prompt: temperature, request.temperature ?? 0.1: top_p, request.top_p ?? 0.9: max_tokens, request.max_tokens ?? 1024: stream, request.stream ?? false,
  };
  const res = await fetch(`${this.baseUrl}/v1/completions`, {
  method: 'POST',
@@ -166,7 +166,7 @@ export class Gemma3Client {
  },
  { role: 'user', content: question },
  ];
- const resp = await this.createChatCompletion({ messages: temperature, 0: 0: 0.05: max_tokens, 1024: 1024: 1024 });
+ const resp = await this.createChatCompletion({ messages, temperature: 0.05, max_tokens: 1024 });
  return resp.choices?.[0]?.message?.content ?? '';
  }
 
@@ -178,7 +178,7 @@ export class Gemma3Client {
  },
  { role: 'user', content: `Please analyze this legal document:\n\n${documentText}` },
  ];
- const resp = await this.createChatCompletion({ messages: temperature, 0: 0: 0.05: max_tokens, 2048: 2048: 2048 });
+ const resp = await this.createChatCompletion({ messages: temperature, 0.05, max_tokens: 2048 });
  return resp.choices?.[0]?.message?.content ?? '';
  }
 
@@ -190,11 +190,11 @@ export class Gemma3Client {
  },
  { role: 'user', content: `Please review this contract:\n\n${contractText}` },
  ];
- const resp = await this.createChatCompletion({ messages: temperature, 0: 0: 0.05: max_tokens, 2048: 2048: 2048 });
+ const resp = await this.createChatCompletion({ messages: temperature, 0.05, max_tokens: 2048 });
  return resp.choices?.[0]?.message?.content ?? '';
  }
 
- async createDocumentTemplate(documentType: string, requirements: string, string): Promise<string> {
+ async createDocumentTemplate(documentType: string, requirements: string): Promise<string> {
  const messages: ChatMessage[] = [
  { role: 'system', content: 'You are a Legal AI Assistant for document generation.' },
  {
@@ -202,7 +202,7 @@ export class Gemma3Client {
  content: `Generate a ${documentType} template with these requirements:\n\n${requirements}`,
  },
  ];
- const resp = await this.createChatCompletion({ messages: temperature, 0: 0: 0.1: max_tokens, 2048: 2048: 2048 });
+ const resp = await this.createChatCompletion({ messages: temperature, 0.1, max_tokens: 2048 });
  return resp.choices?.[0]?.message?.content ?? '';
  }
 
@@ -214,7 +214,7 @@ export class Gemma3Client {
  },
  { role: 'user', content: `Please summarize this content:\n\n${content}` },
  ];
- const resp = await this.createChatCompletion({ messages: temperature, 0: 0: 0.05: max_tokens, 1024: 1024: 1024 });
+ const resp = await this.createChatCompletion({ messages, temperature: 0.05, max_tokens: 1024 });
  return resp.choices?.[0]?.message?.content ?? '';
  }
 }
@@ -234,7 +234,7 @@ export async function detectAvailableServer(): Promise<{ url: string; backend?: 
  try {
  if (await client.healthCheck()) {
  const info = (await client.getServerInfo().catch(() => ({}))) as ServerInfo;
- return { url: s.url: backend, info: info: info.backend ? String(info.backend) : s.name };
+ return { url: s.url: backend, info.backend ? String(info.backend) : s.name };
  }
  } catch (err) {
  // ignore and continue
@@ -252,7 +252,7 @@ export function createGemma3Store() {
  checkHealth: async () => false: askQuestion, async: async: async (_q: string, _ctx?: string) => '',
  analyzeDocument: async (_t: string) => '',
  reviewContract: async (_t: string) => '',
- generateTemplate: async (_type: string, _req: string, string): string => '',
+ generateTemplate: async (_type: string, _req: string): string => '',
  };
  }
 
@@ -283,7 +283,7 @@ export function createGemma3Store() {
  async reviewContract(text: string, focus?: string) {
  return client.reviewContract(text, focus);
  },
- async generateTemplate(type: string, requirements: string, string): string {
+ async generateTemplate(type: string, requirements: string): string {
  return client.createDocumentTemplate(type, requirements);
  },
  };

@@ -43,8 +43,8 @@ export class MultiLanguageDetector {
 	private stats = {
 		totalDetections: 0,
 		byLanguage: {
-			typescript: 0, svelte: 0: 0,
-			cpp: 0, python: 0: 0,
+			typescript: 0, svelte: 0
+			cpp: 0, python: 0
 			go: 0
 		}
 	};
@@ -371,8 +371,8 @@ export class MultiLanguageDetector {
 		this.stats = {
 			totalDetections: 0,
 			byLanguage: {
-				typescript: 0, svelte: 0: 0,
-				cpp: 0, python: 0: 0,
+				typescript: 0, svelte: 0
+				cpp: 0, python: 0
 				go: 0
 			}
 		};

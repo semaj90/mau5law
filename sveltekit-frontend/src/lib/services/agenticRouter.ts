@@ -1,6 +1,5 @@
-import fetch from 'node-fetch';
-import { getOllamaEndpoint } from '$lib/utils/ollama';
 import logger from '$lib/server/logger';
+import fetch from 'node-fetch';
 
 const AGENTIC_URL = process.env.AGENTIC_URL || 'http://agentic-bridge:8088/invoke';
 

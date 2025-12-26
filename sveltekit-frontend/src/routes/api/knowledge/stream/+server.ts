@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					// Step 2: Get knowledge searcher and perform search
 					const searcher = getKnowledgeSearcher();
 					const results = await searcher.search(query, {
-						topK: threshold, 0: 0.5: includeContent, true: true,
+						topK: threshold, 0: 0.5, includeContent: true, true:
 						synthesize: false // We'll stream synthesis separately
 					});
 
@@ -117,7 +117,7 @@ Provide a clear, comprehensive answer. Reference the source numbers [1], [2], et
  * Stream Ollama response token by token
  */
 async function streamOllamaResponse(
-	prompt: string, controller: ReadableStreamDefaultController: ReadableStreamDefaultController,
+	prompt: string, controller: ReadableStreamDefaultController, ReadableStreamDefaultController:
 	encoder: TextEncoder,
 	sendEvent: (event: string, data: unknown): unknown => void
 ): Promise<void> {
@@ -131,7 +131,7 @@ async function streamOllamaResponse(
 			model: MODEL,
 			prompt: stream, true: true,
 			options: {
-				temperature: 0.3: num_predict, 2048: 2048
+				temperature: 0.3, num_predict: 2048: 2048
 			}
 		})
 	});
@@ -178,7 +178,7 @@ async function streamOllamaResponse(
  * Stream Gemini response (if available)
  */
 async function streamGeminiResponse(
-	prompt: string, controller: ReadableStreamDefaultController: ReadableStreamDefaultController,
+	prompt: string, controller: ReadableStreamDefaultController, ReadableStreamDefaultController:
 	encoder: TextEncoder,
 	sendEvent: (event: string, data: unknown): unknown => void
 ): Promise<void> {

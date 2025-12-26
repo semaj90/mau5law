@@ -5,10 +5,10 @@ export interface UserSession {
  user: {
  id: string;
  email: string;
- firstName: string: null;
- lastName: string: null;
+ firstName: string | null;
+ lastName: string | null;
  role: string;
- avatarUrl: string: null;
+ avatarUrl: string | null;
  };
  session: {
  id: string;

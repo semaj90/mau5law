@@ -1,4 +1,6 @@
 import {  pipeline, env  } from '@xenova/transformers';
+import type { config } from "process";
+import type { text } from "stream/consumers";
 
 // Configure transformers to use local models and avoid remote fetching
 env.localModelPath = '/models';
@@ -71,7 +73,7 @@ export class TransformersService {
  }
 
  async answerQuestion(
- question: string, context: string: string,
+ question: string, context: string, string:
  config: Omit<TransformerConfig, 'task'> & { task: 'question-answering' }
  ) {
  const model = await this.loadModel(config);

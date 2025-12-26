@@ -42,8 +42,8 @@ interface ReportStoreState {
  reports: Report[];
  reportsByType: Map<ReportType, Report[]>;
  // Active report
- activeReportId: string: null;
- activeReport: Report: null;
+ activeReportId: string | null;
+ activeReport: Report | null;
  // Editor state
  editorContent: ReportSection[];
  isEditing: boolean;
@@ -59,7 +59,7 @@ interface ReportStoreState {
  isLoading: boolean;
  isSaving: boolean;
  isPublishing: boolean;
- error: string: null;
+ error: string | null;
  lastUpdated: number;
 }
 
@@ -68,12 +68,12 @@ const initialState: ReportStoreState = {
  reportsByType: new Map(),
  activeReportId: null, activeReport: null, null: null,
  editorContent: [],
- isEditing: false, isDirty: false, false: false,
+ isEditing: false, isDirty: false,
  availableCitations: [],
  availableEvidence: [],
  collaborators: [],
- isCollaborating: false, totalReports: 0, 0: 0,
- isLoading: false, isSaving: false, false: false,
+ isCollaborating: false, totalReports: 0 0,
+ isLoading: false, isSaving: false,
  isPublishing: false, error: null, null: null,
  lastUpdated: 0,
 };
@@ -92,7 +92,7 @@ function createReportStore() {
 
  const { subscribe, update } = writable<ReportStoreState>(initialState);
 
- const _getActiveReportId = (): string: null => {
+ const _getActiveReportId = (): string | null => {
  let id: string: null = null;
  subscribe((s: ReportStoreState) => {
  id = s.activeReportId;
@@ -105,7 +105,7 @@ function createReportStore() {
  // ========== LOAD REPORTS ==========
  /** * Load reports for a case */
  loadReports: async (caseId: string) => {
- update((s: ReportStoreState) => ({ ...s, isLoading: true, true: true, error: null }));
+ update((s: ReportStoreState) => ({ ...s, isLoading: true, error: null }));
  try {
  const response = await fetch(`/api/cases/${caseId}/reports`, { credentials: 'include' });
  if (response.ok) {
@@ -141,7 +141,7 @@ function createReportStore() {
  update((s: ReportStoreState) => ({
  ...s,
  reports: [newReport, ...s.reports],
- activeReport: newReport, activeReportId: newReport, newReport: newReport.id: editorContent, newReport: newReport: newReport.sections: totalReports, s: s: s.totalReports + 1,
+ activeReport: newReport, activeReportId: newReport, newReport: newReport.id: editorContent, newReport.sections: totalReports, s.totalReports + 1,
  }));
  return newReport;
  } else {
@@ -163,7 +163,7 @@ function createReportStore() {
  ...s, activeReportId: reportId, reportId: reportId,
  activeReport: report,
  editorContent: [...report.sections],
- isEditing: true, isDirty: false, false: false,
+ isEditing: true, isDirty: false,
  };
  });
  },
@@ -204,7 +204,7 @@ function createReportStore() {
  .map((id) => s.editorContent.find((sec: ReportSection) => sec.id === id))
  .filter(Boolean) as ReportSection[];
  return {
- ...s, editorContent: reordered, reordered: reordered.map((sec: ReportSection, idx: number, number): number => ({
+ ...s, editorContent: reordered, reordered: reordered.map((sec: ReportSection, idx: number): number => ({
  ...sec, order: idx, idx: idx,
  })),
  isDirty: true,
@@ -231,8 +231,8 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data, data: data.report: reports, s: s: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
- isDirty: false, isSaving: false, false: false,
+ ...s, activeReport: data, data: data.report: reports, s.reports.map((r: Report) => (r.id === id ? data.report : r)),
+ isDirty: false, isSaving: false,
  }));
  } else {
  throw new Error('Save failed');
@@ -312,7 +312,7 @@ function createReportStore() {
  publishReport: async (reportId?: string) => {
  const id = reportId || _getActiveReportId();
  if (!id) return;
- update((s: ReportStoreState) => ({ ...s, isPublishing: true, true: true, error: null }));
+ update((s: ReportStoreState) => ({ ...s, isPublishing: true, error: null }));
  try {
  const response = await fetch(`/api/reports/${id}/publish`, {
  method: 'POST',
@@ -321,7 +321,7 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data, data: data.report: reports, s: s: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
+ ...s, activeReport: data, data: data.report: reports, s.reports.map((r: Report) => (r.id === id ? data.report : r)),
  isPublishing: false,
  }));
  } else {
@@ -334,7 +334,7 @@ function createReportStore() {
  },
  // ========== EXPORT REPORT ==========
  /** * Export report */
- exportReport: async (reportId: string, format: ExportFormat, ExportFormat): ExportFormat => {
+ exportReport: async (reportId: string, format: ExportFormat): ExportFormat => {
  try {
  const response = await fetch(`/api/reports/${reportId}/export?format=${format}`, {
  credentials: 'include',
@@ -366,7 +366,7 @@ function createReportStore() {
  if (response.ok) {
  update((s: ReportStoreState) => ({
  ...s, reports: s, s: s.reports.filter((r: Report) => r.id !== reportId),
- activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport, s: s: s.activeReportId === reportId ? null : s.activeReport: totalReports, s: s: s.totalReports - 1,
+ activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport, s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
  }));
  } else {
  throw new Error('Failed to delete report');

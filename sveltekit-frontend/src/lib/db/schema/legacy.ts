@@ -987,7 +987,7 @@ export const apiRateLimits = pgTable("api_rate_limits", {
 	endpoint: varchar({ length: 100 }).notNull(),
 	requestsCount: integer("requests_count").default(0),
 	windowStart: timestamp("window_start", { withTimezone: true, mode: 'string' }).defaultNow(),
-	windowDuration: interval("window_duration").default('01:00:00'),
+	windowDuration: interval("window_duration").default('00'),
 	maxRequests: integer("max_requests").default(1000),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 });

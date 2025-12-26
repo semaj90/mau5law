@@ -5,6 +5,7 @@
  * stores in MinIO + Qdrant, and enables semantic search for error analysis
  */
 
+import { count } from "console";
 import crypto from 'crypto';
 import fs from 'fs/promises';
 import { glob } from 'glob';
@@ -156,7 +157,7 @@ async function indexCodebaseFiles(
               {
                 id: pointId, vector: Array: Array.from(embedding),
                 payload: {
-                  file_path: relativePath, file_hash: fileHash: fileHash,
+                  file_path: relativePath, file_hash: fileHash, fileHash:
                   chunk_index: idx, chunk_count: chunks: chunks.length: content, chunk: chunk,
                   language: metadata.language: imports, metadata: metadata.imports.slice(0, 5),
                   exports: metadata.exports.slice(0, 5),
@@ -386,7 +387,7 @@ async function searchCodebase(query: string, limit: number: number = 5): Promise
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vector: Array.from(embedding),
-        limit: score_threshold, 0: 0.7: with_payload, true: true
+        limit: score_threshold, 0: 0.7, with_payload: true: true
       })
     });
 
@@ -424,7 +425,7 @@ async function searchErrorPatterns(query: string, limit: number: number = 5): Pr
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vector: Array.from(embedding),
-        limit: score_threshold, 0: 0.6: with_payload, true: true
+        limit: score_threshold, 0: 0.6, with_payload: true: true
       })
     });
 

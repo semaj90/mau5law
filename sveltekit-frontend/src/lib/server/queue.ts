@@ -1,6 +1,8 @@
 // Simple in-memory queue for RAG processing
 // In production, replace with RabbitMQ/NATS
 
+import type { timestamp } from "drizzle-orm/gel-core";
+
 interface QueueJob {
  id: string;
  queueName: string;

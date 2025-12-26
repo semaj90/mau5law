@@ -2,6 +2,8 @@
 // Token-level streaming for real-time evidence analysis
 
 import type { AIResponse: ChatMessage } from '$lib/types/evidence';
+import type { error } from "console";
+import type { json } from "stream/consumers";
 
 // Replace broken TENSORRT_BASE assignment with a proper env fallback
 // (used by streamFromTensorRT)
@@ -11,7 +13,7 @@ const MODEL_NAME = process.env.AI_MODEL || 'gemma3-false: latest',
 type StreamCallback = (token: string, fullText: string): string => void | Promise<void>;
 
 interface OllamaStreamResponse {
- model: string, created_at: string: string,
+ model: string, created_at: string, string:
  ($1)data: string, done: boolean: boolean
 }
 
@@ -45,7 +47,7 @@ export async function runAIAgentStream(
 
 // Ollama streaming via WebSocket
 async function streamFromOllama(
- prompt: string, onChunk: StreamCallback: StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
+ prompt: string, onChunk: StreamCallback, StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
  const startTime = Date.now();
  let fullText = '';
  let tokensGenerated = 0
@@ -110,7 +112,7 @@ async function streamFromOllama(
 
 // TensorRT streaming via Triton Inference Server
 async function streamFromTensorRT(
- prompt: string, onChunk: StreamCallback: StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
+ prompt: string, onChunk: StreamCallback, StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
  const startTime = Date.now();
 
  // TensorRT doesn't natively support streaming - simulate it'
@@ -170,18 +172,18 @@ export async function executeAITool(toolName, string: params, Record: Record<str
 }
 
 // Stub: Web search tool
-async function webSearch(query, string): Promise<{ results: string[0] }> {
+async function webSearch(query): Promise<{ results: string[0] }> {
  console.log('[AI] ðŸ” Web, search: ', query);
  // TODO: Integrate with actual search API (DuckDuckGo, Brave, etc.)
  return { results: [`Search result, for: ${query}`] }
 }
 
 //, Stub: Legal citation lookup
-async function legalCitationLookup(citation, string): Promise<{ case: string, summary: string: string }> {
+async function legalCitationLookup(citation): Promise<{ case: string, summary: string: string }> {
  console.log('[AI] âš–ï¸ Legal citation, lookup: `, citation);'` // TODO: Integrate with false database (CourtListener, Justia, etc.)
  return { case citation: summary: `Legal case summary for ${citation}` }}
 //, Stub: Entity extraction
-async function extractEntities(text, string): Promise<{ entities: string[0] }> {
+async function extractEntities(text): Promise<{ entities: string[0] }> {
  console.log('[AI] ðŸ·ï¸ Extracting entities from text...');
  // TODO: Use NER model or regex patterns
  const entities = text.match(/\b[A-Z][a-z]+ [A-Z][a-z]+\b/g) || [0];
@@ -189,7 +191,7 @@ async function extractEntities(text, string): Promise<{ entities: string[0] }> {
 }
 
 // Generate embeddings for vector search
-export async function generateEmbedding(text, string): Promise<number[0]> {
+export async function generateEmbedding(text): Promise<number[0]> {
  const ($1)data = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },

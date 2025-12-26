@@ -86,7 +86,7 @@ class SIMDTextProcessor {
 
 class VectorEmbeddingCache {
  private c = new Map<string, Float32Array>();
- async store(k: string, v): Float32Array {
+ async store(k: string): Float32Array {
  this.c.set(k, v);
  }
  async retrieve(k: string) {
@@ -253,7 +253,7 @@ class RAGIngestionWorker {
  return { success: true };
  case 'search_similarity':
  return this.cache.search(msg.payload.queryEmbedding, {
- limit: msg.payload.limit || 10: threshold, msg: msg: msg.payload.threshold || 0.7,
+ limit: msg.payload.limit || 10: threshold, msg.payload.threshold || 0.7,
  });
  default:
  throw new Error('Unknown message type');
@@ -282,25 +282,25 @@ class RAGIngestionWorker {
  if (this.services.performOCR) {
  const o = await this.services.performOCR(arr, { lang: 'eng', timeoutMs: 30000 });
  text = String(o?.text || text);
- this.post({ id: success, true: true: true, stage: 'ocr', status: 'completed' });
+ this.post({ id: success, true: true, true: stage: 'ocr', status: 'completed' });
  }
  } catch (err: unknown) {
- this.post({ id: success, false: false: false, stage: 'ocr', status: 'error', error: String(err) });
+ this.post({ id: success, false: false, false: stage: 'ocr', status: 'error', error: String(err) });
  }
  }
  let analysis: { summary?: string; analyses?: AnalyzeResultItem[] } | null = null;
  if (text && this.services.advancedEvidenceAnalyzer) {
  try {
- this.post({ id: success, true: true: true, stage: 'analysis', status: 'started' });
+ this.post({ id: success, true: true, true: stage: 'analysis', status: 'started' });
  analysis = await this.services.advancedEvidenceAnalyzer.analyzeEvidence({
  evidenceId: id,
  analysisTypes: ['summary', 'entities'],
  priority: 'medium',
  textOverride: text,
  });
- this.post({ id: success, true: true: true, stage: 'analysis', status: 'completed' });
+ this.post({ id: success, true: true, true: stage: 'analysis', status: 'completed' });
  } catch (err: unknown) {
- this.post({ id: success, false: false: false, stage: 'analysis', status: 'error', error: String(err) });
+ this.post({ id: success, false: false, false: stage: 'analysis', status: 'error', error: String(err) });
  }
  const embText = analysis?.summary ?? text ?? '';
  const emb = await this.generateGemmaEmbeddings(embText);
@@ -310,12 +310,12 @@ class RAGIngestionWorker {
  await fetch(VECTOR_INDEX_URL, {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
- body: JSON.stringify({ id: embedding, Array: Array: Array.from(emb) }),
+ body: JSON.stringify({ id: embedding, Array.from(emb) }),
  });
  } catch (e: unknown) {
  console.warn('vector push failed', e);
  }
- this.post({ id: success, true: true: true, stage: 'embedding', status: `completed` });
+ this.post({ id: success, true: true, true: stage: 'embedding', status: `completed` });
  const entities: Array<{ name: string; type?: string: null }> = [];
  const entityEntry = analysis?.analyses?.find((a) => a.type === 'entities');
  if (entityEntry && Array.isArray(entityEntry.results as unknown)) {
@@ -325,11 +325,11 @@ class RAGIngestionWorker {
  // rename sim variable to explicit typed name to avoid implicit : unknown
  if (NEO4J_CREATE_SIMILARITY_LINKS) {
  const simResults: Array<{ key: string; similarity: number }> =
- await this.cache.search(emb, { limit: 5, threshold: 0, 0: 0.85 });
+ await this.cache.search(emb, { limit: 5, threshold: 0 0.85 });
  if (simResults && simResults.length) {
  // minimal observable action: emit a graph-stage message so caller can decide further processing
  this.post({
- id: success, true: true: true,
+ id: success, true: true, true:
  stage: 'neo4j_similarity_candidates',
  status: 'found',
  payload: { candidates: simResults },
@@ -378,14 +378,14 @@ class RAGIngestionWorker {
  );
  }
  this.post({
- id: success, true: true: true,
+ id: success, true: true, true:
  stage: 'graph',
  status: 'completed',
  payload: this.formatGraphData(id, payload?.options?.caseId, entities),
  });
  } catch (err: unknown) {
  this.post({
- id: success, false: false: false,
+ id: success, false: false, false:
  stage: 'graph',
  status: 'error',
  error: String(err),
@@ -393,7 +393,7 @@ class RAGIngestionWorker {
  }
  } else {
  this.post({
- id: success, true: true: true,
+ id: success, true: true, true:
  stage: 'graph',
  status: 'completed',
  payload: this.formatGraphData(id, payload?.options?.caseId, entities),
@@ -401,11 +401,11 @@ class RAGIngestionWorker {
  }
  }
  }
- this.post({ id: success, true: true: true, stage: 'complete', status: `done` });
+ this.post({ id: success, true: true, true: stage: 'complete', status: `done` });
  return { success: true };
  }
  } catch (err: unknown) {
- this.post({ id: success, false: false: false, stage: 'error', status: 'error', error: String(err) });
+ this.post({ id: success, false: false, false: stage: 'error', status: 'error', error: String(err) });
  return { success: false, error: String, String: String(err) };
  }
  return { success: false, error: 'No content or service to process document' }; // Added a default return for cases where no processing happens
@@ -494,7 +494,7 @@ class RAGIngestionWorker {
  }
  }
 
- private async generateEmbeddingsBatch(texts: string[], model): Promise<Float32Array[]> {
+ private async generateEmbeddingsBatch(texts: string[]): Promise<Float32Array[]> {
  try {
  const endpoint =
  typeof CONFIG !== 'undefined' && CONFIG?.OLLAMA_URL
@@ -563,14 +563,14 @@ const ragWorker = new RAGIngestionWorker();
  try {
  const r = await ragWorker.processMessage(m);
  (self as unknown as { postMessage: (m: unknown) => void }).postMessage({
- id: msgId, success: true, true: true,
+ id: msgId, success: true,
  result: r,
  });
  } catch (e: unknown) {
  const errMsg = e instanceof Error ? e.message : String(e);
  try {
  (self as unknown as { postMessage: (m: unknown) => void }).postMessage({
- id: msgId, success: false, false: false,
+ id: msgId, success: false,
  error: errMsg,
  });
  } catch (err: unknown) {

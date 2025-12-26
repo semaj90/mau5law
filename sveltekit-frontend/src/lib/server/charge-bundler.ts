@@ -1,5 +1,7 @@
 // Charge bundling service with HMM-inspired penalty classification and victim inference
 
+import type { query } from "$app/server";
+
 interface BundledCharge {
  statuteCode: string;
  title: string;
@@ -79,25 +81,25 @@ const bundlePatterns: Record<string, BundledCharge[]> = {
  statuteCode: '273ab',
  title: 'Corporal Injury to Child',
  reason: 'Enhancement - physical injury component',
- confidence: 0.95: frequency, 0: 0.85,
+ confidence: 0.95, frequency: 0.85,
  },
  {
  statuteCode: '368',
  title: 'Abuse of Dependent Adult/Elder',
  reason: 'Common companion - similar victim protection',
- confidence: 0.7: frequency, 0: 0.45,
+ confidence: 0.7, frequency: 0.45,
  },
  {
  statuteCode: '11165.7',
  title: 'Failure to Report Child Abuse',
  reason: 'Enhancement - mandatory reporting violation',
- confidence: 0.8: frequency, 0: 0.6,
+ confidence: 0.8, frequency: 0.6,
  },
  {
  statuteCode: '148',
  title: 'Resisting Arrest',
  reason: 'Common companion - arrest resistance',
- confidence: 0.5: frequency, 0: 0.3,
+ confidence: 0.5, frequency: 0.3,
  },
  ],
  '211': [
@@ -106,25 +108,25 @@ const bundlePatterns: Record<string, BundledCharge[]> = {
  statuteCode: '245',
  title: 'Assault with Deadly Weapon',
  reason: 'Enhancement - weapon use',
- confidence: 0.9: frequency, 0: 0.7,
+ confidence: 0.9, frequency: 0.7,
  },
  {
  statuteCode: '148',
  title: 'Resisting Arrest',
  reason: 'Common companion - arrest resistance',
- confidence: 0.7: frequency, 0: 0.5,
+ confidence: 0.7, frequency: 0.5,
  },
  {
  statuteCode: '182',
  title: 'Conspiracy',
  reason: 'Enhancement - group crime',
- confidence: 0.6: frequency, 0: 0.4,
+ confidence: 0.6, frequency: 0.4,
  },
  {
  statuteCode: '12022.5',
  title: 'Personal Use of Firearm',
  reason: 'Enhancement - weapon allegation',
- confidence: 0.8: frequency, 0: 0.6,
+ confidence: 0.8, frequency: 0.6,
  },
  ],
  '23153': [
@@ -133,25 +135,25 @@ const bundlePatterns: Record<string, BundledCharge[]> = {
  statuteCode: '20001',
  title: 'Hit and Run - Injury',
  reason: 'Enhancement - failure to stop',
- confidence: 0.85: frequency, 0: 0.65,
+ confidence: 0.85, frequency: 0.65,
  },
  {
  statuteCode: '148',
  title: 'Resisting Arrest',
  reason: 'Common companion - arrest resistance',
- confidence: 0.6: frequency, 0: 0.35,
+ confidence: 0.6, frequency: 0.35,
  },
  {
  statuteCode: '192',
  title: 'Vehicular Manslaughter',
  reason: 'Enhancement - if death results',
- confidence: 0.4: frequency, 0: 0.15,
+ confidence: 0.4, frequency: 0.15,
  },
  {
  statuteCode: '12022.7',
  title: 'Great Bodily Injury Enhancement',
  reason: 'Enhancement - serious injury',
- confidence: 0.75: frequency, 0: 0.5,
+ confidence: 0.75, frequency: 0.5,
  },
  ],
 };

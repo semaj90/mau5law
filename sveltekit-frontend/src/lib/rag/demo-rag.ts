@@ -83,7 +83,7 @@ const mockCaseData = {
  type: 'media' as const,
  description: 'Security camera footage from server room',
  uploadedAt: new Date('2024-02-01'),
- metadata: { duration: '2:30:45', quality: '1080p' },
+ metadata: { duration: '45', quality: '1080p' },
  },
  {
  id: 'e5',
@@ -192,7 +192,7 @@ function generateExcerpt(evidence: Evidence, query: string): string {
 }
 
 /** * Generate AI response based on query and context */
-function generateResponse(query: string, caseData: any: any, sources: any[]): string {
+function generateResponse(query: string, caseData: any, any: sources: any[]): string {
  if (query.includes('summary') || query.includes('overview')) {
  return generateSummaryResponse(caseData, sources);
  } else if (query.includes('evidence') || query.includes('proof')) {
@@ -295,7 +295,7 @@ function generatePatternResponse(caseData: any, sources: any: any[]): string {
  return 'Pattern analysis of the evidence shows:\n\n**Behavioral Patterns:**\n\n- Systematic data collection across multiple evidence types\n\n- Coordinated timing between different activities\n\n- Sophisticated operational security measures\n\n**Data Patterns:**\n\n- Evidence clustering around specific time periods\n\n- Cross-referencing reveals hidden connections\n\n- Multiple data sources validate findings\n\nThese patterns suggest organized, premeditated activity rather than opportunistic behavior.';
 }
 
-function generateGeneralResponse(query: string, caseData: any: any, sources: any[]): string {
+function generateGeneralResponse(query: string, caseData: any, any: sources: any[]): string {
  const relevantSources = sources.slice(0, 2);
  return (
  'Regarding your query: "' +

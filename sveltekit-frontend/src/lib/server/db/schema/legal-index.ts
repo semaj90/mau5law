@@ -4,19 +4,11 @@
  */
 
 export {
- cases,
- crimes,
- caseChunks,
- casesRelations,
- crimesRelations,
- caseChunksRelations,
+    caseChunks, caseChunksRelations, cases, casesRelations, crimes, crimesRelations
 } from './legal-cases.js';
 
-export { laws, lawSections, lawsRelations, lawSectionsRelations } from './legal-laws.js';
+export { lawSections, lawSectionsRelations, laws, lawsRelations } from './legal-laws.js';
 
 // Type exports
-export type { cases as CasesTable } from './legal-cases.js';
-export type { crimes as CrimesTable } from './legal-cases.js';
-export type { caseChunks as CaseChunksTable } from './legal-cases.js';
-export type { laws as LawsTable } from './legal-laws.js';
-export type { lawSections as LawSectionsTable } from './legal-laws.js';
+export type { caseChunks as CaseChunksTable, cases as CasesTable, crimes as CrimesTable } from './legal-cases.js';
+export type { lawSections as LawSectionsTable, laws as LawsTable } from './legal-laws.js';

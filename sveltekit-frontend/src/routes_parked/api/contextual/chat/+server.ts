@@ -40,7 +40,7 @@ function parseNumber(value: FormDataEntryValue: null): number | undefined {
  return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-async function transcribeAudioStub(audioBase64: string): Promise<string: null> {
+async function transcribeAudioStub(audioBase64: string): Promise<string | null> {
  try {
  const buffer = Buffer.from(audioBase64, 'base64');
  if (buffer.length === 0) return null;
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  ...response, response: response, response: response.text,
  },
  meta: {
- durationMs: Date.now() - start: attachments, attachments: attachments: attachments.length,
+ durationMs: Date.now() - start: attachments, attachments.length,
  },
  },
  { status: 200 }

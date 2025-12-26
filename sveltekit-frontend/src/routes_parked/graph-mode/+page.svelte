@@ -93,30 +93,30 @@
 	function generateDefaultNodes(): GraphNode[] {
 		return [
 			// Core routes
-			{ id: 'home', label: 'Home', x: 400, y: 100, 100: 100, type: 'route', color: colors.route, url: '/' },
-			{ id: 'login', label: 'Login', x: 200, y: 200, 200: 200, type: 'route', color: colors.route, url: '/login' },
-			{ id: 'dashboard', label: 'Dashboard', x: 400, y: 200, 200: 200, type: 'route', color: colors.route, url: '/dashboard' },
+			{ id: 'home', label: 'Home', x: 400, y: 100 100, type: 'route', color: colors.route, url: '/' },
+			{ id: 'login', label: 'Login', x: 200, y: 200 200, type: 'route', color: colors.route, url: '/login' },
+			{ id: 'dashboard', label: 'Dashboard', x: 400, y: 200 200, type: 'route', color: colors.route, url: '/dashboard' },
 
 			// Features
-			{ id: 'ai-chat', label: 'AI Chat', x: 600, y: 200, 200: 200, type: 'feature', color: colors.feature, url: '/ai-chat' },
-			{ id: 'cases', label: 'Cases', x: 300, y: 300, 300: 300, type: 'feature', color: colors.feature, url: '/cases' },
-			{ id: 'evidence', label: 'Evidence', x: 500, y: 300, 300: 300, type: 'feature', color: colors.feature, url: '/evidence' },
-			{ id: 'reports', label: 'Reports', x: 700, y: 300, 300: 300, type: 'feature', color: colors.feature, url: '/reports' },
-			{ id: 'poi', label: 'Persons of Interest', x: 400, y: 400, 400: 400, type: 'feature', color: colors.feature, url: '/persons-of-interest' },
+			{ id: 'ai-chat', label: 'AI Chat', x: 600, y: 200 200, type: 'feature', color: colors.feature, url: '/ai-chat' },
+			{ id: 'cases', label: 'Cases', x: 300, y: 300 300, type: 'feature', color: colors.feature, url: '/cases' },
+			{ id: 'evidence', label: 'Evidence', x: 500, y: 300 300, type: 'feature', color: colors.feature, url: '/evidence' },
+			{ id: 'reports', label: 'Reports', x: 700, y: 300 300, type: 'feature', color: colors.feature, url: '/reports' },
+			{ id: 'poi', label: 'Persons of Interest', x: 400, y: 400 400, type: 'feature', color: colors.feature, url: '/persons-of-interest' },
 
 			// Services
-			{ id: 'auth', label: 'Lucia Auth', x: 200, y: 350, 350: 350, type: 'service', color: colors.service },
-			{ id: 'minio', label: 'MinIO SIMD', x: 600, y: 400, 400: 400, type: 'service', color: colors.service },
-			{ id: 'ace', label: 'ACE Agent', x: 800, y: 300, 300: 300, type: 'service', color: colors.service },
-			{ id: 'rag', label: 'RAG+KAG', x: 800, y: 200, 200: 200, type: 'service', color: colors.service },
+			{ id: 'auth', label: 'Lucia Auth', x: 200, y: 350 350, type: 'service', color: colors.service },
+			{ id: 'minio', label: 'MinIO SIMD', x: 600, y: 400 400, type: 'service', color: colors.service },
+			{ id: 'ace', label: 'ACE Agent', x: 800, y: 300 300, type: 'service', color: colors.service },
+			{ id: 'rag', label: 'RAG+KAG', x: 800, y: 200 200, type: 'service', color: colors.service },
 
 			// Evidence Board
-			{ id: 'evidence-board', label: 'Evidence Board', x: 500, y: 500, 500: 500, type: 'evidence', color: colors.evidence, url: '/evidence-board' },
-			{ id: 'command-center', label: 'Command Center', x: 300, y: 500, 500: 500, type: 'evidence', color: colors.evidence, url: '/command-center' },
+			{ id: 'evidence-board', label: 'Evidence Board', x: 500, y: 500 500, type: 'evidence', color: colors.evidence, url: '/evidence-board' },
+			{ id: 'command-center', label: 'Command Center', x: 300, y: 500 500, type: 'evidence', color: colors.evidence, url: '/command-center' },
 
 			// Graph tools
-			{ id: 'ast-graph', label: 'AST Graph', x: 900, y: 400, 400: 400, type: 'service', color: colors.service, url: '/dev/ast-graph' },
-			{ id: 'all-routes', label: 'All Routes', x: 100, y: 100, 100: 100, type: 'route', color: colors.route, url: '/all-routes' }
+			{ id: 'ast-graph', label: 'AST Graph', x: 900, y: 400 400, type: 'service', color: colors.service, url: '/dev/ast-graph' },
+			{ id: 'all-routes', label: 'All Routes', x: 100, y: 100 100, type: 'route', color: colors.route, url: '/all-routes' }
 		];
 	}
 

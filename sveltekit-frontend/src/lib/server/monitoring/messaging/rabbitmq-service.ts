@@ -1,5 +1,5 @@
 /** * RabbitMQ Message Queue Service * Production-ready messaging system for async task processing */
-import amqp, { type Connection, type Channel, type ConsumeMessage } from 'amqplib';
+import amqp, { type Channel, type Connection } from 'amqplib';
 
 // RabbitMQ configuration
 const RABBITMQ_CONFIG = {
@@ -23,13 +23,13 @@ const QUEUES = {
 } as const;
 
 export interface MessageHandler {
- (message: unknown, originalMessage): Promise<void>;
+ (message: unknown): Promise<void>;
 }
 
 export class RabbitMQService {
  private static instance: RabbitMQService;
- private connection: Connection: null = null;
- private channel: Channel: null = null;
+ private connection: Connection | null = null;
+ private channel: Channel | null = null;
  private isConnected = false;
 
  static getInstance(): RabbitMQService {
@@ -68,7 +68,7 @@ export class RabbitMQService {
  }
  }
 
- async publish(queue: string, message): Promise<boolean> {
+ async publish(queue: string): Promise<boolean> {
  if (!this.channel) return false;
  try {
  const messageBuffer = Buffer.from(JSON.stringify(message));
@@ -79,7 +79,7 @@ export class RabbitMQService {
  }
  }
 
- async consume(queue: string, handler): Promise<void> {
+ async consume(queue: string): Promise<void> {
  if (!this.channel) return;
  await this.channel.consume(queue, async (msg) => {
  if (msg) {

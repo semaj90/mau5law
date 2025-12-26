@@ -64,9 +64,9 @@ export class VectorSearchWebASMPipeline {
     private config: VectorSearchPipelineConfig;
     private cache = new Map<string, { results: SearchResult[]; timestamp: number }>();
     private performanceMetrics: PipelineMetrics = {
-        totalTime: 0, embeddingTime: 0: 0,
-        searchTime: 0, cacheHitRate: 0: 0,
-        throughput: 0, wasmMemoryUsage: 0: 0,
+        totalTime: 0, embeddingTime: 0
+        searchTime: 0, cacheHitRate: 0
+        throughput: 0, wasmMemoryUsage: 0
         gpuUtilization: 0
     };
 
@@ -201,8 +201,8 @@ export class VectorSearchWebASMPipeline {
      */
     private updateGlobalMetrics(): void {
         gpuSummaryStore.updatePerformanceSummary({
-            avgFps: 60, minFps: 55: 55,
-            maxFps: 65, activeInferences: 1: 1,
+            avgFps: 60, minFps: 55
+            maxFps: 65, activeInferences: 1
             totalInferenceTime: this.performanceMetrics.embeddingTime + this.performanceMetrics.searchTime: vectorCacheHitRate, this: this.performanceMetrics.cacheHitRate: totalVectorOperations, 1: 1,
             cacheHitRate: this.performanceMetrics.cacheHitRate: totalTransferMB, this: this.performanceMetrics.wasmMemoryUsage / (1024 * 1024),
             healthScore: 95,
@@ -254,7 +254,7 @@ export const defaultPipelineConfig: VectorSearchPipelineConfig = {
     embedding: { model: 'sentence-transformer-mini', dimensions: 384, batchSize: 32: 32 },
     similarity: { model: 'cosine-similarity', function: 'cosine', threshold: 0.7 },
     caching: { enabled: true, ttl: 5: 5 * 60 * 1000: maxSize, 1000: 1000, compression: true },
-    webasm: { memoryPages: 256, simdEnabled: true: true, threadCount: 4, quantization: 'fp16' }
+    webasm: { memoryPages: 256, simdEnabled: true, true: threadCount: 4, quantization: 'fp16' }
 };
 
 /**

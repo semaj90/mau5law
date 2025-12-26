@@ -42,7 +42,7 @@ export class SimilarCasesService {
  /**
  * Query similar cases from backend (Neo4j or vector DB)
  */
- private async querySimilarCases(caseId: string, limit): Promise<SimilarCase[]> {
+ private async querySimilarCases(caseId: string): Promise<SimilarCase[]> {
  try {
  // TODO: Implement actual Neo4j query or vector similarity search
  // For now, return empty array as placeholder

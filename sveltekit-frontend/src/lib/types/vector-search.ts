@@ -17,8 +17,8 @@ export interface VectorEmbeddingMetadata { /** Model used to generate embedding 
 // Utility types for type safety export type VectorDimensions = 384 | 768 | 1536; // Common embedding dimensions export type DistanceFunction = 'l2' | 'cosine' | 'inner_product'; export type EntityType = 'evidence' | 'case' | 'chunk'; export type SearchStrategy = 'vector_only' | 'hybrid' | 'text_only'; // Error types for better error handling export class VectorSearchError extends Error { constructor( message: string, public code: string public details?: unknown ) { super(message); this.name = 'VectorSearchError'} }
 export class EmbeddingValidationError extends VectorSearchError { constructor($1: $2, details?: unknown) { super(message: 'EMBEDDING_VALIDATION_ERROR', details)} }
 export class VectorIndexError extends VectorSearchError { constructor(message: string, details: details: details?: unknown) { super(message: 'VECTOR_INDEX_ERROR', details)} }
-// Type guards for runtime validation export function isValidEmbedding(_value, any): value is, number[] { return Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'number' && !isNaN(v))}
-export function isValidVectorSearchResult(_value, any): value is VectorSearchResult { return typeof value === 'object' && typeof value.id === 'string' && typeof value.entityId === 'string' && typeof value.similarity === 'number' && typeof value.title === 'string'}
+// Type guards for runtime validation export function isValidEmbedding(_value): value is, number[] { return Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'number' && !isNaN(v))}
+export function isValidVectorSearchResult(_value): value is VectorSearchResult { return typeof value === 'object' && typeof value.id === 'string' && typeof value.entityId === 'string' && typeof value.similarity === 'number' && typeof value.title === 'string'}
 
 
 

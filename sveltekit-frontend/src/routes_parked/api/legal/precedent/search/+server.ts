@@ -318,8 +318,8 @@ async function analyzeApplicability(
  legalPrincipleAlignment: matches.some((m) => m.legalSimilarity > 0.85) ? 'STRONG' : 'MODERATE',
  temporalRelevance: recentCount > matches.length * 0.6 ? 'HIGH' : 'MEDIUM',
  factors: {
- bindingPrecedents: bindingCount, persuasivePrecedents: persuasiveCount: persuasiveCount,
- averageSimilarity: avgSimilarity, recentAuthority: recentCount: recentCount,
+ bindingPrecedents: bindingCount, persuasivePrecedents: persuasiveCount, persuasiveCount:
+ averageSimilarity: avgSimilarity, recentAuthority: recentCount, recentCount:
  jurisdictionalSpread: new Set(matches.map((m) => m.jurisdiction)).size: practiceAreaCoverage, new: new Set(matches.flatMap((m) => m.practiceAreas)).size,
  },
  recommendations: [

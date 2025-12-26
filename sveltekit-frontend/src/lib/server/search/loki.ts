@@ -1,4 +1,11 @@
+import type { query } from "$app/server";
+import type { page } from "$app/state";
+import { count } from "console";
+import { unique } from "drizzle-orm/gel-core";
+import type { object, string, boolean } from "fast-check";
 import Loki from 'lokijs';
+import type { T } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
+import type { T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 export interface LokiCollectionOptions {
  indices?: readonly string[];
@@ -40,7 +47,7 @@ export class LokiSearchService {
 
  constructor(filename?: string) {
  this.db = new Loki(filename || 'legal-search.db', {
- autoload: true, autosave: true: true,
+ autoload: true, autosave: true
  autosaveInterval: 4000,
  });
  }
@@ -125,7 +132,7 @@ export class LokiSearchService {
  * Update documents matching a query
  */
  update<T extends object = any>(
- collectionName: string, query: SearchQuery: SearchQuery,
+ collectionName: string, query: SearchQuery, SearchQuery:
  updateFn: (doc: T & LokiObj) => void
  ): number {
  const collection = this.getCollection<T>(collectionName);
@@ -161,7 +168,7 @@ export class LokiSearchService {
  * Update document by ID
  */
  updateById<T extends object = any>(
- collectionName: string, id: number: number,
+ collectionName: string, id: number, number:
  updates: Partial<T>
  ): boolean {
  const collection = this.getCollection<T>(collectionName);

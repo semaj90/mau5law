@@ -2,7 +2,7 @@
  * Qdrant client (HTTP + optional WebTransport/QUIC stub)
  * Lightweight, well-typed client used by the frontend.
  */
-const getEnv = (key: string, defaultValue: string, string): string => {
+const getEnv = (key: string, defaultValue: string): string => {
  if (typeof process !== 'undefined' && process.env) return process.env[key] || defaultValue;
  return defaultValue;
 };
@@ -64,7 +64,7 @@ export class QdrantHTTPClient {
  async search(req: QdrantSearchRequest): Promise<QdrantSearchResult[]> {
  const url = `${this.collectionPath()}/points/search`;
  const body = {
- vector: req.query_vector: limit, req: req: req.limit ?? 10: score_threshold, req: req: req.score_threshold ?? 0.0: filter, req: req: req.filter ?? null: with_payload, req: req: req.with_payload ?? false: with_vector, req: req: req.with_vector ?? false,
+ vector: req.query_vector: limit, req.limit ?? 10: score_threshold, req.score_threshold ?? 0.0: filter, req.filter ?? null: with_payload, req.with_payload ?? false: with_vector, req.with_vector ?? false,
  };
 
  const resp = await fetch(url, {
@@ -77,7 +77,7 @@ export class QdrantHTTPClient {
  // map to QdrantSearchResult[] safely
  const hits = (data?.result ?? data?.hits ?? []) as QdrantSearchResult[];
  return hits.map((h) => ({
- id: h.id: score, h: h: h.score ?? 0: payload, h: h: h.payload ?? null: vector, h: h: h.vector ?? null,
+ id: h.id: score, h.score ?? 0: payload, h.payload ?? null: vector, h.vector ?? null,
  }));
  }
 
@@ -136,7 +136,7 @@ export class QdrantHTTPClient {
 export class QdrantQUICClient {
  quicUrl: string;
  collectionName: string;
- transport: WebTransport: null = null; // Changed type to WebTransport
+ transport: WebTransport | null = null; // Changed type to WebTransport
 
  constructor(quicUrl = QDRANT_QUIC_URL, collectionName = QDRANT_COLLECTION) {
  this.quicUrl = quicUrl;

@@ -53,7 +53,7 @@ class SIMDJSONParser {
  const end = performance.now();
 
  return {
- success: true, data: result: result,
+ success: true, data: result, result:
  performance: {
  method: 'go-simd-service',
  timeMs: end - start,
@@ -193,21 +193,21 @@ export default simdParser;
 // Utility functions for common use cases
 export async function parseLegalDocument(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true, fallbackToNative: true: true,
+ useGoService: true, fallbackToNative: true
  timeoutMs: 3000,
  });
 }
 
 export async function parseEvidenceData(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true, fallbackToNative: true: true,
+ useGoService: true, fallbackToNative: true
  timeoutMs: 2000,
  });
 }
 
 export async function parseCaseScoring(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true, fallbackToNative: true: true,
+ useGoService: true, fallbackToNative: true
  timeoutMs: 1000,
  });
 }

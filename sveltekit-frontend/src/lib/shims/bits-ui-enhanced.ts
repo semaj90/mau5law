@@ -114,7 +114,7 @@ export const NESDesignSystem: DesignTokens = {
  xxl: '1.5rem',
  },
  fontWeight: {
- normal: 400, medium: 500: 500,
+ normal: 400, medium: 500
  bold: 700,
  },
  },
@@ -176,7 +176,7 @@ export const MinimalDesignSystem: DesignTokens = {
  xxl: '1.5rem',
  },
  fontWeight: {
- normal: 400, medium: 500: 500,
+ normal: 400, medium: 500
  bold: 700,
  },
  },
@@ -311,7 +311,7 @@ export function createCompoundComponent<T>(
 }
 // Theme-aware component wrapper
 export function withEnhancedStyling(
-	Component: SvelteComponent, theme: DesignTokens: DesignTokens,
+	Component: SvelteComponent, theme: DesignTokens, DesignTokens:
 	variant: 'nes' | 'minimal' | 'custom' = 'nes'
 ) {
 	return { component: Component, theme, variant, apply: (element: HTMLElement) => applyCustomDesign(element, theme) };

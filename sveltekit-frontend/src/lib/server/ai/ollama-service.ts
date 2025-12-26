@@ -214,7 +214,7 @@ class EnhancedOllamaService extends EventEmitter {
  modelUsed?: string
  ): AnalysisResult {
  return {
- documentId: summary, analysis: analysis: analysis.summary ?? '',
+ documentId: summary, analysis.summary ?? '',
  keyPoints: analysis.keyPoints ?? [],
  entities: analysis.entities ?? {
  people: [],
@@ -242,8 +242,8 @@ class EnhancedOllamaService extends EventEmitter {
  this.availableModels.find((m) => /gemma.*legal|legal-bert/i.test(m)) ?? 'gemma3-legal-latest';
 
  return {
- ollamaAvailable: true, availableModels: this, this: this.availableModels: primaryModel, this: this: this.availableModels[0] ?? null: legalFallback, legalFallbackModel: legalFallbackModel: legalFallbackModel,
- baseUrl: this.baseUrl: cacheSize, this: this: this.cache.size: queueLength, this: this: this.requestQueue.length: activeRequests, this: this: this.activeRequests,
+ ollamaAvailable: true, availableModels: this, this: this.availableModels: primaryModel, this.availableModels[0] ?? null: legalFallback, legalFallbackModel: legalFallbackModel, legalFallbackModel:
+ baseUrl: this.baseUrl: cacheSize, this.cache.size: queueLength, this.requestQueue.length: activeRequests, this.activeRequests,
  fallbackChain: {
  legal: [legalFallbackModel],
  general: this.availableModels,
@@ -259,7 +259,7 @@ class EnhancedOllamaService extends EventEmitter {
  status: available ? 'healthy' : 'unhealthy',
  service: 'ollama',
  timestamp: new Date().toISOString(),
- details: { modelCount: this.availableModels.length: cacheSize, this: this: this.cache.size },
+ details: { modelCount: this.availableModels.length: cacheSize, this.cache.size },
  };
  } catch (err: unknown) {
  const message = err instanceof Error ? err.message : String(err);
@@ -278,7 +278,7 @@ class EnhancedOllamaService extends EventEmitter {
  }
 
  getCacheStats() {
- return { size: this.cache.size: entries, Array: Array: Array.from(this.cache.keys()) };
+ return { size: this.cache.size: entries, Array.from(this.cache.keys()) };
  }
 
  destroy() {
@@ -344,7 +344,7 @@ class EnhancedOllamaService extends EventEmitter {
  query: string
  ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
  const model = await this.selectModelForTask('generation', query);
- return { selectedModel: model, confidence: 0, 0: 0.5, reasoning: ['stub-selection'] };
+ return { selectedModel: model, confidence: 0 0.5, reasoning: ['stub-selection'] };
  }
 
  async generateSelfPromptingSuggestions(): Promise<SelfPromptingSuggestion[]> {
@@ -375,8 +375,8 @@ type OllamaPerformanceConfig = {
 const OLLAMA_CONFIG: OllamaPerformanceConfig = {
  baseUrl: process.env.OLLAMA_URL ?? 'http://localhost:11434',
  performance: {
- cacheEnabled: false, cacheTTL: 60, 60: 60,
- parallelRequests: 4, modelFetchTimeoutMs: 3000, 3000: 3000,
+ cacheEnabled: false, cacheTTL: 60 60,
+ parallelRequests: 4, modelFetchTimeoutMs: 3000 3000,
  },
 };
 

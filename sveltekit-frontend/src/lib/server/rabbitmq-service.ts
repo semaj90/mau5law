@@ -1,5 +1,7 @@
 // sveltekit-frontend/src/lib/server/rabbitmq-service.ts
 
+import { T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js"
+
 // Minimal, stable surface that matches existing imports across the app.
 
 export interface DocumentProcessingJob {

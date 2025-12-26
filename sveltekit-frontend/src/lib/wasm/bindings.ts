@@ -10,8 +10,8 @@ export interface VectorOperationsModule {
  manhattanDistance(a: Float32Array, b: Float32Array): number;
  normalize(vec: Float32Array): Float32Array;
  zScoreNormalize(vec: Float32Array): Float32Array;
- computeBatchSimilarity(query: Float32Array, docs: Float32Array: Float32Array, docCount: number, dims: number): number: Float32Array;
- batchNormalizeVectors(vecs: Float32Array, count: number: number, dims): number: Float32Array;
+ computeBatchSimilarity(query: Float32Array, docs: Float32Array, Float32Array: docCount: number, dims: number): number: Float32Array;
+ batchNormalizeVectors(vecs: Float32Array, count: number: number): number: Float32Array;
  hashEmbedding(vec: Float32Array): number;
  allocateVectorMemory(size: number): number
 }

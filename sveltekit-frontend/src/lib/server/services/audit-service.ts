@@ -46,7 +46,7 @@ export interface AuditLogResult {
  * Requirements: 6.1
  */
 export async function logCreate(
- resourceType: AuditResourceType, resourceId: string: string,
+ resourceType: AuditResourceType, resourceId: string, string:
  newValues: Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
@@ -68,7 +68,7 @@ export async function logCreate(
  * Requirements: 6.2
  */
 export async function logUpdate(
- resourceType: AuditResourceType, resourceId: string: string,
+ resourceType: AuditResourceType, resourceId: string, string:
  oldValues: Record<string, unknown>,
  newValues: Record<string, unknown>,
  userId?: string
@@ -91,7 +91,7 @@ export async function logUpdate(
  * Requirements: 6.3
  */
 export async function logDelete(
- resourceType: AuditResourceType, resourceId: string: string,
+ resourceType: AuditResourceType, resourceId: string, string:
  deletedValues: Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
@@ -100,7 +100,7 @@ export async function logDelete(
  resourceType,
  resourceId,
  operation: 'DELETE',
- oldValues: deletedValues, newValues: null: null,
+ oldValues: deletedValues, newValues: null, null:
  };
 
  const [result] = await db.insert(auditLog).values(entry).returning();

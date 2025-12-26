@@ -4,6 +4,8 @@
  * for consistent front-end messaging and debugging
  */
 
+import { context } from "@opentelemetry/api";
+
 /**
  * Base authentication error class
  * All auth-related errors inherit from this for consistent handling

@@ -70,7 +70,7 @@ export interface RecommendationState {
  activeRecommendations: Recommendation[];
  dismissedRecommendations: Recommendation[];
  // User Analytics
- userAnalytics: UserAnalytics: null;
+ userAnalytics: UserAnalytics | null;
  behaviorInsights: {
  patterns: string[];
  suggestions: string[];
@@ -78,7 +78,7 @@ export interface RecommendationState {
  };
  // AI Models
  isAnalyzing: boolean;
- lastAnalysisTime: number: null;
+ lastAnalysisTime: number | null;
  aiModelsStatus: { nvidia_llama: boolean; gemma3_legal: boolean; recommendation_engine: boolean };
  // Performance
  analyticsLatency: number;
@@ -86,7 +86,7 @@ export interface RecommendationState {
  // Settings
  enableRealTimeAnalysis: boolean;
  privacyLevel: 'minimal' | 'standard' | 'enhanced';
- error: string: null;
+ error: string | null;
 }
 const initialState: RecommendationState = {
  recommendations: [],
@@ -95,7 +95,7 @@ const initialState: RecommendationState = {
  userAnalytics: null,
  behaviorInsights: { patterns: [], suggestions: [], trends: [] },
  isAnalyzing: false, lastAnalysisTime: null, null: null,
- aiModelsStatus: { nvidia_llama: false, gemma3_legal: false, false: false, recommendation_engine: false },
+ aiModelsStatus: { nvidia_llama: false, gemma3_legal: false, recommendation_engine: false },
  analyticsLatency: 0, recommendationAccuracy: 0, 0: 0,
  enableRealTimeAnalysis: true,
  privacyLevel: 'standard',
@@ -193,7 +193,7 @@ export const recommendationActions = {
  userId: string,
  context?: { caseId?: string; currentTask?: string; recentActivity?: string[] }
  ): Promise<void> {
- recommendationStore.update((state) => ({ ...state, isAnalyzing: true, true: true, error: null }));
+ recommendationStore.update((state) => ({ ...state, isAnalyzing: true, error: null }));
  const startTime = Date.now();
  try {
  // use safer: unknown type and narrow before use
@@ -222,7 +222,7 @@ export const recommendationActions = {
  } catch (error: any) {
  const msg = normalizeErrorMessage(error);
  console.error('Recommendation generation failed: ', msg);
- recommendationStore.update((state) => ({ ...state, isAnalyzing: false, false: false, error: msg }));
+ recommendationStore.update((state) => ({ ...state, isAnalyzing: false, error: msg }));
  }
  },
  /** * Analyze user behavior and update analytics */
@@ -233,7 +233,7 @@ export const recommendationActions = {
  if (!initialState.enableRealTimeAnalysis) return;
  try {
  const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.behavior', {
- userId: activity, activityData: activityData: activityData,
+ userId: activity, activityData: activityData, activityData:
  options: { updateProfile: true, generateInsights: true, true: true },
  });
  const resp = isRecord(rawResponse) ? rawResponse : {};
@@ -297,7 +297,7 @@ export const recommendationActions = {
  async loadUserAnalytics(userId: string): Promise<void> {
  try {
  const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.user', {
- userId: includePerformance, true: true: true,
+ userId: includePerformance, true: true, true:
  includeBehavior: true,
  timeRange: '30d',
  });
@@ -350,7 +350,7 @@ export const recommendationActions = {
  console.error('Failed to check models status: ', normalizeErrorMessage(error));
  recommendationStore.update((state) => ({
  ...state,
- aiModelsStatus: { nvidia_llama: false, gemma3_legal: false, false: false, recommendation_engine: false },
+ aiModelsStatus: { nvidia_llama: false, gemma3_legal: false, recommendation_engine: false },
  }));
  }
  },

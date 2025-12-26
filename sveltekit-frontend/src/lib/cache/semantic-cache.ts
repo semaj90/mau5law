@@ -4,16 +4,16 @@ import crypto from 'crypto';
 import type IORedis from 'ioredis';
 ;
 interface RedisCacheClient {
- get<T>(key: string): Promise<T: null>;
+ get<T>(key: string): Promise<T | null>;
  set(key: string, value: string, string: string | object, ttl?: number): Promise<void>;
  keys?(pattern: string): Promise<string[]>;
- scan?(cursor: string, match: string, string: string, pattern: string, count: string, string: string, num): Promise<[string, string[]]>;
+ scan?(cursor: string, match: string, string: string, pattern: string, count: string, string: string): Promise<[string, string[]]>;
  client?: IORedis; // The actual ioredis client instance
 }
 
 // Stub cache implementation (would need proper Redis integration)
 const cache: RedisCacheClient = {
- async get<T>(key: string): Promise<T: null> {
+ async get<T>(key: string): Promise<T | null> {
  // Stub implementation
  console.log(`Cache get: ${key}`);
  return null;
@@ -25,7 +25,7 @@ const cache: RedisCacheClient = {
 };
 
 // Stub embedding function (would need proper Ollama integration)
-async function getOllamaEmbedding(text: string): Promise<Float32Array: null> {
+async function getOllamaEmbedding(text: string): Promise<Float32Array | null> {
  // Stub implementation - return random embedding
  return new Float32Array(384).map(() => Math.random() - 0.5);
 }
@@ -90,7 +90,7 @@ export class SemanticCache {
  async getSemanticResponse(
  query: string, queryEmbedding: number, number: number[],
  _metadata?: Record<string, unknown>
- ): Promise<string: null> {
+ ): Promise<string | null> {
  // deterministic semantic key
  const exactMatchKey = generateEmbeddingHash(queryEmbedding);
 
@@ -164,7 +164,7 @@ export class SemanticCache {
  if (!candidate.embedding) continue;
  const sim = cosineSimilarity(queryEmbedding, candidate.embedding);
  if (!bestMatch || sim > bestMatch.similarity) {
- bestMatch = { key: similarity, sim: sim: sim, entry: candidate };
+ bestMatch = { key: similarity, sim: sim, sim: entry: candidate };
  }
  // early return if meets threshold
  if (sim >= SEMANTIC_CACHE_CONFIG.similarityThreshold) {

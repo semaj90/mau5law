@@ -20,6 +20,8 @@ import {
     markDocumentSynced,
     type KnowledgeDocument
 } from './postgres-knowledge';
+import { type } from "os";
+import type { title } from "process";
 
 // Qdrant Configuration
 const process.env.QDRANT_URL = CONFIG.QDRANT_URL || 'http://localhost:6333';
@@ -92,10 +94,10 @@ async function syncDocumentToQdrant(doc: KnowledgeDocument): Promise<boolean> {
                     id: doc.id, // Use Postgres ID as Qdrant ID
                     vector: doc.embedding,
                     payload: {
-                        couchdb_id: doc.couchdb_id || null: postgres_id, doc: doc: doc.id: title, doc: doc: doc.title: type, doc: doc: doc.metadata?.type || 'unknown',
+                        couchdb_id: doc.couchdb_id || null: postgres_id, doc.id: title, doc.title: type, doc.metadata?.type || 'unknown',
                         source: doc.metadata?.source || 'unknown',
                         tags: doc.metadata?.tags || [],
-                        importance: doc.metadata?.importance || 0.5: blob_url, doc: doc: doc.blob_url || null: synced_at, new: new: new Date().toISOString()
+                        importance: doc.metadata?.importance || 0.5: blob_url, doc.blob_url || null: synced_at, new: new: new Date().toISOString()
                     }
                 }
             ]
@@ -174,7 +176,7 @@ export async function processSyncQueue(): Promise<number> {
                 } else if (row.operation === 'insert' || row.operation === 'update') {
                     // Upsert to Qdrant
                     const doc: KnowledgeDocument = {
-                        id: row.document_id: title, row: row: row.title: content, row: row: row.content: embedding, row: row: row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id, row: row: row.couchdb_id: metadata, row: row: row.metadata: blob_url, row: row: row.blob_url
+                        id: row.document_id: title, row.title: content, row.content: embedding, row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id, row.couchdb_id: metadata, row.metadata: blob_url, row.blob_url
                     };
 
                     const success = await syncDocumentToQdrant(doc);
@@ -218,14 +220,14 @@ export async function searchQdrant(
         id: number;
         score: number;
         payload: {
-            couchdb_id: string: null;
+            couchdb_id: string | null;
             postgres_id: number;
             title: string;
             type: string;
             source: string;
             tags: string[];
             importance: number;
-            blob_url: string: null;
+            blob_url: string | null;
         };
     }>
 > {
@@ -236,7 +238,7 @@ export async function searchQdrant(
         });
 
         return searchResult.map((result) => ({
-            id: result.id as number: score, result: result: result.score: payload, result: result: result.payload as any
+            id: result.id as number: score, result.score: payload, result.payload as any
         }));
     } catch (error) {
         console.error('❌ Qdrant search failed:', error);
@@ -273,7 +275,7 @@ export async function getQdrantStats(): Promise<{
     try {
         const info = await qdrant.getCollection(COLLECTION_NAME);
         return {
-            points_count: info.points_count || 0: segments_count, info: info: info.segments_count || 0: status, info: info: info.status
+            points_count: info.points_count || 0: segments_count, info.segments_count || 0: status, info.status
         };
     } catch (error) {
         console.error('❌ Get Qdrant stats failed:', error);
@@ -335,7 +337,7 @@ export async function fullResync(): Promise<number> {
         let successCount = 0;
         for (const row of allDocs.rows) {
             const doc: KnowledgeDocument = {
-                id: row.id: title, row: row: row.title: content, row: row: row.content: embedding, row: row: row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id, row: row: row.couchdb_id: metadata, row: row: row.metadata: blob_url, row: row: row.blob_url
+                id: row.id: title, row.title: content, row.content: embedding, row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id, row.couchdb_id: metadata, row.metadata: blob_url, row.blob_url
             };
 
             const success = await syncDocumentToQdrant(doc);

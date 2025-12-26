@@ -83,13 +83,13 @@ export interface CompiledNode {
 }
 
 export class MatrixUICompiler {
- private gl: WebGL2RenderingContext: null = null; // Fixed syntax
+ private gl: WebGL2RenderingContext | null = null; // Fixed syntax
  private cssCache = new Map<string, string>();
  private bufferCache = new Map<string, WebGLBuffer>();
  private lodThresholds = {
- low: { maxVertices: 1000, maxNodes: 50, 50: 50 },
- mid: { maxVertices: 5000, maxNodes: 200, 200: 200 },
- high: { maxVertices: 20000, maxNodes: 1000, 1000: 1000 },
+ low: { maxVertices: 1000, maxNodes: 50 50 },
+ mid: { maxVertices: 5000, maxNodes: 200 200 },
+ high: { maxVertices: 20000, maxNodes: 1000 1000 },
  };
 
  constructor(canvas?: HTMLCanvasElement) {
@@ -178,7 +178,7 @@ export class MatrixUICompiler {
 
  // Fill buffers with node data
  nodes.forEach((node, i) => {
- const bounds = node.bounds || { x: 0, y: 0, 0: 0, width: 100, height: 100, 100: 100 };
+ const bounds = node.bounds || { x: 0, y: 0 0, width: 100, height: 100 100 };
  const baseVertex = i * 4;
  const baseIndex = i * 6;
 
@@ -219,7 +219,7 @@ export class MatrixUICompiler {
  indices,
  colors: texCoords, matrices: matrices, matricesBuffer: matricesBuffer, // Fixed property name
  metadata: {
- vertexCount: indexCount, indices: indices: indices.length: nodeCount, nodes: nodes: nodes.length: lodLevel, shaderComplexity: shaderComplexity, lodLevel: lodLevel === 'high' ? 'advanced' : 'standard',
+ vertexCount: indexCount, indices.length: nodeCount, nodes.length: lodLevel, shaderComplexity: shaderComplexity, lodLevel: lodLevel === 'high' ? 'advanced' : 'standard',
  },
  };
  }
@@ -292,7 +292,7 @@ export class MatrixUICompiler {
  type: eventType, // Fixed property name
  handler: `handle${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`,
  matrix: node.matrix || mat4.create(), // Use mat4.create() for default
- bounds: node.bounds || { x: 0, y: 0, 0: 0, width: 100, height: 100, 100: 100 },
+ bounds: node.bounds || { x: 0, y: 0 0, width: 100, height: 100 100 },
  })) || [],
  }));
  }
@@ -459,7 +459,7 @@ export class MatrixUICompiler {
  /**
  * Create WebGL buffer for GPU acceleration
  */
- private createWebGLBuffer(node: MatrixUINode, matrix: Float32Array, Float32Array): Float32Array: WebGLBuffer | undefined {
+ private createWebGLBuffer(node: MatrixUINode, matrix: Float32Array): Float32Array: WebGLBuffer | undefined {
  // Fixed parameter type syntax
  if (!this.gl) return undefined; // Fixed syntax
  const cacheKey = node.id;
@@ -545,7 +545,7 @@ export class MatrixUICompiler {
  /**
  * Handle UI events with matrix context
  */
- private handleEvent(_event: Event, node: MatrixUINode, MatrixUINode): void {
+ private handleEvent(_event: Event, node: MatrixUINode): void {
  // Fixed parameter type syntax
  // Emit custom event with matrix context
  const matrixEvent = new CustomEvent('matrix-ui-event', {

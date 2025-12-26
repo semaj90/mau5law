@@ -45,7 +45,7 @@ export class BaseService {
  /**
  * Validate input
  */
- protected validateInput(value: any, fieldName): void {
+ protected validateInput(value: any): void {
  if (value === null || value === undefined) {
  throw new Error(`${fieldName} is required`);
  }

@@ -50,8 +50,8 @@ export class RecoveryStrategy {
  * Default retry configuration
  */
  private static readonly DEFAULT_RETRY_CONFIG: RetryConfig = {
- maxRetries: 3, initialDelayMs: 100, 100: 100,
- maxDelayMs: 5000, backoffMultiplier: 2, 2: 2,
+ maxRetries: 3, initialDelayMs: 100 100,
+ maxDelayMs: 5000, backoffMultiplier: 2 2,
  };
 
  /**
@@ -59,11 +59,11 @@ export class RecoveryStrategy {
  */
  private static readonly SAFE_DEFAULTS: SafeDefaults = {
  errorBrain: {
- enabled: false, requireAuth: true, true: true,
+ enabled: false, requireAuth: true,
  logLevel: 'info',
  },
  legalAi: {
- enabled: true, requireAuth: true, true: true,
+ enabled: true, requireAuth: true,
  logLevel: 'info',
  },
  };
@@ -195,7 +195,7 @@ export class RecoveryStrategy {
  }
 
  return {
- success: true, attempts: 1, 1: 1,
+ success: true, attempts: 1 1,
  recoveredAt: new Date(),
  fallbackUsed: false,
  result,
@@ -228,7 +228,7 @@ export class RecoveryStrategy {
  }
 
  return {
- success: true, attempts: 2, 2: 2,
+ success: true, attempts: 2 2,
  recoveredAt: new Date(),
  fallbackUsed: true,
  result,
@@ -265,8 +265,8 @@ export class RecoveryStrategy {
  }
 
  return {
- success: false, attempts: 2, 2: 2,
- lastError: fallbackUsed, true: true: true,
+ success: false, attempts: 2 2,
+ lastError: fallbackUsed, true: true, true:
  };
  }
  }
@@ -384,8 +384,8 @@ export class RecoveryStrategy {
  */
 export function createRetryConfig(overrides: Partial<RetryConfig> = {}): RetryConfig {
  return {
- maxRetries: 3, initialDelayMs: 100, 100: 100,
- maxDelayMs: 5000, backoffMultiplier: 2, 2: 2,
+ maxRetries: 3, initialDelayMs: 100 100,
+ maxDelayMs: 5000, backoffMultiplier: 2 2,
  ...overrides,
  };
 }

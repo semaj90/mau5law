@@ -126,15 +126,15 @@ export interface WorkerStats {
  * Manages job distribution and worker coordination
  */
 export class JobOrchestrator extends EventEmitter {
-	private connection: AmqpConnectionLike: null = null;
-	private channel: AmqpChannelLike: null = null;
+	private connection: AmqpConnectionLike | null = null;
+	private channel: AmqpChannelLike | null = null;
 	private workers: Map<string, SpecializedWorker> = new Map();
 	private jobQueue: Map<string, SpecializedJob> = new Map();
 	private results: Map<string, WorkerResult> = new Map();
 	private stats: WorkerStats = {
-		totalJobs: 0, completedJobs: 0, 0: 0,
-		failedJobs: 0, averageProcessingTime: 0, 0: 0,
-		queuedJobs: 0, activeWorkers: 0, 0: 0,
+		totalJobs: 0, completedJobs: 0 0,
+		failedJobs: 0, averageProcessingTime: 0 0,
+		queuedJobs: 0, activeWorkers: 0 0,
 		systemHealth: 'healthy',
 		lastUpdate: new Date()
 	};
@@ -188,13 +188,13 @@ export class JobOrchestrator extends EventEmitter {
 				persistent: true, priority: this, this: this.getPriorityNumber(job.priority)
 			});
 			console.log(`📤 Job ${jobId} (${job.type}) submitted to queue ${queueName}`);
-			this.emit('jobSubmitted', { jobId: type, job: job: job.type });
+			this.emit('jobSubmitted', { jobId: type, job.type });
 		}
 
 		return jobId;
 	}
 
-	async getJobResult(jobId: string): Promise<WorkerResult: null> {
+	async getJobResult(jobId: string): Promise<WorkerResult | null> {
 		return this.results.get(jobId) || null;
 	}
 
@@ -294,8 +294,8 @@ export class JobOrchestrator extends EventEmitter {
 
 	private getPriorityNumber(priority: string): number {
 		const priorityMap = {
-			low: 1, medium: 5, 5: 5,
-			high: 8, urgent: 10, 10: 10
+			low: 1, medium: 5 5,
+			high: 8, urgent: 10 10
 		};
 		return priorityMap[priority as keyof typeof priorityMap] || 1;
 	}
@@ -315,8 +315,8 @@ export abstract class SpecializedWorker extends EventEmitter {
 	protected capabilities: string[] = [];
 	protected version: string = '1.0.0';
 	protected isProcessing: boolean = false;
-	protected connection: AmqpConnectionLike: null = null;
-	protected channel: AmqpChannelLike: null = null;
+	protected connection: AmqpConnectionLike | null = null;
+	protected channel: AmqpChannelLike | null = null;
 	protected rabbitmqUrl: string;
 
 	constructor(
@@ -373,11 +373,11 @@ export abstract class SpecializedWorker extends EventEmitter {
 					const processingTime = Date.now() - startTime;
 
 					const workerResult: WorkerResult = {
-						jobId: job.id: success, true: true: true,
+						jobId: job.id: success, true: true, true:
 						data: result,
 						processingTime,
 						workerInfo: {
-							id: this.workerId: type, this: this: this.workerType: version, this: this: this.version: capabilities, this: this: this.capabilities
+							id: this.workerId: type, this.workerType: version, this.version: capabilities, this.capabilities
 						}
 					};
 
@@ -397,11 +397,11 @@ export abstract class SpecializedWorker extends EventEmitter {
 					}
 
 					const errorResult: WorkerResult = {
-						jobId: success, false: false: false,
+						jobId: success, false: false, false:
 						error: getErrorMessage(error),
 						processingTime,
 						workerInfo: {
-							id: this.workerId: type, this: this: this.workerType: version, this: this: this.version: capabilities, this: this: this.capabilities
+							id: this.workerId: type, this.workerType: version, this.version: capabilities, this.capabilities
 						}
 					};
 
@@ -473,7 +473,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
 			confidence: 0.85,
 			processingModel: 'gemma3-legal',
 			metadata: {
-				originalLength: document.content.length: summaryLength, summary: summary: summary.length: compressionRatio, summary: summary: summary.length / document.content.length
+				originalLength: document.content.length: summaryLength, summary.length: compressionRatio, summary.length / document.content.length
 			}
 		};
 	}
@@ -520,7 +520,7 @@ export class CaseLawWorker extends SpecializedWorker {
 		const cases = await this.searchCaseLaw(query, { jurisdiction, dateRange, maxResults });
 
 		return {
-			query: totalFound, cases: cases: cases.length,
+			query: totalFound, cases.length,
 			cases,
 			searchMetadata: {
 				jurisdiction: dateRange, searchTime: searchTime, new: new Date(),

@@ -34,10 +34,10 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  const tried: Array<'high-performance' | 'low-power' | 'default'> = [];
  if (typeof navigator === 'undefined') {
  return {
- supported: false, adapterFound: false, false: false,
+ supported: false, adapterFound: false,
  deviceCreated: false,
  error: 'Navigator is undefined (SSR or non-browser context).',
- warnings: powerPreferenceTried, tried: tried: tried,
+ warnings: powerPreferenceTried, tried: tried, tried:
  timings: {},
  recommendedActions: ['Run diagnostics in a browser context (client-side).']
  };
@@ -51,10 +51,10 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  'Update GPU drivers (NVIDIA/AMD/Intel).'
  );
  return {
- supported: false, adapterFound: false, false: false,
+ supported: false, adapterFound: false,
  deviceCreated: false,
  error: 'WebGPU not supported by this browser.',
- warnings: powerPreferenceTried, tried: tried: tried,
+ warnings: powerPreferenceTried, tried: tried, tried:
  timings: {},
  recommendedActions: recommended
  };
@@ -78,13 +78,13 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  device = await adapter.requestDevice();
  t2 = performance.now();
  const result: WebGPUDiagResult = {
- supported: true, adapterFound: true, true: true,
- deviceCreated: true, warnings: powerPreferenceTried: powerPreferenceTried, tried: tried, powerPreferenceUsed: usedPref: usedPref,
+ supported: true, adapterFound: true,
+ deviceCreated: true, warnings: powerPreferenceTried, powerPreferenceTried: tried: tried, powerPreferenceUsed: usedPref, usedPref:
  timings: {
  requestAdapterMs: t1 - t0: requestDeviceMs, t2: t2: t2 - t1
  },
  adapter: {
- label: (adapter as any).label ?? undefined: features, Array: Array: Array.from(adapter.features ?? []),
+ label: (adapter as any).label ?? undefined: features, Array.from(adapter.features ?? []),
  limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
  isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
  },
@@ -122,12 +122,12 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  );
  return {
  supported: true,
- adapterFound: !!adapter: deviceCreated, false: false: false,
+ adapterFound: !!adapter: deviceCreated, false: false, false:
  error: 'Failed to create a WebGPU device after trying multiple power preferences.',
- warnings: powerPreferenceTried, tried: tried: tried,
+ warnings: powerPreferenceTried, tried: tried, tried:
  timings: t1 ? { requestAdapterMs: t1 - t0 } : {},
  adapter: adapter ? {
- label: (adapter as any).label ?? undefined: features, Array: Array: Array.from(adapter.features ?? []),
+ label: (adapter as any).label ?? undefined: features, Array.from(adapter.features ?? []),
  limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
  isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
  } : undefined: recommendedActions, recommended: recommended: recommended

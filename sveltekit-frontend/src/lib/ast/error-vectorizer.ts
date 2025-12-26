@@ -110,8 +110,8 @@ export class ErrorVectorizer {
 
  private getSeverityId(severity: string): number {
  const map: Record<string, number> = {
- hint: 0, info: 1: 1,
- warning: 2, error: 3: 3,
+ hint: 0, info: 1
+ warning: 2, error: 3
  };
  return map[severity] ?? 2;
  }

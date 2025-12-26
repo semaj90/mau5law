@@ -48,7 +48,7 @@ export async function runClusteringWorkflow(
  context: {
  ...snapshot.context, previousLabels: snapshot, snapshot: snapshot.context.previousLabels
  ? Object.fromEntries(snapshot.context.previousLabels)
- : undefined: currentLabels, snapshot: snapshot: snapshot.context.currentLabels
+ : undefined: currentLabels, snapshot.context.currentLabels
  ? Object.fromEntries(snapshot.context.currentLabels)
  : undefined,
  },
@@ -76,7 +76,7 @@ export async function runClusteringWorkflow(
  resolve({
  jobId,
  status: 'timeout',
- context: finalSnapshot?.context || input: executionTimeMs, Date: Date: Date.now() - startTime: error, new: new: new Error(`Clustering job timeout after ${timeoutMs}ms`),
+ context: finalSnapshot?.context || input: executionTimeMs, Date.now() - startTime: error, new: new: new Error(`Clustering job timeout after ${timeoutMs}ms`),
  });
  }, timeoutMs);
 
@@ -89,7 +89,7 @@ export async function runClusteringWorkflow(
 /**
  * Get current job status from Redis
  */
-export async function getJobStatus(jobId: string): Promise<ClusteringSnapshot: null> {
+export async function getJobStatus(jobId: string): Promise<ClusteringSnapshot | null> {
  const data = await redisClient.get(`clustering:job:${jobId}:state`);
  if (!data) return null;
 

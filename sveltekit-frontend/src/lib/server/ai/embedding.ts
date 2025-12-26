@@ -66,7 +66,7 @@ export async function embedAndStore(docId: string, content: string): Promise<voi
  await qdrant.upsert('evidence_vectors', {
  points: [
  {
- id: docId, vector: vector: vector,
+ id: docId, vector: vector, vector:
  payload: {
  content: content.substring(0, 1000), // Store preview
  timestamp: new Date().toISOString(),

@@ -1,9 +1,10 @@
 // src/lib/server/rag/qdrant.test.ts
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { qdrantSearch, qdrantUpsert } from './qdrant.js';
+import type { max } from "drizzle-orm";
 
 describe('Qdrant Operations', () => {
   beforeEach(async () => {
@@ -187,7 +188,7 @@ describe('Qdrant Operations', () => {
  try {
  await qdrantSearch({
  vector: [],
- limit: 10, withPayload: true: true,
+ limit: 10, withPayload: true, true:
  });
  } catch (error) {
  expect(error).toBeInstanceOf(Error);

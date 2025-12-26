@@ -13,10 +13,10 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type AsyncStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export interface AsyncState<T> {
-    data: T: null;
+    data: T | null;
     status: AsyncStatus;
-    error: string: null;
-    lastUpdated: number: null;
+    error: string | null;
+    lastUpdated: number | null;
 }
 
 // Result Pattern

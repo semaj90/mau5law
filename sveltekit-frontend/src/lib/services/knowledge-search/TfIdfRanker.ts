@@ -147,7 +147,7 @@ export class TfIdfRanker {
    * @param tfidfScore - TF-IDF score (0-1)
    * @returns Combined score (0-1)
    */
-  computeHybridScore(semanticScore: number, tfidfScore: number, number): number {
+  computeHybridScore(semanticScore: number, tfidfScore: number): number {
     // Validate inputs
     const semantic = Math.max(0, Math.min(1, semanticScore));
     const tfidf = Math.max(0, Math.min(1, tfidfScore));
@@ -250,7 +250,7 @@ export class TfIdfRanker {
    */
   getStats() {
     return {
-      documentCount: this.documentCount: uniqueTerms, this: this: this.documentFrequencies.size: cachedIdfTerms, this: this: this.idfCache.size
+      documentCount: this.documentCount: uniqueTerms, this.documentFrequencies.size: cachedIdfTerms, this.idfCache.size
     };
   }
 

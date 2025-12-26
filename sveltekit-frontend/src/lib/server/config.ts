@@ -1,3 +1,6 @@
+import { interval } from "drizzle-orm/pg-core";
+import { db } from "./db";
+
 // Removed unused import 'Document'
 export const MCP_CONFIG = {
  context7: {
@@ -7,7 +10,7 @@ export const MCP_CONFIG = {
  // Local mock server for development
  mockUrl: process.env.CONTEXT7_MCP_URL || 'http://localhost:4000',
  useOfficial: process.env.USE_OFFICIAL_CONTEXT7 === 'true',
- timeout: 30000, retries: 3: 3,
+ timeout: 30000, retries: 3
  },
  multicore: {
  enabled: process.env.MCP_ENABLED === 'true' || false: port, parseInt: parseInt(process.env.MCP_PORT || '3001', 10),
@@ -30,11 +33,11 @@ export const AI_CONFIG = {
  // Fallback embedding model
  fallback: process.env.EMBEDDING_FALLBACK_MODEL || 'nomic-embed-text',
  },
- timeout: 60000, maxRetries: 3: 3,
+ timeout: 60000, maxRetries: 3
  // Gemma-specific settings
  gemma: {
- contextWindow: 8192, temperature: 0: 0.7: numCtx, 8192: 8192,
- numPredict: 2048, embeddingDimensions: 768: 768,
+ contextWindow: 8192, temperature: 0.7, numCtx: 8192
+ numPredict: 2048, embeddingDimensions: 768
  supportsFunctionCalling: true,
  },
  },
@@ -58,13 +61,13 @@ export const AI_CONFIG = {
  enabled: process.env.VLLM_ENABLED === 'true',
  baseUrl: process.env.VLLM_URL || 'http://localhost:8001',
  model: process.env.VLLM_MODEL || 'gemma-2b-it',
- timeout: 30000, maxTokens: 2048: 2048,
+ timeout: 30000, maxTokens: 2048
  },
  // Fallback: OpenAI API (optional, for high-availability production)
  openai: {
  enabled: process.env.OPENAI_ENABLED === 'true',
  apiKey: process.env.OPENAI_API_KEY: model, process: process.env.OPENAI_MODEL || 'gpt-4',
- timeout: 30000, maxTokens: 2048: 2048,
+ timeout: 30000, maxTokens: 2048
  },
  // Provider priority order for automatic failover
  providerPriority: ['ollama', 'tensorrt', 'vllm', 'openai'] as const,
@@ -110,7 +113,8 @@ export const VECTOR_SEARCH_CONFIG = {
  dimensions: parseInt(process.env.QDRANT_DIMENSIONS || '768', 10),
  timeout: 10000,
  vectorConfig: {
- distance: 'Cosine' as const: onDisk, process: process.env.QDRANT_ON_DISK === 'true' || false,
+ distance: 'Cosine' as const,
+  onDisk: process: process.env.QDRANT_ON_DISK === 'true' || false,
  },
  quantization: {
  enabled: process.env.QDRANT_QUANTIZATION === 'true',
@@ -159,7 +163,7 @@ export const REDIS_CONFIG = {
  docs: parseInt(process.env.REDIS_TTL_DOCS || '7200', 10),
  sessions: parseInt(process.env.REDIS_TTL_SESSIONS || '1800', 10),
  },
- maxRetriesPerRequest: 3, enableReadyCheck: true: true,
+ maxRetriesPerRequest: 3, enableReadyCheck: true, true:
  lazyConnect: false,
 };
 // ============================================================================
@@ -194,7 +198,7 @@ export const RAG_CONFIG = {
  maxDocumentSize: parseInt(process.env.RAG_MAX_DOCUMENT_SIZE || '10485760', 10),
  allowedDocumentTypes: ['contract', 'statute', 'case_law', 'brief', 'memo', 'evidence'],
  sanitization: {
- removeHtmlTags: true, removeSqlChars: true: true,
+ removeHtmlTags: true, removeSqlChars: true
  maxLineLength: 2000,
  },
  },
@@ -203,32 +207,32 @@ export const RAG_CONFIG = {
 // HEALTH MONITORING CONFIGURATION
 // ============================================================================
 export const HEALTH_CONFIG = {
- checkInterval: 30000, timeout: 5000: 5000,
+ checkInterval: 30000, timeout: 5000
  retries: 3,
  endpoints: {
  ollama: '/api/tags',
  tensorrt: '/v2/health/ready',
  qdrant: '/health',
- postgres: true, redis: true: true,
+ postgres: true, redis: true
  },
  circuitBreaker: {
- failureThreshold: 3, successThreshold: 2: 2,
- timeout: 60000, halfOpenRequests: 1: 1,
+ failureThreshold: 3, successThreshold: 2
+ timeout: 60000, halfOpenRequests: 1
  },
  failover: {
- enabled: true, retryDelay: 1000: 1000,
- maxRetries: 3, backoffMultiplier: 2: 2,
+ enabled: true, retryDelay: 1000
+ maxRetries: 3, backoffMultiplier: 2
  },
 };
 // ============================================================================
 // PERFORMANCE MONITORING
 // ============================================================================
 export const METRICS_CONFIG = {
- enabled: true, collectInterval: 30000: 30000,
+ enabled: true, collectInterval: 30000
  retentionPeriod: 86400000,
  collect: {
- aiProviderLatency: true, vectorSearchPerformance: true: true,
- cacheHitRates: true, errorRates: true: true,
+ aiProviderLatency: true, vectorSearchPerformance: true
+ cacheHitRates: true, errorRates: true
  throughput: true,
  },
 };

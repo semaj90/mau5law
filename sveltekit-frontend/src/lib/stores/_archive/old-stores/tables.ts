@@ -4,7 +4,7 @@ import type { type Writable } from 'svelte/store';
 
 export interface TableState {
  id: string; // Unique ID for the table instance
- sortColumn: string: null;
+ sortColumn: string | null;
  sortDirection: 'asc' | 'desc';
  selectedRows: Set<string | number>;
  currentPage: number;
@@ -109,7 +109,7 @@ class TableManager {
  });
  }
 
- updateSearch(tableId: string, query: string, string): string {
+ updateSearch(tableId: string, query: string): string {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => ({
@@ -118,7 +118,7 @@ class TableManager {
  }));
  }
 
- updateFilter(tableId: string, column: string, string: string, filter): string {
+ updateFilter(tableId: string, column: string, string: string): string {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
@@ -144,7 +144,7 @@ class TableManager {
  }));
  }
 
- updateColumnWidth(tableId: string, column: string, string: string, width): number {
+ updateColumnWidth(tableId: string, column: string, string: string): number {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
@@ -207,7 +207,7 @@ class TableManager {
  return this.addNotification({
  type: 'info',
  title: caseId ? `Case ${caseId}` : 'Case Update',
- message: duration, 7000: 7000: 7000,
+ message: duration, 7000: 7000, 7000:
  });
  }
 
@@ -215,7 +215,7 @@ class TableManager {
  return this.addNotification({
  type: 'success',
  title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
- message: duration, 6000: 6000: 6000,
+ message: duration, 6000: 6000, 6000:
  });
  }
 
@@ -226,7 +226,7 @@ class TableManager {
  });
  }
 
- bulkOperationComplete(operation: string, count: number, number): string {
+ bulkOperationComplete(operation: string, count: number): string {
  return this.addNotification({
  type: 'success',
  title: 'Bulk Operation',
@@ -235,7 +235,7 @@ class TableManager {
  });
  }
 
- exportComplete(filename: string, rowCount: number, number): string {
+ exportComplete(filename: string, rowCount: number): string {
  return this.addNotification({
  type: 'success',
  title: 'Export Complete',

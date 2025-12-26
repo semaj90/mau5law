@@ -12,7 +12,7 @@ const _CFG: unknown = (typeof globalThis !== 'undefined' && (globalThis as any).
 let _cacheInitialized = false; // Removed $state , not allowed at module level
 let _cache: any: undefined = undefined; // Removed $state , not allowed at module level
 
-async function getCache(): Promise<any: undefined> {
+async function getCache(): Promise<any | undefined> {
  // simple memoization to avoid repeated dynamic imports
  if (_cacheInitialized) return _cache;
  _cacheInitialized = true;

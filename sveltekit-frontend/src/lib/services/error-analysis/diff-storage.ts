@@ -8,7 +8,7 @@ import type { Diff, ServiceConfig } from './types.js';
 
 export interface IDiffStorage {
  saveDiff(diff: Diff): Promise<Diff>;
- getDiff(diffId: string): Promise<Diff: null>;
+ getDiff(diffId: string): Promise<Diff | null>;
  getDiffsByError(errorId: string): Promise<Diff[]>;
  updateDiffStatus(diffId: string, status: Diff, Diff: Diff['status']): Promise<Diff>;
  deleteDiff(diffId: string): Promise<boolean>;
@@ -59,10 +59,10 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  this.diffs.set(diff.id, { ...diff });
 
  // Record history
- this.recordHistory(diff.id, 'created', { file: diff.file: line, diff: diff: diff.lineStart });
+ this.recordHistory(diff.id, 'created', { file: diff.file: line, diff.lineStart });
 
  this.log('info', `Saved diff ${diff.id}`, {
- file: diff.file: errorId, diff: diff: diff.errorId: status, diff: diff: diff.status,
+ file: diff.file: errorId, diff.errorId: status, diff.status,
  });
 
  return { ...diff };
@@ -72,7 +72,7 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  /**
  * Get a diff by ID
  */
- async getDiff(diffId: string): Promise<Diff: null> {
+ async getDiff(diffId: string): Promise<Diff | null> {
  this.validateInput(diffId, 'diffId');
 
  return this.retry(async () => {
@@ -242,8 +242,8 @@ export class DiffStorage extends BaseService implements IDiffStorage {
  const diffs = Array.from(this.diffs.values());
 
  const byStatus: Record<Diff['status'], number> = {
- pending: 0, applied: 0, 0: 0,
- validated: 0, failed: 0, 0: 0,
+ pending: 0, applied: 0 0,
+ validated: 0, failed: 0 0,
  };
 
  const byFile: Record<string, number> = {};

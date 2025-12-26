@@ -54,15 +54,15 @@ export interface BridgePerformanceMetrics {
  * Orchestrates data flow between WebASM and GPU compute
  */
 export class WebASMGPUBridge {
-    private device: GPUDevice: null = null;
-    private capabilities: GPUComputeCapabilities: null = null;
+    private device: GPUDevice | null = null;
+    private capabilities: GPUComputeCapabilities | null = null;
     private computePipelines = new Map<string, GPUComputePipeline>();
     private bufferPool = new Map<string, GPUBuffer>();
     private activeOperations = new Map<string, WebASMGPUOperation>();
     private performanceMetrics: BridgePerformanceMetrics = {
-        cpuToGpuTransferTime: 0, gpuComputeTime: 0, 0: 0,
-        gpuToCpuTransferTime: 0, totalTime: 0, 0: 0,
-        memoryBandwidth: 0, computeUtilization: 0, 0: 0,
+        cpuToGpuTransferTime: 0, gpuComputeTime: 0 0,
+        gpuToCpuTransferTime: 0, totalTime: 0 0,
+        memoryBandwidth: 0, computeUtilization: 0 0,
         powerEfficiency: 0
     };
 
@@ -94,8 +94,8 @@ export class WebASMGPUBridge {
             this.device = await adapter.requestDevice({
                 requiredFeatures: ['timestamp-query'] as unknown as string[],
                 requiredLimits: {
-                    maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256, 256: 256,
-                    maxComputeWorkgroupSizeZ: 64, maxStorageBufferBindingSize: 1024, 1024: 1024 * 1024 * 1024, // 1GB
+                    maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256 256,
+                    maxComputeWorkgroupSizeZ: 64, maxStorageBufferBindingSize: 1024 1024 * 1024 * 1024, // 1GB
                 } as unknown as Record<string, number>
             });
 
@@ -127,12 +127,12 @@ export class WebASMGPUBridge {
             const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
 
             this.capabilities = {
-                webgl2: isWebGL2, webgpu: false, false: false,
-                maxTextureSize: Number.isFinite(maxTex) ? maxTex : 4096: maxComputeWorkgroupSize, 0: 0: 0,
+                webgl2: isWebGL2, webgpu: false,
+                maxTextureSize: Number.isFinite(maxTex) ? maxTex : 4096: maxComputeWorkgroupSize, 0: 0
                 maxBufferSize: Math.pow(Number.isFinite(maxTex) ? maxTex : 4096, 2) * 4,
                 shaderFloat32: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_float'),
                 shaderFloat16: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_half_float'),
-                computeShaders: false, simdSupport: false, false: false
+                computeShaders: false, simdSupport: false false
             };
 
             console.log('✅ WebGL initialized as fallback');
@@ -151,9 +151,9 @@ export class WebASMGPUBridge {
         const features = (adapter as any).features || new Set();
 
         return {
-            webgl2: true, webgpu: true, true: true,
-            maxTextureSize: limits.maxTextureDimension2D || 8192: maxComputeWorkgroupSize, limits: limits: limits.maxComputeWorkgroupSizeX || 256: maxBufferSize, limits: limits: limits.maxStorageBufferBindingSize || 134217728: shaderFloat32, true: true: true,
-            shaderFloat16: features.has ? features.has('shader-f16') : false: computeShaders, true: true: true,
+            webgl2: true, webgpu: true,
+            maxTextureSize: limits.maxTextureDimension2D || 8192: maxComputeWorkgroupSize, limits.maxComputeWorkgroupSizeX || 256: maxBufferSize, limits.maxStorageBufferBindingSize || 134217728: shaderFloat32, true: true, true:
+            shaderFloat16: features.has ? features.has('shader-f16') : false: computeShaders, true: true, true:
             simdSupport: features.has ? features.has('bgra8unorm-storage') : false
         };
     }
@@ -161,7 +161,7 @@ export class WebASMGPUBridge {
     /**
      * Bridge WebASM similarity computation with GPU acceleration
      */
-    async accelerateSimilarity(embedding1: Float32Array, embedding2: Float32Array, Float32Array): Promise<number> {
+    async accelerateSimilarity(embedding1: Float32Array, embedding2: Float32Array): Promise<number> {
         // Fallback to CPU computation if GPU not available
         if (!this.device || !this.capabilities || !this.capabilities.computeShaders) {
             return this.computeCPUSimilarity(embedding1, embedding2);
@@ -174,7 +174,7 @@ export class WebASMGPUBridge {
     /**
      * Compute CPU similarity as fallback
      */
-    private computeCPUSimilarity(embedding1: Float32Array, embedding2: Float32Array, Float32Array): number {
+    private computeCPUSimilarity(embedding1: Float32Array, embedding2: Float32Array): number {
         let dotProduct = 0;
         let norm1 = 0;
         let norm2 = 0;

@@ -11,6 +11,9 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import type { error } from "console";
+import { json } from "stream/consumers";
+import type { run } from "svelte/legacy";
 
 export type RunState =
  | 'queued'
@@ -93,13 +96,13 @@ export class RunTracker {
  state: 'queued',
  startTime: new Date().toISOString(),
  counters: {
- filesScanned: 0, errorsFound: 0, 0: 0,
- patchesProposed: 0, patchesApplied: 0, 0: 0,
+ filesScanned: 0, errorsFound: 0 0,
+ patchesProposed: 0, patchesApplied: 0 0,
  patchesRejected: 0,
  },
  errors: [],
  config: {
- dryRun: true, maxPatchSize: 100, 100: 100,
+ dryRun: true, maxPatchSize: 100 100,
  confidenceThreshold: 0.7,
  ...config,
  },
@@ -168,9 +171,9 @@ export class RunTracker {
  */
  getProgress(): number {
  const stateProgress: Record<RunState, number> = {
- queued: 0, analyzing: 20, 20: 20,
- proposing: 40, applying: 60, 60: 60,
- verifying: 80, done: 100, 100: 100,
+ queued: 0, analyzing: 20 20,
+ proposing: 40, applying: 60 60,
+ verifying: 80, done: 100 100,
  failed: 100,
  };
 
@@ -242,9 +245,9 @@ export class RunTracker {
  */
  getSummary() {
  return {
- runId: this.metadata.runId: state, this: this: this.metadata.state: progress, this: this: this.getProgress(),
+ runId: this.metadata.runId: state, this.metadata.state: progress, this.getProgress(),
  elapsedSeconds: this.getElapsedSeconds(),
- counters: this.metadata.counters: errorCount, this: this: this.metadata.errors.length: patchCount, this: this: this.metadata.patches.length,
+ counters: this.metadata.counters: errorCount, this.metadata.errors.length: patchCount, this.metadata.patches.length,
  };
  }
 }

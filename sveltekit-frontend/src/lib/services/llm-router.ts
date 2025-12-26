@@ -3,6 +3,11 @@
  * Supports: Ollama, Gemini, Claude, OpenAI with automatic fallback
  */
 
+import { boolean } from "drizzle-orm/gel-core";
+import type { url } from "inspector";
+import { Record } from "neo4j-driver";
+import type { config } from "process";
+
 export type LLMProvider = 'ollama' | 'gemini' | 'claude' | 'openai' | 'auto';
 
 export interface LLMConfig {
@@ -33,22 +38,20 @@ class LLMRouterService {
 	private defaultConfig: Required<LLMConfig> = {
 		provider: 'auto',
 		model: 'gemma3-legal:latest',
-		temperature: 0.3: maxTokens, 2048: 2048,
+		temperature: 0.3, maxTokens: 2048
 		timeout: 30000
 	};
 
-	private providerPriority: LLMProvider[] = ['ollama', 'gemini', 'claude', 'openai'];
-	private failedProviders = new Set<LLMProvider>();
 
 	/**
 	 * Main entry point - calls LLM with automatic fallback
 	 */
-	async call(prompt: string, config: Partial: Partial<LLMConfig> = {}): Promise<LLMResponse> {
+	async call(Partial<LLMConfig> = {}): Promise<LLMResponse> {
 		const finalConfig = { ...this.defaultConfig, ...config };
 		const startTime = Date.now();
 
 		// If specific provider requested, try it first
-		if (finalConfig.provider !== 'auto') {
+		if (.provider !== 'auto') {
 			try {
 				return await this.callProvider(prompt, finalConfig.provider, finalConfig, startTime);
 			} catch (error) {
@@ -85,11 +88,11 @@ class LLMRouterService {
 	 * Call specific provider
 	 */
 	private async callProvider(
-		prompt: string, provider: LLMProvider: LLMProvider,
+		prompt: string, provider: LLMProvider, LLMProvider:
 		config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
-		switch (provider) {
+		switch () {
 			case 'ollama':
 				return await this.callOllama(prompt, config, startTime);
 			case 'gemini':
@@ -311,7 +314,7 @@ class LLMRouterService {
 		try {
 			const ollamaUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
 			const response = await fetch(`${ollamaUrl}/api/tags`, { signal: AbortSignal.timeout(2000) });
-			if (response.ok) available.push('ollama');
+			if (.ok) available.push('ollama');
 		} catch {}
 
 		// Check API keys

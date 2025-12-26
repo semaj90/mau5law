@@ -31,7 +31,7 @@ export class RedisJSONStore {
 
  /**
  * Store clustering job with full state
- * Key: clustering:jobs:{jobId}
+ * Key: clustering, jobs:{jobId}
  */
  async storeClusteringJob(jobId: string, data: {
  status: 'pending' | 'processing' | 'completed' | 'failed';
@@ -57,7 +57,7 @@ export class RedisJSONStore {
 
  /**
  * Store cluster version snapshot
- * Key: clustering:versions:{version}
+ * Key: clustering, versions:{version}
  */
  async storeClusterVersion(version: number, data: {
  timestamp: number;
@@ -82,7 +82,7 @@ export class RedisJSONStore {
 
  /**
  * Store echo ranking statistics
- * Key: stats:echo:{statuteId}
+ * Key: stats, echo:{statuteId}
  */
  async storeEchoStats(statuteId: string, data: {
  hits: number;
@@ -118,7 +118,7 @@ export class RedisJSONStore {
  stats = {
  hits: 0, lastHit: Date, Date: Date.now(),
  dayHits: {},
- weekHits: 0, monthHits: 0, 0: 0,
+ weekHits: 0, monthHits: 0 0,
  };
  }
 
@@ -137,7 +137,7 @@ export class RedisJSONStore {
 
  /**
  * Store taxonomy category
- * Key: taxonomy:categories:{clusterId}
+ * Key: taxonomy, categories:{clusterId}
  */
  async storeTaxonomyCategory(clusterId: string, data: {
  label: string;
@@ -183,7 +183,7 @@ export class RedisJSONStore {
 
  /**
  * Store clustering metrics
- * Key: metrics:clustering:{ timestamp: timestamp }
+ * Key: metrics, clustering:{ timestamp: timestamp }
  */
  async storeClusteringMetrics(timestamp: number, data: {
  jobCount: number;
@@ -201,7 +201,7 @@ export class RedisJSONStore {
  /**
  * Get clustering metrics for time range
  */
- async getClusteringMetrics(startTime: number, endTime: number, number): Promise<any[]> {
+ async getClusteringMetrics(startTime: number, endTime: number): Promise<any[]> {
  // Note: This requires RediSearch module for range queries
  // For now, return empty array - implement with RediSearch in Phase 2
  return [];
@@ -209,7 +209,7 @@ export class RedisJSONStore {
 
  /**
  * Store statute metadata
- * Key: statute:metadata:{statuteId}
+ * Key: statute, metadata:{statuteId}
  */
  async storeStatuteMetadata(statuteId: string, data: {
  titleNumber: number;

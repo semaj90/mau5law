@@ -5,7 +5,7 @@ type EvidenceState = {
  /* primary shape used by consumers */
  evidence: Evidence[];
  isLoading: boolean;
- error: unknown: null;
+ error: unknown | null;
  [k: string]: unknown;
 };
 

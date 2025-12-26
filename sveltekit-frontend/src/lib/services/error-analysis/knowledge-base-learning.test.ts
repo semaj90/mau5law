@@ -8,7 +8,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3, retryDelayMs: 100: 100,
+ maxRetries: 3, retryDelayMs: 100
  contextLines: 5,
 };
 
@@ -42,7 +42,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -50,7 +50,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -74,7 +74,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Test error',
  type: 'typescript',
  severity: 'error',
@@ -95,7 +95,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -112,7 +112,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -120,7 +120,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Test error',
  type: 'typescript',
  severity: 'error',
@@ -143,7 +143,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -151,7 +151,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -165,7 +165,7 @@ describe('KnowledgeBaseLearning', () => {
  const queryError: ErrorType = {
  id: 'error-2',
  file: 'test.ts',
- line: 2, column: 1: 1,
+ line: 2, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -186,7 +186,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Unknown error',
  type: 'svelte',
  severity: 'error',
@@ -208,7 +208,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Test error',
  type: 'typescript',
  severity: 'error',
@@ -231,7 +231,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -239,7 +239,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -266,7 +266,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -274,7 +274,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -307,7 +307,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -315,7 +315,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -348,7 +348,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -356,7 +356,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -388,7 +388,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -396,7 +396,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -426,7 +426,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -434,7 +434,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -483,7 +483,7 @@ describe('KnowledgeBaseLearning', () => {
  errorId: `error-${storedFixIds.length}`,
  file: spec.filePath: original, spec: spec.originalCode: modified, spec: spec.fixedCode: context, spec: spec.fixedCode,
  explanation: 'Test fix',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -562,7 +562,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: 'const x = 5',
  context: 'const x = 5;',
  explanation: 'Use const instead of let',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -570,7 +570,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: 'error-1',
  file: 'test.ts',
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: 'Variable should be const',
  type: 'typescript',
  severity: 'error',
@@ -632,7 +632,7 @@ describe('KnowledgeBaseLearning', () => {
  modified: `const x = ${i}`,
  context: `const x = ${i};`,
  explanation: 'Test fix',
- lineStart: 1, lineEnd: 1: 1,
+ lineStart: 1, lineEnd: 1
  status: 'applied',
  createdAt: new Date(),
  };
@@ -640,7 +640,7 @@ describe('KnowledgeBaseLearning', () => {
  const error: ErrorType = {
  id: `error-${i}`,
  file: `test-${i}.ts`,
- line: 1, column: 1: 1,
+ line: 1, column: 1
  message: `Error ${i}`,
  type: specs[i].errorType as 'typescript' | 'svelte',
  severity: 'error',

@@ -12,7 +12,7 @@ type LinkSource = 'ai' | 'user' | 'system';
 async function upsertCitationTag(
  namespace: TagNamespace, name: string, string: string,
  jurisdiction: string: null
-): Promise<string: undefined> {
+): Promise<string | undefined> {
  const rows = await sql`
  SELECT upsert_citation_tag(${namespace}, ${name}, ${jurisdiction}) AS id
  `;
@@ -22,7 +22,7 @@ async function upsertCitationTag(
 /**
  * Link a chunk to a tag
  */
-async function linkChunkTag(chunkId: string, tagId: string, string: string, source): Promise<void> {
+async function linkChunkTag(chunkId: string, tagId: string, string: string): Promise<void> {
  await sql`
  INSERT INTO chunk_tag_links (chunk_id, tag_id, source)
  VALUES (${chunkId}, ${tagId}, ${source})

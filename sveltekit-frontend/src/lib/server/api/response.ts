@@ -15,12 +15,12 @@ export async function withApiHandler(
  }
 }
 
-export async function parseRequestBody<T>(request: Request, schema): Promise<T> {
+export async function parseRequestBody<T>(request: Request): Promise<T> {
  const body = await request.json();
  return schema.parse(body);
 }
 
-export function createPagination(page: number, limit: number, total): number {
+export function createPagination(page: number, limit: number): number {
  return {
  page,
  limit,
@@ -31,7 +31,7 @@ export function createPagination(page: number, limit: number, total): number {
 
 export const CommonErrors = {
  Unauthorized: (message: string) => new Error(`Unauthorized: ${message}`),
- ValidationFailed: (field: string, message): string =>
+ ValidationFailed: (field: string): string =>
  new Error(`Validation failed for ${field}: ${message}`),
  BadRequest: (message: string) => new Error(`Bad request: ${message}`),
  NotFound: (resource: string) => new Error(`${resource} not found`),

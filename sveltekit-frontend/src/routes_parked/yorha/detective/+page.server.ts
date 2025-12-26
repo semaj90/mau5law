@@ -17,14 +17,14 @@ export const load: PageServerLoad = async ({ locals }) => {
  id: 'case-1',
  title: 'Corporate Espionage Investigation',
  status: 'active',
- createdAt: new Date('2024-01-15T10:30:00'),
+ createdAt: new Date('2024-01-15T00'),
  priority: 'high',
  },
  {
  id: 'case-2',
  title: 'Missing Person, Dr. Sarah Chen',
  status: 'active',
- createdAt: new Date('2024-01-16T14:20:00'),
+ createdAt: new Date('2024-01-16T00'),
  priority: 'medium',
  },
  ] as const;
@@ -34,14 +34,14 @@ export const load: PageServerLoad = async ({ locals }) => {
  id: 'evidence-1',
  title: 'Security Camera Footage',
  evidenceType: 'video',
- createdAt: new Date('2024-01-15T10:30:00'),
+ createdAt: new Date('2024-01-15T00'),
  caseTitle: 'Corporate Espionage Investigation',
  },
  {
  id: 'evidence-2',
  title: 'Witness Statement - John Doe',
  evidenceType: 'document',
- createdAt: new Date('2024-01-16T14:20:00'),
+ createdAt: new Date('2024-01-16T00'),
  caseTitle: 'Missing Person, Dr. Sarah Chen',
  },
  ] as const;

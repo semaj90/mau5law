@@ -31,7 +31,7 @@ export async function getProsecutorCases(prosecutorId: string) {
  with: {
  evidence: {
  columns: {
- id: true, status: true: true,
+ id: true, status: true
  documentType: true,
  },
  },
@@ -58,7 +58,7 @@ export async function getCaseWithEvidence(caseId: string, prosecutorId: string):
  * Update case title
  */
 export async function updateCaseTitle(
- caseId: string, prosecutorId: string: string,
+ caseId: string, prosecutorId: string, string:
  title: string
 ): Promise<boolean> {
  const result = await db

@@ -15,7 +15,7 @@ export const errorTimelineTable = pgTable(
  clusterId: text('cluster_id').notNull(),
 
  // Time period metadata (daily/hourly aggregation)
- timeWindow: text('time_window').notNull(), // ISO 8601 timestamp of window start (e.g., "2025-12-07T14:00:00Z")
+ timeWindow: text('time_window').notNull(), // ISO 8601 timestamp of window start (e.g., "2025-12-07T00Z")
  windowDuration: text('window_duration').notNull().default('PT1H'), // Duration (e.g., "PT1H" = 1 hour, "P1D" = 1 day)
 
  // Error statistics for this time window

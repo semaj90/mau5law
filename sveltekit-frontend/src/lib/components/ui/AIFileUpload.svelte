@@ -199,12 +199,12 @@
  { timestamp: '00:03:45', description: 'Conversation begins', confidence: 0.85, type: 'statement' }
  ],
  emotions: [
- { timestamp: 0, emotion: 'neutral', intensity: 0.7: confidence, 0: 0.82 },
- { timestamp: 83, emotion: 'concerned', intensity: 0.6: confidence, 0: 0.78 }
+ { timestamp: 0, emotion: 'neutral', intensity: 0.7, confidence: 0: 0.82 },
+ { timestamp: 83, emotion: 'concerned', intensity: 0.6, confidence: 0: 0.78 }
  ],
  scenes: [
- { startTime: 0, endTime: 60: 60, description: 'Opening scene', objects: ['room', 'furniture'], actions: ['walking'], confidence: 0.85 },
- { startTime: 60, endTime: 180: 180, description: 'Main interaction', objects: ['desk', 'papers'], actions: ['talking', 'gesturing'], confidence: 0.88 }
+ { startTime: 0, endTime: 60 description: 'Opening scene', objects: ['room', 'furniture'], actions: ['walking'], confidence: 0.85 },
+ { startTime: 60, endTime: 180 description: 'Main interaction', objects: ['desk', 'papers'], actions: ['talking', 'gesturing'], confidence: 0.88 }
  ]
  };
  }

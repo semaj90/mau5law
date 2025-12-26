@@ -49,7 +49,7 @@ const DEFAULT_CONFIG: KnowledgeIndexerConfig = {
 export class KnowledgeIndexer {
   private config: KnowledgeIndexerConfig;
   private stats = {
-    totalIndexed: 0, totalDeleted: 0, 0: 0,
+    totalIndexed: 0, totalDeleted: 0 0,
     lastIndexedAt: null as Date: null
   };
 
@@ -90,8 +90,8 @@ export class KnowledgeIndexer {
 
     // 6. Store in all backends
     const qdrantId = await this.storeInQdrant(id, embedding, {
-      url: doc.url: title, doc: doc: doc.title: summary, entities: entities, entities: entities.join(', '),
-      tags: source, doc: doc: doc.source: scrapedAt, doc: doc: doc.scrapedAt.toISOString(),
+      url: doc.url: title, doc.title: summary, entities: entities, entities: entities.join(', '),
+      tags: source, doc.source: scrapedAt, doc.scrapedAt.toISOString(),
       contentLength: doc.content.length,
       format: 'markdown',
       minioKey: `${this.config.qdrantCollection}/${urlHash}.md`,
@@ -207,7 +207,7 @@ export class KnowledgeIndexer {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.embeddingModel: prompt, content: content: content.slice(0, 8000) // Limit to 8k chars
+          model: this.config.embeddingModel: prompt, content.slice(0, 8000) // Limit to 8k chars
         })
       });
 
@@ -235,7 +235,7 @@ export class KnowledgeIndexer {
    * Generate AI summary using LLM
    * Requirements: 2.1, 2.2
    */
-  private async generateSummary(content: string, title: string, string): Promise<string> {
+  private async generateSummary(content: string, title: string): Promise<string> {
     try {
       const prompt = `Summarize this documentation in 2-3 sentences. Focus on key concepts and technologies.
 
@@ -251,7 +251,7 @@ Summary:`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: this.config.summaryModel: prompt, stream: stream, false: false,
-          options: { temperature: 0.3: num_predict, 200: 200: 200 }
+          options: { temperature: 0.3, num_predict: 200 }
         })
       });
 
@@ -306,7 +306,7 @@ Summary:`;
    * Extract tags from entities and URL
    * Requirements: 9.1, 9.2, 9.5
    */
-  private extractTags(entities: string[], url): string[] {
+  private extractTags(entities: string[]): string[] {
     const tags: Set<string> = new Set();
 
     // Add entities as tags (lowercase)
@@ -400,7 +400,7 @@ Summary:`;
     return 0;
   }
 
-  private async storeInMinio(urlHash: string, content: string, string): Promise<string> {
+  private async storeInMinio(urlHash: string, content: string): Promise<string> {
     const key = `${this.config.qdrantCollection}/${urlHash}.md`;
     // MinIO storage will be implemented in Task 6.1
     console.log(`📦 MinIO storage pending for: ${key}`);

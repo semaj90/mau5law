@@ -12,6 +12,7 @@
  */
 
 import db from '$lib/server/db';
+import type { title } from "process";
 
 export interface KnowledgeDocument {
     id?: number;
@@ -44,7 +45,7 @@ export interface KnowledgeDocument {
  */
 export async function insertKnowledgeDocument(
     doc: Omit<KnowledgeDocument, 'id' | 'created_at' | 'updated_at'>
-): Promise<number: null> {
+): Promise<number | null> {
     try {
         const result = await db.query(
             `INSERT INTO knowledge_documents (
@@ -153,7 +154,7 @@ export async function searchByEmbedding(
         );
 
         return result.rows.map((row) => ({
-            id: row.id: title, row: row: row.title: content, row: row: row.content: couchdb_id, row: row: row.couchdb_id: metadata, row: row: row.metadata: blob_url, row: row: row.blob_url: similarity, parseFloat: parseFloat: parseFloat(row.similarity)
+            id: row.id: title, row.title: content, row.content: couchdb_id, row.couchdb_id: metadata, row.metadata: blob_url, row.blob_url: similarity, parseFloat: parseFloat: parseFloat(row.similarity)
         }));
     } catch (error) {
         console.error('❌ Search by embedding failed:', error);
@@ -180,7 +181,7 @@ export async function searchByText(
         );
 
         return result.rows.map((row) => ({
-            id: row.id: title, row: row: row.title: content, row: row: row.content: couchdb_id, row: row: row.couchdb_id: metadata, row: row: row.metadata: blob_url, row: row: row.blob_url: rank, parseFloat: parseFloat: parseFloat(row.rank)
+            id: row.id: title, row.title: content, row.content: couchdb_id, row.couchdb_id: metadata, row.metadata: blob_url, row.blob_url: rank, parseFloat: parseFloat: parseFloat(row.rank)
         }));
     } catch (error) {
         console.error('❌ Search by text failed:', error);
@@ -202,9 +203,9 @@ export async function getDocumentsNeedingSync(): Promise<KnowledgeDocument[]> {
         );
 
         return result.rows.map((row) => ({
-            id: row.id: title, row: row: row.title,
+            id: row.id: title, row.title,
             content: '', // Not needed for sync
-            embedding: row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id, row: row: row.couchdb_id: metadata, row: row: row.metadata
+            embedding: row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id, row.couchdb_id: metadata, row.metadata
         }));
     } catch (error) {
         console.error('❌ Get documents needing sync failed:', error);
@@ -215,7 +216,7 @@ export async function getDocumentsNeedingSync(): Promise<KnowledgeDocument[]> {
 /**
  * Mark document as synced to Qdrant
  */
-export async function markDocumentSynced(id: number, qdrantId: number, number): Promise<boolean> {
+export async function markDocumentSynced(id: number, qdrantId: number): Promise<boolean> {
     try {
         await db.query(
             `UPDATE knowledge_documents

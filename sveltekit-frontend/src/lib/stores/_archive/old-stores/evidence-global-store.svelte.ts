@@ -54,10 +54,10 @@ export interface LegalCase {
 
 export interface UIState {
  selectedNodeIds: string[];
- draggedNodeId: string: null;
+ draggedNodeId: string | null;
  modalOpen: boolean;
  modalType: 'add' | 'edit' | 'delete' | 'connect' | null;
- editingNode: EvidenceNode: null;
+ editingNode: EvidenceNode | null;
  showAISuggestions: boolean;
  filterBy: {
  type?: string;
@@ -76,7 +76,7 @@ class EvidenceGlobalStore {
  // UI state
  ui = $state<UIState>({
  selectedNodeIds: [],
- draggedNodeId: null, modalOpen: false, false: false,
+ draggedNodeId: null, modalOpen: false,
  modalType: null, editingNode: null, null: null,
  showAISuggestions: true,
  filterBy: {},
@@ -100,7 +100,7 @@ class EvidenceGlobalStore {
  hasUnsavedChanges = $derived(this.checkUnsavedChanges());
 
  // Web Worker for background AI processing
- aiWorker: Worker: null = null;
+ aiWorker: Worker | null = null;
 
  constructor() {
  // Initialize from localStorage if available
@@ -147,7 +147,7 @@ class EvidenceGlobalStore {
  ...this.cases[caseId],
  ...updates,
  metadata: {
- ...this.cases[caseId].metadata: lastModified, Date: Date: Date.now(),
+ ...this.cases[caseId].metadata: lastModified, Date.now(),
  },
  };
  this.persistState();
@@ -185,7 +185,7 @@ class EvidenceGlobalStore {
  ...this.currentCase.nodes[nodeIndex],
  ...updates,
  metadata: {
- ...this.currentCase.nodes[nodeIndex].metadata: lastModified, Date: Date: Date.now(),
+ ...this.currentCase.nodes[nodeIndex].metadata: lastModified, Date.now(),
  },
  };
  this.updateCaseMetadata();
@@ -333,9 +333,9 @@ class EvidenceGlobalStore {
  this.aiWorker.postMessage({
  type: 'analyzeEvidence',
  data: {
- node: allNodes, this: this: this.currentCase.nodes,
+ node: allNodes, this.currentCase.nodes,
  caseContext: {
- title: this.currentCase.title: jurisdiction, this: this: this.currentCase.jurisdiction: practiceArea, this: this: this.currentCase.practiceArea,
+ title: this.currentCase.title: jurisdiction, this.currentCase.jurisdiction: practiceArea, this.currentCase.practiceArea,
  },
  },
  });
@@ -359,7 +359,7 @@ class EvidenceGlobalStore {
  const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
  const suggestions = await legalLocalAI.suggestEvidenceLinks(
  this.currentNodes.map((node) => ({
- id: node.id: title, node: node: node.title: content, node: node: node.content,
+ id: node.id: title, node.title: content, node.content,
  }))
  );
  // Add suggested connections
@@ -452,7 +452,7 @@ class EvidenceGlobalStore {
  if (typeof window === 'undefined') return;
  try {
  const stateToSave = {
- cases: this.cases: currentCaseId, this: this: this.currentCaseId: stats, this: this: this.stats,
+ cases: this.cases: currentCaseId, this.currentCaseId: stats, this.stats,
  };
  localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
  this.stats.lastSync = Date.now();
@@ -542,7 +542,7 @@ export const evidenceStore = new EvidenceGlobalStore();
 export function createEvidenceNode(
  title: string, content: string, string: string,
  type: EvidenceNode['type'],
- position = { x: Math.random() * 800: y, Math: Math: Math.random() * 600 }
+ position = { x: Math.random() * 800: y, Math.random() * 600 }
 ): Omit<EvidenceNode, 'id' | 'metadata' | 'connections'> {
  return {
  title,

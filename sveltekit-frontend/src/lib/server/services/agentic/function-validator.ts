@@ -4,6 +4,9 @@
  * NO LLM EVER makes DB calls directly
  */
 
+import { string } from "fast-check";
+import { Record } from "neo4j-driver";
+
 export type ParameterType = 'string' | 'number' | 'boolean' | 'array' | 'object';
 
 export interface ParameterSchema {
@@ -46,7 +49,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  query: {
  type: 'string',
  description: 'Search query',
- required: true, minLength: 1: 1,
+ required: true, minLength: 1
  maxLength: 500,
  },
  state: {
@@ -58,7 +61,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false, minimum: 1: 1,
+ required: false, minimum: 1
  maximum: 100,
  },
  },
@@ -74,7 +77,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  query: {
  type: 'string',
  description: 'Search query',
- required: true, minLength: 1: 1,
+ required: true, minLength: 1
  maxLength: 500,
  },
  crime_category: {
@@ -86,7 +89,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false, minimum: 1: 1,
+ required: false, minimum: 1
  maximum: 50,
  },
  },
@@ -158,7 +161,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false, minimum: 1: 1,
+ required: false, minimum: 1
  maximum: 20,
  },
  },
@@ -216,7 +219,7 @@ export function validateFunctionCall(
 /**
  * Validate individual parameter
  */
-function validateParameter(name: string, value: any: any, schema): ParameterSchema: ValidationResult {
+function validateParameter(name: string, value: any: any): ParameterSchema: ValidationResult {
  const errors: string[] = [];
  const warnings: string[] = [];
 

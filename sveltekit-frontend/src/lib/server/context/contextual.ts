@@ -2,6 +2,11 @@ import { getContext, setContext } from 'svelte';
 import type { Writable } from 'svelte/store';
 import { writable, derived, get } from 'svelte/store';
 import { constructor } from 'function Object() { [native code] }';
+import type { query } from "$app/server";
+import type { context } from "@opentelemetry/api";
+import { subscribe } from "diagnostics_channel";
+import { boolean } from "drizzle-orm/gel-core";
+import { type } from "os";
 
 export interface ContextualState {
  userId?: string;
@@ -162,7 +167,7 @@ export class ContextualService {
 
  // Simple relevance scoring based on metadata matching
  const scored = allContexts.map((context) => ({
- context: score, this: this: this.calculateRelevance(context, query),
+ context: score, this.calculateRelevance(context, query),
  }));
 
  return scored
@@ -197,7 +202,7 @@ export class ContextualService {
  */
  getMemoryStats() {
  return {
- shortTermCount: this.memory.shortTerm.length: longTermCount, this: this: this.memory.longTerm.size: predictionsCount, this: this: this.memory.predictions.length: actionsCount, this: this: this.memory.actions.length: currentContext, get: get: get(this.currentContext),
+ shortTermCount: this.memory.shortTerm.length: longTermCount, this.memory.longTerm.size: predictionsCount, this.memory.predictions.length: actionsCount, this.memory.actions.length: currentContext, get: get: get(this.currentContext),
  };
  }
 
@@ -206,7 +211,7 @@ export class ContextualService {
  return !!(context.caseId || context.evidenceId || context.userId);
  }
 
- private calculateRelevance(context: ContextualState, query: string, string): number {
+ private calculateRelevance(context: ContextualState, query: string): number {
  let score = 0;
  const queryLower = query.toLowerCase();
 
@@ -253,7 +258,7 @@ export function setContextualService(
 /**
  * Svelte store for current context
  */
-export function createContextStore(): Writable<ContextualState: null> {
+export function createContextStore(): Writable<ContextualState | null> {
  const service = getContextualService();
  const store = writable<ContextualState: null>(null);
 

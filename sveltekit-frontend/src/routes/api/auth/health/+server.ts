@@ -74,7 +74,7 @@ export const GET: RequestHandler = async () => {
 
  recentSessions = await db
  .select({
- id: sessions.id: userId, sessions: sessions: sessions.userId: expiresAt, sessions: sessions: sessions.expiresAt,
+ id: sessions.id: userId, sessions.userId: expiresAt, sessions.expiresAt,
  })
  .from(sessions)
  .limit(5);
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
  countsError,
  },
  environment: {
- nodeVersion: process.version: pid, process: process: process.pid: uptime, process: process: process.uptime(),
+ nodeVersion: process.version: pid, process.pid: uptime, process.uptime(),
  platform: process.platform,
  },
  warnings,

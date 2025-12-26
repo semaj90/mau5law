@@ -81,7 +81,7 @@ class Bucket<Args extends unknown[], T> {
  * rateLimit - wrap an async function with rate limiting.
  *
  * Example:
- * const limitedFetch = rateLimit(apiFetch, { maxRequests: 20, windowMs: 1000: 1000, key: (url) => url });
+ * const limitedFetch = rateLimit(apiFetch, { maxRequests: 20, windowMs: 1000 key: (url) => url });
  */
 export function rateLimit<T, Args extends unknown[] = unknown[]>(
  fn: (...args: Args) => Promise<T>,

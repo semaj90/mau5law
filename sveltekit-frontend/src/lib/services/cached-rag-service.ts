@@ -87,7 +87,7 @@ type $RedisCacheAdapter = {
  };
 type $PostgresJSONStore = {
  upsertDocument: (doc: { id: string; body: Record<string, unknown> }) => Promise<boolean>;
- queryByField: (field: string, value): unknown => Promise<Record<string, unknown>[]>;
+ queryByField: (field: string): unknown => Promise<Record<string, unknown>[]>;
 };
 
 // Minimal runtime helpers (server-side wrappers calling backend API routes)
@@ -316,7 +316,7 @@ const pgJsonStore: $PostgresJSONStore = {
  return false;
  }
  },
- async queryByField(field: string, value): unknown {
+ async queryByField(field: string): unknown {
  try {
  const r = await fetch('/api/postgres/json/query', {
  method: 'POST',

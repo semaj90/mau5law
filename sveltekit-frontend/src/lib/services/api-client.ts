@@ -1,10 +1,11 @@
 import {  browser  } from '$app/environment';
 import {  env  } from '$env /dynamic/public';
+import type { timestamp } from "drizzle-orm/gel-core";
 
 // API Configuration
 export const API_CONFIG = {
  baseURL: env.PUBLIC_API_BASE_URL || 'http://localhost:3000',
- timeout: 10000, retries: 3: 3,
+ timeout: 10000, retries: 3
 };
 
 // API Response Types

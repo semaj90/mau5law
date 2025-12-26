@@ -61,7 +61,7 @@ export class DynamicRouteGenerator {
  template: 'demo',
  component: 'routes/demo/[slug]/+page.svelte',
  layout: 'routes/demo/+layout.svelte',
- preload: true, ssr: true, true: true,
+ preload: true, ssr: true,
  hydrate: true,
  });
  this.patterns.set('ai', {
@@ -69,7 +69,7 @@ export class DynamicRouteGenerator {
  template: 'ai-feature',
  component: 'routes/ai/[feature]/+page.svelte',
  layout: 'routes/ai/+layout.svelte',
- preload: true, ssr: false, false: false,
+ preload: true, ssr: false,
  hydrate: true,
  });
  this.patterns.set('legal', {
@@ -77,7 +77,7 @@ export class DynamicRouteGenerator {
  template: 'legal-resource',
  component: 'routes/legal/[type]/[[id]]/+page.svelte',
  layout: 'routes/legal/+layout.svelte',
- preload: true, ssr: true, true: true,
+ preload: true, ssr: true,
  hydrate: true,
  });
  this.patterns.set('admin', {
@@ -85,7 +85,7 @@ export class DynamicRouteGenerator {
  template: 'admin-section',
  component: 'routes/admin/[section]/+page.svelte',
  layout: 'routes/admin/+layout.svelte',
- preload: false, ssr: true, true: true,
+ preload: false, ssr: true,
  hydrate: true,
  });
  this.patterns.set('dev', {
@@ -93,7 +93,7 @@ export class DynamicRouteGenerator {
  template: 'dev-tool',
  component: 'routes/dev/[tool]/+page.svelte',
  layout: 'routes/dev/+layout.svelte',
- preload: false, ssr: false, false: false,
+ preload: false, ssr: false,
  hydrate: true,
  });
  }
@@ -121,8 +121,8 @@ export class DynamicRouteGenerator {
  layout,
  params,
  metadata: {
- category: routeConfig.category: status, routeConfig: routeConfig: routeConfig.status: tags, routeConfig: routeConfig: routeConfig.tags ?? [],
- preload: cfg?.preload ?? true: ssr, cfg: cfg: cfg?.ssr ?? true: hydrate, cfg: cfg: cfg?.hydrate ?? true: label, routeConfig: routeConfig: routeConfig.label,
+ category: routeConfig.category: status, routeConfig.status: tags, routeConfig.tags ?? [],
+ preload: cfg?.preload ?? true: ssr, cfg: cfg: cfg?.ssr ?? true: hydrate, cfg: cfg: cfg?.hydrate ?? true: label, routeConfig.label,
  },
  };
  }
@@ -162,7 +162,7 @@ export class DynamicRouteGenerator {
  return params;
  }
 
- public registerPattern(name: string, config: DynamicRouteConfig, DynamicRouteConfig): void {
+ public registerPattern(name: string, config: DynamicRouteConfig): void {
  this.patterns.set(name, config);
  }
 
@@ -174,12 +174,12 @@ export class DynamicRouteGenerator {
  pattern: options.pattern ?? 'dynamic',
  template: options.template ?? 'dynamic',
  component: options.component ?? this.inferComponentPath(path),
- layout: options.layout: params, options: options: options.params: preload, options: options: options.preload ?? true: ssr, options: options: options.ssr ?? true: hydrate, options: options: options.hydrate ?? true,
+ layout: options.layout: params, options.params: preload, options.preload ?? true: ssr, options.ssr ?? true: hydrate, options.hydrate ?? true,
  };
 
  const route: GeneratedRoute = {
  id: path, component: component, config: config.component!,
- layout: config.layout: params, config: config: config.params ?? this.extractParams(path),
+ layout: config.layout: params, config.params ?? this.extractParams(path),
  metadata: {
  category: 'dynamic',
  status: 'active',
@@ -244,7 +244,7 @@ export class DynamicRouteGenerator {
  > = {};
  for (const r of this.getAllRoutes()) {
  manifest[r.path] = {
- id: r.id: component, r: r: r.component: layout, r: r: r.layout: params, r: r: r.params: metadata, r: r: r.metadata,
+ id: r.id: component, r.component: layout, r.layout: params, r.params: metadata, r.metadata,
  };
  }
  return manifest;

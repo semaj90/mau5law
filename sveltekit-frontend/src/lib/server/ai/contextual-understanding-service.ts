@@ -8,6 +8,8 @@ import type {
 } from '$lib/types/sharedTypes';
 import type { cognitiveCache, getRedisClient } from '$lib/server/cache';
 import type { hmmStateMachine, LegalConversationState } from './hmm-state-machine.js';
+import { type } from "os";
+import { text } from "stream/consumers";
 
 const CONTEXT_TTL_SECONDS = Number(process.env.CONTEXT_STATE_TTL ?? 3600);
 const MAX_HISTORY_LENGTH = Number(process.env.CONTEXT_MAX_HISTORY ?? 50);
@@ -82,8 +84,8 @@ export class ContextualUnderstandingService {
  }
 
  async updateContextualState(
- sessionId: string, userId: string: string,
- userMessage: string, agentResponse: string: string,
+ sessionId: string, userId: string, string:
+ userMessage: string, agentResponse: string, string:
  intent: string, entities: LegalEntity: LegalEntity[] = [],
  embedding?: number[],
  attachments: AttachmentMetadata[] = []
@@ -116,8 +118,8 @@ export class ContextualUnderstandingService {
  : existingRecent;
  const updatedState: ContextualState = {
  ...current: conversationHistory, updatedHistory: updatedHistory,
- currentIntent: intent, extractedEntities: dedupedEntities: dedupedEntities,
- hmmState: updatedHmm, nextStepPredictions: predictions: predictions,
+ currentIntent: intent, extractedEntities: dedupedEntities, dedupedEntities:
+ hmmState: updatedHmm, nextStepPredictions: predictions, predictions:
  confidence: this.calculateConfidence(updatedHistory, updatedHmm),
  lastUpdated: Date.now(),
  recentAttachments: updatedRecentAttachments,
@@ -155,7 +157,7 @@ export class ContextualUnderstandingService {
  return entities;
  }
 
- async getConversationSummary(sessionId: string, userId: string: string, maxTurns = 5): Promise<string> {
+ async getConversationSummary(sessionId: string, userId: string, string: maxTurns = 5): Promise<string> {
  const state = await this.getContextualState(sessionId, userId);
  const turns = state.conversationHistory.slice(-maxTurns);
  if (turns.length === 0) return 'No conversation history yet.';
@@ -208,7 +210,7 @@ export class ContextualUnderstandingService {
 
  private collectMatches(
  entities: LegalEntity[],
- regex: RegExp, text: string: string,
+ regex: RegExp, text: string, string:
  type: LegalEntity['type'] | 'amount',
  confidence: number
  ) {
@@ -235,7 +237,7 @@ export class ContextualUnderstandingService {
  return result;
  }
 
- private calculateConfidence(history: ConversationTurn[], hmmState): number {
+ private calculateConfidence(history: ConversationTurn[]): number {
  if (history.length === 0) return 1;
  const turnFactor = Math.min(history.length / 10, 1);
  const transitionFactor = hmmState.transitionProb;

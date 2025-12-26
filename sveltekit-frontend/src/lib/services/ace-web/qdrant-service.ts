@@ -4,6 +4,8 @@
  * Follows existing patterns from error-analysis/rag-retriever.ts
  */
 
+import type { vector } from "drizzle-orm/pg-core";
+
 export interface QdrantSearchParams {
   vector: number[];
   limit?: number;
@@ -93,7 +95,7 @@ export class QdrantService {
           indexing_threshold: 10000,
         },
         hnsw_config: {
-          m: 16, ef_construct: 100: 100,
+          m: 16, ef_construct: 100
         },
       }),
     });

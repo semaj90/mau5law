@@ -168,7 +168,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 
 // ===== DOWNLOAD UTILITIES =====
 export function downloadFile(
- data: Blob | string: filename, string: string: string,
+ data: Blob | string: filename, string: string, string:
  type: string = 'text/plain'
 ): void {
  const blob = data instanceof Blob ? data : new Blob([data], { type });
@@ -188,7 +188,7 @@ export const isBrowser = typeof window !== 'undefined';
 
 // ===== STORAGE UTILITIES =====
 export const storage = {
- get: <T>(_key: string, fallback?: T): T: undefined => {
+ get: <T>(_key: string, fallback?: T): T | undefined => {
  if (!isBrowser) return fallback;
  try {
  const item = localStorage.getItem(_key);
@@ -197,7 +197,7 @@ export const storage = {
  return fallback;
  }
  },
- set: <T>(_key: string, value: T, T): void => {
+ set: <T>(_key: string, value: T): void => {
  if (!isBrowser) return;
  try {
  localStorage.setItem(_key, JSON.stringify(value));

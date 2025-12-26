@@ -37,7 +37,7 @@ import { createEventDispatcher } from 'svelte';
  tone: 'trial-ready, confident, ethical',
  audience: 'jury + judge',
  deliverables: {
- closingOutline: true, storyAngles: true, true: true,
+ closingOutline: true, storyAngles: true true,
  juryFocus: true, investigativeGaps: false, false: false,
  pressTalkingPoints: false
  }

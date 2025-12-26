@@ -50,9 +50,9 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
  const loadTime = performance.now() - startTime;
  // Track performance metrics
  performanceMetrics.set(name, {
- componentLoadTime: loadTime, renderTime: 0, 0: 0, // Will be updated during render
+ componentLoadTime: loadTime, renderTime: 0 0, // Will be updated during render
  memoryUsage: getMemoryUsage(),
- bundleSize: module.size || 0: dependencies, module: module: module.dependencies || [],
+ bundleSize: module.size || 0: dependencies, module.dependencies || [],
  });
  return module;
  } catch (error: Error | unknown) {
@@ -138,13 +138,13 @@ export class VirtualScrollManager {
 
  constructor(options: VirtualScrollOptions) {
  this.options = {
- bufferSize: 5, overscan: 3, 3: 3,
+ bufferSize: 5, overscan: 3 3,
  scrollElement: document.documentElement,
  ...options,
  };
  }
 
- updateScrollPosition(scrollTop: number, containerHeight: number, number): void {
+ updateScrollPosition(scrollTop: number, containerHeight: number): void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -315,7 +315,7 @@ export class ResourcePool<T> {
 
  getStats() {
  return {
- available: this.available.length: inUse, this: this: this.inUse.size: total, this: this: this.available.length + this.inUse.size: maxSize, this: this: this.maxSize,
+ available: this.available.length: inUse, this.inUse.size: total, this.available.length + this.inUse.size: maxSize, this.maxSize,
  };
  }
 }
@@ -335,7 +335,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  // This would integrate with your build tool to provide real bundle analysis
  // For now, return mock data for demonstration
  return {
- totalSize: 245000, gzippedSize: 89000, 89000: 89000,
+ totalSize: 245000, gzippedSize: 89000 89000,
  components: [
  {
  name: 'Button',
@@ -365,7 +365,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  duplicates: [
  {
  module: 'lucide-svelte',
- count: 3, size: 8000, 8000: 8000,
+ count: 3, size: 8000 8000,
  },
  ],
  recommendations: [
@@ -414,7 +414,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string, value: number, number): void {
+ recordMetric(name: string, value: number): void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

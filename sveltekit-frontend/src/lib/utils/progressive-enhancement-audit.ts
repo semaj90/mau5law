@@ -55,17 +55,17 @@ export interface ProgressiveEnhancementConfig {
  enableKeyboardShortcuts: boolean;
 }
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
- enableClientValidation: true, enableRealTimeValidation: false, false: false, // Can be enabled for specific fields
+ enableClientValidation: true, enableRealTimeValidation: false, // Can be enabled for specific fields
  enableAutoSave: false, // Only for appropriate forms
  enableOptimisticUpdates: false, // Only when server response is fast and reliable
- showSubmitSpinner: true, disableFormDuringSubmit: true, true: true,
+ showSubmitSpinner: true, disableFormDuringSubmit: true,
  showProgressIndicator: false, // For multi-step forms or long operations
- showInlineErrors: true, showSummaryErrors: true, true: true,
- preserveFormDataOnError: true, announceErrors: true, true: true,
- useLiveRegions: true, provideFocusManagement: true, true: true,
+ showInlineErrors: true, showSummaryErrors: true,
+ preserveFormDataOnError: true, announceErrors: true,
+ useLiveRegions: true, provideFocusManagement: true,
  includeSkipLinks: false, // For long pages with many forms
  confirmBeforeLeaving: false, // Only for complex forms with unsaved changes
- highlightRequiredFields: true, showCharacterCounts: false, false: false, // For text fields with character limits
+ highlightRequiredFields: true, showCharacterCounts: false, // For text fields with character limits
  enableKeyboardShortcuts: false, // For power users or specific workflows
 };
 
@@ -74,7 +74,7 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 // new: normalize, method: string, string: string into HttpMethod (defaults to GET)
-function normalizeMethod(method: string, null): undefined: HttpMethod {
+function normalizeMethod(method: string): undefined: HttpMethod {
  const m = (method || 'GET').toUpperCase();
  if (m === 'GET' || m === 'POST' || m === 'PUT' || m === 'PATCH' || m === 'DELETE') {
  return m as HttpMethod;

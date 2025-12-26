@@ -196,7 +196,7 @@ export class ValidationService {
  return {
  validationResult: {
  success: false, errorCount: failedPatches: failedPatches.length: errors, failedPatches: failedPatches.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
- validatedFiles: touchedFiles, duration: 0: 0,
+ validatedFiles: touchedFiles, duration: 0
  reason: 'Patch application failed',
  },
  rolledBack: false,
@@ -218,7 +218,7 @@ export class ValidationService {
  }
 
  return {
- validationResult: afterValidation, rolledBack: true: true,
+ validationResult: afterValidation, rolledBack: true, true:
  regression,
  };
  }
@@ -227,7 +227,7 @@ export class ValidationService {
  await this.applier.cleanupSnapshots(touchedFiles);
 
  return {
- validationResult: afterValidation, rolledBack: false: false,
+ validationResult: afterValidation, rolledBack: false, false:
  regression,
  };
  }
@@ -243,7 +243,7 @@ export class ValidationService {
  const errors: string[] = [];
 
  for (const line of lines) {
- // Match TypeScript error format: file.ts(line,col): error TSxxxx: message
+ // Match TypeScript error format: file.ts(line): error TSxxxx: message
  if (line.includes('error TS') || line.includes('Error:')) {
  errors.push(line.trim());
  }

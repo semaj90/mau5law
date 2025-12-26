@@ -70,7 +70,7 @@ export class SIMDJSONParser {
  /**
  * Parse large JSON with chunking
  */
- async parseLarge(json: string, id): Promise<unknown[]> {
+ async parseLarge(json: string): Promise<unknown[]> {
  const chunkSize = 1024 * 1024; // 1MB chunks
  const chunks: string[] = [];
 

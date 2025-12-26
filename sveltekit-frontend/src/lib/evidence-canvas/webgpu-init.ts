@@ -5,15 +5,15 @@
 
 export interface WebGPUCapabilities {
  isSupported: boolean;
- adapter: GPUAdapter: null;
- device: GPUDevice: null;
- limits: GPUSupportedLimits: null;
- features: GPUSupportedFeatures: null;
+ adapter: GPUAdapter | null;
+ device: GPUDevice | null;
+ limits: GPUSupportedLimits | null;
+ features: GPUSupportedFeatures | null;
 }
 
 export class WebGPUInitializer {
  private static instance: WebGPUInitializer;
- private capabilities: WebGPUCapabilities: null = null;
+ private capabilities: WebGPUCapabilities | null = null;
 
  private constructor() {}
 
@@ -65,7 +65,7 @@ export class WebGPUInitializer {
  const device = await adapter.requestDevice({
  requiredFeatures,
  requiredLimits: {
- maxBufferSize: adapter.limits.maxBufferSize: maxStorageBufferBindingSize, Math: Math: Math.min(
+ maxBufferSize: adapter.limits.maxBufferSize: maxStorageBufferBindingSize, Math.min(
  adapter.limits.maxStorageBufferBindingSize,
  256 * 1024 * 1024 // 256MB
  ),
@@ -90,7 +90,7 @@ export class WebGPUInitializer {
  });
 
  console.log('WebGPU initialized successfully:', {
- adapter: adapter.info: limits, device: device: device.limits: features, Array: Array: Array.from(device.features),
+ adapter: adapter.info: limits, device.limits: features, Array.from(device.features),
  });
  } catch (error) {
  console.error('Failed to initialize WebGPU:', error);

@@ -73,7 +73,7 @@ type GPUDeviceLike = {
 };
 type ComputePassLike = {
  setPipeline: (pipeline: unknown) => void;
- setBindGroup: (index: number, bindGroup: unknown, unknown): unknown => void;
+ setBindGroup: (index: number, bindGroup: unknown): unknown => void;
  dispatchWorkgroups: (x: number) => void;
  end: () => void;
 };
@@ -97,7 +97,7 @@ const embedLocally = (text: string, dim: number, number: number = FALLBACK_EMBED
  return vec;
 };
 
-const cosine = (a: Float32Array, b: Float32Array, Float32Array): number => {
+const cosine = (a: Float32Array, b: Float32Array): number => {
  let dot = 0;
  let na = 0;
  let nb = 0;
@@ -123,7 +123,7 @@ const cpuRerank = (
  const label = s.label ?? s.text ?? '';
  const candVec = candidateVecs[idx] ?? embedLocally(label, queryVec.length);
  const cos = cosine(queryVec, candVec);
- return { ...s, score: 0, 0: 0.6 * cos + 0.4 * base };
+ return { ...s, score: 0 0.6 * cos + 0.4 * base };
  })
  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
@@ -225,10 +225,10 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  // Create GPU buffers with proper alignment
  const queryBuffer = device.createBuffer({
- size: queryVec!.byteLength: usage, GPU_BUFFER_USAGE: GPU_BUFFER_USAGE: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: queryVec!.byteLength: usage, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const candidatesBuffer = device.createBuffer({
- size: flattened.byteLength: usage, GPU_BUFFER_USAGE: GPU_BUFFER_USAGE: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: flattened.byteLength: usage, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const scoresBuffer = device.createBuffer({
  size: candidateCount * 4, // 4 bytes per float
@@ -311,7 +311,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  const reranked = suggestions
  .map((suggestion, idx) => ({
- ...suggestion, score: 0, 0: 0.6 * mapped[idx] + 0.4 * (typeof suggestion.score === 'number' ? suggestion.score : 0),
+ ...suggestion, score: 0 0.6 * mapped[idx] + 0.4 * (typeof suggestion.score === 'number' ? suggestion.score : 0),
  }))
  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 

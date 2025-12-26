@@ -2,10 +2,10 @@
  * Evidence Detective Service
  * AI-powered evidence analysis and detective mode functionality
  */
-import type { OllamaService } from './ollama.js';
+import type { eq } from 'drizzle-orm';
 import db from './db/drizzle.js';
 import * as schema from './db/schema-postgres.js';
-import type { eq } from 'drizzle-orm';
+import type { OllamaService } from './ollama.js';
 
 export class EvidenceDetectiveService {
  private ollamaService: OllamaService;

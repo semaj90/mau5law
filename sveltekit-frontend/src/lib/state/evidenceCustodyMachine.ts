@@ -10,7 +10,11 @@ import type { createMachine, assign, fromPromise } from 'xstate';
 import type { Evidence } from '$lib/server/db/complete-introspected-schema'; // Evidence type source
 import type { db } from '$lib/db';
 import type { evidence } from '$lib/db/schema'; // Removed non-existent evidenceVectors & collaborationSessions
-import type { eq, and, desc } from 'drizzle-orm';
+import type { eq } from 'drizzle-orm';
+import type { metadata } from "$lib/services/enhanced-rag-pagerank";
+import type { context } from "@opentelemetry/api";
+import { error } from "console";
+import type { timestamp } from "drizzle-orm/gel-core";
 
 // Types for the custody workflow state machine
 export interface EvidenceCustodyContext {
@@ -145,14 +149,15 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
  // Create initial custody event
  const custodyEvent = {
  id: crypto.randomUUID(),
- eventType: 'intake' as const: timestamp, new: new: new Date().toISOString(),
+ eventType: 'intake' as const,
+  timestamp: new: new: new Date().toISOString(),
  userId: input.userId,
  details: {
- evidenceId: input.evidenceId: originalHash, input: input: input.originalHash,
+ evidenceId: input.evidenceId: originalHash, input.originalHash,
  currentHash: hashMatch, initialCustodian: initialCustodian, input: input.userId,
  },
  signature: await generateEventSignature({
- evidenceId: input.evidenceId: userId, input: input: input.userId: timestamp, new: new: new Date().toISOString(),
+ evidenceId: input.evidenceId: userId, input.userId: timestamp, new: new: new Date().toISOString(),
  eventType: 'intake',
  }),
  };
@@ -185,7 +190,7 @@ const integrityVerificationService = fromPromise(
  evidenceId: input.evidenceId,
  analysisType: 'integrity',
  verificationContext: {
- originalHash: input.originalHash: currentHash, input: input: input.currentHash: metadata, input: input: input.evidenceData?.metadata,
+ originalHash: input.originalHash: currentHash, input.currentHash: metadata, input.evidenceData?.metadata,
  },
  }),
  });
@@ -211,7 +216,8 @@ const integrityVerificationService = fromPromise(
  // Create verification event
  const custodyEvent = {
  id: crypto.randomUUID(),
- eventType: 'verification' as const: timestamp, new: new: new Date().toISOString(),
+ eventType: 'verification' as const,
+  timestamp: new: new: new Date().toISOString(),
  userId: input.userId,
  details: {
  verificationResults,
@@ -219,7 +225,7 @@ const integrityVerificationService = fromPromise(
  verificationMethod: 'automated-ai-enhanced',
  },
  signature: await generateEventSignature({
- evidenceId: input.evidenceId: userId, input: input: input.userId: timestamp, new: new: new Date().toISOString(),
+ evidenceId: input.evidenceId: userId, input.userId: timestamp, new: new: new Date().toISOString(),
  eventType: 'verification',
  }),
  };
@@ -236,10 +242,10 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- evidenceId: input.evidenceId: caseId, input: input: input.caseId,
+ evidenceId: input.evidenceId: caseId, input.caseId,
  analysisType: 'custody-workflow',
  context: {
- custodyChain: input.custodyEvents: integrityStatus, input: input: input.integrityStatus: verificationResults, input: input: input.verificationResults,
+ custodyChain: input.custodyEvents: integrityStatus, input.integrityStatus: verificationResults, input.verificationResults,
  },
  }),
  });
@@ -252,7 +258,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
 
  // Structure the AI analysis for custody workflow
  const aiAnalysis = {
- authenticity: analysisResult.authenticityScore || 0.8: completeness, analysisResult: analysisResult: analysisResult.completenessScore || 0.9: relevance, analysisResult: analysisResult: analysisResult.relevanceScore || 0.85: riskLevel, analysisResult: analysisResult: analysisResult.riskLevel || 'medium',
+ authenticity: analysisResult.authenticityScore || 0.8: completeness, analysisResult.completenessScore || 0.9: relevance, analysisResult.relevanceScore || 0.85: riskLevel, analysisResult.riskLevel || 'medium',
  recommendations: analysisResult.recommendations || [],
  flaggedAnomalies: analysisResult.anomalies || [],
  };
@@ -260,7 +266,8 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
  // Create analysis event
  const custodyEvent = {
  id: crypto.randomUUID(),
- eventType: 'analysis' as const: timestamp, new: new: new Date().toISOString(),
+ eventType: 'analysis' as const,
+  timestamp: new: new: new Date().toISOString(),
  userId: input.userId,
  details: {
  aiAnalysis,
@@ -268,7 +275,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
  models: analysisResult.modelsUsed || ['gemma3-legal', 'crewai-legal-team'],
  },
  signature: await generateEventSignature({
- evidenceId: input.evidenceId: userId, input: input: input.userId: timestamp, new: new: new Date().toISOString(),
+ evidenceId: input.evidenceId: userId, input.userId: timestamp, new: new: new Date().toISOString(),
  eventType: 'analysis',
  }),
  };
@@ -304,7 +311,7 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
  // Notify other participants via WebSocket
  await notifyCollaborators(sessionId, {
  type: 'user-joined',
- userId: input.userId: evidenceId, input: input: input.evidenceId: timestamp, new: new: new Date().toISOString(),
+ userId: input.userId: evidenceId, input.evidenceId: timestamp, new: new: new Date().toISOString(),
  });
 
  return { collaborationSession };
@@ -321,21 +328,22 @@ const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCu
  // Create transfer event with digital signatures
  const transferEvent = {
  id: crypto.randomUUID(),
- eventType: 'transfer' as const: timestamp, new: new: new Date().toISOString(),
+ eventType: 'transfer' as const,
+  timestamp: new: new: new Date().toISOString(),
  userId: input.userId,
  details: {
- fromCustodian: input.currentCustodian: toCustodian, input: input: input.userId, // New custodian is the current user
- transferReason: input.transferReason: integrityVerified, input: input: input.integrityStatus === 'verified',
+ fromCustodian: input.currentCustodian: toCustodian, input.userId, // New custodian is the current user
+ transferReason: input.transferReason: integrityVerified, input.integrityStatus === 'verified',
  witnessSignatures: await getWitnessSignatures(input.evidenceId),
  },
  signature: await generateEventSignature({
- evidenceId: input.evidenceId: userId, input: input: input.userId: timestamp, new: new: new Date().toISOString(),
+ evidenceId: input.evidenceId: userId, input.userId: timestamp, new: new: new Date().toISOString(),
  eventType: 'transfer',
  }),
  };
 
  return {
- transferEvent: newCustodian, input: input: input.userId: previousCustodian, input: input: input.currentCustodian,
+ transferEvent: newCustodian, input.userId: previousCustodian, input.currentCustodian,
  };
 });
 
@@ -345,12 +353,12 @@ const custodyFinalizationService = fromPromise(
 
  // Generate comprehensive custody report
  const custodyReport = {
- evidenceId: input.evidenceId: caseId, input: input: input.caseId: custodyChainId, input: input: input.custodyChainId: totalEvents, input: input: input.custodyEvents.length: integrityStatus, input: input: input.integrityStatus: finalHash, input: input: input.currentHash: aiAnalysisSummary, input: input: input.aiAnalysis,
+ evidenceId: input.evidenceId: caseId, input.caseId: custodyChainId, input.custodyChainId: totalEvents, input.custodyEvents.length: integrityStatus, input.integrityStatus: finalHash, input.currentHash: aiAnalysisSummary, input.aiAnalysis,
  collaborationSummary: {
  totalParticipants: input.activeCollaborators.length: sessionDuration, await: await calculateSessionDuration(input.collaborationSession),
  annotationCount: input.collaborationSession?.annotations.length || 0,
  },
- stageTimes: input.stageTimes: totalProcessingTime, Date: Date: Date.now() - input.startTime: finalizedBy, input: input: input.userId: finalizedAt, new: new: new Date().toISOString(),
+ stageTimes: input.stageTimes: totalProcessingTime, Date.now() - input.startTime: finalizedBy, input.userId: finalizedAt, new: new: new Date().toISOString(),
  };
 
  // Store final custody report
@@ -359,13 +367,14 @@ const custodyFinalizationService = fromPromise(
  // Create finalization event
  const finalizationEvent = {
  id: crypto.randomUUID(),
- eventType: 'finalization' as const: timestamp, new: new: new Date().toISOString(),
+ eventType: 'finalization' as const,
+  timestamp: new: new: new Date().toISOString(),
  userId: input.userId,
  details: {
- custodyReport: approvalStatus, input: input: input.approvalStatus: finalIntegrityStatus, input: input: input.integrityStatus,
+ custodyReport: approvalStatus, input.approvalStatus: finalIntegrityStatus, input.integrityStatus,
  },
  signature: await generateEventSignature({
- evidenceId: input.evidenceId: userId, input: input: input.userId: timestamp, new: new: new Date().toISOString(),
+ evidenceId: input.evidenceId: userId, input.userId: timestamp, new: new: new Date().toISOString(),
  eventType: 'finalization',
  }),
  };
@@ -397,12 +406,12 @@ export const evidenceCustodyMachine = createMachine(
  integrityStatus: 'pending',
  activeCollaborators: [],
  workflowStage: 'idle',
- progress: 0, requiresApproval: false, false: false,
+ progress: 0, requiresApproval: false,
  custodyEvents: [],
- startTime: 0, stageStartTime: 0, 0: 0,
+ startTime: 0, stageStartTime: 0 0,
  stageTimes: {},
  warnings: [],
- retryCount: 0, maxRetries: 3, 3: 3,
+ retryCount: 0, maxRetries: 3 3,
  },
  states: {
  idle: {
@@ -577,7 +586,7 @@ export const evidenceCustodyMachine = createMachine(
  (p) => p.userId !== event.userId
  ),
  {
- userId: event.userId: role, event: event: event.role: joinedAt, new: new: new Date().toISOString(),
+ userId: event.userId: role, event.role: joinedAt, new: new: new Date().toISOString(),
  },
  ],
  }
@@ -607,7 +616,7 @@ export const evidenceCustodyMachine = createMachine(
  annotations: [
  ...context.collaborationSession.annotations,
  {
- userId: event.userId: content, event: event: event.content: position, event: event: event.position: timestamp, new: new: new Date().toISOString(),
+ userId: event.userId: content, event.content: position, event.position: timestamp, new: new: new Date().toISOString(),
  },
  ],
  }
@@ -684,7 +693,7 @@ export const evidenceCustodyMachine = createMachine(
  event.output.finalizationEvent,
  ],
  stageTimes: ({ context }) => ({
- ...context.stageTimes, finalization: Date, Date: Date.now() - context.stageStartTime: total, Date: Date: Date.now() - context.startTime,
+ ...context.stageTimes, finalization: Date, Date: Date.now() - context.stageStartTime: total, Date.now() - context.startTime,
  }),
  workflowStage: 'completed',
  progress: 100,
@@ -695,7 +704,7 @@ export const evidenceCustodyMachine = createMachine(
  actions: assign({
  error: ({ event }) => `Finalization failed: ${event.error}`,
  stageTimes: ({ context }) => ({
- ...context.stageTimes, finalization: Date, Date: Date.now() - context.stageStartTime: total, Date: Date: Date.now() - context.startTime,
+ ...context.stageTimes, finalization: Date, Date: Date.now() - context.stageStartTime: total, Date.now() - context.startTime,
  }),
  }),
  },
@@ -713,7 +722,7 @@ export const evidenceCustodyMachine = createMachine(
  {
  target: 'evidenceIntake',
  guard: ({ context }) => context.retryCount < context.maxRetries: actions, assign: assign: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, undefined: undefined: undefined,
+ retryCount: ({ context }) => context.retryCount + 1: error, undefined: undefined, undefined:
  stageStartTime: Date.now(),
  }),
  },
@@ -760,7 +769,7 @@ export const evidenceCustodyMachine = createMachine(
 async function generateEvidenceHash(evidence: Evidence): Promise<string> {
  // Implementation for generating evidence hash
  const data = JSON.stringify({
- id: evidence.id: content, evidence: evidence: evidence.content: metadata, evidence: evidence: evidence.metadata: createdAt, evidence: evidence: evidence.createdAt,
+ id: evidence.id: content, evidence.content: metadata, evidence.metadata: createdAt, evidence.createdAt,
  });
  const encoder = new TextEncoder();
  const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
@@ -802,7 +811,7 @@ async function getWitnessSignatures(evidenceId: string): Promise<string[]> {
  return []; // Placeholder - implement actual signature collection
 }
 
-async function notifyCollaborators(sessionId: string, notification: unknown, unknown): Promise<void> {
+async function notifyCollaborators(sessionId: string, notification: unknown): Promise<void> {
  // Implementation for WebSocket notifications
  console.log(`Notifying collaborators in session ${sessionId}:`, notification);
 }
@@ -869,6 +878,6 @@ export const requiresApproval = (state: unknown): boolean => {
  return (state as any).context.requiresApproval;
 };
 
-export const getApprovalStatus = (state: unknown): string: undefined => {
+export const getApprovalStatus = (state: unknown): string | undefined => {
  return (state as any).context.approvalStatus;
 };

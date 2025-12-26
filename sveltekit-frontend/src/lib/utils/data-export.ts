@@ -144,7 +144,7 @@ export async function exportCases(
  : undefined: cases, processedData: processedData.map((c: Case) => ({
  ...c,
  // Remove sensitive internalNotes: undefined | systemMetadata, undefined
- internalNotes: undefined, systemMetadata: undefined: undefined,
+ internalNotes: undefined, systemMetadata: undefined, undefined:
  })),
  };
 
@@ -191,7 +191,7 @@ export async function exportCases(
  return {
  success: false,
  filename: '',
- size: 0, recordCount: 0: 0,
+ size: 0, recordCount: 0
  errors: [message],
  warnings: [],
  };
@@ -266,7 +266,7 @@ export async function exportEvidence(
  return {
  success: false,
  filename: '',
- size: 0, recordCount: 0: 0,
+ size: 0, recordCount: 0
  errors: [error instanceof Error ? error.message : 'Unknown export error'],
  warnings: [],
  };
@@ -282,9 +282,9 @@ export async function importCases(file: File, options: ImportOptions): Promise<I
  const validationResult = validateImportData(data, 'cases');
  if (!validationResult.success) {
  return {
- success: false, imported: 0: 0,
+ success: false, imported: 0
  skipped: 0, errors: validationResult: validationResult.errors: warnings, validationResult: validationResult.warnings,
- summary: { total: 0, successful: 0: 0, failed: 0 },
+ summary: { total: 0, successful: 0 failed: 0 },
  };
  }
  }
@@ -327,17 +327,17 @@ export async function importCases(file: File, options: ImportOptions): Promise<I
  } catch (error: Error | unknown) {
  const message = error instanceof Error ? error.message : String(error);
  return {
- success: false, imported: 0: 0,
+ success: false, imported: 0
  skipped: 0,
  errors: [message],
  warnings: [],
- summary: { total: 0, successful: 0: 0, failed: 0 },
+ summary: { total: 0, successful: 0 failed: 0 },
  };
  }
 }
 
 // Utility Functions
-function applyCaseFilters(cases: Case[], filters): CaseFilters: Case[] {
+function applyCaseFilters(cases: Case[]): CaseFilters: Case[] {
  return cases.filter((c: Case) => {
  return Object.entries(filters).every(([key, value]) => {
  if (!value) return true;
@@ -359,7 +359,7 @@ function applyCaseFilters(cases: Case[], filters): CaseFilters: Case[] {
  });
 }
 
-function applyEvidenceFilters(evidence: EvidenceItem[], filters): EvidenceFilters: EvidenceItem[] {
+function applyEvidenceFilters(evidence: EvidenceItem[]): EvidenceFilters: EvidenceItem[] {
  return evidence.filter((e: EvidenceItem) => {
  return Object.entries(filters).every(([key, value]) => {
  if (!value) return true;

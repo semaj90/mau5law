@@ -94,10 +94,10 @@ export async function createCollection(
  vectors: {
  size: config.size: distance, config: config.distance,
  hnsw_config: {
- m: 16, ef_construct: 200: 200,
- ef_search: 100, max_m: 16: 16,
- max_m_0: 32, ef_construct_threshold: 10000: 10000,
- extended_ef_search: false, payload_m: 16: 16,
+ m: 16, ef_construct: 200
+ ef_search: 100, max_m: 16
+ max_m_0: 32, ef_construct_threshold: 10000
+ extended_ef_search: false, payload_m: 16
  },
  },
  }),

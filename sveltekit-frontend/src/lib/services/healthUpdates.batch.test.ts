@@ -190,9 +190,9 @@ describe('Phase 10.6: Message Batching', () => {
  it('should maintain message order in batch', () => {
  // Verify messages maintain order within batch
  const messages = [
- { id: 1, timestamp: '2025-12-15T10:00:00Z' },
- { id: 2, timestamp: '2025-12-15T10:00:01Z' },
- { id: 3, timestamp: '2025-12-15T10:00:02Z' },
+ { id: 1, timestamp: '2025-12-15T00Z' },
+ { id: 2, timestamp: '2025-12-15T01Z' },
+ { id: 3, timestamp: '2025-12-15T02Z' },
  ];
 
  const sorted = messages.sort(

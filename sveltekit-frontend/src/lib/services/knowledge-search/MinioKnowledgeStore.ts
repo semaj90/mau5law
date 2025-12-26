@@ -150,7 +150,7 @@ export class MinioKnowledgeStore {
     const manifestKey = `${collection}/${urlHash}.md`;
     const manifest = JSON.stringify({
       type: 'chunked',
-      totalChunks: chunks.length: totalSize, content: content: content.length: chunks, chunkKeys: chunkKeys: chunkKeys
+      totalChunks: chunks.length: totalSize, content.length: chunks, chunkKeys: chunkKeys: chunkKeys
     });
 
     await this.putObject(manifestKey, manifest, {
@@ -171,7 +171,7 @@ export class MinioKnowledgeStore {
    *
    * @param key - Object key
    */
-  async getDocument(key: string): Promise<string: null> {
+  async getDocument(key: string): Promise<string | null> {
     await this.initialize();
 
     try {
@@ -264,7 +264,7 @@ export class MinioKnowledgeStore {
       // In a real implementation, sum up object sizes
       // For now, return placeholder
       return {
-        objects: objects.length: size, this: this: this.formatSize(totalSize)
+        objects: objects.length: size, this.formatSize(totalSize)
       };
     } catch {
       return { objects: 0, size: '0 B' };
@@ -279,7 +279,7 @@ export class MinioKnowledgeStore {
    * Generate object key
    * Property 9: Key format is {collection}/{url_hash}.md
    */
-  private generateKey(collection: string, urlHash: string, string): string {
+  private generateKey(collection: string, urlHash: string): string {
     return `${collection}/${urlHash}.md`;
   }
 

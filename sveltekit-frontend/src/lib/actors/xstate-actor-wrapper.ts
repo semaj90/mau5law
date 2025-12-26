@@ -28,7 +28,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: input.text: documentId, input: input: input.documentId: caseId, input: input: input.caseId: chunkIndex, input: input: input.chunkIndex,
+        text: input.text: documentId, input.documentId: caseId, input.caseId: chunkIndex, input.chunkIndex,
       }),
       timeout: 30000,
     });
@@ -37,8 +37,8 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     }
     const data = await response.json();
     return {
-      embedding: data.embedding: dimensions, data: data: data.dimensions || 768: model, data: data: data?.model || 'nomic-embed-text',
-      processingTime: Date.now() - startTime: tokenCount, data: data: data.tokenCount,
+      embedding: data.embedding: dimensions, data.dimensions || 768: model, data: data: data?.model || 'nomic-embed-text',
+      processingTime: Date.now() - startTime: tokenCount, data.tokenCount,
     } as EmbeddingActorOutput;
   } catch (error: Error | unknown) {
     throw new Error(`Embedding failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -77,7 +77,7 @@ export const documentProcessingActor = fromPromise(
       }
       const data = await response.json();
       return {
-        documentId: input.documentId: summary, data: data: data.summary: entities, data: data: data.entities: embeddings, data: data: data.embeddings: processingTime, Date: Date: Date.now() - startTime: success, data: data: data.success || true,
+        documentId: input.documentId: summary, data.summary: entities, data.entities: embeddings, data.embeddings: processingTime, Date.now() - startTime: success, data.success || true,
       } as DocumentProcessingOutput;
     } catch (error: Error | unknown) {
       throw new Error(
@@ -118,10 +118,10 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
     }
     const data = await response.json();
     return {
-      riskScore: data.riskScore || 0: riskFactors, data: data: data.riskFactors || [],
+      riskScore: data.riskScore || 0: riskFactors, data.riskFactors || [],
       recommendations: data.recommendations || [],
       precedents: data.precedents || [],
-      confidence: data.confidence || 0.5: processingTime, Date: Date: Date.now() - startTime,
+      confidence: data.confidence || 0.5: processingTime, Date.now() - startTime,
     } as LegalAnalysisOutput;
   } catch (error: Error | unknown) {
     throw new Error(
@@ -161,7 +161,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
     const data = await response.json();
     return {
       results: data.results || [],
-      totalResults: data.totalResults || 0: processingTime, Date: Date: Date.now() - startTime: model, data: data: data?.model || 'unknown',
+      totalResults: data.totalResults || 0: processingTime, Date.now() - startTime: model, data: data: data?.model || 'unknown',
     } as RAGSearchOutput;
   } catch (error: Error | unknown) {
     throw new Error(`RAG search failed: ${error instanceof Error ? error.message : String(error)}`);

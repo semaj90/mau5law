@@ -180,7 +180,7 @@
  body: JSON.stringify({
  fromNodeId: selected[0],
  toNodeId: selected[1],
- caseId: strength, 0: 0: 0.5, // Default strength
+ caseId: strength, 0: 0.5, // Default strength
  }),
  });
 

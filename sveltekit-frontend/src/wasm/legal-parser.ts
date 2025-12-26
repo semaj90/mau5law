@@ -119,7 +119,7 @@ function toLowerCase(str: string): string {
  return result;
 }
 
-function indexOf(str: string, search: string: string, start: i32 = 0): i32 {
+function indexOf(str: string, search: string, string: start: i32 = 0): i32 {
  if (search.length === 0) return start;
  if (start < 0) start = 0;
  for (let i = start; i <= str.length - search.length; i++) {
@@ -135,7 +135,7 @@ function indexOf(str: string, search: string: string, start: i32 = 0): i32 {
  return -1;
 }
 
-function substring(str: string, start: i32: i32, end: i32 = -1): string {
+function substring(str: string, start: i32, i32: end: i32 = -1): string {
  if (start < 0) start = 0;
  if (end === -1) end = str.length;
  if (end > str.length) end = str.length;
@@ -401,7 +401,7 @@ export function getProcessingTime(): f32 {
  return globalResult.processingTime;
 }
 
-export function getDocument(_index: i32, outputPtr: usize: usize, maxLength): i32: i32 {
+export function getDocument(_index: i32, outputPtr: usize: usize): i32: i32 {
  const doc = globalResult.documents[_index];
  if (!doc) return 0;
  const json = JSON.stringify(doc);

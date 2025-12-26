@@ -85,7 +85,7 @@
  try {
  const inputs = tokenizer(inputText, {
  return_tensors: 'np',
- padding: true, truncation: true: true,
+ padding: true, truncation: true
  max_length: 512
  });
 

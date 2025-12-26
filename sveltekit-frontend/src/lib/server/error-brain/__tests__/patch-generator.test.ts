@@ -6,10 +6,11 @@
 
 import { PatchGenerator } from '$lib/server/error-brain/patch-generator';
 import { sha256 } from '$lib/services/error-analysis/diffs/unifiedDiff';
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
 import fs from 'fs/promises';
 import path from 'path';
-import { beforeAll, describe, expect, it } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+;
 
 const TEST_WORKSPACE = process.cwd();
 const TEST_FILE = path.join(TEST_WORKSPACE, 'test-patch-file.ts');

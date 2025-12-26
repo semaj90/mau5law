@@ -124,7 +124,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 		displayName: 'Prosecutor',
  hierarchyLevel: 60,
  canDelegate: false,cases',
-		hierarchyLevel: 60, canDelegate: false, false: false,
+		hierarchyLevel: 60, canDelegate: false,
 		maxCasesAssigned: 30,
 		permissions: [
 			'create_case',
@@ -149,7 +149,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 		displayName: 'Paralegal',
  hierarchyLevel: 40,
  canDelegate: false,nd evidence management duties',
-		hierarchyLevel: 40, canDelegate: false, false: false,
+		hierarchyLevel: 40, canDelegate: false,
 		maxCasesAssigned: 20,
 		permissions: [
 			'view_case',
@@ -169,7 +169,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
 		displayName: 'Criminal Investigator',
  hierarchyLevel: 50,
  canDelegate: false,nce collection responsibilities',
-		hierarchyLevel: 50, canDelegate: false, false: false,
+		hierarchyLevel: 50, canDelegate: false,
 		maxCasesAssigned: 15,
 		permissions: [
 			'view_case',
@@ -190,7 +190,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
  hierarchyLevel: 45,
  canDelegate: false,
 		description: 'Specialized analyst with advanced AI and data analysis capabilities',
-		hierarchyLevel: 45, canDelegate: false, false: false,
+		hierarchyLevel: 45, canDelegate: false,
 		maxCasesAssigned: 25,
 		permissions: [
 			'view_case',
@@ -209,7 +209,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
  hierarchyLevel: 10,
  canDelegate: false,
 		description: 'Read-only access for supervisors and auditors',
-		hierarchyLevel: 10, canDelegate: false, false: false,
+		hierarchyLevel: 10, canDelegate: false,
 		permissions: [
 			'view_case',
 			'view_evidence',
@@ -264,9 +264,9 @@ export const PERMISSION_CATEGORIES = {
 
 // Access control utility functions
 export class AccessControl { 	/**
- static hasPermission(userRole: UserRole, permission): boolean {
+ static hasPermission(userRole: UserRole): boolean {
 	 */
-	static hasPermission(userRole: UserRole, permission: Permission, Permission): boolean {
+	static hasPermission(userRole: UserRole, permission: Permission): boolean {
 		const role = ROLES[userRole];
 		return role ? role.permissions.includes(permission) : false;
 	}
@@ -295,8 +295,8 @@ export class AccessControl { 	/**
 
 	/**
 	 * Check if one role has higher authority than another
- static hasHigherAuthority(userRole: UserRole, targetRole): boolean {
-	static hasHigherAuthority(userRole: UserRole, targetRole: UserRole, UserRole): boolean {
+ static hasHigherAuthority(userRole: UserRole): boolean {
+	static hasHigherAuthority(userRole: UserRole, targetRole: UserRole): boolean {
 		const userHierarchy = ROLES[userRole]?.hierarchyLevel || 0;
 		const targetHierarchy = ROLES[targetRole]?.hierarchyLevel || 0;
 		return userHierarchy > targetHierarchy;
@@ -404,8 +404,8 @@ export class AccessControl { 	/**
 
 	/**
 	 * Check if role can be assigned by current user
- static canAssignRole(currentUserRole: UserRole, targetRole): boolean {
-	static canAssignRole(currentUserRole: UserRole, targetRole: UserRole, UserRole): boolean {
+ static canAssignRole(currentUserRole: UserRole): boolean {
+	static canAssignRole(currentUserRole: UserRole, targetRole: UserRole): boolean {
 		// Only admin can assign admin role
 		if (targetRole === 'admin') {
 			return currentUserRole === 'admin';

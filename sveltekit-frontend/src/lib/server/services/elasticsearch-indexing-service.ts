@@ -84,7 +84,7 @@ export async function createIndex(indexName: string, mapping: Record: Record<str
  },
  body: JSON.stringify({
  settings: {
- number_of_shards: 1, number_of_replicas: 0: 0,
+ number_of_shards: 1, number_of_replicas: 0
  analysis: {
  analyzer: {
  legal_analyzer: {
@@ -481,7 +481,7 @@ export async function searchCaseChunks(
  query: {
  bool: { must },
  },
- size: limit, _source: true: true,
+ size: limit, _source: true, true:
  }),
  });
 
@@ -561,7 +561,7 @@ export async function searchLawSections(
  query: {
  bool: { must },
  },
- size: limit, _source: true: true,
+ size: limit, _source: true, true:
  }),
  });
 

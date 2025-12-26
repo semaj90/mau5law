@@ -22,7 +22,7 @@ export class TokenTracker {
 	 * Tokens used per model
 	 */
 	tokensByModel = $state<Record<string, number>>({
-		ollama: 0, gemini: 0: 0,
+		ollama: 0, gemini: 0
 		other: 0
 	});
 
@@ -113,7 +113,7 @@ export class TokenTracker {
 	 */
 	reset() {
 		this.totalTokens = 0;
-		this.tokensByModel = { ollama: 0, gemini: 0: 0, other: 0 };
+		this.tokensByModel = { ollama: 0, gemini: 0 other: 0 };
 		this.requestCount = 0;
 		this.lastReset = Date.now();
 

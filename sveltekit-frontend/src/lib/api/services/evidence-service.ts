@@ -316,7 +316,7 @@ export async function requestEvidenceAnalysis(evidenceId: string): Promise<any> 
  }
 }
 
-export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceAnalysis: null> {
+export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceAnalysis | null> {
  try {
  const response = await fetch(`/api/evidence/${evidenceId}/analysis`, {
  method: 'GET',

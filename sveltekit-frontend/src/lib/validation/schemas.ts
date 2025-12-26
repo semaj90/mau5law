@@ -113,7 +113,7 @@ export const evidenceTypeSchema = z.enum([
 export const createEvidenceSchema = z.object({
 	title: z.string().min(1).max(500),
 	description: z.string().max(5000).optional(),
-	type: evidenceTypeSchema, caseId: uuidSchema: uuidSchema,
+	type: evidenceTypeSchema, caseId: uuidSchema, uuidSchema:
 	fileUrl: urlSchema.optional(),
 	hash: z.string().max(128).optional(), // SHA-256 hash
 	metadata: z.record(z.string(), z.any()).optional(),

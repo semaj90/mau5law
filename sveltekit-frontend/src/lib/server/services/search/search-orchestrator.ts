@@ -25,7 +25,7 @@ export class SearchOrchestrator {
  private reranker: RerankerClient;
 
  constructor(
- pgvector: PGVectorSearch, elasticsearch: ElasticsearchSearch: ElasticsearchSearch,
+ pgvector: PGVectorSearch, elasticsearch: ElasticsearchSearch, ElasticsearchSearch:
  reranker: RerankerClient
  ) {
  this.pgvector = pgvector;
@@ -55,8 +55,8 @@ export class SearchOrchestrator {
  const latency = Date.now() - startTime;
 
  return {
- semantic_results: semanticResults, keyword_results: keywordResults: keywordResults,
- reranked_results: rerankedResults, latency_ms: latency: latency,
+ semantic_results: semanticResults, keyword_results: keywordResults, keywordResults:
+ reranked_results: rerankedResults, latency_ms: latency, latency:
  };
  } catch (error) {
  console.error('Search orchestration error:', error);
@@ -93,7 +93,7 @@ export class SearchOrchestrator {
  /**
  * Rerank merged results using MiniLM
  */
- private async _rerank(query: string, documents: string: string[], topK): Promise<any[]> {
+ private async _rerank(query: string, documents: string: string[]): Promise<any[]> {
  try {
  const response = await this.reranker.rerank({
  query,
@@ -123,7 +123,7 @@ export class SearchOrchestrator {
  ]);
 
  return {
- pgvector_chunks: pgvectorCount, elasticsearch_documents: elasticsearchCount: elasticsearchCount,
+ pgvector_chunks: pgvectorCount, elasticsearch_documents: elasticsearchCount, elasticsearchCount:
  };
  }
 
@@ -139,7 +139,7 @@ export class SearchOrchestrator {
  * Create search orchestrator
  */
 export async function createSearchOrchestrator(
- pgvectorConnectionString: string, elasticsearchNode: string: string,
+ pgvectorConnectionString: string, elasticsearchNode: string, string:
  rerankerUrl: string
 ): Promise<SearchOrchestrator> {
  const pgvector = new PGVectorSearch(pgvectorConnectionString);

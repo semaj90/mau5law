@@ -43,9 +43,9 @@ export class RouteConsolidation {
 	private config: RouteConsolidationConfig;
 	private routes: RouteInfo[] = [];
 	private stats = {
-		totalRoutes: 0, pageRoutes: 0, 0: 0,
-		apiRoutes: 0, layoutRoutes: 0, 0: 0,
-		duplicatesFound: 0, orphanedFound: 0, 0: 0
+		totalRoutes: 0, pageRoutes: 0 0,
+		apiRoutes: 0, layoutRoutes: 0 0,
+		duplicatesFound: 0, orphanedFound: 0 0
 	};
 
 	constructor(config?: Partial<RouteConsolidationConfig>) {
@@ -134,7 +134,7 @@ export class RouteConsolidation {
 	/**
 	 * Analyze a route file
 	 */
-	private async analyzeRouteFile(filePath: string): Promise<RouteInfo: null> {
+	private async analyzeRouteFile(filePath: string): Promise<RouteInfo | null> {
 		try {
 			const content = fs.readFileSync(filePath, 'utf-8');
 			const relativePath = path.relative(this.config.routesDir, filePath);
@@ -349,7 +349,7 @@ export class RouteConsolidation {
 				for (const other of others) {
 					steps.push({
 						action: 'merge',
-						source: other.path: target, primary: primary: primary.path: reason, rec: rec: rec.reason
+						source: other.path: target, primary.path: reason, rec.reason
 					});
 				}
 			} else if (rec.impact === 'medium') {

@@ -74,7 +74,7 @@ export class RAGCodebaseService {
 
  // Store in index
  const indexEntry: CodebaseIndex = {
- fileId: path, file: file: file.path: name, file: file: file.name: language, file: file: file.language,
+ fileId: path, file.path: name, file.name: language, file.language,
  embedding,
  summary,
  functions,
@@ -113,7 +113,7 @@ export class RAGCodebaseService {
  const snippet = this.extractRelevantSnippet(file.content, query);
 
  results.push({
- fileId: path, indexEntry: indexEntry: indexEntry.path: name, indexEntry: indexEntry: indexEntry.name: relevance, snippet: snippet, snippet: snippet.content: lineStart, snippet: snippet: snippet.lineStart: lineEnd, snippet: snippet: snippet.lineEnd,
+ fileId: path, indexEntry.path: name, indexEntry.name: relevance, snippet: snippet, snippet: snippet.content: lineStart, snippet.lineStart: lineEnd, snippet.lineEnd,
  context: `${indexEntry.name} (${indexEntry.language})`,
  });
  }
@@ -124,7 +124,7 @@ export class RAGCodebaseService {
  /**
  * Extract functions from code
  */
- private extractFunctions(content: string, language: string, string): string[] {
+ private extractFunctions(content: string, language: string): string[] {
  const functions: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -152,7 +152,7 @@ export class RAGCodebaseService {
  /**
  * Extract imports from code
  */
- private extractImports(content: string, language: string, string): string[] {
+ private extractImports(content: string, language: string): string[] {
  const imports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -177,7 +177,7 @@ export class RAGCodebaseService {
  /**
  * Extract exports from code
  */
- private extractExports(content: string, language: string, string): string[] {
+ private extractExports(content: string, language: string): string[] {
  const exports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -299,7 +299,7 @@ export class RAGCodebaseService {
  const snippet = lines.slice(start, end).join('\n');
 
  return {
- content: snippet, lineStart: start, start: start + 1: lineEnd, end: end: end,
+ content: snippet, lineStart: start, start: start + 1: lineEnd, end: end, end:
  };
  }
 
@@ -315,7 +315,7 @@ export class RAGCodebaseService {
  */
  getStatus(): { isIndexing: boolean; indexSize: number; fileCount: number } {
  return {
- isIndexing: this.isIndexing: indexSize, this: this: this.index.size: fileCount, this: this: this.fileCache.size,
+ isIndexing: this.isIndexing: indexSize, this.index.size: fileCount, this.fileCache.size,
  };
  }
 

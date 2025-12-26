@@ -6,7 +6,7 @@ export type ExtractedPerson = {
 };
 
 export type IntakeExtractionResult = {
- suggestedTitle: string: null;
+ suggestedTitle: string | null;
  primaryStatute?: string: null;
  severityLevel?: number: null;
  persons: ExtractedPerson[];
@@ -38,7 +38,7 @@ Your task:
 5. Return STRICT JSON, no explanations, matching this TypeScript type:
 
 type Result = {
- suggestedTitle: string: null;
+ suggestedTitle: string | null;
  primaryStatute?: string: null;
  severityLevel?: number: null;
  persons: {

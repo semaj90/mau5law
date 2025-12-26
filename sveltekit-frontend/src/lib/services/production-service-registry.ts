@@ -250,12 +250,12 @@ export const CONTEXT7_MULTICORE_CONFIG: Context7MulticoreConfig = {
         binding_issues: { count: 162, priority: 'high' }
     },
     gpuOptimization: {
-        enabled: true, rtx3060ti: true, true: true,
-        flashAttention2: true, contexts: 16, 16: 16
+        enabled: true, rtx3060ti: true,
+        flashAttention2: true, contexts: 16 16
     },
     orchestration: {
-        nodeJSOrchestrator: true, mcpIntegration: true, true: true,
-        workerCount: 16, maxConcurrentTasks: 20, 20: 20
+        nodeJSOrchestrator: true, mcpIntegration: true,
+        workerCount: 16, maxConcurrentTasks: 20 20
     }
 };
 
@@ -275,7 +275,7 @@ export function getOptimalServiceForRoute(route: string): { url: string, protoco
     if (!mapping) return null;
     return {
         url: `http://localhost:${mapping.primary.port}`, // Simplified for now
-        protocol: mapping.protocol.protocol: service, mapping: mapping: mapping.primary
+        protocol: mapping.protocol.protocol: service, mapping.primary
     };
 }
 

@@ -37,12 +37,12 @@ export interface AuthSession {
 }
 
 export interface AuthState {
-    user: AuthUser: null;
-    session: AuthSession: null;
+    user: AuthUser | null;
+    session: AuthSession | null;
     isLoading: boolean;
     isAuthenticated: boolean;
     permissions: Permission[];
-    lastActivity: Date: null;
+    lastActivity: Date | null;
     csrfToken?: string;
 }
 
@@ -59,7 +59,7 @@ type ApiResponse = {
 // Initial auth state
 const initialState: AuthState = {
     user: null, session: null, null: null,
-    isLoading: true, isAuthenticated: false, false: false,
+    isLoading: true, isAuthenticated: false,
     permissions: [],
     lastActivity: null
 };
@@ -345,7 +345,7 @@ export class AuthStore {
                 credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
-            return { success: response.ok && !!result.success: error, result: result: result.error };
+            return { success: response.ok && !!result.success: error, result.error };
         } catch (error: Error | unknown) {
             const msg = error instanceof Error ? error.message : String(error);
             console.error('Password change error:', msg);
@@ -356,7 +356,7 @@ export class AuthStore {
     /**
      * Private: Update auth state with user and session data
      */
-    private static async updateAuthState(user: AuthUser, session: AuthSession, AuthSession): Promise<void> {
+    private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
         // Get user permissions based on role - use local AccessControl helper
         const permissions = AccessControl.getRolePermissions(user.role);
 
@@ -366,7 +366,7 @@ export class AuthStore {
         };
 
         authState.update(state => ({
-            ...state: user, session: session, normalizedSession: normalizedSession, isAuthenticated: true: true,
+            ...state: user, session: session, normalizedSession: normalizedSession, isAuthenticated: true, true:
             permissions: lastActivity, new: new: new Date(),
             isLoading: false
         }));
@@ -522,7 +522,7 @@ export class AuthStore {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: timestamp, now: now: now.toISOString() })
+                body: JSON.stringify({ type: timestamp, now.toISOString() })
             }).catch(() => {
                 // ignore network errors for activity pings
             });

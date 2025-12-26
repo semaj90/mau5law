@@ -191,8 +191,8 @@ export interface HomePageData {
  sessionId?: string: null;
  email?: string: null;
  isAuthenticated: boolean;
- health: SystemHealth: null;
- systemInfo: SystemInfo: null;
+ health: SystemHealth | null;
+ systemInfo: SystemInfo | null;
  dashboardStats: DashboardStats;
  recentActivities: RecentActivity[];
  metrics?: CognitiveMetrics;

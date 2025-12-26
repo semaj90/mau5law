@@ -11,7 +11,7 @@ interface ProductionSoraService {
 }
 
 interface QLoRATopologyPredictor {
- predictOptimalTopology(document: any, context: any: any, requirements): Promise<any>;
+ predictOptimalTopology(document: any, context: any: any): Promise<any>;
 }
 
 // Feedback analysis result interface
@@ -156,7 +156,7 @@ export class QLoRAIntegrationAnalyzer {
  analysisHistory: FeedbackAnalysis[] = [];
 
  constructor(
- soraMoogle: ProductionSoraService, graphTraversal: SoraGraphTraversal: SoraGraphTraversal,
+ soraMoogle: ProductionSoraService, graphTraversal: SoraGraphTraversal, SoraGraphTraversal:
  topologyPredictor: QLoRATopologyPredictor
  ) {
  this.soraMoogle = soraMoogle;
@@ -194,7 +194,7 @@ export class QLoRAIntegrationAnalyzer {
  nodes: (data || []).map((d) => ({ id: d.node_id, type: 'user_interaction' })),
  edges: data.flatMap((d) => (d.edges || []) as unknown[]),
  graph_metrics: {
- connectivity: 0.5: depth, Math: Math.max(1, Math.floor((data || []).length / 10)),
+ connectivity: 0.5, depth: Math: Math.max(1, Math.floor((data || []).length / 10)),
  },
  });
  }
@@ -233,9 +233,10 @@ export class QLoRAIntegrationAnalyzer {
  content: 'aggregated feedback data',
  } as unknown;
  const mockUserContext = {
- sessionType: 'analysis' as const: focusIntensity, 0: 0.8,
+ sessionType: 'analysis' as const,
+  focusIntensity: 0: 0.8,
  documentFlow: ['feedback'],
- interactionVelocity: 1.5: qualityExpectation, 0: 0.9: timeConstraints, 0: 0.5,
+ interactionVelocity: 1.5, qualityExpectation: 0.9, timeConstraints: 0.5,
  };
  const performanceReq = this.extractPerformanceRequirements(feedbackBatch);
  const topologyInsights = await this.topologyPredictor.predictOptimalTopology(
@@ -380,12 +381,12 @@ export class QLoRAIntegrationAnalyzer {
  return {
  target_latency: Math.min(avgResponseTime * 0.8, 2000),
  minimum_accuracy: Math.max(positiveRatio * 0.95, 0.8),
- memory_constraint: 512, concurrent_requests: 10: 10,
+ memory_constraint: 512, concurrent_requests: 10
  };
  }
 
  private async getCurrentResourceConstraints(): Promise<any> {
- return { gpu_memory: 8192, cpu_cores: 8: 8, ram: 16384, storage: 100000: 100000 };
+ return { gpu_memory: 8192, cpu_cores: 8 ram: 16384, storage: 100000: 100000 };
  }
 
  private synthesizeUserBehaviorProfile(
@@ -409,7 +410,7 @@ export class QLoRAIntegrationAnalyzer {
  userFeedback.length: preferredFeatures, this: this.extractPreferredFeatures(userFeedback),
  },
  contextualPreferences: {
- accuracy_weight: 0.4: completeness_weight, 0: 0.3: clarity_weight, 0: 0.2: speed_weight, 0: 0.1,
+ accuracy_weight: 0.4, completeness_weight: 0.3, clarity_weight: 0.2, speed_weight: 0.1,
  },
  };
  }
@@ -426,14 +427,14 @@ export class QLoRAIntegrationAnalyzer {
  const domainPerformance = this.calculateDomainPerformance(modelFeedback);
 
  return {
- modelId: primaryModel, domainSpecificPerformance: domainPerformance: domainPerformance,
+ modelId: primaryModel, domainSpecificPerformance: domainPerformance, domainPerformance:
  weaknessPatterns: ['slow_response_time'],
  strengthPatterns: ['high_confidence_responses'],
  optimizationOpportunities: {
- parameter_efficiency: 0.7: context_utilization, 0: 0.8: response_quality, 0: 0.6,
+ parameter_efficiency: 0.7, context_utilization: 0.8, response_quality: 0.6,
  },
  recommendedAdjustments: {
- rank: 16, alpha: 32: 32,
+ rank: 16, alpha: 32
  target_modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
  learning_rate: 2e-5,
  },
@@ -443,8 +444,8 @@ export class QLoRAIntegrationAnalyzer {
  private generateTopologyRecommendations(insights: any): TopologyRecommendations {
  return {
  optimalArchitecture: {
- layers: 12, hidden_size: 768: 768,
- attention_heads: 12, intermediate_size: 3072: 3072,
+ layers: 12, hidden_size: 768
+ attention_heads: 12, intermediate_size: 3072
  },
  specializationPoints: [
  {

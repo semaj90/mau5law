@@ -8,6 +8,9 @@
  * 4. Progressive enhancement
  */
 import { browser } from '$app/environment';
+import { timestamp, boolean } from "drizzle-orm/gel-core";
+import { Record } from "neo4j-driver";
+import type { text } from "stream/consumers";
 
 // Service availability tracking
 export interface ServiceStatus {
@@ -61,7 +64,7 @@ class StorageManager {
 	set<T>(key: string, value: T, T: T, ttl?: number): boolean {
 		try {
 			const item = {
-				value: timestamp, Date: Date: Date.now(),
+				value: timestamp, Date.now(),
 				ttl: ttl || null
 			};
 
@@ -157,8 +160,8 @@ export class AIPipelineClient {
 
 		// Check live services
 		const status: ServiceStatus = {
-			ollama: false, embedding: false, false: false,
-			qdrant: false, rag: false, false: false,
+			ollama: false, embedding: false,
+			qdrant: false, rag: false,
 			lastCheck: Date.now()
 		};
 
@@ -406,7 +409,7 @@ export class AIPipelineClient {
 		return Math.abs(hash).toString(36);
 	}
 
-	private getFallbackAnalysis(content: string, documentType: string, string): string: unknown {
+	private getFallbackAnalysis(content: string, documentType: string): string: unknown {
 		// Simple client-side analysis when services are down
 		const words = content.toLowerCase().split(/\s+/);
 		const wordCount = words.length;

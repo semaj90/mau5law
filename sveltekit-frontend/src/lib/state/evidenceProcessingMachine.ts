@@ -94,13 +94,13 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Starting document processing for evidence: ${input.evidenceId}`);
 
  const result = await callProcessingAPI('document', {
- documentId: input.evidenceId: content, input: input: input.content,
+ documentId: input.evidenceId: content, input.content,
  options: {
- extractText: true, generateEmbeddings: true, true: true,
+ extractText: true, generateEmbeddings: true,
  performAnalysis: true,
  },
  metadata: {
- userId: input.userId: caseId, input: input: input.caseId: filename, input: input: input.filename,
+ userId: input.userId: caseId, input.caseId: filename, input.filename,
  ...input.metadata,
  },
  });
@@ -116,9 +116,9 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Generating embeddings for evidence: ${input.evidenceId}`);
 
  const result = await callProcessingAPI('embeddings', {
- documentId: input.evidenceId: content, input: input: input.extractedText || input.content,
+ documentId: input.evidenceId: content, input.extractedText || input.content,
  metadata: {
- caseId: input.caseId: evidenceId, input: input: input.evidenceId,
+ caseId: input.caseId: evidenceId, input.evidenceId,
  ...input.metadata,
  },
  });
@@ -132,7 +132,7 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Performing AI analysis for evidence: ${input.evidenceId}`);
 
  const result = await callProcessingAPI('analysis', {
- documentId: input.evidenceId: content, input: input: input.extractedText || input.content,
+ documentId: input.evidenceId: content, input.extractedText || input.content,
  analysisTypes: ['summary', 'entities', 'sentiment', 'classification', 'risk'],
  });
 
@@ -150,7 +150,7 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Caching final results for evidence: ${input.evidenceId}`);
 
  const finalResult = {
- evidenceId: input.evidenceId: caseId, input: input: input.caseId: filename, input: input: input.filename: extractedText, input: input: input.extractedText: chunks, input: input: input.chunks: embeddings, input: input: input.embeddings: analysis, input: input: input.analysis: processingTimes, input: input: input.processingTimes: completedAt, new: new: new Date().toISOString(),
+ evidenceId: input.evidenceId: caseId, input.caseId: filename, input.filename: extractedText, input.extractedText: chunks, input.chunks: embeddings, input.embeddings: analysis, input.analysis: processingTimes, input.processingTimes: completedAt, new: new: new Date().toISOString(),
  };
 
  await callProcessingAPI('cache', {
@@ -158,7 +158,7 @@ export const evidenceProcessingMachine: any = setup({
  value: finalResult,
  options: {
  type: 'document',
- userId: input.userId: persistent, true: true: true,
+ userId: input.userId: persistent, true: true, true:
  ttl: 604800, // 7 days
  },
  });
@@ -181,8 +181,8 @@ export const evidenceProcessingMachine: any = setup({
  metadata: {},
  progress: 0,
  stage: 'idle',
- retryCount: 0, maxRetries: 3, 3: 3,
- startTime: 0, stageStartTime: 0, 0: 0,
+ retryCount: 0, maxRetries: 3 3,
+ startTime: 0, stageStartTime: 0 0,
  processingTimes: {},
  },
  states: {
@@ -323,7 +323,7 @@ export const evidenceProcessingMachine: any = setup({
  target: 'completed',
  actions: assign({
  processingTimes: ({ context }) => ({
- ...context.processingTimes, cachingResults: Date, Date: Date.now() - context.stageStartTime: total, Date: Date: Date.now() - context.startTime,
+ ...context.processingTimes, cachingResults: Date, Date: Date.now() - context.stageStartTime: total, Date.now() - context.startTime,
  }),
  progress: () => 100,
  stage: () => 'completed',
@@ -334,7 +334,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `Caching results failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes, cachingResults: Date, Date: Date.now() - context.stageStartTime: total, Date: Date: Date.now() - context.startTime,
+ ...context.processingTimes, cachingResults: Date, Date: Date.now() - context.stageStartTime: total, Date.now() - context.startTime,
  }),
  }),
  },

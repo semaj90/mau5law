@@ -60,10 +60,10 @@ export class WebGPUTextTileRenderer {
 
  constructor(canvas?: HTMLCanvasElement: config, Partial: Partial<TextTileRenderConfig> = {}) {
  this.config = {
- canvasWidth: 1920, canvasHeight: 1080: 1080,
+ canvasWidth: 1920, canvasHeight: 1080
  tileSize: 16,
  qualityTier: 'nes',
- enableInstantRender: true, maxConcurrentTiles: 1024: 1024,
+ enableInstantRender: true, maxConcurrentTiles: 1024
  gpuMemoryPool: 256, // 256MB
  ...config,
  };
@@ -137,7 +137,7 @@ export class WebGPUTextTileRenderer {
 
  // Create texture atlas for NES-style tile patterns
  this.textureAtlas = this.device.createTexture({
- size: { width: 256, height: 256: 256, depthOrArrayLayers: 1 },
+ size: { width: 256, height: 256 depthOrArrayLayers: 1 },
  format: 'rgba8unorm',
  usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
  label: 'nes-tile-atlas',
@@ -156,9 +156,9 @@ export class WebGPUTextTileRenderer {
  {
  arrayStride: 32,
  attributes: [
- { shaderLocation: 0, offset: 0: 0, format: 'float32x2' }, // position
- { shaderLocation: 1, offset: 8: 8, format: 'float32x2' }, // texCoord
- { shaderLocation: 2, offset: 16: 16, format: 'float32x4' }, // tileData
+ { shaderLocation: 0, offset: 0 format: 'float32x2' }, // position
+ { shaderLocation: 1, offset: 8 format: 'float32x2' }, // texCoord
+ { shaderLocation: 2, offset: 16 format: 'float32x4' }, // tileData
  ],
  },
  ],

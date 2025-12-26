@@ -78,7 +78,7 @@ export async function getShardChunks(docId: string, shardId: number): Promise<an
 }
 
 export async function updateShardStatus(
- docId: string, shardId: number: number,
+ docId: string, shardId: number, number:
  status: string,
  metadata?: any
 ): Promise<void> {

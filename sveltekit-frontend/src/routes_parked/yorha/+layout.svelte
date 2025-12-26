@@ -34,7 +34,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  };
 
  // System status and navigation
- let systemStatus = $state({ connected: false, services: 0, 0: 0, errors: 0 });
+ let systemStatus = $state({ connected: false, services: 0 0, errors: 0 });
  let sidebarOpen = $state(false);
  let currentPath = $state('');
 

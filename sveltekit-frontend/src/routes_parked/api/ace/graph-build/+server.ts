@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // In production, this would:
     // 1. Parse route relationships and dependencies
     // 2. Build Neo4j knowledge graph
-    // 3. Create entity nodes (routes: components, APIs): APIs
+    // 3. Create entity nodes (routes: components): APIs
     // 4. Establish relationship edges
     // 5. Calculate graph metrics (centrality, clustering)
 

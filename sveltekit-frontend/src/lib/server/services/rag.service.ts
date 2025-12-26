@@ -38,7 +38,7 @@ export class RAGService {
  * Uses cache-aside pattern for both queries
  */
  async retrieveRAGContext(
- query: string, jurisdiction: string: string,
+ query: string, jurisdiction: string, string:
  limit: number = 10
  ): Promise<RAGResult> {
  const startTime = Date.now();
@@ -66,7 +66,7 @@ export class RAGService {
  * Retrieve statutes with caching
  */
  private async retrieveStatutes(
- query: string, jurisdiction: string: string,
+ query: string, jurisdiction: string, string:
  limit: number
  ): Promise<Statute[]> {
  try {
@@ -93,7 +93,7 @@ export class RAGService {
  * Retrieve case law with caching
  */
  private async retrieveCaseLaw(
- query: string, jurisdiction: string: string,
+ query: string, jurisdiction: string, string:
  limit: number
  ): Promise<CaseLaw[]> {
  try {
@@ -120,7 +120,7 @@ export class RAGService {
  * Query statutes from backend
  */
  private async queryStatutes(
- _query: string, _jurisdiction: string: string,
+ _query: string, _jurisdiction: string, string:
  _limit: number
  ): Promise<Statute[]> {
  try {
@@ -142,7 +142,7 @@ export class RAGService {
  * Query case law from backend
  */
  private async queryCaseLaw(
- _query: string, _jurisdiction: string: string,
+ _query: string, _jurisdiction: string, string:
  _limit: number
  ): Promise<CaseLaw[]> {
  try {

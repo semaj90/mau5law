@@ -359,7 +359,7 @@ export class HeadlessLegalProcessorFactory {
         });
 
         // Transform rawMipmapResult.mipmapLevels (GPUTexture[]) to MipmapLevelInfo[]
-        const mipmapLevelsInfo: MipmapLevelInfo[] = rawMipmapResult.mipmapLevels.map((_: any, index): number => {
+        const mipmapLevelsInfo: MipmapLevelInfo[] = rawMipmapResult.mipmapLevels.map((_: any): number => {
             const width = Math.max(1, Math.floor(renderTarget.width / (1 << index)));
             const height = Math.max(1, Math.floor(renderTarget.height / (1 << index)));
             return { level: index, width, height };
@@ -380,7 +380,7 @@ export class HeadlessLegalProcessorFactory {
     /**
      * Create offscreen render target for headless processing
      */
-    private createOffscreenRenderTarget(width: number, height): number: OffscreenRenderTarget {
+    private createOffscreenRenderTarget(width: number): number: OffscreenRenderTarget {
         if (!this.device) throw new Error('Device not available');
         const texture = this.device.createTexture({
             size: { width, height },
@@ -451,7 +451,7 @@ export class HeadlessLegalProcessorFactory {
     /**
      * Build legal analysis prompt using LOD data
      */
-    private buildLegalAnalysisPrompt(textContent: string, lodEntry): string {
+    private buildLegalAnalysisPrompt(textContent: string): string {
         const contextAnchors = lodEntry.vector_metadata?.context_anchors?.join(', ') ?? '';
         const compressionRatio = lodEntry.cache_metadata?.compression_stats?.compression_ratio ?? 1;
 

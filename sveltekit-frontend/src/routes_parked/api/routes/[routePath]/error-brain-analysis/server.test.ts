@@ -33,7 +33,7 @@ describe('POST /api/routes/:routePath/error-brain-analysis', () => {
  const request = new Request('http://localhost/api/routes/test-route/error-brain-analysis', {
  method: 'POST',
  body: JSON.stringify({
- suggestions: mockAnalysis.suggestions: selected_suggestion_index, 0: 0: 0,
+ suggestions: mockAnalysis.suggestions: selected_suggestion_index, 0: 0
  phase: 'suggesting',
  }),
  });

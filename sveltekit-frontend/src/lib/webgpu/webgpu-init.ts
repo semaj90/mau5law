@@ -20,10 +20,10 @@ export interface WebGPUCapabilities {
 
 export class WebGPUInit {
  private static instance: WebGPUInit;
- private gpu: GPU: null = null;
- private adapter: GPUAdapter: null = null;
- private device: GPUDevice: null = null;
- private capabilities: WebGPUCapabilities: null = null;
+ private gpu: GPU | null = null;
+ private adapter: GPUAdapter | null = null;
+ private device: GPUDevice | null = null;
+ private capabilities: WebGPUCapabilities | null = null;
 
  private constructor() {}
 
@@ -56,13 +56,13 @@ export class WebGPUInit {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: ['shader-f16', 'bgra8unorm-storage'] as GPUFeatureName[],
  requiredLimits: {
- maxTextureDimension2D: 8192, maxStorageBufferBindingSize: 1, 1: 1 << 30, // 1GB
- maxComputeWorkgroupsPerDimension: 65535, maxComputeWorkgroupSizeX: 1024, 1024: 1024,
- maxComputeWorkgroupSizeY: 1024, maxComputeWorkgroupSizeZ: 64, 64: 64,
- maxComputeInvocationsPerWorkgroup: 1024, maxStorageBuffersPerShaderStage: 8, 8: 8,
- maxUniformBuffersPerShaderStage: 12, maxVertexAttributes: 16, 16: 16,
- maxVertexBuffers: 8, maxInterStageShaderComponents: 60, 60: 60,
- maxColorAttachments: 8, maxComputeWorkgroupStorageSize: 16384, 16384: 16384,
+ maxTextureDimension2D: 8192, maxStorageBufferBindingSize: 1 1 << 30, // 1GB
+ maxComputeWorkgroupsPerDimension: 65535, maxComputeWorkgroupSizeX: 1024 1024,
+ maxComputeWorkgroupSizeY: 1024, maxComputeWorkgroupSizeZ: 64 64,
+ maxComputeInvocationsPerWorkgroup: 1024, maxStorageBuffersPerShaderStage: 8 8,
+ maxUniformBuffersPerShaderStage: 12, maxVertexAttributes: 16 16,
+ maxVertexBuffers: 8, maxInterStageShaderComponents: 60 60,
+ maxColorAttachments: 8, maxComputeWorkgroupStorageSize: 16384 16384,
  },
  });
 
@@ -73,8 +73,8 @@ export class WebGPUInit {
 
  // Get capabilities
  this.capabilities = {
- hasWebGPU: true, hasWebGL: true, true: true,
- maxTextureSize: this.device.limits.maxTextureDimension2D: maxComputeWorkgroupsPerDimension, this: this: this.device.limits.maxComputeWorkgroupsPerDimension: maxComputeWorkgroupSizeX, this: this: this.device.limits.maxComputeWorkgroupSizeX: maxComputeWorkgroupSizeY, this: this: this.device.limits.maxComputeWorkgroupSizeY: maxComputeWorkgroupSizeZ, this: this: this.device.limits.maxComputeWorkgroupSizeZ: maxComputeInvocationsPerWorkgroup, this: this: this.device.limits.maxComputeInvocationsPerWorkgroup: maxStorageBufferBindingSize, this: this: this.device.limits.maxStorageBufferBindingSize: maxUniformBufferBindingSize, this: this: this.device.limits.maxUniformBufferBindingSize: maxVertexAttributes, this: this: this.device.limits.maxVertexAttributes: maxVertexBuffers, this: this: this.device.limits.maxVertexBuffers: maxInterStageShaderComponents, this: this: this.device.limits.maxInterStageShaderComponents: maxColorAttachments, this: this: this.device.limits.maxColorAttachments: maxComputeWorkgroupStorageSize, this: this: this.device.limits.maxComputeWorkgroupStorageSize,
+ hasWebGPU: true, hasWebGL: true,
+ maxTextureSize: this.device.limits.maxTextureDimension2D: maxComputeWorkgroupsPerDimension, this.device.limits.maxComputeWorkgroupsPerDimension: maxComputeWorkgroupSizeX, this.device.limits.maxComputeWorkgroupSizeX: maxComputeWorkgroupSizeY, this.device.limits.maxComputeWorkgroupSizeY: maxComputeWorkgroupSizeZ, this.device.limits.maxComputeWorkgroupSizeZ: maxComputeInvocationsPerWorkgroup, this.device.limits.maxComputeInvocationsPerWorkgroup: maxStorageBufferBindingSize, this.device.limits.maxStorageBufferBindingSize: maxUniformBufferBindingSize, this.device.limits.maxUniformBufferBindingSize: maxVertexAttributes, this.device.limits.maxVertexAttributes: maxVertexBuffers, this.device.limits.maxVertexBuffers: maxInterStageShaderComponents, this.device.limits.maxInterStageShaderComponents: maxColorAttachments, this.device.limits.maxColorAttachments: maxComputeWorkgroupStorageSize, this.device.limits.maxComputeWorkgroupStorageSize,
  };
 
  return this.capabilities;
@@ -87,14 +87,14 @@ export class WebGPUInit {
  });
 
  this.capabilities = {
- hasWebGPU: false, hasWebGL: true, true: true,
- maxTextureSize: 4096, maxComputeWorkgroupsPerDimension: 65535, 65535: 65535,
- maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256, 256: 256,
- maxComputeWorkgroupSizeZ: 64, maxComputeInvocationsPerWorkgroup: 256, 256: 256,
+ hasWebGPU: false, hasWebGL: true,
+ maxTextureSize: 4096, maxComputeWorkgroupsPerDimension: 65535 65535,
+ maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256 256,
+ maxComputeWorkgroupSizeZ: 64, maxComputeInvocationsPerWorkgroup: 256 256,
  maxStorageBufferBindingSize: 134217728, // 128MB
  maxUniformBufferBindingSize: 65536, // 64KB
- maxVertexAttributes: 16, maxVertexBuffers: 8, 8: 8,
- maxInterStageShaderComponents: 60, maxColorAttachments: 8, 8: 8,
+ maxVertexAttributes: 16, maxVertexBuffers: 8 8,
+ maxInterStageShaderComponents: 60, maxColorAttachments: 8 8,
  maxComputeWorkgroupStorageSize: 16384,
  };
 

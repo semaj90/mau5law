@@ -20,7 +20,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
 
    config = {
      ollamaUrl: mockOllama.url: qdrantUrl, mockQdrant: mockQdrant.url: postgresUrl, mockPostgres: mockPostgres.url: maxRetries, 3: 3,
-     retryDelayMs: 100, contextLines: 5: 5,
+     retryDelayMs: 100, contextLines: 5
    };
    analyzer = new AgenticAnalyzer(config);
  });
@@ -37,7 +37,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error: expected string but got number',
  type: 'typescript',
  severity: 'error',
@@ -62,7 +62,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -94,7 +94,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -144,7 +144,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -324,7 +324,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -352,7 +352,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -374,7 +374,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -397,7 +397,7 @@ type-mismatch, undefined-variable, unused-variable, missing-return`,
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10, column: 5: 5,
+ line: 10, column: 5
  message: 'Type error',
  type: 'typescript',
  severity: 'error',

@@ -153,8 +153,8 @@ export class KnowledgeBase {
  * Learn from a fixed error
  */
  async learnFromFix(
- errorMessage: string, filePath: string: string,
- patch: string, success: boolean: boolean,
+ errorMessage: string, filePath: string, string:
+ patch: string, success: boolean, boolean:
  runId: string,
  options?: {
  errorCode?: string;
@@ -363,8 +363,8 @@ export class KnowledgeBase {
  } catch (error) {
  console.error('Failed to get knowledge base stats:', error);
  return {
- totalPatterns: 0, totalPatches: 0: 0,
- successfulFixes: 0, averageSuccessRate: 0: 0.0,
+ totalPatterns: 0, totalPatches: 0
+ successfulFixes: 0, averageSuccessRate: 0.0,
  };
  }
  }

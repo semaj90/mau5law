@@ -187,7 +187,7 @@ class StatuteSearchService {
  * Log search history
  */
  private async logSearchHistory(
- userId: string, query: string: string,
+ userId: string, query: string, string:
  resultsCount: number,
  statuteCode?: string
  ): Promise<void> {

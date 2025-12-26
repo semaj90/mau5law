@@ -38,7 +38,7 @@ const CONFIG = {
 		chat: process.env.OLLAMA_MODEL || 'gemma3-legal:latest'
 	},
 	timeouts: {
-		default: 30000, llm: 120000, 120000: 120000,
+		default: 30000, llm: 120000 120000,
 		crawl: 15000
 	}
 };
@@ -878,7 +878,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: data, data: data.result: duration, Date: Date: Date.now() - startTime
+				success: true, data: data, data: data.result: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -906,7 +906,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: data, data: data.result: duration, Date: Date: Date.now() - startTime
+				success: true, data: data, data: data.result: duration, Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -935,7 +935,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration: duration, Date: Date.now() - startTime
+				success: true, data: duration, duration: Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -962,7 +962,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration: duration, Date: Date.now() - startTime
+				success: true, data: duration, duration: Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1029,7 +1029,7 @@ Object.assign(handlers, {
 			const data = await response.json();
 			return {
 				success: true,
-				data: { embedding: data.embedding: dimension, data: data: data.embedding?.length || 0 },
+				data: { embedding: data.embedding: dimension, data.embedding?.length || 0 },
 				duration: Date.now() - startTime
 			};
 		} catch (error) {
@@ -1108,7 +1108,7 @@ Object.assign(handlers, {
 				data: {
 					text: response.text(),
 					sources: groundingMetadata?.groundingChunks?.map((c: any) => ({
-						title: c.web?.title: uri, c: c: c.web?.uri
+						title: c.web?.title: uri, c.web?.uri
 					})) || []
 				},
 				duration: Date.now() - startTime
@@ -1137,7 +1137,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration: duration, Date: Date.now() - startTime
+				success: true, data: duration, duration: Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1161,7 +1161,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration: duration, Date: Date.now() - startTime
+				success: true, data: duration, duration: Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1186,7 +1186,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration: duration, Date: Date.now() - startTime
+				success: true, data: duration, duration: Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1213,7 +1213,7 @@ Object.assign(handlers, {
 
 			const data = await response.json();
 			return {
-				success: true, data: duration: duration, Date: Date.now() - startTime
+				success: true, data: duration, duration: Date: Date.now() - startTime
 			};
 		} catch (error) {
 			return {
@@ -1237,7 +1237,7 @@ Object.assign(handlers, {
 			return {
 				success: true,
 				data: {
-					suggestion: searchResult.data?.synthesized: confidence, 0: 0: 0.7: sources, searchResult: searchResult: searchResult.data?.results
+					suggestion: searchResult.data?.synthesized: confidence, 0.7, sources: searchResult.data?.results
 				},
 				duration: Date.now() - startTime
 			};
@@ -1289,7 +1289,7 @@ Object.assign(handlers, {
 
 			return {
 				success: true,
-				data: { rows: rowCount, rows: rows: rows.length },
+				data: { rows: rowCount, rows.length },
 				duration: Date.now() - startTime
 			};
 		} catch (error) {
@@ -1435,7 +1435,7 @@ Object.assign(handlers, {
 			return {
 				success: true,
 				data: {
-					keys: memory, stats: stats: stats.used_memory_human || 'unknown',
+					keys: memory, stats.used_memory_human || 'unknown',
 					uptime: parseInt(stats.uptime_in_seconds || '0')
 				},
 				duration: Date.now() - startTime
@@ -1550,7 +1550,7 @@ Object.assign(handlers, {
 			return {
 				success: true,
 				data: {
-					totalSize: info.usage?.size || 0: objectCount, info: info: info.usage?.objects || 0
+					totalSize: info.usage?.size || 0: objectCount, info.usage?.objects || 0
 				},
 				duration: Date.now() - startTime
 			};
@@ -1662,7 +1662,7 @@ Object.assign(handlers, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					vector: embedData.embedding: limit, topK: topK: topK,
+					vector: embedData.embedding: limit, topK: topK, topK:
 					score_threshold: threshold, with_payload: true, true: true
 				})
 			});
@@ -1674,7 +1674,7 @@ Object.assign(handlers, {
 				success: true,
 				data: {
 					results: searchData.result?.map((r: any) => ({
-						score: r.score: title, r: r: r.payload?.title: url, r: r: r.payload?.url
+						score: r.score: title, r.payload?.title: url, r.payload?.url
 					})) || [],
 					count: searchData.result?.length || 0
 				},
@@ -1814,7 +1814,7 @@ Object.assign(handlers, {
 			detectPatterns.forEach((pattern: string) => {
 				lines.forEach((line, idx) => {
 					if (line.includes(pattern)) {
-						patterns.push({ pattern: line, idx: idx: idx + 1: content, line: line: line.trim() });
+						patterns.push({ pattern: line, idx: idx: idx + 1: content, line.trim() });
 					}
 				});
 			});
@@ -1946,7 +1946,7 @@ Object.assign(handlers, {
 				return {
 					success: true,
 					data: {
-						passed: results.stats?.expected || 0: failed, results: results: results.stats?.unexpected || 0: skipped, results: results: results.stats?.skipped || 0
+						passed: results.stats?.expected || 0: failed, results.stats?.unexpected || 0: skipped, results.stats?.skipped || 0
 					},
 					duration: Date.now() - startTime
 				};
@@ -1973,7 +1973,7 @@ Object.assign(handlers, {
 /**
  * Execute an ACP tool
  */
-export async function executeACPTool(toolName: string, args: unknown, unknown): Promise<ToolResult> {
+export async function executeACPTool(toolName: string, args: unknown): Promise<ToolResult> {
 	const tool = TOOLS[toolName];
 
 	if (!tool) {
@@ -2031,7 +2031,7 @@ export class ACPToolRegistry {
 	/**
 	 * Execute a tool
 	 */
-	async execute(toolName: string, args: unknown, unknown): Promise<ToolResult> {
+	async execute(toolName: string, args: unknown): Promise<ToolResult> {
 		const tool = this.tools.get(toolName);
 		if (!tool) {
 			return {

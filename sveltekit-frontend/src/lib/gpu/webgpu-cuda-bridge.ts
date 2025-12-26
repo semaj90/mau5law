@@ -15,9 +15,9 @@ import type { Project } from 'ts-morph';
  * GPU Compute Device Interface
  */
 export interface GPUComputeDevice {
- adapter: GPUAdapter: null;
- device: GPUDevice: null;
- queue: GPUQueue: null;
+ adapter: GPUAdapter | null;
+ device: GPUDevice | null;
+ queue: GPUQueue | null;
  isAvailable: boolean;
  deviceName: string;
  vendorName: 'nvidia' | 'amd' | 'intel' | 'apple' | 'unknown';
@@ -78,7 +78,7 @@ export class WebGPUCUDABridge {
  constructor() {
  this.gpuDevice = {
  adapter: null, device: null, null: null,
- queue: null, isAvailable: false, false: false,
+ queue: null, isAvailable: false,
  deviceName: 'unknown',
  vendorName: 'unknown',
  vramMB: 0,
@@ -244,7 +244,7 @@ export class WebGPUCUDABridge {
 
  // Create buffers
  const errorBuffer = device.createBuffer({
- size: errorData.byteLength: mappedAtCreation, true: true: true,
+ size: errorData.byteLength: mappedAtCreation, true: true, true:
  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  new Float32Array(errorBuffer.getMappedRange()).set(errorData);
@@ -261,7 +261,7 @@ export class WebGPUCUDABridge {
  });
 
  const clusterBuffer = device.createBuffer({
- size: clusterData.byteLength: mappedAtCreation, true: true: true,
+ size: clusterData.byteLength: mappedAtCreation, true: true, true:
  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  new Float32Array(clusterBuffer.getMappedRange()).set(clusterData);
@@ -270,7 +270,7 @@ export class WebGPUCUDABridge {
  // Create params buffer
  const paramsData = new Uint32Array([errors.length, initialClusters.length, 80, 0]);
  const paramsBuffer = device.createBuffer({
- size: paramsData.byteLength: mappedAtCreation, true: true: true,
+ size: paramsData.byteLength: mappedAtCreation, true: true, true:
  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  new Uint32Array(paramsBuffer.getMappedRange()).set(paramsData);
@@ -308,7 +308,7 @@ export class WebGPUCUDABridge {
 
  // Read back results
  const stagingBuffer = device.createBuffer({
- size: clusterData.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: clusterData.byteLength: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  const copyEncoder = device.createCommandEncoder();
@@ -325,7 +325,7 @@ export class WebGPUCUDABridge {
  finalClusters.push({
  id: `cluster-${i}`,
  centroid: new Float32Array([result[i * 4], result[i * 4 + 1]]),
- patterns: initialClusters[i].patterns: category, this: this: this.categorizeCluster(initialClusters[i]),
+ patterns: initialClusters[i].patterns: category, this.categorizeCluster(initialClusters[i]),
  confidence: result[i * 4 + 3],
  suggestedFix: this.generateFixSuggestion(initialClusters[i]),
  });
@@ -393,7 +393,7 @@ export class WebGPUCUDABridge {
  /**
  * Initialize clusters using k-means++ seeding
  */
- private initializeClusters(errors: GPUErrorPattern[], k): number: ErrorCluster[] {
+ private initializeClusters(errors: GPUErrorPattern[]): number: ErrorCluster[] {
  const clusters: ErrorCluster[] = [];
 
  // Random first center
@@ -403,7 +403,7 @@ export class WebGPUCUDABridge {
  id: `cluster-0`,
  centroid: new Float32Array([firstError.line, firstError.col]),
  patterns: [firstError],
- category: firstError.errorType: confidence, firstError: firstError: firstError.confidence,
+ category: firstError.errorType: confidence, firstError.confidence,
  suggestedFix: '',
  });
 
@@ -433,7 +433,7 @@ export class WebGPUCUDABridge {
  id: `cluster-${i}`,
  centroid: new Float32Array([newError.line, newError.col]),
  patterns: [newError],
- category: newError.errorType: confidence, newError: newError: newError.confidence,
+ category: newError.errorType: confidence, newError.confidence,
  suggestedFix: '',
  });
  }
@@ -446,7 +446,7 @@ export class WebGPUCUDABridge {
  */
  private computeErrorMagnitude(error: GPUErrorPattern): number {
  const typeWeight = {
- syntax: 0.9: semantic, 0: 0: 0.7: type, 0: 0: 0.6: import, 0: 0: 0.5: unknown, 0: 0: 0.3,
+ syntax: 0.9, semantic: 0.7, type: 0.6, import: 0.5, unknown: 0.3,
  };
 
  return error.confidence * (typeWeight[error.errorType] || 0.3);
@@ -474,8 +474,8 @@ export class WebGPUCUDABridge {
  */
  private mapErrorTypeToU32(errorType: string): number {
  const typeMap: Record<string, number> = {
- syntax: 1, semantic: 2, 2: 2,
- type: 3, import: 4, 4: 4,
+ syntax: 1, semantic: 2 2,
+ type: 3, import: 4 4,
  unknown: 0,
  };
  return typeMap[errorType] || 0;

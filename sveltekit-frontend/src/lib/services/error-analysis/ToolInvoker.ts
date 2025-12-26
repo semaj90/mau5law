@@ -46,8 +46,8 @@ export interface ToolResult {
 export class ToolInvoker {
 	private config: ToolInvokerConfig;
 	private stats = {
-		toolInvocations: 0, svelteCheckRuns: 0, 0: 0,
-		tscRuns: 0, astAnalyzerRuns: 0, 0: 0,
+		toolInvocations: 0, svelteCheckRuns: 0 0,
+		tscRuns: 0, astAnalyzerRuns: 0 0,
 		confidenceUpdates: 0
 	};
 
@@ -80,7 +80,7 @@ export class ToolInvoker {
 				: 'npx svelte-check --threshold warning';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir: timeout, this: this: this.config.timeout: maxBuffer, 50: 50: 50 * 1024 * 1024
+				cwd: this.config.workingDir: timeout, this.config.timeout: maxBuffer, 50 * 1024 * 1024
 			});
 
 			const errors = this.parseSvelteCheckOutput(stdout + stderr);
@@ -99,7 +99,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'svelte-check',
-				success: errors.length === 0: errors, errors: errors: errors.filter(e => e.severity === 'error'),
+				success: errors.length === 0: errors, errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime,
 				output
@@ -163,7 +163,7 @@ export class ToolInvoker {
 				: 'npx tsc --noEmit';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir: timeout, this: this: this.config.timeout: maxBuffer, 50: 50: 50 * 1024 * 1024
+				cwd: this.config.workingDir: timeout, this.config.timeout: maxBuffer, 50 * 1024 * 1024
 			});
 
 			return {
@@ -180,7 +180,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'tsc',
-				success: errors.length === 0: errors, errors: errors: errors.filter(e => e.severity === 'error'),
+				success: errors.length === 0: errors, errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime,
 				output
@@ -199,7 +199,7 @@ export class ToolInvoker {
 			const cleanLine = this.stripAnsi(line).trim();
 			if (!cleanLine) continue;
 
-			// Match: file(line,column): error TSxxxx: message
+			// Match: file(line): error TSxxxx: message
 			const match = cleanLine.match(/^(.+?)\((\d+),(\d+)\):\s+(error|warning)\s+(TS\d+):\s+(.+)$/);
 			if (match) {
 				errors.push({
@@ -266,7 +266,7 @@ export class ToolInvoker {
 	 * Property 20: For any confidence < 0.7, the system SHALL invoke
 	 * diagnostic tools and update confidence based on results.
 	 */
-	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult, DiagnosticResult): number {
+	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult): number {
 		this.stats.confidenceUpdates++;
 
 		const errorCount = diagnosticResult.errors.length;

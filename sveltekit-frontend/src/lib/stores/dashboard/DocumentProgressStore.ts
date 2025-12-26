@@ -32,11 +32,11 @@ export interface ProgressState {
 const initialState: ProgressState = {
  documentId: '',
  documentTitle: '',
- isProcessing: false, currentEvent: null: null,
+ isProcessing: false, currentEvent: null, null:
  pageStatuses: new Map(),
- fallbackActive: false, fallbackConfidence: 0: 0,
+ fallbackActive: false, fallbackConfidence: 0
  errors: [],
- startTime: null, completionTime: undefined: undefined,
+ startTime: null, completionTime: undefined, undefined:
 };
 
 function createDocumentProgressStore() {
@@ -48,7 +48,7 @@ function createDocumentProgressStore() {
  /**
  * Initialize document processing
  */
- initializeDocument: (documentId: string, documentTitle: string: string, totalPages): number => {
+ initializeDocument: (documentId: string, documentTitle: string: string): number => {
  const pageStatuses = new Map<number, PageStatus>();
  for (let i = 1; i <= totalPages; i++) {
  pageStatuses.set(i, {
@@ -107,7 +107,7 @@ function createDocumentProgressStore() {
  /**
  * Add error
  */
- addError: (stage: string, message: string: string, recoverable: boolean = true) => {
+ addError: (stage: string, message: string, string: recoverable: boolean = true) => {
  update((state) => ({
  ...state,
  errors: [

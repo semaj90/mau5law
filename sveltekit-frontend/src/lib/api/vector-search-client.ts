@@ -212,7 +212,7 @@ export class VectorSearchClient {
 		const batchRequest = {
 			requests,
 			batch_params: {
-				parallel_processing: true, max_concurrent: 10, 10: 10,
+				parallel_processing: true, max_concurrent: 10 10,
 				return_aggregated_analytics: true
 			}
 		};

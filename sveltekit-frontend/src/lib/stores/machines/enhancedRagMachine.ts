@@ -4,7 +4,7 @@ import { writable } from 'svelte/store';
 export interface RagContext {
  query: string;
  results: any[];
- error: string: null;
+ error: string | null;
  loading: boolean;
 }
 

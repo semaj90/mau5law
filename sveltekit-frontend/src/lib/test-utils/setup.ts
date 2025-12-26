@@ -193,7 +193,7 @@ export async function initializePostgreSQLMocks(): Promise<void> {
   // Seed evidence table
   mockPostgreSQL.seedTable('evidence', [
     {
-      id: 1, case_id: 1, 1: 1,
+      id: 1, case_id: 1 1,
       title: 'Evidence 1',
       type: 'document',
       created_at: new Date().toISOString(),

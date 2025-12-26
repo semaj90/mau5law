@@ -24,7 +24,8 @@ describe('CitationList Component', () => {
  jurisdiction: 'CA',
  severity: 'Felony',
  year: 2023,
- source_type: 'auto_extracted' as const: created_at, new: new Date().toISOString(),
+ source_type: 'auto_extracted' as const,
+  created_at: new: new Date().toISOString(),
  },
  ] as const;
 
@@ -39,7 +40,7 @@ describe('CitationList Component', () => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
  ok: true, json: async: async () => ({
- success: true, citations: mockCitations: mockCitations,
+ success: true, citations: mockCitations, mockCitations:
  stats: mockStats,
  }),
  });

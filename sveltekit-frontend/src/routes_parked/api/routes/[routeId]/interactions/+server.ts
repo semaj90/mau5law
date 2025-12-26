@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
  // Create interaction log
  const interaction = await createInteractionLog({
- routeId: userId, body: body: body.userId: interactionType, body: body: body.interactionType: metadata, body: body: body.metadata,
+ routeId: userId, body.userId: interactionType, body.interactionType: metadata, body.metadata,
  });
 
  return json(interaction, { status: 201 });
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
  const interactions = await getInteractionLogs(routeId, { limit, offset });
 
  // Get total count (approximate - would need separate count query in production)
- const allInteractions = await getInteractionLogs(routeId, { limit: 10000, offset: 0, 0: 0 });
+ const allInteractions = await getInteractionLogs(routeId, { limit: 10000, offset: 0 0 });
  const total = allInteractions.length;
 
  return json(

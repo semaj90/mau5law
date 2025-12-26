@@ -84,7 +84,7 @@ export class RecoveryService {
  async executeWithFallbacks<T>(
  strategies: FallbackStrategy[],
  operationName: string
- ): Promise<T: null> {
+ ): Promise<T | null> {
  // Sort by priority
  const sorted = [...strategies].sort((a, b) => a.priority - b.priority);
 
@@ -123,7 +123,7 @@ export class RecoveryService {
  holding: '[Holding unavailable]',
  version: 0, createdAt: new, new: new Date(),
  createdBy: 'system',
- isCurrent: false, isTemplate: true, true: true,
+ isCurrent: false, isTemplate: true,
  };
  }
 
@@ -137,8 +137,8 @@ export class RecoveryService {
  llm: boolean;
  }> {
  const health = {
- cache: false, database: false, false: false,
- vectorDb: false, llm: false, false: false,
+ cache: false, database: false,
+ vectorDb: false, llm: false,
  };
 
  // Check cache

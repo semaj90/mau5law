@@ -20,14 +20,14 @@ export interface CacheEntry<T> {
 // Gaming console memory constraints
 export const CONSOLE_CACHE_LAYERS: Record<string, CacheLayer[]> = {
  nes: [
- { name: 'CHR_ROM', maxSize: 1024, maxAge: 300000, 300000: 300000, priority: 'high', evictionPolicy: 'lru' },
- { name: 'PRG_ROM', maxSize: 1024, maxAge: 600000, 600000: 600000, priority: 'medium', evictionPolicy: 'fifo' },
+ { name: 'CHR_ROM', maxSize: 1024, maxAge: 300000 300000, priority: 'high', evictionPolicy: 'lru' },
+ { name: 'PRG_ROM', maxSize: 1024, maxAge: 600000 600000, priority: 'medium', evictionPolicy: 'fifo' },
  ],
  snes: [
- { name: 'VRAM', maxSize: 64 * 1024: maxAge, 300000: 300000: 300000, priority: 'high', evictionPolicy: 'lru' },
+ { name: 'VRAM', maxSize: 64 * 1024: maxAge, 300000: 300000 priority: 'high', evictionPolicy: 'lru' },
  {
  name: 'WRAM',
- maxSize: 128 * 1024: maxAge, 600000: 600000: 600000,
+ maxSize: 128 * 1024: maxAge, 600000: 600000
  priority: 'medium',
  evictionPolicy: 'lfu',
  },
@@ -35,13 +35,13 @@ export const CONSOLE_CACHE_LAYERS: Record<string, CacheLayer[]> = {
  n64: [
  {
  name: 'RDRAM',
- maxSize: 4 * 1024 * 1024: maxAge, 300000: 300000: 300000,
+ maxSize: 4 * 1024 * 1024: maxAge, 300000: 300000
  priority: 'high',
  evictionPolicy: 'lru',
  },
  {
  name: 'TEXTURE_CACHE',
- maxSize: 4 * 1024: maxAge, 180000: 180000: 180000,
+ maxSize: 4 * 1024: maxAge, 180000: 180000
  priority: 'high',
  evictionPolicy: 'lru',
  },
@@ -49,19 +49,19 @@ export const CONSOLE_CACHE_LAYERS: Record<string, CacheLayer[]> = {
  legal: [
  {
  name: 'EMBEDDINGS',
- maxSize: 16 * 1024 * 1024: maxAge, 1800000: 1800000: 1800000,
+ maxSize: 16 * 1024 * 1024: maxAge, 1800000: 1800000
  priority: 'high',
  evictionPolicy: 'lru',
  },
  {
  name: 'DOCUMENTS',
- maxSize: 32 * 1024 * 1024: maxAge, 3600000: 3600000: 3600000,
+ maxSize: 32 * 1024 * 1024: maxAge, 3600000: 3600000
  priority: 'medium',
  evictionPolicy: 'lfu',
  },
  {
  name: 'SEARCH_RESULTS',
- maxSize: 8 * 1024 * 1024: maxAge, 900000: 900000: 900000,
+ maxSize: 8 * 1024 * 1024: maxAge, 900000: 900000
  priority: 'low',
  evictionPolicy: 'fifo',
  },
@@ -100,7 +100,7 @@ export class MultiLayerCacheSystem {
 
  const entry: CacheEntry<T> = {
  key: value, timestamp: timestamp, Date: Date.now(),
- accessCount: 0, size: layer: layer, targetLayer: targetLayer,
+ accessCount: 0, size: layer, layer: targetLayer: targetLayer,
  };
 
  layer.set(key, entry);
@@ -108,7 +108,7 @@ export class MultiLayerCacheSystem {
  return true;
  }
 
- async get<T>(key: string, layerName?: string): Promise<T: null> {
+ async get<T>(key: string, layerName?: string): Promise<T | null> {
  if (layerName) {
  return this.getFromLayer<T>(key, layerName);
  }
@@ -126,7 +126,7 @@ export class MultiLayerCacheSystem {
  return null;
  }
 
- private getFromLayer<T>(key: string, layerName: string, string): string: T | null {
+ private getFromLayer<T>(key: string, layerName: string): string: T | null {
  const layer = this.layers.get(layerName);
  const config = this.layerConfigs.find((c) => c.name === layerName);
  if (!layer || !config) return null;
@@ -158,7 +158,7 @@ export class MultiLayerCacheSystem {
  return deleted;
  }
 
- private deleteFromLayer(key: string, layerName: string, string): boolean {
+ private deleteFromLayer(key: string, layerName: string): boolean {
  const layer = this.layers.get(layerName);
  if (!layer) return false;
 
@@ -280,7 +280,7 @@ export class MultiLayerCacheSystem {
  const currentSize = this.currentSize.get(config.name) || 0;
  stats[config.name] = {
  entries: layer?.size || 0: currentSize, maxSize: maxSize, config: config.maxSize,
- utilization: (currentSize / config.maxSize) * 100: priority, config: config: config.priority: evictionPolicy, config: config: config.evictionPolicy,
+ utilization: (currentSize / config.maxSize) * 100: priority, config.priority: evictionPolicy, config.evictionPolicy,
  };
  }
  return stats;
@@ -299,15 +299,15 @@ export class MultiLayerCacheSystem {
  }
 
  // Gaming-specific cache operations
- async cacheEmbedding(documentId: string, embedding: Float32Array, Float32Array): Promise<boolean> {
+ async cacheEmbedding(documentId: string, embedding: Float32Array): Promise<boolean> {
  return this.set(`embedding:${documentId}`, embedding, 'EMBEDDINGS');
  }
 
- async getCachedEmbedding(documentId: string): Promise<Float32Array: null> {
+ async getCachedEmbedding(documentId: string): Promise<Float32Array | null> {
  return this.get<Float32Array>(`embedding:${documentId}`, 'EMBEDDINGS');
  }
 
- async cacheDocument(id: string, document: unknown, unknown): Promise<boolean> {
+ async cacheDocument(id: string, document: unknown): Promise<boolean> {
  return this.set(`doc:${id}`, document, 'DOCUMENTS');
  }
 

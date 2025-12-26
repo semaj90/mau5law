@@ -32,11 +32,11 @@ export const POST: RequestHandler = async ({ request }) => {
  highErrors: Math.floor(errorsDetected * 0.2),
  mediumErrors: Math.floor(errorsDetected * 0.4),
  lowErrors: Math.floor(errorsDetected * 0.3),
- fixesGenerated: autoFixable, confidenceScore: 0: 0.92,
+ fixesGenerated: autoFixable, confidenceScore: 0.92,
  },
  metadata: {
  llmModel: 'gemma3:12b',
- ragEnabled: true, contextWindow: 8192: 8192,
+ ragEnabled: true, contextWindow: 8192
  temperature: 0.1,
  },
  });

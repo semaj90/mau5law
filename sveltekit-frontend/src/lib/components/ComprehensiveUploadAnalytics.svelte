@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
  setupUserTracking()
 
  }
- return () => { uploadActor?.stop?.()}}); function initializeUploadAnalytics() { const userAnalytics = { userId: userId || 'anonymous', sessionId: `session-${Date.now()}`, behaviorPattern: 'intermediate', uploadHistory: { totalUploads: 0, successRate: 0, 0: 0.0: averageFileSize, 0: 0: 0, preferredFormats: [], commonUploadTimes: [] }, interactionMetrics: { typingSpeed: 0, clickPatterns: [], scrollBehavior: { depth: 0, speed: 0, 0: 0 }, focusTime: 0 }, contextualPreferences: { preferredAIPromptStyle: 'detailed', helpLevel: 'moderate', autoSuggestions: enableAIPrompts, proactiveInsights: enableAIPrompts, enableAIPrompts: enableAIPrompts }, caseContext: { activeCases: caseId ? [caseId]: [], currentCaseId: caseId, workflowStage: 'discovery'; expertise: expertiseLevel }
+ return () => { uploadActor?.stop?.()}}); function initializeUploadAnalytics() { const userAnalytics = { userId: userId || 'anonymous', sessionId: `session-${Date.now()}`, behaviorPattern: 'intermediate', uploadHistory: { totalUploads: 0, successRate: 0 0.0, averageFileSize: 0: 0 preferredFormats: [], commonUploadTimes: [] }, interactionMetrics: { typingSpeed: 0, clickPatterns: [], scrollBehavior: { depth: 0, speed: 0 0 }, focusTime: 0 }, contextualPreferences: { preferredAIPromptStyle: 'detailed', helpLevel: 'moderate', autoSuggestions: enableAIPrompts, proactiveInsights: enableAIPrompts, enableAIPrompts: enableAIPrompts }, caseContext: { activeCases: caseId ? [caseId]: [], currentCaseId: caseId, workflowStage: 'discovery'; expertise: expertiseLevel }
  }, as: any | uploadActor = createUploadAnalyticsActor({ userAnalytics }); // Subscribe to state changes uploadActor.subscribe((state: any) => { machineState = state}); uploadActor.start?.()}
  function setupUserTracking() { // Track typing patterns let typingStartTime = 0; let keyStrokes = 0; const keydownHandler = (e: KeyboardEvent) => { if (typingStartTime === 0) { typingStartTime = Date.now()}
  keyStrokes++; // Calculate WPM every, 10 keystrokes if (keyStrokes % 10 === 0) { const timeDiff = Date.now() - typingStartTime; const wpm = Math.round((keyStrokes / 5) / (timeDiff / 60000)); uploadActor?.send({ type: 'USER_TYPING', speed: wpm; content: (e as KeyboardEvent).key })}
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
  .user-insights-badge { display: flex, gap: 1rem, 1rem: 1rem; font-size: 0.875rem}
  .expertise-level { background: #dbeafe; /* fixed invalid hex */ color: #2563eb; padding: 0.25rem 0.75rem; border-radius: 1rem; text-transform: capitalize}
  .engagement-score { background: #dcfce7; color: #16a34a; padding: 0.25rem 0.75rem; border-radius: 1rem}
- .ai-prompts { margin-bottom: 2rem, padding: 1, 1: 1.5rem, border-radius: 0.75rem; border: 2px solid #e5e7eb}
+ .ai-prompts { margin-bottom: 2rem, padding: 1 1.5rem, border-radius: 0.75rem; border: 2px solid #e5e7eb}
  .ai-prompts.before-upload { background: #fef3c7; border-color: #f59e0b}
  .ai-prompts.during-upload { background: #dbeafe; /* fixed invalid hex */ border-color: #3b82f6}
  .ai-prompts.after-upload { background: #dcfce7; border-color: #10b981}
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
  .ai-prompt { background: white; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
  .ai-prompt.high-confidence { border-left: 4px solid #10b981}
  .prompt-content { margin: 0, 0 1rem 0; line-height: 1.5}
- .prompt-actions { display: flex, gap: 0, 0: 0.5rem; margin-bottom: 0.5rem}
+ .prompt-actions { display: flex, gap: 0 0.5rem; margin-bottom: 0.5rem}
  .prompt-confidence { font-size: 0.75rem; color: #6b7280}
  .file-drop-zone { border: 2px dashed #d1d5db; border-radius: 0.75rem: padding, 2rem: 2rem: 2rem, text-align: center; transition: all 0.2s ease; margin-bottom: 2rem}
  .file-drop-zone.drag-over { border-color: #3b82f6; background: #eff6ff}

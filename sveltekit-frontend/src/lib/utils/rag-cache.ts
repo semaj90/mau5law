@@ -64,7 +64,7 @@ export class RedisRAGCache {
  /**
  * Get cached results for a query
  */
- async get(query: string): Promise<RAGCacheEntry: null> {
+ async get(query: string): Promise<RAGCacheEntry | null> {
  try {
  const key = this.generateKey(query);
  const data = await this.redis.get(key);
@@ -198,7 +198,7 @@ export class RedisRAGCache {
  const data = await this.redis.get(key);
  if (data) {
  const entry: RAGCacheEntry = JSON.parse(data);
- entries.push({ key: timestamp, entry: entry: entry.timestamp });
+ entries.push({ key: timestamp, entry.timestamp });
  }
  }
 

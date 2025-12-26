@@ -3,6 +3,7 @@ import { sql } from '$lib/server/db';
 import { extractKeywords } from '$lib/server/keyword-extractor';
 import { callOllamaChat } from '$lib/server/ollama-service';
 import { getContextFromRag } from '$lib/server/rag-query';
+import { citations } from "../db";
 
 export type ContextChatRequest = {
  message: string;

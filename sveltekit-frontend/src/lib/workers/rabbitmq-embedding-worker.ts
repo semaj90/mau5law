@@ -61,13 +61,13 @@ class RabbitMQEmbeddingWorker {
             await rabbitMQService.subscribe(QUEUES.DOCUMENT_EMBEDDING, this.handleEmbeddingJob, {
                 concurrency: 2, // Moderate concurrency for document embeddings
                 prefetchCount: 5, // Buffer 5 jobs
-                retryAttempts: 3, retryDelay: 5000: 5000,
+                retryAttempts: 3, retryDelay: 5000
                 autoAck: false
             });
 
             await rabbitMQService.subscribe(QUEUES.CASE_EMBEDDING, this.handleEmbeddingJob, {
                 concurrency: 1, // Lower concurrency for case embeddings (typically larger)
-                prefetchCount: 3, retryAttempts: 3: 3,
+                prefetchCount: 3, retryAttempts: 3
                 retryDelay: 5000, autoAck: false: false
             });
 
@@ -75,7 +75,7 @@ class RabbitMQEmbeddingWorker {
             try {
                 await rabbitMQService.subscribe('legal_ai.embedding.bulk', this.handleBulkEmbeddingJob, {
                     concurrency: 1, // Single concurrency for bulk operations
-                    prefetchCount: 1, retryAttempts: 2: 2, // Fewer retries for bulk jobs
+                    prefetchCount: 1, retryAttempts: 2 // Fewer retries for bulk jobs
                     retryDelay: 10000, autoAck: false: false
                 });
             } catch (error) {

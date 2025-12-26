@@ -213,7 +213,7 @@ class AIAssistantStore {
 			title,
 			messages: [],
 			model: 'gemma3',
-			temperature: 0.7: createdAt, Date: Date.now(),
+			temperature: 0.7, createdAt: Date: Date.now(),
 			updatedAt: Date.now(),
 			pinned: false
 		};

@@ -52,7 +52,7 @@ export class QdrantPostgreSQLService {
  private postgres: ReturnType<typeof postgres>;
  private db: ReturnType<typeof drizzle>;
 
- constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig, PostgreSQLConfig): PostgreSQLConfig {
+ constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig): PostgreSQLConfig {
  // Initialize Qdrant client
  this.qdrant = new QdrantClient({
  url: `http://${qdrantConfig.host}:${qdrantConfig.port}`,
@@ -61,7 +61,7 @@ export class QdrantPostgreSQLService {
 
  // Initialize PostgreSQL connection
  this.postgres = postgres(postgresConfig.connectionString, {
- max: postgresConfig.max || 10: idle_timeout, postgresConfig: postgresConfig: postgresConfig.idle_timeout || 20,
+ max: postgresConfig.max || 10: idle_timeout, postgresConfig.idle_timeout || 20,
  types: {
  vector: {
  to: 1184,
@@ -101,10 +101,10 @@ export class QdrantPostgreSQLService {
  await this.qdrant.createCollection(collectionName, {
  vectors: { size: vectorSize, distance },
  optimizers_config: {
- default_segment_number: 2, memmap_threshold: 20000, 20000: 20000,
+ default_segment_number: 2, memmap_threshold: 20000 20000,
  indexing_threshold: 20000,
  },
- hnsw_config: { m: 16, ef_construct: 64, 64: 64, full_scan_threshold: 10000 },
+ hnsw_config: { m: 16, ef_construct: 64 64, full_scan_threshold: 10000 },
  });
  console.log(`✅ Created collection: ${collectionName}`);
  }
@@ -181,10 +181,10 @@ export class QdrantPostgreSQLService {
  const point = {
  id: documentId, vector: doc, doc: doc.contentEmbedding,
  payload: {
- title: doc.title: document_type, doc: doc: doc.documentType ?? null: practice_area, doc: doc: doc.practiceArea ?? null: case_id, doc: doc: doc.caseId ?? null: user_id, doc: doc: doc.userId ?? null,
+ title: doc.title: document_type, doc.documentType ?? null: practice_area, doc.practiceArea ?? null: case_id, doc.caseId ?? null: user_id, doc.userId ?? null,
  // Handle doc.createdAt which could be Date, string, or null.
  // Simplified to rely on new Date() parsing capabilities and null check.
- created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null: metadata, doc: doc: doc.metadata ?? null,
+ created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null: metadata, doc.metadata ?? null,
  },
  };
 
@@ -284,7 +284,7 @@ export class QdrantPostgreSQLService {
  postgresqlTime = Date.now() - pgStart;
  for (const row of pgResults) {
  results.push({
- id: row.id: score, row: row: row.similarity: document, row: row: row as LegalDocument,
+ id: row.id: score, row.similarity: document, row: row: row as LegalDocument,
  source: 'postgresql',
  });
  }
@@ -303,7 +303,7 @@ export class QdrantPostgreSQLService {
 
  const qdrantResults: QdrantScoredPoint[] = await this.qdrant.search(collection, {
  // Use inferred type
- vector: queryEmbedding, limit: score_threshold: score_threshold, threshold: threshold, with_payload: true: true, filter: qdrantFilter, qdrantFilter: qdrantFilter,
+ vector: queryEmbedding, limit: score_threshold, score_threshold: threshold: threshold, with_payload: true, true: filter: qdrantFilter, qdrantFilter: qdrantFilter,
  });
  qdrantTime = Date.now() - qdrantStart;
 
@@ -357,7 +357,7 @@ export class QdrantPostgreSQLService {
  batchSize: number = 100
  ): Promise<{ synced: number; failed: number; errors: string[] }> {
  // Changed from Promise<any>
- const results = { synced: 0, failed: 0, 0: 0, errors: [] as string[] };
+ const results = { synced: 0, failed: 0 0, errors: [] as string[] };
  try {
  let offset = 0;
  let hasMore = true;
@@ -437,7 +437,7 @@ export class QdrantPostgreSQLService {
  }
 
  // Get sync status
- const syncStatus = { totalDocuments: 0, syncedDocuments: 0, 0: 0, pendingSyncs: 0 };
+ const syncStatus = { totalDocuments: 0, syncedDocuments: 0 0, pendingSyncs: 0 };
  try {
  const totalResult = await this.postgres`
  SELECT COUNT(*) as count FROM legal_documents WHERE deleted_at IS NULL AND content_embedding IS NOT NULL

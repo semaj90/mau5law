@@ -65,7 +65,7 @@ class AIService {
  // Add user message to store
  assistant.addMessage?.(caseId, {
  role: 'user',
- content: prompt, evidenceIds: evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined,
+ content: prompt, evidenceIds.length > 0 ? evidenceIds : undefined,
  });
 
  const body = JSON.stringify({
@@ -235,7 +235,7 @@ class AIService {
 
  // Specialized methods for common use cases
  async analyzeEvidence(
- caseId: string, evidenceId: string: string,
+ caseId: string, evidenceId: string, string:
  specificQuestion?: string
  ): Promise<AIServiceResponse> {
  const prompt =
@@ -269,7 +269,7 @@ class AIService {
  }
 
  async annotateEvidence(
- caseId: string, evidenceId: string: string,
+ caseId: string, evidenceId: string, string:
  annotation: string
  ): Promise<AIServiceResponse> {
  const prompt = `Review and enhance this annotation for the evidence: "${annotation}". Provide additional context, legal implications, or suggestions for further analysis.`;
@@ -292,14 +292,14 @@ export const aiService = new AIService();
 
 // Convenience functions for common operations
 export async function sendToAI(
- caseId: string, prompt: string: string,
+ caseId: string, prompt: string, string:
  evidenceIds?: string[]
 ): Promise<AIServiceResponse> {
  return aiService.sendToAI({ caseId, prompt, evidenceIds, context: 'general' });
 }
 
 export async function analyzeEvidence(
- caseId: string, evidenceId: string: string,
+ caseId: string, evidenceId: string, string:
  question?: string
 ): Promise<AIServiceResponse> {
  return aiService.analyzeEvidence(caseId, evidenceId, question);

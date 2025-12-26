@@ -1,10 +1,16 @@
-import type { z } from 'zod';
+import type { any, number, string, unknown, type z } from 'zod';
 import type { db } from '$lib/server/db';
 import type { evidence as evidenceTable } from '$lib/server/db/schema';
 import type { eq } from 'drizzle-orm';
 import type { generateEmbeddings as fetchEmbeddings } from '$lib/server/services/embedding-service';
 import type { performOCR } from '$lib/ocr/ocr-client';
 import type { MinIOService } from '$lib/server/minio-service';
+import { context } from "@opentelemetry/api";
+import type { error } from "console";
+import type { timestamp } from "drizzle-orm/gel-core";
+import type { vector } from "neo4j-driver";
+import type { type } from "os";
+import type { text } from "stream/consumers";
 
 export const EvidenceAnalysisSchema = z.object({
  evidenceId: z.string(),
@@ -56,9 +62,7 @@ interface ExtendedEvidenceRecord extends EvidenceRecord {
 }
 
 class AdvancedEvidenceAnalyzer {
- private readonly summaryModel = 'heuristic-summary-v1';
  private readonly inferenceModel = 'heuristic-legal-inference-v1';
- private readonly embeddingModel = 'embeddinggemma:latest';
 
  async analyzeEvidence(
  request: z.infer<typeof EvidenceAnalysisSchema>
@@ -108,7 +112,7 @@ class AdvancedEvidenceAnalyzer {
  return analysis;
  }
 
- private async loadEvidence(evidenceId: string): Promise<EvidenceRecord: null> {
+ private async loadEvidence(evidenceId: string): Promise<EvidenceRecord | null> {
  const record = await db.query.evidence.findFirst({
  where: eq(evidenceTable.id, evidenceId),
  });
@@ -151,55 +155,54 @@ class AdvancedEvidenceAnalyzer {
  switch (type) {
  case 'summary': {
  const summary = this.generateSummary(text);
- const embedding = await this.createEmbeddingVector(summary);
  return {
- type: confidence, 0: 0: 0.82,
+ type: confidence, 0.82,
  results: {
- summary: keySentences, this: this: this.extractKeySentences(text),
- embedding: length, summary: summary: summary.length,
+ summary: keySentences, this.extractKeySentences(text),
+ embedding: length, summary.length,
  },
- processingTime: Date.now() - startedAt: model, this: this: this.summaryModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.summaryModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'sentiment': {
  const sentiment = this.analyseSentiment(text);
  return {
- type: confidence, sentiment: sentiment: sentiment.confidence: results, sentiment: sentiment: sentiment,
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ type: confidence, sentiment.confidence: results, sentiment: sentiment, sentiment:
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'entities': {
  const entities = this.extractEntities(text);
  return {
- type: confidence, entities: entities: entities.confidence: results, entities: entities: entities,
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ type: confidence, entities.confidence: results, entities: entities, entities:
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'patterns': {
  const patterns = this.detectPatterns(text, request.options);
  return {
- type: confidence, patterns: patterns: patterns.confidence: results, patterns: patterns: patterns,
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ type: confidence, patterns.confidence: results, patterns: patterns, patterns:
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'precedents': {
  const precedents = this.suggestPrecedents(text, request.options);
  return {
- type: confidence, precedents: precedents: precedents.confidence: results, precedents: precedents: precedents,
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ type: confidence, precedents.confidence: results, precedents: precedents, precedents:
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
  case 'timeline': {
  const timeline = this.buildTimeline(text);
  return {
- type: confidence, timeline: timeline: timeline.length ? 0.75 : 0.4,
+ type: confidence, timeline.length ? 0.75 : 0.4,
  results: { timeline },
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
@@ -214,13 +217,13 @@ class AdvancedEvidenceAnalyzer {
  if (existingOcr) {
  const embedding = await this.createEmbeddingVector(existingOcr);
  return {
- type: confidence, 0: 0: 0.85,
+ type: confidence, 0.85,
  results: {
  text: existingOcr,
  embedding,
  engine: 'upstream',
  },
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
  }
@@ -249,12 +252,12 @@ class AdvancedEvidenceAnalyzer {
 
  const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
- type: confidence, ocrResult: ocrResult: ocrResult.confidence ?? 0.5,
+ type: confidence, ocrResult.confidence ?? 0.5,
  results: {
  ocr: ocrResult, metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  } catch (innerErr) {
  console.warn('MinIO binary OCR failed:', innerErr);
@@ -268,7 +271,7 @@ class AdvancedEvidenceAnalyzer {
  text: content, metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
 
@@ -286,12 +289,12 @@ class AdvancedEvidenceAnalyzer {
  : null;
 
  return {
- type: confidence, ocrResult: ocrResult: ocrResult.confidence ?? 0.5,
+ type: confidence, ocrResult.confidence ?? 0.5,
  results: {
  ocr: ocrResult,
  embedding,
  },
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  }
  }
@@ -308,7 +311,7 @@ class AdvancedEvidenceAnalyzer {
  'OCR not available for this evidence or upstream OCR not present. Returning available textual content only.',
  charactersAvailable: availableText,
  },
- processingTime: Date.now() - startedAt: model, this: this: this.inferenceModel: timestamp, new: new: new Date(),
+ processingTime: Date.now() - startedAt: model, this.inferenceModel: timestamp, new: new: new Date(),
  };
  } catch (error) {
  return this.createErrorResult(type, error, startedAt);
@@ -445,10 +448,9 @@ class AdvancedEvidenceAnalyzer {
  precedents.add('In re Litigation, 556 U.S. 452 (2016)');
  }
 
- const jurisdiction = options?.jurisdiction;
  return {
  precedents: Array.from(precedents),
- jurisdiction: confidence, precedents: precedents: precedents.size ? 0.65 : 0.4,
+ jurisdiction: confidence, precedents.size ? 0.65 : 0.4,
  };
  }
 
@@ -527,7 +529,7 @@ class AdvancedEvidenceAnalyzer {
  });
 
  const vector = result.embeddings?.[0];
- if (Array.isArray(vector)) {
+ if (.isArray(vector)) {
  return vector;
  }
  } catch (error) {
@@ -542,7 +544,7 @@ class AdvancedEvidenceAnalyzer {
  ): AnalysisResult {
  const message = error instanceof Error ? error.message : String(error);
  return {
- type: confidence, 0: 0: 0,
+ type: confidence, 0: 0
  results: { error: message },
  processingTime: Date.now() - startedAt,
  model: 'error',

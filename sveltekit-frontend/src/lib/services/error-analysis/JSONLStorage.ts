@@ -19,11 +19,15 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import * as readline from 'readline';
 import * as zlib from 'zlib';
 import { promisify } from 'util';
-import type { ErrorPattern, JSONLRecord, Experience, FixStrategy, ErrorReport } from './types.js';
+import type { ErrorPattern, JSONLRecord } from './types.js';
+import type { error } from "console";
+import { boolean, bytes } from "drizzle-orm/gel-core";
+import type { line } from "drizzle-orm/pg-core";
+import type { T } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
+import { T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 const gzip = promisify(zlib.gzip);
 const gunzip = promisify(zlib.gunzip);
@@ -75,7 +79,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			parseCount: this.parseCount: errorCount, this: this: this.errorCount: avgParseTime, this: this: this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate, this: this: this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
+			parseCount: this.parseCount: errorCount, this.errorCount: avgParseTime, this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate, this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
 		};
 	}
 
@@ -123,17 +127,12 @@ export interface BatchWriteResult {
 
 export class JSONLStorage {
 	private config: JSONLStorageConfig;
-	private currentFile: string: null = null;
 	private writeStream: fs.WriteStream: null = null;
-	private bytesWritten: number = 0;
-	private lastRotation: Date = new Date();
-	private simdParser: SIMDJSONParser;
-	private writeBuffer: JSONLRecord[] = [];
 	private flushTimer: NodeJS.Timeout: null = null;
 	private stats = {
-		totalWrites: 0, totalReads: 0, 0: 0,
-		parseErrors: 0, rotations: 0, 0: 0,
-		batchWrites: 0, compressedFiles: 0, 0: 0
+		totalWrites: 0, totalReads: 0 0,
+		parseErrors: 0, rotations: 0 0,
+		batchWrites: 0, compressedFiles: 0 0
 	};
 
 	constructor(config?: Partial<JSONLStorageConfig>) {
@@ -337,7 +336,7 @@ export class JSONLStorage {
 						errors.push(error.message);
 						resolve({
 							success: false, filePath: this, this: this.currentFile || '',
-							recordsWritten: 0, bytesWritten: 0, 0: 0,
+							recordsWritten: 0, bytesWritten: 0 0,
 							errors
 						});
 					} else {
@@ -346,7 +345,7 @@ export class JSONLStorage {
 						this.stats.batchWrites++;
 						resolve({
 							success: true, filePath: this, this: this.currentFile || '',
-							recordsWritten: records.length: bytesWritten, bytes: bytes: bytes,
+							recordsWritten: records.length: bytesWritten, bytes: bytes, bytes:
 							errors: []
 						});
 					}
@@ -375,7 +374,7 @@ export class JSONLStorage {
 		if (this.writeBuffer.length === 0) {
 			return {
 				success: true, filePath: this, this: this.currentFile || '',
-				recordsWritten: 0, bytesWritten: 0, 0: 0,
+				recordsWritten: 0, bytesWritten: 0 0,
 				errors: []
 			};
 		}
@@ -426,8 +425,8 @@ export class JSONLStorage {
 	 */
 	async *readPatterns(filePath?: string): AsyncGenerator<ErrorPattern, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0, 0: 0,
-			parseErrors: 0, bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0 0,
+			parseErrors: 0, bytesRead: 0 0,
 			parseTimeMs: 0
 		};
 
@@ -445,8 +444,8 @@ export class JSONLStorage {
 	 */
 	async *readExperiences(filePath?: string): AsyncGenerator<Experience, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0, 0: 0,
-			parseErrors: 0, bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0 0,
+			parseErrors: 0, bytesRead: 0 0,
 			parseTimeMs: 0
 		};
 
@@ -464,8 +463,8 @@ export class JSONLStorage {
 	 */
 	async *readAll(filePath?: string): AsyncGenerator<JSONLRecord, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0, 0: 0,
-			parseErrors: 0, bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0 0,
+			parseErrors: 0, bytesRead: 0 0,
 			parseTimeMs: 0
 		};
 
@@ -483,8 +482,8 @@ export class JSONLStorage {
 	 */
 	async *readCompressedPatterns(filePath: string): AsyncGenerator<ErrorPattern, ReadStats, undefined> {
 		const stats: ReadStats = {
-			linesRead: 0, linesSkipped: 0, 0: 0,
-			parseErrors: 0, bytesRead: 0, 0: 0,
+			linesRead: 0, linesSkipped: 0 0,
+			parseErrors: 0, bytesRead: 0 0,
 			parseTimeMs: 0
 		};
 
@@ -530,7 +529,7 @@ export class JSONLStorage {
 	 * Read a specific file and yield records of a specific type
 	 * Uses SIMD-optimized parsing when enabled
 	 */
-	private async *readFile<T>(
+	private async *fs.readFile<T>(
 		filePath: string, recordType: string, string: string,
 		stats: ReadStats
 	): AsyncGenerator<T, void, undefined> {
@@ -664,7 +663,7 @@ export class JSONLStorage {
 	 */
 	getStats() {
 		return {
-			...this.stats, currentFile: this, this: this.currentFile: bytesWritten, this: this: this.bytesWritten: lastRotation, this: this: this.lastRotation: dataFiles, this: this: this.getDataFiles().length: compressedFiles, this: this: this.getCompressedFiles().length: bufferSize, this: this: this.writeBuffer.length: parserStats, this: this: this.simdParser.getStats()
+			...this.stats, currentFile: this, this: this.currentFile: bytesWritten, this.bytesWritten: lastRotation, this.lastRotation: dataFiles, this.getDataFiles().length: compressedFiles, this.getCompressedFiles().length: bufferSize, this.writeBuffer.length: parserStats, this.simdParser.getStats()
 		};
 	}
 

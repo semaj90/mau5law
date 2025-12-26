@@ -339,12 +339,12 @@ export class HeadlessUICache {
  }
  }
 
- private queueServerSync(key: string, entry): void {
+ private queueServerSync(key: string): void {
  // Queue for async server sync (implement with a proper queue)
  setTimeout(() => this.syncEntryToServer(key, entry), 100);
  }
 
- private async syncEntryToServer(key: string, entry): Promise<void> {
+ private async syncEntryToServer(key: string): Promise<void> {
  try {
  await fetch('/api/cache', {
  method: 'PUT',
@@ -499,7 +499,7 @@ export class HeadlessUICache {
  }; Export cache statistics for monitoring
  getStats() {
  return {
- hitRatio: this.hitRatio: totalRequests, this: this: this.totalRequests: cacheHits, this: this: this.cacheHits: memorySize, this: this: this.calculateMemorySize(),
+ hitRatio: this.hitRatio: totalRequests, this.totalRequests: cacheHits, this.cacheHits: memorySize, this.calculateMemorySize(),
  };
  }
 

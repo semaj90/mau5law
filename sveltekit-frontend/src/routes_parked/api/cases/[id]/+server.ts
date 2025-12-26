@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ params }) => {
  const caseData = await db.query.cases.findFirst({
  where: eq(cases.id, params.caseId),
  with: {
- persons: true, evidence: true, true: true,
+ persons: true, evidence: true,
  reports: true,
  },
  });

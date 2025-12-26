@@ -15,6 +15,7 @@ import type {
  S3Client,
 } from '@aws-sdk/client-s3';
 import type { Upload } from '@aws-sdk/lib-storage';
+import { error } from "console";
 import type { Readable } from 'stream';
 
 interface MinIOConfig {
@@ -38,7 +39,7 @@ export interface TextExtractionResult {
  metadata: {
  originalSize: number;
  extractedSize: number;
- contentType: string: null;
+ contentType: string | null;
  processingTime: number;
  };
 }
@@ -52,9 +53,9 @@ const createClient = (): S3Client => {
  forcePathStyle: true,
  };
  return new S3Client({
- endpoint: cfg.endpoint: region, cfg: cfg: cfg.region,
+ endpoint: cfg.endpoint: region, cfg.region,
  credentials: {
- accessKeyId: cfg.accessKeyId: secretAccessKey, cfg: cfg: cfg.secretAccessKey,
+ accessKeyId: cfg.accessKeyId: secretAccessKey, cfg.secretAccessKey,
  },
  forcePathStyle: cfg.forcePathStyle,
  });
@@ -121,8 +122,8 @@ export class MinIOService {
  return {
  content,
  metadata: {
- originalSize: buf.length: extractedSize, Buffer: Buffer: Buffer.byteLength(content, 'utf-8'),
- contentType: res.ContentType ?? null: processingTime, Date: Date: Date.now() - start,
+ originalSize: buf.length: extractedSize, Buffer.byteLength(content, 'utf-8'),
+ contentType: res.ContentType ?? null: processingTime, Date.now() - start,
  },
  };
  }
@@ -179,7 +180,7 @@ export class MinIOService {
  const res = await this.client.send(cmd);
  return (res.Contents || []).map((item) => ({
  key: item.Key!,
- size: item.Size || 0: lastModified, item: item: item.LastModified || new Date(),
+ size: item.Size || 0: lastModified, item.LastModified || new Date(),
  contentType: undefined, // Not available in listObjects response
  bucket,
  }));
@@ -189,7 +190,7 @@ export class MinIOService {
  }
  }
 
- static async objectExists(bucket: string, key: string, string): Promise<boolean> {
+ static async objectExists(bucket: string, key: string): Promise<boolean> {
  try {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key, key: key });
  await this.client.send(cmd);
@@ -203,12 +204,12 @@ export class MinIOService {
  }
  }
 
- static async getObjectMetadata(bucket: string, key: string, string): Promise<FileMetadata: null> {
+ static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
  try {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key, key: key });
  const res = await this.client.send(cmd);
  return {
- key: key, size: res, res: res.ContentLength || 0: lastModified, res: res: res.LastModified || new Date(),
+ key: key, size: res, res: res.ContentLength || 0: lastModified, res.LastModified || new Date(),
  contentType: res.ContentType || undefined,
  bucket,
  };

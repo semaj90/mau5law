@@ -84,7 +84,7 @@ export interface ProgressData {
  * Manages worker lifecycle and message passing
  */
 export class EmbeddingWorkerManager {
- private worker: Worker: null = null;
+ private worker: Worker | null = null;
  private pendingTasks = new Map<
  string,
  {

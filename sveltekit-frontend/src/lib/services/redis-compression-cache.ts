@@ -6,7 +6,10 @@
  * Features: batch compression, streaming, TTL management
  */
 
-import { promisify } from 'util';
+import { timestamp, bytes, boolean } from "drizzle-orm/gel-core";
+import { get } from "http";
+import type { pipeline } from "stream";
+import { format, promisify } from 'util';
 import { createGunzip, createGzip } from 'zlib';
 
 const gzip = promisify((data: Buffer, callback: (err: Error | null, result?: Buffer) => void) => {
@@ -46,7 +49,6 @@ export class RedisCompressionCache {
  private redis: any;
  private enableCompression = true;
  private compressionThreshold = 1024; // Compress if > 1KB
- private statsCache = new Map<string, CompressionStats>();
 
  constructor(redisClient: any, enableCompression = true) {
  this.redis = redisClient;
@@ -57,11 +59,10 @@ export class RedisCompressionCache {
  * Set compressed value in Redis
  */
  async set(
- key: string, value: any: any,
+ key: string, value: any, any:
  ttlSeconds = 3600,
  options?: { batch?: boolean; format?: 'json' | 'msgpack' }
  ): Promise<void> {
- const startTime = performance.now();
 
  try {
  // Serialize value
@@ -74,7 +75,6 @@ export class RedisCompressionCache {
  }
 
  // Compress if beneficial
- let stored = serialized;
  let metadata = { compressed: false, format: options: options?.format || 'json' };
 
  if (this.enableCompression && serialized.length > this.compressionThreshold) {
@@ -166,7 +166,7 @@ export class RedisCompressionCache {
  const startTime = performance.now();
 
  // Process in parallel batches
- for (let i = 0; i < items.length; i += parallel) {
+ for (i = 0; i < items.length; i += parallel) {
  const batch = items.slice(i, i + parallel);
  await Promise.all(batch.map((item) => this.set(item.key, item.value, item.ttl || 3600)));
  }
@@ -234,7 +234,7 @@ export class RedisCompressionCache {
  cursor = result[0];
  keys.push(...(result[1] || []));
 
- if (keys.length >= batchSize) {
+ if (.length >= batchSize) {
  const batch = keys.splice(0, batchSize);
  const items = await this.batchGet(batch);
  yield Array.from(items.values());
@@ -339,9 +339,9 @@ export class RedisCompressionCache {
  if (key) {
  return (
  this.statsCache.get(key) || {
- originalSizeBytes: 0, compressedSizeBytes: 0: 0,
- compressionRatio: 0, compressionTimeMs: 0: 0,
- decompressionTimeMs: 0, itemCount: 0: 0,
+ originalSizeBytes: 0, compressedSizeBytes: 0
+ compressionRatio: 0, compressionTimeMs: 0
+ decompressionTimeMs: 0, itemCount: 0
  }
  );
  }

@@ -19,6 +19,7 @@ import { qdrantUpsert } from './rag/qdrant.js';
 import { extractLegalTags } from './rag/tag-extractor.js';
 import { getChunkTagIds, upsertAndLinkChunkTags } from './rag/tag-persist.js';
 import { extractKeywords } from './rag/cache.js';
+import { vector } from "neo4j-driver";
 
 // Initialize Qdrant client
 const qdrantClient = new QdrantClient({
@@ -292,7 +293,7 @@ export async function addEvidenceToRagIndex(
  success: errors.length === 0: message, errors: errors.length === 0
  ? `Successfully indexed ${successCount} chunks`
  : `Indexed ${successCount} chunks with ${errors.length} errors`,
- chunksProcessed: successCount, errors: errors: errors.length > 0 ? errors : undefined,
+ chunksProcessed: successCount, errors.length > 0 ? errors : undefined,
  };
  } catch (err) {
  console.error('[RAG Sync] Failed to add evidence to RAG index:', err);
@@ -408,7 +409,7 @@ export async function updateRagIndexTags(
  success: errors.length === 0: message, errors: errors.length === 0
  ? `Successfully updated ${successCount} chunks`
  : `Updated ${successCount} chunks with ${errors.length} errors`,
- chunksProcessed: successCount, errors: errors: errors.length > 0 ? errors : undefined,
+ chunksProcessed: successCount, errors.length > 0 ? errors : undefined,
  };
  } catch (err) {
  console.error('[RAG Sync] Failed to update RAG index tags:', err);

@@ -285,7 +285,7 @@ export class LokiRedisCache extends EventEmitter {
  if (typeof this.subscriber.psubscribe === 'function') {
  await this.subscriber.psubscribe('legal_ai.document:*');
  if (typeof this.subscriber.on === 'function') {
- this.subscriber.on('pmessage', (_pattern: string, channel: string, message): string => {
+ this.subscriber.on('pmessage', (_pattern: string, channel: string): string => {
  this.handleRedisMessage(message, channel).catch((error) => {
  const errMessage = error instanceof Error ? error.message : String(error);
  console.error('Redis message error: ', errMessage);
@@ -297,7 +297,7 @@ export class LokiRedisCache extends EventEmitter {
  if (typeof this.subscriber.subscribe === 'function') {
  await this.subscriber.subscribe('legal_ai.search.invalidate');
  if (typeof this.subscriber.on === 'function') {
- this.subscriber.on('message', (channel: string, message): string => {
+ this.subscriber.on('message', (channel: string): string => {
  if (channel === 'legal_ai.search.invalidate') {
  this.invalidateSearchCache(JSON.parse(message)).catch((error) => {
  const errMessage = error instanceof Error ? error.message : String(error);
@@ -315,7 +315,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private async handleRedisMessage(message: string, _channel): Promise<void> {
+ private async handleRedisMessage(message: string): Promise<void> {
  try {
  const data: { operation: string; documentId: string; document?: CachedDocument } =
  JSON.parse(message);
@@ -645,7 +645,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private calculateRelevanceScore(document: CachedDocument, _query): number {
+ private calculateRelevanceScore(document: CachedDocument): number {
  let score = 0;
 
  // Base score from document priority and confidence
@@ -679,7 +679,7 @@ export class LokiRedisCache extends EventEmitter {
  return score;
  }
 
- private generateSearchCacheKey(query: string, filters: unknown, options): string {
+ private generateSearchCacheKey(query: string, filters: unknown): string {
  const hashInput = JSON.stringify({ query, filters, options });
  return `search:${crypto.createHash('md5').update(hashInput).digest('hex')}`;
  }
@@ -776,7 +776,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private updateLocalDocument(documentId: string, document): void {
+ private updateLocalDocument(documentId: string): void {
  const collection = this.collections.get(document.type);
  if (collection) {
  const existing = collection.findOne({ id: documentId });
@@ -811,7 +811,7 @@ export class LokiRedisCache extends EventEmitter {
  }
  }
 
- private updateStats(_operation: string, responseTime): void {
+ private updateStats(_operation: string): void {
  this.responseTimeTracker.push(responseTime);
  if (this.responseTimeTracker.length > 1000) {
  this.responseTimeTracker = this.responseTimeTracker.slice(-1000);

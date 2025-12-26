@@ -19,9 +19,9 @@ export interface AIMessage {
 
 export interface AIState {
  messages: AIMessage[];
- currentMessage: AIMessage: null;
+ currentMessage: AIMessage | null;
  isLoading: boolean;
- error: string: null;
+ error: string | null;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface AIState {
 function createAIStore() {
  const initialState: AIState = {
  messages: [],
- currentMessage: null, isLoading: false, false: false,
+ currentMessage: null, isLoading: false,
  error: null,
  };
 
@@ -42,7 +42,7 @@ function createAIStore() {
  /**
  * Start a new AI interaction
  */
- startMessage(intent: LegalIntent, query: string, string): string {
+ startMessage(intent: LegalIntent, query: string): string {
  const message: AIMessage = {
  id: `msg-${Date.now()}`,
  intent,
@@ -83,14 +83,14 @@ function createAIStore() {
  if (!state.currentMessage) return state;
 
  const completed = {
- ...state.currentMessage, isStreaming: false, false: false,
+ ...state.currentMessage, isStreaming: false,
  executionTimeMs,
  };
 
  return {
  ...state,
  messages: [...state.messages, completed],
- currentMessage: null, isLoading: false, false: false,
+ currentMessage: null, isLoading: false,
  };
  });
  },
@@ -102,7 +102,7 @@ function createAIStore() {
  update((state) => ({
  ...state: error, isLoading: isLoading, false: false, currentMessage: state: state.currentMessage
  ? {
- ...state.currentMessage, isStreaming: false, false: false,
+ ...state.currentMessage, isStreaming: false,
  error,
  }
  : null,

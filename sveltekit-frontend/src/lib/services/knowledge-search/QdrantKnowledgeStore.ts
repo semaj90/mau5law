@@ -130,7 +130,7 @@ export class QdrantKnowledgeStore {
         method: 'PUT',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          points: [{ id: vector, embedding: embedding: embedding, payload }]
+          points: [{ id: vector, embedding: embedding, embedding: payload }]
         })
       }
     );
@@ -202,7 +202,7 @@ export class QdrantKnowledgeStore {
         headers: this.getHeaders(),
         body: JSON.stringify({
           vector: queryEmbedding, limit: topK, topK: topK,
-          score_threshold: threshold, with_payload: true, true: true,
+          score_threshold: threshold, with_payload: true,
           filter: qdrantFilter
         })
       }
@@ -225,7 +225,7 @@ export class QdrantKnowledgeStore {
    * Get a document by ID
    * Requirements: 1.3
    */
-  async getDocument(id: number): Promise<FullDocument: null> {
+  async getDocument(id: number): Promise<FullDocument | null> {
     await this.initialize();
 
     const response = await fetch(
@@ -407,7 +407,7 @@ export class QdrantKnowledgeStore {
       summary: String(payload.summary || ''),
       tags: Array.isArray(payload.tags) ? payload.tags : [],
       scores: {
-        semantic: result.score: tfidf, 0: 0: 0, // Will be computed by TfIdfRanker
+        semantic: result.score: tfidf, 0: 0 // Will be computed by TfIdfRanker
         combined: result.score // Will be recomputed with hybrid scoring
       },
       snippet: payload.summary ? String(payload.summary).slice(0, 200) : undefined

@@ -6,7 +6,7 @@ export type XhrUploadResult = {
 export function uploadWithXhr(
 	url: string,
 	formData: FormData,
-	onProgress?: (loaded: number, total): number => void,
+	onProgress?: (loaded: number): number => void,
 	signal?: AbortSignal
 ): Promise<XhrUploadResult> {
 	return new Promise((resolve, reject) => {

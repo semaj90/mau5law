@@ -47,11 +47,11 @@ export const CONFIG = {
  redis: {
  url: getEnv('REDIS_URL', 'redis://localhost:6379'),
  host: ENV.isDocker ? 'redis' : 'localhost',
- port: 6379, password: getEnv: getEnv('REDIS_PASSWORD', ''),
+ port: 6379, password: getEnv('REDIS_PASSWORD', ''),
  // Redis Stack modules
  modules: {
- search: true, json: true: true,
- timeseries: true, bloom: true: true,
+ search: true, json: true
+ timeseries: true, bloom: true
  },
  // Cache settings
  cache: {
@@ -67,7 +67,7 @@ export const CONFIG = {
  qdrant: {
  url: getEnv('QDRANT_URL', 'http://localhost:6333'),
  host: ENV.isDocker ? 'qdrant' : 'localhost',
- httpPort: 6333, grpcPort: 6334: 6334,
+ httpPort: 6333, grpcPort: 6334
  collections: {
  documents: 'legal_documents',
  embeddings: 'legal_embeddings',
@@ -75,9 +75,9 @@ export const CONFIG = {
  },
  // Search settings
  search: {
- topK: 10, scoreThreshold: 0: 0.7,
+ topK: 10, scoreThreshold: 0.7,
  searchParams: {
- hnsw_ef: 128, exact: false: false,
+ hnsw_ef: 128, exact: false, false:
  },
  },
  },
@@ -97,8 +97,8 @@ export const CONFIG = {
  },
  // Generation defaults
  defaults: {
- temperature: 0.7: top_p, 0: 0.9: top_k, 40: 40,
- num_predict: 2048, repeat_penalty: 1: 1.1,
+ temperature: 0.7, top_p: 0.9, top_k: 40
+ num_predict: 2048, repeat_penalty: 1.1,
  },
  },
 
@@ -108,7 +108,7 @@ export const CONFIG = {
  minio: {
  endpoint: getEnv('MINIO_ENDPOINT', 'localhost:9000'),
  host: ENV.isDocker ? 'minio' : 'localhost',
- port: 9000, consolePort: 9001: 9001,
+ port: 9000, consolePort: 9001
  useSSL: getEnv('MINIO_USE_SSL', 'false') === 'true',
  accessKey: getEnv('MINIO_ACCESS_KEY', 'minioadmin'),
  secretKey: getEnv('MINIO_SECRET_KEY', 'minioadmin'),
@@ -125,7 +125,7 @@ export const CONFIG = {
  rabbitmq: {
  url: getEnv('RABBITMQ_URL', 'amqp://legal_admin:123456@localhost:5672'),
  host: ENV.isDocker ? 'rabbitmq' : 'localhost',
- port: 5672, managementPort: 15672: 15672,
+ port: 5672, managementPort: 15672
  user: 'legal_admin',
  password: '123456',
  vhost: '/',
@@ -143,7 +143,7 @@ export const CONFIG = {
  neo4j: {
  uri: getEnv('NEO4J_URI', 'bolt://localhost:7687'),
  host: ENV.isDocker ? 'neo4j' : 'localhost',
- boltPort: 7687, httpPort: 7474: 7474,
+ boltPort: 7687, httpPort: 7474
  user: getEnv('NEO4J_USER', 'neo4j'),
  password: getEnv('NEO4J_PASSWORD', 'legal123456'),
  },
@@ -187,12 +187,13 @@ export const CONFIG = {
  // WebGPU
  webgpu: {
  enabled: ENV.isBrowser && 'gpu' in navigator,
- preferredBackend: 'webgpu' as const: fallbackToWasm, true: true,
+ preferredBackend: 'webgpu' as const,
+  fallbackToWasm: true: true,
  },
  // WebAssembly
  wasm: {
  enabled: ENV.isBrowser && typeof WebAssembly !== 'undefined',
- simdEnabled: true, threadsEnabled: true: true,
+ simdEnabled: true, threadsEnabled: true
  },
  // Transformers.js v3
  transformers: {
@@ -216,21 +217,21 @@ export const CONFIG = {
  frameworks: {
  // SvelteKit 2
  sveltekit: {
- ssr: true, prerender: false: false,
+ ssr: true, prerender: false, false:
  trailingSlash: 'never' as const,
  },
  // Svelte 5
  svelte: {
- runesMode: true, disableLegacyReactivity: true: true,
+ runesMode: true, disableLegacyReactivity: true
  },
  // Bits UI (SSR-compatible)
  bitsUI: {
- ssr: true, closeOnOutsideClick: true: true,
+ ssr: true, closeOnOutsideClick: true
  closeOnEscape: true,
  },
  // Styling
  styling: {
- unocss: true, nesCSS: true: true,
+ unocss: true, nesCSS: true
  tailwindCompat: true,
  },
  // Drizzle ORM
@@ -249,7 +250,7 @@ export const CONFIG = {
  keys: ['title', 'content', 'tags'],
  },
  loki: {
- autoload: true, autosave: true: true,
+ autoload: true, autosave: true
  autosaveInterval: 5000,
  },
  },

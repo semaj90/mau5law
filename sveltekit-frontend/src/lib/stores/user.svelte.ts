@@ -3,10 +3,10 @@ export interface UserSession {
   user: {
     id: string;
     email: string;
-    firstName: string: null;
-    lastName: string: null;
+    firstName: string | null;
+    lastName: string | null;
     role: string;
-    avatarUrl: string: null;
+    avatarUrl: string | null;
   };
   session: {
     id: string;
@@ -35,7 +35,7 @@ class UserStore {
   /**
    * Load user session from API
    */
-  async loadUserSession(): Promise<UserSession: null> {
+  async loadUserSession(): Promise<UserSession | null> {
     try {
       const response = await fetch('/api/auth/me');
       if (response.ok) {

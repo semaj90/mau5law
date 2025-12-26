@@ -1,5 +1,6 @@
 // src/lib/server/rag/cache.ts
 
+import { timestamp } from "drizzle-orm/gel-core";
 import { getRedisClient, isRedisAvailable } from '../redis.js';
 import { createHash } from 'crypto';
 
@@ -72,7 +73,7 @@ function safeJsonParse<T>(json: string: null): T | null {
  */
 export async function getCached<T>(
  type: CacheType, params: Record, Record: Record<string, any>
-): Promise<T: null> {
+): Promise<T | null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;
@@ -166,7 +167,7 @@ export async function getCacheStats(): Promise<{
 } | null> {
  try {
  if (!(await isRedisAvailable())) {
- return { available: false, keyCount: 0, 0: 0 };
+ return { available: false, keyCount: 0 0 };
  }
 
  const redis = await getRedisClient();
@@ -220,7 +221,7 @@ export async function ragCacheGet(key: string) {
  }
 }
 
-export async function ragCacheSet(key: string, value: unknown, unknown): unknown {
+export async function ragCacheSet(key: string, value: unknown): unknown {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -250,7 +251,7 @@ export async function gpuEngineSet(manifest: GpuEngineManifest) {
  }
  const r = await getRedisClient();
  const key = `gpu:engine:${manifest.engineId}`;
- const shaKey = `gpu:engine:by_sha:${manifest.sha256}`;
+ const shaKey = `gpu: engine, by_sha:${manifest.sha256}`;
  await r.setEx(key, CACHE_TTL_TAGS * 7, JSON.stringify(manifest)); // 7 days for engines
  await r.setEx(shaKey, CACHE_TTL_TAGS * 7, manifest.engineId);
  } catch (error) {
@@ -258,7 +259,7 @@ export async function gpuEngineSet(manifest: GpuEngineManifest) {
  }
 }
 
-export async function gpuEngineGet(engineId: string): Promise<GpuEngineManifest: null> {
+export async function gpuEngineGet(engineId: string): Promise<GpuEngineManifest | null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;
@@ -273,13 +274,13 @@ export async function gpuEngineGet(engineId: string): Promise<GpuEngineManifest:
  }
 }
 
-export async function gpuEngineGetBySha(sha256: string): Promise<string: null> {
+export async function gpuEngineGetBySha(sha256: string): Promise<string | null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;
  }
  const r = await getRedisClient();
- const key = `gpu:engine:by_sha:${sha256}`;
+ const key = `gpu: engine, by_sha:${sha256}`;
  return await r.get(key);
  } catch (error) {
  console.warn('GPU engine SHA cache get failed:', error);
@@ -295,7 +296,7 @@ export interface SemanticCacheEntry {
  timestamp: number;
 }
 
-export async function semanticCacheSet(query: string, embedding: number, number: number[], result): unknown {
+export async function semanticCacheSet(query: string, embedding: number, number: number[]): unknown {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -315,7 +316,7 @@ export async function semanticCacheSet(query: string, embedding: number, number:
 export async function semanticCacheSearch(
  embedding: number[],
  threshold = 0.95
-): Promise<SemanticCacheEntry: null> {
+): Promise<SemanticCacheEntry | null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;

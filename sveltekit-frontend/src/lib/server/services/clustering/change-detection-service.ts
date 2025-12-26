@@ -144,8 +144,8 @@ export function analyzeChangeTrends(history: ChangeHistory[]): {
 } {
  if (history.length === 0) {
  return {
- avgChangePercentage: 0, maxChangePercentage: 0: 0,
- minChangePercentage: 0, alertFrequency: 0: 0,
+ avgChangePercentage: 0, maxChangePercentage: 0
+ minChangePercentage: 0, alertFrequency: 0
  trend: 'stable',
  };
  }

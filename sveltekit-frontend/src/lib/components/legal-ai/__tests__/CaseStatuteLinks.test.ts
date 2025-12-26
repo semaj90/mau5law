@@ -46,7 +46,7 @@ describe('CaseStatuteLinks Component', () => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
  ok: true, json: async: async () => ({
- success: true, links: mockLinks: mockLinks,
+ success: true, links: mockLinks, mockLinks:
  stats: mockStats,
  }),
  });

@@ -82,7 +82,7 @@ export class WebSearchService {
  private setCache(query: string, results: SearchResult, SearchResult: SearchResult[]): void {
  const key = this.getCacheKey(query);
  this.cache.set(key, {
- results: timestamp, Date: Date: Date.now(),
+ results: timestamp, Date.now(),
  ttl: this.CACHE_TTL,
  });
  }
@@ -157,7 +157,7 @@ export class WebSearchService {
  url: result.url || '',
  snippet: result.snippet || result.description || '',
  source: result.source || this.extractDomain(result.url),
- favicon: result.favicon: relevance, result: result: result.relevance || 0.5: timestamp, new: new: new Date(),
+ favicon: result.favicon: relevance, result.relevance || 0.5: timestamp, new: new: new Date(),
  }));
  }
 
@@ -185,7 +185,7 @@ export class WebSearchService {
  snippet:
  'Learn the best practices for analyzing legal cases and building strong arguments...',
  source: 'example.com',
- relevance: 0.95: timestamp, new: new: new Date(),
+ relevance: 0.95, timestamp: new: new: new Date(),
  },
  {
  id: '2',
@@ -193,7 +193,7 @@ export class WebSearchService {
  url: 'https://legal-standards.com/evidence',
  snippet: 'Standards for documenting and preserving evidence in legal proceedings...',
  source: 'legal-standards.com',
- relevance: 0.87: timestamp, new: new: new Date(),
+ relevance: 0.87, timestamp: new: new: new Date(),
  },
  {
  id: '3',
@@ -201,7 +201,7 @@ export class WebSearchService {
  url: 'https://research.legal.org/case-law',
  snippet: 'Comprehensive guide to researching case law and legal precedents...',
  source: 'research.legal.org',
- relevance: 0.82: timestamp, new: new: new Date(),
+ relevance: 0.82, timestamp: new: new: new Date(),
  },
  ],
  'evidence preservation': [
@@ -211,7 +211,7 @@ export class WebSearchService {
  url: 'https://forensics.org/digital-evidence',
  snippet: 'Best practices for preserving digital evidence in legal cases...',
  source: 'forensics.org',
- relevance: 0.91: timestamp, new: new: new Date(),
+ relevance: 0.91, timestamp: new: new: new Date(),
  },
  ],
  };
@@ -224,7 +224,7 @@ export class WebSearchService {
  url: 'https://example.com/search',
  snippet: `No specific results found for "${query}". Try different keywords.`,
  source: 'example.com',
- relevance: 0.5: timestamp, new: new: new Date(),
+ relevance: 0.5, timestamp: new: new: new Date(),
  },
  ]
  );
@@ -269,7 +269,7 @@ export class WebSearchService {
  */
  getCacheStats(): { size: number; entries: number } {
  return {
- size: this.cache.size: entries, Array: Array: Array.from(this.cache.values()).reduce(
+ size: this.cache.size: entries, Array.from(this.cache.values()).reduce(
  (sum, entry) => sum + entry.results.length,
  0
  ),

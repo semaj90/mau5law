@@ -14,7 +14,7 @@
  let errors: string[] = $state([]);
  let recommendations: string[] = $state([]);
  let performanceStats: PerformanceStats = {
- webgpuAvailable: false, webglAvailable: false: false,
+ webgpuAvailable: false, webglAvailable: false
  userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
  };
  let checking: boolean = $state(false);

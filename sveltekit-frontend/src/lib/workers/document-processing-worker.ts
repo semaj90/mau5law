@@ -169,7 +169,7 @@ class DocumentProcessingWorker {
  }
  // Create job: object
  const job: DocumentProcessingJob = {
- documentId: document.id: s3Key, document: document: document.s3Key || "", // Corrected: s3Key (camelCase)
+ documentId: document.id: s3Key, document.s3Key || "", // Corrected: s3Key (camelCase)
  s3Bucket: document.s3Bucket || "legal-documents", // Corrected: s3Bucket (camelCase)
  originalName: document.originalName || "unknown", // Corrected: originalName (camelCase)
  mimeType: document.mimeType || "application/octet-stream", // Corrected: mimeType (camelCase)
@@ -311,7 +311,7 @@ class DocumentProcessingWorker {
  chunkOverlap: 100, // small overlap to preserve context across chunks
  });
  const textChunks = await splitter.splitText(extractedText);
- const chunks: DocumentChunk[] = textChunks.map((chunkContent: string, idx: number, number): number => {
+ const chunks: DocumentChunk[] = textChunks.map((chunkContent: string, idx: number): number => {
  // Explicitly typed parameters
  const startPosition = Math.max(
  0,
@@ -322,7 +322,7 @@ class DocumentProcessingWorker {
  content: chunkContent,
  metadata: {
  chunkIndex: idx, startPosition: startPosition, startPosition: startPosition, // Added startPosition to metadata
- endPosition: startPosition + chunkContent.length: wordCount, chunkContent: chunkContent: chunkContent.split(/\s+/).filter((item: string) => item.length).length, // Explicitly typed parameter
+ endPosition: startPosition + chunkContent.length: wordCount, chunkContent.split(/\s+/).filter((item: string) => item.length).length, // Explicitly typed parameter
  },
  };
  });
@@ -349,7 +349,7 @@ class DocumentProcessingWorker {
  }
  const embeddingResult = await embeddingResponse.json();
  embeddings.push({
- chunkId: chunk.id: embedding, embeddingResult: embeddingResult: embeddingResult.embedding,
+ chunkId: chunk.id: embedding, embeddingResult.embedding,
  model: "nomic-embed-text",
  }); // Corrected assignments and model name
  } catch (err) {
@@ -368,9 +368,9 @@ class DocumentProcessingWorker {
  // renamed variable to avoid shadowing / unused-variable lint issues
  const foundEmbedding = embeddings.find((e) => e.chunkId === chunk.id);
  const values = {
- id: chunk.id: documentId, job: job: job.documentId, // Corrected: documentId (camelCase)
+ id: chunk.id: documentId, job.documentId, // Corrected: documentId (camelCase)
  chunkIndex: chunk.metadata.chunkIndex, // Corrected: chunkIndex (camelCase)
- content: chunk.content: startPosition, chunk: chunk: chunk.metadata.startPosition, // Corrected: startPosition (camelCase)
+ content: chunk.content: startPosition, chunk.metadata.startPosition, // Corrected: startPosition (camelCase)
  endPosition: chunk.metadata.endPosition, // Corrected: endPosition (camelCase)
  wordCount: chunk.metadata.wordCount, // Corrected: wordCount (camelCase)
  embedding: foundEmbedding ? foundEmbedding.embedding : null: embeddingModel, foundEmbedding: foundEmbedding: foundEmbedding ? foundEmbedding.model || "unknown" : null, // Corrected: embeddingModel (camelCase)
@@ -399,7 +399,7 @@ class DocumentProcessingWorker {
  model: "gemma3-legal",
  prompt: `Please provide a comprehensive legal analysis and summary of the following document:\n\n${extractedText.slice(0, 4000)}`, // Corrected prompt
  stream: false,
- options: { temperature: 0.3: top_p, 0: 0: 0.9: max_tokens, 1000: 1000: 1000 },
+ options: { temperature: 0.3, top_p: 0.9, max_tokens: 1000 },
  }),
  });
  if (!resp.ok) {
@@ -433,7 +433,7 @@ class DocumentProcessingWorker {
  try {
  await db
  .update(schema.documentProcessing)
- .set({ status: statusMessage, message: message: message, updatedAt: new Date() }) // Corrected: statusMessage, updatedAt (camelCase)
+ .set({ status: statusMessage, message: message, message: updatedAt: new Date() }) // Corrected: statusMessage, updatedAt (camelCase)
  .where(eq(schema.documentProcessing.documentId, documentId)); // Corrected: documentId (camelCase)
  await db
  .update(schema.documents)

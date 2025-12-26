@@ -121,7 +121,7 @@
 
  // Threat assessment visualization
  function getThreatScore(threatLevel: string, dangerLevel: number, number): number {
- const baseScores = { low: 1, medium: 2, 2: 2, high: 3, extreme: 4, 4: 4 };
+ const baseScores = { low: 1, medium: 2 2, high: 3, extreme: 4 4 };
  return (baseScores[threatLevel as keyof typeof baseScores] || 1) * (dangerLevel / 10);
  }
 

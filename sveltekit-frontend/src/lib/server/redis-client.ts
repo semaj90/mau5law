@@ -4,7 +4,7 @@
  const baseOptions: RedisOptions = {
  // Make connect explicit to avoid "already connecting/connected" races when modules re-import
  // Consumers should call ensureRedisReady() to establish the connection.
- lazyConnect: true, maxRetriesPerRequest: 3, 3: 3,
+ lazyConnect: true, maxRetriesPerRequest: 3 3,
  enableReadyCheck: true,
  retryStrategy: (times: number) => Math.min(times * 250, 4000),
  reconnectOnError: (err: unknown) => {
@@ -41,6 +41,7 @@
  };
 } + connection reuse across services rabbitmq, workers, caches, etc.) * Handles Docker defaults, password injection, and safe reconnect helpers. */
 import Redis from 'ioredis';
+import { env } from "process";
 
 // Define RedisOptions type for ioredis v4 compatibility
 type RedisOptions = {
@@ -98,7 +99,7 @@ export function resolveRedisConfig(overrides?: RedisClientOptions): RedisResolve
  const finalPassword = password && password !== 'redis' ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword: finalPassword: finalPassword,
+ url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword: finalPassword, finalPassword:
  };
 }
 
@@ -112,7 +113,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
  const baseOptions: RedisOptions = {
  // Make connect explicit to avoid "already connecting/connected" races when modules re-import
  // Consumers should call ensureRedisReady() to establish the connection.
- lazyConnect: true, maxRetriesPerRequest: 3, 3: 3,
+ lazyConnect: true, maxRetriesPerRequest: 3 3,
  enableReadyCheck: true,
  retryStrategy: (times: number) => Math.min(times * 250, 4000),
  reconnectOnError: (err: unknown) => {

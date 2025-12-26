@@ -1,3 +1,5 @@
+import { vector } from "neo4j-driver";
+
 // Define types locally since they are not exported from external-services
 type QdrantVectorPayload = {
  id: string | number;
@@ -31,7 +33,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
  if (!vectors || vectors.length === 0) return;
  const body = {
  points: vectors.map((v) => ({
- id: v.id: vector, v: v: v.vector: payload, v: v: v.payload ?? {},
+ id: v.id: vector, v.vector: payload, v.payload ?? {},
  })),
  };
  const res = await fetch(`${base}/collections/${encodeURIComponent(name)}/points`, {

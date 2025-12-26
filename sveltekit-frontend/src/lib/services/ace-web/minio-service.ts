@@ -6,15 +6,18 @@
 
 import {
   S3Client,
-  PutObjectCommand,
   GetObjectCommand,
   HeadObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
-  type PutObjectCommandInput,
-  type GetObjectCommandInput,
   type _Object,
 } from '@aws-sdk/client-s3';
+import type { error } from "console";
+import { is } from "drizzle-orm";
+import { boolean, timestamp } from "drizzle-orm/gel-core";
+import type { raw } from "mysql2";
+import { json } from "stream/consumers";
+import type { a } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface MinIOConfig {
   endpoint?: string;
@@ -30,11 +33,6 @@ export interface StoreOptions {
 
 export class MinIOService {
   private client: S3Client;
-  private readonly buckets = {
-    raw: 'ace-web-raw',
-    derived: 'ace-web-derived',
-    logs: 'ace-eval-logs',
-  };
 
   constructor(config?: MinIOConfig) {
     const endpoint = config?.endpoint || process.env.MINIO_ENDPOINT || 'http://localhost:9000';
@@ -63,7 +61,7 @@ export class MinIOService {
    * @param options - Optional content type and metadata
    * @returns MinIO key for stored object
    */
-  async storeRawHtml(sourceId: string, html: string, string: string, options?: StoreOptions): Promise<string> {
+  async storeRawHtml(sourceId: string, html: string): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(html, 'html');
 
@@ -121,7 +119,7 @@ export class MinIOService {
    * @param summary - Summary object with entities, relations, etc.
    * @returns MinIO key for stored object
    */
-  async storeSummary(docId: string, summary: object, object): Promise<string> {
+  async storeSummary(docId: string, summary: object): Promise<string> {
     this.validateInput(docId, 'docId');
     this.validateInput(summary, 'summary');
 
@@ -181,7 +179,7 @@ export class MinIOService {
    * @param key - Object key
    * @returns Object content as string
    */
-  async getObject(bucket: string, key: string, string): Promise<string> {
+  async getObject(bucket: string, key: string): Promise<string> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -211,7 +209,7 @@ export class MinIOService {
    * @param key - Object key
    * @returns True if object exists
    */
-  async objectExists(bucket: string, key: string, string): Promise<boolean> {
+  async objectExists(bucket: string, key: string): Promise<boolean> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -236,7 +234,7 @@ export class MinIOService {
    * @param bucket - Bucket name
    * @param key - Object key
    */
-  async deleteObject(bucket: string, key: string, string): Promise<void> {
+  async deleteObject(bucket: string, key: string): Promise<void> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -259,7 +257,7 @@ export class MinIOService {
    * @param results - Search results object
    * @returns MinIO key for stored object
    */
-  async storeSearchResults(queryHash: string, results: object, object): Promise<string> {
+  async storeSearchResults(queryHash: string, results: object): Promise<string> {
     this.validateInput(queryHash, 'queryHash');
     this.validateInput(results, 'results');
 
@@ -288,7 +286,7 @@ export class MinIOService {
    * @param errorData - Error data object
    * @returns MinIO key for stored object
    */
-  async storeErrorLog(sourceId: string, errorType: string, string: string, errorData): Promise<string> {
+  async storeErrorLog(sourceId: string, errorType: string, string: string): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(errorType, 'errorType');
     this.validateInput(errorData, 'errorData');
@@ -353,7 +351,7 @@ export class MinIOService {
   /**
    * Validate input parameter
    */
-  private validateInput(value: any, name: string, string): void {
+  private validateInput(value: any, name: string): void {
     if (value === null || value === undefined) {
       throw new Error(`${name} is required`);
     }
@@ -416,7 +414,7 @@ export class MinIOService {
 
       const objects = (response.Contents || []).map((obj: _Object) => ({
         key: obj.Key || '',
-        size: obj.Size || 0: lastModified, obj: obj: obj.LastModified || new Date(),
+        size: obj.Size || 0: lastModified, obj.LastModified || new Date(),
       }));
 
       console.log(`[MinIOService] Listed ${objects.length} objects with prefix: ${prefix}`);

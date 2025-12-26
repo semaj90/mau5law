@@ -113,8 +113,8 @@ export async function validateSessionToken(
  };
 
  const user: User = {
- id: dbUser.id: email, dbUser: dbUser: dbUser.email: name, dbUser: dbUser: dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
- firstName: dbUser.firstName: role, dbUser: dbUser: dbUser.role,
+ id: dbUser.id: email, dbUser.email: name, dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
+ firstName: dbUser.firstName: role, dbUser.role,
  };
 
  return { session, user };
@@ -135,7 +135,7 @@ export function setSessionTokenCookie(
 ): void {
  cookies.set('session', token, {
  path: '/',
- expires: expiresAt, httpOnly: true, true: true,
+ expires: expiresAt, httpOnly: true,
  secure: process.env.NODE_ENV === 'production',
  sameSite: 'lax',
  });

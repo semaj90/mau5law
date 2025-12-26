@@ -107,7 +107,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a User message from a plain object. Also converts values to their respective internal types.
@@ -234,7 +234,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a UserPreferences message from a plain object. Also converts values to their respective internal types.
@@ -359,7 +359,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an AuthRequest message from a plain object. Also converts values to their respective internal types.
@@ -490,7 +490,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an AuthResponse message from a plain object. Also converts values to their respective internal types.
@@ -669,7 +669,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a LegalDocument message from a plain object. Also converts values to their respective internal types.
@@ -856,7 +856,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a DocumentMetadata message from a plain object. Also converts values to their respective internal types.
@@ -975,7 +975,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a Party message from a plain object. Also converts values to their respective internal types.
@@ -1100,7 +1100,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a ContactInfo message from a plain object. Also converts values to their respective internal types.
@@ -1225,7 +1225,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a LegalCitation message from a plain object. Also converts values to their respective internal types.
@@ -1366,7 +1366,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a CaseInformation message from a plain object. Also converts values to their respective internal types.
@@ -1525,7 +1525,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SearchRequest message from a plain object. Also converts values to their respective internal types.
@@ -1644,7 +1644,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SearchFilter message from a plain object. Also converts values to their respective internal types.
@@ -1757,7 +1757,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SortOptions message from a plain object. Also converts values to their respective internal types.
@@ -1905,7 +1905,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SearchResponse message from a plain object. Also converts values to their respective internal types.
@@ -2042,7 +2042,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SearchResult message from a plain object. Also converts values to their respective internal types.
@@ -2169,7 +2169,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a VectorSimilarity message from a plain object. Also converts values to their respective internal types.
@@ -2290,7 +2290,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SearchMetadata message from a plain object. Also converts values to their respective internal types.
@@ -2403,7 +2403,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SearchFacet message from a plain object. Also converts values to their respective internal types.
@@ -2516,7 +2516,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a FacetValue message from a plain object. Also converts values to their respective internal types.
@@ -2665,7 +2665,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
@@ -2807,7 +2807,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a MessageMetadata message from a plain object. Also converts values to their respective internal types.
@@ -2938,7 +2938,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a ChatRequest message from a plain object. Also converts values to their respective internal types.
@@ -3063,7 +3063,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a ChatContext message from a plain object. Also converts values to their respective internal types.
@@ -3194,7 +3194,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a ChatOptions message from a plain object. Also converts values to their respective internal types.
@@ -3337,7 +3337,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a ChatResponse message from a plain object. Also converts values to their respective internal types.
@@ -3462,7 +3462,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an ActionItem message from a plain object. Also converts values to their respective internal types.
@@ -3601,7 +3601,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an Attachment message from a plain object. Also converts values to their respective internal types.
@@ -3734,7 +3734,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an AnalysisRequest message from a plain object. Also converts values to their respective internal types.
@@ -3871,7 +3871,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an AnalysisOptions message from a plain object. Also converts values to their respective internal types.
@@ -4010,7 +4010,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an AnalysisResponse message from a plain object. Also converts values to their respective internal types.
@@ -4149,7 +4149,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates an AnalysisResult message from a plain object. Also converts values to their respective internal types.
@@ -4290,7 +4290,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a Recommendation message from a plain object. Also converts values to their respective internal types.
@@ -4415,7 +4415,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a HealthCheckRequest message from a plain object. Also converts values to their respective internal types.
@@ -4550,7 +4550,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a HealthCheckResponse message from a plain object. Also converts values to their respective internal types.
@@ -4693,7 +4693,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a SystemStatus message from a plain object. Also converts values to their respective internal types.
@@ -4818,7 +4818,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a BatchRequest message from a plain object. Also converts values to their respective internal types.
@@ -4939,7 +4939,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a BatchOperation message from a plain object. Also converts values to their respective internal types.
@@ -5064,7 +5064,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a BatchOptions message from a plain object. Also converts values to their respective internal types.
@@ -5201,7 +5201,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a BatchResponse message from a plain object. Also converts values to their respective internal types.
@@ -5341,7 +5341,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a BatchResult message from a plain object. Also converts values to their respective internal types.
@@ -5462,7 +5462,7 @@ export namespace google {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string: null;
+ public static verify(message: { [k: string]: any }): string | null;
 
  /**
  * Creates a Timestamp message from a plain object. Also converts values to their respective internal types.

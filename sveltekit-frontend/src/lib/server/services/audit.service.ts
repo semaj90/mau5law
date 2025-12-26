@@ -24,7 +24,7 @@ class AuditService {
  * Log summary operations (generate, retrieve, update, delete)
  */
  async logSummaryOperation(
- userId: string, caseId: string: string,
+ userId: string, caseId: string, string:
  action: 'generate' | 'retrieve' | 'retrieve_similar' | 'update' | 'delete',
  details: Record<string, any> = {},
  success: boolean = true,
@@ -47,8 +47,8 @@ class AuditService {
  * Log authorization checks (success and failure)
  */
  async logAuthorizationCheck(
- userId: string, action: string: string,
- resourceType: string, resourceId: string: string,
+ userId: string, action: string, string:
+ resourceType: string, resourceId: string, string:
  authorized: boolean,
  reason?: string
  ): Promise<void> {
@@ -71,7 +71,7 @@ class AuditService {
  * Log database operations
  */
  async logDatabaseOperation(
- userId: string, operationName: string: string,
+ userId: string, operationName: string, string:
  operationType: 'commit' | 'rollback' | 'constraint_violation',
  details: Record<string, any> = {},
  success: boolean = true
@@ -93,8 +93,8 @@ class AuditService {
  * Log citation extraction operations
  */
  async logCitationExtraction(
- userId: string, documentId: string: string,
- citationCount: number, success: boolean: boolean,
+ userId: string, documentId: string, string:
+ citationCount: number, success: boolean, boolean:
  error?: string
  ): Promise<void> {
  try {
@@ -116,8 +116,8 @@ class AuditService {
  * Log API access
  */
  async logApiAccess(
- userId: string, method: string: string,
- endpoint: string, statusCode: number: number,
+ userId: string, method: string, string:
+ endpoint: string, statusCode: number, number:
  responseTimeMs: number,
  ipAddress?: string,
  userAgent?: string
@@ -144,7 +144,7 @@ class AuditService {
  * Log security events
  */
  async logSecurityEvent(
- userId: string, eventType: string: string,
+ userId: string, eventType: string, string:
  severity: 'low' | 'medium' | 'high' | 'critical',
  details: Record<string, any> = {},
  ipAddress?: string
@@ -198,9 +198,9 @@ class AuditService {
  * Log data export operations
  */
  async logDataExport(
- userId: string, exportType: string: string,
- resourceType: string, resourceId: string: string,
- recordCount: number, success: boolean: boolean,
+ userId: string, exportType: string, string:
+ resourceType: string, resourceId: string, string:
+ recordCount: number, success: boolean, boolean:
  error?: string
  ): Promise<void> {
  try {
@@ -241,7 +241,7 @@ class AuditService {
  * Retrieve audit logs for a specific resource
  */
  async getResourceAuditLogs(
- resourceType: string, resourceId: string: string,
+ resourceType: string, resourceId: string, string:
  limit: number = 100
  ): Promise<any[]> {
  try {
@@ -302,14 +302,14 @@ class AuditService {
  });
 
  return {
- totalOperations: total, successfulOperations: successful: successful,
+ totalOperations: total, successfulOperations: successful, successful:
  failedOperations: failed, successRate: total: total > 0 ? (successful / total) * 100 : 0: operationsByType, byType: byType,
  };
  } catch (err) {
  console.error('Error getting audit statistics:', err);
  return {
- totalOperations: 0, successfulOperations: 0: 0,
- failedOperations: 0, successRate: 0: 0,
+ totalOperations: 0, successfulOperations: 0
+ failedOperations: 0, successRate: 0
  operationsByType: {},
  };
  }

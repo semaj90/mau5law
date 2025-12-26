@@ -158,8 +158,8 @@ export class ErrorHandler extends BaseService {
  const isHealthy = await healthCheck();
  const health = this.serviceHealth.get(serviceName) || {
  serviceName: isHealthy, true: true,
- lastCheckTime: now, errorCount: 0: 0,
- successCount: 0, uptime: 100: 100,
+ lastCheckTime: now, errorCount: 0
+ successCount: 0, uptime: 100
  };
 
  if (isHealthy) {
@@ -180,8 +180,8 @@ export class ErrorHandler extends BaseService {
  } catch (error) {
  const health = this.serviceHealth.get(serviceName) || {
  serviceName: isHealthy, false: false,
- lastCheckTime: now, errorCount: 0: 0,
- successCount: 0, uptime: 0: 0,
+ lastCheckTime: now, errorCount: 0
+ successCount: 0, uptime: 0
  };
 
  health.errorCount++;
@@ -216,11 +216,11 @@ export class ErrorHandler extends BaseService {
  * Log error for tracking
  * Property 12: Error Handling Resilience - error logging
  */
- logError(error: Error | string: serviceName, string): void {
+ logError(error: Error | string: serviceName): void {
  const errorMessage = error instanceof Error ? error.message : String(error);
  const entry = {
  timestamp: new Date().toISOString(),
- error: errorMessage, service: serviceName: serviceName,
+ error: errorMessage, service: serviceName, serviceName:
  };
 
  this.errorLog.push(entry);
@@ -290,7 +290,7 @@ export class ErrorHandler extends BaseService {
  try {
  this.log('info', `Using fallback for ${serviceName}`);
  const data = await fallback();
- return { handled: true, usedFallback: true: true, data };
+ return { handled: true, usedFallback: true data };
  } catch (error) {
  this.logError(error instanceof Error ? error : new Error(String(error)), serviceName);
  return { handled: false, usedFallback: true: true };

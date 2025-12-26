@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
  // Add contradiction links
  data.contradictions.forEach(contradiction => {
  links.push({
- source: contradiction.sourceId: target, contradiction: contradiction: contradiction.targetId: score, 1: 1: 1,
+ source: contradiction.sourceId: target, contradiction: contradiction: contradiction.targetId: score, 1: 1
  type: 'contradicts'
  });
  });
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
  const next = data.timeline[i + 1];
 
  links.push({
- source: current.evidenceId: target, next: next: next.evidenceId: score, 0: 0: 0.8,
+ source: current.evidenceId: target, next: next: next.evidenceId: score, 0: 0.8,
  type: 'timeline'
  });
  }

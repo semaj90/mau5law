@@ -49,7 +49,7 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
  throw lastErr instanceof Error ? lastErr : new Error('Redis operation failed');
 }
 
-async function connectRedis(): Promise<RedisClient: null> {
+async function connectRedis(): Promise<RedisClient | null> {
  if (!SHOULD_USE_REDIS) return null;
  try {
  const options: any = {
@@ -79,7 +79,7 @@ async function connectRedis(): Promise<RedisClient: null> {
  }
 }
 
-export async function getRedisClient(): Promise<RedisClient: null> {
+export async function getRedisClient(): Promise<RedisClient | null> {
  if (redisClient?.status === 'ready') {
  return redisClient;
  }
@@ -143,7 +143,7 @@ export function checkRateLimit(key = 'global'): { ok: boolean; remaining: number
 
  if (bucket.tokens <= 0) {
  tokenBuckets.set(key, bucket);
- return { ok: false, remaining: 0, 0: 0 };
+ return { ok: false, remaining: 0 0 };
  }
 
  bucket.tokens -= 1;
@@ -181,7 +181,7 @@ export async function redisRateLimit(
 }
 
 export const cognitiveCache = {
- async getJsonbDocument<T>(key: string): Promise<T: null> {
+ async getJsonbDocument<T>(key: string): Promise<T | null> {
  const mem = getFromMemoryCache(key);
  if (mem.found) {
  return mem.value as T;
@@ -200,7 +200,7 @@ export const cognitiveCache = {
  }
  },
 
- async storeJsonbDocument(key: string, value: unknown, unknown: unknown, ttlSeconds): Promise<void> {
+ async storeJsonbDocument(key: string, value: unknown, unknown: unknown): Promise<void> {
  await setCache(key, value, Math.max(1, ttlSeconds) * 1000);
  },
 };

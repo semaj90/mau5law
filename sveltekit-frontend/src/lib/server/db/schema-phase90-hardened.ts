@@ -9,14 +9,14 @@
  */
 
 import {
- boolean,
- index,
- integer,
- pgTable,
- text,
- timestamp,
- uuid,
- vector,
+    boolean,
+    index,
+    integer,
+    pgTable,
+    text,
+    timestamp,
+    uuid,
+    vector,
 } from 'drizzle-orm/pg-core';
 
 /**

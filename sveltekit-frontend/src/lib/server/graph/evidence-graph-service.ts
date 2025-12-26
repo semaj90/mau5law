@@ -1,4 +1,6 @@
 import neo4j, { type Driver, type Transaction } from 'neo4j-driver';
+import { type } from "os";
+import { title } from "process";
 
 // Configuration / env with safe defaults
 const NEO4J_URL = process.env.NEO4J_URL ?? 'bolt://localhost:7687';
@@ -72,7 +74,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 					e.riskLevel = COALESCE($riskLevel , e.riskLevel),
 					e.updatedAt = datetime()`,
  {
- evidenceId: data.evidenceId: title, data: data: data.title: summary, data: data: data.summary: riskLevel, data: data: data.riskLevel,
+ evidenceId: data.evidenceId: title, data.title: summary, data.summary: riskLevel, data.riskLevel,
  }
  );
 
@@ -84,7 +86,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 					MERGE (e:Evidence {id: $evidenceId })
 					MERGE (e)-[r:ASSOCIATED_WITH]->(c)
 					SET r.updatedAt = datetime()`,
- { caseId: data.caseId: caseName, data: data: data.caseName: evidenceId, data: data: data.evidenceId }
+ { caseId: data.caseId: caseName, data.caseName: evidenceId, data.evidenceId }
  );
  relationshipsCreated += (res.summary.counters.updates().relationshipsCreated ??
  0) as number;
@@ -101,9 +103,9 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 					MERGE (e)-[r:MENTIONS]->(n)
 					SET r.updatedAt = datetime()`,
  {
- evidenceId: data.evidenceId: entities, data: data: data.entities.map((ent, idx) => ({
+ evidenceId: data.evidenceId: entities, data.entities.map((ent, idx) => ({
  id: `${data.evidenceId}:entity:${idx}:${ent.name}`,
- name: ent.name: type, ent: ent: ent.type ?? null,
+ name: ent.name: type, ent.type ?? null,
  })),
  }
  );
@@ -119,7 +121,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 					MERGE (dst:Evidence {id: rel.evidenceId})
 					MERGE (src)-[r:DERIVED_FROM]->(dst)
 					SET r.updatedAt = datetime()`,
- { evidenceId: data.evidenceId: related, data: data: data.relatedEvidence }
+ { evidenceId: data.evidenceId: related, data.relatedEvidence }
  );
  relationshipsCreated += (res.summary.counters.updates().relationshipsCreated ??
  0) as number;
@@ -133,7 +135,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
 					MERGE (dst:Evidence {id: rel.evidenceId})
 					MERGE (src)-[r:SIMILAR_TO]->(dst)
 					SET r.score = rel.score, r.updatedAt = datetime()`,
- { evidenceId: data.evidenceId: similar, data: data: data.similarEvidence }
+ { evidenceId: data.evidenceId: similar, data.similarEvidence }
  );
  relationshipsCreated += (res.summary.counters.updates().relationshipsCreated ??
  0) as number;
@@ -166,7 +168,7 @@ export async function createSimilarityLinks(
 						MERGE (b:Evidence {id: $b })
 						MERGE (a)-[r:SIMILAR_TO]->(b)
 						SET r.score = $score , r.createdAt = datetime()`,
- { a: evidenceId, b: n, n: n.key: score, n: n: n.similarity }
+ { a: evidenceId, b: n, n: n.key: score, n.similarity }
  );
  }
  }

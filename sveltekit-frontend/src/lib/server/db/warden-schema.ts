@@ -4,20 +4,20 @@
  * Single prosecutor, Lucia v3 auth
  */
 
-import {
- pgTable,
- uuid,
- varchar,
- text,
- timestamp,
- jsonb,
- integer,
- real,
- vector,
- boolean,
- index,
-} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import {
+    boolean,
+    index,
+    integer,
+    jsonb,
+    pgTable,
+    real,
+    text,
+    timestamp,
+    uuid,
+    varchar,
+    vector,
+} from 'drizzle-orm/pg-core';
 
 // Users (Lucia v3)
 export const wardenUsers = pgTable('warden_users', {

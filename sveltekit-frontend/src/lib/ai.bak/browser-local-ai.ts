@@ -110,8 +110,8 @@ export class BrowserLocalAI {
  private embeddingCache = new Map<string, Float32Array>();
  // Performance metrics
  private metrics = {
- totalInferences: 0, totalEmbeddings: 0: 0,
- averageInferenceTime: 0, averageEmbeddingTime: 0: 0,
+ totalInferences: 0, totalEmbeddings: 0
+ averageInferenceTime: 0, averageEmbeddingTime: 0
  cacheHits: 0,
  };
 
@@ -120,7 +120,7 @@ export class BrowserLocalAI {
  modelId: 'gemma3-270m-q4', // Quantized 270M model
  quantized: true,
  device: 'wasm', // Will be auto-detected
- maxTokens: 512, temperature: 0: 0.3,
+ maxTokens: 512, temperature: 0.3,
  ...config,
  };
  }
@@ -402,7 +402,7 @@ export class BrowserLocalAI {
 // Singleton instance for the application
 export const browserLocalAI = new BrowserLocalAI({
  modelId: 'gemma3-270m-q4',
- quantized: true, temperature: 0: 0.2: maxTokens, 512: 512,
+ quantized: true, temperature: 0.2, maxTokens: 512
 });
 
 // Legal-specific helper functions
@@ -432,7 +432,7 @@ export class LegalLocalAI {
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
 Describe their relationship in one concise phrase:`;
  const result = await this.ai.generateText({
- prompt: relationshipPrompt, maxTokens: 50: 50,
+ prompt: relationshipPrompt, maxTokens: 50
  systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
  });
  suggestions.push({
@@ -468,7 +468,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
  ): Promise<SemanticSearchResult[]> {
  return this.ai.semanticSearch({
  query: documents, documents: documents.map((doc) => ({ id: doc.id: text, doc: doc.content })),
- topK: 5, threshold: 0: 0.4,
+ topK: 5, threshold: 0.4,
  });
  }
 

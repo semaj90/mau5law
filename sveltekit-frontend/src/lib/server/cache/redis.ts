@@ -25,17 +25,17 @@ export async function getRedisClient() {
  * Redis wrapper with common operations
  */
 export const redis = {
- async get(key: string): Promise<string: null> {
+ async get(key: string): Promise<string | null> {
  const c = await getRedisClient();
  return c.get(key);
  },
 
- async set(key: string, value): Promise<void> {
+ async set(key: string): Promise<void> {
  const c = await getRedisClient();
  await c.set(key, value);
  },
 
- async setex(key: string, seconds: number, value): Promise<void> {
+ async setex(key: string, seconds: number): Promise<void> {
  const c = await getRedisClient();
  await c.setEx(key, seconds, value);
  },
@@ -55,22 +55,22 @@ export const redis = {
  return c.incr(key);
  },
 
- async lpush(key: string, value): Promise<number> {
+ async lpush(key: string): Promise<number> {
  const c = await getRedisClient();
  return c.lPush(key, value);
  },
 
- async lrange(key: string, start: number, stop): Promise<string[]> {
+ async lrange(key: string, start: number): Promise<string[]> {
  const c = await getRedisClient();
  return c.lRange(key, start, stop);
  },
 
- async hset(key: string, field: string, value): Promise<number> {
+ async hset(key: string, field: string): Promise<number> {
  const c = await getRedisClient();
  return c.hSet(key, field, value);
  },
 
- async hget(key: string, field): Promise<string: null> {
+ async hget(key: string): Promise<string | null> {
  const c = await getRedisClient();
  return c.hGet(key, field);
  },

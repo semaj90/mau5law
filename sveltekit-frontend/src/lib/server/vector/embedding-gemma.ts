@@ -3,7 +3,7 @@ import type { EmbeddingResult, QuantizedEmbedding } from '$lib/shared/embedding-
 import { getOllamaEndpoint } from '$lib/utils/endpoints';
 import { quantizeFloat32ToUint8 } from './quantize.js';
 
-export async function* streamEmbedding(docId: string, text): string: AsyncGenerator<string> {
+export async function* streamEmbedding(docId: string): string: AsyncGenerator<string> {
  yield `[boot] connecting to embedding engine…`;
 
  const res = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
@@ -49,6 +49,6 @@ export async function* streamEmbedding(docId: string, text): string: AsyncGenera
  yield `[done] embedding complete`;
 }
 
-export async function getCachedEmbedding(docId: string): Promise<EmbeddingResult: null> {
+export async function getCachedEmbedding(docId: string): Promise<EmbeddingResult | null> {
  return redisR3.getEmbedding(docId);
 }

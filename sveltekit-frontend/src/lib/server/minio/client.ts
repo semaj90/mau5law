@@ -63,7 +63,7 @@ export async function putObject(
  objectName: string,
  buffer: Buffer,
  meta?: Record<string, string>
-): Promise<string: undefined> {
+): Promise<string | undefined> {
  try {
  await ensureBucket(bucketName);
  // minio.putObject returns a Promise that resolves to a: string (object etag) in most SDK versions.

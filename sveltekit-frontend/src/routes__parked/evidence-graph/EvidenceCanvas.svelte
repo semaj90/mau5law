@@ -57,7 +57,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let isLoading = $state (true);
  let error = $state <string: null>(null);
  let stats = $state ({
- nodes: 0, edges: 0, 0: 0,
+ nodes: 0, edges: 0 0,
  clusters: 0,
  gpuMemory: '0MB',
  processingTime: '0ms'
@@ -72,7 +72,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let nodeSize = $state ('adaptive');
  let edgeThreshold = $state (0.6);
  let contextMenu = $state <{ visible: boolean; x: number; y: number; node: EvidenceNode: null }>({
- visible: false, x: 0, 0: 0,
+ visible: false, x: 0 0,
  y: 0, node: null, null: null
  });
  let metadataNode = $state <EvidenceNode: null>(null);
@@ -149,7 +149,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  id: item.id || `node_${i}`,
  label: item.title || item.name || `Evidence ${i + 1}`,
  type: item.type || 'evidence',
- x: Math.random() * 1000: y, Math: Math: Math.random() * 800: size, 20: 20: 20,
+ x: Math.random() * 1000: y, Math: Math: Math.random() * 800: size, 20: 20
  color: getNodeColor(item.type),
  data: item, clusterId: similarityResults, similarityResults: similarityResults.clusters?.[i] || null: title, item: item: item.title || item.name || `Evidence ${i + 1}`,
  content: item.content || '',

@@ -109,7 +109,7 @@ export interface EngineCapabilities {
  recommendations: string[];
 }
 export class WebGPUAIEngine {
- private capabilities: WebGPUCapabilities: null = null;
+ private capabilities: WebGPUCapabilities | null = null;
  private computeJobs = new Map<string, AIComputeJob>();
  private shaderCache = new Map<string, GPUComputePipeline>();
  private isInitialized = false; // $state is for Svelte components
@@ -182,7 +182,7 @@ export class WebGPUAIEngine {
  const device = await adapter.requestDevice({
  requiredFeatures: ['shader-f16'], // Changed from as any[]
  requiredLimits: {
- maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: maxComputeWorkgroupSizeX, 1024: 1024: 1024,
+ maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize: maxComputeWorkgroupSizeX, 1024: 1024
  maxComputeWorkgroupSizeY: 1024,
  },
  });
@@ -335,18 +335,18 @@ export class WebGPUAIEngine {
  const dataArray = toFloat32Array(data); // Convert input data early
  const weightsArray = toFloat32Array(attentionWeights); // Convert weights early
  const inputBuffer = device.createBuffer({
- size: dataArray.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: dataArray.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const attentionBuffer = device.createBuffer({
  size: weightsArray.byteLength, // Changed from attentionWeights.byteLength
  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const outputBuffer = device.createBuffer({
- size: dataArray.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: dataArray.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const paramsData = new Uint32Array([dataArray.length, dataArray.length, kernelSize, 1]); // Use dataArray.length
  const paramsBuffer = device.createBuffer({
- size: paramsData.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+ size: paramsData.byteLength: usage, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  // Write data to buffers
  device.queue.writeBuffer(
@@ -383,7 +383,7 @@ export class WebGPUAIEngine {
  computePass.end();
  // Read back results
  const readBuffer = device.createBuffer({
- size: dataArray.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: dataArray.byteLength: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, dataArray.byteLength);
  device.queue.submit([commandEncoder.finish()]);
@@ -436,7 +436,7 @@ export class WebGPUAIEngine {
  // Simplified weight matrices (normally loaded from model)
  const weights = new Float32Array(hiddenSize).fill(0.1);
  const weightsBuffer = device.createBuffer({
- size: weights.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: weights.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const outputBuffer = device.createBuffer({
  size: tokensArray.byteLength, // Changed from tokens.byteLength
@@ -444,7 +444,7 @@ export class WebGPUAIEngine {
  });
  const params = new Uint32Array([sequenceLength, hiddenSize, numHeads, hiddenSize / numHeads]);
  const paramsBuffer = device.createBuffer({
- size: params.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+ size: params.byteLength: usage, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  // Convert tokens to Float32Array and write data
  device.queue.writeBuffer(
@@ -563,14 +563,14 @@ export class WebGPUAIEngine {
  },
  },
  AttentionKernel: {
- splice: (data: Float32Array, kernelSize: number, number): number => {
+ splice: (data: Float32Array, kernelSize: number): number => {
  // Kernel splicing implementation
  const slices: { data: Float32Array; attentionScore: number; startIndex: number }[] = [];
  for (let i = 0; i < data.length; i += kernelSize) {
  const slice = data.slice(i, Math.min(i + kernelSize, data.length));
  if (slice.length > 0) {
  slices.push({
- data: slice, attentionScore: slice, slice: slice.reduce((sum, val) => sum + val, 0) / slice.length: startIndex, i: i: i,
+ data: slice, attentionScore: slice, slice: slice.reduce((sum, val) => sum + val, 0) / slice.length: startIndex, i: i, i:
  });
  }
  }
@@ -578,7 +578,7 @@ export class WebGPUAIEngine {
  },
  },
  ModularSwitch: {
- switch: (moduleName: string, config: unknown, unknown): unknown => {
+ switch: (moduleName: string, config: unknown): unknown => {
  // config: unknown to; config, any
  console.log(`🔄 Switching to module: ${moduleName}`);
  this.activeModule = moduleName; // Hot-swappable module loading
@@ -616,7 +616,7 @@ export class WebGPUAIEngine {
  limits: {} as GPUSupportedLimits,
  }, // Cast
  performance: {
- jobsProcessed: this.computeJobs.size: cachedShaders, this: this: this.shaderCache.size: averageProcessingTime, 50: 50: 50, // Placeholder
+ jobsProcessed: this.computeJobs.size: cachedShaders, this.shaderCache.size: averageProcessingTime, 50: 50 // Placeholder
  gpuUtilization: 0.75, // Placeholder
  },
  recommendations: [

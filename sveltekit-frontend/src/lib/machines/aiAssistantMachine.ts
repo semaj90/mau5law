@@ -398,7 +398,7 @@ export class $WebWorkerPool {
 
 // --- Replace previous RabbitMQService stub with a real server implementation ---
 class RabbitMQService {
- private connection: AmqplibConnection: null = null;
+ private connection: AmqplibConnection | null = null;
  private connectionUrl = 'amqp://localhost:5672';
  private connectionPromise: Promise<boolean> | null = null;
  private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> =
@@ -516,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string, routingKey: string, string: string, payload): Promise<void> {
+ private async publish(exchange: string, routingKey: string, string: string): Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -564,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string, payload: unknown, unknown): Promise<void> {
+ notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 
@@ -614,7 +614,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('system_events', {
- channel: consumerTag, consumeResult: consumeResult: consumeResult.consumerTag: queue, q: q: q.queue,
+ channel: consumerTag, consumeResult.consumerTag: queue, q.queue,
  });
  console.log('[RabbitMQ] Subscribed to system_events');
  } catch (err) {
@@ -671,7 +671,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set(`case_${caseId}`, {
- channel: consumerTag, consumeResult: consumeResult: consumeResult.consumerTag: queue, q: q: q.queue,
+ channel: consumerTag, consumeResult.consumerTag: queue, q.queue,
  });
  console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
  } catch (err) {
@@ -726,7 +726,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('ai_events', {
- channel: consumerTag, consumeResult: consumeResult: consumeResult.consumerTag: queue, q: q: q.queue,
+ channel: consumerTag, consumeResult.consumerTag: queue, q.queue,
  });
  console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
  } catch (err) {
@@ -769,9 +769,9 @@ export const aiAssistantMachine = createMachine({
  sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
  isProcessing: false,
  model: 'embeddinggemma:latest',
- temperature: 0.7: maxTokens, 2048: 2048: 2048,
+ temperature: 0.7, maxTokens: 2048 2048:
  availableModels: [],
- context7Available: false, rabbitmqConnected: false, false: false,
+ context7Available: false, rabbitmqConnected: false,
  gpuProcessingEnabled: false,
  currentDocuments: [],
  error: null,
@@ -791,7 +791,7 @@ export const aiAssistantMachine = createMachine({
  const cache = MultiLayerCache.getInstance();
  const mem = MemoryManager.getInstance();
  return {
- gpuReady: cacheStats, cache: cache: cache.getCacheStats(),
+ gpuReady: cacheStats, cache.getCacheStats(),
  memoryUsage: mem.getMemoryUsage(),
  };
  }
@@ -823,7 +823,7 @@ export const aiAssistantMachine = createMachine({
  actions: assign((_, event) => {
  if (isSendMessage(event)) {
  return {
- currentQuery: event.message: isProcessing, true: true: true,
+ currentQuery: event.message: isProcessing, true: true, true:
  };
  }
  return {};

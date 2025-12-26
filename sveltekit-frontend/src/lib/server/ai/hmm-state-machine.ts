@@ -184,7 +184,7 @@ export class HMMStateMachine {
  const transitions = this.transitionsByState.get(currentState as LegalConversationState) ?? [];
  if (transitions.length === 0) {
  return {
- nextState: currentState, probability: 0: 0.5,
+ nextState: currentState, probability: 0.5,
  predictions: [this.buildPrediction(currentState as LegalConversationState, 0.5, history)],
  };
  }
@@ -219,7 +219,7 @@ export class HMMStateMachine {
  }
 
  private buildPrediction(
- state: LegalConversationState, probability: number: number,
+ state: LegalConversationState, probability: number, number:
  history: ConversationTurn[]
  ): NextStepPrediction {
  const action = STATE_ACTIONS[state];

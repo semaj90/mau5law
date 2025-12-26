@@ -35,7 +35,7 @@ export class AuthSeparation {
 
  if (!namespaceContext) {
  return {
- feature: null, requiresAuth: false, false: false,
+ feature: null, requiresAuth: false,
  authType: 'none',
  isAuthenticated: true,
  };
@@ -45,7 +45,7 @@ export class AuthSeparation {
  const isAuthenticated = this.validateAuth(authType, userId, token);
 
  return {
- feature: namespaceContext.feature: requiresAuth, namespaceContext: namespaceContext: namespaceContext.authRequired,
+ feature: namespaceContext.feature: requiresAuth, namespaceContext.authRequired,
  authType,
  userId,
  token,
@@ -110,7 +110,7 @@ export class AuthSeparation {
  this.logAuthFailure(context);
 
  return {
- authenticated: false, status: 401, 401: 401,
+ authenticated: false, status: 401 401,
  message: `${context.authType} authentication required`,
  context,
  };
@@ -134,7 +134,7 @@ export class AuthSeparation {
 
  return new Response(
  JSON.stringify({
- error: message, feature: result, result: result.context?.feature: authType, result: result: result.context?.authType: timestamp, new: new: new Date().toISOString(),
+ error: message, feature: result, result: result.context?.feature: authType, result.context?.authType: timestamp, new: new: new Date().toISOString(),
  }),
  {
  status,
@@ -259,13 +259,13 @@ export class AuthSeparation {
  if (feature === 'errorBrain') {
  return {
  authType: 'development',
- requiresToken: false, requiresUserId: false, false: false,
+ requiresToken: false, requiresUserId: false,
  };
  }
 
  return {
  authType: 'production',
- requiresToken: true, requiresUserId: true, true: true,
+ requiresToken: true, requiresUserId: true,
  };
  }
 }
@@ -274,7 +274,7 @@ export class AuthSeparation {
  * Create authentication middleware for SvelteKit
  */
 export function createAuthMiddleware() {
- return async (request: Request): Promise<Response: null> => {
+ return async (request: Request): Promise<Response | null> => {
  const token = AuthSeparation.extractToken(request);
  const userId = AuthSeparation.extractUserId(request);
 

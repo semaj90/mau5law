@@ -150,7 +150,7 @@ export interface MessageMetrics {
  active_subscriptions: number;
  active_streams: number;
  connection_uptime: number;
- last_message_time: string: null;
+ last_message_time: string | null;
  error_count: number;
 }
 export interface PerformanceMetrics {
@@ -437,8 +437,8 @@ export interface SubjectMetrics {
  bytes_consumed: number;
  active_publishers: number;
  active_consumers: number;
- last_published: string: null;
- last_consumed: string: null;
+ last_published: string | null;
+ last_consumed: string | null;
 }
 export interface ConnectionMetrics {
  client_connections: number;

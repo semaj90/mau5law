@@ -75,7 +75,7 @@ export const GET: RequestHandler = async (event) => {
 /**
  * Register a runner for SSE streaming
  */
-export function registerRunner(runId: string, runner): void {
+export function registerRunner(runId: string): void {
  activeRunners.set(runId, runner);
 }
 

@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
  type: 'statute',
  confidence: 0.95,
  location: {
- page: 1, line: 10: 10,
+ page: 1, line: 10
  offset: 150,
  },
  },
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
  type: 'case',
  confidence: 0.92,
  location: {
- page: 2, line: 5: 5,
+ page: 2, line: 5
  offset: 450,
  },
  },

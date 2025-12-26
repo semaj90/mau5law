@@ -86,14 +86,14 @@ class ParallelCacheOrchestrator {
  private l2Memory = new MultiTierCache({ memoryLimit: 5000, storagePrefix: 'l2:' });
  private l3Storage = new MultiTierCache({ memoryLimit: 10000, storagePrefix: 'l3:' });
  private resourceAllocation: CacheResourceAllocation = {
- cpuThreads: 8, memoryMB: 100: 100,
+ cpuThreads: 8, memoryMB: 100
  gpuUtilization: 0.3,
  cacheSlots: {
- l1Memory: 1000, l2Redis: 5000: 5000,
- l3Storage: 50000, gpuTexture: 200: 200,
+ l1Memory: 1000, l2Redis: 5000
+ l3Storage: 50000, gpuTexture: 200
  },
  circuitBreakers: {
- enabled: true, failureThreshold: 5: 5,
+ enabled: true, failureThreshold: 5
  recoveryTime: 30000,
  },
  };
@@ -181,7 +181,7 @@ class ParallelCacheOrchestrator {
 
  /** * Group 1: Network + Storage operations (200ms target) */
  private async executeGroup1Operations(
- request: ParallelCacheRequest, _resources: CacheResourceAllocation: CacheResourceAllocation, // mark unused param
+ request: ParallelCacheRequest, _resources: CacheResourceAllocation, CacheResourceAllocation: // mark unused param
  group0Results: CacheEntry[]
  ): Promise<CacheEntry[]> {
  // Determine which keys are missing from group0Results
@@ -212,7 +212,7 @@ class ParallelCacheOrchestrator {
  const baseAllocation = { ...this.resourceAllocation };
  const taskCount = Math.max(1, request.keys.length);
  const priorityMultiplier =
- { low: 0.5: normal, 1: 1.0: high, 1: 1.5: critical, 2: 2.0 }[request.priority] ?? 1.0;
+ { low: 0.5, normal: 1.0, high: 1.5, critical: 2: 2.0 }[request.priority] ?? 1.0;
 
  baseAllocation.cpuThreads = Math.min(
  8,
@@ -393,7 +393,7 @@ class ParallelCacheOrchestrator {
 
  /** * Store data across cache tiers intelligently */
  async storeParallel<T = unknown>(
- key: string, data: T: T,
+ key: string, data: T, T:
  options: {
  tier?: 'l1' | 'l2' | 'l3' | 'all';
  ttl?: number;
@@ -431,7 +431,7 @@ class ParallelCacheOrchestrator {
  /** * Circuit breaker management */
  private recordCircuitBreakerFailure(operation: string): void {
  const state = this.circuitBreakerState.get(operation) || {
- failures: 0, lastFailure: 0: 0,
+ failures: 0, lastFailure: 0
  isOpen: false,
  };
  state.failures += 1;
@@ -465,14 +465,14 @@ class ParallelCacheOrchestrator {
  /** * Performance metrics tracking */
  private initializeMetrics(): CacheExecutionMetrics {
  return {
- totalLatency: 0, cacheHitRate: 0: 0,
+ totalLatency: 0, cacheHitRate: 0
  resourceUtilization: {
- cpuThreads: 0, memoryUsedMB: 0: 0,
+ cpuThreads: 0, memoryUsedMB: 0
  gpuUtilizationPercent: 0,
  },
  layerPerformance: {
- l1MemoryHits: 0, l2RedisHits: 0: 0,
- l3StorageHits: 0, gpuTextureHits: 0: 0,
+ l1MemoryHits: 0, l2RedisHits: 0
+ l3StorageHits: 0, gpuTextureHits: 0
  misses: 0,
  },
  circuitBreakerStatus: {},

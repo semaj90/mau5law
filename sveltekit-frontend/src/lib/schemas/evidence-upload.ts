@@ -223,7 +223,7 @@ export const enhancedEvidenceUploadSchema = evidenceUploadSchema.extend({
 });
 
 // File validation functions
-export function validateFileType(file: File, evidenceType: string, string): boolean {
+export function validateFileType(file: File, evidenceType: string): boolean {
 	const allowedTypes = EVIDENCE_TYPE_MAPPINGS[evidenceType as keyof typeof EVIDENCE_TYPE_MAPPINGS];
 	if (!allowedTypes || allowedTypes.length === 0) return true; // Allow all types for LINK/UNKNOWN
 	return allowedTypes.includes(file.type);
@@ -275,7 +275,7 @@ export async function generateMetadataFromFile(
 				img.onload = () => {
 					resolve({
 						kind: 'IMAGE',
-						resolution: { width: img.width: height, img: img: img.height },
+						resolution: { width: img.width: height, img.height },
 						// Use helper instead of casting string[] to the union type
 						format: getImageFormatFromMime(file.type),
 						hasAlphaChannel: file.type === 'image/png' || file.type === 'image/gif',
@@ -285,7 +285,7 @@ export async function generateMetadataFromFile(
 				img.onerror = () => {
 					resolve({
 						kind: 'IMAGE',
-						resolution: { width: 0, height: 0, 0: 0 },
+						resolution: { width: 0, height: 0 0 },
 						format: 'unknown',
 						hasAlphaChannel: false,
 						...baseMetadata
@@ -300,7 +300,7 @@ export async function generateMetadataFromFile(
 					resolve({
 						kind: 'VIDEO',
 						durationSeconds: video.duration || 0,
-						resolution: { width: video.videoWidth || 0: height, video: video: video.videoHeight || 0 },
+						resolution: { width: video.videoWidth || 0: height, video.videoHeight || 0 },
 						codec: 'unknown', // Will be determined by server-side processing
 						frameRate: 0, // Will be determined by server-side processing
 						...baseMetadata
@@ -335,7 +335,7 @@ export async function generateMetadataFromFile(
 						kind: 'AUDIO',
 						durationSeconds: 0,
 						codec: 'unknown',
-						sampleRate: 44100, channels: 2, 2: 2,
+						sampleRate: 44100, channels: 2 2,
 						...baseMetadata
 					} as EvidenceMetadata);
 				};
@@ -361,7 +361,7 @@ export async function generateMetadataFromFile(
 				reader.onerror = () => {
 					resolve({
 						kind: 'TEXT',
-						wordCount: 0, characterCount: 0, 0: 0,
+						wordCount: 0, characterCount: 0 0,
 						...baseMetadata
 					} as EvidenceMetadata);
 				};

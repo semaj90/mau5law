@@ -125,7 +125,7 @@ export class LegalAIJobQueue {
         };
     }
 
-    public async addJob(queueName: string, data): LegalJobData {
+    public async addJob(queueName: string): LegalJobData {
         const queue = this.queues.get(queueName);
         if (!queue) {
             throw new Error(`Queue ${queueName} not found`);

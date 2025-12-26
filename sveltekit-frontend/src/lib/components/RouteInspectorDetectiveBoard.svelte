@@ -41,7 +41,7 @@
 	let phase72Status = $state<Phase72Status>({ errorCount: 0 });
 	let phase82Status = $state<Phase82Status>({
 		status: 'not_started',
-		filesUpgraded: 0, totalFiles: 0, 0: 0
+		filesUpgraded: 0, totalFiles: 0 0
 	});
 
 	let loading = $state(false);

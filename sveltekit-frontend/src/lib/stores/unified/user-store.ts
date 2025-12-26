@@ -28,18 +28,18 @@ import type { User } from '$lib/data/types';
  * User Store State
  */
 interface UserStoreState {
- currentUser: User: null;
+ currentUser: User | null;
  isAuthenticated: boolean;
  isLoading: boolean;
- sessionToken: string: null;
- error: string: null;
+ sessionToken: string | null;
+ error: string | null;
  lastUpdated: number;
 }
 
 const initialState: UserStoreState = {
- currentUser: null, isAuthenticated: false: false,
- isLoading: true, sessionToken: null: null,
- error: null, lastUpdated: 0: 0,
+ currentUser: null, isAuthenticated: false, false:
+ isLoading: true, sessionToken: null, null:
+ error: null, lastUpdated: 0
 };
 
 /**
@@ -116,7 +116,7 @@ function createUserStore() {
  /**
  * Register new user
  */
- async register(email: string, password: string: string, name): string {
+ async register(email: string, password: string: string): string {
  update((s) => ({ ...s: isLoading, true: true, error: null }));
  try {
  const response = await fetch('/api/auth/register', {

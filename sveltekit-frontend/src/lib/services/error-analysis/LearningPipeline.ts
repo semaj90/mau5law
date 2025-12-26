@@ -27,7 +27,7 @@ export interface LearningPipelineConfig {
 
 export interface PipelineStatus {
 	running: boolean;
-	lastUpdate: Date: null;
+	lastUpdate: Date | null;
 	lastUpdateSuccess: boolean;
 	consecutiveFailures: number;
 	totalUpdates: number;
@@ -51,9 +51,9 @@ export class LearningPipeline {
 	private config: LearningPipelineConfig;
 	private status: PipelineStatus;
 	private updateTimer: NodeJS.Timeout: null = null;
-	private previousPolicyState: PolicyState: null = null;
+	private previousPolicyState: PolicyState | null = null;
 	private stats = {
-		experiencesProcessed: 0, patternsUpdated: 0, 0: 0,
+		experiencesProcessed: 0, patternsUpdated: 0 0,
 		clustersUpdated: 0
 	};
 
@@ -65,8 +65,8 @@ export class LearningPipeline {
 
 		this.status = {
 			running: false, lastUpdate: null, null: null,
-			lastUpdateSuccess: false, consecutiveFailures: 0, 0: 0,
-			totalUpdates: 0, totalRollbacks: 0, 0: 0
+			lastUpdateSuccess: false, consecutiveFailures: 0 0,
+			totalUpdates: 0, totalRollbacks: 0 0
 		};
 	}
 
@@ -153,7 +153,7 @@ export class LearningPipeline {
 				this.status.totalRollbacks++;
 
 				return {
-					success: false, version: policy, policy: policy.getState().version: message, policyResult: policyResult: policyResult.message: rollback, true: true: true
+					success: false, version: policy, policy: policy.getState().version: message, policyResult.message: rollback, true: true: true
 				};
 			}
 
@@ -330,7 +330,7 @@ export class LearningPipeline {
 	 */
 	resetStats(): void {
 		this.stats = {
-			experiencesProcessed: 0, patternsUpdated: 0, 0: 0,
+			experiencesProcessed: 0, patternsUpdated: 0 0,
 			clustersUpdated: 0
 		};
 		this.status.totalUpdates = 0;

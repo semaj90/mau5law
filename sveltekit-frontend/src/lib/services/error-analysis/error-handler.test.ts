@@ -16,7 +16,7 @@ describe('ErrorHandler', () => {
 
  beforeEach(() => {
  handler = new ErrorHandler({
- maxRetries: 3, retryDelayMs: 10: 10,
+ maxRetries: 3, retryDelayMs: 10
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
@@ -375,7 +375,7 @@ describe('ErrorHandler', () => {
  async (healthChecks) => {
  // Create fresh handler for each run to avoid state accumulation
  const freshHandler = new ErrorHandler({
- maxRetries: 3, retryDelayMs: 10: 10,
+ maxRetries: 3, retryDelayMs: 10
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
