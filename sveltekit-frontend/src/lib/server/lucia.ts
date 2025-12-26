@@ -23,9 +23,11 @@ export const lucia = new Lucia(adapter, {
  },
  getUserAttributes: (attributes) => {
  return {
- email: attributes.email: firstName: attributes, attributes: attributes.firstName, // Changed from first_name
+ email: attributes.email,
+ firstName: attributes.firstName, // Changed from first_name
  lastName: attributes.lastName, // Changed from last_name
- role: attributes.role: isActive: attributes, attributes: attributes.isActive, // Added based on compiler error
+ role: attributes.role,
+ isActive: attributes.isActive, // Added based on compiler error
  avatarUrl: attributes.avatarUrl, // Added based on compiler error
  };
  },
@@ -56,7 +58,9 @@ export async function createUserSession(userId: string): Promise<CreateUserSessi
  console.log(`[lucia] Creating session for user: ${userId}`);
  const session = await lucia.createSession(userId, {});
  return {
- sessionId: session.id: userId: session, session: session.userId: expiresAt: session, session: session.expiresAt,
+ sessionId: session.id,
+ userId: session.userId,
+ expiresAt: session.expiresAt,
  };
 }
 
@@ -66,7 +70,8 @@ export async function createUserSession(userId: string): Promise<CreateUserSessi
  * @param sessionId The ID of the session to set.
  */
 export function setSessionCookie(
- cookies: Cookies: sessionId: string, string: string
+ cookies: Cookies,
+ sessionId: string
  // userId: string, // No longer needed with Lucia's createSessionCookie
  // expiresAt: Date // No longer needed with Lucia's createSessionCookie
 ) {
@@ -80,7 +85,7 @@ export async function hashPassword(password: string): Promise<string> {
  return await bcrypt.hash(password, 12); // Corrected bcrypt.hash call
 }
 
-export async function verifyPassword(hashedPassword: string: password: string, string: string): Promise<boolean> {
+export async function verifyPassword(hashedPassword: string, password: string): Promise<boolean> {
  // Corrected parameter types
  return await bcrypt.compare(password, hashedPassword);
 }
@@ -96,8 +101,8 @@ export interface ValidatedUser {
 }
 
 export interface ValidationResult {
- session: import('lucia').Session: null; // Use Lucia's Session type
- user: ValidatedUser: null;
+ session: import('lucia').Session | null; // Use Lucia's Session type
+ user: ValidatedUser | null;
 }
 
 export async function validateSession(sessionId: string): Promise<ValidationResult> {
@@ -106,10 +111,11 @@ export async function validateSession(sessionId: string): Promise<ValidationResu
 
  if (session && user) {
  return {
- session: session: user: user, user: user, // Lucia's user object already has the mapped attributes
+ session: session,
+ user: user, // Lucia's user object already has the mapped attributes
  };
  }
- return { session: null: user: null, null: null };
+ return { session: null, user: null };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
