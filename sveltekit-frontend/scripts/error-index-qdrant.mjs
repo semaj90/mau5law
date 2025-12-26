@@ -213,39 +213,47 @@ async function indexErrors(errors, batchSize) {
 		// Generate embeddings
 		const points = [];
 		for (const error of batch) {
+			const domains = error.domains || [];
+
 			// Create rich text representation for embedding
 			const text = [
 				`File: ${error.file}`,
+				`Rel: ${error.projectRootRel || error.file}`,
 				`Error Code: ${error.code}`,
+				`Rule: ${error.ruleId || 'unknown'}`,
 				`Message: ${error.message}`,
+				`Severity: ${error.severity || 'error'}`,
 				`Pattern: ${error.patternId}`,
-				`Domains: ${error.domains.join(', ')}`,
+				`Domains: ${domains.join(', ')}`,
 				error.snippet ? `Snippet: ${error.snippet}` : ''
 			].filter(Boolean).join('\n');
 
 			try {
 				const embedding = await generateEmbedding(text);
 
-				// Use numeric ID (batch offset + index)
-				const pointId = (batchIdx * batchSize) + batch.indexOf(error) + 1;
+				const pointId = error.errorId || error.fingerprint || `${RUN_ID}-${batchIdx}-${points.length}`;
 
 				points.push({
 					id: pointId,
 					vector: embedding,
 					payload: {
-						fingerprint: error.fingerprint,  // Store fingerprint in payload
+						errorId: pointId,
+						fingerprint: error.fingerprint,
 						runId: error.runId,
 						commit: error.commit,
 						timestamp: error.timestamp,
 						file: error.file,
+						projectRootRel: error.projectRootRel || error.file,
 						line: error.line,
 						column: error.column,
 						code: error.code,
+						ruleId: error.ruleId || error.code,
+						severity: error.severity || 'error',
 						message: error.message,
 						patternId: error.patternId,
 						priority: error.priority,
 						severityWeight: error.severityWeight,
-						domains: error.domains,
+						domains,
 						snippet: error.snippet
 					}
 				});
