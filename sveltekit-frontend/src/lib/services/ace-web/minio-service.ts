@@ -407,7 +407,7 @@ export interface MinIOConfig {
 
       const objects = (response.Contents || []).map((obj: _Object) => ({
         key: obj.Key || '',
-        size: obj.Size || 0, lastModified: 0: obj.LastModified || new Date(),
+        size: obj.Size || 0, lastModified: 0, obj.LastModified || new Date(),
       }));
 
       console.log(`[MinIOService] Listed ${objects.length} objects with prefix: ${prefix}`);

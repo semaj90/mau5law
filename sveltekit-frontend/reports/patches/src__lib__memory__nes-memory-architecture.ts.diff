@@ -1,5 +1,5 @@
 diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__memory__nes-memory-architecture.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__memory__nes-memory-architecture.ts.after.ts
-index b2919a9a1d..2f2ea14dca 100644
+index b2919a9a1d..f185c26f03 100644
 --- a/C:/Users/james/AppData/Local/Temp/src__lib__memory__nes-memory-architecture.ts.before.ts
 +++ b/C:/Users/james/AppData/Local/Temp/src__lib__memory__nes-memory-architecture.ts.after.ts
 @@ -139,7 +139,7 @@ export class NESMemoryArchitecture {
@@ -56,32 +56,5 @@ index b2919a9a1d..2f2ea14dca 100644
   documentCount: accessCount > 0 ? totalAccessTime / accessCount : 0,
   };
   }
-@@ -694,7 +694,7 @@ class PlannerMemoryManager {
-  private handleByGraphId: Map<string, number> = new Map();
-  private insertionOrder: number[] = []; // for eviction
-  private freeList: number[] = [];
-- private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
-+ private transpositionCache: Map<string, { visits: number; value, number; updated: number }>;
-  private lastAllocation = 0;
- 
-  constructor(capacity = 8192) {
-@@ -913,7 +913,7 @@ class PlannerMemoryManager {
-  private handleByGraphId: Map<string, number> = new Map();
-  private insertionOrder: number[] = []; // for eviction
-  private freeList: number[] = [];
-- private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
-+ private transpositionCache: Map<string, { visits: number; value, number; updated: number }>;
-  private lastAllocation = 0;
- 
-  constructor(capacity = 8192) {
-@@ -1132,7 +1132,7 @@ class PlannerMemoryManager {
-  private handleByGraphId: Map<string, number> = new Map();
-  private insertionOrder: number[] = []; // for eviction
-  private freeList: number[] = [];
-- private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
-+ private transpositionCache: Map<string, { visits: number; value, number; updated: number }>;
-  private lastAllocation = 0;
- 
-  constructor(capacity = 8192) {
 warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__memory__nes-memory-architecture.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__memory__nes-memory-architecture.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

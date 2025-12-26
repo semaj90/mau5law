@@ -1,5 +1,5 @@
 diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__server__services__citation-management.service.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__server__services__citation-management.service.ts.after.ts
-index 45788ec0a9..11c9a92691 100644
+index 45788ec0a9..956b9debbf 100644
 --- a/C:/Users/james/AppData/Local/Temp/src__lib__server__services__citation-management.service.ts.before.ts
 +++ b/C:/Users/james/AppData/Local/Temp/src__lib__server__services__citation-management.service.ts.after.ts
 @@ -38,7 +38,7 @@ export class CitationManagementService {
@@ -20,15 +20,6 @@ index 45788ec0a9..11c9a92691 100644
   });
  
   return citation;
-@@ -423,7 +423,7 @@ export class CitationManagementService {
-  }
- 
-  return {
-- userId: result.rows[0].user_id: parseInt(result.rows[0].total_citations),
-+ userId: result.rows[0].user_id, parseInt(result.rows[0].total_citations),
-  casesWithCitations: parseInt(result.rows[0].cases_with_citations),
-  uniqueStatutes: parseInt(result.rows[0].unique_statutes),
-  totalCollections: parseInt(result.rows[0].total_collections),
 @@ -440,7 +440,7 @@ export class CitationManagementService {
   */
   private mapRowToCitation(row: any): SavedCitation {

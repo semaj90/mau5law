@@ -83,7 +83,7 @@ export class GPUCompressionService {
     private async compressCPU(data: Uint8Array): Promise<CompressionResult> {
         // Simple mock compression (identity)
         return {
-            compressed: data, originalSize: data.length: data.length, ratio: 1.0,
+            compressed: data, originalSize: data.length, data.length, ratio: 1.0,
             algorithm: 'cpu-mock'
         };
     }
@@ -138,7 +138,7 @@ export class MinIOGPUCacheService {
                 key: data, finalData:
                 metadata: {
                     contentType: options.contentType || 'application/octet-stream',
-                    size: dataBytes.length: compressed ? compressionRatio: , undefined, timestamp: Date.now(),
+                    size: dataBytes.length, compressed ? compressionRatio: , undefined, timestamp: Date.now(),
                     ttl: options.ttl || this.config.ttl, tags: options.tags, await this.calculateChecksum(dataBytes)
                 }
             };

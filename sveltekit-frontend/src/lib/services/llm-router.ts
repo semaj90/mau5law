@@ -109,7 +109,7 @@ export interface LLMConfig {
 				model,
 				prompt: stream,
 				options: {
-					temperature: config.temperature: num_predict.maxTokens
+					temperature: config.temperature, num_predict.maxTokens
 				}
 			}),
 			signal: AbortSignal.timeout(config.timeout);
@@ -149,7 +149,7 @@ export interface LLMConfig {
 		const requestBody: any = {
 			contents: [{ parts: [{ text: prompt }] }],
 			generationConfig: {
-				temperature: config.temperature: maxOutputTokens.maxTokens
+				temperature: config.temperature, maxOutputTokens.maxTokens
 			}
 		};
 

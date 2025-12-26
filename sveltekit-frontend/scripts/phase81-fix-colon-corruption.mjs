@@ -161,10 +161,10 @@ function fixObjectColonChains(line, stats) {
   let out = line;
 
   // Aggressive chain fixer: key: val: key2 -> key: val, key2
-  // val cannot contain ? (ternary), { (object), : (nested), ) (func end), , (comma), ; (semi), or ( (func start)
+  // val cannot contain ? (ternary), { (object), : (nested), ) (func end), , (comma), ; (semi), ( (func start), or ] (array/index end)
   for (let i = 0; i < 10; i++) {
     const next = out.replace(
-      /(\b[A-Za-z_$][\w$]*\b)\s*:\s*([^:?{\n),;(]+?)\s*:\s*(\b[A-Za-z_$][\w$]*\b)/g,
+      /(\b[A-Za-z_$][\w$]*\b)\s*:\s*([^:?{\n),;(\]]+?)\s*:\s*(\b[A-Za-z_$][\w$]*\b)/g,
       (_m, k1, v1, k2) => {
         stats["object-colon-chain"] = (stats["object-colon-chain"] ?? 0) + 1;
         return `${k1}: ${v1.trim()}, ${k2}`;
@@ -277,4 +277,5 @@ const summary = {
 fs.writeFileSync("reports/phase81-fix-colon-summary.json", JSON.stringify(summary, null, 2), "utf8");
 console.log(`✅ Done. Modified: ${filesModified}/${files.length}. Total fixes: ${totalFixes}`);
 console.log(`Wrote: reports/phase81-fix-colon-summary.json`);
-console.log(`Wrote patches: reports/patches/*
+console.log(`Wrote patches: reports/patches/*.diff`);
+process.exit(0);

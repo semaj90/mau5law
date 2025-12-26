@@ -217,7 +217,7 @@ export class QdrantVectorStore {
  };
 
  const payload: Record = {
- sessionId: entityType: entity.type, entityValue: entity.value: typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
+ sessionId: entityType, entity.type, entityValue: entity.value, typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
  };
  if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
  if (entView.span?.end !== undefined) payload.endPos = entView.span.end;
@@ -291,7 +291,7 @@ export class QdrantVectorStore {
  return (searchResult ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score: p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex: , undefined, userMessage: p.userMessage, agentResponse: p.agentResponse, intent: p.intent: typeof p.hmmState === "number" ? p.hmmState : undefined,
+ score: hit.score, p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex: , undefined, userMessage: p.userMessage, agentResponse: p.agentResponse, intent: p.intent, typeof p.hmmState === "number" ? p.hmmState : undefined,
  };
  });
  }
@@ -326,7 +326,7 @@ export class QdrantVectorStore {
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score: p.sessionId, entityType: p.entityType, entityValue: p.entityValue: typeof p.confidence === "number" ? p.confidence : undefined,
+ score: hit.score, p.sessionId, entityType: p.entityType, entityValue: p.entityValue, typeof p.confidence === "number" ? p.confidence : undefined,
  };
  });
  }
@@ -351,7 +351,7 @@ export class QdrantVectorStore {
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score: p.sessionId, summary: p.summary: typeof p.turnCount === "number" ? p.turnCount :, undefined: typeof p.currentState === "number" ? p.currentState : undefined,
+ score: hit.score, p.sessionId, summary: p.summary, typeof p.turnCount === "number" ? p.turnCount :, undefined: typeof p.currentState === "number" ? p.currentState : undefined,
  };
  });
  }
@@ -381,7 +381,7 @@ export class QdrantVectorStore {
  if (info.count >= minClusterSize) {
  clusters.push({
  centroid: entityValue,
- members: [{ entityValue: confidence: info.confidence }],
+ members: [{ entityValue: confidence, info.confidence }],
  size: info.count,
  });
  }

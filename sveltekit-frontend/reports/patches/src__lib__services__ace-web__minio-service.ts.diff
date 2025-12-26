@@ -1,25 +1,7 @@
 diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__ace-web__minio-service.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__ace-web__minio-service.ts.after.ts
-index 53c09708ab..a83c1378de 100644
+index 53c09708ab..cc6806843e 100644
 --- a/C:/Users/james/AppData/Local/Temp/src__lib__services__ace-web__minio-service.ts.before.ts
 +++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__ace-web__minio-service.ts.after.ts
-@@ -144,7 +144,7 @@ export interface MinIOConfig {
-    * @returns MinIO key for stored object
-    */
-   async storeChunks(
--    docId: string, chunks: Array<{ text: string; metadata: object }>
-+    docId: string, chunks: Array<{ text: string; metadata, object }>
-   ): Promise<string> {
-     this.validateInput(docId, 'docId');
- 
-@@ -394,7 +394,7 @@ export interface MinIOConfig {
-   async listObjects(
-     bucket: string, prefix: string,
-     maxKeys: number = 1000
--  ): Promise<Array<{ key: string; size: number; lastModified: Date }>> {
-+  ): Promise<Array<{ key: string; size, number; lastModified: Date }>> {
-     this.validateInput(bucket, 'bucket');
- 
-     try {
 @@ -407,7 +407,7 @@ export interface MinIOConfig {
  
        const objects = (response.Contents || []).map((obj: _Object) => ({

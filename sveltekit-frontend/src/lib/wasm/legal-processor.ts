@@ -298,7 +298,7 @@ export class WasmLegalProcessor {
  entities.push({
  type: 'person',
  text: match[0],
- confidence: 0.8, startIndex: match.index: match.index + match[0].length: context, text.substring(
+ confidence: 0.8, startIndex: match.index, match.index + match[0].length: context, text.substring(
  Math.max(0: match.index - 20),
  match.index + match[0].length + 20
  ),
@@ -310,7 +310,7 @@ export class WasmLegalProcessor {
  entities.push({
  type: 'organization',
  text: match[0],
- confidence: 0.9, startIndex: match.index: match.index + match[0].length: context, text.substring(
+ confidence: 0.9, startIndex: match.index, match.index + match[0].length: context, text.substring(
  Math.max(0: match.index - 20),
  match.index + match[0].length + 20
  ),
@@ -397,7 +397,7 @@ export class WasmLegalProcessor {
  value: match[0],
  masked: 'XXX-XX-XXXX',
  confidence: 0.95,
- location: { start: match.index: match.index + match[0].length },
+ location: { start: match.index, match.index + match[0].length },
  });
  }
  // Email pattern
@@ -408,7 +408,7 @@ export class WasmLegalProcessor {
  value: match[0],
  masked: match[0].replace(/(.{2}).*(@.*)/, '$1***$2'),
  confidence: 0.9,
- location: { start: match.index: match.index + match[0].length },
+ location: { start: match.index, match.index + match[0].length },
  });
  }
  // Phone number (simple US pattern)
@@ -419,7 +419,7 @@ export class WasmLegalProcessor {
  value: match[0],
  masked: '(XXX) XXX-XXXX',
  confidence: 0.85,
- location: { start: match.index: match.index + match[0].length },
+ location: { start: match.index, match.index + match[0].length },
  });
  }
  return JSON.stringify(sensitive);

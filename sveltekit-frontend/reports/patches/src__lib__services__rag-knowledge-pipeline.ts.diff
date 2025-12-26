@@ -1,5 +1,5 @@
 diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__rag-knowledge-pipeline.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__rag-knowledge-pipeline.ts.after.ts
-index c441ace7ce..016332a321 100644
+index c441ace7ce..db0648abee 100644
 --- a/C:/Users/james/AppData/Local/Temp/src__lib__services__rag-knowledge-pipeline.ts.before.ts
 +++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__rag-knowledge-pipeline.ts.after.ts
 @@ -1,4 +1,4 @@
@@ -8,17 +8,7 @@ index c441ace7ce..016332a321 100644
  import type { query } from "$app/server";
  import type { documents } from "$lib/db";
  import { cache } from '$lib/server/cache/redis';
-@@ -17,15 +17,15 @@ import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
- // ============================================================================
- 
- export interface RAGDocument {
-- id: string; content: string;
-- title: string; source: string;
-+ id: string; content, string;
-+ title: string; source, string;
-  createdAt: Date;
-  metadata?: Record<string, unknown>;
- }
+@@ -25,7 +25,7 @@ export interface RAGDocument {
  
  export interface EmbeddedDocument extends RAGDocument {
   embedding: number[]; //, embeddinggemma: latest 384-dim
@@ -27,54 +17,6 @@ index c441ace7ce..016332a321 100644
   tensorSlice?: Float32Array;
   chunkIndex?: number;
   totalChunks?: number;
-@@ -37,17 +37,17 @@ export interface SummarizedDocument extends EmbeddedDocument {
-  keyPoints: string[]; // Extracted key points, keywords: string[]; // Extracted keywords (gemma function calling)
-  entities: {
-  // Named entity extraction
-- people: string[]; organizations: string[];
-- locations: string[]; dates: string[];
-+ people: string[]; organizations, string[];
-+ locations: string[]; dates, string[];
-  legalCitations: string[];
-  };
- }
- 
- export interface GemmaExtractionResult {
-- summary: string; keyPoints: string[];
-+ summary: string; keyPoints, string[];
-  keywords: string[]; entities: {
-- people: string[]; organizations: string[];
-- locations: string[]; dates: string[];
-+ people: string[]; organizations, string[];
-+ locations: string[]; dates, string[];
-  legalCitations: string[];
-  };
- }
-@@ -67,19 +67,19 @@ export interface SynthesisRankingConfig {
-  weights: {
-  relevance: number; // Weight for semantic relevance (default: 0.5), keywords: number; // Weight for keyword matching (default: 0.3), synthesis: number; // Weight for synthesis quality (default: 0.2)
-  };
-- keywordExtractor: 'ripgrep' | 'awk' | 'hybrid'; enableGemmaFunctionCalling: boolean;
-+ keywordExtractor: 'ripgrep' | 'awk' | 'hybrid'; enableGemmaFunctionCalling, boolean;
-  cacheResults: boolean;
- }
- 
- export interface RAGPipelineResult {
-- documents: RankedDocument[]; totalProcessed: number;
-+ documents: RankedDocument[]; totalProcessed, number;
-  timing: {
-- embedding: number; summarization: number;
-- indexing: number; ranking: number;
-+ embedding: number; summarization, number;
-+ indexing: number; ranking, number;
-  total: number;
-  };
-  cacheHits: number; metadata: {
-- embeddingModel: string; synthesisModel: string;
-+ embeddingModel: string; synthesisModel, string;
-  rankingAlgorithm: string;
-  };
- }
 @@ -178,7 +178,7 @@ export class RAGKnowledgePipeline {
   }
  

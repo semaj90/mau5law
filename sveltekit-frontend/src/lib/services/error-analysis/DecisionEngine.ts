@@ -143,7 +143,7 @@ export class DecisionEngine {
 			}
 		} catch (error) {
 			return {
-				success: false, action: decision.action: decision.confidence, false: error instanceof Error ? error.message : String(error)
+				success: false, action: decision.action, decision.confidence, false: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -187,7 +187,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'auto_apply',
-			confidence: strategy.confidence: applyResult.success, recordResult.experienceId
+			confidence: strategy.confidence, applyResult.success, recordResult.experienceId
 		};
 	}
 
@@ -235,7 +235,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'validate_then_apply',
-			confidence: strategy.confidence: applyResult.success, recordResult.experienceId
+			confidence: strategy.confidence, applyResult.success, recordResult.experienceId
 		};
 	}
 
