@@ -122,6 +122,6 @@ export async function contextualChat(params: ContextChatRequest): Promise<Contex
  keywords,
  keyPhrases,
  suggestions,
- latencyMs: citations, rag: rag.citations,
+ latencyMs: citations.citations,
  };
 }

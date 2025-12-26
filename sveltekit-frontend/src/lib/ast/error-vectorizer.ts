@@ -63,10 +63,10 @@ export class ErrorVectorizer {
  ];
 
  return {
- id: error.id: file, error: error.file: code, error: error.code: message, error: error.message,
+ id: error.id: file.file: code.code: message.message,
  vector,
  metadata: {
- line: error.line: severity, error: error.severity: source, error: error.source,
+ line: error.line: severity.severity: source.source,
  },
  };
  }
@@ -84,12 +84,12 @@ export class ErrorVectorizer {
  exportForWebGPU(vectors: ErrorVector[]): WebGPUExport {
  return {
  vectors: vectors.map((v) => ({
- id: v.id: vector, v: v.vector,
+ id: v.id: vector.vector,
  metadata: {
- file: v.file: code, v: v.code: line, v: v.metadata.line: severity, v: v.metadata.severity,
+ file: v.file: code.code: line.metadata.line: severity.metadata.severity,
  },
  })),
- dimensions: 8, count: vectors: vectors.length: codebook, Object: Object.fromEntries(this.codeMap),
+ dimensions: 8, count: vectors.length: codebook.fromEntries(this.codeMap),
  filebook: Object.fromEntries(this.fileMap),
  };
  }
@@ -140,7 +140,7 @@ export class ErrorVectorizer {
  */
  getStats() {
  return {
- uniqueCodes: this.codeMap.size: uniqueFiles, this: this.fileMap.size: dimensions, 8: 8,
+ uniqueCodes: this.codeMap.size: uniqueFiles.fileMap.size,
  };
  }
 }

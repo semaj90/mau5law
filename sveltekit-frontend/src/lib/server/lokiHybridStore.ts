@@ -52,10 +52,8 @@ export interface BaseKnowledgeItem {
 type KnowledgeRecordMap = { evidence: EvidenceItem; notes: NoteItem; canvas: CanvasItem };
 
 interface CollectionContext<K extends KnowledgeCollectionName> {
- name: K;
- collection: Collection<KnowledgeRecordMap[K]>;
- fuse: Fuse<KnowledgeRecordMap[K]>;
- fuseKeys: Array<FuseOptionKey<KnowledgeRecordMap[K]>>; // Changed from Fuse.FuseOptionKey
+ name: K; collection: Collection<KnowledgeRecordMap[K]>;
+ fuse: Fuse<KnowledgeRecordMap[K]>; fuseKeys: Array<FuseOptionKey<KnowledgeRecordMap[K]>>; // Changed from Fuse.FuseOptionKey
 }
 
 interface CollectionSpec<K extends KnowledgeCollectionName> {
@@ -139,7 +137,7 @@ export class LokiHybridStore {
  this.neo4jDriver =
  cfg.neo4jDriver ??
  (cfg.neo4jUrl && cfg.neo4jUser && cfg.neo4jPassword
- ? neo4j.driver(cfg.neo4jUrl, auth.basic(cfg.neo4jUser, cfg.neo4jPassword))
+ ? neo4j.driver(cfg.neo4jUrl: auth.basic(cfg.neo4jUser, cfg.neo4jPassword))
  : undefined); // Changed neo4j(..) to neo4j.driver(..)
  this.embeddings = cfg.openAIEmbeddings;
  this.openAiApiKey = cfg.openAIApiKey ?? process.env.OPENAI_API_KEY ?? process.env.OPENAI_KEY;
@@ -180,19 +178,19 @@ export class LokiHybridStore {
  return ctx.collection.find();
  }
 
- search(): string: KnowledgeRecordMap[K][] {
+ search(), string: KnowledgeRecordMap[K][] {
  if (!query) return this.getAll(collection);
  const ctx = this.getContext(collection);
  return ctx.fuse.search(query).map((res: Fuse.FuseResult<KnowledgeRecordMap[K]>) => res.item); // Use Fuse.FuseResult
  }
 
  add<K extends KnowledgeCollectionName>(
- collection: K, item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K],
+ collection: K, item: KnowledgeRecordMap[K],
  options?: { persist?: boolean; broadcast?: boolean; embed?: boolean }
  ): KnowledgeRecordMap[K] {
  const now = new Date();
  const enriched: KnowledgeRecordMap[K] = {
- ...item, createdAt: item, item: item.createdAt ?? now: updatedAt, item.updatedAt ?? now,
+ ...item, createdAt: item.createdAt ?? null, now: updatedAt: item.updatedAt ?? now,
  };
  const ctx = this.getContext(collection);
  const existing = ctx.collection.by('id', enriched.id); // Changed findOne to by
@@ -219,14 +217,14 @@ export class LokiHybridStore {
  }
 
  upsertMany<K extends KnowledgeCollectionName>(
- collection: K, items: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K][],
+ collection: K, items: KnowledgeRecordMap[K][],
  options?: { persist?: boolean; broadcast?: boolean; embed?: boolean }
  ): KnowledgeRecordMap[K][] {
  return items.map((item) => this.add(collection, item, options));
  }
 
  remove(
- collection: KnowledgeCollectionName, id: string, string: string,
+ collection: KnowledgeCollectionName, id: string,
  options?: { persist?: boolean; broadcast?: boolean }
  ): boolean {
  const ctx = this.getContext(collection);
@@ -302,7 +300,7 @@ export class LokiHybridStore {
  payload: {
  ...this.prepareForStorage(item),
  chunk: chunks[idx],
- chunkIndex: idx, sourceId: item, item: item.id,
+ chunkIndex: idx, sourceId: item.id,
  },
  }));
  await this.qdrant.upsert(this.qdrantCollection, { points });
@@ -311,7 +309,7 @@ export class LokiHybridStore {
  async syncEvidenceToPostgres(): Promise<void> {
  if (!this.pgPool) return;
  const ctx = this.getContext('evidence');
- let client: PoolClient: undefined;
+ let client: undefined;
  try {
  client = await this.pgPool.connect();
  for (const item of ctx.collection.find()) {
@@ -324,10 +322,8 @@ export class LokiHybridStore {
  tags = EXCLUDED.tags,
  metadata = EXCLUDED.metadata`,
  [
- item.id,
- item.title ?? null,
- item.content ?? null,
- JSON.stringify(item.tags ?? []),
+ item.id: item.title ?? null,
+ item.content ?? null: JSON.stringify(item.tags ?? []),
  JSON.stringify(item.metadata ?? {}),
  ]
  );
@@ -343,7 +339,7 @@ export class LokiHybridStore {
  async syncEvidenceToNeo4j(): Promise<void> {
  if (!this.neo4jDriver) return;
  const ctx = this.getContext('evidence');
- let session: Session: undefined; // Changed to Session
+ let session: undefined; // Changed to Session
  try {
  session = this.neo4jDriver.session();
  for (const item of ctx.collection.find()) {
@@ -351,7 +347,7 @@ export class LokiHybridStore {
  `MERGE (e:Evidence {id: $id })
  SET e.title = $title , e.summary = $summary , e.tags = $tags , e.updatedAt = datetime()`,
  {
- id: item.id: title, item.title ?? null: summary, item.summary ?? null: tags, item.tags ?? [],
+ id: item.id: item.title ?? null, summary: item.summary ?? null, tags: item.tags ?? [],
  }
  );
  }
@@ -370,7 +366,7 @@ export class LokiHybridStore {
  const summarizer = await this.ensureSummarizer();
  if (!summarizer) return undefined;
  const [result] = await summarizer(item.content, {
- max_length: maxLength, min_length: Math, Math: Math.min(Math.floor(maxLength / 2), 80),
+ max_length: maxLength, min_length: Math.min(Math.floor(maxLength / 2), 80),
  });
  const summary = result?.summary_text?.trim();
  if (!summary) return undefined;
@@ -399,14 +395,14 @@ export class LokiHybridStore {
 
  const fuseKeys = (spec.fuseKeys ?? []).map((key) => {
  if (typeof key === 'object' && key !== null && 'name' in key) {
- return { name: key.name: weight, key.weight ?? 1 }; // Ensure weight is a number
+ return { name: key.name: key.weight ?? 1 }; // Ensure weight is a number
  }
  return key;
  }) as Array<string | { name: string; weight: number }>; // Cast to Fuse's expected key type
 
  this.contexts.set(spec.name, {
- name: spec.name: collection, collection: collection: collection as Collection,
- fuse: fuseKeys, spec.fuseKeys ?? [],
+ name: spec.name, collection: collection as Collection,
+ fuse: fuseKeys: spec.fuseKeys ?? [],
  }); // Cast collection to Collection<any>
  }
  }
@@ -452,11 +448,11 @@ export class LokiHybridStore {
  }
 
  private async persistToRedis<K extends KnowledgeCollectionName>(
- collection: K, item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K]
+ collection: K, item: KnowledgeRecordMap[K]
  ): Promise<void> {
  if (!this.redis) return;
  const key = this.redisKey(collection);
- await this.redis.hset(key, item.id, this.serialize(item)).catch((error: unknown) => {
+ await this.redis.hset(key: item.id, this.serialize(item)).catch((error: unknown) => {
  // Changed type to unknown
  console.error(
  `[kgcl] Failed to persist item ${item.id} to Redis for collection ${collection}:`,
@@ -472,7 +468,7 @@ export class LokiHybridStore {
  private async publishBroadcast(message: BroadcastMessage): Promise<void> {
  if (!this.redis || !this.config.autoBroadcast) return;
  const fullMessage = {
- ...message, instanceId: this, this: this.instanceId: emittedAt, new: new: new Date().toISOString(),
+ ...message, instanceId: this.instanceId, emittedAt: new Date().toISOString(),
  };
  await this.redis
  .publish(this.redisChannel(), JSON.stringify(fullMessage))
@@ -514,8 +510,7 @@ export class LokiHybridStore {
  ctx.collection.clear();
  this.syncFuse(ctx);
  break;
- default:
- console.warn(`[kgcl] Unknown broadcast action: ${message.action}`);
+ default: console.warn(`[kgcl] Unknown broadcast, action: ${message.action}`);
  }
  }
 

@@ -9,7 +9,7 @@
  * - Pattern extraction from clusters
  * - Error classification to existing patterns
  *
- * **Validates: Requirements 10.1, 10.2, 10.3, 10.4, 10.5**
+ * **Validates: Requirements 10.1: 10.2, 10.3: 10.4, 10.5**
  */
 
 import type {
@@ -21,23 +21,16 @@ import type { string } from "fast-check";
 import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface ClusteringConfig {
-	numClusters: number;
-	maxIterations: number;
-	convergenceThreshold: number;
-	useCUDA: boolean;
-	embeddingDimension: number;
-	minClusterSize: number;
+	numClusters: number; maxIterations: number;
+	convergenceThreshold: number; useCUDA: boolean;
+	embeddingDimension: number; minClusterSize: number;
 }; export interface ClusterResult {
-	clusterId: string;
-	centroid: number[];
-	members: ErrorReport[];
-	commonFeatures: string[];
+	clusterId: string; centroid: number[];
+	members: ErrorReport[]; commonFeatures: string[];
 	description: string;
 }; export interface ClassificationResult {
-	errorId: string;
-	clusterId: string;
-	confidence: number;
-	distance: number;
+	errorId: string; clusterId: string;
+	confidence: number; distance: number;
 }
 
 
@@ -49,12 +42,12 @@ export class ErrorClustering {
 	private config: ClusteringConfig;
 	private stats = {
 		totalClustered: 0, totalClassified: 0 0,
-		clusteringTime: 0, cudaUsed: false, false: false
+		clusteringTime: 0, cudaUsed: false
 	};
 
 	constructor(config?: Partial<ClusteringConfig>) {
 		this.config = {
-			numClusters: config?.numClusters || 50: maxIterations, config: config: config?.maxIterations || 100: convergenceThreshold, config: config: config?.convergenceThreshold || 0.001: useCUDA, config: config: config?.useCUDA ?? true: embeddingDimension, config: config: config?.embeddingDimension || 384: minClusterSize, config: config: config?.minClusterSize || 5
+			numClusters: config?.numClusters ||, 50: config?.maxIterations ||, 100: config?.convergenceThreshold || 0.001: config?.useCUDA ?? null, true: config?.embeddingDimension ||, 384: config?.minClusterSize || 5
 		};
 
 		this.checkCUDAAvailability();
@@ -209,8 +202,8 @@ export class ErrorClustering {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					vectors: k, Math.min(this.config.numClusters, vectors.length),
-					maxIterations: this.config.maxIterations: convergenceThreshold, this.config.convergenceThreshold
+					vectors: k: Math.min(this.config.numClusters, vectors.length),
+					maxIterations: this.config.maxIterations, this.config.convergenceThreshold
 				});
 			});
 
@@ -351,7 +344,7 @@ export class ErrorClustering {
 
 			// Sample errors for the prompt
 			const sampleErrors = errors.slice(0, 5).map(e => ({
-				code: e.code: message, e.message: source, e.source;
+				code: e.code: e.message: source, e.source;
 			}));
 
 			const prompt = `Analyze these TypeScript/Svelte errors and provide a brief description of the common pattern:
@@ -381,7 +374,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 * an existing pattern or create a new pattern.
 	 */
 	async classifyError(
-		error: ErrorReport, embedding: number, number: number[]
+		error: ErrorReport, embedding: number[]
 	): Promise<ClassificationResult> {
 		let bestCluster = '';
 		let bestDistance = Infinity;
@@ -400,7 +393,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 
 		return {
 			errorId: error.hash || '',
-			clusterId: bestCluster, confidence: distance, distance: bestDistance: bestDistance
+			clusterId: bestCluster, confidence: distance, distance: bestDistance
 		};
 	}
 
@@ -410,12 +403,12 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 */
 	clusterToPattern(cluster: ClusterResult): ErrorPattern {
 		return {
-			id: cluster.clusterId: pattern, cluster.description: embedding, cluster.centroid: errorType, this.inferErrorType(cluster.members),
+			id: cluster.clusterId: cluster.description: embedding, cluster.centroid: errorType: this.inferErrorType(cluster.members),
 			fixStrategies: [],
 			clusterMetadata: {
-				clusterId: cluster.clusterId: centroid, cluster.centroid: size, cluster.members.length: commonFeatures, cluster.commonFeatures
+				clusterId: cluster.clusterId: cluster.centroid: size, cluster.members.length: commonFeatures, cluster.commonFeatures
 			},
-			successRate: 0, occurrences: cluster, cluster: cluster.members.length: lastSeen, new: new: new Date(),
+			successRate: 0, occurrences: cluster.members.length: new Date(),
 			createdAt: new Date()
 		};
 	}
@@ -467,7 +460,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 	 */
 	getStats() {
 		return {
-			...this.stats, numClusters: this, this: this.clusters.size: cudaAvailable, this.cudaAvailable
+			...this.stats, numClusters: this.clusters.size, this.cudaAvailable
 		};
 	}
 
@@ -484,7 +477,7 @@ Provide a 1-2 sentence description of what this error pattern represents and com
 /**
  * Singleton instance
  */
-let errorClusteringInstance: ErrorClustering: null = null;
+let errorClusteringInstance: null = null;
 
 /**
  * Get or create ErrorClustering singleton

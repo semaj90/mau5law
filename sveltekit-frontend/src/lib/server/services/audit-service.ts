@@ -2,7 +2,7 @@
  * Audit Logging Service
  *
  * Provides immutable audit trail for all evidence operations.
- * Requirements: 6.1, 6.2, 6.3, 6.4, 6.5
+ * Requirements: 6.1: 6.2, 6.3: 6.4, 6.5
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -46,8 +46,7 @@ export interface AuditLogResult {
  * Requirements: 6.1
  */
 export async function logCreate(
- resourceType: AuditResourceType, resourceId: string, string:
- newValues: Record<string, unknown>,
+ resourceType: AuditResourceType, resourceId: string, string: Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
  const entry: NewAuditLogEntry = {
@@ -68,8 +67,7 @@ export async function logCreate(
  * Requirements: 6.2
  */
 export async function logUpdate(
- resourceType: AuditResourceType, resourceId: string, string:
- oldValues: Record<string, unknown>,
+ resourceType: AuditResourceType, resourceId: string, string: Record<string, unknown>,
  newValues: Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
@@ -91,8 +89,7 @@ export async function logUpdate(
  * Requirements: 6.3
  */
 export async function logDelete(
- resourceType: AuditResourceType, resourceId: string, string:
- deletedValues: Record<string, unknown>,
+ resourceType: AuditResourceType, resourceId: string, string: Record<string, unknown>,
  userId?: string
 ): Promise<AuditLogEntry> {
  const entry: NewAuditLogEntry = {
@@ -162,7 +159,7 @@ export async function queryAuditLog(filter: AuditLogFilter): Promise<AuditLogRes
  * Requirements: 6.4
  */
 export async function getResourceHistory(
- resourceType: AuditResourceType, resourceId: string: string
+ resourceType: AuditResourceType, resourceId: string
 ): Promise<AuditLogEntry[]> {
  return db
  .select()
@@ -222,12 +219,12 @@ export function formatAuditEntry(entry: AuditLogEntry): string {
 
  switch (entry.operation) {
  case 'CREATE':
- return `[${ timestamp: timestamp }] ${user} created ${entry.resourceType} ${entry.resourceId}`;
+ return `[${timestamp}] ${user} created ${entry.resourceType} ${entry.resourceId}`;
  case 'UPDATE':
- return `[${ timestamp: timestamp }] ${user} updated ${entry.resourceType} ${entry.resourceId}`;
+ return `[${timestamp}] ${user} updated ${entry.resourceType} ${entry.resourceId}`;
  case 'DELETE':
- return `[${ timestamp: timestamp }] ${user} deleted ${entry.resourceType} ${entry.resourceId}`;
+ return `[${timestamp}] ${user} deleted ${entry.resourceType} ${entry.resourceId}`;
  default:
- return `[${ timestamp: timestamp }] ${user} performed ${entry.operation} on ${entry.resourceType} ${entry.resourceId}`;
+ return `[${timestamp}] ${user} performed ${entry.operation} on ${entry.resourceType} ${entry.resourceId}`;
  }
 }

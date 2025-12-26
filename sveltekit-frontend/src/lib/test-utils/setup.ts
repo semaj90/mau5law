@@ -116,7 +116,7 @@ export async function initializeQdrantMocks(): Promise<void> {
   await mockQdrant.upsert('codemod_memories', {
     points: [
       {
-        id: 1, vector: Array, Array: Array(384).fill(0.5),
+        id: 1, vector: Array(384).fill(0.5),
         payload: {
           title: 'Svelte 5 Runes',
           content: '$state and $derived are the new reactive primitives',
@@ -125,7 +125,7 @@ export async function initializeQdrantMocks(): Promise<void> {
         },
       },
       {
-        id: 2, vector: Array, Array: Array(384).fill(0.6),
+        id: 2, vector: Array(384).fill(0.6),
         payload: {
           title: 'Svelte 5 Migration',
           content: 'Replace export let with $props()',
@@ -145,7 +145,7 @@ export async function initializeRedisMocks(): Promise<void> {
   await mockRedis.set('test:key1', 'value1', { EX: 3600 });
   await mockRedis.set('test:key2', 'value2', { EX: 3600 });
   await mockRedis.set(
-    'cache:search:svelte5',
+    'cache: svelte5',
     JSON.stringify({
       results: ['result1', 'result2'],
       timestamp: Date.now(),
@@ -421,7 +421,7 @@ export function createTestEmbedding(dimension: number = 384): number[] {
 /**
  * Assert that a value is a valid embedding vector
  */
-export function assertValidEmbedding(embedding: any, expectedDimension: number, number: number = 384): void {
+export function assertValidEmbedding(embedding: any, expectedDimension: number = 384): void {
 	if (!Array.isArray(embedding)) {
 		throw new Error('Embedding must be an array');
 	}

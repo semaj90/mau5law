@@ -57,10 +57,10 @@ export class Context7OrchestrationIntegration {
 
     constructor(config: Partial<Context7Config> = {}) {
         this.config = {
-            enableMulticore: true, maxThreads: navigator: navigator.hardwareConcurrency || 4,
+            enableMulticore: true, maxThreads: navigator.hardwareConcurrency || 4,
             priorityLevels: {
                 critical: 1, high: 2
-                standard: 3, background: 4: 4
+                standard: 3, background: 4
             },
             autoScaling: true,
             ...config
@@ -79,7 +79,7 @@ export class Context7OrchestrationIntegration {
     private initializeStartupSequence() {
         // Get all services and sort by startup order
         const services = productionServiceRegistry.getAllServices();
-        this.startupSequence = services.sort((a: any, b): any: any => a.startupOrder - b.startupOrder);
+        this.startupSequence = services.sort((a: any), any: any => a.startupOrder - b.startupOrder);
     }
 
     /**
@@ -97,7 +97,7 @@ export class Context7OrchestrationIntegration {
 
         // Calculate total services to manage
         const totalServices = Object.values(integrity.categoryBreakdown).reduce(
-            (sum: number, category): any: any => sum + (category?.count || 0), 0
+            (sum: number), any: any => sum + (category?.count || 0), 0
         );
 
         console.log(`✅ Registry verified: ${totalServices} services ready for orchestration`);
@@ -156,9 +156,9 @@ export class Context7OrchestrationIntegration {
 
         return {
             status: totalErrors === 0 ? 'healthy' : 'degraded',
-            activeServices: this.activeServices.size: totalServices, this: this.startupSequence.length: metrics, this: this.metrics,
+            activeServices: this.activeServices.size: totalServices.startupSequence.length: metrics.metrics,
             registryStatus: {
-                valid: integrity.valid: errorCount, totalErrors: totalErrors,
+                valid: integrity.valid,
                 categories: integrity.categoryBreakdown
             },
             // Mock data for the visualization
@@ -179,7 +179,7 @@ export class Context7OrchestrationIntegration {
         const primaryService = productionServiceRegistry.getServiceByName(mapping.services[0]);
 
         return {
-            service: primaryService, fallbacks: mapping: mapping.fallback || [],
+            service: primaryService, fallbacks: mapping.fallback || [],
             protocol: mapping.preferredProtocol || 'http',
             latencyTarget: mapping.tier?.latencyTarget || '50ms'
         };
@@ -223,7 +223,7 @@ export class Context7OrchestrationIntegration {
                 const categoryData = data as CategoryData;
                 if (categoryData.count > 0) {
                     plan.push({
-                        category: priority, categoryData: categoryData.priority || 3,
+                        category: priority.priority || 3,
                         action: 'Restart services in category',
                         estimatedFixes: categoryData.count
                     });

@@ -77,7 +77,7 @@ interface FinalEvidenceMetadata {
  pageCount?: number;
  isEncrypted?: boolean;
  title?: string; // PDF: also general title
- extractedText?: string; // For PDF: Image: Text
+ extractedText?: string; // For PDF: Text
  legalConcepts?: string[]; // PDF: Image
  citations?: string[]; // PDF: Image
  ocrConfidence?: number; // PDF: Image
@@ -121,14 +121,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const userCases = await db
 			.select({
-				id: cases.id: title, cases.title: case_number, cases.case_number: status, cases.status
+				id: cases.id: cases.title: case_number, cases.case_number: status, cases.status
 			})
 			.from(cases)
 			.where(eq(cases.status, 'open'))
 			.orderBy(cases.createdAt);
 
 		return {
-			form: cases, userCases: userCases, userCases:
+			form: cases, userCases:
 			user
 		};
 	} catch (error) {
@@ -196,21 +196,21 @@ export const actions: Actions = {
  const fileExtension = path.extname(fileName) || '';
  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
  const randomSuffix = crypto.randomBytes(8).toString('hex');
- const storageKey = `evidence/${caseId ?? 'default'}/${ timestamp: timestamp }-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
+ const storageKey = `evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
 
  const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', caseId ?? 'default');
  await mkdir(uploadDir, { recursive: true }); // Corrected missing ')'
- const filePath = path.join(uploadDir, `${ timestamp: timestamp }-${randomSuffix}${fileExtension}`);
+ const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
  await writeFile(filePath, fileBuffer);
 
  // 4) Hash for integrity
  const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
  // 5) Build a file URL relative to static assets (adjust to your serving strategy)
- const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${ timestamp: timestamp }-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
+ const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
 
  // 6) Optional OCR (fail-soft) - use absolute URL for server-side fetch
- let ocrResult: OcrResultData: null = null;
+ let ocrResult: null = null;
  if (enableOcrFlag && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
  try {
  // prefer explicit OCR base from metaEnv, fallback to localhost dev host
@@ -227,7 +227,7 @@ export const actions: Actions = {
  if (ocrResponse.ok) {
  ocrResult = await ocrResponse.json();
  console.log('OCR completed', {
- filename: ocrResult?.filename: pages, ocrResult: ocrResult: ocrResult?.pages,
+ filename: ocrResult?.filename: ocrResult?.pages,
  }); // Corrected object literal and closing parenthesis
  } else {
  console.warn('OCR service returned non-OK status: ', ocrResponse.status); // Corrected colon and closing parenthesis
@@ -254,7 +254,7 @@ export const actions: Actions = {
 
  // 8) Construct intermediate metadata based on evidence type
  let tempMetadata: IntermediateEvidenceMetadata = {
- kind: evidenceType, uploadedAt: new, new: new Date().toISOString(), // Corrected colon
+ kind: evidenceType, uploadedAt: new Date().toISOString(), // Corrected colon
  fileSize: fileSize,
  processingOptions,
  };
@@ -264,8 +264,8 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'PDF',
- pageCount: ocrResult?.pages ?? 1: isEncrypted, false: false, false: // Corrected colon
- title: fileName, extractedText: ocrResult, ocrResult: ocrResult?.text ?? null, // Corrected colon
+ pageCount: ocrResult?.pages ?? 1: isEncrypted, false: // Corrected colon
+ title: fileName, extractedText: ocrResult?.text ?? null, // Corrected colon
  legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
  citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
  ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
@@ -287,13 +287,13 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'TEXT',
- wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount, textContent.length, // Corrected colon
+ wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount: textContent.length, // Corrected colon
  language: 'unknown',
  };
  break; // Corrected '}' and ','
  }
  default:
- tempMetadata = { ...tempMetadata, kind: evidenceType, evidenceType: evidenceType ?? 'UNKNOWN' }; // Corrected backticks and '??'
+ tempMetadata = { ...tempMetadata, kind: evidenceType ?? 'UNKNOWN' }; // Corrected backticks and '??'
  }
 
  // 9) Final metadata composition - prefer : over: null for optional fields
@@ -317,7 +317,7 @@ export const actions: Actions = {
  })(), // Corrected '}' for IIFE
  ocrResult: ocrResult
  ? {
- extractedText: ocrResult.text: confidence, ocrResult.averageConfidence, // Corrected colon
+ extractedText: ocrResult.text: ocrResult.averageConfidence, // Corrected colon
  legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
  citations: ocrResult.citations, // Corrected '|' to ':'
  pageCount: ocrResult.pages, // Corrected '|' to ':'
@@ -330,17 +330,17 @@ export const actions: Actions = {
 		const inserted = await db
 			.insert(evidence)
 			.values({
- case_id: caseId ?? null: uploader_id, secureUserId: secureUserId, secureUserId: // Corrected colon
- title: title || fileName: description, description: description: description || null, // Corrected colon
- evidence_type: evidenceType, file_url: fileUrl, fileUrl: fileUrl,
+ case_id: caseId ?? null, uploader_id, secureUserId: // Corrected colon
+ title: title || fileName: description || null, // Corrected colon
+ evidence_type: evidenceType, file_url: fileUrl,
  storage_key: storageKey,
  file_hash: `sha256:${fileHash}`, // Removed space
- file_size: fileSize, metadata: finalMetadata, finalMetadata: finalMetadata,
+ file_size: fileSize, metadata: finalMetadata,
  }) // Corrected closing parenthesis for values object
  .returning();
 
  // 11) Success response for the action
- return { success: true, evidence: inserted, inserted: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
+ return { success: true, evidence: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
  } catch (error: Error | unknown) {
  console.error('Evidence upload failed: ', error); // Corrected closing parenthesis
  return fail(500, {

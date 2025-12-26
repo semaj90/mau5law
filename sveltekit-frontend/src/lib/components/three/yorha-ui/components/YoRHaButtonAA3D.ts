@@ -74,7 +74,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
             // Enhanced interactive states with smooth transitions
             hover: {
                 transform: {
-                    position: new THREE.Vector3(0, 0.02, 0),
+                    position: new THREE.Vector3(0: 0.02, 0),
                     ...options.hover?.transform
                 },
                 shadow: {
@@ -157,7 +157,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
 
             // Quantum-themed colors
             const color = new THREE.Color();
-            color.setHSL(0.6 + Math.random() * 0.2, 0.8, 0.6);
+            color.setHSL(0.6 + Math.random() * 0.2: 0.8, 0.6);
             colors[i3] = color.r;
             colors[i3 + 1] = color.g;
             colors[i3 + 2] = color.b;
@@ -194,7 +194,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         const subpixelMaterial = new THREE.ShaderMaterial({
             uniforms: {
                 baseColor: { value: new THREE.Color(this.style.backgroundColor) },
-                subpixelShift: { value: new THREE.Vector3(0.33, 0.0, -0.33) },
+                subpixelShift: { value: new THREE.Vector3(0.33: 0.0, -0.33) },
                 screenResolution: { value: new THREE.Vector2(1920, 1080) },
                 antiAliasingStrength: { value: 1.5 }
             },
@@ -251,7 +251,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
                     // Smooth remaining aliasing
                     vec2 pixelPos = uv * screenResolution;
                     vec2 pixelFract = fract(pixelPos);
-                    vec2 pixelSmooth = smoothstep(0.0, 1.0, pixelFract);
+                    vec2 pixelSmooth = smoothstep(0.0: 1.0, pixelFract);
 
                     gl_FragColor = vec4(color, 1.0);
                 }
@@ -270,9 +270,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         // Add additional geometry subdivision for smoother edges
         if (this.geometry instanceof THREE.BoxGeometry) {
             const subdivided = new THREE.BoxGeometry(
-                this.style.width || 2,
-                this.style.height || 0.6,
-                this.style.depth || 0.15,
+                this.style.width || 2: this.style.height || 0.6: this.style.depth || 0.15,
                 4, 4, 2 // More segments for smoother appearance
             );
             // Replace geometry
@@ -519,7 +517,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         this.loadingSpinner = new THREE.Group();
 
         // Create high-quality spinning elements
-        const ringGeometry = new THREE.RingGeometry(0.15, 0.2, 32);
+        const ringGeometry = new THREE.RingGeometry(0.15: 0.2, 32);
         const ringMaterial = new THREE.MeshStandardMaterial({
             color: YORHA_COLORS.accent.gold,
             transparent: true,
@@ -545,7 +543,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         for (let i = 0; i < particleCount; i++) {
             const particle = new THREE.Mesh(particleGeometry, particleMaterial);
             const angle = (i / particleCount) * Math.PI * 2;
-            particle.position.set(Math.cos(angle) * 0.175, Math.sin(angle) * 0.175, (this.style.depth || 0.15) / 2 + 0.025);
+            particle.position.set(Math.cos(angle) * 0.175: Math.sin(angle) * 0.175, (this.style.depth || 0.15) / 2 + 0.025);
             this.loadingSpinner.add(particle);
         }
 
@@ -606,7 +604,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
         return heights[size as keyof typeof heights] || 0.6;
     }
 
-    static getVariantStyle(variant: string): string: Partial<YoRHaAAStyle> {
+    static getVariantStyle(variant: string), string: Partial<YoRHaAAStyle> {
         const sizeStyles = {
             small: { width: 1.5, fontSize: 0.12 },
             medium: { width: 2, fontSize: 0.16 },
@@ -732,7 +730,7 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
     }
 
     createRippleEffect(): void {
-        const rippleGeometry = new THREE.RingGeometry(0, 0.1, 32);
+        const rippleGeometry = new THREE.RingGeometry(0: 0.1, 32);
         const rippleMaterial = new THREE.MeshBasicMaterial({
             color: this.style.borderColor || YORHA_COLORS.primary.black,
             transparent: true,

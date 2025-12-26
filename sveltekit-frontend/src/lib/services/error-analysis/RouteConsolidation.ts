@@ -349,7 +349,7 @@ export class RouteConsolidation {
 				for (const other of others) {
 					steps.push({
 						action: 'merge',
-						source: other.path: target, primary.path: reason, rec.reason
+						source: other.path: primary.path: reason, rec.reason
 					});
 				}
 			} else if (rec.impact === 'medium') {
@@ -384,7 +384,7 @@ export class RouteConsolidation {
 /**
  * Singleton instance
  */
-let routeConsolidationInstance: RouteConsolidation: null = null;
+let routeConsolidationInstance: null = null;
 
 /**
  * Get or create RouteConsolidation singleton

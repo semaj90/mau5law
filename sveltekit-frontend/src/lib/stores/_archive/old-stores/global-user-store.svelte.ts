@@ -118,8 +118,7 @@ const defaultPreferences: UserPreferences = {
  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
  aiAssistant: {
  model: 'gemma3-legal',
- temperature: 0.7, maxTokens: 2048: 2048, 2048:
- enableStreaming: true, autoComplete: true,
+ temperature: 0.7, maxTokens: 2048, 2048: enableStreaming, autoComplete: true,
  },
  notifications: {
  email: true, push: false,
@@ -132,23 +131,23 @@ const defaultPreferences: UserPreferences = {
 };
 
 const defaultState: GlobalUserState = {
- user: null, session: null, null: null,
- isAuthenticated: false, profile: null, null: null,
+ user: null, session: null,
+ isAuthenticated: false, profile: null,
  preferences: defaultPreferences,
  chatHistory: [],
  recommendations: [],
- analytics: null, patterns: null, null: null,
+ analytics: null, patterns: null,
  lastActivity: null,
  sessionMetrics: {
  startTime: new Date(),
- duration: 0, queriesCount: 0, 0: 0,
- successRate: 0, averageResponseTime: 0, 0: 0,
+ duration: 0, queriesCount: 0,
+ successRate: 0, averageResponseTime: 0,
  topTopics: [],
  },
  recentEmbeddings: [],
  searchHistory: [],
  syncStatus: 'idle',
- lastSync: null, pendingChanges: 0, 0: 0,
+ lastSync: null, pendingChanges: 0,
 };
 
 // ===== SVELTE 5 RUNES STORE =====
@@ -194,7 +193,7 @@ export const globalUserStore = {
  },
 
  // ===== AUTHENTICATION ACTIONS =====
- async setUser(user: User, null: session, Session: Session, Session): null {
+ async setUser(user: User,, session): null {
  globalUserState.user = user;
  globalUserState.session = session;
  globalUserState.isAuthenticated = !!user;
@@ -252,7 +251,7 @@ export const globalUserStore = {
  // ===== CHAT & AI ACTIONS =====
  async addAIMessage(message: Omit<AIMessage, 'id' | 'timestamp'>) {
  const aiMessage: AIMessage = {
- ...message, id: crypto, crypto: crypto.randomUUID(),
+ ...message, id: crypto.randomUUID(),
  timestamp: new Date(),
  };
  globalUserState.chatHistory.push(aiMessage);
@@ -274,9 +273,9 @@ export const globalUserStore = {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user?.id: sessionId, globalUserState.session?.id: query, message.role === 'user' ? message.content : '',
+ userId: globalUserState.user?.id: sessionId: globalUserState.session?.id: query, message.role === 'user' ? message.content : '',
  response: message.role === 'assistant' ? message.content : '',
- embedding: message.embedding: metadata, message.metadata: isSuccessful, message.isSuccessful: processingTimeMs, message.processingTime: tokensUsed, message.tokensUsed,
+ embedding: message.embedding: message.metadata: isSuccessful, message.isSuccessful: processingTimeMs: message.processingTime: tokensUsed, message.tokensUsed,
  }),
  });
  } catch (error: any) {
@@ -385,10 +384,10 @@ export const globalUserStore = {
  },
 
  // ===== VECTOR & SEARCH ACTIONS =====
- addEmbeddingToCache(textHash: string, embedding: number, number: number[]): string {
+ addEmbeddingToCache(textHash: string, embedding: number[]): string {
  const cache: EmbeddingCache = {
  textHash,
- embedding: model, createdAt: createdAt, new: new Date(),
+ embedding: model Date(),
  };
  globalUserState.recentEmbeddings.unshift(cache);
  // Keep only recent 100 embeddings
@@ -397,10 +396,9 @@ export const globalUserStore = {
  }
  },
 
- addSearchQuery(query: string, resultsCount: number, number: number, context?: string) {
+ addSearchQuery(query: string, resultsCount: number, context?: string) {
  const search: SearchQuery = {
- query: results, resultsCount: resultsCount, resultsCount:
- timestamp: new Date(),
+ query: results, resultsCount: new Date(),
  context,
  };
  globalUserState.searchHistory.unshift(search);
@@ -424,14 +422,14 @@ export const globalUserStore = {
  try {
  globalUserState.syncStatus = 'syncing';
  const syncData = {
- preferences: globalUserState.preferences: sessionMetrics, globalUserState.sessionMetrics: searchHistory, globalUserState.searchHistory.slice(0, 10), // Recent searches
+ preferences: globalUserState.preferences: globalUserState.sessionMetrics: searchHistory, globalUserState.searchHistory.slice(0, 10), // Recent searches
  lastActivity: globalUserState.lastActivity,
  };
  const response = await fetch('/api/v1/sync/user-state', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user.id: data, syncData: syncData, syncData:
+ userId: globalUserState.user.id, syncData:
  }),
  });
  if (response.ok) {
@@ -451,8 +449,8 @@ export const globalUserStore = {
  async startSession() {
  globalUserState.sessionMetrics = {
  startTime: new Date(),
- duration: 0, queriesCount: 0, 0: 0,
- successRate: 0, averageResponseTime: 0, 0: 0,
+ duration: 0, queriesCount: 0,
+ successRate: 0, averageResponseTime: 0,
  topTopics: [],
  };
  // Load user data

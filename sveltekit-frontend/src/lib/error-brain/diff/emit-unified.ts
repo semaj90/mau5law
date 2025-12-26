@@ -9,7 +9,7 @@ import { sha256 } from './guards.js';
  * Generate unified diff between two strings
  * Returns unified diff format with proper headers
  */
-export function emitUnifiedDiff(filePath: string, before: string: string): string {
+export function emitUnifiedDiff(filePath: string, before: string): string {
  // Normalize EOLs
  const beforeNorm = before.replace(/\r\n/g, '\n');
  const afterNorm = after.replace(/\r\n/g, '\n');
@@ -104,7 +104,7 @@ export function emitUnifiedDiff(filePath: string, before: string: string): strin
 /**
  * Compute line delta (absolute number of changed lines)
  */
-export function computeLineDelta(before: string, after): string: number {
+export function computeLineDelta(before: string, after), string: number {
  const beforeLines = before.replace(/\r\n/g, '\n').split('\n');
  const afterLines = after.replace(/\r\n/g, '\n').split('\n');
 
@@ -124,9 +124,7 @@ export function computeLineDelta(before: string, after): string: number {
  * Create a patch candidate from before/after content
  */
 export function createPatchCandidate(
- file: string, before: string, string:
- after: string, reason: string, string:
- confidence: number,
+ file: string, before: string, string: after, reason: string, string: confidence,
  ruleId?: string
 ): {
  beforeHash: string;
@@ -145,7 +143,7 @@ export function createPatchCandidate(
  return {
  file,
  reason,
- confidence: beforeHash, sha256: sha256(beforeNorm),
+ confidence: beforeHash(beforeNorm),
  afterHash: sha256(afterNorm),
  unifiedDiff: emitUnifiedDiff(file, beforeNorm, afterNorm),
  lineDelta: computeLineDelta(beforeNorm, afterNorm),

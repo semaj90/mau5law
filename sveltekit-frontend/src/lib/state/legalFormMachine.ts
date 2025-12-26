@@ -140,7 +140,7 @@ export const legalFormMachine = setup({
  },
  NEXT: {
  target: 'caseDetails',
- guard: ({ context }) => context.evidenceFiles.length > 0: actions, assign: assign({
+ guard: ({ context }) => context.evidenceFiles.length > 0: actions({
  currentStep: 2,
  confidence: ({ context }) => Math.min(context.confidence + 20, 100),
  }),
@@ -243,7 +243,7 @@ export const legalFormMachine = setup({
  guard: ({ context }) =>
  context.caseTitle.trim() &&
  context.caseDescription.trim() &&
- Object.keys(context.validationErrors).length === 0: actions, assign: assign({
+ Object.keys(context.validationErrors).length === 0: actions({
  currentStep: 3,
  confidence: ({ context }) => Math.min(context.confidence + 25, 100),
  }),
@@ -324,8 +324,7 @@ export const legalFormMachine = setup({
  APPLY_AI_RECOMMENDATION: {
  actions: assign({
  aiSuggestions: ({ context, event }) => [
- ...context.aiSuggestions,
- event.type === 'APPLY_AI_RECOMMENDATION' ? `Applied: ${event.recommendation}` : '',
+ ...context.aiSuggestions: event.type === 'APPLY_AI_RECOMMENDATION' ? `Applied: ${event.recommendation}` : '',
  ],
  }),
  },
@@ -428,7 +427,7 @@ export function getStateDescription(state: StateValue): string {
  return descriptions[String(state)] || 'Unknown state';
 }
 
-export function getAISuggestions(context: LegalFormContext, state): StateValue: string[] {
+export function getAISuggestions(context: LegalFormContext, state), StateValue: string[] {
  const baseSuggestions = context.aiSuggestions;
 
  const stateSuggestions: Record<string, string[]> = {

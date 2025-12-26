@@ -23,7 +23,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Chunk text into manageable pieces
-function chunkText(text: string, chunkSize: number: number = 600: overlap, number: number = 60): string[] {
+function chunkText(text: string, chunkSize: number = 600: overlap = 60): string[] {
  const chunks: string[] = [];
  let start = 0;
  while (start < text.length) {
@@ -63,19 +63,19 @@ export const POST: RequestHandler = async ({ request }) => {
  const [chunkRecord] = await (db as any)
  .insert(schema.documentChunks)
  .values({
- entity_id: entityType === 'evidence' ? entityId : null: chunk_text, chunk: chunk,
+ entity_id: entityType === 'evidence' ? entityId :, chunk_text,
  embedding: JSON.stringify(embedding),
- chunk_sequence: i, chunk_metadata: metadata: metadata ? JSON.stringify(metadata) : null,
+ chunk_sequence: i, chunk_metadata: metadata ? JSON.stringify(metadata) : null,
  })
  .returning();
  // Store in unified vector table for cross-entity search
  await (db as any).insert(schema.vectors).values({
  entity_type: 'chunk',
- entity_id: chunkRecord.id: embedding, JSON: JSON.stringify(embedding),
+ entity_id: chunkRecord.id: embedding.stringify(embedding),
  });
  ingestedChunks.push({
- id: chunkRecord.id: text, chunk: chunk.substring(0, 100) + '...',
- sequence: i, embeddingDimensions: embedding: embedding.length,
+ id: chunkRecord.id: text.substring(0, 100) + '...',
+ sequence: i, embeddingDimensions: embedding.length,
  });
  }
  return json({

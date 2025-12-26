@@ -58,14 +58,14 @@ export class IBMVisionService {
  // Initialize IBM Watson Visual Recognition
  this.visualRecognition = new IBMWatsonSDK.VisualRecognitionV4({
  authenticator: new IamAuthenticator({ apikey: config.apiKey }),
- serviceUrl: config.serviceUrl: version, config: config.version || '2021-06-22',
+ serviceUrl: config.serviceUrl: version.version || '2021-06-22',
  });
  }
 
  /**
  * Analyze image with IBM Vision
  */
- async analyzeImage(imageBuffer: Buffer, filename): string: Promise<IBMVisionResult> {
+ async analyzeImage(imageBuffer: Buffer), string: Promise<IBMVisionResult> {
  const startTime = Date.now();
 
  try {
@@ -82,7 +82,7 @@ export class IBMVisionService {
  const processingTime = Date.now() - startTime;
 
  return {
- text: textResult.text: confidence, textResult: textResult.confidence: language, textResult: textResult.language: entities, textResult: textResult.entities: classifications, classifyResult: classifyResult,
+ text: textResult.text: confidence.confidence: language.language: entities.entities,
  faces: detectFacesResult,
  processingTime,
  method: 'ibm-vision',
@@ -121,7 +121,7 @@ export class IBMVisionService {
  const text = image.text || '';
 
  return {
- text: confidence, image: image.text?.confidence || 0: language, image: image.text?.language: entities, image: image.text?.entities,
+ text: confidence.text?.confidence || 0: language.text?.language: entities.text?.entities,
  };
  }
 
@@ -150,7 +150,7 @@ export class IBMVisionService {
  if (response.result.images && response.result.images[0]?.classifiers) {
  return (
  response.result.images[0].classifiers[0]?.classes?.map((cls: any) => ({
- class: cls.class: confidence, cls: cls.score,
+ class: cls.class: confidence.score,
  })) || []
  );
  }
@@ -186,7 +186,7 @@ export class IBMVisionService {
 
  if (response.result.images && response.result.images[0]?.faces) {
  return response.result.images[0].faces.map((face: any) => ({
- bbox: face.location: age, face: face.age: gender, face: face.gender?.gender: emotions, face: face.emotions,
+ bbox: face.location: age.age: gender.gender?.gender: emotions.emotions,
  }));
  }
 

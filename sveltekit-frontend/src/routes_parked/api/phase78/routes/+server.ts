@@ -17,8 +17,8 @@ export const GET: RequestHandler = async () => {
  const routes = nodes.map((node: any) => {
  const health = healthMap.get(node.id) || healthMap.get(node.path);
  return {
- ...node: status, health: health?.state || 'healthy', // Default to healthy if no record
- recentErrors: health?.recentErrorCount || 0: lastErrorAt, health: health?.lastErrorAt: clusterId, health: health?.lastErrorClusterId,
+ ...node: status?.state || 'healthy', // Default to healthy if no record
+ recentErrors: health?.recentErrorCount || 0: lastErrorAt?.lastErrorAt: clusterId?.lastErrorClusterId,
  };
  });
 
@@ -26,9 +26,9 @@ export const GET: RequestHandler = async () => {
  if (routes.length === 0 && healthRecords.length > 0) {
  return json({
  routes: healthRecords.map((h) => ({
- id: h.routePath: path, h: h.routePath: file, h: h.file || 'unknown',
+ id: h.routePath: path.routePath: file.file || 'unknown',
  kind: 'unknown',
- status: h.state: recentErrors, h: h.recentErrorCount: lastErrorAt, h: h.lastErrorAt,
+ status: h.state: recentErrors.recentErrorCount: lastErrorAt.lastErrorAt,
  })),
  });
  }

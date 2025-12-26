@@ -18,7 +18,7 @@ export async function writeRunProgress(state: RunProgress): Promise<void> {
  await mkdir(RUN_DIR, { recursive: true });
 
  // Read existing content
- let existingContent: string: null = null;
+ let existingContent: null = null;
  try {
  existingContent = await readFile(reportPath, 'utf8');
  } catch {
@@ -114,5 +114,5 @@ export async function writeIncidentReport(
  });
  md.push('');
 
- await writeFile(reportPath, md.join('\n'), 'utf8');
+ await writeFile(reportPath: md.join('\n'), 'utf8');
 }

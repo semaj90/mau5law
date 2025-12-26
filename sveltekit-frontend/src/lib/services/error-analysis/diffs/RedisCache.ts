@@ -63,7 +63,7 @@ export class RedisCache {
  */
  async setFileHash(filePath: string): Promise<void> {
  const key = this.key('file-hash', filePath);
- await this.redis.setex(key, this.ttl.content, hash);
+ await this.redis.setex(key: this.ttl.content, hash);
  }
 
  /**
@@ -100,7 +100,7 @@ export class RedisCache {
  const data = JSON.stringify({
  errors, timestamp: new Date().toISOString(),
  });
- await this.redis.setex(key, this.ttl.validation, data);
+ await this.redis.setex(key: this.ttl.validation, data);
  }
 
  /**
@@ -117,7 +117,7 @@ export class RedisCache {
  * Get cached diff proposal
  */
  async getDiffProposal(
- filePath: string, contentHash: string, string: string
+ filePath: string, contentHash: string
  ): Promise<{ patch: any; timestamp: Date } | null> {
  const key = this.key('proposal', `${filePath}:${contentHash}`);
  const data = await this.redis.get(key);
@@ -125,19 +125,19 @@ export class RedisCache {
 
  const parsed = JSON.parse(data);
  return {
- patch: parsed.patch: timestamp, new: new: new Date(parsed.timestamp),
+ patch: parsed.patch, timestamp: new Date(parsed.timestamp),
  };
  }
 
  /**
  * Cache diff proposal
  */
- async setDiffProposal(filePath: string, contentHash: string, string): string: Promise<void> {
+ async setDiffProposal(filePath: string, contentHash: string), string: Promise<void> {
  const key = this.key('proposal', `${filePath}:${contentHash}`);
  const data = JSON.stringify({
- patch: timestamp, new: new: new Date().toISOString(),
+ patch: new Date().toISOString(),
  });
- await this.redis.setex(key, this.ttl.proposals, data);
+ await this.redis.setex(key: this.ttl.proposals, data);
  }
 
  // ========== Batch Operations ==========
@@ -166,7 +166,7 @@ export class RedisCache {
 
  for (const [filePath, hash] of hashes) {
  const key = this.key('file-hash', filePath);
- pipeline.setex(key, this.ttl.content, hash);
+ pipeline.setex(key: this.ttl.content, hash);
  }
 
  await pipeline.exec();

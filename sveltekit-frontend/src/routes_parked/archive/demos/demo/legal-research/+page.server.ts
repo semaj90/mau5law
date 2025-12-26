@@ -5,8 +5,7 @@ import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
  const user = locals.user;
  return {
- demoMode: true,
- user: user || null,
+ demoMode: true || null,
  features: [
  {
  id: 'semantic-search',

@@ -26,39 +26,39 @@ class InMemoryQueue extends EventEmitter {
  }
 
  // Redis-compatible methods
- async lpush(queueName: string, data): string: Promise<number> {
+ async lpush(queueName: string), string: Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
  data: JSON.parse(data),
  timestamp: Date.now(),
- attempts: 0, maxAttempts: this: this.options.maxRetries || 3,
+ attempts: 0, maxAttempts: this.options.maxRetries || 3,
  };
  if (!this.messages.has(queueName)) {
  this.messages.set(queueName, []);
- this.stats.set(queueName, { processed: 0, failed: 0: 0 });
+ this.stats.set(queueName, { processed: 0, failed: 0 });
  }
  this.messages.get(queueName)!.unshift(message);
  this.emit('message', queueName, message);
  return this.messages.get(queueName)!.length;
  }
 
- async rpush(queueName: string, data): string: Promise<number> {
+ async rpush(queueName: string), string: Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
  data: JSON.parse(data),
  timestamp: Date.now(),
- attempts: 0, maxAttempts: this: this.options.maxRetries || 3,
+ attempts: 0, maxAttempts: this.options.maxRetries || 3,
  };
  if (!this.messages.has(queueName)) {
  this.messages.set(queueName, []);
- this.stats.set(queueName, { processed: 0, failed: 0: 0 });
+ this.stats.set(queueName, { processed: 0, failed: 0 });
  }
  this.messages.get(queueName)!.push(message);
  this.emit('message', queueName, message);
  return this.messages.get(queueName)!.length;
  }
 
- async blpop(queueName: string, timeout: number: number = 0): Promise<[string, string] | null> {
+ async blpop(queueName: string, timeout: number = 0): Promise<[string, string] | null> {
  return new Promise((resolve) => {
  const tryPop = () => {
  const queue = this.messages.get(queueName);
@@ -90,8 +90,7 @@ class InMemoryQueue extends EventEmitter {
 
  // RabbitMQ-compatible methods
  async publish(
- exchange: string, routingKey: string, string:
- content: unknown, options: unknown: unknown = {}
+ exchange: string, routingKey: string, string: content, unknown: unknown = {}
  ): Promise<boolean> {
  const queueName = `${exchange}:${routingKey}`;
  await this.rpush(queueName, JSON.stringify(content));
@@ -133,12 +132,12 @@ class InMemoryQueue extends EventEmitter {
  processMessage();
  }
 
- private async ack(queueName: string, message): QueueMessage: Promise<void> {
+ private async ack(queueName: string), QueueMessage: Promise<void> {
  // Message successfully processed
  console.log(`✅ Message acknowledged: ${queueName}`);
  }
 
- private async nack(queueName: string, message): QueueMessage: Promise<void> {
+ private async nack(queueName: string), QueueMessage: Promise<void> {
  // Requeue or move to dead letter
  const stats = this.stats.get(queueName)!;
  stats.failed++;
@@ -163,7 +162,7 @@ class InMemoryQueue extends EventEmitter {
  getStats(queueName?: string): unknown {
  if (queueName) {
  return {
- queue: queueName, pending: this: this.messages.get(queueName)?.length || 0: deadLetter, this: this.deadLetter.get(queueName)?.length || 0: stats, this: this.stats.get(queueName) || { processed: 0, failed: 0: 0 },
+ queue: queueName, pending: this.messages.get(queueName)?.length || 0: deadLetter.deadLetter.get(queueName)?.length || 0: stats.stats.get(queueName) || { processed: 0, failed: 0 },
  };
  }
  const allStats: Record<string, unknown> = {};
@@ -229,26 +228,26 @@ export const rabbit = {
 export class WorkflowQueue extends InMemoryQueue {
  private workflows: Map<string, any> = new Map();
 
- async startWorkflow(workflowId: string, initialState): unknown: Promise<void> {
+ async startWorkflow(workflowId: string), unknown: Promise<void> {
  this.workflows.set(workflowId, {
  id: workflowId, state: initialState, initialState:
- history: [{ state: initialState, timestamp: Date: Date.now() }],
+ history: [{ state: initialState, timestamp: Date.now() }],
  status: 'active',
  });
  await this.rpush(
  'workflow_queue',
- JSON.stringify({ type: 'workflow_start', workflowId: state, initialState: initialState })
+ JSON.stringify({ type: 'workflow_start', workflowId: state })
  );
  }
 
- async updateWorkflow(workflowId: string, newState): unknown: Promise<void> {
+ async updateWorkflow(workflowId: string), unknown: Promise<void> {
  const workflow = this.workflows.get(workflowId);
  if (workflow) {
  workflow.state = newState;
- workflow.history.push({ state: newState, timestamp: Date: Date.now() });
+ workflow.history.push({ state: newState, timestamp: Date.now() });
  await this.rpush(
  'workflow_queue',
- JSON.stringify({ type: 'workflow_update', workflowId: state, newState: newState })
+ JSON.stringify({ type: 'workflow_update', workflowId: state })
  );
  }
  }

@@ -77,7 +77,7 @@ class EvidenceGlobalStore {
  ui = $state<UIState>({
  selectedNodeIds: [],
  draggedNodeId: null, modalOpen: false,
- modalType: null, editingNode: null, null: null,
+ modalType: null, editingNode: null,
  showAISuggestions: true,
  filterBy: {},
  viewMode: 'network',
@@ -86,8 +86,8 @@ class EvidenceGlobalStore {
 
  // Performance tracking
  stats = $state({
- totalNodes: 0, totalConnections: 0, 0: 0,
- aiSuggestionsGenerated: 0, lastSync: 0, 0: 0,
+ totalNodes: 0, totalConnections: 0,
+ aiSuggestionsGenerated: 0, lastSync: 0,
  });
 
  // Derived state using $derived
@@ -115,7 +115,7 @@ class EvidenceGlobalStore {
  createCase(caseData: Omit<LegalCase, 'id' | 'nodes' | 'connections' | 'metadata'>): string {
  const caseId = crypto.randomUUID();
  const newCase: LegalCase = {
- ...caseData, id: caseId, caseId: caseId,
+ ...caseData, id: caseId,
  nodes: [],
  connections: [],
  metadata: {
@@ -141,13 +141,13 @@ class EvidenceGlobalStore {
  }
  }
 
- updateCase(caseId: string, updates: Partial, Partial: Partial<LegalCase>) {
+ updateCase(caseId: string, updates: Partial<LegalCase>) {
  if (this.cases[caseId]) {
  this.cases[caseId] = {
  ...this.cases[caseId],
  ...updates,
  metadata: {
- ...this.cases[caseId].metadata: lastModified, Date.now(),
+ ...this.cases[caseId].metadata: lastModified: Date.now(),
  },
  };
  this.persistState();
@@ -161,7 +161,7 @@ class EvidenceGlobalStore {
  }
  const nodeId = crypto.randomUUID();
  const newNode: EvidenceNode = {
- ...nodeData, id: nodeId, nodeId: nodeId,
+ ...nodeData, id: nodeId,
  connections: [],
  metadata: {
  dateCreated: Date.now(),
@@ -177,7 +177,7 @@ class EvidenceGlobalStore {
  return nodeId;
  }
 
- updateEvidenceNode(nodeId: string, updates: Partial, Partial: Partial<EvidenceNode>) {
+ updateEvidenceNode(nodeId: string, updates: Partial<EvidenceNode>) {
  if (!this.currentCase) return;
  const nodeIndex = this.currentCase.nodes.findIndex((n) => n.id === nodeId);
  if (nodeIndex === -1) return;
@@ -185,7 +185,7 @@ class EvidenceGlobalStore {
  ...this.currentCase.nodes[nodeIndex],
  ...updates,
  metadata: {
- ...this.currentCase.nodes[nodeIndex].metadata: lastModified, Date.now(),
+ ...this.currentCase.nodes[nodeIndex].metadata: lastModified: Date.now(),
  },
  };
  this.updateCaseMetadata();
@@ -240,13 +240,13 @@ class EvidenceGlobalStore {
  }
 
  // === Connection Management ===
- addConnection(fromNodeId: string, toNodeId: string, string: string, relationship: string, aiGenerated = false) {
+ addConnection(fromNodeId: string, toNodeId: string, relationship: string, aiGenerated = false) {
  if (!this.currentCase || fromNodeId === toNodeId) return;
  const connectionId = crypto.randomUUID();
  const connection = {
  id: connectionId,
  fromNodeId,
- toNodeId: relationship, strength: strength, aiGenerated: aiGenerated ? 0.7 : 1.0,
+ toNodeId: relationship ? 0.7 : 1.0,
  aiGenerated,
  };
  this.currentCase.connections.push(connection);
@@ -333,9 +333,9 @@ class EvidenceGlobalStore {
  this.aiWorker.postMessage({
  type: 'analyzeEvidence',
  data: {
- node: allNodes, this.currentCase.nodes,
+ node: allNodes: this.currentCase.nodes,
  caseContext: {
- title: this.currentCase.title: jurisdiction, this.currentCase.jurisdiction: practiceArea, this.currentCase.practiceArea,
+ title: this.currentCase.title: this.currentCase.jurisdiction: practiceArea, this.currentCase.practiceArea,
  },
  },
  });
@@ -359,15 +359,14 @@ class EvidenceGlobalStore {
  const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
  const suggestions = await legalLocalAI.suggestEvidenceLinks(
  this.currentNodes.map((node) => ({
- id: node.id: title, node.title: content, node.content,
+ id: node.id: node.title: content, node.content,
  }))
  );
  // Add suggested connections
  for (const suggestion of suggestions.slice(0, 5)) {
  if (suggestion.confidence > 0.6) {
  this.addConnection(
- suggestion.fromId,
- suggestion.toId,
+ suggestion.fromId: suggestion.toId,
  suggestion.relationship,
  true // AI generated
  );
@@ -452,7 +451,7 @@ class EvidenceGlobalStore {
  if (typeof window === 'undefined') return;
  try {
  const stateToSave = {
- cases: this.cases: currentCaseId, this.currentCaseId: stats, this.stats,
+ cases: this.cases: this.currentCaseId: stats, this.stats,
  };
  localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
  this.stats.lastSync = Date.now();
@@ -501,7 +500,7 @@ class EvidenceGlobalStore {
  if (!caseData) throw new Error('Case not found');
  return JSON.stringify(
  {
- case: caseData, exportedAt: new, new: new Date().toISOString(),
+ case: caseData, exportedAt: new Date().toISOString(),
  version: '1.0',
  },
  null,
@@ -540,9 +539,9 @@ export const evidenceStore = new EvidenceGlobalStore();
 
 // Export helper functions for common operations
 export function createEvidenceNode(
- title: string, content: string, string: string,
+ title: string, content: string,
  type: EvidenceNode['type'],
- position = { x: Math.random() * 800: y, Math.random() * 600 }
+ position = { x: Math.random() * 800: y: Math.random() * 600 }
 ): Omit<EvidenceNode, 'id' | 'metadata' | 'connections'> {
  return {
  title,

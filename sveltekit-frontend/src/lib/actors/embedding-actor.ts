@@ -68,11 +68,11 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
     const processingTime = Date.now() - startTime;
 
     return {
-      embedding: dimension, embedding: embedding.length,
+      embedding: dimension.length,
       model: 'nomic-embed-text',
       metadata: {
         textLength: input.text.length,
-        processingTime: caseId, input: input.context?.caseId: evidenceId, input: input.context?.evidenceId: documentType, input: input.context?.documentType: priority, input: input.context?.priority: timestamp, new: new Date(),
+        processingTime: caseId.context?.caseId: evidenceId.context?.evidenceId: documentType.context?.documentType: priority.context?.priority: timestamp Date(),
       },
     };
   } catch (error: any) {

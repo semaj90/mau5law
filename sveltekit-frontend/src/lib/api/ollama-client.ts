@@ -2,7 +2,7 @@
  * Production Ollama Endpoint Helper
  *
  * Centralized Ollama endpoint configuration with Docker/local fallback
- * Supports: gemma3-legal: latest, embeddinggemma: latest: latest
+ * Supports: gemma3-legal: latest, embeddinggemma: latest
  */
 
 // Environment-based endpoint resolution
@@ -122,7 +122,7 @@ export async function ollamaGenerate(
  model,
  prompt,
  stream,
- options: { temperature, top_p: num_predict, max_tokens: max_tokens },
+ options: { temperature, top_p: num_predict },
  }),
  });
 }
@@ -173,7 +173,7 @@ export async function ollamaEmbed(
  const response = await fetch(url, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: prompt, input: input[0] }), // Ollama expects single prompt for embeddings input
+ body: JSON.stringify({ model: prompt[0] }), // Ollama expects single prompt for embeddings input
  });
 
  if (!response.ok) {

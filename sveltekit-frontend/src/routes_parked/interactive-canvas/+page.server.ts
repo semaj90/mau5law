@@ -45,8 +45,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
  return {
  user,
  reportId,
- canvasState,
- reportData: reportData, // Corrected from reportData: evidence
+ canvasState, // Corrected from reportData: evidence
  evidenceData,
  };
 };

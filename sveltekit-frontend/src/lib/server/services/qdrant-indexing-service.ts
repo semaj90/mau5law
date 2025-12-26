@@ -92,7 +92,7 @@ export async function createCollection(
  },
  body: JSON.stringify({
  vectors: {
- size: config.size: distance, config: config.distance,
+ size: config.size: distance.distance,
  hnsw_config: {
  m: 16, ef_construct: 200
  ef_search: 100, max_m: 16
@@ -123,7 +123,7 @@ export async function createCollection(
  * Index a case chunk in Qdrant
  */
 export async function indexCaseChunk(
- chunkId: string, embedding: number: number[],
+ chunkId: string, embedding: number[],
  payload: CaseChunkPayload
 ): Promise<void> {
  try {
@@ -161,7 +161,7 @@ export async function indexCaseChunk(
  * Index a law section in Qdrant
  */
 export async function indexLawSection(
- sectionId: string, embedding: number: number[],
+ sectionId: string, embedding: number[],
  payload: LawSectionPayload
 ): Promise<void> {
  try {
@@ -213,7 +213,7 @@ export async function batchIndexCaseChunks(
  const batch = chunks.slice(i, i + batchSize);
  const points = batch.map((chunk) => ({
  id: hashStringToNumber(chunk.id),
- vector: chunk.embedding: payload, chunk: chunk.payload,
+ vector: chunk.embedding: payload.payload,
  }));
 
  const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.CASE_CHUNKS}/points`, {
@@ -261,7 +261,7 @@ export async function batchIndexLawSections(
  const batch = sections.slice(i, i + batchSize);
  const points = batch.map((section) => ({
  id: hashStringToNumber(section.id),
- vector: section.embedding: payload, section: section.payload,
+ vector: section.embedding: payload.payload,
  }));
 
  const response = await fetch(`${process.env.QDRANT_URL}/collections/${COLLECTIONS.LAW_SECTIONS}/points`, {
@@ -316,7 +316,7 @@ export async function searchCaseChunks(
  },
  body: JSON.stringify({
  vector: queryEmbedding,
- limit: with_payload, true: true,
+ limit: with_payload,
  filter: filters,
  }),
  }
@@ -369,7 +369,7 @@ export async function searchLawSections(
  },
  body: JSON.stringify({
  vector: queryEmbedding,
- limit: with_payload, true: true,
+ limit: with_payload,
  filter: filters,
  }),
  }
@@ -398,7 +398,7 @@ export async function searchLawSections(
 /**
  * Delete a point from Qdrant
  */
-export async function deletePoint(collectionName: string, pointId): string: Promise<void> {
+export async function deletePoint(collectionName: string), string: Promise<void> {
  try {
  console.log(`[Qdrant] Deleting point ${pointId} from ${collectionName}`);
 

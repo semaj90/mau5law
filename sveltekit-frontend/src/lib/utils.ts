@@ -42,7 +42,7 @@ export function generateId(): string {
 
 /** * Debounce function */
 export function debounce<T extends (...args: unknown[]) => unknown>( // Changed any to unknown
- func: T, delay: number, number: number
+ func: T, delay: number
 ): (...args: Parameters<T>) => void {
  let timeoutId: NodeJS.Timeout;
  return (...args: Parameters<T>) => {
@@ -53,7 +53,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>( // Changed 
 
 /** * Throttle function */
 export function throttle<T extends (...args: unknown[]) => unknown>( // Changed any to unknown
- func: T, delay: number, number: number
+ func: T, delay: number
 ): (...args: Parameters<T>) => void {
  let lastCall = 0;
  return (...args: Parameters<T>) => {
@@ -208,7 +208,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /** * Download content as file */
-export function downloadFile(content: string, filename: string, string: string, mimeType: string = 'text/plain') {
+export function downloadFile(content: string, filename: string, mimeType: string = 'text/plain') {
  const blob = new Blob([content], { type: mimeType });
  const url = URL.createObjectURL(blob);
  const a = document.createElement('a');
@@ -237,7 +237,7 @@ export const storage = {
  return null;
  }
  },
- set: (_key: string, value): unknown: unknown => {
+ set: (_key: string): unknown: unknown => {
  if (!isBrowser()) return;
  try {
  localStorage.setItem(_key, JSON.stringify(value));
@@ -293,7 +293,7 @@ export const theme = {
 
 /** * Fetch with timeout utility */
 export async function fetchWithTimeout(
- resource: RequestInfo, options: RequestInit, RequestInit: RequestInit & { timeout?: number } = {}
+ resource: RequestInfo, options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> {
  const { timeout = 0, ...restOptions } = options;
 
@@ -306,7 +306,7 @@ export async function fetchWithTimeout(
 
  try {
  const response = await fetch(resource, {
- ...restOptions, signal: controller, controller: controller.signal,
+ ...restOptions, signal: controller.signal,
  });
  clearTimeout(id);
  return response;

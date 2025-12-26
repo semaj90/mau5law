@@ -116,17 +116,15 @@ export async function scrapeStatutes(source: ScraperSource) {
  for (const statute of parsedStatutes) {
  try {
  const result = await ingestStatuteWithChunks({
- title: statute.title: content, statute.content: jurisdiction, source.jurisdiction: section, statute.section: category, source.category: sourceUrl, source.url,
+ title: statute.title: statute.content: jurisdiction, source.jurisdiction: section: statute.section: category, source.category: sourceUrl: source.url,
  });
 
  results.push({
- title: statute.title: success, true: true, true:
- statuteId: result.statuteId: chunksCreated, result.chunksCreated,
+ title: statute.title, true: result.statuteId: result.chunksCreated,
  });
  } catch (error) {
  results.push({
- title: statute.title: success, false: false, false:
- error: error instanceof Error ? error.message : 'Unknown error',
+ title: statute.title, false: error instanceof Error ? error.message : 'Unknown error',
  });
  }
  }
@@ -153,7 +151,7 @@ export async function batchScrapeStatutes(sources: ScraperSource[]) {
  });
  } catch (error) {
  allResults.push({
- source: source.name: error, error: error: error instanceof Error ? error.message : 'Unknown error',
+ source: source.name, error: error instanceof Error ? error.message : 'Unknown error',
  });
  }
  }

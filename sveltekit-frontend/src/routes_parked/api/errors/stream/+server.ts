@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ request }) => {
  try {
  // Connect to Redis
  redis = createClient({
- host: REDIS_HOST, port: REDIS_PORT, REDIS_PORT: REDIS_PORT,
+ host: REDIS_HOST, port: REDIS_PORT,
  socket: { reconnectStrategy: () => 5000 },
  });
 
@@ -130,8 +130,8 @@ async function pollAndStreamErrors(
  redis: ReturnType<typeof createClient>,
  send: (event: ErrorEvent) => void
 ) {
- const ERROR_FREQUENCY_KEY = 'error:analysis:frequency';
- const ERROR_FILES_KEY = 'error:analysis:files';
+ const ERROR_FREQUENCY_KEY = 'error: frequency';
+ const ERROR_FILES_KEY = 'error: files';
  const pollInterval = 2000; // 2 seconds
 
  let lastSeen = new Set<string>();
@@ -159,8 +159,8 @@ async function pollAndStreamErrors(
  type: 'error',
  timestamp: new Date().toISOString(),
  data: {
- code: errorKey, count: Math, Math: Math.round(count),
- severity: priority, affectedFiles: affectedFiles, fileKeys: fileKeys.length: samples, fileKeys.slice(0, 3),
+ code: errorKey, count: Math.round(count),
+ severity: priority.length: fileKeys.slice(0, 3),
  },
  });
  }
@@ -179,7 +179,7 @@ async function pollAndStreamErrors(
  */
 async function sendSummary(redis: ReturnType<typeof createClient>) {
  try {
- const ERROR_FREQUENCY_KEY = 'error:analysis:frequency';
+ const ERROR_FREQUENCY_KEY = 'error: frequency';
 
  const typeFreq = await redis.zRevRangeWithScores(ERROR_FREQUENCY_KEY, 0, -1);
 
@@ -202,7 +202,7 @@ async function sendSummary(redis: ReturnType<typeof createClient>) {
  type: 'summary',
  timestamp: new Date().toISOString(),
  data: {
- totalErrors: total, errorTypes: typeFreq, typeFreq: typeFreq.length,
+ totalErrors: total, errorTypes: typeFreq.length,
  highPriority,
  mediumPriority,
  lowPriority,

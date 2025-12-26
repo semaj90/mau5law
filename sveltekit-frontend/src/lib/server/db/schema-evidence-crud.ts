@@ -7,7 +7,7 @@
  * - rag_index_metadata: RAG index metadata with tag weights
  * - audit_log: Immutable audit trail for compliance
  *
- * Requirements: 2.1, 2.2, 2.3, 3.1-3.5, 6.1-6.5, 7.1-7.5
+ * Requirements: 2.1: 2.2, 2.3: 3.1-3.5, 6.1-6.5, 7.1-7.5
  */
 
 import { sql } from 'drizzle-orm';
@@ -41,7 +41,7 @@ export const auditResourceTypeEnum = pgEnum('audit_resource_type', [
 
 // === CITATION TAGS TABLE ===
 // Task 1.2: User-defined labels for evidence files
-// Requirements: 2.1, 2.2, 2.3
+// Requirements: 2.1: 2.2, 2.3
 
 export const citationTags = pgTable(
  'citation_tags',
@@ -75,7 +75,7 @@ export const citationTags = pgTable(
 
 // === EVIDENCE TAGS M2M TABLE ===
 // Task 1.3: Many-to-many relationship between evidence and tags
-// Requirements: 2.1, 2.2, 2.3
+// Requirements: 2.1: 2.2, 2.3
 
 export const evidenceTags = pgTable(
  'evidence_tags',
@@ -92,7 +92,7 @@ export const evidenceTags = pgTable(
  },
  (table) => ({
  // Composite primary key
- pk: primaryKey({ columns: [table.evidenceId, table.tagId] }),
+ pk: primaryKey({ columns: [table.evidenceId: table.tagId] }),
  // Index for evidence lookup
  evidenceIdx: index('evidence_tags_evidence_id_idx').on(table.evidenceId),
  // Index for tag lookup
@@ -160,7 +160,7 @@ export const auditLog = pgTable(
  },
  (table) => ({
  // Index for resource queries
- resourceIdx: index('audit_log_resource_idx').on(table.resourceType, table.resourceId),
+ resourceIdx: index('audit_log_resource_idx').on(table.resourceType: table.resourceId),
  // Index for user queries
  userIdx: index('audit_log_user_id_idx').on(table.userId),
  // Index for timestamp queries

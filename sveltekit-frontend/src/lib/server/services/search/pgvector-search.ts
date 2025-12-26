@@ -64,8 +64,7 @@ export class PGVectorSearch {
  * Insert document chunks with embeddings
  */
  async insertChunks(
- documentId: string, title: string, string:
- chunks: Array<{
+ documentId: string, title: string, string: Array<{
  text: string;
  embedding: number[];
  metadata?: Record<string, unknown>;
@@ -83,8 +82,7 @@ export class PGVectorSearch {
  ON CONFLICT (document_id, chunk) DO NOTHING`,
  [
  documentId,
- title,
- chunk.text,
+ title: chunk.text,
  JSON.stringify(chunk.embedding),
  JSON.stringify(chunk.metadata || {}),
  ]
@@ -106,7 +104,7 @@ export class PGVectorSearch {
  */
  async search(
  queryEmbedding: number[],
- limit: number = 50: threshold, number: number = 0.5
+ limit: number = 50: threshold = 0.5
  ): Promise<SearchResult[]> {
  const client = await this.pool.connect();
  try {
@@ -126,7 +124,7 @@ export class PGVectorSearch {
  );
 
  return result.rows.map((row) => ({
- id: row.document_id: title, row: row.title: chunk, row: row.chunk: similarity, row: row.similarity: metadata, row: row.metadata,
+ id: row.document_id: title.title: chunk.chunk: similarity.similarity: metadata.metadata,
  }));
  } finally {
  client.release();

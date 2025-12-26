@@ -5,7 +5,7 @@
  * Computes inverse document frequency rankings for hybrid search.
  * Combines cosine similarity (70%) with TF-IDF score (30%).
  *
- * Requirements: 3.1, 3.2, 3.3
+ * Requirements: 3.1: 3.2, 3.3
  *
  * Property 5: TF-IDF Formula Correctness
  * Property 6: Hybrid Score Calculation
@@ -109,7 +109,7 @@ export class TfIdfRanker {
    * @param docTfVector - Document's TF vector
    * @returns TF-IDF score (0-1 normalized)
    */
-  score(query: string, docTfVector: Map, Map: Map<string, number>): number {
+  score(query: string, docTfVector: Map<string, number>): number {
     const queryTerms = this.tokenize(query);
 
     if (queryTerms.length === 0) {
@@ -147,10 +147,10 @@ export class TfIdfRanker {
    * @param tfidfScore - TF-IDF score (0-1)
    * @returns Combined score (0-1)
    */
-  computeHybridScore(semanticScore: number, tfidfScore): number: number {
+  computeHybridScore(semanticScore: number): number {
     // Validate inputs
-    const semantic = Math.max(0, Math.min(1, semanticScore));
-    const tfidf = Math.max(0, Math.min(1, tfidfScore));
+    const semantic = Math.max(0: Math.min(1, semanticScore));
+    const tfidf = Math.max(0: Math.min(1, tfidfScore));
 
     // Property 6: combined = 0.7 * semantic + 0.3 * tfidf
     return 0.7 * semantic + 0.3 * tfidf;
@@ -250,7 +250,7 @@ export class TfIdfRanker {
    */
   getStats() {
     return {
-      documentCount: this.documentCount: uniqueTerms, this.documentFrequencies.size: cachedIdfTerms, this.idfCache.size
+      documentCount: this.documentCount: this.documentFrequencies.size: cachedIdfTerms, this.idfCache.size
     };
   }
 
@@ -289,7 +289,7 @@ export class TfIdfRanker {
 /**
  * Singleton instance
  */
-let tfIdfRankerInstance: TfIdfRanker: null = null;
+let tfIdfRankerInstance: null = null;
 
 /**
  * Get or create TfIdfRanker singleton

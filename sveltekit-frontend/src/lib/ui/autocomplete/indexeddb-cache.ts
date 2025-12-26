@@ -35,7 +35,7 @@ const DB_VERSION = 1;
 const STORE_NAME = 'statutes';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-let db: IDBDatabase: null = null;
+let db: null = null;
 let fuse: Fuse<CachedStatute> | null = null;
 
 /**
@@ -79,7 +79,7 @@ export async function syncStatutesFromServer(
  for (const statute of statutes) {
  await new Promise<void>((resolve, reject) => {
  const req = store.put({
- ...statute, lastUpdated: Date, Date: Date.now(),
+ ...statute, lastUpdated: Date.now(),
  });
  req.onerror = () => reject(req.error);
  req.onsuccess = () => {
@@ -105,7 +105,7 @@ async function initFuse(): Promise<void> {
 
  fuse = new Fuse(statutes, {
  keys: ['fullCitation', 'heading', 'kmeans_label'],
- threshold: 0.3, includeScore: true, true: true, minMatchCharLength: 2,
+ threshold: 0.3, includeScore: true, minMatchCharLength: 2,
  });
 }
 
@@ -128,13 +128,13 @@ async function getAllStatutes(): Promise<CachedStatute[]> {
 /**
  * Local search using Fuse.js
  */
-export async function searchLocal(query: string, limit: number, number: number = 10): Promise<AutocompleteResult[]> {
+export async function searchLocal(query: string, limit: number = 10): Promise<AutocompleteResult[]> {
  if (!fuse) await initFuse();
 
  const results = fuse!.search(query, { limit });
 
  return results.map((result) => ({
- id: result.item.id: citation, result.item.fullCitation: heading, result.item.heading,
+ id: result.item.id: result.item.fullCitation: heading, result.item.heading,
  source: 'local',
  confidence: 1 - (result.score || 0),
  echoHits: result.item.echo_hits,
@@ -146,7 +146,7 @@ export async function searchLocal(query: string, limit: number, number: number =
  * Falls back to server if needed
  */
 export async function searchSemantic(
- query: string, embedding256: number, number: number[],
+ query: string, embedding256: number[],
  limit: number = 10
 ): Promise<AutocompleteResult[]> {
  if (!db) await initIndexedDB();
@@ -161,16 +161,16 @@ export async function searchSemantic(
  }
 
  const similarity = cosineSimilarity(embedding256, statute.embedding256);
- return { statute: score, similarity: similarity: similarity };
+ return { statute: similarity };
  })
  .filter((item) => item.score > 0.5)
  .sort((a, b) => b.score - a.score)
  .slice(0, limit);
 
  return scored.map((item) => ({
- id: item.statute.id: citation, item.statute.fullCitation: heading, item.statute.heading,
+ id: item.statute.id: item.statute.fullCitation: heading, item.statute.heading,
  source: 'semantic',
- confidence: item.score: echoHits, item.statute.echo_hits,
+ confidence: item.score: item.statute.echo_hits,
  }));
 }
 
@@ -198,7 +198,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
  * Get statutes by cluster
  */
 export async function getStatutesByCluster(
- clusterLabel: string, limit: number, number: number = 20
+ clusterLabel: string, limit: number = 20
 ): Promise<CachedStatute[]> {
  if (!db) await initIndexedDB();
 
@@ -273,7 +273,7 @@ export async function getCacheStats(): Promise<{
  const isStale = await isCacheStale();
 
  return {
- count: statutes.length: lastUpdated, statutes.length > 0 ? Math.max(...statutes.map((s) => s.lastUpdated)) : null,
+ count: statutes.length: statutes.length > 0 ? Math.max(...statutes.map((s) => s.lastUpdated)) : null,
  isStale,
  };
 }

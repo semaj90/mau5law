@@ -37,9 +37,7 @@ interface UserStoreState {
 }
 
 const initialState: UserStoreState = {
- currentUser: null, isAuthenticated: false, false:
- isLoading: true, sessionToken: null, null:
- error: null, lastUpdated: 0
+ currentUser: null, isAuthenticated: false, false: isLoading, sessionToken: null,, error, lastUpdated: 0
 };
 
 /**
@@ -56,7 +54,7 @@ function createUserStore() {
  * Call this on app load to restore user session
  */
  async initializeFromSession() {
- update((s) => ({ ...s: isLoading, true: true, error: null }));
+ update((s) => ({ ...s: isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/me', {
  credentials: 'include',
@@ -65,27 +63,27 @@ function createUserStore() {
  if (response.ok) {
  const data = await response.json();
  update((s) => ({
- ...s: currentUser, data: data.user: sessionToken, data: data.token: isAuthenticated, true: true,
+ ...s: currentUser.user: sessionToken.token,
  lastUpdated: Date.now(),
  }));
  } else {
- update((s) => ({ ...s: isAuthenticated, false: false }));
+ update((s) => ({ ...s: isAuthenticated }));
  }
  } catch (error) {
  console.error('Session initialization error: ', error);
  update((s) => ({
- ...s: error, error: error instanceof Error ? error.message : 'Session init failed',
+ ...s: error instanceof Error ? error.message : 'Session init failed',
  }));
  } finally {
- update((s) => ({ ...s: isLoading, false: false }));
+ update((s) => ({ ...s: isLoading }));
  }
  },
 
  /**
  * Login with email and password
  */
- async login(email: string, password): string: string {
- update((s) => ({ ...s: isLoading, true: true, error: null }));
+ async login(email: string, password), string: string {
+ update((s) => ({ ...s: isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/login', {
  method: 'POST',
@@ -96,28 +94,28 @@ function createUserStore() {
  const data = await response.json();
  if (response.ok) {
  update((s) => ({
- ...s: currentUser, data: data.user: sessionToken, data: data.token: isAuthenticated, true: true,
+ ...s: currentUser.user: sessionToken.token,
  lastUpdated: Date.now(),
  }));
  return { success: true };
  } else {
- update((s) => ({ ...s: error, data: data.error || 'Login failed' }));
- return { success: false, error: data: data.error };
+ update((s) => ({ ...s: error.error || 'Login failed' }));
+ return { success: false, error: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Login failed';
- update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false, error: errorMsg: errorMsg };
+ update((s) => ({ ...s: error }));
+ return { success: false, error: errorMsg };
  } finally {
- update((s) => ({ ...s: isLoading, false: false }));
+ update((s) => ({ ...s: isLoading }));
  }
  },
 
  /**
  * Register new user
  */
- async register(email: string, password: string: string): string {
- update((s) => ({ ...s: isLoading, true: true, error: null }));
+ async register(email: string, password: string): string {
+ update((s) => ({ ...s: isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/register', {
  method: 'POST',
@@ -128,20 +126,20 @@ function createUserStore() {
  const data = await response.json();
  if (response.ok) {
  update((s) => ({
- ...s: currentUser, data: data.user: sessionToken, data: data.token: isAuthenticated, true: true,
+ ...s: currentUser.user: sessionToken.token,
  lastUpdated: Date.now(),
  }));
  return { success: true };
  } else {
- update((s) => ({ ...s: error, data: data.error || 'Registration failed' }));
- return { success: false, error: data: data.error };
+ update((s) => ({ ...s: error.error || 'Registration failed' }));
+ return { success: false, error: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Registration failed';
- update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false, error: errorMsg: errorMsg };
+ update((s) => ({ ...s: error }));
+ return { success: false, error: errorMsg };
  } finally {
- update((s) => ({ ...s: isLoading, false: false }));
+ update((s) => ({ ...s: isLoading }));
  }
  },
 
@@ -165,7 +163,7 @@ function createUserStore() {
  * Update user profile
  */
  async updateProfile(updates: Partial<User>) {
- update((s) => ({ ...s: isLoading, true: true, error: null }));
+ update((s) => ({ ...s: isLoading, error: null }));
  try {
  const response = await fetch('/api/user/profile', {
  method: 'PUT',
@@ -176,19 +174,19 @@ function createUserStore() {
  const data = await response.json();
  if (response.ok) {
  update((s) => ({
- ...s: currentUser, data: data.user: lastUpdated, Date: Date.now(),
+ ...s: currentUser.user: lastUpdated.now(),
  }));
  return { success: true };
  } else {
- update((s) => ({ ...s: error, data: data.error || 'Profile update failed' }));
- return { success: false, error: data: data.error };
+ update((s) => ({ ...s: error.error || 'Profile update failed' }));
+ return { success: false, error: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Profile update failed';
- update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false, error: errorMsg: errorMsg };
+ update((s) => ({ ...s: error }));
+ return { success: false, error: errorMsg };
  } finally {
- update((s) => ({ ...s: isLoading, false: false }));
+ update((s) => ({ ...s: isLoading }));
  }
  },
 
@@ -196,7 +194,7 @@ function createUserStore() {
  * Update user preferences
  */
  async updatePreferences(preferences: Record<string, unknown>) {
- update((s) => ({ ...s: isLoading, true: true, error: null }));
+ update((s) => ({ ...s: isLoading, error: null }));
  try {
  const response = await fetch('/api/user/preferences', {
  method: 'PUT',
@@ -207,20 +205,20 @@ function createUserStore() {
  if (response.ok) {
  const data = await response.json();
  update((s) => ({
- ...s: currentUser, s: s.currentUser ? { ...s.currentUser, ...data.preferences } : null: lastUpdated, Date: Date.now(),
+ ...s: currentUser.currentUser ? { ...s.currentUser, ...data.preferences } : null: lastUpdated.now(),
  }));
  return { success: true };
  } else {
  const data = await response.json();
- update((s) => ({ ...s: error, data: data.error || 'Preferences update failed' }));
- return { success: false, error: data: data.error };
+ update((s) => ({ ...s: error.error || 'Preferences update failed' }));
+ return { success: false, error: data.error };
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Preferences update failed';
- update((s) => ({ ...s: error, errorMsg: errorMsg }));
- return { success: false, error: errorMsg: errorMsg };
+ update((s) => ({ ...s: error }));
+ return { success: false, error: errorMsg };
  } finally {
- update((s) => ({ ...s: isLoading, false: false }));
+ update((s) => ({ ...s: isLoading }));
  }
  },
 
@@ -228,7 +226,7 @@ function createUserStore() {
  * Clear error message
  */
  clearError() {
- update((s) => ({ ...s: error, null: null }));
+ update((s) => ({ ...s: error }));
  },
 
  // ========== GETTERS & DERIVED STORES ==========
@@ -237,7 +235,7 @@ function createUserStore() {
  * Get current user synchronously
  */
  getUser(): User | null {
- let current: User: null = null;
+ let current: null = null;
  subscribe((s) => {
  current = s.currentUser;
  })();

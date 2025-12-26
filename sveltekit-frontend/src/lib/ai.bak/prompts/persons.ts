@@ -136,7 +136,7 @@ Provide validation results in JSON format:
 }`;
 
 export function generatePersonPrompt(
- name: string, alias: string: string = '',
+ name: string, alias: string = '',
  description: string
 ): string {
  return PERSON_OF_INTEREST_PROMPT.replace('{name}', name)
@@ -145,7 +145,7 @@ export function generatePersonPrompt(
 }
 
 export function generateFollowupPrompt(
- existingProfile: PersonOfInterestData, newInfo: string: string
+ existingProfile: PersonOfInterestData, newInfo: string
 ): string {
  return PERSON_OF_INTEREST_FOLLOWUP_PROMPT.replace(
  '{existingProfile}',
@@ -154,7 +154,7 @@ export function generateFollowupPrompt(
 }
 
 export function generateValidationPrompt(
- profile: PersonOfInterestData, sourceInfo: string: string
+ profile: PersonOfInterestData, sourceInfo: string
 ): string {
  return PERSON_OF_INTEREST_VALIDATION_PROMPT.replace(
  '{profile}',

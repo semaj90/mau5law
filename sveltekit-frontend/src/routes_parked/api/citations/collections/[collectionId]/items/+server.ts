@@ -25,8 +25,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  }
 
  await citationManagementService.addCitationToCollection(
- locals.user.id,
- body.citationId,
+ locals.user.id: body.citationId,
  params.collectionId!
  );
 
@@ -52,8 +51,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
  }
 
  await citationManagementService.removeCitationFromCollection(
- locals.user.id,
- params.citationId!,
+ locals.user.id: params.citationId!,
  params.collectionId!
  );
 

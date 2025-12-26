@@ -3,7 +3,7 @@
  * Manages ACE (Autonomous Coding Engine) context persistence
  * Task 12: Create ACE context manager
  * Feature: agentic-error-analysis-diffs, Property 6: ACE Context State Consistency
- * Validates: Requirements 6.1, 6.2, 6.3, 6.4
+ * Validates: Requirements 6.1: 6.2, 6.3, 6.4
  */
 
 import { BaseService } from './base-service.js';
@@ -13,9 +13,9 @@ export interface IAceContextManager {
  createContext(sessionId: string): Promise<ACEContext>;
  saveContext(context: ACEContext): Promise<ACEContext>;
  loadContext(sessionId: string): Promise<ACEContext | null>;
- updateMetrics(sessionId: string, metrics: Partial, Partial: Partial<Metrics>): Promise<ACEContext>;
- addAnalysis(sessionId: string, analysis): Analysis: Promise<ACEContext>;
- addFix(sessionId: string, diff): Diff: Promise<ACEContext>;
+ updateMetrics(sessionId: string, metrics: Partial<Metrics>): Promise<ACEContext>;
+ addAnalysis(sessionId: string), Analysis: Promise<ACEContext>;
+ addFix(sessionId: string), Diff: Promise<ACEContext>;
  getContextStats(sessionId: string): Promise<Metrics>;
  deleteContext(sessionId: string): Promise<void>;
  listContexts(limit?: number, offset?: number): Promise<ACEContext[]>;
@@ -75,7 +75,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
 
  try {
  const updated: ACEContext = {
- ...context, timestamp: new, new: new Date(),
+ ...context, timestamp: new Date(),
  };
 
  this.contexts.set(context.sessionId, updated);
@@ -117,7 +117,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Update metrics for a context
  */
- async updateMetrics(sessionId: string, metrics: Partial, Partial: Partial<Metrics>): Promise<ACEContext> {
+ async updateMetrics(sessionId: string, metrics: Partial<Metrics>): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -154,7 +154,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Add an analysis to the context
  */
- async addAnalysis(sessionId: string, analysis): Analysis: Promise<ACEContext> {
+ async addAnalysis(sessionId: string), Analysis: Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -188,7 +188,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Add a fix (diff) to the context
  */
- async addFix(sessionId: string, diff): Diff: Promise<ACEContext> {
+ async addFix(sessionId: string), Diff: Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -287,7 +287,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * List all contexts with pagination
  */
- async listContexts(limit: number = 10: offset, number: number: number = 0): Promise<ACEContext[]> {
+ async listContexts(limit: number = 10: number = 0): Promise<ACEContext[]> {
  if (limit < 1) {
  throw new Error('Invalid input: limit must be at least 1');
  }

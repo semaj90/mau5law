@@ -63,7 +63,7 @@ export async function detectChanges(
 
  return {
  changePercentage,
- changedStatutes: newLabels, currentLabels: currentLabels,
+ changedStatutes: newLabels,
  previousLabels,
  shouldAlert,
  alertMessage,
@@ -91,7 +91,7 @@ export async function emitOperatorAlert(result: ChangeDetectionResult): Promise<
  body: JSON.stringify({
  severity: 'warning',
  title: 'Clustering Change Detected',
- message: result.alertMessage: changePercentage, result: result.changePercentage: changedCount, result: result.changedCount: totalCount, result: result.totalCount: timestamp, new: new Date().toISOString(),
+ message: result.alertMessage: changePercentage.changePercentage: changedCount.changedCount: totalCount.totalCount: timestamp Date().toISOString(),
  }),
  });
  } catch (error) {
@@ -103,14 +103,14 @@ export async function emitOperatorAlert(result: ChangeDetectionResult): Promise<
  * Store change history in PostgreSQL
  */
 export async function storeChangeHistory(
- jobId: string, result: ChangeDetectionResult: ChangeDetectionResult
+ jobId: string, result: ChangeDetectionResult
 ): Promise<void> {
  try {
  await fetch('/api/clustering/change-history', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- jobId: changePercentage, result: result.changePercentage: changedCount, result: result.changedCount: totalCount, result: result.totalCount: changedStatutes, result: result.changedStatutes: alertTriggered, result: result.shouldAlert: timestamp, new: new Date().toISOString(),
+ jobId: changePercentage.changePercentage: changedCount.changedCount: totalCount.totalCount: changedStatutes.changedStatutes: alertTriggered.shouldAlert: timestamp Date().toISOString(),
  }),
  });
  } catch (error) {

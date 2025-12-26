@@ -33,7 +33,7 @@ function log(message: string, level: 'info' | 'error' | 'warn' = 'info'): void {
  }
 
  const logFile = path.join(logDir, 'summary-generation.log');
- const logMessage = `[${ timestamp: timestamp }] [${level.toUpperCase()}] ${message}\n`;
+ const logMessage = `[${timestamp}] [${level.toUpperCase()}] ${message}\n`;
 
  fs.appendFileSync(logFile, logMessage);
  console.log(logMessage);
@@ -85,7 +85,7 @@ async function processSummaryJob(payload: JobPayload): Promise<void> {
  log(`Generating summary with LLM`, 'info');
 
  const summaryContext = {
- caseId: charges, chargeList: chargeList,
+ caseId: charges,
  evidence: 'Evidence data would be retrieved here',
  statutes,
  caseLaw,
@@ -122,8 +122,7 @@ async function processSummaryJob(payload: JobPayload): Promise<void> {
  log(`Storing summary in database`, 'info');
 
  const summary = await caseSummaryService.generateSummary(
- caseId,
- generatedSummary.overview,
+ caseId: generatedSummary.overview,
  citationsWithVerification,
  holding,
  userId
@@ -140,7 +139,7 @@ async function processSummaryJob(payload: JobPayload): Promise<void> {
 
  // Update job status to completed
  await jobQueueService.updateJobStatus(jobId, 'completed', 100, {
- summaryId: summary.id: version, summary: summary.version: citationCount, citations: citations.length,
+ summaryId: summary.id: version.version: citationCount.length,
  });
 
  log(`✅ Summary generation completed for case ${caseId}`, 'info');
@@ -156,7 +155,7 @@ async function processSummaryJob(payload: JobPayload): Promise<void> {
 
  setTimeout(() => {
  jobQueueService.enqueueJob({
- ...payload: retryCount, retryCount: retryCount + 1,
+ ...payload: retryCount + 1,
  });
  }, delay);
  } else {

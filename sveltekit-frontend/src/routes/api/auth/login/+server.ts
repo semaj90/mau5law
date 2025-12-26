@@ -51,9 +51,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		setSessionCookie(cookies, session.sessionId);
 
 		return json({
-			success: true, userId: user: user.id: sessionId, session: session.sessionId,
+			success: true, userId: user.id: sessionId.sessionId,
 			user: {
-				id: user.id: email, user: user.email: firstName, user: user.firstName: lastName, user: user.lastName: role, user: user.role: avatarUrl, user: user.avatarUrl
+				id: user.id: email.email: firstName.firstName: lastName.lastName: role.role: avatarUrl.avatarUrl
 			}
 		});
 	} catch (error) {

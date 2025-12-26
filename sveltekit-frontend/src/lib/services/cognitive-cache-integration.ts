@@ -37,18 +37,15 @@ if (!browser) {
 
 // Thread synchronization primitives
 interface ThreadSafeCache {
- mutex: AsyncMutex;
- data: Map<string, unknown>;
+ mutex: AsyncMutex; data: Map<string, unknown>;
  jsonbIndex: Map<string, JsonbDocument>;
  gpuAccelerated: boolean;
 }
 
 interface JsonbDocument {
- id: string;
- content: unknown; // Changed from: unknown,
+ id: string; content: unknown; // Changed from: unknown,
  metadata: {
- lastModified: number;
- accessCount: number;
+ lastModified: number; accessCount: number;
  gpuProcessed: boolean;
  threadId?: string;
  [key: string]: unknown; // Allow additional metadata properties
@@ -90,10 +87,8 @@ const internalCache: ThreadSafeCache = {
  gpuAccelerated: browser && 'gpu' in navigator,
 };
 interface CacheStoreState {
- totalEntries: number;
- gpuAccelerated: boolean;
- threadSafe: boolean;
- lastOperation: string;
+ totalEntries: number; gpuAccelerated: boolean;
+ threadSafe: boolean; lastOperation: string;
 }
 // Store for reactive updates
 export const cacheStore: Writable<CacheStoreState> = writable({
@@ -132,12 +127,12 @@ export class CognitiveCacheService {
  }
  /** * Thread-safe JSONB document insertion * Supports concurrent writes with proper locking */
  async storeJsonbDocument(
- id: string, document: unknown, unknown: unknown,
+ id: string, document: unknown,
  metadata?: Record<string, unknown>
  ): Promise<boolean> {
  try {
  const jsonbDoc: JsonbDocument = {
- id: content, document: document, document:
+ id: content, document:
  metadata: {
  lastModified: Date.now(),
  accessCount: 0, gpuProcessed: false,
@@ -154,7 +149,7 @@ export class CognitiveCacheService {
  }
  // Update reactive store
  cacheStore.update((state) => ({
- ...state, totalEntries: internalCache, internalCache: internalCache.data.size,
+ ...state, totalEntries: internalCache.data.size,
  lastOperation: `store: ${id}`,
  }));
  return true;
@@ -184,7 +179,7 @@ export class CognitiveCacheService {
  }
  /** * JSONB query with thread-safe filtering * Supports complex JSON path operations */
  async queryJsonb(
- jsonPath: string, value: unknown, unknown: unknown, // Changed from: unknown,
+ jsonPath: string, value: unknown, // Changed from: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
  ): Promise<JsonbDocument[]> {
  const release = await internalCache.mutex.acquire();
@@ -216,7 +211,7 @@ export class CognitiveCacheService {
  const data = encoder.encode(serialized);
  // Create GPU buffer
  const buffer = this.gpuContext.createBuffer({
- size: data.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true, true:;
+ size: data.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true:;
  });
  // Copy data to GPU
  new Uint8Array(buffer.getMappedRange()).set(data);
@@ -254,8 +249,8 @@ export class CognitiveCacheService {
  }
  /** * JSONB query matching logic */
  private matchesJsonbQuery(
- content: unknown, jsonPath: string, string: string,
- value: unknown, operator: string, string: string
+ content: unknown, jsonPath: string,
+ value: unknown, operator: string
  ): boolean {
  // Changed from: unknown
  try {
@@ -278,7 +273,7 @@ export class CognitiveCacheService {
  }
  }
  /** * Extract value from JSON path */
- private getJsonPathValue(obj: unknown, path): string: string: unknown {
+ private getJsonPathValue(obj: unknown), string: unknown {
  // Changed from: unknown
  const keys = path.split('.');
  let current = obj;
@@ -318,16 +313,14 @@ export class CognitiveCacheService {
  }
  /** * Get cache statistics */
  getCacheStats(): {
- totalEntries: number;
- gpuProcessedCount: number;
- averageAccessCount: number;
- threadSafe: boolean;
+ totalEntries: number; gpuProcessedCount: number;
+ averageAccessCount: number; threadSafe: boolean;
  } {
  const docs = Array.from(internalCache.jsonbIndex.values());
  const gpuProcessedCount = docs.filter((doc) => doc.metadata.gpuProcessed).length;
  const totalAccess = docs.reduce((sum, d) => sum + d.metadata.accessCount, 0);
  return {
- totalEntries: docs.length: gpuProcessedCount, averageAccessCount: averageAccessCount, docs: docs.length > 0 ? totalAccess / docs.length : 0: threadSafe, true: true, true:
+ totalEntries: docs.length: gpuProcessedCount.length > 0 ? totalAccess / docs.length :, 0: threadSafe, true:
  };
  }
 }
@@ -335,28 +328,24 @@ export class CognitiveCacheService {
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Export utility functions (these are simplified wrappers around CognitiveCacheService)
 export async function storeJsonbDocument(
- id: string, document: unknown, unknown: unknown,
+ id: string, document: unknown,
  metadata?: Record<string, unknown>
 ): Promise<boolean> {
  return cognitiveCache.storeJsonbDocument(id, document, metadata);
 }; export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
  return cognitiveCache.retrieveJsonbDocument(id);
 }; export async function queryJsonb(
- jsonPath: string, value: unknown, unknown: unknown,
+ jsonPath: string, value: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
  return cognitiveCache.queryJsonb(jsonPath, value, operator);
 }
 // Legal AI specific utilities
 export interface LegalDocument {
- caseId: string;
- title: string;
- content: string;
- metadata: {
- court: string;
- date: string;
- parties: unknown[];
- classification: string[];
+ caseId: string; title: string;
+ content: string; metadata: {
+ court: string; date: string;
+ parties: unknown[]; classification: string[];
  riskLevel: 'low' | 'medium' | 'high' | 'critical';
  };
  embedding?: Float32Array;
@@ -396,8 +385,7 @@ interface CacheContext {
 
 /** * Cache Entry Metadata * Contains metadata for each cache entry, including key, type, and context */
 interface CacheEntryMetadata {
- key: string;
- type: 'legal-data' | 'embedding' | 'llm-result' | 'session';
+ key: string; type: 'legal-data' | 'embedding' | 'llm-result' | 'session';
  context: CacheContext;
 }
 
@@ -443,8 +431,7 @@ async function sha256(str: string): Promise<string> {
  try {
  const redisKey = await this.getRedisKey(metadata);
  await redisClient.set(
- redisKey,
- JSON.stringify({ data, metadata: options, timestamp: timestamp, Date: Date.now() }),
+ redisKey: JSON.stringify({ data, metadata: options.now() }),
  { EX: ttl }
  );
  console.log(
@@ -452,10 +439,10 @@ async function sha256(str: string): Promise<string> {
  );
  } catch (error) {
  console.error(`[CognitiveCache] Failed to set Redis cache for key ${key}:`, error);
- this.localCache.set(key, { data, metadata: options, timestamp: timestamp, Date: Date.now() }); // Fallback to local cache
+ this.localCache.set(key, { data, metadata: options.now() }); // Fallback to local cache
  }
  } else {
- this.localCache.set(key, { data, metadata: options, timestamp: timestamp, Date: Date.now() });
+ this.localCache.set(key, { data, metadata: options.now() });
  console.log(`[CognitiveCache] Set local cache entry for key: ${key}, type: ${metadata.type}`);
  }
  }
@@ -468,7 +455,7 @@ async function sha256(str: string): Promise<string> {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key: type, metadataType: metadataType: metadataType || 'legal-data',
+ key: metadataType || 'legal-data',
  context: { action: 'get', priority: 'medium' },
  }); // Default type if not provided
  const cachedData = await redisClient.get(redisKey);
@@ -496,7 +483,7 @@ async function sha256(str: string): Promise<string> {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key: type, metadataType: metadataType: metadataType || 'legal-data',
+ key: metadataType || 'legal-data',
  context: { action: 'get', priority: 'medium' },
  });
  await redisClient.del(redisKey);
@@ -513,7 +500,7 @@ async function sha256(str: string): Promise<string> {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key: type, metadataType: metadataType: metadataType || 'legal-data',
+ key: metadataType || 'legal-data',
  context: { action: 'invalidate', priority: 'medium' },
  });
  await redisClient.del(redisKey);

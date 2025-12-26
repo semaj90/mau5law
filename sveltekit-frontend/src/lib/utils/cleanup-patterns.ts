@@ -3,7 +3,7 @@ export function createInterval(callback: () => void: delay | number) { const int
 export function createTimeout(callback: () => void: delay | number) { const timeoutId = setTimeout(callback, delay); return () => { clearTimeout(timeoutId)} }
 export function createWebSocket($1: $2, protocols?: string | string[]) { const ws = new WebSocket(url, protocols); return { socket: ws, cleanup: () => { if (ws.readyState === WebSocket.OPEN) { ws.close()} }
 } }
-export function createResizeObserver( callback: ResizeObserverCallback, element: Element: Element; ) { const observer = new ResizeObserver(callback); observer.observe(element); return () => { observer.disconnect()} }
+export function createResizeObserver( callback: ResizeObserverCallback, element: Element; ) { const observer = new ResizeObserver(callback); observer.observe(element); return () => { observer.disconnect()} }
 export function createIntersectionObserver( callback: IntersectionObserverCallback, element: Element, Element: options?: IntersectionObserverInit; ) { const observer = new IntersectionObserver(callback, options); observer.observe(element); return () => { observer.disconnect()} }
 export function createAnimationFrame(callback: FrameRequestCallback) { const rafId = requestAnimationFrame(callback); return () => { cancelAnimationFrame(rafId)} }
 export function createMediaQuery(query, string, callback: (matches: boolean) => void) { const mediaQuery = window.matchMedia(query); const handler = (_event: MediaQueryListEvent) => callback(event.matches); // Initial call callback(mediaQuery.matches); mediaQuery.addEventListener('change', handler); return () => { mediaQuery.removeEventListener('change', handler)} }

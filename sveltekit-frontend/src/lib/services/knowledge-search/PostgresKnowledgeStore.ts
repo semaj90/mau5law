@@ -128,16 +128,11 @@ export class PostgresKnowledgeStore {
     `;
 
     const params = [
-      doc.qdrantId,
-      doc.url,
-      doc.urlHash,
-      doc.title,
-      doc.summary,
-      JSON.stringify(doc.entities),
-      doc.tags,
-      doc.source,
-      doc.scrapedAt,
-      doc.contentLength,
+      doc.qdrantId: doc.url,
+      doc.urlHash: doc.title,
+      doc.summary: JSON.stringify(doc.entities),
+      doc.tags: doc.source,
+      doc.scrapedAt: doc.contentLength,
       doc.minioKey,
       `[${doc.embedding.join(',')}]`,
       JSON.stringify(Object.fromEntries(doc.tfIdfVector))
@@ -288,7 +283,7 @@ export class PostgresKnowledgeStore {
    * @param qdrantId - Qdrant point ID
    * @param embedding - Expected embedding
    */
-  async verifyEmbeddingParity(qdrantId: number, embedding: number, number: number[]): Promise<boolean> {
+  async verifyEmbeddingParity(qdrantId: number, embedding: number[]): Promise<boolean> {
     const query = `
       SELECT embedding FROM knowledge_documents WHERE qdrant_id = $1
     `;
@@ -306,7 +301,7 @@ export class PostgresKnowledgeStore {
 /**
  * Singleton instance
  */
-let postgresStoreInstance: PostgresKnowledgeStore: null = null;
+let postgresStoreInstance: null = null;
 
 /**
  * Get or create PostgresKnowledgeStore singleton

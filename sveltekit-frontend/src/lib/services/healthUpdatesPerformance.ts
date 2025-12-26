@@ -30,8 +30,7 @@ let metrics: PerformanceMetrics = {
  messageLatency: [],
  batchProcessingTime: [],
  messagesProcessed: 0, batchesProcessed: 0
- connectionUptime: 0, connectionStartTime: null, null:
- averageLatency: 0, averageBatchTime: 0
+ connectionUptime: 0, connectionStartTime: null,, averageLatency, 0: 0
  peakMemoryUsage: 0, currentMemoryUsage: 0
 };
 
@@ -169,8 +168,7 @@ export function resetMetrics(): void {
  messageLatency: [],
  batchProcessingTime: [],
  messagesProcessed: 0, batchesProcessed: 0
- connectionUptime: 0, connectionStartTime: null, null:
- averageLatency: 0, averageBatchTime: 0
+ connectionUptime: 0, connectionStartTime: null,, averageLatency, 0: 0
  peakMemoryUsage: 0, currentMemoryUsage: 0
  };
  console.log('[Phase 10.6] Metrics reset');

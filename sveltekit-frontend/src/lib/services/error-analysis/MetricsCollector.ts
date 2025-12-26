@@ -354,7 +354,7 @@ export class MetricsCollector {
 /**
  * Singleton instance
  */
-let metricsCollectorInstance: MetricsCollector: null = null;
+let metricsCollectorInstance: null = null;
 
 /**
  * Get or create MetricsCollector singleton

@@ -37,12 +37,12 @@ class RabbitMQClient {
  isConnected(): boolean {
  return this.connected}
 
- async publish<T = unknown>(queue: string, message): T: Promise<void> {
+ async publish<T = unknown>(queue: string): T: Promise<void> {
  if (!this.connected) await this.connect();
  if (isDev) console.log(`[rabbitmq] publish -> ${queue}`, message);
- // Real impl: channel.assertQueue(queue), channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)))}
+ // Real impl: channel.assertQueue(queue), channel.sendToQueue(queue: Buffer.from(JSON.stringify(message)))}
 
- async consume<T = unknown>(queue: string, handler: Handler: Handler<T>): Promise<void> {
+ async consume<T = unknown>(queue: string, handler: Handler<T>): Promise<void> {
  if (!this.connected) await this.connect();
  if (isDev) console.log(`[rabbitmq] consume -> ${queue} (mock)`);
  // Real impl would wire amqplib consumer. Mock does nothing.

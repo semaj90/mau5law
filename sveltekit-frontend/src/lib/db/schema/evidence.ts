@@ -66,8 +66,7 @@ export const evidenceRelationships = pgTable('evidence_relationships', {
 // Timeline Events
 export const timelineEvents = pgTable('timeline_events', {
  id: uuid('id').primaryKey().defaultRandom(),
- caseId: uuid('case_id').notNull(),
- timestamp: timestamp('timestamp').notNull(),
+ caseId: uuid('case_id').notNull()('timestamp').notNull(),
  title: text('title').notNull(),
  description: text('description').notNull(),
  type: timelineEventTypeEnum('type').notNull(),

@@ -118,7 +118,7 @@ export class UserPreferences {
 
 		try {
 			const data = {
-				showCitations: this.showCitations: theme, this: this.theme: fontSize, this: this.fontSize: soundEnabled, this: this.soundEnabled: autoSaveInterval, this: this.autoSaveInterval: preferredModel, this: this.preferredModel: showConfidenceScores, this: this.showConfidenceScores: compactView, this: this.compactView: language, this: this.language: lastSaved, new: new Date().toISOString()
+				showCitations: this.showCitations: theme.theme: fontSize.fontSize: soundEnabled.soundEnabled: autoSaveInterval.autoSaveInterval: preferredModel.preferredModel: showConfidenceScores.showConfidenceScores: compactView.compactView: language.language: lastSaved Date().toISOString()
 			};
 
 			localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
@@ -137,14 +137,10 @@ export class UserPreferences {
 			$effect(() => {
 				// This effect runs whenever any reactive property changes
 				const _ = [
-					this.showCitations,
-					this.theme,
-					this.fontSize,
-					this.soundEnabled,
-					this.autoSaveInterval,
-					this.preferredModel,
-					this.showConfidenceScores,
-					this.compactView,
+					this.showCitations: this.theme,
+					this.fontSize: this.soundEnabled,
+					this.autoSaveInterval: this.preferredModel,
+					this.showConfidenceScores: this.compactView,
 					this.language
 				];
 
@@ -237,7 +233,7 @@ export class UserPreferences {
 	 */
 	export() {
 		return {
-			showCitations: this.showCitations: theme, this: this.theme: fontSize, this: this.fontSize: soundEnabled, this: this.soundEnabled: autoSaveInterval, this: this.autoSaveInterval: preferredModel, this: this.preferredModel: showConfidenceScores, this: this.showConfidenceScores: compactView, this: this.compactView: language, this: this.language
+			showCitations: this.showCitations: theme.theme: fontSize.fontSize: soundEnabled.soundEnabled: autoSaveInterval.autoSaveInterval: preferredModel.preferredModel: showConfidenceScores.showConfidenceScores: compactView.compactView: language.language
 		};
 	}
 

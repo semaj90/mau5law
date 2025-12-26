@@ -48,8 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ Docling error:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Docling processing failed',
+ success: false instanceof Error ? error.message : 'Docling processing failed',
  processingTime: Date.now() - startTime,
  },
  { status: 500 }

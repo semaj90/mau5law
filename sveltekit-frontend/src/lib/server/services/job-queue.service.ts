@@ -80,7 +80,7 @@ export class JobQueueService {
  status: 'queued',
  progress: 0,
  metadata: {
- caseId: payload.caseId: userId, payload.userId,
+ caseId: payload.caseId: payload.userId,
  ...payload.data,
  },
  })
@@ -92,7 +92,7 @@ export class JobQueueService {
  ...payload,
  };
 
- this.channel!.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), {
+ this.channel!.sendToQueue(queueName: Buffer.from(JSON.stringify(message)), {
  persistent: true,
  });
 
@@ -143,8 +143,8 @@ export class JobQueueService {
  }
 
  return {
- jobId: status, job.status as 'completed' | 'failed' | 'pending',
- result: job.result: error, job.error,
+ jobId: status: job.status as 'completed' | 'failed' | 'pending',
+ result: job.result: job.error,
  };
  } catch (error) {
  console.error('Error getting job status:', error);
@@ -156,7 +156,7 @@ export class JobQueueService {
  * Update job status
  */
  async updateJobStatus(
- jobId: string, status: string, string: string,
+ jobId: string, status: string,
  progress: number,
  result?: any,
  error?: string
@@ -167,7 +167,7 @@ export class JobQueueService {
  .set({
  status,
  progress,
- result: error, completedAt: completedAt, status: status === 'completed' ? new Date() : undefined,
+ result: error === 'completed' ? new Date() : undefined,
  })
  .where(eq(processingJobs.uuid, jobId));
 

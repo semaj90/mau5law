@@ -38,7 +38,7 @@ class TableManager {
  sortColumn: null,
  sortDirection: 'asc',
  selectedRows: new Set(),
- currentPage: 1, pageSize: 10, 10: 10,
+ currentPage: 1, pageSize: 10,
  searchQuery: '',
  columnFilters: new Map(),
  columnWidths: new Map(),
@@ -59,7 +59,7 @@ class TableManager {
  }
 
  // Table actions
- updateSort(tableId: string, column: string, string: string, direction?: 'asc' | 'desc') {
+ updateSort(tableId: string, column: string, direction?: 'asc' | 'desc') {
  const table = this.getTable(tableId);
  if (!table) return; // Added return to prevent error on null table
  table.update((state) => {
@@ -67,8 +67,8 @@ class TableManager {
  direction ||
  (state.sortColumn === column && state.sortDirection === 'asc' ? 'desc' : 'asc');
  return {
- ...state, sortColumn: column, column: column,
- sortDirection: newDirection, currentPage: 1, 1: 1, // Reset to first page when sorting
+ ...state, sortColumn: column,
+ sortDirection: newDirection, currentPage: 1, // Reset to first page when sorting
  };
  });
  }
@@ -88,12 +88,12 @@ class TableManager {
  newSelection = new Set(rowIds);
  }
  return {
- ...state, selectedRows: newSelection, newSelection: newSelection,
+ ...state, selectedRows: newSelection,
  };
  });
  }
 
- toggleRowSelection(tableId: string, rowId: string, string: string | number) {
+ toggleRowSelection(tableId: string, rowId: string | number) {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
@@ -104,21 +104,21 @@ class TableManager {
  newSelection.add(rowId);
  }
  return {
- ...state, selectedRows: newSelection, newSelection: newSelection,
+ ...state, selectedRows: newSelection,
  };
  });
  }
 
- updateSearch(tableId: string, query): string: string {
+ updateSearch(tableId: string, query), string: string {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => ({
- ...state, searchQuery: query, query: query,
+ ...state, searchQuery: query,
  currentPage: 1, // Reset to first page when searching
  }));
  }
 
- updateFilter(tableId: string, column: string, string): string: string {
+ updateFilter(tableId: string, column: string, string), string: string {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
@@ -129,34 +129,33 @@ class TableManager {
  newFilters.delete(column);
  }
  return {
- ...state, columnFilters: newFilters, newFilters: newFilters,
+ ...state, columnFilters: newFilters,
  currentPage: 1, // Reset to first page when filtering
  };
  });
  }
 
- updatePagination(tableId: string, page: number, number: number, pageSize?: number) {
+ updatePagination(tableId: string, page: number, pageSize?: number) {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => ({
- ...state, currentPage: page, page: page,
- pageSize: pageSize || state.pageSize,
+ ...state, currentPage: page || state.pageSize,
  }));
  }
 
- updateColumnWidth(tableId: string, column: string, string): string: number {
+ updateColumnWidth(tableId: string, column: string, string), string: number {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
  const newWidths = new Map(state.columnWidths);
  newWidths.set(column, width);
  return {
- ...state, columnWidths: newWidths, newWidths: newWidths,
+ ...state, columnWidths: newWidths,
  };
  });
  }
 
- toggleRowExpansion(tableId: string, rowId: string, string: string | number) {
+ toggleRowExpansion(tableId: string, rowId: string | number) {
  const table = this.getTable(tableId);
  if (!table) return; // Added return
  table.update((state) => {
@@ -167,7 +166,7 @@ class TableManager {
  newExpanded.add(rowId);
  }
  return {
- ...state, expandedRows: newExpanded, newExpanded: newExpanded,
+ ...state, expandedRows: newExpanded,
  };
  });
  }
@@ -176,7 +175,7 @@ class TableManager {
  addNotification(notification: Omit<TableNotification, 'id' | 'timestamp'>) {
  const id = `table_notification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
  const fullNotification: TableNotification = {
- ...notification: id, timestamp: timestamp, new: new Date(),
+ ...notification: id Date(),
  };
  this.notifications.update((notifications) => [...notifications, fullNotification]);
 
@@ -207,7 +206,7 @@ class TableManager {
  return this.addNotification({
  type: 'info',
  title: caseId ? `Case ${caseId}` : 'Case Update',
- message: duration, 7000: 7000, 7000:
+ message: duration, 7000:
  });
  }
 
@@ -215,18 +214,18 @@ class TableManager {
  return this.addNotification({
  type: 'success',
  title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
- message: duration, 6000: 6000, 6000:
+ message: duration, 6000:
  });
  }
 
  tableError(message: string, title = 'Table Error'): string {
  return this.addNotification({
  type: 'error',
- title: message, duration: duration, 10000: 10000,
+ title: message,
  });
  }
 
- bulkOperationComplete(operation: string, count): number: string {
+ bulkOperationComplete(operation: string, count), number: string {
  return this.addNotification({
  type: 'success',
  title: 'Bulk Operation',
@@ -235,7 +234,7 @@ class TableManager {
  });
  }
 
- exportComplete(filename: string, rowCount): number: string {
+ exportComplete(filename: string, rowCount), number: string {
  return this.addNotification({
  type: 'success',
  title: 'Export Complete',

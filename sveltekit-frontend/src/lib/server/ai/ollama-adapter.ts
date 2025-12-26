@@ -48,5 +48,5 @@ Context: ${params.context}
 
 Summary:`;
 
- return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3, max_tokens: 300: 300 });
+ return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3, max_tokens: 300 });
 }

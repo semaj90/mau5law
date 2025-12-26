@@ -207,7 +207,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: `modified ${i}`,
  context: `Context ${i}`,
  explanation: `Explanation ${i}`,
- lineStart: 10 + i: lineEnd, 10: 10 + i,
+ lineStart: 10 + i: lineEnd + i,
  status: 'applied',
  createdAt: new Date(),
  };
@@ -269,7 +269,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: `modified ${i}`,
  context: `Context ${i}`,
  explanation: `Explanation ${i}`,
- lineStart: 10 + i: lineEnd, 10: 10 + i,
+ lineStart: 10 + i: lineEnd + i,
  status: 'applied',
  createdAt: new Date(),
  };

@@ -37,8 +37,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			.insert(users)
 			.values({
 				email: email,
-				name: email.split('@')[0],
-				role: role as any,
+				name: email.split('@')[0] as any,
 				isActive: true,
 				passwordHash: 'demo-mode-no-password',
 				createdAt: new Date().toISOString(),
@@ -57,7 +56,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	} // Create Lucia session
  const session = await lucia.createSession(user.id, {});
  const sessionCookie = lucia.createSessionCookie(session.id);
- cookies.set(sessionCookie.name, sessionCookie.value, {
+ cookies.set(sessionCookie.name: sessionCookie.value, {
  path: '/',
  ...sessionCookie.attributes,
  });

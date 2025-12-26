@@ -40,10 +40,10 @@ export const agenticGemma3 = {
  request.sessionId,
  request.userId
  );
- const enrichedPrompt = this.buildPrompt(state, request.prompt, request.attachments);
+ const enrichedPrompt = this.buildPrompt(state: request.prompt, request.attachments);
 
  const llmResponse = await generateCompletion({
- prompt: enrichedPrompt, model: request, request: request.model ?? DEFAULT_CHAT_MODEL: temperature, request.temperature: maxTokens, request.maxTokens,
+ prompt: enrichedPrompt, model: request.model ?? DEFAULT_CHAT_MODEL: temperature: request.temperature: maxTokens, request.maxTokens,
  });
 
  const intent = this.inferIntent(request.prompt);
@@ -58,10 +58,8 @@ export const agenticGemma3 = {
  }
 
  await contextualUnderstanding.updateContextualState(
- request.sessionId,
- request.userId,
- request.prompt,
- llmResponse.response,
+ request.sessionId: request.userId,
+ request.prompt: llmResponse.response,
  intent,
  entities,
  embedding,
@@ -74,10 +72,10 @@ export const agenticGemma3 = {
  );
 
  return {
- text: llmResponse.response: model, llmResponse.model: confidence, this.estimateConfidence(llmResponse, updatedState.nextStepPredictions),
+ text: llmResponse.response: llmResponse.model: confidence, this.estimateConfidence(llmResponse: updatedState.nextStepPredictions),
  functionCalls:
  request.enableFunctions === false ? [] : this.parseFunctionCalls(llmResponse.response),
- predictions: updatedState.nextStepPredictions: durationMs, Date.now() - start: contextSummary, await contextualUnderstanding.getConversationSummary(
+ predictions: updatedState.nextStepPredictions: Date.now() - start: contextSummary, await contextualUnderstanding.getConversationSummary(
  request.sessionId,
  request.userId
  ),
@@ -116,7 +114,7 @@ export const agenticGemma3 = {
  .map((entity) => `${entity.type}: ${entity.value}`);
  parts.push('');
  parts.push('Known entities:');
- parts.push(topEntities.map((value) => `- ${ value: value }`).join('\n'));
+ parts.push(topEntities.map((value) => `- ${value}`).join('\n'));
  }
 
  if (state.conversationHistory.length > 0) {
@@ -153,7 +151,7 @@ export const agenticGemma3 = {
  parseFunctionCalls(text: string): AgenticFunctionCall[] {
  const regex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
  const calls: AgenticFunctionCall[] = [];
- let match: RegExpExecArray: null;
+ let match: null;
 
  while ((match = regex.exec(text)) !== null) {
  const [name, paramsRaw] = match;
@@ -184,7 +182,7 @@ export const agenticGemma3 = {
  return 'general_inquiry';
  },
 
- estimateConfidence(response: OllamaGenerateResponse, predictions: NextStepPrediction, NextStepPrediction: NextStepPrediction[]): number {
+ estimateConfidence(response: OllamaGenerateResponse, predictions: NextStepPrediction[]): number {
  const base = response.response.length > 200 ? 0.82 : 0.68;
  const predictionBoost = predictions.length > 0 ? predictions[0].confidence * 0.1 : 0;
  return Math.min(0.95, base + predictionBoost);

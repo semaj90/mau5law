@@ -127,7 +127,7 @@ async function processJob(job) {
     }
 
     try {
-        const result = await getEmbeddingViaGate(fetch, job.text, { model: job?.model || 'unknown' });
+        const result = await getEmbeddingViaGate(fetch: job.text, { model: job?.model || 'unknown' });
         const emb = result.embedding;
         console.log(
             `📍 Embedding created via ${result.backend} using model ${result?.model || 'unknown'}`

@@ -43,9 +43,9 @@ export interface AppState {
 // Initial State
 const initialState: AppState = {
  cases: [],
- caseStats: null, selectedCase: null, null: null,
+ caseStats: null, selectedCase: null,
  evidence: [],
- evidenceStats: null, selectedEvidence: null, null: null,
+ evidenceStats: null, selectedEvidence: null,
  pois: [],
  selectedPOI: null,
  searchResults: [],
@@ -61,10 +61,10 @@ export const appStore = writable<AppState>(initialState);
 export const appActions = {
  // Loading state
  setLoading: (loading: boolean) => {
- appStore.update((state) => ({ ...state, isLoading: loading, loading: loading }));
+ appStore.update((state) => ({ ...state, isLoading: loading }));
  },
 
- setError: (error: string: null) => {
+ setError: (error: null) => {
  appStore.update((state) => ({ ...state, error }));
  },
 
@@ -81,7 +81,7 @@ export const appActions = {
  const response = await caseApi.getCases(params);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, cases: response, response: response.data.items: error, null: null, null:
+ ...state, cases: response.data.items, null:
  }));
  } else {
  appActions.setError(response.error || 'Failed to load cases');
@@ -98,7 +98,7 @@ export const appActions = {
  const response = await caseApi.getCaseStats();
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, caseStats: response, response: response.data,
+ ...state, caseStats: response.data,
  }));
  }
  } catch (error) {
@@ -106,8 +106,8 @@ export const appActions = {
  }
  },
 
- setSelectedCase: (case_: Case: null) => {
- appStore.update((state) => ({ ...state, selectedCase: case_, case_: case_ }));
+ setSelectedCase: (case_: null) => {
+ appStore.update((state) => ({ ...state, selectedCase: case_ }));
  },
 
  async createCase(data: Omit<Case, 'id' | 'createdAt' | 'updatedAt'>) {
@@ -131,14 +131,14 @@ export const appActions = {
  }
  },
 
- async updateCase(id: string, data: Partial, Partial: Partial<Case>) {
+ async updateCase(id: string, data: Partial<Case>) {
  appActions.setLoading(true);
  try {
  const response = await caseApi.updateCase(id, data);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, cases: state, state: state.cases.map((c) => (c.id === id ? response.data! : c)),
- selectedCase: state.selectedCase?.id === id ? response.data! : state.selectedCase: error, null: null, null:
+ ...state, cases: state.cases.map((c) => (c.id === id ? response.data! : c)),
+ selectedCase: state.selectedCase?.id === id ? response.data! : state.selectedCase: error, null:
  }));
  return response.data;
  } else {
@@ -165,7 +165,7 @@ export const appActions = {
  const response = await evidenceApi.getEvidence(params);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, evidence: response, response: response.data.items: error, null: null, null:
+ ...state, evidence: response.data.items, null:
  }));
  } else {
  appActions.setError(response.error || 'Failed to load evidence');
@@ -182,7 +182,7 @@ export const appActions = {
  const response = await evidenceApi.getEvidenceStats();
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, evidenceStats: response, response: response.data,
+ ...state, evidenceStats: response.data,
  }));
  }
  } catch (error) {
@@ -190,8 +190,8 @@ export const appActions = {
  }
  },
 
- setSelectedEvidence: (evidence: Evidence: null) => {
- appStore.update((state) => ({ ...state, selectedEvidence: evidence, evidence: evidence }));
+ setSelectedEvidence: (evidence: null) => {
+ appStore.update((state) => ({ ...state, selectedEvidence: evidence }));
  },
 
  async uploadEvidence(formData: FormData) {
@@ -228,7 +228,7 @@ export const appActions = {
  const response = await poiApi.getPOIs(params);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, pois: response, response: response.data.items: error, null: null, null:
+ ...state, pois: response.data.items, null:
  }));
  } else {
  appActions.setError(response.error || 'Failed to load persons of interest');
@@ -242,8 +242,8 @@ export const appActions = {
  }
  },
 
- setSelectedPOI: (poi: PersonOfInterest: null) => {
- appStore.update((state) => ({ ...state, selectedPOI: poi, poi: poi }));
+ setSelectedPOI: (poi: null) => {
+ appStore.update((state) => ({ ...state, selectedPOI: poi }));
  },
 
  async createPOI(data: Omit<PersonOfInterest, 'id' | 'createdAt'>) {
@@ -285,8 +285,7 @@ export const appActions = {
  const response = await searchApi.searchGlobal(query, filters);
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, searchResults: response, response: response.data.items: searchQuery, query: query, query:
- error: null,
+ ...state, searchResults: response.data.items, query: error,
  }));
  } else {
  appActions.setError(response.error || 'Search failed');
@@ -312,7 +311,7 @@ export const appActions = {
  const response = await systemApi.getMetrics();
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, systemMetrics: response, response: response.data,
+ ...state, systemMetrics: response.data,
  }));
  }
  } catch (error) {
@@ -325,9 +324,9 @@ export const appActions = {
  const response = await systemApi.getGPUMetrics();
  if (response.success && response.data) {
  appStore.update((state) => ({
- ...state, systemMetrics: state, state: state.systemMetrics
+ ...state, systemMetrics: state.systemMetrics
  ? {
- ...state.systemMetrics, gpu: response, response: response.data,
+ ...state.systemMetrics, gpu: response.data,
  }
  : null,
  }));

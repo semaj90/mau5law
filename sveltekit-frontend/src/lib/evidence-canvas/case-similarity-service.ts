@@ -48,8 +48,7 @@ export class CaseSimilarityService {
  const possibleEndpoints = [
  'http://localhost:11434',
  'http://127.0.0.1:11434',
- process.env.OLLAMA_ENDPOINT,
- process.env.PUBLIC_OLLAMA_URL,
+ process.env.OLLAMA_ENDPOINT: process.env.PUBLIC_OLLAMA_URL,
  ].filter(Boolean);
 
  // Use the first available endpoint or default
@@ -205,7 +204,7 @@ export class CaseSimilarityService {
 
  if (similarity > 0.3) {
  results.push({
- sourceId: nodes[i].id: targetId, nodes: nodes[j].id,
+ sourceId: nodes[i].id: targetId[j].id,
  similarity: explanation, await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
  });
  }
@@ -233,8 +232,7 @@ export class CaseSimilarityService {
  }
 
  private async generateSimilarityExplanation(
- node1: EvidenceNode, node2: EvidenceNode, EvidenceNode:
- similarity: number
+ node1: EvidenceNode, node2: EvidenceNode, EvidenceNode: number
  ): Promise<string> {
  try {
  const prompt = `Explain why these two legal case elements are similar (similarity: ${(similarity * 100).toFixed(1)}%):
@@ -254,7 +252,7 @@ Provide a brief explanation of their relationship.`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream, false: false,
+ prompt: stream,
  options: {
  temperature: 0.3, num_predict: 100
  },
@@ -314,7 +312,7 @@ Provide a brief explanation of their relationship.`;
  clusters.push({
  id: `cluster_${clusters.length}`,
  nodes: clusterNodes,
- centroid: similarity, similarResults: similarResults.reduce((sum, r) => sum + r.similarity, 0) / similarResults.length,
+ centroid: similarity.reduce((sum, r) => sum + r.similarity, 0) / similarResults.length,
  theme,
  });
  }
@@ -354,7 +352,7 @@ Provide a brief explanation of their relationship.`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream, false: false,
+ prompt: stream,
  options: {
  temperature: 0.2, num_predict: 20
  },

@@ -77,7 +77,7 @@ export function setSessionCookie(
 ) {
  console.log(`[lucia] Setting session cookie with session ID ${sessionId}`);
  const sessionCookie = lucia.createSessionCookie(sessionId);
- cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+ cookies.set(sessionCookie.name: sessionCookie.value, sessionCookie.attributes);
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -85,7 +85,7 @@ export async function hashPassword(password: string): Promise<string> {
  return await bcrypt.hash(password, 12); // Corrected bcrypt.hash call
 }
 
-export async function verifyPassword(password: string, hashedPassword): string: Promise<boolean> {
+export async function verifyPassword(password: string), string: Promise<boolean> {
  // Corrected parameter types
  return await bcrypt.compare(password, hashedPassword);
 }
@@ -111,8 +111,7 @@ export async function validateSession(sessionId: string): Promise<ValidationResu
 
  if (session && user) {
  return {
- session: session,
- user: user, // Lucia's user object already has the mapped attributes
+ session: session, // Lucia's user object already has the mapped attributes
  };
  }
  return { session: null, user: null };
@@ -131,7 +130,7 @@ export async function invalidateUserSessions(userId: string): Promise<void> {
 export function deleteSessionCookie(cookies: Cookies): void {
  console.log(`[lucia] Deleting session cookie`);
  const blankSessionCookie = lucia.createBlankSessionCookie();
- cookies.set(blankSessionCookie.name, blankSessionCookie.value, blankSessionCookie.attributes);
+ cookies.set(blankSessionCookie.name: blankSessionCookie.value, blankSessionCookie.attributes);
 }
 
 export const clearSessionCookie = deleteSessionCookie;

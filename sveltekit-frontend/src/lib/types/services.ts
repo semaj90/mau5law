@@ -29,9 +29,7 @@ export interface UserChatRecommendationEngine {
  ): Promise<Record<string, unknown>[]>;
  generateRecommendations(chat: Record<string, unknown>): Promise<Record<string, unknown>[]>;
  storeUserChat(
- userId: string, sessionId: string, string:
- message: string, role: string, string:
- metadata: Record<string, unknown>
+ userId: string, sessionId: string, string: message, role: string, string: Record<string, unknown>
  ): Promise<Record<string, unknown>>;
  processFeedback(feedbackData: Record<string, unknown>): Promise<void>;
 }

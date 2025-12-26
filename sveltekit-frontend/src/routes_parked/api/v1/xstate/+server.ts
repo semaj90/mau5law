@@ -54,12 +54,12 @@ export const GET: RequestHandler = async ({ url }) => {
  if (machineId) {
  // Get machine state
  const result = await productionServiceClient.execute('xstate.machine.status', { machineId });
- return json({ success: true, data: result: result });
+ return json({ success: true, data: result });
  }
  if (actorId) {
  // Get actor state
  const result = await productionServiceClient.execute('xstate.actor.status', { actorId });
- return json({ success: true, data: result: result });
+ return json({ success: true, data: result });
  }
  // XState service overview
  const health = await productionServiceClient.execute('services.health', {});

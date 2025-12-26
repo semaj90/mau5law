@@ -1,13 +1,13 @@
 export interface ChatMessage {
-id: string, content: string, role: "user" | "assistant" | "system",timestamp: Date: conversationId?: string; metadata?: { model?: string; tokensUsed?: number; references?: string[]; confidence?: number; legalContext?: any; executionTime?: number
+id: string, content: string, role: "user" | "assistant" | "system",timestamp: conversationId?: string; metadata?: { model?: string; tokensUsed?: number; references?: string[]; confidence?: number; legalContext?: any; executionTime?: number
 }
 
 export interface Conversation {
-id: string, title: string, messages: ChatMessage[], created: Date, updated: Date: metadata?: { caseType?: string; jurisdiction?: string; precedents?: string[]
+id: string, title: string, messages: ChatMessage[], created: Date, updated: metadata?: { caseType?: string; jurisdiction?: string; precedents?: string[]
 }
 
 export interface ChatSettings {
-model: string, temperature: number, maxTokens: number, streaming: boolean, contextWindow: number, proactiveMode: boolean, emotionalMode: boolean: legalMode?: boolean; citationMode?: boolean
+model: string, temperature: number, maxTokens: number, streaming: boolean, contextWindow: number, proactiveMode: boolean, emotionalMode: legalMode?: boolean; citationMode?: boolean
 }
 
 export interface ServiceStatus {

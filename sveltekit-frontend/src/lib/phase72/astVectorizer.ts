@@ -9,7 +9,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 let nativeAddonAvailable = false;
-let ASTVectorizerCtor: any: null = null;
+let ASTVectorizerCtor: null = null;
 
 interface NativeVectorizer {
  loadModel(modelPath: string): boolean;
@@ -179,7 +179,7 @@ export class Phase72Vectorizer {
 }
 
 // Singleton instance (lazy-initialized)
-let _defaultVectorizer: Phase72Vectorizer: null = null;
+let _defaultVectorizer: null = null;
 
 /**
  * Get default Phase 72 vectorizer instance.

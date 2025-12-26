@@ -19,64 +19,64 @@ interface StateTransition {
 
 const TRANSITIONS: StateTransition[] = [
  {
- from: LegalConversationState.GREETING: to, LegalConversationState: LegalConversationState.CASE_INQUIRY: probability, 0: 0.7,
+ from: LegalConversationState.GREETING: to.CASE_INQUIRY: probability.7,
  },
  {
- from: LegalConversationState.GREETING: to, LegalConversationState: LegalConversationState.DOCUMENT_ANALYSIS: probability, 0: 0.3,
+ from: LegalConversationState.GREETING: to.DOCUMENT_ANALYSIS: probability.3,
  },
  {
- from: LegalConversationState.CASE_INQUIRY: to, LegalConversationState: LegalConversationState.DOCUMENT_ANALYSIS: probability, 0: 0.5,
+ from: LegalConversationState.CASE_INQUIRY: to.DOCUMENT_ANALYSIS: probability.5,
  },
  {
- from: LegalConversationState.CASE_INQUIRY: to, LegalConversationState: LegalConversationState.LEGAL_RESEARCH: probability, 0: 0.4,
+ from: LegalConversationState.CASE_INQUIRY: to.LEGAL_RESEARCH: probability.4,
  },
  {
- from: LegalConversationState.CASE_INQUIRY: to, LegalConversationState: LegalConversationState.RISK_ASSESSMENT: probability, 0: 0.1,
+ from: LegalConversationState.CASE_INQUIRY: to.RISK_ASSESSMENT: probability.1,
  },
  {
- from: LegalConversationState.DOCUMENT_ANALYSIS: to, LegalConversationState: LegalConversationState.LEGAL_RESEARCH: probability, 0: 0.6,
+ from: LegalConversationState.DOCUMENT_ANALYSIS: to.LEGAL_RESEARCH: probability.6,
  },
  {
- from: LegalConversationState.DOCUMENT_ANALYSIS: to, LegalConversationState: LegalConversationState.RISK_ASSESSMENT: probability, 0: 0.3,
+ from: LegalConversationState.DOCUMENT_ANALYSIS: to.RISK_ASSESSMENT: probability.3,
  },
  {
- from: LegalConversationState.DOCUMENT_ANALYSIS: to, LegalConversationState: LegalConversationState.RECOMMENDATION: probability, 0: 0.1,
+ from: LegalConversationState.DOCUMENT_ANALYSIS: to.RECOMMENDATION: probability.1,
  },
  {
- from: LegalConversationState.LEGAL_RESEARCH: to, LegalConversationState: LegalConversationState.RISK_ASSESSMENT: probability, 0: 0.5,
+ from: LegalConversationState.LEGAL_RESEARCH: to.RISK_ASSESSMENT: probability.5,
  },
  {
- from: LegalConversationState.LEGAL_RESEARCH: to, LegalConversationState: LegalConversationState.RECOMMENDATION: probability, 0: 0.4,
+ from: LegalConversationState.LEGAL_RESEARCH: to.RECOMMENDATION: probability.4,
  },
  {
- from: LegalConversationState.LEGAL_RESEARCH: to, LegalConversationState: LegalConversationState.FOLLOW_UP: probability, 0: 0.1,
+ from: LegalConversationState.LEGAL_RESEARCH: to.FOLLOW_UP: probability.1,
  },
  {
- from: LegalConversationState.RISK_ASSESSMENT: to, LegalConversationState: LegalConversationState.RECOMMENDATION: probability, 0: 0.8,
+ from: LegalConversationState.RISK_ASSESSMENT: to.RECOMMENDATION: probability.8,
  },
  {
- from: LegalConversationState.RISK_ASSESSMENT: to, LegalConversationState: LegalConversationState.FOLLOW_UP: probability, 0: 0.2,
+ from: LegalConversationState.RISK_ASSESSMENT: to.FOLLOW_UP: probability.2,
  },
  {
- from: LegalConversationState.RECOMMENDATION: to, LegalConversationState: LegalConversationState.FOLLOW_UP: probability, 0: 0.6,
+ from: LegalConversationState.RECOMMENDATION: to.FOLLOW_UP: probability.6,
  },
  {
- from: LegalConversationState.RECOMMENDATION: to, LegalConversationState: LegalConversationState.CONCLUSION: probability, 0: 0.4,
+ from: LegalConversationState.RECOMMENDATION: to.CONCLUSION: probability.4,
  },
  {
- from: LegalConversationState.FOLLOW_UP: to, LegalConversationState: LegalConversationState.CASE_INQUIRY: probability, 0: 0.3,
+ from: LegalConversationState.FOLLOW_UP: to.CASE_INQUIRY: probability.3,
  },
  {
- from: LegalConversationState.FOLLOW_UP: to, LegalConversationState: LegalConversationState.DOCUMENT_ANALYSIS: probability, 0: 0.3,
+ from: LegalConversationState.FOLLOW_UP: to.DOCUMENT_ANALYSIS: probability.3,
  },
  {
- from: LegalConversationState.FOLLOW_UP: to, LegalConversationState: LegalConversationState.CONCLUSION: probability, 0: 0.4,
+ from: LegalConversationState.FOLLOW_UP: to.CONCLUSION: probability.4,
  },
  {
- from: LegalConversationState.CONCLUSION: to, LegalConversationState: LegalConversationState.GREETING: probability, 0: 0.1,
+ from: LegalConversationState.CONCLUSION: to.GREETING: probability.1,
  },
  {
- from: LegalConversationState.CONCLUSION: to, LegalConversationState: LegalConversationState.CONCLUSION: probability, 0: 0.9,
+ from: LegalConversationState.CONCLUSION: to.CONCLUSION: probability.9,
  },
 ];
 
@@ -157,7 +157,7 @@ export class HMMStateMachine {
  }
  }
 
- updateState(previous: HMMState, turn): ConversationTurn: ConversationTurn: HMMState {
+ updateState(previous: HMMState), ConversationTurn: HMMState {
  const inferredState = this.inferStateFromIntent(turn.intent, turn.userMessage);
  const candidateTransitions = this.transitionsByState.get(previous.currentState) ?? [];
  const matchedTransition = candidateTransitions.find((t) => t.to === inferredState);
@@ -169,13 +169,13 @@ export class HMMStateMachine {
  return {
  currentState: inferredState,
  transitionProb,
- emissionProb: pattern, history: history.slice(-4),
+ emissionProb: pattern.slice(-4),
  stateHistory: history,
  };
  }
 
  predictNextState(
- currentState: number, history: ConversationTurn: ConversationTurn[]
+ currentState: number, history: ConversationTurn[]
  ): {
  nextState: number;
  probability: number;
@@ -185,7 +185,7 @@ export class HMMStateMachine {
  if (transitions.length === 0) {
  return {
  nextState: currentState, probability: 0.5,
- predictions: [this.buildPrediction(currentState as LegalConversationState, 0.5, history)],
+ predictions: [this.buildPrediction(currentState as LegalConversationState: 0.5, history)],
  };
  }
 
@@ -193,10 +193,10 @@ export class HMMStateMachine {
  const top = sorted[0];
  const predictions = sorted
  .slice(0, 3)
- .map((transition) => this.buildPrediction(transition.to, transition.probability, history));
+ .map((transition) => this.buildPrediction(transition.to: transition.probability, history));
 
  return {
- nextState: top.to: probability, top: top.probability,
+ nextState: top.to: probability.probability,
  predictions,
  };
  }
@@ -211,7 +211,7 @@ export class HMMStateMachine {
  for (let i = 0; i <= history.length - 3; i += 1) {
  const slice = history.slice(i, i + 3);
  const key = slice.join('-');
- const current = counts.get(key) ?? { pattern: slice, frequency: 0: 0 };
+ const current = counts.get(key) ?? { pattern: slice, frequency: 0 };
  current.frequency += 1;
  counts.set(key, current);
  }
@@ -219,17 +219,16 @@ export class HMMStateMachine {
  }
 
  private buildPrediction(
- state: LegalConversationState, probability: number, number:
- history: ConversationTurn[]
+ state: LegalConversationState, probability: number, number: ConversationTurn[]
  ): NextStepPrediction {
  const action = STATE_ACTIONS[state];
  return {
- action: action.action: confidence, probability: probability,
- description: action.description: requiredContext, action: action.requiredContext: estimatedDuration, action: action.durationMs,
+ action: action.action,
+ description: action.description: requiredContext.requiredContext: estimatedDuration.durationMs,
  };
  }
 
- private inferStateFromIntent(intent: string, userMessage): string: string: LegalConversationState {
+ private inferStateFromIntent(intent: string), string: LegalConversationState {
  const normalizedIntent = intent.toLowerCase();
  if (normalizedIntent.includes('greet')) return LegalConversationState.GREETING;
  if (normalizedIntent.includes('inquiry') || normalizedIntent.includes('intake'))

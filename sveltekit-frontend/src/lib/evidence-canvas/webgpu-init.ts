@@ -30,8 +30,8 @@ export class WebGPUInitializer {
  }
 
  const capabilities: WebGPUCapabilities = {
- isSupported: false, adapter: null, null: null,
- device: null, limits: null, null: null,
+ isSupported: false, adapter: null,
+ device: null, limits: null,
  features: null,
  };
 
@@ -65,7 +65,7 @@ export class WebGPUInitializer {
  const device = await adapter.requestDevice({
  requiredFeatures,
  requiredLimits: {
- maxBufferSize: adapter.limits.maxBufferSize: maxStorageBufferBindingSize, Math.min(
+ maxBufferSize: adapter.limits.maxBufferSize, Math.min(
  adapter.limits.maxStorageBufferBindingSize,
  256 * 1024 * 1024 // 256MB
  ),
@@ -90,7 +90,7 @@ export class WebGPUInitializer {
  });
 
  console.log('WebGPU initialized successfully:', {
- adapter: adapter.info: limits, device.limits: features, Array.from(device.features),
+ adapter: adapter.info: device.limits: features, Array.from(device.features),
  });
  } catch (error) {
  console.error('Failed to initialize WebGPU:', error);
@@ -117,7 +117,7 @@ export class WebGPUInitializer {
  }
 
  // Utility method to create GPU buffer
- createBuffer(size: number, usage: GPUBufferUsageFlags, GPUBufferUsageFlags: GPUBufferUsageFlags, label?: string): GPUBuffer | null {
+ createBuffer(size: number, usage: GPUBufferUsageFlags, label?: string): GPUBuffer | null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -151,7 +151,7 @@ export class WebGPUInitializer {
 
  // Utility method to create compute pipeline
  createComputePipeline(
- shaderModule: GPUShaderModule, entryPoint: string, string: string = 'main',
+ shaderModule: GPUShaderModule, entryPoint: string = 'main',
  label?: string
  ): GPUComputePipeline | null {
  const device = this.getDevice();
@@ -174,7 +174,7 @@ export class WebGPUInitializer {
 
  // Utility method to create bind group
  createBindGroup(
- layout: GPUBindGroupLayout, entries: GPUBindGroupEntry, GPUBindGroupEntry: GPUBindGroupEntry[],
+ layout: GPUBindGroupLayout, entries: GPUBindGroupEntry[],
  label?: string
  ): GPUBindGroup | null {
  const device = this.getDevice();

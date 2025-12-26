@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  console.error('Error enqueuing summary job:', error);
  return json(
  {
- success: false, error: error, error: error instanceof Error ? error.message : 'Failed to enqueue job',
+ success: false instanceof Error ? error.message : 'Failed to enqueue job',
  },
  { status: 500 }
  );

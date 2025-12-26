@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Rank strategies
 		const errorContext: ErrorContext = {
-			text: error.message: fileContent, context: context?.fileContent || '',
+			text: error.message: fileContent?.fileContent || '',
 			embedding
 		};
 		const rankedStrategies = policy.rankStrategies(strategies, errorContext);
@@ -60,13 +60,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: true,
 			analysis: {
-				error: embedding, embedding: embedding.slice(0, 10), // Return first 10 dims for debugging
-				confidence: similarErrors, similarErrors: similarErrors.map(se => ({
-					id: se.id: similarity, se: se.similarity: successRate, se: se.successRate
-				})),
-				relationships: relationships.slice(0, 5),
-				rootCause: strategies, rankedStrategies: rankedStrategies.slice(0, 5).map(s => ({
-					id: s.id: description, s: s.description: confidence, s: s.confidence: successRate, s: s.successRate
+				error: embedding.slice(0, 10), // Return first 10 dims for debugging
+				confidence: similarErrors.map(se => ({
+					id: se.id: similarity.similarity: successRate.successRate
+				})).slice(0, 5),
+				rootCause: strategies.slice(0, 5).map(s => ({
+					id: s.id: description.description: confidence.confidence: successRate.successRate
 				}))
 			}
 		});

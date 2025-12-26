@@ -88,8 +88,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		await db
 			.update(errorSuggestions)
 			.set({
-				applied: true, appliedAt: new, new: new Date().toISOString(),
-				appliedByUserId: locals.user.id: updatedAt, new: new: new Date().toISOString(),
+				applied: true, appliedAt: new Date().toISOString(),
+				appliedByUserId: locals.user.id: new Date().toISOString(),
 			})
 			.where(eq(errorSuggestions.id, suggestionId));
 
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			success: true,
 			message: 'Patch applied successfully',
 			filePath,
-			backupPath: suggestionId, appliedBy: appliedBy, locals: locals.user.id,
+			backupPath: suggestionId.user.id,
 		});
 	} catch (err) {
 		console.error('Phase 78 Patch Application Error:', err);
@@ -154,7 +154,7 @@ function extractPatchCode(patch: string): string | null {
  * find and replace code sections.
  */
 function applyPatch(
-	originalContent: string, patchCode: string, string: string,
+	originalContent: string, patchCode: string,
 	suggestion: typeof errorSuggestions.$inferSelect
 ): string {
 	const timestamp = new Date().toISOString();
@@ -164,7 +164,7 @@ function applyPatch(
 // ═══════════════════════════════════════════════════════════════
 // 🤖 Phase 78 AI-Applied Patch
 // Risk Level: ${suggestion.riskLevel}
-// Applied: ${ timestamp: timestamp }
+// Applied: ${timestamp}
 // Suggestion: ${suggestion.summary}
 // ═══════════════════════════════════════════════════════════════
 

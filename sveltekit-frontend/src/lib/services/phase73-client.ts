@@ -66,7 +66,7 @@ export class Phase73Client {
  }
  ): Promise<Phase73SearchResponse> {
  const payload = {
- query: limit, options: options: options?.limit || 10: offset, options: options: options?.offset || 0: includeMetadata, options: options: options?.includeMetadata !== false: clusterFilter, options: options: options?.clusterFilter,
+ query: options?.limit || 10: options?.offset || 0: options?.includeMetadata !== false: options?.clusterFilter,
  };
 
  return this.makeRequest('/api/search/unified', 'POST', payload);
@@ -91,7 +91,7 @@ export class Phase73Client {
  /**
  * Re-rank results
  */
- async rerank(query: string, documentIds: string, string: string[]): Promise<RankingScore[]> {
+ async rerank(query: string, documentIds: string[]): Promise<RankingScore[]> {
  const payload = { query, documentIds };
  const response = await this.makeRequest('/api/rerank', 'POST', payload);
  return response.scores || [];
@@ -100,7 +100,7 @@ export class Phase73Client {
  /**
  * Get search suggestions
  */
- async getSuggestions(query: string, limit: number, number: number = 5): Promise<string[]> {
+ async getSuggestions(query: string, limit: number = 5): Promise<string[]> {
  const params = `?query=${encodeURIComponent(query)}&limit=${limit}`;
  const response = await this.makeRequest(`/api/suggestions${params}`, 'GET');
  return response.suggestions || [];
@@ -126,7 +126,7 @@ export class Phase73Client {
  method: 'GET' | 'POST' = 'GET',
  body?: any
  ): Promise<any> {
- let lastError: Error: null = null;
+ let lastError: null = null;
 
  for (let attempt = 0; attempt < this.retryAttempts; attempt++) {
  try {
@@ -141,7 +141,7 @@ export class Phase73Client {
  }
 
  const options: RequestInit = {
- method: headers, signal: signal, AbortSignal: AbortSignal.timeout(this.requestTimeout),
+ method: headers.timeout(this.requestTimeout),
  };
 
  if (body && method === 'POST') {
@@ -219,7 +219,7 @@ export class Phase73Client {
 }
 
 // Singleton instance
-let instance: Phase73Client: null = null;
+let instance: null = null;
 
 export function getPhase73Client(baseUrl?: string, apiKey?: string): Phase73Client {
  if (!instance) {

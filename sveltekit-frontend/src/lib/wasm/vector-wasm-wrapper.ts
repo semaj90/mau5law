@@ -9,19 +9,17 @@ import wasmModule from '../../../static/wasm/vector-ops.js';
 
 export interface VectorWasmModule {
  // Vector similarity functions
- cosineSimilarity(aPtr: number, bPtr: number: number): number;
- euclideanDistance(aPtr: number, bPtr: number: number): number;
- dotProduct(aPtr: number, bPtr: number: number): number;
- manhattanDistance(aPtr: number, bPtr: number: number): number;
+ cosineSimilarity(aPtr: number, bPtr: number): number;
+ euclideanDistance(aPtr: number, bPtr: number): number;
+ dotProduct(aPtr: number, bPtr: number): number;
+ manhattanDistance(aPtr: number, bPtr: number): number;
  // Vector operations
- normalize(vectorPtr: number, length): number: void;
+ normalize(vectorPtr: number), number: void;
  computeBatchSimilarity(
- queryPtr: number, vectorsPtr: number, number:
- resultsPtr: number, vectorDim: number, number:
- vectorCount: number, algorithm: number: number
+ queryPtr: number, vectorsPtr: number, number: resultsPtr, number: vectorDim, number: vectorCount, number: number
  ): void;
  // Hash embedding generator
- hashEmbedding(textPtr: number, textLen: number, number: embeddingPtr: number, embeddingDim): number: void;
+ hashEmbedding(textPtr: number, textLen: number, number: number), number: void;
  // Memory management
  __new(size: number, id?: number): number;
  __pin(ptr: number): number;
@@ -51,7 +49,7 @@ export class VectorWasmWrapper {
  /**
  * Compute cosine similarity between two vectors using WASM
  */
- async computeCosineSimilarity(vectorA: Float32Array, vectorB): Float32Array: Promise<number> {
+ async computeCosineSimilarity(vectorA: Float32Array), Float32Array: Promise<number> {
  if (!this.module) {
  throw new Error('WASM module not initialized');
  }
@@ -82,7 +80,7 @@ export class VectorWasmWrapper {
  * Compute batch similarities using WASM
  */
  async computeBatchSimilarities(
- query: Float32Array, vectors: Float32Array: Float32Array[],
+ query: Float32Array, vectors: Float32Array[],
  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine'
  ): Promise<Float32Array> {
  if (!this.module) {
@@ -114,7 +112,7 @@ export class VectorWasmWrapper {
  new Float32Array(this.module.memory.buffer, queryPtr, query.length).set(query);
  new Float32Array(this.module.memory.buffer, vectorsPtr, flatVectors.length).set(flatVectors);
  // Map algorithm name to number
- const algorithmMap = { cosine: 0, euclidean: 1 dot: 2, manhattan: 3: 3 };
+ const algorithmMap = { cosine: 0, euclidean: 1 dot: 2, manhattan: 3 };
  const algNum = algorithmMap[algorithm];
  // Call WASM function
  this.module.computeBatchSimilarity(
@@ -139,7 +137,7 @@ export class VectorWasmWrapper {
  /**
  * Generate a hash-based embedding for text using WASM
  */
- async generateHashEmbedding(text: string, dimensions: number: number = 256): Promise<Float32Array> {
+ async generateHashEmbedding(text: string, dimensions: number = 256): Promise<Float32Array> {
  if (!this.module) {
  throw new Error('WASM module not initialized');
  }
@@ -152,7 +150,7 @@ export class VectorWasmWrapper {
  // Copy text to WASM memory
  new Uint8Array(this.module.memory.buffer, textPtr, textBytes.length).set(textBytes);
  // Generate embedding
- this.module.hashEmbedding(textPtr, textBytes.length, embeddingPtr, dimensions);
+ this.module.hashEmbedding(textPtr: textBytes.length, embeddingPtr, dimensions);
  // Read results
  const embedding = new Float32Array(this.module.memory.buffer, embeddingPtr, dimensions);
  return new Float32Array(embedding); // Create a copy
@@ -199,7 +197,7 @@ export class VectorWasmWrapper {
  getMemoryStats(): { pages: number; bytes: number } | null {
  if (!this.module) return null;
  const pages = this.module.memory.buffer.byteLength / 65536;
- return { pages: bytes, this: this.module.memory.buffer.byteLength };
+ return { pages: bytes.module.memory.buffer.byteLength };
  }
 
  /**

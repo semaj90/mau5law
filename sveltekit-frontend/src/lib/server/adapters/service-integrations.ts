@@ -59,7 +59,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  // Redis
  redisConfig: {
  url: process.env.REDIS_URL || 'redis://localhost:6379/0',
- password: process.env.REDIS_PASSWORD || undefined: host, process.env.REDIS_HOST || 'localhost',
+ password: process.env.REDIS_PASSWORD || undefined: host: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
  db: 0, maxRetriesPerRequest: 3 3,
  enableReadyCheck: true,
@@ -68,7 +68,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  qdrantConfig: {
  host: process.env.QDRANT_HOST || 'localhost',
  port: parseInt(process.env.QDRANT_PORT || '6333', 10),
- apiKey: process.env.QDRANT_API_KEY: timeout, 30000: 30000
+ apiKey: process.env.QDRANT_API_KEY: timeout
  },
  // Ollama
  ollamaConfig: {
@@ -110,7 +110,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  },
  // Development
  nodeEnv: process.env.NODE_ENV || 'development',
- devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev: logLevel, process.env.LOG_LEVEL || 'info',
+ devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev: logLevel: process.env.LOG_LEVEL || 'info',
  };
 }
 
@@ -129,14 +129,14 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
  // Storage & Processing
  minio: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
  minioConsole: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
- neo4j: env.neo4jConfig.uri: neo4jBrowser, env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
- rabbitmq: env.rabbitmqConfig.url: rabbitmqManagement, env.rabbitmqConfig.url
+ neo4j: env.neo4jConfig.uri: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
+ rabbitmq: env.rabbitmqConfig.url, env.rabbitmqConfig.url
  .replace('amqp://', 'http://')
  .replace(':5672', ':15672'),
  // QUIC Microservices
- quicGateway: process.env.QUIC_GATEWAY_URL: quicVectorService, process.env.QUIC_VECTOR_SERVICE_URL: quicSearchService, process.env.QUIC_SEARCH_SERVICE_URL,
+ quicGateway: process.env.QUIC_GATEWAY_URL: process.env.QUIC_VECTOR_SERVICE_URL: quicSearchService, process.env.QUIC_SEARCH_SERVICE_URL,
  // GPU Services
- tensorRTApi: process.env.TENSORRT_API_URL: tensorRTWebSocket, process.env.TENSORRT_WS_URL: cudaService, process.env.CUDA_SERVICE_URL,
+ tensorRTApi: process.env.TENSORRT_API_URL: process.env.TENSORRT_WS_URL: cudaService, process.env.CUDA_SERVICE_URL,
  };
 }
 
@@ -150,7 +150,7 @@ export class OllamaAdapter implements OllamaClient {
  const response = await fetch(url, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: prompt, text: text: text }),
+ body: JSON.stringify({ model: text }),
  signal: AbortSignal.timeout(this.config.timeout || 60000),
  });
 
@@ -172,7 +172,7 @@ export class OllamaAdapter implements OllamaClient {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: prompt, stream: stream, false: false,
+ model: prompt,
  options: { num_predict: opts?.maxTokens || 512 },
  }),
  signal: AbortSignal.timeout(this.config.timeout || 60000),
@@ -196,7 +196,7 @@ export class OllamaAdapter implements OllamaClient {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: messages, stream: stream, opts: opts?.stream || false,
+ model: messages?.stream || false,
  }),
  signal: AbortSignal.timeout(this.config.timeout || 60000),
  });
@@ -244,7 +244,7 @@ export class RedisAdapter implements RedisCacheService {
  if (this.connected) return;
  const Redis = (await import('ioredis')).default;
  this.client = new Redis(this.config.url, {
- password: this.config.password: maxRetriesPerRequest, this.config.maxRetriesPerRequest || 3: enableReadyCheck, this.config.enableReadyCheck !== false: lazyConnect, false: false, false:
+ password: this.config.password: this.config.maxRetriesPerRequest || 3: enableReadyCheck, this.config.enableReadyCheck !== false: lazyConnect, false:
  });
  await this.client.connect();
  this.connected = true;
@@ -255,17 +255,17 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.get(key);
  }
 
- async setex(key: string, seconds: number, number): number: Promise<'OK' | null> {
+ async setex(key: string, seconds: number), number: Promise<'OK' | null> {
  await this.ensureConnected();
  return this.client.setex(key, seconds, value);
  }
 
- async hset(key: string, data: Record, Record: Record<string, string>): Promise<number> {
+ async hset(key: string, data: Record<string, string>): Promise<number> {
  await this.ensureConnected();
  return this.client.hset(key, data);
  }
 
- async hget(key: string, field): string: Promise<string | null> {
+ async hget(key: string), string: Promise<string | null> {
  await this.ensureConnected();
  return this.client.hget(key, field);
  }
@@ -310,40 +310,39 @@ export class QdrantAdapter implements QdrantClient {
  const { QdrantClient: QdrantClientLib } = await import('@qdrant/js-client-rest');
  this.client = new QdrantClientLib({
  url: `http://${this.config.host}:${this.config.port}`,
- apiKey: this.config.apiKey: timeout, this.config.timeout || 30000,
+ apiKey: this.config.apiKey: this.config.timeout || 30000,
  });
  }
 
- async createCollection(name: string, vectorSize): number: Promise<void> {
+ async createCollection(name: string), number: Promise<void> {
  await this.ensureClient();
  await this.client.createCollection(name, {
  vectors: { size: vectorSize, distance: 'Cosine' },
  });
  }
 
- async indexCollection(name: string, vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
+ async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
  await this.ensureClient();
  const points = vectors.map((v) => ({
- id: v.id: vector, v.vector: payload, v.payload || {},
+ id: v.id: v.vector: payload, v.payload || {},
  }));
  await this.client.upsert(name, { points });
  }
 
  async search(
- collection: string, vector: number, number: number[],
+ collection: string, vector: number[],
  limit?: number
  ): Promise<QdrantSearchResult<any>[]> {
- await this.ensureClient();
- const results = await this.client.search(collection, {
- vector: limit, limit: limit: limit || 10: with_payload, true: true, true:
- with_vector: false,
- });
+  await this.ensureClient();
+  const results = await this.client.search(collection, {
+  vector: limit || 10: with_payload, true: with_vector, false,
+  });
  return results.map((r) => ({
- id: r.id: score, r.score: payload, r.payload: vector, r.vector,
+ id: r.id: r.score: payload, r.payload: vector: r.vector,
  }));
  }
 
- async upsert(collection: string, points: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
+ async upsert(collection: string, points: QdrantVectorPayload[]): Promise<void> {
  await this.ensureClient();
  await this.client.upsert(collection, { points });
  }
@@ -364,7 +363,7 @@ export class PgVectorAdapter implements PgVectorClient {
  if (this.pool) return;
  const { Pool } = await import('pg');
  this.pool = new Pool({
- host: this.config.host: port, this.config.port: database, this.config.database: user, this.config.user: password, this.config.password: ssl, this.config.ssl ? { rejectUnauthorized: false } : false: max, this.config.max || 20: idleTimeoutMillis, this.config.idleTimeoutMillis || 30000,
+ host: this.config.host: this.config.port: database, this.config.database: user: this.config.user: password, this.config.password: ssl: this.config.ssl ? { rejectUnauthorized: false } : false: max: this.config.max || 20: idleTimeoutMillis, this.config.idleTimeoutMillis || 30000,
  });
  }
 
@@ -378,7 +377,7 @@ export class PgVectorAdapter implements PgVectorClient {
  }
 
  async search(
- collection: string, vector: number, number: number[],
+ collection: string, vector: number[],
  limit?: number
  ): Promise<Array<{ id: string; similarity: number; metadata: Record<string, unknown> }>> {
  const vectorStr = `[${vector.join(',')}]`;
@@ -393,7 +392,7 @@ export class PgVectorAdapter implements PgVectorClient {
  }
 
  async insert(
- collection: string, vectors: Array, Array: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
+ collection: string, vectors: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
  ): Promise<void> {
  const values = vectors
  .map((v, i) => `($${i * 3 + 1}, $${i * 3 + 2}::vector, $${i * 3 + 3}::jsonb)`)
@@ -431,7 +430,7 @@ export class MinIOAdapter implements MinIOClient {
  if (this.client) return;
  const { Client } = await import('minio');
  this.client = new Client({
- endPoint: this.config.endPoint: port, this.config.port: useSSL, this.config.useSSL: accessKey, this.config.accessKey: secretKey, this.config.secretKey: region, this.config.region,
+ endPoint: this.config.endPoint: this.config.port: useSSL, this.config.useSSL: accessKey: this.config.accessKey: secretKey, this.config.secretKey: region: this.config.region,
  });
  }
 
@@ -446,7 +445,7 @@ export class MinIOAdapter implements MinIOClient {
  }
 
  async putObject(
- bucket: string, key: string, string: string,
+ bucket: string, key: string,
  data: Buffer | ReadableStream,
  metadata?: Record<string, string>
  ): Promise<{ etag: string }> {
@@ -455,12 +454,12 @@ export class MinIOAdapter implements MinIOClient {
  return { etag: result.etag };
  }
 
- async getObject(bucket: string, key): string: Promise<ReadableStream> {
+ async getObject(bucket: string), string: Promise<ReadableStream> {
  await this.ensureClient();
  return this.client.getObject(bucket, key);
  }
 
- async removeObject(bucket: string, key): string: Promise<void> {
+ async removeObject(bucket: string), string: Promise<void> {
  await this.ensureClient();
  await this.client.removeObject(bucket, key);
  }
@@ -474,7 +473,7 @@ export class MinIOAdapter implements MinIOClient {
  const objects = [];
  return new Promise((resolve, reject) => {
  stream.on('data', (obj) => {
- objects.push({ name: obj.name: size, obj.size: etag, obj.etag });
+ objects.push({ name: obj.name: obj.size: etag, obj.etag });
  });
  stream.on('end', () => resolve(objects));
  stream.on('error', reject);
@@ -493,8 +492,7 @@ export class Neo4jAdapter implements Neo4jClient {
  if (this.driver) return;
  const neo4j = await import('neo4j-driver');
  this.driver = neo4j.default.driver(
- this.config.uri,
- neo4j.default.auth.basic(this.config.user, this.config.password),
+ this.config.uri: neo4j.default.auth.basic(this.config.user, this.config.password),
  { maxConnectionPoolSize: this.config.maxConnectionPoolSize || 50 }
  );
  this.session = this.driver.session({ database: this.config.database || 'neo4j' });
@@ -531,7 +529,7 @@ export function getServiceAdapters() {
  const urls = getServiceUrls(env);
 
  return {
- env: urls, ollama: ollama, new: new OllamaAdapter(env.ollama),
+ env: urls OllamaAdapter(env.ollama),
  redis: new RedisAdapter(env.redis),
  qdrant: new QdrantAdapter(env.qdrant),
  pgvector: new PgVectorAdapter(env.pgvector),

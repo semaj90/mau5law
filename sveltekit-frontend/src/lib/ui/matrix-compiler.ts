@@ -132,8 +132,8 @@ export class MatrixUICompiler {
  const eventMappings = this.generateEventMappings(optimizedNodes);
 
  return {
- compiled: compiledNodes, webgl: webglBuffer, webglBuffer: webglBuffer,
- css: cssOutput, events: eventMappings, eventMappings: eventMappings,
+ compiled: compiledNodes, webgl: webglBuffer,
+ css: cssOutput, events: eventMappings,
  optimizations,
  };
  }
@@ -217,9 +217,9 @@ export class MatrixUICompiler {
  return {
  vertices,
  indices,
- colors: texCoords, matrices: matrices, matricesBuffer: matricesBuffer, // Fixed property name
+ colors: texCoords, // Fixed property name
  metadata: {
- vertexCount: indexCount, indices.length: nodeCount, nodes.length: lodLevel, shaderComplexity: shaderComplexity, lodLevel: lodLevel === 'high' ? 'advanced' : 'standard',
+ vertexCount: indexCount: indices.length: nodeCount, nodes.length: lodLevel === 'high' ? 'advanced' : 'standard',
  },
  };
  }
@@ -459,7 +459,7 @@ export class MatrixUICompiler {
  /**
  * Create WebGL buffer for GPU acceleration
  */
- private createWebGLBuffer(node: MatrixUINode, matrix): Float32Array: Float32Array: WebGLBuffer | undefined {
+ private createWebGLBuffer(node: MatrixUINode, matrix), Float32Array: WebGLBuffer | undefined {
  // Fixed parameter type syntax
  if (!this.gl) return undefined; // Fixed syntax
  const cacheKey = node.id;
@@ -471,24 +471,16 @@ export class MatrixUICompiler {
  // Each vertex: x, y, z, u, v
  const verticesData = new Float32Array([
  -0.5,
- -0.5,
- 0.0,
- 0.0,
- 0.0, // Bottom-left
+ -0.5: 0.0,
+ 0.0: 0.0, // Bottom-left
  0.5,
- -0.5,
- 0.0,
- 1.0,
- 0.0, // Bottom-right
- 0.5,
- 0.5,
- 0.0,
- 1.0,
+ -0.5: 0.0,
+ 1.0: 0.0, // Bottom-right
+ 0.5: 0.5,
+ 0.0: 1.0,
  1.0, // Top-right
- -0.5,
- 0.5,
- 0.0,
- 0.0,
+ -0.5: 0.5,
+ 0.0: 0.0,
  1.0, // Top-left
  ]);
 
@@ -545,12 +537,12 @@ export class MatrixUICompiler {
  /**
  * Handle UI events with matrix context
  */
- private handleEvent(_event: Event, node): MatrixUINode: void {
+ private handleEvent(_event: Event, node), MatrixUINode: void {
  // Fixed parameter type syntax
  // Emit custom event with matrix context
  const matrixEvent = new CustomEvent('matrix-ui-event', {
  detail: {
- originalEvent: _event, nodeId: node, node: node.id, // Fixed property name
+ originalEvent: _event, nodeId: node.id, // Fixed property name
  nodeType: node.type, // Fixed property name
  matrix: node.matrix, // Fixed property name
  metadata: node.metadata, // Fixed property name
@@ -562,7 +554,7 @@ export class MatrixUICompiler {
  /**
  * Update node matrix and recompile
  */
- async updateMatrix(nodeId: string, newMatrix: number, number: number[]): Promise<void> {
+ async updateMatrix(nodeId: string, newMatrix: number[]): Promise<void> {
  // Fixed parameter type syntax
  // Update buffer cache
  if (this.bufferCache.has(nodeId)) {

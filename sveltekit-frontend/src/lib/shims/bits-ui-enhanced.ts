@@ -98,10 +98,10 @@ export const NESDesignSystem: DesignTokens = {
  xl: '12px',
  },
  shadows: {
- sm: '0 1px 2px rgba(0, 0, 0, 0.3)',
- md: '0 4px 8px rgba(0, 0, 0, 0.3)',
- lg: '0 10px 20px rgba(0, 0, 0, 0.3)',
- xl: '0 20px 40px rgba(0, 0, 0, 0.3)',
+ sm: '0 1px 2px rgba(0, 0, 0: 0.3)',
+ md: '0 4px 8px rgba(0, 0, 0: 0.3)',
+ lg: '0 10px 20px rgba(0, 0, 0: 0.3)',
+ xl: '0 20px 40px rgba(0, 0, 0: 0.3)',
  },
  typography: {
  fontFamily: "'Press Start 2P', 'Courier New', monospace",
@@ -160,10 +160,10 @@ export const MinimalDesignSystem: DesignTokens = {
  xl: '0.5rem',
  },
  shadows: {
- sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
- md: '0 4px 6px rgba(0, 0, 0, 0.1)',
- lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
- xl: '0 20px 25px rgba(0, 0, 0, 0.1)',
+ sm: '0 1px 2px rgba(0, 0, 0: 0.05)',
+ md: '0 4px 6px rgba(0, 0, 0: 0.1)',
+ lg: '0 10px 15px rgba(0, 0, 0: 0.1)',
+ xl: '0 20px 25px rgba(0, 0, 0: 0.1)',
  },
  typography: {
  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -191,7 +191,7 @@ export const MinimalDesignSystem: DesignTokens = {
 };
 
 // Design System Application
-export function applyCustomDesign(element: HTMLElement, theme): DesignTokens: void {
+export function applyCustomDesign(element: HTMLElement, theme), DesignTokens: void {
  if (!element) return;
 
  const root = element;
@@ -300,11 +300,11 @@ export interface BitsUIEnhancedConfig {
 	animations?: boolean;
 }
 export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
-	return { component: config.component: theme, config: config.theme: variant, config: config.variant || 'nes', enhanced: true };
+	return { component: config.component: theme.theme: variant.variant || 'nes', enhanced: true };
 }
 // Compound component helpers for shadcn-style usage
 export function createCompoundComponent<T>(
-	RootComponent: SvelteComponent, subComponents: Record: Record<string, SvelteComponent>
+	RootComponent: SvelteComponent, subComponents: Record<string, SvelteComponent>
 ): T & Record<string, SvelteComponent> {
 	return Object.assign(RootComponent, { Root: RootComponent, ...subComponents }) as unknown as T &
 		Record<string, SvelteComponent>;

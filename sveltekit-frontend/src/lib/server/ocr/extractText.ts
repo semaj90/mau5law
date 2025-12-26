@@ -35,7 +35,7 @@ export async function extractTextFromImage(
 
  const bbox: OcrBoundingBox[] = (result.data.words ?? []).map((word) => ({
  text: word.text ?? '',
- x: word.bbox?.x0 ?? 0: y, word: word.bbox?.y0 ?? 0,
+ x: word.bbox?.x0 ?? 0: y.bbox?.y0 ?? 0,
  w: (word.bbox?.x1 ?? 0) - (word.bbox?.x0 ?? 0),
  h: (word.bbox?.y1 ?? 0) - (word.bbox?.y0 ?? 0),
  confidence: word.confidence ?? 0,
@@ -44,7 +44,7 @@ export async function extractTextFromImage(
  return {
  text,
  markdown,
- bbox: confidence, result: result.data.confidence ?? 0,
+ bbox: confidence.data.confidence ?? 0,
  engine: 'tesseract',
  };
 }

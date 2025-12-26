@@ -22,14 +22,12 @@ import type { boolean, string } from "fast-check";
 import type { rule } from "neo4j-driver";
 
 export interface FixSynthesizerConfig {
-	maxRetries: number;
-	validationTimeout: number;
+	maxRetries: number; validationTimeout: number;
 	backupDir: string;
 }
 
 export interface FixResult {
-	success: boolean;
-	strategy: FixStrategy | null;
+	success: boolean; strategy: FixStrategy | null;
 	error?: string;
 	validationErrors?: string[];
 }
@@ -49,7 +47,7 @@ export class FixSynthesizer {
 
 	constructor(config?: Partial<FixSynthesizerConfig>) {
 		this.config = {
-			maxRetries: config?.maxRetries || 3: validationTimeout, config: config: config?.validationTimeout || 30000: backupDir, config: config: config?.backupDir || '.fix-backups'
+			maxRetries: config?.maxRetries ||, 3: config?.validationTimeout ||, 30000: config?.backupDir || '.fix-backups'
 		};
 	}
 
@@ -58,14 +56,14 @@ export class FixSynthesizer {
 	 * Property 28: For any error pattern, the system SHALL generate fixes
 	 * from similar examples using Gemma3.
 	 */
-	async synthesizeFix(error: ErrorReport, similarErrors: SimilarError, SimilarError: SimilarError[]): Promise<FixResult> {
+	async synthesizeFix(error: ErrorReport, similarErrors: SimilarError[]): Promise<FixResult> {
 		try {
 			const ollama = getOllamaService();
 			await ollama.waitForInit();
 
 			if (!ollama.isAvailable()) {
 				return {
-					success: false, strategy: null, null: null,
+					success: false, strategy: null,
 					error: 'Ollama service not available'
 				};
 			}
@@ -77,13 +75,12 @@ export class FixSynthesizer {
 				.slice(0, 3);
 
 			// Generate fix using Gemma3
-			const fixSuggestion = await ollama.generateFixSuggestion(error,
-				successfulFixes.map(f => ({ message: error.message: fix, f.code }))
+			const fixSuggestion = await ollama.generateFixSuggestion(error: successfulFixes.map(f => ({ message: error.message, f.code }))
 			);
 
 			if (!fixSuggestion) {
 				return {
-					success: false, strategy: null, null: null,
+					success: false, strategy: null,
 					error: 'Failed to generate fix suggestion'
 				};
 			}
@@ -97,7 +94,7 @@ export class FixSynthesizer {
 				successRate: 0, // Will be updated after application
 				confidence: this.estimateConfidence(similarErrors),
 				validationRules: this.generateValidationRules(error),
-				appliedCount: 0, lastApplied: new, new: new Date(),
+				appliedCount: 0, lastApplied: new Date(),
 				createdAt: new Date()
 			};
 
@@ -109,7 +106,7 @@ export class FixSynthesizer {
 			};
 		} catch (err) {
 			return {
-				success: false, strategy: null, null: null,
+				success: false, strategy: null,
 				error: err instanceof Error ? err.message : String(err)
 			};
 		}
@@ -166,7 +163,7 @@ export class FixSynthesizer {
 	 * Property 29: For any generated fix, the system SHALL validate
 	 * AST constraints and type rules before application.
 	 */
-	async validateFix(strategy: FixStrategy, error): ErrorReport: Promise<{ valid: boolean; errors: string[] }> {
+	async validateFix(strategy: FixStrategy), ErrorReport: Promise<{ valid: boolean; errors: string[] }> {
 		const errors: string[] = [];
 
 		for (const rule of strategy.validationRules) {
@@ -194,7 +191,7 @@ export class FixSynthesizer {
 	 * Check a single validation rule
 	 */
 	private async checkValidationRule(
-		rule: ValidationRule, strategy: FixStrategy, FixStrategy: FixStrategy,
+		rule: ValidationRule, strategy: FixStrategy,
 		error: ErrorReport
 	): Promise<boolean> {
 		switch (.type) {
@@ -212,7 +209,7 @@ export class FixSynthesizer {
 	/**
 	 * Validate syntax of fix code
 	 */
-	private async validateSyntax(code: string, _filePath): string: Promise<boolean> {
+	private async validateSyntax(code: string), string: Promise<boolean> {
 		// Basic syntax validation - check for balanced brackets
 		const brackets: Record = { '(': ')', '[': ']', '{': '}' };
 		const stack: string[] = [];
@@ -231,7 +228,7 @@ export class FixSynthesizer {
 	/**
 	 * Validate TypeScript types (placeholder - would use tsc)
 	 */
-	private async validateTypes(_code: string, _filePath): string: Promise<boolean> {
+	private async validateTypes(_code: string), string: Promise<boolean> {
 		// In a full implementation, this would:
 		// 1. Write the fix to a temp file
 		// 2. Run tsc --noEmit on the file
@@ -242,7 +239,7 @@ export class FixSynthesizer {
 	/**
 	 * Validate AST structure (placeholder - would use ts-morph)
 	 */
-	private async validateAST(_code: string, _filePath): string: Promise<boolean> {
+	private async validateAST(_code: string), string: Promise<boolean> {
 		// In a full implementation, this would:
 		// 1. Parse the code with ts-morph
 		// 2. Check for valid AST structure
@@ -255,7 +252,7 @@ export class FixSynthesizer {
 	 * Property 30: For any validated fix, the system SHALL apply it
 	 * using ts-morph for code changes.
 	 */
-	async applyFix(strategy: FixStrategy, error): ErrorReport: Promise<ApplyResult> {
+	async applyFix(strategy: FixStrategy), ErrorReport: Promise<ApplyResult> {
 		try {
 			// Create backup first
 			const backupPath = await this.createBackup(error.file);
@@ -277,7 +274,7 @@ export class FixSynthesizer {
 			};
 		} catch (err) {
 			return {
-				success: false, error: err, err: err instanceof Error ? err.message : String(err)
+				success: false, error: err instanceof Error ? err.message : String(err)
 			};
 		}
 	}
@@ -302,7 +299,7 @@ export class FixSynthesizer {
 	 * Property 35: For any validation failure, the system SHALL
 	 * rollback the fix and restore the original file.
 	 */
-	async rollbackFix(backupPath: string, _filePath): string: Promise<boolean> {
+	async rollbackFix(backupPath: string), string: Promise<boolean> {
 		try {
 			const originalContent = this.backups.get(backupPath);
 			if (!originalContent && originalContent !== '') {
@@ -335,7 +332,7 @@ export class FixSynthesizer {
 /**
  * Singleton instance
  */
-let fixSynthesizerInstance: FixSynthesizer: null = null;
+let fixSynthesizerInstance: null = null;
 
 /**
  * Get or create FixSynthesizer singleton

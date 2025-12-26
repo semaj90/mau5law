@@ -42,7 +42,7 @@ describe('AgentChat Component', () => {
  componentState = {
  messages: [],
  inputValue: '',
- isLoading: false, error: null, null: null,
+ isLoading: false, error: null,
  isDarkTheme: true,
  };
  });
@@ -211,7 +211,7 @@ describe('AgentChat Component', () => {
 
  const event = {
  key: 'Enter',
- shiftKey: true, preventDefault: vi, vi: vi.fn(),
+ shiftKey: true, preventDefault: vi.fn(),
  };
 
  expect(event.shiftKey).toBe(true);
@@ -430,7 +430,7 @@ describe('AgentChat Component', () => {
  const message: MockMessage = {
  id: '1',
  role: 'assistant',
- content: longContent, timestamp: new, new: new Date(),
+ content: longContent, timestamp: new Date(),
  };
 
  expect(message.content.length).toBe(5000);

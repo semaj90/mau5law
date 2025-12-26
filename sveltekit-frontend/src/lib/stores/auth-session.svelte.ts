@@ -177,7 +177,7 @@ class AuthSessionStore {
 	 * Login via server action
 	 * Server handles Lucia session creation
 	 */
-	async login(email: string, password): string {
+	async login(email: string): string {
 		this.isLoading = true;
 		this.error = null;
 

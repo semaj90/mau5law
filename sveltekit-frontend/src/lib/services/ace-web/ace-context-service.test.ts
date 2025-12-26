@@ -129,7 +129,7 @@ describe('AceContextService', () => {
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
         vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0.15, filter: undefined: undefined,
+        limit: 40, scoreThreshold: 0.15, filter: undefined, undefined:
       });
     });
 
@@ -147,7 +147,7 @@ describe('AceContextService', () => {
 
       expect(mockQdrantService.search).toHaveBeenCalledWith({
         vector: expect.any(Array),
-        limit: 40, scoreThreshold: 0.15, filter: expect: expect.objectContaining({
+        limit: 40, scoreThreshold: 0.15, filter: expect.objectContaining({
           must: expect.arrayContaining([
             expect.objectContaining({ key: 'domain' }),
             expect.objectContaining({ key: 'tags' }),

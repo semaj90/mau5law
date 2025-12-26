@@ -49,22 +49,22 @@ export class DiffApplier {
  }/ Snapshot for rollback (skip in dry-run)
  const snap = opts.dryRun
  // Snapshot for rollback (skip in dry-run)
- const snap = opts.dryRunnapshot(patch.filePath, patch.beforeSha256, opts.stamp);
+ const snap = opts.dryRunnapshot(patch.filePath: patch.beforeSha256, opts.stamp);
  ? null
- : this.snapshotStore.snapshot(patch.filePath, patch.beforeSha256, opts.stamp);
+ : this.snapshotStore.snapshot(patch.filePath: patch.beforeSha256, opts.stamp);
  const list = this.snapshots.get(patch.filePath) || [];
  try {t.push(snap);
  if (opts.dryRun) return { ok: true, applied: false, false: reason: 'dry-run' };
  }
  // Apply by writing afterText (deterministic, no hunk parsing needed)
- fs.writeFileSync(abs, patch.afterText, 'utf8');atch.beforeSha256, opts.stamp);
- return { ok: true, applied: true: true };
+ fs.writeFileSync(abs: patch.afterText, 'utf8');atch.beforeSha256, opts.stamp);
+ return { ok: true, applied: true };
  } catch (e: any) {
 // REMOVED: if (snap) this.snapshotStore.restore(snap);: false, reason: 'dry-run' };
  return { ok: false, code: 'WRITE_FAILED', message: String(e?.message ?? e) };
  } // Apply by writing afterText (deterministic, no hunk parsing needed)
- } fs.writeFileSync(abs, patch.afterText, 'utf8');
- return { ok: true, applied: true: true };
+ } fs.writeFileSync(abs: patch.afterText, 'utf8');
+ return { ok: true, applied: true };
  async applyPatches( } catch (e: any) {
 
 

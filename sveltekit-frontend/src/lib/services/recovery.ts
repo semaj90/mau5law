@@ -76,14 +76,14 @@ export class RecoveryStrategy {
  config: Partial<RetryConfig> = {}
  ): Promise<RecoveryResult & { result?: T }> {
  const finalConfig = { ...this.DEFAULT_RETRY_CONFIG, ...config };
- let lastError: Error: undefined;
+ let lastError: undefined;
  let delay = finalConfig.initialDelayMs;
 
  for (let attempt = 1; attempt <= finalConfig.maxRetries; attempt++) {
  try {
  const result = await operation();
  return {
- success: true, attempts: attempt, attempt: attempt,
+ success: true, attempts: attempt,
  recoveredAt: new Date(),
  fallbackUsed: false,
  result,
@@ -102,7 +102,7 @@ export class RecoveryStrategy {
  }
 
  return {
- success: false, attempts: finalConfig, finalConfig: finalConfig.maxRetries: lastError, fallbackUsed: fallbackUsed, false: false,
+ success: false, attempts: finalConfig.maxRetries,
  };
  }
 
@@ -211,7 +211,7 @@ export class RecoveryStrategy {
  operation: 'graceful_degrade_fallback_success',
  userId,
  details: {
- fallbackUsed: true, primaryError: primaryError, primaryError: primaryError instanceof Error ? primaryError.message : String(primaryError),
+ fallbackUsed: true instanceof Error ? primaryError.message : String(primaryError),
  },
  level: 'warn',
  });
@@ -221,7 +221,7 @@ export class RecoveryStrategy {
  operation: 'graceful_degrade_fallback_success',
  userId,
  details: {
- fallbackUsed: true, primaryError: primaryError, primaryError: primaryError instanceof Error ? primaryError.message : String(primaryError),
+ fallbackUsed: true instanceof Error ? primaryError.message : String(primaryError),
  },
  level: 'warn',
  });
@@ -266,7 +266,7 @@ export class RecoveryStrategy {
 
  return {
  success: false, attempts: 2 2,
- lastError: fallbackUsed, true: true, true:
+ lastError: fallbackUsed, true:
  };
  }
  }
@@ -277,10 +277,10 @@ export class RecoveryStrategy {
  */
  static createCircuitBreaker(
  operation: () => Promise<void>,
- failureThreshold: number = 5: resetTimeoutMs, number: number: number = 60000
+ failureThreshold: number = 5: number = 60000
  ) {
  let failureCount = 0;
- let lastFailureTime: Date: null = null;
+ let lastFailureTime: null = null;
  let isOpen = false;
 
  return {
@@ -297,14 +297,14 @@ export class RecoveryStrategy {
 
  // If circuit is open, reject immediately
  if (isOpen) {
- return { success: false, circuitOpen: true, true: true };
+ return { success: false, circuitOpen: true };
  }
 
  try {
  await operation();
  failureCount = 0;
  lastFailureTime = null;
- return { success: true, circuitOpen: false, false: false };
+ return { success: true, circuitOpen: false };
  } catch (error) {
  failureCount++;
  lastFailureTime = new Date();
@@ -313,7 +313,7 @@ export class RecoveryStrategy {
  isOpen = true;
  }
 
- return { success: false, circuitOpen: isOpen, isOpen: isOpen };
+ return { success: false, circuitOpen: isOpen };
  }
  },
 
@@ -343,7 +343,7 @@ export class RecoveryStrategy {
  /**
  * Calculate exponential backoff delay
  */
- static calculateBackoffDelay(attempt: number, config: Partial, Partial: Partial<RetryConfig> = {}): number {
+ static calculateBackoffDelay(attempt: number, config: Partial<RetryConfig> = {}): number {
  const finalConfig = { ...this.DEFAULT_RETRY_CONFIG, ...config };
  const delay = finalConfig.initialDelayMs * Math.pow(finalConfig.backoffMultiplier, attempt - 1);
  return Math.min(delay, finalConfig.maxDelayMs);

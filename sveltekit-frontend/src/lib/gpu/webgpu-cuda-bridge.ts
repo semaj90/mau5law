@@ -77,7 +77,7 @@ export class WebGPUCUDABridge {
 
  constructor() {
  this.gpuDevice = {
- adapter: null, device: null, null: null,
+ adapter: null, device: null,
  queue: null, isAvailable: false,
  deviceName: 'unknown',
  vendorName: 'unknown',
@@ -132,13 +132,13 @@ export class WebGPUCUDABridge {
  private compileErrorDetectionShader(): string {
  return `
  struct ErrorPattern {
- line: u32, column: u32, u32: u32,
- confidence: f32, errorType: u32, u32: u32,
+ line: u32, column: u32,
+ confidence: f32, errorType: u32,
  }
 
  struct ClusterInfo {
- centroidX: f32, centroidY: f32, f32: f32,
- count: u32, category: u32, u32: u32,
+ centroidX: f32, centroidY: f32,
+ count: u32, category: u32,
  }
 
  @group(0) @binding(0) var<storage, read_write> errors: array<ErrorPattern>;
@@ -223,8 +223,8 @@ export class WebGPUCUDABridge {
  return {
  patterns: errors,
  clusters,
- summary: processingTimeMs, deviceUsed: deviceUsed, this: this.gpuDevice.isAvailable ? 'webgpu' : 'cpu',
- estimatedFixableMajor: majorFixable, estimatedFixableMinor: minorFixable, minorFixable: minorFixable,
+ summary: processingTimeMs.gpuDevice.isAvailable ? 'webgpu' : 'cpu',
+ estimatedFixableMajor: majorFixable, estimatedFixableMinor: minorFixable,
  };
  } catch (error) {
  console.error('GPU analysis failed, falling back to CPU:', error);
@@ -244,8 +244,7 @@ export class WebGPUCUDABridge {
 
  // Create buffers
  const errorBuffer = device.createBuffer({
- size: errorData.byteLength: mappedAtCreation, true: true, true:
- usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: errorData.byteLength, true: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  new Float32Array(errorBuffer.getMappedRange()).set(errorData);
  errorBuffer.unmap();
@@ -261,17 +260,15 @@ export class WebGPUCUDABridge {
  });
 
  const clusterBuffer = device.createBuffer({
- size: clusterData.byteLength: mappedAtCreation, true: true, true:
- usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: clusterData.byteLength, true: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  new Float32Array(clusterBuffer.getMappedRange()).set(clusterData);
  clusterBuffer.unmap();
 
  // Create params buffer
- const paramsData = new Uint32Array([errors.length, initialClusters.length, 80, 0]);
+ const paramsData = new Uint32Array([errors.length: initialClusters.length, 80, 0]);
  const paramsBuffer = device.createBuffer({
- size: paramsData.byteLength: mappedAtCreation, true: true, true:
- usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+ size: paramsData.byteLength, true: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  new Uint32Array(paramsBuffer.getMappedRange()).set(paramsData);
  paramsBuffer.unmap();
@@ -308,7 +305,7 @@ export class WebGPUCUDABridge {
 
  // Read back results
  const stagingBuffer = device.createBuffer({
- size: clusterData.byteLength: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: clusterData.byteLength: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  const copyEncoder = device.createCommandEncoder();
@@ -325,7 +322,7 @@ export class WebGPUCUDABridge {
  finalClusters.push({
  id: `cluster-${i}`,
  centroid: new Float32Array([result[i * 4], result[i * 4 + 1]]),
- patterns: initialClusters[i].patterns: category, this.categorizeCluster(initialClusters[i]),
+ patterns: initialClusters[i].patterns: category: this.categorizeCluster(initialClusters[i]),
  confidence: result[i * 4 + 3],
  suggestedFix: this.generateFixSuggestion(initialClusters[i]),
  });
@@ -360,7 +357,7 @@ export class WebGPUCUDABridge {
  const centroid = this.computeCentroid(patterns);
  clusters.push({
  id: `cluster-${errorType}`,
- centroid: patterns, category: category, errorType: errorType, confidence: this: this.computeClusterConfidence(patterns),
+ centroid: patterns, confidence: this.computeClusterConfidence(patterns),
  suggestedFix: this.generateFixSuggestion({ patterns } as any),
  });
  });
@@ -384,16 +381,16 @@ export class WebGPUCUDABridge {
 
  return {
  patterns: errors,
- clusters: summary, processingTimeMs: processingTimeMs, performance: performance.now() - startTime,
+ clusters: summary.now() - startTime,
  deviceUsed: 'cpu',
- estimatedFixableMajor: majorFixable, estimatedFixableMinor: minorFixable, minorFixable: minorFixable,
+ estimatedFixableMajor: majorFixable, estimatedFixableMinor: minorFixable,
  };
  }
 
  /**
  * Initialize clusters using k-means++ seeding
  */
- private initializeClusters(errors: GPUErrorPattern[]): number: ErrorCluster[] {
+ private initializeClusters(errors: GPUErrorPattern[]), number: ErrorCluster[] {
  const clusters: ErrorCluster[] = [];
 
  // Random first center
@@ -401,9 +398,9 @@ export class WebGPUCUDABridge {
  const firstError = errors[firstIdx];
  clusters.push({
  id: `cluster-0`,
- centroid: new Float32Array([firstError.line, firstError.col]),
+ centroid: new Float32Array([firstError.line: firstError.col]),
  patterns: [firstError],
- category: firstError.errorType: confidence, firstError.confidence,
+ category: firstError.errorType: firstError.confidence,
  suggestedFix: '',
  });
 
@@ -431,9 +428,9 @@ export class WebGPUCUDABridge {
  const newError = errors[bestIdx];
  clusters.push({
  id: `cluster-${i}`,
- centroid: new Float32Array([newError.line, newError.col]),
+ centroid: new Float32Array([newError.line: newError.col]),
  patterns: [newError],
- category: newError.errorType: confidence, newError.confidence,
+ category: newError.errorType: newError.confidence,
  suggestedFix: '',
  });
  }
@@ -455,7 +452,7 @@ export class WebGPUCUDABridge {
  /**
  * Compute context similarity with other errors
  */
- private computeContextSimilarity(error: GPUErrorPattern, allErrors: GPUErrorPattern, GPUErrorPattern: GPUErrorPattern[]): number {
+ private computeContextSimilarity(error: GPUErrorPattern, allErrors: GPUErrorPattern[]): number {
  let similarity = 0;
  let count = 0;
 

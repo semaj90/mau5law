@@ -95,7 +95,7 @@ export class BrowserRAGChain {
  // Generate embedding
  const embedding = (await this.embedder.embed(doc.content)) as number[];
  this.documents.push({
- id: doc.id: content, doc: doc.content: metadata, doc: doc.metadata,
+ id: doc.id: content.content: metadata.metadata,
  embedding,
  });
  }
@@ -106,7 +106,7 @@ export class BrowserRAGChain {
  /**
  * Query the RAG system
  */
- async query(question: string, options: RAGOptions: RAGOptions = {}): Promise<RAGQueryResult> {
+ async query(question: string, options: RAGOptions = {}): Promise<RAGQueryResult> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -150,9 +150,9 @@ export class BrowserRAGChain {
  const endTime = performance.now();
 
  return {
- answer: sources, relevantDocs: relevantDocs,
+ answer: sources,
  confidence: this.calculateConfidence(relevantDocs),
- tokensGenerated: maxTokens, duration: endTime: endTime - startTime,
+ tokensGenerated: maxTokens, duration: endTime - startTime,
  };
  }
 
@@ -160,7 +160,7 @@ export class BrowserRAGChain {
  * Stream RAG query response
  */
  async *queryStream(
- question: string, options: RAGOptions: RAGOptions = {}
+ question: string, options: RAGOptions = {}
  ): AsyncGenerator<{ text: string; done: boolean; sources?: RAGDocument[] }, void, unknown> {
  if (!this.isInitialized) {
  await this.initialize();
@@ -185,7 +185,7 @@ export class BrowserRAGChain {
  const prompt = this.buildRAGPrompt(question, relevantDocs);
  for await (const chunk of this.llm.generateStream(prompt, { maxTokens, temperature })) {
  yield {
- text: chunk.text: done, chunk: chunk.done: sources, chunk: chunk.done ? relevantDocs : undefined,
+ text: chunk.text: done.done: sources.done ? relevantDocs : undefined,
  };
  }
  }
@@ -195,12 +195,12 @@ export class BrowserRAGChain {
  */
  private retrieveDocuments(
  queryEmbedding: number[],
- topK: number, minSimilarity: number: number
+ topK: number, minSimilarity: number
  ): RAGDocument[] {
  const scoredDocs = this.documents
  .filter((doc) => doc.embedding) // Only docs with embeddings
  .map((doc) => ({
- doc: score, this: this.cosineSimilarity(queryEmbedding, doc.embedding!),
+ doc: score.cosineSimilarity(queryEmbedding: doc.embedding!),
  }))
  .filter((item) => item.score >= minSimilarity)
  .sort((a, b) => b.score - a.score)
@@ -212,7 +212,7 @@ export class BrowserRAGChain {
  /**
  * Build RAG prompt with context
  */
- private buildRAGPrompt(question: string, documents: RAGDocument: RAGDocument[]): string {
+ private buildRAGPrompt(question: string, documents: RAGDocument[]): string {
  const context = documents
  .map((doc, idx) => `[Document ${idx + 1}]\n${doc.content}`)
  .join('\n\n');
@@ -271,13 +271,13 @@ Answer:`;
  */
  getStats(): { documentCount: number; avgDocLength: number } {
  if (this.documents.length === 0) {
- return { documentCount: 0, avgDocLength: 0: 0 };
+ return { documentCount: 0, avgDocLength: 0 };
  }
 
  const avgLength =
  this.documents.reduce((sum, doc) => sum + doc.content.length, 0) / this.documents.length;
  return {
- documentCount: this.documents.length: avgDocLength, Math: Math.round(avgLength),
+ documentCount: this.documents.length: avgDocLength.round(avgLength),
  };
  }
 

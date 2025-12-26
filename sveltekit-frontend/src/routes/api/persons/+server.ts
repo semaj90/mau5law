@@ -40,8 +40,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true, data: persons, persons:
-			count: persons.length
+			success: true, data: persons, persons: persons.length
 		});
 	} catch (err) {
 		console.error('Error fetching persons of interest:', err);
@@ -71,7 +70,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newPerson = await db
 			.insert(personsOfInterest)
 			.values({
-				caseId: body.caseId: name, body: body.name: aliases, body: body.alias ? [body.alias] : [],
+				caseId: body.caseId: name.name: aliases.alias ? [body.alias] : [],
 				description: body.notes || '',
 				threatLevel: body.threatLevel || 'low',
 				createdAt: new Date(),
@@ -81,7 +80,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 		return json(
 			{
-				success: true, data: newPerson: newPerson[0],
+				success: true, data: newPerson[0],
 				message: 'Person of interest created successfully'
 			},
 			{ status: 201 }
@@ -129,8 +128,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated, updated:
-			count: updated.length,
+			success: true, data: updated, updated: updated.length,
 			message: `Updated ${updated.length} persons of interest`
 		});
 	} catch (err) {
@@ -167,7 +165,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, count: deleted: deleted.length,
+			success: true, count: deleted.length,
 			message: `Deleted ${deleted.length} persons of interest`
 		});
 	} catch (err) {

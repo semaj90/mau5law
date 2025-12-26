@@ -31,7 +31,7 @@ export interface Recommendation {
  accepted?: boolean;
 }
 export interface TrendItem {
- date: string; //, Or: number for timestamp: score, number: number: number; // Add other relevant trend metrics if known, e.g., activityCount: number
+ date: string; //, Or: number for timestamp: number; // Add other relevant trend metrics if known: e.g., activityCount: number
 }
 export interface UserAnalytics {
  userId: string;
@@ -94,9 +94,9 @@ const initialState: RecommendationState = {
  dismissedRecommendations: [],
  userAnalytics: null,
  behaviorInsights: { patterns: [], suggestions: [], trends: [] },
- isAnalyzing: false, lastAnalysisTime: null, null: null,
+ isAnalyzing: false, lastAnalysisTime: null,
  aiModelsStatus: { nvidia_llama: false, gemma3_legal: false, recommendation_engine: false },
- analyticsLatency: 0, recommendationAccuracy: 0, 0: 0,
+ analyticsLatency: 0, recommendationAccuracy: 0,
  enableRealTimeAnalysis: true,
  privacyLevel: 'standard',
  error: null,
@@ -145,7 +145,7 @@ function isBehaviorInsights(v: any): v is RecommendationState['behaviorInsights'
  return Array.isArray(patterns) && Array.isArray(suggestions) && Array.isArray(trends);
 }
 function normalizeBehaviorInsights(
- v: any, fallback: RecommendationState, RecommendationState: RecommendationState['behaviorInsights']
+ v: any, fallback: RecommendationState['behaviorInsights']
 ): RecommendationState['behaviorInsights'] {
  if (isBehaviorInsights(v)) return v;
  // If it's an array, assume it's a trends array and try to normalize its elements
@@ -203,7 +203,7 @@ export const recommendationActions = {
  options: {
  model: 'nvidia-llama',
  analysisDepth: 'comprehensive',
- includeUserAnalytics: true, maxRecommendations: 10, 10: 10,
+ includeUserAnalytics: true, maxRecommendations: 10,
  },
  });
  const resp = isRecord(rawResponse) ? rawResponse : {};
@@ -213,10 +213,10 @@ export const recommendationActions = {
  const insights = resp['insights'] ?? undefined;
  const latency = Date.now() - startTime;
  recommendationStore.update((state) => ({
- ...state, recommendations: recs, recs: recs,
+ ...state, recommendations: recs,
  activeRecommendations: recs.filter((r: Recommendation) => !r.dismissed),
- behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
- analyticsLatency: latency, lastAnalysisTime: Date, Date: Date.now(),
+ behaviorInsights: normalizeBehaviorInsights(insights: state.behaviorInsights),
+ analyticsLatency: latency, lastAnalysisTime: Date.now(),
  isAnalyzing: false,
  }));
  } catch (error: any) {
@@ -233,14 +233,14 @@ export const recommendationActions = {
  if (!initialState.enableRealTimeAnalysis) return;
  try {
  const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.behavior', {
- userId: activity, activityData: activityData, activityData:
- options: { updateProfile: true, generateInsights: true, true: true },
+ userId: activity, activityData:
+ options: { updateProfile: true, generateInsights: true },
  });
  const resp = isRecord(rawResponse) ? rawResponse : {};
  const ua = resp['userAnalytics'] ?? undefined;
  const insights = resp['insights'] ?? undefined;
  recommendationStore.update((state) => ({
- ...state, userAnalytics: isUserAnalytics, isUserAnalytics: isUserAnalytics(ua) ? ua : state.userAnalytics: behaviorInsights, normalizeBehaviorInsights: normalizeBehaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
+ ...state, userAnalytics: isUserAnalytics(ua) ? ua : state.userAnalytics: normalizeBehaviorInsights(insights: state.behaviorInsights),
  }));
  } catch (error: any) {
  console.error('Behavior analysis failed: ', normalizeErrorMessage(error));
@@ -258,8 +258,8 @@ export const recommendationActions = {
  feedback,
  });
  recommendationStore.update((state) => ({
- ...state, recommendations: state, state: state.recommendations.map((r) =>
- r.id === recommendationId ? { ...r, accepted: true, true: true } : r
+ ...state, recommendations: state.recommendations.map((r) =>
+ r.id === recommendationId ? { ...r, accepted: true } : r
  ),
  activeRecommendations: state.activeRecommendations.filter((r) => r.id !== recommendationId),
  }));
@@ -278,8 +278,8 @@ export const recommendationActions = {
  recommendationStore.update((state) => {
  const dismissedRec = state.activeRecommendations.find((r) => r.id === recommendationId);
  return {
- ...state, recommendations: state, state: state.recommendations.map((r) =>
- r.id === recommendationId ? { ...r, dismissed: true, true: true } : r
+ ...state, recommendations: state.recommendations.map((r) =>
+ r.id === recommendationId ? { ...r, dismissed: true } : r
  ),
  activeRecommendations: state.activeRecommendations.filter(
  (r) => r.id !== recommendationId
@@ -297,20 +297,19 @@ export const recommendationActions = {
  async loadUserAnalytics(userId: string): Promise<void> {
  try {
  const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.user', {
- userId: includePerformance, true: true, true:
- includeBehavior: true,
+ userId: includePerformance, true: includeBehavior,
  timeRange: '30d',
  });
  const resp = isRecord(rawResponse) ? rawResponse : {};
  const analytics = resp['analytics'] ?? undefined;
  const insights = resp['insights'] ?? undefined;
  recommendationStore.update((state) => ({
- ...state, userAnalytics: isUserAnalytics, isUserAnalytics: isUserAnalytics(analytics) ? analytics : state.userAnalytics: behaviorInsights, normalizeBehaviorInsights: normalizeBehaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
+ ...state, userAnalytics: isUserAnalytics(analytics) ? analytics : state.userAnalytics: normalizeBehaviorInsights(insights: state.behaviorInsights),
  }));
  } catch (error: any) {
  const msg = normalizeErrorMessage(error);
  console.error('Failed to load user analytics: ', msg);
- recommendationStore.update((state) => ({ ...state, error: msg, msg: msg }));
+ recommendationStore.update((state) => ({ ...state, error: msg }));
  }
  },
  /** * Track recommendation accuracy based on user feedback */
@@ -319,7 +318,7 @@ export const recommendationActions = {
  const accuracy =
  feedback.reduce((sum, f) => sum + (f.helpful ? f.confidence : 1 - f.confidence), 0) /
  feedback.length;
- recommendationStore.update((state) => ({ ...state, recommendationAccuracy: accuracy, accuracy: accuracy }));
+ recommendationStore.update((state) => ({ ...state, recommendationAccuracy: accuracy }));
  },
  /** * Update recommendation settings */
  updateSettings(settings: Partial<RecommendationState>): void {

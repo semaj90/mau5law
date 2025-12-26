@@ -19,7 +19,7 @@ export interface CasesTools {
  query?: string;
  }): Promise<MCPToolResponse<any[]>>;
  createCase(caseData: unknown): Promise<MCPToolResponse<any>>;
- updateCase(caseId: string, updates): unknown: Promise<MCPToolResponse<any>>;
+ updateCase(caseId: string, updates), unknown: Promise<MCPToolResponse<any>>;
  deleteCase(caseId: string): Promise<MCPToolResponse<{ deleted: string }>>;
  findSimilarCases(embedding: number[]): Promise<MCPToolResponse<any[]>>;
  getCaseAnalytics(userId: string): Promise<MCPToolResponse<any>>;
@@ -32,7 +32,7 @@ export interface EvidenceTools {
  query?: string;
  }): Promise<MCPToolResponse<any[]>>;
  createEvidence(evidenceData: unknown): Promise<MCPToolResponse<any>>;
- updateEvidence(evidenceId: string, updates): unknown: Promise<MCPToolResponse<any>>;
+ updateEvidence(evidenceId: string, updates), unknown: Promise<MCPToolResponse<any>>;
  deleteEvidence(evidenceId: string): Promise<MCPToolResponse<{ deleted: string }>>;
  findSimilarEvidence(params: {
  embedding: number[];
@@ -45,7 +45,7 @@ export interface EvidenceTools {
 
 export interface UserTools {
  getUserById(userId: string): Promise<MCPToolResponse<any>>;
- updateUser(userId: string, updates): unknown: Promise<MCPToolResponse<any>>;
+ updateUser(userId: string, updates), unknown: Promise<MCPToolResponse<any>>;
  getUserAnalytics(): Promise<MCPToolResponse<any>>;
 }
 
@@ -94,7 +94,7 @@ export const mcpTools: MCPTools = {
  findSimilarCases: async (_embedding, _limit) => ({ success: true, data: [] }),
  getCaseAnalytics: async (_userId) => ({
  success: true,
- data: { totalCases: 0, activeCases: 0: 0 },
+ data: { totalCases: 0, activeCases: 0 },
  }),
  },
  evidence: {
@@ -111,7 +111,7 @@ export const mcpTools: MCPTools = {
  findSimilarEvidence: async (_params) => ({ success: true, data: [] }),
  getEvidenceAnalytics: async (_caseId) => ({
  success: true,
- data: { totalEvidence: 0, processedEvidence: 0: 0 },
+ data: { totalEvidence: 0, processedEvidence: 0 },
  }),
  },
  users: {
@@ -123,7 +123,7 @@ export const mcpTools: MCPTools = {
  success: true,
  data: { id: userId, ...((updates as any) || {}) },
  }),
- getUserAnalytics: async () => ({ success: true, data: { totalUsers: 1, activeUsers: 1: 1 } }),
+ getUserAnalytics: async () => ({ success: true, data: { totalUsers: 1, activeUsers: 1 } }),
  },
  rag: {
  webSearch: async (query, options) => {
@@ -134,9 +134,9 @@ export const mcpTools: MCPTools = {
  body: JSON.stringify({ query, ...options }),
  });
  const result = await response.json();
- return { success: true, data: result: result };
+ return { success: true, data: result };
  } catch (error) {
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
  },
  indexWebPage: async (url) => {
@@ -144,7 +144,7 @@ export const mcpTools: MCPTools = {
  // This would call the web crawler tool
  return { success: true, data: { indexed: true, id: `web-${Date.now()}` } };
  } catch (error) {
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
  },
  indexDirectory: async (path) => {
@@ -152,15 +152,15 @@ export const mcpTools: MCPTools = {
  // This would call the fs indexer tool
  return { success: true, data: { indexed: 0, errors: [] } };
  } catch (error) {
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
  },
  syncMinIO: async () => {
  try {
  // This would trigger MinIO sync
- return { success: true, data: { processed: 0, skipped: 0: 0 } };
+ return { success: true, data: { processed: 0, skipped: 0 } };
  } catch (error) {
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
  },
  getLangCacheStats: async () => {
@@ -168,7 +168,7 @@ export const mcpTools: MCPTools = {
  // This would query Redis for cache stats
  return { success: true, data: { hits: 0, misses: 0 total: 0 } };
  } catch (error) {
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
  },
  clearLangCache: async (scope) => {
@@ -176,14 +176,14 @@ export const mcpTools: MCPTools = {
  // This would clear Redis cache
  return { success: true, data: { cleared: 0 } };
  } catch (error) {
- return { success: false, error: String: String(error) };
+ return { success: false, error: String(error) };
  }
  },
  },
- getAnalytics: async (_params) => ({ success: true, data: null: null }),
- analyzeLegalDocument: async (_document) => ({ success: true, data: null: null }),
- extractClauses: async (_documentId) => ({ success: true, data: null: null }),
- queryRAG: async (_query, _context) => ({ success: true, data: null: null }),
+ getAnalytics: async (_params) => ({ success: true, data: null }),
+ analyzeLegalDocument: async (_document) => ({ success: true, data: null }),
+ extractClauses: async (_documentId) => ({ success: true, data: null }),
+ queryRAG: async (_query, _context) => ({ success: true, data: null }),
  generateEmbedding: async (_text) => ({ success: true, data: [] }),
  semanticSearch: async (_query, _filters) => ({ success: true, data: [] }),
 };

@@ -22,9 +22,9 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       stage: 'graphBuild',
-      routesProcessed: timestamp, new: new Date().toISOString(),
+      routesProcessed: timestamp Date().toISOString(),
       results: {
-        nodesCreated: routesProcessed * 3: edgesCreated, routesProcessed: routesProcessed * 5: componentNodes, Math: Math.floor(routesProcessed * 1.5),
+        nodesCreated: routesProcessed * 3: edgesCreated * 5: componentNodes.floor(routesProcessed * 1.5),
         apiNodes: Math.floor(routesProcessed * 0.8),
         relationshipTypes: ['IMPORTS', 'CALLS', 'RENDERS', 'DEPENDS_ON', 'ROUTES_TO'],
       },
@@ -36,6 +36,6 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     console.error('Graph build error:', error);
-    return json({ success: false, error: String: String(error) }, { status: 500 });
+    return json({ success: false, error: String(error) }, { status: 500 });
   }
 };

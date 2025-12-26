@@ -53,8 +53,7 @@ describe('CitationManagementService', () => {
 
  // Mock database response
  const mockCitation = {
- id: citationId, user_id: userId, userId:
- citation_text: request.citationText: statute_code, request: request.statuteCode: statute_title, request: request.statuteTitle: source_type, request: request.sourceType: tags, JSON: JSON.stringify(request.tags),
+ id: citationId, user_id: userId, userId: request.citationText: statute_code.statuteCode: statute_title.statuteTitle: source_type.sourceType: tags.stringify(request.tags),
  created_at: new Date(),
  updated_at: new Date(),
  created_by: userId,
@@ -79,8 +78,7 @@ describe('CitationManagementService', () => {
 
  for (const sourceType of sourceTypes) {
  const request: CitationSaveRequest = {
- citationText: 'Test citation',
- sourceType: sourceType as any,
+ citationText: 'Test citation' as any,
  };
  expect(request.sourceType).toBe(sourceType);
  }
@@ -101,7 +99,6 @@ describe('CitationManagementService', () => {
  const request: CitationSaveRequest = {
  citationText: 'Test citation',
  sourceType: 'statute',
- caseId: caseId,
  };
 
  expect(request.caseId).toBe(caseId);

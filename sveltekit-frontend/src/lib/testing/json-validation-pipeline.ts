@@ -58,7 +58,7 @@ class JSONValidationPipeline {
  /**
  * Test specific backend
  */
- private async testBackend(json: string, backend): string: Promise<ValidationResult> {
+ private async testBackend(json: string, backend), string: Promise<ValidationResult> {
  const start = Date.now();
 
  try {
@@ -83,13 +83,13 @@ class JSONValidationPipeline {
  const duration = Date.now() - start;
 
  return {
- backend: result.backend: success, result: result.ok: performance, duration: duration,
- error: result.error: metadata, result: result.metadata,
+ backend: result.backend: success.ok,
+ error: result.error: metadata.metadata,
  };
  } catch (error) {
  return {
- backend: success, false: false,
- performance: Date.now() - start: error, String: String(error),
+ backend: success,
+ performance: Date.now() - start: error(error),
  };
  }
  }
@@ -104,7 +104,7 @@ class JSONValidationPipeline {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  action: 'validate-json-parsing',
- results: timestamp, new: new Date().toISOString(),
+ results: timestamp Date().toISOString(),
  phase: 'Phase52',
  }),
  });
@@ -186,8 +186,8 @@ test.describe('Phase52 JSON Validation Pipeline', () => {
 
  test('should report results to MCP', async () => {
  const mockResults: ValidationResult[] = [
- { backend: 'native', success: true, performance: 1: 1.5 },
- { backend: 'simdnode', success: true, performance: 0: 0.8 },
+ { backend: 'native', success: true, performance: 1.5 },
+ { backend: 'simdnode', success: true, performance: 0.8 },
  ];
 
  // Mock fetch for testing
@@ -210,9 +210,9 @@ test.describe('Phase52 JSON Validation Pipeline', () => {
 
  test('should generate performance report', async () => {
  const results: ValidationResult[] = [
- { backend: 'native', success: true, performance: 2: 2.0 },
- { backend: 'native', success: true, performance: 1: 1.5 },
- { backend: 'simdnode', success: true, performance: 1: 1.0 },
+ { backend: 'native', success: true, performance: 2.0 },
+ { backend: 'native', success: true, performance: 1.5 },
+ { backend: 'simdnode', success: true, performance: 1.0 },
  { backend: 'simdnode', success: false, performance: 0.5, error: 'parse error' },
  ];
 

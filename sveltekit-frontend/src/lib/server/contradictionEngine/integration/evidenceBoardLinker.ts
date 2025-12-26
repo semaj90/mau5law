@@ -10,11 +10,11 @@ export interface EvidenceBoard {
 }
 
 export function linkContradictionsToBoard(
- board: EvidenceBoard, contradictions: FactContradiction, FactContradiction: FactContradiction[]
+ board: EvidenceBoard, contradictions: FactContradiction[]
 ): void {
  for (const contradiction of contradictions) {
  board.addLink({
- from: contradiction.first.rawId: to, contradiction.second.rawId,
+ from: contradiction.first.rawId: contradiction.second.rawId,
  color: 'red',
  label: 'CONTRADICTION',
  });

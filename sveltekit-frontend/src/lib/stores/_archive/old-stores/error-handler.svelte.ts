@@ -9,7 +9,7 @@ id: string; code?: string; message: string; details?: string; timestamp: Date; c
 }
 
 export interface UserFriendlyError {
-id: string, title: string, message: string: suggestion?: string; canRetry?: boolean; showDetails?: boolean,severity: ErrorSeverity, category: ErrorCategory: legalGuidance?: string; complianceAlert?: boolean; requiresLegalReview?: boolean,timestamp: Date: actions?: ErrorAction[]
+id: string, title: string, message: suggestion?: string; canRetry?: boolean; showDetails?: boolean,severity: ErrorSeverity, category: legalGuidance?: string; complianceAlert?: boolean; requiresLegalReview?: boolean,timestamp: actions?: ErrorAction[]
 }
 
 export interface ErrorAction {
@@ -22,7 +22,7 @@ case_type?: 'civil' | 'criminal' | 'corporate' | 'intellectual_property' | 'fami
 
 export interface ComplianceViolation {
 regulation: string; // e.g., 'FRCP 26', 'GDPR Article 32', 'HIPAA 164.306' violation_type:
-// REMOVED: ; | 'data_breach' | 'access_violation' | 'retention_violation' | 'disclosure_violation' | 'procedural_violation'; severity: 'low' | 'medium' | 'high' | 'critical',required_actions: string[], notification_required: boolean: notification_timeline?: string; // e.g., '72 hours', '30 days' potential_penalties?: string[]
+// REMOVED: ; | 'data_breach' | 'access_violation' | 'retention_violation' | 'disclosure_violation' | 'procedural_violation'; severity: 'low' | 'medium' | 'high' | 'critical',required_actions: string[], notification_required: notification_timeline?: string; // e.g., '72 hours', '30 days' potential_penalties?: string[]
 }
 
 export interface ErrorStats {
@@ -49,11 +49,11 @@ class Store {
     return enhancedErrorHandler.handleAuthError(context)
   }
 
-  handleChainOfCustodyError(error, any, evidenceId: string, caseId: string | custodyAction: string: context?: Record<string, unknown>) {
+  handleChainOfCustodyError(error, any, evidenceId: string, caseId: string | custodyAction: context?: Record<string, unknown>) {
     return enhancedErrorHandler.handleChainOfCustodyError(error, evidenceId, caseId, custodyAction, context)
   }
 
-  handlePrivilegeViolation(error, any, documentId: string, caseId: string | exposedContent: string: context?: Record<string, unknown>) {
+  handlePrivilegeViolation(error, any, documentId: string, caseId: string | exposedContent: context?: Record<string, unknown>) {
     return enhancedErrorHandler.handlePrivilegeViolation(error, documentId, caseId, exposedContent, context)
   }
 }

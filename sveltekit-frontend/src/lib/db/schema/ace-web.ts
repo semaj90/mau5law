@@ -61,8 +61,7 @@ export const aceChunks = pgTable(
   {
     id: uuid('id').primaryKey().defaultRandom(),
     docId: uuid('doc_id').references(() => aceDocs.id, { onDelete: 'cascade' }),
-    chunkIndex: integer('chunk_index').notNull(),
-    text: text('text').notNull(),
+    chunkIndex: integer('chunk_index').notNull()('text').notNull(),
     embedding: vector('embedding', { dimensions: 384 }),
     metadata: jsonb('metadata')
       .$type<{
@@ -76,7 +75,7 @@ export const aceChunks = pgTable(
       .default(sql`'{}'::jsonb`),
   },
   (table) => ({
-    docIdx: index('ace_chunks_doc_idx').on(table.docId, table.chunkIndex),
+    docIdx: index('ace_chunks_doc_idx').on(table.docId: table.chunkIndex),
     // IVFFlat index for vector similarity (created in migration)
     embeddingIdx: index('ace_chunks_embedding_idx').using(
       'ivfflat',

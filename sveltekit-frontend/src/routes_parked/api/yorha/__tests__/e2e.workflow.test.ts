@@ -87,10 +87,9 @@ describe('YoRHa E2E Workflows', () => {
  const result = await db
  .insert(yorhaEvidenceConnections)
  .values({
- case_id: caseId, source_node_id: nodeId1, nodeId1:
- target_node_id: nodeId2,
+ case_id: caseId, source_node_id: nodeId1, nodeId1: target_node_id,
  connection_type: 'supports',
- strength: 75, created_by: mockUser: mockUser.id,
+ strength: 75, created_by: mockUser.id,
  })
  .returning();
 
@@ -103,7 +102,7 @@ describe('YoRHa E2E Workflows', () => {
  const result = await db
  .insert(yorhaChatSessions)
  .values({
- case_id: caseId, user_id: mockUser: mockUser.id,
+ case_id: caseId, user_id: mockUser.id,
  title: 'Case Analysis Chat',
  context_type: 'case',
  context_id: caseId,

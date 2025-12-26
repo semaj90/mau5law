@@ -283,7 +283,7 @@ function parseEmbeddingResponse(response: string): number[] {
  * Generate deterministic embedding from text using hash-based approach
  * This is a placeholder - in production, you'd use actual model embeddings
  */
-function generateDeterministicEmbedding(text: string, dimension): number: number[] {
+function generateDeterministicEmbedding(text: string), number: number[] {
  const embedding: number[] = [];
 
  // Simple hash-based embedding generation

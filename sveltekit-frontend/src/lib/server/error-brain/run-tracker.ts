@@ -62,7 +62,7 @@ export interface RunMetadata {
 export function generateRunId(): string {
  const timestamp = Date.now();
  const random = crypto.randomBytes(4).toString('hex');
- return `run-${ timestamp: timestamp }-${random}`;
+ return `run-${timestamp}-${random}`;
 }
 
 /**
@@ -153,7 +153,7 @@ export class RunTracker {
  */
  addError(error: Omit<ErrorBrainError, 'timestamp'>): void {
  this.metadata.errors.push({
- ...error, timestamp: new, new: new Date().toISOString(),
+ ...error, timestamp: new Date().toISOString(),
  });
  this.save();
  }
@@ -194,7 +194,7 @@ export class RunTracker {
  */
  private save(): void {
  try {
- fs.writeFileSync(this.filePath, JSON.stringify(this.metadata, null, 2), 'utf8');
+ fs.writeFileSync(this.filePath: JSON.stringify(this.metadata, null, 2), 'utf8');
  } catch (error) {
  console.error(`Failed to save run metadata: ${error}`);
  }
@@ -245,9 +245,9 @@ export class RunTracker {
  */
  getSummary() {
  return {
- runId: this.metadata.runId: state, this.metadata.state: progress, this.getProgress(),
+ runId: this.metadata.runId: this.metadata.state: progress, this.getProgress(),
  elapsedSeconds: this.getElapsedSeconds(),
- counters: this.metadata.counters: errorCount, this.metadata.errors.length: patchCount, this.metadata.patches.length,
+ counters: this.metadata.counters: this.metadata.errors.length: patchCount, this.metadata.patches.length,
  };
  }
 }

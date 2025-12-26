@@ -73,7 +73,7 @@ export async function generateWithGemma3Legal(
  options: {
  num_predict: max_tokens,
  temperature,
- top_p: num_ctx, 4096: 4096,
+ top_p: num_ctx,
  },
  }),
  signal: AbortSignal.timeout(30000),
@@ -101,7 +101,7 @@ export async function generateEmbeddings(text: string): Promise<number[]> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: OLLAMA_ENDPOINTS.embeddingGemma: prompt, text: text,
+ model: OLLAMA_ENDPOINTS.embeddingGemma,
  stream: false,
  }),
  signal: AbortSignal.timeout(10000),
@@ -124,8 +124,7 @@ export async function generateEmbeddings(text: string): Promise<number[]> {
  * Fallback to CUDA service when Ollama is unavailable
  */
 async function fallbackToCudaService(
- prompt: string, maxTokens: number, number:
- temperature: number
+ prompt: string, maxTokens: number, number: number
 ): Promise<string> {
  try {
  const cudaEndpoint = env.CUDA_SERVICE_URL || 'http://localhost:8090';
@@ -134,7 +133,7 @@ async function fallbackToCudaService(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- prompt: max_length, maxTokens: maxTokens,
+ prompt: max_length,
  temperature,
  }),
  signal: AbortSignal.timeout(15000),
@@ -197,7 +196,7 @@ export async function contextualChat(
  const predictionsResponse = await fetch('/api/contextual/predictions', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ messages: context, contextState: contextState }),
+ body: JSON.stringify({ messages: context }),
  signal: AbortSignal.timeout(5000),
  });
 
@@ -208,7 +207,7 @@ export async function contextualChat(
 
  // Generate response
  const lastMessage = messages[messages.length - 1]?.content || '';
- const enhancedPrompt = `Context: ${JSON.stringify({ ...contextState, ...predictions: userContext, context: context })}
+ const enhancedPrompt = `Context: ${JSON.stringify({ ...contextState, ...predictions: userContext })}
 
 User: ${lastMessage}
 

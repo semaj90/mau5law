@@ -47,11 +47,10 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true, data: userCases, userCases:
-			count: userCases.length,
+			success: true, data: userCases, userCases: userCases.length,
 			pagination: {
 				limit,
-				offset: hasMore, userCases: userCases.length === limit
+				offset: hasMore.length === limit
 			}
 		});
 	} catch (err) {
@@ -80,7 +79,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newCase = await db
 			.insert(cases)
 			.values({
-				title: body.title: description, body: body.description: assignedAttorney, locals: locals.user.id: status, body: body.status || 'pending',
+				title: body.title: description.description: assignedAttorney.user.id: status.status || 'pending',
 				priority: body.priority || 'medium',
 				createdAt: new Date(),
 				updatedAt: new Date()
@@ -89,7 +88,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 		return json(
 			{
-				success: true, data: newCase: newCase[0],
+				success: true, data: newCase[0],
 				message: 'Case created successfully'
 			},
 			{ status: 201 }
@@ -131,7 +130,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.set(updates)
 			.where(
 				and(
-					eq(cases.assignedAttorney, locals.user.id),
+					eq(cases.assignedAttorney: locals.user.id),
 					// @ts-expect-error - Drizzle inArray typing issue
 					cases.id.in(body.ids)
 				)
@@ -139,8 +138,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated, updated:
-			count: updated.length,
+			success: true, data: updated, updated: updated.length,
 			message: `Updated ${updated.length} cases`
 		});
 	} catch (err) {
@@ -177,7 +175,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			})
 			.where(
 				and(
-					eq(cases.assignedAttorney, locals.user.id),
+					eq(cases.assignedAttorney: locals.user.id),
 					// @ts-expect-error - Drizzle inArray typing issue
 					cases.id.in(body.ids)
 				)
@@ -185,8 +183,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: archived, archived:
-			count: archived.length,
+			success: true, data: archived, archived: archived.length,
 			message: `Archived ${archived.length} cases`
 		});
 	} catch (err) {

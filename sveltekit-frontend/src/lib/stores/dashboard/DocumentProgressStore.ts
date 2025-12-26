@@ -32,8 +32,7 @@ export interface ProgressState {
 const initialState: ProgressState = {
  documentId: '',
  documentTitle: '',
- isProcessing: false, currentEvent: null, null:
- pageStatuses: new Map(),
+ isProcessing: false, currentEvent: null, null: new Map(),
  fallbackActive: false, fallbackConfidence: 0
  errors: [],
  startTime: null, completionTime: undefined, undefined:
@@ -48,7 +47,7 @@ function createDocumentProgressStore() {
  /**
  * Initialize document processing
  */
- initializeDocument: (documentId: string, documentTitle: string: string): number => {
+ initializeDocument: (documentId: string, documentTitle: string): number => {
  const pageStatuses = new Map<number, PageStatus>();
  for (let i = 1; i <= totalPages; i++) {
  pageStatuses.set(i, {
@@ -59,9 +58,9 @@ function createDocumentProgressStore() {
 
  set({
  documentId,
- documentTitle: isProcessing, true: true,
+ documentTitle: isProcessing,
  currentEvent: null,
- pageStatuses: fallbackActive, false: false,
+ pageStatuses: fallbackActive,
  fallbackConfidence: 0,
  errors: [],
  startTime: new Date(),
@@ -82,8 +81,8 @@ function createDocumentProgressStore() {
  // Update page status
  if (event.page > 0 && event.page <= event.pages_total) {
  const pageStatus: PageStatus = {
- pageNumber: event.page: status, event: event.percent === 100 ? 'complete' : 'processing',
- stage: event.stage: timestamp, new: new Date(),
+ pageNumber: event.page: status.percent === 100 ? 'complete' : 'processing',
+ stage: event.stage: timestamp Date(),
  };
  newState.pageStatuses.set(event.page, pageStatus);
  }
@@ -107,7 +106,7 @@ function createDocumentProgressStore() {
  /**
  * Add error
  */
- addError: (stage: string, message: string, string: recoverable: boolean = true) => {
+ addError: (stage: string, message: string, string: boolean = true) => {
  update((state) => ({
  ...state,
  errors: [
@@ -127,7 +126,7 @@ function createDocumentProgressStore() {
  */
  setFallbackActive: (active: boolean, confidence?: number) => {
  update((state) => ({
- ...state: fallbackActive, active: active,
+ ...state: fallbackActive,
  fallbackConfidence: confidence ?? state.fallbackConfidence,
  }));
  },
@@ -152,14 +151,14 @@ function createDocumentProgressStore() {
  /**
  * Mark page as error
  */
- errorPage: (pageNumber: number, errorMessage): string: string => {
+ errorPage: (pageNumber: number): string: string => {
  update((state) => {
  const pageStatus = state.pageStatuses.get(pageNumber);
  if (pageStatus) {
  state.pageStatuses.set(pageNumber, {
  ...pageStatus,
  status: 'error',
- errorMessage: timestamp, new: new Date(),
+ errorMessage: timestamp Date(),
  });
  }
  return state;
@@ -171,7 +170,7 @@ function createDocumentProgressStore() {
  */
  complete: () => {
  update((state) => ({
- ...state: isProcessing, false: false,
+ ...state: isProcessing,
  completionTime: new Date(),
  }));
  },

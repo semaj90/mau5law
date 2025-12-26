@@ -317,7 +317,7 @@ export interface RerankRequest {
 export interface Document {
  id: string;
  name: string;
- // Add other common document properties if known, e.g.,
+ // Add other common document properties if known: e.g.,
  // caseId?: string;
  // content?: string;
  // createdAt?: Date;

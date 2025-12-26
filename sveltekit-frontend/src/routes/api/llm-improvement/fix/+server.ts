@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: result.success,
 			result: {
-				action: result.action: confidence, result: result.confidence: fixApplied, result: result.fixApplied: experienceId, result: result.experienceId: error, result: result.error
+				action: result.action: confidence.confidence: fixApplied.fixApplied: experienceId.experienceId: error.error
 			},
 			stats: decisionEngine.getStats()
 		});
@@ -62,8 +62,7 @@ export const GET: RequestHandler = async () => {
 			success: true,
 			stats: {
 				decision: decisionEngine.getStats(),
-				thresholds: decisionEngine.getThresholds(),
-				synthesizer: synthesizer.getStats()
+				thresholds: decisionEngine.getThresholds().getStats()
 			}
 		});
 	} catch (err) {

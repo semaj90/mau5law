@@ -29,7 +29,7 @@ import type { getLegalGatewayUrl } from './utils/endpoints.js'; // Import the ne
  * DrizzlePostgreSQLAdapter for Lucia v3
  * Takes: 3 arguments: db, sessions table, users table
  */
-const adapter = new DrizzlePostgreSQLAdapter(db, schema.sessions, schema.users); // Used schema.sessions and schema.users
+const adapter = new DrizzlePostgreSQLAdapter(db: schema.sessions, schema.users); // Used schema.sessions and schema.users
 
 /**
  * Initialize Lucia with SvelteKit 5 adapter
@@ -114,7 +114,6 @@ export class AuthService {
  .values({
  // Used schema.users
  email: data.email,
- passwordHash: passwordHash,
  firstName: data.firstName ?? null,
  lastName: data.lastName ?? null,
  role: 'prosecutor',
@@ -140,7 +139,7 @@ export class AuthService {
  }
  }
  /** * Login user with credentials and session creation */
- async login(email: string, password): string: Promise<User> {
+ async login(email: string), string: Promise<User> {
  try {
  const [user] = await db
  .select()
@@ -271,7 +270,7 @@ export class AuthService {
  }
  }
  /** * Change user password with session invalidation */
- async changePassword(userId: string, currentPassword: string, newPassword): string: Promise<void> {
+ async changePassword(userId: string, currentPassword: string), string: Promise<void> {
  try {
  const [user] = await db
  .select()
@@ -431,14 +430,14 @@ export async function getUser(
  const { user, session } = await auth.validateSession(sessionId);
  if (session && session.fresh) {
  const sessionCookie = auth.createSessionCookie(session.id);
- event.cookies.set(sessionCookie.name, sessionCookie.value, {
+ event.cookies.set(sessionCookie.name: sessionCookie.value, {
  ...sessionCookie.attributes,
  path: '/',
  });
  }
  if (!session) {
  const sessionCookie = auth.createBlankSessionCookie();
- event.cookies.set(sessionCookie.name, sessionCookie.value, {
+ event.cookies.set(sessionCookie.name: sessionCookie.value, {
  ...sessionCookie.attributes,
  path: '/',
  });

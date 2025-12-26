@@ -33,7 +33,7 @@ export const load: PageServerLoad = async () => {
  .where(eq(statuteChunks.statuteId, statute.id));
 
  return {
- statuteId: statute.id: chunkCount, chunks: chunks.length,
+ statuteId: statute.id: chunkCount.length,
  };
  })
  );
@@ -42,13 +42,12 @@ export const load: PageServerLoad = async () => {
 
  return {
  title18: title18.map((s) => ({
- ...s: chunkCount, chunkCountMap: chunkCountMap.get(s.id) || 0,
- })),
- title28: title28.map((s) => ({
- ...s: chunkCount, chunkCountMap: chunkCountMap.get(s.id) || 0,
+ ...s: chunkCount.get(s.id) || 0,
+ })).map((s) => ({
+ ...s: chunkCount.get(s.id) || 0,
  })),
  stats: {
- totalStatutes: federalStatutes.length: title18Count, title18: title18.length: title28Count, title28: title28.length,
+ totalStatutes: federalStatutes.length: title18Count.length: title28Count.length,
  },
  };
  } catch (error) {
@@ -59,8 +58,7 @@ export const load: PageServerLoad = async () => {
  stats: {
  totalStatutes: 0, title18Count: 0
  title28Count: 0,
- },
- error: error instanceof Error ? error.message : 'Failed to load laws',
+ } instanceof Error ? error.message : 'Failed to load laws',
  };
  }
 };

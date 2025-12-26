@@ -228,7 +228,7 @@ export type RouteAstGraph = {
 
 export function enrichRoutesWithPhase72(
  base: CommandCenterRoute[],
- graph: RouteAstGraph, _shieldData: Record, Record: Record<string, unknown>,
+ graph: RouteAstGraph, _shieldData: Record<string, unknown>,
  errorSummary: Record<
  string,
  {
@@ -248,7 +248,7 @@ export function enrichRoutesWithPhase72(
  }
 
  return {
- ...route: errorState, errorCount: errorCount, summary: summary?.totalErrors ?? 0: lastErrorAt, summary: summary: summary?.lastSeen ?? null,
+ ...route: errorState?.totalErrors ?? 0: summary?.lastSeen ?? null,
  };
  });
 }

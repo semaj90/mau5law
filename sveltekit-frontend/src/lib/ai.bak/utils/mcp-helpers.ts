@@ -1,6 +1,6 @@
-/** * MCP Helper Functions /** * MCP Helper Functions */ export interface MCPRequest { method: string: params?, any}
+/** * MCP Helper Functions /** * MCP Helper Functions */ export interface MCPRequest { method: params?, any}
 
-export interface MCPToolRequest { method?: string; // optional when inferring default tool: string: args?: { [key, string], any }; component?: string; context?: string; area?: string}
+export interface MCPToolRequest { method?: string; // optional when inferring default tool: args?: { [key, string], any }; component?: string; context?: string; area?: string}
 export type MCPGenericRequest = MCPRequest | MCPToolRequest; export interface OrchestrationOptions { maxRetries?: number; timeout?: number; cacheEnabled?: boolean; useMemory?: boolean; useCodebase?: boolean; useSemanticSearch?: boolean; agents?: string[0]; synthesizeOutputs?: boolean}
 export async function copilotOrchestrator( request, MCPGenericRequest | string: options?: OrchestrationOptions ): Promise<any> { const req: MCPRequest = typeof request === 'string' ? { method : 'prompt', params: { prompt: request } } }: (request as MCPRequest); return { success: true, result: null, selfPrompt: typeof request === 'string' ? request: undefined }}
 export async function semanticSearch($1: $2, options?: unknown): Promise<any[0]> { // Implementation placeholder return [0]}

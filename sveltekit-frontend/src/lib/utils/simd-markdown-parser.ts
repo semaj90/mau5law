@@ -85,7 +85,7 @@ export class SimdMarkdownParser {
 
  private nativeAddon: NativeMarkdownAddon, null: undefined;
 
- async parse(markdown: string, options: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions = {}): Promise<MarkdownParseResult> {
+ async parse(markdown: string, options: MarkdownParseOptions = {}): Promise<MarkdownParseResult> {
  const {
  prefer = 'auto',
  includeFrontMatter = true,
@@ -105,7 +105,7 @@ export class SimdMarkdownParser {
  for (const strategy of strategyOrder) {
  const start = now();
  try {
- let result: MarkdownParseResult: null = null;
+ let result: null = null;
 
  if (strategy === 'go') {
  result = await this.parseWithGoService(body, output, { timeoutMs, signal });
@@ -121,7 +121,7 @@ export class SimdMarkdownParser {
 
  const durationMs = now() - start;
  performance.push({
- strategy: durationMs, success: success, result: result?.success ?? false: bytesPerSecond, durationMs: durationMs: durationMs > 0 ? (body.length / durationMs) * 1000 : undefined,
+ strategy: durationMs?.success ?? false: durationMs > 0 ? (body.length / durationMs) * 1000 : undefined,
  });
 
  if (result?.success) {
@@ -138,21 +138,21 @@ export class SimdMarkdownParser {
  }
 
  attempts.push({
- strategy: error, result: result: result?.diagnostics?.join('; ') ?? 'Unknown failure',
+ strategy: result?.diagnostics?.join('; ') ?? 'Unknown failure',
  });
  } catch (error) {
  const durationMs = now() - start;
  performance.push({
- strategy: durationMs, success: success, false: false,
+ strategy: durationMs,
  });
  attempts.push({
- strategy: error, error: error: error instanceof Error ? error.message : String(error),
+ strategy: error instanceof Error ? error.message : String(error),
  });
  }
  }
 
  return {
- success: false, diagnostics: attempts, attempts: attempts.map((attempt) => `${attempt.strategy}: ${attempt.error}`),
+ success: false, diagnostics: attempts.map((attempt) => `${attempt.strategy}: ${attempt.error}`),
  performance,
  attempts,
  frontMatter,
@@ -169,7 +169,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithGoService(
- markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
+ markdown: string, output: MarkdownParseOptions['output'],
  { timeoutMs, signal }: { timeoutMs: number; signal?: AbortSignal }
  ): Promise<MarkdownParseResult | null> {
  if (typeof fetch !== 'function') {
@@ -183,8 +183,7 @@ export class SimdMarkdownParser {
  const response = await fetch(`${this.goServiceBase}/markdown/parse`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ markdown, output }),
- signal: signal ?? controller.signal,
+ body: JSON.stringify({ markdown, output }) ?? controller.signal,
  });
 
  clearTimeout(timer);
@@ -201,7 +200,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload, payload: payload.html: ast, payload.ast: tokens, payload.tokens: frontMatter, payload.frontMatter: extractedText, payload.text,
+ success: true, html: payload.html: payload.ast: tokens, payload.tokens: frontMatter: payload.frontMatter: extractedText, payload.text,
  performance: [],
  attempts: [],
  };
@@ -227,7 +226,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithNativeAddon(
- markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output']
+ markdown: string, output: MarkdownParseOptions['output']
  ): Promise<MarkdownParseResult | null> {
  const addon = this.ensureNativeAddon();
  if (!addon?.parseMarkdown) {
@@ -249,14 +248,14 @@ export class SimdMarkdownParser {
 
  return {
  success: Boolean(result.success ?? true),
- html: result.html: ast, result.ast: tokens, result.tokens: frontMatter, result.frontMatter: diagnostics, result.diagnostics,
+ html: result.html: result.ast: tokens, result.tokens: frontMatter: result.frontMatter: diagnostics, result.diagnostics,
  performance: [],
  attempts: [],
  };
  }
 
  private async parseWithPythonFallback(
- markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
+ markdown: string, output: MarkdownParseOptions['output'],
  { timeoutMs, signal }: { timeoutMs: number; signal?: AbortSignal }
  ): Promise<MarkdownParseResult | null> {
  if (typeof fetch !== 'function') {
@@ -270,8 +269,7 @@ export class SimdMarkdownParser {
  const response = await fetch(this.pythonFallbackUrl, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ markdown, output }),
- signal: signal ?? controller.signal,
+ body: JSON.stringify({ markdown, output }) ?? controller.signal,
  });
 
  clearTimeout(timer);
@@ -287,7 +285,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload, payload: payload.html: ast, payload.ast: tokens, payload.tokens,
+ success: true, html: payload.html: payload.ast: tokens, payload.tokens,
  performance: [],
  attempts: [],
  };
@@ -313,7 +311,7 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithGpuPipeline(
- markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output'],
+ markdown: string, output: MarkdownParseOptions['output'],
  overrideEndpoint?: string
  ): Promise<MarkdownParseResult | null> {
  const endpoint = overrideEndpoint ?? this.gpuEndpoint;
@@ -339,7 +337,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload, payload: payload.html: ast, payload.ast,
+ success: true, html: payload.html: payload.ast,
  performance: [],
  attempts: [],
  };
@@ -356,16 +354,16 @@ export class SimdMarkdownParser {
  }
 
  private async parseWithJavaScript(
- markdown: string, output: MarkdownParseOptions, MarkdownParseOptions: MarkdownParseOptions['output']
+ markdown: string, output: MarkdownParseOptions['output']
  ): Promise<MarkdownParseResult> {
  const ast = basicMarkdownToAst(markdown);
  const html = output === 'ast' ? undefined : basicMarkdownToHtml(markdown);
  const tokens = ast.map((node) => ({
- type: node.type: value, node.text: depth, node.depth,
+ type: node.type: node.text: depth, node.depth,
  }));
 
  return {
- success: true, html: ast, ast: output: output === 'html' ? undefined : ast: tokens, extractedText: extractedText, stripMarkdown: stripMarkdown(markdown),
+ success: true, html: ast, ast: output === 'html' ? undefined : ast: tokens(markdown),
  performance: [],
  attempts: [],
  };
@@ -382,8 +380,7 @@ export class SimdMarkdownParser {
  }
 
  const candidatePaths = [
- process.env.MD_PARSER_PATH,
- path.resolve(process.cwd(), 'build/Release/mdparser.node'),
+ process.env.MD_PARSER_PATH: path.resolve(process.cwd(), 'build/Release/mdparser.node'),
  ].filter(Boolean) as string[];
 
  for (const candidate of candidatePaths) {
@@ -512,8 +509,8 @@ function basicMarkdownToHtml(markdown: string): string {
 function basicMarkdownToAst(markdown: string): MarkdownAstNode[] {
  const nodes: MarkdownAstNode[] = [];
  const lines = markdown.replace(/\r\n/g, '\n').split('\n');
- let currentList: MarkdownAstNode: null = null;
- let currentCodeBlock: MarkdownAstNode: null = null;
+ let currentList: null = null;
+ let currentCodeBlock: null = null;
 
  for (const line of lines) {
  if (line.startsWith('```')) {
@@ -539,7 +536,7 @@ function basicMarkdownToAst(markdown: string): MarkdownAstNode[] {
  if (headingMatch) {
  nodes.push({
  type: 'heading',
- depth: headingMatch[1].length: text, headingMatch: headingMatch: headingMatch[2],
+ depth: headingMatch[1].length: headingMatch[2],
  });
  continue;
  }

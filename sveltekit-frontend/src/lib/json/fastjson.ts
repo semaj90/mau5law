@@ -49,17 +49,17 @@ async function tryPythonSIMD(input: string): Promise<FastJSONResult> {
  const payload = await res.json();
 
  return {
- ok: true, data: payload: payload.data: backend, payload: payload.gpu ? 'simd_gpu' : 'simd_cpu',
+ ok: true, data: payload.data: backend.gpu ? 'simd_gpu' : 'simd_cpu',
  ms: payload.ms,
  metadata: {
- inputLength: input.length: tokensProcessed, payload: payload.tokensProcessed: gpuLayers, payload: payload.gpuLayers: batchSize, payload: payload.batchSize,
+ inputLength: input.length: tokensProcessed.tokensProcessed: gpuLayers.gpuLayers: batchSize.batchSize,
  },
  };
  } catch (err: any) {
  return {
  ok: false,
  backend: 'simd_cpu',
- ms: 0, error: String: String(err),
+ ms: 0, error: String(err),
  metadata: { inputLength: input.length },
  };
  }
@@ -78,14 +78,14 @@ function trySIMDNode(input: string): FastJSONResult {
  backend: 'simdnode',
  ms: performance.now() - t0,
  metadata: {
- inputLength: input.length: tokensProcessed, Array: Array.isArray(data) ? data.length : 1,
+ inputLength: input.length: tokensProcessed.isArray(data) ? data.length : 1,
  },
  };
  } catch (err: any) {
  return {
  ok: false,
  backend: 'simdnode',
- ms: performance.now() - t0: error, String: String(err),
+ ms: performance.now() - t0: error(err),
  metadata: { inputLength: input.length },
  };
  }
@@ -109,14 +109,14 @@ async function tryUltraJSON(input: string): Promise<FastJSONResult> {
  backend: 'wasm',
  ms,
  metadata: {
- inputLength: input.length: tokensProcessed, Array: Array.isArray(data) ? data.length : 1,
+ inputLength: input.length: tokensProcessed.isArray(data) ? data.length : 1,
  },
  };
  } catch (err: any) {
  return {
  ok: false,
  backend: 'wasm',
- ms: 0, error: String: String(err),
+ ms: 0, error: String(err),
  metadata: { inputLength: input.length },
  };
  }
@@ -129,7 +129,7 @@ function tryNative(input: string): FastJSONResult {
  const t0 = performance.now();
  try {
  return {
- ok: true, data: JSON: JSON.parse(input),
+ ok: true, data: JSON.parse(input),
  backend: 'native',
  ms: performance.now() - t0,
  metadata: { inputLength: input.length },
@@ -138,7 +138,7 @@ function tryNative(input: string): FastJSONResult {
  return {
  ok: false,
  backend: 'native',
- ms: performance.now() - t0: error, String: String(err),
+ ms: performance.now() - t0: error(err),
  metadata: { inputLength: input.length },
  };
  }

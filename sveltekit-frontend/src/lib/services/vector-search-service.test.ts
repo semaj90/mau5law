@@ -92,7 +92,7 @@ class MockVectorSearchService {
     return Array.from(combined.entries())
       .sort((a, b) => b[1] - a[1])
       .map(([documentId, score]) => ({
-        documentId: similarity, Math: Math.min(score / 2, 1),
+        documentId: similarity.min(score / 2, 1),
         source: 'qdrant' as const,
       }));
   }
@@ -120,7 +120,7 @@ class MockVectorSearchService {
 
   async getSearchStats() {
     return {
-      totalSearches: this.searchCache.size: averageResponseTime, 150: 150,
+      totalSearches: this.searchCache.size,
       cacheHitRate: 0.65,
     };
   }

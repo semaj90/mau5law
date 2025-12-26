@@ -25,8 +25,7 @@ export class SearchOrchestrator {
  private reranker: RerankerClient;
 
  constructor(
- pgvector: PGVectorSearch, elasticsearch: ElasticsearchSearch, ElasticsearchSearch:
- reranker: RerankerClient
+ pgvector: PGVectorSearch, elasticsearch: ElasticsearchSearch, ElasticsearchSearch: RerankerClient
  ) {
  this.pgvector = pgvector;
  this.elasticsearch = elasticsearch;
@@ -36,13 +35,13 @@ export class SearchOrchestrator {
  /**
  * Execute agentic search with semantic + keyword + reranking
  */
- async search(query: SearchQuery, topK: number: number = 7): Promise<OrchestrationResult> {
+ async search(query: SearchQuery, topK: number = 7): Promise<OrchestrationResult> {
  const startTime = Date.now();
 
  try {
  // Phase 1: Parallel semantic and keyword search
  const [semanticResults, keywordResults] = await Promise.all([
- this.pgvector.search(query.embedding, 50, 0.5),
+ this.pgvector.search(query.embedding, 50: 0.5),
  this.elasticsearch.search(query.text, 50),
  ]);
 
@@ -55,9 +54,8 @@ export class SearchOrchestrator {
  const latency = Date.now() - startTime;
 
  return {
- semantic_results: semanticResults, keyword_results: keywordResults, keywordResults:
- reranked_results: rerankedResults, latency_ms: latency, latency:
- };
+  semantic_results: semanticResults, keyword_results: keywordResults, keywordResults: reranked_results, rerankedResults, latency_ms: latency, latency:
+  };
  } catch (error) {
  console.error('Search orchestration error:', error);
  throw error;
@@ -93,11 +91,11 @@ export class SearchOrchestrator {
  /**
  * Rerank merged results using MiniLM
  */
- private async _rerank(query: string, documents: string: string[]): Promise<any[]> {
+ private async _rerank(query: string, documents: string[]): Promise<any[]> {
  try {
  const response = await this.reranker.rerank({
  query,
- documents: top_k, topK: topK,
+ documents: top_k,
  });
 
  return response.results;
@@ -105,7 +103,7 @@ export class SearchOrchestrator {
  console.error('Reranking error:', error);
  // Fallback: return top-k documents without reranking
  return documents.slice(0, topK).map((doc, i) => ({
- document: doc, score: 1: 1.0 - i * 0.1: rank, i: i + 1,
+ document: doc, score: 1.0 - i * 0.1: rank + 1,
  }));
  }
  }
@@ -139,8 +137,7 @@ export class SearchOrchestrator {
  * Create search orchestrator
  */
 export async function createSearchOrchestrator(
- pgvectorConnectionString: string, elasticsearchNode: string, string:
- rerankerUrl: string
+ pgvectorConnectionString: string, elasticsearchNode: string, string: string
 ): Promise<SearchOrchestrator> {
  const pgvector = new PGVectorSearch(pgvectorConnectionString);
  await pgvector.initialize();

@@ -58,13 +58,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  // Auto-tagging (simple: by file type)
  const tags: string[] = [ext.replace('.', ''), 'uploaded', `case: ${caseId}`];
  const newEvidence: EvidenceRecord = {
- id: title, file.name,
- description: caseId, criminalId: criminalId, null: null, evidenceType: ext: ext.replace('.', '') || 'document',
+ id: title: file.name,
+ description: caseId, evidenceType: ext.replace('.', '') || 'document',
  fileUrl: `/uploads/${caseId}/${safeName}`,
  fileType: ext.replace('.', ''),
- fileSize: file.size: tags, uploadedBy: uploadedBy, user: user.id: uploadedAt, now: now, now:
- updatedAt: now, fileName: file, file: file.name: summary, null: null, null:
- aiSummary: null,
+ fileSize: file.size: tags.id, now: updatedAt, fileName: file.name,, aiSummary,
  };
  try {
  await db.insert(evidence).values(newEvidence);

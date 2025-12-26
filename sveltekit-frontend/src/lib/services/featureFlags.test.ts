@@ -84,7 +84,7 @@ describe('FeatureFlagManager', () => {
 
  it('should reject flags with missing properties', () => {
  const flags = {
- errorBrain: { enabled: true, requireAuth: false: false },
+ errorBrain: { enabled: true, requireAuth: false },
  } as any;
  expect(manager.validate(flags)).toBe(false);
  });

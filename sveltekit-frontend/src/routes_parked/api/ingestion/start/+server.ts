@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: result.success,
  stats: {
- totalDocuments: result.totalDocuments: processedDocuments, result: result.processedDocuments: indexedDocuments, result: result.indexedDocuments: totalChunks, result: result.totalChunks: totalEmbeddings, result: result.totalEmbeddings: executionTimeMs, result: result.executionTimeMs,
+ totalDocuments: result.totalDocuments: processedDocuments.processedDocuments: indexedDocuments.indexedDocuments: totalChunks.totalChunks: totalEmbeddings.totalEmbeddings: executionTimeMs.executionTimeMs,
  executionTimeSec: (result.executionTimeMs / 1000).toFixed(2),
  },
  errors: result.errors,
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('Ingestion error:', error);
  return json(
  {
- success: false, error: error: error instanceof Error ? error.message : 'Unknown error',
+ success: error instanceof Error ? error.message : 'Unknown error',
  },
  { status: 500 }
  );

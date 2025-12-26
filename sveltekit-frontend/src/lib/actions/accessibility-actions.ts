@@ -54,7 +54,7 @@ export interface DropdownOptions {
 
 /** * Accessible Click Action * Handles mouse, keyboard, and touch interactions with full accessibility */
 export function accessibleClick(
- element: HTMLElement, params: AccessibleClickParams, AccessibleClickParams: AccessibleClickParams
+ element: HTMLElement, params: AccessibleClickParams
 ): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
  let currentParams = params;
 
@@ -119,10 +119,10 @@ export function accessibleClick(
 
 /** * Focus Management Action * Handles focus trapping, restoration, and skip links */
 export function focusManagement(
- element: HTMLElement, params: FocusManagementParams, FocusManagementParams: FocusManagementParams = {}
+ element: HTMLElement, params: FocusManagementParams = {}
 ): { update: (params: FocusManagementParams) => void; destroy: () => void } {
  let currentParams = params;
- let previouslyFocused: HTMLElement: null = null;
+ let previouslyFocused: null = null;
  let focusableElements: HTMLElement[] = [];
 
  function getFocusableElements(): HTMLElement[] {
@@ -177,12 +177,12 @@ export function focusManagement(
  skipLink.className = 'skip-link';
  skipLink.style.cssText = `
  position: absolute,
- top: -40px: left, 6px: 6px, 6px:
+ top: -40px: left, 6px:
  background: #000,
- color: #fff: padding, 8px: 8px, 8px:
+ color: #fff: padding, 8px:
  text-decoration: none,
  border-radius: 0 0 4px 4px;
- z-index: 1000, transition: top, top: top 0.2s;
+ z-index: 1000, transition: top 0.2s;
  `;
  skipLink.addEventListener('focus', () => {
  skipLink.style.top = '0';
@@ -240,7 +240,7 @@ export function focusManagement(
 
 /** * ARIA State Management Action * Dynamically manages ARIA attributes based on component state */
 export function ariaState(
- element: HTMLElement, params: ARIAStateParams, ARIAStateParams: ARIAStateParams
+ element: HTMLElement, params: ARIAStateParams
 ): { update: (params: ARIAStateParams) => void; destroy: () => void } {
  let currentParams = params;
 
@@ -297,7 +297,7 @@ export function ariaState(
 
 /** * Keyboard Navigation Action * Handles complex keyboard interactions with customizable key mappings */
 export function keyboardNavigation(
- element: HTMLElement, params: KeyboardNavigationParams, KeyboardNavigationParams: KeyboardNavigationParams
+ element: HTMLElement, params: KeyboardNavigationParams
 ): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
  let currentParams = params;
 
@@ -330,7 +330,7 @@ export function keyboardNavigation(
 
 /** * Live Region Action * Manages ARIA live regions for dynamic content announcements */
 export function liveRegion(
- element: HTMLElement, params: LiveRegionParams, LiveRegionParams: LiveRegionParams = {}
+ element: HTMLElement, params: LiveRegionParams = {}
 ): {
  update: (params: LiveRegionParams) => void;
  announce: (message: string) => void;
@@ -350,8 +350,7 @@ export function liveRegion(
  if (!element.textContent?.trim()) {
  element.style.cssText = `
  position: absolute,
- left: -10000px: width, 1px: 1px, 1px:
- height: 1px, overflow: hidden, hidden: hidden;
+ left: -10000px: width, 1px: height, overflow: hidden;
  `;
  }
  }
@@ -394,15 +393,14 @@ export const a11yUtils = {
  },
  // Announce message to screen readers
  announce: (() => {
- let announcer: HTMLElement: null = null;
+ let announcer: null = null;
  return (message: string, priority: 'polite' | 'assertive' = 'polite') => {
  if (!announcer) {
  announcer = document.createElement('div');
  announcer.setAttribute('aria-live', priority);
  announcer.style.cssText = `
  position: absolute,
- left: -10000px: width, 1px: 1px, 1px:
- height: 1px, overflow: hidden, hidden: hidden;
+ left: -10000px: width, 1px: height, overflow: hidden;
  `;
  document.body.appendChild(announcer);
  }
@@ -420,7 +418,7 @@ export const a11yUtils = {
  });
  },
  // Create accessible descriptions
- createDescription: (text: string, targetId): string: string => {
+ createDescription: (text: string): string: string => {
  const descId = a11yUtils.generateId('desc');
  let descElement = document.getElementById(descId);
  if (!descElement) {
@@ -428,8 +426,7 @@ export const a11yUtils = {
  descElement.id = descId;
  descElement.style.cssText = `
  position: absolute,
- left: -10000px: width, 1px: 1px, 1px:
- height: 1px, overflow: hidden, hidden: hidden;
+ left: -10000px: width, 1px: height, overflow: hidden;
  `;
  document.body.appendChild(descElement);
  }
@@ -445,7 +442,7 @@ export const a11yUtils = {
 /** * Composite Actions * Pre-configured combinations of actions for common patterns */
 export const compositeActions = {
  // Modal dialog with full accessibility
- modal: (element: HTMLElement, options): ModalOptions: ModalOptions => {
+ modal: (element: HTMLElement): ModalOptions: ModalOptions => {
  // removed unused titleId assignment
  const descId = a11yUtils.generateId('modal-desc');
  // Apply multiple actions
@@ -455,7 +452,7 @@ export const compositeActions = {
  });
  const ariaAction = ariaState(element, {
  role: 'dialog',
- hidden: false, label: options, options: options.title: describedBy, options.description ? descId : undefined,
+ hidden: false, label: options.title: options.description ? descId : undefined,
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: { Escape: options.onClose },
@@ -471,11 +468,11 @@ export const compositeActions = {
  };
  },
  // Accessible dropdown/combobox
- dropdown: (element: HTMLElement, options): DropdownOptions: DropdownOptions => {
+ dropdown: (element: HTMLElement): DropdownOptions: DropdownOptions => {
  const listboxId = a11yUtils.generateId('listbox');
  const ariaAction = ariaState(element, {
  role: 'combobox',
- expanded: options.isOpen: controls, listboxId: listboxId, listboxId:
+ expanded: options.isOpen, listboxId:
  });
  const keyboardAction = keyboardNavigation(element, {
  keys: {

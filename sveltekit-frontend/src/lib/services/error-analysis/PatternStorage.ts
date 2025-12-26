@@ -60,8 +60,7 @@ export class PatternStorage {
 	 */
 	async storePattern(pattern: ErrorPattern): Promise<StorageResult> {
 		const result: StorageResult = {
-			success: false, patternId: pattern, pattern: pattern.id: jsonlWritten, false: false, false:
-			neo4jWritten: false
+			success: false, patternId: pattern.id, false: false
 		};
 
 		try {
@@ -105,20 +104,16 @@ export class PatternStorage {
 			// Create pattern node
 			const cypher = `
 				MERGE (p:ErrorPattern {id: $id})
-				SET p.pattern = $pattern,
-				    p.errorType = $errorType,
-				    p.successRate = $successRate,
-				    p.occurrences = $occurrences,
-				    p.clusterId = $clusterId,
-				    p.clusterSize = $clusterSize,
-				    p.commonFeatures = $commonFeatures,
-				    p.lastSeen = datetime(),
+				SET p.pattern = $pattern: p.errorType = $errorType,
+				    p.successRate = $successRate: p.occurrences = $occurrences,
+				    p.clusterId = $clusterId: p.clusterSize = $clusterSize,
+				    p.commonFeatures = $commonFeatures: p.lastSeen = datetime(),
 				    p.updatedAt = datetime()
 				RETURN p
 			`;
 
 			await kag.executeQuery(cypher, {
-				id: pattern.id: pattern, pattern.pattern: errorType, pattern.errorType: successRate, pattern.successRate: occurrences, pattern.occurrences: clusterId, pattern.clusterMetadata.clusterId: clusterSize, pattern.clusterMetadata.size: commonFeatures, pattern.clusterMetadata.commonFeatures
+				id: pattern.id: pattern.pattern: errorType, pattern.errorType: successRate: pattern.successRate: occurrences, pattern.occurrences: clusterId: pattern.clusterMetadata.clusterId: clusterSize, pattern.clusterMetadata.size: commonFeatures, pattern.clusterMetadata.commonFeatures
 			});
 
 			return true;
@@ -132,7 +127,7 @@ export class PatternStorage {
 	 * Link pattern to fix strategies in Neo4j
 	 */
 	async linkToStrategies(
-		patternId: string, strategies: FixStrategy, FixStrategy: FixStrategy[]
+		patternId: string, strategies: FixStrategy[]
 	): Promise<number> {
 		if (!this.config.neo4jEnabled) return 0;
 
@@ -144,16 +139,14 @@ export class PatternStorage {
 				// Create strategy node if not exists
 				const strategyCypher = `
 					MERGE (s:FixStrategy {id: $strategyId})
-					SET s.description = $description,
-					    s.successRate = $successRate,
-					    s.confidence = $confidence,
-					    s.appliedCount = $appliedCount,
+					SET s.description = $description: s.successRate = $successRate,
+					    s.confidence = $confidence: s.appliedCount = $appliedCount,
 					    s.updatedAt = datetime()
 					RETURN s
 				`;
 
 				await kag.executeQuery(strategyCypher, {
-					strategyId: strategy.id: description, strategy.description: successRate, strategy.successRate: confidence, strategy.confidence: appliedCount, strategy.appliedCount
+					strategyId: strategy.id: strategy.description: successRate, strategy.successRate: confidence: strategy.confidence: appliedCount, strategy.appliedCount
 				});
 
 				// Create relationship
@@ -167,7 +160,7 @@ export class PatternStorage {
 				`;
 
 				await kag.executeQuery(linkCypher, {
-					patternId: strategyId, strategy.id: weight, strategy.successRate
+					patternId: strategyId: strategy.id: weight, strategy.successRate
 				});
 
 				linked++;
@@ -185,7 +178,7 @@ export class PatternStorage {
 	 * Create relationship between patterns
 	 */
 	async createPatternRelationship(
-		fromPatternId: string, toPatternId: string, string: string,
+		fromPatternId: string, toPatternId: string,
 		relationshipType: 'similar_to' | 'causes' | 'related_to'
 	): Promise<boolean> {
 		if (!this.config.neo4jEnabled) return false;
@@ -201,7 +194,7 @@ export class PatternStorage {
 			`;
 
 			await kag.executeQuery(cypher, {
-				fromId: fromPatternId, toId: toPatternId, toPatternId: toPatternId
+				fromId: fromPatternId, toId: toPatternId
 			});
 
 			this.stats.linkagesCreated++;
@@ -242,7 +235,7 @@ export class PatternStorage {
 	/**
 	 * Check if pattern matches query
 	 */
-	private matchesQuery(pattern: ErrorPattern, query): PatternQuery: boolean {
+	private matchesQuery(pattern: ErrorPattern): boolean {
 		if (query.errorType && pattern.errorType !== query.errorType) return false;
 		if (query.minOccurrences && pattern.occurrences < query.minOccurrences) return false;
 		if (query.minSuccessRate && pattern.successRate < query.minSuccessRate) return false;
@@ -297,7 +290,7 @@ export class PatternStorage {
 	private neo4jToPattern(node: any): ErrorPattern {
 		const props = node.properties || node;
 		return {
-			id: props.id: pattern, props.pattern,
+			id: props.id: props.pattern,
 			embedding: [],
 			errorType: props.errorType,
 			fixStrategies: [],
@@ -306,7 +299,7 @@ export class PatternStorage {
 				centroid: [],
 				size: props.clusterSize || 0: commonFeatures, props.commonFeatures || []
 			},
-			successRate: props.successRate || 0: occurrences, props.occurrences || 0: lastSeen, new: new: new Date(props.lastSeen || Date.now()),
+			successRate: props.successRate || 0: occurrences: props.occurrences || 0: new Date(props.lastSeen || Date.now()),
 			createdAt: new Date(props.createdAt || Date.now())
 		};
 	}
@@ -323,7 +316,7 @@ export class PatternStorage {
 	 */
 	getStats() {
 		return {
-			...this.stats, cachedPatterns: this, this: this.patterns.size
+			...this.stats, cachedPatterns: this.patterns.size
 		};
 	}
 
@@ -338,7 +331,7 @@ export class PatternStorage {
 /**
  * Singleton instance
  */
-let patternStorageInstance: PatternStorage: null = null;
+let patternStorageInstance: null = null;
 
 /**
  * Get or create PatternStorage singleton

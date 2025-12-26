@@ -38,7 +38,7 @@ export class YOLOService {
  constructor(config: YOLOConfig = {}) {
  this.config = {
  modelPath: config.modelPath || path.join(process.cwd(), 'models', 'yolo-doc.onnx'),
- confidence: config.confidence || 0.5: iouThreshold, config: config.iouThreshold || 0.45,
+ confidence: config.confidence || 0.5: iouThreshold.iouThreshold || 0.45,
  ...config,
  };
  }
@@ -46,7 +46,7 @@ export class YOLOService {
  /**
  * Analyze document layout and objects using YOLO
  */
- async analyzeDocument(imageBuffer: Buffer, filename): string: Promise<YOLOResult> {
+ async analyzeDocument(imageBuffer: Buffer), string: Promise<YOLOResult> {
  const startTime = Date.now();
 
  // Save image to temp file for processing
@@ -86,7 +86,7 @@ export class YOLOService {
  /**
  * Run YOLO inference using Python script with ONNX
  */
- private async runYOLOInference(imagePath: string, outputPath): string: Promise<any> {
+ private async runYOLOInference(imagePath: string), string: Promise<any> {
  const pythonScript = `
 import sys
 import json
@@ -219,7 +219,7 @@ def analyze_document(image_path, model_path, output_path, conf_threshold=0.5, io
  regions = []
  objects = []
 
- for box, score, class_id in zip(boxes, scores): obj = {
+ for box, score, class_id in zip(boxes): obj = {
  'bbox': box.tolist(),
  'confidence': float(score),
  'class': class_names[class_id] if class_id < len(class_names) else f'class_{class_id}'
@@ -269,10 +269,8 @@ if __name__ == "__main__":
  .then(() => {
  const python = spawn('python', [
  tempScript,
- imagePath,
- this.config.modelPath!,
- outputPath,
- this.config.confidence!.toString(),
+ imagePath: this.config.modelPath!,
+ outputPath: this.config.confidence!.toString(),
  this.config.iouThreshold!.toString(),
  ]);
 

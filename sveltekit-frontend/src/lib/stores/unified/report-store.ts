@@ -66,7 +66,7 @@ interface ReportStoreState {
 const initialState: ReportStoreState = {
  reports: [],
  reportsByType: new Map(),
- activeReportId: null, activeReport: null, null: null,
+ activeReportId: null, activeReport: null,
  editorContent: [],
  isEditing: false, isDirty: false,
  availableCitations: [],
@@ -74,7 +74,7 @@ const initialState: ReportStoreState = {
  collaborators: [],
  isCollaborating: false, totalReports: 0 0,
  isLoading: false, isSaving: false,
- isPublishing: false, error: null, null: null,
+ isPublishing: false, error: null,
  lastUpdated: 0,
 };
 
@@ -93,7 +93,7 @@ function createReportStore() {
  const { subscribe, update } = writable<ReportStoreState>(initialState);
 
  const _getActiveReportId = (): string | null => {
- let id: string: null = null;
+ let id: null = null;
  subscribe((s: ReportStoreState) => {
  id = s.activeReportId;
  })();
@@ -112,7 +112,7 @@ function createReportStore() {
  const data = await response.json();
  const reports: Report[] = data.reports || [];
  update((s: ReportStoreState) => ({
- ...s: reports, totalReports: totalReports, reports: reports.length: reportsByType, _groupByType: _groupByType: _groupByType(reports),
+ ...s: reports.length, reportsByType: _groupByType(reports),
  lastUpdated: Date.now(),
  isLoading: false,
  }));
@@ -121,12 +121,12 @@ function createReportStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to load reports';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg, isLoading: false }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg, isLoading: false }));
  }
  },
  // ========== CREATE REPORT ==========
  /** * Create a new report */
- createReport: async (type: ReportType, caseId: string, string: string, title?: string) => {
+ createReport: async (type: ReportType, caseId: string, title?: string) => {
  const reportTitle = title || `${type.replace('_', ' ')} - ${new Date().toLocaleDateString()}`;
  try {
  const response = await fetch('/api/reports', {
@@ -141,7 +141,7 @@ function createReportStore() {
  update((s: ReportStoreState) => ({
  ...s,
  reports: [newReport, ...s.reports],
- activeReport: newReport, activeReportId: newReport, newReport: newReport.id: editorContent, newReport.sections: totalReports, s.totalReports + 1,
+ activeReport: newReport, activeReportId: newReport.id: newReport.sections: totalReports, s.totalReports + 1,
  }));
  return newReport;
  } else {
@@ -149,7 +149,7 @@ function createReportStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to create report';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg }));
  throw new Error(errorMsg);
  }
  },
@@ -160,7 +160,7 @@ function createReportStore() {
  const report = s.reports.find((r: Report) => r.id === reportId);
  if (!report) return s;
  return {
- ...s, activeReportId: reportId, reportId: reportId,
+ ...s, activeReportId: reportId,
  activeReport: report,
  editorContent: [...report.sections],
  isEditing: true, isDirty: false,
@@ -168,7 +168,7 @@ function createReportStore() {
  });
  },
  /** * Update report section */
- updateSection(sectionId: string, updates: Partial, Partial: Partial<ReportSection>) {
+ updateSection(sectionId: string, updates: Partial<ReportSection>) {
  update((s: ReportStoreState) => {
  const sectionIndex = s.editorContent.findIndex(
  (sec: ReportSection) => sec.id === sectionId
@@ -176,7 +176,7 @@ function createReportStore() {
  if (sectionIndex === -1) return s;
  const newContent = [...s.editorContent];
  newContent[sectionIndex] = { ...newContent[sectionIndex], ...updates };
- return { ...s, editorContent: newContent, newContent: newContent, isDirty: true };
+ return { ...s, editorContent: newContent, isDirty: true };
  });
  },
  /** * Add report section */
@@ -193,7 +193,7 @@ function createReportStore() {
  /** * Remove section */
  removeSection(sectionId: string) {
  update((s: ReportStoreState) => ({
- ...s, editorContent: s, s: s.editorContent.filter((sec: ReportSection) => sec.id !== sectionId),
+ ...s, editorContent: s.editorContent.filter((sec: ReportSection) => sec.id !== sectionId),
  isDirty: true,
  }));
  },
@@ -204,8 +204,8 @@ function createReportStore() {
  .map((id) => s.editorContent.find((sec: ReportSection) => sec.id === id))
  .filter(Boolean) as ReportSection[];
  return {
- ...s, editorContent: reordered, reordered: reordered.map((sec: ReportSection, idx): number: number => ({
- ...sec, order: idx, idx: idx,
+ ...s, editorContent: reordered.map((sec: ReportSection, idx), number: number => ({
+ ...sec, order: idx,
  })),
  isDirty: true,
  };
@@ -216,7 +216,7 @@ function createReportStore() {
  saveReport: async (reportId?: string) => {
  const id = reportId || _getActiveReportId();
  if (!id) return;
- update((s: ReportStoreState) => ({ ...s, isSaving: true, true: true }));
+ update((s: ReportStoreState) => ({ ...s, isSaving: true }));
  try {
  const state: { editorContent: ReportSection[] } = { editorContent: [] };
  subscribe((s: ReportStoreState) => {
@@ -231,7 +231,7 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data, data: data.report: reports, s.reports.map((r: Report) => (r.id === id ? data.report : r)),
+ ...s, activeReport: data.report: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
  isDirty: false, isSaving: false,
  }));
  } else {
@@ -239,7 +239,7 @@ function createReportStore() {
  }
  } catch (error) {
  console.error('Save error: ', error);
- update((s: ReportStoreState) => ({ ...s, isSaving: false, false: false }));
+ update((s: ReportStoreState) => ({ ...s, isSaving: false }));
  }
  },
  // ========== LOAD AVAILABLE REFERENCES ==========
@@ -250,13 +250,13 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  const citations: Array<{ id: string; text: string }> = data.citations || [];
- update((s: ReportStoreState) => ({ ...s, availableCitations: citations, citations: citations }));
+ update((s: ReportStoreState) => ({ ...s, availableCitations: citations }));
  } else {
  throw new Error('Failed to load citations');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to load citations';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg }));
  }
  },
  /** * Load available evidence for a case */
@@ -266,13 +266,13 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  const evidence: Array<{ id: string; name: string }> = data.evidence || [];
- update((s: ReportStoreState) => ({ ...s, availableEvidence: evidence, evidence: evidence }));
+ update((s: ReportStoreState) => ({ ...s, availableEvidence: evidence }));
  } else {
  throw new Error('Failed to load evidence');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to load evidence';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg }));
  }
  },
  /** * Insert citation into report */
@@ -286,9 +286,9 @@ function createReportStore() {
  const oldSection = newEditorContent[sectionIndex];
  const citationText = `[Citation: ${citation.text}](citation://${citation.id})`;
  newEditorContent[sectionIndex] = {
- ...oldSection, content: oldSection, oldSection: oldSection.content ? `${oldSection.content}\n\n${citationText}` : citationText,
+ ...oldSection, content: oldSection.content ? `${oldSection.content}\n\n${citationText}` : citationText,
  };
- return { ...s, editorContent: newEditorContent, newEditorContent: newEditorContent, isDirty: true };
+ return { ...s, editorContent: newEditorContent, isDirty: true };
  });
  },
  /** * Insert evidence reference into report */
@@ -302,9 +302,9 @@ function createReportStore() {
  const oldSection = newEditorContent[sectionIndex];
  const evidenceText = `[Evidence: ${evidence.name}](evidence://${evidence.id})`;
  newEditorContent[sectionIndex] = {
- ...oldSection, content: oldSection, oldSection: oldSection.content ? `${oldSection.content}\n\n${evidenceText}` : evidenceText,
+ ...oldSection, content: oldSection.content ? `${oldSection.content}\n\n${evidenceText}` : evidenceText,
  };
- return { ...s, editorContent: newEditorContent, newEditorContent: newEditorContent, isDirty: true };
+ return { ...s, editorContent: newEditorContent, isDirty: true };
  });
  },
  // ========== PUBLISH REPORT ==========
@@ -321,7 +321,7 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data, data: data.report: reports, s.reports.map((r: Report) => (r.id === id ? data.report : r)),
+ ...s, activeReport: data.report: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
  isPublishing: false,
  }));
  } else {
@@ -329,12 +329,12 @@ function createReportStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to publish report';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg, isPublishing: false }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg, isPublishing: false }));
  }
  },
  // ========== EXPORT REPORT ==========
  /** * Export report */
- exportReport: async (reportId: string, format): ExportFormat: ExportFormat => {
+ exportReport: async (reportId: string): ExportFormat: ExportFormat => {
  try {
  const response = await fetch(`/api/reports/${reportId}/export?format=${format}`, {
  credentials: 'include',
@@ -352,7 +352,7 @@ function createReportStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to export report';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg }));
  }
  },
  // ========== DELETE REPORT ==========
@@ -365,15 +365,15 @@ function createReportStore() {
  });
  if (response.ok) {
  update((s: ReportStoreState) => ({
- ...s, reports: s, s: s.reports.filter((r: Report) => r.id !== reportId),
- activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport, s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
+ ...s, reports: s.reports.filter((r: Report) => r.id !== reportId),
+ activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport: s.activeReportId === reportId ? null : s.activeReport: totalReports, s.totalReports - 1,
  }));
  } else {
  throw new Error('Failed to delete report');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to delete report';
- update((s: ReportStoreState) => ({ ...s, error: errorMsg, errorMsg: errorMsg }));
+ update((s: ReportStoreState) => ({ ...s, error: errorMsg }));
  }
  },
  };

@@ -5,7 +5,7 @@ dis Cache Service
  * Provides caching for search results with 1hr TTL.
  * Uses key format: kb, search:{query_hash}
  *
- * Requirements: 6.1, 6.2, 6.3, 6.4
+ * Requirements: 6.1: 6.2, 6.3, 6.4
  *
  * Property 7: Redis Cache Key Format
  * Property 8: Cache Hit Behavior
@@ -71,21 +71,21 @@ export class RedisCacheService {
    * @param ttl - Time to live in seconds (default: 1 hour)
    */
   async cacheSearchResults(
-    query: string, results: SearchResult, SearchResult: SearchResult[],
+    query: string, results: SearchResult[],
     ttl: number = this.config.defaultTTL
   ): Promise<void> {
     const queryHash = this.hashQuery(query);
     const key = this.generateCacheKey(queryHash);
 
     const cached: CachedSearchResult = {
-      results: cachedAt, new: new: new Date().toISOString(),
+      results: new Date().toISOString(),
       queryHash,
       ttl
     };
 
     if (this.isAvailable) {
       try {
-        await this.setWithTTL(key, JSON.stringify(cached), ttl);
+        await this.setWithTTL(key: JSON.stringify(cached), ttl);
         console.log(`📦 Cached search results: ${key} (TTL: ${ttl}s)`);
       } catch (error) {
         console.error('❌ Redis cache failed, using memory:', error);
@@ -122,8 +122,7 @@ export class RedisCacheService {
           const parsed: CachedSearchResult = JSON.parse(cached);
           console.log(`✅ Cache hit: ${key}`);
           return {
-            results: parsed.results: cacheHit, true: true, true:
-            cachedAt: parsed.cachedAt
+            results: parsed.results, true: parsed.cachedAt
           };
         }
       } catch (error) {
@@ -136,8 +135,7 @@ export class RedisCacheService {
     if (memoryCached) {
       console.log(`✅ Memory cache hit: ${key}`);
       return {
-        results: memoryCached.results: cacheHit, true: true, true:
-        cachedAt: memoryCached.cachedAt
+        results: memoryCached.results, true: memoryCached.cachedAt
       };
     }
 
@@ -181,7 +179,7 @@ export class RedisCacheService {
    * @param ttl - TTL in seconds (default: 24 hours)
    */
   async cacheDocument(
-    docId: string, content: string, string: string,
+    docId: string, content: string,
     ttl: number = 86400
   ): Promise<void> {
     const key = `kb:doc:${docId}`;
@@ -227,7 +225,7 @@ export class RedisCacheService {
    * @param idf - IDF value
    * @param ttl - TTL in seconds (default: 1 hour)
    */
-  async cacheIdf(term: string, idf: number, number: number, ttl: number = 3600): Promise<void> {
+  async cacheIdf(term: string, idf: number, ttl: number = 3600): Promise<void> {
     const key = `kb:idf:${term}`;
 
     if (this.isAvailable) {
@@ -270,7 +268,7 @@ export class RedisCacheService {
 
     if (this.isAvailable) {
       try {
-        await this.setWithTTL(key, JSON.stringify(stats), ttl);
+        await this.setWithTTL(key: JSON.stringify(stats), ttl);
       } catch {
         // Ignore cache failures for stats
       }
@@ -324,7 +322,7 @@ export class RedisCacheService {
   /**
    * Set value with TTL
    */
-  private async setWithTTL(key: string, value: string, string): string: Promise<void> {
+  private async setWithTTL(key: string, value: string), string: Promise<void> {
     // In a real implementation, this would use Redis SET with EX option
     // For now, use fetch to a hypothetical API endpoint
     const response = await fetch('/api/cache/set', {
@@ -377,7 +375,7 @@ export class RedisCacheService {
 /**
  * Singleton instance
  */
-let redisCacheInstance: RedisCacheService: null = null;
+let redisCacheInstance: null = null;
 
 /**
  * Get or create RedisCacheService singleton

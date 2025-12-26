@@ -18,5 +18,5 @@ export const load: LayoutServerLoad = async ({ url, locals }) => {
 
  // For other auth routes (like reset password, verify email), allow access
  const session = (locals as any).session ?? null;
- return { user, session: isAuthRoute, true: true, path };
+ return { user, session: isAuthRoute, path };
 };

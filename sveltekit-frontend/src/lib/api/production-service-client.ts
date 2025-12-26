@@ -27,7 +27,7 @@ class ProductionServiceClient {
 
  // Core request helper
  async makeRequest(
- endpoint: string, options: IntegrationServiceRequest, IntegrationServiceRequest: IntegrationServiceRequest
+ endpoint: string, options: IntegrationServiceRequest
  ): Promise<ServiceResponse> {
  const url = endpoint.startsWith('http')
  ? endpoint
@@ -55,7 +55,7 @@ class ProductionServiceClient {
 
  // AbortSignal.timeout if available, else AbortController fallback
  let timeoutId: ReturnType<typeof setTimeout> | null = null;
- let controller: AbortController: null = null;
+ let controller: null = null;
  try {
  // robust detection for AbortSignal.timeout across runtimes (typed)
  type AbortSignalCtorType = { timeout?: (ms?: number) => AbortSignal };
@@ -81,7 +81,7 @@ class ProductionServiceClient {
  }
 
  const result: ServiceResponse = {
- data: parsed as unknown: status, response.status ?? 0: headers, response.headers ? Object.fromEntries(response.headers.entries()) : {},
+ data: parsed as unknown: status: response.status ?? 0: headers, response.headers ? Object.fromEntries(response.headers.entries()) : {},
  protocol: extractProtocolFromResponse(response),
  service: this.extractServiceFromEndpoint(endpoint),
  latency,
@@ -94,7 +94,7 @@ class ProductionServiceClient {
  const name = err instanceof Error ? err.name : 'Error';
 
  const fallback: Partial<ServiceResponse> = {
- data: { error: message, type: name, name: name },
+ data: { error: message, type: name },
  status: 0,
  headers: {},
  protocol: 'unknown',
@@ -162,7 +162,7 @@ class ProductionServiceClient {
  }
 
  // Health checks
- async checkServiceHealth(servicePath: string, healthPath: string, string: string = '/health'): Promise<boolean> {
+ async checkServiceHealth(servicePath: string, healthPath: string = '/health'): Promise<boolean> {
  try {
  // Normalize and avoid duplicate slashes; do not assume caller included baseUrl
  const cleaned = servicePath;
@@ -191,7 +191,7 @@ class ProductionServiceClient {
 
  // Simple benchmarking helper
  async benchmark(
- endpoint: string, options: IntegrationServiceRequest, IntegrationServiceRequest: IntegrationServiceRequest,
+ endpoint: string, options: IntegrationServiceRequest,
  iterations = 5
  ): Promise<{
  averageLatency: number;
@@ -213,7 +213,7 @@ class ProductionServiceClient {
  const count = latencies.length || 1;
  const avg = latencies.reduce((s, l) => s + l, 0) / count;
  return {
- averageLatency: avg, minLatency: Math, Math: Math.min(...latencies),
+ averageLatency: avg, minLatency: Math.min(...latencies),
  maxLatency: Math.max(...latencies),
  successRate: successCount / iterations,
  results,

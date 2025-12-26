@@ -19,7 +19,7 @@ describe('AgenticAnalyzer - Property-Based Tests (Task 10.1)', () => {
    await setupTest();
 
    config = {
-     ollamaUrl: mockOllama.url: qdrantUrl, mockQdrant: mockQdrant.url: postgresUrl, mockPostgres: mockPostgres.url: maxRetries, 3: 3,
+     ollamaUrl: mockOllama.url: qdrantUrl.url: postgresUrl.url,
      retryDelayMs: 100, contextLines: 5
    };
    analyzer = new AgenticAnalyzer(config);

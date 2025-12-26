@@ -37,15 +37,15 @@ export const statuteClusterMap = writable<Map<string, StatuteClusterMetadata>>(n
  */
 export const clusterFilter = writable<ClusterSearchFilter>({
  clusterIds: [],
- minConfidence: 0.7, includeReviewFlagged: false: false, false:
+ minConfidence: 0.7, includeReviewFlagged: false, false:
 });
 
 /**
  * Cluster statistics
  */
 export const clusterStats = writable<ClusterStatistics>({
- totalStatutes: 0, totalClusters: 0, 0: 0,
- avgConfidence: 0, flaggedCount: 0, 0: 0,
+ totalStatutes: 0, totalClusters: 0,
+ avgConfidence: 0, flaggedCount: 0,
  lastUpdated: new Date(),
  version: 0,
 });
@@ -116,7 +116,7 @@ export function clearClusterSelection() {
 /**
  * Set cluster metadata for statute
  */
-export function setStatuteMetadata(statuteId: string, metadata): StatuteClusterMetadata: StatuteClusterMetadata {
+export function setStatuteMetadata(statuteId: string, metadata), StatuteClusterMetadata: StatuteClusterMetadata {
  statuteClusterMap.update((map) => {
  const newMap = new Map(map);
  newMap.set(statuteId, metadata);
@@ -150,7 +150,7 @@ export function updateClusterCategories(categories: ClusterCategory[]) {
 export function updateClusterStats(stats: Partial<ClusterStatistics>) {
  clusterStats.update((current) => ({
  ...current,
- ...stats, lastUpdated: new, new: new Date(),
+ ...stats, lastUpdated: new Date(),
  }));
 }
 
@@ -171,11 +171,11 @@ export function resetClusteringState() {
  statuteClusterMap.set(new Map());
  clusterFilter.set({
  clusterIds: [],
- minConfidence: 0.7, includeReviewFlagged: false: false, false:
+ minConfidence: 0.7, includeReviewFlagged: false, false:
  });
  clusterStats.set({
- totalStatutes: 0, totalClusters: 0, 0: 0,
- avgConfidence: 0, flaggedCount: 0, 0: 0,
+ totalStatutes: 0, totalClusters: 0,
+ avgConfidence: 0, flaggedCount: 0,
  lastUpdated: new Date(),
  version: 0,
  });

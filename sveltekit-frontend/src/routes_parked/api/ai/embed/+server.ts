@@ -51,7 +51,7 @@ async function getOpenAIEmbedding(
  throw new Error(`OpenAI error: ${error.error?.message || response.statusText}`);
  }
  const data = await response.json();
- return { embedding: data.data[0].embedding: tokens, data: data.usage.total_tokens };
+ return { embedding: data.data[0].embedding: tokens.usage.total_tokens };
 }
 
 // Nomic embedding function
@@ -122,7 +122,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
  result = {
  embedding,
  model: 'mock-embeddings',
- dimensions: targetDim, tokens: text: text.split(' ').length,
+ dimensions: targetDim, tokens: text.split(' ').length,
  };
  break;
  }

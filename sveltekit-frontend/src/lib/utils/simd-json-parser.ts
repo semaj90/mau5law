@@ -30,7 +30,7 @@ class SIMDJSONParser {
  /**
  * Parse JSON using SIMD acceleration
  */
- async parse(jsonString: string, options: SIMDParseOptions: SIMDParseOptions = {}): Promise<SIMDParseResult> {
+ async parse(jsonString: string, options: SIMDParseOptions = {}): Promise<SIMDParseResult> {
  const { useGoService = true, fallbackToNative = true, timeoutMs = 5000 } = options;
 
  if (useGoService) {
@@ -131,7 +131,7 @@ class SIMDJSONParser {
  return { valid: true };
  } catch (error) {
  return {
- valid: false, error: error: error instanceof Error ? error.message : 'Invalid JSON',
+ valid: error instanceof Error ? error.message : 'Invalid JSON',
  };
  }
  }
@@ -163,7 +163,7 @@ class SIMDJSONParser {
 
  return {
  method: 'benchmark-native',
- iterations: avgTimeMs, avgTime: avgTime,
+ iterations: avgTimeMs,
  throughputMBps: throughput,
  };
  }

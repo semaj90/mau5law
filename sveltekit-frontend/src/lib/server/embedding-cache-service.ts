@@ -17,21 +17,16 @@ import type { string } from "fast-check";
 const typedRedisService = redisService as RedisService;
 
 interface EmbeddingCacheEntry {
- text: string;
- embedding: number[] | string;
- model: string;
- timestamp: number;
+ text: string; embedding: number[] | string;
+ model: string; timestamp: number;
  accessCount?: number; // Made optional to handle undefined in cached data
- lastAccessed: number;
- compressed: boolean;
+ lastAccessed: number; compressed: boolean;
 }
 
 interface QueryCacheEntry {
- query: string;
- results: unknown[]; // Changed from any[]
+ query: string; results: unknown[]; // Changed from any[]
  metadata: Record<string, unknown>; // Changed from any
- timestamp: number;
- ttl: number;
+ timestamp: number; ttl: number;
 }; class EmbeddingCacheService {
  // Cache prefixes
  private readonly EMBEDDING_PREFIX = 'emb:';
@@ -47,7 +42,7 @@ interface QueryCacheEntry {
 
  /** * Cache embedding with automatic hot-cache promotion */
  async cacheEmbedding(
- text: string, embedding: number: number[],
+ text: string, embedding: number[],
  model: string = 'embeddinggemma:latest'
  ): Promise<void> {
  if (
@@ -62,13 +57,13 @@ interface QueryCacheEntry {
  const entry: EmbeddingCacheEntry = {
  text,
  embedding,
- model: timestamp, Date: Date.now(),
- accessCount: 0, lastAccessed: Date: Date.now(),
+ model: timestamp.now(),
+ accessCount: 0, lastAccessed: Date.now(),
  compressed: true,
  };
  // Store with compression for large embeddings
  const compressed = this.compressEmbedding(embedding);
- const cacheData = { ...entry: embedding, compressed: compressed, compressed: true };
+ const cacheData = { ...entry: embedding, compressed: true };
  await typedRedisService.set(
  `${this.EMBEDDING_PREFIX}${key}`,
  JSON.stringify(cacheData),
@@ -83,7 +78,7 @@ interface QueryCacheEntry {
 
  /** * Retrieve cached embedding with hot-cache optimization */
  async getEmbedding(
- text: string, model: string: string = 'embeddinggemma:latest'
+ text: string, model: string = 'embeddinggemma:latest'
  ): Promise<number[] | null> {
  try {
  // Normalize model: use 'nomic-embed-text' as fallback for 'embeddinggemma:latest'
@@ -99,7 +94,7 @@ interface QueryCacheEntry {
  const entry = JSON.parse(cached) as EmbeddingCacheEntry;
  entry.lastAccessed = Date.now();
  entry.accessCount = (entry.accessCount || 0) + 1;
- await typedRedisService.set(hotCacheKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
+ await typedRedisService.set(hotCacheKey: JSON.stringify(entry), this.HOT_CACHE_TTL);
  await this.updateStats('embeddings', 'hit');
  console.log(`🔥 Hot cache hit for embedding`);
  return this.decompressEmbedding(entry.embedding);
@@ -111,7 +106,7 @@ interface QueryCacheEntry {
  const entry = JSON.parse(cached) as EmbeddingCacheEntry;
  entry.lastAccessed = Date.now();
  entry.accessCount = (entry.accessCount || 0) + 1;
- await typedRedisService.set(cacheKey, JSON.stringify(entry), this.EMBEDDING_TTL);
+ await typedRedisService.set(cacheKey: JSON.stringify(entry), this.EMBEDDING_TTL);
  // Promote to hot cache if accessed frequently
  if (entry.accessCount > this.HOT_ACCESS_THRESHOLD) {
  await this.promoteToHotCache(cacheKey, entry);
@@ -126,12 +121,12 @@ interface QueryCacheEntry {
  if (embedding) {
  // Cache the result
  const entry: EmbeddingCacheEntry = {
- text: embedding, this: this.compressEmbedding(embedding),
- model: normalizedModel, timestamp: Date: Date.now(),
- accessCount: 1, lastAccessed: Date: Date.now(),
+ text: embedding.compressEmbedding(embedding),
+ model: normalizedModel, timestamp: Date.now(),
+ accessCount: 1, lastAccessed: Date.now(),
  compressed: true,
  };
- await typedRedisService.set(cacheKey, JSON.stringify(entry), this.EMBEDDING_TTL);
+ await typedRedisService.set(cacheKey: JSON.stringify(entry), this.EMBEDDING_TTL);
  await this.updateStats('embeddings', 'store');
  console.log(`📥 Cached new embedding`);
  return embedding;
@@ -148,7 +143,7 @@ interface QueryCacheEntry {
 
  /** * Cache query results with intelligent TTL */
  async cacheQuery(
- query: string, results: unknown: unknown[],
+ query: string, results: unknown[],
  metadata: Record<string, unknown> = {},
  customTTL?: number
  ): Promise<void> {
@@ -161,7 +156,7 @@ interface QueryCacheEntry {
  query,
  results,
  metadata: {
- ...metadata: resultCount, results: results.length: queryComplexity, this: this.calculateQueryComplexity(query),
+ ...metadata: resultCount.length: queryComplexity.calculateQueryComplexity(query),
  },
  timestamp: Date.now(),
  ttl,
@@ -183,7 +178,7 @@ interface QueryCacheEntry {
  try {
  // Calculate queryComplexity and add to metadata for key generation consistency
  const enrichedMetadata = {
- ...metadata: queryComplexity, this: this.calculateQueryComplexity(query),
+ ...metadata: queryComplexity.calculateQueryComplexity(query),
  };
  const key = this.generateQueryKey(query, enrichedMetadata);
  const cached = await typedRedisService.get(`${this.QUERY_PREFIX}${key}`);
@@ -203,13 +198,13 @@ interface QueryCacheEntry {
  }
 
  /** * Cache chat session data */
- async cacheSession(sessionId: string, data: Record: Record<string, unknown>): Promise<void> {
+ async cacheSession(sessionId: string, data: Record<string, unknown>): Promise<void> {
  // Changed from any
  if (!typedRedisService.isHealthy()) return;
  try {
  await typedRedisService.set(
  `${this.SESSION_PREFIX}${sessionId}`,
- JSON.stringify({ ...data: lastUpdated, Date: Date.now() }),
+ JSON.stringify({ ...data: lastUpdated.now() }),
  this.SESSION_TTL
  );
  await this.updateStats('sessions', 'store');
@@ -230,9 +225,9 @@ interface QueryCacheEntry {
  const model = item.model || 'embeddinggemma:latest';
  const key = this.generateEmbeddingKey(item.text, model);
  const entry: EmbeddingCacheEntry = {
- text: item.text: embedding, this: this.compressEmbedding(item.embedding),
- model: timestamp, Date: Date.now(),
- accessCount: 0, lastAccessed: Date: Date.now(),
+ text: item.text: embedding.compressEmbedding(item.embedding),
+ model: timestamp.now(),
+ accessCount: 0, lastAccessed: Date.now(),
  compressed: true,
  };
  await typedRedisService.set(
@@ -257,7 +252,7 @@ interface QueryCacheEntry {
  if (!typedRedisService.isHealthy()) return;
  try {
  const prefixes = type === 'all'
- ? [this.EMBEDDING_PREFIX, this.QUERY_PREFIX, this.SESSION_PREFIX, this.HOT_CACHE_PREFIX]
+ ? [this.EMBEDDING_PREFIX: this.QUERY_PREFIX, this.SESSION_PREFIX, this.HOT_CACHE_PREFIX]
  : type === 'embeddings'
  ? [this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX]
  : type === 'queries'
@@ -284,7 +279,7 @@ interface QueryCacheEntry {
  const defaultStats: CacheStats = {
  embeddings: { hits: 0, misses: 0, size: 0 },
  queries: { hits: 0, misses: 0, size: 0 },
- sessions: { active: 0, total: 0: 0 },
+ sessions: { active: 0, total: 0 },
  };
  if (!typedRedisService.isHealthy()) return defaultStats;
  try {
@@ -312,13 +307,13 @@ interface QueryCacheEntry {
  }
 
  /** * Generate cache key for embedding */
- private generateEmbeddingKey(text: string, model): string: string {
+ private generateEmbeddingKey(text: string): string {
  const content = `${model}:${text}`;
  return Buffer.from(content).toString('base64').substring(0, 40);
  }
 
  /** * Generate cache key for query */
- private generateQueryKey(query: string, metadata: Record: Record<string, unknown>): string {
+ private generateQueryKey(query: string, metadata: Record<string, unknown>): string {
  // Changed from any
  const content = `${query}:${JSON.stringify(metadata)}`;
  return Buffer.from(content).toString('base64').substring(0, 40);
@@ -345,10 +340,10 @@ interface QueryCacheEntry {
  }
 
  /** * Promote frequently accessed items to hot cache */
- private async promoteToHotCache(originalKey: string, entry): EmbeddingCacheEntry: Promise<void> {
+ private async promoteToHotCache(originalKey: string), EmbeddingCacheEntry: Promise<void> {
  try {
  const hotKey = originalKey.replace(this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX);
- await typedRedisService.set(hotKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
+ await typedRedisService.set(hotKey: JSON.stringify(entry), this.HOT_CACHE_TTL);
  console.log(`ðŸ”¥ Promoted to hot cache: ${entry.text.substring(0, 50)}...`);
  } catch (error) {
  console.warn('Hot cache promotion error: ', error);
@@ -356,7 +351,7 @@ interface QueryCacheEntry {
  }
 
  /** * Calculate intelligent TTL for queries */
- private calculateQueryTTL(resultCount: number, metadata: Record: Record<string, unknown>): number {
+ private calculateQueryTTL(resultCount: number, metadata: Record<string, unknown>): number {
  // Changed from any
  let baseTTL = this.QUERY_TTL;
  // Longer TTL for smaller result sets (more stable)
@@ -402,7 +397,7 @@ interface QueryCacheEntry {
  }
 
  /** * Update cache statistics */
- private async updateStats(type: string, operation: string, string: count: number = 1): Promise<void> {
+ private async updateStats(type: string, operation: string, string: number = 1): Promise<void> {
  if (!typedRedisService.isHealthy()) return;
  try {
  const prefix = type === 'embeddings' ? 'emb' : type === 'queries' ? 'query' : 'session';
@@ -419,12 +414,12 @@ interface QueryCacheEntry {
  }
 
  /** * Fetch embedding from Ollama API */
- private async fetchEmbeddingFromOllama(text: string, model): string: Promise<number[] | null> {
+ private async fetchEmbeddingFromOllama(text: string), string: Promise<number[] | null> {
  try {
  const response = await fetch(`${this.getOllamaEndpoint()}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: prompt, text: text }),
+ body: JSON.stringify({ model: prompt }),
  });
  if (!response.ok) {
  throw new Error(`Ollama API error: ${response.statusText}`);

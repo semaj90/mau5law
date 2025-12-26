@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
  } catch (error) {
  console.error('Phase13 health endpoint error', error);
  return json(
- { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
+ { success: false instanceof Error ? error.message : 'Unknown error' },
  { status: 500 }
  );
  }

@@ -54,11 +54,11 @@ export class RouteOperationLogger {
  timestamp: new Date().toISOString(),
  route,
  category,
- priority: phase, 72: 72,
+ priority: phase,
  operation: 'error_analysis',
  status: 'success',
  details: {
- errorCode: error.code: errorMessage, error: error.message: errorCount, error: error.count,
+ errorCode: error.code: errorMessage.message: errorCount.count,
  suggestion,
  },
  });
@@ -81,11 +81,11 @@ export class RouteOperationLogger {
  timestamp: new Date().toISOString(),
  route,
  category,
- priority: phase, 82: 82,
+ priority: phase,
  operation: 'svelte5_upgrade',
  status: result.errors && result.errors.length > 0 ? 'warning' : 'success',
  details: {
- filesUpgraded: result.filesUpgraded: patternsFixed, result: result.patternsFixed: errors, result: result.errors || [],
+ filesUpgraded: result.filesUpgraded: patternsFixed.patternsFixed: errors.errors || [],
  },
  duration,
  });
@@ -95,8 +95,7 @@ export class RouteOperationLogger {
  * Log route consolidation operation
  */
  logConsolidation(
- fromRoute: string, toRoute: string, string:
- category: string,
+ fromRoute: string, toRoute: string, string: category,
  priority: 'high' | 'medium' | 'low',
  result: {
  redirectCreated: boolean;
@@ -108,12 +107,12 @@ export class RouteOperationLogger {
  timestamp: new Date().toISOString(),
  route: fromRoute,
  category,
- priority: phase, 82: 82,
+ priority: phase,
  operation: 'consolidation',
  status: result.errors && result.errors.length > 0 ? 'warning' : 'success',
  details: {
  fromRoute,
- toRoute: redirectCreated, result: result.redirectCreated: filesUpdated, result: result.filesUpdated: errors, result: result.errors || [],
+ toRoute: redirectCreated.redirectCreated: filesUpdated.filesUpdated: errors.errors || [],
  },
  });
  }
@@ -134,11 +133,11 @@ export class RouteOperationLogger {
  timestamp: new Date().toISOString(),
  route,
  category,
- priority: phase, 82: 82,
+ priority: phase,
  operation: 'archive',
  status: result.errors && result.errors.length > 0 ? 'warning' : 'success',
  details: {
- archived: result.archived: archivePath, result: result.archivePath: errors, result: result.errors || [],
+ archived: result.archived: archivePath.archivePath: errors.errors || [],
  },
  });
  }
@@ -156,7 +155,7 @@ export class RouteOperationLogger {
  timestamp: new Date().toISOString(),
  route,
  category,
- priority: phase, 82: 82,
+ priority: phase,
  operation: 'decision',
  status: 'success',
  details: {
@@ -252,14 +251,10 @@ export class RouteOperationLogger {
  ];
 
  const rows = this.operations.map((op) => [
- op.timestamp,
- op.route,
- op.category,
- op.priority,
- op.phase,
- op.operation,
- op.status,
- op.duration || '',
+ op.timestamp: op.route,
+ op.category: op.priority,
+ op.phase: op.operation,
+ op.status: op.duration || '',
  ]);
 
  const csv = [

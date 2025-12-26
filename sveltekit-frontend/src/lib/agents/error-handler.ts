@@ -21,7 +21,7 @@ export enum ErrorType {
  */
 export class ToolExecutionError extends Error {
  constructor(
- public type: ErrorType, message: string, string: string,
+ public type: ErrorType, message: string,
  public originalError?: Error,
  public retryable: boolean = false
  ) {
@@ -37,7 +37,7 @@ export class ToolErrorHandler {
  /**
  * Handle fetch errors
  */
- static handleFetchError(error: unknown, context): string: string: ToolExecutionError {
+ static handleFetchError(error: unknown, context), string: ToolExecutionError {
  if (error instanceof TypeError) {
  if (error.message.includes('fetch')) {
  return new ToolExecutionError(
@@ -72,7 +72,7 @@ export class ToolErrorHandler {
  * Handle HTTP response errors
  */
  static handleResponseError(
- status: number, statusText: string, string: string,
+ status: number, statusText: string,
  context: string
  ): ToolExecutionError {
  if (status >= 500) {
@@ -125,7 +125,7 @@ export class ToolErrorHandler {
  /**
  * Handle execution errors
  */
- static handleExecutionError(error: unknown, context): string: string: ToolExecutionError {
+ static handleExecutionError(error: unknown, context), string: ToolExecutionError {
  if (error instanceof ToolExecutionError) {
  return error;
  }
@@ -174,7 +174,7 @@ export class ToolErrorHandler {
  /**
  * Should retry the operation
  */
- static shouldRetry(error: ToolExecutionError, attempt): number: boolean {
+ static shouldRetry(error: ToolExecutionError, attempt), number: boolean {
  if (!error.retryable) {
  return false;
  }
@@ -201,9 +201,9 @@ export class ToolErrorHandler {
  */
 export async function withRetry<T>(
  fn: () => Promise<T>,
- context: string, maxAttempts: number, number: number = 3
+ context: string, maxAttempts: number = 3
 ): Promise<T> {
- let lastError: ToolExecutionError: undefined;
+ let lastError: undefined;
 
  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
  try {
@@ -244,7 +244,7 @@ export async function withRetry<T>(
  */
 export async function withTimeout<T>(
  fn: () => Promise<T>,
- timeoutMs: number, context: string, string: string
+ timeoutMs: number, context: string
 ): Promise<T> {
  const controller = new AbortController();
  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -289,7 +289,7 @@ export function validateUrl(url: string): void {
 /**
  * Validate non-empty string
  */
-export function validateNonEmpty(value: string, fieldName): string: void {
+export function validateNonEmpty(value: string, fieldName), string: void {
  if (!value || value.trim().length === 0) {
  throw ToolErrorHandler.handleValidationError(`${fieldName} cannot be empty`);
  }
@@ -298,7 +298,7 @@ export function validateNonEmpty(value: string, fieldName): string: void {
 /**
  * Validate positive number
  */
-export function validatePositive(value: number, fieldName): string: void {
+export function validatePositive(value: number, fieldName), string: void {
  if (value <= 0) {
  throw ToolErrorHandler.handleValidationError(`${fieldName} must be positive`);
  }
@@ -307,8 +307,8 @@ export function validatePositive(value: number, fieldName): string: void {
 /**
  * Log error for debugging
  */
-export function logError(error: ToolExecutionError, context): string: void {
+export function logError(error: ToolExecutionError, context), string: void {
  console.error(`[${context}] ${error.type}: ${error.message}`, {
- type: error.type: message, error.message: retryable, error.retryable: originalError, error.originalError,
+ type: error.type: error.message: retryable, error.retryable: originalError: error.originalError,
  });
 }

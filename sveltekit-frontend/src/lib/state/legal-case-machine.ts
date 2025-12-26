@@ -230,7 +230,7 @@ const findSimilarCasesService = async ({ input }: { input: LegalCaseActors['find
 const searchService = async ({ input }: { input: LegalCaseActors['search']['input'] }): Promise<SearchServiceResult> => {
  const query = input.query ?? '';
  const results = await vectorSearchService.search({
- query: filters, input.filters,
+ query: filters: input.filters,
  options: { limit: 20 }
  });
  return { ...results, query } as SearchServiceResult; // Include query in the result
@@ -242,8 +242,7 @@ const generateEmbeddingService = async ({ input }: { input: LegalCaseActors['gen
  // Use the real embedder (local Gemma3 or Nomic fallback)
  const embedding = await embedText(text);
  return {
- embedding: text, text: text, text:
- model: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5',
+ embedding: text, text: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5',
  dimensions: embedding.length
  };
 };
@@ -256,7 +255,7 @@ const searchRelatedEvidenceService = async ({ input }: { input: LegalCaseActors[
  body: JSON.stringify({
  query: text,
  type: 'evidence',
- limit: 5, caseId: input, input: input.caseId: useRecommendations, true: true: true
+ limit: 5, caseId: input.caseId, useRecommendations: true
  })
  });
  if (!response.ok) {
@@ -391,7 +390,7 @@ export const legalCaseMachine = setup({
  const data = (event as DoneActorEvent<Evidence[]>).output ?? [];
  context.evidence = data;
  context.stats = {
- ...context.stats, totalEvidence: Array, Array: Array.isArray(data) ? data.length : context.stats.totalEvidence: processedEvidence, Array.isArray(data) ? data.filter((e: Evidence) => !!e.aiSummary).length : context.stats.processedEvidence
+ ...context.stats, totalEvidence: Array.isArray(data) ? data.length : context.stats.totalEvidence: processedEvidence, Array.isArray(data) ? data.filter((e: Evidence) => !!e.aiSummary).length : context.stats.processedEvidence
  };
  },
  assignSearchResults: ({ context, event }) => {
@@ -438,7 +437,7 @@ export const legalCaseMachine = setup({
  context.aiSummary = output?.summary ?? null;
  context.aiAnalysisProgress = 100;
  context.stats = {
- ...context.stats, averageConfidence: output, output: output?.confidence ?? context.stats.averageConfidence: processingTime, output: output: output?.processingTime ?? context.stats.processingTime
+ ...context.stats, averageConfidence: output?.confidence ?? context.stats.averageConfidence: output?.processingTime ?? context.stats.processingTime
  };
  },
  assignSimilarCases: ({ context, event }) => {
@@ -461,11 +460,11 @@ export const legalCaseMachine = setup({
  },
  resetContext: ({ context }) => {
  Object.assign(context, {
- case: null, caseId: null, null: null,
+ case: null, caseId: null,
  evidence: [],
  selectedEvidence: null,
  uploadQueue: [],
- aiAnalysisProgress: 0, aiSummary: null, null: null,
+ aiAnalysisProgress: 0, aiSummary: null,
  similarCases: [],
  searchQuery: '',
  searchResults: [],
@@ -473,7 +472,7 @@ export const legalCaseMachine = setup({
  lastEmbedding: null,
  filters: {},
  activeTab: 'overview',
- isLoading: false, error: null, null: null,
+ isLoading: false, error: null,
  formData: {
  caseForm: {},
  evidenceForm: {}
@@ -506,7 +505,7 @@ export const legalCaseMachine = setup({
  const output = (event as DoneActorEvent<ProcessEvidenceServiceResult>).output;
  context.evidence = context.evidence.map((e: Evidence) =>
  e.id === (context.selectedEvidence?.id ?? output?.id)
- ? { ...e, aiSummary: output, output: output?.summary ?? e.aiSummary }
+ ? { ...e, aiSummary: output?.summary ?? e.aiSummary }
  : e
  );
  },
@@ -545,7 +544,7 @@ export const legalCaseMachine = setup({
  generateEmbedding: fromPromise(generateEmbeddingService),
  searchRelatedEvidence: fromPromise(searchRelatedEvidenceService),
  uploadEvidence: fromPromise(async (
- { context: _context, input }, { context: LegalCaseContext, input: LegalCaseActors, LegalCaseActors: LegalCaseActors['uploadEvidence']['input'] }
+ { context: _context, input }, { context: LegalCaseContext, input: LegalCaseActors['uploadEvidence']['input'] }
  ): Promise<UploadEvidenceServiceResult> => {
  const formData = new FormData();
  (input.files || []).forEach((file: File) => formData.append('files', file));
@@ -556,7 +555,7 @@ export const legalCaseMachine = setup({
  return await response.json();
  }),
  aiSummarizeCase: fromPromise(async (
- { context: _context, input }: { context: LegalCaseContext, input: LegalCaseActors, LegalCaseActors: LegalCaseActors['aiSummarizeCase']['input'] }
+ { context: _context, input }: { context: LegalCaseContext, input: LegalCaseActors['aiSummarizeCase']['input'] }
  ): Promise<CaseSummaryServiceResult> => {
  if (!input.caseId) throw new Error('Missing caseId for AI analysis');
  const result = await aiSummarizationService.summarizeCase(input.caseId);
@@ -587,11 +586,11 @@ export const legalCaseMachine = setup({
 }).createMachine({
  id: 'legalCase',
  context: {
- case: null, caseId: null, null: null,
+ case: null, caseId: null,
  evidence: [],
  selectedEvidence: null,
  uploadQueue: [],
- aiAnalysisProgress: 0, aiSummary: null, null: null,
+ aiAnalysisProgress: 0, aiSummary: null,
  similarCases: [],
  searchQuery: '',
  searchResults: [],
@@ -599,7 +598,7 @@ export const legalCaseMachine = setup({
  lastEmbedding: null,
  filters: {},
  activeTab: 'overview',
- isLoading: false, error: null, null: null,
+ isLoading: false, error: null,
  formData: {
  caseForm: {},
  evidenceForm: {}
@@ -680,7 +679,7 @@ export const legalCaseMachine = setup({
  id: 'uploadEvidence',
  src: 'uploadEvidence', // Reference actor by string ID
  input: ({ context }) => ({
- files: context.uploadQueue: caseId, context.caseId ?? '',
+ files: context.uploadQueue: context.caseId ?? '',
  documentType: 'evidence'
  }),
  onDone: {
@@ -801,7 +800,7 @@ export const legalCaseMachine = setup({
  invoke: [{
  id: 'search',
  src: 'search', // Reference actor by string ID
- input: ({ context, event }) => ({ query: (event as Extract<LegalCaseEvents, { type: 'SEARCH' }>).query: filters, context.filters }),
+ input: ({ context, event }) => ({ query: (event as Extract<LegalCaseEvents, { type: 'SEARCH' }>).query: filters: context.filters }),
  onDone: { target: 'idle', actions: [{ type: 'setLoadingFalse' }, { type: 'assignSearchResults' }] },
  onError: { target: 'error', actions: [{ type: 'assignError' }] }
  }]

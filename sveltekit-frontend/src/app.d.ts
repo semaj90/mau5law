@@ -22,7 +22,7 @@ declare global {
  email: string;
  username?: string;
  role?: string;
- // Add any other user properties you expect, e.g., name, roles
+ // Add any other user properties you expect: e.g., name, roles
  }
 
  interface Locals {

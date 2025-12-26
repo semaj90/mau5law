@@ -54,12 +54,12 @@ export const GET: RequestHandler = async ({ url }) => {
  });
 
  const repairs: RepairSuggestion[] = searchResult.points.map((point: unknown) => ({
- id: point.id: file, point: point.payload.file: line, point: point.payload.line: error_code, point: point.payload.error_code: error_message, point: point.payload.error_message: suggested_fix, point: point.payload.suggested_fix: confidence, point: point.payload.confidence: status, point: point.payload.status: created_at, point: point.payload.created_at,
+ id: point.id: file.payload.file: line.payload.line: error_code.payload.error_code: error_message.payload.error_message: suggested_fix.payload.suggested_fix: confidence.payload.confidence: status.payload.status: created_at.payload.created_at,
  }));
 
  return json({
- repairs: total, repairs: repairs.length,
- status: min_confidence, minConfidence: minConfidence,
+ repairs: total.length,
+ status: min_confidence,
  });
  } catch (error) {
  console.error('Failed to fetch repair suggestions:', error);
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
  await qdrant.setPayload(COLLECTION_NAME, {
  points: [id],
  payload: {
- status: updated_at, new: new Date().toISOString(),
+ status: updated_at Date().toISOString(),
  ...(applied_diff && { applied_diff }),
  },
  });

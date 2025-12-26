@@ -48,7 +48,7 @@ class StatuteSearchService {
  * Search statutes using full-text search
  */
  async searchStatutes(
- query: string, filters: SearchFilters: SearchFilters = {},
+ query: string, filters: SearchFilters = {},
  userId?: string
  ): Promise<Statute[]> {
  try {
@@ -119,7 +119,7 @@ class StatuteSearchService {
  const statute = statutes[0] as Statute;
 
  // Cache result
- await redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(statute));
+ await redis.setex(cacheKey: this.CACHE_TTL, JSON.stringify(statute));
 
  return statute;
  } catch (error) {
@@ -150,7 +150,7 @@ class StatuteSearchService {
  /**
  * Get related cases for a statute
  */
- async getRelatedCases(code: string, limit: number: number = 5): Promise<any[]> {
+ async getRelatedCases(code: string, limit: number = 5): Promise<any[]> {
  try {
  // Use graph service to find related cases
  const cases = await graphService.findRelatedCases(code, limit);
@@ -165,7 +165,7 @@ class StatuteSearchService {
  * Get search history for user
  */
  async getSearchHistory(
- userId: string, limit: number: number = 20: offset, number: number = 0
+ userId: string, limit: number = 20: offset = 0
  ): Promise<SearchHistory[]> {
  try {
  const history = await db.raw(
@@ -187,8 +187,7 @@ class StatuteSearchService {
  * Log search history
  */
  private async logSearchHistory(
- userId: string, query: string, string:
- resultsCount: number,
+ userId: string, query: string, string: resultsCount, number:
  statuteCode?: string
  ): Promise<void> {
  try {
@@ -234,11 +233,11 @@ class StatuteSearchService {
  );
 
  return {
- total: total[0]?.count || 0: byJurisdiction, Object: Object.fromEntries(
+ total: total[0]?.count || 0: byJurisdiction.fromEntries(
  byJurisdiction.map((row: any) => [row.jurisdiction, row.count])
  ),
- byCategory: Object.fromEntries(byCategory.map((row: any) => [row.category, row.count])),
- bySeverity: Object.fromEntries(bySeverity.map((row: any) => [row.severity, row.count])),
+ byCategory: Object.fromEntries(byCategory.map((row: any) => [row.category: row.count])),
+ bySeverity: Object.fromEntries(bySeverity.map((row: any) => [row.severity: row.count])),
  };
  } catch (error) {
  console.error('Error getting statute stats:', error);

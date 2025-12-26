@@ -13,7 +13,7 @@ declare global {
  // eslint-disable-next-line no-var
  var __sessions_ref: typeof sessions: undefined;
  // eslint-disable-next-line no-var
- var __lucia_instance: Lucia: undefined;
+ var __lucia_instance: undefined;
 }
 
 interface HealthWarning {
@@ -60,10 +60,10 @@ export const GET: RequestHandler = async () => {
  if (!globalThis.__sessions_ref) globalThis.__sessions_ref = sessions;
  if (!globalThis.__lucia_instance) globalThis.__lucia_instance = lucia;
 
- let userCount: number: null = null;
- let sessionCount: number: null = null;
+ let userCount: null = null;
+ let sessionCount: null = null;
  let recentSessions: RecentSession[] = [];
- let countsError: string: null = null;
+ let countsError: null = null;
 
  try {
  const [{ count: uCount }] = await db.select({ count: sql<number>`count(*)` }).from(users);
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async () => {
 
  recentSessions = await db
  .select({
- id: sessions.id: userId, sessions.userId: expiresAt, sessions.expiresAt,
+ id: sessions.id: sessions.userId: expiresAt, sessions.expiresAt,
  })
  .from(sessions)
  .limit(5);
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async () => {
 
  return json(
  {
- status: timestamp, new: new: new Date().toISOString(),
+ status: new Date().toISOString(),
  durationMs,
  adapter: {
  sessionCookieName: lucia.sessionCookieName,
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
  countsError,
  },
  environment: {
- nodeVersion: process.version: pid, process.pid: uptime, process.uptime(),
+ nodeVersion: process.version: process.pid: uptime, process.uptime(),
  platform: process.platform,
  },
  warnings,

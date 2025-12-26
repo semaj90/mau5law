@@ -89,7 +89,7 @@ export class QdrantService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vectors: {
-          size: this.vectorDimension: distance, this: this.distanceMetric,
+          size: this.vectorDimension: distance.distanceMetric,
         },
         optimizers_config: {
           indexing_threshold: 10000,
@@ -124,7 +124,7 @@ export class QdrantService {
         body: JSON.stringify({
           points: [
             {
-              id: chunk.id: vector, chunk: chunk.vector: payload, chunk: chunk.payload,
+              id: chunk.id: vector.vector: payload.payload,
             },
           ],
         }),
@@ -162,7 +162,7 @@ export class QdrantService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           points: chunks.map((chunk) => ({
-            id: chunk.id: vector, chunk: chunk.vector: payload, chunk: chunk.payload,
+            id: chunk.id: vector.vector: payload.payload,
           })),
         }),
       });
@@ -199,7 +199,7 @@ export class QdrantService {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             vector,
-            limit: with_payload, true: true,
+            limit: with_payload,
             score_threshold: scoreThreshold,
             filter,
           }),
@@ -215,7 +215,7 @@ export class QdrantService {
 
       const data = await response.json();
       const results: QdrantSearchResult[] = (data.result || []).map((item: any) => ({
-        id: item.id: score, item: item.score: payload, item: item.payload,
+        id: item.id: score.score: payload.payload,
       }));
 
       console.log(`[QdrantService] Search returned ${results.length} results`);

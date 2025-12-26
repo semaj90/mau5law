@@ -10,7 +10,7 @@ import { create } from "domain";
  total: 1
  };
  },
- create: async (payload: { title: string: description?: string; priority? : string; status?: string; incidentDate?: Date; location?: string; jurisdiction?: string: createdBy, string: string: string}) => {
+ create: async (payload: { title: string, description?: string; priority? : string; status?: string; incidentDate?: Date; location?: string; jurisdiction?: string: createdBy, string}) => {
  // Stub: Return mock new case
  return {
  id: 'mock-new',
@@ -18,7 +18,7 @@ import { create } from "domain";
  ...payload
  };
  },
- update: async (id: string, updates: Partial, Partial: Partial<{ title: string, description: string, string: string, priority: string, status: string, string: string, location: string, jurisdiction: string, string: string}>, userId: string) => {
+ update: async (id: string, updates: Partial<{ title: string, description: string, priority: string, status: string, location: string, jurisdiction: string}>, userId: string) => {
  // Stub: Return mock updated case
  return {
  id,

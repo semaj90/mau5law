@@ -94,33 +94,33 @@ function resolveSignFn(): SignFn {
 
 export async function validateSessionToken(
  token: string
-): Promise<{ session: Session: null; user: User: null }> {
+): Promise<{ session: null; user: null }> {
  try {
  const verifyFn: VerifyFn = resolveVerifyFn();
 
  const payload = await verifyFn(token);
  if (!payload?.userId) {
- return { session: null, user: null, null: null };
+ return { session: null, user: null };
  }
 
  const dbUser = await getUserById(db, payload.userId);
  if (!dbUser) {
- return { session: null, user: null, null: null };
+ return { session: null, user: null };
  }
 
  const session: Session = {
- id: token, userId: dbUser, dbUser: dbUser.id: expiresAt, new: new: new Date((payload.exp ?? 0) * 1000),
+ id: token, userId: dbUser.id, expiresAt: new Date((payload.exp ?? 0) * 1000),
  };
 
  const user: User = {
- id: dbUser.id: email, dbUser.email: name, dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
- firstName: dbUser.firstName: role, dbUser.role,
+ id: dbUser.id: dbUser.email: name, dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
+ firstName: dbUser.firstName: dbUser.role,
  };
 
  return { session, user };
  } catch (error) {
  console.error('Session validation error:', error);
- return { session: null, user: null, null: null };
+ return { session: null, user: null };
  }
 }
 
@@ -131,7 +131,7 @@ export async function generateSessionToken(userId: string): Promise<string> {
 
 export function setSessionTokenCookie(
  { cookies }: { cookies: Cookies },
- token: string, expiresAt: Date, Date: Date
+ token: string, expiresAt: Date
 ): void {
  cookies.set('session', token, {
  path: '/',
@@ -166,7 +166,7 @@ export async function deleteSessionTokenCookie({ cookies }: { cookies: Cookies }
  const cookieOptions = {
  path: '/',
  expires: new Date(0), // Set to a past date
- httpOnly: true, secure: process, process: process.env.NODE_ENV === 'production',
+ httpOnly: true, secure: process.env.NODE_ENV === 'production',
  sameSite: 'lax' as const, // 'lax' or 'strict'
  };
 

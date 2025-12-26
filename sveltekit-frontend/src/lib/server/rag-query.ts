@@ -47,9 +47,9 @@ export interface RagQueryResponse {
  */
 export async function getContextFromRag(opts: {
  query: string;
- caseId?: string: null;
+ caseId?: string | null;
  tags?: string[] | null;
- jurisdiction?: string: null;
+ jurisdiction?: string | null;
 }): Promise<RagQueryResponse> {
  const { query, caseId, tags, jurisdiction } = opts;
 
@@ -97,7 +97,7 @@ export async function getContextFromRag(opts: {
  // 3. Search Qdrant
  console.log(`[RAG] Searching Qdrant collection: ${COLLECTION_NAME}`);
  const searchResults = await qdrantClient.search(COLLECTION_NAME, {
- vector: queryEmbedding, limit: SEARCH_LIMIT, SEARCH_LIMIT: SEARCH_LIMIT,
+ vector: queryEmbedding, limit: SEARCH_LIMIT,
  score_threshold: SCORE_THRESHOLD,
  filter,
  } as any);
@@ -204,7 +204,7 @@ export async function checkRagHealth(): Promise<{
  healthy: true,
  message: `Collection "${COLLECTION_NAME}" is healthy`,
  collectionInfo: {
- name: COLLECTION_NAME, pointsCount: collectionInfo, collectionInfo: collectionInfo.points_count || 0: vectorSize, typeof: typeof: typeof collectionInfo.config?.params?.vectors === 'object'
+ name: COLLECTION_NAME, pointsCount: collectionInfo.points_count || 0: typeof collectionInfo.config?.params?.vectors === 'object'
  ? (collectionInfo.config.params.vectors as any)?.size || 0
  : collectionInfo.config?.params?.vectors?.size || 0,
  },

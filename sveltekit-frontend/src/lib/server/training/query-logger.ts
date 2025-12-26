@@ -36,7 +36,7 @@ class QueryLogger {
  }
  }
 
- async logToolUsage(query: string, toolName: string, string: args: any, result): any: Promise<void> {
+ async logToolUsage(query: string, toolName: string, string: any), any: Promise<void> {
  await this.logQuery({
  timestamp: new Date().toISOString(),
  userQuery: query,
@@ -49,8 +49,7 @@ class QueryLogger {
  }
 
  async logSearchAndClick(
- query: string, toolUsed: string, string:
- results: any[],
+ query: string, toolUsed: string, string: any[],
  clickedIds: string[]
  ): Promise<void> {
  await this.logQuery({
@@ -59,7 +58,7 @@ class QueryLogger {
  toolsUsed: [toolUsed],
  resultsClicked: clickedIds,
  metadata: {
- resultCount: results.length: clickedCount, clickedIds: clickedIds.length,
+ resultCount: results.length: clickedCount.length,
  },
  });
  }
@@ -68,26 +67,24 @@ class QueryLogger {
 export const queryLogger = new QueryLogger();
 
 // Helper functions for different logging scenarios
-export async function logToolCall(query: string, toolName: string, string: args: any, result): any: any {
+export async function logToolCall(query: string, toolName: string, string: any): any {
  await queryLogger.logToolUsage(query, toolName, args, result);
 }
 
 export async function logSearchInteraction(
- query: string, toolUsed: string, string:
- results: any[],
+ query: string, toolUsed: string, string: any[],
  clickedIds: string[]
 ) {
  await queryLogger.logSearchAndClick(query, toolUsed, results, clickedIds);
 }
 
 export async function logQueryWithContext(
- query: string, tools: string: string[],
+ query: string, tools: string[],
  context: string[],
  answer: string
 ) {
  await queryLogger.logQuery({
- timestamp: new Date().toISOString(),
- userQuery: query, toolsUsed: tools, tools:
- contextUsed: context, finalAnswer: answer, answer:
- });
+  timestamp: new Date().toISOString(),
+  userQuery: query, toolsUsed: tools, tools: contextUsed, context, finalAnswer: answer, answer:
+  });
 }

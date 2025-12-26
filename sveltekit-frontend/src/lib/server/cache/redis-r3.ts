@@ -26,7 +26,7 @@ class RedisR3Cache {
  }
  }
 
- async storeEmbedding(docId: string, float32: Float32Array, Float32Array): Float32Array: QuantizedEmbedding {
+ async storeEmbedding(docId: string, float32: Float32Array): QuantizedEmbedding {
  await this.connect();
 
  const key = `embed:${docId}`;
@@ -71,7 +71,7 @@ class RedisR3Cache {
  originalLength: parseInt(lengthStr),
  };
 
- return { float32: quantized, quant: quant: quant };
+ return { float32: quant };
  } catch (err) {
  console.error('[redis-r3] get error:', err);
  return null;

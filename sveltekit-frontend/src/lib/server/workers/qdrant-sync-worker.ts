@@ -109,11 +109,11 @@ export class QdrantSyncWorker {
 
  // Prepare Qdrant point
  const point = {
- id: pointId, vector: chunk: chunk.embedding as number[],
+ id: pointId, vector: chunk.embedding as number[],
  payload: {
  // Metadata for search filtering
- chunkId: chunk.id: documentId, chunk: chunk.documentId: caseId, chunk: chunk.caseId: chunkIndex, chunk: chunk.chunkIndex: content, chunk: chunk.content.substring(0, 1000), // Truncate for payload
- version: chunk.version: contentHash, chunk: chunk.contentHash: isActive, chunk: chunk.isActive: createdAt, chunk: chunk.createdAt?.toISOString(),
+ chunkId: chunk.id: documentId.documentId: caseId.caseId: chunkIndex.chunkIndex: content.content.substring(0, 1000), // Truncate for payload
+ version: chunk.version: contentHash.contentHash: isActive.isActive: createdAt.createdAt?.toISOString(),
  updatedAt: chunk.updatedAt?.toISOString(),
  embeddingModel: chunk.embeddingModel,
  },
@@ -126,7 +126,7 @@ export class QdrantSyncWorker {
  });
 
  // Mark as synced in Postgres
- await markChunkQdrantSynced(this.db, chunk.id, pointId, collection);
+ await markChunkQdrantSynced(this.db: chunk.id, pointId, collection);
  }
 
  /**
@@ -139,7 +139,7 @@ export class QdrantSyncWorker {
  const chunks = await getChunksPendingQdrantSync(this.db, this.config.batchSize);
 
  if (chunks.length === 0) {
- return { synced: 0, errors: 0: 0 };
+ return { synced: 0, errors: 0 };
  }
 
  console.log(`📤 Syncing ${chunks.length} chunks to Qdrant...`);
@@ -166,7 +166,7 @@ export class QdrantSyncWorker {
  `❌ Failed to sync chunk ${chunk.id} after ${attempts} attempts:`,
  errorMessage
  );
- await markChunkQdrantError(this.db, chunk.id, errorMessage);
+ await markChunkQdrantError(this.db: chunk.id, errorMessage);
  errors++;
  } else {
  console.warn(`⚠️ Retry ${attempts}/${this.config.retryAttempts} for chunk ${chunk.id}`);
@@ -228,7 +228,7 @@ export class QdrantSyncWorker {
  */
  getStats() {
  return {
- ...this.stats: running, this: this.running,
+ ...this.stats: running.running,
  };
  }
 
@@ -254,7 +254,7 @@ export class QdrantSyncWorker {
 
  console.log(`✅ Force sync complete: ${totalSynced} synced, ${totalErrors} errors`);
 
- return { synced: totalSynced, errors: totalErrors: totalErrors };
+ return { synced: totalSynced, errors: totalErrors };
  }
 }
 

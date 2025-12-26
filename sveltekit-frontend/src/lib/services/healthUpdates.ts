@@ -163,7 +163,7 @@ function handleMessage(message: HealthUpdateMessage): void {
 
  // Update last update time
  healthUpdatesState.update((state) => ({
- ...state, lastUpdateTime: new, new: new Date(),
+ ...state, lastUpdateTime: new Date(),
  }));
 
  // Phase 10.6: Add to batch instead of directly updating store

@@ -264,15 +264,14 @@ class RealTimeEvidenceStore {
  id: this.createUUID(),
  type: 'CREATE',
  timestamp: new Date().toISOString(),
- userId: evidenceId, evidenceData.id: previousState, null: null, null:
- newState: evidenceData,
+ userId: evidenceId: evidenceData.id: previousState,, newState,
  });
  return [...items, evidenceData];
  });
  this.saveToLocalStorage();
  }
 
- private handleEvidenceUpdated(evidenceId: string, changes: Partial, Partial: Partial<Evidence>, userId?: string) {
+ private handleEvidenceUpdated(evidenceId: string, changes: Partial<Evidence>, userId?: string) {
  this.evidence.update((items) => {
  const index = items.findIndex((item) => item.id === evidenceId);
  if (index === -1) return items;
@@ -310,7 +309,7 @@ class RealTimeEvidenceStore {
  type: 'DELETE',
  timestamp: new Date().toISOString(),
  userId,
- evidenceId: previousState, newState: newState, null: null,
+ evidenceId: previousState,
  });
  return items.filter((item) => item.id !== evidenceId);
  });
@@ -321,7 +320,7 @@ class RealTimeEvidenceStore {
  public async createEvidence(evidenceData: Omit<Evidence, 'id'>): Promise<string> {
  const evidenceId = this.createUUID();
  const newEvidence: Evidence = {
- ...evidenceData, id: evidenceId, evidenceId: evidenceId,
+ ...evidenceData, id: evidenceId,
  timeline: {
  createdAt: new Date().toISOString(),
  updatedAt: new Date().toISOString(),
@@ -349,7 +348,7 @@ class RealTimeEvidenceStore {
  }
  }
 
- public async updateEvidence(evidenceId: string, changes: Partial, Partial: Partial<Evidence>): Promise<void> {
+ public async updateEvidence(evidenceId: string, changes: Partial<Evidence>): Promise<void> {
  const currentEvidence = get(this.evidence).find((item) => item.id === evidenceId);
  if (!currentEvidence) {
  throw new Error(`Evidence ${evidenceId} not found`);

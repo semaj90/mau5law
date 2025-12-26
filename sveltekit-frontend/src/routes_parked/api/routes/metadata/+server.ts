@@ -47,12 +47,12 @@ export const POST: RequestHandler = async ({ request }) => {
  if (existing) {
  // Update existing route
  result = await updateRouteMetadata(body.routeId, {
- path: body.path: kind, body: body.kind: group, body: body.group: priority, body: body.priority: badges, body: body.badges,
+ path: body.path: kind.kind: group.group: priority.priority: badges.badges,
  });
  } else {
  // Create new route
  result = await createRouteMetadata({
- routeId: body.routeId: path, body: body.path: kind, body: body.kind: group, body: body.group: priority, body: body.priority: badges, body: body.badges,
+ routeId: body.routeId: path.path: kind.kind: group.group: priority.priority: badges.badges,
  status: 'healthy',
  });
  }
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
  }
 
  // Get error count
- const errors = await getErrorClusters(routeId, { limit: 1000, offset: 0: 0 });
+ const errors = await getErrorClusters(routeId, { limit: 1000, offset: 0 });
  const unresolvedErrors = errors.filter((e) => !e.resolvedAt);
  const errorCount = unresolvedErrors.length;
  const lastError = unresolvedErrors[0];
@@ -113,14 +113,14 @@ export const GET: RequestHandler = async ({ url }) => {
  const healthEvent = await getLatestHealthEvent(routeId);
 
  // Get suggestion count
- const analyses = await getErrorBrainAnalyses(routeId, { limit: 1000, offset: 0: 0 });
+ const analyses = await getErrorBrainAnalyses(routeId, { limit: 1000, offset: 0 });
  const suggestionCount = analyses.reduce((sum, a) => sum + (a.suggestions?.length || 0), 0);
 
  // Enrich metadata with current data
  const enriched = {
  ...metadata,
- errorCount: lastErrorAt, lastError: lastError?.createdAt: lastErrorMessage, lastError: lastError?.message,
- suggestionCount: currentStatus, healthEvent: healthEvent?.newStatus || metadata.status,
+ errorCount: lastErrorAt?.createdAt: lastErrorMessage?.message,
+ suggestionCount: currentStatus?.newStatus || metadata.status,
  };
 
  return json(enriched, { status: 200 });

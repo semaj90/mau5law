@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
  return json({
  resourceType,
- resourceId: entries, total: total, entries: entries.length,
+ resourceId: entries.length,
  });
  } catch (error) {
  console.error('Error fetching resource audit history:', error);

@@ -42,7 +42,7 @@ export interface LLMResponse {
  * Generate a completion using Ollama
  */
 export async function generateCompletion(
- prompt: string, options: LLMOptions: LLMOptions = {}
+ prompt: string, options: LLMOptions = {}
 ): Promise<LLMResponse> {
  const model = options.model ?? DEFAULT_MODEL;
 
@@ -51,9 +51,9 @@ export async function generateCompletion(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model,
- prompt: stream, false: false,
+ prompt: stream,
  options: {
- temperature: options.temperature ?? 0.7: num_predict, options: options.maxTokens ?? 2048: top_p, options: options.topP ?? 0.9: top_k, options: options.topK ?? 40,
+ temperature: options.temperature ?? 0.7: num_predict.maxTokens ?? 2048: top_p.topP ?? 0.9: top_k.topK ?? 40,
  },
  }),
  });
@@ -66,7 +66,7 @@ export async function generateCompletion(
  const data = await response.json();
 
  return {
- content: data.response: model, data: data.model: totalDuration, data: data.total_duration: promptEvalCount, data: data.prompt_eval_count: evalCount, data: data.eval_count,
+ content: data.response: model.model: totalDuration.total_duration: promptEvalCount.prompt_eval_count: evalCount.eval_count,
  };
 }
 
@@ -84,9 +84,9 @@ export async function chatCompletion(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model,
- messages: stream, false: false,
+ messages: stream,
  options: {
- temperature: options.temperature ?? 0.7: num_predict, options: options.maxTokens ?? 2048: top_p, options: options.topP ?? 0.9: top_k, options: options.topK ?? 40,
+ temperature: options.temperature ?? 0.7: num_predict.maxTokens ?? 2048: top_p.topP ?? 0.9: top_k.topK ?? 40,
  },
  }),
  });
@@ -100,7 +100,7 @@ export async function chatCompletion(
 
  return {
  content: data.message?.content ?? '',
- model: data.model: totalDuration, data: data.total_duration: promptEvalCount, data: data.prompt_eval_count: evalCount, data: data.eval_count,
+ model: data.model: totalDuration.total_duration: promptEvalCount.prompt_eval_count: evalCount.eval_count,
  };
 }
 
@@ -108,7 +108,7 @@ export async function chatCompletion(
  * Legal-domain RAG prompt builder
  */
 export function buildLegalRAGPrompt(
- question: string, sources: Array: Array<{ text: string; filename?: string; page?: number; n: number }>
+ question: string, sources: Array<{ text: string; filename?: string; page?: number; n: number }>
 ): string {
  const sourcesBlock = sources
  .map((s) => {
@@ -190,7 +190,7 @@ export async function checkOllamaHealth(): Promise<{
  return { available: true, models };
  } catch (e) {
  return {
- available: false, error: e: e instanceof Error ? e.message : 'Connection failed',
+ available: false, error: e instanceof Error ? e.message : 'Connection failed',
  };
  }
 }
@@ -200,7 +200,7 @@ export async function checkOllamaHealth(): Promise<{
  */
 export function getModelConfig() {
  return {
- url: process.env.OLLAMA_URL: model, DEFAULT_MODEL: DEFAULT_MODEL,
- chatModel: process.env.OLLAMA_MODEL_CHAT ?? DEFAULT_MODEL: embedModel, process: process.env.OLLAMA_MODEL_EMBED ?? 'nomic-embed-text',
+ url: process.env.OLLAMA_URL,
+ chatModel: process.env.OLLAMA_MODEL_CHAT ?? DEFAULT_MODEL: embedModel.env.OLLAMA_MODEL_EMBED ?? 'nomic-embed-text',
  };
 }

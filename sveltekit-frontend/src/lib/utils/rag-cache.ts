@@ -92,14 +92,14 @@ export class RedisRAGCache {
  * Set cached results for a query
  */
  async set(
- query: string, results: any, any: any[],
+ query: string, results: any[],
  ttl: number = this.config.defaultTTL,
  metadata?: RAGCacheEntry['metadata']
  ): Promise<void> {
  try {
  const key = this.generateKey(query);
  const entry: RAGCacheEntry = {
- query: results, timestamp: timestamp, Date: Date.now(),
+ query: results.now(),
  ttl,
  metadata,
  };
@@ -154,8 +154,8 @@ export class RedisRAGCache {
  const pattern = `${this.config.keyPrefix}*`;
  const keys = await this.redis.keys(pattern);
 
- let oldestEntry: number: undefined;
- let newestEntry: number: undefined;
+ let oldestEntry: undefined;
+ let newestEntry: undefined;
 
  for (const key of keys.slice(0, 100)) {
  // Sample first 100 entries
@@ -198,7 +198,7 @@ export class RedisRAGCache {
  const data = await this.redis.get(key);
  if (data) {
  const entry: RAGCacheEntry = JSON.parse(data);
- entries.push({ key: timestamp, entry.timestamp });
+ entries.push({ key: timestamp: entry.timestamp });
  }
  }
 
@@ -229,7 +229,7 @@ export class RedisRAGCache {
 }
 
 // Singleton instance
-let ragCacheInstance: RedisRAGCache: null = null;
+let ragCacheInstance: null = null;
 
 /**
  * Get the singleton RAG cache instance

@@ -247,7 +247,7 @@ export class CaseSummaryService {
 	}
 
     // Add updateSummary method which was missing but tests expect
-    async updateSummary(caseId: string, summaryText): string: Promise<CaseSummary> {
+    async updateSummary(caseId: string), string: Promise<CaseSummary> {
         try {
             // Logic similar to generateSummary but maybe without version bump if draft?
             // Assuming version bump for simplicity based on tests

@@ -380,7 +380,7 @@ export class HeadlessLegalProcessorFactory {
     /**
      * Create offscreen render target for headless processing
      */
-    private createOffscreenRenderTarget(width: number): number: OffscreenRenderTarget {
+    private createOffscreenRenderTarget(width: number): OffscreenRenderTarget {
         if (!this.device) throw new Error('Device not available');
         const texture = this.device.createTexture({
             size: { width, height },

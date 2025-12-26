@@ -58,8 +58,7 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
  if (!newParams) return;
  const {
  role: newRole = 'button',
- handler: newHandler, label: newLabel, newLabel:
- description: newDescription,
+ handler: newHandler, label: newLabel, newLabel: description,
  } = newParams; // Corrected destructuring
 
  // Update mutable handler reference

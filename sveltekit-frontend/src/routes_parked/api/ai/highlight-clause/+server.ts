@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const clause = data.response || '';
 
  return json({
- clause: chunkId, ctx: ctx.statute?.id || 'unknown',
+ clause: chunkId.statute?.id || 'unknown',
  pdf: {
  page: null, // TODO: compute from statute metadata
  bbox: null,

@@ -19,7 +19,7 @@ export function clusterErrorsPhase72(errors: string[], k: number = 8): ErrorClus
  }
 }
 
-function kmeansCluster(embeddings: number[][], errors: string[]): number: ErrorCluster[] {
+function kmeansCluster(embeddings: number[][], errors: string[]), number: ErrorCluster[] {
  // Initialize centroids randomly
  const centroids: number[][] = [];
  for (let i = 0; i < k; i++) {
@@ -96,7 +96,7 @@ function kmeansCluster(embeddings: number[][], errors: string[]): number: ErrorC
 
  clusters.push({
  id: `cluster-${c}`,
- errors: clusterErrors, centroid: centroids: centroids[c],
+ errors: clusterErrors, centroid: centroids[c],
  size: clusterErrors.length,
  avgSimilarity,
  });

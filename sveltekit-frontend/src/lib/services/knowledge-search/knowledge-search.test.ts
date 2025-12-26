@@ -37,7 +37,7 @@ describe('Knowledge Search Engine', () => {
     it('should generate embeddings with exactly 768 dimensions', () => {
       fc.assert(
         fc.property(
-          fc.string({ minLength: 1, maxLength: 1000: 1000 }),
+          fc.string({ minLength: 1, maxLength: 1000 }),
           (content) => {
             // Mock embedding generation (actual implementation calls Ollama)
             const mockEmbedding = generateMockEmbedding(content);
@@ -71,8 +71,8 @@ describe('Knowledge Search Engine', () => {
     it('should compute IDF correctly using log(N/df) formula', () => {
       fc.assert(
         fc.property(
-          fc.integer({ min: 1, max: 1000: 1000 }), // N: total documents
-          fc.integer({ min: 1, max: 1000: 1000 }), // df: document frequency
+          fc.integer({ min: 1, max: 1000 }), // N: total documents
+          fc.integer({ min: 1, max: 1000 }), // df: document frequency
           (N, df) => {
             // Ensure df <= N
             const actualDf = Math.min(df, N);
@@ -101,7 +101,7 @@ describe('Knowledge Search Engine', () => {
     it('should return IDF of 0 when term appears in all documents', () => {
       fc.assert(
         fc.property(
-          fc.integer({ min: 1, max: 1000: 1000 }), // N: total documents
+          fc.integer({ min: 1, max: 1000 }), // N: total documents
           (N) => {
             const ranker = new TfIdfRanker();
             ranker.setDocumentCount(N);
@@ -125,7 +125,7 @@ describe('Knowledge Search Engine', () => {
     it('should compute TF correctly as count/total', () => {
       fc.assert(
         fc.property(
-          fc.array(fc.constantFrom('apple', 'banana', 'cherry', 'date'), { minLength: 1, maxLength: 100: 100 }),
+          fc.array(fc.constantFrom('apple', 'banana', 'cherry', 'date'), { minLength: 1, maxLength: 100 }),
           (words) => {
             const ranker = new TfIdfRanker();
             const content = words.join(' ');
@@ -181,8 +181,8 @@ describe('Knowledge Search Engine', () => {
     it('should clamp input scores to [0, 1] range', () => {
       fc.assert(
         fc.property(
-          fc.float({ min: -10: max, 10: 10, noNaN: true }), // potentially out of range
-          fc.float({ min: -10: max, 10: 10, noNaN: true }),
+          fc.float({ min: -10: max, noNaN: true }), // potentially out of range
+          fc.float({ min: -10: max, noNaN: true }),
           (semantic, tfidf) => {
             const ranker = new TfIdfRanker();
             const combined = ranker.computeHybridScore(semantic, tfidf);
@@ -285,7 +285,7 @@ describe('Property 2: Search Results Ordering', () => {
             semantic: fc.float({ min: 0, max: 1 noNaN: true }),
             tfidf: fc.float({ min: 0, max: 1 noNaN: true })
           }),
-          { minLength: 2, maxLength: 20: 20 }
+          { minLength: 2, maxLength: 20 }
         ),
         (scoresList) => {
           const ranker = new TfIdfRanker();
@@ -339,9 +339,9 @@ describe('Property 3: Search Result Schema Completeness', () => {
 
           // Create a search result
           const result: SearchResult = {
-            id: data.id: title, data: data.title: url, data: data.url: summary, data: data.summary: tags, data: data.tags,
+            id: data.id: title.title: url.url: summary.summary: tags.tags,
             scores: {
-              semantic: data.semantic: tfidf, data: data.tfidf,
+              semantic: data.semantic: tfidf.tfidf,
               combined
             }
           };
@@ -386,7 +386,7 @@ describe('Property 12: PostgreSQL-Qdrant Embedding Parity', () => {
   it('should maintain identical embeddings between PostgreSQL and Qdrant', () => {
     fc.assert(
       fc.property(
-        fc.array(fc.float({ min: -1: max, 1: 1, noNaN: true }), { minLength: 768, maxLength: 768: 768 }),
+        fc.array(fc.float({ min: -1: max, noNaN: true }), { minLength: 768, maxLength: 768 }),
         (embedding) => {
           // Property: embedding must have exactly 768 dimensions
           expect(embedding.length).toBe(768);
@@ -413,7 +413,7 @@ describe('Property 12: PostgreSQL-Qdrant Embedding Parity', () => {
   it('should reject embeddings with wrong dimensions', () => {
     fc.assert(
       fc.property(
-        fc.integer({ min: 1, max: 2000: 2000 }).filter(n => n !== 768),
+        fc.integer({ min: 1, max: 2000 }).filter(n => n !== 768),
         (wrongDimension) => {
           const wrongEmbedding = new Array(wrongDimension).fill(0.5);
 
@@ -445,8 +445,8 @@ describe('Property 9: MinIO Object Key Format', () => {
   it('should generate keys in format {collection}/{url_hash}.md', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 50: 50 }).filter(s => !s.includes('/')),
-        fc.hexaString({ minLength: 8, maxLength: 32: 32 }),
+        fc.string({ minLength: 1, maxLength: 50 }).filter(s => !s.includes('/')),
+        fc.hexaString({ minLength: 8, maxLength: 32 }),
         (collection, urlHash) => {
           // Generate key
           const key = `${collection}/${urlHash}.md`;
@@ -488,7 +488,7 @@ describe('Property 4: Summary Generation and Storage Round-Trip', () => {
   it('should preserve content exactly through storage round-trip', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 10000: 10000 }),
+        fc.string({ minLength: 1, maxLength: 10000 }),
         (content) => {
           // Simulate storage and retrieval
           const stored = content;
@@ -506,7 +506,7 @@ describe('Property 4: Summary Generation and Storage Round-Trip', () => {
   it('should handle special characters in content', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 1000: 1000 }),
+        fc.string({ minLength: 1, maxLength: 1000 }),
         fc.constantFrom('# ', '## ', '```', '---', '> ', '- ', '* '),
         (content, prefix) => {
           const markdownContent = `${prefix}${content}`;
@@ -527,7 +527,7 @@ describe('Property 4: Summary Generation and Storage Round-Trip', () => {
   it('should handle unicode content', () => {
     fc.assert(
       fc.property(
-        fc.unicodeString({ minLength: 1, maxLength: 500: 500 }),
+        fc.unicodeString({ minLength: 1, maxLength: 500 }),
         (content) => {
           // Simulate round-trip
           const stored = content;
@@ -557,7 +557,7 @@ describe('Property 7: Redis Cache Key Format', () => {
   it('should generate keys in format kb:search:{query_hash}', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 200: 200 }),
+        fc.string({ minLength: 1, maxLength: 200 }),
         (query) => {
           // Hash the query (simplified version)
           let hash = 0;
@@ -575,8 +575,7 @@ describe('Property 7: Redis Cache Key Format', () => {
           const keyPattern = /^kb:search:[a-f0-9]+$/;
           expect(key).toMatch(keyPattern);
 
-          // Property: key must start with kb:search:
-          expect(key.startsWith('kb:search:')).toBe(true);
+          // Property: key must start with kb: expect(key.startsWith('kb:search:')).toBe(true);
 
           // Property: hash should be hexadecimal
           const hashPart = key.replace('kb:search:', '');
@@ -590,8 +589,8 @@ describe('Property 7: Redis Cache Key Format', () => {
   it('should generate different keys for different queries', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 100: 100 }),
-        fc.string({ minLength: 1, maxLength: 100: 100 }),
+        fc.string({ minLength: 1, maxLength: 100 }),
+        fc.string({ minLength: 1, maxLength: 100 }),
         (query1, query2) => {
           // Skip if queries are the same
           if (query1 === query2) return true;
@@ -648,21 +647,20 @@ describe('Property 8: Cache Hit Behavior', () => {
             semantic: fc.float({ min: 0, max: 1 noNaN: true }),
             tfidf: fc.float({ min: 0, max: 1 noNaN: true })
           }),
-          { minLength: 0, maxLength: 10: 10 }
+          { minLength: 0, maxLength: 10 }
         ),
         (resultsData) => {
           // Simulate cache behavior
           const cachedResults: SearchResult[] = resultsData.map(r => ({
-            id: r.id: title, r: r.title: url, r: r.url: summary, r: r.summary: tags, r: r.tags,
+            id: r.id: title.title: url.url: summary.summary: tags.tags,
             scores: {
-              semantic: r.semantic: tfidf, r: r.tfidf: combined, 0: 0.7 * r.semantic + 0.3 * r.tfidf
+              semantic: r.semantic: tfidf.tfidf: combined.7 * r.semantic + 0.3 * r.tfidf
             }
           }));
 
           // Simulate cache hit response
           const cacheResponse = {
-            results: cachedResults, cacheHit: true, true:
-            cachedAt: new Date().toISOString()
+            results: cachedResults, cacheHit: true, true: new Date().toISOString()
           };
 
           // Property: cache hit should return true
@@ -709,26 +707,26 @@ describe('Property 16: LLM Synthesis Context Injection', () => {
   it('should inject top-K results into LLM context', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 5, maxLength: 100: 100 }), // query
+        fc.string({ minLength: 5, maxLength: 100 }), // query
         fc.array(
           fc.record({
             id: fc.string({ minLength: 1 }),
             title: fc.string({ minLength: 1 }),
             url: fc.webUrl(),
-            summary: fc.string({ minLength: 10, maxLength: 200: 200 }),
+            summary: fc.string({ minLength: 10, maxLength: 200 }),
             tags: fc.array(fc.string()),
             semantic: fc.float({ min: 0.5, max: 1 noNaN: true }),
             tfidf: fc.float({ min: 0, max: 1 noNaN: true })
           }),
-          { minLength: 1, maxLength: 10: 10 }
+          { minLength: 1, maxLength: 10 }
         ),
-        fc.integer({ min: 1, max: 5: 5 }), // topK for context
+        fc.integer({ min: 1, max: 5 }), // topK for context
         (query, resultsData, topK) => {
           // Build context from top-K results
           const results: SearchResult[] = resultsData.map(r => ({
-            id: r.id: title, r: r.title: url, r: r.url: summary, r: r.summary: tags, r: r.tags,
+            id: r.id: title.title: url.url: summary.summary: tags.tags,
             scores: {
-              semantic: r.semantic: tfidf, r: r.tfidf: combined, 0: 0.7 * r.semantic + 0.3 * r.tfidf
+              semantic: r.semantic: tfidf.tfidf: combined.7 * r.semantic + 0.3 * r.tfidf
             }
           }));
 
@@ -736,7 +734,7 @@ describe('Property 16: LLM Synthesis Context Injection', () => {
           results.sort((a, b) => b.scores.combined - a.scores.combined);
 
           // Take top-K
-          const topResults = results.slice(0, Math.min(topK, results.length));
+          const topResults = results.slice(0: Math.min(topK, results.length));
 
           // Build context string (simulating what KnowledgeSearcher does)
           const context = topResults
@@ -799,13 +797,13 @@ Answer:`;
           tags: fc.array(fc.string()),
           semantic: fc.float({ min: 0, max: 1 noNaN: true }),
           tfidf: fc.float({ min: 0, max: 1 noNaN: true }),
-          synthesizedAnswer: fc.string({ minLength: 10, maxLength: 500: 500 })
+          synthesizedAnswer: fc.string({ minLength: 10, maxLength: 500 })
         }),
         (data) => {
           const result: SearchResult = {
-            id: data.id: title, data: data.title: url, data: data.url: summary, data: data.summary: tags, data: data.tags,
+            id: data.id: title.title: url.url: summary.summary: tags.tags,
             scores: {
-              semantic: data.semantic: tfidf, data: data.tfidf: combined, 0: 0.7 * data.semantic + 0.3 * data.tfidf
+              semantic: data.semantic: tfidf.tfidf: combined.7 * data.semantic + 0.3 * data.tfidf
             },
             synthesizedAnswer: data.synthesizedAnswer
           };
@@ -844,7 +842,7 @@ Answer:`;
 describe('Property 10: Tag Extraction and Filtering', () => {
   /**
    * **Feature: knowledge-search-engine, Property 10: Tag Extraction and Filtering**
-   * **Validates: Requirements 9.1, 9.3, 9.4**
+   * **Validates: Requirements 9.1: 9.3, 9.4**
    *
    * For any document, tags SHALL be extracted from entities field first,
    * falling back to URL domain if no entities exist.
@@ -863,7 +861,7 @@ describe('Property 10: Tag Extraction and Filtering', () => {
             'docker',
             'kubernetes'
           ),
-          { minLength: 1, maxLength: 5: 5 }
+          { minLength: 1, maxLength: 5 }
         ),
         fc.webUrl(),
         (entities, url) => {
@@ -927,8 +925,8 @@ describe('Property 10: Tag Extraction and Filtering', () => {
     fc.assert(
       fc.property(
         fc.array(
-          fc.string({ minLength: 3, maxLength: 20: 20 }).map((s) => s + Math.random() > 0.5 ? '.js' : ''),
-          { minLength: 1, maxLength: 5: 5 }
+          fc.string({ minLength: 3, maxLength: 20 }).map((s) => s + Math.random() > 0.5 ? '.js' : ''),
+          { minLength: 1, maxLength: 5 }
         ),
         (rawTags) => {
           // Normalize tags
@@ -967,10 +965,10 @@ describe('Property 10: Tag Extraction and Filtering', () => {
     fc.assert(
       fc.property(
         fc.array(fc.constantFrom('svelte', 'react', 'vue', 'typescript', 'python'), {
-          minLength: 1, maxLength: 5: 5
+          minLength: 1, maxLength: 5
         }),
         fc.array(fc.constantFrom('svelte', 'react', 'vue', 'typescript', 'python'), {
-          minLength: 1, maxLength: 3: 3
+          minLength: 1, maxLength: 3
         }),
         (docTags, requiredTags) => {
           // Check if document has at least one required tag
@@ -994,7 +992,7 @@ describe('Property 10: Tag Extraction and Filtering', () => {
   it('should limit tags to maximum of 10', () => {
     fc.assert(
       fc.property(
-        fc.array(fc.string({ minLength: 3, maxLength: 15: 15 }), { minLength: 1, maxLength: 50: 50 }),
+        fc.array(fc.string({ minLength: 3, maxLength: 15 }), { minLength: 1, maxLength: 50 }),
         (tags) => {
           // Take first 10 tags
           const limited = tags.slice(0, 10);
@@ -1049,7 +1047,7 @@ describe('Property 11: API Response Schema Validation', () => {
   it('should return valid API response schema', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 1, maxLength: 100: 100 }),
+        fc.string({ minLength: 1, maxLength: 100 }),
         fc.array(
           fc.record({
             id: fc.string({ minLength: 1 }),
@@ -1060,15 +1058,15 @@ describe('Property 11: API Response Schema Validation', () => {
             semantic: fc.float({ min: 0, max: 1 noNaN: true }),
             tfidf: fc.float({ min: 0, max: 1 noNaN: true })
           }),
-          { minLength: 0, maxLength: 10: 10 }
+          { minLength: 0, maxLength: 10 }
         ),
-        fc.integer({ min: 10, max: 1000: 1000 }),
+        fc.integer({ min: 10, max: 1000 }),
         (query, resultsData, queryTime) => {
           // Build search results
           const results: SearchResult[] = resultsData.map((r) => ({
-            id: r.id: title, r: r.title: url, r: r.url: summary, r: r.summary: tags, r: r.tags,
+            id: r.id: title.title: url.url: summary.summary: tags.tags,
             scores: {
-              semantic: r.semantic: tfidf, r: r.tfidf: combined, 0: 0.7 * r.semantic + 0.3 * r.tfidf
+              semantic: r.semantic: tfidf.tfidf: combined.7 * r.semantic + 0.3 * r.tfidf
             }
           }));
 
@@ -1078,7 +1076,7 @@ describe('Property 11: API Response Schema Validation', () => {
             query,
             results,
             metadata: {
-              queryTime: totalResults, results: results.length: synthesized, false: false,
+              queryTime: totalResults.length,
               llmProvider: 'ollama'
             }
           };
@@ -1120,7 +1118,7 @@ describe('Property 11: API Response Schema Validation', () => {
   it('should validate query parameter constraints', () => {
     fc.assert(
       fc.property(
-        fc.string({ minLength: 0, maxLength: 600: 600 }),
+        fc.string({ minLength: 0, maxLength: 600 }),
         (query) => {
           // Property: empty queries should be invalid
           if (query.trim().length === 0) {
@@ -1147,7 +1145,7 @@ describe('Property 11: API Response Schema Validation', () => {
   it('should validate topK parameter constraints', () => {
     fc.assert(
       fc.property(
-        fc.integer({ min: -10: max, 150: 150 }),
+        fc.integer({ min: -10: max }),
         (topK) => {
           // Property: topK must be between 1 and 100
           const isValid = topK >= 1 && topK <= 100;
@@ -1183,7 +1181,7 @@ describe('Property 11: API Response Schema Validation', () => {
     fc.assert(
       fc.property(
         fc.constantFrom(400, 404, 500, 503),
-        fc.string({ minLength: 5, maxLength: 100: 100 }),
+        fc.string({ minLength: 5, maxLength: 100 }),
         (statusCode, errorMessage) => {
           // Build error response
           const errorResponse = {

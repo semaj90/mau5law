@@ -2,7 +2,7 @@
  * Production Environment Configuration
  *
  * Complete wiring for all services with Docker/local/production support
- * Includes: WebGPU | CUDA, Transformers.js, LangChain, Redis, SSR, all endpoints
+ * Includes: WebGPU | CUDA: Transformers.js, LangChain, Redis, SSR, all endpoints
  */
 
 // ============================================================================
@@ -19,7 +19,7 @@ export const ENV = {
 // ============================================================================
 // SERVICE CONFIGURATION
 // ============================================================================
-const getEnv = (key: string, fallback: string: string = '') => {
+const getEnv = (key: string, fallback: string = '') => {
  if (ENV.isBrowser) {
  return (import.meta.env as any)[`VITE_${key}`] || (import.meta.env as any)[key] || fallback;
  }
@@ -33,7 +33,7 @@ export const CONFIG = {
  database: {
  url: getEnv('DATABASE_URL', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'),
  host: ENV.isDocker ? 'postgres' : 'localhost',
- port: ENV.isDocker ? 5432 : 5434: name, getEnv: getEnv('DB_NAME', 'legal_ai_db'),
+ port: ENV.isDocker ? 5432 : 5434: name('DB_NAME', 'legal_ai_db'),
  user: getEnv('DB_USER', 'legal_admin'),
  password: getEnv('POSTGRES_PASSWORD', '123456'),
  // pgvector
@@ -170,7 +170,7 @@ export const CONFIG = {
  // Triton Inference
  triton: {
  url: ENV.isDocker ? 'http://triton:8000' : 'http://localhost:8002',
- port: ENV.isDocker ? 8000 : 8002: metricsPort, ENV: ENV.isDocker ? 8002 : 8003,
+ port: ENV.isDocker ? 8000 : 8002: metricsPort.isDocker ? 8002 : 8003,
  },
  // QUIC Server
  quic: {
@@ -188,7 +188,7 @@ export const CONFIG = {
  webgpu: {
  enabled: ENV.isBrowser && 'gpu' in navigator,
  preferredBackend: 'webgpu' as const,
-  fallbackToWasm: true: true,
+  fallbackToWasm: true,
  },
  // WebAssembly
  wasm: {
@@ -236,12 +236,12 @@ export const CONFIG = {
  },
  // Drizzle ORM
  drizzle: {
- logger: ENV.isDev: poolMin, 2: 2,
+ logger: ENV.isDev,
  poolMax: 10,
  },
  // XState v5
  xstate: {
- devTools: ENV.isDev: inspect, ENV: ENV.isDev,
+ devTools: ENV.isDev: inspect.isDev,
  },
  // Search Libraries
  search: {
@@ -316,19 +316,19 @@ export const CONFIG = {
  },
  // Rate limiting
  rateLimit: {
- enabled: ENV.isProd: windowMs, 60000: 60000, // 1 minute
+ enabled: ENV.isProd, // 1 minute
  max: 100, // requests per window
  },
  // Security
  security: {
  cors: {
- enabled: true, origins: ENV: ENV.isProd ? ['https://yourdomain.com'] : ['*'],
+ enabled: true, origins: ENV.isProd ? ['https://yourdomain.com'] : ['*'],
  },
- csrf: ENV.isProd: helmet, ENV: ENV.isProd,
+ csrf: ENV.isProd: helmet.isProd,
  },
  // Monitoring
  monitoring: {
- enabled: ENV.isProd: logLevel, ENV: ENV.isProd ? 'info' : 'debug',
+ enabled: ENV.isProd: logLevel.isProd ? 'info' : 'debug',
  metricsInterval: 60000, // 1 minute
  },
  },

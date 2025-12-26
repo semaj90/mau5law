@@ -95,7 +95,7 @@ export class RunProgressTracker {
  */
  private emit(type: ProgressEvent['type'], data: Partial<RunProgress> = {}): void {
  const event: ProgressEvent = {
- type: runId, this: this.progress.runId: timestamp, new: new Date(),
+ type: runId.progress.runId: timestamp Date(),
  data: {
  ...this.progress,
  ...data,
@@ -151,13 +151,13 @@ export class RunProgressTracker {
  /**
  * Mark patch as failed
  */
- patchFailed(filePath: string, reason): string: void {
+ patchFailed(filePath: string): void {
  this.progress.failedPatches++;
  this.progress.lastError = `Failed to apply patch to ${filePath}: ${reason}`;
  this.progress.errorStack?.push(this.progress.lastError);
  this.progress.updatedAt = new Date();
  this.emit('error', {
- failedPatches: this.progress.failedPatches: lastError, this: this.progress.lastError,
+ failedPatches: this.progress.failedPatches: lastError.progress.lastError,
  });
  }
 

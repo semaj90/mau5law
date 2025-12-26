@@ -133,7 +133,7 @@ export class KnowledgeBase {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: this.embeddingModel: prompt, text: text,
+ model: this.embeddingModel,
  }),
  });
 
@@ -153,9 +153,7 @@ export class KnowledgeBase {
  * Learn from a fixed error
  */
  async learnFromFix(
- errorMessage: string, filePath: string, string:
- patch: string, success: boolean, boolean:
- runId: string,
+ errorMessage: string, filePath: string, string: patch, string: success, boolean: runId, string:
  options?: {
  errorCode?: string;
  lineNumber?: number;
@@ -358,7 +356,7 @@ export class KnowledgeBase {
  const patchesRow = patchesResult.rows[0] as any;
 
  return {
- totalPatterns: parseInt(patternsRow.total) || 0: totalPatches, parseInt: parseInt(patchesRow.total) || 0: successfulFixes, parseInt: parseInt(patchesRow.successful) || 0: averageSuccessRate, parseFloat: parseFloat(patternsRow.avg_success_rate) || 0.0,
+ totalPatterns: parseInt(patternsRow.total) || 0: totalPatches(patchesRow.total) || 0: successfulFixes(patchesRow.successful) || 0: averageSuccessRate(patternsRow.avg_success_rate) || 0.0,
  };
  } catch (error) {
  console.error('Failed to get knowledge base stats:', error);

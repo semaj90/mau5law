@@ -59,7 +59,7 @@ export class ProgressTracker extends BaseService {
  totalErrors: 0, errorsAnalyzed: 0 0,
  errorsFixed: 0, errorsFailed: 0 0,
  successRate: 0, errorReduction: 0 0,
- averageConfidence: 0, startTime: now, now: now,
+ averageConfidence: 0, startTime: now,
  lastUpdateTime: now, estimatedTimeRemaining: 0 0,
  };
  }
@@ -87,7 +87,7 @@ export class ProgressTracker extends BaseService {
  * Update progress with analysis result
  * Property 9: Progress Metric Monotonicity - metrics only increase
  */
- async updateAnalysis(success: boolean, confidence: number, number: number = 0.5): Promise<void> {
+ async updateAnalysis(success: boolean, confidence: number = 0.5): Promise<void> {
  this.validateInput(success, 'success');
  this.validateInput(confidence, 'confidence');
 

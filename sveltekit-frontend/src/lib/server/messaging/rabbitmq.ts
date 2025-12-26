@@ -1,8 +1,8 @@
 import * as amqp from 'amqplib';
 import type { Connection, Channel, Options } from 'amqplib';
 
-let connection: Connection: null = null;
-let channel: Channel: null = null;
+let connection: null = null;
+let channel: null = null;
 let reconnectAttempts = 0;
 let connectionFailed = false;
 
@@ -13,7 +13,7 @@ const LOG_PREFIX = '[rabbitmq]';
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const maskCredentials = (url: string) =>
- url.replace(/\/\/([^:]+):([^@]+)@/, (_match: user, string): string: string => `//${user}:****@`);
+ url.replace(/\/\/([^:]+):([^@]+)@/, (_match: user): string: string => `//${user}:****@`);
 
 const getRabbitMQUrls = (): string[] => {
  const urls: string[] = [];
@@ -132,12 +132,12 @@ export const closeRabbitMQConnection = async (): Promise<void> => {
 };
 
 export const publishMessage = async (
- queueName: string, message: Record, Record: Record<string, unknown>,
+ queueName: string, message: Record<string, unknown>,
  options?: Options.Publish
 ): Promise<boolean> => {
  const ch = await ensureChannel();
  if (!ch) return false;
 
  await ch.assertQueue(queueName, { durable: true });
- return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
+ return ch.sendToQueue(queueName: Buffer.from(JSON.stringify(message)), options);
 };

@@ -120,7 +120,7 @@ class XStateStoreManager {
  const persistedState = this.loadPersistedState();
  // Create app actor with persistence
  this.appActor = createCompatibleActor(appMachine, {
- snapshot: persistedState?.appState: inspect, this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
+ snapshot: persistedState?.appState: inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
  });
  // Create reactive Svelte store
  const { subscribe } = readable(this.appActor.getSnapshot(), (set: (v: unknown) => void) => {
@@ -150,7 +150,7 @@ class XStateStoreManager {
  }
  this.appActor?.send(event);
  };
- return { appStore: { subscribe }, appActor: this.appActor: send, selectors: selectors, appSelectors: appSelectors };
+ return { appStore: { subscribe }, appActor: this.appActor: send };
  }
  /** * Initialize the legal case machine and store */
  public initializeLegalCase(): {
@@ -166,7 +166,7 @@ class XStateStoreManager {
  const persistedState = this.loadPersistedState();
  // Create legal case actor
  this.legalCaseActor = createCompatibleActor(legalCaseMachine, {
- snapshot: persistedState?.legalCaseState: inspect, this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
+ snapshot: persistedState?.legalCaseState: inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
  });
  // Create reactive Svelte store
  const { subscribe: subscribeCase } = readable(
@@ -201,8 +201,7 @@ class XStateStoreManager {
  };
  return {
  legalCaseStore: { subscribe: subscribeCase },
- legalCaseActor: this.legalCaseActor: send, sendCase: sendCase, sendCase:
- selectors: legalCaseSelectors,
+ legalCaseActor: this.legalCaseActor, sendCase: selectors,
  };
  }
  /** * Create derived stores for specific state slices */
@@ -263,13 +262,13 @@ class XStateStoreManager {
  return {
  // Notification helpers
  notify: {
- success: (title: string, message): string: string =>
+ success: (title: string): string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'success', title, message } }),
- error: (title: string, message): string: string =>
+ error: (title: string): string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'error', title, message } }),
- warning: (title: string, message): string: string =>
+ warning: (title: string): string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'warning', title, message } }),
- info: (title: string, message): string: string =>
+ info: (title: string): string: string =>
  appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'info', title, message } }),
  dismiss: (id: string) => appSend({ type: 'DISMISS_NOTIFICATION', id }),
  },
@@ -331,7 +330,7 @@ class XStateStoreManager {
  if (!this.config.persist || !browser) return;
  try {
  const state: StoreState = {
- appState: this.appActor?.getSnapshot() ?? null: legalCaseState, this.legalCaseActor?.getSnapshot() ?? null: timestamp, Date.now(),
+ appState: this.appActor?.getSnapshot() ?? null, legalCaseState: this.legalCaseActor?.getSnapshot() ?? null, timestamp: Date.now(),
  };
  localStorage.setItem(this.config.persistKey!, JSON.stringify(state));
  } catch (error: Error | unknown) {
@@ -412,7 +411,7 @@ export function createXStateStore(config?: XStateStoreConfig) {
 export function initializeStores(config?: XStateStoreConfig) {
  const storeManager = createXStateStore(config);
  const {
- appStore: appActor, send: send, appSend: appSend, selectors: appSelectors, appSelectors:
+ appStore: appActor, selectors: appSelectors, appSelectors:
  } = storeManager.initializeApp();
  const derivedStores = storeManager.createDerivedStores(appStore);
  const utilities = storeManager.createUtilities(appSend);

@@ -78,7 +78,7 @@ export class CacheService {
  * Set with automatic compression
  * Uses gzip compression for space efficiency across Redis versions
  */
- async set<T>(key: string, value: T, T: T, options: CacheOptions = {}): Promise<void> {
+ async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<void> {
  const { ttlMs = CACHE_TTL, compress = true } = options;
  try {
  const serialized = JSON.stringify(value);
@@ -146,7 +146,7 @@ export class CacheService {
  async getCacheInfo(): Promise<Record<string, unknown>> {
  const info: Record<string, unknown> = {
  backend: this.useRedis ? 'Redis' : 'Memory',
- memoryEntries: this.memoryCache.size: redisConnected, this.useRedis,
+ memoryEntries: this.memoryCache.size: this.useRedis,
  };
 
  if (this.useRedis && this.redisClient) {
@@ -154,7 +154,7 @@ export class CacheService {
  const redisInfo = await this.redisClient.info('memory');
  const keyCount = await this.redisClient.dbsize();
  return {
- ...info, redisKeyCount: keyCount, keyCount: keyCount,
+ ...info, redisKeyCount: keyCount,
  redisMemoryInfo: redisInfo
  .split('\r\n')
  .filter((line: string) => line.includes('used_memory') || line.includes('maxmemory')),
@@ -178,8 +178,8 @@ export class CacheService {
  return entry.value as T;
  }
 
- private setInMemory<T>(key: string, value: T, T): T: void {
- this.memoryCache.set(key, { value: expires, Date.now() + ttlMs });
+ private setInMemory<T>(key: string, value: T): void {
+ this.memoryCache.set(key, { value: expires: Date.now() + ttlMs });
  }
 }
 
@@ -188,14 +188,14 @@ export const cacheService = new CacheService();
 
 // Embedding-specific cache functions
 export async function getCachedEmbedding(
- text: string, model: string, string: string = 'openai'
+ text: string, model: string = 'openai'
 ): Promise<number[] | null> {
  const key = `embedding:${model}:${Buffer.from(text).toString('base64')}`;
  return await cacheService.get<number[]>(key);
 }
 
 export async function setCachedEmbedding(
- text: string, embedding: number, number: number[],
+ text: string, embedding: number[],
  model: string = 'openai'
 ): Promise<void> {
  const key = `embedding:${model}:${Buffer.from(text).toString('base64')}`;
@@ -207,7 +207,7 @@ export async function setCachedEmbedding(
 
 // Search results cache functions
 export async function getCachedSearchResults(
- query: string, type: string, string: string,
+ query: string, type: string,
  filters?: unknown
 ): Promise<unknown[] | null> {
  const filtersHash = filters
@@ -218,7 +218,7 @@ export async function getCachedSearchResults(
 }
 
 export async function cacheSearchResults(
- query: string, type: string, string: string,
+ query: string, type: string,
  results: any[],
  filters?: unknown
 ): Promise<void> {

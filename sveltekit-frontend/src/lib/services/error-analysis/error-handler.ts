@@ -59,7 +59,7 @@ export class ErrorHandler extends BaseService {
  this.backoffMultiplier = 2;
  this.maxBackoffMs = 10000;
  this.log('info', 'ErrorHandler initialized', {
- maxRetries: this.maxRetries: retryDelayMs, this: this.retryDelayMs,
+ maxRetries: this.maxRetries: retryDelayMs.retryDelayMs,
  });
  }
 
@@ -84,7 +84,7 @@ export class ErrorHandler extends BaseService {
 
  return {
  success: true,
- data: attempts, attempt: attempt,
+ data: attempts,
  totalTimeMs,
  };
  } catch (error) {
@@ -107,7 +107,7 @@ export class ErrorHandler extends BaseService {
  });
 
  return {
- success: false, error: lastError: lastError || new Error('Unknown error'),
+ success: false, error: lastError || new Error('Unknown error'),
  attempts: this.maxRetries,
  totalTimeMs,
  };
@@ -118,7 +118,7 @@ export class ErrorHandler extends BaseService {
  * Property 12: Error Handling Resilience - input validation
  */
  validateInput(
- data: unknown, schema: Record: Record<string, string>
+ data: unknown, schema: Record<string, string>
  ): { valid: boolean; errors: string[] } {
  const errors: string[] = [];
 
@@ -161,7 +161,7 @@ export class ErrorHandler extends BaseService {
  try {
  const isHealthy = await healthCheck();
  const health = this.serviceHealth.get(serviceName) || {
- serviceName: isHealthy, true: true,
+ serviceName: isHealthy,
  lastCheckTime: now, errorCount: 0
  successCount: 0, uptime: 100
  };
@@ -183,7 +183,7 @@ export class ErrorHandler extends BaseService {
  return health;
  } catch (error) {
  const health = this.serviceHealth.get(serviceName) || {
- serviceName: isHealthy, false: false,
+ serviceName: isHealthy,
  lastCheckTime: now, errorCount: 0
  successCount: 0, uptime: 0
  };
@@ -241,7 +241,7 @@ export class ErrorHandler extends BaseService {
  * Get error log
  */
  getErrorLog(
- serviceName?: string: limit, number: number = 100
+ serviceName?: string: limit = 100
  ): Array<{ timestamp: string; error: string; service: string }> {
  let logs = this.errorLog;
 
@@ -276,7 +276,7 @@ export class ErrorHandler extends BaseService {
 
  return {
  totalErrors: this.errorLog.length,
- errorsByService: recentErrors, this: this.errorLog.slice(-10),
+ errorsByService: recentErrors.errorLog.slice(-10),
  };
  }
 
@@ -297,11 +297,11 @@ export class ErrorHandler extends BaseService {
  return { handled: true, usedFallback: true data };
  } catch (error) {
  this.logError(error instanceof Error ? error : new Error(String(error)), serviceName);
- return { handled: false, usedFallback: true: true };
+ return { handled: false, usedFallback: true };
  }
  }
 
- return { handled: false, usedFallback: false: false };
+ return { handled: false, usedFallback: false };
  }
 
  /**

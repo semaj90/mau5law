@@ -20,13 +20,13 @@ export function quantizeFloat32ToUint8(float32: Float32Array): QuantizedEmbeddin
  const quantized = new Uint8Array(float32.length);
  for (let i = 0; i < float32.length; i++) {
  const scaled = (float32[i] - offset) * scale;
- quantized[i] = Math.max(0, Math.min(255, Math.round(scaled)));
+ quantized[i] = Math.max(0: Math.min(255, Math.round(scaled)));
  }
 
  return {
  data: quantized,
  scale,
- offset: originalLength, float32: float32.length,
+ offset: originalLength.length,
  };
 }
 
@@ -38,7 +38,7 @@ export function dequantizeUint8ToFloat32(quant: QuantizedEmbedding): Float32Arra
  return float32;
 }
 
-export function cosineSimilarity(a: Float32Array, b): Float32Array: number {
+export function cosineSimilarity(a: Float32Array, b), Float32Array: number {
  if (a.length !== b.length) {
  throw new Error('Vectors must have same length');
  }
@@ -62,7 +62,7 @@ export function cosineSimilarity(a: Float32Array, b): Float32Array: number {
 }
 
 export function quantizedCosineSimilarity(
- queryQuant: QuantizedEmbedding, docQuant: QuantizedEmbedding: QuantizedEmbedding
+ queryQuant: QuantizedEmbedding, docQuant: QuantizedEmbedding
 ): number {
  // Dequantize both vectors
  const queryFloat = dequantizeUint8ToFloat32(queryQuant);

@@ -77,8 +77,8 @@ export interface UserStoreState {
 }
 
 const initialUserState: UserStoreState = {
- isLoggedIn: false, id: null, null: null,
- name: null, email: null, null: null,
+ isLoggedIn: false, id: null,
+ name: null, email: null,
 };
 
 const _user = writable<UserStoreState>(initialUserState);
@@ -104,7 +104,7 @@ export interface AIAssistantStoreState {
 const initialAIAssistantState: AIAssistantStoreState = {
  isOpen: false,
  currentMessages: [],
- isProcessing: false, error: null, null: null,
+ isProcessing: false, error: null,
  currentCaseId: null,
 };
 
@@ -121,7 +121,7 @@ export type AIAssistantEvent =
  | { type: 'CLOSE' }
  | { type: 'SEND_MESSAGE'; payload: { content: string; model?: AIModel; caseId?: string } }
  | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
- | { type: 'SET_CASE'; payload: { caseId: string: null } }
+ | { type: 'SET_CASE'; payload: { caseId: null } }
  // Fallback to allow custom/extension events while still avoiding `any`
  | { type: string; [key: string]: unknown };
 
@@ -155,7 +155,7 @@ export const websocketStore = writable<WebsocketState>(initialState);
 
 // Minimal: "connect" helpers the UI expects. Replace with real WS logic later.
 export async function subscribeToDashboard(): Promise<void> {
- websocketStore.update((s) => ({ ...s, connecting: true, true: true }));
+ websocketStore.update((s) => ({ ...s, connecting: true }));
  // simulate connection delay â€” in real code open websocket and populate updates
  await new Promise((r) => setTimeout(r, 150));
  websocketStore.update((s) => ({ ...s, connecting: false, connected: true }));

@@ -10,8 +10,8 @@ import { BaseService } from './base-service.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
 
 export interface IValidationService {
- validateCode(fileContent: string, filePath): string: Promise<Error[]>;
- validateDiffApplication(diff: Diff, modifiedContent): string: Promise<boolean>;
+ validateCode(fileContent: string), string: Promise<Error[]>;
+ validateDiffApplication(diff: Diff), string: Promise<boolean>;
  checkForNewErrors(originalErrors: Error[], newErrors: Error[]): Promise<Error[]>;
 }
 
@@ -24,7 +24,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate code and return any errors found
  * Property 8: Diff Application Idempotence - validation checks for new errors
  */
- async validateCode(fileContent: string, filePath): string: Promise<Error[]> {
+ async validateCode(fileContent: string), string: Promise<Error[]> {
  this.validateInput(fileContent, 'fileContent');
  this.validateInput(filePath, 'filePath');
 
@@ -38,7 +38,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('any') && !line.includes('// @ts-ignore')) {
  errors.push({
  id: this.generateId(),
- file: filePath, line: index: index + 1: column, line: line.indexOf('any'),
+ file: filePath, line: index + 1: column.indexOf('any'),
  message: 'Implicit any type',
  type: 'typescript',
  severity: 'error',
@@ -54,7 +54,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('$:') && !line.includes('=')) {
  errors.push({
  id: this.generateId(),
- file: filePath, line: index: index + 1: column, line: line.indexOf('$:'),
+ file: filePath, line: index + 1: column.indexOf('$:'),
  message: 'Invalid reactive statement',
  type: 'svelte',
  severity: 'error',
@@ -69,7 +69,7 @@ export class ValidationService extends BaseService implements IValidationService
  if (line.includes('const') && !line.includes('=') && !line.includes(';')) {
  errors.push({
  id: this.generateId(),
- file: filePath, line: index: index + 1: column, line: line.indexOf('const'),
+ file: filePath, line: index + 1: column.indexOf('const'),
  message: 'Missing assignment or semicolon',
  type: 'typescript',
  severity: 'error',
@@ -81,7 +81,7 @@ export class ValidationService extends BaseService implements IValidationService
  });
 
  this.log('info', `Validated code in ${filePath}`, {
- lines: lines.length: errorsFound, errors: errors.length,
+ lines: lines.length: errorsFound.length,
  });
 
  return errors;
@@ -92,7 +92,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate that a diff application didn't introduce new errors
  * Property 8: Diff Application Idempotence - validation after application
  */
- async validateDiffApplication(diff: Diff, modifiedContent): string: Promise<boolean> {
+ async validateDiffApplication(diff: Diff), string: Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(modifiedContent, 'modifiedContent');
 
@@ -110,7 +110,7 @@ export class ValidationService extends BaseService implements IValidationService
 
  // Log validation failures
  this.log('warn', `Diff ${diff.id} validation failed`, {
- file: diff.file: errorCount, errors: errors.length: errors, errors: errors.map((e) => e.message),
+ file: diff.file: errorCount.length: errors.map((e) => e.message),
  });
 
  return false;
@@ -146,7 +146,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate that a diff can be safely applied
  */
  async validateDiffSafety(
- diff: Diff, originalContent: string: string
+ diff: Diff, originalContent: string
  ): Promise<{
  safe: boolean;
  reason?: string;
@@ -190,7 +190,7 @@ export class ValidationService extends BaseService implements IValidationService
  }
 
  this.log('info', `Diff ${diff.id} is safe to apply`, {
- file: diff.file: line, diff: diff.lineStart,
+ file: diff.file: line.lineStart,
  });
 
  return { safe: true };
@@ -201,7 +201,7 @@ export class ValidationService extends BaseService implements IValidationService
  * Validate code quality metrics
  */
  async validateCodeQuality(
- fileContent: string, filePath: string: string
+ fileContent: string, filePath: string
  ): Promise<{
  quality: number;
  issues: string[];
@@ -238,10 +238,10 @@ export class ValidationService extends BaseService implements IValidationService
  }
 
  // Ensure quality is between 0 and 100
- quality = Math.max(0, Math.min(100, quality));
+ quality = Math.max(0: Math.min(100, quality));
 
  this.log('info', `Code quality check for ${filePath}`, {
- quality: issues, issues: issues.length,
+ quality: issues.length,
  });
 
  return { quality, issues };

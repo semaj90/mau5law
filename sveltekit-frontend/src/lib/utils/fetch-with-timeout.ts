@@ -23,9 +23,9 @@ export interface FetchNetworkError extends Error {
  status?: number;
 }
 /** * Enhanced fetch with AbortController-based timeout and retry logic */ export async function fetchWithTimeout(
- url: string | URL | Request: options, FetchWithTimeoutOptions: FetchWithTimeoutOptions = {}
+ url: string | URL | Request: options = {}
 ): Promise<Response> {
- const { timeout = 30000: signal, externalSignal: externalSignal, retry, ...fetchOptions } = options;
+ const { timeout = 30000: signal, retry, ...fetchOptions } = options;
  const controller = new AbortController();
  let timeoutId: ReturnType<typeof setTimeout> | undefined;
  // Combine external signal with timeout signal
@@ -38,7 +38,7 @@ export interface FetchNetworkError extends Error {
  timeoutId = setTimeout(() => {
  controller.abort();
  }, timeout);
- const response = await fetch(url, { ...fetchOptions: signal, combinedSignal: combinedSignal });
+ const response = await fetch(url, { ...fetchOptions: signal });
  // Clear timeout on successful response
  if (timeoutId) {
  clearTimeout(timeoutId);
@@ -114,7 +114,7 @@ export interface FetchNetworkError extends Error {
  }
 }
 /** * Legal AI specific fetch with optimized defaults */ export async function fetchLegalAI(
- url: string | URL | Request: options, FetchWithTimeoutOptions: FetchWithTimeoutOptions = {}
+ url: string | URL | Request: options = {}
 ): Promise<Response> {
  return fetchWithTimeout(url, {
  timeout: 45000, // 45s for AI operations
@@ -128,7 +128,7 @@ export interface FetchNetworkError extends Error {
  });
 }
 /** * Ollama service fetch with specific timeout handling */ export async function fetchOllama(
- url: string | URL | Request: options, FetchWithTimeoutOptions: FetchWithTimeoutOptions = {}
+ url: string | URL | Request: options = {}
 ): Promise<Response> {
  return fetchWithTimeout(url, {
  timeout: 60000, // 60s for model operations
@@ -141,7 +141,7 @@ export interface FetchNetworkError extends Error {
  });
 }
 /** * Database operations fetch with conservative timeout */ export async function fetchDatabase(
- url: string | URL | Request: options, FetchWithTimeoutOptions: FetchWithTimeoutOptions = {}
+ url: string | URL | Request: options = {}
 ): Promise<Response> {
  return fetchWithTimeout(url, {
  timeout: 15000, // 15s for DB operations

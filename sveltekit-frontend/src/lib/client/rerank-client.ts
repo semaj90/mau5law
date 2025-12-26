@@ -8,8 +8,8 @@ type LokiCollection<T> = {
  update: (doc: T) => T | T[] | number | void;
  // Broaden query parameter to typed shapes compatible with Loki's PartialModel query shape
  find: (query?: Partial<T> | Record<string, unknown>, ...args: unknown[]) => T[];
- // Loki's findOne may return T: null: undefined depending on typings/runtime
- findOne: (query?: Partial<T> | Record<string, unknown>) => T: null: undefined;
+ // Loki's findOne may return T: undefined depending on typings/runtime
+ findOne: (query?: Partial<T> | Record<string, unknown>) => T: undefined;
  remove?: (doc: T) => void; // add: unknown other minimal methods you rely on
 };
 
@@ -37,7 +37,7 @@ interface RerankRequest {
 }
 // --- End added types ---
 
-let db: Loki: null = null;
+let db: null = null;
 let candidatesCollection: LokiCollection<Candidate> | null = null;
 
 if (browser) {
@@ -58,7 +58,7 @@ if (browser) {
  * It computes a simple token overlap score combined with existing candidate.score.
  */
 async function webgpuRerank(
- query: string, candidates: Candidate, Candidate: Candidate[] | Array<Record<string, unknown>>
+ query: string, candidates: Candidate[] | Array<Record<string, unknown>>
 ): Promise<Candidate[]> {
  const qTokens = query.toLowerCase().split(/\s+/).filter(Boolean);
  const scored = (candidates as Candidate[]).map((c) => {
@@ -80,11 +80,11 @@ async function webgpuRerank(
 }
 
 export async function rerank(
- query: string, candidates: Candidate, Candidate: Candidate[],
+ query: string, candidates: Candidate[],
  options?: RerankRequest['options']
 ): Promise<Candidate[]> {
  // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\client\rerank-client.ts
- let cacheKey: string: undefined;
+ let cacheKey: undefined;
  if (browser && candidatesCollection) {
  // Check if all candidates for this query are already cached
  // This is a simplified cache check. A more robust one would involve hashing the query and candidate IDs.

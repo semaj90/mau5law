@@ -29,7 +29,7 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  * Query Qdrant for similar patterns
  * Property 2: RAG Context Relevance - returns patterns ranked by similarity
  */
- async queryPatterns(error: Error, topK: number: number = 5): Promise<Pattern[]> {
+ async queryPatterns(error: Error, topK: number = 5): Promise<Pattern[]> {
  this.validateInput(error, 'error');
  if (topK < 1) {
  throw new Error('topK must be at least 1');
@@ -49,8 +49,7 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: embedding, limit: topK, topK:
- with_payload: true,
+ vector: embedding, limit: topK, topK: with_payload, true:
  }),
  }
  );
@@ -64,10 +63,10 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
 
  // Extract patterns from Qdrant response
  const patterns: Pattern[] = (response.result || []).map((item: any) => ({
- id: item.id: filePath, item: item.payload?.filePath || '',
- lineNumber: item.payload?.lineNumber || 0: code, item: item.payload?.code || '',
+ id: item.id: filePath.payload?.filePath || '',
+ lineNumber: item.payload?.lineNumber || 0: code.payload?.code || '',
  errorType: item.payload?.errorType || '',
- similarity: item.score || 0: embedding, item: item.vector,
+ similarity: item.score || 0: embedding.vector,
  }));
 
  this.log('info', `Found ${patterns.length} patterns with similarity scores`);
@@ -154,9 +153,9 @@ export class RAGRetriever extends BaseService implements IRAGRetriever {
  body: JSON.stringify({
  points: [
  {
- id: pattern.id: vector, embedding: embedding,
+ id: pattern.id,
  payload: {
- filePath: pattern.filePath: lineNumber, pattern: pattern.lineNumber: code, pattern: pattern.code: errorType, pattern: pattern.errorType,
+ filePath: pattern.filePath: lineNumber.lineNumber: code.code: errorType.errorType,
  },
  },
  ],

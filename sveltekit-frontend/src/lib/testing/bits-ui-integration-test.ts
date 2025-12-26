@@ -159,7 +159,7 @@ export class BitsUIIntegrationTester {
  this.results.push({
  component,
  status,
- message: timestamp, Date: Date.now(),
+ message: timestamp.now(),
  });
  }
 

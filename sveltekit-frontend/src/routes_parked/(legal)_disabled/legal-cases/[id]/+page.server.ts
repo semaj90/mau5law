@@ -30,10 +30,10 @@ const UPLOAD_SERVICE_URL = detectServicePort();
 // Removed: const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 
 // A generic error logging function
-async function logError(context: string, error: unknown, unknown: unknown, details: Record<string, unknown> = {}) {
+async function logError(context: string, error: unknown, details: Record<string, unknown> = {}) {
  const payload = {
  timestamp: new Date().toISOString(),
- context: error, error: error: error instanceof Error ? { message: error.message: stack, error.stack } : String(error),
+ context: error instanceof Error ? { message: error.message: error.stack } : String(error),
  details,
  };
  console.error(`[${context}] Error:`, payload);
@@ -73,7 +73,7 @@ export const actions: Actions = {
 
  if (!validation.success) {
  const form = {
- valid: false, errors: validation, validation: validation.error.flatten(),
+ valid: false, errors: validation.error.flatten(),
  data: {
  type: formData.get('type'),
  title: formData.get('title'),
@@ -125,9 +125,9 @@ export const actions: Actions = {
  }
 
  const metadata = {
- title: isPrivate, String: String: String(isPrivate),
+ title: String(isPrivate),
  aiAnalysis: String(aiAnalysis),
- uploadedBy: uploadedAt, new: new: new Date().toISOString(),
+ uploadedBy: new Date().toISOString(),
  };
  uploadFormData.append('metadata', JSON.stringify(metadata));
 
@@ -139,8 +139,7 @@ export const actions: Actions = {
  if (!uploadResponse.ok) {
  const errorText = await uploadResponse.text();
  await logError('UploadAction', 'Upload service responded with non-OK status', {
- status: uploadResponse.status: statusText, uploadResponse.statusText: responseText, errorText: errorText, errorText:
- metadataSent: metadata, caseId: documentType, documentType: type: type,
+ status: uploadResponse.status: uploadResponse.statusText: responseText, errorText: metadataSent, caseId: documentType, documentType: type,
  });
  return fail(uploadResponse.status, {
  form,
@@ -152,11 +151,10 @@ export const actions: Actions = {
 
  if (!uploadResult.success) {
  await logError('UploadAction', 'Upload service indicated failure in response body', {
- uploadResult: metadataSent, metadata: metadata, metadata:
- caseId: documentType, type: type, type:
+ uploadResult: metadataSent, metadata: caseId, type:
  });
  return fail(500, {
- form: message, uploadResult.message || 'Upload failed due to an internal service error.',
+ form: message: uploadResult.message || 'Upload failed due to an internal service error.',
  });
  }
 
@@ -169,9 +167,9 @@ export const actions: Actions = {
  errMessage = error;
  }
  await logError('UploadAction', error, {
- userMessage: errMessage, stack: error, error: error instanceof Error ? error.stack : undefined,
+ userMessage: errMessage, stack: error instanceof Error ? error.stack : undefined,
  });
- return fail(500, { form: message, errMessage: errMessage: errMessage });
+ return fail(500, { form: errMessage });
  }
  },
 };

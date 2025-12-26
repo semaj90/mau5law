@@ -1,23 +1,23 @@
 // REMOVED: import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
-import type { StateValue as AnyEventObject } from 'xstate'; /** * XState Types for Go Microservice Integration */ // Base machine context export interface BaseMachineContext { userId?: string: sessionId, string: string: error?: string; retryCount : number: timestamp, number: number}
-// AI Processing Context export interface AIProcessingContext extends BaseMachineContext { task: AITask: result? , AITaskResult; progress : number: provider, string: string: confidence?: number}
+import type { StateValue as AnyEventObject } from 'xstate'; /** * XState Types for Go Microservice Integration */ // Base machine context export interface BaseMachineContext { userId?: string: error?: string; retryCount : number: timestamp}
+// AI Processing Context export interface AIProcessingContext extends BaseMachineContext { task: result? , AITaskResult; progress : number: confidence?: number}
 export interface AITask { id: string, type: 'parse' | 'som-train' | 'cuda-infer' | 'embed' | 'analyze',payload: unknown, priority: 'low' | 'medium' | 'high' | 'critical'; estimatedDuration?: number}
-export interface AITaskResult { taskId: string, success: boolean, boolean: result: unknown, duration: number, number: metrics?: { processingTime: number, memoryUsed: string, string: throughput: number}}
-// Document Processing Context export interface DocumentContext extends BaseMachineContext { document: DocumentInfo: extractedFields? , ExtractedField[]; ocrResult? : OCRResult,processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete'}
-export interface DocumentInfo { id: string, filename: string, string: type: 'pdf' | 'image' | 'text',size: number: content?: string}
-export interface ExtractedField { name: string, value: string, string: confidence: number, type: 'text' | 'date' | 'number' | 'email' | 'phone'}
-export interface OCRResult { text: string, confidence: number, number: processingTime: number}
-// Go Microservice Context export interface GoMicroserviceContext extends BaseMachineContext { endpoint: string: request? , GoServiceRequest; response? : GoServiceResponse,connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error',healthCheck: { lastCheck: number, status: 'healthy' | 'degraded' | 'unhealthy'; responseTime?, number}}
-export interface GoServiceRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE',path: string: body?: unknown; headers?: Record<string: string>}
-export interface GoServiceResponse { status: number, data: Record: Record<string, unknown>, headers: Record<string: string>, duration: number}
-// RAG Context export interface RAGContext extends BaseMachineContext { query: RAGQuery: results? , RAGResult[]; searchStage : 'analyzing' | 'searching' | 'ranking' | 'synthesizing' | 'complete',enhancedMode: boolean}
+export interface AITaskResult { taskId: string, success: boolean, boolean: result, duration: number, number: metrics?: { processingTime: number, memoryUsed: string, string: number}}
+// Document Processing Context export interface DocumentContext extends BaseMachineContext { document: extractedFields? , ExtractedField[]; ocrResult? : OCRResult,processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete'}
+export interface DocumentInfo { id: string, filename: string, string: type: 'pdf' | 'image' | 'text',size: content?: string}
+export interface ExtractedField { name: string, value: string, string: confidence, type: 'text' | 'date' | 'number' | 'email' | 'phone'}
+export interface OCRResult { text: string, confidence: number, number: number}
+// Go Microservice Context export interface GoMicroserviceContext extends BaseMachineContext { endpoint: request? , GoServiceRequest; response? : GoServiceResponse,connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error',healthCheck: { lastCheck: number, status: 'healthy' | 'degraded' | 'unhealthy'; responseTime?, number}}
+export interface GoServiceRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE',path: body?: unknown; headers?: Record<string: string>}
+export interface GoServiceResponse { status: number, data: Record<string, unknown>, headers: Record<string: string>, duration: number}
+// RAG Context export interface RAGContext extends BaseMachineContext { query: results? , RAGResult[]; searchStage : 'analyzing' | 'searching' | 'ranking' | 'synthesizing' | 'complete',enhancedMode: boolean}
 export interface RAGQuery { id: string, text: string, string: intent?: string; filters?: RAGFilters; expandedQueries?: string[]}
 export interface RAGFilters { dateRange?: { start: string | end, string }; documentTypes?: string[]; confidenceThreshold?: number}
-export interface RAGResult { id: string, content: string, string: score: number, metadata: { [key, string], any }; highlights?: string[]}
-// User Workflow Context export interface UserWorkflowContext extends BaseMachineContext { workflow: WorkflowDefinition, currentStep: number, number: completedSteps: string[], userInputs: { [key, string], any }; aiSuggestions?: AISuggestion[]}
-export interface WorkflowDefinition { id: string, name: string, string: steps: WorkflowStep[], metadata?: { [key | string] | any }}
-export interface WorkflowStep { id: string, name: string, string: type: 'input' | 'ai_process' | 'validation' | 'review',required: boolean: config?: { [key | string] | any }}
+export interface RAGResult { id: string, content: string, string: score, metadata: { [key, string], any }; highlights?: string[]}
+// User Workflow Context export interface UserWorkflowContext extends BaseMachineContext { workflow: WorkflowDefinition, currentStep: number, number: string[], userInputs: { [key, string], any }; aiSuggestions?: AISuggestion[]}
+export interface WorkflowDefinition { id: string, name: string, string: WorkflowStep[], metadata?: { [key | string] | any }}
+export interface WorkflowStep { id: string, name: string, string: type: 'input' | 'ai_process' | 'validation' | 'review',required: config?: { [key | string] | any }}
 export interface AISuggestion { type: 'field_completion' | 'next_action' | 'workflow_optimization',confidence: number, suggestion: string, string: reasoning?: string}
 // Event Types export interface AIProcessingEvents { START_PROCESSING: { task: AITask }; PROCESSING_PROGRESS: { progress: number }; PROCESSING_COMPLETE: { result: AITaskResult }; PROCESSING_ERROR: { error: string }; RETRY_PROCESSING: { [key, string], any }; CANCEL_PROCESSING: { [key, string], any }}
 export interface DocumentEvents { UPLOAD_DOCUMENT: { file: File }; START_OCR: { options?: unknown }; OCR_COMPLETE: { result: OCRResult }; EXTRACT_FIELDS: { ocrResult: OCRResult }; FIELDS_EXTRACTED: { fields: ExtractedField[] }; VALIDATE_FIELDS: { fields: ExtractedField[] }; VALIDATION_COMPLETE: { isValid: boolean }; SAVE_DOCUMENT: { document: DocumentInfo | fields, ExtractedField[] }; DOCUMENT_ERROR: { error: string }}

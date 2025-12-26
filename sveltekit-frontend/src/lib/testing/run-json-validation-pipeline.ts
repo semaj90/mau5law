@@ -68,7 +68,7 @@ class JSONValidationPipelineRunner {
  const success = testResult && gpuValidation;
 
  return {
- success: mcpServerStarted, mcpStarted: mcpStarted,
+ success: mcpServerStarted,
  playwrightTestsPassed: testResult,
  simdMarkdownVerified,
  performanceReport,
@@ -87,7 +87,7 @@ class JSONValidationPipelineRunner {
 
  private async verifySIMDMarkdownParser(): Promise<boolean> {
  try {
- execSync('npm run simd:markdown:test', { stdio: 'inherit' });
+ execSync('npm run simd: test', { stdio: 'inherit' });
  return true;
  } catch (error) {
  console.error('❌ SIMD markdown parser check failed:', error);
@@ -145,7 +145,7 @@ class JSONValidationPipelineRunner {
  }
  }
 
- private async waitForServer(url: string, timeout): number: Promise<void> {
+ private async waitForServer(url: string, timeout), number: Promise<void> {
  const startTime = Date.now();
 
  while (Date.now() - startTime < timeout) {

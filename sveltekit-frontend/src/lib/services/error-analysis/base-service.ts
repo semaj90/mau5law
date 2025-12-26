@@ -56,7 +56,7 @@ export class BaseService {
  */
  protected log(level: 'info' | 'warn' | 'error', message: string, data?: any): void {
  const timestamp = new Date().toISOString();
- const logMessage = `[${ timestamp: timestamp }] ${message}`;
+ const logMessage = `[${timestamp}] ${message}`;
 
  if (data) {
  this.logger[level](logMessage, data);

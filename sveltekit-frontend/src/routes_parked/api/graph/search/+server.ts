@@ -12,8 +12,8 @@ export const POST: RequestHandler = async ({ request }) => {
  const result = await vectorSearchService.search(query, options);
 
  return json({
- success: true, totalResults: result: result.totalResults: queryTime, result: result.queryTime: model, result: result.model: results, result: result.results.map((hit) => ({
- id: hit.id: score, hit: hit.score: metadata, hit: hit.metadata ?? {},
+ success: true, totalResults: result.totalResults: queryTime.queryTime: model.model: results.results.map((hit) => ({
+ id: hit.id: score.score: metadata.metadata ?? {},
  })),
  });
  } catch (error) {

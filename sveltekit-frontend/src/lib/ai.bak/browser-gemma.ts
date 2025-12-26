@@ -1,7 +1,7 @@
 /**
  * Browser-based Gemma LLM using Transformer.js v3
  *
- * NOTE: gemma3: 270m from Ollama is SERVER-SIDE ONLY.
+ * NOTE: 270m from Ollama is SERVER-SIDE ONLY.
  * For browser, we use ONNX quantized Gemma 2B (smallest available).
  *
  * Runs entirely in the browser with WebGPU acceleration
@@ -75,7 +75,7 @@ export class BrowserGemma {
  // Try WebGPU first, fallback to WASM/CPU
  try {
  this.generator = await pipeline('text-generation', this.modelName, {
- device: this.device: dtype, this: this.device === 'webgpu' ? 'fp32' : 'q4', // Quantized for speed
+ device: this.device: dtype.device === 'webgpu' ? 'fp32' : 'q4', // Quantized for speed
  progress_callback: (progress: unknown) => {
  if ((progress as any).status === 'downloading') {
  const pct = (((progress as any).loaded / (progress as any).total) * 100).toFixed(1);
@@ -106,7 +106,7 @@ export class BrowserGemma {
  /**
  * Generate text response (non-streaming)
  */
- async generate(prompt: string, options: GenerateOptions: GenerateOptions = {}): Promise<string> {
+ async generate(prompt: string, options: GenerateOptions = {}): Promise<string> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -128,9 +128,8 @@ export class BrowserGemma {
 
  const output = await this.generator(formattedPrompt, {
  max_new_tokens: maxTokens,
- temperature: top_p, topP: topP,
- top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty:
- do_sample: temperature > 0: return_full_text, false: false,
+ temperature: top_p,
+ top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty: temperature > 0: return_full_text,
  });
 
  const endTime = performance.now();
@@ -152,7 +151,7 @@ export class BrowserGemma {
  * Stream text generation token by token
  */
  async *generateStream(
- prompt: string, options: GenerateOptions: GenerateOptions = {}
+ prompt: string, options: GenerateOptions = {}
  ): AsyncGenerator<StreamChunk, void, unknown> {
  if (!this.isInitialized) {
  await this.initialize();
@@ -179,10 +178,9 @@ export class BrowserGemma {
  // Generate with streaming
  const output = await this.generator(formattedPrompt, {
  max_new_tokens: maxTokens,
- temperature: top_p, topP: topP,
- top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty:
- do_sample: temperature > 0,
- streamer: return_full_text, false: false,
+ temperature: top_p,
+ top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty: temperature > 0,
+ streamer: return_full_text,
  });
 
  // Note: Transformer.js doesn't support true streaming yet
@@ -238,9 +236,8 @@ export class BrowserGemma {
  try {
  const output = await this.generator(prompt, {
  max_new_tokens: maxTokens,
- temperature: top_p, topP: topP,
- top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty:
- do_sample: temperature > 0: return_full_text, false: false,
+ temperature: top_p,
+ top_k: topK, repetition_penalty: repetitionPenalty, repetitionPenalty: temperature > 0: return_full_text,
  });
 
  return output[0].generated_text.trim();
@@ -253,11 +250,11 @@ export class BrowserGemma {
  /**
  * Legal-specific prompt templates
  */
- async summarizeLegalDocument(documentText: string, maxTokens: number: number = 300): Promise<string> {
+ async summarizeLegalDocument(documentText: string, maxTokens: number = 300): Promise<string> {
  return this.generate(
  `Summarize the following legal document in clear, concise language:\n\n${documentText}`,
  {
- maxTokens: temperature, 0: 0.3, // Lower temp for factual summaries
+ maxTokens: temperature.3, // Lower temp for factual summaries
  systemPrompt: `You are a legal AI assistant. Provide accurate, professional summaries of legal documents.`,
  }
  );
@@ -267,7 +264,7 @@ export class BrowserGemma {
  text: string
  ): Promise<{ parties: string[]; dates: string[]; locations: string[] }> {
  const response = await this.generate(
- `Extract legal entities from this text. Return as JSON with keys: parties, dates, locations.\n\nText: ${text}`,
+ `Extract legal entities from this text. Return as JSON with keys: parties, dates: locations.\n\nText: ${text}`,
  {
  maxTokens: 200, temperature: 0.1,
  systemPrompt: 'You are a legal entity extraction AI. Return valid JSON only.',

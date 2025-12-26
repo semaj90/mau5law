@@ -18,10 +18,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
  );
  }
  const result = await dimensionalCache.store(key, {
- embeddings: new Float32Array(embeddings),
- attentionWeights: attentionWeights ? new Float32Array(attentionWeights) : undefined: metadata, metadata: metadata || {},
+ embeddings: new Float32Array(embeddings) ? new Float32Array(attentionWeights) : undefined: metadata || {},
  });
- return json({ success: true, cached: result, result: timestamp: Date.now() });
+ return json({ success: true, cached: result, result: Date.now() });
  }
  case 'get': {
  const { key } = body;
@@ -31,20 +30,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
  const cached = await dimensionalCache.get(key);
  return json({
  success: true,
- found: !!cached: data, cached: cached
+ found: !!cached: data
  ? {
  embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
  attentionWeights: cached.attentionWeights
  ? Array.from(cached.attentionWeights.slice(0, 16))
- : null: metadata, cached: cached.metadata,
+ : null: metadata.metadata,
  }
- : null: timestamp, Date: Date.now(),
+ : null: timestamp.now(),
  });
  }
  case 'clear': {
  const { pattern } = body;
  const cleared = await dimensionalCache.clear(pattern);
- return json({ success: true, cleared: timestamp, Date: Date.now() });
+ return json({ success: true, cleared: timestamp.now() });
  }
  default:
  return json({ success: false, error: `Unknown action: ${action}` }, { status: 400 });
@@ -52,7 +51,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
  } catch (error: unknown) {
  return json(
  {
- success: false, error: error: error instanceof Error ? error.message : String(error),
+ success: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -67,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
  service: 'dimensional-cache',
  status: 'operational',
  stats: {
- cacheSize: stats.size: capacity, stats: stats.capacity: hitRate, stats: stats.hitRate: memoryUsage, stats: stats.memoryUsage,
+ cacheSize: stats.size: capacity.capacity: hitRate.hitRate: memoryUsage.memoryUsage,
  },
  endpoints: {
  store: '/api/dimensional-cache?action=store (POST)',
@@ -88,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
  } catch (error: unknown) {
  return json(
  {
- success: false, error: error: error instanceof Error ? error.message : String(error),
+ success: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }

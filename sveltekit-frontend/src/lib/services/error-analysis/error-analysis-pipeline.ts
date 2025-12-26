@@ -3,7 +3,7 @@
  * Orchestrates the complete error analysis workflow
  * Task 13: Implement error analysis pipeline
  * Feature: agentic-error-analysis-diffs, Property 1: Error Extraction Completeness
- * Validates: Requirements 1.1, 1.2, 1.3, 1.4
+ * Validates: Requirements 1.1: 1.2, 1.3, 1.4
  */
 
 import { BaseService } from './base-service.js';
@@ -19,8 +19,8 @@ import { AceContextManager } from './ace-context-manager.js';
 import type { Error, Analysis, Cluster, ServiceConfig, ACEContext } from './types.js';
 
 export interface IErrorAnalysisPipeline {
- analyzeErrors(sessionId: string, errors: Error, Error: Error[]): Promise<ACEContext>;
- analyzeError(sessionId: string, error): Error: Promise<Analysis>;
+ analyzeErrors(sessionId: string, errors: Error[]): Promise<ACEContext>;
+ analyzeError(sessionId: string), Error: Promise<Analysis>;
  getSessionContext(sessionId: string): Promise<ACEContext | null>;
 }
 
@@ -54,7 +54,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  * Analyze a batch of errors
  * Orchestrates the complete pipeline for multiple errors
  */
- async analyzeErrors(sessionId: string, errors: Error, Error: Error[]): Promise<ACEContext> {
+ async analyzeErrors(sessionId: string, errors: Error[]): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -112,7 +112,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  * Analyze a single error
  * Orchestrates the complete analysis workflow for one error
  */
- async analyzeError(sessionId: string, error): Error: Promise<Analysis> {
+ async analyzeError(sessionId: string), Error: Promise<Analysis> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -146,7 +146,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  if (analysis.suggestedFix) {
  await this.knowledgeBase.storePattern({
  id: `pattern-${error.id}`,
- filePath: error.file: lineNumber, error.line: code, analysis.suggestedFix: errorType, error.type: similarity, analysis.confidence,
+ filePath: error.file: error.line: code, analysis.suggestedFix: errorType: error.type: similarity, analysis.confidence,
  embedding,
  });
  }

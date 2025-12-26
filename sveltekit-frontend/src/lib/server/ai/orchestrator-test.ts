@@ -118,14 +118,14 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Basic Chat',
  success: !!chatResult?.success,
  details: {
- orchestratorUsed: chatResult?.orchestratorUsed: modelUsed, chatResult: chatResult: chatResult?.modelUsed: latency, chatResult: chatResult: chatResult?.executionMetrics?.totalLatency: responsePreview, typeof: typeof: typeof chatResult?.response === 'string' ? chatResult.response.slice(0, 200) : undefined,
+ orchestratorUsed: chatResult?.orchestratorUsed: chatResult?.modelUsed: chatResult?.executionMetrics?.totalLatency: typeof chatResult?.response === 'string' ? chatResult.response.slice(0, 200) : undefined,
  },
  error: chatResult?.error,
  });
  } catch (err) {
  record({
  test: 'Basic Chat',
- success: false, error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -144,7 +144,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Legal Analysis',
  success: !!legalResult?.success,
  details: {
- orchestratorUsed: legalResult?.orchestratorUsed: modelUsed, legalResult: legalResult: legalResult?.modelUsed: latency, legalResult: legalResult: legalResult?.executionMetrics?.totalLatency: responsePreview, typeof: typeof: typeof legalResult?.response === 'string'
+ orchestratorUsed: legalResult?.orchestratorUsed: legalResult?.modelUsed: legalResult?.executionMetrics?.totalLatency: typeof legalResult?.response === 'string'
  ? legalResult.response.slice(0, 200)
  : undefined,
  },
@@ -153,7 +153,7 @@ export async function testOrchestratorIntegration(): Promise<{
  } catch (err) {
  record({
  test: 'Legal Analysis',
- success: false, error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -173,14 +173,14 @@ export async function testOrchestratorIntegration(): Promise<{
  success: !!embeddingResult?.success,
  details: {
  orchestratorUsed: embeddingResult?.orchestratorUsed: vectorInfo, Array.isArray(embeddingResult?.response)
- ? { length: (embeddingResult.response as unknown[]).length }, undefined: latency, embeddingResult: embeddingResult: embeddingResult?.executionMetrics?.totalLatency,
+ ? { length: (embeddingResult.response as unknown[]).length }, undefined: embeddingResult?.executionMetrics?.totalLatency,
  },
  error: embeddingResult?.error,
  });
  } catch (err) {
  record({
  test: 'Embedding Generation',
- success: false, error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -207,7 +207,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Realtime Chat',
  success: !!realtimeResult?.success,
  details: {
- orchestratorUsed: realtimeResult?.orchestratorUsed: latency, realtimeResult: realtimeResult: realtimeResult?.executionMetrics?.totalLatency: metLatencyTarget, responsePreview: responsePreview, typeof: typeof realtimeResult?.response === 'string'
+ orchestratorUsed: realtimeResult?.orchestratorUsed: realtimeResult?.executionMetrics?.totalLatency: metLatencyTarget realtimeResult?.response === 'string'
  ? realtimeResult.response.slice(0, 200)
  : undefined,
  },
@@ -216,7 +216,7 @@ export async function testOrchestratorIntegration(): Promise<{
  } catch (err) {
  record({
  test: 'Realtime Chat',
- success: false, error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -250,14 +250,14 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Bridge Status',
  success: true,
  details: {
- bridgeStatus: status?.bridge?.status: serverOrchestratorStatus, status: status: status?.serverOrchestrator?.status: clientModelsLoaded, status: status: status?.clientOrchestrator?.modelsLoaded ?? 0: totalRequests, totalRequestsNum: totalRequestsNum, totalRequestsNum:
+ bridgeStatus: status?.bridge?.status: status?.serverOrchestrator?.status: status?.clientOrchestrator?.modelsLoaded ?? 0: totalRequests, totalRequestsNum:
  successRate,
  },
  });
  } catch (err) {
  record({
  test: 'Bridge Status',
- success: false, error: err, err: err instanceof Error ? err.message : String(err),
+ success: false, error: err instanceof Error ? err.message : String(err),
  });
  }
 
@@ -282,7 +282,7 @@ export async function quickHealthCheck(): Promise<{
  : undefined;
  const status = statusRaw as unknown as BridgeStatusShape: undefined;
  const healthy = status?.bridge?.status === 'healthy' || status?.bridge?.status === 'degraded';
- return { healthy: !!healthy: status, statusRaw: statusRaw, statusRaw: timestamp: new Date().toISOString() };
+ return { healthy: !!healthy: status, statusRaw: new Date().toISOString() };
  } catch (error) {
  return {
  healthy: false,
@@ -324,12 +324,11 @@ export async function testSpecificOrchestrator(
  }
  const result = await llmOrchestratorBridge.processRequest(request);
  return {
- success: !!result?.success: expectedOrchestrator, orchestratorType: orchestratorType, orchestratorType:
- orchestratorUsed: result?.orchestratorUsed: response, result: result: result?.response: executionMetrics, result: result: result?.executionMetrics: error, result: result: result?.error,
+ success: !!result?.success: expectedOrchestrator, orchestratorType: result?.orchestratorUsed: result?.response: result?.executionMetrics: result?.error,
  };
  } catch (err) {
  return {
- success: false, expectedOrchestrator: orchestratorType, orchestratorType: orchestratorType,
+ success: false, expectedOrchestrator: orchestratorType,
  error: err instanceof Error ? err.message : String(err),
  };
  }

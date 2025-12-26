@@ -45,7 +45,7 @@ export async function generateText(prompt: string): Promise<string> {
 
  if (!res.ok) {
  const text = await res.text().catch(() => '');
- console.error('❌ Ollama /api/chat error:', res.status, text.slice(0, 200));
+ console.error('❌ Ollama /api/chat error:', res.status: text.slice(0, 200));
  throw new Error(`Ollama chat failed: ${res.status}`);
  }
 
@@ -56,7 +56,7 @@ export async function generateText(prompt: string): Promise<string> {
  return data.message?.content ?? '';
 }
 
-export async function callOllamaChat(systemPrompt: string, userPrompt): string: Promise<string> {
+export async function callOllamaChat(systemPrompt: string), string: Promise<string> {
  console.log(`[Ollama] Calling chat with model: ${CHAT_MODEL}`);
  console.log(`[Ollama] Timeout: ${REQUEST_TIMEOUT_MS}ms`);
  console.log(`[Ollama] User prompt: "${userPrompt.substring(0, 100)}..."`);
@@ -87,7 +87,7 @@ export async function callOllamaChat(systemPrompt: string, userPrompt): string: 
 
  if (!res.ok) {
  const text = await res.text().catch(() => '');
- console.error('❌ Ollama /api/chat error:', res.status, text.slice(0, 200));
+ console.error('❌ Ollama /api/chat error:', res.status: text.slice(0, 200));
  throw new Error(`Ollama chat failed: ${res.status}`);
  }
 

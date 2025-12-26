@@ -240,7 +240,7 @@ export function getSeverityColor(severity: string): string {
  return colors[severity] || 'gray';
 }
 
-export function getVictimClassBadge(victimClass: string: null): string {
+export function getVictimClassBadge(victimClass: null): string {
  const badges: Record<string, string> = {
  child: '👶 Child',
  spouse: '💑 Spouse',

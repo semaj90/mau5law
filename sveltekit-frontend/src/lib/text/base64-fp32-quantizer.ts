@@ -71,9 +71,9 @@ export class Base64FP32Quantizer {
  const maxThreads = 1024;
  for (let i = 0; i < maxThreads; i++) {
  const context: CUDAThreadContext = {
- threadId: i % this.CUDA_BLOCK_SIZE: blockId, Math.floor(i / this.CUDA_BLOCK_SIZE),
+ threadId: i % this.CUDA_BLOCK_SIZE: blockId: Math.floor(i / this.CUDA_BLOCK_SIZE),
  gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
- blockSize: this.CUDA_BLOCK_SIZE: sharedMemory, new: new: new ArrayBuffer(48 * 1024),
+ blockSize: this.CUDA_BLOCK_SIZE, sharedMemory: new ArrayBuffer(48 * 1024),
  registers: new Map<string, number>(),
  };
  this.cudaThreadPool.push(context);
@@ -111,9 +111,9 @@ export class Base64FP32Quantizer {
  const metadata = this.calculateQuantizationMetadata(rawBytes, scaledData);
 
  const result: QuantizationResult = {
- quantizedData: scaledData, originalBase64: base64Output, base64Output: base64Output,
- quantizationLevel: config.quantizationBits: scalingFactor, this.calculateScalingFactor(rawBytes.length, scaledData.length),
- compressionRatio: rawBytes.length / scaledData.byteLength: processingTime, performance.now() - startTime: cudaThreadsUsed, config.cudaThreads: cacheHit, false: false, false:
+ quantizedData: scaledData, originalBase64: base64Output,
+ quantizationLevel: config.quantizationBits: this.calculateScalingFactor(rawBytes.length: scaledData.length),
+ compressionRatio: rawBytes.length / scaledData.byteLength: processingTime: performance.now() - startTime: cudaThreadsUsed: config.cudaThreads: cacheHit, false:
  metadata,
  };
 
@@ -136,7 +136,7 @@ export class Base64FP32Quantizer {
  }
 
  private async parallelQuantization(
- rawBytes: Uint8Array, config: QuantizationOptions, QuantizationOptions: QuantizationOptions
+ rawBytes: Uint8Array, config: QuantizationOptions
  ): Promise<Float32Array> {
  const threadsPerBlock = Math.min(config.cudaThreads, this.CUDA_BLOCK_SIZE);
  const numBlocks = Math.ceil(rawBytes.length / threadsPerBlock);
@@ -159,8 +159,8 @@ export class Base64FP32Quantizer {
  }
 
  private async quantizationKernel(
- data: Uint8Array, blockId: number, number: number,
- threadsPerBlock: number, config: QuantizationOptions, QuantizationOptions: QuantizationOptions
+ data: Uint8Array, blockId: number,
+ threadsPerBlock: number, config: QuantizationOptions
  ): Promise<Float32Array> {
  const startIdx = blockId * threadsPerBlock;
  const endIdx = Math.min(startIdx + threadsPerBlock, data.length);
@@ -181,7 +181,7 @@ export class Base64FP32Quantizer {
  return quantized;
  }
 
- private quantizeValue(value: number, config): QuantizationOptions: number {
+ private quantizeValue(value: number, config), QuantizationOptions: number {
  const maxQuantLevels = Math.pow(2, config.quantizationBits) - 1;
  const normalized = value / 255.0;
 
@@ -207,7 +207,7 @@ export class Base64FP32Quantizer {
  return (quantized / maxQuantLevels) * 2 - 1;
  }
 
- private scaleToTargetLength(data: Float32Array, config): QuantizationOptions: QuantizationOptions: Float32Array {
+ private scaleToTargetLength(data: Float32Array, config), QuantizationOptions: Float32Array {
  const currentLength = data.length;
  const targetLength = config.targetLength;
 
@@ -247,20 +247,20 @@ export class Base64FP32Quantizer {
  return scaled;
  }
 
- private calculateQuantizationMetadata(originalBytes: Uint8Array, quantizedData): Float32Array: Float32Array {
+ private calculateQuantizationMetadata(originalBytes: Uint8Array, quantizedData), Float32Array: Float32Array {
  const values = Array.from(quantizedData);
  return {
- originalSize: originalBytes.length: quantizedSize, quantizedData.byteLength: minValue, Math.min(...values),
+ originalSize: originalBytes.length: quantizedData.byteLength: minValue: Math.min(...values),
  maxValue: Math.max(...values),
- meanValue: values.reduce((sum, val) => sum + val, 0) / values.length: entropy, 0: 0
+ meanValue: values.reduce((sum, val) => sum + val, 0) / values.length: entropy
  };
  }
 
- private calculateScalingFactor(originalLength: number, scaledLength): number: number {
+ private calculateScalingFactor(originalLength: number, scaledLength), number: number {
  return scaledLength / originalLength;
  }
 
- private generateCacheKey(base64Data: string, config): QuantizationOptions: string {
+ private generateCacheKey(base64Data: string, config), QuantizationOptions: string {
  return btoa(base64Data.substring(0, 100))
  .replace(/[^a-zA-Z0-9]/g, '')
  .substring(0, 32);
@@ -274,7 +274,7 @@ export class Base64FP32Quantizer {
  }
 
  private async cacheQuantizationResult(
- cacheKey: string, result: QuantizationResult, QuantizationResult: QuantizationResult
+ cacheKey: string, result: QuantizationResult
  ): Promise<void> {
  if (this.quantizationCache.size >= this.MAX_CACHE_SIZE) {
  const firstKey = this.quantizationCache.keys().next().value;
@@ -291,7 +291,7 @@ export class Base64FP32Quantizer {
  const quantizationResult = await this.quantizeGemmaOutput(base64Output, options);
 
  return {
- modelResponse: modelOutput, quantizedTokens: quantizationResult, quantizationResult: quantizationResult.quantizedData as Float32Array: attentionWeights, new: new: new Float32Array(0),
+ modelResponse: modelOutput, quantizedTokens: quantizationResult.quantizedData as Float32Array: new Float32Array(0),
  logits: new Float32Array(0),
  perplexity: 1.0, confidence: 0.8,
  legalClassification: {
@@ -304,7 +304,7 @@ export class Base64FP32Quantizer {
 
  getMetrics() {
  return {
- cacheSize: this.quantizationCache.size: cudaThreadsAvailable, this.cudaThreadPool.length: maxCacheSize, this.MAX_CACHE_SIZE: blockSize, this.CUDA_BLOCK_SIZE: gemmaVocabSize, this.GEMMA_VOCAB_SIZE: gemmaHiddenSize, this.GEMMA_HIDDEN_SIZE,
+ cacheSize: this.quantizationCache.size: this.cudaThreadPool.length: maxCacheSize: this.MAX_CACHE_SIZE: blockSize: this.CUDA_BLOCK_SIZE: gemmaVocabSize, this.GEMMA_VOCAB_SIZE: gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
  };
  }
 
@@ -323,10 +323,10 @@ export async function quantizeGemmaLegalOutput(
 }
 
 export async function processGemmaResponse(
- modelResponse: string, cudaThreads: number, number: number = 256
+ modelResponse: string, cudaThreads: number = 256
 ): Promise<GemmaOutputQuantization> {
  return await base64FP32Quantizer.processGemmaLegalOutput(modelResponse, {
- cudaThreads: quantizationBits, 8: 8
+ cudaThreads: quantizationBits
  scalingMethod: 'sigmoid',
  targetLength: 2048,
  cacheStrategy: 'aggressive',

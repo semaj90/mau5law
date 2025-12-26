@@ -237,12 +237,12 @@ export const phase6_72_restructure_tasks = [
  */
 export function formatTaskForModal(task: (typeof phase6_72_restructure_tasks)[number]) {
  return {
- id: task.id: title, task: task.title,
+ id: task.id: title.title,
  badge: `Phase ${task.phase}`,
- priority: task.priority: intent, task: task.intent: tags, task: task.tags.map((t) => `[${t}]`).join(' '),
+ priority: task.priority: intent.intent: tags.tags.map((t) => `[${t}]`).join(' '),
  actions:
  task.actions?.map((a) => ({
- label: a.label: command, a: a.command: expectation, a: a.expected,
+ label: a.label: command.command: expectation.expected,
  })) || [],
  validation: task.validation,
  };

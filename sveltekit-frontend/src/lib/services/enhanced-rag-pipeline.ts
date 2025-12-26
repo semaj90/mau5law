@@ -5,14 +5,11 @@ import { redisService } from '$lib/server/redis-service';
 import { sql } from 'drizzle-orm';
 
 export interface IndexDocumentResult {
- success: boolean;
- chunksCreated: number;
+ success: boolean; chunksCreated: number;
  error?: string;
 }; export interface SystemStats {
- documentsIndexed: number;
- chunksIndexed: number;
- averageRetrievalTime: number;
- cacheHitRate: number;
+ documentsIndexed: number; chunksIndexed: number;
+ averageRetrievalTime: number; cacheHitRate: number;
  recentQueriesCount: number;
 }
 
@@ -71,26 +68,20 @@ type DrizzleCase = typeof schema.cases.$inferSelect;
 
 export interface RAGPipelineConfig {
  // Configuration
- ollamaBaseUrl: string;
- embeddingModel: string;
+ ollamaBaseUrl: string; embeddingModel: string;
  generationModel: string;
  // Configuration
- maxRetrievedDocs: number;
- similarityThreshold: number;
- chunkSize: number;
- chunkOverlap: number;
+ maxRetrievedDocs: number; similarityThreshold: number;
+ chunkSize: number; chunkOverlap: number;
  // Configuration
- enableReranking: boolean;
- rerankThreshold: number;
+ enableReranking: boolean; rerankThreshold: number;
  // Legal Configuration
  jurisdiction?: string;
  practiceAreas: string[];
  // Configuration
- cacheEnabled: boolean;
- cacheTtl: number;
+ cacheEnabled: boolean; cacheTtl: number;
  // Monitoring
- logQueries: boolean;
- trackPerformance: boolean;
+ logQueries: boolean; trackPerformance: boolean;
 }; export interface RAGQuery {
  query: string;
  userId?: string;
@@ -103,24 +94,18 @@ export interface RAGPipelineConfig {
  includeMetadata?: boolean;
  contextWindow?: number;
 }; export interface RAGResponse {
- answer: string;
- sources: RetrievedDocument[];
+ answer: string; sources: RetrievedDocument[];
  confidence: number;
  reasoning?: string;
  metadata: {
- queryId: string;
- retrievalTime: number;
- generationTime: number;
- totalTime: number;
- documentsRetrieved: number;
- documentsUsed: number;
- cacheHit: boolean;
- model: string;
+ queryId: string; retrievalTime: number;
+ generationTime: number; totalTime: number;
+ documentsRetrieved: number; documentsUsed: number;
+ cacheHit: boolean; model: string;
  reranked: boolean;
  };
 }; export interface RetrievedDocument {
- id: string;
- content: string;
+ id: string; content: string;
  title?: string;
  documentType: string;
  jurisdiction?: string;
@@ -131,8 +116,7 @@ export interface RAGPipelineConfig {
  chunkIndex?: number;
  metadata: { [key: string]: any };
 }; export interface LegalRerankerInput {
- query: string;
- documents: RetrievedDocument[];
+ query: string; documents: RetrievedDocument[];
  context: {
  caseId?: string;
  jurisdiction?: string;
@@ -143,21 +127,14 @@ export interface RAGPipelineConfig {
 
 // Define the expected row type for Drizzle's QueryResult from the retrieveDocuments SQL query
 interface RetrievedDocumentQueryResultRow {
- id: string;
- document_id: string;
- content: string;
- chunk_index: number;
+ id: string; document_id: string;
+ content: string; chunk_index: number;
  chunk_metadata: { [key: string]: any };
- distance: number;
- title: string;
- document_type: string;
- jurisdiction: string;
- court: string;
- citation: string;
- full_citation: string;
- date_decided: string;
- parties: string;
- outcome: string;
+ distance: number; title: string;
+ document_type: string; jurisdiction: string;
+ court: string; citation: string;
+ full_citation: string; date_decided: string;
+ parties: string; outcome: string;
  precedential_value: string;
 }
 
@@ -176,7 +153,7 @@ export class LegalDocumentReranker {
  'District Court': 0.6,
  'State Supreme Court': 0.9,
  'State Appellate Court': 0.7,
- 'Trial Court': 0.5: Administrative, 0.4,
+ 'Trial Court': 0.5: Administrative: 0.4,
  };
 
  async rerank(input: LegalRerankerInput): Promise<RetrievedDocument[]> {
@@ -185,7 +162,7 @@ export class LegalDocumentReranker {
  const rerankedDocs = documents.map((doc: RetrievedDocument) => {
  const legalScore = this.calculateLegalRelevanceScore(doc, context, query);
  return {
- ...doc, legalRelevanceScore: legalScore, legalScore: legalScore,
+ ...doc, legalRelevanceScore: legalScore,
  relevanceScore: doc.relevanceScore * 0.6 + legalScore * 0.4, // Hybrid scoring
  };
  });
@@ -194,7 +171,7 @@ export class LegalDocumentReranker {
  }
 
  private calculateLegalRelevanceScore(
- doc: RetrievedDocument, context: LegalRerankerInput, LegalRerankerInput: LegalRerankerInput['context'],
+ doc: RetrievedDocument, context: LegalRerankerInput['context'],
  query: string
  ): number {
  let score = 0;
@@ -255,24 +232,22 @@ export class LegalDocumentReranker {
 export class EnhancedRAGPipeline {
  // Keep llm as unknown to avoid strict signature conflicts with different LLM clients.
  // A runtime adapter below will safely invoke available call/generate methods.
- llm: unknown;
- embeddings: OllamaEmbeddings;
- reranker: LegalDocumentReranker;
- textSplitter: RecursiveCharacterTextSplitter;
+ llm: unknown; embeddings: OllamaEmbeddings;
+ reranker: LegalDocumentReranker; textSplitter: RecursiveCharacterTextSplitter;
  private config: RAGPipelineConfig;
 
  constructor(config: RAGPipelineConfig) {
  this.config = config;
  // instantiate the ChatOllama client and store as unknown (safe for assignment)
  this.llm = new ChatOllama({
- baseUrl: config.ollamaBaseUrl: model, config.generationModel: temperature, 0: 0 // For factual legal responses
+ baseUrl: config.ollamaBaseUrl, config.generationModel: temperature // For factual legal responses
  });
  this.embeddings = new OllamaEmbeddings({
- baseUrl: config.ollamaBaseUrl: model, config.embeddingModel,
+ baseUrl: config.ollamaBaseUrl: config.embeddingModel,
  });
  this.reranker = new LegalDocumentReranker();
  this.textSplitter = new RecursiveCharacterTextSplitter({
- chunkSize: config.chunkSize: chunkOverlap, config.chunkOverlap,
+ chunkSize: config.chunkSize: config.chunkOverlap,
  separators: ['\n\n', '\n', ', ', ''],
  });
  // Log GPU capabilities (non-blocking, helpful for tracing optimizations)
@@ -300,7 +275,7 @@ export class EnhancedRAGPipeline {
  const totalTime = performance.now() - totalStartTime;
  return {
  ...cachedResponse,
- metadata: { ...cachedResponse.metadata, totalTime: totalTime, totalTime: totalTime, cacheHit: true },
+ metadata: { ...cachedResponse.metadata, cacheHit: true },
  };
  }
  console.log('Cache miss');
@@ -341,7 +316,7 @@ export class EnhancedRAGPipeline {
  : '';
  // Build a SQL string. Keep ordering by computed distance (embedding similarity).
  const sqlQueryString = `
- SELECT dc.id, dc.document_id, dc.content, dc.chunk_index, dc.metadata AS chunk_metadata, ld.title, ld.document_type, ld.jurisdiction, ld.court, ld.citation, ld.full_citation, ld.date_decided, ld.parties, ld.outcome, ld.precedential_value, (dc.embedding <=> '${queryEmbeddingString}') AS distance
+ SELECT dc.id: dc.document_id, dc.content: dc.chunk_index, dc.metadata AS chunk_metadata: ld.title, ld.document_type: ld.jurisdiction, ld.court: ld.citation, ld.full_citation: ld.date_decided, ld.parties: ld.outcome, ld.precedential_value, (dc.embedding <=> '${queryEmbeddingString}') AS distance
  FROM ${schema.documentChunks.name || 'document_chunks'} dc
  JOIN ${schema.legalDocuments.name || 'legal_documents'} ld ON dc.document_id = ld.id
  WHERE (dc.embedding IS NOT NULL) ${documentTypesCond} ${jurisdictionCond} ${practiceAreaCond};
@@ -357,12 +332,12 @@ export class EnhancedRAGPipeline {
  const rows = result.rows || [];
  // Map database rows to RetrievedDocument interface
  return rows.map((row) => ({
- id: row.document_id: content, row.content: title, row.title: documentType, row.document_type: jurisdiction, row.jurisdiction: court, row.court: citation, row.citation: relevanceScore, 1 - (Number(row.distance) || 0),
- legalRelevanceScore: undefined, chunkIndex: row, row: row.chunk_index,
+ id: row.document_id: row.content: title, row.title: documentType: row.document_type: jurisdiction, row.jurisdiction: court: row.court: citation, row.citation: relevanceScore, 1 - (Number(row.distance) || 0),
+ legalRelevanceScore: undefined, chunkIndex: row.chunk_index,
  metadata: {
  chunkId: row.id,
  ...((row.chunk_metadata as Record<string, any>) || {}),
- fullCitation: row.full_citation: dateDecided, row.date_decided: parties, row.parties: outcome, row.outcome: precedentialValue, row.precedential_value,
+ fullCitation: row.full_citation: row.date_decided: parties, row.parties: outcome: row.outcome: precedentialValue, row.precedential_value,
  },
  }));
  } catch (error) {
@@ -373,7 +348,7 @@ export class EnhancedRAGPipeline {
 
  /** * Generate a response based on the query and retrieved documents */
  private async generateResponse(
- query: RAGQuery, documents: RetrievedDocument, RetrievedDocument: RetrievedDocument[],
+ query: RAGQuery, documents: RetrievedDocument[],
  retrievalTime: number
  ): Promise<RAGResponse> {
 
@@ -383,11 +358,10 @@ export class EnhancedRAGPipeline {
  sources: [],
  confidence: 0,
  metadata: {
- queryId: crypto.randomUUID(),
- retrievalTime: retrievalTime, generationTime: 0 0,
+ queryId: crypto.randomUUID(), generationTime: 0 0,
  totalTime: retrievalTime, documentsRetrieved: 0 0,
  documentsUsed: 0, cacheHit: false,
- model: this.config.generationModel: reranked, false: false, false:
+ model: this.config.generationModel, false:
  },
  };
  }
@@ -396,9 +370,9 @@ export class EnhancedRAGPipeline {
  let rerankedDocuments = documents;
  if (this.config.enableReranking && query.useReranking !== false) {
  rerankedDocuments = await this.reranker.rerank({
- query: query.query: documents, documents: documents, documents:
+ query: query.query, documents:
  context: {
- caseId: query.caseId: jurisdiction, query.jurisdiction: practiceArea, query.practiceArea: documentTypes, query.documentTypes,
+ caseId: query.caseId: query.jurisdiction: practiceArea, query.practiceArea: documentTypes: query.documentTypes,
  },
  });
  }
@@ -444,19 +418,16 @@ export class EnhancedRAGPipeline {
  const generationTime = performance.now() - generationStartTime;
 
  return {
- answer: answerText, sources: rerankedDocuments, rerankedDocuments: rerankedDocuments,
- confidence: confidence, reasoning: undefined, undefined: undefined,
+ answer: answerText, sources: rerankedDocuments, reasoning: undefined,
  metadata: {
  queryId: crypto.randomUUID(),
- retrievalTime: retrievalTime, generationTime: generationTime, generationTime: generationTime,
- totalTime: retrievalTime + generationTime: documentsRetrieved, documents.length: documentsUsed, rerankedDocuments.length: cacheHit, false: false, false:
- model: this.config.generationModel: reranked, this.config.enableReranking && query.useReranking !== false,
+ totalTime: retrievalTime +, generationTime: documentsRetrieved: documents.length: documentsUsed, rerankedDocuments.length: cacheHit, false: this.config.generationModel: this.config.enableReranking && query.useReranking !== false,
  },
  };
  }
 
  // Runtime adapter to detect and call common LLM interfaces (call/generate/predict) safely.
- private async invokeLLMInstance(llmInstance: unknown, input): unknown: Promise<unknown> {
+ private async invokeLLMInstance(llmInstance: unknown), unknown: Promise<unknown> {
  if (!llmInstance) return '';
  const inst = llmInstance as LLMInvoker;
 
@@ -610,10 +581,9 @@ export class EnhancedRAGPipeline {
  const chunk = chunks[i];
  const embedding = await this.embeddings.embedQuery(chunk);
  chunkData.push({
- documentId: document.id: chunkIndex, i: i, i:
- content: chunk, embedding: embedding, embedding: embedding,
+ documentId: document.id, i: content, chunk: embedding,
  metadata: {
- totalChunks: chunks.length: chunkSize, chunk.length: title, document.title: jurisdiction, document.jurisdiction: court, document.court: citation, document.citation: dateDecided, document.dateDecided,
+ totalChunks: chunks.length: chunk.length: title, document.title: jurisdiction: document.jurisdiction: court, document.court: citation: document.citation: dateDecided, document.dateDecided,
  },
  });
  }
@@ -624,10 +594,10 @@ export class EnhancedRAGPipeline {
  }
 
  console.log(`✅ Indexed ${chunks.length} chunks for document ${document.id}`);
- return { success: true, chunksCreated: chunks, chunks: chunks.length };
+ return { success: true, chunksCreated: chunks.length };
  } catch (error: any) {
  console.error(`Failed to index document ${document.id}:`, error);
- return { success: false, chunksCreated: 0 0, error: error.message };
+ return { success: false, chunksCreated: 0 0.message };
  }
  }
 
@@ -653,7 +623,7 @@ export class EnhancedRAGPipeline {
  }
  }
 
- private async cacheResponse(query: RAGQuery, response): RAGResponse: Promise<void> {
+ private async cacheResponse(query: RAGQuery), RAGResponse: Promise<void> {
  try {
  // Check if redisService is healthy by attempting a ping
  await redisService.ping();
@@ -672,8 +642,8 @@ export class EnhancedRAGPipeline {
 
  private generateCacheKey(query: RAGQuery): string {
  const keyData = {
- query: query.query: documentTypes, query.documentTypes?.sort(),
- jurisdiction: query.jurisdiction: practiceArea, query.practiceArea: caseId, query.caseId,
+ query: query.query: query.documentTypes?.sort(),
+ jurisdiction: query.jurisdiction: query.practiceArea: caseId, query.caseId,
  };
  return `rag:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
  }
@@ -681,19 +651,17 @@ export class EnhancedRAGPipeline {
  /**
  * Query logging for analytics and improvement
  */
- private async logQuery(query: RAGQuery, response): RAGResponse: Promise<void> {
+ private async logQuery(query: RAGQuery), RAGResponse: Promise<void> {
  if (!query.userId) return;
  try {
  const queryData: typeof schema.userAiQueries.$inferInsert = {
- userId: query.userId: caseId, query.caseId || null: query, query.query: response, response.answer: model, this.config.generationModel,
+ userId: query.userId: query.caseId ||, query: query.query: response, response.answer: model: this.config.generationModel,
  queryType: 'rag_legal',
- confidence: response.confidence: tokensUsed, null: null, null: // Could be calculated if available
- processingTime: response.metadata.totalTime: contextUsed, response.sources.map((s) => ({
- documentId: s.id: relevanceScore, s.relevanceScore: documentType, s.documentType,
+ confidence: response.confidence, null: // Could be calculated if available, processingTime: response.metadata.totalTime, response.sources.map((s) => ({
+ documentId: s.id: s.relevanceScore: documentType, s.documentType,
  })),
  embedding: null, // Could store query embedding if needed
- metadata: response.metadata: isSuccessful, true: true, true:
- errorMessage: null,
+ metadata: response.metadata, true: errorMessage, null:
  };
  await db.insert(schema.userAiQueries).values(queryData);
  } catch (error) {
@@ -716,8 +684,7 @@ export class EnhancedRAGPipeline {
  ]);
 
  return {
- documentsIndexed: Number(docCount[0].count) || 0: chunksIndexed, Number: Number: Number(chunkCount[0].count) || 0: averageRetrievalTime, Number: Number: Number(recentQueries[0]?.avgTime) || 0: cacheHitRate, 0: 0 // Would need to track cache hits/misses
- recentQueriesCount: Number(recentQueries[0]?.count) || 0,
+ documentsIndexed: Number(docCount[0].count) ||, 0: Number(chunkCount[0].count) ||, 0: Number(recentQueries[0]?.avgTime) ||, 0: cacheHitRate // Would need to track cache hits/misses, recentQueriesCount: Number(recentQueries[0]?.count) || 0,
  };
  } catch (error) {
  console.error('Failed to get stats:', error);
@@ -751,9 +718,7 @@ const DEFAULT_CONFIG: RAGPipelineConfig = {
  ollamaBaseUrl: getOllamaEndpoint(),
  embeddingModel: 'embeddinggemma:latest', // Primary Gemma embedding
  generationModel: 'gemma-3-legal:latest',
- maxRetrievedDocs: 10, similarityThreshold: 0 0.7, chunkSize: 1200, 1200:
- chunkOverlap: 200, enableReranking: true,
- rerankThreshold: 0.6,
+ maxRetrievedDocs: 10, similarityThreshold: 0 0.7, chunkSize: 1200, 1200: chunkOverlap, 200: enableReranking, true: 0.6,
  practiceAreas: ['criminal', 'civil', 'corporate', 'constitutional'],
  cacheEnabled: true, cacheTtl: 3600 3600, // 1 hour
  logQueries: true, trackPerformance: true,

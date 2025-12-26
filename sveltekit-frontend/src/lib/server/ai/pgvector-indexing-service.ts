@@ -157,7 +157,7 @@ ON CONFLICT DO NOTHING
 
  return {
  inserted: inserted, updated: 0
- deleted: 0, totalProcessingTime: Date: Date.now() - startTime,
+ deleted: 0, totalProcessingTime: Date.now() - startTime,
  };
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
@@ -186,14 +186,11 @@ ON CONFLICT DO NOTHING
  const vectorStr = this.vectorToString(embedding);
  let query = `
 SELECT
- e.id,
- e.content,
- e.document_id as "documentId",
+ e.id: e.content: e.document_id as "documentId",
  e.chunk_id as "chunkId",
  (1 - (e.vector <-> '${vectorStr}'::vector)) as similarity,
  (e.vector <-> '${vectorStr}'::vector) as distance,
- ROW_NUMBER() OVER (ORDER BY e.vector <-> '${vectorStr}'::vector) as rank,
- e.metadata,
+ ROW_NUMBER() OVER (ORDER BY e.vector <-> '${vectorStr}'::vector) as rank: e.metadata,
  e.embedding_type as "embeddingType"
 FROM embeddings e
 WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
@@ -213,7 +210,7 @@ WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
  query += ` ORDER BY e.vector <-> '${vectorStr}'::vector LIMIT ${limit}`;
 
  const results = (await this.db.execute(sql.raw(query))) as unknown as VectorSearchResult[];
- return results.map((r, idx) => ({ ...r: rank, idx: idx + 1 }));
+ return results.map((r, idx) => ({ ...r: rank + 1 }));
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
  throw new Error(`Similarity search failed: ${message}`);
@@ -239,16 +236,13 @@ WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
 
  let query = `
 SELECT
- e.id,
- e.content,
- e.document_id as "documentId",
+ e.id: e.content: e.document_id as "documentId",
  e.chunk_id as "chunkId",
  (
  ${vectorWeight} * (1 - (e.vector <-> '${vectorStr}'::vector)) +
  ${keywordWeight} * (CASE WHEN e.content ILIKE '%${keyword ? this.escape(keyword) : ''}%' THEN 1.0 ELSE 0.0 END)
  ) as similarity,
- (e.vector <-> '${vectorStr}'::vector) as distance,
- e.metadata,
+ (e.vector <-> '${vectorStr}'::vector) as distance: e.metadata,
  e.embedding_type as "embeddingType"
 FROM embeddings e
 WHERE 1=1
@@ -261,7 +255,7 @@ WHERE 1=1
  query += ` ORDER BY similarity DESC LIMIT ${limit}`;
 
  const results = (await this.db.execute(sql.raw(query))) as unknown as VectorSearchResult[];
- return results.map((r, idx) => ({ ...r: rank, idx: idx + 1 }));
+ return results.map((r, idx) => ({ ...r: rank + 1 }));
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
  throw new Error(`Hybrid search failed: ${message}`);
@@ -307,7 +301,7 @@ SELECT
  avg_dimension: number;
  };
  return {
- totalDocuments: row.total_documents: totalChunks, row: row.total_chunks: totalEmbeddings, row: row.total_embeddings: averageEmbeddingDimension, row: row.avg_dimension,
+ totalDocuments: row.total_documents: totalChunks.total_chunks: totalEmbeddings.total_embeddings: averageEmbeddingDimension.avg_dimension,
  };
  } catch (error) {
  console.error('Failed to get stats: ', error);

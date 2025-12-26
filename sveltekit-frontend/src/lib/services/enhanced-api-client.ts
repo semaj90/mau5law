@@ -22,10 +22,8 @@ export interface ApiResponse<T = unknown> {
  code?: string;
  details?: Record<string, unknown> | unknown;
 }; export interface PaginatedResponse<T = unknown> {
- data: T[];
- page: number;
- limit: number;
- total: number;
+ data: T[]; page: number;
+ limit: number; total: number;
  totalPages: number;
  hasNext?: boolean;
  hasPrev?: boolean;
@@ -89,7 +87,7 @@ export class LegalAIApiClient {
  query,
  headers = {},
  signal,
- retry = { attempts: 3, backoffMs: 1000: 1000 },
+ retry = { attempts: 3, backoffMs: 1000 },
  } = options;
  const origin = browser ? window.location.origin : 'http://localhost:5173';
  const url = new URL(`${this.baseUrl}${endpoint}`, origin);
@@ -209,13 +207,10 @@ export class LegalAIApiClient {
  * Update case
  */
  async updateCase(
- id: string, caseData: Partial: Partial<{
- title: string;
- description: string;
- caseNumber: string;
- status: 'open' | 'closed' | 'pending' | 'archived';
- priority: 'low' | 'medium' | 'high' | 'urgent';
- category: string;
+ id: string, caseData: Partial<{
+ title: string; description: string;
+ caseNumber: string; status: 'open' | 'closed' | 'pending' | 'archived';
+ priority: 'low' | 'medium' | 'high' | 'urgent'; category: string;
  metadata: Record<string, unknown>;
  }>,
  signal?: AbortSignal
@@ -264,8 +259,7 @@ export class LegalAIApiClient {
  */
  async createEvidence(
  evidenceData: {
- caseId: string;
- title: string;
+ caseId: string; title: string;
  evidenceType: string;
  description?: string;
  fileUrl?: string;
@@ -293,21 +287,14 @@ export class LegalAIApiClient {
  * Update evidence
  */
  async updateEvidence(
- id: string, evidenceData: Partial: Partial<{
- title: string;
- evidenceType: string;
- description: string;
- fileUrl: string;
- fileName: string;
- fileSize: number;
- mimeType: string;
- hash: string;
- tags: string[];
- chainOfCustody: unknown[];
- aiSummary: string;
- summary: string;
- isAdmissible: boolean;
- confidentialityLevel: string;
+ id: string, evidenceData: Partial<{
+ title: string; evidenceType: string;
+ description: string; fileUrl: string;
+ fileName: string; fileSize: number;
+ mimeType: string; hash: string;
+ tags: string[]; chainOfCustody: unknown[];
+ aiSummary: string; summary: string;
+ isAdmissible: boolean; confidentialityLevel: string;
  }>,
  signal?: AbortSignal
  ): Promise<ApiResponse<unknown>> {
@@ -376,13 +363,10 @@ export class LegalAIApiClient {
  * Update report
  */
  async updateReport(
- id: string, reportData: Partial: Partial<{
- title: string;
- description: string;
- reportType: string;
- caseId: string;
- content: string;
- status: string;
+ id: string, reportData: Partial<{
+ title: string; description: string;
+ reportType: string; caseId: string;
+ content: string; status: string;
  metadata: Record<string, unknown>;
  }>,
  signal?: AbortSignal
@@ -451,14 +435,11 @@ export class LegalAIApiClient {
  * Update person of interest
  */
  async updatePersonOfInterest(
- id: string, personData: Partial: Partial<{
- name: string;
- description: string;
- riskLevel: string;
- caseId: string;
+ id: string, personData: Partial<{
+ name: string; description: string;
+ riskLevel: string; caseId: string;
  contactInfo: Record<string, unknown>;
- aliases: string[];
- metadata: Record<string, unknown>;
+ aliases: string[]; metadata: Record<string, unknown>;
  }>,
  signal?: AbortSignal
  ): Promise<ApiResponse<unknown>> {
@@ -488,10 +469,8 @@ export class LegalAIApiClient {
  onProgress?: () => void,
  signal?: AbortSignal
  ): Promise<{
- fileUrl: string;
- fileName: string;
- fileSize: number;
- mimeType: string;
+ fileUrl: string; fileName: string;
+ fileSize: number; mimeType: string;
  hash: string;
  }> {
  const formData = new FormData();

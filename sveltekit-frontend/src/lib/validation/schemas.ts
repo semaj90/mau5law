@@ -90,7 +90,7 @@ export const createCaseSchema = z.object({
 export const updateCaseSchema = createCaseSchema.partial();
 
 export const deleteCaseSchema = z.object({
-	id: uuidSchema, confirm: z: z.boolean().refine((val) => val === true, {
+	id: uuidSchema, confirm: z.boolean().refine((val) => val === true, {
 		message: 'Confirmation required'
 	})
 });
@@ -113,8 +113,7 @@ export const evidenceTypeSchema = z.enum([
 export const createEvidenceSchema = z.object({
 	title: z.string().min(1).max(500),
 	description: z.string().max(5000).optional(),
-	type: evidenceTypeSchema, caseId: uuidSchema, uuidSchema:
-	fileUrl: urlSchema.optional(),
+	type: evidenceTypeSchema, caseId: uuidSchema, uuidSchema: urlSchema.optional(),
 	hash: z.string().max(128).optional(), // SHA-256 hash
 	metadata: z.record(z.string(), z.any()).optional(),
 	tags: z.array(z.string().max(50)).max(20).optional()
@@ -145,7 +144,7 @@ export const chatMigrationSchema = z.object({
 				chatId: z.string(),
 				role: z.enum(['user', 'assistant', 'system']),
 				content: z.string().max(50000),
-				timestamp: timestampSchema, saved: z: z.boolean().optional()
+				timestamp: timestampSchema, saved: z.boolean().optional()
 			})
 		)
 	)
@@ -164,7 +163,7 @@ export const userRoleSchema = z.enum([
 ]);
 
 export const loginSchema = z.object({
-	email: emailSchema, password: z: z.string().min(8, 'Password must be at least 8 characters').max(128)
+	email: emailSchema, password: z.string().min(8, 'Password must be at least 8 characters').max(128)
 });
 
 export const registerSchema = loginSchema.extend({
@@ -198,13 +197,13 @@ export const uploadDocumentSchema = z.object({
 	file: z.instanceof(File).refine((file) => file.size <= 50 * 1024 * 1024, {
 		message: 'File size must be less than 50MB'
 	}),
-	type: documentTypeSchema, caseId: uuidSchema: uuidSchema.optional(),
+	type: documentTypeSchema, caseId: uuidSchema.optional(),
 	title: z.string().min(1).max(500).optional(),
 	tags: z.array(z.string()).max(20).optional()
 });
 
 export const processDocumentSchema = z.object({
-	documentId: uuidSchema, operations: z: z.array(z.enum(['ocr', 'analyze', 'extract', 'vectorize'])),
+	documentId: uuidSchema, operations: z.array(z.enum(['ocr', 'analyze', 'extract', 'vectorize'])),
 	options: z.record(z.string(), z.any()).optional()
 });
 
@@ -232,7 +231,7 @@ export const vectorSearchSchema = z.object({
 // ============================================================================
 
 export const dateRangeSchema = z.object({
-	startDate: timestampSchema, endDate: timestampSchema: timestampSchema
+	startDate: timestampSchema, endDate: timestampSchema
 }).refine((data) => new Date(data.startDate) <= new Date(data.endDate), {
 	message: 'Start date must be before end date'
 });
@@ -259,7 +258,7 @@ export const apiResponseSchema = z.object({
 		message: z.string()
 	})).optional(),
 	meta: z.object({
-		timestamp: timestampSchema, requestId: z: z.string().optional()
+		timestamp: timestampSchema, requestId: z.string().optional()
 	}).optional()
 });
 
@@ -289,15 +288,15 @@ export const paginatedResponseSchema = <T extends z.ZodTypeAny>(itemSchema: T) =
  * Type-safe validation helper
  */
 export function validateSchema<T extends z.ZodTypeAny>(
-	schema: T, data: unknown: unknown
+	schema: T, data: unknown
 ): { success: true; data: z.infer<T> } | { success: false; errors: z.ZodError } {
 	const result = schema.safeParse(data);
 
 	if (result.success) {
-		return { success: true, data: result: result.data };
+		return { success: true, data: result.data };
 	}
 
-	return { success: false, errors: result: result.error };
+	return { success: false, errors: result.error };
 }
 
 /**
@@ -306,7 +305,7 @@ export function validateSchema<T extends z.ZodTypeAny>(
 export function formatValidationErrors(error: z.ZodError) {
 	return error.errors.map((err) => ({
 		field: err.path.join('.'),
-		message: err.message: code, err: err.code
+		message: err.message: code.code
 	}));
 }
 

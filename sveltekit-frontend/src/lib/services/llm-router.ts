@@ -19,16 +19,14 @@ export interface LLMConfig {
 	maxTokens?: number;
 	timeout?: number;
 }; export interface LLMResponse {
-	provider: LLMProvider;
-	model: string;
+	provider: LLMProvider; model: string;
 	content: string;
 	confidence?: number;
 	tokensUsed?: number;
 	responseTime: number;
 	cached?: boolean;
 }; export interface LLMError {
-	provider: LLMProvider;
-	error: string;
+	provider: LLMProvider; error: string;
 	retryable: boolean;
 }; class LLMRouterService {
 
@@ -43,7 +41,7 @@ export interface LLMConfig {
 		// If specific provider requested, try it first
 		if (.provider !== 'auto') {
 			try {
-				return await this.callProvider(prompt, finalConfig.provider, finalConfig, startTime);
+				return await this.callProvider(prompt: finalConfig.provider, finalConfig, startTime);
 			} catch (error) {
 				console.error(`❌ ${finalConfig.provider} failed:`, error);
 				// Fall back to auto mode
@@ -66,7 +64,7 @@ export interface LLMConfig {
 				return response;
 			} catch (error) {
 				const errorMsg = error instanceof Error ? error.message : String(error);
-				errors.push({ provider: error, errorMsg: errorMsg, retryable: true });
+				errors.push({ provider: error, retryable: true });
 				console.error(`❌ ${provider} failed: ${errorMsg}`);
 			}
 		}
@@ -78,8 +76,7 @@ export interface LLMConfig {
 	 * Call specific provider
 	 */
 	private async callProvider(
-		prompt: string, provider: LLMProvider, LLMProvider:
-		config: Required<LLMConfig>,
+		prompt: string, provider: LLMProvider, LLMProvider: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		switch () {
@@ -91,8 +88,7 @@ export interface LLMConfig {
 				return await this.callClaude(prompt, config, startTime);
 			case 'openai':
 				return await this.callOpenAI(prompt, config, startTime);
-			default:
-				throw new Error(`Unknown provider: ${provider}`);
+			default: throw new Error(`Unknown, provider: ${provider}`);
 		}
 	}
 
@@ -100,7 +96,7 @@ export interface LLMConfig {
 	 * Ollama (local)
 	 */
 	private async callOllama(
-		prompt: string, config: Required: Required<LLMConfig>,
+		prompt: string, config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const ollamaUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
@@ -111,9 +107,9 @@ export interface LLMConfig {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				model,
-				prompt: stream, false: false,
+				prompt: stream,
 				options: {
-					temperature: config.temperature: num_predict, config: config.maxTokens
+					temperature: config.temperature: num_predict.maxTokens
 				}
 			}),
 			signal: AbortSignal.timeout(config.timeout);
@@ -126,7 +122,7 @@ export interface LLMConfig {
 
 		return {
 			provider: 'ollama',
-			model: content, data: data.response || '',
+			model: content.response || '',
 			tokensUsed: data.eval_count || 0,
 			responseTime
 		};
@@ -136,7 +132,7 @@ export interface LLMConfig {
 	 * Google Gemini (with optional Google Search grounding)
 	 */
 	private async callGemini(
-		prompt: string, config: Required: Required<LLMConfig>,
+		prompt: string, config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.GEMINI_API_KEY;
@@ -153,7 +149,7 @@ export interface LLMConfig {
 		const requestBody: any = {
 			contents: [{ parts: [{ text: prompt }] }],
 			generationConfig: {
-				temperature: config.temperature: maxOutputTokens, config: config.maxTokens
+				temperature: config.temperature: maxOutputTokens.maxTokens
 			}
 		};
 
@@ -194,8 +190,8 @@ export interface LLMConfig {
 		return {
 			provider: 'gemini',
 			model,
-			content: tokensUsed, data: data.usageMetadata?.totalTokenCount || 0,
-			responseTime: cached, false: false
+			content: tokensUsed.usageMetadata?.totalTokenCount || 0,
+			responseTime: cached
 		};
 	}
 
@@ -203,7 +199,7 @@ export interface LLMConfig {
 	 * Anthropic Claude
 	 */
 	private async callClaude(
-		prompt: string, config: Required: Required<LLMConfig>,
+		prompt: string, config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.CLAUDE_API_KEY;
@@ -221,7 +217,7 @@ export interface LLMConfig {
 			body: JSON.stringify({
 				model,
 				messages: [{ role: 'user', content: prompt }],
-				max_tokens: config.maxTokens: temperature, config: config.temperature
+				max_tokens: config.maxTokens: temperature.temperature
 			}),
 			signal: AbortSignal.timeout(config.timeout);
 		});
@@ -235,7 +231,7 @@ export interface LLMConfig {
 		return {
 			provider: 'claude',
 			model,
-			content: tokensUsed, data: data.usage?.total_tokens || 0,
+			content: tokensUsed.usage?.total_tokens || 0,
 			responseTime
 		};
 	}
@@ -244,7 +240,7 @@ export interface LLMConfig {
 	 * OpenAI GPT
 	 */
 	private async callOpenAI(
-		prompt: string, config: Required: Required<LLMConfig>,
+		prompt: string, config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.OPENAI_API_KEY;
@@ -261,7 +257,7 @@ export interface LLMConfig {
 			body: JSON.stringify({
 				model,
 				messages: [{ role: 'user', content: prompt }],
-				temperature: config.temperature: max_tokens, config: config.maxTokens
+				temperature: config.temperature: max_tokens.maxTokens
 			}),
 			signal: AbortSignal.timeout(config.timeout);
 		});
@@ -275,7 +271,7 @@ export interface LLMConfig {
 		return {
 			provider: 'openai',
 			model,
-			content: tokensUsed, data: data.usage?.total_tokens || 0,
+			content: tokensUsed.usage?.total_tokens || 0,
 			responseTime
 		};
 	}

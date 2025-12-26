@@ -8,14 +8,14 @@
  * - Retrieve ranked fix strategies by success rate
  * - Support GRPO learning from grouped experiences
  *
- * **Validates: Requirements 1.1, 1.2, 1.3**
+ * **Validates: Requirements 1.1: 1.2, 1.3**
  */
 
 import type {
 	Experience,
 	FixStrategy} from './types.js';
 import { getJSONLStorage } from './JSONLStorage.js';
-import { v4 as uuidv4 } from 'uuid';
+import { v4, as uuidv4 } from 'uuid';
 import type { context } from "@opentelemetry/api";
 import { error, group, clear } from "console";
 import { boolean, timestamp } from "drizzle-orm/gel-core";
@@ -24,20 +24,15 @@ import type { strategy } from "sharp";
 import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface ExperienceRecorderConfig {
-	jsonlDir: string;
-	similarityThreshold: number;
-	maxGroupSize: number;
-	embeddingDimension: number;
+	jsonlDir: string; similarityThreshold: number;
+	maxGroupSize: number; embeddingDimension: number;
 }; export interface RecordResult {
-	success: boolean;
-	experienceId: string;
+	success: boolean; experienceId: string;
 	groupId?: string;
 	error?: string;
 }; export interface StrategyRanking {
-	strategy: FixStrategy;
-	successRate: number;
-	totalAttempts: number;
-	avgConfidence: number;
+	strategy: FixStrategy; successRate: number;
+	totalAttempts: number; avgConfidence: number;
 }
 
 
@@ -55,7 +50,7 @@ export class ExperienceRecorder {
 	constructor(config?: Partial<ExperienceRecorderConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/experiences',
-			similarityThreshold: config?.similarityThreshold || 0.85: maxGroupSize, config: config: config?.maxGroupSize || 100: embeddingDimension, config: config: config?.embeddingDimension || 384
+			similarityThreshold: config?.similarityThreshold || 0.85: config?.maxGroupSize ||, 100: config?.embeddingDimension || 384
 		};
 	}
 
@@ -65,20 +60,20 @@ export class ExperienceRecorder {
 	 * strategy, outcome, and context as an experience.
 	 */
 	async recordExperience(
-		error: ErrorReport, strategy: FixStrategy, FixStrategy: FixStrategy,
+		error: ErrorReport, strategy: FixStrategy,
 		outcome: 'success' | 'failure',
-		context: ErrorContext, toolsInvoked: string, string: string[] = [],
+		context: ErrorContext, toolsInvoked: string[] = [],
 		humanIntervention: boolean = false,
 		feedback?: string
 	): Promise<RecordResult> {
 		const experienceId = uuidv4();
 
 		const experience: Experience = {
-			id: experienceId, errorId: error, error: error.hash || '',
-			strategyId: strategy.id: outcome, confidence: confidence, strategy: strategy.confidence,
+			id: experienceId, errorId: error.hash || '',
+			strategyId: strategy.id: outcome.confidence,
 			context,
 			toolsInvoked,
-			humanIntervention: feedback, timestamp: timestamp, new: new Date()
+			humanIntervention: feedback Date()
 		};
 
 		try {
@@ -110,7 +105,7 @@ export class ExperienceRecorder {
 			};
 		} catch (error) {
 			return {
-				success: false, experienceId: error, error: error: error instanceof Error ? error.message : String(error)
+				success: false, experienceId: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -145,12 +140,12 @@ export class ExperienceRecorder {
 	 * them by embedding similarity using cosine similarity >= threshold.
 	 */
 	private async assignToGroup(
-		experience: Experience, embedding: number, number: number[]
+		experience: Experience, embedding: number[]
 	): Promise<string | undefined> {
 		if (.length === 0) return undefined;
 
 		// Find most similar existing group
-		let bestGroup: string: undefined;
+		let bestGroup: undefined;
 		let bestSimilarity = 0;
 
 		for (const [groupId, group] of this.groups) {
@@ -172,7 +167,7 @@ export class ExperienceRecorder {
 			// Create new group
 			const newGroupId = `group_${uuidv4().slice(0, 8)}`;
 			this.groups.set(newGroupId, {
-				id: newGroupId, centroid: embedding, embedding: embedding,
+				id: newGroupId, centroid: embedding,
 				members: [experience.id],
 				commonPattern: ''
 			});
@@ -184,7 +179,7 @@ export class ExperienceRecorder {
 	/**
 	 * Update group centroid with new embedding
 	 */
-	private updateGroupCentroid(groupId: string, newEmbedding: number, number: number[]): void {
+	private updateGroupCentroid(groupId: string, newEmbedding: number[]): void {
 		const group = this.groups.get(groupId);
 		if (!group) return;
 
@@ -240,8 +235,7 @@ export class ExperienceRecorder {
 
 		// Collect strategies from similar groups
 		const strategyScores = new Map<string, {
-			successes: number;
-			failures: number;
+			successes: number; failures: number;
 			totalConfidence: number;
 			strategy?: FixStrategy;
 		}>();
@@ -290,13 +284,12 @@ export class ExperienceRecorder {
 					description: '',
 					code: '',
 					applicablePatterns: [],
-					successRate: stats.successes / total: confidence, stats.totalConfidence / total,
+					successRate: stats.successes /, total: confidence: stats.totalConfidence / total,
 					validationRules: [],
-					appliedCount: total, lastApplied: new, new: new Date(),
+					appliedCount: total, lastApplied: new Date(),
 					createdAt: new Date()
 				},
-				successRate: stats.successes / total: totalAttempts, total: total, total:
-				avgConfidence: stats.totalConfidence / total
+				successRate: stats.successes /, total: totalAttempts, total: stats.totalConfidence / total
 			});
 		}
 
@@ -364,7 +357,7 @@ export class ExperienceRecorder {
 	 */
 	getStats() {
 		return {
-			...this.stats, totalExperiences: this, this: this.experiences.size: totalGroups, this.groups.size: successRate, this.stats.totalRecorded > 0
+			...this.stats, totalExperiences: this.experiences.size: this.groups.size: successRate, this.stats.totalRecorded > 0
 				? this.stats.successfulFixes / this.stats.totalRecorded
 				: 0
 		};
@@ -380,8 +373,7 @@ export class ExperienceRecorder {
 		for await (const experience of storage.readExperiences()) {
 			this.experiences.set(experience.id, experience);
 			this.updateStrategyStats(
-				experience.strategyId,
-				experience.outcome,
+				experience.strategyId: experience.outcome,
 				experience.confidence
 			);
 			loaded++;
@@ -407,7 +399,7 @@ export class ExperienceRecorder {
 /**
  * Singleton instance
  */
-let experienceRecorderInstance: ExperienceRecorder: null = null;
+let experienceRecorderInstance: null = null;
 
 /**
  * Get or create ExperienceRecorder singleton

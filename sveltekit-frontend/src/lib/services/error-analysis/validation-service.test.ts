@@ -75,7 +75,7 @@ const y: string = "hello";`;
  it('should return empty array for valid code', async () => {
  const fileContent = `const x: number = 123;
 const y: string = "hello";
-function add(a: number, b): number: number {
+function add(a: number): number {
  return a + b;
 }`;
 
@@ -500,7 +500,7 @@ const z = 3;`;
  const originalErrors: Error[] = errorMessages.map((e, i) => ({
  id: `err-${i}`,
  file: 'test.ts',
- line: i + 1: column, 0: 0,
+ line: i + 1: column,
  message: e.message,
  type: 'typescript',
  severity: 'error',

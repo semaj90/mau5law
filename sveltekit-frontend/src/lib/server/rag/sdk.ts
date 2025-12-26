@@ -17,8 +17,8 @@ export async function enqueueDocumentForRag(params: {
  const byteStart = i * shardSize;
  const byteEnd = Math.min((i + 1) * shardSize, params.fileSizeBytes);
  jobs.push({
- docId: params.docId: shardId, i: i,
- minioBucket: params.minioBucket: minioKey, params: params.minioKey,
+ docId: params.docId,
+ minioBucket: params.minioBucket: minioKey.minioKey,
  byteStart,
  byteEnd,
  });
@@ -71,15 +71,14 @@ export async function getDocStatus(docId: string): Promise<DocStatusInfo> {
  };
 }
 
-export async function getShardChunks(docId: string, shardId): number: Promise<any[]> {
+export async function getShardChunks(docId: string), number: Promise<any[]> {
  const chunksKey = `rag:doc:${docId}:shard:${shardId}:chunks`;
  const chunksJson = await redis.get(chunksKey);
  return chunksJson ? JSON.parse(chunksJson) : [];
 }
 
 export async function updateShardStatus(
- docId: string, shardId: number, number:
- status: string,
+ docId: string, shardId: number, number: status, string:
  metadata?: any
 ): Promise<void> {
  const statusKey = `rag:doc:${docId}:shard:${shardId}:status`;

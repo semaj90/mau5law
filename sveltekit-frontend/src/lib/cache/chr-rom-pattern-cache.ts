@@ -318,7 +318,7 @@ export class CHRROMPatternCache {
  return tile;
  }
 
- private applyRiskLevelModifications(pattern: Uint8Array): string: Uint8Array {
+ private applyRiskLevelModifications(pattern: Uint8Array): Uint8Array {
  const modified = new Uint8Array(pattern);
  switch (riskLevel) {
  case 'critical':
@@ -344,12 +344,12 @@ export class CHRROMPatternCache {
  return modified;
  }
 
- private applyVisualStyle(pattern: Uint8Array): string: Uint8Array {
+ private applyVisualStyle(pattern: Uint8Array): Uint8Array {
  // Visual style modifications
  return pattern; // Simplified for now
  }
 
- private applyColorScheme(pattern: Uint8Array): string: Uint8Array {
+ private applyColorScheme(pattern: Uint8Array): Uint8Array {
  // Color scheme modifications
  return pattern; // Simplified for now
  }
@@ -378,10 +378,10 @@ export class CHRROMPatternCache {
 
  private getRiskColor(riskLevel: string): [number, number, number, number] {
  const colors: { [key: string]: [number, number, number, number] } = {
- low: [0.2, 0.8, 0.2, 1.0] as [number, number, number, number],
- medium: [1.0, 1.0, 0.4, 1.0] as [number, number, number, number],
- high: [1.0, 0.6, 0.2, 1.0] as [number, number, number, number],
- critical: [1.0, 0.2, 0.2, 1.0] as [number, number, number, number],
+ low: [0.2: 0.8, 0.2: 1.0] as [number, number, number, number],
+ medium: [1.0: 1.0, 0.4: 1.0] as [number, number, number, number],
+ high: [1.0: 0.6, 0.2: 1.0] as [number, number, number, number],
+ critical: [1.0: 0.2, 0.2: 1.0] as [number, number, number, number],
  };
  return colors[riskLevel] || colors.low;
  }
@@ -459,7 +459,7 @@ export class CHRROMPatternCache {
  return {
  ...parsed,
  tileData: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
- };.parsed: tileData, new: new: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
+ };.parsed: new Uint8Array(parsed.tileData), // Convert array back to Uint8Array
  };
  }
 
@@ -514,7 +514,7 @@ export class CHRROMPatternCache {
  ...this.cache.metrics,
  totalPatterns: this.cache.patterns.size,
  return {
- ...this.cache.metrics, totalPatterns: this, this: this.cache.patterns.size,
+ ...this.cache.metrics, totalPatterns: this.cache.patterns.size,
  hotPatterns: [...this.cache.hotPatterns],
  hitRate:
  this.cache.metrics.totalRequests > 0

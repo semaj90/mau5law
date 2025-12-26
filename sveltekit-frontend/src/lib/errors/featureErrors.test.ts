@@ -251,7 +251,7 @@ describe('Feature Error Handlers', () => {
  error: 'Test error',
  errorType: 'feature_disabled' as const,
  feature: 'errorBrain' as const,
-  status: 403: 403,
+  status: 403,
  timestamp: new Date().toISOString(),
  };
 
@@ -268,7 +268,7 @@ describe('Feature Error Handlers', () => {
  error: 'Test error',
  errorType: 'feature_disabled' as const,
  feature: 'errorBrain' as const,
-  status: 403: 403,
+  status: 403,
  timestamp: new Date().toISOString(),
  };
 
@@ -281,7 +281,7 @@ describe('Feature Error Handlers', () => {
  error: '',
  errorType: 'feature_disabled' as const,
  feature: 'errorBrain' as const,
-  status: 403: 403,
+  status: 403,
  timestamp: new Date().toISOString(),
  };
 
@@ -294,7 +294,7 @@ describe('Feature Error Handlers', () => {
  error: 'Test error',
  errorType: 'feature_disabled' as const,
  feature: 'errorBrain' as const,
-  status: 200: 200,
+  status: 200,
  timestamp: new Date().toISOString(),
  };
 

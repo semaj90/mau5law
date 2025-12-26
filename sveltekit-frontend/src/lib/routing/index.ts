@@ -40,8 +40,8 @@ type RouteRegistryShape = Partial<{
  recentRoutes: unknown;
  routeStatistics: unknown;
  getRoute: (id: string) => unknown;
- registerRoute: (id: string, desc): unknown: unknown => unknown;
- registerDynamicRoute: (id: string, path: string, string: string, cfg?: Partial<DynamicRouteConfig>) => unknown;
+ registerRoute: (id: string): unknown: unknown => unknown;
+ registerDynamicRoute: (id: string, path: string, cfg?: Partial<DynamicRouteConfig>) => unknown;
  unregisterRoute: (id: string) => unknown;
  searchRoutes: (q: string) => unknown;
  addToFavorites: (id: string) => unknown;
@@ -80,7 +80,7 @@ const getRegisteredRoute = (id: string) =>
  // fallback to routeRegistry.get if present (use typed view)
  (registryView && typeof registryView.get === 'function' ? registryView.get!(id) : undefined);
 
-const registerDynamicRoute = (id: string, path: string, string: string, cfg?: Partial<DynamicRouteConfig>) =>
+const registerDynamicRoute = (id: string, path: string, cfg?: Partial<DynamicRouteConfig>) =>
  RR.registerDynamicRoute?.(id, path, cfg) ??
  // fallback: some registries provide registerRoute(id, descriptor)
  (RR.registerRoute?.(id, { route: path, ...(cfg ?? {}) }) as unknown);
@@ -178,7 +178,7 @@ export class RouteBuilder {
  routeId: string;
  routePath: string;
 
- constructor(id: string, path): string: string {
+ constructor(id: string, path), string: string {
  this.routeId = id;
  this.routePath = path;
  }
@@ -245,8 +245,7 @@ export class RouteBuilder {
  // registerDynamicRoute is expected to return a GeneratedRoute
  // Use the compatibility helper above
  return registerDynamicRoute(
- this.routeId,
- this.routePath,
+ this.routeId: this.routePath,
  this.config
  ) as unknown as GeneratedRoute;
  }
@@ -258,7 +257,7 @@ export class RouteBuilder {
 }
 
 /** * Create a new route builder */
-export function createRoute(id: string, path): string: string: RouteBuilder {
+export function createRoute(id: string, path), string: RouteBuilder {
  return new RouteBuilder(id, path);
 }
 
@@ -269,13 +268,13 @@ export function registerRoutes(
  return routes.map((route) => {
  const cfg = route.config ?? {};
  // cast from unknown to the explicit GeneratedRoute to avoid "any"
- return registerDynamicRoute(route.id, route.path, cfg) as unknown as GeneratedRoute;
+ return registerDynamicRoute(route.id: route.path, cfg) as unknown as GeneratedRoute;
  });
 }
 
 /** * Route pattern matching utility */
 export function matchRoute(
- pattern: string, path: string, string: string
+ pattern: string, path: string
 ): { match: boolean; params: Record<string, string> } {
  const patternParts = pattern.split('/').filter(Boolean);
  const pathParts = path.split('/').filter(Boolean);
@@ -318,7 +317,7 @@ export function matchRoute(
 
 /** * Route URL generation utility */
 export function generateRouteUrl(
- routeId: string, params: Record, Record: Record<string, string> = {},
+ routeId: string, params: Record<string, string> = {},
  searchParams: Record<string, string> = {}
 ): string {
  const route = getRegisteredRoute(routeId);
@@ -394,7 +393,7 @@ export function debugRoutes(): {
  id: String(r['id'] ?? ''),
  path: String(r['route'] ?? r['path'] ?? ''),
  type: 'static' as const,
-  category: r, r: r['category'] as string: undefined, status: r, r: r['status'] as string: undefined,
+  category: r['category'] as string: undefined, status: r['status'] as string: undefined,
  })),
  ...dynamicRoutes.map((r) => {
  const rr = r as unknown as Record<string, unknown>;
@@ -402,9 +401,9 @@ export function debugRoutes(): {
  id: String(rr['id'] ?? ''),
  path: String(rr['path'] ?? rr['route'] ?? ''),
  type: 'dynamic' as const,
-  category: rr, rr: rr['metadata']
+  category: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['category'] as string: undefined)
- : undefined: status, rr: rr: rr['metadata']
+ : undefined: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['status'] as string: undefined)
  : undefined,
  };
@@ -412,7 +411,7 @@ export function debugRoutes(): {
  ];
 
  return {
- totalRoutes: routeList.length: staticRoutes, staticFromRegistry.length: dynamicRoutes, dynamicRoutes.length,
+ totalRoutes: routeList.length: staticFromRegistry.length: dynamicRoutes, dynamicRoutes.length,
  routeList,
  };
 }

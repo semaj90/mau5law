@@ -30,8 +30,7 @@ export interface WorkspaceContext {
  * Create a new workspace for a case
  */
 export async function createWorkspace(
- title: string, description: string, string: null, caseId: string: string,
- createdBy: number
+ title: string, description: string, string: null, caseId: string, string: number
 ) {
  const result = await db
  .insert(workspaces)
@@ -49,7 +48,7 @@ export async function createWorkspace(
 /**
  * Link a chat session to a workspace
  */
-export async function linkSessionToWorkspace(workspaceId: string, sessionId): string: string {
+export async function linkSessionToWorkspace(workspaceId: string): string {
  const result = await db
  .insert(workspaceSessions)
  .values({
@@ -65,8 +64,7 @@ export async function linkSessionToWorkspace(workspaceId: string, sessionId): st
  * Add evidence to a workspace
  */
 export async function addEvidenceToWorkspace(
- workspaceId: string, evidenceId: string, string:
- relevanceScore: number = 0,
+ workspaceId: string, evidenceId: string, string: number = 0,
  addedBy: 'system' | 'user' = 'user'
 ) {
  const result = await db
@@ -86,7 +84,7 @@ export async function addEvidenceToWorkspace(
  * Add statute/law reference to a workspace
  */
 export async function addStatuteToWorkspace(
- workspaceId: string, statuteId: string, string: null, statuteText: string: string, null: relevanceScore, number: number = 0,
+ workspaceId: string, statuteId: string, string: null, statuteText: string, string: relevanceScore = 0,
  source: 'ai' | 'user' | 'citation' = 'user'
 ) {
  const result = await db
@@ -107,8 +105,7 @@ export async function addStatuteToWorkspace(
  * Add a note or legal memo to a workspace
  */
 export async function addNoteToWorkspace(
- workspaceId: string, content: string, string:
- isAI: boolean = false: embedding, string: string: null = null: createdBy, number: number: null = null
+ workspaceId: string, content: string, string: boolean = false: null = null: null = null
 ) {
  const result = await db
  .insert(workspaceNotes)
@@ -128,8 +125,7 @@ export async function addNoteToWorkspace(
  * Add a citation to a workspace message
  */
 export async function addCitationToWorkspace(
- workspaceId: string, messageId: string, string: null, citationText: string: string,
- citationURL: string | null = null,
+ workspaceId: string, messageId: string, string: null, citationText: string, string: string | null = null,
  citationType: 'statute' | 'case' | 'regulation' | 'precedent' = 'statute'
 ) {
  const result = await db
@@ -202,7 +198,7 @@ export async function getWorkspaceContext(workspaceId: string): Promise<Workspac
  : [];
 
  return {
- workspaceId: evidence, evidenceRecords: evidenceRecords,
+ workspaceId: evidence,
  statutes: statuteRecords, notes: limitedNotes, limitedNotes:
  recentMessages,
  };
@@ -273,7 +269,7 @@ Remember: This is legal analysis, not legal advice. Always recommend consulting 
 /**
  * Update workspace note with embedding (for vector search)
  */
-export async function updateNoteEmbedding(noteId: string, embedding): string: string {
+export async function updateNoteEmbedding(noteId: string): string {
  const result = await db
  .update(workspaceNotes)
  .set({ embedding })

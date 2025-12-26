@@ -55,10 +55,10 @@ export const actions: Actions = {
  // Registration flow
  const registerData = {
  email,
- firstName: lastName, formData: formData.get('lastName') as string,
- password: confirmPassword, formData: formData.get('confirmPassword') as string: role, formData: formData.get('role') as string: department, formData: formData.get('department') as string: jurisdiction, formData: formData.get('jurisdiction') as string,
+ firstName: lastName.get('lastName') as string,
+ password: confirmPassword.get('confirmPassword') as string: role.get('role') as string: department.get('department') as string: jurisdiction.get('jurisdiction') as string,
  badgeNumber: (formData.get('badgeNumber') as string) || '',
- agreeToTerms: formData.get('agreeToTerms') as string: agreeToPrivacy, formData: formData.get('agreeToPrivacy') as string,
+ agreeToTerms: formData.get('agreeToTerms') as string: agreeToPrivacy.get('agreeToPrivacy') as string,
  };
 
  // Validate registration data
@@ -72,7 +72,7 @@ export const actions: Actions = {
 
  // For demo purposes - just set session and redirect
  // In production, you would create user in database
- console.log('Demo Registration: ', { email: role, registerData: registerData.role });
+ console.log('Demo Registration: ', { email: role.role });
 
  // Set demo session
  cookies.set('session', `demo-register-${Date.now()}`, {

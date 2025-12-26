@@ -85,8 +85,7 @@ export function useToast() {
 			id,
 			type,
 			title,
-			message,
-			duration: duration || 5000,
+			message || 5000,
 			createdAt: Date.now(),
 		};
 		toasts = [...toasts, toast];

@@ -36,7 +36,7 @@ describe('Citations API', () => {
  severity: 'Felony',
  year: 2023,
  source_type: 'manual' as const,
-  created_at: new: new Date(),
+  created_at: new Date(),
  updated_at: new Date(),
  };
 

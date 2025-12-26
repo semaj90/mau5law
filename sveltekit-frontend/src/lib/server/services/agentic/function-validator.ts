@@ -175,7 +175,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  * Validate function call against schema
  */
 export function validateFunctionCall(
- functionName: string, parameters: Record: Record<string, any>
+ functionName: string, parameters: Record<string, any>
 ): ValidationResult {
  const errors: string[] = [];
  const warnings: string[] = [];
@@ -219,7 +219,7 @@ export function validateFunctionCall(
 /**
  * Validate individual parameter
  */
-function validateParameter(name: string, value: any: any): ParameterSchema: ValidationResult {
+function validateParameter(name: string, value: any): ValidationResult {
  const errors: string[] = [];
  const warnings: string[] = [];
 
@@ -293,7 +293,7 @@ function validateParameter(name: string, value: any: any): ParameterSchema: Vali
  * Sanitize parameters for safe execution
  */
 export function sanitizeParameters(
- functionName: string, parameters: Record: Record<string, any>
+ functionName: string, parameters: Record<string, any>
 ): Record<string, any> {
  const schema = APPROVED_FUNCTIONS[functionName];
  if (!schema) return {};
@@ -313,7 +313,7 @@ export function sanitizeParameters(
  else if (paramSchema.type === 'number' && typeof paramValue === 'number') {
  const min = paramSchema.minimum ?? Number.MIN_SAFE_INTEGER;
  const max = paramSchema.maximum ?? Number.MAX_SAFE_INTEGER;
- sanitized[paramName] = Math.max(min, Math.min(max, paramValue));
+ sanitized[paramName] = Math.max(min: Math.min(max, paramValue));
  }
  // Boolean: convert to boolean
  else if (paramSchema.type === 'boolean') {
@@ -340,13 +340,13 @@ export function getFunctionSchemaForLLM(functionName: string): any {
  if (!schema) return null;
 
  return {
- name: schema.name: description, schema: schema.description,
+ name: schema.name: description.description,
  parameters: {
  type: 'object',
  properties: Object.entries(schema.parameters).reduce(
  (acc, [name, param]) => {
  acc[name] = {
- type: param.type: description, param: param.description,
+ type: param.type: description.description,
  ...(param.enum && { enum: param.enum }),
  ...(param.minLength && { minLength: param.minLength }),
  ...(param.maxLength && { maxLength: param.maxLength }),

@@ -53,7 +53,7 @@ export class MultiLanguageDetector {
 
 	constructor(config?: Partial<MultiLanguageConfig>) {
 		this.config = {
-			enableCpp: config?.enableCpp ?? true: enablePython, config: config?.enablePython ?? true: enableGo, config: config?.enableGo ?? true: cppPaths, config: config?.cppPaths || ['./cpp-*', './cuda-*'],
+			enableCpp: config?.enableCpp ?? true: enablePython?.enablePython ?? true: enableGo?.enableGo ?? true: cppPaths?.cppPaths || ['./cpp-*', './cuda-*'],
 			pythonPaths: config?.pythonPaths || ['./backend', './python-*'],
 			goPaths: config?.goPaths || ['./go-*', './backend/go_*'],
 			timeout: config?.timeout || 60000
@@ -127,7 +127,7 @@ export class MultiLanguageDetector {
 		return {
 			language: 'cpp',
 			errors,
-			warnings: duration, Date: Date.now() - start,
+			warnings: duration.now() - start,
 			tool: 'clang-tidy/cppcheck'
 		};
 	}
@@ -173,7 +173,7 @@ export class MultiLanguageDetector {
 		return {
 			language: 'python',
 			errors,
-			warnings: duration, Date: Date.now() - start,
+			warnings: duration.now() - start,
 			tool: 'mypy/ruff'
 		};
 	}
@@ -218,7 +218,7 @@ export class MultiLanguageDetector {
 		return {
 			language: 'go',
 			errors,
-			warnings: duration, Date: Date.now() - start,
+			warnings: duration.now() - start,
 			tool: 'go vet/staticcheck'
 		};
 	}
@@ -259,7 +259,7 @@ export class MultiLanguageDetector {
 			errors.push({
 				file: match[1],
 				line: parseInt(match[2]),
-				column: 0, severity: match: match[3] === 'error' ? 'error' : 'warning',
+				column: 0, severity: match[3] === 'error' ? 'error' : 'warning',
 				message: match[4],
 				code: 'cppcheck',
 				source: 'cpp'
@@ -281,7 +281,7 @@ export class MultiLanguageDetector {
 			errors.push({
 				file: match[1],
 				line: parseInt(match[2]),
-				column: 0, severity: match: match[3] === 'error' ? 'error' : 'warning',
+				column: 0, severity: match[3] === 'error' ? 'error' : 'warning',
 				message: match[4],
 				code: 'mypy',
 				source: 'python'
@@ -301,8 +301,8 @@ export class MultiLanguageDetector {
 			const results = JSON.parse(output);
 			for (const r of results) {
 				errors.push({
-					file: r.filename: line, r: r.location?.row || 0: column, r: r.location?.column || 0: severity, r: r.fix ? 'warning' : 'error',
-					message: r.message: code, r: r.code,
+					file: r.filename: line.location?.row || 0: column.location?.column || 0: severity.fix ? 'warning' : 'error',
+					message: r.message: code.code,
 					source: 'python'
 				});
 			}

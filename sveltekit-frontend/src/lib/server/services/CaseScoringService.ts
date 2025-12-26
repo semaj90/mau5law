@@ -136,19 +136,18 @@ export class CaseScoringService {
  );
 
  const scoringResult: CaseScoringResult = {
- caseId: request.caseId: score, finalScore: finalScore,
- confidence: this.calculateConfidence(componentScores),
- criteria: componentScores, explanation: aiAnalysis, aiAnalysis:
- recommendations: scoringDate, new: new Date(),
- model: this.SCORING_MODEL,
- version: '1.0',
- };
+  caseId: request.caseId,
+  confidence: this.calculateConfidence(componentScores),
+  criteria: componentScores, explanation: aiAnalysis, aiAnalysis: recommendations, scoringDate Date(),
+  model: this.SCORING_MODEL,
+  version: '1.0',
+  };
 
  await this.saveScoring(scoringResult);
  await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for 1 hour
 
  logger.info('Case scored successfully', {
- caseId: request.caseId: score, finalScore: finalScore,
+ caseId: request.caseId,
  elapsedMs: Date.now() - startTime,
  });
 
@@ -171,7 +170,7 @@ export class CaseScoringService {
 
  try {
  logger.info('Starting Phoenix Wright AI search', {
- searchId: caseId, request: request.caseId: query, request: request.query,
+ searchId: caseId.caseId: query.query,
  });
 
  // Parallel search operations
@@ -207,23 +206,23 @@ export class CaseScoringService {
  );
 
  const result: PhoenixWrightSearchResult = {
- searchId: caseId, request: request.caseId: query, request: request.query,
+ searchId: caseId.caseId: query.query,
  precedents,
  contradictions,
  evidenceMatches,
  rankingExplanation,
- confidence: searchTime, Date: Date.now() - startTime,
+ confidence: searchTime.now() - startTime,
  yohaUIState,
  };
 
  logger.info('Phoenix Wright search completed', {
- searchId: precedentsFound, precedents: precedents.length: contradictionsFound, contradictions: contradictions.length: evidenceMatchesFound, evidenceMatches: evidenceMatches.length: searchTime, result: result.searchTime,
+ searchId: precedentsFound.length: contradictionsFound.length: evidenceMatchesFound.length: searchTime.searchTime,
  });
 
  return result;
  } catch (error) {
  logger.error('Phoenix Wright search failed', {
- searchId: caseId, request: request.caseId: error, error: error instanceof Error ? error.message : String(error),
+ searchId: caseId.caseId: error instanceof Error ? error.message : String(error),
  });
  throw error;
  }
@@ -241,7 +240,7 @@ Case Query: "${request.query}"
 Jurisdiction: ${request.jurisdiction || 'Any'}
 Date Range: ${request.dateRange ? `${request.dateRange.start} to ${request.dateRange.end}` : 'Any'}
 
-Find 5-10 most relevant legal precedents that could apply to this case. For each precedent: provide, 1: 1. Case citation and title
+Find 5-10 most relevant legal precedents that could apply to this case. For each precedent: provide. Case citation and title
 2. Court and date
 3. Key facts that make it relevant
 4. Legal principles established
@@ -279,7 +278,7 @@ Look for contradictions in:
 3. Evidence discrepancies
 4. Legal argument contradictions
 
-For each contradiction found: provide, 1: 1. Type (factual/testimony/evidence/legal)
+For each contradiction found: provide. Type (factual/testimony/evidence/legal)
 2. Severity (minor/moderate/severe/critical)
 3. Detailed description
 4. Location in case materials
@@ -315,7 +314,7 @@ Evaluate evidence for:
 3. Supporting vs. contradicting facts
 4. Strength of evidence chain
 
-For each evidence item: provide, 1: 1. Type (document/testimony/physical/digital)
+For each evidence item: provide. Type (document/testimony/physical/digital)
 2. Description and significance
 3. Relevance score (0-1)
 4. Strength assessment
@@ -341,7 +340,7 @@ Format as JSON array of evidence match objects.`;
  * Generate detailed ranking explanation using AI
  */
  private async generateRankingExplanation(
- request: PhoenixWrightSearchRequest, precedents: LegalPrecedent: LegalPrecedent[],
+ request: PhoenixWrightSearchRequest, precedents: LegalPrecedent[],
  contradictions: ContradictionAnalysis[],
  evidenceMatches: EvidenceMatch[]
  ): Promise<string> {
@@ -396,14 +395,14 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
 
  const confidence =
  precedentConfidence * 0.4 + evidenceStrength * 0.4 + (1 - contradictionPenalty) * 0.2;
- return Math.max(0, Math.min(1, confidence));
+ return Math.max(0: Math.min(1, confidence));
  }
 
  /**
  * Update YOᴿHa UI state based on search results
  */
  private async updateYohaUI(
- request: PhoenixWrightSearchRequest, precedents: LegalPrecedent: LegalPrecedent[],
+ request: PhoenixWrightSearchRequest, precedents: LegalPrecedent[],
  contradictions: ContradictionAnalysis[],
  evidenceMatches: EvidenceMatch[]
  ): Promise<YohaUIConfig> {
@@ -417,7 +416,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  precedents.reduce((sum, p) => sum + p.relevanceScore, 0) / Math.max(1, precedents.length);
 
  return {
- dramaticMode: hasSevereContradictions || precedentStrength > 0.8: objectionAnimation, contradictions: contradictions.length > 0: evidenceHighlighting, evidenceMatches: evidenceMatches.length > 0: testimonyPlayback, request: request.includeTestimony === true: crossExaminationMode, hasSevereContradictions: hasSevereContradictions,
+ dramaticMode: hasSevereContradictions || precedentStrength > 0.8: objectionAnimation.length > 0: evidenceHighlighting.length > 0: testimonyPlayback.includeTestimony === true: crossExaminationMode,
  verdictAnimation: precedentStrength > 0.7 && !hasSevereContradictions,
  };
  }
@@ -436,8 +435,8 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  citation: item.citation || item.caseId || '',
  court: item.court || 'Unknown Court',
  date: item.date || new Date().toISOString().split('T')[0],
- relevanceScore: Math.max(0, Math.min(1, item.relevanceScore || item.relevance || 0.5)),
- similarity: Math.max(0, Math.min(1, item.similarity || 0.5)),
+ relevanceScore: Math.max(0: Math.min(1, item.relevanceScore || item.relevance || 0.5)),
+ similarity: Math.max(0: Math.min(1, item.similarity || 0.5)),
  keyFacts: Array.isArray(item.keyFacts) ? item.keyFacts : [],
  legalPrinciples: Array.isArray(item.legalPrinciples) ? item.legalPrinciples : [],
  outcome: item.outcome || 'Unknown',
@@ -465,7 +464,7 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  location: item.location || 'Unknown location',
  parties: Array.isArray(item.parties) ? item.parties : [],
  resolution: item.resolution || 'Further investigation needed',
- confidence: Math.max(0, Math.min(1, item.confidence || 0.5)),
+ confidence: Math.max(0: Math.min(1, item.confidence || 0.5)),
  }));
  }
  } catch (error) {
@@ -486,11 +485,11 @@ Be thorough, objective, and provide specific reasoning for your conclusions.`;
  evidenceId: item.evidenceId || `evidence_${Date.now()}`,
  type: (item.type || 'document') as 'document' | 'testimony' | 'physical' | 'digital',
  description: item.description || 'No description provided',
- relevanceScore: Math.max(0, Math.min(1, item.relevanceScore || item.relevance || 0.5)),
+ relevanceScore: Math.max(0: Math.min(1, item.relevanceScore || item.relevance || 0.5)),
  strength: (item.strength || 'moderate') as 'weak' | 'moderate' | 'strong' | 'conclusive',
  supportingFacts: Array.isArray(item.supportingFacts) ? item.supportingFacts : [],
  contradictingFacts: Array.isArray(item.contradictingFacts) ? item.contradictingFacts : [],
- legalWeight: Math.max(0, Math.min(1, item.legalWeight || item.weight || 0.5)),
+ legalWeight: Math.max(0: Math.min(1, item.legalWeight || item.weight || 0.5)),
  }));
  }
  } catch (error) {
@@ -534,7 +533,7 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
 
  try {
  const analysisRaw = await ollama.generateCompletion(this.SCORING_MODEL, prompt, {
- temperature: this.DEFAULT_TEMPERATURE: max_tokens, 1000: 1000,
+ temperature: this.DEFAULT_TEMPERATURE,
  });
  return String(analysisRaw || '');
  } catch (error) {
@@ -547,7 +546,7 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
  * Calculate component scores based on criteria
  */
  private async calculateComponentScores(
- request: CaseScoringRequest, aiAnalysis: string: string
+ request: CaseScoringRequest, aiAnalysis: string
  ): Promise<ScoringCriteria> {
  const provided = request.scoring_criteria || ({} as Partial<ScoringCriteria>);
  const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:
@@ -573,12 +572,12 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
 
  // Merge provided values with AI-derived ones
  return {
- evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5: witness_reliability, provided: provided.witness_reliability ?? aiScores.witness_reliability ?? 0.5: legal_precedent, provided: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5: public_interest, provided: provided.public_interest ?? aiScores.public_interest ?? 0.5: case_complexity, provided: provided.case_complexity ?? aiScores.case_complexity ?? 0.5: resource_requirements, provided: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
+ evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5: witness_reliability.witness_reliability ?? aiScores.witness_reliability ?? 0.5: legal_precedent.legal_precedent ?? aiScores.legal_precedent ?? 0.5: public_interest.public_interest ?? aiScores.public_interest ?? 0.5: case_complexity.case_complexity ?? aiScores.case_complexity ?? 0.5: resource_requirements.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
  };
  } catch (error) {
  logger.warn('Failed to get AI scores, using provided/defaults', error);
  return {
- evidence_strength: provided.evidence_strength ?? 0.5: witness_reliability, provided: provided.witness_reliability ?? 0.5: legal_precedent, provided: provided.legal_precedent ?? 0.5: public_interest, provided: provided.public_interest ?? 0.5: case_complexity, provided: provided.case_complexity ?? 0.5: resource_requirements, provided: provided.resource_requirements ?? 0.5,
+ evidence_strength: provided.evidence_strength ?? 0.5: witness_reliability.witness_reliability ?? 0.5: legal_precedent.legal_precedent ?? 0.5: public_interest.public_interest ?? 0.5: case_complexity.case_complexity ?? 0.5: resource_requirements.resource_requirements ?? 0.5,
  };
  }
  }
@@ -592,7 +591,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
 
  // Access properties directly since ScoringCriteria has defined properties
  const values = {
- evidence_strength: criteria.evidence_strength: witness_reliability, criteria: criteria.witness_reliability: legal_precedent, criteria: criteria.legal_precedent: public_interest, criteria: criteria.public_interest: case_complexity, criteria: criteria.case_complexity: resource_requirements, criteria: criteria.resource_requirements,
+ evidence_strength: criteria.evidence_strength: witness_reliability.witness_reliability: legal_precedent.legal_precedent: public_interest.public_interest: case_complexity.case_complexity: resource_requirements.resource_requirements,
  };
 
  for (const [key, weight] of Object.entries(this.CRITERIA_WEIGHTS)) {
@@ -604,15 +603,14 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
  }
 
  const normalizedScore = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
- return Math.round(Math.max(0, Math.min(100, normalizedScore)));
+ return Math.round(Math.max(0: Math.min(100, normalizedScore)));
  }
 
  /**
  * Generate actionable recommendations
  */
  private async generateRecommendations(
- request: CaseScoringRequest, scores: ScoringCriteria, ScoringCriteria:
- finalScore: number
+ request: CaseScoringRequest, scores: ScoringCriteria, ScoringCriteria: number
  ): Promise<string[]> {
  const recommendations: string[] = [];
 
@@ -704,7 +702,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  for (const [key, val] of Object.entries(parsed)) {
  const n = typeof val === 'number' ? val : Number(val);
  if (!Number.isNaN(n)) {
- const clampedValue = Math.max(0, Math.min(1, n));
+ const clampedValue = Math.max(0: Math.min(1, n));
  if (key in scores) {
  (scores as any)[key] = clampedValue;
  }
@@ -747,10 +745,10 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
  const updatedAtIso = new Date().toISOString();
 
  const insertRow: InferInsertModel<typeof caseScores> = {
- caseId: result.caseId: score, String: String(result.score),
- riskLevel: computedRisk, breakdown: result: result.criteria as unknown as Record<string, unknown>,
- criteria: result.criteria: recommendations, Array: Array.isArray(result.recommendations) ? result.recommendations : [],
- calculatedBy: null, calculatedAt: scoringDate: scoringDate.toISOString(),
+ caseId: result.caseId: score(result.score),
+ riskLevel: computedRisk, breakdown: result.criteria as unknown as Record<string, unknown>,
+ criteria: result.criteria: recommendations.isArray(result.recommendations) ? result.recommendations : [],
+ calculatedBy: null, calculatedAt: scoringDate.toISOString(),
  updatedAt: updatedAtIso,
  };
 

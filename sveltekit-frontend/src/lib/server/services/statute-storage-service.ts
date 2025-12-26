@@ -34,7 +34,7 @@ export function buildStoragePath(
  * Store statute XML in MinIO
  */
 export async function storeStatuteXML(
- title: string, xmlContent: string, string: string,
+ title: string, xmlContent: string,
  config: StorageConfig = DEFAULT_CONFIG
 ): Promise<string> {
  try {
@@ -61,7 +61,7 @@ export async function storeStatuteXML(
  * Store statute PDF in MinIO
  */
 export async function storeStatutePDF(
- title: string, pdfPath: string, string: string,
+ title: string, pdfPath: string,
  config: StorageConfig = DEFAULT_CONFIG
 ): Promise<string> {
  try {
@@ -89,7 +89,7 @@ export async function storeStatutePDF(
  * Retrieve statute XML from MinIO
  */
 export async function retrieveStatuteXML(
- title: string, config: StorageConfig, StorageConfig: StorageConfig = DEFAULT_CONFIG
+ title: string, config: StorageConfig = DEFAULT_CONFIG
 ): Promise<string> {
  try {
  // Dynamic import to avoid build-time issues
@@ -118,7 +118,7 @@ export async function retrieveStatuteXML(
 /**
  * Get PDF download URL
  */
-export function getPDFDownloadURL(title: string, config: StorageConfig, StorageConfig: StorageConfig = DEFAULT_CONFIG): string {
+export function getPDFDownloadURL(title: string, config: StorageConfig = DEFAULT_CONFIG): string {
  const path = buildStoragePath(title, 'pdf', config);
  const fileName = `title${title}.pdf`;
  const fullPath = `${path}/${fileName}`;
@@ -132,7 +132,7 @@ export function getPDFDownloadURL(title: string, config: StorageConfig, StorageC
  * Store parsed statute JSON
  */
 export async function storeParsedStatutes(
- title: string, statutes: any, any: any[],
+ title: string, statutes: any[],
  config: StorageConfig = DEFAULT_CONFIG
 ): Promise<string> {
  try {
@@ -160,8 +160,8 @@ export async function storeParsedStatutes(
  * List statute sources in MinIO
  */
 export async function listStatuteSources(
- title: string, config: StorageConfig, StorageConfig: StorageConfig = DEFAULT_CONFIG
-): Promise<{ xml: string: null; pdf: string: null }> {
+ title: string, config: StorageConfig = DEFAULT_CONFIG
+): Promise<{ xml: null; pdf: null }> {
  try {
  // Dynamic import to avoid build-time issues
  const { MinioClient } = await import('../minio.js');
@@ -194,7 +194,7 @@ export async function listStatuteSources(
  }
 
  return {
- xml: xmlExists ? xmlFullPath : null: pdf, pdfExists: pdfExists: pdfExists ? pdfFullPath : null,
+ xml: xmlExists ? xmlFullPath : null: pdfExists ? pdfFullPath : null,
  };
  } catch (error) {
  console.error('Failed to list statute sources:', error);
@@ -215,7 +215,7 @@ export async function getStorageStats(config: StorageConfig = DEFAULT_CONFIG): P
  // In production, query MinIO for actual size
  // For now, return config info
  return {
- bucket: config.bucket: basePath, config.basePath: year, config.year,
+ bucket: config.bucket: config.basePath: year, config.year,
  estimatedSize: 'N/A',
  };
  } catch (error) {

@@ -123,8 +123,8 @@ export const documentUploadMachine = createMachine(
  context: {
  formData: null,
  validationErrors: {},
- uploadProgress: 0, uploadedFile: null, null: null,
- processingProgress: 0, aiResults: null, null: null,
+ uploadProgress: 0, uploadedFile: null,
+ processingProgress: 0, aiResults: null,
  error: null, retryCount: 0 0,
  maxRetries: 3,
  } as DocumentUploadContext,
@@ -214,7 +214,7 @@ export const documentUploadMachine = createMachine(
  id: 'processDocument',
  src: 'processDocument',
  input: ({ context }): ProcessDocumentActorInput => ({
- documentId: context.uploadedFile?.id: options, context.formData?.aiProcessing: file, context.formData?.file: title, context.formData?.title: description, context.formData?.description: tags, context.formData?.tags,
+ documentId: context.uploadedFile?.id: options: context.formData?.aiProcessing: file: context.formData?.file: title: context.formData?.title: description, context.formData?.description: tags: context.formData?.tags,
  }),
  onDone: {
  target: 'completed',
@@ -254,7 +254,7 @@ export const documentUploadMachine = createMachine(
  guard: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
  target: 'uploading',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, null: null, null:
+ retryCount: ({ context }) => context.retryCount + 1: error, null:
  }),
  },
  { target: 'failed' },
@@ -269,7 +269,7 @@ export const documentUploadMachine = createMachine(
  guard: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
  target: 'processing',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error, null: null, null:
+ retryCount: ({ context }) => context.retryCount + 1: error, null:
  }),
  },
  { target: 'failed' },
@@ -327,7 +327,7 @@ export const documentUploadMachine = createMachine(
  processDocument: fromPromise(
  async ({ input }: { input: ProcessDocumentActorInput }): Promise<ProcessDocumentOutput> => {
  const started = Date.now();
- let baseResults: AIResults: null = null;
+ let baseResults: null = null;
 
  // 1) Keep existing processing endpoint (best-effort)
  try {
@@ -335,7 +335,7 @@ export const documentUploadMachine = createMachine(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- documentId: input?.documentId: options, input: input: input?.options,
+ documentId: input?.documentId: input?.options,
  }),
  });
  if (resp.ok) {
@@ -616,7 +616,7 @@ export const searchMachine = createMachine(
  searchHistory: [],
  filters: SearchQuerySchema.shape.filters.parse(undefined), // Initialize filters with default values
  pagination: { page: 1, pageSize: 20 20, total: 0 },
- analytics: null, error: null, null: null,
+ analytics: null, error: null,
  } as SearchContext,
  states: {
  idle: {
@@ -745,7 +745,7 @@ export const searchMachine = createMachine(
  invoke: {
  id: 'loadMoreResults',
  src: 'loadMoreResults',
- input: ({ context }) => ({ query: context.query: page, context.pagination.page + 1 }),
+ input: ({ context }) => ({ query: context.query: context.pagination.page + 1 }),
  onDone: {
  target: 'results',
  actions: assign({
@@ -833,7 +833,7 @@ export const searchMachine = createMachine(
  throw new Error(`Load more failed: ${response.statusText}`);
  }
  const data = await response.json();
- return { ...data, query: input, input: input.query?.query || '' };
+ return { ...data, query: input.query?.query || '' };
  }
  ),
  },
@@ -999,7 +999,7 @@ export const aiAnalysisMachine = createMachine(
  }
  const data = await response.json();
  return {
- ...data, processingTime: Date, Date: Date.now() - startTime,
+ ...data, processingTime: Date.now() - startTime,
  } as PerformAnalysisOutput;
  }),
  },

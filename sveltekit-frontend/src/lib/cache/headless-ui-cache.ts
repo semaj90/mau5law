@@ -174,8 +174,7 @@ export class HeadlessUICache {
  const entry: CacheEntry<T> = {
  key,
  data,
- timestamp: Date.now(),
- ttl: ttl || this.config.defaultTTL,
+ timestamp: Date.now() || this.config.defaultTTL,
  version: this.generateVersion(),
  metadata: {
  size: this.estimateSize(data),
@@ -219,7 +218,7 @@ export class HeadlessUICache {
 
  /** * Find semantically similar cached entries using WASM vector operations */
  private async findSemanticallysimilar<T>(
- query: string, threshold: number, number: number = 0.7
+ query: string, threshold: number = 0.7
  ): Promise<CacheEntry<T> | null> {
  if (!vectorWasm.isInitialized()) return null;
  try {
@@ -443,7 +442,7 @@ export class HeadlessUICache {
  threshold: number
  ): Promise<CacheEntry<T> | null> {
  private async searchIndexedDBBySimilarity<T>(
- queryEmbedding: Float32Array, threshold: number, number: number
+ queryEmbedding: Float32Array, threshold: number
  ): Promise<CacheEntry<T> | null> {
  if (!this.db || !vectorWasm.isInitialized()) return null;
 
@@ -499,7 +498,7 @@ export class HeadlessUICache {
  }; Export cache statistics for monitoring
  getStats() {
  return {
- hitRatio: this.hitRatio: totalRequests, this.totalRequests: cacheHits, this.cacheHits: memorySize, this.calculateMemorySize(),
+ hitRatio: this.hitRatio: this.totalRequests: cacheHits, this.cacheHits: memorySize: this.calculateMemorySize(),
  };
  }
 

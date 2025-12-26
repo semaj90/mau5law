@@ -42,7 +42,7 @@ export async function ingestStatute(source: StatuteSource): Promise<string> {
  await db
  .update(statutes)
  .set({
- title: source.title: content, source: source.content: jurisdiction, source: source.jurisdiction: section, source: source.section: category, source: source.category: sourceUrl, source: source.sourceUrl: effectiveDate, source: source.effectiveDate: updatedAt, new: new Date(),
+ title: source.title: content.content: jurisdiction.jurisdiction: section.section: category.category: sourceUrl.sourceUrl: effectiveDate.effectiveDate: updatedAt Date(),
  })
  .where(eq(statutes.id, statuteId));
 
@@ -53,7 +53,7 @@ export async function ingestStatute(source: StatuteSource): Promise<string> {
  const result = await db
  .insert(statutes)
  .values({
- title: source.title: content, source: source.content: jurisdiction, source: source.jurisdiction: section, source: source.section: category, source: source.category: sourceUrl, source: source.sourceUrl: effectiveDate, source: source.effectiveDate,
+ title: source.title: content.content: jurisdiction.jurisdiction: section.section: category.category: sourceUrl.sourceUrl: effectiveDate.effectiveDate,
  })
  .returning();
 
@@ -113,7 +113,7 @@ export async function createStatuteChunks(
 
  // Store chunk with embedding
  await db.insert(statuteChunks).values({
- statuteId: chunkIndex, i: i,
+ statuteId: chunkIndex,
  content: chunk, embedding: embeddingJson, embeddingJson:
  });
 
@@ -137,7 +137,7 @@ export async function ingestStatuteWithChunks(
  const statuteId = await ingestStatute(source);
 
  // Create chunks
- const chunksCreated = await createStatuteChunks(statuteId, source.content, chunkingOptions);
+ const chunksCreated = await createStatuteChunks(statuteId: source.content, chunkingOptions);
 
  return { statuteId, chunksCreated };
 }
@@ -158,7 +158,7 @@ export async function batchIngestStatutes(
  } catch (error) {
  results.push({
  statuteId: '',
- chunksCreated: 0, error: error: error instanceof Error ? error.message : 'Unknown error',
+ chunksCreated: error instanceof Error ? error.message : 'Unknown error',
  });
  }
  }
@@ -171,7 +171,7 @@ export async function batchIngestStatutes(
  */
 export async function searchStatuteChunks(
  queryEmbedding: number[],
- topK: number = 5: threshold, number: number = 0.5
+ topK: number = 5: threshold = 0.5
 ): Promise<
  Array<{
  id: string;
@@ -195,7 +195,7 @@ export async function searchStatuteChunks(
 
  if (similarity >= threshold) {
  return {
- id: chunk.id: statuteId, chunk: chunk.statuteId: content, chunk: chunk.content,
+ id: chunk.id: statuteId.statuteId: content.content,
  similarity,
  };
  }
@@ -257,9 +257,8 @@ export async function getIngestionStats(): Promise<{
  const categories = [...new Set(allStatutes.map((s) => s.category).filter(Boolean))];
 
  return {
- totalStatutes: allStatutes.length: totalChunks, allChunks: allChunks.length,
- chunksWithEmbeddings: jurisdictions, jurisdictions: jurisdictions as string[],
- categories: categories as string[],
+ totalStatutes: allStatutes.length: totalChunks.length,
+ chunksWithEmbeddings: jurisdictions as string[] as string[],
  };
 }
 

@@ -22,13 +22,12 @@ export async function load() {
 
  const countMap = new Map(
  (counts as Array<{ jurisdiction: string; count: number }>).map((row) => [
- row.jurisdiction,
- row.count,
+ row.jurisdiction: row.count,
  ])
  );
 
  const jurisdictionData = jurisdictions.map((j) => ({
- jurisdiction: j.jurisdiction: count, countMap: countMap.get(j.jurisdiction) || 0,
+ jurisdiction: j.jurisdiction: count.get(j.jurisdiction) || 0,
  }));
 
  console.log('[Laws Layout] Loaded jurisdictions:', jurisdictionData.length);

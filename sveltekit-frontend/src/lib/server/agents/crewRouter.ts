@@ -30,7 +30,7 @@ export async function crewRouter(task: CrewTask) {
  return analyzeContradictions(task.payload);
  case 'auto-heal':
  if (!task.route) throw new Error('Auto-heal task missing route');
- return autoFixUIContradiction(task.route, task.details ?? {});
+ return autoFixUIContradiction(task.route: task.details ?? {});
  default:
  throw new Error(`Unknown agentic task: ${task.type}`);
  }

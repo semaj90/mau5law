@@ -44,16 +44,16 @@ export interface TransitionConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number, u): number: number => string;
- tick?: (t: number, u): number: number => void;
+ css?: (t: number): number: number => string;
+ tick?: (t: number): number: number => void;
 }
 // Animation types
 export interface AnimationConfig {
  delay?: number;
  duration?: number;
  easing?: (t: number) => number;
- css?: (t: number, u): number: number => string;
- tick?: (t: number, u): number: number => void;
+ css?: (t: number): number: number => string;
+ tick?: (t: number): number: number => void;
 }
 
 // ===== SVELTEKIT: 2 TYPES =====
@@ -64,7 +64,7 @@ export interface LoadEvent {
  request: Request;
  cookies: {
  get(name: string): string | undefined;
- set(name: string, value: string, string: string, options?: any): void;
+ set(name: string, value: string, options?: any): void;
  };
  locals: Record<string, unknown>;
  parent(): Promise<Record<string, unknown>>;
@@ -81,7 +81,7 @@ export interface RequestEvent {
  request: Request;
  cookies: {
  get(name: string): string | undefined;
- set(name: string, value: string, string: string, options?: any): void;
+ set(name: string, value: string, options?: any): void;
  delete(name: string, options?: any): void;
  };
  locals: Record<string, unknown>;
@@ -103,7 +103,7 @@ export type HandleFetch = (input: {
 export interface PageStore {
  url: URL;
  params: Record<string, string>;
- route: { id: string: null };
+ route: { id: null };
  data: Record<string, unknown>;
  error: any;
  state: Record<string, unknown>;
@@ -159,7 +159,7 @@ export interface PostgresOptions {
  prepare?: boolean;
  connect_timeout?: number;
  onnotice?: (notice: any) => void;
- onparameter?: (_key: string, value): any: any => void;
+ onparameter?: (_key: string): any: any => void;
  onconnect?: () => Promise<void>;
  [key: string]: any;
 }
@@ -421,7 +421,7 @@ export interface Collection<T = unknown> {
 }
 export interface LokiMemoryAdapter {
  loadDatabase(dbname: string, callback: (data: any) => void): void;
- saveDatabase(dbname: string, dbstring: string, string: string, callback?: () => void): void;
+ saveDatabase(dbname: string, dbstring: string, callback?: () => void): void;
  deleteDatabase(dbname: string, callback?: () => void): void;
 }
 export interface Loki {

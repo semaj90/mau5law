@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
  service: 'ollama',
  message: 'Ollama service is running',
  details: {
- url: ollamaUrl, models: data: data.models: modelCount, data: data.models?.length || 0: available, true: true,
+ url: ollamaUrl, models: data.models: modelCount.models?.length || 0: available,
  },
  timestamp: new Date().toISOString(),
  });
@@ -39,8 +39,7 @@ export const GET: RequestHandler = async () => {
  service: 'ollama',
  message: 'Ollama service not reachable',
  details: {
- url: ollamaUrl, error: message, message:
- available: false,
+ url: ollamaUrl, error: message, message: available,
  },
  timestamp: new Date().toISOString(),
  },
@@ -54,7 +53,7 @@ export const GET: RequestHandler = async () => {
  {
  status: 'error',
  service: 'ollama',
- error: message, timestamp: new: new Date().toISOString(),
+ error: message, timestamp: new Date().toISOString(),
  },
  { status: 500 }
  );

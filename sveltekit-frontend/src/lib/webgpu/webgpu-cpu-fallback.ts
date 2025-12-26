@@ -113,7 +113,7 @@ export class WebGPUCPUFallback {
  }
 
  const kernel = this.gpu
- .createKernel(function (a: Float32Array, b: Float32Array, colsA): number: number {
+ .createKernel(function (a: Float32Array, b: Float32Array, colsA), number: number {
  let sum = 0;
  for (let i = 0; i < colsA; i++) {
  sum += a[this.thread.y * colsA + i] * b[i * colsB + this.thread.x];

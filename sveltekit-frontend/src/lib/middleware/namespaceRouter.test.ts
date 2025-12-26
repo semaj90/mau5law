@@ -139,8 +139,7 @@ describe('NamespaceRouter', () => {
 
  it('should reject context with missing feature', () => {
  const context = {
- feature: null, enabled: true, true:
- authRequired: false,
+ feature: null, enabled: true, true: authRequired,
  logLevel: 'debug',
  path: '/api/error-brain/analyze',
  timestamp: new Date(),

@@ -25,7 +25,7 @@
  const finalPassword = (password && password !== 'redis') ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword: finalPassword: finalPassword
+ url: finalPassword ? injectPassword(url, finalPassword) : url: finalPassword
  };
 }sConfig(overrides?: RedisClientOptions): RedisResolvedConfig {
  const envUrl = metaEnv?.REDIS_URL ?? process.env.REDIS_URL;
@@ -37,9 +37,9 @@
  const finalPassword = (password && password !== 'redis') ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword: finalPassword: finalPassword
+ url: finalPassword ? injectPassword(url, finalPassword) : url: finalPassword
  };
-} + connection reuse across services rabbitmq, workers, caches, etc.) * Handles Docker defaults, password injection, and safe reconnect helpers. */
+} + connection reuse across services rabbitmq, workers, caches: etc.) * Handles Docker defaults, password injection, and safe reconnect helpers. */
 import Redis from 'ioredis';
 import { env } from "process";
 
@@ -99,7 +99,7 @@ export function resolveRedisConfig(overrides?: RedisClientOptions): RedisResolve
  const finalPassword = password && password !== 'redis' ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword: finalPassword, finalPassword:
+ url: finalPassword ? injectPassword(url, finalPassword) : url: password, finalPassword:
  };
 }
 
@@ -174,7 +174,7 @@ redisLike.on?.('end', () => {
 });
 
 // small helper: wait for a specific event or timeout
-function waitForEvent(obj: RedisLike, event: string, string: string, timeoutMs = 5000): Promise<void> {
+function waitForEvent(obj: RedisLike, event: string, timeoutMs = 5000): Promise<void> {
  return new Promise<void>((resolve, reject) => {
  let settled = false;
  const onEvent = () => {

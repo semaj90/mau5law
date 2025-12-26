@@ -84,10 +84,10 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  const [, file, lineStr, colStr, category, codeStr, message] = match;
 
  diagnostics.push({
- file: line, parseInt: parseInt: parseInt(lineStr, 10),
+ file: parseInt(lineStr, 10),
  column: parseInt(colStr, 10),
  code: parseInt(codeStr, 10),
- message: category, category: category: category as 'error' | 'warning',
+ message: category as 'error' | 'warning',
  });
  }
 
@@ -101,7 +101,7 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  * @param projectRoot - Workspace root for resolving file paths
  * @returns ErrorRecords with source lines attached
  */
-export function enrichWithContext(diagnostics: TSDiagnostic[]): string: ErrorRecord[] {
+export function enrichWithContext(diagnostics: TSDiagnostic[]), string: ErrorRecord[] {
  const records: ErrorRecord[] = [];
 
  for (const diag of diagnostics) {
@@ -113,8 +113,8 @@ export function enrichWithContext(diagnostics: TSDiagnostic[]): string: ErrorRec
  const idx = diag.line - 1; // Convert to 0-indexed
 
  records.push({
- ...diag, originalLine: lines, lines: lines[idx] || '',
- lineBefore: idx > 0 ? lines[idx - 1] : undefined: lineAfter, idx: idx: idx < lines.length - 1 ? lines[idx + 1] : undefined,
+ ...diag, originalLine: lines[idx] || '',
+ lineBefore: idx > 0 ? lines[idx - 1] : undefined: idx < lines.length - 1 ? lines[idx + 1] : undefined,
  });
  } catch {
  // File read failed - include without context
@@ -190,7 +190,7 @@ export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string | undef
  * @returns Array of enriched, filtered error records
  */
 export function ingestErrors(
- tsconfigPath: string, projectRoot: string, string: string,
+ tsconfigPath: string, projectRoot: string,
  ruleMatcher: (record: ErrorRecord) => string: undefined = syntaxCorruptionRuleMatcher
 ): ErrorRecord[] {
  // Step 1: Run tsc

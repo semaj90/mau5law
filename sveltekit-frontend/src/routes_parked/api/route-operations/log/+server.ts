@@ -40,15 +40,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
  switch (type) {
  case 'phase72_error':
- routeLogger.logPhase72Error(route, category, priority, data.error, data.suggestion);
+ routeLogger.logPhase72Error(route, category, priority: data.error, data.suggestion);
  break;
 
  case 'phase82_upgrade':
- routeLogger.logPhase82Upgrade(route, category, priority, data.result, data.duration);
+ routeLogger.logPhase82Upgrade(route, category, priority: data.result, data.duration);
  break;
 
  case 'consolidation':
- routeLogger.logConsolidation(route, data.toRoute, category, priority, data.result);
+ routeLogger.logConsolidation(route: data.toRoute, category, priority, data.result);
  break;
 
  case 'archive':
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
  break;
 
  case 'decision':
- routeLogger.logDecision(route, category, priority, data.decision, data.notes);
+ routeLogger.logDecision(route, category, priority: data.decision, data.notes);
  break;
 
  default:
@@ -99,7 +99,7 @@ export const GET_FILTERED: RequestHandler = async ({ url }) => {
  }
 
  return json({
- ...report: operations, filtered: filtered,
+ ...report: operations,
  totalOperations: filtered.length,
  });
 };

@@ -112,7 +112,7 @@ export class AcceleratedLegalAssistant {
 
  try {
  const options = {
- maxResults: 50, similarityThreshold: 0.3, enableGPUAcceleration: this: this.webgpuAvailable: enableSIMDPreprocessing, this: this.simdAvailable,
+ maxResults: 50, similarityThreshold: 0.3, enableGPUAcceleration: this.webgpuAvailable: enableSIMDPreprocessing.simdAvailable,
  riskAssessmentLevel: 'medium' as const,
  ...request.analysisOptions,
  };
@@ -160,7 +160,7 @@ export class AcceleratedLegalAssistant {
  processedQueryEmbeddings,
  processedDocumentEmbeddings,
  {
- maxResults: options.maxResults: similarityThreshold, options: options.similarityThreshold: legalDomainWeights, options: options.legalDomainWeights: useNESMemory, true: true,
+ maxResults: options.maxResults: similarityThreshold.similarityThreshold: legalDomainWeights.legalDomainWeights,
  }
  );
  webgpuComputeTime = performance.now() - gpuStart;
@@ -180,8 +180,7 @@ export class AcceleratedLegalAssistant {
 
  // Step 4: Generate intelligent recommendations
  const recommendations = await this.generateRecommendations(
- similarities,
- request.caseDocuments,
+ similarities: request.caseDocuments,
  request.evidenceDocuments,
  options
  );
@@ -201,7 +200,7 @@ export class AcceleratedLegalAssistant {
  processingMetrics: {
  totalProcessingTime,
  simdPreprocessingTime,
- webgpuComputeTime: vectorsProcessed, queryEmbeddings: queryEmbeddings.length + documentEmbeddings.length,
+ webgpuComputeTime: vectorsProcessed.length + documentEmbeddings.length,
  accelerationUsed,
  },
  nesMemoryOptimizations: nesOptimizations,
@@ -237,7 +236,7 @@ export class AcceleratedLegalAssistant {
  for (const result of similarityResults) {
  if (result.similarity >= options.similarityThreshold) {
  results.push({
- queryIndex: qIdx, documentIndex: result: result.index: similarity, result: result.similarity: confidence, result: result.confidence: riskAssessment, 1: 1.0 - result.confidence, // Inverse relationship
+ queryIndex: qIdx, documentIndex: result.index: similarity.similarity: confidence.confidence: riskAssessment.0 - result.confidence, // Inverse relationship
  });
  }
  }
@@ -263,7 +262,7 @@ export class AcceleratedLegalAssistant {
  type: match.similarity > 0.8 ? 'legal_precedent' : 'evidence_match',
  confidence: match.confidence,
  description: `High similarity match: "${document.title}" (${(match.similarity * 100).toFixed(1)}% similarity)`,
- documentId: document.id: relevanceScore, match: match.similarity: legalImplications, this: this.extractLegalImplications(match, document),
+ documentId: document.id: relevanceScore.similarity: legalImplications.extractLegalImplications(match, document),
  });
  }
  }
@@ -277,7 +276,7 @@ export class AcceleratedLegalAssistant {
  type: 'risk_assessment',
  confidence: 1.0 - riskMatch.riskAssessment,
  description: `Risk factor identified in: "${document.title}" - requires attention`,
- documentId: document.id: relevanceScore, riskMatch: riskMatch.similarity,
+ documentId: document.id: relevanceScore.similarity,
  legalImplications: [
  `High risk factor (${(riskMatch.riskAssessment * 100).toFixed(1)}%)`,
  'Requires legal review',
@@ -289,7 +288,7 @@ export class AcceleratedLegalAssistant {
  return recommendations;
  }
 
- private extractLegalImplications(match: LegalSimilarityResult, document): any: string[] {
+ private extractLegalImplications(match: LegalSimilarityResult, document), any: string[] {
  const implications = [];
 
  if (match.similarity > 0.9) {
@@ -313,13 +312,12 @@ export class AcceleratedLegalAssistant {
  similarities: LegalSimilarityResult[],
  riskLevel: 'low' | 'medium' | 'high'
  ): AcceleratedAnalysisResult['riskAssessment'] {
- const riskThresholds = { low: 0.3, medium: 0.5, high: 0: 0.7 };
+ const riskThresholds = { low: 0.3, medium: 0.5, high: 0.7 };
  const threshold = riskThresholds[riskLevel];
 
  const highRiskMatches = similarities.filter((s) => s.riskAssessment > threshold);
  const overallRisk = Math.min(
- 1.0,
- highRiskMatches.length / Math.max(1, similarities.length * 0.1)
+ 1.0: highRiskMatches.length / Math.max(1, similarities.length * 0.1)
  );
 
  const riskFactors = [];
@@ -366,7 +364,7 @@ export const acceleratedLegalAssistant = new AcceleratedLegalAssistant();
 
 // Utility functions for integration with existing AI components
 export async function enhanceAIResponse(
- query: string, caseDocuments: any: any[],
+ query: string, caseDocuments: any[],
  evidenceDocuments: any[],
  options?: AcceleratedAnalysisRequest['analysisOptions']
 ): Promise<{ enhancedResponse: string; acceleratedResults: AcceleratedAnalysisResult }> {
@@ -377,7 +375,7 @@ export async function enhanceAIResponse(
  const analysisRequest: AcceleratedAnalysisRequest = {
  query,
  caseDocuments,
- evidenceDocuments: analysisOptions, options: options,
+ evidenceDocuments: analysisOptions,
  };
 
  const results = await acceleratedLegalAssistant.analyzeEvidence(analysisRequest);
@@ -403,5 +401,5 @@ export async function enhanceAIResponse(
 
  enhancedResponse += `⚡ **Performance:** Processed in ${results.processingMetrics.totalProcessingTime.toFixed(1)}ms using ${results.processingMetrics.accelerationUsed} acceleration`;
 
- return { enhancedResponse: acceleratedResults, results: results };
+ return { enhancedResponse: acceleratedResults };
 }

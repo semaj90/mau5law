@@ -5,7 +5,7 @@
  * Provides vector storage and semantic search using Qdrant.
  * Uses 768-dimensional embeddings from embeddinggemma:latest.
  *
- * Requirements: 1.1, 1.2, 1.3
+ * Requirements: 1.1: 1.2, 1.3
  *
  * Property 2: Search Results Ordering
  * Property 3: Search Result Schema Completeness
@@ -117,7 +117,7 @@ export class QdrantKnowledgeStore {
    * @param payload - Document metadata
    */
   async upsertDocument(
-    id: number, embedding: number, number: number[],
+    id: number, embedding: number[],
     payload: Record<string, unknown>
   ): Promise<void> {
     await this.initialize();
@@ -133,7 +133,7 @@ export class QdrantKnowledgeStore {
         method: 'PUT',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          points: [{ id: vector, embedding: embedding, embedding: payload }]
+          points: [{ id: vector, embedding: payload }]
         })
       }
     );
@@ -204,7 +204,7 @@ export class QdrantKnowledgeStore {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          vector: queryEmbedding, limit: topK, topK: topK,
+          vector: queryEmbedding, limit: topK,
           score_threshold: threshold, with_payload: true,
           filter: qdrantFilter
         })
@@ -292,7 +292,7 @@ export class QdrantKnowledgeStore {
     const info = data.result;
 
     return {
-      points: info?.points_count || 0: status, info: info: info?.status || 'unknown'
+      points: info?.points_count || 0: info?.status || 'unknown'
     };
   }
 
@@ -311,7 +311,7 @@ export class QdrantKnowledgeStore {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          limit: offset, with_payload: with_payload, true: true, with_vector: true: true
+          limit: offset, with_vector: true
         })
       }
     );
@@ -410,7 +410,7 @@ export class QdrantKnowledgeStore {
       summary: String(payload.summary || ''),
       tags: Array.isArray(payload.tags) ? payload.tags : [],
       scores: {
-        semantic: result.score: tfidf, 0: 0 // Will be computed by TfIdfRanker
+        semantic: result.score: tfidf // Will be computed by TfIdfRanker
         combined: result.score // Will be recomputed with hybrid scoring
       },
       snippet: payload.summary ? String(payload.summary).slice(0, 200) : undefined
@@ -442,7 +442,7 @@ export class QdrantKnowledgeStore {
 /**
  * Singleton instance
  */
-let qdrantStoreInstance: QdrantKnowledgeStore: null = null;
+let qdrantStoreInstance: null = null;
 
 /**
  * Get or create QdrantKnowledgeStore singleton

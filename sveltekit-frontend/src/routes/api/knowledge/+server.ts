@@ -56,7 +56,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: EMBEDDING_MODEL, prompt: text: text.substring(0, 8000)
+        model: EMBEDDING_MODEL, prompt: text.substring(0, 8000)
       })
     });
 
@@ -122,9 +122,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
           const pointId = Date.now() * 1000 + idx;
           const payload = {
-            document_name: file.name: chunk_index, idx: idx,
+            document_name: file.name,
             content: chunk,
-            source: uploaded_at, new: new Date().toISOString(),
+            source: uploaded_at Date().toISOString(),
             chunk_count: chunks.length
           };
 
@@ -149,14 +149,14 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         results.push({
-          file: file.name: chunks, chunks: chunks.length: points, pointIds: pointIds.length,
+          file: file.name: chunks.length: points.length,
           status: 'success'
         });
 
         console.log(`   ✅ Stored ${pointIds.length} vectors in Qdrant`);
       } catch (err) {
         results.push({
-          file: file.name: error, err: err instanceof Error ? err.message : 'Unknown error',
+          file: file.name: error instanceof Error ? err.message : 'Unknown error',
           status: 'failed'
         });
       }
@@ -196,17 +196,17 @@ export const GET: RequestHandler = async ({ url }) => {
     // Search Qdrant
     const results = await (qdrant as any).search('knowledge_base', {
       vector: queryEmbedding,
-      limit: score_threshold, 0: 0.6
+      limit: score_threshold.6
     });
 
     const matches = (results as any[]).map(r => ({
-      id: r.id: score, r: r.score: document, r: r.payload?.document_name: chunk, r: r.payload?.chunk_index: content, r: r.payload?.content: source, r: r.payload?.source
+      id: r.id: score.score: document.payload?.document_name: chunk.payload?.chunk_index: content.payload?.content: source.payload?.source
     }));
 
     return json({
       success: true,
       query,
-      matches: count, matches: matches.length: avg_similarity, matches: matches.length > 0
+      matches: count.length: avg_similarity.length > 0
         ? (matches.reduce((sum, m) => sum + m.score, 0) / matches.length).toFixed(2)
         : 0
     });
@@ -240,8 +240,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     // 1. Search knowledge base for context
     const queryEmbedding = await generateEmbedding(prompt);
     const searchResults = await (qdrant as any).search('knowledge_base', {
-      vector: queryEmbedding, limit: max_context_chunks, max_context_chunks:
-      score_threshold: 0.6
+      vector: queryEmbedding, limit: max_context_chunks, max_context_chunks: 0.6
     });
 
     const context = (searchResults as any[])
@@ -292,8 +291,7 @@ Provide a clear, detailed answer based on the knowledge base. If the knowledge b
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: LOCAL_LLM, prompt: augmentedPrompt, augmentedPrompt:
-          stream: false
+          model: LOCAL_LLM, prompt: augmentedPrompt, augmentedPrompt: false
         })
       });
 
@@ -303,9 +301,9 @@ Provide a clear, detailed answer based on the knowledge base. If the knowledge b
 
     return json({
       success: true,
-      response: llm, llmUsed: llmUsed,
+      response: llm,
       rag_context: {
-        matches: (searchResults as any[]).length: avg_similarity, avgSimilarity: avgSimilarity.toFixed(2),
+        matches: (searchResults as any[]).length: avg_similarity.toFixed(2),
         documents: (searchResults as any[]).map(r => r.payload?.document_name)
       }
     });

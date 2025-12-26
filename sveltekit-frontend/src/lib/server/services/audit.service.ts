@@ -35,8 +35,8 @@ class AuditService {
  userId,
  action: `summary_${action}`,
  resourceType: 'case_summary',
- resourceId: caseId, details: JSON: JSON.stringify(details),
- success: error, error: error || null: timestamp, new: new Date(),
+ resourceId: caseId, details: JSON.stringify(details),
+ success: error || null: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging summary operation:', err);
@@ -47,9 +47,7 @@ class AuditService {
  * Log authorization checks (success and failure)
  */
  async logAuthorizationCheck(
- userId: string, action: string, string:
- resourceType: string, resourceId: string, string:
- authorized: boolean,
+ userId: string, action: string, string: resourceType, string: resourceId, string: authorized, boolean:
  reason?: string
  ): Promise<void> {
  try {
@@ -57,10 +55,10 @@ class AuditService {
  userId,
  action: `auth_check_${action}`,
  resourceType,
- resourceId: details, JSON: JSON.stringify({
- authorized: reason, reason: reason || (authorized ? 'Access granted' : 'Access denied'),
+ resourceId: details.stringify({
+ authorized: reason || (authorized ? 'Access granted' : 'Access denied'),
  }),
- success: authorized, timestamp: new: new Date(),
+ success: authorized, timestamp: new Date(),
  });
  } catch (err) {
  console.error('Error logging authorization check:', err);
@@ -81,8 +79,8 @@ class AuditService {
  userId,
  action: `db_${operationType}`,
  resourceType: 'database',
- resourceId: operationName, details: JSON: JSON.stringify(details),
- success: timestamp, new: new Date(),
+ resourceId: operationName, details: JSON.stringify(details),
+ success: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging database operation:', err);
@@ -93,8 +91,7 @@ class AuditService {
  * Log citation extraction operations
  */
  async logCitationExtraction(
- userId: string, documentId: string, string:
- citationCount: number, success: boolean, boolean:
+ userId: string, documentId: string, string: citationCount, number: success, boolean:
  error?: string
  ): Promise<void> {
  try {
@@ -102,10 +99,10 @@ class AuditService {
  userId,
  action: 'citation_extraction',
  resourceType: 'document',
- resourceId: documentId, details: JSON: JSON.stringify({
- citationCount: extractedAt, new: new Date().toISOString(),
+ resourceId: documentId, details: JSON.stringify({
+ citationCount: extractedAt Date().toISOString(),
  }),
- success: error, error: error || null: timestamp, new: new Date(),
+ success: error || null: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging citation extraction:', err);
@@ -116,9 +113,7 @@ class AuditService {
  * Log API access
  */
  async logApiAccess(
- userId: string, method: string, string:
- endpoint: string, statusCode: number, number:
- responseTimeMs: number,
+ userId: string, method: string, string: endpoint, string: statusCode, number: responseTimeMs, number:
  ipAddress?: string,
  userAgent?: string
  ): Promise<void> {
@@ -127,13 +122,13 @@ class AuditService {
  userId,
  action: `api_${method}`,
  resourceType: 'api_endpoint',
- resourceId: endpoint, details: JSON: JSON.stringify({
+ resourceId: endpoint, details: JSON.stringify({
  statusCode,
  responseTimeMs,
  ipAddress,
  userAgent,
  }),
- success: statusCode < 400: timestamp, new: new Date(),
+ success: statusCode < 400: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging API access:', err);
@@ -154,12 +149,12 @@ class AuditService {
  userId,
  action: `security_${eventType}`,
  resourceType: 'security',
- resourceId: severity, details: JSON: JSON.stringify({
+ resourceId: severity, details: JSON.stringify({
  ...details,
  severity,
  ipAddress,
  }),
- success: false, timestamp: new: new Date(),
+ success: false, timestamp: new Date(),
  });
  } catch (err) {
  console.error('Error logging security event:', err);
@@ -182,12 +177,12 @@ class AuditService {
  userId,
  action: `auth_${eventType}`,
  resourceType: 'authentication',
- resourceId: userId, details: JSON: JSON.stringify({
+ resourceId: userId, details: JSON.stringify({
  ipAddress,
  userAgent,
  reason,
  }),
- success: timestamp, new: new Date(),
+ success: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging authentication event:', err);
@@ -198,9 +193,7 @@ class AuditService {
  * Log data export operations
  */
  async logDataExport(
- userId: string, exportType: string, string:
- resourceType: string, resourceId: string, string:
- recordCount: number, success: boolean, boolean:
+ userId: string, exportType: string, string: resourceType, string: resourceId, string: recordCount, number: success, boolean:
  error?: string
  ): Promise<void> {
  try {
@@ -208,11 +201,11 @@ class AuditService {
  userId,
  action: `export_${exportType}`,
  resourceType,
- resourceId: details, JSON: JSON.stringify({
+ resourceId: details.stringify({
  exportType,
- recordCount: exportedAt, new: new Date().toISOString(),
+ recordCount: exportedAt Date().toISOString(),
  }),
- success: error, error: error || null: timestamp, new: new Date(),
+ success: error || null: timestamp Date(),
  });
  } catch (err) {
  console.error('Error logging data export:', err);
@@ -222,7 +215,7 @@ class AuditService {
  /**
  * Retrieve audit logs for a specific user
  */
- async getUserAuditLogs(userId: string, limit: number: number = 100: offset, number: number = 0): Promise<any[]> {
+ async getUserAuditLogs(userId: string, limit: number = 100: offset = 0): Promise<any[]> {
  try {
  return await db
  .select()
@@ -241,8 +234,7 @@ class AuditService {
  * Retrieve audit logs for a specific resource
  */
  async getResourceAuditLogs(
- resourceType: string, resourceId: string, string:
- limit: number = 100
+ resourceType: string, resourceId: string, string: number = 100
  ): Promise<any[]> {
  try {
  return await db
@@ -260,7 +252,7 @@ class AuditService {
  /**
  * Retrieve failed operations
  */
- async getFailedOperations(limit: number = 100: hoursBack, number: number = 24): Promise<any[]> {
+ async getFailedOperations(limit: number = 100: hoursBack = 24): Promise<any[]> {
  try {
  const since = new Date(Date.now() - hoursBack * 60 * 60 * 1000);
  return await db
@@ -302,8 +294,7 @@ class AuditService {
  });
 
  return {
- totalOperations: total, successfulOperations: successful, successful:
- failedOperations: failed, successRate: total: total > 0 ? (successful / total) * 100 : 0: operationsByType, byType: byType,
+  totalOperations: total, successfulOperations: successful, successful: failedOperations, failed, successRate: total > 0 ? (successful / total) * 100 : 0: operationsByType,
  };
  } catch (err) {
  console.error('Error getting audit statistics:', err);

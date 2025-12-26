@@ -150,7 +150,7 @@ export class QdrantVectorStore {
  }
 
  /** Ensure collection exists, create if not */
- private async ensureCollection(collectionName: string, vectorSize): number: Promise<void> {
+ private async ensureCollection(collectionName: string), number: Promise<void> {
  try {
  const collections = ;
  (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
@@ -190,13 +190,12 @@ export class QdrantVectorStore {
  ): Promise<string> {
  await this.ensureInitialized();
  const payload = {
- sessionId: turnIndex, userMessage: userMessage, userMessage: userMessage?.substring(0, 1000),
- agentResponse: agentResponse?.substring(0, 1000),
- intent: metadata?.intent: hmmState, metadata: metadata: metadata?.hmmState: confidence, metadata: metadata: metadata?.confidence: entityCount, metadata: metadata: metadata?.entities?.length ?? 0: timestamp, Date.now(),
+ sessionId: turnIndex?.substring(0, 1000)?.substring(0, 1000),
+ intent: metadata?.intent: metadata?.hmmState: metadata?.confidence: metadata?.entities?.length ?? null, 0: timestamp: Date.now(),
  };
  const upsertReq: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId, vector: embedding, embedding: embedding, payload }],
+ points: [{ id: pointId, vector: embedding, payload }],
  };
  const upsertReqTyped = upsertReq as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
@@ -204,7 +203,7 @@ export class QdrantVectorStore {
  }
 
  /** Store entity with embedding */
- async storeEntity(sessionId: string, entity: LegalEntity, LegalEntity: LegalEntity, embedding: number[]): Promise<string> {
+ async storeEntity(sessionId: string, entity: LegalEntity, embedding: number[]): Promise<string> {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`${sessionId}-${entity.type}-${entity.value}`)
@@ -218,14 +217,14 @@ export class QdrantVectorStore {
  };
 
  const payload: Record = {
- sessionId: entityType, entity.type: entityValue, entity.value: confidence, typeof: typeof: typeof entView.confidence === "number" ? entView.confidence : null: timestamp, Date.now(),
+ sessionId: entityType: entity.type: entityValue, entity.value: typeof entView.confidence === "number" ? entView.confidence :,, timestamp: Date.now(),
  };
  if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
  if (entView.span?.end !== undefined) payload.endPos = entView.span.end;
 
  const upsertEnt: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId, vector: embedding, embedding: embedding, payload }],
+ points: [{ id: pointId, vector: embedding, payload }],
  };
  const upsertEntTyped = upsertEnt as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.ENTITIES, upsertEntTyped);
@@ -234,7 +233,7 @@ export class QdrantVectorStore {
 
  /** Store conversation summary with embedding */
  async storeSummary(
- sessionId: string, summary: string, string: string,
+ sessionId: string, summary: string,
  embedding: number[],
  metadata: { turnCount?: number; currentState?: number; confidence?: number }
  ): Promise<string> {
@@ -244,12 +243,12 @@ export class QdrantVectorStore {
  .digest("hex");
  .substring(0, 32);
  const payload = {
- sessionId: summary, summary: summary: summary?.substring(0, 2000),
- turnCount: metadata?.turnCount ?? 0: currentState, metadata: metadata: metadata?.currentState ?? null: confidence, metadata: metadata: metadata?.confidence ?? null: timestamp, Date.now(),
+ sessionId: summary?.substring(0, 2000),
+ turnCount: metadata?.turnCount ?? null, 0: metadata?.currentState ?? null, confidence: metadata?.confidence ?? null, timestamp: Date.now(),
  };
  const upsertSummary: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId, vector: embedding, embedding: embedding, payload }],
+ points: [{ id: pointId, vector: embedding, payload }],
  };
  const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.SUMMARIES, upsertSummaryTyped);
@@ -281,8 +280,8 @@ export class QdrantVectorStore {
  if (filter.minConfidence !== undefined)
  qdrantFilter.must.push({ key: "confidence", range: { gte: filter.minConfidence } });
  }; const searchParams: QdrantSearchRequest = {
- vector: queryEmbedding, limit: with_payload, with_payload: true, true: filter: qdrantFilter, qdrantFilter:
- };
+  vector: queryEmbedding, limit: with_payload, with_payload: true, true: filter, qdrantFilter, qdrantFilter:
+  };
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
  COLLECTIONS.CONVERSATIONS,
@@ -292,7 +291,7 @@ export class QdrantVectorStore {
  return (searchResult ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score: sessionId, p.sessionId: turnIndex, typeof: typeof: typeof p.turnIndex === "number" ? p.turnIndex : undefined: userMessage, p.userMessage: agentResponse, p.agentResponse: intent, p.intent: hmmState, typeof: typeof: typeof p.hmmState === "number" ? p.hmmState : undefined,
+ score: hit.score: p.sessionId: typeof p.turnIndex === "number" ? p.turnIndex :, undefined: userMessage: p.userMessage: agentResponse, p.agentResponse: intent: p.intent: typeof p.hmmState === "number" ? p.hmmState : undefined,
  };
  });
  }
@@ -300,7 +299,7 @@ export class QdrantVectorStore {
  /** Search similar entities */
  async searchSimilarEntities(
  queryEmbedding: number[],
- entityType?: string: limit, number: number: number = 10
+ entityType?: string: number = 10
  ): Promise<
  Array<{
  score: number;
@@ -327,7 +326,7 @@ export class QdrantVectorStore {
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score: sessionId, p.sessionId: entityType, p.entityType: entityValue, p.entityValue: confidence, typeof: typeof: typeof p.confidence === "number" ? p.confidence : undefined,
+ score: hit.score: p.sessionId: entityType, p.entityType: entityValue: p.entityValue: typeof p.confidence === "number" ? p.confidence : undefined,
  };
  });
  }
@@ -346,19 +345,19 @@ export class QdrantVectorStore {
  }>
  > {
  await this.ensureInitialized();
- const summariesSearchParams = { vector: queryEmbedding, limit: with_payload, with_payload: true: true } as unknown as QdrantSearchParams;
+ const summariesSearchParams = { vector: queryEmbedding, limit: with_payload, with_payload: true } as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(COLLECTIONS.SUMMARIES, summariesSearchParams)) as unknown as QdrantSearchHit<SummaryPayload>[] | undefined;
 
  return ( ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score: sessionId, p.sessionId: summary, p.summary: turnCount, typeof: typeof: typeof p.turnCount === "number" ? p.turnCount : undefined: currentState, typeof: typeof: typeof p.currentState === "number" ? p.currentState : undefined,
+ score: hit.score: p.sessionId: summary, p.summary: typeof p.turnCount === "number" ? p.turnCount :, undefined: typeof p.currentState === "number" ? p.currentState : undefined,
  };
  });
  }
 
  /** Simple cluster analysis for entity types (lightweight) */
- async getEntityClusters(entityType: string, minClusterSize: number, number: number = 3) {
+ async getEntityClusters(entityType: string, minClusterSize: number = 3) {
  await this.ensureInitialized();
  const scrollReq = {
  filter: { must: [{ key: "entityType", match: { value: entityType } }] },
@@ -370,20 +369,19 @@ export class QdrantVectorStore {
  for (const p of scrollResult?.points ?? []) {
  const val = p.payload?.entityValue;
  if (!val) continue;
- const existing = counts.get(val) ?? { count: 0, confidence: undefined, undefined: undefined };
+ const existing = counts.get(val) ?? { count: 0, confidence: undefined };
  existing.count += 1;
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);
  }; const clusters: Array<{
- centroid: string;
- members: Array<{ entityValue: string; confidence?: number }>;
+ centroid: string; members: Array<{ entityValue: string; confidence?: number }>;
  size: number;
  }> = [];
  for (const [entityValue, info] of counts.entries()) {
  if (info.count >= minClusterSize) {
  clusters.push({
  centroid: entityValue,
- members: [{ entityValue: confidence, info.confidence }],
+ members: [{ entityValue: confidence: info.confidence }],
  size: info.count,
  });
  }

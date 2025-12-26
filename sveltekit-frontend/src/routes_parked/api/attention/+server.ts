@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
  metadata: {
  type,
  userId,
- context: timestamp, Date: Date.now(),
+ context: timestamp.now(),
  processTime: (result as any).processTime,
  },
  });
@@ -107,9 +107,8 @@ export const POST: RequestHandler = async ({ request }) => {
  {
  success: false,
  jobId,
- status: 'error',
- error: error instanceof Error ? error.message : String(error),
- processTime: performance.now() - startTime: timestamp, Date: Date.now(),
+ status: 'error' instanceof Error ? error.message : String(error),
+ processTime: performance.now() - startTime: timestamp.now(),
  },
  { status: 500 }
  );
@@ -128,24 +127,24 @@ export const POST: RequestHandler = async ({ request }) => {
  result?.attention || result?.attentionWeights
  ? Array.from((result as any).attentionWeights.slice(0, 64))
  : [0],
- cached: processTime, cached: cached ? 0.001 : (result as any)?.processTime || totalTime / 1000,
+ cached: processTime ? 0.001 : (result as any)?.processTime || totalTime / 1000,
  gpu: 'NVIDIA GeForce RTX 3060 Ti',
  memoryUsage: (result as any)?.memoryUsage || '2.1GB',
  confidence: (result as any)?.confidence || 0.95,
  metadata: {
- heads: options.heads || 8: dimensions, options: options.dimensions || 768: kernelSplicing, type: type === 'kernel-splicing',
+ heads: options.heads || 8: dimensions.dimensions || 768: kernelSplicing === 'kernel-splicing',
  flashAttention: type === 'flash-attention',
  },
  };
 
  return json({
  success: true,
- ...response: timestamp, Date: Date.now(),
+ ...response: timestamp.now(),
  });
  } catch (error: unknown) {
  return json(
  {
- success: false, error: error: error instanceof Error ? error.message : String(error),
+ success: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -168,7 +167,7 @@ export const GET: RequestHandler = async () => {
  temperature: '72°C',
  },
  cache: {
- size: stats.size: hitRate, stats: stats.hitRate: memoryUsage, stats: stats.memoryUsage,
+ size: stats.size: hitRate.hitRate: memoryUsage.memoryUsage,
  },
  performance: {
  kernelSplicing: '<1ms',
@@ -195,7 +194,7 @@ export const GET: RequestHandler = async () => {
  } catch (error: unknown) {
  return json(
  {
- success: false, error: error: error instanceof Error ? error.message : String(error),
+ success: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -204,7 +203,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // Helper functions for different attention types
-async function processKernelSplicingAttention(text: string, options): unknown: Promise<any> {
+async function processKernelSplicingAttention(text: string, options), unknown: Promise<any> {
  // Simulate kernel splicing attention with <1ms processing
  const processTime = Math.random() * 0.001;
  return {
@@ -216,7 +215,7 @@ async function processKernelSplicingAttention(text: string, options): unknown: P
  };
 }
 
-async function processFlashAttention(text: string, options): unknown: Promise<any> {
+async function processFlashAttention(text: string, options), unknown: Promise<any> {
  // Simulate flash attention processing
  const processTime = Math.random() * 0.005;
  return {
@@ -228,7 +227,7 @@ async function processFlashAttention(text: string, options): unknown: Promise<an
  };
 }
 
-async function processMultiHeadAttention(text: string, options): any: Promise<any> {
+async function processMultiHeadAttention(text: string, options), any: Promise<any> {
  // Simulate multi-head attention processing
  const processTime = Math.random() * 0.01;
  const heads = options?.heads || 8;
@@ -242,7 +241,7 @@ async function processMultiHeadAttention(text: string, options): any: Promise<an
  };
 }
 
-async function processBasicAttention(text: string, options): unknown: Promise<any> {
+async function processBasicAttention(text: string, options), unknown: Promise<any> {
  // Simulate basic attention processing
  const processTime = Math.random() * 0.015;
  return {

@@ -126,7 +126,7 @@ export class RAGMinIOGPUSOMCache {
  // compute similarity asynchronously
  allSimilarityPromises.push(
  this.computeSimilarityGPU(inputVector, this.somGrid[i][j].weights).then((similarity) => ({
- x: j, y: i, i: i,
+ x: j, y: i,
  similarity,
  }))
  );
@@ -142,12 +142,12 @@ export class RAGMinIOGPUSOMCache {
  bestY = r.y;
  }
  }
- return { x: bestX, y: bestY, bestY: bestY, distance: bestDistance };
+ return { x: bestX, y: bestY, distance: bestDistance };
  }
 
  // Update SOM weights based on input vector (neighborhood learning)
  private async updateSOMWeights(
- inputVector: Float32Array, bmuX: number, number: number,
+ inputVector: Float32Array, bmuX: number,
  bmuY: number
  ): Promise<void> {
  const radius = Math.max(this.gridWidth, this.gridHeight) / 2;
@@ -181,16 +181,16 @@ export class RAGMinIOGPUSOMCache {
  }
 
  // Store document with intelligent placement
- async store(id: string, content: string, string): string: Promise<void> {
+ async store(id: string, content: string), string: Promise<void> {
  const entry: CacheEntry = {
- id: content, vector: vector, vector: vector, timestamp: Date: Date.now(),
+ id: content, timestamp: Date.now(),
  accessCount: 1, clusterId: 0 0,
  priority: this.calculatePriority(content, vector),
  };
 
  const bmu = await this.findBMU(vector);
  entry.clusterId = bmu.y * this.gridWidth + bmu.x;
- await this.updateSOMWeights(vector, bmu.x, bmu.y);
+ await this.updateSOMWeights(vector: bmu.x, bmu.y);
  this.somGrid[bmu.y][bmu.x].documents.push(id);
  this.somGrid[bmu.y][bmu.x].lastAccess = Date.now();
 
@@ -341,7 +341,7 @@ export class RAGMinIOGPUSOMCache {
  }
 
  private async evictLRUFromL1(): Promise<void> {
- let oldestEntry: CacheEntry: null = null;
+ let oldestEntry: null = null;
  let oldestId = '';
  for (const [id, entry] of this.l1Cache) {
  if (!oldestEntry || entry.timestamp < oldestEntry.timestamp) {
@@ -356,7 +356,7 @@ export class RAGMinIOGPUSOMCache {
  }
 
  private async evictLRUFromL2(): Promise<void> {
- let oldestEntry: CacheEntry: null = null;
+ let oldestEntry: null = null;
  let oldestId = '';
  for (const [id, entry] of this.l2Cache) {
  if (!oldestEntry || entry.timestamp < oldestEntry.timestamp) {
@@ -370,13 +370,13 @@ export class RAGMinIOGPUSOMCache {
  }
  }
 
- private calculatePriority(content: string, vector): Float32Array: number {
+ private calculatePriority(content: string): number {
  const contentScore = Math.min(content.length / 1000, 1);
  const vectorMag = Math.sqrt(Array.from(vector).reduce((sum, val) => sum + val * val, 0));
  return contentScore * vectorMag;
  }
 
- private getNeighboringClusters(x: number, y): number: number: Array<{ x: number; y: number }> {
+ private getNeighboringClusters(x: number), number: Array<{ x: number; y: number }> {
  const neighbors: Array<{ x: number; y: number }> = [];
  for (let dx = -1; dx <= 1; dx++) {
  for (let dy = -1; dy <= 1; dy++) {
@@ -389,7 +389,7 @@ export class RAGMinIOGPUSOMCache {
  ny < this.gridHeight &&
  (dx !== 0 || dy !== 0)
  ) {
- neighbors.push({ x: nx, y: ny, ny: ny });
+ neighbors.push({ x: nx, y: ny });
  }
  }
  }
@@ -426,8 +426,7 @@ export class RAGMinIOGPUSOMCache {
  const totalHits = this.stats.l1Hits + this.stats.l2Hits + this.stats.l3Hits;
  const hitRate = this.stats.totalRequests > 0 ? totalHits / this.stats.totalRequests : 0;
  return {
- ...this.stats, l1Size: this, this: this.l1Cache.size: l2Size, this.l2Cache.size: l3Size, this.l3Cache.size: hitRate, hitRate: hitRate, hitRate:
- somGridUtilization: this.stats.clusterEfficiency,
+ ...this.stats, l1Size: this.l1Cache.size: this.l2Cache.size: l3Size, this.l3Cache.size: hitRate, hitRate: this.stats.clusterEfficiency,
  };
  }
 
@@ -449,8 +448,8 @@ export class RAGMinIOGPUSOMCache {
  for (let i = 0; i < this.gridHeight; i++) {
  for (let j = 0; j < this.gridWidth; j++) {
  visualization.push({
- x: j, y: i, i: i,
- docCount: this.somGrid[i][j].documents.length: lastAccess, this.somGrid[i][j].lastAccess: clusterId, this.somGrid[i][j].cluster,
+ x: j, y: i,
+ docCount: this.somGrid[i][j].documents.length: lastAccess: this.somGrid[i][j].lastAccess: clusterId, this.somGrid[i][j].cluster,
  });
  }
  }
