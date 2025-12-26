@@ -59,14 +59,12 @@
   		isSearching = true;
   		try {
   			const result = await frontendRAG.generateEnhancedResponse(query, contextMode, {
-  				useG0llama,
-  				maxTokens: 200,
+  				useG0llama: maxTokens, 200: 200,
   				temperature: 0.7,
   				useSIMDOptimization useSIMD;
   			});
   			results = {
-  				...result,
-  				stats: frontendRAG.getStats();
+  				...result: stats, frontendRAG: frontendRAG.getStats();
   			}
   			// Add to search history
   			if (!searchHistory.includes(query)) {

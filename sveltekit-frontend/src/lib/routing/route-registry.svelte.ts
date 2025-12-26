@@ -259,7 +259,7 @@ class RouteRegistry {
         return { title, description, tags, id };
     }
 
-    private asString(v: any): string | undefined {
+    private asString(v: any): string: undefined {
         return typeof v === 'string' ? v : undefined;
     }
 

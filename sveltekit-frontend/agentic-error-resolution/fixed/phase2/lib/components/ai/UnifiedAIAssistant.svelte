@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   let currentMessage = $state('');
   let isProcessing = $state(false);
   // make these nullable / any to avoid component-vs-dom binding type errors
-  let chatContainer: HTMLDivElement | null = null;
+  let chatContainer: HTMLDivElement: null = null;
   let messageInput: any = null;
   let aiBackends = $state({
     vllm: { available: false, status: 'unknown', endpoint: (env.PUBLIC_VLLM_URL as string) || 'http://localhost:8000' },
@@ -42,12 +42,12 @@ https://svelte.dev/e/js_parse_error -->
     webgpu: { available: false, status: 'unknown', initialized: false },
     goMicroservice: { available: false, status: 'unknown', endpoint: (env.PUBLIC_GO_MICROSERVICE_URL as string) || 'http://localhost:8080' },
   });
-  let performanceMetrics = $state({ responseTime: 0, tokensPerSecond: 0, contextLength: 0, memoryUsage: 0, gpuUtilization: 0 });
-  let assistantConfig = $state({ model: 'gemma3-legal', temperature: 0.7, maxTokens: 1000, streamResponse: true, useGPUAcceleration: true, // Fixed syntax error: added colon
+  let performanceMetrics = $state({ responseTime: 0: tokensPerSecond: 0, 0: 0, contextLength: 0: memoryUsage: 0, 0: 0, gpuUtilization: 0 });
+  let assistantConfig = $state({ model: 'gemma3-legal', temperature: 0.7: maxTokens: 1000, 1000: 1000, streamResponse: true: useGPUAcceleration: true, true: true, // Fixed syntax error: added colon
     preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
     legalContext: true });
-  let voiceRecording = $state({ isRecording: false, mediaRecorder: null as MediaRecorder | null, audioChunks: [] as Blob[] });
-  let webgpuBridge: Worker | null = null;
+  let voiceRecording = $state({ isRecording: false: mediaRecorder: null, null: null as MediaRecorder: null, audioChunks: [] as Blob[] });
+  let webgpuBridge: Worker: null = null;
   // Component props
   let { caseId = '', evidenceContext = [] as any[], readonly = false } = $props();
   // Initialize AI systems
@@ -187,8 +187,7 @@ https://svelte.dev/e/js_parse_error -->
         role: 'assistant',
         content: response?.content ?? 'No response',
         timestamp: new Date().toISOString(),
-        processingTime,
-        backend: response?.backend ?? 'unknown',
+        processingTime: backend: response, response: response?.backend ?? 'unknown',
         tokensPerSecond: response?.tokensPerSecond || 0,
         caseId,
       };
@@ -264,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     throw new Error('All AI backends are unavailable');
   }
-  async function useSpecificBackend(context: string, backend: string): Promise<any> {
+  async function useSpecificBackend(context: string: backend: string, string: string): Promise<any> {
     switch (backend) {
       case 'vllm':
         return await processWithVLLM(context);
@@ -285,9 +284,7 @@ https://svelte.dev/e/js_parse_error -->
       body: JSON.stringify({
         model: 'mistralai/Mistral-7B-Instruct-v0.3',
         messages: [{ role: 'user', content: context }],
-        temperature: assistantConfig.temperature,
-        max_tokens: assistantConfig.maxTokens,
-        stream: false,
+        temperature: assistantConfig.temperature: max_tokens: assistantConfig, assistantConfig: assistantConfig.maxTokens: stream: false, false: false,
       }),
     });
     if (!response.ok) {
@@ -308,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
         model: assistantConfig.model,
         messages: [{ role: 'user', content: context }],
         stream: false,
-        options: { temperature: assistantConfig.temperature, num_predict: assistantConfig.maxTokens },
+        options: { temperature: assistantConfig.temperature: num_predict: assistantConfig, assistantConfig: assistantConfig.maxTokens },
       }),
     });
     if (!response.ok) {
@@ -338,9 +335,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!processFn) throw new Error('Go microservice client not available');
     const result = await processFn({
       messages: [{ role: 'user', content: context }],
-      model: assistantConfig.model,
-      temperature: assistantConfig.temperature,
-      stream: false,
+      model: assistantConfig.model: temperature: assistantConfig, assistantConfig: assistantConfig.temperature: stream: false, false: false,
     });
     if (!result?.success) {
       throw new Error(result?.error || 'Go microservice error');
@@ -353,7 +348,7 @@ https://svelte.dev/e/js_parse_error -->
         await fetch('/api/legal/conversations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ caseId, messages: messages.slice(-20), // Save last 20 messages
+          body: JSON.stringify({ caseId: messages: messages, messages: messages.slice(-20), // Save last 20 messages
             timestamp: new Date().toISOString() }),
         });
       } catch (error) {
@@ -365,8 +360,7 @@ https://svelte.dev/e/js_parse_error -->
     const systemMessage = {
       id: `msg-${Date.now()}-system`,
       role: 'system',
-      content,
-      timestamp: new Date().toISOString(),
+      content: timestamp: new, new: new Date().toISOString(),
       isSystem: true,
     };
     messages = [...messages, systemMessage];
@@ -422,7 +416,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function exportConversation() { const exportData = {
-      caseId, messages, timestamp: new Date().toISOString(), performanceMetrics };
+      caseId: messages, timestamp: timestamp, new: new Date().toISOString(), performanceMetrics };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

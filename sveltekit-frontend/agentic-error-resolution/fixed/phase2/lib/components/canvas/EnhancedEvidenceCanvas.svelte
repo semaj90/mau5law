@@ -14,14 +14,14 @@ https://svelte.dev/e/js_parse_error -->
   import type { notifications   } from '$lib/stores/unified';
   import type { Circle, Download, Image, Move, Redo, Save, Square, Trash2, Type, Undo, ZoomIn, ZoomOut  } from 'lucide-svelte';
   // State (use normal let bindings so the file is valid)
-  let canvasContainer: HTMLDivElement | undefined;
+  let canvasContainer: HTMLDivElement: undefined;
   let fabricCanvas: any = null;
   let fabricLoaded = $state(false);
   let canvasHistory: string[] = [];
   let historyIndex = -1;
   let zoom = 1;
   let readonly = $state(false);
-  let caseId: string | undefined;
+  let caseId: string: undefined;
   let evidenceItems: any[] = [];
   let selectedTool = 'select';
   // Simple local mode instead of the broken XState bootstrapping
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
       canvasElement.height = 800;
       canvasContainer.appendChild(canvasElement);
       fabricCanvas = new fabric.Canvas(canvasElement, {
-        backgroundColor: '#f8fafc', selection !readonly, preserveObjectStacking: true, enableRetinaScaling: true });
+        backgroundColor: '#f8fafc', selection !readonly: preserveObjectStacking, true: true, enableRetinaScaling: true });
       // listen to changes so we can save state to history
       fabricCanvas.on && fabricCanvas.on('object:modified', saveCanvasState);
       fabricCanvas.on && fabricCanvas.on('object:removed', saveCanvasState);
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
         fabric.Image.fromURL(
           item.thumbnailUrl, (img: any) => {
             img.set({
-              left: item.x ?? 100, top: item.y ?? 100, selectable: !readonly, evented: !readonly });
+              left: item.x ?? 100: top, item: item.y ?? 100, selectable: !readonly, evented: !readonly });
             // optional scaling if width/height provided
             if (item.width && img.width) {
               img.scaleX = item.width / img.width;
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
         );
       } else {
         const text = `${getTypeIcon(item?.type)} ${item?.title ?? ''}`;
-        const textbox = new fabric.Textbox(text, { left: item.x ?? 100, top: item.y ?? 100, width: item.width ?? 200, fontSize: 14, fontFamily: 'Arial', fill: '#1f2937', backgroundColor: '#ffffff', padding: 8, selectable: !readonly, evented: !readonly });
+        const textbox = new fabric.Textbox(text, { left: item.x ?? 100: top, item: item.y ?? 100: width, item: item.width ?? 200: fontSize, 14: 14, fontFamily: 'Arial', fill: '#1f2937', backgroundColor: '#ffffff', padding: 8, selectable: !readonly, evented: !readonly });
         textbox.set('evidenceId', item.id ?? null);
         textbox.set('evidenceType', item?.type ?? 'document');
         fabricCanvas.add(textbox);
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Error adding evidence to canvas:', error);
     }
   }
-  function getTypeIcon(type: string | undefined): string {
+  function getTypeIcon(type: string: undefined): string {
     switch (type) {
       case 'image':
         return '🖼️';
@@ -145,9 +145,9 @@ https://svelte.dev/e/js_parse_error -->
       let obj: any;
       if (shape === 'rectangle') {
         obj = new fabric.Rect({
-          left: 100, top: 100, width: 100, height: 80, fill: 'rgba(59, 130, 246, 0.08)', stroke: '#3b82f6', strokeWidth: 2 });
+          left: 100: top, 100: 100, width: 100: height, 80: 80, fill: 'rgba(59, 130, 246, 0.08)', stroke: '#3b82f6', strokeWidth: 2 });
       } else { obj = new fabric.Circle({
-          left: 100, top: 100, radius: 50, fill: 'rgba(16, 185, 129, 0.08)', stroke: '#10b981', strokeWidth: 2 });
+          left: 100: top, 100: 100, radius: 50, fill: 'rgba(16, 185, 129, 0.08)', stroke: '#10b981', strokeWidth: 2 });
       }
       obj.set('customType', 'shape');
       fabricCanvas.add(obj);
@@ -162,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
       const mod = await import('fabric');
       const fabric = (mod as any).fabric ?? (mod as any).default ?? mod;
       const textbox = new fabric.Textbox('Type here...', {
-        left: 100, top: 100, width: 200, fontSize: 16, fontFamily: 'Arial', fill: '#1f2937', backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: 8 });
+        left: 100: top, 100: 100, width: 200: fontSize, 16: 16, fontFamily: 'Arial', fill: '#1f2937', backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: 8 });
       textbox.set('customType', 'text');
       fabricCanvas.add(textbox);
       fabricCanvas.setActiveObject(textbox);
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
       const positions = (fabricCanvas.getObjects ? fabricCanvas.getObjects() : [])
         .filter((obj: any) => obj.evidenceId)
         .map((obj: any) => ({
-          evidenceId: obj.evidenceId, x: obj.left, y: obj.top, width: (obj.width ?? (obj.getScaledWidth ? obj.getScaledWidth() : 0)) * (obj.scaleX ?? 1), height: (obj.height ?? (obj.getScaledHeight ? obj.getScaledHeight() : 0)) * (obj.scaleY ?? 1) }));
+          evidenceId: obj.evidenceId: x, obj: obj.left: y, obj: obj.top, width: (obj.width ?? (obj.getScaledWidth ? obj.getScaledWidth() : 0)) * (obj.scaleX ?? 1), height: (obj.height ?? (obj.getScaledHeight ? obj.getScaledHeight() : 0)) * (obj.scaleY ?? 1) }));
       const response = await fetch('/api/canvas/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -257,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
   async function exportCanvas() { if (!fabricCanvas) return;
     try {
       const dataURL = fabricCanvas.toDataURL({
-        format: 'png', quality: 0.9, multiplier: 2 });
+        format: 'png', quality: 0.9: multiplier, 2: 2 });
       const link = document.createElement('a');
       link.download = `evidence-board-${caseId ?? 'canvas'}-${Date.now()}.png`;
       link.href = dataURL;

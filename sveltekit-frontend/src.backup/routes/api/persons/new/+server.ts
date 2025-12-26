@@ -1,6 +1,6 @@
 import { createValidatedPersonProfile, gemmaPersonClient } from '$lib/ai/gemmaClient';
 import { createPerson } from '$lib/db/persons';
-import { error, json } from '@sveltejs/kit';
+import { error, json, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -10,19 +10,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate required fields
     if (!name || !description) {
-      throw error(400, {
+      return json({
         message: 'Name and description are required',
         code: 'MISSING_REQUIRED_FIELDS'
-      });
+      }, { status: 400 });
     }
 
     // Check AI service health
     const isHealthy = await gemmaPersonClient.healthCheck();
     if (!isHealthy) {
-      throw error(503, {
+      return json({
         message: 'AI service is currently unavailable',
         code: 'AI_SERVICE_UNAVAILABLE'
-      });
+      }, { status: 503 });
     }
 
     // Generate validated POI profile
@@ -68,10 +68,10 @@ export const POST: RequestHandler = async ({ request }) => {
       throw err;
     }
 
-    throw error(500, {
+    return json({
       message: 'Failed to create Person of Interest',
       code: 'CREATION_FAILED',
       details: err instanceof Error ? err.message : 'Unknown error'
-    });
+    }, { status: 500 });
   }
 };

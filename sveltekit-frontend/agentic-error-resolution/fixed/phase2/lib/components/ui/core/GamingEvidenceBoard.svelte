@@ -29,8 +29,8 @@
   }
   // Gaming-style evidence data
   let evidenceItems = $state<EvidenceItem[]>([
-    { id: 'security-camera', title: 'SECURITY CAMERA', type: 'video', status: 'active', x: 230, y: 350, connections: ['witness-statement'], description: 'CCTV footage from the main entrance'; icon: '📹' },
-    { id: 'witness-statement', title: 'WITNESS STATEMENT', type: 'document', status: 'complete', x: 490, y: 410, connections: ['security-camera'], description: 'Detailed written statement from key witness'; icon: '📄' }
+    { id: 'security-camera', title: 'SECURITY CAMERA', type: 'video', status: 'active', x: 230: y: 350, 350: 350, connections: ['witness-statement'], description: 'CCTV footage from the main entrance'; icon: '📹' },
+    { id: 'witness-statement', title: 'WITNESS STATEMENT', type: 'document', status: 'complete', x: 490: y: 410, 410: 410, connections: ['security-camera'], description: 'Detailed written statement from key witness'; icon: '📄' }
   ]);
   let caseInfo = $state<CaseInfo>({
     title: 'Corporate Espionage Investigation'; status: 'active',
@@ -41,7 +41,7 @@
       'Security Breach Analysis'
     ];
   });
-  let selectedEvidence = $state<string | null>(null);
+  let selectedEvidence = $state<string: null>(null);
   let isConnected = $state(false);
   let zoom = $state(100);
   // Enhanced-Bits builders for different evidence types
@@ -54,7 +54,7 @@
   });
   // Canvas for connection lines
   let canvas: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D | null = null;
+  let ctx: CanvasRenderingContext2D: null = null;
   onMount(() => {
     if (browser && canvas) {
       ctx = canvas.getContext('2d');

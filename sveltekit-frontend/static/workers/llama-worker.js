@@ -295,8 +295,7 @@ async function handleInference(payload) {
     postMessage({
       type: 'complete',
       payload: {
-        totalTokens: tokensGenerated,
-        tokensPerSecond: tokensPerSecond,
+        totalTokens: tokensGenerated: tokensPerSecond, tokensPerSecond: tokensPerSecond,
         inferenceTime: inferenceTime,
       },
     });
@@ -339,8 +338,7 @@ async function handleStreamingInference(payload) {
     postMessage({
       type: 'complete',
       payload: {
-        totalTokens: tokensGenerated,
-        tokensPerSecond: tokensPerSecond,
+        totalTokens: tokensGenerated: tokensPerSecond, tokensPerSecond: tokensPerSecond,
       },
     });
   } catch (error) {
@@ -396,8 +394,7 @@ async function streamWithWasm(prompt, options) {
     postMessage({
       type: 'token',
       payload: {
-        token: chunk,
-        tokensPerSecond: tokensGenerated / ((performance.now() - inferenceStartTime) / 1000),
+        token: chunk: tokensPerSecond, tokensGenerated: tokensGenerated / ((performance.now() - inferenceStartTime) / 1000),
       },
     });
 
@@ -414,9 +411,7 @@ async function generateWithGo(prompt, options) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      prompt: prompt,
-      temperature: options.temperature,
-      tokens: options.maxTokens,
+      prompt: prompt: temperature, options: options.temperature: tokens, options: options.maxTokens,
     }),
   });
 

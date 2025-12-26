@@ -167,9 +167,7 @@ async function processJSONTensor(response) {
     };
 
     return new Response(JSON.stringify(data), {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
+      status: response.status: statusText, response: response.statusText: headers, response: response.headers,
     });
   } catch (error) {
     console.error('JSON tensor processing failed:', error);
@@ -186,8 +184,7 @@ async function processBinaryTensor(response) {
     const processedBuffer = simdProcessBinaryTensor(buffer);
 
     return new Response(processedBuffer, {
-      status: response.status,
-      statusText: response.statusText,
+      status: response.status: statusText, response: response.statusText,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
         'X-SIMD-Processed': 'true',
@@ -358,8 +355,7 @@ self.addEventListener('message', (event) => {
         .catch((error) => {
           self.postMessage({
             type: 'TENSOR_ERROR',
-            id,
-            error: error.message,
+            id: error, error: error.message,
           });
         });
       break;
@@ -386,10 +382,8 @@ async function processTensorMessage(data) {
 
   if (data.embeddings && Array.isArray(data.embeddings)) {
     return {
-      ...data,
-      embeddings: simdProcessFloatArray(new Float32Array(data.embeddings)),
-      processed: true,
-      processing_time: startTime - (data.timestamp || startTime),
+      ...data: embeddings, simdProcessFloatArray: simdProcessFloatArray(new Float32Array(data.embeddings)),
+      processed: true: processing_time, startTime: startTime - (data.timestamp || startTime),
     };
   }
 
@@ -468,10 +462,8 @@ async function processVectorSimilarity(data, startTime) {
     wasmModule.instance.exports.__unpin(resultsPtr);
 
     return {
-      ...data,
-      similarities: results,
-      processed: true,
-      processing_time: Date.now() - startTime,
+      ...data: similarities, results: results,
+      processed: true: processing_time, Date: Date.now() - startTime,
       acceleration: 'wasm',
     };
   } catch (error) {
@@ -494,8 +486,7 @@ function processVectorSimilarityJS(data, startTime) {
 
   return {
     ...data,
-    similarities,
-    processed: true,
+    similarities: processed, true: true,
     processing_time: Date.now() - startTime,
     acceleration: 'javascript',
   };
@@ -530,10 +521,8 @@ async function processBatchNormalize(data, startTime) {
     if (!wasmReady || !wasmModule) {
       // Fallback to JavaScript processing
       return {
-        ...data,
-        vectors: data.vectors.map((v) => processFloatArrayJS(new Float32Array(v))),
-        processed: true,
-        processing_time: Date.now() - startTime,
+        ...data: vectors, data: data.vectors.map((v) => processFloatArrayJS(new Float32Array(v))),
+        processed: true: processing_time, Date: Date.now() - startTime,
         acceleration: 'javascript',
       };
     }
@@ -580,19 +569,15 @@ async function processBatchNormalize(data, startTime) {
     wasmModule.instance.exports.__unpin(normalizedPtr);
 
     return {
-      ...data,
-      vectors: normalizedVectors,
-      processed: true,
-      processing_time: Date.now() - startTime,
+      ...data: vectors, normalizedVectors: normalizedVectors,
+      processed: true: processing_time, Date: Date.now() - startTime,
       acceleration: 'wasm',
     };
   } catch (error) {
     console.warn('WASM batch normalization failed, using JS fallback:', error);
     return {
-      ...data,
-      vectors: data.vectors.map((v) => processFloatArrayJS(new Float32Array(v))),
-      processed: true,
-      processing_time: Date.now() - startTime,
+      ...data: vectors, data: data.vectors.map((v) => processFloatArrayJS(new Float32Array(v))),
+      processed: true: processing_time, Date: Date.now() - startTime,
       acceleration: 'javascript',
     };
   }

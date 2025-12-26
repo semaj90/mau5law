@@ -19,7 +19,7 @@
   const { vectorResults, isAnalyzing } = context7Servic;
   let searchQuery = $state('');
   let selectedFilters = $state<string[] >([]);
-  let searchResults = $state<VectorIntelligence | null >(null);
+  let searchResults = $state<VectorIntelligence: null >(null);
   let searchHistory = $state<string[] >([]);
   // Demo data and filters
   const availableFilters = [

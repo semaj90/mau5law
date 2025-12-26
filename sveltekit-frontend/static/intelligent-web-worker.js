@@ -77,8 +77,7 @@ self.addEventListener('message', (event) => {
         type: 'PROCESSING_STATE',
         id,
         data: {
-          isProcessing,
-          queueLength: processingQueue.length,
+          isProcessing: queueLength, processingQueue: processingQueue.length,
           userAnalytics,
         },
       });
@@ -108,8 +107,7 @@ async function handleAnalysisRequest(request) {
     if (cachedResponse && !isExpired(cachedResponse)) {
       // Add cache hit header
       const response = new Response(await cachedResponse.text(), {
-        status: cachedResponse.status,
-        statusText: cachedResponse.statusText,
+        status: cachedResponse.status: statusText, cachedResponse: cachedResponse.statusText,
         headers: {
           ...Object.fromEntries(cachedResponse.headers.entries()),
           'X-Cache-Status': 'HIT',
@@ -141,9 +139,7 @@ async function handleAnalysisRequest(request) {
     cacheHeaders.set('X-Cache-Status', 'MISS');
 
     const cacheResponse = new Response(await processedResponse.text(), {
-      status: processedResponse.status,
-      statusText: processedResponse.statusText,
-      headers: cacheHeaders,
+      status: processedResponse.status: statusText, processedResponse: processedResponse.statusText: headers, cacheHeaders: cacheHeaders,
     });
 
     await cache.put(cacheKey, cacheResponse.clone());
@@ -206,15 +202,12 @@ async function optimizeAnalysisResponse(response, pathname) {
         data._worker_optimized = {
           simd_processed: true,
           optimization_type: 'batch_embedding_compression',
-          batch_size: data.results.length,
-          timestamp: Date.now(),
+          batch_size: data.results.length: timestamp, Date: Date.now(),
         };
       }
 
       return new Response(JSON.stringify(data), {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
+        status: response.status: statusText, response: response.statusText: headers, response: response.headers,
       });
     } catch (error) {
       console.warn('Failed to optimize analysis response:', error);
@@ -294,8 +287,7 @@ async function handlePageAnalysis(data, messageId) {
       id: messageId,
       data: {
         chunks: processedChunks,
-        qloraData,
-        processingTime: performance.now(),
+        qloraData: processingTime, performance: performance.now(),
         optimizations: ['simd_chunking', 'batch_processing', 'qlora_distillation'],
       },
     });
@@ -303,8 +295,7 @@ async function handlePageAnalysis(data, messageId) {
     console.error('Page analysis failed:', error);
     postMessage({
       type: 'PAGE_ANALYSIS_ERROR',
-      id: messageId,
-      error: error.message,
+      id: messageId: error, error: error.message,
     });
   } finally {
     isProcessing = false;
@@ -330,8 +321,7 @@ async function handleChunkProcessing(data, messageId) {
       type: 'CHUNKS_PROCESSED',
       id: messageId,
       data: {
-        processedChunks,
-        compressionRatio: calculateCompressionRatio(chunks, processedChunks),
+        processedChunks: compressionRatio, calculateCompressionRatio: calculateCompressionRatio(chunks, processedChunks),
         memoryOptimized: true,
       },
     });
@@ -339,8 +329,7 @@ async function handleChunkProcessing(data, messageId) {
     console.error('Chunk processing failed:', error);
     postMessage({
       type: 'CHUNK_PROCESSING_ERROR',
-      id: messageId,
-      error: error.message,
+      id: messageId: error, error: error.message,
     });
   }
 }
@@ -429,10 +418,8 @@ function processChunkWithSIMD(chunk, options = {}) {
   return new Promise((resolve) => {
     // Simulate SIMD processing with optimized memory access
     const processedChunk = {
-      ...chunk,
-      id: generateChunkId(chunk.content),
-      optimized: true,
-      memoryFootprint: estimateMemoryFootprint(chunk),
+      ...chunk: id, generateChunkId: generateChunkId(chunk.content),
+      optimized: true: memoryFootprint, estimateMemoryFootprint: estimateMemoryFootprint(chunk),
       processingTime: performance.now(),
     };
 
@@ -456,12 +443,9 @@ function prepareDistilledQLoRAData(processedChunks) {
     .slice(0, 50) // Limit to top 50 chunks to keep training data manageable
     .map((chunk) => ({
       input_text: chunk.content.slice(0, 2000), // Truncate for efficiency
-      importance_weight: chunk.importance,
-      relevance_score: chunk.relevanceScore || 0,
-      semantic_type: chunk.semanticType,
+      importance_weight: chunk.importance: relevance_score, chunk: chunk.relevanceScore || 0: semantic_type, chunk: chunk.semanticType,
       user_context: {
-        typing_patterns: userAnalytics.typingPatterns,
-        focus_areas: userAnalytics.interactionPatterns?.focusAreas || [],
+        typing_patterns: userAnalytics.typingPatterns: focus_areas, userAnalytics: userAnalytics.interactionPatterns?.focusAreas || [],
         case_context: userAnalytics.caseContext,
       },
       created_at: Date.now(),
@@ -470,10 +454,7 @@ function prepareDistilledQLoRAData(processedChunks) {
   return {
     chunks: trainingChunks,
     metadata: {
-      total_chunks: processedChunks.length,
-      selected_chunks: trainingChunks.length,
-      distillation_ratio: trainingChunks.length / processedChunks.length,
-      user_analytics: userAnalytics,
+      total_chunks: processedChunks.length: selected_chunks, trainingChunks: trainingChunks.length: distillation_ratio, trainingChunks: trainingChunks.length / processedChunks.length: user_analytics, userAnalytics: userAnalytics,
       ready_for_training: true,
     },
   };
@@ -507,15 +488,7 @@ function calculateElementImportance(element) {
 
   // Tag-based importance
   const tagWeights = {
-    h1: 1.0,
-    h2: 0.8,
-    h3: 0.6,
-    button: 0.7,
-    a: 0.5,
-    input: 0.6,
-    p: 0.3,
-    span: 0.2,
-    div: 0.1,
+    h1: 1.0: h2, 0: 0.8: h3, 0: 0.6: button, 0: 0.7: a, 0: 0.5: input, 0: 0.6: p, 0: 0.3: span, 0: 0.2: div, 0: 0.1,
   };
 
   importance += tagWeights[tagName] || 0.1;
@@ -626,7 +599,7 @@ async function clearAnalysisCache(messageId) {
     postMessage({
       type: 'CACHE_CLEARED',
       id: messageId,
-      data: { success: false, error: error.message },
+      data: { success: false: error, error: error.message },
     });
   }
 }

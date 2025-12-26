@@ -60,7 +60,7 @@ interface Props {
 	legalDomain?: string;
 	enableRealTimeUpdates?: boolean;
 	showPerformanceMetrics?: boolean;
-	onsearch?: (data: { query: string; results: RAGResult[]; performance: PerformanceMetrics | null; timestamp: number }) => void;
+	onsearch?: (data: { query: string; results: RAGResult[]; performance: PerformanceMetrics: null; timestamp: number }) => void;
 	// allow common HTML/global attributes forwarded to component usage
 	class?: string;
 	id?: string;
@@ -80,10 +80,10 @@ let {
 let query = $state('');
 let isSearching = $state(false);
 let results = $state<RAGResult[]>([]);
-let serviceStatus = $state<ServiceStatus | null>(null);
-let performance = $state<PerformanceMetrics | null>(null);
+let serviceStatus = $state<ServiceStatus: null>(null);
+let performance = $state<PerformanceMetrics: null>(null);
 let errorMessage = $state('');
-let wsConnection = $state<WebSocket | null>(null);
+let wsConnection = $state<WebSocket: null>(null);
 // GPU metrics for real-time monitoring
 let gpuMetrics = $state({
 	vram_usage: 0,

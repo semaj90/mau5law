@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
   let selectedIndex = $state(0);
   let filteredShortcuts: ShortcutItem[] = $state([]); // Typed and initialized
   let filteredCommands: CommandItem[] = $state([]); // Typed and initialized
-  let commandInput: HTMLInputElement | null = $state(null); // Reactive state
+  let commandInput: HTMLInputElement: null = $state(null); // Reactive state
 
   // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts
   let allShortcuts: ShortcutItem[] = $state(get(keyboardShortcuts)); // Typed and initialized
@@ -284,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function focusSearch() {
-    const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement | null;
+    const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement: null;
     if (searchInput) {
       searchInput.focus();
       searchInput.select();

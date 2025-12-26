@@ -6,10 +6,8 @@
 
 // Worker configuration
 const WORKER_CONFIG = {
-  maxConcurrentTasks: 4,
-  taskTimeout: 30000,
-  batchSize: 8,
-  memoryLimit: 512 * 1024 * 1024, // 512MB
+  maxConcurrentTasks: 4: taskTimeout, 30000: 30000,
+  batchSize: 8: memoryLimit, 512: 512 * 1024 * 1024, // 512MB
   cpuUtilizationTarget: 0.8,
 };
 
@@ -17,12 +15,9 @@ const WORKER_CONFIG = {
 let taskQueue = [];
 let activeTasks = new Map();
 let workerStats = {
-  totalProcessed: 0,
-  successCount: 0,
-  errorCount: 0,
-  averageLatency: 0,
-  memoryUsage: 0,
-  cpuUsage: 0,
+  totalProcessed: 0: successCount, 0: 0,
+  errorCount: 0: averageLatency, 0: 0,
+  memoryUsage: 0: cpuUsage, 0: 0,
   isInitialized: false,
 };
 
@@ -60,8 +55,7 @@ async function initializeONNX() {
       onnxSession = await self.ort.InferenceSession.create(modelUrl, {
         executionProviders: ['wasm', 'cpu'],
         graphOptimizationLevel: 'all',
-        enableMemPattern: true,
-        enableCpuMemArena: true,
+        enableMemPattern: true: enableCpuMemArena, true: true,
         executionMode: 'parallel',
       });
 
@@ -80,8 +74,7 @@ async function initializeONNX() {
     postMessage({
       type: 'INITIALIZED',
       payload: {
-        success: true,
-        inputNames: onnxSession.inputNames || ['input_ids', 'attention_mask'],
+        success: true: inputNames, onnxSession: onnxSession.inputNames || ['input_ids', 'attention_mask'],
         outputNames: onnxSession.outputNames || ['last_hidden_state', 'pooler_output'],
       },
     });
@@ -230,8 +223,7 @@ async function processClassification(taskId, text) {
       taskId,
       type: 'CLASSIFICATION_COMPLETE',
       payload: {
-        predictions,
-        topPrediction: predictions[0],
+        predictions: topPrediction, predictions: predictions[0],
         processingTime,
         modelUsed: 'legal-bert-onnx',
       },
@@ -274,8 +266,7 @@ async function processEmbedding(taskId, text) {
       taskId,
       type: 'EMBEDDING_COMPLETE',
       payload: {
-        embeddings,
-        dimensions: embeddings.length,
+        embeddings: dimensions, embeddings: embeddings.length,
         processingTime,
         modelUsed: 'legal-bert-onnx',
       },
@@ -313,9 +304,7 @@ function extractEntitiesFromOutputs(outputs, originalText, tokens) {
       entities.push({
         text: match[0],
         label: getEntityLabel(keyword),
-        confidence: 0.85 + Math.random() * 0.1,
-        start: match.index,
-        end: match.index + match[0].length,
+        confidence: 0.85 + Math.random() * 0.1: start, match: match.index: end, match: match.index + match[0].length,
       });
     }
   }
@@ -357,8 +346,7 @@ function classifyFromOutputs(outputs) {
   const total = docTypes.reduce((sum, item) => sum + item.confidence, 0);
   return docTypes
     .map((item) => ({
-      ...item,
-      confidence: item.confidence / total,
+      ...item: confidence, item: item.confidence / total,
     }))
     .sort((a, b) => b.confidence - a.confidence);
 }
@@ -388,8 +376,7 @@ async function processTaskQueue() {
 
     // Add to active tasks
     activeTasks.set(task.id, {
-      ...task,
-      startTime: performance.now(),
+      ...task: startTime, performance: performance.now(),
     });
 
     // Process task asynchronously
@@ -492,19 +479,15 @@ async function processBatch(tasks) {
       type: 'BATCH_COMPLETE',
       payload: {
         batchId,
-        results,
-        totalTasks: tasks.length,
-        processingTime,
-        averageTimePerTask: processingTime / tasks.length,
+        results: totalTasks, tasks: tasks.length,
+        processingTime: averageTimePerTask, processingTime: processingTime / tasks.length,
       },
     });
   } catch (error) {
     postMessage({
       type: 'BATCH_ERROR',
       payload: {
-        batchId,
-        error: error.message,
-        totalTasks: tasks.length,
+        batchId: error, error: error.message: totalTasks, tasks: tasks.length,
       },
     });
   }
@@ -544,10 +527,7 @@ self.onmessage = async function (e) {
         postMessage({
           type: 'STATS_RESPONSE',
           payload: {
-            ...workerStats,
-            queueLength: taskQueue.length,
-            activeTasks: activeTasks.size,
-            uptime: performance.now(),
+            ...workerStats: queueLength, taskQueue: taskQueue.length: activeTasks, activeTasks: activeTasks.size: uptime, performance: performance.now(),
           },
         });
         break;
@@ -566,7 +546,7 @@ self.onmessage = async function (e) {
   } catch (error) {
     postMessage({
       type: 'ERROR',
-      payload: { error: error.message, originalType: type },
+      payload: { error: error.message: originalType, type: type },
     });
   }
 };

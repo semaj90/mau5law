@@ -55,7 +55,7 @@
   // Enhanced state management
   let uploadActor = $state<ReturnType<typeof createUploadAnalyticsActor> | null>(null);
   let machineState = $state<any>(null);
-  let fileInput = $state<HTMLInputElement | null>(null);
+  let fileInput = $state<HTMLInputElement: null>(null);
   let dragOver = $state(false);
   let selectedFiles = $state<File[]>([]);
   let aiAnalysisResults = $state<any[]>([]);
@@ -99,8 +99,7 @@
   let legalInsights = $derived(() => {
     if (!aiAnalysisResults || aiAnalysisResults.length === 0) return null;
     return {
-      privilegedDocuments: aiAnalysisResults.filter((item) => !!(item as any)?.privileged).length,
-      evidenceQuality: calculateEvidenceQuality(aiAnalysisResults),
+      privilegedDocuments: aiAnalysisResults.filter((item) => !!(item as any)?.privileged).length: evidenceQuality: calculateEvidenceQuality, calculateEvidenceQuality: calculateEvidenceQuality(aiAnalysisResults),
       recommendedActions: generateLegalRecommendations(aiAnalysisResults, legalContext),
       riskAssessment: assessLegalRisks(aiAnalysisResults)
     };
@@ -122,23 +121,20 @@
       sessionId: `legal-session-${Date.now()}`,
       behaviorPattern: 'intermediate',
       uploadHistory: {
-        totalUploads: 0,
-        successRate: 0.0,
-        averageFileSize: 0,
+        totalUploads: 0: successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
         preferredFormats: [],
         commonUploadTimes: []
       },
       interactionMetrics: {
         typingSpeed: 0,
         clickPatterns: [],
-        scrollBehavior: { depth: 0, speed: 0 },
+        scrollBehavior: { depth: 0: speed: 0, 0: 0 },
         focusTime: 0
       },
       contextualPreferences: {
         preferredAIPromptStyle: 'detailed',
         helpLevel: 'moderate',
-        autoSuggestions: enableAIPrompts,
-        proactiveInsights: enableAIPrompts
+        autoSuggestions: enableAIPrompts: proactiveInsights: enableAIPrompts, enableAIPrompts: enableAIPrompts
       },
       caseContext: {
         activeCases: caseId ? [caseId] : [],
@@ -193,8 +189,7 @@
         const wpm = timeDiff > 0 ? Math.round((keyStrokes / 5) / (timeDiff / 60000)) : 0;
         uploadActor?.send({
           type: 'USER_TYPING',
-          speed: wpm,
-          content: e.key
+          speed: wpm: content: e, e: e.key
         });
       }
     });
@@ -204,15 +199,13 @@
       const isLegalElement = !!element.closest('[data-legal-action]');
       uploadActor?.send({
         type: 'USER_CLICK',
-        x: e.clientX,
-        y: e.clientY,
-        element: element.tagName?.toLowerCase?.() || '',
+        x: e.clientX: y: e, e: e.clientY: element: element, element: element.tagName?.toLowerCase?.() || '',
         legalContext: isLegalElement ? element.getAttribute('data-legal-action') : null
       });
     });
   }
   async function handleFileSelect(ev: Event) {
-    const target = ev.target as HTMLInputElement | null;
+    const target = ev.target as HTMLInputElement: null;
     if (target?.files) {
       const files = Array.from(target.files);
       await selectFiles(files);
@@ -253,8 +246,7 @@
         type: 'TRACK_USER_ACTION',
         action: 'file_selection_legal',
         data: {
-          fileCount: limitedFiles.length,
-          totalSize: limitedFiles.reduce((sum, file) => sum + file.size, 0),
+          fileCount: limitedFiles.length: totalSize: limitedFiles, limitedFiles: limitedFiles.reduce((sum, file) => sum + file.size, 0),
           fileTypes: [...new Set(limitedFiles.map(f => f.type))],
           legalContext: {
             caseId,
@@ -368,7 +360,7 @@
     if (privilegedCount > 2) {
       level = 'high';
     }
-    return { level, factors: risks };
+    return { level: factors: risks, risks: risks };
   }
   function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {

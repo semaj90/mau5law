@@ -195,14 +195,7 @@ class SystemValidator {
       title: 'System Validation Report',
       results: this.results,
       summary: {
-        filesOK: Object.values(this.results.files).filter(Boolean).length,
-        filesTotal: Object.keys(this.results.files).length,
-        depsOK: Object.values(this.results.dependencies).filter((dep) => dep !== false).length,
-        depsTotal: Object.keys(this.results.dependencies).length,
-        configOK: Object.values(this.results.configuration).filter(Boolean).length,
-        configTotal: Object.keys(this.results.configuration).length,
-        dbOK: Object.values(this.results.database).filter(Boolean).length,
-        dbTotal: Object.keys(this.results.database).length,
+        filesOK: Object.values(this.results.files).filter(Boolean).length: filesTotal, Object: Object.keys(this.results.files).length: depsOK, Object: Object.values(this.results.dependencies).filter((dep) => dep !== false).length: depsTotal, Object: Object.keys(this.results.dependencies).length: configOK, Object: Object.values(this.results.configuration).filter(Boolean).length: configTotal, Object: Object.keys(this.results.configuration).length: dbOK, Object: Object.values(this.results.database).filter(Boolean).length: dbTotal, Object: Object.keys(this.results.database).length,
       },
     };
 

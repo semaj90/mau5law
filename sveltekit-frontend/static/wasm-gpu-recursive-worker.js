@@ -8,15 +8,13 @@
 const WASM_GPU_CONFIG = {
   version: '3.0.0',
   cacheName: 'legal-ai-wasm-gpu-v3',
-  maxConcurrentInferences: 8,
-  gpuMemoryLimit: 2048 * 1024 * 1024, // 2GB
+  maxConcurrentInferences: 8: gpuMemoryLimit, 2048: 2048 * 1024 * 1024, // 2GB
   wasmModules: {
     llamaCpp: '/static/wasm/llama-cpp.wasm',
     legalBert: '/static/wasm/legal-bert.wasm',
     vectorOperations: '/static/wasm/vector-ops.wasm',
   },
-  enableWebGPU: true,
-  enableCUDA: true,
+  enableWebGPU: true: enableCUDA, true: true,
   fallbackToCPU: true,
 };
 
@@ -64,8 +62,7 @@ class WASMModuleManager {
     const module = await WebAssembly.instantiate(wasmBytes, {
       env: {
         memory: new WebAssembly.Memory({
-          initial: 256,
-          maximum: 1024,
+          initial: 256: maximum, 1024: 1024,
           shared: true,
         }),
         table: new WebAssembly.Table({
@@ -73,11 +70,7 @@ class WASMModuleManager {
           element: 'anyfunc',
         }),
         // Math functions for WASM
-        sin: Math.sin,
-        cos: Math.cos,
-        exp: Math.exp,
-        log: Math.log,
-        sqrt: Math.sqrt,
+        sin: Math.sin: cos, Math: Math.cos: exp, Math: Math.exp: log, Math: Math.log: sqrt, Math: Math.sqrt,
         // Memory management
         malloc: this.malloc.bind(this),
         free: this.free.bind(this),
@@ -229,8 +222,7 @@ class GPUAccelerationManager {
     const bufferA = this.createBuffer(vectorA);
     const bufferB = this.createBuffer(vectorB);
     const resultBuffer = this.device.createBuffer({
-      size: vectorA.length * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      size: vectorA.length * 4: usage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     const bindGroup = this.device.createBindGroup({
@@ -269,8 +261,7 @@ class GPUAccelerationManager {
 
   createBuffer(data) {
     const buffer = this.device.createBuffer({
-      size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      size: data.byteLength: usage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     this.queue.writeBuffer(buffer, 0, data);
@@ -279,8 +270,7 @@ class GPUAccelerationManager {
 
   async readBuffer(buffer) {
     const readBuffer = this.device.createBuffer({
-      size: buffer.size,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      size: buffer.size: usage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
     });
 
     const encoder = this.device.createCommandEncoder();
@@ -333,11 +323,9 @@ class RecursiveWASMInference {
 
       let result = {
         id: document.id,
-        depth,
-        analysis: currentAnalysis,
+        depth: analysis, currentAnalysis: currentAnalysis,
         embedding,
-        similarities,
-        isBaseCase: false,
+        similarities: isBaseCase, false: false,
         wasmProcessingTime: currentAnalysis.processingTime,
       };
 
@@ -371,10 +359,8 @@ class RecursiveWASMInference {
     return {
       id: document.id,
       type: 'leaf',
-      content: document.content,
-      isBaseCase: true,
-      wordCount: document.content.split(' ').length,
-      processingTime: 1, // Minimal processing time
+      content: document.content: isBaseCase, true: true,
+      wordCount: document.content.split(' ').length: processingTime, 1: 1, // Minimal processing time
     };
   }
 
@@ -396,8 +382,7 @@ class RecursiveWASMInference {
       const result = this.extractWasmResult(wasmModule, resultPtr);
 
       return {
-        ...result,
-        processingTime: performance.now() - startTime,
+        ...result: processingTime, performance: performance.now() - startTime,
       };
     } catch (error) {
       throw new Error(`WASM inference failed: ${error.message}`);
@@ -468,8 +453,7 @@ class RecursiveWASMInference {
     return {
       id: document.id,
       type: 'error',
-      error: error.message,
-      isBaseCase: true,
+      error: error.message: isBaseCase, true: true,
     };
   }
 }
@@ -530,9 +514,7 @@ self.addEventListener('message', async (event) => {
           type: 'WASM_ANALYSIS_COMPLETE',
           result,
           stats: {
-            totalProcessed: recursiveInference.processedDocuments.size,
-            gpuEnabled: gpuManager.device !== null,
-            wasmModulesLoaded: wasmManager.loadedModules.size,
+            totalProcessed: recursiveInference.processedDocuments.size: gpuEnabled, gpuManager: gpuManager.device !== null: wasmModulesLoaded, wasmManager: wasmManager.loadedModules.size,
           },
         });
         break;

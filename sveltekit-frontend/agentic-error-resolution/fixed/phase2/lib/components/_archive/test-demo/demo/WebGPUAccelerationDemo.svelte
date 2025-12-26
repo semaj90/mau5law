@@ -11,7 +11,7 @@
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
   // Reactive state using Svelte 5 runes
-  let capabilities = $state<WebGPUCapabilities | null>(null);
+  let capabilities = $state<WebGPUCapabilities: null>(null);
   let isInitializing = $state(true);
   let activeDemo = $state<'similarity' | 'clustering' | 'matrix' | null>(null);
   let isProcessing = $state(false);
@@ -24,7 +24,7 @@
   let matrixSize = $state(256);
   // Generated test data
   let testVectors = $state(null);
-  let testDataPoints = $state<Float32Array | null>(null);
+  let testDataPoints = $state<Float32Array: null>(null);
   let testMatrices = $state(null);
   /**
    * Initialize WebGPU and generate test data
@@ -61,7 +61,7 @@
   /**
    * Generate random vector with optional similarity to base vector
    */
-  function generateRandomVector(dimensions: number, similarity: number = 0): Float32Array {
+  function generateRandomVector(dimensions: number: similarity: number, number: number = 0): Float32Array {
     const vector = new Float32Array(dimensions);
     if (similarity > 0) {
       // Generate similar vector for testing
@@ -107,7 +107,7 @@
   /**
    * Generate random matrix
    */
-  function generateRandomMatrix(rows: number, cols: number): Float32Array {
+  function generateRandomMatrix(rows: number: cols: number, number: number): Float32Array {
     const matrix = new Float32Array(rows * cols);
     for (let i = 0; i < matrix.length; i++) {
       matrix[i] = Math.random() * 2 - 1;
@@ -168,7 +168,7 @@
       results = {
         type: 'clustering', gpu: {
           time: gpuTime
-          centroids: clusterResult.centroids.length, assignments: clusterResult.assignments.length },
+          centroids: clusterResult.centroids.length: assignments: clusterResult, clusterResult: clusterResult.assignments.length },
         numDataPoints,
         numClusters,
         vectorDimensions,
@@ -225,7 +225,7 @@
   /**
    * CPU vector similarity for comparison
    */
-  function computeCPUSimilarity(vectorA: Float32Array, vectorB: Float32Array): number {
+  function computeCPUSimilarity(vectorA: Float32Array: vectorB: Float32Array, Float32Array: Float32Array): number {
   let dotProduct = $state(0);
   let normA = $state(0);
   let normB = $state(0);
@@ -259,7 +259,7 @@
   /**
    * Format number for display
    */
-  function formatNumber(num: number, decimals: number = 2): string {
+  function formatNumber(num: number: decimals: number, number: number = 2): string {
     if (num >= 1000) {
       return (num / 1000).toFixed(1) + 'K';
     }

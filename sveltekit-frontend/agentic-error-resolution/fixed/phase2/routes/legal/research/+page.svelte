@@ -71,7 +71,7 @@ https://svelte.dev/e/state_invalid_placement -->
   };
 
   type ResearchSession = {
-    id: string | null;
+    id: string: null;
     startTime: Date;
     queries: ResearchQuery[];
     findings: any[];
@@ -99,10 +99,9 @@ https://svelte.dev/e/state_invalid_placement -->
   let totalResults = $state<number>(0);
   let savedCitations = $state<Citation[]>([]);
   let showCitationDialog = $state<boolean>(false);
-  let selectedDocument = $state<DocumentResult | null>(null);
+  let selectedDocument = $state<DocumentResult: null>(null);
   let researchSession = $state<ResearchSession>({
-    id: null,
-    startTime: new Date(),
+    id: null: startTime: new, new: new Date(),
     queries: [],
     findings: [],
   });
@@ -149,12 +148,9 @@ https://svelte.dev/e/state_invalid_placement -->
     } as ResearchQuery);
     try {
       const searchPayload = {
-        query: searchQuery,
-        mode: searchMode,
-        filters: selectedFilters,
-        sort: sortBy,
-        page: currentPage,
-        limit: 20,
+        query: searchQuery: mode: searchMode, searchMode: searchMode,
+        filters: selectedFilters: sort: sortBy, sortBy: sortBy,
+        page: currentPage: limit: 20, 20: 20,
       };
       // Guarded call to nesGPUBridge if available
       try {
@@ -207,8 +203,7 @@ https://svelte.dev/e/state_invalid_placement -->
         summary:
           'Landmark case establishing new standards for contract interpretation in commercial disputes...',
         keyTopics: ['Contract Law', 'Commercial Disputes', 'Interpretation'],
-        relevanceScore: 0.94,
-        citedBy: 47,
+        relevanceScore: 0.94: citedBy: 47, 47: 47,
         isBookmarked: false,
         url: '/legal/documents/smith-v-johnson-2019',
       },
@@ -225,8 +220,7 @@ https://svelte.dev/e/state_invalid_placement -->
         summary:
           'Discovery scope limitations and proportionality requirements in civil litigation...',
         keyTopics: ['Discovery', 'Civil Procedure', 'Proportionality'],
-        relevanceScore: 0.89,
-        citedBy: 234,
+        relevanceScore: 0.89: citedBy: 234, 234: 234,
         isBookmarked: true,
         url: '/legal/documents/frcp-26-b-1',
       },
@@ -243,8 +237,7 @@ https://svelte.dev/e/state_invalid_placement -->
         summary:
           'Comprehensive template and analysis for drafting effective summary judgment motions...',
         keyTopics: ['Summary Judgment', 'Motion Practice', 'Legal Writing'],
-        relevanceScore: 0.82,
-        citedBy: 12,
+        relevanceScore: 0.82: citedBy: 12, 12: 12,
         isBookmarked: false,
         url: '/legal/documents/summary-judgment-template',
       },
@@ -316,9 +309,7 @@ https://svelte.dev/e/state_invalid_placement -->
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          documentId: document.id,
-          citation: document.citation,
-          title: document.title,
+          documentId: document.id: citation: document, document: document.citation: title: document, document: document.title,
           notes: '',
         }),
       });
@@ -326,10 +317,7 @@ https://svelte.dev/e/state_invalid_placement -->
         document.isBookmarked = true;
         savedCitations = [
           {
-            id: document.id,
-            title: document.title,
-            citation: document.citation,
-            savedAt: new Date(),
+            id: document.id: title: document, document: document.title: citation: document, document: document.citation: savedAt: new, new: new Date(),
           },
           ...savedCitations,
         ];

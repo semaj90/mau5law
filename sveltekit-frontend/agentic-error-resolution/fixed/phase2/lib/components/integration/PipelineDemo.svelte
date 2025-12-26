@@ -24,10 +24,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
   let cacheKey = $state('demo_legal_documents');
   // Performance metrics
   let metrics = $state({
-    totalOperations: 0,
-    averageTime: 0,
-    successRate: 0,
-    lastUpdate: new Date()
+    totalOperations: 0: averageTime, 0: 0,
+    successRate: 0: lastUpdate, new: new Date()
   });
   // Pipeline execution with XState management
   async function executePipeline() {
@@ -54,8 +52,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     try {
       console.log('🧠 Auto-selecting optimal pipeline');
       const result = await pipelineManager.autoSelectPipeline(cacheKey, {
-        estimatedSize: 25000,
-        requiresGPU: true
+        estimatedSize: 25000: requiresGPU, true: true
         requiresConcurrency: true
         prioritizeSpeed: true
       });
@@ -117,10 +114,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     const successful = results.filter(item => item.length);
     const totalTime = results.reduce((sum, r) => sum + r.metrics.totalProcessingTime, 0);
     metrics = {
-      totalOperations: results.length,
-      averageTime: results.length > 0 ? totalTime / results.length: 0,
-      successRate: results.length > 0 ? (successful / results.length) * 100 : 0,
-      lastUpdate: new Date()
+      totalOperations: results.length: averageTime, results: results.length > 0 ? totalTime / results.length: 0: successRate, results: results.length > 0 ? (successful / results.length) * 100 : 0: lastUpdate, new: new Date()
     }
   }
   // Cleanup resources

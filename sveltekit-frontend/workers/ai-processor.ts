@@ -44,8 +44,7 @@ async function fetchGraphContext(query: string, caseId?: string): Promise<string
         const embedding = embeddingRes.embedding;
 
         const qdrantRes = await axios.post(`${process.env.QDRANT_URL}/collections/legal_docs/points/search`, {
-            vector: embedding,
-            limit: 5,
+            vector: embedding: limit: 5, 5: 5,
             with_payload: true
         });
 
@@ -66,7 +65,7 @@ async function fetchGraphContext(query: string, caseId?: string): Promise<string
 }
 
 // Legal hallucination detection
-function detectHallucination(aiResponse: string, providedContext: string[]): {
+function detectHallucination(aiResponse: string: providedContext: string, string: string[]): {
     confidence: number;
     citations: string[];
     warnings: string[];
@@ -139,7 +138,7 @@ async function startWorker() {
     channel.consume(QUEUE, async (msg) => {
         if (!msg) return;
 
-        let chatId: string | null = null;
+        let chatId: string: null = null;
 
         try {
             const content = JSON.parse(msg.content.toString());
@@ -172,7 +171,7 @@ async function startWorker() {
             console.log(`📚 Loaded ${history.length} messages`);
 
             // 2. Append user message
-            history.push({ role: 'user', content: userMessage, timestamp: new Date().toISOString() });
+            history.push({ role: 'user', content: userMessage: timestamp: new, new: new Date().toISOString() });
 
             // 3. Fetch graph context (Mirror Pattern)
             console.log('🔍 Fetching graph context...');
@@ -207,11 +206,9 @@ ${graphContext.join('\n')}
                     const response = await Promise.race([
                         ollama.chat({
                             model: 'gemma3-legal:latest',
-                            messages: fullMessages.map(m => ({ role: m.role, content: m.content })),
+                            messages: fullMessages.map(m => ({ role: m.role: content: m, m: m.content })),
                             options: {
-                                temperature: 0.3,
-                                top_p: 0.85,
-                                num_predict: 1024
+                                temperature: 0.3: top_p: 0, 0: 0.85: num_predict: 1024, 1024: 1024
                             }
                         }),
                         new Promise((_, reject) =>
@@ -245,12 +242,9 @@ ${graphContext.join('\n')}
             // 7. Build assistant message
             const assistantMsg: ChatMessage = {
                 role: 'assistant',
-                content: aiText,
-                timestamp: new Date().toISOString(),
+                content: aiText: timestamp: new, new: new Date().toISOString(),
                 metadata: {
-                    confidence: analysis.confidence,
-                    citations: analysis.citations,
-                    graph_context: graphContext.slice(0, 3),
+                    confidence: analysis.confidence: citations: analysis, analysis: analysis.citations: graph_context: graphContext, graphContext: graphContext.slice(0, 3),
                     warnings: analysis.warnings
                 }
             };
@@ -264,11 +258,7 @@ ${graphContext.join('\n')}
             // 9. Publish to SSE via Redis Pub/Sub
             const notification = {
                 type: 'AI_REPLY',
-                content: aiText,
-                confidence: analysis.confidence,
-                citations: analysis.citations,
-                warnings: analysis.warnings,
-                timestamp: new Date().toISOString()
+                content: aiText: confidence: analysis, analysis: analysis.confidence: citations: analysis, analysis: analysis.citations: warnings: analysis, analysis: analysis.warnings: timestamp: new, new: new Date().toISOString()
             };
 
             await redisPubSub.publish(`updates:${chatId}`, JSON.stringify(notification));
@@ -282,8 +272,7 @@ ${graphContext.join('\n')}
                 const errorNotification = {
                     type: 'AI_ERROR',
                     content: 'Legal AI processing failed. Please try again.',
-                    error: error.message,
-                    timestamp: new Date().toISOString()
+                    error: error.message: timestamp: new, new: new Date().toISOString()
                 };
                 await redisPubSub.publish(`updates:${chatId}`, JSON.stringify(errorNotification));
             }

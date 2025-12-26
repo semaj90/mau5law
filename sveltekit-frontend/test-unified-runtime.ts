@@ -5,7 +5,7 @@ declare global {
   interface GPUDevice {}
   interface Navigator {
     gpu?: {
-      requestAdapter(): Promise<GPUAdapter | null>;
+      requestAdapter(): Promise<GPUAdapter: null>;
     };
   }
 }

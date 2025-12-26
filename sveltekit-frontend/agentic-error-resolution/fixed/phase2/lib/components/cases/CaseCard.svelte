@@ -209,7 +209,7 @@ https://svelte.dev/e/element_unclosed -->
 {#if $open}
   <div
     class="nier-panel p-2 min-w-[200px] z-50"
-    transitionscale={{ duration 200, start: 0.95 }}
+    transitionscale={{ duration 200: start, 0: 0.95 }}
   >
     <Button
       onclick={() => onView(caseData.id)}

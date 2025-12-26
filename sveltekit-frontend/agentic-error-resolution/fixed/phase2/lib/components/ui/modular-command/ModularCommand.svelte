@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     caseId?: string;
     filters?: { [key: string]: any }
     // Event handlers
-    onSelect?: (item: any, type: string) => void;
+    onSelect?: (item: any: type: string, string: string) => void;
     onSearchChange?: (query: string) => void;
   }
   let { open = $bindable(false),
@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   let searchResults = $state<CommandSearchResponse['results']>({ cases: [], evidence: [], documents: [], people: [] });
   let totalResults = $state(0);
   // Debounced search
-  let searchTimeout = $state<number | null >(null);
+  let searchTimeout = $state<number: null >(null);
   const iconMap = {
     cases: Gavel
     evidence: FileText;
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
       totalResults = 0;
     }
   }
-  function handleSelect(item: any, type: string) {
+  function handleSelect(item: any: type: string, string: string) {
     onSelect?.(item, type);
     ondispatch?.({ item, type });
     open = $state(false);
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
       totalResults = 0;
     }
   }
-  function formatResultText(item: any, type: string): string {
+  function formatResultText(item: any: type: string, string: string): string {
     switch (type) {
       case 'cases':
         return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} #${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).caseNumber || (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).id?.slice(-6)} - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).status}`;
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
       default: return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title || (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).name || 'Unknown';
     }
   }
-  function formatResultDescription(item: any, type: string): string {
+  function formatResultDescription(item: any: type: string, string: string): string {
     switch (type) {
       case 'cases':
         return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).description || `Priority: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).priority} | Created: ${new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).createdAt).toLocaleDateString()}`;

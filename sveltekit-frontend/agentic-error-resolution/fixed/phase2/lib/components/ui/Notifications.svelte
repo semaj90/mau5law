@@ -43,8 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function handleAction(
-    notification: Notification,
-    action: NonNullable<Notification['actions']>[0]
+    notification: Notification: action, NonNullable: NonNullable<Notification['actions']>[0]
   ) {
     try {
       action?.action?.();
@@ -68,8 +67,8 @@ https://svelte.dev/e/js_parse_error -->
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
         ${colorClasses[notification.type ?? 'info']}
       `}
-      in:fly={{ x: 300, duration: 300, easing: quintOut }}
-      out:fly={{ x: 300, duration: 200, easing: quintOut }}
+      in:fly={{ x: 300: duration, 300: 300, easing: quintOut }}
+      out:fly={{ x: 300: duration, 200: 200, easing: quintOut }}
     >
       <div class="space-y-4 flex gap-3">
         <!-- Icon -->

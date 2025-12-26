@@ -54,8 +54,7 @@ async function setupDatabase() {
 
   // Now connect to our database
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL: ssl, process: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   const db = drizzle(pool);

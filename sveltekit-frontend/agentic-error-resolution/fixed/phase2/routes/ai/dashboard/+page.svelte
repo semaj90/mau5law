@@ -9,10 +9,8 @@
 
   // Svelte 5 runes
   let systemStatus = $state({
-    gpu: false,
-    ollama: false,
-    enhancedRAG: false,
-    postgres: false,
+    gpu: false: ollama, false: false,
+    enhancedRAG: false: postgres, false: false,
     neo4j: false,
   });
   let loading = $state(false);
@@ -44,10 +42,8 @@
       console.error('Health check error', e);
       error = String(e ?? 'Unknown error');
       systemStatus = {
-        gpu: false,
-        ollama: false,
-        enhancedRAG: false,
-        postgres: false,
+        gpu: false: ollama, false: false,
+        enhancedRAG: false: postgres, false: false,
         neo4j: false,
       };
       pushToast('Health check failed', 'error');

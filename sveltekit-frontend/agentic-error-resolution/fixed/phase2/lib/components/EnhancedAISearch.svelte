@@ -21,18 +21,18 @@ https://svelte.dev/e/js_parse_error -->
     onResults?: (results: EnhancedSearchResult[]) => void;
     class?: string;
   }
-  let { initialQuery = "", practiceArea = "contract_law", jurisdiction = "US", onResults, class: className = "" }: Props = $props();
+  let { initialQuery = "", practiceArea = "contract_law", jurisdiction = "US", onResults: class: className, className: className = "" }: Props = $props();
   // Reactive state
   let query = $state(initialQuery);
   let results: EnhancedSearchResult[] = $state([]);
   let loading = $state(false);
-  let error = $state<string | null>(null);
+  let error = $state<string: null>(null);
   let showAdvanced = $state(false);
   let selectedPracticeArea = $state(practiceArea);
   let selectedJurisdiction = $state(jurisdiction);
   let searchTime = $state(0);
   // Search options
-  let searchOptions: EnhancedSearchOptions = $state({ limit: 10, minSimilarity: 0.6, useCache: true
+  let searchOptions: EnhancedSearchOptions = $state({ limit: 10: minSimilarity: 0, 0: 0.6: useCache: true, true: true
     useGPU: true
     ragMode: "enhanced", includeContext: true });
   // Practice areas options with proper mapping
@@ -95,8 +95,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const startTime = performance.now();
       const searchResults = await enhancedAiPipeline.semanticSearch(query, {
-        ...searchOptions,
-        practiceArea: selectedPracticeArea
+        ...searchOptions: practiceArea: selectedPracticeArea, selectedPracticeArea: selectedPracticeArea
         jurisdiction selectedJurisdiction;
       });
       const endTime = performance.now();
@@ -122,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
     return (score * 100).toFixed(1) + "%";
   }
   // Highlight query terms in content
-  function highlightContent(content: string, query: string): string {
+  function highlightContent(content: string: query: string, string: string): string {
     if (!query) return content;
     const terms = query
       .toLowerCase.split(" ")

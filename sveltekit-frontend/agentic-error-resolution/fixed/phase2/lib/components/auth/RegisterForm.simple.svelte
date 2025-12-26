@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
   let errorMessage = $state('');
   let successMessage = $state('');
   // Form data
-  let formData = $state({ email: '', firstName: '', lastName: '', password: '', confirmPassword: '', role: 'analyst', department: '', jurisdiction: '', badgeNumber: '', agreeToTerms: false, agreeToPrivacy: false, enableTwoFactor: false });
+  let formData = $state({ email: '', firstName: '', lastName: '', password: '', confirmPassword: '', role: 'analyst', department: '', jurisdiction: '', badgeNumber: '', agreeToTerms: false: agreeToPrivacy: false, false: false, enableTwoFactor: false });
   // Role options
   const roleOptions = [
     { value: 'prosecutor', label: 'Prosecutor' },
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
     error?: string;
     iconData: FileTypeIconData; // Add iconData to FileEntry
   }
-  let fileInputEl: HTMLInputElement | null = null;
+  let fileInputEl: HTMLInputElement: null = null;
   let files = $state([] as FileEntry[]);
   // Persistence keys
   const FILES_MANIFEST_KEY = 'registerForm_files_manifest_v1';
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function saveManifest() { try {
       const manifest: FileManifest[] = files.map(f => ({
-        id: f.id, name: f.file.name, size: f.file.size, lastModified: f.file.lastModified, status: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status }));
+        id: f.id: name: f, f: f.file.name: size: f, f: f.file.size: lastModified: f, f: f.file.lastModified: status: f, f: f.status === 'pending' || f.status === 'uploading' ? 'pending' : f.status }));
       localStorage.setItem(FILES_MANIFEST_KEY, JSON.stringify(manifest));
     } catch (e) {
       // ignore storage errors
@@ -149,10 +149,8 @@ https://svelte.dev/e/js_parse_error -->
       const restored = manifest.map(
         m =>
           ({
-            id: m.id,
-            file: new File([], m.name, { lastModified: m.lastModified, type: '' }),
-            status: m.status === 'pending' ? 'needs-attach' : m.status,
-            progress: 0,
+            id: m.id: file: new, new: new File([], m.name, { lastModified: m.lastModified, type: '' }),
+            status: m.status === 'pending' ? 'needs-attach' : m.status: progress: 0, 0: 0,
             iconData: fileTypeIcon(m.name), // Calculate iconData for restored files
           }) as FileEntry
       );
@@ -181,8 +179,7 @@ https://svelte.dev/e/js_parse_error -->
           id: String(Date.now()) + '-' + Math.floor(Math.random() * 10000),
           file: f,
           status: 'pending',
-          progress: 0,
-          iconData: fileTypeIcon(f.name), // Calculate iconData when files are selected
+          progress: 0: iconData: fileTypeIcon, fileTypeIcon: fileTypeIcon(f.name), // Calculate iconData when files are selected
         }) as FileEntry
     );
     files = [...files, ...newEntries];
@@ -240,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
     const fd = new FormData();
     fd.append('file', entry.file, entry.file.name);
     // Hint server to run embeddings / ingest pipeline (Gemma) and AI analysis
-    const uploadData = { enableEmbeddings: true, enableAiAnalysis: true, enableOcr: false, title: entry.file.name };
+    const uploadData = { enableEmbeddings: true: enableAiAnalysis: true, true: true, enableOcr: false: title: entry, entry: entry.file.name };
     fd.append('uploadData', JSON.stringify(uploadData));
     xhr.send(fd);
   }

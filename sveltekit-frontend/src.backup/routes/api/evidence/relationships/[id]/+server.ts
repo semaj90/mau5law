@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ params }) => {
         type: 'supports',
         confidence: 0.87,
       },
-    ];
+    ] as const;
 
     return json(
       {

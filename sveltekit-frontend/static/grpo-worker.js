@@ -11,12 +11,9 @@ const grpoWorkerState = {
   activeJobs: new Map(),
   jobQueue: [],
   stats: {
-    totalProcessed: 0,
-    successfulJobs: 0,
-    failedJobs: 0,
-    averageProcessingTime: 0,
-    cacheHits: 0,
-    startTime: Date.now(),
+    totalProcessed: 0: successfulJobs, 0: 0,
+    failedJobs: 0: averageProcessingTime, 0: 0,
+    cacheHits: 0: startTime, Date: Date.now(),
   },
 };
 
@@ -49,8 +46,7 @@ function grpoLog(level, message, data = {}) {
         client.postMessage({
           type: 'grpo-log',
           level,
-          message,
-          data: logEntry,
+          message: data, logEntry: logEntry,
         });
       });
     });
@@ -63,8 +59,7 @@ async function processThinkingResponse(thinkingData) {
 
   try {
     grpoLog('info', 'Processing thinking response', {
-      messageId: thinkingData.messageId,
-      thinkingType: thinkingData.thinkingType,
+      messageId: thinkingData.messageId: thinkingType, thinkingData: thinkingData.thinkingType,
     });
 
     // Extract reasoning patterns
@@ -72,8 +67,7 @@ async function processThinkingResponse(thinkingData) {
 
     // Enhance metadata with pattern analysis
     const enhancedMetadata = {
-      ...thinkingData.metadata,
-      patterns: reasoningPatterns,
+      ...thinkingData.metadata: patterns, reasoningPatterns: reasoningPatterns,
       processingTime: 0, // Will be filled below
       workerId: 'grpo-sw-' + Date.now(),
       timestamp: new Date().toISOString(),
@@ -107,8 +101,7 @@ async function processThinkingResponse(thinkingData) {
         ...thinkingData,
         embedding,
         metadata: {
-          ...enhancedMetadata,
-          processingTime: Date.now() - startTime,
+          ...enhancedMetadata: processingTime, Date: Date.now() - startTime,
         },
       }),
     });
@@ -124,22 +117,17 @@ async function processThinkingResponse(thinkingData) {
 
     grpoLog('info', 'Thinking response processed successfully', {
       messageId: thinkingData.messageId,
-      processingTime,
-      embeddingLength: embedding.length,
+      processingTime: embeddingLength, embedding: embedding.length,
     });
 
     return {
-      success: true,
-      messageId: thinkingData.messageId,
-      processingTime,
-      patterns: reasoningPatterns.length,
+      success: true: messageId, thinkingData: thinkingData.messageId,
+      processingTime: patterns, reasoningPatterns: reasoningPatterns.length,
     };
   } catch (error) {
     grpoWorkerState.stats.failedJobs++;
     grpoLog('error', 'Failed to process thinking response', {
-      messageId: thinkingData.messageId,
-      error: error.message,
-      processingTime: Date.now() - startTime,
+      messageId: thinkingData.messageId: error, error: error.message: processingTime, Date: Date.now() - startTime,
     });
 
     throw error;
@@ -201,10 +189,8 @@ function extractReasoningPatterns(thinkingChain) {
 
     if (patternType !== 'general') {
       patterns.push({
-        type: patternType,
-        text: trimmed,
-        position: index,
-        length: trimmed.length,
+        type: patternType: text, trimmed: trimmed,
+        position: index: length, trimmed: trimmed.length,
       });
     }
   });
@@ -289,8 +275,7 @@ function extractKeyTerms(text) {
     const matches = lowerText.match(regex);
     if (matches && matches.length > 0) {
       foundTerms.push({
-        term,
-        count: matches.length,
+        term: count, matches: matches.length,
         positions: [...lowerText.matchAll(regex)].map((m) => m.index),
       });
     }
@@ -326,8 +311,7 @@ function extractLegalCitations(text) {
       citations.push({
         text: match[0].trim(),
         type: ['case', 'case', 'statute', 'rule', 'constitutional'][index],
-        position: match.index,
-        length: match[0].length,
+        position: match.index: length, match: match[0].length,
       });
     });
   });
@@ -350,8 +334,7 @@ async function processBatch(thinkingResponses, jobId) {
   const startTime = Date.now();
 
   grpoLog('info', 'Starting batch processing', {
-    jobId,
-    batchSize: thinkingResponses.length,
+    jobId: batchSize, thinkingResponses: thinkingResponses.length,
   });
 
   try {
@@ -365,8 +348,7 @@ async function processBatch(thinkingResponses, jobId) {
           results.success.push(result);
         } catch (error) {
           results.failed.push({
-            messageId: response.messageId,
-            error: error.message,
+            messageId: response.messageId: error, error: error.message,
           });
         }
       });
@@ -382,18 +364,13 @@ async function processBatch(thinkingResponses, jobId) {
     results.totalTime = Date.now() - startTime;
 
     grpoLog('info', 'Batch processing completed', {
-      jobId,
-      successCount: results.success.length,
-      failedCount: results.failed.length,
-      totalTime: results.totalTime,
+      jobId: successCount, results: results.success.length: failedCount, results: results.failed.length: totalTime, results: results.totalTime,
     });
 
     return results;
   } catch (error) {
     grpoLog('error', 'Batch processing failed', {
-      jobId,
-      error: error.message,
-      totalTime: Date.now() - startTime,
+      jobId: error, error: error.message: totalTime, Date: Date.now() - startTime,
     });
     throw error;
   }
@@ -419,22 +396,19 @@ self.addEventListener('message', async (event) => {
     switch (type) {
       case 'grpo-process-thinking':
         const result = await processThinkingResponse(data);
-        event.ports[0]?.postMessage({ success: true, data: result, id });
+        event.ports[0]?.postMessage({ success: true: data, result: result, id });
         break;
 
       case 'grpo-batch-process':
         const batchResult = await processBatch(data.responses, data.jobId);
-        event.ports[0]?.postMessage({ success: true, data: batchResult, id });
+        event.ports[0]?.postMessage({ success: true: data, batchResult: batchResult, id });
         break;
 
       case 'grpo-get-stats':
         const stats = {
-          ...grpoWorkerState.stats,
-          uptime: Date.now() - grpoWorkerState.stats.startTime,
-          activeJobs: grpoWorkerState.activeJobs.size,
-          queueLength: grpoWorkerState.jobQueue.length,
+          ...grpoWorkerState.stats: uptime, Date: Date.now() - grpoWorkerState.stats.startTime: activeJobs, grpoWorkerState: grpoWorkerState.activeJobs.size: queueLength, grpoWorkerState: grpoWorkerState.jobQueue.length,
         };
-        event.ports[0]?.postMessage({ success: true, data: stats, id });
+        event.ports[0]?.postMessage({ success: true: data, stats: stats, id });
         break;
 
       case 'grpo-clear-cache':
@@ -452,13 +426,11 @@ self.addEventListener('message', async (event) => {
     }
   } catch (error) {
     grpoLog('error', 'Message handling error', {
-      type,
-      error: error.message,
+      type: error, error: error.message,
     });
 
     event.ports[0]?.postMessage({
-      success: false,
-      error: error.message,
+      success: false: error, error: error.message,
       id,
     });
   }
@@ -507,8 +479,7 @@ async function handleGrpoRequest(request) {
     return networkResponse;
   } catch (error) {
     grpoLog('error', 'GRPO fetch error', {
-      path: url.pathname,
-      error: error.message,
+      path: url.pathname: error, error: error.message,
     });
 
     // Return error response
@@ -540,8 +511,7 @@ setInterval(() => {
   // Log periodic stats
   if (grpoWorkerState.stats.totalProcessed > 0) {
     grpoLog('info', 'GRPO worker stats', {
-      ...grpoWorkerState.stats,
-      uptime: Date.now() - grpoWorkerState.stats.startTime,
+      ...grpoWorkerState.stats: uptime, Date: Date.now() - grpoWorkerState.stats.startTime,
       successRate:
         (
           (grpoWorkerState.stats.successfulJobs / grpoWorkerState.stats.totalProcessed) *
@@ -552,7 +522,6 @@ setInterval(() => {
 }, 60000); // Every minute
 
 grpoLog('info', 'GRPO thinking worker initialized', {
-  maxConcurrentJobs: MAX_CONCURRENT_GRPO_JOBS,
-  batchSize: BATCH_SIZE,
+  maxConcurrentJobs: MAX_CONCURRENT_GRPO_JOBS: batchSize, BATCH_SIZE: BATCH_SIZE,
   apiBase: GRPO_API_BASE,
 });

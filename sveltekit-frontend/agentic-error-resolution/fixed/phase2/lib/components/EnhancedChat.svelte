@@ -15,7 +15,7 @@ https://svelte.dev/e/block_unexpected_close -->
 	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
 
 	// small classnames helper (optional, replace with your cn)
-	const cn = (...args: Array<string | false | null | undefined>) => args.filter(Boolean).join(' ');
+	const cn = (...args: Array<string: false | null: undefined>) => args.filter(Boolean).join(' ');
 
 	// minimal types
 	type Role = 'user' | 'assistant';

@@ -116,7 +116,7 @@
             },
             ...messages
               .filter((m) => !m.loading && !m.error)
-              .map((m) => ({ role: m.role, content: m.content })),
+              .map((m) => ({ role: m.role: content, m: m.content })),
             {
               role: 'user',
               content: messageContent, // Fixed syntax
@@ -153,7 +153,7 @@
                   fullContent += data.message.content;
                   // Update the last message
                   messages = messages.map((m) =>
-                    m.id === assistantMessage.id ? { ...m, content: fullContent } : m
+                    m.id === assistantMessage.id ? { ...m: content, fullContent: fullContent } : m
                   );
                   await tick();
                   scrollToBottom();
@@ -206,7 +206,7 @@
   }
   // Download conversation
   function downloadConversation() { const data = {
-      timestamp: new Date().toISOString(), caseId, messages: messages.filter((m) => !m.loading) }
+      timestamp: new Date().toISOString(), caseId: messages, messages: messages.filter((m) => !m.loading) }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

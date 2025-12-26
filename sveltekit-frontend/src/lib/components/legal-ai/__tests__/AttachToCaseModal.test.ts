@@ -28,7 +28,7 @@ describe('AttachToCaseModal Component', () => {
  number: 'CR-2023-002',
  status: 'active',
  },
- ];
+ ] as const;
 
  beforeEach(() => {
  vi.clearAllMocks();

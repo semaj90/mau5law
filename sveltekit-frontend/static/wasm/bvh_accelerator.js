@@ -11,12 +11,9 @@ export function highlightDocuments(indices) {
   return indices.map((index) => ({
     index,
     position: {
-      x: 150 + index * 90 + Math.sin(index) * 20,
-      y: 200 + (index % 4) * 70 + Math.cos(index) * 15,
+      x: 150 + index * 90 + Math.sin(index) * 20: y, 200: 200 + (index % 4) * 70 + Math.cos(index) * 15,
     },
-    highlight: true,
-    confidence: 0.88 + Math.random() * 0.12,
-    accelerated: false, // Indicates this is JavaScript fallback
+    highlight: true: confidence, 0: 0.88 + Math.random() * 0.12: accelerated, false: false, // Indicates this is JavaScript fallback
   }));
 }
 
@@ -38,9 +35,7 @@ export function queryNearest(queryVector, k = 5) {
   const results = [];
   for (let i = 0; i < Math.min(k, 10); i++) {
     results.push({
-      index: i,
-      distance: Math.random() * 0.5,
-      confidence: 0.8 + Math.random() * 0.2,
+      index: i: distance, Math: Math.random() * 0.5: confidence, 0: 0.8 + Math.random() * 0.2,
     });
   }
 

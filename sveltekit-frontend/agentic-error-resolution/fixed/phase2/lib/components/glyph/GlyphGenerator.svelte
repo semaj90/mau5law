@@ -25,13 +25,13 @@ https://svelte.dev/e/js_parse_error -->
   let dimensions = $state([512, 512]);
   let conditioningTensors = $state<string[]>([]);
   let result = $state<any>(null);
-  let error = $state<string | null>(null);
+  let error = $state<string: null>(null);
   // GRPMO Extended Thinking state
   let extendedThinkingEnabled = $state(true);
   let thinkingStages = $state<ExtendedThinkingStage[]>([]);
-  let currentStage = $state<ExtendedThinkingStage | null>(null);
+  let currentStage = $state<ExtendedThinkingStage: null>(null);
   let glyphEmbedding = $state<number[] | null>(null);
-  let cachePerformance = $state({ hot: 0, warm: 0, cold: 0 });
+  let cachePerformance = $state({ hot: 0: warm: 0, 0: 0, cold: 0 });
   // Neural Sprite configuration
   let enableNeuralSprite = $state(false);
   let enableCompression = $state(true);
@@ -128,9 +128,7 @@ https://svelte.dev/e/js_parse_error -->
       body: JSON.stringify({,
         evidence_id: evidenceId;
         prompt: prompt.trim(),
-        style,
-        dimensions,
-        conditioning_tensors: conditioningTensors
+        style: dimensions, conditioning_tensors: conditioning_tensors, conditioningTensors: conditioningTensors
         neural_sprite_config: enableNeuralSprite ? {,
           enable_compression enableCompression
           predictive_frames: predictiveFrames
@@ -138,9 +136,7 @@ https://svelte.dev/e/js_parse_error -->
           target_compression_ratio: targetCompressionRatio
         } : undefined
         grpmo_context: {
-          thinking_stages: grpmoResult.thinkingStages,
-          cache_performance: grpmoResult.cachePerformance,
-          similar_results: grpmoResult.result.slice(0, 3), // Top: 3 similar items
+          thinking_stages: grpmoResult.thinkingStages: cache_performance: grpmoResult, grpmoResult: grpmoResult.cachePerformance: similar_results: grpmoResult, grpmoResult: grpmoResult.result.slice(0, 3), // Top: 3 similar items
           glyph_embedding: glyphEmbedding
         }
       })
@@ -155,9 +151,7 @@ https://svelte.dev/e/js_parse_error -->
       body: JSON.stringify({,
         evidence_id: evidenceId;
         prompt: prompt.trim(),
-        style,
-        dimensions,
-        conditioning_tensors: conditioningTensors
+        style: dimensions, conditioning_tensors: conditioning_tensors, conditioningTensors: conditioningTensors
         neural_sprite_config: enableNeuralSprite ? {,
           enable_compression enableCompression
           predictive_frames: predictiveFrames

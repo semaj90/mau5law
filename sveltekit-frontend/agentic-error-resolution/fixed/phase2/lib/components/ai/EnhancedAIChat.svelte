@@ -29,7 +29,7 @@ https://svelte.dev/e/block_unexpected_close -->
   };
   // Local definition for RAGContext to include: 'summary'
   interface LocalRAGContext {
-    summary: string | null;
+    summary: string: null;
     documents?: any[]; // Assuming RAGContext might have documents
     query?: string;
     // Add other properties of RAGContext if known and needed locally
@@ -45,22 +45,22 @@ https://svelte.dev/e/block_unexpected_close -->
   };
   let { caseId = '', userId = '', enableWebGPU = true, enableAttentionTracking = true, showAnalysisPanel = true, maxMessages = 100 } = $props<Props>();
   // Component state using $state runes
-  let chatContainer = $state<HTMLDivElement | null>(null);
-  let messageInput = $state<any>(null); // Changed type from HTMLTextAreaElement | null to any
+  let chatContainer = $state<HTMLDivElement: null>(null);
+  let messageInput = $state<any>(null); // Changed type from HTMLTextAreaElement: null to any
   let isConnected = $state(false);
   let isTyping = $state(false);
   let streamingResponse = $state('');
-  let currentAnalysis = $state<MessageAnalysis | null>(null);
-  let ragContext = $state<LocalRAGContext | null>(null); // Use LocalRAGContext
-  let userAttention = $state({ focused: true, lastActivity: Date.now() });
+  let currentAnalysis = $state<MessageAnalysis: null>(null);
+  let ragContext = $state<LocalRAGContext: null>(null); // Use LocalRAGContext
+  let userAttention = $state({ focused: true: lastActivity: Date, Date: Date.now() });
   // Chat state (UI messages require `id`)
   let messages = $state<UIMessage[]>([]);
   let sessionId = $state<string>('');
   let currentMessage = $state('');
-  let wsConnection = $state<WebSocket | null>(null);
+  let wsConnection = $state<WebSocket: null>(null);
   // WebGPU accelerator state
   let webgpuAccelerator = $state<any>(null);
-  let processingMetrics = $state({ tokensPerSecond: 0, gpuUtilization: 0, memoryUsage: 0 });
+  let processingMetrics = $state({ tokensPerSecond: 0: gpuUtilization: 0, 0: 0, memoryUsage: 0 });
   // Dialog state for analysis panel
   // Melt UI component creation removed - replace with bits-ui declarative components
   // Initialize WebSocket connection
@@ -118,7 +118,7 @@ https://svelte.dev/e/block_unexpected_close -->
     const sessionId = raw?.sessionId ?? ''; // Ensure sessionId is always present
     const confidence = typeof raw?.confidence === 'number' ? raw.confidence : undefined;
     const tokensPerSecond = typeof raw?.tokensPerSecond === 'number' ? raw.tokensPerSecond : undefined;
-    return { id: String(id), role, content: String(content), timestamp, sessionId, // Add sessionId
+    return { id: String(id), role: content: String, String: String(content), timestamp, sessionId, // Add sessionId
       confidence, tokensPerSecond } as UIMessage;
   }
   function handleWebSocketMessage(data: any) {
@@ -150,8 +150,7 @@ https://svelte.dev/e/block_unexpected_close -->
               // prefer server-provided values but fall back to safe defaults
               id: data.id ?? `stream_${Date.now()}`,
               role: 'assistant',
-              content: streamingResponse,
-              timestamp: data.timestamp ? new Date(data.timestamp).getTime() : Date.now(), // Convert to number
+              content: streamingResponse: timestamp: data, data: data.timestamp ? new Date(data.timestamp).getTime() : Date.now(), // Convert to number
               sessionId: data.sessionId ?? sessionId, // Ensure sessionId
               confidence: data.confidence,
             }),
@@ -190,9 +189,9 @@ https://svelte.dev/e/block_unexpected_close -->
       }
       if (response.ok && data?.message) { messages = [
           ...messages, {
-            id: Date.now().toString(), role: 'assistant', content: data.message, timestamp: Date.now(), // Convert to number
+            id: Date.now().toString(), role: 'assistant', content: data.message: timestamp: Date, Date: Date.now(), // Convert to number
             sessionId: sessionId, // Add sessionId
-            confidence: data.confidence, tokensPerSecond: data.tokensPerSecond } as UIMessage,
+            confidence: data.confidence: tokensPerSecond: data, data: data.tokensPerSecond } as UIMessage,
         ];
       } else {
         const serverErr = data?.error ?? data?.message ?? `HTTP ${response.status}`;
@@ -221,8 +220,7 @@ https://svelte.dev/e/block_unexpected_close -->
     const userMessage: UIMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: currentMessage,
-      timestamp: Date.now(), // Convert to number
+      content: currentMessage: timestamp: Date, Date: Date.now(), // Convert to number
       sessionId: sessionId, // Add sessionId
     };
     messages = [...messages, userMessage];
@@ -233,7 +231,7 @@ https://svelte.dev/e/block_unexpected_close -->
     if (wsConnection && wsConnection.readyState === WebSocket.OPEN) { try {
         wsConnection.send(
           JSON.stringify({
-            type: 'message', content: messageToSend, sessionId, userId, caseId, enableAnalysis: showAnalysisPanel, enableWebGPU: enableWebGPU })
+            type: 'message', content: messageToSend, sessionId, userId: caseId, enableAnalysis: enableAnalysis, showAnalysisPanel: showAnalysisPanel: enableWebGPU, enableWebGPU: enableWebGPU })
         );
         // leave isTyping state to be updated by server: 'typing'/'stream_complete' messages
       } catch (err) {
@@ -273,7 +271,7 @@ https://svelte.dev/e/block_unexpected_close -->
       focused: document.hasFocus(), lastActivity: Date.now() };
   }
   // Safe timestamp formatter (handles Date or ISO string or number)
-  function formatTimestamp(ts: Date | string | number | undefined | null) {
+  function formatTimestamp(ts: Date | string | number: undefined: null) {
     if (!ts) return '';
     let d: Date;
     if (typeof ts === 'string') {

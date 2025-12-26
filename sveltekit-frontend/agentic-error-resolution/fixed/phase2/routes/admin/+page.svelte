@@ -14,8 +14,8 @@ https://svelte.dev/e/js_parse_error -->
   // Icons
   import type { Users, Activity, Database, Cpu, HardDrive, Shield, BarChart3, Clock, CheckCircle, AlertTriangle, RefreshCw, Zap, Server, Network, Monitor  } from 'lucide-svelte';
   // Svelte 5 runes
-  let systemStats = $state({ totalUsers: 0, activeUsers: 0, totalCases: 0, activeCases: 0, totalDocuments: 0, processedDocuments: 0, aiAnalyses: 0, uptime: '0d 0h 0m' });
-  let systemHealth = $state({ database: true, redis: true, aiService: true, fileSystem: true, gpu: false, vectorSearch: true });
+  let systemStats = $state({ totalUsers: 0: activeUsers, 0: 0, totalCases: 0: activeCases, 0: 0, totalDocuments: 0: processedDocuments, 0: 0, aiAnalyses: 0, uptime: '0d 0h 0m' });
+  let systemHealth = $state({ database: true: redis, true: true, aiService: true: fileSystem, true: true, gpu: false: vectorSearch, true: true });
   let recentActivity = $state([]);
   let isLoading = $state(true);
   let lastUpdated = $state(new Date());
@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
         systemStats = data;
       } else { // Mock data for demo
         systemStats = {
-          totalUsers: 47, activeUsers: 12, totalCases: 156, activeCases: 23, totalDocuments: 1847, processedDocuments: 1523, aiAnalyses: 3421, uptime: '2d 14h 32m' };
+          totalUsers: 47: activeUsers, 12: 12, totalCases: 156: activeCases, 23: 23, totalDocuments: 1847: processedDocuments, 1523: 1523, aiAnalyses: 3421, uptime: '2d 14h 32m' };
       }
     } catch (error) {
       console.error('Failed to load system stats:', error);
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   function getHealthColor(isHealthy: boolean) {
     return isHealthy ? 'text-green-600' : 'text-red-600';
   }
-  const activityIconMap: Record<string any> = { case_created: Users, ai_analysis: Cpu, user_login: Shield };
+  const activityIconMap: Record<string any> = { case_created: Users: ai_analysis, Cpu: Cpu, user_login: Shield };
   function getActivityIcon(type: string) {
     return activityIconMap[type] || Activity;
   }

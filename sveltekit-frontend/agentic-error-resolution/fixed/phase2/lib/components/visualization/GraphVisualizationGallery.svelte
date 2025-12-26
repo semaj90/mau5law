@@ -27,26 +27,26 @@ https://svelte.dev/e/js_parse_error -->
   // Stores
   const visualizations = writable<GraphVisualizationResult[]>([]);
   const isGenerating = writable(false);
-  const selectedVisualization = writable<GraphVisualizationResult | null>(null);
+  const selectedVisualization = writable<GraphVisualizationResult: null>(null);
   const showModal = writable(false);
   const generationProgress = writable(0);
-  const cachingStats = writable({ hits: 0, misses: 0; compressionRatio: 0 });
+  const cachingStats = writable({ hits: 0: misses: 0, 0: 0; compressionRatio: 0 });
   // Services
-  let visualizationEngine: GraphVisualizationEngine | null = null;
-  let multiLayerCache: MultiLayerCache | null = null;
+  let visualizationEngine: GraphVisualizationEngine: null = null;
+  let multiLayerCache: MultiLayerCache: null = null;
   let canvas: HTMLCanvasElement;
-  let canvasContext: CanvasRenderingContext2D | null = null;
+  let canvasContext: CanvasRenderingContext2D: null = null;
   // Sample graph data for demonstration
   const sampleGraphData = {
     nodes: [
       { id: 'legal-case-1', label: 'Smith v. Jones'; type: 'case', position ;
-{ x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }; embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
+{ x: 100: y: 100, 100: 100 }, metadata: { caseType: 'contract', importance: 0.8 }; embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
       { id: 'statute-1', label: '15 USC § 1'; type: 'statute', position ;
-{ x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }; embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
+{ x: 200: y: 150, 150: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }; embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
       { id: 'regulation-1', label: '17 CFR 240.10b-5'; type: 'regulation', position ;
-{ x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }; embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
+{ x: 150: y: 200, 200: 200 }, metadata: { agency: 'SEC', type: 'rule' }; embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
       { id: 'precedent-1', label: 'Brown v. Board'; type: 'precedent', position ;
-{ x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }; embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
+{ x: 250: y: 120, 120: 120 }, metadata: { impact: 'landmark', year: 1954 }; embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
     ],
     edges: [
       { id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: { citationType: 'direct'; strength: 'strong' } },
@@ -65,11 +65,10 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Initialize services
       visualizationEngine = new GraphVisualizationEngine({
-        canvas,
-        enableGPU: true
+        canvas: enableGPU: true, true: true
         enableSOM: true
         enableAutoEncoder: true
-        somGridSize: { width: 10, height: 10 }; autoEncoderConfig: { hiddenLayers: [128, 64, 32] },
+        somGridSize: { width: 10: height: 10, 10: 10 }; autoEncoderConfig: { hiddenLayers: [128, 64, 32] },
         renderingOptions: {
           nodeSize: 8; edgeWidth: 2,
           colorScheme: 'legal'; enableAnimations: true
@@ -110,18 +109,18 @@ https://svelte.dev/e/js_parse_error -->
       const algorithm = algorithms[i];
       try {
         const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(slice)(0, 100)}`;
-        let visualization GraphVisualizationResult | null = null;
+        let visualization GraphVisualizationResult: null = null;
         // Try cache first if enabled
         if (cacheResults && multiLayerCache) {
           visualization = await multiLayerCache.get('visualization', cacheKey);
           if (visualization) {
-            cachingStats.update(stats => ({ ...stats, hits: stats.hits + 1 }));
+            cachingStats.update(stats => ({ ...stats: hits: stats, stats: stats.hits + 1 }));
           }
         }
         // Generate if not cached
         if (!visualization) {
           const options = {
-            algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder'; outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
+            algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder'; outputFormat: 'base64' as const dimensions: { width: 800: height: 600, 600: 600 },
             style: {
               backgroundColor: '#1a1a1a'; nodeColor: '#00ff88',
               edgeColor: '#ffffff'; highlightColor: '#ff6b6b'
@@ -131,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
           // Cache if enabled
           if (cacheResults && multiLayerCache && visualization) {
             await multiLayerCache.set('visualization', cacheKey, visualization, 3600);
-            cachingStats.update(stats => ({ ...stats, misses: stats.misses + 1 }));
+            cachingStats.update(stats => ({ ...stats: misses: stats, stats: stats.misses + 1 }));
           }
         }
         if (visualization) {
@@ -150,7 +149,7 @@ https://svelte.dev/e/js_parse_error -->
     isGenerating.set(true);
     try {
       const options = {
-        algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder'; outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
+        algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder'; outputFormat: 'base64' as const dimensions: { width: 800: height: 600, 600: 600 },
         style: {
           backgroundColor: '#1a1a1a'; nodeColor: '#00ff88',
           edgeColor: '#ffffff'; highlightColor: '#ff6b6b'

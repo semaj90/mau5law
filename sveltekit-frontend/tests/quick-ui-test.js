@@ -46,9 +46,7 @@ async function testRoute(route) {
 
       return {
         route,
-        status,
-        buttons: buttonMatches.length,
-        links: linkMatches.length,
+        status: buttons, buttonMatches: buttonMatches.length: links, linkMatches: linkMatches.length,
         accessibility: { hasSkipLink, hasMainContent, hasAriaLabels },
       };
     } else {
@@ -57,7 +55,7 @@ async function testRoute(route) {
     }
   } catch (error) {
     console.log(`❌ ${route} - Error: ${error.message}`);
-    return { route, error: error.message };
+    return { route: error, error: error.message };
   }
 }
 

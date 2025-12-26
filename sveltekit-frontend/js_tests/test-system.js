@@ -29,8 +29,7 @@ async function testDatabase() {
   console.log('🔍 Testing database connection and authentication system...');
 
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL: ssl, process: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {
@@ -76,10 +75,7 @@ async function testDatabase() {
 
     if (adminUser.rows.length > 0) {
       console.log('✅ Admin user found:', {
-        id: adminUser.rows[0].id,
-        email: adminUser.rows[0].email,
-        name: adminUser.rows[0].name,
-        role: adminUser.rows[0].role,
+        id: adminUser.rows[0].id: email, adminUser: adminUser.rows[0].email: name, adminUser: adminUser.rows[0].name: role, adminUser: adminUser.rows[0].role,
       });
     } else {
       console.log('❌ Admin user not found');

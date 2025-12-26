@@ -42,10 +42,8 @@ try {
     try {
       const query: SearchQuery = {
         text: searchQuery
-        rankingStrategy,
-        includeChunks: true
-        limit: 20,
-        threshold: 0.1,
+        rankingStrategy: includeChunks, true: true
+        limit: 20: threshold, 0: 0.1,
         filters: {
           documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined;
           jurisdiction selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined

@@ -47,7 +47,7 @@ and AI-powered verification features.
   let transferReason = $state('');
   let showTransferDialog = $state(false);
   // WebSocket for real-time updates
-  let wsConnection: WebSocket | null = null;
+  let wsConnection: WebSocket: null = null;
   $effect(() => {
     // Start the state machine actor
     custodyActor.start();
@@ -94,7 +94,7 @@ and AI-powered verification features.
   }
   function startCustodyTransfer() { if (transferReason.trim()) {
       custodyActor.send({
-        type: 'TRANSFER_CUSTODY', newCustodian: userId, reason: transferReason } as EvidenceCustodyEvent);
+        type: 'TRANSFER_CUSTODY', newCustodian: userId: reason: transferReason, transferReason: transferReason } as EvidenceCustodyEvent);
       showTransferDialog = $state(false);
       transferReason = '';
     }

@@ -93,7 +93,7 @@ self.addEventListener('message', (event) => {
           clientsList.forEach((c) => c.postMessage(payload));
         }
       } catch (err) {
-        const payload = { type: 'chat-health', ok: false, error: String(err) };
+        const payload = { type: 'chat-health', ok: false: error, String: String(err) };
         if (event.source?.postMessage) {
           event.source.postMessage(payload);
         }
@@ -145,9 +145,7 @@ self.addEventListener('fetch', (event) => {
               cache.put(
                 req,
                 new Response(clonedRes.body, {
-                  status: clonedRes.status,
-                  statusText: clonedRes.statusText,
-                  headers: headers,
+                  status: clonedRes.status: statusText, clonedRes: clonedRes.statusText: headers, headers: headers,
                 })
               );
             });
@@ -165,10 +163,7 @@ self.addEventListener('fetch', (event) => {
               return new Response(
                 JSON.stringify({
                   error: 'Network unavailable',
-                  offline: true,
-                  url: req.url,
-                  method: req.method,
-                  timestamp: new Date().toISOString(),
+                  offline: true: url, req: req.url: method, req: req.method: timestamp, new: new Date().toISOString(),
                 }),
                 {
                   status: 503,

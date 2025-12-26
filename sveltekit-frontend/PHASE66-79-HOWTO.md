@@ -96,6 +96,7 @@ Standardized JSON object for LLM prompts:
   "repoContext": {
     "framework": "SvelteKit",
     "svelteVersion": "5",
+    "xstateVersion": "5",
     "db": "Postgres17+Drizzle",
     "vector": "pgvector+Qdrant"
   }
@@ -152,6 +153,17 @@ Use CouchDB for MapReduce graph analysis:
 - **Svelte Route:** `[[...path]]` in `<style>` -> `[...path]`.
 - **Env Vars:** `DATABASE_URL` -> `process.env.DATABASE_URL` (with context safety).
 - **Type Imports:** `import type` used as runtime value.
+- **XState v5 Migrations:**
+  - `interpret()` -> `createActor()`
+  - `machine.withContext()` -> use `input` property
+  - `cond` -> `guard` in transitions
+  - `send()` -> `raise()` (self) or `sendTo()` (others)
+  - `pure()`/`choose()` -> `enqueueActions()`
+  - `invoke.data` -> `invoke.input`
+  - Final state `data` -> `output`
+  - Actions receive single object: `({ context, event }) => {}`
+  - Event types must be objects: `{ type: 'EVENT' }`, not strings
+  - See **docs/xstate-v5-patterns.md** for full reference
 
 ## File Layout
 
@@ -162,4 +174,5 @@ Use CouchDB for MapReduce graph analysis:
 - `scripts/patterns.json`: Pattern registry.
 - `reports/`: Stores leaderboards and fix logs.
 - `logs/errors/`: Stores raw JSONL error logs.
+- **docs/xstate-v5-patterns.md**: XState v5 TypeScript patterns and mojibake corruption fixes.
 

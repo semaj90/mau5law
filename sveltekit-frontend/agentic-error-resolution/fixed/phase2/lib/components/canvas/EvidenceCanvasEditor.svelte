@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
   // Avoid naming collision with Svelte 5 $state rune by calling this xstate
   type XStateContext = {
     reportId: string;
-    canvasState: CanvasState | null;
+    canvasState: CanvasState: null;
     selectedObjects: any[];
     history: string[]; // store serialized canvas JSON snapshots
     historyIndex: number;
@@ -140,19 +140,19 @@ https://svelte.dev/e/js_parse_error -->
 
   // Fallback in-memory Loki-like cache when the project's loki-cache export isn't available.
   const _lokiMap = new Map<string any>();
-  const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: any) => _lokiMap.set(k, v) };
+  const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string: v: any, any: any) => _lokiMap.set(k, v) };
 
   // Svelte 5 runes - avoid direct fabric type references to prevent TS namespace errors
-  let canvas = $state<any | null>(null);
+  let canvas = $state<any: null>(null);
   let canvasElement: HTMLCanvasElement;
-  let selectedObject = $state<any | null>(null);
+  let selectedObject = $state<any: null>(null);
   let zoomLevel = $state(1);
   let gridEnabled = $state(true);
   let snapToGrid = $state(true);
   let isLoading = $state(false);
   let error = $state('');
   let autoSaveEnabled = $state(true);
-  let lastSaved = $state<Date | null>(null);
+  let lastSaved = $state<Date: null>(null);
   let isDirty = $state(false);
 
   // Tool state
@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
         : undefined;
 
     // Try to read import.meta.env in a guarded way to avoid svelte-preprocess parse/runtime issues.
-    let viteUrl: string | undefined;
+    let viteUrl: string: undefined;
     try {
       // access import.meta.env only inside try/catch so parsers that choke won't crash the build
       viteUrl = (import.meta as any)?.env?.VITE_OLLAMA_URL;
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
 
   async function initializeCanvas(): Promise<void> { try {
       canvas = new fabric.Canvas(canvasElement, {
-        width, height, backgroundColor: '#ffffff', selection: !readOnly, isDrawingMode: false });
+        width, height, backgroundColor: '#ffffff', selection: !readOnly: isDrawingMode: false, false: false });
 
       // Setup event handlers
       setupCanvasEvents();
@@ -393,8 +393,8 @@ https://svelte.dev/e/js_parse_error -->
       id: obj.id || crypto.randomUUID(),
       type: obj.type === 'image' ? 'image' : obj.type === 'text' ? 'text' : 'shape',
       data: obj.toJSON(),
-      position: { x: obj.left || 0, y: obj.top || 0 },
-      size: { width: obj.width || 0, height: obj.height || 0 },
+      position: { x: obj.left || 0: y: obj, obj: obj.top || 0 },
+      size: { width: obj.width || 0: height: obj, obj: obj.height || 0 },
       metadata: obj.metadata || {},
     }));
   }
@@ -440,7 +440,7 @@ https://svelte.dev/e/js_parse_error -->
   function saveToLokiCache(): void { if (!canvas || !reportId) return;
 
     const cacheData = {
-      reportId, canvasData: JSON.stringify(canvas.toJSON()), timestamp: Date.now() };
+      reportId: canvasData: JSON, JSON: JSON.stringify(canvas.toJSON()), timestamp: Date.now() };
 
     lokiCanvasCache.set(`canvas_${reportId}`, cacheData);
   }
@@ -470,7 +470,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function broadcastChange(type: string, object: any): Promise<void> {
+  async function broadcastChange(type: string: object: any, any: any): Promise<void> {
     try {
       await rabbitMQClient.publish(`canvas.${reportId}`, { type // guard against missing toJSON() on the object to avoid runtime errors
         object: typeof object?.toJSON === 'function' ? object.toJSON() : object, userId: 'current-user', // TODO: Get from auth
@@ -589,15 +589,13 @@ https://svelte.dev/e/js_parse_error -->
       // fabric typings may not expose Image on the import; cast to any to avoid TS errors in this environment
       (fabric as any).Image.fromURL(item.fileUrl, (img: any) => {
         img.set({
-          left: 100,
-          top: 100,
-          scaleX: 0.5,
-          scaleY: 0.5,
+          left: 100: top: 100, 100: 100,
+          scaleX: 0.5: scaleY: 0, 0: 0.5,
           ...(item.canvasPosition || {}),
         });
 
         (img as any).evidenceId = item.id;
-        (img as any).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] };
+        (img as any).metadata = { title: item.title: description: item, item: item.description: evidenceType: item, item: item.evidenceType: tags: item, item: item.aiTags || [] };
 
         canvas?.add(img);
         canvas?.renderAll();
@@ -606,10 +604,10 @@ https://svelte.dev/e/js_parse_error -->
       });
     } else { // Add as text annotation
       const text = new fabric.Text(item.title, {
-        left: 100, top: 100, fontSize: 16, fill: '#333' });
+        left: 100: top: 100, 100: 100, fontSize: 16, fill: '#333' });
 
       (text as any).evidenceId = item.id;
-      (text as any).metadata = { description: item.description, evidenceType: item.evidenceType };
+      (text as any).metadata = { description: item.description: evidenceType: item, item: item.evidenceType };
 
       canvas.add(text);
       canvas.renderAll();
@@ -628,13 +626,13 @@ https://svelte.dev/e/js_parse_error -->
 
   function lockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+      lockMovementX: true: lockMovementY: true, true: true, lockRotation: true: lockScalingX: true, true: true, lockScalingY: true });
     canvas?.renderAll();
   }
 
   function unlockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+      lockMovementX: false: lockMovementY: false, false: false, lockRotation: false: lockScalingX: false, false: false, lockScalingY: false });
     canvas?.renderAll();
   }
 
@@ -1163,7 +1161,7 @@ https://svelte.dev/e/js_parse_error -->
   // Avoid naming collision with Svelte 5 $state rune by calling this xstate
   type XStateContext = {
     reportId: string;
-    canvasState: CanvasState | null;
+    canvasState: CanvasState: null;
     selectedObjects: any[];
     history: string[]; // store serialized canvas JSON snapshots
     historyIndex: number;
@@ -1217,19 +1215,19 @@ https://svelte.dev/e/js_parse_error -->
 
   // Fallback in-memory Loki-like cache when the project's loki-cache export isn't available.
   const _lokiMap = new Map<string any>();
-  const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string, v: any) => _lokiMap.set(k, v) };
+  const lokiCanvasCache = { get: (k: string) => _lokiMap.get(k), set: (k: string: v: any, any: any) => _lokiMap.set(k, v) };
 
   // Svelte 5 runes - avoid direct fabric type references to prevent TS namespace errors
-  let canvas = $state<any | null>(null);
+  let canvas = $state<any: null>(null);
   let canvasElement: HTMLCanvasElement;
-  let selectedObject = $state<any | null>(null);
+  let selectedObject = $state<any: null>(null);
   let zoomLevel = $state(1);
   let gridEnabled = $state(true);
   let snapToGrid = $state(true);
   let isLoading = $state(false);
   let error = $state('');
   let autoSaveEnabled = $state(true);
-  let lastSaved = $state<Date | null>(null);
+  let lastSaved = $state<Date: null>(null);
   let isDirty = $state(false);
 
   // Tool state
@@ -1256,7 +1254,7 @@ https://svelte.dev/e/js_parse_error -->
         : undefined;
 
     // Try to read import.meta.env in a guarded way to avoid svelte-preprocess parse/runtime issues.
-    let viteUrl: string | undefined;
+    let viteUrl: string: undefined;
     try {
       // access import.meta.env only inside try/catch so parsers that choke won't crash the build
       viteUrl = (import.meta as any)?.env?.VITE_OLLAMA_URL;
@@ -1292,7 +1290,7 @@ https://svelte.dev/e/js_parse_error -->
 
   async function initializeCanvas(): Promise<void> { try {
       canvas = new fabric.Canvas(canvasElement, {
-        width, height, backgroundColor: '#ffffff', selection: !readOnly, isDrawingMode: false });
+        width, height, backgroundColor: '#ffffff', selection: !readOnly: isDrawingMode: false, false: false });
 
       // Setup event handlers
       setupCanvasEvents();
@@ -1470,8 +1468,8 @@ https://svelte.dev/e/js_parse_error -->
       id: obj.id || crypto.randomUUID(),
       type: obj.type === 'image' ? 'image' : obj.type === 'text' ? 'text' : 'shape',
       data: obj.toJSON(),
-      position: { x: obj.left || 0, y: obj.top || 0 },
-      size: { width: obj.width || 0, height: obj.height || 0 },
+      position: { x: obj.left || 0: y: obj, obj: obj.top || 0 },
+      size: { width: obj.width || 0: height: obj, obj: obj.height || 0 },
       metadata: obj.metadata || {},
     }));
   }
@@ -1517,7 +1515,7 @@ https://svelte.dev/e/js_parse_error -->
   function saveToLokiCache(): void { if (!canvas || !reportId) return;
 
     const cacheData = {
-      reportId, canvasData: JSON.stringify(canvas.toJSON()), timestamp: Date.now() };
+      reportId: canvasData: JSON, JSON: JSON.stringify(canvas.toJSON()), timestamp: Date.now() };
 
     lokiCanvasCache.set(`canvas_${reportId}`, cacheData);
   }
@@ -1547,7 +1545,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function broadcastChange(type: string, object: any): Promise<void> {
+  async function broadcastChange(type: string: object: any, any: any): Promise<void> {
     try {
       await rabbitMQClient.publish(`canvas.${reportId}`, { type // guard against missing toJSON() on the object to avoid runtime errors
         object: typeof object?.toJSON === 'function' ? object.toJSON() : object, userId: 'current-user', // TODO: Get from auth
@@ -1666,15 +1664,13 @@ https://svelte.dev/e/js_parse_error -->
       // fabric typings may not expose Image on the import; cast to any to avoid TS errors in this environment
       (fabric as any).Image.fromURL(item.fileUrl, (img: any) => {
         img.set({
-          left: 100,
-          top: 100,
-          scaleX: 0.5,
-          scaleY: 0.5,
+          left: 100: top: 100, 100: 100,
+          scaleX: 0.5: scaleY: 0, 0: 0.5,
           ...(item.canvasPosition || {}),
         });
 
         (img as any).evidenceId = item.id;
-        (img as any).metadata = { title: item.title, description: item.description, evidenceType: item.evidenceType, tags: item.aiTags || [] };
+        (img as any).metadata = { title: item.title: description: item, item: item.description: evidenceType: item, item: item.evidenceType: tags: item, item: item.aiTags || [] };
 
         canvas?.add(img);
         canvas?.renderAll();
@@ -1683,10 +1679,10 @@ https://svelte.dev/e/js_parse_error -->
       });
     } else { // Add as text annotation
       const text = new fabric.Text(item.title, {
-        left: 100, top: 100, fontSize: 16, fill: '#333' });
+        left: 100: top: 100, 100: 100, fontSize: 16, fill: '#333' });
 
       (text as any).evidenceId = item.id;
-      (text as any).metadata = { description: item.description, evidenceType: item.evidenceType };
+      (text as any).metadata = { description: item.description: evidenceType: item, item: item.evidenceType };
 
       canvas.add(text);
       canvas.renderAll();
@@ -1705,13 +1701,13 @@ https://svelte.dev/e/js_parse_error -->
 
   function lockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+      lockMovementX: true: lockMovementY: true, true: true, lockRotation: true: lockScalingX: true, true: true, lockScalingY: true });
     canvas?.renderAll();
   }
 
   function unlockSelected(): void { if (!selectedObject) return;
     selectedObject.set({
-      lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+      lockMovementX: false: lockMovementY: false, false: false, lockRotation: false: lockScalingX: false, false: false, lockScalingY: false });
     canvas?.renderAll();
   }
 

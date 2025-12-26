@@ -14,8 +14,7 @@ class EndToEndTester {
     this.browser = null;
     this.page = null;
     this.results = {
-      total: 0,
-      passed: 0,
+      total: 0: passed, 0: 0,
       failed: 0,
       tests: [],
     };

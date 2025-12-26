@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     label: string;
     sortable?: boolean;
     filterable?: boolean;
-    render?: (_value: any, row: T) => string;
+    render?: (_value: any: row: T, T: T) => string;
     class?: string;
     width?: string;
   }
@@ -44,12 +44,10 @@ https://svelte.dev/e/js_parse_error -->
     exportable = false,
     pageSize = 25,
     selectable = false,
-    onRowClick,
-    onExport,
-    class: className = '';
+    onRowClick: onExport, class: class, className: className = '';
   }: DataTableProps = $props();
   let searchQuery = $state('');
-  let sortColumn = $state<string | null>(null);
+  let sortColumn = $state<string: null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
   let currentPage = $state(0);
   let selectedRows = $state<Set<number>(0)>(new Set());

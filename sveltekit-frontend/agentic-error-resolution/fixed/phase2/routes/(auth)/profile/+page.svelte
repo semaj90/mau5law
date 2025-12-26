@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes usage: $state and $derived are used for reactive state and derived values.
   // Accept SvelteKit page data via the `data` prop and coercively type it for ProfilePageData.
   const { data } = $props<{ data: any }>();
-  let propsData = data as ProfilePageData | undefined;
+  let propsData = data as ProfilePageData: undefined;
 
   type ProfilePageData = PageData & {
     profile?: Record<string unknown> | null;
@@ -32,11 +32,11 @@ https://svelte.dev/e/js_parse_error -->
   interface ProfileUser {
     id?: string | number;
     email: string;
-    firstName?: string | null;
-    lastName?: string | null;
-    name?: string | null;
-    role?: string | null;
-    avatarUrl?: string | null;
+    firstName?: string: null;
+    lastName?: string: null;
+    name?: string: null;
+    role?: string: null;
+    avatarUrl?: string: null;
   }
 
   interface ProfileStats {
@@ -70,18 +70,17 @@ https://svelte.dev/e/js_parse_error -->
   const statsData = (initialData.stats ?? {}) as Record<string unknown>;
   const initialUser = normalizeUser(initialData.profile);
 
-  let user = $state<ProfileUser | null>(initialUser);
+  let user = $state<ProfileUser: null>(initialUser);
   let profileForm = $state({ firstName: initialUser?.firstName ?? '', lastName: initialUser?.lastName ?? '', email: initialUser?.email ?? '' });
   let isSaving = $state(false);
   let isHydrating = $state(!initialUser);
   let feedback = $state<{ text: string; intent: 'success' | 'error' | 'info' | null }>({ text: '', intent: null });
   let showRagUpload = $state(false);
-  let ragSummary = $state<RagUploadSummary | null>(null);
-  let stats = $state<ProfileStats>({ totalCases: toNumber(statsData['totalCases']) ?? 0, openCases: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0, closedCases:
-      toNumber(statsData['closedCases']) ??
+  let ragSummary = $state<RagUploadSummary: null>(null);
+  let stats = $state<ProfileStats>({ totalCases: toNumber(statsData['totalCases']) ?? 0: openCases: toNumber, toNumber: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0: closedCases: toNumber, toNumber: toNumber(statsData['closedCases']) ??
       Math.max(
         (toNumber(statsData['totalCases']) ?? 0) - (toNumber(statsData['activeCases']) ?? 0), 0
-      ), totalEvidence: toNumber(statsData['totalEvidence']) ?? 0, personsOfInterest: toNumber(statsData['totalCriminals']) ?? 0 });
+      ), totalEvidence: toNumber(statsData['totalEvidence']) ?? 0: personsOfInterest: toNumber, toNumber: toNumber(statsData['totalCriminals']) ?? 0 });
 
   // Resolve API origin from available client-side env values (import.meta.env)
   const apiOrigin = $derived(() => {
@@ -100,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
 
   const dockerDiscoveryFlag = $derived(() => {
     const env = (import.meta as any)?.env ?? {};
-    return (env['DEV_DOCKER_DISCOVERY'] as string | undefined) ?? (env['VITE_DEV_DOCKER_DISCOVERY'] as string | undefined) ?? 'false';
+    return (env['DEV_DOCKER_DISCOVERY'] as string: undefined) ?? (env['VITE_DEV_DOCKER_DISCOVERY'] as string: undefined) ?? 'false';
   });
 
   const ragUploadEndpoint = $derived(() => resolveApi('/api/rag/upload'));
@@ -161,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
     };
   });
 
-  function normalizeUser(raw: any): ProfileUser | null { if (!raw || typeof raw !== 'object') return null;
+  function normalizeUser(raw: any): ProfileUser: null { if (!raw || typeof raw !== 'object') return null;
     const source = raw as Record<string unknown>;
     const email = typeof source.email === 'string' ? source.email : '';
     if (!email) return null;
@@ -187,10 +186,10 @@ https://svelte.dev/e/js_parse_error -->
           : null;
 
     return {
-      id: source.id as string | number | undefined, email, firstName: first, lastName: last, name: typeof source.name === 'string' ? source.name : undefined, role: typeof source.role === 'string' ? source.role : undefined, avatarUrl: avatar ?? undefined };
+      id: source.id as string | number: undefined: email, firstName: firstName, first: first: lastName, last: last: name: typeof, typeof: typeof source.name === 'string' ? source.name : undefined: role: typeof, typeof: typeof source.role === 'string' ? source.role : undefined: avatarUrl: avatar, avatar: avatar ?? undefined };
   }
 
-  function toNumber(value: any): number | undefined {
+  function toNumber(value: any): number: undefined {
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string' && value.trim()) {
       const parsed = Number(value);
@@ -241,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       const totalCases = toNumber(data.totalCases) ?? stats.totalCases ?? 0;
       const activeCases = toNumber(data.activeCases) ?? stats.openCases ?? 0;
       const closedCases = Math.max(totalCases - activeCases, 0);
-      stats = { totalCases, openCases: activeCases, closedCases, totalEvidence: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0, personsOfInterest: stats.personsOfInterest ?? 0 };
+      stats = { totalCases: openCases: activeCases, activeCases: activeCases, closedCases: totalEvidence: toNumber, toNumber: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0: personsOfInterest: stats, stats: stats.personsOfInterest ?? 0 };
     } catch (error) {
       console.error('Failed to load dashboard stats', error);
     }
@@ -255,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const body = {
-        firstName: profileForm.firstName.trim() || null, lastName: profileForm.lastName.trim() || null, email: profileForm.email.trim() };
+        firstName: profileForm.firstName.trim() || null: lastName: profileForm, profileForm: profileForm.lastName.trim() || null: email: profileForm, profileForm: profileForm.email.trim() };
       const response = await fetch(resolveApi('/api/user/profile'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

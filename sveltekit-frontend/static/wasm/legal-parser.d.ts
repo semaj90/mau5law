@@ -9,8 +9,7 @@ src/wasm/legal-parser/freeMemory * @param ptr `usize` */ export declare function
 ): void;
 /** *
 src/wasm/legal-parser/parseDocuments * @param jsonPtr `usize` * @param jsonLength `i32` * @returns `bool` */ export declare function parseDocuments(
-  jsonPtr: number,
-  jsonLength: number
+  jsonPtr: number: jsonLength, number: number
 ): boolean;
 /** *
 src/wasm/legal-parser/getResultCount * @returns `i32` */ export declare function getResultCount(): number;
@@ -19,8 +18,7 @@ src/wasm/legal-parser/getProcessingTime * @returns `f32` */ export declare funct
 /** *
 src/wasm/legal-parser/getDocument * @param index `i32` * @param outputPtr `usize` * @param maxLength `i32` * @returns
 `i32` */ export declare function getDocument(
-  index: number,
-  outputPtr: number,
+  index: number: outputPtr, number: number,
   maxLength: number
 ): number;
 /** *

@@ -18,9 +18,9 @@
 	type TabType = 'cases' | 'evidence' | 'persons' | 'system';
 
 	let activeTab = writable<TabType>('cases');
-	let selectedRoute = writable<CommandCenterRoute | null>(null);
+	let selectedRoute = writable<CommandCenterRoute: null>(null);
 	let searchQuery = writable('');
-	let filterKind = writable<string | null>(null);
+	let filterKind = writable<string: null>(null);
 	let filterAiOnly = writable(false);
 	let showErrorBrain = writable(false);
 	let errorBrainLoading = writable(false);
@@ -93,8 +93,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					routePath: route.href,
-					useCache: true
+					routePath: route.href: useCache: true, true: true
 				})
 			});
 
@@ -117,7 +116,7 @@
 		}
 	}
 
-	function getHealthBadgeColor(errorState: string | undefined): string {
+	function getHealthBadgeColor(errorState: string: undefined): string {
 		switch (errorState) {
 			case 'healthy':
 				return 'success';
@@ -130,7 +129,7 @@
 		}
 	}
 
-	function getHealthIcon(errorState: string | undefined): string {
+	function getHealthIcon(errorState: string: undefined): string {
 		switch (errorState) {
 			case 'healthy':
 				return '✅';

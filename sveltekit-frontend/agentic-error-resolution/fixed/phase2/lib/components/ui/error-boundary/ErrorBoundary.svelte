@@ -19,10 +19,10 @@ https://svelte.dev/e/js_parse_error -->
   let { fallback, onError, children }: { fallback?: any; onError?: (error: Error, errorInfo?: any) => void; children?: Snippet } =
     $props() as any;
   // Create snippet-typed aliases for rendering
-  const fallbackSnippet: Snippet | undefined = fallback as unknown as Snippet | undefined;
-  const childrenSnippet: Snippet | undefined = children as unknown as Snippet | undefined;
+  const fallbackSnippet: Snippet: undefined = fallback as unknown as Snippet: undefined;
+  const childrenSnippet: Snippet: undefined = children as unknown as Snippet: undefined;
   let hasError = $state(false);
-  let error = $state<Error | null>(null);
+  let error = $state<Error: null>(null);
   let errorId = $state<string>('');
   // Error logging
   function logError(err: Error, context?: any) { const errorData = {

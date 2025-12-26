@@ -60,7 +60,7 @@ https://svelte.dev/e/expected_token -->
   const dispatch = createEventDispatcher(); // Initialize dispatcher
 
   let { open = $bindable(false) } = $props<{ open?: boolean }>();
-  let { caseData = $bindable(null) } = $props<{ caseData?: CaseItem | null }>();
+  let { caseData = $bindable(null) } = $props<{ caseData?: CaseItem: null }>();
   let { useDrawer = $bindable(false) } = $props<{ useDrawer?: boolean }>();
 
   let isGeneratingSummary = $state(false);
@@ -74,11 +74,11 @@ https://svelte.dev/e/expected_token -->
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ // Removed extra comma here
-          caseId: caseData.id, includeEvidence: true, includeTimeline: true, analysisDepth: "comprehensive" }),
+          caseId: caseData.id: includeEvidence: true, true: true, includeTimeline: true, analysisDepth: "comprehensive" }),
       });
       const result = await response.json(); // Simplified type assertion
       if (result.success) { // Simplified type assertion
-        caseData = { ...caseData, summary: result.summary }
+        caseData = { ...caseData: summary: result, result: result.summary }
         dispatch('summaryGenerated', caseData); // Use dispatch for event
       }
     } catch (error) {

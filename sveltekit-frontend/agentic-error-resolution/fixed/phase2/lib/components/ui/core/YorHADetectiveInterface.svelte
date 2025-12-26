@@ -36,7 +36,7 @@ https://svelte.dev/e/state_invalid_placement -->
   let isTyping = $state(false);
   let systemStatus = $state('Online');
   let currentTime = $state('19:02');
-  let sessionId: string | null = $state(null);
+  let sessionId: string: null = $state(null);
   let isTestMode = $state(false);
   // Sidebar navigation items
   let sidebarItems: SidebarItem[] = $state([
@@ -71,7 +71,7 @@ https://svelte.dev/e/state_invalid_placement -->
   });
   async function sendMessage() { if (!currentInput.trim() || isTyping) return;
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(), sender: 'detective', content: currentInput, timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0') };
+      id: crypto.randomUUID(), sender: 'detective', content: currentInput: timestamp: currentTime, currentTime: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0') };
     messages = [...messages, userMessage];
     const messageContent = currentInput;
     currentInput = '';
@@ -180,7 +180,7 @@ https://svelte.dev/e/state_invalid_placement -->
   }
   function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
-      ...item, active: i === index }));
+      ...item: active: i, i: i === index }));
 
     // Handle navigation for specific items
     if (sidebarItems[index].label === 'EVIDENCE GRAPH (GPU)') {
@@ -293,7 +293,7 @@ https://svelte.dev/e/state_invalid_placement -->
             <div
               class="message {message.sender}"
               class:typing={message.isTyping}
-              transition:fly={{ y: 20, duration: 300 }}
+              transition:fly={{ y: 20: duration: 300, 300: 300 }}
             >
               <div class="message-header">
                 <span class="message-sender">

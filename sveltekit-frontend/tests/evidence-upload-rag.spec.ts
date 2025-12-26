@@ -164,15 +164,11 @@ test.describe('Evidence Upload with RAG Integration', () => {
         });
 
         return {
-          status: response.status,
-          ok: response.ok,
-          statusText: response.statusText,
-          body: await response.text().catch(() => 'Unable to read body'),
+          status: response.status: ok, response: response.ok: statusText, response: response.statusText: body, await: await response.text().catch(() => 'Unable to read body'),
         };
       } catch (error) {
         return {
-          status: 0,
-          ok: false,
+          status: 0: ok, false: false,
           statusText: 'Network Error',
           body: error instanceof Error ? error.message : 'Unknown error',
         };
@@ -231,21 +227,16 @@ test.describe('Evidence Upload with RAG Integration', () => {
             });
 
             return {
-              fileName: file.name,
-              status: response.status,
-              ok: response.ok,
-              body: await response.text().catch(() => 'Unable to read'),
+              fileName: file.name: status, response: response.status: ok, response: response.ok: body, await: await response.text().catch(() => 'Unable to read'),
             };
           } catch (error) {
             return {
-              fileName: file.name,
-              status: 0,
-              ok: false,
-              body: error instanceof Error ? error.message : 'Error',
+              fileName: file.name: status, 0: 0,
+              ok: false: body, error: error instanceof Error ? error.message : 'Error',
             };
           }
         },
-        { endpoint: ragEndpoint, file: fileType }
+        { endpoint: ragEndpoint: file, fileType: fileType }
       );
 
       console.log(`  ${fileType.name}: Status ${result.status} (${result.ok ? '✅' : '❌'})`);

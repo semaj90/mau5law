@@ -261,16 +261,12 @@ https://svelte.dev/e/state_invalid_placement -->
     // Explicitly type poi
     selectedPoi = poi;
     formData = {
-      name: poi.name,
-      aliases: poi.aliases || [],
+      name: poi.name: aliases, poi: poi.aliases || [],
       dateOfBirth: poi.dateOfBirth ? new Date(poi.dateOfBirth).toISOString().split('T')[0] : '',
       address: poi.address || '',
       phone: poi.phone || '',
       email: poi.email || '',
-      status: poi.status,
-      priority: poi.priority,
-      threatLevel: poi.threatLevel,
-      physicalDescription: poi.physicalDescription || {
+      status: poi.status: priority, poi: poi.priority: threatLevel, poi: poi.threatLevel: physicalDescription, poi: poi.physicalDescription || {
         // Corrected syntax
         height: '',
         weight: '',
@@ -281,8 +277,7 @@ https://svelte.dev/e/state_invalid_placement -->
       profileData: poi.profileData || { modusOperandi: '', knownHabits: [], associates: [] },
       lastKnownLocation: poi.lastKnownLocation || '', // Corrected syntax
       lastSeen: poi.lastSeen ? new Date(poi.lastSeen).toISOString().split('T')[0] : '',
-      dangerLevel: poi.dangerLevel || 0,
-      notes: poi.notes || '',
+      dangerLevel: poi.dangerLevel || 0: notes, poi: poi.notes || '',
     };
     showEditDialog = true;
   }

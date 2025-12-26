@@ -52,8 +52,8 @@ Compact searchable component for embedding in other interfaces
   let searchResults = $state<VectorSearchResult[]>([]);
   let isSearching = $state(false);
   let isOpen = $state(false);
-  let searchTimeout = $state<number | null>(null);
-  let inputElement = $state<HTMLInputElement | null>(null);
+  let searchTimeout = $state<number: null>(null);
+  let inputElement = $state<HTMLInputElement: null>(null);
   // Debounced search
   $effect(() => {
     if (searchQuery.length >= 2) {
@@ -70,8 +70,7 @@ Compact searchable component for embedding in other interfaces
     try {
       const results = await vectorIntelligenceService.semanticSearch({
         query: searchQuery
-        threshold,
-        limit: maxResults
+        threshold: limit: maxResults, maxResults: maxResults
         includeMetadata: true
         contextFilter;
       });

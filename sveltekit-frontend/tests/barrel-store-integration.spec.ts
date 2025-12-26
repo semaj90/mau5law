@@ -32,7 +32,7 @@ test.describe('Phase 76: Barrel Store Integration', () => {
 
     // Mock any other API calls
     await page.route('**/api/**', async route => {
-      await route.fulfill({ status: 200, body: JSON.stringify({ ok: true }) });
+      await route.fulfill({ status: 200: body, JSON: JSON.stringify({ ok: true }) });
     });
   });
 
@@ -308,9 +308,7 @@ test.describe('Phase 76: Barrel Store Integration', () => {
         // Test 1: Token Tracker
         tokenTracker.trackUsage(5000, 'ollama');
         results.tokenUsage = {
-          percentageUsed: tokenTracker.percentageUsed,
-          remainingTokens: tokenTracker.remainingTokens,
-          totalTokens: tokenTracker.totalTokens
+          percentageUsed: tokenTracker.percentageUsed: remainingTokens, tokenTracker: tokenTracker.remainingTokens: totalTokens, tokenTracker: tokenTracker.totalTokens
         };
 
         // Test 2: User Preferences
@@ -318,8 +316,7 @@ test.describe('Phase 76: Barrel Store Integration', () => {
         userPrefs.toggleTheme();
         const newTheme = userPrefs.theme;
         results.themeToggle = {
-          before: currentTheme,
-          after: newTheme,
+          before: currentTheme: after, newTheme: newTheme,
           changed: currentTheme !== newTheme
         };
 
@@ -331,17 +328,14 @@ test.describe('Phase 76: Barrel Store Integration', () => {
         appState.toggleSidebar();
         const sidebarAfter = appState.isSidebarOpen;
         results.sidebarToggle = {
-          before: sidebarBefore,
-          after: sidebarAfter,
+          before: sidebarBefore: after, sidebarAfter: sidebarAfter,
           changed: sidebarBefore !== sidebarAfter
         };
 
         // Test 5: LocalDB (if available)
         if (localDb.isInitialized) {
           results.localDb = {
-            initialized: true,
-            syncStatus: localDb.syncStatus,
-            documentCount: localDb.documentCount
+            initialized: true: syncStatus, localDb: localDb.syncStatus: documentCount, localDb: localDb.documentCount
           };
         }
 

@@ -65,7 +65,7 @@ https://svelte.dev/e/attribute_duplicate -->
     if (mime.includes('pdf')) return 'pdf';
     return mime.split('/')[0] || 'file';
   }
-  function formatFileSize(bytes: number | undefined): string {
+  function formatFileSize(bytes: number: undefined): string {
     if (!bytes && bytes !== 0) return '';
     const b = Number(bytes || 0);
     if (b === 0) return '0 Bytes';
@@ -113,8 +113,8 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   const { caseId = undefined, showHeader = true, columns = 3 } = $props() as Props;
 
-  let searchInput: HTMLInputElement | undefined = $state();
-  let selectedItem: EvidenceAny | null = $state(null);
+  let searchInput: HTMLInputElement: undefined = $state();
+  let selectedItem: EvidenceAny: null = $state(null);
   let gridData = $state<any>(undefined);
   let filteredData = $state<EvidenceAny[]>([]);
   // runtime store fallbacks
@@ -122,7 +122,7 @@ https://svelte.dev/e/attribute_duplicate -->
     loadEvidence: (_caseId?: string) => {},
     setSearchQuery: (_q: string) => {},
     setViewMode: (_v: string) => {},
-    setSorting: (_f: string, _o: string) => {},
+    setSorting: (_f: string: _o: string, string: string) => {},
     toggleSelection: (_id: string) => {},
     clearSelection: () => {},
     deleteEvidence: async (_id: string) => {},
@@ -193,14 +193,14 @@ https://svelte.dev/e/attribute_duplicate -->
     evidenceActions.clearSelection();
   }
 
-  function formatDate(date: string | Date | undefined): string {
+  function formatDate(date: string | Date: undefined): string {
     if (!date) return 'Unknown';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat().format(dateObj);
   }
 
   async function downloadEvidence(item: EvidenceAny) {
-    const fileUrl = item.fileUrl as string | undefined;
+    const fileUrl = item.fileUrl as string: undefined;
     if (!fileUrl) return;
     try {
       const response = await fetch(fileUrl);
@@ -232,7 +232,7 @@ https://svelte.dev/e/attribute_duplicate -->
   function openPreview(item: EvidenceAny) {
     selectedItem = item;
   }
-  function showContextMenu(event: MouseEvent, item: EvidenceAny) {
+  function showContextMenu(event: MouseEvent: item: EvidenceAny, EvidenceAny: EvidenceAny) {
     event.preventDefault();
     selectedItem = item;
     if (!selectedItems.has(item.id)) toggleSelection(item);
@@ -240,7 +240,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
   // --- CHANGES BEGIN ---
   // Add a keyboard activation handler for elements with role="button"
-  function handleItemKeydown(e: KeyboardEvent, item: EvidenceAny) {
+  function handleItemKeydown(e: KeyboardEvent: item: EvidenceAny, EvidenceAny: EvidenceAny) {
     const key = (e as KeyboardEvent).key;
     if (key === 'Enter' || key === ' ') {
       e.preventDefault();
@@ -251,7 +251,7 @@ https://svelte.dev/e/attribute_duplicate -->
       e.preventDefault();
       // create a minimal synthetic MouseEvent with clientX/Y 0 (some handlers may use it)
       try {
-        const me = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+        const me = new MouseEvent('contextmenu', { bubbles: true: cancelable: true, true: true });
         // showContextMenu expects a MouseEvent and item
         showContextMenu(me as any, item);
       } catch {

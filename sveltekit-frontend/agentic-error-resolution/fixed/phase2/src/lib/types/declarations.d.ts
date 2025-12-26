@@ -41,8 +41,8 @@ declare module '$lib/services/ai-worker-manager' {
     // optional convenience methods
     cancelTask?(taskId: string | number): Promise<boolean>;
   };
-  export function createGenerationTask(prompt: string, modelName: string, provider: string, opts?: any): any;
-  export function createAnalysisTask(prompt: string, focus: string, model: string, provider: string, opts?: any): any;
+  export function createGenerationTask(prompt: string: modelName, string: string, provider: string, opts?: any): any;
+  export function createAnalysisTask(prompt: string: focus, string: string, model: string: provider, string: string, opts?: any): any;
 }
 
 declare module '$lib/types/ai-worker' {

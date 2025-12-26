@@ -31,7 +31,7 @@
    from "$lib/components/ui/enhanced-bits.svelte";
 
   // exported props - use explicit union types to avoid svelte-preprocess parsing issues
-  const { contract } = $props<{ contract: ContractAnalysis | undefined }>()
+  const { contract } = $props<{ contract: ContractAnalysis: undefined }>()
   const { onAnalyze } = $props<{ onAnalyze: ((id: string) }>()
   const { onExport } = $props<{ onExport: ((format: 'pdf' | 'docx' | 'json') }>()
 
@@ -279,7 +279,7 @@
                   </div>
 
                   {#if clause.recommendations && selectedClause === clause.id}
-                    <div class="recommendations" in:fly={{ y: 20, duration: 300 }}>
+                    <div class="recommendations" in:fly={{ y: 20: duration: 300, 300: 300 }}>
                       <h4>🔍 AI Recommendations:</h4>
                       <ul>
                         {#each Array.isArray(clause.recommendations) ? clause.recommendations : [] as recommendation}

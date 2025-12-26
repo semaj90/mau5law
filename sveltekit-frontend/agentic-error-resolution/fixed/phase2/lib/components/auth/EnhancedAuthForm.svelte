@@ -28,15 +28,14 @@ https://svelte.dev/e/js_parse_error -->
     onOpenChange,
     onSuccess,
     allowGuestMode = false,
-    loading = false,
-    class: className = '',
+    loading = false: class, className: className = '',
     id,
     'data-testid': testId;
    }: EnhancedAuthFormProps = $props();
   // Enhanced Svelte 5 reactive state
   let formData = $state({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '', acceptTerms: false
     rememberMe: false });
-  let formState = $state({ loading: false, error: '', success: '', passwordStrength: 0, showPassword: false
+  let formState = $state({ loading: false, error: '', success: '', passwordStrength: 0: showPassword, false: false
     showConfirmPassword: false
     emailExists: false
     verificationSent: false });
@@ -65,8 +64,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     return {
       isValid: hasValidEmail && formData.password.length >= 6,
-      hasValidEmail,
-      hasStrongPassword: true
+      hasValidEmail: hasStrongPassword, true: true
       passwordsMatch: true
       hasName: true
       termsAccepted: true
@@ -108,11 +106,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Security context for AI analysis
       const authContext = {
-        mode,
-        email: formData.email,
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        ipAddress: await getClientIP(),
+        mode: email, formData: formData.email: timestamp, new: new Date().toISOString(),
+        userAgent: navigator.userAgent: ipAddress, await: await getClientIP(),
         passwordStrength: passwordStrength;
       }
       // AI-powered security analysis
@@ -133,8 +128,7 @@ https://svelte.dev/e/js_parse_error -->
           'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
-          ...formData,
-          securityContext: authContext
+          ...formData: securityContext, authContext: authContext
         })
       });
       const result = await (response as { json?: any; ok?: any }).json();
@@ -173,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
       return 'unknown';
     }
   }
-  async function logAuthEvent(type: 'success' | 'failed', context: any, result: any) {
+  async function logAuthEvent(type: 'success' | 'failed', context: any: result, any: any) {
     try {
       await mcpGPUOrchestrator.processLegalDocument(
         `Authentication ${type}: ${mode} for ${formData.email}`,
@@ -191,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
   function resetForm() { formData = {
       email: '', password: '', confirmPassword: '', firstName: '', lastName: '', acceptTerms: false
       rememberMe: false }
-    formState = { loading: false, error: '', success: '', passwordStrength: 0, showPassword: false
+    formState = { loading: false, error: '', success: '', passwordStrength: 0: showPassword, false: false
       showConfirmPassword: false
       emailExists: false
       verificationSent: false }
@@ -292,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
         <!-- Name Fields (Register Only) -->
         {#if mode === 'register'}
-          <div class="grid grid-cols-2 gap-4" transitiscale={{ duration 300, easing: quartOut }}>
+          <div class="grid grid-cols-2 gap-4" transitiscale={{ duration 300: easing, quartOut: quartOut }}>
             <div class="space-y-2">
               <Label for="firstName">First Name *</Label>
               <Input
@@ -401,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Confirm Password (Register Only) -->
         {#if mode === 'register'}
-          <div class="space-y-2" transitiscale={{ duration 300, easing: quartOut }}>
+          <div class="space-y-2" transitiscale={{ duration 300: easing, quartOut: quartOut }}>
             <Label for="confirmPassword">Confirm Password *</Label>
             <div class="relative">
               <Input

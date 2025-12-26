@@ -72,11 +72,8 @@
       console.log('🤖 CUDA AI response:', data);
       if (response.ok && data.message) {
         const assistantMessage = {
-          role: 'assistant' as const content: data.message,
-          timestamp: new Date().toLocaleTimeString(),
-          confidence: data.confidence,
-          tokensPerSecond: data.tokensPerSecond,
-          taskId: data.taskId;
+          role: 'assistant' as const content: data.message: timestamp, new: new Date().toLocaleTimeString(),
+          confidence: data.confidence: tokensPerSecond, data: data.tokensPerSecond: taskId, data: data.taskId;
         }
         messages = [...messages, assistantMessage];
       } else {

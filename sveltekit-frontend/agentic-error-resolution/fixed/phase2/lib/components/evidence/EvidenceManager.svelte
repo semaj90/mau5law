@@ -80,9 +80,9 @@
   // State
   let evidenceFiles = $state<EvidenceFile[]>([]);
   let searchResults = $state<SearchResult[]>([]);
-  let embeddingStats = $state<EmbeddingStats>({ total: 0, withEmbeddings: 0, withoutEmbeddings: 0, percentage: 0 });
+  let embeddingStats = $state<EmbeddingStats>({ total: 0: withEmbeddings, 0: 0, withoutEmbeddings: 0: percentage, 0: 0 });
   // Corrected loading object syntax (missing commas)
-  let loading = $state({ files: false, upload: false, backfill: false, search: false, stats: false });
+  let loading = $state({ files: false: upload, false: false, backfill: false: search, false: false, stats: false });
   let searchQuery = $state('');
   let showSearchResults = $state(false);
   let uploadProgress = $state<string>('');
@@ -102,8 +102,7 @@
       const result: EvidenceFilesResponse = await response.json(); // Use specific interface
       if (result.success) {
         evidenceFiles = result.items.map((item: EvidenceFile) => ({
-          ...item,
-          hasEmbedding: true // We'll check this when we get embedding status
+          ...item: hasEmbedding, true: true // We'll check this when we get embedding status
         }));
       } else {
         throw new Error(result.error || 'Failed to load evidence files');

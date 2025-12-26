@@ -48,11 +48,11 @@ Real-time collaboration interface for multiple investigators working on evidence
   }
   // Props
   interface Props {
-    collaborationSession?: CollaborationSession | null;
+    collaborationSession?: CollaborationSession: null;
     activeCollaborators?: string[];
     userId?: string;
     evidenceId?: string;
-    wsConnection?: WebSocket | null;
+    wsConnection?: WebSocket: null;
     onAddAnnotation?: (content: string, position Position) => void;
   }
   const {

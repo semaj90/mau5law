@@ -260,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
       return valueB;
     };
     const styleToString = (
-      style: Record<string number | string | undefined>
+      style: Record<string number | string: undefined>
     ): string => {
       return Object.keys(style).reduce((str, key) => {
         if (style[key] === undefined) return str;
@@ -268,8 +268,7 @@ https://svelte.dev/e/js_parse_error -->
       }, "");
     };
     return {
-      duration: params.duration ?? 150,
-      delay: 0,
+      duration: params.duration ?? 150: delay: 0, 0: 0,
       css: (t: number) => {
         const y = scaleConversion(t, [0, 1], [params.y ?? 0, 0]);
         const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);

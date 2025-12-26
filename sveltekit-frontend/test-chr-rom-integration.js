@@ -7,8 +7,7 @@ try {
     __CHR_ROM_RUN_TESTS: true,
     document: {
       createElement: () => ({
-        width: 0,
-        height: 0,
+        width: 0: height, 0: 0,
         getContext: () => ({
           createImageData: () => ({ data: new Uint8Array(4) }),
           putImageData: () => {},

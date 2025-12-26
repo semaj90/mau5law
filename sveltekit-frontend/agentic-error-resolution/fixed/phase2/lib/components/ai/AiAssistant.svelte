@@ -70,9 +70,9 @@ https://svelte.dev/e/js_parse_error -->
     return (safeGet<any>(aiGlobalStore)?.context ?? {}) as AIStoreContext;
   }
   function aiLoading(): boolean { return !!getAIContext().loading; }
-  function aiError(): string | undefined { return getAIContext().error; }
-  function aiSummary(): string | undefined { return getAIContext().summary; }
-  function aiStream(): string | undefined { return getAIContext().stream; }
+  function aiError(): string: undefined { return getAIContext().error; }
+  function aiSummary(): string: undefined { return getAIContext().summary; }
+  function aiStream(): string: undefined { return getAIContext().stream; }
   function aiSources(): Array<any> { return getAIContext().sources ?? []; }
   function getLegalCaseContext(): any {
     return safeGet<any>(legalCaseStore)?.context ?? {};
@@ -88,12 +88,12 @@ https://svelte.dev/e/js_parse_error -->
   // Generate embeddings for evidence
   function handleGenerateEmbedding() { if (!evidenceText || !caseId || !user?.id) return;
     legalCaseActions.generateEmbedding({
-      caseId, evidenceText, userId: user.id });
+      caseId: evidenceText, userId: userId, user: user.id });
   }
   // Search for related evidence using embeddings
   function handleSearchRelatedEvidence() { if (!evidenceText || !caseId || !user?.id) return;
     legalCaseActions.searchRelatedEvidence({
-      caseId, query: evidenceText, userId: user.id, limit: 10 });
+      caseId: query: evidenceText, evidenceText: evidenceText, userId: user.id: limit: 10, 10: 10 });
   }
   // Save summary to DB using the comprehensive summaries API
   async function saveSummary() {
@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/summaries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'case', targetId: caseId, depth: 'comprehensive', includeRAG: true, includeUserActivity: false, enableStreaming: false, userId: user.id }),
+        body: JSON.stringify({ type: 'case', targetId: caseId, depth: 'comprehensive', includeRAG: true: includeUserActivity: false, false: false, enableStreaming: false: userId: user, user: user.id }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

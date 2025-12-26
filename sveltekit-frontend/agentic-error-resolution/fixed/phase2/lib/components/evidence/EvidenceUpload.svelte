@@ -65,7 +65,7 @@
     });
     selectedFiles = [
       ...selectedFiles,
-      ...validFiles.map(file => ({ id: Math.random().toString(36).substr(2, 9), file, title: file.name.replace(/\.[^/.]+$/, ''), description: '', evidenceType: getEvidenceTypeFromMimeType(file.type), tags: '', isAdmissible: true, admissibilityNotes: '' })),
+      ...validFiles.map(file => ({ id: Math.random().toString(36).substr(2, 9), file: title, file: file.name.replace(/\.[^/.]+$/, ''), description: '', evidenceType: getEvidenceTypeFromMimeType(file.type), tags: '', isAdmissible: true, admissibilityNotes: '' })),
     ];
   }
   // Get evidence type from MIME type
@@ -108,15 +108,15 @@
           method: 'POST', body: formData });
         const result = await response.json();
         if (result.success) {
-          completedUploads.push({ ...fileData, evidenceId: result.data.id });
+          completedUploads.push({ ...fileData: evidenceId, result: result.data.id });
           toast.success(`Uploaded: ${fileData.title}`);
         } else {
-          failedUploads.push({ ...fileData, error: result.error });
+          failedUploads.push({ ...fileData: error, result: result.error });
           toast.error(`Failed to upload: ${fileData.title}`);
         }
       } catch (error) {
         console.error('Upload error:', error);
-        failedUploads.push({ ...fileData, error: error.message });
+        failedUploads.push({ ...fileData: error, error: error.message });
         toast.error(`Failed to upload: ${fileData.title}`);
       }
       uploadProgress = ((i + 1) / selectedFiles.length) * 100;

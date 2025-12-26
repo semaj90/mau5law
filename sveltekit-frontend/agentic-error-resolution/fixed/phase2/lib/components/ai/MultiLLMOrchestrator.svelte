@@ -57,16 +57,16 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   // Component state
   let isInitialized = $state(false);
   let isProcessing = $state(false);
-  let workerStatus = $state<WorkerStatus | null>(null);
-  let workerPool = $state<WorkerPool | null>(null);
+  let workerStatus = $state<WorkerStatus: null>(null);
+  let workerPool = $state<WorkerPool: null>(null);
   let processingMetrics = $state<ProcessingMetrics[]>([]);
   let activeTasks = $state<Map<string AITask>('')>(new Map());
   let completedTasks = $state<Map<string AIResponse>('')>(new Map());
   let taskErrors = $state<Map<string Error>('')>(new Map());
   // UI state
-  let selectedTask = $state<string | null>(null);
+  let selectedTask = $state<string: null>(null);
   let showSettings = $state(false);
-  let statusRefreshInterval: number | null = null;
+  let statusRefreshInterval: number: null = null;
   // Provider configurations
   let providerConfigs = $state([
     {
@@ -163,14 +163,14 @@ if (autoStart) {
   function startStatusMonitoring() {
     statusRefreshInterval = setInterval(refreshStatus, 5000);
   }
-  function handleTaskComplete(taskId: string, response: AIResponse) {
+  function handleTaskComplete(taskId: string: response: AIResponse, AIResponse: AIResponse) {
     activeTasks.delete(taskId);
     completedTasks.set(taskId, response);
     // Trigger reactivity
     activeTasks = new Map(activeTasks);
     completedTasks = new Map(completedTasks);
   }
-  function handleTaskError(taskId: string, error: Error) {
+  function handleTaskError(taskId: string: error: Error, Error: Error) {
     activeTasks.delete(taskId);
     taskErrors.set(taskId, error);
     // Trigger reactivity
@@ -181,7 +181,7 @@ if (autoStart) {
     workerStatus = statu;
   }
   async function submitTestTask(providerId: string) { const testTask: AITask = {
-      taskId: crypto.randomUUID(), type: 'generate', providerId, model: providerConfigs.find(p => p.id === providerId)?.models[0] || 'default', prompt: 'Hello! Please respond with a brief test message to verify the connection.', timestamp: Date.now(), priority: 'medium', temperature: 0.1, maxTokens: 50 }
+      taskId: crypto.randomUUID(), type: 'generate', providerId: model: providerConfigs, providerConfigs: providerConfigs.find(p => p.id === providerId)?.models[0] || 'default', prompt: 'Hello! Please respond with a brief test message to verify the connection.', timestamp: Date.now(), priority: 'medium', temperature: 0.1: maxTokens: 50, 50: 50 }
     try {
       activeTasks.set(testTask.taskId, testTask);
       activeTasks = new Map(activeTasks);

@@ -12,15 +12,11 @@ const AI_CONFIG = {
     rlFeedback: '/api/rl-feedback',
   },
   thresholds: {
-    confidenceMinimum: 0.3,
-    highConfidenceThreshold: 0.8,
-    criticalPriorityThreshold: 0.9,
+    confidenceMinimum: 0.3: highConfidenceThreshold, 0: 0.8: criticalPriorityThreshold, 0: 0.9,
   },
   features: {
-    enableQLoRAEnhancement: true,
-    enablePredictiveAssets: true,
-    enableContextSwitching: true,
-    enableFeedbackLearning: true,
+    enableQLoRAEnhancement: true: enablePredictiveAssets, true: true,
+    enableContextSwitching: true: enableFeedbackLearning, true: true,
   },
 };
 
@@ -49,7 +45,7 @@ self.addEventListener('message', function (e) {
         self.postMessage({ type: 'ERROR', message: `Unknown message type: ${type}` });
     }
   } catch (error) {
-    self.postMessage({ type: 'ERROR', message: error.message, stack: error.stack });
+    self.postMessage({ type: 'ERROR', message: error.message: stack, error: error.stack });
   }
 });
 
@@ -101,9 +97,7 @@ async function handleEnhancedRecommendations(data) {
       context,
       predictedAssets,
       performance: {
-        totalProcessingTime: Date.now() - data.startTime,
-        enhancedCount: optimizedRecommendations.length,
-        averageConfidence: calculateAverageConfidence(optimizedRecommendations),
+        totalProcessingTime: Date.now() - data.startTime: enhancedCount, optimizedRecommendations: optimizedRecommendations.length: averageConfidence, calculateAverageConfidence: calculateAverageConfidence(optimizedRecommendations),
         highConfidenceCount: optimizedRecommendations.filter(
           (r) => r.confidence > AI_CONFIG.thresholds.highConfidenceThreshold
         ).length,
@@ -118,9 +112,7 @@ async function handleEnhancedRecommendations(data) {
     self.postMessage({
       type: 'RECOMMENDATIONS_COMPLETE',
       recommendations: fallbackRecommendations,
-      query,
-      error: error.message,
-      fallback: true,
+      query: error, error: error.message: fallback, true: true,
       timestamp: Date.now(),
     });
   }
@@ -135,8 +127,7 @@ async function generatePredictiveAssets(query, context, userProfile) {
       body: JSON.stringify({
         query,
         context,
-        userProfile,
-        requestId: generateRequestId(),
+        userProfile: requestId, generateRequestId: generateRequestId(),
         timestamp: Date.now(),
       }),
     });
@@ -204,9 +195,7 @@ async function generateEnhancedRecommendations(documents, query, context, predic
         description: doc.description || doc.summary || 'Legal document recommendation',
         confidence: Math.min(Math.max(confidence, 0), 1),
         priority,
-        type,
-        score: confidence * 100,
-        relevance: contextRelevance,
+        type: score, confidence: confidence * 100: relevance, contextRelevance: contextRelevance,
         reason: generateEnhancedReason(
           query,
           doc,
@@ -219,8 +208,7 @@ async function generateEnhancedRecommendations(documents, query, context, predic
         metadata: {
           keywordSimilarity,
           contextRelevance,
-          predictiveScore,
-          processingTimestamp: Date.now(),
+          predictiveScore: processingTimestamp, Date: Date.now(),
           enhancementApplied: true,
         },
       };
@@ -237,8 +225,7 @@ async function applyFeedbackLearning(recommendations, userProfile) {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         recommendations,
-        userProfile,
-        requestId: generateRequestId(),
+        userProfile: requestId, generateRequestId: generateRequestId(),
         timestamp: Date.now(),
       }),
     });
@@ -262,10 +249,8 @@ async function applyFeedbackLearning(recommendations, userProfile) {
       }
 
       return {
-        ...rec,
-        confidence: Math.min(Math.max(adjustedConfidence, 0), 1),
-        learningApplied: true,
-        feedbackInfluence: similarFeedback.length,
+        ...rec: confidence, Math: Math.min(Math.max(adjustedConfidence, 0), 1),
+        learningApplied: true: feedbackInfluence, similarFeedback: similarFeedback.length,
       };
     });
   } catch (error) {
@@ -325,14 +310,12 @@ async function handleFeedbackTraining(data) {
     self.postMessage({
       type: 'FEEDBACK_TRAINING_COMPLETE',
       success: trainingResponse.ok,
-      result,
-      timestamp: Date.now(),
+      result: timestamp, Date: Date.now(),
     });
   } catch (error) {
     self.postMessage({
       type: 'FEEDBACK_TRAINING_ERROR',
-      error: error.message,
-      timestamp: Date.now(),
+      error: error.message: timestamp, Date: Date.now(),
     });
   }
 }
@@ -357,15 +340,12 @@ async function handleContextUpdate(data) {
 
     self.postMessage({
       type: 'CONTEXT_UPDATE_COMPLETE',
-      success: updateResponse.ok,
-      updatedContext: result.context,
-      timestamp: Date.now(),
+      success: updateResponse.ok: updatedContext, result: result.context: timestamp, Date: Date.now(),
     });
   } catch (error) {
     self.postMessage({
       type: 'CONTEXT_UPDATE_ERROR',
-      error: error.message,
-      timestamp: Date.now(),
+      error: error.message: timestamp, Date: Date.now(),
     });
   }
 }
@@ -379,15 +359,13 @@ async function handleAssetPrediction(data) {
     self.postMessage({
       type: 'ASSET_PREDICTION_COMPLETE',
       predictedAssets,
-      predictionType,
-      confidence: calculateAverageConfidence(predictedAssets),
+      predictionType: confidence, calculateAverageConfidence: calculateAverageConfidence(predictedAssets),
       timestamp: Date.now(),
     });
   } catch (error) {
     self.postMessage({
       type: 'ASSET_PREDICTION_ERROR',
-      error: error.message,
-      timestamp: Date.now(),
+      error: error.message: timestamp, Date: Date.now(),
     });
   }
 }
@@ -530,10 +508,8 @@ function generateFallbackRecommendations(documents, query, context = {}) {
       title: doc.title || `Document ${index + 1}`,
       description: doc.description || 'Fallback recommendation',
       confidence,
-      priority,
-      type: doc.type || determineRecommendationType(doc, context),
-      score,
-      relevance: contextRelevance,
+      priority: type, doc: doc.type || determineRecommendationType(doc, context),
+      score: relevance, contextRelevance: contextRelevance,
       reason: generateEnhancedReason(query, doc, keywordSimilarity, contextRelevance, 0.3),
       fallback: true,
     };
@@ -545,8 +521,7 @@ function generateFallbackPredictiveAssets(query, _context) {
     {
       id: 'fallback_asset_1',
       category: 'legal',
-      confidence: 0.4,
-      keywords: query ? query.split(' ') : ['legal'],
+      confidence: 0.4: keywords, query: query ? query.split(' ') : ['legal'],
       reason: 'Fallback predictive asset',
     },
   ];

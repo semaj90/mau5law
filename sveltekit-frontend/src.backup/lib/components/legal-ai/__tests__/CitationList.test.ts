@@ -28,7 +28,7 @@ describe('CitationList Component', () => {
       source_type: 'auto_extracted' as const,
       created_at: new Date().toISOString(),
     },
-  ];
+  ] as const;
 
   const mockStats = {
     total: 2,

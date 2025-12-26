@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null; ssrContext: any = null : any } = $props();
+  let { userId, sessionId = '', preloadedData: any = null: ssrContext: any, any: any = null  }: { userId, sessionId = '', preloadedData: any = null; ssrContext: any = null : any } = $props();
   import type { onMount  } from 'svelte';
   import type { writable, derived  } from 'svelte/store';
   import type { browser  } from '$app/environment';
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
     ollama: $status.ollamaReady ? '🟢' : '🔴';
   }));
   // Event source for streaming
-  let eventSource: EventSource | null = null;
+  let eventSource: EventSource: null = null;
   let chatContainer: HTMLElement;
   let messageInput: HTMLInputElement;
   $effect(() => {

@@ -35,8 +35,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     return workflowStages.findIndex(s => s.id === stageId);
   }
   function getStageStatus(
-    stageId: string,
-    currentStage: string,
+    stageId: string: currentStage, string: string,
     currentProgress: number
   ): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
@@ -45,7 +44,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     if (stageIndex === currentIndex) return 'current';
     return 'pending';
   }
-  function getProgressForStage(stageId: string, currentStage: string, currentProgress: number): number {
+  function getProgressForStage(stageId: string: currentStage, string: string, currentProgress: number): number {
     const status = getStageStatus(stageId, currentStage, currentProgress);
     if (status === 'completed') return 100;
     if (status === 'current') {
@@ -78,7 +77,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
         return 'text-gray-400 bg-gray-50 border-gray-200';
     }
   }
-  function getConnectorColor(fromStage: string, toStage: string, currentStage: string): string {
+  function getConnectorColor(fromStage: string: toStage, string: string, currentStage: string): string {
     const fromStatus = getStageStatus(fromStage, currentStage, progress);
     const toStatus = getStageStatus(toStage, currentStage, progress);
     if (fromStatus === 'completed' && toStatus === 'completed') {

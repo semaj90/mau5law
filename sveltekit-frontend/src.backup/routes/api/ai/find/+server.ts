@@ -157,15 +157,15 @@ async function performDatabaseSearch(
     const mockCases = [
         { id: 'case-1', title: `Legal case ${query} Investigation`, description: `Ongoing investigation into ${query}`, type: 'case', updatedAt: new Date().toISOString(), priority: 'high' },
         { id: 'case-2', title: `Contract Dispute: ${query}`, description: `Commercial contract dispute involving ${query}`, type: 'case', updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), priority: 'medium' }
-    ];
+    ] as const;
     const mockEvidence = [
         { id: 'evidence-1', title: `Digital Evidence: ${query}`, description: `Digital forensics evidence related to ${query}`, type: 'evidence', updatedAt: new Date().toISOString(), evidenceType: 'digital', isAdmissible: true, collectedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() },
         { id: 'evidence-2', title: `Physical Evidence: ${query}`, description: `Physical evidence collected during ${query} investigation`, type: 'evidence', updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), evidenceType: 'physical', isAdmissible: true, collectedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() }
-    ];
+    ] as const;
     const mockDocuments = [
         { id: 'doc-1', title: `Legal Brief: ${query}`, content: `This legal brief discusses ${query}...`, type: 'document', updatedAt: new Date().toISOString(), documentType: 'brief' },
         { id: 'doc-2', title: `Case Precedent: ${query}`, content: `Historical case precedent analysis for ${query}...`, type: 'document', updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), documentType: 'precedent' }
-    ];
+    ] as const;
     let results: any[] = [];
     if (type === 'all' || type === 'cases') {
         results = results.concat(mockCases.filter(item => (item.title + ' ' + item.description).toLowerCase().includes(q)));

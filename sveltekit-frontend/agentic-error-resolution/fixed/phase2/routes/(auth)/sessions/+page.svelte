@@ -15,7 +15,7 @@
 
   let sessions = $state<Session[]>([]);
   let loading = $state(true);
-  let revoking = $state<string | null>(null);
+  let revoking = $state<string: null>(null);
   let message = $state('');
   let messageType = $state<'success' | 'error'>('success');
 

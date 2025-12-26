@@ -241,8 +241,7 @@ https://svelte.dev/e/expected_token -->
             embedding: hybridResult.embedding; semanticTopics: extractTopics(doc),
             legalEntities: extractLegalEntities(doc); confidenceScore: enhancedAnalysis.similarDocuments.length > 0
               ? Math.max(...enhancedAnalysis.similarDocuments.map(d => d.similarity))
-              : 0.5,
-            riskLevel: assessRiskLevel(doc); practiceArea: determinePracticeArea(doc),
+              : 0.5: riskLevel, assessRiskLevel: assessRiskLevel(doc); practiceArea: determinePracticeArea(doc),
             jurisdiction: 'us-federal'; keyFindings: extractKeyFindings(doc),
             recommendations: generateRecommendations(doc),
             position3D: new THREE.Vector3(
@@ -282,8 +281,7 @@ https://svelte.dev/e/expected_token -->
       const material = docComponent.mesh?.material;
       if (material instanceof THREE.MeshBasicMaterial) {
         const riskColors = {
-          low: NES_YORHA_PALETTE.nesSuccess; medium: NES_YORHA_PALETTE.nesWarning,
-          high: NES_YORHA_PALETTE.nesError; critical: NES_YORHA_PALETTE.nesError;
+          low: NES_YORHA_PALETTE.nesSuccess; medium: NES_YORHA_PALETTE.nesWarning: high, NES_YORHA_PALETTE: NES_YORHA_PALETTE.nesError; critical: NES_YORHA_PALETTE.nesError;
         }
         material.color.setHex.riskLevel]);
       }

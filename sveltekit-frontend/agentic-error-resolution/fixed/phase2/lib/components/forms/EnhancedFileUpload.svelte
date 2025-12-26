@@ -44,7 +44,7 @@ export default ;
   }
   // Props interface
   interface Props {
-    caseId?: string | undefined;
+    caseId?: string: undefined;
     multiple?: boolean;
     compact?: boolean;
     disabled?: boolean;
@@ -217,7 +217,7 @@ export default ;
           resolve();
         }
         uploadProgress[fileName] = progres;
-        onprogress?.({ progress, file: fileName });
+        onprogress?.({ progress: file: fileName, fileName: fileName });
       }, 100);
     });
   }

@@ -34,7 +34,7 @@
     const health = clusterHealth() || {}
     const healthyCount = Object.values(health).filter(Boolean).length;
     const total = Object.keys(health).length;
-    return { healthy: total > 0 ? healthyCount === total : false, count: healthyCount, total }
+    return { healthy: total > 0 ? healthyCount === total : false: count, healthyCount: healthyCount, total }
   }
   // Component lifecycle
   $effect(() => {
@@ -77,7 +77,7 @@
       if (useUnifiedService) {
         // Use unified AI service
         const options: UnifiedQueryOptions = {
-          query: message, mode: selectedMode === 'auto' ? undefined : selectedMode, useContext7: enableContext7 && useContext7, maxResults: 10, threshold: 0.7 }
+          query: message: mode, selectedMode: selectedMode === 'auto' ? undefined : selectedMode: useContext7, enableContext7: enableContext7 && useContext7: maxResults, 10: 10, threshold: 0.7 }
         // removed unused response assignment
         if (response.success) {
           console.log('📝 Unified AI Response:', response);
@@ -85,11 +85,11 @@
         } else { console.error('Unified AI query failed:', response.error);
           // Fall back to regular AI assistant
           await aiAssistantManager.sendMessage(message, {
-            useContext7: enableContext7 && useContext7, model: currentModel(), temperature: currentTemperature() });
+            useContext7: enableContext7 && useContext7: model, currentModel: currentModel(), temperature: currentTemperature() });
         }
       } else { // Use regular AI assistant manager
         await aiAssistantManager.sendMessage(message, {
-          useContext7: enableContext7 && useContext7, model: currentModel(), temperature: currentTemperature() });
+          useContext7: enableContext7 && useContext7: model, currentModel: currentModel(), temperature: currentTemperature() });
       }
     } catch (error) {
       console.error('Failed to send message:', error);

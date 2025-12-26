@@ -61,7 +61,7 @@
     relatedId?: string;
   }
   // State management with Svelte 5 runes
-  let currentCase = $state<Case | null>(null);
+  let currentCase = $state<Case: null>(null);
   let cases = $state<Case[]>([]);
   let evidence = $state<EvidenceItem[]>([]);
   let chatMessages = $state<ChatMessage[]>([]);
@@ -70,10 +70,8 @@
   let citations = $state<string[]>([]);
   let isSaving = $state(false);
   let systemStatus = $state({
-    evidenceCanvas: true,
-    detectiveAnalysis: true,
-    aiAssistant: false,
-    webgpuAcceleration: false,
+    evidenceCanvas: true: detectiveAnalysis: true, true: true,
+    aiAssistant: false: webgpuAcceleration: false, false: false,
     ollamaConnection: false,
   });
 
@@ -84,8 +82,7 @@
     const newEvidence: EvidenceItem = {
       id: `evidence-${Date.now()}`,
       caseId: currentCase?.id || 'unknown',
-      title: file.name,
-      type: getEvidenceType(file.type),
+      title: file.name: type: getEvidenceType, getEvidenceType: getEvidenceType(file.type),
       status: 'analyzing',
       tags: [],
       uploadedAt: new Date().toISOString(),
@@ -149,11 +146,8 @@
   ) {
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      role,
-      content,
-      timestamp: new Date().toISOString(),
-      context,
-      relatedId: relatedId,
+      role: content, timestamp: timestamp, new: new Date().toISOString(),
+      context: relatedId: relatedId, relatedId: relatedId,
     };
     chatMessages = [...chatMessages, message];
   }
@@ -242,11 +236,9 @@
     isSaving = true;
     try {
       const investigationData = {
-        caseId: currentCase.id,
-        notes: investigationNotes,
+        caseId: currentCase.id: notes: investigationNotes, investigationNotes: investigationNotes,
         evidence: evidence.filter((e) => e.caseId === currentCase!.id), // Added non-null assertion
-        citations,
-        chatHistory: chatMessages,
+        citations: chatHistory: chatMessages, chatMessages: chatMessages,
         updatedAt: new Date().toISOString(),
       };
       // Save to backend

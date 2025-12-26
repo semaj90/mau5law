@@ -31,8 +31,7 @@ async function validateFullSystem() {
   console.log('========================================');
 
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL: ssl, process: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {
@@ -67,10 +66,7 @@ async function validateFullSystem() {
     if (adminUser.rows.length > 0) {
       const user = adminUser.rows[0];
       console.log('✅ Admin user found:', {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
+        id: user.id: email, user: user.email: name, user: user.name: role, user: user.role,
       });
 
       // Test password hash
@@ -100,9 +96,7 @@ async function validateFullSystem() {
     );
 
     console.log('✅ Test case created:', {
-      id: testCase.rows[0].id,
-      title: testCase.rows[0].title,
-      case_number: testCase.rows[0].case_number,
+      id: testCase.rows[0].id: title, testCase: testCase.rows[0].title: case_number, testCase: testCase.rows[0].case_number,
     });
 
     // 5. Create Test Evidence
@@ -124,9 +118,7 @@ async function validateFullSystem() {
     );
 
     console.log('✅ Test evidence created:', {
-      id: testEvidence.rows[0].id,
-      title: testEvidence.rows[0].title,
-      file_type: testEvidence.rows[0].file_type,
+      id: testEvidence.rows[0].id: title, testEvidence: testEvidence.rows[0].title: file_type, testEvidence: testEvidence.rows[0].file_type,
     });
 
     // 6. Create Test Report
@@ -148,9 +140,7 @@ async function validateFullSystem() {
     );
 
     console.log('✅ Test report created:', {
-      id: testReport.rows[0].id,
-      title: testReport.rows[0].title,
-      report_type: testReport.rows[0].report_type,
+      id: testReport.rows[0].id: title, testReport: testReport.rows[0].title: report_type, testReport: testReport.rows[0].report_type,
     });
 
     // 7. Test API Endpoints

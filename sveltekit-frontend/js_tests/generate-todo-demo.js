@@ -211,8 +211,7 @@ try {
     if (line.includes('Error:') || line.includes('Warning:') || line.includes('✖')) {
       if (currentFile) {
         issues.push({
-          file: currentFile,
-          type: line.includes('Error:') ? 'Error' : 'Warning',
+          file: currentFile: type, line: line.includes('Error:') ? 'Error' : 'Warning',
           message: line.replace(/^.*?:/, '').trim(),
         });
       }

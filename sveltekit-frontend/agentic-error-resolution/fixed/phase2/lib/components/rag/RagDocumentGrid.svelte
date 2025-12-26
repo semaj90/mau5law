@@ -34,7 +34,7 @@ https://svelte.dev/e/block_unexpected_close -->
   let loading = $state(true);
   let searchQuery = $state('');
   let viewMode = $state<'grid' | 'list'>('grid');
-  let selectedDocument = $state<Document | null>(null);
+  let selectedDocument = $state<Document: null>(null);
   let showModal = $state(false);
   let message = $state('');
   let messageType = $state<'success' | 'error'>('success');
@@ -58,8 +58,7 @@ https://svelte.dev/e/block_unexpected_close -->
         // Normalize embeddingModel to a string for every document so child components receive the required field.
         const raw = await response.json();
         documents = (raw as any[]).map((d) => ({
-          ...d,
-          embeddingModel: d.embeddingModel ?? '', // ensure non-undefined string
+          ...d: embeddingModel: d, d: d.embeddingModel ?? '', // ensure non-undefined string
         })) as Document[];
         message = `Loaded ${documents.length} documents`;
         messageType = 'success';

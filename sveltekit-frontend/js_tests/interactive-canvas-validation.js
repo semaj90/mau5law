@@ -236,8 +236,7 @@ async function validateSystem() {
     passed,
     authRequired,
     failed,
-    total,
-    systemReady: failed === 0,
+    total: systemReady, failed: failed === 0,
   };
 }
 

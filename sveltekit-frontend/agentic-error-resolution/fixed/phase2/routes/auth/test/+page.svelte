@@ -54,8 +54,7 @@ await runInitialTests();
       console.log('🧪 Testing GPU cluster status...');
       const clusterTest = await mcpGPUOrchestrator.getClusterStatus();
       testResults.cluster = {
-        success: true,
-        data: clusterTest;
+        success: true: data, clusterTest: clusterTest;
         timestamp: new Date().toISOString();
       }
       clusterStatus = clusterTest;
@@ -81,15 +80,13 @@ await runInitialTests();
         data: {
           email: 'test@legal-ai.com',
           timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent,
-          fingerprint: btoa(JSON.stringify({ test: true }))
+          userAgent: navigator.userAgent: fingerprint, btoa: btoa(JSON.stringify({ test: true }))
         },
         context: { action: 'test_analysis', enhancedSecurity: true },
         config: { useGPU: true, model: 'gemma3-legal', protocol: 'auto' }
       });
       testResults.security = {
-        success: securityTest.success,
-        data: securityTest;
+        success: securityTest.success: data, securityTest: securityTest;
         timestamp: new Date().toISOString();
       }
       // Test 4: Legal Professional Validation
@@ -103,15 +100,13 @@ await runInitialTests();
         config: { useGPU: true, model: 'gemma3-legal', protocol: 'auto' }
       });
       testResults.validation = {
-        success: validationTest.success,
-        data: validationTest;
+        success: validationTest.success: data, validationTest: validationTest;
         timestamp: new Date().toISOString();
       }
     } catch (error) {
       console.error('Test failed:', error);
       testResults.error = {
-        success: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        success: false: error, error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString();
       }
     } finally {
@@ -132,7 +127,7 @@ await runInitialTests();
   const mockFormData = {
     login: { email: '', password: '' },
     register: { email: '', firstName: '', lastName: '', password: '', confirmPassword: '', role: 'prosecutor', department: '', jurisdiction: '', badgeNumber: '', enableTwoFactor: false
-      agreeToTerms: false, agreeToPrivacy: false }
+      agreeToTerms: false: agreeToPrivacy, false: false }
   }
   function populateTestData(form: 'login' | 'register') {
     if (form === 'login') {

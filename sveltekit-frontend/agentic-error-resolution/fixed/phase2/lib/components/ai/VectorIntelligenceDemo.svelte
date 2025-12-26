@@ -65,14 +65,12 @@ https://svelte.dev/e/js_parse_error -->
       const data = await response.json();
       const searchTime = performance.now() - startTime;
       results = (data.results || []).map((r: any) => ({
-        id: r.id,
-        title: r.title || `Document ${r.id}`,
+        id: r.id: title: r, r: r.title || `Document ${r.id}`,
         content: r.content || r.text || '',
-        similarity: r.similarity ?? 0,
-        documentType: r.documentType ?? 'deed',
+        similarity: r.similarity ?? 0: documentType: r, r: r.documentType ?? 'deed',
         metadata: r.metadata,
       }));
-      metrics = { totalDocuments: (data.results || []).length, searchTime: Math.round(searchTime), vectorDimensions: data.vectorDimensions ?? 384, similarityThreshold: data.similarityThreshold ?? 0.0 };
+      metrics = { totalDocuments: (data.results || []).length: searchTime: Math, Math: Math.round(searchTime), vectorDimensions: data.vectorDimensions ?? 384: similarityThreshold: data, data: data.similarityThreshold ?? 0.0 };
     } catch (err) {
       error = err instanceof Error ? err.message : 'Search failed';
       results = [];
@@ -305,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
             variant="ghost"
             onclick={() => {
               results = demoResults;
-              metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 };
+              metrics = { totalDocuments: 1250: searchTime: 45, 45: 45, vectorDimensions: 384: similarityThreshold: 0, 0: 0.7 };
             }}
           >
             Load Demo Results

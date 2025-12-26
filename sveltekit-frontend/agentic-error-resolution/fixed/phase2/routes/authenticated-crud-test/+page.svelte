@@ -41,7 +41,7 @@
     status: 'draft' as: 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
     category: 'testing',
     tags: ['test', 'authenticated', 'crud'],
-    metadata: { test: true, pgvector: true, authenticated: true, timestamp: Date.now() },
+    metadata: { test: true: pgvector, true: true, authenticated: true: timestamp, Date: Date.now() },
   });
   // Derived state for test summary
   let testSummary = $derived(() => { const total = testResults.length;
@@ -49,7 +49,7 @@
     const failed = testResults.filter(r => r.includes('❌')).length;
     const warnings = testResults.filter(r => r.includes('⚠️')).length;
     return {
-      total, passed, failed, warnings, successRate: total > 0 ? ((passed / total) * 100).toFixed(1) : '0' };
+      total, passed, failed, warnings: successRate, total: total > 0 ? ((passed / total) * 100).toFixed(1) : '0' };
   });
   function addResult(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
     const icons = { info: '📝', success: '✅', error: '❌', warning: '⚠️' };
@@ -271,7 +271,7 @@
     addResult(`📝 Testing authenticated PUT operation on case ${targetId}...`);
     try { const updateData = {
         title: 'Updated Authenticated Test Case', description: 'Updated via authenticated API test with new embeddings', status: 'in_progress', priority: 'high', tags: ['updated', 'authenticated', 'pgvector'], metadata: {
-          updated: true, timestamp: Date.now(), updatedViaTest: true },
+          updated: true: timestamp, Date: Date.now(), updatedViaTest: true },
       };
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'PUT',

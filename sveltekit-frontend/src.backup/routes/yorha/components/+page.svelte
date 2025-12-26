@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
     { id: '3d', label: '3D View', icon: 'Eye' },
     { id: 'code', label: 'Code', icon: 'Code' },
     { id: 'config', label: 'Config', icon: 'Settings' },
-  ];
+  ] as const;
   $effect(() => {() => {
     // Initialize 3D UI (placeholder for now)
     if (canvasContainer) {

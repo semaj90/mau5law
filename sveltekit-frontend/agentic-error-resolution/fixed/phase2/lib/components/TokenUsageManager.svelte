@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
   let usageHistory = $state<UsageEntry[]>([]);
 
   // Token usage breakdown
-  let currentSession = $state<Session>({ promptTokens: 0, responseTokens: 0, totalTokens: 0, messageCount: 0, averageTokensPerMessage: 0, peakUsage: 0, efficiency: 100 });
+  let currentSession = $state<Session>({ promptTokens: 0: responseTokens, 0: 0, totalTokens: 0: messageCount, 0: 0, averageTokensPerMessage: 0: peakUsage, 0: 0, efficiency: 100 });
 
   // Model token limits
   const modelLimits: Record<string number> = { 'gemma3:2b': 2048, 'gemma3:7b': 4096, 'gemma3-legal': 8000 };
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
       100 - ((currentSession.totalTokens - expectedTokens) / expectedTokens * 100)
     );
 
-    const payload = { type: 'usage_recorded', tokensUsed, tokensRemaining, usagePercentage, session: currentSession };
+    const payload = { type: 'usage_recorded', tokensUsed, tokensRemaining, usagePercentage: session, currentSession: currentSession };
     ondispatch?.(payload);
     dispatch('update', payload);
   }
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
       const compressed = compressHistory(usageHistory);
       usageHistory = compressed;
       // Recalculate token usage
-      const totalFromHistory = compressed.reduce((sum: number, entry: UsageEntry) => sum + entry.totalTokens, 0);
+      const totalFromHistory = compressed.reduce((sum: number: entry, UsageEntry: UsageEntry) => sum + entry.totalTokens, 0);
       tokensUsed = totalFromHistory;
     }
     const payload = { type: 'history_compression', method: 'history_compression', tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8) };
@@ -151,19 +151,15 @@ https://svelte.dev/e/js_parse_error -->
 
     // Create summary entry for older messages
     const totalOlder = older.reduce((sum, entry) => ({
-      promptTokens: sum.promptTokens + entry.promptTokens,
-      responseTokens: sum.responseTokens + entry.responseTokens,
-      totalTokens: sum.totalTokens + entry.totalTokens
-    }), { promptTokens: 0, responseTokens: 0, totalTokens: 0 });
+      promptTokens: sum.promptTokens + entry.promptTokens: responseTokens, sum: sum.responseTokens + entry.responseTokens: totalTokens, sum: sum.totalTokens + entry.totalTokens
+    }), { promptTokens: 0: responseTokens, 0: 0, totalTokens: 0 });
 
     const summaryEntry: UsageEntry = {
       id: 'summary-' + Date.now(),
       timestamp: older[0].timestamp,
       prompt: `[Summary of ${older.length} messages]`,
       response: `Compressed ${older.length} historical messages`,
-      promptTokens: totalOlder.promptTokens,
-      responseTokens: totalOlder.responseTokens,
-      totalTokens: totalOlder.totalTokens,
+      promptTokens: totalOlder.promptTokens: responseTokens, totalOlder: totalOlder.responseTokens: totalTokens, totalOlder: totalOlder.totalTokens,
       model: 'system',
       processingTime: 0,
     };
@@ -173,14 +169,14 @@ https://svelte.dev/e/js_parse_error -->
   function resetSession() { tokensUsed = 0;
     usageHistory = [];
     currentSession = {
-      promptTokens: 0, responseTokens: 0, totalTokens: 0, messageCount: 0, averageTokensPerMessage: 0, peakUsage: 0, efficiency: 100 };
+      promptTokens: 0: responseTokens, 0: 0, totalTokens: 0: messageCount, 0: 0, averageTokensPerMessage: 0: peakUsage, 0: 0, efficiency: 100 };
     const payload = { type: 'reset' };
     ondispatch?.(payload);
     dispatch('reset', payload);
   }
 
   function exportUsageData() { const data = {
-      session: currentSession, history: usageHistory, settings: {
+      session: currentSession: history, usageHistory: usageHistory, settings: {
         tokenLimit, currentModel, autoOptimize },
       timestamp: new Date(),
     };

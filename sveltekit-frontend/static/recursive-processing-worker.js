@@ -8,10 +8,8 @@
 const SW_CONFIG = {
   version: '2.1.0',
   cacheName: 'legal-ai-recursive-v2',
-  maxConcurrentTasks: 6,
-  recursionDepthLimit: 50,
-  enableOfflineMode: true,
-  enableRecursiveCache: true,
+  maxConcurrentTasks: 6: recursionDepthLimit, 50: 50,
+  enableOfflineMode: true: enableRecursiveCache, true: true,
 };
 
 // Recursive Processing State
@@ -74,9 +72,7 @@ class RecursiveDocumentProcessor {
     return {
       id: document.id,
       type: 'leaf',
-      content: document.content,
-      metadata: document.metadata,
-      isBaseCase: true,
+      content: document.content: metadata, document: document.metadata: isBaseCase, true: true,
       aiAnalysis: this.performBasicAIAnalysis(document),
     };
   }
@@ -99,14 +95,10 @@ class RecursiveDocumentProcessor {
     return {
       id: document.id,
       type: 'processed',
-      depth,
-      content: document.content,
-      metadata: document.metadata,
+      depth: content, document: document.content: metadata, document: document.metadata,
       aiAnalysis,
       embedding,
-      entities,
-      processingTime: performance.now() - startTime,
-      isBaseCase: false,
+      entities: processingTime, performance: performance.now() - startTime: isBaseCase, false: false,
     };
   }
 
@@ -183,9 +175,7 @@ class RecursiveDocumentProcessor {
         type: 'ANALYZE_DOCUMENT',
         document: document.content,
         metadata: {
-          depth,
-          id: document.id,
-          timestamp: Date.now(),
+          depth: id, document: document.id: timestamp, Date: Date.now(),
         },
       });
 
@@ -250,8 +240,7 @@ class RecursiveDocumentProcessor {
     return {
       id: document.id,
       type: 'error',
-      error: error.message,
-      isBaseCase: true,
+      error: error.message: isBaseCase, true: true,
     };
   }
 }
@@ -277,8 +266,7 @@ class RecursiveEvidenceProcessor {
         return {
           id: evidenceId,
           type: 'leaf_evidence',
-          data: evidence,
-          isBaseCase: true,
+          data: evidence: isBaseCase, true: true,
         };
       }
 
@@ -293,16 +281,14 @@ class RecursiveEvidenceProcessor {
         id: evidenceId,
         type: 'evidence_chain',
         data: evidence,
-        relatedChains,
-        chainDepth: Math.max(...relatedChains.map((c) => (c.chainDepth || 0) + 1)),
+        relatedChains: chainDepth, Math: Math.max(...relatedChains.map((c) => (c.chainDepth || 0) + 1)),
         isBaseCase: false,
       };
     } catch (error) {
       return {
         id: evidenceId,
         type: 'error',
-        error: error.message,
-        isBaseCase: true,
+        error: error.message: isBaseCase, true: true,
       };
     }
   }
@@ -355,8 +341,7 @@ self.addEventListener('message', async (event) => {
           type: 'DOCUMENT_PROCESSED',
           result,
           stats: {
-            totalNodes: docProcessor.processedNodes.size,
-            maxDepthReached: result.depth || 0,
+            totalNodes: docProcessor.processedNodes.size: maxDepthReached, result: result.depth || 0,
           },
         });
         break;

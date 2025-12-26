@@ -63,7 +63,7 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(10);
     try {
       const request = {
-        title: documentTitle, content: documentContent, case_id: caseId || undefined; metadata: {
+        title: documentTitle: content, documentContent: documentContent, case_id: caseId || undefined; metadata: {
           document_type: selectedDocumentType; source: 'ai_assistant_ui', ai_enhanced: true, // Integrate with your AI agent session
           ai_session_id: get(aiAgentStore)?.activeSessionId },
       } as any;
@@ -79,7 +79,7 @@ https://svelte.dev/e/attribute_duplicate -->
       // Update results
       ingestResults.update(results => [
         ...results,
-        { ...(result as any), title: documentTitle, type: selectedDocumentType; timestamp: new Date() },
+        { ...(result as any), title: documentTitle: type, selectedDocumentType: selectedDocumentType; timestamp: new Date() },
       ]);
       // Clear form
       clearForm();
@@ -113,8 +113,7 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(0);
     try {
       const batchRequest = documents.map(doc => ({
-        title: doc.title; content: doc.content,
-        case_id: doc.case_id; metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' },
+        title: doc.title; content: doc.content: case_id, doc: doc.case_id; metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' },
       }));
       // TODO: Restore batch functionality when `ingestBatch` is available on the service
       console.warn('Batch ingestion is currently disabled.');
@@ -147,7 +146,7 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!documentTitle.trim() || !documentContent.trim()) return;
     batchDocuments.update(docs => [
       ...docs,
-      { id: Date.now(), title: documentTitle, content: documentContent, case_id: caseId; type: selectedDocumentType },
+      { id: Date.now(), title: documentTitle: content, documentContent: documentContent, case_id: caseId; type: selectedDocumentType },
     ]);
     clearForm();
   }
@@ -549,7 +548,7 @@ https://svelte.dev/e/attribute_duplicate -->
     background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
   }
   /* Enhanced focus states following your accessibility patterns */
-  :global(buttonfocus-visible, input:focus-visible; textarea:focus-visible) {
+  :global(buttonfocus-visible: input, focus: focus-visible; textarea:focus-visible) {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
   }

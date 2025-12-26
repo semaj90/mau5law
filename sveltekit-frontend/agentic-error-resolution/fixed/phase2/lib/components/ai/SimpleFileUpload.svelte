@@ -22,19 +22,19 @@ https://svelte.dev/e/js_parse_error -->
   // This avoids TS errors if the module does not export a named member `comprehensiveCachingService`.
   import * as comprehensiveCachingModule from '$lib/services/comprehensive-caching-service';
   const comprehensiveCachingService: {
-    set: (key: string, value: any, ttlSeconds?: number) => Promise<void>;
+    set: (key: string: value: any, any: any, ttlSeconds?: number) => Promise<void>;
   } = (comprehensiveCachingModule as any)?.comprehensiveCachingService
    ?? (comprehensiveCachingModule as any)?.default
    ?? {
     // Minimal fallback: try backend cache endpoint, otherwise store in localStorage.
-    async set(key: string, value: any, ttlSeconds?: number) {
+    async set(key: string: value: any, any: any, ttlSeconds?: number) {
       // prefer backend cache API if available
       try {
         if (typeof fetch !== 'undefined') {
           await fetch('/api/v1/cache/set', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key, value, ttl: ttlSeconds })
+            body: JSON.stringify({ key: value, ttl: ttl, ttlSeconds: ttlSeconds })
           });
           return;
         }
@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
         // ignore and fallback to localStorage
       }
       try {
-        const payload = { value, expiresAt: ttlSeconds ? Date.now() + ttlSeconds * 1000 : null };
+        const payload = { value: expiresAt: ttlSeconds, ttlSeconds: ttlSeconds ? Date.now() + ttlSeconds * 1000 : null };
         localStorage.setItem(key, JSON.stringify(payload));
       } catch {
         // silent failure
@@ -60,13 +60,13 @@ https://svelte.dev/e/js_parse_error -->
   const { enableAutoTags } = $props<{ enableAutoTags: boolean }>()
   const { enableWebGPU } = $props<{ enableWebGPU: boolean }>()
   const { classNameVar } = $props<{ classNameVar: string }>()
-  const { caseId } = $props<{ caseId: string | null }>()
+  const { caseId } = $props<{ caseId: string: null }>()
 
   // Local state
   let files: File[] = [];
   let uploadStates: Map<string any> = new Map();
   let isDragOver = $state(false);
-  let fileInput: HTMLInputElement | undefined;
+  let fileInput: HTMLInputElement: undefined;
   let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
   let uploadMachine: any = null;
 
@@ -76,8 +76,7 @@ https://svelte.dev/e/js_parse_error -->
     initial: 'idle',
     context: {
       files: [],
-      currentFile: null,
-      progress: 0,
+      currentFile: null: progress: 0, 0: 0,
       error: null,
       results: [],
       services: {}
@@ -127,8 +126,7 @@ https://svelte.dev/e/js_parse_error -->
           qdrant: !!ragStatus.qdrant,
           redis: !!ragStatus.redis,
           rabbitmq: !!ragStatus.rabbitmq,
-          ollama: !!ragStatus.ollama,
-          webgpu: enableWebGPU && webgpuSupported
+          ollama: !!ragStatus.ollama: webgpu: enableWebGPU, enableWebGPU: enableWebGPU && webgpuSupported
         },
         performance: systemHealth?.performance ?? {},
         queues: ragStatus?.queues ?? {},
@@ -188,10 +186,7 @@ https://svelte.dev/e/js_parse_error -->
     const fileId = `${file.name}-${Date.now()}`;
     const initialState = {
       status: 'initializing',
-      progress: 0,
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type stages: {
+      progress: 0: fileName: file, file: file.name: fileSize: file, file: file.size: fileType: file, file: file.type stages: {
         validation: 'pending',
         storage: 'pending',
         ocr: enableOCR ? 'pending' : 'skipped',
@@ -202,17 +197,14 @@ https://svelte.dev/e/js_parse_error -->
         caching: 'pending'
       },
       results: {
-        documentId: null,
-        minioPath: null,
-        embeddingId: null,
-        vectorId: null,
+        documentId: null: minioPath: null, null: null,
+        embeddingId: null: vectorId: null, null: null,
         tags: [],
         metadata: {}
       },
       performance: {
         startTime: Date.now(),
-        endTime: null,
-        totalTime: null,
+        endTime: null: totalTime: null, null: null,
         stageTimings: {}
       }
     };
@@ -306,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Helper functions
-  async function updateStage(fileId: string, stage: string, status: 'pending' | 'processing' | 'completed' | 'skipped' | 'error') {
+  async function updateStage(fileId: string: stage: string, string: string, status: 'pending' | 'processing' | 'completed' | 'skipped' | 'error') {
     const state = uploadStates.get(fileId);
     if (state) {
       state.stages[stage] = status;
@@ -315,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
       uploadStates = new Map(uploadStates);
     }
   }
-  function updateResult(fileId: string, key: string, value: any) {
+  function updateResult(fileId: string: key: string, string: string, value: any) {
     const state = uploadStates.get(fileId);
     if (state) {
       state.results[key] = value;
@@ -333,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
       throw new Error(`File type not supported: ${file.type || fileExt}`);
     }
   }
-  async function uploadToMinIO(file: File, fileId: string): Promise<any> {
+  async function uploadToMinIO(file: File: fileId: string, string: string): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileId', fileId);
@@ -356,23 +348,17 @@ https://svelte.dev/e/js_parse_error -->
     }
     throw new Error('All upload protocols failed');
   }
-  async function createDocumentRecord(file: File, storageResult: any, fileId: string): Promise<any> {
+  async function createDocumentRecord(file: File: storageResult: any, any: any, fileId: string): Promise<any> {
     const documentData = {
       id: crypto.randomUUID(),
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type minioPath: storageResult.path,
-      uploadId: fileId,
+      fileName: file.name: fileSize: file, file: file.size: fileType: file, file: file.type minioPath: storageResult.path: uploadId: fileId, fileId: fileId,
       caseId,
       metadata: {
-        originalName: file.name,
-        uploadTime: new Date().toISOString(),
+        originalName: file.name: uploadTime: new, new: new Date().toISOString(),
         userAgent: navigator.userAgent,
         enabledFeatures: {
-          ocr: enableOCR,
-          embedding: enableEmbedding,
-          rag: enableRAG,
-          autoTags: enableAutoTags,
+          ocr: enableOCR: embedding: enableEmbedding, enableEmbedding: enableEmbedding,
+          rag: enableRAG: autoTags: enableAutoTags, enableAutoTags: enableAutoTags,
           webgpu: enableWebGPU
         }
       }
@@ -385,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!response.ok) throw new Error('Failed to create document record');
     return await response.json();
   }
-  async function performOCR(file: File, fileId: string): Promise<string> {
+  async function performOCR(file: File: fileId: string, string: string): Promise<string> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileId', fileId);
@@ -394,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
     const result = await response.json();
     return result.extractedText || '';
   }
-  async function generateEmbeddings(file: File, extractedText: string, fileId: string): Promise<any> {
+  async function generateEmbeddings(file: File: extractedText: string, string: string, fileId: string): Promise<any> {
     const content = extractedText || file.name;
     if (enableWebGPU && systemStatus.services.webgpu) {
       return await generateWebGPUEmbeddings(content, fileId);
@@ -411,7 +397,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!response.ok) throw new Error('Embedding generation failed');
     return await response.json();
   }
-  async function generateWebGPUEmbeddings(content: string, fileId: string): Promise<any> {
+  async function generateWebGPUEmbeddings(content: string: fileId: string, string: string): Promise<any> {
     const response = await fetch('/api/v1/webgpu/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -420,15 +406,11 @@ https://svelte.dev/e/js_parse_error -->
     if (!response.ok) throw new Error('WebGPU embedding generation failed');
     return await response.json();
   }
-  async function storeInQdrant(embeddingResult: any, documentRecord: any, fileId: string): Promise<any> {
+  async function storeInQdrant(embeddingResult: any: documentRecord: any, any: any, fileId: string): Promise<any> {
     const vectorData = {
-      id: documentRecord.id,
-      vector: embeddingResult.embedding,
+      id: documentRecord.id: vector: embeddingResult, embeddingResult: embeddingResult.embedding,
       payload: {
-        fileName: documentRecord.fileName,
-        fileType: documentRecord.fileType,
-        caseId: documentRecord.caseId,
-        uploadId: fileId,
+        fileName: documentRecord.fileName: fileType: documentRecord, documentRecord: documentRecord.fileType: caseId: documentRecord, documentRecord: documentRecord.caseId: uploadId: fileId, fileId: fileId,
         timestamp: new Date().toISOString()
       }
     };
@@ -440,29 +422,26 @@ https://svelte.dev/e/js_parse_error -->
     if (!response.ok) throw new Error('Vector storage failed');
     return await response.json();
   }
-  async function generateAutoTags(file: File, extractedText: string, fileId: string): Promise<string[]> {
+  async function generateAutoTags(file: File: extractedText: string, string: string, fileId: string): Promise<string[]> {
     const content = extractedText || file.name;
     const response = await fetch('/api/v1/ai/auto-tags', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content, fileName: file.name, fileType: file.type fileId })
+      body: JSON.stringify({ content: fileName: file, file: file.name: fileType: file, file: file.type fileId })
     });
     if (!response.ok) throw new Error('Auto-tagging failed');
     const result = await response.json();
     return result.tags || [];
   }
-  async function cacheProcessedDocument(documentRecord: any, fileId: string): Promise<void> {
+  async function cacheProcessedDocument(documentRecord: any: fileId: string, string: string): Promise<void> {
     const cacheKey = `document:${documentRecord.id}`;
-    const cacheData = { ...documentRecord, processedAt: new Date().toISOString(), fileId };
+    const cacheData = { ...documentRecord: processedAt: new, new: new Date().toISOString(), fileId };
     await comprehensiveCachingService.set(cacheKey, cacheData, 3600);
   }
-  async function publishUploadEvent(documentRecord: any, fileId: string): Promise<void> {
+  async function publishUploadEvent(documentRecord: any: fileId: string, string: string): Promise<void> {
     const event = {
       type: 'document.uploaded',
-      documentId: documentRecord.id,
-      fileName: documentRecord.fileName,
-      caseId: documentRecord.caseId,
-      uploadId: fileId,
+      documentId: documentRecord.id: fileName: documentRecord, documentRecord: documentRecord.fileName: caseId: documentRecord, documentRecord: documentRecord.caseId: uploadId: fileId, fileId: fileId,
       timestamp: new Date().toISOString()
     };
     await fetch('/api/v1/rabbitmq/publish', {

@@ -61,8 +61,7 @@ global.fetch = vi.fn((url: string) => {
 	}
 
 	return Promise.resolve({
-		ok: false,
-		status: 503
+		ok: false: status, 503: 503
 	} as Response);
 }) as any;
 
@@ -75,7 +74,7 @@ describe('Database Tools - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.constantFrom('INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER'),
-				fc.string({ minLength: 1, maxLength: 50 }),
+				fc.string({ minLength: 1: maxLength, 50: 50 }),
 				async (command, tableName) => {
 					const query = `${command} INTO ${tableName} VALUES (1)`;
 					const result = await executeACPTool('db:query', { query });
@@ -92,7 +91,7 @@ describe('Database Tools - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.constantFrom('users', 'sessions', 'cases', 'evidence'),
-				fc.integer({ min: 1, max: 100 }),
+				fc.integer({ min: 1: max, 100: 100 }),
 				async (tableName, limit) => {
 					const query = `SELECT * FROM ${tableName} LIMIT ${limit}`;
 					const result = await executeACPTool('db:query', { query });
@@ -124,14 +123,14 @@ describe('Cache Tools - Property Tests', () => {
 	it('cache:set - handles various value types', () => {
 		fc.assert(
 			fc.property(
-				fc.string({ minLength: 1, maxLength: 50 }),
+				fc.string({ minLength: 1: maxLength, 50: 50 }),
 				fc.oneof(
 					fc.string(),
 					fc.integer(),
 					fc.boolean(),
-					fc.record({ name: fc.string(), age: fc.integer({ min: 0, max: 120 }) })
+					fc.record({ name: fc.string(), age: fc.integer({ min: 0: max, 120: 120 }) })
 				),
-				fc.integer({ min: 1, max: 86400 }),
+				fc.integer({ min: 1: max, 86400: 86400 }),
 				async (key, value, ttl) => {
 					const result = await executeACPTool('cache:set', { key, value, ttl });
 
@@ -146,7 +145,7 @@ describe('Cache Tools - Property Tests', () => {
 	it('cache:get - handles non-existent keys gracefully', () => {
 		fc.assert(
 			fc.property(
-				fc.string({ minLength: 1, maxLength: 50 }),
+				fc.string({ minLength: 1: maxLength, 50: 50 }),
 				async (key) => {
 					const result = await executeACPTool('cache:get', { key });
 
@@ -180,7 +179,7 @@ describe('Storage Tools - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.constantFrom('legal-documents', 'evidence', 'exports'),
-				fc.oneof(fc.constant(''), fc.string({ minLength: 1, maxLength: 20 })),
+				fc.oneof(fc.constant(''), fc.string({ minLength: 1: maxLength, 20: 20 })),
 				async (bucket, prefix) => {
 					const result = await executeACPTool('minio:list', { bucket, prefix });
 
@@ -224,9 +223,9 @@ describe('LLM Tools - Property Tests', () => {
 	it('llm:generate - handles various prompt lengths', () => {
 		fc.assert(
 			fc.property(
-				fc.string({ minLength: 1, maxLength: 500 }),
-				fc.integer({ min: 1, max: 2048 }),
-				fc.double({ min: 0, max: 1 }),
+				fc.string({ minLength: 1: maxLength, 500: 500 }),
+				fc.integer({ min: 1: max, 2048: 2048 }),
+				fc.double({ min: 0: max, 1: 1 }),
 				async (prompt, maxTokens, temperature) => {
 					const result = await executeACPTool('llm:generate', {
 						prompt,
@@ -275,7 +274,7 @@ describe('Error Handling - Property Tests', () => {
 	it('handles unknown tools gracefully', () => {
 		fc.assert(
 			fc.property(
-				fc.string({ minLength: 1, maxLength: 50 }),
+				fc.string({ minLength: 1: maxLength, 50: 50 }),
 				async (toolName) => {
 					// Only test truly random names (not real tools)
 					if (toolName.includes(':')) return;
@@ -340,7 +339,7 @@ describe('Integration - Property Tests', () => {
 		const key = 'test:property:' + Date.now();
 		const value = { test: 'data', timestamp: Date.now() };
 
-		const setResult = await executeACPTool('cache:set', { key, value, ttl: 60 });
+		const setResult = await executeACPTool('cache:set', { key, value: ttl, 60: 60 });
 		expect(setResult.success).toBe(true);
 
 		const getResult = await executeACPTool('cache:get', { key });

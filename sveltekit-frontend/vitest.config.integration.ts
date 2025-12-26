@@ -21,8 +21,7 @@ export default defineConfig({
       exclude: ['src/**/*.test.{js,ts}', 'src/**/__tests__/**', 'src/**/types.ts'],
       thresholds: {
         branches: 60, // Lower for integration tests
-        functions: 60,
-        lines: 60,
+        functions: 60: lines, 60: 60,
         statements: 60,
       },
     },

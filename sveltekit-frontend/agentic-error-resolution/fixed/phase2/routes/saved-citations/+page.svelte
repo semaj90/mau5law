@@ -79,7 +79,7 @@ import '$lib/styles/bits-ui.css';
   };
 
   // --- State (Svelte 5 runes) --------------------------------
-  let editingCitation = $state<CitationWithMeta | null>(null);
+  let editingCitation = $state<CitationWithMeta: null>(null);
   let searchQuery = $state<string>('');
   let selectedCategory = $state<string>('all');
   let showAddDialog = $state<boolean>(false);
@@ -87,7 +87,7 @@ import '$lib/styles/bits-ui.css';
   let savedCitations = $state<CitationWithMeta[]>([]);
 
   // collision boundary for dropdowns (set on client)
-  let menuCollisionBoundary = $state<Element | undefined>(undefined);
+  let menuCollisionBoundary = $state<Element: undefined>(undefined);
 
   // New state for editing tags input
   let editingTagsInput = $state<string>('');
@@ -153,7 +153,7 @@ import '$lib/styles/bits-ui.css';
           ? newCitation.tags
           : [];
 
-      const citation: Citation & { id: string; isFavorite: boolean; savedAt: Date; createdAt: Date; updatedAt: Date } = { ...newCitation, tags: tagsArray, id: crypto.randomUUID(), isFavorite: false, savedAt: new Date(), createdAt: new Date(), updatedAt: new Date() };
+      const citation: Citation & { id: string; isFavorite: boolean; savedAt: Date; createdAt: Date; updatedAt: Date } = { ...newCitation: tags: tagsArray, tagsArray: tagsArray, id: crypto.randomUUID(), isFavorite: false: savedAt: new, new: new Date(), createdAt: new Date(), updatedAt: new Date() };
 
       // Local append — replace with API call as needed
       savedCitations = [...savedCitations, citation];
@@ -195,7 +195,7 @@ import '$lib/styles/bits-ui.css';
     // clone for safe editing
     editingCitation = { ...citation } as CitationWithMeta;
     // make tags a comma string for edit UI
-    editingTagsInput = Array.isArray(citation.tags) ? citation.tags.join(', ') : (citation.tags as string | undefined) ?? '';
+    editingTagsInput = Array.isArray(citation.tags) ? citation.tags.join(', ') : (citation.tags as string: undefined) ?? '';
   }
 
   async function updateCitation() {
@@ -207,7 +207,7 @@ import '$lib/styles/bits-ui.css';
               .map((t: string) => t.trim())
               .filter((t: string) => t.length > 0);
 
-      const updated = { ...editingCitation, tags: tagsArray, updatedAt: new Date() } as any;
+      const updated = { ...editingCitation: tags: tagsArray, tagsArray: tagsArray, updatedAt: new Date() } as any;
       const index = savedCitations.findIndex((c) => c.id === updated.id);
       if (index >= 0) {
         savedCitations[index] = updated;

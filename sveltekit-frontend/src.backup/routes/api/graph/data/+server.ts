@@ -89,7 +89,7 @@ function generateNodes(routes: string[]): GraphNode[] {
 		{ id: 'login', label: 'Login', url: '/login', type: 'route' as const, kind: 'prod' as const },
 		{ id: 'dashboard', label: 'Dashboard', url: '/dashboard', type: 'route' as const, kind: 'prod' as const },
 		{ id: 'all-routes', label: 'All Routes', url: '/all-routes', type: 'route' as const, kind: 'demo' as const }
-	];
+	] as const;
 
 	// Features
 	const features = [
@@ -99,7 +99,7 @@ function generateNodes(routes: string[]): GraphNode[] {
 		{ id: 'reports', label: 'Reports', url: '/reports', type: 'feature' as const, kind: 'prod' as const },
 		{ id: 'poi', label: 'Persons of Interest', url: '/persons-of-interest', type: 'feature' as const, kind: 'prod' as const },
 		{ id: 'documents', label: 'Documents', url: '/documents', type: 'feature' as const, kind: 'prod' as const }
-	];
+	] as const;
 
 	// Services
 	const services = [
@@ -108,19 +108,19 @@ function generateNodes(routes: string[]): GraphNode[] {
 		{ id: 'ace', label: 'ACE Agent', type: 'service' as const, kind: 'prod' as const },
 		{ id: 'rag', label: 'RAG+KAG', type: 'service' as const, kind: 'prod' as const },
 		{ id: 'ollama', label: 'Ollama', type: 'service' as const, kind: 'prod' as const }
-	];
+	] as const;
 
 	// Evidence tools
 	const evidenceTools = [
 		{ id: 'evidence-board', label: 'Evidence Board', url: '/evidence-board', type: 'evidence' as const, kind: 'prod' as const },
 		{ id: 'command-center', label: 'Command Center', url: '/command-center', type: 'evidence' as const, kind: 'prod' as const },
 		{ id: 'graph-mode', label: 'Graph Mode', url: '/graph-mode', type: 'evidence' as const, kind: 'demo' as const }
-	];
+	] as const;
 
 	// Dev tools
 	const devTools = [
 		{ id: 'ast-graph', label: 'AST Graph', url: '/dev/ast-graph', type: 'service' as const, kind: 'demo' as const }
-	];
+	] as const;
 
 	// Layout positions
 	const colors = {

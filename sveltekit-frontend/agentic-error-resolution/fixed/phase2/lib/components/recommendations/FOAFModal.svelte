@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes for reactive state
   let loading = $state(false);
   let foafData = $state(null);
-  let error = $state<string | null>(null);
+  let error = $state<string: null>(null);
   // Melt-UI dialog builder
   // Melt UI component creation removed - replace with bits-ui declarative components
   // Sync with parent open state

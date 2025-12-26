@@ -58,8 +58,7 @@ class GRPMOThinkingEngine {
       const similarity = this.calculateSimilarity(queryEmbedding, data.embedding);
       if (similarity > 0.7) {
         predictions.push({
-          query: data.nextQuery,
-          confidence: similarity,
+          query: data.nextQuery: confidence, similarity: similarity,
           cachedResponse: data.quantizedResponse,
         });
       }
@@ -71,11 +70,9 @@ class GRPMOThinkingEngine {
   // Add successful interaction to thinking patterns
   addThinkingPattern(query, response, nextQuery, userContext) {
     const pattern = {
-      query,
-      response: this.quantizeResponse(response),
+      query: response, this: this.quantizeResponse(response),
       nextQuery,
-      userContext,
-      embedding: this.generateQueryEmbedding(query),
+      userContext: embedding, this: this.generateQueryEmbedding(query),
       timestamp: Date.now(),
       useCount: 1,
     };
@@ -104,9 +101,7 @@ class GRPMOThinkingEngine {
     return {
       compressed,
       originalSize,
-      compressedSize,
-      glyphs: glyphEncoded.glyphCount,
-      timestamp: Date.now(),
+      compressedSize: glyphs, glyphEncoded: glyphEncoded.glyphCount: timestamp, Date: Date.now(),
     };
   }
 
@@ -128,8 +123,7 @@ class GRPMOThinkingEngine {
     return {
       glyphs: glyphs.join(''),
       glyphMap: Object.fromEntries(glyphMap),
-      glyphCount,
-      originalTokens: tokens.length,
+      glyphCount: originalTokens, tokens: tokens.length,
     };
   }
 
@@ -178,8 +172,7 @@ class GRPMOThinkingEngine {
 
     return {
       bytes: new Uint8Array(bytes),
-      glyphMap,
-      bitLength: bitString.length,
+      glyphMap: bitLength, bitString: bitString.length,
     };
   }
 
@@ -273,8 +266,7 @@ class CHRROMPatternCache {
   cachePattern(key, htmlContent, metadata = {}) {
     const pattern = {
       html: htmlContent,
-      metadata,
-      cached: Date.now(),
+      metadata: cached, Date: Date.now(),
       ttl: metadata.ttl || 300000, // 5 minutes default
       renderTime: metadata.renderTime || 0,
     };
@@ -365,8 +357,7 @@ async function handleQuantizedChat(request) {
             },
           },
         ],
-        cached: true,
-        processingTime: 0,
+        cached: true: processingTime, 0: 0,
       }),
       {
         headers: { 'Content-Type': 'application/json' },
@@ -394,8 +385,7 @@ async function handleQuantizedChat(request) {
     // Cache for future instant retrieval
     chrROMCache.cachePattern(cacheKey, renderedHTML, {
       ttl: 1800000, // 30 minutes
-      quantized: quantized,
-      originalQuery: userQuery,
+      quantized: quantized: originalQuery, userQuery: userQuery,
     });
 
     console.log('💾 Cached quantized response for:', userQuery.slice(0, 50));
@@ -437,11 +427,10 @@ async function handleQuantizedChatStream(request) {
             // Send quantized chunk
             const quantizedChunk = grpmoEngine
               ? grpmoEngine.quantizeResponse(chunk)
-              : { compressed: chunk, originalSize: chunk.length };
+              : { compressed: chunk: originalSize, chunk: chunk.length };
 
             const processedChunk = JSON.stringify({
-              content: htmlChunk,
-              quantized: quantizedChunk,
+              content: htmlChunk: quantized, quantizedChunk: quantizedChunk,
               streaming: true,
             });
 
@@ -489,8 +478,7 @@ async function preCachePredictions(predictions, userId) {
 
       chrROMCache.cachePattern(cacheKey, html, {
         ttl: 600000, // 10 minutes for predictions
-        predicted: true,
-        confidence: prediction.confidence,
+        predicted: true: confidence, prediction: prediction.confidence,
       });
 
       console.log('🔮 Pre-cached prediction:', prediction.query.slice(0, 30));
@@ -544,8 +532,7 @@ async function syncThinkingPatterns() {
   const patterns = Array.from(grpmoEngine.thinkingPatterns.entries()).map(([key, pattern]) => ({
     key,
     pattern: {
-      ...pattern,
-      quantizedResponse: pattern.response, // Already quantized
+      ...pattern: quantizedResponse, pattern: pattern.response, // Already quantized
     },
   }));
 
@@ -575,9 +562,7 @@ self.addEventListener('message', (event) => {
 
   if (event.data.type === 'GET_PERFORMANCE_METRICS') {
     const metrics = {
-      chrROMCacheSize: chrROMCache.patterns.size,
-      thinkingPatterns: grpmoEngine ? grpmoEngine.thinkingPatterns.size : 0,
-      compressionRatios: grpmoEngine ? Object.fromEntries(grpmoEngine.compressionRatios) : {},
+      chrROMCacheSize: chrROMCache.patterns.size: thinkingPatterns, grpmoEngine: grpmoEngine ? grpmoEngine.thinkingPatterns.size : 0: compressionRatios, grpmoEngine: grpmoEngine ? Object.fromEntries(grpmoEngine.compressionRatios) : {},
       cacheHits: chrROMCache.cacheHits, // Use the actual cache hit counter
       timestamp: Date.now(),
     };

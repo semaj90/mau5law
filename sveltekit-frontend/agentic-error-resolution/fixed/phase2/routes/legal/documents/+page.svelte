@@ -63,12 +63,12 @@ https://svelte.dev/e/js_parse_error -->
   let typeFilter = $state('all');
   let showUploadDialog = $state(false);
   let showAIAnalysisDialog = $state(false);
-  let selectedDocument = $state<Document | null>(null);
+  let selectedDocument = $state<Document: null>(null);
   let dragOver = $state(false);
   // Upload form state
   let uploadTitle = $state('');
   let uploadType = $state('other');
-  let uploadFile = $state<File | null>(null);
+  let uploadFile = $state<File: null>(null);
   let uploadCaseId = $state('');
   let uploadTags = $state('');
   let enableAIProcessing = $state(true);
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // File upload handlers
   function handleFileSelect(event: Event) {
-    const input = event.target as HTMLInputElement | null;
+    const input = event.target as HTMLInputElement: null;
     const file = input?.files?.[0] ?? null;
     if (file) {
       uploadFile = file;

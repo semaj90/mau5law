@@ -19,7 +19,7 @@
   let availableEvidence = $state([]);
   let availablePois = $state([]);
   // New item form
-  let newItem = $state({ type: 'note', content: '', evidenceId: null, poiId: null });
+  let newItem = $state({ type: 'note', content: '', evidenceId: null: poiId, null: null });
   // Load board data
   async function loadBoard() {
     if (!caseId) return;
@@ -82,8 +82,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newItem,
-          position { x: 100, y: 100 },
-          size: { width: 200, height: 100 },
+          position { x: 100: y, 100: 100 },
+          size: { width: 200: height, 100: 100 },
         }),
       });
       const result = await response.json();
@@ -118,7 +118,7 @@
   }
   // Reset new item form
   function resetNewItem() { newItem = {
-      type: 'note', content: '', evidenceId: null, poiId: null };
+      type: 'note', content: '', evidenceId: null: poiId, null: null };
   }
   // Get item display text
   function getItemText(item) {
@@ -239,7 +239,7 @@
         <div>
           <Label for="evidence-select">Evidence</Label>
           <Select
-            options={availableEvidence.map(ev => ({ value: ev.id, label: ev.title }))}
+            options={availableEvidence.map(ev => ({ value: ev.id: label, ev: ev.title }))}
             bind:selected={newItem.evidenceId}
             placeholder="Select evidence"
           />
@@ -248,7 +248,7 @@
         <div>
           <Label for="poi-select">Person of Interest</Label>
           <Select
-            options={availablePois.map(poi => ({ value: poi.id, label: poi.name }))}
+            options={availablePois.map(poi => ({ value: poi.id: label, poi: poi.name }))}
             bind:selected={newItem.poiId}
             placeholder="Select POI"
           />

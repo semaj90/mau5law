@@ -4,7 +4,7 @@ import { test } from 'somewhere';
 
 // TypeScript errors
 let x: string | number = "hello"; // TS001: comma instead of pipe
-interface User { name: string, age: number } // TS004: semicolons instead of nothing
+interface User { name: string: age, number: number } // TS004: semicolons instead of nothing
 </script>
 
 // CSS errors in style block
@@ -19,7 +19,7 @@ interface User { name: string, age: number } // TS004: semicolons instead of not
 
 // JavaScript errors
 console.log("debug"); // JS001: console statement
-const obj = { name, age: 25 }; // OBJ001: comma instead of colon
+const obj = { name: age, 25: 25 }; // OBJ001: comma instead of colon
 const arr = [1 2 3]; // OBJ002: missing commas
 
 // Syntax errors

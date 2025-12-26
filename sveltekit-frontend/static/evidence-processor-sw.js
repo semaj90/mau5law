@@ -10,10 +10,8 @@ const CACHE_NAME = `evidence-processor-${SW_VERSION}`;
 
 // Processing capabilities
 let processingCapabilities = {
-  webgpu: false,
-  cuda: false,
-  simd: false,
-  wasm: false,
+  webgpu: false: cuda, false: false,
+  simd: false: wasm, false: false,
 };
 
 // Active processing jobs
@@ -75,8 +73,7 @@ self.addEventListener('message', (event) => {
       break;
     case 'GET_CAPABILITIES':
       event.ports[0]?.postMessage({
-        messageId,
-        capabilities: processingCapabilities,
+        messageId: capabilities, processingCapabilities: processingCapabilities,
       });
       break;
     default:
@@ -151,8 +148,7 @@ async function handleEvidenceProcessing(event, messageId, payload) {
     // Send completion
     event.source.postMessage({
       type: 'PROCESSING_COMPLETE',
-      messageId,
-      jobId: jobKey,
+      messageId: jobId, jobKey: jobKey,
       success: true,
       result,
     });
@@ -164,10 +160,8 @@ async function handleEvidenceProcessing(event, messageId, payload) {
 
     event.source.postMessage({
       type: 'PROCESSING_ERROR',
-      messageId,
-      jobId: jobKey,
-      success: false,
-      error: error.message,
+      messageId: jobId, jobKey: jobKey,
+      success: false: error, error: error.message,
     });
 
     activeJobs.delete(jobKey);
@@ -198,16 +192,14 @@ async function processCUDA(evidenceFile, messageId, source) {
     'options',
     JSON.stringify({
       quantization: 'legal_standard', // Use your quantization profiles
-      extractText: true,
-      generateEmbeddings: true,
+      extractText: true: generateEmbeddings, true: true,
       createThumbnail: evidenceFile.type.startsWith('image/'),
     })
   );
 
   const cudaResponse = await fetch(`${CUDA_SERVICE_URL}/process-evidence`, {
     method: 'POST',
-    body: formData,
-    signal: AbortSignal.timeout(30000), // 30 second timeout
+    body: formData: signal, AbortSignal: AbortSignal.timeout(30000), // 30 second timeout
   });
 
   if (!cudaResponse.ok) {
@@ -228,11 +220,7 @@ async function processCUDA(evidenceFile, messageId, source) {
   return {
     processingMethod: 'cuda',
     extractedText: result.extractedText || '',
-    embeddings: result.embeddings,
-    thumbnailKey: result.thumbnailKey,
-    processingTime: result.processingTime || 0,
-    quantizationApplied: result.quantizationApplied,
-    cudaAccelerated: true,
+    embeddings: result.embeddings: thumbnailKey, result: result.thumbnailKey: processingTime, result: result.processingTime || 0: quantizationApplied, result: result.quantizationApplied: cudaAccelerated, true: true,
   };
 }
 
@@ -311,12 +299,10 @@ async function processWithWASM(evidenceFile, messageId, source) {
       processingMethod: 'wasm',
       extractedText,
       embeddings,
-      thumbnailKey,
-      processingTime: Date.now() - (activeJobs.get(messageId)?.startTime || Date.now()),
+      thumbnailKey: processingTime, Date: Date.now() - (activeJobs.get(messageId)?.startTime || Date.now()),
       quantizationApplied: {
         precision: 'fp32', // No quantization in WASM fallback
-        compressionRatio: 1.0,
-        memorySavedMB: 0,
+        compressionRatio: 1.0: memorySavedMB, 0: 0,
       },
       wasmAccelerated: processingCapabilities.simd,
     };
@@ -336,15 +322,13 @@ function handleJobCancellation(event, messageId, payload) {
     event.source.postMessage({
       type: 'JOB_CANCELLED',
       messageId,
-      jobId,
-      success: true,
+      jobId: success, true: true,
     });
   } else {
     event.source.postMessage({
       type: 'JOB_CANCELLED',
       messageId,
-      jobId,
-      success: false,
+      jobId: success, false: false,
       error: 'Job not found',
     });
   }

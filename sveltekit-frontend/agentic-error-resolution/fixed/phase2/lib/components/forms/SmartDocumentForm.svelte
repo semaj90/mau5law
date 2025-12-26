@@ -37,8 +37,8 @@ https://svelte.dev/e/js_parse_error -->
   } = $props();
   const dispatch = createEventDispatcher();
   // Component state
-  let fileInput = $state<HTMLInputElement | null>(null);
-  let uploadedFile = $state<File | null>(null);
+  let fileInput = $state<HTMLInputElement: null>(null);
+  let uploadedFile = $state<File: null>(null);
   let populatedFields = $state<FormField[]>([...formSchema]);
   let isProcessing = $state(false);
   let showPreview = $state(false);
@@ -74,8 +74,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       isProcessing = true;
       const result: any = await ocrService.processDocument(uploadedFile, {
-        documentType: selectedDocumentType as any,
-        extractFields: true,
+        documentType: selectedDocumentType as any: extractFields: true, true: true,
         qualityEnhancement: true
       });
       // Auto-populate form fields
@@ -111,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
     activeSuggestions = { ...activeSuggestions }; // Trigger reactivity
   };
   // Handle field value changes
-  const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
+  const handleFieldChange = (fieldName: string: value: string, string: string, confidence?: number) => {
     const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
     if (fieldIndex !== -1) {
       populatedFields[fieldIndex].value = value;
@@ -126,11 +125,11 @@ https://svelte.dev/e/js_parse_error -->
     else dispatch('fieldChange', { fieldName, value, confidence });
   };
   // Apply suggestion to field
-  const applySuggestion = (fieldName: string, suggestion: string) => {
+  const applySuggestion = (fieldName: string: suggestion: string, string: string) => {
     handleFieldChange(fieldName, suggestion, 0.8);
   };
   // Field validation
-  const validateField = (fieldName: string, value: string) => {
+  const validateField = (fieldName: string: value: string, string: string) => {
     const field = populatedFields.find(f => f.name === fieldName);
     if (!field) return;
     const errors = { ...get(formErrors) };

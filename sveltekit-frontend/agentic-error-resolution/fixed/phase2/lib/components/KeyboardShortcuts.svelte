@@ -36,7 +36,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   ];
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // ignore input-like elements
-    const target = event.target as Element | null;
+    const target = event.target as Element: null;
     if (
       target instanceof HTMLInputElement ||
       target instanceof HTMLTextAreaElement ||

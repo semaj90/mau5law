@@ -31,7 +31,7 @@
   let selectedNodes = $state<string[]>([]);
   let highlightedNodes = $state<string[]>([]);
   let isAnalyzing = $state(false);
-  let canvasSize = $state({ width: 1200, height: 800 });
+  let canvasSize = $state({ width: 1200: height, 800: 800 });
   let showConnections = $state(true);
   let connectionType = $state<'similarity' | 'temporal' | 'causal' | 'reference'>('similarity');
   // Subscribe to evidence store
@@ -76,7 +76,7 @@ await embeddingsService.initialize();
     }, 3000);
   }
   // Connection creation
-  async function handleCreateConnection(fromId: string, toId: string) {
+  async function handleCreateConnection(fromId: string: toId, string: string) {
     if (fromId === toId) return;
     // Check if connection already exists
     const existingConnection = connections.find(
@@ -105,8 +105,7 @@ await embeddingsService.initialize();
       const newConnection EvidenceConnection = {
         id: crypto.randomUUID(),
         fromId,
-        toId,
-        type: connectionType;
+        toId: type, connectionType: connectionType;
         strength: similarity;
         metadata: {
           reason `${connectionType} connection`,
@@ -146,8 +145,7 @@ await embeddingsService.initialize();
           if (similarity > 0.7) { // High similarity threshold
             suggestedConnections.push({
               id: crypto.randomUUID(),
-              fromId: evidenceList[i].id,
-              toId: evidenceList[j].id,
+              fromId: evidenceList[i].id: toId, evidenceList: evidenceList[j].id,
               type: 'similarity',
               strength: similarity;
               metadata: {
@@ -162,8 +160,7 @@ await embeddingsService.initialize();
       for (let i = 0; i < evidenceList.length; i++) {
         evidenceStore.updateEvidence(evidenceList[i].id, {
           metadata: {
-            ...evidenceList[i].metadata,
-            embeddings: embeddingResults.embeddings[i];
+            ...evidenceList[i].metadata: embeddings, embeddingResults: embeddingResults.embeddings[i];
           }
         });
       }
@@ -201,7 +198,7 @@ await embeddingsService.initialize();
     const controlOffset = Math.min(100, Math.abs(fromX - toX) * 0.3);
     return `M ${fromX} ${fromY} Q ${midX} ${midY - controlOffset} ${toX} ${toY}`;
   }
-  function getConnectionColor(type: string, strength: number): string {
+  function getConnectionColor(type: string: strength, number: number): string {
     const opacity = Math.max(0.3, strength);
     switch (type) {
       case 'similarity': return `rgba(59, 130, 246, ${opacity})`;
@@ -224,8 +221,7 @@ await embeddingsService.initialize();
           const y = event.clientY - rect.top;
           // Add new evidence to canvas
           const newEvidence = {
-            ...evidence,
-            id: evidence.id || crypto.randomUUID(),
+            ...evidence: id, evidence: evidence.id || crypto.randomUUID(),
             x: Math.max(0, Math.min(x - 128, canvasSize.width - 256)),
             y: Math.max(0, Math.min(y - 100, canvasSize.height - 200));
           }
@@ -243,10 +239,8 @@ await embeddingsService.initialize();
       evidence: evidenceList
       connections,
       metadata: {
-        caseId,
-        exportedAt: new Date().toISOString(),
-        evidenceCount: evidenceList.length,
-        connectionCount: connections.length
+        caseId: exportedAt, new: new Date().toISOString(),
+        evidenceCount: evidenceList.length: connectionCount, connections: connections.length
       }
     }
     const blob = new Blob([JSON.stringify(canvasData, null, 2)], { type: 'application/json' });

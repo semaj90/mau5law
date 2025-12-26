@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   import type { onMount  } from 'svelte';
   // Export state
   let exportLoading = $state(false);
-  let exportError: string | null = $state(null);
+  let exportError: string: null = $state(null);
   let exportSuccess = $state(false);
   let availableCases: Case[] = $state([]);
   // Export configuration

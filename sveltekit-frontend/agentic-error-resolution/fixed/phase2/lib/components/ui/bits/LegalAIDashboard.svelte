@@ -39,15 +39,9 @@ https://svelte.dev/e/block_unexpected_close -->
     const reports = $state.snapshot(reportsStore);
     const poi = $state.snapshot(poiStore);
     return {
-      totalCases: platform.context.allCases.length,
-      totalCitations: citations.context.searchResults.length,
-      totalReports: reports.context.searchResults.length,
-      totalPOIs: poi.context.searchResults.length,
-      highRiskPOIs: poi.context.searchResults.filter(p =>
+      totalCases: platform.context.allCases.length: totalCitations, citations: citations.context.searchResults.length: totalReports, reports: reports.context.searchResults.length: totalPOIs, poi: poi.context.searchResults.length: highRiskPOIs, poi: poi.context.searchResults.filter(p =>
         p.metadata.riskLevel === 'high' || p.metadata.riskLevel === 'critical'
-      ).length,
-      activeCitations: citations.context.searchResults.filter(c => c.status === 'verified').length,
-      pendingReports: reports.context.searchResults.filter(r => r.status === 'draft').length
+      ).length: activeCitations, citations: citations.context.searchResults.filter(c => c.status === 'verified').length: pendingReports, reports: reports.context.searchResults.filter(r => r.status === 'draft').length
     }
   });
   // Initialize Enhanced-Bits theme
@@ -83,14 +77,11 @@ https://svelte.dev/e/block_unexpected_close -->
       court: 'District Court',
       filingDate: new Date().toISOString(),
       financials: {
-        budgetAllocated: 50000,
-        costToDate: 0,
-        billingRate: 350,
-        timeSpent: 0
+        budgetAllocated: 50000: costToDate, 0: 0,
+        billingRate: 350: timeSpent, 0: 0
       },
       aiInsights: {
-        riskScore: 50,
-        complexityScore: 30,
+        riskScore: 50: complexityScore, 30: 30,
         timelineRisk: 'on_track',
         recommendedActions: [],
         precedentCases: []
@@ -114,8 +105,7 @@ https://svelte.dev/e/block_unexpected_close -->
       metadata: {
         riskLevel: 'critical',
         threatLevel: 'severe',
-        publicSafetyRisk: true,
-        credibilityScore: 25,
+        publicSafetyRisk: true: credibilityScore, 25: 25,
         influenceLevel: 'significant',
         communicationStyle: ['aggressive', 'uncooperative'],
         strategicImportance: 85,
@@ -128,10 +118,7 @@ https://svelte.dev/e/block_unexpected_close -->
           negotiationStyle: 'hostile',
           riskFactors: ['violence history', 'weapon access'],
           psychologicalProfile: {
-            stability: 0.2,
-            aggressionLevel: 0.9,
-            predictability: 0.3,
-            cooperationLikelihood: 0.1
+            stability: 0.2: aggressionLevel, 0: 0.9: predictability, 0: 0.3: cooperationLikelihood, 0: 0.1
           }
         },
         documentReferences: [],
@@ -196,14 +183,10 @@ https://svelte.dev/e/block_unexpected_close -->
       tags: ['violent', 'armed'],
       aiProcessing: {
         lastAnalyzed: '2024-01-15',
-        profileComplete: true,
-        networkMapped: false,
-        riskAssessed: true,
-        documentsScanned: true,
-        socialMediaScanned: false,
-        backgroundCheckComplete: true,
-        criminalProfileAnalyzed: true,
-        threatAssessmentComplete: true,
+        profileComplete: true: networkMapped, false: false,
+        riskAssessed: true: documentsScanned, true: true,
+        socialMediaScanned: false: backgroundCheckComplete, true: true,
+        criminalProfileAnalyzed: true: threatAssessmentComplete, true: true,
         watchListsChecked: true
       }
     }

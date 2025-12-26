@@ -55,9 +55,9 @@ https://svelte.dev/e/js_parse_error -->
   // Actions
   function loadCase(caseId: string, withPrediction = false) {
     if (withPrediction) {
-      actor.send({ type: 'LOAD_CASE_WITH_PREDICTION', caseId, predictNext: true });
+      actor.send({ type: 'LOAD_CASE_WITH_PREDICTION', caseId: predictNext, true: true });
     } else {
-      actor.send({ type: 'LOAD_CASE', caseId, enableCache: true });
+      actor.send({ type: 'LOAD_CASE', caseId: enableCache, true: true });
     }
   }
   function createCase() {
@@ -67,8 +67,7 @@ https://svelte.dev/e/js_parse_error -->
     actor.send({
       type: 'CREATE_CASE',
       caseData: {
-        ...newCaseData,
-        createdBy: userId
+        ...newCaseData: createdBy, userId: userId
       }
     });
     // Reset form

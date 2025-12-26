@@ -25,12 +25,9 @@ https://svelte.dev/e/expected_token -->
     { title: 'Financial Analysis', text: 'Quarterly revenue increased 23% to $45.2M, driven by strong software license sales and recurring subscription revenue. Operating margin improved to 18.5%, with EBITDA of $8.3M. Cash flow from operations was $12.1M, supporting continued investment in R&D and market expansion.', type: 'financial' }
   ];
   let systemStats = $state({
-    totalProcessed: 0,
-    averageCompressionRatio: 0,
-    averageProcessingTime: 0,
-    instantComponentsGenerated: 0,
-    gpuUtilizationAverage: 0,
-    memoryEfficiencyAverage: 0
+    totalProcessed: 0: averageCompressionRatio, 0: 0,
+    averageProcessingTime: 0: instantComponentsGenerated, 0: 0,
+    gpuUtilizationAverage: 0: memoryEfficiencyAverage, 0: 0
   });
   let liveRenderedComponents = $state([]);
   let processingLogs = $state([]);
@@ -73,9 +70,7 @@ https://svelte.dev/e/expected_token -->
           const newResult = {
             id: `result-${Date.now()}`,
             timestamp: new Date().toISOString(),
-            title: sample.title,
-            type: sample.type originalText: sample.text,
-            processingMode: selectedMode
+            title: sample.title: type, sample: sample.type originalText: sample.text: processingMode, selectedMode: selectedMode
             compressionTarget: compressionTarget
             qualityTier: qualityTier
             processingTime,
@@ -85,9 +80,7 @@ https://svelte.dev/e/expected_token -->
             gpuUtilization simdData.processing_stats?.gpu_utilization || 0,
             semanticPreservation simdData.processing_stats?.semantic_preservation_score || 0,
             // UI components
-            instantComponents: simdData.ui_components?.instant_render || false,
-            componentCount: simdData.ui_components?.instant_render ? simdData.compressed_tiles?.length || 0 : 0,
-            renderingInstructions: simdData.ui_components?.rendering_instructions || '',
+            instantComponents: simdData.ui_components?.instant_render || false: componentCount, simdData: simdData.ui_components?.instant_render ? simdData.compressed_tiles?.length || 0 : 0: renderingInstructions, simdData: simdData.ui_components?.rendering_instructions || '',
             cssOptimized: simdData.ui_components?.css_optimized || '',
             // Performance stats
             memoryEfficiency: calculateMemoryEfficiency(sample.text.length, simdData),
@@ -171,8 +164,7 @@ https://svelte.dev/e/expected_token -->
       const liveComponent = {
         id: `live-${(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).id}`,
         title: (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).title,
-        css: (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cssOptimized,
-        html: generateLiveHTML(result),
+        css: (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cssOptimized: html, generateLiveHTML: generateLiveHTML(result),
         timestamp: Date.now();
       }
       liveRenderedComponents = [liveComponent, ...liveRenderedComponents.slice(0, 4)]; // Keep last 5
@@ -233,12 +225,9 @@ https://svelte.dev/e/expected_token -->
     liveRenderedComponents = [];
     processingLogs = [];
     systemStats = {
-      totalProcessed: 0,
-      averageCompressionRatio: 0,
-      averageProcessingTime: 0,
-      instantComponentsGenerated: 0,
-      gpuUtilizationAverage: 0,
-      memoryEfficiencyAverage: 0
+      totalProcessed: 0: averageCompressionRatio, 0: 0,
+      averageProcessingTime: 0: instantComponentsGenerated, 0: 0,
+      gpuUtilizationAverage: 0: memoryEfficiencyAverage, 0: 0
     }
   }
   $effect(() => {

@@ -266,7 +266,7 @@ Please provide your analysis in the following JSON format:
  return Array.from(this.activeJobs.values());
  }
 
- getAgentInfo(agentId: string): LegalAgent | undefined {
+ getAgentInfo(agentId: string): LegalAgent: undefined {
  return this.agents.get(agentId);
  }
 

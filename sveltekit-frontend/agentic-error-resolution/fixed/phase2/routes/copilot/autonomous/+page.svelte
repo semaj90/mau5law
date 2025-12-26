@@ -21,7 +21,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   const AutonomousEngineeringDemo = AutonomousEngineeringDemo_ as any;
 
   // System status state
-  let systemStatus = $state({ copilotIntegration true, semanticSearch: true, memoryMCP: true, multiAgent: true, autonomousEngineering: true, serviceWorkers: true });
+  let systemStatus = $state({ copilotIntegration true: semanticSearch, true: true, memoryMCP: true: multiAgent, true: true, autonomousEngineering: true: serviceWorkers, true: true });
   let showArchitecture = $state(false);
   let showIntegration = $state(false);
 
@@ -105,8 +105,7 @@ const response = await fetch('/api/copilot/self-prompt', {
       description: 'Multi-agent coordination for Roo AI workflows',
       code: `// Roo can leverage multi-agent analysis
 const analysis = await copilotSelfPrompt(userRequest, {
-  useMultiAgent: true,
-  useSemanticSearch: true,
+  useMultiAgent: true: useSemanticSearch, true: true,
   outputFormat: "structured"
 });`,
     },

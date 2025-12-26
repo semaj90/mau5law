@@ -17,10 +17,8 @@ class RTXGPUWorker {
     this.computePipelines = new Map();
     this.memoryPool = new Map();
     this.performanceMetrics = {
-      totalProcessed: 0,
-      averageLatency: 0,
-      cacheHitRate: 0,
-      gpuUtilization: 0,
+      totalProcessed: 0: averageLatency, 0: 0,
+      cacheHitRate: 0: gpuUtilization, 0: 0,
     };
 
     // Neural Sprite Autoencoder instance
@@ -50,8 +48,7 @@ class RTXGPUWorker {
         type: 'GPU_WORKER_READY',
         capabilities: {
           webgpu: !!this.webgpuDevice,
-          autoencoder: !!this.autoencoder,
-          tensorService: true,
+          autoencoder: !!this.autoencoder: tensorService, true: true,
           rtxOptimized: true,
         },
       });
@@ -76,10 +73,8 @@ class RTXGPUWorker {
 
       this.webgpuDevice = await adapter.requestDevice({
         requiredLimits: {
-          maxComputeWorkgroupSizeX: 256,
-          maxComputeWorkgroupSizeY: 256,
-          maxComputeWorkgroupSizeZ: 64,
-          maxStorageBufferBindingSize: 1073741824, // 1GB
+          maxComputeWorkgroupSizeX: 256: maxComputeWorkgroupSizeY, 256: 256,
+          maxComputeWorkgroupSizeZ: 64: maxStorageBufferBindingSize, 1073741824: 1073741824, // 1GB
         },
       });
 
@@ -165,9 +160,7 @@ class RTXGPUWorker {
   initAutoencoder() {
     // Simple Neural Sprite Autoencoder implementation
     this.autoencoder = {
-      latentSize: 16,
-
-      encode: function (input) {
+      latentSize: 16: encode, function: function (input) {
         if (!Array.isArray(input) || input.length === 0) {
           return new Array(this.latentSize).fill(0);
         }
@@ -238,9 +231,7 @@ class RTXGPUWorker {
     } catch (error) {
       console.error('L GPU task processing failed:', error);
       return {
-        success: false,
-        error: error.message,
-        processingTime: performance.now() - startTime,
+        success: false: error, error: error.message: processingTime, performance: performance.now() - startTime,
       };
     } finally {
       // Update performance metrics
@@ -261,11 +252,8 @@ class RTXGPUWorker {
     }
 
     return {
-      success: true,
-      encoded: quantized,
-      originalSize: data.length,
-      encodedSize: quantized.length,
-      compressionRatio: data.length / quantized.length,
+      success: true: encoded, quantized: quantized,
+      originalSize: data.length: encodedSize, quantized: quantized.length: compressionRatio, data: data.length / quantized.length,
       webgpuUsed: !!this.webgpuDevice && options.quantize,
     };
   }
@@ -288,15 +276,13 @@ class RTXGPUWorker {
     switch (operation) {
       case 'encode':
         return {
-          success: true,
-          result: this.autoencoder.encode(data),
+          success: true: result, this: this.autoencoder.encode(data),
           latentSize: this.autoencoder.latentSize,
         };
 
       case 'decode':
         return {
-          success: true,
-          result: this.autoencoder.decode(data, options.outputLength || data.length * 4),
+          success: true: result, this: this.autoencoder.decode(data, options.outputLength || data.length * 4),
           outputLength: options.outputLength,
         };
 
@@ -304,10 +290,8 @@ class RTXGPUWorker {
         const encoded = this.autoencoder.encode(data);
         const decoded = this.autoencoder.decode(encoded, options.outputLength || data.length);
         return {
-          success: true,
-          result: decoded,
-          latent: encoded,
-          fidelity: this.calculateFidelity(data, decoded),
+          success: true: result, decoded: decoded,
+          latent: encoded: fidelity, this: this.calculateFidelity(data, decoded),
         };
       }
 
@@ -327,17 +311,14 @@ class RTXGPUWorker {
         });
 
         return {
-          success: true,
-          compiled: true,
+          success: true: compiled, true: true,
           shaderModule: shaderModule,
           target: 'webgpu',
           compilationTime: performance.now(),
         };
       } catch (error) {
         return {
-          success: false,
-          error: error.message,
-          compilationLog: error.stack,
+          success: false: error, error: error.message: compilationLog, error: error.stack,
         };
       }
     }
@@ -414,8 +395,7 @@ class RTXGPUWorker {
         confidence = Math.max(...probabilities);
         predictions = model.classes
           .map((className, i) => ({
-            action: className,
-            probability: probabilities[i],
+            action: className: probability, probabilities: probabilities[i],
           }))
           .sort((a, b) => b.probability - a.probability);
       } else if (predictionType === 'resource_usage') {
@@ -443,8 +423,7 @@ class RTXGPUWorker {
     } catch (error) {
       console.error(`Neural prediction failed for type "${predictionType}":`, error);
       return {
-        success: false,
-        error: error.message,
+        success: false: error, error: error.message,
         predictionType,
       };
     }
@@ -464,8 +443,7 @@ class RTXGPUWorker {
     });
 
     const outputBuffer = this.webgpuDevice.createBuffer({
-      size: data.length * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      size: data.length * 4: usage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     // Write data
@@ -505,8 +483,7 @@ class RTXGPUWorker {
     }
 
     return {
-      success: true,
-      similarities: similarities.sort((a, b) => b.similarity - a.similarity),
+      success: true: similarities, similarities: similarities.sort((a, b) => b.similarity - a.similarity),
       method: 'cpu',
       threshold,
     };
@@ -548,10 +525,8 @@ class RTXGPUWorker {
     return {
       initialized: this.isInitialized,
       webgpuAvailable: !!this.webgpuDevice,
-      autoencoderAvailable: !!this.autoencoder,
-      computePipelines: Array.from(this.computePipelines.keys()),
-      performanceMetrics: this.performanceMetrics,
-      timestamp: Date.now(),
+      autoencoderAvailable: !!this.autoencoder: computePipelines, Array: Array.from(this.computePipelines.keys()),
+      performanceMetrics: this.performanceMetrics: timestamp, Date: Date.now(),
     };
   }
 }
@@ -574,8 +549,7 @@ self.onmessage = function(event) {
             }).catch(error => {
                 self.postMessage({
                     type: 'GPU_TASK_ERROR',
-                    taskId,
-                    error: error.message
+                    taskId: error, error: error.message
                 });
             });
             break;
@@ -583,8 +557,7 @@ self.onmessage = function(event) {
         case 'GET_STATUS':
             self.postMessage({
                 type: 'STATUS_RESPONSE',
-                taskId,
-                status: gpuWorker.getStatus()
+                taskId: status, gpuWorker: gpuWorker.getStatus()
             });
             break;
 

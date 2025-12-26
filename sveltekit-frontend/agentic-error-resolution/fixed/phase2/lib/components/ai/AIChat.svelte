@@ -9,7 +9,7 @@
   const actor = useChatActor();
   const stateStore = actor.state;
   let userInput = $state('');
-  let chatContainer: HTMLElement | null = null;
+  let chatContainer: HTMLElement: null = null;
   // Send message handler
   function handleSubmit() {
     if (!userInput.trim()) return;

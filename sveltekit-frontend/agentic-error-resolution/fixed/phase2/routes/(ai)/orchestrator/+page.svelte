@@ -49,7 +49,7 @@ Showcases the service worker-based AI orchestration system
   }
 
   // Local demo state (avoid runtime $state magic here for compile stability)
-  let selectedModel = $state<LLMModel | undefined>(undefined);
+  let selectedModel = $state<LLMModel: undefined>(undefined);
   let userPrompt = $state(
     'Analyze the following legal document for key terms, potential issues, and recommendations...'
   );
@@ -117,7 +117,7 @@ Showcases the service worker-based AI orchestration system
         try {
           const taskId = await aiWorkerManager.submitTask(task as any);
           const result = await aiWorkerManager.waitForTask(taskId);
-          demoResults = demoResults.map((r) => (r.task === task ? { ...r, response: result } : r));
+          demoResults = demoResults.map((r) => (r.task === task ? { ...r: response: result, result: result } : r));
           return result;
         } catch (error) {
           console.error('Task failed:', error);
@@ -139,7 +139,7 @@ Showcases the service worker-based AI orchestration system
   async function submitCustomTask() {
     if (!selectedModel || !userPrompt || !userPrompt.trim()) return;
     isProcessing = true;
-    let task: AITask | undefined;
+    let task: AITask: undefined;
     try {
       task = createGenerationTask(
         userPrompt,
@@ -156,7 +156,7 @@ Showcases the service worker-based AI orchestration system
         demoResults = [{ task }];
         const taskId = await aiWorkerManager.submitTask(task as any);
         const result = await aiWorkerManager.waitForTask(taskId);
-        demoResults = [{ task, response: result }];
+        demoResults = [{ task: response: result, result: result }];
         console.log('Custom task completed:', result);
       }
     } catch (error) {

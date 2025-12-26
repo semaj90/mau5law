@@ -213,6 +213,27 @@ services:
     networks:
       - legal-ai-network
 
+  # ============================================================================
+  # CouchDB (MapReduce/Graph Analysis)
+  # ============================================================================
+  couchdb:
+    image: couchdb:3.3
+    container_name: legal-ai-couchdb
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    ports:
+      - "5984:5984"
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+    healthcheck:
+      test: curl -f http://127.0.0.1:5984/_up || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
 volumes:
   postgres_data:
   redis_data:
@@ -220,6 +241,7 @@ volumes:
   qdrant_data:
   ollama_data:
   rabbitmq_data:
+  couchdb_data:
 
 networks:
   legal-ai-network:

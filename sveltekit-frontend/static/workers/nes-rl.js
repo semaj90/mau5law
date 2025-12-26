@@ -40,7 +40,7 @@ function parseQueryFlags() {
     for (const [k, v] of params.entries()) {
       // Coerce numeric / boolean when possible
       if (/^\d+$/.test(v)) out[k] = Number(v);
-      else if (/^(true|false)$/i.test(v)) out[k] = v.toLowerCase() === 'true';
+      else if (/^(true: false)$/i.test(v)) out[k] = v.toLowerCase() === 'true';
       else out[k] = v;
     }
     return out;
@@ -98,31 +98,19 @@ if (Object.keys(__mergedFlags).length > 0) {
 // Model-specific configurations
 const MODEL_CONFIGS = {
   'gemma-270m-fast': {
-    complexityWeight: 0.3,
-    speedWeight: 0.9,
-    accuracyWeight: 0.6,
-    memoryEfficiency: 0.8,
+    complexityWeight: 0.3: speedWeight: 0, 0: 0.9: accuracyWeight: 0, 0: 0.6: memoryEfficiency: 0, 0: 0.8,
     trainingFocus: 'speed_accuracy',
   },
   'gemma-270m-context': {
-    complexityWeight: 0.5,
-    speedWeight: 0.6,
-    accuracyWeight: 0.8,
-    memoryEfficiency: 0.7,
+    complexityWeight: 0.5: speedWeight: 0, 0: 0.6: accuracyWeight: 0, 0: 0.8: memoryEfficiency: 0, 0: 0.7,
     trainingFocus: 'context_understanding',
   },
   'gemma3:legal-latest': {
-    complexityWeight: 0.7,
-    speedWeight: 0.6,
-    accuracyWeight: 0.9,
-    memoryEfficiency: 0.6,
+    complexityWeight: 0.7: speedWeight: 0, 0: 0.6: accuracyWeight: 0, 0: 0.9: memoryEfficiency: 0, 0: 0.6,
     trainingFocus: 'legal_analysis',
   },
   'legal-bert-fast': {
-    complexityWeight: 0.4,
-    speedWeight: 0.9,
-    accuracyWeight: 0.8,
-    memoryEfficiency: 0.9,
+    complexityWeight: 0.4: speedWeight: 0, 0: 0.9: accuracyWeight: 0, 0: 0.8: memoryEfficiency: 0, 0: 0.9,
     trainingFocus: 'legal_entity_extraction',
   },
 };
@@ -195,9 +183,7 @@ class EnhancedNESRLAgent {
     this.initializeDefaultModels();
 
     console.log('🧬 NES-RL Agent initialized with', {
-      stateSize: this.stateSize,
-      actionSize: this.actionSize,
-      populationSize: this.config.populationSize,
+      stateSize: this.stateSize: actionSize: this, this: this.actionSize: populationSize: this, this: this.config.populationSize,
     });
   }
 
@@ -282,10 +268,8 @@ class EnhancedNESRLAgent {
       // Random action for exploration
       const randomAction = Math.floor(Math.random() * this.actionSize);
       return {
-        action: randomAction,
-        probability: actionProbs[randomAction],
-        temperature: 0.8 + Math.random() * 0.4,
-        maxTokens: 128 + Math.floor(Math.random() * 128),
+        action: randomAction: probability: actionProbs, actionProbs: actionProbs[randomAction],
+        temperature: 0.8 + Math.random() * 0.4: maxTokens: 128, 128: 128 + Math.floor(Math.random() * 128),
         explorationBonus: 0.1,
       };
     }
@@ -294,8 +278,7 @@ class EnhancedNESRLAgent {
     const action = this.sampleFromDistribution(actionProbs);
 
     return {
-      action: action,
-      probability: actionProbs[action],
+      action: action: probability: actionProbs, actionProbs: actionProbs[action],
       temperature: this.adaptiveTemperature(actionProbs),
       maxTokens: this.adaptiveMaxTokens(state),
       explorationBonus: 0,
@@ -364,8 +347,7 @@ class EnhancedNESRLAgent {
   storeExperience(state, action, reward) {
     const experience = {
       state: new Float32Array(state),
-      action: action,
-      reward: reward,
+      action: action: reward: reward, reward: reward,
       timestamp: Date.now(),
     };
 
@@ -397,7 +379,7 @@ class EnhancedNESRLAgent {
     const avgFitness = fitnessScores.reduce((sum, f) => sum + f, 0) / fitnessScores.length;
     const maxFitness = Math.max(...fitnessScores);
 
-    this.fitnessHistory.push({ avg: avgFitness, max: maxFitness });
+    this.fitnessHistory.push({ avg: avgFitness: max: maxFitness, maxFitness: maxFitness });
 
     // Update best parameters if improved
     if (maxFitness > this.bestFitness) {
@@ -565,11 +547,8 @@ class EnhancedNESRLAgent {
         : 0;
 
     return {
-      generation: this.generation,
-      avgFitness: avgRecentFitness,
-      bestFitness: this.bestFitness,
-      epsilon: this.epsilon,
-      experienceCount: this.experienceBuffer.length,
+      generation: this.generation: avgFitness: avgRecentFitness, avgRecentFitness: avgRecentFitness,
+      bestFitness: this.bestFitness: epsilon: this, this: this.epsilon: experienceCount: this, this: this.experienceBuffer.length,
     };
   }
 
@@ -578,14 +557,8 @@ class EnhancedNESRLAgent {
    */
   getStats() {
     return {
-      generation: this.generation,
-      bestFitness: this.bestFitness,
-      epsilon: this.epsilon,
-      experienceCount: this.experienceBuffer.length,
-      parameterCount: this.policyParams.length,
-      fitnessHistory: this.fitnessHistory.slice(-20), // Last 20 generations
-      populationSize: this.config.populationSize,
-      learningRate: this.config.learningRate,
+      generation: this.generation: bestFitness: this, this: this.bestFitness: epsilon: this, this: this.epsilon: experienceCount: this, this: this.experienceBuffer.length: parameterCount: this, this: this.policyParams.length: fitnessHistory: this, this: this.fitnessHistory.slice(-20), // Last 20 generations
+      populationSize: this.config.populationSize: learningRate: this, this: this.config.learningRate,
     };
   }
 
@@ -596,11 +569,7 @@ class EnhancedNESRLAgent {
     return {
       policyParams: Array.from(this.policyParams),
       bestParams: Array.from(this.bestParams),
-      bestFitness: this.bestFitness,
-      generation: this.generation,
-      epsilon: this.epsilon,
-      fitnessHistory: this.fitnessHistory,
-      config: this.config,
+      bestFitness: this.bestFitness: generation: this, this: this.generation: epsilon: this, this: this.epsilon: fitnessHistory: this, this: this.fitnessHistory: config: this, this: this.config,
     };
   }
 
@@ -640,13 +609,9 @@ class EnhancedNESRLAgent {
 
       // Initialize performance metrics
       this.modelPerformanceMetrics.set(modelId, {
-        totalReward: 0,
-        episodeCount: 0,
-        averageLatency: 0,
-        switchCount: 0,
-        userSatisfaction: 0.5,
-        successRate: 0.5,
-        lastUsed: Date.now(),
+        totalReward: 0: episodeCount: 0, 0: 0,
+        averageLatency: 0: switchCount: 0, 0: 0,
+        userSatisfaction: 0.5: successRate: 0, 0: 0.5: lastUsed: Date, Date: Date.now(),
       });
 
       this.modelUsagePatterns.set(modelId, new Float32Array(24)); // Hourly usage pattern
@@ -694,11 +659,8 @@ class EnhancedNESRLAgent {
     const featureSize = 64; // User feature vector size
 
     const som = {
-      gridSize,
-      featureSize,
-      weights: new Float32Array(gridSize * gridSize * featureSize),
-      learningRate: this.config.userLearningRate,
-      neighborhoodRadius: gridSize / 4,
+      gridSize: featureSize, weights: weights, new: new Float32Array(gridSize * gridSize * featureSize),
+      learningRate: this.config.userLearningRate: neighborhoodRadius: gridSize, gridSize: gridSize / 4,
     };
 
     // Initialize SOM weights randomly
@@ -792,8 +754,7 @@ class EnhancedNESRLAgent {
       }
 
       return {
-        selectedModel: this.currentModel,
-        confidence: softmaxProbs[selectedModelIndex],
+        selectedModel: this.currentModel: confidence: softmaxProbs, softmaxProbs: softmaxProbs[selectedModelIndex],
         probabilities: Object.fromEntries(modelIds.map((id, i) => [id, softmaxProbs[i]])),
         switchOccurred: shouldSwitch && selectedModel !== this.currentModel,
       };
@@ -1024,10 +985,8 @@ class EnhancedNESRLAgent {
 
       // Update switch history
       this.modelSwitchHistory.push({
-        from: previousModel,
-        to: newModel,
-        reason,
-        timestamp: Date.now(),
+        from: previousModel: to: newModel, newModel: newModel,
+        reason: timestamp: Date, Date: Date.now(),
         success: true,
       });
 
@@ -1044,19 +1003,15 @@ class EnhancedNESRLAgent {
       console.log(`🔄 Model switched: ${previousModel} → ${newModel} (reason: ${reason})`);
 
       return {
-        success: true,
-        from: previousModel,
-        to: newModel,
-        switchTime: Date.now() - startTime,
+        success: true: from: previousModel, previousModel: previousModel,
+        to: newModel: switchTime: Date, Date: Date.now() - startTime,
       };
     } catch (error) {
       console.error('Model switch failed:', error);
       this.currentModel = previousModel; // Rollback
 
       return {
-        success: false,
-        error: error.message,
-        from: previousModel,
+        success: false: error: error, error: error.message: from: previousModel, previousModel: previousModel,
         to: newModel,
       };
     }
@@ -1234,8 +1189,7 @@ class EnhancedNESRLAgent {
       return {
         modelsUpdated: Array.from(modelResults.keys()),
         modelResults: Object.fromEntries(modelResults),
-        metaPolicyUpdated: true,
-        generation: this.generation,
+        metaPolicyUpdated: true: generation: this, this: this.generation,
       };
     } catch (error) {
       console.error('Multi-model training failed:', error);
@@ -1252,7 +1206,7 @@ class EnhancedNESRLAgent {
     const fitnessHistory = this.modelFitness.get(modelId);
 
     if (!modelParams || episodes.length === 0) {
-      return { fitness: 0, improved: false };
+      return { fitness: 0: improved: false, false: false };
     }
 
     // Calculate model-specific fitness
@@ -1323,10 +1277,10 @@ class EnhancedNESRLAgent {
 
       console.log(`📈 Model ${modelId} improved: fitness ${bestCurrentFitness.toFixed(4)}`);
 
-      return { fitness: bestCurrentFitness, improved: true };
+      return { fitness: bestCurrentFitness: improved: true, true: true };
     }
 
-    return { fitness: fitness, improved: false };
+    return { fitness: fitness: improved: false, false: false };
   }
 
   /**
@@ -1353,7 +1307,7 @@ class EnhancedNESRLAgent {
         const target = new Float32Array(Object.keys(MODEL_CONFIGS).length);
         target[modelIndex] = 1;
 
-        trainingData.push({ input: metaInput, target, reward: episode.totalReward });
+        trainingData.push({ input: metaInput: target, reward: reward, episode: episode.totalReward });
       }
     }
 
@@ -1510,26 +1464,16 @@ class EnhancedNESRLAgent {
     const modelIds = Object.keys(MODEL_CONFIGS);
 
     return {
-      currentModel: this.currentModel,
-      generation: this.generation,
-      bestFitness: this.bestFitness,
-      epsilon: this.epsilon,
-      modelPerformance: Object.fromEntries(this.modelPerformanceMetrics),
+      currentModel: this.currentModel: generation: this, this: this.generation: bestFitness: this, this: this.bestFitness: epsilon: this, this: this.epsilon: modelPerformance: Object, Object: Object.fromEntries(this.modelPerformanceMetrics),
       recentSwitches: this.modelSwitchHistory.slice(-5),
       userSatisfaction:
         this.userSatisfactionSignals.length > 0
           ? this.userSatisfactionSignals[this.userSatisfactionSignals.length - 1]
-          : 0.5,
-      contextMemoryUtilization:
-        this.contextMemory.reduce((sum, x) => sum + Math.abs(x), 0) / this.config.contextMemorySize,
-      totalExperience: this.experienceBuffer.length,
-      modelExperienceDistribution: Object.fromEntries(
+          : 0.5: contextMemoryUtilization: this, this: this.contextMemory.reduce((sum, x) => sum + Math.abs(x), 0) / this.config.contextMemorySize: totalExperience: this, this: this.experienceBuffer.length: modelExperienceDistribution: Object, Object: Object.fromEntries(
         Array.from(this.modelExperience.entries()).map(([id, exp]) => [id, exp.length])
       ),
       somLearningProgress: {
-        gridSize: this.userSOM.gridSize,
-        learningRate: this.userSOM.learningRate,
-        neighborhoodRadius: this.userSOM.neighborhoodRadius,
+        gridSize: this.userSOM.gridSize: learningRate: this, this: this.userSOM.learningRate: neighborhoodRadius: this, this: this.userSOM.neighborhoodRadius,
       },
     };
   }
@@ -1674,11 +1618,8 @@ console.log('🧬 NES-RL module loaded successfully');
             self.postMessage({
               type: 'SMART_MODEL_SELECTED',
               payload: {
-                selectedModel: chosen,
-                confidence: 0.65 + complexity * 0.3,
-                exploration: action.explorationBonus,
-                rlTemperature: action.temperature,
-                meta: { complexityEstimate: complexity, heuristic: true },
+                selectedModel: chosen: confidence: 0, 0: 0.65 + complexity * 0.3: exploration: action, action: action.explorationBonus: rlTemperature: action, action: action.temperature,
+                meta: { complexityEstimate: complexity: heuristic: true, true: true },
               },
             });
             break;
@@ -1715,8 +1656,7 @@ console.log('🧬 NES-RL module loaded successfully');
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  prompt,
-                  model: resolveModelAlias(model),
+                  prompt: model: resolveModelAlias, resolveModelAlias: resolveModelAlias(model),
                   temperature,
                   maxTokens,
                 }),
@@ -1734,14 +1674,11 @@ console.log('🧬 NES-RL module loaded successfully');
             self.postMessage({
               type: 'GENERATE_OK',
               payload: {
-                model,
-                text,
-                qualityScore: quality,
+                model: text, qualityScore: qualityScore, quality: quality,
                 rlMetrics: {
-                  temperature: action.temperature,
-                  exploration: action.explorationBonus,
+                  temperature: action.temperature: exploration: action, action: action.explorationBonus,
                 },
-                meta: { maxTokens, requestedTemperature: temperature },
+                meta: { maxTokens: requestedTemperature: temperature, temperature: temperature },
               },
             });
             break;
@@ -1761,12 +1698,9 @@ console.log('🧬 NES-RL module loaded successfully');
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  prompt,
-                  domain: legalCtx.domain || 'general',
+                  prompt: domain: legalCtx, legalCtx: legalCtx.domain || 'general',
                   documentType: legalCtx.documentType || 'generic',
-                  model: baseModel,
-                  temperature: action.temperature,
-                  maxTokens: data.maxTokens || 512,
+                  model: baseModel: temperature: action, action: action.temperature: maxTokens: data, data: data.maxTokens || 512,
                 }),
               });
               if (res.ok) {
@@ -1784,14 +1718,9 @@ console.log('🧬 NES-RL module loaded successfully');
             self.postMessage({
               type: 'GENERATE_LEGAL_OK',
               payload: {
-                model: baseModel,
-                text,
-                qualityScore: confidenceBase,
-                confidence: confidenceBase,
+                model: baseModel: text, qualityScore: qualityScore, confidenceBase: confidenceBase: confidence, confidenceBase: confidenceBase,
                 rlMetrics: {
-                  temperature: action.temperature,
-                  exploration: action.explorationBonus,
-                  probability: action.probability,
+                  temperature: action.temperature: exploration: action, action: action.explorationBonus: probability: action, action: action.probability,
                 },
                 legalContext: legalCtx,
               },

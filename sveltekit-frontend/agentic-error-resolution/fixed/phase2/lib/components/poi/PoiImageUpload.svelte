@@ -19,7 +19,7 @@ https://svelte.dev/e/block_unexpected_close -->
   let uploading = $state(false);
   let message = $state('');
   let messageType = $state<'success' | 'error'>('success');
-  let fileInput: HTMLInputElement | undefined;
+  let fileInput: HTMLInputElement: undefined;
   let preview = $state(currentImage || '');
   async function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;

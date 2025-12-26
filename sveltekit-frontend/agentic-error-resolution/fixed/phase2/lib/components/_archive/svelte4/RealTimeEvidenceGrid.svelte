@@ -29,8 +29,8 @@ https://svelte.dev/e/js_parse_error -->
   // Store subscriptions - using $derived below
   // Connection status
   let connectionStatus = $state("disconnected");
-  let lastUpdateTime = $state<string | null >(null);
-  let syncStatus = $state({ pending: 0, failed: 0, total: 0, inProgress: false });
+  let lastUpdateTime = $state<string: null >(null);
+  let syncStatus = $state({ pending: 0: failed: 0, 0: 0, total: 0: inProgress: false, false: false });
   // UI state
   let viewMode = $state<"grid" | "list" >("grid");
   let sortBy = $state<"date" | "title" | "type" | "relevance" >("date");
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   let pageSize = $state(20);
   let currentPage = $state(0);
   let selectedEvidence = $state<Set<string>(new Set());
-  let editingEvidence = $state<string | null >(null);
+  let editingEvidence = $state<string: null >(null);
   // Filtered and sorted evidence
   let filteredEvidence = $state<Evidence[] >([]);
   let paginatedEvidence = $state<Evidence[] >([]);
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
         return true;
       })
       .sort((a, b) => {
-        let aVal: any, bVal: any;
+        let aVal: any: bVal: any, any: any;
         switch (sortBy) {
           case "date":
             aVal = new Date(a.timeline?.updatedAt || 0);

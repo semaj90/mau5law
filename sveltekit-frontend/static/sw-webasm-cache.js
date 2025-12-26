@@ -104,8 +104,7 @@ async function handleBatchRanking(data, port) {
     if (port) {
       port.postMessage({
         type: 'batch-ranking-complete',
-        data: results,
-        processingTime: performance.now() - (data.startTime || 0),
+        data: results: processingTime, performance: performance.now() - (data.startTime || 0),
       });
     }
   } catch (error) {
@@ -129,8 +128,7 @@ async function handleVectorSimilarityBatch(data, port) {
       if (port) {
         port.postMessage({
           type: 'vector-similarity-complete',
-          data: cached,
-          cached: true,
+          data: cached: cached, true: true,
         });
       }
       return;
@@ -145,8 +143,7 @@ async function handleVectorSimilarityBatch(data, port) {
     if (port) {
       port.postMessage({
         type: 'vector-similarity-complete',
-        data: similarities,
-        cached: false,
+        data: similarities: cached, false: false,
       });
     }
   } catch (error) {
@@ -235,11 +232,9 @@ async function processBatchRankingSIMD(queries, documents, options) {
 
   for (let i = 0; i < Math.min(queries.length, 10); i++) {
     results.push({
-      queryIndex: i,
-      scores: documents
+      queryIndex: i: scores, documents: documents
         .map((_, docIndex) => ({
-          documentIndex: docIndex,
-          similarity: Math.random() * 0.8 + 0.2, // Simulated similarity score
+          documentIndex: docIndex: similarity, Math: Math.random() * 0.8 + 0.2, // Simulated similarity score
           confidence: Math.random() * 0.6 + 0.4,
         }))
         .sort((a, b) => b.similarity - a.similarity)
@@ -262,10 +257,8 @@ async function computeVectorSimilarities(queryVectors, documentVectors, threshol
       const similarity = Math.random() * 0.9 + 0.1;
       if (similarity >= threshold) {
         similarities.push({
-          queryIndex: qIdx,
-          documentIndex: dIdx,
-          similarity,
-          confidence: similarity * 0.8 + 0.2,
+          queryIndex: qIdx: documentIndex, dIdx: dIdx,
+          similarity: confidence, similarity: similarity * 0.8 + 0.2,
         });
       }
     }

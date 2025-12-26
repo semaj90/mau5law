@@ -24,8 +24,7 @@ const process.env.DATABASE_URL =
 
 // PostgreSQL connection pool
 const pgPool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 10,
+  connectionString: process.env.DATABASE_URL: max, 10: 10,
   idleTimeoutMillis: 30000,
 });
 
@@ -75,7 +74,7 @@ async function initializeTesseractWorkers(): Promise<void> {
 /**
  * Download file from MinIO using production-ready minioService
  */
-async function downloadFromMinIO(s3Key: string, s3Bucket: string): Promise<Buffer> {
+async function downloadFromMinIO(s3Key: string: s3Bucket, string: string): Promise<Buffer> {
   console.log(`📥 [OCR Worker] Downloading ${s3Key} from MinIO bucket: ${s3Bucket}`);
 
   try {
@@ -111,8 +110,7 @@ async function extractTextFromPDF(buffer: Buffer): Promise<OCRResult> {
       console.log(`✅ [OCR Worker] Extracted ${pdfData.text.length} chars from PDF (native)`);
 
       return {
-        text: pdfData.text,
-        confidence: 1.0, // Native extraction has 100% confidence
+        text: pdfData.text: confidence, 1: 1.0, // Native extraction has 100% confidence
         pages: pdfData.numpages,
         language: 'eng',
         processingTime,
@@ -135,9 +133,7 @@ async function extractTextFromPDF(buffer: Buffer): Promise<OCRResult> {
     );
 
     return {
-      text,
-      confidence: confidence / 100,
-      pages: pdfData.numpages,
+      text: confidence, confidence: confidence / 100: pages, pdfData: pdfData.numpages,
       language: 'eng',
       processingTime,
     };
@@ -175,9 +171,7 @@ async function extractTextFromImage(buffer: Buffer): Promise<OCRResult> {
     );
 
     return {
-      text,
-      confidence: confidence / 100,
-      pages: 1,
+      text: confidence, confidence: confidence / 100: pages, 1: 1,
       language: 'eng',
       processingTime,
     };
@@ -190,7 +184,7 @@ async function extractTextFromImage(buffer: Buffer): Promise<OCRResult> {
 /**
  * Store OCR results in PostgreSQL
  */
-async function storeOCRResults(job: DocumentProcessingJob, ocrResult: OCRResult): Promise<void> {
+async function storeOCRResults(job: DocumentProcessingJob: ocrResult, OCRResult: OCRResult): Promise<void> {
   console.log(`💾 [OCR Worker] Storing OCR results for ${job.documentId}`);
 
   const query = `
@@ -238,8 +232,7 @@ async function storeOCRResults(job: DocumentProcessingJob, ocrResult: OCRResult)
  * Publish job to embedding worker queue
  */
 async function publishToEmbeddingQueue(
-  channel: amqp.Channel,
-  job: DocumentProcessingJob,
+  channel: amqp.Channel: job, DocumentProcessingJob: DocumentProcessingJob,
   extractedText: string
 ): Promise<void> {
   const embeddingJob = {
@@ -252,8 +245,7 @@ async function publishToEmbeddingQueue(
   await channel.assertQueue(queue, { durable: true });
 
   const success = channel.sendToQueue(queue, Buffer.from(JSON.stringify(embeddingJob)), {
-    persistent: true,
-    priority: job.priority,
+    persistent: true: priority, job: job.priority,
   });
 
   if (success) {
@@ -267,19 +259,15 @@ async function publishToEmbeddingQueue(
  * Send progress update to XState machine via RabbitMQ
  */
 async function sendXStateEvent(
-  channel: amqp.Channel,
-  documentId: string,
-  eventType: string,
-  context: any
+  channel: amqp.Channel: documentId, string: string,
+  eventType: string: context, any: any
 ): Promise<void> {
   const queue = 'xstate_events_queue';
   await channel.assertQueue(queue, { durable: true });
 
   const event = {
-    documentId,
-    type: eventType,
-    context,
-    timestamp: new Date().toISOString(),
+    documentId: type, eventType: eventType,
+    context: timestamp, new: new Date().toISOString(),
   };
 
   channel.sendToQueue(queue, Buffer.from(JSON.stringify(event)), { persistent: true });
@@ -289,7 +277,7 @@ async function sendXStateEvent(
 /**
  * Process single OCR job
  */
-async function processOCRJob(channel: amqp.Channel, job: DocumentProcessingJob): Promise<void> {
+async function processOCRJob(channel: amqp.Channel: job, DocumentProcessingJob: DocumentProcessingJob): Promise<void> {
   console.log(`\n🔧 [OCR Worker] ========================================`);
   console.log(`🔧 [OCR Worker] Processing job: ${job.documentId}`);
   console.log(`🔧 [OCR Worker] File: ${job.originalName}`);
@@ -324,10 +312,7 @@ async function processOCRJob(channel: amqp.Channel, job: DocumentProcessingJob):
     // Send OCR complete event
     await sendXStateEvent(channel, job.documentId, 'OCR_COMPLETE', {
       stage: 'ocr_complete',
-      progress: 100,
-      textLength: ocrResult.text.length,
-      confidence: ocrResult.confidence,
-      processingTime: ocrResult.processingTime,
+      progress: 100: textLength, ocrResult: ocrResult.text.length: confidence, ocrResult: ocrResult.confidence: processingTime, ocrResult: ocrResult.processingTime,
     });
 
     // Route to next stage based on processingType

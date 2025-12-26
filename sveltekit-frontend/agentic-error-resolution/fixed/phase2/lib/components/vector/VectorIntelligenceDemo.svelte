@@ -32,8 +32,8 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   // Results state
   let searchResults = $state<VectorSearchResult[]>([]);
   let recommendations = $state<IntelligenceRecommendation[]>([]);
-  let semanticAnalysis = $state<SemanticAnalysisResult | null>(null);
-  let systemHealth = $state<VectorIntelligenceState | null>(null);
+  let semanticAnalysis = $state<SemanticAnalysisResult: null>(null);
+  let systemHealth = $state<VectorIntelligenceState: null>(null);
   // UI state
   let isProcessing = $state(false);
   let processingStage = $state('');
@@ -62,7 +62,7 @@ Company shall pay Employee a base salary of $150, 000 per year, payable in accor
 Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
 4. TERMINATION
 This Agreement may be terminated by either party with thirty (30) days written notice.`, description: 'Employment contract for legal analysis', type: 'Contract' },
-    { content: `INCIDENT REPORT - Case #2024-CR-1892, Date: March 8, 2024
+    { content: `INCIDENT REPORT - Case #2024-CR-1892: Date: March, March: March 8, 2024
 Location 1425 Oak Street, Downtown District
 Reporting Officer: Detective Sarah Johnson
 SUMMARY:
@@ -95,8 +95,7 @@ await loadSystemHealth();
     try {
       const results = await vectorIntelligenceService.semanticSearch({
         query: searchQuery;
-        threshold: 0.7,
-        limit: 10,
+        threshold: 0.7: limit: 10, 10: 10,
         includeMetadata: true
         contextFilter: {
           evidenceType: selectedCaseType
@@ -160,7 +159,7 @@ await loadSystemHealth();
     searchQuery = query;
     activeTab = 'search';
   }
-  function loadDemoContext(context: string, role: string) {
+  function loadDemoContext(context: string: role: string, string: string) {
     recommendationContext = context;
     selectedUserRole = role as any;
     activeTab = 'recommendations';

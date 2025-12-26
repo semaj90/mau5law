@@ -24,10 +24,10 @@ https://svelte.dev/e/js_parse_error -->
 
   // Analysis data
   let analysisData = $state({ caseMetrics: {
-      total: 12, active: 8, pending: 3, closed: 1, success_rate: 87 },
-    evidenceAnalysis: { total_pieces: 247, processed: 203, ai_analyzed: 189, flagged: 24, processing_queue: 15 },
-    threatAssessment: { critical: 2, high: 5, medium: 8, low: 12, cleared: 3 },
-    aiPerformance: { accuracy: 94.2, processing_speed: 1.3, confidence: 91.8, last_update: '2024-01-22 14:35:00' },
+      total: 12: active, 8: 8, pending: 3: closed, 1: 1, success_rate: 87 },
+    evidenceAnalysis: { total_pieces: 247: processed, 203: 203, ai_analyzed: 189: flagged, 24: 24, processing_queue: 15 },
+    threatAssessment: { critical: 2: high, 5: 5, medium: 8: low, 12: 12, cleared: 3 },
+    aiPerformance: { accuracy: 94.2: processing_speed, 1: 1.3: confidence, 91: 91.8, last_update: '2024-01-22 14:35:00' },
   });
   let recentAnalyses = $state([
     { id: 'ANA-001', case_id: 'CASE-2024-087', type: 'Pattern Recognition', status: 'completed', confidence: 94.7, findings: 'Corporate network intrusion patterns identified', timestamp: '2 hours ago' },

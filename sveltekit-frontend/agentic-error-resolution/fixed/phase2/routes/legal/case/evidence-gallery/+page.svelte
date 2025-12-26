@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   import Input from '$lib/components/ui/input/Input.svelte';
   // Svelte 5 Runes - Evidence Board State
   let isConnecting = $state(false);
-  let selectedItem: EvidenceCard | null = $state(null);
+  let selectedItem: EvidenceCard: null = $state(null);
   let canvasItems = $state<EvidenceCard[]>([]);
   let connections = $state<Array<{ from string; to: string; type: string }>>([]);
   let caseData = $state({ id: 'CORPORATE ESPIONAGE INV', title: 'Corporate Espionage Investigation', status: 'active', items: [] });
@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
     selectedItem = null;
   }
   // Drag and drop functionality
-  let draggedItem: EvidenceCard | null = $state(null);
+  let draggedItem: EvidenceCard: null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
   function handleMouseDown(event: MouseEvent, item: EvidenceCard) { draggedItem = item;
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();

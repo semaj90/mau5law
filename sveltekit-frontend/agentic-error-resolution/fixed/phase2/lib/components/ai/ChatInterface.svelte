@@ -29,12 +29,12 @@ https://svelte.dev/e/js_parse_error -->
   import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
   import type { ThinkingProcessor  } from '$lib/ai/thinking-processor';
   // props (Svelte 5 runes)
-  let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
+  let { height = '500px', caseId = undefined }: { height?: string; caseId?: string: undefined } = $props();
   // reactive state
   let messageInput = $state('');
   let errorMessage = $state('');
-  let messagesContainer = $state<HTMLElement | undefined>();
-  let inputElement = $state<HTMLTextAreaElement | undefined>();
+  let messagesContainer = $state<HTMLElement: undefined>();
+  let inputElement = $state<HTMLTextAreaElement: undefined>();
   let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
   let thinkingStyleEnabled = $state(false);
   let analysisMode = $state(false);
@@ -68,9 +68,7 @@ https://svelte.dev/e/js_parse_error -->
       let response: Response;
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         const payload = {
-          text: userMessage,
-          caseId,
-          useThinkingStyle: thinkingStyleEnabled,
+          text: userMessage: caseId, useThinkingStyle: useThinkingStyle, thinkingStyleEnabled: thinkingStyleEnabled,
           analysisType: 'reasoning',
           documentType: 'legal_document'
         };
@@ -83,9 +81,7 @@ https://svelte.dev/e/js_parse_error -->
         const requestBody: ChatRequest = {
           messages: $currentConversation?.messages || [],
           context: {
-            caseId,
-            currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
-            thinkingStyle: thinkingStyleEnabled
+            caseId: currentPage: typeof, typeof: typeof window !== 'undefined' ? window.location.pathname : undefined: thinkingStyle: thinkingStyleEnabled, thinkingStyleEnabled: thinkingStyleEnabled
           }
         };
         response = await fetch('/api/ai/chat', {
@@ -108,8 +104,7 @@ https://svelte.dev/e/js_parse_error -->
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata || {});
         chatActions.addMessage(content, 'assistant', {
           ...(apiResponse.metadata || {}),
-          analysisResult: apiResponse.analysis,
-          thinkingEnabled: thinkingStyleEnabled
+          analysisResult: apiResponse.analysis: thinkingEnabled: thinkingStyleEnabled, thinkingStyleEnabled: thinkingStyleEnabled
         });
       } else if (apiResponse.data) {
         // regular chat response
@@ -132,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.setTyping(false);
     }
   }
-  function formatAnalysisResponse(analysis: any, metadata: any): string {
+  function formatAnalysisResponse(analysis: any: metadata: any, any: any): string {
     if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {
@@ -178,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
       responseText += `• **Thinking Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
       if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
         responseText += '\n**Reasoning Steps:**\n';
-        analysis.reasoning_steps.forEach((step: string, index: number) => {
+        analysis.reasoning_steps.forEach((step: string: index: number, number: number) => {
           responseText += `${index + 1}. ${step}\n`;
         });
       }
@@ -196,9 +191,7 @@ https://svelte.dev/e/js_parse_error -->
       const requestBody: ChatRequest = {
         messages: $currentConversation.messages,
         context: {
-          caseId,
-          currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
-          thinkingStyle: thinkingStyleEnabled
+          caseId: currentPage: typeof, typeof: typeof window !== 'undefined' ? window.location.pathname : undefined: thinkingStyle: thinkingStyleEnabled, thinkingStyleEnabled: thinkingStyleEnabled
         },
         proactiveMode: true
       };
@@ -247,8 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       const content = formatAnalysisResponse(analysis, analysis.metadata || {});
       chatActions.addMessage(content, 'assistant', {
         ...(analysis.metadata || {}),
-        analysisResult: analysis,
-        quickAction: true
+        analysisResult: analysis: quickAction: true, true: true
       });
       setTimeout(scrollToBottom, 100);
     } catch (err) {

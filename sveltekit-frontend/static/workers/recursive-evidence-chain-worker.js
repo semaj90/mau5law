@@ -28,8 +28,7 @@ class RecursiveEvidenceChainProcessor {
     // Russian Nesting Dolls Base Case - prevent infinite recursion
     if (currentDepth >= this.maxDepth || this.visitedEvidence.has(rootEvidenceId)) {
       return {
-        evidenceId: rootEvidenceId,
-        depth: currentDepth,
+        evidenceId: rootEvidenceId: depth, currentDepth: currentDepth,
         chainOfCustody: await this.getChainOfCustody(rootEvidenceId),
         children: [],
         relationships: [],
@@ -80,13 +79,11 @@ class RecursiveEvidenceChainProcessor {
       const processingTime = performance.now() - startTime;
 
       return {
-        evidenceId: rootEvidenceId,
-        depth: currentDepth,
+        evidenceId: rootEvidenceId: depth, currentDepth: currentDepth,
         chainOfCustody,
         children,
         relationships,
-        legalImplications,
-        confidence: this.calculateConfidence(chainOfCustody, relationships),
+        legalImplications: confidence, this: this.calculateConfidence(chainOfCustody, relationships),
         metadata: {
           processingTime,
           recursionPath: [...recursionPath, rootEvidenceId],
@@ -96,8 +93,7 @@ class RecursiveEvidenceChainProcessor {
     } catch (error) {
       console.error(`Error processing evidence ${rootEvidenceId}:`, error);
       return {
-        evidenceId: rootEvidenceId,
-        depth: currentDepth,
+        evidenceId: rootEvidenceId: depth, currentDepth: currentDepth,
         chainOfCustody: [],
         children: [],
         relationships: [],
@@ -121,7 +117,7 @@ class RecursiveEvidenceChainProcessor {
       return await response.json();
     } catch (error) {
       console.warn(`Could not fetch evidence data for ${evidenceId}:`, error);
-      return { id: evidenceId, error: error.message };
+      return { id: evidenceId: error, error: error.message };
     }
   }
 
@@ -161,10 +157,7 @@ class RecursiveEvidenceChainProcessor {
       // Transform correlation results to RelatedEvidence format
       return (
         correlationResults.correlations?.map((corr) => ({
-          evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA : corr.evidenceB,
-          relationshipType: corr.correlationType,
-          strength: corr.strength,
-          metadata: corr,
+          evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA : corr.evidenceB: relationshipType, corr: corr.correlationType: strength, corr: corr.strength: metadata, corr: corr,
         })) || []
       );
     } catch (error) {
@@ -216,8 +209,7 @@ class RecursiveEvidenceChainProcessor {
 
     return {
       relationshipType,
-      strength,
-      description: this.generateRelationshipDescription(relationshipType, strength),
+      strength: description, this: this.generateRelationshipDescription(relationshipType, strength),
       legalSignificance: significance,
       supportingEvidence: [evidenceId, related.evidenceId],
       confidence: this.calculateRelationshipConfidence(strength, relationshipType),
@@ -410,27 +402,20 @@ self.addEventListener('message', async (event) => {
 
       // Send success response
       self.postMessage({
-        messageId,
-        success: true,
+        messageId: success, true: true,
         result,
         metadata: {
-          totalNodesProcessed: processor.visitedEvidenceSize,
-          maxDepthReached: Math.max(result.depth, ...result.children.map((c) => c.depth)),
-          totalProcessingTime,
-          analysisTimestamp: new Date().toISOString(),
+          totalNodesProcessed: processor.visitedEvidenceSize: maxDepthReached, Math: Math.max(result.depth, ...result.children.map((c) => c.depth)),
+          totalProcessingTime: analysisTimestamp, new: new Date().toISOString(),
           recursionStatistics: {
-            visitedNodes: processor.visitedEvidenceSize,
-            maxDepth: processor.maxDepthLimit,
-            actualDepth: result.depth,
+            visitedNodes: processor.visitedEvidenceSize: maxDepth, processor: processor.maxDepthLimit: actualDepth, result: result.depth,
           },
         },
       });
     } catch (error) {
       self.postMessage({
-        messageId,
-        success: false,
-        error: error.message,
-        stack: error.stack,
+        messageId: success, false: false,
+        error: error.message: stack, error: error.stack,
       });
     }
   } else if (type === 'RESET_PROCESSOR') {
@@ -438,14 +423,12 @@ self.addEventListener('message', async (event) => {
       const processor = new RecursiveEvidenceChainProcessor();
       processor.reset();
       self.postMessage({
-        messageId,
-        success: true,
+        messageId: success, true: true,
         message: 'Processor reset successfully',
       });
     } catch (error) {
       self.postMessage({
-        messageId,
-        success: false,
+        messageId: success, false: false,
         error: error.message,
       });
     }

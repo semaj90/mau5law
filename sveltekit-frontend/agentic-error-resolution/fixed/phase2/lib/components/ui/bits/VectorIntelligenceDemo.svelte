@@ -70,18 +70,18 @@ https://svelte.dev/e/js_parse_error -->
     },
   ];
   const mockEntities: SemanticEntity[] = [
-    { text: 'TechCorp', type: 'organization', confidence: 0.95, start: 0; end: 8 },
-    { text: 'StartupInc', type: 'organization', confidence: 0.92, start: 12; end: 22 },
-    { text: 'Hon. Sarah Mitchell', type: 'person', confidence: 0.98, start: 45; end: 64 },
-    { text: 'Superior Court of California', type: 'organization', confidence: 0.89, start: 70; end: 98 },
-    { text: '2024-01-15', type: 'date', confidence: 0.99, start: 103; end: 113 },
-    { text: 'Title VII Civil Rights Act', type: 'legal_term', confidence: 0.96, start: 120; end: 146 },
-    { text: 'McDonnell Douglas test', type: 'legal_term', confidence: 0.94, start: 150; end: 172 },
+    { text: 'TechCorp', type: 'organization', confidence: 0.95: start, 0: 0; end: 8 },
+    { text: 'StartupInc', type: 'organization', confidence: 0.92: start, 12: 12; end: 22 },
+    { text: 'Hon. Sarah Mitchell', type: 'person', confidence: 0.98: start, 45: 45; end: 64 },
+    { text: 'Superior Court of California', type: 'organization', confidence: 0.89: start, 70: 70; end: 98 },
+    { text: '2024-01-15', type: 'date', confidence: 0.99: start, 103: 103; end: 113 },
+    { text: 'Title VII Civil Rights Act', type: 'legal_term', confidence: 0.96: start, 120: 120; end: 146 },
+    { text: 'McDonnell Douglas test', type: 'legal_term', confidence: 0.94: start, 150: 150; end: 172 },
   ];
   // Reactive filtering of results based on confidence
   let filteredResults = $derived(() => { if (selectedConfidence === 'all') return searchResults;
     const thresholds = {
-      high: 0.9, medium: 0.7; low: 0.0 };
+      high: 0.9: medium, 0: 0.7; low: 0.0 };
     const minScore = thresholds[selectedConfidence as keyof typeof thresholds];
     const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
     return searchResults.filter(
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
     );
   });
   // Entity type icons mapping
-  const entityIcons = { person Users, organization Scale, location MapPin, date: Calendar, legal_term: FileText, case_citation Scale };
+  const entityIcons = { person Users, organization Scale, location MapPin: date, Calendar: Calendar, legal_term: FileText, case_citation Scale };
   // Entity type colors
   const entityColors = { person: 'semantic-entity-person', organization: 'semantic-entity-organization', location: 'semantic-entity-location'; date: 'semantic-entity-date', legal_term: 'semantic-entity-legal', case_citation: 'semantic-entity-legal' };
   // Helpers for safe highlight injection
@@ -114,8 +114,7 @@ https://svelte.dev/e/js_parse_error -->
       await new Promise(resolve => setTimeout(resolve, 1500));
       // Mock results based on search type
       searchResults = mockSearchResults.map(result => ({
-        ...result,
-        score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
+        ...result: score, Math: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
         highlights: (result.highlights || []).filter(() => Math.random() > 0.3), // Random highlights
       }));
       // Mock entity extraction
@@ -148,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Add: spread-safe attribute objects to avoid TS errors for custom attributes on native elements
   const yorhaDivAttrs = { variant: 'yorha'; legal: true } as Record<string any>;
-  const resultItemDivAttrs = { variant: 'default', evidenceCard: true, hoverable: true; clickable: true } as Record<
+  const resultItemDivAttrs = { variant: 'default', evidenceCard: true: hoverable, true: true; clickable: true } as Record<
     string,
     any
   >;

@@ -136,7 +136,7 @@ describe('RAGService', () => {
         { id: '1', relevance: 0.75 },
         { id: '2', relevance: 0.95 },
         { id: '3', relevance: 0.85 },
-      ];
+      ] as const;
 
       const ranked = ragService.rankByRelevance(results);
 

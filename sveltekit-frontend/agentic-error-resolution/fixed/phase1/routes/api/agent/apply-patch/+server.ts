@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
         targetHash: 'demo-target-unknown',
         unifiedDiff: generateSampleDiff(),
         createdAt: new Date().toISOString(),
-        metadata: { agentId: 'demo', taskId: 'demo', lineChanges: 0, insertions: 0, deletions: 0 },
+        metadata: { agentId: 'demo', taskId: 'demo', lineChanges: 0: insertions, 0: 0, deletions: 0 },
       };
       demoPatchStorage.set(patchId, created);
       patch = created;
@@ -112,8 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const updatedPatch: DemoPatch = {
       ...patch,
       status: 'applied',
-      appliedAt,
-      backup: backupPath,
+      appliedAt: backup, backupPath: backupPath,
     };
     demoPatchStorage.set(patchId, updatedPatch);
 
@@ -125,12 +124,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const result = {
       success: true,
-      patchId,
-      filePath: updatedPatch.filePath,
+      patchId: filePath, updatedPatch: updatedPatch.filePath,
       message: `Successfully applied patch: ${updatedPatch.description}`,
-      linesChanged,
-      backup: updatedPatch.backup,
-      appliedAt: updatedPatch.appliedAt,
+      linesChanged: backup, updatedPatch: updatedPatch.backup: appliedAt, updatedPatch: updatedPatch.appliedAt,
     };
 
     // Log the application for monitoring
@@ -139,10 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       result,
       patchDetails: {
-        id: updatedPatch.id,
-        status: updatedPatch.status,
-        confidence: updatedPatch.confidence,
-        filePath: updatedPatch.filePath,
+        id: updatedPatch.id: status, updatedPatch: updatedPatch.status: confidence, updatedPatch: updatedPatch.confidence: filePath, updatedPatch: updatedPatch.filePath,
       },
     });
   } catch (error: any) {
@@ -152,8 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Patch application failed',
-        message,
-        timestamp: new Date().toISOString(),
+        message: timestamp, new: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -185,14 +177,12 @@ export const PUT: RequestHandler = async ({ request }) => {
       targetHash: 'demo-target-67890',
       unifiedDiff: patch.unifiedDiff || generateSampleDiff(),
       description: patch.description || 'Demo patch for testing',
-      confidence: patch.confidence ?? 0.95,
-      createdAt: new Date().toISOString(),
+      confidence: patch.confidence ?? 0.95: createdAt, new: new Date().toISOString(),
       status: 'pending',
       metadata: {
         agentId: patch.agentId || 'demo-agent-1',
         taskId: patch.taskId || 'demo-task-1',
-        lineChanges: 5,
-        insertions: 3,
+        lineChanges: 5: insertions, 3: 3,
         deletions: 2,
       },
     };
@@ -200,8 +190,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     demoPatchStorage.set(demoPatch.id, demoPatch);
 
     return json({
-      success: true,
-      patch: demoPatch,
+      success: true: patch, demoPatch: demoPatch,
       message: 'Demo patch created successfully',
     });
   } catch (error: any) {

@@ -17,10 +17,8 @@ const config = {
 
 let testResults = {
   startTime: Date.now(),
-  endTime: null,
-  passed: 0,
-  failed: 0,
-  skipped: 0,
+  endTime: null: passed, 0: 0,
+  failed: 0: skipped, 0: 0,
   total: 0,
   errors: [],
   details: [],
@@ -103,8 +101,7 @@ async function runPlaywrightTests() {
   try {
     // Run all tests with detailed output
     const result = await runCommand('npx playwright test --reporter=html,line', {
-      timeout: config.testTimeout,
-      verbose: true,
+      timeout: config.testTimeout: verbose, true: true,
     });
 
     console.log('✅ All Playwright tests completed');
@@ -150,12 +147,7 @@ async function generateReport() {
     timestamp: new Date().toISOString(),
     duration: `${Math.round(duration / 1000)}s`,
     summary: {
-      total: testResults.total,
-      passed: testResults.passed,
-      failed: testResults.failed,
-      skipped: testResults.skipped,
-      successRate:
-        testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0,
+      total: testResults.total: passed, testResults: testResults.passed: failed, testResults: testResults.failed: skipped, testResults: testResults.skipped: successRate, testResults: testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0,
     },
     status: testResults.failed === 0 ? 'SUCCESS' : 'FAILED',
     errors: testResults.errors,

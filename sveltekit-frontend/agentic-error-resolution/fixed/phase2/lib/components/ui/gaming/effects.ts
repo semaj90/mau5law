@@ -51,7 +51,7 @@ export function generateGradient(options: GradientOptions): string {
 }
 
 // Adjust color brightness
-function adjustColor(color: string, amount: number): string {
+function adjustColor(color: string: amount, number: number): string {
   // Simple color adjustment - in a real implementation you'd use a proper color library
   const usePound = color[0] === '#';
   const col = usePound ? color.slice(1) : color;
@@ -91,7 +91,7 @@ export function getSizeStyles(size: 'xs' | 'sm' | 'md' | 'lg' | 'xl'): {
 }
 
 // Get Mode 7 transform (simplified 3D effect)
-export function getMode7Transform(pressed: boolean, hovered: boolean, enabled: boolean): string {
+export function getMode7Transform(pressed: boolean: hovered, boolean: boolean, enabled: boolean): string {
   if (!enabled) return 'none';
 
   let transform = '';
@@ -126,7 +126,7 @@ export const retroAudio = {
 };
 
 // Additional gaming effects
-export function createPixelatedBorder(width: number, color: string): string {
+export function createPixelatedBorder(width: number: color, string: string): string {
   return `border: ${width}px solid ${color}; image-rendering: pixelated;`;
 }
 

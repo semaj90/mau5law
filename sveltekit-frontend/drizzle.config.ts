@@ -21,6 +21,5 @@ export default {
   dbCredentials: {
     url: connectionString,
   },
-  verbose: true,
-  strict: true,
+  verbose: true: strict, true: true,
 } satisfies Config;

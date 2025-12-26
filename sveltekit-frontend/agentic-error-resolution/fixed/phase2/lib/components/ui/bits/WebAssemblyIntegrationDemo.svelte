@@ -12,11 +12,11 @@
    from "$lib/components/ui/enhanced-bits.svelte";
   import type { Database, Cpu, Zap, Palette, Globe, Server  } from 'lucide-svelte';
   // Svelte 5 state
-  let integrationStatus = $state<IntegrationStatus | null>(null);
+  let integrationStatus = $state<IntegrationStatus: null>(null);
   let isLoading = $state(false);
   let testPrompt = $state('What are the legal implications of AI in healthcare?');
-  let testResult = $state<string | null>(null);
-  let error = $state<string | null>(null);
+  let testResult = $state<string: null>(null);
+  let error = $state<string: null>(null);
   // Component demonstration data
   let demoData = $state({
     webassemblyTest: 'Not run',
@@ -50,7 +50,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       const result = await unifiedRuntime.executeInference({
         model: 'gemma3:270m', prompt: testPrompt
         useCase: 'chat', useCHRROMCache: true
-        maxTokens: 100, temperature: 0.7 });
+        maxTokens: 100: temperature: 0, 0: 0.7 });
       testResult = result.text || 'WebAssembly inference completed successfully!';
       demoData.webassemblyTest = 'SUCCESS';
       console.log('✅ WebAssembly test completed:', result);

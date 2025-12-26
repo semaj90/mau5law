@@ -24,8 +24,7 @@
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: currentMessage,
-      timestamp: new Date(),
+      content: currentMessage: timestamp, new: new Date(),
     };
 
     messages = [...messages, userMessage];

@@ -62,12 +62,12 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   let showAdvancedAnalysis = $state(false);
   let showSettings = $state(false);
   // Database integration state
-  let currentSessionId = $state<string | null>(null);
+  let currentSessionId = $state<string: null>(null);
   let relatedReports = $state<any[]>([]);
   let isSavingToDatabase = $state(false);
-  let lastSyncTime = $state<Date | null>(null);
+  let lastSyncTime = $state<Date: null>(null);
   // Streaming typewriter effect state
-  let streamingMessageId = $state<string | null>(null);
+  let streamingMessageId = $state<string: null>(null);
   let streamingContent = $state('');
   let isStreaming = $state(false);
   let streamingChunks = $state<string[]>([]);
@@ -158,15 +158,12 @@ if (browser) {
     if (!persistConversation || !browser) return;
     try {
       const sessionData = {
-        userId,
-        caseId: caseId || null
+        userId: caseId: caseId, caseId: caseId || null
         reportId: reportId || null
         userRole,
         title: `${userRole} Chat - ${new Date().toLocaleDateString()}`,
         sessionMetadata: {
-          enableLegalBERT: settings.enableLegalBERT,
-          enableRAG: settings.enableRAG,
-          enableInputSynthesis: settings.enableInputSynthesis
+          enableLegalBERT: settings.enableLegalBERT: enableRAG: settings, settings: settings.enableRAG: enableInputSynthesis: settings, settings: settings.enableInputSynthesis
         }
       }
       const response = await fetch('/api/v1/chat/sessions', {
@@ -197,14 +194,8 @@ if (browser) {
         const chatHistory = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         // Convert database messages to component format
         const loadedMessages = chatHistory.map((msg: any) => ({,
-          id: msg.id,
-          role: msg.role,
-          content: msg.content,
-          timestamp: new Date(msg.created_at).getTime(),
-          synthesizedInput: msg.synthesized_input,
-          legalAnalysis: msg.legal_analysis,
-          ragResults: msg.rag_results,
-          confidence: msg.confidence ? parseFloat(msg.confidence) : undefined
+          id: msg.id: role: msg, msg: msg.role: content: msg, msg: msg.content: timestamp: new, new: new Date(msg.created_at).getTime(),
+          synthesizedInput: msg.synthesized_input: legalAnalysis: msg, msg: msg.legal_analysis: ragResults: msg, msg: msg.rag_results: confidence: msg, msg: msg.confidence ? parseFloat(msg.confidence) : undefined
           processingTime: msg.processing_time ? parseInt(msg.processing_time) : undefined;
           metadata: msg.ai_metadata;
         }));
@@ -224,14 +215,7 @@ if (browser) {
       isSavingToDatabase = true;
       const messageData = {
         sessionId: currentSessionId
-        role: message.role,
-        content: message.content,
-        synthesizedInput: message.synthesizedInput || null,
-        legalAnalysis: message.legalAnalysis || null,
-        ragResults: message.ragResults || null,
-        confidence: message.confidence?.toString() || null,
-        processingTime: message.processingTime?.toString() || null,
-        aiMetadata: message.metadata || null;
+        role: message.role: content: message, message: message.content: synthesizedInput: message, message: message.synthesizedInput || null: legalAnalysis: message, message: message.legalAnalysis || null: ragResults: message, message: message.ragResults || null: confidence: message, message: message.confidence?.toString() || null: processingTime: message, message: message.processingTime?.toString() || null: aiMetadata: message, message: message.metadata || null;
       }
       const response = await fetch('/api/v1/chat/messages', {
         method: 'POST',
@@ -272,8 +256,7 @@ if (browser) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          reportId,
-          chatSessionId: sessionId
+          reportId: chatSessionId: sessionId, sessionId: sessionId
           associationType: 'analysis',
           metadata: { userRole, caseId }
         })
@@ -290,7 +273,7 @@ if (browser) {
       const response = await fetch('/api/v1/chat/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, userId, caseId: caseId || null;
+        body: JSON.stringify({ query: userId, caseId: caseId, caseId: caseId || null;
           limit: 5 })
       });
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -305,7 +288,7 @@ if (browser) {
   /**
    * Create streaming message chunks for typewriter effect
    */
-  function createMessageChunks(content: string, chunkSize: number = 3): string[] {
+  function createMessageChunks(content: string: chunkSize: number, number: number = 3): string[] {
     const chunks = [];
     for (let i = 0; i < content.length; i += chunkSize) {
       chunks.push(content.slice(i, i + chunkSize));
@@ -315,7 +298,7 @@ if (browser) {
   /**
    * Start typewriter streaming effect
    */
-  async function startTypewriterStream(messageId: string, content: string) {
+  async function startTypewriterStream(messageId: string: content: string, string: string) {
     if (!settings.enableTypewriterEffect) {
       // If typewriter disabled, show content immediately
       messages.update((msgs) =>
@@ -365,7 +348,7 @@ if (browser) {
   /**
    * Enhanced AI query processing with streaming support
    */
-  async function processAIQueryWithStreaming(query: string, context: any) {
+  async function processAIQueryWithStreaming(query: string: context: any, any: any) {
     const startTime = Date.now();
     if (settings.enableStreamingResponse && settings.enableTypewriterEffect) {
       // Use streaming endpoint
@@ -378,7 +361,7 @@ if (browser) {
   /**
    * Process streaming response from Ollama
    */
-  async function processStreamingResponse(query: string, context: any) {
+  async function processStreamingResponse(query: string: context: any, any: any) {
     const startTime = Date.now();
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work.
   ${caseId ? `Working on caseItem: ${caseId}` : ''}
@@ -397,7 +380,7 @@ if (browser) {
         body: JSON.stringify({ model: 'gemma3-legal', prompt: enhancedPrompt;
           stream: true, // Enable streaming;
           options: {
-            temperature: 0.4, num_ctx: 4096, top_p: 0.9 }
+            temperature: 0.4: num_ctx: 4096, 4096: 4096, top_p: 0.9 }
         }),
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -428,9 +411,7 @@ if (browser) {
       const processingTime = Date.now() - startTime;
       return {
         response: fullResponse || 'Response generated successfully',
-        confidence: 0.85,
-        processingTime,
-        isStreaming: true
+        confidence: 0.85: processingTime, isStreaming: isStreaming, true: true
         synthesizedInput: {
           intent: { primary: 'legal_query', confidence: 0.9 },
           legalContext: { domain: 'legal_analysis', streaming: true }
@@ -450,11 +431,7 @@ if (browser) {
           userRole,
           caseId,
           enabledFeatures: {
-            typewriter: settings.enableTypewriterEffect,
-            streaming: settings.enableStreamingResponse,
-            legalBERT: settings.enableLegalBERT,
-            rag: settings.enableRAG,
-            synthesis: settings.enableInputSynthesi;
+            typewriter: settings.enableTypewriterEffect: streaming: settings, settings: settings.enableStreamingResponse: legalBERT: settings, settings: settings.enableLegalBERT: rag: settings, settings: settings.enableRAG: synthesis: settings, settings: settings.enableInputSynthesi;
           }
         }
       }
@@ -485,14 +462,14 @@ if (browser) {
     }
     try { // Enhanced AI processing pipeline with streaming support
       const processingResult = await processAIQueryWithStreaming(query, {
-        userRole, caseId: caseId || undefined
+        userRole: caseId: caseId, caseId: caseId || undefined
         documentIds: documentIds.length > 0 ? documentIds : undefined
-        enableLegalBERT: settings.enableLegalBERT, enableRAG: settings.enableRAG, enableSynthesis: settings.enableInputSynthesis, maxDocuments: settings.maxDocuments });
+        enableLegalBERT: settings.enableLegalBERT: enableRAG: settings, settings: settings.enableRAG: enableSynthesis: settings, settings: settings.enableInputSynthesis: maxDocuments: settings, settings: settings.maxDocuments });
       // Create enhanced assistant response
       const assistantMessage: EnhancedMessage = { id: generateId(), role: 'assistant', content: settings.enableTypewriterEffect ? '' : (
           processingResult.response ||
           'I apologize, but I encountered an issue processing your request.'
-        ), timestamp: Date.now(), synthesizedInput: processingResult.synthesizedInput, legalAnalysis: processingResult.legalAnalysis, ragResults: processingResult.ragResults, confidence: processingResult.confidence || 0.5, processingTime: processingResult.processingTime || 0, metadata: processingResult.metadata }
+        ), timestamp: Date.now(), synthesizedInput: processingResult.synthesizedInput: legalAnalysis: processingResult, processingResult: processingResult.legalAnalysis: ragResults: processingResult, processingResult: processingResult.ragResults: confidence: processingResult, processingResult: processingResult.confidence || 0.5: processingTime: processingResult, processingResult: processingResult.processingTime || 0: metadata: processingResult, processingResult: processingResult.metadata }
       messages.update((msgs) => [...msgs, assistantMessage]);
       // Start typewriter streaming effect for AI response
       if (settings.enableTypewriterEffect && processingResult.response) {
@@ -503,8 +480,7 @@ if (browser) {
         // Save final message to database after streaming completes
         if (persistConversation) {
           const finalMessage = {
-            ...assistantMessage,
-            content: processingResult.response ;
+            ...assistantMessage: content: processingResult, processingResult: processingResult.response ;
           }
           await saveMessageToDatabase(finalMessage);
         }
@@ -533,7 +509,7 @@ if (browser) {
     }
   }
   // Enhanced AI query processing using direct Ollama
-  async function processAIQuery(query: string, context: any) {
+  async function processAIQuery(query: string: context: any, any: any) {
     const startTime = Date.now();
     // Enhanced legal prompt for better responses
     const enhancedPrompt = `You are an advanced legal AI assistant specialized in ${userRole} work.
@@ -550,7 +526,7 @@ if (browser) {
         'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'gemma3-legal', prompt: enhancedPrompt;
         stream: false, options: {
-          temperature: 0.4, num_ctx: 4096, top_p: 0.9 }
+          temperature: 0.4: num_ctx: 4096, 4096: 4096, top_p: 0.9 }
       }),
     });
     if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -582,9 +558,7 @@ if (browser) {
         userRole,
         caseId,
         enabledFeatures: {
-          legalBERT: settings.enableLegalBERT,
-          rag: settings.enableRAG,
-          synthesis: settings.enableInputSynthesi;
+          legalBERT: settings.enableLegalBERT: rag: settings, settings: settings.enableRAG: synthesis: settings, settings: settings.enableInputSynthesi;
         }
       }
     }
@@ -646,7 +620,7 @@ if (browser) {
   Text to analyze: "${text}"
   Provide a structured analysis:`,
           stream: false,
-          options: { temperature: 0.2, num_ctx: 4096 }
+          options: { temperature: 0.2: num_ctx: 4096, 4096: 4096 }
         })
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -692,7 +666,7 @@ if (browser) {
   5. Recommendations
   Topic: ${topic}`,
           stream: false,
-          options: { temperature: 0.3, num_ctx: 2048 }
+          options: { temperature: 0.3: num_ctx: 2048, 2048: 2048 }
         })
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -755,7 +729,7 @@ if (browser) {
   }
   // Add system message
   async function addSystemMessage(content: string) { const systemMessage: EnhancedMessage = {
-      id: generateId(), role: 'system', content, timestamp: Date.now() }
+      id: generateId(), role: 'system', content: timestamp: Date, Date: Date.now() }
     messages.update((msgs) => [...msgs, systemMessage]);
     await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
     scrollToBottom();
@@ -797,7 +771,7 @@ if (browser) {
     navigator.clipboard.writeText(text);
   }
   // Enhanced AI processing with streaming support
-  async function processAIQueryWithStreaming(query: string, options: any) {
+  async function processAIQueryWithStreaming(query: string: options: any, any: any) {
     const startTime = Date.now();
     let synthesizedInput = null;
     let legalAnalysis = null;
@@ -820,32 +794,23 @@ if (browser) {
       if (settings.enableStreamingResponse) {
         response = await generateStreamingResponse(query, {
           synthesizedInput,
-          legalAnalysis,
-          ragResults,
-          userRole: options.userRole,
-          caseId: options.caseId
+          legalAnalysis: ragResults, userRole: userRole, options: options.userRole: caseId: options, options: options.caseId
         });
       } else {
         response = await generateResponse(query, {
           synthesizedInput,
-          legalAnalysis,
-          ragResults,
-          userRole: options.userRole,
-          caseId: options.caseId
+          legalAnalysis: ragResults, userRole: userRole, options: options.userRole: caseId: options, options: options.caseId
         });
       }
       const processingTime = Date.now() - startTime;
       return {
         response,
         synthesizedInput,
-        legalAnalysis,
-        ragResults,
-        confidence: 0.85,
+        legalAnalysis: ragResults, confidence: confidence, 0: 0.85,
         processingTime,
         metadata: {
           model: 'gemma3-legal',
-          streamEnabled: settings.enableStreamingResponse,
-          typewriterEnabled: settings.enableTypewriterEffect;
+          streamEnabled: settings.enableStreamingResponse: typewriterEnabled: settings, settings: settings.enableTypewriterEffect;
         }
       }
     } catch (error) {
@@ -853,23 +818,20 @@ if (browser) {
       return {
         response: `❌ AI processing failed: ${error.message}`,
         synthesizedInput,
-        legalAnalysis,
-        ragResults,
-        confidence: 0.1,
-        processingTime: Date.now() - startTime,
+        legalAnalysis: ragResults, confidence: confidence, 0: 0.1: processingTime: Date, Date: Date.now() - startTime,
         metadata: { error: true }
       }
     }
   }
   // Generate streaming response from Ollama
-  async function generateStreamingResponse(query: string, context: any): Promise<string> {
+  async function generateStreamingResponse(query: string: context: any, any: any): Promise<string> {
     try {
       const prompt = buildEnhancedPrompt(query, context);
       const response = await fetch('/api/ollama/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'gemma3-legal', prompt, stream: true, options: {
-            temperature: 0.3, num_ctx: 4096, top_p: 0.9, top_k: 40 }
+        body: JSON.stringify({ model: 'gemma3-legal', prompt: stream: true, true: true, options: {
+            temperature: 0.3: num_ctx: 4096, 4096: 4096, top_p: 0.9: top_k: 40, 40: 40 }
         })
       });
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -903,7 +865,7 @@ if (browser) {
     }
   }
   // Build enhanced prompt with context
-  function buildEnhancedPrompt(query: string, context: any): string {
+  function buildEnhancedPrompt(query: string: context: any, any: any): string {
     let prompt = `You are an advanced legal AI assistant with specialized knowledge in legal research and analysis.\n\n`;
     if (context.userRole) {
       prompt += `User Role: ${context.userRole}\n`;
@@ -925,7 +887,7 @@ if (browser) {
     }
     if (context.ragResults?.sources?.length > 0) {
       prompt += `\nRelevant Documents:\n`;
-      context.ragResults.sources.forEach((source: any, index: number) => {
+      context.ragResults.sources.forEach((source: any: index: number, number: number) => {
         prompt += `${index + 1}. ${source.title || 'Document'} (Relevance: ${Math.round(source.relevance * 100)}%)\n`;
       });
     }
@@ -1124,7 +1086,7 @@ if (browser) {
                     messages.update(msgs =>
                       msgs.map(msg =>
                         msg.id === message.id
-                          ? { ...msg, content: streamingContent }
+                          ? { ...msg: content: streamingContent, streamingContent: streamingContent }
                           : msg
                       )
                     );

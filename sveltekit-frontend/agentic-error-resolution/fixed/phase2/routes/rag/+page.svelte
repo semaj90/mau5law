@@ -19,7 +19,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let submitting = $state(false);
   let loadingDocuments = $state(false);
   let documents: Array<any> = [];
-  let selectedFile: File | null = null;
+  let selectedFile: File: null = null;
   let tags = '';
   let uploading = $state(false);
   let uploadResult: any = null;
@@ -30,7 +30,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let searchResults: Array<any> = [];
   let systemStatus: any = null;
   let activeTab: 'upload' | 'documents' | 'search' = 'upload';
-  let deletingId: string | null = null;
+  let deletingId: string: null = null;
 
   // Load documents on mount
   async function loadDocuments() {
@@ -122,7 +122,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         tags = '';
 
         // Reset file input if present
-        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement | null;
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement: null;
         if (fileInput) fileInput.value = '';
       } else {
         uploadResult = { success: false, error: json.error || 'Upload failed' };

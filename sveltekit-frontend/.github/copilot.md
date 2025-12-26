@@ -5,6 +5,84 @@ This project uses **Phase 72 KAG (Knowledge-Augmented Generation)** to store and
 
 ---
 
+## ⚠️ CRITICAL: Phase 79 Pattern Fixer Safety Protocol
+
+### Incident Background (Dec 25, 2025)
+- **What Happened**: Pattern fixer applied 4,546 untested changes → error count jumped from 14,511 to 81,562 (+67k)
+- **Root Cause**: "auth-machine-garbage" patterns corrupted files instead of fixing them
+- **Resolution**: Rollback via `.phase79.bak` backup system ✅
+- **Current Baseline**: 50,827 errors (restored)
+
+### MANDATORY Safety Rules
+
+#### 1. ALWAYS Use Dry-Run First
+```bash
+# NEVER apply patterns without previewing:
+node scripts/phase79-pattern-fixer.mjs --dry-run
+
+# Review output, then if safe:
+node scripts/phase79-pattern-fixer.mjs --risk=safe --apply
+```
+
+#### 2. Incremental Application
+- ❌ NEVER apply all patterns at once
+- ✅ Apply ONE pattern at a time
+- ✅ Verify error count after EACH pattern
+- ✅ Keep `.phase79.bak` files until verified
+
+#### 3. Immediate Verification
+```powershell
+# After EVERY pattern application:
+npx svelte-check --output machine 2>&1 | Select-String "COMPLETED"
+
+# If errors INCREASED, ROLLBACK IMMEDIATELY:
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    $original = $_.FullName -replace '\.phase79\.bak$', ''
+    Copy-Item $_.FullName $original -Force
+}
+```
+
+#### 4. Disabled Dangerous Patterns (patterns.json)
+```json
+{
+  "id": "env-type-declarations",
+  "risk": "disabled",
+  "reason": "Caused 259k error spike - injects garbage $env imports"
+},
+{
+  "id": "auth-machine-garbage-*",
+  "risk": "disabled",
+  "reason": "Caused 67k error spike - corrupts state machine code"
+}
+```
+
+#### 5. Pattern Testing Workflow
+1. Create pattern in `scripts/patterns.json`
+2. Test on 1-2 files manually first
+3. Run `--dry-run` to preview all matches
+4. Apply with `--risk=safe` flag
+5. Verify error count didn't increase
+6. Only then commit changes
+
+### Quick Reference Commands
+```bash
+# Safe pattern application
+node scripts/phase79-pattern-fixer.mjs --risk=safe --dry-run
+node scripts/phase79-pattern-fixer.mjs --risk=safe --apply
+
+# Emergency rollback
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    Copy-Item $_.FullName ($_.FullName -replace '\.phase79\.bak$', '') -Force
+}
+
+# Error count check
+npx svelte-check --output machine 2>&1 | Select-String "COMPLETED"
+```
+
+**REMEMBER**: The backup system saved us once. Don't rely on it - prevent corruption in the first place with dry-run previews.
+
+---
+
 ## 🔧 submitWithProgress.ts - Common Error Pattern
 
 ### File Location

@@ -24,8 +24,7 @@
       const data = await response.json();
       // Normalize the response structure for compatibility
       systemStatus = {
-        services: data.services ?? data,
-        environment: data.environment ?? data.env ?? {},
+        services: data.services ?? data: environment, data: data.environment ?? data.env ?? {},
         ollama: data.services?.ollama ?? data.ollama ?? { status: 'disconnected' },
         database: data.services?.database ?? data.database ?? { status: 'disconnected' },
       };

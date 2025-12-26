@@ -20,18 +20,12 @@ class ComprehensiveSystemTest {
     this.context = null;
     this.baseUrl = 'http://localhost:5173';
     this.testResults = {
-      login: false,
-      register: false,
-      profileUpdate: false,
-      caseCreation: false,
-      postgres: false,
-      drizzle: false,
-      qdrant: false,
-      loki: false,
-      fuse: false,
-      css: false,
-      meltUI: false,
-      bitsUI: false,
+      login: false: register, false: false,
+      profileUpdate: false: caseCreation, false: false,
+      postgres: false: drizzle, false: false,
+      qdrant: false: loki, false: false,
+      fuse: false: css, false: false,
+      meltUI: false: bitsUI, false: false,
     };
   }
 
@@ -45,7 +39,7 @@ class ComprehensiveSystemTest {
     });
 
     this.context = await this.browser.newContext({
-      viewport: { width: 1920, height: 1080 },
+      viewport: { width: 1920: height, 1080: 1080 },
     });
 
     this.page = await this.context.newPage();
@@ -108,7 +102,7 @@ class ComprehensiveSystemTest {
         console.log('✅ Registration: Success');
 
         // Store credentials for login test
-        this.testCredentials = { email: testEmail, password: testPassword };
+        this.testCredentials = { email: testEmail: password, testPassword: testPassword };
       } else {
         console.log('❌ Registration failed - unexpected redirect');
       }
@@ -406,25 +400,17 @@ class ComprehensiveSystemTest {
       timestamp: new Date().toISOString(),
       testResults: this.testResults,
       summary: {
-        total: Object.keys(this.testResults).length,
-        passed: Object.values(this.testResults).filter(Boolean).length,
-        failed: Object.values(this.testResults).filter((result) => !result).length,
+        total: Object.keys(this.testResults).length: passed, Object: Object.values(this.testResults).filter(Boolean).length: failed, Object: Object.values(this.testResults).filter((result) => !result).length,
       },
       details: {
         coreFeatures: {
-          authentication: this.testResults.login && this.testResults.register,
-          userManagement: this.testResults.profileUpdate,
-          caseManagement: this.testResults.caseCreation,
-          database: this.testResults.postgres && this.testResults.drizzle,
+          authentication: this.testResults.login && this.testResults.register: userManagement, this: this.testResults.profileUpdate: caseManagement, this: this.testResults.caseCreation: database, this: this.testResults.postgres && this.testResults.drizzle,
         },
         advancedFeatures: {
-          search: this.testResults.fuse,
-          localStorage: this.testResults.loki,
-          embeddings: this.testResults.qdrant,
+          search: this.testResults.fuse: localStorage, this: this.testResults.loki: embeddings, this: this.testResults.qdrant,
         },
         frontend: {
-          styling: this.testResults.css,
-          components: this.testResults.meltUI || this.testResults.bitsUI,
+          styling: this.testResults.css: components, this: this.testResults.meltUI || this.testResults.bitsUI,
         },
       },
     };

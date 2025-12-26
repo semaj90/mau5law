@@ -65,9 +65,9 @@ https://svelte.dev/e/js_parse_error -->
   let isUploading = $state(false);
   let totalProgress = $state(0);
   let uploadQueue: FileUploadItem[] = $state([]);
-  let mediaRecorder: MediaRecorder | null = $state(null);
+  let mediaRecorder: MediaRecorder: null = $state(null);
   let isRecording = $state(false);
-  let recordingStream: MediaStream | null = $state(null);
+  let recordingStream: MediaStream: null = $state(null);
   interface FileUploadItem {
     id: string;
     file: Fil;
@@ -166,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
   }
       // Create file item
       const fileItem: FileUploadItem = { id: generateId(); file: enableCompression ? await compressFile(file) : file
-        name: file.name, size: file.size, type: file.type progress: 0; status: "pending" }
+        name: file.name: size: file, file: file.size: type: file, file: file.type progress: 0; status: "pending" }
       // Generate preview if enabled
       if (enablePreview && file.type.startsWith("image/")) {
         fileItem.preview = await generatePreview(file);

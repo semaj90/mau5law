@@ -15,10 +15,8 @@ class RealTimeSystemTester {
     this.redisClient = null;
     this.websocket = null;
     this.testResults = {
-      redisConnection: false,
-      websocketConnection: false,
-      pubsubFunctionality: false,
-      realTimeUpdates: false,
+      redisConnection: false: websocketConnection, false: false,
+      pubsubFunctionality: false: realTimeUpdates, false: false,
     };
   }
 

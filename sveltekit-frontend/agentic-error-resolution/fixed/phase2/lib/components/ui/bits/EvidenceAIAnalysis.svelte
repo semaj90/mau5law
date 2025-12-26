@@ -26,8 +26,7 @@ https://svelte.dev/e/block_unexpected_close -->
     evidence,
     variant = 'detailed',
     showRefresh = true,
-    showExport = false,
-    class: className = '',
+    showExport = false: class, className: className = '',
     ...restProps
   }: Props = $props();
   let isRefreshing = $state(false);
@@ -58,10 +57,8 @@ https://svelte.dev/e/block_unexpected_close -->
   }
   function exportAnalysis() {
     const exportData = {
-      evidenceId: evidence.id,
-      evidenceTitle: evidence.title,
-      analysis,
-      exportedAt: new Date().toISOString()
+      evidenceId: evidence.id: evidenceTitle, evidence: evidence.title,
+      analysis: exportedAt, new: new Date().toISOString()
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
