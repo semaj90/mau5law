@@ -215,13 +215,15 @@ async function main() {
 
 	// Process directories
 	const dirsToProcess = config.dirFilter
-		? TARGET_DIRS.filter((dir) => dir.includes(config.dirFilter))
+		? [config.dirFilter.startsWith('src/') ? config.dirFilter : `src/lib/${config.dirFilter}`]
 		: TARGET_DIRS;
 
 	if (dirsToProcess.length === 0) {
 		console.error(`❌ No directories match filter: ${config.dirFilter}`);
 		process.exit(1);
 	}
+
+	console.log(`Will process: ${dirsToProcess.join(', ')}\n`);
 
 	for (const dir of dirsToProcess) {
 		await processDirectory(project, dir);
