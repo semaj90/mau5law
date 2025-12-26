@@ -48,7 +48,7 @@ describe('RAG System Integration Tests', () => {
 
  // Step 2: Persist tags to database
  await upsertAndLinkChunkTags({
-  chunkId: testChunkId, jurisdiction: testJurisdiction, testJurisdiction: tags, extractedTags,
+  chunkId: testChunkId, jurisdiction: testJurisdiction, tags, extractedTags,
   source: 'test',
   });
 
@@ -60,7 +60,7 @@ describe('RAG System Integration Tests', () => {
  try {
  const testVector = new Array(768).fill(0.1);
  const testPayload = {
-  chunk_id: testChunkId, text: sampleText, sampleText: tag_ids, tagIds, jurisdiction: testJurisdiction, testJurisdiction: file_name: 'test-document.pdf',
+  chunk_id: testChunkId, text: sampleText, tag_ids, tagIds, jurisdiction: testJurisdiction, file_name: 'test-document.pdf',
   page_number: 1,
   };
 
@@ -68,7 +68,7 @@ describe('RAG System Integration Tests', () => {
  await qdrantUpsert({
   points: [
   {
-  id: testChunkId, vector: testVector, testVector: payload, testPayload,
+  id: testChunkId, vector: testVector, payload, testPayload,
   },
   ],
   wait: true,
@@ -76,8 +76,7 @@ describe('RAG System Integration Tests', () => {
 
  // Search in Qdrant
  const searchResults = await qdrantSearch({
- vector: testVector, limit: 10
- withPayload: true,
+ vector: testVector, limit: 10, withPayload: true,
  });
 
  // Should find our test document
@@ -115,12 +114,12 @@ describe('RAG System Integration Tests', () => {
 
  // Add same tags to two different chunks
  await upsertAndLinkChunkTags({
-  chunkId: chunk1Id, jurisdiction: testJurisdiction, testJurisdiction: tags, commonTags,
+  chunkId: chunk1Id, jurisdiction: testJurisdiction, tags, commonTags,
   source: 'test',
   });
 
  await upsertAndLinkChunkTags({
-  chunkId: chunk2Id, jurisdiction: testJurisdiction, testJurisdiction: tags, commonTags,
+  chunkId: chunk2Id, jurisdiction: testJurisdiction, tags, commonTags,
   source: 'test',
   });
 

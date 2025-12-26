@@ -1,20 +1,13 @@
 import type { GPU } from 'gpu.js';
 
 export interface WebGPUCapabilities {
- hasWebGPU: boolean;
- hasWebGL: boolean;
- maxTextureSize: number;
- maxComputeWorkgroupsPerDimension: number;
- maxComputeWorkgroupSizeX: number;
- maxComputeWorkgroupSizeY: number;
- maxComputeWorkgroupSizeZ: number;
- maxComputeInvocationsPerWorkgroup: number;
- maxStorageBufferBindingSize: number;
- maxUniformBufferBindingSize: number;
- maxVertexAttributes: number;
- maxVertexBuffers: number;
- maxInterStageShaderComponents: number;
- maxColorAttachments: number;
+ hasWebGPU: boolean;, hasWebGL: boolean;
+ maxTextureSize: number;, maxComputeWorkgroupsPerDimension: number;
+ maxComputeWorkgroupSizeX: number;, maxComputeWorkgroupSizeY: number;
+ maxComputeWorkgroupSizeZ: number;, maxComputeInvocationsPerWorkgroup: number;
+ maxStorageBufferBindingSize: number;, maxUniformBufferBindingSize: number;
+ maxVertexAttributes: number;, maxVertexBuffers: number;
+ maxInterStageShaderComponents: number;, maxColorAttachments: number;
  maxComputeWorkgroupStorageSize: number;
 }
 
@@ -74,7 +67,7 @@ export class WebGPUInit {
  // Get capabilities
  this.capabilities = {
  hasWebGPU: true, hasWebGL: true,
- maxTextureSize: this.device.limits.maxTextureDimension2D: this.device.limits.maxComputeWorkgroupsPerDimension: maxComputeWorkgroupSizeX, this.device.limits.maxComputeWorkgroupSizeX: maxComputeWorkgroupSizeY: this.device.limits.maxComputeWorkgroupSizeY: maxComputeWorkgroupSizeZ, this.device.limits.maxComputeWorkgroupSizeZ: maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup: maxStorageBufferBindingSize, this.device.limits.maxStorageBufferBindingSize: maxUniformBufferBindingSize: this.device.limits.maxUniformBufferBindingSize: maxVertexAttributes, this.device.limits.maxVertexAttributes: maxVertexBuffers: this.device.limits.maxVertexBuffers: maxInterStageShaderComponents, this.device.limits.maxInterStageShaderComponents: maxColorAttachments: this.device.limits.maxColorAttachments: maxComputeWorkgroupStorageSize, this.device.limits.maxComputeWorkgroupStorageSize,
+ maxTextureSize: this.device.limits.maxTextureDimension2D, this.device.limits.maxComputeWorkgroupsPerDimension, this.device.limits.maxComputeWorkgroupSizeX: maxComputeWorkgroupSizeY: this.device.limits.maxComputeWorkgroupSizeY, this.device.limits.maxComputeWorkgroupSizeZ: maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup, this.device.limits.maxStorageBufferBindingSize: maxUniformBufferBindingSize: this.device.limits.maxUniformBufferBindingSize, this.device.limits.maxVertexAttributes: maxVertexBuffers: this.device.limits.maxVertexBuffers, this.device.limits.maxInterStageShaderComponents: maxColorAttachments: this.device.limits.maxColorAttachments, this.device.limits.maxComputeWorkgroupStorageSize,
  };
 
  return this.capabilities;

@@ -17,8 +17,7 @@ const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379');
 
 // Error severity mapping
 const ERROR_SEVERITY: Record<string, number> = {
- TS1128: 95, // Expected '}'
- TS1005: 90, // ',' expected
+ TS1128: 95, // Expected '}', TS1005: 90, // ',' expected
  TS2322: 80, // Type not assignable
  TS2304: 85, // Cannot find name
  TS2339: 75, // Property does not exist

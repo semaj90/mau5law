@@ -4,7 +4,7 @@
  const baseOptions: RedisOptions = {
  // Make connect explicit to avoid "already connecting/connected" races when modules re-import
  // Consumers should call ensureRedisReady() to establish the connection.
- lazyConnect: true, maxRetriesPerRequest: 3 3,
+ lazyConnect: true, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
  retryStrategy: (times: number) => Math.min(times * 250, 4000),
  reconnectOnError: (err: unknown) => {
@@ -113,7 +113,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
  const baseOptions: RedisOptions = {
  // Make connect explicit to avoid "already connecting/connected" races when modules re-import
  // Consumers should call ensureRedisReady() to establish the connection.
- lazyConnect: true, maxRetriesPerRequest: 3 3,
+ lazyConnect: true, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
  retryStrategy: (times: number) => Math.min(times * 250, 4000),
  reconnectOnError: (err: unknown) => {

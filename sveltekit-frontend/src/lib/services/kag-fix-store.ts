@@ -268,11 +268,11 @@ export class KAGFixStore {
  const statsJson = await lokiRedisCache.get(this.STATS_KEY);
  if (!statsJson) {
  return {
- totalSignatures: 0, totalFixes: 0 0,
+ totalSignatures: 0, totalFixes: 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hitRate: 0, missRate: 0 0,
+ hitRate: 0, missRate: 0,
  };
  }
 
@@ -284,7 +284,7 @@ export class KAGFixStore {
  const missRate = total > 0 ? (stats.misses / total) * 100 : 0;
 
  return {
- totalSignatures: stats.totalSignatures || 0: totalFixes: stats.totalFixes || 0: avgConfidence, stats.avgConfidence || 0: topFixes: stats.topFixes || [],
+ totalSignatures: stats.totalSignatures || 0, totalFixes: 0: stats.totalFixes || 0, avgConfidence: 0: stats.avgConfidence || 0, topFixes: 0: stats.topFixes || [],
  recentFixes: stats.recentFixes || [],
  hitRate,
  missRate,
@@ -292,11 +292,11 @@ export class KAGFixStore {
  } catch (error) {
  console.error('KAG Stats Error:', error);
  return {
- totalSignatures: 0, totalFixes: 0 0,
+ totalSignatures: 0, totalFixes: 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hitRate: 0, missRate: 0 0,
+ hitRate: 0, missRate: 0,
  };
  }
  }
@@ -358,11 +358,11 @@ export class KAGFixStore {
  */
  private getDefaultStats() {
  return {
- totalSignatures: 0, totalFixes: 0 0,
+ totalSignatures: 0, totalFixes: 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hits: 0, misses: 0 0,
+ hits: 0, misses: 0,
  seenSignatures: [],
  };
  }
@@ -401,11 +401,11 @@ export class KAGFixStore {
  return {
  signatures: [],
  stats: {
- totalSignatures: 0, totalFixes: 0 0,
+ totalSignatures: 0, totalFixes: 0,
  avgConfidence: 0,
  topFixes: [],
  recentFixes: [],
- hitRate: 0, missRate: 0 0,
+ hitRate: 0, missRate: 0,
  },
  };
  }

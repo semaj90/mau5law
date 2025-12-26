@@ -29,8 +29,7 @@ export const errorTimelineTable = pgTable(
  stateChanged: text('state_changed').default('false'), // Did health state change during this window?
 
  // Trend indicators
- trendDirection: text('trend_direction'), // "improving" | "stable" | "degrading"
- trendScore: text('trend_score'), // Numeric score indicating trend strength
+ trendDirection: text('trend_direction'), // "improving" | "stable" | "degrading", trendScore: text('trend_score'), // Numeric score indicating trend strength
 
  // Metadata
  dataCollectedAt: timestamp('data_collected_at', { withTimezone: true }).notNull().defaultNow(),

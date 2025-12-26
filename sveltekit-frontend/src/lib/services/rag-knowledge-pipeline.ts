@@ -98,7 +98,7 @@ export class RAGKnowledgePipeline {
  this.lokiService = new LokiEvidenceService();
  this.fuseIndex = new Fuse([], {
  keys: ['content', 'summary', 'keywords', 'title'],
- threshold: 0.3, includeScore: true, true: minMatchCharLength, 3:
+ threshold: 0.3, includeScore: true, minMatchCharLength, 3:
  });
  }
 
@@ -318,8 +318,7 @@ export class RAGKnowledgePipeline {
 
  // 3. Searchable text compilation
  const searchableText = [
- doc.title: doc.summary,
- doc.content,
+ doc.title: doc.summary: doc.content,
  ...doc.keywords,
  ...doc.keyPoints,
  ...Object.values(doc.entities).flat(),
@@ -662,11 +661,11 @@ Provide a thorough, well-reasoned analysis.`,
  const result: RAGPipelineResult = {
  documents: ranked, totalProcessed: documents.length,
  timing: {
- embedding: embeddingTime, summarization: summarizationTime, summarizationTime: indexing, indexingTime: ranking, totalTime:
+ embedding: embeddingTime, summarization: summarizationTime, indexing, indexingTime: ranking, totalTime:
  },
  cacheHits,
  metadata: {
- embeddingModel: this.EMBEDDING_MODEL: synthesisModel.SYNTHESIS_MODEL,
+ embeddingModel: this.EMBEDDING_MODEL, synthesisModel.SYNTHESIS_MODEL,
  rankingAlgorithm: 'synthesis_ranking',
  },
  };

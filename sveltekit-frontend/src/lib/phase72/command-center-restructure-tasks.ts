@@ -54,7 +54,7 @@ export const phase6_72_restructure_tasks = [
  addon_built: true,
  addon_path: 'build/Release/ast_error_vectorizer.node',
  fallback_model: 'embeddinggemma:latest',
- embedding_dimension: 384, database_ready: false, false: // Set to true after migration
+ embedding_dimension: 384, database_ready: false: false, // Set to true after migration
  },
  actions: [
  {

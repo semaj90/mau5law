@@ -22,7 +22,7 @@ export type LayoutEdge = {
 export function forceDirectedLayout(
  nodes: LayoutNode[],
  edges: LayoutEdge[],
- width: number, height: number, number: number = 100
+ width: number, height: number = 100
 ): LayoutNode[] {
  if (nodes.length === 0) return nodes;
 
@@ -108,7 +108,7 @@ export function initializeNodePositions(
  */
 export function circularLayout(
  nodes: LayoutNode[],
- centerX: number, centerY: number, number: number
+ centerX: number, centerY: number
 ): LayoutNode[] {
  const angleStep = (2 * Math.PI) / nodes.length;
 

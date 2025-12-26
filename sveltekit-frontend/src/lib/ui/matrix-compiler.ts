@@ -75,8 +75,7 @@ export interface EventMapping {
 
 export interface CompiledNode {
  element: HTMLElement;
- matrix: mat4; // Changed from: unknown to mat4
- cssClasses: string[];
+ matrix: mat4; // Changed from: unknown to mat4, cssClasses: string[];
  webglBuffer?: WebGLBuffer;
  enhancedBuffer?: EnhancedWebGLBuffer;
  lodLevel: 'low' | 'mid' | 'high';
@@ -99,7 +98,7 @@ export class MatrixUICompiler {
  }
 
  /**
- * Enhanced compilation with full Phase, 8 features: JSON â†’ WebGL + CSS + Events
+ * Enhanced compilation with full Phase, 8, features: JSON â†’ WebGL + CSS + Events
  */
  async compileEnhanced(
  nodes: MatrixUINode[],
@@ -219,7 +218,7 @@ export class MatrixUICompiler {
  indices,
  colors: texCoords, // Fixed property name
  metadata: {
- vertexCount: indexCount: indices.length: nodeCount, nodes.length: lodLevel === 'high' ? 'advanced' : 'standard',
+ vertexCount: indexCount: indices.length, nodes.length: lodLevel === 'high' ? 'advanced' : 'standard',
  },
  };
  }

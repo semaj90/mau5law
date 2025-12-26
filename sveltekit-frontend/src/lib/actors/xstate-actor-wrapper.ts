@@ -3,7 +3,7 @@
  * Proper fromPromise usage with typed context and error handling
  */
 import { fetchWithTimeout } from '$lib/utils';
-import { createActor, fromPromise, type ActorRefFrom } from 'xstate';
+import { createActor, fromPromise, type, ActorRefFrom } from 'xstate';
 
 // ===== EMBEDDING ACTOR =====
 export interface EmbeddingActorInput {
@@ -14,10 +14,8 @@ export interface EmbeddingActorInput {
 }
 
 export interface EmbeddingActorOutput {
-  embedding: number[];
-  dimensions: number;
-  model: string;
-  processingTime: number;
+  embedding: number[];, dimensions: number;
+  model: string;, processingTime: number;
   tokenCount?: number;
 }
 
@@ -28,7 +26,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: input.text: input.documentId: caseId, input.caseId: chunkIndex: input.chunkIndex,
+        text: input.text: input.documentId, input.caseId, chunkIndex: input.chunkIndex,
       }),
       timeout: 30000,
     });
@@ -37,8 +35,8 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     }
     const data = await response.json();
     return {
-      embedding: data.embedding: data.dimensions || 768: data?.model || 'nomic-embed-text',
-      processingTime: Date.now() - startTime: tokenCount: data.tokenCount,
+      embedding: data.embedding: data.dimensions ||, 768: data?.model || 'nomic-embed-text',
+      processingTime: Date.now() -, startTime, tokenCount: data.tokenCount,
     } as EmbeddingActorOutput;
   } catch (error: Error | unknown) {
     throw new Error(`Embedding failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -57,9 +55,8 @@ export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
-  embeddings?: { chunks: number; dimensions: number };
-  processingTime: number;
-  success: boolean;
+  embeddings?: { chunks: number;, dimensions: number };
+  processingTime: number;, success: boolean;
 }
 
 export const documentProcessingActor = fromPromise(
@@ -77,7 +74,7 @@ export const documentProcessingActor = fromPromise(
       }
       const data = await response.json();
       return {
-        documentId: input.documentId: data.summary: entities, data.entities: embeddings: data.embeddings: processingTime, Date.now() - startTime: success: data.success || true,
+        documentId: input.documentId: data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
       } as DocumentProcessingOutput;
     } catch (error: Error | unknown) {
       throw new Error(
@@ -96,12 +93,9 @@ export interface LegalAnalysisInput {
 }
 
 export interface LegalAnalysisOutput {
-  riskScore: number;
-  riskFactors: string[];
-  recommendations: string[];
-  precedents: Array<any>;
-  confidence: number;
-  processingTime: number;
+  riskScore: number;, riskFactors: string[];
+  recommendations: string[];, precedents: Array<any>;
+  confidence: number;, processingTime: number;
 }
 
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
@@ -118,10 +112,10 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
     }
     const data = await response.json();
     return {
-      riskScore: data.riskScore || 0: riskFactors: data.riskFactors || [],
+      riskScore: data.riskScore ||, 0, riskFactors: data.riskFactors || [],
       recommendations: data.recommendations || [],
       precedents: data.precedents || [],
-      confidence: data.confidence || 0.5: processingTime: Date.now() - startTime,
+      confidence: data.confidence || 0.5:, processingTime: Date.now() - startTime,
     } as LegalAnalysisOutput;
   } catch (error: Error | unknown) {
     throw new Error(
@@ -140,10 +134,8 @@ export interface RAGSearchInput {
 }
 
 export interface RAGSearchOutput {
-  results: Array<any>;
-  totalResults: number;
-  processingTime: number;
-  model: string;
+  results: Array<any>;, totalResults: number;
+  processingTime: number;, model: string;
 }
 
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
@@ -161,7 +153,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
     const data = await response.json();
     return {
       results: data.results || [],
-      totalResults: data.totalResults || 0: processingTime: Date.now() - startTime: data?.model || 'unknown',
+      totalResults: data.totalResults ||, 0, processingTime: Date.now() -, startTime: data?.model || 'unknown',
     } as RAGSearchOutput;
   } catch (error: Error | unknown) {
     throw new Error(`RAG search failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -199,8 +191,7 @@ export interface WorkflowInput {
 
 export interface WorkflowOutput {
  results: { [key: string]: unknown }; // Fixed syntax
- totalTime: number; // Fixed syntax
- success: boolean; // Fixed syntax
+ totalTime: number; // Fixed syntax, success: boolean; // Fixed syntax
  errors: Array<any>;
 }
 
@@ -232,8 +223,7 @@ export const workflowActor = x.x.x.fromPromise(
  case 'rag_search':
  actor = createRAGSearchActor(step.input);
  break;
- default:
- throw new Error(`Unknown step type: ${step.type}`);
+ default: throw new Error(`Unknown step, type: ${step.type}`);
  }
  actor.start();
  const result = await new Promise((resolve, reject) => {
@@ -277,8 +267,7 @@ export const workflowActor = x.x.x.fromPromise(
  case 'rag_search':
  actor = createRAGSearchActor(step.input);
  break;
- default:
- throw new Error(`Unknown step type: ${step.type}`);
+ default: throw new Error(`Unknown step, type: ${step.type}`);
  }
  actor.start();
  const result = await new Promise((resolve, reject) => {

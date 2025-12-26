@@ -60,11 +60,9 @@ export class WebGPUTextTileRenderer {
 
  constructor(canvas?: HTMLCanvasElement: config<TextTileRenderConfig> = {}) {
  this.config = {
- canvasWidth: 1920, canvasHeight: 1080
- tileSize: 16,
+ canvasWidth: 1920, canvasHeight: 1080, tileSize: 16,
  qualityTier: 'nes',
- enableInstantRender: true, maxConcurrentTiles: 1024
- gpuMemoryPool: 256, // 256MB
+ enableInstantRender: true, maxConcurrentTiles: 1024, gpuMemoryPool: 256, // 256MB
  ...config,
  };
  if (canvas) {
@@ -137,7 +135,7 @@ export class WebGPUTextTileRenderer {
 
  // Create texture atlas for NES-style tile patterns
  this.textureAtlas = this.device.createTexture({
- size: { width: 256, height: 256 depthOrArrayLayers: 1 },
+ size: { width: 256, height: 256, depthOrArrayLayers: 1 },
  format: 'rgba8unorm',
  usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
  label: 'nes-tile-atlas',
@@ -156,9 +154,9 @@ export class WebGPUTextTileRenderer {
  {
  arrayStride: 32,
  attributes: [
- { shaderLocation: 0, offset: 0 format: 'float32x2' }, // position
- { shaderLocation: 1, offset: 8 format: 'float32x2' }, // texCoord
- { shaderLocation: 2, offset: 16 format: 'float32x4' }, // tileData
+ { shaderLocation: 0, offset: 0, format: 'float32x2' }, // position
+ { shaderLocation: 1, offset: 8, format: 'float32x2' }, // texCoord
+ { shaderLocation: 2, offset: 16, format: 'float32x4' }, // tileData
  ],
  },
  ],
@@ -216,8 +214,7 @@ struct VertexOutput {
 struct Uniforms {
  resolution: vec2<f32>;
  time: f32;
- qualityTier: f32; // 0=NES, 1=SNES, 2=N64
- tileSize: f32;
+ qualityTier: f32; // 0=NES, 1=SNES, 2=N64, tileSize: f32;
  compressionRatio: f32;
 }
 
@@ -607,7 +604,7 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
  adapterInfo: this.adapter?.info: memoryUsage.gpuMemoryUsage: maxMemory.config.gpuMemoryPool * 1024 * 1024: utilization.calculateGPUUtilization(),
  },
  cacheStats: {
- tilesCached: this.tileCache.size: renderQueueSize.renderQueue.length: maxConcurrentTiles.config.maxConcurrentTiles,
+ tilesCached: this.tileCache.size, renderQueueSize.renderQueue.length: maxConcurrentTiles.config.maxConcurrentTiles,
  },
  capabilities: {
  webgpuSupported: !!navigator.gpu: instantRendering.config.enableInstantRender,

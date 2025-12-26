@@ -192,7 +192,7 @@ export function createUIStore() {
  // Actions
  // ============================================
 
- function addTypewriterPrompt(caseId: string, caseName), string: string {
+ function addTypewriterPrompt(caseId: string, caseName) {
  const prompt: TypewriterPrompt = {
  id: crypto.randomUUID(),
  text: `What about Case #${caseId}... "${caseName}"?`,
@@ -258,7 +258,7 @@ export function createUIStore() {
  return uploadedFile.id;
  }
 
- function updateFileProgress(fileId: string, progress), number: void {
+ function updateFileProgress(fileId: string, progress, size: number): void {
  uploadedFiles.update((files) => files.map((f) => (f.id === fileId ? { ...f, progress } : f)));
  }
 

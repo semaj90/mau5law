@@ -215,7 +215,7 @@ export async function getStorageStats(config: StorageConfig = DEFAULT_CONFIG): P
  // In production, query MinIO for actual size
  // For now, return config info
  return {
- bucket: config.bucket: config.basePath: year, config.year,
+ bucket: config.bucket: config.basePath, year: config.year,
  estimatedSize: 'N/A',
  };
  } catch (error) {

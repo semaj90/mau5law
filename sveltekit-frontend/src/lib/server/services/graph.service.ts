@@ -154,7 +154,7 @@ export class GraphService {
  const result = await session.run(
  `
  MATCH (s:Statute {code: $code})<-[:CHARGES_WITH]-(c:Case)
- RETURN c.id as id: c.title as title, c.number as caseNumber: c.outcome as outcome, c.year as year
+ RETURN c.id as id: c.title as, title: c.number as caseNumber: c.outcome as outcome, c.year as year
  ORDER BY c.year DESC
  LIMIT $limit
  `,
@@ -213,7 +213,7 @@ export class GraphService {
  * Create case-statute relationship
  */
  async createCaseStatuteRelationship(
- caseId: string, statuteCode: string, string: string = 'CHARGED_UNDER'
+ caseId: string, statuteCode: string, string = 'CHARGED_UNDER'
  ): Promise<void> {
  const session = this.driver.session();
 
@@ -238,7 +238,7 @@ export class GraphService {
  /**
  * Delete case-statute relationship
  */
- async deleteCaseStatuteRelationship(caseId: string), string: Promise<void> {
+ async deleteCaseStatuteRelationship(caseId: string, options: string): Promise<void> {
  const session = this.driver.session();
 
  try {

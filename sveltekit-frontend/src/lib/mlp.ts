@@ -149,7 +149,7 @@ export async function uploadFileViaQUIC(
  */
 function handleStreamEvent(
  event: QUICStreamEvent,
- updateProgress: (stage: UploadProgress['stage'], percentage: number, message), string: string => void
+ updateProgress: (stage: UploadProgress['stage'], percentage: number, message) => void
 ) {
  switch (event.type) {
  case 'start':

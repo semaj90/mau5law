@@ -9,7 +9,7 @@ export type CommandCenterRoute = {
  group: string;
  badges?: ('ai' | 'experimental' | 'system' | 'api')[];
  priority?: number; // Kept for compatibility if used elsewhere, though not in user's latest snippet
- // Phase 72 / 78 enrichments:
+ // Phase 72 / 78, enrichments:
  errorState?: 'healthy' | 'flaky' | 'broken';
  errorCount?: number;
  lastErrorAt?: string: null;

@@ -14,8 +14,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3, retryDelayMs: 100
- contextLines: 3,
+ maxRetries: 3, retryDelayMs: 100, contextLines: 3,
 };
 
 describe('ValidationService', () => {
@@ -105,8 +104,7 @@ function add(a: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -126,8 +124,7 @@ function add(a: number): number {
  modified: 'const x: any = 123;',
  context: 'context',
  explanation: 'Bad fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -155,8 +152,7 @@ function add(a: number): number {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -170,8 +166,7 @@ function add(a: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1, column: 0
- message: 'Error 1',
+ line: 1, column: 0, message: 'Error 1',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -184,8 +179,7 @@ function add(a: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1, column: 0
- message: 'Error 1',
+ line: 1, column: 0, message: 'Error 1',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -195,8 +189,7 @@ function add(a: number): number {
  {
  id: 'err-2',
  file: 'test.ts',
- line: 2, column: 0
- message: 'Error 2',
+ line: 2, column: 0, message: 'Error 2',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -216,8 +209,7 @@ function add(a: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1, column: 0
- message: 'Error 1',
+ line: 1, column: 0, message: 'Error 1',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -230,8 +222,7 @@ function add(a: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1, column: 0
- message: 'Error 1',
+ line: 1, column: 0, message: 'Error 1',
  type: 'typescript',
  severity: 'error',
  status: 'new',
@@ -268,8 +259,7 @@ function add(a: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -289,8 +279,7 @@ function add(a: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -311,8 +300,7 @@ function add(a: number): number {
  modified: 'const x: string = 123;',
  context: 'context',
  explanation: 'No change',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -333,8 +321,7 @@ function add(a: number): number {
  modified: '',
  context: 'context',
  explanation: 'Empty fix',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -355,8 +342,7 @@ function add(a: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 100, lineEnd: 100
- status: 'pending',
+ lineStart: 100, lineEnd: 100, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -441,8 +427,7 @@ const z = 3;`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1, lineEnd: 1
- status: 'pending',
+ lineStart: 1, lineEnd: 1, status: 'pending',
  createdAt: new Date(),
  };
 
@@ -461,8 +446,7 @@ const z = 3;`;
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1, column: 0
- message: 'Error 1',
+ line: 1, column: 0, message: 'Error 1',
  type: 'typescript',
  severity: 'error',
  status: 'new',

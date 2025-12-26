@@ -113,7 +113,7 @@ export async function contextualChat(params: ContextChatRequest): Promise<Contex
  console.log(`✅ Chat turn saved: ${turnId}`);
  } catch (err) {
  console.warn('⚠️ Failed to save chat turn:', err);
- // tests 15–17 say: chat still works even if DB dies → we swallow error
+ // tests 15–17, say: chat still works even if DB dies → we swallow error
  }
 
  return {

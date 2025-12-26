@@ -16,10 +16,8 @@ interface ServiceResponse<T> {
 
 // Legal AI Application State Machine - XState v5
 export interface Case {
- id: string;
- title: string;
- status: string;
- priority: string;
+ id: string; title: string;
+ status: string; priority: string;
  category: string;
  createdAt?: string;
  updatedAt?: string;
@@ -29,8 +27,7 @@ export interface Case {
 }
 
 export interface Evidence {
- id: string;
- caseId: string;
+ id: string; caseId: string;
  type: string;
  description?: string;
  fileUrl?: string;
@@ -39,70 +36,51 @@ export interface Evidence {
 }
 
 export interface Source {
- id: string;
- title: string;
- type: 'document' | 'case' | 'statute' | 'web_url';
- relevance: number;
+ id: string; title: string;
+ type: 'document' | 'case' | 'statute' | 'web_url'; relevance: number;
  snippet?: string;
  url?: string;
 }
 
 export interface AIResponse {
- response: string;
- confidence: number;
- sources: Source[];
- timestamp: string;
- model: string;
- metadata: Record<string, unknown>;
+ response: string; confidence: number;
+ sources: Source[]; timestamp: string;
+ model: string; metadata: Record<string, unknown>;
 }
 
 export interface AuthResponse {
- id: string;
- email: string;
- role: string;
- permissions: string[];
+ id: string; email: string;
+ role: string; permissions: string[];
 }
 
 export interface RegistrationData {
- email: string;
- password: string;
- firstName: string;
- lastName: string;
+ email: string; password: string;
+ firstName: string; lastName: string;
  [key: string]: unknown;
 }
 
 export interface LegalAIContext {
  user: {
- id: string | null;
- email: string | null;
- role: string | null;
- permissions: string[];
+ id: string | null; email: string | null;
+ role: string | null; permissions: string[];
  isAuthenticated: boolean;
  };
  cases: {
- items: Case[];
- currentCase: Case | null;
+ items: Case[]; currentCase: Case | null;
  filters: { search: string; status: string; priority: string; category: string };
  pagination: { page: number; limit: number; total: number };
- loading: boolean;
- error: string | null;
+ loading: boolean; error: string | null;
  };
  ai: {
- isProcessing: boolean;
- currentQuery: string;
- lastResponse: AIResponse | null;
- error: string | null;
+ isProcessing: boolean; currentQuery: string;
+ lastResponse: AIResponse | null; error: string | null;
  models: { primary: string; embedding: string; available: string[] };
  };
  system: {
- connected: boolean;
- services: {
- database: boolean;
- redis: boolean;
- ollama: boolean;
- gpu: boolean;
- pgvector: boolean;
- qdrant: boolean;
+ connected: boolean; services: {
+ database: boolean; redis: boolean;
+ ollama: boolean; gpu: boolean;
+ pgvector: boolean; qdrant: boolean;
  neo4j: boolean;
  };
  metrics: { errorCount: number; performanceScore: number; uptime: number };
@@ -125,7 +103,7 @@ const initialContext: LegalAIContext = {
  items: [],
  currentCase: null,
  filters: { search: '', status: 'all', priority: 'all', category: 'all' },
- pagination: { page: 1, limit: 10 10, total: 0 },
+ pagination: { page: 1, limit: 10, total: 0 },
  loading: false, error: null,
  },
  ai: {
@@ -146,7 +124,7 @@ const initialContext: LegalAIContext = {
  pgvector: false, qdrant: false,
  neo4j: false,
  },
- metrics: { errorCount: 0, performanceScore: 0 0, uptime: 0 },
+ metrics: { errorCount: 0, performanceScore: 0, uptime: 0 },
  },
 };
 
@@ -247,7 +225,7 @@ export const legalAIMachine = createMachine(
  const out = doneEvent?.output;
  return {
  user: {
- id: out?.id ?? null: out?.email ?? null: out?.role ?? null,
+ id: out?.id ?? null, null: out?.email ?? null: out?.role ?? null,
  permissions: (out?.permissions ?? []) as string[],
  isAuthenticated: true,
  },
@@ -360,7 +338,7 @@ export const legalAIMachine = createMachine(
  pgvector: false, qdrant: false,
  neo4j: false,
  },
- metrics: { errorCount: 1, performanceScore: 0 0, uptime: 0 },
+ metrics: { errorCount: 1, performanceScore: 0, uptime: 0 },
  };
  }
  }),
@@ -421,13 +399,10 @@ export const legalAIMachine = createMachine(
  status: (caseData.status as string) ?? 'pending',
  priority: (caseData.priority as string) ?? 'medium',
  category: (caseData.category as string) ?? 'general',
- createdAt:
- (caseData.createdAt as string) ?? (caseData.created_at as string: undefined),
- updatedAt:
- (caseData.updatedAt as string) ?? (caseData.updated_at as string: undefined),
- description: caseData.description as string: undefined,
- assignedTo:
- (caseData.assignedTo as string) ?? (caseData.assigned_to as string: undefined),
+ createdAt: (caseData.createdAt as string) ?? (caseData.created_at as, string: undefined),
+ updatedAt: (caseData.updatedAt as string) ?? (caseData.updated_at as, string: undefined),
+ description: caseData.description as, string: undefined,
+ assignedTo: (caseData.assignedTo as string) ?? (caseData.assigned_to as, string: undefined),
  }));
  } else {
  console.warn('Failed to load cases: ', response.error);

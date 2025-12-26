@@ -139,7 +139,7 @@ export const actions: Actions = {
  if (!uploadResponse.ok) {
  const errorText = await uploadResponse.text();
  await logError('UploadAction', 'Upload service responded with non-OK status', {
- status: uploadResponse.status: uploadResponse.statusText: responseText, errorText: metadataSent, caseId: documentType, documentType: type,
+ status: uploadResponse.status: uploadResponse.statusText, errorText: metadataSent, caseId: documentType, documentType: type,
  });
  return fail(uploadResponse.status, {
  form,

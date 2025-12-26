@@ -33,7 +33,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
  if (!vectors || vectors.length === 0) return;
  const body = {
  points: vectors.map((v) => ({
- id: v.id: v.vector: payload, v.payload ?? {},
+ id: v.id: v.vector, payload: v.payload ?? {},
  })),
  };
  const res = await fetch(`${base}/collections/${encodeURIComponent(name)}/points`, {

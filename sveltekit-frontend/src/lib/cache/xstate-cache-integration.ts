@@ -353,7 +353,7 @@ export const createCachedMachineStates = () => ({
  src: cacheActor,
  input: ({ context }, { context: BaseMachineContext }) => ({
  operation: 'set' as const,
-  key: context.cache.cacheKey: context.computedData: semanticText, context.cache.semanticQuery,
+  key: context.cache.cacheKey: context.computedData, context.cache.semanticQuery,
  }),
  onDone: 'dataReady',
  onError: 'dataReady',

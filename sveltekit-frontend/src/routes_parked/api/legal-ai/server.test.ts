@@ -113,8 +113,7 @@ describe('Legal-AI API Endpoints', () => {
  });
 
  vi.mocked(FeatureFlagEnforcer.checkRequest).mockReturnValue({
- allowed: false, status: 403
- message: 'Feature is not available',
+ allowed: false, status: 403, message: 'Feature is not available',
  });
 
  vi.mocked(FeatureFlagEnforcer.createErrorResponse).mockReturnValue(errorResponse);
@@ -144,8 +143,7 @@ describe('Legal-AI API Endpoints', () => {
  vi.mocked(AuthSeparation.extractToken).mockReturnValue(undefined);
  vi.mocked(AuthSeparation.extractUserId).mockReturnValue(undefined);
  vi.mocked(AuthSeparation.checkAuth).mockReturnValue({
- authenticated: false, status: 401
- message: 'production authentication required',
+ authenticated: false, status: 401, message: 'production authentication required',
  context: {
  feature: 'legalAi',
  requiresAuth: true,
@@ -500,8 +498,7 @@ describe('Legal-AI API Endpoints', () => {
  vi.mocked(AuthSeparation.extractToken).mockReturnValue(undefined);
  vi.mocked(AuthSeparation.extractUserId).mockReturnValue(undefined);
  vi.mocked(AuthSeparation.checkAuth).mockReturnValue({
- authenticated: false, status: 401
- message: 'production authentication required',
+ authenticated: false, status: 401, message: 'production authentication required',
  context: {
  feature: 'legalAi',
  requiresAuth: true,

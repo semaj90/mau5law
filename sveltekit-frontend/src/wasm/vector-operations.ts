@@ -399,7 +399,7 @@ export function prepareTensorForCUDA(
  * Optimized memory transfer for large embeddings
  */
 export function optimizedEmbeddingTransfer(
- embeddingPtr: usize, length: i32, i32: i32
+ embeddingPtr: usize, length: i32
 ): usize {
  if (compressionLevel == 0) {
  // No compression, direct transfer
@@ -500,7 +500,7 @@ export function getMemoryStats(): i32 {
 /**
  * Performance benchmark for routing decisions
  */
-export function benchmarkOperation(operation: i32, dataSize: i32), i32: i32 {
+export function benchmarkOperation(operation: i32, dataSize: i32) {
  // Simple benchmark based on operation type
  let ops: i32 = 0;
  for (let i = 0; i < iterations; i++) {

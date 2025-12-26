@@ -26,8 +26,7 @@ export interface ClusterAssignment {
 }
 
 const DEFAULT_CONFIG: KMeansConfig = {
- k: 8, maxIterations: 100
- tolerance: 0.001,
+ k: 8, maxIterations: 100, tolerance: 0.001,
 };
 
 /**

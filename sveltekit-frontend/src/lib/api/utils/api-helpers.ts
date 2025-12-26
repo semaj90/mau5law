@@ -1,3 +1,3 @@
-export function withBase(base: string, path), string: string {
+export function withBase(base: string, path) {
  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 }

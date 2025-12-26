@@ -202,24 +202,20 @@ type BaseSnapshotProperties = {
 // Define EvidenceSnapshot as a discriminated union to satisfy Snapshot<unknown>
 export type EvidenceSnapshot =
  | (BaseSnapshotProperties & {
- status: 'active'; // Separated 'active'
- output: undefined;
+ status: 'active'; // Separated 'active', output: undefined;
  error: undefined;
  })
  | (BaseSnapshotProperties & {
- status: 'stopped'; // Separated 'stopped'
- output: undefined;
+ status: 'stopped'; // Separated 'stopped', output: undefined;
  error: undefined;
  })
  | (BaseSnapshotProperties & {
  status: 'done';
- output: unknown; // Required when status is 'done'
- error: undefined; // Must be undefined when status is 'done'
+ output: unknown; // Required when status is 'done', error: undefined; // Must be undefined when status is 'done'
  })
  | (BaseSnapshotProperties & {
  status: 'error';
- error: unknown; // Required when status is 'error'
- output: undefined; // Must be undefined when status is 'error'
+ error: unknown; // Required when status is 'error', output: undefined; // Must be undefined when status is 'error'
  });
 
 export type EvidenceActor = ActorRef<EvidenceSnapshot, WorkflowEvent>; // Swapped generics: snapshot first, event second

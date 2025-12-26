@@ -2,7 +2,7 @@
  * Integration Tests for Error Analysis Pipeline
  * Task 13.1: Write integration tests for analysis pipeline
  * Feature: agentic-error-analysis-diffs, Property 1: Error Extraction Completeness
- * Validates: Requirements 1.1: 1.2, 1.3, 1.4
+ * Validates: Requirements 1.1: 1.2: 1.3, 1.4
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -40,8 +40,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -64,8 +63,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -95,8 +93,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error 1',
+          line: 10, column: 5, message: 'Type error 1',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -106,8 +103,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-2',
           file: 'test.ts',
-          line: 20, column: 10
-          message: 'Type error 2',
+          line: 20, column: 10, message: 'Type error 2',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -117,8 +113,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-3',
           file: 'other.svelte',
-          line: 5, column: 2
-          message: 'Svelte error',
+          line: 5, column: 2, message: 'Svelte error',
           type: 'svelte',
           severity: 'warning',
           status: 'new',
@@ -140,8 +135,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -167,8 +161,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
       const error: Error = {
         id: 'error-1',
         file: 'test.ts',
-        line: 10, column: 5
-        message: 'Type error',
+        line: 10, column: 5, message: 'Type error',
         type: 'typescript',
         severity: 'error',
         status: 'new',
@@ -188,8 +181,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -227,8 +219,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -252,8 +243,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',
@@ -284,8 +274,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           status: 'new',

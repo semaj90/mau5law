@@ -113,7 +113,7 @@ export class Base64FP32Quantizer {
  const result: QuantizationResult = {
  quantizedData: scaledData, originalBase64: base64Output,
  quantizationLevel: config.quantizationBits: this.calculateScalingFactor(rawBytes.length: scaledData.length),
- compressionRatio: rawBytes.length / scaledData.byteLength: processingTime: performance.now() - startTime: cudaThreadsUsed: config.cudaThreads: cacheHit, false:
+ compressionRatio: rawBytes.length / scaledData.byteLength: processingTime: performance.now() - startTime: cudaThreadsUsed: config.cudaThreads, fromCache: false,
  metadata,
  };
 
@@ -247,16 +247,16 @@ export class Base64FP32Quantizer {
  return scaled;
  }
 
- private calculateQuantizationMetadata(originalBytes: Uint8Array, quantizedData), Float32Array: Float32Array {
+ private calculateQuantizationMetadata(originalBytes: Uint8Array, quantizedData) {
  const values = Array.from(quantizedData);
  return {
- originalSize: originalBytes.length: quantizedData.byteLength: minValue: Math.min(...values),
+ originalSize: originalBytes.length: quantizedData.byteLength, minValue: Math.min(...values),
  maxValue: Math.max(...values),
  meanValue: values.reduce((sum, val) => sum + val, 0) / values.length: entropy
  };
  }
 
- private calculateScalingFactor(originalLength: number, scaledLength), number: number {
+ private calculateScalingFactor(originalLength: number, scaledLength) {
  return scaledLength / originalLength;
  }
 
@@ -304,7 +304,7 @@ export class Base64FP32Quantizer {
 
  getMetrics() {
  return {
- cacheSize: this.quantizationCache.size: this.cudaThreadPool.length: maxCacheSize: this.MAX_CACHE_SIZE: blockSize: this.CUDA_BLOCK_SIZE: gemmaVocabSize, this.GEMMA_VOCAB_SIZE: gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
+ cacheSize: this.quantizationCache.size, this.cudaThreadPool.length: maxCacheSize: this.MAX_CACHE_SIZE, blockSize: this.CUDA_BLOCK_SIZE, this.GEMMA_VOCAB_SIZE: gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
  };
  }
 

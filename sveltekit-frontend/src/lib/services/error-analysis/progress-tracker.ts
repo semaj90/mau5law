@@ -56,11 +56,11 @@ export class ProgressTracker extends BaseService {
  private initializeMetrics(): ProgressMetrics {
  const now = new Date().toISOString();
  return {
- totalErrors: 0, errorsAnalyzed: 0 0,
- errorsFixed: 0, errorsFailed: 0 0,
- successRate: 0, errorReduction: 0 0,
+ totalErrors: 0, errorsAnalyzed: 0,
+ errorsFixed: 0, errorsFailed: 0,
+ successRate: 0, errorReduction: 0,
  averageConfidence: 0, startTime: now,
- lastUpdateTime: now, estimatedTimeRemaining: 0 0,
+ lastUpdateTime: now, estimatedTimeRemaining: 0,
  };
  }
 
@@ -300,5 +300,5 @@ export class ProgressTracker extends BaseService {
 
 // Export singleton instance
 export const progressTracker = new ProgressTracker({
- maxRetries: 3, retryDelayMs: 100 100,
+ maxRetries: 3, retryDelayMs: 100,
 });

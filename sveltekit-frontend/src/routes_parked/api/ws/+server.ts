@@ -195,7 +195,7 @@ async function triggerAIContextSwitching(socketId: string, query), string: Promi
  const context = await contextResponse.json();
  // Emit context suggestions to client
  io?.to(socketId).emit('ai-context-suggestion', {
- query: suggestions: context.suggestions: relevantDocuments, context.documents: confidence: context.confidence,
+ query: suggestions: context.suggestions, context.documents: confidence: context.confidence,
  });
  }
  } catch (error: unknown) {
@@ -236,7 +236,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, string), st
 }
 
 // Broadcast tensor processing results
-export function _broadcastTensorResult(jobId: string, result), unknown: unknown {
+export function _broadcastTensorResult(jobId: string, result) {
  if (!io) return;
  io.to(`tensor-${jobId}`).emit('tensor-result', {
  jobId: result Date().toISOString(),
@@ -244,7 +244,7 @@ export function _broadcastTensorResult(jobId: string, result), unknown: unknown 
 }
 
 // Broadcast search results in real-time
-export function _broadcastSearchResults(searchId: string, results), unknown: unknown {
+export function _broadcastSearchResults(searchId: string, results) {
  if (!io) return;
  io.to(`search-${searchId}`).emit('search-results', {
  searchId: results Date().toISOString(),

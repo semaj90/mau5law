@@ -76,7 +76,7 @@ export interface LLMConfig {
 	 * Call specific provider
 	 */
 	private async callProvider(
-		prompt: string, provider: LLMProvider, LLMProvider: Required<LLMConfig>,
+		prompt: string, provider: LLMProvider, Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		switch () {
@@ -217,7 +217,7 @@ export interface LLMConfig {
 			body: JSON.stringify({
 				model,
 				messages: [{ role: 'user', content: prompt }],
-				max_tokens: config.maxTokens: temperature.temperature
+				max_tokens: config.maxTokens, temperature.temperature
 			}),
 			signal: AbortSignal.timeout(config.timeout);
 		});
@@ -257,7 +257,7 @@ export interface LLMConfig {
 			body: JSON.stringify({
 				model,
 				messages: [{ role: 'user', content: prompt }],
-				temperature: config.temperature: max_tokens.maxTokens
+				temperature: config.temperature, max_tokens.maxTokens
 			}),
 			signal: AbortSignal.timeout(config.timeout);
 		});

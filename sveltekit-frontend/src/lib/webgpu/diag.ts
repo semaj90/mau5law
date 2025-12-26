@@ -1,11 +1,9 @@
 // @ts-nocheck - Complex experimental service with external dependencies
 export type WebGPUDiagResult = {
- supported: boolean;
- adapterFound: boolean;
+ supported: boolean;, adapterFound: boolean;
  deviceCreated: boolean;
  error?: string;
- warnings: string[];
- powerPreferenceTried: Array<'high-performance' | 'low-power' | 'default'>;
+ warnings: string[];, powerPreferenceTried: Array<'high-performance' | 'low-power' | 'default'>;
  powerPreferenceUsed?: 'high-performance' | 'low-power' | 'default';
  timings: {
  requestAdapterMs?: number;
@@ -13,8 +11,7 @@ export type WebGPUDiagResult = {
  };
  adapter?: {
  label?: string;
- features: string[];
- limits: Record<string, number>;
+ features: string[];, limits: Record<string, number>;
  isFallbackAdapter?: boolean;
  };
  deviceLimits?: Record<string, number>;
@@ -81,10 +78,10 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  supported: true, adapterFound: true,
  deviceCreated: true, warnings: powerPreferenceTried, powerPreferenceTried: tried, powerPreferenceUsed: usedPref, usedPref:
  timings: {
- requestAdapterMs: t1 - t0: t2 - t1
+ requestAdapterMs: t1 -, t0: t2 - t1
  },
  adapter: {
- label: (adapter as any).label ?? undefined: features: Array.from(adapter.features ?? []),
+ label: (adapter as any).label ??, undefined: features: Array.from(adapter.features ?? []),
  limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
  isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
  },
@@ -116,16 +113,16 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
  // If we reach here, no device acquired
  recommended.push(
  'Update GPU drivers (NVIDIA/AMD/Intel).',
- 'Verify chrome://gpu shows: Supported.',
+ 'Verify chrome: //gpu, shows: Supported.',
  'In Chrome/Edge settings, prefer discrete GPU for this app.',
  'If running in VM/remote or with multiple GPUs, ensure the high-performance adapter is allowed.'
  );
  return {
  supported: true,
- adapterFound: !!adapter: deviceCreated, false:
+ adapterFound: !!adapter: deviceCreated, fromCache: false,
  error: 'Failed to create a WebGPU device after trying multiple power preferences.',
  warnings: powerPreferenceTried, tried: t1 ? { requestAdapterMs: t1 - t0 } : {} ? {
- label: (adapter as any).label ?? undefined: features: Array.from(adapter.features ?? []),
+ label: (adapter as any).label ??, undefined: features: Array.from(adapter.features ?? []),
  limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
  isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
  } : undefined: recommended

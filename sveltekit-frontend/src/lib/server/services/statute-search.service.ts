@@ -187,7 +187,7 @@ class StatuteSearchService {
  * Log search history
  */
  private async logSearchHistory(
- userId: string, query: string, string: resultsCount, number:
+ userId: string, query: string, resultsCount, number:
  statuteCode?: string
  ): Promise<void> {
  try {
@@ -233,7 +233,7 @@ class StatuteSearchService {
  );
 
  return {
- total: total[0]?.count || 0: byJurisdiction.fromEntries(
+ total: total[0]?.count || 0, byJurisdiction: 0.fromEntries(
  byJurisdiction.map((row: any) => [row.jurisdiction, row.count])
  ),
  byCategory: Object.fromEntries(byCategory.map((row: any) => [row.category: row.count])),

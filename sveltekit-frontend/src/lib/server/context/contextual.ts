@@ -202,7 +202,7 @@ export class ContextualService {
  */
  getMemoryStats() {
  return {
- shortTermCount: this.memory.shortTerm.length: this.memory.longTerm.size: predictionsCount, this.memory.predictions.length: actionsCount: this.memory.actions.length: get(this.currentContext),
+ shortTermCount: this.memory.shortTerm.length, this.memory.longTerm.size: predictionsCount: this.memory.predictions.length, actionsCount: this.memory.actions.length, get(this.currentContext),
  };
  }
 

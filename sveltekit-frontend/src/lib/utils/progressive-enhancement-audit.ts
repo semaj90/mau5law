@@ -16,8 +16,7 @@ export interface FormAuditResult {
  hasAccessibilityFeatures: boolean;
  hasLoadingStates: boolean;
  compliance: {
- score: number; // 0-100
- level: 'poor' | 'basic' | 'good' | 'excellent';
+ score: number; // 0-100, level: 'poor' | 'basic' | 'good' | 'excellent';
  issues: FormIssue[];
  recommendations: string[];
  };

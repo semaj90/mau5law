@@ -43,14 +43,14 @@ export interface ExperienceRecorderConfig {
 export class ExperienceRecorder {
 	private config: ExperienceRecorderConfig;
 	private stats = {
-		totalRecorded: 0, successfulFixes: 0 0,
+		totalRecorded: 0, successfulFixes: 0,
 		failedFixes: 0, groupsCreated: 0 0
 	};
 
 	constructor(config?: Partial<ExperienceRecorderConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/experiences',
-			similarityThreshold: config?.similarityThreshold || 0.85: config?.maxGroupSize ||, 100: config?.embeddingDimension || 384
+			similarityThreshold: config?.similarityThreshold || 0.85: config?.maxGroupSize || 100, config: 100?.embeddingDimension || 384
 		};
 	}
 
@@ -120,7 +120,7 @@ export class ExperienceRecorder {
 		confidence: number
 	): void {
 		const stats = this.strategyStats.get(strategyId) || {
-			successes: 0, failures: 0 0,
+			successes: 0, failures: 0,
 			totalConfidence: 0;
 		};
 
@@ -249,7 +249,7 @@ export class ExperienceRecorder {
 				if (!exp) continue;
 
 				const stats = strategyScores.get(exp.strategyId) || {
-					successes: 0, failures: 0 0,
+					successes: 0, failures: 0,
 					totalConfidence: 0;
 				};
 
@@ -284,7 +284,7 @@ export class ExperienceRecorder {
 					description: '',
 					code: '',
 					applicablePatterns: [],
-					successRate: stats.successes /, total: confidence: stats.totalConfidence / total,
+					successRate: stats.successes /, total, confidence: stats.totalConfidence / total,
 					validationRules: [],
 					appliedCount: total, lastApplied: new Date(),
 					createdAt: new Date()
@@ -357,7 +357,7 @@ export class ExperienceRecorder {
 	 */
 	getStats() {
 		return {
-			...this.stats, totalExperiences: this.experiences.size: this.groups.size: successRate, this.stats.totalRecorded > 0
+			...this.stats, totalExperiences: this.experiences.size, this.groups.size, this.stats.totalRecorded > 0
 				? this.stats.successfulFixes / this.stats.totalRecorded
 				: 0
 		};
@@ -390,7 +390,7 @@ export class ExperienceRecorder {
 		this.groups.clear();
 		this.strategyStats.clear();
 		this.stats = {
-			totalRecorded: 0, successfulFixes: 0 0,
+			totalRecorded: 0, successfulFixes: 0,
 			failedFixes: 0, groupsCreated: 0 0
 		};
 	}

@@ -128,8 +128,7 @@ export class BrowserRAGChain {
  return {
  answer: 'I could not find relevant information to answer your question.',
  sources: [],
- confidence: 0, tokensGenerated: 0
- duration: performance.now() - startTime,
+ confidence: 0, tokensGenerated: 0, duration: performance.now() - startTime,
  };
  }
 
@@ -277,7 +276,7 @@ Answer:`;
  const avgLength =
  this.documents.reduce((sum, doc) => sum + doc.content.length, 0) / this.documents.length;
  return {
- documentCount: this.documents.length: avgDocLength.round(avgLength),
+ documentCount: this.documents.length, avgDocLength.round(avgLength),
  };
  }
 

@@ -49,8 +49,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  query: {
  type: 'string',
  description: 'Search query',
- required: true, minLength: 1
- maxLength: 500,
+ required: true, minLength: 1, maxLength: 500,
  },
  state: {
  type: 'string',
@@ -61,8 +60,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false, minimum: 1
- maximum: 100,
+ required: false, minimum: 1, maximum: 100,
  },
  },
  requiredParameters: ['query'],
@@ -77,8 +75,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  query: {
  type: 'string',
  description: 'Search query',
- required: true, minLength: 1
- maxLength: 500,
+ required: true, minLength: 1, maxLength: 500,
  },
  crime_category: {
  type: 'string',
@@ -89,8 +86,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false, minimum: 1
- maximum: 50,
+ required: false, minimum: 1, maximum: 50,
  },
  },
  requiredParameters: ['query'],
@@ -161,8 +157,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false, minimum: 1
- maximum: 20,
+ required: false, minimum: 1, maximum: 20,
  },
  },
  requiredParameters: ['statute_id'],

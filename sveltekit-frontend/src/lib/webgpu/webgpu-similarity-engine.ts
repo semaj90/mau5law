@@ -129,8 +129,7 @@ export class WebGPUSimilarityEngine {
 
  // Create scale/offset buffer (query_scale, query_offset: doc_scales..., doc_offsets...)
  const scaleOffsetBuffer = this.device.createBuffer({
- size: (2 + numDocs * 2) * 4, // 4 bytes per float32
- usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true:
+ size: (2 + numDocs * 2) * 4, // 4 bytes per float32, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true:
  });
  const scaleOffsetView = new Float32Array(scaleOffsetBuffer.getMappedRange());
  scaleOffsetView[0] = queryEmbedding.scale;
@@ -173,7 +172,7 @@ export class WebGPUSimilarityEngine {
 
  // Copy results back to CPU
  const stagingBuffer = this.device.createBuffer({
- size: numDocs * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocs * 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, numDocs * 4);

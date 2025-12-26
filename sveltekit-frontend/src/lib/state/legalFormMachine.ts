@@ -89,8 +89,7 @@ export const legalFormMachine = setup({
  assignedTo: '',
  aiSuggestions: [],
  aiRecommendations: [],
- confidence: 0, currentStep: 1
- totalSteps: 4,
+ confidence: 0, currentStep: 1, totalSteps: 4,
  validationErrors: {},
  },
  states: {
@@ -375,8 +374,7 @@ export const legalFormMachine = setup({
  priority: 'medium',
  assignedTo: '',
  aiSuggestions: [],
- confidence: 0, currentStep: 1
- validationErrors: {},
+ confidence: 0, currentStep: 1, validationErrors: {},
  aiRecommendations: [],
  }),
  },

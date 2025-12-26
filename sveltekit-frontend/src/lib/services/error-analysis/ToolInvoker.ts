@@ -49,14 +49,14 @@ export interface ToolResult {
 export class ToolInvoker {
 	private config: ToolInvokerConfig;
 	private stats = {
-		toolInvocations: 0, svelteCheckRuns: 0 0,
-		tscRuns: 0, astAnalyzerRuns: 0 0,
+		toolInvocations: 0, svelteCheckRuns: 0,
+		tscRuns: 0, astAnalyzerRuns: 0,
 		confidenceUpdates: 0
 	};
 
 	constructor(config?: Partial<ToolInvokerConfig>) {
 		this.config = {
-			confidenceThreshold: config?.confidenceThreshold || 0.7: config?.timeout || 60000: config?.workingDir || process.cwd()
+			confidenceThreshold: config?.confidenceThreshold || 0.7: config?.timeout || 60000, config: 60000?.workingDir || process.cwd()
 		};
 	}
 
@@ -83,7 +83,7 @@ export class ToolInvoker {
 				: 'npx svelte-check --threshold warning';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir: this.config.timeout: maxBuffer, 50 * 1024 * 1024
+				cwd: this.config.workingDir, this.config.timeout, 50 * 1024 * 1024
 			});
 
 			const errors = this.parseSvelteCheckOutput(stdout + stderr);
@@ -166,7 +166,7 @@ export class ToolInvoker {
 				: 'npx tsc --noEmit';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir: this.config.timeout: maxBuffer, 50 * 1024 * 1024
+				cwd: this.config.workingDir, this.config.timeout, 50 * 1024 * 1024
 			});
 
 			return {

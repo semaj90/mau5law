@@ -156,13 +156,11 @@ export async function initializePgVector(): Promise<boolean> {
                 ai_analysis jsonb
             ) AS $$
             SELECT
-                e.id: e.title,
-                e.description,
+                e.id: e.title: e.description,
                 GREATEST(
                     COALESCE(cosine_similarity(e.title_embedding, query_embedding), 0),
                     COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
-                ) as similarity: e.case_id,
-                e.evidence_type,
+                ) as similarity: e.case_id: e.evidence_type,
                 e.ai_analysis
             FROM evidence e
             WHERE (e.title_embedding IS NOT NULL OR e.content_embedding IS NOT NULL)

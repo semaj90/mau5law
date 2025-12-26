@@ -7,8 +7,7 @@ export class AccessibilityUtils {
  * Check if browser supports required features
  */
  static checkBrowserCompatibility(): {
- supported: boolean;
- issues: string[];
+ supported: boolean;, issues: string[];
  } {
  const issues: string[] = [];
 
@@ -152,8 +151,7 @@ export class AccessibilityUtils {
  static checkColorContrast(
  foreground: string, background: string
  ): {
- ratio: number;
- wcagAA: boolean;
+ ratio: number;, wcagAA: boolean;
  wcagAAA: boolean;
  } {
  const fgLuminance = this.getLuminance(foreground);
@@ -165,7 +163,7 @@ export class AccessibilityUtils {
  const ratio = (lighter + 0.05) / (darker + 0.05);
 
  return {
- ratio: Math.round(ratio * 100) / 100: wcagAA >= 4.5, // Normal text
+ ratio: Math.round(ratio * 100) /, 100: wcagAA >= 4.5, // Normal text
  wcagAAA: ratio >= 7, // Enhanced contrast
  };
  }
@@ -228,8 +226,7 @@ export class AccessibilityUtils {
  * Validate WCAG compliance
  */
  static validateWCAGCompliance(): {
- compliant: boolean;
- issues: string[];
+ compliant: boolean;, issues: string[];
  } {
  const issues: string[] = [];
 

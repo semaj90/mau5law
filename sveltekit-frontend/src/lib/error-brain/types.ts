@@ -31,8 +31,7 @@ export type RunProgress = {
  runId: string;
  createdAt: number;
  step: RunStep;
- pct: number; // 0..100
- counters: {
+ pct: number; // 0..100, counters: {
  filesScanned: number;
  errorsFound: number;
  patchesProposed: number;

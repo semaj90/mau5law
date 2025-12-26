@@ -57,7 +57,7 @@ export interface HealthUpdatesState {
  */
 export const healthUpdatesState: Writable<HealthUpdatesState> = writable({
  connectionState: 'disconnected',
- lastUpdateTime: null, reconnectionAttempts: 0 0,
+ lastUpdateTime: null, reconnectionAttempts: 0,
  isUsingSSE: false,
 });
 

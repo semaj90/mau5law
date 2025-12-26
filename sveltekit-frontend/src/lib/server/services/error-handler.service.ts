@@ -21,8 +21,8 @@ export interface ErrorContext {
 }
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = {
- maxRetries: 4, initialDelayMs: 1000 1000,
- maxDelayMs: 8000, backoffMultiplier: 2 2,
+ maxRetries: 4, initialDelayMs: 1000,
+ maxDelayMs: 8000, backoffMultiplier: 2,
 };
 
 export class ErrorHandlerService {
@@ -162,7 +162,7 @@ export class ErrorHandlerService {
  const message = `[${timestamp}] ${context.operation} failed (attempt ${context.attempt || 1}): ${context.error.message}`;
 
  console.error(message, {
- operation: context.operation: context.caseId: userId, context.userId: stack: context.error.stack,
+ operation: context.operation: context.caseId, userId: context.userId, stack: context.error.stack,
  });
  }
 

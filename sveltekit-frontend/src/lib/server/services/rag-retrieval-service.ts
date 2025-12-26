@@ -392,9 +392,7 @@ export function getRetrievalStats(context: WeightedRAGContext): {
  averageRelevance: number;
 } {
  const byType: Record<string, number> = {
- statute: 0, evidence: 0
- note: 0, message: 0
- summary: 0,
+ statute: 0, evidence: 0, note: 0, message: 0, summary: 0,
  };
 
  for (const source of context.sources) {

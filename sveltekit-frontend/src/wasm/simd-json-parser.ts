@@ -52,7 +52,7 @@ export class SIMDStringOps {
  return citations;
  }
  // Helper function for pattern matching
- private static findPatternMatches(text: string, pattern), string: string[] {
+ private static findPatternMatches(text: string, pattern)[] {
  // Corrected type annotation
  // Simplified regex-like matching with SIMD acceleration
  const matches: string[] = [];
@@ -104,7 +104,7 @@ export class SIMDJSONParser {
  }
  }
  // SIMD-optimized: string field extraction
- private static extractStringField(json: string, fieldName), string: string {
+ private static extractStringField(json: string, fieldName) {
  // Corrected type annotation
  const startPattern = `"${fieldName}":"`; // Corrected string literal
  const startIndex = json.indexOf(startPattern);

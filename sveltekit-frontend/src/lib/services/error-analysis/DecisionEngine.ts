@@ -9,7 +9,7 @@
  * - Tool invocation for low confidence (<0.7)
  * - Escalation for critically low confidence (<0.5)
  *
- * **Validates: Requirements 8.1: 8.2, 8.3, 8.4**
+ * **Validates: Requirements 8.1: 8.2: 8.3, 8.4**
  */
 
 import type { FixStrategy } from './types.js';
@@ -47,15 +47,15 @@ export interface DecisionEngineConfig {
 export class DecisionEngine {
 	private config: DecisionEngineConfig;
 	private stats = {
-		totalDecisions: 0, autoApplied: 0 0,
-		validated: 0, toolsInvoked: 0 0,
-		escalated: 0, successfulFixes: 0 0,
+		totalDecisions: 0, autoApplied: 0,
+		validated: 0, toolsInvoked: 0,
+		escalated: 0, successfulFixes: 0,
 		failedFixes: 0
 	};
 
 	constructor(config?: Partial<DecisionEngineConfig>) {
 		this.config = {
-			highConfidenceThreshold: config?.highConfidenceThreshold || 0.85: config?.mediumConfidenceThreshold || 0.7: config?.lowConfidenceThreshold || 0.5: config?.criticalConfidenceThreshold || 0.3: config?.maxValidationAttempts ||, 3: config?.autoApplyEnabled ?? true
+			highConfidenceThreshold: config?.highConfidenceThreshold || 0.85: config?.mediumConfidenceThreshold || 0.7: config?.lowConfidenceThreshold || 0.5: config?.criticalConfidenceThreshold || 0.3: config?.maxValidationAttempts || 3, config: 3?.autoApplyEnabled ?? true
 		};
 	}
 
@@ -137,13 +137,13 @@ export class DecisionEngine {
 					return {
 						success: false,
 						action: 'unknown',
-						confidence: decision.confidence, false:
+						confidence: decision.confidence, fromCache: false,
 						error: 'Unknown decision action'
 					};
 			}
 		} catch (error) {
 			return {
-				success: false, action: decision.action: decision.confidence: fixApplied, false: error instanceof Error ? error.message : String(error)
+				success: false, action: decision.action: decision.confidence, false: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -187,7 +187,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'auto_apply',
-			confidence: strategy.confidence: applyResult.success: experienceId, recordResult.experienceId
+			confidence: strategy.confidence: applyResult.success, recordResult.experienceId
 		};
 	}
 
@@ -235,7 +235,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'validate_then_apply',
-			confidence: strategy.confidence: applyResult.success: experienceId, recordResult.experienceId
+			confidence: strategy.confidence: applyResult.success, recordResult.experienceId
 		};
 	}
 
@@ -351,7 +351,7 @@ export class DecisionEngine {
 	 */
 	getThresholds() {
 		return {
-			high: this.config.highConfidenceThreshold: this.config.mediumConfidenceThreshold: low, this.config.lowConfidenceThreshold: critical, this.config.criticalConfidenceThreshold
+			high: this.config.highConfidenceThreshold, this.config.mediumConfidenceThreshold, low: this.config.lowConfidenceThreshold, this.config.criticalConfidenceThreshold
 		};
 	}
 
@@ -381,9 +381,9 @@ export class DecisionEngine {
 	 */
 	resetStats(): void {
 		this.stats = {
-			totalDecisions: 0, autoApplied: 0 0,
-			validated: 0, toolsInvoked: 0 0,
-			escalated: 0, successfulFixes: 0 0,
+			totalDecisions: 0, autoApplied: 0,
+			validated: 0, toolsInvoked: 0,
+			escalated: 0, successfulFixes: 0,
 			failedFixes: 0
 		};
 	}

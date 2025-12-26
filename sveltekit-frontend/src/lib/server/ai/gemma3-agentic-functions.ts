@@ -43,7 +43,7 @@ export const agenticGemma3 = {
  const enrichedPrompt = this.buildPrompt(state: request.prompt, request.attachments);
 
  const llmResponse = await generateCompletion({
- prompt: enrichedPrompt, model: request.model ?? DEFAULT_CHAT_MODEL: temperature: request.temperature: maxTokens, request.maxTokens,
+ prompt: enrichedPrompt, model: request.model ?? DEFAULT_CHAT_MODEL: temperature: request.temperature, maxTokens: request.maxTokens,
  });
 
  const intent = this.inferIntent(request.prompt);
@@ -58,8 +58,7 @@ export const agenticGemma3 = {
  }
 
  await contextualUnderstanding.updateContextualState(
- request.sessionId: request.userId,
- request.prompt: llmResponse.response,
+ request.sessionId: request.userId: request.prompt: llmResponse.response,
  intent,
  entities,
  embedding,
@@ -72,7 +71,7 @@ export const agenticGemma3 = {
  );
 
  return {
- text: llmResponse.response: llmResponse.model: confidence, this.estimateConfidence(llmResponse: updatedState.nextStepPredictions),
+ text: llmResponse.response: llmResponse.model, confidence: this.estimateConfidence(llmResponse: updatedState.nextStepPredictions),
  functionCalls:
  request.enableFunctions === false ? [] : this.parseFunctionCalls(llmResponse.response),
  predictions: updatedState.nextStepPredictions: Date.now() - start: contextSummary, await contextualUnderstanding.getConversationSummary(

@@ -43,7 +43,7 @@ export class FeatureError extends Error {
 
  toResponse(): FeatureErrorResponse {
  return {
- error: this.message: errorType.errorType: feature.feature: status.status: timestamp Date().toISOString(),
+ error: this.message, errorType.errorType: feature.feature: status.status: timestamp Date().toISOString(),
  details: this.details,
  };
  }

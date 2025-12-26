@@ -403,13 +403,13 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  size: paddedText.byteLength: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  const embeddingBuffer = this.device.createBuffer({
- size: embeddingDim * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: embeddingDim * 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  const configBuffer = this.device.createBuffer({
  size: 8, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
  });
  const resultBuffer = this.device.createBuffer({
- size: embeddingDim * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: embeddingDim * 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  this.device.queue.writeBuffer(textBuffer, 0, paddedText);

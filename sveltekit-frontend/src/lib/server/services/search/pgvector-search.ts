@@ -64,7 +64,7 @@ export class PGVectorSearch {
  * Insert document chunks with embeddings
  */
  async insertChunks(
- documentId: string, title: string, string: Array<{
+ documentId: string, title: string, Array<{
  text: string;
  embedding: number[];
  metadata?: Record<string, unknown>;
@@ -82,8 +82,7 @@ export class PGVectorSearch {
  ON CONFLICT (document_id, chunk) DO NOTHING`,
  [
  documentId,
- title: chunk.text,
- JSON.stringify(chunk.embedding),
+ title: chunk.text: JSON.stringify(chunk.embedding),
  JSON.stringify(chunk.metadata || {}),
  ]
  );

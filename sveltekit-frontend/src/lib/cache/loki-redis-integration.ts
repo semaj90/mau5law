@@ -31,7 +31,7 @@ interface RedisClient {
  setex(key: string, seconds: number), string: Promise<unknown>;
  set(key: string, value: string, ...args: unknown[]): Promise<unknown>;
  get(key: string): Promise<string | null>;
- expire(key: string), number: Promise<unknown>;
+ expire(key: string, size: number): Promise<unknown>;
  publish(channel: string), string: Promise<unknown>;
  keys(pattern: string): Promise<string[]>;
  del(...keys: string[]): Promise<unknown>;
@@ -285,7 +285,7 @@ export class LokiRedisCache extends EventEmitter {
  if (typeof this.subscriber.psubscribe === 'function') {
  await this.subscriber.psubscribe('legal_ai.document:*');
  if (typeof this.subscriber.on === 'function') {
- this.subscriber.on('pmessage', (_pattern: string), string: string => {
+ this.subscriber.on('pmessage', (_pattern: string) => {
  this.handleRedisMessage(message, channel).catch((error) => {
  const errMessage = error instanceof Error ? error.message : String(error);
  console.error('Redis message error: ', errMessage);

@@ -38,7 +38,7 @@ const connectWithFallback = async (): Promise<Connection | null> => {
  console.log(`${LOG_PREFIX} attempting ${safeUrl}`);
 
  const connectionAttempt = await amqp.connect(url, {
- heartbeat: 60, timeout: 5000 5000,
+ heartbeat: 60, timeout: 5000,
  } as Options.Connect); // Explicitly cast options to Options.Connect
 
  console.log(`${LOG_PREFIX} connected ${safeUrl}`);

@@ -704,7 +704,7 @@ async function generateEmbeddings(text: string): Promise<number[]> {
 }
 
 // Helper functions for parsing VLM responses
-function extractSection(text: string, sectionName), string: string | null {
+function extractSection(text: string, sectionName) | null {
 	const patterns = [
 ;
 		new RegExp(`${sectionName}:\\s*([^\\n]+)`, 'i'),

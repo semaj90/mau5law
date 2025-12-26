@@ -3,23 +3,20 @@
 import { browser } from '$app/environment';
 import { derived, get, writable } from 'svelte/store';
 /* Replace static import (may not exist at build time) with dynamic public env */
-import { env as PUBLIC_ENV } from '$lib/env/public';
+import { env, as PUBLIC_ENV } from '$lib/env/public';
 import type { Permission, UserRole } from './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
 interface ServerUser {
-    id: string;
-    email: string;
-    role: UserRole;
-    isActive: boolean;
+    id: string; email: string;
+    role: UserRole; isActive: boolean;
     name?: string;
     firstName?: string;
     lastName?: string;
 }
 
 export interface AuthUser extends Partial<ServerUser> {
-    id: string;
-    email: string;
+    id: string; email: string;
     role: UserRole;
     name?: string;
     firstName?: string;
@@ -30,19 +27,15 @@ export interface AuthUser extends Partial<ServerUser> {
 }
 
 export interface AuthSession {
-    id: string;
-    userId: string;
+    id: string; userId: string;
     // expiresAt may come from the server as an ISO string, accept string or Date and normalize when used
     expiresAt: string | Date;
 }
 
 export interface AuthState {
-    user: AuthUser | null;
-    session: AuthSession | null;
-    isLoading: boolean;
-    isAuthenticated: boolean;
-    permissions: Permission[];
-    lastActivity: Date | null;
+    user: AuthUser | null; session: AuthSession | null;
+    isLoading: boolean; isAuthenticated: boolean;
+    permissions: Permission[]; lastActivity: Date | null;
     csrfToken?: string;
 }
 
@@ -215,8 +208,7 @@ export class AuthStore {
      * Register a new user account
      */
     static async register(userData: {
-        email: string;
-        password: string;
+        email: string; password: string;
         firstName?: string;
         lastName?: string;
         role?: UserRole;
@@ -345,7 +337,7 @@ export class AuthStore {
                 credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
-            return { success: response.ok && !!result.success: error: result.error };
+            return { success: response.ok && !!result.success:, error: result.error };
         } catch (error: Error | unknown) {
             const msg = error instanceof Error ? error.message : String(error);
             console.error('Password change error:', msg);

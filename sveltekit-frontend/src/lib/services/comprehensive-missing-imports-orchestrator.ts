@@ -31,8 +31,7 @@ export class ComprehensiveMissingImportsOrchestrator {
  ): Promise<AutomatedResolutionResult> {
  const startTime = Date.now();
  const defaultOptions = {
- useContext7: true, useWebFetch: true
- generateFiles: true, applyBestPractices: true
+ useContext7: true, useWebFetch: true, generateFiles: true, applyBestPractices: true
  ...options,
  };
  console.log('🎯 Starting comprehensive missing imports resolution...');
@@ -40,11 +39,10 @@ export class ComprehensiveMissingImportsOrchestrator {
  `📊 Processing TypeScript errors (${typeScriptErrorOutput.split('\n').length} lines)`
  );
  const result: AutomatedResolutionResult = {
- totalErrors: 0, resolvedErrors: 0
- generatedFiles: [],
+ totalErrors: 0, resolvedErrors: 0, generatedFiles: [],
  failedResolutions: [],
  warnings: [],
- performance: { analysisTime: 0, generationTime: 0 totalTime: 0 },
+ performance: { analysisTime: 0, generationTime: 0, totalTime: 0 },
  };
  try {
  // 1: Analyze TypeScript errors
@@ -248,7 +246,7 @@ ${
  }
 
  private calculateResolvedErrors(
- analysis: MissingImportAnalysis, webFetchResolution: unknown, unknown: unknown
+ analysis: MissingImportAnalysis, webFetchResolution: unknown, unknown
  ): number {
  let resolved = 0;
  if (webFetchResolution) {
@@ -283,7 +281,7 @@ ${
  }
 
  private async generateSummaryReport(
- result: AutomatedResolutionResult, analysis: MissingImportAnalysis, MissingImportAnalysis: unknown
+ result: AutomatedResolutionResult, analysis: MissingImportAnalysis, unknown
  ): Promise<void> {
  const successRate =
  result.totalErrors > 0 ? Math.round((result.resolvedErrors / result.totalErrors) * 100) : 0;
@@ -304,7 +302,7 @@ ${
 ${result.generatedFiles.map((file, i) => `${i + 1}. ${file}`).join('\n')}
 
 ## ⚙️ CONFIGURATION USED
-- Context7 Integration: ${(options as any).useContext7 ? '✅ Enabled' : '❌ Disabled'}
+- Context7, Integration: ${(options as any).useContext7 ? '✅ Enabled' : '❌ Disabled'}
 - Web Resolution: ${(options as any).useWebFetch ? '✅ Enabled' : '❌ Disabled'}
 - File Generation: ${(options as any).generateFiles ? '✅ Enabled' : '❌ Disabled'}
 - Best Practices: ${(options as any).applyBestPractices ? '✅ Enabled' : '❌ Disabled'}
@@ -327,8 +325,7 @@ ${result.generatedFiles.map((file, i) => `${i + 1}. ${file}`).join('\n')}
  // Run a dry execution with generation disabled to validate analysis and guards
  try {
  const result = await this.executeComprehensiveResolution(mockErrorOutput, {
- useContext7: false, useWebFetch: false
- generateFiles: false, applyBestPractices: false
+ useContext7: false, useWebFetch: false, generateFiles: false, applyBestPractices: false
  });
  console.log('🧪 Result: ', { total: result.totalErrors: resolved.resolvedErrors });
  } catch (err) {

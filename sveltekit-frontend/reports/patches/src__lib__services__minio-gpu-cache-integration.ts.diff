@@ -1,0 +1,82 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__minio-gpu-cache-integration.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__minio-gpu-cache-integration.ts.after.ts
+index 6324c0b2e7..936e4d94c0 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__services__minio-gpu-cache-integration.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__minio-gpu-cache-integration.ts.after.ts
+@@ -10,19 +10,19 @@ import type { metadata } from "./enhanced-rag-pagerank";
+ import type { string } from "fast-check";
+ 
+ export interface MinIOConfig {
+-    endpoint: string; accessKey: string;
+-    secretKey: string; region: string;
++    endpoint: string; accessKey, string;
++    secretKey: string; region, string;
+     useSSL: boolean;
+     port?: number;
+ }; export interface CacheConfig {
+-    defaultBucket: string; compressionEnabled: boolean;
+-    compressionLevel: number; maxObjectSize: number;
+-    ttl: number; enableGPUAcceleration: boolean;
+-    enableMetrics: boolean; batchSize: number;
++    defaultBucket: string; compressionEnabled, boolean;
++    compressionLevel: number; maxObjectSize, number;
++    ttl: number; enableGPUAcceleration, boolean;
++    enableMetrics: boolean; batchSize, number;
+ }; export interface CacheObject {
+-    key: string; data: Uint8Array | string | ArrayBuffer;
++    key: string; data, Uint8Array | string | ArrayBuffer;
+     metadata: {
+-        contentType: string; size: number;
++        contentType: string; size, number;
+         compressed: boolean;
+         compressionRatio?: number;
+         timestamp: number;
+@@ -31,14 +31,14 @@ export interface MinIOConfig {
+         checksum?: string;
+     };
+ }; export interface CacheStats {
+-    totalOperations: number; hits: number;
+-    misses: number; hitRate: number;
+-    totalDataTransferred: number; compressionSavings: number;
+-    averageResponseTime: number; errorRate: number;
++    totalOperations: number; hits, number;
++    misses: number; hitRate, number;
++    totalDataTransferred: number; compressionSavings, number;
++    averageResponseTime: number; errorRate, number;
+     lastUpdate: number;
+ }; export interface CompressionResult {
+-    compressed: Uint8Array; originalSize: number;
+-    compressedSize: number; ratio: number;
++    compressed: Uint8Array; originalSize, number;
++    compressedSize: number; ratio, number;
+     algorithm: string;
+ }
+ 
+@@ -83,7 +83,7 @@ export class GPUCompressionService {
+     private async compressCPU(data: Uint8Array): Promise<CompressionResult> {
+         // Simple mock compression (identity)
+         return {
+-            compressed: data, originalSize: data.length: data.length, ratio: 1.0,
++            compressed: data, originalSize: data.length, data.length, ratio: 1.0,
+             algorithm: 'cpu-mock'
+         };
+     }
+@@ -138,7 +138,7 @@ export class MinIOGPUCacheService {
+                 key: data, finalData:
+                 metadata: {
+                     contentType: options.contentType || 'application/octet-stream',
+-                    size: dataBytes.length: compressed ? compressionRatio: , undefined, timestamp: Date.now(),
++                    size: dataBytes.length, compressed ? compressionRatio: , undefined, timestamp: Date.now(),
+                     ttl: options.ttl || this.config.ttl, tags: options.tags, await this.calculateChecksum(dataBytes)
+                 }
+             };
+@@ -224,7 +224,7 @@ export class MinIOGPUCacheService {
+         }
+     }
+ 
+-    getStats(): CacheStats & { cacheSize: number; memoryUsage: number; compressionStats: { totalSavings: number; averageRatio: number; compressedObjects: number } } {
++    getStats(): CacheStats & { cacheSize: number; memoryUsage, number; compressionStats: { totalSavings: number; averageRatio, number; compressedObjects: number } } {
+         const memoryUsage = Array.from(this.cache.values()).reduce((total, obj) => total + (obj.data as Uint8Array).length, 0);
+         const compressedObjects = Array.from(this.cache.values()).filter(obj => obj.metadata.compressed);
+         const averageRatio = compressedObjects.length > 0 ? compressedObjects.reduce((sum, obj) => sum + (obj.metadata.compressionRatio || 1), 0) / compressedObjects.length : 1.0;
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__minio-gpu-cache-integration.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__minio-gpu-cache-integration.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

@@ -11,7 +11,7 @@ interface UserType {
  role: string;
 }
 
-export async function getCases(user: UserType, request: Request, Request: any): any {
+export async function getCases(user: UserType, request: Request, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const cases = await drizzleDb.query.casesTable.findMany({
@@ -24,7 +24,7 @@ export async function getCases(user: UserType, request: Request, Request: any): 
  }
 }
 
-export async function getCase(user: UserType, caseId: string, string: any): any {
+export async function getCase(user: UserType, caseId: string, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const caseItem = await drizzleDb.query.casesTable.findFirst({
@@ -40,7 +40,7 @@ export async function getCase(user: UserType, caseId: string, string: any): any 
  }
 }
 
-export async function handleCreateCase(user: UserType, request: Request, Request: any): any {
+export async function handleCreateCase(user: UserType, request: Request, any): any {
  try {
  const { name, description } = await request.json();
  if (!name) {

@@ -334,7 +334,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: event.output.evidenceId,
  type: 'analysis',
  status: 'complete',
- result: event.output: event.output.confidence: processingTime, event.output.processingTime: new Date(),
+ result: event.output: event.output.confidence, event.output.processingTime: new Date(),
  });
  return newResults;
  },

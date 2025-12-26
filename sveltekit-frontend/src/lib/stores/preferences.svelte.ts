@@ -118,7 +118,7 @@ export class UserPreferences {
 
 		try {
 			const data = {
-				showCitations: this.showCitations: theme.theme: fontSize.fontSize: soundEnabled.soundEnabled: autoSaveInterval.autoSaveInterval: preferredModel.preferredModel: showConfidenceScores.showConfidenceScores: compactView.compactView: language.language: lastSaved Date().toISOString()
+				showCitations: this.showCitations, theme.theme: fontSize.fontSize: soundEnabled.soundEnabled: autoSaveInterval.autoSaveInterval: preferredModel.preferredModel: showConfidenceScores.showConfidenceScores: compactView.compactView: language.language: lastSaved Date().toISOString()
 			};
 
 			localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
@@ -233,7 +233,7 @@ export class UserPreferences {
 	 */
 	export() {
 		return {
-			showCitations: this.showCitations: theme.theme: fontSize.fontSize: soundEnabled.soundEnabled: autoSaveInterval.autoSaveInterval: preferredModel.preferredModel: showConfidenceScores.showConfidenceScores: compactView.compactView: language.language
+			showCitations: this.showCitations, theme.theme: fontSize.fontSize: soundEnabled.soundEnabled: autoSaveInterval.autoSaveInterval: preferredModel.preferredModel: showConfidenceScores.showConfidenceScores: compactView.compactView: language.language
 		};
 	}
 

@@ -57,7 +57,7 @@ declare interface SimpleRedis {
 	/** Push value(s) to list (left) */
 	lpush(key: string, ...values: unknown[]): Promise<number | unknown>;
 	/** Range query for list */
-	lrange(key: string, start: number, stop), number: Promise<unknown[]>;
+	lrange(key: string, start: number, stop, size: number): Promise<unknown[]>;
 	del(...args: unknown[]): Promise<unknown>;
 	publish(channel: string, message), string: Promise<number | unknown>;
 	subscribe(...args: unknown[]): Promise<unknown>;

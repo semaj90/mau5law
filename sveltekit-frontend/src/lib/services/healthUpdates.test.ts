@@ -30,8 +30,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  // Reset store state
  healthUpdatesState.set({
  connectionState: 'disconnected',
- lastUpdateTime: null, reconnectionAttempts: 0
- isUsingSSE: false,
+ lastUpdateTime: null, reconnectionAttempts: 0, isUsingSSE: false,
  });
 
  healthUpdates.set([]);
@@ -306,7 +305,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  ...state,
  connectionState: 'connected',
  lastUpdateTime: new Date(),
- reconnectionAttempts: 0, isUsingSSE: false, false:
+ reconnectionAttempts: 0, isUsingSSE: false,
  }));
 
  expect(stateValue.connectionState).toBe('connected');

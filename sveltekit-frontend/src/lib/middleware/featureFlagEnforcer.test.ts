@@ -82,8 +82,7 @@ describe('FeatureFlagEnforcer', () => {
  describe('Error Response Creation', () => {
  it('should create 403 response for disabled error-brain', () => {
  const result = {
- allowed: false, status: 403
- message: 'Error-Brain feature is not enabled',
+ allowed: false, status: 403, message: 'Error-Brain feature is not enabled',
  context: { feature: 'errorBrain' as const },
  };
 
@@ -93,8 +92,7 @@ describe('FeatureFlagEnforcer', () => {
 
  it('should create 503 response for disabled legal-ai', () => {
  const result = {
- allowed: false, status: 503
- message: 'Legal-AI service is unavailable',
+ allowed: false, status: 503, message: 'Legal-AI service is unavailable',
  context: { feature: 'legalAi' as const },
  };
 
@@ -104,8 +102,7 @@ describe('FeatureFlagEnforcer', () => {
 
  it('should include error details in response body', async () => {
  const result = {
- allowed: false, status: 403
- message: 'Feature disabled',
+ allowed: false, status: 403, message: 'Feature disabled',
  context: { feature: 'errorBrain' as const },
  };
 
@@ -182,8 +179,7 @@ describe('FeatureFlagEnforcer', () => {
 
  it('should validate denied result with status and message', () => {
  const result = {
- allowed: false, status: 403
- message: 'Feature disabled',
+ allowed: false, status: 403, message: 'Feature disabled',
  };
  expect(FeatureFlagEnforcer.validateResult(result)).toBe(true);
  });
@@ -205,8 +201,7 @@ describe('FeatureFlagEnforcer', () => {
 
  it('should reject invalid status codes', () => {
  const result = {
- allowed: false, status: 200
- message: 'Feature disabled',
+ allowed: false, status: 200, message: 'Feature disabled',
  };
  expect(FeatureFlagEnforcer.validateResult(result)).toBe(false);
  });

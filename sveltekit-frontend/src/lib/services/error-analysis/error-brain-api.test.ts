@@ -21,8 +21,7 @@ describe('ErrorBrainAPI', () => {
       const errors: AnalysisError[] = [
         {
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
         },
@@ -59,8 +58,7 @@ describe('ErrorBrainAPI', () => {
       const errors: AnalysisError[] = [
         {
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
           code: 'TS2322',
@@ -76,8 +74,7 @@ describe('ErrorBrainAPI', () => {
       const errors: AnalysisError[] = [
         {
           file: 'test.svelte',
-          line: 5, column: 2
-          message: 'Svelte error',
+          line: 5, column: 2, message: 'Svelte error',
           type: 'svelte',
           severity: 'warning',
         },
@@ -92,15 +89,13 @@ describe('ErrorBrainAPI', () => {
       const errors: AnalysisError[] = [
         {
           file: 'test1.ts',
-          line: 10, column: 5
-          message: 'Error 1',
+          line: 10, column: 5, message: 'Error 1',
           type: 'typescript',
           severity: 'error',
         },
         {
           file: 'test2.ts',
-          line: 20, column: 10
-          message: 'Error 2',
+          line: 20, column: 10, message: 'Error 2',
           type: 'typescript',
           severity: 'warning',
         },
@@ -115,8 +110,7 @@ describe('ErrorBrainAPI', () => {
       const errors: AnalysisError[] = [
         {
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
         },
@@ -133,8 +127,7 @@ describe('ErrorBrainAPI', () => {
       const invalidErrors = [
         {
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'invalid-type', // invalid type
           severity: 'error',
         },
@@ -149,8 +142,7 @@ describe('ErrorBrainAPI', () => {
       const invalidErrors = [
         {
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'invalid-severity', // invalid severity
         },
@@ -511,8 +503,7 @@ describe('ErrorBrainAPI', () => {
       const errors: AnalysisError[] = [
         {
           file: 'test.ts',
-          line: 10, column: 5
-          message: 'Type error',
+          line: 10, column: 5, message: 'Type error',
           type: 'typescript',
           severity: 'error',
         },

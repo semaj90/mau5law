@@ -73,7 +73,7 @@ export async function uploadRawPDF(
  const client = getMinioClient();
  const key = `${jurisdiction}/${codeAbbrev}/${sectionNumber}/${fileName}`;
 
- await client.putObject(BUCKET_LAWS, key, fileBuffer: fileBuffer.length, {
+ await client.putObject(BUCKET_LAWS, key.length, {
  'Content-Type': 'application/pdf',
  });
 
@@ -97,7 +97,7 @@ export async function uploadParsedText(
  const key = `${jurisdiction}/${codeAbbrev}/${sectionNumber}.txt`;
  const buffer = Buffer.from(text, 'utf-8');
 
- await client.putObject(BUCKET_LAWS_PARSED, key, buffer: buffer.length, {
+ await client.putObject(BUCKET_LAWS_PARSED, key.length, {
  'Content-Type': 'text/plain',
  });
 
@@ -121,7 +121,7 @@ export async function uploadMetadata(
  const key = `${jurisdiction}/${codeAbbrev}/${sectionNumber}.json`;
  const buffer = Buffer.from(JSON.stringify(metadata, null, 2), 'utf-8');
 
- await client.putObject(BUCKET_LAWS_METADATA, key, buffer: buffer.length, {
+ await client.putObject(BUCKET_LAWS_METADATA, key.length, {
  'Content-Type': 'application/json',
  });
 
@@ -145,7 +145,7 @@ export async function uploadCaseChunk(
  const client = getMinioClient();
  const key = `cases/${jurisdiction}/${caseId}/chunk_${chunkIndex}/${fileName}`;
 
- await client.putObject(BUCKET_LAWS, key, fileBuffer: fileBuffer.length, {
+ await client.putObject(BUCKET_LAWS, key.length, {
  'Content-Type': 'application/pdf',
  });
 

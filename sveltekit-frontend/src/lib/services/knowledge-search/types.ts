@@ -210,8 +210,7 @@ export interface ToolResult {
 // ============================================================================
 
 export interface RoutePattern {
-  importPath: string; // e.g., "$lib/components/Button"
-  expectedFiles: string[]; // ["+page.svelte", "+layout.svelte"]
+  importPath: string; // e.g., "$lib/components/Button", expectedFiles: string[]; // ["+page.svelte", "+layout.svelte"]
   routeGroup?: string; // e.g., "(app)"
   parentLayout?: string; // Parent layout path
   errorCount: number; // How many errors reference this
@@ -226,8 +225,7 @@ export interface TransitionMatrix {
 export interface InferredFile {
   path: string; // Full file path
   type: 'page' | 'layout' | 'server' | 'component';
-  confidence: number; // 0.0 - 1.0
-  dependencies: string[]; // Required imports
+  confidence: number; // 0.0 - 1.0, dependencies: string[]; // Required imports
   scaffoldTemplate: string; // Template name to use
 }
 
@@ -297,8 +295,7 @@ export interface ASTMetadata {
 }
 
 export interface ImportInfo {
-  moduleSpecifier: string; // e.g., "$lib/stores/auth"
-  namedImports: string[]; // e.g., ["authStore", "user"]
+  moduleSpecifier: string; // e.g., "$lib/stores/auth", namedImports: string[]; // e.g., ["authStore", "user"]
   defaultImport?: string;
   isTypeOnly: boolean;
 }
@@ -421,8 +418,7 @@ export interface ParsedError {
   file: string;
   line: number;
   column: number;
-  code: string; // e.g., "TS2307", "svelte(missing-declaration)"
-  message: string;
+  code: string; // e.g., "TS2307", "svelte(missing-declaration)", message: string;
   severity: 'error' | 'warning' | 'info';
   category: string; // Classified category
 }

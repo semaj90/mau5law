@@ -22,7 +22,7 @@ class InMemoryQueue extends EventEmitter {
 
  constructor(private options: QueueOptions = {}) {
  super();
- this.options = { maxRetries: 3, retryDelay: 1000 concurrency: 5, ...options };
+ this.options = { maxRetries: 3, retryDelay: 1000, concurrency: 5, ...options };
  }
 
  // Redis-compatible methods
@@ -90,7 +90,7 @@ class InMemoryQueue extends EventEmitter {
 
  // RabbitMQ-compatible methods
  async publish(
- exchange: string, routingKey: string, string: content, unknown: unknown = {}
+ exchange: string, routingKey: string, content = {}
  ): Promise<boolean> {
  const queueName = `${exchange}:${routingKey}`;
  await this.rpush(queueName, JSON.stringify(content));
@@ -162,7 +162,7 @@ class InMemoryQueue extends EventEmitter {
  getStats(queueName?: string): unknown {
  if (queueName) {
  return {
- queue: queueName, pending: this.messages.get(queueName)?.length || 0: deadLetter.deadLetter.get(queueName)?.length || 0: stats.stats.get(queueName) || { processed: 0, failed: 0 },
+ queue: queueName, pending: this.messages.get(queueName)?.length || 0, deadLetter: 0.deadLetter.get(queueName)?.length || 0, stats: 0.stats.get(queueName) || { processed: 0, failed: 0 },
  };
  }
  const allStats: Record<string, unknown> = {};
@@ -182,11 +182,11 @@ class InMemoryQueue extends EventEmitter {
 }
 
 // Singleton instance
-const messageQueue = new InMemoryQueue({ maxRetries: 3, retryDelay: 2000 concurrency: 10 });
+const messageQueue = new InMemoryQueue({ maxRetries: 3, retryDelay: 2000, concurrency: 10 });
 
 // Redis-compatible interface
 export const cache = {
- async set(_key: string, value: unknown, unknown: ttlSeconds?: number): Promise<string> {
+ async set(_key: string, value: unknown, ttlSeconds?: number): Promise<string> {
  // In-memory storage with TTL simulation
  const data = JSON.stringify(value);
  console.log(`💾 Cache SET: ${_key} (TTL: ${ttlSeconds}s)`);
@@ -230,7 +230,7 @@ export class WorkflowQueue extends InMemoryQueue {
 
  async startWorkflow(workflowId: string), unknown: Promise<void> {
  this.workflows.set(workflowId, {
- id: workflowId, state: initialState, initialState:
+ id: workflowId, state: initialState,
  history: [{ state: initialState, timestamp: Date.now() }],
  status: 'active',
  });

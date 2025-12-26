@@ -55,7 +55,7 @@ class CitationService {
  try {
  const citation: Citation = {
  id: crypto.randomUUID(),
- user_id: userId, case_id: data.case_id: data.statute_code: statute_title, data.statute_title: jurisdiction: data.jurisdiction: severity, data.severity: year: data.year: source_type, data.source_type || 'manual',
+ user_id: userId, case_id: data.case_id: data.statute_code, statute_title: data.statute_title, jurisdiction: data.jurisdiction, severity: data.severity, year: data.year, source_type: data.source_type || 'manual',
  highlighted_text: data.highlighted_text: data.notes: new Date(),
  updated_at: new Date(),
  };

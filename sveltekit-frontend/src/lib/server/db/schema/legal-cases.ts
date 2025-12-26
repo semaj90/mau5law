@@ -17,10 +17,8 @@ import {
 export const cases = pgTable('cases', {
  id: uuid('id').primaryKey().defaultRandom(),
  externalId: text('external_id').unique(), // e.g., docket or reporter cite
- caseName: text('case_name').notNull(), // e.g., "People v. Smith"
- jurisdiction: text('jurisdiction').notNull(), // 'CA', 'US', 'NY', etc.
- courtName: text('court_name'), // e.g., "Cal. Ct. App., 2nd Dist."
- decisionDate: timestamp('decision_date', { withTimezone: true }),
+ caseName: text('case_name').notNull(), // e.g., "People v. Smith", jurisdiction: text('jurisdiction').notNull(), // 'CA', 'US', 'NY', etc.
+ courtName: text('court_name'), // e.g., "Cal. Ct. App., 2nd Dist.", decisionDate: timestamp('decision_date', { withTimezone: true }),
  rawDocMinioKey: text('raw_doc_minio_key'), // path to original PDF in MinIO
  langextractJsonMinioKey: text('langextract_json_minio_key'), // path to LangExtract JSON
  langextractHtmlMinioKey: text('langextract_html_minio_key'), // path to LangExtract HTML
@@ -38,10 +36,7 @@ export const crimes = pgTable('crimes', {
  caseId: uuid('case_id')
  .notNull()
  .references(() => cases.id, { onDelete: 'cascade' }),
- crimeCode: text('crime_code').notNull(), // e.g., "PC 211"
- crimeCategory: text('crime_category').notNull(), // e.g., "robbery", "drug", "homicide"
- crimeClassification: text('crime_classification').notNull(), // "felony" | "misdemeanor" | "infraction" | "wobbler"
- attempted: boolean('attempted').default(false),
+ crimeCode: text('crime_code').notNull(), // e.g., "PC 211", crimeCategory: text('crime_category').notNull(), // e.g., "robbery", "drug", "homicide", crimeClassification: text('crime_classification').notNull(), // "felony" | "misdemeanor" | "infraction" | "wobbler", attempted: boolean('attempted').default(false),
  sentencingYear: integer('sentencing_year'),
  sentenceLengthMonths: integer('sentence_length_months'),
  enhancements: jsonb('enhancements'), // array of enhancement strings
@@ -59,8 +54,7 @@ export const caseChunks = pgTable('case_chunks', {
  .references(() => cases.id, { onDelete: 'cascade' }),
  chunkIndex: integer('chunk_index').notNull(),
  sectionType: text('section_type').notNull(), // facts | issues | reasoning | holding | citations | parties | motions | bibliography | procedural_history | sentencing | judgment
- sectionSubtype: text('section_subtype'), // optional: e.g., "motion_to_suppress"
- text: text('text').notNull(), // chunk content
+ sectionSubtype: text('section_subtype'), // optional: e.g., "motion_to_suppress", text: text('text').notNull(), // chunk content
  embedding: vector('embedding', { dimensions: 768 }), // pgvector column
  tokenStart: integer('token_start'),
  tokenEnd: integer('token_end'),

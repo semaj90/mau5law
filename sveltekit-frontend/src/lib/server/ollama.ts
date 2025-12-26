@@ -66,7 +66,7 @@ export async function queryGemma(prompt: string, systemPrompt?: string): Promise
  },
  body: JSON.stringify({
  model: 'gemma:7b',
- messages: stream, false:
+ messages: stream, fromCache: false,
  }),
  });
 

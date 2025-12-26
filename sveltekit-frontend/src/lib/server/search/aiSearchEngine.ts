@@ -133,6 +133,6 @@ export async function aiSearch(query: string, corpus: HelpArticle[]) {
  ranked.sort((a, b) => b.score - a.score);
 
  return {
- disclaimer: GEMMA_TOC_DISCLAIMER, results: ranked, ranked:
+ disclaimer: GEMMA_TOC_DISCLAIMER, results: ranked,
  };
 }

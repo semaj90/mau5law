@@ -1,0 +1,265 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__server__services__CaseScoringServiceGrpc.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__server__services__CaseScoringServiceGrpc.ts.after.ts
+index 329637873c..bc149d598f 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__server__services__CaseScoringServiceGrpc.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__server__services__CaseScoringServiceGrpc.ts.after.ts
+@@ -39,7 +39,7 @@ class PerformanceMonitor {
+  return v.reduce((a, b) => a + b, 0) / v.length;
+  }
+ 
+- getComparison(): { json: number; grpc: number; improvement: number } {
++ getComparison(): { json: number; grpc, number; improvement: number } {
+  const json = this.getAverageMetric('json_processing');
+  const grpc = this.getAverageMetric('grpc_processing');
+  const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
+@@ -49,10 +49,10 @@ class PerformanceMonitor {
+ 
+ // Simple logger - avoid `any`
+ const logger = {
+- info: (msg: string, ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
+- error: (msg: string, ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
+- warn: (msg: string, ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
+- debug: (msg: string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
++ info: (msg, string, ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
++ error: (msg, string, ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
++ warn: (msg, string, ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
++ debug: (msg, string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
+ };
+ 
+ // --- Added: narrow gRPC types moved ahead of the class to avoid "cannot find name" errors
+@@ -85,12 +85,12 @@ type GrpcStreamUpdate = {
+ };
+ 
+ type GrpcWritableStream = {
+- write: (data: any) => void; end: () => void;
++ write: (data, any) => void; end: () => void;
+  on: (event: 'data' | 'error' | 'end', handler: (payload?: unknown) => void) => void;
+ };
+ 
+ type GrpcClientType = {
+- ScoreCase?: (req: unknown, cb: (err: any, res?: GrpcResponse) => void) => void;
++ ScoreCase?: (req: unknown, cb: (err, any, res?: GrpcResponse) => void) => void;
+  StreamScoringUpdates?: () => GrpcWritableStream | undefined;
+  StreamCaseScoring?: () => GrpcWritableStream | undefined;
+ };
+@@ -110,16 +110,16 @@ type OllamaServiceType = {
+  complete?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
+  run?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
+  // allow other helpers on the service without typing everything
+- [k: string]: any;
++ [k: string], any;
+ };
+ 
+ // Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
+ function mapScoringResultToInsert(result: CaseScoringResult): {
+- caseId: string; score: string;
+- confidence: string; criteria: string;
+- recommendations: string; explanation: string;
+- model: string | null; modelVersion: string | null;
+- performanceMetrics: string; createdAt: string;
++ caseId: string; score, string;
++ confidence: string; criteria, string;
++ recommendations: string; explanation, string;
++ model: string | null; modelVersion, string | null;
++ performanceMetrics: string; createdAt, string;
+  riskLevel: string;
+  updatedAt?: string;
+ } {
+@@ -147,46 +147,46 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
+ 
+ // Phoenix Wright AI-Boosted Search Types
+ export interface LegalPrecedent {
+- id: string; title: string;
+- citation: string; court: string;
+- date: string; summary: string;
+- relevanceScore: number; similarity: number;
+- contradictions: string[]; supportingEvidence: string[];
++ id: string; title, string;
++ citation: string; court, string;
++ date: string; summary, string;
++ relevanceScore: number; similarity, number;
++ contradictions: string[]; supportingEvidence, string[];
+ }; export interface ContradictionAnalysis {
+  type: 'direct' | 'implied' | 'factual' | 'legal'; severity: 'high' | 'medium' | 'low';
+- description: string; evidence: string[];
+- precedents: string[]; recommendation: string;
++ description: string; evidence, string[];
++ precedents: string[]; recommendation, string;
+ }; export interface EvidenceMatch {
+  evidenceId: string; type: 'document' | 'witness' | 'physical' | 'digital';
+- relevance: number; confidence: number;
+- contradictions: ContradictionAnalysis[]; supportingPrecedents: LegalPrecedent[];
++ relevance: number; confidence, number;
++ contradictions: ContradictionAnalysis[]; supportingPrecedents, LegalPrecedent[];
+  explanation: string;
+ }; export interface PhoenixWrightSearchRequest {
+- caseId: string; query: string;
++ caseId: string; query, string;
+  evidenceIds: string[];
+  jurisdiction?: string;
+  caseType?: string;
+- timeRange?: { start: string; end: string };
++ timeRange?: { start: string; end, string };
+  maxResults?: number;
+  includeContradictions?: boolean;
+  semanticThreshold?: number;
+ }; export interface PhoenixWrightSearchResult {
+- caseId: string; query: string;
+- precedents: LegalPrecedent[]; contradictions: ContradictionAnalysis[];
+- evidenceMatches: EvidenceMatch[]; rankingExplanation: string;
+- confidence: number; searchTime: number;
+- modelUsed: string; disclaimer: string;
++ caseId: string; query, string;
++ precedents: LegalPrecedent[]; contradictions, ContradictionAnalysis[];
++ evidenceMatches: EvidenceMatch[]; rankingExplanation, string;
++ confidence: number; searchTime, number;
++ modelUsed: string; disclaimer, string;
+ }
+ 
+ // YOᴿHa UI Enhancement Types
+ export interface YohaUIConfig {
+- theme: 'phoenix' | 'detective' | 'legal'; animations: boolean;
+- soundEffects: boolean; autoAdvance: boolean;
+- showConfidence: boolean; highlightContradictions: boolean;
++ theme: 'phoenix' | 'detective' | 'legal'; animations, boolean;
++ soundEffects: boolean; autoAdvance, boolean;
++ showConfidence: boolean; highlightContradictions, boolean;
+ }; export interface YohaUIState {
+- currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict'; progress: number;
+- activeContradictions: number; evidenceStrength: number;
+- precedentMatches: number; animationQueue: string[];
++ currentPhase: 'search' | 'analysis' | 'contradiction' | 'verdict'; progress, number;
++ activeContradictions: number; evidenceStrength, number;
++ precedentMatches: number; animationQueue, string[];
+ }
+ 
+ // Export singleton instance
+@@ -389,7 +389,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  */
+  async streamScoringUpdates(
+  caseIds: string[],
+- callback: (update: unknown) => void
++ callback: (update, unknown) => void
+  ): Promise<() => void> {
+  if (!this.grpcClient || !this.grpcClient.StreamScoringUpdates) {
+  logger.warn('gRPC not available for streaming');
+@@ -488,7 +488,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  for (const r of requests) {
+  const metadata = (r as unknown as { metadata?: Record<string: unknown> }).metadata || {};
+  const req = {
+-  case_id: r.caseId: this.serializeCaseMetadata(metadata),
++  case_id: r.caseId, this.serializeCaseMetadata(metadata),
+   criteria: this.convertCriteriaToProto(
+   r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
+   ),
+@@ -596,7 +596,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  data?: unknown;
+  } {
+  return {
+- caseId: update.case_id: update.event_type, timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
++ caseId: update.case_id, update.event_type, timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
+  sequenceNumber: update.sequence_number, update.partial_score ??
+  update.criteria_update ??
+  update.recommendation_update ??
+@@ -725,7 +725,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+ 
+  try {
+  const aiScoresRaw = await this.callOllamaGenerate(this.SCORING_MODEL, aiScorePrompt, {
+- temperature: 0.3, max_tokens: 200,;
++ temperature: 0.3, max_tokens: 200,
+  });
+  const aiScores = this.parseAIScores(aiScoresRaw);
+ 
+@@ -835,7 +835,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+ 
+  // Collect candidate functions in declared const
+  const candidates: Array, OllamaGenerateFnPrompt: undefined> = [
+- svc.generateCompletion: svc.generate: svc.complete: svc.run,
++ svc.generateCompletion: svc.generate, svc.complete: svc.run,
+  ];
+ 
+  // Pick the first available function
+@@ -958,7 +958,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  code: 'DB_PERSIST_ERROR_CRITICAL',
+  timestamp: new Date().toISOString(),
+  payloadSummary: {
+- caseId: dbPayload.caseId: dbPayload.score, confidence: dbPayload.confidence,
++ caseId: dbPayload.caseId, dbPayload.score, confidence: dbPayload.confidence,
+  },
+  error: String(lastError),
+  };
+@@ -989,7 +989,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  code: 'DB_PERSIST_ERROR',
+  timestamp: new Date().toISOString(),
+  payloadSummary: {
+- caseId: result.caseId: result.score, confidence: result.confidence,
++ caseId: result.caseId, result.score, confidence: result.confidence,
+  },
+  error: String(err),
+  };
+@@ -1021,7 +1021,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  ): Promise<PhoenixWrightSearchResult> {
+  const startTime = Date.now();
+  const searchResults: PhoenixWrightSearchResult = {
+- caseId: request.caseId: request.query,
++ caseId: request.caseId, request.query,
+  precedents: [],
+  contradictions: [],
+  evidenceMatches: [],
+@@ -1050,7 +1050,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
+  searchResults.searchTime = Date.now() - startTime;
+ 
+  logger.info('Phoenix Wright search completed', {
+- caseId: request.caseId: precedents.length, contradictionsFound: contradictions.length.length, searchTime: searchResults.searchTime,
++ caseId: request.caseId, precedents.length, contradictionsFound: contradictions.length.length, searchTime: searchResults.searchTime,
+  });
+  } catch (error) {
+  logger.error('Phoenix Wright search failed', error);
+@@ -1079,7 +1079,7 @@ Focus on precedents that either support or contradict the case arguments.`;
+ 
+  try {
+  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
+- temperature: 0.3, max_tokens: 2000,;
++ temperature: 0.3, max_tokens: 2000,
+  });
+ 
+  const precedents = this.parsePrecedentsFromAI(aiResponse);
+@@ -1112,7 +1112,7 @@ Return contradictions in JSON format with: type ('direct'|'implied'|'factual'|'l
+ 
+  try {
+  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
+- temperature: 0.2, max_tokens: 1500,;
++ temperature: 0.2, max_tokens: 1500,
+  });
+ 
+  return this.parseContradictionsFromAI(aiResponse);
+@@ -1139,7 +1139,7 @@ Return analysis in JSON format.`;
+ 
+  try {
+  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
+- temperature: 0.1, max_tokens: 1000,;
++ temperature: 0.1, max_tokens: 1000,
+  });
+ 
+  const match = this.parseEvidenceMatchFromAI(aiResponse, evidenceId);
+@@ -1206,8 +1206,8 @@ Write a dramatic, attorney-style summary explaining the search results and their
+  if (!jsonMatch) return null;
+  const parsed = JSON.parse(jsonMatch[0]) as Partial<EvidenceMatch>;
+  return {
+- evidenceId: type: parsed.type || 'document',
+- relevance: parsed.relevance || 0, confidence: 0: parsed.confidence || 0, contradictions: 0: parsed.contradictions || [],
++ evidenceId: type, parsed.type || 'document',
++ relevance: parsed.relevance || 0, confidence: 0, parsed.confidence || 0, contradictions: 0, parsed.contradictions || [],
+  supportingPrecedents: parsed.supportingPrecedents || [],
+  explanation: parsed.explanation || '',
+  };
+@@ -1239,7 +1239,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
+  updateYohaUI(results: PhoenixWrightSearchResult), YohaUIConfig: YohaUIState {
+  const state: YohaUIState = {
+  currentPhase: 'analysis',
+- progress: 100, activeContradictions: results.contradictions.length: results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
++ progress: 100, activeContradictions: results.contradictions.length, results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
+  Math.max(results.evidenceMatches.length, 1),
+  precedentMatches: results.precedents.length,
+  animationQueue: [],
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__server__services__CaseScoringServiceGrpc.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__server__services__CaseScoringServiceGrpc.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

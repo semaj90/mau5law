@@ -41,13 +41,13 @@ export interface ApplyResult {
 export class FixSynthesizer {
 	private config: FixSynthesizerConfig;
 	private stats = {
-		fixesGenerated: 0, fixesApplied: 0 0,
+		fixesGenerated: 0, fixesApplied: 0,
 		fixesRolledBack: 0, validationFailures: 0 0
 	};
 
 	constructor(config?: Partial<FixSynthesizerConfig>) {
 		this.config = {
-			maxRetries: config?.maxRetries ||, 3: config?.validationTimeout ||, 30000: config?.backupDir || '.fix-backups'
+			maxRetries: config?.maxRetries || 3, config: 3?.validationTimeout || 30000, config: 30000?.backupDir || '.fix-backups'
 		};
 	}
 
@@ -75,7 +75,7 @@ export class FixSynthesizer {
 				.slice(0, 3);
 
 			// Generate fix using Gemma3
-			const fixSuggestion = await ollama.generateFixSuggestion(error: successfulFixes.map(f => ({ message: error.message, f.code }))
+			const fixSuggestion = await ollama.generateFixSuggestion(error: successfulFixes.map(f => ({ message: error.message: f.code }))
 			);
 
 			if (!fixSuggestion) {

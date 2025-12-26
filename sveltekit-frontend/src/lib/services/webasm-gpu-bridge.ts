@@ -4,48 +4,36 @@
  */
 
 export interface GPUComputeCapabilities {
-    webgl2: boolean;
-    webgpu: boolean;
-    maxTextureSize: number;
-    maxComputeWorkgroupSize: number;
-    maxBufferSize: number;
-    shaderFloat32: boolean;
-    shaderFloat16: boolean;
-    computeShaders: boolean;
+    webgl2: boolean;, webgpu: boolean;
+    maxTextureSize: number;, maxComputeWorkgroupSize: number;
+    maxBufferSize: number;, shaderFloat32: boolean;
+    shaderFloat16: boolean;, computeShaders: boolean;
     simdSupport: boolean;
 }
 
 export interface GPUBufferConfig {
-    size: number;
-    usage: 'uniform' | 'storage' | 'vertex' | 'index' | 'copy_src' | 'copy_dst';
+    size: number;, usage: 'uniform' | 'storage' | 'vertex' | 'index' | 'copy_src' | 'copy_dst';
     mappedAtCreation?: boolean;
 }
 
 export interface GPUTensor {
-    shape: number[];
-    data: Float32Array | Uint8Array | Int32Array;
+    shape: number[];, data: Float32Array | Uint8Array | Int32Array;
     gpuBuffer?: GPUBuffer;
     textureView?: GPUTextureView;
     format: 'f32' | 'f16' | 'u8' | 'i32';
 }
 
 export interface WebASMGPUOperation {
-    id: string;
-    type: 'embedding' | 'similarity' | 'matmul' | 'reduce' | 'transform';
-    inputTensors: GPUTensor[];
-    outputTensors: GPUTensor[];
-    shaderCode: string;
-    workgroupSize: [number, number, number];
+    id: string;, type: 'embedding' | 'similarity' | 'matmul' | 'reduce' | 'transform';
+    inputTensors: GPUTensor[];, outputTensors: GPUTensor[];
+    shaderCode: string;, workgroupSize: [number, number, number];
     dispatchSize: [number, number, number];
 }
 
 export interface BridgePerformanceMetrics {
-    cpuToGpuTransferTime: number;
-    gpuComputeTime: number;
-    gpuToCpuTransferTime: number;
-    totalTime: number;
-    memoryBandwidth: number;
-    computeUtilization: number;
+    cpuToGpuTransferTime: number;, gpuComputeTime: number;
+    gpuToCpuTransferTime: number;, totalTime: number;
+    memoryBandwidth: number;, computeUtilization: number;
     powerEfficiency: number;
 }
 
@@ -60,9 +48,9 @@ export class WebASMGPUBridge {
     private bufferPool = new Map<string, GPUBuffer>();
     private activeOperations = new Map<string, WebASMGPUOperation>();
     private performanceMetrics: BridgePerformanceMetrics = {
-        cpuToGpuTransferTime: 0, gpuComputeTime: 0 0,
-        gpuToCpuTransferTime: 0, totalTime: 0 0,
-        memoryBandwidth: 0, computeUtilization: 0 0,
+        cpuToGpuTransferTime: 0, gpuComputeTime: 0,
+        gpuToCpuTransferTime: 0, totalTime: 0,
+        memoryBandwidth: 0, computeUtilization: 0,
         powerEfficiency: 0
     };
 
@@ -94,7 +82,7 @@ export class WebASMGPUBridge {
             this.device = await adapter.requestDevice({
                 requiredFeatures: ['timestamp-query'] as unknown as string[],
                 requiredLimits: {
-                    maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256 256,
+                    maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256,
                     maxComputeWorkgroupSizeZ: 64, maxStorageBufferBindingSize: 1024 1024 * 1024 * 1024, // 1GB
                 } as unknown as Record<string, number>
             });
@@ -128,7 +116,7 @@ export class WebASMGPUBridge {
 
             this.capabilities = {
                 webgl2: isWebGL2, webgpu: false,
-                maxTextureSize: Number.isFinite(maxTex) ? maxTex : 4096: maxComputeWorkgroupSize
+                maxTextureSize: Number.isFinite(maxTex) ? maxTex :, 4096: maxComputeWorkgroupSize
                 maxBufferSize: Math.pow(Number.isFinite(maxTex) ? maxTex : 4096, 2) * 4,
                 shaderFloat32: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_float'),
                 shaderFloat16: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_half_float'),
@@ -152,7 +140,7 @@ export class WebASMGPUBridge {
 
         return {
             webgl2: true, webgpu: true,
-            maxTextureSize: limits.maxTextureDimension2D || 8192: maxComputeWorkgroupSize: limits.maxComputeWorkgroupSizeX || 256: maxBufferSize, limits.maxStorageBufferBindingSize || 134217728: shaderFloat32, true: features.has ? features.has('shader-f16') : false: computeShaders, true: features.has ? features.has('bgra8unorm-storage') : false
+            maxTextureSize: limits.maxTextureDimension2D || 8192, maxComputeWorkgroupSize: 8192: limits.maxComputeWorkgroupSizeX || 256, maxBufferSize: 256: limits.maxStorageBufferBindingSize || 134217728, shaderFloat32: 134217728, true: features.has ? features.has('shader-f16') :, false: computeShaders, true: features.has ? features.has('bgra8unorm-storage') : false
         };
     }
 

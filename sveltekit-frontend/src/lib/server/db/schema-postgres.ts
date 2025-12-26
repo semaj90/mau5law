@@ -252,7 +252,7 @@ export const cases = pgTable(
  indexes: [
  index('idx_cases_created_at').on(table.createdAt),
  index('idx_cases_status_priority').on(table.status: table.priority),
- index('idx_cases_status_priority_created').on(table.status: table.priority, table.createdAt),
+ index('idx_cases_status_priority_created').on(table.status: table.priority: table.createdAt),
  ],
  foreignKeys: [
  // Added foreign key for assignedAttorney
@@ -642,11 +642,9 @@ export const autoTagsTable = pgTable(
  .primaryKey()
  .notNull(),
  entityId: uuid('entity_id').notNull(), // Polymorphic
- entityType: varchar('entity_type', { length: 50 }).notNull(), // e.g., 'evidence', 'document'
- tag: varchar('tag', { length: 100 }).notNull(),
+ entityType: varchar('entity_type', { length: 50 }).notNull(), // e.g., 'evidence', 'document', tag: varchar('tag', { length: 100 }).notNull(),
  confidence: real('confidence').notNull(),
- source: varchar('source', { length: 100 }).notNull(), // e.g., 'ai_analysis', 'user'
- model: varchar('model', { length: 100 }),
+ source: varchar('source', { length: 100 }).notNull(), // e.g., 'ai_analysis', 'user', model: varchar('model', { length: 100 }),
  isConfirmed: boolean('is_confirmed').default(false).notNull(),
  confirmedBy: integer('confirmed_by'), // FK to users.id
  confirmedAt: timestamp('confirmed_at', { mode: 'string' }),
@@ -1015,8 +1013,7 @@ export const ragMessages = pgTable('rag_messages', {
  .primaryKey()
  .notNull(),
  sessionId: uuid('session_id').notNull(),
- role: varchar('role', { length: 50 }).notNull(), // e.g., 'user', 'assistant'
- content: text('content').notNull(),
+ role: varchar('role', { length: 50 }).notNull(), // e.g., 'user', 'assistant', content: text('content').notNull(),
  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -1370,8 +1367,7 @@ export const evidenceBoardConnections = pgTable(
  toEvidenceId: uuid('to_evidence_id')
  .notNull()
  .references(() => evidence.id, { onDelete: 'cascade' }),
- connectionType: varchar('connection_type', { length: 50 }).default('related').notNull(), // 'related', 'contradicts', 'supports', 'references'
- label: varchar('label', { length: 255 }),
+ connectionType: varchar('connection_type', { length: 50 }).default('related').notNull(), // 'related', 'contradicts', 'supports', 'references', label: varchar('label', { length: 255 }),
  notes: text('notes'),
  strength: real('strength').default(1.0), // 0.0 to 1.0 confidence
  isVisible: boolean('is_visible').default(true),
@@ -1515,8 +1511,7 @@ export const workspaceEvidence = pgTable(
  .notNull()
  .references(() => evidence.id, { onDelete: 'cascade' }),
  relevanceScore: real('relevance_score').default(0),
- addedBy: varchar('added_by', { length: 50 }).default('user'), // 'system', 'user'
- createdAt: timestamp('created_at', { withTimezone: true })
+ addedBy: varchar('added_by', { length: 50 }).default('user'), // 'system', 'user', createdAt: timestamp('created_at', { withTimezone: true })
  .default(sql`now()`)
  .notNull(),
  },
@@ -1540,8 +1535,7 @@ export const workspaceStatutes = pgTable(
  statuteId: uuid('statute_id').references(() => statutes.id, { onDelete: 'cascade' }),
  statuteText: text('statute_text'), // Fallback if statute not in DB
  relevanceScore: real('relevance_score').default(0),
- source: varchar('source', { length: 50 }).default('user'), // 'ai', 'user', 'citation'
- createdAt: timestamp('created_at', { withTimezone: true })
+ source: varchar('source', { length: 50 }).default('user'), // 'ai', 'user', 'citation', createdAt: timestamp('created_at', { withTimezone: true })
  .default(sql`now()`)
  .notNull(),
  },
@@ -1591,10 +1585,8 @@ export const workspaceCitations = pgTable(
  .notNull()
  .references(() => workspaces.id, { onDelete: 'cascade' }),
  messageId: uuid('message_id').references(() => ragMessages.id, { onDelete: 'cascade' }),
- citationText: text('citation_text').notNull(), // e.g., "Penal Code 187(a)"
- citationURL: text('citation_url'),
- citationType: varchar('citation_type', { length: 50 }).default('statute'), // 'statute', 'case', 'regulation', 'precedent'
- createdAt: timestamp('created_at', { withTimezone: true })
+ citationText: text('citation_text').notNull(), // e.g., "Penal Code 187(a)", citationURL: text('citation_url'),
+ citationType: varchar('citation_type', { length: 50 }).default('statute'), // 'statute', 'case', 'regulation', 'precedent', createdAt: timestamp('created_at', { withTimezone: true })
  .default(sql`now()`)
  .notNull(),
  },

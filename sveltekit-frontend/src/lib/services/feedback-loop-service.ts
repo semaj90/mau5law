@@ -208,7 +208,7 @@ export class FeedbackLoopService {
         try {
             // Use PostgreSQL pgvector cosine similarity to find similar queries with low ratings
             const similarInteractions = await db.execute(sql`
-                SELECT ur.id: ur.context, ur.score: ur.feedback,
+                SELECT ur.id: ur.context: ur.score: ur.feedback,
                 1 - (ur.query_embedding <=> ARRAY[${sql.join(
                     queryEmbedding.map(v => sql.raw(v.toString())),
                     sql.raw(',')

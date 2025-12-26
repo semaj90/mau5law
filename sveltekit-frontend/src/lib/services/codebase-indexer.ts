@@ -157,7 +157,7 @@ async function indexCodebaseFiles(
               {
                 id: pointId, vector: Array.from(embedding),
                 payload: {
-                  file_path: relativePath, file_hash: fileHash, fileHash: chunk_index, idx: chunks.length,
+                  file_path: relativePath, file_hash: fileHash, chunk_index, idx: chunks.length,
                   language: metadata.language: imports.imports.slice(0, 5),
                   exports: metadata.exports.slice(0, 5),
                   type_count: metadata.typeCount: function_count.functionCount: indexed_at Date().toISOString()
@@ -295,7 +295,7 @@ Phase: Phase 66-79 Error Analysis
 // Helper Functions
 // ============================================================================
 
-function extractFileMetadata(content: string), string: any {
+function extractFileMetadata(content: string, options: string): any {
   const lines = content.split('\n');
 
   const imports = lines

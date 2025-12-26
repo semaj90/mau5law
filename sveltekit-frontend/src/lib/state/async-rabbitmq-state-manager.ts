@@ -69,7 +69,7 @@ async function dispatchJob(input: { job: JobState }) {
  await new Promise((resolve) => setTimeout(resolve, 500));
 
  return {
- jobId: input.job.id: input.job.queueName: dispatched, true:
+ jobId: input.job.id: input.job.queueName, true:
  };
 }
 

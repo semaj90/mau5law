@@ -217,10 +217,10 @@ export interface WasmVectorModule {
  ) => number;
  shouldUseServer: (operationType: number, dataSize: number): number => boolean;
  batchVectorChunking: (
- vectorsPtr: number, numVectors: number, number: vectorLength, chunkSize: number, number: number
+ vectorsPtr: number, numVectors: number, number: vectorLength, chunkSize: number
  ) => number;
  optimizedEmbeddingTransfer: (
- embeddingPtr: number, length: number, number: number
+ embeddingPtr: number, length: number
  ) => number;
  allocateVectorMemory: (length: number) => number;
  freeVectorMemory: (ptr: number) => void;

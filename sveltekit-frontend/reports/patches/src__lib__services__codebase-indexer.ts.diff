@@ -1,0 +1,15 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__codebase-indexer.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__codebase-indexer.ts.after.ts
+index 0f02d0659d..0712463085 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__services__codebase-indexer.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__codebase-indexer.ts.after.ts
+@@ -295,7 +295,7 @@ Phase: Phase 66-79 Error Analysis
+ // Helper Functions
+ // ============================================================================
+ 
+-function extractFileMetadata(content: string), string: any {
++function extractFileMetadata(content: string, options: string): any {
+   const lines = content.split('\n');
+ 
+   const imports = lines
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__codebase-indexer.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__codebase-indexer.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

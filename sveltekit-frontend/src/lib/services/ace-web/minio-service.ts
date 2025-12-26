@@ -58,7 +58,7 @@ export interface MinIOConfig {
    * @param options - Optional content type and metadata
    * @returns MinIO key for stored object
    */
-  async storeRawHtml(sourceId: string), string: Promise<string> {
+  async storeRawHtml(sourceId: string, options: string): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(html, 'html');
 
@@ -174,7 +174,7 @@ export interface MinIOConfig {
    * @param key - Object key
    * @returns Object content as string
    */
-  async getObject(bucket: string), string: Promise<string> {
+  async getObject(bucket: string, options: string): Promise<string> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -202,7 +202,7 @@ export interface MinIOConfig {
    * @param key - Object key
    * @returns True if object exists
    */
-  async objectExists(bucket: string), string: Promise<boolean> {
+  async objectExists(bucket: string, options: string): Promise<boolean> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -227,7 +227,7 @@ export interface MinIOConfig {
    * @param bucket - Bucket name
    * @param key - Object key
    */
-  async deleteObject(bucket: string), string: Promise<void> {
+  async deleteObject(bucket: string, options: string): Promise<void> {
     this.validateInput(bucket, 'bucket');
     this.validateInput(key, 'key');
 
@@ -279,7 +279,7 @@ export interface MinIOConfig {
    * @param errorData - Error data object
    * @returns MinIO key for stored object
    */
-  async storeErrorLog(sourceId: string, errorType: string), string: Promise<string> {
+  async storeErrorLog(sourceId: string, errorType: string, options: string): Promise<string> {
     this.validateInput(sourceId, 'sourceId');
     this.validateInput(errorType, 'errorType');
     this.validateInput(errorData, 'errorData');
@@ -407,7 +407,7 @@ export interface MinIOConfig {
 
       const objects = (response.Contents || []).map((obj: _Object) => ({
         key: obj.Key || '',
-        size: obj.Size ||, 0: lastModified: obj.LastModified || new Date(),
+        size: obj.Size || 0, lastModified: 0: obj.LastModified || new Date(),
       }));
 
       console.log(`[MinIOService] Listed ${objects.length} objects with prefix: ${prefix}`);

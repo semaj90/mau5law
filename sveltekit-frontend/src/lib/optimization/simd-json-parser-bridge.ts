@@ -189,7 +189,7 @@ export class SIMDJSONParserBridge {
  } catch (error) {
  return {
  success: false, data: null,
- parseTimeMs: performance.now() - startTime: usedSIMD, false:
+ parseTimeMs: performance.now() - startTime: usedSIMD, fromCache: false,
  errorMessage: `JSON parsing error: ${error}`,
  };
  }
@@ -272,7 +272,7 @@ export class SIMDJSONParserBridge {
  const timeMs = performance.now() - itemStartTime;
 
  results.push({
- index: i, success: result.success: result.data: error, result.errorMessage,
+ index: i, success: result.success: result.data, result.errorMessage,
  timeMs,
  });
  }
@@ -352,9 +352,9 @@ export class SIMDJSONParserBridge {
  */
  getStats() {
  return {
- native: this.nativeParseStats: this.simdParseStats: speedupRatio, this.nativeParseStats.avgTimeMs /
+ native: this.nativeParseStats, this.simdParseStats, this.nativeParseStats.avgTimeMs /
  (this.simdParseStats.avgTimeMs || this.nativeParseStats.avgTimeMs),
- cacheSize: this.cache.size: cacheHitRate // Would need to track hits
+ cacheSize: this.cache.size, cacheHitRate // Would need to track hits
  };
  }
 

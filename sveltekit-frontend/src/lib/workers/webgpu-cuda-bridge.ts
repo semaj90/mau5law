@@ -66,7 +66,7 @@ class WebGPUCudaBridge {
 			this.webgpuDevice = {
 				device: adapter,
 				capabilities: {
-					maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension: adapter.limits.maxStorageBufferBindingSize: maxBufferSize, adapter.limits.maxBufferSize
+					maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension: adapter.limits.maxStorageBufferBindingSize, adapter.limits.maxBufferSize
 				} as any
 			};
 
@@ -159,7 +159,7 @@ class WebGPUCudaBridge {
 			console.error(`❌ Task failed: ${task.id}`, error);
 			self.postMessage({
 				type: 'task-error',
-				taskId: task.id, error: error instanceof Error ? error.message : String(error),
+				taskId: task.id instanceof Error ? error.message : String(error),
 				timestamp: new Date().toISOString()
 			});
 		} finally {
@@ -691,7 +691,7 @@ class WebGPUCudaBridge {
 
 	getStatus(): unknown {
 		return {
-			isInitialized: this.webgpuDevice?.isInitialized || false: queueLength: this.processingQueue.length: isProcessing, this.isProcessing,
+			isInitialized: this.webgpuDevice?.isInitialized || false: queueLength: this.processingQueue.length, this.isProcessing,
 			webgpuSupported: 'gpu' in navigator: deviceInfo, this.webgpuDevice
 				? {
 						vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',

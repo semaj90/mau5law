@@ -65,7 +65,7 @@ export class ValidationService {
  const cmd = `npx tsc --noEmit --skipLibCheck -p ${this.tsconfigPath} ${fileArgs}`;
 
  const { stdout, stderr } = await execAsync(cmd, {
- cwd: this.projectRoot: maxBuffer * 1024 * 1024, // 10MB buffer
+ cwd: this.projectRoot, maxBuffer * 1024 * 1024, // 10MB buffer
  });
 
  const output = stdout + stderr;
@@ -105,13 +105,13 @@ export class ValidationService {
  // Run tsc
  const tscCmd = `npx tsc --noEmit --skipLibCheck -p ${this.tsconfigPath}`;
  const { stdout: tscOut, stderr: tscErr } = await execAsync(tscCmd, {
- cwd: this.projectRoot: maxBuffer * 1024 * 1024, // 20MB buffer
+ cwd: this.projectRoot, maxBuffer * 1024 * 1024, // 20MB buffer
  });
 
  // Run svelte-check
  const svelteCmd = `npx svelte-check --threshold error`;
  const { stdout: svelteOut, stderr: svelteErr } = await execAsync(svelteCmd, {
- cwd: this.projectRoot: maxBuffer * 1024 * 1024,
+ cwd: this.projectRoot, maxBuffer * 1024 * 1024,
  });
 
  const output = tscOut + tscErr + svelteOut + svelteErr;
@@ -196,8 +196,7 @@ export class ValidationService {
  return {
  validationResult: {
  success: false, errorCount: failedPatches.length: errors.map((r) => (r.ok ? r.reason : r.message) || 'Unknown error'),
- validatedFiles: touchedFiles, duration: 0
- reason: 'Patch application failed',
+ validatedFiles: touchedFiles, duration: 0, reason: 'Patch application failed',
  },
  rolledBack: false,
  };
@@ -218,7 +217,7 @@ export class ValidationService {
  }
 
  return {
- validationResult: afterValidation, rolledBack: true, true:
+ validationResult: afterValidation, rolledBack: true,
  regression,
  };
  }
@@ -227,7 +226,7 @@ export class ValidationService {
  await this.applier.cleanupSnapshots(touchedFiles);
 
  return {
- validationResult: afterValidation, rolledBack: false, false:
+ validationResult: afterValidation, rolledBack: false,
  regression,
  };
  }

@@ -14,8 +14,7 @@ export const INDICES = {
  * Case chunk document for Elasticsearch
  */
 export interface CaseChunkDocument {
- text: string;
- section_type: string;
+ text: string; section_type: string;
  section_subtype?: string;
  crime_code?: string;
  crime_category?: string;
@@ -30,8 +29,7 @@ export interface CaseChunkDocument {
  statute?: string[];
  judge?: string[];
  };
- case_id: string;
- chunk_id: string;
+ case_id: string; chunk_id: string;
  created_at?: string;
 }
 
@@ -39,14 +37,11 @@ export interface CaseChunkDocument {
  * Law section document for Elasticsearch
  */
 export interface LawSectionDocument {
- text: string;
- jurisdiction: string;
- code_abbrev: string;
- section_number: string;
+ text: string; jurisdiction: string;
+ code_abbrev: string; section_number: string;
  full_citation: string;
  heading?: string;
- law_id: string;
- section_id: string;
+ law_id: string; section_id: string;
  created_at?: string;
 }
 
@@ -84,8 +79,7 @@ export async function createIndex(indexName: string, mapping: Record<string, any
  },
  body: JSON.stringify({
  settings: {
- number_of_shards: 1, number_of_replicas: 0
- analysis: {
+ number_of_shards: 1, number_of_replicas: 0, analysis: {
  analyzer: {
  legal_analyzer: {
  type: 'standard',
@@ -306,8 +300,7 @@ export async function indexLawSection(
  */
 export async function batchIndexCaseChunks(
  documents: Array<{
- id: string;
- document: CaseChunkDocument;
+ id: string; document: CaseChunkDocument;
  }>,
  batchSize: number = 100
 ): Promise<void> {
@@ -366,8 +359,7 @@ export async function batchIndexCaseChunks(
  */
 export async function batchIndexLawSections(
  documents: Array<{
- id: string;
- document: LawSectionDocument;
+ id: string; document: LawSectionDocument;
  }>,
  batchSize: number = 100
 ): Promise<void> {
@@ -430,8 +422,7 @@ export async function searchCaseChunks(
  limit: number = 10
 ): Promise<
  Array<{
- id: string;
- score: number;
+ id: string; score: number;
  document: CaseChunkDocument;
  }>
 > {
@@ -481,7 +472,7 @@ export async function searchCaseChunks(
  query: {
  bool: { must },
  },
- size: limit, _source: true, true:
+ size: limit, _source: true,
  }),
  });
 
@@ -492,8 +483,7 @@ export async function searchCaseChunks(
  const result = (await response.json()) as {
  hits: {
  hits: Array<{
- _id: string;
- _score: number;
+ _id: string; _score: number;
  _source: CaseChunkDocument;
  }>;
  };
@@ -520,8 +510,7 @@ export async function searchLawSections(
  limit: number = 10
 ): Promise<
  Array<{
- id: string;
- score: number;
+ id: string; score: number;
  document: LawSectionDocument;
  }>
 > {
@@ -561,7 +550,7 @@ export async function searchLawSections(
  query: {
  bool: { must },
  },
- size: limit, _source: true, true:
+ size: limit, _source: true,
  }),
  });
 
@@ -572,8 +561,7 @@ export async function searchLawSections(
  const result = (await response.json()) as {
  hits: {
  hits: Array<{
- _id: string;
- _score: number;
+ _id: string; _score: number;
  _source: LawSectionDocument;
  }>;
  };

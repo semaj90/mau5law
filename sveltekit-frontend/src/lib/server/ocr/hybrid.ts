@@ -1,11 +1,10 @@
 import { extractTextFromImage, isTesseractAvailable } from '$lib/server/ocr/tesseract';
-import { promises as fs } from 'fs';
+import { promises, as fs } from 'fs';
 import path from 'path';
 import { createWorker } from 'tesseract.js';
 
 export interface OcrResult {
- text: string;
- method: 'native' | 'tesseractjs' | 'fallback';
+ text: string;, method: 'native' | 'tesseractjs' | 'fallback';
  error?: string;
 }
 

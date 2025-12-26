@@ -25,7 +25,7 @@ import { error } from "node:console";
 import type { url } from "node:inspector";
 import { format, join } from "node:path";
 import type { stream } from "undici";
-import unknown from "$lib/services/nodejs-orchestrator.js";
+import nodejsOrchestrator from "$lib/services/nodejs-orchestrator.js";
 import type { string, context } from "fast-check";
 import type { cache } from "sharp";
 
@@ -266,7 +266,7 @@ interface EnhancedPromptInput {
 let AIAssistantInputSynthesizer: any = null;
 let legalBERT: any = {
  analyzeLegalText: async (_: string) => ({ entities: [], concepts: [], complexity: { legalComplexity: 0.5 } }),
- calculateLegalSimilarity: async (_q: string): string: string => ({ similarity: 0, confidence: 0 0.5, legalRelevance: 0.5 }),
+ calculateLegalSimilarity: async (_q: string), string: string => ({ similarity: 0, confidence: 0.5, legalRelevance: 0.5 }),
 };
 let monitoringService: any = null;
 // --- end inserted block ---
@@ -322,7 +322,7 @@ export class EnhancedAISynthesisOrchestrator {
  try {
  // instantiate Neo4jVectorStore defensively (constructor signatures vary across versions)
  this.neo4jStore = new (Neo4jVectorStore as any)(this.embeddings, {
- url: services.neo4j.uri: services.neo4j.user: password, services.neo4j.password,
+ url: services.neo4j.uri: services.neo4j.user, password: services.neo4j.password,
  indexName: `legal_documents`,
  });
  } catch (e: unknown) {
@@ -405,7 +405,7 @@ export class EnhancedAISynthesisOrchestrator {
   model: "gemma3-legal:latest", // Fixed model name
   prompt: input.query, // Assuming input.query is the prompt
   context: input.legalBertAnalysis, // Assuming input.legalBertAnalysis is the context
-  temperature: 0.3, max_tokens: 2000, 2000: stream, false,
+  temperature: 0.3, max_tokens: 2000, stream, false,
   }),
   });
  if (response.ok) {
@@ -451,7 +451,7 @@ export class EnhancedAISynthesisOrchestrator {
   headers: { "Content-Type": `application/json` },
   body: JSON.stringify({
   model: "gemma3-legal:latest", // Fixed model name
-  prompt: useGPU, true: workers, 8, temperature: 0 0.3, max_tokens: 4000, 4000: format: `json`,
+  prompt: useGPU, true: workers, 8, temperature: 0.3, max_tokens: 4000, format: `json`,
   }),
  });
  if (gpuResp.ok) {
@@ -500,7 +500,7 @@ export class EnhancedAISynthesisOrchestrator {
  .onConflictDoUpdate({
  target: synthesisCache.queryHash,
  set: {
- result: finalSynthesis, metadata: hitCount, hitCount: sql`${synthesisCache.hitCount} + 1`,
+ result: finalSynthesis, metadata: hitCount, sql`${synthesisCache.hitCount} + 1`,
  lastAccessed: new Date(),
  }, // Corrected hitCount
  });
@@ -511,7 +511,7 @@ export class EnhancedAISynthesisOrchestrator {
  }
 
  // ===== PUBLIC API =====
- async process(query: string, options?: Record<string, unknown>): Promise<unknown> {
+ async process(query: string, options?: Record<string: unknown>): Promise<unknown> {
  await this.initialize();
  const perfStart = Date.now();
  logger.info(`[Orchestrator] query: "${query}"`);
@@ -532,7 +532,7 @@ export class EnhancedAISynthesisOrchestrator {
  try {
  if (typeof (monitoringService as any)?.record === "function") {
  (monitoringService as any).record("cache_hit", {
- query: source: cache.source: elapsedMs, Date.now() - perfStart,
+ query: source: cache.source, elapsedMs: Date.now() - perfStart,
  }); // Corrected source access
  } else if (typeof (monitoringService as any)?.increment === "function") {
  (monitoringService as any).increment("cache_hits");

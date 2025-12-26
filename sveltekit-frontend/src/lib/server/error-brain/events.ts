@@ -32,9 +32,7 @@ export interface RunStartedEvent extends ErrorBrainEventBase {
 
 export interface RunProgressEvent extends ErrorBrainEventBase {
  type: 'run.progress';
- step: string; // 'queued' | 'analyzing' | 'proposing' | 'applying' | 'verifying'
- pct: number; // 0-100
- counters: {
+ step: string; // 'queued' | 'analyzing' | 'proposing' | 'applying' | 'verifying', pct: number; // 0-100, counters: {
  filesScanned: number;
  errorsFound: number;
  patchesProposed: number;
@@ -95,7 +93,7 @@ export type ErrorBrainEvent =
  * Create event with timestamp
  */
 export function createEvent<T extends ErrorBrainEventType>(
- type: T, runId: string, string: Omit<Extract<ErrorBrainEvent, { type: T }>, 'type' | 'runId' | 'ts'>
+ type: T, runId: string, Omit<Extract<ErrorBrainEvent, { type: T }>, 'type' | 'runId' | 'ts'>
 ): ErrorBrainEvent {
  return {
  type,

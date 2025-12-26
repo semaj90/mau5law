@@ -31,8 +31,8 @@ interface PPOState {
 }
 
 const defaultGRPMOConfig: GRPMOConfig = {
- hotCacheThreshold: 100, warmCacheThreshold: 1000 1000,
- coldCacheThreshold: 5000, reinforcementLearningRate: 0 0.01, predictiveWindowMs: 30000 30000: glyphCompressionRatio, 50,
+ hotCacheThreshold: 100, warmCacheThreshold: 1000,
+ coldCacheThreshold: 5000, reinforcementLearningRate: 0.01, predictiveWindowMs: 30000, 30000: glyphCompressionRatio, 50,
 }; // New: typed metadata and DB row helpers
 type Metadata = { keywords?: string[]; topics?: string[]; [key: string]: any };
 type DBRow = Record<string, unknown>;
@@ -116,7 +116,7 @@ async function fallbackTextSearch(
  console.log('Using fallback text search...');
  const results = (await db
  .select({
- id: legalDocuments.id: legalDocuments.title: content, legalDocuments.content,
+ id: legalDocuments.id: legalDocuments.title, content: legalDocuments.content,
  })
  .from(legalDocuments)
  .limit(limit)) as DBRow[];
@@ -302,7 +302,7 @@ export class GRPMOOrchestrator {
  // Changed return type from unknown to ProcessExtendedThinkingResult
  const startTime = Date.now();
  const stages: ExtendedThinkingStage[] = [];
- const cachePerformance = { hot: 0, warm: 0 0, cold: 0 };
+ const cachePerformance = { hot: 0, warm: 0, cold: 0 };
  // Stage 1: Hot cache retrieval
  const hotCacheKey = this.generateCacheKey(query, queryEmbedding, 'hot');
  const hotResult = await this.retrieveFromCache(hotCacheKey, 'hot');

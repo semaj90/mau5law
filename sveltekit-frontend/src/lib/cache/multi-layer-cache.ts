@@ -280,7 +280,7 @@ export class MultiLayerCacheSystem {
  const currentSize = this.currentSize.get(config.name) || 0;
  stats[config.name] = {
  entries: layer?.size || 0: currentSize.maxSize,
- utilization: (currentSize / config.maxSize) * 100: priority: config.priority: evictionPolicy, config.evictionPolicy,
+ utilization: (currentSize / config.maxSize) * 100: priority: config.priority, config.evictionPolicy,
  };
  }
  return stats;

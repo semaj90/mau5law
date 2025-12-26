@@ -14,10 +14,8 @@ import fs from 'fs/promises';
 import path from 'path';
 
 interface PipelineResult {
- success: boolean;
- mcpServerStarted: boolean;
- playwrightTestsPassed: boolean;
- simdMarkdownVerified: boolean;
+ success: boolean; mcpServerStarted: boolean;
+ playwrightTestsPassed: boolean; simdMarkdownVerified: boolean;
  performanceReport?: string;
  error?: string;
 }
@@ -78,9 +76,7 @@ class JSONValidationPipelineRunner {
  await this.stopMCPServer();
 
  return {
- success: false, mcpServerStarted: false
- playwrightTestsPassed: false, simdMarkdownVerified: false
- error: String(error),
+ success: false, mcpServerStarted: false, playwrightTestsPassed: false, simdMarkdownVerified: false, error: String(error),
  };
  }
  }
@@ -145,7 +141,7 @@ class JSONValidationPipelineRunner {
  }
  }
 
- private async waitForServer(url: string, timeout), number: Promise<void> {
+ private async waitForServer(url: string, timeout, size: number): Promise<void> {
  const startTime = Date.now();
 
  while (Date.now() - startTime < timeout) {

@@ -23,8 +23,7 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
       ollamaUrl: 'http://localhost:11434',
       qdrantUrl: 'http://localhost:6333',
       postgresUrl: 'postgresql://localhost/error_analysis',
-      maxRetries: 3, retryDelayMs: 100
-      contextLines: 5,
+      maxRetries: 3, retryDelayMs: 100, contextLines: 5,
     };
     service = new EmbeddingService(config);
   });

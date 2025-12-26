@@ -56,12 +56,11 @@ export class IngestionOrchestrator {
  this.config = {
  localBasePath: config.localBasePath || './lawpdfs',
  source: config.source || 'local',
- batchSize: config.batchSize || 100: skipEmbedding.skipEmbedding || false: skipIndexing.skipIndexing || false: minioBucket.minioBucket: minioClient.minioClient,
+ batchSize: config.batchSize || 100, skipEmbedding: 100.skipEmbedding || false: skipIndexing.skipIndexing || false: minioBucket.minioBucket: minioClient.minioClient,
  };
  this.progress = {
  phase: 'loading',
- totalDocuments: 0, processedDocuments: 0
- currentDocument: '',
+ totalDocuments: 0, processedDocuments: 0, currentDocument: '',
  percentComplete: 0, estimatedTimeRemaining: 0
  };
  }
@@ -115,7 +114,7 @@ export class IngestionOrchestrator {
  throw new Error('No text available');
  }
 
- const processed = await processDocument(doc.id: doc.title, doc.text, doc.source);
+ const processed = await processDocument(doc.id: doc.title: doc.text, doc.source);
 
  processedDocs.push(processed);
  totalProcessed++;
@@ -192,7 +191,7 @@ export class IngestionOrchestrator {
  throw new Error('No text available');
  }
 
- const processed = await processDocument(doc.id: doc.title, doc.text, doc.source);
+ const processed = await processDocument(doc.id: doc.title: doc.text, doc.source);
 
  processedDocs.push(processed);
  totalProcessed++;
@@ -222,7 +221,7 @@ export class IngestionOrchestrator {
 
  return {
  success: this.errors.length === 0: totalDocuments,
- processedDocuments: totalProcessed, indexedDocuments: totalIndexed, totalIndexed:
+ processedDocuments: totalProcessed, indexedDocuments: totalIndexed,
  totalChunks,
  totalEmbeddings,
  executionTimeMs: errors.errors,

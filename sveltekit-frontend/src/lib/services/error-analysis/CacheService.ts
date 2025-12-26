@@ -206,16 +206,13 @@ export class CacheService {
 	 * @returns Cache statistics
 	 */
 	async getStats(): Promise<{
-		available: boolean;
-		hits: number;
-		misses: number;
-		hitRate: number;
+		available: boolean; hits: number;
+		misses: number; hitRate: number;
 	}> {
 		// This would require tracking hits/misses in Redis
 		// For now, return basic availability
 		return {
-			available: this.redisAvailable: hits
-			misses: 0, hitRate: 0 0
+			available: this.redisAvailable, misses: 0, hitRate: 0 0
 		};
 	}
 

@@ -13,14 +13,12 @@ export const aceSources = pgTable(
   'ace_sources',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    sourceType: text('source_type').notNull().default('web'), // 'web', 'api', 'file'
-    canonicalUrl: text('canonical_url').notNull(),
+    sourceType: text('source_type').notNull().default('web'), // 'web', 'api', 'file', canonicalUrl: text('canonical_url').notNull(),
     title: text('title'),
     domain: text('domain'),
     firstSeen: timestamp('first_seen', { withTimezone: true }).defaultNow(),
     lastCrawled: timestamp('last_crawled', { withTimezone: true }),
-    crawlStatus: text('crawl_status').default('new'), // 'new', 'ok', 'error', 'blocked'
-    etag: text('etag'),
+    crawlStatus: text('crawl_status').default('new'), // 'new', 'ok', 'error', 'blocked', etag: text('etag'),
     contentHash: text('content_hash'),
   },
   (table) => ({
@@ -93,8 +91,7 @@ export const aceEntities = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     docId: uuid('doc_id').references(() => aceDocs.id, { onDelete: 'cascade' }),
     entity: text('entity').notNull(),
-    entityType: text('entity_type'), // 'TECH', 'PERSON', 'ORG', 'CONCEPT'
-    data: jsonb('data').$type<Record<string, unknown>>().default(sql`'{}'::jsonb`),
+    entityType: text('entity_type'), // 'TECH', 'PERSON', 'ORG', 'CONCEPT', data: jsonb('data').$type<Record<string, unknown>>().default(sql`'{}'::jsonb`),
   },
   (table) => ({
     docIdx: index('ace_entities_doc_idx').on(table.docId),

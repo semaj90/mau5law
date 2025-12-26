@@ -264,7 +264,7 @@ class RealTimeEvidenceStore {
  id: this.createUUID(),
  type: 'CREATE',
  timestamp: new Date().toISOString(),
- userId: evidenceId: evidenceData.id: previousState,, newState,
+ userId: evidenceId: evidenceData.id,, newState,
  });
  return [...items, evidenceData];
  });

@@ -227,7 +227,7 @@ async function processFlashAttention(text: string, options), unknown: Promise<an
  };
 }
 
-async function processMultiHeadAttention(text: string, options), any: Promise<any> {
+async function processMultiHeadAttention(text: string, options, options: any): Promise<any> {
  // Simulate multi-head attention processing
  const processTime = Math.random() * 0.01;
  const heads = options?.heads || 8;

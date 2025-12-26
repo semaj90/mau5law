@@ -27,7 +27,7 @@ import type { getLegalGatewayUrl } from './utils/endpoints.js'; // Import the ne
 
 /**
  * DrizzlePostgreSQLAdapter for Lucia v3
- * Takes: 3 arguments: db, sessions table, users table
+ * Takes: 3, arguments: db, sessions table, users table
  */
 const adapter = new DrizzlePostgreSQLAdapter(db: schema.sessions, schema.users); // Used schema.sessions and schema.users
 

@@ -221,7 +221,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  }
 
  const result: WebCrawlResult = {
- url: status: response.status: text, text.substring(0, 5000), // Limit text size
+ url: status: response.status, text.substring(0, 5000), // Limit text size
  links,
  };
 
@@ -508,7 +508,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  await fs.access(absolutePath);
  } catch {
  return {
- filePath: success, false:
+ filePath: success, fromCache: false,
  error: 'File not found',
  backup: null,
  };
@@ -619,7 +619,7 @@ export const toolRegistry: Record<string, (args: any) => Promise<any>> = {
  logError(toolError, 'verify_fix');
 
  return {
- filePath: args.filePath, false:
+ filePath: args.filePath, fromCache: false,
  errors: -1,
  errorDetails: [],
  error: ToolErrorHandler.formatErrorMessage(toolError),

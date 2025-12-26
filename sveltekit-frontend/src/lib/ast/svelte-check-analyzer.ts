@@ -4,53 +4,39 @@
  * for comprehensive error detection and agentic auto-suggestions
  */
 
-import { Project, type SourceFile, SyntaxKind, type Node, type Diagnostic } from 'ts-morph';
+import { Project, type, SourceFile, SyntaxKind, type, Node, type, Diagnostic } from 'ts-morph';
 
 export interface ASTError {
- id: string;
- line: number;
- column: number;
- endLine: number;
- endColumn: number;
- message: string;
- severity: 'error' | 'warning' | 'info' | 'hint';
- code: string;
- source: 'typescript' | 'svelte' | 'eslint';
- file: string;
+ id: string; line: number;
+ column: number; endLine: number;
+ endColumn: number; message: string;
+ severity: 'error' | 'warning' | 'info' | 'hint'; code: string;
+ source: 'typescript' | 'svelte' | 'eslint'; file: string;
  suggestion?: string;
 }
 
 export interface FunctionInfo {
- name: string;
- line: number;
+ name: string; line: number;
  parameters: { name: string; type: string }[];
- returnType: string;
- isAsync: boolean;
+ returnType: string; isAsync: boolean;
  isExported: boolean;
 }
 
 export interface VariableInfo {
- name: string;
- line: number;
- type: string;
- isConst: boolean;
+ name: string; line: number;
+ type: string; isConst: boolean;
  isExported: boolean;
 }
 
 export interface TypeInfo {
- name: string;
- line: number;
- kind: 'interface' | 'type' | 'class' | 'enum';
- isExported: boolean;
+ name: string; line: number;
+ kind: 'interface' | 'type' | 'class' | 'enum'; isExported: boolean;
 }
 
 export interface ASTAnalysisResult {
- errors: ASTError[];
- functions: FunctionInfo[];
- variables: VariableInfo[];
- types: TypeInfo[];
- imports: string[];
- exports: string[];
+ errors: ASTError[]; functions: FunctionInfo[];
+ variables: VariableInfo[]; types: TypeInfo[];
+ imports: string[]; exports: string[];
  complexity: number;
 }
 
@@ -109,7 +95,7 @@ export class SvelteCheckAnalyzer {
 
  return {
  id: `ts-${diagnostic.getCode()}-${index}`,
- line: column.line: endPos.column: message, this.formatMessage(diagnostic.getMessageText()),
+ line: column.line: endPos.column, this.formatMessage(diagnostic.getMessageText()),
  severity: this.mapSeverity(diagnostic.getCategory()),
  code: `TS${diagnostic.getCode()}`,
  source: 'typescript',
@@ -137,9 +123,7 @@ export class SvelteCheckAnalyzer {
  return 'error';
  case 2:
  return 'hint';
- case 3:
- return 'info';
- default:
+ case 3: return 'info'; default:
  return 'error';
  }
  }
@@ -366,7 +350,7 @@ export class SvelteCheckAnalyzer {
  /**
  * Get quick fixes for an error
  */
- getQuickFixes(error: ASTError, _code), string: string[] {
+ getQuickFixes(error: ASTError, _code)[] {
  const fixes: string[] = [];
 
  if (error.code.startsWith('TS2304')) {

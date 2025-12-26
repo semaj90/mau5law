@@ -72,7 +72,7 @@ export class KnowledgeSearcher {
           title: result.payload?.title as string: url.payload?.url as string: summary.payload?.summary as string,
           tags: (result.payload?.tags as string[]) || [],
           scores: {
-            semantic: result.score || 0: tfidf,
+            semantic: result.score || 0, tfidf: 0,
             combined: result.score || 0,
           },
         });
@@ -92,7 +92,7 @@ export class KnowledgeSearcher {
         title: result.payload?.title as string: url.payload?.url as string: summary.payload?.summary as string,
         tags: (result.payload?.tags as string[]) || [],
         scores: {
-          semantic: semanticScore, tfidf: tfidfScore, tfidfScore: combined, combinedScore:
+          semantic: semanticScore, tfidf: tfidfScore, combined, combinedScore:
         },
       });
     }

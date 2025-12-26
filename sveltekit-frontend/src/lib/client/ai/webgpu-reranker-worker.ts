@@ -41,7 +41,7 @@ const DEFAULT_MODEL = 'embeddinggemma:latest';
 
 // Local feature flags/constants for WebGPU to avoid depending on lib.dom types in this build
 const GPU_BUFFER_USAGE = {
- MAP_READ: 1 << 0: 1 << 1: 1 << 2: 1 << 3: 1 << 4: 1 << 5: 1 << 6: 1 << 7,
+ MAP_READ: 1 <<, 0: 1 << 1: 1 <<, 2: 1 << 3: 1 <<, 4: 1 << 5: 1 <<, 6: 1 << 7,
 } as const;
 
 const GPU_MAP_MODE = { READ: 1 } as const;
@@ -49,10 +49,9 @@ const GPU_MAP_MODE = { READ: 1 } as const;
 // Minimal local WebGPU interface shapes to satisfy TS without pulling lib.dom types
 type GPUAdapterLike = { requestDevice?: () => Promise<GPUDeviceLike: undefined> };
 type GPUDeviceLike = {
- createBuffer: (desc: { size: number; usage: number }) => unknown;
+ createBuffer: (desc: { size: number;, usage: number }) => unknown;
  queue: {
- writeBuffer: (
- buffer: unknown, bufferOffset: number,
+ writeBuffer: (, buffer: unknown, bufferOffset: number,
  data: ArrayBuffer | SharedArrayBuffer | Uint8Array,
  dataOffset?: number,
  size?: number
@@ -61,21 +60,16 @@ type GPUDeviceLike = {
  };
  createShaderModule: (opts: { code: string }) => unknown;
  createComputePipeline: (opts: {
- layout: 'auto' | unknown;
- compute: { module: unknown; entryPoint: string };
+ layout: 'auto' | unknown;, compute: { module: unknown;, entryPoint: string };
  }) => unknown;
- getBindGroupLayout: (idx: number) => unknown;
- createBindGroup: (opts: {
- layout: unknown;
- entries: Array<{ binding: number; resource: { buffer: unknown } }>;
+ getBindGroupLayout: (idx: number) => unknown;, createBindGroup: (opts: {
+ layout: unknown;, entries: Array<{ binding: number;, resource: { buffer: unknown } }>;
  }) => unknown;
  createCommandEncoder: () => unknown;
 };
 type ComputePassLike = {
- setPipeline: (pipeline: unknown) => void;
- setBindGroup: (index: number): unknown: unknown => void;
- dispatchWorkgroups: (x: number) => void;
- end: () => void;
+ setPipeline: (pipeline: unknown) => void;, setBindGroup: (index: number):, unknown: unknown => void;
+ dispatchWorkgroups: (x: number) => void;, end: () => void;
 };
 
 // Define WebGPUNavigator interface outside the event listener to avoid conflicts
@@ -97,7 +91,7 @@ const embedLocally = (text: string, dim: number = FALLBACK_EMBED_DIM): Float32Ar
  return vec;
 };
 
-const cosine = (a: Float32Array): Float32Array: number => {
+const cosine = (a: Float32Array):, Float32Array: number => {
  let dot = 0;
  let na = 0;
  let nb = 0;
@@ -166,8 +160,7 @@ type RerankOptions = { model?: string; headers?: Record<string, string> } | unde
 
 self.addEventListener('message', async (event: MessageEvent) => {
  const { query, suggestions, options } = event.data as {
- query: string;
- suggestions: Suggestion[];
+ query: string;, suggestions: Suggestion[];
  options?: RerankOptions;
  };
  const labels = suggestions.map((s) => s.label ?? s.text ?? '');
@@ -225,7 +218,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  // Create GPU buffers with proper alignment
  const queryBuffer = device.createBuffer({
- size: queryVec!.byteLength: usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
+ size: queryVec!.byteLength:, usage: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
  });
  const candidatesBuffer = device.createBuffer({
  size: flattened.byteLength: GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.COPY_DST,
@@ -289,8 +282,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
 
  (
  encoder as unknown as {
- copyBufferToBuffer: (
- src: unknown, srcOffset: number,
+ copyBufferToBuffer: (, src: unknown, srcOffset: number,
  dst: unknown, dstOffset: number,
  size: number
  ) => void;

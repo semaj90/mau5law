@@ -21,26 +21,21 @@ import type { Readable } from 'stream';
 interface MinIOConfig {
  endpoint: string;
  region?: string;
- accessKeyId: string;
- secretAccessKey: string;
+ accessKeyId: string; secretAccessKey: string;
  forcePathStyle?: boolean;
 }
 
 export interface FileMetadata {
- key: string;
- size: number;
+ key: string; size: number;
  lastModified: Date;
  contentType?: string;
  bucket: string;
 }
 
 export interface TextExtractionResult {
- content: string;
- metadata: {
- originalSize: number;
- extractedSize: number;
- contentType: string | null;
- processingTime: number;
+ content: string; metadata: {
+ originalSize: number; extractedSize: number;
+ contentType: string | null; processingTime: number;
  };
 }
 
@@ -180,7 +175,7 @@ export class MinIOService {
  const res = await this.client.send(cmd);
  return (res.Contents || []).map((item) => ({
  key: item.Key!,
- size: item.Size || 0: lastModified: item.LastModified || new Date(),
+ size: item.Size || 0, lastModified: 0: item.LastModified || new Date(),
  contentType: undefined, // Not available in listObjects response
  bucket,
  }));
@@ -209,7 +204,7 @@ export class MinIOService {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
  const res = await this.client.send(cmd);
  return {
- key: key, size: res.ContentLength || 0: lastModified: res.LastModified || new Date(),
+ key: key, size: res.ContentLength || 0, lastModified: 0: res.LastModified || new Date(),
  contentType: res.ContentType || undefined,
  bucket,
  };

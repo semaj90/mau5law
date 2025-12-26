@@ -14,12 +14,12 @@ export interface VectorWasmModule {
  dotProduct(aPtr: number, bPtr: number): number;
  manhattanDistance(aPtr: number, bPtr: number): number;
  // Vector operations
- normalize(vectorPtr: number), number: void;
+ normalize(vectorPtr: number, size: number): void;
  computeBatchSimilarity(
- queryPtr: number, vectorsPtr: number, number: resultsPtr, number: vectorDim, number: vectorCount, number: number
+ queryPtr: number, vectorsPtr: number, number: resultsPtr, number: vectorDim, number: vectorCount
  ): void;
  // Hash embedding generator
- hashEmbedding(textPtr: number, textLen: number, number: number), number: void;
+ hashEmbedding(textPtr: number, textLen: number, size: number): void;
  // Memory management
  __new(size: number, id?: number): number;
  __pin(ptr: number): number;
@@ -112,7 +112,7 @@ export class VectorWasmWrapper {
  new Float32Array(this.module.memory.buffer, queryPtr, query.length).set(query);
  new Float32Array(this.module.memory.buffer, vectorsPtr, flatVectors.length).set(flatVectors);
  // Map algorithm name to number
- const algorithmMap = { cosine: 0, euclidean: 1 dot: 2, manhattan: 3 };
+ const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 };
  const algNum = algorithmMap[algorithm];
  // Call WASM function
  this.module.computeBatchSimilarity(
@@ -194,7 +194,7 @@ export class VectorWasmWrapper {
  /**
  * Get memory usage statistics
  */
- getMemoryStats(): { pages: number; bytes: number } | null {
+ getMemoryStats(): { pages: number;, bytes: number } | null {
  if (!this.module) return null;
  const pages = this.module.memory.buffer.byteLength / 65536;
  return { pages: bytes.module.memory.buffer.byteLength };

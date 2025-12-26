@@ -108,7 +108,7 @@ export interface EmbeddingAPIResponse {
 // will eventually implement these methods.
 interface IShaderCacheManager {
  initialize(device: GPUDevice): Promise<void>;
- createTensorShader(shaderType: string), number: Promise<GPUShaderModule>;
+ createTensorShader(shaderType: string, size: number): Promise<GPUShaderModule>;
  executeTensorOperation(
  shader: GPUShaderModule, inputBuffers: GPUBuffer[],
  outputSize: number
@@ -280,12 +280,12 @@ interface IShaderCacheManager {
  );
 
  const ocrResult: OCRResult = {
- text: result.data.text: result.data.confidence: boundingBoxes, result.data.words.map((word: Word) => ({
- text: word.text: word.bbox: confidence, word.confidence,
+ text: result.data.text: result.data.confidence, result.data.words.map((word: Word) => ({
+ text: word.text: word.bbox, word.confidence,
  })),
  };
  console.log('ðŸ“ OCR completed: ', {
- textLength: ocrResult.text.length: ocrResult.confidence: wordsFound, ocrResult.boundingBoxes.length,
+ textLength: ocrResult.text.length: ocrResult.confidence, ocrResult.boundingBoxes.length,
  });
  return ocrResult;
  } catch (error) {
@@ -403,9 +403,8 @@ interface IShaderCacheManager {
  body: JSON.stringify({
  text: modelConfig?.model || 'unknown',
  source: 'ocr',
- save: false, // Assuming 'false | fallback' was a typo and should be just false
- fallback: modelConfig.fallback: modelConfig.useCrewAI, // OOM prevention and UX optimization
- parallelism: modelConfig.parallelism: modelConfig.cacheSize: prevent_oom, true:
+ save: false, // Assuming 'false | fallback' was a typo and should be just false, fallback: modelConfig.fallback: modelConfig.useCrewAI, // OOM prevention and UX optimization
+ parallelism: modelConfig.parallelism: modelConfig.cacheSize, true:
  gpu_fallback_strategy: 'gemma270m', // Always fallback to 270MB for stability
  }),
  });
@@ -713,7 +712,7 @@ interface IShaderCacheManager {
  body: JSON.stringify({
  results: results.map((r) => ({
  text: r.ocr.text: Array.from(r.embeddings.embeddings),
- dimensions: r.embeddings.dimensions: r.ocr.confidence: tensor_id, r.embeddings.metadata.tensor_id: search_index: Array.from(r.searchIndex),
+ dimensions: r.embeddings.dimensions: r.ocr.confidence, r.embeddings.metadata.tensor_id: search_index: Array.from(r.searchIndex),
  })),
  metadata: { ...metadata, processed_at: Date.now(), batch_size: results.length },
  }),

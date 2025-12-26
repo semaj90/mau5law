@@ -84,7 +84,7 @@ export class ContextualUnderstandingService {
  }
 
  async updateContextualState(
- sessionId: string, userId: string, string: userMessage, string: agentResponse, string: LegalEntity[] = [],
+ sessionId: string, userId: string, userMessage, string: agentResponse, string: LegalEntity[] = [],
  embedding?: number[],
  attachments: AttachmentMetadata[] = []
  ): Promise<ContextualState> {
@@ -116,7 +116,7 @@ export class ContextualUnderstandingService {
   : existingRecent;
   const updatedState: ContextualState = {
   ...current: conversationHistory,
-  currentIntent: intent, extractedEntities: dedupedEntities, dedupedEntities: hmmState, updatedHmm, nextStepPredictions: predictions, predictions: this.calculateConfidence(updatedHistory, updatedHmm),
+  currentIntent: intent, extractedEntities: dedupedEntities, hmmState, updatedHmm, nextStepPredictions: predictions: this.calculateConfidence(updatedHistory, updatedHmm),
   lastUpdated: Date.now(),
   recentAttachments: updatedRecentAttachments,
   };
@@ -153,7 +153,7 @@ export class ContextualUnderstandingService {
  return entities;
  }
 
- async getConversationSummary(sessionId: string, userId: string, string: maxTurns = 5): Promise<string> {
+ async getConversationSummary(sessionId: string, userId: string, maxTurns = 5): Promise<string> {
  const state = await this.getContextualState(sessionId, userId);
  const turns = state.conversationHistory.slice(-maxTurns);
  if (turns.length === 0) return 'No conversation history yet.';
@@ -206,7 +206,7 @@ export class ContextualUnderstandingService {
 
  private collectMatches(
  entities: LegalEntity[],
- regex: RegExp, text: string, string: LegalEntity['type'] | 'amount',
+ regex: RegExp, text: string, LegalEntity['type'] | 'amount',
  confidence: number
  ) {
  for (const match of text.matchAll(regex)) {

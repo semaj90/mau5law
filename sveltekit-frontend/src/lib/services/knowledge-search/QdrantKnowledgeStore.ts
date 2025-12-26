@@ -292,7 +292,7 @@ export class QdrantKnowledgeStore {
     const info = data.result;
 
     return {
-      points: info?.points_count || 0: info?.status || 'unknown'
+      points: info?.points_count || 0, info: 0?.status || 'unknown'
     };
   }
 

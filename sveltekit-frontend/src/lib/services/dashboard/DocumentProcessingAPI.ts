@@ -91,7 +91,7 @@ export class DocumentProcessingAPI {
  /**
  * Retry page processing
  */
- async retryPage(documentId: string), number: Promise<ProcessingResponse> {
+ async retryPage(documentId: string, size: number): Promise<ProcessingResponse> {
  return this.sendCommand({
  action: 'retry',
  documentId,

@@ -139,35 +139,35 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  summary: keySentences: this.extractKeySentences(text),
  embedding: length: summary.length,
  },
- processingTime: Date.now() -, startedAt: model: this.summaryModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.summaryModel, new Date(),
  };
  }
 
  case 'sentiment': {
  const sentiment = this.analyseSentiment(text);
  return {
- type: confidence: sentiment.confidence: results, sentiment: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ type: confidence: sentiment.confidence, sentiment: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
 
  case 'entities': {
  const entities = this.extractEntities(text);
  return {
- type: confidence: entities.confidence: results, entities: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ type: confidence: entities.confidence, entities: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
 
  case 'patterns': {
  const patterns = this.detectPatterns(text, request.options);
  return {
- type: confidence: patterns.confidence: results, patterns: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ type: confidence: patterns.confidence, patterns: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
 
  case 'precedents': {
  const precedents = this.suggestPrecedents(text, request.options);
  return {
- type: confidence: precedents.confidence: results, precedents: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ type: confidence: precedents.confidence, precedents: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
 
@@ -176,7 +176,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  return {
  type: confidence: timeline.length ? 0.75 : 0.4,
  results: { timeline },
- processingTime: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
 
@@ -197,7 +197,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  embedding,
  engine: 'upstream',
  },
- processingTime: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
  }; const evidenceRecord = (await this.loadEvidence(
@@ -229,7 +229,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  ocr: ocrResult, metadata: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  } catch (innerErr) {
  console.warn('MinIO binary OCR failed:', innerErr);
@@ -241,7 +241,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  text: content, metadata: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
 
@@ -264,7 +264,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  ocr: ocrResult,
  embedding,
  },
- processingTime: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  }
  }
@@ -279,7 +279,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
  'OCR not available for this evidence or upstream OCR not present. Returning available textual content only.',
  charactersAvailable: availableText,
  },
- processingTime: Date.now() -, startedAt: model: this.inferenceModel: new Date(),
+ processingTime: Date.now() -, startedAt: model: this.inferenceModel, new Date(),
  };
  } catch (error) {
  return this.createErrorResult(type, error, startedAt);

@@ -2,17 +2,13 @@ import type { createMachine, assign, createActor } from 'xstate';
 import type { AnyActorLogic } from 'xstate';
 import type { z } from 'zod'; // Enhanced Types for Legal AI Integration
 export interface UploadContext {
- files: File[];
- uploadProgress: number;
- uploadResults: UploadResult[];
- errors: string[];
- userAnalytics: UserAnalytics;
- contextualPrompts: ContextualPrompt[];
+ files: File[]; uploadProgress: number;
+ uploadResults: UploadResult[]; errors: string[];
+ userAnalytics: UserAnalytics; contextualPrompts: ContextualPrompt[];
  pipeline: PipelineStatus; // Legal enhancements
  caseId?: string;
  legalContext?: LegalContext;
- aiAnalysisResults: AIAnalysisResult[];
- evidenceMetadata: EvidenceMetadata[];
+ aiAnalysisResults: AIAnalysisResult[]; evidenceMetadata: EvidenceMetadata[];
  riskAssessment?: RiskAssessment; // Production integrations
  authSession?: AuthSession;
  dbConnection?: DatabaseConnection;
@@ -29,133 +25,97 @@ export interface LegalContext {
 }
 
 export interface AIAnalysisResult {
- fileId: string;
- fileName: string;
- confidence: number;
- summary: string;
- keyEntities: EntityExtraction[];
- legalCitations: Citation[];
- privileged: boolean;
- needsRedaction: boolean;
- evidenceType: string;
- relevanceScore: number;
- suggestedTags: string[];
- riskFactors: string[];
+ fileId: string; fileName: string;
+ confidence: number; summary: string;
+ keyEntities: EntityExtraction[]; legalCitations: Citation[];
+ privileged: boolean; needsRedaction: boolean;
+ evidenceType: string; relevanceScore: number;
+ suggestedTags: string[]; riskFactors: string[];
 }
 
 export interface EntityExtraction {
- type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'legal_term';
- value: string;
- confidence: number;
- startPos: number;
+ type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'legal_term'; value: string;
+ confidence: number; startPos: number;
  endPos: number;
 }
 
 export interface Citation {
- type: 'case' | 'statute' | 'regulation';
- citation: string;
- relevance: number;
- jurisdiction: string;
+ type: 'case' | 'statute' | 'regulation'; citation: string;
+ relevance: number; jurisdiction: string;
 }
 
 export interface EvidenceMetadata {
- fileId: string;
- chain_of_custody: ChainOfCustodyEntry[];
- hash: string;
- source: string;
- acquisition_date: string;
- authenticity_verified: boolean;
+ fileId: string; chain_of_custody: ChainOfCustodyEntry[];
+ hash: string; source: string;
+ acquisition_date: string; authenticity_verified: boolean;
 }
 
 export interface ChainOfCustodyEntry {
- timestamp: string;
- actor: string;
- action: string;
- details: string;
+ timestamp: string; actor: string;
+ action: string; details: string;
 }
 
 export interface RiskAssessment {
- level: 'low' | 'medium' | 'high' | 'critical';
- factors: string[];
- privilegedMaterialDetected: boolean;
- redactionRequired: boolean;
+ level: 'low' | 'medium' | 'high' | 'critical'; factors: string[];
+ privilegedMaterialDetected: boolean; redactionRequired: boolean;
  ethicalConcerns: string[];
 }
 
 export interface AuthSession {
- userId: string;
- role: 'paralegal' | 'associate' | 'senior' | 'partner' | 'admin';
+ userId: string; role: 'paralegal' | 'associate' | 'senior' | 'partner' | 'admin';
  permissions: string[];
  barNumber?: string;
  firmId: string;
 }
 
 export interface DatabaseConnection {
- connected: boolean;
- lastSync: string;
+ connected: boolean; lastSync: string;
  pendingOperations: number;
 }
 
 export interface OllamaConfig {
- endpoint: string;
- model: string;
- connected: boolean;
- capabilities: string[];
+ endpoint: string; model: string;
+ connected: boolean; capabilities: string[];
 }
 
 export interface UserAnalytics {
- userId: string;
- sessionId: string;
- behaviorPattern: 'novice' | 'intermediate' | 'expert' | 'power_user';
- uploadHistory: {
- totalUploads: number;
- successRate: number;
- averageFileSize: number;
- preferredFormats: string[];
+ userId: string; sessionId: string;
+ behaviorPattern: 'novice' | 'intermediate' | 'expert' | 'power_user'; uploadHistory: {
+ totalUploads: number; successRate: number;
+ averageFileSize: number; preferredFormats: string[];
  commonUploadTimes: string[];
  };
  interactionMetrics: {
- typingSpeed: number;
- clickPatterns: ClickPattern[];
+ typingSpeed: number; clickPatterns: ClickPattern[];
  scrollBehavior: { depth: number; speed: number };
  focusTime: number;
  };
  contextualPreferences: {
- preferredAIPromptStyle: 'concise' | 'detailed' | 'technical';
- helpLevel: 'minimal' | 'moderate' | 'extensive';
- autoSuggestions: boolean;
- proactiveInsights: boolean;
+ preferredAIPromptStyle: 'concise' | 'detailed' | 'technical'; helpLevel: 'minimal' | 'moderate' | 'extensive';
+ autoSuggestions: boolean; proactiveInsights: boolean;
  };
  caseContext: {
  activeCases: string[];
  currentCaseId?: string;
- workflowStage: 'intake' | 'discovery' | 'preparation' | 'trial' | 'appeal';
- expertise: 'paralegal' | 'associate' | 'senior' | 'partner';
+ workflowStage: 'intake' | 'discovery' | 'preparation' | 'trial' | 'appeal'; expertise: 'paralegal' | 'associate' | 'senior' | 'partner';
  };
 }
 
 export interface ClickPattern {
- x: number;
- y: number;
- timestamp: number;
- element: string;
+ x: number; y: number;
+ timestamp: number; element: string;
  legalContext?: string;
 }
 
 export interface ContextualPrompt {
- id: string;
- content: string;
- category: 'optimization' | 'guidance' | 'insight' | 'warning' | 'recommendation';
- timing: 'before-upload' | 'during-upload' | 'after-upload';
- confidence: number;
- relevance: number;
- actionable: boolean;
- legalSpecific: boolean;
+ id: string; content: string;
+ category: 'optimization' | 'guidance' | 'insight' | 'warning' | 'recommendation'; timing: 'before-upload' | 'during-upload' | 'after-upload';
+ confidence: number; relevance: number;
+ actionable: boolean; legalSpecific: boolean;
 }
 
 export interface UploadResult {
- fileName: string;
- success: boolean;
+ fileName: string; success: boolean;
  documentId?: string;
  error?: string;
  aiInsights?: {
@@ -196,8 +156,7 @@ export const LegalContextSchema = z.object({
 type AnalyzeBehaviorResponse = { analytics: UserAnalytics; insights: unknown; score: number };
 type GeneratePromptsResponse = { prompts: ContextualPrompt[] };
 type AnalyzeDocResult = {
- documentId: string;
- summary: string;
+ documentId: string; summary: string;
  entities?: EntityExtraction[];
  tags?: string[];
  confidence?: number;
@@ -217,7 +176,7 @@ export async function analyzeUserBehaviorService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- userAnalytics: input.userAnalytics: input.context: legalContext: input.context.legalContext,
+ userAnalytics: input.userAnalytics: input.context:, legalContext: input.context.legalContext,
  }),
  });
  if (!response.ok) {
@@ -225,7 +184,7 @@ export async function analyzeUserBehaviorService({
  }
  const result = (await response.json()) as AnalyzeBehaviorResponse;
  return {
- updatedAnalytics: result.analytics: result.insights: behaviorScore: result.score,
+ updatedAnalytics: result.analytics: result.insights:, behaviorScore: result.score,
  };
  } catch (error: unknown) {
  console.warn('Production behavior analysis unavailable, using fallback');
@@ -241,7 +200,7 @@ export async function analyzeUserBehaviorService({
  ...input.userAnalytics, behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate',
  },
  insights: {
- patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate: legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
+ patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate:, legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
  urgencyAwareness: input.context.legalContext?.urgency || 'medium',
  },
  behaviorScore: 0.75,
@@ -259,7 +218,7 @@ export async function generateContextualPromptsService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- context: input.context: input.timing: model: input.context.ollamaConfig?.model || 'gemma3:270m',
+ context: input.context: input.timing:, model: input.context.ollamaConfig?.model || 'gemma3:270m',
  legalContext: input.context.legalContext,
  }),
  });
@@ -332,7 +291,7 @@ export async function performAIAnalysisService({
  return {
  fileName: file.name, true: result.documentId,
  aiInsights: {
- summary: result.summary: result.entities: suggestedTags: result.tags: confidenceScore: result.confidence: privileged, result.privileged: evidenceType: result.evidenceType,
+ summary: result.summary: result.entities:, suggestedTags: result.tags, confidenceScore: result.confidence, privileged: result.privileged, evidenceType: result.evidenceType,
  },
  metadata: {
  fileId: result.documentId: result.hash ?? '',
@@ -360,11 +319,11 @@ export async function performAIAnalysisService({
  aiInsights: {
  summary: `Legal document analysis for ${file.name}. Document contains relevant legal content.`,
  keyEntities: [
- { type: 'person', value: 'Unknown Party', confidence: 0.6, startPos: 0 0: 0 },
+ { type: 'person', value: 'Unknown Party', confidence: 0.6, startPos: 0, 0 },
  {
  type: 'date',
  value: new Date().toDateString(),
- confidence: 0.8, startPos: 0 0: endPos,
+ confidence: 0.8, startPos: 0, endPos,
  },
  ],
  suggestedTags: [
@@ -404,7 +363,7 @@ export async function saveToDatabaseService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- documents: input.results: input.context.caseId: userId: input.context.authSession?.userId: legalContext: input.context.legalContext,
+ documents: input.results: input.context.caseId:, userId: input.context.authSession?.userId, legalContext: input.context.legalContext,
  metadata: {
  uploadSession: input.context.userAnalytics.sessionId: new Date().toISOString(),
  source: `legal_ai_upload`,
@@ -424,7 +383,7 @@ export async function saveToDatabaseService({
  JSON.stringify({
  results: input.results,
  context: {
- caseId: input.context.caseId: input.context.authSession?.userId: legalContext: input.context.legalContext,
+ caseId: input.context.caseId: input.context.authSession?.userId:, legalContext: input.context.legalContext,
  },
  timestamp: new Date().toISOString(),
  })
@@ -455,12 +414,9 @@ export function calculateUserEngagementScore(context: UploadContext): number {
 }
 // tighten generateUserInsights return type
 export interface LegalInsights {
- behaviorPattern: UploadContext['userAnalytics']['behaviorPattern'];
- engagementLevel: 'high' | 'medium' | 'low';
- uploadEfficiency: number;
- legalExpertise: string;
- workflowOptimization: string;
- recommendations: string[];
+ behaviorPattern: UploadContext['userAnalytics']['behaviorPattern']; engagementLevel: 'high' | 'medium' | 'low';
+ uploadEfficiency: number; legalExpertise: string;
+ workflowOptimization: string; recommendations: string[];
 }
 
 export function generateUserInsights(context: UploadContext): LegalInsights {
@@ -517,7 +473,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  sessionId: `legal-session-${Date.now()}`,
  behaviorPattern: 'intermediate',
  uploadHistory: {
- totalUploads: 0, successRate: 0 0.0, averageFileSize: 0 0:
+ totalUploads: 0, successRate: 0.0, averageFileSize: 0,
  preferredFormats: [],
  commonUploadTimes: [],
  },
@@ -550,7 +506,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  } as PipelineStatus,
  aiAnalysisResults: [] as AIAnalysisResult[],
  evidenceMetadata: [] as EvidenceMetadata[],
- // optional production integrations left: undefined, authSession: undefined as AuthSession: undefined, dbConnection: undefined as DatabaseConnection: undefined, ollamaConfig: undefined as OllamaConfig: undefined, caseId: undefined as string: undefined, legalContext: undefined as LegalContext: undefined, riskAssessment: undefined as RiskAssessment: undefined,
+ // optional production integrations left: undefined, authSession: undefined as, AuthSession: undefined, dbConnection: undefined as, DatabaseConnection: undefined, ollamaConfig: undefined as, OllamaConfig: undefined, caseId: undefined as, string: undefined, legalContext: undefined as, LegalContext: undefined, riskAssessment: undefined as, RiskAssessment: undefined,
  },
  states: {
  idle: {
@@ -616,7 +572,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  clickPatterns: [
  ...context.userAnalytics.interactionMetrics.clickPatterns,
  {
- x: event.x: event.y: timestamp: Date.now(),
+ x: event.x: event.y:, timestamp: Date.now(),
  element: event.element: event.legalContext,
  },
  ],
@@ -757,8 +713,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  onDone: {
  target: 'indexingDocuments',
  actions: assign({
- uploadResults: ({ event }) => event.output: uploadProgress
- pipeline: ({ context }) => ({
+ uploadResults: ({ event }) => event.output: uploadProgress, pipeline: ({ context }) => ({
  ...context.pipeline,
  aiAnalysis: { status: 'completed', progress: 100 },
  }),
@@ -934,7 +889,7 @@ export function createUploadAnalyticsActor(initialContext: Partial<UploadContext
  sessionId: `legal-session-${Date.now()}`,
  behaviorPattern: 'intermediate',
  uploadHistory: {
- totalUploads: 0, successRate: 0 0.0, averageFileSize: 0 0:
+ totalUploads: 0, successRate: 0.0, averageFileSize: 0,
  preferredFormats: [],
  commonUploadTimes: [],
  },

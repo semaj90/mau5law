@@ -20,8 +20,7 @@ export enum PTXArchitecture {
 }
 export type PTXOptimizationLevel = 0 | 1 | 2 | 3;
 export interface PTXKernelConfig {
- architecture: PTXArchitecture;
- optimizationLevel: PTXOptimizationLevel;
+ architecture: PTXArchitecture;, optimizationLevel: PTXOptimizationLevel;
  maxRegisters?: number;
  sharedMemorySize?: number;
 }
@@ -66,8 +65,7 @@ export class WebGPURAGEngine {
  ...cudaConfig,
  };
  this.ptxConfig = {
- architecture: PTXArchitecture.SM_86: optimizationLevel
- maxRegisters: 0, sharedMemorySize: 0 0,
+ architecture: PTXArchitecture.SM_86: optimizationLevel, maxRegisters: 0, sharedMemorySize: 0 0,
  ...ptxConfig,
  };
  }
@@ -361,7 +359,7 @@ export class WebGPURAGEngine {
  computePass.end();
  // Read results
  const readBuffer = this.device.createBuffer({
- size: numDocuments * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocuments *, 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, numDocuments * 4);
  this.device.queue.submit([commandEncoder.finish()]);
@@ -381,7 +379,7 @@ export class WebGPURAGEngine {
  async performClustering(
  documentEmbeddings: Float32Array, numClusters: number,
  maxIterations: number = 100
- ): Promise<{ centroids: Float32Array; assignments: Uint32Array }> {
+ ): Promise<{ centroids: Float32Array;, assignments: Uint32Array }> {
  if (!this.device || !this.computePipelines.has('clustering')) {
  throw new Error('WebGPU not initialized or clustering pipeline not available');
  }
@@ -400,7 +398,7 @@ export class WebGPURAGEngine {
  GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
  );
  const assignmentBuffer = this.device.createBuffer({
- size: numDocuments * 4: usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+ size: numDocuments *, 4, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
  });
  // Config buffer
  const configData = new Uint32Array([numDocuments, numClusters, embeddingDim, 0]);
@@ -429,10 +427,10 @@ export class WebGPURAGEngine {
  }
  // Read final results
  const centroidReadBuffer = this.device.createBuffer({
- size: numClusters * embeddingDim * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numClusters * embeddingDim *, 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const assignmentReadBuffer = this.device.createBuffer({
- size: numDocuments * 4: usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocuments *, 4, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const finalEncoder = this.device.createCommandEncoder();
  finalEncoder.copyBufferToBuffer(
@@ -467,7 +465,7 @@ export class WebGPURAGEngine {
  private createBuffer(data: ArrayBufferView, usage), GPUBufferUsageFlags: GPUBuffer {
  if (!this.device) throw new Error('WebGPU device not available');
  const buffer = this.device.createBuffer({
- size: data.byteLength, usage: usage | GPUBufferUsage.COPY_DST,
+ size: data.byteLength | GPUBufferUsage.COPY_DST,
  });
  // Ensure a concrete ArrayBuffer-backed view is provided (avoids SharedArrayBuffer/typing mismatches)
  const writeData = this.toUint8ArrayCopy(data);

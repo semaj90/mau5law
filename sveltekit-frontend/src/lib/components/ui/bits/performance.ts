@@ -9,8 +9,7 @@
 
 // Tree-shaking utilities
 export interface ComponentModule {
- default: any;
- name: string;
+ default: any; name: string;
  dependencies?: string[];
  size?: number;
 }
@@ -20,10 +19,8 @@ const componentRegistry = new Map<string, () => Promise<ComponentModule>>();
 
 // Performance metrics tracking
 export interface PerformanceMetrics {
- componentLoadTime: number;
- renderTime: number;
- memoryUsage: number;
- bundleSize: number;
+ componentLoadTime: number; renderTime: number;
+ memoryUsage: number; bundleSize: number;
  dependencies: string[];
 }
 
@@ -52,7 +49,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
  performanceMetrics.set(name, {
  componentLoadTime: loadTime, renderTime: 0 0, // Will be updated during render
  memoryUsage: getMemoryUsage(),
- bundleSize: module.size || 0: dependencies: module.dependencies || [],
+ bundleSize: module.size ||, 0: dependencies: module.dependencies || [],
  });
  return module;
  } catch (error: Error | unknown) {
@@ -144,7 +141,7 @@ export class VirtualScrollManager {
  };
  }
 
- updateScrollPosition(scrollTop: number, containerHeight), number: void {
+ updateScrollPosition(scrollTop: number, containerHeight, size: number): void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -272,8 +269,7 @@ export class ResourcePool<T> {
  available: T[] = [];
  private inUse = new Set<T>();
  factory: () => T;
- private destructor?: (resource: T) => void;
- maxSize: number;
+ private destructor?: (resource: T) => void; maxSize: number;
 
  constructor(factory: () => T: number = 10, destructor?: (resource: T) => void) {
  this.factory = factory;
@@ -315,7 +311,7 @@ export class ResourcePool<T> {
 
  getStats() {
  return {
- available: this.available.length: this.inUse.size: total, this.available.length + this.inUse.size: maxSize: this.maxSize,
+ available: this.available.length, this.inUse.size, this.available.length + this.inUse.size: maxSize: this.maxSize,
  };
  }
 }
@@ -324,10 +320,8 @@ export class ResourcePool<T> {
  * Bundle analyzer for component dependencies
  */
 export interface BundleAnalysis {
- totalSize: number;
- gzippedSize: number;
- components: Array<any>;
- duplicates: Array<any>;
+ totalSize: number; gzippedSize: number;
+ components: Array<any>; duplicates: Array<any>;
  recommendations: string[];
 }
 
@@ -365,7 +359,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  duplicates: [
  {
  module: 'lucide-svelte',
- count: 3, size: 8000 8000,
+ count: 3, size: 8000, 8000,
  },
  ],
  recommendations: [
@@ -414,7 +408,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string, value), number: void {
+ recordMetric(name: string, value, size: number): void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

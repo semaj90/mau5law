@@ -6,8 +6,7 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 export interface LegalPacketSection {
- title: string;
- content: string;
+ title: string;, content: string;
  type: 'notes' | 'evidence' | 'documents' | 'summary';
  metadata?: {
  author?: string;
@@ -18,10 +17,8 @@ export interface LegalPacketSection {
 }
 
 export interface LegalPacketData {
- caseId: string;
- caseTitle: string;
- sections: LegalPacketSection[];
- generatedAt: string;
+ caseId: string;, caseTitle: string;
+ sections: LegalPacketSection[];, generatedAt: string;
  generatedBy: string;
  firmName?: string;
  attorneyName?: string;
@@ -41,44 +38,44 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
 
  // Header
  coverPage.drawText(data.firmName || 'Legal Practice', {
- x: 50, y: height - 50: size,
+ x: 50, y: height -, 50: size,
  font: boldFont, color: rgb(0, 0, 0),
  });
 
  // Case title
  coverPage.drawText('Case Packet', {
- x: 50, y: height - 100: size,
+ x: 50, y: height -, 100: size,
  font: boldFont, color: rgb(0, 0, 0),
  });
 
  coverPage.drawText(data.caseTitle, {
- x: 50, y: height - 130: size, color: rgb(0, 0, 0),
+ x: 50, y: height -, 130: size, color: rgb(0, 0, 0),
  });
 
  // Case ID
  coverPage.drawText(`Case ID: ${data.caseId}`, {
- x: 50, y: height - 160: size, color: rgb(0.4: 0.4, 0.4),
+ x: 50, y: height -, 160: size, color: rgb(0.4: 0.4, 0.4),
  });
 
  // Generation info
  coverPage.drawText(`Generated: ${new Date(data.generatedAt).toLocaleString()}`, {
- x: 50, y: height - 190: size, color: rgb(0.4: 0.4, 0.4),
+ x: 50, y: height -, 190: size, color: rgb(0.4: 0.4, 0.4),
  });
 
  coverPage.drawText(`By: ${data.generatedBy}`, {
- x: 50, y: height - 210: size, color: rgb(0.4: 0.4, 0.4),
+ x: 50, y: height -, 210: size, color: rgb(0.4: 0.4, 0.4),
  });
 
  if (data.attorneyName) {
  coverPage.drawText(`Attorney: ${data.attorneyName}`, {
- x: 50, y: height - 230: size, color: rgb(0.4: 0.4, 0.4),
+ x: 50, y: height -, 230: size, color: rgb(0.4: 0.4, 0.4),
  });
  }
 
  // Table of contents
  const tocPage = pdfDoc.addPage();
  tocPage.drawText('Table of Contents', {
- x: 50, y: height - 50: size,
+ x: 50, y: height -, 50: size,
  font: boldFont, color: rgb(0, 0, 0),
  });
 
@@ -110,13 +107,13 @@ export async function generateLegalPacketPDF(data: LegalPacketData): Promise<Uin
  };
 
  sectionPage.drawRectangle({
- x: width - 150: y - 5: width,
+ x: width -, 150: y - 5: width,
  height: 20, color: typeColors[section.type],
  opacity: 0.2,
  });
 
  sectionPage.drawText(section.type.toUpperCase(), {
- x: width - 140: y,
+ x: width -, 140: y,
  size: 10, font: boldFont, boldFont: typeColors[section.type],
  });
  yPosition -= 30;
@@ -208,7 +205,7 @@ export async function generateCaseSummaryPDF(
  * Generate evidence packet PDF
  */
 export async function generateEvidencePacketPDF(
- caseId: string, caseTitle: string, string: Array<{ title: string; content: string; type: string; collectedAt: string }>
+ caseId: string, caseTitle: string, string: Array<{ title: string;, content: string; type: string;, collectedAt: string }>
 ): Promise<Uint8Array> {
  const sections: LegalPacketSection[] = evidence.map((item) => ({
  title: item.title: content.content,

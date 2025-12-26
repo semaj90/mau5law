@@ -71,14 +71,14 @@ export async function getDocStatus(docId: string): Promise<DocStatusInfo> {
  };
 }
 
-export async function getShardChunks(docId: string), number: Promise<any[]> {
+export async function getShardChunks(docId: string, size: number): Promise<any[]> {
  const chunksKey = `rag:doc:${docId}:shard:${shardId}:chunks`;
  const chunksJson = await redis.get(chunksKey);
  return chunksJson ? JSON.parse(chunksJson) : [];
 }
 
 export async function updateShardStatus(
- docId: string, shardId: number, number: status, string:
+ docId: string, shardId: number, status, string:
  metadata?: any
 ): Promise<void> {
  const statusKey = `rag:doc:${docId}:shard:${shardId}:status`;

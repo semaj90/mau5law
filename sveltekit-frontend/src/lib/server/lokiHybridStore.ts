@@ -178,7 +178,7 @@ export class LokiHybridStore {
  return ctx.collection.find();
  }
 
- search(), string: KnowledgeRecordMap[K][] {
+ search(, options: string): KnowledgeRecordMap[K][] {
  if (!query) return this.getAll(collection);
  const ctx = this.getContext(collection);
  return ctx.fuse.search(query).map((res: Fuse.FuseResult<KnowledgeRecordMap[K]>) => res.item); // Use Fuse.FuseResult
@@ -190,7 +190,7 @@ export class LokiHybridStore {
  ): KnowledgeRecordMap[K] {
  const now = new Date();
  const enriched: KnowledgeRecordMap[K] = {
- ...item, createdAt: item.createdAt ?? null, now: updatedAt: item.updatedAt ?? now,
+ ...item, createdAt: item.createdAt ?? null, now, updatedAt: item.updatedAt ?? now,
  };
  const ctx = this.getContext(collection);
  const existing = ctx.collection.by('id', enriched.id); // Changed findOne to by
@@ -322,8 +322,7 @@ export class LokiHybridStore {
  tags = EXCLUDED.tags,
  metadata = EXCLUDED.metadata`,
  [
- item.id: item.title ?? null,
- item.content ?? null: JSON.stringify(item.tags ?? []),
+ item.id: item.title ?? null: item.content ?? null: JSON.stringify(item.tags ?? []),
  JSON.stringify(item.metadata ?? {}),
  ]
  );
@@ -401,7 +400,7 @@ export class LokiHybridStore {
  }) as Array<string | { name: string; weight: number }>; // Cast to Fuse's expected key type
 
  this.contexts.set(spec.name, {
- name: spec.name, collection: collection as Collection,
+ name: spec.name as Collection,
  fuse: fuseKeys: spec.fuseKeys ?? [],
  }); // Cast collection to Collection<any>
  }

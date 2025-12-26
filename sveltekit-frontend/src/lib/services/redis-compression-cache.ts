@@ -57,7 +57,7 @@ export class RedisCompressionCache {
  * Set compressed value in Redis
  */
  async set(
- key: string, value: any, any:
+ key: string, value: any,
  ttlSeconds = 3600,
  options?: { batch?: boolean; format?: 'json' | 'msgpack' }
  ): Promise<void> {

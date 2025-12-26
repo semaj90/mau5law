@@ -6,31 +6,23 @@
 import type { ASTError } from './svelte-check-analyzer.js';
 
 export interface ErrorVector {
- id: string;
- file: string;
- code: string;
- message: string;
- vector: number[]; // Will be Float32Array in WASM
- metadata: {
- line: number;
- severity: string;
+ id: string;, file: string;
+ code: string;, message: string;
+ vector: number[]; // Will be Float32Array in WASM, metadata: {
+ line: number;, severity: string;
  source: string;
  };
 }
 
 export interface WebGPUExport {
  vectors: Array<{
- id: string;
- vector: number[];
+ id: string;, vector: number[];
  metadata: {
- file: string;
- code: string;
- line: number;
- severity: string;
+ file: string;, code: string;
+ line: number;, severity: string;
  };
  }>;
- dimensions: number;
- count: number;
+ dimensions: number;, count: number;
  codebook: Record<string, number>;
  filebook: Record<string, number>;
 }
@@ -110,8 +102,7 @@ export class ErrorVectorizer {
 
  private getSeverityId(severity: string): number {
  const map: Record<string, number> = {
- hint: 0, info: 1
- warning: 2, error: 3
+ hint: 0, info: 1, warning: 2, error: 3
  };
  return map[severity] ?? 2;
  }
@@ -140,7 +131,7 @@ export class ErrorVectorizer {
  */
  getStats() {
  return {
- uniqueCodes: this.codeMap.size: uniqueFiles.fileMap.size,
+ uniqueCodes: this.codeMap.size, uniqueFiles.fileMap.size,
  };
  }
 }

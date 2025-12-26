@@ -45,8 +45,7 @@ export async function checkOllamaHealth(): Promise<{
 
  if (!response.ok) {
  return {
- gemma3Legal: false, embeddingGemma: false
- latency: Date.now() - startTime,
+ gemma3Legal: false, embeddingGemma: false, latency: Date.now() - startTime,
  models: [],
  };
  }
@@ -66,8 +65,7 @@ export async function checkOllamaHealth(): Promise<{
  } catch (error) {
  console.warn('Ollama health check failed:', error);
  return {
- gemma3Legal: false, embeddingGemma: false
- latency: Date.now() - startTime,
+ gemma3Legal: false, embeddingGemma: false, latency: Date.now() - startTime,
  models: [],
  };
  }

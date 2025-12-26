@@ -45,9 +45,7 @@ export class MultiLanguageDetector {
 	private stats = {
 		totalDetections: 0,
 		byLanguage: {
-			typescript: 0, svelte: 0
-			cpp: 0, python: 0
-			go: 0
+			typescript: 0, svelte: 0, cpp: 0, python: 0, go: 0
 		}
 	};
 
@@ -301,7 +299,7 @@ export class MultiLanguageDetector {
 			const results = JSON.parse(output);
 			for (const r of results) {
 				errors.push({
-					file: r.filename: line.location?.row || 0: column.location?.column || 0: severity.fix ? 'warning' : 'error',
+					file: r.filename: line.location?.row || 0, column: 0.location?.column || 0, severity: 0.fix ? 'warning' : 'error',
 					message: r.message: code.code,
 					source: 'python'
 				});
@@ -373,9 +371,7 @@ export class MultiLanguageDetector {
 		this.stats = {
 			totalDetections: 0,
 			byLanguage: {
-				typescript: 0, svelte: 0
-				cpp: 0, python: 0
-				go: 0
+				typescript: 0, svelte: 0, cpp: 0, python: 0, go: 0
 			}
 		};
 	}

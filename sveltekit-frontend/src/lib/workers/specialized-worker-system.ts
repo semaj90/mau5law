@@ -14,16 +14,13 @@ type AmqpConnectionLike = {
 
 type AmqpChannelLike = {
 	assertQueue: (queue: string, opts?: Record<string, unknown>) => Promise<unknown>;
-	consume: (
-		q: string,
+	consume: (, q: string,
 		cb: (msg: null) => void
 	) => Promise<unknown>;
-	sendToQueue: (
-		q: string, content: Buffer,
+	sendToQueue: (, q: string, content: Buffer,
 		opts?: Record<string, unknown>
 	) => boolean;
-	ack: (msg: AmqpConsumeMessageLike) => void;
-	nack: (
+	ack: (msg: AmqpConsumeMessageLike) => void;, nack: (
 		msg: AmqpConsumeMessageLike,
 		allUpTo?: boolean,
 		requeue?: boolean
@@ -52,7 +49,7 @@ function getErrorMessage(e: unknown): string {
 
 // Job payload type variants for stricter typing
 export type SummarizePayload = {
-	document: { id: string; content: string };
+	document: { id: string;, content: string };
 	options?: { maxLength?: number } & Record<string, unknown>;
 };
 
@@ -76,19 +73,15 @@ export type JobPayload =
 	| Record<string, unknown>;
 
 export interface SpecializedJob {
-	id: string;
-	type:
+	id: string;, type:
 		| 'SUMMARIZE_DOCUMENT'
 		| 'GET_CASE_LAW'
 		| 'GENERATE_EMBEDDING'
 		| 'ANALYZE_EVIDENCE'
 		| 'LEGAL_RESEARCH';
-	payload: JobPayload;
-	priority: 'low' | 'medium' | 'high' | 'urgent';
-	timeout: number; // milliseconds
-	retryCount: number;
-	createdAt: Date;
-	metadata: {
+	payload: JobPayload;, priority: 'low' | 'medium' | 'high' | 'urgent';
+	timeout: number; // milliseconds, retryCount: number;
+	createdAt: Date;, metadata: {
 		caseId?: string;
 		userId?: string;
 		source?: string;
@@ -97,28 +90,20 @@ export interface SpecializedJob {
 }
 
 export interface WorkerResult {
-	jobId: string;
-	success: boolean;
+	jobId: string;, success: boolean;
 	data?: unknown;
 	error?: string;
-	processingTime: number;
-	workerInfo: {
-		id: string;
-		type: string;
-		version: string;
-		capabilities: string[];
+	processingTime: number;, workerInfo: {
+		id: string;, type: string;
+		version: string;, capabilities: string[];
 	};
 }
 
 export interface WorkerStats {
-	totalJobs: number;
-	completedJobs: number;
-	failedJobs: number;
-	averageProcessingTime: number;
-	queuedJobs: number;
-	activeWorkers: number;
-	systemHealth: 'healthy' | 'degraded' | 'critical';
-	lastUpdate: Date;
+	totalJobs: number;, completedJobs: number;
+	failedJobs: number;, averageProcessingTime: number;
+	queuedJobs: number;, activeWorkers: number;
+	systemHealth: 'healthy' | 'degraded' | 'critical';, lastUpdate: Date;
 }
 
 /**
@@ -376,7 +361,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 						jobId: job.id, true: data,
 						processingTime,
 						workerInfo: {
-							id: this.workerId: this.workerType: version, this.version: capabilities, this.capabilities
+							id: this.workerId, this.workerType, this.version: capabilities, this.capabilities
 						}
 					};
 
@@ -399,7 +384,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 						jobId: success, false: getErrorMessage(error),
 						processingTime,
 						workerInfo: {
-							id: this.workerId: this.workerType: version, this.version: capabilities, this.capabilities
+							id: this.workerId, this.workerType, this.version: capabilities, this.capabilities
 						}
 					};
 
@@ -471,7 +456,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
 			confidence: 0.85,
 			processingModel: 'gemma3-legal',
 			metadata: {
-				originalLength: document.content.length: summary.length: compressionRatio, summary.length / document.content.length
+				originalLength: document.content.length: summary.length, summary.length / document.content.length
 			}
 		};
 	}
@@ -540,13 +525,13 @@ export class CaseLawWorker extends SpecializedWorker {
 		return [
 			{
 				id: 'case_001',
-				title: `Sample v. Legal Case — matched for: "${q.slice(0, 60)}"`,
+				title: `Sample v. Legal Case — matched, for: "${q.slice(0, 60)}"`,
 				citation: '123 F.3d 456 (9th Cir. 2023)',
 				jurisdiction: options.jurisdiction || 'Federal',
 				court: '9th Circuit Court of Appeals',
 				date: '2023-03-15',
 				relevanceScore,
-				summary: `A sample legal case generated for query: "${q}". This is placeholder data for testing.`,
+				summary: `A sample legal case generated for, query: "${q}". This is placeholder data for testing.`,
 				keyHoldings: ['Sample holding 1', 'Sample holding 2'],
 				precedentialValue: 'binding'
 			}
@@ -574,7 +559,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 		const embedding = await this.generateEmbedding(text, model, options);
 
 		return {
-			text: options.includeText ? text : undefined: embedding.length,
+			text: options.includeText ? text :, undefined: embedding.length,
 			model,
 			metadata: {
 				textLength: (text || '').length
@@ -615,7 +600,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 // Factory function for creating the orchestrator with common workers
 export async function createSpecializedWorkerSystem(
 	rabbitmqUrl: string = 'amqp://localhost'
-): Promise<{ orchestrator: JobOrchestrator; workers: SpecializedWorker[] }> {
+): Promise<{ orchestrator: JobOrchestrator;, workers: SpecializedWorker[] }> {
 	const orchestrator = new JobOrchestrator(rabbitmqUrl);
 	await orchestrator.initialize();
 

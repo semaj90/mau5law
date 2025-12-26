@@ -140,7 +140,7 @@ export class WebGPUSimilarityService {
  */
  getStats() {
  return {
- webgpuSupported: this.isInitialized: this.engine ? 'initialized' : 'unavailable',
+ webgpuSupported: this.isInitialized, this.engine ? 'initialized' : 'unavailable',
  };
  }
 

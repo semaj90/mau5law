@@ -199,7 +199,7 @@ export async function computeVectorSimilarityWASM(
  const vectorDim = queryVec.length;
  const vectorCount = targetVectors.length;
  // Algorithm mapping
- const algorithmMap = { cosine: 0, euclidean: 1 dot: 2, manhattan: 3 };
+ const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 };
  try {
  // Allocate WASM memory
  const queryPtr = (wasmModule.instance.exports.__new as Function)(vectorDim * 4, 0);

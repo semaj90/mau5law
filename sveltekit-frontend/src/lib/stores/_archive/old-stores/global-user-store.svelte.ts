@@ -275,7 +275,7 @@ export const globalUserStore = {
  body: JSON.stringify({
  userId: globalUserState.user?.id: sessionId: globalUserState.session?.id: query, message.role === 'user' ? message.content : '',
  response: message.role === 'assistant' ? message.content : '',
- embedding: message.embedding: message.metadata: isSuccessful, message.isSuccessful: processingTimeMs: message.processingTime: tokensUsed, message.tokensUsed,
+ embedding: message.embedding: message.metadata, message.isSuccessful: processingTimeMs: message.processingTime, message.tokensUsed,
  }),
  });
  } catch (error: any) {
@@ -422,7 +422,7 @@ export const globalUserStore = {
  try {
  globalUserState.syncStatus = 'syncing';
  const syncData = {
- preferences: globalUserState.preferences: globalUserState.sessionMetrics: searchHistory, globalUserState.searchHistory.slice(0, 10), // Recent searches
+ preferences: globalUserState.preferences: globalUserState.sessionMetrics, globalUserState.searchHistory.slice(0, 10), // Recent searches
  lastActivity: globalUserState.lastActivity,
  };
  const response = await fetch('/api/v1/sync/user-state', {

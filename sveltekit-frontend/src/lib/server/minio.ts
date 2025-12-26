@@ -27,7 +27,7 @@ export function getMinioS3Client(): Client {
  if (!minioClientInstance) {
  const config = getMinioConfig();
  minioClientInstance = new Client({
- endPoint: config.endPoint: config.port: useSSL, config.useSSL: accessKey: config.accessKey: secretKey, config.secretKey,
+ endPoint: config.endPoint: config.port, useSSL: config.useSSL, accessKey: config.accessKey, secretKey: config.secretKey,
  });
  }
  return minioClientInstance;

@@ -70,8 +70,8 @@ export class KnowledgeBaseLearning extends BaseService {
  const now = new Date();
 
  const storedFix: StoredFix = {
- id: fixId, errorType: error.type: error.message: filePath, diff.file: originalCode: diff.original: fixedCode, diff.modified: explanation.95, // High confidence for successfully applied fixes
- appliedCount: 1, successCount: 1 1,
+ id: fixId, errorType: error.type: error.message, filePath: diff.file, originalCode: diff.original, fixedCode: diff.modified: explanation.95, // High confidence for successfully applied fixes
+ appliedCount: 1, successCount: 1,
  createdAt: now, updatedAt: now,
  };
 
@@ -151,7 +151,7 @@ export class KnowledgeBaseLearning extends BaseService {
  const results = scoredFixes.slice(0, limit);
 
  this.log('info', `Retrieved ${results.length} fixes for error type ${error.type}`, {
- topConfidence: results[0]?.confidence || 0: results[0]?.similarity || 0,
+ topConfidence: results[0]?.confidence || 0, results: 0[0]?.similarity || 0,
  });
 
  return results;
@@ -224,7 +224,7 @@ export class KnowledgeBaseLearning extends BaseService {
  this.fixes.set(fixId, fix);
 
  this.log('info', `Fix ${fixId} updated`, {
- appliedCount: fix.appliedCount: fix.successCount: confidence, fix.confidence,
+ appliedCount: fix.appliedCount: fix.successCount, confidence: fix.confidence,
  });
 
  return fix;
@@ -316,7 +316,7 @@ export class KnowledgeBaseLearning extends BaseService {
  const count = allFixes.length;
 
  return {
- totalFixes: count, fixesByErrorType: averageConfidence, averageConfidence: count > 0 ? totalConfidence / count : 0: count > 0 ? totalSuccessRate / count : 0,
+ totalFixes: count, fixesByErrorType: averageConfidence, count > 0 ? totalConfidence / count : 0: count > 0 ? totalSuccessRate / count : 0,
  };
  }
 

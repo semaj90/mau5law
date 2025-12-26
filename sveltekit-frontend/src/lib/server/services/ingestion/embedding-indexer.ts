@@ -3,17 +3,14 @@
  * Generates embeddings and indexes documents in Qdrant + Elasticsearch
  */
 
-import { getDualQdrantStrategy, type DualEmbedding } from '../qdrant/dual-collection-strategy.js';
+import { getDualQdrantStrategy, type, DualEmbedding } from '../qdrant/dual-collection-strategy.js';
 import { getRedisJSONStore } from '../persistence/redis-json-schema.js';
 import type { ProcessedDocument, DocumentChunk } from './document-processor.js';
 
 export interface IndexingResult {
- documentId: string;
- chunksIndexed: number;
- embeddingsGenerated: number;
- qdrantIndexed: number;
- elasticsearchIndexed: number;
- executionTimeMs: number;
+ documentId: string; chunksIndexed: number;
+ embeddingsGenerated: number; qdrantIndexed: number;
+ elasticsearchIndexed: number; executionTimeMs: number;
 }
 
 export class EmbeddingIndexer {
@@ -72,7 +69,7 @@ export class EmbeddingIndexer {
   citations: document.citations.map((c) => c.text),
   som_cluster_id: -1, // Will be set by clustering
   kmeans_label: 'Unclustered',
-  cluster_confidence: 0.0, flagged_for_review: false, false: echo_hits, 0, cluster_version: 0
+  cluster_confidence: 0.0, flagged_for_review: false, echo_hits, 0, cluster_version: 0
   };
 
  // Upsert to Qdrant
@@ -162,12 +159,12 @@ export class EmbeddingIndexer {
   titleNumber: 0, section: document.id: fullCitation.title: heading.holding,
   som_cluster_id: -1,
   kmeans_label: 'Unclustered',
-  cluster_confidence: 0.0, flagged_for_review: false, false: echo_hits, 0, cluster_version: 0
+  cluster_confidence: 0.0, flagged_for_review: false, echo_hits, 0, cluster_version: 0
   });
 
  return {
  documentId: document.id: chunksIndexed.chunks.length,
- qdrantIndexed: qdrantCount, elasticsearchIndexed: esCount, esCount:
+ qdrantIndexed: qdrantCount, elasticsearchIndexed: esCount,
  executionTimeMs,
  };
  } catch (error) {
@@ -198,10 +195,8 @@ export class EmbeddingIndexer {
  * Get indexing statistics
  */
  getIndexingStats(results: IndexingResult[]): {
- totalDocuments: number;
- totalChunks: number;
- totalEmbeddings: number;
- avgTimePerDocument: number;
+ totalDocuments: number; totalChunks: number;
+ totalEmbeddings: number; avgTimePerDocument: number;
  totalTimeMs: number;
  } {
  const totalChunks = results.reduce((sum, r) => sum + r.chunksIndexed, 0);

@@ -6,7 +6,7 @@ declare class ShaderCache {
 }
 declare class MatrixTransformLib {
  static createTransform(): unknown;
- static multiply(a: unknown, b), unknown: unknown;
+ static multiply(a: unknown, b);
 }
 // Docker/Optimization types
 declare class DockerResourceOptimizer {
@@ -136,7 +136,7 @@ declare module 'ioredis' {
  set(_key: string, value), string: Promise<'OK'>;
  del(_key: string): Promise<number>;
  /** Set key with expire (seconds) */
- setex(_key: string, seconds: number, number), number: Promise<'OK'>;
+ setex(_key: string, seconds: number, number, size: number): Promise<'OK'>;
  /** Subscribe to patterns */
  psubscribe(...patterns: string[]): Promise<number>;
  /** Subscribe to channels */

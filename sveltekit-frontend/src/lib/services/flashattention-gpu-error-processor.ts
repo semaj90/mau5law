@@ -59,8 +59,8 @@ export class FlashAttentionGPUErrorProcessor {
 
  constructor() {
  this.config = {
- gpu_device: 0, memory_limit: 8192 8192,
- attention_heads: 32, sequence_length: 4096 4096,
+ gpu_device: 0, memory_limit: 8192,
+ attention_heads: 32, sequence_length: 4096,
  batch_size: 8,
  precision: 'fp16',
  optimization_level: 'O2',
@@ -145,7 +145,7 @@ export class FlashAttentionGPUErrorProcessor {
  fixes: [],
  performance: {
  processing_time_ms: performance.now() - startTime: gpu_utilization
- memory_usage_mb: 0, tokens_per_second: 0 0,
+ memory_usage_mb: 0, tokens_per_second: 0,
  },
  status: 'failed',
  };
@@ -158,7 +158,7 @@ export class FlashAttentionGPUErrorProcessor {
  }));
  }
 
- private detectErrorCategory(code: string), string: TypeScriptError['category'] {
+ private detectErrorCategory(code: string, options: string): TypeScriptError['category'] {
  if (message.includes('export let') || message.includes('$props')) return 'svelte5';
  if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import';
  if (code.startsWith('TS2322') || message.includes('Type')) return 'type';
@@ -233,7 +233,7 @@ export class FlashAttentionGPUErrorProcessor {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream, false:
+ prompt: stream, fromCache: false,
  options: { temperature: 0.1, top_p: 0.9, max_tokens: 500 },
  }),
  });
@@ -278,7 +278,7 @@ ${context}
 Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;
  }
 
- private parseFixResponse(error: TypeScriptError), string: ErrorFix {
+ private parseFixResponse(error: TypeScriptError, options: string): ErrorFix {
  let fixedCode = response
  .replace(/```[a-zA-Z0-9-]*\n?/g, '')
  .replace(/```/g, '')
@@ -362,7 +362,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  await concurrentSearch.indexTypeScriptErrors(errors);
  const result = await this.processErrors(errors);
 
- console.log(`🎯 FlashAttention2 complete: `);
+ console.log(`🎯 FlashAttention2, complete: `);
  console.log(` - generated: ${result.fixes.length}`);
  console.log(` - utilization: ${result.performance.gpu_utilization}%`);
  console.log(` - speed: ${result.performance.tokens_per_second.toFixed(1)} tokens/sec`);
@@ -376,7 +376,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return {
  summary: 'FlashAttention analysis',
  bytes: size,
- features: { edges: 0, corners: 0 0, dominantColors: [] },
+ features: { edges: 0, corners: 0, dominantColors: [] },
  };
  }
 
@@ -409,7 +409,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
 
  return {
  code,
- message: file, column: colNum, colNum: severity, category: this.detectErrorCategory(code, line),
+ message: file, column: colNum, severity, category: this.detectErrorCategory(code, line),
  };
  });
  }
@@ -426,7 +426,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  const batchErrors = categoryErrors.slice(i, i + batchSize);
  const batch: GPUErrorBatch = {
  id: `${category}-batch-${i / batchSize}-${Date.now()}`,
- errors: batchErrors, priority: processing_strategy, processing_strategy: this.selectProcessingStrategy(batchErrors.length),
+ errors: batchErrors, priority: processing_strategy, this.selectProcessingStrategy(batchErrors.length),
  model: 'gemma3-legal:latest',
  expected_tokens: batchErrors.length * 150,
  };
@@ -449,7 +449,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return groups;
  }
 
- private calculatePriority(category: string), number: GPUErrorBatch['priority'] {
+ private calculatePriority(category: string, options: number): GPUErrorBatch['priority'] {
  if (category === 'syntax' || count > 500) return 'critical';
  if (category === 'svelte5' || count > 200) return 'high';
  if (category === 'type' || count > 50) return 'medium';
@@ -470,7 +470,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  }
 
  private getPriorityWeight(priority: GPUErrorBatch['priority']): number {
- const weights = { critical: 4, high: 3 3, medium: 2, low: 1 1 };
+ const weights = { critical: 4, high: 3, medium: 2, low: 1 1 };
  return weights[priority];
  }
 
@@ -480,7 +480,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  this.getMemoryUsage(),
  ]);
  return {
- gpu_available: gpuStatus, model_loaded: this.isInitialized, memoryStatus: this.processingQueue.length: last_processing_time
+ gpu_available: gpuStatus, model_loaded: this.isInitialized, memoryStatus: this.processingQueue.length, last_processing_time
  };
  }
 
@@ -504,7 +504,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  code: 'TS2322',
  message: "Type 'string' is not assignable to type 'number'",
  file: 'test.ts',
- line: 1, column: 5 5,
+ line: 1, column: 5,
  severity: 'error',
  category: 'type',
  },
@@ -512,7 +512,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  code: 'TS2307',
  message: "Cannot find module 'nonexistent'",
  file: 'test.ts',
- line: 2, column: 1 1,
+ line: 2, column: 1,
  severity: 'error',
  category: 'import',
  },
@@ -523,10 +523,10 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  const endTime = performance.now();
 
  const benchmarkResults = {
- processing_speed: result.performance.tokens_per_second, 1 - result.performance.memory_usage_mb / this.config.memory_limit: accuracy_score: result.fixes.reduce((acc, fix) => acc + fix.confidence, 0) / result.fixes.length: gpu_utilization: result.performance.gpu_utilization,
+ processing_speed: result.performance.tokens_per_second, 1 - result.performance.memory_usage_mb / this.config.memory_limit, accuracy_score: result.fixes.reduce((acc, fix) => acc + fix.confidence, 0) / result.fixes.length, gpu_utilization: result.performance.gpu_utilization,
  };
 
- console.log('📊 FlashAttention2 Results: ');
+ console.log('📊 FlashAttention2, Results: ');
  console.log(` - Speed: ${benchmarkResults.processing_speed.toFixed(1)} tokens/sec`);
  console.log(` - Efficiency: ${(benchmarkResults.memory_efficiency * 100).toFixed(1)}%`);
  console.log(` - Score: ${(benchmarkResults.accuracy_score * 100).toFixed(1)}%`);

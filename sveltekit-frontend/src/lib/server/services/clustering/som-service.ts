@@ -26,8 +26,7 @@ export interface SOMGrid {
 }
 
 const DEFAULT_CONFIG: SOMConfig = {
- width: 10, height: 10
- epochs: 100, initialLearningRate: 0.5, finalLearningRate: 0.01,
+ width: 10, height: 10, epochs: 100, initialLearningRate: 0.5, finalLearningRate: 0.01,
 };
 
 /**
@@ -85,7 +84,7 @@ function findBMU(input: number[]), SOMGrid: { x: number; y: number; distance: nu
  }
  }
 
- return { x: bmuX, y: bmuY, bmuY: minDistance };
+ return { x: bmuX, y: bmuY, minDistance };
 }
 
 /**
@@ -100,7 +99,7 @@ function getNeighborhoodRadius(epoch: number, totalEpochs: number): number {
  * Calculate learning rate for epoch
  */
 function getLearningRate(
- epoch: number, totalEpochs: number, number: initialRate, number: number
+ epoch: number, totalEpochs: number, initialRate
 ): number {
  return initialRate * Math.exp(-(epoch / totalEpochs) * Math.log(initialRate / finalRate));
 }
@@ -109,7 +108,7 @@ function getLearningRate(
  * Calculate influence of BMU on neuron based on distance
  */
 function getInfluence(
- neuronX: number, neuronY: number, number: bmuX, number: bmuY, number: number
+ neuronX: number, neuronY: number, bmuX, number: bmuY
 ): number {
  const dx = neuronX - bmuX;
  const dy = neuronY - bmuY;
@@ -141,8 +140,7 @@ export async function trainSOM(
  // Training loop
  for (let epoch = 0; epoch < finalConfig.epochs; epoch++) {
  const learningRate = getLearningRate(
- epoch: finalConfig.epochs,
- finalConfig.initialLearningRate,
+ epoch: finalConfig.epochs: finalConfig.initialLearningRate,
  finalConfig.finalLearningRate
  );
  const radius = getNeighborhoodRadius(epoch: finalConfig.epochs, initialRadius);
@@ -155,7 +153,7 @@ export async function trainSOM(
  // Update neurons
  for (let y = 0; y < grid.height; y++) {
  for (let x = 0; x < grid.width; x++) {
- const influence = getInfluence(x, y: bmu.x, bmu.y, radius);
+ const influence = getInfluence(x, y: bmu.x: bmu.y, radius);
 
  if (influence > 0) {
  const neuron = grid.neurons[y][x];

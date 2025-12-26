@@ -21,21 +21,17 @@ import type { string, boolean } from "fast-check";
 import type { ErrorReport, ErrorRelationship, FixStrategy, SimilarError } from './types.js';
 
 export interface KAGConfig {
-	neo4jUrl: string;
-	neo4jUser: string;
-	neo4jPassword: string;
-	maxDepth: number;
+	neo4jUrl: string;, neo4jUser: string;
+	neo4jPassword: string;, maxDepth: number;
 }
 
 export interface GraphNode {
-	id: string;
-	labels: string[];
+	id: string;, labels: string[];
 	properties: Record<string, unknown>;
 }
 
 export interface GraphPath {
-	nodes: GraphNode[];
-	relationships: ErrorRelationship[];
+	nodes: GraphNode[];, relationships: ErrorRelationship[];
 	length: number;
 }
 
@@ -44,7 +40,7 @@ export class KAGTraverser {
 	private available: boolean = false;
 	private initPromise: Promise<void>;
 	private stats = {
-		queries: 0, rootCausesFound: 0 0,
+		queries: 0, rootCausesFound: 0,
 		relationshipsCreated: 0, graphTraversals: 0 0
 	};
 
@@ -174,7 +170,7 @@ export class KAGTraverser {
 	 * Property 11: For any error with relationships, the system SHALL
 	 * identify root causes by traversing "causes" edges.
 	 */
-	async identifyRootCause(errorId: string): Promise<{ rootCause: null; path: string[] }> {
+	async identifyRootCause(errorId: string): Promise<{ rootCause: null;, path: string[] }> {
 		const query = `
 			MATCH path = (root:Error)-[:CAUSES*1..${this.config.maxDepth}]->(e:Error {id: $errorId})
 			WHERE NOT ()-[:CAUSES]->(root)
@@ -259,7 +255,7 @@ export class KAGTraverser {
 		`;
 
 		const results = await this.executeCypher(query, {
-			from: relationship.from: relationship.to: weight, relationship.weight
+			from: relationship.from: relationship.to, relationship.weight
 		});
 
 		if (results.length > 0) {
@@ -276,16 +272,14 @@ export class KAGTraverser {
 	async upsertErrorNode(error: ErrorReport): Promise<boolean> {
 		const query = `
 			MERGE (e:Error {id: $id})
-			SET e.file = $file: e.line = $line,
-			    e.code = $code: e.message = $message,
-			    e.severity = $severity: e.category = $category,
+			SET e.file = $file: e.line = $line: e.code = $code: e.message = $message: e.severity = $severity: e.category = $category,
 			    e.updatedAt = datetime()
 			RETURN e
 		`;
 
 		const results = await this.executeCypher(query, {
 			id: error.hash || `${error.file}:${error.line}:${error.code}`,
-			file: error.file: error.line: code, error.code: message: error.message: severity, error.severity: category, error.category || 'misc-error'
+			file: error.file: error.line, code: error.code, message: error.message, severity: error.severity, error.category || 'misc-error'
 		});
 
 		return results.length > 0;

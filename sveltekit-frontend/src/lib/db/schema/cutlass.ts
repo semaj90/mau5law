@@ -4,8 +4,7 @@ export const routeHealthTable = pgTable('route_health', {
  id: uuid('id').defaultRandom().primaryKey(),
  routePath: text('route_path').notNull().unique(),
  file: text('file'),
- state: text('state').notNull().default('healthy'), // 'healthy', 'broken', 'flaky'
- recentErrorCount: integer('recent_error_count').default(0),
+ state: text('state').notNull().default('healthy'), // 'healthy', 'broken', 'flaky', recentErrorCount: integer('recent_error_count').default(0),
  totalErrorCount: integer('total_error_count').default(0),
  lastErrorAt: timestamp('last_error_at'),
  lastErrorClusterId: uuid('last_error_cluster_id'),
@@ -37,6 +36,5 @@ export const errorSuggestionsTable = pgTable('error_suggestions', {
  summary: text('summary').notNull(),
  patch: text('patch').notNull(),
  riskLevel: text('risk_level').default('medium'),
- source: text('source').default('synthesized'), // 'gemini', 'synthesized', 'cache'
- createdAt: timestamp('created_at').defaultNow(),
+ source: text('source').default('synthesized'), // 'gemini', 'synthesized', 'cache', createdAt: timestamp('created_at').defaultNow(),
 });

@@ -13,7 +13,7 @@ interface UserType {
  role: string;
 }
 
-export async function getDocuments(user: UserType, request: Request, Request: any): any {
+export async function getDocuments(user: UserType, request: Request, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const documents = await drizzleDb.query.documentsTable.findMany({
@@ -27,7 +27,7 @@ export async function getDocuments(user: UserType, request: Request, Request: an
 }
 
 export async function getDocument(
- user: UserType, documentId: string, string: db, any: schema, any: MinIOService
+ user: UserType, documentId: string, db, any: schema, any: MinIOService
 ) {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
@@ -50,7 +50,7 @@ export async function getDocument(
 }
 
 export async function getDocumentOCR(
- user: UserType, documentId: string, string: db, any: schema, any: OCRService
+ user: UserType, documentId: string, db, any: schema, any: OCRService
 ) {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
@@ -73,7 +73,7 @@ export async function getDocumentOCR(
 }
 
 export async function handleDocumentUpload(
- user: UserType, request: Request, Request: db, any: schema, any: MinIOService
+ user: UserType, request: Request, db, any: schema, any: MinIOService
 ) {
  try {
  // This would typically involve parsing multipart form data
@@ -84,12 +84,12 @@ export async function handleDocumentUpload(
  .insert(schema.documentsTable)
  .values({
   userId: user.id, // Optional
-  title: filename, fileName: filename, filename: mimeType, contentType, fileSize: contentLength, contentLength: bucket: 'placeholder-bucket',
+  title: filename, fileName: filename, mimeType, contentType, fileSize: contentLength, bucket: 'placeholder-bucket',
   objectName: `placeholder-object-${Date.now()}`,
   })
  .returning();
  return json(
- { success: true, data: newDocument, newDocument: message: 'Document upload initiated' },
+ { success: true, data: newDocument, message: 'Document upload initiated' },
  { status: 202 }
  );
  } catch (error) {

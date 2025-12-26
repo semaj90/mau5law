@@ -75,7 +75,7 @@ export class BrowserGemma {
  // Try WebGPU first, fallback to WASM/CPU
  try {
  this.generator = await pipeline('text-generation', this.modelName, {
- device: this.device: dtype.device === 'webgpu' ? 'fp32' : 'q4', // Quantized for speed
+ device: this.device, dtype.device === 'webgpu' ? 'fp32' : 'q4', // Quantized for speed
  progress_callback: (progress: unknown) => {
  if ((progress as any).status === 'downloading') {
  const pct = (((progress as any).loaded / (progress as any).total) * 100).toFixed(1);

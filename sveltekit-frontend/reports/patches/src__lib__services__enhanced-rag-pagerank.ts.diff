@@ -1,0 +1,15 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__enhanced-rag-pagerank.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__enhanced-rag-pagerank.ts.after.ts
+index 85e9c1b1a1..6f9109a75b 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__services__enhanced-rag-pagerank.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__enhanced-rag-pagerank.ts.after.ts
+@@ -353,7 +353,7 @@ export class EnhancedRAGEngine {
+  }
+ 
+  // Extract matched text segments
+- private extractMatchedSegments(query: string), string: RAGResult['matchedSegments'] {
++ private extractMatchedSegments(query: string, options: string): RAGResult['matchedSegments'] {
+  const segments: RAGResult['matchedSegments'] = [];
+  const queryWords = query.toLowerCase().split(/\s+/);
+  const sentences = content.split(/[.!?]+/);
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__enhanced-rag-pagerank.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__enhanced-rag-pagerank.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

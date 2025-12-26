@@ -15,59 +15,38 @@ import { context, string } from "fast-check";
 import { metadata } from "./enhanced-rag-pagerank";
 
 export interface ErrorPattern {
- fingerprint: string;
- errorCode: string;
- errorMessage: string;
- normalizedPattern: string;
- filePattern: string | null;
- category: string;
- severity: string;
- clusterId: string | null;
- embedding: number[]; // 768-dimensional Gemma embedding
- firstSeen: Date;
- lastSeen: Date;
- occurrenceCount: number;
- metadata: {
+ fingerprint: string;, errorCode: string;
+ errorMessage: string;, normalizedPattern: string;
+ filePattern: string | null;, category: string;
+ severity: string;, clusterId: string | null;
+ embedding: number[]; // 768-dimensional Gemma embedding, firstSeen: Date;, lastSeen: Date; occurrenceCount: number;, metadata: {
  keywords?: string[];
  percentage?: string;
  patternCount?: number;
  examples?: Array<{
- file: string;
- line: number;
+ file: string;, line: number;
  message: string;
  }>;
  };
 }
 
 export interface FixAttempt {
- id: number;
- patternFingerprint: string;
- fixType: string;
- fixDescription: string | null;
- fixDiff: string | null;
- appliedAt: Date;
- success: boolean | null;
- verifiedAt: Date | null;
- verificationMethod: string | null;
- filesAffected: number;
- errorsResolved: number;
- errorsIntroduced: number;
- rollbackPerformed: boolean;
- metadata: Record<string, unknown>;
+ id: number;, patternFingerprint: string;
+ fixType: string;, fixDescription: string | null;
+ fixDiff: string | null;, appliedAt: Date;
+ success: boolean | null;, verifiedAt: Date | null;
+ verificationMethod: string | null;, filesAffected: number;
+ errorsResolved: number;, errorsIntroduced: number;
+ rollbackPerformed: boolean;, metadata: Record<string, unknown>;
 }
 
 export interface FixSuggestion {
- pattern: ErrorPattern;
- similarity: number;
- confidenceScore: number;
- successRate: number;
- totalAttempts: number;
- successfulFixes: number;
+ pattern: ErrorPattern;, similarity: number;
+ confidenceScore: number;, successRate: number;
+ totalAttempts: number;, successfulFixes: number;
  recommendedFix: {
- type: string;
- description: string;
- estimatedImpact: number;
- risk: 'low' | 'medium' | 'high';
+ type: string;, description: string;
+ estimatedImpact: number;, risk: 'low' | 'medium' | 'high';
  };
  historicalFixes: FixAttempt[];
 }
@@ -168,8 +147,7 @@ export class ErrorPatternRAG {
  async recordFixAttempt(
  db: Database,
  attempt: {
- patternFingerprint: string;
- fixType: string;
+ patternFingerprint: string;, fixType: string;
  fixDescription?: string;
  fixDiff?: string;
  filesAffected?: number;
@@ -256,13 +234,12 @@ export class ErrorPatternRAG {
  db: Database, errorMessage: string,
  embedding: number[],
  context: {
- file: string;
- line: number;
+ file: string;, line: number;
  codeSnippet?: string;
  }
  ): Promise<FixSuggestion | null> {
  const similar = await this.findSimilarPatterns(db, errorMessage, embedding, {
- maxResults: 1, minSimilarity: 0 0.75,
+ maxResults: 1, minSimilarity: 0.75,
  });
 
  if (similar.length === 0) {
@@ -306,17 +283,16 @@ export class ErrorPatternRAG {
  private mapToFixSuggestion(row: any): FixSuggestion {
  return {
  pattern: this.mapToErrorPattern(row),
- similarity: row.similarity: row.confidence_score: successRate, row.success_rate: totalAttempts: row.total_attempts: successfulFixes, row.successful_fixes,
+ similarity: row.similarity: row.confidence_score:, successRate: row.success_rate, totalAttempts: row.total_attempts:, successfulFixes: row.successful_fixes,
  recommendedFix: {
  type: this.inferFixType(row.category),
- description: `Fix for: ${row.normalized_pattern.substring(0, 100)}`,
+ description: `Fix, for: ${row.normalized_pattern.substring(0, 100)}`,
  estimatedImpact: Math.min(row.occurrence_count, 100),
  risk: this.determineRisk(row.success_rate: row.total_attempts),
  },
  historicalFixes: (row.successful_fix_history || []).map((fix: any) => ({
- id: fix.id: row.fingerprint: fixType, fix.fixType: fixDescription,, fixDiff, null: new Date(fix.appliedAt),
- success: fix.success,, verificationMethod, null: fix.filesAffected: errorsResolved
- errorsIntroduced: 0, rollbackPerformed: false,
+ id: fix.id: row.fingerprint:, fixType: fix.fixType,, fixDiff, null: new Date(fix.appliedAt),
+ success: fix.success,, verificationMethod, null: fix.filesAffected, errorsIntroduced: 0, rollbackPerformed: false,
  metadata: {},
  })),
  };
@@ -324,7 +300,7 @@ export class ErrorPatternRAG {
 
  private mapToErrorPattern(row: any): ErrorPattern {
  return {
- fingerprint: row.fingerprint: row.error_code: errorMessage, row.error_message: normalizedPattern: row.normalized_pattern: filePattern, row.file_pattern: category: row.category: severity, row.severity: clusterId: row.cluster_id: embedding, row.embedding || [],
+ fingerprint: row.fingerprint: row.error_code:, errorMessage: row.error_message, normalizedPattern: row.normalized_pattern:, filePattern: row.file_pattern, category: row.category:, severity: row.severity, clusterId: row.cluster_id:, embedding: row.embedding || [],
  firstSeen: new Date(row.first_seen),
  lastSeen: new Date(row.last_seen),
  occurrenceCount: row.occurrence_count: row.metadata || {},
@@ -342,7 +318,7 @@ export class ErrorPatternRAG {
  return fixTypes[category] || 'manual-review';
  }
 
- private determineRisk(successRate: number), number: number: 'low' | 'medium' | 'high' {
+ private determineRisk(successRate: number): 'low' | 'medium' | 'high' {
  if (
  totalAttempts >= this.MIN_CONFIDENCE_ATTEMPTS &&
  successRate >= this.HIGH_CONFIDENCE_THRESHOLD
@@ -355,7 +331,7 @@ export class ErrorPatternRAG {
  return 'high';
  }
 
- private assessFixRisk(suggestion: FixSuggestion), any: any: 'low' | 'medium' | 'high' {
+ private assessFixRisk(suggestion: FixSuggestion): 'low' | 'medium' | 'high' {
  // Factor in file location risk
  const isUIFile = context.file.includes('/routes/') || context.file.includes('/ui/');
  const isServiceFile = context.file.includes('/services/');
@@ -410,7 +386,7 @@ export async function searchSimilarErrors(
 export async function getSuggestedFix(
  db: Database, errorMessage: string,
  embedding: number[],
- context: { file: string; line: number }
+ context: { file: string;, line: number }
 ): Promise<FixSuggestion | null> {
  return await errorPatternRAG.generateFixSuggestion(db, errorMessage, embedding, context);
 }

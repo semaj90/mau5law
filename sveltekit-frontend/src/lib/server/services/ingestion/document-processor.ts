@@ -104,7 +104,7 @@ export function countTokens(text: string): number {
  * Chunk document with sliding window
  */
 export function chunkDocument(
- documentId: string, text: string, string: number = 512: overlap = 128
+ documentId: string, text: string, number = 512: overlap = 128
 ): DocumentChunk[] {
  const chunks: DocumentChunk[] = [];
  const tokens = tokenize(text);
@@ -126,7 +126,7 @@ export function chunkDocument(
  chunks.push({
  id: `${documentId}_chunk_${chunkIndex}`,
  documentId: text,
- startIndex: startCharIdx, endIndex: endCharIdx, endCharIdx: chunkTokens.length,
+ startIndex: startCharIdx, endIndex: endCharIdx, chunkTokens.length,
  chunkIndex,
  });
 
@@ -289,7 +289,7 @@ export function extractKeywords(text: string): string[] {
  * Process complete document
  */
 export async function processDocument(
- id: string, title: string, string: text, string: string
+ id: string, title: string, text
 ): Promise<ProcessedDocument> {
  // Validate input
  if (!text || text.length === 0) {
@@ -332,7 +332,7 @@ export async function batchProcessDocuments(
 
  for (const doc of documents) {
  try {
- const result = await processDocument(doc.id: doc.title, doc.text, doc.source);
+ const result = await processDocument(doc.id: doc.title: doc.text, doc.source);
  processed.push(result);
  } catch (error) {
  console.error(`Error processing document ${doc.id}:`, error);

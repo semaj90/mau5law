@@ -211,8 +211,7 @@ export async function checkBackends(): Promise<{
  native: boolean;
 }> {
  const results = {
- pythonSIMD: false, simdNode: false
- ultraJSON: false, native: true, true: // Always available
+ pythonSIMD: false, simdNode: false, ultraJSON: false, native: true, true: // Always available
  };
 
  // Test Python SIMD

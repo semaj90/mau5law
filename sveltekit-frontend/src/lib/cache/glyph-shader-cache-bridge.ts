@@ -374,7 +374,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32): u32 -> vec4<f32> {
  if (!this.device) return;
  // Create a shared texture atlas for common glyphs
  this.glyphTextureAtlas = this.device.createTexture({
- size: { width: 1024, height: 1024 depthOrArrayLayers: 1 },
+ size: { width: 1024, height: 1024, depthOrArrayLayers: 1 },
  format: 'rgba8unorm',
  usage:
  GPUTextureUsage.TEXTURE_BINDING |

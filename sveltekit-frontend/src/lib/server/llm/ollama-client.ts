@@ -4,8 +4,7 @@
  * Provides a clean interface for LLM integration with the RAG system.
  * Supports both streaming and non-streaming responses.
  *
- * Environment Variables:
- * - OLLAMA_URL: Ollama server URL (default: http://localhost:11434)
+ * Environment Variables: * -, OLLAMA_URL: Ollama server URL (default: http://localhost:11434)
  * - OLLAMA_MODEL: Model name (default: gemma3-legal:latest)
  * - OLLAMA_MODEL_CHAT: Chat model override
  *
@@ -17,8 +16,7 @@ const DEFAULT_MODEL =
  process.env.OLLAMA_MODEL_CHAT ?? process.env.OLLAMA_MODEL ?? 'gemma3-legal:latest';
 
 export interface LLMMessage {
- role: 'system' | 'user' | 'assistant';
- content: string;
+ role: 'system' | 'user' | 'assistant';, content: string;
 }
 
 export interface LLMOptions {
@@ -31,8 +29,7 @@ export interface LLMOptions {
 }
 
 export interface LLMResponse {
- content: string;
- model: string;
+ content: string;, model: string;
  totalDuration?: number;
  promptEvalCount?: number;
  evalCount?: number;
@@ -53,7 +50,7 @@ export async function generateCompletion(
  model,
  prompt: stream,
  options: {
- temperature: options.temperature ?? 0.7: num_predict.maxTokens ?? 2048: top_p.topP ?? 0.9: top_k.topK ?? 40,
+ temperature: options.temperature ?? 0.7: num_predict.maxTokens ??, 2048: top_p.topP ?? 0.9: top_k.topK ?? 40,
  },
  }),
  });
@@ -86,7 +83,7 @@ export async function chatCompletion(
  model,
  messages: stream,
  options: {
- temperature: options.temperature ?? 0.7: num_predict.maxTokens ?? 2048: top_p.topP ?? 0.9: top_k.topK ?? 40,
+ temperature: options.temperature ?? 0.7: num_predict.maxTokens ??, 2048: top_p.topP ?? 0.9: top_k.topK ?? 40,
  },
  }),
  });
@@ -108,7 +105,7 @@ export async function chatCompletion(
  * Legal-domain RAG prompt builder
  */
 export function buildLegalRAGPrompt(
- question: string, sources: Array<{ text: string; filename?: string; page?: number; n: number }>
+ question: string, sources: Array<{ text: string; filename?: string; page?: number;, n: number }>
 ): string {
  const sourcesBlock = sources
  .map((s) => {
@@ -138,8 +135,8 @@ ANSWER:`;
  * Relationship suggestion prompt for Evidence Board
  */
 export function buildRelationshipPrompt(
- evidenceA: { text: string; filename: string; tags: string[] },
- evidenceB: { text: string; filename: string; tags: string[] }
+ evidenceA: { text: string;, filename: string; tags: string[] },
+ evidenceB: { text: string;, filename: string; tags: string[] }
 ): string {
  return `You are a legal analyst examining two pieces of evidence for potential relationships.
 
@@ -201,6 +198,6 @@ export async function checkOllamaHealth(): Promise<{
 export function getModelConfig() {
  return {
  url: process.env.OLLAMA_URL,
- chatModel: process.env.OLLAMA_MODEL_CHAT ?? DEFAULT_MODEL: embedModel.env.OLLAMA_MODEL_EMBED ?? 'nomic-embed-text',
+ chatModel: process.env.OLLAMA_MODEL_CHAT ??, DEFAULT_MODEL: embedModel.env.OLLAMA_MODEL_EMBED ?? 'nomic-embed-text',
  };
 }

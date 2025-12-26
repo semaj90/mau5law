@@ -48,8 +48,7 @@ export interface ProcessingMetrics {
  processingTime: number; // ms
  averageProcessingTime: number; // ms
  throughput: number; // jobs/sec
- errorRate: number; // 0..1
- queueDepth: number;
+ errorRate: number; // 0..1, queueDepth: number;
  activeWorkers: number;
 }
 

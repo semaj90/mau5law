@@ -57,9 +57,7 @@ export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = {
  memory_requirement: '7.3GB'},
  generation: {
  temperature: 0.1, // Low for factual legal analysis
- top_p: 0.9, top_k: 40
- repeat_penalty: 1.1, max_tokens: 2048
- stop_sequences: ['\n\n---', '\nUser: ', '\nHuman: ', '\n\nNote: ']},
+ top_p: 0.9, top_k: 40, repeat_penalty: 1.1, max_tokens: 2048, stop_sequences: ['\n\n---', '\nUser: ', '\nHuman: ', '\n\nNote: ']},
  legal_prompts: {
  contract_analysis: (
  document: string
@@ -130,16 +128,14 @@ Provide detailed risk matrix with severity and likelihood ratings.`, // Fix: tem
  gpu_optimization: {
  enable_gpu: true, // Fix: semicolon to comma
  gpu_memory_fraction: 0.85, // Use 85% of RTX, 3060 Ti memory
- batch_size: 8, parallel_requests: 4
- quantization: 'int8', // Balance between speed and quality
+ batch_size: 8, parallel_requests: 4, quantization: 'int8', // Balance between speed and quality
  tensor_parallel: false, // Single GPU setup
  },
  rag_integration: {
  enable_rag: true, // Fix: semicolon to comma
  vector_db: 'postgresql', // Use pgvector
  embedding_model: 'nomic-embed-text',
- similarity_threshold: 0.7, max_context_chunks: 10
- rerank_results: true},
+ similarity_threshold: 0.7, max_context_chunks: 10, rerank_results: true},
  legal_domains: {
  contract_law: true, // Fix: semicolon to comma
  criminal_law: true, // Fix: comma to colon, then semicolon to comma
@@ -192,8 +188,7 @@ export const PERFORMANCE_CONFIG = {
  // Multi-threading
  threading: {
  num_threads: 8, // Match CPU cores
- num_gpu_layers: 35, num_batch: 512
- num_predict: 2048}};
+ num_gpu_layers: 35, num_batch: 512, num_predict: 2048}};
 
 // API integration endpoints
 const OLLAMA_BASE = (() => {

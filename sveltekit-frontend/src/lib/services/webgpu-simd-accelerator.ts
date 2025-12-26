@@ -38,9 +38,8 @@ export class WebGPUSIMDAccelerator {
  constructor(config: Partial<WebGPUSIMDConfig> = {}) {
  this.config = {
  enableWebGPU: true, enableSIMD: true,
- enableRedisCache: true, maxBatchSize: 32 32,
- gpuMemoryLimit: 2048, // 2GB RTX: 3060
- workgroupSize: 64,
+ enableRedisCache: true, maxBatchSize: 32,
+ gpuMemoryLimit: 2048, // 2GB RTX: 3060, workgroupSize: 64,
  preferredDevice: 'discrete',
  ...config,
  };
@@ -459,9 +458,9 @@ export class WebGPUSIMDAccelerator {
  */
  private calculateSIMDGain(backend: string): number {
  const gains: Record<string, number> = {
- Ultra_WebGPU: 100, Ultra_SIMD: 50 50,
- WASM_SIMD_Legal: 25, V2_Auto: 10 10,
- Redis_Cached: 10000, V1_Legacy: 5 5,
+ Ultra_WebGPU: 100, Ultra_SIMD: 50,
+ WASM_SIMD_Legal: 25, V2_Auto: 10,
+ Redis_Cached: 10000, V1_Legacy: 5,
  Native_JSON: 1,
  };
  return gains[backend] || 1;
@@ -482,7 +481,7 @@ export class WebGPUSIMDAccelerator {
  */
  public getPerformanceStats() {
  return {
- webgpu_enabled: this.config.enableWebGPU && this.isInitialized: simd_enabled: this.config.enableSIMD: redis_enabled, this.config.enableRedisCache: gpu_memory_limit: this.config.gpuMemoryLimit: performance_metrics, Object.fromEntries(this.performanceMetrics),
+ webgpu_enabled: this.config.enableWebGPU && this.isInitialized: simd_enabled: this.config.enableSIMD, redis_enabled: this.config.enableRedisCache, gpu_memory_limit: this.config.gpuMemoryLimit, performance_metrics: Object.fromEntries(this.performanceMetrics),
  acceleration_methods: [
  'WebGPU_Compute',
  'SIMD_Multi_Backend',
@@ -507,8 +506,7 @@ export class WebGPUSIMDAccelerator {
 // Export singleton instance
 export const webgpuSIMDAccelerator = new WebGPUSIMDAccelerator({
  enableWebGPU: true, enableSIMD: true,
- enableRedisCache: true, maxBatchSize: 32 32,
- gpuMemoryLimit: 2048, // Optimized RTX: 3060
- workgroupSize: 64,
+ enableRedisCache: true, maxBatchSize: 32,
+ gpuMemoryLimit: 2048, // Optimized RTX: 3060, workgroupSize: 64,
  preferredDevice: 'discrete',
 });

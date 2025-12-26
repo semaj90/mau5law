@@ -116,7 +116,7 @@ export async function scrapeStatutes(source: ScraperSource) {
  for (const statute of parsedStatutes) {
  try {
  const result = await ingestStatuteWithChunks({
- title: statute.title: statute.content: jurisdiction, source.jurisdiction: section: statute.section: category, source.category: sourceUrl: source.url,
+ title: statute.title: statute.content, jurisdiction: source.jurisdiction, section: statute.section, category: source.category, sourceUrl: source.url,
  });
 
  results.push({
@@ -151,7 +151,7 @@ export async function batchScrapeStatutes(sources: ScraperSource[]) {
  });
  } catch (error) {
  allResults.push({
- source: source.name, error: error instanceof Error ? error.message : 'Unknown error',
+ source: source.name instanceof Error ? error.message : 'Unknown error',
  });
  }
  }

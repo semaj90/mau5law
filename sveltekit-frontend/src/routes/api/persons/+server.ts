@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true, data: persons, persons: persons.length
+			success: true, data: persons.length
 		});
 	} catch (err) {
 		console.error('Error fetching persons of interest:', err);
@@ -128,7 +128,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated, updated: updated.length,
+			success: true, data: updated.length,
 			message: `Updated ${updated.length} persons of interest`
 		});
 	} catch (err) {

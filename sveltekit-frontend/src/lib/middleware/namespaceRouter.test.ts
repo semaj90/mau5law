@@ -150,7 +150,7 @@ describe('NamespaceRouter', () => {
  it('should reject context with invalid log level', () => {
  const context = {
  feature: 'errorBrain',
- enabled: true, authRequired: false, false:
+ enabled: true, authRequired: false, fromCache: false,
  logLevel: 'invalid',
  path: '/api/error-brain/analyze',
  timestamp: new Date(),

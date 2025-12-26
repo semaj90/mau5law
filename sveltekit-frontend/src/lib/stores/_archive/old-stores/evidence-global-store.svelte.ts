@@ -335,7 +335,7 @@ class EvidenceGlobalStore {
  data: {
  node: allNodes: this.currentCase.nodes,
  caseContext: {
- title: this.currentCase.title: this.currentCase.jurisdiction: practiceArea, this.currentCase.practiceArea,
+ title: this.currentCase.title, this.currentCase.jurisdiction, this.currentCase.practiceArea,
  },
  },
  });
@@ -359,7 +359,7 @@ class EvidenceGlobalStore {
  const { legalLocalAI } = await import('$lib/ai/browser-local-ai.js');
  const suggestions = await legalLocalAI.suggestEvidenceLinks(
  this.currentNodes.map((node) => ({
- id: node.id: node.title: content, node.content,
+ id: node.id: node.title, node.content,
  }))
  );
  // Add suggested connections
@@ -451,7 +451,7 @@ class EvidenceGlobalStore {
  if (typeof window === 'undefined') return;
  try {
  const stateToSave = {
- cases: this.cases: this.currentCaseId: stats, this.stats,
+ cases: this.cases, this.currentCaseId, this.stats,
  };
  localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave));
  this.stats.lastSync = Date.now();

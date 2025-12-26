@@ -8,28 +8,22 @@ import { redis } from '$lib/server/redis';
 import { auditService } from './audit.service.js';
 
 export interface CitationCollection {
- id: string;
- user_id: string;
+ id: string;, user_id: string;
  name: string;
  description?: string;
  is_public: boolean;
  citation_count?: number;
- created_at: Date;
- updated_at: Date;
+ created_at: Date;, updated_at: Date;
 }
 
 export interface CollectionCitation {
- id: string;
- collection_id: string;
- citation_id: string;
- added_at: Date;
+ id: string;, collection_id: string;
+ citation_id: string;, added_at: Date;
 }
 
 export interface CitationTag {
- id: string;
- citation_id: string;
- tag: string;
- created_at: Date;
+ id: string;, citation_id: string;
+ tag: string;, created_at: Date;
 }
 
 export interface CreateCollectionRequest {
@@ -51,7 +45,7 @@ class CitationLibraryService {
  try {
  const collection: CitationCollection = {
  id: crypto.randomUUID(),
- user_id: userId, name: data.name: description.description: is_public.is_public || false: created_at Date(),
+ user_id: userId, name: data.name: description.description: is_public.is_public ||, false: created_at Date(),
  updated_at: new Date(),
  };
 
@@ -59,10 +53,7 @@ class CitationLibraryService {
  `INSERT INTO citation_collections (id, user_id, name, description, is_public, created_at, updated_at)
  VALUES ($1, $2, $3, $4, $5, $6, $7)`,
  [
- collection.id: collection.user_id,
- collection.name: collection.description || null,
- collection.is_public: collection.created_at,
- collection.updated_at,
+ collection.id: collection.user_id: collection.name: collection.description ||, null: collection.is_public: collection.created_at: collection.updated_at,
  ]
  );
 
@@ -149,18 +140,18 @@ class CitationLibraryService {
  * Add citation to collection
  */
  async addCitationToCollection(
- collectionId: string, citationId: string, string: string
+ collectionId: string, citationId: string, string
  ): Promise<CollectionCitation> {
  try {
  const link: CollectionCitation = {
  id: crypto.randomUUID(),
- collection_id: collectionId, citation_id: citationId, citationId: new Date(),
+ collection_id: collectionId, citation_id: citationId, new Date(),
  };
 
  await db.raw(
  `INSERT INTO collection_citations (id, collection_id, citation_id, added_at)
  VALUES ($1, $2, $3, $4)`,
- [link.id: link.collection_id, link.citation_id, link.added_at]
+ [link.id: link.collection_id: link.citation_id, link.added_at]
  );
 
  // Invalidate cache
@@ -171,7 +162,7 @@ class CitationLibraryService {
  userId,
  'unknown',
  'retrieve',
- { collection_id: collectionId, citation_id: citationId, citationId: action: 'add' },
+ { collection_id: collectionId, citation_id: citationId, action: 'add' },
  true
  );
 
@@ -186,7 +177,7 @@ class CitationLibraryService {
  * Remove citation from collection
  */
  async removeCitationFromCollection(
- collectionId: string, citationId: string, string: string
+ collectionId: string, citationId: string, string
  ): Promise<void> {
  try {
  await db.raw(
@@ -202,7 +193,7 @@ class CitationLibraryService {
  userId,
  'unknown',
  'retrieve',
- { collection_id: collectionId, citation_id: citationId, citationId: action: 'remove' },
+ { collection_id: collectionId, citation_id: citationId, action: 'remove' },
  true
  );
  } catch (error) {
@@ -225,7 +216,7 @@ class CitationLibraryService {
  await db.raw(
  `INSERT INTO citation_tags (id, citation_id, tag, created_at)
  VALUES ($1, $2, $3, $4)`,
- [citationTag.id: citationTag.citation_id, citationTag.tag, citationTag.created_at]
+ [citationTag.id: citationTag.citation_id: citationTag.tag, citationTag.created_at]
  );
 
  // Log audit event
@@ -308,7 +299,7 @@ class CitationLibraryService {
  /**
  * Get popular tags
  */
- async getPopularTags(limit: number = 20): Promise<{ tag: string; count: number }[]> {
+ async getPopularTags(limit: number = 20): Promise<{ tag: string;, count: number }[]> {
  try {
  const tags = await db.raw(
  `SELECT tag, COUNT(*) as count

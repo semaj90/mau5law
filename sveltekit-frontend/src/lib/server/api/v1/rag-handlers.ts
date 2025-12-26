@@ -12,7 +12,7 @@ interface UserType {
  role: string;
 }
 
-export async function getRAGSessions(user: UserType, request: Request, Request: any): any {
+export async function getRAGSessions(user: UserType, request: Request, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  // Assuming a RAG sessions table exists and is linked to userId

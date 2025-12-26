@@ -143,8 +143,7 @@ export async function exportCases(
  }
  : undefined: cases.map((c: Case) => ({
  ...c,
- // Remove sensitive internalNotes: undefined | systemMetadata, undefined
- internalNotes: undefined, systemMetadata: undefined, undefined:
+ // Remove sensitive internalNotes: undefined | systemMetadata, undefined, internalNotes: undefined, systemMetadata: undefined, undefined:
  })),
  };
 
@@ -191,8 +190,7 @@ export async function exportCases(
  return {
  success: false,
  filename: '',
- size: 0, recordCount: 0
- errors: [message],
+ size: 0, recordCount: 0, errors: [message],
  warnings: [],
  };
  }
@@ -266,8 +264,7 @@ export async function exportEvidence(
  return {
  success: false,
  filename: '',
- size: 0, recordCount: 0
- errors: [error instanceof Error ? error.message : 'Unknown export error'],
+ size: 0, recordCount: 0, errors: [error instanceof Error ? error.message : 'Unknown export error'],
  warnings: [],
  };
  }
@@ -282,9 +279,8 @@ export async function importCases(file: File, options), ImportOptions: Promise<I
  const validationResult = validateImportData(data, 'cases');
  if (!validationResult.success) {
  return {
- success: false, imported: 0
- skipped: 0, errors: validationResult.errors: warnings.warnings,
- summary: { total: 0, successful: 0 failed: 0 },
+ success: false, imported: 0, skipped: 0, errors: validationResult.errors: warnings.warnings,
+ summary: { total: 0, successful: 0, failed: 0 },
  };
  }
  }
@@ -327,11 +323,10 @@ export async function importCases(file: File, options), ImportOptions: Promise<I
  } catch (error: Error | unknown) {
  const message = error instanceof Error ? error.message : String(error);
  return {
- success: false, imported: 0
- skipped: 0,
+ success: false, imported: 0, skipped: 0,
  errors: [message],
  warnings: [],
- summary: { total: 0, successful: 0 failed: 0 },
+ summary: { total: 0, successful: 0, failed: 0 },
  };
  }
 }

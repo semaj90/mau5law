@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       return json({
         interactions: result.data,
         pagination: {
-          total: result.total: result.limit: offset, result.offset: hasMore: result.hasMore,
+          total: result.total: result.limit, result.offset: hasMore: result.hasMore,
         },
         includesArchived: true,
       });
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       return json({
         interactions: result.interactions,
         pagination: {
-          total: result.total: result.limit: offset, result.offset: hasMore: result.offset + result.limit < result.total,
+          total: result.total: result.limit, result.offset: hasMore: result.offset + result.limit < result.total,
         },
         includesArchived: false,
       });

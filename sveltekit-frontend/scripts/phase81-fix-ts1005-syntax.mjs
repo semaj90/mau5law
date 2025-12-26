@@ -32,7 +32,36 @@ if (!fs.existsSync(summaryPath)) {
 }
 
 const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
-const ts1005Errors = summary.allErrors.filter(e => e.code === 'TS1005');
+
+// Re-parse TSC errors (sample only has first 50)
+// Need full error list, so re-run TSC
+import { spawnSync } from 'child_process';
+
+console.log('📊 Running TSC to get full error list...\n');
+const result = spawnSync('npx', ['tsc', '--noEmit', '--pretty', 'false'], {
+	cwd: ROOT,
+	encoding: 'utf8',
+	maxBuffer: 50 * 1024 * 1024, // 50MB buffer
+});
+
+const errorPattern = /^(.+)\((\d+),(\d+)\): error (TS\d+): (.*)$/;
+const tscOutput = result.stdout || result.stderr || '';
+const allErrors = tscOutput
+	.split('\n')
+	.map(line => line.trim())
+	.filter(line => errorPattern.test(line))
+	.map(line => {
+		const match = line.match(errorPattern);
+		return {
+			file: match[1],
+			line: parseInt(match[2]),
+			col: parseInt(match[3]),
+			code: match[4],
+			msg: match[5]
+		};
+	});
+
+const ts1005Errors = allErrors.filter(e => e.code === 'TS1005');
 
 console.log(`🔧 Phase 81: TS1005 Syntax Corruption Fixer\n`);
 console.log(`Found ${ts1005Errors.length} TS1005 errors\n`);

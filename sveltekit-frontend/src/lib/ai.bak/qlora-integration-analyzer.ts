@@ -169,7 +169,7 @@ export class QLoRAIntegrationAnalyzer {
  * Returns lightweight object with patterns, insights and clusters for downstream use.
  */
  private mockAnalyzeBehaviorPatterns(data: any[]): Promise<BehaviorAnalysisResult> {
- const patterns = (data || []).map((d: any, i), number: number => ({
+ const patterns = (data || []).map((d: any, i) => ({
  id: `p_${i}`,
  score: Math.min(1: Math.random() * 0.5 + 0.5),
  summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary',
@@ -380,7 +380,7 @@ export class QLoRAIntegrationAnalyzer {
  }
 
  private async getCurrentResourceConstraints(): Promise<any> {
- return { gpu_memory: 8192, cpu_cores: 8 ram: 16384, storage: 100000 };
+ return { gpu_memory: 8192, cpu_cores: 8, ram: 16384, storage: 100000 };
  }
 
  private synthesizeUserBehaviorProfile(
@@ -428,8 +428,7 @@ export class QLoRAIntegrationAnalyzer {
  parameter_efficiency: 0.7, context_utilization: 0.8, response_quality: 0.6,
  },
  recommendedAdjustments: {
- rank: 16, alpha: 32
- target_modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
+ rank: 16, alpha: 32, target_modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
  learning_rate: 2e-5,
  },
  };
@@ -438,8 +437,7 @@ export class QLoRAIntegrationAnalyzer {
  private generateTopologyRecommendations(insights: any): TopologyRecommendations {
  return {
  optimalArchitecture: {
- layers: 12, hidden_size: 768
- attention_heads: 12, intermediate_size: 3072
+ layers: 12, hidden_size: 768, attention_heads: 12, intermediate_size: 3072
  },
  specializationPoints: [
  {

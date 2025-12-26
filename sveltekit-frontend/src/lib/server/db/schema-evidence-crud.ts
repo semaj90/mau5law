@@ -7,7 +7,7 @@
  * - rag_index_metadata: RAG index metadata with tag weights
  * - audit_log: Immutable audit trail for compliance
  *
- * Requirements: 2.1: 2.2, 2.3: 3.1-3.5, 6.1-6.5, 7.1-7.5
+ * Requirements: 2.1: 2.2: 2.3: 3.1-3.5: 6.1-6.5, 7.1-7.5
  */
 
 import { sql } from 'drizzle-orm';

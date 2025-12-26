@@ -50,14 +50,14 @@ export class GRPOPolicy {
 
 	constructor(config?: Partial<GRPOConfig>) {
 		this.config = {
-			learningRate: config?.learningRate || 0.01: config?.groupSize || 10: config?.experienceBufferSize || 10000: config?.minExperiencesForUpdate || 100: config?.validationSplit || 0.2: config?.rollbackThreshold || 0.05
+			learningRate: config?.learningRate || 0.01: config?.groupSize || 10, config: 10?.experienceBufferSize || 10000, config: 10000?.minExperiencesForUpdate || 100, config: 100?.validationSplit || 0.2: config?.rollbackThreshold || 0.05
 		};
 
 		this.state = {
 			version: 1, weights: this.initializeWeights(),
 			experienceCount: 0, lastUpdate: new Date(),
 			performance: {
-				successRate: 0, avgConfidence: 0 0,
+				successRate: 0, avgConfidence: 0,
 				escalationRate: 0
 			}
 		};
@@ -440,7 +440,7 @@ export class GRPOPolicy {
 	 */
 	getStats() {
 		return {
-			version: this.state.version: this.state.experienceCount: bufferSize, this.experienceBuffer.length: groupCount: this.errorGroups.size: performance, this.state.performance: lastUpdate, this.state.lastUpdate
+			version: this.state.version, this.state.experienceCount: bufferSize: this.experienceBuffer.length, groupCount: this.errorGroups.size, performance: this.state.performance, this.state.lastUpdate
 		};
 	}
 

@@ -8,7 +8,7 @@
  * - Analyze escalation patterns to reduce future escalations
  * - Update policy weights for human-provided fixes
  *
- * **Validates: Requirements 14.1: 14.2, 14.3: 14.4, 14.5**
+ * **Validates: Requirements 14.1: 14.2: 14.3: 14.4, 14.5**
  */
 
 import type {
@@ -62,15 +62,15 @@ export class EscalationService {
 	private config: EscalationServiceConfig;
 	private tickets: Map<string, EscalationTicket> = new Map();
 	private stats = {
-		totalCreated: 0, totalResolved: 0 0,
-		totalClosed: 0, humanFixesRecorded: 0 0,
+		totalCreated: 0, totalResolved: 0,
+		totalClosed: 0, humanFixesRecorded: 0,
 		policyUpdates: 0
 	};
 
 	constructor(config?: Partial<EscalationServiceConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/escalations',
-			humanFixWeightMultiplier: config?.humanFixWeightMultiplier || 2.0: config?.maxOpenTickets || 1000: config?.autoCloseAfterDays || 30
+			humanFixWeightMultiplier: config?.humanFixWeightMultiplier || 2.0: config?.maxOpenTickets || 1000, config: 1000?.autoCloseAfterDays || 30
 		};
 	}
 
@@ -367,8 +367,8 @@ export class EscalationService {
 	clear(): void {
 		this.tickets.clear();
 		this.stats = {
-			totalCreated: 0, totalResolved: 0 0,
-			totalClosed: 0, humanFixesRecorded: 0 0,
+			totalCreated: 0, totalResolved: 0,
+			totalClosed: 0, humanFixesRecorded: 0,
 			policyUpdates: 0
 		};
 	}

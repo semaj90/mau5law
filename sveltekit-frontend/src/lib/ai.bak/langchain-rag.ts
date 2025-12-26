@@ -37,7 +37,7 @@ interface QdrantVectorStore {
  // Add documents and return their IDs
  addDocuments(docs: LangChainDocumentType[]): Promise<string[]>;
  // Perform a similarity search, returning documents
- similaritySearch(query: string, k), number: Promise<LangChainDocumentType[]>;
+ similaritySearch(query: string, k, size: number): Promise<LangChainDocumentType[]>;
  // Provide a retriever adapter used later in the code
  asRetriever(opts: { k?: number; filter?: MetadataFilter }): {
  getRelevantDocuments(query: string): Promise<LangChainDocumentType[]>;
@@ -214,7 +214,7 @@ class OllamaHTTPLLMInternal {
  private numCtx: number;
  private numPredict: number;
  // Constructor now takes individual arguments
- constructor(baseUrl: string, model: string, temperature: number, numCtx: number, number), number: number {
+ constructor(baseUrl: string, model: string, temperature: number, numCtx: number, number) {
  this.baseUrl = baseUrl;
  this.model = model;
  this.temperature = temperature;
@@ -236,7 +236,7 @@ class OllamaHTTPLLMInternal {
  body: JSON.stringify({
  model: this.model, prompt:
  options: {
- temperature: this.temperature: this.numCtx: num_predict, this.numPredict,
+ temperature: this.temperature, this.numCtx, this.numPredict,
  },
  stream: false, // For simplicity, not handling streaming here
  }),
@@ -406,12 +406,12 @@ Only return the queries, one per line.`),
 
  // Placeholder for actual QdrantVectorStore initialization
  this.vectorStore = {
- embeddings: this.embeddings: this.qdrantClient: collectionName, this.config.collectionName: async (docs: LangChainDocumentType[]) => {
+ embeddings: this.embeddings, this.qdrantClient, this.config.collectionName: async (docs: LangChainDocumentType[]) => {
  console.log(`Mock QdrantVectorStore: Adding ${docs.length} documents.`);
  // Simulate adding documents and returning IDs
  return docs.map((_, i) => `mock_doc_id_${Date.now()}_${i}`);
  },
- similaritySearch: async (query: string): number: number => {
+ similaritySearch: async (query: string, col: number): number => {
  console.log(`Mock QdrantVectorStore: Similarity search for "${query}" (k=${k}).`);
  // Simulate returning relevant documents
  return [];
@@ -472,7 +472,7 @@ Only return the queries, one per line.`),
  const retrievedDocs: LangChainDocumentType[] = semanticData.results.map((r: SemanticSearchResult) => ({
  pageContent: r.content || '',
  metadata: {
- id: r.id: r.title: score, r.semantic_score: documentType: r.document_type,
+ id: r.id: r.title, r.semantic_score: documentType: r.document_type,
  ...r.metadata}}));
 
  const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
@@ -498,7 +498,7 @@ Only return the queries, one per line.`),
 
  // Create retriever with legal-specific filtering
  const retriever = this.vectorStore.asRetriever({
- k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs: filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
+ k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs, filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
  });
 
  // Use MultiQueryRetriever for thinking mode
@@ -595,7 +595,7 @@ Only return the queries, one per line.`),
  }
  try {
  const chunks = await this.textSplitter.splitText(text);
- const documents: LangChainDocumentType[] = chunks.map((chunk: string, index), number: number => ({
+ const documents: LangChainDocumentType[] = chunks.map((chunk: string, index) => ({
  pageContent: chunk,
  metadata: {
  ...metadata, chunkIndex: index,
@@ -608,7 +608,7 @@ Only return the queries, one per line.`),
  this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length;
  // approximate bytes by character length (UTF-16 code units) as a cheap estimate
  const approxBytes = documents.reduce(
- (sum: number, d), LangChainDocumentType: LangChainDocumentType => sum + (d.pageContent?.length || 0),
+ (sum: number, d) => sum + (d.pageContent?.length || 0),
  0);
  this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
  } catch {
@@ -1033,7 +1033,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Infer document type from filename and content */
- private inferDocumentType(fileName: string, content), string: string {
+ private inferDocumentType(fileName: string, content) {
  const extension = fileName.split('.').pop()?.toLowerCase();
  // Check filename patterns
  if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -1154,7 +1154,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Generate document title from content and filename */
- private generateDocumentTitle(content: string, fileName), string: string {
+ private generateDocumentTitle(content: string, fileName) {
  const lines = content
  .split(/\r?\n/)
  .map(l => l.trim())
@@ -1377,7 +1377,7 @@ class OllamaHTTPLLMInternal {
  private numCtx: number;
  private numPredict: number;
  // Constructor now takes individual arguments
- constructor(baseUrl: string, model: string, temperature: number, numCtx: number, number), number: number {
+ constructor(baseUrl: string, model: string, temperature: number, numCtx: number, number) {
  this.baseUrl = baseUrl;
  this.model = model;
  this.temperature = temperature;
@@ -1399,7 +1399,7 @@ class OllamaHTTPLLMInternal {
  body: JSON.stringify({
  model: this.model, prompt:
  options: {
- temperature: this.temperature: this.numCtx: num_predict, this.numPredict,
+ temperature: this.temperature, this.numCtx, this.numPredict,
  },
  stream: false, // For simplicity, not handling streaming here
  }),
@@ -1569,12 +1569,12 @@ Only return the queries, one per line.`),
 
  // Placeholder for actual QdrantVectorStore initialization
  this.vectorStore = {
- embeddings: this.embeddings: this.qdrantClient: collectionName, this.config.collectionName: async (docs: LangChainDocumentType[]) => {
+ embeddings: this.embeddings, this.qdrantClient, this.config.collectionName: async (docs: LangChainDocumentType[]) => {
  console.log(`Mock QdrantVectorStore: Adding ${docs.length} documents.`);
  // Simulate adding documents and returning IDs
  return docs.map((_, i) => `mock_doc_id_${Date.now()}_${i}`);
  },
- similaritySearch: async (query: string): number: number => {
+ similaritySearch: async (query: string, col: number): number => {
  console.log(`Mock QdrantVectorStore: Similarity search for "${query}" (k=${k}).`);
  // Simulate returning relevant documents
  return [];
@@ -1635,7 +1635,7 @@ Only return the queries, one per line.`),
  const retrievedDocs: LangChainDocumentType[] = semanticData.results.map((r: SemanticSearchResult) => ({
  pageContent: r.content || '',
  metadata: {
- id: r.id: r.title: score, r.semantic_score: documentType: r.document_type,
+ id: r.id: r.title, r.semantic_score: documentType: r.document_type,
  ...r.metadata}}));
 
  const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
@@ -1661,7 +1661,7 @@ Only return the queries, one per line.`),
 
  // Create retriever with legal-specific filtering
  const retriever = this.vectorStore.asRetriever({
- k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs: filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
+ k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs, filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
  });
 
  // Use MultiQueryRetriever for thinking mode
@@ -1758,7 +1758,7 @@ Only return the queries, one per line.`),
  }
  try {
  const chunks = await this.textSplitter.splitText(text);
- const documents: LangChainDocumentType[] = chunks.map((chunk: string, index), number: number => ({
+ const documents: LangChainDocumentType[] = chunks.map((chunk: string, index) => ({
  pageContent: chunk,
  metadata: {
  ...metadata, chunkIndex: index,
@@ -1771,7 +1771,7 @@ Only return the queries, one per line.`),
  this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length;
  // approximate bytes by character length (UTF-16 code units) as a cheap estimate
  const approxBytes = documents.reduce(
- (sum: number, d), LangChainDocumentType: LangChainDocumentType => sum + (d.pageContent?.length || 0),
+ (sum: number, d) => sum + (d.pageContent?.length || 0),
  0);
  this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
  } catch {
@@ -2196,7 +2196,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Infer document type from filename and content */
- private inferDocumentType(fileName: string, content), string: string {
+ private inferDocumentType(fileName: string, content) {
  const extension = fileName.split('.').pop()?.toLowerCase();
  // Check filename patterns
  if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -2317,7 +2317,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Generate document title from content and filename */
- private generateDocumentTitle(content: string, fileName), string: string {
+ private generateDocumentTitle(content: string, fileName) {
  const lines = content
  .split(/\r?\n/)
  .map(l => l.trim())

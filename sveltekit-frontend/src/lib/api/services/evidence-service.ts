@@ -10,8 +10,7 @@ export interface Evidence {
  category: 'favorable' | 'unfavorable' | 'neutral' | 'unknown';
  source: string;
  acquiredDate: string;
- relevanceScore: number; // 0-1
- authenticityVerified: boolean;
+ relevanceScore: number; // 0-1, authenticityVerified: boolean;
  chainOfCustody: ChainOfCustodyEntry[];
  tags: string[];
  attachments: EvidenceAttachment[];
@@ -59,8 +58,7 @@ export interface EvidenceAnalysis {
  potentialImpact: 'low' | 'medium' | 'high' | 'critical';
  relatedCases: string[];
  suggestedActions: string[];
- confidenceScore: number; // 0-1
- analysisDate: string;
+ confidenceScore: number; // 0-1, analysisDate: string;
  analyzedBy: 'ai' | 'human' | 'hybrid';
  reviewStatus: 'pending' | 'reviewed' | 'approved' | 'rejected';
 }

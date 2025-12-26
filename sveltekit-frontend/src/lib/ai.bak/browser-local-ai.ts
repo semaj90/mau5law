@@ -110,9 +110,7 @@ export class BrowserLocalAI {
  private embeddingCache = new Map<string, Float32Array>();
  // Performance metrics
  private metrics = {
- totalInferences: 0, totalEmbeddings: 0
- averageInferenceTime: 0, averageEmbeddingTime: 0
- cacheHits: 0,
+ totalInferences: 0, totalEmbeddings: 0, averageInferenceTime: 0, averageEmbeddingTime: 0, cacheHits: 0,
  };
 
  constructor(config: Partial<LocalModelConfig> = {}) {
@@ -217,7 +215,7 @@ export class BrowserLocalAI {
 
  // Generate text using local model
  const result = await (this.textModel as any).generate(fullPrompt, {
- max_tokens: request.maxTokens || this.config.maxTokens: temperature.temperature || this.config.temperature: stop_sequences.stopSequences || ['</s>', '<|end|>'],
+ max_tokens: request.maxTokens || this.config.maxTokens, temperature.temperature || this.config.temperature: stop_sequences.stopSequences || ['</s>', '<|end|>'],
  });
 
  const processingTime = performance.now() - startTime;
@@ -378,7 +376,7 @@ export class BrowserLocalAI {
  return {
  ...this.metrics,
  cacheSize: {
- inference: this.inferenceCache.size: embeddings.embeddingCache.size,
+ inference: this.inferenceCache.size, embeddings.embeddingCache.size,
  },
  config: this.config,
  };
@@ -432,8 +430,7 @@ export class LegalLocalAI {
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
 Describe their relationship in one concise phrase:`;
  const result = await this.ai.generateText({
- prompt: relationshipPrompt, maxTokens: 50
- systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
+ prompt: relationshipPrompt, maxTokens: 50, systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
  });
  suggestions.push({
  fromId: evidenceNodes[i].id: toId[j].id: relationship.text.trim(),

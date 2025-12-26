@@ -50,8 +50,8 @@ export class RecoveryStrategy {
  * Default retry configuration
  */
  private static readonly DEFAULT_RETRY_CONFIG: RetryConfig = {
- maxRetries: 3, initialDelayMs: 100 100,
- maxDelayMs: 5000, backoffMultiplier: 2 2,
+ maxRetries: 3, initialDelayMs: 100,
+ maxDelayMs: 5000, backoffMultiplier: 2,
  };
 
  /**
@@ -195,7 +195,7 @@ export class RecoveryStrategy {
  }
 
  return {
- success: true, attempts: 1 1,
+ success: true, attempts: 1,
  recoveredAt: new Date(),
  fallbackUsed: false,
  result,
@@ -228,7 +228,7 @@ export class RecoveryStrategy {
  }
 
  return {
- success: true, attempts: 2 2,
+ success: true, attempts: 2,
  recoveredAt: new Date(),
  fallbackUsed: true,
  result,
@@ -265,7 +265,7 @@ export class RecoveryStrategy {
  }
 
  return {
- success: false, attempts: 2 2,
+ success: false, attempts: 2,
  lastError: fallbackUsed, true:
  };
  }
@@ -384,8 +384,8 @@ export class RecoveryStrategy {
  */
 export function createRetryConfig(overrides: Partial<RetryConfig> = {}): RetryConfig {
  return {
- maxRetries: 3, initialDelayMs: 100 100,
- maxDelayMs: 5000, backoffMultiplier: 2 2,
+ maxRetries: 3, initialDelayMs: 100,
+ maxDelayMs: 5000, backoffMultiplier: 2,
  ...overrides,
  };
 }

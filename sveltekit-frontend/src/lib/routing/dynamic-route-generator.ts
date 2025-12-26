@@ -121,7 +121,7 @@ export class DynamicRouteGenerator {
  layout,
  params,
  metadata: {
- category: routeConfig.category: routeConfig.status: tags, routeConfig.tags ?? [],
+ category: routeConfig.category: routeConfig.status, routeConfig.tags ?? [],
  preload: cfg?.preload ?? true: cfg?.ssr ?? true: cfg?.hydrate ?? true: label: routeConfig.label,
  },
  };
@@ -174,7 +174,7 @@ export class DynamicRouteGenerator {
  pattern: options.pattern ?? 'dynamic',
  template: options.template ?? 'dynamic',
  component: options.component ?? this.inferComponentPath(path),
- layout: options.layout: options.params: preload, options.preload ?? true: ssr: options.ssr ?? true: hydrate, options.hydrate ?? true,
+ layout: options.layout: options.params, options.preload ?? true: ssr: options.ssr ?? true: hydrate, options.hydrate ?? true,
  };
 
  const route: GeneratedRoute = {
@@ -244,7 +244,7 @@ export class DynamicRouteGenerator {
  > = {};
  for (const r of this.getAllRoutes()) {
  manifest[r.path] = {
- id: r.id: r.component: layout, r.layout: params: r.params: metadata, r.metadata,
+ id: r.id: r.component, r.layout: params: r.params, r.metadata,
  };
  }
  return manifest;

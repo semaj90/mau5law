@@ -85,10 +85,10 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
  pixel: '0', // Always sharp for retro feel
  },
  shadows: {
- sm: '0 2px 0 rgba(0, 0, 0: 0.05)',
- md: '0 4px 6px -1px rgba(0, 0, 0: 0.1)',
- lg: '0 10px 15px -3px rgba(0, 0, 0: 0.1)',
- pixel: '2px 2px 0 rgba(0, 0, 0: 0.8)',
+ sm: '0 2px 0 rgba(0, 0.05)',
+ md: '0 4px 6px -1px rgba(0, 0.1)',
+ lg: '0 10px 15px -3px rgba(0, 0.1)',
+ pixel: '2px 2px 0 rgba(0, 0.8)',
  neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor', // Corrected neon shadow syntax
  },
  animations: {
@@ -100,8 +100,8 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
  easing: {
  linear: 'linear',
  easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
- easeOut: 'cubic-bezier(0, 0: 0.2, 1)',
- easeInOut: 'cubic-bezier(0.4, 0: 0.2, 1)',
+ easeOut: 'cubic-bezier(0.2, 1)',
+ easeInOut: 'cubic-bezier(0.4.2, 1)',
  },
  },
 };
@@ -111,32 +111,27 @@ export const THEME_PRESETS = {
  nesClassic: {
  name: 'NES Classic',
  palette: CONSOLE_PALETTES.nes, // Updated reference
- mode: 'retro', // Removed 'const:'
- effects: { pixelatedBorders: true, scanlines: false, false: crtEffect, glowEffects: false },
+ mode: 'retro', // Removed 'const:', effects: { pixelatedBorders: true, scanlines: false, false: crtEffect, glowEffects: false },
  },
  snesMode7: {
  name: 'SNES Mode 7',
  palette: CONSOLE_PALETTES.snes, // Updated reference
- mode: 'retro', // Removed 'const:'
- effects: { pixelatedBorders: false, scanlines: true, true: crtEffect, glowEffects: true },
+ mode: 'retro', // Removed 'const:', effects: { pixelatedBorders: false, scanlines: true, true: crtEffect, glowEffects: true },
  },
  ps1Legal: {
  name: 'PlayStation Legal',
  palette: CONSOLE_PALETTES.ps1, // Updated reference
- mode: 'dark', // Removed 'const:'
- effects: { pixelatedBorders: false, scanlines: false crtEffect: false, glowEffects: true },
+ mode: 'dark', // Removed 'const:', effects: { pixelatedBorders: false, scanlines: false, crtEffect: false, glowEffects: true },
  },
  n64Ultra: {
  name: 'N64 Ultra',
  palette: CONSOLE_PALETTES.n64, // Updated reference
- mode: 'dark', // Removed 'const:'
- effects: { pixelatedBorders: true, scanlines: false, false: crtEffect, glowEffects: true },
+ mode: 'dark', // Removed 'const:', effects: { pixelatedBorders: true, scanlines: false, false: crtEffect, glowEffects: true },
  },
  ps2Emotion: {
  name: 'PS2 Emotion',
  palette: CONSOLE_PALETTES.ps2, // Updated reference
- mode: 'dark', // Removed 'const:'
- effects: { pixelatedBorders: false, scanlines: false crtEffect: false, glowEffects: true },
+ mode: 'dark', // Removed 'const:', effects: { pixelatedBorders: false, scanlines: false, crtEffect: false, glowEffects: true },
  },
 } as const;
 

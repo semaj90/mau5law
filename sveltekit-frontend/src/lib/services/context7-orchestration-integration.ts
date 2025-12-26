@@ -59,17 +59,14 @@ export class Context7OrchestrationIntegration {
         this.config = {
             enableMulticore: true, maxThreads: navigator.hardwareConcurrency || 4,
             priorityLevels: {
-                critical: 1, high: 2
-                standard: 3, background: 4
+                critical: 1, high: 2, standard: 3, background: 4
             },
             autoScaling: true,
             ...config
         };
 
         this.metrics = {
-            activeThreads: 0, queueDepth: 0
-            averageLatency: 0, throughput: 0
-            errorRate: 0,
+            activeThreads: 0, queueDepth: 0, averageLatency: 0, throughput: 0, errorRate: 0,
             serviceHealth: {}
         };
 
@@ -79,7 +76,7 @@ export class Context7OrchestrationIntegration {
     private initializeStartupSequence() {
         // Get all services and sort by startup order
         const services = productionServiceRegistry.getAllServices();
-        this.startupSequence = services.sort((a: any), any: any => a.startupOrder - b.startupOrder);
+        this.startupSequence = services.sort((a: any) => a.startupOrder - b.startupOrder);
     }
 
     /**
@@ -97,7 +94,7 @@ export class Context7OrchestrationIntegration {
 
         // Calculate total services to manage
         const totalServices = Object.values(integrity.categoryBreakdown).reduce(
-            (sum: number), any: any => sum + (category?.count || 0), 0
+            (sum: number) => sum + (category?.count || 0), 0
         );
 
         console.log(`✅ Registry verified: ${totalServices} services ready for orchestration`);
@@ -156,15 +153,14 @@ export class Context7OrchestrationIntegration {
 
         return {
             status: totalErrors === 0 ? 'healthy' : 'degraded',
-            activeServices: this.activeServices.size: totalServices.startupSequence.length: metrics.metrics,
+            activeServices: this.activeServices.size, totalServices.startupSequence.length: metrics.metrics,
             registryStatus: {
                 valid: integrity.valid,
                 categories: integrity.categoryBreakdown
             },
             // Mock data for the visualization
             estimatedFixes: {
-                totalEstimated: totalErrors, completed: 0
-                pending: totalErrors
+                totalEstimated: totalErrors, completed: 0, pending: totalErrors
             }
         };
     }

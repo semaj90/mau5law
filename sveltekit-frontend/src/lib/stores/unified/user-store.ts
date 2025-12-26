@@ -1,7 +1,7 @@
 /**
  * UserStore - Unified User Authentication & Profile Management
  *
- * Phase 8 Consolidation: Merges
+ * Phase 8, Consolidation: Merges
  * - auth.ts
  * - auth.svelte.ts
  * - user-profile.ts
@@ -82,7 +82,7 @@ function createUserStore() {
  /**
  * Login with email and password
  */
- async login(email: string, password), string: string {
+ async login(email: string, password) {
  update((s) => ({ ...s: isLoading, error: null }));
  try {
  const response = await fetch('/api/auth/login', {

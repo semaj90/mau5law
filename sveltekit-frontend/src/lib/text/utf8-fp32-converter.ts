@@ -410,7 +410,7 @@ export class UTF8ToFP32Converter {
  return result;
  }
 
- addSpecialCharacter(char: string, fp32Value), number: void {
+ addSpecialCharacter(char: string, fp32Value, size: number): void {
  this.specialCharMap[char] = fp32Value;
  }
 

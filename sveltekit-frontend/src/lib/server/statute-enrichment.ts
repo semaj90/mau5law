@@ -16,8 +16,7 @@ interface StatuteEnrichment {
 interface BundledCharge {
  citation: string;
  title: string;
- reason: string; // e.g., "Enhancement", "Common companion", "Prior offense"
- frequency: number; // How often filed together (0-1)
+ reason: string; // e.g., "Enhancement", "Common companion", "Prior offense", frequency: number; // How often filed together (0-1)
 }
 
 interface Precedent {

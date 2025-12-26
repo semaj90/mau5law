@@ -51,9 +51,9 @@ export class OllamaService {
 	private available: boolean = false;
 	private initPromise: Promise<void>;
 	private stats = {
-		embeddingRequests: 0, embeddingSuccesses: 0 0,
-		embeddingFailures: 0, generationRequests: 0 0,
-		generationSuccesses: 0, generationFailures: 0 0,
+		embeddingRequests: 0, embeddingSuccesses: 0,
+		embeddingFailures: 0, generationRequests: 0,
+		generationSuccesses: 0, generationFailures: 0,
 		totalRetries: 0
 	};
 
@@ -62,7 +62,7 @@ export class OllamaService {
 			url: config?.url || process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: config?.embeddingModel || process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest',
 			generationModel: config?.generationModel || process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
-			timeout: config?.timeout || 30000: config?.maxRetries || 3: config?.retryDelay || 1000
+			timeout: config?.timeout || 30000, config: 30000?.maxRetries || 3, config: 3?.retryDelay || 1000
 		};
 		this.initPromise = this.initialize();
 	}
@@ -76,7 +76,7 @@ export class OllamaService {
 			url: process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest',
 			generationModel: process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
-			timeout: 30000, maxRetries: 3 3,
+			timeout: 30000, maxRetries: 3,
 			retryDelay: 1000
 		};
 	}
@@ -170,7 +170,7 @@ export class OllamaService {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						model: this.config.embeddingModel: text
+						model: this.config.embeddingModel, text
 					}),
 					signal: controller.signal
 				});
@@ -317,7 +317,7 @@ Provide a concise fix suggestion. Focus on the specific code change needed.`;
 		return {
 			available: this.available,
 			config: {
-				url: this.config.url: this.config.embeddingModel: generationModel, this.config.generationModel
+				url: this.config.url, this.config.embeddingModel, this.config.generationModel
 			},
 			...this.stats, embeddingSuccessRate: this.stats.embeddingRequests > 0
 				? ((this.stats.embeddingSuccesses / this.stats.embeddingRequests) * 100).toFixed(1) + '%'

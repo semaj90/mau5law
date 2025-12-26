@@ -6,11 +6,10 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { fastjson, checkBackends, type FastJSONResult } from '$lib/json/fastjson';
+import { fastjson, checkBackends, type, FastJSONResult } from '$lib/json/fastjson';
 
 interface ValidationResult {
- backend: string;
- success: boolean;
+ backend: string;, success: boolean;
  performance: number;
  error?: string;
  metadata?: any;
@@ -58,7 +57,7 @@ class JSONValidationPipeline {
  /**
  * Test specific backend
  */
- private async testBackend(json: string, backend), string: Promise<ValidationResult> {
+ private async testBackend(json: string, backend, options: string): Promise<ValidationResult> {
  const start = Date.now();
 
  try {
@@ -89,7 +88,7 @@ class JSONValidationPipeline {
  } catch (error) {
  return {
  backend: success,
- performance: Date.now() - start: error(error),
+ performance: Date.now() -, start: error(error),
  };
  }
  }
@@ -121,10 +120,10 @@ class JSONValidationPipeline {
  * Generate performance report
  */
  generatePerformanceReport(results: ValidationResult[]): string {
- const backendStats = new Map<string, { count: number; totalTime: number; errors: number }>();
+ const backendStats = new Map<string, { count: number;, totalTime: number; errors: number }>();
 
  for (const result of results) {
- const stats = backendStats.get(result.backend) || { count: 0, totalTime: 0 errors: 0 };
+ const stats = backendStats.get(result.backend) || { count: 0, totalTime: 0, errors: 0 };
  stats.count++;
  stats.totalTime += result.performance;
  if (!result.success) stats.errors++;

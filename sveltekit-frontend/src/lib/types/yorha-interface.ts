@@ -37,8 +37,7 @@ export interface YoRHaModule {
  id: string;
  name: string;
  status: ModuleStatus;
- power: number; // 0-100
- description: string;
+ power: number; // 0-100, description: string;
  icon: string;
  color: string;
  version?: string;
@@ -49,8 +48,7 @@ export interface YoRHaModule {
 }
 export interface ModuleConfiguration {
  auto_start: boolean;
- priority: number; // 1-10
- resource_allocation: ResourceAllocation;
+ priority: number; // 1-10, resource_allocation: ResourceAllocation;
  monitoring_enabled: boolean;
  logging_level: LogLevel;
  backup_enabled: boolean;
@@ -250,8 +248,7 @@ export interface NeuralNetworkState {
  total_nodes: number;
  active_nodes: number;
  connections: number;
- activity_level: number; // 0-100
- learning_rate: number;
+ activity_level: number; // 0-100, learning_rate: number;
  error_rate: number;
  training_status: TrainingStatus;
  model_accuracy: number;
@@ -289,9 +286,7 @@ export interface RiskFactor {
  category: string;
  description: string;
  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
- probability: number; // 0-1
- impact_score: number; // 0-10
- mitigation_strategies: string[];
+ probability: number; // 0-1, impact_score: number; // 0-10, mitigation_strategies: string[];
 }
 export interface LegalResponse {
  id: string;

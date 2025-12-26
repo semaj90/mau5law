@@ -1,25 +1,21 @@
 import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
+import { promises, as fs } from 'fs';
 import * as path from 'path';
 import { tmpdir } from 'os';
 
 export interface YOLOResult {
- text: string;
- layout: {
+ text: string;, layout: {
  regions: Array<{
- type: 'text' | 'image' | 'table' | 'header' | 'footer' | 'signature';
- bbox: number[];
+ type: 'text' | 'image' | 'table' | 'header' | 'footer' | 'signature';, bbox: number[];
  confidence: number;
  text?: string;
  }>;
  };
  objects: Array<{
- class: string;
- bbox: number[];
+ class: string;, bbox: number[];
  confidence: number;
  }>;
- processingTime: number;
- method: 'yolo';
+ processingTime: number;, method: 'yolo';
 }
 
 export interface YOLOConfig {
@@ -46,7 +42,7 @@ export class YOLOService {
  /**
  * Analyze document layout and objects using YOLO
  */
- async analyzeDocument(imageBuffer: Buffer), string: Promise<YOLOResult> {
+ async analyzeDocument(imageBuffer: Buffer, options: string): Promise<YOLOResult> {
  const startTime = Date.now();
 
  // Save image to temp file for processing
@@ -86,7 +82,7 @@ export class YOLOService {
  /**
  * Run YOLO inference using Python script with ONNX
  */
- private async runYOLOInference(imagePath: string), string: Promise<any> {
+ private async runYOLOInference(imagePath: string, options: string): Promise<any> {
  const pythonScript = `
 import sys
 import json
@@ -96,8 +92,7 @@ import onnxruntime as ort
 from pathlib import Path
 
 def load_yolo_model(model_path):
- """Load YOLO model with ONNX runtime"""
- try:
+ """Load YOLO model with ONNX runtime""", try:
  session = ort.InferenceSession(model_path)
  return session
  except Exception as e:
@@ -107,8 +102,7 @@ def load_yolo_model(model_path):
 def preprocess_image(image_path, input_size=(640, 640)):
  """Preprocess image for YOLO inference"""
  image = cv2.imread(image_path)
- if image is None:
- raise ValueError(f"Could not load image: {image_path}")
+ if image is None: raise ValueError(f"Could not load, image: {image_path}")
 
  # Resize image
  image_resized = cv2.resize(image, input_size)
@@ -193,8 +187,7 @@ def compute_iou(box1, boxes):
  return intersection / union
 
 def analyze_document(image_path, model_path, output_path, conf_threshold=0.5, iou_threshold=0.45):
- """Main document analysis function"""
- try:
+ """Main document analysis function""", try:
  # Load model
  session = load_yolo_model(model_path)
 

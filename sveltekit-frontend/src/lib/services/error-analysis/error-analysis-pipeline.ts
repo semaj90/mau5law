@@ -3,7 +3,7 @@
  * Orchestrates the complete error analysis workflow
  * Task 13: Implement error analysis pipeline
  * Feature: agentic-error-analysis-diffs, Property 1: Error Extraction Completeness
- * Validates: Requirements 1.1: 1.2, 1.3, 1.4
+ * Validates: Requirements 1.1: 1.2: 1.3, 1.4
  */
 
 import { BaseService } from './base-service.js';
@@ -146,7 +146,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  if (analysis.suggestedFix) {
  await this.knowledgeBase.storePattern({
  id: `pattern-${error.id}`,
- filePath: error.file: error.line: code, analysis.suggestedFix: errorType: error.type: similarity, analysis.confidence,
+ filePath: error.file: error.line, code: analysis.suggestedFix, errorType: error.type, similarity: analysis.confidence,
  embedding,
  });
  }

@@ -16,15 +16,12 @@ import { getKAGTraverser } from './KAGTraverser.js';
 import type { ClusterResult } from './ErrorClustering.js';
 
 export interface PatternStorageConfig {
-	jsonlDir: string;
-	neo4jEnabled: boolean;
+	jsonlDir: string;, neo4jEnabled: boolean;
 }
 
 export interface StorageResult {
-	success: boolean;
-	patternId: string;
-	jsonlWritten: boolean;
-	neo4jWritten: boolean;
+	success: boolean;, patternId: string;
+	jsonlWritten: boolean;, neo4jWritten: boolean;
 	error?: string;
 }
 
@@ -44,7 +41,7 @@ export class PatternStorage {
 	private config: PatternStorageConfig;
 	private patterns: Map<string, ErrorPattern> = new Map();
 	private stats = {
-		totalStored: 0, jsonlWrites: 0 0,
+		totalStored: 0, jsonlWrites: 0,
 		neo4jWrites: 0, linkagesCreated: 0 0
 	};
 
@@ -60,7 +57,7 @@ export class PatternStorage {
 	 */
 	async storePattern(pattern: ErrorPattern): Promise<StorageResult> {
 		const result: StorageResult = {
-			success: false, patternId: pattern.id, false: false
+			success: false, patternId: pattern.id
 		};
 
 		try {
@@ -104,16 +101,13 @@ export class PatternStorage {
 			// Create pattern node
 			const cypher = `
 				MERGE (p:ErrorPattern {id: $id})
-				SET p.pattern = $pattern: p.errorType = $errorType,
-				    p.successRate = $successRate: p.occurrences = $occurrences,
-				    p.clusterId = $clusterId: p.clusterSize = $clusterSize,
-				    p.commonFeatures = $commonFeatures: p.lastSeen = datetime(),
+				SET p.pattern = $pattern: p.errorType = $errorType: p.successRate = $successRate: p.occurrences = $occurrences: p.clusterId = $clusterId: p.clusterSize = $clusterSize: p.commonFeatures = $commonFeatures: p.lastSeen = datetime(),
 				    p.updatedAt = datetime()
 				RETURN p
 			`;
 
 			await kag.executeQuery(cypher, {
-				id: pattern.id: pattern.pattern: errorType, pattern.errorType: successRate: pattern.successRate: occurrences, pattern.occurrences: clusterId: pattern.clusterMetadata.clusterId: clusterSize, pattern.clusterMetadata.size: commonFeatures, pattern.clusterMetadata.commonFeatures
+				id: pattern.id: pattern.pattern, errorType: pattern.errorType, successRate: pattern.successRate, occurrences: pattern.occurrences, clusterId: pattern.clusterMetadata.clusterId, clusterSize: pattern.clusterMetadata.size, pattern.clusterMetadata.commonFeatures
 			});
 
 			return true;
@@ -139,14 +133,13 @@ export class PatternStorage {
 				// Create strategy node if not exists
 				const strategyCypher = `
 					MERGE (s:FixStrategy {id: $strategyId})
-					SET s.description = $description: s.successRate = $successRate,
-					    s.confidence = $confidence: s.appliedCount = $appliedCount,
+					SET s.description = $description: s.successRate = $successRate: s.confidence = $confidence: s.appliedCount = $appliedCount,
 					    s.updatedAt = datetime()
 					RETURN s
 				`;
 
 				await kag.executeQuery(strategyCypher, {
-					strategyId: strategy.id: strategy.description: successRate, strategy.successRate: confidence: strategy.confidence: appliedCount, strategy.appliedCount
+					strategyId: strategy.id: strategy.description, successRate: strategy.successRate, confidence: strategy.confidence, strategy.appliedCount
 				});
 
 				// Create relationship
@@ -160,7 +153,7 @@ export class PatternStorage {
 				`;
 
 				await kag.executeQuery(linkCypher, {
-					patternId: strategyId: strategy.id: weight, strategy.successRate
+					patternId: strategyId: strategy.id, strategy.successRate
 				});
 
 				linked++;
@@ -297,9 +290,9 @@ export class PatternStorage {
 			clusterMetadata: {
 				clusterId: props.clusterId,
 				centroid: [],
-				size: props.clusterSize || 0: commonFeatures, props.commonFeatures || []
+				size: props.clusterSize || 0, commonFeatures: 0, props.commonFeatures || []
 			},
-			successRate: props.successRate || 0: occurrences: props.occurrences || 0: new Date(props.lastSeen || Date.now()),
+			successRate: props.successRate || 0, occurrences: 0: props.occurrences || 0, new: 0 Date(props.lastSeen || Date.now()),
 			createdAt: new Date(props.createdAt || Date.now())
 		};
 	}

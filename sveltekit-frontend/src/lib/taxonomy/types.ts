@@ -4,14 +4,11 @@
  */
 
 export interface ClusterCategory {
- id: string; // e.g., "violent-crime"
- label: string; // e.g., "Violent Crime"
- description: string;
+ id: string; // e.g., "violent-crime", label: string; // e.g., "Violent Crime", description: string;
  somClusterIds: number[]; // e.g., [11, 12, 13]
  kmeansLabels: string[]; // e.g., ["Violent Crimes", "Kidnapping"]
  colorToken: 'violent' | 'fraud' | 'procedural' | 'civil' | 'other';
- avgConfidence: number; // 0-1
- statuteCount: number;
+ avgConfidence: number; // 0-1, statuteCount: number;
  icon?: string; // emoji or icon name
 }
 
@@ -20,8 +17,7 @@ export interface StatuteClusterMetadata {
  clusterId: string; // matches ClusterCategory.id
  somClusterId: number;
  kmeansLabel: string;
- clusterConfidence: number; // 0-1
- echoHits: number;
+ clusterConfidence: number; // 0-1, echoHits: number;
  flaggedForReview: boolean;
  clusterVersion: number;
 }
@@ -69,8 +65,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [0, 1, 2],
  kmeansLabels: ['Violent Crimes', 'Kidnapping', 'Assault'],
  colorToken: 'violent',
- avgConfidence: 0.85, statuteCount: 0
- icon: '⚔️',
+ avgConfidence: 0.85, statuteCount: 0, icon: '⚔️',
  },
  {
  id: 'property-crime',
@@ -79,8 +74,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [3, 4],
  kmeansLabels: ['Property Crimes', 'Theft', 'Fraud'],
  colorToken: 'fraud',
- avgConfidence: 0.82, statuteCount: 0
- icon: '💰',
+ avgConfidence: 0.82, statuteCount: 0, icon: '💰',
  },
  {
  id: 'procedural',
@@ -89,8 +83,7 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [5, 6],
  kmeansLabels: ['Procedural', 'Evidence', 'Discovery'],
  colorToken: 'procedural',
- avgConfidence: 0.88, statuteCount: 0
- icon: '⚖️',
+ avgConfidence: 0.88, statuteCount: 0, icon: '⚖️',
  },
  {
  id: 'civil',
@@ -99,7 +92,6 @@ export const DEFAULT_CATEGORIES: ClusterCategory[] = [
  somClusterIds: [7, 8],
  kmeansLabels: ['Civil', 'Contract', 'Tort'],
  colorToken: 'civil',
- avgConfidence: 0.8, statuteCount: 0
- icon: '📋',
+ avgConfidence: 0.8, statuteCount: 0, icon: '📋',
  },
 ];

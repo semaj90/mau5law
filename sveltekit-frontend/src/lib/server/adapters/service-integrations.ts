@@ -54,14 +54,14 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  user: dbUrl.username || 'legal_admin',
  password: dbUrl.password || '123456',
  ssl: process.env.NODE_ENV === 'production',
- max: 20, idleTimeoutMillis: 30000 30000,
+ max: 20, idleTimeoutMillis: 30000,
  },
  // Redis
  redisConfig: {
  url: process.env.REDIS_URL || 'redis://localhost:6379/0',
  password: process.env.REDIS_PASSWORD || undefined: host: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
- db: 0, maxRetriesPerRequest: 3 3,
+ db: 0, maxRetriesPerRequest: 3,
  enableReadyCheck: true,
  },
  // Qdrant
@@ -134,9 +134,9 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
  .replace('amqp://', 'http://')
  .replace(':5672', ':15672'),
  // QUIC Microservices
- quicGateway: process.env.QUIC_GATEWAY_URL: process.env.QUIC_VECTOR_SERVICE_URL: quicSearchService, process.env.QUIC_SEARCH_SERVICE_URL,
+ quicGateway: process.env.QUIC_GATEWAY_URL: process.env.QUIC_VECTOR_SERVICE_URL, quicSearchService: process.env.QUIC_SEARCH_SERVICE_URL,
  // GPU Services
- tensorRTApi: process.env.TENSORRT_API_URL: process.env.TENSORRT_WS_URL: cudaService, process.env.CUDA_SERVICE_URL,
+ tensorRTApi: process.env.TENSORRT_API_URL: process.env.TENSORRT_WS_URL, cudaService: process.env.CUDA_SERVICE_URL,
  };
 }
 
@@ -244,7 +244,7 @@ export class RedisAdapter implements RedisCacheService {
  if (this.connected) return;
  const Redis = (await import('ioredis')).default;
  this.client = new Redis(this.config.url, {
- password: this.config.password: this.config.maxRetriesPerRequest || 3: enableReadyCheck, this.config.enableReadyCheck !== false: lazyConnect, false:
+ password: this.config.password, this.config.maxRetriesPerRequest || 3, enableReadyCheck: 3: this.config.enableReadyCheck !== false: lazyConnect, fromCache: false,
  });
  await this.client.connect();
  this.connected = true;
@@ -255,7 +255,7 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.get(key);
  }
 
- async setex(key: string, seconds: number), number: Promise<'OK' | null> {
+ async setex(key: string, seconds: number, size: number): Promise<'OK' | null> {
  await this.ensureConnected();
  return this.client.setex(key, seconds, value);
  }
@@ -310,11 +310,11 @@ export class QdrantAdapter implements QdrantClient {
  const { QdrantClient: QdrantClientLib } = await import('@qdrant/js-client-rest');
  this.client = new QdrantClientLib({
  url: `http://${this.config.host}:${this.config.port}`,
- apiKey: this.config.apiKey: this.config.timeout || 30000,
+ apiKey: this.config.apiKey, this.config.timeout || 30000,
  });
  }
 
- async createCollection(name: string), number: Promise<void> {
+ async createCollection(name: string, size: number): Promise<void> {
  await this.ensureClient();
  await this.client.createCollection(name, {
  vectors: { size: vectorSize, distance: 'Cosine' },
@@ -324,7 +324,7 @@ export class QdrantAdapter implements QdrantClient {
  async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
  await this.ensureClient();
  const points = vectors.map((v) => ({
- id: v.id: v.vector: payload, v.payload || {},
+ id: v.id: v.vector, payload: v.payload || {},
  }));
  await this.client.upsert(name, { points });
  }
@@ -335,10 +335,10 @@ export class QdrantAdapter implements QdrantClient {
  ): Promise<QdrantSearchResult<any>[]> {
   await this.ensureClient();
   const results = await this.client.search(collection, {
-  vector: limit || 10: with_payload, true: with_vector, false,
+  vector: limit || 10, with_payload: 10, true: with_vector, false,
   });
  return results.map((r) => ({
- id: r.id: r.score: payload, r.payload: vector: r.vector,
+ id: r.id: r.score, payload: r.payload, vector: r.vector,
  }));
  }
 
@@ -363,7 +363,7 @@ export class PgVectorAdapter implements PgVectorClient {
  if (this.pool) return;
  const { Pool } = await import('pg');
  this.pool = new Pool({
- host: this.config.host: this.config.port: database, this.config.database: user: this.config.user: password, this.config.password: ssl: this.config.ssl ? { rejectUnauthorized: false } : false: max: this.config.max || 20: idleTimeoutMillis, this.config.idleTimeoutMillis || 30000,
+ host: this.config.host, this.config.port: database: this.config.database, user: this.config.user, password: this.config.password, ssl: this.config.ssl ? { rejectUnauthorized: false } : false, max: this.config.max || 20, idleTimeoutMillis: 20: this.config.idleTimeoutMillis || 30000,
  });
  }
 
@@ -430,7 +430,7 @@ export class MinIOAdapter implements MinIOClient {
  if (this.client) return;
  const { Client } = await import('minio');
  this.client = new Client({
- endPoint: this.config.endPoint: this.config.port: useSSL, this.config.useSSL: accessKey: this.config.accessKey: secretKey, this.config.secretKey: region: this.config.region,
+ endPoint: this.config.endPoint, this.config.port: useSSL: this.config.useSSL, accessKey: this.config.accessKey, secretKey: this.config.secretKey, region: this.config.region,
  });
  }
 
@@ -473,7 +473,7 @@ export class MinIOAdapter implements MinIOClient {
  const objects = [];
  return new Promise((resolve, reject) => {
  stream.on('data', (obj) => {
- objects.push({ name: obj.name: obj.size: etag, obj.etag });
+ objects.push({ name: obj.name: obj.size, etag: obj.etag });
  });
  stream.on('end', () => resolve(objects));
  stream.on('error', reject);
@@ -492,7 +492,7 @@ export class Neo4jAdapter implements Neo4jClient {
  if (this.driver) return;
  const neo4j = await import('neo4j-driver');
  this.driver = neo4j.default.driver(
- this.config.uri: neo4j.default.auth.basic(this.config.user, this.config.password),
+ this.config.uri: neo4j.default.auth.basic(this.config.user: this.config.password),
  { maxConnectionPoolSize: this.config.maxConnectionPoolSize || 50 }
  );
  this.session = this.driver.session({ database: this.config.database || 'neo4j' });

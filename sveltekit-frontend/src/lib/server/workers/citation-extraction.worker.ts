@@ -33,8 +33,7 @@ class CitationExtractionWorker {
  'citation-extraction',
  this.processCitationExtraction.bind(this),
  {
- connection: redis, concurrency: 5
- removeOnComplete: 100, removeOnFail: 50
+ connection: redis, concurrency: 5, removeOnComplete: 100, removeOnFail: 50
  }
  );
 
@@ -158,7 +157,7 @@ class CitationExtractionWorker {
  * Save extracted citations
  */
  private async saveCitations(
- documentId: string, caseId: string, string: ExtractedCitation[],
+ documentId: string, caseId: string, ExtractedCitation[],
  userId: string
  ): Promise<void> {
  if (citations.length === 0) return;
@@ -211,8 +210,7 @@ class CitationExtractionWorker {
  } catch (error) {
  console.error('Error getting extraction stats:', error);
  return {
- totalJobs: 0, completedJobs: 0
- failedJobs: 0,
+ totalJobs: 0, completedJobs: 0, failedJobs: 0,
  };
  }
  }

@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.orderBy(desc(reports.createdAt))
 			.limit(limit)
 			.offset(offset);			return json({
-				success: true, data: userReports, userReports: userReports.length
+				success: true, data: userReports.length
 			});
 		} else {
 			// Fetch all reports created by user
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 				.offset(offset);
 
 			return json({
-				success: true, data: userReports, userReports: userReports.length
+				success: true, data: userReports.length
 			});
 		}
 	} catch (err) {
@@ -128,7 +128,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true, data: updated, updated: updated.length,
+			success: true, data: updated.length,
 			message: `Updated ${updated.length} reports`
 		});
 	} catch (err) {

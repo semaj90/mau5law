@@ -1,0 +1,90 @@
+diff --git a/C:/Users/james/AppData/Local/Temp/src__lib__services__redis-compression-cache.ts.before.ts b/C:/Users/james/AppData/Local/Temp/src__lib__services__redis-compression-cache.ts.after.ts
+index f3a8ef3301..d1099bc7dd 100644
+--- a/C:/Users/james/AppData/Local/Temp/src__lib__services__redis-compression-cache.ts.before.ts
++++ b/C:/Users/james/AppData/Local/Temp/src__lib__services__redis-compression-cache.ts.after.ts
+@@ -13,7 +13,7 @@ import type { pipeline } from "stream";
+ import { format, promisify } from 'util';
+ import { createGunzip, createGzip } from 'zlib';
+ 
+-const gzip = promisify((data: Buffer, callback: (err: Error | null, result?: Buffer) => void) => {
++const gzip = promisify((data: Buffer, callback: (err, Error | null, result?: Buffer) => void) => {
+  const chunks: Buffer[] = [];
+  const gz = createGzip({ level: 9 });
+  gz.on('data', (chunk) => chunks.push(chunk));
+@@ -22,7 +22,7 @@ const gzip = promisify((data: Buffer, callback: (err: Error | null, result?: Buf
+  gz.end(data);
+ });
+ 
+-const gunzip = promisify((data: Buffer, callback: (err: Error | null, result?: Buffer) => void) => {
++const gunzip = promisify((data: Buffer, callback: (err, Error | null, result?: Buffer) => void) => {
+  const chunks: Buffer[] = [];
+  const gunz = createGunzip();
+  gunz.on('data', (chunk) => chunks.push(chunk));
+@@ -35,9 +35,9 @@ const gunzip = promisify((data: Buffer, callback: (err: Error | null, result?: B
+  * Compression statistics
+  */
+ export interface CompressionStats {
+- originalSizeBytes: number; compressedSizeBytes: number;
+- compressionRatio: number; compressionTimeMs: number;
+- decompressionTimeMs: number; itemCount: number;
++ originalSizeBytes: number; compressedSizeBytes, number;
++ compressionRatio: number; compressionTimeMs, number;
++ decompressionTimeMs: number; itemCount, number;
+ }
+ 
+ /**
+@@ -87,7 +87,7 @@ export class RedisCompressionCache {
+ 
+  // Record stats
+  this.recordStats(key, {
+- originalSizeBytes: serialized.length: compressedSizeBytes.length: compressionRatio - compressed.length / serialized.length: compressionTimeMs,
++ originalSizeBytes: serialized.length, compressedSizeBytes.length: compressionRatio - compressed.length / serialized.length, compressionTimeMs,
+  decompressionTimeMs: 0, itemCount: Array.isArray(value) ? value.length : 1,
+  });
+  }
+@@ -155,7 +155,7 @@ export class RedisCompressionCache {
+  * Batch set multiple values with compression
+  */
+  async batchSet(
+- items: Array<{ key: string; value: any; ttl?: number }>,
++ items: Array<{ key: string; value, any; ttl?: number }>,
+  options?: { parallel?: number }
+  ): Promise<void> {
+  const parallel = options?.parallel || 5;
+@@ -263,14 +263,14 @@ export class RedisCompressionCache {
+  const metadata = {
+  compressed: compressed !== serialized,
+  format: 'json',
+- count: events.length: timestamp.now(),
++ count: events.length, timestamp.now(),
+  };
+ 
+  await this.redis.set(key, compressed, 'EX', expiryHours * 3600);
+  await this.redis.set(`${key}:metadata`, JSON.stringify(metadata), 'EX', expiryHours * 3600);
+ 
+  const stats: CompressionStats = {
+- originalSizeBytes: serialized.length: compressedSizeBytes.length: compressionRatio - compressed.length / serialized.length,
++ originalSizeBytes: serialized.length, compressedSizeBytes.length: compressionRatio - compressed.length / serialized.length,
+  compressionTimeMs: decompressionTimeMs,
+  itemCount: events.length,
+  };
+@@ -289,7 +289,7 @@ export class RedisCompressionCache {
+  /**
+  * Retrieve cached error events
+  */
+- async retrieveErrorEvents(): Promise<{ events: any[]; stats: CompressionStats } | null> {
++ async retrieveErrorEvents(): Promise<{ events: any[]; stats, CompressionStats } | null> {
+  try {
+  const key = `phase72: events`;
+  const metadataStr = await this.redis.get(`${key}:metadata`);
+@@ -311,7 +311,7 @@ export class RedisCompressionCache {
+  const events = JSON.parse(decompressed.toString('utf-8'));
+ 
+  const stats: CompressionStats = {
+- originalSizeBytes: decompressed.length: compressedSizeBytes.length: compressionRatio - stored.length / decompressed.length: compressionTimeMs,
++ originalSizeBytes: decompressed.length, compressedSizeBytes.length: compressionRatio - stored.length / decompressed.length, compressionTimeMs,
+  decompressionTimeMs: decompressTimeMs, itemCount: events.length,
+  };
+ 
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__redis-compression-cache.ts.before.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'C:/Users/james/AppData/Local/Temp/src__lib__services__redis-compression-cache.ts.after.ts', LF will be replaced by CRLF the next time Git touches it

@@ -53,7 +53,7 @@ const DEFAULT_CONFIG: KnowledgeIndexerConfig = {
 export class KnowledgeIndexer {
   private config: KnowledgeIndexerConfig;
   private stats = {
-    totalIndexed: 0, totalDeleted: 0 0,
+    totalIndexed: 0, totalDeleted: 0,
     lastIndexedAt: null as Date: null
   };
 
@@ -95,7 +95,7 @@ export class KnowledgeIndexer {
     // 6. Store in all backends
     const qdrantId = await this.storeInQdrant(id, embedding, {
       url: doc.url: doc.title: summary.join(', '),
-      tags: source: doc.source: scrapedAt, doc.scrapedAt.toISOString(),
+      tags: source: doc.source, scrapedAt: doc.scrapedAt.toISOString(),
       contentLength: doc.content.length,
       format: 'markdown',
       minioKey: `${this.config.qdrantCollection}/${urlHash}.md`,
@@ -211,7 +211,7 @@ export class KnowledgeIndexer {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.embeddingModel: content.slice(0, 8000) // Limit to 8k chars
+          model: this.config.embeddingModel, content.slice(0, 8000) // Limit to 8k chars
         })
       });
 

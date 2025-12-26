@@ -124,7 +124,7 @@ export async function generateEmbeddings(text: string): Promise<number[]> {
  * Fallback to CUDA service when Ollama is unavailable
  */
 async function fallbackToCudaService(
- prompt: string, maxTokens: number, number: number
+ prompt: string, maxTokens: number, number
 ): Promise<string> {
  try {
  const cudaEndpoint = env.CUDA_SERVICE_URL || 'http://localhost:8090';

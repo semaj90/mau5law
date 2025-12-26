@@ -1,5 +1,5 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type, RequestHandler } from '@sveltejs/kit';
 import { JSDOM } from 'jsdom';
 import pdfParse from 'pdf-parse';
 import postgres from 'postgres';

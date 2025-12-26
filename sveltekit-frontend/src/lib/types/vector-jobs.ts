@@ -32,8 +32,7 @@ export interface VectorJobResult {
 export interface CUDAProcessingStatus {
  jobId: string;
  stage: 'initializing' | 'preprocessing' | 'computing' | 'postprocessing' | 'completed';
- progress: number; // 0-100
- currentOperation: string;
+ progress: number; // 0-100, currentOperation: string;
  estimatedTimeRemainingMs?: number;
  gpuUtilization?: number;
  memoryUsage?: number;

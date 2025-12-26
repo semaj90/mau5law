@@ -212,22 +212,17 @@ export const system_metrics = pgTable(
  id: serial('id').primaryKey(),
 
  // CPU metrics
- cpu_usage: integer('cpu_usage'), // 0-100
- cpu_cores: integer('cpu_cores'),
+ cpu_usage: integer('cpu_usage'), // 0-100, cpu_cores: integer('cpu_cores'),
 
  // Memory metrics
- memory_usage: integer('memory_usage'), // 0-100
- memory_total_gb: integer('memory_total_gb'),
+ memory_usage: integer('memory_usage'), // 0-100, memory_total_gb: integer('memory_total_gb'),
  memory_used_gb: integer('memory_used_gb'),
 
  // GPU metrics
- gpu_usage: integer('gpu_usage'), // 0-100
- gpu_memory_usage: integer('gpu_memory_usage'), // 0-100
- gpu_temperature: integer('gpu_temperature'), // Celsius
+ gpu_usage: integer('gpu_usage'), // 0-100, gpu_memory_usage: integer('gpu_memory_usage'), // 0-100, gpu_temperature: integer('gpu_temperature'), // Celsius
 
  // Disk metrics
- disk_usage: integer('disk_usage'), // 0-100
- disk_total_gb: integer('disk_total_gb'),
+ disk_usage: integer('disk_usage'), // 0-100, disk_total_gb: integer('disk_total_gb'),
  disk_used_gb: integer('disk_used_gb'),
 
  // Network metrics

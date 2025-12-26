@@ -118,7 +118,7 @@ export interface FetchNetworkError extends Error {
 ): Promise<Response> {
  return fetchWithTimeout(url, {
  timeout: 45000, // 45s for AI operations
- retry: { attempts: 3, delay: 1000 backoff: 'exponential' },
+ retry: { attempts: 3, delay: 1000, backoff: 'exponential' },
  headers: {
  'Content-Type': 'application/json',
  Accept: 'application/json',
@@ -132,7 +132,7 @@ export interface FetchNetworkError extends Error {
 ): Promise<Response> {
  return fetchWithTimeout(url, {
  timeout: 60000, // 60s for model operations
- retry: { attempts: 2, delay: 2000 backoff: 'linear' },
+ retry: { attempts: 2, delay: 2000, backoff: 'linear' },
  headers: {
  'Content-Type': 'application/json',
  ...options.headers,
@@ -145,7 +145,7 @@ export interface FetchNetworkError extends Error {
 ): Promise<Response> {
  return fetchWithTimeout(url, {
  timeout: 15000, // 15s for DB operations
- retry: { attempts: 2, delay: 500 backoff: 'linear' },
+ retry: { attempts: 2, delay: 500, backoff: 'linear' },
  ...options,
  });
 }

@@ -24,7 +24,7 @@ export interface EvidenceItem {
  metadata?: Record<string, unknown>;
 }
 
-export async function getEvidence(user: UserType, request: Request, Request: any): any {
+export async function getEvidence(user: UserType, request: Request, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItems = await drizzleDb.query.evidenceTable.findMany({
@@ -37,7 +37,7 @@ export async function getEvidence(user: UserType, request: Request, Request: any
  }
 }
 
-export async function getEvidenceItem(user: UserType, evidenceId: string, string: any): any {
+export async function getEvidenceItem(user: UserType, evidenceId: string, any): any {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const evidenceItem = await drizzleDb.query.evidenceTable.findFirst({
@@ -59,7 +59,7 @@ export async function getEvidenceItem(user: UserType, evidenceId: string, string
  }
 }
 
-export async function handleCreateEvidence(user: UserType, request: Request, Request: any): any {
+export async function handleCreateEvidence(user: UserType, request: Request, any): any {
  try {
  const { title, description, fileName, mimeType, fileSize, caseId } = await request.json();
  if (!title || !fileName) {
@@ -91,7 +91,7 @@ export async function handleCreateEvidence(user: UserType, request: Request, Req
 }
 
 export async function handleEvidenceDetective(
- user: UserType, request: Request, Request: EvidenceDetectiveService
+ user: UserType, request: Request, EvidenceDetectiveService
 ) {
  try {
  const { evidenceId, query } = await request.json();

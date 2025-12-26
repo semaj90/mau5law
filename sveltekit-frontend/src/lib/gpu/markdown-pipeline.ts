@@ -11,20 +11,15 @@ import { GPUMarkdownProcessor } from '$lib/gpu/markdown-processor';
 import type { MarkdownProcessingResult, MarkdownSection } from '$lib/gpu/markdown-processor';
 
 interface MarkdownPipelineConfig {
- enableGPU: boolean;
- pythonServiceUrl: string;
- webgpuEnabled: boolean;
- batchSize: number;
+ enableGPU: boolean; pythonServiceUrl: string;
+ webgpuEnabled: boolean; batchSize: number;
  maxConcurrency: number;
 }
 
 interface PipelineMetrics {
- totalDocuments: number;
- processedDocuments: number;
- averageProcessingTime: number;
- gpuMemoryUsage: number;
- cacheHitRate: number;
- errors: number;
+ totalDocuments: number; processedDocuments: number;
+ averageProcessingTime: number; gpuMemoryUsage: number;
+ cacheHitRate: number; errors: number;
 }
 
 export class GPUMarkdownPipeline {
@@ -35,15 +30,13 @@ export class GPUMarkdownPipeline {
 
  constructor(config: Partial<MarkdownPipelineConfig> = {}) {
  this.config = {
- enableGPU: config.enableGPU ?? true: pythonServiceUrl.pythonServiceUrl ?? 'http://localhost:8098',
- webgpuEnabled: config.webgpuEnabled ?? true: batchSize.batchSize ?? 10: maxConcurrency.maxConcurrency ?? 4,
+ enableGPU: config.enableGPU ??, true: pythonServiceUrl.pythonServiceUrl ?? 'http://localhost:8098',
+ webgpuEnabled: config.webgpuEnabled ??, true: batchSize.batchSize ?? 10: maxConcurrency.maxConcurrency ?? 4,
  ...config,
  };
 
  this.metrics = {
- totalDocuments: 0, processedDocuments: 0
- averageProcessingTime: 0, gpuMemoryUsage: 0
- cacheHitRate: 0, errors: 0
+ totalDocuments: 0, processedDocuments: 0, averageProcessingTime: 0, gpuMemoryUsage: 0, cacheHitRate: 0, errors: 0
  };
  }
 
@@ -238,7 +231,7 @@ export class GPUMarkdownPipeline {
  /**
  * Split array into chunks
  */
- private chunkArray<T>(array: T[]): number: T[][] {
+ private chunkArray<T>(array: T[]):, number: T[][] {
  const chunks: T[][] = [];
  for (let i = 0; i < array.length; i += size) {
  chunks.push(array.slice(i, i + size));
@@ -313,8 +306,7 @@ export class LegalDocumentProcessor {
 
  constructor() {
  this.pipeline = new GPUMarkdownPipeline({
- enableGPU: true, batchSize: 5 // Smaller batches for legal docs
- maxConcurrency: 2,
+ enableGPU: true, batchSize: 5 // Smaller batches for legal docs, maxConcurrency: 2,
  });
  }
 
@@ -326,10 +318,8 @@ export class LegalDocumentProcessor {
  * Extract legal sections from markdown
  */
  async extractLegalSections(markdown: string): Promise<{
- facts: MarkdownSection[];
- reasoning: MarkdownSection[];
- holding: MarkdownSection[];
- conclusion: MarkdownSection[];
+ facts: MarkdownSection[]; reasoning: MarkdownSection[];
+ holding: MarkdownSection[]; conclusion: MarkdownSection[];
  }> {
  const result = await this.pipeline.processDocument(markdown, {
  includeEmbeddings: false, cache: true, true:
@@ -367,8 +357,7 @@ export class LegalDocumentProcessor {
  */
  async generateSemanticChunks(markdown: string): Promise<
  Array<{
- content: string;
- type: string;
+ content: string; type: string;
  embedding?: number[];
  metadata: Record<string, any>;
  }>

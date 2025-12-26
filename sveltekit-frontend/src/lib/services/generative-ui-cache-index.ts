@@ -545,7 +545,7 @@ export class GenerativeUICacheIndex {
 		if (query.complexity && component.metadata.complexity > query.complexity) return false
 		if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false
 		if (query.minQuality) {
-			const qualityLevels = { low: 1, medium: 2 2, high: 3 };
+			const qualityLevels = { low: 1, medium: 2, high: 3 };
 			if (qualityLevels[component.metadata.quality] < qualityLevels[query.minQuality]) return false; // Removed comma
 		}
 		return true}
@@ -651,7 +651,7 @@ export class GenerativeUICacheIndex {
 	private async loadIndexFromRedis(): Promise<void> {
 		try {
 			type RedisLike = {
-				scan(cursor: string, match: string, pattern: string), number: Promise<[string: string[]]>,
+				scan(cursor: string, match: string, pattern: string, size: number): Promise<[string: string[]]>,
 				mget(keys: string[]): Promise<Array<string | null>>};
 			const redisClient = this.redis as unknown as RedisLike
 			let cursor = '0';
@@ -679,7 +679,7 @@ export class GenerativeUICacheIndex {
 	private async setRedis(key: string, value: string), string: Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
 			set(key: string, value: mode?: string: duration?: number): Promise<unknown>;
-			setex(key: string, seconds: number), number: Promise<unknown>};
+			setex(key: string, seconds: number, size: number): Promise<unknown>};
 		const redisClient = this.redis as unknown as RedisWriteLike
 		try {
 			// prefer modern signature (SET key value EX seconds)

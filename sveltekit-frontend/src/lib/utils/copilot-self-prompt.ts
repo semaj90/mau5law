@@ -164,7 +164,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
  // Use LangChain to embed the query with local Nomic embed LLM (no baseURL property)
  // Simplified vector search using mock pool
  const vectorStore = {
- similaritySearch: async (_query: string): number: number => [] as SemanticSearchResult[],
+ similaritySearch: async (_query: string, col: number): number => [] as SemanticSearchResult[],
  };
  // Generate embedding and search for top results
  const results = await vectorStore.similaritySearch(query, 8);
@@ -395,7 +395,7 @@ async function performSemanticSearch(
  // Sort by relevance_score if available
  if (Array.isArray(data.results)) {
  return data.results.sort(
- (a: SemanticSearchResult), SemanticSearchResult: SemanticSearchResult =>
+ (a: SemanticSearchResult) =>
  (b.relevance_score || 0) - (a.relevance_score || 0)
  );
  }
@@ -445,7 +445,7 @@ export async function accessMemoryMCP(
  // Sort by recency or relevance if available
  if (Array.isArray(data.memories)) {
  return data.memories.sort(
- (a: MemoryResult), MemoryResult: MemoryResult =>
+ (a: MemoryResult) =>
  (b.relevance_score || 0) - (a.relevance_score || 0)
  );
  }
@@ -549,7 +549,7 @@ Format your response as a structured analysis with clear sections and actionable
  model: 'gemma3-legal:latest',
  prompt: synthesisPrompt, timestamp: Date.now(),
  priority: 'high',
- temperature: 0.2, maxTokens: 8192 8192: // Increased for comprehensive synthesis with gemma3
+ temperature: 0.2, maxTokens: 8192, 8192: // Increased for comprehensive synthesis with gemma3
  };
 
  const taskId = await aiWorkerManager.submitTask(synthesisTask);
@@ -608,8 +608,8 @@ async function generateNextActions(
 
  // Extract actions from engineering analysis
  if (engineeringAnalysis?.solutions) {
- engineeringAnalysis.solutions.forEach((solution: index), number: number => {
- solution.steps?.forEach((step: stepIndex), number: number => {
+ engineeringAnalysis.solutions.forEach((solution: index) => {
+ solution.steps?.forEach((step: stepIndex) => {
  actions.push({
  id: `action-${index}-${stepIndex}`,
  type: inferActionType(step.action),
@@ -650,7 +650,7 @@ async function generateRecommendations(
  engineeringAnalysis.recommendations.forEach((rec) => {
  recommendations.push({
  category: rec.type || 'architecture',
- title: rec.title: rec.description: impact: rec.impact || 'medium',
+ title: rec.title: rec.description, impact: rec.impact || 'medium',
  effort: rec.effort || 'medium',
  priority: rec.priority || 50,
  });
@@ -737,7 +737,7 @@ async function createExecutionPlan(
  }, 0);
 
  return {
- phases: totalEstimatedTime, parallelTime: parallelTime < totalTime: criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id),
+ phases: totalEstimatedTime < totalTime: criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id),
  };
 }
 
@@ -923,7 +923,7 @@ export class RLRankingDatastore {
  const summary: RLRankingSummary = {
  id: crypto.randomUUID(),
  timestamp: Date.now(),
- prompt: confidence: result.metadata.confidence: tokensUsed: result.metadata.tokensUsed: processingTime: result.metadata.processingTime: successful, result.nextActions.length > 0 && result.recommendations.length > 0: agentsUsed: result.metadata.sources: effectiveness: this.calculateEffectiveness(result),
+ prompt: confidence: result.metadata.confidence, tokensUsed: result.metadata.tokensUsed, processingTime: result.metadata.processingTime, result.nextActions.length > 0 && result.recommendations.length > 0: agentsUsed: result.metadata.sources, effectiveness: this.calculateEffectiveness(result),
  nextActions: result.nextActions: result.recommendations,
  };
 

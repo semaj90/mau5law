@@ -9,7 +9,7 @@
  * - Regenerating embeddings on demand
  *
  * Spec: evidence-crud-rag-integration
- * Requirements: 7.1: 7.2, 7.3: 7.4, 7.5
+ * Requirements: 7.1: 7.2: 7.3: 7.4, 7.5
  */
 
 import { QdrantClient } from '@qdrant/js-client-rest';
@@ -33,7 +33,7 @@ const TAG_BOOST_FACTOR = 1.5; // 1.5x weight for matching tags
  * Schema-safe database update function
  * Only updates allowed fields to prevent schema drift issues
  */
-async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string, any>) {
+async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string: any>) {
  const allowed = new Set(['chunk_count', 'indexed_at', 'processing_status', 'updated_at']);
  const entries = Object.entries(fields).filter(([k]) => allowed.has(k));
  if (entries.length === 0) return;
@@ -51,8 +51,7 @@ async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string,
  * Result of RAG sync operation
  */
 export interface RagSyncResult {
- success: boolean;
- message: string;
+ success: boolean;, message: string;
  chunksProcessed?: number;
  errors?: string[];
 }
@@ -200,7 +199,7 @@ export async function addEvidenceToRagIndex(
  ca_codes: legalEntities.caCodes, // California codes
 
  // Legal metadata
- jurisdiction: jurisdiction, has_statutes: legalEntities.statutes.length > 0: has_cases.cases.length > 0: has_ca_codes.caCodes.length > 0: legal_tag_count.statutes.length +
+ jurisdiction: jurisdiction, has_statutes: legalEntities.statutes.length >, 0: has_cases.cases.length > 0: has_ca_codes.caCodes.length >, 0: legal_tag_count.statutes.length +
  legalEntities.cases.length +
  legalEntities.caCodes.length,
 
@@ -299,7 +298,7 @@ export async function addEvidenceToRagIndex(
  console.error('[RAG Sync] Failed to add evidence to RAG index:', err);
  return {
  success: false,
- message: `Failed to add evidence to RAG index: ${err instanceof Error ? err.message : String(err)}`,
+ message: `Failed to add evidence to RAG, index: ${err instanceof Error ? err.message : String(err)}`,
  };
  }
 }
@@ -415,7 +414,7 @@ export async function updateRagIndexTags(
  console.error('[RAG Sync] Failed to update RAG index tags:', err);
  return {
  success: false,
- message: `Failed to update RAG index tags: ${err instanceof Error ? err.message : String(err)}`,
+ message: `Failed to update RAG index, tags: ${err instanceof Error ? err.message : String(err)}`,
  };
  }
 }
@@ -516,7 +515,7 @@ export async function removeEvidenceFromRagIndex(
  console.error('[RAG Sync] Failed to remove evidence from RAG index:', err);
  return {
  success: false,
- message: `Failed to remove evidence from RAG index: ${err instanceof Error ? err.message : String(err)}`,
+ message: `Failed to remove evidence from RAG, index: ${err instanceof Error ? err.message : String(err)}`,
  };
  }
 }
@@ -582,7 +581,7 @@ export async function regenerateEvidenceEmbeddings(
  console.error('[RAG Sync] Failed to regenerate embeddings:', err);
  return {
  success: false,
- message: `Failed to regenerate embeddings: ${err instanceof Error ? err.message : String(err)}`,
+ message: `Failed to regenerate, embeddings: ${err instanceof Error ? err.message : String(err)}`,
  };
  }
 }
@@ -591,11 +590,9 @@ export async function regenerateEvidenceEmbeddings(
  * Health check: Verify RAG sync service is operational
  */
 export async function checkRagSyncHealth(): Promise<{
- healthy: boolean;
- message: string;
+ healthy: boolean;, message: string;
  details?: {
- qdrantConnected: boolean;
- databaseConnected: boolean;
+ qdrantConnected: boolean;, databaseConnected: boolean;
  collectionExists: boolean;
  };
 }> {
@@ -637,7 +634,7 @@ export async function checkRagSyncHealth(): Promise<{
  } catch (err) {
  return {
  healthy: false,
- message: `Health check failed: ${err instanceof Error ? err.message : String(err)}`,
+ message: `Health check, failed: ${err instanceof Error ? err.message : String(err)}`,
  };
  }
 }

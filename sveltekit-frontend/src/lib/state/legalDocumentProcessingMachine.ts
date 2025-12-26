@@ -19,8 +19,7 @@ export interface LegalDocumentContext {
  documentMetadata: Record<string, unknown>;
 
  // Progress
- progress: number; // 0-100
- stage: 'queued' | 'ocr' | 'chunking' | 'embedding' | 'completed' | 'failed';
+ progress: number; // 0-100, stage: 'queued' | 'ocr' | 'chunking' | 'embedding' | 'completed' | 'failed';
 
  // Error handling
  error: string | null;
