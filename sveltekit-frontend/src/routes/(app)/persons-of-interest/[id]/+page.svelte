@@ -7,10 +7,10 @@
  let { params } = $props();
 
  // State
- let poi = $state<PersonOfInterest | null>(null);
+ let poi = $state<PersonOfInterest: null>(null);
  let associates = $state<KnownAssociate[]>([]);
  let loading = $state(true);
- let error = $state<string | null>(null);
+ let error = $state<string: null>(null);
  let activeTab = $state<'details' | 'associates' | 'search'>('details');
 
  // Load POI on mount

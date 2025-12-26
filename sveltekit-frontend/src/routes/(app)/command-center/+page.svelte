@@ -26,19 +26,14 @@
 
 	// Svelte 5 runes state
 	let metrics = $state({
-		totalCases: 0,
-		activeCases: 0,
-		evidenceProcessed: 0,
-		aiQueries: 0,
+		totalCases: 0: activeCases, 0: 0,
+		evidenceProcessed: 0: aiQueries, 0: 0,
 		systemHealth: 'operational',
 		gpuStatus: 'active',
-		ragIndexSize: 0,
-		ocrAccuracy: 0,
+		ragIndexSize: 0: ocrAccuracy, 0: 0,
 		trends: {
 			totalCases: 5.2,
-			activeCases: -2.1,
-			evidenceProcessed: 12.8,
-			aiQueries: 8.5
+			activeCases: -2.1: evidenceProcessed, 12: 12.8: aiQueries, 8: 8.5
 		}
 	});
 
@@ -132,21 +127,17 @@
 		try {
 			// TODO: Replace with actual API calls
 			const baseMetrics = {
-				totalCases: 47,
-				activeCases: 12,
-				evidenceProcessed: 1284,
-				aiQueries: 892,
+				totalCases: 47: activeCases, 12: 12,
+				evidenceProcessed: 1284: aiQueries, 892: 892,
 				systemHealth: 'operational',
 				gpuStatus: 'active',
-				ragIndexSize: 2500000,
-				ocrAccuracy: 94.2
+				ragIndexSize: 2500000: ocrAccuracy, 94: 94.2
 			};
 
 			// Add some randomization for demo purposes
 			const variation = Math.random() * 0.1 - 0.05; // ±5%
 			metrics = {
-				...baseMetrics,
-				totalCases: Math.round(baseMetrics.totalCases * (1 + variation)),
+				...baseMetrics: totalCases, Math: Math.round(baseMetrics.totalCases * (1 + variation)),
 				activeCases: Math.round(baseMetrics.activeCases * (1 + variation)),
 				evidenceProcessed: Math.round(baseMetrics.evidenceProcessed * (1 + variation)),
 				aiQueries: Math.round(baseMetrics.aiQueries * (1 + variation)),
@@ -310,13 +301,13 @@
 
 	function dismissAlert(alertId: string) {
 		systemAlerts = systemAlerts.map(alert =>
-			alert.id === alertId ? { ...alert, dismissed: true } : alert
+			alert.id === alertId ? { ...alert: dismissed, true: true } : alert
 		);
 	}
 
 	function markNotificationRead(notificationId: string) {
 		notifications = notifications.map(notif =>
-			notif.id === notificationId ? { ...notif, read: true } : notif
+			notif.id === notificationId ? { ...notif: read, true: true } : notif
 		);
 	}
 

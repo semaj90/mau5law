@@ -18,6 +18,7 @@ import { glob } from 'glob';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { promisify } from 'util';
+import { scanEnvImports } from './env-import-guard.mjs';
 
 const execAsync = promisify(exec);
 
@@ -29,6 +30,13 @@ const args = process.argv.slice(2);
 const DRY_RUN = !args.includes('--apply');
 const VERIFY = args.includes('--verify');
 const PATTERN_FILTER = args.find(a => a.startsWith('--pattern='))?.split('=')[1];
+const RISK_FILTER = args.find(a => a.startsWith('--risk='))?.split('=')[1]; // safe | medium | high
+const RISK_ORDER = { safe: 0, medium: 1, high: 2 };
+const RISK_LEVEL = (RISK_FILTER || 'high').toLowerCase();
+const RISK_THRESHOLD = RISK_ORDER[RISK_LEVEL] ?? RISK_ORDER.high;
+const FORCE_ENV = args.includes('--force-env') || args.includes('--force');
+
+const ENV_QUARANTINE_PATH = path.join('src', 'lib', 'env');
 
 // ============================================================================
 // PATTERN REGISTRY - Add new patterns here
@@ -486,6 +494,22 @@ const PATTERNS = [
 	},
 ];
 
+// Pattern metadata overlay for risk-tiering and guards
+const PATTERN_METADATA = {
+	'db-import': { scope: 'ts', risk: 'safe', requires: ['fileExists:src/lib/server/db.ts'], patchKind: 'replace' },
+	'drizzle-enum': { scope: 'ts', risk: 'medium', requires: ['contains:cases.status'], patchKind: 'replace' },
+	'drizzle-active-cases': { scope: 'ts', risk: 'medium', requires: ['contains:cases.status'], patchKind: 'codemod' },
+	'get-user-id': { scope: 'ts', risk: 'medium', requires: ['contains:locals'], patchKind: 'codemod' },
+	'get-ollama-endpoint-import': { scope: 'ts', risk: 'safe', requires: [], patchKind: 'replace' },
+	'svelte-rest-route': { scope: 'svelte', risk: 'safe', requires: ['contains:<style'], patchKind: 'replace' },
+	'superforms-adapter': { scope: 'ts', risk: 'medium', requires: ['contains:sveltekit-superforms'], patchKind: 'replace' },
+	'sveltekit-error': { scope: 'ts', risk: 'medium', requires: ['contains:throw error('], patchKind: 'codemod' },
+	'union-const': { scope: 'ts', risk: 'safe', requires: [], patchKind: 'replace' },
+	'type-import-runtime': { scope: 'ts', risk: 'safe', requires: [], patchKind: 'replace' },
+	'lucia-session-adapter': { scope: 'ts', risk: 'high', requires: ['contains:DrizzlePostgreSQLAdapter'], patchKind: 'manual' },
+	'env-vars-global': { scope: 'ts', risk: 'high', requires: ['notContains:$env/'], patchKind: 'replace' }
+};
+
 // Load patterns from JSON
 try {
     const patternsPath = path.join(__dirname, 'patterns.json');
@@ -496,6 +520,8 @@ try {
         id: p.id,
         description: p.description || p.id,
         priority: p.priority || 10,
+        risk: p.risk || 'medium', // Default to medium risk
+        scope: p.scope || 'ts',
         test: new RegExp(p.regex, 'g'),
         files: '**/*.{ts,js,svelte}',
         excludes: GLOBAL_EXCLUDES,
@@ -512,7 +538,13 @@ try {
     dynamicPatterns.forEach(dp => {
         const existingIndex = PATTERNS.findIndex(p => p.id === dp.id);
         if (existingIndex !== -1) {
-            PATTERNS[existingIndex] = dp;
+            // Merge metadata but keep custom fix function if it exists
+            PATTERNS[existingIndex] = {
+                ...PATTERNS[existingIndex],
+                risk: dp.risk,
+                scope: dp.scope,
+                priority: dp.priority
+            };
         } else {
             PATTERNS.push(dp);
         }
@@ -520,6 +552,21 @@ try {
 } catch (e) {
     console.warn('Could not load patterns.json:', e.message);
 }
+
+const DEFAULT_PATTERN_META = {
+	risk: 'medium',
+	scope: 'ts',
+	requires: [],
+	patchKind: 'replace'
+};
+
+PATTERNS.forEach(p => {
+	const meta = PATTERN_METADATA[p.id] || {};
+	p.risk = meta.risk || p.risk || DEFAULT_PATTERN_META.risk;
+	p.scope = meta.scope || p.scope || DEFAULT_PATTERN_META.scope;
+	p.requires = meta.requires || p.requires || DEFAULT_PATTERN_META.requires;
+	p.patchKind = meta.patchKind || p.patchKind || DEFAULT_PATTERN_META.patchKind;
+});
 
 // ============================================================================
 // EXECUTION ENGINE
@@ -536,26 +583,38 @@ class PatternFixer {
 			patternMatches: {},
 			errors: []
 		};
+		this.tainted = false;
+		this.envViolations = [];
+		this.requirementCache = new Map();
+		this.riskLevel = RISK_LEVEL;
 	}
 
 	async run() {
 		console.log('🔧 Phase 79: Deterministic Pattern Auto-Fixer\n');
 		console.log(`Mode: ${DRY_RUN ? 'DRY RUN' : 'APPLY CHANGES'}\n`);
+		console.log(`Risk tier: <= ${RISK_LEVEL}\n`);
 
 		if (PATTERN_FILTER) {
 			console.log(`Filter: ${PATTERN_FILTER}\n`);
 		}
 
-		// Sort patterns by priority
+		const riskRank = (p) => RISK_ORDER[p.risk] ?? RISK_ORDER.medium;
+
+		// Sort patterns by priority and filter by risk
 		const patterns = PATTERNS
 			.filter(p => !PATTERN_FILTER || p.id === PATTERN_FILTER)
+			.filter(p => riskRank(p) <= RISK_THRESHOLD)
 			.sort((a, b) => a.priority - b.priority);
 
 		console.log(`📋 Active Patterns (${patterns.length}):`);
 		patterns.forEach(p => {
-			console.log(`  ${p.priority}. [${p.id}] ${p.description}`);
+			console.log(`  ${p.priority}. [${p.id}] ${p.description} (Risk: ${p.risk || 'unknown'})`);
 		});
 		console.log('');
+
+		if (!DRY_RUN) {
+			await this.runPreEnvGate();
+		}
 
 		// Process each pattern
 		for (const pattern of patterns) {
@@ -567,8 +626,105 @@ class PatternFixer {
 			await this.verifyAndRollback();
 		}
 
+		if (!DRY_RUN) {
+			await this.runPostEnvGate();
+		}
+
 		// Print summary
 		await this.printSummary();
+	}
+
+	async runPreEnvGate() {
+		const scan = await scanEnvImports({ root: ROOT });
+		if (scan.violations.length > 0 && !FORCE_ENV) {
+			console.error('❌ Forbidden $env imports detected before apply. Run emergency-cleanup-env-imports.mjs or --force-env to proceed.');
+			scan.violations.slice(0, 10).forEach(v => {
+				console.error(` - ${path.relative(ROOT, v.file)}:${v.line} ${v.snippet}`);
+			});
+			process.exit(1);
+		}
+
+		if (scan.violations.length > 0) {
+			console.warn(`⚠️  Proceeding with ${scan.violations.length} pre-existing env violations (force enabled)`);
+		} else {
+			console.log('✅ Env quarantine clean before apply');
+		}
+	}
+
+	async runPostEnvGate() {
+		const scan = await scanEnvImports({ root: ROOT });
+		if (scan.violations.length === 0) {
+			console.log('✅ Env quarantine clean after apply');
+			return;
+		}
+
+		this.tainted = true;
+		this.envViolations = scan.violations;
+		console.warn(`⚠️  Detected ${scan.violations.length} forbidden $env imports after apply. Running cleanup...`);
+
+		try {
+			await execAsync('node scripts/emergency-cleanup-env-imports.mjs', { cwd: ROOT });
+			console.warn('🧹 Ran emergency-cleanup-env-imports.mjs to self-heal env spray');
+		} catch (err) {
+			console.error('❌ Failed to run emergency cleanup:', err.message);
+		}
+	}
+
+	async requirementsSatisfied(pattern, content, filePath) {
+		if (!pattern.requires || pattern.requires.length === 0) return true;
+
+		for (const requirement of pattern.requires) {
+			const [kind, ...rest] = requirement.split(':');
+			const value = rest.join(':');
+			if (!value) continue;
+
+			if (kind === 'fileExists') {
+				if (this.requirementCache.has(value)) {
+					if (!this.requirementCache.get(value)) return false;
+					continue;
+				}
+				const exists = await fs
+					.access(path.join(ROOT, value))
+					.then(() => true)
+					.catch(() => false);
+				this.requirementCache.set(value, exists);
+				if (!exists) return false;
+			} else if (kind === 'contains' && !content.includes(value)) {
+				return false;
+			} else if (kind === 'notContains' && content.includes(value)) {
+				return false;
+			} else if (kind === 'within') {
+				const rel = path.relative(path.join(ROOT, value), filePath);
+				if (rel.startsWith('..')) return false;
+			}
+		}
+
+		return true;
+	}
+
+	async applyWithIdempotence(pattern, content, filePath) {
+		const first = await pattern.fix(content, filePath);
+		if (!first) return null;
+
+		const second = await pattern.fix(first, filePath);
+		if (second && second !== first) {
+			const third = await pattern.fix(second, filePath);
+			if (third && third !== second) {
+				this.stats.errors.push({ pattern: pattern.id, error: 'Non-idempotent output detected (third pass still changes)' });
+				return null;
+			}
+			this.stats.patternMatches[pattern.id].nonIdempotent = (this.stats.patternMatches[pattern.id].nonIdempotent || 0) + 1;
+			return third || second;
+		}
+
+		// One more guard to ensure stability
+		const guard = await pattern.fix(first, filePath);
+		if (guard && guard !== first) {
+			this.stats.errors.push({ pattern: pattern.id, error: 'Non-idempotent output detected (guard pass changed content)' });
+			return null;
+		}
+
+		return first;
 	}
 
 	async applyPattern(pattern) {
@@ -605,23 +761,45 @@ class PatternFixer {
 	async processFile(filePath, pattern) {
 		try {
 			const content = await fs.readFile(filePath, 'utf-8');
+			const testRegex = new RegExp(pattern.test.source, pattern.test.flags);
 
 			// Quick test before expensive processing
-			if (!pattern.test.test(content)) {
+			if (!testRegex.test(content)) {
+				return;
+			}
+
+			if (!(await this.requirementsSatisfied(pattern, content, filePath))) {
 				return;
 			}
 
 			this.stats.filesScanned++;
 
-			// Apply fix
-			const fixed = await pattern.fix(content, filePath);
+			// Apply fix with idempotence guard
+			const fixed = await this.applyWithIdempotence(pattern, content, filePath);
 
-			if (fixed) {
+			if (fixed && fixed !== content) {
 				const relativePath = path.relative(ROOT, filePath);
+
+				// ENV QUARANTINE CHECK
+				// If the fix introduces an $env import, ensure it's in the allowed directory
+				if ((fixed.includes("from '$env") || fixed.includes('from "$env')) &&
+					!content.includes("from '$env") && !content.includes('from "$env')) {
+
+					// Normalize paths for comparison
+					const normalizedPath = relativePath.split(path.sep).join('/');
+					const normalizedQuarantine = ENV_QUARANTINE_PATH.split(path.sep).join('/');
+
+					if (!normalizedPath.startsWith(normalizedQuarantine)) {
+						console.log(`  ⚠️  Skipped (Env Quarantine): ${relativePath} attempts to import $env directly.`);
+						return;
+					}
+				}
+
 				console.log(`  ✏️  ${relativePath}`);
 
 				this.stats.patternMatches[pattern.id].files++;
 				this.stats.patternMatches[pattern.id].changes++;
+				this.stats.filesModified++;
 
 				// Calculate hashes
 				const beforeHash = createHash('sha256').update(content).digest('hex');
@@ -641,6 +819,9 @@ class PatternFixer {
 					this.fixLog.push({
 						runId: this.runId,
 						patternId: pattern.id,
+						risk: pattern.risk,
+						scope: pattern.scope,
+						patchKind: pattern.patchKind,
 						file: relativePath,
 						status: 'applied',
 						beforeHash,
@@ -745,6 +926,13 @@ class PatternFixer {
 			console.log('\n⚠️  Errors:');
 			this.stats.errors.forEach(e => {
 				console.log(`  ${e.pattern}: ${e.error}`);
+			});
+		}
+
+		if (this.tainted) {
+			console.log('\n⚠️  Env gate TAINTED: cleanup ran for forbidden $env imports');
+			this.envViolations.slice(0, 5).forEach(v => {
+				console.log(`  ${path.relative(ROOT, v.file)}:${v.line} ${v.snippet}`);
 			});
 		}
 

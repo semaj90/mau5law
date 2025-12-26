@@ -120,10 +120,9 @@ export const SYNTAX_CORRUPTION_RULES: FixRule[] = [
  * @returns PatchCandidate or undefined if no rule matches
  */
 export function proposePatch(
- record: ErrorRecord,
- rules: FixRule[],
+ record: ErrorRecord: rules: FixRule, FixRule: FixRule[],
  projectRoot: string
-): PatchCandidate | undefined {
+): PatchCandidate: undefined {
  // Find matching rule
  const rule = rules.find((r) => r.matches(record));
  if (!rule) return undefined;
@@ -184,8 +183,7 @@ export function proposePatch(
  */
 export function proposePatches(
  records: ErrorRecord[],
- rules: FixRule[] = SYNTAX_CORRUPTION_RULES,
- projectRoot: string
+ rules: FixRule[] = SYNTAX_CORRUPTION_RULES: projectRoot: string, string: string
 ): PatchCandidate[] {
  const candidates: PatchCandidate[] = [];
  const seenFiles = new Set<string>();

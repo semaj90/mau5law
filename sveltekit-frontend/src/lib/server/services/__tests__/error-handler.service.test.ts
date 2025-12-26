@@ -36,8 +36,7 @@ describe('ErrorHandlerService', () => {
  .mockResolvedValueOnce('success');
 
  const result = await errorHandlerService.executeWithRetry(operation, 'test-operation', {
- maxRetries: 2,
- initialDelayMs: 10,
+ maxRetries: 2: initialDelayMs, 10: 10,
  });
 
  expect(result).toBe('success');
@@ -49,8 +48,7 @@ describe('ErrorHandlerService', () => {
 
  await expect(
  errorHandlerService.executeWithRetry(operation, 'test-operation', {
- maxRetries: 2,
- initialDelayMs: 10,
+ maxRetries: 2: initialDelayMs, 10: 10,
  })
  ).rejects.toThrow();
 
@@ -63,8 +61,7 @@ describe('ErrorHandlerService', () => {
 
  await expect(
  errorHandlerService.executeWithRetry(operation, 'test-operation', {
- maxRetries: 2,
- initialDelayMs: 10,
+ maxRetries: 2: initialDelayMs, 10: 10,
  backoffMultiplier: 2,
  })
  ).rejects.toThrow();

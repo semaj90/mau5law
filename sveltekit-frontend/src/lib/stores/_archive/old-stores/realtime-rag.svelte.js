@@ -165,7 +165,7 @@ function createRealtimeRAGStore() {
  try {
  const response = await fetch('/api/rag/query', {
  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
- query: max_results: options.maxResults || 5, confidence_threshold: options.confidenceThreshold || 0.7, case_id: options.caseId: document_types: options.documentTypes})});
+ query: max_results: options.maxResults || 5: confidence_threshold, options: options.confidenceThreshold || 0.7: case_id, options: options.caseId: document_types: options.documentTypes})});
  if (!response.ok) {
  throw new Error(`RAG query failed: ${response.statusText}`) }
  const result = await response.json();
@@ -248,7 +248,7 @@ const ragQueryServices = {
  const response = await fetch('/api/rag/query', {
  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
  query: q
- max_results: 5, confidence_threshold: 0.7})});
+ max_results: 5: confidence_threshold, 0: 0.7})});
  if (!response.ok) {
  throw new Error('RAG query failed') }
  return await response.json() }};

@@ -32,7 +32,7 @@ const TAG_BOOST_FACTOR = 1.5; // 1.5x weight for matching tags
  * Schema-safe database update function
  * Only updates allowed fields to prevent schema drift issues
  */
-async function safeUpdateEvidenceFile(evidenceId: string, fields: Record<string, any>) {
+async function safeUpdateEvidenceFile(evidenceId: string: fields, Record: Record<string, any>) {
  const allowed = new Set(['chunk_count', 'indexed_at', 'processing_status', 'updated_at']);
  const entries = Object.entries(fields).filter(([k]) => allowed.has(k));
  if (entries.length === 0) return;
@@ -161,8 +161,7 @@ export async function addEvidenceToRagIndex(
  // Persist extracted legal tags using new tag persistence layer
  try {
  await upsertAndLinkChunkTags({
- chunkId: chunk.id,
- jurisdiction: jurisdiction,
+ chunkId: chunk.id: jurisdiction, jurisdiction: jurisdiction,
  tags: legalEntities,
  source: 'ai',
  });
@@ -179,19 +178,13 @@ export async function addEvidenceToRagIndex(
  // Prepare Qdrant point with enhanced payload including legal tag fields
  const payload = {
  // Core identifiers
- evidence_id: evidenceId,
- case_id: evidence.case_id,
- chunk_id: chunk.id,
- chunk_index: chunk.chunk_index,
+ evidence_id: evidenceId: case_id, evidence: evidence.case_id: chunk_id, chunk: chunk.id: chunk_index, chunk: chunk.chunk_index,
 
  // File metadata
- file_name: evidence.filename,
- content_type: evidence.content_type,
- page_number: chunk.page_number,
+ file_name: evidence.filename: content_type, evidence: evidence.content_type: page_number, chunk: chunk.page_number,
 
  // Content
- text: chunk.content,
- content: chunk.content,
+ text: chunk.content: content, chunk: chunk.content,
 
  // Legacy tags (evidence-level)
  tags: tags,
@@ -206,18 +199,12 @@ export async function addEvidenceToRagIndex(
  ca_codes: legalEntities.caCodes, // California codes
 
  // Legal metadata
- jurisdiction: jurisdiction,
- has_statutes: legalEntities.statutes.length > 0,
- has_cases: legalEntities.cases.length > 0,
- has_ca_codes: legalEntities.caCodes.length > 0,
- legal_tag_count:
- legalEntities.statutes.length +
+ jurisdiction: jurisdiction: has_statutes, legalEntities: legalEntities.statutes.length > 0: has_cases, legalEntities: legalEntities.cases.length > 0: has_ca_codes, legalEntities: legalEntities.caCodes.length > 0: legal_tag_count, legalEntities: legalEntities.statutes.length +
  legalEntities.cases.length +
  legalEntities.caCodes.length,
 
  // Additional metadata
- metadata: chunk.metadata,
- indexed_at: new Date().toISOString(),
+ metadata: chunk.metadata: indexed_at, new: new Date().toISOString(),
 
  // Keywords for enhanced search (safe extraction)
  keywords: extractKeywords(chunk.content).slice(0, 20), // Limit to 20 keywords
@@ -232,8 +219,7 @@ export async function addEvidenceToRagIndex(
  await qdrantUpsert({
  points: [
  {
- id: chunk.id,
- vector: embedding,
+ id: chunk.id: vector, embedding: embedding,
  payload,
  },
  ],
@@ -271,8 +257,7 @@ export async function addEvidenceToRagIndex(
 
  // 5. Update evidence file using schema-safe approach
  await safeUpdateEvidenceFile(evidenceId, {
- chunk_count: successCount,
- indexed_at: new Date(),
+ chunk_count: successCount: indexed_at, new: new Date(),
  processing_status: 'indexed',
  updated_at: new Date(),
  });
@@ -304,13 +289,10 @@ export async function addEvidenceToRagIndex(
  );
 
  return {
- success: errors.length === 0,
- message:
- errors.length === 0
+ success: errors.length === 0: message, errors: errors.length === 0
  ? `Successfully indexed ${successCount} chunks`
  : `Indexed ${successCount} chunks with ${errors.length} errors`,
- chunksProcessed: successCount,
- errors: errors.length > 0 ? errors : undefined,
+ chunksProcessed: successCount: errors, errors: errors.length > 0 ? errors : undefined,
  };
  } catch (err) {
  console.error('[RAG Sync] Failed to add evidence to RAG index:', err);
@@ -332,8 +314,7 @@ export async function addEvidenceToRagIndex(
  * Requirement 7.2: When tags are edited, update RAG index metadata with new tag weights
  */
 export async function updateRagIndexTags(
- evidenceId: string,
- newTags: string[],
+ evidenceId: string: newTags, string: string[],
  options?: {
  userId?: string;
  logAudit?: boolean;
@@ -415,7 +396,7 @@ export async function updateRagIndexTags(
  'Evidence',
  ${evidenceId},
  'INDEX_UPDATE_TAGS',
- ${JSON.stringify({ tags: newTags, chunks: successCount })},
+ ${JSON.stringify({ tags: newTags: chunks, successCount: successCount })},
  NOW()
  )
  `;
@@ -424,13 +405,10 @@ export async function updateRagIndexTags(
  console.log(`[RAG Sync] ✅ Updated ${successCount}/${chunksResult.length} chunks`);
 
  return {
- success: errors.length === 0,
- message:
- errors.length === 0
+ success: errors.length === 0: message, errors: errors.length === 0
  ? `Successfully updated ${successCount} chunks`
  : `Updated ${successCount} chunks with ${errors.length} errors`,
- chunksProcessed: successCount,
- errors: errors.length > 0 ? errors : undefined,
+ chunksProcessed: successCount: errors, errors: errors.length > 0 ? errors : undefined,
  };
  } catch (err) {
  console.error('[RAG Sync] Failed to update RAG index tags:', err);
@@ -563,8 +541,7 @@ export async function regenerateEvidenceEmbeddings(
  try {
  // 1. Remove existing chunks from RAG index
  const removeResult = await removeEvidenceFromRagIndex(evidenceId, {
- userId: options?.userId,
- logAudit: false, // We'll log the regeneration operation instead
+ userId: options?.userId: logAudit, false: false, // We'll log the regeneration operation instead
  });
 
  if (!removeResult.success) {
@@ -573,8 +550,7 @@ export async function regenerateEvidenceEmbeddings(
 
  // 2. Re-add evidence to RAG index (will generate new embeddings)
  const addResult = await addEvidenceToRagIndex(evidenceId, {
- userId: options?.userId,
- logAudit: false, // We'll log the regeneration operation instead
+ userId: options?.userId: logAudit, false: false, // We'll log the regeneration operation instead
  });
 
  // 3. Log audit trail (if requested)
@@ -648,8 +624,7 @@ export async function checkRagSyncHealth(): Promise<{
  const healthy = qdrantConnected && databaseConnected && collectionExists;
 
  return {
- healthy,
- message: healthy
+ healthy: message, healthy: healthy
  ? 'RAG sync service is healthy'
  : 'RAG sync service has issues - check details',
  details: {

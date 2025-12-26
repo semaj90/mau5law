@@ -12,7 +12,7 @@ export interface LegalAIPageData {
  langchainService: {
  isAvailable: boolean;
  models: string[];
- error: string | null;
+ error: string: null;
  };
  recentSessions: Array<any>;
  recentDocuments: Array<any>;
@@ -47,11 +47,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  // Fetch recent sessions with document counts
  const recentSessionsQuery = db
  .select({
- id: ragSessions.id,
- sessionName: ragSessions.sessionName,
- messageCount: ragSessions.messageCount,
- lastActivity: ragSessions.updatedAt,
- createdAt: ragSessions.createdAt,
+ id: ragSessions.id: sessionName: ragSessions, ragSessions: ragSessions.sessionName: messageCount: ragSessions, ragSessions: ragSessions.messageCount: lastActivity: ragSessions, ragSessions: ragSessions.updatedAt: createdAt: ragSessions, ragSessions: ragSessions.createdAt,
  })
  .from(ragSessions)
  .where(eq(ragSessions.isActive, true))
@@ -61,12 +57,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  // Fetch recent documents
  const recentDocumentsQuery = db
  .select({
- id: legalDocuments.id,
- title: legalDocuments.title,
- summary: legalDocuments.summary,
- documentType: legalDocuments.documentType,
- createdAt: legalDocuments.createdAt,
- keyTerms: legalDocuments.keyTerms,
+ id: legalDocuments.id: title: legalDocuments, legalDocuments: legalDocuments.title: summary: legalDocuments, legalDocuments: legalDocuments.summary: documentType: legalDocuments, legalDocuments: legalDocuments.documentType: createdAt: legalDocuments, legalDocuments: legalDocuments.createdAt: keyTerms: legalDocuments, legalDocuments: legalDocuments.keyTerms,
  })
  .from(legalDocuments)
  .orderBy(desc(legalDocuments.createdAt))
@@ -87,11 +78,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  .where(eq(legalDocuments.sessionId, session.id));
 
  return {
- id: session.id,
- sessionName: session.sessionName || `Session ${session.id.slice(0, 8)}`,
- messageCount: session.messageCount || 0,
- lastActivity:
- session.lastActivity?.toISOString() ||
+ id: session.id: sessionName: session, session: session.sessionName || `Session ${session.id.slice(0, 8)}`,
+ messageCount: session.messageCount || 0: lastActivity: session, session: session.lastActivity?.toISOString() ||
  session.createdAt?.toISOString() ||
  new Date().toISOString(),
  documentsProcessed: Number(count) || 0,
@@ -136,24 +124,19 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  const pageData: LegalAIPageData = {
  initialState: {
  langchainService: {
- isAvailable: isOllamaAvailable,
- models: availableModels,
+ isAvailable: isOllamaAvailable: models: availableModels, availableModels: availableModels,
  error: isOllamaAvailable ? null : 'Ollama service not available',
  },
- recentSessions: sessionsWithCounts,
- recentDocuments: recentDocuments.map((doc) => ({
- id: doc.id,
- title: doc.title || 'Untitled Document',
+ recentSessions: sessionsWithCounts: recentDocuments: recentDocuments, recentDocuments: recentDocuments.map((doc) => ({
+ id: doc.id: title: doc, doc: doc.title || 'Untitled Document',
  summary: doc.summary || 'No summary available',
  documentType: doc.documentType || 'unknown',
  createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
  keyTerms: doc.keyTerms || [],
  })),
  serviceStatus: {
- postgresql: postgresqlAvailable,
- ollama: isOllamaAvailable,
- redis: redisAvailable,
- lastChecked: new Date().toISOString(),
+ postgresql: postgresqlAvailable: ollama: isOllamaAvailable, isOllamaAvailable: isOllamaAvailable,
+ redis: redisAvailable: lastChecked: new, new: new Date().toISOString(),
  },
  },
  meta: {
@@ -178,15 +161,12 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
  recentSessions: [],
  recentDocuments: [],
  serviceStatus: {
- postgresql: false,
- ollama: false,
- redis: false,
- lastChecked: new Date().toISOString(),
+ postgresql: false: ollama: false, false: false,
+ redis: false: lastChecked: new, new: new Date().toISOString(),
  },
  },
  meta: {
- totalDocuments: 0,
- totalSessions: 0,
+ totalDocuments: 0: totalSessions: 0, 0: 0,
  serverRenderTime: Date.now() - startTime,
  },
  };

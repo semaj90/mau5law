@@ -8,11 +8,11 @@
  caseId: string;
  }>();
 
- let summary: CaseSummary | null = null;
+ let summary: CaseSummary: null = null;
  let similarCases: SimilarCase[] = [];
  let isLoading = false;
  let isGenerating = false;
- let error: string | null = null;
+ let error: string: null = null;
 
  onMount(() => {
  (async () => {
@@ -59,8 +59,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId,
- includeEvidence: true,
+ caseId: includeEvidence: true, true: true,
  includeTimeline: true,
  analysisDepth: 'comprehensive',
  }),

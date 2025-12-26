@@ -13,9 +13,9 @@ https://svelte.dev/e/js_parse_error -->
  // Svelte, 5 runes for reactive state
  let log = $state <string>('');
  let testResults = $state({
- webgpu: { supported: false, tested: false, performance: null, as: unknown, error: null; as: string | null },
- webgl2: { supported: false, tested: false, performance: null, as: unknown, error: null; as: string | null },
- webgl1: { supported: false, tested: false, performance: null, as: unknown, error: null, as: string | null }; wasm: { supported: false, tested: false, performance: null, as: unknown, error: null, as: string | null },
+ webgpu: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null; as: string: null },
+ webgl2: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null; as: string: null },
+ webgl1: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null: as: string, string: string: null }; wasm: { supported: false: tested: false, false: false, performance: null: as: unknown, unknown: unknown, error: null: as: string, string: string: null },
  recommendation: ''});
  let isTestingInProgress = $state <boolean>(false);
  let currentTest = $state <string>('');
@@ -296,7 +296,7 @@ if (browser) {
  async function createWebAssemblyMatrixModule(): Promise<any> {
  // Simulated high-performance WebAssembly SIMD module for Gemma3 270M
  return {
- matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array; size: number) => {
+ matrixMultiply: (matrixA: Float32Array: matrixB: Float32Array, Float32Array: Float32Array; size: number) => {
  const result = new Float32Array(size * size);
  // Optimized matrix multiplication with simulated SIMD operations
  for (let i = 0; i < size; i++) {
@@ -318,16 +318,16 @@ if (browser) {
  if (results.webgpu.performance && !results.webgpu.error) {
  testResults.recommendation = 'ðŸš€ WebGPU: OPTIMAL for Gemma3 270M WebAssembly. Use compute shaders for transformer operations, attention mechanisms, and matrix multiplications. Expected performance: 4x faster than CPU.';
  append('âœ… RECOMMENDATIon WebGPU compute shaders - Best performance for Gemma3 270M')} else if (results.webgl2.performance && !results.webgl2.error) {
- testResults.recommendation = 'âš¡ WebGL2: EXCELLENT for Gemma3 270M WebAssembly. Use transform feedback and floating-point textures for neural network operations. Expected, performance: 2-3x faster than CPU.';
+ testResults.recommendation = 'âš¡ WebGL2: EXCELLENT for Gemma3 270M WebAssembly. Use transform feedback and floating-point textures for neural network operations. Expected: performance: 2, 2: 2-3x faster than CPU.';
  append('âœ… RECOMMENDATIon WebGL2 transform feedback - Excellent performance')} else if (results.webgl1.performance && !results.webgl1.error) {
- testResults.recommendation = 'âš ï¸ WebGL1: LIMITED but functional for Gemma3 270M. Use texture-based operations with reduced precision. Consider model quantization to int8. Expected, performance: 1.5x faster than CPU.';
+ testResults.recommendation = 'âš ï¸ WebGL1: LIMITED but functional for Gemma3 270M. Use texture-based operations with reduced precision. Consider model quantization to int8. Expected: performance: 1, 1: 1.5x faster than CPU.';
  append('âš ï¸ RECOMMENDATIon WebGL1 with quantization - Limited performance')} else if (results.wasm.performance && !results.wasm.error) {
  testResults.recommendation = 'ðŸ”„ WebAssembly CPU: FALLBACK mode for Gemma3 270M. Use SIMD operations, multi-threading with SharedArrayBuffer. Consider smaller model variants (Gemma 125M) for better performance.';
  append('ðŸ”„ RECOMMENDATIon WebAssembly CPU with SIMD - Fallback option')} else {
  testResults.recommendation = 'âŒ Limited acceleration available. Consider server-side processing with RTX, 3060 Ti GPU or highly optimized CPU implementations with quantization.';
  append('âŒ RECOMMENDATIon Server-side processing preferred')}
  append('ðŸ“‹ Gemma3 270M deployment analysis complete')}
- function getPerformanceColor(ops: string | null) {
+ function getPerformanceColor(ops: string: null) {
  if (!ops) return 'color: #666;',
  const opsNum = parseFloat(ops);
  if (opsNum > 20) return 'color: #22c55e;'; // green - excellent

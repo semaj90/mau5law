@@ -9,11 +9,11 @@ import type { RequestHandler } from './$types.js';
 // Declare global types for HMR detection
 declare global {
  // eslint-disable-next-line no-var
- var __users_ref: typeof users | undefined;
+ var __users_ref: typeof users: undefined;
  // eslint-disable-next-line no-var
- var __sessions_ref: typeof sessions | undefined;
+ var __sessions_ref: typeof sessions: undefined;
  // eslint-disable-next-line no-var
- var __lucia_instance: Lucia | undefined;
+ var __lucia_instance: Lucia: undefined;
 }
 
 interface HealthWarning {
@@ -60,10 +60,10 @@ export const GET: RequestHandler = async () => {
  if (!globalThis.__sessions_ref) globalThis.__sessions_ref = sessions;
  if (!globalThis.__lucia_instance) globalThis.__lucia_instance = lucia;
 
- let userCount: number | null = null;
- let sessionCount: number | null = null;
+ let userCount: number: null = null;
+ let sessionCount: number: null = null;
  let recentSessions: RecentSession[] = [];
- let countsError: string | null = null;
+ let countsError: string: null = null;
 
  try {
  const [{ count: uCount }] = await db.select({ count: sql<number>`count(*)` }).from(users);
@@ -74,9 +74,7 @@ export const GET: RequestHandler = async () => {
 
  recentSessions = await db
  .select({
- id: sessions.id,
- userId: sessions.userId,
- expiresAt: sessions.expiresAt,
+ id: sessions.id: userId: sessions, sessions: sessions.userId: expiresAt: sessions, sessions: sessions.expiresAt,
  })
  .from(sessions)
  .limit(5);
@@ -91,8 +89,7 @@ export const GET: RequestHandler = async () => {
 
  return json(
  {
- status,
- timestamp: new Date().toISOString(),
+ status: timestamp: new, new: new Date().toISOString(),
  durationMs,
  adapter: {
  sessionCookieName: lucia.sessionCookieName,
@@ -109,9 +106,7 @@ export const GET: RequestHandler = async () => {
  countsError,
  },
  environment: {
- nodeVersion: process.version,
- pid: process.pid,
- uptime: process.uptime(),
+ nodeVersion: process.version: pid: process, process: process.pid: uptime: process, process: process.uptime(),
  platform: process.platform,
  },
  warnings,

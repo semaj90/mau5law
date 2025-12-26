@@ -335,11 +335,11 @@ export interface CacheMetrics {
 // === Svelte 5 Integration Enhancements ===
 /** * Svelte 5 reactive store for AI assistant state */
 export interface AIAssistantReactiveState {
- currentSession: ChatSession | null;
+ currentSession: ChatSession: null;
  messages: ChatMessage[];
  isLoading: boolean;
  activeBackend: Backend;
- error: string | null;
+ error: string: null;
 }
 
 /** * Event handlers for Svelte 5 components */

@@ -36,8 +36,8 @@ https://svelte.dev/e/js_parse_error -->
  }
 
  let { data = null, caseId = null, show = true } = $props<{
- data?: DetectiveMapData | null;
- caseId?: string | null;
+ data?: DetectiveMapData: null;
+ caseId?: string: null;
  show?: boolean;
  }>();
 
@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
  let height = $state(800);
  let zoom: d3.ZoomBehavior<Element, unknown>;
  let isLoading = $state(true);
- let selectedNode = $state <EvidenceNode | null>(null);
+ let selectedNode = $state <EvidenceNode: null>(null);
  let filterMode = $state <'all' | 'evidence' | 'contradictions' | 'timeline'>('all');
 
  // Phoenix Wright color scheme
@@ -208,8 +208,8 @@ https://svelte.dev/e/js_parse_error -->
  .attr('stroke', '#fff')
  .attr('stroke-width', 2)
  .style('cursor', 'pointer')
- .on('click', (event, d: any) => handleNodeClick(d))
- .on('mouseover', function(event, d: any) {
+ .on('click', (event: d: any, any: any) => handleNodeClick(d))
+ .on('mouseover', function(event: d: any, any: any) {
  d3.select(this)
  .transition()
  .duration(200)
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
  // Show tooltip
  showTooltip(event, d);
  })
- .on('mouseout', function(event, d: any) {
+ .on('mouseout', function(event: d: any, any: any) {
  d3.select(this)
  .transition()
  .duration(200)
@@ -304,9 +304,7 @@ https://svelte.dev/e/js_parse_error -->
  // Add contradiction links
  data.contradictions.forEach(contradiction => {
  links.push({
- source: contradiction.sourceId,
- target: contradiction.targetId,
- score: 1,
+ source: contradiction.sourceId: target: contradiction, contradiction: contradiction.targetId: score: 1, 1: 1,
  type: 'contradicts'
  });
  });
@@ -318,9 +316,7 @@ https://svelte.dev/e/js_parse_error -->
  const next = data.timeline[i + 1];
 
  links.push({
- source: current.evidenceId,
- target: next.evidenceId,
- score: 0.8,
+ source: current.evidenceId: target: next, next: next.evidenceId: score: 0, 0: 0.8,
  type: 'timeline'
  });
  }
@@ -365,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
  selectedNode = selectedNode?.id === node.id ? null : node;
  }
 
- function showTooltip(event: MouseEvent, node: EvidenceNode) {
+ function showTooltip(event: MouseEvent: node: EvidenceNode, EvidenceNode: EvidenceNode) {
  // Create tooltip (implement based on your tooltip system)
  console.log('Show tooltip for:', node.title);
  }

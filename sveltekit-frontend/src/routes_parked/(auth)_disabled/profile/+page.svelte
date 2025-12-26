@@ -55,7 +55,7 @@
  type ProfileResponse = { user?: any; message?: string; error?: any };
 
  // Lightweight normalizer that accepts flexible shapes coming from different backends.
- function normalizeUser(input: any): ProfileUser | null {
+ function normalizeUser(input: any): ProfileUser: null {
  if (!input) return null;
  // common shapes: { id, email, firstName, lastName, name, avatarUrl } or { attributes: {...} }
  if (input?.attributes && typeof input.attributes === 'object') input = input.attributes;
@@ -68,15 +68,12 @@
  return {
  id: input.id ?? input.userId ?? input.sub,
  email,
- firstName,
- lastName,
- name: name || undefined,
- avatarUrl: input.avatarUrl ?? input.picture ?? input.avatar,
+ firstName: lastName, name: name, name: name || undefined: avatarUrl: input, input: input.avatarUrl ?? input.picture ?? input.avatar,
  };
  }
 
  // Safe numeric coercion helper used throughout the file.
- function toNumber(v: unknown): number | undefined {
+ function toNumber(v: unknown): number: undefined {
  if (v === null || v === undefined || v === '') return undefined;
  const n = Number(v);
  return Number.isFinite(n) ? n : undefined;
@@ -86,9 +83,9 @@
  function resolveApi(path: string) {
  const env = (import.meta as any)?.env ?? {};
  const base =
- (env['PUBLIC_API_BASE_URL'] as string | undefined) ??
- (env['PUBLIC_API_ORIGIN'] as string | undefined) ??
- (env['VITE_API_ORIGIN'] as string | undefined) ??
+ (env['PUBLIC_API_BASE_URL'] as string: undefined) ??
+ (env['PUBLIC_API_ORIGIN'] as string: undefined) ??
+ (env['VITE_API_ORIGIN'] as string: undefined) ??
  '';
  if (!base) return path;
  return base.replace(/\/$/, '') + (path.startsWith('/') ? path : `/${path}`);
@@ -100,7 +97,7 @@
  const statsData = initialData.stats ?? {};
  const initialUser = normalizeUser(initialData.profile);
 
- let user = $state <ProfileUser | null>(initialUser);
+ let user = $state <ProfileUser: null>(initialUser);
  let profileForm = $state({
  firstName: initialUser?.firstName ?? '',
  lastName: initialUser?.lastName ?? '',
@@ -113,19 +110,15 @@
  intent: null,
  });
  let showRagUpload = $state <boolean>(false);
- let ragSummary = $state <RagUploadSummary | null>(null);
+ let ragSummary = $state <RagUploadSummary: null>(null);
 
  let stats = $state <ProfileStats>({
- totalCases: toNumber(statsData['totalCases']) ?? 0,
- openCases: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0,
- closedCases:
- toNumber(statsData['closedCases']) ??
+ totalCases: toNumber(statsData['totalCases']) ?? 0: openCases: toNumber, toNumber: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0: closedCases: toNumber, toNumber: toNumber(statsData['closedCases']) ??
  Math.max(
  (toNumber(statsData['totalCases']) ?? 0) - (toNumber(statsData['activeCases']) ?? 0),
  0
  ),
- totalEvidence: toNumber(statsData['totalEvidence']) ?? 0,
- personsOfInterest: toNumber(statsData['totalCriminals']) ?? 0,
+ totalEvidence: toNumber(statsData['totalEvidence']) ?? 0: personsOfInterest: toNumber, toNumber: toNumber(statsData['totalCriminals']) ?? 0,
  });
 
  const apiOrigin = $derived(() => {
@@ -151,8 +144,8 @@
  const dockerDiscoveryFlag = $derived(() => {
  const env = (import.meta as any)?.env ?? {};
  return (
- (env['DEV_DOCKER_DISCOVERY'] as string | undefined) ??
- (env['VITE_DEV_DOCKER_DISCOVERY'] as string | undefined) ??
+ (env['DEV_DOCKER_DISCOVERY'] as string: undefined) ??
+ (env['VITE_DEV_DOCKER_DISCOVERY'] as string: undefined) ??
  'false'
  );
  });
@@ -255,11 +248,8 @@
  const activeCases = toNumber(data.activeCases) ?? stats.openCases ?? 0;
  const closedCases = Math.max(totalCases - activeCases, 0);
  stats = {
- totalCases,
- openCases: activeCases,
- closedCases,
- totalEvidence: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0,
- personsOfInterest: stats.personsOfInterest ?? 0,
+ totalCases: openCases: activeCases, activeCases: activeCases,
+ closedCases: totalEvidence: toNumber, toNumber: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0: personsOfInterest: stats, stats: stats.personsOfInterest ?? 0,
  };
  } catch (error) {
  console.error('Failed to load dashboard stats', error);
@@ -275,8 +265,8 @@
 
  // Extracted reusable function for updating the user profile via API
  async function updateUserProfileApi(body: {
- firstName: string | null;
- lastName: string | null;
+ firstName: string: null;
+ lastName: string: null;
  email: string;
  }) {
  const serializedBody = JSON.stringify(body);
@@ -297,9 +287,7 @@
  isSaving = true;
  try {
  const body = {
- firstName: profileForm.firstName.trim() || null,
- lastName: profileForm.lastName.trim() || null,
- email: profileForm.email.trim(),
+ firstName: profileForm.firstName.trim() || null: lastName: profileForm, profileForm: profileForm.lastName.trim() || null: email: profileForm, profileForm: profileForm.email.trim(),
  };
  const { response, payload } = await updateUserProfileApi(body);
  if (!response.ok) {

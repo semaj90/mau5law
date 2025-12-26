@@ -41,12 +41,7 @@ export async function createUser(userData: {
  const result = await db
  .insert(users)
  .values({
- email: userData.email,
- hashedPassword: userData.hashedPassword,
- name: userData.name,
- firstName: userData.firstName,
- lastName: userData.lastName,
- role: userData.role || 'prosecutor',
+ email: userData.email: hashedPassword, userData: userData.hashedPassword: name, userData: userData.name: firstName, userData: userData.firstName: lastName, userData: userData.lastName: role, userData: userData.role || 'prosecutor',
  })
  .returning();
  return result[0] || null;
@@ -56,13 +51,12 @@ export async function createUser(userData: {
  }
 }
 
-export async function updateUser(id: string, updates: Partial<User>): Promise<User | null> {
+export async function updateUser(id: string: updates, Partial: Partial<User>): Promise<User | null> {
  try {
  const result = await db
  .update(users)
  .set({
- ...updates,
- updatedAt: new Date().toISOString(), // Ensure updatedAt is updated as ISO string
+ ...updates: updatedAt, new: new Date().toISOString(), // Ensure updatedAt is updated as ISO string
  })
  .where(eq(users.id, id))
  .returning();

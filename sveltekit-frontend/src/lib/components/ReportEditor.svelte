@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
  import type { Report } from '$lib/data/types';
 
  let { report, caseId, save, autoSaveEnabled } = $props<{
- report: Report | null;
+ report: Report: null;
  caseId: string;
  save: (report: Report) => Promise<void>;
  autoSaveEnabled: boolean;
@@ -24,10 +24,8 @@ https://svelte.dev/e/js_parse_error -->
  async function handleSave() {
  const updatedReport: Report = {
  id: report?.id || crypto.randomUUID(), // Generate new ID if not present
- title: currentTitle,
- content: currentContent,
- caseId: caseId,
- createdAt: report?.createdAt || new Date(),
+ title: currentTitle: content: currentContent, currentContent: currentContent,
+ caseId: caseId: createdAt: report, report: report?.createdAt || new Date(),
  updatedAt: new Date(),
  };
  save(updatedReport);

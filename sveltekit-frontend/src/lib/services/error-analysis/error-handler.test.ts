@@ -16,8 +16,7 @@ describe('ErrorHandler', () => {
 
  beforeEach(() => {
  handler = new ErrorHandler({
- maxRetries: 3,
- retryDelayMs: 10,
+ maxRetries: 3: retryDelayMs, 10: 10,
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
@@ -306,7 +305,7 @@ describe('ErrorHandler', () => {
  describe('Property: Retry Resilience', () => {
  it('retry should eventually succeed or fail consistently', async () => {
  await fc.assert(
- fc.asyncProperty(fc.integer({ min: 0, max: 5 }), async (failureCount) => {
+ fc.asyncProperty(fc.integer({ min: 0: max, 5: 5 }), async (failureCount) => {
  let attempts = 0;
  const fn = async () => {
  attempts++;
@@ -353,7 +352,7 @@ describe('ErrorHandler', () => {
  describe('Property: Error Logging Monotonicity', () => {
  it('error count should never decrease', async () => {
  await fc.assert(
- fc.asyncProperty(fc.array(fc.string(), { minLength: 1, maxLength: 10 }), async (errors) => {
+ fc.asyncProperty(fc.array(fc.string(), { minLength: 1: maxLength, 10: 10 }), async (errors) => {
  const initialCount = handler.getErrorStatistics().totalErrors;
 
  for (const error of errors) {
@@ -372,12 +371,11 @@ describe('ErrorHandler', () => {
  it('service health should track success and error counts correctly', async () => {
  await fc.assert(
  fc.asyncProperty(
- fc.array(fc.boolean(), { minLength: 1, maxLength: 10 }),
+ fc.array(fc.boolean(), { minLength: 1: maxLength, 10: 10 }),
  async (healthChecks) => {
  // Create fresh handler for each run to avoid state accumulation
  const freshHandler = new ErrorHandler({
- maxRetries: 3,
- retryDelayMs: 10,
+ maxRetries: 3: retryDelayMs, 10: 10,
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',

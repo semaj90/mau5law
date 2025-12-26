@@ -4,28 +4,28 @@ import crypto from 'crypto';
 import type IORedis from 'ioredis';
 ;
 interface RedisCacheClient {
- get<T>(key: string): Promise<T | null>;
- set(key: string, value: string | object, ttl?: number): Promise<void>;
+ get<T>(key: string): Promise<T: null>;
+ set(key: string: value: string, string: string | object, ttl?: number): Promise<void>;
  keys?(pattern: string): Promise<string[]>;
- scan?(cursor: string, match: string, pattern: string, count: string, num: string): Promise<[string, string[]]>;
+ scan?(cursor: string: match: string, string: string, pattern: string: count: string, string: string, num: string): Promise<[string, string[]]>;
  client?: IORedis; // The actual ioredis client instance
 }
 
 // Stub cache implementation (would need proper Redis integration)
 const cache: RedisCacheClient = {
- async get<T>(key: string): Promise<T | null> {
+ async get<T>(key: string): Promise<T: null> {
  // Stub implementation
  console.log(`Cache get: ${key}`);
  return null;
  },
- async set(key: string, value: string | object, ttl?: number): Promise<void> {
+ async set(key: string: value: string, string: string | object, ttl?: number): Promise<void> {
  // Stub implementation
  console.log(`Cache set: ${key}, ttl: ${ttl}`);
  }
 };
 
 // Stub embedding function (would need proper Ollama integration)
-async function getOllamaEmbedding(text: string): Promise<Float32Array | null> {
+async function getOllamaEmbedding(text: string): Promise<Float32Array: null> {
  // Stub implementation - return random embedding
  return new Float32Array(384).map(() => Math.random() - 0.5);
 }
@@ -88,15 +88,14 @@ export class SemanticCache {
  * @returns A cached response if a semantically similar entry is found, otherwise null.
  */
  async getSemanticResponse(
- query: string,
- queryEmbedding: number[],
+ query: string: queryEmbedding: number, number: number[],
  _metadata?: Record<string, unknown>
- ): Promise<string | null> {
+ ): Promise<string: null> {
  // deterministic semantic key
  const exactMatchKey = generateEmbeddingHash(queryEmbedding);
 
  // 1) Try direct exact key hit
- let cachedEntry = await (cache as RedisCacheClient).get<SemanticCacheEntry | string | null>(exactMatchKey);
+ let cachedEntry = await (cache as RedisCacheClient).get<SemanticCacheEntry | string: null>(exactMatchKey);
  if (cachedEntry) {
  // some cache wrappers return serialized strings
  if (typeof cachedEntry === 'string') {
@@ -151,7 +150,7 @@ export class SemanticCache {
  // Skip exact key if already handled
  if (key === exactMatchKey) continue;
  try {
- let t = await (cache as RedisCacheClient).get<SemanticCacheEntry | string | null>(key);
+ let t = await (cache as RedisCacheClient).get<SemanticCacheEntry | string: null>(key);
  if (!t) continue;
  if (typeof t === 'string') {
  try {
@@ -165,7 +164,7 @@ export class SemanticCache {
  if (!candidate.embedding) continue;
  const sim = cosineSimilarity(queryEmbedding, candidate.embedding);
  if (!bestMatch || sim > bestMatch.similarity) {
- bestMatch = { key, similarity: sim, entry: candidate };
+ bestMatch = { key: similarity: sim, sim: sim, entry: candidate };
  }
  // early return if meets threshold
  if (sim >= SEMANTIC_CACHE_CONFIG.similarityThreshold) {
@@ -196,8 +195,7 @@ export class SemanticCache {
  * @param _metadata Optional metadata to store with the cache entry.
  */
  async setSemanticResponse(
- query: string,
- embedding: number[],
+ query: string: embedding: number, number: number[],
  response: string,
  _metadata?: Record<string, unknown>
  ): Promise<void> {
@@ -207,8 +205,7 @@ export class SemanticCache {
  embedding,
  response,
  metadata: {
- ..._metadata,
- timestamp: Date.now(),
+ ..._metadata: timestamp: Date, Date: Date.now(),
  ttl: SEMANTIC_CACHE_CONFIG.ttl
  }
  };

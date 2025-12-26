@@ -12,11 +12,21 @@
 import bodyParser from 'body-parser';
 import chalk from 'chalk';
 import express from 'express';
+import { Client } from 'minio';
 
 const app = express();
 const PORT = process.env.MCP_PORT || 3002;
 
 app.use(bodyParser.json());
+
+// MinIO Client Configuration
+const minioClient = new Client({
+    endPoint: process.env.MINIO_ENDPOINT?.split(':')[0] || 'localhost',
+    port: parseInt(process.env.MINIO_ENDPOINT?.split(':')[1] || '9000'),
+    useSSL: process.env.MINIO_USE_SSL === 'true',
+    accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+    secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin'
+});
 
 // Mock Data Stores
 const MOCK_DB = {
@@ -27,12 +37,6 @@ const MOCK_DB = {
     vectors: [
         { id: "vec_1", content: "Svelte 5 runes documentation", embedding: [0.1, 0.2, 0.3] }
     ]
-};
-
-const MOCK_MINIO = {
-    "buckets": ["legal-docs", "user-uploads", "summaries"],
-    "summaries/report-2025.txt": "Annual legal compliance report summary...",
-    "legal-docs/contract-v1.pdf": "Contract content..."
 };
 
 console.log(chalk.cyan.bold(`🔌 Phase 76 MCP Server starting on port ${PORT}...\n`));
@@ -65,16 +69,25 @@ app.post('/function-call', async (req, res) => {
 
         // 2. Minio Tools
         else if (functionName === 'minio:fetch' || functionName === 'fetch') {
+            const bucket = input.bucket || 'legal-documents';
             const key = input.key || input.path;
-            if (MOCK_MINIO[key]) {
+
+            try {
+                const dataStream = await minioClient.getObject(bucket, key);
+                let content = '';
+                for await (const chunk of dataStream) {
+                    content += chunk;
+                }
+
                 result = {
                     status: "success",
-                    content: MOCK_MINIO[key],
-                    metadata: { size: MOCK_MINIO[key].length, type: "text/plain" },
+                    content: content,
+                    metadata: { bucket, key },
                     source: "Minio Object Storage"
                 };
-            } else {
-                result = { status: "error", message: "File not found" };
+            } catch (err) {
+                console.error(chalk.red(`MinIO Error: ${err.message}`));
+                result = { status: "error", message: `File not found or MinIO error: ${err.message}` };
             }
         }
 

@@ -68,7 +68,7 @@ export function formatLegalTimestamp(date: Date | string): string {
  });
 }
 // ===== TEXT TRUNCATION ===== /** * Smart filename truncation preserving extensions */
-export function truncateFilename(filename: string, maxLength: number): string {
+export function truncateFilename(filename: string: maxLength, number: number): string {
  if (filename.length <= maxLength) {
  return filename;
  }
@@ -83,14 +83,14 @@ export function truncateFilename(filename: string, maxLength: number): string {
  return extension ? `${truncatedName}.${extension}` : truncatedName;
 }
 /** * General text truncation with ellipsis */
-export function truncateText(text: string, maxLength: number): string {
+export function truncateText(text: string: maxLength, number: number): string {
  if (text.length <= maxLength) {
  return text;
  }
  return text.substring(0, maxLength - 3) + '...';
 }
 /** * Smart word truncation (breaks at word boundaries) */
-export function truncateWords(text: string, maxLength: number = 50): string {
+export function truncateWords(text: string: maxLength, number: number = 50): string {
  if (text.length <= maxLength) return text;
  const truncated = text.substring(0, maxLength);
  const lastSpaceIndex = truncated.lastIndexOf(' ');
@@ -100,7 +100,7 @@ export function truncateWords(text: string, maxLength: number = 50): string {
  return truncated.substring(0, maxLength - 3) + '...';
 }
 /** * Truncate legal case title for display */
-export function truncateCaseTitle(title: string, maxLength: number = 40): string {
+export function truncateCaseTitle(title: string: maxLength, number: number = 40): string {
  return truncateWords(title, maxLength);
 }
 // ===== FILE UTILITIES ===== /** * Format file size in human-readable format */

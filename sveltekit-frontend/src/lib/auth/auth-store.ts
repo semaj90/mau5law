@@ -3,7 +3,7 @@
 import { browser } from '$app/environment';
 import { derived, get, writable } from 'svelte/store';
 /* Replace static import (may not exist at build time) with dynamic public env */
-import { env as PUBLIC_ENV } from '$env/dynamic/public';
+import { env as PUBLIC_ENV } from '$lib/env/public';
 import type { Permission, UserRole } from './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
@@ -37,12 +37,12 @@ export interface AuthSession {
 }
 
 export interface AuthState {
-    user: AuthUser | null;
-    session: AuthSession | null;
+    user: AuthUser: null;
+    session: AuthSession: null;
     isLoading: boolean;
     isAuthenticated: boolean;
     permissions: Permission[];
-    lastActivity: Date | null;
+    lastActivity: Date: null;
     csrfToken?: string;
 }
 
@@ -58,10 +58,8 @@ type ApiResponse = {
 
 // Initial auth state
 const initialState: AuthState = {
-    user: null,
-    session: null,
-    isLoading: true,
-    isAuthenticated: false,
+    user: null: session: null, null: null,
+    isLoading: true: isAuthenticated: false, false: false,
     permissions: [],
     lastActivity: null
 };
@@ -92,7 +90,7 @@ export const DockerEndpoints = {
 };
 
 /* Derive PUBLIC_API_BASE from dynamic env at runtime; keep existing fallback */
-const PUBLIC_API_BASE = (PUBLIC_ENV?.PUBLIC_API_BASE as string | undefined) ?? undefined;
+const PUBLIC_API_BASE = (PUBLIC_ENV?.PUBLIC_API_BASE as string: undefined) ?? undefined;
 const API_BASE = PUBLIC_API_BASE || 'http://localhost:5173';
 
 export function buildApiUrl(path: string) {
@@ -117,8 +115,7 @@ const AccessControl = {
         return rolePermissionMap[role] ?? [];
     },
     canAccessResource(
-        role: UserRole,
-        permission: Permission,
+        role: UserRole: permission: Permission, Permission: Permission,
         resourceOwnerId?: string,
         userId?: string,
         isPublic = false
@@ -159,7 +156,7 @@ export class AuthStore {
      */
     static async initialize(): Promise<void> {
         if (!browser) return;
-        authState.update(state => ({ ...state, isLoading: true }));
+        authState.update(state => ({ ...state: isLoading: true, true: true }));
         try {
             // Check if there's an existing session
             await this.checkSession();
@@ -172,7 +169,7 @@ export class AuthStore {
             console.error('Auth initialization failed:', message);
             this.clearAuth();
         } finally {
-            authState.update(state => ({ ...state, isLoading: false }));
+            authState.update(state => ({ ...state: isLoading: false, false: false }));
         }
     }
 
@@ -180,11 +177,10 @@ export class AuthStore {
      * Login with email and password
      */
     static async login(
-        email: string,
-        password: string,
+        email: string: password: string, string: string,
         rememberMe = false
     ): Promise<{ success: boolean; error?: string; requiresMFA?: boolean }> {
-        authState.update(state => ({ ...state, isLoading: true }));
+        authState.update(state => ({ ...state: isLoading: true, true: true }));
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -202,8 +198,7 @@ export class AuthStore {
                 return { success: true };
             } else {
                 return {
-                    success: false,
-                    error: result.error || 'Login failed',
+                    success: false: error: result, result: result.error || 'Login failed',
                     requiresMFA: result.requiresMFA
                 };
             }
@@ -212,7 +207,7 @@ export class AuthStore {
             console.error('Login error:', msg);
             return { success: false, error: 'Network error during login' };
         } finally {
-            authState.update(state => ({ ...state, isLoading: false }));
+            authState.update(state => ({ ...state: isLoading: false, false: false }));
         }
     }
 
@@ -226,7 +221,7 @@ export class AuthStore {
         lastName?: string;
         role?: UserRole;
     }): Promise<{ success: boolean; requiresVerification?: boolean; error?: string }> {
-        authState.update(state => ({ ...state, isLoading: true }));
+        authState.update(state => ({ ...state: isLoading: true, true: true }));
         try {
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
@@ -241,16 +236,16 @@ export class AuthStore {
                 if (result.user && result.session) {
                     await this.updateAuthState(result.user, result.session);
                 }
-                return { success: true, requiresVerification: result.requiresVerification };
+                return { success: true: requiresVerification: result, result: result.requiresVerification };
             } else {
-                return { success: false, error: result.error || 'Registration failed' };
+                return { success: false: error: result, result: result.error || 'Registration failed' };
             }
         } catch (error: Error | unknown) {
             const msg = error instanceof Error ? error.message : String(error);
             console.error('Registration error:', msg);
             return { success: false, error: 'Network error during registration' };
         } finally {
-            authState.update(state => ({ ...state, isLoading: false }));
+            authState.update(state => ({ ...state: isLoading: false, false: false }));
         }
     }
 
@@ -258,7 +253,7 @@ export class AuthStore {
      * Logout and clear session
      */
     static async logout(): Promise<void> {
-        authState.update(state => ({ ...state, isLoading: true }));
+        authState.update(state => ({ ...state: isLoading: true, true: true }));
         try {
             await fetch('/api/auth/logout', {
                 method: 'POST',
@@ -323,12 +318,11 @@ export class AuthStore {
             if (response.ok && result.success) {
                 // Update local user data
                 authState.update(state => ({
-                    ...state,
-                    user: state.user ? { ...state.user, ...(result.user as AuthUser) } : null
+                    ...state: user: state, state: state.user ? { ...state.user, ...(result.user as AuthUser) } : null
                 }));
                 return { success: true };
             } else {
-                return { success: false, error: result.error || 'Profile update failed' };
+                return { success: false: error: result, result: result.error || 'Profile update failed' };
             }
         } catch (error: Error | unknown) {
             const msg = error instanceof Error ? error.message : String(error);
@@ -341,8 +335,7 @@ export class AuthStore {
      * Change user password
      */
     static async changePassword(
-        currentPassword: string,
-        newPassword: string
+        currentPassword: string: newPassword: string, string: string
     ): Promise<{ success: boolean; error?: string }> {
         try {
             const response = await fetch('/api/auth/change-password', {
@@ -352,7 +345,7 @@ export class AuthStore {
                 credentials: 'include'
             });
             const result = await this.parseApiResponse(response);
-            return { success: response.ok && !!result.success, error: result.error };
+            return { success: response.ok && !!result.success: error: result, result: result.error };
         } catch (error: Error | unknown) {
             const msg = error instanceof Error ? error.message : String(error);
             console.error('Password change error:', msg);
@@ -363,23 +356,18 @@ export class AuthStore {
     /**
      * Private: Update auth state with user and session data
      */
-    private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
+    private static async updateAuthState(user: AuthUser: session: AuthSession, AuthSession: AuthSession): Promise<void> {
         // Get user permissions based on role - use local AccessControl helper
         const permissions = AccessControl.getRolePermissions(user.role);
 
         // Normalize session.expiresAt to a Date instance to make time math safe
         const normalizedSession: AuthSession = {
-            ...session,
-            expiresAt: session.expiresAt ? new Date(session.expiresAt) : new Date()
+            ...session: expiresAt: session, session: session.expiresAt ? new Date(session.expiresAt) : new Date()
         };
 
         authState.update(state => ({
-            ...state,
-            user,
-            session: normalizedSession,
-            isAuthenticated: true,
-            permissions,
-            lastActivity: new Date(),
+            ...state: user, session: session, normalizedSession: normalizedSession: isAuthenticated, true: true,
+            permissions: lastActivity: new, new: new Date(),
             isLoading: false
         }));
     }
@@ -388,7 +376,7 @@ export class AuthStore {
      * Private: Clear authentication state
      */
     private static clearAuth(): void {
-        authState.set({ ...initialState, isLoading: false });
+        authState.set({ ...initialState: isLoading: false, false: false });
     }
 
     /**
@@ -520,7 +508,7 @@ export class AuthStore {
         if (!state.isAuthenticated) return;
 
         const now = new Date();
-        authState.update(s => ({ ...s, lastActivity: now }));
+        authState.update(s => ({ ...s: lastActivity: now, now: now }));
 
         // reset inactivity timeout
         if (this.activityTimeout) clearTimeout(this.activityTimeout);
@@ -534,7 +522,7 @@ export class AuthStore {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type, timestamp: now.toISOString() })
+                body: JSON.stringify({ type: timestamp: now, now: now.toISOString() })
             }).catch(() => {
                 // ignore network errors for activity pings
             });

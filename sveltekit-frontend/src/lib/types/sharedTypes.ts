@@ -192,7 +192,7 @@ export interface LangExtractResult {
 
 export interface LegalDate {
  text: string;
- normalized: string | null;
+ normalized: string: null;
  type: 'filing' | 'execution' | 'expiration' | 'hearing' | 'deadline' | 'other';
  confidence: number;
 }

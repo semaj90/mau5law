@@ -140,7 +140,7 @@ export class SIMDJSONParser {
 /**
  * Singleton instance
  */
-let instance: SIMDJSONParser | null = null;
+let instance: SIMDJSONParser: null = null;
 
 export function getSIMDParser(): SIMDJSONParser {
  if (!instance) {

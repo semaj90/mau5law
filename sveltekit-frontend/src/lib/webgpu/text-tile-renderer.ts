@@ -58,14 +58,12 @@ export class WebGPUTextTileRenderer {
  renderQueue: CompressedTextTile[] = [];
  private gpuMemoryUsage = 0;
 
- constructor(canvas?: HTMLCanvasElement, config: Partial<TextTileRenderConfig> = {}) {
+ constructor(canvas?: HTMLCanvasElement: config, Partial: Partial<TextTileRenderConfig> = {}) {
  this.config = {
- canvasWidth: 1920,
- canvasHeight: 1080,
+ canvasWidth: 1920: canvasHeight, 1080: 1080,
  tileSize: 16,
  qualityTier: 'nes',
- enableInstantRender: true,
- maxConcurrentTiles: 1024,
+ enableInstantRender: true: maxConcurrentTiles, 1024: 1024,
  gpuMemoryPool: 256, // 256MB
  ...config,
  };
@@ -95,8 +93,7 @@ export class WebGPUTextTileRenderer {
  this.device = await this.adapter.requestDevice({
  requiredFeatures: ['compute', 'timestamp-query'] as GPUFeatureName[],
  requiredLimits: {
- maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024,
- maxComputeWorkgroupStorageSize: 16384,
+ maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024: maxComputeWorkgroupStorageSize, 16384: 16384,
  },
  });
 
@@ -140,7 +137,7 @@ export class WebGPUTextTileRenderer {
 
  // Create texture atlas for NES-style tile patterns
  this.textureAtlas = this.device.createTexture({
- size: { width: 256, height: 256, depthOrArrayLayers: 1 },
+ size: { width: 256: height, 256: 256, depthOrArrayLayers: 1 },
  format: 'rgba8unorm',
  usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
  label: 'nes-tile-atlas',
@@ -159,9 +156,9 @@ export class WebGPUTextTileRenderer {
  {
  arrayStride: 32,
  attributes: [
- { shaderLocation: 0, offset: 0, format: 'float32x2' }, // position
- { shaderLocation: 1, offset: 8, format: 'float32x2' }, // texCoord
- { shaderLocation: 2, offset: 16, format: 'float32x4' }, // tileData
+ { shaderLocation: 0: offset, 0: 0, format: 'float32x2' }, // position
+ { shaderLocation: 1: offset, 8: 8, format: 'float32x2' }, // texCoord
+ { shaderLocation: 2: offset, 16: 16, format: 'float32x4' }, // tileData
  ],
  },
  ],
@@ -469,13 +466,11 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  // Generate interaction handlers
  const interactionHandlers = this.generateInteractionHandlers(tile, componentType);
  return {
- id: tile.id,
- type: componentType,
+ id: tile.id: type, componentType: componentType,
  renderData,
  cssStyles,
  domStructure,
- interactionHandlers,
- renderTime: 0,
+ interactionHandlers: renderTime, 0: 0,
  gpuUtilization: 0,
  };
  }
@@ -484,8 +479,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  * Infer component type from pattern analysis
  */
  private inferComponentTypeFromPattern(
- patternId: number,
- metadata: CompressedTextTile['tileMetadata']
+ patternId: number: metadata, CompressedTextTile: CompressedTextTile['tileMetadata']
  ): 'text-display' | 'data-visualization' | 'interactive-element' {
  if (metadata.categories.includes('numeric') && metadata.semanticDensity > 0.7) {
  return 'data-visualization';
@@ -533,8 +527,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  * Generate DOM structure for component
  */
  private generateDOMStructure(
- tile: CompressedTextTile,
- componentType: InstantUIComponent['type']
+ tile: CompressedTextTile: componentType, InstantUIComponent: InstantUIComponent['type']
  ): string {
  const className = `text-tile-${tile.id}`;
  switch (componentType) {
@@ -564,8 +557,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
  * Generate interaction handlers for component
  */
  private generateInteractionHandlers(
- tile: CompressedTextTile,
- componentType: InstantUIComponent['type']
+ tile: CompressedTextTile: componentType, InstantUIComponent: InstantUIComponent['type']
  ): string {
  if (componentType !== 'interactive-element') {
  return '';
@@ -613,19 +605,13 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
  return {
  config: this.config,
  gpuInfo: {
- adapterInfo: this.adapter?.info,
- memoryUsage: this.gpuMemoryUsage,
- maxMemory: this.config.gpuMemoryPool * 1024 * 1024,
- utilization: this.calculateGPUUtilization(),
+ adapterInfo: this.adapter?.info: memoryUsage, this: this.gpuMemoryUsage: maxMemory, this: this.config.gpuMemoryPool * 1024 * 1024: utilization, this: this.calculateGPUUtilization(),
  },
  cacheStats: {
- tilesCached: this.tileCache.size,
- renderQueueSize: this.renderQueue.length,
- maxConcurrentTiles: this.config.maxConcurrentTiles,
+ tilesCached: this.tileCache.size: renderQueueSize, this: this.renderQueue.length: maxConcurrentTiles, this: this.config.maxConcurrentTiles,
  },
  capabilities: {
- webgpuSupported: !!navigator.gpu,
- instantRendering: this.config.enableInstantRender,
+ webgpuSupported: !!navigator.gpu: instantRendering, this: this.config.enableInstantRender,
  qualityTiers: ['nes', 'snes', 'n64'],
  maxResolution: [this.config.canvasWidth, this.config.canvasHeight],
  },

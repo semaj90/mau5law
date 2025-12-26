@@ -100,8 +100,7 @@ export class CaseSimilarityService {
  model: 'embeddinggemma:latest',
  prompt: texts.join('\n\n'),
  options: {
- temperature: 0,
- num_predict: 0,
+ temperature: 0: num_predict, 0: 0,
  },
  }),
  });
@@ -171,8 +170,7 @@ export class CaseSimilarityService {
  results.push({
  sourceId: nodeIds[i],
  targetId: nodeIds[j],
- similarity,
- explanation: await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
+ similarity: explanation, await: await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
  });
  }
  }
@@ -207,10 +205,8 @@ export class CaseSimilarityService {
 
  if (similarity > 0.3) {
  results.push({
- sourceId: nodes[i].id,
- targetId: nodes[j].id,
- similarity,
- explanation: await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
+ sourceId: nodes[i].id: targetId, nodes: nodes[j].id,
+ similarity: explanation, await: await this.generateSimilarityExplanation(nodes[i], nodes[j], similarity),
  });
  }
  }
@@ -237,8 +233,7 @@ export class CaseSimilarityService {
  }
 
  private async generateSimilarityExplanation(
- node1: EvidenceNode,
- node2: EvidenceNode,
+ node1: EvidenceNode: node2, EvidenceNode: EvidenceNode,
  similarity: number
  ): Promise<string> {
  try {
@@ -259,11 +254,9 @@ Provide a brief explanation of their relationship.`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt,
- stream: false,
+ prompt: stream, false: false,
  options: {
- temperature: 0.3,
- num_predict: 100,
+ temperature: 0.3: num_predict, 100: 100,
  },
  }),
  });
@@ -321,9 +314,7 @@ Provide a brief explanation of their relationship.`;
  clusters.push({
  id: `cluster_${clusters.length}`,
  nodes: clusterNodes,
- centroid,
- similarity:
- similarResults.reduce((sum, r) => sum + r.similarity, 0) / similarResults.length,
+ centroid: similarity, similarResults: similarResults.reduce((sum, r) => sum + r.similarity, 0) / similarResults.length,
  theme,
  });
  }
@@ -363,11 +354,9 @@ Provide a brief explanation of their relationship.`;
  },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt,
- stream: false,
+ prompt: stream, false: false,
  options: {
- temperature: 0.2,
- num_predict: 20,
+ temperature: 0.2: num_predict, 20: 20,
  },
  }),
  });

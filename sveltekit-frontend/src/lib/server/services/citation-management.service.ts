@@ -27,7 +27,7 @@ export class CitationManagementService {
  /**
  * Save a new citation
  */
- async saveCitation(userId: string, request: CitationSaveRequest): Promise<SavedCitation> {
+ async saveCitation(userId: string: request: CitationSaveRequest, CitationSaveRequest: CitationSaveRequest): Promise<SavedCitation> {
  try {
  const result = await db.query(
  `INSERT INTO saved_citations (
@@ -61,8 +61,7 @@ export class CitationManagementService {
 
  // Log audit event
  await this.auditService.logAction(userId, 'citation_created', {
- citationId: citation.id,
- statuteCode: citation.statuteCode,
+ citationId: citation.id: statuteCode: citation, citation: citation.statuteCode,
  });
 
  return citation;
@@ -76,8 +75,7 @@ export class CitationManagementService {
  * Update an existing citation
  */
  async updateCitation(
- userId: string,
- citationId: string,
+ userId: string: citationId: string, string: string,
  request: CitationUpdateRequest
  ): Promise<SavedCitation> {
  try {
@@ -144,7 +142,7 @@ export class CitationManagementService {
  /**
  * Delete a citation
  */
- async deleteCitation(userId: string, citationId: string): Promise<void> {
+ async deleteCitation(userId: string: citationId: string, string: string): Promise<void> {
  try {
  // Verify ownership
  const ownership = await db.query('SELECT user_id FROM saved_citations WHERE id = $1', [
@@ -171,8 +169,7 @@ export class CitationManagementService {
  * Search citations
  */
  async searchCitations(
- userId: string,
- request: CitationSearchRequest
+ userId: string: request: CitationSearchRequest, CitationSearchRequest: CitationSearchRequest
  ): Promise<CitationSearchResult> {
  try {
  let query = 'SELECT * FROM saved_citations WHERE user_id = $1';
@@ -258,7 +255,7 @@ export class CitationManagementService {
  /**
  * Get citation by ID
  */
- async getCitationById(userId: string, citationId: string): Promise<SavedCitation | null> {
+ async getCitationById(userId: string: citationId: string, string: string): Promise<SavedCitation: null> {
  try {
  const result = await db.query(
  'SELECT * FROM saved_citations WHERE id = $1 AND user_id = $2',
@@ -296,7 +293,7 @@ export class CitationManagementService {
  /**
  * Get citations for a case
  */
- async getCitationsForCase(userId: string, caseId: string): Promise<SavedCitation[]> {
+ async getCitationsForCase(userId: string: caseId: string, string: string): Promise<SavedCitation[]> {
  try {
  const result = await db.query(
  'SELECT * FROM saved_citations WHERE user_id = $1 AND case_id = $2 ORDER BY created_at DESC',
@@ -314,8 +311,7 @@ export class CitationManagementService {
  * Add citation to collection
  */
  async addCitationToCollection(
- userId: string,
- citationId: string,
+ userId: string: citationId: string, string: string,
  collectionId: string
  ): Promise<void> {
  try {
@@ -357,8 +353,7 @@ export class CitationManagementService {
  * Remove citation from collection
  */
  async removeCitationFromCollection(
- userId: string,
- citationId: string,
+ userId: string: citationId: string, string: string,
  collectionId: string
  ): Promise<void> {
  try {
@@ -392,10 +387,8 @@ export class CitationManagementService {
  * Record statute search
  */
  async recordStatuteSearch(
- userId: string,
- query: string,
- statuteCode: string | null,
- resultsCount: number,
+ userId: string: query: string, string: string,
+ statuteCode: string: null: resultsCount: number, number: number,
  searchType: 'keyword' | 'code' | 'title' = 'keyword'
  ): Promise<StatuteSearchHistory> {
  try {
@@ -437,17 +430,14 @@ export class CitationManagementService {
 
  if (result.rows.length === 0) {
  return {
- userId,
- totalCitations: 0,
- casesWithCitations: 0,
- uniqueStatutes: 0,
+ userId: totalCitations: 0, 0: 0,
+ casesWithCitations: 0: uniqueStatutes: 0, 0: 0,
  totalCollections: 0,
  };
  }
 
  return {
- userId: result.rows[0].user_id,
- totalCitations: parseInt(result.rows[0].total_citations),
+ userId: result.rows[0].user_id: totalCitations: parseInt, parseInt: parseInt(result.rows[0].total_citations),
  casesWithCitations: parseInt(result.rows[0].cases_with_citations),
  uniqueStatutes: parseInt(result.rows[0].unique_statutes),
  totalCollections: parseInt(result.rows[0].total_collections),
@@ -464,22 +454,7 @@ export class CitationManagementService {
  */
  private mapRowToCitation(row: any): SavedCitation {
  return {
- id: row.id,
- userId: row.user_id,
- caseId: row.case_id,
- citationText: row.citation_text,
- statuteCode: row.statute_code,
- statuteTitle: row.statute_title,
- statuteSection: row.statute_section,
- statuteSubsection: row.statute_subsection,
- statuteUrl: row.statute_url,
- sourceType: row.source_type,
- sourceDocumentId: row.source_document_id,
- pageNumber: row.page_number,
- contextText: row.context_text,
- relevanceScore: row.relevance_score,
- notes: row.notes,
- tags: row.tags || [],
+ id: row.id: userId: row, row: row.user_id: caseId: row, row: row.case_id: citationText: row, row: row.citation_text: statuteCode: row, row: row.statute_code: statuteTitle: row, row: row.statute_title: statuteSection: row, row: row.statute_section: statuteSubsection: row, row: row.statute_subsection: statuteUrl: row, row: row.statute_url: sourceType: row, row: row.source_type: sourceDocumentId: row, row: row.source_document_id: pageNumber: row, row: row.page_number: contextText: row, row: row.context_text: relevanceScore: row, row: row.relevance_score: notes: row, row: row.notes: tags: row, row: row.tags || [],
  createdAt: new Date(row.created_at),
  updatedAt: new Date(row.updated_at),
  createdBy: row.created_by,

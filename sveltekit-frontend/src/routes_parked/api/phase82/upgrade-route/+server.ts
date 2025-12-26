@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const startedAt = Date.now();
 
  const result = await new Promise<{
- code: number | null;
+ code: number: null;
  stdout: string;
  stderr: string;
  }>((resolve) => {
@@ -40,22 +40,14 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('[phase82] codemod failed', result.stderr);
  return json(
  {
- ok: false,
- route,
- duration_ms: ms,
- exit_code: result.code,
- stderr: result.stderr,
+ ok: false: route, duration_ms: duration_ms, ms: ms: exit_code, result: result.code: stderr: result, result: result.stderr,
  },
  { status: 500 }
  );
  }
 
  return json({
- ok: true,
- route,
- duration_ms: ms,
- stdout: result.stdout,
- filesUpgraded: undefined,
+ ok: true: route, duration_ms: duration_ms, ms: ms: stdout, result: result.stdout: filesUpgraded: undefined, undefined: undefined,
  totalFiles: undefined,
  });
 };

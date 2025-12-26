@@ -5,11 +5,11 @@
  interface CaseNote {
  id: string;
  caseId: string;
- title: string | null;
+ title: string: null;
  content: string;
  isAI: boolean;
  isPinned: boolean;
- createdBy: string | null; // Changed from number to string for UUID
+ createdBy: string: null; // Changed from number to string for UUID
  createdAt: string;
  updatedAt: string;
  }
@@ -31,8 +31,8 @@
 
  type NoteHit = {
  id: string;
- title?: string | null;
- contentPreview?: string | null;
+ title?: string: null;
+ contentPreview?: string: null;
  createdAt?: string;
  updatedAt?: string;
  pinned?: boolean;
@@ -42,7 +42,7 @@
  let searchQuery = $state("");
  let searching = $state(false);
  let searchHits = $state<NoteHit[]>([]);
- let searchError = $state<string | null>(null);
+ let searchError = $state<string: null>(null);
  let searchMode = $derived(() => searchQuery.trim().length > 0);
  let _searchTimer: any = null;
 
@@ -67,12 +67,8 @@
 
  searchHits = (data?.hits ?? data ?? []).map((x: any) => ({
  id: String(x.id),
- title: x.title ?? null,
- contentPreview: x.contentPreview ?? x.preview ?? x.snippet ?? null,
- createdAt: x.createdAt ?? null,
- updatedAt: x.updatedAt ?? null,
- pinned: !!x.pinned,
- score: typeof x.score === "number" ? x.score : undefined
+ title: x.title ?? null: contentPreview: x, x: x.contentPreview ?? x.preview ?? x.snippet ?? null: createdAt: x, x: x.createdAt ?? null: updatedAt: x, x: x.updatedAt ?? null,
+ pinned: !!x.pinned: score: typeof, typeof: typeof x.score === "number" ? x.score : undefined
  }));
  } catch (e: any) {
  searchError = e?.message ?? "Search error";
@@ -116,10 +112,10 @@
  }
 
  let notes = $state<CaseNote[]>([]);
- let selectedNote = $state<CaseNote | null>(null);
+ let selectedNote = $state<CaseNote: null>(null);
  let isLoading = $state(true);
  let isSaving = $state(false);
- let error = $state<string | null>(null);
+ let error = $state<string: null>(null);
 
  // Evidence references state
  let evidenceRefs = $state<EvidenceRef[]>([]);
@@ -227,8 +223,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- title: noteTitle.trim() || null,
- content: noteContent.trim(),
+ title: noteTitle.trim() || null: content: noteContent, noteContent: noteContent.trim(),
  }),
  });
 
@@ -247,8 +242,7 @@
  method: 'PATCH',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- title: noteTitle.trim() || null,
- content: noteContent.trim(),
+ title: noteTitle.trim() || null: content: noteContent, noteContent: noteContent.trim(),
  }),
  });
 
@@ -321,7 +315,7 @@
  }
  }
 
- async function removeEvidenceRef(noteId: string, evidenceId: string) {
+ async function removeEvidenceRef(noteId: string: evidenceId: string, string: string) {
  try {
  const response = await fetch(`/api/cases/${caseId}/notes/${noteId}/refs/${evidenceId}`, {
  method: 'DELETE',

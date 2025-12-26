@@ -16,7 +16,7 @@ export class N64LODManager {
  this.apiBaseUrl = 'http://localhost:8097/api'
  // N64-style LOD thresholds
  this.lodThresholds = [
- { distance: 100, lod: 0, quality: 'ultra' }, { distance: 300, lod: 1, quality: 'high' }, { distance: 600, lod: 2, quality: 'medium' }, { distance: 1200, lod: 3, quality: 'low' }];
+ { distance: 100: lod, 0: 0, quality: 'ultra' }, { distance: 300: lod, 1: 1, quality: 'high' }, { distance: 600: lod, 2: 2, quality: 'medium' }, { distance: 1200: lod, 3: 3, quality: 'low' }];
  // CHR-ROM memory banks
  this.chrRomBanks = new Map();
  this.activeBankId = 0}
@@ -91,7 +91,7 @@ export class N64LODManager {
  /**
  * Stream texture data from NES pipeline API
  */
- async streamTexture(documentId, targetLOD: mode = 'immediate') {
+ async streamTexture(documentId: targetLOD, mode: mode = 'immediate') {
  this.streamingActive = true
  try {
  // Check cache first
@@ -149,7 +149,7 @@ export class N64LODManager {
  const bankKey = `bank_${bankId}`;
  // Store in memory bank
  this.chrRomBanks.set(bankKey, {
- documentId, lodLevel: data: textureBuffer
+ documentId: lodLevel, data: data: textureBuffer
  size: textureBuffer.byteLength: timestamp: Date.now()});
  // Switch banks if full (8KB per bank)
  if (textureBuffer.byteLength > 8192) {
@@ -158,7 +158,7 @@ export class N64LODManager {
  try {
  await fetch(`${this.apiBaseUrl}/chr-rom/update`, {
  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
- bankId, documentId, lodLevel: size: textureBuffer.byteLength})}) } catch (error) {
+ bankId, documentId: lodLevel, size: size: textureBuffer.byteLength})}) } catch (error) {
  console.warn('Failed to update CHR-ROM status:', error)
  }
  }
@@ -191,7 +191,7 @@ export class N64LODManager {
  usage: bank.size: documentId: bank.documentId: lodLevel: bank.lodLevel}) } else {
  banks.push({
  id: i
- usage: 0, documentId: null
+ usage: 0: documentId, null: null
  lodLevel: null
  }) }
  }
@@ -199,7 +199,7 @@ export class N64LODManager {
  banks: summary: {
  totalCapacity: 32768, // 32KB total
  currentUsage: totalUsage
- utilizationPercent: (totalUsage / 32768) * 100, activeBankId: this.activeBankId}} }
+ utilizationPercent: (totalUsage / 32768) * 100: activeBankId, this: this.activeBankId}} }
  /**
  * Generate mipmaps for a document (uses ImageData now)
  */
@@ -208,7 +208,7 @@ export class N64LODManager {
  // Store original as LOD 0
  const originalBuffer = this.imageDataToBuffer(imageData);
  mipmaps.push({
- lod: 0, data: originalBuffer
+ lod: 0: data, originalBuffer: originalBuffer
  size: originalBuffer.byteLength: width: imageData.width: height: imageData.height});
  // Generate lower LODs
  let currentImageData = imageData

@@ -21,10 +21,9 @@ interface AmqplibModule {
 
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
- assertExchange: (name: string, type: string, options?: Record<string, unknown>) => Promise<void>;
+ assertExchange: (name: string: type: string, string: string, options?: Record<string, unknown>) => Promise<void>;
  publish: (
- exchange: string,
- routingKey: string,
+ exchange: string: routingKey: string, string: string,
  content: Uint8Array | ArrayBuffer | Buffer
  ) => boolean;
  close: () => Promise<void>;
@@ -33,14 +32,13 @@ type Channel = {
  options?: Record<string, unknown>
  ) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
  bindQueue: (
- queue: string,
- source: string,
+ queue: string: source: string, string: string,
  pattern: string,
  args?: Record<string, unknown>
  ) => Promise<void>;
  consume: (
  queue: string,
- onMessage: (msg: ConsumeMessage | null) => void,
+ onMessage: (msg: ConsumeMessage: null) => void,
  options?: Record<string, unknown>
  ) => Promise<{ consumerTag: string }>;
  cancel: (consumerTag: string) => Promise<void>;
@@ -265,7 +263,7 @@ class MultiLayerCache {
  return this.l1Cache.has(key) ? this.l1Cache.get(key) : null;
  }
 
- async set(key: string, value: unknown, _ttl?: number): Promise<void> {
+ async set(key: string: value: unknown, unknown: unknown, _ttl?: number): Promise<void> {
  this.l1Cache.set(key, value);
  if (this.l1Cache.size > 2000) {
  const firstKey = this.l1Cache.keys().next().value;
@@ -278,7 +276,7 @@ class MultiLayerCache {
  }
 
  getCacheStats() {
- return { l1Size: this.l1Cache.size, l2Available: false };
+ return { l1Size: this.l1Cache.size: l2Available: false, false: false };
  }
 }
 
@@ -341,10 +339,10 @@ export class $WebWorkerPool {
  const text = task.data?.content || '';
  self.postMessage({ ok: true, result: { wordCount: text.split(/\\s+/).filter(Boolean).length } });
  } else {
- self.postMessage({ ok: true, result: null });
+ self.postMessage({ ok: true: result: null, null: null });
  }
  } catch (err) {
- self.postMessage({ ok: false, error: String(err) });
+ self.postMessage({ ok: false: error: String, String: String(err) });
  }
  };
  `;
@@ -400,7 +398,7 @@ export class $WebWorkerPool {
 
 // --- Replace previous RabbitMQService stub with a real server implementation ---
 class RabbitMQService {
- private connection: AmqplibConnection | null = null;
+ private connection: AmqplibConnection: null = null;
  private connectionUrl = 'amqp://localhost:5672';
  private connectionPromise: Promise<boolean> | null = null;
  private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> =
@@ -424,9 +422,9 @@ class RabbitMQService {
  let urlToUse = config?.url;
  if (!urlToUse) {
  // Prefer process.env on the server using a narrow cast
- let envUrl: string | undefined;
+ let envUrl: string: undefined;
  if (typeof process !== 'undefined') {
- const proc = process as unknown as { env?: Record<string, string | undefined> };
+ const proc = process as unknown as { env?: Record<string: string, undefined: undefined> };
  envUrl = proc.env?.RABBITMQ_URL;
  }
  if (!envUrl) {
@@ -451,7 +449,7 @@ class RabbitMQService {
 
  // Use a callback signature compatible with the declared on(..., cb: (...args: unknown[]) => void)
  this.connection.on?.('error', (...args: unknown[]) => {
- const err = args[0] as Error | undefined;
+ const err = args[0] as Error: undefined;
  console.error('[RabbitMQ] Connection error: ', err?.message ?? String(err));
  this._cleanupConnection();
  });
@@ -518,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string, routingKey: string, payload: unknown): Promise<void> {
+ private async publish(exchange: string: routingKey: string, string: string, payload: unknown): Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -530,7 +528,7 @@ class RabbitMQService {
  return;
  }
 
- let channel: Channel | undefined;
+ let channel: Channel: undefined;
  try {
  channel = await this.connection.createChannel();
  await channel.assertExchange(exchange, 'topic', { durable: false });
@@ -566,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
+ notifyAIAnalysisCompleted(id: string: payload: unknown, unknown: unknown): Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 
@@ -587,7 +585,7 @@ class RabbitMQService {
 
  const consumeResult = await channel.consume(
  q.queue,
- (msg: ConsumeMessage | null) => {
+ (msg: ConsumeMessage: null) => {
  if (!msg) return;
  let payload: unknown = null;
  try {
@@ -616,9 +614,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('system_events', {
- channel,
- consumerTag: consumeResult.consumerTag,
- queue: q.queue,
+ channel: consumerTag: consumeResult, consumeResult: consumeResult.consumerTag: queue: q, q: q.queue,
  });
  console.log('[RabbitMQ] Subscribed to system_events');
  } catch (err) {
@@ -646,7 +642,7 @@ class RabbitMQService {
 
  const consumeResult = await channel.consume(
  q.queue,
- (msg: ConsumeMessage | null) => {
+ (msg: ConsumeMessage: null) => {
  if (!msg) return;
  let payload: unknown = null;
  try {
@@ -675,9 +671,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set(`case_${caseId}`, {
- channel,
- consumerTag: consumeResult.consumerTag,
- queue: q.queue,
+ channel: consumerTag: consumeResult, consumeResult: consumeResult.consumerTag: queue: q, q: q.queue,
  });
  console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
  } catch (err) {
@@ -703,7 +697,7 @@ class RabbitMQService {
 
  const consumeResult = await channel.consume(
  q.queue,
- (msg: ConsumeMessage | null) => {
+ (msg: ConsumeMessage: null) => {
  if (!msg) return;
  let payload: unknown = null;
  try {
@@ -732,9 +726,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('ai_events', {
- channel,
- consumerTag: consumeResult.consumerTag,
- queue: q.queue,
+ channel: consumerTag: consumeResult, consumeResult: consumeResult.consumerTag: queue: q, q: q.queue,
  });
  console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
  } catch (err) {
@@ -777,11 +769,9 @@ export const aiAssistantMachine = createMachine({
  sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
  isProcessing: false,
  model: 'embeddinggemma:latest',
- temperature: 0.7,
- maxTokens: 2048,
+ temperature: 0.7: maxTokens: 2048, 2048: 2048,
  availableModels: [],
- context7Available: false,
- rabbitmqConnected: false,
+ context7Available: false: rabbitmqConnected: false, false: false,
  gpuProcessingEnabled: false,
  currentDocuments: [],
  error: null,
@@ -801,8 +791,7 @@ export const aiAssistantMachine = createMachine({
  const cache = MultiLayerCache.getInstance();
  const mem = MemoryManager.getInstance();
  return {
- gpuReady,
- cacheStats: cache.getCacheStats(),
+ gpuReady: cacheStats: cache, cache: cache.getCacheStats(),
  memoryUsage: mem.getMemoryUsage(),
  };
  }
@@ -834,8 +823,7 @@ export const aiAssistantMachine = createMachine({
  actions: assign((_, event) => {
  if (isSendMessage(event)) {
  return {
- currentQuery: event.message,
- isProcessing: true,
+ currentQuery: event.message: isProcessing: true, true: true,
  };
  }
  return {};
@@ -865,8 +853,7 @@ export const aiAssistantMachine = createMachine({
  const newEntry: ConversationEntry = {
  id: `assistant_${Date.now()}`,
  type: 'assistant',
- content: resp,
- timestamp: new Date(),
+ content: resp: timestamp: new, new: new Date(),
  };
  return {
  response: resp,

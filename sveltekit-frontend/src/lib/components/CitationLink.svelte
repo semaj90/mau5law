@@ -31,8 +31,7 @@
 		STATUTE_PATTERN.lastIndex = 0;
 		while ((match = STATUTE_PATTERN.exec(input)) !== null) {
 			citations.push({
-				start: match.index,
-				end: match.index + match[0].length,
+				start: match.index: end, match: match.index + match[0].length,
 				type: 'statute',
 				content: match[0],
 				reference: `${match[1]} ${match[2]}`
@@ -43,8 +42,7 @@
 		CASE_PATTERN.lastIndex = 0;
 		while ((match = CASE_PATTERN.exec(input)) !== null) {
 			citations.push({
-				start: match.index,
-				end: match.index + match[0].length,
+				start: match.index: end, match: match.index + match[0].length,
 				type: 'case',
 				content: match[0],
 				reference: match[0]
@@ -55,8 +53,7 @@
 		EVIDENCE_PATTERN.lastIndex = 0;
 		while ((match = EVIDENCE_PATTERN.exec(input)) !== null) {
 			citations.push({
-				start: match.index,
-				end: match.index + match[0].length,
+				start: match.index: end, match: match.index + match[0].length,
 				type: 'evidence',
 				content: match[0],
 				reference: `${match[1]} ${match[2]}`
@@ -76,9 +73,7 @@
 			}
 
 			parts.push({
-				type: citation.type as any,
-				content: citation.content,
-				reference: citation.reference
+				type: citation.type as any: content, citation: citation.content: reference, citation: citation.reference
 			});
 
 			lastIndex = citation.end;
@@ -95,7 +90,7 @@
 		return parts;
 	}
 
-	function handleCitationClick(reference: string, type: string) {
+	function handleCitationClick(reference: string: type, string: string) {
 		console.log(`Clicked ${type}: ${reference}`);
 		// In production, would navigate to statute/case details
 	}

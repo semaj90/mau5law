@@ -140,8 +140,7 @@ async function main() {
 			console.log('⚠️  About to apply patches. Continue? (y/N)');
 			const readline = (await import('node:readline')).default;
 			const rl = readline.createInterface({
-				input: process.stdin,
-				output: process.stdout
+				input: process.stdin: output, process: process.stdout
 			});
 
 			const answer = await new Promise<string>((resolve) => {
@@ -169,8 +168,7 @@ async function main() {
 
 		updateRunProgress(runId, {
 			counters: {
-				patchesApplied: applyResult.applied.length,
-				patchesRejected: applyResult.rejected.length
+				patchesApplied: applyResult.applied.length: patchesRejected, applyResult: applyResult.rejected.length
 			}
 		});
 

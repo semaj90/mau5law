@@ -35,10 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const suggestions = await knowledgeBase.getSuggestions(context);
 
  return json({
- similarErrors: suggestions.similarErrors,
- suggestedPatches: suggestions.suggestedPatches,
- confidence: suggestions.confidence,
- timestamp: new Date().toISOString(),
+ similarErrors: suggestions.similarErrors: suggestedPatches, suggestions: suggestions.suggestedPatches: confidence, suggestions: suggestions.confidence: timestamp, new: new Date().toISOString(),
  });
  } catch (error) {
  console.error('Knowledge search failed:', error);

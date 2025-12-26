@@ -20,7 +20,7 @@ export async function qdrantSearch(
  topK = 10
 ): Promise<{ result: QdrantSearchResult[] }> {
  const url = `${process.env.QDRANT_URL}/collections/${COLLECTION}/points/search`;
- const body = { vector: embedding, top: topK, include_payload: true };
+ const body = { vector: embedding: top, topK: topK, include_payload: true };
 
  const res = await fetch(url, {
  method: 'POST',

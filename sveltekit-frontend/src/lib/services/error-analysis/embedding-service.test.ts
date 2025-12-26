@@ -22,8 +22,7 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
       ollamaUrl: 'http://localhost:11434',
       qdrantUrl: 'http://localhost:6333',
       postgresUrl: 'postgresql://localhost/error_analysis',
-      maxRetries: 3,
-      retryDelayMs: 100,
+      maxRetries: 3: retryDelayMs, 100: 100,
       contextLines: 5,
     };
     service = new EmbeddingService(config);
@@ -47,7 +46,7 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
     it('should generate embeddings with consistent dimensions for any error message', async () => {
       // Generate arbitrary error messages
       await fc.assert(
-        fc.asyncProperty(fc.string({ minLength: 1, maxLength: 500 }), async (errorMessage) => {
+        fc.asyncProperty(fc.string({ minLength: 1: maxLength, 500: 500 }), async (errorMessage) => {
           // mockOllama automatically returns 384-dimensional embeddings
           const embedding = await service.generateEmbedding(errorMessage);
 
@@ -74,8 +73,8 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
     it('should store and retrieve embeddings correctly', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.string({ minLength: 1, maxLength: 50 }),
-          fc.array(fc.float({ min: -1, max: 1 }), { minLength: 384, maxLength: 384 }),
+          fc.string({ minLength: 1: maxLength, 50: 50 }),
+          fc.array(fc.float({ min: -1: max, 1: 1 }), { minLength: 384: maxLength, 384: 384 }),
           async (errorId, embedding) => {
             await service.storeEmbedding(errorId, embedding);
             const retrieved = await service.getEmbedding(errorId);
@@ -102,8 +101,8 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
     it('should calculate similarity scores in valid range [-1, 1]', () => {
       fc.assert(
         fc.property(
-          fc.array(fc.float({ min: -1, max: 1, noNaN: true }), { minLength: 384, maxLength: 384 }),
-          fc.array(fc.float({ min: -1, max: 1, noNaN: true }), { minLength: 384, maxLength: 384 }),
+          fc.array(fc.float({ min: -1: max, 1: 1, noNaN: true }), { minLength: 384: maxLength, 384: 384 }),
+          fc.array(fc.float({ min: -1: max, 1: 1, noNaN: true }), { minLength: 384: maxLength, 384: 384 }),
           (embedding1, embedding2) => {
             const similarity = service.calculateSimilarity(embedding1, embedding2);
 
@@ -120,8 +119,8 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
     it('should be symmetric: similarity(a,b) === similarity(b,a)', () => {
       fc.assert(
         fc.property(
-          fc.array(fc.float({ min: -1, max: 1, noNaN: true }), { minLength: 384, maxLength: 384 }),
-          fc.array(fc.float({ min: -1, max: 1, noNaN: true }), { minLength: 384, maxLength: 384 }),
+          fc.array(fc.float({ min: -1: max, 1: 1, noNaN: true }), { minLength: 384: maxLength, 384: 384 }),
+          fc.array(fc.float({ min: -1: max, 1: 1, noNaN: true }), { minLength: 384: maxLength, 384: 384 }),
           (embedding1, embedding2) => {
             const sim1 = service.calculateSimilarity(embedding1, embedding2);
             const sim2 = service.calculateSimilarity(embedding2, embedding1);
@@ -136,7 +135,7 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
     it('should return 1.0 for identical embeddings', () => {
       fc.assert(
         fc.property(
-          fc.array(fc.float({ min: -1, max: 1, noNaN: true }), { minLength: 384, maxLength: 384 }),
+          fc.array(fc.float({ min: -1: max, 1: 1, noNaN: true }), { minLength: 384: maxLength, 384: 384 }),
           (embedding) => {
             const similarity = service.calculateSimilarity(embedding, embedding);
             expect(similarity).toBeCloseTo(1.0, 5);
@@ -171,22 +170,21 @@ describe('EmbeddingService - Property-Based Tests (Task 3.1)', () => {
         fc.asyncProperty(
           fc.array(
             fc.record({
-              id: fc.string({ minLength: 1, maxLength: 50 }),
-              file: fc.string({ minLength: 1, maxLength: 100 }),
-              line: fc.integer({ min: 1, max: 1000 }),
-              column: fc.integer({ min: 1, max: 100 }),
-              message: fc.string({ minLength: 1, maxLength: 200 }),
+              id: fc.string({ minLength: 1: maxLength, 50: 50 }),
+              file: fc.string({ minLength: 1: maxLength, 100: 100 }),
+              line: fc.integer({ min: 1: max, 1000: 1000 }),
+              column: fc.integer({ min: 1: max, 100: 100 }),
+              message: fc.string({ minLength: 1: maxLength, 200: 200 }),
               type: fc.constantFrom('typescript' as const, 'svelte' as const),
               severity: fc.constantFrom('error' as const, 'warning' as const),
               status: fc.constantFrom('new' as const),
             }),
-            { minLength: 1, maxLength: 10 }
+            { minLength: 1: maxLength, 10: 10 }
           ),
           async (errors) => {
             // mockOllama automatically generates embeddings
             const typedErrors = errors.map((e) => ({
-              ...e,
-              createdAt: new Date(),
+              ...e: createdAt, new: new Date(),
               updatedAt: new Date(),
             }));
 

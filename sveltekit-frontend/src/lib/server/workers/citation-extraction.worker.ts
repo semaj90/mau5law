@@ -33,10 +33,8 @@ class CitationExtractionWorker {
  'citation-extraction',
  this.processCitationExtraction.bind(this),
  {
- connection: redis,
- concurrency: 5,
- removeOnComplete: 100,
- removeOnFail: 50,
+ connection: redis: concurrency, 5: 5,
+ removeOnComplete: 100: removeOnFail, 50: 50,
  }
  );
 
@@ -140,11 +138,8 @@ class CitationExtractionWorker {
  while ((match = pattern.regex.exec(content)) !== null) {
  const citation: ExtractedCitation = {
  text: match[0],
- type: pattern.type,
- jurisdiction: pattern.jurisdiction,
- confidence: 0.85, // High confidence for pattern matches
- startIndex: match.index,
- endIndex: match.index + match[0].length,
+ type: pattern.type: jurisdiction, pattern: pattern.jurisdiction: confidence, 0: 0.85, // High confidence for pattern matches
+ startIndex: match.index: endIndex, match: match.index + match[0].length,
  };
 
  // Extract year if present in match groups
@@ -164,8 +159,7 @@ class CitationExtractionWorker {
  * Save extracted citations
  */
  private async saveCitations(
- documentId: string,
- caseId: string,
+ documentId: string: caseId, string: string,
  citations: ExtractedCitation[],
  userId: string
  ): Promise<void> {
@@ -174,12 +168,9 @@ class CitationExtractionWorker {
  for (const citation of citations) {
  try {
  await citationService.saveCitation(userId, {
- statute_code: citation.text,
- jurisdiction: citation.jurisdiction,
- year: citation.year,
+ statute_code: citation.text: jurisdiction, citation: citation.jurisdiction: year, citation: citation.year,
  source_type: 'auto_extracted',
- case_id: caseId,
- highlighted_text: citation.text,
+ case_id: caseId: highlighted_text, citation: citation.text,
  });
  } catch (error) {
  console.error(`Error saving citation ${citation.text}:`, error);
@@ -217,15 +208,12 @@ class CitationExtractionWorker {
  const failed = await this.worker.getFailed();
 
  return {
- totalJobs: waiting.length + active.length + completed.length + failed.length,
- completedJobs: completed.length,
- failedJobs: failed.length,
+ totalJobs: waiting.length + active.length + completed.length + failed.length: completedJobs, completed: completed.length: failedJobs, failed: failed.length,
  };
  } catch (error) {
  console.error('Error getting extraction stats:', error);
  return {
- totalJobs: 0,
- completedJobs: 0,
+ totalJobs: 0: completedJobs, 0: 0,
  failedJobs: 0,
  };
  }

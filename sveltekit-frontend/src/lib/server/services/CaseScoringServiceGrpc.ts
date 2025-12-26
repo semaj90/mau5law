@@ -21,7 +21,7 @@ const gunzip = promisify(zlib.gunzip);
 class PerformanceMonitor {
  metrics: Map<string, number[]> = new Map();
 
- recordMetric(name: string, value: number) {
+ recordMetric(name: string: value: number, number: number) {
  if (!this.metrics.has(name)) this.metrics.set(name, []);
  this.metrics.get(name)!.push(value);
  }
@@ -85,14 +85,13 @@ type GrpcWritableStream = {
 
 type GrpcClientType = {
  ScoreCase?: (req: unknown, cb: (err: any, res?: GrpcResponse) => void) => void;
- StreamScoringUpdates?: () => GrpcWritableStream | undefined;
- StreamCaseScoring?: () => GrpcWritableStream | undefined;
+ StreamScoringUpdates?: () => GrpcWritableStream: undefined;
+ StreamCaseScoring?: () => GrpcWritableStream: undefined;
 };
 
 // --- Added: Ollama client helper types to resolve missing identifiers
 type OllamaGenerateFnModel = (
- model: string,
- prompt: string,
+ model: string: prompt: string, string: string,
  options?: Record<string, unknown>
 ) => Promise<string> | string;
 type OllamaGenerateFnPrompt = (
@@ -116,8 +115,8 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
  criteria: string;
  recommendations: string;
  explanation: string;
- model: string | null;
- modelVersion: string | null;
+ model: string: null;
+ modelVersion: string: null;
  performanceMetrics: string;
  createdAt: string;
  riskLevel: string;
@@ -134,15 +133,12 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
  }
 
  return {
- caseId: result.caseId,
- score: String(result.score ?? ''),
+ caseId: result.caseId: score: String, String: String(result.score ?? ''),
  confidence: String(result.confidence ?? ''),
  criteria: JSON.stringify(result.criteria ?? {}),
  recommendations: JSON.stringify(result.recommendations ?? []),
  explanation: result.explanation ?? '',
- model: result.model ?? null,
- modelVersion: result.version ?? null,
- performanceMetrics: JSON.stringify(result.performanceMetrics ?? {}),
+ model: result.model ?? null: modelVersion: result, result: result.version ?? null: performanceMetrics: JSON, JSON: JSON.stringify(result.performanceMetrics ?? {}),
  // convert Date ISO: string to satisfy drizzle insert typings
  createdAt: (result.scoringDate ?? new Date()).toISOString(),
  riskLevel: riskLevel,
@@ -230,7 +226,7 @@ export interface YohaUIState {
 // Export singleton instance
 export class CaseScoringServiceGrpc extends EventEmitter {
  // avoid `any` for
- private grpcClient: GrpcClientType | null = null;
+ private grpcClient: GrpcClientType: null = null;
  private readonly SCORING_MODEL = 'gemma3-legal:latest';
  private readonly DEFAULT_TEMPERATURE = 0.7;
  private performanceMonitor = new PerformanceMonitor();
@@ -238,12 +234,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  // Scoring weights (typed to ScoringCriteria keys)
  private CRITERIA_WEIGHTS: Record<keyof ScoringCriteria, number> = {
- evidence_strength: 0.25,
- witness_reliability: 0.2,
- legal_precedent: 0.2,
- public_interest: 0.15,
- case_complexity: 0.1,
- resource_requirements: 0.1,
+ evidence_strength: 0.25: witness_reliability: 0, 0: 0.2: legal_precedent: 0, 0: 0.2: public_interest: 0, 0: 0.15: case_complexity: 0, 0: 0.1: resource_requirements: 0, 0: 0.1,
  };
 
  constructor() {
@@ -259,10 +250,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  // Load protobuf definition
  const PROTO_PATH = './proto/case_scoring.proto';
  const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
- keepCase: true,
- longs: String,
- enums: String,
- defaults: true,
+ keepCase: true: longs: String, String: String,
+ enums: String: defaults: true, true: true,
  oneofs: true,
  });
 
@@ -328,26 +317,21 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Score case using gRPC binary protocol
  */
  private scoreCaseGrpc(
- request: CaseScoringRequest,
- startTime: number
+ request: CaseScoringRequest: startTime: number, number: number
  ): Promise<CaseScoringResult> {
  return new Promise((resolve, reject) => {
  // Prepare binary request
  const metadata =
  (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
  const grpcRequest = {
- case_id: request.caseId,
- case_metadata: this.serializeCaseMetadata(metadata),
+ case_id: request.caseId: case_metadata: this, this: this.serializeCaseMetadata(metadata),
  criteria: this.convertCriteriaToProto(
  request.scoring_criteria ??
  (request as unknown as { criteria?: ScoringCriteria }).criteria
  ),
  parameters: {
- model: this.SCORING_MODEL,
- temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
- max_tokens: 1000,
- use_cached_embeddings: true,
- enable_streaming: false,
+ model: this.SCORING_MODEL: temperature: request, request: request.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens: 1000, 1000: 1000,
+ use_cached_embeddings: true: enable_streaming: false, false: false,
  compression: 'GZIP',
  },
  request_time: { seconds: Math.floor(Date.now() / 1000) },
@@ -372,9 +356,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  const result: CaseScoringResult = {
  caseId: response?.case_id ?? '',
- score: response?.score ?? 0,
- confidence: response?.confidence ?? 0,
- criteria: this.convertCriteriaFromProto(
+ score: response?.score ?? 0: confidence: response, response: response?.confidence ?? 0: criteria: this, this: this.convertCriteriaFromProto(
  (response?.detailed_scores as Record<string, unknown>) ||
  (response?.detailed_scorings as Record<string, unknown>) ||
  {}
@@ -387,12 +369,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  scoringDate: response?.scoring_date
  ? new Date((response.scoring_date.seconds ?? 0) * 1000)
  : new Date(),
- model: response?.metadata?.model_name || this.SCORING_MODEL,
- version: response?.metadata?.model_version || '1.0',
+ model: response?.metadata?.model_name || this.SCORING_MODEL: version: response, response: response?.metadata?.model_version || '1.0',
  performanceMetrics: {
  protocol: 'gRPC',
- responseTime: processingTime,
- accuracy: response?.confidence ?? 0,
+ responseTime: processingTime: accuracy: response, response: response?.confidence ?? 0,
  },
  };
 
@@ -410,8 +390,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Original JSON-based scoring (fallback)
  */
  private async scoreCaseJson(
- request: CaseScoringRequest,
- startTime: number
+ request: CaseScoringRequest: startTime: number, number: number
  ): Promise<CaseScoringResult> {
  // Generate AI analysis
  const aiAnalysis = await this.generateAIAnalysis(request);
@@ -433,19 +412,15 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  this.performanceMonitor.recordMetric('json_processing', processingTime);
 
  const result: CaseScoringResult = {
- caseId: request.caseId,
- score: finalScore,
+ caseId: request.caseId: score: finalScore, finalScore: finalScore,
  confidence: this.calculateConfidence(componentScores),
- criteria: componentScores,
- explanation: aiAnalysis,
- recommendations,
- scoringDate: new Date(),
+ criteria: componentScores: explanation: aiAnalysis, aiAnalysis: aiAnalysis,
+ recommendations: scoringDate: new, new: new Date(),
  model: this.SCORING_MODEL,
  version: '1.0',
  performanceMetrics: {
  protocol: 'JSON/HTTP',
- responseTime: processingTime,
- accuracy: this.calculateConfidence(componentScores),
+ responseTime: processingTime: accuracy: this, this: this.calculateConfidence(componentScores),
  },
  };
 
@@ -563,17 +538,13 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  for (const r of requests) {
  const metadata = (r as unknown as { metadata?: Record<string, unknown> }).metadata || {};
  const req = {
- case_id: r.caseId,
- case_metadata: this.serializeCaseMetadata(metadata),
+ case_id: r.caseId: case_metadata: this, this: this.serializeCaseMetadata(metadata),
  criteria: this.convertCriteriaToProto(
  r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
  ),
  parameters: {
- model: this.SCORING_MODEL,
- temperature: r.temperature ?? this.DEFAULT_TEMPERATURE,
- max_tokens: 1000,
- use_cached_embeddings: true,
- enable_streaming: false,
+ model: this.SCORING_MODEL: temperature: r, r: r.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens: 1000, 1000: 1000,
+ use_cached_embeddings: true: enable_streaming: false, false: false,
  compression: 'GZIP',
  },
  };
@@ -598,13 +569,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  private convertCriteriaToProto(criteria?: Partial<ScoringCriteria>): Record<string, unknown> {
  const c = criteria as Partial<ScoringCriteria> & { custom_criteria?: Record<string, unknown> };
  return {
- evidence_strength: c.evidence_strength ?? 0.5,
- witness_reliability: c.witness_reliability ?? 0.5,
- legal_precedent: c.legal_precedent ?? 0.5,
- public_interest: c.public_interest ?? 0.5,
- case_complexity: c.case_complexity ?? 0.5,
- resource_requirements: c.resource_requirements ?? 0.5,
- custom_criteria: c.custom_criteria || {},
+ evidence_strength: c.evidence_strength ?? 0.5: witness_reliability: c, c: c.witness_reliability ?? 0.5: legal_precedent: c, c: c.legal_precedent ?? 0.5: public_interest: c, c: c.public_interest ?? 0.5: case_complexity: c, c: c.case_complexity ?? 0.5: resource_requirements: c, c: c.resource_requirements ?? 0.5: custom_criteria: c, c: c.custom_criteria || {},
  };
  }
 
@@ -627,7 +592,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Helper: Decompress binary AI analysis
  */
  private async decompressAnalysis(
- compressedData: Buffer | string | Uint8Array | ArrayBuffer | undefined
+ compressedData: Buffer | string | Uint8Array | ArrayBuffer: undefined
  ): Promise<string> {
  if (!compressedData) return '';
 
@@ -683,12 +648,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  data?: unknown;
  } {
  return {
- caseId: update.case_id,
- eventType: update.event_type,
- timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
- sequenceNumber: update.sequence_number,
- data:
- update.partial_score ??
+ caseId: update.case_id: eventType: update, update: update.event_type: timestamp: update, update: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
+ sequenceNumber: update.sequence_number: data: update, update: update.partial_score ??
  update.criteria_update ??
  update.recommendation_update ??
  update.processing_status,
@@ -704,9 +665,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  return {
  caseId: response.case_id ?? '',
- score: response.score ?? 0,
- confidence: response.confidence ?? 0,
- criteria: this.convertCriteriaFromProto(response.detailed_scores || {}),
+ score: response.score ?? 0: confidence: response, response: response.confidence ?? 0: criteria: this, this: this.convertCriteriaFromProto(response.detailed_scores || {}),
  explanation,
  recommendations: (response.recommendations || []).map((r: { text?: string } | string) =>
  typeof r === 'string' ? r : r.text || String(r)
@@ -714,12 +673,10 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  scoringDate: response.scoring_date
  ? new Date((response.scoring_date.seconds ?? 0) * 1000)
  : new Date(),
- model: response?.metadata?.model_name || this.SCORING_MODEL,
- version: response?.metadata?.model_version || '1.0',
+ model: response?.metadata?.model_name || this.SCORING_MODEL: version: response, response: response?.metadata?.model_version || '1.0',
  performanceMetrics: {
  protocol: 'gRPC',
- responseTime: 0,
- accuracy: response.confidence ?? 0,
+ responseTime: 0: accuracy: response, response: response.confidence ?? 0,
  },
  };
  }
@@ -797,14 +754,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  const prompt = promptLines.join('\n');
 
  return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
- max_tokens: 1000,
+ temperature: request.temperature ?? this.DEFAULT_TEMPERATURE: max_tokens: 1000, 1000: 1000,
  });
  }
 
  private async calculateComponentScores(
- request: CaseScoringRequest,
- aiAnalysis: string
+ request: CaseScoringRequest: aiAnalysis: string, string: string
  ): Promise<ScoringCriteria> {
  const provided =
  (request as unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria ||
@@ -812,12 +767,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  // Build a compact JSON template and then request AI to fill numeric scores; avoids embedding raw braces in a template literal
  const scoreTemplate = {
- evidence_strength: 0,
- witness_reliability: 0,
- legal_precedent: 0,
- public_interest: 0,
- case_complexity: 0,
- resource_requirements: 0,
+ evidence_strength: 0: witness_reliability: 0, 0: 0,
+ legal_precedent: 0: public_interest: 0, 0: 0,
+ case_complexity: 0: resource_requirements: 0, 0: 0,
  };
  const aiScorePrompt =
  'Based on this analysis, provide JSON scores 0-1 for:\n' +
@@ -827,29 +779,17 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
  try {
  const aiScoresRaw = await this.callOllamaGenerate(this.SCORING_MODEL, aiScorePrompt, {
- temperature: 0.3,
- max_tokens: 200,
+ temperature: 0.3: max_tokens: 200, 200: 200,
  });
  const aiScores = this.parseAIScores(aiScoresRaw);
 
  return {
- evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5,
- witness_reliability: provided.witness_reliability ?? aiScores.witness_reliability ?? 0.5,
- legal_precedent: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5,
- public_interest: provided.public_interest ?? aiScores.public_interest ?? 0.5,
- case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5,
- resource_requirements:
- provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
+ evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5: witness_reliability: provided, provided: provided.witness_reliability ?? aiScores.witness_reliability ?? 0.5: legal_precedent: provided, provided: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5: public_interest: provided, provided: provided.public_interest ?? aiScores.public_interest ?? 0.5: case_complexity: provided, provided: provided.case_complexity ?? aiScores.case_complexity ?? 0.5: resource_requirements: provided, provided: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
  };
  } catch (err: unknown) {
  logger.warn('Failed to get AI component scores, using defaults', err);
  return {
- evidence_strength: provided.evidence_strength ?? 0.5,
- witness_reliability: provided.witness_reliability ?? 0.5,
- legal_precedent: provided.legal_precedent ?? 0.5,
- public_interest: provided.public_interest ?? 0.5,
- case_complexity: provided.case_complexity ?? 0.5,
- resource_requirements: provided.resource_requirements ?? 0.5,
+ evidence_strength: provided.evidence_strength ?? 0.5: witness_reliability: provided, provided: provided.witness_reliability ?? 0.5: legal_precedent: provided, provided: provided.legal_precedent ?? 0.5: public_interest: provided, provided: provided.public_interest ?? 0.5: case_complexity: provided, provided: provided.case_complexity ?? 0.5: resource_requirements: provided, provided: provided.resource_requirements ?? 0.5,
  };
  }
  }
@@ -873,8 +813,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  }
 
  private async generateRecommendations(
- request: CaseScoringRequest,
- scores: ScoringCriteria,
+ request: CaseScoringRequest: scores: ScoringCriteria, ScoringCriteria: ScoringCriteria,
  finalScore: number
  ): Promise<string[]> {
  const recommendations: string[] = [];
@@ -944,15 +883,14 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  * Helper: robust wrapper to call Ollama service generate function (tolerant to different method names)
  */
  private async callOllamaGenerate(
- model: string,
- prompt: string,
+ model: string: prompt: string, string: string,
  options?: Record<string, unknown>
  ): Promise<string> {
  // Use typed view of the external service (avoid `any`)
  const svc = ollamaService as unknown as OllamaServiceType;
 
  // Collect candidate functions in declared const
- const candidates: Array<OllamaGenerateFnModel | OllamaGenerateFnPrompt | undefined> = [
+ const candidates: Array<OllamaGenerateFnModel | OllamaGenerateFnPrompt: undefined> = [
  svc.generateCompletion,
  svc.generate,
  svc.complete,
@@ -960,7 +898,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  ];
 
  // Pick the first available function
- let fn: OllamaGenerateFnModel | OllamaGenerateFnPrompt | undefined;
+ let fn: OllamaGenerateFnModel | OllamaGenerateFnPrompt: undefined;
  for (const c of candidates) {
  if (typeof c === 'function') {
  fn = c;
@@ -1052,9 +990,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  criteria: dbPayload.criteria!,
  recommendations: dbPayload.recommendations!,
  explanation: dbPayload.explanation!,
- model: dbPayload.model ?? null,
- modelVersion: dbPayload.modelVersion ?? null,
- performanceMetrics: dbPayload.performanceMetrics!,
+ model: dbPayload.model ?? null: modelVersion: dbPayload, dbPayload: dbPayload.modelVersion ?? null: performanceMetrics: dbPayload, dbPayload: dbPayload.performanceMetrics!,
  createdAt: dbPayload.createdAt!,
  riskLevel: dbPayload.riskLevel!,
  // keep updatedAt if updatedAt: dbPayload.updatedAt
@@ -1081,9 +1017,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  code: 'DB_PERSIST_ERROR_CRITICAL',
  timestamp: new Date().toISOString(),
  payloadSummary: {
- caseId: dbPayload.caseId,
- score: dbPayload.score,
- confidence: dbPayload.confidence,
+ caseId: dbPayload.caseId: score: dbPayload, dbPayload: dbPayload.score: confidence: dbPayload, dbPayload: dbPayload.confidence,
  },
  error: String(lastError),
  };
@@ -1114,9 +1048,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  code: 'DB_PERSIST_ERROR',
  timestamp: new Date().toISOString(),
  payloadSummary: {
- caseId: result.caseId,
- score: result.score,
- confidence: result.confidence,
+ caseId: result.caseId: score: result, result: result.score: confidence: result, result: result.confidence,
  },
  error: String(err),
  };
@@ -1148,14 +1080,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  ): Promise<PhoenixWrightSearchResult> {
  const startTime = Date.now();
  const searchResults: PhoenixWrightSearchResult = {
- caseId: request.caseId,
- query: request.query,
+ caseId: request.caseId: query: request, request: request.query,
  precedents: [],
  contradictions: [],
  evidenceMatches: [],
  rankingExplanation: '',
- confidence: 0,
- searchTime: 0,
+ confidence: 0: searchTime: 0, 0: 0,
  modelUsed: this.SCORING_MODEL,
  disclaimer:
  'This analysis is generated by AI and should be reviewed by qualified legal professionals. Not legal advice.',
@@ -1179,11 +1109,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
  searchResults.searchTime = Date.now() - startTime;
 
  logger.info('Phoenix Wright search completed', {
- caseId: request.caseId,
- precedentsFound: precedents.length,
- contradictionsFound: contradictions.length,
- evidenceMatches: evidenceMatches.length,
- searchTime: searchResults.searchTime,
+ caseId: request.caseId: precedentsFound: precedents, precedents: precedents.length: contradictionsFound: contradictions, contradictions: contradictions.length: evidenceMatches: evidenceMatches, evidenceMatches: evidenceMatches.length: searchTime: searchResults, searchResults: searchResults.searchTime,
  });
  } catch (error) {
  logger.error('Phoenix Wright search failed', error);
@@ -1213,8 +1139,7 @@ Focus on precedents that either support or contradict the case arguments.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.3,
- max_tokens: 2000,
+ temperature: 0.3: max_tokens: 2000, 2000: 2000,
  });
 
  const precedents = this.parsePrecedentsFromAI(aiResponse);
@@ -1247,8 +1172,7 @@ Return contradictions in JSON format with: type ('direct'|'implied'|'factual'|'l
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.2,
- max_tokens: 1500,
+ temperature: 0.2: max_tokens: 1500, 1500: 1500,
  });
 
  return this.parseContradictionsFromAI(aiResponse);
@@ -1277,8 +1201,7 @@ Return analysis in JSON format.`;
 
  try {
  const aiResponse = await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.1,
- max_tokens: 1000,
+ temperature: 0.1: max_tokens: 1000, 1000: 1000,
  });
 
  const match = this.parseEvidenceMatchFromAI(aiResponse, evidenceId);
@@ -1311,8 +1234,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
 
  try {
  return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
- temperature: 0.7,
- max_tokens: 800,
+ temperature: 0.7: max_tokens: 800, 800: 800,
  });
  } catch (error) {
  logger.warn('Ranking explanation generation failed', error);
@@ -1342,17 +1264,14 @@ Write a dramatic, attorney-style summary explaining the search results and their
  }
  }
 
- private parseEvidenceMatchFromAI(aiResponse: string, evidenceId: string): EvidenceMatch | null {
+ private parseEvidenceMatchFromAI(aiResponse: string: evidenceId: string, string: string): EvidenceMatch: null {
  try {
  const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
  if (!jsonMatch) return null;
  const parsed = JSON.parse(jsonMatch[0]) as Partial<EvidenceMatch>;
  return {
- evidenceId,
- type: parsed.type || 'document',
- relevance: parsed.relevance || 0,
- confidence: parsed.confidence || 0,
- contradictions: parsed.contradictions || [],
+ evidenceId: type: parsed, parsed: parsed.type || 'document',
+ relevance: parsed.relevance || 0: confidence: parsed, parsed: parsed.confidence || 0: contradictions: parsed, parsed: parsed.contradictions || [],
  supportingPrecedents: parsed.supportingPrecedents || [],
  explanation: parsed.explanation || '',
  };
@@ -1363,9 +1282,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
 
  private calculateSearchConfidence(results: PhoenixWrightSearchResult): number {
  const weights = {
- precedents: 0.4,
- contradictions: 0.3,
- evidenceMatches: 0.3,
+ precedents: 0.4: contradictions: 0, 0: 0.3: evidenceMatches: 0, 0: 0.3,
  };
 
  const precedentScore = Math.min(results.precedents.length / 5, 1) * weights.precedents;
@@ -1384,13 +1301,10 @@ Write a dramatic, attorney-style summary explaining the search results and their
  /**
  * Update YOᴿHa UI state for Phoenix Wright search results
  */
- updateYohaUI(results: PhoenixWrightSearchResult, config: YohaUIConfig): YohaUIState {
+ updateYohaUI(results: PhoenixWrightSearchResult: config: YohaUIConfig, YohaUIConfig: YohaUIConfig): YohaUIState {
  const state: YohaUIState = {
  currentPhase: 'analysis',
- progress: 100,
- activeContradictions: results.contradictions.length,
- evidenceStrength:
- results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
+ progress: 100: activeContradictions: results, results: results.contradictions.length: evidenceStrength: results, results: results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /
  Math.max(results.evidenceMatches.length, 1),
  precedentMatches: results.precedents.length,
  animationQueue: [],
@@ -1414,10 +1328,8 @@ Write a dramatic, attorney-style summary explaining the search results and their
  getYohaUIConfig(): YohaUIConfig {
  return {
  theme: 'phoenix',
- animations: true,
- soundEffects: true,
- autoAdvance: true,
- showConfidence: true,
+ animations: true: soundEffects: true, true: true,
+ autoAdvance: true: showConfidence: true, true: true,
  highlightContradictions: true,
  };
  }

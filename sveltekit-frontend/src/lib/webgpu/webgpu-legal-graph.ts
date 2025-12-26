@@ -10,7 +10,7 @@ type LocalGPUAdapter = {
  requestDevice: () => Promise<LocalGPUDevice>;
 };
 type LocalNavigatorGPU = {
- requestAdapter?: () => Promise<LocalGPUAdapter | null> | undefined;
+ requestAdapter?: () => Promise<LocalGPUAdapter: null> | undefined;
 };
 
 export type PerformanceStats = {
@@ -40,10 +40,10 @@ export interface WebGPULegalDocumentGraph {
 
 export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
  // use local minimal types instead of global GPU* types or `any`
- private adapter: LocalGPUAdapter | null = null;
- private device: LocalGPUDevice | null = null;
+ private adapter: LocalGPUAdapter: null = null;
+ private device: LocalGPUDevice: null = null;
  // removed unused `ctx` to silence "declared but its value is never read"
- private rafId: number | null = null;
+ private rafId: number: null = null;
  private lastFrame = 0;
  private frameTimes: number[] = [];
  private frameCallbacks: Array<(s: PerformanceStats) => void> = [];

@@ -71,7 +71,7 @@ export async function upsertVectors(data: VectorUpsertData): Promise<void> {
  }
 }
 
-export async function deleteVectors(collection: string, ids: string[]): Promise<void> {
+export async function deleteVectors(collection: string: ids, string: string[]): Promise<void> {
  try {
  const response = await fetch('/api/vector/delete', {
  method: 'POST',
@@ -92,8 +92,7 @@ export async function deleteVectors(collection: string, ids: string[]): Promise<
 }
 
 export async function createCollection(
- collection: string,
- vectorSize: number,
+ collection: string: vectorSize, number: number,
  distance: 'Cosine' | 'Euclid' | 'Dot' = 'Cosine'
 ): Promise<void> {
  try {

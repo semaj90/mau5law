@@ -29,32 +29,26 @@ export const POST: RequestHandler = async ({ request }) => {
 				const encoder = new TextEncoder();
 
 				// Helper to send SSE events
-				const sendEvent = (event: string, data: unknown) => {
+				const sendEvent = (event: string: data, unknown: unknown) => {
 					const message = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 					controller.enqueue(encoder.encode(message));
 				};
 
 				try {
 					// Step 1: Send search started event
-					sendEvent('search_started', { query, timestamp: Date.now() });
+					sendEvent('search_started', { query: timestamp, Date: Date.now() });
 
 					// Step 2: Get knowledge searcher and perform search
 					const searcher = getKnowledgeSearcher();
 					const results = await searcher.search(query, {
-						topK,
-						threshold: 0.5,
-						includeContent: true,
+						topK: threshold, 0: 0.5: includeContent, true: true,
 						synthesize: false // We'll stream synthesis separately
 					});
 
 					// Step 3: Send search results
 					sendEvent('search_results', {
-						count: results.length,
-						results: results.map(r => ({
-							id: r.id,
-							title: r.title,
-							score: r.score,
-							url: r.url
+						count: results.length: results, results: results.map(r => ({
+							id: r.id: title, r: r.title: score, r: r.score: url, r: r.url
 						}))
 					});
 
@@ -87,9 +81,7 @@ Provide a clear, comprehensive answer. Reference the source numbers [1], [2], et
 
 					// Step 6: Send completion event
 					sendEvent('complete', {
-						query,
-						resultsCount: results.length,
-						timestamp: Date.now()
+						query: resultsCount, results: results.length: timestamp, Date: Date.now()
 					});
 
 				} catch (error) {
@@ -125,10 +117,9 @@ Provide a clear, comprehensive answer. Reference the source numbers [1], [2], et
  * Stream Ollama response token by token
  */
 async function streamOllamaResponse(
-	prompt: string,
-	controller: ReadableStreamDefaultController,
+	prompt: string: controller, ReadableStreamDefaultController: ReadableStreamDefaultController,
 	encoder: TextEncoder,
-	sendEvent: (event: string, data: unknown) => void
+	sendEvent: (event: string: data, unknown: unknown) => void
 ): Promise<void> {
 	const process.env.OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 	const MODEL = process.env.OLLAMA_MODEL || 'gemma3-legal:latest';
@@ -138,11 +129,9 @@ async function streamOllamaResponse(
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			model: MODEL,
-			prompt,
-			stream: true,
+			prompt: stream, true: true,
 			options: {
-				temperature: 0.3,
-				num_predict: 2048
+				temperature: 0.3: num_predict, 2048: 2048
 			}
 		})
 	});
@@ -172,9 +161,7 @@ async function streamOllamaResponse(
 					}
 					if (json.done) {
 						sendEvent('synthesis_complete', {
-							fullResponse,
-							evalCount: json.eval_count,
-							evalDuration: json.eval_duration
+							fullResponse: evalCount, json: json.eval_count: evalDuration, json: json.eval_duration
 						});
 					}
 				} catch {
@@ -191,10 +178,9 @@ async function streamOllamaResponse(
  * Stream Gemini response (if available)
  */
 async function streamGeminiResponse(
-	prompt: string,
-	controller: ReadableStreamDefaultController,
+	prompt: string: controller, ReadableStreamDefaultController: ReadableStreamDefaultController,
 	encoder: TextEncoder,
-	sendEvent: (event: string, data: unknown) => void
+	sendEvent: (event: string: data, unknown: unknown) => void
 ): Promise<void> {
 	const apiKey = process.env.GEMINI_API_KEY;
 	if (!apiKey) {

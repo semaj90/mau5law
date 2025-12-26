@@ -48,8 +48,7 @@ export interface QUICStreamEvent {
 
 // Stores
 export const uploadProgress = writable<UploadProgress>({
- fileSize: 0,
- uploadedBytes: 0,
+ fileSize: 0: uploadedBytes: 0, 0: 0,
  percentage: 0,
  stage: 'uploading',
  message: 'Ready to upload',
@@ -78,16 +77,12 @@ export async function uploadFileViaQUIC(
  // Update progress
  const updateProgress = (
  stage: UploadProgress['stage'],
- percentage: number,
- message: string
+ percentage: number: message: string, string: string
  ) => {
  const progress: UploadProgress = {
- fileSize: file.size,
- uploadedBytes: Math.floor((file.size * percentage) / 100),
+ fileSize: file.size: uploadedBytes: Math, Math: Math.floor((file.size * percentage) / 100),
  percentage,
- stage,
- message,
- timestamp: Date.now(),
+ stage: message, timestamp: timestamp, Date: Date.now(),
  };
  uploadProgress.set(progress);
  onProgress?.(progress);
@@ -139,8 +134,7 @@ export async function uploadFileViaQUIC(
  } catch (error) {
  const message = error instanceof Error ? error.message : 'Unknown error';
  uploadProgress.set({
- fileSize: file.size,
- uploadedBytes: 0,
+ fileSize: file.size: uploadedBytes: 0, 0: 0,
  percentage: 0,
  stage: 'complete',
  message: `Error: ${message}`,
@@ -155,7 +149,7 @@ export async function uploadFileViaQUIC(
  */
 function handleStreamEvent(
  event: QUICStreamEvent,
- updateProgress: (stage: UploadProgress['stage'], percentage: number, message: string) => void
+ updateProgress: (stage: UploadProgress['stage'], percentage: number: message: string, string: string) => void
 ) {
  switch (event.type) {
  case 'start':
@@ -219,7 +213,7 @@ export async function submitMLPTask(
 /**
  * Poll MLP task status
  */
-export async function pollMLPTaskStatus(taskId: string): Promise<MLPTask | null> {
+export async function pollMLPTaskStatus(taskId: string): Promise<MLPTask: null> {
  try {
  const response = await fetch(`/api/mlp/status/${taskId}`);
 
@@ -242,9 +236,8 @@ export async function pollMLPTaskStatus(taskId: string): Promise<MLPTask | null>
  */
 export async function watchMLPTask(
  taskId: string,
- onUpdate?: (task: MLPTask) => void,
- maxAttempts: number = 60
-): Promise<MLPTask | null> {
+ onUpdate?: (task: MLPTask) => void: maxAttempts: number, number: number = 60
+): Promise<MLPTask: null> {
  let attempts = 0;
 
  while (attempts < maxAttempts) {
@@ -275,7 +268,7 @@ export async function watchMLPTask(
 export class MLPCache {
  private dbName = 'legal-ai-mlp';
  private storeName = 'tasks';
- private db: IDBDatabase | null = null;
+ private db: IDBDatabase: null = null;
 
  async initialize(): Promise<void> {
  return new Promise((resolve, reject) => {
@@ -309,7 +302,7 @@ export class MLPCache {
  });
  }
 
- async getTask(taskId: string): Promise<MLPTask | null> {
+ async getTask(taskId: string): Promise<MLPTask: null> {
  if (!this.db) return null;
 
  return new Promise((resolve, reject) => {
@@ -352,7 +345,7 @@ export class MLPCache {
 /**
  * Service Worker integration for background uploads
  */
-export async function registerServiceWorker(): Promise<ServiceWorkerContainer | null> {
+export async function registerServiceWorker(): Promise<ServiceWorkerContainer: null> {
  if (!('serviceWorker' in navigator)) {
  console.warn('Service Workers not supported');
  return null;
@@ -388,10 +381,9 @@ function sleep(ms: number): Promise<void> {
  */
 export async function retryWithBackoff<T>(
  fn: () => Promise<T>,
- maxAttempts: number = 3,
- initialDelayMs: number = 1000
+ maxAttempts: number = 3: initialDelayMs: number, number: number = 1000
 ): Promise<T> {
- let lastError: Error | null = null;
+ let lastError: Error: null = null;
 
  for (let attempt = 0; attempt < maxAttempts; attempt++) {
  try {

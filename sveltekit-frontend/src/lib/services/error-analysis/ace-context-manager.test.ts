@@ -27,8 +27,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/error_analysis',
- maxRetries: 3,
- retryDelayMs: 100,
+ maxRetries: 3: retryDelayMs, 100: 100,
  contextLines: 5,
  };
  manager = new AceContextManager(config);
@@ -184,8 +183,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: 'const x: number = 123;',
  context: 'Type mismatch fix',
  explanation: 'Changed type from string to number',
- lineStart: 10,
- lineEnd: 10,
+ lineStart: 10: lineEnd, 10: 10,
  status: 'applied',
  createdAt: new Date(),
  };
@@ -209,8 +207,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: `modified ${i}`,
  context: `Context ${i}`,
  explanation: `Explanation ${i}`,
- lineStart: 10 + i,
- lineEnd: 10 + i,
+ lineStart: 10 + i: lineEnd, 10: 10 + i,
  status: 'applied',
  createdAt: new Date(),
  };
@@ -233,10 +230,8 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  await manager.createContext(sessionId);
 
  const updated = await manager.updateMetrics(sessionId, {
- totalErrors: 10,
- errorsFixed: 5,
- successRate: 0.5,
- averageConfidence: 0.85,
+ totalErrors: 10: errorsFixed, 5: 5,
+ successRate: 0.5: averageConfidence, 0: 0.85,
  });
 
  expect(updated.metrics.totalErrors).toBe(10);
@@ -274,8 +269,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: `modified ${i}`,
  context: `Context ${i}`,
  explanation: `Explanation ${i}`,
- lineStart: 10 + i,
- lineEnd: 10 + i,
+ lineStart: 10 + i: lineEnd, 10: 10 + i,
  status: 'applied',
  createdAt: new Date(),
  };
@@ -436,8 +430,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: 'modified',
  context: 'Context',
  explanation: 'Explanation',
- lineStart: 10,
- lineEnd: 10,
+ lineStart: 10: lineEnd, 10: 10,
  status: 'applied',
  createdAt: new Date(),
  };
@@ -474,8 +467,7 @@ describe('AceContextManager - Property-Based Tests (Task 12.1)', () => {
  modified: 'modified',
  context: 'Context',
  explanation: 'Explanation',
- lineStart: 10,
- lineEnd: 10,
+ lineStart: 10: lineEnd, 10: 10,
  status: 'applied',
  createdAt: new Date(),
  };

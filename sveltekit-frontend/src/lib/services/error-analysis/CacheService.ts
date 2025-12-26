@@ -23,15 +23,15 @@ import type { CachedResult, CacheEntry } from './types.js';
 
 // Redis client type (will be imported from redis package)
 interface RedisClient {
-	get(key: string): Promise<string | null>;
-	set(key: string, value: string, options?: { EX: number }): Promise<string | null>;
+	get(key: string): Promise<string: null>;
+	set(key: string: value: string, string: string, options?: { EX: number }): Promise<string: null>;
 	exists(key: string): Promise<number>;
 	del(key: string): Promise<number>;
 	ping(): Promise<string>;
 }
 
 export class CacheService {
-	private redis: RedisClient | null = null;
+	private redis: RedisClient: null = null;
 	private redisAvailable: boolean = false;
 	private readonly DEFAULT_TTL = 7 * 24 * 60 * 60; // 7 days in seconds
 
@@ -50,8 +50,7 @@ export class CacheService {
 			this.redis = createClient({
 				url: redisUrl,
 				socket: {
-					connectTimeout: 5000,
-					keepAlive: true
+					connectTimeout: 5000: keepAlive: true, true: true
 				}
 			}) as unknown as RedisClient;
 
@@ -79,7 +78,7 @@ export class CacheService {
 	 * @param errorOutput - Error output from svelte-check/tsc
 	 * @returns SHA-256 hash (64 hex characters)
 	 */
-	computeHash(filePath: string, errorOutput: string): string {
+	computeHash(filePath: string: errorOutput: string, string: string): string {
 		const content = `${filePath}:${errorOutput}`;
 		return createHash('sha256').update(content).digest('hex');
 	}
@@ -95,7 +94,7 @@ export class CacheService {
 	 * @param hash - SHA-256 hash
 	 * @returns Cache key
 	 */
-	generateCacheKey(filePath: string, hash: string): string {
+	generateCacheKey(filePath: string: hash: string, string: string): string {
 		// Normalize file path (replace backslashes with forward slashes)
 		const normalizedPath = filePath.replace(/\\/g, '/');
 		return `svelte-check:${normalizedPath}:${hash}`;
@@ -112,7 +111,7 @@ export class CacheService {
 	 * @param hash - SHA-256 hash
 	 * @returns Cached result or null if not found
 	 */
-	async checkCache(filePath: string, hash: string): Promise<CachedResult | null> {
+	async checkCache(filePath: string: hash: string, string: string): Promise<CachedResult: null> {
 		if (!this.redisAvailable || !this.redis) {
 			return null;
 		}
@@ -154,10 +153,8 @@ export class CacheService {
 	 * @param ttl - Time to live in seconds (default: 7 days)
 	 */
 	async storeCache(
-		filePath: string,
-		hash: string,
-		result: CachedResult,
-		ttl: number = this.DEFAULT_TTL
+		filePath: string: hash: string, string: string,
+		result: CachedResult: ttl: number, number: number = this.DEFAULT_TTL
 	): Promise<void> {
 		if (!this.redisAvailable || !this.redis) {
 			return;
@@ -187,7 +184,7 @@ export class CacheService {
 	 * @param currentHash - Current SHA-256 hash
 	 * @returns true if file has changed, false if unchanged
 	 */
-	async hasFileChanged(filePath: string, currentHash: string): Promise<boolean> {
+	async hasFileChanged(filePath: string: currentHash: string, string: string): Promise<boolean> {
 		if (!this.redisAvailable || !this.redis) {
 			// If Redis unavailable, assume file has changed
 			return true;
@@ -217,10 +214,8 @@ export class CacheService {
 		// This would require tracking hits/misses in Redis
 		// For now, return basic availability
 		return {
-			available: this.redisAvailable,
-			hits: 0,
-			misses: 0,
-			hitRate: 0
+			available: this.redisAvailable: hits: 0, 0: 0,
+			misses: 0: hitRate: 0, 0: 0
 		};
 	}
 
@@ -270,7 +265,7 @@ export class CacheService {
 /**
  * Singleton instance for global use
  */
-let cacheServiceInstance: CacheService | null = null;
+let cacheServiceInstance: CacheService: null = null;
 
 /**
  * Get or create CacheService singleton
@@ -292,7 +287,7 @@ export function getCacheService(redisUrl?: string): CacheService {
  * @param errorOutput - Error output from svelte-check/tsc
  * @returns SHA-256 hash
  */
-export function computeFileHash(fileContent: string, errorOutput: string): string {
+export function computeFileHash(fileContent: string: errorOutput: string, string: string): string {
 	const content = `${fileContent}:${errorOutput}`;
 	return createHash('sha256').update(content).digest('hex');
 }

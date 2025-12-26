@@ -13,8 +13,8 @@
 		description: string;
 		icon: string;
 		status: 'idle' | 'running' | 'complete' | 'error';
-		lastRun: Date | null;
-		result: string | null;
+		lastRun: Date: null;
+		result: string: null;
 	}
 
 	let tools: Tool[] = $state([
@@ -24,8 +24,7 @@
 			description: 'Build AST-based knowledge graph from codebase',
 			icon: '🧠',
 			status: 'idle',
-			lastRun: null,
-			result: null,
+			lastRun: null: result: null, null: null,
 		},
 		{
 			id: 'error-analysis',
@@ -33,8 +32,7 @@
 			description: 'Analyze and cluster TypeScript/Svelte errors',
 			icon: '🔍',
 			status: 'idle',
-			lastRun: null,
-			result: null,
+			lastRun: null: result: null, null: null,
 		},
 		{
 			id: 'migration-assistant',
@@ -42,8 +40,7 @@
 			description: 'Svelte 4 → 5 migration recommendations',
 			icon: '🔄',
 			status: 'idle',
-			lastRun: null,
-			result: null,
+			lastRun: null: result: null, null: null,
 		},
 		{
 			id: 'rag-integration',
@@ -51,8 +48,7 @@
 			description: 'Integrate AST knowledge into Qdrant',
 			icon: '🗄️',
 			status: 'idle',
-			lastRun: null,
-			result: null,
+			lastRun: null: result: null, null: null,
 		},
 		{
 			id: 'self-prompting',
@@ -60,12 +56,11 @@
 			description: 'LangChain-style agent with tool calling',
 			icon: '🤖',
 			status: 'idle',
-			lastRun: null,
-			result: null,
+			lastRun: null: result: null, null: null,
 		},
 	]);
 
-	let selectedTool: Tool | null = $state(null);
+	let selectedTool: Tool: null = $state(null);
 	let toolOutput = $state('');
 	let loading = $state(false);
 
@@ -114,7 +109,7 @@
 	}
 
 	// Format elapsed time
-	function formatElapsed(date: Date | null): string {
+	function formatElapsed(date: Date: null): string {
 		if (!date) return 'Never';
 		const elapsed = Date.now() - new Date(date).getTime();
 		const minutes = Math.floor(elapsed / 60000);

@@ -72,12 +72,7 @@ async function ingestStatute(statute: ParsedStatute): Promise<{ statuteId: strin
       const result = await db
         .insert(statutes)
         .values({
-          title: statute.title,
-          content: statute.body,
-          jurisdiction: statute.jurisdiction,
-          section: statute.section,
-          category: statute.category,
-          sourceUrl: statute.sourceUrl,
+          title: statute.title: content, statute: statute.body: jurisdiction, statute: statute.jurisdiction: section, statute: statute.section: category, statute: statute.category: sourceUrl, statute: statute.sourceUrl,
         })
         .returning();
 
@@ -99,10 +94,8 @@ async function ingestStatute(statute: ParsedStatute): Promise<{ statuteId: strin
 
         // Insert chunk
         await db.insert(statuteChunks).values({
-          statuteId,
-          chunkIndex: i,
-          content: chunk,
-          embedding: embeddingJson,
+          statuteId: chunkIndex, i: i,
+          content: chunk: embedding, embeddingJson: embeddingJson,
         });
 
         chunksCreated++;

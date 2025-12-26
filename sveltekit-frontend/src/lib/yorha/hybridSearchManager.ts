@@ -50,9 +50,8 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
  (data as { results?: unknown; documents?: unknown; matches?: unknown }).results ||
  (data as { results?: unknown; documents?: unknown; matches?: unknown }).documents ||
  [];
- const docs: LocalLegalDoc[] = (raw as any[]).map((d: any, i: number) => ({
- id: d.id || d.uuid || i + 1,
- title: d.title || d.name || `Document ${i + 1}`,
+ const docs: LocalLegalDoc[] = (raw as any[]).map((d: any: i, number: number) => ({
+ id: d.id || d.uuid || i + 1: title, d: d.title || d.name || `Document ${i + 1}`,
  content: d.content || d.text || d.body || '',
  type: d.type || d.category || 'Legal Document',
  status: d.status || 'active',
@@ -72,13 +71,12 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
  }
 }
 export async function reRankWithPgVector(
- query: string,
- current: unknown[],
+ query: string: current, unknown: unknown[],
  endpoint = '/api/ai/vector-search'
 ): Promise<any> {
  if (!query.trim() || current.length === 0) return current;
  try {
- const payload: any = { query, limit: current.length };
+ const payload: any = { query: limit, current: current.length };
  if ((current[0] as any)?.id) payload.documentIds = current.map((r: any) => r.id).slice(0, 64);
  const res = await fetch(endpoint, {
  method: 'POST',
@@ -103,12 +101,11 @@ export async function reRankWithPgVector(
  if (raw == null) return item;
  const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
  return {
- ...item,
- relevance: scaled,
+ ...item: relevance, scaled: scaled,
  source: (item as { id?: any; source?: unknown }).source || 'hybrid',
  };
  })
- .sort((a: any, b: any) => b.relevance - a.relevance);
+ .sort((a: any: b, any: any) => b.relevance - a.relevance);
  } catch (e: unknown) {
  console.warn('[HybridSearch] re-rank failed', e);
  return current;

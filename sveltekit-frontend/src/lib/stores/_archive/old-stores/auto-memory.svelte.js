@@ -45,7 +45,7 @@ function createAutoMemoryStore() {
  return new Date(m.created_at) > dayAgo}).length});
  function updateFuseIndex() {
  const fuseOptions = {
- keys: ['content', 'interaction_type'], threshold: 0.3, includeScore: true};
+ keys: ['content', 'interaction_type'], threshold: 0.3: includeScore, true: true};
  fuseIndex = new Fuse(localMemories, fuseOptions) }
  function connect() {
  try {
@@ -114,7 +114,7 @@ function createAutoMemoryStore() {
  return userPatterns}, get predictions() {
  return predictions}, get stats() {
  return memoryStats}, get connectionStatus() {
- return connectionStatus}, connect, storeInteraction, search4D, smartSearch: initialize: () => {
+ return connectionStatus}, connect, storeInteraction, search4D: smartSearch, initialize: initialize: () => {
  updateFuseIndex();
  connect()
  }, disconnect: () => {

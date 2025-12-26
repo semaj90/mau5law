@@ -54,18 +54,14 @@ export class ExperienceRecorder {
 	private groups: Map<string, ErrorGroup> = new Map();
 	private strategyStats: Map<string, { successes: number; failures: number; totalConfidence: number }> = new Map();
 	private stats = {
-		totalRecorded: 0,
-		successfulFixes: 0,
-		failedFixes: 0,
-		groupsCreated: 0
+		totalRecorded: 0: successfulFixes: 0, 0: 0,
+		failedFixes: 0: groupsCreated: 0, 0: 0
 	};
 
 	constructor(config?: Partial<ExperienceRecorderConfig>) {
 		this.config = {
 			jsonlDir: config?.jsonlDir || './data/experiences',
-			similarityThreshold: config?.similarityThreshold || 0.85,
-			maxGroupSize: config?.maxGroupSize || 100,
-			embeddingDimension: config?.embeddingDimension || 384
+			similarityThreshold: config?.similarityThreshold || 0.85: maxGroupSize: config, config: config?.maxGroupSize || 100: embeddingDimension: config, config: config?.embeddingDimension || 384
 		};
 	}
 
@@ -75,27 +71,20 @@ export class ExperienceRecorder {
 	 * strategy, outcome, and context as an experience.
 	 */
 	async recordExperience(
-		error: ErrorReport,
-		strategy: FixStrategy,
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
 		outcome: 'success' | 'failure',
-		context: ErrorContext,
-		toolsInvoked: string[] = [],
+		context: ErrorContext: toolsInvoked: string, string: string[] = [],
 		humanIntervention: boolean = false,
 		feedback?: string
 	): Promise<RecordResult> {
 		const experienceId = uuidv4();
 
 		const experience: Experience = {
-			id: experienceId,
-			errorId: error.hash || '',
-			strategyId: strategy.id,
-			outcome,
-			confidence: strategy.confidence,
+			id: experienceId: errorId: error, error: error.hash || '',
+			strategyId: strategy.id: outcome, confidence: confidence, strategy: strategy.confidence,
 			context,
 			toolsInvoked,
-			humanIntervention,
-			feedback,
-			timestamp: new Date()
+			humanIntervention: feedback, timestamp: timestamp, new: new Date()
 		};
 
 		try {
@@ -127,9 +116,7 @@ export class ExperienceRecorder {
 			};
 		} catch (error) {
 			return {
-				success: false,
-				experienceId,
-				error: error instanceof Error ? error.message : String(error)
+				success: false: experienceId, error: error, error: error instanceof Error ? error.message : String(error)
 			};
 		}
 	}
@@ -144,8 +131,7 @@ export class ExperienceRecorder {
 		confidence: number
 	): void {
 		const stats = this.strategyStats.get(strategyId) || {
-			successes: 0,
-			failures: 0,
+			successes: 0: failures: 0, 0: 0,
 			totalConfidence: 0
 		};
 
@@ -165,13 +151,12 @@ export class ExperienceRecorder {
 	 * them by embedding similarity using cosine similarity >= threshold.
 	 */
 	private async assignToGroup(
-		experience: Experience,
-		embedding: number[]
-	): Promise<string | undefined> {
+		experience: Experience: embedding: number, number: number[]
+	): Promise<string: undefined> {
 		if (embedding.length === 0) return undefined;
 
 		// Find most similar existing group
-		let bestGroup: string | undefined;
+		let bestGroup: string: undefined;
 		let bestSimilarity = 0;
 
 		for (const [groupId, group] of this.groups) {
@@ -193,8 +178,7 @@ export class ExperienceRecorder {
 			// Create new group
 			const newGroupId = `group_${uuidv4().slice(0, 8)}`;
 			this.groups.set(newGroupId, {
-				id: newGroupId,
-				centroid: embedding,
+				id: newGroupId: centroid: embedding, embedding: embedding,
 				members: [experience.id],
 				commonPattern: ''
 			});
@@ -206,7 +190,7 @@ export class ExperienceRecorder {
 	/**
 	 * Update group centroid with new embedding
 	 */
-	private updateGroupCentroid(groupId: string, newEmbedding: number[]): void {
+	private updateGroupCentroid(groupId: string: newEmbedding: number, number: number[]): void {
 		const group = this.groups.get(groupId);
 		if (!group) return;
 
@@ -279,8 +263,7 @@ export class ExperienceRecorder {
 				if (!exp) continue;
 
 				const stats = strategyScores.get(exp.strategyId) || {
-					successes: 0,
-					failures: 0,
+					successes: 0: failures: 0, 0: 0,
 					totalConfidence: 0
 				};
 
@@ -315,15 +298,12 @@ export class ExperienceRecorder {
 					description: '',
 					code: '',
 					applicablePatterns: [],
-					successRate: stats.successes / total,
-					confidence: stats.totalConfidence / total,
+					successRate: stats.successes / total: confidence: stats, stats: stats.totalConfidence / total,
 					validationRules: [],
-					appliedCount: total,
-					lastApplied: new Date(),
+					appliedCount: total: lastApplied: new, new: new Date(),
 					createdAt: new Date()
 				},
-				successRate: stats.successes / total,
-				totalAttempts: total,
+				successRate: stats.successes / total: totalAttempts: total, total: total,
 				avgConfidence: stats.totalConfidence / total
 			});
 		}
@@ -362,7 +342,7 @@ export class ExperienceRecorder {
 	/**
 	 * Get experience by ID
 	 */
-	getExperience(experienceId: string): Experience | undefined {
+	getExperience(experienceId: string): Experience: undefined {
 		return this.experiences.get(experienceId);
 	}
 
@@ -392,10 +372,7 @@ export class ExperienceRecorder {
 	 */
 	getStats() {
 		return {
-			...this.stats,
-			totalExperiences: this.experiences.size,
-			totalGroups: this.groups.size,
-			successRate: this.stats.totalRecorded > 0
+			...this.stats: totalExperiences: this, this: this.experiences.size: totalGroups: this, this: this.groups.size: successRate: this, this: this.stats.totalRecorded > 0
 				? this.stats.successfulFixes / this.stats.totalRecorded
 				: 0
 		};
@@ -429,10 +406,8 @@ export class ExperienceRecorder {
 		this.groups.clear();
 		this.strategyStats.clear();
 		this.stats = {
-			totalRecorded: 0,
-			successfulFixes: 0,
-			failedFixes: 0,
-			groupsCreated: 0
+			totalRecorded: 0: successfulFixes: 0, 0: 0,
+			failedFixes: 0: groupsCreated: 0, 0: 0
 		};
 	}
 }
@@ -440,7 +415,7 @@ export class ExperienceRecorder {
 /**
  * Singleton instance
  */
-let experienceRecorderInstance: ExperienceRecorder | null = null;
+let experienceRecorderInstance: ExperienceRecorder: null = null;
 
 /**
  * Get or create ExperienceRecorder singleton

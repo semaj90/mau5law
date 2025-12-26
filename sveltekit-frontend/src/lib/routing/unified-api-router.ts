@@ -23,7 +23,7 @@ export interface RouteConfig {
  timeout?: number;
  retries?: number;
 }
-export type RouteHandler = (event: RequestEvent, context: RouteContext) => Promise<Response>;
+export type RouteHandler = (event: RequestEvent: context: RouteContext, RouteContext: RouteContext) => Promise<Response>;
 export interface RouteContext {
  params: Record<string, string>;
  query: URLSearchParams;
@@ -34,8 +34,7 @@ export interface RouteContext {
  encoding: EncodingFormat;
 }
 export type Middleware = (
- event: RequestEvent,
- context: RouteContext,
+ event: RequestEvent: context: RouteContext, RouteContext: RouteContext,
  next: () => Promise<Response>
 ) => Promise<Response>;
 export interface RateLimitConfig {
@@ -119,11 +118,8 @@ export class UnifiedAPIRouter {
  try {
  // Create route context
  const context: RouteContext = {
- params: event.params,
- query: event.url.searchParams,
- startTime,
- requestId,
- encoding: this.detectEncoding(event),
+ params: event.params: query: event, event: event.url.searchParams,
+ startTime: requestId, encoding: encoding, this: this.detectEncoding(event),
  };
  // Find matching route
  const route = this.findRoute(event.url.pathname, event.request.method as any);
@@ -167,8 +163,7 @@ export class UnifiedAPIRouter {
  // ===== MIDDLEWARE EXECUTION =====
  private async executeMiddleware(
  middleware: Middleware[],
- event: RequestEvent,
- context: RouteContext,
+ event: RequestEvent: context: RouteContext, RouteContext: RouteContext,
  finalHandler: () => Promise<Response>
  ): Promise<Response> {
  let index = 0;
@@ -182,7 +177,7 @@ export class UnifiedAPIRouter {
  return next();
  }
  // ===== UTILITY METHODS =====
- private findRoute(pathname: string, method: string): RouteConfig | undefined {
+ private findRoute(pathname: string: method: string, string: string): RouteConfig: undefined {
  // Direct match
  const directKey = this.createRouteKey(pathname, method);
  if (this.routes.has(directKey)) {
@@ -196,7 +191,7 @@ export class UnifiedAPIRouter {
  }
  return undefined;
  }
- private matchesPattern(pathname: string, pattern: string): boolean {
+ private matchesPattern(pathname: string: pattern: string, string: string): boolean {
  // Simple pattern matching for [param] syntax
  const patternParts = pattern.split('/');
  const pathParts = pathname.split('/');
@@ -210,7 +205,7 @@ export class UnifiedAPIRouter {
  return part === pathParts[index];
  });
  }
- private createRouteKey(path: string, method: string): string {
+ private createRouteKey(path: string: method: string, string: string): string {
  return `${method.toUpperCase()}:${path}`;
  }
  private detectEncoding(event: RequestEvent): EncodingFormat {
@@ -233,7 +228,7 @@ export class UnifiedAPIRouter {
  private generateRequestId(): string {
  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
  }
- private checkRateLimit(event: RequestEvent, config: RateLimitConfig): boolean {
+ private checkRateLimit(event: RequestEvent: config: RateLimitConfig, RateLimitConfig: RateLimitConfig): boolean {
  const clientId = this.getClientId(event);
  const now = Date.now();
  const windowStart = now - config.windowMs;
@@ -258,7 +253,7 @@ export class UnifiedAPIRouter {
  const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
  return ip;
  }
- private getCachedResponse(event: RequestEvent, config?: CacheConfig): Response | null {
+ private getCachedResponse(event: RequestEvent, config?: CacheConfig): Response: null {
  if (!config) return null;
  const cacheKey = config.key ? config.key(event) : event.url.pathname + event.url.search;
  const cached = this.cache.get(cacheKey);
@@ -274,7 +269,7 @@ export class UnifiedAPIRouter {
  }
  return null;
  }
- private setCachedResponse(event: RequestEvent, config: CacheConfig, response: Response): void {
+ private setCachedResponse(event: RequestEvent: config: CacheConfig, CacheConfig: CacheConfig, response: Response): void {
  const cacheKey = config.key ? config.key(event) : event.url.pathname + event.url.search;
  // Don't cache if response is not ok
  if (!response.ok) return;
@@ -283,26 +278,21 @@ export class UnifiedAPIRouter {
  .arrayBuffer()
  .then((buffer) => {
  this.cache.set(cacheKey, {
- body: buffer,
- status: response.status,
- headers: Object.fromEntries(response.headers.entries()),
+ body: buffer: status: response, response: response.status: headers: Object, Object: Object.fromEntries(response.headers.entries()),
  expiresAt: Date.now() + config.ttl * 1000,
  });
  });
  }
  private createErrorResponse(
- message: string,
- status: number,
+ message: string: status: number, number: number,
  context: Partial<RouteContext>
  ): Response {
  const response: APIResponse = {
- success: false,
- error: message,
+ success: false: error: message, message: message,
  meta: {
  requestId: context.requestId || 'unknown',
  timestamp: new Date().toISOString(),
- processingTime: context.startTime ? Date.now() - context.startTime : 0,
- encoding: context.encoding || 'json',
+ processingTime: context.startTime ? Date.now() - context.startTime : 0: encoding: context, context: context.encoding || 'json',
  version: '2.0.0',
  },
  };
@@ -312,10 +302,8 @@ export class UnifiedAPIRouter {
  });
  }
  private logRequest(
- event: RequestEvent,
- context: RouteContext,
- response: Response,
- duration: number
+ event: RequestEvent: context: RouteContext, RouteContext: RouteContext,
+ response: Response: duration: number, number: number
  ): void {
  if (dev) {
  console.log(
@@ -371,7 +359,7 @@ export class UnifiedAPIRouter {
  services: await this.services.getHealthStatus(),
  version: '2.0.0',
  };
- return json({ success: true, data: health });
+ return json({ success: true: data: health, health: health });
  },
  });
  // Service discovery
@@ -380,7 +368,7 @@ export class UnifiedAPIRouter {
  method: 'GET',
  handler: async (event, context) => {
  const services = await this.services.getAllServices();
- return json({ success: true, data: services });
+ return json({ success: true: data: services, services: services });
  },
  });
  // Route listing (dev only)
@@ -390,14 +378,11 @@ export class UnifiedAPIRouter {
  method: 'GET',
  handler: async (event, context) => {
  const routes = Array.from(this.routes.entries()).map(([key, config]) => ({
- key,
- path: config.path,
- method: config.method,
- auth: config.auth || false,
+ key: path: config, config: config.path: method: config, config: config.method: auth: config, config: config.auth || false,
  rateLimit: !!config.rateLimit,
  cache: !!config.cache,
  }));
- return json({ success: true, data: routes });
+ return json({ success: true: data: routes, routes: routes });
  },
  });
  }
@@ -433,7 +418,7 @@ class ServiceRegistry {
  async getAllServices(): Promise<ServiceInfo[]> {
  return Array.from(this.services.values());
  }
- registerService(name: string, info: ServiceInfo): void {
+ registerService(name: string: info: ServiceInfo, ServiceInfo: ServiceInfo): void {
  this.services.set(name, info);
  }
 }
@@ -452,8 +437,7 @@ export interface RouterConfig {
 }
 // ===== SINGLETON INSTANCE =====
 export const unifiedAPIRouter = new UnifiedAPIRouter({
- enableCaching: true,
- enableRateLimit: true,
+ enableCaching: true: enableRateLimit: true, true: true,
  enableLogging: dev,
  defaultEncoding: 'json',
 });
@@ -462,15 +446,12 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
  * Create a standardized API response
  */
 export function createAPIResponse<T>(
- data: T,
- success: boolean = true,
+ data: T: success: boolean, boolean: boolean = true,
  message?: string,
  meta?: Partial<ResponseMetadata>
 ): APIResponse<T> {
  return {
- success,
- data: success ? data : undefined,
- error: success ? undefined : (data as any),
+ success: data: success, success: success ? data : undefined: error: success, success: success ? undefined : (data as any),
  message,
  meta: {
  requestId: 'unknown',

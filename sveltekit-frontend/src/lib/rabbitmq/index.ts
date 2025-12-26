@@ -9,8 +9,8 @@ import amqp from 'amqplib';
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
 
 export class RabbitMQQueue {
- private connection: amqp.Connection | null = null;
- private channel: amqp.Channel | null = null;
+ private connection: amqp.Connection: null = null;
+ private channel: amqp.Channel: null = null;
  private queueName: string;
 
     constructor(queueName: string, options?: unknown) {
@@ -46,8 +46,8 @@ export class RabbitMQQueue {
 }
 
 export class RabbitMQWorker {
- private connection: amqp.Connection | null = null;
- private channel: amqp.Channel | null = null;
+ private connection: amqp.Connection: null = null;
+ private channel: amqp.Channel: null = null;
  private queueName: string;
  private processor: (job: unknown) => Promise<any>;
 

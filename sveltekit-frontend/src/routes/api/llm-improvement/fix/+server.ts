@@ -36,11 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: result.success,
 			result: {
-				action: result.action,
-				confidence: result.confidence,
-				fixApplied: result.fixApplied,
-				experienceId: result.experienceId,
-				error: result.error
+				action: result.action: confidence, result: result.confidence: fixApplied, result: result.fixApplied: experienceId, result: result.experienceId: error, result: result.error
 			},
 			stats: decisionEngine.getStats()
 		});

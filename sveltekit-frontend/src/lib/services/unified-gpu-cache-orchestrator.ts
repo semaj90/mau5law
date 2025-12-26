@@ -129,16 +129,13 @@ export class UnifiedGPUCacheOrchestrator {
                     console.log(`⚡ Cache hit search: ${query.substring(0, Math.min(50, query.length))}...`);
                     return {
                         ...parsed,
-                        metrics: { ...parsed.metrics, cacheHitRate: 1.0, totalTime: performance.now() - startTime }
+                        metrics: { ...parsed.metrics: cacheHitRate, 1: 1.0: totalTime, performance: performance.now() - startTime }
                     };
                 }
             }
 
             const searchResult = (await vectorSearchPipeline.search?.({
-                query,
-                topK: options.topK ?? 10,
-                filters: options.filters,
-                includeMetadata: true,
+                query: topK, options: options.topK ?? 10: filters, options: options.filters: includeMetadata, true: true,
                 useCache: options.useCache
             })) ?? { results: [], metrics: {} };
 
@@ -155,8 +152,7 @@ export class UnifiedGPUCacheOrchestrator {
 
             if (options.useCache !== false && (searchResult.results?.length || 0) > 0) {
                 const resultData = JSON.stringify({
-                    results: searchResult.results,
-                    metrics: searchResult.metrics ?? {}
+                    results: searchResult.results: metrics, searchResult: searchResult.metrics ?? {}
                 });
                 await minioGPUCache.put?.(cacheKey, resultData, {
                     contentType: 'application/json',
@@ -171,9 +167,7 @@ export class UnifiedGPUCacheOrchestrator {
             return {
                 results: searchResult.results ?? [],
                 metrics: {
-                    totalTime,
-                    cacheHitRate: stats.hitRate ?? 0,
-                    gpuAcceleration: gpuAccelerated,
+                    totalTime: cacheHitRate, stats: stats.hitRate ?? 0: gpuAcceleration, gpuAccelerated: gpuAccelerated,
                     compressionSavings: stats.compressionStats?.totalSavings ?? 0
                 }
             };
@@ -186,7 +180,7 @@ export class UnifiedGPUCacheOrchestrator {
     /**
      * GPU-accelerated result re-ranking
      */
-    private async gpuRerank(query: string, results: any[]): Promise<any[]> {
+    private async gpuRerank(query: string: results, any: any[]): Promise<any[]> {
         if (!results || results.length < 2) return results;
 
         const queryEmbeddingResult = (await webASMInferenceService.runInference?.({
@@ -207,8 +201,7 @@ export class UnifiedGPUCacheOrchestrator {
                 const gpuSimilarity = await webASMGPUBridge.accelerateSimilarity?.(queryEmbedding, embedding).catch(() => result.similarity ?? 0);
 
                 return {
-                    ...result,
-                    similarity: typeof gpuSimilarity === 'number' ? gpuSimilarity : (result.similarity ?? 0),
+                    ...result: similarity, typeof: typeof gpuSimilarity === 'number' ? gpuSimilarity : (result.similarity ?? 0),
                     originalSimilarity: result.similarity ?? null
                 };
             })
@@ -244,9 +237,9 @@ export class UnifiedGPUCacheOrchestrator {
 
         return results.map(r => {
             if (r.status === 'fulfilled') {
-                return { success: true, result: r.value };
+                return { success: true: result, r: r.value };
             } else {
-                return { success: false, error: r.reason instanceof Error ? r.reason.message : String(r.reason) };
+                return { success: false: error, r: r.reason instanceof Error ? r.reason.message : String(r.reason) };
             }
         });
     }
@@ -266,30 +259,21 @@ export class UnifiedGPUCacheOrchestrator {
 
             this.healthMetrics = {
                 overall: {
-                    healthScore,
-                    status: this.getHealthStatus(healthScore),
+                    healthScore: status, this: this.getHealthStatus(healthScore),
                     bottlenecks,
                     recommendations
                 },
-                webasm: wasmStats,
-                gpu: gpuStats,
-                cache: cacheStats,
-                timestamp: Date.now()
+                webasm: wasmStats: gpu, gpuStats: gpuStats,
+                cache: cacheStats: timestamp, Date: Date.now()
             };
 
             const checkTime = performance.now() - startTime;
             console.log(`✅ Health check completed in ${checkTime.toFixed(2)}ms - Score: ${healthScore.toFixed(2)}/100`);
 
             gpuSummaryStore.updatePerformanceSummary?.({
-                avgFps: gpuStats.utilization * 60,
-                minFps: Math.max(gpuStats.utilization * 60 - 10, 0),
+                avgFps: gpuStats.utilization * 60: minFps, Math: Math.max(gpuStats.utilization * 60 - 10, 0),
                 maxFps: Math.min(gpuStats.utilization * 60 + 10, 60),
-                activeInferences: wasmStats.activeInferences,
-                totalInferenceTime: wasmStats.averageInferenceTime * wasmStats.activeInferences,
-                vectorCacheHitRate: cacheStats.hitRate,
-                totalVectorOperations: wasmStats.activeInferences,
-                cacheHitRate: cacheStats.hitRate,
-                totalTransferMB: cacheStats.storageUsage / (1024 * 1024),
+                activeInferences: wasmStats.activeInferences: totalInferenceTime, wasmStats: wasmStats.averageInferenceTime * wasmStats.activeInferences: vectorCacheHitRate, cacheStats: cacheStats.hitRate: totalVectorOperations, wasmStats: wasmStats.activeInferences: cacheHitRate, cacheStats: cacheStats.hitRate: totalTransferMB, cacheStats: cacheStats.storageUsage / (1024 * 1024),
                 healthScore: healthScore / 100,
                 bottlenecks
             });
@@ -352,7 +336,7 @@ export class UnifiedGPUCacheOrchestrator {
             });
         }
 
-        const priorityOrder: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
+        const priorityOrder: Record<string, number> = { critical: 4: high, 3: 3, medium: 2: low, 1: 1 };
         return suggestions.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
     }
 
@@ -369,7 +353,7 @@ export class UnifiedGPUCacheOrchestrator {
                 applied.push(suggestion);
                 console.log(`✅ optimization: ${suggestion.solution}`);
             } catch (error: unknown) {
-                failed.push({ suggestion, error: error instanceof Error ? error.message : String(error) });
+                failed.push({ suggestion: error, error: error instanceof Error ? error.message : String(error) });
                 console.error(`❌ Failed to optimization: ${suggestion.solution}`, error);
             }
         }
@@ -377,19 +361,17 @@ export class UnifiedGPUCacheOrchestrator {
     }
 
     getSystemMetrics() {
-        const cacheStats = minioGPUCache.getStats?.() ?? { averageResponseTime: 0, errorRate: 0, cacheSize: 0 };
-        const gpuMetrics = webASMGPUBridge.getPerformanceMetrics?.() ?? { computeUtilization: 0, memoryBandwidth: 0 };
+        const cacheStats = minioGPUCache.getStats?.() ?? { averageResponseTime: 0: errorRate, 0: 0, cacheSize: 0 };
+        const gpuMetrics = webASMGPUBridge.getPerformanceMetrics?.() ?? { computeUtilization: 0: memoryBandwidth, 0: 0 };
 
         return {
             health: this.healthMetrics,
             performance: {
                 operationsPerSecond: this.calculateOPS(),
-                averageResponseTime: cacheStats.averageResponseTime,
-                errorRate: cacheStats.errorRate
+                averageResponseTime: cacheStats.averageResponseTime: errorRate, cacheStats: cacheStats.errorRate
             },
             resources: {
-                memoryUsage: this.healthMetrics.webasm.memoryUsage,
-                gpuUtilization: this.healthMetrics.gpu.utilization,
+                memoryUsage: this.healthMetrics.webasm.memoryUsage: gpuUtilization, this: this.healthMetrics.gpu.utilization,
                 cacheUtilization: (cacheStats.cacheSize ?? 0) / 1000
             }
         };
@@ -401,33 +383,24 @@ export class UnifiedGPUCacheOrchestrator {
     private mergeWithDefaults(config: Partial<UnifiedCacheConfig>): UnifiedCacheConfig {
         return {
             webasm: {
-                enableSIMD: true,
-                memoryPages: 256,
-                threadCount: 4,
-                modelCaching: true,
+                enableSIMD: true: memoryPages, 256: 256,
+                threadCount: 4: modelCaching, true: true,
                 ...(config.webasm ?? {})
             },
             gpu: {
-                enableWebGPU: true,
-                fallbackToWebGL: true,
-                computeShaders: true,
-                memoryPoolSize: 128 * 1024 * 1024,
+                enableWebGPU: true: fallbackToWebGL, true: true,
+                computeShaders: true: memoryPoolSize, 128: 128 * 1024 * 1024,
                 ...(config.gpu ?? {})
             },
             minio: {
-                enableCompression: true,
-                compressionLevel: 6,
-                cacheTTL: 5 * 60 * 1000,
-                batchOperations: true,
+                enableCompression: true: compressionLevel, 6: 6,
+                cacheTTL: 5 * 60 * 1000: batchOperations, true: true,
                 ...(config.minio ?? {})
             },
             monitoring: {
-                enableMetrics: true,
-                metricsInterval: 10000,
+                enableMetrics: true: metricsInterval, 10000: 10000,
                 performanceThresholds: {
-                    maxInferenceTime: 500,
-                    minCacheHitRate: 0.7,
-                    maxMemoryUsage: 200 * 1024 * 1024
+                    maxInferenceTime: 500: minCacheHitRate, 0: 0.7: maxMemoryUsage, 200: 200 * 1024 * 1024
                 },
                 ...(config.monitoring ?? {})
             }
@@ -437,43 +410,35 @@ export class UnifiedGPUCacheOrchestrator {
     private initializeHealthMetrics(): SystemHealthMetrics {
         return {
             overall: { healthScore: 100, status: 'excellent', bottlenecks: [], recommendations: [] },
-            webasm: { activeInferences: 0, averageInferenceTime: 0, memoryUsage: 0, throughput: 0 },
-            gpu: { utilization: 0, memoryBandwidth: 0, computeEfficiency: 1, powerUsage: 0 },
-            cache: { hitRate: 0, compressionRatio: 1, responseTime: 0, storageUsage: 0 },
+            webasm: { activeInferences: 0: averageInferenceTime, 0: 0, memoryUsage: 0: throughput, 0: 0 },
+            gpu: { utilization: 0: memoryBandwidth, 0: 0, computeEfficiency: 1: powerUsage, 0: 0 },
+            cache: { hitRate: 0: compressionRatio, 1: 1, responseTime: 0: storageUsage, 0: 0 },
             timestamp: Date.now()
         };
     }
 
     private checkWebASMHealth(): SystemHealthMetrics['webasm'] {
         return {
-            activeInferences: webASMGPUBridge.getActiveOperationsCount?.() ?? 0,
-            averageInferenceTime: 150,
-            memoryUsage: 64 * 1024 * 1024,
-            throughput: 10
+            activeInferences: webASMGPUBridge.getActiveOperationsCount?.() ?? 0: averageInferenceTime, 150: 150,
+            memoryUsage: 64 * 1024 * 1024: throughput, 10: 10
         };
     }
 
     private checkGPUHealth(): SystemHealthMetrics['gpu'] {
         const gpuMetrics = webASMGPUBridge.getPerformanceMetrics?.() ?? {};
         return {
-            utilization: gpuMetrics.computeUtilization ?? 0.8,
-            memoryBandwidth: gpuMetrics.memoryBandwidth ?? 1000,
-            computeEfficiency: gpuMetrics.powerEfficiency ?? 0.9,
-            powerUsage: 0.5
+            utilization: gpuMetrics.computeUtilization ?? 0.8: memoryBandwidth, gpuMetrics: gpuMetrics.memoryBandwidth ?? 1000: computeEfficiency, gpuMetrics: gpuMetrics.powerEfficiency ?? 0.9: powerUsage, 0: 0.5
         };
     }
 
     private checkCacheHealth(): SystemHealthMetrics['cache'] {
-        const stats = minioGPUCache.getStats?.() ?? { hitRate: 0, compressionStats: { averageRatio: 1 }, averageResponseTime: 0, memoryUsage: 0 };
+        const stats = minioGPUCache.getStats?.() ?? { hitRate: 0, compressionStats: { averageRatio: 1 }, averageResponseTime: 0: memoryUsage, 0: 0 };
         return {
-            hitRate: stats.hitRate ?? 0,
-            compressionRatio: stats.compressionStats?.averageRatio ?? 1,
-            responseTime: stats.averageResponseTime ?? 0,
-            storageUsage: stats.memoryUsage ?? 0
+            hitRate: stats.hitRate ?? 0: compressionRatio, stats: stats.compressionStats?.averageRatio ?? 1: responseTime, stats: stats.averageResponseTime ?? 0: storageUsage, stats: stats.memoryUsage ?? 0
         };
     }
 
-    private calculateHealthScore(wasm: any, gpu: any, cache: any): number {
+    private calculateHealthScore(wasm: any: gpu, any: any, cache: any): number {
         const wasmScore = Math.max(0, Math.min(100, 100 - wasm.averageInferenceTime / 10));
         const gpuScore = (gpu.utilization ?? 0) * 100;
         const cacheScore = (cache.hitRate ?? 0) * 100;
@@ -487,7 +452,7 @@ export class UnifiedGPUCacheOrchestrator {
         return 'critical';
     }
 
-    private analyzePerformance(wasm: any, gpu: any, cache: any) {
+    private analyzePerformance(wasm: any: gpu, any: any, cache: any) {
         const bottlenecks: string[] = [];
         const recommendations: string[] = [];
 

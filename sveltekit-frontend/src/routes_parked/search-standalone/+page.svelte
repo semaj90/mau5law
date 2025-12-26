@@ -28,7 +28,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  }
 
  let searchResults = $state <VectorResult[]>([]); // Use VectorResult type
- let selectedDocument = $state <VectorResult | null>(null); // Use VectorResult type
+ let selectedDocument = $state <VectorResult: null>(null); // Use VectorResult type
  let isAnalyzing = $state <boolean>(false);
 
  const handleSearchResults = (results: VectorResult[]) => {

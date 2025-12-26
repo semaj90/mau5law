@@ -45,14 +45,37 @@ Index errors and fixes for semantic lookup.
 ### 5. Auto-Fix Pipeline
 Apply deterministic fixes based on patterns.
 
-- **Run Fixer:**
+- **Run Fixer (SAFE MODE):**
   ```bash
-  node scripts/phase79-pattern-fixer.mjs --apply
+  # ALWAYS start with safe patterns only
+  node scripts/phase79-pattern-fixer.mjs --risk=safe --apply
   ```
+
+- **⚠️ CRITICAL SAFETY RULES:**
+  1. **ALWAYS backup before applying**: All fixes create `.phase79.bak` files
+  2. **START WITH SAFE PATTERNS ONLY**: Use `--risk=safe` flag
+  3. **VERIFY AFTER EACH RUN**: Check error count doesn't increase
+  4. **NEVER apply all patterns at once**: Too risky, hard to debug
+  5. **ROLLBACK ON REGRESSION**: Restore from `.phase79.bak` files immediately
+
+- **Rollback Process:**
+  ```powershell
+  # If error count increases, immediately restore:
+  Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+      $original = $_.FullName -replace '\.phase79\.bak$', ''
+      Copy-Item $_.FullName $original -Force
+  }
+  ```
+
   *Features:*
   - Iterates patterns by priority.
   - Generates `reports/fix-log-<runId>.jsonl` audit trail.
   - Optional regression gate: `--verify` (runs svelte-check after fixes).
+
+- **Known Dangerous Patterns (DISABLED):**
+  - `env-type-declarations`: Injects garbage imports
+  - `auth-machine-garbage-*`: Corrupts state machine code
+  - Any pattern with `risk: "high"` in patterns.json
 
 ### 6. Contextual Prompting Integration
 Use the indexed data to build "context packs" for LLM prompts.
@@ -71,15 +94,24 @@ Use the indexed data to build "context packs" for LLM prompts.
    node scripts/error-ingest.mjs --run=run-01
    ```
 
-2. **Fix:**
+2. **⚠️ Fix (SAFE MODE ONLY):**
    ```bash
-   # Applies deterministic fixes based on patterns.json
-   node scripts/phase79-pattern-fixer.mjs --apply
+   # CRITICAL: ONLY apply safe patterns
+   node scripts/phase79-pattern-fixer.mjs --risk=safe --apply
    ```
 
 3. **Verify & Re-Ingest:**
    ```bash
-   # Runs svelte-check again to verify fixes
+   # IMMEDIATELY verify error count didn't increase
+   npx svelte-check --output machine 2>&1 | Select-String "COMPLETED"
+
+   # If errors increased, ROLLBACK:
+   # Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+   #     $original = $_.FullName -replace '\.phase79\.bak$', ''
+   #     Copy-Item $_.FullName $original -Force
+   # }
+
+   # Then re-ingest to confirm baseline
    node scripts/error-ingest.mjs --run=run-02
    ```
 
@@ -94,6 +126,36 @@ Use the indexed data to build "context packs" for LLM prompts.
    # Search for specific error types
    node scripts/error-search.mjs --query "remaining errors"
    ```
+
+## ⚠️ LESSONS LEARNED (Dec 25, 2025)
+
+### Pattern Fixer Regression Incident
+- **Issue**: Applied all patterns without verification → 14,511 errors jumped to 81,562 (+67k)
+- **Root Cause**: "auth-machine-garbage" patterns corrupted files instead of fixing them
+- **Recovery**: Restored from `.phase79.bak` files (backup system worked perfectly)
+
+### Best Practices Going Forward:
+1. **ALWAYS use `--risk=safe` flag first**
+2. **NEVER apply all patterns at once** - too hard to identify which pattern broke things
+3. **VERIFY after each pattern application** - check error count immediately
+4. **Keep backup files** until verified - don't clean up `.phase79.bak` files prematurely
+5. **Audit patterns.json regularly** - disable dangerous patterns with `risk: "disabled"`
+6. **Test patterns on small file sets first** - use `--dry-run` to preview changes
+
+### Recovery Commands (Keep Handy):
+```powershell
+# Restore all from backups
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | ForEach-Object {
+    $original = $_.FullName -replace '\.phase79\.bak$', ''
+    Copy-Item $_.FullName $original -Force
+}
+
+# Clean up backups after verification
+Get-ChildItem -Recurse -Filter "*.phase79.bak" | Remove-Item -Force
+
+# Quick error count check
+npx svelte-check --output machine 2>&1 | Select-String "COMPLETED" | Select-Object -Last 1
+```
 
 ## Key Patterns (Phase 79)
 

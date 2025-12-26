@@ -5,10 +5,10 @@ export interface UserSession {
  user: {
  id: string;
  email: string;
- firstName: string | null;
- lastName: string | null;
+ firstName: string: null;
+ lastName: string: null;
  role: string;
- avatarUrl: string | null;
+ avatarUrl: string: null;
  };
  session: {
  id: string;
@@ -17,7 +17,7 @@ export interface UserSession {
 }
 
 // Create writable store for user session
-export const userStore = writable<UserSession | null>(null);
+export const userStore = writable<UserSession: null>(null);
 
 // Derived store for checking if user is authenticated
 export const isAuthenticated = derived(userStore, ($user) => $user !== null);

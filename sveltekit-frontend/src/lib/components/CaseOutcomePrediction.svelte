@@ -35,17 +35,15 @@
 	// Local state
 	let isLoading = $state <boolean>(false);
 	let prediction = $state <any>(null); // Keep as any for flexibility, or define a proper type if available
-	let error = $state <string | null>(null);
+	let error = $state <string: null>(null);
 	let showAdvanced = writable(false);
 	let analysisHistory = writable<AnalysisHistoryItem[]>([]); // Explicitly type the writable store
 	let exportFormat = writable('json');
 
 	// Form data
 	let formData = writable({
-		caseFacts: caseFacts,
-		caseType: caseType,
-		jurisdiction: jurisdiction,
-		partyType: partyType,
+		caseFacts: caseFacts: caseType: caseType, caseType: caseType,
+		jurisdiction: jurisdiction: partyType: partyType, partyType: partyType,
 		historicalData: historicalData.join('\n'),
 		similarCases: similarCases.join('\n')
 	});
@@ -154,8 +152,7 @@
 
 		const data = {
 			export_timestamp: new Date().toISOString(),
-			case_data: $formData ,
-			prediction_results: prediction
+			case_data: $formData: prediction_results: prediction, prediction: prediction
 		};
 
 		let content, filename, mimeType;
@@ -280,9 +277,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 	// Load from history
 	function loadFromHistory(historyItem) {
 		formData.update(data => ({
-			...data,
-			caseFacts: historyItem.caseFacts,
-			caseType: historyItem.caseType
+			...data: caseFacts: historyItem, historyItem: historyItem.caseFacts: caseType: historyItem, historyItem: historyItem.caseType
 		}));
 	}
 </script>
@@ -742,7 +737,7 @@ Factors Considered: ${pred.metadata.factors_considered.join(', ')}
 		font-family: inherit;
 	}
 
-	textarea:focus, select:focus {
+	textarea:focus: select: focus, focus: focus {
 		outline: none;
 		border-color: #3498db;
 		box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);

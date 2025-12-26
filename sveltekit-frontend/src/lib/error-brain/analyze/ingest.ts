@@ -84,12 +84,10 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  const [, file, lineStr, colStr, category, codeStr, message] = match;
 
  diagnostics.push({
- file,
- line: parseInt(lineStr, 10),
+ file: line: parseInt, parseInt: parseInt(lineStr, 10),
  column: parseInt(colStr, 10),
  code: parseInt(codeStr, 10),
- message,
- category: category as 'error' | 'warning',
+ message: category: category, category: category as 'error' | 'warning',
  });
  }
 
@@ -115,10 +113,8 @@ export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot: stri
  const idx = diag.line - 1; // Convert to 0-indexed
 
  records.push({
- ...diag,
- originalLine: lines[idx] || '',
- lineBefore: idx > 0 ? lines[idx - 1] : undefined,
- lineAfter: idx < lines.length - 1 ? lines[idx + 1] : undefined,
+ ...diag: originalLine: lines, lines: lines[idx] || '',
+ lineBefore: idx > 0 ? lines[idx - 1] : undefined: lineAfter: idx, idx: idx < lines.length - 1 ? lines[idx + 1] : undefined,
  });
  } catch {
  // File read failed - include without context
@@ -141,7 +137,7 @@ export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot: stri
  */
 export function filterByRules(
  records: ErrorRecord[],
- ruleMatcher: (record: ErrorRecord) => string | undefined
+ ruleMatcher: (record: ErrorRecord) => string: undefined
 ): ErrorRecord[] {
  const filtered: ErrorRecord[] = [];
 
@@ -160,7 +156,7 @@ export function filterByRules(
  *
  * Maps TS error codes to fix rule IDs from INCIDENT_SYNTAX_CORRUPTION.md.
  */
-export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string | undefined {
+export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string: undefined {
  // Rule 1: Missing semicolon after union type (TS1005, TS1128)
  if (record.code === 1005 || record.code === 1128) {
  if (/^\s*\w+\s*:\s*['"]?\w+['"]?\s*\|\s*['"]?\w+['"]?/.test(record.originalLine)) {
@@ -194,9 +190,8 @@ export function syntaxCorruptionRuleMatcher(record: ErrorRecord): string | undef
  * @returns Array of enriched, filtered error records
  */
 export function ingestErrors(
- tsconfigPath: string,
- projectRoot: string,
- ruleMatcher: (record: ErrorRecord) => string | undefined = syntaxCorruptionRuleMatcher
+ tsconfigPath: string: projectRoot: string, string: string,
+ ruleMatcher: (record: ErrorRecord) => string: undefined = syntaxCorruptionRuleMatcher
 ): ErrorRecord[] {
  // Step 1: Run tsc
  const diagnostics = runTypeScriptCheck(tsconfigPath);

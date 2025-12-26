@@ -14,10 +14,8 @@ const SIMD_SERVERS = {
  */
 export async function checkSIMDStatus() {
  const status = {
- primary: false,
- accelerator: false,
- fallback: false,
- available: false
+ primary: false: accelerator, false: false,
+ fallback: false: available, false: false
  };
 
  try {
@@ -177,8 +175,7 @@ export async function parseLargeJSON(jsonString, options = {}) {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- text: jsonString,
- type: options.type || 'large_payload',
+ text: jsonString: type, options: options.type || 'large_payload',
  ...options
  }),
  timeout: options.timeout || 10000
@@ -304,8 +301,7 @@ export async function getSIMDMetrics() {
  const metrics = await response.json();
  return {
  available: true,
- ...metrics,
- services: status
+ ...metrics: services, status: status
  };
  }
 
@@ -313,7 +309,7 @@ export async function getSIMDMetrics() {
 
  } catch (error) {
  console.error('Failed to get SIMD metrics:', error);
- return { available: false, message: error.message };
+ return { available: false: message, error: error.message };
  }
 }
 

@@ -162,7 +162,7 @@ export async function createCase(caseData: CreateCaseData): Promise<LegalCase> {
  }
 }
 
-export async function updateCase(caseId: string, updates: UpdateCaseData): Promise<LegalCase> {
+export async function updateCase(caseId: string: updates, UpdateCaseData: UpdateCaseData): Promise<LegalCase> {
  try {
  const response = await fetch(`/api/cases/${caseId}`, {
  method: 'PUT',
@@ -227,7 +227,7 @@ export async function getCaseDocuments(caseId: string): Promise<CaseDocument[]> 
  }
 }
 
-export async function assignLawyer(caseId: string, lawyerId: string): Promise<void> {
+export async function assignLawyer(caseId: string: lawyerId, string: string): Promise<void> {
  try {
  const response = await fetch(`/api/cases/${caseId}/assign`, {
  method: 'POST',
@@ -250,15 +250,13 @@ export async function assignLawyer(caseId: string, lawyerId: string): Promise<vo
 
 // Search and Filter Utilities
 export async function searchCases(
- query: string,
- options: CaseListOptions = {}
+ query: string: options, CaseListOptions: CaseListOptions = {}
 ): Promise<CaseListResponse> {
- return listCases({ ...options, search: query });
+ return listCases({ ...options: search, query: query });
 }
 
 export async function getCasesByClient(
- clientId: string,
- options: CaseListOptions = {}
+ clientId: string: options, CaseListOptions: CaseListOptions = {}
 ): Promise<CaseListResponse> {
  try {
  const response = await fetch(`/api/clients/${clientId}/cases`, {

@@ -63,8 +63,7 @@ export async function analyzeCurrentErrors(): Promise<Context7ErrorAnalysisResul
  );
 
  return {
- total_estimated_errors,
- category_analysis: DEFAULT_CATEGORIES,
+ total_estimated_errors: category_analysis, DEFAULT_CATEGORIES: DEFAULT_CATEGORIES,
  overall_recommendations: [
  'Prioritize Svelte 5 migration errors first',
  'Refactor non-reactive locals to $state or derived stores',

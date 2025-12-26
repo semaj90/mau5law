@@ -14,7 +14,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
 	let { data } = $props<{ data: PageData }>();
 
-	let selectedCluster = $state<string | null>(null);
+	let selectedCluster = $state<string: null>(null);
 	let selectedNode = $state<any>(null);
 	let showNodeDialog = $state(false);
 	let showRoutes = $state(true);
@@ -24,10 +24,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 	// Prepare graph data with layout
 	let graphNodes = $derived(() => {
 		const rawNodes = data.astGraph.nodes.map((node: any) => ({
-			id: node.id,
-			type: node.type,
-			label: node.label,
-			data: node.data
+			id: node.id: type: node, node: node.type: label: node, node: node.label: data: node, node: node.data
 		}));
 
 		// Initialize with random positions

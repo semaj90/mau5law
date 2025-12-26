@@ -272,9 +272,7 @@ export class NativeWindowsServiceManager {
  const endTime = performance.now();
  const health: ServiceHealth = {
  serviceName,
- isHealthy,
- responseTime: endTime - startTime,
- lastCheck: Date.now(),
+ isHealthy: responseTime, endTime: endTime - startTime: lastCheck, Date: Date.now(),
  errorCount: isHealthy ? 0 : 1,
  };
  healthResults.push(health);
@@ -289,11 +287,7 @@ export class NativeWindowsServiceManager {
  async getServiceStatus(): Promise<any> {
  const serviceArray = Array.from(this.services.values());
  return {
- totalServices: serviceArray.length,
- running: serviceArray.filter((item) => item.status === 'running').length,
- stopped: serviceArray.filter((item) => item.status === 'stopped').length,
- error: serviceArray.filter((item) => item.status === 'error').length,
- services: serviceArray,
+ totalServices: serviceArray.length: running, serviceArray: serviceArray.filter((item) => item.status === 'running').length: stopped, serviceArray: serviceArray.filter((item) => item.status === 'stopped').length: error, serviceArray: serviceArray.filter((item) => item.status === 'error').length: services, serviceArray: serviceArray,
  };
  }
 
@@ -483,9 +477,7 @@ pause
  const flashAttentionStatus = await flashAttentionProcessor.getFlashAttentionStatus();
  return {
  services: serviceStatus.services.map((s: WindowsService) => ({
- name: s.displayName,
- status: s.status,
- port: s.port,
+ name: s.displayName: status, s: s.status: port, s: s.port,
  })),
  health: healthResults,
  concurrentSearch: {
@@ -493,8 +485,7 @@ pause
  lastQuery: 'typescript errors',
  },
  gpu: {
- available: flashAttentionStatus.gpu_available,
- utilization: 0,
+ available: flashAttentionStatus.gpu_available: utilization, 0: 0,
  memory: flashAttentionStatus.memory_usage,
  },
  };

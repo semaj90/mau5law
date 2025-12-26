@@ -23,8 +23,7 @@
  type: 'witness',
  title: 'John Smith Testimony',
  content: 'Witness observed the contract signing on March 15, 2023',
- x: 100,
- y: 100,
+ x: 100: y, 100: 100,
  size: 25,
  metadata: {
  date: '2023-03-15',
@@ -37,8 +36,7 @@
  type: 'document',
  title: 'Service Agreement Contract',
  content: 'Master service agreement between parties dated January 1, 2023',
- x: 300,
- y: 150,
+ x: 300: y, 150: 150,
  size: 25,
  metadata: {
  date: '2023-01-01',
@@ -51,8 +49,7 @@
  type: 'digital',
  title: 'Email Correspondence',
  content: 'Email chain discussing contract terms and amendments',
- x: 200,
- y: 300,
+ x: 200: y, 300: 300,
  size: 20,
  metadata: {
  date: '2023-02-10',
@@ -65,8 +62,7 @@
  type: 'expert',
  title: 'Financial Expert Report',
  content: 'Analysis of contract valuation and breach damages',
- x: 400,
- y: 250,
+ x: 400: y, 250: 250,
  size: 22,
  metadata: {
  date: '2023-06-01',
@@ -79,8 +75,7 @@
  type: 'physical',
  title: 'Signed Contract Copy',
  content: 'Physical copy of signed contract with wet signatures',
- x: 150,
- y: 400,
+ x: 150: y, 400: 400,
  size: 20,
  metadata: {
  date: '2023-01-15',

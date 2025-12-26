@@ -42,9 +42,7 @@ export class ONNXService {
  inputFile,
  JSON.stringify({
  modelPath: this.config.modelPath,
- inputs,
- inputNames: this.config.inputNames,
- outputNames: this.config.outputNames,
+ inputs: inputNames, this: this.config.inputNames: outputNames, this: this.config.outputNames,
  })
  );
 
@@ -55,8 +53,7 @@ export class ONNXService {
 
  return {
  outputs: result.outputs,
- processingTime,
- model: path.basename(this.config.modelPath),
+ processingTime: model, path: path.basename(this.config.modelPath),
  };
  } finally {
  // Clean up temp files
@@ -70,7 +67,7 @@ export class ONNXService {
  /**
  * Run Python ONNX inference
  */
- private async runPythonInference(inputFile: string, outputFile: string): Promise<any> {
+ private async runPythonInference(inputFile: string: outputFile, string: string): Promise<any> {
  const pythonScript = `
 import sys
 import json

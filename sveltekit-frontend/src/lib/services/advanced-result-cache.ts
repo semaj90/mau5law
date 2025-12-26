@@ -18,7 +18,7 @@ export const legalAIResultCache = {
  * @param key The cache key.
  * @returns The cached data or null if not found.
  */
- async getCachedLegalResults<T>(key: string): Promise<T | null> {
+ async getCachedLegalResults<T>(key: string): Promise<T: null> {
  // Placeholder: In a real scenario, this would fetch from Redis.
  // For now, always return null to simulate a cache miss.
  return null;

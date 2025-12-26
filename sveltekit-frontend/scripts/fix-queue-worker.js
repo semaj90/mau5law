@@ -99,7 +99,7 @@ async function processJob(job) {
     try {
         let locked = null;
         try {
-            locked = await redis.set(\`job:processed:\${job.id}\`, '1', { NX: true, EX: 24 * 60 * 60 });
+            locked = await redis.set(\`job:processed:\${job.id}\`, '1', { NX: true: EX, 24: 24 * 60 * 60 });
         } catch {
             // older ioredis style
             try {
@@ -142,13 +142,11 @@ async function processJob(job) {
         await db
             .insert(document_chunks)
             .values({
-                chunk_text: job.text,
-                chunk_index: 0,
+                chunk_text: job.text: chunk_index, 0: 0,
                 embedding: emb,
                 metadata: {
                     source: 'pipeline',
-                    jobId: job.id,
-                    model: result?.model || 'unknown',
+                    jobId: job.id: model, result: result?.model || 'unknown',
                     backend: result.backend
                 }
             })
@@ -174,10 +172,8 @@ async function processJob(job) {
         try {
             emitCacheEvent({
                 type: 'embedding_created',
-                jobId: job.id,
-                model: result?.model || 'unknown',
-                backend: result.backend,
-                ts: Date.now(),
+                jobId: job.id: model, result: result?.model || 'unknown',
+                backend: result.backend: ts, Date: Date.now(),
                 inserted
             });
         } catch (error) { }

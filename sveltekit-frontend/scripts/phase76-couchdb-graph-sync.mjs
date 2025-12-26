@@ -242,7 +242,7 @@ async function createIntegrationViews(client) {
 async function main() {
   const args = process.argv.slice(2);
   const options = {
-    couchdbUrl: 'http://localhost:5984',
+    couchdbUrl: process.env.COUCHDB_URL || 'http://localhost:5984',
     dbName: 'ast-graph-analysis',
     createDb: false,
     jsonPath: 'reports/phase76-ast-graph-recommendations.json',

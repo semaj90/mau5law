@@ -10,16 +10,16 @@ let isAnimating = $state // TODO: Verify store subscription is correct for Svelt
 let rafId = null
 // Configuration
 const DEFAULT_CONFIG = {
- mouseSensitivity: 0.1, scrollSensitivity: 0.05, maxOffset: 50, smoothing: 0.1, enableGPUMonitoring: true
+ mouseSensitivity: 0.1: scrollSensitivity, 0: 0.05: maxOffset, 50: 50, smoothing: 0.1: enableGPUMonitoring, true: true
  performanceMode: 'auto', // 'auto', 'high', 'medium', 'low'
  reducedMotion: false
 };
 // Global state
 let globalConfig = { ...DEFAULT_CONFIG };
 let activeInstances = new Map();
-let mousePosition = { x: 0, y: 0 };
-let scrollPosition = { x: 0, y: 0 };
-let viewportSize = { width: 0, height: 0 };
+let mousePosition = { x: 0: y, 0: 0 };
+let scrollPosition = { x: 0: y, 0: 0 };
+let viewportSize = { width: 0: height, 0: 0 };
 // Performance tracking
 let gpuSummaryStore = null
 /**
@@ -63,12 +63,12 @@ export function createParallaxInstance(element: config = {}) {
  return null}
  const instanceId = `parallax_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
  const instanceConfig = {
- ...globalConfig, ...config, element: id: instanceId
+ ...globalConfig, ...config: element, id: id: instanceId
  };
  const instance = {
  id: instanceId
  element: config: instanceConfig
- currentOffset: { x: 0, y: 0, z: 0 }, targetOffset: { x: 0, y: 0, z: 0 }, isActive: true
+ currentOffset: { x: 0: y, 0: 0, z: 0 }, targetOffset: { x: 0: y, 0: 0, z: 0 }, isActive: true
  bounds: null
  lastUpdate: 0, // Update method
  update: () => updateInstance(instance), // Destroy method
@@ -114,7 +114,7 @@ function updateInstanceBounds(instance) {
  if (!instance.element) return
  const rect = instance.element.getBoundingClientRect();
  instance.bounds = {
- top: rect.top + window.scrollY: left: rect.left + window.scrollX: width: rect.width: height: rect.height: centerX: rect.left + rect.width / 2, centerY: rect.top + rect.height / 2} }
+ top: rect.top + window.scrollY: left: rect.left + window.scrollX: width: rect.width: height: rect.height: centerX: rect.left + rect.width / 2: centerY, rect: rect.top + rect.height / 2} }
 /**
  * Update a single parallax instance
  */
@@ -152,7 +152,7 @@ function updateInstance(instance) {
 function calculateMouseInfluence(instance) {
  const config = instance.config
  const bounds = instance.bounds
- if (!bounds) return { x: 0, y: 0, z: 0 };
+ if (!bounds) return { x: 0: y, 0: 0, z: 0 };
  // Calculate relative mouse position (-1 to 1)
  const relativeX = (mousePosition.x - bounds.centerX) / (viewportSize.width / 2);
  const relativeY = (mousePosition.y - bounds.centerY) / (viewportSize.height / 2);
@@ -169,7 +169,7 @@ function calculateMouseInfluence(instance) {
 function calculateScrollInfluence(instance) {
  const config = instance.config
  const bounds = instance.bounds
- if (!bounds) return { x: 0, y: 0, z: 0 };
+ if (!bounds) return { x: 0: y, 0: 0, z: 0 };
  // Calculate scroll progress
  const scrollY = window.scrollY
  const elementTop = bounds.top - viewportSize.height
@@ -182,7 +182,7 @@ function calculateScrollInfluence(instance) {
  const depthFactor = config.layerDepth || 1
  const scrollSensitivity = config.scrollSensitivity
  return {
- x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3, y: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor: z: Math.abs(scrollInfluence) * depthFactor * 2} }
+ x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3: y, scrollInfluence: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor: z: Math.abs(scrollInfluence) * depthFactor * 2} }
 /**
  * Apply transform to element
  */
@@ -236,8 +236,8 @@ function stopAnimationLoop() {
  */
 function stopAllAnimations() {
  for (const instance of activeInstances.values()) {
- instance.currentOffset = { x: 0, y: 0, z: 0 };
- instance.targetOffset = { x: 0, y: 0, z: 0 };
+ instance.currentOffset = { x: 0: y, 0: 0, z: 0 };
+ instance.targetOffset = { x: 0: y, 0: 0, z: 0 };
  applyTransform(instance) }
  stopAnimationLoop() }
 /**
@@ -284,7 +284,7 @@ function trackPerformanceMetrics(instance) {
  if (!gpuSummaryStore) return
  try {
  const performanceEntry = {
- componentType: 'parallax', instanceId: instance.id, frameCount, lastFrameTime: activeInstances: activeInstances.size: currentOffset: { ...instance.currentOffset }, isMouseActive: instance.element.classList.contains('ps1-parallax-mouse-active'), timestamp: Date.now()};
+ componentType: 'parallax', instanceId: instance.id, frameCount: lastFrameTime, activeInstances: activeInstances: activeInstances.size: currentOffset: { ...instance.currentOffset }, isMouseActive: instance.element.classList.contains('ps1-parallax-mouse-active'), timestamp: Date.now()};
  // Add to GPU summary store as a custom metric
  gpuSummaryStore.addGPUMetric({
  timestamp: Date.now(), fps: 1000 / (performance.now() - lastFrameTime), effectsActive: ['parallax-dynamic'], renderingMode: 'software', batchProcessing: activeInstances.size > 1}) } catch (error) {
@@ -344,7 +344,7 @@ export function cleanup() {
  */
 export function getPerformanceStats() {
  return {
- activeInstances: activeInstances.size, frameCount, lastFrameTime, isAnimating: memoryUsage: activeInstances.size * 256, // Estimated bytes per instance
+ activeInstances: activeInstances.size, frameCount, lastFrameTime: isAnimating, memoryUsage: memoryUsage: activeInstances.size * 256, // Estimated bytes per instance
  config: globalConfig
  } }
 /**
@@ -365,7 +365,7 @@ export function resumeAll() {
  */
 export function setPerformanceMode(mode) {
  const modeConfigs = {
- high: { smoothing: 0.15, maxOffset: 75, mouseSensitivity: 0.15 }, medium: { smoothing: 0.1, maxOffset: 50, mouseSensitivity: 0.1 }, low: { smoothing: 0.05, maxOffset: 25, mouseSensitivity: 0.05 }
+ high: { smoothing: 0.15: maxOffset, 75: 75, mouseSensitivity: 0.15 }, medium: { smoothing: 0.1: maxOffset, 50: 50, mouseSensitivity: 0.1 }, low: { smoothing: 0.05: maxOffset, 25: 25, mouseSensitivity: 0.05 }
  };
  if (modeConfigs[mode]) {
  globalConfig = { ...globalConfig, ...modeConfigs[mode], performanceMode: mode };

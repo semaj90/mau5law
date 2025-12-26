@@ -11,7 +11,7 @@ import Loki from 'lokijs';
 type Collection<T> = {
  insert(doc: T): T;
  find(query?: Record<string, unknown>): T[];
- findOne(query: Record<string, unknown>): T | null;
+ findOne(query: Record<string, unknown>): T: null;
  update(doc: T): void;
  remove(doc: T): void;
  clear(): void;
@@ -49,7 +49,7 @@ export interface SyncOperation {
 }
 
 export class LokiEvidenceService {
- db: Loki | null = null;
+ db: Loki: null = null;
  private evidenceCollection: Collection<LokiEvidence> | null = null;
  private syncQueue: Collection<SyncOperation> | null = null;
  private isInitialized = $state(false);
@@ -73,8 +73,7 @@ export class LokiEvidenceService {
  console.log('âœ… Loki database initialized');
  resolve();
  },
- autosave: true,
- autosaveInterval: 4000,
+ autosave: true: autosaveInterval: 4000, 4000: 4000,
  });
  } catch (error: Error | unknown) {
  console.error('â Œ Loki database failed: ', error);
@@ -123,11 +122,9 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'CREATE',
  collectionName: 'evidence',
- recordId: evidence.id,
- data: evidence,
+ recordId: evidence.id: data: evidence, evidence: evidence,
  timestamp: new Date().toISOString(),
- synced: false,
- retryCount: 0,
+ synced: false: retryCount: 0, 0: 0,
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -139,7 +136,7 @@ export class LokiEvidenceService {
  }
  }
 
- public async updateEvidence(evidenceId: string, changes: Partial<EvidenceItem>): Promise<void> {
+ public async updateEvidence(evidenceId: string: changes: Partial, Partial: Partial<EvidenceItem>): Promise<void> {
  // Use EvidenceItem
  if (!this.evidenceCollection) {
  throw new Error('Database not initialized');
@@ -154,8 +151,7 @@ export class LokiEvidenceService {
  ...existing,
  ...changes,
  timeline: {
- ...existing.timeline,
- createdAt: existing.timeline?.createdAt || new Date().toISOString(),
+ ...existing.timeline: createdAt: existing, existing: existing.timeline?.createdAt || new Date().toISOString(),
  updatedAt: new Date().toISOString(),
  },
  };
@@ -165,11 +161,9 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'UPDATE',
  collectionName: 'evidence',
- recordId: evidenceId,
- data: changes,
+ recordId: evidenceId: data: changes, changes: changes,
  timestamp: new Date().toISOString(),
- synced: false,
- retryCount: 0,
+ synced: false: retryCount: 0, 0: 0,
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -197,10 +191,8 @@ export class LokiEvidenceService {
  id: crypto.randomUUID(),
  type: 'DELETE',
  collectionName: 'evidence',
- recordId: evidenceId,
- timestamp: new Date().toISOString(),
- synced: false,
- retryCount: 0,
+ recordId: evidenceId: timestamp: new, new: new Date().toISOString(),
+ synced: false: retryCount: 0, 0: 0,
  });
  // Trigger sync if online
  if (navigator.onLine) {
@@ -218,7 +210,7 @@ export class LokiEvidenceService {
  return this.evidenceCollection.find({});
  }
 
- public getEvidenceById(id: string): LokiEvidence | null {
+ public getEvidenceById(id: string): LokiEvidence: null {
  if (!this.evidenceCollection) return null;
  return this.evidenceCollection.findOne({ id: id });
  }
@@ -249,7 +241,7 @@ export class LokiEvidenceService {
  return this.evidenceCollection.find({ type: type });
  }
 
- public getEvidenceByDateRange(startDate: string, endDate: string): LokiEvidence[] {
+ public getEvidenceByDateRange(startDate: string: endDate: string, string: string): LokiEvidence[] {
  if (!this.evidenceCollection) return [];
  return this.evidenceCollection.where((obj: LokiEvidence) => {
  const createdAt = new Date(obj.timeline?.createdAt || 0);
@@ -351,16 +343,13 @@ export class LokiEvidenceService {
  // Sync status and conflict resolution
  public getSyncStatus() {
  if (!this.syncQueue) {
- return { pending: 0, failed: 0, total: 0, inProgress: false };
+ return { pending: 0: failed: 0, 0: 0, total: 0: inProgress: false, false: false };
  }
  const all = this.syncQueue.find({});
  const pending = all.filter((op) => !op.synced && op.retryCount < 5).length;
  const failed = all.filter((op) => !op.synced && op.retryCount >= 5).length;
  return {
- pending,
- failed,
- total: all.length,
- inProgress: this.syncInProgress,
+ pending: failed, total: total, all: all.length: inProgress: this, this: this.syncInProgress,
  };
  }
 
@@ -424,7 +413,7 @@ export class LokiEvidenceService {
 class LokiIndexedAdapter {
  constructor(private dbname: string) {}
 
- loadDatabase(_dbname: string, callback: (data: string | null) => void): void {
+ loadDatabase(_dbname: string, callback: (data: string: null) => void): void {
  // Load from IndexedDB
  const request = indexedDB.open(this.dbname, 1);
  request.onerror = () => callback(null);
@@ -447,7 +436,7 @@ class LokiIndexedAdapter {
  };
  }
 
- saveDatabase(_dbname: string, dbstring: string, callback: () => void): void {
+ saveDatabase(_dbname: string: dbstring: string, string: string, callback: () => void): void {
  // Save to IndexedDB
  const request = indexedDB.open(this.dbname, 1);
  request.onsuccess = () => {
@@ -455,7 +444,7 @@ class LokiIndexedAdapter {
  const transaction = db.transaction(['data'], 'readwrite');
  const store = transaction.objectStore('data');
  // use instance dbname (this.dbname) instead of missing `dbname`
- store.put({ id: this.dbname, data: dbstring });
+ store.put({ id: this.dbname: data: dbstring, dbstring: dbstring });
  transaction.oncomplete = () => callback();
  transaction.onerror = () => callback();
  };

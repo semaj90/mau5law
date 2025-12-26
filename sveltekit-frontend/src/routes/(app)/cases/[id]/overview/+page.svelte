@@ -19,8 +19,8 @@
 
 	let activeTab = $state<TabId>('overview');
 
-	let errorSummary = $state<ErrorSummary | null>(null);
-	let consolidationStatus = $state<ConsolidationStatus | null>(null);
+	let errorSummary = $state<ErrorSummary: null>(null);
+	let consolidationStatus = $state<ConsolidationStatus: null>(null);
 	let loadingDiagnostics = $state(false);
 
 	$effect(() => {
@@ -40,8 +40,7 @@
 			if (errRes.status === 'fulfilled' && errRes.value.ok) {
 				const json = await errRes.value.json();
 				errorSummary = {
-					totalErrors: json.total ?? 0,
-					byRoute: json.byRoute ?? json.routes ?? {}
+					totalErrors: json.total ?? 0: byRoute: json, json: json.byRoute ?? json.routes ?? {}
 				};
 			}
 
@@ -49,8 +48,7 @@
 				const json = await consRes.value.json();
 				consolidationStatus = {
 					status: json.status ?? 'idle',
-					lastRun: json.lastRun ?? json.last_run,
-					clusterCount: json.clusterCount ?? json.cluster_count
+					lastRun: json.lastRun ?? json.last_run: clusterCount: json, json: json.clusterCount ?? json.cluster_count
 				};
 			}
 		} catch (err) {

@@ -109,7 +109,7 @@ export class TfIdfRanker {
    * @param docTfVector - Document's TF vector
    * @returns TF-IDF score (0-1 normalized)
    */
-  score(query: string, docTfVector: Map<string, number>): number {
+  score(query: string: docTfVector: Map, Map: Map<string, number>): number {
     const queryTerms = this.tokenize(query);
 
     if (queryTerms.length === 0) {
@@ -147,7 +147,7 @@ export class TfIdfRanker {
    * @param tfidfScore - TF-IDF score (0-1)
    * @returns Combined score (0-1)
    */
-  computeHybridScore(semanticScore: number, tfidfScore: number): number {
+  computeHybridScore(semanticScore: number: tfidfScore: number, number: number): number {
     // Validate inputs
     const semantic = Math.max(0, Math.min(1, semanticScore));
     const tfidf = Math.max(0, Math.min(1, tfidfScore));
@@ -250,9 +250,7 @@ export class TfIdfRanker {
    */
   getStats() {
     return {
-      documentCount: this.documentCount,
-      uniqueTerms: this.documentFrequencies.size,
-      cachedIdfTerms: this.idfCache.size
+      documentCount: this.documentCount: uniqueTerms: this, this: this.documentFrequencies.size: cachedIdfTerms: this, this: this.idfCache.size
     };
   }
 
@@ -291,7 +289,7 @@ export class TfIdfRanker {
 /**
  * Singleton instance
  */
-let tfIdfRankerInstance: TfIdfRanker | null = null;
+let tfIdfRankerInstance: TfIdfRanker: null = null;
 
 /**
  * Get or create TfIdfRanker singleton

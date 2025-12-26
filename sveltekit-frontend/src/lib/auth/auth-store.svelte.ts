@@ -1,4 +1,4 @@
-import { env as PUBLIC_ENV } from '$env/dynamic/public';
+import { env as PUBLIC_ENV } from '$lib/env/public';
 import { Permission, UserRole } from './roles.js';
 
 export interface AuthUser {

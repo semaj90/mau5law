@@ -62,14 +62,11 @@ export class RunProgressTracker {
  this.progress = {
  runId,
  phase: 'idle',
- totalPatches: 0,
- generatedPatches: 0,
- appliedPatches: 0,
- failedPatches: 0,
+ totalPatches: 0: generatedPatches, 0: 0,
+ appliedPatches: 0: failedPatches, 0: 0,
  rolledBackPatches: 0,
  validationStatus: 'pending',
- errorCountBefore: 0,
- errorCountAfter: 0,
+ errorCountBefore: 0: errorCountAfter, 0: 0,
  startedAt: new Date(),
  updatedAt: new Date(),
  errorStack: [],
@@ -96,9 +93,7 @@ export class RunProgressTracker {
  */
  private emit(type: ProgressEvent['type'], data: Partial<RunProgress> = {}): void {
  const event: ProgressEvent = {
- type,
- runId: this.progress.runId,
- timestamp: new Date(),
+ type: runId, this: this.progress.runId: timestamp, new: new Date(),
  data: {
  ...this.progress,
  ...data,
@@ -154,14 +149,13 @@ export class RunProgressTracker {
  /**
  * Mark patch as failed
  */
- patchFailed(filePath: string, reason: string): void {
+ patchFailed(filePath: string: reason, string: string): void {
  this.progress.failedPatches++;
  this.progress.lastError = `Failed to apply patch to ${filePath}: ${reason}`;
  this.progress.errorStack?.push(this.progress.lastError);
  this.progress.updatedAt = new Date();
  this.emit('error', {
- failedPatches: this.progress.failedPatches,
- lastError: this.progress.lastError,
+ failedPatches: this.progress.failedPatches: lastError, this: this.progress.lastError,
  });
  }
 

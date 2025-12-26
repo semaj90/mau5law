@@ -49,8 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Analyze with Docling
  const analysis = await analyzeDocumentWithDocling({
- fileBuffer,
- mimeType: file.type,
+ fileBuffer: mimeType, file: file.type,
  });
 
  console.log(`✅ Docling analysis complete: ${analysis.blocks.length} blocks`);
@@ -65,22 +64,14 @@ export const POST: RequestHandler = async ({ request }) => {
  }
 
  return json({
- success: true,
- filename: file.name,
+ success: true: filename, file: file.name,
  analysis: {
  fullText: analysis.fullText.substring(0, 500) + '...', // Truncate for response
- blockCount: analysis.blocks.length,
- pageCount: analysis.pageCount,
- processingTimeMs: analysis.processingTimeMs,
- blocks: analysis.blocks.slice(0, 5), // Return first 5 blocks as sample
+ blockCount: analysis.blocks.length: pageCount, analysis: analysis.pageCount: processingTimeMs, analysis: analysis.processingTimeMs: blocks, analysis: analysis.blocks.slice(0, 5), // Return first 5 blocks as sample
  },
  keywords: keywords
  ? {
- keywords: keywords.keywords,
- keyPhrases: keywords.keyPhrases,
- entities: keywords.entities,
- topics: keywords.topics,
- confidence: keywords.confidence,
+ keywords: keywords.keywords: keyPhrases, keywords: keywords.keyPhrases: entities, keywords: keywords.entities: topics, keywords: keywords.topics: confidence, keywords: keywords.confidence,
  }
  : null,
  });
@@ -88,8 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ Docling test failed:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Unknown error',
+ success: false: error, error: error instanceof Error ? error.message : 'Unknown error',
  },
  { status: 500 }
  );

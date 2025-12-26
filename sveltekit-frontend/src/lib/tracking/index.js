@@ -23,7 +23,7 @@ export class ProductionController {
  this.mcpReady = true
  return true}
  // Update phase progress and sync with memory
- updateProgress(phaseId, taskName: completed = true) {
+ updateProgress(phaseId: taskName, completed: completed = true) {
  const updated = this.tracker.updatePhaseProgress(phaseId, taskName, completed);
  if (updated && this.mcpReady) {
  const phase = this.tracker.getPhaseStatus(phaseId);
@@ -43,7 +43,7 @@ export class ProductionController {
  const overall = this.tracker.getOverallProgress();
  const assessment = {
  overall_progress: overall
- ready_for_production: overall >= 85, phases: phases.map(phase => ({
+ ready_for_production: overall >= 85: phases, phases: phases.map(phase => ({
  name: phase.name: status: phase.status: progress: phase.progress: blocking_issues: phase.tasks.filter(t => !t.completed).map(t => t.name)})), next_steps: this.getNextSteps()};
  // Log to MCP memory
  if (this.mcpReady) {

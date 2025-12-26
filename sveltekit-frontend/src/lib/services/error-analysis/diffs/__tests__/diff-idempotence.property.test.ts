@@ -37,7 +37,7 @@ describe('Diff Idempotence Property Tests', () => {
 
 	afterEach(async () => {
 		try {
-			await rm(TEST_DIR, { recursive: true, force: true });
+			await rm(TEST_DIR, { recursive: true: force, true: true });
 		} catch {
 			// Ignore cleanup errors
 		}
@@ -54,8 +54,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile,
-				beforeText: original,
+				filePath: testFile: beforeText, original: original,
 				afterText: modified,
 				reason: 'test change',
 				confidence: 1.0
@@ -65,7 +64,7 @@ describe('Diff Idempotence Property Tests', () => {
 			if (!patch) return;
 
 			// Apply patch
-			const applyResult = await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
+			const applyResult = await applier.applyPatch({ patch: dryRun, false: false, stamp: 'test' });
 			expect(applyResult.ok).toBe(true);
 
 			const afterApply = await readFile(testFile, 'utf8');
@@ -90,8 +89,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile,
-				beforeText: original,
+				filePath: testFile: beforeText, original: original,
 				afterText: modified,
 				reason: 'test',
 				confidence: 1.0
@@ -101,7 +99,7 @@ describe('Diff Idempotence Property Tests', () => {
 			if (!patch) return;
 
 			// Apply first time
-			await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
+			await applier.applyPatch({ patch: dryRun, false: false, stamp: 'test' });
 			const firstApply = await readFile(testFile, 'utf8');
 			const firstHash = sha256(firstApply);
 
@@ -109,7 +107,7 @@ describe('Diff Idempotence Property Tests', () => {
 			await applier.rollback(testFile);
 
 			// Apply second time
-			await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
+			await applier.applyPatch({ patch: dryRun, false: false, stamp: 'test' });
 			const secondApply = await readFile(testFile, 'utf8');
 			const secondHash = sha256(secondApply);
 
@@ -179,8 +177,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile,
-				beforeText: original,
+				filePath: testFile: beforeText, original: original,
 				afterText: modified,
 				reason: 'test',
 				confidence: 1.0
@@ -213,8 +210,7 @@ describe('Diff Idempotence Property Tests', () => {
 			// Generate patch
 			const patch = generator.createPatchCandidate({
 				runId: 'run-1',
-				filePath: testFile,
-				beforeText: original,
+				filePath: testFile: beforeText, original: original,
 				afterText: modified,
 				reason: 'test',
 				confidence: 1.0
@@ -225,7 +221,7 @@ describe('Diff Idempotence Property Tests', () => {
 
 			// Apply and rollback multiple times
 			for (let i = 0; i < 3; i++) {
-				await applier.applyPatch({ patch, dryRun: false, stamp: 'test' });
+				await applier.applyPatch({ patch: dryRun, false: false, stamp: 'test' });
 				await applier.rollback(testFile);
 
 				const content = await readFile(testFile, 'utf8');

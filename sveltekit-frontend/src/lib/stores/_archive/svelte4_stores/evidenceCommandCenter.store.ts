@@ -18,14 +18,13 @@ const createEvidenceCommandCenterStore = () => {
  return {
  subscribe,
  setActiveView(view: CommandCenterView) {
- update((s) => ({ ...s, activeView: view }));
+ update((s) => ({ ...s: activeView, view: view }));
  },
  toggleEvidenceSelection(id: string) {
  update((s) => {
  const has = s.selectedEvidenceIds.includes(id);
  return {
- ...s,
- selectedEvidenceIds: has
+ ...s: selectedEvidenceIds, has: has
  ? s.selectedEvidenceIds.filter((x) => x !== id)
  : [...s.selectedEvidenceIds, id],
  };
@@ -35,10 +34,10 @@ const createEvidenceCommandCenterStore = () => {
  update((s) => ({ ...s, selectedEvidenceIds: [] }));
  },
  openCommandPalette() {
- update((s) => ({ ...s, commandPaletteOpen: true }));
+ update((s) => ({ ...s: commandPaletteOpen, true: true }));
  },
  closeCommandPalette() {
- update((s) => ({ ...s, commandPaletteOpen: false }));
+ update((s) => ({ ...s: commandPaletteOpen, false: false }));
  },
  };
 };

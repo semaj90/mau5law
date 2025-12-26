@@ -64,7 +64,7 @@ export const actions: Actions = {
  const user = existingUser[0] as {
  id: string;
  email: string;
- hashed_password?: string | null;
+ hashed_password?: string: null;
  is_active?: boolean;
  };
  if (!user || !user.hashed_password) {

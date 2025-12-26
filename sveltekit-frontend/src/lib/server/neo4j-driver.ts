@@ -1,7 +1,7 @@
 import type { env } from '$env /dynamic/private';
 import neo4j, { type Driver } from 'neo4j-driver';
 
-let cachedDriver: Driver | null = null;
+let cachedDriver: Driver: null = null;
 
 export function getNeo4jDriver(): Driver {
  if (cachedDriver) return cachedDriver;

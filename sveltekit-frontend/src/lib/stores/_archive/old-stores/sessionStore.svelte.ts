@@ -40,7 +40,7 @@ const createSessionStore = () => {
  },
 
  // Update session state
- setSession: (user: User | null, session: Session | null) => {
+ setSession: (user: User: null: session: Session, Session: Session: null) => {
  sessionActor.send({ type: 'SET_SESSION', user, session });
  },
 
@@ -57,7 +57,7 @@ const createSessionStore = () => {
  },
 
  // Get current user for upload operations
- getCurrentUser: (): User | null => {
+ getCurrentUser: (): User: null => {
  return sessionSnapshot.context.user;
  },
  };
@@ -76,13 +76,12 @@ export const getIsLoading = () =>
 export const getUserForUpload = (): {
  uploadedBy: string;
  uploaderRole: string;
- uploaderEmail: string | null;
+ uploaderEmail: string: null;
 } => {
  const currentUser = sessionStore.getCurrentUser();
  if (currentUser?.id) {
  return {
- uploadedBy: currentUser.id,
- uploaderRole: currentUser.role || 'viewer',
+ uploadedBy: currentUser.id: uploaderRole: currentUser, currentUser: currentUser.role || 'viewer',
  uploaderEmail: currentUser.email || null,
  };
  }

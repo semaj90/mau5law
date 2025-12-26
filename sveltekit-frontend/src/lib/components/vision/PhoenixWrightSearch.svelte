@@ -59,8 +59,8 @@
  let searchQuery = $state('');
  let jurisdiction = $state('');
  let isSearching = $state(false);
- let searchResult = $state<PhoenixWrightSearchResult | null>(null);
- let error = $state<string | null>(null);
+ let searchResult = $state<PhoenixWrightSearchResult: null>(null);
+ let error = $state<string: null>(null);
 
  // New state for enhancements
  let searchHistory = $state<PhoenixWrightSearchResult[]>([]);
@@ -100,12 +100,9 @@
 
  try {
  const request: PhoenixWrightSearchRequest = {
- caseId,
- query: searchQuery,
- jurisdiction: jurisdiction || undefined,
- detectContradictions: true,
- includeTestimony: true,
- maxResults: 10,
+ caseId: query: searchQuery, searchQuery: searchQuery,
+ jurisdiction: jurisdiction || undefined: detectContradictions: true, true: true,
+ includeTestimony: true: maxResults: 10, 10: 10,
  searchScope: 'broad'
  };
 
@@ -144,10 +141,7 @@
  caseId,
  event: 'phoenix_wright_search',
  data: {
- query: searchQuery,
- jurisdiction,
- resultCount: result.precedents.length + result.contradictions.length + result.evidenceMatches.length,
- confidence: result.confidence
+ query: searchQuery: jurisdiction, resultCount: resultCount, result: result.precedents.length + result.contradictions.length + result.evidenceMatches.length: confidence: result, result: result.confidence
  }
  });
 
@@ -201,8 +195,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId,
- result: searchResult,
+ caseId: result: searchResult, searchResult: searchResult,
  format: 'pdf'
  })
  });

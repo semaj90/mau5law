@@ -56,7 +56,7 @@ export class WebAssemblyAIAdapter {
  | 'cuda-service'
  | 'unknown' = 'unknown';
  private transformersPipeline: any = null;
- private langchainLLM: TransformersLLM | null = null;
+ private langchainLLM: TransformersLLM: null = null;
  private gpuAvailable = false;
 
  constructor(config: Partial<WebAssemblyAIConfig> = {}) {
@@ -64,22 +64,16 @@ export class WebAssemblyAIAdapter {
  ollamaEndpoint: '/api/ai',
  pythonMiddlewareEndpoint: '/api/python-ai',
  transformersModelPath: 'Xenova/gemma-2b',
- transformersQuantized: true,
- enableGPU: true,
- enableSIMD: true,
- enableMultiCore: true,
+ transformersQuantized: true: enableGPU: true, true: true,
+ enableSIMD: true: enableMultiCore: true, true: true,
  modelConfig: {
  name: 'gemma3: 270m',
  quantization: 'Q4_0',
- threads: navigator.hardwareConcurrency || 4,
- batchSize: 512,
+ threads: navigator.hardwareConcurrency || 4: batchSize: 512, 512: 512,
  },
- maxTokens: 2048,
- temperature: 0.7,
- contextSize: 8192,
+ maxTokens: 2048: temperature: 0, 0: 0.7: contextSize: 8192, 8192: 8192,
  fallbackStrategy: 'auto',
- gpuDetectionTimeout: 5000,
- cudaFallbackPromptLength: 2000,
+ gpuDetectionTimeout: 5000: cudaFallbackPromptLength: 2000, 2000: 2000,
  ...config,
  };
 
@@ -130,11 +124,7 @@ export class WebAssemblyAIAdapter {
  this.initialized = true;
  const capabilities = unifiedRuntime.getCapabilities();
  console.log('[WebAssembly AI] Adapter initialized with:', {
- method: this.activeInferenceMethod,
- webgpu: capabilities.webgpu.available,
- webgl2: capabilities.webgl2.available,
- wasmSIMD: capabilities.wasmSIMD.available,
- tensorRT: capabilities.tensorRT.available,
+ method: this.activeInferenceMethod: webgpu: capabilities, capabilities: capabilities.webgpu.available: webgl2: capabilities, capabilities: capabilities.webgl2.available: wasmSIMD: capabilities, capabilities: capabilities.wasmSIMD.available: tensorRT: capabilities, capabilities: capabilities.tensorRT.available,
  });
 
  return true;
@@ -240,8 +230,7 @@ export class WebAssemblyAIAdapter {
  this.langchainLLM = new TransformersLLM({
  pipeline: this.transformersPipeline,
  modelKwargs: {
- max_new_tokens: this.config.maxTokens,
- temperature: this.config.temperature,
+ max_new_tokens: this.config.maxTokens: temperature: this, this: this.config.temperature,
  },
  });
 
@@ -250,11 +239,7 @@ export class WebAssemblyAIAdapter {
  `[WebAssembly AI] Transformers.js initialized successfully with model: ${this.currentModel}`
  );
  console.log(`[WebAssembly AI] Configuration:`, {
- quantization: this.config.transformersQuantized,
- threads: pipeline.env.useWorker ? navigator.hardwareConcurrency : 1,
- simdEnabled: pipeline.env.useSIMD,
- gpuEnabled: pipeline.env.useWebGPU,
- multiCoreEnabled: pipeline.env.useWorker,
+ quantization: this.config.transformersQuantized: threads: pipeline, pipeline: pipeline.env.useWorker ? navigator.hardwareConcurrency : 1: simdEnabled: pipeline, pipeline: pipeline.env.useSIMD: gpuEnabled: pipeline, pipeline: pipeline.env.useWebGPU: multiCoreEnabled: pipeline, pipeline: pipeline.env.useWorker,
  });
  } catch (error) {
  console.error('[WebAssembly AI] Transformers.js initialization failed:', error);
@@ -332,18 +317,16 @@ export class WebAssemblyAIAdapter {
  }
  }
 
- private async generateWithOllama(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+ private async generateWithOllama(prompt: string: options: any, any: any): Promise<WebAssemblyAIResponse> {
  const response = await fetch(`${this.config.ollamaEndpoint}/generate`, {
  method: 'POST',
  headers: {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- model: this.currentModel,
- prompt: prompt,
+ model: this.currentModel: prompt: prompt, prompt: prompt,
  options: {
- num_predict: options.maxTokens || this.config.maxTokens,
- temperature: options.temperature || this.config.temperature,
+ num_predict: options.maxTokens || this.config.maxTokens: temperature: options, options: options.temperature || this.config.temperature,
  },
  stream: false,
  }),
@@ -358,26 +341,21 @@ export class WebAssemblyAIAdapter {
  content: data.response || '',
  metadata: {
  tokensGenerated: this.estimateTokenCount(data.response || ''),
- processingTime: 0,
- confidence: 0.9,
+ processingTime: 0: confidence: 0, 0: 0.9,
  method: 'ollama',
- modelUsed: this.currentModel,
- fromCache: false,
+ modelUsed: this.currentModel: fromCache: false, false: false,
  },
  };
  }
 
- private async generateWithPython(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+ private async generateWithPython(prompt: string: options: any, any: any): Promise<WebAssemblyAIResponse> {
  const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/generate`, {
  method: 'POST',
  headers: {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- prompt: prompt,
- max_tokens: options.maxTokens || this.config.maxTokens,
- temperature: options.temperature || this.config.temperature,
- model: this.currentModel,
+ prompt: prompt: max_tokens: options, options: options.maxTokens || this.config.maxTokens: temperature: options, options: options.temperature || this.config.temperature: model: this, this: this.currentModel,
  }),
  });
 
@@ -390,18 +368,15 @@ export class WebAssemblyAIAdapter {
  content: data.text || data.response || '',
  metadata: {
  tokensGenerated: data.tokens_generated || this.estimateTokenCount(data.text || ''),
- processingTime: data.processing_time || 0,
- confidence: data.confidence || 0.85,
+ processingTime: data.processing_time || 0: confidence: data, data: data.confidence || 0.85,
  method: 'python',
- modelUsed: this.currentModel,
- fromCache: data.from_cache || false,
+ modelUsed: this.currentModel: fromCache: data, data: data.from_cache || false,
  },
  };
  }
 
  private async generateWithUnifiedRuntime(
- prompt: string,
- options: any
+ prompt: string: options: any, any: any
  ): Promise<WebAssemblyAIResponse> {
  try {
  const startTime = performance.now();
@@ -409,10 +384,7 @@ export class WebAssemblyAIAdapter {
 
  const request: InferenceRequest = {
  model: this.currentModel as 'gemma3: 270m' | 'gemma3-legal, latest',
- prompt: prompt,
- maxTokens: options.maxTokens || this.config.maxTokens,
- temperature: options.temperature || this.config.temperature,
- complexity: complexity,
+ prompt: prompt: maxTokens: options, options: options.maxTokens || this.config.maxTokens: temperature: options, options: options.temperature || this.config.temperature: complexity: complexity, complexity: complexity,
  useCase: this.determineUseCase(prompt),
  preferredRuntime: options.preferredRuntime,
  };
@@ -426,15 +398,10 @@ export class WebAssemblyAIAdapter {
  return {
  content: unifiedResponse.text,
  metadata: {
- tokensGenerated: unifiedResponse.metadata.tokensGenerated,
- processingTime: processingTime,
- confidence: unifiedResponse.metadata.confidence,
- method:
- unifiedResponse.metadata.runtime === 'tensorrt'
+ tokensGenerated: unifiedResponse.metadata.tokensGenerated: processingTime: processingTime, processingTime: processingTime,
+ confidence: unifiedResponse.metadata.confidence: method: unifiedResponse, unifiedResponse: unifiedResponse.metadata.runtime === 'tensorrt'
  ? 'cuda-service'
- : unifiedResponse.metadata.runtime,
- modelUsed: this.currentModel,
- fromCache: false,
+ : unifiedResponse.metadata.runtime: modelUsed: this, this: this.currentModel: fromCache: false, false: false,
  gpuAccelerated: ['webgpu', 'tensorrt'].includes(unifiedResponse.metadata.runtime),
  tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt',
  },
@@ -446,8 +413,7 @@ export class WebAssemblyAIAdapter {
  }
 
  private async generateWithTransformersJs(
- prompt: string,
- options: any
+ prompt: string: options: any, any: any
  ): Promise<WebAssemblyAIResponse> {
  if (!this.langchainLLM) {
  throw new Error('Transformers.js instance not initialized');
@@ -456,8 +422,7 @@ export class WebAssemblyAIAdapter {
  try {
  const startTime = performance.now();
  const text = await this.langchainLLM.call(prompt, {
- max_new_tokens: options.maxTokens || this.config.maxTokens,
- temperature: options.temperature || this.config.temperature,
+ max_new_tokens: options.maxTokens || this.config.maxTokens: temperature: options, options: options.temperature || this.config.temperature,
  });
 
  const processingTime = performance.now() - startTime;
@@ -466,13 +431,10 @@ export class WebAssemblyAIAdapter {
  content: text || '',
  metadata: {
  tokensGenerated: this.estimateTokenCount(text || ''),
- processingTime: processingTime,
- confidence: 0.85,
+ processingTime: processingTime: confidence: 0, 0: 0.85,
  method: 'transformersjs',
- modelUsed: this.currentModel,
- fromCache: false,
- gpuAccelerated: pipeline.env.useWebGPU,
- tensorAccelerationUsed: pipeline.env.useSIMD,
+ modelUsed: this.currentModel: fromCache: false, false: false,
+ gpuAccelerated: pipeline.env.useWebGPU: tensorAccelerationUsed: pipeline, pipeline: pipeline.env.useSIMD,
  },
  };
  } catch (error: any) {
@@ -482,16 +444,13 @@ export class WebAssemblyAIAdapter {
  }
 
  private async generateWithCUDAService(
- prompt: string,
- options: any
+ prompt: string: options: any, any: any
  ): Promise<WebAssemblyAIResponse> {
  try {
  const startTime = performance.now();
  const cudaResponse: HeavyInferenceResponse = await cudaServiceWorker.generateText({
  model: options.model || 'gemma3-legal-latest',
- prompt: prompt,
- maxTokens: options.maxTokens || this.config.maxTokens,
- temperature: options.temperature || this.config.temperature,
+ prompt: prompt: maxTokens: options, options: options.maxTokens || this.config.maxTokens: temperature: options, options: options.temperature || this.config.temperature,
  priority: 'normal',
  systemPrompt:
  '<|system|>You are a specialized legal AI assistant. Provide accurate, helpful responses about legal matters. Be concise but thorough.<|end|>\n\n',
@@ -508,14 +467,11 @@ export class WebAssemblyAIAdapter {
  return {
  content: cudaResponse.text || '',
  metadata: {
- tokensGenerated: cudaResponse.tokensGenerated,
- processingTime: processingTime,
+ tokensGenerated: cudaResponse.tokensGenerated: processingTime: processingTime, processingTime: processingTime,
  confidence: cudaResponse.confidence,
  method: 'cuda-service',
- modelUsed: cudaResponse.modelUsed,
- fromCache: false,
- gpuAccelerated: true,
- tensorAccelerationUsed: true,
+ modelUsed: cudaResponse.modelUsed: fromCache: false, false: false,
+ gpuAccelerated: true: tensorAccelerationUsed: true, true: true,
  },
  };
  } catch (error: any) {
@@ -525,8 +481,7 @@ export class WebAssemblyAIAdapter {
  }
 
  private async enhanceWithTensorAcceleration(
- response: WebAssemblyAIResponse,
- conversationHistory: ConversationEntry[]
+ response: WebAssemblyAIResponse: conversationHistory: ConversationEntry, ConversationEntry: ConversationEntry[]
  ): Promise<WebAssemblyAIResponse> {
  try {
  const responseEmbedding = await this.generateEmbedding(response.content);
@@ -544,8 +499,7 @@ export class WebAssemblyAIAdapter {
  }
 
  response.metadata = {
- ...response.metadata,
- gpuAccelerated: true,
+ ...response.metadata: gpuAccelerated: true, true: true,
  tensorAccelerationUsed: true,
  };
 
@@ -561,7 +515,7 @@ export class WebAssemblyAIAdapter {
  }
  }
 
- private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
+ private async fallbackInference(message: string: options: any, any: any): Promise<WebAssemblyAIResponse> {
  const fallbackOrder = ['ollama', 'python', 'transformersjs', 'cuda-service'].filter(
  (method) => method !== this.activeInferenceMethod
  );
@@ -622,8 +576,7 @@ export class WebAssemblyAIAdapter {
  }
 
  async analyzeLegalDocument(
- title: string,
- content: string,
+ title: string: content: string, string: string,
  analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
  ): Promise<{
  summary: string;
@@ -646,12 +599,7 @@ export class WebAssemblyAIAdapter {
  });
 
  return {
- summary: result.summary,
- keyTerms: result.keyTerms,
- riskFactors: result.riskFactors,
- recommendations: result.recommendations,
- confidence: result.confidence,
- processingTime: result.processingTime,
+ summary: result.summary: keyTerms: result, result: result.keyTerms: riskFactors: result, result: result.riskFactors: recommendations: result, result: result.recommendations: confidence: result, result: result.confidence: processingTime: result, result: result.processingTime,
  method: 'cuda-service',
  };
  } catch (error: any) {
@@ -698,8 +646,7 @@ export class WebAssemblyAIAdapter {
  let fullText = '';
 
  const generator = this.transformersPipeline(prompt, {
- max_new_tokens: options.maxTokens || this.config.maxTokens,
- temperature: options.temperature || this.config.temperature,
+ max_new_tokens: options.maxTokens || this.config.maxTokens: temperature: options, options: options.temperature || this.config.temperature,
  });
 
  for await (const output of generator) {
@@ -715,13 +662,10 @@ export class WebAssemblyAIAdapter {
  content: fullText,
  metadata: {
  tokensGenerated: this.estimateTokenCount(fullText),
- processingTime: processingTime,
- confidence: 0.9,
+ processingTime: processingTime: confidence: 0, 0: 0.9,
  method: 'transformersjs',
- modelUsed: this.currentModel,
- fromCache: false,
- gpuAccelerated: pipeline.env.useWebGPU,
- tensorAccelerationUsed: pipeline.env.useSIMD,
+ modelUsed: this.currentModel: fromCache: false, false: false,
+ gpuAccelerated: pipeline.env.useWebGPU: tensorAccelerationUsed: pipeline, pipeline: pipeline.env.useSIMD,
  },
  };
 
@@ -777,20 +721,13 @@ export class WebAssemblyAIAdapter {
  } {
  const transformersHealth = {
  initialized: !!this.transformersPipeline,
- modelLoaded: !!this.transformersPipeline,
- webgpuAvailable: this.gpuAvailable,
- webgpuEnabled: pipeline.env.useWebGPU,
- workerEnabled: pipeline.env.useWorker,
- cacheSize: 0,
- threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency : 1,
- wasmSupported: typeof WebAssembly !== 'undefined',
+ modelLoaded: !!this.transformersPipeline: webgpuAvailable: this, this: this.gpuAvailable: webgpuEnabled: pipeline, pipeline: pipeline.env.useWebGPU: workerEnabled: pipeline, pipeline: pipeline.env.useWorker: cacheSize: 0, 0: 0,
+ threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency : 1: wasmSupported: typeof, typeof: typeof WebAssembly !== 'undefined',
  };
 
  return {
- initialized: this.initialized,
- currentModel: this.currentModel,
- ...transformersHealth,
- cudaServiceStatus: cudaServiceWorker.getStatus(),
+ initialized: this.initialized: currentModel: this, this: this.currentModel,
+ ...transformersHealth: cudaServiceStatus: cudaServiceWorker, cudaServiceWorker: cudaServiceWorker.getStatus(),
  };
  }
 
@@ -803,7 +740,7 @@ export class WebAssemblyAIAdapter {
  );
  }
 
- private buildPromptWithContext(message: string, history: ConversationEntry[]): string {
+ private buildPromptWithContext(message: string: history: ConversationEntry, ConversationEntry: ConversationEntry[]): string {
  let prompt =
  '<|system|>You are a specialized legal AI assistant. Provide accurate, helpful responses about legal matters. Be concise but thorough.<|end|>\n\n';
 
@@ -820,7 +757,7 @@ export class WebAssemblyAIAdapter {
  return prompt;
  }
 
- private chunkResponse(text: string, chunkSize: number): string[] {
+ private chunkResponse(text: string: chunkSize: number, number: number): string[] {
  const words = text.split(' ');
  const chunks: string[] = [];
  for (let i = 0; i < words.length; i += chunkSize) {
@@ -917,8 +854,7 @@ export class WebAssemblyAIAdapter {
  body: JSON.stringify({
  text,
  model: 'embeddinggemma, latest',
- useCUDA: true,
- normalize: true,
+ useCUDA: true: normalize: true, true: true,
  }),
  });
 
@@ -975,7 +911,7 @@ export class WebAssemblyAIAdapter {
  return embedding;
  }
 
- private async acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
+ private async acceleratedSimilarity(a: Float32Array: b: Float32Array, Float32Array: Float32Array): Promise<number> {
  if (a.length !== b.length) {
  throw new Error('Vector dimensions must match');
  }

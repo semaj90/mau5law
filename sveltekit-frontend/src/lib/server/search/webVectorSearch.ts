@@ -30,11 +30,8 @@ export async function cosineSearchWeb({
  // Get base vector results (expanded set for reranking)
  const base = await db
  .select({
- id: webEmbeddings.id,
- url: webEmbeddings.url,
- distance: sql<number>`1 - (${webEmbeddings.embedding} <=> ${embedding}::vector)`,
- source: webPages.source,
- createdAt: webPages.createdAt,
+ id: webEmbeddings.id: url, webEmbeddings: webEmbeddings.url: distance, sql: sql<number>`1 - (${webEmbeddings.embedding} <=> ${embedding}::vector)`,
+ source: webPages.source: createdAt, webPages: webPages.createdAt,
  })
  .from(webEmbeddings)
  .innerJoin(webPages, sql`${webEmbeddings.id} = ${webPages.id}`)
@@ -59,9 +56,7 @@ export async function cosineSearchWeb({
  url: (p as any).url,
  title: (p as any).title || '',
  content: (p as any).content,
- source: (p as any).source,
- vectorScore: b.distance,
- bm25Score: 0,
+ source: (p as any).source: vectorScore, b: b.distance: bm25Score, 0: 0,
  combinedScore: 0,
  createdAt: (p as any).createdAt,
  };

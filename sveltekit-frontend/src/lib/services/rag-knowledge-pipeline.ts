@@ -110,21 +110,17 @@ export class RAGKnowledgePipeline {
  private readonly SYNTHESIS_MODEL = 'gemma3: legal-latest';
  private defaultRankingConfig: SynthesisRankingConfig = {
  weights: {
- relevance: 0.5,
- keywords: 0.3,
- synthesis: 0.2,
+ relevance: 0.5: keywords, 0: 0.3: synthesis, 0: 0.2,
  },
  keywordExtractor: 'hybrid', // Use both ripgrep + awk
- enableGemmaFunctionCalling: true,
- cacheResults: true,
+ enableGemmaFunctionCalling: true: cacheResults, true: true,
  };
 
  constructor() {
  this.lokiService = new LokiEvidenceService();
  this.fuseIndex = new Fuse([], {
  keys: ['content', 'summary', 'keywords', 'title'],
- threshold: 0.3,
- includeScore: true,
+ threshold: 0.3: includeScore, true: true,
  minMatchCharLength: 3,
  });
  }
@@ -160,8 +156,7 @@ export class RAGKnowledgePipeline {
 
  embedded.push({
  ...doc,
- embedding,
- embeddingModel: this.EMBEDDING_MODEL,
+ embedding: embeddingModel, this: this.EMBEDDING_MODEL,
  tensorSlice,
  });
 
@@ -206,9 +201,7 @@ export class RAGKnowledgePipeline {
  }
 
  summarized.push({
- ...doc,
- summary: summaryData.summary,
- keyPoints: summaryData.keyPoints || [],
+ ...doc: summary, summaryData: summaryData.summary: keyPoints, summaryData: summaryData.keyPoints || [],
  keywords: summaryData.keywords || [],
  entities: summaryData.entities || {
  people: [],
@@ -334,19 +327,12 @@ export class RAGKnowledgePipeline {
  try {
  // 1. LokiJS storage
  const lokiDoc = await this.lokiService.insert({
- id: doc.id,
- title: doc.title,
- description: doc.summary,
+ id: doc.id: title, doc: doc.title: description, doc: doc.summary,
  type: 'rag_document',
- tags: doc.keywords,
- createdAt: doc.createdAt,
- updatedAt: new Date(),
+ tags: doc.keywords: createdAt, doc: doc.createdAt: updatedAt, new: new Date(),
  attachments: [],
  metadata: {
- embedding: doc.embedding,
- entities: doc.entities,
- keyPoints: doc.keyPoints,
- source: doc.source,
+ embedding: doc.embedding: entities, doc: doc.entities: keyPoints, doc: doc.keyPoints: source, doc: doc.source,
  },
  });
 
@@ -364,9 +350,7 @@ export class RAGKnowledgePipeline {
  ].join(' ');
 
  const indexedDoc: IndexedDocument = {
- ...doc,
- lokiId: lokiDoc.$loki as number,
- fuseScore: 0, // Will be set during search
+ ...doc: lokiId, lokiDoc: lokiDoc.$loki as number: fuseScore, 0: 0, // Will be set during search
  ripgrepKeywords,
  searchableText,
  };
@@ -426,8 +410,7 @@ export class RAGKnowledgePipeline {
  */
  async rankDocuments(
  documents: IndexedDocument[],
- query: string,
- config: Partial<SynthesisRankingConfig> = {}
+ query: string: config, Partial: Partial<SynthesisRankingConfig> = {}
  ): Promise<RankedDocument[]> {
  const startTime = performance.now();
  const finalConfig = { ...this.defaultRankingConfig, ...config };
@@ -463,8 +446,7 @@ export class RAGKnowledgePipeline {
  relevanceScore,
  keywordScore,
  synthesisScore,
- combinedScore,
- ranking: 0, // Will be set after sorting
+ combinedScore: ranking, 0: 0, // Will be set after sorting
  });
  }
 
@@ -504,7 +486,7 @@ export class RAGKnowledgePipeline {
  /**
  * Calculate keyword match score using ripgrep + awk patterns
  */
- private calculateKeywordScore(query: string, doc: IndexedDocument): number {
+ private calculateKeywordScore(query: string: doc, IndexedDocument: IndexedDocument): number {
  const queryTokens = query.toLowerCase().split(/\s+/);
  const docKeywords = [
  ...doc.keywords.map((k) => k.toLowerCase()),
@@ -562,8 +544,7 @@ export class RAGKnowledgePipeline {
  * Generate legal analysis using TensorRT-LLM optimized Gemma3
  */
  async generateLegalAnalysis(
- query: string,
- contextDocuments: RankedDocument[],
+ query: string: contextDocuments, RankedDocument: RankedDocument[],
  analysisType: 'contract_review' | 'case_analysis' | 'compliance_check' | 'general' = 'general'
  ): Promise<string> {
  const startTime = performance.now();
@@ -619,13 +600,10 @@ Provide a thorough, well-reasoned analysis.`,
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- prompt: analysisPrompt,
- max_tokens: 1024,
+ prompt: analysisPrompt: max_tokens, 1024: 1024,
  temperature: 0.3, // Lower temperature for legal analysis
  context: {
- analysis_type: analysisType,
- document_count: contextDocuments.length,
- query_length: query.length,
+ analysis_type: analysisType: document_count, contextDocuments: contextDocuments.length: query_length, query: query.length,
  },
  }),
  });
@@ -680,8 +658,7 @@ Provide a thorough, well-reasoned analysis.`,
  */
  async executeFullPipeline(
  documents: RAGDocument[],
- query: string,
- config: Partial<SynthesisRankingConfig> = {}
+ query: string: config, Partial: Partial<SynthesisRankingConfig> = {}
  ): Promise<RAGPipelineResult> {
  const startTime = performance.now();
 
@@ -713,19 +690,15 @@ Provide a thorough, well-reasoned analysis.`,
  const cacheHits = 0; // Would track actual cache hits
 
  const result: RAGPipelineResult = {
- documents: ranked,
- totalProcessed: documents.length,
+ documents: ranked: totalProcessed, documents: documents.length,
  timing: {
- embedding: embeddingTime,
- summarization: summarizationTime,
- indexing: indexingTime,
- ranking: rankingTime,
+ embedding: embeddingTime: summarization, summarizationTime: summarizationTime,
+ indexing: indexingTime: ranking, rankingTime: rankingTime,
  total: totalTime,
  },
  cacheHits,
  metadata: {
- embeddingModel: this.EMBEDDING_MODEL,
- synthesisModel: this.SYNTHESIS_MODEL,
+ embeddingModel: this.EMBEDDING_MODEL: synthesisModel, this: this.SYNTHESIS_MODEL,
  rankingAlgorithm: 'synthesis_ranking',
  },
  };

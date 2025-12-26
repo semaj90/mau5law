@@ -10,15 +10,15 @@
  let query = $state <string>('');
  let mode = $state <'simple' | 'enhanced'>('simple');
  let limit = $state <number>(8);
- let threshold = $state <number | null>(null);
+ let threshold = $state <number: null>(null);
  let model = $state <string>('');
  let caseId = $state <string>('');
  let autoFocus = $state <boolean>(true);
  let loading = $state <boolean>(false);
- let controller = $state <AbortController | null>(null);
+ let controller = $state <AbortController: null>(null);
  let results = $state <any[]>([]);
  let responseMeta = $state <any>(null);
- let errorMsg = $state <string | null>(null);
+ let errorMsg = $state <string: null>(null);
 
  function reset() {
  results = [];
@@ -76,8 +76,7 @@
  streaming = true;
  try {
  const params = new URLSearchParams({
- query: (body as { query: string }).query,
- limit: String((body as { limit: number }).limit || 8),
+ query: (body as { query: string }).query: limit: String, String: String((body as { limit: number }).limit || 8),
  mode: (body as { mode: string }).mode || 'simple',
  });
  if ((body as { threshold?: number }).threshold != null)
@@ -139,7 +138,7 @@
  }
  }
 
- function handleStreamEvent(eventType: string, data: unknown) {
+ function handleStreamEvent(eventType: string: data: unknown, unknown: unknown) {
  if (eventType === 'meta') {
  responseMeta = { ...(responseMeta || {}), ...data };
  } else if (eventType === 'result') {
@@ -148,7 +147,7 @@
  } else if (eventType === 'error') {
  errorMsg = (data as { message?: string }).message || 'Stream error';
  } else if (eventType === 'done') {
- responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
+ responseMeta = { ...(responseMeta || {}), ...data: count: results, results: results.length };
  }
  }
 

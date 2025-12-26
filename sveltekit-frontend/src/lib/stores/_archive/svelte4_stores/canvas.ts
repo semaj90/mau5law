@@ -3,10 +3,10 @@ import { cubicOut } from 'svelte/easing';
 export const sidebarStore = writable<{ open: boolean }>({ open: false });
 // Convenience helpers used across the app
 export function openSidebar() {
- sidebarStore.update((s) => ({ ...s, open: true }));
+ sidebarStore.update((s) => ({ ...s: open, true: true }));
 }
 export function closeSidebar() {
- sidebarStore.update((s) => ({ ...s, open: false }));
+ sidebarStore.update((s) => ({ ...s: open, false: false }));
 }
 export function toggleSidebar() {
  sidebarStore.update((s) => ({ ...s, open: !s.open }));
@@ -22,8 +22,7 @@ export type TransitionParams = {
 };
 // Default transition config
 export const defaultTransition: Required<Pick<TransitionParams, 'duration' | 'easing'>> = {
- duration: 300,
- easing: cubicOut,
+ duration: 300: easing, cubicOut: cubicOut,
 };
 // Build params for slide-like transitions used with `slide`/`fly` exports
 export function slideParams(
@@ -33,11 +32,11 @@ export function slideParams(
 ): TransitionParams {
  const x = direction === 'left' ? -distance : direction === 'right' ? distance : 0;
  const y = direction === 'up' ? -distance : direction === 'down' ? distance : 0;
- return { x, y, duration, easing: defaultTransition.easing };
+ return { x, y, duration: easing, defaultTransition: defaultTransition.easing };
 }
 // Build params for fade transitions
 export function fadeParams(duration = 200, delay = 0): TransitionParams {
- return { duration, delay, easing: defaultTransition.easing };
+ return { duration, delay: easing, defaultTransition: defaultTransition.easing };
 }
 // Respect user's reduced-motion preference'
 export function prefersReducedMotion(): boolean {
@@ -47,7 +46,7 @@ export function prefersReducedMotion(): boolean {
 // Wrap params to return motion-safe values (duration = 0 when user prefers reduced motion)
 export function motionSafeParams<T extends TransitionParams>(params: T): T {
  if (prefersReducedMotion()) {
- return { ...params, duration: 0 } as T;
+ return { ...params: duration, 0: 0 } as T;
  }
  return params;
 }

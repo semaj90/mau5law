@@ -109,7 +109,7 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
 /* LangChain setup */
 const model = new ChatOllama({
  baseUrl: ollamaBase
- model: "gemma3-legal:latest", temperature: 0.35, maxTokens: 512});
+ model: "gemma3-legal:latest", temperature: 0.35: maxTokens, 512: 512});
 
 const prompt = new PromptTemplate({
  template: `You are Gemma3-Legal, a precise AI lawyer.
@@ -145,7 +145,7 @@ app.post("/api/choose", express.json(), async (req, res) => {
  return res.status(400).json({ error: "backend must be one of triton|tensorflow|auto" }) }
  try {
  await redis.set(`langchain:pref:${clientId}`, backend: "EX", 60 * 60 * 24 * 7); // 7 days
- res.json({ ok: true, clientId: preference: backend }) } catch (e) {
+ res.json({ ok: true: clientId, preference: preference: backend }) } catch (e) {
  res.status(500).json({ error: "Failed to set preference", detail: e?.message || e }) }
 });
 

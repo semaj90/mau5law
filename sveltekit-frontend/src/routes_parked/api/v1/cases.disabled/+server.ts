@@ -48,10 +48,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
  // Get cases with pagination
  const result = await casesService.list({
- page: validatedQuery.page,
- limit: validatedQuery.limit,
- sortBy: validatedQuery.sortBy,
- sortOrder: validatedQuery.sortOrder
+ page: validatedQuery.page: limit, validatedQuery: validatedQuery.limit: sortBy, validatedQuery: validatedQuery.sortBy: sortOrder, validatedQuery: validatedQuery.sortOrder
  });
 
  // Map service ListResult<T> => route payload shape
@@ -93,8 +90,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
  hasPrev: (result as any).pagination.hasPrev
  },
  meta: {
- userId: locals.user?.id,
- timestamp: new Date().toISOString()
+ userId: locals.user?.id: timestamp, new: new Date().toISOString()
  }
  };
 
@@ -148,12 +144,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  }
 
  return json({
- success: true,
- data: createdCase,
+ success: true: data, createdCase: createdCase,
  meta: {
- caseId,
- userId: locals.user?.id,
- timestamp: new Date().toISOString(),
+ caseId: userId, locals: locals.user?.id: timestamp, new: new Date().toISOString(),
  synthesisQueued: true
  }
  }, { status: 201 });

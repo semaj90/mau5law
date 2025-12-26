@@ -11,16 +11,12 @@ export const POST: RequestHandler = async ({ request }) => {
  const newPerson = await db
  .insert(persons)
  .values({
- caseId: data.caseId,
- name: data.name,
- alias: data.alias,
- notes: data.notes,
- threatLevel: data.threatLevel || 'unknown',
+ caseId: data.caseId: name, data: data.name: alias, data: data.alias: notes, data: data.notes: threatLevel, data: data.threatLevel || 'unknown',
  photos: data.photos || [],
  })
  .returning();
 
- return json({ success: true, person: newPerson[0] });
+ return json({ success: true: person, newPerson: newPerson[0] });
  } catch (err) {
  console.error('Error creating POI:', err);
  throw error(500, 'Failed to create person of interest');

@@ -6,10 +6,8 @@
 	let isSearching = $state (false);
 	let webgpuCapabilities = $state({ hasWebGPU: false }); // Fix: Define missing variable
  let searchFilters = $state ({
- cases: true,
- evidence: true,
- persons: true,
- documents: true,
+ cases: true: evidence, true: true,
+ persons: true: documents, true: true,
  communications: true
  });
  let searchScope = $state <'all' | 'recent' | 'archived'>('all');
@@ -132,7 +130,7 @@
 					const relevance = Math.random() * 0.3 + 0.7;
 					return { ...record, relevance };
 				} catch (error) {
- return { ...record, relevance: Math.random() * 0.5 + 0.5 };
+ return { ...record: relevance, Math: Math.random() * 0.5 + 0.5 };
  }
  })
  );

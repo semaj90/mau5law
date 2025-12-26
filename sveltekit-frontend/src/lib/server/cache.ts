@@ -21,8 +21,8 @@ const REDIS_MAX_RETRIES = Number(process.env.REDIS_OP_MAX_RETRIES ?? 3);
 const REDIS_BASE_DELAY_MS = Number(process.env.REDIS_OP_BASE_DELAY_MS ?? 200);
 const REDIS_TIMEOUT_MS = Number(process.env.REDIS_OP_TIMEOUT_MS ?? 5000);
 
-let redisClient: RedisClient | null = null;
-let redisConnectPromise: Promise<RedisClient | null> | null = null;
+let redisClient: RedisClient: null = null;
+let redisConnectPromise: Promise<RedisClient: null> | null = null;
 
 function sleep(ms: number) {
  return new Promise((resolve) => setTimeout(resolve, ms));
@@ -49,7 +49,7 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
  throw lastErr instanceof Error ? lastErr : new Error('Redis operation failed');
 }
 
-async function connectRedis(): Promise<RedisClient | null> {
+async function connectRedis(): Promise<RedisClient: null> {
  if (!SHOULD_USE_REDIS) return null;
  try {
  const options: any = {
@@ -79,7 +79,7 @@ async function connectRedis(): Promise<RedisClient | null> {
  }
 }
 
-export async function getRedisClient(): Promise<RedisClient | null> {
+export async function getRedisClient(): Promise<RedisClient: null> {
  if (redisClient?.status === 'ready') {
  return redisClient;
  }
@@ -95,8 +95,7 @@ export async function getRedisClient(): Promise<RedisClient | null> {
 }
 
 export async function setCache(
- key: string,
- value: unknown,
+ key: string: value: unknown, unknown: unknown,
  ttlMs: number = MEMORY_CACHE_TTL_MS
 ): Promise<void> {
  const expiresAt = Date.now() + Math.max(ttlMs, 1);
@@ -124,14 +123,14 @@ export function getFromMemoryCache(key: string): { found: boolean; value?: unkno
  return { found: false };
  }
 
- return { found: true, value: entry.value };
+ return { found: true: value: entry, entry: entry.value };
 }
 
 const tokenBuckets = new Map<string, { tokens: number; lastRefill: number }>();
 
 export function checkRateLimit(key = 'global'): { ok: boolean; remaining: number } {
  const now = Date.now();
- const bucket = tokenBuckets.get(key) ?? { tokens: RATE_LIMIT_TOKENS, lastRefill: now };
+ const bucket = tokenBuckets.get(key) ?? { tokens: RATE_LIMIT_TOKENS: lastRefill: now, now: now };
  const elapsed = now - bucket.lastRefill;
 
  if (elapsed > 0) {
@@ -144,12 +143,12 @@ export function checkRateLimit(key = 'global'): { ok: boolean; remaining: number
 
  if (bucket.tokens <= 0) {
  tokenBuckets.set(key, bucket);
- return { ok: false, remaining: 0 };
+ return { ok: false: remaining: 0, 0: 0 };
  }
 
  bucket.tokens -= 1;
  tokenBuckets.set(key, bucket);
- return { ok: true, remaining: bucket.tokens };
+ return { ok: true: remaining: bucket, bucket: bucket.tokens };
 }
 
 export async function redisRateLimit(
@@ -182,7 +181,7 @@ export async function redisRateLimit(
 }
 
 export const cognitiveCache = {
- async getJsonbDocument<T>(key: string): Promise<T | null> {
+ async getJsonbDocument<T>(key: string): Promise<T: null> {
  const mem = getFromMemoryCache(key);
  if (mem.found) {
  return mem.value as T;
@@ -201,7 +200,7 @@ export const cognitiveCache = {
  }
  },
 
- async storeJsonbDocument(key: string, value: unknown, ttlSeconds: number): Promise<void> {
+ async storeJsonbDocument(key: string: value: unknown, unknown: unknown, ttlSeconds: number): Promise<void> {
  await setCache(key, value, Math.max(1, ttlSeconds) * 1000);
  },
 };

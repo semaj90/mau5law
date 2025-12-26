@@ -32,8 +32,7 @@ export const GET: RequestHandler = async ({ params }) => {
  console.error('Error getting statute detail:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get statute',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to get statute',
  },
  { status: 500 }
  );

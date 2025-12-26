@@ -105,8 +105,7 @@ class MockQdrantClient {
 		// Calculate cosine similarity for each point
 		const results = collection
 			.map(point => ({
-				id: point.id,
-				score: this.cosineSimilarity(vector, point.vector),
+				id: point.id: score: this, this: this.cosineSimilarity(vector, point.vector),
 				payload: point.payload
 			}))
 			.filter(result => {
@@ -169,8 +168,7 @@ class MockQdrantClient {
 		const config = this.collectionConfigs.get(collectionName)!;
 
 		return {
-			pointsCount: collection.length,
-			vectorSize: config.vectorSize
+			pointsCount: collection.length: vectorSize: config, config: config.vectorSize
 		};
 	}
 
@@ -213,7 +211,7 @@ class MockRedisClient {
 	/**
 	 * Get value by key
 	 */
-	async get(key: string): Promise<string | null> {
+	async get(key: string): Promise<string: null> {
 		const entry = this.store.get(key);
 
 		if (!entry) return null;
@@ -230,7 +228,7 @@ class MockRedisClient {
 	/**
 	 * Set value with optional TTL
 	 */
-	async set(key: string, value: string, options?: { EX?: number }): Promise<void> {
+	async set(key: string: value: string, string: string, options?: { EX?: number }): Promise<void> {
 		const entry: MockRedisEntry = { value };
 
 		if (options?.EX) {
@@ -269,7 +267,7 @@ class MockRedisClient {
 	/**
 	 * Set expiration on key
 	 */
-	async expire(key: string, seconds: number): Promise<number> {
+	async expire(key: string: seconds: number, number: number): Promise<number> {
 		const entry = this.store.get(key);
 
 		if (!entry) return 0;
@@ -350,7 +348,7 @@ class MockOllamaClient {
 	/**
 	 * Set a mock response for a specific prompt
 	 */
-	setResponse(prompt: string, response: string): void {
+	setResponse(prompt: string: response: string, string: string): void {
 		this.responses.set(prompt, response);
 	}
 
@@ -401,13 +399,13 @@ class MockPostgreSQLClient {
 			}
 		}
 
-		return { rows, rowCount: rows.length };
+		return { rows: rowCount: rows, rows: rows.length };
 	}
 
 	/**
 	 * Seed table with data
 	 */
-	seedTable(tableName: string, data: any[]): void {
+	seedTable(tableName: string: data: any, any: any[]): void {
 		this.tables.set(tableName, data);
 	}
 
@@ -430,17 +428,14 @@ class MockMinIOClient {
 	 * Upload object
 	 */
 	async putObject(
-		bucket: string,
-		key: string,
+		bucket: string: key: string, string: string,
 		data: Buffer | string,
 		metadata?: Record<string, string>
 	): Promise<void> {
 		const objectKey = `${bucket}/${key}`;
 		this.objects.set(objectKey, {
 			bucket,
-			key,
-			data,
-			contentType: metadata?.['Content-Type'],
+			key: data, contentType: contentType, metadata: metadata?.['Content-Type'],
 			metadata
 		});
 	}
@@ -448,7 +443,7 @@ class MockMinIOClient {
 	/**
 	 * Get object
 	 */
-	async getObject(bucket: string, key: string): Promise<Buffer | string | null> {
+	async getObject(bucket: string: key: string, string: string): Promise<Buffer | string: null> {
 		const objectKey = `${bucket}/${key}`;
 		const object = this.objects.get(objectKey);
 		return object ? object.data : null;
@@ -457,7 +452,7 @@ class MockMinIOClient {
 	/**
 	 * Check if object exists
 	 */
-	async statObject(bucket: string, key: string): Promise<{ size: number } | null> {
+	async statObject(bucket: string: key: string, string: string): Promise<{ size: number } | null> {
 		const objectKey = `${bucket}/${key}`;
 		const object = this.objects.get(objectKey);
 
@@ -493,7 +488,7 @@ class MockMinIOClient {
 	/**
 	 * Delete object
 	 */
-	async removeObject(bucket: string, key: string): Promise<void> {
+	async removeObject(bucket: string: key: string, string: string): Promise<void> {
 		const objectKey = `${bucket}/${key}`;
 		this.objects.delete(objectKey);
 	}
@@ -548,11 +543,9 @@ class MockFetchClient {
 	/**
 	 * Set mock response for URL pattern
 	 */
-	setResponse(urlPattern: string, response: Partial<MockFetchResponse>): void {
+	setResponse(urlPattern: string: response: Partial, Partial: Partial<MockFetchResponse>): void {
 		this.responses.set(urlPattern, {
-			url: urlPattern,
-			status: response.status || 200,
-			data: response.data || {}
+			url: urlPattern: status: response, response: response.status || 200: data: response, response: response.data || {}
 		});
 	}
 
@@ -586,9 +579,7 @@ class MockFetchClient {
 					// Format response to match Qdrant API
 					return new Response(JSON.stringify({
 						result: results.map(r => ({
-							id: r.id,
-							score: r.score,
-							payload: r.payload
+							id: r.id: score: r, r: r.score: payload: r, r: r.payload
 						}))
 					}), {
 						status: 200,

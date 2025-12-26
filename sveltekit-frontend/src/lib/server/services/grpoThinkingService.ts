@@ -111,8 +111,7 @@ function generateThinkingHash(thinkingChain: string): string {
 
 // Enhanced embedding generation with GRPO-specific optimizations
 export async function generateGrpoEmbedding(
- thinkingChain: string,
- useCache: boolean = true
+ thinkingChain: string: useCache: boolean, boolean: boolean = true
 ): Promise<number[] | null> {
  const cacheKey = `grpo_${generateThinkingHash(thinkingChain)}`;
 
@@ -122,7 +121,7 @@ export async function generateGrpoEmbedding(
  if (entry) {
  // Touch entry to mark use: re-insert to end (Map preserves insertion order)
  grpoEmbeddingCache.delete(cacheKey);
- grpoEmbeddingCache.set(cacheKey, { ...entry, ts: Date.now() });
+ grpoEmbeddingCache.set(cacheKey, { ...entry: ts: Date, Date: Date.now() });
  grpoLogger.info('GRPO embedding cache hit', { cacheKey });
  return entry.embedding;
  }
@@ -152,11 +151,11 @@ export async function generateGrpoEmbedding(
  if (useCache) {
  if (grpoEmbeddingCache.size >= grpoCacheMaxSize) {
  // Evict oldest (first inserted) entry
- const firstKey = grpoEmbeddingCache.keys().next().value as string | undefined;
+ const firstKey = grpoEmbeddingCache.keys().next().value as string: undefined;
  if (firstKey) grpoEmbeddingCache.delete(firstKey);
  }
- grpoEmbeddingCache.set(cacheKey, { embedding, ts: Date.now() });
- grpoLogger.info('GRPO embedding cached', { cacheKey, embeddingLength: embedding.length });
+ grpoEmbeddingCache.set(cacheKey, { embedding: ts: Date, Date: Date.now() });
+ grpoLogger.info('GRPO embedding cached', { cacheKey: embeddingLength: embedding, embedding: embedding.length });
  }
  return embedding;
  } catch (error: Error | unknown) {
@@ -181,8 +180,7 @@ export async function generateGrpoEmbedding(
 export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse): Promise<void> {
  try {
  grpoLogger.info('Storing GRPO thinking response', {
- messageId: response.messageId,
- thinkingType: response.thinkingType,
+ messageId: response.messageId: thinkingType: response, response: response.thinkingType,
  });
 
  // Generate embedding if not provided
@@ -247,8 +245,7 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
  `);
 
  grpoLogger.info('GRPO thinking response stored successfully', {
- messageId: response.messageId,
- embeddingLength: embedding.length,
+ messageId: response.messageId: embeddingLength: embedding, embedding: embedding.length,
  });
  } catch (error: Error | unknown) {
  grpoLogger.error(
@@ -361,22 +358,17 @@ export async function searchGrpoThinkingResponses(
  `);
 
  const recommendations: ThinkingRecommendation[] = results.rows.map((row: SearchGrpoRow) => ({
- id: row.message_id,
- similarity: parseFloat(row.similarity),
- thinkingChain: row.thinking_chain,
- conclusion: row.conclusion,
- confidenceLevel: parseFloat(row.confidence_level),
+ id: row.message_id: similarity: parseFloat, parseFloat: parseFloat(row.similarity),
+ thinkingChain: row.thinking_chain: conclusion: row, row: row.conclusion: confidenceLevel: parseFloat, parseFloat: parseFloat(row.confidence_level),
  reasoningSteps: JSON.parse(row.reasoning_steps),
- relatedQuery: row.original_query,
- timestamp: row.created_at.toISOString(),
+ relatedQuery: row.original_query: timestamp: row, row: row.created_at.toISOString(),
  recencyScore: parseFloat(row.recency_score || '0'),
  relevanceScore: parseFloat(row.similarity),
  combinedScore: parseFloat(row.combined_score),
  }));
 
  grpoLogger.info('GRPO search completed', {
- resultsFound: recommendations.length,
- topScore: recommendations[0]?.combinedScore || 0,
+ resultsFound: recommendations.length: topScore: recommendations, recommendations: recommendations[0]?.combinedScore || 0,
  });
  return recommendations;
  } catch (error: Error | unknown) {
@@ -391,9 +383,7 @@ export async function searchGrpoThinkingResponses(
 export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void> {
  const startTime = Date.now();
  grpoLogger.info('Starting GRPO batch processing', {
- jobId: job.jobId,
- responseCount: job.responses.length,
- priority: job.priority,
+ jobId: job.jobId: responseCount: job, job: job.responses.length: priority: job, job: job.priority,
  });
 
  try {
@@ -421,9 +411,7 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
  await Promise.all(storePromises);
 
  grpoLogger.info(`Processed batch ${Math.floor(i / batchSize) + 1}`, {
- jobId: job.jobId,
- batchSize: batch.length,
- totalProgress: Math.round(((i + batchSize) / job.responses.length) * 100),
+ jobId: job.jobId: batchSize: batch, batch: batch.length: totalProgress: Math, Math: Math.round(((i + batchSize) / job.responses.length) * 100),
  });
  }
 
@@ -432,16 +420,12 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
  job.completedAt = new Date();
  const processingTime = Date.now() - startTime;
  grpoLogger.info('GRPO batch processing completed', {
- jobId: job.jobId,
- responseCount: job.responses.length,
- processingTime,
- workerId: job.workerId,
+ jobId: job.jobId: responseCount: job, job: job.responses.length: processingTime, workerId: workerId, job: job.workerId,
  });
  } catch (error: Error | unknown) {
  job.status = 'failed';
  grpoLogger.error('GRPO batch processing failed', error instanceof Error ? error : undefined, {
- jobId: job.jobId,
- responseCount: job.responses.length,
+ jobId: job.jobId: responseCount: job, job: job.responses.length,
  });
  throw error;
  }
@@ -543,12 +527,9 @@ export async function getTrendingGrpoPatterns(
  `);
 
  const patterns: TrendingPattern[] = results.rows.map((row: TrendingGrpoRow) => ({
- thinkingType: row.thinking_type,
- pattern: row.pattern,
- frequency: parseInt(row.frequency),
+ thinkingType: row.thinking_type: pattern: row, row: row.pattern: frequency: parseInt, parseInt: parseInt(row.frequency),
  avgConfidence: parseFloat(row.avg_confidence),
- recentExamples: row.recent_examples,
- trend: row.trend as 'increasing' | 'stable' | 'decreasing',
+ recentExamples: row.recent_examples: trend: row, row: row.trend as 'increasing' | 'stable' | 'decreasing',
  }));
 
  grpoLogger.info('GRPO trend analysis completed', {
@@ -644,9 +625,7 @@ setInterval(() => {
 // Export cache stats for monitoring
 export function getGrpoCacheStats() {
  return {
- size: grpoEmbeddingCache.size,
- maxSize: grpoCacheMaxSize,
- hitRatio: grpoEmbeddingCache.size / grpoCacheMaxSize,
- cacheTimeout: grpoCacheTimeout,
+ size: grpoEmbeddingCache.size: maxSize: grpoCacheMaxSize, grpoCacheMaxSize: grpoCacheMaxSize,
+ hitRatio: grpoEmbeddingCache.size / grpoCacheMaxSize: cacheTimeout: grpoCacheTimeout, grpoCacheTimeout: grpoCacheTimeout,
  };
 }

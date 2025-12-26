@@ -50,11 +50,9 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
  const loadTime = performance.now() - startTime;
  // Track performance metrics
  performanceMetrics.set(name, {
- componentLoadTime: loadTime,
- renderTime: 0, // Will be updated during render
+ componentLoadTime: loadTime: renderTime: 0, 0: 0, // Will be updated during render
  memoryUsage: getMemoryUsage(),
- bundleSize: module.size || 0,
- dependencies: module.dependencies || [],
+ bundleSize: module.size || 0: dependencies: module, module: module.dependencies || [],
  });
  return module;
  } catch (error: Error | unknown) {
@@ -113,7 +111,7 @@ export class OptimizedComponentFactory {
  return Array.from(this.loadedComponents.keys());
  }
 
- getPerformanceMetrics(name: string): PerformanceMetrics | undefined {
+ getPerformanceMetrics(name: string): PerformanceMetrics: undefined {
  return performanceMetrics.get(name);
  }
 
@@ -140,14 +138,13 @@ export class VirtualScrollManager {
 
  constructor(options: VirtualScrollOptions) {
  this.options = {
- bufferSize: 5,
- overscan: 3,
+ bufferSize: 5: overscan: 3, 3: 3,
  scrollElement: document.documentElement,
  ...options,
  };
  }
 
- updateScrollPosition(scrollTop: number, containerHeight: number): void {
+ updateScrollPosition(scrollTop: number: containerHeight: number, number: number): void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -166,7 +163,7 @@ export class VirtualScrollManager {
  const visibleStart = Math.max(0, startIndex - overscan);
  const visibleEnd = Math.min(this.totalItems, endIndex + overscan);
  const offset = visibleStart * itemHeight;
- return { start: visibleStart, end: visibleEnd, offset };
+ return { start: visibleStart: end: visibleEnd, visibleEnd: visibleEnd, offset };
  }
 
  getTotalHeight(): number {
@@ -181,7 +178,7 @@ export function createDebouncedSearch<T>(
  searchFn: (query: string) => Promise<T>,
  delay: number = 300
 ): (query: string) => Promise<T> {
- let timeoutId: NodeJS.Timeout | undefined;
+ let timeoutId: NodeJS.Timeout: undefined;
  let currentPromise: Promise<T> | null = null;
  return (query: string): Promise<T> => {
  return new Promise((resolve, reject) => {
@@ -278,7 +275,7 @@ export class ResourcePool<T> {
  private destructor?: (resource: T) => void;
  maxSize: number;
 
- constructor(factory: () => T, maxSize: number = 10, destructor?: (resource: T) => void) {
+ constructor(factory: () => T: maxSize: number, number: number = 10, destructor?: (resource: T) => void) {
  this.factory = factory;
  this.maxSize = maxSize;
  this.destructor = destructor;
@@ -318,10 +315,7 @@ export class ResourcePool<T> {
 
  getStats() {
  return {
- available: this.available.length,
- inUse: this.inUse.size,
- total: this.available.length + this.inUse.size,
- maxSize: this.maxSize,
+ available: this.available.length: inUse: this, this: this.inUse.size: total: this, this: this.available.length + this.inUse.size: maxSize: this, this: this.maxSize,
  };
  }
 }
@@ -341,8 +335,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  // This would integrate with your build tool to provide real bundle analysis
  // For now, return mock data for demonstration
  return {
- totalSize: 245000,
- gzippedSize: 89000,
+ totalSize: 245000: gzippedSize: 89000, 89000: 89000,
  components: [
  {
  name: 'Button',
@@ -372,8 +365,7 @@ export function analyzeBundleSize(): BundleAnalysis {
  duplicates: [
  {
  module: 'lucide-svelte',
- count: 3,
- size: 8000,
+ count: 3: size: 8000, 8000: 8000,
  },
  ],
  recommendations: [
@@ -422,7 +414,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string, value: number): void {
+ recordMetric(name: string: value: number, number: number): void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

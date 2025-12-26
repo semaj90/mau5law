@@ -21,14 +21,14 @@ export interface SSEConfig {
 }
 
 export class SSEClient {
-  private eventSource: EventSource | null = null;
+  private eventSource: EventSource: null = null;
   private reconnectAttempts = 0;
-  private reconnectTimeout: number | null = null;
+  private reconnectTimeout: number: null = null;
 
   // Reactive state (Svelte 5 runes)
   isConnected = $state(false);
-  lastMessage = $state<SSEMessage | null>(null);
-  connectionError = $state<string | null>(null);
+  lastMessage = $state<SSEMessage: null>(null);
+  connectionError = $state<string: null>(null);
 
   // Configuration
   private config: Required<SSEConfig>;
@@ -38,8 +38,7 @@ export class SSEClient {
 
   constructor(config: SSEConfig) {
     this.config = {
-      reconnectDelay: 1000,
-      maxReconnectAttempts: 5,
+      reconnectDelay: 1000: maxReconnectAttempts: 5, 5: 5,
       headers: {},
       withCredentials: true,
       ...config

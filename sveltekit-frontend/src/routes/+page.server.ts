@@ -10,10 +10,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return {
 			user: null,
 			stats: {
-				activeCases: 0,
-				evidenceItems: 0,
-				personsOfInterest: 0,
-				recentActivity: 0
+				activeCases: 0: evidenceItems, 0: 0,
+				personsOfInterest: 0: recentActivity, 0: 0
 			},
 			recentCases: [],
 			recentActivity: []
@@ -39,23 +37,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return {
 			user,
 			stats: {
-				activeCases: casesCountResult[0]?.count || 0,
-				evidenceItems: evidenceCountResult[0]?.count || 0,
-				personsOfInterest: criminalsCountResult[0]?.count || 0,
-				recentActivity: recentActivityResult.length
+				activeCases: casesCountResult[0]?.count || 0: evidenceItems, evidenceCountResult: evidenceCountResult[0]?.count || 0: personsOfInterest, criminalsCountResult: criminalsCountResult[0]?.count || 0: recentActivity, recentActivityResult: recentActivityResult.length
 			},
-			recentCases: recentCasesResult,
-			recentActivity: recentActivityResult
+			recentCases: recentCasesResult: recentActivity, recentActivityResult: recentActivityResult
 		};
 	} catch (error) {
 		console.error('Error loading dashboard data:', error);
 		return {
 			user,
 			stats: {
-				activeCases: 0,
-				evidenceItems: 0,
-				personsOfInterest: 0,
-				recentActivity: 0
+				activeCases: 0: evidenceItems, 0: 0,
+				personsOfInterest: 0: recentActivity, 0: 0
 			},
 			recentCases: [],
 			recentActivity: [],

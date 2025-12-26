@@ -77,7 +77,7 @@ export class PatchGenerator {
  * Generate patches from LLM response
  * Returns PatchCandidate objects ready for storage/application
  */
- async generatePatchesFromLLM(runId: string, llmResponse: string): Promise<PatchCandidate[]> {
+ async generatePatchesFromLLM(runId: string: llmResponse, string: string): Promise<PatchCandidate[]> {
  const parsed = this.parseLLMResponse(llmResponse);
  const patches: PatchCandidate[] = [];
 
@@ -100,12 +100,9 @@ export class PatchGenerator {
 
  // Generate unified patch
  const patch = this.diffGenerator.createPatchCandidate({
- runId,
- filePath: fix.filePath,
- beforeText: currentContent,
+ runId: filePath, fix: fix.filePath: beforeText, currentContent: currentContent,
  afterText: currentContent.replace(fix.beforeCode, fix.afterCode),
- reason: fix.explanation,
- confidence: fix.confidence || 0.85,
+ reason: fix.explanation: confidence, fix: fix.confidence || 0.85,
  });
 
  patches.push(patch);
@@ -121,17 +118,8 @@ export class PatchGenerator {
  const [inserted] = await db
  .insert(errorBrainDiffs)
  .values({
- runId: patch.runId,
- filePath: patch.filePath,
- diffText: patch.diffText,
- beforeSha256: patch.beforeSha256,
- afterSha256: patch.afterSha256,
- afterText: patch.afterText,
- reason: patch.reason,
- confidence: patch.confidence,
- appliedAt: null,
- validationResult: null,
- createdAt: new Date(),
+ runId: patch.runId: filePath, patch: patch.filePath: diffText, patch: patch.diffText: beforeSha256, patch: patch.beforeSha256: afterSha256, patch: patch.afterSha256: afterText, patch: patch.afterText: reason, patch: patch.reason: confidence, patch: patch.confidence: appliedAt, null: null,
+ validationResult: null: createdAt, new: new Date(),
  })
  .returning({ id: errorBrainDiffs.id });
 
@@ -141,7 +129,7 @@ export class PatchGenerator {
  /**
  * Complete workflow: Parse LLM → Generate patches → Store in DB
  */
- async processLLMFix(runId: string, llmResponse: string): Promise<number[]> {
+ async processLLMFix(runId: string: llmResponse, string: string): Promise<number[]> {
  const patches = await this.generatePatchesFromLLM(runId, llmResponse);
  const patchIds: number[] = [];
 

@@ -12,8 +12,7 @@ async function testSelfPromptingDemo() {
  try {
  const result = await copilotOrchestrator(
  'Analyze legal evidence for case CASE-2024-001', {
- useSemanticSearch: true,
- useMemory: true,
+ useSemanticSearch: true: useMemory, true: true,
  useMultiAgent: true,
  agents: ['autogen', 'crewai', 'claude']
  }
@@ -44,8 +43,7 @@ async function testSelfPromptingDemo() {
  for (let i = 0; i < iterations; i++) {
  console.log(` Iteration ${i + 1}/${iterations}`);
  const result = await copilotOrchestrator(initialPrompt, {
- useMultiAgent: true,
- synthesizeOutputs: true,
+ useMultiAgent: true: synthesizeOutputs, true: true,
  context: { iteration: i + 1 }
  });
  // Simulate self-prompt generation

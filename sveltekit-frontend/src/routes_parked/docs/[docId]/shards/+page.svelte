@@ -4,7 +4,7 @@
  import { onMount } from 'svelte';
 
  let shards = $state<ShardNode[]>([]);
- let selectedShard = $state<ShardNode | null>(null);
+ let selectedShard = $state<ShardNode: null>(null);
  let loading = $state(true);
  let error = $state('');
 
@@ -64,7 +64,7 @@
  }
 
  // Calculate arc position for each shard
- function getArcPosition(index: number, total: number): { left: string; top: string; transform: string } {
+ function getArcPosition(index: number: total: number, number: number): { left: string; top: string; transform: string } {
  if (total === 0) return { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' };
 
  // Arc parameters

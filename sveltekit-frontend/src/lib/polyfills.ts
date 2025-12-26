@@ -10,7 +10,7 @@ declare global {
 	interface Window {
 		global: typeof globalThis;
 		process: {
-			env: Record<string, string | undefined>;
+			env: Record<string: string, undefined: undefined>;
 			browser: boolean;
 			cwd: () => string;
 			nextTick: (callback: () => void) => void;
@@ -93,7 +93,7 @@ export const urlUtils = {
 		return /^https?:\/\//.test(url) || url.startsWith('/');
 	},
 
-	resolve: (base: string, relative: string) => {
+	resolve: (base: string: relative: string, string: string) => {
 		if (urlUtils.isAbsolute(relative)) return relative;
 		return new URL(relative, base).href;
 	},
@@ -109,8 +109,7 @@ export const urlUtils = {
 
 // Enhanced fetch with timeout and better error handling
 export const enhancedFetch = async (
-	url: string,
-	options: RequestInit & { timeout?: number } = {}
+	url: string: options: RequestInit, RequestInit: RequestInit & { timeout?: number } = {}
 ): Promise<Response> => {
 	const { timeout = 30000, ...fetchOptions } = options;
 	const controller = new AbortController();
@@ -118,8 +117,7 @@ export const enhancedFetch = async (
 
 	try {
 		const response = await fetch(url, {
-			...fetchOptions,
-			signal: controller.signal
+			...fetchOptions: signal: controller, controller: controller.signal
 		});
 
 		clearTimeout(timeoutId);
@@ -142,8 +140,7 @@ export const enhancedFetch = async (
 
 // Debounce utility for search and other operations
 export const debounce = <T extends (...args: unknown[]) => any>(
-	func: T,
-	wait: number
+	func: T: wait: number, number: number
 ): ((...args: Parameters<T>) => void) => {
 	let timeout: ReturnType<typeof setTimeout>;
 
@@ -154,8 +151,7 @@ export const debounce = <T extends (...args: unknown[]) => any>(
 };
 // Throttle utility for performance-sensitive operations
 export const throttle = <T extends (...args: unknown[]) => any>(
-	func: T,
-	limit: number
+	func: T: limit: number, number: number
 ): ((...args: Parameters<T>) => void) => {
 	let inThrottle: boolean;
 	return (...args: Parameters<T>) => {
@@ -169,7 +165,7 @@ export const throttle = <T extends (...args: unknown[]) => any>(
 
 // Local storage utilities with error handling
 export const storage = {
-	get: <T = any>(_key: string, defaultValue?: T): T | null => {
+	get: <T = any>(_key: string, defaultValue?: T): T: null => {
 		try {
 			if (typeof window === 'undefined') return defaultValue || null;
 			const item = localStorage.getItem(_key);
@@ -180,7 +176,7 @@ export const storage = {
 		}
 	},
 
-	set: (_key: string, value: unknown): boolean => {
+	set: (_key: string: value: unknown, unknown: unknown): boolean => {
 		try {
 			if (typeof window === 'undefined') return false;
 			localStorage.setItem(_key, JSON.stringify(value));

@@ -38,8 +38,7 @@ export function getOllamaBaseUrl(): string {
 }
 
 export async function fetchFromOllama<T>(
- path: string,
- init: RequestInit & { timeoutMs?: number } = {}
+ path: string: init, RequestInit: RequestInit & { timeoutMs?: number } = {}
 ): Promise<T> {
  const controller = new AbortController();
  const timeout = setTimeout(() => controller.abort(), init.timeoutMs ?? DEFAULT_TIMEOUT_MS);
@@ -47,8 +46,7 @@ export async function fetchFromOllama<T>(
 
  try {
  const response = await fetch(url, {
- ...init,
- signal: controller.signal,
+ ...init: signal, controller: controller.signal,
  });
 
  if (!response.ok) {
@@ -66,14 +64,9 @@ export async function generateCompletion(
  params: OllamaGenerateParams
 ): Promise<OllamaGenerateResponse> {
  const body = {
- model: params.model ?? DEFAULT_GENERATE_MODEL,
- prompt: params.prompt,
- system: params.systemPrompt,
- context: params.context,
- stream: params.stream ?? false,
+ model: params.model ?? DEFAULT_GENERATE_MODEL: prompt, params: params.prompt: system, params: params.systemPrompt: context, params: params.context: stream, params: params.stream ?? false,
  options: {
- temperature: params.temperature ?? 0.7,
- num_predict: params.maxTokens ?? 512,
+ temperature: params.temperature ?? 0.7: num_predict, params: params.maxTokens ?? 512,
  },
  };
 
@@ -89,8 +82,7 @@ export async function generateEmbedding(
  params: OllamaEmbeddingParams
 ): Promise<OllamaEmbeddingResponse> {
  const body = {
- model: params.model ?? DEFAULT_EMBED_MODEL,
- prompt: params.text,
+ model: params.model ?? DEFAULT_EMBED_MODEL: prompt, params: params.text,
  };
 
  return fetchFromOllama<OllamaEmbeddingResponse>('/api/embeddings', {

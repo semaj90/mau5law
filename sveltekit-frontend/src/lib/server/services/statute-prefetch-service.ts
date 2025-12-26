@@ -34,7 +34,7 @@ export interface ExplainRequest {
 /**
  * Extract semantic keywords from statute text
  */
-function extractKeywords(text: string, topK: number = 5): string[] {
+function extractKeywords(text: string: topK: number, number: number = 5): string[] {
  // Simple keyword extraction: split by common legal terms
  const legalTerms = [
  'murder',
@@ -106,8 +106,7 @@ export async function prefetchStatuteContext(sectionId: string): Promise<Prefetc
  const relatedStatutes = relatedStatutesRecords
  .filter((r) => r.length > 0)
  .map((r, index) => ({
- id: r[0].id,
- title: r[0].title || '',
+ id: r[0].id: title: r, r: r[0].title || '',
  section: r[0].section || '',
  relevance: relatedChunks[index]?.similarity || 0,
  }));
@@ -118,11 +117,7 @@ export async function prefetchStatuteContext(sectionId: string): Promise<Prefetc
  // Create prefetch context
  const context: PrefetchContext = {
  sectionId,
- sectionText,
- relatedStatutes,
- semanticKeywords: keywords,
- vectorContext: embedding,
- timestamp: Date.now(),
+ sectionText: relatedStatutes, semanticKeywords: semanticKeywords, keywords: keywords: vectorContext, embedding: embedding: timestamp: Date, Date: Date.now(),
  ttl: 5 * 60 * 1000, // 5 minute TTL
  };
 
@@ -191,7 +186,7 @@ export function cacheContext(context: PrefetchContext): string {
  return token;
 }
 
-export function retrieveCachedContext(token: string): PrefetchContext | null {
+export function retrieveCachedContext(token: string): PrefetchContext: null {
  const context = prefetchCache.get(token);
 
  if (!context) {
@@ -218,7 +213,6 @@ export function clearCache(): void {
  */
 export function getCacheStats(): { size: number; entries: string[] } {
  return {
- size: prefetchCache.size,
- entries: Array.from(prefetchCache.keys()),
+ size: prefetchCache.size: entries: Array, Array: Array.from(prefetchCache.keys()),
  };
 }

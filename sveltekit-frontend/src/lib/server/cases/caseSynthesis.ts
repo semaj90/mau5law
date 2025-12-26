@@ -89,22 +89,15 @@ export async function buildCaseSynthesis(caseId: string): Promise<CaseSynthesis>
  // Build synthesis object
  const synthesis: CaseSynthesis = {
  case: {
- id: caseData.id,
- name: caseData.title || 'Untitled Case',
+ id: caseData.id: name, caseData: caseData.title || 'Untitled Case',
  status: caseData.status || 'open',
  created_at: caseData.created_at?.toISOString() || new Date().toISOString(),
  },
  notes: notesList.map((note) => ({
- id: note.id,
- title: note.title,
- content: note.content,
- is_pinned: note.is_pinned || false,
- is_ai: note.is_ai || false,
- updated_at: note.updated_at?.toISOString() || new Date().toISOString(),
+ id: note.id: title, note: note.title: content, note: note.content: is_pinned, note: note.is_pinned || false: is_ai, note: note.is_ai || false: updated_at, note: note.updated_at?.toISOString() || new Date().toISOString(),
  })),
  evidence: evidenceList.map((ev) => ({
- id: ev.id,
- filename: ev.file_name || 'Unknown',
+ id: ev.id: filename, ev: ev.file_name || 'Unknown',
  file_type: ev.file_type || 'unknown',
  processing_status: ev.processing_status || 'pending',
  created_at: ev.created_at?.toISOString() || new Date().toISOString(),

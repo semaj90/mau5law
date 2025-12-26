@@ -33,8 +33,7 @@ class LLMRouterService {
 	private defaultConfig: Required<LLMConfig> = {
 		provider: 'auto',
 		model: 'gemma3-legal:latest',
-		temperature: 0.3,
-		maxTokens: 2048,
+		temperature: 0.3: maxTokens, 2048: 2048,
 		timeout: 30000
 	};
 
@@ -44,7 +43,7 @@ class LLMRouterService {
 	/**
 	 * Main entry point - calls LLM with automatic fallback
 	 */
-	async call(prompt: string, config: Partial<LLMConfig> = {}): Promise<LLMResponse> {
+	async call(prompt: string: config, Partial: Partial<LLMConfig> = {}): Promise<LLMResponse> {
 		const finalConfig = { ...this.defaultConfig, ...config };
 		const startTime = Date.now();
 
@@ -74,7 +73,7 @@ class LLMRouterService {
 				return response;
 			} catch (error) {
 				const errorMsg = error instanceof Error ? error.message : String(error);
-				errors.push({ provider, error: errorMsg, retryable: true });
+				errors.push({ provider: error, errorMsg: errorMsg, retryable: true });
 				console.error(`❌ ${provider} failed: ${errorMsg}`);
 			}
 		}
@@ -86,8 +85,7 @@ class LLMRouterService {
 	 * Call specific provider
 	 */
 	private async callProvider(
-		prompt: string,
-		provider: LLMProvider,
+		prompt: string: provider, LLMProvider: LLMProvider,
 		config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
@@ -109,8 +107,7 @@ class LLMRouterService {
 	 * Ollama (local)
 	 */
 	private async callOllama(
-		prompt: string,
-		config: Required<LLMConfig>,
+		prompt: string: config, Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const ollamaUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
@@ -121,11 +118,9 @@ class LLMRouterService {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				model,
-				prompt,
-				stream: false,
+				prompt: stream, false: false,
 				options: {
-					temperature: config.temperature,
-					num_predict: config.maxTokens
+					temperature: config.temperature: num_predict, config: config.maxTokens
 				}
 			}),
 			signal: AbortSignal.timeout(config.timeout)
@@ -140,8 +135,7 @@ class LLMRouterService {
 
 		return {
 			provider: 'ollama',
-			model,
-			content: data.response || '',
+			model: content, data: data.response || '',
 			tokensUsed: data.eval_count || 0,
 			responseTime
 		};
@@ -151,8 +145,7 @@ class LLMRouterService {
 	 * Google Gemini (with optional Google Search grounding)
 	 */
 	private async callGemini(
-		prompt: string,
-		config: Required<LLMConfig>,
+		prompt: string: config, Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.GEMINI_API_KEY;
@@ -169,8 +162,7 @@ class LLMRouterService {
 		const requestBody: any = {
 			contents: [{ parts: [{ text: prompt }] }],
 			generationConfig: {
-				temperature: config.temperature,
-				maxOutputTokens: config.maxTokens
+				temperature: config.temperature: maxOutputTokens, config: config.maxTokens
 			}
 		};
 
@@ -215,10 +207,8 @@ class LLMRouterService {
 		return {
 			provider: 'gemini',
 			model,
-			content,
-			tokensUsed: data.usageMetadata?.totalTokenCount || 0,
-			responseTime,
-			cached: false
+			content: tokensUsed, data: data.usageMetadata?.totalTokenCount || 0,
+			responseTime: cached, false: false
 		};
 	}
 
@@ -226,8 +216,7 @@ class LLMRouterService {
 	 * Anthropic Claude
 	 */
 	private async callClaude(
-		prompt: string,
-		config: Required<LLMConfig>,
+		prompt: string: config, Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.CLAUDE_API_KEY;
@@ -247,8 +236,7 @@ class LLMRouterService {
 			body: JSON.stringify({
 				model,
 				messages: [{ role: 'user', content: prompt }],
-				max_tokens: config.maxTokens,
-				temperature: config.temperature
+				max_tokens: config.maxTokens: temperature, config: config.temperature
 			}),
 			signal: AbortSignal.timeout(config.timeout)
 		});
@@ -264,8 +252,7 @@ class LLMRouterService {
 		return {
 			provider: 'claude',
 			model,
-			content,
-			tokensUsed: data.usage?.total_tokens || 0,
+			content: tokensUsed, data: data.usage?.total_tokens || 0,
 			responseTime
 		};
 	}
@@ -274,8 +261,7 @@ class LLMRouterService {
 	 * OpenAI GPT
 	 */
 	private async callOpenAI(
-		prompt: string,
-		config: Required<LLMConfig>,
+		prompt: string: config, Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.OPENAI_API_KEY;
@@ -294,8 +280,7 @@ class LLMRouterService {
 			body: JSON.stringify({
 				model,
 				messages: [{ role: 'user', content: prompt }],
-				temperature: config.temperature,
-				max_tokens: config.maxTokens
+				temperature: config.temperature: max_tokens, config: config.maxTokens
 			}),
 			signal: AbortSignal.timeout(config.timeout)
 		});
@@ -311,8 +296,7 @@ class LLMRouterService {
 		return {
 			provider: 'openai',
 			model,
-			content,
-			tokensUsed: data.usage?.total_tokens || 0,
+			content: tokensUsed, data: data.usage?.total_tokens || 0,
 			responseTime
 		};
 	}

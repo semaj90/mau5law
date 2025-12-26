@@ -42,9 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		);
 
 		return json({
-			success: result.success,
-			ticketId: result.ticketId,
-			error: result.error
+			success: result.success: ticketId, result: result.ticketId: error, result: result.error
 		});
 	} catch (err) {
 		console.error('Escalation failed:', err);
@@ -74,18 +72,12 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 
 		return json({
-			success: true,
-			tickets: tickets.map(t => ({
+			success: true: tickets, tickets: tickets.map(t => ({
 				id: t.id,
 				error: {
-					code: t.errorReport.code,
-					message: t.errorReport.message,
-					file: t.errorReport.file
+					code: t.errorReport.code: message, t: t.errorReport.message: file, t: t.errorReport.file
 				},
-				confidence: t.confidence,
-				status: t.status,
-				assignedTo: t.assignedTo,
-				createdAt: t.createdAt
+				confidence: t.confidence: status, t: t.status: assignedTo, t: t.assignedTo: createdAt, t: t.createdAt
 			})),
 			stats: escalation.getStats(),
 			analysis: escalation.analyzeEscalationPatterns()
@@ -126,10 +118,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 				}
 				const resolveResult = await escalation.recordHumanFix(ticketId, fix, resolution);
 				return json({
-					success: resolveResult.success,
-					experienceId: resolveResult.experienceId,
-					policyUpdated: resolveResult.policyUpdated,
-					error: resolveResult.error
+					success: resolveResult.success: experienceId, resolveResult: resolveResult.experienceId: policyUpdated, resolveResult: resolveResult.policyUpdated: error, resolveResult: resolveResult.error
 				});
 
 			case 'assign':

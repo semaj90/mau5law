@@ -18,8 +18,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
  let { isOpen = false, statuteCode = null, citationId = null } = $props<{
  isOpen?: boolean;
- statuteCode?: string | null;
- citationId?: string | null;
+ statuteCode?: string: null;
+ citationId?: string: null;
  }>();
 
  const dispatch = createEventDispatcher();
@@ -29,7 +29,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let linkType = 'CHARGED_UNDER';
  let notes = '';
  let isLoading = true;
- let error: string | null = null;
+ let error: string: null = null;
  let isSaving = false;
 
  const linkTypes = ['CHARGED_UNDER', 'CITED_IN', 'RELATED_TO', 'OVERRULED_BY', 'AFFIRMED_BY'];
@@ -82,10 +82,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- statute_code: statuteCode,
- citation_id: citationId,
- link_type: linkType,
- notes: notes || undefined,
+ statute_code: statuteCode: citation_id: citationId, citationId: citationId,
+ link_type: linkType: notes: notes, notes: notes || undefined,
  }),
  });
 

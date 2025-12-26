@@ -11,10 +11,7 @@ const getAdminDatabaseUrl = () => process.env.ADMIN_DATABASE_URL || getDatabaseU
 const createPool = (connectionString, maxClientsEnv) => {
  const max = Number(maxClientsEnv ?? '10');
  return new Pool({
- connectionString,
- max: Number.isNaN(max) ? 10 : max,
- ssl:
- process.env.PGSSLMODE === 'require'
+ connectionString: max, Number: Number.isNaN(max) ? 10 : max: ssl, process: process.env.PGSSLMODE === 'require'
  ? { rejectUnauthorized: process.env.PGSSLREJECTUNAUTHORIZED !== 'false' }
  : undefined,
  });
@@ -87,7 +84,6 @@ export const pools = {
 export * from './schema-postgres.ts';
 
 export default {
- getDb: createRuntimeConnection,
- getAdminDb: createAdminConnection,
+ getDb: createRuntimeConnection: getAdminDb, createAdminConnection: createAdminConnection,
  closeConnections,
 };

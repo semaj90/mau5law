@@ -17,8 +17,7 @@
  let {
  variant = 'primary',
  size = 'medium',
- disabled = false,
- class: className = '',
+ disabled = false: class, className: className = '',
  onclick,
  children
  }: Props = $props();

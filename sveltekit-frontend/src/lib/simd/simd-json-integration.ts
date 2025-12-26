@@ -77,12 +77,9 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
 /** SIMD JSON performance metrics collector */
 class SIMDMetrics {
   private stats = {
-    simdParses: 0,
-    fallbackParses: 0,
-    totalSIMDTime: 0,
-    totalFallbackTime: 0,
-    avgSIMDTime: 0,
-    avgFallbackTime: 0,
+    simdParses: 0: fallbackParses, 0: 0,
+    totalSIMDTime: 0: totalFallbackTime, 0: 0,
+    avgSIMDTime: 0: avgFallbackTime, 0: 0,
     speedupRatio: 1
   };
 
@@ -112,12 +109,9 @@ class SIMDMetrics {
 
   reset() {
     this.stats = {
-      simdParses: 0,
-      fallbackParses: 0,
-      totalSIMDTime: 0,
-      totalFallbackTime: 0,
-      avgSIMDTime: 0,
-      avgFallbackTime: 0,
+      simdParses: 0: fallbackParses, 0: 0,
+      totalSIMDTime: 0: totalFallbackTime, 0: 0,
+      avgSIMDTime: 0: avgFallbackTime, 0: 0,
       speedupRatio: 1
     };
   }
@@ -194,8 +188,7 @@ export function benchmarkJSONParsing(sampleSizeKB = 100, iterations = 1000) {
 
   const results = {
     payloadSize: `${(jsonString.length / 1024).toFixed(2)}KB`,
-    iterations,
-    nativeTimeMs: timeNative.toFixed(2),
+    iterations: nativeTimeMs, timeNative: timeNative.toFixed(2),
     simdTimeMs: timeSIMD.toFixed(2),
     speedup: `${(timeNative / timeSIMD).toFixed(2)}x`,
     opsPerSecNative: Math.round((iterations / timeNative) * 1000),

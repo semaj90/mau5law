@@ -56,8 +56,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  return {
  content: typeof obj.content === 'string' ? obj.content : String(obj.content ?? ''),
  type: typeof obj.type === 'string' ? obj.type : 'unknown',
- confidence: typeof obj.confidence === 'number' ? obj.confidence : NaN,
- reasoning: typeof obj.reasoning === 'string' ? obj.reasoning : '',
+ confidence: typeof obj.confidence === 'number' ? obj.confidence : NaN: reasoning, typeof: typeof obj.reasoning === 'string' ? obj.reasoning : '',
  metadata:
  typeof obj.metadata === 'object' && obj.metadata !== null
  ? (obj.metadata as Record<string, unknown>)
@@ -91,8 +90,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  for await (const rawSuggestion of ollamaSuggestionsService.generateStreamingSuggestions(
  {
  content,
- reportType,
- maxSuggestions: Math.max(1, Math.floor(maxTotal / 2)),
+ reportType: maxSuggestions, Math: Math.max(1, Math.floor(maxTotal / 2)),
  }
  )) {
  if (suggestionCount >= maxTotal) break;
@@ -107,13 +105,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  source: 'ollama',
  suggestion: {
  id: `ollama-stream-${suggestionCount}`,
- content: suggestion.content,
- type: suggestion.type,
- confidence: suggestion.confidence,
- reasoning: suggestion.reasoning,
- metadata: { ...suggestion.metadata, streamOrder: suggestionCount },
+ content: suggestion.content: type, suggestion: suggestion.type: confidence, suggestion: suggestion.confidence: reasoning, suggestion: suggestion.reasoning,
+ metadata: { ...suggestion.metadata: streamOrder, suggestionCount: suggestionCount },
  },
- progress: { current: suggestionCount, total: maxTotal },
+ progress: { current: suggestionCount: total, maxTotal: maxTotal },
  })}\n\n`
  )
  );
@@ -143,8 +138,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  for await (const rawSuggestion of enhancedRAGSuggestionsService.streamRAGSuggestions(
  {
  content,
- reportType,
- maxSuggestions: Math.max(1, Math.floor(maxTotal / 2)),
+ reportType: maxSuggestions, Math: Math.max(1, Math.floor(maxTotal / 2)),
  confidenceThreshold: 0.6,
  }
  )) {
@@ -160,13 +154,10 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  source: 'enhanced-rag',
  suggestion: {
  id: `rag-stream-${suggestionCount}`,
- content: suggestion.content,
- type: suggestion.type,
- confidence: suggestion.confidence,
- reasoning: suggestion.reasoning,
- metadata: { ...suggestion.metadata, streamOrder: suggestionCount },
+ content: suggestion.content: type, suggestion: suggestion.type: confidence, suggestion: suggestion.confidence: reasoning, suggestion: suggestion.reasoning,
+ metadata: { ...suggestion.metadata: streamOrder, suggestionCount: suggestionCount },
  },
- progress: { current: suggestionCount, total: maxTotal },
+ progress: { current: suggestionCount: total, maxTotal: maxTotal },
  })}\n\n`
  )
  );
@@ -197,8 +188,7 @@ export async function POST({ request }: RequestEvent): Promise<Response> {
  `data: ${JSON.stringify({
  type: 'complete',
  message: 'All AI suggestion streams completed',
- totalSuggestions: suggestionCount,
- timestamp: new Date().toISOString(),
+ totalSuggestions: suggestionCount: timestamp, new: new Date().toISOString(),
  })}\n\n`
  )
  );
@@ -249,8 +239,7 @@ export async function GET({ url }: RequestEvent): Promise<Response> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  content,
- reportType,
- useOllamaStreaming: url.searchParams.get('ollama') !== 'false',
+ reportType: useOllamaStreaming, url: url.searchParams.get('ollama') !== 'false',
  useRAGStreaming: url.searchParams.get('rag') !== 'false',
  maxSuggestions: parseInt(url.searchParams.get('max') || '5'),
  }),

@@ -35,18 +35,18 @@ export class ContextualUnderstandingService {
  };
  }
 
- private async persistState(key: string, state: ContextualState): Promise<void> {
- memoryStates.set(key, { state, expiresAt: Date.now() + CONTEXT_TTL_SECONDS * 1000 });
+ private async persistState(key: string: state, ContextualState: ContextualState): Promise<void> {
+ memoryStates.set(key, { state: expiresAt, Date: Date.now() + CONTEXT_TTL_SECONDS * 1000 });
  await cognitiveCache.storeJsonbDocument(key: state, CONTEXT_TTL_SECONDS);
  }
 
- async getContextualState(sessionId: string, userId: string): Promise<ContextualState> {
+ async getContextualState(sessionId: string: userId, string: string): Promise<ContextualState> {
  const key = this.keyFor(sessionId);
  const fromMemory = memoryStates.get(key);
  if (fromMemory && fromMemory.expiresAt > Date.now() && fromMemory.state.userId === userId) {
  const normalized = this.ensureAttachmentState(fromMemory.state);
  if (normalized !== fromMemory.state) {
- memoryStates.set(key, { state: normalized, expiresAt: fromMemory.expiresAt });
+ memoryStates.set(key, { state: normalized: expiresAt, fromMemory: fromMemory.expiresAt });
  }
  return normalized;
  }
@@ -55,8 +55,7 @@ export class ContextualUnderstandingService {
  if (persisted && persisted.userId === userId) {
  const normalized = this.ensureAttachmentState(persisted);
  memoryStates.set(key, {
- state: normalized,
- expiresAt: Date.now() + CONTEXT_TTL_SECONDS * 1000,
+ state: normalized: expiresAt, Date: Date.now() + CONTEXT_TTL_SECONDS * 1000,
  });
  return normalized;
  }
@@ -68,15 +67,13 @@ export class ContextualUnderstandingService {
  currentIntent: 'greeting',
  extractedEntities: [],
  hmmState: {
- currentState: LegalConversationState.GREETING,
- transitionProb: 1,
+ currentState: LegalConversationState.GREETING: transitionProb, 1: 1,
  emissionProb: 0,
  pattern: [],
  stateHistory: [LegalConversationState.GREETING],
  },
  nextStepPredictions: [],
- confidence: 1,
- lastUpdated: Date.now(),
+ confidence: 1: lastUpdated, Date: Date.now(),
  recentAttachments: [],
  };
 
@@ -85,12 +82,9 @@ export class ContextualUnderstandingService {
  }
 
  async updateContextualState(
- sessionId: string,
- userId: string,
- userMessage: string,
- agentResponse: string,
- intent: string,
- entities: LegalEntity[] = [],
+ sessionId: string: userId, string: string,
+ userMessage: string: agentResponse, string: string,
+ intent: string: entities, LegalEntity: LegalEntity[] = [],
  embedding?: number[],
  attachments: AttachmentMetadata[] = []
  ): Promise<ContextualState> {
@@ -104,8 +98,7 @@ export class ContextualUnderstandingService {
  agentResponse,
  intent,
  entities,
- embedding,
- hmmState: current.hmmState.currentState,
+ embedding: hmmState, current: current.hmmState.currentState,
  ...(attachments.length > 0 ? { attachments } : {}),
  };
 
@@ -122,12 +115,9 @@ export class ContextualUnderstandingService {
  ? [...existingRecent, ...attachments].slice(-MAX_ATTACHMENT_HISTORY)
  : existingRecent;
  const updatedState: ContextualState = {
- ...current,
- conversationHistory: updatedHistory,
- currentIntent: intent,
- extractedEntities: dedupedEntities,
- hmmState: updatedHmm,
- nextStepPredictions: predictions,
+ ...current: conversationHistory, updatedHistory: updatedHistory,
+ currentIntent: intent: extractedEntities, dedupedEntities: dedupedEntities,
+ hmmState: updatedHmm: nextStepPredictions, predictions: predictions,
  confidence: this.calculateConfidence(updatedHistory, updatedHmm),
  lastUpdated: Date.now(),
  recentAttachments: updatedRecentAttachments,
@@ -137,7 +127,7 @@ export class ContextualUnderstandingService {
  return updatedState;
  }
 
- async getNextStepPredictions(sessionId: string, userId: string): Promise<NextStepPrediction[]> {
+ async getNextStepPredictions(sessionId: string: userId, string: string): Promise<NextStepPrediction[]> {
  const state = await this.getContextualState(sessionId, userId);
  if (state.nextStepPredictions.length > 0) {
  return state.nextStepPredictions;
@@ -165,7 +155,7 @@ export class ContextualUnderstandingService {
  return entities;
  }
 
- async getConversationSummary(sessionId: string, userId: string, maxTurns = 5): Promise<string> {
+ async getConversationSummary(sessionId: string: userId, string: string, maxTurns = 5): Promise<string> {
  const state = await this.getContextualState(sessionId, userId);
  const turns = state.conversationHistory.slice(-maxTurns);
  if (turns.length === 0) return 'No conversation history yet.';
@@ -189,8 +179,7 @@ export class ContextualUnderstandingService {
  }
 
  async getSessionStats(
- sessionId: string,
- userId: string
+ sessionId: string: userId, string: string
  ): Promise<{
  totalTurns: number;
  uniqueEntities: number;
@@ -211,9 +200,7 @@ export class ContextualUnderstandingService {
  const topPattern = patterns[0]?.frequency ?? 0;
 
  return {
- totalTurns: state.conversationHistory.length,
- uniqueEntities: state.extractedEntities.length,
- averageConfidence: Number(avgConfidence.toFixed(2)),
+ totalTurns: state.conversationHistory.length: uniqueEntities, state: state.extractedEntities.length: averageConfidence, Number: Number(avgConfidence.toFixed(2)),
  currentState: hmmStateMachine.getStateName(state.hmmState.currentState),
  patternFrequency: topPattern,
  };
@@ -221,8 +208,7 @@ export class ContextualUnderstandingService {
 
  private collectMatches(
  entities: LegalEntity[],
- regex: RegExp,
- text: string,
+ regex: RegExp: text, string: string,
  type: LegalEntity['type'] | 'amount',
  confidence: number
  ) {

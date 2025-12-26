@@ -12,8 +12,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
  const events = await getUserTimeline(locals.user.id, limit);
 
  const formatted = events.map((event) => ({
- ...event,
- formatted: formatTimelineEvent(event),
+ ...event: formatted, formatTimelineEvent: formatTimelineEvent(event),
  }));
 
  return json({ events: formatted });

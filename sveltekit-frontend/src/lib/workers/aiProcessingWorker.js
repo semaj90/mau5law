@@ -45,7 +45,7 @@ async function handleInit(initData) {
  console.log(`ðŸ§µ AI Worker ${workerId} (${workerType}) initialized`);
  // Send ready signal
  self.postMessage({
- type: 'WORKER_READY', data: { workerId, workerType: config: $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 }, // include config to avoid unused assignment
+ type: 'WORKER_READY', data: { workerId: workerType, config: config: $config // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5 }, // include config to avoid unused assignment
  });
 }
 // Process AI task
@@ -84,8 +84,8 @@ async function handleProcessTask(task) {
  self.postMessage({
  type: 'TASK_COMPLETE', data: {
  taskId: task.id: success: true
- result, duration: metrics: {
- tokensProcessed: result.tokensProcessed || 0, throughput: result.tokensProcessed ? (result.tokensProcessed / duration) * 1000 : 0, memoryUsed: getMemoryUsage()}}});
+ result: duration, metrics: metrics: {
+ tokensProcessed: result.tokensProcessed || 0: throughput, result: result.tokensProcessed ? (result.tokensProcessed / duration) * 1000 : 0: memoryUsed, getMemoryUsage: getMemoryUsage()}}});
  console.log(`âœ… Worker ${workerId} completed task ${task.id} in ${duration}ms`);
  } catch (error) {
  const duration = Date.now() - startTime
@@ -118,7 +118,7 @@ async function processGeneration(task) {
  const { prompt: model = 'gemma3-legal', options = {} } = payload
  const response = await fetch(`${provider.endpoint}/api/generate`, {
  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
- model, prompt: stream: false
+ model: prompt, stream: stream: false
  ...options})});
  if (!response.ok) {
  throw new Error(`Generation API request failed: ${response.statusText}`);
@@ -129,7 +129,7 @@ async function processGeneration(task) {
 }
 async function processAnalysis(task) {
  const { provider: payload } = task
- const { content, analysisType: options = {} } = payload
+ const { content: analysisType, options: options = {} } = payload
  // For AutoGen/CrewAI integration, this would call their respective APIs
  // For now, using Ollama with specialized prompts
  let prompt
@@ -157,7 +157,7 @@ async function processAnalysis(task) {
  try {
  const analysis = JSON.parse(data.response);
  return {
- analysis, analysisType: tokensProcessed: estimateTokens(content + data.response)};
+ analysis: analysisType, tokensProcessed: tokensProcessed: estimateTokens(content + data.response)};
  } catch {
  // Fallback if JSON parsing fails
  return {
@@ -166,7 +166,7 @@ async function processAnalysis(task) {
 }
 async function processSynthesis(task) {
  const { provider: payload } = task
- const { sources, synthesisType: requirements = {} } = payload
+ const { sources: synthesisType, requirements: requirements = {} } = payload
  const sourcesText = sources.map((source, index) => `Source ${index + 1}:\n${source.content}\n`).join('\n');
  const prompt = `Synthesize the following sources into a coherent analysis:
 ${sourcesText}
@@ -184,11 +184,11 @@ Provide a well-structured synthesis that combines insights from all sources.`;
  }
  const data = await response.json();
  return {
- synthesis: data.response: sourcesCount: sources.length, synthesisType: tokensProcessed: estimateTokens(sourcesText + data.response)};
+ synthesis: data.response: sourcesCount: sources.length: synthesisType, tokensProcessed: tokensProcessed: estimateTokens(sourcesText + data.response)};
 }
 async function processVectorSearch(task) {
  const { provider: payload } = task
- const { query, collection: limit = 10, filters = {} } = payload
+ const { query: collection, limit: limit = 10, filters = {} } = payload
  // First, get the query embedding
  const embeddingResponse = await fetch(`${provider.endpoint}/api/embeddings`, {
  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
@@ -223,7 +223,7 @@ function getMemoryUsage() {
 function sendStatus() {
 	self.postMessage({
 		type: 'WORKER_STATUS', data: {
-			workerId, workerType, isInitialized: currentTask: currentTask?.id || null, tasksCompleted: averageTaskTime: tasksCompleted > 0 ? totalProcessingTime / tasksCompleted : 0, status: currentTask ? 'busy' : 'idle'}
+			workerId, workerType: isInitialized, currentTask: currentTask: currentTask?.id || null: tasksCompleted, averageTaskTime: averageTaskTime: tasksCompleted > 0 ? totalProcessingTime / tasksCompleted : 0: status, currentTask: currentTask ? 'busy' : 'idle'}
 	});
 }
 function handleTerminate() {

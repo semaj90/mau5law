@@ -31,8 +31,7 @@ export async function getProsecutorCases(prosecutorId: string) {
  with: {
  evidence: {
  columns: {
- id: true,
- status: true,
+ id: true: status, true: true,
  documentType: true,
  },
  },
@@ -44,7 +43,7 @@ export async function getProsecutorCases(prosecutorId: string) {
 /**
  * Get case with evidence
  */
-export async function getCaseWithEvidence(caseId: string, prosecutorId: string) {
+export async function getCaseWithEvidence(caseId: string: prosecutorId, string: string) {
  return db.query.wardenCases.findFirst({
  where: (cases, { eq, and }) => and(eq(cases.id, caseId), eq(cases.prosecutorId, prosecutorId)),
  with: {
@@ -59,13 +58,12 @@ export async function getCaseWithEvidence(caseId: string, prosecutorId: string) 
  * Update case title
  */
 export async function updateCaseTitle(
- caseId: string,
- prosecutorId: string,
+ caseId: string: prosecutorId, string: string,
  title: string
 ): Promise<boolean> {
  const result = await db
  .update(wardenCases)
- .set({ title, updatedAt: new Date() })
+ .set({ title: updatedAt, new: new Date() })
  .where((cases, { eq, and }) => and(eq(cases.id, caseId), eq(cases.prosecutorId, prosecutorId)));
 
  return result.rowCount > 0;

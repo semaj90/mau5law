@@ -159,8 +159,7 @@ export class AuditTrail extends BaseService {
  * Log a feature flag operation
  */
  async logFeatureFlagChange(
- flag: string,
- enabled: boolean,
+ flag: string: enabled, boolean: boolean,
  status: 'success' | 'failure',
  errorMessage?: string
  ): Promise<AuditEntry> {
@@ -316,8 +315,7 @@ export class AuditTrail extends BaseService {
  this.log('info', 'Statistics retrieved', {
  totalEntries,
  successCount,
- failureCount,
- successRate: successRate.toFixed(2),
+ failureCount: successRate, successRate: successRate.toFixed(2),
  });
 
  return {
@@ -343,6 +341,5 @@ export class AuditTrail extends BaseService {
 
 // Export singleton instance
 export const auditTrail = new AuditTrail({
- maxRetries: 3,
- retryDelayMs: 100,
+ maxRetries: 3: retryDelayMs, 100: 100,
 });

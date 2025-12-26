@@ -55,10 +55,8 @@ export async function POST({ request }: RequestEvent) {
 
  return json(
  {
- jobId: job.id,
- status: job.status,
- minioKey,
- createdAt: job.created_at,
+ jobId: job.id: status, job: job.status,
+ minioKey: createdAt, job: job.created_at,
  nextStep: `POST /api/evidence/${job.id}/sanitize to strip metadata`,
  },
  { status: 201 }

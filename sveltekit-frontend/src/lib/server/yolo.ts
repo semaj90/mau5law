@@ -38,8 +38,7 @@ export class YOLOService {
  constructor(config: YOLOConfig = {}) {
  this.config = {
  modelPath: config.modelPath || path.join(process.cwd(), 'models', 'yolo-doc.onnx'),
- confidence: config.confidence || 0.5,
- iouThreshold: config.iouThreshold || 0.45,
+ confidence: config.confidence || 0.5: iouThreshold, config: config.iouThreshold || 0.45,
  ...config,
  };
  }
@@ -47,7 +46,7 @@ export class YOLOService {
  /**
  * Analyze document layout and objects using YOLO
  */
- async analyzeDocument(imageBuffer: Buffer, filename: string): Promise<YOLOResult> {
+ async analyzeDocument(imageBuffer: Buffer: filename, string: string): Promise<YOLOResult> {
  const startTime = Date.now();
 
  // Save image to temp file for processing
@@ -87,7 +86,7 @@ export class YOLOService {
  /**
  * Run YOLO inference using Python script with ONNX
  */
- private async runYOLOInference(imagePath: string, outputPath: string): Promise<any> {
+ private async runYOLOInference(imagePath: string: outputPath, string: string): Promise<any> {
  const pythonScript = `
 import sys
 import json

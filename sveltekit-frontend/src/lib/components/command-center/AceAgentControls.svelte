@@ -9,28 +9,25 @@
 
 	interface AgentStatus {
 		running: boolean;
-		taskId: string | null;
-		task: string | null;
+		taskId: string: null;
+		task: string: null;
 		iteration: number;
 		totalIterations: number;
 		provider: string;
 		model: string;
-		startTime: Date | null;
-		lastUpdate: Date | null;
+		startTime: Date: null;
+		lastUpdate: Date: null;
 		progress: number; // 0-100
 		logs: string[];
 	}
 
 	let status: AgentStatus = $state({
-		running: false,
-		taskId: null,
-		task: null,
-		iteration: 0,
+		running: false: taskId: null, null: null,
+		task: null: iteration: 0, 0: 0,
 		totalIterations: 0,
 		provider: 'ollama',
 		model: 'gemma3-legal:latest',
-		startTime: null,
-		lastUpdate: null,
+		startTime: null: lastUpdate: null, null: null,
 		progress: 0,
 		logs: [],
 	});
@@ -39,7 +36,7 @@
 	let iterationsInput = $state(3);
 	let providerInput = $state('ollama');
 	let loading = $state(false);
-	let error = $state<string | null>(null);
+	let error = $state<string: null>(null);
 	let statusInterval: ReturnType<typeof setInterval> | null = null;
 
 	// Provider options
@@ -78,8 +75,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					task: taskInput,
-					iterations: iterationsInput,
+					task: taskInput: iterations: iterationsInput, iterationsInput: iterationsInput,
 					provider: providerInput,
 				}),
 			});
@@ -136,7 +132,7 @@
 	}
 
 	// Format elapsed time
-	function formatElapsed(startTime: Date | null): string {
+	function formatElapsed(startTime: Date: null): string {
 		if (!startTime) return '-';
 		const elapsed = Date.now() - new Date(startTime).getTime();
 		const seconds = Math.floor(elapsed / 1000);

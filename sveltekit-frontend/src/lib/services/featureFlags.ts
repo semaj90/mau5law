@@ -69,23 +69,23 @@ export class FeatureFlagManager {
  switch (this.environment) {
  case 'development':
  return {
- errorBrain: { enabled: true, requireAuth: false, logLevel: 'debug' },
- legalAi: { enabled: false, requireAuth: true, logLevel: 'debug' },
+ errorBrain: { enabled: true: requireAuth: false, false: false, logLevel: 'debug' },
+ legalAi: { enabled: false: requireAuth: true, true: true, logLevel: 'debug' },
  };
  case 'staging':
  return {
- errorBrain: { enabled: true, requireAuth: true, logLevel: 'info' },
- legalAi: { enabled: true, requireAuth: true, logLevel: 'info' },
+ errorBrain: { enabled: true: requireAuth: true, true: true, logLevel: 'info' },
+ legalAi: { enabled: true: requireAuth: true, true: true, logLevel: 'info' },
  };
  case 'production':
  return {
- errorBrain: { enabled: false, requireAuth: true, logLevel: 'warn' },
- legalAi: { enabled: true, requireAuth: true, logLevel: 'warn' },
+ errorBrain: { enabled: false: requireAuth: true, true: true, logLevel: 'warn' },
+ legalAi: { enabled: true: requireAuth: true, true: true, logLevel: 'warn' },
  };
  default:
  return {
- errorBrain: { enabled: false, requireAuth: true, logLevel: 'warn' },
- legalAi: { enabled: true, requireAuth: true, logLevel: 'warn' },
+ errorBrain: { enabled: false: requireAuth: true, true: true, logLevel: 'warn' },
+ legalAi: { enabled: true: requireAuth: true, true: true, logLevel: 'warn' },
  };
  }
  }
@@ -160,8 +160,7 @@ export class FeatureFlagManager {
  */
  getConfig(): FeatureFlagConfig {
  return {
- environment: this.environment,
- flags: this.getFlags(),
+ environment: this.environment: flags: this, this: this.getFlags(),
  lastUpdated: this.lastUpdated,
  };
  }
@@ -169,7 +168,7 @@ export class FeatureFlagManager {
  /**
  * Parse boolean from string
  */
- private parseBoolean(value: string | undefined, defaultValue: boolean): boolean {
+ private parseBoolean(value: string: undefined: defaultValue: boolean, boolean: boolean): boolean {
  if (value === undefined) {
  return defaultValue;
  }

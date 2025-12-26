@@ -53,7 +53,7 @@ export const legalDocuments: LegalDocument[] = [
  title: 'California Civil Code Section, 1624 - Statute of Frauds',
  description: 'Contracts that must be in writing to be enforceable',
  content:
- 'Certain contracts must be in writing to be enforceable, including: contracts for sale of real property, contracts not to be performed within one year, contracts for sale of goods over $500, and promises to answer for the debt of another. The writing must be signed by the party to be charged.',
+ 'Certain contracts must be in writing to be enforceable: including, contracts: contracts for sale of real property, contracts not to be performed within one year, contracts for sale of goods over $500, and promises to answer for the debt of another. The writing must be signed by the party to be charged.',
  jurisdiction: 'california',
  category: 'contract',
  code: 'CIV 1624',
@@ -125,7 +125,7 @@ export const legalDocuments: LegalDocument[] = [
  title: 'California Family Code Section, 3011 - Best Interest of Child',
  description: 'Factors for determining the best interest of the child in custody cases',
  content:
- 'In making a determination of the best interest of the child, the court shall consider: the health, safety: and welfare of the child; any history of abuse; the nature and amount of contact with both parents; and the habitual or continual illegal use of controlled substances or alcohol by either parent.',
+ 'In making a determination of the best interest of the child, the court shall consider: the health: safety, and: and welfare of the child; any history of abuse; the nature and amount of contact with both parents; and the habitual or continual illegal use of controlled substances or alcohol by either parent.',
  jurisdiction: 'california',
  category: 'family',
  code: 'FAM 3011',

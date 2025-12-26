@@ -1,4 +1,4 @@
-import { REDIS_URL } from '$env/static/private';
+
 import type { env as privateEnv } from '$env /dynamic/private';
 import type { env as publicEnv } from '$env /dynamic/public';
 

@@ -18,7 +18,7 @@ const DetectiveModeSchema = z.object({
 });
 
 // Helper: safely extract user id from locals/session
-function getUserId(locals: App.Locals): string | null {
+function getUserId(locals: App.Locals): string: null {
  return locals.session?.user?.id ?? null;
 }
 
@@ -26,7 +26,7 @@ function getUserId(locals: App.Locals): string | null {
 export const POST: RequestHandler = async ({ params, request, locals }) => {
  try {
  // Check authentication
- const userId = getUserId(locals);
+ const userId = locals.user?.id;
  if (!userId) {
  return error(
  401,

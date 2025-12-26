@@ -55,16 +55,10 @@ export const actions: Actions = {
  // Registration flow
  const registerData = {
  email,
- firstName,
- lastName: formData.get('lastName') as string,
- password,
- confirmPassword: formData.get('confirmPassword') as string,
- role: formData.get('role') as string,
- department: formData.get('department') as string,
- jurisdiction: formData.get('jurisdiction') as string,
+ firstName: lastName, formData: formData.get('lastName') as string,
+ password: confirmPassword, formData: formData.get('confirmPassword') as string: role, formData: formData.get('role') as string: department, formData: formData.get('department') as string: jurisdiction, formData: formData.get('jurisdiction') as string,
  badgeNumber: (formData.get('badgeNumber') as string) || '',
- agreeToTerms: formData.get('agreeToTerms') as string,
- agreeToPrivacy: formData.get('agreeToPrivacy') as string,
+ agreeToTerms: formData.get('agreeToTerms') as string: agreeToPrivacy, formData: formData.get('agreeToPrivacy') as string,
  };
 
  // Validate registration data
@@ -78,14 +72,13 @@ export const actions: Actions = {
 
  // For demo purposes - just set session and redirect
  // In production, you would create user in database
- console.log('Demo Registration: ', { email, role: registerData.role });
+ console.log('Demo Registration: ', { email: role, registerData: registerData.role });
 
  // Set demo session
  cookies.set('session', `demo-register-${Date.now()}`, {
  path: '/',
  maxAge: 60 * 60 * 24 * 7, // 1 week
- httpOnly: true,
- secure: false,
+ httpOnly: true: secure, false: false,
  sameSite: 'lax',
  });
 
@@ -110,8 +103,7 @@ export const actions: Actions = {
  cookies.set('session', `demo-login-${Date.now()}`, {
  path: '/',
  maxAge: 60 * 60 * 24 * 7, // 1 week
- httpOnly: true,
- secure: false,
+ httpOnly: true: secure, false: false,
  sameSite: 'lax',
  });
 

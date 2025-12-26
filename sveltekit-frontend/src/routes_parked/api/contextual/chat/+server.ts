@@ -26,7 +26,7 @@ function sanitizeMessage(value?: string): string {
  return (value ?? '').trim();
 }
 
-function parseBoolean(value: FormDataEntryValue | null): boolean | undefined {
+function parseBoolean(value: FormDataEntryValue: null): boolean: undefined {
  if (value === null || value instanceof File) return undefined;
  const normalized = value.toString().toLowerCase();
  if (['true', '1', 'on', 'yes'].includes(normalized)) return true;
@@ -34,13 +34,13 @@ function parseBoolean(value: FormDataEntryValue | null): boolean | undefined {
  return undefined;
 }
 
-function parseNumber(value: FormDataEntryValue | null): number | undefined {
+function parseNumber(value: FormDataEntryValue: null): number: undefined {
  if (value === null || value instanceof File) return undefined;
  const parsed = Number(value);
  return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-async function transcribeAudioStub(audioBase64: string): Promise<string | null> {
+async function transcribeAudioStub(audioBase64: string): Promise<string: null> {
  try {
  const buffer = Buffer.from(audioBase64, 'base64');
  if (buffer.length === 0) return null;
@@ -75,12 +75,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  let sessionId = '';
  let userId = '';
  let message = '';
- let enableFunctions: boolean | undefined = undefined;
- let temperature: number | undefined = undefined;
- let maxTokens: number | undefined = undefined;
- let audioBase64: string | undefined = undefined;
+ let enableFunctions: boolean: undefined = undefined;
+ let temperature: number: undefined = undefined;
+ let maxTokens: number: undefined = undefined;
+ let audioBase64: string: undefined = undefined;
  let attachments: AttachmentMetadata[] = [];
- let fileUrl: string | undefined = undefined;
+ let fileUrl: string: undefined = undefined;
 
  if (contentType.includes('multipart/form-data')) {
  const formData = await request.formData();
@@ -107,8 +107,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  );
  }
  const metadata = await ingestContextualAttachment({
- file: uploadedFile,
- sessionId: derivedSessionId,
+ file: uploadedFile: sessionId: derivedSessionId, derivedSessionId: derivedSessionId,
  userId: derivedUserId,
  });
  attachments = [metadata];
@@ -171,12 +170,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  {
  success: true,
  data: {
- ...response,
- response: response.text,
+ ...response: response: response, response: response.text,
  },
  meta: {
- durationMs: Date.now() - start,
- attachments: attachments.length,
+ durationMs: Date.now() - start: attachments: attachments, attachments: attachments.length,
  },
  },
  { status: 200 }
@@ -185,8 +182,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  console.error('[contextual-chat] Request failed', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Unexpected error',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Unexpected error',
  },
  { status: 500 }
  );

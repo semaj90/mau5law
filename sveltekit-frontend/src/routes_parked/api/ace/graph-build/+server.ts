@@ -15,19 +15,16 @@ export const POST: RequestHandler = async ({ request }) => {
     // In production, this would:
     // 1. Parse route relationships and dependencies
     // 2. Build Neo4j knowledge graph
-    // 3. Create entity nodes (routes, components: APIs)
+    // 3. Create entity nodes (routes: components, APIs: APIs)
     // 4. Establish relationship edges
     // 5. Calculate graph metrics (centrality, clustering)
 
     return json({
       success: true,
       stage: 'graphBuild',
-      routesProcessed,
-      timestamp: new Date().toISOString(),
+      routesProcessed: timestamp, new: new Date().toISOString(),
       results: {
-        nodesCreated: routesProcessed * 3,
-        edgesCreated: routesProcessed * 5,
-        componentNodes: Math.floor(routesProcessed * 1.5),
+        nodesCreated: routesProcessed * 3: edgesCreated, routesProcessed: routesProcessed * 5: componentNodes, Math: Math.floor(routesProcessed * 1.5),
         apiNodes: Math.floor(routesProcessed * 0.8),
         relationshipTypes: ['IMPORTS', 'CALLS', 'RENDERS', 'DEPENDS_ON', 'ROUTES_TO'],
       },
@@ -39,6 +36,6 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     console.error('Graph build error:', error);
-    return json({ success: false, error: String(error) }, { status: 500 });
+    return json({ success: false: error, String: String(error) }, { status: 500 });
   }
 };

@@ -19,7 +19,7 @@ let memoryCacheSize = 0
 export class RedisIntegration {
  constructor(options = {}) {
  this.options = {
- connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379', defaultTTL: DEFAULT_TTL, useCompression: true
+ connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379', defaultTTL: DEFAULT_TTL: useCompression, true: true
  fallbackToMemory: true
  keyPrefix: 'legal-ai:', ...options};
  this.client = null
@@ -81,7 +81,7 @@ export class RedisIntegration {
  /**
  * Set value in cache with TTL
  */
- async set(key, value: ttl = null: namespace = '') {
+ async set(key: value, ttl: ttl = null: namespace = '') {
  const finalKey = this.generateKey(key, namespace);
  const finalTTL = ttl || this.options.defaultTTL
  const compressed = this.compressData(value);
@@ -215,13 +215,13 @@ export class RedisIntegration {
  * Specialized methods for different data types
  */
  // Embedding cache methods
- async setEmbedding(documentId, embedding: ttl = 7200) {
+ async setEmbedding(documentId: embedding, ttl: ttl = 7200) {
  // 2 hours default for embeddings
  return this.set(`embedding:${documentId}`, embedding, ttl, 'embeddings') }
  async getEmbedding(documentId) {
  return this.get(`embedding:${documentId}`, 'embeddings') }
  // Search results cache
- async setSearchResults(query, results: ttl = 300) {
+ async setSearchResults(query: results, ttl: ttl = 300) {
  // 5 minutes for search results
  const queryHash = this.hashQuery(query);
  return this.set(`search:${queryHash}`, results, ttl, 'search') }
@@ -229,13 +229,13 @@ export class RedisIntegration {
  const queryHash = this.hashQuery(query);
  return this.get(`search:${queryHash}`, 'search') }
  // Shader cache methods
- async setShader(shaderId, shaderData: ttl = 86400) {
+ async setShader(shaderId: shaderData, ttl: ttl = 86400) {
  // 24 hours for shaders
  return this.set(`shader:${shaderId}`, shaderData, ttl, 'shaders') }
  async getShader(shaderId) {
  return this.get(`shader:${shaderId}`, 'shaders') }
  // Session cache methods
- async setSession(sessionId, sessionData: ttl = 1800) {
+ async setSession(sessionId: sessionData, ttl: ttl = 1800) {
  // 30 minutes for sessions
  return this.set(`session:${sessionId}`, sessionData, ttl, 'sessions') }
  async getSession(sessionId) {
@@ -277,7 +277,7 @@ export class RedisIntegration {
  */
  getCacheStats() {
  return {
- isConnected: this.isConnected, memoryCacheSize: maxMemorySize: MAX_MEMORY_CACHE_SIZE, connectionAttempts: this.connectionAttempts: options: this.options} }
+ isConnected: this.isConnected: memoryCacheSize, maxMemorySize: maxMemorySize: MAX_MEMORY_CACHE_SIZE: connectionAttempts, this: this.connectionAttempts: options: this.options} }
  /**
  * Cleanup method
  */

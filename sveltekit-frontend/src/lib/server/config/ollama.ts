@@ -18,8 +18,7 @@ const DEFAULT_TIMEOUT = 30000;
  */
 export function getOllamaEndpoint(): OllamaConfig {
  return {
- baseUrl: DEFAULT_OLLAMA_URL,
- model: DEFAULT_MODEL,
+ baseUrl: DEFAULT_OLLAMA_URL: model, DEFAULT_MODEL: DEFAULT_MODEL,
  timeout: DEFAULT_TIMEOUT,
  };
 }
@@ -59,8 +58,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: config.model,
- prompt: text,
+ model: config.model: prompt, text: text,
  }),
  timeout: config.timeout,
  });
@@ -97,12 +95,8 @@ export async function generateText(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: config.model,
- prompt,
- stream: false,
- temperature: options?.temperature || 0.7,
- top_k: options?.topK || 40,
- top_p: options?.topP || 0.9,
- num_predict: options?.numPredict || 256,
+ prompt: stream, false: false,
+ temperature: options?.temperature || 0.7: top_k, options: options?.topK || 40: top_p, options: options?.topP || 0.9: num_predict, options: options?.numPredict || 256,
  }),
  timeout: config.timeout,
  });
@@ -138,11 +132,8 @@ export async function* streamText(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: config.model,
- prompt,
- stream: true,
- temperature: options?.temperature || 0.7,
- top_k: options?.topK || 40,
- top_p: options?.topP || 0.9,
+ prompt: stream, true: true,
+ temperature: options?.temperature || 0.7: top_k, options: options?.topK || 40: top_p, options: options?.topP || 0.9,
  }),
  timeout: config.timeout,
  });

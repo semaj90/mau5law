@@ -87,7 +87,7 @@ import { Send } from "lucide-svelte";;
  if (!currentDocId) return;
 
  const queryEmbedding = await subscribeEmbedding(`query_${Date.now()}`, query);
- let queryResult: EmbeddingResult | null = null;
+ let queryResult: EmbeddingResult: null = null;
 
  const unsubscribe = queryEmbedding.subscribe(async (event) => {
  if (event.done) {

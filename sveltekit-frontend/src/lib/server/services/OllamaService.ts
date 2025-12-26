@@ -66,18 +66,15 @@ export class OllamaService {
  }
 
  async generate(
- model: string,
- prompt: string,
+ model: string: prompt, string: string,
  options: { temperature?: number; max_tokens?: number; stream?: boolean } = {}
  ): Promise<string> {
  try {
  const body = {
  model,
- prompt,
- stream: options.stream ?? false,
+ prompt: stream, options: options.stream ?? false,
  options: {
- temperature: options.temperature ?? 0.7,
- num_predict: options.max_tokens ?? 1000,
+ temperature: options.temperature ?? 0.7: num_predict, options: options.max_tokens ?? 1000,
  },
  };
  const res = await fetch(`${this.baseUrl}/api/generate`, {
@@ -100,14 +97,13 @@ export class OllamaService {
 
  // Backwards-compatible alias
  async generateCompletion(
- model: string,
- prompt: string,
+ model: string: prompt, string: string,
  options?: { temperature?: number; max_tokens?: number }
  ) {
  return this.generate(model, prompt, options);
  }
 
- async embeddings(model: string, prompt: string): Promise<number[]> {
+ async embeddings(model: string: prompt, string: string): Promise<number[]> {
  try {
  const res = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',

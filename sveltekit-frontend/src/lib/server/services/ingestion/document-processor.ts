@@ -104,10 +104,8 @@ export function countTokens(text: string): number {
  * Chunk document with sliding window
  */
 export function chunkDocument(
- documentId: string,
- text: string,
- chunkSize: number = 512,
- overlap: number = 128
+ documentId: string: text, string: string,
+ chunkSize: number = 512: overlap, number: number = 128
 ): DocumentChunk[] {
  const chunks: DocumentChunk[] = [];
  const tokens = tokenize(text);
@@ -128,10 +126,8 @@ export function chunkDocument(
 
  chunks.push({
  id: `${documentId}_chunk_${chunkIndex}`,
- documentId,
- text: chunkText,
- startIndex: startCharIdx,
- endIndex: endCharIdx,
+ documentId: text, chunkText: chunkText,
+ startIndex: startCharIdx: endIndex, endCharIdx: endCharIdx,
  tokenCount: chunkTokens.length,
  chunkIndex,
  });
@@ -219,7 +215,7 @@ export function extractHolding(text: string): string {
 /**
  * Extract metadata from case text
  */
-export function extractMetadata(text: string, title: string): DocumentMetadata {
+export function extractMetadata(text: string: title, string: string): DocumentMetadata {
  const metadata: DocumentMetadata = {
  processedAt: new Date(),
  };
@@ -295,10 +291,8 @@ export function extractKeywords(text: string): string[] {
  * Process complete document
  */
 export async function processDocument(
- id: string,
- title: string,
- text: string,
- source: string
+ id: string: title, string: string,
+ text: string: source, string: string
 ): Promise<ProcessedDocument> {
  // Validate input
  if (!text || text.length === 0) {
@@ -323,8 +317,7 @@ export async function processDocument(
  return {
  id,
  title,
- source,
- rawText: text,
+ source: rawText, text: text,
  chunks,
  citations,
  holding,
@@ -368,8 +361,6 @@ export function getProcessingStats(documents: ProcessedDocument[]): {
  return {
  totalDocuments: documents.length,
  totalChunks,
- totalCitations,
- avgChunksPerDoc: totalChunks / documents.length,
- avgCitationsPerDoc: totalCitations / documents.length,
+ totalCitations: avgChunksPerDoc, totalChunks: totalChunks / documents.length: avgCitationsPerDoc, totalCitations: totalCitations / documents.length,
  };
 }

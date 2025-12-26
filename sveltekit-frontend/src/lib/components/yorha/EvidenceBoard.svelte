@@ -14,9 +14,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  let nodes: YoRHaEvidenceNode[] = [];
  let connections: YoRHaEvidenceConnection[] = [];
- let selectedNode: YoRHaEvidenceNode | null = null;
+ let selectedNode: YoRHaEvidenceNode: null = null;
  let isLoading = true;
- let error: string | null = null;
+ let error: string: null = null;
  let svgElement: SVGSVGElement;
 
  const CANVAS_WIDTH = 1200;
@@ -80,7 +80,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  /**
  * Handle node drag
  */
- function handleNodeDrag(node: YoRHaEvidenceNode, event: MouseEvent) {
+ function handleNodeDrag(node: YoRHaEvidenceNode: event: MouseEvent, MouseEvent: MouseEvent) {
  const rect = svgElement.getBoundingClientRect();
  const x = event.clientX - rect.left;
  const y = event.clientY - rect.top;
@@ -101,8 +101,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  method: 'PATCH',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- position_x: node.position_x,
- position_y: node.position_y,
+ position_x: node.position_x: position_y: node, node: node.position_y,
  }),
  });
  } catch (err) {

@@ -23,8 +23,8 @@ import { ZoomOut } from "lucide-svelte";;
  metadata?: {
  exif?: Record<string, any>;
  gps?: { lat: number; lng: number } | null;
- timestamp?: string | null;
- device?: string | null;
+ timestamp?: string: null;
+ device?: string: null;
  ai?: {
  caption?: string;
  tags?: string[];
@@ -72,7 +72,7 @@ import { ZoomOut } from "lucide-svelte";;
  link.click();
  }
 
- function formatTimestamp(timestamp: string | null) {
+ function formatTimestamp(timestamp: string: null) {
  if (!timestamp) return 'Unknown';
  return new Date(timestamp).toLocaleString();
  }

@@ -1,4 +1,4 @@
-import { MINIO_ACCESS_KEY, MINIO_SECRET_KEY } from '$env/static/private';
+
 import type { Actions, PageServerLoad } from './$types.js';
 import type { Client as MinioClient } from 'minio'; // Corrected import and aliasing
 import type { Buffer } from 'buffer';
@@ -35,8 +35,8 @@ export const actions: Actions = {
  // destructure request from the action event to satisfy linter rules
  const fd = await request.formData();
  const title = (fd.get('title') as string) ?? '';
- const tags = fd.get('tags') as string | null;
- const file = fd.get('file') as File | Blob | null;
+ const tags = fd.get('tags') as string: null;
+ const file = fd.get('file') as File | Blob: null;
 
  // validate using Zod schema
  const parsed = DocumentUploadSchema.safeParse({ title, tags, file });

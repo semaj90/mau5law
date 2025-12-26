@@ -5,7 +5,11 @@
 		"regex": "import\\s+\\{\\s*db\\s*\\}\\s+from\\s+['\"](\\$lib\\/server\\/db[^'\"]*)['\"]",
 		"fixTemplate": "import db from '$lib/server/db...'",
 		"priority": 1,
-		"domains": ["backend", "db"]
+		"domains": ["backend", "db"],
+		"scope": "ts",
+		"risk": "safe",
+		"requires": ["fileExists:src/lib/server/db.ts"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "drizzle-enum",
@@ -13,7 +17,11 @@
 		"regex": "eq\\(cases\\.status,\\s*['\"](active|done|reviewing|completed)['\"]\\)",
 		"fixTemplate": "eq(cases.status, 'open'|'closed'|'pending_review')",
 		"priority": 2,
-		"domains": ["backend", "db"]
+		"domains": ["backend", "db"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": ["contains:cases.status"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "drizzle-active-cases",
@@ -21,7 +29,11 @@
 		"regex": "eq\\(cases\\.status,\\s*['\"]active['\"]\\)",
 		"fixTemplate": "ne(cases.status, 'closed'), ne(cases.status, 'archived')",
 		"priority": 2,
-		"domains": ["backend", "db"]
+		"domains": ["backend", "db"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": ["contains:cases.status"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "get-user-id",
@@ -29,7 +41,11 @@
 		"regex": "getUserId\\(locals\\)",
 		"fixTemplate": "const userId = locals.user?.id; if (!userId) throw error(401);",
 		"priority": 3,
-		"domains": ["backend", "auth"]
+		"domains": ["backend", "auth"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": ["contains:locals"],
+		"patchKind": "codemod"
 	},
 	{
 		"id": "get-ollama-endpoint-import",
@@ -37,7 +53,11 @@
 		"regex": "import\\s+type\\s+\\{\\s*getOllamaEndpoint\\s*\\}\\s+from",
 		"fixTemplate": "import { getOllamaEndpoint } from ...",
 		"priority": 3,
-		"domains": ["backend", "ai"]
+		"domains": ["backend", "ai"],
+		"scope": "ts",
+		"risk": "safe",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "svelte-rest-route",
@@ -45,7 +65,11 @@
 		"regex": "\\[\\[\\.\\.\\.path\\]\\]",
 		"fixTemplate": "[...path]",
 		"priority": 4,
-		"domains": ["frontend", "svelte"]
+		"domains": ["frontend", "svelte"],
+		"scope": "svelte",
+		"risk": "safe",
+		"requires": ["contains:<style"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "env-vars-global",
@@ -53,7 +77,11 @@
 		"regex": "(?<![\\w.'\"])(DATABASE_URL|OLLAMA_URL|QDRANT_URL|AUTH_COOKIE_NAME)(?![\\w:])",
 		"fixTemplate": "process.env.$1",
 		"priority": 4,
-		"domains": ["backend", "config"]
+		"domains": ["backend", "config"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["notContains:$env/"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "superforms-adapter",
@@ -61,16 +89,23 @@
 		"regex": "zodClient\\(",
 		"fixTemplate": "zod(...)",
 		"priority": 5,
-		"domains": ["backend", "forms"]
+		"domains": ["backend", "forms"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": ["contains:sveltekit-superforms"],
+		"patchKind": "replace"
 	},
-
 	{
 		"id": "sveltekit-error",
 		"description": "Fix error() object literals to json() or string",
 		"regex": "throw\\s+error\\(\\d+,\\s*\\{[^}]*message:",
 		"fixTemplate": "return json({ ... }, { status: ... })",
 		"priority": 6,
-		"domains": ["backend", "api"]
+		"domains": ["backend", "api"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": ["contains:throw error("],
+		"patchKind": "codemod"
 	},
 	{
 		"id": "lucia-session-adapter",
@@ -78,7 +113,11 @@
 		"regex": "new\\s+Lucia\\([^)]*DrizzlePostgreSQLAdapter",
 		"fixTemplate": "new DrizzlePostgreSQLAdapter(db, sessions as any, ...)",
 		"priority": 6,
-		"domains": ["backend", "auth"]
+		"domains": ["backend", "auth"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:DrizzlePostgreSQLAdapter"],
+		"patchKind": "manual"
 	},
 	{
 		"id": "union-const",
@@ -86,7 +125,11 @@
 		"regex": "const\\s+\\w+\\s*=\\s*\\[\\s*\\{\\s*id:\\s*['\"][^'\"]+['\"]",
 		"fixTemplate": "const ... = [...] as const;",
 		"priority": 7,
-		"domains": ["frontend", "typescript"]
+		"domains": ["frontend", "typescript"],
+		"scope": "ts",
+		"risk": "safe",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "type-import-runtime",
@@ -94,7 +137,11 @@
 		"regex": "import\\s+type\\s+\\{\\s*[^}]*(webgpuCapabilities|OllamaGetEndpoint)[^}]*\\}",
 		"fixTemplate": "import { ... }",
 		"priority": 8,
-		"domains": ["frontend", "backend"]
+		"domains": ["frontend", "backend"],
+		"scope": "ts",
+		"risk": "safe",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "zod-key-comma",
@@ -102,7 +149,11 @@
 		"regex": "(\\w+),\\s*z\\.",
 		"fixTemplate": "$1: z.",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "zod-arg-colon",
@@ -110,7 +161,11 @@
 		"regex": "\\.(min|max)\\((\\d+):\\s*",
 		"fixTemplate": ".$1($2, ",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "zod-type-def",
@@ -118,7 +173,11 @@
 		"regex": "type\\s+(\\w+)\\s*=\\s*z\\.(input|output)<typeof:\\s*(\\w+)>,",
 		"fixTemplate": "type $1 = z.$2<typeof $3>;",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "drizzle-key-comma",
@@ -126,7 +185,11 @@
 		"regex": "(\\w+),\\s*(uuid|text|varchar|integer|boolean|timestamp|jsonb|serial|vector)\\(",
 		"fixTemplate": "$1: $2(",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "drizzle-garbage-type-metadata",
@@ -134,7 +197,11 @@
 		"regex": "metadata:\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('metadata'\\)",
 		"fixTemplate": "metadata: jsonb('metadata')",
 		"priority": 95,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:metadata"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "drizzle-garbage-type-embedding",
@@ -142,7 +209,11 @@
 		"regex": "embedding:\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('embedding'\\)",
 		"fixTemplate": "embedding: vector('embedding', { dimensions: 768 })",
 		"priority": 95,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:embedding"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "drizzle-garbage-type-generic",
@@ -150,7 +221,11 @@
 		"regex": "(\\w+):\\s*string\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\|\\s*undefined\\s*=\\s*undefined;\\s*\\('(\\w+)'\\)",
 		"fixTemplate": "$1: text('$2')",
 		"priority": 90,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "import-double-braces",
@@ -158,7 +233,11 @@
 		"regex": "import\\s+\\{\\s+\\{\\s*(.*?)\\s*\\}\\s+\\}\\s+from",
 		"fixTemplate": "import { $1 } from",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
 		"id": "auth-machine-garbage-1",
@@ -166,7 +245,11 @@
 		"regex": "(\\w+)\\?\\s*,\\s*string",
 		"fixTemplate": "$1?: string",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:Auth"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "auth-machine-garbage-2",
@@ -174,7 +257,11 @@
 		"regex": "(\\w+)\\?\\s*:\\s*unknown",
 		"fixTemplate": "$1?: unknown",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:Auth"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "auth-machine-garbage-3",
@@ -182,7 +269,11 @@
 		"regex": "(\\w+)\\s*\\|\\s*undefined",
 		"fixTemplate": "$1: undefined",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:Auth"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "auth-machine-garbage-4",
@@ -190,7 +281,11 @@
 		"regex": "(\\w+)\\s*\\|\\s*false",
 		"fixTemplate": "$1: false",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:Auth"],
+		"patchKind": "replace"
 	},
 	{
 		"id": "auth-machine-garbage-5",
@@ -198,22 +293,34 @@
 		"regex": "(\\w+)\\s*\\|\\s*true",
 		"fixTemplate": "$1: true",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "ts",
+		"risk": "high",
+		"requires": ["contains:Auth"],
+		"patchKind": "replace"
 	},
 	{
-		"id": "auth-machine-garbage-6",
-		"description": "Fix Auth Machine garbage 6",
-		"regex": "(\\w+)\\s*\\|\\s*null",
-		"fixTemplate": "$1: null",
+		"id": "svelte-rest-route-attr",
+		"description": "Fix corrupted [attr] syntax in Svelte components",
+		"regex": "\\[attr\\]:\\s*\\[\\.\\.\\.path\\]",
+		"fixTemplate": "[attr]: path",
 		"priority": 100,
-		"domains": ["corruption"]
+		"domains": ["corruption"],
+		"scope": "svelte",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	},
 	{
-		"id": "auth-machine-garbage-7",
-		"description": "Fix Auth Machine garbage 7",
-		"regex": "(\\w+)\\s*,\\s*(\\w+)\\s*:\\s*(\\w+)",
-		"fixTemplate": "$1: $2, $3: $3",
-		"priority": 50,
-		"domains": ["corruption"]
+		"id": "svelte-rest-route-separator",
+		"description": "Fix corrupted route separator spacing",
+		"regex": "path\\s*=>\\s*\\{\\s*\\[\\s*\\.\\.\\.path\\s*\\]",
+		"fixTemplate": "path => ({ ...path })",
+		"priority": 100,
+		"domains": ["corruption"],
+		"scope": "svelte",
+		"risk": "medium",
+		"requires": [],
+		"patchKind": "replace"
 	}
 ]

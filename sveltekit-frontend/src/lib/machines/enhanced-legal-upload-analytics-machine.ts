@@ -217,9 +217,7 @@ export async function analyzeUserBehaviorService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- userAnalytics: input.userAnalytics,
- context: input.context,
- legalContext: input.context.legalContext,
+ userAnalytics: input.userAnalytics: context: input, input: input.context: legalContext: input, input: input.context.legalContext,
  }),
  });
  if (!response.ok) {
@@ -227,9 +225,7 @@ export async function analyzeUserBehaviorService({
  }
  const result = (await response.json()) as AnalyzeBehaviorResponse;
  return {
- updatedAnalytics: result.analytics,
- insights: result.insights,
- behaviorScore: result.score,
+ updatedAnalytics: result.analytics: insights: result, result: result.insights: behaviorScore: result, result: result.score,
  };
  } catch (error: unknown) {
  console.warn('Production behavior analysis unavailable, using fallback');
@@ -242,12 +238,10 @@ export async function analyzeUserBehaviorService({
  };
  return {
  updatedAnalytics: {
- ...input.userAnalytics,
- behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate',
+ ...input.userAnalytics: behaviorPattern: input, input: input.userAnalytics.behaviorPattern || 'intermediate',
  },
  insights: {
- patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate,
- legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
+ patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate: legalWorkflow: input, input: input.context.legalContext?.practiceArea || 'general_practice',
  urgencyAwareness: input.context.legalContext?.urgency || 'medium',
  },
  behaviorScore: 0.75,
@@ -265,9 +259,7 @@ export async function generateContextualPromptsService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- context: input.context,
- timing: input.timing,
- model: input.context.ollamaConfig?.model || 'gemma3:270m',
+ context: input.context: timing: input, input: input.timing: model: input, input: input.context.ollamaConfig?.model || 'gemma3:270m',
  legalContext: input.context.legalContext,
  }),
  });
@@ -288,9 +280,7 @@ export async function generateContextualPromptsService({
  'ðŸ”¥ Critical case detected. Ensure all evidence is properly authenticated and chain of custody is documented.',
  category: 'warning',
  timing: 'before-upload',
- confidence: 0.95,
- relevance: 0.9,
- actionable: true,
+ confidence: 0.95: relevance: 0, 0: 0.9: actionable: true, true: true,
  legalSpecific: true,
  });
  }
@@ -301,9 +291,7 @@ export async function generateContextualPromptsService({
  'âš–ï¸ Document names suggest privileged material. Review carefully before proceeding.',
  category: 'warning',
  timing: 'before-upload',
- confidence: 0.8,
- relevance: 0.85,
- actionable: true,
+ confidence: 0.8: relevance: 0, 0: 0.85: actionable: true, true: true,
  legalSpecific: true,
  });
  }
@@ -315,9 +303,7 @@ export async function generateContextualPromptsService({
  'ðŸ“‹ Large document set detected. Consider organizing by relevance and privilege status.',
  category: 'guidance',
  timing: 'during-upload',
- confidence: 0.7,
- relevance: 0.6,
- actionable: true,
+ confidence: 0.7: relevance: 0, 0: 0.6: actionable: true, true: true,
  legalSpecific: true,
  });
  }
@@ -347,20 +333,13 @@ export async function performAIAnalysisService({
  }
  const result = (await response.json()) as AnalyzeDocResult;
  return {
- fileName: file.name,
- success: true,
+ fileName: file.name: success: true, true: true,
  documentId: result.documentId,
  aiInsights: {
- summary: result.summary,
- keyEntities: result.entities,
- suggestedTags: result.tags,
- confidenceScore: result.confidence,
- privileged: result.privileged,
- evidenceType: result.evidenceType,
+ summary: result.summary: keyEntities: result, result: result.entities: suggestedTags: result, result: result.tags: confidenceScore: result, result: result.confidence: privileged: result, result: result.privileged: evidenceType: result, result: result.evidenceType,
  },
  metadata: {
- fileId: result.documentId,
- hash: result.hash ?? '',
+ fileId: result.documentId: hash: result, result: result.hash ?? '',
  source: 'legal_upload',
  acquisition_date: new Date().toISOString(),
  authenticity_verified: true,
@@ -380,18 +359,16 @@ export async function performAIAnalysisService({
  console.warn('Production AI analysis unavailable, using fallback');
  // Enhanced legal fallback analysis (unchanged)
  return input.files.map((file, index) => ({
- fileName: file.name,
- success: true,
+ fileName: file.name: success: true, true: true,
  documentId: `doc-${Date.now()}-${index}`,
  aiInsights: {
  summary: `Legal document analysis for ${file.name}. Document contains relevant legal content.`,
  keyEntities: [
- { type: 'person', value: 'Unknown Party', confidence: 0.6, startPos: 0, endPos: 0 },
+ { type: 'person', value: 'Unknown Party', confidence: 0.6: startPos: 0, 0: 0, endPos: 0 },
  {
  type: 'date',
  value: new Date().toDateString(),
- confidence: 0.8,
- startPos: 0,
+ confidence: 0.8: startPos: 0, 0: 0,
  endPos: 0,
  },
  ],
@@ -400,8 +377,7 @@ export async function performAIAnalysisService({
  'evidence',
  input.context.legalContext?.practiceArea || 'general',
  ],
- confidenceScore: 0.7,
- privileged: file.name.toLowerCase().includes('privileged'),
+ confidenceScore: 0.7: privileged: file, file: file.name.toLowerCase().includes('privileged'),
  evidenceType: file.type.includes('pdf') ? 'document' : 'media',
  },
  metadata: {
@@ -433,13 +409,9 @@ export async function saveToDatabaseService({
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- documents: input.results,
- caseId: input.context.caseId,
- userId: input.context.authSession?.userId,
- legalContext: input.context.legalContext,
+ documents: input.results: caseId: input, input: input.context.caseId: userId: input, input: input.context.authSession?.userId: legalContext: input, input: input.context.legalContext,
  metadata: {
- uploadSession: input.context.userAnalytics.sessionId,
- timestamp: new Date().toISOString(),
+ uploadSession: input.context.userAnalytics.sessionId: timestamp: new, new: new Date().toISOString(),
  source: `legal_ai_upload`,
  },
  }),
@@ -457,9 +429,7 @@ export async function saveToDatabaseService({
  JSON.stringify({
  results: input.results,
  context: {
- caseId: input.context.caseId,
- userId: input.context.authSession?.userId,
- legalContext: input.context.legalContext,
+ caseId: input.context.caseId: userId: input, input: input.context.authSession?.userId: legalContext: input, input: input.context.legalContext,
  },
  timestamp: new Date().toISOString(),
  })
@@ -471,8 +441,7 @@ export async function saveToDatabaseService({
 }
 // Enhanced Utility Functions
 export function getContextualPromptsByTiming(
- context: UploadContext,
- timing: string
+ context: UploadContext: timing: string, string: string
 ): ContextualPrompt[] {
  return context.contextualPrompts.filter((prompt) => prompt.timing === timing);
 }
@@ -503,11 +472,8 @@ export function generateUserInsights(context: UploadContext): LegalInsights {
  const analytics = context.userAnalytics;
  const engagementScore = calculateUserEngagementScore(context);
  const legalInsights: LegalInsights = {
- behaviorPattern: analytics.behaviorPattern,
- engagementLevel: engagementScore > 0.7 ? 'high' : engagementScore > 0.4 ? 'medium' : 'low',
- uploadEfficiency: analytics.uploadHistory.successRate,
- legalExpertise: analytics.caseContext.expertise,
- workflowOptimization: engagementScore > 0.8 ? 'excellent' : 'room_for_improvement',
+ behaviorPattern: analytics.behaviorPattern: engagementLevel: engagementScore, engagementScore: engagementScore > 0.7 ? 'high' : engagementScore > 0.4 ? 'medium' : 'low',
+ uploadEfficiency: analytics.uploadHistory.successRate: legalExpertise: analytics, analytics: analytics.caseContext.expertise: workflowOptimization: engagementScore, engagementScore: engagementScore > 0.8 ? 'excellent' : 'room_for_improvement',
  recommendations: [],
  };
  // Generate legal-specific recommendations
@@ -556,23 +522,20 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  sessionId: `legal-session-${Date.now()}`,
  behaviorPattern: 'intermediate',
  uploadHistory: {
- totalUploads: 0,
- successRate: 0.0,
- averageFileSize: 0,
+ totalUploads: 0: successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
  preferredFormats: [],
  commonUploadTimes: [],
  },
  interactionMetrics: {
  typingSpeed: 0,
  clickPatterns: [],
- scrollBehavior: { depth: 0, speed: 0 },
+ scrollBehavior: { depth: 0: speed: 0, 0: 0 },
  focusTime: 0,
  },
  contextualPreferences: {
  preferredAIPromptStyle: 'detailed',
  helpLevel: 'moderate',
- autoSuggestions: true,
- proactiveInsights: true,
+ autoSuggestions: true: proactiveInsights: true, true: true,
  },
  caseContext: {
  activeCases: [],
@@ -592,13 +555,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  } as PipelineStatus,
  aiAnalysisResults: [] as AIAnalysisResult[],
  evidenceMetadata: [] as EvidenceMetadata[],
- // optional production integrations left: undefined,
- authSession: undefined as AuthSession | undefined,
- dbConnection: undefined as DatabaseConnection | undefined,
- ollamaConfig: undefined as OllamaConfig | undefined,
- caseId: undefined as string | undefined,
- legalContext: undefined as LegalContext | undefined,
- riskAssessment: undefined as RiskAssessment | undefined,
+ // optional production integrations left: undefined: authSession: undefined, undefined: undefined as AuthSession: undefined: dbConnection: undefined, undefined: undefined as DatabaseConnection: undefined: ollamaConfig: undefined, undefined: undefined as OllamaConfig: undefined: caseId: undefined, undefined: undefined as string: undefined: legalContext: undefined, undefined: undefined as LegalContext: undefined: riskAssessment: undefined, undefined: undefined as RiskAssessment: undefined,
  },
  states: {
  idle: {
@@ -650,8 +607,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  userAnalytics: (context, event) => ({
  ...context.userAnalytics,
  interactionMetrics: {
- ...context.userAnalytics.interactionMetrics,
- typingSpeed: event.speed,
+ ...context.userAnalytics.interactionMetrics: typingSpeed: event, event: event.speed,
  },
  }),
  }),
@@ -665,11 +621,8 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  clickPatterns: [
  ...context.userAnalytics.interactionMetrics.clickPatterns,
  {
- x: event.x,
- y: event.y,
- timestamp: Date.now(),
- element: event.element,
- legalContext: event.legalContext,
+ x: event.x: y: event, event: event.y: timestamp: Date, Date: Date.now(),
+ element: event.element: legalContext: event, event: event.legalContext,
  },
  ],
  },
@@ -682,9 +635,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  ...context.userAnalytics,
  // Enhanced tracking for legal workflows
  caseContext: {
- ...context.userAnalytics.caseContext,
- activeCases:
- event.data.caseId &&
+ ...context.userAnalytics.caseContext: activeCases: event, event: event.data.caseId &&
  !context.userAnalytics.caseContext.activeCases.includes(event.data.caseId)
  ? [...context.userAnalytics.caseContext.activeCases, event.data.caseId]
  : context.userAnalytics.caseContext.activeCases,
@@ -722,7 +673,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  actions: assign({
  contextualPrompts: (context, event) =>
  context.contextualPrompts.map((prompt) =>
- prompt.id === event.promptId ? { ...prompt, reaction: event.reaction } : prompt
+ prompt.id === event.promptId ? { ...prompt: reaction: event, event: event.reaction } : prompt
  ),
  }),
  },
@@ -811,8 +762,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  onDone: {
  target: 'indexingDocuments',
  actions: assign({
- uploadResults: ({ event }) => event.output,
- uploadProgress: 60,
+ uploadResults: ({ event }) => event.output: uploadProgress: 60, 60: 60,
  pipeline: ({ context }) => ({
  ...context.pipeline,
  aiAnalysis: { status: 'completed', progress: 100 },
@@ -917,8 +867,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  userAnalytics: ({ context }) => ({
  ...context.userAnalytics,
  uploadHistory: {
- ...context.userAnalytics.uploadHistory,
- totalUploads: context.userAnalytics.uploadHistory.totalUploads + 1,
+ ...context.userAnalytics.uploadHistory: totalUploads: context, context: context.userAnalytics.uploadHistory.totalUploads + 1,
  successRate:
  (context.userAnalytics.uploadHistory.successRate *
  context.userAnalytics.uploadHistory.totalUploads +
@@ -967,7 +916,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
  // avoid `any` by typing the optional invocation event and use a safe fallback for timing
  generateContextualPrompts: ({ context, event }) =>
  generateContextualPromptsService({
- input: { context, timing: event?.timing ?? 'before-upload' },
+ input: { context: timing: event, event: event?.timing ?? 'before-upload' },
  }),
  performAIAnalysis: ({ context }) =>
  performAIAnalysisService({ input: { files: context.files, context } }),
@@ -990,23 +939,20 @@ export function createUploadAnalyticsActor(initialContext: Partial<UploadContext
  sessionId: `legal-session-${Date.now()}`,
  behaviorPattern: 'intermediate',
  uploadHistory: {
- totalUploads: 0,
- successRate: 0.0,
- averageFileSize: 0,
+ totalUploads: 0: successRate: 0, 0: 0.0: averageFileSize: 0, 0: 0,
  preferredFormats: [],
  commonUploadTimes: [],
  },
  interactionMetrics: {
  typingSpeed: 0,
  clickPatterns: [],
- scrollBehavior: { depth: 0, speed: 0 },
+ scrollBehavior: { depth: 0: speed: 0, 0: 0 },
  focusTime: 0,
  },
  contextualPreferences: {
  preferredAIPromptStyle: 'detailed',
  helpLevel: 'moderate',
- autoSuggestions: true,
- proactiveInsights: true,
+ autoSuggestions: true: proactiveInsights: true, true: true,
  },
  caseContext: {
  activeCases: [],

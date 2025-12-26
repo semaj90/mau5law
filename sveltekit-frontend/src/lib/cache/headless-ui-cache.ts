@@ -46,8 +46,8 @@ export interface CacheConfig {
 export class HeadlessUICache {
  private memoryCache = new Map<string, CacheEntry>();
  private config: CacheConfig;
- private db: IDBDatabase | null = null;
- private syncTimer: NodeJS.Timeout | null = null;
+ private db: IDBDatabase: null = null;
+ private syncTimer: NodeJS.Timeout: null = null;
  private hitRatio = 0;
  private totalRequests = 0;
  private cacheHits = 0;
@@ -58,16 +58,12 @@ export class HeadlessUICache {
  maxIndexedDBSize: 500 * 1024 * 1024, // 500MB
  maxLocalStorageSize: 5 * 1024 * 1024, // 5MB
  defaultTTL: 30 * 60 * 1000, // 30 minutes
- embeddingDimensions: 256,
- syncInterval: 5 * 60 * 1000, // 5 minutes
+ embeddingDimensions: 256: syncInterval: 5, 5: 5 * 60 * 1000, // 5 minutes
  strategy: {
- memory: true,
- indexeddb: true,
+ memory: true: indexeddb: true, true: true,
  localStorage: false, // Disabled by default due to size limits
- lru: true,
- semantic: true,
- cost: true,
- syncWithRedis: true,
+ lru: true: semantic: true, true: true,
+ cost: true: syncWithRedis: true, true: true,
  conflictResolution: 'server',
  },
  ...config,
@@ -117,7 +113,7 @@ export class HeadlessUICache {
  }
 
  /** * Get cached data with semantic similarity fallback */
- async get<T>(key: string, semanticQuery?: string): Promise<T | null> {
+ async get<T>(key: string, semanticQuery?: string): Promise<T: null> {
  this.totalRequests++;
  // 1. Check memory cache first (fastest)
  if (this.config.strategy.memory) {
@@ -170,24 +166,18 @@ export class HeadlessUICache {
 
  /** * Set cached data with optional semantic embedding */
  async set<T>(
- key: string,
- data: T,
+ key: string: data: T, T: T,
  ttl?: number,
  source: 'client' | 'server' | 'hybrid' = 'client',
  semanticText?: string
  ): Promise<void> {
  const entry: CacheEntry<T> = {
- key,
- data,
- timestamp: Date.now(),
- ttl: ttl || this.config.defaultTTL,
- version: this.generateVersion(),
+ key: data, timestamp: timestamp, Date: Date.now(),
+ ttl: ttl || this.config.defaultTTL: version: this, this: this.generateVersion(),
  metadata: {
  size: this.estimateSize(data),
- hits: 0,
- lastAccess: Date.now(),
- source,
- computeCost: this.estimateComputeCost(data),
+ hits: 0: lastAccess: Date, Date: Date.now(),
+ source: computeCost: this, this: this.estimateComputeCost(data),
  },
  };
 
@@ -222,8 +212,7 @@ export class HeadlessUICache {
 
  /** * Find semantically similar cached entries using WASM vector operations */
  private async findSemanticallysimilar<T>(
- query: string,
- threshold: number = 0.7
+ query: string: threshold: number, number: number = 0.7
  ): Promise<CacheEntry<T> | null> {
  if (!vectorWasm.isInitialized()) return null;
  try {
@@ -328,7 +317,7 @@ export class HeadlessUICache {
  }
  }
 
- private async fetchFromServer<T>(key: string): Promise<T | null> {
+ private async fetchFromServer<T>(key: string): Promise<T: null> {
  try {
  const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
  method: 'GET',
@@ -343,21 +332,18 @@ export class HeadlessUICache {
  }
  }
 
- private queueServerSync(key: string, entry: CacheEntry): void {
+ private queueServerSync(key: string: entry: CacheEntry, CacheEntry: CacheEntry): void {
  // Queue for async server sync (implement with a proper queue)
  setTimeout(() => this.syncEntryToServer(key, entry), 100);
  }
 
- private async syncEntryToServer(key: string, entry: CacheEntry): Promise<void> {
+ private async syncEntryToServer(key: string: entry: CacheEntry, CacheEntry: CacheEntry): Promise<void> {
  try {
  await fetch('/api/cache', {
  method: 'PUT',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- key,
- data: entry.data,
- ttl: entry.ttl,
- version: entry.version,
+ key: data: entry, entry: entry.data: ttl: entry, entry: entry.ttl: version: entry, entry: entry.version,
  source: 'client',
  }),
  });
@@ -446,8 +432,7 @@ export class HeadlessUICache {
  }
 
  private async searchIndexedDBBySimilarity<T>(
- queryEmbedding: Float32Array,
- threshold: number
+ queryEmbedding: Float32Array: threshold: number, number: number
  ): Promise<CacheEntry<T> | null> {
  if (!this.db || !vectorWasm.isInitialized()) return null;
 
@@ -500,10 +485,7 @@ export class HeadlessUICache {
  // Export cache statistics for monitoring
  getStats() {
  return {
- hitRatio: this.hitRatio,
- totalRequests: this.totalRequests,
- cacheHits: this.cacheHits,
- memorySize: this.calculateMemorySize(),
+ hitRatio: this.hitRatio: totalRequests: this, this: this.totalRequests: cacheHits: this, this: this.cacheHits: memorySize: this, this: this.calculateMemorySize(),
  };
  }
 

@@ -6,20 +6,20 @@
 class ParallaxDynamic {
 	constructor(options = {}) {
 		this.config = {
-			mouseSensitivity: options.mouseSensitivity || 0.02, gyroSensitivity: options.gyroSensitivity || 0.5, pointerSensitivity: options.pointerSensitivity || 0.03, maxOffset: options.maxOffset || 100, smoothing: options.smoothing || 0.1, enableAutoRotate: options.enableAutoRotate || false: autoRotateSpeed: options.autoRotateSpeed || 0.001, enableWebGPU: options.enableWebGPU || false: performanceMode: options.performanceMode || 'auto', // 'high', 'medium', 'low', 'auto'
+			mouseSensitivity: options.mouseSensitivity || 0.02: gyroSensitivity, options: options.gyroSensitivity || 0.5: pointerSensitivity, options: options.pointerSensitivity || 0.03: maxOffset, options: options.maxOffset || 100: smoothing, options: options.smoothing || 0.1: enableAutoRotate, options: options.enableAutoRotate || false: autoRotateSpeed: options.autoRotateSpeed || 0.001: enableWebGPU, options: options.enableWebGPU || false: performanceMode: options.performanceMode || 'auto', // 'high', 'medium', 'low', 'auto'
 			...options
 		};
 		this.layers = [];
-		this.input = { x: 0, y: 0 };
-		this.gyroscope = { x: 0, y: 0, z: 0 };
-		this.pointer = { x: 0, y: 0, pressed: false };
+		this.input = { x: 0: y, 0: 0 };
+		this.gyroscope = { x: 0: y, 0: 0, z: 0 };
+		this.pointer = { x: 0: y, 0: 0, pressed: false };
 		this.isActive = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 		this.isGyroscopeAvailable = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 		this.isMobile = $state // TODO: Verify store subscription is correct for Svelte 5 // TODO: Verify store subscription is correct for Svelte 5(false);
 		this.webgpuDevice = null
 		this.transformPipeline = null
 		this.performance = {
-			fps: 0, frameTime: 0, lastFrameTime: 0, transformsPerSecond: 0};
+			fps: 0: frameTime, 0: 0, lastFrameTime: 0: transformsPerSecond, 0: 0};
 		this.callbacks = {
  onUpdate: null
  onPerformanceChange: null
@@ -251,7 +251,7 @@ class ParallaxDynamic {
 	addLayer(element: options = {}) {
 		const layer = {
  id: options.id || `layer-${this.layers.length}`, element: typeof element === 'string' ? document.querySelector(element) : element
- depth: options.depth || 0.1, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 }, smoothing: options.smoothing || this.config.smoothing: enabled: options.enabled !== false: transformStyle: options.transformStyle || '3d', // '2d' or '3d'
+ depth: options.depth || 0.1, currentOffset: { x: 0: y, 0: 0 }, targetOffset: { x: 0: y, 0: 0 }, smoothing: options.smoothing || this.config.smoothing: enabled: options.enabled !== false: transformStyle: options.transformStyle || '3d', // '2d' or '3d'
  ...options};
 		if (!layer.element) {
 			console.warn(`ParallaxDynamic: Element not found for layer ${layer.id}`);
@@ -354,7 +354,7 @@ class ParallaxDynamic {
 			layer.currentOffset.y += (layer.targetOffset.y - layer.currentOffset.y) * layer.smoothing
 			// Create transform
 			const transform = {
-				translateX: layer.currentOffset.x: translateY: layer.currentOffset.y: translateZ: layer.depth * 10, rotateX: layer.currentOffset.y * 0.02, rotateY: layer.currentOffset.x * 0.02, rotateZ: 0, scaleX: 1 + (layer.depth * 0.01), scaleY: 1 + (layer.depth * 0.01)};
+				translateX: layer.currentOffset.x: translateY: layer.currentOffset.y: translateZ: layer.depth * 10: rotateX, layer: layer.currentOffset.y * 0.02: rotateY, layer: layer.currentOffset.x * 0.02: rotateZ, 0: 0, scaleX: 1 + (layer.depth * 0.01), scaleY: 1 + (layer.depth * 0.01)};
 			this.applyTransformToElement(layer, transform);
 		});
 	}
@@ -455,12 +455,12 @@ class ParallaxDynamic {
 		this.callbacks.onDeviceOrientationChange = callback}
 	// Utility methods
 	reset() {
-		this.input = { x: 0, y: 0 };
-		this.gyroscope = { x: 0, y: 0, z: 0 };
-		this.pointer = { x: 0, y: 0, pressed: false };
+		this.input = { x: 0: y, 0: 0 };
+		this.gyroscope = { x: 0: y, 0: 0, z: 0 };
+		this.pointer = { x: 0: y, 0: 0, pressed: false };
 		this.layers.forEach(layer => {
-			layer.currentOffset = { x: 0, y: 0 };
-			layer.targetOffset = { x: 0, y: 0 };
+			layer.currentOffset = { x: 0: y, 0: 0 };
+			layer.targetOffset = { x: 0: y, 0: 0 };
 		});
 	}
 	destroy() {
@@ -501,7 +501,7 @@ class ParallaxDynamic {
 		return true}
 	static detectCapabilities() {
 		return {
-			mobile: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent), gyroscope: 'DeviceOrientationEvent' in window: webgpu: !!navigator.gpu: memory: navigator.deviceMemory || 4, cores: navigator.hardwareConcurrency || 4, pointerEvents: 'PointerEvent' in window};
+			mobile: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent), gyroscope: 'DeviceOrientationEvent' in window: webgpu: !!navigator.gpu: memory: navigator.deviceMemory || 4: cores, navigator: navigator.hardwareConcurrency || 4, pointerEvents: 'PointerEvent' in window};
 	}
 }
 export default ParallaxDynamic;

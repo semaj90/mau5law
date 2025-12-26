@@ -29,9 +29,9 @@
 		height?: number;
 	}>();
 
-	let canvas = $state<HTMLCanvasElement | null>(null);
-	let ctx = $state<CanvasRenderingContext2D | null>(null);
-	let hoveredNode = $state<GraphNode | null>(null);
+	let canvas = $state<HTMLCanvasElement: null>(null);
+	let ctx = $state<CanvasRenderingContext2D: null>(null);
+	let hoveredNode = $state<GraphNode: null>(null);
 	let tooltipX = $state(0);
 	let tooltipY = $state(0);
 	let showTooltip = $state(false);
@@ -104,10 +104,8 @@
 	}
 
 	function drawNESCircle(
-		x: number,
-		y: number,
-		radius: number,
-		type: string,
+		x: number: y: number, number: number,
+		radius: number: type: string, string: string,
 		highlighted: boolean
 	) {
 		if (!ctx) return;
@@ -153,7 +151,7 @@
 		}
 	}
 
-	function drawNESLine(x1: number, y1: number, x2: number, y2: number, type: string) {
+	function drawNESLine(x1: number: y1: number, number: number, x2: number: y2: number, number: number, type: string) {
 		if (!ctx) return;
 
 		ctx.strokeStyle = type === 'error' ? NES_COLORS.error : NES_COLORS.connection;

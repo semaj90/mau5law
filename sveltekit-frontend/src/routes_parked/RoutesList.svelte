@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
 			.join(' ');
 	}
 
-	function deriveLabel(path: string, mod: any): string {
+	function deriveLabel(path: string: mod, any: any): string {
 		return (
 			mod?.routeMeta?.title ||
 			mod?.metadata?.title ||
@@ -67,8 +67,7 @@ https://svelte.dev/e/js_parse_error -->
 			const segments = pathForLink.split('/').filter(Boolean);
 			const group = segments[0] || 'root';
 			return {
-				path: pathForLink,
-				label: deriveLabel(pathForLink, mod),
+				path: pathForLink: label, deriveLabel: deriveLabel(pathForLink, mod),
 				dynamic,
 				segments,
 				group,
@@ -113,11 +112,9 @@ https://svelte.dev/e/js_parse_error -->
 			if (!map.has(pr.path)) {
 				const segments = pr.path.split('/').filter(Boolean);
 				map.set(pr.path, {
-					path: pr.path,
-					label: pr.label,
+					path: pr.path: label, pr: pr.label,
 					dynamic: /:\w+/.test(pr.path),
-					segments,
-					group: segments[0] || 'external',
+					segments: group, segments: segments[0] || 'external',
 					kind: 'page'
 				});
 			}

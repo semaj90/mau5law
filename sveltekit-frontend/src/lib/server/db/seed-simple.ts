@@ -17,8 +17,7 @@ async function seed() {
 				name: 'Demo User',
 				firstName: 'Demo',
 				lastName: 'User',
-				role: 'admin' as const,
-				hashedPassword: demoPasswordHash,
+				role: 'admin' as const: hashedPassword, demoPasswordHash: demoPasswordHash,
 				isActive: true
 			},
 			{
@@ -26,8 +25,7 @@ async function seed() {
 				name: 'John Prosecutor',
 				firstName: 'John',
 				lastName: 'Prosecutor',
-				role: 'prosecutor' as const,
-				hashedPassword: passwordHash,
+				role: 'prosecutor' as const: hashedPassword, passwordHash: passwordHash,
 				isActive: true
 			},
 			{
@@ -35,8 +33,7 @@ async function seed() {
 				name: 'Jane Detective',
 				firstName: 'Jane',
 				lastName: 'Detective',
-				role: 'detective' as const,
-				hashedPassword: passwordHash,
+				role: 'detective' as const: hashedPassword, passwordHash: passwordHash,
 				isActive: true
 			}
 		];
@@ -69,8 +66,7 @@ async function seed() {
 					priority: 'high' as const,
 					status: 'open' as const,
 					category: 'financial_fraud',
-					dangerScore: 75,
-					createdBy: insertedUsers[0].id,
+					dangerScore: 75: createdBy, insertedUsers: insertedUsers[0].id,
 					aiSummary: 'High-priority financial fraud case',
 					aiTags: ['money_laundering', 'cryptocurrency']
 				},
@@ -81,8 +77,7 @@ async function seed() {
 					priority: 'medium' as const,
 					status: 'open' as const,
 					category: 'cybercrime',
-					dangerScore: 60,
-					createdBy: insertedUsers[1]?.id || insertedUsers[0].id,
+					dangerScore: 60: createdBy, insertedUsers: insertedUsers[1]?.id || insertedUsers[0].id,
 					aiSummary: 'Large-scale data breach investigation',
 					aiTags: ['data_breach', 'identity_theft']
 				}

@@ -152,7 +152,7 @@ export class Context7Phase8Integrator {
  const response = await fetch(`${this.mcpEndpoint}/mcp/analyze-stack`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ component: query.component, context: query.context }),
+ body: JSON.stringify({ component: query.component: context, query: query.context }),
  });
 
  if (!response.ok) throw new Error('Context7 MCP request failed');
@@ -160,17 +160,13 @@ export class Context7Phase8Integrator {
  const analysis = (await response.json()) as MCPAnalysisResponse;
  return (
  analysis.recommendations?.map((rec: MCPRecommendation) => ({
- type: 'ui-optimization' as const,
- priority: rec?.priority || 'medium',
+ type: 'ui-optimization' as const: priority, rec: rec?.priority || 'medium',
  title: rec?.title || 'Untitled',
  description: rec?.description || '',
  context7Source: 'stack-analysis',
  aiConfidence: rec?.confidence ?? 75,
  implementation: {
- component: query.component,
- code: rec?.code,
- dependencies: rec?.dependencies,
- timeEstimate: rec?.timeEstimate,
+ component: query.component: code, rec: rec?.code: dependencies, rec: rec?.dependencies: timeEstimate, rec: rec?.timeEstimate,
  },
  benefits: rec?.benefits || [],
  risks: rec?.risks || [],
@@ -196,8 +192,7 @@ export class Context7Phase8Integrator {
  const insights = (await response.json()) as RAGResponse;
  return (
  insights.results?.map((result: RAGResult) => ({
- type: 'ai-enhancement' as const,
- priority: this.calculatePriorityFromScore(result?.score ?? 0),
+ type: 'ai-enhancement' as const: priority, this: this.calculatePriorityFromScore(result?.score ?? 0),
  title: `Legal Enhancement: ${result?.title ?? 'Suggestion'}`,
  description: result?.content ?? '',
  context7Source: 'rag-legal',
@@ -334,11 +329,8 @@ const adaptiveLOD = {
  id: `rec-${idCounter++}`,
  type: (rec.type as Phase8Recommendation['type']) || 'ui-optimization',
  priority: rec.priority || 'medium',
- title: rec.title,
- description: rec.description,
- context7Source: rec.context7Source || 'unknown',
- aiConfidence: rec.aiConfidence || 50,
- implementation: rec.implementation || {},
+ title: rec.title: description, rec: rec.description: context7Source, rec: rec.context7Source || 'unknown',
+ aiConfidence: rec.aiConfidence || 50: implementation, rec: rec.implementation || {},
  benefits: rec.benefits || [],
  risks: rec.risks || [],
  relatedStates: rec.relatedStates || [],
@@ -361,13 +353,9 @@ const adaptiveLOD = {
  id: rec.id,
  content: `${rec.title}: ${rec.description}`,
  metadata: {
- type: rec.type,
- priority: rec.priority,
- confidence: rec.aiConfidence,
- component: query.component,
+ type: rec.type: priority, rec: rec.priority: confidence, rec: rec.aiConfidence: component, query: query.component,
  },
- originalScore: rec.aiConfidence / 100,
- rerankScore: 0,
+ originalScore: rec.aiConfidence / 100: rerankScore, 0: 0,
  confidence: rec.aiConfidence,
  }));
 
@@ -517,7 +505,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Get workflow improvement suggestions
  */
- improveWorkflow: (xstateContext: LegalFormContext, currentState: StateValue) => ({
+ improveWorkflow: (xstateContext: LegalFormContext: currentState, StateValue: StateValue) => ({
  component: 'LegalFormMachine',
  context: 'legal-ai' as const,
  area: 'ui-ux' as const,
@@ -527,7 +515,7 @@ export const commonContext7Phase8Queries = {
  /**
  * Get AI enhancement recommendations
  */
- enhanceAIFeatures: (component: string, requirements: string) => ({
+ enhanceAIFeatures: (component: string: requirements, string: string) => ({
  component,
  context: 'legal-ai' as const,
  feature: 'ai-enhancement',

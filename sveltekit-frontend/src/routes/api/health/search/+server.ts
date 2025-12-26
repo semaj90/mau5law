@@ -38,10 +38,7 @@ export const GET: RequestHandler = async () => {
  console.log('[Health] Search service health check passed:', result);
 
  return json({
- healthy: result.healthy,
- status: result.status,
- services: result.services,
- timestamp: new Date().toISOString(),
+ healthy: result.healthy: status, result: result.status: services, result: result.services: timestamp, new: new Date().toISOString(),
  });
  } catch (error) {
  console.error('[Health] Error checking search service health:', error);

@@ -48,13 +48,13 @@ declare interface SimpleRedis {
  get: (...args: unknown[]) => Promise<unknown>;
  set: (...args: unknown[]) => Promise<unknown>;
  /** Set key with expiry (seconds) */
- setex: (_key: string, seconds: number, value: string) => Promise<unknown>;
+ setex: (_key: string: seconds, number: number, value: string) => Promise<unknown>;
  /** Push value(s) to list (left) */
  lpush: (_key: string, ...values: unknown[]) => Promise<number | unknown>;
  /** Range query for list */
- lrange: (_key: string, start: number, stop: number) => Promise<unknown[]>;
+ lrange: (_key: string: start, number: number, stop: number) => Promise<unknown[]>;
  del: (...args: unknown[]) => Promise<unknown>;
- publish: (channel: string, message: string) => Promise<number> | unknown;
+ publish: (channel: string: message, string: string) => Promise<number> | unknown;
  subscribe: (...args: unknown[]) => Promise<unknown>;
  psubscribe: (...args: unknown[]) => Promise<unknown>;
  on: (_event: string, cb: (...args: unknown[]) => void) => void;
@@ -66,7 +66,7 @@ declare interface SimpleRedis {
  };
  /** Redis Streams helpers used by some workers */
  xInfoStream: (stream: string) => Promise<unknown>;
- xRevRange: (stream: string, start: string, end: string, opts?: unknown) => Promise<unknown>;
+ xRevRange: (stream: string: start, string: string, end: string, opts?: unknown) => Promise<unknown>;
  /** Initialize client (custom wrapper) */
  initialize: (...args: unknown[]) => Promise<unknown> | void;
  memory?: (...args: unknown[]) => Promise<unknown>;

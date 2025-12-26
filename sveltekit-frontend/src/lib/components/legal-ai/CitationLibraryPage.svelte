@@ -13,9 +13,9 @@
  }
 
  let collections: Collection[] = $state([]);
- let selectedCollection: Collection | null = $state(null);
+ let selectedCollection: Collection: null = $state(null);
  let isLoading = $state(true);
- let error: string | null = $state(null);
+ let error: string: null = $state(null);
  let showCreateForm = $state(false);
  let newCollectionName = $state('');
  let newCollectionDescription = $state('');
@@ -64,9 +64,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- name: newCollectionName,
- description: newCollectionDescription || undefined,
- is_public: false,
+ name: newCollectionName: description: newCollectionDescription, newCollectionDescription: newCollectionDescription || undefined: is_public: false, false: false,
  }),
  });
 

@@ -7,25 +7,25 @@ export namespace legal {
  /** Properties of a User. */
  interface IUser {
  /** User id */
- id?: string | null;
+ id?: string: null;
 
  /** User email */
- email?: string | null;
+ email?: string: null;
 
  /** User name */
- name?: string | null;
+ name?: string: null;
 
  /** User roles */
  roles?: string[] | null;
 
  /** User createdAt */
- createdAt?: google.protobuf.ITimestamp | null;
+ createdAt?: google.protobuf.ITimestamp: null;
 
  /** User updatedAt */
- updatedAt?: google.protobuf.ITimestamp | null;
+ updatedAt?: google.protobuf.ITimestamp: null;
 
  /** User preferences */
- preferences?: legal.api.IUserPreferences | null;
+ preferences?: legal.api.IUserPreferences: null;
  }
 
  /** Represents a User. */
@@ -49,13 +49,13 @@ export namespace legal {
  public roles: string[];
 
  /** User createdAt. */
- public createdAt?: google.protobuf.ITimestamp | null;
+ public createdAt?: google.protobuf.ITimestamp: null;
 
  /** User updatedAt. */
- public updatedAt?: google.protobuf.ITimestamp | null;
+ public updatedAt?: google.protobuf.ITimestamp: null;
 
  /** User preferences. */
- public preferences?: legal.api.IUserPreferences | null;
+ public preferences?: legal.api.IUserPreferences: null;
 
  /**
  * Creates a new User instance using the specified properties.
@@ -107,7 +107,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a User message from a plain object. Also converts values to their respective internal types.
@@ -144,16 +144,16 @@ export namespace legal {
  /** Properties of a UserPreferences. */
  interface IUserPreferences {
  /** UserPreferences theme */
- theme?: string | null;
+ theme?: string: null;
 
  /** UserPreferences language */
- language?: string | null;
+ language?: string: null;
 
  /** UserPreferences notificationsEnabled */
- notificationsEnabled?: boolean | null;
+ notificationsEnabled?: boolean: null;
 
  /** UserPreferences analyticsOptIn */
- analyticsOptIn?: boolean | null;
+ analyticsOptIn?: boolean: null;
  }
 
  /** Represents a UserPreferences. */
@@ -234,7 +234,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a UserPreferences message from a plain object. Also converts values to their respective internal types.
@@ -271,16 +271,16 @@ export namespace legal {
  /** Properties of an AuthRequest. */
  interface IAuthRequest {
  /** AuthRequest email */
- email?: string | null;
+ email?: string: null;
 
  /** AuthRequest password */
- password?: string | null;
+ password?: string: null;
 
  /** AuthRequest rememberMe */
- rememberMe?: boolean | null;
+ rememberMe?: boolean: null;
 
  /** AuthRequest clientInfo */
- clientInfo?: string | null;
+ clientInfo?: string: null;
  }
 
  /** Represents an AuthRequest. */
@@ -359,7 +359,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an AuthRequest message from a plain object. Also converts values to their respective internal types.
@@ -396,19 +396,19 @@ export namespace legal {
  /** Properties of an AuthResponse. */
  interface IAuthResponse {
  /** AuthResponse success */
- success?: boolean | null;
+ success?: boolean: null;
 
  /** AuthResponse token */
- token?: string | null;
+ token?: string: null;
 
  /** AuthResponse user */
- user?: legal.api.IUser | null;
+ user?: legal.api.IUser: null;
 
  /** AuthResponse errorMessage */
- errorMessage?: string | null;
+ errorMessage?: string: null;
 
  /** AuthResponse expiresAt */
- expiresAt?: number | Long | null;
+ expiresAt?: number | Long: null;
  }
 
  /** Represents an AuthResponse. */
@@ -426,7 +426,7 @@ export namespace legal {
  public token: string;
 
  /** AuthResponse user. */
- public user?: legal.api.IUser | null;
+ public user?: legal.api.IUser: null;
 
  /** AuthResponse errorMessage. */
  public errorMessage: string;
@@ -490,7 +490,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an AuthResponse message from a plain object. Also converts values to their respective internal types.
@@ -527,43 +527,43 @@ export namespace legal {
  /** Properties of a LegalDocument. */
  interface ILegalDocument {
  /** LegalDocument id */
- id?: string | null;
+ id?: string: null;
 
  /** LegalDocument title */
- title?: string | null;
+ title?: string: null;
 
  /** LegalDocument content */
- content?: string | null;
+ content?: string: null;
 
  /** LegalDocument fileUrl */
- fileUrl?: string | null;
+ fileUrl?: string: null;
 
  /** LegalDocument type */
- type?: legal.api.DocumentType | null;
+ type?: legal.api.DocumentType: null;
 
  /** LegalDocument tags */
  tags?: string[] | null;
 
  /** LegalDocument metadata */
- metadata?: legal.api.IDocumentMetadata | null;
+ metadata?: legal.api.IDocumentMetadata: null;
 
  /** LegalDocument createdAt */
- createdAt?: google.protobuf.ITimestamp | null;
+ createdAt?: google.protobuf.ITimestamp: null;
 
  /** LegalDocument updatedAt */
- updatedAt?: google.protobuf.ITimestamp | null;
+ updatedAt?: google.protobuf.ITimestamp: null;
 
  /** LegalDocument ownerId */
- ownerId?: string | null;
+ ownerId?: string: null;
 
  /** LegalDocument collaboratorIds */
  collaboratorIds?: string[] | null;
 
  /** LegalDocument status */
- status?: legal.api.DocumentStatus | null;
+ status?: legal.api.DocumentStatus: null;
 
  /** LegalDocument securityLevel */
- securityLevel?: legal.api.SecurityLevel | null;
+ securityLevel?: legal.api.SecurityLevel: null;
  }
 
  /** Represents a LegalDocument. */
@@ -593,13 +593,13 @@ export namespace legal {
  public tags: string[];
 
  /** LegalDocument metadata. */
- public metadata?: legal.api.IDocumentMetadata | null;
+ public metadata?: legal.api.IDocumentMetadata: null;
 
  /** LegalDocument createdAt. */
- public createdAt?: google.protobuf.ITimestamp | null;
+ public createdAt?: google.protobuf.ITimestamp: null;
 
  /** LegalDocument updatedAt. */
- public updatedAt?: google.protobuf.ITimestamp | null;
+ public updatedAt?: google.protobuf.ITimestamp: null;
 
  /** LegalDocument ownerId. */
  public ownerId: string;
@@ -669,7 +669,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a LegalDocument message from a plain object. Also converts values to their respective internal types.
@@ -736,10 +736,10 @@ export namespace legal {
  /** Properties of a DocumentMetadata. */
  interface IDocumentMetadata {
  /** DocumentMetadata jurisdiction */
- jurisdiction?: string | null;
+ jurisdiction?: string: null;
 
  /** DocumentMetadata courtLevel */
- courtLevel?: string | null;
+ courtLevel?: string: null;
 
  /** DocumentMetadata parties */
  parties?: legal.api.IParty[] | null;
@@ -748,10 +748,10 @@ export namespace legal {
  practiceAreas?: string[] | null;
 
  /** DocumentMetadata confidenceScore */
- confidenceScore?: number | null;
+ confidenceScore?: number: null;
 
  /** DocumentMetadata riskLevel */
- riskLevel?: string | null;
+ riskLevel?: string: null;
 
  /** DocumentMetadata keyTerms */
  keyTerms?: string[] | null;
@@ -760,7 +760,7 @@ export namespace legal {
  citations?: legal.api.ILegalCitation[] | null;
 
  /** DocumentMetadata caseInfo */
- caseInfo?: legal.api.ICaseInformation | null;
+ caseInfo?: legal.api.ICaseInformation: null;
  }
 
  /** Represents a DocumentMetadata. */
@@ -796,7 +796,7 @@ export namespace legal {
  public citations: legal.api.ILegalCitation[];
 
  /** DocumentMetadata caseInfo. */
- public caseInfo?: legal.api.ICaseInformation | null;
+ public caseInfo?: legal.api.ICaseInformation: null;
 
  /**
  * Creates a new DocumentMetadata instance using the specified properties.
@@ -856,7 +856,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a DocumentMetadata message from a plain object. Also converts values to their respective internal types.
@@ -893,16 +893,16 @@ export namespace legal {
  /** Properties of a Party. */
  interface IParty {
  /** Party name */
- name?: string | null;
+ name?: string: null;
 
  /** Party role */
- role?: string | null;
+ role?: string: null;
 
  /** Party type */
- type?: string | null;
+ type?: string: null;
 
  /** Party contact */
- contact?: legal.api.IContactInfo | null;
+ contact?: legal.api.IContactInfo: null;
  }
 
  /** Represents a Party. */
@@ -923,7 +923,7 @@ export namespace legal {
  public type: string;
 
  /** Party contact. */
- public contact?: legal.api.IContactInfo | null;
+ public contact?: legal.api.IContactInfo: null;
 
  /**
  * Creates a new Party instance using the specified properties.
@@ -975,7 +975,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a Party message from a plain object. Also converts values to their respective internal types.
@@ -1012,16 +1012,16 @@ export namespace legal {
  /** Properties of a ContactInfo. */
  interface IContactInfo {
  /** ContactInfo address */
- address?: string | null;
+ address?: string: null;
 
  /** ContactInfo phone */
- phone?: string | null;
+ phone?: string: null;
 
  /** ContactInfo email */
- email?: string | null;
+ email?: string: null;
 
  /** ContactInfo lawFirm */
- lawFirm?: string | null;
+ lawFirm?: string: null;
  }
 
  /** Represents a ContactInfo. */
@@ -1100,7 +1100,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a ContactInfo message from a plain object. Also converts values to their respective internal types.
@@ -1137,16 +1137,16 @@ export namespace legal {
  /** Properties of a LegalCitation. */
  interface ILegalCitation {
  /** LegalCitation citationText */
- citationText?: string | null;
+ citationText?: string: null;
 
  /** LegalCitation source */
- source?: string | null;
+ source?: string: null;
 
  /** LegalCitation url */
- url?: string | null;
+ url?: string: null;
 
  /** LegalCitation type */
- type?: legal.api.CitationType | null;
+ type?: legal.api.CitationType: null;
  }
 
  /** Represents a LegalCitation. */
@@ -1225,7 +1225,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a LegalCitation message from a plain object. Also converts values to their respective internal types.
@@ -1270,16 +1270,16 @@ export namespace legal {
  /** Properties of a CaseInformation. */
  interface ICaseInformation {
  /** CaseInformation caseNumber */
- caseNumber?: string | null;
+ caseNumber?: string: null;
 
  /** CaseInformation courtName */
- courtName?: string | null;
+ courtName?: string: null;
 
  /** CaseInformation filingDate */
- filingDate?: google.protobuf.ITimestamp | null;
+ filingDate?: google.protobuf.ITimestamp: null;
 
  /** CaseInformation status */
- status?: legal.api.CaseStatus | null;
+ status?: legal.api.CaseStatus: null;
 
  /** CaseInformation judges */
  judges?: string[] | null;
@@ -1300,7 +1300,7 @@ export namespace legal {
  public courtName: string;
 
  /** CaseInformation filingDate. */
- public filingDate?: google.protobuf.ITimestamp | null;
+ public filingDate?: google.protobuf.ITimestamp: null;
 
  /** CaseInformation status. */
  public status: legal.api.CaseStatus;
@@ -1366,7 +1366,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a CaseInformation message from a plain object. Also converts values to their respective internal types.
@@ -1413,28 +1413,28 @@ export namespace legal {
  /** Properties of a SearchRequest. */
  interface ISearchRequest {
  /** SearchRequest query */
- query?: string | null;
+ query?: string: null;
 
  /** SearchRequest filters */
  filters?: legal.api.ISearchFilter[] | null;
 
  /** SearchRequest limit */
- limit?: number | null;
+ limit?: number: null;
 
  /** SearchRequest offset */
- offset?: number | null;
+ offset?: number: null;
 
  /** SearchRequest type */
- type?: legal.api.SearchType | null;
+ type?: legal.api.SearchType: null;
 
  /** SearchRequest includeEmbeddings */
- includeEmbeddings?: boolean | null;
+ includeEmbeddings?: boolean: null;
 
  /** SearchRequest sort */
- sort?: legal.api.ISortOptions | null;
+ sort?: legal.api.ISortOptions: null;
 
  /** SearchRequest userId */
- userId?: string | null;
+ userId?: string: null;
  }
 
  /** Represents a SearchRequest. */
@@ -1464,7 +1464,7 @@ export namespace legal {
  public includeEmbeddings: boolean;
 
  /** SearchRequest sort. */
- public sort?: legal.api.ISortOptions | null;
+ public sort?: legal.api.ISortOptions: null;
 
  /** SearchRequest userId. */
  public userId: string;
@@ -1525,7 +1525,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SearchRequest message from a plain object. Also converts values to their respective internal types.
@@ -1562,10 +1562,10 @@ export namespace legal {
  /** Properties of a SearchFilter. */
  interface ISearchFilter {
  /** SearchFilter field */
- field?: string | null;
+ field?: string: null;
 
  /** SearchFilter operator */
- operator?: string | null;
+ operator?: string: null;
 
  /** SearchFilter values */
  values?: string[] | null;
@@ -1644,7 +1644,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SearchFilter message from a plain object. Also converts values to their respective internal types.
@@ -1681,10 +1681,10 @@ export namespace legal {
  /** Properties of a SortOptions. */
  interface ISortOptions {
  /** SortOptions field */
- field?: string | null;
+ field?: string: null;
 
  /** SortOptions descending */
- descending?: boolean | null;
+ descending?: boolean: null;
  }
 
  /** Represents a SortOptions. */
@@ -1757,7 +1757,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SortOptions message from a plain object. Also converts values to their respective internal types.
@@ -1806,19 +1806,19 @@ export namespace legal {
  results?: legal.api.ISearchResult[] | null;
 
  /** SearchResponse totalCount */
- totalCount?: number | null;
+ totalCount?: number: null;
 
  /** SearchResponse maxScore */
- maxScore?: number | null;
+ maxScore?: number: null;
 
  /** SearchResponse queryId */
- queryId?: string | null;
+ queryId?: string: null;
 
  /** SearchResponse processingTimeMs */
- processingTimeMs?: number | null;
+ processingTimeMs?: number: null;
 
  /** SearchResponse metadata */
- metadata?: legal.api.ISearchMetadata | null;
+ metadata?: legal.api.ISearchMetadata: null;
  }
 
  /** Represents a SearchResponse. */
@@ -1845,7 +1845,7 @@ export namespace legal {
  public processingTimeMs: number;
 
  /** SearchResponse metadata. */
- public metadata?: legal.api.ISearchMetadata | null;
+ public metadata?: legal.api.ISearchMetadata: null;
 
  /**
  * Creates a new SearchResponse instance using the specified properties.
@@ -1905,7 +1905,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SearchResponse message from a plain object. Also converts values to their respective internal types.
@@ -1942,19 +1942,19 @@ export namespace legal {
  /** Properties of a SearchResult. */
  interface ISearchResult {
  /** SearchResult document */
- document?: legal.api.ILegalDocument | null;
+ document?: legal.api.ILegalDocument: null;
 
  /** SearchResult score */
- score?: number | null;
+ score?: number: null;
 
  /** SearchResult highlights */
  highlights?: string[] | null;
 
  /** SearchResult similarity */
- similarity?: legal.api.IVectorSimilarity | null;
+ similarity?: legal.api.IVectorSimilarity: null;
 
  /** SearchResult excerpt */
- excerpt?: string | null;
+ excerpt?: string: null;
 
  /** SearchResult relatedCitations */
  relatedCitations?: legal.api.ILegalCitation[] | null;
@@ -1969,7 +1969,7 @@ export namespace legal {
  constructor(properties?: legal.api.ISearchResult);
 
  /** SearchResult document. */
- public document?: legal.api.ILegalDocument | null;
+ public document?: legal.api.ILegalDocument: null;
 
  /** SearchResult score. */
  public score: number;
@@ -1978,7 +1978,7 @@ export namespace legal {
  public highlights: string[];
 
  /** SearchResult similarity. */
- public similarity?: legal.api.IVectorSimilarity | null;
+ public similarity?: legal.api.IVectorSimilarity: null;
 
  /** SearchResult excerpt. */
  public excerpt: string;
@@ -2042,7 +2042,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SearchResult message from a plain object. Also converts values to their respective internal types.
@@ -2079,16 +2079,16 @@ export namespace legal {
  /** Properties of a VectorSimilarity. */
  interface IVectorSimilarity {
  /** VectorSimilarity cosineSimilarity */
- cosineSimilarity?: number | null;
+ cosineSimilarity?: number: null;
 
  /** VectorSimilarity euclideanDistance */
- euclideanDistance?: number | null;
+ euclideanDistance?: number: null;
 
  /** VectorSimilarity embeddingDimension */
- embeddingDimension?: number | null;
+ embeddingDimension?: number: null;
 
  /** VectorSimilarity modelUsed */
- modelUsed?: string | null;
+ modelUsed?: string: null;
  }
 
  /** Represents a VectorSimilarity. */
@@ -2169,7 +2169,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a VectorSimilarity message from a plain object. Also converts values to their respective internal types.
@@ -2212,7 +2212,7 @@ export namespace legal {
  facets?: legal.api.ISearchFacet[] | null;
 
  /** SearchMetadata hasMoreResults */
- hasMoreResults?: boolean | null;
+ hasMoreResults?: boolean: null;
  }
 
  /** Represents a SearchMetadata. */
@@ -2290,7 +2290,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SearchMetadata message from a plain object. Also converts values to their respective internal types.
@@ -2327,7 +2327,7 @@ export namespace legal {
  /** Properties of a SearchFacet. */
  interface ISearchFacet {
  /** SearchFacet field */
- field?: string | null;
+ field?: string: null;
 
  /** SearchFacet values */
  values?: legal.api.IFacetValue[] | null;
@@ -2403,7 +2403,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SearchFacet message from a plain object. Also converts values to their respective internal types.
@@ -2440,10 +2440,10 @@ export namespace legal {
  /** Properties of a FacetValue. */
  interface IFacetValue {
  /** FacetValue value */
- value?: string | null;
+ value?: string: null;
 
  /** FacetValue count */
- count?: number | null;
+ count?: number: null;
  }
 
  /** Represents a FacetValue. */
@@ -2516,7 +2516,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a FacetValue message from a plain object. Also converts values to their respective internal types.
@@ -2553,28 +2553,28 @@ export namespace legal {
  /** Properties of a ChatMessage. */
  interface IChatMessage {
  /** ChatMessage id */
- id?: string | null;
+ id?: string: null;
 
  /** ChatMessage sessionId */
- sessionId?: string | null;
+ sessionId?: string: null;
 
  /** ChatMessage userId */
- userId?: string | null;
+ userId?: string: null;
 
  /** ChatMessage content */
- content?: string | null;
+ content?: string: null;
 
  /** ChatMessage type */
- type?: legal.api.MessageType | null;
+ type?: legal.api.MessageType: null;
 
  /** ChatMessage attachments */
  attachments?: legal.api.IAttachment[] | null;
 
  /** ChatMessage timestamp */
- timestamp?: google.protobuf.ITimestamp | null;
+ timestamp?: google.protobuf.ITimestamp: null;
 
  /** ChatMessage metadata */
- metadata?: legal.api.IMessageMetadata | null;
+ metadata?: legal.api.IMessageMetadata: null;
  }
 
  /** Represents a ChatMessage. */
@@ -2604,10 +2604,10 @@ export namespace legal {
  public attachments: legal.api.IAttachment[];
 
  /** ChatMessage timestamp. */
- public timestamp?: google.protobuf.ITimestamp | null;
+ public timestamp?: google.protobuf.ITimestamp: null;
 
  /** ChatMessage metadata. */
- public metadata?: legal.api.IMessageMetadata | null;
+ public metadata?: legal.api.IMessageMetadata: null;
 
  /**
  * Creates a new ChatMessage instance using the specified properties.
@@ -2665,7 +2665,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
@@ -2711,19 +2711,19 @@ export namespace legal {
  /** Properties of a MessageMetadata. */
  interface IMessageMetadata {
  /** MessageMetadata modelUsed */
- modelUsed?: string | null;
+ modelUsed?: string: null;
 
  /** MessageMetadata tokensUsed */
- tokensUsed?: number | null;
+ tokensUsed?: number: null;
 
  /** MessageMetadata processingTimeMs */
- processingTimeMs?: number | null;
+ processingTimeMs?: number: null;
 
  /** MessageMetadata sourceDocuments */
  sourceDocuments?: string[] | null;
 
  /** MessageMetadata confidenceScore */
- confidenceScore?: number | null;
+ confidenceScore?: number: null;
  }
 
  /** Represents a MessageMetadata. */
@@ -2807,7 +2807,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a MessageMetadata message from a plain object. Also converts values to their respective internal types.
@@ -2844,19 +2844,19 @@ export namespace legal {
  /** Properties of a ChatRequest. */
  interface IChatRequest {
  /** ChatRequest sessionId */
- sessionId?: string | null;
+ sessionId?: string: null;
 
  /** ChatRequest userId */
- userId?: string | null;
+ userId?: string: null;
 
  /** ChatRequest message */
- message?: string | null;
+ message?: string: null;
 
  /** ChatRequest context */
- context?: legal.api.IChatContext | null;
+ context?: legal.api.IChatContext: null;
 
  /** ChatRequest options */
- options?: legal.api.IChatOptions | null;
+ options?: legal.api.IChatOptions: null;
  }
 
  /** Represents a ChatRequest. */
@@ -2877,10 +2877,10 @@ export namespace legal {
  public message: string;
 
  /** ChatRequest context. */
- public context?: legal.api.IChatContext | null;
+ public context?: legal.api.IChatContext: null;
 
  /** ChatRequest options. */
- public options?: legal.api.IChatOptions | null;
+ public options?: legal.api.IChatOptions: null;
 
  /**
  * Creates a new ChatRequest instance using the specified properties.
@@ -2938,7 +2938,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a ChatRequest message from a plain object. Also converts values to their respective internal types.
@@ -2978,7 +2978,7 @@ export namespace legal {
  documentIds?: string[] | null;
 
  /** ChatContext caseId */
- caseId?: string | null;
+ caseId?: string: null;
 
  /** ChatContext previousMessageIds */
  previousMessageIds?: string[] | null;
@@ -3063,7 +3063,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a ChatContext message from a plain object. Also converts values to their respective internal types.
@@ -3100,19 +3100,19 @@ export namespace legal {
  /** Properties of a ChatOptions. */
  interface IChatOptions {
  /** ChatOptions model */
- model?: string | null;
+ model?: string: null;
 
  /** ChatOptions temperature */
- temperature?: number | null;
+ temperature?: number: null;
 
  /** ChatOptions maxTokens */
- maxTokens?: number | null;
+ maxTokens?: number: null;
 
  /** ChatOptions stream */
- stream?: boolean | null;
+ stream?: boolean: null;
 
  /** ChatOptions includeSources */
- includeSources?: boolean | null;
+ includeSources?: boolean: null;
  }
 
  /** Represents a ChatOptions. */
@@ -3194,7 +3194,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a ChatOptions message from a plain object. Also converts values to their respective internal types.
@@ -3231,19 +3231,19 @@ export namespace legal {
  /** Properties of a ChatResponse. */
  interface IChatResponse {
  /** ChatResponse response */
- response?: string | null;
+ response?: string: null;
 
  /** ChatResponse sources */
  sources?: string[] | null;
 
  /** ChatResponse confidence */
- confidence?: number | null;
+ confidence?: number: null;
 
  /** ChatResponse modelUsed */
- modelUsed?: string | null;
+ modelUsed?: string: null;
 
  /** ChatResponse tokensUsed */
- tokensUsed?: number | null;
+ tokensUsed?: number: null;
 
  /** ChatResponse citations */
  citations?: legal.api.ILegalCitation[] | null;
@@ -3337,7 +3337,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a ChatResponse message from a plain object. Also converts values to their respective internal types.
@@ -3374,16 +3374,16 @@ export namespace legal {
  /** Properties of an ActionItem. */
  interface IActionItem {
  /** ActionItem description */
- description?: string | null;
+ description?: string: null;
 
  /** ActionItem priority */
- priority?: legal.api.ActionPriority | null;
+ priority?: legal.api.ActionPriority: null;
 
  /** ActionItem dueDate */
- dueDate?: google.protobuf.ITimestamp | null;
+ dueDate?: google.protobuf.ITimestamp: null;
 
  /** ActionItem assignedTo */
- assignedTo?: string | null;
+ assignedTo?: string: null;
  }
 
  /** Represents an ActionItem. */
@@ -3401,7 +3401,7 @@ export namespace legal {
  public priority: legal.api.ActionPriority;
 
  /** ActionItem dueDate. */
- public dueDate?: google.protobuf.ITimestamp | null;
+ public dueDate?: google.protobuf.ITimestamp: null;
 
  /** ActionItem assignedTo. */
  public assignedTo: string;
@@ -3462,7 +3462,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an ActionItem message from a plain object. Also converts values to their respective internal types.
@@ -3507,19 +3507,19 @@ export namespace legal {
  /** Properties of an Attachment. */
  interface IAttachment {
  /** Attachment filename */
- filename?: string | null;
+ filename?: string: null;
 
  /** Attachment contentType */
- contentType?: string | null;
+ contentType?: string: null;
 
  /** Attachment size */
- size?: number | Long | null;
+ size?: number | Long: null;
 
  /** Attachment url */
- url?: string | null;
+ url?: string: null;
 
  /** Attachment checksum */
- checksum?: string | null;
+ checksum?: string: null;
  }
 
  /** Represents an Attachment. */
@@ -3601,7 +3601,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an Attachment message from a plain object. Also converts values to their respective internal types.
@@ -3638,19 +3638,19 @@ export namespace legal {
  /** Properties of an AnalysisRequest. */
  interface IAnalysisRequest {
  /** AnalysisRequest documentId */
- documentId?: string | null;
+ documentId?: string: null;
 
  /** AnalysisRequest type */
- type?: legal.api.AnalysisType | null;
+ type?: legal.api.AnalysisType: null;
 
  /** AnalysisRequest specificQueries */
  specificQueries?: string[] | null;
 
  /** AnalysisRequest options */
- options?: legal.api.IAnalysisOptions | null;
+ options?: legal.api.IAnalysisOptions: null;
 
  /** AnalysisRequest userId */
- userId?: string | null;
+ userId?: string: null;
  }
 
  /** Represents an AnalysisRequest. */
@@ -3671,7 +3671,7 @@ export namespace legal {
  public specificQueries: string[];
 
  /** AnalysisRequest options. */
- public options?: legal.api.IAnalysisOptions | null;
+ public options?: legal.api.IAnalysisOptions: null;
 
  /** AnalysisRequest userId. */
  public userId: string;
@@ -3734,7 +3734,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an AnalysisRequest message from a plain object. Also converts values to their respective internal types.
@@ -3781,16 +3781,16 @@ export namespace legal {
  /** Properties of an AnalysisOptions. */
  interface IAnalysisOptions {
  /** AnalysisOptions jurisdiction */
- jurisdiction?: string | null;
+ jurisdiction?: string: null;
 
  /** AnalysisOptions practiceAreas */
  practiceAreas?: string[] | null;
 
  /** AnalysisOptions confidenceThreshold */
- confidenceThreshold?: number | null;
+ confidenceThreshold?: number: null;
 
  /** AnalysisOptions includeRecommendations */
- includeRecommendations?: boolean | null;
+ includeRecommendations?: boolean: null;
  }
 
  /** Represents an AnalysisOptions. */
@@ -3871,7 +3871,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an AnalysisOptions message from a plain object. Also converts values to their respective internal types.
@@ -3908,19 +3908,19 @@ export namespace legal {
  /** Properties of an AnalysisResponse. */
  interface IAnalysisResponse {
  /** AnalysisResponse analysisId */
- analysisId?: string | null;
+ analysisId?: string: null;
 
  /** AnalysisResponse type */
- type?: legal.api.AnalysisType | null;
+ type?: legal.api.AnalysisType: null;
 
  /** AnalysisResponse results */
  results?: legal.api.IAnalysisResult[] | null;
 
  /** AnalysisResponse overallConfidence */
- overallConfidence?: number | null;
+ overallConfidence?: number: null;
 
  /** AnalysisResponse createdAt */
- createdAt?: google.protobuf.ITimestamp | null;
+ createdAt?: google.protobuf.ITimestamp: null;
 
  /** AnalysisResponse recommendations */
  recommendations?: legal.api.IRecommendation[] | null;
@@ -3947,7 +3947,7 @@ export namespace legal {
  public overallConfidence: number;
 
  /** AnalysisResponse createdAt. */
- public createdAt?: google.protobuf.ITimestamp | null;
+ public createdAt?: google.protobuf.ITimestamp: null;
 
  /** AnalysisResponse recommendations. */
  public recommendations: legal.api.IRecommendation[];
@@ -4010,7 +4010,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an AnalysisResponse message from a plain object. Also converts values to their respective internal types.
@@ -4047,13 +4047,13 @@ export namespace legal {
  /** Properties of an AnalysisResult. */
  interface IAnalysisResult {
  /** AnalysisResult category */
- category?: string | null;
+ category?: string: null;
 
  /** AnalysisResult finding */
- finding?: string | null;
+ finding?: string: null;
 
  /** AnalysisResult confidence */
- confidence?: number | null;
+ confidence?: number: null;
 
  /** AnalysisResult supportingText */
  supportingText?: string[] | null;
@@ -4062,7 +4062,7 @@ export namespace legal {
  citations?: legal.api.ILegalCitation[] | null;
 
  /** AnalysisResult riskLevel */
- riskLevel?: legal.api.RiskLevel | null;
+ riskLevel?: legal.api.RiskLevel: null;
  }
 
  /** Represents an AnalysisResult. */
@@ -4149,7 +4149,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates an AnalysisResult message from a plain object. Also converts values to their respective internal types.
@@ -4194,16 +4194,16 @@ export namespace legal {
  /** Properties of a Recommendation. */
  interface IRecommendation {
  /** Recommendation title */
- title?: string | null;
+ title?: string: null;
 
  /** Recommendation description */
- description?: string | null;
+ description?: string: null;
 
  /** Recommendation type */
- type?: legal.api.RecommendationType | null;
+ type?: legal.api.RecommendationType: null;
 
  /** Recommendation priority */
- priority?: legal.api.ActionPriority | null;
+ priority?: legal.api.ActionPriority: null;
 
  /** Recommendation steps */
  steps?: string[] | null;
@@ -4290,7 +4290,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a Recommendation message from a plain object. Also converts values to their respective internal types.
@@ -4335,10 +4335,10 @@ export namespace legal {
  /** Properties of a HealthCheckRequest. */
  interface IHealthCheckRequest {
  /** HealthCheckRequest service */
- service?: string | null;
+ service?: string: null;
 
  /** HealthCheckRequest includeDetails */
- includeDetails?: boolean | null;
+ includeDetails?: boolean: null;
  }
 
  /** Represents a HealthCheckRequest. */
@@ -4415,7 +4415,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a HealthCheckRequest message from a plain object. Also converts values to their respective internal types.
@@ -4452,19 +4452,19 @@ export namespace legal {
  /** Properties of a HealthCheckResponse. */
  interface IHealthCheckResponse {
  /** HealthCheckResponse healthy */
- healthy?: boolean | null;
+ healthy?: boolean: null;
 
  /** HealthCheckResponse status */
- status?: string | null;
+ status?: string: null;
 
  /** HealthCheckResponse details */
  details?: { [k: string]: string } | null;
 
  /** HealthCheckResponse timestamp */
- timestamp?: google.protobuf.ITimestamp | null;
+ timestamp?: google.protobuf.ITimestamp: null;
 
  /** HealthCheckResponse version */
- version?: string | null;
+ version?: string: null;
  }
 
  /** Represents a HealthCheckResponse. */
@@ -4485,7 +4485,7 @@ export namespace legal {
  public details: { [k: string]: string };
 
  /** HealthCheckResponse timestamp. */
- public timestamp?: google.protobuf.ITimestamp | null;
+ public timestamp?: google.protobuf.ITimestamp: null;
 
  /** HealthCheckResponse version. */
  public version: string;
@@ -4550,7 +4550,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a HealthCheckResponse message from a plain object. Also converts values to their respective internal types.
@@ -4587,25 +4587,25 @@ export namespace legal {
  /** Properties of a SystemStatus. */
  interface ISystemStatus {
  /** SystemStatus serviceName */
- serviceName?: string | null;
+ serviceName?: string: null;
 
  /** SystemStatus operational */
- operational?: boolean | null;
+ operational?: boolean: null;
 
  /** SystemStatus cpuUsage */
- cpuUsage?: number | null;
+ cpuUsage?: number: null;
 
  /** SystemStatus memoryUsage */
- memoryUsage?: number | null;
+ memoryUsage?: number: null;
 
  /** SystemStatus activeConnections */
- activeConnections?: number | null;
+ activeConnections?: number: null;
 
  /** SystemStatus requestsPerMinute */
- requestsPerMinute?: number | Long | null;
+ requestsPerMinute?: number | Long: null;
 
  /** SystemStatus lastUpdated */
- lastUpdated?: google.protobuf.ITimestamp | null;
+ lastUpdated?: google.protobuf.ITimestamp: null;
  }
 
  /** Represents a SystemStatus. */
@@ -4635,7 +4635,7 @@ export namespace legal {
  public requestsPerMinute: number | Long;
 
  /** SystemStatus lastUpdated. */
- public lastUpdated?: google.protobuf.ITimestamp | null;
+ public lastUpdated?: google.protobuf.ITimestamp: null;
 
  /**
  * Creates a new SystemStatus instance using the specified properties.
@@ -4693,7 +4693,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a SystemStatus message from a plain object. Also converts values to their respective internal types.
@@ -4730,16 +4730,16 @@ export namespace legal {
  /** Properties of a BatchRequest. */
  interface IBatchRequest {
  /** BatchRequest batchId */
- batchId?: string | null;
+ batchId?: string: null;
 
  /** BatchRequest operations */
  operations?: legal.api.IBatchOperation[] | null;
 
  /** BatchRequest options */
- options?: legal.api.IBatchOptions | null;
+ options?: legal.api.IBatchOptions: null;
 
  /** BatchRequest userId */
- userId?: string | null;
+ userId?: string: null;
  }
 
  /** Represents a BatchRequest. */
@@ -4757,7 +4757,7 @@ export namespace legal {
  public operations: legal.api.IBatchOperation[];
 
  /** BatchRequest options. */
- public options?: legal.api.IBatchOptions | null;
+ public options?: legal.api.IBatchOptions: null;
 
  /** BatchRequest userId. */
  public userId: string;
@@ -4818,7 +4818,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a BatchRequest message from a plain object. Also converts values to their respective internal types.
@@ -4855,10 +4855,10 @@ export namespace legal {
  /** Properties of a BatchOperation. */
  interface IBatchOperation {
  /** BatchOperation operationId */
- operationId?: string | null;
+ operationId?: string: null;
 
  /** BatchOperation type */
- type?: string | null;
+ type?: string: null;
 
  /** BatchOperation parameters */
  parameters?: { [k: string]: string } | null;
@@ -4939,7 +4939,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a BatchOperation message from a plain object. Also converts values to their respective internal types.
@@ -4976,16 +4976,16 @@ export namespace legal {
  /** Properties of a BatchOptions. */
  interface IBatchOptions {
  /** BatchOptions parallelExecution */
- parallelExecution?: boolean | null;
+ parallelExecution?: boolean: null;
 
  /** BatchOptions maxConcurrency */
- maxConcurrency?: number | null;
+ maxConcurrency?: number: null;
 
  /** BatchOptions timeoutSeconds */
- timeoutSeconds?: number | null;
+ timeoutSeconds?: number: null;
 
  /** BatchOptions continueOnError */
- continueOnError?: boolean | null;
+ continueOnError?: boolean: null;
  }
 
  /** Represents a BatchOptions. */
@@ -5064,7 +5064,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a BatchOptions message from a plain object. Also converts values to their respective internal types.
@@ -5101,22 +5101,22 @@ export namespace legal {
  /** Properties of a BatchResponse. */
  interface IBatchResponse {
  /** BatchResponse batchId */
- batchId?: string | null;
+ batchId?: string: null;
 
  /** BatchResponse status */
- status?: legal.api.BatchStatus | null;
+ status?: legal.api.BatchStatus: null;
 
  /** BatchResponse results */
  results?: legal.api.IBatchResult[] | null;
 
  /** BatchResponse startedAt */
- startedAt?: google.protobuf.ITimestamp | null;
+ startedAt?: google.protobuf.ITimestamp: null;
 
  /** BatchResponse completedAt */
- completedAt?: google.protobuf.ITimestamp | null;
+ completedAt?: google.protobuf.ITimestamp: null;
 
  /** BatchResponse errorMessage */
- errorMessage?: string | null;
+ errorMessage?: string: null;
  }
 
  /** Represents a BatchResponse. */
@@ -5137,10 +5137,10 @@ export namespace legal {
  public results: legal.api.IBatchResult[];
 
  /** BatchResponse startedAt. */
- public startedAt?: google.protobuf.ITimestamp | null;
+ public startedAt?: google.protobuf.ITimestamp: null;
 
  /** BatchResponse completedAt. */
- public completedAt?: google.protobuf.ITimestamp | null;
+ public completedAt?: google.protobuf.ITimestamp: null;
 
  /** BatchResponse errorMessage. */
  public errorMessage: string;
@@ -5201,7 +5201,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a BatchResponse message from a plain object. Also converts values to their respective internal types.
@@ -5247,19 +5247,19 @@ export namespace legal {
  /** Properties of a BatchResult. */
  interface IBatchResult {
  /** BatchResult operationId */
- operationId?: string | null;
+ operationId?: string: null;
 
  /** BatchResult success */
- success?: boolean | null;
+ success?: boolean: null;
 
  /** BatchResult resultData */
- resultData?: string | null;
+ resultData?: string: null;
 
  /** BatchResult errorMessage */
- errorMessage?: string | null;
+ errorMessage?: string: null;
 
  /** BatchResult processingTimeMs */
- processingTimeMs?: number | null;
+ processingTimeMs?: number: null;
  }
 
  /** Represents a BatchResult. */
@@ -5341,7 +5341,7 @@ export namespace legal {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a BatchResult message from a plain object. Also converts values to their respective internal types.
@@ -5384,10 +5384,10 @@ export namespace google {
  /** Properties of a Timestamp. */
  interface ITimestamp {
  /** Timestamp seconds */
- seconds?: number | Long | null;
+ seconds?: number | Long: null;
 
  /** Timestamp nanos */
- nanos?: number | null;
+ nanos?: number: null;
  }
 
  /** Represents a Timestamp. */
@@ -5462,7 +5462,7 @@ export namespace google {
  * @param message Plain object to verify
  * @returns `null` if valid, otherwise the reason why it is not
  */
- public static verify(message: { [k: string]: any }): string | null;
+ public static verify(message: { [k: string]: any }): string: null;
 
  /**
  * Creates a Timestamp message from a plain object. Also converts values to their respective internal types.

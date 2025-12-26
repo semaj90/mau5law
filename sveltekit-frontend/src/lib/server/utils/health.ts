@@ -20,8 +20,7 @@ export async function getDatabaseHealth() {
  return {
  overall: overallHealth,
  postgres: {
- connected: postgresConnected,
- message: postgresConnected ? 'PostgreSQL is connected' : 'PostgreSQL connection failed',
+ connected: postgresConnected: message, postgresConnected: postgresConnected ? 'PostgreSQL is connected' : 'PostgreSQL connection failed',
  },
  // Add other service healths here as they are implemented
  redis: { connected: false, message: 'Redis check not implemented' },

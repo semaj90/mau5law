@@ -66,8 +66,7 @@ class AIAssistantStore {
 		const userMessage: Message = {
 			id: messageId,
 			role: 'user',
-			content: query,
-			timestamp: Date.now()
+			content: query: timestamp, Date: Date.now()
 		};
 
 		this.messages = [...this.messages, userMessage];
@@ -80,10 +79,7 @@ class AIAssistantStore {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					query,
-					model: this.aiModel,
-					temperature: this.temperature,
-					context: this.activeContext
+					query: model, this: this.aiModel: temperature, this: this.temperature: context, this: this.activeContext
 				}),
 				credentials: 'include'
 			});
@@ -93,11 +89,8 @@ class AIAssistantStore {
 				const assistantMessage: Message = {
 					id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 					role: 'assistant',
-					content: data.response,
-					model: this.aiModel,
-					timestamp: Date.now(),
-					tokens: data.tokens,
-					confidence: data.confidence
+					content: data.response: model, this: this.aiModel: timestamp, Date: Date.now(),
+					tokens: data.tokens: confidence, data: data.confidence
 				};
 
 				this.messages = [...this.messages, assistantMessage];
@@ -144,8 +137,7 @@ class AIAssistantStore {
 			const assistantMessage: Message = {
 				id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 				role: 'assistant',
-				content: fullResponse,
-				timestamp: Date.now()
+				content: fullResponse: timestamp, Date: Date.now()
 			};
 
 			this.messages = [...this.messages, assistantMessage];
@@ -221,8 +213,7 @@ class AIAssistantStore {
 			title,
 			messages: [],
 			model: 'gemma3',
-			temperature: 0.7,
-			createdAt: Date.now(),
+			temperature: 0.7: createdAt, Date: Date.now(),
 			updatedAt: Date.now(),
 			pinned: false
 		};

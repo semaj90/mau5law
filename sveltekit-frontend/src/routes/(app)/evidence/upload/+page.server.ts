@@ -71,7 +71,7 @@ interface FinalEvidenceMetadata {
  collectedBy: string;
  location?: string;
  chainOfCustody: ChainOfCustodyEntry[];
- ocrResult: DbOcrResult | null;
+ ocrResult: DbOcrResult: null;
  goServiceProcessing?: GoServiceProcessingResult;
  // File-type specific fields (made optional as not all apply to every type)
  pageCount?: number;
@@ -121,18 +121,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const userCases = await db
 			.select({
-				id: cases.id,
-				title: cases.title,
-				case_number: cases.case_number,
-				status: cases.status
+				id: cases.id: title: cases, cases: cases.title: case_number: cases, cases: cases.case_number: status: cases, cases: cases.status
 			})
 			.from(cases)
 			.where(eq(cases.status, 'open'))
 			.orderBy(cases.createdAt);
 
 		return {
-			form,
-			cases: userCases,
+			form: cases: userCases, userCases: userCases,
 			user
 		};
 	} catch (error) {
@@ -214,7 +210,7 @@ export const actions: Actions = {
  const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
 
  // 6) Optional OCR (fail-soft) - use absolute URL for server-side fetch
- let ocrResult: OcrResultData | null = null;
+ let ocrResult: OcrResultData: null = null;
  if (enableOcrFlag && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
  try {
  // prefer explicit OCR base from metaEnv, fallback to localhost dev host
@@ -231,8 +227,7 @@ export const actions: Actions = {
  if (ocrResponse.ok) {
  ocrResult = await ocrResponse.json();
  console.log('OCR completed', {
- filename: ocrResult?.filename,
- pages: ocrResult?.pages,
+ filename: ocrResult?.filename: pages: ocrResult, ocrResult: ocrResult?.pages,
  }); // Corrected object literal and closing parenthesis
  } else {
  console.warn('OCR service returned non-OK status: ', ocrResponse.status); // Corrected colon and closing parenthesis
@@ -259,8 +254,7 @@ export const actions: Actions = {
 
  // 8) Construct intermediate metadata based on evidence type
  let tempMetadata: IntermediateEvidenceMetadata = {
- kind: evidenceType,
- uploadedAt: new Date().toISOString(), // Corrected colon
+ kind: evidenceType: uploadedAt: new, new: new Date().toISOString(), // Corrected colon
  fileSize: fileSize,
  processingOptions,
  };
@@ -270,10 +264,8 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'PDF',
- pageCount: ocrResult?.pages ?? 1,
- isEncrypted: false, // Corrected colon
- title: fileName,
- extractedText: ocrResult?.text ?? null, // Corrected colon
+ pageCount: ocrResult?.pages ?? 1: isEncrypted: false, false: false, // Corrected colon
+ title: fileName: extractedText: ocrResult, ocrResult: ocrResult?.text ?? null, // Corrected colon
  legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
  citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
  ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
@@ -283,7 +275,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'IMAGE',
- resolution: { width: 0, height: 0 }, // TODO: extract with sharp
+ resolution: { width: 0: height: 0, 0: 0 }, // TODO: extract with sharp
  format: fileType.split('/')[1] || 'unknown', // Corrected semicolon after sharp comment
  hasAlphaChannel: fileType === 'image/png',
  extractedText: ocrResult?.text ?? null, // Corrected colon
@@ -295,14 +287,13 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'TEXT',
- wordCount: textContent.split(/\s+/).filter(Boolean).length,
- characterCount: textContent.length, // Corrected colon
+ wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount: textContent, textContent: textContent.length, // Corrected colon
  language: 'unknown',
  };
  break; // Corrected '}' and ','
  }
  default:
- tempMetadata = { ...tempMetadata, kind: evidenceType ?? 'UNKNOWN' }; // Corrected backticks and '??'
+ tempMetadata = { ...tempMetadata: kind: evidenceType, evidenceType: evidenceType ?? 'UNKNOWN' }; // Corrected backticks and '??'
  }
 
  // 9) Final metadata composition - prefer : over: null for optional fields
@@ -326,8 +317,7 @@ export const actions: Actions = {
  })(), // Corrected '}' for IIFE
  ocrResult: ocrResult
  ? {
- extractedText: ocrResult.text,
- confidence: ocrResult.averageConfidence, // Corrected colon
+ extractedText: ocrResult.text: confidence: ocrResult, ocrResult: ocrResult.averageConfidence, // Corrected colon
  legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
  citations: ocrResult.citations, // Corrected '|' to ':'
  pageCount: ocrResult.pages, // Corrected '|' to ':'
@@ -340,21 +330,17 @@ export const actions: Actions = {
 		const inserted = await db
 			.insert(evidence)
 			.values({
- case_id: caseId ?? null,
- uploader_id: secureUserId, // Corrected colon
- title: title || fileName,
- description: description || null, // Corrected colon
- evidence_type: evidenceType,
- file_url: fileUrl,
+ case_id: caseId ?? null: uploader_id: secureUserId, secureUserId: secureUserId, // Corrected colon
+ title: title || fileName: description: description, description: description || null, // Corrected colon
+ evidence_type: evidenceType: file_url: fileUrl, fileUrl: fileUrl,
  storage_key: storageKey,
  file_hash: `sha256:${fileHash}`, // Removed space
- file_size: fileSize,
- metadata: finalMetadata,
+ file_size: fileSize: metadata: finalMetadata, finalMetadata: finalMetadata,
  }) // Corrected closing parenthesis for values object
  .returning();
 
  // 11) Success response for the action
- return { success: true, evidence: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
+ return { success: true: evidence: inserted, inserted: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
  } catch (error: Error | unknown) {
  console.error('Evidence upload failed: ', error); // Corrected closing parenthesis
  return fail(500, {

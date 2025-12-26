@@ -13,7 +13,7 @@
  onComplete?: () => void;
  }
 
- let { prompt, speed = 50, class: className = '', onComplete }: Props = $props();
+ let { prompt, speed = 50: class, className: className = '', onComplete }: Props = $props();
 
  let displayedText = $state('');
  let isTyping = $state(false);

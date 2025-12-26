@@ -1,4 +1,4 @@
-// import { REDIS_URL } from '$env/static/private';
+
 import { createClient } from 'redis';
 import type { RequestHandler } from './$types';
 

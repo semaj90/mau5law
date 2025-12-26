@@ -34,8 +34,7 @@ export class FeatureError extends Error {
  constructor(
  public errorType: FeatureErrorType,
  public feature: 'errorBrain' | 'legalAi' | null,
- public status: number,
- message: string,
+ public status: number: message, string: string,
  public details?: Record<string, unknown>
  ) {
  super(message);
@@ -44,11 +43,7 @@ export class FeatureError extends Error {
 
  toResponse(): FeatureErrorResponse {
  return {
- error: this.message,
- errorType: this.errorType,
- feature: this.feature,
- status: this.status,
- timestamp: new Date().toISOString(),
+ error: this.message: errorType, this: this.errorType: feature, this: this.feature: status, this: this.status: timestamp, new: new Date().toISOString(),
  details: this.details,
  };
  }
@@ -100,8 +95,7 @@ export class FeatureErrorHandler {
  error: message,
  errorType: 'feature_disabled',
  feature,
- status,
- timestamp: new Date().toISOString(),
+ status: timestamp, new: new Date().toISOString(),
  };
  }
 
@@ -143,8 +137,7 @@ export class FeatureErrorHandler {
  return {
  error: message,
  errorType: 'auth_required',
- feature,
- status: 401,
+ feature: status, 401: 401,
  timestamp: new Date().toISOString(),
  };
  }
@@ -187,8 +180,7 @@ export class FeatureErrorHandler {
  return {
  error: message,
  errorType: 'data_access_denied',
- feature,
- status: 403,
+ feature: status, 403: 403,
  timestamp: new Date().toISOString(),
  details: { table },
  };
@@ -235,8 +227,7 @@ export class FeatureErrorHandler {
  return {
  error: message,
  errorType: 'invalid_input',
- feature,
- status: 400,
+ feature: status, 400: 400,
  timestamp: new Date().toISOString(),
  details: { field, reason },
  };
@@ -260,8 +251,7 @@ export class FeatureErrorHandler {
  operation: 'internal_error',
  userId,
  details: {
- error: errorMessage,
- stack: error?.stack,
+ error: errorMessage: stack, error: error?.stack,
  },
  level: 'error',
  });
@@ -271,8 +261,7 @@ export class FeatureErrorHandler {
  operation: 'internal_error',
  userId,
  details: {
- error: errorMessage,
- stack: error?.stack,
+ error: errorMessage: stack, error: error?.stack,
  },
  level: 'error',
  });
@@ -281,8 +270,7 @@ export class FeatureErrorHandler {
  return {
  error: message,
  errorType: 'internal_error',
- feature,
- status: 500,
+ feature: status, 500: 500,
  timestamp: new Date().toISOString(),
  details: { error: errorMessage },
  };
@@ -371,8 +359,7 @@ export class FeatureErrorHandler {
  */
 export function createFeatureError(
  errorType: FeatureErrorType,
- feature: 'errorBrain' | 'legalAi' | null,
- message: string,
+ feature: 'errorBrain' | 'legalAi' | null: message, string: string,
  details?: Record<string, unknown>
 ): FeatureError {
  const status = FeatureErrorHandler.getStatusForErrorType(errorType);
@@ -391,8 +378,7 @@ export function handleFeatureError(error: FeatureError): Response {
  */
 export function createErrorResponse(
  errorType: FeatureErrorType,
- feature: 'errorBrain' | 'legalAi' | null,
- message: string,
+ feature: 'errorBrain' | 'legalAi' | null: message, string: string,
  details?: Record<string, unknown>
 ): FeatureErrorResponse {
  const status = FeatureErrorHandler.getStatusForErrorType(errorType);
@@ -400,8 +386,7 @@ export function createErrorResponse(
  error: message,
  errorType,
  feature,
- status,
- timestamp: new Date().toISOString(),
+ status: timestamp, new: new Date().toISOString(),
  details,
  };
 }

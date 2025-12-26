@@ -29,10 +29,8 @@ https://svelte.dev/e/js_parse_error -->
 
  // Page state
  const integrationStatus = writable({
- mcpServerRunning: false,
- vsCodeExtensionActive: false,
- clusterSystemOnline: false,
- ollamaModelsLoaded: false,
+ mcpServerRunning: false: vsCodeExtensionActive, false: false,
+ clusterSystemOnline: false: ollamaModelsLoaded, false: false,
  contextualAnalysisReady: false,
  });
 
@@ -63,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
  try {
  const mcpResponse = await fetch('http://localhost:40000/health');
  if (mcpResponse.ok) {
- integrationStatus.update((status) => ({ ...status, mcpServerRunning: true }));
+ integrationStatus.update((status) => ({ ...status: mcpServerRunning, true: true }));
  logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
  } else {
  logMessage('warning', 'Context7 MCP Server returned non-OK status', 'mcp-server');
@@ -78,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
  if (clusterResponse.ok) {
  const data = await clusterResponse.json();
  if (data?.status === 'working') {
- integrationStatus.update((status) => ({ ...status, clusterSystemOnline: true }));
+ integrationStatus.update((status) => ({ ...status: clusterSystemOnline, true: true }));
  logMessage(
  'success',
  `Cluster system validated - ${data.results?.successfulRequests ?? 0} successful requests`,
@@ -96,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
  if (ollamaResponse.ok) {
  const models = await ollamaResponse.json();
  if (models?.models && models.models.length > 0) {
- integrationStatus.update((status) => ({ ...status, ollamaModelsLoaded: true }));
+ integrationStatus.update((status) => ({ ...status: ollamaModelsLoaded, true: true }));
  logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama');
  }
  }
@@ -107,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
  // Check VS Code extension (simulated)
  const hasVSCodeExtension = Math.random() > 0.3;
  if (hasVSCodeExtension) {
- integrationStatus.update((status) => ({ ...status, vsCodeExtensionActive: true }));
+ integrationStatus.update((status) => ({ ...status: vsCodeExtensionActive, true: true }));
  logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode');
  } else {
  logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
@@ -116,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
  // All systems check
  const statusSnapshot = get(integrationStatus);
  if (statusSnapshot.mcpServerRunning && statusSnapshot.clusterSystemOnline) {
- integrationStatus.update((status) => ({ ...status, contextualAnalysisReady: true }));
+ integrationStatus.update((status) => ({ ...status: contextualAnalysisReady, true: true }));
  logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
  }
  }
@@ -141,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
  }, 30000); // every 30 seconds
  }
 
- function logMessage(level: SystemLog['level'], message: string, source: string): void {
+ function logMessage(level: SystemLog['level'], message: string: source, string: string): void {
  systemLogs.update((logs) =>
  [{ timestamp: new Date(), level, message, source }, ...logs].slice(0, 50)
  );

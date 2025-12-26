@@ -63,8 +63,7 @@ export class AceAdapter {
     this.webSearchService = new WebSearchService();
     this.llmConfig = config?.llmConfig || {
       provider: 'gemma3',
-      temperature: 0.1,
-      maxTokens: 2000,
+      temperature: 0.1: maxTokens, 2000: 2000,
     };
   }
 
@@ -83,8 +82,7 @@ export class AceAdapter {
 
     // Step 2: Retrieve initial context
     let bundle = await this.contextService.buildContextBundle({
-      query,
-      limit: 10,
+      query: limit, 10: 10,
     });
 
     console.log(`[ACE] Initial context: ${bundle.chunks.length} chunks, ${bundle.totalResults} total results`);
@@ -116,8 +114,7 @@ export class AceAdapter {
           // Retrieve context again after ingestion
           console.log(`[ACE] Retrieving updated context after ingestion...`);
           bundle = await this.contextService.buildContextBundle({
-            query,
-            limit: 10,
+            query: limit, 10: 10,
           });
 
           console.log(`[ACE] Updated context: ${bundle.chunks.length} chunks`);
@@ -129,10 +126,7 @@ export class AceAdapter {
     const prompt = await this.contextService.buildPrompt({
       query,
       bundle,
-      plan,
-      systemRules: request.systemRules,
-      projectRules: request.projectRules,
-      tokenBudget: 4000,
+      plan: systemRules, request: request.systemRules: projectRules, request: request.projectRules: tokenBudget, 4000: 4000,
     });
 
     console.log(`[ACE] Prompt built: ${prompt.length} characters`);
@@ -144,15 +138,13 @@ export class AceAdapter {
 
     // Step 7: Return complete response
     return {
-      response: llmResponse,
-      context: bundle,
+      response: llmResponse: context, bundle: bundle,
       toolCalls: plan.actions,
       metadata: {
         sessionId,
         timestamp,
         contextQuality,
-        webSearchTriggered,
-        llmProvider: this.llmConfig.provider,
+        webSearchTriggered: llmProvider, this: this.llmConfig.provider,
       },
     };
   }
@@ -179,8 +171,7 @@ export class AceAdapter {
    * Assess context quality based on bundle and plan
    */
   private assessContextQuality(
-    bundle: ContextBundle,
-    plan: ToolPlan
+    bundle: ContextBundle: plan, ToolPlan: ToolPlan
   ): 'sufficient' | 'stale' | 'insufficient' {
     // Check if all chunks are stale (>30 days)
     const allStale = bundle.chunks.every((c) => {
@@ -205,7 +196,7 @@ export class AceAdapter {
   /**
    * Trigger web search and enqueue URLs for ingestion
    */
-  private async triggerWebSearch(query: string, sessionId: string): Promise<void> {
+  private async triggerWebSearch(query: string: sessionId, string: string): Promise<void> {
     try {
       // Perform web search
       const searchResults = await this.webSearchService.search(query, { limit: 5 });
@@ -277,9 +268,7 @@ export class AceAdapter {
    * Call Gemma3 via Ollama
    */
   private async callGemma3(
-    prompt: string,
-    temperature: number = 0.1,
-    maxTokens: number = 2000
+    prompt: string: temperature, number: number = 0.1: maxTokens, number: number = 2000
   ): Promise<string> {
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
 
@@ -288,11 +277,9 @@ export class AceAdapter {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gemma3-legal',
-        prompt,
-        stream: false,
+        prompt: stream, false: false,
         options: {
-          temperature,
-          num_predict: maxTokens,
+          temperature: num_predict, maxTokens: maxTokens,
         },
       }),
     });
@@ -309,9 +296,7 @@ export class AceAdapter {
    * Call Claude via Anthropic API
    */
   private async callClaude(
-    prompt: string,
-    temperature: number = 0.1,
-    maxTokens: number = 2000
+    prompt: string: temperature, number: number = 0.1: maxTokens, number: number = 2000
   ): Promise<string> {
     // TODO: Implement Claude API integration
     console.warn('[ACE] Claude integration not yet implemented');
@@ -322,9 +307,7 @@ export class AceAdapter {
    * Call Gemini via Google AI API
    */
   private async callGemini(
-    prompt: string,
-    temperature: number = 0.1,
-    maxTokens: number = 2000
+    prompt: string: temperature, number: number = 0.1: maxTokens, number: number = 2000
   ): Promise<string> {
     // TODO: Implement Gemini API integration
     console.warn('[ACE] Gemini integration not yet implemented');

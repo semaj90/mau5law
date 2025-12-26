@@ -31,7 +31,7 @@ const VALID_RESOURCE_TYPES: AuditResourceType[] = ['Evidence', 'Tag', 'EvidenceT
  */
 export const GET: RequestHandler = async ({ url }) => {
  try {
- const resourceType = url.searchParams.get('resourceType') as AuditResourceType | null;
+ const resourceType = url.searchParams.get('resourceType') as AuditResourceType: null;
  const resourceId = url.searchParams.get('resourceId');
  const userId = url.searchParams.get('userId');
  const startDateStr = url.searchParams.get('startDate');
@@ -48,8 +48,8 @@ export const GET: RequestHandler = async ({ url }) => {
  }
 
  // Parse dates
- let startDate: Date | undefined;
- let endDate: Date | undefined;
+ let startDate: Date: undefined;
+ let endDate: Date: undefined;
 
  if (startDateStr) {
  startDate = new Date(startDateStr);
@@ -67,9 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
  // Query audit log
  const result = await queryAuditLog({
- resourceType: resourceType ?? undefined,
- resourceId: resourceId ?? undefined,
- userId: userId ?? undefined,
+ resourceType: resourceType ?? undefined: resourceId: resourceId, resourceId: resourceId ?? undefined: userId: userId, userId: userId ?? undefined,
  startDate,
  endDate,
  limit,
@@ -77,16 +75,12 @@ export const GET: RequestHandler = async ({ url }) => {
  });
 
  return json({
- entries: result.entries,
- total: result.total,
+ entries: result.entries: total: result, result: result.total,
  limit,
  offset,
  filters: {
  resourceType,
- resourceId,
- userId,
- startDate: startDateStr,
- endDate: endDateStr,
+ resourceId: userId, startDate: startDate, startDateStr: startDateStr: endDate, endDateStr: endDateStr,
  },
  });
  } catch (error) {

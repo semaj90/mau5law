@@ -1,4 +1,4 @@
-import { REDIS_URL, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, JWT_SECRET } from '$env/static/private';
+
 import { json } from '@sveltejs/kit';
 
 /**

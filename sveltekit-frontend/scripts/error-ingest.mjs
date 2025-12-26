@@ -15,9 +15,9 @@
  */
 
 import { execSync } from 'child_process';
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, join, relative } from 'path';
+import { dirname, join, relative, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,12 +40,43 @@ console.log('📥 Phase 79: Error Ingestion Pipeline\n');
 console.log(`   Run ID: ${RUN_ID}`);
 console.log(`   Commit: ${COMMIT_HASH}\n`);
 
+const SEVERITY_MAP = {
+	error: 'error',
+	err: 'error',
+	warn: 'warn',
+	warning: 'warn',
+	info: 'info',
+	hint: 'info'
+};
+
+function normalizeSeverity(raw = 'error') {
+	const key = String(raw).toLowerCase();
+	return SEVERITY_MAP[key] || 'error';
+}
+
+function normalizeMessage(message = '') {
+	// Remove absolute/relative paths and collapse numbers to reduce churn
+	const withoutPaths = message.replace(/([A-Za-z]:)?[\\/][\\w.\\-_/]+/g, '<path>');
+	const withoutNumbers = withoutPaths.replace(/\d+/g, '<n>');
+	return withoutNumbers.replace(/\s+/g, ' ').trim();
+}
+
+function bucketLine(line = 0) {
+	const safeLine = Number.isFinite(line) ? line : 0;
+	return Math.max(0, Math.floor(safeLine / 5) * 5);
+}
+
 /**
  * Generate stable fingerprint for deduplication
  */
 function generateFingerprint(error) {
 	const hash = createHash('sha256');
-	hash.update(`${error.tool}|${error.file}|${error.code}|${error.message}`);
+	const messageNormalized = normalizeMessage(error.message || '');
+	const fileRel = error.projectRootRel || error.file || 'unknown';
+	const lineBucket = bucketLine(error.line);
+	const rule = error.ruleId || error.code || 'unknown';
+
+	hash.update(`${error.tool}|${rule}|${error.code}|${messageNormalized}|${fileRel}|${lineBucket}`);
 	return hash.digest('hex').substring(0, 16);
 }
 
@@ -53,20 +84,32 @@ function generateFingerprint(error) {
  * Normalize error from svelte-check format to unified schema
  */
 function normalizeError(rawError, tool = 'svelte-check') {
-	return {
+	const filePath = rawError.file || rawError.fileName || 'unknown';
+	const normalizedSeverity = normalizeSeverity(rawError.severity || rawError.level);
+	const projectRootRel = relative(ROOT, resolve(ROOT, filePath));
+	const normalizedMessage = normalizeMessage(rawError.message || rawError.text || '');
+
+	const base = {
 		runId: RUN_ID,
 		commit: COMMIT_HASH,
 		timestamp: new Date().toISOString(),
 		tool,
-		file: rawError.file || rawError.fileName || 'unknown',
+		errorId: randomUUID(),
+		file: filePath,
+		projectRootRel,
 		line: rawError.line || rawError.start?.line || 0,
 		column: rawError.column || rawError.start?.column || 0,
 		code: rawError.code || rawError.errorCode || 'unknown',
+		ruleId: rawError.ruleId || (rawError.code ? `ts(${rawError.code})` : `${tool}:unknown`),
 		message: rawError.message || rawError.text || '',
+		messageNormalized: normalizedMessage,
 		snippet: rawError.snippet || rawError.source || '',
-		severity: rawError.severity || 'error',
+		severity: normalizedSeverity,
 		fingerprint: null // Set after creation
 	};
+
+	base.fingerprint = generateFingerprint(base);
+	return base;
 }
 
 /**
@@ -132,7 +175,6 @@ function parseSvelteCheckOutput(output) {
 					code: errorMatch[2] || 'unknown'
 				});
 
-				normalized.fingerprint = generateFingerprint(normalized);
 				errors.push(normalized);
 				currentFile = null;
 			}
@@ -200,12 +242,16 @@ function loadPatterns() {
 function classifyError(error, patterns) {
 	for (const pattern of patterns) {
 		const regex = new RegExp(pattern.regex, 'i');
-		if (regex.test(error.message) || regex.test(error.snippet)) {
+		if (regex.test(error.message) || regex.test(error.messageNormalized) || regex.test(error.snippet)) {
 			return {
 				patternId: pattern.id,
 				priority: pattern.priority,
 				severityWeight: pattern.severityWeight,
-				domains: pattern.domains
+				domains: pattern.domains,
+				ruleId: error.ruleId || pattern.ruleId || pattern.id,
+				risk: pattern.risk || 'medium',
+				scope: pattern.scope || 'ts',
+				patchKind: pattern.patchKind || 'replace'
 			};
 		}
 	}
@@ -214,7 +260,31 @@ function classifyError(error, patterns) {
 		patternId: 'unknown',
 		priority: 999,
 		severityWeight: 1,
-		domains: ['uncategorized']
+		domains: ['uncategorized'],
+		risk: 'medium',
+		scope: 'ts',
+		patchKind: 'manual'
+	};
+}
+
+function buildContextPack(error, pattern) {
+	return {
+		fingerprint: error.fingerprint,
+		patternId: pattern?.id || error.patternId || 'unknown',
+		fixTemplate: pattern?.fixTemplate || '',
+		error: {
+			tool: error.tool,
+			code: error.code,
+			message: error.message,
+			snippet: error.snippet
+		},
+		topSimilarResolved: [],
+		repoContext: {
+			framework: 'SvelteKit',
+			svelteVersion: '5',
+			db: 'Postgres17+Drizzle',
+			vector: 'pgvector+Qdrant'
+		}
 	};
 }
 
@@ -233,15 +303,30 @@ async function main() {
 		errors = errors.map(e => normalizeError(e));
 	}
 
+	// Backfill new schema fields (projectRootRel, ruleId, severity normalization, stable fingerprint)
+	errors = errors.map(raw => {
+		const enriched = { ...raw };
+		enriched.severity = normalizeSeverity(raw.severity || raw.level);
+		enriched.projectRootRel = raw.projectRootRel || relative(ROOT, resolve(ROOT, raw.file || 'unknown'));
+		enriched.messageNormalized = raw.messageNormalized || normalizeMessage(raw.message || '');
+		enriched.ruleId = raw.ruleId || (raw.code ? `ts(${raw.code})` : `${raw.tool || 'tool'}:unknown`);
+		enriched.fingerprint = raw.fingerprint || generateFingerprint(enriched);
+		return enriched;
+	});
+
 	console.log(`✅ Collected ${errors.length} errors\n`);
 
 	// Step 2: Load patterns and classify
 	const patterns = loadPatterns();
 	console.log(`📋 Loaded ${patterns.length} patterns\n`);
 
+	const patternIndex = Object.fromEntries(patterns.map(p => [p.id, p]));
+
 	const classified = errors.map(error => {
 		const classification = classifyError(error, patterns);
-		return { ...error, ...classification };
+		const enriched = { ...error, ...classification };
+		enriched.contextPack = buildContextPack(enriched, patternIndex[classification.patternId]);
+		return enriched;
 	});
 
 	// Step 3: Generate statistics
@@ -258,6 +343,10 @@ async function main() {
 	for (const error of classified) {
 		// By pattern
 		stats.byPattern[error.patternId] = (stats.byPattern[error.patternId] || 0) + 1;
+
+		// Severity counts
+		stats.bySeverity = stats.bySeverity || {};
+		stats.bySeverity[error.severity] = (stats.bySeverity[error.severity] || 0) + 1;
 
 		// By file
 		stats.byFile[error.file] = (stats.byFile[error.file] || 0) + 1;

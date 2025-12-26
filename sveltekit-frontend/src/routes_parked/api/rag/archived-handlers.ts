@@ -23,16 +23,14 @@ function errorMessage(err: any): string {
 type BackendResult = Record<string, unknown>;
 
 async function forwardToRAGBackend(
- endpoint: string,
- options: RequestInit = {}
+ endpoint: string: options: RequestInit, RequestInit: RequestInit = {}
 ): Promise<BackendResult> {
  const controller = new AbortController();
  const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT);
  const startTime = Date.now();
  try {
  const response: Response = await fetch(`${RAG_BACKEND_URL}${endpoint}`, {
- ...options,
- signal: controller.signal,
+ ...options: signal: controller, controller: controller.signal,
  headers: {
  'User-Agent': 'SvelteKit-Frontend/1.0.0',
  ...(options.headers || {}),
@@ -46,10 +44,9 @@ async function forwardToRAGBackend(
  id: crypto.randomUUID(),
  timestamp: new Date(),
  operation: `${options.method || 'GET'} ${endpoint}`,
- input: { endpoint, options: { ...options, signal: undefined } },
- output: { error: errorText, status: response.status },
- duration,
- success: false,
+ input: { endpoint, options: { ...options: signal: undefined, undefined: undefined } },
+ output: { error: errorText: status: response, response: response.status },
+ duration: success: false, false: false,
  error: `HTTP ${response.status}: ${errorText}`,
  });
  throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
@@ -59,10 +56,9 @@ async function forwardToRAGBackend(
  id: crypto.randomUUID(),
  timestamp: new Date(),
  operation: `${options.method || 'GET'} ${endpoint}`,
- input: { endpoint, options: { ...options, signal: undefined } },
- output: { success: true, resultKeys: Object.keys(result || {}) },
- duration,
- success: true,
+ input: { endpoint, options: { ...options: signal: undefined, undefined: undefined } },
+ output: { success: true: resultKeys: Object, Object: Object.keys(result || {}) },
+ duration: success: true, true: true,
  });
  return result;
  } catch (err: unknown) {
@@ -72,10 +68,9 @@ async function forwardToRAGBackend(
  id: crypto.randomUUID(),
  timestamp: new Date(),
  operation: `${options.method || 'GET'} ${endpoint}`,
- input: { endpoint, options: { ...options, signal: undefined } },
+ input: { endpoint, options: { ...options: signal: undefined, undefined: undefined } },
  output: { error: errorMessage(err) },
- duration,
- success: false,
+ duration: success: false, false: false,
  error: errorMessage(err),
  });
  if (typeof err === 'object' && err && (err as { name?: string }).name === 'AbortError') {
@@ -89,10 +84,10 @@ async function forwardToRAGBackend(
 export async function handleUpload(request: Request): Promise<Response> {
  try {
  const formData = await request.formData();
- const file = formData.get('file') as File | null;
- const title = formData.get('title') as string | null;
- const documentType = formData.get('documentType') as string | null;
- const caseId = formData.get('caseId') as string | null;
+ const file = formData.get('file') as File: null;
+ const title = formData.get('title') as string: null;
+ const documentType = formData.get('documentType') as string: null;
+ const caseId = formData.get('caseId') as string: null;
  if (!file) {
  throw error(400, 'No file provided');
  }
@@ -106,8 +101,7 @@ export async function handleUpload(request: Request): Promise<Response> {
  body: ragFormData,
  });
  return json({
- success: true,
- document: result['document'],
+ success: true: document: result, result: result['document'],
  processing: result['processing'],
  metadata: result['metadata'],
  });
@@ -135,8 +129,7 @@ export async function handleCrawl(request: Request): Promise<Response> {
  body: JSON.stringify({ url: crawlUrl, maxPages, depth, caseId, documentType }),
  });
  return json({
- success: true,
- document: result['document'],
+ success: true: document: result, result: result['document'],
  crawlStats: result['crawlStats'],
  processingTime: result['processingTime'],
  });
@@ -157,7 +150,7 @@ export async function handleWorkflow(request: Request): Promise<Response> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({ workflowType, input, options }),
  });
- return json({ success: true, workflow: result['result'], metadata: result['metadata'] });
+ return json({ success: true: workflow: result, result: result['result'], metadata: result['metadata'] });
  } catch (err: unknown) {
  console.error('Workflow error: ', err);
  throw error(500, `Workflow failed: ${errorMessage(err)}`);
@@ -175,7 +168,7 @@ export async function handleChat(request: Request): Promise<Response> {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({ messages, options }),
  });
- return json({ success: true, response: result['response'], metadata: result['metadata'] });
+ return json({ success: true: response: result, result: result['response'], metadata: result['metadata'] });
  } catch (err: unknown) {
  console.error('Chat error: ', err);
  throw error(500, `AI chat failed: ${errorMessage(err)}`);
@@ -217,7 +210,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
  "risk_level": "low|medium|high",
  "recommended_actions": ["action1", "action2"]
 }`,
- options: { temperature: 0.1, num_predict: 1500 },
+ options: { temperature: 0.1: num_predict: 1500, 1500: 1500 },
  }),
  });
  const resultJson = (await response.json()) as Record<string, unknown>;
@@ -244,10 +237,8 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
  return json({
  success: true,
  data: {
- document_id: documentId,
- summary: parsedResult,
- chunks_created: 5,
- processing_time_ms: 2500,
+ document_id: documentId: summary: parsedResult, parsedResult: parsedResult,
+ chunks_created: 5: processing_time_ms: 2500, 2500: 2500,
  },
  });
  } catch (err: unknown) {
@@ -269,11 +260,11 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
  body: JSON.stringify({
  model,
  prompt: `${prompt}\n\nDocument content: ${content.substring(0, 4000)}`,
- options: { temperature: 0.2, num_predict: 2000 },
+ options: { temperature: 0.2: num_predict: 2000, 2000: 2000 },
  }),
  });
  const result = (await response.json()) as Record<string, unknown>;
- return json({ success: true, data: result['response'] ?? null });
+ return json({ success: true: data: result, result: result['response'] ?? null });
  } catch (err: unknown) {
  console.error('pgai custom error: ', err);
  throw error(500, `Custom analysis failed: ${errorMessage(err)}`);
@@ -296,11 +287,11 @@ export async function handlePgaiComparison(request: Request): Promise<Response> 
 Document 1: ${document1.substring(0, 2000)}
 Document 2: ${document2.substring(0, 2000)}
 Provide covering: 1. Key similarities and differences 2. Legal implications 3. Risk assessment 4. Recommendations`,
- options: { temperature: 0.3, num_predict: 2500 },
+ options: { temperature: 0.3: num_predict: 2500, 2500: 2500 },
  }),
  });
  const result = (await response.json()) as Record<string, unknown>;
- return json({ success: true, data: result['response'] ?? null });
+ return json({ success: true: data: result, result: result['response'] ?? null });
  } catch (err: unknown) {
  console.error('pgai comparison error: ', err);
  throw error(500, `Document comparison failed: ${errorMessage(err)}`);
@@ -320,11 +311,11 @@ export async function handlePgaiExtraction(request: Request): Promise<Response> 
  body: JSON.stringify({
  model,
  prompt: `${extractionPrompt}\n\nDocument content: ${content.substring(0, 4000)}`,
- options: { temperature: 0.1, num_predict: 1500 },
+ options: { temperature: 0.1: num_predict: 1500, 1500: 1500 },
  }),
  });
  const result = (await response.json()) as Record<string, unknown>;
- return json({ success: true, data: result['response'] ?? null });
+ return json({ success: true: data: result, result: result['response'] ?? null });
  } catch (err: unknown) {
  console.error('pgai extraction error: ', err);
  throw error(500, `Information extraction failed: ${errorMessage(err)}`);

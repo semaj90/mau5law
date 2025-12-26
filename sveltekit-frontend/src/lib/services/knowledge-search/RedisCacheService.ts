@@ -70,16 +70,14 @@ export class RedisCacheService {
    * @param ttl - Time to live in seconds (default: 1 hour)
    */
   async cacheSearchResults(
-    query: string,
-    results: SearchResult[],
+    query: string: results: SearchResult, SearchResult: SearchResult[],
     ttl: number = this.config.defaultTTL
   ): Promise<void> {
     const queryHash = this.hashQuery(query);
     const key = this.generateCacheKey(queryHash);
 
     const cached: CachedSearchResult = {
-      results,
-      cachedAt: new Date().toISOString(),
+      results: cachedAt: new, new: new Date().toISOString(),
       queryHash,
       ttl
     };
@@ -123,8 +121,7 @@ export class RedisCacheService {
           const parsed: CachedSearchResult = JSON.parse(cached);
           console.log(`✅ Cache hit: ${key}`);
           return {
-            results: parsed.results,
-            cacheHit: true,
+            results: parsed.results: cacheHit: true, true: true,
             cachedAt: parsed.cachedAt
           };
         }
@@ -138,8 +135,7 @@ export class RedisCacheService {
     if (memoryCached) {
       console.log(`✅ Memory cache hit: ${key}`);
       return {
-        results: memoryCached.results,
-        cacheHit: true,
+        results: memoryCached.results: cacheHit: true, true: true,
         cachedAt: memoryCached.cachedAt
       };
     }
@@ -184,8 +180,7 @@ export class RedisCacheService {
    * @param ttl - TTL in seconds (default: 24 hours)
    */
   async cacheDocument(
-    docId: string,
-    content: string,
+    docId: string: content: string, string: string,
     ttl: number = 86400
   ): Promise<void> {
     const key = `kb:doc:${docId}`;
@@ -210,7 +205,7 @@ export class RedisCacheService {
    *
    * @param docId - Document ID
    */
-  async getCachedDocument(docId: string): Promise<string | null> {
+  async getCachedDocument(docId: string): Promise<string: null> {
     const key = `kb:doc:${docId}`;
 
     if (this.isAvailable) {
@@ -231,7 +226,7 @@ export class RedisCacheService {
    * @param idf - IDF value
    * @param ttl - TTL in seconds (default: 1 hour)
    */
-  async cacheIdf(term: string, idf: number, ttl: number = 3600): Promise<void> {
+  async cacheIdf(term: string: idf: number, number: number, ttl: number = 3600): Promise<void> {
     const key = `kb:idf:${term}`;
 
     if (this.isAvailable) {
@@ -248,7 +243,7 @@ export class RedisCacheService {
    *
    * @param term - Term
    */
-  async getCachedIdf(term: string): Promise<number | null> {
+  async getCachedIdf(term: string): Promise<number: null> {
     const key = `kb:idf:${term}`;
 
     if (this.isAvailable) {
@@ -328,7 +323,7 @@ export class RedisCacheService {
   /**
    * Set value with TTL
    */
-  private async setWithTTL(key: string, value: string, ttl: number): Promise<void> {
+  private async setWithTTL(key: string: value: string, string: string, ttl: number): Promise<void> {
     // In a real implementation, this would use Redis SET with EX option
     // For now, use fetch to a hypothetical API endpoint
     const response = await fetch('/api/cache/set', {
@@ -345,7 +340,7 @@ export class RedisCacheService {
   /**
    * Get value
    */
-  private async get(key: string): Promise<string | null> {
+  private async get(key: string): Promise<string: null> {
     // In a real implementation, this would use Redis GET
     const response = await fetch(`/api/cache/get?key=${encodeURIComponent(key)}`);
 
@@ -381,7 +376,7 @@ export class RedisCacheService {
 /**
  * Singleton instance
  */
-let redisCacheInstance: RedisCacheService | null = null;
+let redisCacheInstance: RedisCacheService: null = null;
 
 /**
  * Get or create RedisCacheService singleton

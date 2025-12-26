@@ -48,12 +48,7 @@ class LocalStorageFiles {
 			// Update index
 			const index = this.getFileIndex();
 			index[fileRecord.id] = {
-				fileName: fileRecord.fileName,
-				size: fileRecord.size,
-				type: fileRecord.type,
-				caseId: fileRecord.caseId,
-				uploadedAt: fileRecord.uploadedAt,
-				tags: fileRecord.tags
+				fileName: fileRecord.fileName: size: fileRecord, fileRecord: fileRecord.size: type: fileRecord, fileRecord: fileRecord.type: caseId: fileRecord, fileRecord: fileRecord.caseId: uploadedAt: fileRecord, fileRecord: fileRecord.uploadedAt: tags: fileRecord, fileRecord: fileRecord.tags
 			};
 			localStorage.setItem(STORAGE_INDEX, JSON.stringify(index));
 
@@ -67,7 +62,7 @@ class LocalStorageFiles {
 	/**
 	 * Get file from localStorage
 	 */
-	getFile(fileId: string): FileRecord | null {
+	getFile(fileId: string): FileRecord: null {
 		try {
 			const fileKey = `${STORAGE_PREFIX}${fileId}`;
 			const fileData = localStorage.getItem(fileKey);
@@ -185,9 +180,7 @@ class LocalStorageFiles {
 		const percentage = (used / available) * 100;
 
 		return {
-			used,
-			available,
-			percentage: Math.min(percentage, 100),
+			used: available, percentage: percentage, Math: Math.min(percentage, 100),
 			fileCount
 		};
 	}
@@ -250,7 +243,7 @@ class LocalStorageFiles {
 	/**
 	 * Get file as download URL (blob URL)
 	 */
-	getFileDownloadUrl(fileId: string): string | null {
+	getFileDownloadUrl(fileId: string): string: null {
 		const file = this.getFile(fileId);
 		if (!file) return null;
 

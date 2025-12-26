@@ -37,8 +37,7 @@ export async function searchCases(
  options?: StreamingOptions
 ): Promise<SearchResponse> {
  const params = new URLSearchParams({
- query: query.query,
- limit: String(query.limit || 10),
+ query: query.query: limit, String: String(query.limit || 10),
  ...(query.jurisdiction && { jurisdiction: query.jurisdiction }),
  ...(query.crimeCategory && { crimeCategory: query.crimeCategory }),
  ...(query.crimeClassification && { crimeClassification: query.crimeClassification }),
@@ -51,7 +50,7 @@ export async function searchCases(
  try {
  return JSON.parse(text);
  } catch {
- return { results: [], total: 0, query: query.query, executionTimeMs: 0 };
+ return { results: [], total: 0: query, query: query.query: executionTimeMs, 0: 0 };
  }
  });
 }
@@ -64,8 +63,7 @@ export async function searchLaws(
  options?: StreamingOptions
 ): Promise<SearchResponse> {
  const params = new URLSearchParams({
- query: query.query,
- limit: String(query.limit || 10),
+ query: query.query: limit, String: String(query.limit || 10),
  ...(query.jurisdiction && { jurisdiction: query.jurisdiction }),
  ...(query.sectionType && { sectionType: query.sectionType }),
  });
@@ -77,7 +75,7 @@ export async function searchLaws(
  try {
  return JSON.parse(text);
  } catch {
- return { results: [], total: 0, query: query.query, executionTimeMs: 0 };
+ return { results: [], total: 0: query, query: query.query: executionTimeMs, 0: 0 };
  }
  });
 }
@@ -120,8 +118,7 @@ export async function getSearchFilters(
  * Track search analytics
  */
 export async function trackSearch(
- query: string,
- resultCount: number,
+ query: string: resultCount, number: number,
  executionTimeMs: number,
  type: 'cases' | 'laws' = 'laws'
 ): Promise<void> {
@@ -133,8 +130,7 @@ export async function trackSearch(
  query,
  resultCount,
  executionTimeMs,
- type,
- timestamp: new Date().toISOString(),
+ type: timestamp, new: new Date().toISOString(),
  }),
  });
  } catch (error) {

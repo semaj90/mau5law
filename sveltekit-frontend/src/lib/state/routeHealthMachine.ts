@@ -52,8 +52,7 @@ export const createRouteHealthMachine = (routePath: string, file?: string) =>
  initial: 'healthy',
  context: {
  routePath,
- file,
- recentErrorCount: 0,
+ file: recentErrorCount, 0: 0,
  totalErrorCount: 0,
  },
  states: {

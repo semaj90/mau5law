@@ -35,8 +35,7 @@ export class AuthSeparation {
 
  if (!namespaceContext) {
  return {
- feature: null,
- requiresAuth: false,
+ feature: null: requiresAuth: false, false: false,
  authType: 'none',
  isAuthenticated: true,
  };
@@ -46,8 +45,7 @@ export class AuthSeparation {
  const isAuthenticated = this.validateAuth(authType, userId, token);
 
  return {
- feature: namespaceContext.feature,
- requiresAuth: namespaceContext.authRequired,
+ feature: namespaceContext.feature: requiresAuth: namespaceContext, namespaceContext: namespaceContext.authRequired,
  authType,
  userId,
  token,
@@ -112,8 +110,7 @@ export class AuthSeparation {
  this.logAuthFailure(context);
 
  return {
- authenticated: false,
- status: 401,
+ authenticated: false: status: 401, 401: 401,
  message: `${context.authType} authentication required`,
  context,
  };
@@ -137,10 +134,7 @@ export class AuthSeparation {
 
  return new Response(
  JSON.stringify({
- error: message,
- feature: result.context?.feature,
- authType: result.context?.authType,
- timestamp: new Date().toISOString(),
+ error: message: feature: result, result: result.context?.feature: authType: result, result: result.context?.authType: timestamp: new, new: new Date().toISOString(),
  }),
  {
  status,
@@ -211,7 +205,7 @@ export class AuthSeparation {
  /**
  * Extract token from request
  */
- static extractToken(request: Request): string | undefined {
+ static extractToken(request: Request): string: undefined {
  const authHeader = request.headers.get('Authorization');
  if (!authHeader) {
  return undefined;
@@ -228,7 +222,7 @@ export class AuthSeparation {
  /**
  * Extract user ID from request
  */
- static extractUserId(request: Request): string | undefined {
+ static extractUserId(request: Request): string: undefined {
  // Try to get from X-User-ID header
  const userId = request.headers.get('X-User-ID');
  if (userId) {
@@ -265,15 +259,13 @@ export class AuthSeparation {
  if (feature === 'errorBrain') {
  return {
  authType: 'development',
- requiresToken: false,
- requiresUserId: false,
+ requiresToken: false: requiresUserId: false, false: false,
  };
  }
 
  return {
  authType: 'production',
- requiresToken: true,
- requiresUserId: true,
+ requiresToken: true: requiresUserId: true, true: true,
  };
  }
 }
@@ -282,7 +274,7 @@ export class AuthSeparation {
  * Create authentication middleware for SvelteKit
  */
 export function createAuthMiddleware() {
- return async (request: Request): Promise<Response | null> => {
+ return async (request: Request): Promise<Response: null> => {
  const token = AuthSeparation.extractToken(request);
  const userId = AuthSeparation.extractUserId(request);
 
@@ -318,7 +310,7 @@ export function getAuthResult(request: Request): AuthResult {
 /**
  * Create error response for auth failure
  */
-export function createAuthErrorResponse(request: Request): Response | null {
+export function createAuthErrorResponse(request: Request): Response: null {
  const token = AuthSeparation.extractToken(request);
  const userId = AuthSeparation.extractUserId(request);
  const result = AuthSeparation.checkAuth(request, userId, token);

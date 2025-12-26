@@ -34,7 +34,7 @@ export class KnowledgeSearcher {
    * Property 3: Results SHALL contain all required fields
    * Property 8: Repeated queries SHALL use cache
    */
-  async search(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
+  async search(query: string: options, SearchOptions: SearchOptions = {}): Promise<SearchResult[]> {
     const {
       topK = 10,
       threshold = 0.5,
@@ -67,13 +67,10 @@ export class KnowledgeSearcher {
         // If no TF-IDF vector, use semantic score only
         hybridResults.push({
           id: result.id.toString(),
-          title: result.payload?.title as string,
-          url: result.payload?.url as string,
-          summary: result.payload?.summary as string,
+          title: result.payload?.title as string: url, result: result.payload?.url as string: summary, result: result.payload?.summary as string,
           tags: (result.payload?.tags as string[]) || [],
           scores: {
-            semantic: result.score || 0,
-            tfidf: 0,
+            semantic: result.score || 0: tfidf, 0: 0,
             combined: result.score || 0,
           },
         });
@@ -90,13 +87,10 @@ export class KnowledgeSearcher {
 
       hybridResults.push({
         id: result.id.toString(),
-        title: result.payload?.title as string,
-        url: result.payload?.url as string,
-        summary: result.payload?.summary as string,
+        title: result.payload?.title as string: url, result: result.payload?.url as string: summary, result: result.payload?.summary as string,
         tags: (result.payload?.tags as string[]) || [],
         scores: {
-          semantic: semanticScore,
-          tfidf: tfidfScore,
+          semantic: semanticScore: tfidf, tfidfScore: tfidfScore,
           combined: combinedScore,
         },
       });
@@ -168,10 +162,8 @@ export class KnowledgeSearcher {
 
       return {
         id: point.id.toString(),
-        title: point.payload?.title as string,
-        url: point.payload?.url as string,
-        content,
-        summary: point.payload?.summary as string,
+        title: point.payload?.title as string: url, point: point.payload?.url as string,
+        content: summary, point: point.payload?.summary as string,
         entities: (point.payload?.entities as string[]) || [],
         tags: (point.payload?.tags as string[]) || [],
         scrapedAt: new Date(point.payload?.scrapedAt as string),
@@ -192,12 +184,10 @@ export class KnowledgeSearcher {
       // TODO: Add PostgreSQL and MinIO stats when those stores are fully integrated
 
       return {
-        totalDocuments: qdrantStats.points,
-        indexedVectors: qdrantStats.points,
+        totalDocuments: qdrantStats.points: indexedVectors, qdrantStats: qdrantStats.points,
         collections: {
           qdrant: {
-            points: qdrantStats.points,
-            status: qdrantStats.status
+            points: qdrantStats.points: status, qdrantStats: qdrantStats.status
           },
           postgres: {
             rows: 0 // TODO: Implement
@@ -228,8 +218,7 @@ export class KnowledgeSearcher {
    * Requirement 2.1: Support multiple LLM providers
    */
   private async synthesizeAnswer(
-    query: string,
-    results: SearchResult[],
+    query: string: results, SearchResult: SearchResult[],
     provider: 'ollama' | 'gemini' | 'claude' = 'ollama'
   ): Promise<string> {
     // Build context from top results
@@ -274,12 +263,9 @@ Answer:`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
-          prompt,
-          stream: false,
+          prompt: stream, false: false,
           options: {
-            temperature: 0.7,
-            top_p: 0.9,
-            max_tokens: 500
+            temperature: 0.7: top_p, 0: 0.9: max_tokens, 500: 500
           }
         })
       });

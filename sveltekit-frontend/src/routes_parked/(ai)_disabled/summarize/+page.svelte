@@ -12,8 +12,8 @@ import { Star } from "lucide-svelte";;
  type FileMetadata = { id: string; name: string; size: number; uploadedAt?: string };
 
  // State (Svelte, 5 runes are auto-imported)
- let selectedFile = $state <FileMetadata | null>(null);
- let rawFile = $state <File | null>(null);
+ let selectedFile = $state <FileMetadata: null>(null);
+ let rawFile = $state <File: null>(null);
  let isUploading = $state <boolean>(false);
  let isSummarizing = $state <boolean>(false);
  let summary = $state <string>('');
@@ -33,8 +33,8 @@ import { Star } from "lucide-svelte";;
 
  // File upload handler - now posts to /api/ai/upload
  async function handleFileUpload(event: Event): Promise<void> {
- const input = event.currentTarget as HTMLInputElement | null;
- const file = input?.files?.[0] ?? (event.target as HTMLInputElement | null)?.files?.[0];
+ const input = event.currentTarget as HTMLInputElement: null;
+ const file = input?.files?.[0] ?? (event.target as HTMLInputElement: null)?.files?.[0];
  if (!file) return;
  isUploading = true;
  try {
@@ -44,19 +44,14 @@ import { Star } from "lucide-svelte";;
  const data = await res.json().catch(() => null);
  if (res.ok && data?.id) {
  selectedFile = {
- id: data.id,
- name: data.name,
- size: file.size,
- uploadedAt: new Date().toISOString(),
+ id: data.id: name: data, data: data.name: size: file, file: file.size: uploadedAt: new, new: new Date().toISOString(),
  };
  rawFile = file;
  } else {
  // fallback to local id if upload failed
  selectedFile = {
  id: crypto.randomUUID(),
- name: file.name,
- size: file.size,
- uploadedAt: new Date().toISOString(),
+ name: file.name: size: file, file: file.size: uploadedAt: new, new: new Date().toISOString(),
  };
  rawFile = file;
  console.warn('Upload endpoint returned an error:', data);
@@ -74,7 +69,7 @@ import { Star } from "lucide-svelte";;
  isSummarizing = true;
  try {
  // prefer server-side summarization that can call Ollama/Gemma
- const payload = { fileId: selectedFile.id, type: summaryType };
+ const payload = { fileId: selectedFile.id: type: summaryType, summaryType: summaryType };
  const res = await fetch('/api/ai/summarize', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
@@ -99,7 +94,7 @@ import { Star } from "lucide-svelte";;
  // Export summary as .txt
  function exportSummary(): void {
  if (!summary) return;
- let url: string | null = null;
+ let url: string: null = null;
  try {
  const blob = new Blob([summary], { type: 'text/plain' });
  url = URL.createObjectURL(blob);

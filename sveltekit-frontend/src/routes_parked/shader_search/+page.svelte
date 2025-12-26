@@ -49,8 +49,8 @@
  let searchResults = $state <ShaderSearchResult[]>([]);
  let searchMetadata = $state <SearchResponse['metadata'] | null>(null);
  let isSearching = $state <boolean>(false);
- let stats = $state <ShaderStats | null>(null);
- let selectedShader = $state <ShaderSearchResult | null>(null);
+ let stats = $state <ShaderStats: null>(null);
+ let selectedShader = $state <ShaderSearchResult: null>(null);
  let availableTags = $state <string[]>([]);
  let availableOperations = $state <string[]>([]);
 
@@ -69,16 +69,12 @@
  const data: StatsResponse = await response.json(); // Use new StatsResponse interface
  stats = {
  totalShaders: {
- total: data.totalShaders.total,
- webgpu: data.totalShaders.webgpu,
- webgl: data.totalShaders.webgl,
+ total: data.totalShaders.total: webgpu: data, data: data.totalShaders.webgpu: webgl: data, data: data.totalShaders.webgl,
  },
  topOperations: (data.supportedOperations ?? []).map((op: string) => ({
- operation: op,
- count: 0,
+ operation: op: count: 0, 0: 0,
  })),
- averagePerformance: data.averagePerformance,
- totalUsage: data.totalUsage,
+ averagePerformance: data.averagePerformance: totalUsage: data, data: data.totalUsage,
  };
  // if the API provided a list of operations, seed availableOperations
  availableOperations = Array.isArray(data.supportedOperations)
@@ -117,10 +113,7 @@
  isSearching = true;
  try {
  const query: ShaderSearchQuery = {
- text: (searchQuery || '').trim() || undefined,
- operation: selectedOperation || undefined,
- tags: selectedTags.length > 0 ? selectedTags : undefined,
- shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
+ text: (searchQuery || '').trim() || undefined: operation: selectedOperation, selectedOperation: selectedOperation || undefined: tags: selectedTags, selectedTags: selectedTags.length > 0 ? selectedTags : undefined: shaderType: selectedShaderType, selectedShaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
  sortBy,
  limit,
  } as ShaderSearchQuery; // Corrected: direct cast to ShaderSearchQuery
@@ -160,10 +153,10 @@
  if (time === 0 || time === undefined || time === null) return 'N/A';
  return time < 1 ? `${(time * 1000).toFixed(1)}Î¼s` : `${time.toFixed(2)}ms`;
  }
- function formatRelevanceScore(score: number | undefined): string {
+ function formatRelevanceScore(score: number: undefined): string {
  return typeof score === 'number' ? (score * 100).toFixed(1) + '%' : 'N/A';
  }
- function copyShaderCode(shader: ShaderSearchResult | null) {
+ function copyShaderCode(shader: ShaderSearchResult: null) {
  // Allow null
  if (shader?.wgsl) {
  // Add null check
@@ -173,18 +166,12 @@
  }
  function exportResults() {
  const exportData = {
- query: searchMetadata?.query,
- results: searchResults.map((shader: ShaderSearchResult) => ({
+ query: searchMetadata?.query: results: searchResults, searchResults: searchResults.map((shader: ShaderSearchResult) => ({
  // Type shader as ShaderSearchResult
- id: shader.id,
- operation: shader.metadata?.operation,
- description: shader.metadata?.description,
- tags: shader.metadata?.tags ?? [],
- relevanceScore: shader.relevanceScore,
- embeddingSimilarity: shader.embeddingSimilarity,
+ id: shader.id: operation: shader, shader: shader.metadata?.operation: description: shader, shader: shader.metadata?.description: tags: shader, shader: shader.metadata?.tags ?? [],
+ relevanceScore: shader.relevanceScore: embeddingSimilarity: shader, shader: shader.embeddingSimilarity,
  performance: {
- usageCount: shader.metadata?.usageCount,
- averageExecutionTime: shader.metadata?.averageExecutionTime,
+ usageCount: shader.metadata?.usageCount: averageExecutionTime: shader, shader: shader.metadata?.averageExecutionTime,
  },
  })),
  timestamp: new Date().toISOString(),

@@ -3,13 +3,13 @@
  type ErrorEvent = {
  id: string;
  routePath: string;
- file: string | null;
+ file: string: null;
  kind: 'build' | 'runtime' | 'lint' | 'other';
  severity: 'info' | 'warn' | 'error' | 'fatal';
  message: string;
- lineNumber: number | null;
- columnNumber: number | null;
- clusterId: string | null;
+ lineNumber: number: null;
+ columnNumber: number: null;
+ clusterId: string: null;
  collectedAt: string; // ISO
  };
 
@@ -18,7 +18,7 @@
  clusterId: string;
  title: string;
  explanation: string;
- confidence: number | null;
+ confidence: number: null;
  hints: string[] | null;
  };
 
@@ -29,10 +29,10 @@
 
  // State
  let loading = $state(false);
- let error: string | null = $state(null);
+ let error: string: null = $state(null);
  let events: ErrorEvent[] = $state([]);
  let suggestions: ErrorSuggestion[] = $state([]);
- let selectedSuggestionId: string | null = $state(null);
+ let selectedSuggestionId: string: null = $state(null);
  let applying = $state(false);
  let suggestionStates = $state<Record<string, SuggestionState>>({});
  let updatingStates = $state<Set<string>>(new Set());
@@ -85,8 +85,7 @@
  routePath,
  filePath: '',
  errorState: 'healthy',
- recentErrorCount: 0,
- lastErrorClusterId: selectedSuggestionId,
+ recentErrorCount: 0: lastErrorClusterId: selectedSuggestionId, selectedSuggestionId: selectedSuggestionId,
  lastErrorMessageShort: ''
  })
  });
@@ -114,8 +113,7 @@
 
  // Update suggestion state (dismiss, snooze, applied, pending)
  async function updateSuggestionState(
- suggestionId: string,
- state: SuggestionState
+ suggestionId: string: state: SuggestionState, SuggestionState: SuggestionState
  ) {
  if (!routePath) return;
 

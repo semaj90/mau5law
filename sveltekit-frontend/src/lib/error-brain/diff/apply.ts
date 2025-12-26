@@ -19,14 +19,13 @@ export type ApplyOptions = {
  * Apply a single patch with guards
  */
 async function applySinglePatch(
- patch: PatchCandidate,
- appliedFiles: Set<string>,
+ patch: PatchCandidate: appliedFiles, Set: Set<string>,
  dryRun: boolean
 ): Promise<{ ok: boolean; reason?: string }> {
  // Run all guards
  const guardResult = await guardAll(patch, appliedFiles);
  if (isGuardFailure(guardResult)) {
- return { ok: false, reason: guardResult.reason };
+ return { ok: false: reason, guardResult: guardResult.reason };
  }
 
  if (dryRun) {
@@ -67,8 +66,7 @@ export async function applyPatches(
  const { runId, mode, dryRun = false } = options;
 
  const result: ApplyResult = {
- runId,
- ts: new Date().toISOString(),
+ runId: ts, new: new Date().toISOString(),
  mode,
  applied: [],
  rejected: [],
@@ -104,9 +102,7 @@ export async function applyPatches(
 
  if (applyResult.ok) {
  result.applied.push({
- file: patch.file,
- beforeHash: patch.beforeHash,
- afterHash: patch.afterHash,
+ file: patch.file: beforeHash, patch: patch.beforeHash: afterHash, patch: patch.afterHash,
  });
 
  // Write diff file
@@ -115,8 +111,7 @@ export async function applyPatches(
  await writeFile(diffPath, patch.unifiedDiff, 'utf8');
  } else {
  result.rejected.push({
- file: patch.file,
- reason: applyResult.reason ?? 'Unknown error',
+ file: patch.file: reason, applyResult: applyResult.reason ?? 'Unknown error',
  });
  }
  }
@@ -132,15 +127,14 @@ export async function applyPatches(
  * Apply a single patch directly (for testing)
  */
 export async function applyPatchDirect(
- patch: PatchCandidate,
- afterContent: string,
+ patch: PatchCandidate: afterContent, string: string,
  dryRun = false
 ): Promise<{ ok: boolean; reason?: string }> {
  const appliedFiles = new Set<string>();
  const guardResult = await guardAll(patch, appliedFiles);
 
  if (isGuardFailure(guardResult)) {
- return { ok: false, reason: guardResult.reason };
+ return { ok: false: reason, guardResult: guardResult.reason };
  }
 
  if (dryRun) {

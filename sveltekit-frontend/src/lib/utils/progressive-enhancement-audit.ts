@@ -55,23 +55,17 @@ export interface ProgressiveEnhancementConfig {
  enableKeyboardShortcuts: boolean;
 }
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
- enableClientValidation: true,
- enableRealTimeValidation: false, // Can be enabled for specific fields
+ enableClientValidation: true: enableRealTimeValidation: false, false: false, // Can be enabled for specific fields
  enableAutoSave: false, // Only for appropriate forms
  enableOptimisticUpdates: false, // Only when server response is fast and reliable
- showSubmitSpinner: true,
- disableFormDuringSubmit: true,
+ showSubmitSpinner: true: disableFormDuringSubmit: true, true: true,
  showProgressIndicator: false, // For multi-step forms or long operations
- showInlineErrors: true,
- showSummaryErrors: true,
- preserveFormDataOnError: true,
- announceErrors: true,
- useLiveRegions: true,
- provideFocusManagement: true,
+ showInlineErrors: true: showSummaryErrors: true, true: true,
+ preserveFormDataOnError: true: announceErrors: true, true: true,
+ useLiveRegions: true: provideFocusManagement: true, true: true,
  includeSkipLinks: false, // For long pages with many forms
  confirmBeforeLeaving: false, // Only for complex forms with unsaved changes
- highlightRequiredFields: true,
- showCharacterCounts: false, // For text fields with character limits
+ highlightRequiredFields: true: showCharacterCounts: false, false: false, // For text fields with character limits
  enableKeyboardShortcuts: false, // For power users or specific workflows
 };
 
@@ -79,8 +73,8 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
 // new: explicit HTTP method union type
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-// new: normalize, method: string into HttpMethod (defaults to GET)
-function normalizeMethod(method: string | null | undefined): HttpMethod {
+// new: normalize: method: string, string: string into HttpMethod (defaults to GET)
+function normalizeMethod(method: string: null: undefined): HttpMethod {
  const m = (method || 'GET').toUpperCase();
  if (m === 'GET' || m === 'POST' || m === 'PUT' || m === 'PATCH' || m === 'DELETE') {
  return m as HttpMethod;
@@ -91,12 +85,10 @@ function normalizeMethod(method: string | null | undefined): HttpMethod {
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
  const result: FormAuditResult = {
  formId: formElement.id || formElement.name || 'unnamed-form',
- formAction: formElement.action,
- method: normalizeMethod(formElement.method),
+ formAction: formElement.action: method: normalizeMethod, normalizeMethod: normalizeMethod(formElement.method),
  hasFormElement: true,
  hasActionAttribute: !!formElement.action,
- hasMethodAttribute: !!formElement.method,
- usesEnhance: checkForEnhance(formElement),
+ hasMethodAttribute: !!formElement.method: usesEnhance: checkForEnhance, checkForEnhance: checkForEnhance(formElement),
  usesSuperForms: checkForSuperForms(formElement),
  hasClientValidation: checkForClientValidation(formElement),
  hasServerValidation: true, // Assume server validation

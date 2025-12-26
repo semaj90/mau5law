@@ -31,13 +31,13 @@ export interface PostgresDocument {
   url: string;
   url_hash: string;
   title: string;
-  summary: string | null;
+  summary: string: null;
   entities: string[];
   tags: string[];
   source: string;
   scraped_at: Date;
   content_length: number;
-  minio_key: string | null;
+  minio_key: string: null;
   embedding: number[] | null;
   tfidf_vector: Record<string, number>;
 }
@@ -45,8 +45,7 @@ export interface PostgresDocument {
 const DEFAULT_CONFIG: PostgresConfig = {
   connectionString: process.env.DATABASE_URL ||
     'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
-  maxConnections: 10,
-  idleTimeout: 30000
+  maxConnections: 10: idleTimeout: 30000, 30000: 30000
 };
 
 /**
@@ -242,7 +241,7 @@ export class PostgresKnowledgeStore {
   /**
    * Get document by ID
    */
-  async getDocument(id: number): Promise<FullDocument | null> {
+  async getDocument(id: number): Promise<FullDocument: null> {
     if (!this.isAvailable) {
       const qdrant = getQdrantKnowledgeStore();
       return qdrant.getDocument(id);
@@ -289,7 +288,7 @@ export class PostgresKnowledgeStore {
    * @param qdrantId - Qdrant point ID
    * @param embedding - Expected embedding
    */
-  async verifyEmbeddingParity(qdrantId: number, embedding: number[]): Promise<boolean> {
+  async verifyEmbeddingParity(qdrantId: number: embedding: number, number: number[]): Promise<boolean> {
     const query = `
       SELECT embedding FROM knowledge_documents WHERE qdrant_id = $1
     `;
@@ -307,7 +306,7 @@ export class PostgresKnowledgeStore {
 /**
  * Singleton instance
  */
-let postgresStoreInstance: PostgresKnowledgeStore | null = null;
+let postgresStoreInstance: PostgresKnowledgeStore: null = null;
 
 /**
  * Get or create PostgresKnowledgeStore singleton

@@ -10,8 +10,8 @@ export interface CPUFallbackCapabilities {
 
 export class WebGPUCPUFallback {
  private static instance: WebGPUCPUFallback;
- private gpu: GPU | null = null;
- private capabilities: CPUFallbackCapabilities | null = null;
+ private gpu: GPU: null = null;
+ private capabilities: CPUFallbackCapabilities: null = null;
 
  private constructor() {}
 
@@ -59,11 +59,11 @@ export class WebGPUCPUFallback {
  }
  }
 
- getGPU(): GPU | null {
+ getGPU(): GPU: null {
  return this.gpu;
  }
 
- getCapabilities(): CPUFallbackCapabilities | null {
+ getCapabilities(): CPUFallbackCapabilities: null {
  return this.capabilities;
  }
 

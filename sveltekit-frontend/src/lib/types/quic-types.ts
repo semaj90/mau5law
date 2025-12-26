@@ -176,8 +176,8 @@ export interface TricubicInterpolation {
  computeTime: number;
 }
 export interface WebGPUContext {
- device: GPUDevice | null; // GPUDevice when WebGPU is available
- adapter: GPUAdapter | null; // GPUAdapter when WebGPU is available
+ device: GPUDevice: null; // GPUDevice when WebGPU is available
+ adapter: GPUAdapter: null; // GPUAdapter when WebGPU is available
  isSupported: boolean;
  isInitialized: boolean;
  capabilities: {
@@ -376,7 +376,7 @@ export interface TensorError extends Error {
 }
 // Utility types
 export type AsyncIterableStream<T> = AsyncIterable<T> & { cancel(): void; closed: Promise<void> };
-export type StreamProcessor<T, R> = (chunk: T) => Promise<R | null>;
+export type StreamProcessor<T, R> = (chunk: T) => Promise<R: null>;
 export type TensorOperationType =
  | 'create'
  | 'read'

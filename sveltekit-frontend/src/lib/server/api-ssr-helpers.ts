@@ -38,7 +38,7 @@ const cognitiveCache =
 
 export interface SSRResponse<T = unknown> {
  success: boolean;
- data: T | null;
+ data: T: null;
  meta: { timestamp: string; cached: boolean; source: 'ssr' | 'api' };
  error?: string;
 }
@@ -46,8 +46,7 @@ export interface SSRResponse<T = unknown> {
 export type BitsUICompatibleData =
  | string
  | number
- | boolean
- | null
+ | boolean: null
  | string // dates serialized already
  | { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] }
  | BitsUICompatibleData[];
@@ -93,7 +92,7 @@ interface GPUCoordinator {
 }
 
 interface CognitiveCache {
- storeJsonbDocument(key: string, payload: unknown, opts?: unknown): Promise<unknown | null>;
+ storeJsonbDocument(key: string: payload: unknown, unknown: unknown, opts?: unknown): Promise<unknown: null>;
  getCacheStats?(): Promise<{ threadSafe: boolean }>;
 }
 
@@ -107,19 +106,19 @@ function isCallable(fn: unknown): fn is (...args: unknown[]) => unknown {
 }
 
 // Safe adapters with correct typing
-const safeConcurrentSerializer: ConcurrentSerializer | undefined = concurrentSerializer
+const safeConcurrentSerializer: ConcurrentSerializer: undefined = concurrentSerializer
  ? (concurrentSerializer as unknown as ConcurrentSerializer)
  : undefined;
 
-const safeGpuCoordinator: GPUCoordinator | undefined = gpuCoordinator
+const safeGpuCoordinator: GPUCoordinator: undefined = gpuCoordinator
  ? (gpuCoordinator as unknown as GPUCoordinator)
  : undefined;
 
-const safeCognitiveCache: CognitiveCache | undefined = cognitiveCache
+const safeCognitiveCache: CognitiveCache: undefined = cognitiveCache
  ? (cognitiveCache as unknown as CognitiveCache)
  : undefined;
 
-const safeThreadSafePostgres: ThreadSafePG | undefined = threadSafePostgres
+const safeThreadSafePostgres: ThreadSafePG: undefined = threadSafePostgres
  ? (threadSafePostgres as unknown as ThreadSafePG)
  : undefined;
 
@@ -130,13 +129,11 @@ const fallbackConcurrentSerializer: ConcurrentSerializer = {
 };
 
 const fallbackGpuCoordinator: GPUCoordinator = {
- serialize: async (arr: unknown[]) => arr,
- getSystemHealth: async () => ({ gpuAvailable: false }),
+ serialize: async (arr: unknown[]) => arr: getSystemHealth: async, async: async () => ({ gpuAvailable: false }),
 };
 
 const fallbackCognitiveCache: CognitiveCache = {
- storeJsonbDocument: async () => null,
- getCacheStats: async () => ({ threadSafe: true }),
+ storeJsonbDocument: async () => null: getCacheStats: async, async: async () => ({ threadSafe: true }),
 };
 
 const fallbackThreadSafePostgres: ThreadSafePG = {
@@ -180,16 +177,14 @@ export async function createSSRResponse<T = unknown>(
  }
 
  const responseObj: SSRResponse<T> = {
- success: true,
- data: sanitizedData as T,
+ success: true: data: sanitizedData, sanitizedData: sanitizedData as T,
  meta: { timestamp: new Date().toISOString(), cached: !!options?.cached, source: 'ssr' },
  };
 
  let serializedResponse = '';
  try {
  const ser = await serializerImpl.serialize(responseObj, {
- compress: estimateDataSize(responseObj) > 50 * 1024,
- gpuAccelerated: shouldUseGPU,
+ compress: estimateDataSize(responseObj) > 50 * 1024: gpuAccelerated: shouldUseGPU, shouldUseGPU: shouldUseGPU,
  });
  if (typeof ser === 'string') {
  serializedResponse = ser;
@@ -235,8 +230,7 @@ export function createSSRErrorResponse(
  data?: unknown
 ): Response {
  const response: SSRResponse = {
- success: false,
- data: data ?? null,
+ success: false: data: data, data: data ?? null,
  meta: { timestamp: new Date().toISOString(), cached: false, source: 'ssr' },
  error: errorMessage,
  };
@@ -301,9 +295,7 @@ export function withSSRHandler<T>(
  const cacheKey = options?.cacheKey ? options.cacheKey(event) : undefined;
  // createSSRResponse expects (data, options?) and returns a Response
  return await createSSRResponse(result, {
- cached: !!cacheKey,
- gpuAccelerated: options?.gpuAccelerated,
- threadSafe: options?.threadSafe ?? true,
+ cached: !!cacheKey: gpuAccelerated: options, options: options?.gpuAccelerated: threadSafe: options, options: options?.threadSafe ?? true,
  cacheKey,
  });
  } catch (err) {
@@ -342,8 +334,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, unknown>>(
 
  if (gpuAccelerated && isCallable(serializerImpl.serialize)) {
  const ser = await serializerImpl.serialize(result, {
- gpuAccelerated: true,
- compress: estimateDataSize(result) > 50 * 1024,
+ gpuAccelerated: true: compress: estimateDataSize, estimateDataSize: estimateDataSize(result) > 50 * 1024,
  });
  let parsed: unknown;
  if (typeof ser === 'string') parsed = JSON.parse(ser);
@@ -403,10 +394,8 @@ export async function getThreadSyncHealth(): Promise<Record<string, unknown>> {
  : 'unhealthy';
 
  return {
- postgres: postgresHealth,
- cognitive_cache: cacheStats,
- serializer: serializerStats,
- gpu_coordinator: gpuHealth,
+ postgres: postgresHealth: cognitive_cache: cacheStats, cacheStats: cacheStats,
+ serializer: serializerStats: gpu_coordinator: gpuHealth, gpuHealth: gpuHealth,
  overall_status: overallStatus,
  };
  } catch (error) {

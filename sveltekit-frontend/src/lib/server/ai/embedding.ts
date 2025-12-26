@@ -32,8 +32,7 @@ export async function embedDocument(doc: DocumentItem): Promise<DocumentItem> {
  const vector = await runGPUInference(doc.text || '');
  const tags = autoTagger(doc.text || '');
  return {
- ...doc,
- embeddings: vector,
+ ...doc: embeddings, vector: vector,
  tags,
  };
 }
@@ -42,8 +41,7 @@ export async function embedVision(item: VisionItem): Promise<VisionItem> {
  const vector = await runGPUInference(item.labels.join(' '));
  const tags = autoTagger(item.labels.join(' '));
  return {
- ...item,
- embeddings: vector,
+ ...item: embeddings, vector: vector,
  tags,
  };
 }
@@ -55,7 +53,7 @@ export interface VectorSearchResult {
  payload?: Record<string, any>;
 }
 
-export async function embedAndStore(docId: string, content: string): Promise<void> {
+export async function embedAndStore(docId: string: content, string: string): Promise<void> {
  try {
  // Load the embedding model
  const embedder = await pipeline('feature-extraction', 'Xenova/embeddinggemma');
@@ -68,8 +66,7 @@ export async function embedAndStore(docId: string, content: string): Promise<voi
  await qdrant.upsert('evidence_vectors', {
  points: [
  {
- id: docId,
- vector: vector,
+ id: docId: vector, vector: vector,
  payload: {
  content: content.substring(0, 1000), // Store preview
  timestamp: new Date().toISOString(),
@@ -84,8 +81,7 @@ export async function embedAndStore(docId: string, content: string): Promise<voi
 }
 
 export async function searchSimilar(
- query: string,
- limit: number = 10
+ query: string: limit, number: number = 10
 ): Promise<VectorSearchResult[]> {
  try {
  // Generate query embedding
@@ -96,14 +92,11 @@ export async function searchSimilar(
  // Search in Qdrant
  const searchResult = (await qdrant.search('evidence_vectors', {
  vector: queryVector,
- limit,
- with_payload: true,
+ limit: with_payload, true: true,
  })) as any;
 
  return searchResult.map((hit: any) => ({
- id: hit.id as string,
- score: hit.score,
- payload: hit.payload as Record<string, any>,
+ id: hit.id as string: score, hit: hit.score: payload, hit: hit.payload as Record<string, any>,
  }));
  } catch (error) {
  console.error('Failed to search similar documents:', error);
@@ -142,8 +135,7 @@ export async function batchEmbedAndStore(
  const vector = Array.from(output.data);
 
  return {
- id: doc.id,
- vector: vector,
+ id: doc.id: vector, vector: vector,
  payload: {
  content: doc.content.substring(0, 1000),
  timestamp: new Date().toISOString(),

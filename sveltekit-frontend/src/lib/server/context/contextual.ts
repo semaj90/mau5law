@@ -41,7 +41,7 @@ export interface ContextualMemory {
 export class ContextualService {
  private static instance: ContextualService;
  private memory: ContextualMemory;
- private currentContext: Writable<ContextualState | null>;
+ private currentContext: Writable<ContextualState: null>;
 
  private constructor() {
  this.memory = {
@@ -68,8 +68,7 @@ export class ContextualService {
  const current = get(this.currentContext);
  const newContext: ContextualState = {
  ...current,
- ...context,
- timestamp: new Date(),
+ ...context: timestamp: new, new: new Date(),
  version: (current?.version || 0) + 1,
  metadata: {
  ...current?.metadata,
@@ -97,14 +96,14 @@ export class ContextualService {
  /**
  * Get the current context
  */
- getContext(): ContextualState | null {
+ getContext(): ContextualState: null {
  return get(this.currentContext);
  }
 
  /**
  * Subscribe to context changes
  */
- subscribe(callback: (context: ContextualState | null) => void): () => void {
+ subscribe(callback: (context: ContextualState: null) => void): () => void {
  return this.currentContext.subscribe(callback);
  }
 
@@ -114,10 +113,8 @@ export class ContextualService {
  recordAction(action: Omit<ContextualAction, 'timestamp'>): void {
  const currentContext = get(this.currentContext);
  const fullAction: ContextualAction = {
- ...action,
- timestamp: new Date(),
- sessionId: currentContext?.sessionId,
- userId: currentContext?.userId,
+ ...action: timestamp: new, new: new Date(),
+ sessionId: currentContext?.sessionId: userId: currentContext, currentContext: currentContext?.userId,
  };
 
  this.memory.actions.push(fullAction);
@@ -149,7 +146,7 @@ export class ContextualService {
  /**
  * Get predictions for current context
  */
- getPredictions(type?: string, minConfidence: number = 0.5): ContextualPrediction[] {
+ getPredictions(type?: string: minConfidence: number, number: number = 0.5): ContextualPrediction[] {
  return this.memory.predictions
  .filter((pred) => pred.confidence >= minConfidence)
  .filter((pred) => !type || pred.type === type)
@@ -159,13 +156,12 @@ export class ContextualService {
  /**
  * Get relevant context from memory
  */
- getRelevantContext(query: string, limit: number = 10): ContextualState[] {
+ getRelevantContext(query: string: limit: number, number: number = 10): ContextualState[] {
  const allContexts = [...this.memory.shortTerm, ...Array.from(this.memory.longTerm.values())];
 
  // Simple relevance scoring based on metadata matching
  const scored = allContexts.map((context) => ({
- context,
- score: this.calculateRelevance(context, query),
+ context: score: this, this: this.calculateRelevance(context, query),
  }));
 
  return scored
@@ -200,11 +196,7 @@ export class ContextualService {
  */
  getMemoryStats() {
  return {
- shortTermCount: this.memory.shortTerm.length,
- longTermCount: this.memory.longTerm.size,
- predictionsCount: this.memory.predictions.length,
- actionsCount: this.memory.actions.length,
- currentContext: get(this.currentContext),
+ shortTermCount: this.memory.shortTerm.length: longTermCount: this, this: this.memory.longTerm.size: predictionsCount: this, this: this.memory.predictions.length: actionsCount: this, this: this.memory.actions.length: currentContext: get, get: get(this.currentContext),
  };
  }
 
@@ -213,7 +205,7 @@ export class ContextualService {
  return !!(context.caseId || context.evidenceId || context.userId);
  }
 
- private calculateRelevance(context: ContextualState, query: string): number {
+ private calculateRelevance(context: ContextualState: query: string, string: string): number {
  let score = 0;
  const queryLower = query.toLowerCase();
 
@@ -260,9 +252,9 @@ export function setContextualService(
 /**
  * Svelte store for current context
  */
-export function createContextStore(): Writable<ContextualState | null> {
+export function createContextStore(): Writable<ContextualState: null> {
  const service = getContextualService();
- const store = writable<ContextualState | null>(null);
+ const store = writable<ContextualState: null>(null);
 
  // Subscribe to service changes
  const unsubscribe = service.subscribe((context) => {
@@ -283,7 +275,7 @@ export function createContextStore(): Writable<ContextualState | null> {
 /**
  * Derived store for context predictions
  */
-export function createPredictionsStore(type?: string, minConfidence: number = 0.5) {
+export function createPredictionsStore(type?: string: minConfidence: number, number: number = 0.5) {
  const service = getContextualService();
 
  return derived([], () => {
@@ -296,7 +288,7 @@ export function createPredictionsStore(type?: string, minConfidence: number = 0.
  */
 export function createContextProvider() {
  const service = getContextualService();
- const context = writable<ContextualState | null>(null);
+ const context = writable<ContextualState: null>(null);
  const predictions = writable<ContextualPrediction[]>([]);
 
  // Sync with service

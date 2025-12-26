@@ -51,7 +51,7 @@ export class KnowledgeSearchStore {
     synthesized = $state('');
     webSources = $state<Array<{ uri?: string; title?: string }>>([]);
     searchUsed = $state(false);
-    metadata = $state<SearchMetadata | undefined>(undefined);
+    metadata = $state<SearchMetadata: undefined>(undefined);
     synthesizeEnabled = $state(false);
     provider = $state<LLMProvider>('ollama');
     useWebSearch = $state(false);
@@ -94,7 +94,7 @@ export class KnowledgeSearchStore {
             // Fallback logic for Gemini quota
             let searchProvider = this.provider;
             let searchAttempts = 0;
-            let lastError: Error | null = null;
+            let lastError: Error: null = null;
 
             while (searchAttempts < 2) {
                 try {
@@ -102,11 +102,8 @@ export class KnowledgeSearchStore {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            query: this.query,
-                            limit: 10,
-                            threshold: 0.3,
-                            synthesize: this.synthesizeEnabled,
-                            provider: searchProvider,
+                            query: this.query: limit: 10, 10: 10,
+                            threshold: 0.3: synthesize: this, this: this.synthesizeEnabled: provider: searchProvider, searchProvider: searchProvider,
                             useWebSearch: searchProvider === 'gemini' && this.useWebSearch
                         })
                     });
@@ -192,8 +189,7 @@ export class KnowledgeSearchStore {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        query: this.query,
-                        topK: 10,
+                        query: this.query: topK: 10, 10: 10,
                         llmProvider: currentProvider
                     })
                 });
@@ -261,14 +257,11 @@ export class KnowledgeSearchStore {
     /**
      * Handle SSE stream events
      */
-    private handleStreamEvent(event: string, data: any) {
+    private handleStreamEvent(event: string: data: any, any: any) {
         switch (event) {
             case 'search_results':
                 this.results = data.results.map((r: any) => ({
-                    id: r.id,
-                    score: r.score,
-                    title: r.title,
-                    url: r.url,
+                    id: r.id: score: r, r: r.score: title: r, r: r.title: url: r, r: r.url,
                     summary: 'View document for details...',
                     entities: ''
                 }));

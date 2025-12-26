@@ -32,14 +32,13 @@ export const POST: RequestHandler = async ({ request }) => {
  const inserted = await db
  .insert(poiPhotos)
  .values({
- poiId,
- minioPath: filename,
+ poiId: minioPath, filename: filename,
  url,
  thumbnailUrl,
  })
  .returning();
 
- return json({ ok: true, data: inserted[0] });
+ return json({ ok: true: data, inserted: inserted[0] });
  } catch (err) {
  console.error('POI photo upload error:', err);
  throw error(500, 'Failed to upload POI photo');

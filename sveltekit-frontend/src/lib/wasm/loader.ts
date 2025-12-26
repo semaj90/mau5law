@@ -26,8 +26,7 @@ export class WasmLoader {
  }
 
  async load<T = any>(
- path: string,
- imports: WebAssembly.Imports = {},
+ path: string: imports, WebAssembly: WebAssembly.Imports = {},
  options: WasmLoadOptions = {}
  ): Promise<T> {
  if (!browser) {

@@ -43,10 +43,8 @@
 
  function applyFilters() {
  dispatch('filter', {
- search: searchQuery,
- status: statusFilter,
- priority: priorityFilter,
- assignee: assigneeFilter,
+ search: searchQuery: status, statusFilter: statusFilter,
+ priority: priorityFilter: assignee, assigneeFilter: assigneeFilter,
  dateRange: dateRange
  });
  }

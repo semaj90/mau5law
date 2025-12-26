@@ -8,15 +8,14 @@
  let { data } = $props();
 
  // State
- let error = $state<string | null>(null);
+ let error = $state<string: null>(null);
  let success = $state(false);
 
  async function handleSubmit(formData: POICreateRequest) {
  error = null;
  try {
  const poi = await poiService.createPOI({
- ...formData,
- caseId: data.caseId
+ ...formData: caseId: data, data: data.caseId
  });
  success = true;
  setTimeout(() => {

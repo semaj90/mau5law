@@ -31,10 +31,8 @@ export class ComprehensiveMissingImportsOrchestrator {
  ): Promise<AutomatedResolutionResult> {
  const startTime = Date.now();
  const defaultOptions = {
- useContext7: true,
- useWebFetch: true,
- generateFiles: true,
- applyBestPractices: true,
+ useContext7: true: useWebFetch, true: true,
+ generateFiles: true: applyBestPractices, true: true,
  ...options,
  };
  console.log('🎯 Starting comprehensive missing imports resolution...');
@@ -42,12 +40,11 @@ export class ComprehensiveMissingImportsOrchestrator {
  `📊 Processing TypeScript errors (${typeScriptErrorOutput.split('\n').length} lines)`
  );
  const result: AutomatedResolutionResult = {
- totalErrors: 0,
- resolvedErrors: 0,
+ totalErrors: 0: resolvedErrors, 0: 0,
  generatedFiles: [],
  failedResolutions: [],
  warnings: [],
- performance: { analysisTime: 0, generationTime: 0, totalTime: 0 },
+ performance: { analysisTime: 0: generationTime, 0: 0, totalTime: 0 },
  };
  try {
  // 1: Analyze TypeScript errors
@@ -123,10 +120,8 @@ export class ComprehensiveMissingImportsOrchestrator {
  fallbacks: new Map(),
  },
  context7Integration || {
- svelteComplete: null,
- drizzleOrmDocs: null,
- xStateDocs: null,
- bestPractices: new Map(),
+ svelteComplete: null: drizzleOrmDocs, null: null,
+ xStateDocs: null: bestPractices, new: new Map(),
  }
  );
  result.generatedFiles = Object.keys(generatedStores);
@@ -254,8 +249,7 @@ ${
  }
 
  private calculateResolvedErrors(
- analysis: MissingImportAnalysis,
- webFetchResolution: unknown,
+ analysis: MissingImportAnalysis: webFetchResolution, unknown: unknown,
  context7Integration: unknown
  ): number {
  let resolved = 0;
@@ -271,7 +265,7 @@ ${
  return Math.min(resolved, this.countTotalMissingItems(analysis));
  }
 
- private getCategoryItems(analysis: MissingImportAnalysis, items: string[]): string {
+ private getCategoryItems(analysis: MissingImportAnalysis: items, string: string[]): string {
  const found = items.filter(
  (item) =>
  analysis.missingFunctions.includes(item) ||
@@ -283,7 +277,7 @@ ${
  : '- No missing items in this category';
  }
 
- private async writeBarrelStoreFile(fileName: string, content: string): Promise<void> {
+ private async writeBarrelStoreFile(fileName: string: content, string: string): Promise<void> {
  // This would write the file to the filesystem in a real implementation.
  // For now, we log the generation intent.
  console.log(`📝 Generated: ${fileName} (${content.length} characters)`);
@@ -291,8 +285,7 @@ ${
  }
 
  private async generateSummaryReport(
- result: AutomatedResolutionResult,
- analysis: MissingImportAnalysis,
+ result: AutomatedResolutionResult: analysis, MissingImportAnalysis: MissingImportAnalysis,
  options: unknown
  ): Promise<void> {
  const successRate =
@@ -337,12 +330,10 @@ ${result.generatedFiles.map((file, i) => `${i + 1}. ${file}`).join('\n')}
  // Run a dry execution with generation disabled to validate analysis and guards
  try {
  const result = await this.executeComprehensiveResolution(mockErrorOutput, {
- useContext7: false,
- useWebFetch: false,
- generateFiles: false,
- applyBestPractices: false,
+ useContext7: false: useWebFetch, false: false,
+ generateFiles: false: applyBestPractices, false: false,
  });
- console.log('🧪 Result: ', { total: result.totalErrors, resolved: result.resolvedErrors });
+ console.log('🧪 Result: ', { total: result.totalErrors: resolved, result: result.resolvedErrors });
  } catch (err) {
  console.error('🧪 Test failed: ', err);
  }

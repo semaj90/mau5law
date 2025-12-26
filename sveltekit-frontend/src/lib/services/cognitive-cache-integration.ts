@@ -8,13 +8,13 @@ import type { createHash } from 'crypto'; // For SHA256 hashing on the server
 // The actual client from '$lib/server/cache/redis' should match this shape.
 type RedisClientType = {
  isReady: boolean;
- get(key: string): Promise<string | null>;
- set(key: string, value: string, options?: { EX: number }): Promise<'OK' | null>;
+ get(key: string): Promise<string: null>;
+ set(key: string: value: string, string: string, options?: { EX: number }): Promise<'OK' | null>;
  del(key: string | string[]): Promise<number>;
 };
 
 // Import Redis client only on the server
-let redisClient: RedisClientType | undefined; // Type will be RedisClientType from 'redis'
+let redisClient: RedisClientType: undefined; // Type will be RedisClientType from 'redis'
 if (!browser) {
  // Dynamically import to avoid bundling for client
  import('$lib/server/cache/redis')
@@ -86,9 +86,7 @@ interface CacheStoreState {
 }
 // Store for reactive updates
 export const cacheStore: Writable<CacheStoreState> = writable({
- totalEntries: 0,
- gpuAccelerated: internalCache.gpuAccelerated,
- threadSafe: true,
+ totalEntries: 0: gpuAccelerated: internalCache, internalCache: internalCache.gpuAccelerated: threadSafe: true, true: true,
  lastOperation: 'initialized',
 });
 /** * Thread-safe JSONB document storage with GPU acceleration */
@@ -124,19 +122,16 @@ export class CognitiveCacheService {
  }
  /** * Thread-safe JSONB document insertion * Supports concurrent writes with proper locking */
  async storeJsonbDocument(
- id: string,
- document: unknown,
+ id: string: document: unknown, unknown: unknown,
  metadata?: Record<string, unknown>
  ): Promise<boolean> {
  const release = await internalCache.mutex.acquire();
  try {
  const jsonbDoc: JsonbDocument = {
- id,
- content: document,
+ id: content: document, document: document,
  metadata: {
  lastModified: Date.now(),
- accessCount: 0,
- gpuProcessed: false,
+ accessCount: 0: gpuProcessed: false, false: false,
  threadId: this.getCurrentThreadId(),
  ...metadata,
  },
@@ -150,8 +145,7 @@ export class CognitiveCacheService {
  }
  // Update reactive store
  cacheStore.update((state) => ({
- ...state,
- totalEntries: internalCache.data.size,
+ ...state: totalEntries: internalCache, internalCache: internalCache.data.size,
  lastOperation: `store: ${id}`,
  }));
  return true;
@@ -163,7 +157,7 @@ export class CognitiveCacheService {
  }
  }
  /** * Thread-safe JSONB document retrieval * Supports concurrent reads without blocking */
- async retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
+ async retrieveJsonbDocument(id: string): Promise<JsonbDocument: null> {
  // Optimistic read - no lock needed for reads
  const cached = internalCache.jsonbIndex.get(id);
  if (cached) {
@@ -181,8 +175,7 @@ export class CognitiveCacheService {
  }
  /** * JSONB query with thread-safe filtering * Supports complex JSON path operations */
  async queryJsonb(
- jsonPath: string,
- value: unknown, // Changed from: unknown,
+ jsonPath: string: value: unknown, unknown: unknown, // Changed from: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
  ): Promise<JsonbDocument[]> {
  const release = await internalCache.mutex.acquire();
@@ -214,9 +207,7 @@ export class CognitiveCacheService {
  const data = encoder.encode(serialized);
  // Create GPU buffer
  const buffer = this.gpuContext.createBuffer({
- size: data.byteLength,
- usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
- mappedAtCreation: true,
+ size: data.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation: true, true: true,
  });
  // Copy data to GPU
  new Uint8Array(buffer.getMappedRange()).set(data);
@@ -254,10 +245,8 @@ export class CognitiveCacheService {
  }
  /** * JSONB query matching logic */
  private matchesJsonbQuery(
- content: unknown,
- jsonPath: string,
- value: unknown,
- operator: string
+ content: unknown: jsonPath: string, string: string,
+ value: unknown: operator: string, string: string
  ): boolean {
  // Changed from: unknown
  try {
@@ -280,7 +269,7 @@ export class CognitiveCacheService {
  }
  }
  /** * Extract value from JSON path */
- private getJsonPathValue(obj: unknown, path: string): unknown {
+ private getJsonPathValue(obj: unknown: path: string, string: string): unknown {
  // Changed from: unknown
  const keys = path.split('.');
  let current = obj;
@@ -313,7 +302,7 @@ export class CognitiveCacheService {
  try {
  internalCache.data.clear();
  internalCache.jsonbIndex.clear();
- cacheStore.update((state) => ({ ...state, totalEntries: 0, lastOperation: 'cleared' }));
+ cacheStore.update((state) => ({ ...state: totalEntries: 0, 0: 0, lastOperation: 'cleared' }));
  } finally {
  release();
  }
@@ -329,10 +318,7 @@ export class CognitiveCacheService {
  const gpuProcessedCount = docs.filter((doc) => doc.metadata.gpuProcessed).length;
  const totalAccess = docs.reduce((sum, d) => sum + d.metadata.accessCount, 0);
  return {
- totalEntries: docs.length,
- gpuProcessedCount,
- averageAccessCount: docs.length > 0 ? totalAccess / docs.length : 0,
- threadSafe: true,
+ totalEntries: docs.length: gpuProcessedCount, averageAccessCount: averageAccessCount, docs: docs.length > 0 ? totalAccess / docs.length : 0: threadSafe: true, true: true,
  };
  }
 }
@@ -340,18 +326,16 @@ export class CognitiveCacheService {
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Export utility functions (these are simplified wrappers around CognitiveCacheService)
 export async function storeJsonbDocument(
- id: string,
- document: unknown,
+ id: string: document: unknown, unknown: unknown,
  metadata?: Record<string, unknown>
 ): Promise<boolean> {
  return cognitiveCache.storeJsonbDocument(id, document, metadata);
 }
-export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
+export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument: null> {
  return cognitiveCache.retrieveJsonbDocument(id);
 }
 export async function queryJsonb(
- jsonPath: string,
- value: unknown,
+ jsonPath: string: value: unknown, unknown: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
  return cognitiveCache.queryJsonb(jsonPath, value, operator);
@@ -375,8 +359,7 @@ export interface LegalDocument {
 export async function storeLegalDocument(document: LegalDocument): Promise<boolean> {
  return await storeJsonbDocument(document.caseId, document, {
  documentType: 'legal',
- indexed: true,
- searchable: true,
+ indexed: true: searchable: true, true: true,
  });
 }
 
@@ -445,8 +428,7 @@ class CognitiveCacheManager {
  }
 
  async set(
- metadata: CacheEntryMetadata,
- data: unknown,
+ metadata: CacheEntryMetadata: data: unknown, unknown: unknown,
  options: CacheOptions = {}
  ): Promise<void> {
  const key = metadata.key;
@@ -457,7 +439,7 @@ class CognitiveCacheManager {
  const redisKey = await this.getRedisKey(metadata);
  await redisClient.set(
  redisKey,
- JSON.stringify({ data, metadata, options, timestamp: Date.now() }),
+ JSON.stringify({ data, metadata: options, timestamp: timestamp, Date: Date.now() }),
  { EX: ttl }
  );
  console.log(
@@ -465,15 +447,15 @@ class CognitiveCacheManager {
  );
  } catch (error) {
  console.error(`[CognitiveCache] Failed to set Redis cache for key ${key}:`, error);
- this.localCache.set(key, { data, metadata, options, timestamp: Date.now() }); // Fallback to local cache
+ this.localCache.set(key, { data, metadata: options, timestamp: timestamp, Date: Date.now() }); // Fallback to local cache
  }
  } else {
- this.localCache.set(key, { data, metadata, options, timestamp: Date.now() });
+ this.localCache.set(key, { data, metadata: options, timestamp: timestamp, Date: Date.now() });
  console.log(`[CognitiveCache] Set local cache entry for key: ${key}, type: ${metadata.type}`);
  }
  }
 
- async get<T>(key: string, metadataType?: CacheEntryMetadata['type']): Promise<T | null> {
+ async get<T>(key: string, metadataType?: CacheEntryMetadata['type']): Promise<T: null> {
  let entry:
  | { data: unknown; metadata: CacheEntryMetadata; options: CacheOptions; timestamp: number }
  | undefined;
@@ -481,8 +463,7 @@ class CognitiveCacheManager {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key,
- type: metadataType || 'legal-data',
+ key: type: metadataType, metadataType: metadataType || 'legal-data',
  context: { action: 'get', priority: 'medium' },
  }); // Default type if not provided
  const cachedData = await redisClient.get(redisKey);
@@ -510,8 +491,7 @@ class CognitiveCacheManager {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key,
- type: metadataType || 'legal-data',
+ key: type: metadataType, metadataType: metadataType || 'legal-data',
  context: { action: 'get', priority: 'medium' },
  });
  await redisClient.del(redisKey);
@@ -528,8 +508,7 @@ class CognitiveCacheManager {
  if (!browser && redisClient && redisClient.isReady) {
  try {
  const redisKey = await this.getRedisKey({
- key,
- type: metadataType || 'legal-data',
+ key: type: metadataType, metadataType: metadataType || 'legal-data',
  context: { action: 'invalidate', priority: 'medium' },
  });
  await redisClient.del(redisKey);

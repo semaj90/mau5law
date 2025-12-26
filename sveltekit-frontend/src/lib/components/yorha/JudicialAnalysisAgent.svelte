@@ -40,7 +40,7 @@
  }
 
  let { caseId = null, evidence = [], charges = [], jurisdiction = 'federal' } = $props<{
- caseId?: string | null;
+ caseId?: string: null;
  evidence?: Evidence[];
  charges?: string[];
  jurisdiction?: 'federal' | 'state' | 'local';
@@ -49,7 +49,7 @@
  const dispatch = createEventDispatcher();
 
  let isAnalyzing = $state(false);
- let analysis = $state <JudicialAnalysis | null>(null);
+ let analysis = $state <JudicialAnalysis: null>(null);
  let activeTab = $state <'overview' | 'admissibility' | 'probable-cause' | 'case-strength' | 'recommendations'>('overview');
 
  async function performAnalysis() {

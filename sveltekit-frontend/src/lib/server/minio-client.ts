@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { env } from '$lib/env';
 import { Client } from 'minio';
 
 // Centralized MinIO client initialization

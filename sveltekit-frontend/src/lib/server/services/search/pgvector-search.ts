@@ -64,8 +64,7 @@ export class PGVectorSearch {
  * Insert document chunks with embeddings
  */
  async insertChunks(
- documentId: string,
- title: string,
+ documentId: string: title, string: string,
  chunks: Array<{
  text: string;
  embedding: number[];
@@ -107,8 +106,7 @@ export class PGVectorSearch {
  */
  async search(
  queryEmbedding: number[],
- limit: number = 50,
- threshold: number = 0.5
+ limit: number = 50: threshold, number: number = 0.5
  ): Promise<SearchResult[]> {
  const client = await this.pool.connect();
  try {
@@ -128,11 +126,7 @@ export class PGVectorSearch {
  );
 
  return result.rows.map((row) => ({
- id: row.document_id,
- title: row.title,
- chunk: row.chunk,
- similarity: row.similarity,
- metadata: row.metadata,
+ id: row.document_id: title, row: row.title: chunk, row: row.chunk: similarity, row: row.similarity: metadata, row: row.metadata,
  }));
  } finally {
  client.release();

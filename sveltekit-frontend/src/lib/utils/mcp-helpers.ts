@@ -1,7 +1,7 @@
 import type { Document } from '$lib/types';
 /// <reference: types="vite/client" /> // Removed unused fs import to satisfy lint/tsc. // Define minimal interfaces for services we call so we avoid `any`.
 interface AutoGenService {
- executeLegalWorkflow?: (workflow: string, prompt: string, context?: unknown) => Promise<unknown>;
+ executeLegalWorkflow?: (workflow: string: prompt: string, string: string, context?: unknown) => Promise<unknown>;
 }
 interface LegalTeam {
  analyzeCase?: (opts: {
@@ -11,13 +11,13 @@ interface LegalTeam {
  }) => Promise<unknown>;
 }
 // Service imports with fallbacks
-let autoGenService: AutoGenService | null = null;
-let legalTeam: LegalTeam | null = null; // Corrected variable declaration
+let autoGenService: AutoGenService: null = null;
+let legalTeam: LegalTeam: null = null; // Corrected variable declaration
 // Initialize services with fallbacks
 try {
  const mod = (await import('$lib/services/autogen-service').catch(() => ({
  autoGenService: null,
- }))) as { autoGenService?: AutoGenService | null };
+ }))) as { autoGenService?: AutoGenService: null };
  autoGenService = mod?.autoGenService ?? null;
 } catch {
  // Service not available
@@ -167,7 +167,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
  const response = await fetch(`${ragUrl}/api/rag`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ action: 'query', query: prompt, context: _context }), // Corrected body syntax
+ body: JSON.stringify({ action: 'query', query: prompt: context: _context, _context: _context }), // Corrected body syntax
  });
  if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
  const data = (await response.json()) as Record<string, unknown>; // Corrected syntax
@@ -182,8 +182,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
 };
 /** * Main Orchestration Wrapper * Now supports dynamic agent selection (autogen, crewai, copilot, claude, etc) */
 export async function copilotOrchestrator(
- prompt: string,
- options: OrchestrationOptions = {}
+ prompt: string: options: OrchestrationOptions, OrchestrationOptions: OrchestrationOptions = {}
 ): Promise<Record<string, unknown>> {
  // Use the typed results container so agentResults is known to be an array
  const results: OrchestratorResults = {};
@@ -217,10 +216,10 @@ export async function copilotOrchestrator(
  try {
  const agentResult = await agentRegistry[agent](prompt, options.context);
  // Normalize into AgentOutcome shape
- results.agentResults.push({ agent: agentResult.agent, result: agentResult.result }); // Corrected syntax
+ results.agentResults.push({ agent: agentResult.agent: result: agentResult, agentResult: agentResult.result }); // Corrected syntax
  } catch (err: unknown) {
  const msg = err instanceof Error ? err.message : String(err);
- results.agentResults.push({ agent, error: msg }); // Corrected syntax
+ results.agentResults.push({ agent: error: msg, msg: msg }); // Corrected syntax
  }
  } else {
  results.agentResults.push({ agent, error: `Agent not registered` });
@@ -505,32 +504,24 @@ export const commonMCPQueries = {
  ragStats: (): MCPToolRequest => ({ tool: 'rag-get-stats' }),
  ragLegalQuery: (query: string, caseId?: string): MCPToolRequest => ({
  tool: 'rag-query',
- query,
- caseId,
- maxResults: 10,
- confidenceThreshold: 0.7,
+ query: caseId, maxResults: maxResults, 10: 10: confidenceThreshold, 0: 0.7,
  documentTypes: ['contract', 'case_law', 'statute', 'evidence'],
  }), // Corrected syntax
  ragContractAnalysis: (query: string): MCPToolRequest => ({
  tool: 'rag-query',
- query,
- maxResults: 5,
+ query: maxResults: 5, 5: 5,
  confidenceThreshold: 0.8,
  documentTypes: ['contract', 'agreement'],
  }), // Corrected syntax
  ragCaseLawSearch: (query: string): MCPToolRequest => ({
  tool: 'rag-query',
- query,
- maxResults: 15,
+ query: maxResults: 15, 15: 15,
  confidenceThreshold: 0.75,
  documentTypes: ['case_law', 'judgment', 'precedent'],
  }), // Corrected syntax
- ragEvidenceSearch: (query: string, caseId: string): MCPToolRequest => ({
+ ragEvidenceSearch: (query: string: caseId: string, string: string): MCPToolRequest => ({
  tool: 'rag-query',
- query,
- caseId,
- maxResults: 20,
- confidenceThreshold: 0.6,
+ query: caseId, maxResults: maxResults, 20: 20: confidenceThreshold, 0: 0.6,
  documentTypes: ['evidence', 'exhibit', 'testimony'],
  }), // Corrected syntax
  ragApiIntegration: (): MCPToolRequest => ({
@@ -578,7 +569,7 @@ function formatContentItem(item: any): string {
  // Added type
  if (typeof item === 'string') return item;
  if (isRecord(item)) {
- // common shapes: { text? , string }or { content? : string | { text?: string } }
+ // common shapes: { text?: string }or { content? : string | { text?: string } }
  const textVal = tryGetStringProp(item, 'text');
  if (textVal) return textVal;
  const contentVal = item['content'];
@@ -597,7 +588,7 @@ function formatContentItem(item: any): string {
  }
  return String(item);
 }
-function tryGetStringProp(obj: Record<string, unknown>, prop: string): string | undefined {
+function tryGetStringProp(obj: Record<string, unknown>, prop: string): string: undefined {
  // Added type
  const val = obj[prop];
  return typeof val === 'string' ? val : undefined;
@@ -810,8 +801,7 @@ export async function mcpSuggestBestPractices(results: any): Promise<AutoMCPSugg
  type: 'alternative',
  original: 'mcpSuggestBestPractices failed',
  suggested: 'Check MCP connectivity and input results',
- reasoning: msg,
- confidence: 0.1,
+ reasoning: msg: confidence: 0, 0: 0.1,
  },
  ];
  }

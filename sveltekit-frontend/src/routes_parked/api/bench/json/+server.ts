@@ -26,8 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const t3 = performance.now();
 
  return json({
- iterations,
- bytes: payload.length,
+ iterations: bytes, payload: payload.length,
  baseline_ms: +(t1 - t0).toFixed(3),
  fast_ms: +(t3 - t2).toFixed(3),
  speedup: +((t1 - t0) / Math.max(1e-6, t3 - t2)).toFixed(3),

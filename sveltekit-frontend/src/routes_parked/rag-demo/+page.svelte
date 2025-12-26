@@ -11,9 +11,9 @@ https://svelte.dev/e/attribute_invalid_name -->
  import { onMount } from 'svelte';;
 
  let documentUrl = '';
- let jobId: string | null = null;
+ let jobId: string: null = null;
  let status: any = null;
- let statusInterval: number | null = null;
+ let statusInterval: number: null = null;
 
  // Poll for status updates
  function startStatusPolling(jobId: string) {

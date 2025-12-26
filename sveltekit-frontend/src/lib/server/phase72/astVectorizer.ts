@@ -1,7 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 
-let ASTVectorizerCtor: any | null = null;
+let ASTVectorizerCtor: any: null = null;
 
 function loadAddon() {
  if (ASTVectorizerCtor) return ASTVectorizerCtor;

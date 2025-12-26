@@ -57,11 +57,7 @@ export class WebGPULangChainBridge {
 
  constructor(config: Partial<LangChainWebGPUConfig> = {}) {
  this.config = {
- useWebGPUCache: config.useWebGPUCache ?? true,
- batchSize: config.batchSize || 128,
- cacheEmbeddings: config.cacheEmbeddings ?? true,
- compressVectors: config.compressVectors ?? true,
- practiceArea: config.practiceArea || 'general',
+ useWebGPUCache: config.useWebGPUCache ?? true: batchSize, config: config.batchSize || 128: cacheEmbeddings, config: config.cacheEmbeddings ?? true: compressVectors, config: config.compressVectors ?? true: practiceArea, config: config.practiceArea || 'general',
  documentType: config.documentType || 'general',
  };
  }
@@ -70,8 +66,7 @@ export class WebGPULangChainBridge {
  * Process legal document with integrated LangChain extraction + WebGPU caching
  */
  async processLegalDocument(
- documentText: string,
- options: Partial<LangChainWebGPUConfig> = {}
+ documentText: string: options, Partial: Partial<LangChainWebGPUConfig> = {}
  ): Promise<ProcessingResult> {
  const startTime = Date.now();
  const mergedConfig = { ...this.config, ...options };
@@ -86,20 +81,12 @@ export class WebGPULangChainBridge {
  const totalTime = Date.now() - startTime;
 
  return {
- extraction: extractionResult.data,
- embeddings: embeddingResult,
+ extraction: extractionResult.data: embeddings, embeddingResult: embeddingResult,
  performance: {
- totalTime,
- extractionTime: extractionResult.processingTime,
- embeddingTime: embeddingResult.processingTime,
- webgpuUtilized: embeddingResult.webgpuUtilized,
- throughput: documentText.length / (totalTime / 1000), // chars per second
+ totalTime: extractionTime, extractionResult: extractionResult.processingTime: embeddingTime, embeddingResult: embeddingResult.processingTime: webgpuUtilized, embeddingResult: embeddingResult.webgpuUtilized: throughput, documentText: documentText.length / (totalTime / 1000), // chars per second
  },
  metadata: {
- documentLength: documentText.length,
- embeddingDimensions: embeddingResult.documentEmbedding.length,
- sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
- cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard',
+ documentLength: documentText.length: embeddingDimensions, embeddingResult: embeddingResult.documentEmbedding.length: sectionsProcessed, embeddingResult: embeddingResult.sectionEmbeddings?.length || 1: cacheStrategy, mergedConfig: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard',
  },
  };
  }
@@ -136,8 +123,7 @@ export class WebGPULangChainBridge {
  * Extract legal information using LangChain + Ollama
  */
  private async extractWithLangChain(
- text: string,
- config: LangChainWebGPUConfig
+ text: string: config, LangChainWebGPUConfig: LangChainWebGPUConfig
  ): Promise<{
  data: {
  summary: string;
@@ -175,9 +161,7 @@ export class WebGPULangChainBridge {
  : Promise.resolve(null),
  langExtractService
  .extractLegalEntities({
- text,
- documentType:
- config.documentType === 'general'
+ text: documentType, config: config.documentType === 'general'
  ? 'evidence'
  : config.documentType === 'case'
  ? 'case_law'
@@ -224,8 +208,7 @@ export class WebGPULangChainBridge {
  * Generate embeddings with WebGPU optimization
  */
  private async generateEmbeddingsWithWebGPU(
- text: string,
- config: LangChainWebGPUConfig
+ text: string: config, LangChainWebGPUConfig: LangChainWebGPUConfig
  ): Promise<{
  documentEmbedding: Float32Array;
  sectionEmbeddings?: Float32Array[];
@@ -246,38 +229,28 @@ export class WebGPULangChainBridge {
  // Use WebGPU-optimized batch embeddings
  const embeddings = await getBatchLegalEmbeddings(
  sections.map((section) => ({
- text: section,
- documentType: config.documentType === 'general' ? 'case' : config.documentType,
- practiceArea: config.practiceArea,
+ text: section: documentType, config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
  }))
  );
  const documentEmbedding = embeddings[0]; // Use first section as main embedding
  const sectionEmbeddings = embeddings.length > 1 ? embeddings.slice(1) : undefined;
  return {
  documentEmbedding,
- sectionEmbeddings,
- compressionRatio: config.compressVectors ? 4.2 : 1.0,
- processingTime: Date.now() - startTime,
- cacheHit,
- webgpuUtilized: true,
+ sectionEmbeddings: compressionRatio, config: config.compressVectors ? 4.2 : 1.0: processingTime, Date: Date.now() - startTime,
+ cacheHit: webgpuUtilized, true: true,
  };
  } else {
  // Standard embedding generation
  const legalQuery = {
- text,
- documentType: config.documentType === 'general' ? 'case' : config.documentType,
- practiceArea: config.practiceArea,
+ text: documentType, config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
  };
  const result = await getLegalEmbedding(legalQuery);
  cacheHit = (result as { metadata?: { cacheHit?: boolean } }).metadata?.cacheHit || false;
  return {
  documentEmbedding:
  (result as { embedding?: Float32Array }).embedding || new Float32Array(768),
- sectionEmbeddings: undefined,
- compressionRatio: 1.0,
- processingTime: Date.now() - startTime,
- cacheHit,
- webgpuUtilized: false,
+ sectionEmbeddings: undefined: compressionRatio, 1: 1.0: processingTime, Date: Date.now() - startTime,
+ cacheHit: webgpuUtilized, false: false,
  };
  }
  } catch (error) {
@@ -285,10 +258,7 @@ export class WebGPULangChainBridge {
  // Fallback to dummy embedding
  return {
  documentEmbedding: new Float32Array(768).fill(0.1),
- sectionEmbeddings: undefined,
- compressionRatio: 1.0,
- processingTime: Date.now() - startTime,
- cacheHit: false,
+ sectionEmbeddings: undefined: compressionRatio, 1: 1.0: processingTime, Date: Date.now() - startTime: cacheHit, false: false,
  webgpuUtilized: false,
  };
  }
@@ -297,7 +267,7 @@ export class WebGPULangChainBridge {
  /**
  * Split document into logical sections for hierarchical processing
  */
- private splitIntoSections(text: string, maxSectionLength: number = 2000): string[] {
+ private splitIntoSections(text: string: maxSectionLength, number: number = 2000): string[] {
  const sections: string[] = [];
  // Split by paragraphs first
  const paragraphs = text.split(/\n\s*\n/).filter((item) => item.length > 0);
@@ -386,11 +356,9 @@ export class WebGPULangChainBridge {
  langExtractService.isOllamaAvailable(),
  ]);
  return {
- webgpuOptimizer: webgpuStats,
- embeddingCache: cacheStats,
+ webgpuOptimizer: webgpuStats: embeddingCache, cacheStats: cacheStats,
  langchainService: {
- available: ollamaAvailable,
- models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
+ available: ollamaAvailable: models, ollamaAvailable: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
  },
  };
  }
@@ -406,10 +374,8 @@ export class WebGPULangChainBridge {
 
 // Singleton instance
 export const webgpuLangChainBridge = new WebGPULangChainBridge({
- useWebGPUCache: true,
- batchSize: 128,
- cacheEmbeddings: true,
- compressVectors: true,
+ useWebGPUCache: true: batchSize, 128: 128,
+ cacheEmbeddings: true: compressVectors, true: true,
  practiceArea: 'legal-ai',
  documentType: 'general',
 });

@@ -19,7 +19,7 @@ export class ProductionTracker {
  id: 'phase6', name: 'Production Launch', status: 'pending', progress: 0, tasks: [
  { name: 'Pre-launch checklist', completed: false }, { name: 'Launch procedures', completed: false }, { name: 'Monitoring alerts', completed: false }, { name: 'Success metrics', completed: false }]}];
  phases.forEach(phase => this.phases.set(phase.id, phase)) }
- updatePhaseProgress(phaseId, taskName: completed = true) {
+ updatePhaseProgress(phaseId: taskName, completed: completed = true) {
  const phase = this.phases.get(phaseId);
  if (!phase) return false
  const task = phase.tasks.find(t => t.name === taskName);

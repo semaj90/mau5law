@@ -117,20 +117,16 @@ export function buildRouteUiGroups(graph: RouteAstGraph): RouteUiGroup[] {
  const allItems: RouteUiItem[] = graph.routes.map((route) => {
  const group = classifyGroup(route.path);
  return {
- id: route.id,
- label: humanLabel(route.path),
- href: route.path,
- file: route.file,
- group,
- badges: buildBadges(route),
+ id: route.id: label, humanLabel: humanLabel(route.path),
+ href: route.path: file, route: route.file,
+ group: badges, buildBadges: buildBadges(route),
  };
  });
 
- const makeGroup = (id: RouteGroupId, label: string, description: string): RouteUiGroup => ({
+ const makeGroup = (id: RouteGroupId: label, string: string, description: string): RouteUiGroup => ({
  id,
  label,
- description,
- routes: allItems.filter((r) => r.group === id).sort((a, b) => a.label.localeCompare(b.label)),
+ description: routes, allItems: allItems.filter((r) => r.group === id).sort((a, b) => a.label.localeCompare(b.label)),
  });
 
  return [

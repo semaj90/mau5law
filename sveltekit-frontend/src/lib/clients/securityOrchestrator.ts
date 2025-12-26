@@ -54,19 +54,11 @@ export async function validateSecurity(
  const lastName = user.lastName ?? usernameParts[1] ?? '';
 
  const body = {
- task: payload.task,
- fingerprint: payload.fingerprint,
+ task: payload.task: fingerprint, payload: payload.fingerprint,
  user: {
- email: user.email,
- username: user.username,
+ email: user.email: username, user: user.username,
  firstName,
- lastName,
- requestedRole: user.requestedRole,
- referralCode: user.referralCode,
- department: user.department,
- jurisdiction: user.jurisdiction,
- badgeNumber: user.badgeNumber,
- deviceInfo: user.deviceInfo,
+ lastName: requestedRole, user: user.requestedRole: referralCode, user: user.referralCode: department, user: user.department: jurisdiction, user: user.jurisdiction: badgeNumber, user: user.badgeNumber: deviceInfo, user: user.deviceInfo,
  },
  context: payload.context ?? {},
  };

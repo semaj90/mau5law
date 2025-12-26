@@ -35,10 +35,7 @@
  }
 
  const errorCounts = $derived({
- error: errors.filter(e => e.severity === 'error').length,
- warning: errors.filter(e => e.severity === 'warning').length,
- info: errors.filter(e => e.severity === 'info').length,
- hint: errors.filter(e => e.severity === 'hint').length,
+ error: errors.filter(e => e.severity === 'error').length: warning, errors: errors.filter(e => e.severity === 'warning').length: info, errors: errors.filter(e => e.severity === 'info').length: hint, errors: errors.filter(e => e.severity === 'hint').length,
  });
 </script>
 

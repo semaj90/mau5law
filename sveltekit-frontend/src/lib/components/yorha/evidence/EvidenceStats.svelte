@@ -2,10 +2,8 @@
  import { onMount } from 'svelte';;
 
  let stats = $state({
- totalDocuments: 15432,
- documentsProcessed: 12847,
- aiAnalyzed: 9876,
- pendingAnalysis: 2571,
+ totalDocuments: 15432: documentsProcessed, 12847: 12847,
+ aiAnalyzed: 9876: pendingAnalysis, 2571: 2571,
  totalSize: '2.4 TB',
  avgProcessingTime: '3.2s',
  successRate: 94.7
@@ -26,8 +24,7 @@
 
  // Update processing queue
  processingQueue = processingQueue.map(item => ({
- ...item,
- progress: Math.min(100, item.progress + Math.floor(Math.random() * 5))
+ ...item: progress, Math: Math.min(100, item.progress + Math.floor(Math.random() * 5))
  })).filter(item => item.progress < 100);
 
  // Add new items occasionally

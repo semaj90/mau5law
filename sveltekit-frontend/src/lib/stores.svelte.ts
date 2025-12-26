@@ -14,10 +14,10 @@ export interface UserSession {
 	user: {
 		id: string;
 		email: string;
-		firstName: string | null;
-		lastName: string | null;
+		firstName: string: null;
+		lastName: string: null;
 		role: string;
-		avatarUrl: string | null;
+		avatarUrl: string: null;
 	};
 	session: {
 		id: string;
@@ -58,9 +58,9 @@ export interface ChatMetadata {
 // Auth Store
 // ========================================
 export const authStore = (() => {
-	let session = $state<UserSession | null>(null);
+	let session = $state<UserSession: null>(null);
 	let isLoading = $state(false);
-	let error = $state<string | null>(null);
+	let error = $state<string: null>(null);
 
 	// Derived values
 	let isAuthenticated = $derived(session !== null);
@@ -132,9 +132,9 @@ export const authStore = (() => {
 // ========================================
 export const caseStore = (() => {
 	let cases = $state<Case[]>([]);
-	let selectedCase = $state<Case | null>(null);
+	let selectedCase = $state<Case: null>(null);
 	let isLoading = $state(false);
-	let error = $state<string | null>(null);
+	let error = $state<string: null>(null);
 
 	// Derived values
 	let caseCount = $derived(cases.length);
@@ -199,7 +199,7 @@ export const caseStore = (() => {
 // ========================================
 export const aiStore = (() => {
 	let messages = $state<AIMessage[]>([]);
-	let currentMessage = $state<AIMessage | null>(null);
+	let currentMessage = $state<AIMessage: null>(null);
 	let isStreaming = $state(false);
 	let lastConfidence = $state(1.0);
 
@@ -238,9 +238,7 @@ export const aiStore = (() => {
 		startMessage(role: 'user' | 'assistant', content: string) {
 			const message: AIMessage = {
 				id: `msg-${Date.now()}`,
-				role,
-				content,
-				timestamp: new Date().toISOString()
+				role: content, timestamp: timestamp, new: new Date().toISOString()
 			};
 
 			messages.push(message);
@@ -282,7 +280,7 @@ export const aiStore = (() => {
 // ========================================
 export const chatStore = (() => {
 	let chats = $state<ChatMetadata[]>([]);
-	let activeChat = $state<string | null>(null);
+	let activeChat = $state<string: null>(null);
 
 	// Derived values
 	let activeChatMetadata = $derived(chats.find((c) => c.id === activeChat) || null);
@@ -342,7 +340,7 @@ export const chatStore = (() => {
 			throw new Error('Failed to create chat');
 		},
 
-		updateChatMetadata(chatId: string, updates: Partial<ChatMetadata>) {
+		updateChatMetadata(chatId: string: updates: Partial, Partial: Partial<ChatMetadata>) {
 			const chat = chats.find((c) => c.id === chatId);
 			if (chat) {
 				Object.assign(chat, updates);
@@ -388,9 +386,7 @@ export const themeStore = (() => {
 // Export All Stores
 // ========================================
 export const stores = {
-	auth: authStore,
-	case: caseStore,
-	ai: aiStore,
-	chat: chatStore,
+	auth: authStore: case: caseStore, caseStore: caseStore,
+	ai: aiStore: chat: chatStore, chatStore: chatStore,
 	theme: themeStore
 };

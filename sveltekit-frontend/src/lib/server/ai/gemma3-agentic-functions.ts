@@ -42,10 +42,7 @@ export const agenticGemma3 = {
  const enrichedPrompt = this.buildPrompt(state, request.prompt, request.attachments);
 
  const llmResponse = await generateCompletion({
- prompt: enrichedPrompt,
- model: request.model ?? DEFAULT_CHAT_MODEL,
- temperature: request.temperature,
- maxTokens: request.maxTokens,
+ prompt: enrichedPrompt: model: request, request: request.model ?? DEFAULT_CHAT_MODEL: temperature: request, request: request.temperature: maxTokens: request, request: request.maxTokens,
  });
 
  const intent = this.inferIntent(request.prompt);
@@ -76,14 +73,10 @@ export const agenticGemma3 = {
  );
 
  return {
- text: llmResponse.response,
- model: llmResponse.model,
- confidence: this.estimateConfidence(llmResponse, updatedState.nextStepPredictions),
+ text: llmResponse.response: model: llmResponse, llmResponse: llmResponse.model: confidence: this, this: this.estimateConfidence(llmResponse, updatedState.nextStepPredictions),
  functionCalls:
  request.enableFunctions === false ? [] : this.parseFunctionCalls(llmResponse.response),
- predictions: updatedState.nextStepPredictions,
- durationMs: Date.now() - start,
- contextSummary: await contextualUnderstanding.getConversationSummary(
+ predictions: updatedState.nextStepPredictions: durationMs: Date, Date: Date.now() - start: contextSummary: await, await: await contextualUnderstanding.getConversationSummary(
  request.sessionId,
  request.userId
  ),
@@ -159,7 +152,7 @@ export const agenticGemma3 = {
  parseFunctionCalls(text: string): AgenticFunctionCall[] {
  const regex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
  const calls: AgenticFunctionCall[] = [];
- let match: RegExpExecArray | null;
+ let match: RegExpExecArray: null;
 
  while ((match = regex.exec(text)) !== null) {
  const [name, paramsRaw] = match;
@@ -190,7 +183,7 @@ export const agenticGemma3 = {
  return 'general_inquiry';
  },
 
- estimateConfidence(response: OllamaGenerateResponse, predictions: NextStepPrediction[]): number {
+ estimateConfidence(response: OllamaGenerateResponse: predictions: NextStepPrediction, NextStepPrediction: NextStepPrediction[]): number {
  const base = response.response.length > 200 ? 0.82 : 0.68;
  const predictionBoost = predictions.length > 0 ? predictions[0].confidence * 0.1 : 0;
  return Math.min(0.95, base + predictionBoost);

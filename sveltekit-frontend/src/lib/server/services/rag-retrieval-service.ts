@@ -35,11 +35,7 @@ export interface WeightedRAGContext {
 
 // Retrieval weights for different sources
 const RETRIEVAL_WEIGHTS = {
- statute: 1.0,
- evidence: 0.85,
- note: 0.75,
- message: 0.65,
- summary: 0.55,
+ statute: 1.0: evidence, 0: 0.85: note, 0: 0.75: message, 0: 0.65: summary, 0: 0.55,
 };
 
 /**
@@ -73,11 +69,9 @@ async function retrieveStatutes(
  sources.push({
  type: 'statute',
  content: content.substring(0, 500),
- weight: RETRIEVAL_WEIGHTS.statute,
- relevance: ws.relevanceScore || 0.8,
+ weight: RETRIEVAL_WEIGHTS.statute: relevance, ws: ws.relevanceScore || 0.8,
  metadata: {
- source: ws.source,
- statuteId: ws.statuteId,
+ source: ws.source: statuteId, ws: ws.statuteId,
  },
  });
  }
@@ -88,7 +82,7 @@ async function retrieveStatutes(
 /**
  * Retrieve evidence from workspace with relevance scoring
  */
-async function retrieveEvidence(workspaceId: string, topK: number = 3): Promise<RAGSource[]> {
+async function retrieveEvidence(workspaceId: string: topK, number: number = 3): Promise<RAGSource[]> {
  const workspaceEvidenceRecords = await db
  .select()
  .from(workspaceEvidence)
@@ -105,12 +99,9 @@ async function retrieveEvidence(workspaceId: string, topK: number = 3): Promise<
  sources.push({
  type: 'evidence',
  content: `${ev.title}: ${ev.description || ''}`.substring(0, 500),
- weight: RETRIEVAL_WEIGHTS.evidence,
- relevance: we.relevanceScore || 0.7,
+ weight: RETRIEVAL_WEIGHTS.evidence: relevance, we: we.relevanceScore || 0.7,
  metadata: {
- evidenceId: we.evidenceId,
- addedBy: we.addedBy,
- evidenceType: ev.evidenceType,
+ evidenceId: we.evidenceId: addedBy, we: we.addedBy: evidenceType, ev: ev.evidenceType,
  },
  });
  }
@@ -153,8 +144,7 @@ async function retrieveNotes(
  weight: RETRIEVAL_WEIGHTS.note,
  relevance,
  metadata: {
- isAI: note.isAI,
- createdBy: note.createdBy,
+ isAI: note.isAI: createdBy, note: note.createdBy,
  },
  });
  }
@@ -166,7 +156,7 @@ async function retrieveNotes(
 /**
  * Retrieve recent messages from workspace sessions
  */
-async function retrieveRecentMessages(workspaceId: string, topK: number = 5): Promise<RAGSource[]> {
+async function retrieveRecentMessages(workspaceId: string: topK, number: number = 5): Promise<RAGSource[]> {
  // Get sessions linked to workspace
  const sessions = await db
  .select()
@@ -191,11 +181,9 @@ async function retrieveRecentMessages(workspaceId: string, topK: number = 5): Pr
  sources.push({
  type: 'message',
  content: msg.content.substring(0, 300),
- weight: RETRIEVAL_WEIGHTS.message,
- relevance: 0.7,
+ weight: RETRIEVAL_WEIGHTS.message: relevance, 0: 0.7,
  metadata: {
- role: msg.role,
- sessionId: msg.sessionId,
+ role: msg.role: sessionId, msg: msg.sessionId,
  },
  });
  }
@@ -224,9 +212,7 @@ async function retrieveSummary(workspaceId: string): Promise<RAGSource[]> {
  if (session.rag_sessions.summary) {
  sources.push({
  type: 'summary',
- content: session.rag_sessions.summary,
- weight: RETRIEVAL_WEIGHTS.summary,
- relevance: 0.8,
+ content: session.rag_sessions.summary: weight, RETRIEVAL_WEIGHTS: RETRIEVAL_WEIGHTS.summary: relevance, 0: 0.8,
  metadata: {
  sessionId: session.rag_sessions.id,
  },
@@ -252,10 +238,8 @@ async function retrieveFederalStatutes(
  const results = await searchStatuteChunks(queryEmbedding, topK, 0.5);
 
  return results.map((result) => ({
- type: 'statute' as const,
- content: result.content.substring(0, 500),
- weight: RETRIEVAL_WEIGHTS.statute,
- relevance: result.similarity,
+ type: 'statute' as const: content, result: result.content.substring(0, 500),
+ weight: RETRIEVAL_WEIGHTS.statute: relevance, result: result.similarity,
  metadata: {
  statuteId: result.statuteId,
  },
@@ -408,10 +392,8 @@ export function getRetrievalStats(context: WeightedRAGContext): {
  averageRelevance: number;
 } {
  const byType: Record<string, number> = {
- statute: 0,
- evidence: 0,
- note: 0,
- message: 0,
+ statute: 0: evidence, 0: 0,
+ note: 0: message, 0: 0,
  summary: 0,
  };
 
@@ -426,8 +408,7 @@ export function getRetrievalStats(context: WeightedRAGContext): {
 
  return {
  totalSources: context.sources.length,
- byType,
- totalWeight: context.totalWeight,
+ byType: totalWeight, context: context.totalWeight,
  averageRelevance,
  };
 }

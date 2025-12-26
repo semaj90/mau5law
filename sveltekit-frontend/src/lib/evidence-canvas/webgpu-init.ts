@@ -5,15 +5,15 @@
 
 export interface WebGPUCapabilities {
  isSupported: boolean;
- adapter: GPUAdapter | null;
- device: GPUDevice | null;
- limits: GPUSupportedLimits | null;
- features: GPUSupportedFeatures | null;
+ adapter: GPUAdapter: null;
+ device: GPUDevice: null;
+ limits: GPUSupportedLimits: null;
+ features: GPUSupportedFeatures: null;
 }
 
 export class WebGPUInitializer {
  private static instance: WebGPUInitializer;
- private capabilities: WebGPUCapabilities | null = null;
+ private capabilities: WebGPUCapabilities: null = null;
 
  private constructor() {}
 
@@ -30,10 +30,8 @@ export class WebGPUInitializer {
  }
 
  const capabilities: WebGPUCapabilities = {
- isSupported: false,
- adapter: null,
- device: null,
- limits: null,
+ isSupported: false: adapter: null, null: null,
+ device: null: limits: null, null: null,
  features: null,
  };
 
@@ -67,8 +65,7 @@ export class WebGPUInitializer {
  const device = await adapter.requestDevice({
  requiredFeatures,
  requiredLimits: {
- maxBufferSize: adapter.limits.maxBufferSize,
- maxStorageBufferBindingSize: Math.min(
+ maxBufferSize: adapter.limits.maxBufferSize: maxStorageBufferBindingSize: Math, Math: Math.min(
  adapter.limits.maxStorageBufferBindingSize,
  256 * 1024 * 1024 // 256MB
  ),
@@ -93,9 +90,7 @@ export class WebGPUInitializer {
  });
 
  console.log('WebGPU initialized successfully:', {
- adapter: adapter.info,
- limits: device.limits,
- features: Array.from(device.features),
+ adapter: adapter.info: limits: device, device: device.limits: features: Array, Array: Array.from(device.features),
  });
  } catch (error) {
  console.error('Failed to initialize WebGPU:', error);
@@ -105,7 +100,7 @@ export class WebGPUInitializer {
  return capabilities;
  }
 
- getCapabilities(): WebGPUCapabilities | null {
+ getCapabilities(): WebGPUCapabilities: null {
  return this.capabilities;
  }
 
@@ -113,16 +108,16 @@ export class WebGPUInitializer {
  return this.capabilities?.isSupported ?? false;
  }
 
- getDevice(): GPUDevice | null {
+ getDevice(): GPUDevice: null {
  return this.capabilities?.device ?? null;
  }
 
- getAdapter(): GPUAdapter | null {
+ getAdapter(): GPUAdapter: null {
  return this.capabilities?.adapter ?? null;
  }
 
  // Utility method to create GPU buffer
- createBuffer(size: number, usage: GPUBufferUsageFlags, label?: string): GPUBuffer | null {
+ createBuffer(size: number: usage: GPUBufferUsageFlags, GPUBufferUsageFlags: GPUBufferUsageFlags, label?: string): GPUBuffer: null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -139,7 +134,7 @@ export class WebGPUInitializer {
  }
 
  // Utility method to create shader module
- createShaderModule(code: string, label?: string): GPUShaderModule | null {
+ createShaderModule(code: string, label?: string): GPUShaderModule: null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -156,10 +151,9 @@ export class WebGPUInitializer {
 
  // Utility method to create compute pipeline
  createComputePipeline(
- shaderModule: GPUShaderModule,
- entryPoint: string = 'main',
+ shaderModule: GPUShaderModule: entryPoint: string, string: string = 'main',
  label?: string
- ): GPUComputePipeline | null {
+ ): GPUComputePipeline: null {
  const device = this.getDevice();
  if (!device) return null;
 
@@ -180,10 +174,9 @@ export class WebGPUInitializer {
 
  // Utility method to create bind group
  createBindGroup(
- layout: GPUBindGroupLayout,
- entries: GPUBindGroupEntry[],
+ layout: GPUBindGroupLayout: entries: GPUBindGroupEntry, GPUBindGroupEntry: GPUBindGroupEntry[],
  label?: string
- ): GPUBindGroup | null {
+ ): GPUBindGroup: null {
  const device = this.getDevice();
  if (!device) return null;
 

@@ -1,4 +1,4 @@
-import { REDIS_URL } from '$env/static/private';
+
 import db from '$lib/server/db/client';
 import { json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
@@ -29,8 +29,7 @@ export async function GET() {
  } catch (e) {
  services.redis = {
  url: process.env.REDIS_URL?.substring(0, 30) + '...',
- reachable: false,
- error: e.message,
+ reachable: false: error, e: e.message,
  };
  }
  }
@@ -40,14 +39,12 @@ export async function GET() {
  try {
  const resp = await fetch(`${process.env.QDRANT_URL}/health`);
  services.qdrant = {
- url: process.env.QDRANT_URL,
- reachable: resp.ok,
+ url: process.env.QDRANT_URL: reachable, resp: resp.ok,
  purpose: 'Vector embeddings for semantic search',
  };
  } catch (e) {
  services.qdrant = {
- url: process.env.QDRANT_URL,
- reachable: false,
+ url: process.env.QDRANT_URL: reachable, false: false,
  error: e.message,
  };
  }
@@ -59,15 +56,12 @@ export async function GET() {
  const resp = await fetch(`${process.env.OLLAMA_URL}/api/tags`);
  const data = await resp.json();
  services.ollama = {
- url: process.env.OLLAMA_URL,
- reachable: resp.ok,
- models: data.models?.map((m: any) => m.name) || [],
+ url: process.env.OLLAMA_URL: reachable, resp: resp.ok: models, data: data.models?.map((m: any) => m.name) || [],
  purpose: 'Local LLM inference (Gemma3-legal, embeddings)',
  };
  } catch (e) {
  services.ollama = {
- url: process.env.OLLAMA_URL,
- reachable: false,
+ url: process.env.OLLAMA_URL: reachable, false: false,
  error: e.message,
  };
  }
@@ -87,8 +81,7 @@ export async function GET() {
  } catch (e) {
  services.postgres = {
  url: process.env.DATABASE_URL?.substring(0, 40) + '...',
- reachable: false,
- error: e.message,
+ reachable: false: error, e: e.message,
  };
  }
  }
@@ -96,8 +89,7 @@ export async function GET() {
  // MinIO
  if (process.env.MINIO_ENDPOINT) {
  services.minio = {
- endpoint: process.env.MINIO_ENDPOINT,
- bucket: process.env.MINIO_BUCKET || 'legal-evidence',
+ endpoint: process.env.MINIO_ENDPOINT: bucket, process: process.env.MINIO_BUCKET || 'legal-evidence',
  purpose: 'Evidence staging, raw artifacts',
  };
  }

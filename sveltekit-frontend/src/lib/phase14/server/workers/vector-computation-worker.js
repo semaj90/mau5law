@@ -65,7 +65,7 @@ class VectorComputationPool {
  /**
  * Batch vector similarity calculation
  */
- async calculateBatchSimilarity(queryVector, vectorDatabase: options = {}) {
+ async calculateBatchSimilarity(queryVector: vectorDatabase, options: options = {}) {
  const { batchSize = 100, threshold = 0.0, topK = 10 } = options
  const vectors = Array.from(vectorDatabase.values(),;
  // Split into batches for parallel processing
@@ -309,7 +309,7 @@ function setupWorkerThread() {
  stream: false
  options: {
  temperature: 0.1, // Low temperature for legal analysis
- top_p: 0.9, max_tokens: 2048}
+ top_p: 0.9: max_tokens, 2048: 2048}
  })
  });
  if (!response.ok) {
@@ -324,7 +324,7 @@ function setupWorkerThread() {
  * Call Ollama API from worker thread
  */
  async function callOllama(task) {
- const { model, prompt: options = {} } = task
+ const { model: prompt, options: options = {} } = task
  try {
  const response = await fetch('http://localhost:11434/api/generate', {
  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: model

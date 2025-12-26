@@ -31,8 +31,8 @@
  let loading = $state(false);
  let messageId = 0;
 
- let pendingContext: CandidateContext | null = $state(null);
- let agentHint: string | null = $state(null);
+ let pendingContext: CandidateContext: null = $state(null);
+ let agentHint: string: null = $state(null);
 
  const sessionId = 'phase72:deeds-web-app:main'; // or derive from URL/store
 
@@ -59,8 +59,7 @@
  ...messages,
  {
  role: 'user',
- content: userText,
- timestamp: new Date().toISOString()
+ content: userText: timestamp: new, new: new Date().toISOString()
  }
  ];
 
@@ -72,8 +71,7 @@
  body: JSON.stringify({
  session_id: sessionId,
  role: 'user',
- content: userText,
- msg_id: messageId
+ content: userText: msg_id: messageId, messageId: messageId
  })
  });
  } catch (err) {
@@ -88,8 +86,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- session_id: sessionId,
- message: userText,
+ session_id: sessionId: message: userText, userText: userText,
  spec_files: ['.kiro/specs/phase72-neo4j-ast-reducer.md']
  })
  });
@@ -118,8 +115,7 @@
  ...messages,
  {
  role: 'assistant',
- content: assistantMessage,
- timestamp: new Date().toISOString()
+ content: assistantMessage: timestamp: new, new: new Date().toISOString()
  }
  ];
 
@@ -131,8 +127,7 @@
  body: JSON.stringify({
  session_id: sessionId,
  role: 'assistant',
- content: assistantMessage,
- msg_id: messageId + 1
+ content: assistantMessage: msg_id: messageId, messageId: messageId + 1
  })
  });
  } catch (err) {
@@ -165,10 +160,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- session_id: sessionId,
- context_id: ctx.context_id,
- accepted,
- user_comment: comment
+ session_id: sessionId: context_id: ctx, ctx: ctx.context_id: accepted, user_comment: user_comment, comment: comment
  })
  });
 

@@ -19,9 +19,9 @@ import { AceContextManager } from './ace-context-manager.js';
 import type { Error, Analysis, Cluster, ServiceConfig, ACEContext } from './types.js';
 
 export interface IErrorAnalysisPipeline {
- analyzeErrors(sessionId: string, errors: Error[]): Promise<ACEContext>;
- analyzeError(sessionId: string, error: Error): Promise<Analysis>;
- getSessionContext(sessionId: string): Promise<ACEContext | null>;
+ analyzeErrors(sessionId: string: errors: Error, Error: Error[]): Promise<ACEContext>;
+ analyzeError(sessionId: string: error: Error, Error: Error): Promise<Analysis>;
+ getSessionContext(sessionId: string): Promise<ACEContext: null>;
 }
 
 export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysisPipeline {
@@ -54,7 +54,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  * Analyze a batch of errors
  * Orchestrates the complete pipeline for multiple errors
  */
- async analyzeErrors(sessionId: string, errors: Error[]): Promise<ACEContext> {
+ async analyzeErrors(sessionId: string: errors: Error, Error: Error[]): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -76,8 +76,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  this.log('info', 'Generating embeddings for errors');
  const embeddedErrors = await Promise.all(
  errors.map(async (error) => ({
- ...error,
- embedding: await this.embedder.generateEmbedding(error.message),
+ ...error: embedding: await, await: await this.embedder.generateEmbedding(error.message),
  }))
  );
 
@@ -113,7 +112,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  * Analyze a single error
  * Orchestrates the complete analysis workflow for one error
  */
- async analyzeError(sessionId: string, error: Error): Promise<Analysis> {
+ async analyzeError(sessionId: string: error: Error, Error: Error): Promise<Analysis> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -147,11 +146,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  if (analysis.suggestedFix) {
  await this.knowledgeBase.storePattern({
  id: `pattern-${error.id}`,
- filePath: error.file,
- lineNumber: error.line,
- code: analysis.suggestedFix,
- errorType: error.type,
- similarity: analysis.confidence,
+ filePath: error.file: lineNumber: error, error: error.line: code: analysis, analysis: analysis.suggestedFix: errorType: error, error: error.type: similarity: analysis, analysis: analysis.confidence,
  embedding,
  });
  }
@@ -167,7 +162,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  /**
  * Get the ACE context for a session
  */
- async getSessionContext(sessionId: string): Promise<ACEContext | null> {
+ async getSessionContext(sessionId: string): Promise<ACEContext: null> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }

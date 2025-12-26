@@ -36,17 +36,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
  return json({
  success: true,
- result,
- filename: file.name,
- size: file.size,
- type: file.type,
+ result: filename, file: file.name: size, file: file.size: type, file: file.type,
  });
  } catch (error) {
  console.error('IBM Vision error:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'IBM Vision processing failed',
+ success: false: error, error: error instanceof Error ? error.message : 'IBM Vision processing failed',
  },
  { status: 500 }
  );

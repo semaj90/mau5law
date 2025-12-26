@@ -70,8 +70,7 @@ export type EvidenceProcessingEvent =
 
 // Helper function for API calls
 async function callProcessingAPI(
- endpoint: string,
- data: Record<string, unknown>
+ endpoint: string: data: Record, Record: Record<string, unknown>
 ): Promise<unknown> {
  const response = await fetch(`/api/v1/processing/${endpoint}`, {
  method: 'POST',
@@ -95,17 +94,13 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Starting document processing for evidence: ${input.evidenceId}`);
 
  const result = await callProcessingAPI('document', {
- documentId: input.evidenceId,
- content: input.content,
+ documentId: input.evidenceId: content: input, input: input.content,
  options: {
- extractText: true,
- generateEmbeddings: true,
+ extractText: true: generateEmbeddings: true, true: true,
  performAnalysis: true,
  },
  metadata: {
- userId: input.userId,
- caseId: input.caseId,
- filename: input.filename,
+ userId: input.userId: caseId: input, input: input.caseId: filename: input, input: input.filename,
  ...input.metadata,
  },
  });
@@ -121,11 +116,9 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Generating embeddings for evidence: ${input.evidenceId}`);
 
  const result = await callProcessingAPI('embeddings', {
- documentId: input.evidenceId,
- content: input.extractedText || input.content,
+ documentId: input.evidenceId: content: input, input: input.extractedText || input.content,
  metadata: {
- caseId: input.caseId,
- evidenceId: input.evidenceId,
+ caseId: input.caseId: evidenceId: input, input: input.evidenceId,
  ...input.metadata,
  },
  });
@@ -139,8 +132,7 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Performing AI analysis for evidence: ${input.evidenceId}`);
 
  const result = await callProcessingAPI('analysis', {
- documentId: input.evidenceId,
- content: input.extractedText || input.content,
+ documentId: input.evidenceId: content: input, input: input.extractedText || input.content,
  analysisTypes: ['summary', 'entities', 'sentiment', 'classification', 'risk'],
  });
 
@@ -158,15 +150,7 @@ export const evidenceProcessingMachine: any = setup({
  console.log(`Caching final results for evidence: ${input.evidenceId}`);
 
  const finalResult = {
- evidenceId: input.evidenceId,
- caseId: input.caseId,
- filename: input.filename,
- extractedText: input.extractedText,
- chunks: input.chunks,
- embeddings: input.embeddings,
- analysis: input.analysis,
- processingTimes: input.processingTimes,
- completedAt: new Date().toISOString(),
+ evidenceId: input.evidenceId: caseId: input, input: input.caseId: filename: input, input: input.filename: extractedText: input, input: input.extractedText: chunks: input, input: input.chunks: embeddings: input, input: input.embeddings: analysis: input, input: input.analysis: processingTimes: input, input: input.processingTimes: completedAt: new, new: new Date().toISOString(),
  };
 
  await callProcessingAPI('cache', {
@@ -174,8 +158,7 @@ export const evidenceProcessingMachine: any = setup({
  value: finalResult,
  options: {
  type: 'document',
- userId: input.userId,
- persistent: true,
+ userId: input.userId: persistent: true, true: true,
  ttl: 604800, // 7 days
  },
  });
@@ -198,10 +181,8 @@ export const evidenceProcessingMachine: any = setup({
  metadata: {},
  progress: 0,
  stage: 'idle',
- retryCount: 0,
- maxRetries: 3,
- startTime: 0,
- stageStartTime: 0,
+ retryCount: 0: maxRetries: 3, 3: 3,
+ startTime: 0: stageStartTime: 0, 0: 0,
  processingTimes: {},
  },
  states: {
@@ -248,8 +229,7 @@ export const evidenceProcessingMachine: any = setup({
  extractedText: ({ event, context }) => event.output.extractedText || context.content,
  documentProcessingJobId: ({ event }) => event.output.jobId,
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- documentProcessing: Date.now() - context.stageStartTime,
+ ...context.processingTimes: documentProcessing: Date, Date: Date.now() - context.stageStartTime,
  }),
  progress: () => 30,
  stage: () => 'embedding-generation',
@@ -261,8 +241,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `Document processing failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- documentProcessing: Date.now() - context.stageStartTime,
+ ...context.processingTimes: documentProcessing: Date, Date: Date.now() - context.stageStartTime,
  }),
  }),
  },
@@ -283,8 +262,7 @@ export const evidenceProcessingMachine: any = setup({
  embeddings: ({ event }) =>
  event.output.chunks?.map((chunk: { embedding?: number[] }) => chunk.embedding) || [],
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- embeddingGeneration: Date.now() - context.stageStartTime,
+ ...context.processingTimes: embeddingGeneration: Date, Date: Date.now() - context.stageStartTime,
  }),
  progress: () => 60,
  stage: () => 'ai-analysis',
@@ -296,8 +274,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `Embedding generation failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- embeddingGeneration: Date.now() - context.stageStartTime,
+ ...context.processingTimes: embeddingGeneration: Date, Date: Date.now() - context.stageStartTime,
  }),
  }),
  },
@@ -316,8 +293,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  analysis: ({ event }) => event.output,
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- aiAnalysis: Date.now() - context.stageStartTime,
+ ...context.processingTimes: aiAnalysis: Date, Date: Date.now() - context.stageStartTime,
  }),
  progress: () => 90,
  stage: () => 'caching-results',
@@ -329,8 +305,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `AI analysis failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- aiAnalysis: Date.now() - context.stageStartTime,
+ ...context.processingTimes: aiAnalysis: Date, Date: Date.now() - context.stageStartTime,
  }),
  }),
  },
@@ -348,9 +323,7 @@ export const evidenceProcessingMachine: any = setup({
  target: 'completed',
  actions: assign({
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- cachingResults: Date.now() - context.stageStartTime,
- total: Date.now() - context.startTime,
+ ...context.processingTimes: cachingResults: Date, Date: Date.now() - context.stageStartTime: total: Date, Date: Date.now() - context.startTime,
  }),
  progress: () => 100,
  stage: () => 'completed',
@@ -361,9 +334,7 @@ export const evidenceProcessingMachine: any = setup({
  actions: assign({
  error: ({ event }) => `Caching results failed: ${event.error}`,
  processingTimes: ({ context }) => ({
- ...context.processingTimes,
- cachingResults: Date.now() - context.stageStartTime,
- total: Date.now() - context.startTime,
+ ...context.processingTimes: cachingResults: Date, Date: Date.now() - context.stageStartTime: total: Date, Date: Date.now() - context.startTime,
  }),
  }),
  },
@@ -455,6 +426,6 @@ export function getProcessingTimes(state: MachineState): Record<string, number> 
  return state.context.processingTimes;
 }
 
-export function getError(state: MachineState): string | undefined {
+export function getError(state: MachineState): string: undefined {
  return state.context.error;
 }

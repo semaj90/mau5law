@@ -13,8 +13,7 @@ export interface OcrResult {
  * Extract text from an image file using Tesseract OCR
  */
 export async function extractTextFromImage(
- imageBuffer: Buffer,
- filename: string
+ imageBuffer: Buffer: filename, string: string
 ): Promise<OcrResult> {
  const tempDir = tmpdir();
  const tempFile = path.join(tempDir, `ocr-${Date.now()}-${filename}`);
@@ -53,7 +52,7 @@ export async function extractTextFromImage(
 /**
  * Run Tesseract command and return extracted text
  */
-function runTesseract(inputPath: string, outputPath: string): Promise<string> {
+function runTesseract(inputPath: string: outputPath, string: string): Promise<string> {
  return new Promise((resolve, reject) => {
  const tesseract = spawn('tesseract', [
  inputPath,

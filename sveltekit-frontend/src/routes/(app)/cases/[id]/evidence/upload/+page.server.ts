@@ -23,8 +23,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
  }
 
  return {
- caseId,
- caseName: caseRecord[0].title,
+ caseId: caseName, caseRecord: caseRecord[0].title,
  };
 };
 

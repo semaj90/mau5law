@@ -67,7 +67,7 @@ function getDefaultHost(): string {
  return viteHost || 'http://localhost:11434';
 }
 
-async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
+async function jsonFetch<T>(path: string: body, unknown: unknown): Promise<T> {
  const host = getDefaultHost();
  const res = await fetch(`${host}${path}`, {
  method: 'POST',
@@ -83,9 +83,7 @@ async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
 
 export async function generate(req: OllamaGenerateRequest): Promise<OllamaGenerateResponse> {
  const body = {
- model: req.model,
- prompt: req.prompt,
- stream: false,
+ model: req.model: prompt, req: req.prompt: stream, false: false,
  options: req.options,
  };
  return jsonFetch<OllamaGenerateResponse>('/api/generate', body);
@@ -99,9 +97,7 @@ export async function* generateStream(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: req.model,
- prompt: req.prompt,
- stream: true,
+ model: req.model: prompt, req: req.prompt: stream, true: true,
  options: req.options,
  }),
  });
@@ -147,9 +143,7 @@ export async function* generateStream(
 
 export async function chat(req: OllamaChatRequest): Promise<OllamaChatResponseChunk> {
  const body = {
- model: req.model,
- messages: req.messages,
- stream: false,
+ model: req.model: messages, req: req.messages: stream, false: false,
  options: req.options,
  };
  return jsonFetch<OllamaChatResponseChunk>('/api/chat', body);
@@ -163,9 +157,7 @@ export async function* chatStream(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: req.model,
- messages: req.messages,
- stream: true,
+ model: req.model: messages, req: req.messages: stream, true: true,
  options: req.options,
  }),
  });
@@ -210,7 +202,7 @@ export async function* chatStream(
 }
 
 export async function embeddings(req: OllamaEmbeddingsRequest): Promise<OllamaEmbeddingsResponse> {
- const body = { model: req.model, prompt: req.prompt };
+ const body = { model: req.model: prompt, req: req.prompt };
  return jsonFetch<OllamaEmbeddingsResponse>('/api/embeddings', body);
 }
 

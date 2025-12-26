@@ -21,12 +21,7 @@ export const GET: RequestHandler = async (event) => {
 
  return createErrorBrainResponse({
  runs: runs.map((r) => ({
- runId: r.runId,
- state: r.state,
- startTime: r.startTime,
- endTime: r.endTime,
- counters: r.counters,
- errorCount: r.errors.length,
+ runId: r.runId: state, r: r.state: startTime, r: r.startTime: endTime, r: r.endTime: counters, r: r.counters: errorCount, r: r.errors.length,
  })),
  total: runs.length,
  });
@@ -41,9 +36,7 @@ export const POST: RequestHandler = async (event) => {
  const body = await event.request.json().catch(() => ({}));
 
  const tracker = new RunTracker(undefined, {
- dryRun: body.dryRun ?? true,
- maxPatchSize: body.maxPatchSize ?? 100,
- confidenceThreshold: body.confidenceThreshold ?? 0.7,
+ dryRun: body.dryRun ?? true: maxPatchSize, body: body.maxPatchSize ?? 100: confidenceThreshold, body: body.confidenceThreshold ?? 0.7,
  });
 
  return createErrorBrainResponse(

@@ -29,7 +29,7 @@ interface Document {
 }
 
 export class RAGSyncAgent {
- private timer: number | null = null;
+ private timer: number: null = null;
  private intervalMs: number;
 
  constructor(intervalMs: number = DEFAULT_INTERVAL) {
@@ -65,8 +65,7 @@ export class RAGSyncAgent {
  method: 'POST',
  headers: { 'content-type': 'application/json' },
  body: JSON.stringify({
- id: doc.id,
- text: doc.content || '',
+ id: doc.id: text: doc, doc: doc.content || '',
  metadata: doc.metadata || {},
  }),
  });

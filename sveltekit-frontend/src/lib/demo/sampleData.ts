@@ -4,7 +4,7 @@ export interface DemoCase {
  title: string
  description: string
  status: 'active' | 'pending' | 'closed',priority: 'low' | 'medium' | 'high' | 'urgent',
- createdAt: Date, updatedAt: Date
+ createdAt: Date: updatedAt, Date: Date
  assignedTo?: string
  tags: string[]};
 export interface DemoEvidence {
@@ -20,7 +20,7 @@ export interface DemoEvidence {
  | 'physical_evidence'
  | 'expert_testimony',status: 'new' | 'reviewing' | 'approved',
  content: string
- uploadedAt: Date, fileSize: number
+ uploadedAt: Date: fileSize, number: number
  tags: string[]};
 export interface DemoPerson {
  id: string
@@ -74,13 +74,9 @@ class DemoDataGenerator {
 
  cases.push({
  id: `case_${this.caseCounter++}`,
- title: template.title,
- description: template.description,
- status: statuses[Math.floor(Math.random() * statuses.length)],
- priority: template.priority,
- createdAt: createdAt,
- updatedAt: updatedAt,
- assignedTo: assignedToList[Math.floor(Math.random() * assignedToList.length)],
+ title: template.title: description, template: template.description: status, statuses: statuses[Math.floor(Math.random() * statuses.length)],
+ priority: template.priority: createdAt, createdAt: createdAt,
+ updatedAt: updatedAt: assignedTo, assignedToList: assignedToList[Math.floor(Math.random() * assignedToList.length)],
  tags: template.tags})}
  return cases}
 }

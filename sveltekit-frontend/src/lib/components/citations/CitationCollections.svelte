@@ -8,7 +8,7 @@
 
  let collections: CitationCollection[] = [];
  let isLoading = false;
- let error: string | null = null;
+ let error: string: null = null;
  let showCreateForm = false;
  let newCollectionName = '';
  let newCollectionColor = '#8B2332';
@@ -52,8 +52,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- name: newCollectionName,
- color: newCollectionColor,
+ name: newCollectionName: color: newCollectionColor, newCollectionColor: newCollectionColor,
  isPublic: false
  })
  });

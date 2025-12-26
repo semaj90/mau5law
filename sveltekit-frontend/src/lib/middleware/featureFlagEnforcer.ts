@@ -136,7 +136,7 @@ export class FeatureFlagEnforcer {
  * Get feature status for request
  */
  static getFeatureStatus(request: Request): {
- feature: string | null;
+ feature: string: null;
  enabled: boolean;
  requiresAuth: boolean;
  } {
@@ -191,7 +191,7 @@ export class FeatureFlagEnforcer {
  * Create enforcement middleware for SvelteKit
  */
 export function createFeatureFlagMiddleware() {
- return async (request: Request): Promise<Response | null> => {
+ return async (request: Request): Promise<Response: null> => {
  const result = FeatureFlagEnforcer.checkRequest(request);
 
  if (!result.allowed) {
@@ -220,7 +220,7 @@ export function getEnforcementResult(request: Request): EnforcementResult {
 /**
  * Create error response for denied request
  */
-export function createDenialResponse(request: Request): Response | null {
+export function createDenialResponse(request: Request): Response: null {
  const result = FeatureFlagEnforcer.checkRequest(request);
 
  if (result.allowed) {

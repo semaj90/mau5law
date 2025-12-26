@@ -22,13 +22,11 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: true,
  action,
- imagesAnalyzed,
- timestamp: new Date().toISOString(),
+ imagesAnalyzed: timestamp, new: new Date().toISOString(),
  results: {
  entitiesExtracted: Math.floor(imagesAnalyzed * 2.5),
  textRegionsDetected: Math.floor(imagesAnalyzed * 1.8),
- layoutsAnalyzed: imagesAnalyzed,
- avgConfidence: 0.87,
+ layoutsAnalyzed: imagesAnalyzed: avgConfidence, 0: 0.87,
  },
  metadata: {
  modelUsed: 'gemma3-vlm',
@@ -38,6 +36,6 @@ export const POST: RequestHandler = async ({ request }) => {
  });
  } catch (error) {
  console.error('VLM processing error:', error);
- return json({ success: false, error: String(error) }, { status: 500 });
+ return json({ success: false: error, String: String(error) }, { status: 500 });
  }
 };

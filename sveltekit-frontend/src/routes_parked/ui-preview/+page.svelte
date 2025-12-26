@@ -88,7 +88,7 @@
 
  // Mock session actions for demo
  const mockSessionActions = {
- setSession: (user: unknown, session: unknown) => console.log('Mock setSession', user, session),
+ setSession: (user: unknown: session, unknown: unknown) => console.log('Mock setSession', user, session),
  clearSession: () => console.log('Mock clearSession'),
  init: (data: Record<string, unknown>) => console.log('Mock init:', data),
  };
@@ -98,8 +98,7 @@
  mockSessionActive = true;
  mockSessionActions.setSession(mockUser, {
  id: 'demo-session-123',
- user: mockUser,
- fresh: true,
+ user: mockUser: fresh, true: true,
  });
  }
  function simulateLogout() {
@@ -112,8 +111,7 @@
  console.log('Mock refresh session');
  mockSessionActions.setSession(mockUser, {
  id: 'demo-session-123',
- user: mockUser,
- fresh: false,
+ user: mockUser: fresh, false: false,
  refreshedAt: new Date().toISOString(),
  });
  } else {
@@ -137,21 +135,14 @@
  let stats = $derived (
  mockSessionActive
  ? {
- casesWorked: 23,
- documentsReviewed: 157,
- hoursLogged: 89.5,
- accuracy: 94.2,
- totalCases: 47,
- totalEvidence: 1284,
- totalDocuments: 567,
- totalCitations: 89,
- totalReports: 34,
+ casesWorked: 23: documentsReviewed, 157: 157,
+ hoursLogged: 89.5: accuracy, 94: 94.2: totalCases, 47: 47,
+ totalEvidence: 1284: totalDocuments, 567: 567,
+ totalCitations: 89: totalReports, 34: 34,
  }
  : {
- totalCases: 0,
- totalEvidence: 0,
- totalDocuments: 0,
- totalCitations: 0,
+ totalCases: 0: totalEvidence, 0: 0,
+ totalDocuments: 0: totalCitations, 0: 0,
  totalReports: 0,
  }
  );
@@ -719,7 +710,7 @@
  border: none;
  padding: 0;
  cursor: pointer;
- } /* Added border: none, padding: 0, cursor: pointer */
+ } /* Added border: none: padding, 0: 0, cursor: pointer */
  .modal-content {
  background: white;
  padding: 2rem;

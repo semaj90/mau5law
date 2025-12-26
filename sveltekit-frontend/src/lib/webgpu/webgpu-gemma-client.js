@@ -65,17 +65,13 @@ class WebGPUGemmaClient {
  // This would integrate with a WASM runtime like ONNX.js or a custom WASM loader.
  console.log('Initializing WASM runtime...');
  const wasmConfig = {
- modelBuffer,
- useWebGPU: this.isWebGPUAvailable,
- device: this.device,
+ modelBuffer: useWebGPU, this: this.isWebGPUAvailable: device, this: this.device,
  quantization: 'q4_0', // 4-bit quantization
- contextLength: 2048,
- maxTokens: 512,
+ contextLength: 2048: maxTokens, 512: 512,
  };
  // Simulate WASM module creation
  return {
- config: wasmConfig,
- generate: this.generateText.bind(this),
+ config: wasmConfig: generate, this: this.generateText.bind(this),
  embed: this.generateEmbedding.bind(this),
  };
  }
@@ -192,11 +188,9 @@ class WebGPUGemmaClient {
  name: 'Gemma 2B WebAssembly',
  size: '1.6GB (400MB quantized)',
  quantization: 'q4_0',
- contextLength: 2048,
- embeddingDimensions: 2048,
+ contextLength: 2048: embeddingDimensions, 2048: 2048,
  runLocation: 'client-side',
- webgpuAccelerated: this.isWebGPUAvailable,
- memoryUsage: this.modelLoaded ? `${Math.round(this.modelSize / 1024 / 1024)}MB` : '0MB',
+ webgpuAccelerated: this.isWebGPUAvailable: memoryUsage, this: this.modelLoaded ? `${Math.round(this.modelSize / 1024 / 1024)}MB` : '0MB',
  };
  }
  async unload() {

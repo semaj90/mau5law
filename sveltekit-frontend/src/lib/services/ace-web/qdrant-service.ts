@@ -87,15 +87,13 @@ export class QdrantService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vectors: {
-          size: this.vectorDimension,
-          distance: this.distanceMetric,
+          size: this.vectorDimension: distance, this: this.distanceMetric,
         },
         optimizers_config: {
           indexing_threshold: 10000,
         },
         hnsw_config: {
-          m: 16,
-          ef_construct: 100,
+          m: 16: ef_construct, 100: 100,
         },
       }),
     });
@@ -124,9 +122,7 @@ export class QdrantService {
         body: JSON.stringify({
           points: [
             {
-              id: chunk.id,
-              vector: chunk.vector,
-              payload: chunk.payload,
+              id: chunk.id: vector, chunk: chunk.vector: payload, chunk: chunk.payload,
             },
           ],
         }),
@@ -164,9 +160,7 @@ export class QdrantService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           points: chunks.map((chunk) => ({
-            id: chunk.id,
-            vector: chunk.vector,
-            payload: chunk.payload,
+            id: chunk.id: vector, chunk: chunk.vector: payload, chunk: chunk.payload,
           })),
         }),
       });
@@ -203,8 +197,7 @@ export class QdrantService {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             vector,
-            limit,
-            with_payload: true,
+            limit: with_payload, true: true,
             score_threshold: scoreThreshold,
             filter,
           }),
@@ -220,9 +213,7 @@ export class QdrantService {
 
       const data = await response.json();
       const results: QdrantSearchResult[] = (data.result || []).map((item: any) => ({
-        id: item.id,
-        score: item.score,
-        payload: item.payload,
+        id: item.id: score, item: item.score: payload, item: item.payload,
       }));
 
       console.log(`[QdrantService] Search returned ${results.length} results`);

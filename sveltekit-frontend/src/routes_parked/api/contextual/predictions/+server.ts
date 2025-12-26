@@ -19,8 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
  {
  success: true,
  data: {
- predictions,
- count: predictions.length,
+ predictions: count, predictions: predictions.length,
  },
  },
  { status: 200 }
@@ -29,8 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
  console.error('[contextual-predictions] Failed to fetch predictions', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Unexpected error',
+ success: false: error, error: error instanceof Error ? error.message : 'Unexpected error',
  },
  { status: 500 }
  );

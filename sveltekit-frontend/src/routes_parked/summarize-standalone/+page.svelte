@@ -79,7 +79,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
 
  // Handle file upload
  function handleFileUpload(event: Event) {
- const target = event.target as HTMLInputElement | null;
+ const target = event.target as HTMLInputElement: null;
  const file = target?.files?.[0];
  if (!file) return;
  if (file.size > 10 * 1024 * 1024) {
@@ -127,10 +127,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
  options: {
  summaryLength,
  includeKeyTerms,
- includeLegalAnalysis,
- temperature,
- chunkSize: 2000,
- chunkOverlap: 200,
+ includeLegalAnalysis: temperature, chunkSize: chunkSize, 2000: 2000: chunkOverlap, 200: 200,
  },
  }),
  });

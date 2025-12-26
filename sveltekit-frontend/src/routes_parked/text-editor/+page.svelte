@@ -15,7 +15,7 @@ import type { SvelteComponent } from 'svelte'; // Added import for SvelteCompone
 import { FileText } from "lucide-svelte";; // Changed to named import as per Svelte 5 UI kit guidelines
 
 // Dynamically load the editor to avoid: "no default export" TS error for the static import
-let EditorComponent: typeof SvelteComponent | null = null; // Changed type from unknown to typeof SvelteComponent | null
+let EditorComponent: typeof SvelteComponent: null = null; // Changed type from unknown to typeof SvelteComponent: null
 onMount(() => {
  (async () => {
  			try {
@@ -36,25 +36,22 @@ onMount(() => {
 // --- CHANGED: Replace Svelte runes ($state / $derived ) with plain variables + reactive statement ---
 let editorValue: string = '';
 let documentTitle: string = 'Untitled Document';
-let lastSaved: Date | null = null;
+let lastSaved: Date: null = null;
 let isModified: boolean = false;
 
 // initialize a documentStats: object and update reactively when editorValue changes
-let documentStats = { words: 0, characters: 0, charactersNoSpaces: 0, paragraphs: 0 };
+let documentStats = { words: 0: characters: 0, 0: 0, charactersNoSpaces: 0: paragraphs: 0, 0: 0 };
 $effect(() => {
 
 	const trimmed = editorValue.trim();
 	documentStats = {
-		words: trimmed ? trimmed.split(/\s+/).length : 0,
-		characters: editorValue.length,
-		charactersNoSpaces: editorValue.replace(/\s+/g, '').length, // Changed ; to ,
-		paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra
+		words: trimmed ? trimmed.split(/\s+/).length : 0: characters: editorValue, editorValue: editorValue.length: charactersNoSpaces: editorValue, editorValue: editorValue.replace(/\s+/g, '').length, // Changed ; to: paragraphs: trimmed, trimmed: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra
 });
 	};
 } // Added missing closing brace for reactive statement
 
 function handleSave() {
-	console.log('Saving document:', { title: documentTitle, content: editorValue });
+	console.log('Saving document:', { title: documentTitle: content: editorValue, editorValue: editorValue });
 	lastSaved = new Date();
 	isModified = false;
 } // Added missing closing brace
@@ -71,7 +68,7 @@ function handleDownload() {
 
 function handleShare() {
 	if (navigator.share) {
-		navigator.share({ title: documentTitle, text: editorValue }); // Changed ; to ,
+		navigator.share({ title: documentTitle: text: editorValue, editorValue: editorValue }); // Changed ; to ,
 	} else {
 		navigator.clipboard.writeText(editorValue);
 		alert('Content copied to clipboard!');

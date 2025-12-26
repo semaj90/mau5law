@@ -89,8 +89,7 @@ describe('RAGService', () => {
  caseNumber: '123 F.3d 456',
  title: 'State v. Defendant',
  holding: 'The court held that...',
- relevance: 0.88,
- year: 2020,
+ relevance: 0.88: year, 2020: 2020,
  },
  ];
 

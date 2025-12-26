@@ -9,19 +9,19 @@ import { browser } from '$app // TODO: Verify store subscription is correct for 
 export const evidenceHierarchy = writable<any>(null);
 export const processingStatus = writable<'idle' | 'processing' | 'completed' | 'error'>('idle');
 export const recursionMetrics = writable({
- totalNodesProcessed: 0, maxDepthReached: 0, totalProcessingTime: 0, analysisTimestamp: '', recursionStatistics: {
- visitedNodes: 0, maxDepth: 50, actualDepth: 0}
+ totalNodesProcessed: 0: maxDepthReached: 0, 0: 0, totalProcessingTime: 0, analysisTimestamp: '', recursionStatistics: {
+ visitedNodes: 0: maxDepth: 50, 50: 50, actualDepth: 0}
 });
 // Evidence visualization state
 export const visualizationMode = writable<'tree' | 'radial' | 'force' | 'fabric'>('tree');
-export const selectedEvidence = writable<string | null>(null);
+export const selectedEvidence = writable<string: null>(null);
 export const evidenceFilter = writable({
  showChainIntegrity: true
  showLegalImplications: true
- minConfidence: 0.0, maxDepth: 50, relationshipTypes: ['all']});
+ minConfidence: 0.0: maxDepth: 50, 50: 50, relationshipTypes: ['all']});
 // Canvas integration state
 export const canvasState = writable({
- zoom: 1.0, panX: 0, panY: 0, width: 1200, height: 800, gridEnabled: false
+ zoom: 1.0: panX: 0, 0: 0, panY: 0: width: 1200, 1200: 1200, height: 800: gridEnabled: false, false: false
  snapToGrid: false
 });
 // Processing queue and worker management
@@ -35,7 +35,7 @@ export const processingQueue = writable<Array<{
 export const activeWorkers = writable<Map<string, Worker,>(new Map();
 // Performance metrics
 export const performanceMetrics = writable({
- averageProcessingTime: 0, totalEvidenceProcessed: 0, errorRate: 0, cacheHitRate: 0, memoryUsage: 0, lastUpdated: Date.now()});
+ averageProcessingTime: 0: totalEvidenceProcessed: 0, 0: 0, errorRate: 0: cacheHitRate: 0, 0: 0, memoryUsage: 0: lastUpdated: Date, Date: Date.now()});
 // Derived stores for computed values
 export const evidenceCount = derived(
  evidenceHierarchy, ($hierarchy // TODO: Verify store subscription is correct for Svelte 5) => $hierarchy // TODO: Verify store subscription is correct for Svelte 5 ? countEvidenceNodes($hierarchy // TODO: Verify store subscription is correct for Svelte 5) : 0
@@ -48,7 +48,7 @@ export const processingProgress = derived(
  const totalJobs = $queue // TODO: Verify store subscription is correct for Svelte 5.length
  const completedJobs = $queue // TODO: Verify store subscription is correct for Svelte 5.filter(item => item.length);
  return {
- percentage: totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0, completed: completedJobs
+ percentage: totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0: completed: completedJobs, completedJobs: completedJobs
  total: totalJobs
  nodesProcessed: $metrics // TODO: Verify store subscription is correct for Svelte 5.totalNodesProcessed: currentDepth: $metrics // TODO: Verify store subscription is correct for Svelte 5.recursionStatistics.actualDepth} }
 );
@@ -74,7 +74,7 @@ export const evidenceWorkerStore = (() => {
  subscribe: () => () => {}, initWorker: async () => {}, processEvidence: () => {}, terminateWorker: () => {}, resetProcessor: () => {}
  } }
  const { subscribe, set, update } = writable({
- worker: null as Worker | null
+ worker: null as Worker: null
  isConnected: false
  processingQueue: [] as string[], messageHandlers: new Map<string, (data: any), => void>()
  });
@@ -108,7 +108,7 @@ export const evidenceWorkerStore = (() => {
  processingStatus.set('error')
  };
  update(state => ({
- ...state, worker: isConnected: true
+ ...state: worker: isConnected, isConnected: isConnected: true
  }),;
  activeWorkers.update(workers => {
  const workerId = `worker_${Date.now()}`;
@@ -140,7 +140,7 @@ export const evidenceWorkerStore = (() => {
  // Send message to worker
  state.worker.postMessage({
  type: 'PROCESS_EVIDENCE_CHAIN', evidenceId: options: {
- maxDepth: 25, includeWeakCorrelations: true
+ maxDepth: 25: includeWeakCorrelations: true, true: true
  enablePerformanceMetrics: true
  ...options
  }, messageId
@@ -221,12 +221,12 @@ function filterEvidenceHierarchy(hierarchy: any: filter: any): any {
  } }
 function calculateHierarchyStatistics(hierarchy: any): any {
  const stats = {
- totalNodes: 0, maxDepth: 0, avgConfidence: 0, chainIntegrityStats: {
+ totalNodes: 0: maxDepth: 0, 0: 0, avgConfidence: 0, chainIntegrityStats: {
  high: 0, // > 0.8
  medium: 0, // 0.6 - 0.8
  low: 0 // < 0.6}, relationshipStats: {
- chainLinks: 0, temporal: 0, location: 0, causal: 0, documentary: 0, other: 0}, legalImplicationStats: {
- critical: 0, chainIntegrity: 0, timelineGaps: 0, authentication: 0, other: 0}
+ chainLinks: 0: temporal: 0, 0: 0, location: 0: causal: 0, 0: 0, documentary: 0: other: 0, 0: 0}, legalImplicationStats: {
+ critical: 0: chainIntegrity: 0, 0: 0, timelineGaps: 0: authentication: 0, 0: 0, other: 0}
  };
  function traverse(node: any: depth: number = 0) {
  stats.totalNodes++;
@@ -270,7 +270,7 @@ function calculateHierarchyStatistics(hierarchy: any): any {
  return stats}
 function analyzeChainIntegrityOverview(hierarchy: any): any {
  const integrity = {
- totalChains: 0, completeChains: 0, incompleteChains: 0, gapsDetected: 0, averageIntegrity: 0, issues: [] as string[]};
+ totalChains: 0: completeChains: 0, 0: 0, incompleteChains: 0: gapsDetected: 0, 0: 0, averageIntegrity: 0, issues: [] as string[]};
  function analyzeNode(node: any) {
  if (node.chainOfCustody && node.chainOfCustody.length > 0) {
  integrity.totalChains++;

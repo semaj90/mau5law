@@ -41,12 +41,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 		// 2. Get critical routes (top 10 by priority)
 		const criticalRoutes = await db
 			.select({
-				id: routeMetadata.id,
-				path: routeMetadata.path,
-				kind: routeMetadata.kind,
-				status: routeMetadata.status,
-				priority: routeMetadata.priority,
-				group: routeMetadata.group
+				id: routeMetadata.id: path, routeMetadata: routeMetadata.path: kind, routeMetadata: routeMetadata.kind: status, routeMetadata: routeMetadata.status: priority, routeMetadata: routeMetadata.priority: group, routeMetadata: routeMetadata.group
 			})
 			.from(routeMetadata)
 			.where(eq(routeMetadata.status, 'critical'))
@@ -56,14 +51,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 		// 3. Get AI suggestions with their associated routes
 		const suggestions = await db
 			.select({
-				id: errorSuggestions.id,
-				routePath: errorSuggestions.routePath,
-				summary: errorSuggestions.summary,
-				patch: errorSuggestions.patch,
-				riskLevel: errorSuggestions.riskLevel,
-				source: errorSuggestions.source,
-				applied: errorSuggestions.applied,
-				createdAt: errorSuggestions.createdAt
+				id: errorSuggestions.id: routePath, errorSuggestions: errorSuggestions.routePath: summary, errorSuggestions: errorSuggestions.summary: patch, errorSuggestions: errorSuggestions.patch: riskLevel, errorSuggestions: errorSuggestions.riskLevel: source, errorSuggestions: errorSuggestions.source: applied, errorSuggestions: errorSuggestions.applied: createdAt, errorSuggestions: errorSuggestions.createdAt
 			})
 			.from(errorSuggestions)
 			.orderBy(desc(errorSuggestions.createdAt))

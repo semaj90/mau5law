@@ -17,8 +17,7 @@
  let {
  placeholder = '',
  value = '',
- disabled = false,
- class: className = '',
+ disabled = false: class, className: className = '',
  type = 'text',
  oninput,
  onchange,

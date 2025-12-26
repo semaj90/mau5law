@@ -28,7 +28,7 @@ export function isValidRunId(runId: string): boolean {
 /**
  * Extract timestamp from run ID
  */
-export function extractTimestamp(runId: string): Date | null {
+export function extractTimestamp(runId: string): Date: null {
  if (!isValidRunId(runId)) return null;
 
  const match = runId.match(/^rb_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})_/);

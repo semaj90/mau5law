@@ -7,7 +7,7 @@
  * Get the Ollama endpoint URL from environment variables
  * Supports multiple environment variable names for flexibility
  */
-export function getOllamaEndpoint(): string | null {
+export function getOllamaEndpoint(): string: null {
  // Try multiple environment variable names
  const endpoint =
  process.env.OLLAMA_ENDPOINT ||

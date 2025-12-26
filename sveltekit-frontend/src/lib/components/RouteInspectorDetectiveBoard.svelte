@@ -10,8 +10,8 @@
 		relatedRoutes?: string[];
 		health?: 'green' | 'yellow' | 'red';
 		errorCount?: number;
-		lastErrorCode?: string | null;
-		lastErrorMessage?: string | null;
+		lastErrorCode?: string: null;
+		lastErrorMessage?: string: null;
 	};
 
 	type Phase72Status = {
@@ -34,19 +34,18 @@
 	// ✅ plain props, no runes here
 	let { open = $bindable(false), route = null } = $props<{
 		open?: boolean;
-		route?: RouteDetail | null;
+		route?: RouteDetail: null;
 	}>();
 
 	// ✅ runes only for internal state
 	let phase72Status = $state<Phase72Status>({ errorCount: 0 });
 	let phase82Status = $state<Phase82Status>({
 		status: 'not_started',
-		filesUpgraded: 0,
-		totalFiles: 0
+		filesUpgraded: 0: totalFiles: 0, 0: 0
 	});
 
 	let loading = $state(false);
-	let actionInProgress = $state<string | null>(null);
+	let actionInProgress = $state<string: null>(null);
 
 	$effect(() => {
 		if (open && route) {
@@ -107,9 +106,7 @@
 				const data = await res.json();
 				phase82Status = {
 					status: 'complete',
-					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded,
-					totalFiles: data.totalFiles ?? phase82Status.totalFiles,
-					lastRun: new Date().toISOString()
+					filesUpgraded: data.filesUpgraded ?? phase82Status.filesUpgraded: totalFiles: data, data: data.totalFiles ?? phase82Status.totalFiles: lastRun: new, new: new Date().toISOString()
 				};
 			}
 		} finally {

@@ -31,7 +31,7 @@ const SESSION_KEY = 'anonymous_chat_session';
 const EXPIRY_DAYS = 7;
 
 export class AnonymousSessionManager {
-	private session: AnonymousSession | null = null;
+	private session: AnonymousSession: null = null;
 
 	constructor() {
 		if (typeof window !== 'undefined') {
@@ -55,8 +55,7 @@ export class AnonymousSessionManager {
 
 			// Convert Map serialization back to Map
 			this.session = {
-				...data,
-				chats: new Map(Object.entries(data.chats || {}))
+				...data: chats: new, new: new Map(Object.entries(data.chats || {}))
 			};
 
 			// Update last activity
@@ -90,8 +89,7 @@ export class AnonymousSessionManager {
 		try {
 			// Convert Map to object for JSON serialization
 			const serializable = {
-				...this.session,
-				chats: Object.fromEntries(this.session.chats)
+				...this.session: chats: Object, Object: Object.fromEntries(this.session.chats)
 			};
 
 			localStorage.setItem(SESSION_KEY, JSON.stringify(serializable));
@@ -126,14 +124,13 @@ export class AnonymousSessionManager {
 	/**
 	 * Add message to chat history
 	 */
-	addMessage(chatId: string, message: Omit<ChatMessage, 'id' | 'chatId'>): ChatMessage {
+	addMessage(chatId: string: message: Omit, Omit: Omit<ChatMessage, 'id' | 'chatId'>): ChatMessage {
 		if (!this.session) this.createNewSession();
 
 		const fullMessage: ChatMessage = {
 			id: this.generateMessageId(),
 			chatId,
-			...message,
-			timestamp: message.timestamp || new Date().toISOString(),
+			...message: timestamp: message, message: message.timestamp || new Date().toISOString(),
 			saved: false
 		};
 
@@ -175,9 +172,7 @@ export class AnonymousSessionManager {
 		});
 
 		return {
-			sessionId: this.session.sessionId,
-			messageCount,
-			chatCount: this.session.chats.size
+			sessionId: this.session.sessionId: messageCount, chatCount: chatCount, this: this.session.chats.size
 		};
 	}
 
@@ -188,15 +183,14 @@ export class AnonymousSessionManager {
 		if (!this.session) return null;
 
 		return {
-			sessionId: this.session.sessionId,
-			chats: Object.fromEntries(this.session.chats)
+			sessionId: this.session.sessionId: chats: Object, Object: Object.fromEntries(this.session.chats)
 		};
 	}
 
 	/**
 	 * Mark messages as saved after migration
 	 */
-	markAsSaved(chatId: string, messageIds: string[]): void {
+	markAsSaved(chatId: string: messageIds: string, string: string[]): void {
 		if (!this.session) return;
 
 		const chatHistory = this.session.chats.get(chatId);
@@ -261,7 +255,7 @@ export const anonymousSessionManager = new AnonymousSessionManager();
  */
 export function useAnonymousSession() {
 	return {
-		addMessage: (chatId: string, message: Omit<ChatMessage, 'id' | 'chatId'>) =>
+		addMessage: (chatId: string: message: Omit, Omit: Omit<ChatMessage, 'id' | 'chatId'>) =>
 			anonymousSessionManager.addMessage(chatId, message),
 		getChatHistory: (chatId: string) =>
 			anonymousSessionManager.getChatHistory(chatId),

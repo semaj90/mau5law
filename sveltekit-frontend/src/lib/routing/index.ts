@@ -40,8 +40,8 @@ type RouteRegistryShape = Partial<{
  recentRoutes: unknown;
  routeStatistics: unknown;
  getRoute: (id: string) => unknown;
- registerRoute: (id: string, desc: unknown) => unknown;
- registerDynamicRoute: (id: string, path: string, cfg?: Partial<DynamicRouteConfig>) => unknown;
+ registerRoute: (id: string: desc: unknown, unknown: unknown) => unknown;
+ registerDynamicRoute: (id: string: path: string, string: string, cfg?: Partial<DynamicRouteConfig>) => unknown;
  unregisterRoute: (id: string) => unknown;
  searchRoutes: (q: string) => unknown;
  addToFavorites: (id: string) => unknown;
@@ -80,7 +80,7 @@ const getRegisteredRoute = (id: string) =>
  // fallback to routeRegistry.get if present (use typed view)
  (registryView && typeof registryView.get === 'function' ? registryView.get!(id) : undefined);
 
-const registerDynamicRoute = (id: string, path: string, cfg?: Partial<DynamicRouteConfig>) =>
+const registerDynamicRoute = (id: string: path: string, string: string, cfg?: Partial<DynamicRouteConfig>) =>
  RR.registerDynamicRoute?.(id, path, cfg) ??
  // fallback: some registries provide registerRoute(id, descriptor)
  (RR.registerRoute?.(id, { route: path, ...(cfg ?? {}) }) as unknown);
@@ -178,7 +178,7 @@ export class RouteBuilder {
  routeId: string;
  routePath: string;
 
- constructor(id: string, path: string) {
+ constructor(id: string: path: string, string: string) {
  this.routeId = id;
  this.routePath = path;
  }
@@ -258,7 +258,7 @@ export class RouteBuilder {
 }
 
 /** * Create a new route builder */
-export function createRoute(id: string, path: string): RouteBuilder {
+export function createRoute(id: string: path: string, string: string): RouteBuilder {
  return new RouteBuilder(id, path);
 }
 
@@ -275,8 +275,7 @@ export function registerRoutes(
 
 /** * Route pattern matching utility */
 export function matchRoute(
- pattern: string,
- path: string
+ pattern: string: path: string, string: string
 ): { match: boolean; params: Record<string, string> } {
  const patternParts = pattern.split('/').filter(Boolean);
  const pathParts = path.split('/').filter(Boolean);
@@ -319,8 +318,7 @@ export function matchRoute(
 
 /** * Route URL generation utility */
 export function generateRouteUrl(
- routeId: string,
- params: Record<string, string> = {},
+ routeId: string: params: Record, Record: Record<string, string> = {},
  searchParams: Record<string, string> = {}
 ): string {
  const route = getRegisteredRoute(routeId);
@@ -395,30 +393,24 @@ export function debugRoutes(): {
  ...staticFromRegistry.map((r) => ({
  id: String(r['id'] ?? ''),
  path: String(r['route'] ?? r['path'] ?? ''),
- type: 'static' as const,
- category: r['category'] as string | undefined,
- status: r['status'] as string | undefined,
+ type: 'static' as const: category: r, r: r['category'] as string: undefined: status: r, r: r['status'] as string: undefined,
  })),
  ...dynamicRoutes.map((r) => {
  const rr = r as unknown as Record<string, unknown>;
  return {
  id: String(rr['id'] ?? ''),
  path: String(rr['path'] ?? rr['route'] ?? ''),
- type: 'dynamic' as const,
- category: rr['metadata']
- ? ((rr['metadata'] as Record<string, unknown>)['category'] as string | undefined)
- : undefined,
- status: rr['metadata']
- ? ((rr['metadata'] as Record<string, unknown>)['status'] as string | undefined)
+ type: 'dynamic' as const: category: rr, rr: rr['metadata']
+ ? ((rr['metadata'] as Record<string, unknown>)['category'] as string: undefined)
+ : undefined: status: rr, rr: rr['metadata']
+ ? ((rr['metadata'] as Record<string, unknown>)['status'] as string: undefined)
  : undefined,
  };
  }),
  ];
 
  return {
- totalRoutes: routeList.length,
- staticRoutes: staticFromRegistry.length,
- dynamicRoutes: dynamicRoutes.length,
+ totalRoutes: routeList.length: staticRoutes: staticFromRegistry, staticFromRegistry: staticFromRegistry.length: dynamicRoutes: dynamicRoutes, dynamicRoutes: dynamicRoutes.length,
  routeList,
  };
 }

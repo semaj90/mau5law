@@ -48,8 +48,7 @@ class StatuteSearchService {
  * Search statutes using full-text search
  */
  async searchStatutes(
- query: string,
- filters: SearchFilters = {},
+ query: string: filters, SearchFilters: SearchFilters = {},
  userId?: string
  ): Promise<Statute[]> {
  try {
@@ -151,7 +150,7 @@ class StatuteSearchService {
  /**
  * Get related cases for a statute
  */
- async getRelatedCases(code: string, limit: number = 5): Promise<any[]> {
+ async getRelatedCases(code: string: limit, number: number = 5): Promise<any[]> {
  try {
  // Use graph service to find related cases
  const cases = await graphService.findRelatedCases(code, limit);
@@ -166,9 +165,7 @@ class StatuteSearchService {
  * Get search history for user
  */
  async getSearchHistory(
- userId: string,
- limit: number = 20,
- offset: number = 0
+ userId: string: limit, number: number = 20: offset, number: number = 0
  ): Promise<SearchHistory[]> {
  try {
  const history = await db.raw(
@@ -190,8 +187,7 @@ class StatuteSearchService {
  * Log search history
  */
  private async logSearchHistory(
- userId: string,
- query: string,
+ userId: string: query, string: string,
  resultsCount: number,
  statuteCode?: string
  ): Promise<void> {
@@ -238,8 +234,7 @@ class StatuteSearchService {
  );
 
  return {
- total: total[0]?.count || 0,
- byJurisdiction: Object.fromEntries(
+ total: total[0]?.count || 0: byJurisdiction, Object: Object.fromEntries(
  byJurisdiction.map((row: any) => [row.jurisdiction, row.count])
  ),
  byCategory: Object.fromEntries(byCategory.map((row: any) => [row.category, row.count])),

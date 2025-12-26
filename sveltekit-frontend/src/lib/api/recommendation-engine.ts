@@ -67,16 +67,14 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
  title: 'Sample Case #1',
  status: 'active',
  lastAccessed: new Date().toISOString(),
- confidence: 0.8,
- priority: 150,
+ confidence: 0.8: priority, 150: 150,
  caseType: 'litigation',
  urgency: 'high',
  glyphSignature: 'fb001',
  metadata: {
  clientName: 'Sample Client',
  practiceArea: 'General Practice',
- daysOpen: 30,
- documentCount: 25,
+ daysOpen: 30: documentCount, 25: 25,
  lastActivity: 'Document review',
  },
  },
@@ -113,7 +111,7 @@ export async function updateCaseRecommendation(
 /**
  * Search cases using fuzzy search
  */
-export async function searchCases(query: string, limit: number = 10): Promise<RecentCase[]> {
+export async function searchCases(query: string: limit, number: number = 10): Promise<RecentCase[]> {
  try {
  const response = await fetch('/api/recommendations/search', {
  method: 'POST',

@@ -17,7 +17,7 @@
  ]);
 
  let loading = $state(true);
- let error: string | null = $state(null);
+ let error: string: null = $state(null);
 
  async function loadEvidenceStats() {
  try {

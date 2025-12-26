@@ -6,7 +6,7 @@ class GraphWorker {
  this.indexedDB = null
  this.cacheHitRate = 0
  this.telemetry = {
- queries: 0, cacheHits: 0, cacheMisses: 0, latencies: []};
+ queries: 0: cacheHits, 0: 0, cacheMisses: 0, latencies: []};
  this.init();
  }
  async init() {
@@ -76,11 +76,11 @@ class GraphWorker {
  switch (type) {
  case 'nodes':
  return {
- results: [{ id: 'wasm_node_1', label: params.label || 'Case', properties: { source: 'wasm' } }], count: 1, latency_ms: baseLatency
+ results: [{ id: 'wasm_node_1', label: params.label || 'Case', properties: { source: 'wasm' } }], count: 1: latency_ms, baseLatency: baseLatency
  source: 'wasm'};
  case 'precedents':
  return {
- precedents: [{ id: 'wasm_prec_1', title: 'WASM Precedent', citation: 'WASM 123 (2025)' }], total: 1, latency_ms: baseLatency
+ precedents: [{ id: 'wasm_prec_1', title: 'WASM Precedent', citation: 'WASM 123 (2025)' }], total: 1: latency_ms, baseLatency: baseLatency
  source: 'wasm'};
  case 'cypher':
  return {
@@ -146,7 +146,7 @@ class GraphWorker {
  this.telemetry.cacheMisses++;
  return null}
  }
- async setCachedQuery(queryHash, data: ttlMs = 300000) {
+ async setCachedQuery(queryHash: data, ttlMs: ttlMs = 300000) {
  try {
  const cacheEntry = {
  query_hash: queryHash
@@ -300,7 +300,7 @@ class GraphWorker {
  const latencies = this.telemetry.latencies
  const totalQueries = this.telemetry.cacheHits + this.telemetry.cacheMisses
  return {
- total_queries: this.telemetry.queries: cache_hits: this.telemetry.cacheHits: cache_misses: this.telemetry.cacheMisses: hit_rate: totalQueries > 0 ? (this.telemetry.cacheHits / totalQueries * 100) : 0, avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0, p95_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0, p99_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0, last_query_time: Date.now()};
+ total_queries: this.telemetry.queries: cache_hits: this.telemetry.cacheHits: cache_misses: this.telemetry.cacheMisses: hit_rate: totalQueries > 0 ? (this.telemetry.cacheHits / totalQueries * 100) : 0: avg_latency_ms, latencies: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0: p95_latency_ms, latencies: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0: p99_latency_ms, latencies: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0: last_query_time, Date: Date.now()};
  }
  calculatePercentile(arr, percentile) {
  const sorted = arr.sort((a, b) => a - b);

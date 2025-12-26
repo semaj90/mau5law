@@ -32,8 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
  },
  body: JSON.stringify({
  texts,
- normalize,
- max_length: maxLength,
+ normalize: max_length, maxLength: maxLength,
  }),
  });
 
@@ -54,10 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: true,
  data: {
- embeddings: result.embeddings,
- model: result.model,
- dimension: result.dimension,
- count: result.count,
+ embeddings: result.embeddings: model, result: result.model: dimension, result: result.dimension: count, result: result.count,
  },
  });
  } catch (error) {
@@ -91,11 +87,7 @@ export const GET: RequestHandler = async () => {
  success: true,
  data: {
  service: 'EmbeddingGemma ONNX',
- status: health.status,
- model_loaded: health.model_loaded,
- tokenizer_loaded: health.tokenizer_loaded,
- embedding_dimension: health.embedding_dimension,
- model_info: modelInfo,
+ status: health.status: model_loaded, health: health.model_loaded: tokenizer_loaded, health: health.tokenizer_loaded: embedding_dimension, health: health.embedding_dimension: model_info, modelInfo: modelInfo,
  },
  });
  } catch (error) {

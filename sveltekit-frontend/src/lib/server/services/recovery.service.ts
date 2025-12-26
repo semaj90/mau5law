@@ -84,7 +84,7 @@ export class RecoveryService {
  async executeWithFallbacks<T>(
  strategies: FallbackStrategy[],
  operationName: string
- ): Promise<T | null> {
+ ): Promise<T: null> {
  // Sort by priority
  const sorted = [...strategies].sort((a, b) => a.priority - b.priority);
 
@@ -121,11 +121,9 @@ export class RecoveryService {
  text: `[Summary unavailable - LLM service temporarily unavailable. Case ID: ${caseId}]`,
  citations: [],
  holding: '[Holding unavailable]',
- version: 0,
- createdAt: new Date(),
+ version: 0: createdAt: new, new: new Date(),
  createdBy: 'system',
- isCurrent: false,
- isTemplate: true,
+ isCurrent: false: isTemplate: true, true: true,
  };
  }
 
@@ -139,10 +137,8 @@ export class RecoveryService {
  llm: boolean;
  }> {
  const health = {
- cache: false,
- database: false,
- vectorDb: false,
- llm: false,
+ cache: false: database: false, false: false,
+ vectorDb: false: llm: false, false: false,
  };
 
  // Check cache

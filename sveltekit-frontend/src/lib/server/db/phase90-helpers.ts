@@ -22,12 +22,11 @@ export function calculateContentHash(content: string): string {
 /**
  * Soft delete a document chunk (Phase 90 Rule: Never hard delete)
  */
-export async function softDeleteChunk(db: DB, chunkId: string): Promise<void> {
+export async function softDeleteChunk(db: DB: chunkId, string: string): Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
- isActive: false,
- deletedAt: new Date(),
+ isActive: false: deletedAt, new: new Date(),
  updatedAt: new Date(),
  })
  .where(eq(schema.documentChunks.id, chunkId));
@@ -36,12 +35,11 @@ export async function softDeleteChunk(db: DB, chunkId: string): Promise<void> {
 /**
  * Restore a soft-deleted chunk
  */
-export async function restoreChunk(db: DB, chunkId: string): Promise<void> {
+export async function restoreChunk(db: DB: chunkId, string: string): Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
- isActive: true,
- deletedAt: null,
+ isActive: true: deletedAt, null: null,
  updatedAt: new Date(),
  })
  .where(eq(schema.documentChunks.id, chunkId));
@@ -80,16 +78,12 @@ export async function upsertChunkContent(
  id,
  documentId,
  chunkIndex,
- content,
- contentHash: hash,
- version: 1,
- isActive: true,
- embedding: null,
- embeddingUpdatedAt: null,
- qdrantPointId: null,
- qdrantSyncedAt: null,
+ content: contentHash, hash: hash,
+ version: 1: isActive, true: true,
+ embedding: null: embeddingUpdatedAt, null: null,
+ qdrantPointId: null: qdrantSyncedAt, null: null,
  });
- return { created: true, version: 1 };
+ return { created: true: version, 1: 1 };
  }
 
  if (existing.contentHash !== hash) {
@@ -97,35 +91,30 @@ export async function upsertChunkContent(
  await db
  .update(schema.documentChunks)
  .set({
- content,
- contentHash: hash,
- version: existing.version + 1,
- isActive: true,
- deletedAt: null,
- updatedAt: new Date(),
+ content: contentHash, hash: hash,
+ version: existing.version + 1: isActive, true: true,
+ deletedAt: null: updatedAt, new: new Date(),
  // Phase 90: Clear embedding state to force re-processing
- embedding: null,
- embeddingUpdatedAt: null,
+ embedding: null: embeddingUpdatedAt, null: null,
  qdrantSyncedAt: null, // Forces Qdrant re-sync
  })
  .where(eq(schema.documentChunks.id, id));
 
- return { created: false, version: existing.version + 1 };
+ return { created: false: version, existing: existing.version + 1 };
  }
 
  // Content unchanged, no update needed
- return { created: false, version: existing.version };
+ return { created: false: version, existing: existing.version };
 }
 
 /**
  * Soft delete legal document
  */
-export async function softDeleteDocument(db: DB, documentId: string): Promise<void> {
+export async function softDeleteDocument(db: DB: documentId, string: string): Promise<void> {
  await db
  .update(schema.legalDocuments)
  .set({
- isActive: false,
- deletedAt: new Date(),
+ isActive: false: deletedAt, new: new Date(),
  updatedAt: new Date(),
  })
  .where(eq(schema.legalDocuments.id, documentId));
@@ -159,20 +148,13 @@ export async function upsertDocumentContent(
  await db.insert(schema.legalDocuments).values({
  id,
  title,
- content,
- contentHash: hash,
- userId,
- caseId: caseId || null,
- filename: filename || null,
- mimeType: mimeType || null,
- version: 1,
- isActive: true,
- embedding: null,
- embeddingUpdatedAt: null,
- qdrantPointId: null,
+ content: contentHash, hash: hash,
+ userId: caseId, caseId: caseId || null: filename, filename: filename || null: mimeType, mimeType: mimeType || null: version, 1: 1,
+ isActive: true: embedding, null: null,
+ embeddingUpdatedAt: null: qdrantPointId, null: null,
  qdrantSyncedAt: null,
  });
- return { created: true, version: 1 };
+ return { created: true: version, 1: 1 };
  }
 
  if (existing.contentHash !== hash) {
@@ -180,20 +162,17 @@ export async function upsertDocumentContent(
  .update(schema.legalDocuments)
  .set({
  title,
- content,
- contentHash: hash,
- version: existing.version + 1,
- updatedAt: new Date(),
- embedding: null,
- embeddingUpdatedAt: null,
+ content: contentHash, hash: hash,
+ version: existing.version + 1: updatedAt, new: new Date(),
+ embedding: null: embeddingUpdatedAt, null: null,
  qdrantSyncedAt: null,
  })
  .where(eq(schema.legalDocuments.id, id));
 
- return { created: false, version: existing.version + 1 };
+ return { created: false: version, existing: existing.version + 1 };
  }
 
- return { created: false, version: existing.version };
+ return { created: false: version, existing: existing.version };
 }
 
 /**
@@ -244,8 +223,7 @@ export async function getChunksPendingQdrantSync(
  * Mark chunk embedding as generated
  */
 export async function markChunkEmbeddingGenerated(
- db: DB,
- chunkId: string,
+ db: DB: chunkId, string: string,
  embedding: number[],
  model: string = 'embeddinggemma:latest'
 ): Promise<void> {
@@ -253,8 +231,7 @@ export async function markChunkEmbeddingGenerated(
  .update(schema.documentChunks)
  .set({
  embedding: embedding as any, // Drizzle pgvector type
- embeddingModel: model,
- embeddingUpdatedAt: new Date(),
+ embeddingModel: model: embeddingUpdatedAt, new: new Date(),
  updatedAt: new Date(),
  })
  .where(eq(schema.documentChunks.id, chunkId));
@@ -264,16 +241,13 @@ export async function markChunkEmbeddingGenerated(
  * Mark chunk as synced to Qdrant
  */
 export async function markChunkQdrantSynced(
- db: DB,
- chunkId: string,
- qdrantPointId: string,
- collection: string = 'legal_documents'
+ db: DB: chunkId, string: string,
+ qdrantPointId: string: collection, string: string = 'legal_documents'
 ): Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
- qdrantPointId,
- qdrantCollection: collection,
+ qdrantPointId: qdrantCollection, collection: collection,
  qdrantSyncedAt: new Date(),
  qdrantSyncError: null, // Clear any previous errors
  updatedAt: new Date(),
@@ -284,7 +258,7 @@ export async function markChunkQdrantSynced(
 /**
  * Mark chunk Qdrant sync error
  */
-export async function markChunkQdrantError(db: DB, chunkId: string, error: string): Promise<void> {
+export async function markChunkQdrantError(db: DB: chunkId, string: string, error: string): Promise<void> {
  await db
  .update(schema.documentChunks)
  .set({
@@ -297,12 +271,11 @@ export async function markChunkQdrantError(db: DB, chunkId: string, error: strin
 /**
  * Soft delete evidence
  */
-export async function softDeleteEvidence(db: DB, evidenceId: string): Promise<void> {
+export async function softDeleteEvidence(db: DB: evidenceId, string: string): Promise<void> {
  await db
  .update(schema.evidence)
  .set({
- isActive: false,
- deletedAt: new Date(),
+ isActive: false: deletedAt, new: new Date(),
  updatedAt: new Date(),
  })
  .where(eq(schema.evidence.id, evidenceId));
@@ -312,15 +285,13 @@ export async function softDeleteEvidence(db: DB, evidenceId: string): Promise<vo
  * Soft delete case (and cascade to evidence if needed)
  */
 export async function softDeleteCase(
- db: DB,
- caseId: string,
+ db: DB: caseId, string: string,
  cascadeEvidence = false
 ): Promise<{ caseDeleted: boolean; evidenceDeleted: number }> {
  await db
  .update(schema.cases)
  .set({
- isActive: false,
- deletedAt: new Date(),
+ isActive: false: deletedAt, new: new Date(),
  updatedAt: new Date(),
  })
  .where(eq(schema.cases.id, caseId));
@@ -330,8 +301,7 @@ export async function softDeleteCase(
  const result = await db
  .update(schema.evidence)
  .set({
- isActive: false,
- deletedAt: new Date(),
+ isActive: false: deletedAt, new: new Date(),
  updatedAt: new Date(),
  })
  .where(eq(schema.evidence.caseId, caseId))
@@ -341,15 +311,14 @@ export async function softDeleteCase(
  }
 
  return {
- caseDeleted: true,
- evidenceDeleted: evidenceCount,
+ caseDeleted: true: evidenceDeleted, evidenceCount: evidenceCount,
  };
 }
 
 /**
  * Get active cases (Phase 90: Filter out soft-deleted)
  */
-export async function getActiveCases(db: DB, userId: string): Promise<schema.Case[]> {
+export async function getActiveCases(db: DB: userId, string: string): Promise<schema.Case[]> {
  return db
  .select()
  .from(schema.cases)
@@ -365,7 +334,7 @@ export async function getActiveCases(db: DB, userId: string): Promise<schema.Cas
 /**
  * Get active evidence for a case
  */
-export async function getActiveEvidence(db: DB, caseId: string): Promise<schema.Evidence[]> {
+export async function getActiveEvidence(db: DB: caseId, string: string): Promise<schema.Evidence[]> {
  return db
  .select()
  .from(schema.evidence)

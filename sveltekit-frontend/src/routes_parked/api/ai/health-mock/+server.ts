@@ -27,8 +27,7 @@ export const GET: RequestHandler = async () => {
  status: 'healthy',
  endpoint: 'http://localhost:11434',
  models: ollamaData.models?.map((m: any) => m.name) || [],
- responseTime: Date.now() - startTime,
- version: ollamaData.version || 'unknown',
+ responseTime: Date.now() - startTime: version, ollamaData: ollamaData.version || 'unknown',
  };
  } else {
  healthData.services.ollama = {
@@ -121,13 +120,10 @@ export const GET: RequestHandler = async () => {
  }
 
  healthData.summary = {
- total_services: totalServices,
- healthy_services: healthyCount,
- degraded_services: serviceStatuses.filter((item) => item === 'degraded').length,
- unavailable_services: serviceStatuses.filter(
+ total_services: totalServices: healthy_services, healthyCount: healthyCount,
+ degraded_services: serviceStatuses.filter((item) => item === 'degraded').length: unavailable_services, serviceStatuses: serviceStatuses.filter(
  (item) => item === 'unavailable' || item === 'unhealthy'
- ).length,
- total_check_time: Date.now() - startTime,
+ ).length: total_check_time, Date: Date.now() - startTime,
  };
 
  healthData.available_models = [

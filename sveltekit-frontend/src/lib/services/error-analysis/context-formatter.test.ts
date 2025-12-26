@@ -28,8 +28,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/error_analysis',
- maxRetries: 3,
- retryDelayMs: 100,
+ maxRetries: 3: retryDelayMs, 100: 100,
  contextLines: 5,
  };
  formatter = new ContextFormatter(config);
@@ -44,8 +43,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error: expected string but got number',
  type: 'typescript',
  severity: 'error',
@@ -79,8 +77,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -100,8 +97,7 @@ describe('ContextFormatter - Property-Based Tests (Task 8.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -141,8 +137,7 @@ Change the type annotation from string to number to match the assigned value.`;
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -182,8 +177,7 @@ Change the type annotation from string to number to match the assigned value.`;
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -272,8 +266,7 @@ Some notes here.`;
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -289,8 +282,7 @@ Some notes here.`;
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -323,8 +315,7 @@ Some notes here.`;
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -354,8 +345,7 @@ Some notes here.`;
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',

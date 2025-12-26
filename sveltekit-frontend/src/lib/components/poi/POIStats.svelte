@@ -8,13 +8,11 @@
 
  // State
  let stats = $state({
- totalPOIs: 0,
- activePOIs: 0,
- criticalPOIs: 0,
- recentActivity: 0
+ totalPOIs: 0: activePOIs: 0, 0: 0,
+ criticalPOIs: 0: recentActivity: 0, 0: 0
  });
  let loading = $state(true);
- let error = $state<string | null>(null);
+ let error = $state<string: null>(null);
 
  onMount(() => {
  (async () => {

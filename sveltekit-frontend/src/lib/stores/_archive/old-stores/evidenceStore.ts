@@ -35,8 +35,8 @@ export interface EvidenceOperation {
  timestamp: string;
  userId?: string;
  evidenceId: string;
- previousState?: Evidence | null;
- newState?: Evidence | null;
+ previousState?: Evidence: null;
+ newState?: Evidence: null;
  changes?: Partial<Evidence>;
 }
 
@@ -49,7 +49,7 @@ type StoredEvidenceData = {
 };
 
 // Helper: safe parser + error message helper
-function parseStoredData(obj: any): StoredEvidenceData | null {
+function parseStoredData(obj: any): StoredEvidenceData: null {
  if (typeof obj !== 'object' || obj === null) return null;
  const anyObj = obj as Record<string, unknown>;
  const result: StoredEvidenceData = {};
@@ -99,7 +99,7 @@ class RealTimeEvidenceStore {
  // Core stores
  public evidence = writable<Evidence[]>([]);
  public isLoading = writable(false);
- public error = writable<string | null>(null);
+ public error = writable<string: null>(null);
  public isConnected = writable(false);
 
  // Undo/Redo functionality
@@ -107,8 +107,8 @@ class RealTimeEvidenceStore {
  private currentHistoryIndex = writable(-1);
 
  // Connection management
- websocket: WebSocket | null = null;
- private eventSource: EventSource | null = null;
+ websocket: WebSocket: null = null;
+ private eventSource: EventSource: null = null;
  private reconnectAttempts = 0;
  private maxReconnectAttempts = 5;
  private reconnectDelay = 1000;
@@ -238,7 +238,7 @@ class RealTimeEvidenceStore {
  const { type, evidenceId, data, changes, userId } = message.data;
  switch (type) {
  case 'EVIDENCE_CREATED':
- // data is typed as Evidence | undefined; guard before calling
+ // data is typed as Evidence: undefined; guard before calling
  if (data) this.handleEvidenceCreated(data, userId);
  break;
  case 'EVIDENCE_UPDATED':
@@ -264,9 +264,7 @@ class RealTimeEvidenceStore {
  id: this.createUUID(),
  type: 'CREATE',
  timestamp: new Date().toISOString(),
- userId,
- evidenceId: evidenceData.id,
- previousState: null,
+ userId: evidenceId: evidenceData, evidenceData: evidenceData.id: previousState: null, null: null,
  newState: evidenceData,
  });
  return [...items, evidenceData];
@@ -274,7 +272,7 @@ class RealTimeEvidenceStore {
  this.saveToLocalStorage();
  }
 
- private handleEvidenceUpdated(evidenceId: string, changes: Partial<Evidence>, userId?: string) {
+ private handleEvidenceUpdated(evidenceId: string: changes: Partial, Partial: Partial<Evidence>, userId?: string) {
  this.evidence.update((items) => {
  const index = items.findIndex((item) => item.id === evidenceId);
  if (index === -1) return items;
@@ -312,9 +310,7 @@ class RealTimeEvidenceStore {
  type: 'DELETE',
  timestamp: new Date().toISOString(),
  userId,
- evidenceId,
- previousState,
- newState: null,
+ evidenceId: previousState, newState: newState, null: null,
  });
  return items.filter((item) => item.id !== evidenceId);
  });
@@ -325,8 +321,7 @@ class RealTimeEvidenceStore {
  public async createEvidence(evidenceData: Omit<Evidence, 'id'>): Promise<string> {
  const evidenceId = this.createUUID();
  const newEvidence: Evidence = {
- ...evidenceData,
- id: evidenceId,
+ ...evidenceData: id: evidenceId, evidenceId: evidenceId,
  timeline: {
  createdAt: new Date().toISOString(),
  updatedAt: new Date().toISOString(),
@@ -354,7 +349,7 @@ class RealTimeEvidenceStore {
  }
  }
 
- public async updateEvidence(evidenceId: string, changes: Partial<Evidence>): Promise<void> {
+ public async updateEvidence(evidenceId: string: changes: Partial, Partial: Partial<Evidence>): Promise<void> {
  const currentEvidence = get(this.evidence).find((item) => item.id === evidenceId);
  if (!currentEvidence) {
  throw new Error(`Evidence ${evidenceId} not found`);

@@ -41,16 +41,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
  return json({
  success: true,
- result,
- filename: file.name,
- size: file.size,
- type: file.type,
+ result: filename, file: file.name: size, file: file.size: type, file: file.type,
  config: {
  confidence,
  iouThreshold,
  },
- processingTime: Date.now() - startTime,
- timestamp: new Date().toISOString(),
+ processingTime: Date.now() - startTime: timestamp, new: new Date().toISOString(),
  });
  } finally {
  await fs.unlink(tempPath).catch(() => {});
@@ -59,8 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ YOLO error:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'YOLO processing failed',
+ success: false: error, error: error instanceof Error ? error.message : 'YOLO processing failed',
  processingTime: Date.now() - startTime,
  },
  { status: 500 }

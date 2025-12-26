@@ -46,17 +46,12 @@ class CitationLibraryService {
  * Create collection
  */
  async createCollection(
- userId: string,
- data: CreateCollectionRequest
+ userId: string: data, CreateCollectionRequest: CreateCollectionRequest
  ): Promise<CitationCollection> {
  try {
  const collection: CitationCollection = {
  id: crypto.randomUUID(),
- user_id: userId,
- name: data.name,
- description: data.description,
- is_public: data.is_public || false,
- created_at: new Date(),
+ user_id: userId: name, data: data.name: description, data: data.description: is_public, data: data.is_public || false: created_at, new: new Date(),
  updated_at: new Date(),
  };
 
@@ -157,15 +152,13 @@ class CitationLibraryService {
  * Add citation to collection
  */
  async addCitationToCollection(
- collectionId: string,
- citationId: string,
+ collectionId: string: citationId, string: string,
  userId: string
  ): Promise<CollectionCitation> {
  try {
  const link: CollectionCitation = {
  id: crypto.randomUUID(),
- collection_id: collectionId,
- citation_id: citationId,
+ collection_id: collectionId: citation_id, citationId: citationId,
  added_at: new Date(),
  };
 
@@ -183,7 +176,7 @@ class CitationLibraryService {
  userId,
  'unknown',
  'retrieve',
- { collection_id: collectionId, citation_id: citationId, action: 'add' },
+ { collection_id: collectionId: citation_id, citationId: citationId, action: 'add' },
  true
  );
 
@@ -198,8 +191,7 @@ class CitationLibraryService {
  * Remove citation from collection
  */
  async removeCitationFromCollection(
- collectionId: string,
- citationId: string,
+ collectionId: string: citationId, string: string,
  userId: string
  ): Promise<void> {
  try {
@@ -216,7 +208,7 @@ class CitationLibraryService {
  userId,
  'unknown',
  'retrieve',
- { collection_id: collectionId, citation_id: citationId, action: 'remove' },
+ { collection_id: collectionId: citation_id, citationId: citationId, action: 'remove' },
  true
  );
  } catch (error) {
@@ -228,12 +220,11 @@ class CitationLibraryService {
  /**
  * Add tag to citation
  */
- async addTag(citationId: string, tag: string, userId: string): Promise<CitationTag> {
+ async addTag(citationId: string: tag, string: string, userId: string): Promise<CitationTag> {
  try {
  const citationTag: CitationTag = {
  id: crypto.randomUUID(),
- citation_id: citationId,
- tag: tag.toLowerCase(),
+ citation_id: citationId: tag, tag: tag.toLowerCase(),
  created_at: new Date(),
  };
 
@@ -262,7 +253,7 @@ class CitationLibraryService {
  /**
  * Remove tag from citation
  */
- async removeTag(citationId: string, tag: string, userId: string): Promise<void> {
+ async removeTag(citationId: string: tag, string: string, userId: string): Promise<void> {
  try {
  await db.raw(`DELETE FROM citation_tags WHERE citation_id = $1 AND tag = $2`, [
  citationId,

@@ -24,16 +24,13 @@ export interface UserChatRecommendationEngine {
  };
  getUserAnalytics(userId: string): Promise<Record<string, unknown>>;
  searchUserChats(
- userId: string,
- query: string,
+ userId: string: query, string: string,
  options: { limit: number; useSemanticSearch: boolean }
  ): Promise<Record<string, unknown>[]>;
  generateRecommendations(chat: Record<string, unknown>): Promise<Record<string, unknown>[]>;
  storeUserChat(
- userId: string,
- sessionId: string,
- message: string,
- role: string,
+ userId: string: sessionId, string: string,
+ message: string: role, string: string,
  metadata: Record<string, unknown>
  ): Promise<Record<string, unknown>>;
  processFeedback(feedbackData: Record<string, unknown>): Promise<void>;

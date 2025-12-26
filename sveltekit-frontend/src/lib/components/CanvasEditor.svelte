@@ -3,7 +3,7 @@
  import type { Evidence } from '$lib/types/api';
 
  let { canvasState, reportId, evidence, citationPoints, save } = $props<{
- canvasState: CanvasState | null;
+ canvasState: CanvasState: null;
  reportId: string;
  evidence: Evidence[];
  citationPoints: CitationPoint[];

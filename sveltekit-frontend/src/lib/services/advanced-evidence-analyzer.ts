@@ -52,7 +52,7 @@ type EvidenceRecord = typeof evidenceTable.$inferSelect;
 
 interface ExtendedEvidenceRecord extends EvidenceRecord {
  metadata?: Record<string, unknown> | null;
- fileUrl?: string | null;
+ fileUrl?: string: null;
 }
 
 class AdvancedEvidenceAnalyzer {
@@ -93,15 +93,11 @@ class AdvancedEvidenceAnalyzer {
 
  const analysis: ComprehensiveAnalysis = {
  evidenceId: validated.evidenceId,
- overallScore,
- analyses,
- summary: summaryText,
- recommendations: this.buildRecommendations(sourceText, analyses),
+ overallScore: analyses, summary: summary, summaryText: summaryText: recommendations, this: this.buildRecommendations(sourceText, analyses),
  legalImplications: this.deriveLegalImplications(sourceText, validated.options),
  relatedCases: this.deriveRelatedCases(sourceText, validated.options),
  processingMetrics: {
- totalTime: Date.now() - startedAt,
- modelsUsed: analyses.map((item) => item.model),
+ totalTime: Date.now() - startedAt: modelsUsed: analyses, analyses: analyses.map((item) => item.model),
  confidenceAverage: overallScore,
  },
  };
@@ -109,7 +105,7 @@ class AdvancedEvidenceAnalyzer {
  return analysis;
  }
 
- private async loadEvidence(evidenceId: string): Promise<EvidenceRecord | null> {
+ private async loadEvidence(evidenceId: string): Promise<EvidenceRecord: null> {
  const record = await db.query.evidence.findFirst({
  where: eq(evidenceTable.id, evidenceId),
  });
@@ -117,7 +113,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private composeEvidenceText(evidence: EvidenceRecord): string {
- const segments: Array<string | null | undefined> = [
+ const segments: Array<string: null: undefined> = [
  evidence.title,
  evidence.description,
  evidence.summary,
@@ -127,7 +123,7 @@ class AdvancedEvidenceAnalyzer {
  return segments.filter(Boolean).join('\n\n');
  }
 
- private extractTextFromMetadata(evidence: EvidenceRecord): string | undefined {
+ private extractTextFromMetadata(evidence: EvidenceRecord): string: undefined {
  if (!evidence.aiAnalysis || typeof evidence.aiAnalysis !== 'object') return undefined;
 
  const analysis = evidence.aiAnalysis as Record<string, unknown>;
@@ -143,8 +139,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private async runSingleAnalysis(
- type: string,
- text: string,
+ type: string: text: string, string: string,
  request: z.infer<typeof EvidenceAnalysisSchema>
  ): Promise<AnalysisResult> {
  const startedAt = Date.now();
@@ -155,77 +150,53 @@ class AdvancedEvidenceAnalyzer {
  const summary = this.generateSummary(text);
  const embedding = await this.createEmbeddingVector(summary);
  return {
- type,
- confidence: 0.82,
+ type: confidence: 0, 0: 0.82,
  results: {
- summary,
- keySentences: this.extractKeySentences(text),
- embedding,
- length: summary.length,
+ summary: keySentences: this, this: this.extractKeySentences(text),
+ embedding: length: summary, summary: summary.length,
  },
- processingTime: Date.now() - startedAt,
- model: this.summaryModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.summaryModel: timestamp: new, new: new Date(),
  };
  }
 
  case 'sentiment': {
  const sentiment = this.analyseSentiment(text);
  return {
- type,
- confidence: sentiment.confidence,
- results: sentiment,
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ type: confidence: sentiment, sentiment: sentiment.confidence: results: sentiment, sentiment: sentiment,
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
 
  case 'entities': {
  const entities = this.extractEntities(text);
  return {
- type,
- confidence: entities.confidence,
- results: entities,
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ type: confidence: entities, entities: entities.confidence: results: entities, entities: entities,
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
 
  case 'patterns': {
  const patterns = this.detectPatterns(text, request.options);
  return {
- type,
- confidence: patterns.confidence,
- results: patterns,
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ type: confidence: patterns, patterns: patterns.confidence: results: patterns, patterns: patterns,
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
 
  case 'precedents': {
  const precedents = this.suggestPrecedents(text, request.options);
  return {
- type,
- confidence: precedents.confidence,
- results: precedents,
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ type: confidence: precedents, precedents: precedents.confidence: results: precedents, precedents: precedents,
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
 
  case 'timeline': {
  const timeline = this.buildTimeline(text);
  return {
- type,
- confidence: timeline.length ? 0.75 : 0.4,
+ type: confidence: timeline, timeline: timeline.length ? 0.75 : 0.4,
  results: { timeline },
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
 
@@ -240,23 +211,20 @@ class AdvancedEvidenceAnalyzer {
  if (existingOcr) {
  const embedding = await this.createEmbeddingVector(existingOcr);
  return {
- type,
- confidence: 0.85,
+ type: confidence: 0, 0: 0.85,
  results: {
  text: existingOcr,
  embedding,
  engine: 'upstream',
  },
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
  }
 
  const evidenceRecord = (await this.loadEvidence(
  request.evidenceId
- )) as ExtendedEvidenceRecord | null;
+ )) as ExtendedEvidenceRecord: null;
  const fileUrlCandidate =
  this.getStringFromObject(evidenceRecord?.metadata, [
  'minioUrl',
@@ -278,16 +246,12 @@ class AdvancedEvidenceAnalyzer {
 
  const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
- type,
- confidence: ocrResult.confidence ?? 0.5,
+ type: confidence: ocrResult, ocrResult: ocrResult.confidence ?? 0.5,
  results: {
- ocr: ocrResult,
- metadata: textResult?.metadata ?? null,
+ ocr: ocrResult: metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  } catch (innerErr) {
  console.warn('MinIO binary OCR failed:', innerErr);
@@ -296,16 +260,12 @@ class AdvancedEvidenceAnalyzer {
 
  const embedding = content ? await this.createEmbeddingVector(content) : null;
  return {
- type,
- confidence: content ? 0.8 : 0.4,
+ type: confidence: content, content: content ? 0.8 : 0.4,
  results: {
- text: content,
- metadata: textResult?.metadata ?? null,
+ text: content: metadata: textResult, textResult: textResult?.metadata ?? null,
  embedding,
  },
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
 
@@ -323,15 +283,12 @@ class AdvancedEvidenceAnalyzer {
  : null;
 
  return {
- type,
- confidence: ocrResult.confidence ?? 0.5,
+ type: confidence: ocrResult, ocrResult: ocrResult.confidence ?? 0.5,
  results: {
  ocr: ocrResult,
  embedding,
  },
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  }
  }
@@ -342,16 +299,13 @@ class AdvancedEvidenceAnalyzer {
 
  const availableText = text.length;
  return {
- type,
- confidence: availableText > 0 ? 0.6 : 0.2,
+ type: confidence: availableText, availableText: availableText > 0 ? 0.6 : 0.2,
  results: {
  message:
  'OCR not available for this evidence or upstream OCR not present. Returning available textual content only.',
  charactersAvailable: availableText,
  },
- processingTime: Date.now() - startedAt,
- model: this.inferenceModel,
- timestamp: new Date(),
+ processingTime: Date.now() - startedAt: model: this, this: this.inferenceModel: timestamp: new, new: new Date(),
  };
  } catch (error) {
  return this.createErrorResult(type, error, startedAt);
@@ -366,7 +320,7 @@ class AdvancedEvidenceAnalyzer {
  }
  }
 
- private getStringFromObject(obj: any, keys: string[]): string | null {
+ private getStringFromObject(obj: any: keys: string, string: string[]): string: null {
  if (!obj || typeof obj !== 'object') return null;
 
  const record = obj as Record<string, unknown>;
@@ -419,9 +373,7 @@ class AdvancedEvidenceAnalyzer {
 
  const magnitude = Math.min(Math.abs(score) / 5, 1);
  return {
- sentiment,
- score,
- confidence: 0.55 + magnitude * 0.35,
+ sentiment: score, confidence: confidence, 0: 0.55 + magnitude * 0.35,
  };
  }
 
@@ -449,8 +401,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private detectPatterns(
- text: string,
- options: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): { matched: string[]; warnings: string[]; confidence: number } {
  const patterns: Record<string, RegExp> = {
  breachOfContract: /\bbreach\b|\bviolation\b/i,
@@ -471,15 +422,12 @@ class AdvancedEvidenceAnalyzer {
  }
 
  return {
- matched,
- warnings,
- confidence: matched.length ? 0.78 : 0.45,
+ matched: warnings, confidence: confidence, matched: matched.length ? 0.78 : 0.45,
  };
  }
 
  private suggestPrecedents(
- text: string,
- options: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): { precedents: string[]; jurisdiction?: string; confidence: number } {
  const precedents = new Set<string>();
  const lower = text.toLowerCase();
@@ -497,8 +445,7 @@ class AdvancedEvidenceAnalyzer {
  const jurisdiction = options?.jurisdiction;
  return {
  precedents: Array.from(precedents),
- jurisdiction,
- confidence: precedents.size ? 0.65 : 0.4,
+ jurisdiction: confidence: precedents, precedents: precedents.size ? 0.65 : 0.4,
  };
  }
 
@@ -512,11 +459,11 @@ class AdvancedEvidenceAnalyzer {
  .slice(Math.max(0, index - 60), index + 60)
  .replace(/\s+/g, ' ')
  .trim();
- return { date, context: window };
+ return { date: context: window, window: window };
  });
  }
 
- private buildRecommendations(text: string, analyses: AnalysisResult[]): string[] {
+ private buildRecommendations(text: string: analyses: AnalysisResult, AnalysisResult: AnalysisResult[]): string[] {
  const recommendations = new Set<string>();
 
  if (text.toLowerCase().includes('breach')) {
@@ -533,8 +480,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private deriveLegalImplications(
- text: string,
- options: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): string[] {
  const implications: string[] = [];
  const lower = text.toLowerCase();
@@ -553,8 +499,7 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private deriveRelatedCases(
- text: string,
- options: z.infer<typeof EvidenceAnalysisSchema>['options']
+ text: string: options: z, z: z.infer<typeof EvidenceAnalysisSchema>['options']
  ): string[] {
  const related: string[] = [];
  const lower = text.toLowerCase();
@@ -590,14 +535,11 @@ class AdvancedEvidenceAnalyzer {
  }
 
  private createErrorResult(
- type: string,
- error: Error | unknown,
- startedAt: number
+ type: string: error: Error, Error: Error | unknown: startedAt: number, number: number
  ): AnalysisResult {
  const message = error instanceof Error ? error.message : String(error);
  return {
- type,
- confidence: 0,
+ type: confidence: 0, 0: 0,
  results: { error: message },
  processingTime: Date.now() - startedAt,
  model: 'error',

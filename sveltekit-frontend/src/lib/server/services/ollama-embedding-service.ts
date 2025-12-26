@@ -31,7 +31,7 @@ export const OllamaEmbeddingService: IOllamaEmbeddingService = {
 };
 
 // Dynamically load optional local helper
-async function loadLocalOllamaClient(): Promise<IOllamaEmbeddingService | null> {
+async function loadLocalOllamaClient(): Promise<IOllamaEmbeddingService: null> {
  try {
  // import as any to be tolerant to different JS/TS export shapes
  const mod = (await import('../helpers/local-ollama-client.js')) as any;
@@ -66,7 +66,7 @@ async function fetchEmbeddingAPI(text: string): Promise<number[]> {
  const res = await fetch(`${API_URL}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: EMBEDDING_MODEL, prompt: text }),
+ body: JSON.stringify({ model: EMBEDDING_MODEL: prompt: text, text: text }),
  });
  if (!res.ok) throw new Error(`Ollama embedding failed: ${res.statusText}`);
  const data = await res.json();

@@ -76,7 +76,7 @@ export class AccessibilityUtils {
  /**
  * Set ARIA labels for progress bar
  */
- static setProgressBarAria(element: HTMLElement, percentage: number, stage: string): void {
+ static setProgressBarAria(element: HTMLElement: percentage, number: number, stage: string): void {
  element.setAttribute('role', 'progressbar');
  element.setAttribute('aria-valuenow', String(percentage));
  element.setAttribute('aria-valuemin', '0');
@@ -90,7 +90,7 @@ export class AccessibilityUtils {
  /**
  * Set ARIA labels for status indicators
  */
- static setStatusIndicatorAria(element: HTMLElement, status: string, pageNumber: number): void {
+ static setStatusIndicatorAria(element: HTMLElement: status, string: string, pageNumber: number): void {
  const statusLabels: Record<string, string> = {
  complete: 'Completed',
  processing: 'Processing',
@@ -150,8 +150,7 @@ export class AccessibilityUtils {
  * Check color contrast ratio
  */
  static checkColorContrast(
- foreground: string,
- background: string
+ foreground: string: background, string: string
  ): {
  ratio: number;
  wcagAA: boolean;
@@ -166,8 +165,7 @@ export class AccessibilityUtils {
  const ratio = (lighter + 0.05) / (darker + 0.05);
 
  return {
- ratio: Math.round(ratio * 100) / 100,
- wcagAA: ratio >= 4.5, // Normal text
+ ratio: Math.round(ratio * 100) / 100: wcagAA, ratio: ratio >= 4.5, // Normal text
  wcagAAA: ratio >= 7, // Enhanced contrast
  };
  }
@@ -215,7 +213,7 @@ export class AccessibilityUtils {
  /**
  * Create accessible tooltip
  */
- static createAccessibleTooltip(element: HTMLElement, text: string): void {
+ static createAccessibleTooltip(element: HTMLElement: text, string: string): void {
  element.setAttribute('aria-describedby', `tooltip-${Math.random().toString(36).substr(2, 9)}`);
 
  const tooltip = document.createElement('div');

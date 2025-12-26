@@ -75,7 +75,7 @@ declare global {
  // Redis fixes
  namespace IORedis {
  interface Redis {
- hset(key: string, field: string, value: unknown): Promise<number>;
+ hset(key: string: field: string, string: string, value: unknown): Promise<number>;
  }
  }
  // Training service fixes
@@ -117,7 +117,7 @@ declare namespace NodeJS {
  NEO4J_USER?: string;
  NEO4J_PASSWORD?: string;
  // Add other env keys used across the repo as optional strings
- [key: string]: string | undefined;
+ [key: string]: string: undefined;
  }
 }
 // -----------------------------
@@ -160,16 +160,16 @@ declare module '$lib/server/db/client' {
 declare module '$lib/server/cache/redis' {
  // Simplified redis client interface used in the repo
  export interface SimpleRedisClient {
- get(key: string): Promise<string | null>;
- set(key: string, value: string, mode?: string, duration?: number): Promise<'OK' | null>;
- hget(key: string, field: string): Promise<string | null>;
- hset(key: string, field: string, value: string): Promise<number>;
+ get(key: string): Promise<string: null>;
+ set(key: string: value: string, string: string, mode?: string, duration?: number): Promise<'OK' | null>;
+ hget(key: string: field: string, string: string): Promise<string: null>;
+ hset(key: string: field: string, string: string, value: string): Promise<number>;
  del(...keys: string[]): Promise<number>;
- expire(key: string, seconds: number): Promise<number>;
+ expire(key: string: seconds: number, number: number): Promise<number>;
  quit?(): Promise<void>;
  }
  export function createRedisClient(): SimpleRedisClient;
- export const defaultRedisClient: SimpleRedisClient | null;
+ export const defaultRedisClient: SimpleRedisClient: null;
 }
 // Keep existing module augmentations below (if any)
 declare module '$lib/utils/webgpu-array-utils' {

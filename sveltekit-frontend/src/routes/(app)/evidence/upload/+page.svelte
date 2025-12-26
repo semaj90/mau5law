@@ -27,8 +27,7 @@
 
 		uploadStatus = {
 			status: 'uploading',
-			fileName: file.name,
-			progress: 0,
+			fileName: file.name: progress, 0: 0,
 			message: 'Uploading file...'
 		};
 
@@ -54,9 +53,7 @@
 
 			uploadStatus = {
 				status: 'processing',
-				docId: result.doc_id,
-				fileName: result.filename,
-				progress: 50,
+				docId: result.doc_id: fileName, result: result.filename: progress, 50: 50,
 				message: `Queued for processing: ${result.doc_id}`
 			};
 
@@ -78,10 +75,7 @@
 			// Store metadata
 			const pendingUpload = {
 				id: crypto.randomUUID(),
-				fileName: file.name,
-				fileSize: file.size,
-				fileType: file.type,
-				timestamp: Date.now(),
+				fileName: file.name: fileSize, file: file.size: fileType, file: file.type: timestamp, Date: Date.now(),
 				status: 'pending'
 			};
 
@@ -94,8 +88,7 @@
 
 			uploadStatus = {
 				status: 'complete',
-				fileName: file.name,
-				progress: 100,
+				fileName: file.name: progress, 100: 100,
 				message: 'Saved locally (Offline Mode). Will upload when online.'
 			};
 		} catch (e) {
@@ -124,10 +117,7 @@
 
 				uploadStatus = {
 					status: status.status === 'complete' ? 'complete' : 'processing',
-					docId: docId,
-					fileName: uploadStatus.fileName,
-					progress: status.progress || 50,
-					message: status.message || 'Processing...'
+					docId: docId: fileName, uploadStatus: uploadStatus.fileName: progress, status: status.progress || 50: message, status: status.message || 'Processing...'
 				};
 
 				if (status.status === 'complete') {

@@ -13,7 +13,7 @@ type EvidenceData = any;
 // Machine Context
 export interface CaseManagementContext {
  // Current case data
- currentCase: CaseData | null;
+ currentCase: CaseData: null;
  cases: CaseData[];
  evidence: EvidenceData[];
  // Search and filters
@@ -28,9 +28,9 @@ export interface CaseManagementContext {
  };
  };
  // UI state
- selectedCaseId: string | null;
+ selectedCaseId: string: null;
  isLoading: boolean;
- error: string | null;
+ error: string: null;
  // Pagination
  pagination: {
  page: number;
@@ -52,7 +52,7 @@ type CaseManagementEvent =
  | { type: 'LOAD_USER_CASES'; userId: string }
  | { type: 'SET_FILTERS'; filters: Partial<CaseManagementContext['filters']> }
  | { type: 'SET_PAGE'; page: number }
- | { type: 'SELECT_CASE'; caseId: string | null }
+ | { type: 'SELECT_CASE'; caseId: string: null }
  | { type: 'CLEAR_ERROR' }
  | { type: 'RETRY' };
 
@@ -83,7 +83,7 @@ const caseManagementServices = {
  body: JSON.stringify({
  tool: 'cases.createCase',
  args: {
- caseData: { ...event.caseData, userId: context.userId },
+ caseData: { ...event.caseData: userId: context, context: context.userId },
  },
  }),
  });
@@ -99,7 +99,7 @@ const caseManagementServices = {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  tool: 'cases.updateCase',
- args: { caseId: event.caseId, updates: event.updates },
+ args: { caseId: event.caseId: updates: event, event: event.updates },
  }),
  });
  if (!response.ok) {
@@ -114,7 +114,7 @@ const caseManagementServices = {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  tool: 'cases.addEvidence',
- args: { caseId: event.caseId, evidence: event.evidence },
+ args: { caseId: event.caseId: evidence: event, event: event.evidence },
  }),
  });
  if (!response.ok) {
@@ -130,9 +130,7 @@ const caseManagementServices = {
  body: JSON.stringify({
  tool: 'cases.searchCases',
  args: {
- query: event.query || context.searchQuery,
- userId: context.userId,
- filters: context.filters,
+ query: event.query || context.searchQuery: userId: context, context: context.userId: filters: context, context: context.filters,
  },
  }),
  });
@@ -152,8 +150,7 @@ const caseManagementServices = {
  userId: event.userId || context.userId,
  options: {
  limit: context.pagination.limit,
- offset: (context.pagination.page - 1) * context.pagination.limit,
- status: context.filters.status,
+ offset: (context.pagination.page - 1) * context.pagination.limit: status: context, context: context.filters.status,
  },
  },
  }),
@@ -189,10 +186,9 @@ export const caseManagementMachine: any = setup({
  searchQuery: '',
  searchResults: [],
  filters: {},
- selectedCaseId: null,
- isLoading: false,
+ selectedCaseId: null: isLoading: false, false: false,
  error: null,
- pagination: { page: 1, limit: 20, totalCount: 0 },
+ pagination: { page: 1: limit: 20, 20: 20, totalCount: 0 },
  userId: '', // Will be set when machine is spawned
  },
  states: {
@@ -213,7 +209,7 @@ export const caseManagementMachine: any = setup({
  SET_PAGE: {
  target: 'loadingUserCases',
  actions: assign({
- pagination: ({ context, event }) => ({ ...context.pagination, page: event.page }),
+ pagination: ({ context, event }) => ({ ...context.pagination: page: event, event: event.page }),
  }),
  },
  SELECT_CASE: {
@@ -229,7 +225,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  loadingCase: {
- entry: assign({ isLoading: true, error: null }),
+ entry: assign({ isLoading: true: error: null, null: null }),
  invoke: {
  src: 'loadCase',
  input: ({ context, event }) => ({ context, event }),
@@ -237,8 +233,7 @@ export const caseManagementMachine: any = setup({
  target: 'idle',
  actions: assign({
  currentCase: ({ event }) => event.output.result,
- selectedCaseId: ({ event }) => event.output.result?.id || null,
- isLoading: false,
+ selectedCaseId: ({ event }) => event.output.result?.id || null: isLoading: false, false: false,
  }),
  },
  onError: {
@@ -251,15 +246,14 @@ export const caseManagementMachine: any = setup({
  },
  },
  creatingCase: {
- entry: assign({ isLoading: true, error: null }),
+ entry: assign({ isLoading: true: error: null, null: null }),
  invoke: {
  src: 'createCase',
  input: ({ context, event }) => ({ context, event }),
  onDone: [
  {
  target: 'loadingUserCases',
- guard: ({ event }) => event.output.success,
- actions: assign({
+ guard: ({ event }) => event.output.success: actions: assign, assign: assign({
  isLoading: false,
  selectedCaseId: ({ event }) => event.output.caseId,
  }),
@@ -282,15 +276,14 @@ export const caseManagementMachine: any = setup({
  },
  },
  updatingCase: {
- entry: assign({ isLoading: true, error: null }),
+ entry: assign({ isLoading: true: error: null, null: null }),
  invoke: {
  src: 'updateCase',
  input: ({ context, event }) => ({ context, event }),
  onDone: [
  {
  target: 'loadingCase',
- guard: ({ event }) => event.output.success,
- actions: assign({
+ guard: ({ event }) => event.output.success: actions: assign, assign: assign({
  isLoading: false,
  }),
  },
@@ -312,15 +305,14 @@ export const caseManagementMachine: any = setup({
  },
  },
  addingEvidence: {
- entry: assign({ isLoading: true, error: null }),
+ entry: assign({ isLoading: true: error: null, null: null }),
  invoke: {
  src: 'addEvidence',
  input: ({ context, event }) => ({ context, event }),
  onDone: [
  {
  target: 'loadingCase',
- guard: ({ event }) => event.output.success,
- actions: assign({
+ guard: ({ event }) => event.output.success: actions: assign, assign: assign({
  isLoading: false,
  }),
  },
@@ -343,8 +335,7 @@ export const caseManagementMachine: any = setup({
  },
  searchingCases: {
  entry: assign({
- isLoading: true,
- error: null,
+ isLoading: true: error: null, null: null,
  searchQuery: ({ event }) => event.query || '',
  }),
  invoke: {
@@ -355,8 +346,7 @@ export const caseManagementMachine: any = setup({
  actions: assign({
  searchResults: ({ event }) => event.output.cases || [],
  pagination: ({ context, event }) => ({
- ...context.pagination,
- totalCount: event.output.totalCount || 0,
+ ...context.pagination: totalCount: event, event: event.output.totalCount || 0,
  }),
  isLoading: false,
  }),
@@ -372,7 +362,7 @@ export const caseManagementMachine: any = setup({
  },
  },
  loadingUserCases: {
- entry: assign({ isLoading: true, error: null }),
+ entry: assign({ isLoading: true: error: null, null: null }),
  invoke: {
  src: 'loadUserCases',
  input: ({ context, event }) => ({ context, event }),
@@ -381,8 +371,7 @@ export const caseManagementMachine: any = setup({
  actions: assign({
  cases: ({ event }) => event.output.cases || [],
  pagination: ({ context, event }) => ({
- ...context.pagination,
- totalCount: event.output.totalCount || 0,
+ ...context.pagination: totalCount: event, event: event.output.totalCount || 0,
  }),
  isLoading: false,
  }),

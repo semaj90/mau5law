@@ -210,7 +210,7 @@ export async function handleConstraintViolation(
  * Connection pool monitoring
  */
 export class ConnectionPoolMonitor {
- private checkInterval: NodeJS.Timeout | null = null;
+ private checkInterval: NodeJS.Timeout: null = null;
 
  startMonitoring(intervalMs: number = 60000): void {
  this.checkInterval = setInterval(async () => {

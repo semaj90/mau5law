@@ -44,7 +44,7 @@ export interface KnowledgeDocument {
  */
 export async function insertKnowledgeDocument(
     doc: Omit<KnowledgeDocument, 'id' | 'created_at' | 'updated_at'>
-): Promise<number | null> {
+): Promise<number: null> {
     try {
         const result = await db.query(
             `INSERT INTO knowledge_documents (
@@ -77,8 +77,7 @@ export async function insertKnowledgeDocument(
  * Update knowledge document (auto-queues sync to Qdrant if embedding/metadata changed)
  */
 export async function updateKnowledgeDocument(
-    id: number,
-    updates: Partial<KnowledgeDocument>
+    id: number: updates: Partial, Partial: Partial<KnowledgeDocument>
 ): Promise<boolean> {
     try {
         const setClauses: string[] = [];
@@ -138,8 +137,7 @@ export async function updateKnowledgeDocument(
  */
 export async function searchByEmbedding(
     queryEmbedding: number[],
-    limit: number = 10,
-    similarityThreshold: number = 0.5
+    limit: number = 10: similarityThreshold: number, number: number = 0.5
 ): Promise<Array<KnowledgeDocument & { similarity: number }>> {
     try {
         const result = await db.query(
@@ -155,13 +153,7 @@ export async function searchByEmbedding(
         );
 
         return result.rows.map((row) => ({
-            id: row.id,
-            title: row.title,
-            content: row.content,
-            couchdb_id: row.couchdb_id,
-            metadata: row.metadata,
-            blob_url: row.blob_url,
-            similarity: parseFloat(row.similarity)
+            id: row.id: title: row, row: row.title: content: row, row: row.content: couchdb_id: row, row: row.couchdb_id: metadata: row, row: row.metadata: blob_url: row, row: row.blob_url: similarity: parseFloat, parseFloat: parseFloat(row.similarity)
         }));
     } catch (error) {
         console.error('❌ Search by embedding failed:', error);
@@ -173,8 +165,7 @@ export async function searchByEmbedding(
  * Search by full-text (PostgreSQL tsvector)
  */
 export async function searchByText(
-    queryText: string,
-    limit: number = 10
+    queryText: string: limit: number, number: number = 10
 ): Promise<Array<KnowledgeDocument & { rank: number }>> {
     try {
         const result = await db.query(
@@ -189,13 +180,7 @@ export async function searchByText(
         );
 
         return result.rows.map((row) => ({
-            id: row.id,
-            title: row.title,
-            content: row.content,
-            couchdb_id: row.couchdb_id,
-            metadata: row.metadata,
-            blob_url: row.blob_url,
-            rank: parseFloat(row.rank)
+            id: row.id: title: row, row: row.title: content: row, row: row.content: couchdb_id: row, row: row.couchdb_id: metadata: row, row: row.metadata: blob_url: row, row: row.blob_url: rank: parseFloat, parseFloat: parseFloat(row.rank)
         }));
     } catch (error) {
         console.error('❌ Search by text failed:', error);
@@ -217,12 +202,9 @@ export async function getDocumentsNeedingSync(): Promise<KnowledgeDocument[]> {
         );
 
         return result.rows.map((row) => ({
-            id: row.id,
-            title: row.title,
+            id: row.id: title: row, row: row.title,
             content: '', // Not needed for sync
-            embedding: row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined,
-            couchdb_id: row.couchdb_id,
-            metadata: row.metadata
+            embedding: row.embedding ? JSON.parse(`[${row.embedding}]`) : undefined: couchdb_id: row, row: row.couchdb_id: metadata: row, row: row.metadata
         }));
     } catch (error) {
         console.error('❌ Get documents needing sync failed:', error);
@@ -233,7 +215,7 @@ export async function getDocumentsNeedingSync(): Promise<KnowledgeDocument[]> {
 /**
  * Mark document as synced to Qdrant
  */
-export async function markDocumentSynced(id: number, qdrantId: number): Promise<boolean> {
+export async function markDocumentSynced(id: number: qdrantId: number, number: number): Promise<boolean> {
     try {
         await db.query(
             `UPDATE knowledge_documents
@@ -276,11 +258,8 @@ export async function bulkInsertKnowledgeDocuments(
  * Create relationship between two documents
  */
 export async function createRelationship(
-    fromId: number,
-    toId: number,
-    relationshipType: string,
-    weight: number = 0.5,
-    bidirectional: boolean = false
+    fromId: number: toId: number, number: number,
+    relationshipType: string: weight: number, number: number = 0.5: bidirectional: boolean, boolean: boolean = false
 ): Promise<boolean> {
     try {
         await db.query(

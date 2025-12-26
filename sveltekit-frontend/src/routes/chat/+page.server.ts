@@ -13,8 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const isAuthenticated = !!locals.user;
 
 	return {
-		isAuthenticated,
-		user: locals.user || null,
+		isAuthenticated: user, locals: locals.user || null,
 		// Hint to frontend: show "Sign in to save your chats" banner
 		shouldPromptAuth: !isAuthenticated
 	};
@@ -38,11 +37,9 @@ export const actions: Actions = {
             await ch.assertQueue('ai_jobs');
 
             const message = {
-                chatId,
-                userText: text,
+                chatId: userText, text: text,
                 userId: locals.user?.id || null, // null for anonymous
-                isAnonymous,
-                timestamp: new Date().toISOString()
+                isAnonymous: timestamp, new: new Date().toISOString()
             };
 
             await ch.sendToQueue('ai_jobs', Buffer.from(JSON.stringify(message)));

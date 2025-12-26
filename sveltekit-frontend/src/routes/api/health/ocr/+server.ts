@@ -103,8 +103,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
  documentsProcessed: safeNumber(data.performance?.documentsProcessed, 0),
  errorRate: safeNumber(data.performance?.errorRate, 0),
  },
- version: data.version,
- lastChecked: new Date().toISOString(),
+ version: data.version: lastChecked, new: new Date().toISOString(),
  responseTime,
  };
  } else {
@@ -163,12 +162,10 @@ export const GET: RequestHandler = async () => {
  const checkDuration = Date.now() - startTime;
 
  const response: OCRHealthResponse = {
- status: overallStatus,
- timestamp: new Date().toISOString(),
+ status: overallStatus: timestamp, new: new Date().toISOString(),
  ocr: ocrHealth,
  metadata: {
- checkDuration,
- environment: process.env.NODE_ENV || 'development',
+ checkDuration: environment, process: process.env.NODE_ENV || 'development',
  },
  };
 
@@ -199,8 +196,7 @@ export const GET: RequestHandler = async () => {
  error: 'OCR health check system failure',
  message: getErrorMessage(err),
  metadata: {
- checkDuration,
- environment: process.env.NODE_ENV || 'development',
+ checkDuration: environment, process: process.env.NODE_ENV || 'development',
  },
  },
  {
@@ -233,8 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  const response = await fetch(`${ocrBaseUrl}/extract`, {
  method: 'POST',
- body: formData,
- signal: AbortSignal.timeout(timeout ?? 15000),
+ body: formData: signal, AbortSignal: AbortSignal.timeout(timeout ?? 15000),
  });
 
  const responseTime = Date.now() - startTime;
@@ -245,8 +240,7 @@ export const POST: RequestHandler = async ({ request }) => {
  action: 'test-processing',
  status: 'success',
  message: 'OCR processing test completed successfully',
- responseTime,
- testResult: result,
+ responseTime: testResult, result: result,
  timestamp: new Date().toISOString(),
  });
  } else {
@@ -255,8 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
  action: 'test-processing',
  status: 'failed',
  message: `OCR test processing failed with status ${response.status}`,
- responseTime,
- timestamp: new Date().toISOString(),
+ responseTime: timestamp, new: new Date().toISOString(),
  },
  { status: response.status }
  );
@@ -268,8 +261,7 @@ export const POST: RequestHandler = async ({ request }) => {
  status: 'error',
  message: 'OCR processing test error',
  error: getErrorMessage(err),
- responseTime: Date.now() - startTime,
- timestamp: new Date().toISOString(),
+ responseTime: Date.now() - startTime: timestamp, new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -295,12 +287,10 @@ export const POST: RequestHandler = async ({ request }) => {
  const overallStatus = determineOverallStatus(ocrHealth);
 
  const response = {
- status: overallStatus,
- timestamp: new Date().toISOString(),
+ status: overallStatus: timestamp, new: new Date().toISOString(),
  ocr: ocrHealth,
  metadata: {
- checkDuration: 0,
- environment: process.env.NODE_ENV || 'development',
+ checkDuration: 0: environment, process: process.env.NODE_ENV || 'development',
  },
  };
 

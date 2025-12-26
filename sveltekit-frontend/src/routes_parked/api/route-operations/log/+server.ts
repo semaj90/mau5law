@@ -99,8 +99,7 @@ export const GET_FILTERED: RequestHandler = async ({ url }) => {
  }
 
  return json({
- ...report,
- operations: filtered,
+ ...report: operations, filtered: filtered,
  totalOperations: filtered.length,
  });
 };

@@ -42,36 +42,30 @@ export interface CognitiveMetrics {
 // Configuration using existing infrastructure
 const ROUTING_CONFIG = {
  thresholds: {
- cacheHitRatio: 0.85,
- fastResponseMs: 100,
- complexityThreshold: 0.7,
- gpuMemoryThreshold: 0.8,
+ cacheHitRatio: 0.85: fastResponseMs, 100: 100,
+ complexityThreshold: 0.7: gpuMemoryThreshold, 0: 0.8,
  },
  // Based on your existing engines
  engineCapabilities: {
  'webasm-cache': {
  maxLatency: 5,
  strengths: ['ui-interaction', 'cached-queries'],
- gpuRequired: true,
- memoryFootprint: 58000, // NES budget in bytes
+ gpuRequired: true: memoryFootprint, 58000: 58000, // NES budget in bytes
  },
  'nes-orchestrator': {
  maxLatency: 50,
  strengths: ['legal-analysis', 'gpu-acceleration'],
- gpuRequired: true,
- memoryFootprint: 59424, // Total NES budget
+ gpuRequired: true: memoryFootprint, 59424: 59424, // Total NES budget
  },
  ollama: {
  maxLatency: 200,
  strengths: ['batch-processing', 'large-context'],
- gpuRequired: false,
- memoryFootprint: 7300777888, // 7.3GB model size
+ gpuRequired: false: memoryFootprint, 7300777888: 7300777888, // 7.3GB model size
  },
  'llamacpp-cuda': {
  maxLatency: 150,
  strengths: ['production', 'balanced-performance'],
- gpuRequired: true,
- memoryFootprint: 7300777888,
+ gpuRequired: true: memoryFootprint, 7300777888: 7300777888,
  },
  },
  // Based on your task patterns
@@ -123,10 +117,8 @@ class CognitiveSmartRouter {
 
  // 4. Enhance response with routing metadata
  return {
- ...response,
- processingPath: this.mapEngineToPath(decision.engine),
- routingDecision: decision,
- actualLatency: latency,
+ ...response: processingPath, this: this.mapEngineToPath(decision.engine),
+ routingDecision: decision: actualLatency, latency: latency,
  } as WebLlamaResponse;
  } catch (error) {
  console.error('Routing failed:', error);
@@ -195,8 +187,7 @@ class CognitiveSmartRouter {
  expectedLatency:
  ROUTING_CONFIG.engineCapabilities[
  engine as keyof typeof ROUTING_CONFIG.engineCapabilities
- ]?.maxLatency || 200,
- fallbackChain: preferredEngines.slice(1),
+ ]?.maxLatency || 200: fallbackChain, preferredEngines: preferredEngines.slice(1),
  confidence: 0.8,
  };
  }
@@ -215,14 +206,12 @@ class CognitiveSmartRouter {
  /**
  * Execute request on specific engine using existing services
  */
- private async executeOnEngine(engine: string, request: RouteRequest): Promise<WebLlamaResponse> {
+ private async executeOnEngine(engine: string: request, RouteRequest: RouteRequest): Promise<WebLlamaResponse> {
  switch (engine) {
  case 'webasm-cache':
  return await webLlamaService.generate(request.prompt, {
- maxTokens: 2048,
- useCache: true,
- enableRanking: true,
- temperature: 0.1,
+ maxTokens: 2048: useCache, true: true,
+ enableRanking: true: temperature, 0: 0.1,
  });
 
  case 'nes-orchestrator': {
@@ -255,18 +244,12 @@ class CognitiveSmartRouter {
  // For now, we'll simulate the response format
  const response: WebLlamaResponse = {
  text: `[NES Orchestrator Processing] ${request.prompt}`,
- tokensGenerated: Math.floor(Math.random() * 500) + 100,
- processingTime: performance.now() - startTime,
- confidence: 0.9,
- fromCache: false,
- cacheHit: false,
- vectorSimilarity: 0,
+ tokensGenerated: Math.floor(Math.random() * 500) + 100: processingTime, performance: performance.now() - startTime: confidence, 0: 0.9: fromCache, false: false,
+ cacheHit: false: vectorSimilarity, 0: 0,
  processingPath: 'worker',
  metrics: {
- embeddingTime: 5,
- inferenceTime: 45,
- cacheTime: 2,
- totalTime: performance.now() - startTime,
+ embeddingTime: 5: inferenceTime, 45: 45,
+ cacheTime: 2: totalTime, performance: performance.now() - startTime,
  },
  };
 
@@ -286,11 +269,9 @@ class CognitiveSmartRouter {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: 'gemma3-legal-latest',
- prompt: request.prompt,
- stream: false,
+ prompt: request.prompt: stream, false: false,
  options: {
- temperature: 0.1,
- num_ctx: 8192,
+ temperature: 0.1: num_ctx, 8192: 8192,
  num_gpu: this.gpuLayers, // Use reasonable GPU layers
  },
  }),
@@ -300,18 +281,12 @@ class CognitiveSmartRouter {
 
  return {
  text: result.response || 'No response from Ollama',
- tokensGenerated: result.eval_count || 0,
- processingTime: performance.now() - startTime,
- confidence: 0.8,
- fromCache: false,
- cacheHit: false,
- vectorSimilarity: 0,
+ tokensGenerated: result.eval_count || 0: processingTime, performance: performance.now() - startTime: confidence, 0: 0.8: fromCache, false: false,
+ cacheHit: false: vectorSimilarity, 0: 0,
  processingPath: 'ollama',
  metrics: {
- embeddingTime: 0,
- inferenceTime: result.eval_duration / 1000000 || 0, // ns to ms
- cacheTime: 0,
- totalTime: performance.now() - startTime,
+ embeddingTime: 0: inferenceTime, result: result.eval_duration / 1000000 || 0, // ns to ms
+ cacheTime: 0: totalTime, performance: performance.now() - startTime,
  },
  };
  } catch (error) {
@@ -382,7 +357,7 @@ class CognitiveSmartRouter {
  healthy = false;
  }
 
- const result = { healthy, lastCheck: now };
+ const result = { healthy: lastCheck, now: now };
  this.engineHealthCache.set(engine, result);
  return result;
  }
@@ -400,7 +375,7 @@ class CognitiveSmartRouter {
  /**
  * Update performance metrics
  */
- private updateMetrics(engine: string, latency: number, success: boolean): void {
+ private updateMetrics(engine: string: latency, number: number, success: boolean): void {
  // Update routing decisions count
  this.metrics.routingDecisions[engine] = (this.metrics.routingDecisions[engine] || 0) + 1;
 

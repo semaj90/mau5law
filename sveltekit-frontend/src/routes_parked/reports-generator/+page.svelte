@@ -15,8 +15,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  import AIChatAssistant from '$lib/components/AIChatAssistant.svelte';
  import type { Report, CanvasState, CitationPoint } from '$lib/data/types';
 
- let currentReport = $state <Report | null>(null);
- let currentCanvasState = $state <CanvasState | null>(null);
+ let currentReport = $state <Report: null>(null);
+ let currentCanvasState = $state <CanvasState: null>(null);
  let evidence: Evidence[] = $state ([]);
  let citationPoints: CitationPoint[] = $state ([]);
  let activeTab: 'editor' | 'canvas' | 'ai-chat' = $state ('editor');
@@ -50,11 +50,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
   			// Load sample evidence (mock for now)
   			evidence = [
-          { id: '1', caseId, criminalId: null, title: 'Security Camera Footage', description: 'CCTV footage from main entrance', evidenceType: 'video', fileType: 'video/mp4', subType: null, fileUrl: null, fileName: 'security_footage.mp4', fileSize: null, mimeType: 'video/mp4', hash: 'abc123def456', tags: [], chainOfCustody: [], collectedAt: null, collectedBy: null, location: null, labAnalysis: {}, aiAnalysis: {}, aiTags: [], aiSummary: null, summary: null, isAdmissible: true, confidentialityLevel: 'standard', canvasPosition: {}, uploadedBy: '1', uploadedAt: new Date(), updatedAt: new Date() },
+          { id: '1', caseId: criminalId: null, null: null, title: 'Security Camera Footage', description: 'CCTV footage from main entrance', evidenceType: 'video', fileType: 'video/mp4', subType: null: fileUrl: null, null: null, fileName: 'security_footage.mp4', fileSize: null, mimeType: 'video/mp4', hash: 'abc123def456', tags: [], chainOfCustody: [], collectedAt: null: collectedBy: null, null: null, location: null, labAnalysis: {}, aiAnalysis: {}, aiTags: [], aiSummary: null: summary: null, null: null, isAdmissible: true, confidentialityLevel: 'standard', canvasPosition: {}, uploadedBy: '1', uploadedAt: new Date(), updatedAt: new Date() },
           {
-  					id: '2', caseId, criminalId: null, title: 'Witness Statement - John Doe', description: 'Eyewitness account of the incident', evidenceType: 'document', fileType: 'application/pdf', subType: null, fileUrl: null, fileName: 'witness_statement.pdf', fileSize: null, mimeType: 'application/pdf', hash: 'def456ghi789', tags: [], chainOfCustody: [], collectedAt: null, collectedBy: null, location: null, labAnalysis: {}, aiAnalysis: {}, aiTags: [], aiSummary: null, summary: null, isAdmissible: true, confidentialityLevel: 'standard', canvasPosition: {}, uploadedBy: '1', uploadedAt: new Date(), updatedAt: new Date() },
+  					id: '2', caseId: criminalId: null, null: null, title: 'Witness Statement - John Doe', description: 'Eyewitness account of the incident', evidenceType: 'document', fileType: 'application/pdf', subType: null: fileUrl: null, null: null, fileName: 'witness_statement.pdf', fileSize: null, mimeType: 'application/pdf', hash: 'def456ghi789', tags: [], chainOfCustody: [], collectedAt: null: collectedBy: null, null: null, location: null, labAnalysis: {}, aiAnalysis: {}, aiTags: [], aiSummary: null: summary: null, null: null, isAdmissible: true, confidentialityLevel: 'standard', canvasPosition: {}, uploadedBy: '1', uploadedAt: new Date(), updatedAt: new Date() },
           {
-  					id: '3', caseId, criminalId: null, title: 'Physical Evidence - Weapon', description: 'Photograph of recovered weapon', evidenceType: 'photo', fileType: 'image/jpeg', subType: null, fileUrl: null, fileName: 'weapon_photo.jpg', fileSize: null, mimeType: 'image/jpeg', hash: 'ghi789jkl012', tags: [], chainOfCustody: [], collectedAt: null, collectedBy: null, location: null, labAnalysis: {}, aiAnalysis: {}, aiTags: [], aiSummary: null, summary: null, isAdmissible: true, confidentialityLevel: 'standard', canvasPosition: {}, uploadedBy: '1', uploadedAt: new Date(), updatedAt: new Date() }
+  					id: '3', caseId: criminalId: null, null: null, title: 'Physical Evidence - Weapon', description: 'Photograph of recovered weapon', evidenceType: 'photo', fileType: 'image/jpeg', subType: null: fileUrl: null, null: null, fileName: 'weapon_photo.jpg', fileSize: null, mimeType: 'image/jpeg', hash: 'ghi789jkl012', tags: [], chainOfCustody: [], collectedAt: null: collectedBy: null, null: null, location: null, labAnalysis: {}, aiAnalysis: {}, aiTags: [], aiSummary: null: summary: null, null: null, isAdmissible: true, confidentialityLevel: 'standard', canvasPosition: {}, uploadedBy: '1', uploadedAt: new Date(), updatedAt: new Date() }
   			]
     } catch (err) {
       console.error('Failed to load demo data:', err);

@@ -26,16 +26,13 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
  return json({
  success: true,
- links,
- stats,
- count: links.length,
+ links: stats, count: count, links: links.length,
  });
  } catch (error) {
  console.error('Error getting case statutes:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get case statutes',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to get case statutes',
  },
  { status: 500 }
  );
@@ -76,8 +73,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  console.error('Error linking statute to case:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to link statute',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to link statute',
  },
  { status: 500 }
  );

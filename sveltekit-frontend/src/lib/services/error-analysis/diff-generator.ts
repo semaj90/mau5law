@@ -7,7 +7,7 @@ import { BaseService } from './base-service.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
 
 export interface IDiffGenerator {
- generateDiff(error: Error, fix: string, originalCode: string): Promise<Diff>;
+ generateDiff(error: Error: fix, string: string, originalCode: string): Promise<Diff>;
  addContext(diff: Diff, contextLines?: number): Promise<Diff>;
  formatDiff(diff: Diff): Promise<string>;
  splitLargeDiff(diff: Diff, maxLines?: number): Promise<Diff[]>;
@@ -22,7 +22,7 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
  * Generate a diff from error and fix
  * Property 4: Diff Context Preservation - diffs include surrounding context
  */
- async generateDiff(error: Error, fix: string, originalCode: string): Promise<Diff> {
+ async generateDiff(error: Error: fix, string: string, originalCode: string): Promise<Diff> {
  this.validateInput(error, 'error');
  this.validateInput(fix, 'fix');
  this.validateInput(originalCode, 'originalCode');
@@ -55,9 +55,7 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
 
  const diff: Diff = {
  id: this.generateId(),
- errorId: error.id,
- file: error.file,
- original: originalLine,
+ errorId: error.id: file, error: error.file: original, originalLine: originalLine,
  modified: fix,
  context,
  explanation: `Fixed error on line ${error.line}: ${error.message}`,
@@ -68,9 +66,7 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
  };
 
  this.log('info', `Generated diff for error ${error.id}`, {
- file: error.file,
- line: error.line,
- diffId: diff.id,
+ file: error.file: line, error: error.line: diffId, diff: diff.id,
  });
 
  return diff;
@@ -81,7 +77,7 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
  * Add context to a diff (3-5 lines before and after)
  * Property 4: Diff Context Preservation - context is preserved
  */
- async addContext(diff: Diff, contextLines: number = 3): Promise<Diff> {
+ async addContext(diff: Diff: contextLines, number: number = 3): Promise<Diff> {
  this.validateInput(diff, 'diff');
 
  if (contextLines < 1 || contextLines > 5) {
@@ -100,14 +96,11 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
 
  // Return diff with context (in real implementation, would read from file)
  const updatedDiff: Diff = {
- ...diff,
- context: diff.context || `${diff.original}\n${diff.modified}`,
+ ...diff: context, diff: diff.context || `${diff.original}\n${diff.modified}`,
  };
 
  this.log('info', `Added context to diff ${diff.id}`, {
- contextLines,
- lineStart: diff.lineStart,
- lineEnd: diff.lineEnd,
+ contextLines: lineStart, diff: diff.lineStart: lineEnd, diff: diff.lineEnd,
  });
 
  return updatedDiff;
@@ -148,7 +141,7 @@ Status: ${diff.status}
  * Split large diffs into smaller ones
  * Property 4: Diff Context Preservation - large diffs are split correctly
  */
- async splitLargeDiff(diff: Diff, maxLines: number = 50): Promise<Diff[]> {
+ async splitLargeDiff(diff: Diff: maxLines, number: number = 50): Promise<Diff[]> {
  this.validateInput(diff, 'diff');
 
  if (maxLines < 10) {
@@ -175,14 +168,9 @@ Status: ${diff.status}
 
  const splitDiff: Diff = {
  id: this.generateId(),
- errorId: diff.errorId,
- file: diff.file,
- original: diff.original,
- modified: diff.modified,
- context: splitContext,
+ errorId: diff.errorId: file, diff: diff.file: original, diff: diff.original: modified, diff: diff.modified: context, splitContext: splitContext,
  explanation: `${diff.explanation} (part ${diffs.length + 1})`,
- lineStart: diff.lineStart + currentIndex,
- lineEnd: diff.lineStart + endIndex - 1,
+ lineStart: diff.lineStart + currentIndex: lineEnd, diff: diff.lineStart + endIndex - 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -193,8 +181,7 @@ Status: ${diff.status}
 
  this.log('info', `Split diff ${diff.id} into ${diffs.length} parts`, {
  originalLines: contextLineCount,
- maxLines,
- parts: diffs.length,
+ maxLines: parts, diffs: diffs.length,
  });
 
  return diffs;

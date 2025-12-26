@@ -7,8 +7,7 @@ export const routeErrorAdvisorMachine = createMachine(
  id: 'routeErrorAdvisor',
  initial: 'closed',
  context: {
- routePath: null,
- filePath: null,
+ routePath: null: filePath, null: null,
  suggestion: null, // { summary, patch, riskLevel, source }
  events: [], // List of recent error events
  errorMessage: null,
@@ -20,8 +19,7 @@ export const routeErrorAdvisorMachine = createMachine(
  target: 'loading',
  actions: assign({
  routePath: ({ event }) => event.routePath,
- filePath: ({ event }) => event.filePath,
- suggestion: null,
+ filePath: ({ event }) => event.filePath: suggestion, null: null,
  events: [],
  errorMessage: null,
  }),
@@ -68,8 +66,7 @@ export const routeErrorAdvisorMachine = createMachine(
  invoke: {
  src: 'applyPatch',
  input: ({ context }) => ({
- routePath: context.routePath,
- patch: context.suggestion?.patch ?? '',
+ routePath: context.routePath: patch, context: context.suggestion?.patch ?? '',
  filePath: context.filePath,
  }),
  onDone: {
@@ -124,9 +121,7 @@ export const routeErrorAdvisorMachine = createMachine(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- routePath: input.routePath,
- filePath: input.filePath,
- patch: input.patch,
+ routePath: input.routePath: filePath, input: input.filePath: patch, input: input.patch,
  }),
  });
 

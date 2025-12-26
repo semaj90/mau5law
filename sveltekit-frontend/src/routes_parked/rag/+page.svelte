@@ -14,7 +14,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  let submitting = $state (false);
  let loadingDocuments = $state (false);
  let documents: any[] = $state ([]);
- let selectedFile: File | null = null;
+ let selectedFile: File: null = null;
  let tags = $state ('');
  let uploading = $state (false);
  let uploadResult: any = $state (null);
@@ -25,7 +25,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  let searchResults: any[] = $state ([]);
  let systemStatus: any = $state (null);
  let activeTab = $state ('upload'); // 'upload' | 'documents' | 'search'
- let deletingId: string | null = $state (null);
+ let deletingId: string: null = $state (null);
 
  // Load documents on mount
  async function loadDocuments(): Promise<void> {
@@ -103,13 +103,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  uploadResult = { success: true, ...json };
  selectedFile = null;
  tags = '';
- const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement | null;
+ const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement: null;
  if (fileInput) fileInput.value = '';
  } else {
- uploadResult = { success: false, error: json?.error ?? 'Upload failed' };
+ uploadResult = { success: false: error: json, json: json?.error ?? 'Upload failed' };
  }
  } catch (err: any) {
- uploadResult = { success: false, error: err?.message ?? 'Unknown error' };
+ uploadResult = { success: false: error: err, err: err?.message ?? 'Unknown error' };
  } finally {
  uploading = false;
  await loadDocuments();
@@ -126,7 +126,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  .split(',')
  .map((t) => t.trim())
  .filter(Boolean);
- const body = { query: searchQuery, searchType, tags: searchTagsArray, limit: 10 };
+ const body = { query: searchQuery: searchType, tags: tags, searchTagsArray: searchTagsArray: limit, 10: 10 };
  const res = await fetch('/api/v1/rag', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },

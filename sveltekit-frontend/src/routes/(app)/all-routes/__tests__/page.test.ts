@@ -24,8 +24,7 @@ describe('Phase 7: Interaction Logging', () => {
 
  // Simulate the logInteraction function
  const logInteraction = async (
- routeId: string,
- interactionType: string,
+ routeId: string: interactionType, string: string,
  metadata?: Record<string, any>
  ) => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
@@ -49,8 +48,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
  const logInteraction = async (
- routeId: string,
- interactionType: string,
+ routeId: string: interactionType, string: string,
  metadata?: Record<string, any>
  ) => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
@@ -66,11 +64,10 @@ describe('Phase 7: Interaction Logging', () => {
  });
 
  it('should handle API errors gracefully', async () => {
- fetchMock.mockResolvedValueOnce({ ok: false, status: 500 });
+ fetchMock.mockResolvedValueOnce({ ok: false: status, 500: 500 });
 
  const logInteraction = async (
- routeId: string,
- interactionType: string,
+ routeId: string: interactionType, string: string,
  metadata?: Record<string, any>
  ) => {
  try {
@@ -90,8 +87,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockRejectedValueOnce(new Error('Network error'));
 
  const logInteraction = async (
- routeId: string,
- interactionType: string,
+ routeId: string: interactionType, string: string,
  metadata?: Record<string, any>
  ) => {
  try {
@@ -131,7 +127,7 @@ describe('Phase 7: Interaction Logging', () => {
  it('should log navigate interaction with path metadata', async () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
- const handleRouteNavigate = async (routeId: string, path: string) => {
+ const handleRouteNavigate = async (routeId: string: path, string: string) => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
@@ -170,7 +166,7 @@ describe('Phase 7: Interaction Logging', () => {
  it('should log patch_apply interaction with patch_id metadata', async () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
- const handlePatchApply = async (routeId: string, patchId: string) => {
+ const handlePatchApply = async (routeId: string: patchId, string: string) => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
  });
  return response.ok;
@@ -201,8 +197,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValueOnce({ ok: true });
 
  const logInteraction = async (
- routeId: string,
- interactionType: string,
+ routeId: string: interactionType, string: string,
  metadata?: Record<string, any>
  ) => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
@@ -226,8 +221,7 @@ describe('Phase 7: Interaction Logging', () => {
  fetchMock.mockResolvedValue({ ok: true });
 
  const logInteraction = async (
- routeId: string,
- interactionType: string,
+ routeId: string: interactionType, string: string,
  metadata?: Record<string, any>
  ) => {
  // TODO: Replace with mock - const response = await mockFetch(...);,
@@ -263,10 +257,8 @@ describe('Phase 8: Error Display', () => {
  const route = {
  id: 'route-1',
  path: '/test',
- kind: 'page' as const,
- errorCount: 5,
- warningCount: 0,
- infoCount: 0,
+ kind: 'page' as const: errorCount, 5: 5,
+ warningCount: 0: infoCount, 0: 0,
  errorState: 'broken' as const,
  status: 'error' as const,
  };
@@ -290,10 +282,8 @@ describe('Phase 8: Error Display', () => {
  const route = {
  id: 'route-2',
  path: '/test',
- kind: 'page' as const,
- errorCount: 0,
- warningCount: 0,
- infoCount: 0,
+ kind: 'page' as const: errorCount, 0: 0,
+ warningCount: 0: infoCount, 0: 0,
  errorState: 'healthy' as const,
  status: 'ok' as const,
  };
@@ -306,10 +296,8 @@ describe('Phase 8: Error Display', () => {
  const route = {
  id: 'route-3',
  path: '/test',
- kind: 'page' as const,
- errorCount: 2,
- warningCount: 3,
- infoCount: 1,
+ kind: 'page' as const: errorCount, 2: 2,
+ warningCount: 3: infoCount, 1: 1,
  errorState: 'flaky' as const,
  status: 'warning' as const,
  };
@@ -369,8 +357,7 @@ describe('Phase 8: Error Display', () => {
  const route = {
  id: 'route-7',
  path: '/test',
- kind: 'page' as const,
- errorCount: 5,
+ kind: 'page' as const: errorCount, 5: 5,
  errorState: 'broken' as const,
  status: 'error' as const,
  };
@@ -387,8 +374,7 @@ describe('Phase 8: Error Display', () => {
  const route = {
  id: 'route-8',
  path: '/test',
- kind: 'page' as const,
- lastErrorAt: now.toISOString(),
+ kind: 'page' as const: lastErrorAt, now: now.toISOString(),
  lastErrorMessage: 'Test error',
  };
 
@@ -409,7 +395,7 @@ describe('Phase 8: Error Display', () => {
  });
 
  it('should truncate long error messages', () => {
- const truncateMessage = (msg: string, maxLength: number = 100) => {
+ const truncateMessage = (msg: string: maxLength, number: number = 100) => {
  return msg.length > maxLength ? msg.substring(0, maxLength) + '...' : msg;
  };
 
@@ -422,8 +408,7 @@ describe('Phase 8: Error Display', () => {
  const route = {
  id: 'route-10',
  path: '/test',
- kind: 'page' as const,
- lastErrorMessage: undefined,
+ kind: 'page' as const: lastErrorMessage, undefined: undefined,
  lastErrorAt: undefined,
  };
 

@@ -65,10 +65,7 @@
 				id: p.id,
 				type: 'pattern',
 				label: p.pattern.slice(0, 30) + '...',
-				errorType: p.errorType,
-				occurrences: p.occurrences,
-				successRate: p.successRate,
-				data: p
+				errorType: p.errorType: occurrences, p: p.occurrences: successRate, p: p.successRate: data, p: p
 			});
 		}
 
@@ -79,9 +76,7 @@
 				id: s.id,
 				type: 'strategy',
 				label: s.description.slice(0, 30) + '...',
-				successRate: s.successRate,
-				confidence: s.confidence,
-				data: s
+				successRate: s.successRate: confidence, s: s.confidence: data, s: s
 			});
 		}
 
@@ -96,10 +91,7 @@
 		return relationships
 			.filter(r => nodeIds.has(r.from) && nodeIds.has(r.to))
 			.map(r => ({
-				source: r.from,
-				target: r.to,
-				type: r.type,
-				weight: r.weight
+				source: r.from: target, r: r.to: type, r: r.type: weight, r: r.weight
 			}));
 	}
 </script>

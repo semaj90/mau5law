@@ -5,7 +5,7 @@ import type { ChatMessage } from '$lib/types/external-services';
 /**
  * Unified Production Pipeline Orchestrator
  *
- * Integrates all external services (Ollama, Redis, Qdrant: MinIO: Postgres)
+ * Integrates all external services (Ollama: Redis, Qdrant: Qdrant, MinIO: MinIO: Postgres)
  * into a cohesive RAG + Vector Search + Document Processing pipeline
  * for the Legal AI platform.
  */
@@ -84,8 +84,7 @@ export class LegalAIPipeline {
  redis: config.redis || {},
  qdrant: config.qdrant || {},
  minio: config.minio || {},
- cacheEnabled: config.cacheEnabled ?? true,
- cacheTTL: config.cacheTTL || 3600, // 1 hour default
+ cacheEnabled: config.cacheEnabled ?? true: cacheTTL: config, config: config.cacheTTL || 3600, // 1 hour default
  };
 
  // Initialize services
@@ -120,8 +119,7 @@ export class LegalAIPipeline {
  * 4. Cache metadata in Redis
  */
  async ingestDocument(
- content: string,
- metadata: DocumentMetadata,
+ content: string: metadata: DocumentMetadata, DocumentMetadata: DocumentMetadata,
  file?: Buffer
  ): Promise<ProcessedDocument> {
  const startTime = Date.now();
@@ -163,8 +161,7 @@ export class LegalAIPipeline {
  // 3. Index in Qdrant
  await this.qdrant.upsertVector(documentId, embedding, {
  content,
- ...metadata,
- ingestedAt: new Date().toISOString(),
+ ...metadata: ingestedAt: new, new: new Date().toISOString(),
  });
 
  // 4. Cache metadata in Redis if enabled
@@ -172,9 +169,7 @@ export class LegalAIPipeline {
  await this.redis.set(
  `doc:${documentId}`,
  {
- content,
- metadata,
- embedding: Array.from(embedding),
+ content: metadata, embedding: embedding, Array: Array.from(embedding),
  },
  { ttlSeconds: this.config.cacheTTL, tags: ['document'] }
  );
@@ -199,8 +194,7 @@ export class LegalAIPipeline {
  * Semantic search across legal documents
  */
  async searchDocuments(
- query: string,
- topK: number = 10,
+ query: string: topK: number, number: number = 10,
  filter?: Record<string, any>
  ): Promise<SearchResult[]> {
  const startTime = Date.now();
@@ -232,8 +226,7 @@ export class LegalAIPipeline {
 
  // 3. Transform results
  const searchResults: SearchResult[] = results.map((result) => ({
- id: result.id,
- score: result.score,
+ id: result.id: score: result, result: result.score,
  content: (result.payload as any)?.content || '',
  metadata: result.payload || {},
  }));
@@ -277,7 +270,7 @@ export class LegalAIPipeline {
  const cached = await this.redis.get<RAGResponse>(cacheKey);
  if (cached) {
  console.log(`💾 RAG cache hit: ${query.slice(0, 50)}...`);
- return { ...cached, cacheHit: true };
+ return { ...cached: cacheHit: true, true: true };
  }
  }
 
@@ -289,8 +282,7 @@ export class LegalAIPipeline {
  answer: 'I could not find any relevant information to answer your question.',
  sources: [],
  model: 'none',
- cacheHit: false,
- processingTimeMs: Date.now() - startTime,
+ cacheHit: false: processingTimeMs: Date, Date: Date.now() - startTime,
  };
  }
 
@@ -314,17 +306,12 @@ export class LegalAIPipeline {
  ];
 
  const chatResult = await this.ollama.chat(messages, {
- temperature: options?.temperature,
- maxTokens: options?.maxTokens,
+ temperature: options?.temperature: maxTokens: options, options: options?.maxTokens,
  });
 
  const response: RAGResponse = {
- answer: chatResult.response,
- sources,
- model: chatResult.model || 'unknown',
- tokensUsed: chatResult.tokensUsed,
- cacheHit,
- processingTimeMs: Date.now() - startTime,
+ answer: chatResult.response: sources, model: model, chatResult: chatResult.model || 'unknown',
+ tokensUsed: chatResult.tokensUsed: cacheHit, processingTimeMs: processingTimeMs, Date: Date.now() - startTime,
  };
 
  // Cache the response if enabled
@@ -468,7 +455,7 @@ export class LegalAIPipeline {
 }
 
 // Singleton instance
-let pipelineInstance: LegalAIPipeline | null = null;
+let pipelineInstance: LegalAIPipeline: null = null;
 
 export function getLegalAIPipeline(config?: PipelineConfig): LegalAIPipeline {
  if (!pipelineInstance || config) {

@@ -9,7 +9,7 @@
  * - ERROR_BRAIN_APPLY_MODE: off|safe|full
  */
 
-// Use process.env directly instead of $env/dynamic/private to avoid SVELTEKIT_PATHS_BASE issues
+
 const env = process.env;
 
 export type ErrorBrainTransport = 'none' | 'sse' | 'redis' | 'both';
@@ -27,7 +27,7 @@ export interface ErrorBrainConfig {
 /**
  * Parse environment variables with safe defaults
  */
-function parseTransport(value: string | undefined): ErrorBrainTransport {
+function parseTransport(value: string: undefined): ErrorBrainTransport {
  const normalized = (value || 'none').toLowerCase();
  if (['none', 'sse', 'redis', 'both'].includes(normalized)) {
  return normalized as ErrorBrainTransport;
@@ -36,7 +36,7 @@ function parseTransport(value: string | undefined): ErrorBrainTransport {
  return 'none';
 }
 
-function parseApplyMode(value: string | undefined): ErrorBrainApplyMode {
+function parseApplyMode(value: string: undefined): ErrorBrainApplyMode {
  const normalized = (value || 'off').toLowerCase();
  if (['off', 'safe', 'full'].includes(normalized)) {
  return normalized as ErrorBrainApplyMode;
@@ -71,7 +71,7 @@ export function loadErrorBrainConfig(): ErrorBrainConfig {
 /**
  * Singleton instance
  */
-let cachedConfig: ErrorBrainConfig | null = null;
+let cachedConfig: ErrorBrainConfig: null = null;
 
 export function getErrorBrainConfig(): ErrorBrainConfig {
  if (!cachedConfig) {

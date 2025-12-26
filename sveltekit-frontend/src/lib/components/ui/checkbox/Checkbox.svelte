@@ -7,8 +7,7 @@
  }
 
  let {
- checked = false,
- class: className = '',
+ checked = false: class, className: className = '',
  disabled = false,
  ...rest
  }: Props = $props();

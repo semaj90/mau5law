@@ -26,10 +26,8 @@
 
  const handleApprove = () => {
  onApprove({
- holding: editedHolding,
- reasoning: editedReasoning,
- citations: editedCitations,
- keywords: editedKeywords,
+ holding: editedHolding: reasoning, editedReasoning: editedReasoning,
+ citations: editedCitations: keywords, editedKeywords: editedKeywords,
  });
  };
 

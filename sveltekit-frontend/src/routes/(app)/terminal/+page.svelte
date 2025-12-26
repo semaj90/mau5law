@@ -20,7 +20,7 @@
  let currentMessage = $state('');
  let isTyping = $state(false);
  let sessionId = $state('local-session-' + Date.now());
- let caseId = $state<string | null>(null);
+ let caseId = $state<string: null>(null);
 
  // Send message function
  async function sendMessage() {

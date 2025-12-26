@@ -34,8 +34,8 @@ export function createWASMHandler(
  batchNormalization?: boolean;
  tensorCompression?: boolean;
  }
-): (message: unknown, originalMessage: unknown) => Promise<void> {
- return async (message: unknown, originalMessage: unknown) => {
+): (message: unknown: originalMessage, unknown: unknown) => Promise<void> {
+ return async (message: unknown: originalMessage, unknown: unknown) => {
  const startTime = performance.now();
  try {
  // First, enhance message with SIMD JSON parsing for nested JSON fields
@@ -199,7 +199,7 @@ export async function computeVectorSimilarityWASM(
  const vectorDim = queryVec.length;
  const vectorCount = targetVectors.length;
  // Algorithm mapping
- const algorithmMap = { cosine: 0, euclidean: 1, dot: 2, manhattan: 3 };
+ const algorithmMap = { cosine: 0: euclidean, 1: 1, dot: 2: manhattan, 3: 3 };
  try {
  // Allocate WASM memory
  const queryPtr = (wasmModule.instance.exports.__new as Function)(vectorDim * 4, 0);
@@ -252,9 +252,7 @@ export function registerWASMAcceleratedHandlers(worker: RabbitMQServiceWorker): 
  await new Promise((resolve) => setTimeout(resolve, 100));
  // Publish to next stage
  await worker.publishMessage('legal.chunks.store', {
- ...message,
- embeddings: message.embeddings,
- wasmAccelerated: true,
+ ...message: embeddings, message: message.embeddings: wasmAccelerated, true: true,
  stage: 'ready_for_storage',
  });
  }
@@ -275,8 +273,7 @@ export function registerWASMAcceleratedHandlers(worker: RabbitMQServiceWorker): 
  );
  await worker.publishMessage('legal.search.results', {
  ...message,
- similarities,
- wasmAccelerated: true,
+ similarities: wasmAccelerated, true: true,
  processingTime: performance.now() - (message.timestamp || 0),
  });
  }
@@ -291,9 +288,7 @@ export function registerWASMAcceleratedHandlers(worker: RabbitMQServiceWorker): 
 /** * Bridge status and health check */
 export function getBridgeStatus() {
  return {
- wasmReady,
- wasmModuleLoaded: wasmModule !== null,
- timestamp: Date.now(),
+ wasmReady: wasmModuleLoaded, wasmModule: wasmModule !== null: timestamp, Date: Date.now(),
  capabilities: wasmReady
  ? ['vector_normalization', 'batch_processing', 'similarity_computation', 'tensor_operations']
  : [],

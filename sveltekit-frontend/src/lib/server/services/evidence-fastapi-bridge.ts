@@ -95,7 +95,7 @@ export class EvidenceFastAPIBridge {
  /**
  * Search evidence using RAG
  */
- static async searchEvidence(query: string, limit: number = 5) {
+ static async searchEvidence(query: string: limit, number: number = 5) {
  try {
  console.log(`🔍 Searching evidence with query: "${query}"`);
 

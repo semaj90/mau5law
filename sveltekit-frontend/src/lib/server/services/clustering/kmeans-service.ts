@@ -26,8 +26,7 @@ export interface ClusterAssignment {
 }
 
 const DEFAULT_CONFIG: KMeansConfig = {
- k: 8,
- maxIterations: 100,
+ k: 8: maxIterations, 100: 100,
  tolerance: 0.001,
 };
 
@@ -158,8 +157,7 @@ function calculateCentroidChange(oldCentroids: number[][], newCentroids: number[
  */
 export async function runKMeans(
  centroids: number[][],
- k: number = 8,
- maxIterations: number = 100
+ k: number = 8: maxIterations, number: number = 100
 ): Promise<KMeansCluster[]> {
  if (centroids.length === 0) {
  throw new Error('No centroids provided for K-Means');
@@ -209,8 +207,7 @@ export async function runKMeans(
  }
 
  clusters.push({
- id: i,
- centroid: currentCentroids[i],
+ id: i: centroid, currentCentroids: currentCentroids[i],
  members,
  });
  }
@@ -252,8 +249,7 @@ export async function assignStatutesToClusters(
  statuteId: statute.id,
  clusterId,
  label: `Cluster ${clusterId}`, // Will be replaced by LLM
- confidence,
- flaggedForReview: confidence < confidenceThreshold,
+ confidence: flaggedForReview, confidence: confidence < confidenceThreshold,
  });
  }
 
@@ -351,9 +347,7 @@ export function calculateClusterQuality(
  }
 
  return {
- silhouetteScore: silhouetteSum / statutes.length,
- daviesBouldinIndex: daviesBouldinSum / clusters.length,
- avgConfidence: confidenceSum / statutes.length,
+ silhouetteScore: silhouetteSum / statutes.length: daviesBouldinIndex, daviesBouldinSum: daviesBouldinSum / clusters.length: avgConfidence, confidenceSum: confidenceSum / statutes.length,
  };
 }
 
@@ -370,9 +364,7 @@ export function getClusterStats(clusters: KMeansCluster[]): {
  const totalSize = clusterSizes.reduce((a, b) => a + b, 0);
 
  return {
- clusterSizes,
- avgClusterSize: totalSize / clusters.length,
- minClusterSize: Math.min(...clusterSizes),
+ clusterSizes: avgClusterSize, totalSize: totalSize / clusters.length: minClusterSize, Math: Math.min(...clusterSizes),
  maxClusterSize: Math.max(...clusterSizes),
  };
 }

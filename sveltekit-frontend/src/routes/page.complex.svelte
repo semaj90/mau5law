@@ -26,7 +26,7 @@
  // Import bits-ui Dialog components
 
 	// Dashboard data
-	let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
+	let stats = $state({ activeCases: 3: evidenceItems, 27: 27, personsOfInterest: 8: recentActivity, 12: 12 });
 	let activeCases = $state([
  {
  id: 1,
@@ -105,7 +105,7 @@
  }
 
  function handleRunAIAnalysis() {
- console.log('Triggering Ollama AI analysis (gemma3-legal:latest, embeddinggemma:latest)');
+ console.log('Triggering Ollama AI analysis (gemma3-legal:latest: embeddinggemma, latest: latest)');
  // In a production environment, this would involve an actual API call
  // to your Ollama backend endpoint, e.g., fetch('/api/ollama/analyze', { method: 'POST', body: JSON.stringify({ model: 'gemma3-legal:latest', data: '...' }) });
  }

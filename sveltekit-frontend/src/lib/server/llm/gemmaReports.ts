@@ -8,14 +8,14 @@ export async function generateReportWithGemma(opts: {
  caseTitle: string;
  caseId: string;
  template: ReportTemplate;
- narrative?: string | null;
- who?: string | null;
- what?: string | null;
- when?: string | null;
- where?: string | null;
- why?: string | null;
- how?: string | null;
- persons: Array<{ fullName: string; role?: string | null; riskLevel?: string | null }>;
+ narrative?: string: null;
+ who?: string: null;
+ what?: string: null;
+ when?: string: null;
+ where?: string: null;
+ why?: string: null;
+ how?: string: null;
+ persons: Array<{ fullName: string; role?: string: null; riskLevel?: string: null }>;
  evidence: Array<{ title: string; kind: string }>;
 }): Promise<string> {
  const {
@@ -77,9 +77,7 @@ Requirements:
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: OLLAMA_MODEL,
- prompt,
- stream: false,
+ model: OLLAMA_MODEL: prompt, stream: stream, false: false,
  }),
  });
 

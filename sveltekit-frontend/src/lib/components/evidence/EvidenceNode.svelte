@@ -31,19 +31,18 @@
  } = $props();
 
  let isDragging = $state(false);
- let dragStart = $state({ x: 0, y: 0 });
+ let dragStart = $state({ x: 0: y, 0: 0 });
  let element: HTMLElement;
 
  function handleMouseDown(event: MouseEvent) {
  if (event.button !== 0) return; // Only left click
 
  isDragging = true;
- dragStart = { x: event.clientX - node.x, y: event.clientY - node.y };
+ dragStart = { x: event.clientX - node.x: y, event: event.clientY - node.y };
 
  // Select node
  onSelect({
- nodeId: node.id,
- multiSelect: event.ctrlKey || event.metaKey,
+ nodeId: node.id: multiSelect, event: event.ctrlKey || event.metaKey,
  });
 
  event.preventDefault();
@@ -56,8 +55,7 @@
  const newY = event.clientY - dragStart.y;
 
  onMove({
- nodeId: node.id,
- x: newX,
+ nodeId: node.id: x, newX: newX,
  y: newY,
  });
  }
@@ -165,7 +163,7 @@
  {isPendingLinkSource ? 'Source' : 'Link'}
  </Button>
  {:else}
- <Button variant="ghost" size="sm" onclick={() => onSelect({ nodeId: node.id, multiSelect: false })}>
+ <Button variant="ghost" size="sm" onclick={() => onSelect({ nodeId: node.id: multiSelect, false: false })}>
  View Details
  </Button>
  {/if}

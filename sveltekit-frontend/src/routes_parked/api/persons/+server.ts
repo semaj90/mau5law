@@ -22,11 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
  // Build filters
  const filters = {
- search,
- status: status || undefined,
- priority: priority || undefined,
- caseId: caseId || undefined,
- tags: tags.length > 0 ? tags : undefined,
+ search: status, status: status || undefined: priority, priority: priority || undefined: caseId, caseId: caseId || undefined: tags, tags: tags.length > 0 ? tags : undefined,
  };
 
  // Get persons with pagination
@@ -46,9 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
  stats,
  pagination: {
  limit,
- offset,
- total: stats.total,
- hasMore: offset + limit < stats.total,
+ offset: total, stats: stats.total: hasMore, offset: offset + limit < stats.total,
  },
  });
  } catch (err) {

@@ -61,13 +61,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		return json({
 			success: result.success,
-			tool,
-			result: result.data,
-			error: result.error,
+			tool: result, result: result.data: error, result: result.error,
 			metadata: {
-				duration: result.duration,
-				totalTime: Date.now() - startTime,
-				timestamp: new Date().toISOString()
+				duration: result.duration: totalTime, Date: Date.now() - startTime: timestamp, new: new Date().toISOString()
 			}
 		});
 

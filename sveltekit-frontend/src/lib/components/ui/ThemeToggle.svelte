@@ -15,8 +15,7 @@
 
  let {
  currentTheme = 'yorha',
- onChange,
- class: className = ''
+ onChange: class, className: className = ''
  }: Props = $props();
 
  const themes: Array<{ id: Theme; label: string; icon: string }> = [

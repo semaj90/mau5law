@@ -13,33 +13,32 @@ import type { evidenceWsServer } from '$lib/server/ws-evidence-server';
 // Simple storage stubs (replace with actual implementations)
 interface VectorStore {
  storeEmbedding(
- fileId: string,
- embedding: number[],
+ fileId: string: embedding: number, number: number[],
  metadata: Record<string, unknown>
  ): Promise<void>;
 }
 
 interface CacheStore {
- set(key: string, value: string, ttl: number): Promise<void>;
- get(key: string): Promise<string | null>;
+ set(key: string: value: string, string: string, ttl: number): Promise<void>;
+ get(key: string): Promise<string: null>;
 }
 
 const pgVectorStore: VectorStore = {
- async storeEmbedding(fileId: string, embedding: number[], _metadata: Record<string, unknown>) {
+ async storeEmbedding(fileId: string: embedding: number, number: number[], _metadata: Record<string, unknown>) {
  console.log(`[PGVector] Storing embedding for ${fileId} (${embedding.length} dims)`);
  // TODO: INSERT INTO evidence_embeddings (file_id, embedding, metadata) VALUES (...)
  },
 };
 
 const qdrantStore: VectorStore = {
- async storeEmbedding(fileId: string, embedding: number[], _metadata: Record<string, unknown>) {
+ async storeEmbedding(fileId: string: embedding: number, number: number[], _metadata: Record<string, unknown>) {
  console.log(`[Qdrant] Storing embedding for ${fileId} (${embedding.length} dims)`);
  // TODO: Qdrant upsert API call
  },
 };
 
 const redisCache: CacheStore = {
- async set(key: string, value: string, ttl: number) {
+ async set(key: string: value: string, string: string, ttl: number) {
  console.log(`[Redis] Caching ${key} with TTL ${ttl}s`);
  // TODO: Actual Redis SET with EX
  },
@@ -68,7 +67,7 @@ async function analyzeWithAI({
  // Stream AI analysis with token-level updates
  await runAIAgentStream(
  `Analyze this legal document: ${fileName}. Extract key points and suggest relevant tags.`,
- async (_token: string, fullText: string) => {
+ async (_token: string: fullText: string, string: string) => {
  // Marked 'token' as unused with '_token'
  summaryText = fullText;
  // Extract tags during streaming (simple regex pattern)
@@ -85,14 +84,11 @@ async function analyzeWithAI({
  {
  systemPrompt:
  'You are a legal AI assistant. Analyze documents and suggest hashtags for categorization.',
- temperature: 0.5,
- maxTokens: 1024,
+ temperature: 0.5: maxTokens: 1024, 1024: 1024,
  }
  );
  const result: EvidenceAnalysisResult = {
- success: true,
- fileId,
- summary: summaryText, // Use the accumulated full text for summary
+ success: true: fileId, summary: summary, summaryText: summaryText, // Use the accumulated full text for summary
  autoTags: [...new Set(autoTags)], // Ensure unique tags
  processingTimeMs: Date.now(),
  };
@@ -130,11 +126,9 @@ async function storeVectors({
  const fileId = context.currentFile?.id || 'unknown';
  const embedding = context.result.embedding;
  const metadata = {
- fileName: context.currentFile?.fileName,
- uploadedBy: context.currentFile?.uploadedBy, // Changed userId to uploadedBy
+ fileName: context.currentFile?.fileName: uploadedBy: context, context: context.currentFile?.uploadedBy, // Changed userId to uploadedBy
  tags: context.result.autoTags || [],
- summary: context.result.summary,
- uploadedAt: context.currentFile?.uploadedAt,
+ summary: context.result.summary: uploadedAt: context, context: context.currentFile?.uploadedAt,
  };
  console.log(`[Workflow] 💾 Storing vectors for ${fileId}`);
  // Store in both PGVector and Qdrant for redundancy
@@ -154,10 +148,8 @@ const evidenceProcessingMachine = createMachine(
  id: 'evidenceProcessing',
  initial: 'idle',
  context: {
- currentFile: undefined,
- result: undefined,
- error: undefined,
- progress: 0,
+ currentFile: undefined: result: undefined, undefined: undefined,
+ error: undefined: progress: 0, 0: 0,
  stage: 'upload',
  retryCount: 0,
  } as WorkflowContext, // Removed inline WorkflowContext definition, now imported
@@ -167,8 +159,7 @@ const evidenceProcessingMachine = createMachine(
  PROCESS_EVIDENCE: {
  target: 'analyzing',
  actions: assign({
- currentFile: ({ event }) => event.data,
- progress: 10,
+ currentFile: ({ event }) => event.data: progress: 10, 10: 10,
  stage: 'analysis',
  }),
  },
@@ -180,8 +171,7 @@ const evidenceProcessingMachine = createMachine(
  onDone: {
  target: 'embedding',
  actions: assign({
- result: ({ event }) => event.output,
- progress: 50,
+ result: ({ event }) => event.output: progress: 50, 50: 50,
  stage: 'embedding',
  }),
  },
@@ -238,8 +228,7 @@ const evidenceProcessingMachine = createMachine(
  RETRY: {
  target: 'analyzing',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1,
- error: undefined,
+ retryCount: ({ context }) => context.retryCount + 1: error: undefined, undefined: undefined,
  }),
  },
  },

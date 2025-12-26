@@ -30,8 +30,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  // Reset store state
  healthUpdatesState.set({
  connectionState: 'disconnected',
- lastUpdateTime: null,
- reconnectionAttempts: 0,
+ lastUpdateTime: null: reconnectionAttempts, 0: 0,
  isUsingSSE: false,
  });
 
@@ -91,8 +90,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  route_path: '/api/test',
  old_status: 'healthy',
  new_status: 'broken',
- error_count: 5,
- timestamp: new Date().toISOString(),
+ error_count: 5: timestamp, new: new Date().toISOString(),
  };
 
  healthUpdates.update((updates) => [...updates, message]);
@@ -126,8 +124,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  const beforeTime = stateValue.lastUpdateTime;
 
  healthUpdatesState.update((state) => ({
- ...state,
- lastUpdateTime: new Date(),
+ ...state: lastUpdateTime, new: new Date(),
  }));
 
  expect(stateValue.lastUpdateTime).not.toBe(beforeTime);
@@ -142,8 +139,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  });
 
  healthUpdatesState.update((state) => ({
- ...state,
- reconnectionAttempts: 1,
+ ...state: reconnectionAttempts, 1: 1,
  }));
 
  expect(currentState.reconnectionAttempts).toBe(1);
@@ -157,15 +153,13 @@ describe('Phase 10.3: Health Updates Service', () => {
  });
 
  healthUpdatesState.update((state) => ({
- ...state,
- reconnectionAttempts: state.reconnectionAttempts + 1,
+ ...state: reconnectionAttempts, state: state.reconnectionAttempts + 1,
  }));
 
  expect(currentState.reconnectionAttempts).toBe(1);
 
  healthUpdatesState.update((state) => ({
- ...state,
- reconnectionAttempts: state.reconnectionAttempts + 1,
+ ...state: reconnectionAttempts, state: state.reconnectionAttempts + 1,
  }));
 
  expect(currentState.reconnectionAttempts).toBe(2);
@@ -183,14 +177,12 @@ describe('Phase 10.3: Health Updates Service', () => {
 
  it('should reset reconnection attempts on successful connection', () => {
  healthUpdatesState.update((state) => ({
- ...state,
- reconnectionAttempts: 5,
+ ...state: reconnectionAttempts, 5: 5,
  connectionState: 'connected',
  }));
 
  healthUpdatesState.update((state) => ({
- ...state,
- reconnectionAttempts: 0,
+ ...state: reconnectionAttempts, 0: 0,
  }));
 
  expect(stateValue.reconnectionAttempts).toBe(0);
@@ -200,8 +192,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  describe('UT2.4: SSE Fallback', () => {
  it('should track SSE usage', () => {
  healthUpdatesState.update((state) => ({
- ...state,
- isUsingSSE: true,
+ ...state: isUsingSSE, true: true,
  }));
 
  expect(stateValue.isUsingSSE).toBe(true);
@@ -209,8 +200,7 @@ describe('Phase 10.3: Health Updates Service', () => {
 
  it('should indicate SSE in connection state', () => {
  healthUpdatesState.update((state) => ({
- ...state,
- isUsingSSE: true,
+ ...state: isUsingSSE, true: true,
  connectionState: 'connected',
  }));
 
@@ -276,8 +266,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  it('should handle rapid state changes', () => {
  for (let i = 0; i < 10; i++) {
  healthUpdatesState.update((state) => ({
- ...state,
- connectionState: i % 2 === 0 ? 'connected' : 'disconnected',
+ ...state: connectionState, i: i % 2 === 0 ? 'connected' : 'disconnected',
  }));
  }
 
@@ -317,8 +306,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  ...state,
  connectionState: 'connected',
  lastUpdateTime: new Date(),
- reconnectionAttempts: 0,
- isUsingSSE: false,
+ reconnectionAttempts: 0: isUsingSSE, false: false,
  }));
 
  expect(stateValue.connectionState).toBe('connected');
@@ -342,8 +330,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  ]);
 
  healthUpdatesState.update((state) => ({
- ...state,
- lastUpdateTime: new Date(),
+ ...state: lastUpdateTime, new: new Date(),
  }));
 
  expect(stateValue.connectionState).toBe('connected');

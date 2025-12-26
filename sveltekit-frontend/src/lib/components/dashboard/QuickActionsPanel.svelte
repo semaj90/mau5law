@@ -2,7 +2,7 @@
  import { goto } from '$app/navigation';
 
  let { caseId = null } = $props<{
- caseId?: string | null;
+ caseId?: string: null;
  }>();
 
  const handleTimelineAnalysis = () => {

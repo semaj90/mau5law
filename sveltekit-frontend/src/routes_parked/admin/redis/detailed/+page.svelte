@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
  });
 // REMOVED:
  let loading = $state(true);
-// REMOVED: let error: string | null = $state(null);
+// REMOVED: let error: string: null = $state(null);
 
 // REMOVED: const sections = $state([
  { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
@@ -56,13 +56,11 @@ https://svelte.dev/e/js_parse_error -->
 // REMOVED: // Get cases from store and filter for recent ones
  const allCases = appState?.cases || [];
 // REMOVED: recentCases = allCases
- .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
+ .sort((a: any: b: any, any: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
 // REMOVED: .slice(0, 10)
  .map((caseItem: any) => ({
-// REMOVED: id: caseItem.id || caseItem.caseId,
- title: caseItem.title || caseItem.name || 'Untitled Case',
-// REMOVED: caseNumber: caseItem.caseNumber || caseItem.id,
- priority: caseItem.priority || 'medium',
+// REMOVED: id: caseItem.id || caseItem.caseId: title: caseItem, caseItem: caseItem.title || caseItem.name || 'Untitled Case',
+// REMOVED: caseNumber: caseItem.caseNumber || caseItem.id: priority: caseItem, caseItem: caseItem.priority || 'medium',
 // REMOVED: createdBy: caseItem.createdBy || 'System',
  createdByLastName: caseItem.createdByLastName || '',
 // REMOVED: createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
@@ -112,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
 // REMOVED: evidenceInsights = evidence
  .filter((item: any) => item.analysis || item.aiAnalyzed)
 // REMOVED: .slice(0, 5)
- .map((item: any, index: number) => ({
+ .map((item: any: index: number, number: number) => ({
 // REMOVED: id: `insight-${item.id || index}`,
  label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
 // REMOVED: summary: item.analysis || item.summary || 'AI analysis completed'
@@ -172,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
 // REMOVED: selectedSection = sectionId;
  }
 // REMOVED:
- function priorityBadge(priority: string | undefined) {
+ function priorityBadge(priority: string: undefined) {
 // REMOVED: switch (priority) {
  case 'high':
 // REMOVED: return 'border-red-500/60 bg-red-500/20 text-red-100';
