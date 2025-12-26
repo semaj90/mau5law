@@ -16,6 +16,7 @@
 import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { createHash } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,9 +26,27 @@ const LOGS_DIR = join(ROOT, 'logs', 'errors');
 // Configuration
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 const COLLECTION_NAME = 'phase79_errors';
 const EMBEDDING_MODEL = 'embeddinggemma:latest';
-const VECTOR_SIZE = 1024; // embeddinggemma dimension
+const VECTOR_SIZE = 768; // embeddinggemma:latest actual dimension
+const EMBEDDING_CACHE_PREFIX = 'emb:phase79:';
+
+// Redis client (lazy init)
+let redis = null;
+async function getRedis() {
+	if (redis) return redis;
+	try {
+		const { default: Redis } = await import('ioredis');
+		redis = new Redis(REDIS_URL, { lazyConnect: true, maxRetriesPerRequest: 1 });
+		await redis.connect();
+		console.log('   📦 Redis connected for embedding cache');
+		return redis;
+	} catch (e) {
+		console.warn('   ⚠️  Redis unavailable, running without cache');
+		return null;
+	}
+}
 
 // Parse CLI args
 const args = process.argv.slice(2);
@@ -57,9 +76,22 @@ function loadErrors(runId) {
 }
 
 /**
- * Generate embedding via Ollama
+ * Generate embedding via Ollama (with Redis cache)
  */
 async function generateEmbedding(text) {
+	// Check Redis cache first
+	const cacheKey = EMBEDDING_CACHE_PREFIX + createHash('md5').update(text).digest('hex');
+	const r = await getRedis();
+	if (r) {
+		try {
+			const cached = await r.get(cacheKey);
+			if (cached) {
+				return JSON.parse(cached);
+			}
+		} catch (e) { /* ignore cache errors */ }
+	}
+
+	// Call Ollama
 	const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -74,7 +106,16 @@ async function generateEmbedding(text) {
 	}
 
 	const data = await response.json();
-	return data.embedding;
+	const embedding = data.embedding;
+
+	// Cache in Redis (24h TTL)
+	if (r && embedding) {
+		try {
+			await r.setex(cacheKey, 86400, JSON.stringify(embedding));
+		} catch (e) { /* ignore cache errors */ }
+	}
+
+	return embedding;
 }
 
 /**
@@ -114,6 +155,38 @@ async function createCollection(recreate = false) {
 
 	console.log(`✅ Collection created\n`);
 }
+/**
+ * Format milliseconds to human readable time
+ */
+function formatTime(ms) {
+	if (ms < 1000) return `${ms}ms`;
+	const secs = Math.floor(ms / 1000);
+	if (secs < 60) return `${secs}s`;
+	const mins = Math.floor(secs / 60);
+	const remainSecs = secs % 60;
+	if (mins < 60) return `${mins}m ${remainSecs}s`;
+	const hours = Math.floor(mins / 60);
+	const remainMins = mins % 60;
+	return `${hours}h ${remainMins}m`;
+}
+
+/**
+ * Render progress bar
+ */
+function renderProgress(current, total, startTime, cacheHits = 0) {
+	const pct = Math.round((current / total) * 100);
+	const filled = Math.round(pct / 2);
+	const empty = 50 - filled;
+	const bar = '█'.repeat(filled) + '░'.repeat(empty);
+
+	const elapsed = Date.now() - startTime;
+	const rate = current / (elapsed / 1000); // items per second
+	const remaining = total - current;
+	const eta = rate > 0 ? Math.round((remaining / rate) * 1000) : 0;
+
+	const cacheInfo = cacheHits > 0 ? ` | Cache: ${cacheHits}` : '';
+	process.stdout.write(`\r   [${bar}] ${pct}% (${current}/${total}) | ETA: ${formatTime(eta)}${cacheInfo}   `);
+}
 
 /**
  * Index errors in batches
@@ -122,6 +195,8 @@ async function indexErrors(errors, batchSize) {
 	console.log(`📊 Indexing ${errors.length} errors in batches of ${batchSize}...\n`);
 
 	let indexed = 0;
+	let cacheHits = 0;
+	const startTime = Date.now();
 	const batches = [];
 
 	// Split into batches
@@ -132,7 +207,8 @@ async function indexErrors(errors, batchSize) {
 	for (let batchIdx = 0; batchIdx < batches.length; batchIdx++) {
 		const batch = batches[batchIdx];
 
-		console.log(`   Batch ${batchIdx + 1}/${batches.length} (${batch.length} errors)...`);
+		// Update progress bar
+		renderProgress(indexed, errors.length, startTime, cacheHits);
 
 		// Generate embeddings
 		const points = [];
@@ -150,10 +226,14 @@ async function indexErrors(errors, batchSize) {
 			try {
 				const embedding = await generateEmbedding(text);
 
+				// Use numeric ID (batch offset + index)
+				const pointId = (batchIdx * batchSize) + batch.indexOf(error) + 1;
+
 				points.push({
-					id: error.fingerprint,
+					id: pointId,
 					vector: embedding,
 					payload: {
+						fingerprint: error.fingerprint,  // Store fingerprint in payload
 						runId: error.runId,
 						commit: error.commit,
 						timestamp: error.timestamp,
@@ -183,16 +263,27 @@ async function indexErrors(errors, batchSize) {
 			});
 
 			if (!upsertRes.ok) {
-				console.error(`   ❌ Batch ${batchIdx + 1} failed: ${upsertRes.statusText}`);
+				process.stdout.write(`\n   ❌ Batch ${batchIdx + 1} failed: ${upsertRes.statusText}\n`);
 				continue;
 			}
 
 			indexed += points.length;
-			console.log(`   ✅ Indexed ${points.length} errors (${indexed}/${errors.length} total)`);
 		}
 	}
 
-	console.log(`\n✅ Indexing complete! ${indexed} errors indexed.\n`);
+	// Final progress bar
+	renderProgress(indexed, errors.length, startTime, cacheHits);
+
+	const elapsed = Date.now() - startTime;
+	const rate = (indexed / (elapsed / 1000)).toFixed(1);
+	console.log(`\n\n✅ Indexing complete!`);
+	console.log(`   📊 Indexed: ${indexed}/${errors.length} errors`);
+	console.log(`   ⏱️  Elapsed: ${formatTime(elapsed)}`);
+	console.log(`   🚀 Rate: ${rate} errors/sec`);
+	if (cacheHits > 0) {
+		console.log(`   💾 Cache hits: ${cacheHits}`);
+	}
+	console.log('');
 }
 
 /**
