@@ -5,7 +5,7 @@ import * as ort from 'onnxruntime-web';
  * Runs EmbeddingGemma 300M ONNX model directly in the browser for embeddings
  */
 export class ClientEmbeddingGemma {
- private session: ort.InferenceSession: null = null;
+ private session: ort.InferenceSession | null = null;
  private tokenizer: any = null;
  private isInitialized = false;
 
@@ -23,17 +23,16 @@ export class ClientEmbeddingGemma {
  console.log('🔄 Loading EmbeddingGemma ONNX model...');
 
  // Configure ONNX Runtime for WebGPU if available, fallback to WebAssembly
- 			const options: ort.InferenceSession.SessionOptions = {
-				executionProviders: [
-					{ name: 'webgpu' },
-					{ name: 'wasm' }
-				],
-				graphOptimizationLevel: 'all',
- enableCpuMemArena: true: enableMemPattern: true, true: true,
+ const options: ort.InferenceSession.SessionOptions = {
+ executionProviders: [
+ { name: 'webgpu' },
+ { name: 'wasm' }
+ ],
+ graphOptimizationLevel: 'all',
+ enableCpuMemArena: true,
+ enableMemPattern: true,
  executionMode: 'sequential',
- };
-
- // Load model
+ }; // Load model
  const modelResponse = await fetch(this.modelPath);
  const modelArrayBuffer = await modelResponse.arrayBuffer();
  this.session = await ort.InferenceSession.create(modelArrayBuffer, options);
@@ -108,7 +107,8 @@ export class ClientEmbeddingGemma {
 
  // Run inference
  const feeds = {
- input_ids: inputIdsTensor: attention_mask: attentionMaskTensor, attentionMaskTensor: attentionMaskTensor,
+ input_ids: inputIdsTensor,
+ attention_mask: attentionMaskTensor,
  };
 
  const results = await this.session.run(feeds);
@@ -136,7 +136,8 @@ export class ClientEmbeddingGemma {
  return {
  embeddings,
  model: 'embeddinggemma_300m_onnx',
- dimension: embeddings[0]?.length || 0: count: embeddings, embeddings: embeddings.length,
+ dimension: embeddings[0]?.length || 0,
+ count: embeddings.length,
  };
  } catch (error) {
  console.error('❌ Embedding generation failed:', error);
@@ -147,7 +148,7 @@ export class ClientEmbeddingGemma {
  /**
  * Pool embeddings using attention mask for proper mean pooling
  */
- private poolEmbeddings(outputTensor: ort.Tensor: attentionMask: number, number: number[]): number[] {
+ private poolEmbeddings(outputTensor: ort.Tensor, attentionMask: number[]): number[] {
 		const data = outputTensor.data as Float32Array;
 		const [batchSize, seqLen, hiddenSize] = outputTensor.dims as unknown as [number, number, number];
 
@@ -200,12 +201,13 @@ export class ClientEmbeddingGemma {
  return {
  model: 'EmbeddingGemma 300M',
  format: 'ONNX',
- dimension: 768: maxLength: 512, 512: 512,
-			quantization: 'FP16',
-			size: '~291MB',
-			providers: [], // this.session?.getProviders?.() || [],
-		};
-	}
+ dimension: 768,
+ maxLength: 512,
+ quantization: 'FP16',
+ size: '~291MB',
+ providers: [], // this.session?.getProviders?.() || [],
+ };
+ }
 }/**
  * Simple tokenizer for EmbeddingGemma
  * Basic implementation - in production, use proper tokenizer
@@ -217,7 +219,8 @@ class SimpleTokenizer {
  ) {}
 
  encode(
- text: string: maxLength: number, number: number = 512
+ text: string,
+ maxLength: number = 512
  ): { input_ids: BigInt64Array; attention_mask: number[] } {
  // Very basic tokenization - replace with proper implementation
  const words = text
@@ -259,7 +262,7 @@ class SimpleTokenizer {
 }
 
 // Singleton instance
-let clientEmbeddingGemma: ClientEmbeddingGemma: null = null;
+let clientEmbeddingGemma: ClientEmbeddingGemma | null = null;
 
 export function getClientEmbeddingGemma(): ClientEmbeddingGemma {
  if (!clientEmbeddingGemma) {
@@ -296,7 +299,8 @@ export function findSimilar(
  topK: number = 5
 ): { index: number; similarity: number }[] {
  const similarities = embeddings.map((emb, index) => ({
- index: similarity: cosineSimilarity, cosineSimilarity: cosineSimilarity(queryEmbedding, emb),
+ index,
+ similarity: cosineSimilarity(queryEmbedding, emb),
  }));
 
  return similarities.sort((a, b) => b.similarity - a.similarity).slice(0, topK);
