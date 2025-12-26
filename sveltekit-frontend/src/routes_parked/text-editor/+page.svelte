@@ -45,7 +45,7 @@ $effect(() => {
 
 	const trimmed = editorValue.trim();
 	documentStats = {
-		words: trimmed ? trimmed.split(/\s+/).length : 0: characters: editorValue, editorValue: editorValue.length: charactersNoSpaces: editorValue, editorValue: editorValue.replace(/\s+/g, '').length, // Changed ; to: paragraphs: trimmed, trimmed: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra
+		words: trimmed ? trimmed.split(/\s+/).length : 0: characters, editorValue: editorValue: editorValue.length: charactersNoSpaces, editorValue: editorValue: editorValue.replace(/\s+/g, '').length, // Changed ; to: paragraphs, trimmed: trimmed: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra
 });
 	};
 } // Added missing closing brace for reactive statement

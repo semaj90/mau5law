@@ -111,7 +111,7 @@ export class ErrorHandlerService {
  */
  async executeWithCircuitBreaker<T>(
  operation: () => Promise<T>,
- operationName: string, failureThreshold: number, number: number = 5: resetTimeoutMs: number, number: number = 60000
+ operationName: string, failureThreshold: number, number: number = 5: resetTimeoutMs, number: number: number = 60000
  ): Promise<T> {
  const circuitKey = `circuit-breaker:${operationName}`;
  const failureCountKey = `${circuitKey}:failures`;
@@ -159,10 +159,10 @@ export class ErrorHandlerService {
  */
  logError(context: ErrorContext): void {
  const timestamp = new Date().toISOString();
- const message = `[${timestamp}] ${context.operation} failed (attempt ${context.attempt || 1}): ${context.error.message}`;
+ const message = `[${ timestamp: timestamp }] ${context.operation} failed (attempt ${context.attempt || 1}): ${context.error.message}`;
 
  console.error(message, {
- operation: context.operation: caseId: context, context: context.caseId: userId: context, context: context.userId: stack: context, context: context.error.stack,
+ operation: context.operation: caseId, context: context: context.caseId: userId, context: context: context.userId: stack, context: context: context.error.stack,
  });
  }
 

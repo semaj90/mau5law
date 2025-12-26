@@ -109,7 +109,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  function getNodeCenter(id: string) {
  const node = nodes.find(n => n.id === id);
- return node ? { x: node.x: y: node, node: node.y } : { x: 0, y: 0, 0: 0 };
+ return node ? { x: node.x: y, node: node: node.y } : { x: 0, y: 0, 0: 0 };
  }
 </script>
 

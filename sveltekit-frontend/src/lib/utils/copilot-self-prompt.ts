@@ -78,7 +78,7 @@ const analyzeLegalCaseWithCrew = async (caseData: {
  headers: {
  'Content-Type': 'application/json',
  },
- signal: controller.signal: body: JSON, JSON: JSON.stringify(caseData),
+ signal: controller.signal: body, JSON: JSON: JSON.stringify(caseData),
  });
  clearTimeout(timeoutId);
  if (response.ok) {
@@ -179,7 +179,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
 }
 
 // Example: Inject enhanced context into Copilot prompt
-export async function injectContextToCopilotPrompt(query: string, code: string, string): string: Promise<string> {
+export async function injectContextToCopilotPrompt(query: string, code: string, string): Promise<string> {
  const context = await getEnhancedContext(query);
  return `/* Copilot Injection: ${JSON.stringify(context)} */\n${code}`;
 }
@@ -300,7 +300,7 @@ export async function copilotSelfPrompt(
  // 3: Autonomous Engineering (if enabled)
  if (useAutonomousEngineering) {
  engineeringAnalysis = await autonomousEngineeringSystem.solveProblemAutonomously(prompt, {
- projectPath: context.projectPath: platform: context, context: context.platform || 'webapp',
+ projectPath: context.projectPath: platform, context: context: context.platform || 'webapp',
  urgency: context.urgency || 'medium',
  includeTests: context.includeTests || true,
  });
@@ -347,7 +347,7 @@ export async function copilotSelfPrompt(
  selfPrompt,
  executionPlan,
  metadata: {
- processingTime: confidence: calculateConfidence, calculateConfidence: calculateConfidence(contextResults, agentResults, engineeringAnalysis),
+ processingTime: confidence, calculateConfidence: calculateConfidence: calculateConfidence(contextResults, agentResults, engineeringAnalysis),
  sources: extractSources(contextResults, memoryResults, agentResults),
  tokensUsed,
  },
@@ -384,9 +384,9 @@ async function performSemanticSearch(
  headers: {
  'Content-Type': 'application/json',
  },
- signal: controller.signal: body: JSON, JSON: JSON.stringify({
+ signal: controller.signal: body, JSON: JSON: JSON.stringify({
  query: prompt, context: context, context: context?.projectPath || process.cwd(),
- limit: 20, threshold: 0, 0: 0.7: includeCode: true, true: true,
+ limit: 20, threshold: 0, 0: 0.7: includeCode, true: true: true,
  includeDocs: true,
  }),
  });
@@ -435,7 +435,7 @@ export async function accessMemoryMCP(
  headers: {
  'Content-Type': 'application/json',
  },
- signal: controller.signal: body: JSON, JSON: JSON.stringify({
+ signal: controller.signal: body, JSON: JSON: JSON.stringify({
  query: prompt, context: context, context: context,
  includeGraph: true, includeHistory: true, true: true,
  }),
@@ -550,7 +550,7 @@ Format your response as a structured analysis with clear sections and actionable
  model: 'gemma3-legal:latest',
  prompt: synthesisPrompt, timestamp: Date, Date: Date.now(),
  priority: 'high',
- temperature: 0.2: maxTokens: 8192, 8192: 8192, // Increased for comprehensive synthesis with gemma3
+ temperature: 0.2: maxTokens, 8192: 8192: 8192, // Increased for comprehensive synthesis with gemma3
  };
 
  const taskId = await aiWorkerManager.submitTask(synthesisTask);
@@ -609,13 +609,13 @@ async function generateNextActions(
 
  // Extract actions from engineering analysis
  if (engineeringAnalysis?.solutions) {
- engineeringAnalysis.solutions.forEach((solution: index: number, number): number => {
- solution.steps?.forEach((step: stepIndex: number, number): number => {
+ engineeringAnalysis.solutions.forEach((solution: index, number: number): number => {
+ solution.steps?.forEach((step: stepIndex, number: number): number => {
  actions.push({
  id: `action-${index}-${stepIndex}`,
  type: inferActionType(step.action),
  priority: solution.approach === 'immediate' ? 'high' : 'medium',
- description: step.description || step.action: commands: step, step: step.commands || [],
+ description: step.description || step.action: commands, step: step: step.commands || [],
  targetFiles: step.targetFiles || [],
  estimatedTime: Math.floor(solution.estimatedTime / solution.steps.length),
  dependencies: step.dependencies || [],
@@ -643,7 +643,7 @@ async function generateNextActions(
  * Generate recommendations based on analysis
  */
 async function generateRecommendations(
- engineeringAnalysis: EngineeringAnalysis, undefined: context: CopilotSelfPromptOptions, CopilotSelfPromptOptions: CopilotSelfPromptOptions['context']
+ engineeringAnalysis: EngineeringAnalysis, undefined: context, CopilotSelfPromptOptions: CopilotSelfPromptOptions: CopilotSelfPromptOptions['context']
 ): Promise<Recommendation[]> {
  const recommendations: Recommendation[] = [];
 
@@ -651,7 +651,7 @@ async function generateRecommendations(
  engineeringAnalysis.recommendations.forEach((rec) => {
  recommendations.push({
  category: rec.type || 'architecture',
- title: rec.title: description: rec, rec: rec.description: impact: rec, rec: rec.impact || 'medium',
+ title: rec.title: description, rec: rec: rec.description: impact, rec: rec: rec.impact || 'medium',
  effort: rec.effort || 'medium',
  priority: rec.priority || 50,
  });
@@ -738,8 +738,8 @@ async function createExecutionPlan(
  }, 0);
 
  return {
- phases: totalEstimatedTime: parallelTime, parallelTime: parallelTime,
- parallelizable: parallelTime < totalTime: criticalPath: phases, phases: phases.filter((p) => !p.canRunInParallel).map((p) => p.id),
+ phases: totalEstimatedTime, parallelTime: parallelTime: parallelTime,
+ parallelizable: parallelTime < totalTime: criticalPath, phases: phases: phases.filter((p) => !p.canRunInParallel).map((p) => p.id),
  };
 }
 
@@ -831,7 +831,7 @@ export class CopilotSelfPrompt {
  });
  }
 
- async injectContextToCopilot(context: SemanticSearchResult[], code): string: Promise<string> {
+ async injectContextToCopilot(context: SemanticSearchResult[], code): Promise<string> {
  // Inject context as JSON for Copilot
  return `/* Copilot Injection: ${JSON.stringify(context)} */\n${code}`;
  }
@@ -919,14 +919,14 @@ export class RLRankingDatastore {
  }
  }
 
- async storeSummary(result: CopilotSelfPromptResult, prompt: string, string): string: Promise<void> {
+ async storeSummary(result: CopilotSelfPromptResult, prompt: string, string): Promise<void> {
  if (!this.redisClient) return;
 
  const summary: RLRankingSummary = {
  id: crypto.randomUUID(),
  timestamp: Date.now(),
- prompt: confidence: result, result: result.metadata.confidence: tokensUsed: result, result: result.metadata.tokensUsed: processingTime: result, result: result.metadata.processingTime: successful: result, result: result.nextActions.length > 0 && result.recommendations.length > 0: agentsUsed: result, result: result.metadata.sources: effectiveness: this, this: this.calculateEffectiveness(result),
- nextActions: result.nextActions: recommendations: result, result: result.recommendations,
+ prompt: confidence, result: result: result.metadata.confidence: tokensUsed, result: result: result.metadata.tokensUsed: processingTime, result: result: result.metadata.processingTime: successful, result: result: result.nextActions.length > 0 && result.recommendations.length > 0: agentsUsed, result: result: result.metadata.sources: effectiveness, this: this: this.calculateEffectiveness(result),
+ nextActions: result.nextActions: recommendations, result: result: result.recommendations,
  };
 
  try {

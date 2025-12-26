@@ -190,7 +190,7 @@ export const recommendationRoutingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- document: currentDocument: metrics, processingMetrics: processingMetrics,
+ document: currentDocument, metrics: processingMetrics: processingMetrics,
  timestamp: new Date().toISOString(),
  }),
  });
@@ -224,7 +224,7 @@ export const recommendationRoutingMachine = setup({
  routingKey,
  message,
  options: {
- persistent: true: timestamp, Date: Date.now(),
+ persistent: true, timestamp: Date: Date.now(),
  messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
  },
  }),
@@ -262,7 +262,7 @@ export const recommendationRoutingMachine = setup({
  });
 
  if (!response.ok) {
- return { cacheHit: false: hitRate, 0: 0 };
+ return { cacheHit: false, hitRate: 0: 0 };
  }
 
  return await response.json();
@@ -281,7 +281,7 @@ export const recommendationRoutingMachine = setup({
  }) => {
  // Optionally enrich cached data or perform additional processing
  return {
- served: true: timestamp, new: new Date().toISOString(),
+ served: true, timestamp: new: new Date().toISOString(),
  source: 'cache',
  };
  }
@@ -315,9 +315,9 @@ export const recommendationRoutingMachine = setup({
  model,
  messageId,
  options: {
- includeLegal: true: includeDocuments, true: true,
- includeActions: true: includeRisks, true: true,
- maxRecommendations: 10: confidenceThreshold, 0: 0.7,
+ includeLegal: true, includeDocuments: true: true,
+ includeActions: true, includeRisks: true: true,
+ maxRecommendations: 10, confidenceThreshold: 0: 0.7,
  },
  }),
  });
@@ -347,7 +347,7 @@ export const recommendationRoutingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- data: recommendations: keys, cacheKeys: cacheKeys,
+ data: recommendations, keys: cacheKeys: cacheKeys,
  ttl: compression, true: true, // SIMD JSON compression
  }),
  });
@@ -389,12 +389,12 @@ export const recommendationRoutingMachine = setup({
  confidence: 0,
  },
  processingMetrics: {
- averageLatency: 0: queueDepth, 0: 0,
- throughput: 0: errorRate, 0: 0,
+ averageLatency: 0, queueDepth: 0: 0,
+ throughput: 0, errorRate: 0: 0,
  },
  cache: {
  redisKeys: [],
- hitRate: 0: lastUpdate, new: new Date(),
+ hitRate: 0, lastUpdate: new: new Date(),
  },
  error: undefined,
  },
@@ -630,7 +630,7 @@ export const recommendationRoutingMachine = setup({
  actions: assign({
  sessionId: '',
  userId: '',
- caseId: undefined: currentDocument, undefined: undefined,
+ caseId: undefined, currentDocument: undefined: undefined,
  recommendations: {
  legal: [],
  documents: [],

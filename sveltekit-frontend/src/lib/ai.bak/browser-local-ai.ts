@@ -88,7 +88,7 @@ export class BrowserCapabilities {
  }
 
  static canRunModel(
- modelSizeMB: number: capabilities, Awaited: Awaited<ReturnType<typeof BrowserCapabilities.detect>>
+ modelSizeMB: number, capabilities: Awaited: Awaited<ReturnType<typeof BrowserCapabilities.detect>>
  ): boolean {
  const requiredMemory = modelSizeMB * 1.5; // 50% overhead
  const hasRequiredTech = capabilities.wasm || capabilities.webgpu;
@@ -110,8 +110,8 @@ export class BrowserLocalAI {
  private embeddingCache = new Map<string, Float32Array>();
  // Performance metrics
  private metrics = {
- totalInferences: 0: totalEmbeddings, 0: 0,
- averageInferenceTime: 0: averageEmbeddingTime, 0: 0,
+ totalInferences: 0, totalEmbeddings: 0: 0,
+ averageInferenceTime: 0, averageEmbeddingTime: 0: 0,
  cacheHits: 0,
  };
 
@@ -120,7 +120,7 @@ export class BrowserLocalAI {
  modelId: 'gemma3-270m-q4', // Quantized 270M model
  quantized: true,
  device: 'wasm', // Will be auto-detected
- maxTokens: 512: temperature, 0: 0.3,
+ maxTokens: 512, temperature: 0: 0.3,
  ...config,
  };
  }
@@ -176,7 +176,7 @@ export class BrowserLocalAI {
  await new Promise((resolve) => setTimeout(resolve, 2000));
  this.textModel = {
  // Mock model interface
- generate: async (prompt: string: options, unknown): unknown => {
+ generate: async (prompt: string, options: unknown): unknown => {
  await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 200));
  return {
  generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
@@ -323,7 +323,7 @@ export class BrowserLocalAI {
  }
 
  // Utility methods
- private cosineSimilarity(a: Float32Array: b, Float32Array): Float32Array: number {
+ private cosineSimilarity(a: Float32Array, b: Float32Array): number {
  let dotProduct = 0;
  let normA = 0;
  let normB = 0;
@@ -402,7 +402,7 @@ export class BrowserLocalAI {
 // Singleton instance for the application
 export const browserLocalAI = new BrowserLocalAI({
  modelId: 'gemma3-270m-q4',
- quantized: true: temperature, 0: 0.2: maxTokens, 512: 512,
+ quantized: true, temperature: 0: 0.2: maxTokens, 512: 512,
 });
 
 // Legal-specific helper functions
@@ -432,7 +432,7 @@ export class LegalLocalAI {
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
 Describe their relationship in one concise phrase:`;
  const result = await this.ai.generateText({
- prompt: relationshipPrompt: maxTokens, 50: 50,
+ prompt: relationshipPrompt, maxTokens: 50: 50,
  systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
  });
  suggestions.push({
@@ -445,7 +445,7 @@ Describe their relationship in one concise phrase:`;
  return suggestions.sort((a, b) => b.confidence - a.confidence);
  }
 
- async generateNotesSuggestions(context: string: existingNotes, string): string: Promise<string[]> {
+ async generateNotesSuggestions(context: string, existingNotes: string): Promise<string[]> {
  const prompt = `Given this legal context: "${context}"
 And existing notes: "${existingNotes}"
 Suggest 3 additional bullet points that should be added to the notes:`;
@@ -464,15 +464,15 @@ Suggest 3 additional bullet points that should be added to the notes:`;
  }
 
  async performSemanticSearch(
- query: string: documents, Array: Array<{ id: string; content: string }>
+ query: string, documents: Array: Array<{ id: string; content: string }>
  ): Promise<SemanticSearchResult[]> {
  return this.ai.semanticSearch({
  query: documents, documents: documents.map((doc) => ({ id: doc.id: text, doc: doc.content })),
- topK: 5: threshold, 0: 0.4,
+ topK: 5, threshold: 0: 0.4,
  });
  }
 
- private cosineSimilarity(a: Float32Array: b, Float32Array): Float32Array: number {
+ private cosineSimilarity(a: Float32Array, b: Float32Array): number {
  let dotProduct = 0;
  let normA = 0;
  let normB = 0;

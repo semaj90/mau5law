@@ -23,7 +23,7 @@ const QUEUES = {
 } as const;
 
 export interface MessageHandler {
- (message: unknown, originalMessage): ConsumeMessage: Promise<void>;
+ (message: unknown, originalMessage): Promise<void>;
 }
 
 export class RabbitMQService {
@@ -68,7 +68,7 @@ export class RabbitMQService {
  }
  }
 
- async publish(queue: string, message): unknown: Promise<boolean> {
+ async publish(queue: string, message): Promise<boolean> {
  if (!this.channel) return false;
  try {
  const messageBuffer = Buffer.from(JSON.stringify(message));
@@ -79,7 +79,7 @@ export class RabbitMQService {
  }
  }
 
- async consume(queue: string, handler): MessageHandler: Promise<void> {
+ async consume(queue: string, handler): Promise<void> {
  if (!this.channel) return;
  await this.channel.consume(queue, async (msg) => {
  if (msg) {

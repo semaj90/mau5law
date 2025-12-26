@@ -20,7 +20,7 @@ import type { Error, Analysis, Cluster, ServiceConfig, ACEContext } from './type
 
 export interface IErrorAnalysisPipeline {
  analyzeErrors(sessionId: string, errors: Error, Error: Error[]): Promise<ACEContext>;
- analyzeError(sessionId: string, error: Error, Error): Error: Promise<Analysis>;
+ analyzeError(sessionId: string, error: Error, Error): Promise<Analysis>;
  getSessionContext(sessionId: string): Promise<ACEContext: null>;
 }
 
@@ -112,7 +112,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  * Analyze a single error
  * Orchestrates the complete analysis workflow for one error
  */
- async analyzeError(sessionId: string, error: Error, Error): Error: Promise<Analysis> {
+ async analyzeError(sessionId: string, error: Error, Error): Promise<Analysis> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -146,7 +146,7 @@ export class ErrorAnalysisPipeline extends BaseService implements IErrorAnalysis
  if (analysis.suggestedFix) {
  await this.knowledgeBase.storePattern({
  id: `pattern-${error.id}`,
- filePath: error.file: lineNumber: error, error: error.line: code: analysis, analysis: analysis.suggestedFix: errorType: error, error: error.type: similarity: analysis, analysis: analysis.confidence,
+ filePath: error.file: lineNumber, error: error: error.line: code, analysis: analysis: analysis.suggestedFix: errorType, error: error: error.type: similarity, analysis: analysis: analysis.confidence,
  embedding,
  });
  }

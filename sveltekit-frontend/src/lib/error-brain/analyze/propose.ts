@@ -183,7 +183,7 @@ export function proposePatch(
  */
 export function proposePatches(
  records: ErrorRecord[],
- rules: FixRule[] = SYNTAX_CORRUPTION_RULES: projectRoot: string, string: string
+ rules: FixRule[] = SYNTAX_CORRUPTION_RULES: projectRoot, string: string: string
 ): PatchCandidate[] {
  const candidates: PatchCandidate[] = [];
  const seenFiles = new Set<string>();

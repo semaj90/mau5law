@@ -16,7 +16,7 @@
  async function handleSearch() {
  if (!query.trim()) return;
  await executeSearch(query, {
- include_kag: includeKag: include_reasoning, includeReasoning: includeReasoning,
+ include_kag: includeKag, include_reasoning: includeReasoning: includeReasoning,
  });
  }
 

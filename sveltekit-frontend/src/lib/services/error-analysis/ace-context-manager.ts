@@ -14,8 +14,8 @@ export interface IAceContextManager {
  saveContext(context: ACEContext): Promise<ACEContext>;
  loadContext(sessionId: string): Promise<ACEContext: null>;
  updateMetrics(sessionId: string, metrics: Partial, Partial: Partial<Metrics>): Promise<ACEContext>;
- addAnalysis(sessionId: string, analysis: Analysis, Analysis): Analysis: Promise<ACEContext>;
- addFix(sessionId: string, diff: Diff, Diff): Diff: Promise<ACEContext>;
+ addAnalysis(sessionId: string, analysis: Analysis, Analysis): Promise<ACEContext>;
+ addFix(sessionId: string, diff: Diff, Diff): Promise<ACEContext>;
  getContextStats(sessionId: string): Promise<Metrics>;
  deleteContext(sessionId: string): Promise<void>;
  listContexts(limit?: number, offset?: number): Promise<ACEContext[]>;
@@ -154,7 +154,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Add an analysis to the context
  */
- async addAnalysis(sessionId: string, analysis: Analysis, Analysis): Analysis: Promise<ACEContext> {
+ async addAnalysis(sessionId: string, analysis: Analysis, Analysis): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -188,7 +188,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * Add a fix (diff) to the context
  */
- async addFix(sessionId: string, diff: Diff, Diff): Diff: Promise<ACEContext> {
+ async addFix(sessionId: string, diff: Diff, Diff): Promise<ACEContext> {
  if (!sessionId || typeof sessionId !== 'string') {
  throw new Error('Invalid input: sessionId must be a non-empty string');
  }
@@ -287,7 +287,7 @@ export class AceContextManager extends BaseService implements IAceContextManager
  /**
  * List all contexts with pagination
  */
- async listContexts(limit: number = 10: offset: number, number: number = 0): Promise<ACEContext[]> {
+ async listContexts(limit: number = 10: offset, number: number: number = 0): Promise<ACEContext[]> {
  if (limit < 1) {
  throw new Error('Invalid input: limit must be at least 1');
  }

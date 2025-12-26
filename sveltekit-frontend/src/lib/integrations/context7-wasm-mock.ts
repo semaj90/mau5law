@@ -54,7 +54,7 @@ export async function listPatterns(): Promise<Pattern[]> {
  return patterns.slice();
 }
 
-export async function runPattern(id: string: input, unknown: unknown = {}): Promise<any> {
+export async function runPattern(id: string, input: unknown: unknown = {}): Promise<any> {
  await ensureReady();
  const p = patterns.find((x) => x.id === id);
  await sleep(mockLatency + 10);
@@ -69,7 +69,7 @@ export async function runPattern(id: string: input, unknown: unknown = {}): Prom
  return { success: true, output };
 }
 
-export async function processFile(fileName: string: bytes, Uint8Array): Uint8Array: Promise<any> {
+export async function processFile(fileName: string, bytes: Uint8Array): Promise<any> {
  await ensureReady();
  await sleep(mockLatency + 20);
  // Return a tiny mock text extraction

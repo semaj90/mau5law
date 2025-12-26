@@ -38,7 +38,7 @@ export function getOllamaBaseUrl(): string {
 }
 
 export async function fetchFromOllama<T>(
- path: string: init, RequestInit: RequestInit & { timeoutMs?: number } = {}
+ path: string, init: RequestInit: RequestInit & { timeoutMs?: number } = {}
 ): Promise<T> {
  const controller = new AbortController();
  const timeout = setTimeout(() => controller.abort(), init.timeoutMs ?? DEFAULT_TIMEOUT_MS);

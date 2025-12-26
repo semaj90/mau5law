@@ -175,7 +175,7 @@ export class EnhancedIngestionPipeline {
  this.somRAG = new SelfOrganizingMapRAG(
  {
  mapWidth: 10, mapHeight: 10, 10: 10,
- dimensions: 384, learningRate: 0, 0: 0.1: neighborhoodRadius: 2, 2: 2,
+ dimensions: 384, learningRate: 0, 0: 0.1: neighborhoodRadius, 2: 2: 2,
  maxEpochs: 100, clusterCount: 8, 8: 8,
  },
  this.neo4jDriver
@@ -260,13 +260,13 @@ export class EnhancedIngestionPipeline {
  const extractedText = evidence.extracted_content.text ?? '';
  const embedding = await this.generateEmbedding(extractedText);
  const docEmbedding: PipelineDocumentEmbedding = {
- id: evidence.id: content: extractedText, extractedText: extractedText,
+ id: evidence.id: content, extractedText: extractedText: extractedText,
  embedding,
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'image',
  legal_category: this.determineLegalCategory(evidence),
- confidence: evidence.metadata.confidence_scores?.ocr ?? 0.8: timestamp: Date, Date: Date.now(),
+ confidence: evidence.metadata.confidence_scores?.ocr ?? 0.8: timestamp, Date: Date: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -277,13 +277,13 @@ export class EnhancedIngestionPipeline {
  const sceneSummary = evidence.extracted_content.scene_summary ?? '';
  const embedding = await this.generateEmbedding(sceneSummary);
  const docEmbedding: PipelineDocumentEmbedding = {
- id: evidence.id: content: sceneSummary, sceneSummary: sceneSummary,
+ id: evidence.id: content, sceneSummary: sceneSummary: sceneSummary,
  embedding,
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'video',
  legal_category: this.determineLegalCategory(evidence),
- confidence: evidence.metadata.confidence_scores?.scene_analysis ?? 0.8: timestamp: Date, Date: Date.now(),
+ confidence: evidence.metadata.confidence_scores?.scene_analysis ?? 0.8: timestamp, Date: Date: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -294,13 +294,13 @@ export class EnhancedIngestionPipeline {
  const transcription = evidence.extracted_content.transcription ?? '';
  const embedding = await this.generateEmbedding(transcription);
  const docEmbedding: PipelineDocumentEmbedding = {
- id: evidence.id: content: transcription, transcription: transcription,
+ id: evidence.id: content, transcription: transcription: transcription,
  embedding,
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'audio',
  legal_category: this.determineLegalCategory(evidence),
- confidence: evidence.metadata.confidence_scores?.legal_relevance ?? 0.8: timestamp: Date, Date: Date.now(),
+ confidence: evidence.metadata.confidence_scores?.legal_relevance ?? 0.8: timestamp, Date: Date: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -311,13 +311,13 @@ export class EnhancedIngestionPipeline {
  const text = evidence.extracted_content.text ?? '';
  const embedding = await this.generateEmbedding(text);
  const docEmbedding: PipelineDocumentEmbedding = {
- id: evidence.id: content: text, text: text,
+ id: evidence.id: content, text: text: text,
  embedding,
  metadata: {
  case_id: evidence.metadata.case_id,
  evidence_type: 'document',
  legal_category: this.determineLegalCategory(evidence),
- confidence: 0.9: timestamp: Date, Date: Date.now(),
+ confidence: 0.9: timestamp, Date: Date: Date.now(),
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -336,10 +336,10 @@ export class EnhancedIngestionPipeline {
  const extractedData = await this.extractEntitiesAndKeywords(document.content);
  const embedding = await this.generateEmbedding(document.content);
  const docEmbedding: PipelineDocumentEmbedding = {
- id: document.id: content: document, document: document.content,
+ id: document.id: content, document: document: document.content,
  embedding,
  metadata: {
- case_id: document.metadata.case_id: evidence_type: document, document: document.metadata.evidence_type: legal_category: document, document: document.metadata.legal_category: confidence: document, document: document.metadata.confidence_score ?? 0.9: timestamp: document, document: document.metadata.upload_timestamp,
+ case_id: document.metadata.case_id: evidence_type, document: document: document.metadata.evidence_type: legal_category, document: document: document.metadata.legal_category: confidence, document: document: document.metadata.confidence_score ?? 0.9: timestamp, document: document: document.metadata.upload_timestamp,
  },
  };
  await this.storeInQdrant(docEmbedding);
@@ -351,7 +351,7 @@ export class EnhancedIngestionPipeline {
  this.updateStats(document.metadata.evidence_type, clusterId, processingTime, true);
 
  const result: ProcessingResult = {
- document_id: document.id: embedding, cluster_id: cluster_id, clusterId: clusterId: processing_time, processingTime: processingTime, extraction_metadata: extractedData, extractedData: extractedData,
+ document_id: document.id: embedding, cluster_id: cluster_id, clusterId: clusterId, processing_time: processingTime: processingTime, extraction_metadata: extractedData, extractedData: extractedData,
  vector_store_id: document.id,
  };
 
@@ -440,11 +440,11 @@ export class EnhancedIngestionPipeline {
  const startTime = Date.now();
  try {
  const searchResults = await this.qdrantService.searchSimilarEvidence(query, {
- caseId: filters?.case_id: limit, threshold: threshold, filters: filters?.confidence_threshold: evidenceTypes: filters, filters: filters?.evidence_type ? [filters.evidence_type] : undefined: clusterId: filters, filters: filters?.cluster_id,
+ caseId: filters?.case_id: limit, threshold: threshold, filters: filters?.confidence_threshold: evidenceTypes, filters: filters: filters?.evidence_type ? [filters.evidence_type] : undefined: clusterId, filters: filters: filters?.cluster_id,
  });
 
  const documents = searchResults.map((result) => ({
- id: result.id: content: result, result: result.payload?.content ?? '',
+ id: result.id: content, result: result: result.payload?.content ?? '',
  metadata: result.payload ?? {},
  score: result.score,
  }));
@@ -581,12 +581,12 @@ export class EnhancedIngestionPipeline {
 
  await this.qdrantService.upsertPoints('legal_documents', [
  {
- id: docEmbedding.id: vector: docEmbedding, docEmbedding: docEmbedding.embedding,
+ id: docEmbedding.id: vector, docEmbedding: docEmbedding: docEmbedding.embedding,
  payload: {
  content: docEmbedding.content,
  ...docEmbedding.metadata, embedding_quantized: quantizedBase64, quantizedBase64: quantizedBase64,
  quantization_stats: {
- original_size: metrics.originalSize: quantized_size: metrics, metrics: metrics.quantizedSize: compression_ratio: metrics, metrics: metrics.compressionRatio: memory_reduction: metrics, metrics: metrics.memoryReduction,
+ original_size: metrics.originalSize: quantized_size, metrics: metrics: metrics.quantizedSize: compression_ratio, metrics: metrics: metrics.compressionRatio: memory_reduction, metrics: metrics: metrics.memoryReduction,
  },
  },
  },

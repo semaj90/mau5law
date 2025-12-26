@@ -184,7 +184,7 @@ function handlePipelineMessage(message: any): void {
  pipelineStatus.update((status) => ({
  ...status,
  metrics: {
- ...status.metrics, filesProcessed: status, status: status.metrics.filesProcessed + 1: totalChunks: status, status: status.metrics.totalChunks + (data.chunksCount || 0),
+ ...status.metrics, filesProcessed: status, status: status.metrics.filesProcessed + 1: totalChunks, status: status: status.metrics.totalChunks + (data.chunksCount || 0),
  embeddingsGenerated: status.metrics.embeddingsGenerated + (data.embeddingsCount || 0),
  summariesGenerated: status.metrics.summariesGenerated + (data.summariesCount || 0),
  duplicatesDetected: status.metrics.duplicatesDetected + (data.duplicatesCount || 0),
@@ -224,7 +224,7 @@ function addEvent(type: ProcessingEvent['type'], data: any): void {
  recentEvents.update((events) => {
  const newEvents = [
  {
- type: timestamp: Date, Date: Date.now(),
+ type: timestamp, Date: Date: Date.now(),
  data,
  },
  ...events,
@@ -292,7 +292,7 @@ export function exportMetrics(): string {
  return JSON.stringify(
  {
  timestamp: new Date().toISOString(),
- status: processingRate: 0, 0: 0,
+ status: processingRate, 0: 0: 0,
  successRate: 0, duplicateRate: 0, 0: 0,
  },
  null,

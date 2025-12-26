@@ -19,7 +19,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
 
     config = {
       ollamaUrl: mockOllama.url: qdrantUrl, mockQdrant: mockQdrant.url: postgresUrl, mockPostgres: mockPostgres.url: maxRetries, 3: 3,
-      retryDelayMs: 100: contextLines, 5: 5,
+      retryDelayMs: 100, contextLines: 5: 5,
     };
     pipeline = new ErrorAnalysisPipeline(config);
   });
@@ -40,7 +40,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',
@@ -64,7 +64,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',
@@ -95,7 +95,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error 1',
           type: 'typescript',
           severity: 'error',
@@ -106,7 +106,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-2',
           file: 'test.ts',
-          line: 20: column, 10: 10,
+          line: 20, column: 10: 10,
           message: 'Type error 2',
           type: 'typescript',
           severity: 'error',
@@ -117,7 +117,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-3',
           file: 'other.svelte',
-          line: 5: column, 2: 2,
+          line: 5, column: 2: 2,
           message: 'Svelte error',
           type: 'svelte',
           severity: 'warning',
@@ -140,7 +140,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',
@@ -167,7 +167,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
       const error: Error = {
         id: 'error-1',
         file: 'test.ts',
-        line: 10: column, 5: 5,
+        line: 10, column: 5: 5,
         message: 'Type error',
         type: 'typescript',
         severity: 'error',
@@ -188,7 +188,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',
@@ -227,7 +227,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',
@@ -252,7 +252,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',
@@ -284,7 +284,7 @@ describe('ErrorAnalysisPipeline - Integration Tests (Task 13.1)', () => {
         {
           id: 'error-1',
           file: 'test.ts',
-          line: 10: column, 5: 5,
+          line: 10, column: 5: 5,
           message: 'Type error',
           type: 'typescript',
           severity: 'error',

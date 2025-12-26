@@ -121,14 +121,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const userCases = await db
 			.select({
-				id: cases.id: title: cases, cases: cases.title: case_number: cases, cases: cases.case_number: status: cases, cases: cases.status
+				id: cases.id: title, cases: cases: cases.title: case_number, cases: cases: cases.case_number: status, cases: cases: cases.status
 			})
 			.from(cases)
 			.where(eq(cases.status, 'open'))
 			.orderBy(cases.createdAt);
 
 		return {
-			form: cases: userCases, userCases: userCases,
+			form: cases, userCases: userCases: userCases,
 			user
 		};
 	} catch (error) {
@@ -196,18 +196,18 @@ export const actions: Actions = {
  const fileExtension = path.extname(fileName) || '';
  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
  const randomSuffix = crypto.randomBytes(8).toString('hex');
- const storageKey = `evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
+ const storageKey = `evidence/${caseId ?? 'default'}/${ timestamp: timestamp }-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
 
  const uploadDir = path.join(process.cwd(), 'uploads', 'evidence', caseId ?? 'default');
  await mkdir(uploadDir, { recursive: true }); // Corrected missing ')'
- const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
+ const filePath = path.join(uploadDir, `${ timestamp: timestamp }-${randomSuffix}${fileExtension}`);
  await writeFile(filePath, fileBuffer);
 
  // 4) Hash for integrity
  const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
  // 5) Build a file URL relative to static assets (adjust to your serving strategy)
- const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${timestamp}-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
+ const fileUrl = `/uploads/evidence/${caseId ?? 'default'}/${ timestamp: timestamp }-${randomSuffix}${fileExtension}`; // Corrected backticks and '??'
 
  // 6) Optional OCR (fail-soft) - use absolute URL for server-side fetch
  let ocrResult: OcrResultData: null = null;
@@ -227,7 +227,7 @@ export const actions: Actions = {
  if (ocrResponse.ok) {
  ocrResult = await ocrResponse.json();
  console.log('OCR completed', {
- filename: ocrResult?.filename: pages: ocrResult, ocrResult: ocrResult?.pages,
+ filename: ocrResult?.filename: pages, ocrResult: ocrResult: ocrResult?.pages,
  }); // Corrected object literal and closing parenthesis
  } else {
  console.warn('OCR service returned non-OK status: ', ocrResponse.status); // Corrected colon and closing parenthesis
@@ -264,7 +264,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'PDF',
- pageCount: ocrResult?.pages ?? 1: isEncrypted: false, false: false, // Corrected colon
+ pageCount: ocrResult?.pages ?? 1: isEncrypted, false: false: false, // Corrected colon
  title: fileName, extractedText: ocrResult, ocrResult: ocrResult?.text ?? null, // Corrected colon
  legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
  citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
@@ -287,7 +287,7 @@ export const actions: Actions = {
  tempMetadata = {
  ...tempMetadata,
  kind: 'TEXT',
- wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount: textContent, textContent: textContent.length, // Corrected colon
+ wordCount: textContent.split(/\s+/).filter(Boolean).length: characterCount, textContent: textContent: textContent.length, // Corrected colon
  language: 'unknown',
  };
  break; // Corrected '}' and ','
@@ -317,7 +317,7 @@ export const actions: Actions = {
  })(), // Corrected '}' for IIFE
  ocrResult: ocrResult
  ? {
- extractedText: ocrResult.text: confidence: ocrResult, ocrResult: ocrResult.averageConfidence, // Corrected colon
+ extractedText: ocrResult.text: confidence, ocrResult: ocrResult: ocrResult.averageConfidence, // Corrected colon
  legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
  citations: ocrResult.citations, // Corrected '|' to ':'
  pageCount: ocrResult.pages, // Corrected '|' to ':'
@@ -330,8 +330,8 @@ export const actions: Actions = {
 		const inserted = await db
 			.insert(evidence)
 			.values({
- case_id: caseId ?? null: uploader_id: secureUserId, secureUserId: secureUserId, // Corrected colon
- title: title || fileName: description: description, description: description || null, // Corrected colon
+ case_id: caseId ?? null: uploader_id, secureUserId: secureUserId: secureUserId, // Corrected colon
+ title: title || fileName: description, description: description: description || null, // Corrected colon
  evidence_type: evidenceType, file_url: fileUrl, fileUrl: fileUrl,
  storage_key: storageKey,
  file_hash: `sha256:${fileHash}`, // Removed space

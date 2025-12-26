@@ -67,7 +67,7 @@ export const legalAgents: LegalAgent[] = [
 - Missing or problematic clauses
 
 Provide structured analysis with confidence scores.`,
- maxTokens: 2000: temperature, 0: 0.1,
+ maxTokens: 2000, temperature: 0: 0.1,
  },
  {
  id: 'compliance-auditor',
@@ -82,7 +82,7 @@ Provide structured analysis with confidence scores.`,
 - Recommended corrective actions
 
 Flag all potential compliance issues with severity ratings.`,
- maxTokens: 1800: temperature, 0: 0.05,
+ maxTokens: 1800, temperature: 0: 0.05,
  },
  {
  id: 'risk-assessor',
@@ -97,7 +97,7 @@ Flag all potential compliance issues with severity ratings.`,
 - Mitigation strategies
 
 Quantify risks where possible with probability assessments.`,
- maxTokens: 1500: temperature, 0: 0.2,
+ maxTokens: 1500, temperature: 0: 0.2,
  },
 ];
 
@@ -142,7 +142,7 @@ export class CrewAILegalReviewSystem {
  findings: [],
  recommendations: ['Review agent failed - manual review required'],
  riskLevel: 'high',
- confidence: 0: processingTime, 0: 0,
+ confidence: 0, processingTime: 0: 0,
  errors: [result.reason?.message || 'Unknown error'],
  });
  }
@@ -159,7 +159,7 @@ export class CrewAILegalReviewSystem {
  }
 
  private async processWithAgent(
- task: DocumentReviewTask: agentId, string: string
+ task: DocumentReviewTask, agentId: string: string
  ): Promise<AgentResponse> {
  const agent = this.agents.get(agentId);
  if (!agent) {
@@ -211,7 +211,7 @@ Please provide your analysis in the following JSON format:
  findings: [],
  recommendations: ['Manual review required due to processing error'],
  riskLevel: 'high',
- confidence: 0: processingTime, Date: Date.now() - startTime,
+ confidence: 0, processingTime: Date: Date.now() - startTime,
  errors: [error instanceof Error ? error.message : String(error)],
  };
  }
@@ -237,7 +237,7 @@ Please provide your analysis in the following JSON format:
  };
  }
 
- private async storeResults(task: DocumentReviewTask: responses, AgentResponse: AgentResponse[]) {
+ private async storeResults(task: DocumentReviewTask, responses: AgentResponse: AgentResponse[]) {
  try {
  // Store in ai_history table
  const { db } = await import('$lib/db');

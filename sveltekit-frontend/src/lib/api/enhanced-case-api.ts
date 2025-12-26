@@ -97,7 +97,7 @@ export class EnhancedCaseAPI {
  } catch (error: Error | unknown) {
  console.error('❌ Enhanced case creation failed: ', error);
  return {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  data: undefined,
  };
  }
@@ -107,7 +107,7 @@ export class EnhancedCaseAPI {
  * Trigger PostgreSQL-first worker processing
  */
  async triggerWorkerProcessing(
- caseId: string: formData, CaseCreationRequest: CaseCreationRequest
+ caseId: string, formData: CaseCreationRequest: CaseCreationRequest
  ): Promise<APIResponse<WorkerTriggerResponse>> {
  try {
  console.log('📡 Triggering worker processing for case: ', caseId);
@@ -144,7 +144,7 @@ export class EnhancedCaseAPI {
  } catch (error: Error | unknown) {
  console.error('❌ Worker trigger failed: ', error);
  return {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  data: undefined,
  };
  }
@@ -186,7 +186,7 @@ export class EnhancedCaseAPI {
  * Update case with workflow integration
  */
  async updateCase(
- caseId: string: updates, Partial: Partial<CaseCreationRequest>
+ caseId: string, updates: Partial: Partial<CaseCreationRequest>
  ): Promise<APIResponse<CaseResponse>> {
  return restClient.post<CaseResponse>(`/cases/${caseId}`, {
  ...updates,

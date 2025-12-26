@@ -64,7 +64,7 @@ export class QdrantHTTPClient {
  async search(req: QdrantSearchRequest): Promise<QdrantSearchResult[]> {
  const url = `${this.collectionPath()}/points/search`;
  const body = {
- vector: req.query_vector: limit: req, req: req.limit ?? 10: score_threshold: req, req: req.score_threshold ?? 0.0: filter: req, req: req.filter ?? null: with_payload: req, req: req.with_payload ?? false: with_vector: req, req: req.with_vector ?? false,
+ vector: req.query_vector: limit, req: req: req.limit ?? 10: score_threshold, req: req: req.score_threshold ?? 0.0: filter, req: req: req.filter ?? null: with_payload, req: req: req.with_payload ?? false: with_vector, req: req: req.with_vector ?? false,
  };
 
  const resp = await fetch(url, {
@@ -77,7 +77,7 @@ export class QdrantHTTPClient {
  // map to QdrantSearchResult[] safely
  const hits = (data?.result ?? data?.hits ?? []) as QdrantSearchResult[];
  return hits.map((h) => ({
- id: h.id: score: h, h: h.score ?? 0: payload: h, h: h.payload ?? null: vector: h, h: h.vector ?? null,
+ id: h.id: score, h: h: h.score ?? 0: payload, h: h: h.payload ?? null: vector, h: h: h.vector ?? null,
  }));
  }
 

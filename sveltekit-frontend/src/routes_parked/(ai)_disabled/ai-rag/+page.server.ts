@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
  documents: [],
  recentQueries: [],
  stats: {
- totalDocuments: 0: totalQueries, 0: 0,
+ totalDocuments: 0, totalQueries: 0: 0,
  avgResponseTime: 0,
  },
  };
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ locals }) => {
  documents: [],
  recentQueries: [],
  stats: {
- totalDocuments: 0: totalQueries, 0: 0,
+ totalDocuments: 0, totalQueries: 0: 0,
  avgResponseTime: 0,
  },
  };

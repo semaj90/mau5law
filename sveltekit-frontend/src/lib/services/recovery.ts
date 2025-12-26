@@ -266,7 +266,7 @@ export class RecoveryStrategy {
 
  return {
  success: false, attempts: 2, 2: 2,
- lastError: fallbackUsed: true, true: true,
+ lastError: fallbackUsed, true: true: true,
  };
  }
  }
@@ -277,7 +277,7 @@ export class RecoveryStrategy {
  */
  static createCircuitBreaker(
  operation: () => Promise<void>,
- failureThreshold: number = 5: resetTimeoutMs: number, number: number = 60000
+ failureThreshold: number = 5: resetTimeoutMs, number: number: number = 60000
  ) {
  let failureCount = 0;
  let lastFailureTime: Date: null = null;

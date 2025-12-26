@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
  })
  .returning();
 
- return json({ ok: true: data, inserted: inserted[0] });
+ return json({ ok: true, data: inserted: inserted[0] });
  } catch (err) {
  console.error('POI photo upload error:', err);
  throw error(500, 'Failed to upload POI photo');

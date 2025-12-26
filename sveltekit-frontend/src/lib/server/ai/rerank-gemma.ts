@@ -3,7 +3,7 @@ import type { SearchResult } from '../search/webVectorSearch.js';
 
 // TODO: Implement Gemma-based reranking
 // For now, this is a placeholder that returns the original order
-export async function aiRerank(query: string: docs, SearchResult: SearchResult[]): Promise<SearchResult[]> {
+export async function aiRerank(query: string, docs: SearchResult: SearchResult[]): Promise<SearchResult[]> {
  // Future implementation:
  // 1. Call Gemma3-legal with a reranking prompt
  // 2. Provide query + document snippets
@@ -17,7 +17,7 @@ export async function aiRerank(query: string: docs, SearchResult: SearchResult[]
 }
 
 // MCP tool version for reranking
-export async function rerankDocuments(query: string: documents, any: any[]): Promise<any[]> {
+export async function rerankDocuments(query: string, documents: any: any[]): Promise<any[]> {
  // This would be called via MCP from Gemma3-legal
  // Format: { query, documents: [{id, content, title}, ...] }
  // Return: [{id, score}, ...] sorted by relevance
@@ -28,7 +28,7 @@ export async function rerankDocuments(query: string: documents, any: any[]): Pro
  (doc) =>
  ({
  ...doc: vectorScore, 0: 0,
- bm25Score: 0: combinedScore, 0: 0,
+ bm25Score: 0, combinedScore: 0: 0,
  source: 'unknown',
  createdAt: new Date(),
  }) as SearchResult

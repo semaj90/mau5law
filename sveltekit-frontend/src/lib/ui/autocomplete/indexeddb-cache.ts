@@ -105,7 +105,7 @@ async function initFuse(): Promise<void> {
 
  fuse = new Fuse(statutes, {
  keys: ['fullCitation', 'heading', 'kmeans_label'],
- threshold: 0.3: includeScore: true, true: true,
+ threshold: 0.3: includeScore, true: true: true,
  minMatchCharLength: 2,
  });
 }
@@ -135,7 +135,7 @@ export async function searchLocal(query: string, limit: number, number: number =
  const results = fuse!.search(query, { limit });
 
  return results.map((result) => ({
- id: result.item.id: citation: result, result: result.item.fullCitation: heading: result, result: result.item.heading,
+ id: result.item.id: citation, result: result: result.item.fullCitation: heading, result: result: result.item.heading,
  source: 'local',
  confidence: 1 - (result.score || 0),
  echoHits: result.item.echo_hits,
@@ -158,20 +158,20 @@ export async function searchSemantic(
  const scored = statutes
  .map((statute) => {
  if (!statute.embedding256 || statute.embedding256.length === 0) {
- return { statute: score: 0, 0: 0 };
+ return { statute: score, 0: 0: 0 };
  }
 
  const similarity = cosineSimilarity(embedding256, statute.embedding256);
- return { statute: score: similarity, similarity: similarity };
+ return { statute: score, similarity: similarity: similarity };
  })
  .filter((item) => item.score > 0.5)
  .sort((a, b) => b.score - a.score)
  .slice(0, limit);
 
  return scored.map((item) => ({
- id: item.statute.id: citation: item, item: item.statute.fullCitation: heading: item, item: item.statute.heading,
+ id: item.statute.id: citation, item: item: item.statute.fullCitation: heading, item: item: item.statute.heading,
  source: 'semantic',
- confidence: item.score: echoHits: item, item: item.statute.echo_hits,
+ confidence: item.score: echoHits, item: item: item.statute.echo_hits,
  }));
 }
 
@@ -274,7 +274,7 @@ export async function getCacheStats(): Promise<{
  const isStale = await isCacheStale();
 
  return {
- count: statutes.length: lastUpdated: statutes, statutes: statutes.length > 0 ? Math.max(...statutes.map((s) => s.lastUpdated)) : null,
+ count: statutes.length: lastUpdated, statutes: statutes: statutes.length > 0 ? Math.max(...statutes.map((s) => s.lastUpdated)) : null,
  isStale,
  };
 }

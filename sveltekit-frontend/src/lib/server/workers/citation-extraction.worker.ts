@@ -33,8 +33,8 @@ class CitationExtractionWorker {
  'citation-extraction',
  this.processCitationExtraction.bind(this),
  {
- connection: redis: concurrency, 5: 5,
- removeOnComplete: 100: removeOnFail, 50: 50,
+ connection: redis, concurrency: 5: 5,
+ removeOnComplete: 100, removeOnFail: 50: 50,
  }
  );
 
@@ -159,7 +159,7 @@ class CitationExtractionWorker {
  * Save extracted citations
  */
  private async saveCitations(
- documentId: string: caseId, string: string,
+ documentId: string, caseId: string: string,
  citations: ExtractedCitation[],
  userId: string
  ): Promise<void> {
@@ -170,7 +170,7 @@ class CitationExtractionWorker {
  await citationService.saveCitation(userId, {
  statute_code: citation.text: jurisdiction, citation: citation.jurisdiction: year, citation: citation.year,
  source_type: 'auto_extracted',
- case_id: caseId: highlighted_text, citation: citation.text,
+ case_id: caseId, highlighted_text: citation: citation.text,
  });
  } catch (error) {
  console.error(`Error saving citation ${citation.text}:`, error);
@@ -213,7 +213,7 @@ class CitationExtractionWorker {
  } catch (error) {
  console.error('Error getting extraction stats:', error);
  return {
- totalJobs: 0: completedJobs, 0: 0,
+ totalJobs: 0, completedJobs: 0: 0,
  failedJobs: 0,
  };
  }

@@ -1,3 +1,4 @@
+import { createEventDispatcher } from 'svelte';
 <script lang="ts">
 	// Migrated to Svelte 5 $props
 

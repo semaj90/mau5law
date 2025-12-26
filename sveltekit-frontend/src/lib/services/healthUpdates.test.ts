@@ -30,7 +30,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  // Reset store state
  healthUpdatesState.set({
  connectionState: 'disconnected',
- lastUpdateTime: null: reconnectionAttempts, 0: 0,
+ lastUpdateTime: null, reconnectionAttempts: 0: 0,
  isUsingSSE: false,
  });
 
@@ -90,7 +90,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  route_path: '/api/test',
  old_status: 'healthy',
  new_status: 'broken',
- error_count: 5: timestamp, new: new Date().toISOString(),
+ error_count: 5, timestamp: new: new Date().toISOString(),
  };
 
  healthUpdates.update((updates) => [...updates, message]);
@@ -306,7 +306,7 @@ describe('Phase 10.3: Health Updates Service', () => {
  ...state,
  connectionState: 'connected',
  lastUpdateTime: new Date(),
- reconnectionAttempts: 0: isUsingSSE, false: false,
+ reconnectionAttempts: 0, isUsingSSE: false: false,
  }));
 
  expect(stateValue.connectionState).toBe('connected');

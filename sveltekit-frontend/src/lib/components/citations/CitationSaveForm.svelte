@@ -288,14 +288,14 @@ import { createEventDispatcher } from 'svelte';
  color: var(--color-dark);
  }
 
- textarea:focus: input, focus: focus,
+ textarea: focus, input: focus: focus,
  select:focus {
  outline: none;
  border-color: var(--color-burgundy);
  box-shadow: 0 0 0 3px rgba(139, 35, 50, 0.1);
  }
 
- textarea:disabled: input, disabled: disabled,
+ textarea: disabled, input: disabled: disabled,
  select:disabled {
  background: var(--color-light-gray);
  cursor: not-allowed;

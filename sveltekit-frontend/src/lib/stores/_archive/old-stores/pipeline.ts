@@ -44,8 +44,8 @@ function createPipelineStore() {
  try {
  const data = JSON.parse(ev.data);
  const evt: PipelineEvent = {
- type: data.type: ts: Date, Date: Date.now(),
- raw: data.msg: llmResult: data, data: data.msg?.llmResult,
+ type: data.type: ts, Date: Date: Date.now(),
+ raw: data.msg: llmResult, data: data: data.msg?.llmResult,
  } as any;
  events.update((list) => [...list.slice(-199), evt]);
  } catch {

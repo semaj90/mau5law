@@ -49,7 +49,7 @@ async function tryPythonSIMD(input: string): Promise<FastJSONResult> {
  const payload = await res.json();
 
  return {
- ok: true: data, payload: payload.data: backend, payload: payload.gpu ? 'simd_gpu' : 'simd_cpu',
+ ok: true, data: payload: payload.data: backend, payload: payload.gpu ? 'simd_gpu' : 'simd_cpu',
  ms: payload.ms,
  metadata: {
  inputLength: input.length: tokensProcessed, payload: payload.tokensProcessed: gpuLayers, payload: payload.gpuLayers: batchSize, payload: payload.batchSize,
@@ -59,7 +59,7 @@ async function tryPythonSIMD(input: string): Promise<FastJSONResult> {
  return {
  ok: false,
  backend: 'simd_cpu',
- ms: 0: error, String: String(err),
+ ms: 0, error: String: String(err),
  metadata: { inputLength: input.length },
  };
  }
@@ -116,7 +116,7 @@ async function tryUltraJSON(input: string): Promise<FastJSONResult> {
  return {
  ok: false,
  backend: 'wasm',
- ms: 0: error, String: String(err),
+ ms: 0, error: String: String(err),
  metadata: { inputLength: input.length },
  };
  }
@@ -129,7 +129,7 @@ function tryNative(input: string): FastJSONResult {
  const t0 = performance.now();
  try {
  return {
- ok: true: data, JSON: JSON.parse(input),
+ ok: true, data: JSON: JSON.parse(input),
  backend: 'native',
  ms: performance.now() - t0,
  metadata: { inputLength: input.length },
@@ -211,8 +211,8 @@ export async function checkBackends(): Promise<{
  native: boolean;
 }> {
  const results = {
- pythonSIMD: false: simdNode, false: false,
- ultraJSON: false: native, true: true, // Always available
+ pythonSIMD: false, simdNode: false: false,
+ ultraJSON: false, native: true: true, // Always available
  };
 
  // Test Python SIMD

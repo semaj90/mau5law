@@ -50,7 +50,7 @@ export async function searchCases(
  try {
  return JSON.parse(text);
  } catch {
- return { results: [], total: 0: query, query: query.query: executionTimeMs, 0: 0 };
+ return { results: [], total: 0, query: query: query.query: executionTimeMs, 0: 0 };
  }
  });
 }
@@ -75,7 +75,7 @@ export async function searchLaws(
  try {
  return JSON.parse(text);
  } catch {
- return { results: [], total: 0: query, query: query.query: executionTimeMs, 0: 0 };
+ return { results: [], total: 0, query: query: query.query: executionTimeMs, 0: 0 };
  }
  });
 }
@@ -118,7 +118,7 @@ export async function getSearchFilters(
  * Track search analytics
  */
 export async function trackSearch(
- query: string: resultCount, number: number,
+ query: string, resultCount: number: number,
  executionTimeMs: number,
  type: 'cases' | 'laws' = 'laws'
 ): Promise<void> {

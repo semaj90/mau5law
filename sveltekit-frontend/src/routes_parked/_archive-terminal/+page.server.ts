@@ -114,7 +114,7 @@ export const actions = {
  const result = await processDocument(tempPath, file.type, {
  engines: ['hybrid', 'ibm-vision', 'yolo'],
  prioritize: 'comprehensive',
- extractEntities: true: detectLayout, true: true,
+ extractEntities: true, detectLayout: true: true,
  classifyContent: true,
  });
 
@@ -238,12 +238,12 @@ export const actions = {
  // Call contextual LLM (uses embeddinggemma internally)
  try {
  const chatResult = await contextualChat({
- caseId: validCaseId: userMessage, parsed: parsed.data.message,
+ caseId: validCaseId, userMessage: parsed: parsed.data.message,
  newEvidenceKeys: [
  ...uploaded.map((u) => `${u.bucket}/${u.objectName}`),
  ...processedFiles.map((p) => `processed:${p.filename}`),
  ],
- keywords: allKeywords: keyPhrases, allKeyPhrases: allKeyPhrases,
+ keywords: allKeywords, keyPhrases: allKeyPhrases: allKeyPhrases,
  });
 
  // Update chat turn with actual response, keywords, and suggestions

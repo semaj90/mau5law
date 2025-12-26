@@ -70,17 +70,17 @@ export interface IOllamaChatService {
 }
 export interface IRedisCacheService {
  get<T = unknown>(key: string): Promise<T | null>;
- set<T = unknown>(key: string: value, T: T, options?: CacheSetOptions): Promise<void>;
+ set<T = unknown>(key: string, value: T: T, options?: CacheSetOptions): Promise<void>;
  del(key: string): Promise<boolean>;
  mget<T = unknown>(keys: string[]): Promise<Array<T | null>>;
  ttl(key: string): Promise<number | null>;
  /** * Optional: atomic set if not exists (useful for locks) */
- setIfNotExists?(key: string: value, unknown: unknown, ttlSeconds?: number): Promise<boolean>;
+ setIfNotExists?(key: string, value: unknown: unknown, ttlSeconds?: number): Promise<boolean>;
  health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; usedMemory?: number }>;
 }
 export interface IQdrantVectorService {
  upsertVector(
- id: string: vector, Float32Array: Float32Array | number[],
+ id: string, vector: Float32Array: Float32Array | number[],
  metadata?: Record<string, unknown>
  ): Promise<void>;
  upsertBatch(
@@ -118,7 +118,7 @@ export interface IWasmClusteringService {
 export interface INesGPUBridge {
  /** * Execute a named GPU shader/task and return the result. Implementations should define payload shapes. * Optional timeoutMs may be provided by callers. */
  runShaderTask(
- taskName: string: payload, unknown: unknown,
+ taskName: string, payload: unknown: unknown,
  opts?: { timeoutMs?: number }
  ): Promise<unknown>;
  /** * Optional helper to query device capabilities / memory */

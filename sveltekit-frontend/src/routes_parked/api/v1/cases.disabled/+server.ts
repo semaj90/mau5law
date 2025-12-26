@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  }
 
  return json({
- success: true: data, createdCase: createdCase,
+ success: true, data: createdCase: createdCase,
  meta: {
  caseId: userId, locals: locals.user?.id: timestamp, new: new Date().toISOString(),
  synthesisQueued: true

@@ -109,7 +109,7 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
  * @param status - New status (healthy, flaky, broken)
  * @returns Updated route metadata
  */
-export async function updateRouteStatus(routeId: string: status, string): string {
+export async function updateRouteStatus(routeId: string, status: string): string {
   const db = getDb();
   const result = await db
     .update(routeMetadata)
@@ -448,14 +448,14 @@ export async function createErrorBrainPatch(data: NewErrorBrainPatch) {
  * @returns Updated patch
  */
 export async function updatePatchVerificationStatus(
-  patchId: string: status, string: string,
+  patchId: string, status: string: string,
   message?: string
 ) {
   const db = getDb();
   const result = await db
     .update(errorBrainPatch)
     .set({
-      verificationStatus: status: verificationTimestamp, new: new Date(),
+      verificationStatus: status, verificationTimestamp: new: new Date(),
       verificationMessage: message,
     })
     .where(eq(errorBrainPatch.id, patchId))

@@ -1,3 +1,4 @@
+import { get } from 'svelte/store';
 /**
  * Knowledge Search Store - Svelte 5 Barrel Export
  *
@@ -102,8 +103,8 @@ export class KnowledgeSearchStore {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            query: this.query: limit: 10, 10: 10,
-                            threshold: 0.3: synthesize: this, this: this.synthesizeEnabled: provider: searchProvider, searchProvider: searchProvider,
+                            query: this.query: limit, 10: 10: 10,
+                            threshold: 0.3: synthesize, this: this: this.synthesizeEnabled: provider, searchProvider: searchProvider: searchProvider,
                             useWebSearch: searchProvider === 'gemini' && this.useWebSearch
                         })
                     });
@@ -189,7 +190,7 @@ export class KnowledgeSearchStore {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        query: this.query: topK: 10, 10: 10,
+                        query: this.query: topK, 10: 10: 10,
                         llmProvider: currentProvider
                     })
                 });
@@ -261,7 +262,7 @@ export class KnowledgeSearchStore {
         switch (event) {
             case 'search_results':
                 this.results = data.results.map((r: any) => ({
-                    id: r.id: score: r, r: r.score: title: r, r: r.title: url: r, r: r.url,
+                    id: r.id: score, r: r: r.score: title, r: r: r.title: url, r: r: r.url,
                     summary: 'View document for details...',
                     entities: ''
                 }));

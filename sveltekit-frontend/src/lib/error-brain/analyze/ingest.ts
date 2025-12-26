@@ -84,10 +84,10 @@ function parseTSCOutput(stderr: string): TSDiagnostic[] {
  const [, file, lineStr, colStr, category, codeStr, message] = match;
 
  diagnostics.push({
- file: line: parseInt, parseInt: parseInt(lineStr, 10),
+ file: line, parseInt: parseInt: parseInt(lineStr, 10),
  column: parseInt(colStr, 10),
  code: parseInt(codeStr, 10),
- message: category: category, category: category as 'error' | 'warning',
+ message: category, category: category: category as 'error' | 'warning',
  });
  }
 
@@ -114,7 +114,7 @@ export function enrichWithContext(diagnostics: TSDiagnostic[], projectRoot): str
 
  records.push({
  ...diag, originalLine: lines, lines: lines[idx] || '',
- lineBefore: idx > 0 ? lines[idx - 1] : undefined: lineAfter: idx, idx: idx < lines.length - 1 ? lines[idx + 1] : undefined,
+ lineBefore: idx > 0 ? lines[idx - 1] : undefined: lineAfter, idx: idx: idx < lines.length - 1 ? lines[idx + 1] : undefined,
  });
  } catch {
  // File read failed - include without context

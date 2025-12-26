@@ -111,7 +111,7 @@ export class WebGPUSimilarityEngine {
 
  // Create GPU buffers
  const queryBuffer = this.device.createBuffer({
- size: queryEmbedding.data.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation: true, true: true,
+ size: queryEmbedding.data.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true: true,
  });
  new Uint8Array(queryBuffer.getMappedRange()).set(queryEmbedding.data);
  queryBuffer.unmap();
@@ -119,7 +119,7 @@ export class WebGPUSimilarityEngine {
  // Pack all document embeddings into a single buffer
  const docsBufferSize = numDocs * embeddingSize;
  const docsBuffer = this.device.createBuffer({
- size: docsBufferSize, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation: true, true: true,
+ size: docsBufferSize, usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true: true,
  });
  const docsView = new Uint8Array(docsBuffer.getMappedRange());
  for (let i = 0; i < numDocs; i++) {
@@ -130,7 +130,7 @@ export class WebGPUSimilarityEngine {
  // Create scale/offset buffer (query_scale, query_offset, doc_scales..., doc_offsets...)
  const scaleOffsetBuffer = this.device.createBuffer({
  size: (2 + numDocs * 2) * 4, // 4 bytes per float32
- usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation: true, true: true,
+ usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true: true,
  });
  const scaleOffsetView = new Float32Array(scaleOffsetBuffer.getMappedRange());
  scaleOffsetView[0] = queryEmbedding.scale;
@@ -173,7 +173,7 @@ export class WebGPUSimilarityEngine {
 
  // Copy results back to CPU
  const stagingBuffer = this.device.createBuffer({
- size: numDocs * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: numDocs * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
 
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, numDocs * 4);

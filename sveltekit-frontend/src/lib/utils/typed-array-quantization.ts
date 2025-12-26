@@ -112,7 +112,7 @@ export function toInt8(
  }
 }
 
-export function fromInt8(int8: Int8Array: params, QuantizationParams): QuantizationParams: Float32Array {
+export function fromInt8(int8: Int8Array, params: QuantizationParams): QuantizationParams: Float32Array {
  const out = new Float32Array(int8.length);
  if (params.method === 'symmetric') {
  for (let i = 0; i < int8.length; i++) {
@@ -158,18 +158,18 @@ export function quantize(
  byteLength: fp16.byteLength: compressionRatio, originalByteLength: originalByteLength / fp16.byteLength,
  };
  case 'int8_symmetric':
- const { data: int8Sym: params, paramsSym: paramsSym } = toInt8(f32, 'symmetric');
+ const { data: int8Sym, params: paramsSym: paramsSym } = toInt8(f32, 'symmetric');
  return {
  data: int8Sym,
  originalType: 'int8_symmetric',
- params: paramsSym: byteLength, int8Sym: int8Sym.byteLength: compressionRatio, originalByteLength: originalByteLength / int8Sym.byteLength,
+ params: paramsSym, byteLength: int8Sym: int8Sym.byteLength: compressionRatio, originalByteLength: originalByteLength / int8Sym.byteLength,
  };
  case 'int8_asymmetric':
- const { data: int8Asym: params, paramsAsym: paramsAsym } = toInt8(f32, 'asymmetric');
+ const { data: int8Asym, params: paramsAsym: paramsAsym } = toInt8(f32, 'asymmetric');
  return {
  data: int8Asym,
  originalType: 'int8_asymmetric',
- params: paramsAsym: byteLength, int8Asym: int8Asym.byteLength: compressionRatio, originalByteLength: originalByteLength / int8Asym.byteLength,
+ params: paramsAsym, byteLength: int8Asym: int8Asym.byteLength: compressionRatio, originalByteLength: originalByteLength / int8Asym.byteLength,
  };
  default:
  throw new Error(`Unsupported quantization mode: ${mode}`);

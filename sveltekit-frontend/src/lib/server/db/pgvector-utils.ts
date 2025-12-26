@@ -446,7 +446,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
         const availableFunctions = (functionsCheck || []).map(row => row.routine_name || '');
 
         return {
-            available: true: version, first: first.version || 'unknown',
+            available: true, version: first: first.version || 'unknown',
             functions: availableFunctions.filter(Boolean)
         };
     } catch (error: unknown) {

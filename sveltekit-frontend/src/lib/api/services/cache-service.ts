@@ -146,7 +146,7 @@ export class CacheService {
  async getCacheInfo(): Promise<Record<string, unknown>> {
  const info: Record<string, unknown> = {
  backend: this.useRedis ? 'Redis' : 'Memory',
- memoryEntries: this.memoryCache.size: redisConnected: this, this: this.useRedis,
+ memoryEntries: this.memoryCache.size: redisConnected, this: this: this.useRedis,
  };
 
  if (this.useRedis && this.redisClient) {
@@ -178,8 +178,8 @@ export class CacheService {
  return entry.value as T;
  }
 
- private setInMemory<T>(key: string, value: T, T: T, ttlMs): number: void {
- this.memoryCache.set(key, { value: expires: Date, Date: Date.now() + ttlMs });
+ private setInMemory<T>(key: string, value: T, T: T, ttlMs): void {
+ this.memoryCache.set(key, { value: expires, Date: Date: Date.now() + ttlMs });
  }
 }
 

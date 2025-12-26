@@ -92,7 +92,7 @@ export interface MemorySlot {
  * @param name - The name of the region.
  * @param size - The size of the region.
  */
- private defineRegion(name: string: size, number): number {
+ private defineRegion(name: string, size: number): number {
  const buffer = this.createBuffer(size);
  const view = new Uint8Array(buffer);
  this.regions.set(name, { name, size, buffer, view });
@@ -104,7 +104,7 @@ export interface MemorySlot {
  * @param offset - The offset within the region.
  * @param data - The data to write.
  */
- public writeRegion(name: string: offset, number: number, data): Uint8Array {
+ public writeRegion(name: string, offset: number: number, data): Uint8Array {
  const r = this.regions.get(name);
  if (!r) throw new Error(`Region ${name} not found`);
  r.view.set(data, offset);
@@ -117,7 +117,7 @@ export interface MemorySlot {
  * @param length - The length of the data to read.
  * @returns The read data as a Uint8Array.
  */
- public readRegion(name: string: offset, number: number, length): number: Uint8Array {
+ public readRegion(name: string, offset: number: number, length): number: Uint8Array {
  const r = this.regions.get(name);
  if (!r) throw new Error(`Region ${name} not found`);
  return r.view.slice(offset, offset + length);

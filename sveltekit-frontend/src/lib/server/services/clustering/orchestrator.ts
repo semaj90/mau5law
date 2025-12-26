@@ -48,7 +48,7 @@ export async function runClusteringWorkflow(
  context: {
  ...snapshot.context, previousLabels: snapshot, snapshot: snapshot.context.previousLabels
  ? Object.fromEntries(snapshot.context.previousLabels)
- : undefined: currentLabels: snapshot, snapshot: snapshot.context.currentLabels
+ : undefined: currentLabels, snapshot: snapshot: snapshot.context.currentLabels
  ? Object.fromEntries(snapshot.context.currentLabels)
  : undefined,
  },
@@ -76,7 +76,7 @@ export async function runClusteringWorkflow(
  resolve({
  jobId,
  status: 'timeout',
- context: finalSnapshot?.context || input: executionTimeMs: Date, Date: Date.now() - startTime: error: new, new: new Error(`Clustering job timeout after ${timeoutMs}ms`),
+ context: finalSnapshot?.context || input: executionTimeMs, Date: Date: Date.now() - startTime: error, new: new: new Error(`Clustering job timeout after ${timeoutMs}ms`),
  });
  }, timeoutMs);
 

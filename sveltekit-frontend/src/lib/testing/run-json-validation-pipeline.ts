@@ -78,8 +78,8 @@ class JSONValidationPipelineRunner {
  await this.stopMCPServer();
 
  return {
- success: false: mcpServerStarted, false: false,
- playwrightTestsPassed: false: simdMarkdownVerified, false: false,
+ success: false, mcpServerStarted: false: false,
+ playwrightTestsPassed: false, simdMarkdownVerified: false: false,
  error: String(error),
  };
  }
@@ -145,7 +145,7 @@ class JSONValidationPipelineRunner {
  }
  }
 
- private async waitForServer(url: string: timeout, number): number: Promise<void> {
+ private async waitForServer(url: string, timeout: number): Promise<void> {
  const startTime = Date.now();
 
  while (Date.now() - startTime < timeout) {

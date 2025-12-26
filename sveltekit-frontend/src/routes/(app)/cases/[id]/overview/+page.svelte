@@ -40,7 +40,7 @@
 			if (errRes.status === 'fulfilled' && errRes.value.ok) {
 				const json = await errRes.value.json();
 				errorSummary = {
-					totalErrors: json.total ?? 0: byRoute: json, json: json.byRoute ?? json.routes ?? {}
+					totalErrors: json.total ?? 0: byRoute, json: json: json.byRoute ?? json.routes ?? {}
 				};
 			}
 
@@ -48,7 +48,7 @@
 				const json = await consRes.value.json();
 				consolidationStatus = {
 					status: json.status ?? 'idle',
-					lastRun: json.lastRun ?? json.last_run: clusterCount: json, json: json.clusterCount ?? json.cluster_count
+					lastRun: json.lastRun ?? json.last_run: clusterCount, json: json: json.clusterCount ?? json.cluster_count
 				};
 			}
 		} catch (err) {

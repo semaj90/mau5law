@@ -43,7 +43,7 @@ export class AISuggestionsService {
  }
 
  async generateSuggestions(
- context: SuggestionContext: similarities, SimilarityResult: SimilarityResult[]
+ context: SuggestionContext, similarities: SimilarityResult: SimilarityResult[]
  ): Promise<AISuggestion[]> {
  const cacheKey = this.generateCacheKey(context);
  if (this.suggestionCache.has(cacheKey)) {
@@ -71,7 +71,7 @@ export class AISuggestionsService {
 
  // Sort by confidence and priority
  suggestions.sort((a, b) => {
- const priorityOrder = { critical: 4: high, 3: 3, medium: 2: low, 1: 1 };
+ const priorityOrder = { critical: 4, high: 3: 3, medium: 2, low: 1: 1 };
  const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
  if (priorityDiff !== 0) return priorityDiff;
  return b.confidence - a.confidence;
@@ -88,7 +88,7 @@ export class AISuggestionsService {
  }
 
  private async generateEvidenceSuggestions(
- context: SuggestionContext: similarities, SimilarityResult: SimilarityResult[]
+ context: SuggestionContext, similarities: SimilarityResult: SimilarityResult[]
  ): Promise<AISuggestion[]> {
  const suggestions: AISuggestion[] = [];
 
@@ -200,7 +200,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  }
 
  private async generatePrecedentSuggestions(
- context: SuggestionContext: similarities, SimilarityResult: SimilarityResult[]
+ context: SuggestionContext, similarities: SimilarityResult: SimilarityResult[]
  ): Promise<AISuggestion[]> {
  const suggestions: AISuggestion[] = [];
 
@@ -311,7 +311,7 @@ Provide 2-3 strategic recommendations with confidence levels.`;
  if (line.includes('strategy') || line.includes('approach') || line.includes('recommend')) {
  strategies.push({
  title: line.substring(0, 50).trim(),
- description: line: confidence, 0: 0.8,
+ description: line, confidence: 0: 0.8,
  priority: 'medium',
  actions: ['Evaluate feasibility', 'Assess risks', 'Plan implementation'],
  });

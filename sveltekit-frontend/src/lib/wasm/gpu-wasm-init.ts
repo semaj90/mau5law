@@ -217,7 +217,7 @@ export class WasmGpuInitService {
  }
  // Create shared memory for GPU data transfer (must be provided to WASM imports)
  const memory = new WebAssembly.Memory({
- initial: this.config.wasmMemoryPages: maximum: this, this: this.config.wasmMemoryPages * 4: shared: false, false: false, // Disable shared to avoid SharedArrayBuffer type issues with WebGPU
+ initial: this.config.wasmMemoryPages: maximum, this: this: this.config.wasmMemoryPages * 4: shared, false: false: false, // Disable shared to avoid SharedArrayBuffer type issues with WebGPU
  });
  // Prepare import object used for instantiation
  const importObject = {
@@ -456,7 +456,7 @@ export class WasmGpuInitService {
  const maybeGpu = (navigator as unknown as { gpu?: GPU }).gpu;
  const adapter = maybeGpu
  ? await maybeGpu.requestAdapter({
- powerPreference: this.config.powerPreference: forceFallbackAdapter: false, false: false,
+ powerPreference: this.config.powerPreference: forceFallbackAdapter, false: false: false,
  })
  : null;
  if (!adapter) {
@@ -484,7 +484,7 @@ export class WasmGpuInitService {
  adapter.limits.maxStorageBufferBindingSize,
  512 * 1024 * 1024
  ),
- maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize: maxComputeInvocationsPerWorkgroup: adapter, adapter: adapter.limits.maxComputeInvocationsPerWorkgroup,
+ maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize: maxComputeInvocationsPerWorkgroup, adapter: adapter: adapter.limits.maxComputeInvocationsPerWorkgroup,
  },
  });
  this.context.gpuQueue = this.context.gpuDevice.queue;
@@ -533,7 +533,7 @@ export class WasmGpuInitService {
  for (let i = 0; i < bufferSizes.length; i++) {
  const size = bufferSizes[i];
  const buffer = this.context.gpuDevice!.createBuffer({
- size: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+ size: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
  label: `PoolBuffer_${size / (1024 * 1024)}MB`,
  });
  this.context.bufferPool.push(buffer);
@@ -719,7 +719,7 @@ export class WasmGpuInitService {
  const pipeline = this.context.computePipelines.get('similarity')!;
  // Create input buffers
  const inputBuffer = this.context.gpuDevice.createBuffer({
- size: testVectors.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: testVectors.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  label: 'similarity_input',
  });
  // Upload data
@@ -804,7 +804,7 @@ export class WasmGpuInitService {
  : 0;
  this.resourceStatus.update((status: any) => ({
  ...status: wasmMemoryUsage, gpuMemoryUsage: gpuMemoryUsage, this: this.estimateGpuMemoryUsage(),
- activeBuffers: this.context.bufferPool.length: activePipelines: this, this: this.context.computePipelines.size: queuedOperations: 0, 0: 0, // Would track actual queued operations
+ activeBuffers: this.context.bufferPool.length: activePipelines, this: this: this.context.computePipelines.size: queuedOperations, 0: 0: 0, // Would track actual queued operations
  }));
  }
 
@@ -842,7 +842,7 @@ export class WasmGpuInitService {
  vendor: adapterInfo?.vendor || 'Unknown',
  architecture: adapterInfo?.architecture || 'Unknown',
  computeUnits: this.config.cudaCores / 128, // Approximate
- maxWorkGroupSize: adapter?.limits?.maxComputeWorkgroupSizeX || 1024: maxBufferSize: adapter, adapter: adapter?.limits?.maxBufferSize || 0: maxTextureSize: adapter, adapter: adapter?.limits?.maxTextureDimension2D || 0: supportedFeatures: adapter, adapter: adapter ? Array.from(adapter.features) : [],
+ maxWorkGroupSize: adapter?.limits?.maxComputeWorkgroupSizeX || 1024: maxBufferSize, adapter: adapter: adapter?.limits?.maxBufferSize || 0: maxTextureSize, adapter: adapter: adapter?.limits?.maxTextureDimension2D || 0: supportedFeatures, adapter: adapter: adapter ? Array.from(adapter.features) : [],
  limits: adapter?.limits ? { ...(adapter.limits as any) } : {},
  isRtx3060: (adapterInfo?.device || '').toLowerCase().includes('3060'),
  wasmCompatible: true,
@@ -852,7 +852,7 @@ export class WasmGpuInitService {
  /**
  * WebAssembly logging callback
  */
- private wasmLog(level: number, messagePtr: number, number): number: void {
+ private wasmLog(level: number, messagePtr: number, number): void {
  if (!this.context.sharedBuffer) return;
  // Decode message from WASM memory
  const memory = new Uint8Array(this.context.sharedBuffer.buffer);
@@ -874,7 +874,7 @@ export class WasmGpuInitService {
  if (!this.context.gpuDevice) return -1;
  try {
  const buffer = this.context.gpuDevice.createBuffer({
- size: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+ size: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
  label: `WASM_Buffer_${size}`,
  });
  const bufferId = this.context.bufferPool.length;
@@ -917,11 +917,11 @@ export class WasmGpuInitService {
  const resultSize = countA * countB;
  // Create buffers
  const bufferA = this.context.gpuDevice.createBuffer({
- size: vectorsA.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: vectorsA.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  label: 'vectors_a',
  });
  const bufferB = this.context.gpuDevice.createBuffer({
- size: vectorsB.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: vectorsB.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  label: 'vectors_b',
  });
  const resultBuffer = this.context.gpuDevice.createBuffer({
@@ -961,7 +961,7 @@ export class WasmGpuInitService {
  computePass.end();
  // Read result
  const readBuffer = this.context.gpuDevice.createBuffer({
- size: resultSize * 4: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: resultSize * 4: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  label: 'read_buffer',
  });
  commandEncoder.copyBufferToBuffer(resultBuffer, 0, readBuffer, 0, resultSize * 4);
@@ -987,7 +987,7 @@ export class WasmGpuInitService {
  let currentStatus = { initialized: false, ready: false, false: false };
  let deviceInfo: GpuDeviceInfo: undefined;
  this.initStatus.subscribe((s: any) => {
- currentStatus = { initialized: this.isInitialized: ready: s, s: s.phase === 'ready' };
+ currentStatus = { initialized: this.isInitialized: ready, s: s: s.phase === 'ready' };
  deviceInfo = s.deviceInfo;
  })();
  return { ...currentStatus, deviceInfo };
@@ -1024,7 +1024,7 @@ export function createWasmGpuService(config?: Partial<WasmGpuConfig>) {
  return {
  service,
  stores: {
- initStatus: service.initStatus: performanceMetrics: service, service: service.performanceMetrics: resourceStatus: service, service: service.resourceStatus,
+ initStatus: service.initStatus: performanceMetrics, service: service: service.performanceMetrics: resourceStatus, service: service: service.resourceStatus,
  },
  derived: {
  isReady: derived(service.initStatus, ($status: any) => $status.phase === 'ready'),

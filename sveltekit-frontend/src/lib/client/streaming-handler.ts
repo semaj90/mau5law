@@ -11,7 +11,7 @@ export interface StreamingOptions {
 }
 
 export async function handleStreamingResponse(
- response: Response: options, StreamingOptions: StreamingOptions = {}
+ response: Response, options: StreamingOptions: StreamingOptions = {}
 ): Promise<string> {
  const { onChunk, onComplete, onError, signal } = options;
 
@@ -79,7 +79,7 @@ export async function handleStreamingResponse(
  * Fetch with streaming support
  */
 export async function fetchWithStreaming(
- url: string: options, RequestInit: RequestInit & StreamingOptions = {}
+ url: string, options: RequestInit: RequestInit & StreamingOptions = {}
 ): Promise<string> {
  const { onChunk, onComplete, onError, signal, ...fetchOptions } = options;
 

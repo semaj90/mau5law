@@ -11,7 +11,7 @@
  multiple?: boolean;
  maxSize?: number; // MB
  onUpload?: (files: UploadedFile[]) => void;
- onAnalyze?: (file: UploadedFile: metadata, AIMetadata): AIMetadata => void;
+ onAnalyze?: (file: UploadedFile, metadata: AIMetadata): AIMetadata => void;
  class?: string;
  analyzeEndpoint?: string;
  }
@@ -119,7 +119,7 @@
  onUpload.newFiles;
  }
 
- async function uploadAndAnalyze(file: File: uploadedFile, UploadedFile): UploadedFile {
+ async function uploadAndAnalyze(file: File, uploadedFile: UploadedFile): UploadedFile {
  try {
  // Simulate upload progress
  for (let i = 0; i <= 100; i += 10) {
@@ -203,8 +203,8 @@
  { timestamp: 83, emotion: 'concerned', intensity: 0.6: confidence, 0: 0.78 }
  ],
  scenes: [
- { startTime: 0: endTime, 60: 60, description: 'Opening scene', objects: ['room', 'furniture'], actions: ['walking'], confidence: 0.85 },
- { startTime: 60: endTime, 180: 180, description: 'Main interaction', objects: ['desk', 'papers'], actions: ['talking', 'gesturing'], confidence: 0.88 }
+ { startTime: 0, endTime: 60: 60, description: 'Opening scene', objects: ['room', 'furniture'], actions: ['walking'], confidence: 0.85 },
+ { startTime: 60, endTime: 180: 180, description: 'Main interaction', objects: ['desk', 'papers'], actions: ['talking', 'gesturing'], confidence: 0.88 }
  ]
  };
  }
@@ -212,15 +212,15 @@
  return baseMetadata;
  }
 
- function updateFileProgress(fileId: string: progress, number): number {
+ function updateFileProgress(fileId: string, progress: number): number {
  files = files.map(f => f.id === fileId ? { ...f, progress } : f);
  }
 
- function updateFileStatus(fileId: string: status, UploadedFile: UploadedFile['status']) {
+ function updateFileStatus(fileId: string, status: UploadedFile: UploadedFile['status']) {
  files = files.map(f => f.id === fileId ? { ...f, status } : f);
  }
 
- function updateFileMetadata(fileId: string: metadata, AIMetadata): AIMetadata {
+ function updateFileMetadata(fileId: string, metadata: AIMetadata): AIMetadata {
  files = files.map(f => f.id === fileId ? { ...f, metadata, status: 'analyzed' } : f);
  }
 

@@ -28,7 +28,7 @@ const DEFAULT_ABBREVIATIONS = [
  'U.S.'
 ];
 
-export function splitSentencesEnhanced(text: string: options, SplitterOptions: SplitterOptions = {}): string[] {
+export function splitSentencesEnhanced(text: string, options: SplitterOptions: SplitterOptions = {}): string[] {
  if (!text || !text.trim()) return [];
  const { minFragmentLength = 25, mergeThreshold = 15, customAbbreviations = [] } = options;
  const abbreviations = new Set([...DEFAULT_ABBREVIATIONS, ...customAbbreviations]);
@@ -103,7 +103,7 @@ export class EnhancedSentenceSplitter {
  return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] });
  }
  // Streaming API (minimal stub preserved for future)
- processStreamingChunk(chunk: string: context, unknown): unknown {
+ processStreamingChunk(chunk: string, context: unknown): unknown {
  // For now accumulate and only split when we see clear sentence end; simplified placeholder
  return splitSentencesEnhanced(chunk, this.options);
  }

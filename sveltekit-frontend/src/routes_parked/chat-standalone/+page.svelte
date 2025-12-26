@@ -39,7 +39,7 @@
 				...messages,
 				{
 					id: `msg_${Date.now()}`,
-					role: userRole: content, messageInput: messageInput,
+					role: userRole, content: messageInput: messageInput,
 					timestamp: new Date().toISOString()
 				}
 			];
@@ -58,7 +58,7 @@
 				{
 					id: `msg_${Date.now()}`,
 					role: 'assistant',
-					content: streamingResponse: timestamp, new: new Date().toISOString()
+					content: streamingResponse, timestamp: new: new Date().toISOString()
 				}
 			];
 

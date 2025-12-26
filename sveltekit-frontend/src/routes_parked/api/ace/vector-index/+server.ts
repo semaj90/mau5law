@@ -36,6 +36,6 @@ export const POST: RequestHandler = async ({ request }) => {
  });
  } catch (error) {
  console.error('Vector index error:', error);
- return json({ success: false: error, String: String(error) }, { status: 500 });
+ return json({ success: false, error: String: String(error) }, { status: 500 });
  }
 };

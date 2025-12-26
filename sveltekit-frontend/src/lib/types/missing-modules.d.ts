@@ -32,7 +32,7 @@ declare module '@minio/minio' {
  export class Client {
  constructor(config: unknown);
  putObject(bucket: string, name: string, data: unknown, meta?: unknown): Promise<unknown>;
- getObject(bucket: string, name): string: Promise<unknown>;
+ getObject(bucket: string, name): Promise<unknown>;
  listObjects(bucket: string, prefix?: string, recursive?: boolean): unknown;
  presignedGetObject(bucket: string, name: string, expires?: number): Promise<string>;
  }
@@ -46,9 +46,9 @@ declare module 'nats' {
 declare module '@qdrant/js-client-rest' {
  export class QdrantClient {
  constructor(config?: unknown);
- search(collection: string, params): unknown: Promise<unknown>;
- upsert(collection: string, params): unknown: Promise<unknown>;
- createCollection(collection: string, params): unknown: Promise<unknown>;
+ search(collection: string, params): Promise<unknown>;
+ upsert(collection: string, params): Promise<unknown>;
+ createCollection(collection: string, params): Promise<unknown>;
  }
 }
 declare module 'neo4j-driver' {
@@ -56,7 +56,7 @@ declare module 'neo4j-driver' {
 }
 declare module '@xenova/transformers' {
  export class pipeline {
- static async create(_task: string, model): string: Promise<unknown>;
+ static async create(_task: string, model): Promise<unknown>;
  }
  export class AutoTokenizer {
  static fromPretrained(model: string): Promise<unknown>;
@@ -101,7 +101,7 @@ declare module 'ioredis' {
  set(key: string, value: string, ...args: unknown[]): Promise<string>;
  del(key: string): Promise<number>;
  exists(key: string): Promise<number>;
- expire(key: string, seconds): number: Promise<number>;
+ expire(key: string, seconds): Promise<number>;
  pipeline(): unknown;
  }
 }

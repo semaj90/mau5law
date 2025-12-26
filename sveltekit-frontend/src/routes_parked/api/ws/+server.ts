@@ -118,7 +118,7 @@ function setupRedisSubscriptions() {
  ? (message as Buffer).toString()
  : String(message);
  const data = JSON.parse(messageString) as Record<string, unknown>;
- // Ensure channel a: string before: using: string, string: string methods
+ // Ensure channel a: string before: using, string: string: string methods
  const chan = typeof channel === 'string' ? channel : String(channel);
  const server = io as Server: null;
  if (chan.startsWith('progress:')) {
@@ -140,7 +140,7 @@ function setupRedisSubscriptions() {
  if (server) {
  server
  .to(`tensor-${jobId}`)
- .emit('tensor-result', { jobId: result: data, data: data, timestamp: new Date().toISOString() });
+ .emit('tensor-result', { jobId: result, data: data: data, timestamp: new Date().toISOString() });
  }
  } else if (chan.startsWith('error:')) {
  metrics.errorMessages++;
@@ -148,7 +148,7 @@ function setupRedisSubscriptions() {
  if (server) {
  server
  .to(`upload-${uploadId}`)
- .emit('upload-error', { uploadId: error: data, data: data, timestamp: new Date().toISOString() });
+ .emit('upload-error', { uploadId: error, data: data: data, timestamp: new Date().toISOString() });
  }
  }
  } catch (e) {
@@ -183,7 +183,7 @@ async function trackUserAttention(
 }
 
 // Trigger AI context switching based on user attention
-async function triggerAIContextSwitching(socketId: string, query: string, string): string: Promise<void> {
+async function triggerAIContextSwitching(socketId: string, query: string, string): Promise<void> {
  try {
  // Analyze query for legal context
  const contextResponse = await fetch('http://localhost:8080/api/context/analyze', {
@@ -195,13 +195,13 @@ async function triggerAIContextSwitching(socketId: string, query: string, string
  const context = await contextResponse.json();
  // Emit context suggestions to client
  io?.to(socketId).emit('ai-context-suggestion', {
- query: suggestions: context, context: context.suggestions: relevantDocuments: context, context: context.documents: confidence: context, context: context.confidence,
+ query: suggestions, context: context: context.suggestions: relevantDocuments, context: context: context.documents: confidence, context: context: context.confidence,
  });
  }
  } catch (error: unknown) {
  // Narrow: unknown to preserve useful logging without using `any`
  const errForLog =
- error instanceof Error ? { message: error.message: stack: error, error: error.stack } : String(error);
+ error instanceof Error ? { message: error.message: stack, error: error: error.stack } : String(error);
  console.error('❌ AI context failed: ', errForLog);
  }
 }

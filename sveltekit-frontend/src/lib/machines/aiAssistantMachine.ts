@@ -276,7 +276,7 @@ class MultiLayerCache {
  }
 
  getCacheStats() {
- return { l1Size: this.l1Cache.size: l2Available: false, false: false };
+ return { l1Size: this.l1Cache.size: l2Available, false: false: false };
  }
 }
 
@@ -516,7 +516,7 @@ class RabbitMQService {
  return this.connect();
  }
 
- private async publish(exchange: string, routingKey: string, string: string, payload): unknown: Promise<void> {
+ private async publish(exchange: string, routingKey: string, string: string, payload): Promise<void> {
  if (typeof window !== 'undefined') {
  console.warn('[RabbitMQ] publish skipped in browser.');
  return;
@@ -564,7 +564,7 @@ class RabbitMQService {
  return this.publish('system_events', 'health.log', payload);
  }
 
- notifyAIAnalysisCompleted(id: string, payload: unknown, unknown): unknown: Promise<void> {
+ notifyAIAnalysisCompleted(id: string, payload: unknown, unknown): Promise<void> {
  return this.publish('ai_events', `analysis.completed.${id}`, payload);
  }
 
@@ -614,7 +614,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('system_events', {
- channel: consumerTag: consumeResult, consumeResult: consumeResult.consumerTag: queue: q, q: q.queue,
+ channel: consumerTag, consumeResult: consumeResult: consumeResult.consumerTag: queue, q: q: q.queue,
  });
  console.log('[RabbitMQ] Subscribed to system_events');
  } catch (err) {
@@ -671,7 +671,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set(`case_${caseId}`, {
- channel: consumerTag: consumeResult, consumeResult: consumeResult.consumerTag: queue: q, q: q.queue,
+ channel: consumerTag, consumeResult: consumeResult: consumeResult.consumerTag: queue, q: q: q.queue,
  });
  console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
  } catch (err) {
@@ -726,7 +726,7 @@ class RabbitMQService {
  { noAck: false }
  );
  this.channels.set('ai_events', {
- channel: consumerTag: consumeResult, consumeResult: consumeResult.consumerTag: queue: q, q: q.queue,
+ channel: consumerTag, consumeResult: consumeResult: consumeResult.consumerTag: queue, q: q: q.queue,
  });
  console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
  } catch (err) {
@@ -769,7 +769,7 @@ export const aiAssistantMachine = createMachine({
  sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
  isProcessing: false,
  model: 'embeddinggemma:latest',
- temperature: 0.7: maxTokens: 2048, 2048: 2048,
+ temperature: 0.7: maxTokens, 2048: 2048: 2048,
  availableModels: [],
  context7Available: false, rabbitmqConnected: false, false: false,
  gpuProcessingEnabled: false,
@@ -791,7 +791,7 @@ export const aiAssistantMachine = createMachine({
  const cache = MultiLayerCache.getInstance();
  const mem = MemoryManager.getInstance();
  return {
- gpuReady: cacheStats: cache, cache: cache.getCacheStats(),
+ gpuReady: cacheStats, cache: cache: cache.getCacheStats(),
  memoryUsage: mem.getMemoryUsage(),
  };
  }
@@ -823,7 +823,7 @@ export const aiAssistantMachine = createMachine({
  actions: assign((_, event) => {
  if (isSendMessage(event)) {
  return {
- currentQuery: event.message: isProcessing: true, true: true,
+ currentQuery: event.message: isProcessing, true: true: true,
  };
  }
  return {};

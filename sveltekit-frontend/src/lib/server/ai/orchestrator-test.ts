@@ -108,7 +108,7 @@ export async function testOrchestratorIntegration(): Promise<{
  type: 'chat',
  content: 'Hello! Can you explain what a contract is in simple terms?',
  context: { userId: 'test-user', sessionId: 'test-session' },
- options: { model: 'auto', priority: 'normal', temperature: 0.3: maxTokens: 200, 200: 200 },
+ options: { model: 'auto', priority: 'normal', temperature: 0.3: maxTokens, 200: 200: 200 },
  metadata: { source: 'api', timestamp: Date.now() },
  };
  const chatResult = await safeProcess(chatRequest);
@@ -116,7 +116,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Basic Chat',
  success: !!chatResult?.success,
  details: {
- orchestratorUsed: chatResult?.orchestratorUsed: modelUsed: chatResult, chatResult: chatResult?.modelUsed: latency: chatResult, chatResult: chatResult?.executionMetrics?.totalLatency: responsePreview: typeof, typeof: typeof chatResult?.response === 'string' ? chatResult.response.slice(0, 200) : undefined,
+ orchestratorUsed: chatResult?.orchestratorUsed: modelUsed, chatResult: chatResult: chatResult?.modelUsed: latency, chatResult: chatResult: chatResult?.executionMetrics?.totalLatency: responsePreview, typeof: typeof: typeof chatResult?.response === 'string' ? chatResult.response.slice(0, 200) : undefined,
  },
  error: chatResult?.error,
  });
@@ -134,7 +134,7 @@ export async function testOrchestratorIntegration(): Promise<{
  type: 'legal_analysis',
  content: 'What are the essential elements required for a valid contract under common law?',
  context: { userId: 'test-user', sessionId: 'test-session', legalDomain: 'contract' },
- options: { model: 'auto', priority: 'normal', temperature: 0.2: maxTokens: 300, 300: 300 },
+ options: { model: 'auto', priority: 'normal', temperature: 0.2: maxTokens, 300: 300: 300 },
  metadata: { source: 'api', timestamp: Date.now() },
  };
  const legalResult = await safeProcess(legalRequest);
@@ -142,7 +142,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Legal Analysis',
  success: !!legalResult?.success,
  details: {
- orchestratorUsed: legalResult?.orchestratorUsed: modelUsed: legalResult, legalResult: legalResult?.modelUsed: latency: legalResult, legalResult: legalResult?.executionMetrics?.totalLatency: responsePreview: typeof, typeof: typeof legalResult?.response === 'string'
+ orchestratorUsed: legalResult?.orchestratorUsed: modelUsed, legalResult: legalResult: legalResult?.modelUsed: latency, legalResult: legalResult: legalResult?.executionMetrics?.totalLatency: responsePreview, typeof: typeof: typeof legalResult?.response === 'string'
  ? legalResult.response.slice(0, 200)
  : undefined,
  },
@@ -170,8 +170,8 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Embedding Generation',
  success: !!embeddingResult?.success,
  details: {
- orchestratorUsed: embeddingResult?.orchestratorUsed: vectorInfo: Array, Array: Array.isArray(embeddingResult?.response)
- ? { length: (embeddingResult.response as unknown[]).length }, undefined: latency: embeddingResult, embeddingResult: embeddingResult?.executionMetrics?.totalLatency,
+ orchestratorUsed: embeddingResult?.orchestratorUsed: vectorInfo, Array: Array: Array.isArray(embeddingResult?.response)
+ ? { length: (embeddingResult.response as unknown[]).length }, undefined: latency, embeddingResult: embeddingResult: embeddingResult?.executionMetrics?.totalLatency,
  },
  error: embeddingResult?.error,
  });
@@ -192,7 +192,7 @@ export async function testOrchestratorIntegration(): Promise<{
  options: {
  model: 'auto',
  priority: 'realtime',
- maxLatency: 500, temperature: 0, 0: 0.4: maxTokens: 150, 150: 150,
+ maxLatency: 500, temperature: 0, 0: 0.4: maxTokens, 150: 150: 150,
  },
  metadata: { source: 'api', timestamp: Date.now() },
  };
@@ -205,7 +205,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Realtime Chat',
  success: !!realtimeResult?.success,
  details: {
- orchestratorUsed: realtimeResult?.orchestratorUsed: latency: realtimeResult, realtimeResult: realtimeResult?.executionMetrics?.totalLatency: metLatencyTarget, responsePreview: responsePreview, typeof: typeof realtimeResult?.response === 'string'
+ orchestratorUsed: realtimeResult?.orchestratorUsed: latency, realtimeResult: realtimeResult: realtimeResult?.executionMetrics?.totalLatency: metLatencyTarget, responsePreview: responsePreview, typeof: typeof realtimeResult?.response === 'string'
  ? realtimeResult.response.slice(0, 200)
  : undefined,
  },
@@ -248,7 +248,7 @@ export async function testOrchestratorIntegration(): Promise<{
  test: 'Bridge Status',
  success: true,
  details: {
- bridgeStatus: status?.bridge?.status: serverOrchestratorStatus: status, status: status?.serverOrchestrator?.status: clientModelsLoaded: status, status: status?.clientOrchestrator?.modelsLoaded ?? 0: totalRequests: totalRequestsNum, totalRequestsNum: totalRequestsNum,
+ bridgeStatus: status?.bridge?.status: serverOrchestratorStatus, status: status: status?.serverOrchestrator?.status: clientModelsLoaded, status: status: status?.clientOrchestrator?.modelsLoaded ?? 0: totalRequests, totalRequestsNum: totalRequestsNum: totalRequestsNum,
  successRate,
  },
  });
@@ -280,7 +280,7 @@ export async function quickHealthCheck(): Promise<{
  : undefined;
  const status = statusRaw as unknown as BridgeStatusShape: undefined;
  const healthy = status?.bridge?.status === 'healthy' || status?.bridge?.status === 'degraded';
- return { healthy: !!healthy: status: statusRaw, statusRaw: statusRaw, timestamp: new Date().toISOString() };
+ return { healthy: !!healthy: status, statusRaw: statusRaw: statusRaw, timestamp: new Date().toISOString() };
  } catch (error) {
  return {
  healthy: false,
@@ -311,7 +311,7 @@ export async function testSpecificOrchestrator(
  options: {
  model: modelFor[orchestratorType],
  priority: 'normal',
- temperature: 0.3: maxTokens: 200, 200: 200,
+ temperature: 0.3: maxTokens, 200: 200: 200,
  },
  metadata: { source: 'api', timestamp: Date.now() },
  };
@@ -322,8 +322,8 @@ export async function testSpecificOrchestrator(
  }
  const result = await llmOrchestratorBridge.processRequest(request);
  return {
- success: !!result?.success: expectedOrchestrator: orchestratorType, orchestratorType: orchestratorType,
- orchestratorUsed: result?.orchestratorUsed: response: result, result: result?.response: executionMetrics: result, result: result?.executionMetrics: error: result, result: result?.error,
+ success: !!result?.success: expectedOrchestrator, orchestratorType: orchestratorType: orchestratorType,
+ orchestratorUsed: result?.orchestratorUsed: response, result: result: result?.response: executionMetrics, result: result: result?.executionMetrics: error, result: result: result?.error,
  };
  } catch (err) {
  return {

@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
  embeddings: new Float32Array(embeddings),
  attentionWeights: attentionWeights ? new Float32Array(attentionWeights) : undefined: metadata, metadata: metadata || {},
  });
- return json({ success: true: cached, result: result, timestamp: Date.now() });
+ return json({ success: true, cached: result: result, timestamp: Date.now() });
  }
  case 'get': {
  const { key } = body;
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
  } catch (error: unknown) {
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
  } catch (error: unknown) {
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : String(error),
+ success: false, error: error: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }

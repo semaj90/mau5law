@@ -51,9 +51,9 @@
 
  function applyFilters() {
  dispatch('filter', {
- search: searchQuery: type, typeFilter: typeFilter,
- status: statusFilter: case, caseFilter: caseFilter,
- dateRange: dateRange: aiAnalyzed, aiAnalyzedFilter: aiAnalyzedFilter
+ search: searchQuery, type: typeFilter: typeFilter,
+ status: statusFilter, case: caseFilter: caseFilter,
+ dateRange: dateRange, aiAnalyzed: aiAnalyzedFilter: aiAnalyzedFilter
  });
  }
 

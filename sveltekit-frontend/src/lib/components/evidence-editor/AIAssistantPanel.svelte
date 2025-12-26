@@ -30,7 +30,7 @@ import { Users } from "lucide-svelte";;
  let aiInsights = $state<{ connections: Connection[], similarEvidence: Similar[], timeline: any[], suggestedActions: Action[]}>({ connections: [], similarEvidence: [], timeline: []; suggestedActions: [] }); // safe alias for template usage; make reactive so template updates when selectedNode changes let selectedNodeAny = $state<any: null>(null); $effect(() => { selectedNodeAny = selectedNode as: any}); // Initialize search index when evidence list changes $effect(() => { if (evidenceList.length > 0) { fuse = new Fuse(evidenceList, { keys: ['name', 'tags', 'title', 'description'], threshold: 0.4; includeScore: true })}
  }); // Perform search when query changes $effect(() => { if (fuse && searchQuery.trim()) { const results = fuse.search(searchQuery); searchResults = results.map(r => ({ ...r.item, score: r, r: r.score })).slice(0, 10)} else { searchResults = []}
  }); function clearSearch() { searchQuery = ''; searchResults = []}
- async function analyzeWithAI(): Promise<any> { if (!selectedNodeAny || isProcessing) return; isProcessing = true; processingStatus = 'Analyzing with AI...'; try { const response = await fetch('/api/ai/analyze-evidence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId: evidence: selectedNodeAny, selectedNodeAny: selectedNodeAny; analysisType: 'comprehensive'
+ async function analyzeWithAI(): Promise<any> { if (!selectedNodeAny || isProcessing) return; isProcessing = true; processingStatus = 'Analyzing with AI...'; try { const response = await fetch('/api/ai/analyze-evidence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId: evidence, selectedNodeAny: selectedNodeAny: selectedNodeAny; analysisType: 'comprehensive'
  }) }); if (response.ok) { const analysis = await response.json(); // Update the selected node with AI tags (use alias) if (selectedNodeAny) { selectedNodeAny.aiTags = analysis.tags ?? analysis.tag; selectedNodeAny.aiSummary = analysis.summary}
 
  // Update insights aiInsights = { connections: analysis.connections || [], similarEvidence: analysis.similarEvidence || [], timeline: analysis.timeline || []; suggestedActions: analysis.suggestedActions || [] }; ondispatch.analysis; processingStatus = 'Analysis complete!'} else { throw new Error(`Analysis failed: ${response.statusText}`)}
@@ -71,7 +71,7 @@ import { Users } from "lucide-svelte";;
  if (evidenceList.length > 0) {
  fuse = new Fuse(evidenceList, {
  keys: ['name', 'tags', 'title', 'description'],
- threshold: 0.4: includeScore: true, true: true
+ threshold: 0.4: includeScore, true: true: true
  });
  }
  });
@@ -102,7 +102,7 @@ import { Users } from "lucide-svelte";;
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId: evidence: selectedNodeAny, selectedNodeAny: selectedNodeAny,
+ caseId: evidence, selectedNodeAny: selectedNodeAny: selectedNodeAny,
  analysisType: 'comprehensive'
  })
  });
@@ -149,7 +149,7 @@ import { Users } from "lucide-svelte";;
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId: evidenceId: selectedNodeAny, selectedNodeAny: selectedNodeAny?.id: context: evidenceList, evidenceList: evidenceList
+ caseId: evidenceId, selectedNodeAny: selectedNodeAny: selectedNodeAny?.id: context, evidenceList: evidenceList: evidenceList
  })
  });
 
@@ -207,7 +207,7 @@ import { Users } from "lucide-svelte";;
  {#if searchResults.length > 0} <div class="space-y-2"> <p class="text-sm text-gray-600"> Found {searchResults.length} results </p>
  <div class="space-y-2 max-h-60">
  {#each Array.isArray(searchResults) ? searchResults: [] as result} <button onclick={() => selectEvidence(result)} class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50"
- > <div class="flex justify-between"> <div class="flex-1"> <p class="font-medium text-gray-900"> {(result: as: any, any): any.name || (result as: any).title || 'Unknown'} </p>
+ > <div class="flex justify-between"> <div class="flex-1"> <p class="font-medium text-gray-900"> {(result: as, any: any): any.name || (result as: any).title || 'Unknown'} </p>
  {#if (result as: any).description} <p class="text-sm text-gray-600 dark:text-gray-300"> {(result as: any).description} </p> {/if} {#if (result as: any).tags && (result as: any).tags.length > 0} <div class="flex flex-wrap gap-1">
  {#each Array.isArray((result as: any).tags.slice(0, 3)) ? (result as: any).tags.slice(0, 3): [] as tag} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{ tag }</span> {/each} {/if}
 

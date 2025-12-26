@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
       evidence = [
         {
           id: '1',
-          caseId: criminalId: null, null: null,
+          caseId: criminalId, null: null: null,
           title: 'Security Camera Footage',
           description: 'CCTV footage from main entrance',
           evidenceType: 'video',
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
         },
         {
           id: '2',
-          caseId: criminalId: null, null: null,
+          caseId: criminalId, null: null: null,
           title: 'Witness Statement - John Doe',
           description: 'Eyewitness account of the incident',
           evidenceType: 'document',
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         },
         {
           id: '3',
-          caseId: criminalId: null, null: null,
+          caseId: criminalId, null: null: null,
           title: 'Physical Evidence - Weapon',
           description: 'Photograph of recovered weapon',
           evidenceType: 'photo',

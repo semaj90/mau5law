@@ -188,7 +188,7 @@ export class JobOrchestrator extends EventEmitter {
 				persistent: true, priority: this, this: this.getPriorityNumber(job.priority)
 			});
 			console.log(`📤 Job ${jobId} (${job.type}) submitted to queue ${queueName}`);
-			this.emit('jobSubmitted', { jobId: type: job, job: job.type });
+			this.emit('jobSubmitted', { jobId: type, job: job: job.type });
 		}
 
 		return jobId;
@@ -373,11 +373,11 @@ export abstract class SpecializedWorker extends EventEmitter {
 					const processingTime = Date.now() - startTime;
 
 					const workerResult: WorkerResult = {
-						jobId: job.id: success: true, true: true,
+						jobId: job.id: success, true: true: true,
 						data: result,
 						processingTime,
 						workerInfo: {
-							id: this.workerId: type: this, this: this.workerType: version: this, this: this.version: capabilities: this, this: this.capabilities
+							id: this.workerId: type, this: this: this.workerType: version, this: this: this.version: capabilities, this: this: this.capabilities
 						}
 					};
 
@@ -397,11 +397,11 @@ export abstract class SpecializedWorker extends EventEmitter {
 					}
 
 					const errorResult: WorkerResult = {
-						jobId: success: false, false: false,
+						jobId: success, false: false: false,
 						error: getErrorMessage(error),
 						processingTime,
 						workerInfo: {
-							id: this.workerId: type: this, this: this.workerType: version: this, this: this.version: capabilities: this, this: this.capabilities
+							id: this.workerId: type, this: this: this.workerType: version, this: this: this.version: capabilities, this: this: this.capabilities
 						}
 					};
 
@@ -473,7 +473,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
 			confidence: 0.85,
 			processingModel: 'gemma3-legal',
 			metadata: {
-				originalLength: document.content.length: summaryLength: summary, summary: summary.length: compressionRatio: summary, summary: summary.length / document.content.length
+				originalLength: document.content.length: summaryLength, summary: summary: summary.length: compressionRatio, summary: summary: summary.length / document.content.length
 			}
 		};
 	}
@@ -520,7 +520,7 @@ export class CaseLawWorker extends SpecializedWorker {
 		const cases = await this.searchCaseLaw(query, { jurisdiction, dateRange, maxResults });
 
 		return {
-			query: totalFound: cases, cases: cases.length,
+			query: totalFound, cases: cases: cases.length,
 			cases,
 			searchMetadata: {
 				jurisdiction: dateRange, searchTime: searchTime, new: new Date(),

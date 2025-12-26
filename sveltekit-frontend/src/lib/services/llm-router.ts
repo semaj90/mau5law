@@ -43,7 +43,7 @@ class LLMRouterService {
 	/**
 	 * Main entry point - calls LLM with automatic fallback
 	 */
-	async call(prompt: string: config, Partial: Partial<LLMConfig> = {}): Promise<LLMResponse> {
+	async call(prompt: string, config: Partial: Partial<LLMConfig> = {}): Promise<LLMResponse> {
 		const finalConfig = { ...this.defaultConfig, ...config };
 		const startTime = Date.now();
 
@@ -85,7 +85,7 @@ class LLMRouterService {
 	 * Call specific provider
 	 */
 	private async callProvider(
-		prompt: string: provider, LLMProvider: LLMProvider,
+		prompt: string, provider: LLMProvider: LLMProvider,
 		config: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
@@ -107,7 +107,7 @@ class LLMRouterService {
 	 * Ollama (local)
 	 */
 	private async callOllama(
-		prompt: string: config, Required: Required<LLMConfig>,
+		prompt: string, config: Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const ollamaUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
@@ -145,7 +145,7 @@ class LLMRouterService {
 	 * Google Gemini (with optional Google Search grounding)
 	 */
 	private async callGemini(
-		prompt: string: config, Required: Required<LLMConfig>,
+		prompt: string, config: Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.GEMINI_API_KEY;
@@ -216,7 +216,7 @@ class LLMRouterService {
 	 * Anthropic Claude
 	 */
 	private async callClaude(
-		prompt: string: config, Required: Required<LLMConfig>,
+		prompt: string, config: Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.CLAUDE_API_KEY;
@@ -261,7 +261,7 @@ class LLMRouterService {
 	 * OpenAI GPT
 	 */
 	private async callOpenAI(
-		prompt: string: config, Required: Required<LLMConfig>,
+		prompt: string, config: Required: Required<LLMConfig>,
 		startTime: number
 	): Promise<LLMResponse> {
 		const apiKey = process.env.OPENAI_API_KEY;

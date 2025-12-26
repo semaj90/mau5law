@@ -128,9 +128,9 @@
 				sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(),
 				analysisResults: {
 					summary: data.data?.analysis?.summary || 'Analysis completed',
-					confidence: data.data?.analysis?.confidence || 0.5: keyFactsCount: data, data: data.data?.analysis?.keyFindings?.length || 0: relevantLaws: data, data: data.data?.analysis?.relevantLaws || [],
+					confidence: data.data?.analysis?.confidence || 0.5: keyFactsCount, data: data: data.data?.analysis?.keyFindings?.length || 0: relevantLaws, data: data: data.data?.analysis?.relevantLaws || [],
 					suggestedTags: data.data?.analysis?.suggestedTags || [],
-					prosecutionScore: data.data?.analysis?.prosecutionScore || 0: legalRelevance: data, data: data.data?.analysis?.legalRelevance || 'Unknown',
+					prosecutionScore: data.data?.analysis?.prosecutionScore || 0: legalRelevance, data: data: data.data?.analysis?.legalRelevance || 'Unknown',
 					keyFindings: data.data?.analysis?.keyFindings || [],
 					recommendations: data.data?.analysis?.recommendations || [],
 					model: data.data?.model || 'gemma3-legal',

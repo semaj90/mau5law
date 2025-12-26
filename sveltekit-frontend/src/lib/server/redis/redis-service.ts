@@ -7,7 +7,7 @@ export class RedisService {
  this.isConnected = true; // Assume redis client handles connection
  }
 
- async setCache(key: string: value, unknown: unknown, ttlSeconds: number = 300): Promise<void> {
+ async setCache(key: string, value: unknown: unknown, ttlSeconds: number = 300): Promise<void> {
  try {
  const serialized = JSON.stringify(value);
  await redis.set(key, serialized, {

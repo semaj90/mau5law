@@ -33,7 +33,7 @@ function log(message: string, level: 'info' | 'error' | 'warn' = 'info'): void {
  }
 
  const logFile = path.join(logDir, 'summary-generation.log');
- const logMessage = `[${timestamp}] [${level.toUpperCase()}] ${message}\n`;
+ const logMessage = `[${ timestamp: timestamp }] [${level.toUpperCase()}] ${message}\n`;
 
  fs.appendFileSync(logFile, logMessage);
  console.log(logMessage);

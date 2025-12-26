@@ -67,7 +67,7 @@ export class ONNXService {
  /**
  * Run Python ONNX inference
  */
- private async runPythonInference(inputFile: string: outputFile, string): string: Promise<any> {
+ private async runPythonInference(inputFile: string, outputFile: string): Promise<any> {
  const pythonScript = `
 import sys
 import json

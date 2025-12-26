@@ -349,7 +349,7 @@ export class RouteConsolidation {
 				for (const other of others) {
 					steps.push({
 						action: 'merge',
-						source: other.path: target: primary, primary: primary.path: reason: rec, rec: rec.reason
+						source: other.path: target, primary: primary: primary.path: reason, rec: rec: rec.reason
 					});
 				}
 			} else if (rec.impact === 'medium') {

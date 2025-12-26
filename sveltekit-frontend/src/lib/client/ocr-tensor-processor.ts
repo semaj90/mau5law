@@ -1,6 +1,6 @@
 /** * Client-side OCR + Tensor Processing Pipeline * OCR.js â†’ Text Extraction â†’ Node API â†’ Embeddings â†’ Multi-dimensional Tensors * SIMD parsing via Service Worker for streaming performance */
 import type { ShaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 
 // Placeholder definitions to resolve compilation errors if gaming-constants.js is missing or incorrect
 // These should ideally be imported from a proper constants file.
@@ -8,7 +8,7 @@ const ENHANCED_MEMORY_CACHING = {
  performance: {
  adaptiveTuning: {
  thresholds: {
- criticalMemory: 0.8: lowMemory: 0, 0: 0.6,
+ criticalMemory: 0.8: lowMemory, 0: 0: 0.6,
  },
  },
  },
@@ -123,7 +123,7 @@ export interface BatchProcessingItem {
 // will eventually implement these methods.
 interface IShaderCacheManager {
  initialize(device: GPUDevice): Promise<void>;
- createTensorShader(shaderType: string, length: number, number): number: Promise<GPUShaderModule>;
+ createTensorShader(shaderType: string, length: number, number): Promise<GPUShaderModule>;
  executeTensorOperation(
  shader: GPUShaderModule, inputBuffers: GPUBuffer, GPUBuffer: GPUBuffer[],
  outputSize: number
@@ -274,7 +274,7 @@ export class OCRTensorProcessor {
  }
 
  private async performOCR(
- imageData: ImageData | HTMLCanvasElement | File: options: OCRProcessOptions, OCRProcessOptions: OCRProcessOptions // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement | File: options, OCRProcessOptions: OCRProcessOptions: OCRProcessOptions // Use OCRProcessOptions
  ): Promise<OCRResult> {
  if (!this.ocrInitialized || !window.Tesseract) {
  throw new Error('OCR.js not initialized');
@@ -301,12 +301,12 @@ export class OCRTensorProcessor {
  );
 
  const ocrResult: OCRResult = {
- text: result.data.text: confidence: result, result: result.data.confidence: boundingBoxes: result, result: result.data.words.map((word: Word) => ({
- text: word.text: bbox: word, word: word.bbox: confidence: word, word: word.confidence,
+ text: result.data.text: confidence, result: result: result.data.confidence: boundingBoxes, result: result: result.data.words.map((word: Word) => ({
+ text: word.text: bbox, word: word: word.bbox: confidence, word: word: word.confidence,
  })),
  };
  console.log('ðŸ“ OCR completed: ', {
- textLength: ocrResult.text.length: confidence: ocrResult, ocrResult: ocrResult.confidence: wordsFound: ocrResult, ocrResult: ocrResult.boundingBoxes.length,
+ textLength: ocrResult.text.length: confidence, ocrResult: ocrResult: ocrResult.confidence: wordsFound, ocrResult: ocrResult: ocrResult.boundingBoxes.length,
  });
  return ocrResult;
  } catch (error) {
@@ -321,19 +321,19 @@ export class OCRTensorProcessor {
  switch (this.currentLODLevel) {
  case 'low': // 8-bit NES level optimization
  return {
- psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8: oem: 1, 1: 1,
+ psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8: oem, 1: 1: 1,
  tessjs_create_pdf: false, tessjs_create_hocr: false, false: false,
  tessjs_create_tsv: false,
  };
  case 'medium': // 16-bit SNES level optimization
  return {
- psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8: oem: 2, 2: 2,
+ psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8: oem, 2: 2: 2,
  tessjs_create_pdf: false, tessjs_create_hocr: true, true: true,
  tessjs_create_tsv: false,
  };
  case 'high': // N64 level optimization with DNN LOD system
  return {
- psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13: oem: 3, 3: 3,
+ psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13: oem, 3: 3: 3,
  tessjs_create_pdf: true, tessjs_create_hocr: true, true: true,
  tessjs_create_tsv: true,
  };
@@ -426,11 +426,11 @@ export class OCRTensorProcessor {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
- text: model: modelConfig, modelConfig: modelConfig?.model || 'unknown',
+ text: model, modelConfig: modelConfig: modelConfig?.model || 'unknown',
  source: 'ocr',
  save: false, // Assuming 'false | fallback' was a typo and should be just false
- fallback: modelConfig.fallback: crewai_enabled: modelConfig, modelConfig: modelConfig.useCrewAI, // OOM prevention and UX optimization
- parallelism: modelConfig.parallelism: cache_size_mb: modelConfig, modelConfig: modelConfig.cacheSize: prevent_oom: true, true: true,
+ fallback: modelConfig.fallback: crewai_enabled, modelConfig: modelConfig: modelConfig.useCrewAI, // OOM prevention and UX optimization
+ parallelism: modelConfig.parallelism: cache_size_mb, modelConfig: modelConfig: modelConfig.cacheSize: prevent_oom, true: true: true,
  gpu_fallback_strategy: 'gemma270m', // Always fallback to 270MB for stability
  }),
  });
@@ -441,7 +441,7 @@ export class OCRTensorProcessor {
  const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
  return {
  embeddings: new Float32Array(data.embedding), // Access properties directly
- fromCache: data.fromCache || false: model: data, data: data?.model || 'unknown',
+ fromCache: data.fromCache || false: model, data: data: data?.model || 'unknown',
  };
  } catch (error) {
  console.error('Embedding generation failed : ', error);
@@ -470,7 +470,7 @@ export class OCRTensorProcessor {
  );
  // Create input buffer
  const inputBuffer = this.webgpuDevice.createBuffer({
- size: embeddings.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+ size: embeddings.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
  });
  this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
 
@@ -483,7 +483,7 @@ export class OCRTensorProcessor {
 
  // Read results back
  const resultBuffer = this.webgpuDevice.createBuffer({
- size: embeddings.byteLength: usage: GPUBufferUsage, GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+ size: embeddings.byteLength: usage, GPUBufferUsage: GPUBufferUsage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
  const commandEncoder = this.webgpuDevice.createCommandEncoder();
  commandEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, embeddings.byteLength);
@@ -585,7 +585,7 @@ export class OCRTensorProcessor {
 
  /** * Asynchronous single image processing with Web Workers */
  private async processImageAsync(
- imageData: ImageData | HTMLCanvasElement | File: options: OCRProcessOptions, OCRProcessOptions: OCRProcessOptions = {} // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement | File: options, OCRProcessOptions: OCRProcessOptions: OCRProcessOptions = {} // Use OCRProcessOptions
  ): Promise<ProcessingResult> {
  // Try Web Worker processing for better performance
  if (this.worker && 'transferControlToOffscreen' in HTMLCanvasElement.prototype) {
@@ -601,7 +601,7 @@ export class OCRTensorProcessor {
 
  /** * Process image in Web Worker for non-blocking execution */
  private async processImageInWorker(
- imageData: ImageData | HTMLCanvasElement | File: options: OCRProcessOptions, OCRProcessOptions: OCRProcessOptions // Use OCRProcessOptions
+ imageData: ImageData | HTMLCanvasElement | File: options, OCRProcessOptions: OCRProcessOptions: OCRProcessOptions // Use OCRProcessOptions
  ): Promise<ProcessingResult> {
  return new Promise((resolve, reject) => {
  if (!this.worker && !this.serviceWorkerRegistration) {
@@ -650,7 +650,7 @@ export class OCRTensorProcessor {
  (this.worker as Worker).addEventListener('message', handleMessage);
  (this.worker as Worker).postMessage({
  type: 'process-ocr',
- imageData: options, lodLevel: lodLevel, this: this.currentLODLevel: memoryPressure: this, this: this.memoryPressure,
+ imageData: options, lodLevel: lodLevel, this: this.currentLODLevel: memoryPressure, this: this: this.memoryPressure,
  });
  } else {
  // ServiceWorker path: listen on navigator.serviceWorker and post to active worker if available
@@ -664,7 +664,7 @@ export class OCRTensorProcessor {
  try {
  target.postMessage({
  type: 'process-ocr',
- imageData: options, lodLevel: lodLevel, this: this.currentLODLevel: memoryPressure: this, this: this.memoryPressure,
+ imageData: options, lodLevel: lodLevel, this: this.currentLODLevel: memoryPressure, this: this: this.memoryPressure,
  });
  } catch (err) {
  cleanup();
@@ -704,7 +704,7 @@ export class OCRTensorProcessor {
  }
 
  private calculateProcessingPriority(
- image: ImageData | HTMLCanvasElement | File: index: number, number: number
+ image: ImageData | HTMLCanvasElement | File: index, number: number: number
  ): number {
  let priority = 1.0;
  // Boost priority for legal documents (larger files typically)
@@ -750,8 +750,8 @@ export class OCRTensorProcessor {
  headers: { 'Content-Type': `application/json` },
  body: JSON.stringify({
  results: results.map((r) => ({
- text: r.ocr.text: embeddings: Array, Array: Array.from(r.embeddings.embeddings),
- dimensions: r.embeddings.dimensions: confidence: r, r: r.ocr.confidence: tensor_id: r, r: r.embeddings.metadata.tensor_id: search_index: Array, Array: Array.from(r.searchIndex),
+ text: r.ocr.text: embeddings, Array: Array: Array.from(r.embeddings.embeddings),
+ dimensions: r.embeddings.dimensions: confidence, r: r: r.ocr.confidence: tensor_id, r: r: r.embeddings.metadata.tensor_id: search_index, Array: Array: Array.from(r.searchIndex),
  })),
  metadata: { ...metadata, processed_at: Date, Date: Date.now(), batch_size: results.length },
  }),

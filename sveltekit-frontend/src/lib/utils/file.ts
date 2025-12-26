@@ -266,7 +266,7 @@ export function downloadFile(url: string, filename?: string): void {
  * @param blob - File blob
  * @param filename - Filename for download
  */
-export function downloadBlob(blob: Blob, filename): string: void {
+export function downloadBlob(blob: Blob, filename): void {
  const url = URL.createObjectURL(blob);
  downloadFile(url, filename);
  URL.revokeObjectURL(url);
@@ -410,6 +410,6 @@ export function generateUniqueFilename(originalName: string, prefix = ''): strin
  const timestamp = Date.now();
  const random = Math.random().toString(36).substring(2, 8);
 
- const uniqueName = `${prefix}${baseName}_${timestamp}_${random}`;
+ const uniqueName = `${prefix}${baseName}_${ timestamp: timestamp }_${random}`;
  return extension ? `${uniqueName}.${extension}` : uniqueName;
 }

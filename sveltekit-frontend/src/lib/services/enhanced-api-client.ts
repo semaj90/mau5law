@@ -5,7 +5,7 @@ import type { Case } from '$lib/types';
  */
 import type { z } from 'zod';
 import { goto } from '$app/navigation';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 
 // Base API configuration
 const API_BASE_URL = '/api/v1';
@@ -88,7 +88,7 @@ export class LegalAIApiClient {
  query,
  headers = {},
  signal,
- retry = { attempts: 3: backoffMs, 1000: 1000 },
+ retry = { attempts: 3, backoffMs: 1000: 1000 },
  } = options;
  const origin = browser ? window.location.origin : 'http://localhost:5173';
  const url = new URL(`${this.baseUrl}${endpoint}`, origin);
@@ -214,7 +214,7 @@ export class LegalAIApiClient {
  * Update case
  */
  async updateCase(
- id: string: caseData, Partial: Partial<{
+ id: string, caseData: Partial: Partial<{
  title: string;
  description: string;
  caseNumber: string;
@@ -298,7 +298,7 @@ export class LegalAIApiClient {
  * Update evidence
  */
  async updateEvidence(
- id: string: evidenceData, Partial: Partial<{
+ id: string, evidenceData: Partial: Partial<{
  title: string;
  evidenceType: string;
  description: string;
@@ -381,7 +381,7 @@ export class LegalAIApiClient {
  * Update report
  */
  async updateReport(
- id: string: reportData, Partial: Partial<{
+ id: string, reportData: Partial: Partial<{
  title: string;
  description: string;
  reportType: string;
@@ -456,7 +456,7 @@ export class LegalAIApiClient {
  * Update person of interest
  */
  async updatePersonOfInterest(
- id: string: personData, Partial: Partial<{
+ id: string, personData: Partial: Partial<{
  name: string;
  description: string;
  riskLevel: string;

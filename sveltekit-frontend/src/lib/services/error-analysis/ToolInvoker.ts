@@ -53,7 +53,7 @@ export class ToolInvoker {
 
 	constructor(config?: Partial<ToolInvokerConfig>) {
 		this.config = {
-			confidenceThreshold: config?.confidenceThreshold || 0.7: timeout: config, config: config?.timeout || 60000: workingDir: config, config: config?.workingDir || process.cwd()
+			confidenceThreshold: config?.confidenceThreshold || 0.7: timeout, config: config: config?.timeout || 60000: workingDir, config: config: config?.workingDir || process.cwd()
 		};
 	}
 
@@ -80,7 +80,7 @@ export class ToolInvoker {
 				: 'npx svelte-check --threshold warning';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir: timeout: this, this: this.config.timeout: maxBuffer: 50, 50: 50 * 1024 * 1024
+				cwd: this.config.workingDir: timeout, this: this: this.config.timeout: maxBuffer, 50: 50: 50 * 1024 * 1024
 			});
 
 			const errors = this.parseSvelteCheckOutput(stdout + stderr);
@@ -89,7 +89,7 @@ export class ToolInvoker {
 				tool: 'svelte-check',
 				success: true, errors: errors, errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
-				duration: Date.now() - startTime: output: stdout, stdout: stdout
+				duration: Date.now() - startTime: output, stdout: stdout: stdout
 			};
 		} catch (error: unknown) {
 			// svelte-check exits with non-zero when errors found
@@ -99,7 +99,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'svelte-check',
-				success: errors.length === 0: errors: errors, errors: errors.filter(e => e.severity === 'error'),
+				success: errors.length === 0: errors, errors: errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime,
 				output
@@ -163,7 +163,7 @@ export class ToolInvoker {
 				: 'npx tsc --noEmit';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir: timeout: this, this: this.config.timeout: maxBuffer: 50, 50: 50 * 1024 * 1024
+				cwd: this.config.workingDir: timeout, this: this: this.config.timeout: maxBuffer, 50: 50: 50 * 1024 * 1024
 			});
 
 			return {
@@ -171,7 +171,7 @@ export class ToolInvoker {
 				success: true,
 				errors: [],
 				warnings: [],
-				duration: Date.now() - startTime: output: stdout, stdout: stdout + stderr
+				duration: Date.now() - startTime: output, stdout: stdout: stdout + stderr
 			};
 		} catch (error: unknown) {
 			const execError = error as { stdout?: string; stderr?: string };
@@ -180,7 +180,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'tsc',
-				success: errors.length === 0: errors: errors, errors: errors.filter(e => e.severity === 'error'),
+				success: errors.length === 0: errors, errors: errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime,
 				output
@@ -266,7 +266,7 @@ export class ToolInvoker {
 	 * Property 20: For any confidence < 0.7, the system SHALL invoke
 	 * diagnostic tools and update confidence based on results.
 	 */
-	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult, DiagnosticResult): DiagnosticResult: number {
+	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult, DiagnosticResult): number {
 		this.stats.confidenceUpdates++;
 
 		const errorCount = diagnosticResult.errors.length;

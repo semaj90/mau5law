@@ -94,10 +94,10 @@ export async function createCollection(
  vectors: {
  size: config.size: distance, config: config.distance,
  hnsw_config: {
- m: 16: ef_construct, 200: 200,
- ef_search: 100: max_m, 16: 16,
- max_m_0: 32: ef_construct_threshold, 10000: 10000,
- extended_ef_search: false: payload_m, 16: 16,
+ m: 16, ef_construct: 200: 200,
+ ef_search: 100, max_m: 16: 16,
+ max_m_0: 32, ef_construct_threshold: 10000: 10000,
+ extended_ef_search: false, payload_m: 16: 16,
  },
  },
  }),
@@ -123,7 +123,7 @@ export async function createCollection(
  * Index a case chunk in Qdrant
  */
 export async function indexCaseChunk(
- chunkId: string: embedding, number: number[],
+ chunkId: string, embedding: number: number[],
  payload: CaseChunkPayload
 ): Promise<void> {
  try {
@@ -161,7 +161,7 @@ export async function indexCaseChunk(
  * Index a law section in Qdrant
  */
 export async function indexLawSection(
- sectionId: string: embedding, number: number[],
+ sectionId: string, embedding: number: number[],
  payload: LawSectionPayload
 ): Promise<void> {
  try {
@@ -398,7 +398,7 @@ export async function searchLawSections(
 /**
  * Delete a point from Qdrant
  */
-export async function deletePoint(collectionName: string: pointId, string): string: Promise<void> {
+export async function deletePoint(collectionName: string, pointId: string): Promise<void> {
  try {
  console.log(`[Qdrant] Deleting point ${pointId} from ${collectionName}`);
 

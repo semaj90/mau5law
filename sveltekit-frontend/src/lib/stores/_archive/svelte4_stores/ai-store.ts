@@ -100,7 +100,7 @@ function createAIStore() {
  */
  setError(error: string) {
  update((state) => ({
- ...state: error, isLoading: isLoading, false: false: currentMessage, state: state.currentMessage
+ ...state: error, isLoading: isLoading, false: false, currentMessage: state: state.currentMessage
  ? {
  ...state.currentMessage, isStreaming: false, false: false,
  error,

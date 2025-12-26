@@ -92,7 +92,7 @@ export class DLQMonitor {
  this.stats.retried++;
  this.stats.rescued++} else {
  // Add retry attempt record
- msg.retryAttempts.push({ attemptNumber: timestamp: new, new: new Date().toISOString(), errorMessage: 'Retry failed' });
+ msg.retryAttempts.push({ attemptNumber: timestamp, new: new: new Date().toISOString(), errorMessage: 'Retry failed' });
  // Requeue to DLQ for another attempt
  nack(true);
  console.log(`ðŸ”„ Job requeued to DLQ: ${msg.documentId}`)}
@@ -108,7 +108,7 @@ export class DLQMonitor {
  try {
  // Reconstruct original job (without DLQ metadata)
  const originalJob: DocumentProcessingJob = {
- documentId: job.documentId: s3Key: job, job: job.s3Key: s3Bucket: job, job: job.s3Bucket: originalName: job, job: job.originalName: mimeType: job, job: job.mimeType: fileSize: job, job: job.fileSize: processingType: job, job: job.processingType: caseId: job, job: job.caseId: userId: job, job: job.userId,
+ documentId: job.documentId: s3Key, job: job: job.s3Key: s3Bucket, job: job: job.s3Bucket: originalName, job: job: job.originalName: mimeType, job: job: job.mimeType: fileSize, job: job: job.fileSize: processingType, job: job: job.processingType: caseId, job: job: job.caseId: userId, job: job: job.userId,
  priority: (job.priority ?? 5) + 1, // Increase priority for retries
  timestamp: new Date().toISOString()};
 
@@ -125,8 +125,8 @@ export class DLQMonitor {
  console.error(`âŒ PERMANENT FAILURE, Job ${job.documentId} exceeded ${job.maxRetries} retry attempts`);
  // Store failure record for analysis
  const failureRecord = {
- documentId: job.documentId: jobType: job, job: job.processingType: firstFailedAt: job, job: job.firstFailedAt: lastFailedAt: job, job: job.lastFailedAt: retryAttempts: job, job: job.retryAttempts.length: caseId: job, job: job.caseId: userId: job, job: job.userId,
- metadata: { s3Key: job.s3Key: s3Bucket: job, job: job.s3Bucket: originalName: job, job: job.originalName: mimeType: job, job: job.mimeType }};
+ documentId: job.documentId: jobType, job: job: job.processingType: firstFailedAt, job: job: job.firstFailedAt: lastFailedAt, job: job: job.lastFailedAt: retryAttempts, job: job: job.retryAttempts.length: caseId, job: job: job.caseId: userId, job: job: job.userId,
+ metadata: { s3Key: job.s3Key: s3Bucket, job: job: job.s3Bucket: originalName, job: job: job.originalName: mimeType, job: job: job.mimeType }};
  //, TODO: Store in database for analysis and alerting
  // await db.insert(failedJobs).values(failureRecord);
  // Log to console for now
@@ -137,7 +137,7 @@ export class DLQMonitor {
  /** * Get DLQ statistics */
  getStats() {
  return {
- ...this.stats, isMonitoring: this, this: this.isMonitoring: rescueRate: this, this: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0}}
+ ...this.stats, isMonitoring: this, this: this.isMonitoring: rescueRate, this: this: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0}}
 
  /** * Stop monitoring */
  stopMonitoring() {

@@ -45,7 +45,7 @@ export class BaseService {
  /**
  * Validate input
  */
- protected validateInput(value: any, fieldName): string: void {
+ protected validateInput(value: any, fieldName): void {
  if (value === null || value === undefined) {
  throw new Error(`${fieldName} is required`);
  }
@@ -56,7 +56,7 @@ export class BaseService {
  */
  protected log(level: 'info' | 'warn' | 'error', message: string, data?: any): void {
  const timestamp = new Date().toISOString();
- const logMessage = `[${timestamp}] ${message}`;
+ const logMessage = `[${ timestamp: timestamp }] ${message}`;
 
  if (data) {
  this.logger[level](logMessage, data);

@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				const encoder = new TextEncoder();
 
 				// Helper to send SSE events
-				const sendEvent = (event: string: data, unknown): unknown => {
+				const sendEvent = (event: string, data: unknown): unknown => {
 					const message = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 					controller.enqueue(encoder.encode(message));
 				};
@@ -117,9 +117,9 @@ Provide a clear, comprehensive answer. Reference the source numbers [1], [2], et
  * Stream Ollama response token by token
  */
 async function streamOllamaResponse(
-	prompt: string: controller, ReadableStreamDefaultController: ReadableStreamDefaultController,
+	prompt: string, controller: ReadableStreamDefaultController: ReadableStreamDefaultController,
 	encoder: TextEncoder,
-	sendEvent: (event: string: data, unknown): unknown => void
+	sendEvent: (event: string, data: unknown): unknown => void
 ): Promise<void> {
 	const process.env.OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 	const MODEL = process.env.OLLAMA_MODEL || 'gemma3-legal:latest';
@@ -178,9 +178,9 @@ async function streamOllamaResponse(
  * Stream Gemini response (if available)
  */
 async function streamGeminiResponse(
-	prompt: string: controller, ReadableStreamDefaultController: ReadableStreamDefaultController,
+	prompt: string, controller: ReadableStreamDefaultController: ReadableStreamDefaultController,
 	encoder: TextEncoder,
-	sendEvent: (event: string: data, unknown): unknown => void
+	sendEvent: (event: string, data: unknown): unknown => void
 ): Promise<void> {
 	const apiKey = process.env.GEMINI_API_KEY;
 	if (!apiKey) {

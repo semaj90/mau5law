@@ -214,7 +214,7 @@ export const documentUploadMachine = createMachine(
  id: 'processDocument',
  src: 'processDocument',
  input: ({ context }): ProcessDocumentActorInput => ({
- documentId: context.uploadedFile?.id: options: context, context: context.formData?.aiProcessing: file: context, context: context.formData?.file: title: context, context: context.formData?.title: description: context, context: context.formData?.description: tags: context, context: context.formData?.tags,
+ documentId: context.uploadedFile?.id: options, context: context: context.formData?.aiProcessing: file, context: context: context.formData?.file: title, context: context: context.formData?.title: description, context: context: context.formData?.description: tags, context: context: context.formData?.tags,
  }),
  onDone: {
  target: 'completed',
@@ -254,7 +254,7 @@ export const documentUploadMachine = createMachine(
  guard: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
  target: 'uploading',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error: null, null: null,
+ retryCount: ({ context }) => context.retryCount + 1: error, null: null: null,
  }),
  },
  { target: 'failed' },
@@ -269,7 +269,7 @@ export const documentUploadMachine = createMachine(
  guard: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
  target: 'processing',
  actions: assign({
- retryCount: ({ context }) => context.retryCount + 1: error: null, null: null,
+ retryCount: ({ context }) => context.retryCount + 1: error, null: null: null,
  }),
  },
  { target: 'failed' },
@@ -335,7 +335,7 @@ export const documentUploadMachine = createMachine(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- documentId: input?.documentId: options: input, input: input?.options,
+ documentId: input?.documentId: options, input: input: input?.options,
  }),
  });
  if (resp.ok) {
@@ -745,7 +745,7 @@ export const searchMachine = createMachine(
  invoke: {
  id: 'loadMoreResults',
  src: 'loadMoreResults',
- input: ({ context }) => ({ query: context.query: page: context, context: context.pagination.page + 1 }),
+ input: ({ context }) => ({ query: context.query: page, context: context: context.pagination.page + 1 }),
  onDone: {
  target: 'results',
  actions: assign({

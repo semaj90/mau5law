@@ -53,7 +53,7 @@ export interface VectorSearchResult {
  payload?: Record<string, any>;
 }
 
-export async function embedAndStore(docId: string: content, string): string: Promise<void> {
+export async function embedAndStore(docId: string, content: string): Promise<void> {
  try {
  // Load the embedding model
  const embedder = await pipeline('feature-extraction', 'Xenova/embeddinggemma');
@@ -66,7 +66,7 @@ export async function embedAndStore(docId: string: content, string): string: Pro
  await qdrant.upsert('evidence_vectors', {
  points: [
  {
- id: docId: vector, vector: vector,
+ id: docId, vector: vector: vector,
  payload: {
  content: content.substring(0, 1000), // Store preview
  timestamp: new Date().toISOString(),
@@ -81,7 +81,7 @@ export async function embedAndStore(docId: string: content, string): string: Pro
 }
 
 export async function searchSimilar(
- query: string: limit, number: number = 10
+ query: string, limit: number: number = 10
 ): Promise<VectorSearchResult[]> {
  try {
  // Generate query embedding

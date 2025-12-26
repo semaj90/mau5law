@@ -1,183 +1,199 @@
 {
-  "generated": "2025-12-26T17:30:47.280Z",
-  "totalErrors": 77552,
-  "uniquePatterns": 320,
+  "generated": "2025-12-26T18:51:32.762Z",
+  "totalErrors": 86467,
+  "uniquePatterns": 317,
   "topPatterns": [
     {
       "signature": "unknown::'X' expected.",
       "code": "unknown",
       "exampleMessage": "',' expected.",
-      "count": 20956,
-      "filesAffected": 1526,
-      "impactScore": 31978856
+      "count": 23900,
+      "filesAffected": 1491,
+      "impactScore": 35634900
     },
     {
       "signature": "ts(2304)::Cannot find name 'X'.",
       "code": "ts(2304)",
-      "exampleMessage": "Cannot find name 'category_analysis'.",
-      "count": 14167,
-      "filesAffected": 1120,
-      "impactScore": 15867040
+      "exampleMessage": "Cannot find name 'temperature'.",
+      "count": 16629,
+      "filesAffected": 1161,
+      "impactScore": 19306269
     },
     {
       "signature": "ts(1005)::'X' expected.",
       "code": "ts(1005)",
       "exampleMessage": "';' expected.",
-      "count": 7111,
-      "filesAffected": 848,
-      "impactScore": 6030128
+      "count": 6372,
+      "filesAffected": 838,
+      "impactScore": 5339736
     },
     {
       "signature": "unknown::'X' only refers to a type, but is being used as a value here.",
       "code": "unknown",
       "exampleMessage": "'CommandCenterRoute' only refers to a type, but is being used as a value here.",
-      "count": 3854,
-      "filesAffected": 508,
-      "impactScore": 1957832
+      "count": 4623,
+      "filesAffected": 588,
+      "impactScore": 2718324
     },
     {
       "signature": "unknown::No value exists in scope for the shorthand property 'X'. Either declare one or provide an initialize",
       "code": "unknown",
-      "exampleMessage": "No value exists in scope for the shorthand property 'scale'. Either declare one or provide an initializer.",
-      "count": 3167,
-      "filesAffected": 587,
-      "impactScore": 1859029
+      "exampleMessage": "No value exists in scope for the shorthand property 'enableCpuMemArena'. Either declare one or provide an initializer.",
+      "count": 4069,
+      "filesAffected": 676,
+      "impactScore": 2750644
     },
     {
       "signature": "ts(1128)::Declaration or statement expected.",
       "code": "ts(1128)",
       "exampleMessage": "Declaration or statement expected.",
-      "count": 2811,
-      "filesAffected": 647,
-      "impactScore": 1818717
+      "count": 3378,
+      "filesAffected": 734,
+      "impactScore": 2479452
     },
     {
       "signature": "unknown::Object is possibly 'X'.",
       "code": "unknown",
       "exampleMessage": "Object is possibly 'undefined'.",
-      "count": 2307,
-      "filesAffected": 249,
-      "impactScore": 574443
+      "count": 2511,
+      "filesAffected": 281,
+      "impactScore": 705591
     },
     {
       "signature": "ts(2339)::Property 'X' does not exist on type 'X'.",
       "code": "ts(2339)",
-      "exampleMessage": "Property 'similarity' does not exist on type '{ index: any; cosineSimilarity: number; }'.",
-      "count": 2222,
-      "filesAffected": 474,
-      "impactScore": 1053228
-    },
-    {
-      "signature": "unknown::'X' cannot be used as a value because it was imported using 'X'.",
-      "code": "unknown",
-      "exampleMessage": "'browser' cannot be used as a value because it was imported using 'import type'.",
-      "count": 2064,
-      "filesAffected": 310,
-      "impactScore": 639840
+      "exampleMessage": "Property 'similarity' does not exist on type '{ index: any; this: any; }'.",
+      "count": 2448,
+      "filesAffected": 518,
+      "impactScore": 1268064
     },
     {
       "signature": "unknown::Duplicate identifier 'X'.",
       "code": "unknown",
       "exampleMessage": "Duplicate identifier 'null'.",
-      "count": 1704,
-      "filesAffected": 413,
-      "impactScore": 703752
+      "count": 2011,
+      "filesAffected": 450,
+      "impactScore": 904950
+    },
+    {
+      "signature": "unknown::'X' cannot be used as a value because it was imported using 'X'.",
+      "code": "unknown",
+      "exampleMessage": "'z' cannot be used as a value because it was imported using 'import type'.",
+      "count": 1924,
+      "filesAffected": 282,
+      "impactScore": 542568
     },
     {
       "signature": "unknown::Unexpected keyword or identifier.",
       "code": "unknown",
       "exampleMessage": "Unexpected keyword or identifier.",
-      "count": 1559,
-      "filesAffected": 370,
-      "impactScore": 576830
+      "count": 1898,
+      "filesAffected": 404,
+      "impactScore": 766792
     },
     {
       "signature": "unknown::Expression expected.",
       "code": "unknown",
       "exampleMessage": "Expression expected.",
-      "count": 1442,
-      "filesAffected": 519,
-      "impactScore": 748398
-    },
-    {
-      "signature": "unknown::Object literal may only specify known properties, and 'X' does not exist in type 'X'.",
-      "code": "unknown",
-      "exampleMessage": "Object literal may only specify known properties, and 'DEFAULT_CATEGORIES' does not exist in type 'Context7ErrorAnalysisResult'.",
-      "count": 1055,
-      "filesAffected": 387,
-      "impactScore": 408285
-    },
-    {
-      "signature": "unknown::Expected N arguments, but got N.",
-      "code": "unknown",
-      "exampleMessage": "Expected 3 arguments, but got 2.",
-      "count": 947,
-      "filesAffected": 297,
-      "impactScore": 281259
+      "count": 1727,
+      "filesAffected": 592,
+      "impactScore": 1022384
     },
     {
       "signature": "unknown::Left side of comma operator is unused and has no side effects.",
       "code": "unknown",
       "exampleMessage": "Left side of comma operator is unused and has no side effects.",
-      "count": 733,
-      "filesAffected": 240,
-      "impactScore": 175920
+      "count": 1084,
+      "filesAffected": 294,
+      "impactScore": 318696
+    },
+    {
+      "signature": "unknown::Object literal may only specify known properties, and 'X' does not exist in type 'X'.",
+      "code": "unknown",
+      "exampleMessage": "Object literal may only specify known properties, and '(Missing)' does not exist in type '{ embeddings: number[][]; model: string; dimension: number; count: number; }'.",
+      "count": 1013,
+      "filesAffected": 385,
+      "impactScore": 390005
     },
     {
       "signature": "ts(2305)::Module 'X' has no exported member 'X'.",
       "code": "ts(2305)",
-      "exampleMessage": "Module '\\\"$lib/types\\\"' has no exported member 'SearchResult'.",
-      "count": 719,
-      "filesAffected": 346,
-      "impactScore": 248774
-    },
-    {
-      "signature": "ts(2322)::Type 'X' is not assignable to type 'X'.",
-      "code": "ts(2322)",
-      "exampleMessage": "Type 'Session' is not assignable to type 'string'.",
-      "count": 708,
-      "filesAffected": 233,
-      "impactScore": 164964
+      "exampleMessage": "Module '\\\"./services/enhanced-api-client.js\\\"' has no exported member 'EnhancedApiClient'.",
+      "count": 717,
+      "filesAffected": 343,
+      "impactScore": 245931
     },
     {
       "signature": "unknown::Operator 'X' cannot be applied to types 'X' and 'X'.",
       "code": "unknown",
-      "exampleMessage": "Operator '>' cannot be applied to types 'boolean' and '{ if(: any, this: any): any; \\\"\\\": any; return: Promise<unknown>; }'.",
-      "count": 534,
-      "filesAffected": 184,
-      "impactScore": 98256
+      "exampleMessage": "Operator '<' cannot be applied to types 'boolean' and 'number'.",
+      "count": 699,
+      "filesAffected": 223,
+      "impactScore": 155877
     },
     {
-      "signature": "unknown::Expected 'X' for property initializer.",
+      "signature": "unknown::Expected N arguments, but got N.",
       "code": "unknown",
-      "exampleMessage": "Expected '=' for property initializer.",
-      "count": 509,
-      "filesAffected": 248,
-      "impactScore": 126232
+      "exampleMessage": "Expected 2 arguments, but got 1.",
+      "count": 619,
+      "filesAffected": 230,
+      "impactScore": 142370
+    },
+    {
+      "signature": "ts(2322)::Type 'X' is not assignable to type 'X'.",
+      "code": "ts(2322)",
+      "exampleMessage": "Type 'string' is not assignable to type 'number'.",
+      "count": 528,
+      "filesAffected": 233,
+      "impactScore": 123024
     },
     {
       "signature": "ts(1131)::Property or signature expected.",
       "code": "ts(1131)",
       "exampleMessage": "Property or signature expected.",
-      "count": 454,
-      "filesAffected": 264,
-      "impactScore": 119856
+      "count": 511,
+      "filesAffected": 290,
+      "impactScore": 148190
+    },
+    {
+      "signature": "unknown::An element access expression should take an argument.",
+      "code": "unknown",
+      "exampleMessage": "An element access expression should take an argument.",
+      "count": 487,
+      "filesAffected": 189,
+      "impactScore": 92043
+    },
+    {
+      "signature": "unknown::Expected 'X' for property initializer.",
+      "code": "unknown",
+      "exampleMessage": "Expected '=' for property initializer.",
+      "count": 476,
+      "filesAffected": 238,
+      "impactScore": 113288
     },
     {
       "signature": "ts(2339)::Property assignment expected.",
       "code": "ts(2339)",
       "exampleMessage": "Property assignment expected.",
-      "count": 406,
-      "filesAffected": 188,
-      "impactScore": 76328
+      "count": 432,
+      "filesAffected": 207,
+      "impactScore": 89424
+    },
+    {
+      "signature": "unknown::The right-hand side of an arithmetic operation must be of type 'X', 'X', 'X' or an enum type.",
+      "code": "unknown",
+      "exampleMessage": "The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.",
+      "count": 400,
+      "filesAffected": 155,
+      "impactScore": 62000
     },
     {
       "signature": "unknown::Identifier expected.",
       "code": "unknown",
       "exampleMessage": "Identifier expected.",
-      "count": 372,
-      "filesAffected": 160,
-      "impactScore": 59520
+      "count": 393,
+      "filesAffected": 175,
+      "impactScore": 68775
     },
     {
       "signature": "ts(2305)::Module 'X' has no exported member 'X'. Did you mean to use 'X' instead?",
@@ -188,342 +204,326 @@
       "impactScore": 51013
     },
     {
-      "signature": "unknown::The value 'X' cannot be used here.",
-      "code": "unknown",
-      "exampleMessage": "The value 'null' cannot be used here.",
-      "count": 314,
-      "filesAffected": 188,
-      "impactScore": 59032
+      "signature": "ts(2304)::Cannot find name 'X'. Do you need to install type definitions for jQuery? Try `npm i --save-dev @typ",
+      "code": "ts(2304)",
+      "exampleMessage": "Cannot find name '$'. Do you need to install type definitions for jQuery? Try `npm i --save-dev @types/jquery` and then add 'jquery' to the types field in your tsconfig.",
+      "count": 321,
+      "filesAffected": 77,
+      "impactScore": 24717
     },
     {
       "signature": "unknown::'X' is not allowed as a variable declaration name.",
       "code": "unknown",
       "exampleMessage": "'null' is not allowed as a variable declaration name.",
-      "count": 306,
-      "filesAffected": 213,
-      "impactScore": 65178
+      "count": 314,
+      "filesAffected": 216,
+      "impactScore": 67824
     },
     {
-      "signature": "unknown::An element access expression should take an argument.",
+      "signature": "unknown::The value 'X' cannot be used here.",
       "code": "unknown",
-      "exampleMessage": "An element access expression should take an argument.",
-      "count": 305,
-      "filesAffected": 128,
-      "impactScore": 39040
-    },
-    {
-      "signature": "unknown::The right-hand side of an arithmetic operation must be of type 'X', 'X', 'X' or an enum type.",
-      "code": "unknown",
-      "exampleMessage": "The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.",
-      "count": 305,
-      "filesAffected": 126,
-      "impactScore": 38430
+      "exampleMessage": "The value 'null' cannot be used here.",
+      "count": 307,
+      "filesAffected": 196,
+      "impactScore": 60172
     },
     {
       "signature": "unknown::Unexpected token. A constructor, method, accessor, or property was expected.",
       "code": "unknown",
       "exampleMessage": "Unexpected token. A constructor, method, accessor, or property was expected.",
-      "count": 298,
-      "filesAffected": 244,
-      "impactScore": 72712
-    },
-    {
-      "signature": "unknown::This expression is not callable.\\n Type 'X' has no call signatures.",
-      "code": "unknown",
-      "exampleMessage": "This expression is not callable.\\n  Type '{ if(: any): any; }' has no call signatures.",
-      "count": 238,
-      "filesAffected": 107,
-      "impactScore": 25466
-    },
-    {
-      "signature": "unknown::Generic type 'X' requires N type argument(s).",
-      "code": "unknown",
-      "exampleMessage": "Generic type 'Record' requires 2 type argument(s).",
-      "count": 224,
-      "filesAffected": 162,
-      "impactScore": 36288
-    },
-    {
-      "signature": "unknown::The left-hand side of an assignment expression must be a variable or a property access.",
-      "code": "unknown",
-      "exampleMessage": "The left-hand side of an assignment expression must be a variable or a property access.",
-      "count": 218,
-      "filesAffected": 161,
-      "impactScore": 35098
+      "count": 302,
+      "filesAffected": 229,
+      "impactScore": 69158
     },
     {
       "signature": "unknown::The left-hand side of an arithmetic operation must be of type 'X', 'X', 'X' or an enum type.",
       "code": "unknown",
       "exampleMessage": "The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.",
-      "count": 216,
-      "filesAffected": 144,
-      "impactScore": 31104
+      "count": 279,
+      "filesAffected": 175,
+      "impactScore": 48825
     },
     {
       "signature": "ts(2451)::Cannot redeclare block-scoped variable 'X'.",
       "code": "ts(2451)",
       "exampleMessage": "Cannot redeclare block-scoped variable 'documentChunks'.",
-      "count": 210,
-      "filesAffected": 65,
-      "impactScore": 13650
+      "count": 265,
+      "filesAffected": 82,
+      "impactScore": 21730
     },
     {
-      "signature": "ts(2304)::Cannot find name 'X'. Do you need to install type definitions for jQuery? Try `npm i --save-dev @typ",
-      "code": "ts(2304)",
-      "exampleMessage": "Cannot find name '$'. Do you need to install type definitions for jQuery? Try `npm i --save-dev @types/jquery` and then add 'jquery' to the types field in your tsconfig.",
-      "count": 206,
-      "filesAffected": 65,
-      "impactScore": 13390
-    },
-    {
-      "signature": "unknown::'X' refers to a value, but is being used as a type here. Did you mean 'X'?",
+      "signature": "unknown::Generic type 'X' requires N type argument(s).",
       "code": "unknown",
-      "exampleMessage": "'T' refers to a value, but is being used as a type here. Did you mean 'typeof T'?",
-      "count": 179,
-      "filesAffected": 86,
-      "impactScore": 15394
+      "exampleMessage": "Generic type 'Record' requires 2 type argument(s).",
+      "count": 245,
+      "filesAffected": 181,
+      "impactScore": 44345
     },
     {
-      "signature": "unknown::Invalid character.",
+      "signature": "unknown::The left-hand side of an assignment expression must be a variable or a property access.",
       "code": "unknown",
-      "exampleMessage": "Invalid character.",
-      "count": 176,
-      "filesAffected": 37,
-      "impactScore": 6512
+      "exampleMessage": "The left-hand side of an assignment expression must be a variable or a property access.",
+      "count": 223,
+      "filesAffected": 171,
+      "impactScore": 38133
     },
     {
-      "signature": "unknown::Identifier expected. 'X' is a reserved word that cannot be used here.",
+      "signature": "unknown::This expression is not callable.\\n Type 'X' has no call signatures.",
       "code": "unknown",
-      "exampleMessage": "Identifier expected. 'null' is a reserved word that cannot be used here.",
-      "count": 167,
-      "filesAffected": 93,
-      "impactScore": 15531
-    },
-    {
-      "signature": "unknown::Unexpected token\\nhttps://svelte.dev/e/js_parse_error\\n\\nIf you expect this syntax to work, here are",
-      "code": "unknown",
-      "exampleMessage": "Unexpected token\\nhttps://svelte.dev/e/js_parse_error\\n\\nIf you expect this syntax to work, here are some suggestions: \\nIf you use typescript with `svelte-preprocess`, did you add `lang=\\\"ts\\\"` to your `script` tag? \\nDid you setup a `svelte.config.js`? \\nSee https://github.com/sveltejs/language-tools/tree/master/docs#using-with-preprocessors for more info.",
-      "count": 165,
-      "filesAffected": 165,
-      "impactScore": 27225
-    },
-    {
-      "signature": "unknown::Expected N-N arguments, but got N.",
-      "code": "unknown",
-      "exampleMessage": "Expected 2-3 arguments, but got 1.",
-      "count": 159,
-      "filesAffected": 85,
-      "impactScore": 13515
-    },
-    {
-      "signature": "ts(2345)::Argument of type 'X' is not assignable to parameter of type 'X'.",
-      "code": "ts(2345)",
-      "exampleMessage": "Argument of type 'number' is not assignable to parameter of type 'string'.",
-      "count": 156,
-      "filesAffected": 64,
-      "impactScore": 9984
-    },
-    {
-      "signature": "unknown::Block-scoped variable 'X' used before its declaration.",
-      "code": "unknown",
-      "exampleMessage": "Block-scoped variable 'undefined' used before its declaration.",
-      "count": 148,
-      "filesAffected": 53,
-      "impactScore": 7844
-    },
-    {
-      "signature": "unknown::Cannot find module 'X' or its corresponding type declarations.",
-      "code": "unknown",
-      "exampleMessage": "Cannot find module '$routes /api/ai/chat/+server' or its corresponding type declarations.",
-      "count": 145,
-      "filesAffected": 103,
-      "impactScore": 14935
-    },
-    {
-      "signature": "ts(1005)::'X' or 'X' expected.",
-      "code": "ts(1005)",
-      "exampleMessage": "'{' or ';' expected.",
-      "count": 137,
-      "filesAffected": 113,
-      "impactScore": 15481
+      "exampleMessage": "This expression is not callable.\\n  Type '{ if(: any): any; }' has no call signatures.",
+      "count": 216,
+      "filesAffected": 114,
+      "impactScore": 24624
     },
     {
       "signature": "unknown::A function whose declared type is neither 'X', 'X', nor 'X' must return a value.",
       "code": "unknown",
       "exampleMessage": "A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.",
-      "count": 122,
-      "filesAffected": 105,
-      "impactScore": 12810
+      "count": 201,
+      "filesAffected": 160,
+      "impactScore": 32160
     },
     {
-      "signature": "ts(2305)::'X' has no exported member named 'X'. Did you mean 'X'?",
-      "code": "ts(2305)",
-      "exampleMessage": "'\\\"amqplib\\\"' has no exported member named 'Connection'. Did you mean 'connect'?",
-      "count": 113,
-      "filesAffected": 98,
-      "impactScore": 11074
+      "signature": "unknown::Cannot find module 'X' or its corresponding type declarations.",
+      "code": "unknown",
+      "exampleMessage": "Cannot find module '$routes /api/ai/chat/+server' or its corresponding type declarations.",
+      "count": 195,
+      "filesAffected": 149,
+      "impactScore": 29055
+    },
+    {
+      "signature": "unknown::'X' refers to a value, but is being used as a type here. Did you mean 'X'?",
+      "code": "unknown",
+      "exampleMessage": "'T' refers to a value, but is being used as a type here. Did you mean 'typeof T'?",
+      "count": 182,
+      "filesAffected": 94,
+      "impactScore": 17108
+    },
+    {
+      "signature": "unknown::Block-scoped variable 'X' used before its declaration.",
+      "code": "unknown",
+      "exampleMessage": "Block-scoped variable 'undefined' used before its declaration.",
+      "count": 175,
+      "filesAffected": 54,
+      "impactScore": 9450
+    },
+    {
+      "signature": "unknown::Identifier expected. 'X' is a reserved word that cannot be used here.",
+      "code": "unknown",
+      "exampleMessage": "Identifier expected. 'null' is a reserved word that cannot be used here.",
+      "count": 164,
+      "filesAffected": 103,
+      "impactScore": 16892
+    },
+    {
+      "signature": "unknown::Unexpected token\\nhttps://svelte.dev/e/js_parse_error\\n\\nIf you expect this syntax to work, here are",
+      "code": "unknown",
+      "exampleMessage": "Unexpected token\\nhttps://svelte.dev/e/js_parse_error\\n\\nIf you expect this syntax to work, here are some suggestions: \\nIf you use typescript with `svelte-preprocess`, did you add `lang=\\\"ts\\\"` to your `script` tag? \\nDid you setup a `svelte.config.js`? \\nSee https://github.com/sveltejs/language-tools/tree/master/docs#using-with-preprocessors for more info.",
+      "count": 162,
+      "filesAffected": 162,
+      "impactScore": 26244
+    },
+    {
+      "signature": "ts(2339)::Subsequent property declarations must have the same type. Property 'X' must be of type 'X', but here",
+      "code": "ts(2339)",
+      "exampleMessage": "Subsequent property declarations must have the same type.  Property 'string' must be of type 'string', but here has type 'any'.",
+      "count": 142,
+      "filesAffected": 90,
+      "impactScore": 12780
+    },
+    {
+      "signature": "unknown::Expected N-N arguments, but got N.",
+      "code": "unknown",
+      "exampleMessage": "Expected 2-3 arguments, but got 1.",
+      "count": 141,
+      "filesAffected": 88,
+      "impactScore": 12408
+    },
+    {
+      "signature": "unknown::Invalid character.",
+      "code": "unknown",
+      "exampleMessage": "Invalid character.",
+      "count": 141,
+      "filesAffected": 39,
+      "impactScore": 5499
     },
     {
       "signature": "unknown::Type parameter name cannot be 'X'.",
       "code": "unknown",
       "exampleMessage": "Type parameter name cannot be 'string'.",
-      "count": 105,
-      "filesAffected": 70,
-      "impactScore": 7350
-    },
-    {
-      "signature": "unknown::A 'X' parameter must be the first parameter.",
-      "code": "unknown",
-      "exampleMessage": "A 'this' parameter must be the first parameter.",
-      "count": 102,
-      "filesAffected": 32,
-      "impactScore": 3264
+      "count": 133,
+      "filesAffected": 88,
+      "impactScore": 11704
     },
     {
       "signature": "ts(2339)::Property 'X' does not exist on type 'X'. Did you mean 'X'?",
       "code": "ts(2339)",
       "exampleMessage": "Property 'setEx' does not exist on type 'SimpleRedis'. Did you mean 'setex'?",
-      "count": 92,
-      "filesAffected": 46,
-      "impactScore": 4232
+      "count": 127,
+      "filesAffected": 73,
+      "impactScore": 9271
     },
     {
-      "signature": "ts(2322)::No overload matches this call.\\n Overload N of N, 'X', gave the following error.\\n Type 'X' is not a",
-      "code": "ts(2322)",
-      "exampleMessage": "No overload matches this call.\\n  Overload 1 of 2, '(this: void, updater: Updater<AuthState>): void', gave the following error.\\n    Type 'Readable<boolean>' is not assignable to type 'boolean'.\\n  Overload 2 of 2, '(this: void, updater: Updater<AuthState>): void', gave the following error.\\n    Type 'Readable<boolean>' is not assignable to type 'boolean'.",
-      "count": 91,
-      "filesAffected": 34,
-      "impactScore": 3094
+      "signature": "ts(2345)::Argument of type 'X' is not assignable to parameter of type 'X'.",
+      "code": "ts(2345)",
+      "exampleMessage": "Argument of type 'number' is not assignable to parameter of type 'string'.",
+      "count": 127,
+      "filesAffected": 58,
+      "impactScore": 7366
     },
     {
-      "signature": "ts(2322)::Type 'X' is not assignable to type 'X'.\\n Type 'X' is not assignable to type 'X'.",
-      "code": "ts(2322)",
-      "exampleMessage": "Type 'this' is not assignable to type 'boolean'.\\n  Type 'RabbitMQServiceWorker' is not assignable to type 'boolean'.",
-      "count": 90,
-      "filesAffected": 41,
-      "impactScore": 3690
+      "signature": "ts(2305)::'X' has no exported member named 'X'. Did you mean 'X'?",
+      "code": "ts(2305)",
+      "exampleMessage": "'\\\"amqplib\\\"' has no exported member named 'Connection'. Did you mean 'connect'?",
+      "count": 124,
+      "filesAffected": 109,
+      "impactScore": 13516
+    },
+    {
+      "signature": "unknown::No overload matches this call.\\n Overload N of N, 'X', gave the following error.\\n Object literal ma",
+      "code": "unknown",
+      "exampleMessage": "No overload matches this call.\\n  Overload 1 of 2, '(value: { email: string | SQL<unknown> | Placeholder<string, any>; passwordHash: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<...>; ... 7 more ...; updatedAt?: string | ... 1 more ... | Placeholder<...>; }): PgInsertBase<...>', gave the following error.\\n    Object literal may only specify known properties, and 'hashedPassword' does not exist in type '{ email: string | SQL<unknown> | Placeholder<string, any>; passwordHash: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<...>; ... 7 more ...; updatedAt?: string | ... 1 more ... | Placeholder<...>; }'.\\n  Overload 2 of 2, '(values: { email: string | SQL<unknown> | Placeholder<string, any>; passwordHash: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<...>; ... 7 more ...; updatedAt?: string | ... 1 more ... | Placeholder<...>; }[]): PgInsertBase<...>', gave the following error.\\n    Object literal may only specify known properties, and 'email' does not exist in type '{ email: string | SQL<unknown> | Placeholder<string, any>; passwordHash: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<...>; ... 7 more ...; updatedAt?: string | ... 1 more ... | Placeholder<...>; }[]'.",
+      "count": 117,
+      "filesAffected": 58,
+      "impactScore": 6786
+    },
+    {
+      "signature": "ts(1005)::'X' or 'X' expected.",
+      "code": "ts(1005)",
+      "exampleMessage": "'{' or ';' expected.",
+      "count": 94,
+      "filesAffected": 89,
+      "impactScore": 8366
+    },
+    {
+      "signature": "unknown::'X' or 'X' expected.",
+      "code": "unknown",
+      "exampleMessage": "'catch' or 'finally' expected.",
+      "count": 93,
+      "filesAffected": 78,
+      "impactScore": 7254
     }
   ],
   "topFiles": [
     {
-      "file": "src/lib/services/advanced_cache_manager.ts",
-      "errorCount": 998
+      "file": "src/lib/server/services/CaseScoringServiceGrpc.ts",
+      "errorCount": 1162
     },
     {
-      "file": "src/lib/cache/loki-redis-integration-fixed.ts",
-      "errorCount": 762
+      "file": "src/lib/server/ai/rag-pipeline-enhanced.ts",
+      "errorCount": 704
     },
     {
-      "file": "src/lib/cache/loki-redis-integration.ts",
-      "errorCount": 745
-    },
-    {
-      "file": "src/lib/cache/headless-ui-cache.ts",
-      "errorCount": 563
-    },
-    {
-      "file": "src/lib/cache/gpu-leftover-cache.ts",
-      "errorCount": 558
-    },
-    {
-      "file": "src/lib/cache/chr-rom-pattern-cache.ts",
-      "errorCount": 523
-    },
-    {
-      "file": "src/lib/services/cached-rag-service.ts",
-      "errorCount": 488
-    },
-    {
-      "file": "src/lib/3d/memory-palace-engine.ts",
-      "errorCount": 484
-    },
-    {
-      "file": "src/lib/stores/chat-store.svelte.ts",
-      "errorCount": 470
-    },
-    {
-      "file": "src/lib/workers/recursive-evidence-chain-worker.ts",
-      "errorCount": 461
-    },
-    {
-      "file": "src/lib/services/rag-minio-gpu-som-cache.ts",
-      "errorCount": 457
-    },
-    {
-      "file": "src/lib/services/advanced-evidence-analyzer.ts",
-      "errorCount": 453
-    },
-    {
-      "file": "src/lib/services/minio-gpu-cache-integration.ts",
-      "errorCount": 413
-    },
-    {
-      "file": "src/lib/services/knowledge-search/MinioKnowledgeStore.ts",
-      "errorCount": 405
-    },
-    {
-      "file": "src/lib/memory/nes-memory-architecture.ts",
-      "errorCount": 390
+      "file": "src/lib/services/error-analysis/JSONLStorage.ts",
+      "errorCount": 690
     },
     {
       "file": "src/lib/server/lokiHybridStore.ts",
-      "errorCount": 388
+      "errorCount": 685
     },
     {
-      "file": "src/lib/services/error-analysis/diffs/RedisCache.ts",
-      "errorCount": 371
+      "file": "src/lib/server/services/user-recommendation-service.ts",
+      "errorCount": 593
     },
     {
-      "file": "src/lib/services/cognitive-cache-integration.ts",
-      "errorCount": 367
+      "file": "src/lib/services/enhanced-rag-pagerank.ts",
+      "errorCount": 592
     },
     {
-      "file": "src/lib/workers/rag-ingestion-worker.ts",
-      "errorCount": 353
+      "file": "src/lib/services/enhanced-api-client.ts",
+      "errorCount": 578
     },
     {
-      "file": "src/lib/server/services/streaming-ingestion-pipeline.ts",
-      "errorCount": 345
+      "file": "src/lib/server/ai/qdrant-vector-store.ts",
+      "errorCount": 563
     },
     {
       "file": "src/lib/services/enhanced-ai-analysis.ts",
-      "errorCount": 338
+      "errorCount": 530
     },
     {
-      "file": "src/lib/test-utils/mocks.ts",
-      "errorCount": 328
+      "file": "src/lib/services/advanced-evidence-analyzer.ts",
+      "errorCount": 506
     },
     {
-      "file": "src/lib/ast/ast-processor.ts",
-      "errorCount": 328
+      "file": "src/lib/services/qlora-rl-langextract-integration.ts",
+      "errorCount": 476
     },
     {
-      "file": "src/lib/database/migrations/migration-system.ts",
-      "errorCount": 314
+      "file": "src/lib/server/embedding-cache-service.ts",
+      "errorCount": 456
     },
     {
-      "file": "src/lib/server/services/case-summary.service.ts",
-      "errorCount": 312
+      "file": "src/lib/storage/integrated-search-engine.ts",
+      "errorCount": 453
     },
     {
-      "file": "src/lib/services/ai-evidence-analyzer.ts",
-      "errorCount": 294
+      "file": "src/lib/services/rag-minio-gpu-som-cache.ts",
+      "errorCount": 447
     },
     {
-      "file": "src/lib/cache/multi-layer-cache.ts",
-      "errorCount": 291
+      "file": "src/lib/state/evidenceCustodyMachine.ts",
+      "errorCount": 438
     },
     {
-      "file": "src/lib/server/storage/minio.ts",
-      "errorCount": 288
+      "file": "src/lib/workers/recursive-evidence-chain-worker.ts",
+      "errorCount": 438
     },
     {
-      "file": "src/lib/services/kag-fix-store.ts",
-      "errorCount": 283
+      "file": "src/lib/client/ocr-tensor-processor.ts",
+      "errorCount": 411
     },
     {
-      "file": "src/lib/services/gpu-ai-service.ts",
-      "errorCount": 282
+      "file": "src/lib/services/error-analysis/ExperienceRecorder.ts",
+      "errorCount": 409
+    },
+    {
+      "file": "src/lib/services/minio-gpu-cache-integration.ts",
+      "errorCount": 407
+    },
+    {
+      "file": "src/lib/services/knowledge-search/MinioKnowledgeStore.ts",
+      "errorCount": 404
+    },
+    {
+      "file": "src/lib/services/ace-web/minio-service.ts",
+      "errorCount": 400
+    },
+    {
+      "file": "src/lib/services/redis-compression-cache.ts",
+      "errorCount": 399
+    },
+    {
+      "file": "src/lib/server/adapters/service-integrations.ts",
+      "errorCount": 390
+    },
+    {
+      "file": "src/lib/services/error-analysis/DecisionEngine.ts",
+      "errorCount": 388
+    },
+    {
+      "file": "src/lib/services/enhanced-rag-pipeline.ts",
+      "errorCount": 373
+    },
+    {
+      "file": "src/lib/server/webgpu-langchain-bridge.ts",
+      "errorCount": 372
+    },
+    {
+      "file": "src/lib/services/error-analysis/ErrorClustering.ts",
+      "errorCount": 352
+    },
+    {
+      "file": "src/lib/services/cognitive-cache-integration.ts",
+      "errorCount": 349
+    },
+    {
+      "file": "src/lib/services/llm-router.ts",
+      "errorCount": 347
+    },
+    {
+      "file": "src/lib/services/rag-knowledge-pipeline.ts",
+      "errorCount": 331
     }
   ],
   "codemodOpportunities": [
@@ -531,19 +531,19 @@
       "type": "missing-import",
       "description": "Add missing imports",
       "signature": "ts(2304)::Cannot find name 'X'.",
-      "estimatedFixes": 14167
+      "estimatedFixes": 16629
     },
     {
       "type": "missing-import",
       "description": "Add missing imports",
       "signature": "ts(2305)::Module 'X' has no exported member 'X'.",
-      "estimatedFixes": 719
+      "estimatedFixes": 717
     },
     {
       "type": "type-mismatch",
       "description": "Fix type mismatches",
       "signature": "ts(2322)::Type 'X' is not assignable to type 'X'.",
-      "estimatedFixes": 708
+      "estimatedFixes": 528
     },
     {
       "type": "missing-import",
@@ -555,31 +555,19 @@
       "type": "missing-import",
       "description": "Add missing imports",
       "signature": "ts(2304)::Cannot find name 'X'. Do you need to install type definitions for jQuery? Try `npm i --save-dev @typ",
-      "estimatedFixes": 206
+      "estimatedFixes": 321
     },
     {
       "type": "type-mismatch",
       "description": "Fix type mismatches",
       "signature": "ts(2345)::Argument of type 'X' is not assignable to parameter of type 'X'.",
-      "estimatedFixes": 156
+      "estimatedFixes": 127
     },
     {
       "type": "missing-import",
       "description": "Add missing imports",
       "signature": "ts(2305)::'X' has no exported member named 'X'. Did you mean 'X'?",
-      "estimatedFixes": 113
-    },
-    {
-      "type": "type-mismatch",
-      "description": "Fix type mismatches",
-      "signature": "ts(2322)::No overload matches this call.\\n Overload N of N, 'X', gave the following error.\\n Type 'X' is not a",
-      "estimatedFixes": 91
-    },
-    {
-      "type": "type-mismatch",
-      "description": "Fix type mismatches",
-      "signature": "ts(2322)::Type 'X' is not assignable to type 'X'.\\n Type 'X' is not assignable to type 'X'.",
-      "estimatedFixes": 90
+      "estimatedFixes": 124
     }
   ]
 }

@@ -8,13 +8,13 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; import Card from '$lib/components/ui/Card/Card.svelte'; import CardContent from '$lib/components/ui/Card/CardContent.svelte'; import CardHeader from '$lib/components/ui/Card/CardHeader.svelte'; import CardTitle from '$lib/components/ui/Card/CardTitle.svelte'; import Button from '$lib/components/ui/button/Button.svelte'; // Types interface LegalStats { activeCases: number: documentsAnalyzed, number: number, citationsFound: number; complianceScore: number}
+import type { Document } from '$lib/types'; import Card from '$lib/components/ui/Card/Card.svelte'; import CardContent from '$lib/components/ui/Card/CardContent.svelte'; import CardHeader from '$lib/components/ui/Card/CardHeader.svelte'; import CardTitle from '$lib/components/ui/Card/CardTitle.svelte'; import Button from '$lib/components/ui/button/Button.svelte'; // Types interface LegalStats { activeCases: number, documentsAnalyzed: number: number, citationsFound: number; complianceScore: number}
 
- interface LegalService { name: string: icon, string: string, href: string; description: string}
+ interface LegalService { name: string, icon: string: string, href: string; description: string}
 
  interface RecentActivity { type: 'case_update' | 'document_review' | 'citation_check' | 'compliance_scan';, title: string, status?: string; priority?: 'high' | 'medium' | 'low'; confidence?: number; pages?: number; citations?: number; verified?: number; score?: number; issues?: number}
 
- // Legal system statistics - Svelte, 5 $state const legalStats: LegalStats = { activeCases: 23: documentsAnalyzed, 1847: 1847, citationsFound: 542; complianceScore: 96.2 }; // Legal services - corrected and well-formed const legalServices: LegalService[] = [ { name: 'Case Management', icon: 'âš–ï¸', href: '/legal/cases'; description: 'Comprehensive case tracking and management system'
+ // Legal system statistics - Svelte, 5 $state const legalStats: LegalStats = { activeCases: 23, documentsAnalyzed: 1847: 1847, citationsFound: 542; complianceScore: 96.2 }; // Legal services - corrected and well-formed const legalServices: LegalService[] = [ { name: 'Case Management', icon: 'âš–ï¸', href: '/legal/cases'; description: 'Comprehensive case tracking and management system'
  }, {
 // REMOVED: name: 'Document Analysis', icon: 'ðŸ“„', href: '/legal/documents'; description: 'AI-powered legal document analysis and review'
  }, {
@@ -25,7 +25,7 @@ import type { Document } from '$lib/types'; import Card from '$lib/components/ui
 // REMOVED: name: 'Contracts', icon: 'ðŸ“', href: '/legal/contracts'; description: 'Smart contract analysis and risk assessment'
  }, {
 // REMOVED: name: 'Legal Research', icon: 'ðŸ”', href: '/legal/research'; description: 'Comprehensive legal research and case law analysis'
- } ]; // Recent legal activities const recentActivities: RecentActivity[] = [ { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' }, { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94: pages, 67: 67 }, { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23: verified, 21: 21 }, { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5; issues: 2 }];
+ } ]; // Recent legal activities const recentActivities: RecentActivity[] = [ { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' }, { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67: 67 }, { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23, verified: 21: 21 }, { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5; issues: 2 }];
 </script>
 
 <main class="page-repair">

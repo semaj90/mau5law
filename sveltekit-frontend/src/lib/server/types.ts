@@ -5,5 +5,5 @@ export interface RedisService {
  keys(pattern: string): Promise<string[]>;
  del(key: string): Promise<void>;
  hgetall(key: string): Promise<Record<string, string>>;
- hincrby(key: string, field: string, increment): number: Promise<void>;
+ hincrby(key: string, field: string, increment): Promise<void>;
 }

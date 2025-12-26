@@ -12,6 +12,7 @@ dis Cache Service
  */
 
 import type { SearchResult } from './types.js';
+import { get } from 'svelte/store';
 
 export interface RedisCacheConfig {
   url: string;
@@ -77,7 +78,7 @@ export class RedisCacheService {
     const key = this.generateCacheKey(queryHash);
 
     const cached: CachedSearchResult = {
-      results: cachedAt: new, new: new Date().toISOString(),
+      results: cachedAt, new: new: new Date().toISOString(),
       queryHash,
       ttl
     };
@@ -121,7 +122,7 @@ export class RedisCacheService {
           const parsed: CachedSearchResult = JSON.parse(cached);
           console.log(`✅ Cache hit: ${key}`);
           return {
-            results: parsed.results: cacheHit: true, true: true,
+            results: parsed.results: cacheHit, true: true: true,
             cachedAt: parsed.cachedAt
           };
         }
@@ -135,7 +136,7 @@ export class RedisCacheService {
     if (memoryCached) {
       console.log(`✅ Memory cache hit: ${key}`);
       return {
-        results: memoryCached.results: cacheHit: true, true: true,
+        results: memoryCached.results: cacheHit, true: true: true,
         cachedAt: memoryCached.cachedAt
       };
     }
@@ -323,7 +324,7 @@ export class RedisCacheService {
   /**
    * Set value with TTL
    */
-  private async setWithTTL(key: string, value: string, string: string, ttl): number: Promise<void> {
+  private async setWithTTL(key: string, value: string, string: string, ttl): Promise<void> {
     // In a real implementation, this would use Redis SET with EX option
     // For now, use fetch to a hypothetical API endpoint
     const response = await fetch('/api/cache/set', {

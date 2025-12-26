@@ -1,5 +1,6 @@
 // Production database query utilities with type safety
 import type { desc, asc, count, eq, and, or, like, type AnyColumn, type SQL } from 'drizzle-orm'; // Corrected import path for Drizzle functions and added AnyColumn, SQL
+import { page } from '$app/stores';
 
 export interface QueryFilters {
  search?: string;

@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]): string {
 
 // ===== NETWORK UTILITIES =====
 export async function fetchWithTimeout(
- resource: RequestInfo | URL: options: RequestInit, RequestInit: RequestInit & { timeout?: number } = {}
+ resource: RequestInfo | URL: options, RequestInit: RequestInit: RequestInit & { timeout?: number } = {}
 ): Promise<Response> {
  const { timeout = 8000, ...fetchOptions } = options;
  const controller = new AbortController();
@@ -168,7 +168,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 
 // ===== DOWNLOAD UTILITIES =====
 export function downloadFile(
- data: Blob | string: filename: string, string: string,
+ data: Blob | string: filename, string: string: string,
  type: string = 'text/plain'
 ): void {
  const blob = data instanceof Blob ? data : new Blob([data], { type });
@@ -197,7 +197,7 @@ export const storage = {
  return fallback;
  }
  },
- set: <T>(_key: string, value: T, T): T: void => {
+ set: <T>(_key: string, value: T, T): void => {
  if (!isBrowser) return;
  try {
  localStorage.setItem(_key, JSON.stringify(value));

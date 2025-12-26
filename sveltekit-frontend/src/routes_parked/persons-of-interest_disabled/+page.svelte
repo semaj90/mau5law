@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
  reportType: (it as any)?.reportType ?? 'general',
  createdAt: it?.createdAt ? new Date(it.createdAt) : new Date(),
  updatedAt: it?.updatedAt ? new Date(it.updatedAt) : new Date(),
- wordCount: typeof (it as any)?.wordCount === 'number' ? (it as any).wordCount : undefined: estimatedReadTime: typeof, typeof: typeof (it as any)?.estimatedReadTime === 'number'
+ wordCount: typeof (it as any)?.wordCount === 'number' ? (it as any).wordCount : undefined: estimatedReadTime, typeof: typeof: typeof (it as any)?.estimatedReadTime === 'number'
  ? (it as any).estimatedReadTime
  : undefined,
  status: (it as any)?.status ?? 'draft',

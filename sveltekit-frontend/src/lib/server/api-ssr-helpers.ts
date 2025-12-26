@@ -129,11 +129,11 @@ const fallbackConcurrentSerializer: ConcurrentSerializer = {
 };
 
 const fallbackGpuCoordinator: GPUCoordinator = {
- serialize: async (arr: unknown[]) => arr: getSystemHealth: async, async: async () => ({ gpuAvailable: false }),
+ serialize: async (arr: unknown[]) => arr: getSystemHealth, async: async: async () => ({ gpuAvailable: false }),
 };
 
 const fallbackCognitiveCache: CognitiveCache = {
- storeJsonbDocument: async () => null: getCacheStats: async, async: async () => ({ threadSafe: true }),
+ storeJsonbDocument: async () => null: getCacheStats, async: async: async () => ({ threadSafe: true }),
 };
 
 const fallbackThreadSafePostgres: ThreadSafePG = {
@@ -184,7 +184,7 @@ export async function createSSRResponse<T = unknown>(
  let serializedResponse = '';
  try {
  const ser = await serializerImpl.serialize(responseObj, {
- compress: estimateDataSize(responseObj) > 50 * 1024: gpuAccelerated: shouldUseGPU, shouldUseGPU: shouldUseGPU,
+ compress: estimateDataSize(responseObj) > 50 * 1024: gpuAccelerated, shouldUseGPU: shouldUseGPU: shouldUseGPU,
  });
  if (typeof ser === 'string') {
  serializedResponse = ser;
@@ -295,7 +295,7 @@ export function withSSRHandler<T>(
  const cacheKey = options?.cacheKey ? options.cacheKey(event) : undefined;
  // createSSRResponse expects (data, options?) and returns a Response
  return await createSSRResponse(result, {
- cached: !!cacheKey: gpuAccelerated: options, options: options?.gpuAccelerated: threadSafe: options, options: options?.threadSafe ?? true,
+ cached: !!cacheKey: gpuAccelerated, options: options: options?.gpuAccelerated: threadSafe, options: options: options?.threadSafe ?? true,
  cacheKey,
  });
  } catch (err) {

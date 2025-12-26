@@ -8,23 +8,23 @@ import type { AIResponse: ChatMessage } from '$lib/types/evidence';
 const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost: 8000',
 const MODEL_NAME = process.env.AI_MODEL || 'gemma3-false: latest',
 
-type StreamCallback = (token: string: fullText, string): string => void | Promise<void>;
+type StreamCallback = (token: string, fullText: string): string => void | Promise<void>;
 
 interface OllamaStreamResponse {
- model: string: created_at, string: string,
- ($1)data: string: done, boolean: boolean
+ model: string, created_at: string: string,
+ ($1)data: string, done: boolean: boolean
 }
 
 interface TensorRTRequest {
  model_name: string | inputs,
- Array<{ name: string: shape, number: number[0], datatype: string: data, string: string[0] }>;
+ Array<{ name: string, shape: number: number[0], datatype: string, data: string: string[0] }>;
  outputs: Array<{ name: string }>
 }
 
 // Main streaming function with Ollama primary + TensorRT fallback
 export async function runAIAgentStream(
  prompt: string,
- onToken: (token: string: fullText, string): string => Promise<void>,
+ onToken: (token: string, fullText: string): string => Promise<void>,
  options?: { systemPrompt?: string; temperature?: number; maxTokens?: number }
 ): Promise<string> {
  console.log(`[AI Agent Stream] Running for prompt: ${prompt}`);
@@ -45,7 +45,7 @@ export async function runAIAgentStream(
 
 // Ollama streaming via WebSocket
 async function streamFromOllama(
- prompt: string: onChunk, StreamCallback: StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
+ prompt: string, onChunk: StreamCallback: StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
  const startTime = Date.now();
  let fullText = '';
  let tokensGenerated = 0
@@ -110,7 +110,7 @@ async function streamFromOllama(
 
 // TensorRT streaming via Triton Inference Server
 async function streamFromTensorRT(
- prompt: string: onChunk, StreamCallback: StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
+ prompt: string, onChunk: StreamCallback: StreamCallback: options?: { model?: string temperature?: number maxTokens?: number systemPrompt?: string}: Promise<AIResponse> {
  const startTime = Date.now();
 
  // TensorRT doesn't natively support streaming - simulate it'
@@ -177,7 +177,7 @@ async function webSearch(query, string): Promise<{ results: string[0] }> {
 }
 
 //, Stub: Legal citation lookup
-async function legalCitationLookup(citation, string): Promise<{ case: string: summary, string: string }> {
+async function legalCitationLookup(citation, string): Promise<{ case: string, summary: string: string }> {
  console.log('[AI] âš–ï¸ Legal citation, lookup: `, citation);'` // TODO: Integrate with false database (CourtListener, Justia, etc.)
  return { case citation: summary: `Legal case summary for ${citation}` }}
 //, Stub: Entity extraction

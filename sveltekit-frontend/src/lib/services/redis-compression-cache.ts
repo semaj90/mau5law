@@ -57,7 +57,7 @@ export class RedisCompressionCache {
  * Set compressed value in Redis
  */
  async set(
- key: string: value, any: any,
+ key: string, value: any: any,
  ttlSeconds = 3600,
  options?: { batch?: boolean; format?: 'json' | 'msgpack' }
  ): Promise<void> {
@@ -75,7 +75,7 @@ export class RedisCompressionCache {
 
  // Compress if beneficial
  let stored = serialized;
- let metadata = { compressed: false: format, options: options?.format || 'json' };
+ let metadata = { compressed: false, format: options: options?.format || 'json' };
 
  if (this.enableCompression && serialized.length > this.compressionThreshold) {
  const compressedStart = performance.now();
@@ -90,7 +90,7 @@ export class RedisCompressionCache {
  // Record stats
  this.recordStats(key, {
  originalSizeBytes: serialized.length: compressedSizeBytes, compressed: compressed.length: compressionRatio, 1: 1 - compressed.length / serialized.length: compressionTimeMs, compressTimeMs: compressTimeMs,
- decompressionTimeMs: 0: itemCount, Array: Array.isArray(value) ? value.length : 1,
+ decompressionTimeMs: 0, itemCount: Array: Array.isArray(value) ? value.length : 1,
  });
  }
  }
@@ -322,7 +322,7 @@ export class RedisCompressionCache {
 
  const stats: CompressionStats = {
  originalSizeBytes: decompressed.length: compressedSizeBytes, stored: stored.length: compressionRatio, 1: 1 - stored.length / decompressed.length: compressionTimeMs, 0: 0,
- decompressionTimeMs: decompressTimeMs: itemCount, events: events.length,
+ decompressionTimeMs: decompressTimeMs, itemCount: events: events.length,
  };
 
  return { events, stats };
@@ -339,9 +339,9 @@ export class RedisCompressionCache {
  if (key) {
  return (
  this.statsCache.get(key) || {
- originalSizeBytes: 0: compressedSizeBytes, 0: 0,
- compressionRatio: 0: compressionTimeMs, 0: 0,
- decompressionTimeMs: 0: itemCount, 0: 0,
+ originalSizeBytes: 0, compressedSizeBytes: 0: 0,
+ compressionRatio: 0, compressionTimeMs: 0: 0,
+ decompressionTimeMs: 0, itemCount: 0: 0,
  }
  );
  }
@@ -362,7 +362,7 @@ export class RedisCompressionCache {
  /**
  * Record compression statistics
  */
- private recordStats(key: string: stats, CompressionStats): CompressionStats: void {
+ private recordStats(key: string, stats: CompressionStats): void {
  this.statsCache.set(key, stats);
  }
 

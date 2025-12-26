@@ -58,7 +58,7 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
  if (!newParams) return;
  const {
  role: newRole = 'button',
- handler: newHandler: label, newLabel: newLabel,
+ handler: newHandler, label: newLabel: newLabel,
  description: newDescription,
  } = newParams; // Corrected destructuring
 

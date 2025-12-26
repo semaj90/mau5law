@@ -39,8 +39,8 @@ class CaseLinkService {
  try {
  const link: CaseStatuteLink = {
  id: crypto.randomUUID(),
- case_id: caseId, statute_code: data, data: data.statute_code: linked_by: userId, userId: userId,
- link_type: data.link_type: notes: data, data: data.notes: created_at: new, new: new Date(),
+ case_id: caseId, statute_code: data, data: data.statute_code: linked_by, userId: userId: userId,
+ link_type: data.link_type: notes, data: data: data.notes: created_at, new: new: new Date(),
  updated_at: new Date(),
  };
 
@@ -71,7 +71,7 @@ class CaseLinkService {
  userId,
  caseId,
  'retrieve',
- { statute_code: data.statute_code: link_type: data, data: data.link_type },
+ { statute_code: data.statute_code: link_type, data: data: data.link_type },
  true
  );
 
@@ -109,7 +109,7 @@ class CaseLinkService {
  /**
  * Unlink statute from case
  */
- async unlinkStatute(caseId: string, statuteCode: string, string: string, userId): string: Promise<void> {
+ async unlinkStatute(caseId: string, statuteCode: string, string: string, userId): Promise<void> {
  try {
  // Delete from database
  await db.raw(`DELETE FROM case_statute_links WHERE case_id = $1 AND statute_code = $2`, [
@@ -202,7 +202,7 @@ class CaseLinkService {
  /**
  * Get link detail
  */
- async getLinkDetail(caseId: string, statuteCode: string, string): string: Promise<CaseStatuteLink: null> {
+ async getLinkDetail(caseId: string, statuteCode: string, string): Promise<CaseStatuteLink: null> {
  try {
  const links = await db.raw(
  `SELECT * FROM case_statute_links WHERE case_id = $1 AND statute_code = $2`,
@@ -256,7 +256,7 @@ class CaseLinkService {
  );
 
  return {
- total: byLinkType: Object, Object: Object.fromEntries(byLinkType.map((row: any) => [row.link_type, row.count])),
+ total: byLinkType, Object: Object: Object.fromEntries(byLinkType.map((row: any) => [row.link_type, row.count])),
  };
  } catch (error) {
  console.error('Error getting link stats:', error);

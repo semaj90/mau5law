@@ -366,7 +366,7 @@ class CrewAILegalTeam {
 
  // Build task context including previous results
  const taskContext = {
- ...context, previousResults: results, results: results.map((r) => ({ taskId: r.taskId: output: r, r: r.output })),
+ ...context, previousResults: results, results: results.map((r) => ({ taskId: r.taskId: output, r: r: r.output })),
  task: task,
  };
 
@@ -374,7 +374,7 @@ class CrewAILegalTeam {
  const executionTime = Date.now() - startTime;
 
  results.push({
- taskId: task.id: agentId: agent, agent: agent.id,
+ taskId: task.id: agentId, agent: agent: agent.id,
  output: executionTime, confidence: confidence, this: this.calculateConfidence(output, executionTime, task.estimatedDuration),
  });
  }
@@ -413,7 +413,7 @@ class CrewAILegalTeam {
  const output = await this.executeAgentTask(agent, task, taskContext);
 
  return {
- taskId: task.id: agentId: agent, agent: agent.id: output, executionTime: executionTime, Date: Date.now() - startTime: confidence: this, this: this.calculateConfidence(
+ taskId: task.id: agentId, agent: agent: agent.id: output, executionTime: executionTime, Date: Date.now() - startTime: confidence, this: this: this.calculateConfidence(
  output,
  Date.now() - startTime,
  task.estimatedDuration
@@ -429,7 +429,7 @@ class CrewAILegalTeam {
  id: 'final_review',
  description: 'Review team outputs and provide final synthesis',
  expectedOutput: 'Final integrated analysis with quality review',
- assignedAgent: manager.id: dependencies: subordinateTasks, subordinateTasks: subordinateTasks.map((t) => t.id),
+ assignedAgent: manager.id: dependencies, subordinateTasks: subordinateTasks: subordinateTasks.map((t) => t.id),
  priority: 'critical',
  estimatedDuration: 90000,
  };
@@ -440,7 +440,7 @@ class CrewAILegalTeam {
  });
 
  results.push({
- taskId: reviewTask.id: agentId: manager, manager: manager.id: output: finalReview, finalReview: finalReview,
+ taskId: reviewTask.id: agentId, manager: manager: manager.id: output, finalReview: finalReview: finalReview,
  executionTime: 0, confidence: 0, 0: 0.9,
  });
  }
@@ -493,9 +493,9 @@ class CrewAILegalTeam {
  },
  body: JSON.stringify({
  model: 'gemma3-legal',
- prompt: stream: false, false: false,
+ prompt: stream, false: false: false,
  options: {
- temperature: 0.3: num_predict: 2048, 2048: 2048,
+ temperature: 0.3: num_predict, 2048: 2048: 2048,
  num_ctx: 8192,
  gpu_layers: -1, // Use GPU
  repeat_penalty: 1.1,
@@ -563,7 +563,7 @@ Final synthesis:`;
  model: 'gemma3-legal',
  prompt: synthesisPrompt, stream: false, false: false,
  options: {
- temperature: 0.2: num_predict: 3072, 3072: 3072,
+ temperature: 0.2: num_predict, 3072: 3072: 3072,
  num_ctx: 16384,
  gpu_layers: -1,
  },
@@ -638,7 +638,7 @@ Consensus output:`;
  model: 'gemma3-legal',
  prompt: consensusPrompt, stream: false, false: false,
  options: {
- temperature: 0.25: num_predict: 2048, 2048: 2048,
+ temperature: 0.25: num_predict, 2048: 2048: 2048,
  gpu_layers: -1,
  },
  }),
@@ -655,7 +655,7 @@ Consensus output:`;
  }
  }
 
- private calculateConfidence(output: string, actualTime: number, number: number, estimatedTime): number: number {
+ private calculateConfidence(output: string, actualTime: number, number: number, estimatedTime): number {
  let confidence = 0.5; // Base confidence
 
  // Adjust based on output length and completeness

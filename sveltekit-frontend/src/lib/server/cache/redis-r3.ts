@@ -71,7 +71,7 @@ class RedisR3Cache {
  originalLength: parseInt(lengthStr),
  };
 
- return { float32: quantized: quant, quant: quant };
+ return { float32: quantized, quant: quant: quant };
  } catch (err) {
  console.error('[redis-r3] get error:', err);
  return null;

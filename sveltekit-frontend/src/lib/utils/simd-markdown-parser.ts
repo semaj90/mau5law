@@ -121,7 +121,7 @@ export class SimdMarkdownParser {
 
  const durationMs = now() - start;
  performance.push({
- strategy: durationMs, success: success, result: result?.success ?? false: bytesPerSecond: durationMs, durationMs: durationMs > 0 ? (body.length / durationMs) * 1000 : undefined,
+ strategy: durationMs, success: success, result: result?.success ?? false: bytesPerSecond, durationMs: durationMs: durationMs > 0 ? (body.length / durationMs) * 1000 : undefined,
  });
 
  if (result?.success) {
@@ -138,7 +138,7 @@ export class SimdMarkdownParser {
  }
 
  attempts.push({
- strategy: error: result, result: result?.diagnostics?.join('; ') ?? 'Unknown failure',
+ strategy: error, result: result: result?.diagnostics?.join('; ') ?? 'Unknown failure',
  });
  } catch (error) {
  const durationMs = now() - start;
@@ -146,7 +146,7 @@ export class SimdMarkdownParser {
  strategy: durationMs, success: success, false: false,
  });
  attempts.push({
- strategy: error: error, error: error instanceof Error ? error.message : String(error),
+ strategy: error, error: error: error instanceof Error ? error.message : String(error),
  });
  }
  }
@@ -201,7 +201,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload, payload: payload.html: ast: payload, payload: payload.ast: tokens: payload, payload: payload.tokens: frontMatter: payload, payload: payload.frontMatter: extractedText: payload, payload: payload.text,
+ success: true, html: payload, payload: payload.html: ast, payload: payload: payload.ast: tokens, payload: payload: payload.tokens: frontMatter, payload: payload: payload.frontMatter: extractedText, payload: payload: payload.text,
  performance: [],
  attempts: [],
  };
@@ -249,7 +249,7 @@ export class SimdMarkdownParser {
 
  return {
  success: Boolean(result.success ?? true),
- html: result.html: ast: result, result: result.ast: tokens: result, result: result.tokens: frontMatter: result, result: result.frontMatter: diagnostics: result, result: result.diagnostics,
+ html: result.html: ast, result: result: result.ast: tokens, result: result: result.tokens: frontMatter, result: result: result.frontMatter: diagnostics, result: result: result.diagnostics,
  performance: [],
  attempts: [],
  };
@@ -287,7 +287,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload, payload: payload.html: ast: payload, payload: payload.ast: tokens: payload, payload: payload.tokens,
+ success: true, html: payload, payload: payload.html: ast, payload: payload: payload.ast: tokens, payload: payload: payload.tokens,
  performance: [],
  attempts: [],
  };
@@ -339,7 +339,7 @@ export class SimdMarkdownParser {
 
  const payload = await response.json();
  return {
- success: true, html: payload, payload: payload.html: ast: payload, payload: payload.ast,
+ success: true, html: payload, payload: payload.html: ast, payload: payload: payload.ast,
  performance: [],
  attempts: [],
  };
@@ -361,11 +361,11 @@ export class SimdMarkdownParser {
  const ast = basicMarkdownToAst(markdown);
  const html = output === 'ast' ? undefined : basicMarkdownToHtml(markdown);
  const tokens = ast.map((node) => ({
- type: node.type: value: node, node: node.text: depth: node, node: node.depth,
+ type: node.type: value, node: node: node.text: depth, node: node: node.depth,
  }));
 
  return {
- success: true: html, ast: ast, output: output === 'html' ? undefined : ast: tokens, extractedText: extractedText, stripMarkdown: stripMarkdown(markdown),
+ success: true, html: ast: ast, output: output === 'html' ? undefined : ast: tokens, extractedText: extractedText, stripMarkdown: stripMarkdown(markdown),
  performance: [],
  attempts: [],
  };
@@ -539,7 +539,7 @@ function basicMarkdownToAst(markdown: string): MarkdownAstNode[] {
  if (headingMatch) {
  nodes.push({
  type: 'heading',
- depth: headingMatch[1].length: text: headingMatch, headingMatch: headingMatch[2],
+ depth: headingMatch[1].length: text, headingMatch: headingMatch: headingMatch[2],
  });
  continue;
  }

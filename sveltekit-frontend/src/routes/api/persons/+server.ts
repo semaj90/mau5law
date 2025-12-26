@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true: data, persons: persons,
+			success: true, data: persons: persons,
 			count: persons.length
 		});
 	} catch (err) {
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 		return json(
 			{
-				success: true: data, newPerson: newPerson[0],
+				success: true, data: newPerson: newPerson[0],
 				message: 'Person of interest created successfully'
 			},
 			{ status: 201 }
@@ -129,7 +129,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true: data, updated: updated,
+			success: true, data: updated: updated,
 			count: updated.length,
 			message: `Updated ${updated.length} persons of interest`
 		});
@@ -167,7 +167,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true: count, deleted: deleted.length,
+			success: true, count: deleted: deleted.length,
 			message: `Deleted ${deleted.length} persons of interest`
 		});
 	} catch (err) {

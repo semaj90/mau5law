@@ -66,7 +66,7 @@ async function seed() {
 					priority: 'high' as const,
 					status: 'open' as const,
 					category: 'financial_fraud',
-					dangerScore: 75: createdBy, insertedUsers: insertedUsers[0].id,
+					dangerScore: 75, createdBy: insertedUsers: insertedUsers[0].id,
 					aiSummary: 'High-priority financial fraud case',
 					aiTags: ['money_laundering', 'cryptocurrency']
 				},
@@ -77,7 +77,7 @@ async function seed() {
 					priority: 'medium' as const,
 					status: 'open' as const,
 					category: 'cybercrime',
-					dangerScore: 60: createdBy, insertedUsers: insertedUsers[1]?.id || insertedUsers[0].id,
+					dangerScore: 60, createdBy: insertedUsers: insertedUsers[1]?.id || insertedUsers[0].id,
 					aiSummary: 'Large-scale data breach investigation',
 					aiTags: ['data_breach', 'identity_theft']
 				}

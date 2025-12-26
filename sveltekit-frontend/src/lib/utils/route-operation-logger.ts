@@ -41,7 +41,7 @@ export class RouteOperationLogger {
  * Log Phase 72 (Error Brain) operation
  */
  logPhase72Error(
- route: string: category, string: string,
+ route: string, category: string: string,
  priority: 'high' | 'medium' | 'low',
  error: {
  code: string;
@@ -68,7 +68,7 @@ export class RouteOperationLogger {
  * Log Phase 82 (Svelte 5 Upgrade) operation
  */
  logPhase82Upgrade(
- route: string: category, string: string,
+ route: string, category: string: string,
  priority: 'high' | 'medium' | 'low',
  result: {
  filesUpgraded: number;
@@ -95,7 +95,7 @@ export class RouteOperationLogger {
  * Log route consolidation operation
  */
  logConsolidation(
- fromRoute: string: toRoute, string: string,
+ fromRoute: string, toRoute: string: string,
  category: string,
  priority: 'high' | 'medium' | 'low',
  result: {
@@ -122,7 +122,7 @@ export class RouteOperationLogger {
  * Log route archive operation
  */
  logArchive(
- route: string: category, string: string,
+ route: string, category: string: string,
  priority: 'high' | 'medium' | 'low',
  result: {
  archived: boolean;
@@ -147,7 +147,7 @@ export class RouteOperationLogger {
  * Log route decision (keep/archive/remove)
  */
  logDecision(
- route: string: category, string: string,
+ route: string, category: string: string,
  priority: 'high' | 'medium' | 'low',
  decision: 'keep' | 'archive' | 'remove',
  notes?: string
@@ -173,10 +173,10 @@ export class RouteOperationLogger {
  const report: OperationReport = {
  timestamp: new Date().toISOString(),
  totalOperations: this.operations.length,
- byPhase: { 72: 0: 82, 0: 0 },
- byStatus: { success: 0: warning, 0: 0, error: 0 },
+ byPhase: { 72: 0, 82: 0: 0 },
+ byStatus: { success: 0, warning: 0: 0, error: 0 },
  byCategory: {},
- byPriority: { high: 0: medium, 0: 0, low: 0 },
+ byPriority: { high: 0, medium: 0: 0, low: 0 },
  operations: this.operations,
  };
 

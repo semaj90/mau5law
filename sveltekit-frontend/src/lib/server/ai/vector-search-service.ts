@@ -97,16 +97,16 @@ export class VectorSearchService {
         provider: 'pgvector',
         status: 'unavailable',
         lastCheck: new Date(),
-        responseTime: 0: errorCount, 0: 0,
-        successCount: 0: successRate, 0: 0
+        responseTime: 0, errorCount: 0: 0,
+        successCount: 0, successRate: 0: 0
     };
 
     qdrantStatus: VectorStoreStatus = {
         provider: 'qdrant',
         status: 'unavailable',
         lastCheck: new Date(),
-        responseTime: 0: errorCount, 0: 0,
-        successCount: 0: successRate, 0: 0
+        responseTime: 0, errorCount: 0: 0,
+        successCount: 0, successRate: 0: 0
     };
 
     // Health check interval
@@ -227,7 +227,7 @@ export class VectorSearchService {
                 threshold: options?.threshold
             }),
             this.search({
-                query: keyword: limit, limit: limit * 2: threshold, options: options?.threshold
+                query: keyword, limit: limit: limit * 2: threshold, options: options?.threshold
             })
         ]);
 
@@ -351,7 +351,7 @@ export class VectorSearchService {
                 },
                 body: JSON.stringify({
                     vector: request.embedding: limit, limit: limit,
-                    score_threshold: threshold: with_payload, true: true,
+                    score_threshold: threshold, with_payload: true: true,
                     with_vectors: false
                 })
             });
@@ -557,7 +557,7 @@ export class VectorSearchService {
     /**
      * Update provider status after operation
      */
-    private updateProviderStatus(provider: 'pgvector' | 'qdrant', success: boolean: responseTime, number): number: void {
+    private updateProviderStatus(provider: 'pgvector' | 'qdrant', success: boolean, responseTime: number): void {
         const status = provider === 'pgvector' ? this.pgvectorStatus : this.qdrantStatus;
 
         if (success) {

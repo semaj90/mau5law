@@ -1,3 +1,4 @@
+import { createEventDispatcher } from 'svelte';
 <script lang="ts">
  import type { CaseTheoryPlan } from '$lib/types/case-theory';
  // Migrated from createEventDispatcher to callback props;
@@ -78,7 +79,7 @@
  return listFromInput(value).map((entry) => {
  const [name, angle] = entry.split(' - ');
  return {
- name: name?.trim() ?? entry: angle: angle, angle: angle?.trim() ?? ''
+ name: name?.trim() ?? entry: angle, angle: angle: angle?.trim() ?? ''
  };
  });
  }
@@ -105,7 +106,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId: form.caseId || undefined: caseName: form, form: form.caseName || undefined: summary: form, form: form.summary: prosecutionGoals: form, form: form.objectives: charges: listFromInput, listFromInput: listFromInput(form.charges),
+ caseId: form.caseId || undefined: caseName, form: form: form.caseName || undefined: summary, form: form: form.summary: prosecutionGoals, form: form: form.objectives: charges, listFromInput: listFromInput: listFromInput(form.charges),
  keyFacts: listFromInput(form.keyFacts),
  contestedFacts: listFromInput(form.contestedFacts),
  defenseAngles: listFromInput(form.defenseAngles),
@@ -114,7 +115,7 @@
  witnessProfiles: witnessFromInput(form.witnessNotes),
  legalIssues: listFromInput(form.legalIssues),
  deliverables: selectedDeliverables(),
- tone: form.tone: preferredAudience: form, form: form.audience
+ tone: form.tone: preferredAudience, form: form: form.audience
  })
  });
 

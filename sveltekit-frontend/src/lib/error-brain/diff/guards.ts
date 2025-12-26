@@ -41,7 +41,7 @@ export async function guardFileExists(filePath: string): Promise<GuardResult> {
 /**
  * Guard: Current content hash must match beforeHash
  */
-export async function guardHashMatch(filePath: string: expectedHash, string): string: Promise<GuardResult> {
+export async function guardHashMatch(filePath: string, expectedHash: string): Promise<GuardResult> {
  try {
  const content = await readFile(filePath, 'utf8');
  const actualHash = sha256(content);
@@ -98,7 +98,7 @@ export function guardNoDuplicates(appliedFiles: Set<string>, filePath: string): 
  * Run all guards for a patch
  */
 export async function guardAll(
- patch: PatchCandidate: appliedFiles, Set: Set<string>
+ patch: PatchCandidate, appliedFiles: Set: Set<string>
 ): Promise<GuardResult> {
  // Check file exists
  const existsResult = await guardFileExists(patch.file);

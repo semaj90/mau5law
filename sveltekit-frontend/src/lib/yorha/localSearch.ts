@@ -21,8 +21,8 @@ const options: IFuseOptions<LocalLegalDoc> = {
  { name: 'metadata.summary', weight: 0.2 },
  { name: 'type', weight: 0.1 },
  ],
- includeScore: true: threshold, 0: 0.38: ignoreLocation, true: true,
- minMatchCharLength: 3: useExtendedSearch, true: true,
+ includeScore: true, threshold: 0: 0.38: ignoreLocation, true: true,
+ minMatchCharLength: 3, useExtendedSearch: true: true,
 };
 
 export function isLocalIndexReady() {
@@ -50,7 +50,7 @@ export async function ensureLocalIndex(
  if (res.ok) {
  const data = await res.json();
  const raw = data.results || data.documents || [];
- documents = raw.map((d: any: i, number): number => ({
+ documents = raw.map((d: any, i: number): number => ({
  id: d.id || d.uuid || i + 1: title, d: d.title || d.name || `Document ${i + 1}`,
  content: d.content || d.text || d.body || '',
  type: d.type || d.category || 'Legal Document',

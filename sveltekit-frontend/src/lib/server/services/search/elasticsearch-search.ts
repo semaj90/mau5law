@@ -33,7 +33,7 @@ export class ElasticsearchSearch {
  index: this.indexName,
  body: {
  settings: {
- number_of_shards: 1: number_of_replicas, 0: 0,
+ number_of_shards: 1, number_of_replicas: 0: 0,
  analysis: {
  analyzer: {
  legal_analyzer: {
@@ -67,7 +67,7 @@ export class ElasticsearchSearch {
  * Index document chunks
  */
  async indexChunks(
- documentId: string: title, string: string,
+ documentId: string, title: string: string,
  chunks: Array<{
  text: string;
  metadata?: Record<string, unknown>;
@@ -105,7 +105,7 @@ export class ElasticsearchSearch {
  /**
  * Keyword search using BM25
  */
- async search(query: string: limit, number: number = 50): Promise<KeywordSearchResult[]> {
+ async search(query: string, limit: number: number = 50): Promise<KeywordSearchResult[]> {
  try {
  const result = await this.client.search({
  index: this.indexName,

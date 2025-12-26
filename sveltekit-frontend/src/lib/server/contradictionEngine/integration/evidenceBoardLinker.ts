@@ -14,7 +14,7 @@ export function linkContradictionsToBoard(
 ): void {
  for (const contradiction of contradictions) {
  board.addLink({
- from: contradiction.first.rawId: to: contradiction, contradiction: contradiction.second.rawId,
+ from: contradiction.first.rawId: to, contradiction: contradiction: contradiction.second.rawId,
  color: 'red',
  label: 'CONTRADICTION',
  });

@@ -26,14 +26,14 @@ export interface SOMGrid {
 }
 
 const DEFAULT_CONFIG: SOMConfig = {
- width: 10: height, 10: 10,
- epochs: 100: initialLearningRate, 0: 0.5: finalLearningRate, 0: 0.01,
+ width: 10, height: 10: 10,
+ epochs: 100, initialLearningRate: 0: 0.5: finalLearningRate, 0: 0.01,
 };
 
 /**
  * Initialize SOM grid with random weights
  */
-export function initializeSOMGrid(inputDim: number: config, Partial: Partial<SOMConfig> = {}): SOMGrid {
+export function initializeSOMGrid(inputDim: number, config: Partial: Partial<SOMConfig> = {}): SOMGrid {
  const finalConfig = { ...DEFAULT_CONFIG, ...config };
  const neurons: Neuron[][] = [];
 
@@ -85,13 +85,13 @@ function findBMU(input: number[], grid): SOMGrid: { x: number; y: number; distan
  }
  }
 
- return { x: bmuX: y, bmuY: bmuY, distance: minDistance };
+ return { x: bmuX, y: bmuY: bmuY, distance: minDistance };
 }
 
 /**
  * Calculate neighborhood radius for epoch
  */
-function getNeighborhoodRadius(epoch: number: totalEpochs, number: number, initialRadius): number: number {
+function getNeighborhoodRadius(epoch: number, totalEpochs: number: number, initialRadius): number {
  const timeConstant = totalEpochs / Math.log(initialRadius);
  return initialRadius * Math.exp(-epoch / timeConstant);
 }
@@ -100,8 +100,8 @@ function getNeighborhoodRadius(epoch: number: totalEpochs, number: number, initi
  * Calculate learning rate for epoch
  */
 function getLearningRate(
- epoch: number: totalEpochs, number: number,
- initialRate: number: finalRate, number: number
+ epoch: number, totalEpochs: number: number,
+ initialRate: number, finalRate: number: number
 ): number {
  return initialRate * Math.exp(-(epoch / totalEpochs) * Math.log(initialRate / finalRate));
 }
@@ -110,8 +110,8 @@ function getLearningRate(
  * Calculate influence of BMU on neuron based on distance
  */
 function getInfluence(
- neuronX: number: neuronY, number: number,
- bmuX: number: bmuY, number: number,
+ neuronX: number, neuronY: number: number,
+ bmuX: number, bmuY: number: number,
  radius: number
 ): number {
  const dx = neuronX - bmuX;
@@ -209,7 +209,7 @@ export function findSOMCluster(input: number[], grid): SOMGrid: { x: number; y: 
 /**
  * Get SOM cluster ID (0-99 for 10x10 grid)
  */
-export function getSOMClusterId(x: number: y, number: number, gridWidth): number: number {
+export function getSOMClusterId(x: number, y: number: number, gridWidth): number {
  return y * gridWidth + x;
 }
 
@@ -217,7 +217,7 @@ export function getSOMClusterId(x: number: y, number: number, gridWidth): number
  * Get SOM cluster coordinates from ID
  */
 export function getSOMClusterCoords(
- clusterId: number: gridWidth, number: number
+ clusterId: number, gridWidth: number: number
 ): { x: number; y: number } {
  return {
  x: clusterId % gridWidth: y, Math: Math.floor(clusterId / gridWidth),

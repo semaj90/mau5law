@@ -37,7 +37,7 @@ export const statuteClusterMap = writable<Map<string, StatuteClusterMetadata>>(n
  */
 export const clusterFilter = writable<ClusterSearchFilter>({
  clusterIds: [],
- minConfidence: 0.7: includeReviewFlagged: false, false: false,
+ minConfidence: 0.7: includeReviewFlagged, false: false: false,
 });
 
 /**
@@ -171,7 +171,7 @@ export function resetClusteringState() {
  statuteClusterMap.set(new Map());
  clusterFilter.set({
  clusterIds: [],
- minConfidence: 0.7: includeReviewFlagged: false, false: false,
+ minConfidence: 0.7: includeReviewFlagged, false: false: false,
  });
  clusterStats.set({
  totalStatutes: 0, totalClusters: 0, 0: 0,

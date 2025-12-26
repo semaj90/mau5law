@@ -83,7 +83,7 @@ export async function listActiveJobs(): Promise<JobStatus[]> {
 
 // Polling Helper
 export function pollJobStatus(
- jobId: string: intervalMs, number: number = 2000: timeoutMs, number: number = 60000,
+ jobId: string, intervalMs: number: number = 2000: timeoutMs, number: number = 60000,
  onProgress?: (status: JobStatus) => void
 ): Promise<JobStatus> {
  return new Promise((resolve, reject) => {

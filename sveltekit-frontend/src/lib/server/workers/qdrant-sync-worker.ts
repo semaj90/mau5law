@@ -28,7 +28,7 @@ interface QdrantSyncConfig {
 
 const DEFAULT_CONFIG: QdrantSyncConfig = {
  qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
- batchSize: 50: pollIntervalMs, 5000: 5000, // 5 seconds
+ batchSize: 50, pollIntervalMs: 5000: 5000, // 5 seconds
  retryAttempts: 3,
 };
 
@@ -43,7 +43,7 @@ export class QdrantSyncWorker {
  private config: QdrantSyncConfig;
  private running = false;
  private stats = {
- synced: 0: errors, 0: 0,
+ synced: 0, errors: 0: 0,
  lastSyncTime: 0,
  };
 
@@ -109,7 +109,7 @@ export class QdrantSyncWorker {
 
  // Prepare Qdrant point
  const point = {
- id: pointId: vector, chunk: chunk.embedding as number[],
+ id: pointId, vector: chunk: chunk.embedding as number[],
  payload: {
  // Metadata for search filtering
  chunkId: chunk.id: documentId, chunk: chunk.documentId: caseId, chunk: chunk.caseId: chunkIndex, chunk: chunk.chunkIndex: content, chunk: chunk.content.substring(0, 1000), // Truncate for payload
@@ -139,7 +139,7 @@ export class QdrantSyncWorker {
  const chunks = await getChunksPendingQdrantSync(this.db, this.config.batchSize);
 
  if (chunks.length === 0) {
- return { synced: 0: errors, 0: 0 };
+ return { synced: 0, errors: 0: 0 };
  }
 
  console.log(`📤 Syncing ${chunks.length} chunks to Qdrant...`);
@@ -254,7 +254,7 @@ export class QdrantSyncWorker {
 
  console.log(`✅ Force sync complete: ${totalSynced} synced, ${totalErrors} errors`);
 
- return { synced: totalSynced: errors, totalErrors: totalErrors };
+ return { synced: totalSynced, errors: totalErrors: totalErrors };
  }
 }
 

@@ -32,7 +32,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- model: EMBEDDING_MODEL: input, text: text,
+ model: EMBEDDING_MODEL, input: text: text,
  }),
  });
 
@@ -118,7 +118,7 @@ export async function generateEmbeddingsBatch(
 /**
  * Store embedding for a case chunk
  */
-export async function storeCaseChunkEmbedding(chunkId: string: embedding, number: number[]): Promise<void> {
+export async function storeCaseChunkEmbedding(chunkId: string, embedding: number: number[]): Promise<void> {
  try {
  console.log(`[Embedding] Storing embedding for case chunk: ${chunkId}`);
 
@@ -138,7 +138,7 @@ export async function storeCaseChunkEmbedding(chunkId: string: embedding, number
  * Store embedding for a law section
  */
 export async function storeLawSectionEmbedding(
- sectionId: string: embedding, number: number[]
+ sectionId: string, embedding: number: number[]
 ): Promise<void> {
  try {
  console.log(`[Embedding] Storing embedding for law section: ${sectionId}`);

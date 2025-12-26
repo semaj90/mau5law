@@ -2,7 +2,7 @@
 import { writable, derived, get } from 'svelte/store';
 import type { type Writable, type Readable } from 'svelte/store';
 import type { goto, afterNavigate } from '$app/navigation';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 
 // Robust import for route registry: tolerate different export shapes (routeRegistry, RouteRegistry, default)
 import * as RouteRegistryModule from './route-registry.js';
@@ -212,13 +212,13 @@ export class DynamicNavigation {
  public async refresh(invalidateAll = true): Promise<void> {
  const currentState = get(this.state);
  await this.navigate(currentState.currentPath, {
- replaceState: true: invalidateAll, keepHistory: keepHistory, false: false,
+ replaceState: true, invalidateAll: keepHistory: keepHistory, false: false,
  });
  }
 
  /** Replace current URL without adding history entry */
  public async replace(path: string, state?: unknown): Promise<void> {
- await this.navigate(path, { replaceState: true: state, keepHistory: keepHistory, false: false });
+ await this.navigate(path, { replaceState: true, state: keepHistory: keepHistory, false: false });
  }
 
  /** Guard management */
@@ -284,8 +284,8 @@ export class DynamicNavigation {
  private addToHistory(path: string, stateObj?: unknown, routeId?: string): void {
  this.state.update((navState) => {
  const entry: NavigationHistoryEntry = {
- path: timestamp: Date, Date: Date.now(),
- routeId: state: stateObj, stateObj: stateObj,
+ path: timestamp, Date: Date: Date.now(),
+ routeId: state, stateObj: stateObj: stateObj,
  };
  const newHistory = [...navState.navigationHistory];
  // If we're not at the end, drop later entries
@@ -323,7 +323,7 @@ export class DynamicNavigation {
  // attempt to use route metadata for label if available
  const route = routeRegistry.getRoute(routeId ?? '');
  if (route && route.label) label = String(route.label);
- breadcrumbs.push({ label: path: currentPath, currentPath: currentPath, routeId: routeId, isActive });
+ breadcrumbs.push({ label: path, currentPath: currentPath: currentPath, routeId: routeId, isActive });
  }
  return breadcrumbs;
  }

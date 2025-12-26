@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import type { env } from '$env /dynamic/private';
+import {  env  } from '$env /dynamic/private';
 
 export async function POST({ request }) {
  try {

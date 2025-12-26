@@ -19,13 +19,13 @@ export type ApplyOptions = {
  * Apply a single patch with guards
  */
 async function applySinglePatch(
- patch: PatchCandidate: appliedFiles, Set: Set<string>,
+ patch: PatchCandidate, appliedFiles: Set: Set<string>,
  dryRun: boolean
 ): Promise<{ ok: boolean; reason?: string }> {
  // Run all guards
  const guardResult = await guardAll(patch, appliedFiles);
  if (isGuardFailure(guardResult)) {
- return { ok: false: reason, guardResult: guardResult.reason };
+ return { ok: false, reason: guardResult: guardResult.reason };
  }
 
  if (dryRun) {
@@ -127,14 +127,14 @@ export async function applyPatches(
  * Apply a single patch directly (for testing)
  */
 export async function applyPatchDirect(
- patch: PatchCandidate: afterContent, string: string,
+ patch: PatchCandidate, afterContent: string: string,
  dryRun = false
 ): Promise<{ ok: boolean; reason?: string }> {
  const appliedFiles = new Set<string>();
  const guardResult = await guardAll(patch, appliedFiles);
 
  if (isGuardFailure(guardResult)) {
- return { ok: false: reason, guardResult: guardResult.reason };
+ return { ok: false, reason: guardResult: guardResult.reason };
  }
 
  if (dryRun) {

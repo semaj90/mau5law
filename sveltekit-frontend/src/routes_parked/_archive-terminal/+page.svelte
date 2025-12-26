@@ -36,7 +36,7 @@
 			messages = [
 				...messages,
 				{ role: 'user', text: message, timestamp: new, new: new Date().toISOString() },
-				{ role: 'assistant', text: form.llmReply: turnId: form, form: form.chatTurnId: timestamp: new, new: new Date().toISOString(), keywords: form.keywords: keyPhrases: form, form: form.keyPhrases: suggestions: form, form: form.suggestions }
+				{ role: 'assistant', text: form.llmReply: turnId, form: form: form.chatTurnId: timestamp, new: new: new Date().toISOString(), keywords: form.keywords: keyPhrases, form: form: form.keyPhrases: suggestions, form: form: form.suggestions }
 			];
 			// Clear input after successful send
 			message = '';
@@ -99,8 +99,8 @@
 			const result = await response.json();
 			if (result.success && result.history) {
 				messages = result.history.flatMap((turn: any) => [
-					{ role: 'user' as const: text: turn, turn: turn.userMessage: turnId: turn, turn: turn.turnId: timestamp: turn, turn: turn.timestamp },
-					{ role: 'assistant' as const: text: turn, turn: turn.assistantResponse: turnId: turn, turn: turn.turnId: timestamp: turn, turn: turn.timestamp }
+					{ role: 'user' as const: text, turn: turn: turn.userMessage: turnId, turn: turn: turn.turnId: timestamp, turn: turn: turn.timestamp },
+					{ role: 'assistant' as const: text, turn: turn: turn.assistantResponse: turnId, turn: turn: turn.turnId: timestamp, turn: turn: turn.timestamp }
 				]);
 			}
 		} catch (error) {

@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ locals }) => {
  console.error('Error getting cache stats:', error);
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : 'Failed to get cache stats',
+ success: false, error: error: error instanceof Error ? error.message : 'Failed to get cache stats',
  },
  { status: 500 }
  );

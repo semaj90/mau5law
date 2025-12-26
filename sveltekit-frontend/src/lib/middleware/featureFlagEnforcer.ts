@@ -79,7 +79,7 @@ export class FeatureFlagEnforcer {
  /**
  * Log denied request
  */
- private static logDeniedRequest(context: NamespaceContext, message): string: void {
+ private static logDeniedRequest(context: NamespaceContext, message): void {
  if (context.feature === 'errorBrain') {
  featureLogger.logErrorBrain({
  timestamp: new Date(),

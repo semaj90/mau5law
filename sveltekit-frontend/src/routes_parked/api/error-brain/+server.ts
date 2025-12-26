@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Create analysis result
  const result: AnalysisResult = {
- id: analysisId: errorMessage, body: body.errorMessage,
+ id: analysisId, errorMessage: body: body.errorMessage,
  analysis: {
  errorType: body.errorType || 'unknown',
  severity: 'medium',
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to analyze error',
- details: errorMessage: timestamp, new: new Date().toISOString(),
+ details: errorMessage, timestamp: new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -248,7 +248,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
 
  // Create patch result
  const result: PatchResult = {
- id: patchId: analysisId, body: body.analysisId,
+ id: patchId, analysisId: body: body.analysisId,
  patch: {
  filePath: 'src/lib/example.ts',
  changes: [
@@ -290,7 +290,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to generate patch',
- details: errorMessage: timestamp, new: new Date().toISOString(),
+ details: errorMessage, timestamp: new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -403,7 +403,7 @@ export const GET: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to get history',
- details: errorMessage: timestamp, new: new Date().toISOString(),
+ details: errorMessage, timestamp: new: new Date().toISOString(),
  },
  { status: 500 }
  );

@@ -3,7 +3,7 @@
  * Production-ready endpoint management for gemma3-legal:latest and embeddinggemma:latest
  */
 
-import type { env } from '$env /dynamic/private';
+import {  env  } from '$env /dynamic/private';
 import type { dev } from '$app/environment';
 
 // Ollama endpoint configuration
@@ -124,7 +124,7 @@ export async function generateEmbeddings(text: string): Promise<number[]> {
  * Fallback to CUDA service when Ollama is unavailable
  */
 async function fallbackToCudaService(
- prompt: string: maxTokens, number: number,
+ prompt: string, maxTokens: number: number,
  temperature: number
 ): Promise<string> {
  try {
@@ -215,7 +215,7 @@ User: ${lastMessage}
 Assistant: `;
 
  return await generateWithGemma3Legal(enhancedPrompt, {
- max_tokens: 500: temperature, 0: 0.8,
+ max_tokens: 500, temperature: 0: 0.8,
  });
  } catch (error) {
  console.error('Contextual chat failed:', error);

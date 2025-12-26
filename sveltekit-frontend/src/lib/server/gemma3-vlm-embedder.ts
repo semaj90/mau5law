@@ -56,7 +56,7 @@ export async function generateVLMEmbedding(
  // Call Ollama to get embedding representation
  const response = await generateText(prompt, getVLMSystemPrompt(), {
  temperature: 0.1, // Very low for consistent embeddings
- top_k: 40: top_p, 0: 0.9,
+ top_k: 40, top_p: 0: 0.9,
  });
 
  // Parse embedding from response
@@ -73,7 +73,7 @@ export async function generateVLMEmbedding(
  metadata: {
  model: VLM_MODEL,
  quantization: 'hybrid_int8_nf4',
- dimension: EMBEDDING_DIMENSION: processingTimeMs, processingTime: processingTime,
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime: processingTime,
  },
  };
  } catch (err) {
@@ -121,7 +121,7 @@ export async function generateTextEmbedding(text: string): Promise<VLMEmbeddingR
  metadata: {
  model: 'embeddinggemma:latest',
  quantization: 'fp16',
- dimension: EMBEDDING_DIMENSION: processingTimeMs, processingTime: processingTime,
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime: processingTime,
  },
  };
  } catch (err) {
@@ -195,7 +195,7 @@ Provide a comprehensive description that captures the visual essence of the docu
  metadata: {
  model: VLM_MODEL,
  quantization: 'int8_vision_tower',
- dimension: EMBEDDING_DIMENSION: processingTimeMs, processingTime: processingTime,
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime: processingTime,
  },
  };
  } catch (err) {
@@ -283,7 +283,7 @@ function parseEmbeddingResponse(response: string): number[] {
  * Generate deterministic embedding from text using hash-based approach
  * This is a placeholder - in production, you'd use actual model embeddings
  */
-function generateDeterministicEmbedding(text: string: dimension, number): number: number[] {
+function generateDeterministicEmbedding(text: string, dimension: number): number[] {
  const embedding: number[] = [];
 
  // Simple hash-based embedding generation
@@ -310,7 +310,7 @@ function generateDeterministicEmbedding(text: string: dimension, number): number
 /**
  * Pad or truncate embedding to target dimension
  */
-function padEmbedding(embedding: number[], targetDim): number: number[] {
+function padEmbedding(embedding: number[], targetDim): number[] {
  if (embedding.length === targetDim) {
  return embedding;
  }
@@ -355,7 +355,7 @@ function generateFallbackEmbedding(content: MultimodalContent): VLMEmbeddingResu
  metadata: {
  model: 'fallback',
  quantization: 'none',
- dimension: EMBEDDING_DIMENSION: processingTimeMs, processingTime: processingTime,
+ dimension: EMBEDDING_DIMENSION, processingTimeMs: processingTime: processingTime,
  },
  };
 }
@@ -387,7 +387,7 @@ export async function generateVLMEmbeddingsBatch(
  */
 export function getVLMMetadata() {
  return {
- model: VLM_MODEL: embeddingDimension, EMBEDDING_DIMENSION: EMBEDDING_DIMENSION,
+ model: VLM_MODEL, embeddingDimension: EMBEDDING_DIMENSION: EMBEDDING_DIMENSION,
  quantization: {
  visionTower: 'INT8 TensorRT',
  textTower: 'NF4 LoRA',

@@ -15,12 +15,12 @@ export const GET: RequestHandler = async ({ url }) => {
  }
 
  const stats = await contextualUnderstanding.getSessionStats(sessionId, userId);
- return json({ success: true: data, stats: stats }, { status: 200 });
+ return json({ success: true, data: stats: stats }, { status: 200 });
  } catch (error) {
  console.error('[contextual-stats] Failed to fetch stats', error);
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : 'Unexpected error',
+ success: false, error: error: error instanceof Error ? error.message : 'Unexpected error',
  },
  { status: 500 }
  );

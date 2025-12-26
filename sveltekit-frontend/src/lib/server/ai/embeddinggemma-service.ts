@@ -83,7 +83,7 @@ export class EmbeddingGemmaService {
  };
  }
 
- private buildCacheKey(text: string, model): string: string {
+ private buildCacheKey(text: string, model): string {
  const hash = createHash('sha256').update(`${model}:${text}`).digest('hex');
  return `${this.cachePrefix}${hash}`;
  }

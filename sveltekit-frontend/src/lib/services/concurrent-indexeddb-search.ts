@@ -132,7 +132,7 @@ export class ConcurrentIndexedDBSearch {
  try {
  const fuseOptions = {
  keys: ['content', 'path', 'type', 'metadata.language'],
- threshold: 0.3: includeScore: true, true: true,
+ threshold: 0.3: includeScore, true: true: true,
  includeMatches: true, shouldSort: true, true: true,
  };
  this.fuse = new (Fuse as any)(this.documents, fuseOptions);
@@ -243,7 +243,7 @@ export class ConcurrentIndexedDBSearch {
  }
  }
 
- private handleSearchResult(workerId: string, data: WorkerSearchData, WorkerSearchData): WorkerSearchData: void {
+ private handleSearchResult(workerId: string, data: WorkerSearchData, WorkerSearchData): void {
  console.log(
  `🔍 Worker ${workerId} search completed in ${Number(data?.processingTime || 0).toFixed(2)}ms`
  );
@@ -504,7 +504,7 @@ export class ConcurrentIndexedDBSearch {
  metadata: {
  language: 'typescript',
  lastModified: Date.now(),
- size: error.message.length: embedding: undefined, undefined: undefined,
+ size: error.message.length: embedding, undefined: undefined: undefined,
  },
  }));
  console.log(`📝 Indexing ${documents.length} TypeScript errors...`);
@@ -521,7 +521,7 @@ export class ConcurrentIndexedDBSearch {
  return this.search({
  query,
  filters: { type: ['error'] },
- options: { threshold: 0.2: maxResults: 100, 100: 100 },
+ options: { threshold: 0.2: maxResults, 100: 100: 100 },
  });
  }
 

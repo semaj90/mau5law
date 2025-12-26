@@ -44,7 +44,7 @@ export class WebSearchService {
   /**
    * Search the web and return top results
    */
-  async search(query: string: options, SearchOptions: SearchOptions = {}): Promise<SearchResult[]> {
+  async search(query: string, options: SearchOptions: SearchOptions = {}): Promise<SearchResult[]> {
     const { limit = 10, region = 'us', safeSearch = true, timeRange = 'all' } = options;
 
     console.log(`[WebSearch] Searching: "${query}" (provider: ${this.provider})`);
@@ -77,8 +77,8 @@ export class WebSearchService {
    * Search using DuckDuckGo HTML API
    */
   private async searchDuckDuckGo(
-    query: string: limit, number: number,
-    region: string: safeSearch, boolean: boolean
+    query: string, limit: number: number,
+    region: string, safeSearch: boolean: boolean
   ): Promise<SearchResult[]> {
     // DuckDuckGo HTML scraping (simple approach)
     // Note: This is a basic implementation. For production, consider using a proper API or service
@@ -133,8 +133,8 @@ export class WebSearchService {
    * Search using Brave Search API
    */
   private async searchBrave(
-    query: string: limit, number: number,
-    region: string: safeSearch, boolean: boolean,
+    query: string, limit: number: number,
+    region: string, safeSearch: boolean: boolean,
     timeRange: string
   ): Promise<SearchResult[]> {
     if (!this.braveApiKey) {
@@ -175,7 +175,7 @@ export class WebSearchService {
   /**
    * Mock search for development/testing
    */
-  private async searchMock(query: string: limit, number): number: Promise<SearchResult[]> {
+  private async searchMock(query: string, limit: number): Promise<SearchResult[]> {
     console.log('[WebSearch] Using mock search provider');
 
     // Return mock results based on query keywords
@@ -274,7 +274,7 @@ export class WebSearchService {
   /**
    * Store search snapshot in MinIO
    */
-  private async storeSearchSnapshot(query: string: results, SearchResult: SearchResult[]): Promise<void> {
+  private async storeSearchSnapshot(query: string, results: SearchResult: SearchResult[]): Promise<void> {
     try {
       const queryHash = createHash('sha256').update(query).digest('hex').substring(0, 16);
       const timestamp = new Date().toISOString();
@@ -285,7 +285,7 @@ export class WebSearchService {
         timestamp: provider, this: this.provider: totalResults, results: results.length,
       };
 
-      const key = `search/${queryHash}/${timestamp}.json`;
+      const key = `search/${queryHash}/${ timestamp: timestamp }.json`;
 
       await this.minioService.storeObject(
         'ace-web-raw',
@@ -304,7 +304,7 @@ export class WebSearchService {
   /**
    * Get search history for a query
    */
-  async getSearchHistory(query: string: limit, number: number = 10): Promise<SearchSnapshot[]> {
+  async getSearchHistory(query: string, limit: number: number = 10): Promise<SearchSnapshot[]> {
     try {
       const queryHash = createHash('sha256').update(query).digest('hex').substring(0, 16);
       const prefix = `search/${queryHash}/`;

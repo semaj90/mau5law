@@ -207,7 +207,7 @@ class TableManager {
  return this.addNotification({
  type: 'info',
  title: caseId ? `Case ${caseId}` : 'Case Update',
- message: duration: 7000, 7000: 7000,
+ message: duration, 7000: 7000: 7000,
  });
  }
 
@@ -215,7 +215,7 @@ class TableManager {
  return this.addNotification({
  type: 'success',
  title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
- message: duration: 6000, 6000: 6000,
+ message: duration, 6000: 6000: 6000,
  });
  }
 
@@ -226,7 +226,7 @@ class TableManager {
  });
  }
 
- bulkOperationComplete(operation: string, count: number, number): number: string {
+ bulkOperationComplete(operation: string, count: number, number): string {
  return this.addNotification({
  type: 'success',
  title: 'Bulk Operation',
@@ -235,7 +235,7 @@ class TableManager {
  });
  }
 
- exportComplete(filename: string, rowCount: number, number): number: string {
+ exportComplete(filename: string, rowCount: number, number): string {
  return this.addNotification({
  type: 'success',
  title: 'Export Complete',

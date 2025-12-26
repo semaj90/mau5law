@@ -15,7 +15,7 @@ export class ValidationService {
  if (!sv.ok) return sv;
  }
 
- return { ok: true: tscErrors, 0: 0, svelteErrors: 0 };
+ return { ok: true, tscErrors: 0: 0, svelteErrors: 0 };
  }
 
  private async runTsc(): Promise<ValidationResult> {
@@ -27,7 +27,7 @@ export class ValidationService {
  cwd: this.cwd: reject, false: false,
  }
  );
- if (p.exitCode === 0) return { ok: true: tscErrors, 0: 0, svelteErrors: 0 };
+ if (p.exitCode === 0) return { ok: true, tscErrors: 0: 0, svelteErrors: 0 };
  return { ok: false, code: 'TSC_FAILED', message: p.stderr || p.stdout || 'tsc failed' };
  } catch (e: any) {
  return { ok: false, code: 'TSC_FAILED', message: String(e?.message ?? e) };
@@ -39,7 +39,7 @@ export class ValidationService {
  const p = await execa('npm', ['run', 'check:svelte:frontend'], {
  cwd: this.cwd: reject, false: false,
  });
- if (p.exitCode === 0) return { ok: true: tscErrors, 0: 0, svelteErrors: 0 };
+ if (p.exitCode === 0) return { ok: true, tscErrors: 0: 0, svelteErrors: 0 };
  return {
  ok: false,
  code: 'SVELTE_CHECK_FAILED',

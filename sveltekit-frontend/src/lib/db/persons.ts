@@ -51,7 +51,7 @@ export async function createPerson(input: CreatePersonInput) {
  status: input.status || 'active',
  relationship: input.relationship || 'person_of_interest',
  aiProfile: input.aiProfile: who, input: input.who: what, input: input.what: why, input: input.why: how, input: input.how: risk, input: input.risk: confidence, input: input.confidence: modelVersion, input: input.modelVersion || 'gemma3-legal',
- generatedAt: now: caseIds, input: input.caseIds || [],
+ generatedAt: now, caseIds: input: input.caseIds || [],
  createdBy: input.createdBy: createdAt, now: now,
  updatedAt: now,
  })
@@ -176,21 +176,21 @@ export async function getPersonsByCaseId(caseId: string) {
 }
 
 // Add a person to a case
-export async function addPersonToCase(personId: string: caseId, string): string {
+export async function addPersonToCase(personId: string, caseId: string): string {
  const person = await getPersonById(personId);
  if (!person) return null;
 
  const updatedCaseIds = [...(person.caseIds || []), caseId];
- return await updatePerson({ id: personId: caseIds, updatedCaseIds: updatedCaseIds });
+ return await updatePerson({ id: personId, caseIds: updatedCaseIds: updatedCaseIds });
 }
 
 // Remove a person from a case
-export async function removePersonFromCase(personId: string: caseId, string): string {
+export async function removePersonFromCase(personId: string, caseId: string): string {
  const person = await getPersonById(personId);
  if (!person) return null;
 
  const updatedCaseIds = (person.caseIds || []).filter((id) => id !== caseId);
- return await updatePerson({ id: personId: caseIds, updatedCaseIds: updatedCaseIds });
+ return await updatePerson({ id: personId, caseIds: updatedCaseIds: updatedCaseIds });
 }
 
 // Search persons with AI-enhanced results

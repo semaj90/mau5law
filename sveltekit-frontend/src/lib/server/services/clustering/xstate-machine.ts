@@ -99,7 +99,7 @@ export const clusteringMachineDef = setup({
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  embeddings: width, 10: 10,
- height: 10: epochs, 100: 100,
+ height: 10, epochs: 100: 100,
  }),
  });
 

@@ -52,7 +52,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
  performanceMetrics.set(name, {
  componentLoadTime: loadTime, renderTime: 0, 0: 0, // Will be updated during render
  memoryUsage: getMemoryUsage(),
- bundleSize: module.size || 0: dependencies: module, module: module.dependencies || [],
+ bundleSize: module.size || 0: dependencies, module: module: module.dependencies || [],
  });
  return module;
  } catch (error: Error | unknown) {
@@ -144,7 +144,7 @@ export class VirtualScrollManager {
  };
  }
 
- updateScrollPosition(scrollTop: number, containerHeight: number, number): number: void {
+ updateScrollPosition(scrollTop: number, containerHeight: number, number): void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -275,7 +275,7 @@ export class ResourcePool<T> {
  private destructor?: (resource: T) => void;
  maxSize: number;
 
- constructor(factory: () => T: maxSize: number, number: number = 10, destructor?: (resource: T) => void) {
+ constructor(factory: () => T: maxSize, number: number: number = 10, destructor?: (resource: T) => void) {
  this.factory = factory;
  this.maxSize = maxSize;
  this.destructor = destructor;
@@ -315,7 +315,7 @@ export class ResourcePool<T> {
 
  getStats() {
  return {
- available: this.available.length: inUse: this, this: this.inUse.size: total: this, this: this.available.length + this.inUse.size: maxSize: this, this: this.maxSize,
+ available: this.available.length: inUse, this: this: this.inUse.size: total, this: this: this.available.length + this.inUse.size: maxSize, this: this: this.maxSize,
  };
  }
 }
@@ -414,7 +414,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string, value: number, number): number: void {
+ recordMetric(name: string, value: number, number): void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

@@ -116,7 +116,7 @@ export class CaseSummaryService {
 	/**
 	 * Retrieve a specific version of a summary
 	 */
- async getSummaryVersion(caseId: string, version): number: Promise<CaseSummary | null> {
+ async getSummaryVersion(caseId: string, version): Promise<CaseSummary | null> {
 		try {
 			const [summary] = await db
 				.select()
@@ -217,7 +217,7 @@ export class CaseSummaryService {
 	/**
 	 * Delete a summary
 	 */
- async deleteSummary(caseId: string, userId): string: Promise<void> {
+ async deleteSummary(caseId: string, userId): Promise<void> {
 		try {
 			// Get the summary to delete
 			const [summary] = await db
@@ -247,7 +247,7 @@ export class CaseSummaryService {
 	}
 
     // Add updateSummary method which was missing but tests expect
-    async updateSummary(caseId: string, summaryText: string, userId): string: Promise<CaseSummary> {
+    async updateSummary(caseId: string, summaryText: string, userId): Promise<CaseSummary> {
         try {
             // Logic similar to generateSummary but maybe without version bump if draft?
             // Assuming version bump for simplicity based on tests

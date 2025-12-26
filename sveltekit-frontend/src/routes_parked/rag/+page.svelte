@@ -126,7 +126,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  .split(',')
  .map((t) => t.trim())
  .filter(Boolean);
- const body = { query: searchQuery: searchType, tags: tags, searchTagsArray: searchTagsArray: limit, 10: 10 };
+ const body = { query: searchQuery, searchType: tags: tags, searchTagsArray: searchTagsArray, limit: 10: 10 };
  const res = await fetch('/api/v1/rag', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },

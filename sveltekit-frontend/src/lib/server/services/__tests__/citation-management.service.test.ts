@@ -53,7 +53,7 @@ describe('CitationManagementService', () => {
 
  // Mock database response
  const mockCitation = {
- id: citationId: user_id, userId: userId,
+ id: citationId, user_id: userId: userId,
  citation_text: request.citationText: statute_code, request: request.statuteCode: statute_title, request: request.statuteTitle: source_type, request: request.sourceType: tags, JSON: JSON.stringify(request.tags),
  created_at: new Date(),
  updated_at: new Date(),
@@ -149,7 +149,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: 'civil rights',
  filters: {},
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.query).toBe('civil rights');
@@ -159,7 +159,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: '',
  filters: { sourceType: 'statute' as const },
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.filters.sourceType).toBe('statute');
@@ -169,7 +169,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: '',
  filters: { statuteCode: '42-1983' },
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.filters.statuteCode).toBe('42-1983');
@@ -179,7 +179,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: '',
  filters: { tags: ['civil-rights', 'federal'] },
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.filters.tags).toHaveLength(2);
@@ -192,7 +192,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: '',
  filters: { dateFrom, dateTo },
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.filters.dateFrom).toEqual(dateFrom);
@@ -203,7 +203,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: '',
  filters: { minRelevance: 0.8 },
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.filters.minRelevance).toBe(0.8);
@@ -213,7 +213,7 @@ describe('CitationManagementService', () => {
  const request = {
  query: '',
  filters: {},
- limit: 50: offset, 100: 100,
+ limit: 50, offset: 100: 100,
  };
 
  expect(request.limit).toBe(50);
@@ -229,7 +229,7 @@ describe('CitationManagementService', () => {
  tags: ['civil-rights'],
  minRelevance: 0.8,
  },
- limit: 20: offset, 0: 0,
+ limit: 20, offset: 0: 0,
  };
 
  expect(request.query).toBe('civil rights');

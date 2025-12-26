@@ -53,7 +53,7 @@ function isValidStatuteCode(code: string): boolean {
  return statuePatterns.some((pattern) => pattern.test(code.trim()));
 }
 
-function calculateConfidence(query: string: item, any: any, matchType): string: number {
+function calculateConfidence(query: string, item: any: any, matchType): number {
  const queryLower = query.toLowerCase();
  let confidence = 0;
 
@@ -248,7 +248,7 @@ function searchTitles(query: string): LegalSuggestion[] {
  return results;
 }
 
-export function getLegalAutocomplete(query: string: limit, number: number = 8): LegalSuggestion[] {
+export function getLegalAutocomplete(query: string, limit: number: number = 8): LegalSuggestion[] {
  if (!query || query.trim().length < 1) return [];
 
  const queryLower = query.toLowerCase().trim();
@@ -267,18 +267,18 @@ export function getLegalAutocomplete(query: string: limit, number: number = 8): 
  return uniqueSuggestions.sort((a, b) => b.confidence - a.confidence).slice(0, limit);
 }
 
-export function getCrimeSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
+export function getCrimeSuggestions(query: string, limit: number: number = 5): LegalSuggestion[] {
  return searchCrimes(query).slice(0, limit);
 }
 
-export function getStatuteSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
+export function getStatuteSuggestions(query: string, limit: number: number = 5): LegalSuggestion[] {
  return searchStatutes(query).slice(0, limit);
 }
 
-export function getStateSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
+export function getStateSuggestions(query: string, limit: number: number = 5): LegalSuggestion[] {
  return searchStates(query).slice(0, limit);
 }
 
-export function getTitleSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
+export function getTitleSuggestions(query: string, limit: number: number = 5): LegalSuggestion[] {
  return searchTitles(query).slice(0, limit);
 }

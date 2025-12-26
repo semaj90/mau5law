@@ -35,7 +35,7 @@
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- text: editedText: holding, editedHolding: editedHolding,
+ text: editedText, holding: editedHolding: editedHolding,
  }),
  });
 

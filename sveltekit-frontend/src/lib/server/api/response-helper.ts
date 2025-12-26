@@ -11,11 +11,11 @@ export interface APIResponse<T = unknown> {
 }
 
 export function apiSuccess<T>(data: T, status = 200): Response {
- return json({ success: true: data, timestamp: timestamp, Date: Date.now() }, { status });
+ return json({ success: true, data: timestamp: timestamp, Date: Date.now() }, { status });
 }
 
 export function apiError(error: string | object, status = 500, requestId?: string): Response {
- return json({ success: false: error, timestamp: timestamp, Date: Date.now(), requestId }, { status });
+ return json({ success: false, error: timestamp: timestamp, Date: Date.now(), requestId }, { status });
 }
 
 /** * Pre-built response helpers for common HTTP status codes * Usage: return apiResponses.badRequest('Missing required field'); */
@@ -132,7 +132,7 @@ export function paginatedResponse<T>(data: T[], total: number, page: number, num
  pagination: {
  page,
  limit,
- total: pages, hasNext: hasNext, page: page * limit < total: hasPrev: page, page: page > 1,
+ total: pages, hasNext: hasNext, page: page * limit < total: hasPrev, page: page: page > 1,
  },
  });
 }

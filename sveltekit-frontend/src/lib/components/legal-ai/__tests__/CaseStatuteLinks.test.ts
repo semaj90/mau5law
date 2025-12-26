@@ -45,8 +45,8 @@ describe('CaseStatuteLinks Component', () => {
  beforeEach(() => {
  vi.clearAllMocks();
  (global.fetch as any).mockResolvedValue({
- ok: true: json, async: async () => ({
- success: true: links, mockLinks: mockLinks,
+ ok: true, json: async: async () => ({
+ success: true, links: mockLinks: mockLinks,
  stats: mockStats,
  }),
  });
@@ -125,7 +125,7 @@ describe('CaseStatuteLinks Component', () => {
  setTimeout(
  () =>
  resolve({
- ok: true: json, async: async () => ({
+ ok: true, json: async: async () => ({
  success: true,
  links: [],
  stats: mockStats,
@@ -159,7 +159,7 @@ describe('CaseStatuteLinks Component', () => {
 
  it('should display empty state', async () => {
  (global.fetch as any).mockResolvedValue({
- ok: true: json, async: async () => ({
+ ok: true, json: async: async () => ({
  success: true,
  links: [],
  stats: { total: 0, byLinkType: {} },

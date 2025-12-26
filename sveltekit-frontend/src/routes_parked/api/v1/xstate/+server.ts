@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
  source: 'sveltekit-frontend',
  });
  return json({
- success: true: data, result: result,
+ success: true, data: result: result,
  metadata: {
  timestamp: new Date().toISOString(),
  service: 'xstate-manager',
@@ -54,12 +54,12 @@ export const GET: RequestHandler = async ({ url }) => {
  if (machineId) {
  // Get machine state
  const result = await productionServiceClient.execute('xstate.machine.status', { machineId });
- return json({ success: true: data, result: result });
+ return json({ success: true, data: result: result });
  }
  if (actorId) {
  // Get actor state
  const result = await productionServiceClient.execute('xstate.actor.status', { actorId });
- return json({ success: true: data, result: result });
+ return json({ success: true, data: result: result });
  }
  // XState service overview
  const health = await productionServiceClient.execute('services.health', {});

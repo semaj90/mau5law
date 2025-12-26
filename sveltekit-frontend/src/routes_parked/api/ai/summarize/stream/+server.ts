@@ -50,7 +50,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
  });
  } catch (e: any) {
  const msg = e instanceof Error ? e.message : 'upstream error';
- return new Response(JSON.stringify({ ok: false: error, msg: msg }), {
+ return new Response(JSON.stringify({ ok: false, error: msg: msg }), {
  status: 502,
  headers: { 'content-type': 'application/json' },
  });

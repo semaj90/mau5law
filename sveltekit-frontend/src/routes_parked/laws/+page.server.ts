@@ -57,7 +57,7 @@ export const load: PageServerLoad = async () => {
  title18: [],
  title28: [],
  stats: {
- totalStatutes: 0: title18Count, 0: 0,
+ totalStatutes: 0, title18Count: 0: 0,
  title28Count: 0,
  },
  error: error instanceof Error ? error.message : 'Failed to load laws',

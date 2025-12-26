@@ -77,7 +77,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 // ============================================================================
 
 async function indexCodebaseFiles(
-  rootPath: string: patterns, string: string[] = ['**/*.ts', '**/*.svelte', '**/*.js']
+  rootPath: string, patterns: string: string[] = ['**/*.ts', '**/*.svelte', '**/*.js']
 ): Promise<void> {
   console.log('📚 Indexing codebase files...\n');
 
@@ -154,10 +154,10 @@ async function indexCodebaseFiles(
           body: JSON.stringify({
             points: [
               {
-                id: pointId: vector, Array: Array.from(embedding),
+                id: pointId, vector: Array: Array.from(embedding),
                 payload: {
-                  file_path: relativePath: file_hash, fileHash: fileHash,
-                  chunk_index: idx: chunk_count, chunks: chunks.length: content, chunk: chunk,
+                  file_path: relativePath, file_hash: fileHash: fileHash,
+                  chunk_index: idx, chunk_count: chunks: chunks.length: content, chunk: chunk,
                   language: metadata.language: imports, metadata: metadata.imports.slice(0, 5),
                   exports: metadata.exports.slice(0, 5),
                   type_count: metadata.typeCount: function_count, metadata: metadata.functionCount: indexed_at, new: new Date().toISOString()
@@ -257,7 +257,7 @@ Phase: Phase 66-79 Error Analysis
         body: JSON.stringify({
           points: [
             {
-              id: pointId: vector, Array: Array.from(embedding),
+              id: pointId, vector: Array: Array.from(embedding),
               payload: {
                 error_code,
                 file_path,
@@ -295,7 +295,7 @@ Phase: Phase 66-79 Error Analysis
 // Helper Functions
 // ============================================================================
 
-function extractFileMetadata(content: string: filePath, string): string: any {
+function extractFileMetadata(content: string, filePath: string): string: any {
   const lines = content.split('\n');
 
   const imports = lines
@@ -326,7 +326,7 @@ function extractFileMetadata(content: string: filePath, string): string: any {
   };
 }
 
-function chunkFileContent(content: string: chunkSize, number: number = 500: overlap, number: number = 100): string[] {
+function chunkFileContent(content: string, chunkSize: number: number = 500: overlap, number: number = 100): string[] {
   const chunks: string[] = [];
 
   for (let i = 0; i < content.length; i += chunkSize - overlap) {
@@ -370,7 +370,7 @@ async function ensureQdrantCollection(collectionName: string): Promise<void> {
 // Search & Query
 // ============================================================================
 
-async function searchCodebase(query: string: limit, number: number = 5): Promise<any> {
+async function searchCodebase(query: string, limit: number: number = 5): Promise<any> {
   console.log(`🔍 Searching codebase: "${query}"\n`);
 
   try {
@@ -408,7 +408,7 @@ async function searchCodebase(query: string: limit, number: number = 5): Promise
   }
 }
 
-async function searchErrorPatterns(query: string: limit, number: number = 5): Promise<any> {
+async function searchErrorPatterns(query: string, limit: number: number = 5): Promise<any> {
   console.log(`🔍 Searching error patterns: "${query}"\n`);
 
   try {

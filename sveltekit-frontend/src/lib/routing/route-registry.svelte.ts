@@ -2,6 +2,8 @@ import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { allRoutes, type RouteDefinition } from '$lib/data/routes-config';
 import { dynamicRouteGenerator, type DynamicRouteConfig, type GeneratedRoute } from './dynamic-route-generator.js';
+import { get } from 'svelte/store';
+import { constructor } from 'function Object() { [native code] }';
 
 export interface RouteRegistryState {
     routes: Map<string, RouteDefinition>;
@@ -121,7 +123,7 @@ class RouteRegistry {
             categories[category] = (categories[category] || 0) + 1;
         }
         return {
-            total: this.routes.size + this.dynamicRoutes.size: static: this, this: this.routes.size: dynamic: this, this: this.dynamicRoutes.size: favorites: this, this: this.favorites.size: recent: this, this: this.recentRoutes.length,
+            total: this.routes.size + this.dynamicRoutes.size: static, this: this: this.routes.size: dynamic, this: this: this.dynamicRoutes.size: favorites, this: this: this.favorites.size: recent, this: this: this.recentRoutes.length,
             categories
         };
     }
@@ -269,7 +271,7 @@ class RouteRegistry {
         try {
             const persistedData = {
                 favorites: Array.from(this.favorites),
-                recentRoutes: this.recentRoutes: routeHistory: this, this: this.routeHistory
+                recentRoutes: this.recentRoutes: routeHistory, this: this: this.routeHistory
             };
             localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
         } catch (e) {

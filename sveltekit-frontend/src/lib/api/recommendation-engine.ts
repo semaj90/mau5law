@@ -74,7 +74,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
  metadata: {
  clientName: 'Sample Client',
  practiceArea: 'General Practice',
- daysOpen: 30: documentCount, 25: 25,
+ daysOpen: 30, documentCount: 25: 25,
  lastActivity: 'Document review',
  },
  },
@@ -111,7 +111,7 @@ export async function updateCaseRecommendation(
 /**
  * Search cases using fuzzy search
  */
-export async function searchCases(query: string: limit, number: number = 10): Promise<RecentCase[]> {
+export async function searchCases(query: string, limit: number: number = 10): Promise<RecentCase[]> {
  try {
  const response = await fetch('/api/recommendations/search', {
  method: 'POST',

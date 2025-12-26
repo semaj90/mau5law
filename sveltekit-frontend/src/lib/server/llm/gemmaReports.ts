@@ -77,7 +77,7 @@ Requirements:
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: OLLAMA_MODEL: prompt, stream: stream, false: false,
+ model: OLLAMA_MODEL, prompt: stream: stream, false: false,
  }),
  });
 

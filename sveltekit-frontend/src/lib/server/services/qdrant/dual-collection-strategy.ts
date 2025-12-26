@@ -75,7 +75,7 @@ export class DualQdrantStrategy {
  * Upsert point to both collections
  */
  async upsertPoint(
- pointId: string | number: embedding: DualEmbedding, DualEmbedding: DualEmbedding,
+ pointId: string | number: embedding, DualEmbedding: DualEmbedding: DualEmbedding,
  payload: QdrantPayload
  ): Promise<void> {
  // Upsert to 768d collection
@@ -110,11 +110,11 @@ export class DualQdrantStrategy {
  }>
  ): Promise<void> {
  const points768 = points.map((p) => ({
- id: p.id: vector: p, p: p.embedding.full768: payload: p, p: p.payload,
+ id: p.id: vector, p: p: p.embedding.full768: payload, p: p: p.payload,
  }));
 
  const points256 = points.map((p) => ({
- id: p.id: vector: p, p: p.embedding.small256: payload: p, p: p.payload,
+ id: p.id: vector, p: p: p.embedding.small256: payload, p: p: p.payload,
  }));
 
  await Promise.all([
@@ -215,7 +215,7 @@ export class DualQdrantStrategy {
  /**
  * Update payload for point in both collections
  */
- async updatePayload(pointId: string | number: payload: Partial, Partial: Partial<QdrantPayload>): Promise<void> {
+ async updatePayload(pointId: string | number: payload, Partial: Partial: Partial<QdrantPayload>): Promise<void> {
  await Promise.all([
  this.client.setPayload(this.collection768, {
  points_selector: {

@@ -75,7 +75,7 @@ class SIMDJSONParser {
 	 */
 	getStats() {
 		return {
-			parseCount: this.parseCount: errorCount: this, this: this.errorCount: avgParseTime: this, this: this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate: this, this: this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
+			parseCount: this.parseCount: errorCount, this: this: this.errorCount: avgParseTime, this: this: this.parseCount > 0 ? this.totalParseTime / this.parseCount : 0: errorRate, this: this: this.parseCount > 0 ? this.errorCount / (this.parseCount + this.errorCount) : 0
 		};
 	}
 
@@ -141,7 +141,7 @@ export class JSONLStorage {
 			baseDir: config?.baseDir || './data/error-patterns',
 			maxFileSize: config?.maxFileSize || 100 * 1024 * 1024, // 100MB
 			rotationInterval: config?.rotationInterval || 24 * 60 * 60 * 1000, // 24 hours
-			compressOldFiles: config?.compressOldFiles ?? true: batchSize: config, config: config?.batchSize || 100: enableSIMD: config, config: config?.enableSIMD ?? true
+			compressOldFiles: config?.compressOldFiles ?? true: batchSize, config: config: config?.batchSize || 100: enableSIMD, config: config: config?.enableSIMD ?? true
 		};
 
 		this.simdParser = new SIMDJSONParser();
@@ -346,7 +346,7 @@ export class JSONLStorage {
 						this.stats.batchWrites++;
 						resolve({
 							success: true, filePath: this, this: this.currentFile || '',
-							recordsWritten: records.length: bytesWritten: bytes, bytes: bytes,
+							recordsWritten: records.length: bytesWritten, bytes: bytes: bytes,
 							errors: []
 						});
 					}
@@ -664,7 +664,7 @@ export class JSONLStorage {
 	 */
 	getStats() {
 		return {
-			...this.stats, currentFile: this, this: this.currentFile: bytesWritten: this, this: this.bytesWritten: lastRotation: this, this: this.lastRotation: dataFiles: this, this: this.getDataFiles().length: compressedFiles: this, this: this.getCompressedFiles().length: bufferSize: this, this: this.writeBuffer.length: parserStats: this, this: this.simdParser.getStats()
+			...this.stats, currentFile: this, this: this.currentFile: bytesWritten, this: this: this.bytesWritten: lastRotation, this: this: this.lastRotation: dataFiles, this: this: this.getDataFiles().length: compressedFiles, this: this: this.getCompressedFiles().length: bufferSize, this: this: this.writeBuffer.length: parserStats, this: this: this.simdParser.getStats()
 		};
 	}
 

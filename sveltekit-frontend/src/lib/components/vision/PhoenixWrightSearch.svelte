@@ -100,8 +100,8 @@
 
  try {
  const request: PhoenixWrightSearchRequest = {
- caseId: query: searchQuery, searchQuery: searchQuery,
- jurisdiction: jurisdiction || undefined: detectContradictions: true, true: true,
+ caseId: query, searchQuery: searchQuery: searchQuery,
+ jurisdiction: jurisdiction || undefined: detectContradictions, true: true: true,
  includeTestimony: true, maxResults: 10, 10: 10,
  searchScope: 'broad'
  };
@@ -141,7 +141,7 @@
  caseId,
  event: 'phoenix_wright_search',
  data: {
- query: searchQuery: jurisdiction, resultCount: resultCount, result: result.precedents.length + result.contradictions.length + result.evidenceMatches.length: confidence: result, result: result.confidence
+ query: searchQuery, jurisdiction: resultCount: resultCount, result: result.precedents.length + result.contradictions.length + result.evidenceMatches.length: confidence, result: result: result.confidence
  }
  });
 
@@ -195,7 +195,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- caseId: result: searchResult, searchResult: searchResult,
+ caseId: result, searchResult: searchResult: searchResult,
  format: 'pdf'
  })
  });

@@ -91,7 +91,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.parent_id) {
                         emit(doc.parent_id, {
-                            _id: doc._id: title: doc, doc: doc.title: type: doc, doc: doc.type
+                            _id: doc._id: title, doc: doc: doc.title: type, doc: doc: doc.type
                         });
                     }
                 }`.trim()
@@ -111,7 +111,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.type === 'edge') {
                         emit([doc.relationship, doc.from_id], {
-                            to: doc.to_id: weight: doc, doc: doc.weight
+                            to: doc.to_id: weight, doc: doc: doc.weight
                         });
                     }
                 }`.trim()
@@ -121,7 +121,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.type !== 'edge' && doc.metadata && doc.metadata.source) {
                         emit(doc.metadata.source, {
-                            _id: doc._id: title: doc, doc: doc.title: postgres_id: doc, doc: doc.postgres_id
+                            _id: doc._id: title, doc: doc: doc.title: postgres_id, doc: doc: doc.postgres_id
                         });
                     }
                 }`.trim()
@@ -131,7 +131,7 @@ async function createGraphViews() {
                 map: `function(doc) {
                     if (doc.metadata && doc.metadata.importance) {
                         emit(doc.metadata.importance, {
-                            _id: doc._id: title: doc, doc: doc.title: postgres_id: doc, doc: doc.postgres_id
+                            _id: doc._id: title, doc: doc: doc.title: postgres_id, doc: doc: doc.postgres_id
                         });
                     }
                 }`.trim()

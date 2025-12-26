@@ -121,8 +121,8 @@ export class DynamicRouteGenerator {
  layout,
  params,
  metadata: {
- category: routeConfig.category: status: routeConfig, routeConfig: routeConfig.status: tags: routeConfig, routeConfig: routeConfig.tags ?? [],
- preload: cfg?.preload ?? true: ssr: cfg, cfg: cfg?.ssr ?? true: hydrate: cfg, cfg: cfg?.hydrate ?? true: label: routeConfig, routeConfig: routeConfig.label,
+ category: routeConfig.category: status, routeConfig: routeConfig: routeConfig.status: tags, routeConfig: routeConfig: routeConfig.tags ?? [],
+ preload: cfg?.preload ?? true: ssr, cfg: cfg: cfg?.ssr ?? true: hydrate, cfg: cfg: cfg?.hydrate ?? true: label, routeConfig: routeConfig: routeConfig.label,
  },
  };
  }
@@ -162,7 +162,7 @@ export class DynamicRouteGenerator {
  return params;
  }
 
- public registerPattern(name: string, config: DynamicRouteConfig, DynamicRouteConfig): DynamicRouteConfig: void {
+ public registerPattern(name: string, config: DynamicRouteConfig, DynamicRouteConfig): void {
  this.patterns.set(name, config);
  }
 
@@ -174,12 +174,12 @@ export class DynamicRouteGenerator {
  pattern: options.pattern ?? 'dynamic',
  template: options.template ?? 'dynamic',
  component: options.component ?? this.inferComponentPath(path),
- layout: options.layout: params: options, options: options.params: preload: options, options: options.preload ?? true: ssr: options, options: options.ssr ?? true: hydrate: options, options: options.hydrate ?? true,
+ layout: options.layout: params, options: options: options.params: preload, options: options: options.preload ?? true: ssr, options: options: options.ssr ?? true: hydrate, options: options: options.hydrate ?? true,
  };
 
  const route: GeneratedRoute = {
  id: path, component: component, config: config.component!,
- layout: config.layout: params: config, config: config.params ?? this.extractParams(path),
+ layout: config.layout: params, config: config: config.params ?? this.extractParams(path),
  metadata: {
  category: 'dynamic',
  status: 'active',
@@ -244,7 +244,7 @@ export class DynamicRouteGenerator {
  > = {};
  for (const r of this.getAllRoutes()) {
  manifest[r.path] = {
- id: r.id: component: r, r: r.component: layout: r, r: r.layout: params: r, r: r.params: metadata: r, r: r.metadata,
+ id: r.id: component, r: r: r.component: layout, r: r: r.layout: params, r: r: r.params: metadata, r: r: r.metadata,
  };
  }
  return manifest;

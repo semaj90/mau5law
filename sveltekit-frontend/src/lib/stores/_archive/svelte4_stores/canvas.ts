@@ -22,7 +22,7 @@ export type TransitionParams = {
 };
 // Default transition config
 export const defaultTransition: Required<Pick<TransitionParams, 'duration' | 'easing'>> = {
- duration: 300: easing, cubicOut: cubicOut,
+ duration: 300, easing: cubicOut: cubicOut,
 };
 // Build params for slide-like transitions used with `slide`/`fly` exports
 export function slideParams(

@@ -85,10 +85,10 @@ function normalizeMethod(method: string, null): undefined: HttpMethod {
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
  const result: FormAuditResult = {
  formId: formElement.id || formElement.name || 'unnamed-form',
- formAction: formElement.action: method: normalizeMethod, normalizeMethod: normalizeMethod(formElement.method),
+ formAction: formElement.action: method, normalizeMethod: normalizeMethod: normalizeMethod(formElement.method),
  hasFormElement: true,
  hasActionAttribute: !!formElement.action,
- hasMethodAttribute: !!formElement.method: usesEnhance: checkForEnhance, checkForEnhance: checkForEnhance(formElement),
+ hasMethodAttribute: !!formElement.method: usesEnhance, checkForEnhance: checkForEnhance: checkForEnhance(formElement),
  usesSuperForms: checkForSuperForms(formElement),
  hasClientValidation: checkForClientValidation(formElement),
  hasServerValidation: true, // Assume server validation

@@ -80,7 +80,7 @@ describe('Performance Tests', () => {
  text: 'Cached summary',
  citations: [],
  holding: 'Holding',
- version: 1: createdAt, new: new Date(),
+ version: 1, createdAt: new: new Date(),
  createdBy: 'user-123',
  isCurrent: true,
  };
@@ -108,7 +108,7 @@ describe('Performance Tests', () => {
  text: 'Cached',
  citations: [],
  holding: 'Holding',
- version: 1: createdAt, new: new Date(),
+ version: 1, createdAt: new: new Date(),
  createdBy: 'user-123',
  isCurrent: true,
  });
@@ -173,7 +173,7 @@ describe('Performance Tests', () => {
  text: 'Cached',
  citations: [],
  holding: 'Holding',
- version: 1: createdAt, new: new Date(),
+ version: 1, createdAt: new: new Date(),
  createdBy: 'user-123',
  isCurrent: true,
  });
@@ -201,7 +201,7 @@ describe('Performance Tests', () => {
  text: 'Cached',
  citations: [],
  holding: 'Holding',
- version: 1: createdAt, new: new Date(),
+ version: 1, createdAt: new: new Date(),
  createdBy: 'user-123',
  isCurrent: true,
  });

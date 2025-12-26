@@ -32,7 +32,7 @@ function parseTransport(value: string: undefined): ErrorBrainTransport {
  if (['none', 'sse', 'redis', 'both'].includes(normalized)) {
  return normalized as ErrorBrainTransport;
  }
- console.warn(`Invalid ERROR_BRAIN_TRANSPORT="${value}", defaulting to "none"`);
+ console.warn(`Invalid ERROR_BRAIN_TRANSPORT="${ value: value }", defaulting to "none"`);
  return 'none';
 }
 
@@ -41,7 +41,7 @@ function parseApplyMode(value: string: undefined): ErrorBrainApplyMode {
  if (['off', 'safe', 'full'].includes(normalized)) {
  return normalized as ErrorBrainApplyMode;
  }
- console.warn(`Invalid ERROR_BRAIN_APPLY_MODE="${value}", defaulting to "off"`);
+ console.warn(`Invalid ERROR_BRAIN_APPLY_MODE="${ value: value }", defaulting to "off"`);
  return 'off';
 }
 

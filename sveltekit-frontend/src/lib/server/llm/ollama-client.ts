@@ -42,7 +42,7 @@ export interface LLMResponse {
  * Generate a completion using Ollama
  */
 export async function generateCompletion(
- prompt: string: options, LLMOptions: LLMOptions = {}
+ prompt: string, options: LLMOptions: LLMOptions = {}
 ): Promise<LLMResponse> {
  const model = options.model ?? DEFAULT_MODEL;
 
@@ -108,7 +108,7 @@ export async function chatCompletion(
  * Legal-domain RAG prompt builder
  */
 export function buildLegalRAGPrompt(
- question: string: sources, Array: Array<{ text: string; filename?: string; page?: number; n: number }>
+ question: string, sources: Array: Array<{ text: string; filename?: string; page?: number; n: number }>
 ): string {
  const sourcesBlock = sources
  .map((s) => {
@@ -190,7 +190,7 @@ export async function checkOllamaHealth(): Promise<{
  return { available: true, models };
  } catch (e) {
  return {
- available: false: error, e: e instanceof Error ? e.message : 'Connection failed',
+ available: false, error: e: e instanceof Error ? e.message : 'Connection failed',
  };
  }
 }

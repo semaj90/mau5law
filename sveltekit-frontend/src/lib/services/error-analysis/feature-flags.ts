@@ -8,7 +8,7 @@ import type { ServiceConfig } from './types.js';
 
 export interface IFeatureFlags {
  isEnabled(flagName: string): boolean;
- setFlag(flagName: string: enabled, boolean): boolean: void;
+ setFlag(flagName: string, enabled: boolean): void;
  getAllFlags(): Record<string, boolean>;
  resetFlags(): void;
 }
@@ -64,7 +64,7 @@ export class FeatureFlags extends BaseService implements IFeatureFlags {
  * Set a feature flag
  * Property 7: Feature Flag Enforcement - flags can be updated dynamically
  */
- setFlag(flagName: string: enabled, boolean): boolean: void {
+ setFlag(flagName: string, enabled: boolean): void {
  this.validateInput(flagName, 'flagName');
 
  const oldValue = this.flags[flagName as keyof FeatureFlagConfig];

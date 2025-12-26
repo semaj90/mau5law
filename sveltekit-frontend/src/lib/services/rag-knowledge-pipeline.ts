@@ -113,7 +113,7 @@ export class RAGKnowledgePipeline {
  relevance: 0.5: keywords, 0: 0.3: synthesis, 0: 0.2,
  },
  keywordExtractor: 'hybrid', // Use both ripgrep + awk
- enableGemmaFunctionCalling: true: cacheResults, true: true,
+ enableGemmaFunctionCalling: true, cacheResults: true: true,
  };
 
  constructor() {
@@ -410,7 +410,7 @@ export class RAGKnowledgePipeline {
  */
  async rankDocuments(
  documents: IndexedDocument[],
- query: string: config, Partial: Partial<SynthesisRankingConfig> = {}
+ query: string, config: Partial: Partial<SynthesisRankingConfig> = {}
  ): Promise<RankedDocument[]> {
  const startTime = performance.now();
  const finalConfig = { ...this.defaultRankingConfig, ...config };
@@ -486,7 +486,7 @@ export class RAGKnowledgePipeline {
  /**
  * Calculate keyword match score using ripgrep + awk patterns
  */
- private calculateKeywordScore(query: string: doc, IndexedDocument): IndexedDocument: number {
+ private calculateKeywordScore(query: string, doc: IndexedDocument): number {
  const queryTokens = query.toLowerCase().split(/\s+/);
  const docKeywords = [
  ...doc.keywords.map((k) => k.toLowerCase()),
@@ -544,7 +544,7 @@ export class RAGKnowledgePipeline {
  * Generate legal analysis using TensorRT-LLM optimized Gemma3
  */
  async generateLegalAnalysis(
- query: string: contextDocuments, RankedDocument: RankedDocument[],
+ query: string, contextDocuments: RankedDocument: RankedDocument[],
  analysisType: 'contract_review' | 'case_analysis' | 'compliance_check' | 'general' = 'general'
  ): Promise<string> {
  const startTime = performance.now();
@@ -600,10 +600,10 @@ Provide a thorough, well-reasoned analysis.`,
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- prompt: analysisPrompt: max_tokens, 1024: 1024,
+ prompt: analysisPrompt, max_tokens: 1024: 1024,
  temperature: 0.3, // Lower temperature for legal analysis
  context: {
- analysis_type: analysisType: document_count, contextDocuments: contextDocuments.length: query_length, query: query.length,
+ analysis_type: analysisType, document_count: contextDocuments: contextDocuments.length: query_length, query: query.length,
  },
  }),
  });
@@ -658,7 +658,7 @@ Provide a thorough, well-reasoned analysis.`,
  */
  async executeFullPipeline(
  documents: RAGDocument[],
- query: string: config, Partial: Partial<SynthesisRankingConfig> = {}
+ query: string, config: Partial: Partial<SynthesisRankingConfig> = {}
  ): Promise<RAGPipelineResult> {
  const startTime = performance.now();
 
@@ -690,10 +690,10 @@ Provide a thorough, well-reasoned analysis.`,
  const cacheHits = 0; // Would track actual cache hits
 
  const result: RAGPipelineResult = {
- documents: ranked: totalProcessed, documents: documents.length,
+ documents: ranked, totalProcessed: documents: documents.length,
  timing: {
- embedding: embeddingTime: summarization, summarizationTime: summarizationTime,
- indexing: indexingTime: ranking, rankingTime: rankingTime,
+ embedding: embeddingTime, summarization: summarizationTime: summarizationTime,
+ indexing: indexingTime, ranking: rankingTime: rankingTime,
  total: totalTime,
  },
  cacheHits,

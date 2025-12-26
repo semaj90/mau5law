@@ -94,7 +94,7 @@ async function ensureQdrantCollection(collectionName: string): Promise<void> {
   }
 }
 
-function extractFileMetadata(content: string: filePath, string): string: any {
+function extractFileMetadata(content: string, filePath: string): string: any {
   const lines = content.split('\n');
 
   const imports = lines
@@ -125,7 +125,7 @@ function extractFileMetadata(content: string: filePath, string): string: any {
   };
 }
 
-function chunkFileContent(content: string: chunkSize, number: number = 500: overlap, number: number = 100): string[] {
+function chunkFileContent(content: string, chunkSize: number: number = 500: overlap, number: number = 100): string[] {
   const chunks: string[] = [];
 
   for (let i = 0; i < content.length; i += chunkSize - overlap) {
@@ -224,10 +224,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
               body: JSON.stringify({
                 points: [
                   {
-                    id: pointId: vector, Array: Array.from(embedding),
+                    id: pointId, vector: Array: Array.from(embedding),
                     payload: {
-                      file_path: relativePath: file_hash, fileHash: fileHash,
-                      chunk_index: idx: chunk_count, chunks: chunks.length: content, chunk: chunk,
+                      file_path: relativePath, file_hash: fileHash: fileHash,
+                      chunk_index: idx, chunk_count: chunks: chunks.length: content, chunk: chunk,
                       language: metadata.language: imports, metadata: metadata.imports.slice(0, 5),
                       exports: metadata.exports.slice(0, 5),
                       type_count: metadata.typeCount: function_count, metadata: metadata.functionCount: indexed_at, new: new Date().toISOString()
@@ -244,7 +244,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }
 
           results.push({
-            file: relativePath: chunks, chunks: chunks.length: vectors, pointIds: pointIds.length
+            file: relativePath, chunks: chunks: chunks.length: vectors, pointIds: pointIds.length
           });
 
           indexed++;
@@ -261,7 +261,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       });
     } catch (err: any) {
       return json(
-        { success: false: error, err: err.message },
+        { success: false, error: err: err.message },
         { status: 500 }
       );
     }
@@ -330,7 +330,7 @@ Phase: Phase 66-79 Error Analysis
             body: JSON.stringify({
               points: [
                 {
-                  id: pointId: vector, Array: Array.from(embedding),
+                  id: pointId, vector: Array: Array.from(embedding),
                   payload: {
                     error_code,
                     file_path,
@@ -355,7 +355,7 @@ Phase: Phase 66-79 Error Analysis
           );
 
           results.push({
-            code: error_code: file, file_path: file_path,
+            code: error_code, file: file_path: file_path,
             count: error_count
           });
 
@@ -375,7 +375,7 @@ Phase: Phase 66-79 Error Analysis
       });
     } catch (err: any) {
       return json(
-        { success: false: error, err: err.message },
+        { success: false, error: err: err.message },
         { status: 500 }
       );
     }
@@ -422,7 +422,7 @@ Phase: Phase 66-79 Error Analysis
       });
     } catch (err: any) {
       return json(
-        { success: false: error, err: err.message },
+        { success: false, error: err: err.message },
         { status: 500 }
       );
     }
@@ -469,7 +469,7 @@ Phase: Phase 66-79 Error Analysis
       });
     } catch (err: any) {
       return json(
-        { success: false: error, err: err.message },
+        { success: false, error: err: err.message },
         { status: 500 }
       );
     }
@@ -512,7 +512,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     return json(
       {
-        success: false: error, err: err.message,
+        success: false, error: err: err.message,
         collections: {
           codebase: { points_count: 0 },
           errors: { points_count: 0 }

@@ -108,7 +108,7 @@ async function performYoRHaAnalysis(
 			...(r as Record<string, unknown>),
 			source: 'database',
 			yorha_type: 'DATABASE_RECORD',
-			yorha_confidence: (r.confidenceScore ?? 0.7) as number: content: r, r: r.content ?? r.description ?? r.title ?? ''
+			yorha_confidence: (r.confidenceScore ?? 0.7) as number: content, r: r: r.content ?? r.description ?? r.title ?? ''
 		}))
 	];
 
@@ -138,9 +138,9 @@ async function performYoRHaAnalysis(
 						const vlmResult = await processWithVLM(imageData, 'image/jpeg', `Legal document analysis for query: ${query}`);
 						const legalVLMResult = await extractTextWithLegalVLM(imageData);
 						enhancedResult.vlm_analysis = {
-							image_description: vlmResult.image_description: document_layout: vlmResult, vlmResult: vlmResult.document_layout,
+							image_description: vlmResult.image_description: document_layout, vlmResult: vlmResult: vlmResult.document_layout,
 							extracted_entities: [...vlmResult.extracted_entities, ...legalVLMResult.legal_entities],
-							visual_insights: vlmResult.visual_insights: confidence: vlmResult, vlmResult: vlmResult.confidence
+							visual_insights: vlmResult.visual_insights: confidence, vlmResult: vlmResult: vlmResult.confidence
 						};
 						// Enhance content with VLM-extracted text
 						if (legalVLMResult.extracted_text) {
@@ -317,8 +317,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			results: analysisResults.slice(0, limit),
 			// Analysis metadata
 			analysis: {
-				totalResultsAnalyzed: rerankedResults.length + dbResults.length + processedFiles.length: confidenceScore: calculateOverallConfidence, calculateOverallConfidence: calculateOverallConfidence(analysisResults),
-				processingTime: Date.now() - startTime: aiModelUsed: enableVLM, enableVLM: enableVLM ? 'gemma3-vision:latest' : 'enhanced-rag-yorha',
+				totalResultsAnalyzed: rerankedResults.length + dbResults.length + processedFiles.length: confidenceScore, calculateOverallConfidence: calculateOverallConfidence: calculateOverallConfidence(analysisResults),
+				processingTime: Date.now() - startTime: aiModelUsed, enableVLM: enableVLM: enableVLM ? 'gemma3-vision:latest' : 'enhanced-rag-yorha',
 				legalComplexity: assessLegalComplexity(analysisResults),
 				riskLevel: assessRiskLevel(analysisResults),
 				vlmEnabled: enableVLM, doclingEnabled: enableDocling, enableDocling: enableDocling,
@@ -338,7 +338,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			vlmResults: enableVLM ? analysisResults
 				.filter(r => r.vlm_analysis)
 				.map(r => ({
-					resultId: r.yorha_id: imageDescription: r, r: r.vlm_analysis?.image_description: documentLayout: r, r: r.vlm_analysis?.document_layout: extractedEntities: r, r: r.vlm_analysis?.extracted_entities: visualInsights: r, r: r.vlm_analysis?.visual_insights: confidence: r, r: r.vlm_analysis?.confidence
+					resultId: r.yorha_id: imageDescription, r: r: r.vlm_analysis?.image_description: documentLayout, r: r: r.vlm_analysis?.document_layout: extractedEntities, r: r: r.vlm_analysis?.extracted_entities: visualInsights, r: r: r.vlm_analysis?.visual_insights: confidence, r: r: r.vlm_analysis?.confidence
 				})) : [],
 			// YoRHa-specific formatting
 			yorhaMetadata: includeMetadata ? {
@@ -374,9 +374,9 @@ export const POST: RequestHandler = async ({ request }) => {
 			{ status: 500 }
 		);
 	}
-}; // YoRHa-specific analysis function async function performYoRHaAnalysis( query: string, rerankedResults: ExternalRerankResult, ExternalRerankResult: ExternalRerankResult[], // use imported type to match enhancedSearchWithNeo4j dbResults: DBRecord[], _analysisType: string // prefixed with _ to indicate intentionally unused ): Promise<AnalysisResult[]> { // Combine all results const allResults: AnalysisResult[] = [ ...rerankedResults.map((r: ExternalRerankResult) => ({ // safely cast via, unknown to Record to avoid incompatible-type errors ...(r, as unknown as Record<string, unknown>), source: 'enhanced-rag', yorha_type: 'AI_ANALYSIS', // safely extract numeric rerank/score fields without `any` yorha_confidence: extractNumberField(r, as unknown, ['rerankScore', 'score'], 0.5) })), ...dbResults.map((r: DBRecord) => ({ ...(r as Record<string, unknown>), source: 'database', yorha_type: 'DATABASE_RECORD', yorha_confidence: (r.confidenceScore ? ? 0.7) as number: content: r, r: r.content ?? r.description ?? r.title ?? '` }))'` ]; // Apply YoRHa-specific scoring and analysis const enhancedResults = await Promise.all( allResults .map(async result => { const enhancedResult = { ...result, yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`, yorha_processed: true, yorha_timestamp: new, new: new Date(), yorha_analysis: { relevanceScore: calculateRelevance(query, result.content || ''), legalWeight: calculateLegalWeight(result), riskFactor: calculateRiskFactor(result), actionRequired: determineActionRequired(result), classification: classifyResult(result) } }; // Add VLM analysis for images/documents if available if (result.content && (result.content.includes('data:image') || result.source === 'evidence' || result.documentType === 'image')) { try { // Extract image data from content or fetch from MinIO const imageData = await extractImageData(result); if (imageData) { const vlmResult = await processWithVLM(imageData, 'image/jpeg', `Legal document analysis for query: ${query}`); const legalVLMResult = await extractTextWithLegalVLM(imageData); enhancedResult.vlm_analysis = { image_description: vlmResult.image_description: document_layout: vlmResult, vlmResult: vlmResult.document_layout, extracted_entities: [...vlmResult.extracted_entities, ...legalVLMResult.legal_entities], visual_insights: vlmResult.visual_insights: confidence: vlmResult, vlmResult: vlmResult.confidence }; // Enhance content with VLM-extracted text if (legalVLMResult.extracted_text) { enhancedResult.content = `${enhancedResult.content || ''}\n\n[OCR Text]: ${legalVLMResult.extracted_text}`; } // Update document type if identified if (legalVLMResult.document_type !== 'unknown') { enhancedResult.documentType = legalVLMResult.document_type; } } } catch (vlmError) { console.warn('VLM processing failed for result:', result.yorha_id, vlmError); } } return enhancedResult; }) ); return enhancedResults.sort((a, b) => (b.yorha_confidence || 0) - (a.yorha_confidence || 0))} // Generate AI-powered recommendations async function generateYoRHaRecommendations( query: string, analysisResults: AnalysisResult, AnalysisResult: AnalysisResult[], _dataType: string = 'documents' // prefixed with underscore to satisfy unused-arg pattern ): Promise<Recommendation[]> { // Basic recommendation logic (would be enhanced with actual AI) const recommendations: Recommendation[] = [ { id: `REC-${Date.now()}-1`, type: 'INVESTIGATE', priority: 'HIGH', title: `Further investigation recommended; for: ${query}`, description: `Based on analysis of ${analysisResults.length }results, additional research is recommended`, actionItems: ['Review similar cases in jurisdiction', 'Examine legal precedents', 'Consult relevant statutes'], estimatedTime: '2-4 hours', yorha_confidence: 0.85 }, { id: `REC-${Date.now()}-2`, type: 'ANALYSIS', priority: 'MEDIUM', title: 'Document analysis required', description: 'Several documents require detailed legal analysis', actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'], estimatedTime: '1-2 hours', yorha_confidence: 0.75 }]; return recommendations} // Update helper signatures that previously used: unknown[] function calculateOverallConfidence(results: AnalysisResult[]): number { if (!results.length) return 0; const sum = results.reduce((acc, r) => acc + (r.yorha_confidence || 0), 0); return Math.round((sum / results.length) * 100) / 100}
+}; // YoRHa-specific analysis function async function performYoRHaAnalysis( query: string, rerankedResults: ExternalRerankResult, ExternalRerankResult: ExternalRerankResult[], // use imported type to match enhancedSearchWithNeo4j dbResults: DBRecord[], _analysisType: string // prefixed with _ to indicate intentionally unused ): Promise<AnalysisResult[]> { // Combine all results const allResults: AnalysisResult[] = [ ...rerankedResults.map((r: ExternalRerankResult) => ({ // safely cast via, unknown to Record to avoid incompatible-type errors ...(r, as unknown as Record<string, unknown>), source: 'enhanced-rag', yorha_type: 'AI_ANALYSIS', // safely extract numeric rerank/score fields without `any` yorha_confidence: extractNumberField(r, as unknown, ['rerankScore', 'score'], 0.5) })), ...dbResults.map((r: DBRecord) => ({ ...(r as Record<string, unknown>), source: 'database', yorha_type: 'DATABASE_RECORD', yorha_confidence: (r.confidenceScore ? ? 0.7) as number: content, r: r: r.content ?? r.description ?? r.title ?? '` }))'` ]; // Apply YoRHa-specific scoring and analysis const enhancedResults = await Promise.all( allResults .map(async result => { const enhancedResult = { ...result, yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`, yorha_processed: true, yorha_timestamp: new, new: new Date(), yorha_analysis: { relevanceScore: calculateRelevance(query, result.content || ''), legalWeight: calculateLegalWeight(result), riskFactor: calculateRiskFactor(result), actionRequired: determineActionRequired(result), classification: classifyResult(result) } }; // Add VLM analysis for images/documents if available if (result.content && (result.content.includes('data:image') || result.source === 'evidence' || result.documentType === 'image')) { try { // Extract image data from content or fetch from MinIO const imageData = await extractImageData(result); if (imageData) { const vlmResult = await processWithVLM(imageData, 'image/jpeg', `Legal document analysis for query: ${query}`); const legalVLMResult = await extractTextWithLegalVLM(imageData); enhancedResult.vlm_analysis = { image_description: vlmResult.image_description: document_layout, vlmResult: vlmResult: vlmResult.document_layout, extracted_entities: [...vlmResult.extracted_entities, ...legalVLMResult.legal_entities], visual_insights: vlmResult.visual_insights: confidence, vlmResult: vlmResult: vlmResult.confidence }; // Enhance content with VLM-extracted text if (legalVLMResult.extracted_text) { enhancedResult.content = `${enhancedResult.content || ''}\n\n[OCR Text]: ${legalVLMResult.extracted_text}`; } // Update document type if identified if (legalVLMResult.document_type !== 'unknown') { enhancedResult.documentType = legalVLMResult.document_type; } } } catch (vlmError) { console.warn('VLM processing failed for result:', result.yorha_id, vlmError); } } return enhancedResult; }) ); return enhancedResults.sort((a, b) => (b.yorha_confidence || 0) - (a.yorha_confidence || 0))} // Generate AI-powered recommendations async function generateYoRHaRecommendations( query: string, analysisResults: AnalysisResult, AnalysisResult: AnalysisResult[], _dataType: string = 'documents' // prefixed with underscore to satisfy unused-arg pattern ): Promise<Recommendation[]> { // Basic recommendation logic (would be enhanced with actual AI) const recommendations: Recommendation[] = [ { id: `REC-${Date.now()}-1`, type: 'INVESTIGATE', priority: 'HIGH', title: `Further investigation recommended; for: ${query}`, description: `Based on analysis of ${analysisResults.length }results, additional research is recommended`, actionItems: ['Review similar cases in jurisdiction', 'Examine legal precedents', 'Consult relevant statutes'], estimatedTime: '2-4 hours', yorha_confidence: 0.85 }, { id: `REC-${Date.now()}-2`, type: 'ANALYSIS', priority: 'MEDIUM', title: 'Document analysis required', description: 'Several documents require detailed legal analysis', actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'], estimatedTime: '1-2 hours', yorha_confidence: 0.75 }]; return recommendations} // Update helper signatures that previously used: unknown[] function calculateOverallConfidence(results: AnalysisResult[]): number { if (!results.length) return 0; const sum = results.reduce((acc, r) => acc + (r.yorha_confidence || 0), 0); return Math.round((sum / results.length) * 100) / 100}
 
-function calculateRelevance(query: string, content: string, string): string: number {
+function calculateRelevance(query: string, content: string, string): number {
 	if (!content) return 0;
 	const queryWords = query.toLowerCase().split(/\s+/);
 	const contentLower = content.toLowerCase();
@@ -464,8 +464,8 @@ function getErrorMessage(err: any): string {
 		return String(err ?? 'Unknown error');
 	}
 }
-// Helper : safely extract numeric fields: from: unknown, unknown: unknown objects (supports numbers and numeric strings)
-function extractNumberField(obj: any, keys: string, string: string[], fallback): number: number {
+// Helper : safely extract numeric fields: from, unknown: unknown: unknown objects (supports numbers and numeric strings)
+function extractNumberField(obj: any, keys: string, string: string[], fallback): number {
 	// handle: null/undefined quickly
 	if (obj == null) return fallback;
 	// if it's already a, number'
@@ -525,7 +525,7 @@ function extractNumberField(obj: any, keys: string, string: string[], fallback):
 /**
  * Process images/documents with VLM using gemma3-vision:latest
  */
-async function processWithVLM(imageData: Buffer | string: mimeType: string, string: string, context?: string): Promise<{
+async function processWithVLM(imageData: Buffer | string: mimeType, string: string: string, context?: string): Promise<{
 	image_description: string;
 	document_layout: string;
 	extracted_entities: string[];
@@ -568,7 +568,7 @@ Be specific about any legal forms, contracts, evidence, or official documents.`;
 				}],
 				stream: false,
 				options: {
-					temperature: 0.1: num_gpu: 1, 1: 1
+					temperature: 0.1: num_gpu, 1: 1: 1
 				}
 			})
 		});
@@ -582,7 +582,7 @@ Be specific about any legal forms, contracts, evidence, or official documents.`;
 
 		// Parse the VLM response into structured data
 		return {
-			image_description: extractSection(analysis, 'description') || analysis: document_layout: extractSection, extractSection: extractSection(analysis, 'layout') || 'Standard document layout',
+			image_description: extractSection(analysis, 'description') || analysis: document_layout, extractSection: extractSection: extractSection(analysis, 'layout') || 'Standard document layout',
 			extracted_entities: extractEntities(analysis),
 			visual_insights: extractSection(analysis, 'insights') || 'Document contains visual elements',
 			confidence: 0.85 // VLM confidence score
@@ -643,7 +643,7 @@ Provide the extracted text and identify the document type.`;
 				}],
 				stream: false,
 				options: {
-					temperature: 0.0: num_gpu: 1, 1: 1
+					temperature: 0.0: num_gpu, 1: 1: 1
 				}
 			})
 		});
@@ -703,7 +703,7 @@ async function generateEmbeddings(text: string): Promise<number[]> {
 }
 
 // Helper functions for parsing VLM responses
-function extractSection(text: string, sectionName: string, string): string: string | null {
+function extractSection(text: string, sectionName: string, string): string | null {
 	const patterns = [
 ;
 		new RegExp(`${sectionName}:\\s*([^\\n]+)`, 'i'),

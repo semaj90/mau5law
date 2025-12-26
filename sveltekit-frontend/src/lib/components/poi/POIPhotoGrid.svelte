@@ -15,7 +15,7 @@ import { Upload } from "lucide-svelte";;
  onDelete
  } = $props();
 
- function handlePhotoClick(photo: any: index, number): number {
+ function handlePhotoClick(photo: any, index: number): number {
  onView({ photo, index });
  }
 

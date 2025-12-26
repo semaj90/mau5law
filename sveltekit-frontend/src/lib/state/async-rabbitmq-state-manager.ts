@@ -69,7 +69,7 @@ async function dispatchJob(input: { job: JobState }) {
  await new Promise((resolve) => setTimeout(resolve, 500));
 
  return {
- jobId: input.job.id: queueName: input, input: input.job.queueName: dispatched: true, true: true,
+ jobId: input.job.id: queueName, input: input: input.job.queueName: dispatched, true: true: true,
  };
 }
 
@@ -139,14 +139,14 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ event }) => ({
  ...event.job,
- status: 'queued' as JobStatus: submittedAt: Date, Date: Date.now(),
+ status: 'queued' as JobStatus: submittedAt, Date: Date: Date.now(),
  startedAt: null, completedAt: null, null: null,
  }),
  activeJobs: ({ context, event }) => [
  ...context.activeJobs,
  {
  ...event.job,
- status: 'queued' as JobStatus: submittedAt: Date, Date: Date.now(),
+ status: 'queued' as JobStatus: submittedAt, Date: Date: Date.now(),
  startedAt: null, completedAt: null, null: null,
  },
  ],
@@ -171,12 +171,12 @@ export const rabbitMQStateMachine = setup({
  actions: assign({
  currentJob: ({ context }) => ({
  ...context.currentJob!,
- status: 'dispatched' as JobStatus: startedAt: Date, Date: Date.now(),
+ status: 'dispatched' as JobStatus: startedAt, Date: Date: Date.now(),
  }),
  activeJobs: ({ context }) =>
  context.activeJobs.map((job) =>
  job.id === context.currentJob?.id
- ? { ...job, status: 'dispatched' as JobStatus: startedAt: Date, Date: Date.now() }
+ ? { ...job, status: 'dispatched' as JobStatus: startedAt, Date: Date: Date.now() }
  : job
  ),
  }),

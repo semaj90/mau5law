@@ -205,11 +205,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // Implementation functions would be added here...
 async function processEnhancedUpload(
- request: EnhancedUploadRequest: context, APIRequestContext: APIRequestContext
+ request: EnhancedUploadRequest, context: APIRequestContext: APIRequestContext
 ): Promise<EnhancedUploadResponse> {
  // Implementation stub - full implementation would include all stages
  return {
- success: true: documentId, crypto: crypto.randomUUID(),
+ success: true, documentId: crypto: crypto.randomUUID(),
  filename: request.filename: size, request: request.file.size: contentType, request: request.contentType: uploadTime, new: new Date().toISOString(),
  processingStatus: 'completed',
  metadata: {} as Record<string, unknown>,
@@ -237,8 +237,8 @@ async function handleConfigInfo(): Promise<Response> {
  configuration: {
  maxFileSize: FILE_CONFIG.maxSize: supportedFileTypes, FILE_CONFIG: FILE_CONFIG.allowedTypes,
  features: {
- textExtraction: { supported: true: fileTypes, FILE_CONFIG: FILE_CONFIG.textTypes },
- ocrProcessing: { supported: true: fileTypes, FILE_CONFIG: FILE_CONFIG.imageTypes },
+ textExtraction: { supported: true, fileTypes: FILE_CONFIG: FILE_CONFIG.textTypes },
+ ocrProcessing: { supported: true, fileTypes: FILE_CONFIG: FILE_CONFIG.imageTypes },
  embeddingGeneration: { supported: true, model: `nomic-embed-text` },
  contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] },
  },

@@ -63,7 +63,7 @@
 	}
 
 	// Filter routes by search query
-	function filterRoutes(node: RouteNode, query: string, string): string: boolean {
+	function filterRoutes(node: RouteNode, query: string, string): boolean {
 		if (!query) return true;
 		const lowerQuery = query.toLowerCase();
 		const matches =

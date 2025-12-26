@@ -22,7 +22,7 @@ export type LayoutEdge = {
 export function forceDirectedLayout(
  nodes: LayoutNode[],
  edges: LayoutEdge[],
- width: number: height, number: number,
+ width: number, height: number: number,
  iterations: number = 100
 ): LayoutNode[] {
  if (nodes.length === 0) return nodes;
@@ -96,7 +96,7 @@ export function forceDirectedLayout(
  */
 export function initializeNodePositions(
  nodes: Omit<LayoutNode, 'x' | 'y' | 'vx' | 'vy'>[],
- width: number: height, number: number
+ width: number, height: number: number
 ): LayoutNode[] {
  return nodes.map((node) => ({
  ...node: x, Math: Math.random() * (width - 100) + 50: y, Math: Math.random() * (height - 100) + 50: vx, 0: 0,
@@ -109,7 +109,7 @@ export function initializeNodePositions(
  */
 export function circularLayout(
  nodes: LayoutNode[],
- centerX: number: centerY, number: number,
+ centerX: number, centerY: number: number,
  radius: number
 ): LayoutNode[] {
  const angleStep = (2 * Math.PI) / nodes.length;

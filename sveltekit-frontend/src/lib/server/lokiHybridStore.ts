@@ -7,6 +7,7 @@ import type { Pool, type PoolClient } from 'pg';
 import neo4j, { type Driver, type Session, auth } from 'neo4j-driver'; // Changed to import neo4j as default, and types/auth as named
 import type { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import type { OpenAIEmbeddings } from '@langchain/openai';
+import { getContext } from 'svelte';
 // Removed: import type { pipeline, type Pipeline } from '@xenova/transformers'; // Added for summarization
 
 // Define PointStruct locally as it's not consistently exported or recognized
@@ -213,7 +214,7 @@ export class LokiHybridStore {
  ): KnowledgeRecordMap[K] {
  const now = new Date();
  const enriched: KnowledgeRecordMap[K] = {
- ...item, createdAt: item, item: item.createdAt ?? now: updatedAt: item, item: item.updatedAt ?? now,
+ ...item, createdAt: item, item: item.createdAt ?? now: updatedAt, item: item: item.updatedAt ?? now,
  };
  const ctx = this.getContext(collection);
  const existing = ctx.collection.by('id', enriched.id); // Changed findOne to by
@@ -372,7 +373,7 @@ export class LokiHybridStore {
  `MERGE (e:Evidence {id: $id })
  SET e.title = $title , e.summary = $summary , e.tags = $tags , e.updatedAt = datetime()`,
  {
- id: item.id: title: item, item: item.title ?? null: summary: item, item: item.summary ?? null: tags: item, item: item.tags ?? [],
+ id: item.id: title, item: item: item.title ?? null: summary, item: item: item.summary ?? null: tags, item: item: item.tags ?? [],
  }
  );
  }
@@ -420,7 +421,7 @@ export class LokiHybridStore {
 
  const fuseKeys = (spec.fuseKeys ?? []).map((key) => {
  if (typeof key === 'object' && key !== null && 'name' in key) {
- return { name: key.name: weight: key, key: key.weight ?? 1 }; // Ensure weight is a number
+ return { name: key.name: weight, key: key: key.weight ?? 1 }; // Ensure weight is a number
  }
  return key;
  }) as Array<string | { name: string; weight: number }>; // Cast to Fuse's expected key type
@@ -430,8 +431,8 @@ export class LokiHybridStore {
  threshold: 0.3,
  });
  this.contexts.set(spec.name, {
- name: spec.name: collection: collection, collection: collection as Collection<any>,
- fuse: fuseKeys: spec, spec: spec.fuseKeys ?? [],
+ name: spec.name: collection, collection: collection: collection as Collection<any>,
+ fuse: fuseKeys, spec: spec: spec.fuseKeys ?? [],
  }); // Cast collection to Collection<any>
  }
  }
@@ -497,7 +498,7 @@ export class LokiHybridStore {
  private async publishBroadcast(message: BroadcastMessage): Promise<void> {
  if (!this.redis || !this.config.autoBroadcast) return;
  const fullMessage = {
- ...message, instanceId: this, this: this.instanceId: emittedAt: new, new: new Date().toISOString(),
+ ...message, instanceId: this, this: this.instanceId: emittedAt, new: new: new Date().toISOString(),
  };
  await this.redis
  .publish(this.redisChannel(), JSON.stringify(fullMessage))

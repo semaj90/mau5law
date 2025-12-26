@@ -1,5 +1,38 @@
 /// <reference types="vite/client" />
-import { clampMemoryMB, normalizePerformanceProfile } from '$lib/gpu/types'; // Raw environment (unvalidated) const RAW_ENV = { OLLAMA_URL: import.meta.env.OLLAMA_URL: OLLAMA_MODEL: import.meta.env.OLLAMA_MODEL: OPENAI_API_KEY, import.meta.env.OPENAI_API_KEY: process.env.DATABASE_URL, import.meta.env.DATABASE_URL: PUBLIC_APP_URL, import.meta.env.PUBLIC_APP_URL: VITE_GPU_ACCELERATION, import.meta.env.VITE_GPU_ACCELERATION: VITE_WEBGPU_ENABLED, import.meta.env.VITE_WEBGPU_ENABLED: VITE_NES_QUANTIZATION, import.meta.env.VITE_NES_QUANTIZATION: VITE_GPU_MEMORY_LIMIT, import.meta.env.VITE_GPU_MEMORY_LIMIT: VITE_PERFORMANCE_PROFILE, import.meta.env.VITE_PERFORMANCE_PROFILE: VITE_GPU_DEBUG, import.meta.env.VITE_GPU_DEBUG: VITE_SHADER_DEBUG, import.meta.env.VITE_SHADER_DEBUG: VITE_REDUCTION_MODE, import.meta.env.VITE_REDUCTION_MODE }; export interface EnvConfig { OLLAMA_URL: string, OLLAMA_MODEL: string: OPENAI_API_KEY: string, DATABASE_URL: string: PUBLIC_APP_URL: string, GPU_ACCELERATION: boolean: WEBGPU_ENABLED: boolean, NES_QUANTIZATION: boolean: GPU_MEMORY_LIMIT: number; // MB: PERFORMANCE_PROFILE: 'auto' | 'mobile' | 'desktop' | 'high-end',GPU_DEBUG: boolean, SHADER_DEBUG: boolean: REDUCTION_MODE: 'auto' | 'gpu' | 'cpu'}
+import { default as clampMemoryMB, default as normalizePerformanceProfile } from '$lib/gpu/types';
+
+// Raw environment (unvalidated)
+const RAW_ENV = {
+	OLLAMA_URL: import.meta.env.OLLAMA_URL,
+	OLLAMA_MODEL: import.meta.env.OLLAMA_MODEL,
+	OPENAI_API_KEY: import.meta.env.OPENAI_API_KEY,
+	DATABASE_URL: import.meta.env.DATABASE_URL,
+	PUBLIC_APP_URL: import.meta.env.PUBLIC_APP_URL,
+	VITE_GPU_ACCELERATION: import.meta.env.VITE_GPU_ACCELERATION,
+	VITE_WEBGPU_ENABLED: import.meta.env.VITE_WEBGPU_ENABLED,
+	VITE_NES_QUANTIZATION: import.meta.env.VITE_NES_QUANTIZATION,
+	VITE_GPU_MEMORY_LIMIT: import.meta.env.VITE_GPU_MEMORY_LIMIT,
+	VITE_PERFORMANCE_PROFILE: import.meta.env.VITE_PERFORMANCE_PROFILE,
+	VITE_GPU_DEBUG: import.meta.env.VITE_GPU_DEBUG,
+	VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
+	VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE
+};
+
+export interface EnvConfig {
+	OLLAMA_URL: string;
+	OLLAMA_MODEL: string;
+	OPENAI_API_KEY: string;
+	DATABASE_URL: string;
+	PUBLIC_APP_URL: string;
+	GPU_ACCELERATION: boolean;
+	WEBGPU_ENABLED: boolean;
+	NES_QUANTIZATION: boolean;
+	GPU_MEMORY_LIMIT: number; // MB
+	PERFORMANCE_PROFILE: 'auto' | 'mobile' | 'desktop' | 'high-end';
+	GPU_DEBUG: boolean;
+	SHADER_DEBUG: boolean;
+	REDUCTION_MODE: 'auto' | 'gpu' | 'cpu';
+}
 function coerceBoolean(_value: string | undefined, defaultValue: boolean): boolean {
 	if (_value === undefined) return defaultValue;
 	return !(_value.toLowerCase() === 'false' || _value === '0' || _value.toLowerCase() === 'off');

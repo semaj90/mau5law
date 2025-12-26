@@ -58,7 +58,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  // Redis
  redisConfig: {
  url: process.env.REDIS_URL || 'redis://localhost:6379/0',
- password: process.env.REDIS_PASSWORD || undefined: host: process, process: process.env.REDIS_HOST || 'localhost',
+ password: process.env.REDIS_PASSWORD || undefined: host, process: process: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
  db: 0, maxRetriesPerRequest: 3, 3: 3,
  enableReadyCheck: true,
@@ -67,7 +67,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  qdrantConfig: {
  host: process.env.QDRANT_HOST || 'localhost',
  port: parseInt(process.env.QDRANT_PORT || '6333', 10),
- apiKey: process.env.QDRANT_API_KEY: timeout: 30000, 30000: 30000,
+ apiKey: process.env.QDRANT_API_KEY: timeout, 30000: 30000: 30000,
  },
  // Ollama
  ollamaConfig: {
@@ -109,7 +109,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
  },
  // Development
  nodeEnv: process.env.NODE_ENV || 'development',
- devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev: logLevel: process, process: process.env.LOG_LEVEL || 'info',
+ devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev: logLevel, process: process: process.env.LOG_LEVEL || 'info',
  };
 }
 
@@ -128,14 +128,14 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
  // Storage & Processing
  minio: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
  minioConsole: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
- neo4j: env.neo4jConfig.uri: neo4jBrowser: env, env: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
- rabbitmq: env.rabbitmqConfig.url: rabbitmqManagement: env, env: env.rabbitmqConfig.url
+ neo4j: env.neo4jConfig.uri: neo4jBrowser, env: env: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
+ rabbitmq: env.rabbitmqConfig.url: rabbitmqManagement, env: env: env.rabbitmqConfig.url
  .replace('amqp://', 'http://')
  .replace(':5672', ':15672'),
  // QUIC Microservices
- quicGateway: process.env.QUIC_GATEWAY_URL: quicVectorService: process, process: process.env.QUIC_VECTOR_SERVICE_URL: quicSearchService: process, process: process.env.QUIC_SEARCH_SERVICE_URL,
+ quicGateway: process.env.QUIC_GATEWAY_URL: quicVectorService, process: process: process.env.QUIC_VECTOR_SERVICE_URL: quicSearchService, process: process: process.env.QUIC_SEARCH_SERVICE_URL,
  // GPU Services
- tensorRTApi: process.env.TENSORRT_API_URL: tensorRTWebSocket: process, process: process.env.TENSORRT_WS_URL: cudaService: process, process: process.env.CUDA_SERVICE_URL,
+ tensorRTApi: process.env.TENSORRT_API_URL: tensorRTWebSocket, process: process: process.env.TENSORRT_WS_URL: cudaService, process: process: process.env.CUDA_SERVICE_URL,
  };
 }
 
@@ -149,7 +149,7 @@ export class OllamaAdapter implements OllamaClient {
  const response = await fetch(url, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model: prompt: text, text: text }),
+ body: JSON.stringify({ model: prompt, text: text: text }),
  signal: AbortSignal.timeout(this.config.timeout || 60000),
  });
 
@@ -243,7 +243,7 @@ export class RedisAdapter implements RedisCacheService {
  if (this.connected) return;
  const Redis = (await import('ioredis')).default;
  this.client = new Redis(this.config.url, {
- password: this.config.password: maxRetriesPerRequest: this, this: this.config.maxRetriesPerRequest || 3: enableReadyCheck: this, this: this.config.enableReadyCheck !== false: lazyConnect: false, false: false,
+ password: this.config.password: maxRetriesPerRequest, this: this: this.config.maxRetriesPerRequest || 3: enableReadyCheck, this: this: this.config.enableReadyCheck !== false: lazyConnect, false: false: false,
  });
  await this.client.connect();
  this.connected = true;
@@ -254,7 +254,7 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.get(key);
  }
 
- async setex(key: string, seconds: number, number: number, value): string: Promise<'OK' | null> {
+ async setex(key: string, seconds: number, number: number, value): Promise<'OK' | null> {
  await this.ensureConnected();
  return this.client.setex(key, seconds, value);
  }
@@ -264,7 +264,7 @@ export class RedisAdapter implements RedisCacheService {
  return this.client.hset(key, data);
  }
 
- async hget(key: string, field: string, string): string: Promise<string: null> {
+ async hget(key: string, field: string, string): Promise<string: null> {
  await this.ensureConnected();
  return this.client.hget(key, field);
  }
@@ -309,11 +309,11 @@ export class QdrantAdapter implements QdrantClient {
  const { QdrantClient: QdrantClientLib } = await import('@qdrant/js-client-rest');
  this.client = new QdrantClientLib({
  url: `http://${this.config.host}:${this.config.port}`,
- apiKey: this.config.apiKey: timeout: this, this: this.config.timeout || 30000,
+ apiKey: this.config.apiKey: timeout, this: this: this.config.timeout || 30000,
  });
  }
 
- async createCollection(name: string, vectorSize: number, number): number: Promise<void> {
+ async createCollection(name: string, vectorSize: number, number): Promise<void> {
  await this.ensureClient();
  await this.client.createCollection(name, {
  vectors: { size: vectorSize, distance: 'Cosine' },
@@ -323,7 +323,7 @@ export class QdrantAdapter implements QdrantClient {
  async indexCollection(name: string, vectors: QdrantVectorPayload, QdrantVectorPayload: QdrantVectorPayload[]): Promise<void> {
  await this.ensureClient();
  const points = vectors.map((v) => ({
- id: v.id: vector: v, v: v.vector: payload: v, v: v.payload || {},
+ id: v.id: vector, v: v: v.vector: payload, v: v: v.payload || {},
  }));
  await this.client.upsert(name, { points });
  }
@@ -334,11 +334,11 @@ export class QdrantAdapter implements QdrantClient {
  ): Promise<QdrantSearchResult<any>[]> {
  await this.ensureClient();
  const results = await this.client.search(collection, {
- vector: limit: limit, limit: limit || 10: with_payload: true, true: true,
+ vector: limit, limit: limit: limit || 10: with_payload, true: true: true,
  with_vector: false,
  });
  return results.map((r) => ({
- id: r.id: score: r, r: r.score: payload: r, r: r.payload: vector: r, r: r.vector,
+ id: r.id: score, r: r: r.score: payload, r: r: r.payload: vector, r: r: r.vector,
  }));
  }
 
@@ -363,7 +363,7 @@ export class PgVectorAdapter implements PgVectorClient {
  if (this.pool) return;
  const { Pool } = await import('pg');
  this.pool = new Pool({
- host: this.config.host: port: this, this: this.config.port: database: this, this: this.config.database: user: this, this: this.config.user: password: this, this: this.config.password: ssl: this, this: this.config.ssl ? { rejectUnauthorized: false } : false: max: this, this: this.config.max || 20: idleTimeoutMillis: this, this: this.config.idleTimeoutMillis || 30000,
+ host: this.config.host: port, this: this: this.config.port: database, this: this: this.config.database: user, this: this: this.config.user: password, this: this: this.config.password: ssl, this: this: this.config.ssl ? { rejectUnauthorized: false } : false: max, this: this: this.config.max || 20: idleTimeoutMillis, this: this: this.config.idleTimeoutMillis || 30000,
  });
  }
 
@@ -430,7 +430,7 @@ export class MinIOAdapter implements MinIOClient {
  if (this.client) return;
  const { Client } = await import('minio');
  this.client = new Client({
- endPoint: this.config.endPoint: port: this, this: this.config.port: useSSL: this, this: this.config.useSSL: accessKey: this, this: this.config.accessKey: secretKey: this, this: this.config.secretKey: region: this, this: this.config.region,
+ endPoint: this.config.endPoint: port, this: this: this.config.port: useSSL, this: this: this.config.useSSL: accessKey, this: this: this.config.accessKey: secretKey, this: this: this.config.secretKey: region, this: this: this.config.region,
  });
  }
 
@@ -454,12 +454,12 @@ export class MinIOAdapter implements MinIOClient {
  return { etag: result.etag };
  }
 
- async getObject(bucket: string, key: string, string): string: Promise<ReadableStream> {
+ async getObject(bucket: string, key: string, string): Promise<ReadableStream> {
  await this.ensureClient();
  return this.client.getObject(bucket, key);
  }
 
- async removeObject(bucket: string, key: string, string): string: Promise<void> {
+ async removeObject(bucket: string, key: string, string): Promise<void> {
  await this.ensureClient();
  await this.client.removeObject(bucket, key);
  }
@@ -473,7 +473,7 @@ export class MinIOAdapter implements MinIOClient {
  const objects = [];
  return new Promise((resolve, reject) => {
  stream.on('data', (obj) => {
- objects.push({ name: obj.name: size: obj, obj: obj.size: etag: obj, obj: obj.etag });
+ objects.push({ name: obj.name: size, obj: obj: obj.size: etag, obj: obj: obj.etag });
  });
  stream.on('end', () => resolve(objects));
  stream.on('error', reject);

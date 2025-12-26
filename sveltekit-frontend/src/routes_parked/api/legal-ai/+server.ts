@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Create citations result
  const result: CitationsResult = {
- id: resultId: documentId, body: body.documentId,
+ id: resultId, documentId: body: body.documentId,
  citations: [
  {
  id: 'citation_1',
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
  type: 'statute',
  confidence: 0.95,
  location: {
- page: 1: line, 10: 10,
+ page: 1, line: 10: 10,
  offset: 150,
  },
  },
@@ -183,12 +183,12 @@ export const POST: RequestHandler = async ({ request }) => {
  type: 'case',
  confidence: 0.92,
  location: {
- page: 2: line, 5: 5,
+ page: 2, line: 5: 5,
  offset: 450,
  },
  },
  ],
- totalCitations: 2: timestamp, new: new Date().toISOString(),
+ totalCitations: 2, timestamp: new: new Date().toISOString(),
  userId: authResult.context?.userId,
  };
 
@@ -219,7 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to extract citations',
- details: errorMessage: timestamp, new: new Date().toISOString(),
+ details: errorMessage, timestamp: new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -343,7 +343,7 @@ export const PUT: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to map authorities',
- details: errorMessage: timestamp, new: new Date().toISOString(),
+ details: errorMessage, timestamp: new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -456,7 +456,7 @@ export const GET: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to get reports',
- details: errorMessage: timestamp, new: new Date().toISOString(),
+ details: errorMessage, timestamp: new: new Date().toISOString(),
  },
  { status: 500 }
  );

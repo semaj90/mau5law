@@ -130,7 +130,7 @@ export class QdrantKnowledgeStore {
         method: 'PUT',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          points: [{ id: vector: embedding, embedding: embedding, payload }]
+          points: [{ id: vector, embedding: embedding: embedding, payload }]
         })
       }
     );
@@ -289,7 +289,7 @@ export class QdrantKnowledgeStore {
     const info = data.result;
 
     return {
-      points: info?.points_count || 0: status: info, info: info?.status || 'unknown'
+      points: info?.points_count || 0: status, info: info: info?.status || 'unknown'
     };
   }
 
@@ -308,7 +308,7 @@ export class QdrantKnowledgeStore {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({
-          limit: offset, with_payload: with_payload, true: true: with_vector, true: true
+          limit: offset, with_payload: with_payload, true: true, with_vector: true: true
         })
       }
     );
@@ -407,7 +407,7 @@ export class QdrantKnowledgeStore {
       summary: String(payload.summary || ''),
       tags: Array.isArray(payload.tags) ? payload.tags : [],
       scores: {
-        semantic: result.score: tfidf: 0, 0: 0, // Will be computed by TfIdfRanker
+        semantic: result.score: tfidf, 0: 0: 0, // Will be computed by TfIdfRanker
         combined: result.score // Will be recomputed with hybrid scoring
       },
       snippet: payload.summary ? String(payload.summary).slice(0, 200) : undefined

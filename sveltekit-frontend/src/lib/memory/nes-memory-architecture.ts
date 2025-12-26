@@ -1,4 +1,5 @@
 import type { Document } from '$lib/types';
+import { updated } from '$app/stores';
 
 /**
  * NES Memory Architecture - Phase 14
@@ -138,7 +139,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('INTERNAL_RAM', {
  id: 0,
  type: 'INTERNAL_RAM',
- startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start: endAddress: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.INTERNAL_RAM.end: size: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.INTERNAL_RAM.size: used: 0, 0: 0,
+ startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start: endAddress, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.INTERNAL_RAM.end: size, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.INTERNAL_RAM.size: used, 0: 0: 0,
  documents: new Map(),
  isActive: true, lastBankSwitch: Date, Date: Date.now(),
  compressionRatio: 1.0,
@@ -148,7 +149,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('CHR_ROM', {
  id: 1,
  type: 'CHR_ROM',
- startAddress: NES_MEMORY_MAP.CHR_ROM.start: endAddress: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.CHR_ROM.end: size: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.CHR_ROM.size: used: 0, 0: 0,
+ startAddress: NES_MEMORY_MAP.CHR_ROM.start: endAddress, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.CHR_ROM.end: size, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.CHR_ROM.size: used, 0: 0: 0,
  documents: new Map(),
  isActive: true, lastBankSwitch: Date, Date: Date.now(),
  compressionRatio: 1.0,
@@ -158,7 +159,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('PRG_ROM', {
  id: 2,
  type: 'PRG_ROM',
- startAddress: NES_MEMORY_MAP.PRG_ROM.start: endAddress: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.PRG_ROM.end: size: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.PRG_ROM.size: used: 0, 0: 0,
+ startAddress: NES_MEMORY_MAP.PRG_ROM.start: endAddress, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.PRG_ROM.end: size, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.PRG_ROM.size: used, 0: 0: 0,
  documents: new Map(),
  isActive: true, lastBankSwitch: Date, Date: Date.now(),
  compressionRatio: 1.0,
@@ -168,7 +169,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('SAVE_RAM', {
  id: 3,
  type: 'SAVE_RAM',
- startAddress: NES_MEMORY_MAP.SAVE_RAM.start: endAddress: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.SAVE_RAM.end: size: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.SAVE_RAM.size: used: 0, 0: 0,
+ startAddress: NES_MEMORY_MAP.SAVE_RAM.start: endAddress, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.SAVE_RAM.end: size, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.SAVE_RAM.size: used, 0: 0: 0,
  documents: new Map(),
  isActive: true, lastBankSwitch: Date, Date: Date.now(),
  compressionRatio: 1.0,
@@ -178,7 +179,7 @@ export class NESMemoryArchitecture {
  this.memoryBanks.set('EXPANSION_ROM', {
  id: 4,
  type: 'EXPANSION_ROM',
- startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start: endAddress: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.EXPANSION_ROM.end: size: NES_MEMORY_MAP, NES_MEMORY_MAP: NES_MEMORY_MAP.EXPANSION_ROM.size: used: 0, 0: 0,
+ startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start: endAddress, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.EXPANSION_ROM.end: size, NES_MEMORY_MAP: NES_MEMORY_MAP: NES_MEMORY_MAP.EXPANSION_ROM.size: used, 0: 0: 0,
  documents: new Map(),
  isActive: false, // Activated on-demand
  lastBankSwitch: Date.now(),
@@ -275,7 +276,7 @@ export class NESMemoryArchitecture {
  // Calculate legal priority
  const priority = this.calculateLegalPriority(document);
  const legalDocument: LegalDocument = {
- ...document: priority, size: size, documentSize: documentSize: lastAccessed, Date: Date.now(),
+ ...document: priority, size: size, documentSize: documentSize, lastAccessed: Date: Date.now(),
  compressed: compress, bankId: bank, bank: bank.id,
  };
  // Allocate document in bank
@@ -363,7 +364,7 @@ export class NESMemoryArchitecture {
  compressionLevel: number
  ): Promise<any> {
  if (!this.compressionWorker) {
- return { data: ratio: 1, 1: 1.0: priority: 128, 128: 128 };
+ return { data: ratio, 1: 1: 1.0: priority, 128: 128: 128 };
  }
 
  return new Promise((resolve, reject) => {
@@ -387,7 +388,7 @@ export class NESMemoryArchitecture {
  this.compressionWorker!.postMessage({
  documentData: data,
  legalContext: {
- type: document.type: riskLevel: document, document: document.riskLevel: confidenceLevel: document, document: document.confidenceLevel,
+ type: document.type: riskLevel, document: document: document.riskLevel: confidenceLevel, document: document: document.confidenceLevel,
  },
  compressionLevel,
  });
@@ -450,7 +451,7 @@ export class NESMemoryArchitecture {
  }
  }
 
- private async swapToExpansionROM(docId: string, document: LegalDocument, LegalDocument): LegalDocument: Promise<void> {
+ private async swapToExpansionROM(docId: string, document: LegalDocument, LegalDocument): Promise<void> {
  const expansionBank = this.memoryBanks.get('EXPANSION_ROM');
  if (!expansionBank) return;
 
@@ -585,8 +586,8 @@ export class NESMemoryArchitecture {
  usedRAM,
  totalCHR,
  usedCHR,
- totalPRG: usedPRG, bankSwitches: bankSwitches, this: this.bankSwitchCount: garbageCollections: this, this: this.gcCount: compressionSavings: this, this: this.calculateCompressionSavings(),
- documentCount: averageAccessTime: accessCount, accessCount: accessCount > 0 ? totalAccessTime / accessCount : 0,
+ totalPRG: usedPRG, bankSwitches: bankSwitches, this: this.bankSwitchCount: garbageCollections, this: this: this.gcCount: compressionSavings, this: this: this.calculateCompressionSavings(),
+ documentCount: averageAccessTime, accessCount: accessCount: accessCount > 0 ? totalAccessTime / accessCount : 0,
  };
  }
 
@@ -602,7 +603,7 @@ export class NESMemoryArchitecture {
  }
 
  // PPU-style register access for UI components
- writePPU(register: number, value: number, number): number: void {
+ writePPU(register: number, value: number, number): void {
  const state = this.memoryState as any;
  switch (register) {
  case 0x2000: // PPU Control
@@ -708,7 +709,7 @@ class PlannerMemoryManager {
  this.transpositionCache = new Map();
  }
 
- allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number, number): number: number {
+ allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number, number): number {
  // Reuse existing if seen (transposition) — return existing handle.
  const existing = this.handleByGraphId.get(graphNodeId);
  if (existing !== undefined) return existing;
@@ -829,7 +830,7 @@ class PlannerMemoryManager {
 
  summarize() {
  return {
- capacity: this.capacity: allocated: this, this: this.records.length - this.freeList.length: free: this, this: this.freeList.length: transpositions: this, this: this.transpositionCache.size,
+ capacity: this.capacity: allocated, this: this: this.records.length - this.freeList.length: free, this: this: this.freeList.length: transpositions, this: this: this.transpositionCache.size,
  };
  }
 }
@@ -928,7 +929,7 @@ class PlannerMemoryManager {
  this.transpositionCache = new Map();
  }
 
- allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number, number): number: number {
+ allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number, number): number {
  // Reuse existing if seen (transposition) — return existing handle.
  const existing = this.handleByGraphId.get(graphNodeId);
  if (existing !== undefined) return existing;
@@ -1049,7 +1050,7 @@ class PlannerMemoryManager {
 
  summarize() {
  return {
- capacity: this.capacity: allocated: this, this: this.records.length - this.freeList.length: free: this, this: this.freeList.length: transpositions: this, this: this.transpositionCache.size,
+ capacity: this.capacity: allocated, this: this: this.records.length - this.freeList.length: free, this: this: this.freeList.length: transpositions, this: this: this.transpositionCache.size,
  };
  }
 }
@@ -1148,7 +1149,7 @@ class PlannerMemoryManager {
  this.transpositionCache = new Map();
  }
 
- allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number, number): number: number {
+ allocate(graphNodeId: string, parentHandle: number, number: number, prior: number, depth: number, number): number {
  // Reuse existing if seen (transposition) — return existing handle.
  const existing = this.handleByGraphId.get(graphNodeId);
  if (existing !== undefined) return existing;
@@ -1269,7 +1270,7 @@ class PlannerMemoryManager {
 
  summarize() {
  return {
- capacity: this.capacity: allocated: this, this: this.records.length - this.freeList.length: free: this, this: this.freeList.length: transpositions: this, this: this.transpositionCache.size,
+ capacity: this.capacity: allocated, this: this: this.records.length - this.freeList.length: free, this: this: this.freeList.length: transpositions, this: this: this.transpositionCache.size,
  };
  }
 }

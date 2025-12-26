@@ -122,7 +122,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
  result = {
  embedding,
  model: 'mock-embeddings',
- dimensions: targetDim: tokens, text: text.split(' ').length,
+ dimensions: targetDim, tokens: text: text.split(' ').length,
  };
  break;
  }

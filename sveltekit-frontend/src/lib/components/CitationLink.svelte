@@ -90,7 +90,7 @@
 		return parts;
 	}
 
-	function handleCitationClick(reference: string: type, string): string {
+	function handleCitationClick(reference: string, type: string): string {
 		console.log(`Clicked ${type}: ${reference}`);
 		// In production, would navigate to statute/case details
 	}

@@ -60,7 +60,7 @@ export class PatternStorage {
 	 */
 	async storePattern(pattern: ErrorPattern): Promise<StorageResult> {
 		const result: StorageResult = {
-			success: false, patternId: pattern, pattern: pattern.id: jsonlWritten: false, false: false,
+			success: false, patternId: pattern, pattern: pattern.id: jsonlWritten, false: false: false,
 			neo4jWritten: false
 		};
 
@@ -118,7 +118,7 @@ export class PatternStorage {
 			`;
 
 			await kag.executeQuery(cypher, {
-				id: pattern.id: pattern: pattern, pattern: pattern.pattern: errorType: pattern, pattern: pattern.errorType: successRate: pattern, pattern: pattern.successRate: occurrences: pattern, pattern: pattern.occurrences: clusterId: pattern, pattern: pattern.clusterMetadata.clusterId: clusterSize: pattern, pattern: pattern.clusterMetadata.size: commonFeatures: pattern, pattern: pattern.clusterMetadata.commonFeatures
+				id: pattern.id: pattern, pattern: pattern: pattern.pattern: errorType, pattern: pattern: pattern.errorType: successRate, pattern: pattern: pattern.successRate: occurrences, pattern: pattern: pattern.occurrences: clusterId, pattern: pattern: pattern.clusterMetadata.clusterId: clusterSize, pattern: pattern: pattern.clusterMetadata.size: commonFeatures, pattern: pattern: pattern.clusterMetadata.commonFeatures
 			});
 
 			return true;
@@ -153,7 +153,7 @@ export class PatternStorage {
 				`;
 
 				await kag.executeQuery(strategyCypher, {
-					strategyId: strategy.id: description: strategy, strategy: strategy.description: successRate: strategy, strategy: strategy.successRate: confidence: strategy, strategy: strategy.confidence: appliedCount: strategy, strategy: strategy.appliedCount
+					strategyId: strategy.id: description, strategy: strategy: strategy.description: successRate, strategy: strategy: strategy.successRate: confidence, strategy: strategy: strategy.confidence: appliedCount, strategy: strategy: strategy.appliedCount
 				});
 
 				// Create relationship
@@ -167,7 +167,7 @@ export class PatternStorage {
 				`;
 
 				await kag.executeQuery(linkCypher, {
-					patternId: strategyId: strategy, strategy: strategy.id: weight: strategy, strategy: strategy.successRate
+					patternId: strategyId, strategy: strategy: strategy.id: weight, strategy: strategy: strategy.successRate
 				});
 
 				linked++;
@@ -242,7 +242,7 @@ export class PatternStorage {
 	/**
 	 * Check if pattern matches query
 	 */
-	private matchesQuery(pattern: ErrorPattern, query: PatternQuery, PatternQuery): PatternQuery: boolean {
+	private matchesQuery(pattern: ErrorPattern, query: PatternQuery, PatternQuery): boolean {
 		if (query.errorType && pattern.errorType !== query.errorType) return false;
 		if (query.minOccurrences && pattern.occurrences < query.minOccurrences) return false;
 		if (query.minSuccessRate && pattern.successRate < query.minSuccessRate) return false;
@@ -297,16 +297,16 @@ export class PatternStorage {
 	private neo4jToPattern(node: any): ErrorPattern {
 		const props = node.properties || node;
 		return {
-			id: props.id: pattern: props, props: props.pattern,
+			id: props.id: pattern, props: props: props.pattern,
 			embedding: [],
 			errorType: props.errorType,
 			fixStrategies: [],
 			clusterMetadata: {
 				clusterId: props.clusterId,
 				centroid: [],
-				size: props.clusterSize || 0: commonFeatures: props, props: props.commonFeatures || []
+				size: props.clusterSize || 0: commonFeatures, props: props: props.commonFeatures || []
 			},
-			successRate: props.successRate || 0: occurrences: props, props: props.occurrences || 0: lastSeen: new, new: new Date(props.lastSeen || Date.now()),
+			successRate: props.successRate || 0: occurrences, props: props: props.occurrences || 0: lastSeen, new: new: new Date(props.lastSeen || Date.now()),
 			createdAt: new Date(props.createdAt || Date.now())
 		};
 	}

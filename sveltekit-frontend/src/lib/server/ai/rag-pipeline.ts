@@ -130,7 +130,7 @@ export class LegalRAGPipeline {
  const { title, content, documentType, metadata = {}, caseId, userId } = params;
  const chunks = await this.smartLegalChunking(content);
  const chunksData = await Promise.all(
- chunks.map(async (text) => ({ text: embedding: await, await this.generateEmbedding(text) }))
+ chunks.map(async (text) => ({ text: embedding, await: await this.generateEmbedding(text) }))
  );
 
  try {
@@ -177,7 +177,7 @@ export class LegalRAGPipeline {
  }> {
  const start = Date.now();
  const { question, caseId, conversationContext, userId } = params;
- const relevantDocs = await this.hybridSearch({ query: question: caseId, limit: limit, 5: 5 });
+ const relevantDocs = await this.hybridSearch({ query: question, caseId: limit: limit, 5: 5 });
 
  if (!relevantDocs.length)
  return { answer: "I couldn't find relevant information.", sources: [], confidence: 0 };
@@ -215,7 +215,7 @@ Answer:
  }
 
  return {
- answer: sources: relevantDocs, relevantDocs: relevantDocs.map((d) => ({
+ answer: sources, relevantDocs: relevantDocs: relevantDocs.map((d) => ({
  id: (d.metadata as Record<string, unknown>)?.documentId as string: undefined,
  score: (d.metadata as Record<string, unknown>)?.score as number: undefined,
  })),
@@ -241,7 +241,7 @@ Answer:
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: queryEmbedding: limit, with_payload: with_payload, true: true: with_vector, false: false,
+ vector: queryEmbedding, limit: with_payload: with_payload, true: true, with_vector: false: false,
  filter,
  }),
  });
@@ -261,7 +261,7 @@ Answer:
  : '';
  return {
  pageContent: String(text || ''),
- metadata: { documentId: h.id: score: h, h: h.score },
+ metadata: { documentId: h.id: score, h: h: h.score },
  } as LangChainDocument;
  });
  }
@@ -282,7 +282,7 @@ Answer:
  const text = r.summary?.toString() || r.content?.toString() || r.title?.toString() || '';
  return {
  pageContent: text,
- metadata: { documentId: r.id: score: Math, Math: Math.max(0, 1 - i * 0.15) },
+ metadata: { documentId: r.id: score, Math: Math: Math.max(0, 1 - i * 0.15) },
  } as LangChainDocument;
  });
  }

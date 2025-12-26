@@ -15,7 +15,7 @@ export async function withApiHandler(
  }
 }
 
-export async function parseRequestBody<T>(request: Request, schema): any: Promise<T> {
+export async function parseRequestBody<T>(request: Request, schema): Promise<T> {
  const body = await request.json();
  return schema.parse(body);
 }

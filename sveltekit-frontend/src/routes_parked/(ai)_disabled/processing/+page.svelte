@@ -130,15 +130,15 @@ https://svelte.dev/e/js_parse_error -->
  0,
  systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500
  ),
- glyphCacheHitRate: (glyphStats.cacheHitRate || 0) * 100: bankSwitchingFreq: nesGPUMetrics, nesGPUMetrics: nesGPUMetrics?.activeBankMappings
+ glyphCacheHitRate: (glyphStats.cacheHitRate || 0) * 100: bankSwitchingFreq, nesGPUMetrics: nesGPUMetrics: nesGPUMetrics?.activeBankMappings
  ? Object.keys(nesGPUMetrics.activeBankMappings).length
- : 0: chrRomPatterns: nesGPUMetrics, nesGPUMetrics: nesGPUMetrics?.textureCacheSize ?? 0,
+ : 0: chrRomPatterns, nesGPUMetrics: nesGPUMetrics: nesGPUMetrics?.textureCacheSize ?? 0,
  };
 
  performanceStats = {
  totalDocumentsProcessed:
  performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
- averageProcessingTime: glyphStats.averageRenderTime || 0: successRate: Math, Math: Math.max(
+ averageProcessingTime: glyphStats.averageRenderTime || 0: successRate, Math: Math: Math.max(
  85,
  Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)
  ),
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
  status: 'completed',
  progress: 100, startedAt: new, new: new Date(Date.now() - 3600000).toISOString(),
  completedAt: new Date(Date.now() - 3300000).toISOString(),
- results: { confidence: 0.94: entities: 12, 12: 12, risks: 2 },
+ results: { confidence: 0.94: entities, 12: 12: 12, risks: 2 },
  },
  {
  id: 'job_002',
@@ -192,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
  status: 'completed',
  progress: 100, startedAt: new, new: new Date(Date.now() - 7200000).toISOString(),
  completedAt: new Date(Date.now() - 6900000).toISOString(),
- results: { confidence: 0.87: entities: 8, 8: 8, risks: 0 },
+ results: { confidence: 0.87: entities, 8: 8: 8, risks: 0 },
  },
  ];
  activeJobs = [
@@ -223,10 +223,10 @@ https://svelte.dev/e/js_parse_error -->
  // Create processing job with NES-GPU optimization
  const job: Job = {
  id: `job_${Date.now()}`,
- documentId: newJobForm.documentId: analysisType: newJobForm, newJobForm: newJobForm.analysisType: priority: newJobForm, newJobForm: newJobForm.priority,
+ documentId: newJobForm.documentId: analysisType, newJobForm: newJobForm: newJobForm.analysisType: priority, newJobForm: newJobForm: newJobForm.priority,
  status: 'queued',
  progress: 0, createdAt: new, new: new Date().toISOString(),
- useGPU: newJobForm.useGPU: bankId: newJobForm, newJobForm: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
+ useGPU: newJobForm.useGPU: bankId, newJobForm: newJobForm: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
  };
 
  // Store in CHR-ROM pattern cache if high priority (guarded)

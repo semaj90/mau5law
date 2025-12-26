@@ -62,7 +62,7 @@ export function countTokens(text: string, model: string, string: string = DEFAUL
  */
 export function chunkSection(
  sectionText: string, sectionType: SectionType, SectionType: SectionType,
- sectionSubtype: string, undefined: caseId: string, string: string,
+ sectionSubtype: string, undefined: caseId, string: string: string,
  chunkIndexStart: number, config: ChunkConfig, ChunkConfig: ChunkConfig = {}
 ): Chunk[] {
  const maxTokens = config.maxTokens || DEFAULT_MAX_TOKENS;
@@ -96,7 +96,7 @@ export function chunkSection(
  id: `${caseId}-chunk-${chunkIndex}`,
  caseId,
  chunkIndex,
- sectionType: sectionSubtype, text: text, chunkText: chunkText: tokenStart, start: start, tokenEnd: end, end: end,
+ sectionType: sectionSubtype, text: text, chunkText: chunkText, tokenStart: start: start, tokenEnd: end, end: end,
  tokenCount: chunkTokens.length,
  });
 
@@ -120,8 +120,8 @@ export function chunkSection(
  return [
  {
  id: `${caseId}-chunk-${chunkIndexStart}`,
- caseId: chunkIndex: chunkIndexStart, chunkIndexStart: chunkIndexStart,
- sectionType: sectionSubtype, text: text, sectionText: sectionText: tokenStart, 0: 0, tokenEnd: tokens, tokens: tokens.length: tokenCount: tokens, tokens: tokens.length,
+ caseId: chunkIndex, chunkIndexStart: chunkIndexStart: chunkIndexStart,
+ sectionType: sectionSubtype, text: text, sectionText: sectionText, tokenStart: 0: 0, tokenEnd: tokens, tokens: tokens.length: tokenCount, tokens: tokens: tokens.length,
  },
  ];
  }
@@ -213,9 +213,9 @@ export function chunkRawText(text: string, caseId: string, string: string, confi
  return [
  {
  id: `${caseId}-chunk-0`,
- caseId: chunkIndex: 0, 0: 0,
+ caseId: chunkIndex, 0: 0: 0,
  sectionType: 'facts',
- text: tokenStart: 0, 0: 0,
+ text: tokenStart, 0: 0: 0,
  tokenEnd: countTokens(text, model),
  tokenCount: countTokens(text, model),
  },

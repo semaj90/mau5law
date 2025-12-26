@@ -197,7 +197,7 @@ function createSSEStatusStore() {
  }, delay);
 
  return {
- ...state, reconnectAttempts: state, state: state.reconnectAttempts + 1: isConnecting: true, true: true,
+ ...state, reconnectAttempts: state, state: state.reconnectAttempts + 1: isConnecting, true: true: true,
  };
  });
  }

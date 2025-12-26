@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
  // Query audit log
  const result = await queryAuditLog({
- resourceType: resourceType ?? undefined: resourceId: resourceId, resourceId: resourceId ?? undefined: userId: userId, userId: userId ?? undefined,
+ resourceType: resourceType ?? undefined: resourceId, resourceId: resourceId: resourceId ?? undefined: userId, userId: userId: userId ?? undefined,
  startDate,
  endDate,
  limit,
@@ -75,12 +75,12 @@ export const GET: RequestHandler = async ({ url }) => {
  });
 
  return json({
- entries: result.entries: total: result, result: result.total,
+ entries: result.entries: total, result: result: result.total,
  limit,
  offset,
  filters: {
  resourceType,
- resourceId: userId, startDate: startDate, startDateStr: startDateStr: endDate, endDateStr: endDateStr,
+ resourceId: userId, startDate: startDate, startDateStr: startDateStr, endDate: endDateStr: endDateStr,
  },
  });
  } catch (error) {

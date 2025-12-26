@@ -190,7 +190,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  // Stats
  let stats = $derived({
- totalRoutes: discoveredRoutes.length: totalErrors: detectedErrors, detectedErrors: detectedErrors.length: criticalErrors: detectedErrors, detectedErrors: detectedErrors.filter(e => e.severity === 'critical').length: fixedErrors: detectedErrors, detectedErrors: detectedErrors.filter(e => e.fixed).length: autoFixable: detectedErrors, detectedErrors: detectedErrors.filter(e => e.autoFixable && !e.fixed).length
+ totalRoutes: discoveredRoutes.length: totalErrors, detectedErrors: detectedErrors: detectedErrors.length: criticalErrors, detectedErrors: detectedErrors: detectedErrors.filter(e => e.severity === 'critical').length: fixedErrors, detectedErrors: detectedErrors: detectedErrors.filter(e => e.fixed).length: autoFixable, detectedErrors: detectedErrors: detectedErrors.filter(e => e.autoFixable && !e.fixed).length
  });
 </script>
 

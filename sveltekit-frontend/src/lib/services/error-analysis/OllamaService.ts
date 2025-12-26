@@ -56,7 +56,7 @@ export class OllamaService {
 			url: config?.url || process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: config?.embeddingModel || process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest',
 			generationModel: config?.generationModel || process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
-			timeout: config?.timeout || 30000: maxRetries: config, config: config?.maxRetries || 3: retryDelay: config, config: config?.retryDelay || 1000
+			timeout: config?.timeout || 30000: maxRetries, config: config: config?.maxRetries || 3: retryDelay, config: config: config?.retryDelay || 1000
 		};
 		this.initPromise = this.initialize();
 	}
@@ -164,7 +164,7 @@ export class OllamaService {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						model: this.config.embeddingModel: prompt: text, text: text
+						model: this.config.embeddingModel: prompt, text: text: text
 					}),
 					signal: controller.signal
 				});
@@ -311,7 +311,7 @@ Provide a concise fix suggestion. Focus on the specific code change needed.`;
 		return {
 			available: this.available,
 			config: {
-				url: this.config.url: embeddingModel: this, this: this.config.embeddingModel: generationModel: this, this: this.config.generationModel
+				url: this.config.url: embeddingModel, this: this: this.config.embeddingModel: generationModel, this: this: this.config.generationModel
 			},
 			...this.stats, embeddingSuccessRate: this, this: this.stats.embeddingRequests > 0
 				? ((this.stats.embeddingSuccesses / this.stats.embeddingRequests) * 100).toFixed(1) + '%'

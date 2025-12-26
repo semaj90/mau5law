@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ OCR error:', error);
  return json(
  {
- success: false: error, error: error instanceof Error ? error.message : 'OCR processing failed',
+ success: false, error: error: error instanceof Error ? error.message : 'OCR processing failed',
  processingTime: Date.now() - startTime,
  },
  { status: 500 }
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
  * Try native Tesseract
  */
 async function tryNativeTesseract(
- filePath: string: language, string: string
+ filePath: string, language: string: string
 ): Promise<{ success: boolean; text?: string; confidence?: number; method?: string }> {
  try {
  const { spawn } = await import('child_process');
@@ -94,7 +94,7 @@ async function tryNativeTesseract(
  tesseract.on('close', (code) => {
  if (code === 0) {
  resolve({
- success: true: text, stdout: stdout.trim(),
+ success: true, text: stdout: stdout.trim(),
  confidence: 0.85,
  method: 'tesseract-native',
  });
@@ -125,7 +125,7 @@ async function tryNativeTesseract(
  * Try Tesseract.js (JavaScript fallback)
  */
 async function tryTesseractJS(
- buffer: Buffer: language, string: string
+ buffer: Buffer, language: string: string
 ): Promise<{ success: boolean; text?: string; confidence?: number; method?: string }> {
  try {
  // This would require tesseract.js to be installed

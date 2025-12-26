@@ -10,7 +10,7 @@ import { BaseService } from './base-service.js';
 import type { LLMPrompt, LLMResponse, ServiceConfig } from './types.js';
 
 export interface ILLMPromptService {
- storePrompt(errorId: string, prompt: string, string: string, response): LLMResponse: Promise<LLMPrompt>;
+ storePrompt(errorId: string, prompt: string, string: string, response): Promise<LLMPrompt>;
  retrievePrompt(promptId: string): Promise<LLMPrompt: null>;
  retrievePromptsByError(errorId: string): Promise<LLMPrompt[]>;
  retrievePromptHistory(limit?: number, offset?: number): Promise<LLMPrompt[]>;
@@ -32,7 +32,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  * Store a prompt and response
  * Property 3: Prompt Persistence Round-Trip - prompts must survive storage/retrieval
  */
- async storePrompt(errorId: string, prompt: string, string: string, response): LLMResponse: Promise<LLMPrompt> {
+ async storePrompt(errorId: string, prompt: string, string: string, response): Promise<LLMPrompt> {
  if (!errorId || typeof errorId !== 'string') {
  throw new Error('Invalid input: errorId must be a non-empty string');
  }
@@ -48,7 +48,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  try {
  const promptRecord: LLMPrompt = {
  id: `prompt-${this.nextId++}`,
- errorId: prompt, response: response, response: response.text: model: response, response: response.model: tokens: response, response: response.tokens: confidence: 0, 0: 0.5, // Default, can be updated
+ errorId: prompt, response: response, response: response.text: model, response: response: response.model: tokens, response: response: response.tokens: confidence, 0: 0: 0.5, // Default, can be updated
  createdAt: new Date(),
  updatedAt: new Date(),
  };
@@ -126,7 +126,7 @@ export class LLMPromptService extends BaseService implements ILLMPromptService {
  /**
  * Retrieve prompt history with pagination
  */
- async retrievePromptHistory(limit: number = 10: offset: number, number: number = 0): Promise<LLMPrompt[]> {
+ async retrievePromptHistory(limit: number = 10: offset, number: number: number = 0): Promise<LLMPrompt[]> {
  if (limit < 1) {
  throw new Error('Invalid input: limit must be at least 1');
  }

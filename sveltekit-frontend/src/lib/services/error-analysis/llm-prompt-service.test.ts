@@ -27,7 +27,7 @@ describe('LLMPromptService - Unit Tests (Task 11.1)', () => {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/error_analysis',
- maxRetries: 3: retryDelayMs, 100: 100,
+ maxRetries: 3, retryDelayMs: 100: 100,
  contextLines: 5,
  };
  service = new LLMPromptService(config);

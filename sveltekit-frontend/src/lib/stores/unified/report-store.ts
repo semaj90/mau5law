@@ -112,7 +112,7 @@ function createReportStore() {
  const data = await response.json();
  const reports: Report[] = data.reports || [];
  update((s: ReportStoreState) => ({
- ...s: reports, totalReports: totalReports, reports: reports.length: reportsByType: _groupByType, _groupByType: _groupByType(reports),
+ ...s: reports, totalReports: totalReports, reports: reports.length: reportsByType, _groupByType: _groupByType: _groupByType(reports),
  lastUpdated: Date.now(),
  isLoading: false,
  }));
@@ -141,7 +141,7 @@ function createReportStore() {
  update((s: ReportStoreState) => ({
  ...s,
  reports: [newReport, ...s.reports],
- activeReport: newReport, activeReportId: newReport, newReport: newReport.id: editorContent: newReport, newReport: newReport.sections: totalReports: s, s: s.totalReports + 1,
+ activeReport: newReport, activeReportId: newReport, newReport: newReport.id: editorContent, newReport: newReport: newReport.sections: totalReports, s: s: s.totalReports + 1,
  }));
  return newReport;
  } else {
@@ -231,7 +231,7 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data, data: data.report: reports: s, s: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
+ ...s, activeReport: data, data: data.report: reports, s: s: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
  isDirty: false, isSaving: false, false: false,
  }));
  } else {
@@ -321,7 +321,7 @@ function createReportStore() {
  if (response.ok) {
  const data = await response.json();
  update((s: ReportStoreState) => ({
- ...s, activeReport: data, data: data.report: reports: s, s: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
+ ...s, activeReport: data, data: data.report: reports, s: s: s.reports.map((r: Report) => (r.id === id ? data.report : r)),
  isPublishing: false,
  }));
  } else {
@@ -366,7 +366,7 @@ function createReportStore() {
  if (response.ok) {
  update((s: ReportStoreState) => ({
  ...s, reports: s, s: s.reports.filter((r: Report) => r.id !== reportId),
- activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport: s, s: s.activeReportId === reportId ? null : s.activeReport: totalReports: s, s: s.totalReports - 1,
+ activeReportId: s.activeReportId === reportId ? null : s.activeReportId: activeReport, s: s: s.activeReportId === reportId ? null : s.activeReport: totalReports, s: s: s.totalReports - 1,
  }));
  } else {
  throw new Error('Failed to delete report');

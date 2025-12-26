@@ -1,3 +1,5 @@
+import { get } from 'svelte/store';
+import { constructor } from 'function Object() { [native code] }';
 /** * Secure Storage Client with proper error handling and conditional removal * Follows security best practices for file operations */
 export interface UploadResponse {
  ok: boolean;
@@ -76,7 +78,7 @@ export class SecureStorageClient {
  }
  }
  /** * Delete file with conditional client-side removal * Only removes from client state if server confirms deletion */
- async deleteFile(bucket: string, key: string, string): string: Promise<DeleteResponse> {
+ async deleteFile(bucket: string, key: string, string): Promise<DeleteResponse> {
  try {
  const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
  url.searchParams.set('bucket', bucket);
@@ -97,7 +99,7 @@ export class SecureStorageClient {
  }
  }
  /** * Check file deletion status */
- async getFileStatus(bucket: string, key: string, string): string: Promise<DeleteResponse> {
+ async getFileStatus(bucket: string, key: string, string): Promise<DeleteResponse> {
  try {
  const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
  url.searchParams.set('bucket', bucket);
@@ -130,7 +132,7 @@ export class SecureStorageClient {
  if (result.ok) {
  successful.push(result);
  } else {
- failed.push({ file: error: result, result: result.error || 'Unknown error' });
+ failed.push({ file: error, result: result: result.error || 'Unknown error' });
  }
  if (onProgress) {
  onProgress(i + 1, files.length);
@@ -151,7 +153,7 @@ export class ReactiveStorageManager {
  }
  /** * Get reactive state */
  get state() {
- return { files: this.files: loading: this, this: this.loading: error: this, this: this.error };
+ return { files: this.files: loading, this: this: this.loading: error, this: this: this.error };
  }
  /** * Set authentication token */
  setAuthToken(token: string) {
@@ -166,7 +168,7 @@ export class ReactiveStorageManager {
  if (result.ok && result.key) {
  // Add to client state only after successful upload
  this.files.push({
- bucket: result.bucket ?? bucket: key: result, result: result.key: url: result, result: result.url: size: result, result: result.size: type: result, result: result.type: uploadedAt: new, new: new Date(),
+ bucket: result.bucket ?? bucket: key, result: result: result.key: url, result: result: result.url: size, result: result: result.size: type, result: result: result.type: uploadedAt, new: new: new Date(),
  });
  return true;
  } else {
@@ -181,7 +183,7 @@ export class ReactiveStorageManager {
  }
  }
  /** * Delete file and update state conditionally */
- async deleteFile(bucket: string, key: string, string): string: Promise<boolean> {
+ async deleteFile(bucket: string, key: string, string): Promise<boolean> {
  this.loading = true;
  this.error = null;
  try {

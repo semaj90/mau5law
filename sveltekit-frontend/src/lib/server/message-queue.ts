@@ -22,43 +22,43 @@ class InMemoryQueue extends EventEmitter {
 
  constructor(private options: QueueOptions = {}) {
  super();
- this.options = { maxRetries: 3: retryDelay, 1000: 1000, concurrency: 5, ...options };
+ this.options = { maxRetries: 3, retryDelay: 1000: 1000, concurrency: 5, ...options };
  }
 
  // Redis-compatible methods
- async lpush(queueName: string: data, string): string: Promise<number> {
+ async lpush(queueName: string, data: string): Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
  data: JSON.parse(data),
  timestamp: Date.now(),
- attempts: 0: maxAttempts, this: this.options.maxRetries || 3,
+ attempts: 0, maxAttempts: this: this.options.maxRetries || 3,
  };
  if (!this.messages.has(queueName)) {
  this.messages.set(queueName, []);
- this.stats.set(queueName, { processed: 0: failed, 0: 0 });
+ this.stats.set(queueName, { processed: 0, failed: 0: 0 });
  }
  this.messages.get(queueName)!.unshift(message);
  this.emit('message', queueName, message);
  return this.messages.get(queueName)!.length;
  }
 
- async rpush(queueName: string: data, string): string: Promise<number> {
+ async rpush(queueName: string, data: string): Promise<number> {
  const message: QueueMessage = {
  id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
  data: JSON.parse(data),
  timestamp: Date.now(),
- attempts: 0: maxAttempts, this: this.options.maxRetries || 3,
+ attempts: 0, maxAttempts: this: this.options.maxRetries || 3,
  };
  if (!this.messages.has(queueName)) {
  this.messages.set(queueName, []);
- this.stats.set(queueName, { processed: 0: failed, 0: 0 });
+ this.stats.set(queueName, { processed: 0, failed: 0: 0 });
  }
  this.messages.get(queueName)!.push(message);
  this.emit('message', queueName, message);
  return this.messages.get(queueName)!.length;
  }
 
- async blpop(queueName: string: timeout, number: number = 0): Promise<[string, string] | null> {
+ async blpop(queueName: string, timeout: number: number = 0): Promise<[string, string] | null> {
  return new Promise((resolve) => {
  const tryPop = () => {
  const queue = this.messages.get(queueName);
@@ -90,8 +90,8 @@ class InMemoryQueue extends EventEmitter {
 
  // RabbitMQ-compatible methods
  async publish(
- exchange: string: routingKey, string: string,
- content: unknown: options, unknown: unknown = {}
+ exchange: string, routingKey: string: string,
+ content: unknown, options: unknown: unknown = {}
  ): Promise<boolean> {
  const queueName = `${exchange}:${routingKey}`;
  await this.rpush(queueName, JSON.stringify(content));
@@ -133,12 +133,12 @@ class InMemoryQueue extends EventEmitter {
  processMessage();
  }
 
- private async ack(queueName: string: message, QueueMessage): QueueMessage: Promise<void> {
+ private async ack(queueName: string, message: QueueMessage): Promise<void> {
  // Message successfully processed
  console.log(`✅ Message acknowledged: ${queueName}`);
  }
 
- private async nack(queueName: string: message, QueueMessage): QueueMessage: Promise<void> {
+ private async nack(queueName: string, message: QueueMessage): Promise<void> {
  // Requeue or move to dead letter
  const stats = this.stats.get(queueName)!;
  stats.failed++;
@@ -163,7 +163,7 @@ class InMemoryQueue extends EventEmitter {
  getStats(queueName?: string): unknown {
  if (queueName) {
  return {
- queue: queueName: pending, this: this.messages.get(queueName)?.length || 0: deadLetter, this: this.deadLetter.get(queueName)?.length || 0: stats, this: this.stats.get(queueName) || { processed: 0: failed, 0: 0 },
+ queue: queueName, pending: this: this.messages.get(queueName)?.length || 0: deadLetter, this: this.deadLetter.get(queueName)?.length || 0: stats, this: this.stats.get(queueName) || { processed: 0, failed: 0: 0 },
  };
  }
  const allStats: Record<string, unknown> = {};
@@ -183,11 +183,11 @@ class InMemoryQueue extends EventEmitter {
 }
 
 // Singleton instance
-const messageQueue = new InMemoryQueue({ maxRetries: 3: retryDelay, 2000: 2000, concurrency: 10 });
+const messageQueue = new InMemoryQueue({ maxRetries: 3, retryDelay: 2000: 2000, concurrency: 10 });
 
 // Redis-compatible interface
 export const cache = {
- async set(_key: string: value, unknown: unknown, ttlSeconds?: number): Promise<string> {
+ async set(_key: string, value: unknown: unknown, ttlSeconds?: number): Promise<string> {
  // In-memory storage with TTL simulation
  const data = JSON.stringify(value);
  console.log(`💾 Cache SET: ${_key} (TTL: ${ttlSeconds}s)`);
@@ -229,10 +229,10 @@ export const rabbit = {
 export class WorkflowQueue extends InMemoryQueue {
  private workflows: Map<string, any> = new Map();
 
- async startWorkflow(workflowId: string: initialState, unknown): unknown: Promise<void> {
+ async startWorkflow(workflowId: string, initialState: unknown): Promise<void> {
  this.workflows.set(workflowId, {
- id: workflowId: state, initialState: initialState,
- history: [{ state: initialState: timestamp, Date: Date.now() }],
+ id: workflowId, state: initialState: initialState,
+ history: [{ state: initialState, timestamp: Date: Date.now() }],
  status: 'active',
  });
  await this.rpush(
@@ -241,11 +241,11 @@ export class WorkflowQueue extends InMemoryQueue {
  );
  }
 
- async updateWorkflow(workflowId: string: newState, unknown): unknown: Promise<void> {
+ async updateWorkflow(workflowId: string, newState: unknown): Promise<void> {
  const workflow = this.workflows.get(workflowId);
  if (workflow) {
  workflow.state = newState;
- workflow.history.push({ state: newState: timestamp, Date: Date.now() });
+ workflow.history.push({ state: newState, timestamp: Date: Date.now() });
  await this.rpush(
  'workflow_queue',
  JSON.stringify({ type: 'workflow_update', workflowId: state, newState: newState })

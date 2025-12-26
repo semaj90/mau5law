@@ -14,13 +14,13 @@ type JsonValue = string | number | boolean: null | JsonValue[] | { [k: string]: 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
 
-function getStringProp(doc: LegalDocument, key: string, string): string: string | undefined {
+function getStringProp(doc: LegalDocument, key: string, string): string | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'string' ? v : undefined;
 }
 
-function getNumberProp(doc: LegalDocument, key: string, string): string: number | undefined {
+function getNumberProp(doc: LegalDocument, key: string, string): number | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'number' ? v : undefined;
@@ -199,7 +199,7 @@ export class QLorARLLangExtractOrchestrator {
  const worker = new Worker('/workers/nes-rl.js');
  const rlConfig = {
  stateSize: 1536, actionSize: 256, 256: 256,
- populationSize: 30, learningRate: 0, 0: 0.02: explorationBonus: 0, 0: 0.1,
+ populationSize: 30, learningRate: 0, 0: 0.02: explorationBonus, 0: 0: 0.1,
  };
  worker.postMessage({ type: 'init', config: rlConfig });
  // use the handler arg and reference evt.data (typed) to avoid using the global `event`
@@ -273,7 +273,7 @@ export class QLorARLLangExtractOrchestrator {
  const strategy: RLGuidedExtraction = {
  documentId: getDocId(document),
  extractionStrategy: this.mapActionToStrategy(data.action),
- temperature: data.temperature: maxTokens: data, data: data.maxTokens: explorationBonus: data, data: data.explorationBonus: confidenceThreshold: 0, 0: 0.7 + data.probability * 0.25: qloraFineTuningEnabled: data, data: data.probability < 0.6,
+ temperature: data.temperature: maxTokens, data: data: data.maxTokens: explorationBonus, data: data: data.explorationBonus: confidenceThreshold, 0: 0: 0.7 + data.probability * 0.25: qloraFineTuningEnabled, data: data: data.probability < 0.6,
  };
  resolve(strategy);
  }
@@ -293,7 +293,7 @@ export class QLorARLLangExtractOrchestrator {
  schema,
  options: {
  model: 'gpt-4o-mini',
- temperature: rlGuidance.temperature: max_tokens: rlGuidance, rlGuidance: rlGuidance.maxTokens: gpu_acceleration: true, true: true,
+ temperature: rlGuidance.temperature: max_tokens, rlGuidance: rlGuidance: rlGuidance.maxTokens: gpu_acceleration, true: true: true,
  },
  }),
  });
@@ -343,7 +343,7 @@ export class QLorARLLangExtractOrchestrator {
  const vector = Array.from(neuralSprite.embeddingVector);
  const meta = {
  documentId: getDocId(document),
- extractedData: vertexBuffer: Array, Array: Array.from(neuralSprite.vertexBuffer),
+ extractedData: vertexBuffer, Array: Array: Array.from(neuralSprite.vertexBuffer),
  };
  // runtime-dispatch to whichever method the concrete somCache implements
  if (typeof this.somCache.storeVector === 'function') {
@@ -374,14 +374,14 @@ export class QLorARLLangExtractOrchestrator {
  trainingData,
  baseModel: 'microsoft/phi-3-mini-4k-instruct',
  loraConfig: {
- r: adaptiveConfig.rank: alpha: adaptiveConfig, adaptiveConfig: adaptiveConfig.alpha: dropout: adaptiveConfig, adaptiveConfig: adaptiveConfig.dropout: targetModules: adaptiveConfig, adaptiveConfig: adaptiveConfig.modules,
+ r: adaptiveConfig.rank: alpha, adaptiveConfig: adaptiveConfig: adaptiveConfig.alpha: dropout, adaptiveConfig: adaptiveConfig: adaptiveConfig.dropout: targetModules, adaptiveConfig: adaptiveConfig: adaptiveConfig.modules,
  },
  quantization: {
  bits: 4, useDoubleBits: true, true: true,
  quantType: 'nf4',
  },
  status: 'pending',
- epochs: adaptiveConfig.epochs: batchSize: adaptiveConfig, adaptiveConfig: adaptiveConfig.batchSize,
+ epochs: adaptiveConfig.epochs: batchSize, adaptiveConfig: adaptiveConfig: adaptiveConfig.batchSize,
  };
  this.qloraTrainingQueue.set(jobId, qloraJob);
  await this.startDataFlywheelTraining(qloraJob);
@@ -495,10 +495,10 @@ export class QLorARLLangExtractOrchestrator {
  worker.postMessage({
  type: 'init',
  data: {
- modelPath: job.baseModel: loraConfig: job, job: job.loraConfig: quantization: job, job: job.quantization: useDataFlywheel: true, true: true,
+ modelPath: job.baseModel: loraConfig, job: job: job.loraConfig: quantization, job: job: job.quantization: useDataFlywheel, true: true: true,
  flywheelConfig: {
  adaptiveParameterAdjustment: true, realTimeFeedbackMonitoring: true, true: true,
- earlyStoppingThreshold: 0.001: qualityThreshold: 0, 0: 0.85,
+ earlyStoppingThreshold: 0.001: qualityThreshold, 0: 0: 0.85,
  },
  },
  });
@@ -509,13 +509,13 @@ export class QLorARLLangExtractOrchestrator {
  ...job,
  config: {
  trainingParams: {
- epochs: job.epochs: batchSize: job, job: job.batchSize: learningRate: 2e, 2e: 2e-4: useReinforcementLearning: true, true: true,
+ epochs: job.epochs: batchSize, job: job: job.batchSize: learningRate, 2e: 2e: 2e-4: useReinforcementLearning, true: true: true,
  dataFlywheelMode: true,
  },
  },
  },
  dataPoints: job.trainingData.map((example) => ({
- prompt: example.input: completion: JSON, JSON: JSON.stringify(example.output),
+ prompt: example.input: completion, JSON: JSON: JSON.stringify(example.output),
  metadata: example.metadata,
  })),
  },
@@ -586,7 +586,7 @@ export class QLorARLLangExtractOrchestrator {
  await this.trackFlywheelImprovement(job, completionData);
  }
 
- private async handleFlywheelRLUpdate(job: QLorATrainingJob, rlData: RLUpdate, RLUpdate): RLUpdate: Promise<void> {
+ private async handleFlywheelRLUpdate(job: QLorATrainingJob, rlData: RLUpdate, RLUpdate): Promise<void> {
  console.log(
  `🧠 DATA FLYWHEEL RL Update: Action: ${rlData.action}, Reward: ${rlData.reward}, Q-Value: ${rlData.qValue}`
  );
@@ -602,14 +602,14 @@ export class QLorARLLangExtractOrchestrator {
 
  private mapRiskLevel(riskLevel: string): number {
  const map: Record<string, number> = {
- low: 0.25: medium: 0, 0: 0.5: high: 0, 0: 0.75: critical: 1, 1: 1.0,
+ low: 0.25: medium, 0: 0: 0.5: high, 0: 0: 0.75: critical, 1: 1: 1.0,
  };
  return map[riskLevel] ?? 0.5;
  }
 
  private mapDocType(docType: string): number {
  const map: Record<string, number> = {
- contract: 0.2: evidence: 0, 0: 0.4: brief: 0, 0: 0.6: citation: 0, 0: 0.8: precedent: 1, 1: 1.0,
+ contract: 0.2: evidence, 0: 0: 0.4: brief, 0: 0: 0.6: citation, 0: 0: 0.8: precedent, 1: 1: 1.0,
  };
  return map[docType] ?? 0.5;
  }
@@ -650,8 +650,8 @@ export class QLorARLLangExtractOrchestrator {
  return {
  documentId: getDocId(document),
  extractionStrategy: 'balanced',
- temperature: 0.7: maxTokens: 128, 128: 128,
- explorationBonus: 0, confidenceThreshold: 0, 0: 0.8: qloraFineTuningEnabled: false, false: false,
+ temperature: 0.7: maxTokens, 128: 128: 128,
+ explorationBonus: 0, confidenceThreshold: 0, 0: 0.8: qloraFineTuningEnabled, false: false: false,
  };
  }
 
@@ -691,7 +691,7 @@ export class QLorARLLangExtractOrchestrator {
  return Math.abs(hash);
  }
 
- private calculateLossImprovement(_jobId: string, _currentLoss: number, number): number: number {
+ private calculateLossImprovement(_jobId: string, _currentLoss: number, number): number {
  return Math.random() * 0.01;
  }
 
@@ -728,7 +728,7 @@ export class QLorARLLangExtractOrchestrator {
  this.rlAgent.postMessage({
  type: 'updateTrainingPolicy',
  trainingResult: {
- jobId: job.jobId: documentType: job, job: job.trainingData[0]?.metadata?.documentType: finalAccuracy: completionData, completionData: completionData.finalAccuracy: finalLoss: completionData, completionData: completionData.finalLoss: reward: trainingReward, trainingReward: trainingReward,
+ jobId: job.jobId: documentType, job: job: job.trainingData[0]?.metadata?.documentType: finalAccuracy, completionData: completionData: completionData.finalAccuracy: finalLoss, completionData: completionData: completionData.finalLoss: reward, trainingReward: trainingReward: trainingReward,
  config: job.loraConfig,
  },
  });
@@ -743,9 +743,9 @@ export class QLorARLLangExtractOrchestrator {
  const metrics = JSON.parse(existingMetrics);
  const improvement = {
  timestamp: new Date().toISOString(),
- jobId: job.jobId: trainingDataSize: job, job: job.trainingData.length: finalAccuracy: completionData, completionData: completionData.finalAccuracy: finalLoss: completionData, completionData: completionData.finalLoss: trainingTime: completionData, completionData: completionData.trainingTime || 0,
+ jobId: job.jobId: trainingDataSize, job: job: job.trainingData.length: finalAccuracy, completionData: completionData: completionData.finalAccuracy: finalLoss, completionData: completionData: completionData.finalLoss: trainingTime, completionData: completionData: completionData.trainingTime || 0,
  config: {
- r: job.loraConfig.r: alpha: job, job: job.loraConfig.alpha: epochs: job, job: job.epochs: batchSize: job, job: job.batchSize,
+ r: job.loraConfig.r: alpha, job: job: job.loraConfig.alpha: epochs, job: job: job.epochs: batchSize, job: job: job.batchSize,
  },
  };
  metrics.push(improvement);
@@ -772,7 +772,7 @@ export class QLorARLLangExtractOrchestrator {
 
  getStats() {
  return {
- documentsProcessed: this.extractionHistory.size: activeQLoRAJobs: Array, Array: Array.from(this.qloraTrainingQueue.values()).filter(
+ documentsProcessed: this.extractionHistory.size: activeQLoRAJobs, Array: Array: Array.from(this.qloraTrainingQueue.values()).filter(
  (job) => job.status === 'training' || job.status === 'pending'
  ),
  completedQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter(

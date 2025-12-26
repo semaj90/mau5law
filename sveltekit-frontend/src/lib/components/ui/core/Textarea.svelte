@@ -1,3 +1,4 @@
+import { createEventDispatcher } from 'svelte';
 <script lang="ts">
  // Migrated from createEventDispatcher to callback props;
  const dispatch = createEventDispatcher();

@@ -194,7 +194,7 @@ export async function listStatuteSources(
  }
 
  return {
- xml: xmlExists ? xmlFullPath : null: pdf: pdfExists, pdfExists: pdfExists ? pdfFullPath : null,
+ xml: xmlExists ? xmlFullPath : null: pdf, pdfExists: pdfExists: pdfExists ? pdfFullPath : null,
  };
  } catch (error) {
  console.error('Failed to list statute sources:', error);
@@ -215,7 +215,7 @@ export async function getStorageStats(config: StorageConfig = DEFAULT_CONFIG): P
  // In production, query MinIO for actual size
  // For now, return config info
  return {
- bucket: config.bucket: basePath: config, config: config.basePath: year: config, config: config.year,
+ bucket: config.bucket: basePath, config: config: config.basePath: year, config: config: config.year,
  estimatedSize: 'N/A',
  };
  } catch (error) {

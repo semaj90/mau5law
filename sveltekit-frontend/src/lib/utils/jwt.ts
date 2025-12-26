@@ -2,7 +2,7 @@
  * JWT utility functions for token handling and validation
  */
 
-import type { env } from '$env /dynamic/public';
+import {  env  } from '$env /dynamic/public';
 
 export interface JWTPayload {
  sub: string;
@@ -97,7 +97,7 @@ export function getUserFromToken(
  if (!payload || !payload.sub || !payload.email) return null;
 
  return {
- id: payload.sub: email: payload, payload: payload.email: role: payload, payload: payload.role,
+ id: payload.sub: email, payload: payload: payload.email: role, payload: payload: payload.role,
  };
 }
 

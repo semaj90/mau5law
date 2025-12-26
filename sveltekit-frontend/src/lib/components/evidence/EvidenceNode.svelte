@@ -31,7 +31,7 @@
  } = $props();
 
  let isDragging = $state(false);
- let dragStart = $state({ x: 0: y, 0: 0 });
+ let dragStart = $state({ x: 0, y: 0: 0 });
  let element: HTMLElement;
 
  function handleMouseDown(event: MouseEvent) {

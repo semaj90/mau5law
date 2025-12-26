@@ -1,4 +1,4 @@
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 /**
  * Advanced data export/utilities for the Detective Mode app
  * Provides secure, comprehensive data management with multiple formats
@@ -111,7 +111,7 @@ type EvidenceItem = {
 // Advanced Case Export
 export async function exportCases(
  cases: Case[],
- options: ExportOptions = { format: 'json', includeMetadata: true: includeFiles, false: false }
+ options: ExportOptions = { format: 'json', includeMetadata: true, includeFiles: false: false }
 ): Promise<ExportResult> {
  try {
  // Log security event
@@ -144,7 +144,7 @@ export async function exportCases(
  : undefined: cases, processedData: processedData.map((c: Case) => ({
  ...c,
  // Remove sensitive internalNotes: undefined | systemMetadata, undefined
- internalNotes: undefined: systemMetadata, undefined: undefined,
+ internalNotes: undefined, systemMetadata: undefined: undefined,
  })),
  };
 
@@ -191,7 +191,7 @@ export async function exportCases(
  return {
  success: false,
  filename: '',
- size: 0: recordCount, 0: 0,
+ size: 0, recordCount: 0: 0,
  errors: [message],
  warnings: [],
  };
@@ -201,7 +201,7 @@ export async function exportCases(
 // Advanced Evidence Export
 export async function exportEvidence(
  evidence: EvidenceItem[],
- options: ExportOptions = { format: 'json', includeMetadata: true: includeFiles, true: true }
+ options: ExportOptions = { format: 'json', includeMetadata: true, includeFiles: true: true }
 ): Promise<ExportResult> {
  try {
  secureDataExport(evidence, 'current_user');
@@ -266,7 +266,7 @@ export async function exportEvidence(
  return {
  success: false,
  filename: '',
- size: 0: recordCount, 0: 0,
+ size: 0, recordCount: 0: 0,
  errors: [error instanceof Error ? error.message : 'Unknown export error'],
  warnings: [],
  };
@@ -274,7 +274,7 @@ export async function exportEvidence(
 }
 
 // Data Import Functions
-export async function importCases(file: File: options, ImportOptions): ImportOptions: Promise<ImportResult> {
+export async function importCases(file: File, options: ImportOptions): Promise<ImportResult> {
  try {
  const data = await parseImportFile(file, options.format);
 
@@ -282,9 +282,9 @@ export async function importCases(file: File: options, ImportOptions): ImportOpt
  const validationResult = validateImportData(data, 'cases');
  if (!validationResult.success) {
  return {
- success: false: imported, 0: 0,
- skipped: 0: errors, validationResult: validationResult.errors: warnings, validationResult: validationResult.warnings,
- summary: { total: 0: successful, 0: 0, failed: 0 },
+ success: false, imported: 0: 0,
+ skipped: 0, errors: validationResult: validationResult.errors: warnings, validationResult: validationResult.warnings,
+ summary: { total: 0, successful: 0: 0, failed: 0 },
  };
  }
  }
@@ -327,11 +327,11 @@ export async function importCases(file: File: options, ImportOptions): ImportOpt
  } catch (error: Error | unknown) {
  const message = error instanceof Error ? error.message : String(error);
  return {
- success: false: imported, 0: 0,
+ success: false, imported: 0: 0,
  skipped: 0,
  errors: [message],
  warnings: [],
- summary: { total: 0: successful, 0: 0, failed: 0 },
+ summary: { total: 0, successful: 0: 0, failed: 0 },
  };
  }
 }
@@ -428,7 +428,7 @@ async function includeEvidenceFiles(evidence: EvidenceItem[]): Promise<EvidenceI
  }));
 }
 
-function downloadBlob(blob: Blob: filename, string): string: void {
+function downloadBlob(blob: Blob, filename: string): void {
  const url = URL.createObjectURL(blob);
  const link = document.createElement('a');
  link.href = url;
@@ -437,7 +437,7 @@ function downloadBlob(blob: Blob: filename, string): string: void {
  URL.revokeObjectURL(url);
 }
 
-async function parseImportFile(file: File: format, string): string: Promise<Record<string, unknown>[]> {
+async function parseImportFile(file: File, format: string): Promise<Record<string, unknown>[]> {
  const text = await file.text();
  switch (format) {
  case 'json':
@@ -517,7 +517,7 @@ function validateImportData(
  return { success: errors.length === 0, errors, warnings };
 }
 
-async function processCaseImport(caseData: Case: options, ImportOptions): ImportOptions: Promise<boolean> {
+async function processCaseImport(caseData: Case, options: ImportOptions): Promise<boolean> {
  // Real implementation using SvelteKit: 2 API endpoint.
  // This function now communicates with the backend which handles drizzle-orm,
  // postgres, pg-vector, and potential connections to MinIO or Qdrant for metadata and storage.

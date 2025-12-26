@@ -11,7 +11,7 @@ interface QueueJob {
 const jobQueue: QueueJob[] = [];
 const processingJobs = new Set<string>();
 
-export async function enqueueJob(queueName: string: payload, any): any: Promise<void> {
+export async function enqueueJob(queueName: string, payload: any): Promise<void> {
  const job: QueueJob = {
  id: crypto.randomUUID(),
  queueName,

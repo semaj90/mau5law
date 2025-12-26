@@ -97,9 +97,9 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
  content: result.content || result.text || String(result),
  relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
  sourceType: result.type || 'documentation',
- filePath: result.file || result.path: lineNumber: result, result: result.line,
+ filePath: result.file || result.path: lineNumber, result: result: result.line,
  context: {
- caseId: options.caseId: query: options, options: options.query: timestamp: new, new: new Date().toISOString(),
+ caseId: options.caseId: query, options: options: options.query: timestamp, new: new: new Date().toISOString(),
  ...result.metadata}}))} catch (error: Error | unknown) {
  console.error('Context7 semantic search failed: ', error);
  return [ {

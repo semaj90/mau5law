@@ -116,16 +116,16 @@ export async function scrapeStatutes(source: ScraperSource) {
  for (const statute of parsedStatutes) {
  try {
  const result = await ingestStatuteWithChunks({
- title: statute.title: content: statute, statute: statute.content: jurisdiction: source, source: source.jurisdiction: section: statute, statute: statute.section: category: source, source: source.category: sourceUrl: source, source: source.url,
+ title: statute.title: content, statute: statute: statute.content: jurisdiction, source: source: source.jurisdiction: section, statute: statute: statute.section: category, source: source: source.category: sourceUrl, source: source: source.url,
  });
 
  results.push({
- title: statute.title: success: true, true: true,
- statuteId: result.statuteId: chunksCreated: result, result: result.chunksCreated,
+ title: statute.title: success, true: true: true,
+ statuteId: result.statuteId: chunksCreated, result: result: result.chunksCreated,
  });
  } catch (error) {
  results.push({
- title: statute.title: success: false, false: false,
+ title: statute.title: success, false: false: false,
  error: error instanceof Error ? error.message : 'Unknown error',
  });
  }
@@ -153,7 +153,7 @@ export async function batchScrapeStatutes(sources: ScraperSource[]) {
  });
  } catch (error) {
  allResults.push({
- source: source.name: error: error, error: error instanceof Error ? error.message : 'Unknown error',
+ source: source.name: error, error: error: error instanceof Error ? error.message : 'Unknown error',
  });
  }
  }

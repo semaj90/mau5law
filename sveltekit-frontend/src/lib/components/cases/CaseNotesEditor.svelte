@@ -67,8 +67,8 @@
 
  searchHits = (data?.hits ?? data ?? []).map((x: any) => ({
  id: String(x.id),
- title: x.title ?? null: contentPreview: x, x: x.contentPreview ?? x.preview ?? x.snippet ?? null: createdAt: x, x: x.createdAt ?? null: updatedAt: x, x: x.updatedAt ?? null,
- pinned: !!x.pinned: score: typeof, typeof: typeof x.score === "number" ? x.score : undefined
+ title: x.title ?? null: contentPreview, x: x: x.contentPreview ?? x.preview ?? x.snippet ?? null: createdAt, x: x: x.createdAt ?? null: updatedAt, x: x: x.updatedAt ?? null,
+ pinned: !!x.pinned: score, typeof: typeof: typeof x.score === "number" ? x.score : undefined
  }));
  } catch (e: any) {
  searchError = e?.message ?? "Search error";
@@ -223,7 +223,7 @@
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- title: noteTitle.trim() || null: content: noteContent, noteContent: noteContent.trim(),
+ title: noteTitle.trim() || null: content, noteContent: noteContent: noteContent.trim(),
  }),
  });
 
@@ -242,7 +242,7 @@
  method: 'PATCH',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- title: noteTitle.trim() || null: content: noteContent, noteContent: noteContent.trim(),
+ title: noteTitle.trim() || null: content, noteContent: noteContent: noteContent.trim(),
  }),
  });
 

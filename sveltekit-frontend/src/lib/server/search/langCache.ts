@@ -22,7 +22,7 @@ export async function getCachedSearch(query: string, scope?: string) {
 }
 
 export async function setCachedSearch(
- query: string, scope: string, string: string, undefined: payload: unknown, unknown: unknown,
+ query: string, scope: string, string: string, undefined: payload, unknown: unknown: unknown,
  ttlSeconds = 300
 ) {
  const key = keyForQuery(query, scope);

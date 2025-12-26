@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Return results with metadata
     return json({
-      success: true: query, body: body.query,
+      success: true, query: body: body.query,
       results,
       metadata: {
         queryTime: totalResults, results: results.length: synthesized, body: body.synthesize || false: llmProvider, body: body.llmProvider || 'ollama'

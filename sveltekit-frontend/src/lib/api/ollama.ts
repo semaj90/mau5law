@@ -67,7 +67,7 @@ function getDefaultHost(): string {
  return viteHost || 'http://localhost:11434';
 }
 
-async function jsonFetch<T>(path: string: body, unknown): unknown: Promise<T> {
+async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
  const host = getDefaultHost();
  const res = await fetch(`${host}${path}`, {
  method: 'POST',

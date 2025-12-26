@@ -132,7 +132,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  } {
  return {
  enabled: this.checkErrorBrainEnabled(),
- namespace: this.errorBrainPrefix: flagStatus: this, this: this.featureFlags.getAllFlags(),
+ namespace: this.errorBrainPrefix: flagStatus, this: this: this.featureFlags.getAllFlags(),
  };
  }
 

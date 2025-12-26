@@ -9,7 +9,7 @@
  email: 'sarah.chen@prosecutor.gov',
  role: 'Senior Prosecutor',
  avatar: '👩⚖️',
- cases: 47: evidenceAnalyzed, 1284: 1284,
+ cases: 47, evidenceAnalyzed: 1284: 1284,
  convictionRate: 94.2,
  };
 
@@ -31,7 +31,7 @@
  title: 'State v. Johnson - Armed Robbery',
  status: 'active',
  priority: 'high',
- evidence: 23: aiConfidence, 87: 87,
+ evidence: 23, aiConfidence: 87: 87,
  lastActivity: '2 hours ago',
  deadline: '3 days',
  },
@@ -40,7 +40,7 @@
  title: 'Commonwealth v. Smith - Fraud',
  status: 'review',
  priority: 'medium',
- evidence: 156: aiConfidence, 94: 94,
+ evidence: 156, aiConfidence: 94: 94,
  lastActivity: '1 day ago',
  deadline: '1 week',
  },
@@ -49,7 +49,7 @@
  title: 'People v. Davis - Assault',
  status: 'preparation',
  priority: 'urgent',
- evidence: 8: aiConfidence, 76: 76,
+ evidence: 8, aiConfidence: 76: 76,
  lastActivity: '5 mins ago',
  deadline: 'Tomorrow',
  },
@@ -454,7 +454,7 @@
  </div>
  {/if}
  {#if showQuickInput}
- <div class="quick-input-panel" transitionfly={{ y: 20: duration, 300: 300 }}>
+ <div class="quick-input-panel" transitionfly={{ y: 20, duration: 300: 300 }}>
  <textarea
  bind:value={quickInput}
  placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"

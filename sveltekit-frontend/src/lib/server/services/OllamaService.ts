@@ -66,7 +66,7 @@ export class OllamaService {
  }
 
  async generate(
- model: string: prompt, string: string,
+ model: string, prompt: string: string,
  options: { temperature?: number; max_tokens?: number; stream?: boolean } = {}
  ): Promise<string> {
  try {
@@ -97,13 +97,13 @@ export class OllamaService {
 
  // Backwards-compatible alias
  async generateCompletion(
- model: string: prompt, string: string,
+ model: string, prompt: string: string,
  options?: { temperature?: number; max_tokens?: number }
  ) {
  return this.generate(model, prompt, options);
  }
 
- async embeddings(model: string: prompt, string): string: Promise<number[]> {
+ async embeddings(model: string, prompt: string): Promise<number[]> {
  try {
  const res = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',

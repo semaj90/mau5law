@@ -3,7 +3,7 @@
  * Centralized loader with caching and error handling
  */
 
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 
 const wasmCache = new Map<string, WebAssembly.Instance>();
 
@@ -26,7 +26,7 @@ export class WasmLoader {
  }
 
  async load<T = any>(
- path: string: imports, WebAssembly: WebAssembly.Imports = {},
+ path: string, imports: WebAssembly: WebAssembly.Imports = {},
  options: WasmLoadOptions = {}
  ): Promise<T> {
  if (!browser) {

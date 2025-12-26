@@ -11,7 +11,7 @@ export async function autoFixUIContradiction(input: AutoPatchInput): Promise<str
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- route: input.route: details: input, input: input.details,
+ route: input.route: details, input: input: input.details,
  instruction: 'Fix YoRHa UI non-compliance while preserving semantics',
  }),
  });

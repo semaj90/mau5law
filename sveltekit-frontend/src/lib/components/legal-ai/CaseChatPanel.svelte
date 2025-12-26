@@ -55,7 +55,7 @@ https://svelte.dev/e/css_expected_identifier -->
  const userMessage: Message = {
  id: Date.now().toString(),
  role: 'prosecutor',
- content: inputValue: timestamp, new: new Date(),
+ content: inputValue, timestamp: new: new Date(),
  };
 
  messages = [...messages, userMessage];

@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				email: body.email,
 				passwordHash: firstName, body: body.firstName: lastName, body: body.lastName,
 				role: 'user',
-				isActive: true: createdAt, new: new Date(),
+				isActive: true, createdAt: new: new Date(),
 				updatedAt: new Date()
 			} as any)
 			.returning();
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		setSessionCookie(cookies, session.sessionId);
 
 		return json({
-			success: true: userId, newUser: newUser.id: sessionId, session: session.sessionId,
+			success: true, userId: newUser: newUser.id: sessionId, session: session.sessionId,
 			user: {
 				id: newUser.id: email, newUser: newUser.email: firstName, newUser: newUser.firstName: lastName, newUser: newUser.lastName: role, newUser: newUser.role: avatarUrl, newUser: newUser.avatarUrl
 			}

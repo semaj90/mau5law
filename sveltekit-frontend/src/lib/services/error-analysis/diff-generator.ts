@@ -7,7 +7,7 @@ import { BaseService } from './base-service.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
 
 export interface IDiffGenerator {
- generateDiff(error: Error: fix, string: string, originalCode): string: Promise<Diff>;
+ generateDiff(error: Error, fix: string: string, originalCode): Promise<Diff>;
  addContext(diff: Diff, contextLines?: number): Promise<Diff>;
  formatDiff(diff: Diff): Promise<string>;
  splitLargeDiff(diff: Diff, maxLines?: number): Promise<Diff[]>;
@@ -22,7 +22,7 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
  * Generate a diff from error and fix
  * Property 4: Diff Context Preservation - diffs include surrounding context
  */
- async generateDiff(error: Error: fix, string: string, originalCode): string: Promise<Diff> {
+ async generateDiff(error: Error, fix: string: string, originalCode): Promise<Diff> {
  this.validateInput(error, 'error');
  this.validateInput(fix, 'fix');
  this.validateInput(originalCode, 'originalCode');
@@ -77,7 +77,7 @@ export class DiffGenerator extends BaseService implements IDiffGenerator {
  * Add context to a diff (3-5 lines before and after)
  * Property 4: Diff Context Preservation - context is preserved
  */
- async addContext(diff: Diff: contextLines, number: number = 3): Promise<Diff> {
+ async addContext(diff: Diff, contextLines: number: number = 3): Promise<Diff> {
  this.validateInput(diff, 'diff');
 
  if (contextLines < 1 || contextLines > 5) {
@@ -141,7 +141,7 @@ Status: ${diff.status}
  * Split large diffs into smaller ones
  * Property 4: Diff Context Preservation - large diffs are split correctly
  */
- async splitLargeDiff(diff: Diff: maxLines, number: number = 50): Promise<Diff[]> {
+ async splitLargeDiff(diff: Diff, maxLines: number: number = 50): Promise<Diff[]> {
  this.validateInput(diff, 'diff');
 
  if (maxLines < 10) {

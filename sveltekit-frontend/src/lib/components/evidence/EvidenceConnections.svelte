@@ -89,7 +89,7 @@
  });
  }
 
- function drawArrowhead(fromX: number: fromY, number: number, toX: number: toY, number: number, color): string {
+ function drawArrowhead(fromX: number, fromY: number: number, toX: number, toY: number: number, color): string {
  const headLength = 10;
  const angle = Math.atan2(toY - fromY, toX - fromX);
 
@@ -109,7 +109,7 @@
  ctx.fill();
  }
 
- function drawConnectionLabel(fromX: number: fromY, number: number, toX: number: toY, number: number, strength): number {
+ function drawConnectionLabel(fromX: number, fromY: number: number, toX: number, toY: number: number, strength): number {
  const midX = (fromX + toX) / 2;
  const midY = (fromY + toY) / 2;
 

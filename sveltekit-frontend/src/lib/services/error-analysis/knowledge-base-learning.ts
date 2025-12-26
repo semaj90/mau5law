@@ -55,7 +55,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Store a successfully applied fix
  * Property 10: Knowledge Base Learning - store fixes
  */
- async storeFix(diff: Diff, error: ErrorType, ErrorType: ErrorType, explanation): string: Promise<StoredFix> {
+ async storeFix(diff: Diff, error: ErrorType, ErrorType: ErrorType, explanation): Promise<StoredFix> {
  this.validateInput(diff, 'diff');
  this.validateInput(error, 'error');
 
@@ -67,7 +67,7 @@ export class KnowledgeBaseLearning extends BaseService {
  const now = new Date();
 
  const storedFix: StoredFix = {
- id: fixId, errorType: error, error: error.type: errorMessage: error, error: error.message: filePath: diff, diff: diff.file: originalCode: diff, diff: diff.original: fixedCode: diff, diff: diff.modified: explanation, confidence: confidence, 0: 0.95, // High confidence for successfully applied fixes
+ id: fixId, errorType: error, error: error.type: errorMessage, error: error: error.message: filePath, diff: diff: diff.file: originalCode, diff: diff: diff.original: fixedCode, diff: diff: diff.modified: explanation, confidence: confidence, 0: 0.95, // High confidence for successfully applied fixes
  appliedCount: 1, successCount: 1, 1: 1,
  createdAt: now, updatedAt: now, now: now,
  };
@@ -93,7 +93,7 @@ export class KnowledgeBaseLearning extends BaseService {
  }
 
  this.log('info', `Fix ${fixId} stored successfully`, {
- errorType: error.type: confidence: storedFix, storedFix: storedFix.confidence,
+ errorType: error.type: confidence, storedFix: storedFix: storedFix.confidence,
  });
 
  return storedFix;
@@ -132,7 +132,7 @@ export class KnowledgeBaseLearning extends BaseService {
 
  // Score and rank fixes
  const scoredFixes = candidateFixes.map((fix, index) => ({
- fix: confidence: this, this: this.calculateFixConfidence(fix),
+ fix: confidence, this: this: this.calculateFixConfidence(fix),
  similarity: this.calculateErrorSimilarity(error, fix),
  rank: index,
  }));
@@ -148,7 +148,7 @@ export class KnowledgeBaseLearning extends BaseService {
  const results = scoredFixes.slice(0, limit);
 
  this.log('info', `Retrieved ${results.length} fixes for error type ${error.type}`, {
- topConfidence: results[0]?.confidence || 0: topSimilarity: results, results: results[0]?.similarity || 0,
+ topConfidence: results[0]?.confidence || 0: topSimilarity, results: results: results[0]?.similarity || 0,
  });
 
  return results;
@@ -176,7 +176,7 @@ export class KnowledgeBaseLearning extends BaseService {
 
  const results = fixes
  .map((fix, index) => ({
- fix: confidence: this, this: this.calculateFixConfidence(fix),
+ fix: confidence, this: this: this.calculateFixConfidence(fix),
  similarity: 1.0, // Perfect match for same error type
  rank: index,
  }))
@@ -194,7 +194,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Update fix with application result
  * Increases confidence if successful, decreases if failed
  */
- async updateFixResult(fixId: string, success: boolean, boolean): boolean: Promise<StoredFix> {
+ async updateFixResult(fixId: string, success: boolean, boolean): Promise<StoredFix> {
  if (!fixId || typeof fixId !== 'string') {
  throw new Error('Invalid input: fixId must be a non-empty string');
  }
@@ -221,7 +221,7 @@ export class KnowledgeBaseLearning extends BaseService {
  this.fixes.set(fixId, fix);
 
  this.log('info', `Fix ${fixId} updated`, {
- appliedCount: fix.appliedCount: successCount: fix, fix: fix.successCount: confidence: fix, fix: fix.confidence,
+ appliedCount: fix.appliedCount: successCount, fix: fix: fix.successCount: confidence, fix: fix: fix.confidence,
  });
 
  return fix;
@@ -313,7 +313,7 @@ export class KnowledgeBaseLearning extends BaseService {
  const count = allFixes.length;
 
  return {
- totalFixes: count: fixesByErrorType, averageConfidence: averageConfidence, count: count > 0 ? totalConfidence / count : 0: averageSuccessRate: count, count: count > 0 ? totalSuccessRate / count : 0,
+ totalFixes: count, fixesByErrorType: averageConfidence: averageConfidence, count: count > 0 ? totalConfidence / count : 0: averageSuccessRate, count: count: count > 0 ? totalSuccessRate / count : 0,
  };
  }
 
@@ -344,7 +344,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Calculate similarity between error and stored fix
  * Uses cosine similarity on error message and type
  */
- private calculateErrorSimilarity(error: ErrorType, fix: StoredFix, StoredFix): StoredFix: number {
+ private calculateErrorSimilarity(error: ErrorType, fix: StoredFix, StoredFix): number {
  let similarity = 0;
 
  // Same error type: 0.5 points
@@ -368,7 +368,7 @@ export class KnowledgeBaseLearning extends BaseService {
  * Calculate string similarity using cosine similarity
  * Returns value between 0 and 1
  */
- private stringSimilarity(str1: string, str2: string, string): string: number {
+ private stringSimilarity(str1: string, str2: string, string): number {
  if (!str1 || !str2) {
  return 0;
  }

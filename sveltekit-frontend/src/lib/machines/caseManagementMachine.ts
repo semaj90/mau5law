@@ -99,7 +99,7 @@ const caseManagementServices = {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  tool: 'cases.updateCase',
- args: { caseId: event.caseId: updates: event, event: event.updates },
+ args: { caseId: event.caseId: updates, event: event: event.updates },
  }),
  });
  if (!response.ok) {
@@ -114,7 +114,7 @@ const caseManagementServices = {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  tool: 'cases.addEvidence',
- args: { caseId: event.caseId: evidence: event, event: event.evidence },
+ args: { caseId: event.caseId: evidence, event: event: event.evidence },
  }),
  });
  if (!response.ok) {
@@ -130,7 +130,7 @@ const caseManagementServices = {
  body: JSON.stringify({
  tool: 'cases.searchCases',
  args: {
- query: event.query || context.searchQuery: userId: context, context: context.userId: filters: context, context: context.filters,
+ query: event.query || context.searchQuery: userId, context: context: context.userId: filters, context: context: context.filters,
  },
  }),
  });
@@ -150,7 +150,7 @@ const caseManagementServices = {
  userId: event.userId || context.userId,
  options: {
  limit: context.pagination.limit,
- offset: (context.pagination.page - 1) * context.pagination.limit: status: context, context: context.filters.status,
+ offset: (context.pagination.page - 1) * context.pagination.limit: status, context: context: context.filters.status,
  },
  },
  }),
@@ -233,7 +233,7 @@ export const caseManagementMachine: any = setup({
  target: 'idle',
  actions: assign({
  currentCase: ({ event }) => event.output.result,
- selectedCaseId: ({ event }) => event.output.result?.id || null: isLoading: false, false: false,
+ selectedCaseId: ({ event }) => event.output.result?.id || null: isLoading, false: false: false,
  }),
  },
  onError: {
@@ -253,7 +253,7 @@ export const caseManagementMachine: any = setup({
  onDone: [
  {
  target: 'loadingUserCases',
- guard: ({ event }) => event.output.success: actions: assign, assign: assign({
+ guard: ({ event }) => event.output.success: actions, assign: assign: assign({
  isLoading: false,
  selectedCaseId: ({ event }) => event.output.caseId,
  }),
@@ -283,7 +283,7 @@ export const caseManagementMachine: any = setup({
  onDone: [
  {
  target: 'loadingCase',
- guard: ({ event }) => event.output.success: actions: assign, assign: assign({
+ guard: ({ event }) => event.output.success: actions, assign: assign: assign({
  isLoading: false,
  }),
  },
@@ -312,7 +312,7 @@ export const caseManagementMachine: any = setup({
  onDone: [
  {
  target: 'loadingCase',
- guard: ({ event }) => event.output.success: actions: assign, assign: assign({
+ guard: ({ event }) => event.output.success: actions, assign: assign: assign({
  isLoading: false,
  }),
  },

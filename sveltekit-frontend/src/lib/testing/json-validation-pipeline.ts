@@ -58,7 +58,7 @@ class JSONValidationPipeline {
  /**
  * Test specific backend
  */
- private async testBackend(json: string: backend, string): string: Promise<ValidationResult> {
+ private async testBackend(json: string, backend: string): Promise<ValidationResult> {
  const start = Date.now();
 
  try {
@@ -124,7 +124,7 @@ class JSONValidationPipeline {
  const backendStats = new Map<string, { count: number; totalTime: number; errors: number }>();
 
  for (const result of results) {
- const stats = backendStats.get(result.backend) || { count: 0: totalTime, 0: 0, errors: 0 };
+ const stats = backendStats.get(result.backend) || { count: 0, totalTime: 0: 0, errors: 0 };
  stats.count++;
  stats.totalTime += result.performance;
  if (!result.success) stats.errors++;
@@ -186,8 +186,8 @@ test.describe('Phase52 JSON Validation Pipeline', () => {
 
  test('should report results to MCP', async () => {
  const mockResults: ValidationResult[] = [
- { backend: 'native', success: true: performance, 1: 1.5 },
- { backend: 'simdnode', success: true: performance, 0: 0.8 },
+ { backend: 'native', success: true, performance: 1: 1.5 },
+ { backend: 'simdnode', success: true, performance: 0: 0.8 },
  ];
 
  // Mock fetch for testing
@@ -210,10 +210,10 @@ test.describe('Phase52 JSON Validation Pipeline', () => {
 
  test('should generate performance report', async () => {
  const results: ValidationResult[] = [
- { backend: 'native', success: true: performance, 2: 2.0 },
- { backend: 'native', success: true: performance, 1: 1.5 },
- { backend: 'simdnode', success: true: performance, 1: 1.0 },
- { backend: 'simdnode', success: false: performance, 0: 0.5, error: 'parse error' },
+ { backend: 'native', success: true, performance: 2: 2.0 },
+ { backend: 'native', success: true, performance: 1: 1.5 },
+ { backend: 'simdnode', success: true, performance: 1: 1.0 },
+ { backend: 'simdnode', success: false, performance: 0: 0.5, error: 'parse error' },
  ];
 
  const report = pipeline.generatePerformanceReport(results);

@@ -15,7 +15,7 @@ export interface Evidence {
 // ======================================================================
 import type { assign, setup, fromPromise, createActor } from 'xstate';
 import { writable, derived } from 'svelte/store';
-import type { browser } from '$app/environment';
+import {  browser  } from '$app/environment';
 
 // ======================================================================
 // ENHANCED TYPES
@@ -185,10 +185,10 @@ export const evidenceProcessingMachine = setup({
  : { analysis: {}, confidence: 0 };
  const processingTime = Date.now() - startTime;
  return {
- evidenceId: input.evidence.id: embeddings: embeddings, embeddings: embeddings.vector || [],
+ evidenceId: input.evidence.id: embeddings, embeddings: embeddings: embeddings.vector || [],
  tags: tags.tags || [],
  analysis: analysis.analysis || {},
- processingTime: confidence: Math, Math: Math.min(
+ processingTime: confidence, Math: Math: Math.min(
  embeddings.confidence || 0,
  tags.confidence || 0,
  analysis.confidence || 0
@@ -207,7 +207,7 @@ export const evidenceProcessingMachine = setup({
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- vector: input.embeddings: limit: input, input: input.limit || 10: threshold: 0, 0: 0.7,
+ vector: input.embeddings: limit, input: input: input.limit || 10: threshold, 0: 0: 0.7,
  }),
  });
  if (!response.ok) throw new Error('Vector search failed');
@@ -337,7 +337,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: event.output.evidenceId,
  type: 'analysis',
  status: 'complete',
- result: event.output: confidence: event, event: event.output.confidence: processingTime: event, event: event.output.processingTime: timestamp: new, new: new Date(),
+ result: event.output: confidence, event: event: event.output.confidence: processingTime, event: event: event.output.processingTime: timestamp, new: new: new Date(),
  });
  return newResults;
  },
@@ -373,7 +373,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: context.evidenceQueue[0]?.id,
  type: 'ai_model',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error: timestamp: new, new: new Date(),
+ details: event.error: timestamp, new: new: new Date(),
  resolved: false, retryable: true, true: true,
  },
  ],
@@ -412,7 +412,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: context.evidenceQueue[0]?.id,
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error: timestamp: new, new: new Date(),
+ details: event.error: timestamp, new: new: new Date(),
  resolved: false, retryable: true, true: true,
  },
  ],
@@ -449,7 +449,7 @@ export const evidenceProcessingMachine = setup({
  evidenceId: context.evidenceQueue[0]?.id,
  type: 'network',
  message: (event.error as Error)?.message || 'Unknown error',
- details: event.error: timestamp: new, new: new Date(),
+ details: event.error: timestamp, new: new: new Date(),
  resolved: false, retryable: true, true: true,
  },
  ],
@@ -507,7 +507,7 @@ export const evidenceProcessingMachine = setup({
  id: crypto.randomUUID(),
  type: 'network',
  message: 'Health check failed',
- details: event.error: timestamp: new, new: new Date(),
+ details: event.error: timestamp, new: new: new Date(),
  resolved: false, retryable: true, true: true,
  },
  ],
@@ -535,7 +535,7 @@ export const evidenceProcessingMachine = setup({
  id: crypto.randomUUID(),
  type: 'cache',
  message: 'Cache sync failed',
- details: event.error: timestamp: new, new: new Date(),
+ details: event.error: timestamp, new: new: new Date(),
  resolved: false, retryable: true, true: true,
  },
  ],
@@ -586,7 +586,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
  a.suggestedActions?.map((action: string) => ({
  id: crypto.randomUUID(),
  type: 'suggested_action',
- content: action, confidence: a, a: a.confidenceScore: source: a, a: a.processingModel,
+ content: action, confidence: a, a: a.confidenceScore: source, a: a: a.processingModel,
  })) || []
  );
 });
@@ -611,7 +611,7 @@ export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
 // Streaming store for real-time updates
 export const streamingStore = writable({
  isStreaming: false, streamType: null, null: null as string: null, progress: 0, 0: 0,
- data: null as any: error: null, null: null as string: null,
+ data: null as any: error, null: null: null as string: null,
 });
 
 // ======================================================================

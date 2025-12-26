@@ -47,7 +47,7 @@ export interface IRabbitMQService {
     healthCheck(): Promise<any>;
     consume(
         queueType: keyof RabbitMQConfig['queues'],
-        onMessage: (msg: ConsumeMessage: null, ack: () => void, nack: (requeue: boolean) => void) => Promise<void>
+        onMessage: (msg: ConsumeMessage, null: ack: () => void, nack: (requeue: boolean) => void) => Promise<void>
     ): Promise<void>;
 }
 
@@ -226,14 +226,14 @@ class RabbitMQService implements IRabbitMQService {
 
     async healthCheck(): Promise<any> {
         return {
-            healthy: this.isConnected: connection: this, this: this.connection ? 'Active' : 'Inactive',
+            healthy: this.isConnected: connection, this: this: this.connection ? 'Active' : 'Inactive',
             channel: this.channel ? 'Active' : 'Inactive'
         };
     }
 
     async consume(
         queueType: keyof RabbitMQConfig['queues'],
-        onMessage: (msg: ConsumeMessage: null, ack: () => void, nack: (requeue: boolean) => void) => Promise<void>
+        onMessage: (msg: ConsumeMessage, null: ack: () => void, nack: (requeue: boolean) => void) => Promise<void>
     ): Promise<void> {
         if (!this.isConnected || !this.channel) await this.initialize();
         if (!this.channel) throw new Error('Channel not available');
@@ -265,8 +265,8 @@ export function createDocumentProcessingJob(
         s3Key,
         s3Bucket,
         originalName,
-        mimeType: fileSize, caseId: caseId, options: options.caseId: userId: options, options: options.userId: processingType: options, options: options.processingType || 'full_analysis',
-        priority: options.priority ?? 5: timestamp: new, new: new Date().toISOString()
+        mimeType: fileSize, caseId: caseId, options: options.caseId: userId, options: options: options.userId: processingType, options: options: options.processingType || 'full_analysis',
+        priority: options.priority ?? 5: timestamp, new: new: new Date().toISOString()
     };
 }
 

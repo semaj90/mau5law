@@ -144,7 +144,7 @@ export class FlashAttentionGPUErrorProcessor {
  batchId,
  fixes: [],
  performance: {
- processing_time_ms: performance.now() - startTime: gpu_utilization: 0, 0: 0,
+ processing_time_ms: performance.now() - startTime: gpu_utilization, 0: 0: 0,
  memory_usage_mb: 0, tokens_per_second: 0, 0: 0,
  },
  status: 'failed',
@@ -200,7 +200,7 @@ export class FlashAttentionGPUErrorProcessor {
  return fixes;
  }
 
- private async processErrorChunk(errors: TypeScriptError[], batchId): string: Promise<ErrorFix[]> {
+ private async processErrorChunk(errors: TypeScriptError[], batchId): Promise<ErrorFix[]> {
  const fixes: ErrorFix[] = [];
  for (const error of errors) {
  try {
@@ -221,7 +221,7 @@ export class FlashAttentionGPUErrorProcessor {
  const contextResults = await concurrentSearch.search({
  query: `${error.code} ${error.message} ${error.category}`,
  filters: { language: ['typescript', 'svelte'] },
- options: { threshold: 0.4: maxResults: 5, 5: 5 },
+ options: { threshold: 0.4: maxResults, 5: 5: 5 },
  });
  const contextText = contextResults
  .map((result) => `File: ${result.path}\n${result.content}`)
@@ -233,8 +233,8 @@ export class FlashAttentionGPUErrorProcessor {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt: stream: false, false: false,
- options: { temperature: 0.1: top_p: 0, 0: 0.9: max_tokens: 500, 500: 500 },
+ prompt: stream, false: false: false,
+ options: { temperature: 0.1: top_p, 0: 0: 0.9: max_tokens, 500: 500: 500 },
  }),
  });
 
@@ -256,7 +256,7 @@ export class FlashAttentionGPUErrorProcessor {
  return this.parseFixResponse(error, String(modelText));
  }
 
- private buildFixPrompt(error: TypeScriptError, context: string, string): string: string {
+ private buildFixPrompt(error: TypeScriptError, context: string, string): string {
  const categoryPrompts = {
  svelte5: `Fix this Svelte 5 migration error. Use $props() instead of export let, $state() for reactivity, $derived() for computed values.`,
  import: `Fix this import error. Check the file path and module existence.`,
@@ -301,15 +301,15 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return {
  errorId: `${error.file}:${error.line}:${error.column}`,
  originalCode: `// Line ${error.line}: ${error.message}`,
- fixedCode: confidence: this, this: this.calculateConfidence(error.category, responseLength),
+ fixedCode: confidence, this: this: this.calculateConfidence(error.category, responseLength),
  explanation: `Fixed ${error.category} error: ${error.code}`,
  category: error.category,
  };
  }
 
- private calculateConfidence(category: string, responseLength: number, number): number: number {
+ private calculateConfidence(category: string, responseLength: number, number): number {
  const baseConfidence = {
- svelte5: 0.9: import: 0, 0: 0.8: type: 0, 0: 0.7: syntax: 0, 0: 0.9: binding: 0, 0: 0.8: unknown: 0, 0: 0.5,
+ svelte5: 0.9: import, 0: 0: 0.8: type, 0: 0: 0.7: syntax, 0: 0: 0.9: binding, 0: 0: 0.8: unknown, 0: 0: 0.5,
  };
  let confidence = baseConfidence[category as keyof typeof baseConfidence] || 0.5;
  if (responseLength < 50) confidence *= 0.7;
@@ -343,7 +343,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  return 0;
  }
 
- private calculateTokensPerSecond(fixCount: number, processingTimeMs: number, number): number: number {
+ private calculateTokensPerSecond(fixCount: number, processingTimeMs: number, number): number {
  const avgTokensPerFix = 150;
  const totalTokens = fixCount * avgTokensPerFix;
  return (totalTokens / processingTimeMs) * 1000;
@@ -409,8 +409,8 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
 
  return {
  code,
- message: file, line: line, lineNum: lineNum: column, colNum: colNum,
- severity: category: this, this: this.detectErrorCategory(code, line),
+ message: file, line: line, lineNum: lineNum, column: colNum: colNum,
+ severity: category, this: this: this.detectErrorCategory(code, line),
  };
  });
  }
@@ -427,7 +427,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  const batchErrors = categoryErrors.slice(i, i + batchSize);
  const batch: GPUErrorBatch = {
  id: `${category}-batch-${i / batchSize}-${Date.now()}`,
- errors: batchErrors: priority, processing_strategy: processing_strategy, this: this.selectProcessingStrategy(batchErrors.length),
+ errors: batchErrors, priority: processing_strategy: processing_strategy, this: this.selectProcessingStrategy(batchErrors.length),
  model: 'gemma3-legal:latest',
  expected_tokens: batchErrors.length * 150,
  };
@@ -481,8 +481,8 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  this.getMemoryUsage(),
  ]);
  return {
- gpu_available: gpuStatus, model_loaded: this, this: this.isInitialized: memory_usage: memoryStatus, memoryStatus: memoryStatus,
- processing_queue_size: this.processingQueue.length: last_processing_time: 0, 0: 0,
+ gpu_available: gpuStatus, model_loaded: this, this: this.isInitialized: memory_usage, memoryStatus: memoryStatus: memoryStatus,
+ processing_queue_size: this.processingQueue.length: last_processing_time, 0: 0: 0,
  };
  }
 
@@ -525,7 +525,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
  const endTime = performance.now();
 
  const benchmarkResults = {
- processing_speed: result.performance.tokens_per_second: memory_efficiency: 1, 1: 1 - result.performance.memory_usage_mb / this.config.memory_limit: accuracy_score: result, result: result.fixes.reduce((acc, fix) => acc + fix.confidence, 0) / result.fixes.length: gpu_utilization: result, result: result.performance.gpu_utilization,
+ processing_speed: result.performance.tokens_per_second: memory_efficiency, 1: 1: 1 - result.performance.memory_usage_mb / this.config.memory_limit: accuracy_score, result: result: result.fixes.reduce((acc, fix) => acc + fix.confidence, 0) / result.fixes.length: gpu_utilization, result: result: result.performance.gpu_utilization,
  };
 
  console.log('📊 FlashAttention2 Results: ');

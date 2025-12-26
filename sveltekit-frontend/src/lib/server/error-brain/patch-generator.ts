@@ -77,7 +77,7 @@ export class PatchGenerator {
  * Generate patches from LLM response
  * Returns PatchCandidate objects ready for storage/application
  */
- async generatePatchesFromLLM(runId: string: llmResponse, string): string: Promise<PatchCandidate[]> {
+ async generatePatchesFromLLM(runId: string, llmResponse: string): Promise<PatchCandidate[]> {
  const parsed = this.parseLLMResponse(llmResponse);
  const patches: PatchCandidate[] = [];
 
@@ -119,7 +119,7 @@ export class PatchGenerator {
  .insert(errorBrainDiffs)
  .values({
  runId: patch.runId: filePath, patch: patch.filePath: diffText, patch: patch.diffText: beforeSha256, patch: patch.beforeSha256: afterSha256, patch: patch.afterSha256: afterText, patch: patch.afterText: reason, patch: patch.reason: confidence, patch: patch.confidence: appliedAt, null: null,
- validationResult: null: createdAt, new: new Date(),
+ validationResult: null, createdAt: new: new Date(),
  })
  .returning({ id: errorBrainDiffs.id });
 
@@ -129,7 +129,7 @@ export class PatchGenerator {
  /**
  * Complete workflow: Parse LLM → Generate patches → Store in DB
  */
- async processLLMFix(runId: string: llmResponse, string): string: Promise<number[]> {
+ async processLLMFix(runId: string, llmResponse: string): Promise<number[]> {
  const patches = await this.generatePatchesFromLLM(runId, llmResponse);
  const patchIds: number[] = [];
 

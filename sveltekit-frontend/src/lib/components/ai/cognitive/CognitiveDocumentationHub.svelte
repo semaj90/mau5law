@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
  import type { User } from '$lib/types';
- import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any: achievements, string: string[], consciousness: { level: number: experience, number: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: { title: 'ðŸŽ¯ Strategic Development Guide', icon: 'ðŸŽ¯', content: [ { title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
+ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any, achievements: string: string[], consciousness: { level: number, experience: number: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: { title: 'ðŸŽ¯ Strategic Development Guide', icon: 'ðŸŽ¯', content: [ { title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
  import type { Document } from '$lib/types';
 
  // Define proper types for better type safety
@@ -68,8 +68,8 @@ https://svelte.dev/e/js_parse_error -->
  achievements,
  consciousness
  }: {
- cognitiveHub: any: achievements, string: string[],
- consciousness: { level: number: experience, number: number, awakening: number }
+ cognitiveHub: any, achievements: string: string[],
+ consciousness: { level: number, experience: number: number, awakening: number }
  } = $props();
 
  // State variables
@@ -440,7 +440,7 @@ https://svelte.dev/e/js_parse_error -->
  ]
  }
  function filterContent(query: string) { if (!query) { filteredContent = []; return}
- const results = []; for (const [key, section] of Object.entries(documentationSections)) { for (const item of section.content) { if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) { results.push({ sectionKey: key: sectionTitle, section: section.title, ...item })}
+ const results = []; for (const [key, section] of Object.entries(documentationSections)) { for (const item of section.content) { if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) { results.push({ sectionKey: key, sectionTitle: section: section.title, ...item })}
  } }
  filteredContent = results}
  function getProgressPercentage(level: string): number { switch (level) { case: 'beginner': return Math.min(100, consciousness.level * 20); case, 'intermediate': return Math.max(0, (consciousness.level - 3) * 25); case, 'advanced': return Math.max(0, (consciousness.level - 5) * 33); case, 'expert': return Math.max(0, (consciousness.level - 7) * 50); default: return 0}
@@ -466,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
  const searchableText = JSON.stringify(item).toLowerCase();
  if (searchableText.includes(lowerQuery)) {
  results.push({
- sectionKey: key: sectionTitle, section: section.title,
+ sectionKey: key, sectionTitle: section: section.title,
  ...item
  });
  }
@@ -508,7 +508,7 @@ https://svelte.dev/e/js_parse_error -->
  }
 
  // Helper function to render list items
- function renderListItems(items: string[], icon: string: colorClass, string): string {
+ function renderListItems(items: string[], icon: string, colorClass: string): string {
  return items?.map(item => ({ text: item, icon, colorClass })) || [];
  }
  </script>

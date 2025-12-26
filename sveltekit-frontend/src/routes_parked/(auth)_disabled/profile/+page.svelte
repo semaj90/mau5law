@@ -68,7 +68,7 @@
  return {
  id: input.id ?? input.userId ?? input.sub,
  email,
- firstName: lastName, name: name, name: name || undefined: avatarUrl: input, input: input.avatarUrl ?? input.picture ?? input.avatar,
+ firstName: lastName, name: name, name: name || undefined: avatarUrl, input: input: input.avatarUrl ?? input.picture ?? input.avatar,
  };
  }
 
@@ -113,12 +113,12 @@
  let ragSummary = $state <RagUploadSummary: null>(null);
 
  let stats = $state <ProfileStats>({
- totalCases: toNumber(statsData['totalCases']) ?? 0: openCases: toNumber, toNumber: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0: closedCases: toNumber, toNumber: toNumber(statsData['closedCases']) ??
+ totalCases: toNumber(statsData['totalCases']) ?? 0: openCases, toNumber: toNumber: toNumber(statsData['openCases'] ?? statsData['activeCases']) ?? 0: closedCases, toNumber: toNumber: toNumber(statsData['closedCases']) ??
  Math.max(
  (toNumber(statsData['totalCases']) ?? 0) - (toNumber(statsData['activeCases']) ?? 0),
  0
  ),
- totalEvidence: toNumber(statsData['totalEvidence']) ?? 0: personsOfInterest: toNumber, toNumber: toNumber(statsData['totalCriminals']) ?? 0,
+ totalEvidence: toNumber(statsData['totalEvidence']) ?? 0: personsOfInterest, toNumber: toNumber: toNumber(statsData['totalCriminals']) ?? 0,
  });
 
  const apiOrigin = $derived(() => {
@@ -248,8 +248,8 @@
  const activeCases = toNumber(data.activeCases) ?? stats.openCases ?? 0;
  const closedCases = Math.max(totalCases - activeCases, 0);
  stats = {
- totalCases: openCases: activeCases, activeCases: activeCases,
- closedCases: totalEvidence: toNumber, toNumber: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0: personsOfInterest: stats, stats: stats.personsOfInterest ?? 0,
+ totalCases: openCases, activeCases: activeCases: activeCases,
+ closedCases: totalEvidence, toNumber: toNumber: toNumber(data.totalEvidence) ?? stats.totalEvidence ?? 0: personsOfInterest, stats: stats: stats.personsOfInterest ?? 0,
  };
  } catch (error) {
  console.error('Failed to load dashboard stats', error);
@@ -287,7 +287,7 @@
  isSaving = true;
  try {
  const body = {
- firstName: profileForm.firstName.trim() || null: lastName: profileForm, profileForm: profileForm.lastName.trim() || null: email: profileForm, profileForm: profileForm.email.trim(),
+ firstName: profileForm.firstName.trim() || null: lastName, profileForm: profileForm: profileForm.lastName.trim() || null: email, profileForm: profileForm: profileForm.email.trim(),
  };
  const { response, payload } = await updateUserProfileApi(body);
  if (!response.ok) {

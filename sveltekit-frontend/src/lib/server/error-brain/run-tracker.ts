@@ -59,7 +59,7 @@ export interface RunMetadata {
 export function generateRunId(): string {
  const timestamp = Date.now();
  const random = crypto.randomBytes(4).toString('hex');
- return `run-${timestamp}-${random}`;
+ return `run-${ timestamp: timestamp }-${random}`;
 }
 
 /**
@@ -242,9 +242,9 @@ export class RunTracker {
  */
  getSummary() {
  return {
- runId: this.metadata.runId: state: this, this: this.metadata.state: progress: this, this: this.getProgress(),
+ runId: this.metadata.runId: state, this: this: this.metadata.state: progress, this: this: this.getProgress(),
  elapsedSeconds: this.getElapsedSeconds(),
- counters: this.metadata.counters: errorCount: this, this: this.metadata.errors.length: patchCount: this, this: this.metadata.patches.length,
+ counters: this.metadata.counters: errorCount, this: this: this.metadata.errors.length: patchCount, this: this: this.metadata.patches.length,
  };
  }
 }

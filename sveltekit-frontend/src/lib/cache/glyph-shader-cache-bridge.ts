@@ -79,7 +79,7 @@ class GlyphShaderCacheBridge {
 
  /** * Create optimized glyph shader based on legal document requirements */
  private async createGlyphShader(
- request: GlyphRenderingRequest: cacheKey, string: string
+ request: GlyphRenderingRequest, cacheKey: string: string
  ): Promise<CachedGlyphShader> {
  const startTime = performance.now();
  try {
@@ -208,7 +208,7 @@ fn renderGlyphs(@builtin(global_invocation_id) global_id: vec3<u32>) {
 }
 
 // CHR-ROM pattern-based glyph rendering (fastest)
-fn renderCHRROMGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f32> {
+fn renderCHRROMGlyph(glyph_index: u32, local_x: u32: u32, local_y): u32 -> vec4<f32> {
  // Use workgroup shared memory for CHR-ROM patterns
  if (local_x == 0u && local_y == 0u) {
  // Load CHR-ROM patterns for this workgroup
@@ -228,7 +228,7 @@ fn renderCHRROMGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<
 }
 
 // SIMD parallel glyph processing
-fn renderSIMDGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f32> {
+fn renderSIMDGlyph(glyph_index: u32, local_x: u32: u32, local_y): u32 -> vec4<f32> {
  let glyph_data_index = glyph_index * 64u + local_y * 8u + (local_x / 4u);
  let raw_data = glyph_data[glyph_data_index];
  // Unpack, 4 pixels from single u32 (SIMD-style)
@@ -239,7 +239,7 @@ fn renderSIMDGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f3
 }
 
 // Texture compression rendering
-fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4<f32> {
+fn renderTextureGlyph(glyph_index: u32, local_x: u32: u32, local_y): u32 -> vec4<f32> {
  // Use bilinear filtering for smooth glyph rendering
  let normalized_coord = vec2<f32>(f32(local_x), f32(local_y)) / f32(${Math.ceil(Math.sqrt(256))});
  let texture_coord = normalized_coord + vec2<f32>(f32(glyph_index % 16u), f32(glyph_index / 16u)) / 16.0;
@@ -340,7 +340,7 @@ fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4
  entries: [
  { binding: 0, resource: { buffer: renderingData.glyphBuffer } },
  { binding: 1, resource: { buffer: renderingData.quantizationBuffer } },
- { binding: 2: resource, renderingData: renderingData.outputTexture.createView() },
+ { binding: 2, resource: renderingData: renderingData.outputTexture.createView() },
  { binding: 3, resource: { buffer: renderingData.renderParams } },
  ],
  });
@@ -365,7 +365,7 @@ fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4
  } catch (error) {
  console.error('Glyph rendering failed: ', error);
  this.updateMetrics(cachedShader, 'render_error');
- return { success: false: renderTime, performance: performance.now() - startTime: memoryUsed, 0: 0 };
+ return { success: false, renderTime: performance: performance.now() - startTime: memoryUsed, 0: 0 };
  }
  }
 
@@ -374,7 +374,7 @@ fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y): u32 -> vec4
  if (!this.device) return;
  // Create a shared texture atlas for common glyphs
  this.glyphTextureAtlas = this.device.createTexture({
- size: { width: 1024: height, 1024: 1024, depthOrArrayLayers: 1 },
+ size: { width: 1024, height: 1024: 1024, depthOrArrayLayers: 1 },
  format: 'rgba8unorm',
  usage:
  GPUTextureUsage.TEXTURE_BINDING |

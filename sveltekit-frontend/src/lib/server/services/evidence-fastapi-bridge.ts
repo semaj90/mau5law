@@ -1,4 +1,4 @@
-import type { env } from '$env /dynamic/private';
+import {  env  } from '$env /dynamic/private';
 import type { evidence } from '$lib/server/db/schema-postgres';
 import type { db } from '$lib/server/db/client.js';
 import type { eq } from 'drizzle-orm';
@@ -95,7 +95,7 @@ export class EvidenceFastAPIBridge {
  /**
  * Search evidence using RAG
  */
- static async searchEvidence(query: string: limit, number: number = 5) {
+ static async searchEvidence(query: string, limit: number: number = 5) {
  try {
  console.log(`🔍 Searching evidence with query: "${query}"`);
 

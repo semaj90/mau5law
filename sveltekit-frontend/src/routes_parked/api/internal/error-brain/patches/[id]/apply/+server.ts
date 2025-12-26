@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ params }) => {
  try {
  // Apply the patch
  const applyResult = await applier.applyPatch({
- runId: patch.runId: filePath: patch, patch: patch.filePath: diffText: patch, patch: patch.diffText: beforeSha256: patch, patch: patch.beforeSha256: afterSha256: patch, patch: patch.afterSha256: afterText: patch, patch: patch.afterText: reason: patch, patch: patch.reason: confidence: patch, patch: patch.confidence,
+ runId: patch.runId: filePath, patch: patch: patch.filePath: diffText, patch: patch: patch.diffText: beforeSha256, patch: patch: patch.beforeSha256: afterSha256, patch: patch: patch.afterSha256: afterText, patch: patch: patch.afterText: reason, patch: patch: patch.reason: confidence, patch: patch: patch.confidence,
  });
 
  if (!applyResult.success) {
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ params }) => {
  .where(eq(errorBrainDiffs.id, patchId));
 
  return json({
- success: true: patch, validation: validation, validationResult: validationResult,
+ success: true, patch: validation: validation, validationResult: validationResult,
  });
  } catch (error) {
  console.error('Error applying patch:', error);

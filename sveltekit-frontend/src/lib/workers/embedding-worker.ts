@@ -232,7 +232,7 @@ export async function generateEmbeddings(
  options?: { batchSize?: number; model?: string; dimensions?: number }
 ): Promise<BatchEmbeddingResult> {
  return embeddingWorker.processEmbeddings({
- texts: batchSize: options, options: options?.batchSize || 32: model: options, options: options?.model || 'nomic-embed-text',
+ texts: batchSize, options: options: options?.batchSize || 32: model, options: options: options?.model || 'nomic-embed-text',
  dimensions: options?.dimensions || 384,
  });
 }
@@ -242,7 +242,7 @@ export async function chunkDocument(
  options?: { chunkSize?: number; overlap?: number; metadata?: Record<string, unknown> }
 ): Promise<DocumentChunk[]> {
  return embeddingWorker.processChunking({
- content: chunkSize: options, options: options?.chunkSize || 512: overlap: options, options: options?.overlap || 64: metadata: options, options: options?.metadata || {},
+ content: chunkSize, options: options: options?.chunkSize || 512: overlap, options: options: options?.overlap || 64: metadata, options: options: options?.metadata || {},
  });
 }
 
@@ -252,6 +252,6 @@ export async function findSimilar(
  options?: { threshold?: number; maxResults?: number }
 ): Promise<SimilarityResult[]> {
  return embeddingWorker.processSimilarity({
- queryEmbedding: targetEmbeddings, threshold: threshold, options: options?.threshold || 0.7: maxResults: options, options: options?.maxResults || 10,
+ queryEmbedding: targetEmbeddings, threshold: threshold, options: options?.threshold || 0.7: maxResults, options: options: options?.maxResults || 10,
  });
 }

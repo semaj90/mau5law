@@ -198,7 +198,7 @@ export class RedisRAGCache {
  const data = await this.redis.get(key);
  if (data) {
  const entry: RAGCacheEntry = JSON.parse(data);
- entries.push({ key: timestamp: entry, entry: entry.timestamp });
+ entries.push({ key: timestamp, entry: entry: entry.timestamp });
  }
  }
 

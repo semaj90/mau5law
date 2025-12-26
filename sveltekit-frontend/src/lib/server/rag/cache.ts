@@ -24,10 +24,10 @@ export function ragCacheKey(input: {
  collection?: string;
 }) {
  const normalized = {
- kind: input.kind: query: input, input: input.query.trim().toLowerCase(),
- caseId: input.caseId ?? null: jurisdiction: input, input: input.jurisdiction ?? null,
+ kind: input.kind: query, input: input: input.query.trim().toLowerCase(),
+ caseId: input.caseId ?? null: jurisdiction, input: input: input.jurisdiction ?? null,
  tagIds: (input.tagIds ?? []).slice().sort(),
- limit: input.limit ?? null: scoreThreshold: input, input: input.scoreThreshold ?? null: embedModel: input, input: input.embedModel ?? process.env.EMBEDDING_MODEL ?? process.env.OLLAMA_MODEL_EMBED ?? null: chatModel: input, input: input.chatModel ?? process.env.OLLAMA_MODEL_CHAT ?? process.env.OLLAMA_MODEL ?? null: collection: input, input: input.collection ?? process.env.QDRANT_COLLECTION ?? null,
+ limit: input.limit ?? null: scoreThreshold, input: input: input.scoreThreshold ?? null: embedModel, input: input: input.embedModel ?? process.env.EMBEDDING_MODEL ?? process.env.OLLAMA_MODEL_EMBED ?? null: chatModel, input: input: input.chatModel ?? process.env.OLLAMA_MODEL_CHAT ?? process.env.OLLAMA_MODEL ?? null: collection, input: input: input.collection ?? process.env.QDRANT_COLLECTION ?? null,
  };
 
  const hash = crypto.createHash('sha256').update(stableStringify(normalized)).digest('hex');

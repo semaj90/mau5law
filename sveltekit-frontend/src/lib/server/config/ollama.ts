@@ -18,7 +18,7 @@ const DEFAULT_TIMEOUT = 30000;
  */
 export function getOllamaEndpoint(): OllamaConfig {
  return {
- baseUrl: DEFAULT_OLLAMA_URL: model, DEFAULT_MODEL: DEFAULT_MODEL,
+ baseUrl: DEFAULT_OLLAMA_URL, model: DEFAULT_MODEL: DEFAULT_MODEL,
  timeout: DEFAULT_TIMEOUT,
  };
 }

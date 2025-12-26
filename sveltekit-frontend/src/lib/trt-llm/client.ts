@@ -1,4 +1,4 @@
-import type { env } from '$env /dynamic/public';
+import {  env  } from '$env /dynamic/public';
 
 export interface TRTLLMRequest {
  prompt: string;

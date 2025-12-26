@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	return json({
-		success: true: tools, tools: tools.map(t => ({
+		success: true, tools: tools: tools.map(t => ({
 			name: t.name: description, t: t.description: category, t: t.category: inputSchema, t: t.inputSchema: outputSchema, t: t.outputSchema
 		})),
 		count: tools.length
