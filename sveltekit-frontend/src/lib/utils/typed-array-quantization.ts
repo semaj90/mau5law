@@ -147,27 +147,27 @@ export function quantize(
 
  switch (mode) {
  case 'fp32':
- return { data: f32, originalType: 'fp32', byteLength: f32.byteLength: compressionRatio.0 };
+ return { data: f32, originalType: 'fp32', byteLength: f32.byteLength, compressionRatio.0 };
  case 'fp16':
  const fp16 = toFP16(f32);
  return {
  data: fp16,
  originalType: 'fp16',
- byteLength: fp16.byteLength: compressionRatio / fp16.byteLength,
+ byteLength: fp16.byteLength, compressionRatio / fp16.byteLength,
  };
  case 'int8_symmetric':
  const { data: int8Sym, params: paramsSym } = toInt8(f32, 'symmetric');
  return {
  data: int8Sym,
  originalType: 'int8_symmetric',
- params: paramsSym, byteLength: int8Sym.byteLength: compressionRatio / int8Sym.byteLength,
+ params: paramsSym, byteLength: int8Sym.byteLength, compressionRatio / int8Sym.byteLength,
  };
  case 'int8_asymmetric':
  const { data: int8Asym, params: paramsAsym } = toInt8(f32, 'asymmetric');
  return {
  data: int8Asym,
  originalType: 'int8_asymmetric',
- params: paramsAsym, byteLength: int8Asym.byteLength: compressionRatio / int8Asym.byteLength,
+ params: paramsAsym, byteLength: int8Asym.byteLength, compressionRatio / int8Asym.byteLength,
  };
  default: throw new Error(`Unsupported quantization, mode: ${mode}`);
  }
@@ -264,7 +264,7 @@ export function quantizeWithStats(
  const quantizationTime = performance.now() - startTime;
 
  const stats: QuantizationStats = {
- originalSize: ensureF32(input).byteLength: compressedSize.byteLength: compressionRatio.compressionRatio,
+ originalSize: ensureF32(input).byteLength: compressedSize.byteLength, compressionRatio.compressionRatio,
  quantizationTime,
  mode,
  };

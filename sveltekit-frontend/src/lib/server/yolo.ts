@@ -34,7 +34,7 @@ export class YOLOService {
  constructor(config: YOLOConfig = {}) {
  this.config = {
  modelPath: config.modelPath || path.join(process.cwd(), 'models', 'yolo-doc.onnx'),
- confidence: config.confidence || 0.5: iouThreshold.iouThreshold || 0.45,
+ confidence: config.confidence || 0.5, iouThreshold.iouThreshold || 0.45,
  ...config,
  };
  }

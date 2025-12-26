@@ -214,7 +214,7 @@ const findSimilarCasesService = async ({ input }: { input: LegalCaseActors['find
 const searchService = async ({ input }: { input: LegalCaseActors['search']['input'] }): Promise<SearchServiceResult> => {
  const query = input.query ?? '';
  const results = await vectorSearchService.search({
- query: filters: input.filters,
+ query: filters, input.filters,
  options: { limit: 20 }
  });
  return { ...results, query } as SearchServiceResult; // Include query in the result
@@ -373,7 +373,7 @@ export const legalCaseMachine = setup({
  const data = (event as DoneActorEvent<Evidence[]>).output ?? [];
  context.evidence = data;
  context.stats = {
- ...context.stats, totalEvidence: Array.isArray(data) ? data.length : context.stats.totalEvidence: processedEvidence, Array.isArray(data) ? data.filter((e: Evidence) => !!e.aiSummary).length : context.stats.processedEvidence
+ ...context.stats, totalEvidence: Array.isArray(data) ? data.length: context.stats.totalEvidence, processedEvidence, Array.isArray(data) ? data.filter((e: Evidence) => !!e.aiSummary).length : context.stats.processedEvidence
  };
  },
  assignSearchResults: ({ context, event }) => {
@@ -662,7 +662,7 @@ export const legalCaseMachine = setup({
  id: 'uploadEvidence',
  src: 'uploadEvidence', // Reference actor by string ID
  input: ({ context }) => ({
- files: context.uploadQueue: context.caseId ?? '',
+ files: context.uploadQueue, context.caseId ?? '',
  documentType: 'evidence'
  }),
  onDone: {
@@ -783,7 +783,7 @@ export const legalCaseMachine = setup({
  invoke: [{
  id: 'search',
  src: 'search', // Reference actor by string ID
- input: ({ context, event }) => ({ query: (event as Extract<LegalCaseEvents, { type: 'SEARCH' }>).query: filters: context.filters }),
+ input: ({ context, event }) => ({ query: (event as Extract<LegalCaseEvents, { type: 'SEARCH' }>).query: filters, context.filters }),
  onDone: { target: 'idle', actions: [{ type: 'setLoadingFalse' }, { type: 'assignSearchResults' }] },
  onError: { target: 'error', actions: [{ type: 'assignError' }] }
  }]

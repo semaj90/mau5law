@@ -1,0 +1,380 @@
+{
+  "dryRun": true,
+  "filesProcessed": 50,
+  "filesModified": 0,
+  "filesRevertedForBalance": 0,
+  "totalFixes": 16,
+  "topFiles": [
+    {
+      "file": "src/lib/integrations/flashattention-multicore-bridge.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 4,
+      "breakdown": {
+        "param-name-comma-type": 2,
+        "object-colon-chain": 2
+      }
+    },
+    {
+      "file": "src/lib/services/vector-search-index.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 2,
+      "breakdown": {
+        "param-name-comma-type": 1,
+        "object-colon-chain": 1
+      }
+    },
+    {
+      "file": "src/lib/server/rag-sync.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 2,
+      "breakdown": {
+        "param-name-comma-type": 1,
+        "object-colon-chain": 1
+      }
+    },
+    {
+      "file": "src/lib/vector/metadata-encoder.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 2,
+      "breakdown": {
+        "param-name-comma-type": 1,
+        "object-colon-chain": 1
+      }
+    },
+    {
+      "file": "src/lib/server/services/vectorDBService.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 2,
+      "breakdown": {
+        "param-name-comma-type": 1,
+        "object-colon-chain": 1
+      }
+    },
+    {
+      "file": "src/lib/state/xstate-store.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 2,
+      "breakdown": {
+        "param-name-comma-type": 1,
+        "object-colon-chain": 1
+      }
+    },
+    {
+      "file": "src/lib/services/user-chat-recommendation-engine.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 2,
+      "breakdown": {
+        "param-name-comma-type": 1,
+        "object-colon-chain": 1
+      }
+    },
+    {
+      "file": "src/lib/services/gpu-aware-legal-cache.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/webgpu/gpu-ranking-matrices.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/services/neo4j-client.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/ai/types.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/ai/caching-layer.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/yorha/constants.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/integrations/phase13-full-integration.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/services/statute-ingestion-service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/ai/cluster-stream.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/workers/gpu-compute-worker.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/services/case-summary.service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/ai/graph-rag-orchestrator.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/vector-pipeline-service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/types/webgpu.d.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/rate-limiter.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/components/ai/FileUploadGemma3.stories.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/ollama-gemma3-service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/actors/xstate-actor-wrapper.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/state/legal-case-machine.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/database-pool-service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/services/graph.service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/chr-rom-mipmap-integration.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/rabbitmq-dlq-monitor.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/db/dexie-integration.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/optimization/context7-mcp-integration.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/orchestration/optimized-rabbitmq-orchestrator.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/crud-client.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/yolo.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/agents/tools.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/neo4jGraphService.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/utils/pdf-packet-generator.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/embeddings-service.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/stores/knowledge-search.svelte.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/testing/json-validation-pipeline.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/auth-simple.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/q-lora-training.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/codebase-indexer.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/server/llm/ollama-client.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/services/error-pattern-rag.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/components/three/yorha-ui/api/YoRHaAPIClient.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/types/vendor/pgvector.d.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/utils/case-transform.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    },
+    {
+      "file": "src/lib/utils/typed-array-quantization.ts",
+      "changed": false,
+      "revertedForBalance": false,
+      "fixes": 0,
+      "breakdown": {}
+    }
+  ]
+}

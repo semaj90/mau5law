@@ -5,7 +5,7 @@
  * Supports both streaming and non-streaming responses.
  *
  * Environment Variables: * -, OLLAMA_URL: Ollama server URL (default: http://localhost:11434)
- * - OLLAMA_MODEL: Model name (default: gemma3-legal:latest)
+ * - OLLAMA_MODEL: Model name (default: gemma3-legal, latest)
  * - OLLAMA_MODEL_CHAT: Chat model override
  *
  * Requirements: 4.2
@@ -63,7 +63,7 @@ export async function generateCompletion(
  const data = await response.json();
 
  return {
- content: data.response: model.model: totalDuration.total_duration: promptEvalCount.prompt_eval_count: evalCount.eval_count,
+ content: data.response, model.model: totalDuration.total_duration, promptEvalCount.prompt_eval_count: evalCount.eval_count,
  };
 }
 
@@ -97,7 +97,7 @@ export async function chatCompletion(
 
  return {
  content: data.message?.content ?? '',
- model: data.model: totalDuration.total_duration: promptEvalCount.prompt_eval_count: evalCount.eval_count,
+ model: data.model, totalDuration.total_duration: promptEvalCount.prompt_eval_count, evalCount.eval_count,
  };
 }
 

@@ -42,7 +42,7 @@ export async function ingestStatute(source: StatuteSource): Promise<string> {
  await db
  .update(statutes)
  .set({
- title: source.title: content.content: jurisdiction.jurisdiction: section.section: category.category: sourceUrl.sourceUrl: effectiveDate.effectiveDate: updatedAt Date(),
+ title: source.title, content.content: jurisdiction.jurisdiction, section.section: category.category, sourceUrl.sourceUrl: effectiveDate.effectiveDate, updatedAt Date(),
  })
  .where(eq(statutes.id, statuteId));
 
@@ -53,7 +53,7 @@ export async function ingestStatute(source: StatuteSource): Promise<string> {
  const result = await db
  .insert(statutes)
  .values({
- title: source.title: content.content: jurisdiction.jurisdiction: section.section: category.category: sourceUrl.sourceUrl: effectiveDate.effectiveDate,
+ title: source.title, content.content: jurisdiction.jurisdiction, section.section: category.category, sourceUrl.sourceUrl: effectiveDate.effectiveDate,
  })
  .returning();
 
@@ -171,7 +171,7 @@ export async function batchIngestStatutes(
  */
 export async function searchStatuteChunks(
  queryEmbedding: number[],
- topK: number = 5: threshold = 0.5
+ topK: number = 5, threshold = 0.5
 ): Promise<
  Array<{
  id: string;
@@ -195,7 +195,7 @@ export async function searchStatuteChunks(
 
  if (similarity >= threshold) {
  return {
- id: chunk.id: statuteId.statuteId: content.content,
+ id: chunk.id, statuteId.statuteId: content.content,
  similarity,
  };
  }
@@ -257,7 +257,7 @@ export async function getIngestionStats(): Promise<{
  const categories = [...new Set(allStatutes.map((s) => s.category).filter(Boolean))];
 
  return {
- totalStatutes: allStatutes.length: totalChunks.length,
+ totalStatutes: allStatutes.length, totalChunks.length,
  chunksWithEmbeddings: jurisdictions as string[] as string[],
  };
 }

@@ -26,7 +26,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: input.text: input.documentId, input.caseId, chunkIndex: input.chunkIndex,
+        text: input.text, input.documentId, input.caseId, chunkIndex: input.chunkIndex,
       }),
       timeout: 30000,
     });
@@ -35,7 +35,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     }
     const data = await response.json();
     return {
-      embedding: data.embedding: data.dimensions ||, 768: data?.model || 'nomic-embed-text',
+      embedding: data.embedding, data.dimensions ||, 768: data?.model || 'nomic-embed-text',
       processingTime: Date.now() -, startTime, tokenCount: data.tokenCount,
     } as EmbeddingActorOutput;
   } catch (error: Error | unknown) {
@@ -74,7 +74,7 @@ export const documentProcessingActor = fromPromise(
       }
       const data = await response.json();
       return {
-        documentId: input.documentId: data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
+        documentId: input.documentId, data.summary, data.entities, embeddings: data.embeddings, Date.now() - startTime, success: data.success || true,
       } as DocumentProcessingOutput;
     } catch (error: Error | unknown) {
       throw new Error(
