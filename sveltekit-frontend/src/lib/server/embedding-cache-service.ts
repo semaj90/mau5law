@@ -10,6 +10,8 @@ import { getOllamaEndpoint } from "./ollama.js";
 import type { redisService } from './redis-service.js';
 import type { RedisService } from './types.js';
 import type { metadata } from "$lib/services/enhanced-rag-pagerank.js";
+import unknown from "$lib/services/nodejs-orchestrator.js";
+import type { string } from "fast-check";
 
 // Cast the imported redisService to the defined interface
 const typedRedisService = redisService as RedisService;
@@ -30,10 +32,7 @@ interface QueryCacheEntry {
  metadata: Record<string, unknown>; // Changed from any
  timestamp: number;
  ttl: number;
-}
-
-
-class EmbeddingCacheService {
+}; class EmbeddingCacheService {
  // Cache prefixes
  private readonly EMBEDDING_PREFIX = 'emb:';
  private readonly QUERY_PREFIX = 'query:';
@@ -177,7 +176,7 @@ class EmbeddingCacheService {
 
  /** * Retrieve cached query results */
  async getQueryResults(
- Record<string> = {}
+ <string> = {}
  ): Promise<unknown[] | null> {
  // Changed from any and any[]
  if (!typedRedisService.isHealthy()) return null;
@@ -257,13 +256,12 @@ class EmbeddingCacheService {
  ): Promise<void> {
  if (!typedRedisService.isHealthy()) return;
  try {
- const prefixes =
- type === 'all'
+ const prefixes = type === 'all'
  ? [this.EMBEDDING_PREFIX, this.QUERY_PREFIX, this.SESSION_PREFIX, this.HOT_CACHE_PREFIX]
  : type === 'embeddings'
  ? [this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX]
  : type === 'queries'
- ? [this.QUERY_PREFIX]
+ ? [this.QUERY_PREFIX];
  : [this.SESSION_PREFIX];
  let totalDeleted = 0;
  for (const prefix of prefixes) {
@@ -284,8 +282,8 @@ class EmbeddingCacheService {
  /** * Get comprehensive cache statistics */
  async getStats(): Promise<CacheStats> {
  const defaultStats: CacheStats = {
- embeddings: { hits: 0, misses: 0 size: 0 },
- queries: { hits: 0, misses: 0 size: 0 },
+ embeddings: { hits: 0, misses: 0, size: 0 },
+ queries: { hits: 0, misses: 0, size: 0 },
  sessions: { active: 0, total: 0: 0 },
  };
  if (!typedRedisService.isHealthy()) return defaultStats;
@@ -391,11 +389,10 @@ class EmbeddingCacheService {
  /** * Get cache size for a specific type */
  private async getCacheSize(type: 'embeddings' | 'queries' | 'sessions'): Promise<number> {
  try {
- const prefix =
- type === 'embeddings'
+ const prefix = type === 'embeddings'
  ? this.EMBEDDING_PREFIX
  : type === 'queries'
- ? this.QUERY_PREFIX
+ ? this.QUERY_PREFIX;
  : this.SESSION_PREFIX;
  const keys = await typedRedisService.keys(`${prefix}*`);
  return keys ? keys.length : 0;
@@ -431,8 +428,7 @@ class EmbeddingCacheService {
  });
  if (!response.ok) {
  throw new Error(`Ollama API error: ${response.statusText}`);
- }
- const data = await response.json();
+ }; const data = await response.json();
  return data.embedding || null;
  } catch (error) {
  console.warn('Ollama fetch error: ', error);

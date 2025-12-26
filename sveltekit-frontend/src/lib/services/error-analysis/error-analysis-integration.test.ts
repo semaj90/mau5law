@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { KnowledgeBase } from './knowledge-base.js';
 import { ContextFormatter } from './context-formatter.js';
@@ -7,6 +7,7 @@ import { ErrorHandler } from './error-handler.js';
 import { KnowledgeBaseLearning } from './knowledge-base-learning.js';
 import { AceContextManager } from './ace-context-manager.js';
 import type { ServiceConfig, Diff, Error as ErrorType } from './types.js';
+import { timestamp } from "drizzle-orm/gel-core";
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

@@ -4,7 +4,11 @@
  * Optimizes neural topology predictions with spatial-temporal indexing
  */
 import type { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
+import type { string } from "fast-check";
+import type { cache } from "sharp";
 import type { BitmapHiddenMarkovSOM } from './bitmap-hmm-som.js';
+import type { metadata } from "./enhanced-rag-pagerank.js";
+import unknown from "./nodejs-orchestrator.js";
 import type { QLoRATrainingService } from './q-lora-training.js';
 
 export interface CacheLevel {

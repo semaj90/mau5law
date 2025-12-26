@@ -4,10 +4,10 @@
  * Tests: error extraction, normalization, and metadata extraction
  */
 
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ErrorExtractor } from './error-extractor.js';
 import type { ServiceConfig } from './types.js';
+;
 
 describe('ErrorExtractor - Unit Tests (Task 2.1)', () => {
  let extractor: ErrorExtractor;

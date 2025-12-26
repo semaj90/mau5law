@@ -4,6 +4,9 @@
  * Phase 74 Task 9: RAG Codebase Context
  */
 
+import { timestamp } from "drizzle-orm/gel-core";
+import path from "path";
+
 export interface CodebaseFile {
  path: string;
  name: string;

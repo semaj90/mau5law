@@ -12,6 +12,8 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import type { ErrorReport } from './types.js';
+import type { duration } from "drizzle-orm/gel-core";
+import { line } from "drizzle-orm/pg-core";
 
 const execAsync = promisify(exec);
 

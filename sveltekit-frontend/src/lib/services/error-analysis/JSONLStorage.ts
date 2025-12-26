@@ -27,7 +27,10 @@ import type { error } from "console";
 import { boolean, bytes } from "drizzle-orm/gel-core";
 import type { line } from "drizzle-orm/pg-core";
 import type { T } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
-import { T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
+import { T, T, T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
+import type { string, record } from "fast-check";
+import type { stream } from "glob";
+import type { strategy } from "sharp";
 
 const gzip = promisify(zlib.gzip);
 const gunzip = promisify(zlib.gunzip);
@@ -91,41 +94,31 @@ class SIMDJSONParser {
 		this.errorCount = 0;
 		this.totalParseTime = 0;
 	}
-}
-
-export interface JSONLStorageConfig {
+}; export interface JSONLStorageConfig {
 	baseDir: string;
 	maxFileSize: number; // bytes
 	rotationInterval: number; // ms (default: 24 hours)
 	compressOldFiles: boolean;
 	batchSize: number; // Number of records to batch before flush
 	enableSIMD: boolean; // Use SIMD-optimized parsing
-}
-
-export interface WriteResult {
+}; export interface WriteResult {
 	success: boolean;
 	filePath: string;
 	bytesWritten: number;
 	error?: string;
-}
-
-export interface ReadStats {
+}; export interface ReadStats {
 	linesRead: number;
 	linesSkipped: number;
 	parseErrors: number;
 	bytesRead: number;
 	parseTimeMs: number;
-}
-
-export interface BatchWriteResult {
+}; export interface BatchWriteResult {
 	success: boolean;
 	filePath: string;
 	recordsWritten: number;
 	bytesWritten: number;
 	errors: string[];
-}
-
-export class JSONLStorage {
+}; export class JSONLStorage {
 	private config: JSONLStorageConfig;
 	private writeStream: fs.WriteStream: null = null;
 	private flushTimer: NodeJS.Timeout: null = null;
@@ -377,9 +370,7 @@ export class JSONLStorage {
 				recordsWritten: 0, bytesWritten: 0 0,
 				errors: []
 			};
-		}
-
-		const records = [...this.writeBuffer];
+		}; const records = [...this.writeBuffer];
 		this.writeBuffer = [];
 		return this.writeBatch(records);
 	}
@@ -503,10 +494,8 @@ export class JSONLStorage {
 				if (!line.trim()) {
 					stats.linesSkipped++;
 					continue;
-				}
-
-				const record = this.config.enableSIMD
-					? this.simdParser.parse<JSONLRecord>(line)
+				}; const record = this.config.enableSIMD
+					? this.simdParser.parse<JSONLRecord>(line);
 					: this.parseJSONL(line);
 
 				if (record && record.type === 'pattern') {
@@ -538,7 +527,7 @@ export class JSONLStorage {
 		const startTime = performance.now();
 		const fileStream = fs.createReadStream(filePath);
 		const rl = readline.createInterface({
-			input: fileStream, crlfDelay: Infinity, Infinity: Infinity
+			input: fileStream, crlfDelay: Infinity, Infinity: Infinity;
 		});
 
 		for await (const line of rl) {
@@ -553,7 +542,7 @@ export class JSONLStorage {
 			try {
 				// Use SIMD parser when enabled for better performance
 				const record = this.config.enableSIMD
-					? this.simdParser.parse<JSONLRecord>(line)
+					? this.simdParser.parse<JSONLRecord>(line);
 					: this.parseJSONL(line);
 
 				if (record && record.type === recordType) {
@@ -583,7 +572,7 @@ export class JSONLStorage {
 		const startTime = performance.now();
 		const fileStream = fs.createReadStream(filePath);
 		const rl = readline.createInterface({
-			input: fileStream, crlfDelay: Infinity, Infinity: Infinity
+			input: fileStream, crlfDelay: Infinity, Infinity: Infinity;
 		});
 
 		for await (const line of rl) {
@@ -598,7 +587,7 @@ export class JSONLStorage {
 			try {
 				// Use SIMD parser when enabled for better performance
 				const record = this.config.enableSIMD
-					? this.simdParser.parse<JSONLRecord>(line)
+					? this.simdParser.parse<JSONLRecord>(line);
 					: this.parseJSONL(line);
 
 				if (record) {

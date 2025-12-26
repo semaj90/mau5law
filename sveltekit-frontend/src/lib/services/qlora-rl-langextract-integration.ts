@@ -11,6 +11,8 @@ import type { metrics } from "@opentelemetry/api";
 import { boolean } from "drizzle-orm/gel-core";
 import { Record } from "neo4j-driver";
 import { config } from "process";
+import type { LegalDocument, type LegalDocument } from "$lib/models/LegalDocument.svelte.js";
+import type { string } from "fast-check";
 
 // Generic JSON value type
 type JsonValue = string | number | boolean: null | JsonValue[] | { [k: string]: JsonValue };
@@ -22,32 +24,22 @@ function getStringProp(doc: LegalDocument, key: string): string | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'string' ? v : undefined;
-}
-
-function getNumberProp(doc: LegalDocument, key: string): number | undefined {
+}; function getNumberProp(doc: LegalDocument, key: string): number | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'number' ? v : undefined;
-}
-
-function getRiskLevel(doc: LegalDocument): 'low' | 'medium' | 'high' | 'critical' | undefined {
+}; function getRiskLevel(doc: LegalDocument): 'low' | 'medium' | 'high' | 'critical' | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r['riskLevel'];
  if (v === 'low' || v === 'medium' || v === 'high' || v === 'critical')
  return v as 'low' | 'medium' | 'high' | 'critical';
  return undefined;
-}
-
-function getVectorEmbedding(doc: LegalDocument): Float32Array | undefined {
+}; function getVectorEmbedding(doc: LegalDocument): Float32Array | undefined {
  const r = (doc as unknown as { metadata?: { vectorEmbedding?: Float32Array } }).metadata;
  return r?.vectorEmbedding;
-}
-
-function getDocId(doc: LegalDocument): string {
+}; function getDocId(doc: LegalDocument): string {
  return getStringProp(doc, 'id') ?? getStringProp(doc, 'documentId') ?? 'unknown';
-}
-
-function getDocType(doc: LegalDocument): string {
+}; function getDocType(doc: LegalDocument): string {
  return getStringProp(doc, 'type') ?? 'contract';
 }
 
@@ -105,9 +97,7 @@ export interface RLGuidedExtraction {
  explorationBonus: number;
  confidenceThreshold: number;
  qloraFineTuningEnabled: boolean;
-}
-
-export interface LegalExtractionExample {
+}; export interface LegalExtractionExample {
  input: string;
  output: Record<string, JsonValue>;
  metadata: {
@@ -117,9 +107,7 @@ export interface LegalExtractionExample {
  reward: number;
  userFeedback?: { quality: number };
  };
-}
-
-export interface QLorATrainingJob {
+}; export interface QLorATrainingJob {
  jobId: string;
  trainingData: LegalExtractionExample[];
  baseModel: string;
@@ -137,9 +125,7 @@ export interface QLorATrainingJob {
  status: 'pending' | 'training' | 'completed' | 'failed';
  epochs: number;
  batchSize: number;
-}
-
-export interface NeuralSpriteLegalProcessing {
+}; export interface NeuralSpriteLegalProcessing {
  spriteId: string;
  patternBuffer: ArrayBuffer;
  vertexBuffer: Float32Array;
@@ -249,8 +235,7 @@ export class QLorARLLangExtractOrchestrator {
  const ve = getVectorEmbedding(document);
  if (ve instanceof Float32Array) {
  contextVector.set(ve.subarray(0, 1536));
- }
- const contextStart = 1500;
+ }; const contextStart = 1500;
  contextVector[contextStart + 0] = (getNumberProp(document, 'priority') || 0) / 255;
  contextVector[contextStart + 1] = getNumberProp(document, 'confidenceLevel') || 0;
  contextVector[contextStart + 2] = this.mapRiskLevel(getRiskLevel(document) || 'medium');
@@ -271,7 +256,7 @@ export class QLorARLLangExtractOrchestrator {
  this.rlAgent!.onmessage = (evt: MessageEvent<RLWorkerOutboundMessage>) => {
  const { type } = evt.data;
  if (type === 'actionSelected') {
- const data = (evt.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>)
+ const data = (evt.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>);
  .data;
  const strategy: RLGuidedExtraction = {
  documentId: getDocId(document),
@@ -313,8 +298,7 @@ export class QLorARLLangExtractOrchestrator {
  for (let i = 0; i < 1024; i++) {
  const tileData = this.encodeDataToTile(extractedData, i);
  patternView.set(tileData, i * 8);
- }
- const vertexCount = 256;
+ }; const vertexCount = 256;
  const vertexBuffer = new Float32Array(vertexCount * 3);
  for (let i = 0; i < vertexCount; i++) {
  const idx = i * 3;
@@ -323,8 +307,7 @@ export class QLorARLLangExtractOrchestrator {
  vertexBuffer[idx + 1] = Math.cos(i * 0.1) * (getNumberProp(document, 'confidenceLevel') || 0);
  vertexBuffer[idx + 2] =
  (i / vertexCount) * this.mapRiskLevel(getRiskLevel(document) || 'medium');
- }
- const nametablePosition = Math.floor(Math.random() * 960);
+ }; const nametablePosition = Math.floor(Math.random() * 960);
  const attributeData = this.calculateAttributeData(document);
  return {
  spriteId,
@@ -405,7 +388,7 @@ export class QLorARLLangExtractOrchestrator {
  const positiveExamples = history.filter(
  (example) =>
  (example.metadata?.reward ?? 0) > 0.7 &&
- (example.metadata?.userFeedback?.quality ?? 0) > 7
+ (example.metadata?.userFeedback?.quality ?? 0) > 7;
  );
  const difficultyBuckets = new Map<string, LegalExtractionExample[]>();
  positiveExamples.forEach((example) => {
@@ -418,7 +401,7 @@ export class QLorARLLangExtractOrchestrator {
  for (const bucket of difficultyBuckets.values()) {
  const sampleSize = Math.min(10, bucket.length);
  const sampled = bucket
- .sort((a, b) => (b.metadata?.reward ?? 0) - (a.metadata?.reward ?? 0))
+ .sort((a, b) => (b.metadata?.reward ?? 0) - (a.metadata?.reward ?? 0));
  .slice(0, sampleSize);
  examples.push(...sampled);
  }
@@ -448,8 +431,7 @@ export class QLorARLLangExtractOrchestrator {
  modules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'],
  epochs: 3, batchSize: 4 4,
  };
- }
- const avgDifficulty =
+ }; const avgDifficulty =
  trainingData.reduce((sum, ex) => sum + ex.metadata.difficulty, 0) / trainingData.length;
  const avgReward =
  trainingData.reduce((sum, ex) => sum + ex.metadata.reward, 0) / trainingData.length;
@@ -510,7 +492,7 @@ export class QLorARLLangExtractOrchestrator {
  job: {
  config: {
  trainingParams: {
- epochs: job.epochs: batchSize, job.batchSize: learningRate, 2e: 2e: 2e-4: useReinforcementLearning, true: true, true,
+ epochs: batchSize, job.batchSize: learningRate, 2e: 2e: 2e-4: useReinforcementLearning, true: true, true,
  },
  },
  },
@@ -650,7 +632,7 @@ export class QLorARLLangExtractOrchestrator {
  return {
  documentId: getDocId(document),
  extractionStrategy: 'balanced',
- temperature: 0.7, maxTokens: 128 128:
+ temperature: 0.7, maxTokens: 128, 128:
  explorationBonus: 0, confidenceThreshold: 0 0.8, qloraFineTuningEnabled: false, false: false:
  };
  }
@@ -666,8 +648,7 @@ export class QLorARLLangExtractOrchestrator {
  } catch {
  dataStr = String(data);
  }
- }
- const hash = this.simpleHash(dataStr + tileIndex);
+ }; const hash = this.simpleHash(dataStr + tileIndex);
  for (let i = 0; i < 8; i++) {
  tile[i] = (hash >> (i * 4)) & 0xff;
  }
@@ -783,8 +764,6 @@ export class QLorARLLangExtractOrchestrator {
  typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined,
  };
  }
-}
-
-export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
+}; export const qloraRLOrchestrator = new QLorARLLangExtractOrchestrator({
  langextractServiceUrl: 'http://localhost:3001',
 });

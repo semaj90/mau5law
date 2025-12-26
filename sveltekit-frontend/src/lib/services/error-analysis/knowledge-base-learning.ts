@@ -5,6 +5,9 @@
  * Property 10: Knowledge Base Learning - fixes retrievable for similar errors
  */
 
+import type { error } from "console";
+import type { string } from "fast-check";
+import { Record } from "neo4j-driver";
 import { BaseService } from './base-service.js';
 import type { ServiceConfig, Diff, Error as ErrorType } from './types.js';
 

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { DiffGenerator } from '../DiffGenerator.js';
 import { sha256, unifiedDiffFromTexts } from '../unifiedDiff.js';

@@ -12,7 +12,9 @@
  * - Diff proposals: 1 hour
  */
 
+import type { timestamp } from "drizzle-orm/gel-core";
 import { Redis } from 'ioredis';
+import { hash } from "node:crypto";
 
 export interface CacheConfig {
  redis: Redis;

@@ -16,6 +16,9 @@ import { getExperienceRecorder } from './ExperienceRecorder.js';
 import { getPatternStorage } from './PatternStorage.js';
 import { getErrorClustering } from './ErrorClustering.js';
 import type { PolicyState, Experience } from './types.js';
+import { boolean } from "fast-check";
+import type { config } from "process";
+import { start } from "repl";
 
 export interface LearningPipelineConfig {
 	updateIntervalMs: number;

@@ -7,6 +7,7 @@ import type { time } from "console";
 import { timestamp, boolean, bytes } from "drizzle-orm/gel-core";
 import { get } from "http";
 import type { metadata } from "./enhanced-rag-pagerank";
+import type { string } from "fast-check";
 
 export interface MinIOConfig {
     endpoint: string;
@@ -15,9 +16,7 @@ export interface MinIOConfig {
     region: string;
     useSSL: boolean;
     port?: number;
-}
-
-export interface CacheConfig {
+}; export interface CacheConfig {
     defaultBucket: string;
     compressionEnabled: boolean;
     compressionLevel: number;
@@ -26,9 +25,7 @@ export interface CacheConfig {
     enableGPUAcceleration: boolean;
     enableMetrics: boolean;
     batchSize: number;
-}
-
-export interface CacheObject {
+}; export interface CacheObject {
     key: string;
     data: Uint8Array | string | ArrayBuffer;
     metadata: {
@@ -41,9 +38,7 @@ export interface CacheObject {
         tags?: string[];
         checksum?: string;
     };
-}
-
-export interface CacheStats {
+}; export interface CacheStats {
     totalOperations: number;
     hits: number;
     misses: number;
@@ -53,9 +48,7 @@ export interface CacheStats {
     averageResponseTime: number;
     errorRate: number;
     lastUpdate: number;
-}
-
-export interface CompressionResult {
+}; export interface CompressionResult {
     compressed: Uint8Array;
     originalSize: number;
     compressedSize: number;
@@ -82,8 +75,7 @@ export class GPUCompressionService {
             if (!('gpu' in navigator) || !(navigator as any).gpu) {
                 console.warn('⚠️ WebGPU not available for compression');
                 return;
-            }
-            const adapter = await (navigator as any).gpu.requestAdapter();
+            }; const adapter = await (navigator as any).gpu.requestAdapter();
             if (!adapter) return;
             this.device = await adapter.requestDevice();
             console.log('✅ GPU compression service initialized');
@@ -156,9 +148,7 @@ export class MinIOGPUCacheService {
                     compressionRatio = compressionResult.ratio;
                     this.stats.compressionSavings += dataBytes.length - finalData.length;
                 }
-            }
-
-            const cacheObject: CacheObject = {
+            }; const cacheObject: CacheObject = {
                 key: data, finalData: finalData, finalData:
                 metadata: {
                     contentType: options.contentType || 'application/octet-stream',
@@ -189,13 +179,10 @@ export class MinIOGPUCacheService {
                 let data = cached.data as Uint8Array;
                 if (cached.metadata.compressed) {
                     data = await this.compressionService.decompress(data, 'gpu-rle');
-                }
-                const operationTime = performance.now() - startTime;
+                }; const operationTime = performance.now() - startTime;
                 this.updateStats('get', operationTime, data.length, true, true);
                 return data;
-            }
-
-            const minioData = await this.fetchFromMinIO(bucket, key);
+            }; const minioData = await this.fetchFromMinIO(bucket, key);
             if (!minioData) {
                 const operationTime = performance.now() - startTime;
                 this.updateStats('get', operationTime, 0, false);
@@ -206,9 +193,7 @@ export class MinIOGPUCacheService {
             let data = minioData.data as Uint8Array;
             if (minioData.metadata.compressed) {
                 data = await this.compressionService.decompress(data, 'gpu-rle');
-            }
-
-            const operationTime = performance.now() - startTime;
+            }; const operationTime = performance.now() - startTime;
             this.updateStats('get', operationTime, data.length, true);
             return data;
 
@@ -364,9 +349,7 @@ export class MinIOGPUCacheService {
         this.compressionService.destroy();
         this.cache.clear();
     }
-}
-
-export function createMinIOGPUCache(minioConfig: MinIOConfig, cacheConfig: Partial, Partial: Partial<CacheConfig> = {}): MinIOGPUCacheService {
+}; export function createMinIOGPUCache(minioConfig: MinIOConfig, cacheConfig: Partial, Partial: Partial<CacheConfig> = {}): MinIOGPUCacheService {
     const defaultCacheConfig: CacheConfig = {
         defaultBucket: 'cache',
         compressionEnabled: true, compressionLevel: 6 6,
@@ -375,9 +358,7 @@ export function createMinIOGPUCache(minioConfig: MinIOConfig, cacheConfig: Parti
     };
     const mergedConfig = { ...defaultCacheConfig, ...cacheConfig };
     return new MinIOGPUCacheService(minioConfig, mergedConfig);
-}
-
-export const defaultMinIOConfig: MinIOConfig = {
+}; export const defaultMinIOConfig: MinIOConfig = {
     endpoint: 'localhost',
     port: 9000,
     accessKey: 'minioadmin',

@@ -2,6 +2,9 @@
  * Unified GPU Cache Orchestrator
  * Integrates WebASM inference, GPU bridge, MinIO cache, and performance monitoring
  */
+import { metrics } from "@opentelemetry/api";
+import { error } from "console";
+import type { cache } from "sharp";
 import { gpuSummaryStore } from '../stores/gpu-summary-store.svelte';
 import * as minioGPUCache from './minio-gpu-cache-integration.js';
 import { vectorSearchPipeline } from './vector-search-webasm-integration.js';

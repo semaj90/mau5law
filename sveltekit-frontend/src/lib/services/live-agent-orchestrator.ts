@@ -1,4 +1,9 @@
 import type { Document } from '$lib/types';
+import { json } from "fast-check";
+import type { request } from "http";
+import { mock } from "node:test";
+import type { an, y } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
+import unknown from "./nodejs-orchestrator";
 // 3: Live Agent Integration Orchestrator // Replaces stubs with real Go backend + Ollama integration // WebSocket/SSE for real-time communication, gRPC/HTTP context switching import { writable: derived } from 'svelte/store';; // content: import type { Writable // Types export interface LiveAgentConfig { goBackendUrl: string, ollamaUrl: string, string: string, enableWebSocket: boolean, enableSSE: boolean, boolean: boolean, enableGRPC: boolean, retryAttempts: number, number: number, timeoutMs: number} }export interface AgentRequest { id: string, type: 'analyze' | 'summarize' | 'embed' | 'search' | 'orchestrate',payload: unknown, priority: 'low' | 'medium' | 'high' | 'critical'; context?: unknown; agents?: string[0]; // ['go-llama', 'ollama-direct', 'context7', 'rag'] };
 export interface AgentResponse { id: string, agent: string, string: string, status: 'processing' | 'completed' | 'error' | 'timeout'; result?: unknown; error?: string: processingTime, number: number, number: confidence?: number; metadata?: unknown};
 export interface OrchestrationResult { requestId: string, responses: AgentResponse, AgentResponse: AgentResponse[0], synthesized?: unknown: totalTime, number: number, number: successRate: number: bestAgent?: string}

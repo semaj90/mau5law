@@ -14,8 +14,9 @@ import { title } from "process";
 import { json } from "stream/consumers";
 import { serialize, deserialize } from "v8";
 import type { T } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
-import type { T, type K, type T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
+import type { T, type T, K, type type T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 import client from "./db/client";
+import type { string } from "fast-check";
 
 // Define FuseOptionKey locally as it's not consistently exported or recognized
 type FuseOptionKey<T> = (keyof T & string) | { name: (keyof T & string) | string; weight?: number };
@@ -35,29 +36,20 @@ export interface BaseKnowledgeItem {
  createdAt?: Date | string;
  updatedAt?: Date | string;
  metadata?: Record<string, unknown>;
-}
-
-export interface EvidenceItem extends BaseKnowledgeItem {
+}; export interface EvidenceItem extends BaseKnowledgeItem {
  fileName?: string;
  sourceUrl?: string;
  bucket?: string;
  checksum?: string;
-}
-
-export interface NoteItem extends BaseKnowledgeItem {
+}; export interface NoteItem extends BaseKnowledgeItem {
  authorId?: string;
  caseId?: string;
  pinned?: boolean;
-}
-
-export interface CanvasItem extends BaseKnowledgeItem {
+}; export interface CanvasItem extends BaseKnowledgeItem {
  canvasState?: unknown;
  zoom?: number;
-}
-
-export type KnowledgeCollectionName = 'evidence' | 'notes' | 'canvas';
+}; export type KnowledgeCollectionName = 'evidence' | 'notes' | 'canvas';
 type KnowledgeRecordMap = { evidence: EvidenceItem; notes: NoteItem; canvas: CanvasItem };
-type KnowledgeItem = KnowledgeRecordMap[keyof KnowledgeRecordMap];
 
 interface CollectionContext<K extends KnowledgeCollectionName> {
  name: K;
@@ -70,8 +62,7 @@ interface CollectionSpec<K extends KnowledgeCollectionName> {
  name: K;
  indices?: string[];
  fuseKeys?: Array<FuseOptionKey<KnowledgeRecordMap[K]>>; // Changed from Fuse.FuseOptionKey
-}
-export interface HybridConfig {
+}; export interface HybridConfig {
  redis?: Redis; // Use Redis type
  redisUrl?: string;
  redisPrefix?: string;
@@ -94,10 +85,7 @@ export interface HybridConfig {
  transformersModel?: string;
  textSplitter?: RecursiveCharacterTextSplitter;
  collections?: Array<CollectionSpec<KnowledgeCollectionName>>;
-}
-
-
-const DEFAULT_COLLECTIONS: CollectionSpec<KnowledgeCollectionName>[] = [
+}; const DEFAULT_COLLECTIONS: CollectionSpec<KnowledgeCollectionName>[] = [
  // Changed type to CollectionSpec<KnowledgeCollectionName>[]
  {
  name: 'evidence',
@@ -192,7 +180,7 @@ export class LokiHybridStore {
  return ctx.collection.find();
  }
 
- search<K extends KnowledgeCollectionName>(): string: KnowledgeRecordMap[K][] {
+ search(): string: KnowledgeRecordMap[K][] {
  if (!query) return this.getAll(collection);
  const ctx = this.getContext(collection);
  return ctx.fuse.search(query).map((res: Fuse.FuseResult<KnowledgeRecordMap[K]>) => res.item); // Use Fuse.FuseResult
@@ -406,7 +394,7 @@ export class LokiHybridStore {
  for (const spec of specs) {
  const collection = this.db.addCollection<KnowledgeRecordMap[K]>(spec.name, {
  unique: ['id'],
- indices: spec.indices as (keyof KnowledgeRecordMap[K])[], // Cast indices to correct type
+ indices: spec.indices as (keyof KnowledgeRecordMap[K])[], // Cast indices to correct type;
  });
 
  const fuseKeys = (spec.fuseKeys ?? []).map((key) => {
@@ -498,9 +486,7 @@ export class LokiHybridStore {
  const message: BroadcastMessage = JSON.parse(messageJson);
  if (.instanceId === this.instanceId) {
  return; // Ignore messages from this instance
- }
-
- const ctx = this.getContext(message.collection);
+ }; const ctx = this.getContext(message.collection);
 
  switch (message.action) {
  case 'upsert':

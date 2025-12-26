@@ -8,9 +8,6 @@ import crypto from 'crypto';
 
 import type { createMachine, assign, fromPromise } from 'xstate';
 import type { Evidence } from '$lib/server/db/complete-introspected-schema'; // Evidence type source
-import type { db } from '$lib/db';
-import type { evidence } from '$lib/db/schema'; // Removed non-existent evidenceVectors & collaborationSessions
-import type { eq } from 'drizzle-orm';
 import type { metadata } from "$lib/services/enhanced-rag-pagerank";
 import type { context } from "@opentelemetry/api";
 import { error } from "console";
@@ -101,9 +98,7 @@ export interface EvidenceCustodyContext {
  warnings: string[];
  retryCount: number;
  maxRetries: number;
-}
-
-export type EvidenceCustodyEvent =
+}; export type EvidenceCustodyEvent =
  | {
  type: 'START_CUSTODY_WORKFLOW';
  evidenceId: string;
@@ -130,17 +125,11 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
  console.log(`Starting evidence intake for custody workflow: ${input.evidenceId}`);
 
  // Fetch evidence data with full details
- const evidenceRecord = await db
- .select()
- .from(evidence)
- .where(eq(evidence.id, input.evidenceId))
  .limit(1);
 
  if (!evidenceRecord.length) {
  throw new Error(`Evidence not found: ${input.evidenceId}`);
- }
-
- const evidenceData = evidenceRecord[0];
+ }; const evidenceData = evidenceRecord[0];
 
  // Verify initial integrity
  const currentHash = await generateEvidenceHash(evidenceData);
@@ -252,9 +241,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
 
  if (!analysisResponse.ok) {
  throw new Error(`AI analysis failed: ${analysisResponse.statusText}`);
- }
-
- const analysisResult = await analysisResponse.json();
+ }; const analysisResult = await analysisResponse.json();
 
  // Structure the AI analysis for custody workflow
  const aiAnalysis = {

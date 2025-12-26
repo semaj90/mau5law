@@ -5,11 +5,14 @@
  * Tests correctness properties defined in the design document.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import * as fc from 'fast-check';
 import { TfIdfRanker } from './TfIdfRanker.js';
 import type { SearchResult } from './types.js';
+import type { max } from "drizzle-orm";
+import type { url } from "inspector";
+import type { title } from "process";
 
 describe('Knowledge Search Engine', () => {
   beforeEach(async () => {

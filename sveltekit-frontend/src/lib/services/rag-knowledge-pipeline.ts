@@ -1,11 +1,15 @@
 // import type { Document } from '$lib/types'; /** * ðŸ§  RAG Knowledge Base Pipeline * * Comprehensive pipeline for: Embed → Summarize → Index → Rank * Integrates with MCP multi-core server and advanced SIMD pipeline * * Features: * - embeddinggemma: latest (384-dim) embeddings * - Gemma function calling for structured extraction * - Synthesis ranking with ripgrep + awk keyword scoring * - Multi-stage processing: embed → summarize → index → rank */
+import type { query } from "$app/server";
 import type { documents } from "$lib/db";
 import { cache } from '$lib/server/cache/redis';
 import vectorService from '$lib/server/vector/EnhancedVectorService';
 import { getOllamaEndpoint } from '$lib/utils/endpoints';
 import { LokiEvidenceService } from '$lib/utils/loki-evidence';
+import { generateLegalAnalysis } from "$lib/utils/ollama-endpoints";
+import type { string } from "fast-check";
 import Fuse from 'fuse.js';
 import { title, config } from "process";
+import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 // import type { StreamingResult } from './advanced-simd-pipeline.js';
 
 // ============================================================================
@@ -404,7 +408,7 @@ export class RAGKnowledgePipeline {
  * Rank documents using synthesis algorithm (relevance + keywords + synthesis quality)
  */
  async rankDocuments(
- Partial<SynthesisRankingConfig> = {}
+ <SynthesisRankingConfig> = {}
  ): Promise<RankedDocument[]> {
  const startTime = performance.now();
  const finalConfig = { ...this.defaultRankingConfig, ...config };

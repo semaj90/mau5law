@@ -5,7 +5,7 @@
  * Validates: Requirements 5.1, 5.2
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { ErrorClusterer } from './error-clusterer.js';

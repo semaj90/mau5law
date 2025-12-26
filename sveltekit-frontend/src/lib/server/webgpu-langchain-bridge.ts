@@ -14,6 +14,8 @@ import type { boolean } from "drizzle-orm/gel-core";
 import type { config } from "process";
 import type { text } from "stream/consumers";
 import type { documents } from "./db/schema.js";
+import unknown from "$lib/services/nodejs-orchestrator.js";
+import type { string } from "fast-check";
 
 export interface LangChainWebGPUConfig {
  useWebGPUCache: boolean;
@@ -22,9 +24,7 @@ export interface LangChainWebGPUConfig {
  compressVectors: boolean;
  practiceArea: string;
  documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
-}
-
-export interface ProcessingResult {
+}; export interface ProcessingResult {
  extraction: {
  summary: string;
  keyTerms: string[];
@@ -54,9 +54,7 @@ export interface ProcessingResult {
  sectionsProcessed: number;
  cacheStrategy: string;
  };
-}
-
-export class WebGPULangChainBridge {
+}; export class WebGPULangChainBridge {
  private config: LangChainWebGPUConfig;
 
  constructor(config: Partial<LangChainWebGPUConfig> = {}) {
@@ -112,7 +110,7 @@ export class WebGPULangChainBridge {
  const batch = documents.slice(i, i + batchSize);
  // Process batch in parallel
  const batchResults = await Promise.all(
- batch.map((doc) => this.processLegalDocument(doc.content, mergedConfig))
+ batch.map((doc) => this.processLegalDocument(doc.content, mergedConfig));
  );
  results.push(...batchResults);
  // Log progress
@@ -234,7 +232,7 @@ export class WebGPULangChainBridge {
  const embeddings = await getBatchLegalEmbeddings(
  sections.map((section) => ({
  text: section, documentType: config: config.documentType === 'general' ? 'case' : config.documentType: practiceArea, config: config.practiceArea,
- }))
+ }));
  );
  const documentEmbedding = embeddings[0]; // Use first section as main embedding
  return {
@@ -377,9 +375,7 @@ export class WebGPULangChainBridge {
 
 // Singleton instance
 export const webgpuLangChainBridge = new WebGPULangChainBridge({
- useWebGPUCache: true, batchSize: 128
- cacheEmbeddings: true, compressVectors: true
- practiceArea: 'legal-ai',
+ useWebGPUCache: true, batchSize: 128, cacheEmbeddings: true, compressVectors: true, practiceArea: 'legal-ai',
  documentType: 'general',
 });
 
@@ -389,15 +385,11 @@ export async function processLegalDocumentWithWebGPU(
  options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult> {
  return webgpuLangChainBridge.processLegalDocument(text, options);
-}
-
-export async function processBatchDocumentsWithWebGPU(
+}; export async function processBatchDocumentsWithWebGPU(
  documents: Array<{ id: string; content: string; metadata?: unknown }>,
  options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult[]> {
  return webgpuLangChainBridge.processBatchDocuments(documents, options);
-}
-
-export async function getLangChainWebGPUStats(): Promise<any> {
+}; export async function getLangChainWebGPUStats(): Promise<any> {
  return webgpuLangChainBridge.getProcessingStats();
 }

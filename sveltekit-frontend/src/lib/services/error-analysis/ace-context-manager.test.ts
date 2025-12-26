@@ -5,7 +5,7 @@
  * Validates: Requirements 6.1, 6.2
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { AceContextManager } from './ace-context-manager.js';
 import type { ServiceConfig, Analysis, Diff } from './types.js';

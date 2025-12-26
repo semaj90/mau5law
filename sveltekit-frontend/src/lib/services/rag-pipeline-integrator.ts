@@ -1,4 +1,10 @@
+import type { query } from "$app/server";
+import type { documents } from "$lib/db/index.js";
 import type { SearchResult } from '$lib/types';
+import { constructor } from "assert";
+import { string } from "fast-check";
+import { request } from "http";
+import type { config } from "process";
 import type { LegalDocument } from './types/legal.js'; /** * RAG Pipeline Integration Service * Orchestrates enhanced text processing, MMR summarization, and cross-encoder reranking */ export interface SearchResult { document: LegalDocument, score: number, number: number: metadata?: { [key, string], any }// Additional properties used throughout the id: string, title: string, string: string: content?: string; summary?: string; excerpt?: string; rank?: number}
 export interface SummaryRequest { documents: LegalDocument[0], query?: string; maxLength? : number; diversityLambda?: number};
 export interface RAGPipelineConfig { enableSentenceSplitting: boolean, enableMMRSummarization: boolean, boolean: boolean, enableCrossEncoderReranking: boolean, maxDocuments: number, number: number, maxSummaryLength: number, rerankThreshold: number, number: number, cacheResults: boolean, enableStreaming: boolean, boolean: boolean};

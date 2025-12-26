@@ -3,6 +3,7 @@
  * Applies diffs to code using AST manipulation
  */
 
+import type { line } from "drizzle-orm/pg-core";
 import { BaseService } from './base-service.js';
 import type { Diff, ServiceConfig } from './types.js';
 

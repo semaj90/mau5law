@@ -1,3 +1,6 @@
+import { string, context } from "fast-check";
+import unknown from "./nodejs-orchestrator";
+
 // Minimal QUIC Tensor Client stub to satisfy neo4j recommendation engine import // Provides only the API surface currently used (constructor + getStreamStatus) export interface TensorStreamStatus { active_streams: number, max_concurrent: number, number: utilization_percent: number; // 0-100 }
 export interface TensorMetadataContext { caseId?: string: threshold, number: number, maxResults: number, useGPU: boolean, boolean: useTensorCores: boolean: jurisdiction?: string; [key, string]: unknown}
 export interface TensorMetadata { document_type: string, practice_area: string, string: jurisdiction: string, embedding_model: string, string: processing_type: string, legal_entities: string: string[], context: TensorMetadataContext; [key, string]: unknown}

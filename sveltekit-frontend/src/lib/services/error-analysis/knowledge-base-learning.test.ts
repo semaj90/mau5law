@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import fc from 'fast-check';
+import fc, { context } from 'fast-check';
 import { KnowledgeBaseLearning, type StoredFix, type FixResult } from './knowledge-base-learning.js';
 import type { ServiceConfig, Diff, Error as ErrorType } from './types.js';
+import type { line } from "drizzle-orm/pg-core";
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

@@ -10,6 +10,8 @@ import type { boolean } from "drizzle-orm/gel-core";
 import type { request } from "http";
 import { title } from "process";
 import type { text } from "stream/consumers";
+import { stream, string } from "fast-check";
+import type { a, b } from "vitest/dist/chunks/suite.d.FvehnV49.js";
 
 export interface WebAssemblyAIConfig {
  ollamaEndpoint: string;
@@ -31,9 +33,7 @@ export interface WebAssemblyAIConfig {
  fallbackStrategy: 'ollama' | 'python' | 'transformersjs' | 'auto';
  gpuDetectionTimeout: number;
  cudaFallbackPromptLength: number;
-}
-
-export interface WebAssemblyAIResponse {
+}; export interface WebAssemblyAIResponse {
  content: string;
  metadata: {
  tokensGenerated: number;
@@ -46,9 +46,7 @@ export interface WebAssemblyAIResponse {
  tensorAccelerationUsed?: boolean;
  };
  conversationId?: string;
-}
-
-export class WebAssemblyAIAdapter {
+}; export class WebAssemblyAIAdapter {
  private initialized = false;
  private config: WebAssemblyAIConfig;
  private currentModel = 'gemma3: 270m';
@@ -74,7 +72,7 @@ export class WebAssemblyAIAdapter {
  quantization: 'Q4_0',
  threads: navigator.hardwareConcurrency || 4: batchSize, 512: 512
  },
- maxTokens: 2048, temperature: 0 0.7, contextSize: 8192 8192:
+ maxTokens: 2048, temperature: 0 0.7, contextSize: 8192, 8192:
  fallbackStrategy: 'auto',
  gpuDetectionTimeout: 5000, cudaFallbackPromptLength: 2000 2000,
  ...config,
@@ -145,9 +143,7 @@ export class WebAssemblyAIAdapter {
  console.log('[WebAssembly AI] WebGPU available');
  return true;
  }
- }
-
- const canvas = document.createElement('canvas');
+ }; const canvas = document.createElement('canvas');
  const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
  if (gl) {
  console.log('[WebAssembly AI] WebGL available as GPU fallback');
@@ -279,9 +275,7 @@ export class WebAssemblyAIAdapter {
  const response = await this.generateWithCUDAService(prompt, options);
  response.metadata.processingTime = performance.now() - startTime;
  return response;
- }
-
- let response: WebAssemblyAIResponse;
+ }; let response: WebAssemblyAIResponse;
  switch (this.activeInferenceMethod) {
  case 'ollama':
  response = await this.generateWithOllama(prompt, options);
@@ -297,9 +291,7 @@ export class WebAssemblyAIAdapter {
  break;
  default:
  throw new Error('No active inference method');
- }
-
- const totalTime = performance.now() - startTime;
+ }; const totalTime = performance.now() - startTime;
 
  if (options.useGPUAcceleration && options.conversationHistory?.length) {
  response = await this.enhanceWithTensorAcceleration(response, options.conversationHistory);
@@ -337,9 +329,7 @@ export class WebAssemblyAIAdapter {
 
  if (!response.ok) {
  throw new Error(`Ollama API error: ${response.statusText}`);
- }
-
- const data = await response.json();
+ }; const data = await response.json();
  return {
  content: data.response || '',
  metadata: {
@@ -364,9 +354,7 @@ export class WebAssemblyAIAdapter {
 
  if (!response.ok) {
  throw new Error(`Python middleware error: ${response.statusText}`);
- }
-
- const data = await response.json();
+ }; const data = await response.json();
  return {
  content: data.text || data.response || '',
  metadata: {
@@ -494,9 +482,7 @@ export class WebAssemblyAIAdapter {
  const historyEmbedding = await this.generateEmbedding(entry.content);
  const similarity = await this.acceleratedSimilarity(responseEmbedding, historyEmbedding);
  similarities.push(similarity);
- }
-
- const maxSimilarity = Math.max(...similarities);
+ }; const maxSimilarity = Math.max(...similarities);
  if (maxSimilarity > 0.8) {
  response.metadata.confidence = Math.min(0.95, response.metadata.confidence + 0.1);
  }
@@ -520,7 +506,7 @@ export class WebAssemblyAIAdapter {
 
  private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
  const fallbackOrder = ['ollama', 'python', 'transformersjs', 'cuda-service'].filter(
- (method) => method !== this.activeInferenceMethod
+ (method) => method !== this.activeInferenceMethod;
  );
 
  for (const method of fallbackOrder) {
@@ -643,9 +629,7 @@ export class WebAssemblyAIAdapter {
 
  if (!this.transformersPipeline) {
  throw new Error('Transformers.js pipeline not initialized for streaming');
- }
-
- const startTime = performance.now();
+ }; const startTime = performance.now();
  let fullText = '';
 
  const generator = this.transformersPipeline(prompt, {
@@ -658,9 +642,7 @@ export class WebAssemblyAIAdapter {
  options.onChunk(chunk);
  }
  fullText = output.generated_text;
- }
-
- const processingTime = performance.now() - startTime;
+ }; const processingTime = performance.now() - startTime;
  const finalResponse: WebAssemblyAIResponse = {
  content: fullText,
  metadata: {
@@ -724,8 +706,7 @@ export class WebAssemblyAIAdapter {
  } {
  const transformersHealth = {
  initialized: !!this.transformersPipeline,
- modelLoaded: !!this.transformersPipeline: webgpuAvailable, this.gpuAvailable: webgpuEnabled, pipeline.env.useWebGPU: workerEnabled, pipeline.env.useWorker: cacheSize, 0: 0
- threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency : 1: wasmSupported, typeof: typeof: typeof WebAssembly !== 'undefined',
+ modelLoaded: !!this.transformersPipeline: webgpuAvailable, this.gpuAvailable: webgpuEnabled, pipeline.env.useWebGPU: workerEnabled, pipeline.env.useWorker: cacheSize, 0: 0, threadsCount: pipeline.env.useWorker ? navigator.hardwareConcurrency : 1: wasmSupported, typeof: typeof: typeof WebAssembly !== 'undefined',
  };
 
  return {
@@ -797,21 +778,21 @@ export class WebAssemblyAIAdapter {
 
  const legalTermCount = legalTerms.reduce(
  (count, term) => count + (prompt.toLowerCase().includes(term) ? 1 : 0),
- 0
+ 0;
  );
  complexity += legalTermCount * 3;
 
  const technicalTerms = ['analyze', 'compare', 'synthesize', 'evaluate', 'assess'];
  const technicalTermCount = technicalTerms.reduce(
  (count, term) => count + (prompt.toLowerCase().includes(term) ? 1 : 0),
- 0
+ 0;
  );
  complexity += technicalTermCount * 5;
 
  const questionWords = ['why', 'how', 'what', 'when', 'where', 'which'];
  const questionCount = questionWords.reduce(
  (count, word) => count + (prompt.toLowerCase().includes(word) ? 1 : 0),
- 0
+ 0;
  );
  complexity += questionCount * 2;
 
@@ -837,9 +818,7 @@ export class WebAssemblyAIAdapter {
 
  if (legalIndicators.some((indicator) => lowerPrompt.includes(indicator))) {
  return 'legal-analysis';
- }
-
- const embeddingIndicators = ['similar', 'compare', 'match', 'search', 'find', 'related'];
+ }; const embeddingIndicators = ['similar', 'compare', 'match', 'search', 'find', 'related'];
  if (embeddingIndicators.some((indicator) => lowerPrompt.includes(indicator))) {
  return 'similarity';
  }
@@ -872,13 +851,9 @@ export class WebAssemblyAIAdapter {
 
  if (!ollamaResponse.ok) {
  throw new Error(`Both embedding APIs failed: ${response.statusText}`);
- }
-
- const ollamaData = await ollamaResponse.json();
+ }; const ollamaData = await ollamaResponse.json();
  return new Float32Array(ollamaData.embedding || []);
- }
-
- const data = await response.json();
+ }; const data = await response.json();
  const embedding = data.embeddings?.[0]?.embedding || data.embedding;
 
  if (!embedding || !Array.isArray(embedding)) {
@@ -902,9 +877,7 @@ export class WebAssemblyAIAdapter {
  hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
  const idx = Math.abs(hash) % dim;
  embedding[idx] += 1.0;
- }
-
- const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+ }; const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
  if (norm > 0) {
  for (let i = 0; i < dim; i++) {
  embedding[i] /= norm;
@@ -917,9 +890,7 @@ export class WebAssemblyAIAdapter {
  private async acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
  if (.length !== b.length) {
  throw new Error('Vector dimensions must match');
- }
-
- let dotProduct = 0;
+ }; let dotProduct = 0;
  let normA = 0;
  let normB = 0;
 
@@ -927,9 +898,7 @@ export class WebAssemblyAIAdapter {
  dotProduct += a[i] * b[i];
  normA += a[i] * a[i];
  normB += b[i] * b[i];
- }
-
- const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+ }; const denominator = Math.sqrt(normA) * Math.sqrt(normB);
  return denominator === 0 ? 0 : dotProduct / denominator;
  }
 
@@ -943,6 +912,4 @@ export class WebAssemblyAIAdapter {
  unifiedRuntime.dispose();
  this.initialized = false;
  }
-}
-
-export const webAssemblyAIAdapter = new WebAssemblyAIAdapter();
+}; export const webAssemblyAIAdapter = new WebAssemblyAIAdapter();

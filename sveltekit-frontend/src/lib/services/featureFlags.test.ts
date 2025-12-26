@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { FeatureFlagManager, type FeatureFlags } from './featureFlags.js';
 

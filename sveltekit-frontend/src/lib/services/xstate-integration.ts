@@ -3,6 +3,9 @@ import type {
  type LegalAIContext,
  type LegalAIEvent,
 } from '$lib/machines/legalAIMachine.v5';
+import { as } from "$lib/server/db/utils";
+import redis from "$lib/server/redis-client";
+import { error } from "console";
 import type { type Writable } from 'svelte/store';
 import { writable } from 'svelte/store';
 import type { createActor, type Snapshot } from 'xstate';

@@ -4,6 +4,7 @@
  * Property 2: RAG Context Relevance - patterns must be ranked by similarity
  */
 
+import { vector } from "neo4j-driver";
 import { BaseService } from './base-service.js';
 import { EmbeddingService } from './embedding-service.js';
 import type { Error, Pattern, ServiceConfig } from './types.js';

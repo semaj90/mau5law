@@ -1,12 +1,13 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
- DataIsolationLayer,
- canAccessTable,
- enforceTableAccess,
- getAllowedTablesForFeature,
- validateDataAccess,
+    DataIsolationLayer,
+    canAccessTable,
+    enforceTableAccess,
+    getAllowedTablesForFeature,
+    validateDataAccess,
 } from './dataIsolation.js';
+;
 
 describe('DataIsolationLayer', () => {
   beforeEach(async () => {

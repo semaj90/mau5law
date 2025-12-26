@@ -1,8 +1,6 @@
-import type { Document } from '$lib/types';
 import { RabbitMQQueue, RabbitMQWorker, type RabbitMQJob } from '$lib/rabbitmq';
 import { redis as redisConnection } from '$lib/server/redis';
 import type { Redis as RedisClient } from 'ioredis';
-import { encoding_for_model } from '@dqbd/tiktoken';
 
 // RabbitMQJob types for the legal document processing pipeline
 export interface BaseJobData {

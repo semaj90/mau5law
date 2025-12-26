@@ -11,6 +11,9 @@ import type { title } from "process";
 import type { text } from "stream/consumers";
 import type { metadata } from "$lib/services/enhanced-rag-pagerank";
 import { checkOllamaHealth } from "../ollama";
+import unknown from "$lib/services/nodejs-orchestrator";
+import { stream, string } from "fast-check";
+import { join } from "path";
 
 // Minimal type definitions for schema tables to satisfy type checker
 // IMPORTANT: You must ensure your actual src/lib/server/db/schema-postgres.ts
@@ -24,9 +27,7 @@ declare module '$lib/server/db/schema-postgres' {
  dialect: 'pg';
  schema: undefined;
  };
- }
-
- export const legal_documents: DrizzleTable<'legal_documents', {
+ }; export const legal_documents: DrizzleTable<'legal_documents', {
  id: string;
  title: string;
  content: string;
@@ -330,8 +331,7 @@ interface Risk {
  description: string;
  severity: 'low' | 'medium' | 'high';
  category: string;
-}
-export type SourceRef = {
+}; export type SourceRef = {
  id: string;
  title?: string;
  score?: number;
@@ -364,8 +364,7 @@ class InputValidator {
  validateAndSanitize(input: string, maxLength: number): string {
  if (input.length > maxLength) {
  throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
- }
- let sanitized = input;
+ }; let sanitized = input;
  if (this.securityConfig.sanitization.removeHtmlTags) {
  sanitized = sanitized.replace(/<[^>]*>?/gm, '');
  }
@@ -522,8 +521,7 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
  if (!response.ok) {
  const errorText = await response.text();
  throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText} - ${errorText}`);
- }
- const data = await response.json();
+ }; const data = await response.json();
  if (!Array.isArray(data.embedding) || !data.embedding.every((num: unknown) => typeof num === 'number')) {
  throw new Error('Invalid embedding response from Ollama API');
  }
@@ -562,8 +560,7 @@ class OllamaHTTPLLM {
  if (!response.ok) {
  const errorText = await response.text();
  throw new Error(`Ollama generate API error: ${response.status} ${response.statusText} - ${errorText}`);
- }
- const data = await response.json();
+ }; const data = await response.json();
  // Ollama's /api/generate with stream: false returns { model, created_at, response, done, ... }
  if (typeof data.response === 'string') {
  return data.response;
@@ -721,9 +718,7 @@ export class EnhancedLegalRAGPipeline {
  await this.ensureInitialized();
  if (!this.embeddings) {
  throw new Error('Embeddings provider not initialized.');
- }
-
- const cacheKey = `embedding:${this.hashText(text)}`;
+ }; const cacheKey = `embedding:${this.hashText(text)}`;
  if (this.config.rag.enableCaching && this.redis) {
  const cached = await this.redis.get(cacheKey);
  if (cached) {
@@ -731,9 +726,7 @@ export class EnhancedLegalRAGPipeline {
  return JSON.parse(cached);
  }
  this.metrics.incrementCounter('embedding_cache_misses');
- }
-
- const embedding = await this.embeddings.embedQuery(text);
+ }; const embedding = await this.embeddings.embedQuery(text);
 
  if (this.config.rag.enableCaching && this.redis) {
  await this.redis.setex(cacheKey, this.config.redis.cacheTtl, JSON.stringify(embedding));
@@ -831,7 +824,7 @@ export class EnhancedLegalRAGPipeline {
  embedding: string;
  metadata: Record<string, unknown>;
  };
- const isDocumentChunkInsert = (r: unknown): r is DocumentChunkInsert =>
+ const isDocumentChunkInsert = (): r is DocumentChunkInsert =>;
  r !== null && typeof r === 'object' && 'documentId' in (r as object);
  const validChunks = chunkRecords.filter(isDocumentChunkInsert);
  if (validChunks.length > 0) {
@@ -868,8 +861,7 @@ export class EnhancedLegalRAGPipeline {
  errors.push(errorMsg);
  console.warn(errorMsg);
  }
- }
- const processingTime = Date.now() - startTime;
+ }; const processingTime = Date.now() - startTime;
  const success = successfulChunks > 0;
  console.log(
  `[RAG] Document ingestion completed in ${processingTime}ms (${successfulChunks}/${chunks.length} chunks successful)`,
@@ -1072,7 +1064,7 @@ export class EnhancedLegalRAGPipeline {
  .map(
  (doc, idx) =>
  `[Source ${idx + 1}]:\nTitle: ${doc.title}\nContent: ${doc.content}\nConfidentiality: ${doc.confidentialityLevel || 'public'}`,
- )
+ );
  .join('\n\n---\n\n');
  // Create enhanced legal prompt
  const promptTemplate = PromptTemplate.fromTemplate(`
@@ -1089,7 +1081,7 @@ Instructions:
 6. Maintain a professional legal tone appropriate for ${confidentialityLevel || 'general'} matters
 7. Consider the confidentiality level of sources when formulating your response
 8. Highlight any potential legal risks or compliance issues
-9. Provide actionable recommendations where appropriate.
+9. Provide actionable recommendations where appropriate.;
 Answer: `);
  // Create chain and generate answer
  const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
@@ -1124,8 +1116,7 @@ Answer: `);
  });
  } catch (error) {
  console.warn('Failed to log query: ', error);
- }
- const result: AnswerResult = {
+ }; const result: AnswerResult = {
  answer: answer, sources: relevantDocs, relevantDocs: relevantDocs.map((d) => ({
  id: d.documentId: title, d.title: score, d.score: excerpt, d.content.substring(0, 200) + '...',
  confidentialityLevel: d.confidentialityLevel,
@@ -1205,7 +1196,7 @@ Provide your analysis in the following structured format:
 6. COMPLIANCE FLAGS
 - Identify any potential regulatory issues
 - Data privacy and security considerations
-- Industry-specific compliance requirements
+- Industry-specific compliance requirements;
 Provide specific clause references and line numbers where applicable. Focus on practical legal advice. `);
  const chain = RunnableSequence.from([contractPrompt, this.llm!, new StringOutputParser()]);
  const llmResponse = await Promise.race([
@@ -1223,7 +1214,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  this.metrics.recordTiming('contract_analysis_time', processingTime, {
  jurisdiction: jurisdiction || 'general',
  });
- return { ...parsedAnalysis, confidence: 0 0.85, processingTime, complianceFlags, jurisdiction };
+ return { ...parsedAnalysis, confidence: 0, 0.85, processingTime, complianceFlags, jurisdiction };
  } catch (err: unknown) {
  const error = err instanceof Error ? err : new Error(String(err));
  console.error('[RAG] Contract analysis error: ', error);
@@ -1245,7 +1236,7 @@ Extract relevant legal tags from this {documentType} document. Focus on legal co
 Document excerpt: {content}
 Return ONLY a JSON array of tags with confidence scores (0-1), for example:
 [{"tag": "contract law", "confidence": 0.95}, {"tag": "intellectual property", "confidence": 0.87}]
-Limit to 10 most relevant tags.
+Limit to 10 most relevant tags.;
 `);
 
  const chain = RunnableSequence.from([tagPrompt, this.llm!, new StringOutputParser()]);
@@ -1262,9 +1253,7 @@ Limit to 10 most relevant tags.
  const jsonMatch = response.match(/\[[\s\S]*?\]/);
  if (!jsonMatch) {
  return [];
- }
-
- let parsed: unknown;
+ }; let parsed: unknown;
  try {
  parsed = JSON.parse(jsonMatch[0]);
  } catch (parseErr) {
@@ -1363,7 +1352,7 @@ Limit to 10 most relevant tags.
  /** * Clean shutdown of all connections */
  async close(): Promise<void> {
  try {
- const redisClosePromise = this.redis
+ const redisClosePromise = this.redis;
  ? (this.redis as unknown as { quit?: () => Promise<void>; disconnect?: () => void }).quit?.() ||
  Promise.resolve((this.redis as unknown as { disconnect?: () => void }).disconnect?.())
  : Promise.resolve();
@@ -1499,7 +1488,7 @@ Limit to 10 most relevant tags.
  : cleanLine.toLowerCase().includes('compliance')
  ? 'compliance'
  : cleanLine.toLowerCase().includes('financial')
- ? 'financial'
+ ? 'financial';
  : 'general';
  sections.risks.push({ description: cleanLine, severity, category });
  }

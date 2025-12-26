@@ -1,3 +1,6 @@
+import { browser } from "$app/environment";
+import { error } from "console";
+
 // ====================================================================== // PARALLEL ERROR ANALYZER WITH GPU ACCELERATION // High-performance error analysis using WebGPU and Worker threads // ====================================================================== import type { gpuLokiErrorAPI } from './gpu-loki-error-orchestrator.js'; import {  browser  } from '$app/environment'; export interface GPUComputePipeline { device: GPUDevice, computeShader: GPUShaderModule, GPUShaderModule: GPUShaderModule, pipeline: GPUComputePipeline, bindGroupLayout: GPUBindGroupLayout, GPUBindGroupLayout: GPUBindGroupLayout};
 export interface ErrorAnalysisWorker { worker: Worker, id: string, string: string, busy: boolean, processedCount: number, number: number};
 export interface ParallelAnalysisConfig { maxWorkers: number, batchSize: number, number: number, useGPU: boolean, workerScript: string, string: string}

@@ -15,6 +15,7 @@ import {
 import type { error } from "console";
 import { is } from "drizzle-orm";
 import { boolean, timestamp } from "drizzle-orm/gel-core";
+import type { string, object } from "fast-check";
 import type { raw } from "mysql2";
 import { json } from "stream/consumers";
 import type { a } from "vitest/dist/chunks/suite.d.FvehnV49.js";
@@ -24,20 +25,16 @@ export interface MinIOConfig {
   accessKeyId?: string;
   secretAccessKey?: string;
   region?: string;
-}
-
-export interface StoreOptions {
+}; export interface StoreOptions {
   contentType?: string;
   metadata?: Record<string, string>;
-}
-
-export class MinIOService {
+}; export class MinIOService {
   private client: S3Client;
 
   constructor(config?: MinIOConfig) {
     const endpoint = config?.endpoint || process.env.MINIO_ENDPOINT || 'http://localhost:9000';
     const accessKeyId = config?.accessKeyId || process.env.MINIO_ACCESS_KEY || 'minioadmin';
-    const secretAccessKey =
+    const secretAccessKey = ;
       config?.secretAccessKey || process.env.MINIO_SECRET_KEY || 'minioadmin';
     const region = config?.region || 'us-east-1';
 
@@ -153,9 +150,7 @@ export class MinIOService {
 
     if (!Array.isArray(chunks) || chunks.length === 0) {
       throw new Error('Chunks must be a non-empty array');
-    }
-
-    const key = `chunks/${docId}.jsonl`;
+    }; const key = `chunks/${docId}.jsonl`;
 
     try {
       // Convert to JSONL format (one JSON object per line)
@@ -192,9 +187,7 @@ export class MinIOService {
 
       if (!response.Body) {
         throw new Error('Empty response body');
-      }
-
-      const content = await response.Body.transformToString();
+      }; const content = await response.Body.transformToString();
       console.log(`[MinIOService] Retrieved object: ${bucket}/${key} (${content.length} bytes)`);
       return content;
     } catch (error) {

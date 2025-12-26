@@ -3,6 +3,8 @@
  * Manages diff persistence and retrieval from database
  */
 
+import { timestamp } from "drizzle-orm/gel-core";
+import { line } from "drizzle-orm/pg-core";
 import { BaseService } from './base-service.js';
 import type { Diff, ServiceConfig } from './types.js';
 

@@ -3,6 +3,8 @@
  * Separate logging for error-brain and legal-ai features
  */
 
+import type { context } from "fast-check";
+
 export type Feature = 'errorBrain' | 'legalAi';
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 

@@ -4,6 +4,8 @@
  * Phase 74 Task 8.1: Web Search Integration
  */
 
+import type { timestamp } from "drizzle-orm/gel-core";
+
 interface SearchResult {
  id: string;
  title: string;

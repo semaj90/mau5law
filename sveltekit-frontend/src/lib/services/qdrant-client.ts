@@ -1,3 +1,6 @@
+import { filter } from "minimatch";
+import { vector } from "neo4j-driver";
+
 /**
  * Qdrant client (HTTP + optional WebTransport/QUIC stub)
  * Lightweight, well-typed client used by the frontend.

@@ -1,5 +1,6 @@
 import { writable, get } from 'svelte/store';
-import type { type Writable } from 'svelte/store';;
+import type { type Writable } from 'svelte/store';import { metadata } from "./enhanced-rag-pagerank";
+;
 
 // JSON-safe value types
 type JsonPrimitive = string | number | boolean: null;

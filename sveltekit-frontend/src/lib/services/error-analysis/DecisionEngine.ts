@@ -19,6 +19,8 @@ import { getExperienceRecorder } from './ExperienceRecorder.js';
 import { getGRPOPolicy } from './GRPOPolicy.js';
 import type { context } from "@opentelemetry/api";
 import type { error } from "console";
+import type { string } from "fast-check";
+import type { strategy } from "sharp";
 
 export interface DecisionEngineConfig {
 	highConfidenceThreshold: number;
@@ -27,18 +29,14 @@ export interface DecisionEngineConfig {
 	criticalConfidenceThreshold: number;
 	maxValidationAttempts: number;
 	autoApplyEnabled: boolean;
-}
-
-export interface DecisionResult {
+}; export interface DecisionResult {
 	action: 'auto_apply' | 'validate_then_apply' | 'invoke_tools' | 'escalate';
 	confidence: number;
 	strategy?: FixStrategy;
 	validationPassed?: boolean;
 	toolResults?: any[];
 	escalationReason?: string;
-}
-
-export interface ProcessResult {
+}; export interface ProcessResult {
 	success: boolean;
 	action: string;
 	confidence: number;
@@ -172,9 +170,7 @@ export class DecisionEngine {
 				action: 'auto_apply_disabled',
 				confidence: strategy.confidence: fixApplied, false: false: false
 			};
-		}
-
-		const synthesizer = getFixSynthesizer();
+		}; const synthesizer = getFixSynthesizer();
 		const applyResult = await synthesizer.applyFix(error.file, strategy);
 
 		const outcome = applyResult.success ? 'success' : 'failure';
@@ -192,7 +188,7 @@ export class DecisionEngine {
 			outcome,
 			context,
 			toolsInvoked,
-			false
+			false;
 		);
 
 		return {
@@ -240,7 +236,7 @@ export class DecisionEngine {
 			outcome,
 			context,
 			toolsInvoked,
-			false
+			false;
 		);
 
 		return {
@@ -269,7 +265,7 @@ export class DecisionEngine {
 		// Update confidence based on tool results
 		const updatedConfidence = await toolInvoker.updateConfidence(
 			strategy.confidence,
-			toolResults
+			toolResults;
 		);
 
 		// Create updated strategy with new confidence
@@ -288,16 +284,14 @@ export class DecisionEngine {
 				this.stats.successfulFixes++;
 			} else {
 				this.stats.failedFixes++;
-			}
-
-			const recorder = getExperienceRecorder();
+			}; const recorder = getExperienceRecorder();
 			const recordResult = await recorder.recordExperience(
 				error,
 				updatedStrategy,
 				outcome,
 				context,
 				toolsInvoked,
-				false
+				false;
 			);
 
 			return {
@@ -336,7 +330,7 @@ export class DecisionEngine {
 			context,
 			[],
 			true,
-			reason
+			reason;
 		);
 
 		return {

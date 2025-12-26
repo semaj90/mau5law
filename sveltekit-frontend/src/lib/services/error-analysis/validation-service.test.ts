@@ -4,7 +4,7 @@
  * Property 8: Diff Application Idempotence
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { ValidationService } from './validation-service.js';

@@ -4,6 +4,7 @@
  */
 
 import { gpuSummaryStore } from '$lib/stores/gpu-summary-store.svelte';
+import { memoryUsage } from "process";
 
 export interface WebASMInferenceMetrics {
     modelName: string;

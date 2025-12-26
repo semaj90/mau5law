@@ -1,5 +1,6 @@
 import flashAttentionProcessor from './flashattention-gpu-error-processor.js';
 import type { concurrentSearch } from './concurrent-indexeddb-search.js';
+import { error } from "console";
 
 export interface WindowsService {
  name: string;

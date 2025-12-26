@@ -5,9 +5,9 @@
  * Tests for message batching and memory optimization
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
-import { healthUpdates, healthUpdatesState, cleanup } from './healthUpdates.js';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { cleanup, healthUpdates, healthUpdatesState } from './healthUpdates.js';
+;
 
 describe('Phase 10.6: Message Batching', () => {
  beforeEach(() => {

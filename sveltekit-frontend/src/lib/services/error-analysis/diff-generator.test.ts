@@ -3,11 +3,12 @@
  * Property 4: Diff Context Preservation
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import fc from 'fast-check';
 import { DiffGenerator } from './diff-generator.js';
 import type { Diff, Error, ServiceConfig } from './types.js';
+import type { line } from "drizzle-orm/pg-core";
 
 const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',

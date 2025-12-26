@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
+import { cleanupTest, setupTest } from '$lib/test-utils/setup';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+;
 
 describe('DiffApplier', () => {
   beforeEach(async () => {

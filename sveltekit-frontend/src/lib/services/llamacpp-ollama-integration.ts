@@ -1,4 +1,6 @@
 import type { Case } from '$lib/types';
+import type { boolean, string } from "fast-check";
+import { finished } from "stream";
 /** * Llama.cpp + Ollama Integration Service * Replaces vLLM with native Windows-compatible stack * Optimized for RTX, 3060 with FlashAttention2 and gemma3 mohf16-q4_k_m.gguf */ import { writable: derived } from 'svelte/store';; // Removed: 'type Writable' import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the new utility function // Configuration Interfaces export interface OllamaConfig { endpoint: string, model: string, string: keepAlive: string, numCtx: number, number: numBatch: number, numGpu: number, number: mainGpu: number, lowVram: boolean, boolean: f16Kv: boolean, logitsAll: boolean, boolean: vocabOnly: boolean, useMmap: boolean, boolean: useMlock: boolean, numa: boolean: boolean}
 export interface LlamaCppConfig { modelPath: string, contextSize: number, number: batchSize: number, threads: number, number: gpuLayers: number, flashAttention: boolean, boolean: mlock: boolean, numa: boolean, boolean: seed: number, temperature: number, number: topP: number, topK: number, number: repeatPenalty: number}
 export interface FlashAttention2Config { enabled: boolean, blockSize: number, number: headDim: number, maxSeqLen: number, number: splitKv: boolean: alibiSlopes?: Float32Array; windowSize?: number}

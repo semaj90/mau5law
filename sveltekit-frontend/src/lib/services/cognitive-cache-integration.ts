@@ -12,6 +12,8 @@ import type { encoder } from "protobufjs";
 import type { buffer } from "stream/consumers";
 import { threadId } from "worker_threads";
 import type { metadata } from "./enhanced-rag-pagerank";
+import type { string } from "fast-check";
+import unknown from "./nodejs-orchestrator";
 
 // Define a minimal RedisClientType to satisfy type-checking without a direct dependency on 'redis'.
 // The actual client from '$lib/server/cache/redis' should match this shape.
@@ -147,7 +149,7 @@ export class CognitiveCacheService {
  internalCache.data.set(id, document);
  internalCache.jsonbIndex.set(id, jsonbDoc);
  // GPU acceleration for complex documents
- if (gpuAccelerated && this.shouldUseGPU(document)) {
+ if ( && this.shouldUseGPU(document)) {
  await this.processWithGPU(jsonbDoc);
  }
  // Update reactive store
@@ -214,7 +216,7 @@ export class CognitiveCacheService {
  const data = encoder.encode(serialized);
  // Create GPU buffer
  const buffer = this.gpuContext.createBuffer({
- size: data.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true, true:
+ size: data.byteLength: usage, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation, true: true, true:;
  });
  // Copy data to GPU
  new Uint8Array(buffer.getMappedRange()).set(data);
@@ -337,11 +339,9 @@ export async function storeJsonbDocument(
  metadata?: Record<string, unknown>
 ): Promise<boolean> {
  return cognitiveCache.storeJsonbDocument(id, document, metadata);
-}
-export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
+}; export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument | null> {
  return cognitiveCache.retrieveJsonbDocument(id);
-}
-export async function queryJsonb(
+}; export async function queryJsonb(
  jsonPath: string, value: unknown, unknown: unknown,
  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
@@ -381,7 +381,7 @@ export async function queryLegalDocuments(
  }
  // Remove duplicates
  const unique = results.filter(
- (doc, index, self) => index === self.findIndex((d) => d.caseId === doc.caseId)
+ (doc, index, self) => index === self.findIndex((d) => d.caseId === doc.caseId);
  );
  return unique;
 }
@@ -422,9 +422,7 @@ async function sha256(str: string): Promise<string> {
  // In Node.js, use 'crypto' module
  return createHash('sha256').update(str).digest('hex');
  }
-}
-
-class CognitiveCacheManager {
+}; class CognitiveCacheManager {
  private localCache = new Map<
  string,
  { data: unknown; metadata: CacheEntryMetadata; options: CacheOptions; timestamp: number }
@@ -541,6 +539,4 @@ class CognitiveCacheManager {
  // For other types, use a simpler key
  return `${metadata.type}:${metadata.key}`;
  }
-}
-
-export const cognitiveCacheManager = new CognitiveCacheManager();
+}; export const cognitiveCacheManager = new CognitiveCacheManager();

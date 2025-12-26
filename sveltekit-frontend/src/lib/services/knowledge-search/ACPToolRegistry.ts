@@ -15,6 +15,14 @@
  *   const result = await executeACPTool('knowledge:search', { query: 'Svelte 5 runes' });
  */
 
+import type { browser } from "$app/environment";
+import type { execSync } from "child_process";
+import type { duration } from "drizzle-orm/gel-core";
+import { exists } from "fs";
+import { stream } from "glob";
+import { url } from "inspector";
+import { title } from "process";
+import unknown from "../nodejs-orchestrator.js";
 import type {
     ACPTool,
     ToolResult

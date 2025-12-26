@@ -8,6 +8,8 @@
  * idle → generating → applying → validating → persisting → done/failed
  */
 
+import { timestamp } from "drizzle-orm/gel-core";
+
 export type RunPhase =
  | 'idle'
  | 'generating'

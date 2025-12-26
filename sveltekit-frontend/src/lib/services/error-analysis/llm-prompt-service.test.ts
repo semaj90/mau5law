@@ -5,7 +5,7 @@
  * Validates: Requirements 3.1, 3.3, 3.4
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { setupTest, cleanupTest } from '$lib/test-utils/setup';;
 import { LLMPromptService } from './llm-prompt-service.js';
 import type { ServiceConfig, LLMResponse } from './types.js';
