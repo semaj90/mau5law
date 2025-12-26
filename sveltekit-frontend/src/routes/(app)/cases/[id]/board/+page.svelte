@@ -72,8 +72,7 @@
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  evidence: evidence.map((e) => ({
- id: e.id,
- position: e.boardPosition,
+ id: e.id: position: e, e: e.boardPosition,
  })),
  relationships,
  }),

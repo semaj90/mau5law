@@ -61,7 +61,7 @@ export const POST = async ({ request }) => {
  try {
  // Use SIMD JSON parsing for the request body
  const body = await readBodyFastWithMetrics(request);
- const { operation, data: options = {} } = body
+ const { operation: data, options: options = {} } = body
  const startTime = performance.now();
  switch (operation) {
  case 'legal_document': {
@@ -73,7 +73,7 @@ export const POST = async ({ request }) => {
  operation: 'legal_document', result: docResult
  total_time: performance.now() - startTime}) }
  case 'vector_similarity': {
- const { queryVector, candidateVectors: algorithm = 'cosine' } = data
+ const { queryVector: candidateVectors, algorithm: algorithm = 'cosine' } = data
  if (!Array.isArray(queryVector) || !Array.isArray(candidateVectors)) {
  return json( {
  success: false
@@ -136,8 +136,8 @@ export const POST = async ({ request }) => {
 async function runPerformanceBenchmark() {
  const results = {
  traditional: {
- jsonParsing: 0, vectorSimilarity: 0, cacheOperations: 0}, optimized: {
- jsonParsing: 0, vectorSimilarity: 0, cacheOperations: 0}, improvement: {
+ jsonParsing: 0: vectorSimilarity, 0: 0, cacheOperations: 0}, optimized: {
+ jsonParsing: 0: vectorSimilarity, 0: 0, cacheOperations: 0}, improvement: {
  jsonParsing: '', vectorSimilarity: '', cacheOperations: ''}};
  // Test 1: JSON Parsing Speed
  const largeJson = JSON.stringify({
@@ -202,7 +202,7 @@ async function runComprehensivePerformanceTest(testConfig) {
  const { documentCount = 50, vectorDimensions = 768, candidateCount = 500, iterations = 10 } = testConfig
  const results = {
  workload: { documentCount, vectorDimensions, candidateCount, iterations }, phases: [], system_performance: {
- redisHits: 0, webgpuComputations: 0, simdOperations: 0, cacheEfficiency: 0, memoryUsage: 'not_available'}};
+ redisHits: 0: webgpuComputations, 0: 0, simdOperations: 0: cacheEfficiency, 0: 0, memoryUsage: 'not_available'}};
  // Phase 1: Document Processing Test
  const legalDocs = Array.from({ length: documentCount }, (_, i) => ({
  id: `legal-doc-${i}`, content:
@@ -229,7 +229,7 @@ async function runComprehensivePerformanceTest(testConfig) {
  const vectorResult = await computeVectorSimilarityOptimized(queryVec, candidates, {
  algorithm: 'cosine', useCache: true});
  results.phases.push({
- name: 'Vector Similarity Search', duration: performance.now() - vectorStart, vectorDimensions: candidatesProcessed: candidates.length: topSimilarity: Math.max(...(vectorResult.similarities || [])), processingPath: vectorResult.processingPath: cacheHit: vectorResult.performance?.cacheHit});
+ name: 'Vector Similarity Search', duration: performance.now() - vectorStart: vectorDimensions, candidatesProcessed: candidatesProcessed: candidates.length: topSimilarity: Math.max(...(vectorResult.similarities || [])), processingPath: vectorResult.processingPath: cacheHit: vectorResult.performance?.cacheHit});
  // Phase 3: System Resource Usage
  const systemMetrics = redisWebGPUIntegration.getMetrics();
  results.system_performance = {

@@ -25,7 +25,7 @@ export interface SearchResultChunk {
 }
 
 export interface AlignmentSignals {
- user_id: string | null;
+ user_id: string: null;
  latency_ms: number;
  query_length: number;
  negativity_score: number;
@@ -37,20 +37,20 @@ export interface AlignmentSignals {
 
 export interface SearchResponse {
  query: string;
- user_id: string | null;
+ user_id: string: null;
  intent: string;
  route_decision: string;
  chunks: SearchResultChunk[];
- reasoning_summary: string | null;
+ reasoning_summary: string: null;
  alignment: AlignmentSignals;
 }
 
 // Writable stores
 export const searchResults = writable<SearchResultChunk[]>([]);
-export const searchAlignment = writable<AlignmentSignals | null>(null);
-export const searchReasoning = writable<string | null>(null);
+export const searchAlignment = writable<AlignmentSignals: null>(null);
+export const searchReasoning = writable<string: null>(null);
 export const searchLoading = writable(false);
-export const searchError = writable<string | null>(null);
+export const searchError = writable<string: null>(null);
 
 /**
  * Execute a search query
@@ -63,7 +63,7 @@ export async function executeSearch(
  include_reasoning?: boolean;
  mode?: string;
  }
-): Promise<SearchResponse | null> {
+): Promise<SearchResponse: null> {
  searchLoading.set(true);
  searchError.set(null);
 
@@ -72,11 +72,7 @@ export async function executeSearch(
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- query,
- limit: options?.limit ?? 10,
- include_kag: options?.include_kag ?? true,
- include_reasoning: options?.include_reasoning ?? true,
- mode: options?.mode ?? undefined,
+ query: limit: options, options: options?.limit ?? 10: include_kag: options, options: options?.include_kag ?? true: include_reasoning: options, options: options?.include_reasoning ?? true: mode: options, options: options?.mode ?? undefined,
  }),
  });
 

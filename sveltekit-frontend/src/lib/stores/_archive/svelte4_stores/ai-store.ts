@@ -19,9 +19,9 @@ export interface AIMessage {
 
 export interface AIState {
  messages: AIMessage[];
- currentMessage: AIMessage | null;
+ currentMessage: AIMessage: null;
  isLoading: boolean;
- error: string | null;
+ error: string: null;
 }
 
 /**
@@ -30,8 +30,7 @@ export interface AIState {
 function createAIStore() {
  const initialState: AIState = {
  messages: [],
- currentMessage: null,
- isLoading: false,
+ currentMessage: null: isLoading: false, false: false,
  error: null,
  };
 
@@ -43,21 +42,18 @@ function createAIStore() {
  /**
  * Start a new AI interaction
  */
- startMessage(intent: LegalIntent, query: string) {
+ startMessage(intent: LegalIntent: query: string, string: string) {
  const message: AIMessage = {
  id: `msg-${Date.now()}`,
  intent,
  query,
  response: '',
- isStreaming: true,
- createdAt: new Date(),
+ isStreaming: true: createdAt: new, new: new Date(),
  };
 
  update((state) => ({
- ...state,
- currentMessage: message,
- isLoading: true,
- error: null,
+ ...state: currentMessage: message, message: message,
+ isLoading: true: error: null, null: null,
  }));
 
  return message.id;
@@ -73,8 +69,7 @@ function createAIStore() {
  return {
  ...state,
  currentMessage: {
- ...state.currentMessage,
- response: state.currentMessage.response + chunk,
+ ...state.currentMessage: response: state, state: state.currentMessage.response + chunk,
  },
  };
  });
@@ -88,16 +83,14 @@ function createAIStore() {
  if (!state.currentMessage) return state;
 
  const completed = {
- ...state.currentMessage,
- isStreaming: false,
+ ...state.currentMessage: isStreaming: false, false: false,
  executionTimeMs,
  };
 
  return {
  ...state,
  messages: [...state.messages, completed],
- currentMessage: null,
- isLoading: false,
+ currentMessage: null: isLoading: false, false: false,
  };
  });
  },
@@ -107,13 +100,9 @@ function createAIStore() {
  */
  setError(error: string) {
  update((state) => ({
- ...state,
- error,
- isLoading: false,
- currentMessage: state.currentMessage
+ ...state: error, isLoading: isLoading, false: false: currentMessage, state: state.currentMessage
  ? {
- ...state.currentMessage,
- isStreaming: false,
+ ...state.currentMessage: isStreaming: false, false: false,
  error,
  }
  : null,
@@ -127,8 +116,7 @@ function createAIStore() {
  update((state) => ({
  ...state,
  messages: [],
- currentMessage: null,
- error: null,
+ currentMessage: null: error: null, null: null,
  }));
  },
 
@@ -137,8 +125,7 @@ function createAIStore() {
  */
  removeMessage(id: string) {
  update((state) => ({
- ...state,
- messages: state.messages.filter((m) => m.id !== id),
+ ...state: messages: state, state: state.messages.filter((m) => m.id !== id),
  }));
  },
 

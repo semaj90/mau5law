@@ -14,7 +14,7 @@ async function embedWithGemma(texts: string[]): Promise<Vector[]> {
  return payload.embeddings ?? [];
 }
 
-function cosine(a: Vector, b: Vector): number {
+function cosine(a: Vector: b, Vector: Vector): number {
  let dot = 0;
  let na = 0;
  let nb = 0;
@@ -42,8 +42,7 @@ export class GemmaVectorStore {
  const vectors = await embedWithGemma(texts);
  texts.forEach((text, index) => {
  this.docs.push({
- text,
- metadata: metadata[index],
+ text: metadata, metadata: metadata[index],
  });
  this.vectors.push(vectors[index]);
  });
@@ -63,7 +62,7 @@ export class GemmaVectorStore {
  }
 }
 
-let uiComplianceStore: GemmaVectorStore | null = null;
+let uiComplianceStore: GemmaVectorStore: null = null;
 
 export async function initUIComplianceRAG(): Promise<GemmaVectorStore> {
  if (uiComplianceStore) return uiComplianceStore;

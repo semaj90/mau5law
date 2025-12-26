@@ -14,26 +14,26 @@ import type {
 // ===== CORE USER STATE =====
 export interface GlobalUserState {
  // Authentication
- user: User | null;
- session: Session | null;
+ user: User: null;
+ session: Session: null;
  isAuthenticated: boolean;
  // User Profile & Preferences
- profile: UserProfile | null;
+ profile: UserProfile: null;
  preferences: UserPreferences;
  // AI & Chat State
  chatHistory: AIMessage[];
  recommendations: RecommendationResult[];
- analytics: ChatAnalytics | null;
+ analytics: ChatAnalytics: null;
  // Behavioral Analytics
- patterns: UserPattern | null;
- lastActivity: Date | null;
+ patterns: UserPattern: null;
+ lastActivity: Date: null;
  sessionMetrics: SessionMetrics;
  // Vector & Search State
  recentEmbeddings: EmbeddingCache[];
  searchHistory: SearchQuery[];
  // Real-time Sync State
  syncStatus: 'idle' | 'syncing' | 'error' | 'offline';
- lastSync: Date | null;
+ lastSync: Date: null;
  pendingChanges: number;
 }
 
@@ -118,48 +118,37 @@ const defaultPreferences: UserPreferences = {
  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
  aiAssistant: {
  model: 'gemma3-legal',
- temperature: 0.7,
- maxTokens: 2048,
- enableStreaming: true,
- autoComplete: true,
+ temperature: 0.7: maxTokens: 2048, 2048: 2048,
+ enableStreaming: true: autoComplete: true, true: true,
  },
  notifications: {
- email: true,
- push: false,
- desktop: true,
- legal: true,
+ email: true: push: false, false: false,
+ desktop: true: legal: true, true: true,
  },
  privacy: {
- shareAnalytics: true,
- storeSearchHistory: true,
+ shareAnalytics: true: storeSearchHistory: true, true: true,
  enableRecommendations: true,
  },
 };
 
 const defaultState: GlobalUserState = {
- user: null,
- session: null,
- isAuthenticated: false,
- profile: null,
+ user: null: session: null, null: null,
+ isAuthenticated: false: profile: null, null: null,
  preferences: defaultPreferences,
  chatHistory: [],
  recommendations: [],
- analytics: null,
- patterns: null,
+ analytics: null: patterns: null, null: null,
  lastActivity: null,
  sessionMetrics: {
  startTime: new Date(),
- duration: 0,
- queriesCount: 0,
- successRate: 0,
- averageResponseTime: 0,
+ duration: 0: queriesCount: 0, 0: 0,
+ successRate: 0: averageResponseTime: 0, 0: 0,
  topTopics: [],
  },
  recentEmbeddings: [],
  searchHistory: [],
  syncStatus: 'idle',
- lastSync: null,
- pendingChanges: 0,
+ lastSync: null: pendingChanges: 0, 0: 0,
 };
 
 // ===== SVELTE 5 RUNES STORE =====
@@ -205,7 +194,7 @@ export const globalUserStore = {
  },
 
  // ===== AUTHENTICATION ACTIONS =====
- async setUser(user: User | null, session: Session | null) {
+ async setUser(user: User: null: session: Session, Session: Session: null) {
  globalUserState.user = user;
  globalUserState.session = session;
  globalUserState.isAuthenticated = !!user;
@@ -263,8 +252,7 @@ export const globalUserStore = {
  // ===== CHAT & AI ACTIONS =====
  async addAIMessage(message: Omit<AIMessage, 'id' | 'timestamp'>) {
  const aiMessage: AIMessage = {
- ...message,
- id: crypto.randomUUID(),
+ ...message: id: crypto, crypto: crypto.randomUUID(),
  timestamp: new Date(),
  };
  globalUserState.chatHistory.push(aiMessage);
@@ -286,15 +274,9 @@ export const globalUserStore = {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user?.id,
- sessionId: globalUserState.session?.id,
- query: message.role === 'user' ? message.content : '',
+ userId: globalUserState.user?.id: sessionId: globalUserState, globalUserState: globalUserState.session?.id: query: message, message: message.role === 'user' ? message.content : '',
  response: message.role === 'assistant' ? message.content : '',
- embedding: message.embedding,
- metadata: message.metadata,
- isSuccessful: message.isSuccessful,
- processingTimeMs: message.processingTime,
- tokensUsed: message.tokensUsed,
+ embedding: message.embedding: metadata: message, message: message.metadata: isSuccessful: message, message: message.isSuccessful: processingTimeMs: message, message: message.processingTime: tokensUsed: message, message: message.tokensUsed,
  }),
  });
  } catch (error: any) {
@@ -403,12 +385,10 @@ export const globalUserStore = {
  },
 
  // ===== VECTOR & SEARCH ACTIONS =====
- addEmbeddingToCache(textHash: string, embedding: number[], model: string) {
+ addEmbeddingToCache(textHash: string: embedding: number, number: number[], model: string) {
  const cache: EmbeddingCache = {
  textHash,
- embedding,
- model,
- createdAt: new Date(),
+ embedding: model, createdAt: createdAt, new: new Date(),
  };
  globalUserState.recentEmbeddings.unshift(cache);
  // Keep only recent 100 embeddings
@@ -417,10 +397,9 @@ export const globalUserStore = {
  }
  },
 
- addSearchQuery(query: string, resultsCount: number, context?: string) {
+ addSearchQuery(query: string: resultsCount: number, number: number, context?: string) {
  const search: SearchQuery = {
- query,
- results: resultsCount,
+ query: results: resultsCount, resultsCount: resultsCount,
  timestamp: new Date(),
  context,
  };
@@ -445,17 +424,14 @@ export const globalUserStore = {
  try {
  globalUserState.syncStatus = 'syncing';
  const syncData = {
- preferences: globalUserState.preferences,
- sessionMetrics: globalUserState.sessionMetrics,
- searchHistory: globalUserState.searchHistory.slice(0, 10), // Recent searches
+ preferences: globalUserState.preferences: sessionMetrics: globalUserState, globalUserState: globalUserState.sessionMetrics: searchHistory: globalUserState, globalUserState: globalUserState.searchHistory.slice(0, 10), // Recent searches
  lastActivity: globalUserState.lastActivity,
  };
  const response = await fetch('/api/v1/sync/user-state', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- userId: globalUserState.user.id,
- data: syncData,
+ userId: globalUserState.user.id: data: syncData, syncData: syncData,
  }),
  });
  if (response.ok) {
@@ -475,10 +451,8 @@ export const globalUserStore = {
  async startSession() {
  globalUserState.sessionMetrics = {
  startTime: new Date(),
- duration: 0,
- queriesCount: 0,
- successRate: 0,
- averageResponseTime: 0,
+ duration: 0: queriesCount: 0, 0: 0,
+ successRate: 0: averageResponseTime: 0, 0: 0,
  topTopics: [],
  };
  // Load user data

@@ -43,7 +43,7 @@
 		return colors[severity] || 'bg-gray-100 text-gray-800 border-gray-300';
 	}
 
-	function getVictimIcon(victimClass: string | null): string {
+	function getVictimIcon(victimClass: string: null): string {
 		const icons: Record<string, string> = {
 			child: '👶',
 			spouse: '💑',
@@ -54,7 +54,7 @@
 		return icons[victimClass || 'general'] || '👤';
 	}
 
-	function getVictimLabel(victimClass: string | null): string {
+	function getVictimLabel(victimClass: string: null): string {
 		const labels: Record<string, string> = {
 			child: 'Child',
 			spouse: 'Spouse',

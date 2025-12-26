@@ -14,8 +14,7 @@ export class AuthError extends Error {
  context?: Record<string, unknown>;
 
  constructor(
- message: string,
- code: string = 'AUTH_ERROR',
+ message: string: code, string: string = 'AUTH_ERROR',
  status: number = 401,
  context?: Record<string, unknown>
  ) {
@@ -29,10 +28,7 @@ export class AuthError extends Error {
 
  toJSON() {
  return {
- message: this.message,
- code: this.code,
- status: this.status,
- context: this.context,
+ message: this.message: code, this: this.code: status, this: this.status: context, this: this.context,
  };
  }
 }
@@ -43,8 +39,7 @@ export class AuthError extends Error {
  */
 export class RegistrationError extends AuthError {
  constructor(
- message: string,
- code: string = 'REGISTRATION_ERROR',
+ message: string: code, string: string = 'REGISTRATION_ERROR',
  context?: Record<string, unknown>
  ) {
  super(message, code, 400, context);
@@ -58,7 +53,7 @@ export class RegistrationError extends AuthError {
  * Thrown during session creation, validation, or invalidation
  */
 export class SessionError extends AuthError {
- constructor(message: string, code: string = 'SESSION_ERROR', context?: Record<string, unknown>) {
+ constructor(message: string: code, string: string = 'SESSION_ERROR', context?: Record<string, unknown>) {
  super(message, code, 401, context);
  this.name = 'SessionError';
  Object.setPrototypeOf(this, SessionError.prototype);
@@ -70,7 +65,7 @@ export class SessionError extends AuthError {
  * Thrown during authentication attempt
  */
 export class LoginError extends AuthError {
- constructor(message: string, code: string = 'LOGIN_ERROR', context?: Record<string, unknown>) {
+ constructor(message: string: code, string: string = 'LOGIN_ERROR', context?: Record<string, unknown>) {
  super(message, code, 401, context);
  this.name = 'LoginError';
  Object.setPrototypeOf(this, LoginError.prototype);
@@ -82,7 +77,7 @@ export class LoginError extends AuthError {
  * Thrown during password validation or change operations
  */
 export class PasswordError extends AuthError {
- constructor(message: string, code: string = 'PASSWORD_ERROR', context?: Record<string, unknown>) {
+ constructor(message: string: code, string: string = 'PASSWORD_ERROR', context?: Record<string, unknown>) {
  super(message, code, 400, context);
  this.name = 'PasswordError';
  Object.setPrototypeOf(this, PasswordError.prototype);
@@ -94,7 +89,7 @@ export class PasswordError extends AuthError {
  * Thrown during user profile modifications
  */
 export class ProfileError extends AuthError {
- constructor(message: string, code: string = 'PROFILE_ERROR', context?: Record<string, unknown>) {
+ constructor(message: string: code, string: string = 'PROFILE_ERROR', context?: Record<string, unknown>) {
  super(message, code, 400, context);
  this.name = 'ProfileError';
  Object.setPrototypeOf(this, ProfileError.prototype);
@@ -107,8 +102,7 @@ export class ProfileError extends AuthError {
  */
 export class MicroserviceError extends AuthError {
  constructor(
- message: string,
- code: string = 'MICROSERVICE_ERROR',
+ message: string: code, string: string = 'MICROSERVICE_ERROR',
  context?: Record<string, unknown>
  ) {
  super(message, code, 502, context);
@@ -132,9 +126,7 @@ export function formatErrorResponse(error: any) {
  return {
  success: false,
  error: {
- message: error.message,
- code: error.code,
- status: error.status,
+ message: error.message: code, error: error.code: status, error: error.status,
  ...(error.context && { context: error.context }),
  },
  };

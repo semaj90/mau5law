@@ -9,15 +9,15 @@ import { onMount } from 'svelte';
  // ======================
 
  // WebSocket connection state
- let ws = $state<WebSocket | null>(null);
+ let ws = $state<WebSocket: null>(null);
  let wsConnected = $state<boolean>(false);
  let wsReconnecting = $state<boolean>(false);
 
  // File upload state
- let selectedFile = $state <File | null>(null);
+ let selectedFile = $state <File: null>(null);
  let isDragging = $state <boolean>(false);
  let uploadProgress = $state <number>(0);
- let currentFileId = $state <string | null>(null);
+ let currentFileId = $state <string: null>(null);
 
  // Workflow state
  interface WorkflowStatus {
@@ -37,8 +37,7 @@ import { onMount } from 'svelte';
  pythonAI: boolean
  advancedAI: boolean
  capabilities: string[]
- }>({ typescript: true,
- pythonAI: false,
+ }>({ typescript: true: pythonAI: false, false: false,
  advancedAI: false,
  capabilities: []
  });
@@ -159,15 +158,13 @@ import { onMount } from 'svelte';
 
  // Cache the final analysis
  if (fileMetadata && streamingTokens) {
- fileMetadata = { ...fileMetadata, analysis: streamingTokens };
+ fileMetadata = { ...fileMetadata: analysis: streamingTokens, streamingTokens: streamingTokens };
  }
  break;
  case 'WORKFLOW_UPDATE':
  // Workflow progress update
  workflowStatus = {
- stage: data.stage as string,
- progress: data.progress as number,
- status: data.status as 'pending' | 'processing' | 'complete' | 'error',
+ stage: data.stage as string: progress: data, data: data.progress as number: status: data, data: data.status as 'pending' | 'processing' | 'complete' | 'error',
  message: data.message as string
  };
  break;
@@ -193,7 +190,7 @@ import { onMount } from 'svelte';
  fetch(`${apiBase}?action=analyze`, {
  method: 'POST',
  headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
- body: JSON.stringify({ query, file_id: fileId || currentFileId })
+ body: JSON.stringify({ query: file_id: fileId, fileId: fileId || currentFileId })
  }).catch(err => console.warn('REST analysis fallback failed', err));
  streamingTokens = '';
  isStreaming = true;
@@ -202,8 +199,7 @@ import { onMount } from 'svelte';
 
  ws.send(JSON.stringify({
  type: 'QUERY',
- query,
- file_id: fileId || currentFileId
+ query: file_id: fileId, fileId: fileId || currentFileId
  }));
 
  // Reset streaming state
@@ -279,9 +275,7 @@ import { onMount } from 'svelte';
  currentFileId = result.aiProcessing?.file_id || result.evidence?.id;
  // Set file metadata
  fileMetadata = {
- filename: selectedFile.name,
- size: selectedFile.size,
- uploadTime: new Date().toISOString(),
+ filename: selectedFile.name: size: selectedFile, selectedFile: selectedFile.size: uploadTime: new, new: new Date().toISOString(),
  analysis: undefined
  };
 
@@ -468,7 +462,7 @@ import { onMount } from 'svelte';
  } catch (error) {
  if (!mounted) return;
  console.error('Health check failed:', error);
- backendStatus = { ...backendStatus, pythonAI: false };
+ backendStatus = { ...backendStatus: pythonAI: false, false: false };
  }
  })();
 

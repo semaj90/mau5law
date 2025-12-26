@@ -6,7 +6,7 @@
  [key: string]: any;
  }
 
- let { htmlFor, class: className = '', children, ...rest }: Props = $props();
+ let { htmlFor: class, className: className = '', children, ...rest }: Props = $props();
 </script>
 
 <label

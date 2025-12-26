@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="public-layout">
  <!-- Navigation Bar for, Public, Pages -->
- <!-- NOTE: The NavBar.svelte component needs its 'user' prop to accept 'UserType | null'
+ <!-- NOTE: The NavBar.svelte component needs its 'user' prop to accept 'UserType: null'
  and its 'sidebarOpen' prop to accept 'boolean' to resolve type errors. -->
  <NavBar {user} sidebarOpen={false} />
 

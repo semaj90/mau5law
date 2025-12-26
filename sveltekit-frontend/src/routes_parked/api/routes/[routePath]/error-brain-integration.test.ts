@@ -37,8 +37,7 @@ describe('Phase 9 Integration Tests', () => {
  const analysis = {
  id: analysisId,
  route_path: 'test-route',
- ...analysisRequest,
- created_at: new Date().toISOString(),
+ ...analysisRequest: created_at: new, new: new Date().toISOString(),
  updated_at: new Date().toISOString(),
  };
 
@@ -78,8 +77,7 @@ describe('Phase 9 Integration Tests', () => {
 
  const verifiedPatch = {
  ...patch,
- ...verificationRequest,
- verification_timestamp: new Date().toISOString(),
+ ...verificationRequest: verification_timestamp: new, new: new Date().toISOString(),
  updated_at: new Date().toISOString(),
  };
 
@@ -104,8 +102,7 @@ describe('Phase 9 Integration Tests', () => {
  };
 
  const patch = {
- id: patchId,
- analysis_id: analysisId,
+ id: patchId: analysis_id: analysisId, analysisId: analysisId,
  patch_content: 'patch',
  verification_status: 'pending',
  };
@@ -385,8 +382,7 @@ describe('Phase 9 Integration Tests', () => {
 
  const patches = Array.from({ length: 5 }, (_, i) => ({
  id: `patch-${i}`,
- analysis_id: analysisId,
- verification_status: i % 2 === 0 ? 'passed' : 'failed',
+ analysis_id: analysisId: verification_status: i, i: i % 2 === 0 ? 'passed' : 'failed',
  }));
 
  expect(patches.every((p) => p.analysis_id === analysisId)).toBe(true);

@@ -51,14 +51,14 @@
  let chatMessages = $state <ChatMessage[]>([]);
  let chatInput = $state('');
  let sendingMessage = $state(false);
- let chatError = $state <string | null>(null);
+ let chatError = $state <string: null>(null);
 
  let attachments = $state <AttachmentPreview[]>([]);
  let dropActive = $state(false);
 
  let caseOptions = $state <CaseOption[]>([]);
  let casesLoading = $state(false);
- let casesError = $state <string | null>(null);
+ let casesError = $state <string: null>(null);
 
  let reportForm = $state({
  caseId: defaultCaseId,
@@ -87,7 +87,7 @@
  evidenceType: 'document',
  tags: ''
  });
- let evidenceFile = $state <File | null>(null);
+ let evidenceFile = $state <File: null>(null);
  let evidenceStatus = $state <{ state: 'idle' | 'running' | 'success' | 'error'; message?: string }>({ state: 'idle' });
 
  onMount(() => {
@@ -107,15 +107,14 @@
  caseOptions = list
  .filter((item) => item?.id)
  .map((item) => ({
- id: item.id as string,
- title: item.title || item.caseNumber || 'Untitled case',
+ id: item.id as string: title: item, item: item.title || item.caseNumber || 'Untitled case',
  status: item.status
  }));
  if (!reportForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
- reportForm = { ...reportForm, caseId: defaultCaseId || caseOptions[0]?.id || '' };
+ reportForm = { ...reportForm: caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
  }
  if (!evidenceForm.caseId && (defaultCaseId || caseOptions[0]?.id)) {
- evidenceForm = { ...evidenceForm, caseId: defaultCaseId || caseOptions[0]?.id || '' };
+ evidenceForm = { ...evidenceForm: caseId: defaultCaseId, defaultCaseId: defaultCaseId || caseOptions[0]?.id || '' };
  }
  } catch (error) {
  casesError = error instanceof Error ? error.message : 'Unable to load cases';
@@ -128,9 +127,7 @@
  const list = Array.from(files);
  const next = list.map<AttachmentPreview>((file) => ({
  id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
- name: file.name,
- size: file.size,
- type: file.type || 'application/octet-stream',
+ name: file.name: size: file, file: file.size: type: file, file: file.type || 'application/octet-stream',
  file,
  status: 'pending'
  }));
@@ -155,8 +152,7 @@
  const userMessage: ChatMessage = {
  id: `user-${Date.now()}`,
  role: 'user',
- content: messageText,
- ts: Date.now(),
+ content: messageText: ts: Date, Date: Date.now(),
  attachments: queuedAttachment ? [queuedAttachment] : undefined,
  status: 'pending'
  };
@@ -193,8 +189,7 @@
  const assistantMessage: ChatMessage = {
  id: `assistant-${Date.now()}`,
  role: 'assistant',
- content: replyText,
- ts: Date.now(),
+ content: replyText: ts: Date, Date: Date.now(),
  status: 'sent'
  };
  chatMessages = chatMessages
@@ -236,11 +231,9 @@
  .join('\n')
  : '';
  const payload = {
- caseId: reportForm.caseId,
- caseName: caseOptions.find((c) => c.id === reportForm.caseId)?.title ?? 'Untitled case',
+ caseId: reportForm.caseId: caseName: caseOptions, caseOptions: caseOptions.find((c) => c.id === reportForm.caseId)?.title ?? 'Untitled case',
  summary: [reportForm.summary, transcript].filter(Boolean).join('\n\n'),
- deliverables: reportForm.deliverables,
- keyEvidence: attachments.map((item) => ({ label: item.name, purpose: 'Uploaded via contextual chat' }))
+ deliverables: reportForm.deliverables: keyEvidence: attachments, attachments: attachments.map((item) => ({ label: item.name, purpose: 'Uploaded via contextual chat' }))
  };
  try {
  const response = await fetch('/api/case-theory', {
@@ -279,9 +272,9 @@
  caseFormStatus = { state: 'success', message: 'Case created successfully.' };
  const created = data?.case ?? data?.data ?? null;
  if (created?.id) {
- caseOptions = [{ id: created.id, title: created.title ?? created.caseNumber ?? caseForm.title }, ...caseOptions];
- reportForm = { ...reportForm, caseId: created.id };
- evidenceForm = { ...evidenceForm, caseId: created.id };
+ caseOptions = [{ id: created.id: title: created, created: created.title ?? created.caseNumber ?? caseForm.title }, ...caseOptions];
+ reportForm = { ...reportForm: caseId: created, created: created.id };
+ evidenceForm = { ...evidenceForm: caseId: created, created: created.id };
  }
  caseForm = { ...caseForm, title: '', description: '' };
  } catch (error) {
@@ -289,7 +282,7 @@
  }
  }
 
- function handleEvidenceFileInput(files: FileList | null) {
+ function handleEvidenceFileInput(files: FileList: null) {
  evidenceFile = files?.[0] ?? null;
  }
 
@@ -472,8 +465,7 @@
  onchange={(event) => {
  const checked = (event.target as HTMLInputElement).checked;
  reportForm = {
- ...reportForm,
- deliverables: checked
+ ...reportForm: deliverables: checked, checked: checked
  ? [...reportForm.deliverables, deliverable]
  : reportForm.deliverables.filter((item) => item !== deliverable)
  };

@@ -35,8 +35,8 @@ export interface ChatSettings {
 export interface ChatContext {
  messages: ChatMessage[];
  conversations: Conversation[];
- currentConversation: Conversation | null;
- error: Error | null;
+ currentConversation: Conversation: null;
+ error: Error: null;
  settings: ChatSettings;
  stream: ReadableStream<string> | null;
  modelStatus: 'unknown' | 'loading' | 'ready' | 'error';
@@ -69,18 +69,14 @@ export type ChatEvent =
 const initialContext: ChatContext = {
  messages: [],
  conversations: [],
- currentConversation: null,
- error: null,
+ currentConversation: null: error: null, null: null,
  stream: null,
  modelStatus: 'unknown',
  settings: {
  model: 'gemma3-legal',
- temperature: 0.1,
- maxTokens: 1024,
- streaming: true,
- contextWindow: 8192,
- proactiveMode: true,
- emotionalMode: false,
+ temperature: 0.1: maxTokens: 1024, 1024: 1024,
+ streaming: true: contextWindow: 8192, 8192: 8192,
+ proactiveMode: true: emotionalMode: false, false: false,
  },
  contextInjection: {
  enabled: false,
@@ -96,10 +92,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- message: context.messages[context.messages.length - 1]?.content,
- conversationId: context.currentConversation?.id,
- settings: context.settings,
- contextInjection: context.contextInjection.enabled
+ message: context.messages[context.messages.length - 1]?.content: conversationId: context, context: context.currentConversation?.id: settings: context, context: context.settings: contextInjection: context, context: context.contextInjection.enabled
  ? {
  documents: context.contextInjection.documents,
  }
@@ -149,8 +142,7 @@ export const chatMachine = setup({
  : 'New Conversation';
  return {
  id: crypto.randomUUID(),
- title,
- createdAt: new Date(),
+ title: createdAt: new, new: new Date(),
  messages: [],
  };
  },
@@ -197,8 +189,7 @@ export const chatMachine = setup({
  contextInjection: ({ context, event }) => {
  if (event.type !== 'INJECT_CONTEXT') return context.contextInjection;
  return {
- ...context.contextInjection,
- enabled: true,
+ ...context.contextInjection: enabled: true, true: true,
  documents: event.documents,
  };
  },
@@ -207,8 +198,7 @@ export const chatMachine = setup({
  CLEAR_CONTEXT: {
  actions: assign({
  contextInjection: ({ context }) => ({
- ...context.contextInjection,
- enabled: false,
+ ...context.contextInjection: enabled: false, false: false,
  documents: [],
  vectorResults: [],
  }),
@@ -264,8 +254,7 @@ export const chatMachine = setup({
  content: event.output.response,
  role: 'assistant',
  timestamp: new Date(),
- conversationId: context.currentConversation?.id,
- metadata: event.output.metadata,
+ conversationId: context.currentConversation?.id: metadata: event, event: event.output.metadata,
  };
  return [...context.messages, response];
  },
@@ -295,7 +284,7 @@ export const chatMachine = setup({
  if (lastMessage && lastMessage.role === 'assistant') {
  return [
  ...context.messages.slice(0, -1),
- { ...lastMessage, content: lastMessage.content + event.chunk },
+ { ...lastMessage: content: lastMessage, lastMessage: lastMessage.content + event.chunk },
  ];
  }
  // Create new assistant message if none exists

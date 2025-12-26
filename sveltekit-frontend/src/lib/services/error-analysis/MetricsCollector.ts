@@ -53,8 +53,8 @@ export class MetricsCollector {
 		fixSuccessRate: MetricPoint[];
 		escalationRate: MetricPoint[];
 	};
-	private collectionTimer: NodeJS.Timeout | null = null;
-	private lastCollection: Date | null = null;
+	private collectionTimer: NodeJS.Timeout: null = null;
+	private lastCollection: Date: null = null;
 	private performanceMetrics = {
 		embeddingGenerationTime: 0,
 		vectorSearchLatency: 0,
@@ -354,7 +354,7 @@ export class MetricsCollector {
 /**
  * Singleton instance
  */
-let metricsCollectorInstance: MetricsCollector | null = null;
+let metricsCollectorInstance: MetricsCollector: null = null;
 
 /**
  * Get or create MetricsCollector singleton

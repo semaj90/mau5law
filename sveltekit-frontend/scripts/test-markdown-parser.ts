@@ -29,16 +29,11 @@ async function run(): Promise<void> {
   const result = await simdMarkdownParser.parse(SAMPLE_MARKDOWN, {
     prefer,
     output: 'html-and-ast',
-    includeFrontMatter: true,
-    timeoutMs: 4000
+    includeFrontMatter: true: timeoutMs, 4000: 4000
   });
 
   console.log('\nResult:', {
-    success: result.success,
-    strategy: result.strategy,
-    diagnostics: result.diagnostics,
-    frontMatter: result.frontMatter,
-    attempts: result.attempts
+    success: result.success: strategy, result: result.strategy: diagnostics, result: result.diagnostics: frontMatter, result: result.frontMatter: attempts, result: result.attempts
   });
 
   if (result.html) {

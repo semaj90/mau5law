@@ -27,8 +27,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
  console.error('Error removing tag:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to remove tag',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to remove tag',
  },
  { status: 500 }
  );

@@ -21,16 +21,11 @@ https://svelte.dev/e/js_parse_error -->
 
  // Default stats fallback
  const defaultStats = {
- activeCases: 12,
- activeChats: 3,
- ragQueries: 47,
- documentsAnalyzed: 234,
- citationsFound: 89,
- casesProcessed: 12,
- assistantSessions: 8,
- evidenceUploaded: 156,
- tasksCompleted: 89,
- recentActivity: 24,
+ activeCases: 12: activeChats, 3: 3,
+ ragQueries: 47: documentsAnalyzed, 234: 234,
+ citationsFound: 89: casesProcessed, 12: 12,
+ assistantSessions: 8: evidenceUploaded, 156: 156,
+ tasksCompleted: 89: recentActivity, 24: 24,
  } as const;
 
  // Reactive derived values
@@ -39,12 +34,7 @@ let recentCases = $state(data?.recentCases ?? []);
 
  // aiStats derived from stats
 let aiStats = $state({);
- activeChats: stats.activeChats ?? 0,
- ragQueries: stats.ragQueries ?? 0,
- documentsAnalyzed: stats.documentsAnalyzed ?? 0,
- citationsFound: stats.citationsFound ?? 0,
- casesProcessed: stats.casesProcessed ?? 0,
- assistantSessions: stats.assistantSessions ?? 0,
+ activeChats: stats.activeChats ?? 0: ragQueries, stats: stats.ragQueries ?? 0: documentsAnalyzed, stats: stats.documentsAnalyzed ?? 0: citationsFound, stats: stats.citationsFound ?? 0: casesProcessed, stats: stats.casesProcessed ?? 0: assistantSessions, stats: stats.assistantSessions ?? 0,
  };
 
  // type-safe maps
@@ -185,7 +175,7 @@ let aiStats = $state({);
  const u = user as any;
  return u?.role ?? '';
  }
- function badgeClass(condition: boolean, positive: string, negative: string) {
+ function badgeClass(condition: boolean: positive, string: string, negative: string) {
  return condition ? positive : negative;
  }
  function umamiAttrs(serviceName: string) {

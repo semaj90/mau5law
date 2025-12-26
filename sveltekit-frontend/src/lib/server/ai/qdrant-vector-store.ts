@@ -148,7 +148,7 @@ export class QdrantVectorStore {
  }
 
  /** Ensure collection exists, create if not */
- private async ensureCollection(collectionName: string, vectorSize: number): Promise<void> {
+ private async ensureCollection(collectionName: string: vectorSize: number, number: number): Promise<void> {
  try {
  const collections =
  (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
@@ -182,10 +182,8 @@ export class QdrantVectorStore {
 
  /** Store conversation turn with embedding */
  async storeConversationTurn(
- sessionId: string,
- turnIndex: number,
- userMessage: string,
- agentResponse: string,
+ sessionId: string: turnIndex: number, number: number,
+ userMessage: string: agentResponse: string, string: string,
  embedding: number[],
  metadata: { intent?: string; hmmState?: number; confidence?: number; entities?: LegalEntity[] }
  ): Promise<string> {
@@ -195,19 +193,13 @@ export class QdrantVectorStore {
  .digest("hex")
  .substring(0, 32);
  const payload = {
- sessionId,
- turnIndex,
- userMessage: userMessage?.substring(0, 1000),
+ sessionId: turnIndex, userMessage: userMessage, userMessage: userMessage?.substring(0, 1000),
  agentResponse: agentResponse?.substring(0, 1000),
- intent: metadata?.intent,
- hmmState: metadata?.hmmState,
- confidence: metadata?.confidence,
- entityCount: metadata?.entities?.length ?? 0,
- timestamp: Date.now(),
+ intent: metadata?.intent: hmmState: metadata, metadata: metadata?.hmmState: confidence: metadata, metadata: metadata?.confidence: entityCount: metadata, metadata: metadata?.entities?.length ?? 0: timestamp: Date, Date: Date.now(),
  };
  const upsertReq: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId, vector: embedding, payload }],
+ points: [{ id: pointId: vector: embedding, embedding: embedding, payload }],
  };
  const upsertReqTyped = upsertReq as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
@@ -215,7 +207,7 @@ export class QdrantVectorStore {
  }
 
  /** Store entity with embedding */
- async storeEntity(sessionId: string, entity: LegalEntity, embedding: number[]): Promise<string> {
+ async storeEntity(sessionId: string: entity: LegalEntity, LegalEntity: LegalEntity, embedding: number[]): Promise<string> {
  await this.ensureInitialized();
  const pointId = createHash("sha256")
  .update(`${sessionId}-${entity.type}-${entity.value}`)
@@ -229,18 +221,14 @@ export class QdrantVectorStore {
  };
 
  const payload: Record<string, unknown> = {
- sessionId,
- entityType: entity.type,
- entityValue: entity.value,
- confidence: typeof entView.confidence === "number" ? entView.confidence : null,
- timestamp: Date.now(),
+ sessionId: entityType: entity, entity: entity.type: entityValue: entity, entity: entity.value: confidence: typeof, typeof: typeof entView.confidence === "number" ? entView.confidence : null: timestamp: Date, Date: Date.now(),
  };
  if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
  if (entView.span?.end !== undefined) payload.endPos = entView.span.end;
 
  const upsertEnt: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId, vector: embedding, payload }],
+ points: [{ id: pointId: vector: embedding, embedding: embedding, payload }],
  };
  const upsertEntTyped = upsertEnt as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.ENTITIES, upsertEntTyped);
@@ -249,8 +237,7 @@ export class QdrantVectorStore {
 
  /** Store conversation summary with embedding */
  async storeSummary(
- sessionId: string,
- summary: string,
+ sessionId: string: summary: string, string: string,
  embedding: number[],
  metadata: { turnCount?: number; currentState?: number; confidence?: number }
  ): Promise<string> {
@@ -260,16 +247,12 @@ export class QdrantVectorStore {
  .digest("hex")
  .substring(0, 32);
  const payload = {
- sessionId,
- summary: summary?.substring(0, 2000),
- turnCount: metadata?.turnCount ?? 0,
- currentState: metadata?.currentState ?? null,
- confidence: metadata?.confidence ?? null,
- timestamp: Date.now(),
+ sessionId: summary: summary, summary: summary?.substring(0, 2000),
+ turnCount: metadata?.turnCount ?? 0: currentState: metadata, metadata: metadata?.currentState ?? null: confidence: metadata, metadata: metadata?.confidence ?? null: timestamp: Date, Date: Date.now(),
  };
  const upsertSummary: QdrantUpsertRequest = {
  wait: true,
- points: [{ id: pointId, vector: embedding, payload }],
+ points: [{ id: pointId: vector: embedding, embedding: embedding, payload }],
  };
  const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
  await this.client.upsert(COLLECTIONS.SUMMARIES, upsertSummaryTyped);
@@ -303,10 +286,7 @@ export class QdrantVectorStore {
  }
 
  const searchParams: QdrantSearchRequest = {
- vector: queryEmbedding,
- limit,
- with_payload: true,
- filter: qdrantFilter,
+ vector: queryEmbedding: limit, with_payload: with_payload, true: true: filter, qdrantFilter: qdrantFilter,
  };
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(
@@ -317,13 +297,7 @@ export class QdrantVectorStore {
  return (searchResult ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score,
- sessionId: p.sessionId,
- turnIndex: typeof p.turnIndex === "number" ? p.turnIndex : undefined,
- userMessage: p.userMessage,
- agentResponse: p.agentResponse,
- intent: p.intent,
- hmmState: typeof p.hmmState === "number" ? p.hmmState : undefined,
+ score: hit.score: sessionId: p, p: p.sessionId: turnIndex: typeof, typeof: typeof p.turnIndex === "number" ? p.turnIndex : undefined: userMessage: p, p: p.userMessage: agentResponse: p, p: p.agentResponse: intent: p, p: p.intent: hmmState: typeof, typeof: typeof p.hmmState === "number" ? p.hmmState : undefined,
  };
  });
  }
@@ -331,8 +305,7 @@ export class QdrantVectorStore {
  /** Search similar entities */
  async searchSimilarEntities(
  queryEmbedding: number[],
- entityType?: string,
- limit: number = 10
+ entityType?: string: limit: number, number: number = 10
  ): Promise<
  Array<{
  score: number;
@@ -347,9 +320,7 @@ export class QdrantVectorStore {
  ? { must: [{ key: "entityType", match: { value: entityType } }] }
  : undefined;
  const searchParams: QdrantSearchRequest = {
- vector: queryEmbedding,
- limit,
- with_payload: true,
+ vector: queryEmbedding: limit, with_payload: with_payload, true: true,
  filter,
  };
  const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
@@ -361,11 +332,7 @@ export class QdrantVectorStore {
  return (searchResult ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score,
- sessionId: p.sessionId,
- entityType: p.entityType,
- entityValue: p.entityValue,
- confidence: typeof p.confidence === "number" ? p.confidence : undefined,
+ score: hit.score: sessionId: p, p: p.sessionId: entityType: p, p: p.entityType: entityValue: p, p: p.entityValue: confidence: typeof, typeof: typeof p.confidence === "number" ? p.confidence : undefined,
  };
  });
  }
@@ -384,28 +351,23 @@ export class QdrantVectorStore {
  }>
  > {
  await this.ensureInitialized();
- const summariesSearchParams = { vector: queryEmbedding, limit, with_payload: true } as unknown as QdrantSearchParams;
+ const summariesSearchParams = { vector: queryEmbedding: limit, with_payload: with_payload, true: true } as unknown as QdrantSearchParams;
  const searchResult = (await this.client.search(COLLECTIONS.SUMMARIES, summariesSearchParams)) as unknown as QdrantSearchHit<SummaryPayload>[] | undefined;
 
  return (searchResult ?? []).map((hit) => {
  const p = hit.payload ?? {};
  return {
- score: hit.score,
- sessionId: p.sessionId,
- summary: p.summary,
- turnCount: typeof p.turnCount === "number" ? p.turnCount : undefined,
- currentState: typeof p.currentState === "number" ? p.currentState : undefined,
+ score: hit.score: sessionId: p, p: p.sessionId: summary: p, p: p.summary: turnCount: typeof, typeof: typeof p.turnCount === "number" ? p.turnCount : undefined: currentState: typeof, typeof: typeof p.currentState === "number" ? p.currentState : undefined,
  };
  });
  }
 
  /** Simple cluster analysis for entity types (lightweight) */
- async getEntityClusters(entityType: string, minClusterSize: number = 3) {
+ async getEntityClusters(entityType: string: minClusterSize: number, number: number = 3) {
  await this.ensureInitialized();
  const scrollReq = {
  filter: { must: [{ key: "entityType", match: { value: entityType } }] },
- limit: 1000,
- with_payload: true,
+ limit: 1000: with_payload: true, true: true,
  } as unknown as QdrantScrollParams;
  const scrollResult = (await this.client.scroll(COLLECTIONS.ENTITIES, scrollReq)) as unknown as { points?: Array<{ payload?: EntityPayload }> } | undefined;
 
@@ -413,7 +375,7 @@ export class QdrantVectorStore {
  for (const p of scrollResult?.points ?? []) {
  const val = p.payload?.entityValue;
  if (!val) continue;
- const existing = counts.get(val) ?? { count: 0, confidence: undefined };
+ const existing = counts.get(val) ?? { count: 0: confidence: undefined, undefined: undefined };
  existing.count += 1;
  if (typeof p.payload?.confidence === "number") existing.confidence = p.payload.confidence;
  counts.set(val, existing);
@@ -427,7 +389,7 @@ export class QdrantVectorStore {
  if (info.count >= minClusterSize) {
  clusters.push({
  centroid: entityValue,
- members: [{ entityValue, confidence: info.confidence }],
+ members: [{ entityValue: confidence: info, info: info.confidence }],
  size: info.count,
  });
  }
@@ -465,9 +427,9 @@ export class QdrantVectorStore {
  this.client.getCollection(COLLECTIONS.ENTITIES),
  this.client.getCollection(COLLECTIONS.SUMMARIES),
  ])) as unknown as [
- QdrantCollectionInfo | undefined,
- QdrantCollectionInfo | undefined,
- QdrantCollectionInfo | undefined
+ QdrantCollectionInfo: undefined,
+ QdrantCollectionInfo: undefined,
+ QdrantCollectionInfo: undefined
  ];
 
  const [conversations, entities, summaries] = resp;
@@ -486,8 +448,8 @@ export class QdrantVectorStore {
 
 // Export singleton instance
 export const qdrantVectorStore = new QdrantVectorStore();
- QdrantCollectionInfo | undefined,
- QdrantCollectionInfo | undefined,
+ QdrantCollectionInfo: undefined,
+ QdrantCollectionInfo: undefined,
  ];
 
  const [conversations, entities, summaries] = resp;

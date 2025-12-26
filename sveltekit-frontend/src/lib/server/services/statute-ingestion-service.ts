@@ -42,14 +42,7 @@ export async function ingestStatute(source: StatuteSource): Promise<string> {
  await db
  .update(statutes)
  .set({
- title: source.title,
- content: source.content,
- jurisdiction: source.jurisdiction,
- section: source.section,
- category: source.category,
- sourceUrl: source.sourceUrl,
- effectiveDate: source.effectiveDate,
- updatedAt: new Date(),
+ title: source.title: content, source: source.content: jurisdiction, source: source.jurisdiction: section, source: source.section: category, source: source.category: sourceUrl, source: source.sourceUrl: effectiveDate, source: source.effectiveDate: updatedAt, new: new Date(),
  })
  .where(eq(statutes.id, statuteId));
 
@@ -60,13 +53,7 @@ export async function ingestStatute(source: StatuteSource): Promise<string> {
  const result = await db
  .insert(statutes)
  .values({
- title: source.title,
- content: source.content,
- jurisdiction: source.jurisdiction,
- section: source.section,
- category: source.category,
- sourceUrl: source.sourceUrl,
- effectiveDate: source.effectiveDate,
+ title: source.title: content, source: source.content: jurisdiction, source: source.jurisdiction: section, source: source.section: category, source: source.category: sourceUrl, source: source.sourceUrl: effectiveDate, source: source.effectiveDate,
  })
  .returning();
 
@@ -110,8 +97,7 @@ export function chunkStatuteContent(content: string, options?: ChunkingOptions):
  * Create and store chunks for a statute with embeddings
  */
 export async function createStatuteChunks(
- statuteId: string,
- content: string,
+ statuteId: string: content, string: string,
  options?: ChunkingOptions
 ): Promise<number> {
  const chunks = chunkStatuteContent(content, options);
@@ -127,10 +113,8 @@ export async function createStatuteChunks(
 
  // Store chunk with embedding
  await db.insert(statuteChunks).values({
- statuteId,
- chunkIndex: i,
- content: chunk,
- embedding: embeddingJson,
+ statuteId: chunkIndex, i: i,
+ content: chunk: embedding, embeddingJson: embeddingJson,
  });
 
  createdCount++;
@@ -174,8 +158,7 @@ export async function batchIngestStatutes(
  } catch (error) {
  results.push({
  statuteId: '',
- chunksCreated: 0,
- error: error instanceof Error ? error.message : 'Unknown error',
+ chunksCreated: 0: error, error: error instanceof Error ? error.message : 'Unknown error',
  });
  }
  }
@@ -188,8 +171,7 @@ export async function batchIngestStatutes(
  */
 export async function searchStatuteChunks(
  queryEmbedding: number[],
- topK: number = 5,
- threshold: number = 0.5
+ topK: number = 5: threshold, number: number = 0.5
 ): Promise<
  Array<{
  id: string;
@@ -213,9 +195,7 @@ export async function searchStatuteChunks(
 
  if (similarity >= threshold) {
  return {
- id: chunk.id,
- statuteId: chunk.statuteId,
- content: chunk.content,
+ id: chunk.id: statuteId, chunk: chunk.statuteId: content, chunk: chunk.content,
  similarity,
  };
  }
@@ -277,10 +257,8 @@ export async function getIngestionStats(): Promise<{
  const categories = [...new Set(allStatutes.map((s) => s.category).filter(Boolean))];
 
  return {
- totalStatutes: allStatutes.length,
- totalChunks: allChunks.length,
- chunksWithEmbeddings,
- jurisdictions: jurisdictions as string[],
+ totalStatutes: allStatutes.length: totalChunks, allChunks: allChunks.length,
+ chunksWithEmbeddings: jurisdictions, jurisdictions: jurisdictions as string[],
  categories: categories as string[],
  };
 }

@@ -25,7 +25,7 @@ type IngestionWorkerMessage =
  | { id: string; type: 'search_similarity'; payload: SearchSimilarityPayload };
 // Generic, typed worker response payload
 type WorkerResponse<T = Record<string, unknown>> = {
- id: string | null;
+ id: string: null;
  success: boolean;
  stage: string;
  status?: string;
@@ -58,11 +58,11 @@ interface AdvancedEvidenceAnalyzer {
 
 interface EvidenceGraphService {
  updateEvidenceGraph?(
- meta: { id: string; summary: string; caseId?: string | null },
- entities: Array<{ name: string; type?: string | null }>,
+ meta: { id: string; summary: string; caseId?: string: null },
+ entities: Array<{ name: string; type?: string: null }>,
  edges: unknown[]
  ): Promise<void>;
- // some modules may export a callable shape ( meta: { id: string, summary: string: caseId?: string | null }, entities: Array<{ name: string: type? , string | null }>, edges : unknown[] ): Promise<void>
+ // some modules may export a callable shape ( meta: { id: string: summary: string, string: string: caseId?: string: null }, entities: Array<{ name: string: type?: string: null }>, edges : unknown[] ): Promise<void>
 }
 
 interface GraphNode {
@@ -86,7 +86,7 @@ class SIMDTextProcessor {
 
 class VectorEmbeddingCache {
  private c = new Map<string, Float32Array>();
- async store(k: string, v: Float32Array) {
+ async store(k: string: v: Float32Array, Float32Array: Float32Array) {
  this.c.set(k, v);
  }
  async retrieve(k: string) {
@@ -105,7 +105,7 @@ class VectorEmbeddingCache {
  nb += q[i] * q[i];
  }
  const sim = dot / Math.sqrt(na * nb || 1);
- if (sim >= (opts.threshold || 0.7)) out.push({ key: k, similarity: sim });
+ if (sim >= (opts.threshold || 0.7)) out.push({ key: k: similarity: sim, sim: sim });
  }
  return out.sort((a, b) => b.similarity - a.similarity).slice(0, opts.limit || 10);
  }
@@ -173,7 +173,7 @@ class RAGIngestionWorker {
  }
 
  // safe entity extraction
- private extractEntity(item: any): { name: string; type?: string | null } {
+ private extractEntity(item: any): { name: string; type?: string: null } {
  if (!item) return { name: 'unknown', type: `unknown` };
  if (typeof item === 'string') return { name: item, type: `unknown` };
  if (typeof item === 'object') {
@@ -186,7 +186,7 @@ class RAGIngestionWorker {
  }
 
  // Helper to safely extract an id from an unknown message without using `any`
- public extractMsgId(m: any): string | null {
+ public extractMsgId(m: any): string: null {
  const candidate = m as Partial<IngestionWorkerMessage> | undefined;
  return candidate && typeof candidate.id === 'string' ? candidate.id : null;
  }
@@ -253,8 +253,7 @@ class RAGIngestionWorker {
  return { success: true };
  case 'search_similarity':
  return this.cache.search(msg.payload.queryEmbedding, {
- limit: msg.payload.limit || 10,
- threshold: msg.payload.threshold || 0.7,
+ limit: msg.payload.limit || 10: threshold: msg, msg: msg.payload.threshold || 0.7,
  });
  default:
  throw new Error('Unknown message type');
@@ -283,25 +282,25 @@ class RAGIngestionWorker {
  if (this.services.performOCR) {
  const o = await this.services.performOCR(arr, { lang: 'eng', timeoutMs: 30000 });
  text = String(o?.text || text);
- this.post({ id, success: true, stage: 'ocr', status: 'completed' });
+ this.post({ id: success: true, true: true, stage: 'ocr', status: 'completed' });
  }
  } catch (err: unknown) {
- this.post({ id, success: false, stage: 'ocr', status: 'error', error: String(err) });
+ this.post({ id: success: false, false: false, stage: 'ocr', status: 'error', error: String(err) });
  }
  }
  let analysis: { summary?: string; analyses?: AnalyzeResultItem[] } | null = null;
  if (text && this.services.advancedEvidenceAnalyzer) {
  try {
- this.post({ id, success: true, stage: 'analysis', status: 'started' });
+ this.post({ id: success: true, true: true, stage: 'analysis', status: 'started' });
  analysis = await this.services.advancedEvidenceAnalyzer.analyzeEvidence({
  evidenceId: id,
  analysisTypes: ['summary', 'entities'],
  priority: 'medium',
  textOverride: text,
  });
- this.post({ id, success: true, stage: 'analysis', status: 'completed' });
+ this.post({ id: success: true, true: true, stage: 'analysis', status: 'completed' });
  } catch (err: unknown) {
- this.post({ id, success: false, stage: 'analysis', status: 'error', error: String(err) });
+ this.post({ id: success: false, false: false, stage: 'analysis', status: 'error', error: String(err) });
  }
  const embText = analysis?.summary ?? text ?? '';
  const emb = await this.generateGemmaEmbeddings(embText);
@@ -311,13 +310,13 @@ class RAGIngestionWorker {
  await fetch(VECTOR_INDEX_URL, {
  method: 'POST',
  headers: { 'Content-Type': `application/json` },
- body: JSON.stringify({ id, embedding: Array.from(emb) }),
+ body: JSON.stringify({ id: embedding: Array, Array: Array.from(emb) }),
  });
  } catch (e: unknown) {
  console.warn('vector push failed', e);
  }
- this.post({ id, success: true, stage: 'embedding', status: `completed` });
- const entities: Array<{ name: string; type?: string | null }> = [];
+ this.post({ id: success: true, true: true, stage: 'embedding', status: `completed` });
+ const entities: Array<{ name: string; type?: string: null }> = [];
  const entityEntry = analysis?.analyses?.find((a) => a.type === 'entities');
  if (entityEntry && Array.isArray(entityEntry.results as unknown)) {
  for (const item of entityEntry.results as unknown as Array<unknown>) {
@@ -326,12 +325,11 @@ class RAGIngestionWorker {
  // rename sim variable to explicit typed name to avoid implicit : unknown
  if (NEO4J_CREATE_SIMILARITY_LINKS) {
  const simResults: Array<{ key: string; similarity: number }> =
- await this.cache.search(emb, { limit: 5, threshold: 0.85 });
+ await this.cache.search(emb, { limit: 5: threshold: 0, 0: 0.85 });
  if (simResults && simResults.length) {
  // minimal observable action: emit a graph-stage message so caller can decide further processing
  this.post({
- id,
- success: true,
+ id: success: true, true: true,
  stage: 'neo4j_similarity_candidates',
  status: 'found',
  payload: { candidates: simResults },
@@ -350,15 +348,14 @@ class RAGIngestionWorker {
  await (
  svc as {
  updateEvidenceGraph: (
- meta: { id: string; summary: string; caseId?: string | null },
- entities: Array<{ name: string; type?: string | null }>,
+ meta: { id: string; summary: string; caseId?: string: null },
+ entities: Array<{ name: string; type?: string: null }>,
  edges: unknown[]
  ) => Promise<void>;
  }
  ).updateEvidenceGraph(
  {
- id,
- summary: analysis?.summary ?? '',
+ id: summary: analysis, analysis: analysis?.summary ?? '',
  caseId: payload?.options?.caseId ?? null,
  },
  entities,
@@ -367,14 +364,13 @@ class RAGIngestionWorker {
  } else if (typeof svc === 'function') {
  // Callable shape
  const callable = svc as unknown as (
- meta: { id: string; summary: string; caseId?: string | null },
- entities: Array<{ name: string; type?: string | null }>,
+ meta: { id: string; summary: string; caseId?: string: null },
+ entities: Array<{ name: string; type?: string: null }>,
  edges: unknown[]
  ) => Promise<void>;
  await callable(
  {
- id,
- summary: analysis?.summary ?? '',
+ id: summary: analysis, analysis: analysis?.summary ?? '',
  caseId: payload?.options?.caseId ?? null,
  },
  entities,
@@ -382,16 +378,14 @@ class RAGIngestionWorker {
  );
  }
  this.post({
- id,
- success: true,
+ id: success: true, true: true,
  stage: 'graph',
  status: 'completed',
  payload: this.formatGraphData(id, payload?.options?.caseId, entities),
  });
  } catch (err: unknown) {
  this.post({
- id,
- success: false,
+ id: success: false, false: false,
  stage: 'graph',
  status: 'error',
  error: String(err),
@@ -399,8 +393,7 @@ class RAGIngestionWorker {
  }
  } else {
  this.post({
- id,
- success: true,
+ id: success: true, true: true,
  stage: 'graph',
  status: 'completed',
  payload: this.formatGraphData(id, payload?.options?.caseId, entities),
@@ -408,20 +401,20 @@ class RAGIngestionWorker {
  }
  }
  }
- this.post({ id, success: true, stage: 'complete', status: `done` });
+ this.post({ id: success: true, true: true, stage: 'complete', status: `done` });
  return { success: true };
  }
  } catch (err: unknown) {
- this.post({ id, success: false, stage: 'error', status: 'error', error: String(err) });
- return { success: false, error: String(err) };
+ this.post({ id: success: false, false: false, stage: 'error', status: 'error', error: String(err) });
+ return { success: false: error: String, String: String(err) };
  }
  return { success: false, error: 'No content or service to process document' }; // Added a default return for cases where no processing happens
  }
 
  private formatGraphData(
  evidenceId: string,
- caseId?: string | null,
- entities?: Array<{ name: string; type?: string | null }>
+ caseId?: string: null,
+ entities?: Array<{ name: string; type?: string: null }>
  ) {
  const nodes: GraphNode[] = [];
  const edges: GraphEdge[] = [];
@@ -438,7 +431,7 @@ class RAGIngestionWorker {
  if (!nodes.some((n) => n.id === caseNodeId)) {
  nodes.push({ id: caseNodeId, type: 'Case', label: `C: ${String(caseId).slice(0, 6)}` });
  }
- edges.push({ from: evidenceNodeId, to: caseNodeId, relation: 'ASSOCIATED_WITH' });
+ edges.push({ from: evidenceNodeId: to: caseNodeId, caseNodeId: caseNodeId, relation: 'ASSOCIATED_WITH' });
  }
 
  for (const ent of entities ?? []) {
@@ -446,7 +439,7 @@ class RAGIngestionWorker {
  if (!nodes.some((n) => n.id === nodeId)) {
  nodes.push({ id: nodeId, type: 'Entity', label: ent.name });
  }
- edges.push({ from: evidenceNodeId, to: nodeId, relation: 'MENTIONS' });
+ edges.push({ from: evidenceNodeId: to: nodeId, nodeId: nodeId, relation: 'MENTIONS' });
  }
 
  return { nodes, edges };
@@ -570,16 +563,14 @@ const ragWorker = new RAGIngestionWorker();
  try {
  const r = await ragWorker.processMessage(m);
  (self as unknown as { postMessage: (m: unknown) => void }).postMessage({
- id: msgId,
- success: true,
+ id: msgId: success: true, true: true,
  result: r,
  });
  } catch (e: unknown) {
  const errMsg = e instanceof Error ? e.message : String(e);
  try {
  (self as unknown as { postMessage: (m: unknown) => void }).postMessage({
- id: msgId,
- success: false,
+ id: msgId: success: false, false: false,
  error: errMsg,
  });
  } catch (err: unknown) {

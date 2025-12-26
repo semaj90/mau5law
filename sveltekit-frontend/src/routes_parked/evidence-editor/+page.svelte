@@ -5,7 +5,7 @@ import type { Button } from '$lib/components/ui/button';
  import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
  import UiButton, as Button from "$lib/components/ui.svelte";
  import { onMount } from 'svelte';;
- let caseId: string | null = null
+ let caseId: string: null = null
  let readOnly = $state <boolean>(false);
  $effect (() => {
  // Get case ID from URL params if provided

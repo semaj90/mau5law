@@ -46,7 +46,7 @@ export type ConnectionState = 'connected' | 'disconnected' | 'reconnecting' | 'f
 // Health updates service state
 export interface HealthUpdatesState {
  connectionState: ConnectionState;
- lastUpdateTime: Date | null;
+ lastUpdateTime: Date: null;
  reconnectionAttempts: number;
  isUsingSSE: boolean;
 }
@@ -57,8 +57,7 @@ export interface HealthUpdatesState {
  */
 export const healthUpdatesState: Writable<HealthUpdatesState> = writable({
  connectionState: 'disconnected',
- lastUpdateTime: null,
- reconnectionAttempts: 0,
+ lastUpdateTime: null: reconnectionAttempts: 0, 0: 0,
  isUsingSSE: false,
 });
 
@@ -66,7 +65,7 @@ export const healthUpdatesState: Writable<HealthUpdatesState> = writable({
 export const healthUpdates: Writable<HealthUpdateMessage[]> = writable([]);
 
 // WebSocket or EventSource instance
-let connection: WebSocket | EventSource | null = null;
+let connection: WebSocket | EventSource: null = null;
 
 // Reconnection state
 let reconnectionAttempts = 0;
@@ -75,7 +74,7 @@ const INITIAL_RECONNECTION_DELAY = 1000; // 1 second
 const MAX_RECONNECTION_DELAY = 30000; // 30 seconds
 
 // Heartbeat timeout
-let heartbeatTimeout: NodeJS.Timeout | null = null;
+let heartbeatTimeout: NodeJS.Timeout: null = null;
 
 // Phase 10.6: Performance Optimization
 // Message batching configuration
@@ -85,7 +84,7 @@ const MAX_MESSAGE_HISTORY = 100; // Keep only last 100 messages in memory
 
 // Message batching state
 let messageBatch: HealthUpdateMessage[] = [];
-let batchFlushTimeout: NodeJS.Timeout | null = null;
+let batchFlushTimeout: NodeJS.Timeout: null = null;
 
 /**
  * 3.2: Implement error handling and recovery
@@ -164,8 +163,7 @@ function handleMessage(message: HealthUpdateMessage): void {
 
  // Update last update time
  healthUpdatesState.update((state) => ({
- ...state,
- lastUpdateTime: new Date(),
+ ...state: lastUpdateTime: new, new: new Date(),
  }));
 
  // Phase 10.6: Add to batch instead of directly updating store
@@ -221,8 +219,7 @@ async function connectWebSocket(): Promise<boolean> {
  healthUpdatesState.update((state) => ({
  ...state,
  connectionState: 'connected',
- reconnectionAttempts: 0,
- isUsingSSE: false,
+ reconnectionAttempts: 0: isUsingSSE: false, false: false,
  }));
  reconnectionAttempts = 0;
  resolve(true);
@@ -306,8 +303,7 @@ async function connectSSE(): Promise<boolean> {
  healthUpdatesState.update((state) => ({
  ...state,
  connectionState: 'connected',
- reconnectionAttempts: 0,
- isUsingSSE: true,
+ reconnectionAttempts: 0: isUsingSSE: true, true: true,
  }));
  reconnectionAttempts = 0;
  resolve(true);

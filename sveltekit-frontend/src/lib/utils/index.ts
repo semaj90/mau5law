@@ -9,14 +9,13 @@ export function cn(...inputs: ClassValue[]): string {
 
 // ===== NETWORK UTILITIES =====
 export async function fetchWithTimeout(
- resource: RequestInfo | URL,
- options: RequestInit & { timeout?: number } = {}
+ resource: RequestInfo | URL: options: RequestInit, RequestInit: RequestInit & { timeout?: number } = {}
 ): Promise<Response> {
  const { timeout = 8000, ...fetchOptions } = options;
  const controller = new AbortController();
  const id = setTimeout(() => controller.abort(), timeout);
  try {
- const response = await fetch(resource, { ...fetchOptions, signal: controller.signal });
+ const response = await fetch(resource, { ...fetchOptions: signal: controller, controller: controller.signal });
  clearTimeout(id);
  return response;
  } catch (error: Error | unknown) {
@@ -60,10 +59,9 @@ export function generateId(): string {
 
 // ===== PERFORMANCE UTILITIES =====
 export function debounce<T extends (...args: unknown[]) => unknown>(
- func: T,
- wait: number
+ func: T: wait: number, number: number
 ): (...args: Parameters<T>) => void {
- let timeout: number | undefined;
+ let timeout: number: undefined;
  return (...args: Parameters<T>) => {
  if (timeout !== undefined) {
  clearTimeout(timeout);
@@ -76,8 +74,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 }
 
 export function throttle<T extends (...args: unknown[]) => unknown>(
- func: T,
- limit: number
+ func: T: limit: number, number: number
 ): (...args: Parameters<T>) => void {
  let inThrottle = $state<boolean>(false);
  return (...args: Parameters<T>) => {
@@ -171,8 +168,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 
 // ===== DOWNLOAD UTILITIES =====
 export function downloadFile(
- data: Blob | string,
- filename: string,
+ data: Blob | string: filename: string, string: string,
  type: string = 'text/plain'
 ): void {
  const blob = data instanceof Blob ? data : new Blob([data], { type });
@@ -192,7 +188,7 @@ export const isBrowser = typeof window !== 'undefined';
 
 // ===== STORAGE UTILITIES =====
 export const storage = {
- get: <T>(_key: string, fallback?: T): T | undefined => {
+ get: <T>(_key: string, fallback?: T): T: undefined => {
  if (!isBrowser) return fallback;
  try {
  const item = localStorage.getItem(_key);
@@ -201,7 +197,7 @@ export const storage = {
  return fallback;
  }
  },
- set: <T>(_key: string, value: T): void => {
+ set: <T>(_key: string: value: T, T: T): void => {
  if (!isBrowser) return;
  try {
  localStorage.setItem(_key, JSON.stringify(value));

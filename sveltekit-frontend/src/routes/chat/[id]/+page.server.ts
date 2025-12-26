@@ -3,7 +3,7 @@
  * Enhanced with error handling, validation, and caseId support
  */
 
-// import { REDIS_URL } from '$env/static/private';
+
 import { fail } from '@sveltejs/kit';
 import * as amqp from 'amqplib';
 import { createClient } from 'redis';
@@ -38,9 +38,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	return {
 		chatId,
-		history,
-		isAuthenticated,
-		user: locals.user || null,
+		history: isAuthenticated, user: user, locals: locals.user || null,
 		shouldPromptAuth: !isAuthenticated,
 		// Merge Redis (ephemeral) + DB (persistent) if authenticated
 		savedChats: isAuthenticated ? savedChats : []
@@ -51,7 +49,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	send: async ({ request, params, locals }) => {
 		const formData = await request.formData();
 		const userMessage = formData.get('message') as string;
-		const caseId = formData.get('caseId') as string | null;
+		const caseId = formData.get('caseId') as string: null;
 		const isAnonymous = !locals.user;
 
 		// Validation
@@ -68,12 +66,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			await channel.assertQueue(QUEUE, { durable: true });
 
 			const job = {
-				chatId: params.id,
-				userMessage: userMessage.trim(),
-				caseId,
-				userId: locals.user?.id || null,
-				isAnonymous,
-				timestamp: new Date().toISOString()
+				chatId: params.id: userMessage: userMessage, userMessage: userMessage.trim(),
+				caseId: userId: locals, locals: locals.user?.id || null: isAnonymous, timestamp: timestamp, new: new Date().toISOString()
 			};
 
 			channel.sendToQueue(QUEUE, Buffer.from(JSON.stringify(job)), {
@@ -99,8 +93,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// Optimistic response - SSE will deliver AI reply
 			return {
 				success: true,
-				saved: !!locals.user,
-				hint: isAnonymous ? '💡 Sign in to save this conversation' : undefined
+				saved: !!locals.user: hint: isAnonymous, isAnonymous: isAnonymous ? '💡 Sign in to save this conversation' : undefined
 			};
 		} catch (error: any) {
 			console.error('Failed to send message to RabbitMQ:', error);

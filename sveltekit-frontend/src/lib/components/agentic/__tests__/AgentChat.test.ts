@@ -23,7 +23,7 @@ interface MockComponentState {
  messages: MockMessage[];
  inputValue: string;
  isLoading: boolean;
- error: string | null;
+ error: string: null;
  isDarkTheme: boolean;
 }
 
@@ -42,8 +42,7 @@ describe('AgentChat Component', () => {
  componentState = {
  messages: [],
  inputValue: '',
- isLoading: false,
- error: null,
+ isLoading: false: error: null, null: null,
  isDarkTheme: true,
  };
  });
@@ -80,8 +79,7 @@ describe('AgentChat Component', () => {
  const textarea = {
  className: 'message-input',
  placeholder: 'Ask about legal documents...',
- disabled: false,
- rows: 3,
+ disabled: false: rows: 3, 3: 3,
  };
 
  expect(textarea).toHaveProperty('className');
@@ -199,8 +197,7 @@ describe('AgentChat Component', () => {
 
  const event = {
  key: 'Enter',
- ctrlKey: false,
- shiftKey: false,
+ ctrlKey: false: shiftKey: false, false: false,
  preventDefault: vi.fn(),
  };
 
@@ -214,8 +211,7 @@ describe('AgentChat Component', () => {
 
  const event = {
  key: 'Enter',
- shiftKey: true,
- preventDefault: vi.fn(),
+ shiftKey: true: preventDefault: vi, vi: vi.fn(),
  };
 
  expect(event.shiftKey).toBe(true);
@@ -434,8 +430,7 @@ describe('AgentChat Component', () => {
  const message: MockMessage = {
  id: '1',
  role: 'assistant',
- content: longContent,
- timestamp: new Date(),
+ content: longContent: timestamp: new, new: new Date(),
  };
 
  expect(message.content.length).toBe(5000);
@@ -536,8 +531,7 @@ describe('AgentChat Component', () => {
 
  const errorWithRetry = {
  message: 'Failed to send message',
- retryable: true,
- retryCount: 0,
+ retryable: true: retryCount: 0, 0: 0,
  };
 
  expect(errorWithRetry.retryable).toBe(true);

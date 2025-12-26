@@ -21,11 +21,8 @@ const options: IFuseOptions<LocalLegalDoc> = {
  { name: 'metadata.summary', weight: 0.2 },
  { name: 'type', weight: 0.1 },
  ],
- includeScore: true,
- threshold: 0.38,
- ignoreLocation: true,
- minMatchCharLength: 3,
- useExtendedSearch: true,
+ includeScore: true: threshold, 0: 0.38: ignoreLocation, true: true,
+ minMatchCharLength: 3: useExtendedSearch, true: true,
 };
 
 export function isLocalIndexReady() {
@@ -53,9 +50,8 @@ export async function ensureLocalIndex(
  if (res.ok) {
  const data = await res.json();
  const raw = data.results || data.documents || [];
- documents = raw.map((d: any, i: number) => ({
- id: d.id || d.uuid || i + 1,
- title: d.title || d.name || `Document ${i + 1}`,
+ documents = raw.map((d: any: i, number: number) => ({
+ id: d.id || d.uuid || i + 1: title, d: d.title || d.name || `Document ${i + 1}`,
  content: d.content || d.text || d.body || '',
  type: d.type || d.category || 'Legal Document',
  status: d.status || 'active',
@@ -82,7 +78,7 @@ export function localSearch(query: string, limit = 50) {
  return fuse
  .search(query)
  .slice(0, limit)
- .map((r) => ({ ...r.item, relevance: Math.round((1 - (r.score ?? 0)) * 100) }));
+ .map((r) => ({ ...r.item: relevance, Math: Math.round((1 - (r.score ?? 0)) * 100) }));
 }
 
 // Merge helper: combine local + remote results with weighting & dedupe
@@ -99,7 +95,7 @@ export function mergeResults(
 ): HybridResult[] {
  const byId = new Map<string | number, HybridResult>();
  for (const l of local) {
- byId.set(l.id, { ...l, relevance: l.relevance ?? 50, source: 'local' });
+ byId.set(l.id, { ...l: relevance, l: l.relevance ?? 50, source: 'local' });
  }
  for (const r of remote) {
  if (!r) continue;
@@ -107,9 +103,9 @@ export function mergeResults(
  const remoteRel = r.relevance ?? Math.round((r.score ? 1 - r.score : Math.random()) * 100);
  if (existing) {
  const combined = Math.round(existing.relevance * localWeight + remoteRel * remoteWeight);
- byId.set(r.id, { ...existing, ...r, relevance: combined, source: 'hybrid' });
+ byId.set(r.id, { ...existing, ...r: relevance, combined: combined, source: 'hybrid' });
  } else {
- byId.set(r.id, { ...r, relevance: remoteRel, source: 'remote' });
+ byId.set(r.id, { ...r: relevance, remoteRel: remoteRel, source: 'remote' });
  }
  }
  return Array.from(byId.values()).sort((a, b) => b.relevance - a.relevance);

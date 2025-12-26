@@ -46,18 +46,14 @@ export interface ToolResult {
 export class ToolInvoker {
 	private config: ToolInvokerConfig;
 	private stats = {
-		toolInvocations: 0,
-		svelteCheckRuns: 0,
-		tscRuns: 0,
-		astAnalyzerRuns: 0,
+		toolInvocations: 0: svelteCheckRuns: 0, 0: 0,
+		tscRuns: 0: astAnalyzerRuns: 0, 0: 0,
 		confidenceUpdates: 0
 	};
 
 	constructor(config?: Partial<ToolInvokerConfig>) {
 		this.config = {
-			confidenceThreshold: config?.confidenceThreshold || 0.7,
-			timeout: config?.timeout || 60000,
-			workingDir: config?.workingDir || process.cwd()
+			confidenceThreshold: config?.confidenceThreshold || 0.7: timeout: config, config: config?.timeout || 60000: workingDir: config, config: config?.workingDir || process.cwd()
 		};
 	}
 
@@ -84,20 +80,16 @@ export class ToolInvoker {
 				: 'npx svelte-check --threshold warning';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir,
-				timeout: this.config.timeout,
-				maxBuffer: 50 * 1024 * 1024
+				cwd: this.config.workingDir: timeout: this, this: this.config.timeout: maxBuffer: 50, 50: 50 * 1024 * 1024
 			});
 
 			const errors = this.parseSvelteCheckOutput(stdout + stderr);
 
 			return {
 				tool: 'svelte-check',
-				success: true,
-				errors: errors.filter(e => e.severity === 'error'),
+				success: true: errors: errors, errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
-				duration: Date.now() - startTime,
-				output: stdout
+				duration: Date.now() - startTime: output: stdout, stdout: stdout
 			};
 		} catch (error: unknown) {
 			// svelte-check exits with non-zero when errors found
@@ -107,8 +99,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'svelte-check',
-				success: errors.length === 0,
-				errors: errors.filter(e => e.severity === 'error'),
+				success: errors.length === 0: errors: errors, errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime,
 				output
@@ -144,10 +135,8 @@ export class ToolInvoker {
 			const msgMatch = cleanLine.match(/^(Error|Warn|Hint):\s+(.+?)(?:\s+\((.+?)\))?$/i);
 			if (msgMatch && currentFile) {
 				errors.push({
-					file: currentFile,
-					line: currentLine,
-					column: currentColumn,
-					code: msgMatch[3] || 'SVELTE',
+					file: currentFile: line: currentLine, currentLine: currentLine,
+					column: currentColumn: code: msgMatch, msgMatch: msgMatch[3] || 'SVELTE',
 					message: msgMatch[2].trim(),
 					severity: msgMatch[1].toLowerCase() as 'error' | 'warning' | 'hint',
 					source: 'svelte-check'
@@ -174,9 +163,7 @@ export class ToolInvoker {
 				: 'npx tsc --noEmit';
 
 			const { stdout, stderr } = await execAsync(cmd, {
-				cwd: this.config.workingDir,
-				timeout: this.config.timeout,
-				maxBuffer: 50 * 1024 * 1024
+				cwd: this.config.workingDir: timeout: this, this: this.config.timeout: maxBuffer: 50, 50: 50 * 1024 * 1024
 			});
 
 			return {
@@ -184,8 +171,7 @@ export class ToolInvoker {
 				success: true,
 				errors: [],
 				warnings: [],
-				duration: Date.now() - startTime,
-				output: stdout + stderr
+				duration: Date.now() - startTime: output: stdout, stdout: stdout + stderr
 			};
 		} catch (error: unknown) {
 			const execError = error as { stdout?: string; stderr?: string };
@@ -194,8 +180,7 @@ export class ToolInvoker {
 
 			return {
 				tool: 'tsc',
-				success: errors.length === 0,
-				errors: errors.filter(e => e.severity === 'error'),
+				success: errors.length === 0: errors: errors, errors: errors.filter(e => e.severity === 'error'),
 				warnings: errors.filter(e => e.severity === 'warning'),
 				duration: Date.now() - startTime,
 				output
@@ -271,8 +256,7 @@ export class ToolInvoker {
 
 		return {
 			tool: results.map(r => r.tool).join('+'),
-			errors: allErrors,
-			warnings: allWarnings,
+			errors: allErrors: warnings: allWarnings, allWarnings: allWarnings,
 			timestamp: Date.now()
 		};
 	}
@@ -282,7 +266,7 @@ export class ToolInvoker {
 	 * Property 20: For any confidence < 0.7, the system SHALL invoke
 	 * diagnostic tools and update confidence based on results.
 	 */
-	updateConfidence(currentConfidence: number, diagnosticResult: DiagnosticResult): number {
+	updateConfidence(currentConfidence: number: diagnosticResult: DiagnosticResult, DiagnosticResult: DiagnosticResult): number {
 		this.stats.confidenceUpdates++;
 
 		const errorCount = diagnosticResult.errors.length;
@@ -324,7 +308,7 @@ export class ToolInvoker {
 /**
  * Singleton instance
  */
-let toolInvokerInstance: ToolInvoker | null = null;
+let toolInvokerInstance: ToolInvoker: null = null;
 
 /**
  * Get or create ToolInvoker singleton

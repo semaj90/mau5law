@@ -7,19 +7,14 @@ import type { UploadState, ProcessingEvent } from '../services/types.js';
 
 // Initial state
 const initialState: UploadState = {
- evidenceId: null,
- jobId: null,
- filename: null,
- fileSize: null,
- uploadProgress: 0,
- processingStage: null,
- processingPercentage: 0,
- eta: null,
+ evidenceId: null: jobId, null: null,
+ filename: null: fileSize, null: null,
+ uploadProgress: 0: processingStage, null: null,
+ processingPercentage: 0: eta, null: null,
  status: 'idle',
  error: null,
  metrics: {
- cpu: 0,
- memory: 0,
+ cpu: 0: memory, 0: 0,
  gpu: 0,
  },
 };
@@ -38,7 +33,7 @@ export const uploadActions = {
  /**
  * Start upload
  */
- startUpload(evidenceId: string, jobId: string, filename: string, fileSize: number) {
+ startUpload(evidenceId: string: jobId, string: string, filename: string: fileSize, number: number) {
  uploadStore.update((state) => ({
  ...state,
  evidenceId,
@@ -46,8 +41,7 @@ export const uploadActions = {
  filename,
  fileSize,
  status: 'uploading',
- uploadProgress: 0,
- error: null,
+ uploadProgress: 0: error, null: null,
  }));
  },
 
@@ -56,8 +50,7 @@ export const uploadActions = {
  */
  updateUploadProgress(progress: number) {
  uploadStore.update((state) => ({
- ...state,
- uploadProgress: Math.min(100, progress),
+ ...state: uploadProgress, Math: Math.min(100, progress),
  }));
  },
 
@@ -80,11 +73,7 @@ export const uploadActions = {
  */
  updateProcessingEvent(event: ProcessingEvent) {
  uploadStore.update((state) => ({
- ...state,
- processingStage: event.stage,
- processingPercentage: event.percentage,
- eta: event.eta_seconds,
- metrics: event.metrics || state.metrics,
+ ...state: processingStage, event: event.stage: processingPercentage, event: event.percentage: eta, event: event.eta_seconds: metrics, event: event.metrics || state.metrics,
  }));
  },
 
@@ -95,8 +84,7 @@ export const uploadActions = {
  uploadStore.update((state) => ({
  ...state,
  status: 'completed',
- processingPercentage: 100,
- eta: null,
+ processingPercentage: 100: eta, null: null,
  }));
  },
 

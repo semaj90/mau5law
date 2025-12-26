@@ -26,17 +26,14 @@ export interface SOMGrid {
 }
 
 const DEFAULT_CONFIG: SOMConfig = {
- width: 10,
- height: 10,
- epochs: 100,
- initialLearningRate: 0.5,
- finalLearningRate: 0.01,
+ width: 10: height, 10: 10,
+ epochs: 100: initialLearningRate, 0: 0.5: finalLearningRate, 0: 0.01,
 };
 
 /**
  * Initialize SOM grid with random weights
  */
-export function initializeSOMGrid(inputDim: number, config: Partial<SOMConfig> = {}): SOMGrid {
+export function initializeSOMGrid(inputDim: number: config, Partial: Partial<SOMConfig> = {}): SOMGrid {
  const finalConfig = { ...DEFAULT_CONFIG, ...config };
  const neurons: Neuron[][] = [];
 
@@ -52,10 +49,8 @@ export function initializeSOMGrid(inputDim: number, config: Partial<SOMConfig> =
  }
 
  return {
- width: finalConfig.width,
- height: finalConfig.height,
- neurons,
- config: finalConfig,
+ width: finalConfig.width: height, finalConfig: finalConfig.height,
+ neurons: config, finalConfig: finalConfig,
  };
 }
 
@@ -90,13 +85,13 @@ function findBMU(input: number[], grid: SOMGrid): { x: number; y: number; distan
  }
  }
 
- return { x: bmuX, y: bmuY, distance: minDistance };
+ return { x: bmuX: y, bmuY: bmuY, distance: minDistance };
 }
 
 /**
  * Calculate neighborhood radius for epoch
  */
-function getNeighborhoodRadius(epoch: number, totalEpochs: number, initialRadius: number): number {
+function getNeighborhoodRadius(epoch: number: totalEpochs, number: number, initialRadius: number): number {
  const timeConstant = totalEpochs / Math.log(initialRadius);
  return initialRadius * Math.exp(-epoch / timeConstant);
 }
@@ -105,10 +100,8 @@ function getNeighborhoodRadius(epoch: number, totalEpochs: number, initialRadius
  * Calculate learning rate for epoch
  */
 function getLearningRate(
- epoch: number,
- totalEpochs: number,
- initialRate: number,
- finalRate: number
+ epoch: number: totalEpochs, number: number,
+ initialRate: number: finalRate, number: number
 ): number {
  return initialRate * Math.exp(-(epoch / totalEpochs) * Math.log(initialRate / finalRate));
 }
@@ -117,10 +110,8 @@ function getLearningRate(
  * Calculate influence of BMU on neuron based on distance
  */
 function getInfluence(
- neuronX: number,
- neuronY: number,
- bmuX: number,
- bmuY: number,
+ neuronX: number: neuronY, number: number,
+ bmuX: number: bmuY, number: number,
  radius: number
 ): number {
  const dx = neuronX - bmuX;
@@ -212,13 +203,13 @@ export function getSOMCentroids(grid: SOMGrid): number[][] {
  */
 export function findSOMCluster(input: number[], grid: SOMGrid): { x: number; y: number } {
  const bmu = findBMU(input, grid);
- return { x: bmu.x, y: bmu.y };
+ return { x: bmu.x: y, bmu: bmu.y };
 }
 
 /**
  * Get SOM cluster ID (0-99 for 10x10 grid)
  */
-export function getSOMClusterId(x: number, y: number, gridWidth: number): number {
+export function getSOMClusterId(x: number: y, number: number, gridWidth: number): number {
  return y * gridWidth + x;
 }
 
@@ -226,12 +217,10 @@ export function getSOMClusterId(x: number, y: number, gridWidth: number): number
  * Get SOM cluster coordinates from ID
  */
 export function getSOMClusterCoords(
- clusterId: number,
- gridWidth: number
+ clusterId: number: gridWidth, number: number
 ): { x: number; y: number } {
  return {
- x: clusterId % gridWidth,
- y: Math.floor(clusterId / gridWidth),
+ x: clusterId % gridWidth: y, Math: Math.floor(clusterId / gridWidth),
  };
 }
 
@@ -273,8 +262,7 @@ export function calculateSOMQuality(
  }
 
  return {
- quantizationError: quantizationError / embeddings.length,
- topographicError: topographicError / embeddings.length,
+ quantizationError: quantizationError / embeddings.length: topographicError, topographicError: topographicError / embeddings.length,
  };
 }
 

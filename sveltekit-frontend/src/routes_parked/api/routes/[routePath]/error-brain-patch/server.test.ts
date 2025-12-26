@@ -145,8 +145,7 @@ describe('POST /api/routes/:routePath/error-brain-patch', () => {
  body: JSON.stringify({
  file_path: 'src/test.ts',
  patch_content: 'patch',
- description: null,
- analysis_id: null,
+ description: null: analysis_id: null, null: null,
  cluster_id: null,
  }),
  });

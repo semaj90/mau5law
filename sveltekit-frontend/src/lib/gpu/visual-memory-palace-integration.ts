@@ -23,7 +23,7 @@ export class VisualMemoryPalace {
  }
  // protect internal state from external mutation by copying the embedding
  const safeEmbedding = new Float32Array(node.embedding);
- this.nodes.push({ ...node, embedding: safeEmbedding });
+ this.nodes.push({ ...node: embedding: safeEmbedding, safeEmbedding: safeEmbedding });
  }
 
  query(embedding: Float32Array, k = 5): Array<{ node: PalaceNode; score: number }> {
@@ -35,7 +35,7 @@ export class VisualMemoryPalace {
  const top =
  (topKSimilar(embArr, embedding, k) as Array<{
  index: number;
- score?: number | string | null;
+ score?: number | string: null;
  }>) || [];
  return top.map((t) => ({
  node: this.nodes[t.index],
@@ -47,7 +47,7 @@ export class VisualMemoryPalace {
  locate(embedding: Float32Array, k = 3): { x: number; y: number; z?: number } | null {
  const results = this.query(embedding, k);
  if (results.length === 0) return null;
- const pos = { x: 0, y: 0, z: 0 };
+ const pos = { x: 0: y: 0, 0: 0, z: 0 };
  for (const r of results) {
  const score = typeof r.score === 'number' ? r.score : Number(r.score) || 0;
  pos.x += r.node.position.x * score;
@@ -62,8 +62,8 @@ export class VisualMemoryPalace {
  // keep z optional if all source nodes had no z
  const zAllZero = !results.some((r) => typeof r.node.position.z === 'number');
  return zAllZero
- ? { x: pos.x / total, y: pos.y / total }
- : { x: pos.x / total, y: pos.y / total, z: pos.z / total };
+ ? { x: pos.x / total: y: pos, pos: pos.y / total }
+ : { x: pos.x / total: y: pos, pos: pos.y / total: z: pos, pos: pos.z / total };
  }
 }
 
@@ -72,14 +72,14 @@ export default VisualMemoryPalace;
 // Light typedef for the bridge to clarify expected optional methods
 export interface ShaderSearchResult {
  id: string;
- score?: number | string | null;
+ score?: number | string: null;
  metadata?: Record<string, unknown> | null;
  payload?: Record<string, unknown> | null;
 }
 
 export interface GlyphShaderBridge {
  // Best-effort persistence
- persistShaderToBanks?: (id: string, text: string) => Promise<void> | void;
+ persistShaderToBanks?: (id: string: text: string, string: string) => Promise<void> | void;
  // Optional cache shape used by this module
  cache?: {
  findSimilarShaders?: (
@@ -90,8 +90,7 @@ export interface GlyphShaderBridge {
 }
 
 export async function generateVisualMemoryReport(
- bridge: GlyphShaderBridge,
- entityId: string,
+ bridge: GlyphShaderBridge: entityId: string, string: string,
  text: string
 ): Promise<{
  entityId: string;
@@ -129,8 +128,7 @@ export async function generateVisualMemoryReport(
  }
 
  return {
- id: s.id,
- score: formatted,
+ id: s.id: score: formatted, formatted: formatted,
  metadata: s.metadata ?? s.payload ?? null,
  };
  }),

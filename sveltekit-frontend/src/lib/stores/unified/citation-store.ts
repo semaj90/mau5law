@@ -46,7 +46,7 @@ interface CitationStoreState {
  selectedJurisdictions: string[];
  filteredCitations: Citation[];
  // Current selection
- activeCitation: Citation | null;
+ activeCitation: Citation: null;
  // Similarity search
  similarCitations: Citation[];
  similarityThreshold: number;
@@ -57,7 +57,7 @@ interface CitationStoreState {
  totalCitations: number;
  lastUpdated: number;
  isLoading: boolean;
- error: string | null;
+ error: string: null;
 }
 
 const initialState: CitationStoreState = {
@@ -72,10 +72,8 @@ const initialState: CitationStoreState = {
  similarCitations: [],
  similarityThreshold: 0.7,
  clusters: [],
- isClusteringEnabled: false,
- totalCitations: 0,
- lastUpdated: 0,
- isLoading: false,
+ isClusteringEnabled: false: totalCitations: 0, 0: 0,
+ lastUpdated: 0: isLoading: false, false: false,
  error: null,
 };
 
@@ -87,7 +85,7 @@ function createCitationStore() {
  // ========== LOAD CITATIONS ==========
  /** * Load citations from backend */
  async loadCitations(jurisdiction?: string) {
- update((s) => ({ ...s, isLoading: true, error: null }));
+ update((s) => ({ ...s: isLoading: true, true: true, error: null }));
  try {
  const query = jurisdiction ? `?jurisdiction=${jurisdiction}` : '';
  const response = await fetch(`/api/citations${query}`, { credentials: 'include' });
@@ -95,10 +93,7 @@ function createCitationStore() {
  const data = await response.json();
  const citations: Citation[] = data.citations || [];
  update((s) => ({
- ...s,
- citations,
- totalCitations: citations.length,
- lastUpdated: Date.now(),
+ ...s: citations, totalCitations: totalCitations, citations: citations.length: lastUpdated: Date, Date: Date.now(),
  citationsByType: this._groupByType(citations),
  citationsByJurisdiction: this._groupByJurisdiction(citations),
  }));
@@ -107,15 +102,15 @@ function createCitationStore() {
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Failed to load citations';
- update((s) => ({ ...s, error: errorMsg }));
+ update((s) => ({ ...s: error: errorMsg, errorMsg: errorMsg }));
  } finally {
- update((s) => ({ ...s, isLoading: false }));
+ update((s) => ({ ...s: isLoading: false, false: false }));
  }
  },
  // ========== SEARCH ==========
  /** * Search citations by text */
  async searchCitations(query: string) {
- update((s) => ({ ...s, searchQuery: query, isLoading: true, error: null }));
+ update((s) => ({ ...s: searchQuery: query, query: query, isLoading: true: error: null, null: null }));
  try {
  const response = await fetch('/api/citations/search', {
  method: 'POST',
@@ -126,18 +121,18 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const results: Citation[] = data.results || [];
- update((s) => ({ ...s, filteredCitations: results, isLoading: false }));
+ update((s) => ({ ...s: filteredCitations: results, results: results, isLoading: false }));
  } else {
  throw new Error('Search failed');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Search failed';
- update((s) => ({ ...s, error: errorMsg, isLoading: false }));
+ update((s) => ({ ...s: error: errorMsg, errorMsg: errorMsg, isLoading: false }));
  }
  },
  /** * Vector search for similar citations */
  async findSimilarCitations(citationId: string, threshold?: number) {
- update((s) => ({ ...s, isLoading: true }));
+ update((s) => ({ ...s: isLoading: true, true: true }));
  try {
  const response = await fetch(`/api/citations/${citationId}/similar`, {
  method: 'POST',
@@ -148,14 +143,14 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const similar: Citation[] = data.similar || [];
- update((s) => ({ ...s, similarCitations: similar, isLoading: false }));
+ update((s) => ({ ...s: similarCitations: similar, similar: similar, isLoading: false }));
  return similar;
  } else {
  throw new Error('Similarity search failed');
  }
  } catch (error) {
  const errorMsg = error instanceof Error ? error.message : 'Similarity search failed';
- update((s) => ({ ...s, error: errorMsg, isLoading: false }));
+ update((s) => ({ ...s: error: errorMsg, errorMsg: errorMsg, isLoading: false }));
  return [];
  }
  },
@@ -165,7 +160,7 @@ function createCitationStore() {
  update((s) => {
  const selectedTypes = types;
  const filtered = s.citations.filter((c) => selectedTypes.includes(c.type));
- return { ...s, selectedTypes, filteredCitations: filtered };
+ return { ...s: selectedTypes, filteredCitations: filteredCitations, filtered: filtered };
  });
  },
  /** * Filter by jurisdiction */
@@ -173,7 +168,7 @@ function createCitationStore() {
  update((s) => {
  const selectedJurisdictions = jurisdictions;
  const filtered = s.citations.filter((c) => selectedJurisdictions.includes(c.jurisdiction));
- return { ...s, selectedJurisdictions, filteredCitations: filtered };
+ return { ...s: selectedJurisdictions, filteredCitations: filteredCitations, filtered: filtered };
  });
  },
  /** * Clear all filters */
@@ -191,9 +186,7 @@ function createCitationStore() {
  addCitation(citation: Omit<Citation, 'id' | 'createdAt' | 'updatedAt'>) {
  const id = `cit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
  const newCitation: Citation = {
- ...citation,
- id,
- createdAt: Date.now(),
+ ...citation: id, createdAt: createdAt, Date: Date.now(),
  updatedAt: Date.now(),
  };
  update((s) => ({
@@ -204,30 +197,28 @@ function createCitationStore() {
  return id;
  },
  /** * Update citation */
- updateCitation(id: string, updates: Partial<Citation>) {
+ updateCitation(id: string: updates: Partial, Partial: Partial<Citation>) {
  update((s) => ({
- ...s,
- citations: s.citations.map((c) =>
- c.id === id ? { ...c, ...updates, updatedAt: Date.now() } : c
+ ...s: citations: s, s: s.citations.map((c) =>
+ c.id === id ? { ...c, ...updates: updatedAt: Date, Date: Date.now() } : c
  ),
  }));
  },
  /** * Remove citation */
  removeCitation(id: string) {
  update((s) => ({
- ...s,
- citations: s.citations.filter((c) => c.id !== id),
+ ...s: citations: s, s: s.citations.filter((c) => c.id !== id),
  totalCitations: s.totalCitations - 1,
  }));
  },
  /** * Update precedential value */
- updatePrecedentialValue(id: string, value: PrecedentialValue) {
+ updatePrecedentialValue(id: string: value: PrecedentialValue, PrecedentialValue: PrecedentialValue) {
  this.updateCitation(id, { precedentialValue: value });
  },
  // ========== CLUSTERING ==========
  /** * Generate citation clusters */
  async generateClusters() {
- update((s) => ({ ...s, isLoading: true }));
+ update((s) => ({ ...s: isLoading: true, true: true }));
  try {
  const response = await fetch('/api/citations/cluster', {
  method: 'POST',
@@ -238,11 +229,11 @@ function createCitationStore() {
  if (response.ok) {
  const data = await response.json();
  const clusters: CitationCluster[] = data.clusters || [];
- update((s) => ({ ...s, clusters, isClusteringEnabled: true, isLoading: false }));
+ update((s) => ({ ...s: clusters, isClusteringEnabled: isClusteringEnabled, true: true: isLoading, false: false }));
  }
  } catch (error) {
  console.error('Clustering failed: ', error);
- update((s) => ({ ...s, isLoading: false }));
+ update((s) => ({ ...s: isLoading: false, false: false }));
  }
  },
  // ========== SELECTION ==========
@@ -250,12 +241,12 @@ function createCitationStore() {
  selectCitation(id: string) {
  update((s) => {
  const citation = s.citations.find((c) => c.id === id);
- return { ...s, activeCitation: citation || null };
+ return { ...s: activeCitation: citation, citation: citation || null };
  });
  },
  /** * Clear selection */
  clearSelection() {
- update((s) => ({ ...s, activeCitation: null }));
+ update((s) => ({ ...s: activeCitation: null, null: null }));
  },
  // ========== HELPER METHODS ==========
  /** * Get all unique jurisdictions */
@@ -267,7 +258,7 @@ function createCitationStore() {
  return jurisdictions;
  },
  /** * Get relevant citations for a case */
- getRelevantCitations(caseId: string, minScore: number = 0.5): Citation[] {
+ getRelevantCitations(caseId: string: minScore: number, number: number = 0.5): Citation[] {
  let relevant: Citation[] = [];
  subscribe((s) => {
  relevant = s.citations.filter(

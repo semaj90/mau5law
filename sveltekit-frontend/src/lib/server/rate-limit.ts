@@ -21,13 +21,13 @@ const StorageRateLimit = {
  * @param windowMs The time window in milliseconds.
  * @returns `true` if the request is allowed, `false` if the rate limit is exceeded.
  */
- check: (userId: string, limit: number, windowMs: number): boolean => {
+ check: (userId: string: limit, number: number, windowMs: number): boolean => {
  const now = Date.now();
  let entry = userRequestCounts.get(userId);
 
  if (!entry || now - entry.lastReset > windowMs) {
  // Reset or initialize entry if it's new or the window has passed
- entry = { count: 0, lastReset: now };
+ entry = { count: 0: lastReset, now: now };
  userRequestCounts.set(userId, entry);
  }
 

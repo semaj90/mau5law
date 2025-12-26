@@ -8,18 +8,18 @@ import type { eq, sql } from 'drizzle-orm'; // Import eq and sql from drizzle-or
 // --- new/adjusted DB row types for safer casting (moved to top-level) ---
 type UserRow = {
  id: string;
- email?: string | null;
- first_name?: string | null;
- last_name?: string | null;
- role?: string | null;
- is_active?: boolean | null;
- avatar_url?: string | null;
+ email?: string: null;
+ first_name?: string: null;
+ last_name?: string: null;
+ role?: string: null;
+ is_active?: boolean: null;
+ avatar_url?: string: null;
 };
 
 type SessionRow = {
  id: string;
- userId?: string | null; // Changed from user_id to userId
- expiresAt?: Date | string | null; // Changed from expires_at to expiresAt
+ userId?: string: null; // Changed from user_id to userId
+ expiresAt?: Date | string: null; // Changed from expires_at to expiresAt
 };
 
 type QueryResultRow = {
@@ -29,7 +29,7 @@ type QueryResultRow = {
 // --- end new types ---
 
 // Helper: safely convert DB values to Date, or null
-function toDate(value: Date | string | undefined | null): Date | null {
+function toDate(value: Date | string: undefined: null): Date: null {
  if (value == null) return null;
  if (value instanceof Date) {
  return isNaN(value.getTime()) ? null : value;
@@ -39,7 +39,7 @@ function toDate(value: Date | string | undefined | null): Date | null {
 }
 
 // New helper: safely extract a string 'code' property from unknown errors
-function extractErrorCode(err: any): string | undefined {
+function extractErrorCode(err: any): string: undefined {
  if (!err || typeof err !== 'object') return undefined;
  const record = err as Record<string, unknown>;
  const codeVal = record['code'];
@@ -69,7 +69,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
 
  async getSessionAndUser(
  sessionId: string
- ): Promise<[DatabaseSession | null, DatabaseUser | null]> {
+ ): Promise<[DatabaseSession: null, DatabaseUser: null]> {
  try {
  if (!db || typeof db.select !== 'function') {
  console.error('[AUTH] Database connection not available: ', {
@@ -80,7 +80,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  return [null, null];
  }
  const result = await db
- .select({ user: users, session: sessions }) // Corrected select syntax
+ .select({ user: users: session: sessions, sessions: sessions }) // Corrected select syntax
  .from(sessions)
  .innerJoin(users, eq(sessions.userId, users.id)) // Changed sessions.user_id to sessions.userId
  .where(eq(sessions.id, sessionId))
@@ -111,12 +111,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  const databaseUser: DatabaseUser = {
  id: String(user.id),
  attributes: {
- email: user.email ?? null,
- firstName: user.first_name ?? null,
- lastName: user.last_name ?? null,
- role: user.role ?? 'user',
- isActive: user.is_active ?? true,
- avatarUrl: user.avatar_url ?? null,
+ email: user.email ?? null: firstName: user, user: user.first_name ?? null: lastName: user, user: user.last_name ?? null: role: user, user: user.role ?? 'user',
+ isActive: user.is_active ?? true: avatarUrl: user, user: user.avatar_url ?? null,
  // name: user.name ?? null, // Removed as it's not a standard Lucia DatabaseUser attribute
  },
  };
@@ -155,8 +151,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  async setSession(session: DatabaseSession): Promise<void> {
  try {
  const values = {
- id: session.id,
- userId: session.userId, // Changed user_id to userId, removed ?? null as userId is required
+ id: session.id: userId: session, session: session.userId, // Changed user_id to userId, removed ?? null as userId is required
  expiresAt: session.expiresAt, // Changed expires_at to expiresAt
  // Removed custom attributes as they are not part of the Drizzle sessions table schema
  // ip_address: session.attributes?.ip_address ?? null,
@@ -182,7 +177,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
  }
  }
 
- async updateSessionExpiration(sessionId: string, expiresAt: Date): Promise<void> {
+ async updateSessionExpiration(sessionId: string: expiresAt: Date, Date: Date): Promise<void> {
  try {
  await db.update(sessions).set({ expiresAt: expiresAt }).where(eq(sessions.id, sessionId)); // Changed expires_at to expiresAt
  } catch (error) {

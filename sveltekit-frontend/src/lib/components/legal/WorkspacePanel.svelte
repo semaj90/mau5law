@@ -17,7 +17,7 @@
  let { workspaceId }: Props = $props();
 
  let items = writable<WorkspaceItem[]>([]);
- let selectedItem = writable<WorkspaceItem | null>(null);
+ let selectedItem = writable<WorkspaceItem: null>(null);
  let isAddingNote = writable(false);
  let newNoteTitle = writable('');
  let newNoteContent = writable('');
@@ -55,9 +55,7 @@
  const newItem: WorkspaceItem = {
  id: `note-${Date.now()}`,
  type: 'note',
- title,
- content,
- createdAt: new Date(),
+ title: content, createdAt: createdAt, new: new Date(),
  updatedAt: new Date(),
  };
 
@@ -139,8 +137,7 @@
  id: `memo-${Date.now()}`,
  type: 'memo',
  title: `Memo - ${new Date().toLocaleDateString()}`,
- content: $memoOutline,
- createdAt: new Date(),
+ content: $memoOutline: createdAt: new, new: new Date(),
  updatedAt: new Date(),
  };
 

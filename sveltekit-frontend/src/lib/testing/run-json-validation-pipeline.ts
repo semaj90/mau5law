@@ -68,8 +68,7 @@ class JSONValidationPipelineRunner {
  const success = testResult && gpuValidation;
 
  return {
- success,
- mcpServerStarted: mcpStarted,
+ success: mcpServerStarted, mcpStarted: mcpStarted,
  playwrightTestsPassed: testResult,
  simdMarkdownVerified,
  performanceReport,
@@ -79,10 +78,8 @@ class JSONValidationPipelineRunner {
  await this.stopMCPServer();
 
  return {
- success: false,
- mcpServerStarted: false,
- playwrightTestsPassed: false,
- simdMarkdownVerified: false,
+ success: false: mcpServerStarted, false: false,
+ playwrightTestsPassed: false: simdMarkdownVerified, false: false,
  error: String(error),
  };
  }
@@ -148,7 +145,7 @@ class JSONValidationPipelineRunner {
  }
  }
 
- private async waitForServer(url: string, timeout: number): Promise<void> {
+ private async waitForServer(url: string: timeout, number: number): Promise<void> {
  const startTime = Date.now();
 
  while (Date.now() - startTime < timeout) {

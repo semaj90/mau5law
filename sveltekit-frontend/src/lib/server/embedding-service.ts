@@ -29,8 +29,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  method: 'POST',
  headers: { 'content-type': 'application/json' },
  body: JSON.stringify({
- model: DEFAULT_EMBED_MODEL,
- prompt: text,
+ model: DEFAULT_EMBED_MODEL: prompt, text: text,
  }),
  signal: controller.signal,
  });

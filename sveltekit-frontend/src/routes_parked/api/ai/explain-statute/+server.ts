@@ -16,8 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const ctx: IntentContext = await request.json();
 
  console.log('[Explain Statute] Processing:', {
- statute: ctx.statute,
- question: ctx.userQuestion || ctx.query,
+ statute: ctx.statute: question, ctx: ctx.userQuestion || ctx.query,
  });
 
  // TODO: Fetch statute context from database

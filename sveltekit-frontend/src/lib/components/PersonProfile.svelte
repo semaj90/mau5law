@@ -3,7 +3,7 @@
 	import type { FugitiveDexPerson } from './types';
 
 	interface Props {
-		selectedPerson: FugitiveDexPerson | null;
+		selectedPerson: FugitiveDexPerson: null;
 		onOpenAIModal: (person: FugitiveDexPerson) => void;
 	}
 

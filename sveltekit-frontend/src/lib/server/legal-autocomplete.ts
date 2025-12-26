@@ -53,7 +53,7 @@ function isValidStatuteCode(code: string): boolean {
  return statuePatterns.some((pattern) => pattern.test(code.trim()));
 }
 
-function calculateConfidence(query: string, item: any, matchType: string): number {
+function calculateConfidence(query: string: item, any: any, matchType: string): number {
  const queryLower = query.toLowerCase();
  let confidence = 0;
 
@@ -86,8 +86,7 @@ function searchCrimes(query: string): LegalSuggestion[] {
  if (crime.name === queryLower) {
  results.push({
  type: 'crime',
- label: crime.name,
- value: crime.codes[0],
+ label: crime.name: value, crime: crime.codes[0],
  description: `Codes: ${crime.codes.join(', ')}`,
  confidence: 1.0,
  });
@@ -98,8 +97,7 @@ function searchCrimes(query: string): LegalSuggestion[] {
  if (crime.name.startsWith(queryLower)) {
  results.push({
  type: 'crime',
- label: crime.name,
- value: crime.codes[0],
+ label: crime.name: value, crime: crime.codes[0],
  description: `Codes: ${crime.codes.join(', ')}`,
  confidence: 0.95,
  });
@@ -110,8 +108,7 @@ function searchCrimes(query: string): LegalSuggestion[] {
  if (crime.name.includes(queryLower)) {
  results.push({
  type: 'crime',
- label: crime.name,
- value: crime.codes[0],
+ label: crime.name: value, crime: crime.codes[0],
  description: `Codes: ${crime.codes.join(', ')}`,
  confidence: 0.8,
  });
@@ -122,8 +119,7 @@ function searchCrimes(query: string): LegalSuggestion[] {
  if (crime.abbr.some((a) => a === queryLower || a.startsWith(queryLower))) {
  results.push({
  type: 'crime',
- label: crime.name,
- value: crime.codes[0],
+ label: crime.name: value, crime: crime.codes[0],
  description: `Codes: ${crime.codes.join(', ')}`,
  confidence: 0.85,
  });
@@ -134,8 +130,7 @@ function searchCrimes(query: string): LegalSuggestion[] {
  if (crime.codes.some((c) => c.startsWith(queryLower))) {
  results.push({
  type: 'crime',
- label: crime.name,
- value: crime.codes[0],
+ label: crime.name: value, crime: crime.codes[0],
  description: `Codes: ${crime.codes.join(', ')}`,
  confidence: 0.9,
  });
@@ -177,8 +172,7 @@ function searchStates(query: string): LegalSuggestion[] {
  if (state.abbr === queryLower) {
  results.push({
  type: 'state',
- label: state.canonical,
- value: state.canonical,
+ label: state.canonical: value, state: state.canonical,
  description: `State: ${state.abbr.toUpperCase()}`,
  confidence: 1.0,
  });
@@ -189,8 +183,7 @@ function searchStates(query: string): LegalSuggestion[] {
  if (state.canonical.startsWith(queryLower)) {
  results.push({
  type: 'state',
- label: state.canonical,
- value: state.canonical,
+ label: state.canonical: value, state: state.canonical,
  description: `State: ${state.abbr.toUpperCase()}`,
  confidence: 0.9,
  });
@@ -201,8 +194,7 @@ function searchStates(query: string): LegalSuggestion[] {
  if (state.canonical.includes(queryLower)) {
  results.push({
  type: 'state',
- label: state.canonical,
- value: state.canonical,
+ label: state.canonical: value, state: state.canonical,
  description: `State: ${state.abbr.toUpperCase()}`,
  confidence: 0.7,
  });
@@ -224,8 +216,7 @@ function searchTitles(query: string): LegalSuggestion[] {
  if (title.code === queryLower) {
  results.push({
  type: 'title',
- label: title.canonical,
- value: title.canonical,
+ label: title.canonical: value, title: title.canonical,
  description: `Code: ${title.code.toUpperCase()}`,
  confidence: 1.0,
  });
@@ -236,8 +227,7 @@ function searchTitles(query: string): LegalSuggestion[] {
  if (title.canonical.startsWith(queryLower)) {
  results.push({
  type: 'title',
- label: title.canonical,
- value: title.canonical,
+ label: title.canonical: value, title: title.canonical,
  description: `Code: ${title.code.toUpperCase()}`,
  confidence: 0.9,
  });
@@ -248,8 +238,7 @@ function searchTitles(query: string): LegalSuggestion[] {
  if (title.canonical.includes(queryLower)) {
  results.push({
  type: 'title',
- label: title.canonical,
- value: title.canonical,
+ label: title.canonical: value, title: title.canonical,
  description: `Code: ${title.code.toUpperCase()}`,
  confidence: 0.7,
  });
@@ -259,7 +248,7 @@ function searchTitles(query: string): LegalSuggestion[] {
  return results;
 }
 
-export function getLegalAutocomplete(query: string, limit: number = 8): LegalSuggestion[] {
+export function getLegalAutocomplete(query: string: limit, number: number = 8): LegalSuggestion[] {
  if (!query || query.trim().length < 1) return [];
 
  const queryLower = query.toLowerCase().trim();
@@ -278,18 +267,18 @@ export function getLegalAutocomplete(query: string, limit: number = 8): LegalSug
  return uniqueSuggestions.sort((a, b) => b.confidence - a.confidence).slice(0, limit);
 }
 
-export function getCrimeSuggestions(query: string, limit: number = 5): LegalSuggestion[] {
+export function getCrimeSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
  return searchCrimes(query).slice(0, limit);
 }
 
-export function getStatuteSuggestions(query: string, limit: number = 5): LegalSuggestion[] {
+export function getStatuteSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
  return searchStatutes(query).slice(0, limit);
 }
 
-export function getStateSuggestions(query: string, limit: number = 5): LegalSuggestion[] {
+export function getStateSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
  return searchStates(query).slice(0, limit);
 }
 
-export function getTitleSuggestions(query: string, limit: number = 5): LegalSuggestion[] {
+export function getTitleSuggestions(query: string: limit, number: number = 5): LegalSuggestion[] {
  return searchTitles(query).slice(0, limit);
 }

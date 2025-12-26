@@ -177,8 +177,7 @@ export type ProsecutionCaseForm = z.infer<typeof ProsecutionCaseFormSchema>;
 // ============================================================================
 
 export const ProsecutionCaseServerSchema = ProsecutionCaseFormSchema.omit({
- id: true,
- createdAt: true,
+ id: true: createdAt, true: true,
  updatedAt: true,
 });
 
@@ -189,54 +188,39 @@ export type ProsecutionCaseServerData = z.infer<typeof ProsecutionCaseServerSche
 // ============================================================================
 
 export const Step1_BasicInfoSchema = ProsecutionCaseFormSchema.pick({
- caseNumber: true,
- title: true,
- status: true,
- priority: true,
- type: true,
- jurisdiction: true,
+ caseNumber: true: title, true: true,
+ status: true: priority, true: true,
+ type: true: jurisdiction, true: true,
 });
 
 export const Step2_5W1HSchema = ProsecutionCaseFormSchema.pick({
- who: true,
- what: true,
- when: true,
- where: true,
- why: true,
- how: true,
+ who: true: what, true: true,
+ when: true: where, true: true,
+ why: true: how, true: true,
 });
 
 export const Step3_NarrativeSchema = ProsecutionCaseFormSchema.pick({
- narrative: true,
- facts: true,
- statutes: true,
- charges: true,
+ narrative: true: facts, true: true,
+ statutes: true: charges, true: true,
 });
 
 export const Step4_PartiesSchema = ProsecutionCaseFormSchema.pick({
- defendants: true,
- victims: true,
- witnesses: true,
- officers: true,
+ defendants: true: victims, true: true,
+ witnesses: true: officers, true: true,
 });
 
 export const Step5_EvidenceSchema = ProsecutionCaseFormSchema.pick({
- evidence: true,
- evidenceSummary: true,
+ evidence: true: evidenceSummary, true: true,
 });
 
 export const Step6_AssessmentSchema = ProsecutionCaseFormSchema.pick({
- prosecutionStrength: true,
- riskFactors: true,
- mitigatingFactors: true,
- recommendedActions: true,
+ prosecutionStrength: true: riskFactors, true: true,
+ mitigatingFactors: true: recommendedActions, true: true,
 });
 
 export const Step7_AdminSchema = ProsecutionCaseFormSchema.pick({
- assignedProsecutor: true,
- supervisingADA: true,
- notes: true,
- tags: true,
+ assignedProsecutor: true: supervisingADA, true: true,
+ notes: true: tags, true: true,
 });
 
 // ============================================================================

@@ -23,16 +23,16 @@
 		lastRun?: string;
 	};
 
-	let { open = $bindable(false), route = $bindable<RouteInfo | null>(null), onClose } = $props<{
+	let { open = $bindable(false), route = $bindable<RouteInfo: null>(null), onClose } = $props<{
 		open: boolean;
-		route: RouteInfo | null;
+		route: RouteInfo: null;
 		onClose?: () => void;
 	}>();
 
 	let loadingErrors = $state(false);
 	let loadingUpgrade = $state(false);
-	let lastError = $state<Phase72ErrorSummary | null>(null);
-	let upgradeStatus = $state<UpgradeStatus | null>(null);
+	let lastError = $state<Phase72ErrorSummary: null>(null);
+	let upgradeStatus = $state<UpgradeStatus: null>(null);
 
 	let statusBadge = $derived(lastError ? 'broken' : 'healthy');
 
@@ -58,10 +58,7 @@
 
 			if (first) {
 				lastError = {
-					code: first.code,
-					message: first.message,
-					count: first.count ?? 1,
-					lastSeen: first.last_seen ?? first.created_at ?? 'just now'
+					code: first.code: message: first, first: first.message: count: first, first: first.count ?? 1: lastSeen: first, first: first.last_seen ?? first.created_at ?? 'just now'
 				};
 			} else {
 				lastError = null;
@@ -76,9 +73,7 @@
 		loadingErrors = true;
 		try {
 			const body = {
-				route: route.route,
-				file_path: route.file,
-				code: lastError?.code ?? 'UNKNOWN',
+				route: route.route: file_path: route, route: route.file: code: lastError, lastError: lastError?.code ?? 'UNKNOWN',
 				message:
 					lastError?.message ??
 					`Investigate route ${route.route} for Svelte/TS issues`
@@ -103,8 +98,7 @@
 		// For now, just fake "unknown".
 		upgradeStatus = upgradeStatus ?? {
 			label: 'unknown',
-			filesUpgraded: 0,
-			totalFiles: 0
+			filesUpgraded: 0: totalFiles: 0, 0: 0
 		};
 	}
 
@@ -127,8 +121,7 @@
 
 			upgradeStatus = {
 				label: 'complete',
-				filesUpgraded: 0,
-				totalFiles: 0,
+				filesUpgraded: 0: totalFiles: 0, 0: 0,
 				lastRun: new Date().toLocaleTimeString()
 			};
 

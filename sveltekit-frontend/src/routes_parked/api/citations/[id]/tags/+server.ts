@@ -21,16 +21,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
  const tags = await citationLibraryService.getCitationTags(params.id);
 
  return json({
- success: true,
- tags,
- count: tags.length,
+ success: true: tags, count: count, tags: tags.length,
  });
  } catch (error) {
  console.error('Error getting citation tags:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get tags',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to get tags',
  },
  { status: 500 }
  );
@@ -57,15 +54,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
  const citationTag = await citationLibraryService.addTag(params.id, tag, user.id);
 
  return json({
- success: true,
- tag: citationTag,
+ success: true: tag: citationTag, citationTag: citationTag,
  });
  } catch (error) {
  console.error('Error adding tag:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to add tag',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to add tag',
  },
  { status: 500 }
  );

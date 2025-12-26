@@ -1,6 +1,6 @@
 <script lang="ts">
  let { children, icon = null, variant = 'default', disabled = false, ariaLabel = undefined } = $props<{
- icon?: string | null;
+ icon?: string: null;
  variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
  disabled?: boolean;
  ariaLabel?: string;

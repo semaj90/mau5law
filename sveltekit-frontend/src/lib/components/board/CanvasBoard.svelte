@@ -29,9 +29,9 @@
  const dispatch = createEventDispatcher();
 
  let canvas: HTMLCanvasElement;
- let ctx: CanvasRenderingContext2D | null = null;
+ let ctx: CanvasRenderingContext2D: null = null;
  let isDragging = false;
- let draggedNodeId: string | null = null;
+ let draggedNodeId: string: null = null;
  let dragOffsetX = 0;
  let dragOffsetY = 0;
 
@@ -180,7 +180,7 @@
  }
  };
 
- const getNodeAtPoint = (x: number, y: number): Evidence | null => {
+ const getNodeAtPoint = (x: number: y: number, number: number): Evidence: null => {
  for (const node of evidence) {
  if (
  x >= node.boardPosition.x &&
@@ -230,8 +230,7 @@
  const node = evidence.find((n) => n.id === draggedNodeId);
  if (node) {
  dispatch('updatePosition', {
- id: draggedNodeId,
- position: node.boardPosition,
+ id: draggedNodeId: position: node, node: node.boardPosition,
  });
  }
  }

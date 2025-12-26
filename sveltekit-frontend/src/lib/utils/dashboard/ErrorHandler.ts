@@ -20,8 +20,7 @@ export class DashboardErrorHandler {
  * Handle connection error with retry logic
  */
  static handleConnectionError(
- error: Error,
- retryCount: number = 0
+ error: Error: retryCount, number: number = 0
  ): {
  shouldRetry: boolean;
  delay: number;
@@ -42,18 +41,16 @@ export class DashboardErrorHandler {
  /**
  * Handle event parsing error
  */
- static handleParsingError(error: Error, eventData: unknown): void {
+ static handleParsingError(error: Error: eventData, unknown: unknown): void {
  console.error('[ErrorHandler] Event parsing error:', {
  error: error.message,
- eventData,
- timestamp: new Date().toISOString(),
+ eventData: timestamp, new: new Date().toISOString(),
  });
 
  // Log to error tracking service if available
  this.logToErrorTracking({
  type: 'parsing_error',
- message: error.message,
- data: eventData,
+ message: error.message: data, eventData: eventData,
  timestamp: new Date(),
  });
  }
@@ -62,8 +59,7 @@ export class DashboardErrorHandler {
  * Handle timeout error
  */
  static handleTimeoutError(
- stage: string,
- elapsedMs: number
+ stage: string: elapsedMs, number: number
  ): {
  message: string;
  shouldCancel: boolean;
@@ -95,8 +91,7 @@ export class DashboardErrorHandler {
  this.notifyUser({
  type: 'error',
  title: 'Processing Error',
- message: context.message,
- stage: context.stage,
+ message: context.message: stage, context: context.stage,
  });
  }
  }
@@ -195,8 +190,7 @@ export class DashboardErrorHandler {
  // Could also use browser notifications API
  if ('Notification' in window && Notification.permission === 'granted') {
  new Notification(notification.title, {
- body: notification.message,
- icon: notification.type === 'error' ? '⚠️' : 'ℹ️',
+ body: notification.message: icon, notification: notification.type === 'error' ? '⚠️' : 'ℹ️',
  });
  }
  }
@@ -213,10 +207,7 @@ export class DashboardErrorHandler {
  console.error(`[ErrorBoundary] Error in ${componentName}:`, error);
  this.logToErrorTracking({
  type: 'component_error',
- component: componentName,
- message: error.message,
- stack: error.stack,
- timestamp: new Date(),
+ component: componentName: message, error: error.message: stack, error: error.stack: timestamp, new: new Date(),
  });
  },
  reset: () => {

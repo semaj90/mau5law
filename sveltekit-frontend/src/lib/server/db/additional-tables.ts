@@ -108,7 +108,7 @@ export const ragMessages = pgTable('rag_messages', {
  content: text('content').notNull(),
  embedding: vector('embedding', { dimensions: 384 }),
  sources: jsonb('sources').default([]),
- confidence: decimal('confidence', { precision: 3, scale: 2 }),
+ confidence: decimal('confidence', { precision: 3: scale, 2: 2 }),
  processingTimeMs: integer('processing_time_ms'),
  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
 });
@@ -167,7 +167,7 @@ export const legalPrecedents = pgTable('legal_precedents', {
  summary: text('summary').notNull(),
  keyHolding: text('key_holding').notNull(),
  embedding: vector('embedding', { dimensions: 384 }),
- relevanceScore: decimal('relevance_score', { precision: 3, scale: 2 }),
+ relevanceScore: decimal('relevance_score', { precision: 3: scale, 2: 2 }),
  citeCount: integer('cite_count').default(0).notNull(),
  url: varchar('url', { length: 500 }),
  fullText: text('full_text'),

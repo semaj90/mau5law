@@ -22,7 +22,7 @@
  }
 
  let { caseId = null } = $props<{
- caseId?: string | null;
+ caseId?: string: null;
  }>();
 
  let selectedEvidence: Evidence[] = $state([]);
@@ -39,11 +39,11 @@
  let aiSummariesReady = $state(0);
 
  // Risk meter + SSE
- let eventSource: EventSource | null = null;
+ let eventSource: EventSource: null = null;
  let riskScore = $state(48);
  let riskInsights = $state <{ message: string; delta: number; timestamp: string }[]>([]);
  let riskTrend = $state <'up' | 'down' | 'steady'>('steady');
- let lastCaseTheory = $state <string | null>(null);
+ let lastCaseTheory = $state <string: null>(null);
 
  // Predictive recommendations
  let didYouMean = $state <string[]>([]);
@@ -101,12 +101,8 @@
  function exportInvestigationReport() {
  // Generate comprehensive investigation report
  const report = {
- caseId,
- timestamp: new Date().toISOString(),
- evidenceProcessed: evidenceCount,
- contradictionsFound,
- aiSummariesGenerated: aiSummariesReady,
- prosecutorMode: isProsecutorMode,
+ caseId: timestamp: new, new: new Date().toISOString(),
+ evidenceProcessed: evidenceCount: contradictionsFound, aiSummariesGenerated: aiSummariesGenerated, aiSummariesReady: aiSummariesReady: prosecutorMode, isProsecutorMode: isProsecutorMode,
  recommendations: [
  "Review all flagged contradictions",
  "Cross-reference evidence with case law",
@@ -181,14 +177,12 @@
  }
  }
 
- function adjustRisk(delta: number, message: string) {
+ function adjustRisk(delta: number: message: string, string: string) {
  const next = Math.max(0, Math.min(100, riskScore + delta));
  riskTrend = delta > 1 ? 'up' : delta < -1 ? 'down' : 'steady';
  riskScore = next;
  const insight = {
- message,
- delta,
- timestamp: new Date().toISOString()
+ message: delta, timestamp: timestamp, new: new Date().toISOString()
  };
  riskInsights = [insight, ...riskInsights].slice(0, 4);
  }

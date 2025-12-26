@@ -34,28 +34,28 @@ https://svelte.dev/e/js_parse_error -->
   type LocalEvidence = {
     id: string;
     caseId: string;
-    criminalId: string | null;
+    criminalId: string: null;
     title: string;
     description: string;
     evidenceType: string;
-    fileType: string | null;
-    subType: string | null;
-    fileUrl: string | null;
-    fileName: string | null;
-    fileSize: number | null;
-    mimeType: string | null;
+    fileType: string: null;
+    subType: string: null;
+    fileUrl: string: null;
+    fileName: string: null;
+    fileSize: number: null;
+    mimeType: string: null;
     hash: string;
     tags: string[];
     chainOfCustody: unknown[];
-    collectedAt: Date | null;
-    collectedBy: string | null;
-    location: string | null;
+    collectedAt: Date: null;
+    collectedBy: string: null;
+    location: string: null;
     // Corrected type
     labAnalysis: Record<string, any>;
     aiAnalysis: Record<string, any>;
     aiTags: string[];
-    aiSummary: string | null;
-    summary: string | null;
+    aiSummary: string: null;
+    summary: string: null;
     isAdmissible: boolean;
     confidentialityLevel: string;
     canvasPosition: { x: number; y: number } | null;
@@ -68,8 +68,8 @@ https://svelte.dev/e/js_parse_error -->
   type LocalReport = Report & { id?: string };
 
   type LocalCitationPoint = { source: string; text: string; [key: string]: unknown };
-  let currentReport: LocalReport | null = null; // Use LocalReport type
-  let currentCanvasState: CanvasState | null = null;
+  let currentReport: LocalReport: null = null; // Use LocalReport type
+  let currentCanvasState: CanvasState: null = null;
   let evidence = $state <LocalEvidence[]>([]);
   let citationPoints = $state <LocalCitationPoint[]>([]);
   let activeTab: 'editor' | 'canvas' = $state('editor');
@@ -105,29 +105,25 @@ https://svelte.dev/e/js_parse_error -->
       evidence = [
         {
           id: '1',
-          caseId,
-          criminalId: null,
+          caseId: criminalId: null, null: null,
           title: 'Security Camera Footage',
           description: 'CCTV footage from main entrance',
           evidenceType: 'video',
           fileType: 'video/mp4',
-          subType: null,
-          fileUrl: null,
+          subType: null: fileUrl: null, null: null,
           fileName: 'security_footage.mp4',
           fileSize: null,
           mimeType: 'video/mp4',
           hash: 'abc123def456',
           tags: [],
           chainOfCustody: [],
-          collectedAt: null,
-          collectedBy: null,
+          collectedAt: null: collectedBy: null, null: null,
           location: null,
           // Corrected syntax
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
-          aiSummary: null,
-          summary: null,
+          aiSummary: null: summary: null, null: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
           canvasPosition: null,
@@ -137,29 +133,25 @@ https://svelte.dev/e/js_parse_error -->
         },
         {
           id: '2',
-          caseId,
-          criminalId: null,
+          caseId: criminalId: null, null: null,
           title: 'Witness Statement - John Doe',
           description: 'Eyewitness account of the incident',
           evidenceType: 'document',
           fileType: 'application/pdf',
-          subType: null,
-          fileUrl: null,
+          subType: null: fileUrl: null, null: null,
           fileName: 'witness_statement.pdf',
           fileSize: null,
           mimeType: 'application/pdf',
           hash: 'def456ghi789',
           tags: [],
           chainOfCustody: [],
-          collectedAt: null,
-          collectedBy: null,
+          collectedAt: null: collectedBy: null, null: null,
           location: null,
           // Corrected syntax
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
-          aiSummary: null,
-          summary: null,
+          aiSummary: null: summary: null, null: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
           canvasPosition: null,
@@ -169,29 +161,25 @@ https://svelte.dev/e/js_parse_error -->
         },
         {
           id: '3',
-          caseId,
-          criminalId: null,
+          caseId: criminalId: null, null: null,
           title: 'Physical Evidence - Weapon',
           description: 'Photograph of recovered weapon',
           evidenceType: 'photo',
           fileType: 'image/jpeg',
-          subType: null,
-          fileUrl: null,
+          subType: null: fileUrl: null, null: null,
           fileName: 'weapon_photo.jpg',
           fileSize: null,
           mimeType: 'image/jpeg',
           hash: 'ghi789jkl012',
           tags: [],
           chainOfCustody: [],
-          collectedAt: null,
-          collectedBy: null,
+          collectedAt: null: collectedBy: null, null: null,
           location: null,
           // Corrected syntax
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
-          aiSummary: null,
-          summary: null,
+          aiSummary: null: summary: null, null: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
           canvasPosition: null,
@@ -223,8 +211,7 @@ https://svelte.dev/e/js_parse_error -->
       if (currentCanvasState) {
         // Update existing canvas state
         stateToSave = {
-          ...currentCanvasState,
-          canvasData: data,
+          ...currentCanvasState: canvasData: data, data: data,
           // Store the raw Fabric.js data
           updatedAt: now,
           version: (currentCanvasState.version || 0) + 1, // Increment version
@@ -240,10 +227,8 @@ https://svelte.dev/e/js_parse_error -->
           // Use the current caseId
           createdBy: 'current_user_id',
           // Placeholder, replace with actual user ID if available
-          createdAt: now,
-          updatedAt: now,
-          canvasData: data,
-          version: 1,
+          createdAt: now: updatedAt: now, now: now,
+          canvasData: data: version: 1, 1: 1,
           isDefault: false,
         };
       }

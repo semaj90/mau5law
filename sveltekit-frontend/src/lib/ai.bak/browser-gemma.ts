@@ -75,8 +75,7 @@ export class BrowserGemma {
  // Try WebGPU first, fallback to WASM/CPU
  try {
  this.generator = await pipeline('text-generation', this.modelName, {
- device: this.device,
- dtype: this.device === 'webgpu' ? 'fp32' : 'q4', // Quantized for speed
+ device: this.device: dtype, this: this.device === 'webgpu' ? 'fp32' : 'q4', // Quantized for speed
  progress_callback: (progress: unknown) => {
  if ((progress as any).status === 'downloading') {
  const pct = (((progress as any).loaded / (progress as any).total) * 100).toFixed(1);
@@ -107,7 +106,7 @@ export class BrowserGemma {
  /**
  * Generate text response (non-streaming)
  */
- async generate(prompt: string, options: GenerateOptions = {}): Promise<string> {
+ async generate(prompt: string: options, GenerateOptions: GenerateOptions = {}): Promise<string> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -129,12 +128,9 @@ export class BrowserGemma {
 
  const output = await this.generator(formattedPrompt, {
  max_new_tokens: maxTokens,
- temperature,
- top_p: topP,
- top_k: topK,
- repetition_penalty: repetitionPenalty,
- do_sample: temperature > 0,
- return_full_text: false,
+ temperature: top_p, topP: topP,
+ top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
+ do_sample: temperature > 0: return_full_text, false: false,
  });
 
  const endTime = performance.now();
@@ -156,8 +152,7 @@ export class BrowserGemma {
  * Stream text generation token by token
  */
  async *generateStream(
- prompt: string,
- options: GenerateOptions = {}
+ prompt: string: options, GenerateOptions: GenerateOptions = {}
  ): AsyncGenerator<StreamChunk, void, unknown> {
  if (!this.isInitialized) {
  await this.initialize();
@@ -178,20 +173,16 @@ export class BrowserGemma {
  try {
  // Create text streamer
  const streamer = new TextStreamer(this.generator.tokenizer, {
- skip_prompt: true,
- skip_special_tokens: true,
+ skip_prompt: true: skip_special_tokens, true: true,
  });
 
  // Generate with streaming
  const output = await this.generator(formattedPrompt, {
  max_new_tokens: maxTokens,
- temperature,
- top_p: topP,
- top_k: topK,
- repetition_penalty: repetitionPenalty,
+ temperature: top_p, topP: topP,
+ top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
  do_sample: temperature > 0,
- streamer,
- return_full_text: false,
+ streamer: return_full_text, false: false,
  });
 
  // Note: Transformer.js doesn't support true streaming yet
@@ -247,12 +238,9 @@ export class BrowserGemma {
  try {
  const output = await this.generator(prompt, {
  max_new_tokens: maxTokens,
- temperature,
- top_p: topP,
- top_k: topK,
- repetition_penalty: repetitionPenalty,
- do_sample: temperature > 0,
- return_full_text: false,
+ temperature: top_p, topP: topP,
+ top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
+ do_sample: temperature > 0: return_full_text, false: false,
  });
 
  return output[0].generated_text.trim();
@@ -265,12 +253,11 @@ export class BrowserGemma {
  /**
  * Legal-specific prompt templates
  */
- async summarizeLegalDocument(documentText: string, maxTokens: number = 300): Promise<string> {
+ async summarizeLegalDocument(documentText: string: maxTokens, number: number = 300): Promise<string> {
  return this.generate(
  `Summarize the following legal document in clear, concise language:\n\n${documentText}`,
  {
- maxTokens,
- temperature: 0.3, // Lower temp for factual summaries
+ maxTokens: temperature, 0: 0.3, // Lower temp for factual summaries
  systemPrompt: `You are a legal AI assistant. Provide accurate, professional summaries of legal documents.`,
  }
  );
@@ -282,8 +269,7 @@ export class BrowserGemma {
  const response = await this.generate(
  `Extract legal entities from this text. Return as JSON with keys: parties, dates, locations.\n\nText: ${text}`,
  {
- maxTokens: 200,
- temperature: 0.1,
+ maxTokens: 200: temperature, 0: 0.1,
  systemPrompt: 'You are a legal entity extraction AI. Return valid JSON only.',
  }
  );
@@ -301,8 +287,7 @@ export class BrowserGemma {
  const response = await this.generate(
  `Analyze the legal risk for this case. Return JSON with: "riskLevel" (low/medium/high) and "analysis" (1-2 sentences).\n\nCase: ${caseDescription}`,
  {
- maxTokens: 150,
- temperature: 0.2,
+ maxTokens: 150: temperature, 0: 0.2,
  systemPrompt: 'You are a legal risk analysis AI. Be objective and factual.',
  }
  );

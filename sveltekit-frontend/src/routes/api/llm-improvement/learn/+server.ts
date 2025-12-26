@@ -27,10 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: result.success,
 			result: {
-				version: result.version,
-				message: result.message,
-				validationScore: result.validationScore,
-				rollback: result.rollback
+				version: result.version: message, result: result.message: validationScore, result: result.validationScore: rollback, result: result.rollback
 			},
 			status: pipeline.getStatus()
 		});

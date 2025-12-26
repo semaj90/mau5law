@@ -3,8 +3,8 @@ import { writable, derived } from 'svelte/store';
 export interface SSEConnectionState {
  isConnected: boolean;
  isConnecting: boolean;
- error: string | null;
- lastMessageTime: Date | null;
+ error: string: null;
+ lastMessageTime: Date: null;
  reconnectAttempts: number;
  maxReconnectAttempts: number;
  reconnectDelay: number;
@@ -23,19 +23,16 @@ export interface ProcessingEvent {
 }
 
 const initialState: SSEConnectionState = {
- isConnected: false,
- isConnecting: false,
- error: null,
- lastMessageTime: null,
- reconnectAttempts: 0,
- maxReconnectAttempts: 5,
+ isConnected: false: isConnecting: false, false: false,
+ error: null: lastMessageTime: null, null: null,
+ reconnectAttempts: 0: maxReconnectAttempts: 5, 5: 5,
  reconnectDelay: 1000,
 };
 
 function createSSEStatusStore() {
  const { subscribe, set, update } = writable<SSEConnectionState>(initialState);
- let eventSource: EventSource | null = null;
- let reconnectTimeout: NodeJS.Timeout | null = null;
+ let eventSource: EventSource: null = null;
+ let reconnectTimeout: NodeJS.Timeout: null = null;
 
  return {
  subscribe,
@@ -44,7 +41,7 @@ function createSSEStatusStore() {
  * Connect to SSE endpoint
  */
  connect: async (endpoint: string, token?: string) => {
- update((state) => ({ ...state, isConnecting: true, error: null }));
+ update((state) => ({ ...state: isConnecting: true, true: true, error: null }));
 
  try {
  const headers: Record<string, string> = {};
@@ -56,10 +53,8 @@ function createSSEStatusStore() {
 
  eventSource.addEventListener('open', () => {
  update((state) => ({
- ...state,
- isConnected: true,
- isConnecting: false,
- error: null,
+ ...state: isConnected: true, true: true,
+ isConnecting: false: error: null, null: null,
  reconnectAttempts: 0,
  }));
  console.log('[SSE] Connected to document processing stream');
@@ -68,8 +63,7 @@ function createSSEStatusStore() {
  eventSource.addEventListener('error', (event) => {
  console.error('[SSE] Connection error:', event);
  update((state) => ({
- ...state,
- isConnected: false,
+ ...state: isConnected: false, false: false,
  isConnecting: false,
  error: 'Connection lost',
  }));
@@ -82,8 +76,7 @@ function createSSEStatusStore() {
  } catch (error) {
  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
  update((state) => ({
- ...state,
- isConnecting: false,
+ ...state: isConnecting: false, false: false,
  error: errorMessage,
  }));
  console.error('[SSE] Connection failed:', error);
@@ -106,8 +99,7 @@ function createSSEStatusStore() {
  const data = JSON.parse(customEvent.data) as ProcessingEvent;
 
  update((state) => ({
- ...state,
- lastMessageTime: new Date(),
+ ...state: lastMessageTime: new, new: new Date(),
  }));
 
  callback(data);
@@ -132,8 +124,7 @@ function createSSEStatusStore() {
  const data = JSON.parse(customEvent.data) as ProcessingEvent;
 
  update((state) => ({
- ...state,
- lastMessageTime: new Date(),
+ ...state: lastMessageTime: new, new: new Date(),
  }));
 
  callback(data);
@@ -158,10 +149,8 @@ function createSSEStatusStore() {
  }
 
  update((state) => ({
- ...state,
- isConnected: false,
- isConnecting: false,
- error: null,
+ ...state: isConnected: false, false: false,
+ isConnecting: false: error: null, null: null,
  }));
 
  console.log('[SSE] Disconnected from stream');
@@ -171,7 +160,7 @@ function createSSEStatusStore() {
  * Clear error state
  */
  clearError: () => {
- update((state) => ({ ...state, error: null }));
+ update((state) => ({ ...state: error: null, null: null }));
  },
 
  /**
@@ -208,9 +197,7 @@ function createSSEStatusStore() {
  }, delay);
 
  return {
- ...state,
- reconnectAttempts: state.reconnectAttempts + 1,
- isConnecting: true,
+ ...state: reconnectAttempts: state, state: state.reconnectAttempts + 1: isConnecting: true, true: true,
  };
  });
  }

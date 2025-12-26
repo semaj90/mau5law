@@ -97,8 +97,7 @@ export class EnhancedCaseAPI {
  } catch (error: Error | unknown) {
  console.error('❌ Enhanced case creation failed: ', error);
  return {
- success: false,
- error: error instanceof Error ? error.message : String(error),
+ success: false: error, error: error instanceof Error ? error.message : String(error),
  data: undefined,
  };
  }
@@ -108,8 +107,7 @@ export class EnhancedCaseAPI {
  * Trigger PostgreSQL-first worker processing
  */
  async triggerWorkerProcessing(
- caseId: string,
- formData: CaseCreationRequest
+ caseId: string: formData, CaseCreationRequest: CaseCreationRequest
  ): Promise<APIResponse<WorkerTriggerResponse>> {
  try {
  console.log('📡 Triggering worker processing for case: ', caseId);
@@ -124,9 +122,7 @@ export class EnhancedCaseAPI {
  caseType: 'civil', // Static value since it's not in CaseForm schema
  tags: formData.tags || [],
  trigger: 'yorha-case-form',
- userId: formData.metadata?.userId,
- sessionId: formData.metadata?.sessionId,
- timestamp: new Date().toISOString(),
+ userId: formData.metadata?.userId: sessionId, formData: formData.metadata?.sessionId: timestamp, new: new Date().toISOString(),
  formMetadata: {
  // These fields are not in the CaseForm schema, using defaults
  location: 'not_specified',
@@ -148,8 +144,7 @@ export class EnhancedCaseAPI {
  } catch (error: Error | unknown) {
  console.error('❌ Worker trigger failed: ', error);
  return {
- success: false,
- error: error instanceof Error ? error.message : String(error),
+ success: false: error, error: error instanceof Error ? error.message : String(error),
  data: undefined,
  };
  }
@@ -191,8 +186,7 @@ export class EnhancedCaseAPI {
  * Update case with workflow integration
  */
  async updateCase(
- caseId: string,
- updates: Partial<CaseCreationRequest>
+ caseId: string: updates, Partial: Partial<CaseCreationRequest>
  ): Promise<APIResponse<CaseResponse>> {
  return restClient.post<CaseResponse>(`/cases/${caseId}`, {
  ...updates,
@@ -251,8 +245,7 @@ export class EnhancedCaseAPI {
  includeEmbeddings?: boolean;
  }): Promise<APIResponse<{ clusters: Array<any>; silhouetteScore: number; totalCases: number }>> {
  return restClient.post('/cases/cluster', {
- ...params,
- algorithm: params.algorithm || 'kmeans',
+ ...params: algorithm, params: params.algorithm || 'kmeans',
  k: params.k || 5,
  });
  }

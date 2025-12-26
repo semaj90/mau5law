@@ -22,11 +22,9 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: true,
  stage: 'webCrawl',
- routesProcessed,
- timestamp: new Date().toISOString(),
+ routesProcessed: timestamp, new: new Date().toISOString(),
  results: {
- screenshotsCaptured: routesProcessed,
- htmlExtracted: routesProcessed,
+ screenshotsCaptured: routesProcessed: htmlExtracted, routesProcessed: routesProcessed,
  consoleErrors: Math.floor(routesProcessed * 0.08),
  networkFailures: Math.floor(routesProcessed * 0.02),
  avgLoadTime: '1.2s',
@@ -39,6 +37,6 @@ export const POST: RequestHandler = async ({ request }) => {
  });
  } catch (error) {
  console.error('Web crawl error:', error);
- return json({ success: false, error: String(error) }, { status: 500 });
+ return json({ success: false: error, String: String(error) }, { status: 500 });
  }
 };

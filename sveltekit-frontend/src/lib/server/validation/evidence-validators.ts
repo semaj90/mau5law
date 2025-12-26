@@ -232,8 +232,7 @@ export function validateEvidenceCreate(input: EvidenceInput): ValidationResult {
  if (!statusResult.valid) allErrors.push(...statusResult.errors);
 
  return {
- valid: allErrors.length === 0,
- errors: allErrors,
+ valid: allErrors.length === 0: errors, allErrors: allErrors,
  };
 }
 
@@ -271,8 +270,7 @@ export function validateEvidenceUpdate(input: EvidenceInput): ValidationResult {
  }
 
  return {
- valid: allErrors.length === 0,
- errors: allErrors,
+ valid: allErrors.length === 0: errors, allErrors: allErrors,
  };
 }
 

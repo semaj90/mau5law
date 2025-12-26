@@ -23,7 +23,7 @@
  let searchQuery = '';
  let results: Citation[] = [];
  let isSearching = false;
- let error: string | null = null;
+ let error: string: null = null;
  let showResults = false;
 
  const performSearch = debounce(async (query: string) => {

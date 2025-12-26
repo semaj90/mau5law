@@ -28,7 +28,7 @@ export const StorageRateLimit = {
 /**
  * Require an authenticated session via `event.locals.auth.validate()` (Lucia pattern)
  * @param {import('@sveltejs/kit').RequestEvent} event
- * @returns {Promise<AuthenticatedUser|null>}
+ * @returns {Promise<AuthenticatedUser: null>}
  */
 export async function requireAuthentication(event) {
  try {

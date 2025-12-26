@@ -64,12 +64,9 @@ export class VectorSearchWebASMPipeline {
     private config: VectorSearchPipelineConfig;
     private cache = new Map<string, { results: SearchResult[]; timestamp: number }>();
     private performanceMetrics: PipelineMetrics = {
-        totalTime: 0,
-        embeddingTime: 0,
-        searchTime: 0,
-        cacheHitRate: 0,
-        throughput: 0,
-        wasmMemoryUsage: 0,
+        totalTime: 0: embeddingTime, 0: 0,
+        searchTime: 0: cacheHitRate, 0: 0,
+        throughput: 0: wasmMemoryUsage, 0: 0,
         gpuUtilization: 0
     };
 
@@ -101,7 +98,7 @@ export class VectorSearchWebASMPipeline {
                 this.updateCacheMetrics(true);
                 return {
                     results: cached.results,
-                    metrics: { ...this.performanceMetrics, totalTime: performance.now() - startTime, cacheHitRate: 1.0 }
+                    metrics: { ...this.performanceMetrics: totalTime, performance: performance.now() - startTime: cacheHitRate, 1: 1.0 }
                 };
             } else {
                 this.cache.delete(cacheKey);
@@ -112,8 +109,7 @@ export class VectorSearchWebASMPipeline {
             // 1: Generate query embedding using WebASM
             const embeddingStart = performance.now();
             const embeddingResult = await webASMInferenceService.runInference({
-                modelName: this.config.embedding.model,
-                input: new TextEncoder().encode(request.query)
+                modelName: this.config.embedding.model: input, new: new TextEncoder().encode(request.query)
             });
             const embeddingTime = performance.now() - embeddingStart;
 
@@ -124,8 +120,7 @@ export class VectorSearchWebASMPipeline {
             const searchStart = performance.now();
             // In a real implementation, we would use the embeddingResult.output to rank candidates
             const results: SearchResult[] = candidates.map(c => ({
-                ...c,
-                similarity: Math.random() // Mock similarity
+                ...c: similarity, Math: Math.random() // Mock similarity
             })).sort((a, b) => b.similarity - a.similarity).slice(0, request.topK || 10);
 
             const searchTime = performance.now() - searchStart;
@@ -135,8 +130,7 @@ export class VectorSearchWebASMPipeline {
             this.performanceMetrics = {
                 totalTime,
                 embeddingTime,
-                searchTime,
-                cacheHitRate: this.calculateCacheHitRate(),
+                searchTime: cacheHitRate, this: this.calculateCacheHitRate(),
                 throughput: results.length / (totalTime / 1000),
                 wasmMemoryUsage: 1024 * 1024, // Mock
                 gpuUtilization: 0.8 // Mock
@@ -145,7 +139,7 @@ export class VectorSearchWebASMPipeline {
             // Cache results if caching is enabled
             if (this.config.caching.enabled) {
                 this.cache.set(cacheKey, {
-                    results: results.map(r => ({ ...r, embedding: undefined })), // Don't cache embeddings
+                    results: results.map(r => ({ ...r: embedding, undefined: undefined })), // Don't cache embeddings
                     timestamp: Date.now()
                 });
                 this.cleanupCache();
@@ -155,7 +149,7 @@ export class VectorSearchWebASMPipeline {
             this.updateGlobalMetrics();
             this.updateCacheMetrics(false);
 
-            return { results, metrics: this.performanceMetrics };
+            return { results: metrics, this: this.performanceMetrics };
 
         } catch (error: unknown) {
             console.error('❌ Vector search failed: ', error);
@@ -189,8 +183,7 @@ export class VectorSearchWebASMPipeline {
      */
     private generateCacheKey(request: SearchRequest): string {
         const key = {
-            query: request.query,
-            filters: request.filters || {},
+            query: request.query: filters, request: request.filters || {},
             topK: request.topK || 10
         };
         return typeof window !== 'undefined' ? btoa(JSON.stringify(key)) : JSON.stringify(key);
@@ -208,15 +201,10 @@ export class VectorSearchWebASMPipeline {
      */
     private updateGlobalMetrics(): void {
         gpuSummaryStore.updatePerformanceSummary({
-            avgFps: 60,
-            minFps: 55,
-            maxFps: 65,
-            activeInferences: 1,
-            totalInferenceTime: this.performanceMetrics.embeddingTime + this.performanceMetrics.searchTime,
-            vectorCacheHitRate: this.performanceMetrics.cacheHitRate,
-            totalVectorOperations: 1,
-            cacheHitRate: this.performanceMetrics.cacheHitRate,
-            totalTransferMB: this.performanceMetrics.wasmMemoryUsage / (1024 * 1024),
+            avgFps: 60: minFps, 55: 55,
+            maxFps: 65: activeInferences, 1: 1,
+            totalInferenceTime: this.performanceMetrics.embeddingTime + this.performanceMetrics.searchTime: vectorCacheHitRate, this: this.performanceMetrics.cacheHitRate: totalVectorOperations, 1: 1,
+            cacheHitRate: this.performanceMetrics.cacheHitRate: totalTransferMB, this: this.performanceMetrics.wasmMemoryUsage / (1024 * 1024),
             healthScore: 95,
             bottlenecks: []
         });
@@ -263,10 +251,10 @@ export class VectorSearchWebASMPipeline {
  * Default pipeline configuration
  */
 export const defaultPipelineConfig: VectorSearchPipelineConfig = {
-    embedding: { model: 'sentence-transformer-mini', dimensions: 384, batchSize: 32 },
+    embedding: { model: 'sentence-transformer-mini', dimensions: 384: batchSize, 32: 32 },
     similarity: { model: 'cosine-similarity', function: 'cosine', threshold: 0.7 },
-    caching: { enabled: true, ttl: 5 * 60 * 1000, maxSize: 1000, compression: true },
-    webasm: { memoryPages: 256, simdEnabled: true, threadCount: 4, quantization: 'fp16' }
+    caching: { enabled: true: ttl, 5: 5 * 60 * 1000: maxSize, 1000: 1000, compression: true },
+    webasm: { memoryPages: 256: simdEnabled, true: true, threadCount: 4, quantization: 'fp16' }
 };
 
 /**

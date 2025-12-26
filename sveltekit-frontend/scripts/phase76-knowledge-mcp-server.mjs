@@ -23,6 +23,7 @@ import chalk from 'chalk';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import { Client } from 'minio';
 import fetch from 'node-fetch';
 
 dotenv.config();
@@ -46,10 +47,32 @@ const CONFIG = {
 		url: process.env.OLLAMA_URL || 'http://localhost:11434',
 		embeddingModel: process.env.EMBEDDING_MODEL || 'embeddinggemma:latest',
 		chatModel: process.env.OLLAMA_MODEL || 'gemma3-legal:latest'
+	},
+	minio: {
+		endPoint: process.env.MINIO_ENDPOINT?.split(':')[0] || 'localhost',
+		port: parseInt(process.env.MINIO_ENDPOINT?.split(':')[1] || '9000'),
+		useSSL: process.env.MINIO_USE_SSL === 'true',
+		accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+		secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
+		bucket: 'knowledge-base'
 	}
 };
 
 const qdrant = new QdrantClient({ url: CONFIG.qdrant.url });
+const minioClient = new Client(CONFIG.minio);
+
+// Ensure bucket exists
+(async () => {
+	try {
+		const exists = await minioClient.bucketExists(CONFIG.minio.bucket);
+		if (!exists) {
+			await minioClient.makeBucket(CONFIG.minio.bucket, 'us-east-1');
+			console.log(chalk.green(`   ✅ Created MinIO bucket: ${CONFIG.minio.bucket}`));
+		}
+	} catch (err) {
+		console.warn(chalk.yellow(`   ⚠️  MinIO bucket check failed: ${err.message}`));
+	}
+})();
 
 // ═══════════════════════════════════════════════════════════════════════
 // MCP Tool Registry
@@ -280,6 +303,19 @@ async function toolIndex(params) {
 			}
 		}]
 	});
+
+	// Save to MinIO
+	try {
+		const key = `docs/${new Date().toISOString().split('T')[0]}/${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+		await minioClient.putObject(CONFIG.minio.bucket, key, content, {
+			'x-amz-meta-title': title,
+			'x-amz-meta-url': url,
+			'x-amz-meta-summary': summary ? encodeURIComponent(summary.substring(0, 100)) : ''
+		});
+		console.log(chalk.gray(`   💾 Saved to MinIO: ${key}`));
+	} catch (err) {
+		console.error(chalk.red(`   ❌ MinIO save failed: ${err.message}`));
+	}
 
 	return {
 		success: true,

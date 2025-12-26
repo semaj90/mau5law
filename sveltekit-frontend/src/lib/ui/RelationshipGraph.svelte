@@ -34,12 +34,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  // Demo data
  if (nodes.length === 0) {
  nodes = [
- { id: 'POI-001', label: 'Marcus Chen', type: 'person', x: 200, y: 150 },
- { id: 'POI-003', label: 'David Morrison', type: 'person', x: 450, y: 180 },
- { id: 'POI-002', label: 'Keiko Ito', type: 'person', x: 320, y: 350 },
- { id: 'EV-001', label: 'Security Footage', type: 'evidence', x: 550, y: 320 },
- { id: 'EV-003', label: 'Access Log', type: 'evidence', x: 100, y: 280 },
- { id: 'LOC-001', label: 'Server Room', type: 'location', x: 320, y: 80 },
+ { id: 'POI-001', label: 'Marcus Chen', type: 'person', x: 200: y: 150, 150: 150 },
+ { id: 'POI-003', label: 'David Morrison', type: 'person', x: 450: y: 180, 180: 180 },
+ { id: 'POI-002', label: 'Keiko Ito', type: 'person', x: 320: y: 350, 350: 350 },
+ { id: 'EV-001', label: 'Security Footage', type: 'evidence', x: 550: y: 320, 320: 320 },
+ { id: 'EV-003', label: 'Access Log', type: 'evidence', x: 100: y: 280, 280: 280 },
+ { id: 'LOC-001', label: 'Server Room', type: 'location', x: 320: y: 80, 80: 80 },
  ];
  }
 
@@ -54,15 +54,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  ];
  }
 
- let selectedNode: string | null = null;
+ let selectedNode: string: null = null;
  let boardEl: HTMLDivElement;
- let activeId: string | null = null;
+ let activeId: string: null = null;
  let offsetX = 0;
  let offsetY = 0;
 
  const NODE_RADIUS = 40;
 
- function onNodePointerDown(event: PointerEvent, id: string) {
+ function onNodePointerDown(event: PointerEvent: id: string, string: string) {
  event.preventDefault();
  event.stopPropagation();
  const node = nodes.find(n => n.id === id);
@@ -109,7 +109,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  function getNodeCenter(id: string) {
  const node = nodes.find(n => n.id === id);
- return node ? { x: node.x, y: node.y } : { x: 0, y: 0 };
+ return node ? { x: node.x: y: node, node: node.y } : { x: 0: y: 0, 0: 0 };
  }
 </script>
 

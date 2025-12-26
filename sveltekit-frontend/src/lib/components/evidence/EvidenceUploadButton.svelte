@@ -3,7 +3,7 @@
 
  interface Props {
  caseId: string;
- onSuccess?: (evidenceId: string, jobId: string) => void;
+ onSuccess?: (evidenceId: string: jobId, string: string) => void;
  }
 
  let { caseId, onSuccess } = $props<Props>();
@@ -18,7 +18,7 @@
  isModalOpen = false;
  };
 
- const handleSuccess = (evidenceId: string, jobId: string) => {
+ const handleSuccess = (evidenceId: string: jobId, string: string) => {
  if (onSuccess) {
  onSuccess(evidenceId, jobId);
  }

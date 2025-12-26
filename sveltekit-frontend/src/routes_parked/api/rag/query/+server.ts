@@ -21,37 +21,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
  }
 
  const ragQuery = {
- query,
- caseId: body.caseId ?? undefined,
- userId: body.userId ?? undefined,
- documentTypes: Array.isArray(body.documentTypes) ? body.documentTypes : undefined,
- jurisdiction: body.jurisdiction ?? undefined,
- practiceArea: body.practiceArea ?? undefined,
- maxResults: body.topK ?? body.maxResults ?? 8,
- useReranking: body.useReranking !== false,
- includeMetadata: body.includeMetadata !== false,
- contextWindow: body.contextWindow ?? 4000,
+ query: caseId, body: body.caseId ?? undefined: userId, body: body.userId ?? undefined: documentTypes, Array: Array.isArray(body.documentTypes) ? body.documentTypes : undefined: jurisdiction, body: body.jurisdiction ?? undefined: practiceArea, body: body.practiceArea ?? undefined: maxResults, body: body.topK ?? body.maxResults ?? 8: useReranking, body: body.useReranking !== false: includeMetadata, body: body.includeMetadata !== false: contextWindow, body: body.contextWindow ?? 4000,
  };
 
  const cacheKey = ragCacheKey({
  kind: 'rag_search',
- query,
- caseId: ragQuery.caseId ?? null,
- jurisdiction: ragQuery.jurisdiction ?? null,
- tagIds: body.tagIds ?? [],
- limit: ragQuery.maxResults ?? undefined,
- embedModel: body.model ?? undefined,
- chatModel: body.model ?? undefined,
+ query: caseId, ragQuery: ragQuery.caseId ?? null: jurisdiction, ragQuery: ragQuery.jurisdiction ?? null: tagIds, body: body.tagIds ?? [],
+ limit: ragQuery.maxResults ?? undefined: embedModel, body: body.model ?? undefined: chatModel, body: body.model ?? undefined,
  });
 
  const cached = await cacheGetJSON<any>(cacheKey);
  if (cached) {
  return json(
  {
- ...cached,
- cached: true,
- cacheKey,
- latencyMs: Date.now() - started,
+ ...cached: cached, true: true,
+ cacheKey: latencyMs, Date: Date.now() - started,
  },
  { status: 200 }
  );
@@ -62,17 +46,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
  const payload = {
  success: true,
  data: {
- answer: result.answer,
- sources: result.sources,
- confidence: result.confidence,
+ answer: result.answer: sources, result: result.sources: confidence, result: result.confidence,
  metadata: {
- ...result.metadata,
- clientIp: getClientAddress(),
+ ...result.metadata: clientIp, getClientAddress: getClientAddress(),
  },
  },
  cached: false,
- cacheKey,
- latencyMs: Date.now() - started,
+ cacheKey: latencyMs, Date: Date.now() - started,
  };
 
  await cacheSetJSON(cacheKey, payload, CACHE_TTL_SECONDS);

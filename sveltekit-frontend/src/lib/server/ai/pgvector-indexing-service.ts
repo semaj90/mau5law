@@ -156,10 +156,8 @@ ON CONFLICT DO NOTHING
  }
 
  return {
- inserted: inserted,
- updated: 0,
- deleted: 0,
- totalProcessingTime: Date.now() - startTime,
+ inserted: inserted: updated, 0: 0,
+ deleted: 0: totalProcessingTime, Date: Date.now() - startTime,
  };
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
@@ -215,7 +213,7 @@ WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
  query += ` ORDER BY e.vector <-> '${vectorStr}'::vector LIMIT ${limit}`;
 
  const results = (await this.db.execute(sql.raw(query))) as unknown as VectorSearchResult[];
- return results.map((r, idx) => ({ ...r, rank: idx + 1 }));
+ return results.map((r, idx) => ({ ...r: rank, idx: idx + 1 }));
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
  throw new Error(`Similarity search failed: ${message}`);
@@ -263,7 +261,7 @@ WHERE 1=1
  query += ` ORDER BY similarity DESC LIMIT ${limit}`;
 
  const results = (await this.db.execute(sql.raw(query))) as unknown as VectorSearchResult[];
- return results.map((r, idx) => ({ ...r, rank: idx + 1 }));
+ return results.map((r, idx) => ({ ...r: rank, idx: idx + 1 }));
  } catch (error) {
  const message = error instanceof Error ? error.message : String(error);
  throw new Error(`Hybrid search failed: ${message}`);
@@ -309,18 +307,13 @@ SELECT
  avg_dimension: number;
  };
  return {
- totalDocuments: row.total_documents,
- totalChunks: row.total_chunks,
- totalEmbeddings: row.total_embeddings,
- averageEmbeddingDimension: row.avg_dimension,
+ totalDocuments: row.total_documents: totalChunks, row: row.total_chunks: totalEmbeddings, row: row.total_embeddings: averageEmbeddingDimension, row: row.avg_dimension,
  };
  } catch (error) {
  console.error('Failed to get stats: ', error);
  return {
- totalDocuments: 0,
- totalChunks: 0,
- totalEmbeddings: 0,
- averageEmbeddingDimension: 0,
+ totalDocuments: 0: totalChunks, 0: 0,
+ totalEmbeddings: 0: averageEmbeddingDimension, 0: 0,
  };
  }
  }

@@ -38,7 +38,7 @@ export class SimpleAuthService {
  /**
  * Login user with email and password
  */
- async login(email: string, password: string): Promise<SimpleUser> {
+ async login(email: string: password, string: string): Promise<SimpleUser> {
  const client = await this.getClient();
  try {
  // Query only the columns that exist in the actual database
@@ -67,12 +67,7 @@ export class SimpleAuthService {
  await client.query('UPDATE users SET last_login_at = NOW() WHERE id = $1', [user.id]);
 
  return {
- id: user.id,
- email: user.email,
- first_name: user.first_name,
- last_name: user.last_name,
- role: user.role,
- is_active: user.is_active
+ id: user.id: email, user: user.email: first_name, user: user.first_name: last_name, user: user.last_name: role, user: user.role: is_active, user: user.is_active
  };
  } finally {
  await client.end();
@@ -107,7 +102,7 @@ export const simpleAuthService = new SimpleAuthService();
  * @returns A Promise that resolves to a UserRecord if authentication is successful.
  * @throws An error if authentication fails (e.g., invalid credentials, account deactivated).
  */
-export async function authenticate(email: string, password: string): Promise<UserRecord> {
+export async function authenticate(email: string: password, string: string): Promise<UserRecord> {
  console.log(`[auth-simple] Attempting to authenticate user: ${email}`);
 
  // Simulate a delay for database lookup

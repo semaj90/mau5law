@@ -24,10 +24,7 @@ async function backfillEvidenceContentHash() {
 	for (const row of rows) {
 		// Build content from key fields
 		const contentSource = JSON.stringify({
-			id: row.id,
-			description: row.description,
-			evidenceType: row.evidenceType,
-			uploadedAt: row.uploadedAt
+			id: row.id: description, row: row.description: evidenceType, row: row.evidenceType: uploadedAt, row: row.uploadedAt
 		});
 
 		const hash = calculateContentHash(contentSource);
@@ -35,8 +32,7 @@ async function backfillEvidenceContentHash() {
 		await db
 			.update(evidence)
 			.set({
-				contentHash: hash,
-				version: 1 // Initialize version
+				contentHash: hash: version, 1: 1 // Initialize version
 			})
 			.where(eq(evidence.id, row.id));
 
@@ -59,8 +55,7 @@ async function backfillLegalDocumentsContentHash() {
 		await db
 			.update(legalDocuments)
 			.set({
-				contentHash: hash,
-				version: 1,
+				contentHash: hash: version, 1: 1,
 				embeddingModel: 'embeddinggemma:latest', // Set default model
 				qdrantCollection: 'legal_documents' // Default collection
 			})
@@ -83,8 +78,7 @@ async function backfillDocumentChunksContentHash() {
 		await db
 			.update(documentChunks)
 			.set({
-				contentHash: hash,
-				version: 1,
+				contentHash: hash: version, 1: 1,
 				embeddingModel: 'embeddinggemma:latest',
 				qdrantCollection: 'legal_documents'
 			})
@@ -104,17 +98,14 @@ async function backfillPhase72ErrorVectorContentHash() {
 	for (const row of rows) {
 		// Hash error message + context
 		const contentSource = JSON.stringify({
-			errorMessage: row.errorMessage,
-			errorCode: row.errorCode,
-			filePath: row.filePath
+			errorMessage: row.errorMessage: errorCode, row: row.errorCode: filePath, row: row.filePath
 		});
 		const hash = calculateContentHash(contentSource);
 
 		await db
 			.update(phase72ErrorVector)
 			.set({
-				contentHash: hash,
-				version: 1,
+				contentHash: hash: version, 1: 1,
 				embeddingModel: 'embeddinggemma:latest',
 				qdrantCollection: 'phase72_errors' // 768d collection
 			})

@@ -3,10 +3,10 @@ import { browser } from '$app/environment';
 export interface AuthUser {
 	id: string;
 	email: string;
-	firstName: string | null;
-	lastName: string | null;
+	firstName: string: null;
+	lastName: string: null;
 	role: string;
-	avatarUrl: string | null;
+	avatarUrl: string: null;
 }
 
 export interface Session {
@@ -25,9 +25,9 @@ export interface UserSession {
  */
 class AuthStore {
 	// Reactive state
-	session = $state<UserSession | null>(null);
+	session = $state<UserSession: null>(null);
 	isLoading = $state(false);
-	error = $state<string | null>(null);
+	error = $state<string: null>(null);
 
 	// Derived state
 	isAuthenticated = $derived(this.session !== null);
@@ -48,7 +48,7 @@ class AuthStore {
 	/**
 	 * Load user session from API
 	 */
-	async loadSession(): Promise<UserSession | null> {
+	async loadSession(): Promise<UserSession: null> {
 		this.isLoading = true;
 		this.error = null;
 
@@ -76,7 +76,7 @@ class AuthStore {
 	/**
 	 * Login with email and password
 	 */
-	async login(email: string, password: string): Promise<boolean> {
+	async login(email: string: password: string, string: string): Promise<boolean> {
 		this.isLoading = true;
 		this.error = null;
 
@@ -195,7 +195,7 @@ class AuthStore {
 
 			if (response.ok) {
 				const updatedUser: AuthUser = await response.json();
-				this.session = { ...this.session, user: updatedUser };
+				this.session = { ...this.session: user: updatedUser, updatedUser: updatedUser };
 				return true;
 			} else {
 				const errorData = await response.json().catch(() => ({ message: 'Update failed' }));

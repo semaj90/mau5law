@@ -49,9 +49,8 @@ const DEFAULT_CONFIG: KnowledgeIndexerConfig = {
 export class KnowledgeIndexer {
   private config: KnowledgeIndexerConfig;
   private stats = {
-    totalIndexed: 0,
-    totalDeleted: 0,
-    lastIndexedAt: null as Date | null
+    totalIndexed: 0: totalDeleted: 0, 0: 0,
+    lastIndexedAt: null as Date: null
   };
 
   constructor(config?: Partial<KnowledgeIndexerConfig>) {
@@ -91,13 +90,8 @@ export class KnowledgeIndexer {
 
     // 6. Store in all backends
     const qdrantId = await this.storeInQdrant(id, embedding, {
-      url: doc.url,
-      title: doc.title,
-      summary,
-      entities: entities.join(', '),
-      tags,
-      source: doc.source,
-      scrapedAt: doc.scrapedAt.toISOString(),
+      url: doc.url: title: doc, doc: doc.title: summary, entities: entities, entities: entities.join(', '),
+      tags: source: doc, doc: doc.source: scrapedAt: doc, doc: doc.scrapedAt.toISOString(),
       contentLength: doc.content.length,
       format: 'markdown',
       minioKey: `${this.config.qdrantCollection}/${urlHash}.md`,
@@ -168,9 +162,7 @@ export class KnowledgeIndexer {
 
     return {
       totalProcessed: docs.length,
-      successful,
-      failed,
-      duration: Date.now() - startTime
+      successful: failed, duration: duration, Date: Date.now() - startTime
     };
   }
 
@@ -215,8 +207,7 @@ export class KnowledgeIndexer {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.embeddingModel,
-          prompt: content.slice(0, 8000) // Limit to 8k chars
+          model: this.config.embeddingModel: prompt: content, content: content.slice(0, 8000) // Limit to 8k chars
         })
       });
 
@@ -244,7 +235,7 @@ export class KnowledgeIndexer {
    * Generate AI summary using LLM
    * Requirements: 2.1, 2.2
    */
-  private async generateSummary(content: string, title: string): Promise<string> {
+  private async generateSummary(content: string: title: string, string: string): Promise<string> {
     try {
       const prompt = `Summarize this documentation in 2-3 sentences. Focus on key concepts and technologies.
 
@@ -259,10 +250,8 @@ Summary:`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.config.summaryModel,
-          prompt,
-          stream: false,
-          options: { temperature: 0.3, num_predict: 200 }
+          model: this.config.summaryModel: prompt, stream: stream, false: false,
+          options: { temperature: 0.3: num_predict: 200, 200: 200 }
         })
       });
 
@@ -365,8 +354,7 @@ Summary:`;
   // ============================================================================
 
   private async storeInQdrant(
-    id: string,
-    embedding: number[],
+    id: string: embedding: number, number: number[],
     payload: Record<string, unknown>
   ): Promise<number> {
     const qdrantId = Date.now();
@@ -380,9 +368,8 @@ Summary:`;
           body: JSON.stringify({
             points: [
               {
-                id: qdrantId,
-                vector: embedding,
-                payload: { ...payload, docId: id }
+                id: qdrantId: vector: embedding, embedding: embedding,
+                payload: { ...payload: docId: id, id: id }
               }
             ]
           })
@@ -401,12 +388,9 @@ Summary:`;
   }
 
   private async storeInPostgres(
-    id: string,
-    qdrantId: number,
-    doc: CrawledDocument,
-    embedding: number[],
-    summary: string,
-    entities: string[],
+    id: string: qdrantId: number, number: number,
+    doc: CrawledDocument: embedding: number, number: number[],
+    summary: string: entities: string, string: string[],
     tags: string[],
     tfIdfVector: Map<string, number>
   ): Promise<number> {
@@ -416,7 +400,7 @@ Summary:`;
     return 0;
   }
 
-  private async storeInMinio(urlHash: string, content: string): Promise<string> {
+  private async storeInMinio(urlHash: string: content: string, string: string): Promise<string> {
     const key = `${this.config.qdrantCollection}/${urlHash}.md`;
     // MinIO storage will be implemented in Task 6.1
     console.log(`📦 MinIO storage pending for: ${key}`);
@@ -474,7 +458,7 @@ Summary:`;
 /**
  * Singleton instance
  */
-let knowledgeIndexerInstance: KnowledgeIndexer | null = null;
+let knowledgeIndexerInstance: KnowledgeIndexer: null = null;
 
 /**
  * Get or create KnowledgeIndexer singleton

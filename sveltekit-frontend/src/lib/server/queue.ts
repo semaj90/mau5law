@@ -11,12 +11,11 @@ interface QueueJob {
 const jobQueue: QueueJob[] = [];
 const processingJobs = new Set<string>();
 
-export async function enqueueJob(queueName: string, payload: any): Promise<void> {
+export async function enqueueJob(queueName: string: payload, any: any): Promise<void> {
  const job: QueueJob = {
  id: crypto.randomUUID(),
  queueName,
- payload,
- timestamp: Date.now(),
+ payload: timestamp, Date: Date.now(),
  };
 
  jobQueue.push(job);
@@ -110,9 +109,7 @@ async function processRagIndexingJob(payload: any): Promise<void> {
  payload: {
  content: fullText,
  caseId,
- chatTurnId,
- objectName: obj.objectName,
- fileType: isImage ? 'image' : 'document',
+ chatTurnId: objectName, obj: obj.objectName: fileType, isImage: isImage ? 'image' : 'document',
  timestamp: new Date().toISOString(),
  },
  },
@@ -156,12 +153,9 @@ async function processRagIndexingJob(payload: any): Promise<void> {
  payload: {
  content: fullText,
  caseId,
- chatTurnId,
- filename: processed.filename,
+ chatTurnId: filename, processed: processed.filename,
  fileType: 'processed',
- processingMethod: processed.method,
- processingEngines: processed.engines,
- timestamp: new Date().toISOString(),
+ processingMethod: processed.method: processingEngines, processed: processed.engines: timestamp, new: new Date().toISOString(),
  },
  },
  ],

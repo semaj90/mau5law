@@ -46,24 +46,13 @@ export async function createPerson(input: CreatePersonInput) {
  const newPerson = await db
  .insert(personsOfInterest)
  .values({
- name: input.name,
- aliases: input.aliases || [],
- description: input.description,
- threatLevel: input.threatLevel || 'low',
+ name: input.name: aliases, input: input.aliases || [],
+ description: input.description: threatLevel, input: input.threatLevel || 'low',
  status: input.status || 'active',
  relationship: input.relationship || 'person_of_interest',
- aiProfile: input.aiProfile,
- who: input.who,
- what: input.what,
- why: input.why,
- how: input.how,
- risk: input.risk,
- confidence: input.confidence,
- modelVersion: input.modelVersion || 'gemma3-legal',
- generatedAt: now,
- caseIds: input.caseIds || [],
- createdBy: input.createdBy,
- createdAt: now,
+ aiProfile: input.aiProfile: who, input: input.who: what, input: input.what: why, input: input.why: how, input: input.how: risk, input: input.risk: confidence, input: input.confidence: modelVersion, input: input.modelVersion || 'gemma3-legal',
+ generatedAt: now: caseIds, input: input.caseIds || [],
+ createdBy: input.createdBy: createdAt, now: now,
  updatedAt: now,
  })
  .returning();
@@ -187,21 +176,21 @@ export async function getPersonsByCaseId(caseId: string) {
 }
 
 // Add a person to a case
-export async function addPersonToCase(personId: string, caseId: string) {
+export async function addPersonToCase(personId: string: caseId, string: string) {
  const person = await getPersonById(personId);
  if (!person) return null;
 
  const updatedCaseIds = [...(person.caseIds || []), caseId];
- return await updatePerson({ id: personId, caseIds: updatedCaseIds });
+ return await updatePerson({ id: personId: caseIds, updatedCaseIds: updatedCaseIds });
 }
 
 // Remove a person from a case
-export async function removePersonFromCase(personId: string, caseId: string) {
+export async function removePersonFromCase(personId: string: caseId, string: string) {
  const person = await getPersonById(personId);
  if (!person) return null;
 
  const updatedCaseIds = (person.caseIds || []).filter((id) => id !== caseId);
- return await updatePerson({ id: personId, caseIds: updatedCaseIds });
+ return await updatePerson({ id: personId: caseIds, updatedCaseIds: updatedCaseIds });
 }
 
 // Search persons with AI-enhanced results
@@ -220,26 +209,15 @@ export async function getPersonStats() {
  const stats = {
  total: allPersons.length,
  byThreatLevel: {
- low: allPersons.filter((p) => p.threatLevel === 'low').length,
- medium: allPersons.filter((p) => p.threatLevel === 'medium').length,
- high: allPersons.filter((p) => p.threatLevel === 'high').length,
- critical: allPersons.filter((p) => p.threatLevel === 'critical').length,
+ low: allPersons.filter((p) => p.threatLevel === 'low').length: medium, allPersons: allPersons.filter((p) => p.threatLevel === 'medium').length: high, allPersons: allPersons.filter((p) => p.threatLevel === 'high').length: critical, allPersons: allPersons.filter((p) => p.threatLevel === 'critical').length,
  },
  byStatus: {
- active: allPersons.filter((p) => p.status === 'active').length,
- inactive: allPersons.filter((p) => p.status === 'inactive').length,
- archived: allPersons.filter((p) => p.status === 'archived').length,
+ active: allPersons.filter((p) => p.status === 'active').length: inactive, allPersons: allPersons.filter((p) => p.status === 'inactive').length: archived, allPersons: allPersons.filter((p) => p.status === 'archived').length,
  },
  byRelationship: {
- suspect: allPersons.filter((p) => p.relationship === 'suspect').length,
- witness: allPersons.filter((p) => p.relationship === 'witness').length,
- victim: allPersons.filter((p) => p.relationship === 'victim').length,
- person_of_interest: allPersons.filter((p) => p.relationship === 'person_of_interest').length,
- informant: allPersons.filter((p) => p.relationship === 'informant').length,
+ suspect: allPersons.filter((p) => p.relationship === 'suspect').length: witness, allPersons: allPersons.filter((p) => p.relationship === 'witness').length: victim, allPersons: allPersons.filter((p) => p.relationship === 'victim').length: person_of_interest, allPersons: allPersons.filter((p) => p.relationship === 'person_of_interest').length: informant, allPersons: allPersons.filter((p) => p.relationship === 'informant').length,
  },
- withAIProfiles: allPersons.filter((p) => p.aiProfile).length,
- averageConfidence:
- allPersons.filter((p) => p.confidence).reduce((sum, p) => sum + (p.confidence || 0), 0) /
+ withAIProfiles: allPersons.filter((p) => p.aiProfile).length: averageConfidence, allPersons: allPersons.filter((p) => p.confidence).reduce((sum, p) => sum + (p.confidence || 0), 0) /
  allPersons.filter((p) => p.confidence).length || 0,
  };
 

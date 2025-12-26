@@ -4,12 +4,12 @@
  import { onDestroy, onMount } from 'svelte';
 
  let container: HTMLDivElement = $state();
- let scene: MemoryPalaceScene | null = null;
+ let scene: MemoryPalaceScene: null = null;
  let query = $state('');
  let loading = $state(false);
  let chunks: any[] = $state([]);
  let alignment: any = $state(null);
- let reasoning: string | null = $state(null);
+ let reasoning: string: null = $state(null);
  let timeline: any[] = $state([]);
  let selectedChunk: any = $state(null);
 

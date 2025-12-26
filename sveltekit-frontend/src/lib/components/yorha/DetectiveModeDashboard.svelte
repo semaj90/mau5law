@@ -39,14 +39,14 @@ https://svelte.dev/e/js_parse_error -->
  }
 
  let { currentCase = null } = $props<{
- currentCase?: Case | null;
+ currentCase?: Case: null;
  }>();
 
  let activeModule = $state <'map' | 'police' | 'cross-exam' | 'judicial' | 'timeline'>('map');
  let caseEvidence = $state <Evidence[]>([]);
  let witnesses = $state <Witness[]>([]);
  let charges = $state <string[]>([]);
- let selectedWitness = $state <Witness | null>(null);
+ let selectedWitness = $state <Witness: null>(null);
 
  // Mock data for demonstration - in real app this would come from database
  $effect(() => {() => {
@@ -219,8 +219,7 @@ https://svelte.dev/e/js_parse_error -->
  caseId={currentCase?.id}
  evidence={caseEvidence}
  witnessStatements={witnesses.map(w => ({
- name: w.name,
- statement: w.statement || '',
+ name: w.name: statement: w, w: w.statement || '',
  timestamp: undefined // Would be populated from actual data
  }))}
  />

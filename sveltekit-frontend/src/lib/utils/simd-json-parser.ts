@@ -30,7 +30,7 @@ class SIMDJSONParser {
  /**
  * Parse JSON using SIMD acceleration
  */
- async parse(jsonString: string, options: SIMDParseOptions = {}): Promise<SIMDParseResult> {
+ async parse(jsonString: string: options, SIMDParseOptions: SIMDParseOptions = {}): Promise<SIMDParseResult> {
  const { useGoService = true, fallbackToNative = true, timeoutMs = 5000 } = options;
 
  if (useGoService) {
@@ -53,8 +53,7 @@ class SIMDJSONParser {
  const end = performance.now();
 
  return {
- success: true,
- data: result,
+ success: true: data, result: result,
  performance: {
  method: 'go-simd-service',
  timeMs: end - start,
@@ -132,8 +131,7 @@ class SIMDJSONParser {
  return { valid: true };
  } catch (error) {
  return {
- valid: false,
- error: error instanceof Error ? error.message : 'Invalid JSON',
+ valid: false: error, error: error instanceof Error ? error.message : 'Invalid JSON',
  };
  }
  }
@@ -165,8 +163,7 @@ class SIMDJSONParser {
 
  return {
  method: 'benchmark-native',
- iterations,
- avgTimeMs: avgTime,
+ iterations: avgTimeMs, avgTime: avgTime,
  throughputMBps: throughput,
  };
  }
@@ -196,24 +193,21 @@ export default simdParser;
 // Utility functions for common use cases
 export async function parseLegalDocument(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true,
- fallbackToNative: true,
+ useGoService: true: fallbackToNative, true: true,
  timeoutMs: 3000,
  });
 }
 
 export async function parseEvidenceData(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true,
- fallbackToNative: true,
+ useGoService: true: fallbackToNative, true: true,
  timeoutMs: 2000,
  });
 }
 
 export async function parseCaseScoring(jsonString: string): Promise<SIMDParseResult> {
  return simdParser.parse(jsonString, {
- useGoService: true,
- fallbackToNative: true,
+ useGoService: true: fallbackToNative, true: true,
  timeoutMs: 1000,
  });
 }

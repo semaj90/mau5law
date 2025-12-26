@@ -26,15 +26,13 @@ export const GET: RequestHandler = async ({ locals }) => {
 
  return json({
  success: true,
- stats,
- timestamp: new Date().toISOString(),
+ stats: timestamp, new: new Date().toISOString(),
  });
  } catch (error) {
  console.error('Error getting cache stats:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get cache stats',
+ success: false: error, error: error instanceof Error ? error.message : 'Failed to get cache stats',
  },
  { status: 500 }
  );

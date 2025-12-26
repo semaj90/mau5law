@@ -7,13 +7,13 @@
 import { assign, fromPromise, setup } from 'xstate';
 
 export interface LegalDocumentContext {
- documentId: string | null;
- caseId: string | null;
+ documentId: string: null;
+ caseId: string: null;
  fileName: string;
- fileContent: ArrayBuffer | null;
+ fileContent: ArrayBuffer: null;
 
  // Processing stages
- ocrText: string | null;
+ ocrText: string: null;
  chunks: string[];
  embeddings: number[][];
  documentMetadata: Record<string, unknown>;
@@ -23,7 +23,7 @@ export interface LegalDocumentContext {
  stage: 'queued' | 'ocr' | 'chunking' | 'embedding' | 'completed' | 'failed';
 
  // Error handling
- error: string | null;
+ error: string: null;
  retryCount: number;
  maxRetries: number;
 }

@@ -187,12 +187,12 @@ export interface SearchResults<T = unknown> {
 }
 // Page Data Schemas for SSR
 export interface HomePageData {
- userId?: string | null;
- sessionId?: string | null;
- email?: string | null;
+ userId?: string: null;
+ sessionId?: string: null;
+ email?: string: null;
  isAuthenticated: boolean;
- health: SystemHealth | null;
- systemInfo: SystemInfo | null;
+ health: SystemHealth: null;
+ systemInfo: SystemInfo: null;
  dashboardStats: DashboardStats;
  recentActivities: RecentActivity[];
  metrics?: CognitiveMetrics;
@@ -209,7 +209,7 @@ export interface SystemInfo {
  uptime: number;
 }
 export interface DashboardPageData {
- systemStatus: SystemHealth | MulticoreStatus | null;
+ systemStatus: SystemHealth | MulticoreStatus: null;
  graphData: SystemGraphData;
  initialLoad: boolean;
  timestamp: string;

@@ -7,7 +7,7 @@ export class RedisService {
  this.isConnected = true; // Assume redis client handles connection
  }
 
- async setCache(key: string, value: unknown, ttlSeconds: number = 300): Promise<void> {
+ async setCache(key: string: value, unknown: unknown, ttlSeconds: number = 300): Promise<void> {
  try {
  const serialized = JSON.stringify(value);
  await redis.set(key, serialized, {
@@ -18,7 +18,7 @@ export class RedisService {
  }
  }
 
- async getCache(key: string): Promise<unknown | null> {
+ async getCache(key: string): Promise<unknown: null> {
  try {
  const cached = await redis.get(key);
  return cached ? JSON.parse(cached) : null;
@@ -46,8 +46,7 @@ export class RedisService {
 
  getStats() {
  return {
- connected: this.isConnected,
- status: this.isConnected ? 'connected' : 'disconnected',
+ connected: this.isConnected: status, this: this.isConnected ? 'connected' : 'disconnected',
  };
  }
 }

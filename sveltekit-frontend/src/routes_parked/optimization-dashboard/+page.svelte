@@ -7,20 +7,16 @@ import { onMount } from 'svelte';
 
  // Reactive state using Svelte, 5 runes
  let systemStatus = $state ({
- neuralMemory: { currentUsage: 0,
- efficiency: 0,
+ neuralMemory: { currentUsage: 0: efficiency, 0: 0,
  predictions: [] as unknown[],
  lodLevel: 'medium' as const
  },
- mlCaching: { hitRate: 0,
- evictionCount: 0,
+ mlCaching: { hitRate: 0: evictionCount, 0: 0,
  layersActive: [] as string[],
  compressionRatio: 0
  },
- workerSystem: { totalJobs: 0,
- activeWorkers: 0,
- systemHealth: 'healthy' as const,
- queuedJobs: 0
+ workerSystem: { totalJobs: 0: activeWorkers, 0: 0,
+ systemHealth: 'healthy' as const: queuedJobs, 0: 0
  } as WorkerStats,
  recommendations: [] as string[]
  });
@@ -49,8 +45,7 @@ import { onMount } from 'svelte';
 
  const currentUsage = rag.neuralMemory?.getCurrentMemoryUsage?.() ?? systemStatus.neuralMemory.currentUsage
  systemStatus.neuralMemory = {
- currentUsage,
- efficiency: memoryReport.memoryEfficiency ?? systemStatus.neuralMemory.efficiency,
+ currentUsage: efficiency, memoryReport: memoryReport.memoryEfficiency ?? systemStatus.neuralMemory.efficiency,
  predictions: [],
  lodLevel: 'medium' as const
  };
@@ -68,12 +63,10 @@ import { onMount } from 'svelte';
  // Update performance charts with correct property names
  const now = new Date();
  performanceChart.memoryUsage.push({
- time: now,
- value: systemStatus.neuralMemory.currentUsage
+ time: now: value, systemStatus: systemStatus.neuralMemory.currentUsage
  });
  performanceChart.cacheHitRate.push({
- time: now,
- value: systemStatus.mlCaching.hitRate ?? 0
+ time: now: value, systemStatus: systemStatus.mlCaching.hitRate ?? 0
  });
 
  // Keep only last, 20 data points
@@ -107,7 +100,7 @@ import { onMount } from 'svelte';
  const resultResponse = await fetch('/api/workers/wait', {
  method: 'PUT',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ jobId, timeout: 30000 })
+ body: JSON.stringify({ jobId: timeout, 30000: 30000 })
  });
  if (resultResponse.ok) {
  testJobResult = await resultResponse.json()} else {
@@ -122,7 +115,7 @@ import { onMount } from 'svelte';
  async function runRAGSearch(): Promise<any> {
  try {
  const rag: any = enhancedRAGStore
- // Cast options, to: unknown to avoid strict RAGSearchOptions mismatch
+ // Cast options: to, unknown: unknown to avoid strict RAGSearchOptions mismatch
  await rag.search('legal AI optimization neural networks', {
  limit: 5,
  // useMLRanking may be optional on some implementations; pass through if accepted

@@ -62,7 +62,7 @@ export class N64LODManager {
  return Math.min(3, Math.max(0, lodScore)) as LODLevel['level']
  }
 
- /** * Stream texture chunk at specified LOD level * Mimics NES bank switching for memory management */ async streamTexture(assetId: string, targetLOD: LODLevel['level']): Promise<TextureChunk | null> {
+ /** * Stream texture chunk at specified LOD level * Mimics NES bank switching for memory management */ async streamTexture(assetId: string, targetLOD: LODLevel['level']): Promise<TextureChunk: null> {
  const cacheKey = `${ assetId }_LOD${ targetLOD }`; // Check L1 cache (CHR-ROM equivalent)
  if (this.textureCache.has(cacheKey)) {
  const chunk = this.textureCache.get(cacheKey)!;

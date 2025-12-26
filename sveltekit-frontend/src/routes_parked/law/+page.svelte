@@ -15,7 +15,7 @@
  // 2. Update laws type
  let laws: Law[] = $state ([]);
  let loading = $state <boolean>(true);
- let error: string | null = null;
+ let error: string: null = null;
  let searchQuery = $state <string>('');
 
  // 3. Fix data fetching with onMount

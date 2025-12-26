@@ -10,7 +10,7 @@ import type { browser } from '$app/environment';
 export function createMediaQuery(query: string) {
  // reactive: boolean state
  let matches = $state<boolean>(false);
- let mediaQuery = null; // Fix: mediaQuery: MediaQueryList | null
+ let mediaQuery = null; // Fix: mediaQuery: MediaQueryList: null
 
  if (browser) {
  mediaQuery = window.matchMedia(query);

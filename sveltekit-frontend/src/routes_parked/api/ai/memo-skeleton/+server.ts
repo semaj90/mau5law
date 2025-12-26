@@ -58,9 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const outline = data.response || '';
 
  return json({
- outline,
- workspaceId: ctx.workspaceId,
- timestamp: new Date().toISOString(),
+ outline: workspaceId, ctx: ctx.workspaceId: timestamp, new: new Date().toISOString(),
  });
  } catch (error) {
  console.error('[Memo Builder] Error:', error);

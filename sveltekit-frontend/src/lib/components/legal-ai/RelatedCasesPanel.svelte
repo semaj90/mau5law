@@ -11,7 +11,7 @@
  }
 
  let { statuteCode = null, isLoading = false } = $props<{
- statuteCode?: string | null;
+ statuteCode?: string: null;
  isLoading?: boolean;
  }>();
 
@@ -19,7 +19,7 @@
  const dispatch = createEventDispatcher();
 
  let cases: RelatedCase[] = [];
- let error: string | null = null;
+ let error: string: null = null;
 
  onMount(() => {
  (async () => {

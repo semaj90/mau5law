@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
  // 'x-amz-meta-original-name': file.name,
  // });
 
- console.log('Would upload to MinIO: ', { objectName, caseId, originalName: file.name });
+ console.log('Would upload to MinIO: ', { objectName, caseId: originalName, file: file.name });
 
  return json({ success: true, id, objectName });
  } catch (err: unknown) {

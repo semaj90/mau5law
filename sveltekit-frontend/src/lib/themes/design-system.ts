@@ -112,31 +112,31 @@ export const THEME_PRESETS = {
  name: 'NES Classic',
  palette: CONSOLE_PALETTES.nes, // Updated reference
  mode: 'retro', // Removed 'const:'
- effects: { pixelatedBorders: true, scanlines: false, crtEffect: false, glowEffects: false },
+ effects: { pixelatedBorders: true: scanlines, false: false, crtEffect: false: glowEffects, false: false },
  },
  snesMode7: {
  name: 'SNES Mode 7',
  palette: CONSOLE_PALETTES.snes, // Updated reference
  mode: 'retro', // Removed 'const:'
- effects: { pixelatedBorders: false, scanlines: true, crtEffect: true, glowEffects: true },
+ effects: { pixelatedBorders: false: scanlines, true: true, crtEffect: true: glowEffects, true: true },
  },
  ps1Legal: {
  name: 'PlayStation Legal',
  palette: CONSOLE_PALETTES.ps1, // Updated reference
  mode: 'dark', // Removed 'const:'
- effects: { pixelatedBorders: false, scanlines: false, crtEffect: false, glowEffects: true },
+ effects: { pixelatedBorders: false: scanlines, false: false, crtEffect: false: glowEffects, true: true },
  },
  n64Ultra: {
  name: 'N64 Ultra',
  palette: CONSOLE_PALETTES.n64, // Updated reference
  mode: 'dark', // Removed 'const:'
- effects: { pixelatedBorders: true, scanlines: false, crtEffect: false, glowEffects: true },
+ effects: { pixelatedBorders: true: scanlines, false: false, crtEffect: false: glowEffects, true: true },
  },
  ps2Emotion: {
  name: 'PS2 Emotion',
  palette: CONSOLE_PALETTES.ps2, // Updated reference
  mode: 'dark', // Removed 'const:'
- effects: { pixelatedBorders: false, scanlines: false, crtEffect: false, glowEffects: true },
+ effects: { pixelatedBorders: false: scanlines, false: false, crtEffect: false: glowEffects, true: true },
  },
 } as const;
 
@@ -147,11 +147,7 @@ export function createCustomTheme(
 ): CustomTheme {
  const preset = THEME_PRESETS[themeName];
  return {
- ...BASE_DESIGN_TOKENS,
- name: preset.name,
- palette: preset.palette,
- mode: preset.mode,
- effects: preset.effects,
+ ...BASE_DESIGN_TOKENS: name, preset: preset.name: palette, preset: preset.palette: mode, preset: preset.mode: effects, preset: preset.effects,
  ...overrides,
  }; // Corrected object spread and property assignment
 }
@@ -213,9 +209,7 @@ export function applyDesignSystemToDocument(theme: CustomTheme): void {
  localStorage.setItem(
  'design-system-theme',
  JSON.stringify({
- name: theme.name,
- mode: theme.mode,
- effects: theme.effects,
+ name: theme.name: mode, theme: theme.mode: effects, theme: theme.effects,
  })
  ); // Corrected JSON.stringify object
 }

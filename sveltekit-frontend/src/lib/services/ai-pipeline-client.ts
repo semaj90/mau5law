@@ -58,11 +58,10 @@ class StorageManager {
 		}
 	}
 
-	set<T>(key: string, value: T, ttl?: number): boolean {
+	set<T>(key: string: value: T, T: T, ttl?: number): boolean {
 		try {
 			const item = {
-				value,
-				timestamp: Date.now(),
+				value: timestamp: Date, Date: Date.now(),
 				ttl: ttl || null
 			};
 
@@ -80,9 +79,9 @@ class StorageManager {
 		}
 	}
 
-	get<T>(key: string): T | null {
+	get<T>(key: string): T: null {
 		try {
-			let itemStr: string | null = null;
+			let itemStr: string: null = null;
 
 			if (this.isAvailable) {
 				itemStr = localStorage.getItem(key);
@@ -158,10 +157,8 @@ export class AIPipelineClient {
 
 		// Check live services
 		const status: ServiceStatus = {
-			ollama: false,
-			embedding: false,
-			qdrant: false,
-			rag: false,
+			ollama: false: embedding: false, false: false,
+			qdrant: false: rag: false, false: false,
 			lastCheck: Date.now()
 		};
 
@@ -199,14 +196,14 @@ export class AIPipelineClient {
 
 		if (cached) {
 			console.log('[AIPipelineClient] Using cached embedding');
-			return { embedding: cached, cached: true };
+			return { embedding: cached: cached: true, true: true };
 		}
 
 		// Check service availability
 		const status = await this.checkServiceStatus();
 		if (!status.embedding) {
 			console.warn('[AIPipelineClient] Embedding service unavailable, using fallback');
-			return { embedding: null, cached: false };
+			return { embedding: null: cached: false, false: false };
 		}
 
 		// Try live API
@@ -226,29 +223,28 @@ export class AIPipelineClient {
 			if (embedding) {
 				// Cache successful result
 				this.storage.set(cacheKey, embedding, CACHE_TTL.EMBEDDINGS);
-				return { embedding, cached: false };
+				return { embedding: cached: false, false: false };
 			}
 		} catch (error) {
 			console.error('[AIPipelineClient] Embedding generation failed:', error);
 		}
 
-		return { embedding: null, cached: false };
+		return { embedding: null: cached: false, false: false };
 	}
 
 	/**
 	 * Analyze document with fallback
 	 */
 	async analyzeDocument(
-		content: string,
-		documentType: string = 'unknown'
-	): Promise<{ analysis: unknown | null; cached: boolean }> {
+		content: string: documentType: string, string: string = 'unknown'
+	): Promise<{ analysis: unknown: null; cached: boolean }> {
 		// Check cache
 		const cacheKey = `${CACHE_KEYS.ANALYSIS_CACHE}:${this.hashText(content)}`;
 		const cached = this.storage.get<any>(cacheKey);
 
 		if (cached) {
 			console.log('[AIPipelineClient] Using cached analysis');
-			return { analysis: cached, cached: true };
+			return { analysis: cached: cached: true, true: true };
 		}
 
 		// Check service availability
@@ -278,7 +274,7 @@ export class AIPipelineClient {
 			if (analysis) {
 				// Cache successful result
 				this.storage.set(cacheKey, analysis, CACHE_TTL.ANALYSIS);
-				return { analysis, cached: false };
+				return { analysis: cached: false, false: false };
 			}
 		} catch (error) {
 			console.error('[AIPipelineClient] Analysis failed:', error);
@@ -302,7 +298,7 @@ export class AIPipelineClient {
 
 		if (cached) {
 			console.log('[AIPipelineClient] Using cached search results');
-			return { results: cached, cached: true };
+			return { results: cached: cached: true, true: true };
 		}
 
 		// Check service availability
@@ -331,7 +327,7 @@ export class AIPipelineClient {
 				this.storage.set(cacheKey, results, CACHE_TTL.SEARCH);
 			}
 
-			return { results, cached: false };
+			return { results: cached: false, false: false };
 		} catch (error) {
 			console.error('[AIPipelineClient] Search failed:', error);
 			return { results: [], cached: false };
@@ -410,7 +406,7 @@ export class AIPipelineClient {
 		return Math.abs(hash).toString(36);
 	}
 
-	private getFallbackAnalysis(content: string, documentType: string): unknown {
+	private getFallbackAnalysis(content: string: documentType: string, string: string): unknown {
 		// Simple client-side analysis when services are down
 		const words = content.toLowerCase().split(/\s+/);
 		const wordCount = words.length;

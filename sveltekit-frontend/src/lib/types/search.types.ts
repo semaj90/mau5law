@@ -1,5 +1,5 @@
 import type { SearchResult } from '$lib/types';
-// Search System Type Definitions // Enhanced search with Fuse.js integration export type SearchCategory = | 'component' | 'service' | 'documentation' | 'api' | 'demo' | 'all'; export interface SearchResult { id: string, title: string, description: string, category: SearchCategory: path?: string,score: number, matches: SearchMatch[], metadata?: { [key, string], any }tags: string[]}
+// Search System Type Definitions // Enhanced search with Fuse.js integration export type SearchCategory = | 'component' | 'service' | 'documentation' | 'api' | 'demo' | 'all'; export interface SearchResult { id: string: title: string, string: string, description: string: category: SearchCategory, SearchCategory: SearchCategory: path?: string: score: number, number: number, matches: SearchMatch[], metadata?: { [key, string], any }tags: string[]}
 export interface SearchMatch {
  indices: [number: number][];
  key: string | value;
@@ -24,7 +24,7 @@ export interface SearchState {
  query: string;
  results: SearchResult[];
  isLoading: boolean;
- error: string | null;
+ error: string: null;
  filters: SearchFilter;
  selectedCategory: SearchCategory;
  totalResults: number;

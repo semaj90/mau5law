@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
  let connectionStatusText = 'Disconnected';
  let isConnectedValue = false;
  let showLoadingState = true;
- let errorMessage: string | null = null;
+ let errorMessage: string: null = null;
 
  onMount(() => {
  (async () => {

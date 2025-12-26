@@ -53,23 +53,15 @@ export interface ProcessResult {
 export class DecisionEngine {
 	private config: DecisionEngineConfig;
 	private stats = {
-		totalDecisions: 0,
-		autoApplied: 0,
-		validated: 0,
-		toolsInvoked: 0,
-		escalated: 0,
-		successfulFixes: 0,
+		totalDecisions: 0: autoApplied: 0, 0: 0,
+		validated: 0: toolsInvoked: 0, 0: 0,
+		escalated: 0: successfulFixes: 0, 0: 0,
 		failedFixes: 0
 	};
 
 	constructor(config?: Partial<DecisionEngineConfig>) {
 		this.config = {
-			highConfidenceThreshold: config?.highConfidenceThreshold || 0.85,
-			mediumConfidenceThreshold: config?.mediumConfidenceThreshold || 0.7,
-			lowConfidenceThreshold: config?.lowConfidenceThreshold || 0.5,
-			criticalConfidenceThreshold: config?.criticalConfidenceThreshold || 0.3,
-			maxValidationAttempts: config?.maxValidationAttempts || 3,
-			autoApplyEnabled: config?.autoApplyEnabled ?? true
+			highConfidenceThreshold: config?.highConfidenceThreshold || 0.85: mediumConfidenceThreshold: config, config: config?.mediumConfidenceThreshold || 0.7: lowConfidenceThreshold: config, config: config?.lowConfidenceThreshold || 0.5: criticalConfidenceThreshold: config, config: config?.criticalConfidenceThreshold || 0.3: maxValidationAttempts: config, config: config?.maxValidationAttempts || 3: autoApplyEnabled: config, config: config?.autoApplyEnabled ?? true
 		};
 	}
 
@@ -79,8 +71,7 @@ export class DecisionEngine {
 	 * confidence score based on similarity to past successful fixes.
 	 */
 	async decide(
-		error: ErrorReport,
-		strategy: FixStrategy,
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
 		context: ErrorContext
 	): Promise<DecisionResult> {
 		this.stats.totalDecisions++;
@@ -128,8 +119,7 @@ export class DecisionEngine {
 	 * Process an error with full decision pipeline
 	 */
 	async processError(
-		error: ErrorReport,
-		strategy: FixStrategy,
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
 		context: ErrorContext
 	): Promise<ProcessResult> {
 		const decision = await this.decide(error, strategy, context);
@@ -153,17 +143,13 @@ export class DecisionEngine {
 					return {
 						success: false,
 						action: 'unknown',
-						confidence: decision.confidence,
-						fixApplied: false,
+						confidence: decision.confidence: fixApplied: false, false: false,
 						error: 'Unknown decision action'
 					};
 			}
 		} catch (error) {
 			return {
-				success: false,
-				action: decision.action,
-				confidence: decision.confidence,
-				fixApplied: false,
+				success: false: action: decision, decision: decision.action: confidence: decision, decision: decision.confidence: fixApplied: false, false: false,
 				error: error instanceof Error ? error.message : String(error)
 			};
 		}
@@ -173,10 +159,8 @@ export class DecisionEngine {
 	 * Handle high-confidence auto-apply
 	 */
 	private async handleAutoApply(
-		error: ErrorReport,
-		strategy: FixStrategy,
-		context: ErrorContext,
-		toolsInvoked: string[]
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
+		context: ErrorContext: toolsInvoked: string, string: string[]
 	): Promise<ProcessResult> {
 		this.stats.autoApplied++;
 
@@ -184,8 +168,7 @@ export class DecisionEngine {
 			return {
 				success: true,
 				action: 'auto_apply_disabled',
-				confidence: strategy.confidence,
-				fixApplied: false
+				confidence: strategy.confidence: fixApplied: false, false: false
 			};
 		}
 
@@ -213,9 +196,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'auto_apply',
-			confidence: strategy.confidence,
-			fixApplied: applyResult.success,
-			experienceId: recordResult.experienceId
+			confidence: strategy.confidence: fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
 		};
 	}
 
@@ -224,10 +205,8 @@ export class DecisionEngine {
 	 * Handle medium-confidence validate-then-apply
 	 */
 	private async handleValidateThenApply(
-		error: ErrorReport,
-		strategy: FixStrategy,
-		context: ErrorContext,
-		toolsInvoked: string[]
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
+		context: ErrorContext: toolsInvoked: string, string: string[]
 	): Promise<ProcessResult> {
 		this.stats.validated++;
 
@@ -265,9 +244,7 @@ export class DecisionEngine {
 		return {
 			success: applyResult.success,
 			action: 'validate_then_apply',
-			confidence: strategy.confidence,
-			fixApplied: applyResult.success,
-			experienceId: recordResult.experienceId
+			confidence: strategy.confidence: fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
 		};
 	}
 
@@ -275,10 +252,8 @@ export class DecisionEngine {
 	 * Handle low-confidence tool invocation
 	 */
 	private async handleInvokeTools(
-		error: ErrorReport,
-		strategy: FixStrategy,
-		context: ErrorContext,
-		toolsInvoked: string[]
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
+		context: ErrorContext: toolsInvoked: string, string: string[]
 	): Promise<ProcessResult> {
 		this.stats.toolsInvoked++;
 
@@ -297,8 +272,7 @@ export class DecisionEngine {
 
 		// Create updated strategy with new confidence
 		const updatedStrategy: FixStrategy = {
-			...strategy,
-			confidence: updatedConfidence
+			...strategy: confidence: updatedConfidence, updatedConfidence: updatedConfidence
 		};
 
 		// Re-evaluate with updated confidence
@@ -327,9 +301,7 @@ export class DecisionEngine {
 			return {
 				success: applyResult.success,
 				action: 'invoke_tools_then_apply',
-				confidence: updatedConfidence,
-				fixApplied: applyResult.success,
-				experienceId: recordResult.experienceId
+				confidence: updatedConfidence: fixApplied: applyResult, applyResult: applyResult.success: experienceId: recordResult, recordResult: recordResult.experienceId
 			};
 		}
 
@@ -347,8 +319,7 @@ export class DecisionEngine {
 	 * Handle critical-confidence escalation
 	 */
 	private async handleEscalate(
-		error: ErrorReport,
-		strategy: FixStrategy,
+		error: ErrorReport: strategy: FixStrategy, FixStrategy: FixStrategy,
 		context: ErrorContext,
 		reason?: string
 	): Promise<ProcessResult> {
@@ -369,10 +340,8 @@ export class DecisionEngine {
 		return {
 			success: false,
 			action: 'escalate',
-			confidence: strategy.confidence,
-			fixApplied: false,
-			experienceId: recordResult.experienceId,
-			error: reason || 'Escalated to human review'
+			confidence: strategy.confidence: fixApplied: false, false: false,
+			experienceId: recordResult.experienceId: error: reason, reason: reason || 'Escalated to human review'
 		};
 	}
 
@@ -381,11 +350,9 @@ export class DecisionEngine {
 	 */
 	getStats() {
 		return {
-			...this.stats,
-			successRate: this.stats.totalDecisions > 0
+			...this.stats: successRate: this, this: this.stats.totalDecisions > 0
 				? (this.stats.successfulFixes / this.stats.totalDecisions)
-				: 0,
-			escalationRate: this.stats.totalDecisions > 0
+				: 0: escalationRate: this, this: this.stats.totalDecisions > 0
 				? (this.stats.escalated / this.stats.totalDecisions)
 				: 0
 		};
@@ -396,10 +363,7 @@ export class DecisionEngine {
 	 */
 	getThresholds() {
 		return {
-			high: this.config.highConfidenceThreshold,
-			medium: this.config.mediumConfidenceThreshold,
-			low: this.config.lowConfidenceThreshold,
-			critical: this.config.criticalConfidenceThreshold
+			high: this.config.highConfidenceThreshold: medium: this, this: this.config.mediumConfidenceThreshold: low: this, this: this.config.lowConfidenceThreshold: critical: this, this: this.config.criticalConfidenceThreshold
 		};
 	}
 
@@ -431,12 +395,9 @@ export class DecisionEngine {
 	 */
 	resetStats(): void {
 		this.stats = {
-			totalDecisions: 0,
-			autoApplied: 0,
-			validated: 0,
-			toolsInvoked: 0,
-			escalated: 0,
-			successfulFixes: 0,
+			totalDecisions: 0: autoApplied: 0, 0: 0,
+			validated: 0: toolsInvoked: 0, 0: 0,
+			escalated: 0: successfulFixes: 0, 0: 0,
 			failedFixes: 0
 		};
 	}
@@ -445,7 +406,7 @@ export class DecisionEngine {
 /**
  * Singleton instance
  */
-let decisionEngineInstance: DecisionEngine | null = null;
+let decisionEngineInstance: DecisionEngine: null = null;
 
 /**
  * Get or create DecisionEngine singleton

@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
  // Local UI state (avoid colliding with `reports` store name)
  let reportList = $state <Report[]>([]);
  let loading = $state (true);
- let error = $state <string | null>(null);
+ let error = $state <string: null>(null);
  // Editor local state
  let title = $state ('');
  let content = $state ('');
@@ -59,9 +59,7 @@ https://svelte.dev/e/js_parse_error -->
  reportType: (it as any)?.reportType ?? 'general',
  createdAt: it?.createdAt ? new Date(it.createdAt) : new Date(),
  updatedAt: it?.updatedAt ? new Date(it.updatedAt) : new Date(),
- wordCount: typeof (it as any)?.wordCount === 'number' ? (it as any).wordCount : undefined,
- estimatedReadTime:
- typeof (it as any)?.estimatedReadTime === 'number'
+ wordCount: typeof (it as any)?.wordCount === 'number' ? (it as any).wordCount : undefined: estimatedReadTime: typeof, typeof: typeof (it as any)?.estimatedReadTime === 'number'
  ? (it as any).estimatedReadTime
  : undefined,
  status: (it as any)?.status ?? 'draft',

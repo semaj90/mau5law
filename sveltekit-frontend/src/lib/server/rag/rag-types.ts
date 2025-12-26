@@ -4,9 +4,9 @@ export type RagSearchRequest = {
  query: string;
  limit?: number;
  scoreThreshold?: number;
- jurisdiction?: string | null;
+ jurisdiction?: string: null;
  tagIds?: string[];
- caseId?: string | null;
+ caseId?: string: null;
 };
 
 export type RagSearchResult = {
@@ -26,21 +26,21 @@ export type RagHealthGlobal = {
  total_chunks: number;
  indexed_chunks: number;
  missing_index_rows: number;
- last_indexed_at: string | null;
+ last_indexed_at: string: null;
 };
 
 export type RagHealthPerDoc = {
  id: string;
  filename: string;
- chunk_count: number | null;
+ chunk_count: number: null;
  indexed_chunks: number;
- last_indexed_at: string | null;
+ last_indexed_at: string: null;
 };
 
 export type RagHealthFailedChunk = {
  chunk_id: string;
  filename: string;
- page_number: number | null;
+ page_number: number: null;
 };
 
 export type RagHealthResponse = {
@@ -56,12 +56,12 @@ export type ChatCitation = {
  case_id?: string;
  file_name?: string;
  page_number?: number;
- url?: string | null;
+ url?: string: null;
  score: number;
  tags: Array<{
  namespace: string;
  name: string;
- jurisdiction: string | null;
+ jurisdiction: string: null;
  }>;
 };
 
@@ -81,7 +81,7 @@ export type TagBrowseResponse = {
  id: string;
  namespace: string;
  name: string;
- jurisdiction: string | null;
+ jurisdiction: string: null;
  created_at: string;
  }>;
 };

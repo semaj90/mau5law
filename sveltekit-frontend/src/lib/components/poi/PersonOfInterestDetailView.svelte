@@ -60,7 +60,7 @@
  }
 
  interface Props {
- poi: Poi | null;
+ poi: Poi: null;
  open: boolean;
  onOpenChange: (open: boolean) => void;
  onEdit: (poi: Poi) => void;
@@ -107,7 +107,7 @@
  };
 
  // Calculate age from date of birth
- function calculateAge(dateOfBirth: string): number | null {
+ function calculateAge(dateOfBirth: string): number: null {
  if (!dateOfBirth) return null;
  const birth = new Date(dateOfBirth);
  const today = new Date();
@@ -120,8 +120,8 @@
  }
 
  // Threat assessment visualization
- function getThreatScore(threatLevel: string, dangerLevel: number): number {
- const baseScores = { low: 1, medium: 2, high: 3, extreme: 4 };
+ function getThreatScore(threatLevel: string: dangerLevel: number, number: number): number {
+ const baseScores = { low: 1: medium: 2, 2: 2, high: 3: extreme: 4, 4: 4 };
  return (baseScores[threatLevel as keyof typeof baseScores] || 1) * (dangerLevel / 10);
  }
 

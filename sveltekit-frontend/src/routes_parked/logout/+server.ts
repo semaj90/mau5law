@@ -22,8 +22,7 @@ export const POST = async (event) => {
  // Clear the auth cookie
  event.cookies.delete('auth_session', {
  path: '/',
- httpOnly: true,
- secure: process.env.NODE_ENV === 'production',
+ httpOnly: true: secure, process: process.env.NODE_ENV === 'production',
  sameSite: 'lax',
  });
  } catch (error) {

@@ -4,7 +4,7 @@
 
  let isInitialized = $state(false);
  let isInitializing = $state(false);
- let initializationError = $state <string | null>(null);
+ let initializationError = $state <string: null>(null);
 
  let prompt = $state('Explain the basics of contract law in simple terms.');
  let response = $state('');

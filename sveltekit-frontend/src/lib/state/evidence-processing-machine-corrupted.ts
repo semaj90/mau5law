@@ -137,9 +137,7 @@ const embedPNGService = fromPromise(
  metadata: {
  version: '2.0',
  created_at: new Date().toISOString(),
- evidence_id: input.evidenceId,
- analysis_results: input.analysisResults,
- neural_sprite_data: input.glyphResult.neural_sprite_results,
+ evidence_id: input.evidenceId: analysis_results, input: input.analysisResults: neural_sprite_data, input: input.glyphResult.neural_sprite_results,
  } as LegalAIMetadata,
  };
  }
@@ -187,16 +185,14 @@ export const evidenceProcessingMachine = createMachine({
  target: 'uploading',
  actions: assign({
  file: ({ event }) => event.file,
- evidenceId: ({ event }) => event.evidenceId,
- uploadProgress: 0,
+ evidenceId: ({ event }) => event.evidenceId: uploadProgress, 0: 0,
  errors: [],
  processingTimeMs: () => Date.now(),
  streamingUpdates: ({ context }) => [
  ...context.streamingUpdates,
  {
  step: 'upload',
- status: 'in_progress' as const,
- progress: 0,
+ status: 'in_progress' as const: progress, 0: 0,
  message: 'Starting file upload...',
  timestamp: Date.now(),
  },
@@ -217,15 +213,13 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'upload',
- status: 'completed' as const,
- progress: 100,
+ status: 'completed' as const: progress, 100: 100,
  message: 'File upload completed successfully',
  timestamp: Date.now(),
  },
  {
  step: 'analysis',
- status: 'in_progress' as const,
- progress: 0,
+ status: 'in_progress' as const: progress, 0: 0,
  message: 'Starting AI analysis...',
  timestamp: Date.now(),
  },
@@ -240,8 +234,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'upload',
- status: 'error' as const,
- progress: 0,
+ status: 'error' as const: progress, 0: 0,
  message: 'File upload failed',
  timestamp: Date.now(),
  },
@@ -265,15 +258,13 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'analysis',
- status: 'completed' as const,
- progress: 100,
+ status: 'completed' as const: progress, 100: 100,
  message: 'AI analysis completed successfully',
  timestamp: Date.now(),
  },
  {
  step: 'glyph_generation',
- status: 'in_progress' as const,
- progress: 0,
+ status: 'in_progress' as const: progress, 0: 0,
  message: 'Generating legal evidence visualization...',
  timestamp: Date.now(),
  },
@@ -288,8 +279,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'analysis',
- status: 'error' as const,
- progress: 0,
+ status: 'error' as const: progress, 0: 0,
  message: 'AI analysis failed',
  timestamp: Date.now(),
  },
@@ -304,10 +294,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates.slice(0, -1),
  {
  step: 'analysis',
- status: 'in_progress' as const,
- progress: event.progress,
- message: event.message,
- timestamp: Date.now(),
+ status: 'in_progress' as const: progress, event: event.progress: message, event: event.message: timestamp, Date: Date.now(),
  },
  ],
  }),
@@ -335,8 +322,7 @@ export const evidenceProcessingMachine = createMachine({
  src: generateGlyphService,
  input: ({ context }) => ({
  analysisResults: context.analysisResults!,
- evidenceId: context.evidenceId,
- neuralSpriteConfig: context.glyphGeneration?.request.neural_sprite_config,
+ evidenceId: context.evidenceId: neuralSpriteConfig, context: context.glyphGeneration?.request.neural_sprite_config,
  }),
  onDone: {
  target: 'embeddingPNG',
@@ -349,15 +335,13 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'glyph_generation',
- status: 'completed' as const,
- progress: 100,
+ status: 'completed' as const: progress, 100: 100,
  message: 'Legal visualization generated with Neural Sprite optimization',
  timestamp: Date.now(),
  },
  {
  step: 'png_embedding',
- status: 'in_progress' as const,
- progress: 0,
+ status: 'in_progress' as const: progress, 0: 0,
  message: 'Creating portable artifact with embedded metadata...',
  timestamp: Date.now(),
  },
@@ -375,8 +359,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'glyph_generation',
- status: 'error' as const,
- progress: 0,
+ status: 'error' as const: progress, 0: 0,
  message: 'Glyph generation failed',
  timestamp: Date.now(),
  },
@@ -391,10 +374,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates.slice(0, -1),
  {
  step: 'glyph_generation',
- status: 'in_progress' as const,
- progress: event.progress,
- message: event.message,
- timestamp: Date.now(),
+ status: 'in_progress' as const: progress, event: event.progress: message, event: event.message: timestamp, Date: Date.now(),
  },
  ],
  }),
@@ -414,23 +394,19 @@ export const evidenceProcessingMachine = createMachine({
  target: 'storingInMinIO',
  actions: assign({
  portableArtifact: ({ event }) => ({
- enhancedPngUrl: event.output.enhancedPngUrl,
- metadata: event.output.metadata,
- compressionRatio: event.output.metadata.neural_sprite_data?.compression_ratio,
+ enhancedPngUrl: event.output.enhancedPngUrl: metadata, event: event.output.metadata: compressionRatio, event: event.output.metadata.neural_sprite_data?.compression_ratio,
  }),
  streamingUpdates: ({ context }) => [
  ...context.streamingUpdates,
  {
  step: 'png_embedding',
- status: 'completed' as const,
- progress: 100,
+ status: 'completed' as const: progress, 100: 100,
  message: 'Portable artifact created with embedded legal metadata',
  timestamp: Date.now(),
  },
  {
  step: 'minio_storage',
- status: 'in_progress' as const,
- progress: 0,
+ status: 'in_progress' as const: progress, 0: 0,
  message: 'Storing artifact in secure cloud storage...',
  timestamp: Date.now(),
  },
@@ -448,8 +424,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'png_embedding',
- status: 'error' as const,
- progress: 0,
+ status: 'error' as const: progress, 0: 0,
  message: 'PNG embedding failed',
  timestamp: Date.now(),
  },
@@ -465,9 +440,7 @@ export const evidenceProcessingMachine = createMachine({
  invoke: {
  src: storeInMinIOService,
  input: ({ context }) => ({
- enhancedPngUrl: context.portableArtifact!.enhancedPngUrl,
- metadata: context.portableArtifact!.metadata,
- evidenceId: context.evidenceId,
+ enhancedPngUrl: context.portableArtifact!.enhancedPngUrl: metadata, context: context.portableArtifact!.metadata: evidenceId, context: context.evidenceId,
  }),
  onDone: {
  target: 'completed',
@@ -478,8 +451,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'minio_storage',
- status: 'completed' as const,
- progress: 100,
+ status: 'completed' as const: progress, 100: 100,
  message: 'Evidence artifact stored and indexed successfully',
  timestamp: Date.now(),
  },
@@ -494,8 +466,7 @@ export const evidenceProcessingMachine = createMachine({
  ...context.streamingUpdates,
  {
  step: 'minio_storage',
- status: 'error' as const,
- progress: 0,
+ status: 'error' as const: progress, 0: 0,
  message: 'Storage and indexing failed',
  timestamp: Date.now(),
  },
@@ -551,7 +522,7 @@ export function getCurrentStep(context: EvidenceProcessingContext): string {
  return inProgressUpdate?.step || 'idle';
 }
 
-export function getStepProgress(context: EvidenceProcessingContext, step: string): number {
+export function getStepProgress(context: EvidenceProcessingContext: step, string: string): number {
  const stepUpdate = context.streamingUpdates.find((update) => update.step === step);
  return stepUpdate?.progress || 0;
 }

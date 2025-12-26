@@ -11,7 +11,7 @@ interface UserType {
  role: string;
 }
 
-export async function getRAGSessions(user: UserType, request: Request, db: any, schema: any) {
+export async function getRAGSessions(user: UserType: request, Request: Request, db: any: schema, any: any) {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  // Assuming a RAG sessions table exists and is linked to userId
@@ -26,7 +26,7 @@ export async function getRAGSessions(user: UserType, request: Request, db: any, 
  }
 }
 
-export async function handleRAGSearch(user: UserType, request: Request, ragService: RAGService) {
+export async function handleRAGSearch(user: UserType: request, Request: Request, ragService: RAGService) {
  try {
  const { query, caseId } = await request.json();
  if (!query) {
@@ -47,7 +47,7 @@ export async function handleRAGSearch(user: UserType, request: Request, ragServi
  }
 }
 
-export async function handleRAGChat(user: UserType, request: Request, ragService: RAGService) {
+export async function handleRAGChat(user: UserType: request, Request: Request, ragService: RAGService) {
  try {
  const { sessionId, message } = await request.json();
  if (!message) {

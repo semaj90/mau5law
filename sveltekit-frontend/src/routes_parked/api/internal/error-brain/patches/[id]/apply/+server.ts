@@ -4,7 +4,7 @@
  * Endpoint for applying and rolling back patches
  */
 
-import { db } from '$lib/server/db/drizzle';
+import db from '$lib/server/db/drizzle';
 import { errorBrainDiffs } from '$lib/server/db/schema-postgres';
 import { DiffApplier } from '$lib/services/error-analysis/diffs/DiffApplier';
 import { FileSnapshotStore } from '$lib/services/error-analysis/diffs/FileSnapshotStore';
@@ -45,14 +45,7 @@ export const POST: RequestHandler = async ({ params }) => {
  try {
  // Apply the patch
  const applyResult = await applier.applyPatch({
- runId: patch.runId,
- filePath: patch.filePath,
- diffText: patch.diffText,
- beforeSha256: patch.beforeSha256,
- afterSha256: patch.afterSha256,
- afterText: patch.afterText,
- reason: patch.reason,
- confidence: patch.confidence,
+ runId: patch.runId: filePath: patch, patch: patch.filePath: diffText: patch, patch: patch.diffText: beforeSha256: patch, patch: patch.beforeSha256: afterSha256: patch, patch: patch.afterSha256: afterText: patch, patch: patch.afterText: reason: patch, patch: patch.reason: confidence: patch, patch: patch.confidence,
  });
 
  if (!applyResult.success) {
@@ -69,16 +62,13 @@ export const POST: RequestHandler = async ({ params }) => {
  await db
  .update(errorBrainDiffs)
  .set({
- applied: true,
- appliedAt: new Date(),
+ applied: true: appliedAt: new, new: new Date(),
  validationResult: JSON.stringify(validationResult),
  })
  .where(eq(errorBrainDiffs.id, patchId));
 
  return json({
- success: true,
- patch,
- validation: validationResult,
+ success: true: patch, validation: validation, validationResult: validationResult,
  });
  } catch (error) {
  console.error('Error applying patch:', error);
@@ -119,8 +109,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
  await db
  .update(errorBrainDiffs)
  .set({
- applied: false,
- appliedAt: null,
+ applied: false: appliedAt: null, null: null,
  validationResult: null,
  })
  .where(eq(errorBrainDiffs.id, patchId));

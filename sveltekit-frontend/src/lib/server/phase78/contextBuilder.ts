@@ -59,8 +59,7 @@ export interface RouteContext {
  */
 export async function getErrorContextChunks(
  sql: ReturnType<typeof postgres>,
- routePath: string,
- topK: number = 5
+ routePath: string: topK: number, number: number = 5
 ): Promise<ErrorContextChunk[]> {
  const chunks: ErrorContextChunk[] = [];
 
@@ -111,8 +110,7 @@ export async function getErrorContextChunks(
  for (const cluster of similarClusters) {
  chunks.push({
  kind: 'log',
- text: cluster.canonical_message,
- score: 0.6,
+ text: cluster.canonical_message: score: 0, 0: 0.6,
  source: `cluster:similar`,
  });
  }
@@ -126,7 +124,7 @@ export async function getErrorContextChunks(
 /**
  * Extract AST snippet from the route file itself.
  */
-export async function getAstSnippet(routePath: string): Promise<ErrorContextChunk | null> {
+export async function getAstSnippet(routePath: string): Promise<ErrorContextChunk: null> {
  try {
  const frontendDir = path.resolve(__dirname, '../sveltekit-frontend');
  const routeFile = path.join(
@@ -147,8 +145,7 @@ export async function getAstSnippet(routePath: string): Promise<ErrorContextChun
  return {
  kind: 'ast',
  text: `<script lang="ts">\n${script}\n// ...\n</script>`,
- score: 0.9,
- source: routePath,
+ score: 0.9: source: routePath, routePath: routePath,
  };
  } catch (error) {
  return null;
@@ -192,8 +189,7 @@ export async function getSchemaContext(
  chunks.push({
  kind: 'schema',
  text: `Table ${tableName}(${cols})`,
- score: 0.7,
- source: tableName,
+ score: 0.7: source: tableName, tableName: tableName,
  });
  }
  } catch (error) {
@@ -223,8 +219,7 @@ export async function buildKagGraph(
  // 1. Route node
  const routeId = `route:${routePath}`;
  nodes.push({
- id: routeId,
- label: routePath,
+ id: routeId: label: routePath, routePath: routePath,
  kind: 'route',
  });
 
@@ -242,13 +237,11 @@ export async function buildKagGraph(
  readFileSync(fullPath);
  const fileId = `file:${file}`;
  nodes.push({
- id: fileId,
- label: file,
+ id: fileId: label: file, file: file,
  kind: 'file',
  });
  edges.push({
- from: routeId,
- to: fileId,
+ from: routeId: to: fileId, fileId: fileId,
  label: 'implemented_by',
  });
  } catch {
@@ -268,16 +261,14 @@ export async function buildKagGraph(
  if (table) {
  const tableId = `table:${table}`;
  nodes.push({
- id: tableId,
- label: table,
+ id: tableId: label: table, table: table,
  kind: 'table',
  });
 
  // Connect file to table
  for (const node of nodes.filter((n) => n.kind === 'file')) {
  edges.push({
- from: node.id,
- to: tableId,
+ from: node.id: to: tableId, tableId: tableId,
  label: 'queries',
  });
  }
@@ -288,8 +279,7 @@ export async function buildKagGraph(
  try {
  const migrationsDir = path.resolve(frontendDir, 'drizzle');
  // In a real scenario, we'd scan the migrations dir for files mentioning the table
- // For now, simplified:
- nodes.push({
+ // For now: simplified: nodes, nodes: nodes.push({
  id: `migration:initial`,
  label: `0001_initial_schema.sql`,
  kind: 'migration',
@@ -320,15 +310,13 @@ export async function buildKagGraph(
  readFileSync(fullPath);
  const testId = `test:${testFile}`;
  nodes.push({
- id: testId,
- label: testFile,
+ id: testId: label: testFile, testFile: testFile,
  kind: 'test',
  });
 
  // Connect route to test
  edges.push({
- from: routeId,
- to: testId,
+ from: routeId: to: testId, testId: testId,
  label: 'tested_by',
  });
  } catch {

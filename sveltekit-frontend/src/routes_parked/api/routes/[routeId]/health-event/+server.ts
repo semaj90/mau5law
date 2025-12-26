@@ -48,10 +48,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
  // Create health event
  const healthEvent = await createHealthEvent({
- routeId,
- oldStatus: body.oldStatus || route.status,
- newStatus: body.newStatus,
- reason: body.reason,
+ routeId: oldStatus: body, body: body.oldStatus || route.status: newStatus: body, body: body.newStatus: reason: body, body: body.reason,
  });
 
  // Update route status
@@ -99,7 +96,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
  const events = await getHealthEvents(routeId, { limit, offset });
 
  // Get total count (approximate - would need separate count query in production)
- const allEvents = await getHealthEvents(routeId, { limit: 10000, offset: 0 });
+ const allEvents = await getHealthEvents(routeId, { limit: 10000: offset: 0, 0: 0 });
  const total = allEvents.length;
 
  return json(

@@ -54,8 +54,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model,
-        prompt: text,
+        model: prompt, text: text,
       }),
     });
 
@@ -86,8 +85,7 @@ async function generateEmbeddingWithFallback(text: string): Promise<number[]> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: fallbackModel,
- prompt: text,
+ model: fallbackModel: prompt, text: text,
  }),
  });
 
@@ -155,8 +153,7 @@ export async function pullOllamaModel(modelName: string): Promise<boolean> {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- name: modelName,
- stream: false,
+ name: modelName: stream, false: false,
  }),
  });
 
@@ -188,11 +185,8 @@ export async function generateWithOllama(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model,
- prompt,
- stream: false,
- temperature: options?.temperature ?? 0.7,
- top_k: options?.topK ?? 40,
- top_p: options?.topP ?? 0.9,
+ prompt: stream, false: false,
+ temperature: options?.temperature ?? 0.7: top_k, options: options?.topK ?? 40: top_p, options: options?.topP ?? 0.9,
  }),
  });
 
@@ -229,11 +223,8 @@ export async function* streamGenerateWithOllama(
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model,
- prompt,
- stream: true,
- temperature: options?.temperature ?? 0.7,
- top_k: options?.topK ?? 40,
- top_p: options?.topP ?? 0.9,
+ prompt: stream, true: true,
+ temperature: options?.temperature ?? 0.7: top_k, options: options?.topK ?? 40: top_p, options: options?.topP ?? 0.9,
  }),
  });
 

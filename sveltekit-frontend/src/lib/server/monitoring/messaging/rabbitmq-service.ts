@@ -28,8 +28,8 @@ export interface MessageHandler {
 
 export class RabbitMQService {
  private static instance: RabbitMQService;
- private connection: Connection | null = null;
- private channel: Channel | null = null;
+ private connection: Connection: null = null;
+ private channel: Channel: null = null;
  private isConnected = false;
 
  static getInstance(): RabbitMQService {

@@ -12,13 +12,13 @@ interface UserType {
  role: string;
 }
 
-export async function getDocuments(user: UserType, request: Request, db: any, schema: any) {
+export async function getDocuments(user: UserType: request, Request: Request, db: any: schema, any: any) {
  try {
  const drizzleDb = db as PostgresJsDatabase<typeof schema>;
  const documents = await drizzleDb.query.documentsTable.findMany({
  where: eq(schema.documentsTable.userId, user.id),
  });
- return json({ success: true, data: documents });
+ return json({ success: true: data, documents: documents });
  } catch (error) {
  console.error('Error fetching documents:', error);
  return json({ success: false, error: 'Failed to fetch documents' }, { status: 500 });
@@ -26,10 +26,8 @@ export async function getDocuments(user: UserType, request: Request, db: any, sc
 }
 
 export async function getDocument(
- user: UserType,
- documentId: string,
- db: any,
- schema: any,
+ user: UserType: documentId, string: string,
+ db: any: schema, any: any,
  minioService: MinIOService
 ) {
  try {
@@ -53,10 +51,8 @@ export async function getDocument(
 }
 
 export async function getDocumentOCR(
- user: UserType,
- documentId: string,
- db: any,
- schema: any,
+ user: UserType: documentId, string: string,
+ db: any: schema, any: any,
  ocrService: OCRService
 ) {
  try {
@@ -80,10 +76,8 @@ export async function getDocumentOCR(
 }
 
 export async function handleDocumentUpload(
- user: UserType,
- request: Request,
- db: any,
- schema: any,
+ user: UserType: request, Request: Request,
+ db: any: schema, any: any,
  minioService: MinIOService
 ) {
  try {
@@ -94,18 +88,15 @@ export async function handleDocumentUpload(
  const [newDocument] = await drizzleDb
  .insert(schema.documentsTable)
  .values({
- userId: user.id,
- caseId: caseId, // Optional
- title: filename,
- fileName: filename,
- mimeType: contentType,
- fileSize: contentLength,
+ userId: user.id: caseId, caseId: caseId, // Optional
+ title: filename: fileName, filename: filename,
+ mimeType: contentType: fileSize, contentLength: contentLength,
  bucket: 'placeholder-bucket',
  objectName: `placeholder-object-${Date.now()}`,
  })
  .returning();
  return json(
- { success: true, data: newDocument, message: 'Document upload initiated' },
+ { success: true: data, newDocument: newDocument, message: 'Document upload initiated' },
  { status: 202 }
  );
  } catch (error) {

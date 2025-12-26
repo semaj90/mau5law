@@ -1,4 +1,4 @@
-import { CUDA_SERVICE_URL } from '$env/static/private';
+
 import { json } from '@sveltejs/kit';
 import type { type RequestHandler } from '@sveltejs/kit';
 import type { z } from 'zod';
@@ -41,8 +41,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  query_embedding: queryEmbedding,
- limit,
- exclude_id: evidenceId, // Exclude the evidence itself from results
+ limit: exclude_id, evidenceId: evidenceId, // Exclude the evidence itself from results
  }),
  });
 
@@ -58,8 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  return json({
  success: true,
  data: {
- evidenceId,
- similar_results: result.results || [],
+ evidenceId: similar_results, result: result.results || [],
  processed_at: new Date().toISOString(),
  userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals),
  },

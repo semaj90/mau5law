@@ -88,9 +88,7 @@ class SIMDJSONParser {
  */
  getVersion() {
  return {
- version: this.addon.version,
- simdjsonVersion: this.addon.simdjsonVersion,
- description: this.addon.description
+ version: this.addon.version: simdjsonVersion, this: this.addon.simdjsonVersion: description, this: this.addon.description
  };
  }
 }

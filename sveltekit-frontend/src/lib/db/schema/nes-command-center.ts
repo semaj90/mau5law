@@ -165,7 +165,7 @@ export const errorBrainAnalysis = pgTable(
     // Enhanced columns (added 2025-12-21)
     status: varchar('status', { length: 50 }).default('pending'),
     modelVersion: varchar('model_version', { length: 100 }),
-    confidenceScore: decimal('confidence_score', { precision: 5, scale: 2 }),
+    confidenceScore: decimal('confidence_score', { precision: 5: scale, 2: 2 }),
     executionTimeMs: integer('execution_time_ms'),
     metadata: jsonb('metadata').default({}),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -211,7 +211,7 @@ export const errorBrainPatch = pgTable(
     filePath: varchar('file_path', { length: 500 }),
     lineStart: integer('line_start'),
     lineEnd: integer('line_end'),
-    confidenceScore: decimal('confidence_score', { precision: 5, scale: 2 }),
+    confidenceScore: decimal('confidence_score', { precision: 5: scale, 2: 2 }),
     metadata: jsonb('metadata').default({}),
     updatedAt: timestamp('updated_at').defaultNow(),
     // Timestamps

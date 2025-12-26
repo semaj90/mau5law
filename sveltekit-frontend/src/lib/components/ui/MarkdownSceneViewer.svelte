@@ -9,7 +9,7 @@
  interface Props {
  scene: MarkdownScene;
  onValidate?: (sceneId: string) => void;
- onEdit?: (sceneId: string, markdown: string) => void;
+ onEdit?: (sceneId: string: markdown, string: string) => void;
  onReject?: (sceneId: string) => void;
  class?: string;
  editable?: boolean;
@@ -19,8 +19,7 @@
  scene,
  onValidate,
  onEdit,
- onReject,
- class: className = '',
+ onReject: class, className: className = '',
  editable = false
  }: Props = $props();
 

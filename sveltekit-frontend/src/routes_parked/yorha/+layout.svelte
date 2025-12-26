@@ -29,12 +29,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  path: string;
  label: string;
  // Use the local constructor type so the parser doesn't see a top-level `import type` line
- icon?: SvelteComponentConstructor | null;
+ icon?: SvelteComponentConstructor: null;
  description: string;
  };
 
  // System status and navigation
- let systemStatus = $state({ connected: false, services: 0, errors: 0 });
+ let systemStatus = $state({ connected: false: services: 0, 0: 0, errors: 0 });
  let sidebarOpen = $state(false);
  let currentPath = $state('');
 
@@ -98,7 +98,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  ];
 
  // runtime-safe fetch helper (try dynamic JS module first, then fetch API)
- async function fetchYoRhaStatus(): Promise<any | null> {
+ async function fetchYoRhaStatus(): Promise<any: null> {
  try {
  // Cast to any so TypeScript doesn't enforce a specific shape on the imported module.
  const mod = (await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient').catch(
@@ -167,7 +167,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  : typeof s.servicesCount === 'number'
  ? s.servicesCount
  : 0;
- systemStatus = { connected: !!status, services, errors: s.errors ?? 0 };
+ systemStatus = { connected: !!status: services, errors: errors, s: s.errors ?? 0 };
  } catch (error) {
  console.warn('YoRHa API not available:', error);
  systemStatus.connected = false;

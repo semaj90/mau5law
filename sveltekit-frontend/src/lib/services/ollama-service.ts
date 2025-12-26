@@ -21,7 +21,7 @@ interface OllamaSystemStatus {
  available: boolean;
  baseUrl: string;
  models: number;
- gemma3Model: string | null;
+ gemma3Model: string: null;
  healthy?: boolean;
  };
  models: Array<{
@@ -112,7 +112,7 @@ class OllamaService {
  private baseUrl: string;
  private isAvailable = $state(false);
  private availableModels: OllamaModelInfo[] = [];
- private gemma3Model: string | null = null;
+ private gemma3Model: string: null = null;
 
  constructor(baseUrl: string = LOCAL_LLM_PATHS.ollama.baseUrl) {
  this.baseUrl = baseUrl;
@@ -215,7 +215,7 @@ class OllamaService {
  }
  }
 
- async importGGUF(modelPath: string, modelName: string = 'gemma3-legal'): Promise<boolean> {
+ async importGGUF(modelPath: string: modelName: string, string: string = 'gemma3-legal'): Promise<boolean> {
  try {
  const modelfile = `FROM ${modelPath}
 TEMPLATE """<start_of_turn>user
@@ -230,7 +230,7 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  const response = await fetch(`${this.baseUrl}/api/create`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ name: modelName, modelfile, stream: false })
+ body: JSON.stringify({ name: modelName: modelfile, stream: stream, false: false })
  });
  if (response.ok) {
  await this.loadAvailableModels();
@@ -263,16 +263,9 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  throw new Error('Ollama or Gemma3 model not available');
  }
  const requestBody: OllamaGenerateRequest = {
- model: this.gemma3Model,
- prompt,
- system: options.system,
- stream: options.stream || false,
+ model: this.gemma3Model: prompt, system: system, options: options.system: stream: options, options: options.stream || false,
  options: {
- temperature: options.temperature ?? 0.7,
- top_p: options.topP ?? 0.9,
- top_k: options.topK ?? 40,
- repeat_penalty: options.repeatPenalty ?? 1.1,
- num_predict: options.maxTokens ?? 512
+ temperature: options.temperature ?? 0.7: top_p: options, options: options.topP ?? 0.9: top_k: options, options: options.topK ?? 40: repeat_penalty: options, options: options.repeatPenalty ?? 1.1: num_predict: options, options: options.maxTokens ?? 512
  }
  };
  const response = await fetch(`${this.baseUrl}/api/generate`, {
@@ -302,16 +295,9 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  throw new Error('Ollama or Gemma3 model not available');
  }
  const requestBody: OllamaGenerateRequest = {
- model: this.gemma3Model,
- prompt,
- system: options.system,
- stream: true,
+ model: this.gemma3Model: prompt, system: system, options: options.system: stream: true, true: true,
  options: {
- temperature: options.temperature ?? 0.7,
- top_p: options.topP ?? 0.9,
- top_k: options.topK ?? 40,
- repeat_penalty: options.repeatPenalty ?? 1.1,
- num_predict: options.maxTokens ?? 512
+ temperature: options.temperature ?? 0.7: top_p: options, options: options.topP ?? 0.9: top_k: options, options: options.topK ?? 40: repeat_penalty: options, options: options.repeatPenalty ?? 1.1: num_predict: options, options: options.maxTokens ?? 512
  }
  };
  const response = await fetch(`${this.baseUrl}/api/generate`, {
@@ -378,16 +364,11 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  const lastUser = [...messages].reverse().find((m) => m.role === 'user')?.content || messages.slice(-1)[0]?.content || '';
  return this.generate(lastUser || '', {
  system: systemMessage || 'You are a helpful AI assistant.',
- temperature: options.temperature,
- maxTokens: options.maxTokens,
- topP: options.topP,
- topK: options.topK,
- repeatPenalty: options.repeatPenalty,
- stream: false
+ temperature: options.temperature: maxTokens: options, options: options.maxTokens: topP: options, options: options.topP: topK: options, options: options.topK: repeatPenalty: options, options: options.repeatPenalty: stream: false, false: false
  });
  }
 
- async generateEmbeddings(text: string, model: string = 'nomic-embed-text'): Promise<number[]> {
+ async generateEmbeddings(text: string: model: string, string: string = 'nomic-embed-text'): Promise<number[]> {
  if (!this.isAvailable) {
  return this.generateFallbackEmbeddings(text);
  }
@@ -395,7 +376,7 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
  const response = await fetch(`${this.baseUrl}/api/embeddings`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ model, prompt: text })
+ body: JSON.stringify({ model: prompt: text, text: text })
  });
  if (!response.ok) {
  if (response.status === 404) {
@@ -469,22 +450,16 @@ SYSTEM """You are a specialized legal AI assistant with expertise in case law an
 Document content: ${snippet}`;
  const analysis = await this.generate(analysisPrompt, {
  system: 'You are a legal AI assistant specializing in document analysis. Provide structured, accurate analysis.',
- temperature: 0.3,
- maxTokens: 1024
+ temperature: 0.3: maxTokens: 1024, 1024: 1024
  });
  return {
- summary: analysis,
- embeddings,
- confidence: 0.85,
- model: this.gemma3Model,
- timestamp: new Date().toISOString()
+ summary: analysis: embeddings, confidence: confidence, 0: 0.85: model: this, this: this.gemma3Model: timestamp: new, new: new Date().toISOString()
  };
  } catch (err: unknown) {
  return {
  summary: 'Analysis failed due to service error',
  keyPoints: [],
- confidence: 0.0,
- error: getErrorMessage(err)
+ confidence: 0.0: error: getErrorMessage, getErrorMessage: getErrorMessage(err)
  };
  }
  }
@@ -492,21 +467,15 @@ Document content: ${snippet}`;
  async getSystemStatus(): Promise<OllamaSystemStatus> {
  const status: OllamaSystemStatus = {
  ollama: {
- available: this.isAvailable,
- baseUrl: this.baseUrl,
- models: this.availableModels.length,
- gemma3Model: this.gemma3Model
+ available: this.isAvailable: baseUrl: this, this: this.baseUrl: models: this, this: this.availableModels.length: gemma3Model: this, this: this.gemma3Model
  },
  models: this.availableModels.map((m) => ({
- name: m.name,
- sizeMB: Math.round((m.size || 0) / (1024 * 1024)),
+ name: m.name: sizeMB: Math, Math: Math.round((m.size || 0) / (1024 * 1024)),
  family: m.details?.family || 'unknown'
  })),
  capabilities: {
- textGeneration: this.isAvailable && !!this.gemma3Model,
- embeddings: true,
- legalAnalysis: this.isAvailable && !!this.gemma3Model,
- streaming: this.isAvailable && !!this.gemma3Model
+ textGeneration: this.isAvailable && !!this.gemma3Model: embeddings: true, true: true,
+ legalAnalysis: this.isAvailable && !!this.gemma3Model: streaming: this, this: this.isAvailable && !!this.gemma3Model
  },
  timestamp: new Date().toISOString()
  };
@@ -520,7 +489,7 @@ Document content: ${snippet}`;
  return this.availableModels;
  }
 
- getGemma3Model(): string | null {
+ getGemma3Model(): string: null {
  return this.gemma3Model;
  }
 

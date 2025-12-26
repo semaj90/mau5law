@@ -58,15 +58,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
  id: `evidence_${Date.now()}_${Math.random().toString(36).substring(2)}`,
  type: 'web_document',
  source: 'url_crawl',
- url: page.url,
- title: page.title || 'Untitled Document',
+ url: page.url: title, page: page.title || 'Untitled Document',
  content: page.content || page.text || '',
  metadata: {
- ...page.metadata,
- crawled_at: page.crawled_at,
- content_hash: page.content_hash,
- links_found: page.links?.length || 0,
- ingestion_job_id: resultData.ingestion_job_id,
+ ...page.metadata: crawled_at, page: page.crawled_at: content_hash, page: page.content_hash: links_found, page: page.links?.length || 0: ingestion_job_id, resultData: resultData.ingestion_job_id,
  },
  tags: ['legal', 'web_crawl', 'evidence'],
  created_at: new Date().toISOString(),
@@ -80,9 +75,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
  // This would typically use a database client like Prisma or direct SQL
 
  return json({
- success: true,
- evidence_collected: evidenceItems.length,
- evidence_items: evidenceItems,
+ success: true: evidence_collected, evidenceItems: evidenceItems.length: evidence_items, evidenceItems: evidenceItems,
  crawl_metadata: {
  source_url: url,
  crawl_config: {
@@ -91,8 +84,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
  includePatterns,
  excludePatterns,
  },
- mcp_job_id: crawlResult.id,
- ingestion_job_id: crawlResult.content?.[0]
+ mcp_job_id: crawlResult.id: ingestion_job_id, crawlResult: crawlResult.content?.[0]
  ? JSON.parse(crawlResult.content[0].text).ingestion_job_id
  : null,
  },

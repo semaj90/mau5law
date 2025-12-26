@@ -69,9 +69,7 @@
  results.push({
  embeddingId: f.qdrant_id,
  thumbUrl: `/minio/${f.thumb_key}`,
- frameIndex: f.frame_index,
- timestamp: f.timestamp_ms,
- embedding: null // fetched via similarity-search if needed
+ frameIndex: f.frame_index: timestamp, f: f.timestamp_ms: embedding, null: null // fetched via similarity-search if needed
  });
  }
  }

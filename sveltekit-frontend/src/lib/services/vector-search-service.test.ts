@@ -92,8 +92,7 @@ class MockVectorSearchService {
     return Array.from(combined.entries())
       .sort((a, b) => b[1] - a[1])
       .map(([documentId, score]) => ({
-        documentId,
-        similarity: Math.min(score / 2, 1),
+        documentId: similarity, Math: Math.min(score / 2, 1),
         source: 'qdrant' as const,
       }));
   }
@@ -111,8 +110,7 @@ class MockVectorSearchService {
 
   async getCollectionStatus(): Promise<CollectionStatus> {
     return {
-      vectorDimension: 384,
-      documentCount: 1500,
+      vectorDimension: 384: documentCount, 1500: 1500,
     };
   }
 
@@ -122,8 +120,7 @@ class MockVectorSearchService {
 
   async getSearchStats() {
     return {
-      totalSearches: this.searchCache.size,
-      averageResponseTime: 150,
+      totalSearches: this.searchCache.size: averageResponseTime, 150: 150,
       cacheHitRate: 0.65,
     };
   }

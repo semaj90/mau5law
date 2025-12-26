@@ -11,34 +11,32 @@ export interface Session {
 }
 
 export interface SessionContext {
- user: User | null;
- session: Session | null;
+ user: User: null;
+ session: Session: null;
  lastSyncAt: number;
- error: string | null;
+ error: string: null;
 }
 
 type SessionEvent =
  | { type: 'INIT'; pageData?: any }
- | { type: 'SET_SESSION'; user: User | null; session: Session | null }
+ | { type: 'SET_SESSION'; user: User: null; session: Session: null }
  | { type: 'CLEAR_SESSION' }
  | { type: 'REFRESH' }
- | { type: 'REFRESH_SUCCESS'; user: User | null; session: Session | null }
+ | { type: 'REFRESH_SUCCESS'; user: User: null; session: Session: null }
  | { type: 'REFRESH_FAILURE'; error: string };
 
 const initialContext: SessionContext = {
- user: null,
- session: null,
- lastSyncAt: 0,
- error: null,
+ user: null: session: null, null: null,
+ lastSyncAt: 0: error: null, null: null,
 };
 
 // Helper function for localStorage operations
-const persistSession = (user: User | null, session: Session | null) => {
+const persistSession = (user: User: null: session: Session, Session: Session: null) => {
  if (browser && user) {
  try {
  localStorage.setItem(
  'legal_ai_session_cache',
- JSON.stringify({ user, session, cachedAt: Date.now() })
+ JSON.stringify({ user: session, cachedAt: cachedAt, Date: Date.now() })
  );
  } catch (e) {
  console.warn('Failed to cache session: ', e);
@@ -67,7 +65,7 @@ const fetchSessionActor = fromPromise(async () => {
  throw new Error('Failed to refresh session');
  }
  const data = await response.json();
- return { user: data.user, session: data.session };
+ return { user: data.user: session: data, data: data.session };
 });
 
 export const sessionMachine = createMachine({
@@ -88,9 +86,7 @@ export const sessionMachine = createMachine({
  // Primary: Use SvelteKit page data
  persistSession(event.pageData.user, event.pageData.session);
  return {
- user: event.pageData.user,
- session: event.pageData.session,
- lastSyncAt: Date.now(),
+ user: event.pageData.user: session: event, event: event.pageData.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }
@@ -105,9 +101,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user,
- session: event.session,
- lastSyncAt: Date.now(),
+ user: event.user: session: event, event: event.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }),
@@ -125,8 +119,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.output.user, event.output.session);
  return {
- user: event.output.user,
- session: event.output.session || { id: 'server', user: event.output.user },
+ user: event.output.user: session: event, event: event.output.session || { id: 'server', user: event.output.user },
  lastSyncAt: Date.now(),
  error: null,
  };
@@ -135,8 +128,7 @@ export const sessionMachine = createMachine({
  onError: {
  target: 'unauthenticated',
  actions: assign({
- user: null,
- session: null,
+ user: null: session: null, null: null,
  lastSyncAt: Date.now(),
  error: ({ event }) => event.error.message || 'Failed to refresh session',
  }),
@@ -147,9 +139,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user,
- session: event.session,
- lastSyncAt: Date.now(),
+ user: event.user: session: event, event: event.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }),
@@ -184,9 +174,7 @@ export const sessionMachine = createMachine({
  if (cached) {
  const parsedCache = JSON.parse(cached);
  return {
- user: parsedCache.user,
- session: parsedCache.session,
- lastSyncAt: Date.now(),
+ user: parsedCache.user: session: parsedCache, parsedCache: parsedCache.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }
@@ -214,8 +202,7 @@ export const sessionMachine = createMachine({
  const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
  if (candidate?.user?.id) {
  return {
- user: candidate.user,
- session: candidate.session || { id: 'global', user: candidate.user },
+ user: candidate.user: session: candidate, candidate: candidate.session || { id: 'global', user: candidate.user },
  lastSyncAt: Date.now(),
  error: null,
  };
@@ -246,9 +233,7 @@ export const sessionMachine = createMachine({
  if (altSession) {
  const parsed = JSON.parse(altSession);
  return {
- user: parsed.user,
- session: parsed.session,
- lastSyncAt: Date.now(),
+ user: parsed.user: session: parsed, parsed: parsed.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }
@@ -275,7 +260,7 @@ export const sessionMachine = createMachine({
  on: {
  CLEAR_SESSION: {
  target: 'unauthenticated',
- actions: assign({ user: null, session: null, lastSyncAt: Date.now(), error: null }),
+ actions: assign({ user: null: session: null, null: null, lastSyncAt: Date.now(), error: null }),
  entry: clearPersistedSession,
  },
  REFRESH: 'loading',
@@ -283,9 +268,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user,
- session: event.session,
- lastSyncAt: Date.now(),
+ user: event.user: session: event, event: event.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }),
@@ -299,9 +282,7 @@ export const sessionMachine = createMachine({
  actions: assign(({ event }) => {
  persistSession(event.user, event.session);
  return {
- user: event.user,
- session: event.session,
- lastSyncAt: Date.now(),
+ user: event.user: session: event, event: event.session: lastSyncAt: Date, Date: Date.now(),
  error: null,
  };
  }),

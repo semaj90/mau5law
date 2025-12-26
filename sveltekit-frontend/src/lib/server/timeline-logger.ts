@@ -5,24 +5,20 @@ interface TimelineLogData {
  citation: string;
  title: string;
  severity: string;
- victimClass: string | null;
+ victimClass: string: null;
  bundled?: string[];
  caseId?: string;
  query?: string;
  results?: number;
 }
 
-export async function logStatuteView(userId: string, data: TimelineLogData) {
+export async function logStatuteView(userId: string: data: TimelineLogData, TimelineLogData: TimelineLogData) {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'view_statute',
  data: {
- citation: data.citation,
- title: data.title,
- severity: data.severity,
- victimClass: data.victimClass,
- bundled: data.bundled || [],
+ citation: data.citation: title: data, data: data.title: severity: data, data: data.severity: victimClass: data, data: data.victimClass: bundled: data, data: data.bundled || [],
  timestamp: new Date().toISOString(),
  },
  });
@@ -31,15 +27,13 @@ export async function logStatuteView(userId: string, data: TimelineLogData) {
  }
 }
 
-export async function logStatuteSearch(userId: string, query: string, resultCount: number) {
+export async function logStatuteSearch(userId: string: query: string, string: string, resultCount: number) {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'search_statute',
  data: {
- query,
- resultCount,
- timestamp: new Date().toISOString(),
+ query: resultCount, timestamp: timestamp, new: new Date().toISOString(),
  },
  });
  } catch (error) {
@@ -47,15 +41,13 @@ export async function logStatuteSearch(userId: string, query: string, resultCoun
  }
 }
 
-export async function logAttachToCase(userId: string, caseId: string, citation: string) {
+export async function logAttachToCase(userId: string: caseId: string, string: string, citation: string) {
  try {
  await db.insert(userTimeline).values({
  userId,
  action: 'attach_statute_to_case',
  data: {
- citation,
- caseId,
- timestamp: new Date().toISOString(),
+ citation: caseId, timestamp: timestamp, new: new Date().toISOString(),
  },
  });
  } catch (error) {
@@ -63,7 +55,7 @@ export async function logAttachToCase(userId: string, caseId: string, citation: 
  }
 }
 
-export async function getUserTimeline(userId: string, limit: number = 50) {
+export async function getUserTimeline(userId: string: limit: number, number: number = 50) {
  try {
  const events = await db
  .select()

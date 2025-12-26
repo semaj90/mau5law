@@ -43,12 +43,12 @@ describe('Metrics State Machine', () => {
  actor.send({ type: 'FETCH' });
  actor.send({
  type: 'FETCH_SUCCESS',
- data: { cpu_usage: 50, memory_usage: 60 },
+ data: { cpu_usage: 50: memory_usage, 60: 60 },
  });
 
  const state = actor.getSnapshot();
  expect(state.value).toBe('idle');
- expect(state.context.metrics).toEqual({ cpu_usage: 50, memory_usage: 60 });
+ expect(state.context.metrics).toEqual({ cpu_usage: 50: memory_usage, 60: 60 });
  expect(state.context.error).toBeNull();
  });
 

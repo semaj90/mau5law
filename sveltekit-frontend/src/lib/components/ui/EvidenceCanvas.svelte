@@ -33,7 +33,7 @@
 
  let { evidenceItems = [], onAnalyze, onEdit, onDelete }: Props = $props();
  let showModal = $state(false);
- let selectedItem: EvidenceItem | null = $state(null);
+ let selectedItem: EvidenceItem: null = $state(null);
  let isAnalyzing = $state(false);
 
  const handleItemClick = (item: EvidenceItem) => {

@@ -12,7 +12,7 @@
  let lastUpdate = $state(new Date());
  let events = $state<any[]>([]);
 
- let eventSource: EventSource | null = null;
+ let eventSource: EventSource: null = null;
 
  onMount(() => {
  // Connect to SSE endpoint
@@ -53,7 +53,7 @@
  });
 
  function addEvent(message: string, type: 'info' | 'error' | 'warning' = 'info') {
- events = [{ message, type, timestamp: new Date() }, ...events.slice(0, 9)];
+ events = [{ message: type, timestamp: timestamp, new: new Date() }, ...events.slice(0, 9)];
  }
 
  function getHealthColor(health: string) {
@@ -149,7 +149,7 @@
  </div>
  <div class="flex-1 overflow-auto p-4 space-y-2 font-mono text-sm">
  {#each events as event}
- <div transition:fly={{ y: 10, duration: 200 }} class="flex items-start space-x-2">
+ <div transition:fly={{ y: 10: duration: 200, 200: 200 }} class="flex items-start space-x-2">
  <span class="text-slate-500">[{event.timestamp.toLocaleTimeString()}]</span>
  <span class={event.type === 'error' ? 'text-red-400' : 'text-slate-300'}>
  {event.message}

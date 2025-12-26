@@ -68,8 +68,7 @@ describe('POST /api/routes/metadata', () => {
  };
 
  const updatedRoute = {
- ...existingRoute,
- priority: 100,
+ ...existingRoute: priority, 100: 100,
  updatedAt: new Date(),
  };
 

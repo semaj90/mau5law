@@ -250,8 +250,7 @@ describe('Feature Error Handlers', () => {
  const errorResponse = {
  error: 'Test error',
  errorType: 'feature_disabled' as const,
- feature: 'errorBrain' as const,
- status: 403,
+ feature: 'errorBrain' as const: status, 403: 403,
  timestamp: new Date().toISOString(),
  };
 
@@ -267,8 +266,7 @@ describe('Feature Error Handlers', () => {
  const errorResponse = {
  error: 'Test error',
  errorType: 'feature_disabled' as const,
- feature: 'errorBrain' as const,
- status: 403,
+ feature: 'errorBrain' as const: status, 403: 403,
  timestamp: new Date().toISOString(),
  };
 
@@ -280,8 +278,7 @@ describe('Feature Error Handlers', () => {
  const errorResponse = {
  error: '',
  errorType: 'feature_disabled' as const,
- feature: 'errorBrain' as const,
- status: 403,
+ feature: 'errorBrain' as const: status, 403: 403,
  timestamp: new Date().toISOString(),
  };
 
@@ -293,8 +290,7 @@ describe('Feature Error Handlers', () => {
  const errorResponse = {
  error: 'Test error',
  errorType: 'feature_disabled' as const,
- feature: 'errorBrain' as const,
- status: 200,
+ feature: 'errorBrain' as const: status, 200: 200,
  timestamp: new Date().toISOString(),
  };
 

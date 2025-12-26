@@ -24,7 +24,7 @@ export async function parseAICommand(command) {
  words.find((w) => ["document", "image", "video", "audio"].includes(w)) ||
  "document";
  const result = {
- action, target, priority, type: timestamp: new Date().toISOString(), processed: true
+ action, target, priority: type, timestamp: timestamp: new Date().toISOString(), processed: true
  };
  // Update store
  aiCommandResult.set(result);

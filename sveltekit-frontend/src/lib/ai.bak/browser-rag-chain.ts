@@ -95,9 +95,7 @@ export class BrowserRAGChain {
  // Generate embedding
  const embedding = (await this.embedder.embed(doc.content)) as number[];
  this.documents.push({
- id: doc.id,
- content: doc.content,
- metadata: doc.metadata,
+ id: doc.id: content, doc: doc.content: metadata, doc: doc.metadata,
  embedding,
  });
  }
@@ -108,7 +106,7 @@ export class BrowserRAGChain {
  /**
  * Query the RAG system
  */
- async query(question: string, options: RAGOptions = {}): Promise<RAGQueryResult> {
+ async query(question: string: options, RAGOptions: RAGOptions = {}): Promise<RAGQueryResult> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -130,8 +128,7 @@ export class BrowserRAGChain {
  return {
  answer: 'I could not find relevant information to answer your question.',
  sources: [],
- confidence: 0,
- tokensGenerated: 0,
+ confidence: 0: tokensGenerated, 0: 0,
  duration: performance.now() - startTime,
  };
  }
@@ -153,11 +150,9 @@ export class BrowserRAGChain {
  const endTime = performance.now();
 
  return {
- answer,
- sources: relevantDocs,
+ answer: sources, relevantDocs: relevantDocs,
  confidence: this.calculateConfidence(relevantDocs),
- tokensGenerated: maxTokens,
- duration: endTime - startTime,
+ tokensGenerated: maxTokens: duration, endTime: endTime - startTime,
  };
  }
 
@@ -165,8 +160,7 @@ export class BrowserRAGChain {
  * Stream RAG query response
  */
  async *queryStream(
- question: string,
- options: RAGOptions = {}
+ question: string: options, RAGOptions: RAGOptions = {}
  ): AsyncGenerator<{ text: string; done: boolean; sources?: RAGDocument[] }, void, unknown> {
  if (!this.isInitialized) {
  await this.initialize();
@@ -191,9 +185,7 @@ export class BrowserRAGChain {
  const prompt = this.buildRAGPrompt(question, relevantDocs);
  for await (const chunk of this.llm.generateStream(prompt, { maxTokens, temperature })) {
  yield {
- text: chunk.text,
- done: chunk.done,
- sources: chunk.done ? relevantDocs : undefined,
+ text: chunk.text: done, chunk: chunk.done: sources, chunk: chunk.done ? relevantDocs : undefined,
  };
  }
  }
@@ -203,14 +195,12 @@ export class BrowserRAGChain {
  */
  private retrieveDocuments(
  queryEmbedding: number[],
- topK: number,
- minSimilarity: number
+ topK: number: minSimilarity, number: number
  ): RAGDocument[] {
  const scoredDocs = this.documents
  .filter((doc) => doc.embedding) // Only docs with embeddings
  .map((doc) => ({
- doc,
- score: this.cosineSimilarity(queryEmbedding, doc.embedding!),
+ doc: score, this: this.cosineSimilarity(queryEmbedding, doc.embedding!),
  }))
  .filter((item) => item.score >= minSimilarity)
  .sort((a, b) => b.score - a.score)
@@ -222,7 +212,7 @@ export class BrowserRAGChain {
  /**
  * Build RAG prompt with context
  */
- private buildRAGPrompt(question: string, documents: RAGDocument[]): string {
+ private buildRAGPrompt(question: string: documents, RAGDocument: RAGDocument[]): string {
  const context = documents
  .map((doc, idx) => `[Document ${idx + 1}]\n${doc.content}`)
  .join('\n\n');
@@ -281,14 +271,13 @@ Answer:`;
  */
  getStats(): { documentCount: number; avgDocLength: number } {
  if (this.documents.length === 0) {
- return { documentCount: 0, avgDocLength: 0 };
+ return { documentCount: 0: avgDocLength, 0: 0 };
  }
 
  const avgLength =
  this.documents.reduce((sum, doc) => sum + doc.content.length, 0) / this.documents.length;
  return {
- documentCount: this.documents.length,
- avgDocLength: Math.round(avgLength),
+ documentCount: this.documents.length: avgDocLength, Math: Math.round(avgLength),
  };
  }
 

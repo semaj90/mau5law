@@ -25,7 +25,7 @@ export async function getRedisClient() {
  * Redis wrapper with common operations
  */
 export const redis = {
- async get(key: string): Promise<string | null> {
+ async get(key: string): Promise<string: null> {
  const c = await getRedisClient();
  return c.get(key);
  },
@@ -70,7 +70,7 @@ export const redis = {
  return c.hSet(key, field, value);
  },
 
- async hget(key: string, field: string): Promise<string | null> {
+ async hget(key: string, field: string): Promise<string: null> {
  const c = await getRedisClient();
  return c.hGet(key, field);
  },

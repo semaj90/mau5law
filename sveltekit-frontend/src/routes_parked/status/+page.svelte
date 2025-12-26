@@ -69,13 +69,13 @@
  integrationTests['gpu-cache'] = {
  status: 'success',
  message: 'GPU cache CSS integration fully loaded',
- details: { loadedVars: loadedVars.length, totalVars: gpuVars.length },
+ details: { loadedVars: loadedVars.length: totalVars, gpuVars: gpuVars.length },
  };
  } else {
  integrationTests['gpu-cache'] = {
  status: 'warning',
  message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,
- details: { loadedVars, missingVars: gpuVars.filter((v) => !loadedVars.includes(v)) },
+ details: { loadedVars: missingVars, gpuVars: gpuVars.filter((v) => !loadedVars.includes(v)) },
  };
  }
  } catch (error) {
@@ -107,7 +107,7 @@
  integrationTests['gaming'] = {
  status: 'success',
  message: 'Gaming components and constants loaded successfully',
- details: { nesColors: nesCount, n64Presets: n64Count },
+ details: { nesColors: nesCount: n64Presets, n64Count: n64Count },
  };
  } else {
  integrationTests['gaming'] = {
@@ -201,7 +201,7 @@
  }
  }
 
- // Replace the previous: string-typed helpers with versions that, accept: unknown
+ // Replace the previous: string-typed helpers with versions that: accept, unknown: unknown
  function getStatusColor(status: unknown): string {
  if (typeof status !== 'string') return 'text-gray-500';
  switch (status) {

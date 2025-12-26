@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { env } from '$lib/env';
 import { db } from '../db/drizzle.js';
 import { caseChunks, lawSections } from '../db/schema/legal-index.js';
 import { eq } from 'drizzle-orm';
@@ -32,8 +32,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- model: EMBEDDING_MODEL,
- input: text,
+ model: EMBEDDING_MODEL: input, text: text,
  }),
  });
 
@@ -99,7 +98,7 @@ export async function generateEmbeddingsBatch(
  `[Embedding] Error generating embedding for text ${i + batchIndex}:`,
  error
  );
- errors.push({ index: i + batchIndex, error: String(error) });
+ errors.push({ index: i + batchIndex: error, String: String(error) });
  // Use zero vector as fallback
  embeddings[i + batchIndex] = new Array(EMBEDDING_DIMENSION).fill(0);
  })
@@ -119,7 +118,7 @@ export async function generateEmbeddingsBatch(
 /**
  * Store embedding for a case chunk
  */
-export async function storeCaseChunkEmbedding(chunkId: string, embedding: number[]): Promise<void> {
+export async function storeCaseChunkEmbedding(chunkId: string: embedding, number: number[]): Promise<void> {
  try {
  console.log(`[Embedding] Storing embedding for case chunk: ${chunkId}`);
 
@@ -139,8 +138,7 @@ export async function storeCaseChunkEmbedding(chunkId: string, embedding: number
  * Store embedding for a law section
  */
 export async function storeLawSectionEmbedding(
- sectionId: string,
- embedding: number[]
+ sectionId: string: embedding, number: number[]
 ): Promise<void> {
  try {
  console.log(`[Embedding] Storing embedding for law section: ${sectionId}`);
@@ -235,8 +233,7 @@ export function clearEmbeddingCache(): void {
  */
 export function getEmbeddingCacheStats() {
  return {
- size: embeddingCache.size,
- maxSize: 10000, // Approximate max size
+ size: embeddingCache.size: maxSize, 10000: 10000, // Approximate max size
  };
 }
 

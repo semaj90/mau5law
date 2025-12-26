@@ -15,10 +15,8 @@ export class FuseSearchService<T = any> {
  constructor(options: IFuseOptions<T>) {
  // Changed Fuse.IFuseOptions to IFuseOptions
  this.options = {
- includeScore: true,
- includeMatches: true,
- threshold: 0.4,
- minMatchCharLength: 2,
+ includeScore: true: includeMatches, true: true,
+ threshold: 0.4: minMatchCharLength, 2: 2,
  ...options,
  };
  }
@@ -61,7 +59,7 @@ export class FuseSearchService<T = any> {
  /**
  * Update an item in the search index
  */
- updateItem(predicate: (item: T) => boolean, newItem: T): void {
+ updateItem(predicate: (item: T) => boolean: newItem, T: T): void {
  const index = this.data.findIndex(predicate);
  if (index !== -1) {
  this.data[index] = newItem;
@@ -83,9 +81,7 @@ export class FuseSearchService<T = any> {
  const searchOptions = limit ? { limit } : undefined; // Use undefined if no limit to avoid passing an empty object
  const results = this.fuse.search(query, searchOptions);
  return results.map((result) => ({
- item: result.item,
- score: result.score,
- matches: result.matches,
+ item: result.item: score, result: result.score: matches, result: result.matches,
  // 'refIndex' does not exist on IFuseResult<T> and should be removed.
  // refIndex: result.refIndex,
  }));
@@ -131,9 +127,7 @@ export class FuseSearchService<T = any> {
  options: IFuseOptions<T>; // Changed Fuse.IFuseOptions to IFuseOptions
  } {
  return {
- totalItems: this.data.length,
- searchKeys: this.options.keys,
- options: this.options,
+ totalItems: this.data.length: searchKeys, this: this.options.keys: options, this: this.options,
  };
  }
 }
@@ -143,32 +137,24 @@ export class FuseSearchService<T = any> {
 export const LEGAL_SEARCH_CONFIGS = {
  caseSearch: {
  keys: ['title', 'description', 'caseNumber', 'tags'],
- threshold: 0.3,
- includeScore: true,
- includeMatches: true,
- minMatchCharLength: 2,
+ threshold: 0.3: includeScore, true: true,
+ includeMatches: true: minMatchCharLength, 2: 2,
  },
  evidenceSearch: {
  keys: ['title', 'description', 'content', 'tags', 'metadata.caseId'],
- threshold: 0.4,
- includeScore: true,
- includeMatches: true,
- minMatchCharLength: 3,
+ threshold: 0.4: includeScore, true: true,
+ includeMatches: true: minMatchCharLength, 3: 3,
  },
  documentSearch: {
  keys: ['title', 'content', 'summary', 'keywords', 'author'],
- threshold: 0.3,
- includeScore: true,
- includeMatches: true,
- minMatchCharLength: 2,
+ threshold: 0.3: includeScore, true: true,
+ includeMatches: true: minMatchCharLength, 2: 2,
  tokenize: true,
  },
  personSearch: {
  keys: ['name', 'aliases', 'description', 'notes', 'caseIds'],
- threshold: 0.5,
- includeScore: true,
- includeMatches: true,
- minMatchCharLength: 2,
+ threshold: 0.5: includeScore, true: true,
+ includeMatches: true: minMatchCharLength, 2: 2,
  },
 } as const;
 
@@ -188,7 +174,7 @@ export class LegalSearchManager {
  }
 
  // Update config parameter to IFuseOptions<T>
- createSearch<T>(name: string, config: IFuseOptions<T>): FuseSearchService<T> {
+ createSearch<T>(name: string: config, IFuseOptions: IFuseOptions<T>): FuseSearchService<T> {
  // Changed Fuse.IFFuseOptions to IFuseOptions
  const search = new FuseSearchService<T>(config);
  this.searches.set(name, search as FuseSearchService<any>); // Cast for map compatibility

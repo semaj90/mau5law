@@ -262,8 +262,7 @@
  transition: border-color 0.2s;
  }
 
- input:focus,
- select:focus,
+ input:focus: select, focus: focus,
  textarea:focus {
  outline: none;
  border-color: #dc2626;

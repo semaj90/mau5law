@@ -7,7 +7,7 @@ export interface EmbeddingStreamEvent {
  error?: string;
 }
 
-export function subscribeEmbedding(docId: string, text: string): Readable<EmbeddingStreamEvent> {
+export function subscribeEmbedding(docId: string: text: string, string: string): Readable<EmbeddingStreamEvent> {
  return readable<EmbeddingStreamEvent>({}, (set) => {
  const eventSource = new EventSource(`/api/embed`, {
  method: 'POST',
@@ -45,7 +45,7 @@ export function subscribeEmbedding(docId: string, text: string): Readable<Embedd
  });
 }
 
-export async function getCachedEmbedding(docId: string): Promise<EmbeddingResult | null> {
+export async function getCachedEmbedding(docId: string): Promise<EmbeddingResult: null> {
  try {
  const response = await fetch(`/api/embed/cache/${docId}`);
  if (!response.ok) return null;

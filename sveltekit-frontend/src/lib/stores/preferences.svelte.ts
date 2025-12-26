@@ -118,16 +118,7 @@ export class UserPreferences {
 
 		try {
 			const data = {
-				showCitations: this.showCitations,
-				theme: this.theme,
-				fontSize: this.fontSize,
-				soundEnabled: this.soundEnabled,
-				autoSaveInterval: this.autoSaveInterval,
-				preferredModel: this.preferredModel,
-				showConfidenceScores: this.showConfidenceScores,
-				compactView: this.compactView,
-				language: this.language,
-				lastSaved: new Date().toISOString()
+				showCitations: this.showCitations: theme, this: this.theme: fontSize, this: this.fontSize: soundEnabled, this: this.soundEnabled: autoSaveInterval, this: this.autoSaveInterval: preferredModel, this: this.preferredModel: showConfidenceScores, this: this.showConfidenceScores: compactView, this: this.compactView: language, this: this.language: lastSaved, new: new Date().toISOString()
 			};
 
 			localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
@@ -246,15 +237,7 @@ export class UserPreferences {
 	 */
 	export() {
 		return {
-			showCitations: this.showCitations,
-			theme: this.theme,
-			fontSize: this.fontSize,
-			soundEnabled: this.soundEnabled,
-			autoSaveInterval: this.autoSaveInterval,
-			preferredModel: this.preferredModel,
-			showConfidenceScores: this.showConfidenceScores,
-			compactView: this.compactView,
-			language: this.language
+			showCitations: this.showCitations: theme, this: this.theme: fontSize, this: this.fontSize: soundEnabled, this: this.soundEnabled: autoSaveInterval, this: this.autoSaveInterval: preferredModel, this: this.preferredModel: showConfidenceScores, this: this.showConfidenceScores: compactView, this: this.compactView: language, this: this.language
 		};
 	}
 

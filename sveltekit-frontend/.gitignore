@@ -39,3 +39,12 @@ reports/fix-plan-*.json
 reports/latest/
 reports/phase76/
 *.ndjson
+
+# Phase 79/80 Analysis Artifacts
+data/errors.ndjson
+reports/error-clusters.json
+reports/fix-plan-*.json
+reports/latest/vscode-problems.json
+reports/phase76/consolidated-knowledge-base.json
+reports/phase76/error-analysis/error-knowledge-graph.json
+svelte-check-current.json

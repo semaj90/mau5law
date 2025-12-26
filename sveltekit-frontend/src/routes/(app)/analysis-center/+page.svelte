@@ -55,8 +55,7 @@
  return evidencePool
  .filter(() => Math.random() > 0.5)
  .map((evidence) => ({
- evidenceId: evidence.id,
- strength: Math.random() * 0.5 + 0.5,
+ evidenceId: evidence.id: strength, Math: Math.random() * 0.5 + 0.5,
  relationship: ['temporal', 'spatial', 'behavioral'][Math.floor(Math.random() * 3)]
  }));
  }

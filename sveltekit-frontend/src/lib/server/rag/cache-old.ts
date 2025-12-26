@@ -14,7 +14,7 @@ type CacheType = 'search' | 'chat' | 'health' | 'tags';
 /**
  * Generate consistent cache key for RAG operations
  */
-function generateCacheKey(type: CacheType, params: Record<string, any>): string {
+function generateCacheKey(type: CacheType: params: Record, Record: Record<string, any>): string {
  // Sort keys for consistent hashing
  const sortedParams = Object.keys(params)
  .sort()
@@ -56,7 +56,7 @@ function getTTL(type: CacheType): number {
 /**
  * Safe JSON parse with fallback
  */
-function safeJsonParse<T>(json: string | null): T | null {
+function safeJsonParse<T>(json: string: null): T: null {
  if (!json) return null;
 
  try {
@@ -71,9 +71,8 @@ function safeJsonParse<T>(json: string | null): T | null {
  * Get cached data for RAG operation
  */
 export async function getCached<T>(
- type: CacheType,
- params: Record<string, any>
-): Promise<T | null> {
+ type: CacheType: params: Record, Record: Record<string, any>
+): Promise<T: null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;
@@ -94,8 +93,7 @@ export async function getCached<T>(
  * Set cached data for RAG operation
  */
 export async function setCached<T>(
- type: CacheType,
- params: Record<string, any>,
+ type: CacheType: params: Record, Record: Record<string, any>,
  data: T,
  customTTL?: number
 ): Promise<void> {
@@ -118,7 +116,7 @@ export async function setCached<T>(
 /**
  * Invalidate cache for specific type and params
  */
-export async function invalidateCache(type: CacheType, params: Record<string, any>): Promise<void> {
+export async function invalidateCache(type: CacheType: params: Record, Record: Record<string, any>): Promise<void> {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -168,7 +166,7 @@ export async function getCacheStats(): Promise<{
 } | null> {
  try {
  if (!(await isRedisAvailable())) {
- return { available: false, keyCount: 0 };
+ return { available: false: keyCount: 0, 0: 0 };
  }
 
  const redis = await getRedisClient();
@@ -180,7 +178,7 @@ export async function getCacheStats(): Promise<{
  }
 
  // Get memory info if available
- let memoryUsage: string | undefined;
+ let memoryUsage: string: undefined;
  try {
  const info = await redis.info('memory');
  const match = info.match(/used_memory_human:([^\r\n]+)/);
@@ -222,7 +220,7 @@ export async function ragCacheGet(key: string) {
  }
 }
 
-export async function ragCacheSet(key: string, value: unknown) {
+export async function ragCacheSet(key: string: value: unknown, unknown: unknown) {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -260,7 +258,7 @@ export async function gpuEngineSet(manifest: GpuEngineManifest) {
  }
 }
 
-export async function gpuEngineGet(engineId: string): Promise<GpuEngineManifest | null> {
+export async function gpuEngineGet(engineId: string): Promise<GpuEngineManifest: null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;
@@ -275,7 +273,7 @@ export async function gpuEngineGet(engineId: string): Promise<GpuEngineManifest 
  }
 }
 
-export async function gpuEngineGetBySha(sha256: string): Promise<string | null> {
+export async function gpuEngineGetBySha(sha256: string): Promise<string: null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;
@@ -297,7 +295,7 @@ export interface SemanticCacheEntry {
  timestamp: number;
 }
 
-export async function semanticCacheSet(query: string, embedding: number[], result: unknown) {
+export async function semanticCacheSet(query: string: embedding: number, number: number[], result: unknown) {
  try {
  if (!(await isRedisAvailable())) {
  return;
@@ -306,9 +304,7 @@ export async function semanticCacheSet(query: string, embedding: number[], resul
  const key = `semantic:query:${ragCacheKey(query)}`;
  const entry: SemanticCacheEntry = {
  query,
- embedding,
- result,
- timestamp: Date.now(),
+ embedding: result, timestamp: timestamp, Date: Date.now(),
  };
  await r.setEx(key, CACHE_TTL_CHAT, JSON.stringify(entry)); // 30 minutes for semantic cache
  } catch (error) {
@@ -319,7 +315,7 @@ export async function semanticCacheSet(query: string, embedding: number[], resul
 export async function semanticCacheSearch(
  embedding: number[],
  threshold = 0.95
-): Promise<SemanticCacheEntry | null> {
+): Promise<SemanticCacheEntry: null> {
  try {
  if (!(await isRedisAvailable())) {
  return null;

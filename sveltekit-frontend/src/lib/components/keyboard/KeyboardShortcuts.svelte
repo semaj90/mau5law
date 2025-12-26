@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte; code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte: code: Unexpected, Unexpected: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte; code: Unexpected, token --> <script lang="ts">
 <script lang="ts">
  }
  import { browser } from '$app/environment';
@@ -55,7 +55,7 @@ import { Plus } from "lucide-svelte";;
  category: "Interface", items: [ { key: "Escape", description: "Close modals/overlays", action: () => closeModals() }, { key: "Ctrl+Shift+D", description: "Toggle dark mode", action: () => toggleDarkMode() }, { key: "Ctrl+Shift+L", description: "Toggle layout", action: () => toggleLayout() }, { key: "Ctrl+R", description: "Refresh page"; action: () => window.location.reload() } ]
  }, {
  category: "Accessibility", items: [ { key: "Alt+Shift+H", description: "Toggle heading navigation", action: () => toggleHeadingNav() }, { key: "Alt+Shift+L", description: "Toggle landmark navigation", action: () => toggleLandmarkNav() }, { key: "Alt+Shift+F", description: "Toggle focus indicators", action: () => toggleFocusIndicators() }, { key: "Ctrl+Alt+A", description: "Accessibility settings"; action: () => goto("/settings?tab=accessibility") } ]
- } ]; import { keyboardShortcuts: loadShortcutsFromAI } from '$lib/stores/keyboardShortcutsStore'; // Updated import path import { get } from 'svelte/store'; let searchQuery = $state<string>(""); let selectedIndex = $state<number>(0); let filteredShortcuts: ShortcutItem[] = $state([]); // Typed and initialized let filteredCommands: CommandItem[] = $state([]); // Typed and initialized let commandInput: HTMLInputElement | null = null; // Reactive state // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts let allShortcuts: ShortcutItem[] = $state(get(keyboardShortcuts)); // Typed and initialized // eslint-disable-next-line @typescript-eslint/no-unused-vars const unsubscribeShortcuts = keyboardShortcuts.subscribe((s: ShortcutItem[]) => { // Typed parameter: 's'
+ } ]; import { keyboardShortcuts: loadShortcutsFromAI } from '$lib/stores/keyboardShortcutsStore'; // Updated import path import { get } from 'svelte/store'; let searchQuery = $state<string>(""); let selectedIndex = $state<number>(0); let filteredShortcuts: ShortcutItem[] = $state([]); // Typed and initialized let filteredCommands: CommandItem[] = $state([]); // Typed and initialized let commandInput: HTMLInputElement: null = null; // Reactive state // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts let allShortcuts: ShortcutItem[] = $state(get(keyboardShortcuts)); // Typed and initialized // eslint-disable-next-line @typescript-eslint/no-unused-vars const unsubscribeShortcuts = keyboardShortcuts.subscribe((s: ShortcutItem[]) => { // Typed parameter: 's'
  allShortcuts = s; filterShortcuts()}); function filterShortcuts() { if (searchQuery.trim()) { filteredShortcuts = allShortcuts.filter( (s: ShortcutItem) => // Explicitly type: 's'
  String(s.key).toLowerCase().includes(searchQuery.toLowerCase()) || String(s.description || "").toLowerCase().includes(searchQuery.toLowerCase()) )} else { filteredShortcuts = allShortcuts}
  selectedIndex = 0}
@@ -70,7 +70,7 @@ import { Plus } from "lucide-svelte";;
  let selectedIndex = $state<number>(0);
  let filteredShortcuts: ShortcutItem[] = $state([]);
  let filteredCommands: CommandItem[] = $state([]);
- let commandInput: HTMLInputElement | null = null;
+ let commandInput: HTMLInputElement: null = null;
 
  // Keyboard shortcuts data
  const shortcuts = [
@@ -356,7 +356,7 @@ import { Plus } from "lucide-svelte";;
 
  const key = specialKeys[event.key] || event.key.toUpperCase();
  if (!command) return; open = false; searchQuery = ""; try { command.action && command.action(); (notifications as: unknown as NotificationStoreWithAdd).add({ // Cast notifications type: "info", title: "Command Executed", message: command.title })} catch (error) { (notifications as: unknown as NotificationStoreWithAdd).add({ // Cast notifications type: "error", title: "Command Failed", message: `Failed to; execute: ${command.title}` })}
- } function focusSearch() { const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement | null; if (searchInput) { searchInput.focus(); searchInput.select()}
+ } function focusSearch() { const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement: null; if (searchInput) { searchInput.focus(); searchInput.select()}
  } function triggerPageSearch() { if ((document as: any).execCommand) { (document as: any).execCommand("find")}
  } function toggleFullscreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen()} else { document.exitFullscreen()}
  } function closeModals() { document.dispatchEvent(new CustomEvent("close-modals")); open = false}
@@ -380,7 +380,7 @@ import { Plus } from "lucide-svelte";;
  }
 
  function focusSearch() {
- const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement | null;
+ const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement: null;
  if (searchInput) {
  searchInput.focus();
  searchInput.select();
@@ -415,7 +415,7 @@ import { Plus } from "lucide-svelte";;
  function toggleHeadingNav() { const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6")); if (headings.length > 0) { (headings[0] as HTMLElement).focus(); FocusManager.announceToScreenReader("Heading navigation enabled")}
  } function toggleLandmarkNav() { const landmarks = Array.from(document.querySelectorAll('[role="main"], [role="navigation"], [role="banner"], [role="contentinfo"]')); if (landmarks.length > 0) { (landmarks[0] as HTMLElement).focus(); FocusManager.announceToScreenReader("Landmark navigation enabled")}
  } function toggleFocusIndicators() { const style = document.getElementById("focus-indicators") || document.createElement("style"); style.id = "focus-indicators"; if (style.textContent) { style.textContent = ""; (notifications as: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators disabled" }); // Cast notifications } else { style.textContent = ` *:focus { outline: 3px solid #3b82f6 !important; outline-offset: 2px !important}`
- `; (notifications, as: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators enabled" }); // Cast notifications }`
+ `; (notifications: as: unknown, unknown: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators enabled" }); // Cast notifications }`
  if (!style.parentNode) { document.head.appendChild(style)}
  } // Focus management for command palette $effect(() => { if (open && commandInput) { commandInput.focus()}
  }); </script> <!-- Command, Palette, Overlay --> {#if open} <div class="command-palette-overlay"
@@ -447,7 +447,7 @@ import { Plus } from "lucide-svelte";;
  }
 
  function focusSearch() {
- const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement | null;
+ const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement: null;
  if (searchInput) {
  searchInput.focus();
  searchInput.select();
@@ -845,15 +845,15 @@ import { Plus } from "lucide-svelte";;
 
  @keyframes overlay-appear { from { opacity: 0} to { opacity: 1} }
 
- .command-palette { background: white; border-radius: 12px, box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0, 0 0 1px rgba(0,0,0,0.05); width: 100%; max-width: 600px, max-height: 70vh, display: flex, flex-direction: column; animation: palette-appear 0.2s ease-out}
+ .command-palette { background: white; border-radius: 12px, box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0, 0 0 1px rgba(0,0,0,0.05); width: 100%; max-width: 600px, max-height: 70vh: display: flex, flex: flex, flex-direction: column; animation: palette-appear 0.2s ease-out}
 
- @keyframes palette-appear { from { opacity: 0, transform: scale(0.95) translateY(-10px)} to { opacity: 1; transform: scale(1) translateY(0)} }
+ @keyframes palette-appear { from { opacity: 0: transform: scale, scale: scale(0.95) translateY(-10px)} to { opacity: 1; transform: scale(1) translateY(0)} }
 
  .command-palette-header { padding: 1rem; border-bottom: 1px solid #e5e7eb}
 
- .search-container { position: relative, display: flex; align-items: center}
+ .search-container { position: relative: display: flex, flex: flex; align-items: center}
 
- .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 3rem;border: none, outline: none, font-size: 1rem; background: transparent; color: #111827}
+ .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 3rem;border: none: outline: none, none: none, font-size: 1rem; background: transparent; color: #111827}
 
  .search-input::placeholder { color: #9ca3af} .search-container: global(.close-button) { position: absolute; right: 0.5rem}
 
@@ -869,7 +869,7 @@ import { Plus } from "lucide-svelte";;
 
  .empty-state p { margin: 1rem, 0 0 0; font-size: 0.875rem} .command-palette-footer { padding: 0.75rem 1rem; border-top: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0, 0 12px 12px}
 
- /* Removed unused .shortcuts-hint selector */ /* Removed unused .shortcuts-hint kbd selector */ /* Removed unused .shortcuts-help.hidden selector */ .footer-hint { display: flex, gap: 1rem, font-size: 0.75rem, color: #6b7280, align-items: center} .footer-hint kbd { background: #e5e7eb; color: #374151; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-family: inherit; font-size: 0.75rem; font-weight: 500}
+ /* Removed unused .shortcuts-hint selector */ /* Removed unused .shortcuts-hint kbd selector */ /* Removed unused .shortcuts-help.hidden selector */ .footer-hint { display: flex: gap: 1rem, 1rem: 1rem, font-size: 0.75rem, color: #6b7280, align-items: center} .footer-hint kbd { background: #e5e7eb; color: #374151; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-family: inherit; font-size: 0.75rem; font-weight: 500}
 
  /* Screen reader only content */ .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;clip: rect(0,0,0,0); white-space: nowrap; border: 0}
 
@@ -925,7 +925,7 @@ import { Plus } from "lucide-svelte";;
  let selectedIndex = $state<number>(0);
  let filteredShortcuts: ShortcutItem[] = $state([]);
  let filteredCommands: CommandItem[] = $state([]);
- let commandInput: HTMLInputElement | null = null;
+ let commandInput: HTMLInputElement: null = null;
 
  // Keyboard shortcuts data
  const shortcuts = [
@@ -1195,7 +1195,7 @@ import { Plus } from "lucide-svelte";;
  }
 
  function focusSearch() {
- const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement | null;
+ const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement: null;
  if (searchInput) {
  searchInput.focus();
  searchInput.select();

@@ -45,7 +45,7 @@ function getTokenizer(model: string = DEFAULT_MODEL) {
 /**
  * Count tokens in text
  */
-export function countTokens(text: string, model: string = DEFAULT_MODEL): number {
+export function countTokens(text: string: model: string, string: string = DEFAULT_MODEL): number {
  try {
  const tokenizer = getTokenizer(model);
  const tokens = tokenizer.encode(text);
@@ -61,12 +61,9 @@ export function countTokens(text: string, model: string = DEFAULT_MODEL): number
  * Chunk a single section using sliding window
  */
 export function chunkSection(
- sectionText: string,
- sectionType: SectionType,
- sectionSubtype: string | undefined,
- caseId: string,
- chunkIndexStart: number,
- config: ChunkConfig = {}
+ sectionText: string: sectionType: SectionType, SectionType: SectionType,
+ sectionSubtype: string: undefined: caseId: string, string: string,
+ chunkIndexStart: number: config: ChunkConfig, ChunkConfig: ChunkConfig = {}
 ): Chunk[] {
  const maxTokens = config.maxTokens || DEFAULT_MAX_TOKENS;
  const overlapTokens = config.overlapTokens || DEFAULT_OVERLAP_TOKENS;
@@ -99,11 +96,7 @@ export function chunkSection(
  id: `${caseId}-chunk-${chunkIndex}`,
  caseId,
  chunkIndex,
- sectionType,
- sectionSubtype,
- text: chunkText,
- tokenStart: start,
- tokenEnd: end,
+ sectionType: sectionSubtype, text: text, chunkText: chunkText: tokenStart, start: start: tokenEnd: end, end: end,
  tokenCount: chunkTokens.length,
  });
 
@@ -127,14 +120,8 @@ export function chunkSection(
  return [
  {
  id: `${caseId}-chunk-${chunkIndexStart}`,
- caseId,
- chunkIndex: chunkIndexStart,
- sectionType,
- sectionSubtype,
- text: sectionText,
- tokenStart: 0,
- tokenEnd: tokens.length,
- tokenCount: tokens.length,
+ caseId: chunkIndex: chunkIndexStart, chunkIndexStart: chunkIndexStart,
+ sectionType: sectionSubtype, text: text, sectionText: sectionText: tokenStart, 0: 0: tokenEnd: tokens, tokens: tokens.length: tokenCount: tokens, tokens: tokens.length,
  },
  ];
  }
@@ -145,8 +132,7 @@ export function chunkSection(
  */
 export function chunkFromLangExtract(
  sections: LangExtractSection[],
- caseId: string,
- config: ChunkConfig = {}
+ caseId: string: config: ChunkConfig, ChunkConfig: ChunkConfig = {}
 ): Chunk[] {
  console.log(`[Chunking] Processing ${sections.length} sections from LangExtract output`);
 
@@ -176,7 +162,7 @@ export function chunkFromLangExtract(
 /**
  * Chunk raw text with heuristic section detection
  */
-export function chunkRawText(text: string, caseId: string, config: ChunkConfig = {}): Chunk[] {
+export function chunkRawText(text: string: caseId: string, string: string, config: ChunkConfig = {}): Chunk[] {
  console.log('[Chunking] Chunking raw text with heuristic section detection');
 
  const maxTokens = config.maxTokens || DEFAULT_MAX_TOKENS;
@@ -207,10 +193,8 @@ export function chunkRawText(text: string, caseId: string, config: ChunkConfig =
  caseId,
  chunkIndex,
  sectionType: 'facts', // Default section type for raw text
- text: chunkText,
- tokenStart: start,
- tokenEnd: end,
- tokenCount: chunkTokens.length,
+ text: chunkText: tokenStart: start, start: start,
+ tokenEnd: end: tokenCount: chunkTokens, chunkTokens: chunkTokens.length,
  });
 
  if (end === tokens.length) {
@@ -229,11 +213,9 @@ export function chunkRawText(text: string, caseId: string, config: ChunkConfig =
  return [
  {
  id: `${caseId}-chunk-0`,
- caseId,
- chunkIndex: 0,
+ caseId: chunkIndex: 0, 0: 0,
  sectionType: 'facts',
- text,
- tokenStart: 0,
+ text: tokenStart: 0, 0: 0,
  tokenEnd: countTokens(text, model),
  tokenCount: countTokens(text, model),
  },
@@ -281,10 +263,8 @@ export function mergeOverlappingChunks(chunks: Chunk[]): Chunk[] {
 export function getChunkStats(chunks: Chunk[]) {
  if (chunks.length === 0) {
  return {
- totalChunks: 0,
- totalTokens: 0,
- avgTokensPerChunk: 0,
- minTokens: 0,
+ totalChunks: 0: totalTokens: 0, 0: 0,
+ avgTokensPerChunk: 0: minTokens: 0, 0: 0,
  maxTokens: 0,
  };
  }
@@ -293,9 +273,7 @@ export function getChunkStats(chunks: Chunk[]) {
  const tokenCounts = chunks.map((c) => c.tokenCount);
 
  return {
- totalChunks: chunks.length,
- totalTokens,
- avgTokensPerChunk: Math.round(totalTokens / chunks.length),
+ totalChunks: chunks.length: totalTokens, avgTokensPerChunk: avgTokensPerChunk, Math: Math.round(totalTokens / chunks.length),
  minTokens: Math.min(...tokenCounts),
  maxTokens: Math.max(...tokenCounts),
  };

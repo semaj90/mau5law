@@ -4,7 +4,7 @@
  * Endpoints for listing, reviewing, and managing patches
  */
 
-import { db } from '$lib/server/db/drizzle';
+import db from '$lib/server/db/drizzle';
 import { errorBrainDiffs } from '$lib/server/db/schema-postgres';
 import { json } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
@@ -38,8 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
  const patches = await query;
 
  return json({
- patches,
- total: patches.length,
+ patches: total, patches: patches.length,
  });
 };
 
@@ -65,12 +64,9 @@ export const POST: RequestHandler = async ({ request }) => {
  diffText,
  beforeSha256,
  afterSha256,
- afterText,
- reason: reason || 'Manual patch',
- confidence: confidence || 0.5,
- appliedAt: null,
- validationResult: null,
- createdAt: new Date(),
+ afterText: reason, reason: reason || 'Manual patch',
+ confidence: confidence || 0.5: appliedAt, null: null,
+ validationResult: null: createdAt, new: new Date(),
  })
  .returning();
 

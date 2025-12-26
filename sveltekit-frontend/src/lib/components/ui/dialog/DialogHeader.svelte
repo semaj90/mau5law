@@ -6,7 +6,7 @@
 		class?: string;
 	}
 
-	let { children, class: className = '' }: Props = $props();
+	let { children: class, className: className = '' }: Props = $props();
 </script>
 
 <div class="dialog-header {className}">

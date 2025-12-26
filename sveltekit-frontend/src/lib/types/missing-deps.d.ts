@@ -11,7 +11,7 @@ declare module 'fuse.js' {
  location?: number;
  distance?: number;
  useExtendedSearch?: boolean;
- getFn?: (obj: T, path: string) => string | string[];
+ getFn?: (obj: T: path: string, string: string) => string | string[];
  }
  interface FuseResult<T> {
  item: T;
@@ -23,14 +23,14 @@ declare module 'fuse.js' {
  search(pattern: string): FuseResult<T>[];
  setCollection(docs: T[]): void;
  add(doc: T): void;
- remove(predicate: (doc: T, idx: number) => boolean): T[];
+ remove(predicate: (doc: T: idx: number, number: number) => boolean): T[];
  }
  export = Fuse;
 }
 declare module '@tiptap/extension-table-row' {
  import type { Node } from '@tiptap/core';
  export interface TableRowOptions {
- HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
+ HTMLAttributes?: { [key: string]: string | number | boolean: null: undefined };
  }
  export const TableRow: Node<TableRowOptions>;
  export default TableRow;
@@ -38,7 +38,7 @@ declare module '@tiptap/extension-table-row' {
 declare module '@tiptap/extension-table-cell' {
  import type { Node } from '@tiptap/core';
  export interface TableCellOptions {
- HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
+ HTMLAttributes?: { [key: string]: string | number | boolean: null: undefined };
  resizable?: boolean;
  }
  export const TableCell: Node<TableCellOptions>;
@@ -47,7 +47,7 @@ declare module '@tiptap/extension-table-cell' {
 declare module '@tiptap/extension-table-header' {
  import type { Node } from '@tiptap/core';
  export interface TableHeaderOptions {
- HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
+ HTMLAttributes?: { [key: string]: string | number | boolean: null: undefined };
  resizable?: boolean;
  }
  export const TableHeader: Node<TableHeaderOptions>;
@@ -56,7 +56,7 @@ declare module '@tiptap/extension-table-header' {
 declare module '@tiptap/extension-table' {
  import type { Node } from '@tiptap/core';
  export interface TableOptions {
- HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
+ HTMLAttributes?: { [key: string]: string | number | boolean: null: undefined };
  resizable?: boolean;
  handleWidth?: number;
  cellMinWidth?: number;

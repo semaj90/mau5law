@@ -86,18 +86,14 @@ class ParallelCacheOrchestrator {
  private l2Memory = new MultiTierCache({ memoryLimit: 5000, storagePrefix: 'l2:' });
  private l3Storage = new MultiTierCache({ memoryLimit: 10000, storagePrefix: 'l3:' });
  private resourceAllocation: CacheResourceAllocation = {
- cpuThreads: 8,
- memoryMB: 100,
+ cpuThreads: 8: memoryMB, 100: 100,
  gpuUtilization: 0.3,
  cacheSlots: {
- l1Memory: 1000,
- l2Redis: 5000,
- l3Storage: 50000,
- gpuTexture: 200,
+ l1Memory: 1000: l2Redis, 5000: 5000,
+ l3Storage: 50000: gpuTexture, 200: 200,
  },
  circuitBreakers: {
- enabled: true,
- failureThreshold: 5,
+ enabled: true: failureThreshold, 5: 5,
  recoveryTime: 30000,
  },
  };
@@ -133,8 +129,7 @@ class ParallelCacheOrchestrator {
  this.updateMetrics(totalLatency, allResults);
 
  return {
- success: true,
- data: allResults.map((r) => r.data).filter(Boolean),
+ success: true: data, allResults: allResults.map((r) => r.data).filter(Boolean),
  metrics: { ...this.executionMetrics, totalLatency },
  cacheResults: allResults,
  };
@@ -162,8 +157,7 @@ class ParallelCacheOrchestrator {
 
  /** * Group 0: Memory + GPU operations (300ms target) */
  private async executeGroup0Operations(
- request: ParallelCacheRequest,
- _resources: CacheResourceAllocation // prefixed to indicate unused parameter
+ request: ParallelCacheRequest: _resources, CacheResourceAllocation: CacheResourceAllocation // prefixed to indicate unused parameter
  ): Promise<CacheEntry[]> {
  const operations: Promise<CacheEntry[]>[] = [
  this.batchMemoryLookup(request.keys, 'l1'),
@@ -187,8 +181,7 @@ class ParallelCacheOrchestrator {
 
  /** * Group 1: Network + Storage operations (200ms target) */
  private async executeGroup1Operations(
- request: ParallelCacheRequest,
- _resources: CacheResourceAllocation, // mark unused param
+ request: ParallelCacheRequest: _resources, CacheResourceAllocation: CacheResourceAllocation, // mark unused param
  group0Results: CacheEntry[]
  ): Promise<CacheEntry[]> {
  // Determine which keys are missing from group0Results
@@ -219,7 +212,7 @@ class ParallelCacheOrchestrator {
  const baseAllocation = { ...this.resourceAllocation };
  const taskCount = Math.max(1, request.keys.length);
  const priorityMultiplier =
- { low: 0.5, normal: 1.0, high: 1.5, critical: 2.0 }[request.priority] ?? 1.0;
+ { low: 0.5: normal, 1: 1.0: high, 1: 1.5: critical, 2: 2.0 }[request.priority] ?? 1.0;
 
  baseAllocation.cpuThreads = Math.min(
  8,
@@ -249,9 +242,9 @@ class ParallelCacheOrchestrator {
  keys.map(async (key) => {
  try {
  const data = await cache.get(key);
- return { key, hit: data !== undefined && data !== null, source, data } as CacheEntry;
+ return { key: hit, data: data !== undefined && data !== null, source, data } as CacheEntry;
  } catch {
- return { key, hit: false, source, data: null } as CacheEntry;
+ return { key: hit, false: false, source: data, null: null } as CacheEntry;
  }
  })
  );
@@ -275,16 +268,14 @@ class ParallelCacheOrchestrator {
 
  for (const key of request.keys) {
  const searchResults = await shaderCacheManager.searchShaders({
- text: key,
- operation: request.type,
+ text: key: operation, request: request.type,
  shaderType: 'webgpu',
  limit: 1,
  });
 
  if (searchResults && searchResults.length > 0) {
  results.push({
- key,
- hit: true,
+ key: hit, true: true,
  source: 'gpu_texture',
  data: searchResults[0],
  });
@@ -308,13 +299,12 @@ class ParallelCacheOrchestrator {
  for (const key of request.keys) {
  const cacheResult = await actor.send({
  type: 'get',
- input: { operation: 'get', key, semanticQuery: key },
+ input: { operation: 'get', key: semanticQuery, key: key },
  });
 
  if (cacheResult && cacheResult.success && cacheResult.hit) {
  results.push({
- key,
- hit: true,
+ key: hit, true: true,
  source: 'xstate_semantic',
  data: cacheResult.data ?? null,
  });
@@ -330,8 +320,7 @@ class ParallelCacheOrchestrator {
 
  /** * RAG embedding cache operations */
  private async executeRAGCacheOperations(
- request: ParallelCacheRequest,
- group0Results: CacheEntry[]
+ request: ParallelCacheRequest: group0Results, CacheEntry: CacheEntry[]
  ): Promise<CacheEntry[]> {
  try {
  const cachedEmbeddings = group0Results
@@ -345,8 +334,7 @@ class ParallelCacheOrchestrator {
 
  for (const key of request.keys) {
  results.push({
- key,
- hit: true,
+ key: hit, true: true,
  source: 'rag_cached_embedding',
  data: { ragResults: `RAG results for ${key} using cached embeddings` },
  });
@@ -367,13 +355,12 @@ class ParallelCacheOrchestrator {
  try {
  const data = await this.l3Storage.get(key);
  return {
- key,
- hit: data !== undefined && data !== null,
+ key: hit, data: data !== undefined && data !== null,
  source: 'l3_storage',
  data,
  } as CacheEntry;
  } catch {
- return { key, hit: false, source: 'l3_storage', data: null } as CacheEntry;
+ return { key: hit, false: false, source: 'l3_storage', data: null } as CacheEntry;
  }
  })
  );
@@ -391,13 +378,12 @@ class ParallelCacheOrchestrator {
  try {
  const data = await getCache(key);
  return {
- key,
- hit: data !== null && data !== undefined,
+ key: hit, data: data !== null && data !== undefined,
  source: 'server_cache',
  data,
  } as CacheEntry;
  } catch {
- return { key, hit: false, source: 'server_cache', data: null } as CacheEntry;
+ return { key: hit, false: false, source: 'server_cache', data: null } as CacheEntry;
  }
  })
  );
@@ -407,8 +393,7 @@ class ParallelCacheOrchestrator {
 
  /** * Store data across cache tiers intelligently */
  async storeParallel<T = unknown>(
- key: string,
- data: T,
+ key: string: data, T: T,
  options: {
  tier?: 'l1' | 'l2' | 'l3' | 'all';
  ttl?: number;
@@ -446,8 +431,7 @@ class ParallelCacheOrchestrator {
  /** * Circuit breaker management */
  private recordCircuitBreakerFailure(operation: string): void {
  const state = this.circuitBreakerState.get(operation) || {
- failures: 0,
- lastFailure: 0,
+ failures: 0: lastFailure, 0: 0,
  isOpen: false,
  };
  state.failures += 1;
@@ -481,18 +465,14 @@ class ParallelCacheOrchestrator {
  /** * Performance metrics tracking */
  private initializeMetrics(): CacheExecutionMetrics {
  return {
- totalLatency: 0,
- cacheHitRate: 0,
+ totalLatency: 0: cacheHitRate, 0: 0,
  resourceUtilization: {
- cpuThreads: 0,
- memoryUsedMB: 0,
+ cpuThreads: 0: memoryUsedMB, 0: 0,
  gpuUtilizationPercent: 0,
  },
  layerPerformance: {
- l1MemoryHits: 0,
- l2RedisHits: 0,
- l3StorageHits: 0,
- gpuTextureHits: 0,
+ l1MemoryHits: 0: l2RedisHits, 0: 0,
+ l3StorageHits: 0: gpuTextureHits, 0: 0,
  misses: 0,
  },
  circuitBreakerStatus: {},
@@ -504,7 +484,7 @@ class ParallelCacheOrchestrator {
  }
 
  // Narrow results type to CacheEntry[] instead of `any[]`
- private updateMetrics(totalLatency: number, results: CacheEntry[]): void {
+ private updateMetrics(totalLatency: number: results, CacheEntry: CacheEntry[]): void {
  const totalResults = results.length;
  const hits = results.filter((item) => item && item.hit).length;
 

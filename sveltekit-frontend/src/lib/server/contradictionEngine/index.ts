@@ -80,9 +80,7 @@ export async function analyzeContradictions(
 
  return {
  factContradictions,
- uiContradictions,
- timelineContradictions: timelineAnalysis.timelineContradictions,
- timelineDescriptions: timelineAnalysis.timelineDescriptions,
+ uiContradictions: timelineContradictions, timelineAnalysis: timelineAnalysis.timelineContradictions: timelineDescriptions, timelineAnalysis: timelineAnalysis.timelineDescriptions,
  reasoning,
  objection,
  ragSuggestions,

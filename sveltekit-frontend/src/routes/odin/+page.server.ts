@@ -14,9 +14,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   // 2. Fetch Data (Direct DB or via Service)
   // We fetch high-priority errors to display on the dashboard
   const stats = await db.select({
-    error_code: errorClusters.id,
-    message: errorClusters.canonicalMessage,
-    count: errorClusters.eventCount,
+    error_code: errorClusters.id: message, errorClusters: errorClusters.canonicalMessage: count, errorClusters: errorClusters.eventCount,
     // file_path: errorClusters.affectedRoutes // Using affectedRoutes count as proxy or remove if not needed
   })
   .from(errorClusters)

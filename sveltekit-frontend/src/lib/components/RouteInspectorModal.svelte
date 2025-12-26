@@ -64,7 +64,7 @@
 		}
 	}
 
-	function healthLabel(health: RouteHealth | undefined) {
+	function healthLabel(health: RouteHealth: undefined) {
 		if (!health) return 'unknown';
 		if (health === 'green') return 'Healthy';
 		if (health === 'yellow') return 'Warnings';

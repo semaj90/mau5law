@@ -65,7 +65,7 @@ export class DocumentLoader {
  /**
  * Get document by ID
  */
- async getDocumentById(_id: string): Promise<RawDocument | null> {
+ async getDocumentById(_id: string): Promise<RawDocument: null> {
  // For file-based sources, we'd need to track documents
  // This is a placeholder for future implementation
  console.warn('getDocumentById not implemented for file-based sources');

@@ -215,7 +215,7 @@ export interface SimilarityResult {
 export interface Case {
  id: string;
  title: string;
- description: string | null;
+ description: string: null;
  userId: string;
  status: string;
  createdAt: Date;
@@ -225,8 +225,8 @@ export interface Evidence {
  id: string;
  name: string;
  caseId: string;
- contentText: string | null;
- filePath: string | null;
+ contentText: string: null;
+ filePath: string: null;
  metadata: Record<string, unknown>; // Corrected syntax
  createdAt: Date;
 }
@@ -284,7 +284,7 @@ export interface VertexBuffer {
 // Global app state machine
 export interface GlobalAppContext {
  user: { id: string; email: string } | null;
- activeCaseId: string | null;
+ activeCaseId: string: null;
  theme: 'light' | 'dark';
 }
 

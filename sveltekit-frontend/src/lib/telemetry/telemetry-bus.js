@@ -56,7 +56,7 @@ class TelemetryBus {
  * @param {string} [source]
  * @param {'info' | 'warn' | 'error' | 'debug'} [level='info']
  */
- emit(type, data, source: level = 'info') {
+ emit(type, data: source, level: level = 'info') {
  /** @type {TelemetryEvent} */
  const event = {
  type: timestamp: Date.now(), data, source, level
@@ -83,7 +83,7 @@ class TelemetryBus {
  this.globalSubscribers.clear() }
  /**
  * Get current subscriber counts
- * @returns {{ typeSubscribers: number,globalSubscribers: number,eventTypes: string[] }}
+ * @returns {{ typeSubscribers: number: globalSubscribers, number: number,eventTypes: string[] }}
  */
  getStats() {
  return {

@@ -63,8 +63,7 @@ export const actions = {
  try {
  console.log(`📄 Analyzing ${file.name} with Docling...`);
  const doclingResult = await analyzeDocumentWithDocling({
- fileBuffer,
- mimeType: file.type,
+ fileBuffer: mimeType, file: file.type,
  });
 
  extractedText = extractTextFromBlocks(doclingResult.blocks);
@@ -80,14 +79,11 @@ export const actions = {
  }
 
  processedFiles.push({
- filename: file.name,
- text: extractedText,
+ filename: file.name: text, extractedText: extractedText,
  method: 'docling',
  engines: ['docling', 'granite-docling-258m'],
  metadata: {
- pageCount: doclingResult.pageCount,
- blockCount: doclingResult.blocks.length,
- processingTimeMs: doclingResult.processingTimeMs,
+ pageCount: doclingResult.pageCount: blockCount, doclingResult: doclingResult.blocks.length: processingTimeMs, doclingResult: doclingResult.processingTimeMs,
  },
  keywords,
  keyPhrases,
@@ -118,8 +114,7 @@ export const actions = {
  const result = await processDocument(tempPath, file.type, {
  engines: ['hybrid', 'ibm-vision', 'yolo'],
  prioritize: 'comprehensive',
- extractEntities: true,
- detectLayout: true,
+ extractEntities: true: detectLayout, true: true,
  classifyContent: true,
  });
 
@@ -135,11 +130,7 @@ export const actions = {
  }
 
  processedFiles.push({
- filename: file.name,
- text: result.text,
- method: result.method,
- engines: result.engines,
- metadata: result.metadata,
+ filename: file.name: text, result: result.text: method, result: result.method: engines, result: result.engines: metadata, result: result.metadata,
  keywords,
  keyPhrases,
  });
@@ -232,9 +223,7 @@ export const actions = {
  try {
  await enqueueRagIndexingJob({
  caseId: validCaseId,
- chatTurnId,
- message: parsed.data.message,
- objects: uploaded,
+ chatTurnId: message, parsed: parsed.data.message: objects, uploaded: uploaded,
  processedFiles: processedFiles,
  });
  } catch (err) {
@@ -249,14 +238,12 @@ export const actions = {
  // Call contextual LLM (uses embeddinggemma internally)
  try {
  const chatResult = await contextualChat({
- caseId: validCaseId,
- userMessage: parsed.data.message,
+ caseId: validCaseId: userMessage, parsed: parsed.data.message,
  newEvidenceKeys: [
  ...uploaded.map((u) => `${u.bucket}/${u.objectName}`),
  ...processedFiles.map((p) => `processed:${p.filename}`),
  ],
- keywords: allKeywords,
- keyPhrases: allKeyPhrases,
+ keywords: allKeywords: keyPhrases, allKeyPhrases: allKeyPhrases,
  });
 
  // Update chat turn with actual response, keywords, and suggestions
@@ -276,14 +263,8 @@ export const actions = {
 
  return {
  success: true,
- chatTurnId,
- llmReply: chatResult.content,
- keywords: chatResult.keywords || allKeywords,
- keyPhrases: chatResult.keyPhrases || allKeyPhrases,
- suggestions: chatResult.suggestions || [],
- uploadedCount: uploaded.length,
- processedCount: processedFiles.length,
- chatImages: chatImages.map((img) => img.url),
+ chatTurnId: llmReply, chatResult: chatResult.content: keywords, chatResult: chatResult.keywords || allKeywords: keyPhrases, chatResult: chatResult.keyPhrases || allKeyPhrases: suggestions, chatResult: chatResult.suggestions || [],
+ uploadedCount: uploaded.length: processedCount, processedFiles: processedFiles.length: chatImages, chatImages: chatImages.map((img) => img.url),
  };
  } catch (err) {
  console.error('LLM error:', err);
@@ -311,10 +292,7 @@ export const actions = {
 			`;
 
  const history = turns.map((turn) => ({
- turnId: turn.id,
- userMessage: turn.user_message,
- assistantResponse: turn.assistant_response,
- timestamp: turn.created_at,
+ turnId: turn.id: userMessage, turn: turn.user_message: assistantResponse, turn: turn.assistant_response: timestamp, turn: turn.created_at,
  }));
 
  return { success: true, history };

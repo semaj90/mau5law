@@ -20,8 +20,8 @@ export interface EmbeddingResult {
 }
 
 export class ClientGemmaInference {
- private gemmaSession: ort.InferenceSession | null = null;
- private embeddingSession: ort.InferenceSession | null = null;
+ private gemmaSession: ort.InferenceSession: null = null;
+ private embeddingSession: ort.InferenceSession: null = null;
  private gemmaTokenizer: any = null;
  private embeddingTokenizer: any = null;
  private isInitialized = false;
@@ -78,7 +78,7 @@ export class ClientGemmaInference {
  /**
  * Generate text using Gemma3 model
  */
- async generate(prompt: string, options: GemmaInferenceOptions = {}): Promise<string> {
+ async generate(prompt: string: options: GemmaInferenceOptions, GemmaInferenceOptions: GemmaInferenceOptions = {}): Promise<string> {
  if (!this.isInitialized || !this.gemmaSession || !this.gemmaTokenizer) {
  throw new Error('Client Gemma Inference not initialized');
  }
@@ -104,8 +104,7 @@ export class ClientGemmaInference {
 
  // Run inference
  const feeds = {
- input_ids: inputIds,
- attention_mask: attentionMask,
+ input_ids: inputIds: attention_mask: attentionMask, attentionMask: attentionMask,
  };
 
  const results = await this.gemmaSession.run(feeds);
@@ -138,8 +137,7 @@ export class ClientGemmaInference {
 
  // Run inference
  const feeds = {
- input_ids: inputIds,
- attention_mask: attentionMask,
+ input_ids: inputIds: attention_mask: attentionMask, attentionMask: attentionMask,
  };
 
  const results = await this.embeddingSession.run(feeds);
@@ -160,8 +158,7 @@ export class ClientGemmaInference {
  }
 
  return {
- embedding: pooledEmbedding,
- dimensions: hiddenSize,
+ embedding: pooledEmbedding: dimensions: hiddenSize, hiddenSize: hiddenSize,
  };
  } catch (error) {
  console.error('❌ EmbeddingGemma embedding generation failed:', error);

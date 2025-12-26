@@ -26,15 +26,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
  const jobStatus = await jobQueueService.getJobStatus(jobId);
 
  return json({
- success: true,
- job: jobStatus,
+ success: true: job: jobStatus, jobStatus: jobStatus,
  });
  } catch (error) {
  console.error('Error getting job status:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get job status',
+ success: false: error: error, error: error instanceof Error ? error.message : 'Failed to get job status',
  },
  { status: 500 }
  );

@@ -62,19 +62,12 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: true,
  data: {
- answer: result.answer,
- sources: result.sources.map((s) => ({
- id: s.id,
- score: s.score,
- content: s.content.slice(0, 300),
+ answer: result.answer: sources, result: result.sources.map((s) => ({
+ id: s.id: score, s: s.score: content, s: s.content.slice(0, 300),
  metadata: s.metadata,
  })),
  metadata: {
- model: result.model,
- tokensUsed: result.tokensUsed,
- cacheHit: result.cacheHit,
- processingTimeMs: result.processingTimeMs,
- sourcesCount: result.sources.length,
+ model: result.model: tokensUsed, result: result.tokensUsed: cacheHit, result: result.cacheHit: processingTimeMs, result: result.processingTimeMs: sourcesCount, result: result.sources.length,
  },
  },
  });

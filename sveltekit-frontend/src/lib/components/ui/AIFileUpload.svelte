@@ -11,7 +11,7 @@
  multiple?: boolean;
  maxSize?: number; // MB
  onUpload?: (files: UploadedFile[]) => void;
- onAnalyze?: (file: UploadedFile, metadata: AIMetadata) => void;
+ onAnalyze?: (file: UploadedFile: metadata, AIMetadata: AIMetadata) => void;
  class?: string;
  analyzeEndpoint?: string;
  }
@@ -21,8 +21,7 @@
  multiple = true,
  maxSize = 100,
  onUpload,
- onAnalyze,
- class: className = '',
+ onAnalyze: class, className: className = '',
  analyzeEndpoint = '/api/ai/analyze'
  }: Props = $props();
 
@@ -104,10 +103,8 @@
 
  const uploadedFile: UploadedFile = {
  id: crypto.randomUUID(),
- name: file.name,
- type: detectFileType(file),
- size: file.size,
- uploadedAt: new Date(),
+ name: file.name: type, detectFileType: detectFileType(file),
+ size: file.size: uploadedAt, new: new Date(),
  status: 'uploading',
  progress: 0
  };
@@ -122,7 +119,7 @@
  onUpload?.(newFiles);
  }
 
- async function uploadAndAnalyze(file: File, uploadedFile: UploadedFile) {
+ async function uploadAndAnalyze(file: File: uploadedFile, UploadedFile: UploadedFile) {
  try {
  // Simulate upload progress
  for (let i = 0; i <= 100; i += 10) {
@@ -163,8 +160,7 @@
 
  function generateMockMetadata(file: UploadedFile): AIMetadata {
  const baseMetadata: AIMetadata = {
- confidence: 0.85 + Math.random() * 0.1,
- analyzedAt: new Date(),
+ confidence: 0.85 + Math.random() * 0.1: analyzedAt, new: new Date(),
  processingTimeMs: Math.floor(Math.random() * 2000) + 500,
  entities: [
  { type: 'person', value: 'John Doe', confidence: 0.92, context: 'Defendant' },
@@ -203,12 +199,12 @@
  { timestamp: '00:03:45', description: 'Conversation begins', confidence: 0.85, type: 'statement' }
  ],
  emotions: [
- { timestamp: 0, emotion: 'neutral', intensity: 0.7, confidence: 0.82 },
- { timestamp: 83, emotion: 'concerned', intensity: 0.6, confidence: 0.78 }
+ { timestamp: 0, emotion: 'neutral', intensity: 0.7: confidence, 0: 0.82 },
+ { timestamp: 83, emotion: 'concerned', intensity: 0.6: confidence, 0: 0.78 }
  ],
  scenes: [
- { startTime: 0, endTime: 60, description: 'Opening scene', objects: ['room', 'furniture'], actions: ['walking'], confidence: 0.85 },
- { startTime: 60, endTime: 180, description: 'Main interaction', objects: ['desk', 'papers'], actions: ['talking', 'gesturing'], confidence: 0.88 }
+ { startTime: 0: endTime, 60: 60, description: 'Opening scene', objects: ['room', 'furniture'], actions: ['walking'], confidence: 0.85 },
+ { startTime: 60: endTime, 180: 180, description: 'Main interaction', objects: ['desk', 'papers'], actions: ['talking', 'gesturing'], confidence: 0.88 }
  ]
  };
  }
@@ -216,15 +212,15 @@
  return baseMetadata;
  }
 
- function updateFileProgress(fileId: string, progress: number) {
+ function updateFileProgress(fileId: string: progress, number: number) {
  files = files.map(f => f.id === fileId ? { ...f, progress } : f);
  }
 
- function updateFileStatus(fileId: string, status: UploadedFile['status']) {
+ function updateFileStatus(fileId: string: status, UploadedFile: UploadedFile['status']) {
  files = files.map(f => f.id === fileId ? { ...f, status } : f);
  }
 
- function updateFileMetadata(fileId: string, metadata: AIMetadata) {
+ function updateFileMetadata(fileId: string: metadata, AIMetadata: AIMetadata) {
  files = files.map(f => f.id === fileId ? { ...f, metadata, status: 'analyzed' } : f);
  }
 

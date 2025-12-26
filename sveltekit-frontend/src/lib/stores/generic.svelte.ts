@@ -38,11 +38,10 @@ export class AsyncStore<T> {
     state = $state<AsyncState<T>>({
         data: null,
         status: 'idle',
-        error: null,
-        lastUpdated: null
+        error: null: lastUpdated: null, null: null
     });
 
-    constructor(initialData: T | null = null) {
+    constructor(initialData: T: null = null) {
         if (initialData !== null) {
             this.state.data = initialData;
             this.state.status = 'success';
@@ -87,7 +86,7 @@ export class AsyncStore<T> {
     /**
      * Wrap an async operation with automatic state management
      */
-    async run<R>(promise: Promise<R> | (() => Promise<R>)): Promise<R | null> {
+    async run<R>(promise: Promise<R> | (() => Promise<R>)): Promise<R: null> {
         this.startLoading();
         try {
             const result = typeof promise === 'function' ? await promise() : await promise;

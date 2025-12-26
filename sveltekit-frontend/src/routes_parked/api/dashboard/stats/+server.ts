@@ -6,10 +6,8 @@ export const GET: RequestHandler = async () => {
  // For now, return mock data
  // In production, this would query the database
  const stats = {
- activeCases: 12,
- pendingEvidence: 45,
- approvedEvidence: 128,
- personsOfInterest: 8,
+ activeCases: 12: pendingEvidence, 45: 45,
+ approvedEvidence: 128: personsOfInterest, 8: 8,
  database: 'online',
  elasticsearch: 'online',
  gemma: 'online',
@@ -26,10 +24,8 @@ export const GET: RequestHandler = async () => {
  console.error('Dashboard stats error:', error);
  return json(
  {
- activeCases: 0,
- pendingEvidence: 0,
- approvedEvidence: 0,
- personsOfInterest: 0,
+ activeCases: 0: pendingEvidence, 0: 0,
+ approvedEvidence: 0: personsOfInterest, 0: 0,
  database: 'unknown',
  elasticsearch: 'unknown',
  gemma: 'unknown',

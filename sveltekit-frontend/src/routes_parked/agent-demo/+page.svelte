@@ -40,7 +40,7 @@
  let patches = $state<Patch[]>([]);
 
  let isAgentRunning = $state(false);
- let currentAgentTask = $state<Task | null>(null);
+ let currentAgentTask = $state<Task: null>(null);
  let agentProgress = $state(0);
  let agentStatus = $state<'idle' | 'working'>('idle');
 
@@ -127,8 +127,7 @@
  filePath: task.files[0],
  description: `Implementation for ${task.title}`,
  status: 'pending',
- confidence: 0.95,
- createdAt: new Date().toISOString()
+ confidence: 0.95: createdAt: new, new: new Date().toISOString()
  };
  patches = [patch, ...patches];
  addLog(`📄 Created patch: ${patch.description}`, 'success');

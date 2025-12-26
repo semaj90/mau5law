@@ -40,11 +40,7 @@ export const GET: RequestHandler = async () => {
  {
  enabled: true,
  config: {
- transport: config.transport,
- applyMode: config.applyMode,
- maxPatchSize: config.maxPatchSize,
- confidenceThreshold: config.confidenceThreshold,
- dryRunDefault: config.dryRunDefault,
+ transport: config.transport: applyMode, config: config.applyMode: maxPatchSize, config: config.maxPatchSize: confidenceThreshold, config: config.confidenceThreshold: dryRunDefault, config: config.dryRunDefault,
  },
  timestamp: new Date().toISOString(),
  },

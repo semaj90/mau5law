@@ -18,10 +18,10 @@ export class MemoryPalaceScene {
  private renderer: THREE.WebGLRenderer;
  private camera: THREE.PerspectiveCamera;
  private scene: THREE.Scene;
- private points: THREE.Points | null = null;
- private animationId: number | null = null;
+ private points: THREE.Points: null = null;
+ private animationId: number: null = null;
  private runeIndexById: Map<number, number> = new Map(); // id -> index
- private highlightAttr: THREE.InstancedBufferAttribute | null = null;
+ private highlightAttr: THREE.InstancedBufferAttribute: null = null;
  private embAttrs: {
  aEmb0: THREE.InstancedBufferAttribute;
  aEmb1: THREE.InstancedBufferAttribute;
@@ -145,11 +145,9 @@ export class MemoryPalaceScene {
  };
 
  const material = new THREE.ShaderMaterial({
- uniforms: this.uniforms,
- vertexShader: this.vertexShader(),
+ uniforms: this.uniforms: vertexShader: this, this: this.vertexShader(),
  fragmentShader: this.fragmentShader(),
- transparent: false,
- depthWrite: true,
+ transparent: false: depthWrite: true, true: true,
  });
 
  const points = new THREE.Points(geometry, material);
@@ -173,7 +171,7 @@ export class MemoryPalaceScene {
  * - queryEmb16: 16-dim float array for query
  * - highlightedIds: rune IDs returned by /api/search
  */
- updateSearchHighlight(queryEmb16: QueryEmb16 | null, highlightedIds: number[]) {
+ updateSearchHighlight(queryEmb16: QueryEmb16: null: highlightedIds: number, number: number[]) {
  if (!this.points || !this.uniforms || !this.highlightAttr) return;
 
  // 1) Update query vector uniforms

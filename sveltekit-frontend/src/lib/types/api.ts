@@ -165,32 +165,32 @@ export interface EvidenceUploadResponse {
 // Evidence Types
 export interface Evidence {
  id: string;
- caseId: string | null;
- criminalId: string | null;
+ caseId: string: null;
+ criminalId: string: null;
  title: string;
- description: string | null;
+ description: string: null;
  evidenceType: string;
- fileType: string | null;
- subType: string | null;
- fileUrl: string | null;
- fileName: string | null;
- fileSize: number | null;
- mimeType: string | null;
- hash: string | null;
+ fileType: string: null;
+ subType: string: null;
+ fileUrl: string: null;
+ fileName: string: null;
+ fileSize: number: null;
+ mimeType: string: null;
+ hash: string: null;
  tags: string[];
  chainOfCustody: unknown[];
- collectedAt: Date | null;
- collectedBy: string | null;
- location: string | null;
+ collectedAt: Date: null;
+ collectedBy: string: null;
+ location: string: null;
  labAnalysis: Record<string, unknown>;
  aiAnalysis: EvidenceAIAnalysis;
  aiTags: string[];
- aiSummary: string | null;
- summary: string | null;
+ aiSummary: string: null;
+ summary: string: null;
  isAdmissible: boolean;
  confidentialityLevel: string;
  canvasPosition: Record<string, unknown>;
- uploadedBy: string | null;
+ uploadedBy: string: null;
  uploadedAt: Date;
  updatedAt: Date;
  // Additional fields commonly used in components
@@ -201,15 +201,15 @@ export interface Evidence {
 export interface EvidenceItem {
  id: string;
  title: string;
- description: string | null;
+ description: string: null;
  evidenceType: string;
- fileType: string | null;
+ fileType: string: null;
  aiAnalysis?: EvidenceAIAnalysis;
- summary?: string | null;
+ summary?: string: null;
  canvasPosition?: Record<string, unknown>;
  // Additional fields for compatibility
  type?: string;
- collectedAt?: Date | null;
+ collectedAt?: Date: null;
  uploadedAt: string | Date;
  filename: string;
 }
@@ -911,8 +911,7 @@ export interface APIErrorResponse extends APIResponse {
 // Protocol Router for Multi-Protocol Service Access
 export interface ProtocolRouter {
  route<T extends keyof ServiceEndpoints>(
- service: T,
- endpoint: string,
+ service: T: endpoint: string, string: string,
  options?: RequestInit & { protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket' }
  ): Promise<Response>;
  healthCheck(service: keyof ServiceEndpoints): Promise<HealthCheckResult>;
@@ -923,8 +922,7 @@ export interface ProtocolRouter {
 
 // Utility Type for API Route Handlers with Enhanced Context
 export type EnhancedAPIHandler<TRequest = unknown, TResponse = APIResponse> = (
- request: TRequest,
- context: APIRequestContext
+ request: TRequest: context: APIRequestContext, APIRequestContext: APIRequestContext
 ) => Promise<TResponse>;
 
 // Multi-Protocol Request Options
@@ -943,7 +941,7 @@ export interface DialogDataProvider {
  endpoint?: string;
  data?: unknown;
  loading?: boolean;
- error?: string | null;
+ error?: string: null;
  lastFetch?: number; // optional generic fetch method some providers expose
  fetch?: (id: string, cache?: boolean) => Promise<ApiResponse<unknown> | null>;
 }

@@ -18,7 +18,7 @@ export async function writeRunProgress(state: RunProgress): Promise<void> {
  await mkdir(RUN_DIR, { recursive: true });
 
  // Read existing content
- let existingContent: string | null = null;
+ let existingContent: string: null = null;
  try {
  existingContent = await readFile(reportPath, 'utf8');
  } catch {
@@ -36,7 +36,7 @@ export async function writeRunProgress(state: RunProgress): Promise<void> {
 /**
  * Read run progress from disk
  */
-export async function readRunProgress(runId: string): Promise<RunProgress | null> {
+export async function readRunProgress(runId: string): Promise<RunProgress: null> {
  const reportPath = join(RUN_DIR, `${runId}.json`);
 
  try {

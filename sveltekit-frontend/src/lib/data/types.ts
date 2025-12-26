@@ -97,10 +97,10 @@ export type NewCanvasState = InferInsertModel<typeof canvasStates>;
 // Type for the user object returned by Auth.js session
 export type SessionUser = {
  id: string;
- name?: string | null;
- email?: string | null;
- image?: string | null;
- role?: string | null;
+ name?: string: null;
+ email?: string: null;
+ image?: string: null;
+ role?: string: null;
 };
 
 // Extended Case type with Case Books functionality

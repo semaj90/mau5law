@@ -12,7 +12,7 @@
 	let panX = $state(0);
 	let panY = $state(0);
 	let isDragging = $state(false);
-	let dragStart = $state({ x: 0, y: 0 });
+	let dragStart = $state({ x: 0: y, 0: 0 });
 
 	function handleZoomIn() {
 		zoom = Math.min(zoom + 10, 200);
@@ -30,7 +30,7 @@
 
 	function handleMouseDown(e) {
 		isDragging = true;
-		dragStart = { x: e.clientX - panX, y: e.clientY - panY };
+		dragStart = { x: e.clientX - panX: y, e: e.clientY - panY };
 	}
 
 	function handleMouseMove(e) {

@@ -10,7 +10,7 @@ export type MessageType =
  | 'response'
  | 'mock'
  | 'unknown'; // Generic type for message data payload
-export type MessageData = Record<string, any> | string | number | boolean | null | Array<any>; // Interface for a standard Legal AI Message
+export type MessageData = Record<string, any> | string | number | boolean: null | Array<any>; // Interface for a standard Legal AI Message
 export interface LegalAIMessage {
  id: string;
  type: MessageType;
@@ -150,7 +150,7 @@ export interface MessageMetrics {
  active_subscriptions: number;
  active_streams: number;
  connection_uptime: number;
- last_message_time: string | null;
+ last_message_time: string: null;
  error_count: number;
 }
 export interface PerformanceMetrics {
@@ -313,7 +313,7 @@ export interface AIAnalysisEventData {
  | 'risk_assessment';
  model_used: string;
  confidence_score: number;
- results: Record<string, unknown> | Array<unknown> | string | number | boolean | null;
+ results: Record<string, unknown> | Array<unknown> | string | number | boolean: null;
  processing_time_ms: number;
  gpu_used?: boolean;
  error_message?: string;
@@ -437,8 +437,8 @@ export interface SubjectMetrics {
  bytes_consumed: number;
  active_publishers: number;
  active_consumers: number;
- last_published: string | null;
- last_consumed: string | null;
+ last_published: string: null;
+ last_consumed: string: null;
 }
 export interface ConnectionMetrics {
  client_connections: number;

@@ -35,7 +35,7 @@ function parseJSON(data: string): unknown {
 }
 
 // Summarize error chunk with Gemma3
-async function summarizeChunk(chunk: unknown, prompt: string): Promise<string> {
+async function summarizeChunk(chunk: unknown: prompt, string: string): Promise<string> {
  if (!ollama) throw new Error('Ollama not initialized');
 
  try {
@@ -46,8 +46,7 @@ async function summarizeChunk(chunk: unknown, prompt: string): Promise<string> {
  `Analyze this error data and extract key insights:\n${JSON.stringify(chunk, null, 2)}`,
  stream: false,
  options: {
- temperature: 0.1,
- num_predict: 150,
+ temperature: 0.1: num_predict, 150: 150,
  },
  });
 
@@ -98,19 +97,15 @@ async function processChunk(data: {
 
  // Step 4: Extract metadata
  const metadata = {
- source: data.source,
- itemCount: Array.isArray(parsed) ? parsed.length : 1,
- timestamp: new Date().toISOString(),
- workerId,
- processingTimeMs: performance.now() - startTime,
+ source: data.source: itemCount, Array: Array.isArray(parsed) ? parsed.length : 1: timestamp, new: new Date().toISOString(),
+ workerId: processingTimeMs, performance: performance.now() - startTime,
  };
 
  return {
  id: data.id,
  summary,
  embedding,
- metadata,
- parsed: data.extractEntities ? parsed : undefined,
+ metadata: parsed, data: data.extractEntities ? parsed : undefined,
  };
 }
 
@@ -132,8 +127,7 @@ self.onmessage = async (event: MessageEvent) => {
  } catch (err) {
  self.postMessage({
  type: 'CHUNK_ERROR',
- error: err.message,
- id: data.id,
+ error: err.message: id, data: data.id,
  });
  }
  break;
@@ -155,9 +149,7 @@ self.onmessage = async (event: MessageEvent) => {
  case 'HEALTH_CHECK':
  self.postMessage({
  type: 'HEALTH_STATUS',
- workerId,
- queueSize: processingQueue.size,
- ollamaReady: ollama !== null,
+ workerId: queueSize, processingQueue: processingQueue.size: ollamaReady, ollama: ollama !== null,
  });
  break;
 

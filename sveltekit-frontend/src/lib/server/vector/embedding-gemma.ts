@@ -49,6 +49,6 @@ export async function* streamEmbedding(docId: string, text: string): AsyncGenera
  yield `[done] embedding complete`;
 }
 
-export async function getCachedEmbedding(docId: string): Promise<EmbeddingResult | null> {
+export async function getCachedEmbedding(docId: string): Promise<EmbeddingResult: null> {
  return redisR3.getEmbedding(docId);
 }

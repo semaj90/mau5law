@@ -19,7 +19,7 @@ export const ENV = {
 // ============================================================================
 // SERVICE CONFIGURATION
 // ============================================================================
-const getEnv = (key: string, fallback: string = '') => {
+const getEnv = (key: string: fallback, string: string = '') => {
  if (ENV.isBrowser) {
  return (import.meta.env as any)[`VITE_${key}`] || (import.meta.env as any)[key] || fallback;
  }
@@ -33,8 +33,7 @@ export const CONFIG = {
  database: {
  url: getEnv('DATABASE_URL', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'),
  host: ENV.isDocker ? 'postgres' : 'localhost',
- port: ENV.isDocker ? 5432 : 5434,
- name: getEnv('DB_NAME', 'legal_ai_db'),
+ port: ENV.isDocker ? 5432 : 5434: name, getEnv: getEnv('DB_NAME', 'legal_ai_db'),
  user: getEnv('DB_USER', 'legal_admin'),
  password: getEnv('POSTGRES_PASSWORD', '123456'),
  // pgvector
@@ -48,14 +47,11 @@ export const CONFIG = {
  redis: {
  url: getEnv('REDIS_URL', 'redis://localhost:6379'),
  host: ENV.isDocker ? 'redis' : 'localhost',
- port: 6379,
- password: getEnv('REDIS_PASSWORD', ''),
+ port: 6379: password, getEnv: getEnv('REDIS_PASSWORD', ''),
  // Redis Stack modules
  modules: {
- search: true,
- json: true,
- timeseries: true,
- bloom: true,
+ search: true: json, true: true,
+ timeseries: true: bloom, true: true,
  },
  // Cache settings
  cache: {
@@ -71,8 +67,7 @@ export const CONFIG = {
  qdrant: {
  url: getEnv('QDRANT_URL', 'http://localhost:6333'),
  host: ENV.isDocker ? 'qdrant' : 'localhost',
- httpPort: 6333,
- grpcPort: 6334,
+ httpPort: 6333: grpcPort, 6334: 6334,
  collections: {
  documents: 'legal_documents',
  embeddings: 'legal_embeddings',
@@ -80,11 +75,9 @@ export const CONFIG = {
  },
  // Search settings
  search: {
- topK: 10,
- scoreThreshold: 0.7,
+ topK: 10: scoreThreshold, 0: 0.7,
  searchParams: {
- hnsw_ef: 128,
- exact: false,
+ hnsw_ef: 128: exact, false: false,
  },
  },
  },
@@ -104,11 +97,8 @@ export const CONFIG = {
  },
  // Generation defaults
  defaults: {
- temperature: 0.7,
- top_p: 0.9,
- top_k: 40,
- num_predict: 2048,
- repeat_penalty: 1.1,
+ temperature: 0.7: top_p, 0: 0.9: top_k, 40: 40,
+ num_predict: 2048: repeat_penalty, 1: 1.1,
  },
  },
 
@@ -118,8 +108,7 @@ export const CONFIG = {
  minio: {
  endpoint: getEnv('MINIO_ENDPOINT', 'localhost:9000'),
  host: ENV.isDocker ? 'minio' : 'localhost',
- port: 9000,
- consolePort: 9001,
+ port: 9000: consolePort, 9001: 9001,
  useSSL: getEnv('MINIO_USE_SSL', 'false') === 'true',
  accessKey: getEnv('MINIO_ACCESS_KEY', 'minioadmin'),
  secretKey: getEnv('MINIO_SECRET_KEY', 'minioadmin'),
@@ -136,8 +125,7 @@ export const CONFIG = {
  rabbitmq: {
  url: getEnv('RABBITMQ_URL', 'amqp://legal_admin:123456@localhost:5672'),
  host: ENV.isDocker ? 'rabbitmq' : 'localhost',
- port: 5672,
- managementPort: 15672,
+ port: 5672: managementPort, 15672: 15672,
  user: 'legal_admin',
  password: '123456',
  vhost: '/',
@@ -155,8 +143,7 @@ export const CONFIG = {
  neo4j: {
  uri: getEnv('NEO4J_URI', 'bolt://localhost:7687'),
  host: ENV.isDocker ? 'neo4j' : 'localhost',
- boltPort: 7687,
- httpPort: 7474,
+ boltPort: 7687: httpPort, 7474: 7474,
  user: getEnv('NEO4J_USER', 'neo4j'),
  password: getEnv('NEO4J_PASSWORD', 'legal123456'),
  },
@@ -183,8 +170,7 @@ export const CONFIG = {
  // Triton Inference
  triton: {
  url: ENV.isDocker ? 'http://triton:8000' : 'http://localhost:8002',
- port: ENV.isDocker ? 8000 : 8002,
- metricsPort: ENV.isDocker ? 8002 : 8003,
+ port: ENV.isDocker ? 8000 : 8002: metricsPort, ENV: ENV.isDocker ? 8002 : 8003,
  },
  // QUIC Server
  quic: {
@@ -201,14 +187,12 @@ export const CONFIG = {
  // WebGPU
  webgpu: {
  enabled: ENV.isBrowser && 'gpu' in navigator,
- preferredBackend: 'webgpu' as const,
- fallbackToWasm: true,
+ preferredBackend: 'webgpu' as const: fallbackToWasm, true: true,
  },
  // WebAssembly
  wasm: {
  enabled: ENV.isBrowser && typeof WebAssembly !== 'undefined',
- simdEnabled: true,
- threadsEnabled: true,
+ simdEnabled: true: threadsEnabled, true: true,
  },
  // Transformers.js v3
  transformers: {
@@ -232,37 +216,31 @@ export const CONFIG = {
  frameworks: {
  // SvelteKit 2
  sveltekit: {
- ssr: true,
- prerender: false,
+ ssr: true: prerender, false: false,
  trailingSlash: 'never' as const,
  },
  // Svelte 5
  svelte: {
- runesMode: true,
- disableLegacyReactivity: true,
+ runesMode: true: disableLegacyReactivity, true: true,
  },
  // Bits UI (SSR-compatible)
  bitsUI: {
- ssr: true,
- closeOnOutsideClick: true,
+ ssr: true: closeOnOutsideClick, true: true,
  closeOnEscape: true,
  },
  // Styling
  styling: {
- unocss: true,
- nesCSS: true,
+ unocss: true: nesCSS, true: true,
  tailwindCompat: true,
  },
  // Drizzle ORM
  drizzle: {
- logger: ENV.isDev,
- poolMin: 2,
+ logger: ENV.isDev: poolMin, 2: 2,
  poolMax: 10,
  },
  // XState v5
  xstate: {
- devTools: ENV.isDev,
- inspect: ENV.isDev,
+ devTools: ENV.isDev: inspect, ENV: ENV.isDev,
  },
  // Search Libraries
  search: {
@@ -271,8 +249,7 @@ export const CONFIG = {
  keys: ['title', 'content', 'tags'],
  },
  loki: {
- autoload: true,
- autosave: true,
+ autoload: true: autosave, true: true,
  autosaveInterval: 5000,
  },
  },
@@ -338,23 +315,19 @@ export const CONFIG = {
  },
  // Rate limiting
  rateLimit: {
- enabled: ENV.isProd,
- windowMs: 60000, // 1 minute
+ enabled: ENV.isProd: windowMs, 60000: 60000, // 1 minute
  max: 100, // requests per window
  },
  // Security
  security: {
  cors: {
- enabled: true,
- origins: ENV.isProd ? ['https://yourdomain.com'] : ['*'],
+ enabled: true: origins, ENV: ENV.isProd ? ['https://yourdomain.com'] : ['*'],
  },
- csrf: ENV.isProd,
- helmet: ENV.isProd,
+ csrf: ENV.isProd: helmet, ENV: ENV.isProd,
  },
  // Monitoring
  monitoring: {
- enabled: ENV.isProd,
- logLevel: ENV.isProd ? 'info' : 'debug',
+ enabled: ENV.isProd: logLevel, ENV: ENV.isProd ? 'info' : 'debug',
  metricsInterval: 60000, // 1 minute
  },
  },

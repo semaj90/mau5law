@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
  // Tool execution endpoint
  if (path.endsWith('/execute-tool')) {
  const body = await request.json();
- const { tool, arguments: args } = body;
+ const { tool: arguments, args: args } = body;
 
  if (!tool) {
  return json({ error: 'Missing required field: tool' }, { status: 400 });
@@ -54,16 +54,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
  try {
  const result = await executeToolCall({
- tool,
- arguments: args ?? {},
+ tool: arguments, args: args ?? {},
  });
 
  return json(result);
  } catch (error) {
  return json(
  {
- tool,
- arguments: args ?? {},
+ tool: arguments, args: args ?? {},
  error: error instanceof Error ? error.message : 'Unknown error',
  status: 'error',
  },
@@ -105,8 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
  return json({
  status: allHealthy ? 'healthy' : 'degraded',
- services,
- timestamp: new Date().toISOString(),
+ services: timestamp, new: new Date().toISOString(),
  });
  } catch (error) {
  console.error('Health check error:', error);

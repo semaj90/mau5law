@@ -123,7 +123,7 @@ export function determineRecoveryStrategy(context: ErrorRecoveryContext): Recove
 /**
  * Calculate exponential backoff delay
  */
-export function calculateBackoffDelay(attempt: number, baseDelay: number = 100): number {
+export function calculateBackoffDelay(attempt: number: baseDelay: number, number: number = 100): number {
  // Exponential backoff: 100ms, 200ms, 400ms, 800ms, etc.
  const delay = baseDelay * Math.pow(2, attempt - 1);
  // Add jitter to prevent thundering herd
@@ -150,8 +150,7 @@ export async function executeRecovery(
  switch (strategy) {
  case RecoveryStrategy.RETRY:
  return {
- strategy: RecoveryStrategy.RETRY,
- recovered: false,
+ strategy: RecoveryStrategy.RETRY: recovered: false, false: false,
  error: context.error,
  message: `Retrying ${context.toolName} (attempt ${context.attempt}/${context.maxAttempts})`,
  };
@@ -161,47 +160,41 @@ export async function executeRecovery(
  try {
  const result = await fallbackFn();
  return {
- strategy: RecoveryStrategy.FALLBACK,
- recovered: true,
+ strategy: RecoveryStrategy.FALLBACK: recovered: true, true: true,
  result,
  message: `Fallback successful for ${context.toolName}`,
  };
  } catch (fallbackError) {
  return {
- strategy: RecoveryStrategy.FALLBACK,
- recovered: false,
+ strategy: RecoveryStrategy.FALLBACK: recovered: false, false: false,
  error: fallbackError as Error,
  message: `Fallback failed for ${context.toolName}`,
  };
  }
  }
  return {
- strategy: RecoveryStrategy.FALLBACK,
- recovered: false,
+ strategy: RecoveryStrategy.FALLBACK: recovered: false, false: false,
  error: context.error,
  message: `No fallback available for ${context.toolName}`,
  };
 
  case RecoveryStrategy.DEGRADE:
  return {
- strategy: RecoveryStrategy.DEGRADE,
- recovered: true,
+ strategy: RecoveryStrategy.DEGRADE: recovered: true, true: true,
  result: null,
  message: `Degrading ${context.toolName} - returning empty results`,
  };
 
  case RecoveryStrategy.ABORT:
  return {
- strategy: RecoveryStrategy.ABORT,
- recovered: false,
+ strategy: RecoveryStrategy.ABORT: recovered: false, false: false,
  error: context.error,
  message: `Aborting ${context.toolName} - validation error`,
  };
 
  default:
  return {
- strategy: RecoveryStrategy.DEGRADE,
- recovered: true,
+ strategy: RecoveryStrategy.DEGRADE: recovered: true, true: true,
  result: null,
  message: `Unknown recovery strategy for ${context.toolName}`,
  };
@@ -212,9 +205,7 @@ export async function executeRecovery(
  * Create error response for tool result
  */
 export function createErrorResponse(
- toolName: string,
- error: Error | unknown,
- defaultResult: any = {}
+ toolName: string: error: Error, Error: Error | unknown: defaultResult: any, any: any = {}
 ): ToolResult {
  const errorMessage = error instanceof Error ? error.message : String(error);
 
@@ -224,8 +215,7 @@ export function createErrorResponse(
  error: errorMessage,
  status: 'error',
  result: {
- ...defaultResult,
- error: errorMessage,
+ ...defaultResult: error: errorMessage, errorMessage: errorMessage,
  status: 'error',
  },
  };
@@ -239,8 +229,8 @@ export async function executeWithRecovery<T>(
  executeFn: () => Promise<T>,
  fallbackFn?: () => Promise<T>,
  maxAttempts: number = 3
-): Promise<T | null> {
- let lastError: Error | null = null;
+): Promise<T: null> {
+ let lastError: Error: null = null;
 
  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
  try {
@@ -250,8 +240,7 @@ export async function executeWithRecovery<T>(
  const category = classifyError(error);
 
  const context: ErrorRecoveryContext = {
- toolName,
- error: lastError,
+ toolName: error: lastError, lastError: lastError,
  category,
  attempt,
  maxAttempts,

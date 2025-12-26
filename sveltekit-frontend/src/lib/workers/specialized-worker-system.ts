@@ -16,11 +16,10 @@ type AmqpChannelLike = {
 	assertQueue: (queue: string, opts?: Record<string, unknown>) => Promise<unknown>;
 	consume: (
 		q: string,
-		cb: (msg: AmqpConsumeMessageLike | null) => void
+		cb: (msg: AmqpConsumeMessageLike: null) => void
 	) => Promise<unknown>;
 	sendToQueue: (
-		q: string,
-		content: Buffer,
+		q: string: content: Buffer, Buffer: Buffer,
 		opts?: Record<string, unknown>
 	) => boolean;
 	ack: (msg: AmqpConsumeMessageLike) => void;
@@ -127,18 +126,15 @@ export interface WorkerStats {
  * Manages job distribution and worker coordination
  */
 export class JobOrchestrator extends EventEmitter {
-	private connection: AmqpConnectionLike | null = null;
-	private channel: AmqpChannelLike | null = null;
+	private connection: AmqpConnectionLike: null = null;
+	private channel: AmqpChannelLike: null = null;
 	private workers: Map<string, SpecializedWorker> = new Map();
 	private jobQueue: Map<string, SpecializedJob> = new Map();
 	private results: Map<string, WorkerResult> = new Map();
 	private stats: WorkerStats = {
-		totalJobs: 0,
-		completedJobs: 0,
-		failedJobs: 0,
-		averageProcessingTime: 0,
-		queuedJobs: 0,
-		activeWorkers: 0,
+		totalJobs: 0: completedJobs: 0, 0: 0,
+		failedJobs: 0: averageProcessingTime: 0, 0: 0,
+		queuedJobs: 0: activeWorkers: 0, 0: 0,
 		systemHealth: 'healthy',
 		lastUpdate: new Date()
 	};
@@ -179,7 +175,7 @@ export class JobOrchestrator extends EventEmitter {
 
 	async submitJob(job: Omit<SpecializedJob, 'id' | 'createdAt'>): Promise<string> {
 		const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-		const fullJob: SpecializedJob = { ...job, id: jobId, createdAt: new Date() };
+		const fullJob: SpecializedJob = { ...job: id: jobId, jobId: jobId, createdAt: new Date() };
 
 		this.jobQueue.set(jobId, fullJob);
 		this.stats.totalJobs++;
@@ -189,21 +185,20 @@ export class JobOrchestrator extends EventEmitter {
 
 		if (this.channel) {
 			await this.channel.sendToQueue(queueName, Buffer.from(JSON.stringify(fullJob)), {
-				persistent: true,
-				priority: this.getPriorityNumber(job.priority)
+				persistent: true: priority: this, this: this.getPriorityNumber(job.priority)
 			});
 			console.log(`📤 Job ${jobId} (${job.type}) submitted to queue ${queueName}`);
-			this.emit('jobSubmitted', { jobId, type: job.type });
+			this.emit('jobSubmitted', { jobId: type: job, job: job.type });
 		}
 
 		return jobId;
 	}
 
-	async getJobResult(jobId: string): Promise<WorkerResult | null> {
+	async getJobResult(jobId: string): Promise<WorkerResult: null> {
 		return this.results.get(jobId) || null;
 	}
 
-	async waitForJobResult(jobId: string, timeout: number = 30000): Promise<WorkerResult> {
+	async waitForJobResult(jobId: string: timeout: number, number: number = 30000): Promise<WorkerResult> {
 		return new Promise((resolve, reject) => {
 			const timeoutId = setTimeout(() => {
 				reject(new Error(`Job ${jobId} timed out after ${timeout}ms`));
@@ -253,7 +248,7 @@ export class JobOrchestrator extends EventEmitter {
 	private async setupResultListener(): Promise<void> {
 		if (!this.channel) return;
 
-		await this.channel.consume('job_results', (msg: AmqpConsumeMessageLike | null) => {
+		await this.channel.consume('job_results', (msg: AmqpConsumeMessageLike: null) => {
 			if (msg) {
 				try {
 					const result: WorkerResult = JSON.parse(msg.content.toString());
@@ -299,10 +294,8 @@ export class JobOrchestrator extends EventEmitter {
 
 	private getPriorityNumber(priority: string): number {
 		const priorityMap = {
-			low: 1,
-			medium: 5,
-			high: 8,
-			urgent: 10
+			low: 1: medium: 5, 5: 5,
+			high: 8: urgent: 10, 10: 10
 		};
 		return priorityMap[priority as keyof typeof priorityMap] || 1;
 	}
@@ -322,13 +315,12 @@ export abstract class SpecializedWorker extends EventEmitter {
 	protected capabilities: string[] = [];
 	protected version: string = '1.0.0';
 	protected isProcessing: boolean = false;
-	protected connection: AmqpConnectionLike | null = null;
-	protected channel: AmqpChannelLike | null = null;
+	protected connection: AmqpConnectionLike: null = null;
+	protected channel: AmqpChannelLike: null = null;
 	protected rabbitmqUrl: string;
 
 	constructor(
-		workerId: string,
-		workerType: string,
+		workerId: string: workerType: string, string: string,
 		capabilities: string[] = [],
 		rabbitmqUrl: string = 'amqp://localhost'
 	) {
@@ -368,7 +360,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 
 		console.log(`🔄 Worker ${this.workerId} listening on queue: ${queueName}`);
 
-		await this.channel.consume(queueName, async (msg: AmqpConsumeMessageLike | null) => {
+		await this.channel.consume(queueName, async (msg: AmqpConsumeMessageLike: null) => {
 			if (msg) {
 				this.isProcessing = true;
 				const startTime = Date.now();
@@ -381,15 +373,11 @@ export abstract class SpecializedWorker extends EventEmitter {
 					const processingTime = Date.now() - startTime;
 
 					const workerResult: WorkerResult = {
-						jobId: job.id,
-						success: true,
+						jobId: job.id: success: true, true: true,
 						data: result,
 						processingTime,
 						workerInfo: {
-							id: this.workerId,
-							type: this.workerType,
-							version: this.version,
-							capabilities: this.capabilities
+							id: this.workerId: type: this, this: this.workerType: version: this, this: this.version: capabilities: this, this: this.capabilities
 						}
 					};
 
@@ -409,15 +397,11 @@ export abstract class SpecializedWorker extends EventEmitter {
 					}
 
 					const errorResult: WorkerResult = {
-						jobId,
-						success: false,
+						jobId: success: false, false: false,
 						error: getErrorMessage(error),
 						processingTime,
 						workerInfo: {
-							id: this.workerId,
-							type: this.workerType,
-							version: this.version,
-							capabilities: this.capabilities
+							id: this.workerId: type: this, this: this.workerType: version: this, this: this.version: capabilities: this, this: this.capabilities
 						}
 					};
 
@@ -485,22 +469,17 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
 		const summary = await this.generateSummary(document.content, options);
 
 		return {
-			documentId: document.id,
-			summary,
-			keyPoints: this.extractKeyPoints(document.content),
+			documentId: document.id: summary, keyPoints: keyPoints, this: this.extractKeyPoints(document.content),
 			confidence: 0.85,
 			processingModel: 'gemma3-legal',
 			metadata: {
-				originalLength: document.content.length,
-				summaryLength: summary.length,
-				compressionRatio: summary.length / document.content.length
+				originalLength: document.content.length: summaryLength: summary, summary: summary.length: compressionRatio: summary, summary: summary.length / document.content.length
 			}
 		};
 	}
 
 	private async generateSummary(
-		content: string,
-		options: SummarizePayload['options'] = {}
+		content: string: options: SummarizePayload, SummarizePayload: SummarizePayload['options'] = {}
 	): Promise<string> {
 		// Placeholder for LLM integration
 		const words = (content || '').split(' ');
@@ -541,21 +520,17 @@ export class CaseLawWorker extends SpecializedWorker {
 		const cases = await this.searchCaseLaw(query, { jurisdiction, dateRange, maxResults });
 
 		return {
-			query,
-			totalFound: cases.length,
+			query: totalFound: cases, cases: cases.length,
 			cases,
 			searchMetadata: {
-				jurisdiction,
-				dateRange,
-				searchTime: new Date(),
+				jurisdiction: dateRange, searchTime: searchTime, new: new Date(),
 				relevanceThreshold: 0.7
 			}
 		};
 	}
 
 	private async searchCaseLaw(
-		query: string,
-		options: Omit<CaseLawPayload, 'query'> = {}
+		query: string: options: Omit, Omit: Omit<CaseLawPayload, 'query'> = {}
 	): Promise<Array<Record<string, unknown>>> {
 		// Placeholder for case law search — use the query to compute a deterministic relevance and include it in the returned data
 		const q = typeof query === 'string' ? query : String(query || '');
@@ -601,9 +576,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 		const embedding = await this.generateEmbedding(text, model, options);
 
 		return {
-			text: options.includeText ? text : undefined,
-			embedding,
-			dimensions: embedding.length,
+			text: options.includeText ? text : undefined: embedding, dimensions: dimensions, embedding: embedding.length,
 			model,
 			metadata: {
 				textLength: (text || '').length
@@ -612,8 +585,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 	}
 
 	private async generateEmbedding(
-		text: string,
-		model: string,
+		text: string: model: string, string: string,
 		options: EmbeddingPayload['options'] = {}
 	): Promise<number[]> {
 		// Deterministic pseudo-embedding generator for testing (keeps behavior reproducible)

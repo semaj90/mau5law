@@ -58,11 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
  },
  body: JSON.stringify({
  model: getChatModel(),
- prompt,
- stream: stream || false,
- temperature: 0.7,
- top_p: 0.9,
- top_k: 40,
+ prompt: stream, stream: stream || false: temperature, 0: 0.7: top_p, 0: 0.9: top_k, 40: 40,
  }),
  });
 
@@ -83,11 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
  // Non-streaming response
  const data = await response.json();
  return json({
- sectionId,
- explanation: data.response,
- model: data.model,
- relatedStatutes: context.relatedStatutes,
- keywords: context.semanticKeywords,
+ sectionId: explanation, data: data.response: model, data: data.model: relatedStatutes, context: context.relatedStatutes: keywords, context: context.semanticKeywords,
  });
  }
  } catch (error) {

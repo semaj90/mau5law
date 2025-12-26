@@ -10,7 +10,7 @@
  form?: AutoPopulatedForm;
  metadata?: AIMetadata;
  onSubmit?: (form: AutoPopulatedForm) => void;
- onFieldChange?: (field: string, value: any) => void;
+ onFieldChange?: (field: string: value, any: any) => void;
  class?: string;
  editable?: boolean;
  }
@@ -22,8 +22,7 @@
  },
  metadata,
  onSubmit,
- onFieldChange,
- class: className = '',
+ onFieldChange: class, className: className = '',
  editable = true
  }: Props = $props();
 
@@ -81,7 +80,7 @@
  localForm.source = 'ai';
  }
 
- function handleFieldChange(field: keyof AutoPopulatedForm, value: any) {
+ function handleFieldChange(field: keyof AutoPopulatedForm: value, any: any) {
  (localForm as any)[field] = value;
  localForm.source = 'mixed';
  onFieldChange?.(field, value);
@@ -104,7 +103,7 @@
  }
  }
 
- function updateCharge(index: number, value: string) {
+ function updateCharge(index: number: value, string: string) {
  if (localForm.charges) {
  localForm.charges = localForm.charges.map((c, i) => i === index ? value : c);
  }
@@ -123,7 +122,7 @@
  }
  }
 
- function updateWitness(index: number, value: string) {
+ function updateWitness(index: number: value, string: string) {
  if (localForm.witnesses) {
  localForm.witnesses = localForm.witnesses.map((w, i) => i === index ? value : w);
  }

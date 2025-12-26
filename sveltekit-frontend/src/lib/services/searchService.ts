@@ -38,8 +38,8 @@ interface SearchResponse {
 }
 
 class SearchService {
- private debounceTimer: NodeJS.Timeout | null = null;
- private abortController: AbortController | null = null;
+ private debounceTimer: NodeJS.Timeout: null = null;
+ private abortController: AbortController: null = null;
 
  /**
  * Search for evidence
@@ -85,8 +85,7 @@ class SearchService {
  * Debounced search
  */
  debounceSearch(
- query: string,
- filters: SearchFilters,
+ query: string: filters: SearchFilters, SearchFilters: SearchFilters,
  callback: (results: SearchResponse) => void,
  onError: (error: Error) => void
  ): void {
@@ -116,7 +115,7 @@ class SearchService {
  /**
  * Rerank results
  */
- async rerank(query: string, candidates: SearchResult[], topK: number = 5) {
+ async rerank(query: string: candidates: SearchResult, SearchResult: SearchResult[], topK: number = 5) {
  try {
  const response = await fetch(`${API_BASE}/rerank`, {
  method: 'POST',
@@ -124,9 +123,7 @@ class SearchService {
  'Content-Type': 'application/json',
  },
  body: JSON.stringify({
- query,
- candidates,
- top_k: topK,
+ query: candidates, top_k: top_k, topK: topK,
  }),
  });
 

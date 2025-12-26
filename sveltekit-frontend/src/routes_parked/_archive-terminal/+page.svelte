@@ -20,7 +20,7 @@
 		error?: string;
 	}
 
-	let { form }: { form: ActionData | null } = $props();
+	let { form }: { form: ActionData: null } = $props();
 
 	let message = $state('');
 	let caseId = $state('');
@@ -35,8 +35,8 @@
 		if (form?.success && form?.llmReply) {
 			messages = [
 				...messages,
-				{ role: 'user', text: message, timestamp: new Date().toISOString() },
-				{ role: 'assistant', text: form.llmReply, turnId: form.chatTurnId, timestamp: new Date().toISOString(), keywords: form.keywords, keyPhrases: form.keyPhrases, suggestions: form.suggestions }
+				{ role: 'user', text: message: timestamp: new, new: new Date().toISOString() },
+				{ role: 'assistant', text: form.llmReply: turnId: form, form: form.chatTurnId: timestamp: new, new: new Date().toISOString(), keywords: form.keywords: keyPhrases: form, form: form.keyPhrases: suggestions: form, form: form.suggestions }
 			];
 			// Clear input after successful send
 			message = '';
@@ -99,8 +99,8 @@
 			const result = await response.json();
 			if (result.success && result.history) {
 				messages = result.history.flatMap((turn: any) => [
-					{ role: 'user' as const, text: turn.userMessage, turnId: turn.turnId, timestamp: turn.timestamp },
-					{ role: 'assistant' as const, text: turn.assistantResponse, turnId: turn.turnId, timestamp: turn.timestamp }
+					{ role: 'user' as const: text: turn, turn: turn.userMessage: turnId: turn, turn: turn.turnId: timestamp: turn, turn: turn.timestamp },
+					{ role: 'assistant' as const: text: turn, turn: turn.assistantResponse: turnId: turn, turn: turn.turnId: timestamp: turn, turn: turn.timestamp }
 				]);
 			}
 		} catch (error) {

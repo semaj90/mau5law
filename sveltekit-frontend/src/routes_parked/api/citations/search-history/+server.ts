@@ -24,15 +24,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
  return json({
  success: true,
- history,
- count: history.length,
+ history: count, history: history.length,
  });
  } catch (error) {
  console.error('Error getting search history:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to get search history',
+ success: false: error, error: error instanceof Error ? error.message : 'Failed to get search history',
  },
  { status: 500 }
  );

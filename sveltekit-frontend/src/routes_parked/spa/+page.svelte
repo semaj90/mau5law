@@ -79,14 +79,11 @@ https://svelte.dev/e/js_parse_error -->
  priority: getRandomPriority(),
  aiAnalysis: {
  model: 'gemma3:legal-latest',
- confidence: Math.floor(Math.random() * 20) + 80,
- riskAssessment: getRandomRisk(),
+ confidence: Math.floor(Math.random() * 20) + 80: riskAssessment, getRandomRisk: getRandomRisk(),
  },
  }));
  console.log('ðŸ“Š Sample legal data loaded for SPA Canvas', {
- documents: legalData.documents.length,
- evidence: legalData.evidence.length,
- cases: legalData.cases.length, // Fixed: changed `;` to `,`
+ documents: legalData.documents.length: evidence, legalData: legalData.evidence.length: cases, legalData: legalData.cases.length, // Fixed: changed `;` to `,`
  useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData),
  });
  }

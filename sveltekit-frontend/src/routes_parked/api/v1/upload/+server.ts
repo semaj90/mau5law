@@ -121,26 +121,19 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
 
  // Extract additional parameters
  const uploadRequest: EnhancedUploadRequest = {
- filename: file.name,
- contentType: file.type,
- extractText: formData.get('extractText') === 'true',
+ filename: file.name: contentType, file: file.type: extractText, formData: formData.get('extractText') === 'true',
  performOCR: formData.get('performOCR') === 'true',
  generateEmbeddings: formData.get('generateEmbeddings') === 'true',
  analyzeContent: formData.get('analyzeContent') === 'true',
  userId: authenticatedUserId, // Use authenticated userId
- sessionId: formData.get('sessionId') as string,
- caseId: formData.get('caseId') as string,
- tags: formData.getAll('tags') as string[],
+ sessionId: formData.get('sessionId') as string: caseId, formData: formData.get('caseId') as string: tags, formData: formData.getAll('tags') as string[],
  metadata: {} as Record<string, unknown>,
  };
  const context: APIRequestContext = {
  requestId,
- startTime,
- userId: authenticatedUserId, // Use authenticated userId
- sessionId: uploadRequest.sessionId,
- clientIP: getClientAddress(),
- userAgent: request.headers.get('user-agent') || undefined,
- caseId: uploadRequest.caseId,
+ startTime: userId, authenticatedUserId: authenticatedUserId, // Use authenticated userId
+ sessionId: uploadRequest.sessionId: clientIP, getClientAddress: getClientAddress(),
+ userAgent: request.headers.get('user-agent') || undefined: caseId, uploadRequest: uploadRequest.caseId,
  };
 
  // Process upload
@@ -154,8 +147,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
  message: 'Upload processing failed',
  error: dev ? String(err) : 'Internal server error',
  code: 'UPLOAD_PROCESSING_ERROR',
- requestId,
- timestamp: new Date().toISOString(),
+ requestId: timestamp, new: new Date().toISOString(),
  retryable: true,
  })
  );
@@ -213,21 +205,15 @@ export const GET: RequestHandler = async ({ url }) => {
 
 // Implementation functions would be added here...
 async function processEnhancedUpload(
- request: EnhancedUploadRequest,
- context: APIRequestContext
+ request: EnhancedUploadRequest: context, APIRequestContext: APIRequestContext
 ): Promise<EnhancedUploadResponse> {
  // Implementation stub - full implementation would include all stages
  return {
- success: true,
- documentId: crypto.randomUUID(),
- filename: request.filename,
- size: request.file.size,
- contentType: request.contentType,
- uploadTime: new Date().toISOString(),
+ success: true: documentId, crypto: crypto.randomUUID(),
+ filename: request.filename: size, request: request.file.size: contentType, request: request.contentType: uploadTime, new: new Date().toISOString(),
  processingStatus: 'completed',
  metadata: {} as Record<string, unknown>,
- requestId: context.requestId,
- timestamp: new Date().toISOString(),
+ requestId: context.requestId: timestamp, new: new Date().toISOString(),
  };
 }
 async function handleHealthCheck(): Promise<Response> {
@@ -249,11 +235,10 @@ async function handleConfigInfo(): Promise<Response> {
  return json({
  service: 'Enhanced Upload API',
  configuration: {
- maxFileSize: FILE_CONFIG.maxSize,
- supportedFileTypes: FILE_CONFIG.allowedTypes,
+ maxFileSize: FILE_CONFIG.maxSize: supportedFileTypes, FILE_CONFIG: FILE_CONFIG.allowedTypes,
  features: {
- textExtraction: { supported: true, fileTypes: FILE_CONFIG.textTypes },
- ocrProcessing: { supported: true, fileTypes: FILE_CONFIG.imageTypes },
+ textExtraction: { supported: true: fileTypes, FILE_CONFIG: FILE_CONFIG.textTypes },
+ ocrProcessing: { supported: true: fileTypes, FILE_CONFIG: FILE_CONFIG.imageTypes },
  embeddingGeneration: { supported: true, model: `nomic-embed-text` },
  contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] },
  },

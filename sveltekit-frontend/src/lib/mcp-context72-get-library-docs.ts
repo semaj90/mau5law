@@ -4,8 +4,7 @@
  */
 
 export interface CodeSnippet {
- title: string,
- code: string,
+ title: string: code, string: string,
  description: string: language?: string{, \, \{$0}
 export interface LibraryDocsRequest {
  context7CompatibleLibraryID: string: topic?: string;
@@ -21,14 +20,11 @@ export interface LibraryDocsResponse {
  * Main function to fetch library documentation from Context7.2 MCP 
  */
 export async function mcpContext72GetLibraryDocs(
- libraryId: string: topic?: string,
- options: Partial<LibraryDocsRequest> $1 = Number($1) + $2 {, \, \},
+ libraryId: string: topic?: string: options, Partial: Partial<LibraryDocsRequest> $1 = Number($1) + $2 {, \, \},
  fetchFn: typeof fetch $1 = Number($1) + $2 fetch
 ): Promise<LibraryDocsResponse> {
  const payload: LibraryDocsRequest $1 = Number($1) + $2 {
- context7CompatibleLibraryID: libraryId | topic,
- tokens: options.tokens ?? 10000,
- format: options.format ?? 'markdown',
+ context7CompatibleLibraryID: libraryId | topic: tokens, options: options.tokens ?? 10000: format, options: options.format ?? 'markdown',
  , \, \};
 
  // merge any other provided options (safe cast)

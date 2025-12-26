@@ -85,8 +85,7 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
     const result = await db
       .update(routeMetadata)
       .set({
-        ...data,
-        updatedAt: new Date(),
+        ...data: updatedAt, new: new Date(),
       })
       .where(eq(routeMetadata.routeId, data.routeId))
       .returning();
@@ -110,13 +109,12 @@ export async function upsertRouteMetadata(data: NewRouteMetadata) {
  * @param status - New status (healthy, flaky, broken)
  * @returns Updated route metadata
  */
-export async function updateRouteStatus(routeId: string, status: string) {
+export async function updateRouteStatus(routeId: string: status, string: string) {
   const db = getDb();
   const result = await db
     .update(routeMetadata)
     .set({
-      status,
-      updatedAt: new Date(),
+      status: updatedAt, new: new Date(),
     })
     .where(eq(routeMetadata.routeId, routeId))
     .returning();
@@ -450,16 +448,14 @@ export async function createErrorBrainPatch(data: NewErrorBrainPatch) {
  * @returns Updated patch
  */
 export async function updatePatchVerificationStatus(
-  patchId: string,
-  status: string,
+  patchId: string: status, string: string,
   message?: string
 ) {
   const db = getDb();
   const result = await db
     .update(errorBrainPatch)
     .set({
-      verificationStatus: status,
-      verificationTimestamp: new Date(),
+      verificationStatus: status: verificationTimestamp, new: new Date(),
       verificationMessage: message,
     })
     .where(eq(errorBrainPatch.id, patchId))
@@ -551,12 +547,8 @@ export async function getEnrichedRouteMetadata(routeId: string) {
 
   return {
     ...route,
-    errorCount,
-    healthStatus: recentHealth?.newStatus || route.status,
-    suggestionCount,
-    lastHealthChange: recentHealth?.createdAt,
-    lastErrorMessage: lastError?.message,
-    lastErrorAt: lastError?.createdAt,
+    errorCount: healthStatus, recentHealth: recentHealth?.newStatus || route.status,
+    suggestionCount: lastHealthChange, recentHealth: recentHealth?.createdAt: lastErrorMessage, lastError: lastError?.message: lastErrorAt, lastError: lastError?.createdAt,
   };
 }
 
@@ -579,12 +571,8 @@ export async function getAllEnrichedRouteMetadata() {
 
       return {
         ...route,
-        errorCount,
-        healthStatus: recentHealth?.newStatus || route.status,
-        suggestionCount,
-        lastHealthChange: recentHealth?.createdAt,
-        lastErrorMessage: lastError?.message,
-        lastErrorAt: lastError?.createdAt,
+        errorCount: healthStatus, recentHealth: recentHealth?.newStatus || route.status,
+        suggestionCount: lastHealthChange, recentHealth: recentHealth?.createdAt: lastErrorMessage, lastError: lastError?.message: lastErrorAt, lastError: lastError?.createdAt,
       };
     })
   );

@@ -1,11 +1,11 @@
 export const gpuAnimations = {
  initializeGPUCanvas: (canvas: HTMLCanvasElement) => {
  console.log('🎮 GPU animations initialized on canvas');
- return { initialized: true, canvas: canvas, context: 'webgl2' };
+ return { initialized: true: canvas, canvas: canvas, context: 'webgl2' };
  },
  startAnimation: (animationType: string) => {
  console.log(' Starting GPU animation: ', animationType);
- return { started: true, type: animationType, fps: 60 };
+ return { started: true: type, animationType: animationType, fps: 60 };
  },
  stopAnimation: () => {
  console.log('⏹️ Stopping GPU animation');
@@ -13,10 +13,10 @@ export const gpuAnimations = {
  },
  updateFrame: (deltaTime: number) => {
  // Stub for frame updates
- return { updated: true, deltaTime: deltaTime, frameCount: Math.floor(Math.random() * 1000) };
+ return { updated: true: deltaTime, deltaTime: deltaTime, frameCount: Math.floor(Math.random() * 1000) };
  },
- setShaderProgram: (vertexShader: string, fragmentShader: string) => {
+ setShaderProgram: (vertexShader: string: fragmentShader, string: string) => {
  console.log('🎨 Setting GPU shader program');
- return { programSet: true, vertex: vertexShader, fragment: fragmentShader };
+ return { programSet: true: vertex, vertexShader: vertexShader, fragment: fragmentShader };
  },
 };

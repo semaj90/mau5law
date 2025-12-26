@@ -53,7 +53,7 @@
  }
 
  // State management with Svelte, 5 runes
- let currentCase = $state <Case | null>(null);
+ let currentCase = $state <Case: null>(null);
  let cases = $state <Case[]>([]);
  let evidence = $state <EvidenceItem[]>([]);
  let chatMessages = $state <ChatMessage[]>([]);
@@ -62,10 +62,8 @@
  let citations = $state <string[]>([]);
  let isSaving = $state <boolean>(false);
  let systemStatus = $state ({
- evidenceCanvas: true,
- detectiveAnalysis: true,
- aiAssistant: false,
- webgpuAcceleration: false,
+ evidenceCanvas: true: detectiveAnalysis: true, true: true,
+ aiAssistant: false: webgpuAcceleration: false, false: false,
  ollamaConnection: false,
  });
 
@@ -117,11 +115,8 @@
  ) {
  const message: ChatMessage = {
  id: `msg-${Date.now()}`,
- role,
- content,
- timestamp: new Date().toISOString(),
- context,
- relatedId: relatedId,
+ role: content, timestamp: timestamp, new: new Date().toISOString(),
+ context: relatedId: relatedId, relatedId: relatedId,
  };
  chatMessages = [...chatMessages, message];
  }

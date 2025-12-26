@@ -32,10 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  return json({
  success: true,
- result,
- filename: file.name,
- size: file.size,
- type: file.type,
+ result: filename, file: file.name: size, file: file.size: type, file: file.type,
  });
  } finally {
  // Clean up temp file
@@ -44,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
  } catch (error) {
  console.error('Document processing error:', error);
  return json(
- { success: false, error: error instanceof Error ? error.message : 'Processing failed' },
+ { success: false: error, error: error instanceof Error ? error.message : 'Processing failed' },
  { status: 500 }
  );
  }

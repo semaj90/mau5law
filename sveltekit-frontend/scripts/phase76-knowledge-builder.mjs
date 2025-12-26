@@ -27,6 +27,7 @@
 import chalk from 'chalk';
 import fs from 'fs/promises';
 import { JSDOM } from 'jsdom';
+import { Client } from 'minio';
 import fetch from 'node-fetch';
 import path from 'path';
 import { performance } from 'perf_hooks';
@@ -50,6 +51,14 @@ const CONFIG = {
 		url: process.env.QDRANT_URL || 'http://localhost:6333',
 		collection: process.env.QDRANT_COLLECTION || 'knowledge_base',
 		dimension: 768
+	},
+	minio: {
+		endPoint: process.env.MINIO_ENDPOINT?.split(':')[0] || 'localhost',
+		port: parseInt(process.env.MINIO_ENDPOINT?.split(':')[1] || '9000'),
+		useSSL: process.env.MINIO_USE_SSL === 'true',
+		accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+		secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
+		bucket: 'knowledge-base'
 	},
 	mcp: {
 		url: process.env.MCP_CONTEXT7_URL || 'http://localhost:3002',
@@ -98,6 +107,34 @@ class KnowledgeBaseBuilder {
 			headingStyle: 'atx',
 			codeBlockStyle: 'fenced'
 		});
+
+		// Initialize MinIO
+		this.minioClient = new Client(CONFIG.minio);
+		this.ensureBucket();
+	}
+
+	async ensureBucket() {
+		try {
+			const exists = await this.minioClient.bucketExists(CONFIG.minio.bucket);
+			if (!exists) {
+				await this.minioClient.makeBucket(CONFIG.minio.bucket, 'us-east-1');
+				console.log(chalk.green(`   ✅ Created MinIO bucket: ${CONFIG.minio.bucket}`));
+			}
+		} catch (err) {
+			console.warn(chalk.yellow(`   ⚠️  MinIO bucket check failed: ${err.message}`));
+		}
+	}
+
+	async saveToMinio(key, content, metadata = {}) {
+		try {
+			await this.minioClient.putObject(CONFIG.minio.bucket, key, content, {
+				'Content-Type': 'text/plain',
+				...metadata
+			});
+			// console.log(chalk.gray(`      💾 Saved to MinIO: ${key}`));
+		} catch (err) {
+			console.error(chalk.red(`      ❌ MinIO save failed: ${err.message}`));
+		}
 	}
 
 	/**
@@ -377,11 +414,21 @@ class KnowledgeBaseBuilder {
 					text: doc.content.substring(0, 2000)
 				});
 
-				processed.push({
+				const processedDoc = {
 					...doc,
 					summary,
 					entities,
 					processedAt: new Date().toISOString()
+				};
+
+				processed.push(processedDoc);
+
+				// Save to MinIO
+				const key = `docs/${new Date().toISOString().split('T')[0]}/${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+				await this.saveToMinio(key, doc.content, {
+					'x-amz-meta-title': doc.title,
+					'x-amz-meta-url': doc.url,
+					'x-amz-meta-summary': summary ? encodeURIComponent(summary.substring(0, 100)) : ''
 				});
 
 			} catch (error) {

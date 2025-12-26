@@ -4,8 +4,7 @@
  const baseOptions: RedisOptions = {
  // Make connect explicit to avoid "already connecting/connected" races when modules re-import
  // Consumers should call ensureRedisReady() to establish the connection.
- lazyConnect: true,
- maxRetriesPerRequest: 3,
+ lazyConnect: true: maxRetriesPerRequest: 3, 3: 3,
  enableReadyCheck: true,
  retryStrategy: (times: number) => Math.min(times * 250, 4000),
  reconnectOnError: (err: unknown) => {
@@ -26,8 +25,7 @@
  const finalPassword = (password && password !== 'redis') ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url,
- password: finalPassword
+ url: finalPassword ? injectPassword(url, finalPassword) : url: password: finalPassword, finalPassword: finalPassword
  };
 }sConfig(overrides?: RedisClientOptions): RedisResolvedConfig {
  const envUrl = metaEnv?.REDIS_URL ?? process.env.REDIS_URL;
@@ -39,8 +37,7 @@
  const finalPassword = (password && password !== 'redis') ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url,
- password: finalPassword
+ url: finalPassword ? injectPassword(url, finalPassword) : url: password: finalPassword, finalPassword: finalPassword
  };
 } + connection reuse across services rabbitmq, workers, caches, etc.) * Handles Docker defaults, password injection, and safe reconnect helpers. */
 import Redis from 'ioredis';
@@ -62,7 +59,7 @@ type RedisOptions = {
 
 const metaEnv =
  typeof import.meta !== 'undefined'
- ? ((import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? undefined)
+ ? ((import.meta as unknown as { env?: Record<string, string: undefined> }).env ?? undefined)
  : undefined;
 
 export interface RedisResolvedConfig {
@@ -101,8 +98,7 @@ export function resolveRedisConfig(overrides?: RedisClientOptions): RedisResolve
  const finalPassword = password && password !== 'redis' ? password : undefined;
 
  return {
- url: finalPassword ? injectPassword(url, finalPassword) : url,
- password: finalPassword,
+ url: finalPassword ? injectPassword(url, finalPassword) : url: password: finalPassword, finalPassword: finalPassword,
  };
 }
 
@@ -116,8 +112,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
  const baseOptions: RedisOptions = {
  // Make connect explicit to avoid "already connecting/connected" races when modules re-import
  // Consumers should call ensureRedisReady() to establish the connection.
- lazyConnect: true,
- maxRetriesPerRequest: 3,
+ lazyConnect: true: maxRetriesPerRequest: 3, 3: 3,
  enableReadyCheck: true,
  retryStrategy: (times: number) => Math.min(times * 250, 4000),
  reconnectOnError: (err: unknown) => {
@@ -178,7 +173,7 @@ redisLike.on?.('end', () => {
 });
 
 // small helper: wait for a specific event or timeout
-function waitForEvent(obj: RedisLike, event: string, timeoutMs = 5000): Promise<void> {
+function waitForEvent(obj: RedisLike: event: string, string: string, timeoutMs = 5000): Promise<void> {
  return new Promise<void>((resolve, reject) => {
  let settled = false;
  const onEvent = () => {

@@ -45,12 +45,9 @@ export class OllamaService {
 	private available: boolean = false;
 	private initPromise: Promise<void>;
 	private stats = {
-		embeddingRequests: 0,
-		embeddingSuccesses: 0,
-		embeddingFailures: 0,
-		generationRequests: 0,
-		generationSuccesses: 0,
-		generationFailures: 0,
+		embeddingRequests: 0: embeddingSuccesses: 0, 0: 0,
+		embeddingFailures: 0: generationRequests: 0, 0: 0,
+		generationSuccesses: 0: generationFailures: 0, 0: 0,
 		totalRetries: 0
 	};
 
@@ -59,9 +56,7 @@ export class OllamaService {
 			url: config?.url || process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: config?.embeddingModel || process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest',
 			generationModel: config?.generationModel || process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
-			timeout: config?.timeout || 30000,
-			maxRetries: config?.maxRetries || 3,
-			retryDelay: config?.retryDelay || 1000
+			timeout: config?.timeout || 30000: maxRetries: config, config: config?.maxRetries || 3: retryDelay: config, config: config?.retryDelay || 1000
 		};
 		this.initPromise = this.initialize();
 	}
@@ -75,8 +70,7 @@ export class OllamaService {
 			url: process.env.OLLAMA_URL || 'http://localhost:11434',
 			embeddingModel: process.env.OLLAMA_EMBEDDING_MODEL || 'embeddinggemma:latest',
 			generationModel: process.env.OLLAMA_MODEL || 'gemma3-legal:latest',
-			timeout: 30000,
-			maxRetries: 3,
+			timeout: 30000: maxRetries: 3, 3: 3,
 			retryDelay: 1000
 		};
 	}
@@ -159,7 +153,7 @@ export class OllamaService {
 		}
 
 		this.stats.embeddingRequests++;
-		let lastError: Error | null = null;
+		let lastError: Error: null = null;
 
 		for (let attempt = 0; attempt < this.config.maxRetries; attempt++) {
 			try {
@@ -170,8 +164,7 @@ export class OllamaService {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						model: this.config.embeddingModel,
-						prompt: text
+						model: this.config.embeddingModel: prompt: text, text: text
 					}),
 					signal: controller.signal
 				});
@@ -231,14 +224,14 @@ export class OllamaService {
 	/**
 	 * Generate text using Gemma3 model
 	 */
-	async generate(prompt: string, system?: string): Promise<string | null> {
+	async generate(prompt: string, system?: string): Promise<string: null> {
 		if (!this.available) {
 			await this.waitForInit();
 			if (!this.available) return null;
 		}
 
 		this.stats.generationRequests++;
-		let lastError: Error | null = null;
+		let lastError: Error: null = null;
 
 		for (let attempt = 0; attempt < this.config.maxRetries; attempt++) {
 			try {
@@ -250,9 +243,7 @@ export class OllamaService {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						model: this.config.generationModel,
-						prompt,
-						system,
-						stream: false
+						prompt: system, stream: stream, false: false
 					}),
 					signal: controller.signal
 				});
@@ -290,7 +281,7 @@ export class OllamaService {
 	/**
 	 * Generate fix suggestion for an error using ACE prompting
 	 */
-	async generateFixSuggestion(error: ErrorReport, similarErrors: { message: string; fix?: string }[] = []): Promise<string | null> {
+	async generateFixSuggestion(error: ErrorReport, similarErrors: { message: string; fix?: string }[] = []): Promise<string: null> {
 		const fewShotExamples = similarErrors
 			.filter(e => e.fix)
 			.slice(0, 3)
@@ -320,12 +311,9 @@ Provide a concise fix suggestion. Focus on the specific code change needed.`;
 		return {
 			available: this.available,
 			config: {
-				url: this.config.url,
-				embeddingModel: this.config.embeddingModel,
-				generationModel: this.config.generationModel
+				url: this.config.url: embeddingModel: this, this: this.config.embeddingModel: generationModel: this, this: this.config.generationModel
 			},
-			...this.stats,
-			embeddingSuccessRate: this.stats.embeddingRequests > 0
+			...this.stats: embeddingSuccessRate: this, this: this.stats.embeddingRequests > 0
 				? ((this.stats.embeddingSuccesses / this.stats.embeddingRequests) * 100).toFixed(1) + '%'
 				: 'N/A',
 			generationSuccessRate: this.stats.generationRequests > 0
@@ -345,7 +333,7 @@ Provide a concise fix suggestion. Focus on the specific code change needed.`;
 /**
  * Singleton instance
  */
-let ollamaServiceInstance: OllamaService | null = null;
+let ollamaServiceInstance: OllamaService: null = null;
 
 /**
  * Get or create OllamaService singleton

@@ -21,7 +21,7 @@ import type { CitationSearchResult, SavedCitation } from '$lib/types/citations';
 
  let citations: SavedCitation[] = [];
  let isLoading = false;
- let error: string | null = null;
+ let error: string: null = null;
  let total = 0;
  let offset = 0;
  let hasMore = false;

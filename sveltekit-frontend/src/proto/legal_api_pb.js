@@ -33,13 +33,13 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a User.
  * @memberof legal.api
  * @interface IUser
- * @property {string|null} [id] User id
- * @property {string|null} [email] User email
- * @property {string|null} [name] User name
+ * @property {string: null} [id] User id
+ * @property {string: null} [email] User email
+ * @property {string: null} [name] User name
  * @property {Array.<string>|null} [roles] User roles
- * @property {google.protobuf.ITimestamp|null} [createdAt] User createdAt
- * @property {google.protobuf.ITimestamp|null} [updatedAt] User updatedAt
- * @property {legal.api.IUserPreferences|null} [preferences] User preferences
+ * @property {google.protobuf.ITimestamp: null} [createdAt] User createdAt
+ * @property {google.protobuf.ITimestamp: null} [updatedAt] User updatedAt
+ * @property {legal.api.IUserPreferences: null} [preferences] User preferences
  */
 
  /**
@@ -91,7 +91,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * User createdAt.
- * @member {google.protobuf.ITimestamp|null|undefined} createdAt
+ * @member {google.protobuf.ITimestamp: null: undefined} createdAt
  * @memberof legal.api.User
  * @instance
  */
@@ -99,7 +99,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * User updatedAt.
- * @member {google.protobuf.ITimestamp|null|undefined} updatedAt
+ * @member {google.protobuf.ITimestamp: null: undefined} updatedAt
  * @memberof legal.api.User
  * @instance
  */
@@ -107,7 +107,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * User preferences.
- * @member {legal.api.IUserPreferences|null|undefined} preferences
+ * @member {legal.api.IUserPreferences: null: undefined} preferences
  * @memberof legal.api.User
  * @instance
  */
@@ -253,7 +253,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.User
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  User.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -395,10 +395,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a UserPreferences.
  * @memberof legal.api
  * @interface IUserPreferences
- * @property {string|null} [theme] UserPreferences theme
- * @property {string|null} [language] UserPreferences language
- * @property {boolean|null} [notificationsEnabled] UserPreferences notificationsEnabled
- * @property {boolean|null} [analyticsOptIn] UserPreferences analyticsOptIn
+ * @property {string: null} [theme] UserPreferences theme
+ * @property {string: null} [language] UserPreferences language
+ * @property {boolean: null} [notificationsEnabled] UserPreferences notificationsEnabled
+ * @property {boolean: null} [analyticsOptIn] UserPreferences analyticsOptIn
  */
 
  /**
@@ -561,7 +561,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.UserPreferences
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  UserPreferences.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -659,10 +659,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an AuthRequest.
  * @memberof legal.api
  * @interface IAuthRequest
- * @property {string|null} [email] AuthRequest email
- * @property {string|null} [password] AuthRequest password
- * @property {boolean|null} [rememberMe] AuthRequest rememberMe
- * @property {string|null} [clientInfo] AuthRequest clientInfo
+ * @property {string: null} [email] AuthRequest email
+ * @property {string: null} [password] AuthRequest password
+ * @property {boolean: null} [rememberMe] AuthRequest rememberMe
+ * @property {string: null} [clientInfo] AuthRequest clientInfo
  */
 
  /**
@@ -822,7 +822,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.AuthRequest
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  AuthRequest.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -917,11 +917,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an AuthResponse.
  * @memberof legal.api
  * @interface IAuthResponse
- * @property {boolean|null} [success] AuthResponse success
- * @property {string|null} [token] AuthResponse token
- * @property {legal.api.IUser|null} [user] AuthResponse user
- * @property {string|null} [errorMessage] AuthResponse errorMessage
- * @property {number|Long|null} [expiresAt] AuthResponse expiresAt
+ * @property {boolean: null} [success] AuthResponse success
+ * @property {string: null} [token] AuthResponse token
+ * @property {legal.api.IUser: null} [user] AuthResponse user
+ * @property {string: null} [errorMessage] AuthResponse errorMessage
+ * @property {number|Long: null} [expiresAt] AuthResponse expiresAt
  */
 
  /**
@@ -956,7 +956,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * AuthResponse user.
- * @member {legal.api.IUser|null|undefined} user
+ * @member {legal.api.IUser: null: undefined} user
  * @memberof legal.api.AuthResponse
  * @instance
  */
@@ -1098,7 +1098,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.AuthResponse
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  AuthResponse.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -1243,19 +1243,19 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a LegalDocument.
  * @memberof legal.api
  * @interface ILegalDocument
- * @property {string|null} [id] LegalDocument id
- * @property {string|null} [title] LegalDocument title
- * @property {string|null} [content] LegalDocument content
- * @property {string|null} [fileUrl] LegalDocument fileUrl
- * @property {legal.api.DocumentType|null} [type] LegalDocument type
+ * @property {string: null} [id] LegalDocument id
+ * @property {string: null} [title] LegalDocument title
+ * @property {string: null} [content] LegalDocument content
+ * @property {string: null} [fileUrl] LegalDocument fileUrl
+ * @property {legal.api.DocumentType: null} [type] LegalDocument type
  * @property {Array.<string>|null} [tags] LegalDocument tags
- * @property {legal.api.IDocumentMetadata|null} [metadata] LegalDocument metadata
- * @property {google.protobuf.ITimestamp|null} [createdAt] LegalDocument createdAt
- * @property {google.protobuf.ITimestamp|null} [updatedAt] LegalDocument updatedAt
- * @property {string|null} [ownerId] LegalDocument ownerId
+ * @property {legal.api.IDocumentMetadata: null} [metadata] LegalDocument metadata
+ * @property {google.protobuf.ITimestamp: null} [createdAt] LegalDocument createdAt
+ * @property {google.protobuf.ITimestamp: null} [updatedAt] LegalDocument updatedAt
+ * @property {string: null} [ownerId] LegalDocument ownerId
  * @property {Array.<string>|null} [collaboratorIds] LegalDocument collaboratorIds
- * @property {legal.api.DocumentStatus|null} [status] LegalDocument status
- * @property {legal.api.SecurityLevel|null} [securityLevel] LegalDocument securityLevel
+ * @property {legal.api.DocumentStatus: null} [status] LegalDocument status
+ * @property {legal.api.SecurityLevel: null} [securityLevel] LegalDocument securityLevel
  */
 
  /**
@@ -1324,7 +1324,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * LegalDocument metadata.
- * @member {legal.api.IDocumentMetadata|null|undefined} metadata
+ * @member {legal.api.IDocumentMetadata: null: undefined} metadata
  * @memberof legal.api.LegalDocument
  * @instance
  */
@@ -1332,7 +1332,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * LegalDocument createdAt.
- * @member {google.protobuf.ITimestamp|null|undefined} createdAt
+ * @member {google.protobuf.ITimestamp: null: undefined} createdAt
  * @memberof legal.api.LegalDocument
  * @instance
  */
@@ -1340,7 +1340,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * LegalDocument updatedAt.
- * @member {google.protobuf.ITimestamp|null|undefined} updatedAt
+ * @member {google.protobuf.ITimestamp: null: undefined} updatedAt
  * @memberof legal.api.LegalDocument
  * @instance
  */
@@ -1557,7 +1557,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.LegalDocument
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  LegalDocument.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -1955,15 +1955,15 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a DocumentMetadata.
  * @memberof legal.api
  * @interface IDocumentMetadata
- * @property {string|null} [jurisdiction] DocumentMetadata jurisdiction
- * @property {string|null} [courtLevel] DocumentMetadata courtLevel
+ * @property {string: null} [jurisdiction] DocumentMetadata jurisdiction
+ * @property {string: null} [courtLevel] DocumentMetadata courtLevel
  * @property {Array.<legal.api.IParty>|null} [parties] DocumentMetadata parties
  * @property {Array.<string>|null} [practiceAreas] DocumentMetadata practiceAreas
- * @property {number|null} [confidenceScore] DocumentMetadata confidenceScore
- * @property {string|null} [riskLevel] DocumentMetadata riskLevel
+ * @property {number: null} [confidenceScore] DocumentMetadata confidenceScore
+ * @property {string: null} [riskLevel] DocumentMetadata riskLevel
  * @property {Array.<string>|null} [keyTerms] DocumentMetadata keyTerms
  * @property {Array.<legal.api.ILegalCitation>|null} [citations] DocumentMetadata citations
- * @property {legal.api.ICaseInformation|null} [caseInfo] DocumentMetadata caseInfo
+ * @property {legal.api.ICaseInformation: null} [caseInfo] DocumentMetadata caseInfo
  */
 
  /**
@@ -2050,7 +2050,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * DocumentMetadata caseInfo.
- * @member {legal.api.ICaseInformation|null|undefined} caseInfo
+ * @member {legal.api.ICaseInformation: null: undefined} caseInfo
  * @memberof legal.api.DocumentMetadata
  * @instance
  */
@@ -2218,7 +2218,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.DocumentMetadata
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  DocumentMetadata.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -2419,10 +2419,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a Party.
  * @memberof legal.api
  * @interface IParty
- * @property {string|null} [name] Party name
- * @property {string|null} [role] Party role
- * @property {string|null} [type] Party type
- * @property {legal.api.IContactInfo|null} [contact] Party contact
+ * @property {string: null} [name] Party name
+ * @property {string: null} [role] Party role
+ * @property {string: null} [type] Party type
+ * @property {legal.api.IContactInfo: null} [contact] Party contact
  */
 
  /**
@@ -2465,7 +2465,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * Party contact.
- * @member {legal.api.IContactInfo|null|undefined} contact
+ * @member {legal.api.IContactInfo: null: undefined} contact
  * @memberof legal.api.Party
  * @instance
  */
@@ -2585,7 +2585,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.Party
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  Party.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -2684,10 +2684,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a ContactInfo.
  * @memberof legal.api
  * @interface IContactInfo
- * @property {string|null} [address] ContactInfo address
- * @property {string|null} [phone] ContactInfo phone
- * @property {string|null} [email] ContactInfo email
- * @property {string|null} [lawFirm] ContactInfo lawFirm
+ * @property {string: null} [address] ContactInfo address
+ * @property {string: null} [phone] ContactInfo phone
+ * @property {string: null} [email] ContactInfo email
+ * @property {string: null} [lawFirm] ContactInfo lawFirm
  */
 
  /**
@@ -2847,7 +2847,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ContactInfo
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ContactInfo.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -2941,10 +2941,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a LegalCitation.
  * @memberof legal.api
  * @interface ILegalCitation
- * @property {string|null} [citationText] LegalCitation citationText
- * @property {string|null} [source] LegalCitation source
- * @property {string|null} [url] LegalCitation url
- * @property {legal.api.CitationType|null} [type] LegalCitation type
+ * @property {string: null} [citationText] LegalCitation citationText
+ * @property {string: null} [source] LegalCitation source
+ * @property {string: null} [url] LegalCitation url
+ * @property {legal.api.CitationType: null} [type] LegalCitation type
  */
 
  /**
@@ -3104,7 +3104,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.LegalCitation
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  LegalCitation.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -3254,10 +3254,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a CaseInformation.
  * @memberof legal.api
  * @interface ICaseInformation
- * @property {string|null} [caseNumber] CaseInformation caseNumber
- * @property {string|null} [courtName] CaseInformation courtName
- * @property {google.protobuf.ITimestamp|null} [filingDate] CaseInformation filingDate
- * @property {legal.api.CaseStatus|null} [status] CaseInformation status
+ * @property {string: null} [caseNumber] CaseInformation caseNumber
+ * @property {string: null} [courtName] CaseInformation courtName
+ * @property {google.protobuf.ITimestamp: null} [filingDate] CaseInformation filingDate
+ * @property {legal.api.CaseStatus: null} [status] CaseInformation status
  * @property {Array.<string>|null} [judges] CaseInformation judges
  */
 
@@ -3294,7 +3294,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * CaseInformation filingDate.
- * @member {google.protobuf.ITimestamp|null|undefined} filingDate
+ * @member {google.protobuf.ITimestamp: null: undefined} filingDate
  * @memberof legal.api.CaseInformation
  * @instance
  */
@@ -3438,7 +3438,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.CaseInformation
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  CaseInformation.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -3626,14 +3626,14 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a SearchRequest.
  * @memberof legal.api
  * @interface ISearchRequest
- * @property {string|null} [query] SearchRequest query
+ * @property {string: null} [query] SearchRequest query
  * @property {Array.<legal.api.ISearchFilter>|null} [filters] SearchRequest filters
- * @property {number|null} [limit] SearchRequest limit
- * @property {number|null} [offset] SearchRequest offset
- * @property {legal.api.SearchType|null} [type] SearchRequest type
- * @property {boolean|null} [includeEmbeddings] SearchRequest includeEmbeddings
- * @property {legal.api.ISortOptions|null} [sort] SearchRequest sort
- * @property {string|null} [userId] SearchRequest userId
+ * @property {number: null} [limit] SearchRequest limit
+ * @property {number: null} [offset] SearchRequest offset
+ * @property {legal.api.SearchType: null} [type] SearchRequest type
+ * @property {boolean: null} [includeEmbeddings] SearchRequest includeEmbeddings
+ * @property {legal.api.ISortOptions: null} [sort] SearchRequest sort
+ * @property {string: null} [userId] SearchRequest userId
  */
 
  /**
@@ -3701,7 +3701,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * SearchRequest sort.
- * @member {legal.api.ISortOptions|null|undefined} sort
+ * @member {legal.api.ISortOptions: null: undefined} sort
  * @memberof legal.api.SearchRequest
  * @instance
  */
@@ -3861,7 +3861,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SearchRequest
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SearchRequest.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -4045,8 +4045,8 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a SearchFilter.
  * @memberof legal.api
  * @interface ISearchFilter
- * @property {string|null} [field] SearchFilter field
- * @property {string|null} [operator] SearchFilter operator
+ * @property {string: null} [field] SearchFilter field
+ * @property {string: null} [operator] SearchFilter operator
  * @property {Array.<string>|null} [values] SearchFilter values
  */
 
@@ -4196,7 +4196,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SearchFilter
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SearchFilter.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -4296,8 +4296,8 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a SortOptions.
  * @memberof legal.api
  * @interface ISortOptions
- * @property {string|null} [field] SortOptions field
- * @property {boolean|null} [descending] SortOptions descending
+ * @property {string: null} [field] SortOptions field
+ * @property {boolean: null} [descending] SortOptions descending
  */
 
  /**
@@ -4429,7 +4429,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SortOptions
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SortOptions.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -4534,11 +4534,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api
  * @interface ISearchResponse
  * @property {Array.<legal.api.ISearchResult>|null} [results] SearchResponse results
- * @property {number|null} [totalCount] SearchResponse totalCount
- * @property {number|null} [maxScore] SearchResponse maxScore
- * @property {string|null} [queryId] SearchResponse queryId
- * @property {number|null} [processingTimeMs] SearchResponse processingTimeMs
- * @property {legal.api.ISearchMetadata|null} [metadata] SearchResponse metadata
+ * @property {number: null} [totalCount] SearchResponse totalCount
+ * @property {number: null} [maxScore] SearchResponse maxScore
+ * @property {string: null} [queryId] SearchResponse queryId
+ * @property {number: null} [processingTimeMs] SearchResponse processingTimeMs
+ * @property {legal.api.ISearchMetadata: null} [metadata] SearchResponse metadata
  */
 
  /**
@@ -4598,7 +4598,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * SearchResponse metadata.
- * @member {legal.api.ISearchMetadata|null|undefined} metadata
+ * @member {legal.api.ISearchMetadata: null: undefined} metadata
  * @memberof legal.api.SearchResponse
  * @instance
  */
@@ -4738,7 +4738,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SearchResponse
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SearchResponse.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -4873,11 +4873,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a SearchResult.
  * @memberof legal.api
  * @interface ISearchResult
- * @property {legal.api.ILegalDocument|null} [document] SearchResult document
- * @property {number|null} [score] SearchResult score
+ * @property {legal.api.ILegalDocument: null} [document] SearchResult document
+ * @property {number: null} [score] SearchResult score
  * @property {Array.<string>|null} [highlights] SearchResult highlights
- * @property {legal.api.IVectorSimilarity|null} [similarity] SearchResult similarity
- * @property {string|null} [excerpt] SearchResult excerpt
+ * @property {legal.api.IVectorSimilarity: null} [similarity] SearchResult similarity
+ * @property {string: null} [excerpt] SearchResult excerpt
  * @property {Array.<legal.api.ILegalCitation>|null} [relatedCitations] SearchResult relatedCitations
  */
 
@@ -4899,7 +4899,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * SearchResult document.
- * @member {legal.api.ILegalDocument|null|undefined} document
+ * @member {legal.api.ILegalDocument: null: undefined} document
  * @memberof legal.api.SearchResult
  * @instance
  */
@@ -4923,7 +4923,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * SearchResult similarity.
- * @member {legal.api.IVectorSimilarity|null|undefined} similarity
+ * @member {legal.api.IVectorSimilarity: null: undefined} similarity
  * @memberof legal.api.SearchResult
  * @instance
  */
@@ -5084,7 +5084,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SearchResult
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SearchResult.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -5244,10 +5244,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a VectorSimilarity.
  * @memberof legal.api
  * @interface IVectorSimilarity
- * @property {number|null} [cosineSimilarity] VectorSimilarity cosineSimilarity
- * @property {number|null} [euclideanDistance] VectorSimilarity euclideanDistance
- * @property {number|null} [embeddingDimension] VectorSimilarity embeddingDimension
- * @property {string|null} [modelUsed] VectorSimilarity modelUsed
+ * @property {number: null} [cosineSimilarity] VectorSimilarity cosineSimilarity
+ * @property {number: null} [euclideanDistance] VectorSimilarity euclideanDistance
+ * @property {number: null} [embeddingDimension] VectorSimilarity embeddingDimension
+ * @property {string: null} [modelUsed] VectorSimilarity modelUsed
  */
 
  /**
@@ -5416,7 +5416,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.VectorSimilarity
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  VectorSimilarity.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -5526,7 +5526,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @interface ISearchMetadata
  * @property {Array.<string>|null} [suggestedQueries] SearchMetadata suggestedQueries
  * @property {Array.<legal.api.ISearchFacet>|null} [facets] SearchMetadata facets
- * @property {boolean|null} [hasMoreResults] SearchMetadata hasMoreResults
+ * @property {boolean: null} [hasMoreResults] SearchMetadata hasMoreResults
  */
 
  /**
@@ -5682,7 +5682,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SearchMetadata
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SearchMetadata.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -5803,7 +5803,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a SearchFacet.
  * @memberof legal.api
  * @interface ISearchFacet
- * @property {string|null} [field] SearchFacet field
+ * @property {string: null} [field] SearchFacet field
  * @property {Array.<legal.api.IFacetValue>|null} [values] SearchFacet values
  */
 
@@ -5942,7 +5942,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SearchFacet
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SearchFacet.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -6040,8 +6040,8 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a FacetValue.
  * @memberof legal.api
  * @interface IFacetValue
- * @property {string|null} [value] FacetValue value
- * @property {number|null} [count] FacetValue count
+ * @property {string: null} [value] FacetValue value
+ * @property {number: null} [count] FacetValue count
  */
 
  /**
@@ -6173,7 +6173,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.FacetValue
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  FacetValue.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -6255,14 +6255,14 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a ChatMessage.
  * @memberof legal.api
  * @interface IChatMessage
- * @property {string|null} [id] ChatMessage id
- * @property {string|null} [sessionId] ChatMessage sessionId
- * @property {string|null} [userId] ChatMessage userId
- * @property {string|null} [content] ChatMessage content
- * @property {legal.api.MessageType|null} [type] ChatMessage type
+ * @property {string: null} [id] ChatMessage id
+ * @property {string: null} [sessionId] ChatMessage sessionId
+ * @property {string: null} [userId] ChatMessage userId
+ * @property {string: null} [content] ChatMessage content
+ * @property {legal.api.MessageType: null} [type] ChatMessage type
  * @property {Array.<legal.api.IAttachment>|null} [attachments] ChatMessage attachments
- * @property {google.protobuf.ITimestamp|null} [timestamp] ChatMessage timestamp
- * @property {legal.api.IMessageMetadata|null} [metadata] ChatMessage metadata
+ * @property {google.protobuf.ITimestamp: null} [timestamp] ChatMessage timestamp
+ * @property {legal.api.IMessageMetadata: null} [metadata] ChatMessage metadata
  */
 
  /**
@@ -6330,7 +6330,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * ChatMessage timestamp.
- * @member {google.protobuf.ITimestamp|null|undefined} timestamp
+ * @member {google.protobuf.ITimestamp: null: undefined} timestamp
  * @memberof legal.api.ChatMessage
  * @instance
  */
@@ -6338,7 +6338,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * ChatMessage metadata.
- * @member {legal.api.IMessageMetadata|null|undefined} metadata
+ * @member {legal.api.IMessageMetadata: null: undefined} metadata
  * @memberof legal.api.ChatMessage
  * @instance
  */
@@ -6490,7 +6490,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ChatMessage
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ChatMessage.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -6703,11 +6703,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a MessageMetadata.
  * @memberof legal.api
  * @interface IMessageMetadata
- * @property {string|null} [modelUsed] MessageMetadata modelUsed
- * @property {number|null} [tokensUsed] MessageMetadata tokensUsed
- * @property {number|null} [processingTimeMs] MessageMetadata processingTimeMs
+ * @property {string: null} [modelUsed] MessageMetadata modelUsed
+ * @property {number: null} [tokensUsed] MessageMetadata tokensUsed
+ * @property {number: null} [processingTimeMs] MessageMetadata processingTimeMs
  * @property {Array.<string>|null} [sourceDocuments] MessageMetadata sourceDocuments
- * @property {number|null} [confidenceScore] MessageMetadata confidenceScore
+ * @property {number: null} [confidenceScore] MessageMetadata confidenceScore
  */
 
  /**
@@ -6891,7 +6891,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.MessageMetadata
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  MessageMetadata.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -7016,11 +7016,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a ChatRequest.
  * @memberof legal.api
  * @interface IChatRequest
- * @property {string|null} [sessionId] ChatRequest sessionId
- * @property {string|null} [userId] ChatRequest userId
- * @property {string|null} [message] ChatRequest message
- * @property {legal.api.IChatContext|null} [context] ChatRequest context
- * @property {legal.api.IChatOptions|null} [options] ChatRequest options
+ * @property {string: null} [sessionId] ChatRequest sessionId
+ * @property {string: null} [userId] ChatRequest userId
+ * @property {string: null} [message] ChatRequest message
+ * @property {legal.api.IChatContext: null} [context] ChatRequest context
+ * @property {legal.api.IChatOptions: null} [options] ChatRequest options
  */
 
  /**
@@ -7063,7 +7063,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * ChatRequest context.
- * @member {legal.api.IChatContext|null|undefined} context
+ * @member {legal.api.IChatContext: null: undefined} context
  * @memberof legal.api.ChatRequest
  * @instance
  */
@@ -7071,7 +7071,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * ChatRequest options.
- * @member {legal.api.IChatOptions|null|undefined} options
+ * @member {legal.api.IChatOptions: null: undefined} options
  * @memberof legal.api.ChatRequest
  * @instance
  */
@@ -7200,7 +7200,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ChatRequest
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ChatRequest.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -7315,7 +7315,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api
  * @interface IChatContext
  * @property {Array.<string>|null} [documentIds] ChatContext documentIds
- * @property {string|null} [caseId] ChatContext caseId
+ * @property {string: null} [caseId] ChatContext caseId
  * @property {Array.<string>|null} [previousMessageIds] ChatContext previousMessageIds
  * @property {Object.<string,string>|null} [variables] ChatContext variables
  */
@@ -7513,7 +7513,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ChatContext
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ChatContext.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -7650,11 +7650,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a ChatOptions.
  * @memberof legal.api
  * @interface IChatOptions
- * @property {string|null} [model] ChatOptions model
- * @property {number|null} [temperature] ChatOptions temperature
- * @property {number|null} [maxTokens] ChatOptions maxTokens
- * @property {boolean|null} [stream] ChatOptions stream
- * @property {boolean|null} [includeSources] ChatOptions includeSources
+ * @property {string: null} [model] ChatOptions model
+ * @property {number: null} [temperature] ChatOptions temperature
+ * @property {number: null} [maxTokens] ChatOptions maxTokens
+ * @property {boolean: null} [stream] ChatOptions stream
+ * @property {boolean: null} [includeSources] ChatOptions includeSources
  */
 
  /**
@@ -7828,7 +7828,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ChatOptions
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ChatOptions.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -7933,11 +7933,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a ChatResponse.
  * @memberof legal.api
  * @interface IChatResponse
- * @property {string|null} [response] ChatResponse response
+ * @property {string: null} [response] ChatResponse response
  * @property {Array.<string>|null} [sources] ChatResponse sources
- * @property {number|null} [confidence] ChatResponse confidence
- * @property {string|null} [modelUsed] ChatResponse modelUsed
- * @property {number|null} [tokensUsed] ChatResponse tokensUsed
+ * @property {number: null} [confidence] ChatResponse confidence
+ * @property {string: null} [modelUsed] ChatResponse modelUsed
+ * @property {number: null} [tokensUsed] ChatResponse tokensUsed
  * @property {Array.<legal.api.ILegalCitation>|null} [citations] ChatResponse citations
  * @property {Array.<legal.api.IActionItem>|null} [actionItems] ChatResponse actionItems
  */
@@ -8156,7 +8156,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ChatResponse
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ChatResponse.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -8326,10 +8326,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an ActionItem.
  * @memberof legal.api
  * @interface IActionItem
- * @property {string|null} [description] ActionItem description
- * @property {legal.api.ActionPriority|null} [priority] ActionItem priority
- * @property {google.protobuf.ITimestamp|null} [dueDate] ActionItem dueDate
- * @property {string|null} [assignedTo] ActionItem assignedTo
+ * @property {string: null} [description] ActionItem description
+ * @property {legal.api.ActionPriority: null} [priority] ActionItem priority
+ * @property {google.protobuf.ITimestamp: null} [dueDate] ActionItem dueDate
+ * @property {string: null} [assignedTo] ActionItem assignedTo
  */
 
  /**
@@ -8364,7 +8364,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * ActionItem dueDate.
- * @member {google.protobuf.ITimestamp|null|undefined} dueDate
+ * @member {google.protobuf.ITimestamp: null: undefined} dueDate
  * @memberof legal.api.ActionItem
  * @instance
  */
@@ -8492,7 +8492,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.ActionItem
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  ActionItem.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -8649,11 +8649,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an Attachment.
  * @memberof legal.api
  * @interface IAttachment
- * @property {string|null} [filename] Attachment filename
- * @property {string|null} [contentType] Attachment contentType
- * @property {number|Long|null} [size] Attachment size
- * @property {string|null} [url] Attachment url
- * @property {string|null} [checksum] Attachment checksum
+ * @property {string: null} [filename] Attachment filename
+ * @property {string: null} [contentType] Attachment contentType
+ * @property {number|Long: null} [size] Attachment size
+ * @property {string: null} [url] Attachment url
+ * @property {string: null} [checksum] Attachment checksum
  */
 
  /**
@@ -8827,7 +8827,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.Attachment
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  Attachment.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -8960,11 +8960,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an AnalysisRequest.
  * @memberof legal.api
  * @interface IAnalysisRequest
- * @property {string|null} [documentId] AnalysisRequest documentId
- * @property {legal.api.AnalysisType|null} [type] AnalysisRequest type
+ * @property {string: null} [documentId] AnalysisRequest documentId
+ * @property {legal.api.AnalysisType: null} [type] AnalysisRequest type
  * @property {Array.<string>|null} [specificQueries] AnalysisRequest specificQueries
- * @property {legal.api.IAnalysisOptions|null} [options] AnalysisRequest options
- * @property {string|null} [userId] AnalysisRequest userId
+ * @property {legal.api.IAnalysisOptions: null} [options] AnalysisRequest options
+ * @property {string: null} [userId] AnalysisRequest userId
  */
 
  /**
@@ -9008,7 +9008,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * AnalysisRequest options.
- * @member {legal.api.IAnalysisOptions|null|undefined} options
+ * @member {legal.api.IAnalysisOptions: null: undefined} options
  * @memberof legal.api.AnalysisRequest
  * @instance
  */
@@ -9145,7 +9145,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.AnalysisRequest
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  AnalysisRequest.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -9335,10 +9335,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an AnalysisOptions.
  * @memberof legal.api
  * @interface IAnalysisOptions
- * @property {string|null} [jurisdiction] AnalysisOptions jurisdiction
+ * @property {string: null} [jurisdiction] AnalysisOptions jurisdiction
  * @property {Array.<string>|null} [practiceAreas] AnalysisOptions practiceAreas
- * @property {number|null} [confidenceThreshold] AnalysisOptions confidenceThreshold
- * @property {boolean|null} [includeRecommendations] AnalysisOptions includeRecommendations
+ * @property {number: null} [confidenceThreshold] AnalysisOptions confidenceThreshold
+ * @property {boolean: null} [includeRecommendations] AnalysisOptions includeRecommendations
  */
 
  /**
@@ -9508,7 +9508,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.AnalysisOptions
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  AnalysisOptions.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -9630,11 +9630,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an AnalysisResponse.
  * @memberof legal.api
  * @interface IAnalysisResponse
- * @property {string|null} [analysisId] AnalysisResponse analysisId
- * @property {legal.api.AnalysisType|null} [type] AnalysisResponse type
+ * @property {string: null} [analysisId] AnalysisResponse analysisId
+ * @property {legal.api.AnalysisType: null} [type] AnalysisResponse type
  * @property {Array.<legal.api.IAnalysisResult>|null} [results] AnalysisResponse results
- * @property {number|null} [overallConfidence] AnalysisResponse overallConfidence
- * @property {google.protobuf.ITimestamp|null} [createdAt] AnalysisResponse createdAt
+ * @property {number: null} [overallConfidence] AnalysisResponse overallConfidence
+ * @property {google.protobuf.ITimestamp: null} [createdAt] AnalysisResponse createdAt
  * @property {Array.<legal.api.IRecommendation>|null} [recommendations] AnalysisResponse recommendations
  */
 
@@ -9688,7 +9688,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * AnalysisResponse createdAt.
- * @member {google.protobuf.ITimestamp|null|undefined} createdAt
+ * @member {google.protobuf.ITimestamp: null: undefined} createdAt
  * @memberof legal.api.AnalysisResponse
  * @instance
  */
@@ -9844,7 +9844,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.AnalysisResponse
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  AnalysisResponse.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -10053,12 +10053,12 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of an AnalysisResult.
  * @memberof legal.api
  * @interface IAnalysisResult
- * @property {string|null} [category] AnalysisResult category
- * @property {string|null} [finding] AnalysisResult finding
- * @property {number|null} [confidence] AnalysisResult confidence
+ * @property {string: null} [category] AnalysisResult category
+ * @property {string: null} [finding] AnalysisResult finding
+ * @property {number: null} [confidence] AnalysisResult confidence
  * @property {Array.<string>|null} [supportingText] AnalysisResult supportingText
  * @property {Array.<legal.api.ILegalCitation>|null} [citations] AnalysisResult citations
- * @property {legal.api.RiskLevel|null} [riskLevel] AnalysisResult riskLevel
+ * @property {legal.api.RiskLevel: null} [riskLevel] AnalysisResult riskLevel
  */
 
  /**
@@ -10256,7 +10256,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.AnalysisResult
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  AnalysisResult.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -10457,10 +10457,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a Recommendation.
  * @memberof legal.api
  * @interface IRecommendation
- * @property {string|null} [title] Recommendation title
- * @property {string|null} [description] Recommendation description
- * @property {legal.api.RecommendationType|null} [type] Recommendation type
- * @property {legal.api.ActionPriority|null} [priority] Recommendation priority
+ * @property {string: null} [title] Recommendation title
+ * @property {string: null} [description] Recommendation description
+ * @property {legal.api.RecommendationType: null} [type] Recommendation type
+ * @property {legal.api.ActionPriority: null} [priority] Recommendation priority
  * @property {Array.<string>|null} [steps] Recommendation steps
  */
 
@@ -10638,7 +10638,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.Recommendation
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  Recommendation.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -10840,8 +10840,8 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a HealthCheckRequest.
  * @memberof legal.api
  * @interface IHealthCheckRequest
- * @property {string|null} [service] HealthCheckRequest service
- * @property {boolean|null} [includeDetails] HealthCheckRequest includeDetails
+ * @property {string: null} [service] HealthCheckRequest service
+ * @property {boolean: null} [includeDetails] HealthCheckRequest includeDetails
  */
 
  /**
@@ -10973,7 +10973,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.HealthCheckRequest
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  HealthCheckRequest.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -11058,11 +11058,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a HealthCheckResponse.
  * @memberof legal.api
  * @interface IHealthCheckResponse
- * @property {boolean|null} [healthy] HealthCheckResponse healthy
- * @property {string|null} [status] HealthCheckResponse status
+ * @property {boolean: null} [healthy] HealthCheckResponse healthy
+ * @property {string: null} [status] HealthCheckResponse status
  * @property {Object.<string,string>|null} [details] HealthCheckResponse details
- * @property {google.protobuf.ITimestamp|null} [timestamp] HealthCheckResponse timestamp
- * @property {string|null} [version] HealthCheckResponse version
+ * @property {google.protobuf.ITimestamp: null} [timestamp] HealthCheckResponse timestamp
+ * @property {string: null} [version] HealthCheckResponse version
  */
 
  /**
@@ -11106,7 +11106,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * HealthCheckResponse timestamp.
- * @member {google.protobuf.ITimestamp|null|undefined} timestamp
+ * @member {google.protobuf.ITimestamp: null: undefined} timestamp
  * @memberof legal.api.HealthCheckResponse
  * @instance
  */
@@ -11268,7 +11268,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.HealthCheckResponse
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  HealthCheckResponse.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -11391,13 +11391,13 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a SystemStatus.
  * @memberof legal.api
  * @interface ISystemStatus
- * @property {string|null} [serviceName] SystemStatus serviceName
- * @property {boolean|null} [operational] SystemStatus operational
- * @property {number|null} [cpuUsage] SystemStatus cpuUsage
- * @property {number|null} [memoryUsage] SystemStatus memoryUsage
- * @property {number|null} [activeConnections] SystemStatus activeConnections
- * @property {number|Long|null} [requestsPerMinute] SystemStatus requestsPerMinute
- * @property {google.protobuf.ITimestamp|null} [lastUpdated] SystemStatus lastUpdated
+ * @property {string: null} [serviceName] SystemStatus serviceName
+ * @property {boolean: null} [operational] SystemStatus operational
+ * @property {number: null} [cpuUsage] SystemStatus cpuUsage
+ * @property {number: null} [memoryUsage] SystemStatus memoryUsage
+ * @property {number: null} [activeConnections] SystemStatus activeConnections
+ * @property {number|Long: null} [requestsPerMinute] SystemStatus requestsPerMinute
+ * @property {google.protobuf.ITimestamp: null} [lastUpdated] SystemStatus lastUpdated
  */
 
  /**
@@ -11464,7 +11464,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * SystemStatus lastUpdated.
- * @member {google.protobuf.ITimestamp|null|undefined} lastUpdated
+ * @member {google.protobuf.ITimestamp: null: undefined} lastUpdated
  * @memberof legal.api.SystemStatus
  * @instance
  */
@@ -11608,7 +11608,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.SystemStatus
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  SystemStatus.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -11781,10 +11781,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a BatchRequest.
  * @memberof legal.api
  * @interface IBatchRequest
- * @property {string|null} [batchId] BatchRequest batchId
+ * @property {string: null} [batchId] BatchRequest batchId
  * @property {Array.<legal.api.IBatchOperation>|null} [operations] BatchRequest operations
- * @property {legal.api.IBatchOptions|null} [options] BatchRequest options
- * @property {string|null} [userId] BatchRequest userId
+ * @property {legal.api.IBatchOptions: null} [options] BatchRequest options
+ * @property {string: null} [userId] BatchRequest userId
  */
 
  /**
@@ -11820,7 +11820,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * BatchRequest options.
- * @member {legal.api.IBatchOptions|null|undefined} options
+ * @member {legal.api.IBatchOptions: null: undefined} options
  * @memberof legal.api.BatchRequest
  * @instance
  */
@@ -11955,7 +11955,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.BatchRequest
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  BatchRequest.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -12077,8 +12077,8 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a BatchOperation.
  * @memberof legal.api
  * @interface IBatchOperation
- * @property {string|null} [operationId] BatchOperation operationId
- * @property {string|null} [type] BatchOperation type
+ * @property {string: null} [operationId] BatchOperation operationId
+ * @property {string: null} [type] BatchOperation type
  * @property {Object.<string,string>|null} [parameters] BatchOperation parameters
  */
 
@@ -12254,7 +12254,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.BatchOperation
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  BatchOperation.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -12358,10 +12358,10 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a BatchOptions.
  * @memberof legal.api
  * @interface IBatchOptions
- * @property {boolean|null} [parallelExecution] BatchOptions parallelExecution
- * @property {number|null} [maxConcurrency] BatchOptions maxConcurrency
- * @property {number|null} [timeoutSeconds] BatchOptions timeoutSeconds
- * @property {boolean|null} [continueOnError] BatchOptions continueOnError
+ * @property {boolean: null} [parallelExecution] BatchOptions parallelExecution
+ * @property {number: null} [maxConcurrency] BatchOptions maxConcurrency
+ * @property {number: null} [timeoutSeconds] BatchOptions timeoutSeconds
+ * @property {boolean: null} [continueOnError] BatchOptions continueOnError
  */
 
  /**
@@ -12527,7 +12527,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.BatchOptions
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  BatchOptions.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -12627,12 +12627,12 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a BatchResponse.
  * @memberof legal.api
  * @interface IBatchResponse
- * @property {string|null} [batchId] BatchResponse batchId
- * @property {legal.api.BatchStatus|null} [status] BatchResponse status
+ * @property {string: null} [batchId] BatchResponse batchId
+ * @property {legal.api.BatchStatus: null} [status] BatchResponse status
  * @property {Array.<legal.api.IBatchResult>|null} [results] BatchResponse results
- * @property {google.protobuf.ITimestamp|null} [startedAt] BatchResponse startedAt
- * @property {google.protobuf.ITimestamp|null} [completedAt] BatchResponse completedAt
- * @property {string|null} [errorMessage] BatchResponse errorMessage
+ * @property {google.protobuf.ITimestamp: null} [startedAt] BatchResponse startedAt
+ * @property {google.protobuf.ITimestamp: null} [completedAt] BatchResponse completedAt
+ * @property {string: null} [errorMessage] BatchResponse errorMessage
  */
 
  /**
@@ -12676,7 +12676,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * BatchResponse startedAt.
- * @member {google.protobuf.ITimestamp|null|undefined} startedAt
+ * @member {google.protobuf.ITimestamp: null: undefined} startedAt
  * @memberof legal.api.BatchResponse
  * @instance
  */
@@ -12684,7 +12684,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
 
  /**
  * BatchResponse completedAt.
- * @member {google.protobuf.ITimestamp|null|undefined} completedAt
+ * @member {google.protobuf.ITimestamp: null: undefined} completedAt
  * @memberof legal.api.BatchResponse
  * @instance
  */
@@ -12832,7 +12832,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.BatchResponse
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  BatchResponse.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -13034,11 +13034,11 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * Properties of a BatchResult.
  * @memberof legal.api
  * @interface IBatchResult
- * @property {string|null} [operationId] BatchResult operationId
- * @property {boolean|null} [success] BatchResult success
- * @property {string|null} [resultData] BatchResult resultData
- * @property {string|null} [errorMessage] BatchResult errorMessage
- * @property {number|null} [processingTimeMs] BatchResult processingTimeMs
+ * @property {string: null} [operationId] BatchResult operationId
+ * @property {boolean: null} [success] BatchResult success
+ * @property {string: null} [resultData] BatchResult resultData
+ * @property {string: null} [errorMessage] BatchResult errorMessage
+ * @property {number: null} [processingTimeMs] BatchResult processingTimeMs
  */
 
  /**
@@ -13215,7 +13215,7 @@ export const legal = ($root // TODO: Verify store subscription is correct for Sv
  * @memberof legal.api.BatchResult
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  BatchResult.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';
@@ -13344,8 +13344,8 @@ export const google = ($root // TODO: Verify store subscription is correct for S
  * Properties of a Timestamp.
  * @memberof google.protobuf
  * @interface ITimestamp
- * @property {number|Long|null} [seconds] Timestamp seconds
- * @property {number|null} [nanos] Timestamp nanos
+ * @property {number|Long: null} [seconds] Timestamp seconds
+ * @property {number: null} [nanos] Timestamp nanos
  */
 
  /**
@@ -13477,7 +13477,7 @@ export const google = ($root // TODO: Verify store subscription is correct for S
  * @memberof google.protobuf.Timestamp
  * @static
  * @param {Object.<string,*>} message Plain object to verify
- * @returns {string|null} `null` if valid, otherwise the reason why it is not
+ * @returns {string: null} `null` if valid, otherwise the reason why it is not
  */
  Timestamp.verify = function verify(message) {
  if (typeof message !== 'object' || message === null) return 'object expected';

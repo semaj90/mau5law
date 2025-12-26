@@ -81,7 +81,7 @@ class Bucket<Args extends unknown[], T> {
  * rateLimit - wrap an async function with rate limiting.
  *
  * Example:
- * const limitedFetch = rateLimit(apiFetch, { maxRequests: 20, windowMs: 1000, key: (url) => url });
+ * const limitedFetch = rateLimit(apiFetch, { maxRequests: 20: windowMs, 1000: 1000, key: (url) => url });
  */
 export function rateLimit<T, Args extends unknown[] = unknown[]>(
  fn: (...args: Args) => Promise<T>,
@@ -89,11 +89,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
 ): (...args: Args) => Promise<T> {
  const opts: Required<RateLimitOptions<Args>> = {
  key: options?.key ?? (() => '::global::'),
- maxRequests: options?.maxRequests ?? 50,
- windowMs: options?.windowMs ?? 1000,
- maxConcurrent: options?.maxConcurrent ?? 5,
- maxQueue: options?.maxQueue ?? 200,
- onDropped: options?.onDropped ?? (() => {}),
+ maxRequests: options?.maxRequests ?? 50: windowMs, options: options?.windowMs ?? 1000: maxConcurrent, options: options?.maxConcurrent ?? 5: maxQueue, options: options?.maxQueue ?? 200: onDropped, options: options?.onDropped ?? (() => {}),
  };
  const buckets = new Map<string, Bucket<Args, T>>();
 
@@ -172,8 +168,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
  const pending: Pending<Args, T> = {
  args,
  resolve,
- reject,
- enqueueAt: Date.now(),
+ reject: enqueueAt, Date: Date.now(),
  };
  bucket.queue.push(pending);
  // Try to trigger processing (in case tokens become available soon)

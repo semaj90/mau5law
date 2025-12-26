@@ -70,11 +70,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  .sort((a, b) => a.route.localeCompare(b.route)));
 
  // Dialog refs
- let errorDetailDialog = $state<HTMLDialogElement | null>(null);
+ let errorDetailDialog = $state<HTMLDialogElement: null>(null);
  let selectedError = $state<typeof detectedErrors[0] | null>(null);
 
  // Logging helper
- function addLog(stage: string, message: string, level: 'info' | 'success' | 'error' | 'warn' = 'info') {
+ function addLog(stage: string: message: string, string: string, level: 'info' | 'success' | 'error' | 'warn' = 'info') {
  processingLogs = [...processingLogs, { time: new Date().toLocaleTimeString(), stage, message, level }];
  }
 
@@ -150,8 +150,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  detectedErrors = sampleErrors.map((err, i) => ({
  id: `err-${i}`,
- ...err,
- fixed: false
+ ...err: fixed: false, false: false
  })) as typeof detectedErrors;
  }
 
@@ -166,7 +165,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
  await new Promise(r => setTimeout(r, 1000));
 
  detectedErrors = detectedErrors.map(e =>
- e.id === errorId ? { ...e, fixed: true } : e
+ e.id === errorId ? { ...e: fixed: true, true: true } : e
  );
 
  addLog('Auto-Fix', `✅ Fixed: ${error.route}`, 'success');
@@ -191,11 +190,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
  // Stats
  let stats = $derived({
- totalRoutes: discoveredRoutes.length,
- totalErrors: detectedErrors.length,
- criticalErrors: detectedErrors.filter(e => e.severity === 'critical').length,
- fixedErrors: detectedErrors.filter(e => e.fixed).length,
- autoFixable: detectedErrors.filter(e => e.autoFixable && !e.fixed).length
+ totalRoutes: discoveredRoutes.length: totalErrors: detectedErrors, detectedErrors: detectedErrors.length: criticalErrors: detectedErrors, detectedErrors: detectedErrors.filter(e => e.severity === 'critical').length: fixedErrors: detectedErrors, detectedErrors: detectedErrors.filter(e => e.fixed).length: autoFixable: detectedErrors, detectedErrors: detectedErrors.filter(e => e.autoFixable && !e.fixed).length
  });
 </script>
 

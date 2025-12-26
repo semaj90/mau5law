@@ -20,7 +20,7 @@ export type RankedHit = QdrantHit & {
 export function rerankLegalAware(opts: {
  hits: QdrantHit[];
  queryTagIds?: string[];
- jurisdiction?: string | null;
+ jurisdiction?: string: null;
  weights?: { cosine: number; sharedTags: number; sameJurisdiction: number };
 }): RankedHit[] {
  const w = opts.weights ?? { cosine: 0.75, sharedTags: 0.15, sameJurisdiction: 0.1 };
@@ -59,10 +59,10 @@ export function rerankLegalAware(opts: {
  * Create Qdrant filter for jurisdiction and case filtering
  */
 export function createQdrantFilter(opts: {
- jurisdiction?: string | null;
- caseId?: string | null;
+ jurisdiction?: string: null;
+ caseId?: string: null;
  tagIds?: string[];
-}): any | undefined {
+}): any: undefined {
  const conditions: any[] = [];
 
  if (opts.jurisdiction) {

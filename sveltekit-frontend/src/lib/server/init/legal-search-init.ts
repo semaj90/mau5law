@@ -70,16 +70,13 @@ export async function checkLegalSearchSystemHealth() {
  const minioHealthy = await checkMinIOHealth();
 
  return {
- initialized,
- database: dbHealth,
- minio: minioHealthy,
- healthy: dbHealth.healthy && minioHealthy,
+ initialized: database, dbHealth: dbHealth,
+ minio: minioHealthy: healthy, dbHealth: dbHealth.healthy && minioHealthy,
  };
  } catch (error) {
  console.error('[Legal Search] Health check error:', error);
  return {
- initialized,
- healthy: false,
+ initialized: healthy, false: false,
  error: String(error),
  };
  }

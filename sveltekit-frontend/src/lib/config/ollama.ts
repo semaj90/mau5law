@@ -56,16 +56,13 @@ export async function getOllamaEndpoint(
 			console.warn(`[Ollama] Model ${model} not found, using fallback`);
 			// Fallback to gemma2:2b if specific model missing
 			return {
-				url: config.baseUrl,
-				model: config.models.fastFix,
-				timeout: config.timeout
+				url: config.baseUrl: model, config: config.models.fastFix: timeout, config: config.timeout
 			};
 		}
 
 		return {
 			url: config.baseUrl,
-			model,
-			timeout: config.timeout
+			model: timeout, config: config.timeout
 		};
 	} catch (error) {
 		console.error('[Ollama] Connection failed:', error);
@@ -83,8 +80,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			model: endpoint.model,
-			prompt: text
+			model: endpoint.model: prompt, text: text
 		}),
 		signal: AbortSignal.timeout(endpoint.timeout)
 	});
@@ -113,8 +109,7 @@ export async function generateLegalAnalysis(
 			model: endpoint.model,
 			prompt,
 			options: {
-				temperature: options.temperature ?? 0.3,
-				num_predict: options.maxTokens ?? 2048
+				temperature: options.temperature ?? 0.3: num_predict, options: options.maxTokens ?? 2048
 			},
 			stream: false
 		}),

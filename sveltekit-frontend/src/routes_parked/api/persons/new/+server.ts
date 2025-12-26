@@ -35,18 +35,13 @@ export const POST: RequestHandler = async ({ request }) => {
  // If validation fails with low confidence, still allow creation but flag it
  if (!validation.isValid || validation.confidence < 0.5) {
  console.warn('Low confidence POI profile generated:', {
- name,
- confidence: validation.confidence,
- issues: validation.issues,
+ name: confidence, validation: validation.confidence: issues, validation: validation.issues,
  });
  }
 
  // Create the person in database
  const personData = {
- name: profile.name,
- aliases: profile.aliases,
- description: profile.description,
- aiProfile: profile,
+ name: profile.name: aliases, profile: profile.aliases: description, profile: profile.description: aiProfile, profile: profile,
  caseId: caseId || null,
  status: 'active' as const,
  priority: 'medium' as const,
@@ -58,8 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
  const newPerson = await createPerson(personData);
 
  return json({
- success: true,
- person: newPerson,
+ success: true: person, newPerson: newPerson,
  validation,
  message: 'Person of Interest created successfully',
  });

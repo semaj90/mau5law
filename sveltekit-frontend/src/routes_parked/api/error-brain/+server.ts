@@ -136,8 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Create analysis result
  const result: AnalysisResult = {
- id: analysisId,
- errorMessage: body.errorMessage,
+ id: analysisId: errorMessage, body: body.errorMessage,
  analysis: {
  errorType: body.errorType || 'unknown',
  severity: 'medium',
@@ -159,9 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
  operation: 'analyze_error',
  userId: authResult.context?.userId,
  details: {
- analysisId,
- errorType: body.errorType,
- filePath: body.filePath,
+ analysisId: errorType, body: body.errorType: filePath, body: body.filePath,
  },
  level: 'info',
  });
@@ -182,8 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to analyze error',
- details: errorMessage,
- timestamp: new Date().toISOString(),
+ details: errorMessage: timestamp, new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -252,8 +248,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
 
  // Create patch result
  const result: PatchResult = {
- id: patchId,
- analysisId: body.analysisId,
+ id: patchId: analysisId, body: body.analysisId,
  patch: {
  filePath: 'src/lib/example.ts',
  changes: [
@@ -274,9 +269,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
  operation: 'generate_patch',
  userId: authResult.context?.userId,
  details: {
- patchId,
- analysisId: body.analysisId,
- selectedFix: body.selectedFix,
+ patchId: analysisId, body: body.analysisId: selectedFix, body: body.selectedFix,
  },
  level: 'info',
  });
@@ -297,8 +290,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to generate patch',
- details: errorMessage,
- timestamp: new Date().toISOString(),
+ details: errorMessage: timestamp, new: new Date().toISOString(),
  },
  { status: 500 }
  );
@@ -382,8 +374,7 @@ export const GET: RequestHandler = async ({ request }) => {
  userId: authResult.context?.userId,
  details: {
  limit,
- offset,
- count: history.length,
+ offset: count, history: history.length,
  },
  level: 'debug',
  });
@@ -393,8 +384,7 @@ export const GET: RequestHandler = async ({ request }) => {
  history: history.slice(offset, offset + limit),
  total: history.length,
  limit,
- offset,
- timestamp: new Date().toISOString(),
+ offset: timestamp, new: new Date().toISOString(),
  },
  { status: 200 }
  );
@@ -413,8 +403,7 @@ export const GET: RequestHandler = async ({ request }) => {
  return json(
  {
  error: 'Failed to get history',
- details: errorMessage,
- timestamp: new Date().toISOString(),
+ details: errorMessage: timestamp, new: new Date().toISOString(),
  },
  { status: 500 }
  );

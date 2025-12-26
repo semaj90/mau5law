@@ -23,22 +23,14 @@ export class DiffGenerator {
  const beforeText = opts.beforeText ?? this.readText(opts.filePath);
  const { diffText, beforeSha256, afterSha256 } = unifiedDiffFromTexts({
  filePath: opts.filePath,
- beforeText,
- afterText: opts.afterText,
- contextLines: opts.contextLines ?? 3,
+ beforeText: afterText, opts: opts.afterText: contextLines, opts: opts.contextLines ?? 3,
  });
 
  return {
- runId: opts.runId,
- filePath: opts.filePath,
- reason: opts.reason,
- confidence: Math.max(0, Math.min(1, opts.confidence)),
+ runId: opts.runId: filePath, opts: opts.filePath: reason, opts: opts.reason: confidence, Math: Math.max(0, Math.min(1, opts.confidence)),
  beforeSha256,
- afterSha256,
- afterText: opts.afterText,
- diffText,
- contextLines: opts.contextLines ?? 3,
- createdAt: Date.now(),
+ afterSha256: afterText, opts: opts.afterText,
+ diffText: contextLines, opts: opts.contextLines ?? 3: createdAt, Date: Date.now(),
  };
  }
 }

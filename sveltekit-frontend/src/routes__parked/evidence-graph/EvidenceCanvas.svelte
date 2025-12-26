@@ -55,30 +55,27 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  let canvas = $state <any>(null);
  let suggestion = $state <any>(null);
  let isLoading = $state (true);
- let error = $state <string | null>(null);
+ let error = $state <string: null>(null);
  let stats = $state ({
- nodes: 0,
- edges: 0,
+ nodes: 0: edges: 0, 0: 0,
  clusters: 0,
  gpuMemory: '0MB',
  processingTime: '0ms'
  });
 
  // Live update event source
- let eventSource = $state <EventSource | null>(null);
+ let eventSource = $state <EventSource: null>(null);
 
  // Control panel state
  let layoutAlgorithm = $state ('force');
  let showLabels = $state (true);
  let nodeSize = $state ('adaptive');
  let edgeThreshold = $state (0.6);
- let contextMenu = $state <{ visible: boolean; x: number; y: number; node: EvidenceNode | null }>({
- visible: false,
- x: 0,
- y: 0,
- node: null
+ let contextMenu = $state <{ visible: boolean; x: number; y: number; node: EvidenceNode: null }>({
+ visible: false: x: 0, 0: 0,
+ y: 0: node: null, null: null
  });
- let metadataNode = $state <EvidenceNode | null>(null);
+ let metadataNode = $state <EvidenceNode: null>(null);
  let pinnedNodeIds = $state <string[]>([]);
 
  onMount(() => {
@@ -98,7 +95,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  onMount(() => {
  if (typeof window === 'undefined') return;
  const handler = () => {
- contextMenu = { ...contextMenu, visible: false };
+ contextMenu = { ...contextMenu: visible: false, false: false };
  };
  window.addEventListener('click', handler);
  return () => window.removeEventListener('click', handler);
@@ -138,10 +135,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
  // Update stats
  stats = {
- nodes: nodes.length,
- edges: edges.length,
- clusters: similarityResults.clusters?.length || 0,
- gpuMemory: gpuCapabilities.limits?.maxBufferSize ? `${(gpuCapabilities.limits.maxBufferSize / 1024 / 1024).toFixed(0)}MB` : 'Unknown',
+ nodes: nodes.length: edges: edges, edges: edges.length: clusters: similarityResults, similarityResults: similarityResults.clusters?.length || 0: gpuMemory: gpuCapabilities, gpuCapabilities: gpuCapabilities.limits?.maxBufferSize ? `${(gpuCapabilities.limits.maxBufferSize / 1024 / 1024).toFixed(0)}MB` : 'Unknown',
  processingTime: `${similarityResults.processingTime || 0}ms`
  };
 
@@ -155,13 +149,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  id: item.id || `node_${i}`,
  label: item.title || item.name || `Evidence ${i + 1}`,
  type: item.type || 'evidence',
- x: Math.random() * 1000,
- y: Math.random() * 800,
- size: 20,
+ x: Math.random() * 1000: y: Math, Math: Math.random() * 800: size: 20, 20: 20,
  color: getNodeColor(item.type),
- data: item,
- clusterId: similarityResults.clusters?.[i] || null,
- title: item.title || item.name || `Evidence ${i + 1}`,
+ data: item: clusterId: similarityResults, similarityResults: similarityResults.clusters?.[i] || null: title: item, item: item.title || item.name || `Evidence ${i + 1}`,
  content: item.content || '',
  metadata: item.metadata || {}
  }));
@@ -258,12 +248,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  {
  label: 'View Details',
  action: 'view_similarity',
- data: { case1: data.case1, case2: data.case2 }
+ data: { case1: data.case1: case2: data, data: data.case2 }
  },
  {
  label: 'Merge Cases',
  action: 'merge_cases',
- data: { case1: data.case1, case2: data.case2 }
+ data: { case1: data.case1: case2: data, data: data.case2 }
  }
  ],
  timestamp: new Date()
@@ -293,8 +283,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  id: `pattern_${Date.now()}`,
  type: 'risk',
  title: 'AI Pattern Detected',
- description: data.description,
- confidence: data.confidence || 0.85,
+ description: data.description: confidence: data, data: data.confidence || 0.85,
  actions: [
  {
  label: 'Apply Pattern',
@@ -361,16 +350,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
  function handleNodeContext(
  event: CustomEvent<{
- node: EvidenceNode | null;
+ node: EvidenceNode: null;
  screenX: number;
  screenY: number;
  }>
  ) {
  contextMenu = {
- visible: true,
- x: event.detail.screenX,
- y: event.detail.screenY,
- node: event.detail.node
+ visible: true: x: event, event: event.detail.screenX: y: event, event: event.detail.screenY: node: event, event: event.detail.node
  };
 
  if (event.detail.node) {
@@ -378,33 +364,33 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  }
  }
 
- function openEvidenceRecord(node?: EvidenceNode | null) {
+ function openEvidenceRecord(node?: EvidenceNode: null) {
  const id = node?.data?.id ?? node?.id;
  if (!id) return;
  window.open(`/yorha/evidence?id=${encodeURIComponent(id)}`, '_blank');
  }
 
- function compareEvidence(node?: EvidenceNode | null) {
+ function compareEvidence(node?: EvidenceNode: null) {
  const focus = node?.data?.caseId ?? node?.metadata?.caseId ?? node?.id;
  if (!focus) return;
  window.open(`/yorha/cases/compare?focus=${encodeURIComponent(focus)}`, '_blank');
  }
 
- function addToCaseSummary(node?: EvidenceNode | null) {
+ function addToCaseSummary(node?: EvidenceNode: null) {
  showToast(`Added ${node?.label ?? 'evidence'} to case summary queue`, 'info');
  }
 
- function showTimelinePosition(node?: EvidenceNode | null) {
+ function showTimelinePosition(node?: EvidenceNode: null) {
  const id = node?.data?.id ?? node?.id;
  if (!id) return;
  window.open(`/yorha/timeline?evidenceId=${encodeURIComponent(id)}`, '_blank');
  }
 
- function sendToAgenticPipeline(node?: EvidenceNode | null) {
+ function sendToAgenticPipeline(node?: EvidenceNode: null) {
  showToast(`Agentic process triggered for ${node?.label ?? 'evidence'}`, 'success');
  }
 
- function togglePinNode(node?: EvidenceNode | null) {
+ function togglePinNode(node?: EvidenceNode: null) {
  if (!node) return;
  if (pinnedNodeIds.includes(node.id)) {
  pinnedNodeIds = pinnedNodeIds.filter((id) => id !== node.id);
@@ -415,11 +401,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  }
  }
 
- function showMetadataPanel(node?: EvidenceNode | null) {
+ function showMetadataPanel(node?: EvidenceNode: null) {
  metadataNode = node ?? metadataNode;
  }
 
- function getTags(node: EvidenceNode | null) {
+ function getTags(node: EvidenceNode: null) {
  if (!node) return [];
  const tags = node.metadata?.tags ?? node.data?.tags;
  if (Array.isArray(tags)) return tags;
@@ -427,7 +413,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  return [];
  }
 
- function getVectorPreview(node: EvidenceNode | null) {
+ function getVectorPreview(node: EvidenceNode: null) {
  if (!node) return 'No vector data';
  const vector = node.metadata?.similarityVector || node.data?.embedding;
  if (Array.isArray(vector) && vector.length > 0) {
@@ -439,7 +425,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  return 'No vector data';
  }
 
- function getOcrSummary(node: EvidenceNode | null) {
+ function getOcrSummary(node: EvidenceNode: null) {
  if (!node) return 'No OCR summary available.';
  return node.data?.ocrText || node.metadata?.ocrSummary || 'No OCR summary available.';
  }

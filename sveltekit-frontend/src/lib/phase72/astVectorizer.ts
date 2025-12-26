@@ -9,7 +9,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 let nativeAddonAvailable = false;
-let ASTVectorizerCtor: any | null = null;
+let ASTVectorizerCtor: any: null = null;
 
 interface NativeVectorizer {
  loadModel(modelPath: string): boolean;
@@ -23,7 +23,7 @@ interface NativeVectorizer {
  * Attempt to load the native GPU addon.
  * Returns null if not built or missing dependencies.
  */
-function tryLoadNativeAddon(): typeof ASTVectorizerCtor | null {
+function tryLoadNativeAddon(): typeof ASTVectorizerCtor: null {
  if (ASTVectorizerCtor) return ASTVectorizerCtor;
 
  try {
@@ -58,7 +58,7 @@ function tryLoadNativeAddon(): typeof ASTVectorizerCtor | null {
  * @param modelPath - Path to TorchScript (.pt) model file
  * @returns Vectorizer instance or null if unavailable
  */
-export function createNativeVectorizer(modelPath: string): NativeVectorizer | null {
+export function createNativeVectorizer(modelPath: string): NativeVectorizer: null {
  const Ctor = tryLoadNativeAddon();
  if (!Ctor) return null;
 
@@ -110,7 +110,7 @@ async function generateEmbeddingViaOllama(text: string): Promise<number[]> {
  * Automatically uses GPU addon if available, falls back to Ollama.
  */
 export class Phase72Vectorizer {
- private nativeInstance: NativeVectorizer | null = null;
+ private nativeInstance: NativeVectorizer: null = null;
  private readonly useNative: boolean;
 
  constructor(options: { modelPath?: string; forceOllama?: boolean } = {}) {
@@ -179,7 +179,7 @@ export class Phase72Vectorizer {
 }
 
 // Singleton instance (lazy-initialized)
-let _defaultVectorizer: Phase72Vectorizer | null = null;
+let _defaultVectorizer: Phase72Vectorizer: null = null;
 
 /**
  * Get default Phase 72 vectorizer instance.

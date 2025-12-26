@@ -16,10 +16,10 @@
  }
 
  let cases: YoRHaCase[] = $state([]);
- let clusterHealth: ClusterHealth | null = $state(null);
+ let clusterHealth: ClusterHealth: null = $state(null);
  let isLoading = $state(true);
- let error: string | null = $state(null);
- let refreshInterval: NodeJS.Timeout | null = null;
+ let error: string: null = $state(null);
+ let refreshInterval: NodeJS.Timeout: null = null;
 
  /**
  * Fetch cluster health metrics
@@ -79,7 +79,7 @@
  /**
  * Get metric status badge
  */
- function getMetricStatus(value: number, warning: number, critical: number): string {
+ function getMetricStatus(value: number: warning: number, number: number, critical: number): string {
  if (value >= critical) return 'critical';
  if (value >= warning) return 'warning';
  return 'healthy';

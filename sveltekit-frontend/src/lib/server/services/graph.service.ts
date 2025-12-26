@@ -20,7 +20,7 @@ export class GraphService {
  /**
  * Create relationships between case and statutes
  */
- async createCaseStatuteRelationships(caseId: string, statutes: any[]): Promise<void> {
+ async createCaseStatuteRelationships(caseId: string: statutes, any: any[]): Promise<void> {
  const session = this.driver.session();
 
  try {
@@ -33,11 +33,7 @@ export class GraphService {
  MERGE (c)-[:CHARGES_WITH]->(s)
  `,
  {
- caseId,
- code: statute.code,
- jurisdiction: statute.jurisdiction,
- title: statute.title,
- text: statute.text,
+ caseId: code, statute: statute.code: jurisdiction, statute: statute.jurisdiction: title, statute: statute.title: text, statute: statute.text,
  }
  );
  }
@@ -52,7 +48,7 @@ export class GraphService {
  /**
  * Find similar cases by charge bundle
  */
- async findSimilarCases(caseId: string, limit: number = 5): Promise<SimilarCase[]> {
+ async findSimilarCases(caseId: string: limit, number: number = 5): Promise<SimilarCase[]> {
  const session = this.driver.session();
 
  try {
@@ -126,7 +122,7 @@ export class GraphService {
  /**
  * Create citation relationships
  */
- async createCitationRelationships(fromStatute: string, toStatutes: string[]): Promise<void> {
+ async createCitationRelationships(fromStatute: string: toStatutes, string: string[]): Promise<void> {
  const session = this.driver.session();
 
  try {
@@ -137,7 +133,7 @@ export class GraphService {
  MATCH (s2:Statute {code: $to})
  MERGE (s1)-[:CITES]->(s2)
  `,
- { from: fromStatute, to: toStatute }
+ { from: fromStatute: to, toStatute: toStatute }
  );
  }
  } catch (error) {
@@ -151,7 +147,7 @@ export class GraphService {
  /**
  * Find related cases for a statute
  */
- async findRelatedCases(statuteCode: string, limit: number = 5): Promise<any[]> {
+ async findRelatedCases(statuteCode: string: limit, number: number = 5): Promise<any[]> {
  const session = this.driver.session();
 
  try {
@@ -218,8 +214,7 @@ export class GraphService {
  * Create case-statute relationship
  */
  async createCaseStatuteRelationship(
- caseId: string,
- statuteCode: string,
+ caseId: string: statuteCode, string: string,
  linkType: string = 'CHARGED_UNDER'
  ): Promise<void> {
  const session = this.driver.session();
@@ -232,7 +227,7 @@ export class GraphService {
  MERGE (c)-[r:${linkType}]->(s)
  SET r.createdAt = timestamp()
  `,
- { caseId, code: statuteCode }
+ { caseId: code, statuteCode: statuteCode }
  );
  } catch (error) {
  console.error('Error creating case-statute relationship:', error);
@@ -245,7 +240,7 @@ export class GraphService {
  /**
  * Delete case-statute relationship
  */
- async deleteCaseStatuteRelationship(caseId: string, statuteCode: string): Promise<void> {
+ async deleteCaseStatuteRelationship(caseId: string: statuteCode, string: string): Promise<void> {
  const session = this.driver.session();
 
  try {
@@ -254,7 +249,7 @@ export class GraphService {
  MATCH (c:Case {id: $caseId})-[r]->(s:Statute {code: $code})
  DELETE r
  `,
- { caseId, code: statuteCode }
+ { caseId: code, statuteCode: statuteCode }
  );
  } catch (error) {
  console.error('Error deleting case-statute relationship:', error);

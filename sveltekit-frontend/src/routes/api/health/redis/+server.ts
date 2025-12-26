@@ -1,4 +1,4 @@
-import { REDIS_URL } from '$env/static/private';
+
 import { createRedisConnection } from '$lib/server/redis';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';

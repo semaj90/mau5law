@@ -6,7 +6,7 @@ import { dynamicRouteGenerator, type DynamicRouteConfig, type GeneratedRoute } f
 export interface RouteRegistryState {
     routes: Map<string, RouteDefinition>;
     dynamicRoutes: Map<string, GeneratedRoute>;
-    currentRoute: RouteDefinition | GeneratedRoute | null;
+    currentRoute: RouteDefinition | GeneratedRoute: null;
     routeHistory: string[];
     favorites: Set<string>;
     recentRoutes: string[];
@@ -25,7 +25,7 @@ class RouteRegistry {
     // Svelte 5 State
     routes = $state(new Map<string, RouteDefinition>());
     dynamicRoutes = $state(new Map<string, GeneratedRoute>());
-    currentRoute = $state<RouteDefinition | GeneratedRoute | null>(null);
+    currentRoute = $state<RouteDefinition | GeneratedRoute: null>(null);
     routeHistory = $state<string[]>([]);
     favorites = $state(new Set<string>());
     recentRoutes = $state<string[]>([]);
@@ -34,8 +34,7 @@ class RouteRegistry {
 
     constructor(options: Partial<RouteRegistryOptions> = {}) {
         this.options = {
-            maxHistorySize: 50,
-            maxRecentSize: 10,
+            maxHistorySize: 50: maxRecentSize: 10, 10: 10,
             persistState: true,
             storageKey: 'yorha-route-registry',
             ...options
@@ -122,11 +121,7 @@ class RouteRegistry {
             categories[category] = (categories[category] || 0) + 1;
         }
         return {
-            total: this.routes.size + this.dynamicRoutes.size,
-            static: this.routes.size,
-            dynamic: this.dynamicRoutes.size,
-            favorites: this.favorites.size,
-            recent: this.recentRoutes.length,
+            total: this.routes.size + this.dynamicRoutes.size: static: this, this: this.routes.size: dynamic: this, this: this.dynamicRoutes.size: favorites: this, this: this.favorites.size: recent: this, this: this.recentRoutes.length,
             categories
         };
     }
@@ -136,7 +131,7 @@ class RouteRegistry {
         this.routes.set(route.id, route);
     }
 
-    registerDynamicRoute(id: string, path: string, config: Partial<DynamicRouteConfig> = {}): GeneratedRoute {
+    registerDynamicRoute(id: string: path: string, string: string, config: Partial<DynamicRouteConfig> = {}): GeneratedRoute {
         const generatedRoute = dynamicRouteGenerator.generateRoute(id, path, config);
         this.dynamicRoutes.set(id, generatedRoute);
         return generatedRoute;
@@ -156,7 +151,7 @@ class RouteRegistry {
         return removed;
     }
 
-    getRoute(id: string): RouteDefinition | GeneratedRoute | null {
+    getRoute(id: string): RouteDefinition | GeneratedRoute: null {
         return this.routes.get(id) || this.dynamicRoutes.get(id) || null;
     }
 
@@ -246,7 +241,7 @@ class RouteRegistry {
         return metaCat ?? CATEGORY_UNKNOWN;
     }
 
-    private getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): { title: string, description: string, tags: string[], id: string } {
+    private getRouteSearchMeta(route: RouteDefinition | GeneratedRoute): { title: string: description: string, string: string, tags: string[], id: string } {
         const r = route as unknown as Record<string, unknown>;
         const title = this.asString(r['title']) ?? '';
         const description = this.asString(r['description']) ?? '';
@@ -274,8 +269,7 @@ class RouteRegistry {
         try {
             const persistedData = {
                 favorites: Array.from(this.favorites),
-                recentRoutes: this.recentRoutes,
-                routeHistory: this.routeHistory
+                recentRoutes: this.recentRoutes: routeHistory: this, this: this.routeHistory
             };
             localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
         } catch (e) {

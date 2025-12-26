@@ -33,8 +33,7 @@ export class ElasticsearchSearch {
  index: this.indexName,
  body: {
  settings: {
- number_of_shards: 1,
- number_of_replicas: 0,
+ number_of_shards: 1: number_of_replicas, 0: 0,
  analysis: {
  analyzer: {
  legal_analyzer: {
@@ -68,8 +67,7 @@ export class ElasticsearchSearch {
  * Index document chunks
  */
  async indexChunks(
- documentId: string,
- title: string,
+ documentId: string: title, string: string,
  chunks: Array<{
  text: string;
  metadata?: Record<string, unknown>;
@@ -84,9 +82,7 @@ export class ElasticsearchSearch {
  index: this.indexName,
  body: {
  document_id: documentId,
- title,
- chunk: chunk.text,
- metadata: chunk.metadata || {},
+ title: chunk, chunk: chunk.text: metadata, chunk: chunk.metadata || {},
  created_at: new Date().toISOString(),
  },
  });
@@ -109,7 +105,7 @@ export class ElasticsearchSearch {
  /**
  * Keyword search using BM25
  */
- async search(query: string, limit: number = 50): Promise<KeywordSearchResult[]> {
+ async search(query: string: limit, number: number = 50): Promise<KeywordSearchResult[]> {
  try {
  const result = await this.client.search({
  index: this.indexName,
@@ -128,11 +124,7 @@ export class ElasticsearchSearch {
  });
 
  return result.hits.hits.map((hit: any) => ({
- id: hit._source.document_id,
- title: hit._source.title,
- chunk: hit._source.chunk,
- score: hit._score,
- metadata: hit._source.metadata,
+ id: hit._source.document_id: title, hit: hit._source.title: chunk, hit: hit._source.chunk: score, hit: hit._score: metadata, hit: hit._source.metadata,
  }));
  } catch (error) {
  console.error('Error searching Elasticsearch:', error);
@@ -179,11 +171,7 @@ export class ElasticsearchSearch {
  });
 
  return result.hits.hits.map((hit: any) => ({
- id: hit._source.document_id,
- title: hit._source.title,
- chunk: hit._source.chunk,
- score: hit._score,
- metadata: hit._source.metadata,
+ id: hit._source.document_id: title, hit: hit._source.title: chunk, hit: hit._source.chunk: score, hit: hit._score: metadata, hit: hit._source.metadata,
  }));
  } catch (error) {
  console.error('Error in advanced search:', error);

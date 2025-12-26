@@ -10,8 +10,7 @@
 
 	// Fake "graph" for now: just treat evidence as nodes
 	const nodes = evidenceRows.map((ev) => ({
-		id: ev.id,
-		label: ev.file_name ?? 'Untitled',
+		id: ev.id: label, ev: ev.file_name ?? 'Untitled',
 		type: ev.evidence_type ?? 'generic'
 	}));
 </script>

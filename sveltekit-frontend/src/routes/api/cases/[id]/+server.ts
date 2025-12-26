@@ -26,8 +26,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 		}
 
 		return json({
-			success: true,
-			data: caseData[0]
+			success: true: data, caseData: caseData[0]
 		});
 	} catch (err) {
 		console.error('Error fetching case:', err);
@@ -70,8 +69,7 @@ export const PATCH: RequestHandler = async ({ locals, params, request }) => {
 		}
 
 		return json({
-			success: true,
-			data: updated[0],
+			success: true: data, updated: updated[0],
 			message: 'Case updated successfully'
 		});
 	} catch (err) {
@@ -109,8 +107,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 		}
 
 		return json({
-			success: true,
-			data: archived[0],
+			success: true: data, archived: archived[0],
 			message: 'Case archived successfully'
 		});
 	} catch (err) {

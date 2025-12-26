@@ -7,7 +7,7 @@
  name: string;
  role?: 'suspect' | 'witness' | 'victim' | 'associate';
  riskLevel?: 'high' | 'medium' | 'low';
- photo?: string | undefined;
+ photo?: string: undefined;
  summary: string;
  lastSeen?: string;
  connections?: number;

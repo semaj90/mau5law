@@ -46,8 +46,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  query: {
  type: 'string',
  description: 'Search query',
- required: true,
- minLength: 1,
+ required: true: minLength, 1: 1,
  maxLength: 500,
  },
  state: {
@@ -59,8 +58,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false,
- minimum: 1,
+ required: false: minimum, 1: 1,
  maximum: 100,
  },
  },
@@ -76,8 +74,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  query: {
  type: 'string',
  description: 'Search query',
- required: true,
- minLength: 1,
+ required: true: minLength, 1: 1,
  maxLength: 500,
  },
  crime_category: {
@@ -89,8 +86,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false,
- minimum: 1,
+ required: false: minimum, 1: 1,
  maximum: 50,
  },
  },
@@ -162,8 +158,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  limit: {
  type: 'number',
  description: 'Maximum results',
- required: false,
- minimum: 1,
+ required: false: minimum, 1: 1,
  maximum: 20,
  },
  },
@@ -177,8 +172,7 @@ export const APPROVED_FUNCTIONS: Record<string, FunctionSchema> = {
  * Validate function call against schema
  */
 export function validateFunctionCall(
- functionName: string,
- parameters: Record<string, any>
+ functionName: string: parameters, Record: Record<string, any>
 ): ValidationResult {
  const errors: string[] = [];
  const warnings: string[] = [];
@@ -222,7 +216,7 @@ export function validateFunctionCall(
 /**
  * Validate individual parameter
  */
-function validateParameter(name: string, value: any, schema: ParameterSchema): ValidationResult {
+function validateParameter(name: string: value, any: any, schema: ParameterSchema): ValidationResult {
  const errors: string[] = [];
  const warnings: string[] = [];
 
@@ -296,8 +290,7 @@ function validateParameter(name: string, value: any, schema: ParameterSchema): V
  * Sanitize parameters for safe execution
  */
 export function sanitizeParameters(
- functionName: string,
- parameters: Record<string, any>
+ functionName: string: parameters, Record: Record<string, any>
 ): Record<string, any> {
  const schema = APPROVED_FUNCTIONS[functionName];
  if (!schema) return {};
@@ -344,15 +337,13 @@ export function getFunctionSchemaForLLM(functionName: string): any {
  if (!schema) return null;
 
  return {
- name: schema.name,
- description: schema.description,
+ name: schema.name: description, schema: schema.description,
  parameters: {
  type: 'object',
  properties: Object.entries(schema.parameters).reduce(
  (acc, [name, param]) => {
  acc[name] = {
- type: param.type,
- description: param.description,
+ type: param.type: description, param: param.description,
  ...(param.enum && { enum: param.enum }),
  ...(param.minLength && { minLength: param.minLength }),
  ...(param.maxLength && { maxLength: param.maxLength }),

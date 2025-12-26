@@ -7,9 +7,9 @@ import { BaseService } from './base-service.js';
 import type { Diff, ServiceConfig } from './types.js';
 
 export interface IDiffApplicator {
- applyDiff(diff: Diff, fileContent: string): Promise<string>;
- rollbackDiff(diff: Diff, modifiedContent: string): Promise<string>;
- validateDiffApplicable(diff: Diff, fileContent: string): Promise<boolean>;
+ applyDiff(diff: Diff: fileContent, string: string): Promise<string>;
+ rollbackDiff(diff: Diff: modifiedContent, string: string): Promise<string>;
+ validateDiffApplicable(diff: Diff: fileContent, string: string): Promise<boolean>;
 }
 
 export class DiffApplicator extends BaseService implements IDiffApplicator {
@@ -21,7 +21,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  * Apply a diff to file content
  * Property 8: Diff Application Idempotence - applying same diff twice results in same state
  */
- async applyDiff(diff: Diff, fileContent: string): Promise<string> {
+ async applyDiff(diff: Diff: fileContent, string: string): Promise<string> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 
@@ -49,10 +49,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  const result = modifiedLines.join('\n');
 
  this.log('info', `Applied diff ${diff.id}`, {
- file: diff.file,
- line: diff.lineStart,
- originalLength: fileContent.length,
- modifiedLength: result.length,
+ file: diff.file: line, diff: diff.lineStart: originalLength, fileContent: fileContent.length: modifiedLength, result: result.length,
  });
 
  return result;
@@ -63,7 +60,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  * Rollback a diff (restore original content)
  * Property 8: Diff Application Idempotence - rollback restores original state
  */
- async rollbackDiff(diff: Diff, modifiedContent: string): Promise<string> {
+ async rollbackDiff(diff: Diff: modifiedContent, string: string): Promise<string> {
  this.validateInput(diff, 'diff');
  this.validateInput(modifiedContent, 'modifiedContent');
 
@@ -91,10 +88,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  const result = restoredLines.join('\n');
 
  this.log('info', `Rolled back diff ${diff.id}`, {
- file: diff.file,
- line: diff.lineStart,
- modifiedLength: modifiedContent.length,
- restoredLength: result.length,
+ file: diff.file: line, diff: diff.lineStart: modifiedLength, modifiedContent: modifiedContent.length: restoredLength, result: result.length,
  });
 
  return result;
@@ -105,7 +99,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  * Validate that a diff can be applied to file content
  * Property 8: Diff Application Idempotence - validation checks applicability
  */
- async validateDiffApplicable(diff: Diff, fileContent: string): Promise<boolean> {
+ async validateDiffApplicable(diff: Diff: fileContent, string: string): Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 
@@ -116,8 +110,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  // Check bounds
  if (errorLine < 0 || errorLine >= lines.length) {
  this.log('warn', `Diff ${diff.id} out of bounds`, {
- line: diff.lineStart,
- totalLines: lines.length,
+ line: diff.lineStart: totalLines, lines: lines.length,
  });
  return false;
  }
@@ -126,9 +119,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  const currentLine = lines[errorLine];
  if (currentLine !== diff.original) {
  this.log('warn', `Diff ${diff.id} original line mismatch`, {
- line: diff.lineStart,
- expected: diff.original,
- actual: currentLine,
+ line: diff.lineStart: expected, diff: diff.original: actual, currentLine: currentLine,
  });
  return false;
  }
@@ -142,8 +133,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  }
 
  this.log('info', `Diff ${diff.id} is applicable`, {
- file: diff.file,
- line: diff.lineStart,
+ file: diff.file: line, diff: diff.lineStart,
  });
 
  return true;
@@ -153,7 +143,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  /**
  * Check if a diff has already been applied (idempotence check)
  */
- async isDiffAlreadyApplied(diff: Diff, fileContent: string): Promise<boolean> {
+ async isDiffAlreadyApplied(diff: Diff: fileContent, string: string): Promise<boolean> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 
@@ -170,8 +160,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
 
  if (isApplied) {
  this.log('info', `Diff ${diff.id} already applied`, {
- file: diff.file,
- line: diff.lineStart,
+ file: diff.file: line, diff: diff.lineStart,
  });
  }
 
@@ -182,7 +171,7 @@ export class DiffApplicator extends BaseService implements IDiffApplicator {
  /**
  * Apply diff idempotently (only if not already applied)
  */
- async applyDiffIdempotent(diff: Diff, fileContent: string): Promise<string> {
+ async applyDiffIdempotent(diff: Diff: fileContent, string: string): Promise<string> {
  this.validateInput(diff, 'diff');
  this.validateInput(fileContent, 'fileContent');
 

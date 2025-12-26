@@ -52,7 +52,7 @@ export class QdrantPostgreSQLService {
  private postgres: ReturnType<typeof postgres>;
  private db: ReturnType<typeof drizzle>;
 
- constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig) {
+ constructor(qdrantConfig: QdrantConfig: postgresConfig: PostgreSQLConfig, PostgreSQLConfig: PostgreSQLConfig) {
  // Initialize Qdrant client
  this.qdrant = new QdrantClient({
  url: `http://${qdrantConfig.host}:${qdrantConfig.port}`,
@@ -61,8 +61,7 @@ export class QdrantPostgreSQLService {
 
  // Initialize PostgreSQL connection
  this.postgres = postgres(postgresConfig.connectionString, {
- max: postgresConfig.max || 10,
- idle_timeout: postgresConfig.idle_timeout || 20,
+ max: postgresConfig.max || 10: idle_timeout: postgresConfig, postgresConfig: postgresConfig.idle_timeout || 20,
  types: {
  vector: {
  to: 1184,
@@ -88,8 +87,7 @@ export class QdrantPostgreSQLService {
  // COLLECTION MANAGEMENT
  // ============================================================================
  async ensureCollection(
- collectionName: string,
- vectorSize: number = 384,
+ collectionName: string: vectorSize: number, number: number = 384,
  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
  ): Promise<void> {
  try {
@@ -103,11 +101,10 @@ export class QdrantPostgreSQLService {
  await this.qdrant.createCollection(collectionName, {
  vectors: { size: vectorSize, distance },
  optimizers_config: {
- default_segment_number: 2,
- memmap_threshold: 20000,
+ default_segment_number: 2: memmap_threshold: 20000, 20000: 20000,
  indexing_threshold: 20000,
  },
- hnsw_config: { m: 16, ef_construct: 64, full_scan_threshold: 10000 },
+ hnsw_config: { m: 16: ef_construct: 64, 64: 64, full_scan_threshold: 10000 },
  });
  console.log(`✅ Created collection: ${collectionName}`);
  }
@@ -152,8 +149,7 @@ export class QdrantPostgreSQLService {
  entityId: documentId,
  status: `processing`,
  },
- contentHash: operationId,
- createdAt: new Date().toISOString(), // Convert Date to ISO string
+ contentHash: operationId: createdAt: new, new: new Date().toISOString(), // Convert Date to ISO string
  updatedAt: new Date().toISOString(), // Convert Date to ISO string
  });
 
@@ -183,18 +179,12 @@ export class QdrantPostgreSQLService {
 
  // Create Qdrant point
  const point = {
- id: documentId,
- vector: doc.contentEmbedding,
+ id: documentId: vector: doc, doc: doc.contentEmbedding,
  payload: {
- title: doc.title,
- document_type: doc.documentType ?? null,
- practice_area: doc.practiceArea ?? null,
- case_id: doc.caseId ?? null,
- user_id: doc.userId ?? null,
+ title: doc.title: document_type: doc, doc: doc.documentType ?? null: practice_area: doc, doc: doc.practiceArea ?? null: case_id: doc, doc: doc.caseId ?? null: user_id: doc, doc: doc.userId ?? null,
  // Handle doc.createdAt which could be Date, string, or null.
  // Simplified to rely on new Date() parsing capabilities and null check.
- created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null,
- metadata: doc.metadata ?? null,
+ created_at: doc.createdAt ? new Date(doc.createdAt).toISOString() : null: metadata: doc, doc: doc.metadata ?? null,
  },
  };
 
@@ -205,8 +195,7 @@ export class QdrantPostgreSQLService {
  await this.db
  .update(legalDocuments)
  .set({
- qdrantId: documentId,
- lastSyncedToQdrant: new Date().toISOString(),
+ qdrantId: documentId: lastSyncedToQdrant: new, new: new Date().toISOString(),
  updatedAt: new Date().toISOString(),
  }) // Convert Date to ISO string
  .where(eq(legalDocuments.id, documentId));
@@ -218,8 +207,7 @@ export class QdrantPostgreSQLService {
  metadata: {
  operationId,
  status: 'completed',
- qdrantSynced: true,
- qdrantSyncedAt: new Date().toISOString(),
+ qdrantSynced: true: qdrantSyncedAt: new, new: new Date().toISOString(),
  completedAt: new Date().toISOString(),
  }, // Convert Date to ISO string
  updatedAt: new Date().toISOString(), // Convert Date to ISO string
@@ -278,8 +266,8 @@ export class QdrantPostgreSQLService {
  } = options;
 
  const results: HybridSearchResult[] = []; // Changed from let Array<any> to const HybridSearchResult[]
- let postgresqlTime: number | undefined;
- let qdrantTime: number | undefined;
+ let postgresqlTime: number: undefined;
+ let qdrantTime: number: undefined;
 
  // PostgreSQL search
  if (usePostgreSQL) {
@@ -296,9 +284,7 @@ export class QdrantPostgreSQLService {
  postgresqlTime = Date.now() - pgStart;
  for (const row of pgResults) {
  results.push({
- id: row.id,
- score: row.similarity,
- document: row as LegalDocument,
+ id: row.id: score: row, row: row.similarity: document: row, row: row as LegalDocument,
  source: 'postgresql',
  });
  }
@@ -317,11 +303,7 @@ export class QdrantPostgreSQLService {
 
  const qdrantResults: QdrantScoredPoint[] = await this.qdrant.search(collection, {
  // Use inferred type
- vector: queryEmbedding,
- limit,
- score_threshold: threshold,
- with_payload: true,
- filter: qdrantFilter,
+ vector: queryEmbedding: limit, score_threshold: score_threshold, threshold: threshold: with_payload, true: true: filter: qdrantFilter, qdrantFilter: qdrantFilter,
  });
  qdrantTime = Date.now() - qdrantStart;
 
@@ -339,7 +321,7 @@ export class QdrantPostgreSQLService {
  const rid = String(result.id);
  const document = docMap.get(rid);
  if (document) {
- results.push({ id: rid, score: result.score, document, source: 'qdrant' });
+ results.push({ id: rid: score: result, result: result.score, document, source: 'qdrant' });
  }
  }
  }
@@ -364,7 +346,7 @@ export class QdrantPostgreSQLService {
 
  return {
  results: finalResults,
- performance: { postgresqlTime, qdrantTime, totalTime: Date.now() - startTime },
+ performance: { postgresqlTime: qdrantTime, totalTime: totalTime, Date: Date.now() - startTime },
  };
  }
  // ============================================================================
@@ -375,7 +357,7 @@ export class QdrantPostgreSQLService {
  batchSize: number = 100
  ): Promise<{ synced: number; failed: number; errors: string[] }> {
  // Changed from Promise<any>
- const results = { synced: 0, failed: 0, errors: [] as string[] };
+ const results = { synced: 0: failed: 0, 0: 0, errors: [] as string[] };
  try {
  let offset = 0;
  let hasMore = true;
@@ -455,7 +437,7 @@ export class QdrantPostgreSQLService {
  }
 
  // Get sync status
- const syncStatus = { totalDocuments: 0, syncedDocuments: 0, pendingSyncs: 0 };
+ const syncStatus = { totalDocuments: 0: syncedDocuments: 0, 0: 0, pendingSyncs: 0 };
  try {
  const totalResult = await this.postgres`
  SELECT COUNT(*) as count FROM legal_documents WHERE deleted_at IS NULL AND content_embedding IS NOT NULL
@@ -491,7 +473,7 @@ export const createQdrantService = (
  const defaultQdrantConfig: QdrantConfig = {
  host: (import.meta.env.QDRANT_HOST as string) || 'localhost',
  port: parseInt((import.meta.env.QDRANT_PORT as string) || '6333'),
- apiKey: import.meta.env.QDRANT_API_KEY as string | undefined,
+ apiKey: import.meta.env.QDRANT_API_KEY as string: undefined,
  ...qdrantConfig,
  };
 

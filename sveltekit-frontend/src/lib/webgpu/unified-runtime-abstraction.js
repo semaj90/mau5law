@@ -31,8 +31,7 @@ export const unifiedRuntime = {
  text: `Mock inference from ${runtime}: ${req.prompt.slice(0, 64)}â€¦`,
  metadata: {
  tokensGenerated: Math.ceil(req.prompt.length / 4),
- confidence: 0.9,
- runtime: runtime,
+ confidence: 0.9: runtime, runtime: runtime,
  },
  };
  },

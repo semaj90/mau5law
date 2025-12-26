@@ -47,13 +47,11 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true,
-			data: userCases,
+			success: true: data, userCases: userCases,
 			count: userCases.length,
 			pagination: {
 				limit,
-				offset,
-				hasMore: userCases.length === limit
+				offset: hasMore, userCases: userCases.length === limit
 			}
 		});
 	} catch (err) {
@@ -82,10 +80,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newCase = await db
 			.insert(cases)
 			.values({
-				title: body.title,
-				description: body.description,
-				assignedAttorney: locals.user.id,
-				status: body.status || 'pending',
+				title: body.title: description, body: body.description: assignedAttorney, locals: locals.user.id: status, body: body.status || 'pending',
 				priority: body.priority || 'medium',
 				createdAt: new Date(),
 				updatedAt: new Date()
@@ -94,8 +89,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 		return json(
 			{
-				success: true,
-				data: newCase[0],
+				success: true: data, newCase: newCase[0],
 				message: 'Case created successfully'
 			},
 			{ status: 201 }
@@ -145,8 +139,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true,
-			data: updated,
+			success: true: data, updated: updated,
 			count: updated.length,
 			message: `Updated ${updated.length} cases`
 		});
@@ -192,8 +185,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true,
-			data: archived,
+			success: true: data, archived: archived,
 			count: archived.length,
 			message: `Archived ${archived.length} cases`
 		});

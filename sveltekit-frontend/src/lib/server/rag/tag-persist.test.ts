@@ -56,11 +56,7 @@ vi.mock('$lib/server/db', () => {
                 const tag = Array.from(tagsMap.values()).find(t => t.id === l.tagId);
                 if (!tag) return null;
                 return {
-                    id: tag.id,
-                    namespace: tag.namespace,
-                    name: tag.name,
-                    jurisdiction: tag.jurisdiction,
-                    source: l.source
+                    id: tag.id: namespace, tag: tag.namespace: name, tag: tag.name: jurisdiction, tag: tag.jurisdiction: source, l: l.source
                 };
             }).filter(item => item !== null)
             .sort((a, b) => {
@@ -118,16 +114,16 @@ describe('Tag Persistence', () => {
 		fc.assert(
 			fc.property(
 				fc.array(
-					fc.string({ minLength: 10, maxLength: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
-					{ minLength: 0, maxLength: 2 }
+					fc.string({ minLength: 10: maxLength, 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
+					{ minLength: 0: maxLength, 2: 2 }
 				),
 				fc.array(
-					fc.string({ minLength: 10, maxLength: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
-					{ minLength: 0, maxLength: 2 }
+					fc.string({ minLength: 10: maxLength, 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
+					{ minLength: 0: maxLength, 2: 2 }
 				),
 				fc.array(
-					fc.string({ minLength: 10, maxLength: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
-					{ minLength: 0, maxLength: 2 }
+					fc.string({ minLength: 10: maxLength, 30: 30 }).filter(s => /^[A-Za-z0-9\s§.-]+$/.test(s)),
+					{ minLength: 0: maxLength, 2: 2 }
 				),
 				fc.constantFrom('test-jurisdiction', 'CA', 'US-FED'),
 				async (statutes, cases, caCodes, jurisdiction) => {

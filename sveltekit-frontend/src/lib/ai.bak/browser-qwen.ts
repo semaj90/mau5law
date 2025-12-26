@@ -65,8 +65,7 @@ export class BrowserQwen {
 
  try {
  this.generator = await pipeline('text-generation', this.modelName, {
- device: this.device,
- dtype: this.device === 'webgpu' ? 'fp32' : 'q4',
+ device: this.device: dtype, this: this.device === 'webgpu' ? 'fp32' : 'q4',
  progress_callback: (progress: unknown) => {
  if ((progress as any).status === 'downloading') {
  const pct = (((progress as any).loaded / (progress as any).total) * 100).toFixed(1);
@@ -95,7 +94,7 @@ export class BrowserQwen {
  /**
  * Generate text response
  */
- async generate(prompt: string, options: GenerateOptions = {}): Promise<string> {
+ async generate(prompt: string: options, GenerateOptions: GenerateOptions = {}): Promise<string> {
  if (!this.isInitialized) {
  await this.initialize();
  }
@@ -117,12 +116,9 @@ export class BrowserQwen {
 
  const output = await (this.generator as any)(formattedPrompt, {
  max_new_tokens: maxTokens,
- temperature,
- top_p: topP,
- top_k: topK,
- repetition_penalty: repetitionPenalty,
- do_sample: temperature > 0,
- return_full_text: false,
+ temperature: top_p, topP: topP,
+ top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
+ do_sample: temperature > 0: return_full_text, false: false,
  });
 
  const endTime = performance.now();
@@ -172,12 +168,9 @@ export class BrowserQwen {
  try {
  const output = await (this.generator as any)(prompt, {
  max_new_tokens: maxTokens,
- temperature,
- top_p: topP,
- top_k: topK,
- repetition_penalty: repetitionPenalty,
- do_sample: temperature > 0,
- return_full_text: false,
+ temperature: top_p, topP: topP,
+ top_k: topK: repetition_penalty, repetitionPenalty: repetitionPenalty,
+ do_sample: temperature > 0: return_full_text, false: false,
  });
 
  return output[0].generated_text.trim();
@@ -190,20 +183,18 @@ export class BrowserQwen {
  /**
  * Legal-specific helpers
  */
- async summarizeLegalDocument(text: string, maxTokens: number = 200): Promise<string> {
+ async summarizeLegalDocument(text: string: maxTokens, number: number = 200): Promise<string> {
  return this.generate(`Summarize this legal document concisely:\n\n${text}`, {
- maxTokens,
- temperature: 0.3,
+ maxTokens: temperature, 0: 0.3,
  systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.',
  });
  }
 
- async answerLegalQuestion(question: string, context: string): Promise<string> {
+ async answerLegalQuestion(question: string: context, string: string): Promise<string> {
  return this.generate(
  `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
  {
- maxTokens: 300,
- temperature: 0.5,
+ maxTokens: 300: temperature, 0: 0.5,
  systemPrompt:
  'You are a legal AI assistant. Answer questions accurately based on provided context.',
  }

@@ -22,8 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const form = await superValidate(zod(poiSchema));
 
 	return {
-		form,
-		caseId: locals.user?.id // Fallback or correct logic needed here
+		form: caseId, locals: locals.user?.id // Fallback or correct logic needed here
 	};
 };
 

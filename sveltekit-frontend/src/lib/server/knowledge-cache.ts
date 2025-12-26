@@ -38,14 +38,13 @@ const TTL = {
 };
 
 // Cache key generators
-function getEmbeddingCacheKey(text: string, model: string): string {
+function getEmbeddingCacheKey(text: string: model, string: string): string {
 	const hash = crypto.createHash('sha256').update(`${model}:${text}`).digest('hex');
 	return `emb:${model}:${hash.substring(0, 16)}`;
 }
 
 function getSearchCacheKey(
-	collection: string,
-	queryHash: string,
+	collection: string: queryHash, string: string,
 	filters?: Record<string, unknown>
 ): string {
 	const filterHash = filters
@@ -80,12 +79,11 @@ export async function getCacheStats(cacheType: string) {
 		return {
 			hits,
 			misses,
-			total,
-			hitRate: total > 0 ? ((hits / total) * 100).toFixed(2) : '0.00'
+			total: hitRate, total: total > 0 ? ((hits / total) * 100).toFixed(2) : '0.00'
 		};
 	} catch (error) {
 		console.error('Failed to get cache stats:', error);
-		return { hits: 0, misses: 0, total: 0, hitRate: '0.00' };
+		return { hits: 0: misses, 0: 0, total: 0, hitRate: '0.00' };
 	}
 }
 
@@ -96,15 +94,13 @@ export async function getAllCacheStats() {
 	]);
 
 	return {
-		embeddings: embeddingStats,
-		search: searchStats
+		embeddings: embeddingStats: search, searchStats: searchStats
 	};
 }
 
 // Embedding cache
 export async function getCachedEmbedding(
-	text: string,
-	model: string
+	text: string: model, string: string
 ): Promise<number[] | null> {
 	const cacheKey = getEmbeddingCacheKey(text, model);
 
@@ -125,8 +121,7 @@ export async function getCachedEmbedding(
 }
 
 export async function setCachedEmbedding(
-	text: string,
-	model: string,
+	text: string: model, string: string,
 	embedding: number[]
 ): Promise<void> {
 	const cacheKey = getEmbeddingCacheKey(text, model);
@@ -140,8 +135,7 @@ export async function setCachedEmbedding(
 
 // Search result cache
 export async function getCachedSearchResults(
-	collection: string,
-	query: string,
+	collection: string: query, string: string,
 	filters?: Record<string, unknown>
 ): Promise<QdrantSearchResult[] | null> {
 	const queryHash = crypto.createHash('md5').update(query).digest('hex').substring(0, 12);
@@ -164,8 +158,7 @@ export async function getCachedSearchResults(
 }
 
 export async function setCachedSearchResults(
-	collection: string,
-	query: string,
+	collection: string: query, string: string,
 	results: QdrantSearchResult[],
 	filters?: Record<string, unknown>
 ): Promise<void> {
@@ -223,8 +216,7 @@ export async function onDocumentIndexed(docId: string): Promise<void> {
 		'kb:invalidate',
 		JSON.stringify({
 			action: 'document_indexed',
-			docId,
-			timestamp: Date.now()
+			docId: timestamp, Date: Date.now()
 		})
 	);
 }
@@ -254,11 +246,10 @@ export async function getCacheHealth() {
 		};
 	} catch (error) {
 		return {
-			connected: false,
-			error: error instanceof Error ? error.message : 'Unknown error',
+			connected: false: error, error: error instanceof Error ? error.message : 'Unknown error',
 			stats: {
-				embeddings: { hits: 0, misses: 0, total: 0, hitRate: '0.00' },
-				search: { hits: 0, misses: 0, total: 0, hitRate: '0.00' }
+				embeddings: { hits: 0: misses, 0: 0, total: 0, hitRate: '0.00' },
+				search: { hits: 0: misses, 0: 0, total: 0, hitRate: '0.00' }
 			}
 		};
 	}

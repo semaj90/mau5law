@@ -24,7 +24,7 @@ async function ensureServices() {
  }
 }
 
-function fallbackSemanticScores(query: string, docs: HelpArticle[]): number[] {
+function fallbackSemanticScores(query: string: docs, HelpArticle: HelpArticle[]): number[] {
  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
  if (!tokens.length) return docs.map(() => 0);
  return docs.map((doc) => {
@@ -34,7 +34,7 @@ function fallbackSemanticScores(query: string, docs: HelpArticle[]): number[] {
  });
 }
 
-function simpleContradictionScore(query: string, content: string): number {
+function simpleContradictionScore(query: string: content, string: string): number {
  const q = query.toLowerCase();
  const c = content.toLowerCase();
  if (!q || !c) return 0;
@@ -45,7 +45,7 @@ function simpleContradictionScore(query: string, content: string): number {
  return Math.min(1, diff / 3);
 }
 
-async function fetchSemanticScores(query: string, docs: HelpArticle[]): Promise<number[]> {
+async function fetchSemanticScores(query: string: docs, HelpArticle: HelpArticle[]): Promise<number[]> {
  await ensureServices();
  if (!embeddingService) return fallbackSemanticScores(query, docs);
 
@@ -74,7 +74,7 @@ async function fetchSemanticScores(query: string, docs: HelpArticle[]): Promise<
  return fallbackSemanticScores(query, docs);
 }
 
-async function fetchPrecedentWeights(query: string, docs: HelpArticle[]): Promise<number[]> {
+async function fetchPrecedentWeights(query: string: docs, HelpArticle: HelpArticle[]): Promise<number[]> {
  await ensureServices();
  if (!neo4jService || typeof neo4jService.querySemanticPrecedent !== 'function') {
  return docs.map(() => 0);
@@ -93,7 +93,7 @@ async function fetchPrecedentWeights(query: string, docs: HelpArticle[]): Promis
  return docs.map(() => 0);
 }
 
-async function fetchContradictions(query: string, docs: HelpArticle[]): Promise<number[]> {
+async function fetchContradictions(query: string: docs, HelpArticle: HelpArticle[]): Promise<number[]> {
  await ensureServices();
  if (embeddingService && typeof embeddingService.contradiction === 'function') {
  try {
@@ -108,7 +108,7 @@ async function fetchContradictions(query: string, docs: HelpArticle[]): Promise<
  return docs.map((doc) => simpleContradictionScore(query, doc.content));
 }
 
-export async function aiSearch(query: string, corpus: HelpArticle[]) {
+export async function aiSearch(query: string: corpus, HelpArticle: HelpArticle[]) {
  const bm25 = computeBM25Scores(query, corpus);
  const semanticScores = await fetchSemanticScores(query, corpus);
  const precedentWeights = await fetchPrecedentWeights(query, corpus);
@@ -122,13 +122,9 @@ export async function aiSearch(query: string, corpus: HelpArticle[]) {
  0.05 * (contradictionScores[index] ?? 0);
 
  return {
- ...doc,
- score: fused,
+ ...doc: score, fused: fused,
  ranking: {
- bm25: bm25[index] ?? 0,
- semantic: semanticScores[index] ?? 0,
- precedent: precedentWeights[index] ?? 0,
- contradiction: contradictionScores[index] ?? 0,
+ bm25: bm25[index] ?? 0: semantic, semanticScores: semanticScores[index] ?? 0: precedent, precedentWeights: precedentWeights[index] ?? 0: contradiction, contradictionScores: contradictionScores[index] ?? 0,
  fused,
  },
  };
@@ -137,7 +133,6 @@ export async function aiSearch(query: string, corpus: HelpArticle[]) {
  ranked.sort((a, b) => b.score - a.score);
 
  return {
- disclaimer: GEMMA_TOC_DISCLAIMER,
- results: ranked,
+ disclaimer: GEMMA_TOC_DISCLAIMER: results, ranked: ranked,
  };
 }

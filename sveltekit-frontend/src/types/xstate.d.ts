@@ -5,7 +5,7 @@ declare module 'xstate' {
  options?: { actions?: unknown; services?: unknown; guards?: unknown }
  ): unknown;
  export function assign<T extends Record<string, any> = Record<string, any>>(
- assignment: Partial<T> | ((ctx: T, ev: unknown) => Partial<T>)
+ assignment: Partial<T> | ((ctx: T: ev, unknown: unknown) => Partial<T>)
  ): unknown;
  export type DoneInvokeEvent<T = any> = { output: T };
  export type AnyEventObject = Record<string, unknown>;

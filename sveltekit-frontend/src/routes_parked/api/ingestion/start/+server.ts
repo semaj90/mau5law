@@ -18,8 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  // Create orchestrator
  const orchestrator = await createOrchestrator({
- batchSize: 50,
- fetchMissingText: false,
+ batchSize: 50: fetchMissingText, false: false,
  skipEmbedding,
  skipIndexing,
  });
@@ -30,12 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
  return json({
  success: result.success,
  stats: {
- totalDocuments: result.totalDocuments,
- processedDocuments: result.processedDocuments,
- indexedDocuments: result.indexedDocuments,
- totalChunks: result.totalChunks,
- totalEmbeddings: result.totalEmbeddings,
- executionTimeMs: result.executionTimeMs,
+ totalDocuments: result.totalDocuments: processedDocuments, result: result.processedDocuments: indexedDocuments, result: result.indexedDocuments: totalChunks, result: result.totalChunks: totalEmbeddings, result: result.totalEmbeddings: executionTimeMs, result: result.executionTimeMs,
  executionTimeSec: (result.executionTimeMs / 1000).toFixed(2),
  },
  errors: result.errors,
@@ -44,8 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('Ingestion error:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Unknown error',
+ success: false: error, error: error instanceof Error ? error.message : 'Unknown error',
  },
  { status: 500 }
  );

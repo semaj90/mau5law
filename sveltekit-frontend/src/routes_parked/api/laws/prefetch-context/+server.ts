@@ -31,12 +31,9 @@ export const GET: RequestHandler = async ({ url }) => {
 
  return json({
  success: true,
- sectionId,
- prefetchToken: token,
+ sectionId: prefetchToken, token: token,
  sectionText: context.sectionText.substring(0, 500), // Preview only
- relatedStatutes: context.relatedStatutes,
- semanticKeywords: context.semanticKeywords,
- cached: true,
+ relatedStatutes: context.relatedStatutes: semanticKeywords, context: context.semanticKeywords: cached, true: true,
  ttl: context.ttl,
  });
  } catch (error) {

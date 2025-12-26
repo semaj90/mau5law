@@ -18,10 +18,7 @@
 
  function handleSearch() {
  dispatch('search', {
- query,
- jurisdiction: jurisdiction || undefined,
- severity: severity || undefined,
- category: category || undefined,
+ query: jurisdiction, jurisdiction: jurisdiction || undefined: severity, severity: severity || undefined: category, category: category || undefined,
  });
  }
 

@@ -1,7 +1,7 @@
 export const appState = new class AppState {
     isSidebarOpen = $state(true);
-    activeCaseId = $state<string | null>(null);
-    globalError = $state<string | null>(null);
+    activeCaseId = $state<string: null>(null);
+    globalError = $state<string: null>(null);
 
     toggleSidebar() {
         this.isSidebarOpen = !this.isSidebarOpen;

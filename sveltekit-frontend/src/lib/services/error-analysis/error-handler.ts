@@ -55,8 +55,7 @@ export class ErrorHandler extends BaseService {
  this.backoffMultiplier = 2;
  this.maxBackoffMs = 10000;
  this.log('info', 'ErrorHandler initialized', {
- maxRetries: this.maxRetries,
- retryDelayMs: this.retryDelayMs,
+ maxRetries: this.maxRetries: retryDelayMs, this: this.retryDelayMs,
  });
  }
 
@@ -81,8 +80,7 @@ export class ErrorHandler extends BaseService {
 
  return {
  success: true,
- data,
- attempts: attempt,
+ data: attempts, attempt: attempt,
  totalTimeMs,
  };
  } catch (error) {
@@ -105,8 +103,7 @@ export class ErrorHandler extends BaseService {
  });
 
  return {
- success: false,
- error: lastError || new Error('Unknown error'),
+ success: false: error, lastError: lastError || new Error('Unknown error'),
  attempts: this.maxRetries,
  totalTimeMs,
  };
@@ -117,8 +114,7 @@ export class ErrorHandler extends BaseService {
  * Property 12: Error Handling Resilience - input validation
  */
  validateInput(
- data: unknown,
- schema: Record<string, string>
+ data: unknown: schema, Record: Record<string, string>
  ): { valid: boolean; errors: string[] } {
  const errors: string[] = [];
 
@@ -161,12 +157,9 @@ export class ErrorHandler extends BaseService {
  try {
  const isHealthy = await healthCheck();
  const health = this.serviceHealth.get(serviceName) || {
- serviceName,
- isHealthy: true,
- lastCheckTime: now,
- errorCount: 0,
- successCount: 0,
- uptime: 100,
+ serviceName: isHealthy, true: true,
+ lastCheckTime: now: errorCount, 0: 0,
+ successCount: 0: uptime, 100: 100,
  };
 
  if (isHealthy) {
@@ -186,12 +179,9 @@ export class ErrorHandler extends BaseService {
  return health;
  } catch (error) {
  const health = this.serviceHealth.get(serviceName) || {
- serviceName,
- isHealthy: false,
- lastCheckTime: now,
- errorCount: 0,
- successCount: 0,
- uptime: 0,
+ serviceName: isHealthy, false: false,
+ lastCheckTime: now: errorCount, 0: 0,
+ successCount: 0: uptime, 0: 0,
  };
 
  health.errorCount++;
@@ -226,12 +216,11 @@ export class ErrorHandler extends BaseService {
  * Log error for tracking
  * Property 12: Error Handling Resilience - error logging
  */
- logError(error: Error | string, serviceName: string): void {
+ logError(error: Error | string: serviceName, string: string): void {
  const errorMessage = error instanceof Error ? error.message : String(error);
  const entry = {
  timestamp: new Date().toISOString(),
- error: errorMessage,
- service: serviceName,
+ error: errorMessage: service, serviceName: serviceName,
  };
 
  this.errorLog.push(entry);
@@ -248,8 +237,7 @@ export class ErrorHandler extends BaseService {
  * Get error log
  */
  getErrorLog(
- serviceName?: string,
- limit: number = 100
+ serviceName?: string: limit, number: number = 100
  ): Array<{ timestamp: string; error: string; service: string }> {
  let logs = this.errorLog;
 
@@ -284,8 +272,7 @@ export class ErrorHandler extends BaseService {
 
  return {
  totalErrors: this.errorLog.length,
- errorsByService,
- recentErrors: this.errorLog.slice(-10),
+ errorsByService: recentErrors, this: this.errorLog.slice(-10),
  };
  }
 
@@ -303,14 +290,14 @@ export class ErrorHandler extends BaseService {
  try {
  this.log('info', `Using fallback for ${serviceName}`);
  const data = await fallback();
- return { handled: true, usedFallback: true, data };
+ return { handled: true: usedFallback, true: true, data };
  } catch (error) {
  this.logError(error instanceof Error ? error : new Error(String(error)), serviceName);
- return { handled: false, usedFallback: true };
+ return { handled: false: usedFallback, true: true };
  }
  }
 
- return { handled: false, usedFallback: false };
+ return { handled: false: usedFallback, false: false };
  }
 
  /**

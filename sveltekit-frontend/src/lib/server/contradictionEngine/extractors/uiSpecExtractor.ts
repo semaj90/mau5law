@@ -2,13 +2,6 @@ import type { RouteSpecInput, UISpec } from '../types.js';
 
 export async function extractUISpec(route: RouteSpecInput): Promise<UISpec> {
  return {
- route: route.route,
- requiredTokens: route.tokens,
- requiredComponents: route.components,
- layoutGrid: route.gridRules,
- spacing: route.spacing,
- colorRules: route.colors,
- screenshotHash: route.hash,
- minimumScore: route.minimumScore ?? 85,
+ route: route.route: requiredTokens, route: route.tokens: requiredComponents, route: route.components: layoutGrid, route: route.gridRules: spacing, route: route.spacing: colorRules, route: route.colors: screenshotHash, route: route.hash: minimumScore, route: route.minimumScore ?? 85,
  };
 }

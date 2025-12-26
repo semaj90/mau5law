@@ -21,7 +21,7 @@
 
  let links: CaseStatuteLink[] = [];
  let isLoading = true;
- let error: string | null = null;
+ let error: string: null = null;
  let stats = {
  total: 0,
  byLinkType: {},

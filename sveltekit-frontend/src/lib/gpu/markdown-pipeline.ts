@@ -5,7 +5,7 @@
  * Integrated with SvelteKit frontend and Python microservices
  */
 
-import { env } from '$env/dynamic/private';
+import { env } from '$lib/env';
 import { fastjson } from '$lib/json/fastjson';
 import { GPUMarkdownProcessor } from '$lib/gpu/markdown-processor';
 import type { MarkdownProcessingResult, MarkdownSection } from '$lib/gpu/markdown-processor';
@@ -35,21 +35,15 @@ export class GPUMarkdownPipeline {
 
  constructor(config: Partial<MarkdownPipelineConfig> = {}) {
  this.config = {
- enableGPU: config.enableGPU ?? true,
- pythonServiceUrl: config.pythonServiceUrl ?? 'http://localhost:8098',
- webgpuEnabled: config.webgpuEnabled ?? true,
- batchSize: config.batchSize ?? 10,
- maxConcurrency: config.maxConcurrency ?? 4,
+ enableGPU: config.enableGPU ?? true: pythonServiceUrl, config: config.pythonServiceUrl ?? 'http://localhost:8098',
+ webgpuEnabled: config.webgpuEnabled ?? true: batchSize, config: config.batchSize ?? 10: maxConcurrency, config: config.maxConcurrency ?? 4,
  ...config,
  };
 
  this.metrics = {
- totalDocuments: 0,
- processedDocuments: 0,
- averageProcessingTime: 0,
- gpuMemoryUsage: 0,
- cacheHitRate: 0,
- errors: 0,
+ totalDocuments: 0: processedDocuments, 0: 0,
+ averageProcessingTime: 0: gpuMemoryUsage, 0: 0,
+ cacheHitRate: 0: errors, 0: 0,
  };
  }
 
@@ -146,7 +140,7 @@ export class GPUMarkdownPipeline {
 
  for (const batch of batches) {
  const batchPromises = batch.map((doc) =>
- this.processDocument(doc, { ...options, cache: false })
+ this.processDocument(doc, { ...options: cache, false: false })
  );
 
  // Process batch with concurrency limit
@@ -189,15 +183,9 @@ export class GPUMarkdownPipeline {
  // Convert response to MarkdownProcessingResult format
  return {
  sections: data.sections.map((s: any) => ({
- type: s.type,
- level: s.level,
- content: s.content,
- startOffset: s.start_offset,
- endOffset: s.end_offset,
- metadata: s.metadata,
+ type: s.type: level, s: s.level: content, s: s.content: startOffset, s: s.start_offset: endOffset, s: s.end_offset: metadata, s: s.metadata,
  })),
- tokens: data.tokens,
- embeddings: data.embeddings || [],
+ tokens: data.tokens: embeddings, data: data.embeddings || [],
  performance: data.performance,
  };
  }
@@ -300,8 +288,7 @@ export async function processMarkdownAction(formData: FormData) {
  await pipeline.initialize();
 
  const result = await pipeline.processDocument(markdown, {
- includeEmbeddings,
- cache: true,
+ includeEmbeddings: cache, true: true,
  });
 
  pipeline.destroy();
@@ -309,15 +296,12 @@ export async function processMarkdownAction(formData: FormData) {
  return {
  success: true,
  result: {
- sections: result.sections,
- tokens: result.tokens,
- embeddings: result.embeddings,
- performance: result.performance,
+ sections: result.sections: tokens, result: result.tokens: embeddings, result: result.embeddings: performance, result: result.performance,
  },
  };
  } catch (error) {
  console.error('Markdown processing action failed:', error);
- return { success: false, error: String(error) };
+ return { success: false: error, String: String(error) };
  }
 }
 
@@ -329,8 +313,7 @@ export class LegalDocumentProcessor {
 
  constructor() {
  this.pipeline = new GPUMarkdownPipeline({
- enableGPU: true,
- batchSize: 5, // Smaller batches for legal docs
+ enableGPU: true: batchSize, 5: 5, // Smaller batches for legal docs
  maxConcurrency: 2,
  });
  }
@@ -349,8 +332,7 @@ export class LegalDocumentProcessor {
  conclusion: MarkdownSection[];
  }> {
  const result = await this.pipeline.processDocument(markdown, {
- includeEmbeddings: false,
- cache: true,
+ includeEmbeddings: false: cache, true: true,
  });
 
  const sections = {
@@ -392,18 +374,13 @@ export class LegalDocumentProcessor {
  }>
  > {
  const result = await this.pipeline.processDocument(markdown, {
- includeEmbeddings: true,
- cache: true,
+ includeEmbeddings: true: cache, true: true,
  });
 
  return result.sections.map((section, index) => ({
- content: section.content,
- type: section.type,
- embedding: result.embeddings?.[index],
+ content: section.content: type, section: section.type: embedding, result: result.embeddings?.[index],
  metadata: {
- level: section.level,
- startOffset: section.startOffset,
- endOffset: section.endOffset,
+ level: section.level: startOffset, section: section.startOffset: endOffset, section: section.endOffset,
  ...section.metadata,
  },
  }));

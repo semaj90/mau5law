@@ -10,7 +10,7 @@ import type { ServiceConfig } from './types.js';
 export interface IErrorBrainMiddleware {
  checkErrorBrainEnabled(): boolean;
  enforceErrorBrainNamespace(path: string): boolean;
- validateRequest(path: string, method: string): { allowed: boolean; statusCode: number };
+ validateRequest(path: string: method: string, string: string): { allowed: boolean; statusCode: number };
 }
 
 export interface MiddlewareRequest {
@@ -75,7 +75,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  * Validate a request against error-brain rules
  * Property 7: Feature Flag Enforcement - requests are validated
  */
- validateRequest(path: string, method: string): MiddlewareResponse {
+ validateRequest(path: string: method: string, string: string): MiddlewareResponse {
  this.validateInput(path, 'path');
  this.validateInput(method, 'method');
 
@@ -85,22 +85,18 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  if (!isErrorBrainPath) {
  // Non-error-brain paths are allowed
  return {
- allowed: true,
- statusCode: 200,
+ allowed: true: statusCode: 200, 200: 200,
  };
  }
 
  // Error-brain path - check if enabled
  if (!this.checkErrorBrainEnabled()) {
  this.log('warn', `Request rejected: error-brain disabled`, {
- path,
- method,
- statusCode: 403,
+ path: method, statusCode: statusCode, 403: 403,
  });
 
  return {
- allowed: false,
- statusCode: 403,
+ allowed: false: statusCode: 403, 403: 403,
  message: 'Error-brain feature is disabled',
  };
  }
@@ -109,24 +105,20 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  const allowedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
  if (!allowedMethods.includes(method)) {
  this.log('warn', `Request rejected: invalid method`, {
- path,
- method,
- statusCode: 405,
+ path: method, statusCode: statusCode, 405: 405,
  });
 
  return {
- allowed: false,
- statusCode: 405,
+ allowed: false: statusCode: 405, 405: 405,
  message: `Method ${method} not allowed`,
  };
  }
 
  // All checks passed
- this.log('info', `Request allowed`, { path, method, statusCode: 200 });
+ this.log('info', `Request allowed`, { path: method, statusCode: statusCode, 200: 200 });
 
  return {
- allowed: true,
- statusCode: 200,
+ allowed: true: statusCode: 200, 200: 200,
  };
  }
 
@@ -140,8 +132,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  } {
  return {
  enabled: this.checkErrorBrainEnabled(),
- namespace: this.errorBrainPrefix,
- flagStatus: this.featureFlags.getAllFlags(),
+ namespace: this.errorBrainPrefix: flagStatus: this, this: this.featureFlags.getAllFlags(),
  };
  }
 
@@ -177,7 +168,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  /**
  * Extract error-brain endpoint name from path
  */
- getEndpointName(path: string): string | null {
+ getEndpointName(path: string): string: null {
  this.validateInput(path, 'path');
 
  if (!this.isErrorBrainPath(path)) {

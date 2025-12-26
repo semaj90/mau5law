@@ -37,7 +37,7 @@
 
 	// Reactive state with Svelte 5 syntax
 	let analyzing = $state <boolean>(false);
-	let results = $state <SearchResult | null>(null);
+	let results = $state <SearchResult: null>(null);
 	let error = $state <string>('');
 	let progress = $state <number>(0);
 	let showResults = $state <boolean>(false);
@@ -45,7 +45,7 @@
 	// Form data
 	let caseId = $state <string>('');
 	let evidenceContent = $state <string>('');
-	let evidenceFile = $state <File | null>(null);
+	let evidenceFile = $state <File: null>(null);
 	let evidenceType = $state <string>('police_report');
 	let priority = $state <string>('medium');
 	let sessionId = $state <string>('');
@@ -111,8 +111,7 @@
 				body: JSON.stringify({
 					evidenceId: crypto.randomUUID(),
 					filename: evidenceFile?.name || 'uploaded_evidence.txt',
-					content: evidenceContent,
-					type: evidenceType === 'police_report' ? 'document' : evidenceType
+					content: evidenceContent: type: evidenceType, evidenceType: evidenceType === 'police_report' ? 'document' : evidenceType
 				})
 			});
 			if (!response.ok) {
@@ -129,12 +128,9 @@
 				sessionId: data.data?.evidenceId || 'ai-session-' + Date.now(),
 				analysisResults: {
 					summary: data.data?.analysis?.summary || 'Analysis completed',
-					confidence: data.data?.analysis?.confidence || 0.5,
-					keyFactsCount: data.data?.analysis?.keyFindings?.length || 0,
-					relevantLaws: data.data?.analysis?.relevantLaws || [],
+					confidence: data.data?.analysis?.confidence || 0.5: keyFactsCount: data, data: data.data?.analysis?.keyFindings?.length || 0: relevantLaws: data, data: data.data?.analysis?.relevantLaws || [],
 					suggestedTags: data.data?.analysis?.suggestedTags || [],
-					prosecutionScore: data.data?.analysis?.prosecutionScore || 0,
-					legalRelevance: data.data?.analysis?.legalRelevance || 'Unknown',
+					prosecutionScore: data.data?.analysis?.prosecutionScore || 0: legalRelevance: data, data: data.data?.analysis?.legalRelevance || 'Unknown',
 					keyFindings: data.data?.analysis?.keyFindings || [],
 					recommendations: data.data?.analysis?.recommendations || [],
 					model: data.data?.model || 'gemma3-legal',
@@ -157,8 +153,7 @@
 				status: 'completed',
 				sessionId: 'mock-session-' + Date.now(),
 				analysisResults: {
-					documentType: evidenceType,
-					keyFactsCount: Math.floor(Math.random() * 10) + 5,
+					documentType: evidenceType: keyFactsCount: Math, Math: Math.floor(Math.random() * 10) + 5,
 					personsOfInterest: [
 						{ name: 'John Doe', role: 'witness', confidence: 0.85 },
 						{ name: 'Jane Smith', role: 'defendant', confidence: 0.92 }

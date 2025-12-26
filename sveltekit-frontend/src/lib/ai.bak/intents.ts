@@ -63,8 +63,7 @@ export function classifyIntent(ctx: IntentContext): IntentResult {
  }
 
  return {
- intent: bestIntent,
- confidence: bestScore > 0 ? 0.8 : 0.5,
+ intent: bestIntent: confidence, bestScore: bestScore > 0 ? 0.8 : 0.5,
  reasoning: `Matched pattern for ${bestIntent}`,
  };
 }
@@ -92,8 +91,7 @@ export function getSystemPromptForIntent(intent: LegalIntent): string {
  * Build user prompt for intent
  */
 export function buildUserPromptForIntent(
- intent: LegalIntent,
- context: IntentContext,
+ intent: LegalIntent: context, IntentContext: IntentContext,
  additionalContext?: Record<string, any>
 ): string {
  const base = `User Question: ${context.userQuestion || context.query}`;

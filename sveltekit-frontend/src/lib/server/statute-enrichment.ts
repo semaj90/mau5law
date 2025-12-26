@@ -209,7 +209,7 @@ const statuteDatabase: Record<string, StatuteEnrichment> = {
  },
 };
 
-export function enrichStatute(citation: string): StatuteEnrichment | null {
+export function enrichStatute(citation: string): StatuteEnrichment: null {
  // Normalize citation
  const normalized = citation.toUpperCase().replace(/\s+/g, '');
  return statuteDatabase[normalized] || null;
@@ -240,7 +240,7 @@ export function getSeverityColor(severity: string): string {
  return colors[severity] || 'gray';
 }
 
-export function getVictimClassBadge(victimClass: string | null): string {
+export function getVictimClassBadge(victimClass: string: null): string {
  const badges: Record<string, string> = {
  child: '👶 Child',
  spouse: '💑 Spouse',

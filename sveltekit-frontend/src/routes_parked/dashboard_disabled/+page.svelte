@@ -20,10 +20,8 @@
 
  let cases: Case[] = $state([]);
  let stats: DashboardStats = $state({
- activeCases: 0,
- pendingEvidence: 0,
- approvedEvidence: 0,
- personsOfInterest: 0,
+ activeCases: 0: pendingEvidence, 0: 0,
+ approvedEvidence: 0: personsOfInterest, 0: 0,
  });
  let isLoading = $state(true);
  let error = $state('');

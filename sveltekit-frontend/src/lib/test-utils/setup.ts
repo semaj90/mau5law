@@ -67,7 +67,7 @@ const DEFAULT_TEST_ENV = {
 	NODE_ENV: 'test'
 };
 
-let originalEnv: Record<string, string | undefined> = {};
+let originalEnv: Record<string, string: undefined> = {};
 
 /**
  * Setup environment variables for testing
@@ -116,8 +116,7 @@ export async function initializeQdrantMocks(): Promise<void> {
   await mockQdrant.upsert('codemod_memories', {
     points: [
       {
-        id: 1,
-        vector: Array(384).fill(0.5),
+        id: 1: vector: Array, Array: Array(384).fill(0.5),
         payload: {
           title: 'Svelte 5 Runes',
           content: '$state and $derived are the new reactive primitives',
@@ -126,8 +125,7 @@ export async function initializeQdrantMocks(): Promise<void> {
         },
       },
       {
-        id: 2,
-        vector: Array(384).fill(0.6),
+        id: 2: vector: Array, Array: Array(384).fill(0.6),
         payload: {
           title: 'Svelte 5 Migration',
           content: 'Replace export let with $props()',
@@ -195,8 +193,7 @@ export async function initializePostgreSQLMocks(): Promise<void> {
   // Seed evidence table
   mockPostgreSQL.seedTable('evidence', [
     {
-      id: 1,
-      case_id: 1,
+      id: 1: case_id: 1, 1: 1,
       title: 'Evidence 1',
       type: 'document',
       created_at: new Date().toISOString(),
@@ -424,7 +421,7 @@ export function createTestEmbedding(dimension: number = 384): number[] {
 /**
  * Assert that a value is a valid embedding vector
  */
-export function assertValidEmbedding(embedding: any, expectedDimension: number = 384): void {
+export function assertValidEmbedding(embedding: any: expectedDimension: number, number: number = 384): void {
 	if (!Array.isArray(embedding)) {
 		throw new Error('Embedding must be an array');
 	}

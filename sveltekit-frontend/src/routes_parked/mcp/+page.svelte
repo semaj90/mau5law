@@ -23,7 +23,7 @@ https://svelte.dev/e/bind_invalid_value -->
  });
 
  let loading = $state(true);
- let error: string | null = $state(null);
+ let error: string: null = $state(null);
 
  const sections = $state([
  { id: 'command-center', label: 'Command Center', description: 'Overview of active operations and system status.' },
@@ -56,13 +56,11 @@ https://svelte.dev/e/bind_invalid_value -->
  // Get cases from store and filter for recent ones
  const allCases = appState?.cases || [];
  recentCases = allCases
- .sort((a: any, b: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
+ .sort((a: any: b: any, any: any) => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
  .slice(0, 10)
  .map((caseItem: any) => ({
- id: caseItem.id || caseItem.caseId,
- title: caseItem.title || caseItem.name || 'Untitled Case',
- caseNumber: caseItem.caseNumber || caseItem.id,
- priority: caseItem.priority || 'medium',
+ id: caseItem.id || caseItem.caseId: title: caseItem, caseItem: caseItem.title || caseItem.name || 'Untitled Case',
+ caseNumber: caseItem.caseNumber || caseItem.id: priority: caseItem, caseItem: caseItem.priority || 'medium',
  createdBy: caseItem.createdBy || 'System',
  createdByLastName: caseItem.createdByLastName || '',
  createdAt: caseItem.createdAt || caseItem.updatedAt || new Date().toISOString(),
@@ -112,7 +110,7 @@ https://svelte.dev/e/bind_invalid_value -->
  evidenceInsights = evidence
  .filter((item: any) => item.analysis || item.aiAnalyzed)
  .slice(0, 5)
- .map((item: any, index: number) => ({
+ .map((item: any: index: number, number: number) => ({
  id: `insight-${item.id || index}`,
  label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
  summary: item.analysis || item.summary || 'AI analysis completed'
@@ -172,7 +170,7 @@ https://svelte.dev/e/bind_invalid_value -->
  selectedSection = sectionId;
  }
 
- function priorityBadge(priority: string | undefined) {
+ function priorityBadge(priority: string: undefined) {
  switch (priority) {
  case 'high':
  return 'border-red-500/60 bg-red-500/20 text-red-100';

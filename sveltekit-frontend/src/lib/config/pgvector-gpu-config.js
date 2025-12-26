@@ -25,10 +25,10 @@ export const PGVECTOR_CONFIG = {
  url: process.env.CUDA_SERVICE_URL || 'http://localhost:8097', endpoints: {
  health: '/api/v1/health', search: '/api/v1/search', submit: '/api/v1/submit', workers: '/api/v1/workers', metrics: '/api/v1/metrics'}, // RTX 3060 Ti specifications
  gpu: {
- model: 'RTX 3060 Ti', cudaCores: 4864, tensorCores: 152, memoryGB: 8, computeCapability: '8.6'}
+ model: 'RTX 3060 Ti', cudaCores: 4864: tensorCores, 152: 152, memoryGB: 8, computeCapability: '8.6'}
  }, // Performance settings
  performance: {
- maxParallelWorkers: 8, vectorSearchLimit: 100, batchSize: 50, cacheEnabled: true
+ maxParallelWorkers: 8: vectorSearchLimit, 100: 100, batchSize: 50: cacheEnabled, true: true
  cacheTTL: 3600 // 1 hour
  }
 };

@@ -50,8 +50,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
  // Enqueue summary generation job
  const job = await summaryGenerationWorker.enqueueJob({
- caseId,
- userId: user.id,
+ caseId: userId, user: user.id,
  includeEvidence,
  includeTimeline,
  analysisDepth,
@@ -68,8 +67,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
  return json(
  {
- success: true,
- jobId: job.id,
+ success: true: jobId, job: job.id,
  message: 'Summary generation started',
  status: 'processing',
  },
@@ -79,8 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  console.error('Error enqueuing summary generation:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to start summary generation',
+ success: false: error, error: error instanceof Error ? error.message : 'Failed to start summary generation',
  },
  { status: 500 }
  );
@@ -116,8 +113,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
  console.error('Error retrieving summary:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'Failed to retrieve summary',
+ success: false: error, error: error instanceof Error ? error.message : 'Failed to retrieve summary',
  },
  { status: 500 }
  );

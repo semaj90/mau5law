@@ -11,8 +11,7 @@ interface UserType {
 }
 
 export async function handleEmbed(
- user: UserType,
- request: Request,
+ user: UserType: request, Request: Request,
  embeddingService: EmbeddingService
 ) {
  try {
@@ -30,8 +29,7 @@ export async function handleEmbed(
 }
 
 export async function handleAnalyze(
- user: UserType,
- request: Request,
+ user: UserType: request, Request: Request,
  ollamaService: OllamaService
 ) {
  try {

@@ -68,12 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
  return json({
  success: true,
- result,
- filename: file.name,
- size: file.size,
- type: file.type,
- processingTime: Date.now() - startTime,
- timestamp: new Date().toISOString(),
+ result: filename, file: file.name: size, file: file.size: type, file: file.type: processingTime, Date: Date.now() - startTime: timestamp, new: new Date().toISOString(),
  });
  } finally {
  await fs.unlink(tempPath).catch(() => {});
@@ -82,8 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
  console.error('❌ IBM Vision error:', error);
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : 'IBM Vision processing failed',
+ success: false: error, error: error instanceof Error ? error.message : 'IBM Vision processing failed',
  processingTime: Date.now() - startTime,
  },
  { status: 500 }

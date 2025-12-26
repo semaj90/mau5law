@@ -26,6 +26,18 @@ const REPORTS_DIR = join(ROOT, 'reports', 'phase79-leaderboard');
 
 mkdirSync(REPORTS_DIR, { recursive: true });
 
+const SEVERITY_SCORE = {
+	error: 3,
+	warn: 2,
+	info: 1
+};
+
+const RISK_WEIGHT = {
+	safe: 1,
+	medium: 2,
+	high: 3
+};
+
 // Parse CLI args
 const args = process.argv.slice(2);
 const RUN_ID = args.find(a => a.startsWith('--run='))?.split('=')[1];
@@ -47,6 +59,25 @@ function loadErrors(runId) {
 	const runFile = join(LOGS_DIR, `${runId}.jsonl`);
 	const lines = readFileSync(runFile, 'utf8').trim().split('\n');
 	return lines.map(line => JSON.parse(line));
+}
+
+function derivePackage(file) {
+	const normalized = file.replace(/\\/g, '/');
+	const parts = normalized.split('/');
+	// Capture src/<area>/<feature>
+	const srcIdx = parts.indexOf('src');
+	if (srcIdx !== -1 && parts[srcIdx + 1]) {
+		return parts.slice(srcIdx + 1, srcIdx + 3).join('/');
+	}
+	return parts.slice(0, 2).join('/');
+}
+
+function buildFingerprintCounts(errors) {
+	const counts = {};
+	for (const error of errors) {
+		counts[error.fingerprint] = (counts[error.fingerprint] || 0) + 1;
+	}
+	return counts;
 }
 
 /**
@@ -82,24 +113,45 @@ function classifyArchitecture(file) {
 
 /**
  * Calculate impact score
- * Score = (errorCount × categoryWeight × severityWeight) + cascadeMultiplier
+ * Split into impact (how much we fix) and risk (how likely we break runtime)
  */
-function calculateImpactScore(file, errorCount, errors) {
+function calculateImpactScore(file, errorCount, errors, fingerprintCounts) {
 	const { category, weight: categoryWeight } = classifyArchitecture(file);
+	const severityScore = errors.reduce((sum, e) => {
+		return sum + (SEVERITY_SCORE[e.severity] || e.severityWeight || 1);
+	}, 0) / errors.length;
 
-	// Average severity weight
-	const avgSeverity = errors.reduce((sum, e) => sum + (e.severityWeight || 1), 0) / errors.length;
-
-	// Cascade multiplier (errors that block other files)
+	const clusterSize = errors.reduce((max, e) => Math.max(max, fingerprintCounts[e.fingerprint] || 1), 1);
+	const distinctPackages = new Set(errors.map(e => derivePackage(e.projectRootRel || e.file))).size;
+	const buildBreaker = errors.some(e => (e.severity || 'error') === 'error' || /Cannot find module|is not assignable|module not found/i.test(e.message || ''));
 	const cascadeMultiplier = category === 'routes-pages' || category === 'api-endpoints' ? 1.5 : 1.0;
 
-	return Math.round((errorCount * categoryWeight * avgSeverity) * cascadeMultiplier);
+	const impact = Math.round(
+		(errorCount * categoryWeight * severityScore * cascadeMultiplier) +
+		(clusterSize * 5) +
+		(distinctPackages * 3) +
+		(buildBreaker ? 15 : 0)
+	);
+
+	return { impact, clusterSize, distinctPackages, buildBreaker };
+}
+
+function calculateRisk(errors, file) {
+	const baseRisk = Math.max(...errors.map(e => RISK_WEIGHT[e.risk] || RISK_WEIGHT.medium));
+	const sensitiveSurface = /(auth|db|database|migration|migrations|env)/i.test(file) ? 1 : 0;
+	const envTouch = errors.some(e => /\\$env\\//.test(e.message || '') || (e.domains || []).includes('config')) ? 1 : 0;
+	const patchSafety = errors.some(e => (e.patchKind || 'replace') === 'ast') ? -0.5 : 0;
+
+	const riskScore = Math.max(1, baseRisk + sensitiveSurface + envTouch + patchSafety);
+	return Number(riskScore.toFixed(2));
 }
 
 /**
  * Generate markdown leaderboard
  */
 function generateLeaderboard(errors, topN) {
+	const fingerprintCounts = buildFingerprintCounts(errors);
+
 	// Group by file
 	const fileGroups = {};
 	for (const error of errors) {
@@ -112,20 +164,27 @@ function generateLeaderboard(errors, topN) {
 	// Calculate scores
 	const scored = Object.entries(fileGroups).map(([file, fileErrors]) => {
 		const { category, weight } = classifyArchitecture(file);
-		const impactScore = calculateImpactScore(file, fileErrors.length, fileErrors);
+		const impactParts = calculateImpactScore(file, fileErrors.length, fileErrors, fingerprintCounts);
+		const riskScore = calculateRisk(fileErrors, file);
+		const priorityScore = Number((impactParts.impact / riskScore).toFixed(2));
 
 		return {
 			file,
 			errorCount: fileErrors.length,
 			category,
 			categoryWeight: weight,
-			impactScore,
+			impactScore: impactParts.impact,
+			riskScore,
+			priorityScore,
+			clusterSize: impactParts.clusterSize,
+			distinctPackages: impactParts.distinctPackages,
+			buildBreaker: impactParts.buildBreaker,
 			errors: fileErrors
 		};
 	});
 
 	// Sort by impact score
-	scored.sort((a, b) => b.impactScore - a.impactScore);
+	scored.sort((a, b) => b.priorityScore - a.priorityScore);
 
 	// Generate markdown
 	const md = [];
@@ -164,15 +223,15 @@ function generateLeaderboard(errors, topN) {
 
 	// Top N files
 	md.push(`## 🎯 Top ${Math.min(topN, scored.length)} Files by Impact Score\n`);
-	md.push(`| Rank | File | Errors | Category | Weight | Impact | Fix Priority |`);
-	md.push(`|------|------|--------|----------|--------|--------|--------------|`);
+	md.push(`| Rank | File | Errors | Impact | Risk | Impact/Risk | Category | Packages | Cluster |`);
+	md.push(`|------|------|--------|--------|------|-------------|----------|----------|---------|`);
 
 	for (let i = 0; i < Math.min(topN, scored.length); i++) {
 		const item = scored[i];
 		const shortPath = relative(ROOT, item.file);
-		const priority = item.impactScore > 100 ? 'P0' : item.impactScore > 50 ? 'P1' : 'P2';
+		const priority = item.priorityScore > 60 ? 'P0' : item.priorityScore > 30 ? 'P1' : 'P2';
 
-		md.push(`| ${i + 1} | \`${shortPath}\` | ${item.errorCount} | ${item.category} | ${item.categoryWeight} | ${item.impactScore} | **${priority}** |`);
+		md.push(`| ${i + 1} | \`${shortPath}\` | ${item.errorCount} | ${item.impactScore} | ${item.riskScore} | **${item.priorityScore} (${priority})** | ${item.category} | ${item.distinctPackages} | ${item.clusterSize} |`);
 	}
 	md.push('');
 
@@ -185,7 +244,11 @@ function generateLeaderboard(errors, topN) {
 		md.push(`### ${i + 1}. ${shortPath}`);
 		md.push(`- **Errors:** ${item.errorCount}`);
 		md.push(`- **Category:** ${item.category}`);
-		md.push(`- **Impact Score:** ${item.impactScore}`);
+		md.push(`- **Impact:** ${item.impactScore}`);
+		md.push(`- **Risk:** ${item.riskScore}`);
+		md.push(`- **Impact/Risk:** ${item.priorityScore}`);
+		md.push(`- **Cluster Size:** ${item.clusterSize} | **Packages:** ${item.distinctPackages}`);
+		md.push(`- **Build Breaker:** ${item.buildBreaker ? 'yes' : 'no'}`);
 		md.push('');
 
 		// Group errors by pattern
@@ -207,23 +270,23 @@ function generateLeaderboard(errors, topN) {
 	// Fix recommendations
 	md.push(`## 🔧 Fix Recommendations\n`);
 	md.push(`### P0 (Critical - Impact > 100)`);
-	const p0 = scored.filter(s => s.impactScore > 100);
+	const p0 = scored.filter(s => s.priorityScore > 60);
 	for (const item of p0.slice(0, 10)) {
 		const shortPath = relative(ROOT, item.file);
-		md.push(`- [ ] \`${shortPath}\` (${item.errorCount} errors, score: ${item.impactScore})`);
+		md.push(`- [ ] \`${shortPath}\` (${item.errorCount} errors, impact/risk: ${item.priorityScore})`);
 	}
 	md.push('');
 
 	md.push(`### P1 (High - Impact 50-100)`);
-	const p1 = scored.filter(s => s.impactScore > 50 && s.impactScore <= 100);
+	const p1 = scored.filter(s => s.priorityScore > 30 && s.priorityScore <= 60);
 	for (const item of p1.slice(0, 10)) {
 		const shortPath = relative(ROOT, item.file);
-		md.push(`- [ ] \`${shortPath}\` (${item.errorCount} errors, score: ${item.impactScore})`);
+		md.push(`- [ ] \`${shortPath}\` (${item.errorCount} errors, impact/risk: ${item.priorityScore})`);
 	}
 	md.push('');
 
 	md.push(`### P2 (Medium - Impact < 50)`);
-	const p2 = scored.filter(s => s.impactScore <= 50);
+	const p2 = scored.filter(s => s.priorityScore <= 30);
 	md.push(`- ${p2.length} files remaining`);
 	md.push('');
 
@@ -234,10 +297,10 @@ function generateLeaderboard(errors, topN) {
  * Main execution
  */
 async function main() {
-	const errors = loadErrors(RUN_ID);
-	console.log(`✅ Loaded ${errors.length} errors\n`);
+const errors = loadErrors(RUN_ID);
+console.log(`✅ Loaded ${errors.length} errors\n`);
 
-	const markdown = generateLeaderboard(errors, TOP_N);
+const markdown = generateLeaderboard(errors, TOP_N);
 
 	const outFile = join(REPORTS_DIR, `${RUN_ID}-leaderboard.md`);
 	writeFileSync(outFile, markdown);
@@ -257,16 +320,18 @@ async function main() {
 		.map(([file, fileErrors]) => ({
 			file,
 			errorCount: fileErrors.length,
-			impactScore: calculateImpactScore(file, fileErrors.length, fileErrors)
+			impactScore: calculateImpactScore(file, fileErrors.length, fileErrors, buildFingerprintCounts(errors)).impact,
+			riskScore: calculateRisk(fileErrors, file)
 		}))
-		.sort((a, b) => b.impactScore - a.impactScore);
+		.map(item => ({ ...item, priorityScore: Number((item.impactScore / item.riskScore).toFixed(2)) }))
+		.sort((a, b) => b.priorityScore - a.priorityScore);
 
 	console.log('📊 TOP 10 FILES BY IMPACT\n');
 	for (let i = 0; i < Math.min(10, scored.length); i++) {
 		const item = scored[i];
 		const shortPath = relative(ROOT, item.file);
 		console.log(`${i + 1}. ${shortPath}`);
-		console.log(`   Errors: ${item.errorCount} | Impact: ${item.impactScore}\n`);
+		console.log(`   Errors: ${item.errorCount} | Impact: ${item.impactScore} | Risk: ${item.riskScore} | Impact/Risk: ${item.priorityScore}\n`);
 	}
 
 	console.log(`✅ Leaderboard generated!\n`);

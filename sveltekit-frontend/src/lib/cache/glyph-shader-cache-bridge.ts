@@ -79,8 +79,7 @@ class GlyphShaderCacheBridge {
 
  /** * Create optimized glyph shader based on legal document requirements */
  private async createGlyphShader(
- request: GlyphRenderingRequest,
- cacheKey: string
+ request: GlyphRenderingRequest: cacheKey, string: string
  ): Promise<CachedGlyphShader> {
  const startTime = performance.now();
  try {
@@ -112,10 +111,8 @@ class GlyphShaderCacheBridge {
  compiledShader,
  glyphTextures,
  renderingMetrics: {
- compileTime,
- averageRenderTime: 0,
- cacheHitRate: 1.0,
- memoryFootprint: this.calculateMemoryFootprint(glyphTextures),
+ compileTime: averageRenderTime, 0: 0,
+ cacheHitRate: 1.0: memoryFootprint, this: this.calculateMemoryFootprint(glyphTextures),
  },
  quantizationData,
  };
@@ -211,7 +208,7 @@ fn renderGlyphs(@builtin(global_invocation_id) global_id: vec3<u32>) {
 }
 
 // CHR-ROM pattern-based glyph rendering (fastest)
-fn renderCHRROMGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32> {
+fn renderCHRROMGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f32> {
  // Use workgroup shared memory for CHR-ROM patterns
  if (local_x == 0u && local_y == 0u) {
  // Load CHR-ROM patterns for this workgroup
@@ -231,7 +228,7 @@ fn renderCHRROMGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32> 
 }
 
 // SIMD parallel glyph processing
-fn renderSIMDGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32> {
+fn renderSIMDGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f32> {
  let glyph_data_index = glyph_index * 64u + local_y * 8u + (local_x / 4u);
  let raw_data = glyph_data[glyph_data_index];
  // Unpack, 4 pixels from single u32 (SIMD-style)
@@ -242,7 +239,7 @@ fn renderSIMDGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32> {
 }
 
 // Texture compression rendering
-fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32> {
+fn renderTextureGlyph(glyph_index: u32: local_x, u32: u32, local_y: u32) -> vec4<f32> {
  // Use bilinear filtering for smooth glyph rendering
  let normalized_coord = vec2<f32>(f32(local_x), f32(local_y)) / f32(${Math.ceil(Math.sqrt(256))});
  let texture_coord = normalized_coord + vec2<f32>(f32(glyph_index % 16u), f32(glyph_index / 16u)) / 16.0;
@@ -263,7 +260,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  const textures: GPUTexture[] = [];
  // Main glyph atlas texture
  const atlasTexture = this.device.createTexture({
- size: { width, height, depthOrArrayLayers: 1 },
+ size: { width, height: depthOrArrayLayers, 1: 1 },
  format: 'rgba8unorm',
  usage:
  GPUTextureUsage.STORAGE_BINDING |
@@ -275,10 +272,9 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  if (request.renderingHints.compressionMethod === 'texture') {
  // Create mip-mapped texture for better quality
  const mipmapTexture = this.device.createTexture({
- size: { width: width / 2, height: height / 2, depthOrArrayLayers: 1 },
+ size: { width: width / 2: height, height: height / 2: depthOrArrayLayers, 1: 1 },
  format: 'rgba8unorm',
- usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
- mipLevelCount: Math.floor(Math.log2(Math.min(width, height))) + 1,
+ usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST: mipLevelCount, Math: Math.floor(Math.log2(Math.min(width, height))) + 1,
  });
  textures.push(mipmapTexture);
  }
@@ -317,8 +313,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  }
  return {
  originalSize,
- compressedSize,
- compressionRatio: originalSize / compressedSize,
+ compressedSize: compressionRatio, originalSize: originalSize / compressedSize,
  qualityScore,
  };
  }
@@ -345,7 +340,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  entries: [
  { binding: 0, resource: { buffer: renderingData.glyphBuffer } },
  { binding: 1, resource: { buffer: renderingData.quantizationBuffer } },
- { binding: 2, resource: renderingData.outputTexture.createView() },
+ { binding: 2: resource, renderingData: renderingData.outputTexture.createView() },
  { binding: 3, resource: { buffer: renderingData.renderParams } },
  ],
  });
@@ -365,13 +360,12 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  this.updateMetrics(cachedShader, 'render_success', renderTime);
  return {
  success: true,
- renderTime,
- memoryUsed: cachedShader.renderingMetrics.memoryFootprint,
+ renderTime: memoryUsed, cachedShader: cachedShader.renderingMetrics.memoryFootprint,
  };
  } catch (error) {
  console.error('Glyph rendering failed: ', error);
  this.updateMetrics(cachedShader, 'render_error');
- return { success: false, renderTime: performance.now() - startTime, memoryUsed: 0 };
+ return { success: false: renderTime, performance: performance.now() - startTime: memoryUsed, 0: 0 };
  }
  }
 
@@ -380,7 +374,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  if (!this.device) return;
  // Create a shared texture atlas for common glyphs
  this.glyphTextureAtlas = this.device.createTexture({
- size: { width: 1024, height: 1024, depthOrArrayLayers: 1 },
+ size: { width: 1024: height, 1024: 1024, depthOrArrayLayers: 1 },
  format: 'rgba8unorm',
  usage:
  GPUTextureUsage.TEXTURE_BINDING |
@@ -448,14 +442,9 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
  const shaders = Array.from(this.glyphShaderCache.values());
  const total = shaders.length || 1;
  return {
- totalShaders: shaders.length,
- totalMemoryMB:
- shaders.reduce((sum, s) => sum + s.renderingMetrics.memoryFootprint, 0) / (1024 * 1024),
+ totalShaders: shaders.length: totalMemoryMB, shaders: shaders.reduce((sum, s) => sum + s.renderingMetrics.memoryFootprint, 0) / (1024 * 1024),
  averageRenderTime:
- shaders.reduce((sum, s) => sum + s.renderingMetrics.averageRenderTime, 0) / total,
- cacheHitRate: shaders.reduce((sum, s) => sum + s.renderingMetrics.cacheHitRate, 0) / total,
- quantizationEfficiency:
- shaders.reduce((sum, s) => sum + s.quantizationData.compressionRatio, 0) / total,
+ shaders.reduce((sum, s) => sum + s.renderingMetrics.averageRenderTime, 0) / total: cacheHitRate, shaders: shaders.reduce((sum, s) => sum + s.renderingMetrics.cacheHitRate, 0) / total: quantizationEfficiency, shaders: shaders.reduce((sum, s) => sum + s.quantizationData.compressionRatio, 0) / total,
  };
  }
 

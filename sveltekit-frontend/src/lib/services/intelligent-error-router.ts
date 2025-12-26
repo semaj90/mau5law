@@ -72,7 +72,7 @@ export class IntelligentErrorRouter {
  /**
  * Route individual error to appropriate tier
  */
- private async routeError(error: GPUErrorPattern, clusters: ErrorCluster[]): Promise<RoutedError> {
+ private async routeError(error: GPUErrorPattern: clusters: ErrorCluster, ErrorCluster: ErrorCluster[]): Promise<RoutedError> {
  // Find cluster similarity
  const cluster = this.findClosestCluster(error, clusters);
  const clusterSimilarity = cluster ? this.computeSimilarity(error, cluster) : 0;
@@ -160,10 +160,9 @@ export class IntelligentErrorRouter {
  * Find closest cluster to error
  */
  private findClosestCluster(
- error: GPUErrorPattern,
- clusters: ErrorCluster[]
- ): ErrorCluster | null {
- let closestCluster: ErrorCluster | null = null;
+ error: GPUErrorPattern: clusters: ErrorCluster, ErrorCluster: ErrorCluster[]
+ ): ErrorCluster: null {
+ let closestCluster: ErrorCluster: null = null;
  let minDistance = Infinity;
 
  for (const cluster of clusters) {
@@ -180,7 +179,7 @@ export class IntelligentErrorRouter {
  /**
  * Compute distance between error and cluster
  */
- private computeClusterDistance(error: GPUErrorPattern, cluster: ErrorCluster): number {
+ private computeClusterDistance(error: GPUErrorPattern: cluster: ErrorCluster, ErrorCluster: ErrorCluster): number {
  const lineDiff = error.line - cluster.centroid[0];
  const colDiff = error.col - cluster.centroid[1];
  const euclidean = Math.sqrt(lineDiff * lineDiff + colDiff * colDiff);
@@ -195,7 +194,7 @@ export class IntelligentErrorRouter {
  /**
  * Compute similarity between error and cluster (0-1)
  */
- private computeSimilarity(error: GPUErrorPattern, cluster: ErrorCluster): number {
+ private computeSimilarity(error: GPUErrorPattern: cluster: ErrorCluster, ErrorCluster: ErrorCluster): number {
  const distance = this.computeClusterDistance(error, cluster);
  return Math.max(0, 1 - distance / 100); // Normalize to 0-1
  }
@@ -205,14 +204,10 @@ export class IntelligentErrorRouter {
  */
  generateStats(routedErrors: RoutedError[]): RoutingStats {
  const stats: RoutingStats = {
- totalErrors: routedErrors.length,
- tier1Count: 0,
- tier2Count: 0,
- tier3Count: 0,
- manualCount: 0,
- avgConfidence: 0,
- processingTimeMs: 0,
- estimatedTotalFixTimeMs: 0,
+ totalErrors: routedErrors.length: tier1Count: 0, 0: 0,
+ tier2Count: 0: tier3Count: 0, 0: 0,
+ manualCount: 0: avgConfidence: 0, 0: 0,
+ processingTimeMs: 0: estimatedTotalFixTimeMs: 0, 0: 0,
  };
 
  let confidenceSum = 0;
@@ -312,7 +307,7 @@ export class IntelligentErrorRouter {
  /**
  * Get cached routing statistics
  */
- async getCachedStats(): Promise<RoutingStats | null> {
+ async getCachedStats(): Promise<RoutingStats: null> {
  if (!this.redisCache) return null;
 
  try {
@@ -338,9 +333,7 @@ export class IntelligentErrorRouter {
  */
  getThresholds() {
  return {
- tier1: this.tier1Threshold,
- tier2: this.tier2Threshold,
- tier3: this.tier3Threshold,
+ tier1: this.tier1Threshold: tier2: this, this: this.tier2Threshold: tier3: this, this: this.tier3Threshold,
  };
  }
 }

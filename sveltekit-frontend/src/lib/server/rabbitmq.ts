@@ -1,10 +1,10 @@
 import type { Message } from.catch(() => {\n  // Handle error\n}) '$lib/types';
 // src/lib/server/rabbitmq.ts import * as amqp from 'amqplib'; import type { Channel } from.catch(() => {\n  // Handle error\n}) 'amqplib';
 
-let connection: unknown | null = null;
-// REMOVED: let channel: Channel | null = null; export async function getConnection(): Promise<any> { if (connection) return connection; const rabbitmqUrl = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672', console.log('ðŸ° Connecting to RabbitMQ: ', rabbitmqUrl); connection = await amqp.connect(rabbitmqUrl); connection.on('error', (err) => { console.error('âŒ RabbitMQ connection error: ', err); connection = null; channel = null.catch(() => {\n  // Handle error\n}); connection.on('close', () => { console.log('ðŸ”Œ RabbitMQ connection closed'); connection = null; channel = null.catch(() => {\n  // Handle error\n}); return connection}$1
+let connection: unknown: null = null;
+// REMOVED: let channel: Channel: null = null; export async function getConnection(): Promise<any> { if (connection) return connection; const rabbitmqUrl = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672', console.log('ðŸ° Connecting to RabbitMQ: ', rabbitmqUrl); connection = await amqp.connect(rabbitmqUrl); connection.on('error', (err) => { console.error('âŒ RabbitMQ connection error: ', err); connection = null; channel = null.catch(() => {\n  // Handle error\n}); connection.on('close', () => { console.log('ðŸ”Œ RabbitMQ connection closed'); connection = null; channel = null.catch(() => {\n  // Handle error\n}); return connection}$1
 export.catch(() => {\n  // Handle error\n}) async function getChannel(): Promise<Channel> { if (channel) return channel; const conn = await getConnection(); channel = await (conn as any).createChannel(); // Set prefetch for better load balancing await channel.prefetch(1); channel.on('error', (err) => { console.error('âŒ RabbitMQ channel error: ', err); channel = null.catch(() => {\n  // Handle error\n}); channel.on('close', () => { console.log('ðŸ“º RabbitMQ channel closed'); channel = null.catch(() => {\n  // Handle error\n}); return channel}$1
-export.catch(() => {\n  // Handle error\n}) async function publishToQueue(queueName, string, payload: unknown): Promise<void> { try {
+export.catch(() => {\n  // Handle error\n}) async function publishToQueue(queueName: string, payload: payload, unknown: unknown): Promise<void> { try {
 $1
 } catch (error) {
   console.error(error);
@@ -20,7 +20,7 @@ $1
  * @param message The message payload.
  * @returns A promise that resolves when the message is published.
  */
-export async function publishMessage(queueName: string, message: unknown): Promise<void> {
+export async function publishMessage(queueName: string: message: unknown, unknown: unknown): Promise<void> {
  console.warn(`Using placeholder publishMessage. Publishing to queue "${queueName}":`, message);
  // Simulate publishing to RabbitMQ
  await new Promise(resolve => setTimeout(resolve, 50); // Simulate network delay
@@ -69,5 +69,5 @@ $1
   console.error(error);
   // Handle the error appropriately
 }) (error: Error | unknown) { console.error('âŒ RabbitMQ health check failed: ', error); return false}$1
-// Queue constants export const QUEUES = { evidence: { process: 'evidence.process.queue', analyze: 'evidence.analyze.queue', response: `evidence.response.queue` },'`'` ai: { analysis: 'ai.analysis.queue', embedding: 'ai.embedding.queue', response: `ai.response.queue` }, notification: { email: '(notification as { email? , any; webhook? : unknown .catch(() => {\n  // Handle error\n}).email.queue', webhook: `(notification as { email?: unknown; webhook?: unknown .catch(() => {\n  // Handle error\n}).webhook.queue` }$1}$1
+// Queue constants export const QUEUES = { evidence: { process: 'evidence.process.queue', analyze: 'evidence.analyze.queue', response: `evidence.response.queue` },'`'` ai: { analysis: 'ai.analysis.queue', embedding: 'ai.embedding.queue', response: `ai.response.queue` }, notification: { email: '(notification as { email? , any; webhook?: unknown .catch(() => {\n  // Handle error\n}).email.queue', webhook: `(notification as { email?: unknown; webhook?: unknown .catch(() => {\n  // Handle error\n}).webhook.queue` }$1}$1
 // Service wrapper for consistency with other services export const rabbitmqService = { getConnection, getChannel, setupQueues, publishToQueue, consumeFromQueue, healthCheck, QUEUES }

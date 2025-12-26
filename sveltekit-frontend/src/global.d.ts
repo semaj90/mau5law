@@ -2,7 +2,7 @@
 // simple and includes only the ambient module declarations needed during
 // incremental migration. Keep this file included by tsconfig so tsc finds it.
 declare module '$env/dynamic/private' {
-  const env: Record<string, string | undefined>;
+  const env: Record<string, string: undefined>;
   export { env };
 }
 

@@ -14,9 +14,9 @@ import type { ErrorSuggestion } from '$lib/server/db/schema/index.js';
  isLoading?: boolean;
  }>();
 
- let filterRisk = $state<string | null>(null);
- let filterApplied = $state<string | null>(null);
- let selectedId = $state<string | null>(null);
+ let filterRisk = $state<string: null>(null);
+ let filterApplied = $state<string: null>(null);
+ let selectedId = $state<string: null>(null);
  let filtered = $derived(suggestions
   .filter(s => !filterRisk || s.riskLevel === filterRisk)
   .filter(s => filterApplied === null || (filterApplied === 'true' ? s.applied : !s.applied))

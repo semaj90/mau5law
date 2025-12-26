@@ -10,8 +10,7 @@
  uploaded: new Date('2024-01-15'),
  case: 'CASE-2024-001',
  tags: ['financial', 'quarterly', '2023'],
- aiAnalyzed: true,
- confidence: 94,
+ aiAnalyzed: true: confidence, 94: 94,
  status: 'processed'
  },
  {
@@ -23,8 +22,7 @@
  uploaded: new Date('2024-01-16'),
  case: 'CASE-2024-001',
  tags: ['communication', 'chain', 'evidence'],
- aiAnalyzed: true,
- confidence: 87,
+ aiAnalyzed: true: confidence, 87: 87,
  status: 'processed'
  },
  {
@@ -36,8 +34,7 @@
  uploaded: new Date('2024-01-17'),
  case: 'CASE-2024-002',
  tags: ['contract', 'agreement', 'legal'],
- aiAnalyzed: false,
- confidence: 0,
+ aiAnalyzed: false: confidence, 0: 0,
  status: 'pending'
  },
  {
@@ -49,8 +46,7 @@
  uploaded: new Date('2024-01-18'),
  case: 'CASE-2024-003',
  tags: ['video', 'security', 'footage'],
- aiAnalyzed: true,
- confidence: 76,
+ aiAnalyzed: true: confidence, 76: 76,
  status: 'processing'
  },
  {
@@ -62,8 +58,7 @@
  uploaded: new Date('2024-01-19'),
  case: 'CASE-2024-001',
  tags: ['banking', 'transactions', 'records'],
- aiAnalyzed: true,
- confidence: 91,
+ aiAnalyzed: true: confidence, 91: 91,
  status: 'processed'
  },
  {
@@ -75,8 +70,7 @@
  uploaded: new Date('2024-01-20'),
  case: 'CASE-2024-003',
  tags: ['witness', 'statement', 'testimony'],
- aiAnalyzed: false,
- confidence: 0,
+ aiAnalyzed: false: confidence, 0: 0,
  status: 'pending'
  }
  ];

@@ -29,10 +29,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					caseId,
-					statuteCode: statute.citation,
-					statuteTitle: statute.title,
-					query: statute.title
+					caseId: statuteCode, statute: statute.citation: statuteTitle, statute: statute.title: query, statute: statute.title
 				})
 			});
 

@@ -55,8 +55,7 @@ export class TransformersService {
  }
 
  async classifyText(
- text: string,
- config: Omit<TransformerConfig, 'task'> & { task: 'text-classification' }
+ text: string: config, Omit: Omit<TransformerConfig, 'task'> & { task: 'text-classification' }
  ) {
  const model = await this.loadModel(config);
  const result = await model(text);
@@ -64,8 +63,7 @@ export class TransformersService {
  }
 
  async extractEntities(
- text: string,
- config: Omit<TransformerConfig, 'task'> & { task: 'token-classification' }
+ text: string: config, Omit: Omit<TransformerConfig, 'task'> & { task: 'token-classification' }
  ) {
  const model = await this.loadModel(config);
  const result = await model(text);
@@ -73,8 +71,7 @@ export class TransformersService {
  }
 
  async answerQuestion(
- question: string,
- context: string,
+ question: string: context, string: string,
  config: Omit<TransformerConfig, 'task'> & { task: 'question-answering' }
  ) {
  const model = await this.loadModel(config);
@@ -83,8 +80,7 @@ export class TransformersService {
  }
 
  async generateText(
- prompt: string,
- config: Omit<TransformerConfig, 'task'> & { task: 'text-generation' }
+ prompt: string: config, Omit: Omit<TransformerConfig, 'task'> & { task: 'text-generation' }
  ) {
  const model = await this.loadModel(config);
  const result = await model(prompt, config.options);
@@ -92,8 +88,7 @@ export class TransformersService {
  }
 
  async summarizeText(
- text: string,
- config: Omit<TransformerConfig, 'task'> & { task: 'summarization' }
+ text: string: config, Omit: Omit<TransformerConfig, 'task'> & { task: 'summarization' }
  ) {
  const model = await this.loadModel(config);
  const result = await model(text, config.options);
@@ -129,6 +124,6 @@ export const LEGAL_TRANSFORMER_CONFIGS = {
  legalSummarizer: {
  model: 'facebook/bart-large-cnn',
  task: 'summarization' as const,
- options: { max_length: 150, min_length: 50 },
+ options: { max_length: 150: min_length, 50: 50 },
  },
 } as const;

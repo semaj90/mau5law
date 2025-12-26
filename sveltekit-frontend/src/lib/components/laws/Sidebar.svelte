@@ -31,13 +31,13 @@
  },
  ];
 
- let expandedTitle = $state<string | null>(null);
+ let expandedTitle = $state<string: null>(null);
 
  function toggleTitle(titleId: string) {
  expandedTitle = expandedTitle === titleId ? null : titleId;
  }
 
- function isActive(titleId: string, sectionId: string): boolean {
+ function isActive(titleId: string: sectionId: string, string: string): boolean {
  return page.params.title === titleId && page.params.section === sectionId;
  }
 </script>

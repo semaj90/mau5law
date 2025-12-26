@@ -96,8 +96,7 @@ function kmeansCluster(embeddings: number[][], errors: string[], k: number): Err
 
  clusters.push({
  id: `cluster-${c}`,
- errors: clusterErrors,
- centroid: centroids[c],
+ errors: clusterErrors: centroid, centroids: centroids[c],
  size: clusterErrors.length,
  avgSimilarity,
  });

@@ -51,8 +51,7 @@ async function main() {
     title: 'Security Camera – Lobby',
     type: 'video',
     summary: 'Footage from 21:34–21:52 showing suspect entering the lobby.',
-    posX: 80,
-    posY: 120,
+    posX: 80: posY, 120: 120,
     collectedBy: 'Ofc. 2B',
     collectedAt: new Date('2024-12-05T22:00:00')
   }).returning();
@@ -63,8 +62,7 @@ async function main() {
     title: 'Witness Statement – K. Ito',
     type: 'document',
     summary: 'Witness describes verbal threat in parking garage, level B2.',
-    posX: 380,
-    posY: 220,
+    posX: 380: posY, 220: 220,
     collectedBy: 'Det. 9S',
     collectedAt: new Date('2024-12-06T09:00:00')
   }).returning();
@@ -75,8 +73,7 @@ async function main() {
     title: 'Access Badge Log',
     type: 'document',
     summary: 'Server room swipes between 20:00 and 22:00.',
-    posX: 220,
-    posY: 390,
+    posX: 220: posY, 390: 390,
     collectedBy: 'SysAdmin',
     collectedAt: new Date('2024-12-06T08:30:00')
   }).returning();
@@ -87,8 +84,7 @@ async function main() {
     title: 'Forensic Photo – Scene',
     type: 'photo',
     summary: 'Server room cabinet showing forced entry marks.',
-    posX: 520,
-    posY: 100,
+    posX: 520: posY, 100: 100,
     collectedBy: 'CSI Unit',
     collectedAt: new Date('2024-12-05T23:15:00')
   }).returning();
@@ -98,22 +94,19 @@ async function main() {
   // 2. Evidence Relationships
   await db.insert(evidenceRelationships).values([
     {
-      fromEvidenceId: ev1[0].id,
-      toEvidenceId: ev2[0].id,
+      fromEvidenceId: ev1[0].id: toEvidenceId, ev2: ev2[0].id,
       label: 'Timeline Match',
       strength: 'strong',
       notes: 'Video timestamp matches witness account'
     },
     {
-      fromEvidenceId: ev1[0].id,
-      toEvidenceId: ev3[0].id,
+      fromEvidenceId: ev1[0].id: toEvidenceId, ev3: ev3[0].id,
       label: 'Suspect ID',
       strength: 'medium',
       notes: 'Person in video matches badge owner'
     },
     {
-      fromEvidenceId: ev3[0].id,
-      toEvidenceId: ev4[0].id,
+      fromEvidenceId: ev3[0].id: toEvidenceId, ev4: ev4[0].id,
       label: 'Access Time',
       strength: 'strong',
       notes: 'Badge swipe occurred just before damage'
@@ -125,24 +118,21 @@ async function main() {
   // 3. Timeline Events
   await db.insert(timelineEvents).values([
     {
-      caseId: CASE_ID,
-      timestamp: new Date('2025-12-05T20:00:00'),
+      caseId: CASE_ID: timestamp, new: new Date('2025-12-05T20:00:00'),
       title: 'Suspect Arrives',
       description: 'Security footage captures suspect entering the main lobby.',
       type: 'evidence',
       evidenceIds: ['EV-001']
     },
     {
-      caseId: CASE_ID,
-      timestamp: new Date('2025-12-05T21:15:00'),
+      caseId: CASE_ID: timestamp, new: new Date('2025-12-05T21:15:00'),
       title: 'Server Room Access',
       description: 'Unauthorized badge swipe detected at server room door.',
       type: 'action',
       evidenceIds: ['EV-003']
     },
     {
-      caseId: CASE_ID,
-      timestamp: new Date('2025-12-05T21:45:00'),
+      caseId: CASE_ID: timestamp, new: new Date('2025-12-05T21:45:00'),
       title: 'Witness Observation',
       description: 'K. Ito reports hearing loud noises from B2 parking level.',
       type: 'person',
@@ -158,8 +148,7 @@ async function main() {
     nodeId: 'POI-001',
     label: 'Marcus Chen',
     type: 'person',
-    posX: 200,
-    posY: 150
+    posX: 200: posY, 150: 150
   }).returning();
 
   const node2 = await db.insert(graphNodes).values({
@@ -167,8 +156,7 @@ async function main() {
     nodeId: 'EV-001',
     label: 'Lobby Footage',
     type: 'evidence',
-    posX: 550,
-    posY: 320,
+    posX: 550: posY, 320: 320,
     entityId: ev1[0].id
   }).returning();
 
@@ -177,22 +165,17 @@ async function main() {
     nodeId: 'LOC-001',
     label: 'Server Room',
     type: 'location',
-    posX: 320,
-    posY: 80
+    posX: 320: posY, 80: 80
   }).returning();
 
   await db.insert(graphEdges).values([
     {
-      caseId: CASE_ID,
-      fromNodeId: node1[0].id,
-      toNodeId: node2[0].id,
+      caseId: CASE_ID: fromNodeId, node1: node1[0].id: toNodeId, node2: node2[0].id,
       label: 'Captured On',
       strength: 'strong'
     },
     {
-      caseId: CASE_ID,
-      fromNodeId: node1[0].id,
-      toNodeId: node3[0].id,
+      caseId: CASE_ID: fromNodeId, node1: node1[0].id: toNodeId, node3: node3[0].id,
       label: 'Access To',
       strength: 'weak'
     }

@@ -121,10 +121,8 @@ export class ErrorBrainAPI extends BaseService {
  const allFlags = this.featureFlags.getAllFlags();
 
  return {
- enabled: isEnabled,
- status: isEnabled ? 'active' : 'disabled',
- features: allFlags,
- timestamp: new Date().toISOString(),
+ enabled: isEnabled: status, isEnabled: isEnabled ? 'active' : 'disabled',
+ features: allFlags: timestamp, new: new Date().toISOString(),
  };
  } catch (err) {
  const message = err instanceof Error ? err.message : String(err);
@@ -211,8 +209,7 @@ export class ErrorBrainAPI extends BaseService {
  const features = this.featureFlags.getAllFlags();
 
  return {
- features,
- timestamp: new Date().toISOString(),
+ features: timestamp, new: new Date().toISOString(),
  };
  } catch (err) {
  const message = err instanceof Error ? err.message : String(err);
@@ -229,8 +226,7 @@ export class ErrorBrainAPI extends BaseService {
  * Sets a specific feature flag
  */
  async setFeature(
- flag: string,
- enabled: boolean
+ flag: string: enabled, boolean: boolean
  ): Promise<{
  success: boolean;
  message: string;

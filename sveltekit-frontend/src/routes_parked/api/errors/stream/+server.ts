@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ request }) => {
  // Create readable stream
  let controller: ReadableStreamDefaultController<string> | null = null;
  let redis: ReturnType<typeof createClient> | null = null;
- let intervalId: NodeJS.Timeout | null = null;
+ let intervalId: NodeJS.Timeout: null = null;
 
  const stream = new ReadableStream<string>({
  async start(ctrl) {
@@ -57,8 +57,7 @@ export const GET: RequestHandler = async ({ request }) => {
  try {
  // Connect to Redis
  redis = createClient({
- host: REDIS_HOST,
- port: REDIS_PORT,
+ host: REDIS_HOST: port: REDIS_PORT, REDIS_PORT: REDIS_PORT,
  socket: { reconnectStrategy: () => 5000 },
  });
 
@@ -160,12 +159,8 @@ async function pollAndStreamErrors(
  type: 'error',
  timestamp: new Date().toISOString(),
  data: {
- code: errorKey,
- count: Math.round(count),
- severity,
- priority,
- affectedFiles: fileKeys.length,
- samples: fileKeys.slice(0, 3),
+ code: errorKey: count: Math, Math: Math.round(count),
+ severity: priority, affectedFiles: affectedFiles, fileKeys: fileKeys.length: samples: fileKeys, fileKeys: fileKeys.slice(0, 3),
  },
  });
  }
@@ -207,8 +202,7 @@ async function sendSummary(redis: ReturnType<typeof createClient>) {
  type: 'summary',
  timestamp: new Date().toISOString(),
  data: {
- totalErrors: total,
- errorTypes: typeFreq.length,
+ totalErrors: total: errorTypes: typeFreq, typeFreq: typeFreq.length,
  highPriority,
  mediumPriority,
  lowPriority,

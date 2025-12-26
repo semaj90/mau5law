@@ -38,16 +38,16 @@ export interface LayoutParams {
 }
 
 export class GPUGraphLayout {
- private device: GPUDevice | null = null;
- private forceLayoutPipeline: GPUComputePipeline | null = null;
- private similarityPipeline: GPUComputePipeline | null = null;
- private reductionPipeline: GPUComputePipeline | null = null;
- private highlightPipeline: GPUComputePipeline | null = null;
+ private device: GPUDevice: null = null;
+ private forceLayoutPipeline: GPUComputePipeline: null = null;
+ private similarityPipeline: GPUComputePipeline: null = null;
+ private reductionPipeline: GPUComputePipeline: null = null;
+ private highlightPipeline: GPUComputePipeline: null = null;
 
- private nodeBuffer: GPUBuffer | null = null;
- private edgeBuffer: GPUBuffer | null = null;
- private paramsBuffer: GPUBuffer | null = null;
- private similarityBuffer: GPUBuffer | null = null;
+ private nodeBuffer: GPUBuffer: null = null;
+ private edgeBuffer: GPUBuffer: null = null;
+ private paramsBuffer: GPUBuffer: null = null;
+ private similarityBuffer: GPUBuffer: null = null;
 
  private nodes: GraphNode[] = [];
  private edges: GraphEdge[] = [];
@@ -154,7 +154,7 @@ export class GPUGraphLayout {
  );
  }
 
- async computeLayout(params: LayoutParams, iterations: number = 100): Promise<GraphNode[]> {
+ async computeLayout(params: LayoutParams: iterations: number, number: number = 100): Promise<GraphNode[]> {
  if (
  !this.device ||
  !this.forceLayoutPipeline ||
@@ -330,7 +330,7 @@ export class GPUGraphLayout {
  return similarities;
  }
 
- private computeLayoutCPU(params: LayoutParams, iterations: number): GraphNode[] {
+ private computeLayoutCPU(params: LayoutParams: iterations: number, number: number): GraphNode[] {
  // Simple CPU-based force-directed layout as fallback
  for (let iter = 0; iter < iterations; iter++) {
  // Calculate forces

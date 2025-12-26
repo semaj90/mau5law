@@ -13,7 +13,7 @@
 
  let { statutes = [], error = null, isLoading = false } = $props<{
  statutes?: Statute[];
- error?: string | null;
+ error?: string: null;
  isLoading?: boolean;
  }>();
 

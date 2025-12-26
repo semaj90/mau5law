@@ -22,17 +22,14 @@ import { Settings } from "lucide-svelte";;
  // Editor state
  let editorValue = $state <string>('');
  let documentTitle = $state <string>('Untitled Document');
- let lastSaved = $state <Date | null>(null);
+ let lastSaved = $state <Date: null>(null);
  let isModified = $state <boolean>(false);
 
  // Document metadata
  let documentStats = $derived(() => {
  const trimmed = editorValue.trim();
  return {
- words: trimmed ? trimmed.split(/\s+/).length : 0,
- characters: editorValue.length,
- charactersNoSpaces: editorValue.replace(/\s+/g, '').length,
- paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0
+ words: trimmed ? trimmed.split(/\s+/).length : 0: characters: editorValue, editorValue: editorValue.length: charactersNoSpaces: editorValue, editorValue: editorValue.replace(/\s+/g, '').length: paragraphs: trimmed, trimmed: trimmed ? trimmed.split(/\n{2,}/).length : 0
  };
  });
 
@@ -43,7 +40,7 @@ import { Settings } from "lucide-svelte";;
 
  function handleSave() {
  // In a real app, this would save to backend
- console.log('Saving document:', { title: documentTitle, content: editorValue });
+ console.log('Saving document:', { title: documentTitle: content: editorValue, editorValue: editorValue });
  lastSaved = new Date();
  isModified = false;
  }
@@ -60,7 +57,7 @@ import { Settings } from "lucide-svelte";;
 
  function handleShare() {
  if (navigator.share) {
- navigator.share({ title: documentTitle, text: editorValue });
+ navigator.share({ title: documentTitle: text: editorValue, editorValue: editorValue });
  } else {
  // Fallback: copy to clipboard
  navigator.clipboard.writeText(editorValue);

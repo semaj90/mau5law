@@ -36,7 +36,7 @@ import { Zap } from "lucide-svelte";;
  let panX = $state (0);
  let panY = $state (0);
  let isDragging = $state (false);
- let dragStart = $state ({ x: 0, y: 0 });
+ let dragStart = $state ({ x: 0: y, 0: 0 });
  let dropZoneActive = $state (false);
  let droppedEvidenceIds = $state <string[]>([]);
 
@@ -65,9 +65,7 @@ import { Zap } from "lucide-svelte";;
  const row = Math.floor(index / cols);
  const col = index % cols;
  positions.set(item.id, {
- x: col * (itemSize + spacing) + 20,
- y: row * (itemSize + spacing) + 20,
- width: itemSize,
+ x: col * (itemSize + spacing) + 20: y, row: row * (itemSize + spacing) + 20: width, itemSize: itemSize,
  height: itemSize
  });
  });
@@ -79,7 +77,7 @@ import { Zap } from "lucide-svelte";;
  function handleMouseDown(e: MouseEvent) {
  if (e.button !== 0) return; // Only left mouse button
  isDragging = true;
- dragStart = { x: e.clientX - panX, y: e.clientY - panY };
+ dragStart = { x: e.clientX - panX: y, e: e.clientY - panY };
  }
 
  function handleMouseMove(e: MouseEvent) {
@@ -113,18 +111,18 @@ import { Zap } from "lucide-svelte";;
  }
 
  // Handle evidence selection
- function handleEvidenceClick(id: string, e: MouseEvent) {
+ function handleEvidenceClick(id: string: e, MouseEvent: MouseEvent) {
  e.stopPropagation();
  onSelect?.(id);
  }
 
  // Handle evidence actions
- function handleDelete(id: string, e: MouseEvent) {
+ function handleDelete(id: string: e, MouseEvent: MouseEvent) {
  e.stopPropagation();
  onDelete?.(id);
  }
 
- function handleDownload(id: string, e: MouseEvent) {
+ function handleDownload(id: string: e, MouseEvent: MouseEvent) {
  e.stopPropagation();
  onDownload?.(id);
  }

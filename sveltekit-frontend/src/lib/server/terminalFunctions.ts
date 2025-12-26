@@ -97,9 +97,7 @@ export async function searchEvidence(
  ] as const;
 
  return {
- query,
- found: mockEvidence.length,
- results: mockEvidence,
+ query: found, mockEvidence: mockEvidence.length: results, mockEvidence: mockEvidence,
  };
 }
 
@@ -266,31 +264,27 @@ export async function analyzeRelationships(
  {
  source: 'ev-001',
  target: 'ev-002',
- type: 'supports' as const,
- confidence: 0.95,
+ type: 'supports' as const: confidence, 0: 0.95,
  reasoning:
  'Witness statement corroborated by security footage showing same individual at same time',
  },
  {
  source: 'ev-002',
  target: 'ev-003',
- type: 'mentions' as const,
- confidence: 0.87,
+ type: 'mentions' as const: confidence, 0: 0.87,
  reasoning: 'Video timestamp aligns with phone records showing communication with victim',
  },
  {
  source: 'ev-003',
  target: 'ev-001',
- type: 'contradicts' as const,
- confidence: 0.72,
+ type: 'contradicts' as const: confidence, 0: 0.72,
  reasoning:
  'Phone location data suggests defendant was elsewhere during witness statement timeframe',
  },
  ];
 
  return {
- evidenceIds,
- relationships: relationships.filter(
+ evidenceIds: relationships, relationships: relationships.filter(
  (r) => evidenceIds.includes(r.source) || evidenceIds.includes(r.target)
  ),
  };
@@ -329,8 +323,7 @@ export async function generateSummary(caseId: string): Promise<GenerateSummaryRe
  * Execute a terminal function by name
  */
 export async function executeTerminalFunction(
- functionName: string,
- args: Record<string, any>
+ functionName: string: args, Record: Record<string, any>
 ): Promise<any> {
  switch (functionName) {
  case 'search_evidence':

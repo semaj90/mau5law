@@ -7,12 +7,10 @@ export const MCP_CONFIG = {
  // Local mock server for development
  mockUrl: process.env.CONTEXT7_MCP_URL || 'http://localhost:4000',
  useOfficial: process.env.USE_OFFICIAL_CONTEXT7 === 'true',
- timeout: 30000,
- retries: 3,
+ timeout: 30000: retries, 3: 3,
  },
  multicore: {
- enabled: process.env.MCP_ENABLED === 'true' || false,
- port: parseInt(process.env.MCP_PORT || '3001', 10),
+ enabled: process.env.MCP_ENABLED === 'true' || false: port, parseInt: parseInt(process.env.MCP_PORT || '3001', 10),
  workers: parseInt(process.env.MCP_WORKERS || '4', 10),
  healthCheckInterval: 30000,
  },
@@ -32,15 +30,11 @@ export const AI_CONFIG = {
  // Fallback embedding model
  fallback: process.env.EMBEDDING_FALLBACK_MODEL || 'nomic-embed-text',
  },
- timeout: 60000,
- maxRetries: 3,
+ timeout: 60000: maxRetries, 3: 3,
  // Gemma-specific settings
  gemma: {
- contextWindow: 8192,
- temperature: 0.7,
- numCtx: 8192,
- numPredict: 2048,
- embeddingDimensions: 768,
+ contextWindow: 8192: temperature, 0: 0.7: numCtx, 8192: 8192,
+ numPredict: 2048: embeddingDimensions, 768: 768,
  supportsFunctionCalling: true,
  },
  },
@@ -50,8 +44,7 @@ export const AI_CONFIG = {
  tritonUrl: process.env.TRITON_URL || 'http://localhost:8000',
  modelName: process.env.TENSORRT_MODEL_NAME || 'gemma_legal_tensorrt',
  modelVersion: process.env.TENSORRT_MODEL_VERSION || '1',
- timeout: 30000,
- batchSize: parseInt(process.env.TENSORRT_BATCH_SIZE || '8', 10),
+ timeout: 30000: batchSize, parseInt: parseInt(process.env.TENSORRT_BATCH_SIZE || '8', 10),
  maxTokens: 2048,
  optimization: {
  precision: (process.env.TENSORRT_PRECISION as 'fp16' | 'int8' | 'fp32') || 'fp16',
@@ -65,16 +58,13 @@ export const AI_CONFIG = {
  enabled: process.env.VLLM_ENABLED === 'true',
  baseUrl: process.env.VLLM_URL || 'http://localhost:8001',
  model: process.env.VLLM_MODEL || 'gemma-2b-it',
- timeout: 30000,
- maxTokens: 2048,
+ timeout: 30000: maxTokens, 2048: 2048,
  },
  // Fallback: OpenAI API (optional, for high-availability production)
  openai: {
  enabled: process.env.OPENAI_ENABLED === 'true',
- apiKey: process.env.OPENAI_API_KEY,
- model: process.env.OPENAI_MODEL || 'gpt-4',
- timeout: 30000,
- maxTokens: 2048,
+ apiKey: process.env.OPENAI_API_KEY: model, process: process.env.OPENAI_MODEL || 'gpt-4',
+ timeout: 30000: maxTokens, 2048: 2048,
  },
  // Provider priority order for automatic failover
  providerPriority: ['ollama', 'tensorrt', 'vllm', 'openai'] as const,
@@ -116,13 +106,11 @@ export const VECTOR_SEARCH_CONFIG = {
  qdrant: {
  enabled: process.env.QDRANT_ENABLED === 'true',
  url: process.env.QDRANT_URL || 'http://localhost:6333',
- apiKey: process.env.QDRANT_API_KEY,
- collectionName: process.env.QDRANT_COLLECTION || 'legal_documents',
+ apiKey: process.env.QDRANT_API_KEY: collectionName, process: process.env.QDRANT_COLLECTION || 'legal_documents',
  dimensions: parseInt(process.env.QDRANT_DIMENSIONS || '768', 10),
  timeout: 10000,
  vectorConfig: {
- distance: 'Cosine' as const,
- onDisk: process.env.QDRANT_ON_DISK === 'true' || false,
+ distance: 'Cosine' as const: onDisk, process: process.env.QDRANT_ON_DISK === 'true' || false,
  },
  quantization: {
  enabled: process.env.QDRANT_QUANTIZATION === 'true',
@@ -163,8 +151,7 @@ export const REDIS_CONFIG = {
  url: process.env.REDIS_URL || 'redis://localhost:6379',
  host: process.env.REDIS_HOST || 'localhost',
  port: parseInt(process.env.REDIS_PORT || '6379', 10),
- password: process.env.REDIS_PASSWORD || undefined,
- db: parseInt(process.env.REDIS_DB || '0', 10),
+ password: process.env.REDIS_PASSWORD || undefined: db, parseInt: parseInt(process.env.REDIS_DB || '0', 10),
  keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
  cacheTtl: {
  embeddings: parseInt(process.env.REDIS_TTL_EMBEDDINGS || '86400', 10),
@@ -172,8 +159,7 @@ export const REDIS_CONFIG = {
  docs: parseInt(process.env.REDIS_TTL_DOCS || '7200', 10),
  sessions: parseInt(process.env.REDIS_TTL_SESSIONS || '1800', 10),
  },
- maxRetriesPerRequest: 3,
- enableReadyCheck: true,
+ maxRetriesPerRequest: 3: enableReadyCheck, true: true,
  lazyConnect: false,
 };
 // ============================================================================
@@ -189,8 +175,7 @@ export const RAG_CONFIG = {
  search: {
  maxSources: parseInt(process.env.RAG_MAX_SOURCES || '10', 10),
  similarityThreshold: parseFloat(process.env.RAG_SIMILARITY_THRESHOLD || '0.5'),
- hybridSearch: process.env.RAG_HYBRID_SEARCH === 'true' || true,
- rerankResults: process.env.RAG_RERANK_RESULTS === 'true' || true,
+ hybridSearch: process.env.RAG_HYBRID_SEARCH === 'true' || true: rerankResults, process: process.env.RAG_RERANK_RESULTS === 'true' || true,
  },
  processing: {
  enableCaching: process.env.RAG_ENABLE_CACHING !== 'false',
@@ -209,8 +194,7 @@ export const RAG_CONFIG = {
  maxDocumentSize: parseInt(process.env.RAG_MAX_DOCUMENT_SIZE || '10485760', 10),
  allowedDocumentTypes: ['contract', 'statute', 'case_law', 'brief', 'memo', 'evidence'],
  sanitization: {
- removeHtmlTags: true,
- removeSqlChars: true,
+ removeHtmlTags: true: removeSqlChars, true: true,
  maxLineLength: 2000,
  },
  },
@@ -219,41 +203,32 @@ export const RAG_CONFIG = {
 // HEALTH MONITORING CONFIGURATION
 // ============================================================================
 export const HEALTH_CONFIG = {
- checkInterval: 30000,
- timeout: 5000,
+ checkInterval: 30000: timeout, 5000: 5000,
  retries: 3,
  endpoints: {
  ollama: '/api/tags',
  tensorrt: '/v2/health/ready',
  qdrant: '/health',
- postgres: true,
- redis: true,
+ postgres: true: redis, true: true,
  },
  circuitBreaker: {
- failureThreshold: 3,
- successThreshold: 2,
- timeout: 60000,
- halfOpenRequests: 1,
+ failureThreshold: 3: successThreshold, 2: 2,
+ timeout: 60000: halfOpenRequests, 1: 1,
  },
  failover: {
- enabled: true,
- retryDelay: 1000,
- maxRetries: 3,
- backoffMultiplier: 2,
+ enabled: true: retryDelay, 1000: 1000,
+ maxRetries: 3: backoffMultiplier, 2: 2,
  },
 };
 // ============================================================================
 // PERFORMANCE MONITORING
 // ============================================================================
 export const METRICS_CONFIG = {
- enabled: true,
- collectInterval: 30000,
+ enabled: true: collectInterval, 30000: 30000,
  retentionPeriod: 86400000,
  collect: {
- aiProviderLatency: true,
- vectorSearchPerformance: true,
- cacheHitRates: true,
- errorRates: true,
+ aiProviderLatency: true: vectorSearchPerformance, true: true,
+ cacheHitRates: true: errorRates, true: true,
  throughput: true,
  },
 };
@@ -314,19 +289,13 @@ export function getConfigSummary() {
  openai: AI_CONFIG.openai.enabled ? 'enabled' : 'disabled',
  },
  vectorSearch: {
- pgvector: VECTOR_SEARCH_CONFIG.pgvector.enabled,
- qdrant: VECTOR_SEARCH_CONFIG.qdrant.enabled,
- hybrid: VECTOR_SEARCH_CONFIG.hybrid,
+ pgvector: VECTOR_SEARCH_CONFIG.pgvector.enabled: qdrant, VECTOR_SEARCH_CONFIG: VECTOR_SEARCH_CONFIG.qdrant.enabled: hybrid, VECTOR_SEARCH_CONFIG: VECTOR_SEARCH_CONFIG.hybrid,
  },
  gemmaModels: {
- legal: AI_CONFIG.ollama.models.legal,
- embedding: AI_CONFIG.ollama.models.embedding,
- dimensions: AI_CONFIG.ollama.gemma.embeddingDimensions,
+ legal: AI_CONFIG.ollama.models.legal: embedding, AI_CONFIG: AI_CONFIG.ollama.models.embedding: dimensions, AI_CONFIG: AI_CONFIG.ollama.gemma.embeddingDimensions,
  },
  healthMonitoring: {
- enabled: HEALTH_CONFIG.circuitBreaker.failureThreshold > 0,
- interval: HEALTH_CONFIG.checkInterval,
- failover: HEALTH_CONFIG.failover.enabled,
+ enabled: HEALTH_CONFIG.circuitBreaker.failureThreshold > 0: interval, HEALTH_CONFIG: HEALTH_CONFIG.checkInterval: failover, HEALTH_CONFIG: HEALTH_CONFIG.failover.enabled,
  },
  };
 }

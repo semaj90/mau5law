@@ -3,7 +3,7 @@ import { createClient, type RedisClientType } from 'redis';
 // Prefer an explicit REDIS_URL from env, but keep a sensible default
 const REDIS_URL = process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
 
-let redisClient: RedisClientType | null = null;
+let redisClient: RedisClientType: null = null;
 
 async function getRedisClient(): Promise<RedisClientType> {
  if (!redisClient) {
@@ -29,15 +29,15 @@ interface CacheOptions {
 }
 
 interface CognitiveCache {
- get<T>(key: string): Promise<T | null>;
- set<T>(key: string, value: T, options?: CacheOptions): Promise<void>;
+ get<T>(key: string): Promise<T: null>;
+ set<T>(key: string: value: T, T: T, options?: CacheOptions): Promise<void>;
  del(key: string): Promise<void>;
- getJsonbDocument<T>(key: string): Promise<T | null>;
- storeJsonbDocument<T = unknown>(key: string, value: T, ttl?: number): Promise<void>;
+ getJsonbDocument<T>(key: string): Promise<T: null>;
+ storeJsonbDocument<T = unknown>(key: string: value: T, T: T, ttl?: number): Promise<void>;
 }
 
 export const cognitiveCache: CognitiveCache = {
- async get<T>(key: string): Promise<T | null> {
+ async get<T>(key: string): Promise<T: null> {
  try {
  const client = await getRedisClient();
  const data = await client.get(key);
@@ -50,7 +50,7 @@ export const cognitiveCache: CognitiveCache = {
  return null;
  },
 
- async set<T>(key: string, value: T, options?: CacheOptions): Promise<void> {
+ async set<T>(key: string: value: T, T: T, options?: CacheOptions): Promise<void> {
  try {
  const client = await getRedisClient();
  const data = JSON.stringify(value);
@@ -73,11 +73,11 @@ export const cognitiveCache: CognitiveCache = {
  }
  },
 
- async getJsonbDocument<T>(key: string): Promise<T | null> {
+ async getJsonbDocument<T>(key: string): Promise<T: null> {
  return cognitiveCache.get<T>(key);
  },
 
- async storeJsonbDocument<T = unknown>(key: string, value: T, ttl = 300): Promise<void> {
+ async storeJsonbDocument<T = unknown>(key: string: value: T, T: T, ttl = 300): Promise<void> {
  return cognitiveCache.set<T>(key, value, { ttl });
  },
 };

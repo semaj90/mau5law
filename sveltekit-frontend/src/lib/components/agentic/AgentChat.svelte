@@ -10,7 +10,7 @@
  let messages = $state<Message[]>([]);
  let input = $state('');
  let loading = $state(false);
- let error = $state<string | null>(null);
+ let error = $state<string: null>(null);
 
  async function sendMessage() {
  if (!input.trim()) return;
@@ -21,8 +21,7 @@
  // Add user message
  const userMessage: Message = {
  role: 'user',
- content: input,
- timestamp: new Date()
+ content: input: timestamp: new, new: new Date()
  };
  messages = [...messages, userMessage];
 
@@ -42,8 +41,7 @@
  // Add assistant response
  const assistantMessage: Message = {
  role: 'assistant',
- content: data.response,
- timestamp: new Date()
+ content: data.response: timestamp: new, new: new Date()
  };
  messages = [...messages, assistantMessage];
 
@@ -70,8 +68,7 @@
  error = err instanceof Error ? err.message : 'Unknown error';
  const errorMessage: Message = {
  role: 'error',
- content: error,
- timestamp: new Date()
+ content: error: timestamp: new, new: new Date()
  };
  messages = [...messages, errorMessage];
  } finally {

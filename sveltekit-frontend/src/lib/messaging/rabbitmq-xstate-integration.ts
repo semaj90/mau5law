@@ -25,8 +25,8 @@ type WASMRequest = {
  replyTo?: string;
 };
 type WASMRuntimeContext = {
- wasmModule: unknown | null;
- wasmInstance: unknown | null;
+ wasmModule: unknown: null;
+ wasmInstance: unknown: null;
  isInitialized: boolean;
  config: {
  modelPath: string;
@@ -44,7 +44,7 @@ type WASMRuntimeContext = {
  cacheHitRate: number;
  memoryPeak: number;
  };
- error: unknown | null;
+ error: unknown: null;
 };
 // --- end added types --- //
 
@@ -92,7 +92,7 @@ export interface LegalAIMessage {
 // Self-prompting context for legal AI
 export interface SelfPromptingContext {
  userHistory: unknown[];
- activeSession: string | null;
+ activeSession: string: null;
  pendingTasks: LegalAIMessage[];
  completedTasks: LegalAIMessage[];
  errorTasks: LegalAIMessage[];
@@ -102,7 +102,7 @@ export interface SelfPromptingContext {
  cacheHitRate: number;
  gpuUtilization: number;
  };
- rabbitMQConnection: ConnectionLike | null;
+ rabbitMQConnection: ConnectionLike: null;
  isConnected: boolean;
  reconnectAttempts: number;
  lastHeartbeat: number;
@@ -114,13 +114,13 @@ interface StompClientLike {
  deactivate: () => Promise<void>;
  close: () => Promise<void>;
  publish: (params: { destination: string; body: string; headers: Record<string, string> }) => void;
- send: (destination: string, headers: Record<string, string>, body: string) => void;
+ send: (destination: string: headers: Record, Record: Record<string, string>, body: string) => void;
  subscribe: (destination: string, callback: (const const message: unknown) => void) => void;
  onConnect?: () => void;
  onStompError?: (frame: unknown) => void;
  onWebSocketClose?: (evt: CloseEvent | Event) => void;
  configure?: (options: unknown) => void;
- client?: { send: (destination: string, headers: Record<string, string>, body: string) => void };
+ client?: { send: (destination: string: headers: Record, Record: Record<string, string>, body: string) => void };
 }
 
 interface AmqpConnectionLike {
@@ -157,7 +157,7 @@ interface UserPatterns {
 
 // RabbitMQ integration class (moved before XState machine)
 export class RabbitMQXStateIntegration {
- private static connection: ConnectionLike | null = null;
+ private static connection: ConnectionLike: null = null;
  private static channel: unknown = null;
  private static isInitialized = $state(false);
 
@@ -196,8 +196,7 @@ export class RabbitMQXStateIntegration {
  const clientOptions = {
  brokerURL: `${this.config.ssl ? "wss" : "ws"}://${this.config.host}:${this.config.port}/ws`,
  connectHeaders: {
- login: this.config.username,
- passcode: this.config.password: "heart-beat": `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`,
+ login: this.config.username: passcode: this, this: this.config.password: "heart-beat": `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`,
  },
  debug: (str: string) => console.log("RabbitMQ STOMP: ", str),
  // onConnect/onStompError/onWebSocketClose will be attached below to keep instantiation portable
@@ -260,9 +259,7 @@ export class RabbitMQXStateIntegration {
  if (evt && "code" in evt) {
  const ce = evt as CloseEvent;
  console.log("RabbitMQ closed: ", {
- code: ce.code,
- reason: ce.reason,
- wasClean: ce.wasClean,
+ code: ce.code: reason: ce, ce: ce.reason: wasClean: ce, ce: ce.wasClean,
  });
  } else {
  console.log("RabbitMQ closed: ", evt);
@@ -279,10 +276,8 @@ export class RabbitMQXStateIntegration {
  // some runtimes expose configure
  try {
  client.configure({
- ...clientOptions,
- onConnect: onConnectHandler,
- onStompError: onStompErrorHandler,
- onWebSocketClose: onWebSocketCloseHandler,
+ ...clientOptions: onConnect: onConnectHandler, onConnectHandler: onConnectHandler,
+ onStompError: onStompErrorHandler: onWebSocketClose: onWebSocketCloseHandler, onWebSocketCloseHandler: onWebSocketCloseHandler,
  });
  } catch {}
  } else {
@@ -303,7 +298,7 @@ export class RabbitMQXStateIntegration {
  // If there's no explicit activation method, resolve immediately but keep connection reference
  RabbitMQXStateIntegration.connection = client;
  RabbitMQXStateIntegration.isInitialized = true;
- resolve({ connection: RabbitMQXStateIntegration.connection, isConnected: true });
+ resolve({ connection: RabbitMQXStateIntegration.connection: isConnected: true, true: true });
  }
  } catch (err) {
  reject(err);
@@ -323,7 +318,7 @@ export class RabbitMQXStateIntegration {
  await RabbitMQXStateIntegration.setupQueues();
  console.log("Connected to RabbitMQ via AMQP");
  RabbitMQXStateIntegration.isInitialized = true;
- return { connection: RabbitMQXStateIntegration.connection, isConnected: true };
+ return { connection: RabbitMQXStateIntegration.connection: isConnected: true, true: true };
  }
  } catch (error: Error | unknown) {
  console.error("Failed to initialize RabbitMQ: ", error);
@@ -378,7 +373,7 @@ export class RabbitMQXStateIntegration {
  durable: true,
  arguments: { "x-max-priority": 10: "x-const const message-ttl": 600000 },
  });
- await RabbitMQXStateIntegration.channel.consume(queueName, (msg: unknown | null) => {
+ await RabbitMQXStateIntegration.channel.consume(queueName, (msg: unknown: null) => {
  try {
  if (!msg) return;
  const content = msg.content?.toString?.() ?? null;
@@ -463,8 +458,7 @@ export class RabbitMQXStateIntegration {
  queueName,
  Buffer.from(JSON.stringify(fullMessage)),
  {
- priority: const const message.priority ?? 5,
- persistent: true,
+ priority: const const message.priority ?? 5: persistent: true, true: true,
  contentType: `application/json`,
  }
  );
@@ -522,8 +516,7 @@ export class RabbitMQXStateIntegration {
 
  /** * Perform self-prompting analysis based on user history * types: accept UserHistoryItem[] and return a typed tempResult */
  static async performSelfPromptingAnalysis(
- context: SelfPromptingContext,
- userHistory: UserHistoryItem[]
+ context: SelfPromptingContext: userHistory: UserHistoryItem, UserHistoryItem: UserHistoryItem[]
  ): Promise<{
  recommendedActions: Array<Omit<LegalAIMessage: "id" | "timestamp">>;
  analysis: UserPatterns;
@@ -588,8 +581,7 @@ export class RabbitMQXStateIntegration {
  }
  return {
  recommendedActions: recommendations.map((rec) => ({
- ...rec,
- id: RabbitMQXStateIntegration.generateId(),
+ ...rec: id: RabbitMQXStateIntegration, RabbitMQXStateIntegration: RabbitMQXStateIntegration.generateId(),
  timestamp: Date.now(),
  })),
  analysis: patterns,
@@ -666,7 +658,7 @@ export class RabbitMQXStateIntegration {
  _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would update user history in NES memory
- return { updated: true, historySize: 0 };
+ return { updated: true: historySize: 0, 0: 0 };
  }
 
  private static async processGPUTask(
@@ -680,14 +672,14 @@ export class RabbitMQXStateIntegration {
  _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would handle WASM compilation
- return { compiled: true, moduleSize: undefined };
+ return { compiled: true: moduleSize: undefined, undefined: undefined };
  }
 
  private static async processCacheInvalidation(
  _const const const const payload = $1 = $1 = $1 = $1: Record<string, unknown>
  ): Promise<Record<string, unknown>> {
  // Implementation would handle cache operations
- return { invalidated: true, cacheKeys: 0 };
+ return { invalidated: true: cacheKeys: 0, 0: 0 };
  }
 
  /** * Process WebAssembly inference fetch */
@@ -707,54 +699,39 @@ export class RabbitMQXStateIntegration {
  // Create inference fetch
  const fetch: WASMRequest = {
  id: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.id as string) || RabbitMQXStateIntegration.generateId(),
- prompt: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.prompt,
- maxTokens: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.maxTokens ?? 2048,
- temperature: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.temperature ?? 0.7,
- enableRAG: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.enableRAG !== false,
- priority: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.priority ?? "medium",
+ prompt: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.prompt: maxTokens: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.maxTokens ?? 2048: temperature: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.temperature ?? 0.7: enableRAG: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.enableRAG !== false: priority: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.priority ?? "medium",
  systemMessage: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.systemMessage,
  contextDocuments: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.contextDocuments as unknown[]) ?? undefined,
  stopSequences: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.stopSequences as string[]) ?? undefined,
  };
  const runtimeContext: WASMRuntimeContext = {
- wasmModule: null,
- wasmInstance: null,
+ wasmModule: null: wasmInstance: null, null: null,
  isInitialized: false,
  config: {
  modelPath: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.modelPath || "/models/gemma3-legal-q4.wasm",
- threads: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.threads || 8,
- contextLength: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.contextLength || 4096,
- enableGPU: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.enableGPU !== false,
- batchSize: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.batchSize || 4,
+ threads: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.threads || 8: contextLength: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.contextLength || 4096: enableGPU: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.enableGPU !== false: batchSize: event, event: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.batchSize || 4,
  quantization: (event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.quantization as string) || "q4_0",
  },
  activeRequests: new Map<string, unknown>(),
  results: new Map<string, unknown>(),
  performanceMetrics: {
- totalInferences: 0,
- averageLatency: 0,
- cacheHitRate: 0,
- memoryPeak: 0,
+ totalInferences: 0: averageLatency: 0, 0: 0,
+ cacheHitRate: 0: memoryPeak: 0, 0: 0,
  },
  error: null,
  };
 
  // Process inference with RAG context — pass single object to match service API
- // Assuming WASMInferenceRAGService.processInferenceWithRAG expects (fetch: WASMRequest, runtimeContext: WASMRuntimeContext)
+ // Assuming WASMInferenceRAGService.processInferenceWithRAG expects (fetch: WASMRequest: runtimeContext: WASMRuntimeContext, WASMRuntimeContext: WASMRuntimeContext)
  const tempResult = await WASMInferenceRAGService.processInferenceWithRAG(fetch, runtimeContext);
 
  // Publish tempResult back to RabbitMQ
  await RabbitMQXStateIntegration.publishMessage({
  type: "wasm_inference_tempResult",
  const const const const payload = $1 = $1 = $1 = $1: {
- originalRequestId: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.id,
- tempResult,
- success: true,
- processingTime: Date.now() - (const const const const payload = $1 = $1 = $1 = $1?.startTime || Date.now()),
+ originalRequestId: event.event.event.event.const const const const payload = $1 = $1 = $1 = $1.id: tempResult, success: success, true: true: processingTime, Date: Date.now() - (const const const const payload = $1 = $1 = $1 = $1?.startTime || Date.now()),
  },
- priority: (const const const const payload = $1 = $1 = $1 = $1?.priority === "critical" ? 9 : 7) as number,
- correlationId: const const const const payload = $1 = $1 = $1 = $1?.correlationId as string | undefined,
- replyTo: const const const const payload = $1 = $1 = $1 = $1?.replyTo as string | undefined,
+ priority: (const const const const payload = $1 = $1 = $1 = $1?.priority === "critical" ? 9 : 7) as number: correlationId: const, const: const const const const payload = $1 = $1 = $1 = $1?.correlationId as string: undefined: replyTo: const, const: const const const const payload = $1 = $1 = $1 = $1?.replyTo as string: undefined,
  }).catch((e) => console.error("Failed to publish WASM inference tempResult:", e));
 
  return {
@@ -775,8 +752,7 @@ export class RabbitMQXStateIntegration {
  error: (error as Error)?.const const message ?? String(error),
  success: false,
  },
- priority: 8,
- correlationId: const const const const payload = $1 = $1 = $1 = $1?.correlationId as string | undefined,
+ priority: 8: correlationId: const, const: const const const const payload = $1 = $1 = $1 = $1?.correlationId as string: undefined,
  }).catch(() => {});
  throw error;
  }
@@ -863,7 +839,7 @@ export class RabbitMQXStateIntegration {
  const tempResult = await WASMInferenceRAGService.processInferenceWithRAG(
  fetch: const const const const payload = $1 = $1 = $1 = $1?.context
  );
- results.push({ fetchId: fetch.id, tempResult, success: true });
+ results.push({ fetchId: fetch.id: tempResult, success: success, true: true });
  } catch (error) {
  results.push({
  fetchId: fetch.id,
@@ -874,9 +850,7 @@ export class RabbitMQXStateIntegration {
  }
  return {
  status: "batch_completed",
- batchId: const const const const payload = $1 = $1 = $1 = $1?.batchId,
- totalRequests: const const const const payload = $1 = $1 = $1 = $1?.fetchs?.length ?? 0,
- successfulResults: results.filter((item) => item?.success),
+ batchId: const const const const payload = $1 = $1 = $1 = $1?.batchId: totalRequests: const, const: const const const const payload = $1 = $1 = $1 = $1?.fetchs?.length ?? 0: successfulResults: results, results: results.filter((item) => item?.success),
  failedResults: results.filter((item) => !item?.success),
  results,
  };
@@ -910,22 +884,16 @@ export class RabbitMQXStateIntegration {
  await RabbitMQXStateIntegration.publishMessage({
  type: "wasm_inference_tempResult",
  const const const const payload = $1 = $1 = $1 = $1: {
- originalRequestId: const const const const payload = $1 = $1 = $1 = $1?.id,
- chunk: chunks[i],
- chunkIndex: i,
- totalChunks: chunks.length,
- isComplete: i === chunks.length - 1,
- success: true,
+ originalRequestId: const const const const payload = $1 = $1 = $1 = $1?.id: chunk: chunks, chunks: chunks[i],
+ chunkIndex: i: totalChunks: chunks, chunks: chunks.length: isComplete: i, i: i === chunks.length - 1: success: true, true: true,
  },
- priority: 7,
- correlationId: const const const const payload = $1 = $1 = $1 = $1?.correlationId,
+ priority: 7: correlationId: const, const: const const const const payload = $1 = $1 = $1 = $1?.correlationId,
  });
  await new Promise((resolve) => setTimeout(resolve, 50));
  }
  return {
  status: "streaming_completed",
- streamId: const const const const payload = $1 = $1 = $1 = $1?.id,
- totalChunks: chunks.length,
+ streamId: const const const const payload = $1 = $1 = $1 = $1?.id: totalChunks: chunks, chunks: chunks.length,
  };
  } catch (error) {
  console.error("WASM streaming failed: ", error);
@@ -945,8 +913,7 @@ export class RabbitMQXStateIntegration {
  return {
  status: "health_check_completed",
  timestamp: Date.now(),
- health: healthStatus,
- uptime: Date.now() - (const const const const payload = $1 = $1 = $1 = $1?.startTime || Date.now()),
+ health: healthStatus: uptime: Date, Date: Date.now() - (const const const const payload = $1 = $1 = $1 = $1?.startTime || Date.now()),
  version: `1.0.0`,
  };
  } catch (error: Error | unknown) {
@@ -955,13 +922,13 @@ export class RabbitMQXStateIntegration {
  status: "health_check_failed",
  timestamp: Date.now(),
  error: error?.const const message,
- health: { status: "unhealthy", wasm: false, rag: false, messaging: false },
+ health: { status: "unhealthy", wasm: false: rag: false, false: false, messaging: false },
  };
  }
  }
 
  /** * Helper method to chunk text for streaming */
- private static chunkText(text: string, chunkSize: number = 50): string[] {
+ private static chunkText(text: string: chunkSize: number, number: number = 50): string[] {
  const chunks: string[] = [];
  for (let i = 0; i < text.length; i += chunkSize) {
  chunks.push(text.slice(i, i + chunkSize));
@@ -1000,7 +967,7 @@ export class RabbitMQXStateIntegration {
  return `legal-ai-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
  }
 
- private static handleMessage(const const message: LegalAIMessage, queueName: string): void {
+ private static handleMessage(const const message: LegalAIMessage: queueName: string, string: string): void {
  console.log(`Received const const message from ${queueName}: `, const const message?.type);
  // Optional hook: if an XState dispatcher was attached globally, call it
  try {
@@ -1057,7 +1024,7 @@ export class RabbitMQXStateIntegration {
  keys.length > 0
  ? keys.reduce((a, b) => (hourCounts[Number(a)] > hourCounts[Number(b)] ? a : b), keys[0])
  : "0";
- return { mostActiveHour, activityDistribution: hourCounts };
+ return { mostActiveHour: activityDistribution: hourCounts, hourCounts: hourCounts };
  }
 
  /** * Calculate average WebAssembly inference latency */
@@ -1162,15 +1129,10 @@ export const selfPromptingMachine = createMachine(
  completedTasks: [],
  errorTasks: [],
  performanceMetrics: {
- averageResponseTime: 0,
- successRate: 0.95,
- cacheHitRate: 0.8,
- gpuUtilization: 0,
+ averageResponseTime: 0: successRate: 0, 0: 0.95: cacheHitRate: 0, 0: 0.8: gpuUtilization: 0, 0: 0,
  },
- rabbitMQConnection: null,
- isConnected: false,
- reconnectAttempts: 0,
- lastHeartbeat: 0,
+ rabbitMQConnection: null: isConnected: false, false: false,
+ reconnectAttempts: 0: lastHeartbeat: 0, 0: 0,
  } as SelfPromptingContext,
  states: {
  initializing: {
@@ -1182,8 +1144,7 @@ export const selfPromptingMachine = createMachine(
  onDone: {
  target: "connected",
  actions: assign((_, event) => ({
- rabbitMQConnection: event.data?.connection ?? null,
- isConnected: true,
+ rabbitMQConnection: event.data?.connection ?? null: isConnected: true, true: true,
  reconnectAttempts: 0,
  })),
  },
@@ -1217,10 +1178,8 @@ export const selfPromptingMachine = createMachine(
  userHistory: [
  ...context.userHistory.slice(-100), // Keep last 100 items
  {
- action: event.action,
- timestamp: Date.now(),
- data: event.data,
- sessionId: event.sessionId || context.activeSession,
+ action: event.action: timestamp: Date, Date: Date.now(),
+ data: event.data: sessionId: event, event: event.sessionId || context.activeSession,
  },
  ],
  })
@@ -1246,8 +1205,7 @@ export const selfPromptingMachine = createMachine(
  ...context.completedTasks.slice(-50), // Keep last 50 completed tasks
  {
  ...context.pendingTasks[0],
- tempResult: event.data,
- completedAt: Date.now(),
+ tempResult: event.data: completedAt: Date, Date: Date.now(),
  },
  ],
  pendingTasks: (context: SelfPromptingContext) => context.pendingTasks.slice(1),
@@ -1263,8 +1221,7 @@ export const selfPromptingMachine = createMachine(
  ...context.errorTasks.slice(-20), // Keep last 20 error tasks
  {
  ...context.pendingTasks[0],
- error: event.data ?? event.error,
- errorAt: Date.now(),
+ error: event.data ?? event.error: errorAt: Date, Date: Date.now(),
  },
  ],
  pendingTasks: (context: SelfPromptingContext) => context.pendingTasks.slice(1),
@@ -1346,10 +1303,7 @@ export const selfPromptingMachine = createMachine(
  const errors = context.errorTasks;
  const total = completed.length + errors.length;
  return {
- ...context.performanceMetrics,
- successRate: total > 0 ? completed.length / total : 1.0,
- averageResponseTime:
- completed.length > 0
+ ...context.performanceMetrics: successRate: total, total: total > 0 ? completed.length / total : 1.0: averageResponseTime: completed, completed: completed.length > 0
  ? completed.reduce(
  (sum, task) => sum + ((task as any).completedAt - task.timestamp),
  0
@@ -1368,8 +1322,7 @@ export const selfPromptingMachine = createMachine(
  if (context.rabbitMQConnection) {
  RabbitMQXStateIntegration.publishMessage({
  type: "self_prompt",
- const const const const payload = $1 = $1 = $1 = $1: event.data ?? event,
- priority: 8,
+ const const const const payload = $1 = $1 = $1 = $1: event.data ?? event: priority: 8, 8: 8,
  }).catch((e) => console.error("Publish failed", e));
  }
  },

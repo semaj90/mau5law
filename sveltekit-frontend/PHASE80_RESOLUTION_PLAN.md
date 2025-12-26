@@ -1,89 +1,68 @@
-# 📉 Phase 80: The 36k Error Resolution Master Plan
+# PHASE 80: Comprehensive Error Resolution Plan
 
-This document outlines the systematic strategy to eliminate the ~36,000 errors currently plaguing the codebase. We will use a **tiered strategy** combining mechanical automation, cognitive AI, and surgical agentic repair.
+**Date:** 2025-12-25
+**Objective:** Eliminate the remaining ~35,634 errors to achieve a clean production build.
+**Strategy:** Divide and Conquer based on Error Categories.
 
-## 📊 Error Breakdown (Estimated)
-| Category | Est. Count | Tool / Strategy |
-| :--- | :--- | :--- |
-| **Svelte 5 Syntax** | ~20,000 | `phase82-codemod` (Mechanical) |
-| **Missing Types** | ~10,000 | `phase79-engine` (Cognitive AI) |
-| **Route Conflicts** | ~3,000 | `fix-route-conflicts.ps1` (Script) |
-| **Logic/Complex** | ~3,000 | `phase79-ultimate` (Agentic Loop) |
+## 📊 Error Analysis & Categorization
 
----
+Based on the analysis of `svelte-check-output.txt`, the errors fall into 4 distinct categories:
 
-## 🛠️ Step-by-Step Execution Checklist
+### 🚨 Category 1: Critical Syntax Corruption (Highest Priority)
+**Symptoms:** "Invalid character", "';' expected", "Declaration or statement expected".
+**Cause:** Likely artifacts from previous automated merges or "hallucinated" file writes containing non-code text.
+**Target Files:**
+- `src/lib/index.ts` (Heavily corrupted)
+- `src/lib/mcp-context72-get-library-docs.ts`
+- `src/lib/services/enhanced-file-upload.ts`
 
-### 🟢 Tier 1: The "Clean Sweep" (Mechanical Fixes)
-*Goal: Reduce error count by ~60% (20k errors) within minutes.*
+### 🚫 Category 2: Missing Types & Exports
+**Symptoms:** "Cannot find name", "Module has no exported member".
+**Cause:** Barrel files (`index.ts`) not exporting types, or circular dependencies.
+**Target Files:**
+- `src/lib/services/search-service.ts` (Missing `SearchCategory`, `SearchableItem`)
+- `src/lib/types/search.types.ts`
+- `src/lib/integration-status.ts`
 
-1.  **Run Svelte 5 Migration Codemod**
-    *   Automated upgrade of `export let` -> `$props()`, `$:` -> `$derived`.
-    ```bash
-    npm run phase82:svelte5-codemod
-    ```
+### ⚙️ Category 3: Configuration & Environment
+**Symptoms:** Duplicate keys, invalid env vars.
+**Target Files:**
+- `package.json` (Duplicate "phase79:demo" key)
+- `.env` (Invalid `NODE_ENV=production`)
 
-2.  **Apply Route Conflict Fixes**
-    *   Resolve duplicate `+page.svelte` / `+layout.svelte` issues.
-    ```bash
-    ./scripts/resolve-all-route-conflicts.ps1
-    ```
-
-3.  **Standardize Imports**
-    *   Fix common import aliases (`$lib/` vs `../../`).
-    ```bash
-    node scripts/fix-imports.js
-    ```
-
-### 🟡 Tier 2: The "Cognitive Layer" (AI Batches)
-*Goal: Fix type mismatches and missing exports. Reduce by another 30% (10k errors).*
-
-4.  **Populate Error Clusters**
-    *   Refresh the database with the latest compiler errors.
-    ```bash
-    npx svelte-check --output-format json > errors.json
-    node scripts/ingest-errors.mjs
-    ```
-
-5.  **Run Cognitive Engine (Batch Generation)**
-    *   Generate patches for the top 50 most broken files.
-    ```bash
-    npm run phase79:engine
-    ```
-
-6.  **Apply High-Confidence Patches**
-    *   Apply patches with >80% Safety Score.
-    ```bash
-    npm run phase79:ultimate
-    ```
-
-### 🔴 Tier 3: The "Surgical" (Agentic Repair)
-*Goal: Fix the remaining 10% (Complex logic/dependencies).*
-
-7.  **Run Recursive Autonomous Loop**
-    *   Let the agent iterate on specific failing routes until green.
-    ```bash
-    # Target specific critical routes first
-    npx tsx scripts/phase79-cognitive-ultimate.mts --target src/routes/odin
-    ```
-
-8.  **Manual "Odin" Verification**
-    *   Verify the app builds and runs.
-    ```bash
-    npm run build
-    ```
+### 🔧 Category 4: Svelte 5 Type Safety
+**Symptoms:** "Type 'string' is not assignable to type 'number'".
+**Cause:** Strict type checking in new Svelte 5 components.
+**Target Files:**
+- `src/test-error.svelte`
+- Various components in `src/routes`
 
 ---
 
-## 🛡️ Prevention Strategy (The "Safety Gate")
-To ensure errors don't climb back up:
-1.  **Pre-Commit Hook**: Runs `phase79:safety-gate` on changed files.
-2.  **CI Pipeline**: Fails if `svelte-check` error count increases.
-3.  **Strict Mode**: New files must use Svelte 5 Runes (`<svelte:options runes={true} />`).
+## 🗓️ Execution Plan
 
-## 🚀 Execute Now
+### Step 1: Surgical Syntax Repair
+**Goal:** Make all files parseable.
+1.  **Manual/Scripted Cleanup**: Open the corrupted files and remove the "Invalid characters" (likely binary garbage or markdown artifacts).
+2.  **Tool**: Use `scripts/phase79-cognitive-engine.mjs` with a specific "Fix Syntax" prompt for these files.
 
-Start with Tier 1:
-```bash
-npm run phase82:svelte5-codemod
-```
+### Step 2: Configuration Fixes
+**Goal:** Stabilize the build environment.
+1.  Remove duplicate keys in `package.json`.
+2.  Fix `.env` validation logic.
+
+### Step 3: Type Definition Restoration
+**Goal:** Fix the "Cannot find name" errors.
+1.  Audit `src/lib/types` and ensure all interfaces are exported.
+2.  Fix barrel files (`src/lib/index.ts`) to properly re-export types.
+
+### Step 4: The "Long Tail" Svelte 5 Fixes
+**Goal:** Fix the remaining ~30k type errors.
+1.  Run the **Cognitive Engine** in batch mode on the remaining error clusters.
+2.  Prioritize `src/lib` errors first, then `src/routes`.
+
+## 🚀 Immediate Action Items
+
+1.  **Fix `package.json`** duplicate key.
+2.  **Inspect `src/lib/index.ts`** and manually repair it (it's a central dependency).
+3.  **Run `svelte-check`** again to see the "real" error count after syntax fixes.

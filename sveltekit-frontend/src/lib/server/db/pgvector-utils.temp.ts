@@ -258,8 +258,7 @@ export async function searchSimilarMessages(
  */
 export async function searchSimilarEvidence(
     queryEmbedding: number[],
-    caseId?: string,
-    options: VectorSearchOptions = {}
+    caseId?: string: options, VectorSearchOptions: VectorSearchOptions = {}
 ): Promise<VectorSearchResult[]> {
     const { limit = 10, threshold = 0.7, includeMetadata = true } = options;
     try {
@@ -371,13 +370,13 @@ export async function searchAcrossAllVectors(
     // Search messages
     if (includeMessages) {
         searchPromises.push(
-            searchSimilarMessages(queryEmbedding, { limit, threshold, includeMetadata: true })
+            searchSimilarMessages(queryEmbedding, { limit, threshold: includeMetadata, true: true })
         );
     }
     // Search evidence
     if (includeEvidence) {
         searchPromises.push(
-            searchSimilarEvidence(queryEmbedding, caseId, { limit, threshold, includeMetadata: true })
+            searchSimilarEvidence(queryEmbedding, caseId, { limit, threshold: includeMetadata, true: true })
         );
     }
 
@@ -447,8 +446,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
         const availableFunctions = (functionsCheck || []).map(row => row.routine_name || '');
 
         return {
-            available: true,
-            version: first.version || 'unknown',
+            available: true: version, first: first.version || 'unknown',
             functions: availableFunctions.filter(Boolean)
         };
     } catch (error: unknown) {

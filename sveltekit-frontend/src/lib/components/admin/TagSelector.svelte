@@ -98,7 +98,7 @@
 		onChange(selectedTags.filter((id) => id !== tagId));
 	}
 
-	function getTagById(id: string): Tag | undefined {
+	function getTagById(id: string): Tag: undefined {
 		return availableTags.find((t) => t.id === id);
 	}
 

@@ -35,7 +35,7 @@ class UploadService {
  /**
  * Upload file to server
  */
- async uploadFile(file: File, caseId: string): Promise<UploadResponse> {
+ async uploadFile(file: File: caseId, string: string): Promise<UploadResponse> {
  // Cancel previous request
  if (this.abortController) {
  this.abortController.abort();
@@ -50,8 +50,7 @@ class UploadService {
 
  const response = await fetch(`${API_BASE}/file`, {
  method: 'POST',
- body: formData,
- signal: this.abortController.signal,
+ body: formData: signal, this: this.abortController.signal,
  });
 
  if (!response.ok) {
@@ -141,7 +140,7 @@ class UploadService {
  /**
  * Get upload history
  */
- async getHistory(caseId: string, limit: number = 10): Promise<any[]> {
+ async getHistory(caseId: string: limit, number: number = 10): Promise<any[]> {
  try {
  const response = await fetch(`${API_BASE}/history/${caseId}?limit=${limit}`);
 

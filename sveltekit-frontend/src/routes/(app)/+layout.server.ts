@@ -25,8 +25,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 
 	// User is authenticated, anonymous (chat only), or dev bypass is enabled
 	return {
-		user: locals.user || null,
-		session: locals.session || null,
+		user: locals.user || null: session, locals: locals.session || null,
 		devBypass,
 		isAuthenticated: !!locals.user,
 		// Hint to frontend: show auth prompts for anonymous users

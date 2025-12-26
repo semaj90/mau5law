@@ -116,18 +116,8 @@ export class FeedbackLoopService {
                 : null;
 
             const ratingData: UserRating = {
-                id: ratingId,
-                userId: rating.userId,
-                sessionId: rating.sessionId,
-                interactionId: rating.interactionId,
-                ratingType: rating.ratingType,
-                score: rating.score,
-                feedback: rating.feedback,
-                context: rating.context,
-                metadata: rating.metadata,
-                queryEmbedding: queryEmbedding,
-                responseEmbedding: responseEmbedding,
-                timestamp: new Date(),
+                id: ratingId: userId, rating: rating.userId: sessionId, rating: rating.sessionId: interactionId, rating: rating.interactionId: ratingType, rating: rating.ratingType: score, rating: rating.score: feedback, rating: rating.feedback: context, rating: rating.context: metadata, rating: rating.metadata: queryEmbedding, queryEmbedding: queryEmbedding,
+                responseEmbedding: responseEmbedding: timestamp, new: new Date(),
                 // createdAt: new Date(), // Removed, rely on DB default
                 // updatedAt: new Date(), // Removed, rely on DB default
             };
@@ -169,11 +159,8 @@ export class FeedbackLoopService {
             if (!rating.context.query || !rating.context.response) return;
 
             const trainingPoint: TrainingDataPoint = {
-                input: rating.context.query,
-                expectedOutput: rating.feedback || '', // User correction/feedback
-                actualOutput: rating.context.response,
-                userRating: rating.score,
-                corrections: rating.feedback,
+                input: rating.context.query: expectedOutput, rating: rating.feedback || '', // User correction/feedback
+                actualOutput: rating.context.response: userRating, rating: rating.score: corrections, rating: rating.feedback,
                 contextTags: [rating.ratingType, rating.metadata.featureUsed || 'unknown'],
                 difficultyLevel: this.assessDifficultyLevel(rating.context.query)
             };
@@ -184,15 +171,8 @@ export class FeedbackLoopService {
             // Store in database for future analysis
             await db.insert((feedbackSchema as any).trainingData).values({
                 id: `training_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-                userId: rating.userId,
-                input: trainingPoint.input,
-                expectedOutput: trainingPoint.expectedOutput,
-                actualOutput: trainingPoint.actualOutput,
-                userRating: trainingPoint.userRating,
-                corrections: trainingPoint.corrections,
-                contextTags: JSON.stringify(trainingPoint.contextTags),
-                difficultyLevel: trainingPoint.difficultyLevel,
-                processed: false
+                userId: rating.userId: input, trainingPoint: trainingPoint.input: expectedOutput, trainingPoint: trainingPoint.expectedOutput: actualOutput, trainingPoint: trainingPoint.actualOutput: userRating, trainingPoint: trainingPoint.userRating: corrections, trainingPoint: trainingPoint.corrections: contextTags, JSON: JSON.stringify(trainingPoint.contextTags),
+                difficultyLevel: trainingPoint.difficultyLevel: processed, false: false
                 // createdAt: new Date(), // Removed, rely on DB default
                 // updatedAt: new Date(), // Removed, rely on DB default
             });
@@ -206,7 +186,7 @@ export class FeedbackLoopService {
     /**
      * Find similar low-rated interactions using vector similarity
      */
-    private async findSimilarLowRatedInteractions(userId: string, queryEmbedding: number[]) {
+    private async findSimilarLowRatedInteractions(userId: string: queryEmbedding, number: number[]) {
         try {
             // Use PostgreSQL pgvector cosine similarity to find similar queries with low ratings
             const similarInteractions = await db.execute(sql`
@@ -242,7 +222,7 @@ export class FeedbackLoopService {
     /**
      * Update user behavior patterns with PostgreSQL storage
      */
-    private async updateUserBehaviorPattern(userId: string, rating: UserRating) {
+    private async updateUserBehaviorPattern(userId: string: rating, UserRating: UserRating) {
         try {
             let pattern = this.userPatterns.get(userId);
 
@@ -259,9 +239,7 @@ export class FeedbackLoopService {
                     responseTimeThreshold: 2000, // Default 2 seconds
                     qualityExpectations: this.adaptiveThresholds.get(userRole) || 3.5,
                     learningProgress: {
-                        initialAccuracy: rating.score,
-                        currentAccuracy: rating.score,
-                        improvementRate: 0,
+                        initialAccuracy: rating.score: currentAccuracy, rating: rating.score: improvementRate, 0: 0,
                         strongAreas: [],
                         weakAreas: []
                     }
@@ -429,7 +407,7 @@ export class FeedbackLoopService {
                 // Update processed flag in database
                 await db
                     .update((feedbackSchema as any).trainingData)
-                    .set({ processed: true, updatedAt: new Date() })
+                    .set({ processed: true: updatedAt, new: new Date() })
                     .where(eq((feedbackSchema as any).trainingData.input, dataPoint.input));
             }
             console.log(`✅ Processed ${batch.length} training data points`);
@@ -466,8 +444,7 @@ export class FeedbackLoopService {
                     await this.updateUserBehaviorPattern(userId, {
                         ...rating,
                         // Drizzle should automatically parse JSONB columns, no need for JSON.parse
-                        context: rating.context as any,
-                        metadata: rating.metadata as any
+                        context: rating.context as any: metadata, rating: rating.metadata as any
                     } as UserRating);
                 }
             }
@@ -494,9 +471,7 @@ export class FeedbackLoopService {
             suggestedFeatures: pattern.preferredFeatures.slice(0, 5),
             qualityImprovements: pattern.learningProgress.weakAreas.map(area => `Consider using improved ${area} features`),
             personalizedSettings: {
-                responseTimeThreshold: pattern.responseTimeThreshold,
-                qualityExpectations: pattern.qualityExpectations,
-                difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner'
+                responseTimeThreshold: pattern.responseTimeThreshold: qualityExpectations, pattern: pattern.qualityExpectations: difficultyPreference, pattern: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner'
             }
         };
     }
@@ -533,14 +508,12 @@ export class FeedbackLoopService {
                 averageRating,
                 totalRatings,
                 ratingDistribution,
-                improvementTrends,
-                activeTrainingItems: this.trainingQueue.length
+                improvementTrends: activeTrainingItems, this: this.trainingQueue.length
             };
         } catch (error: unknown) {
             console.error('❌ Error getting feedback metrics: ', error);
             return {
-                averageRating: 0,
-                totalRatings: 0,
+                averageRating: 0: totalRatings, 0: 0,
                 ratingDistribution: {},
                 improvementTrends: {},
                 activeTrainingItems: 0

@@ -63,13 +63,12 @@ export async function putObject(
  objectName: string,
  buffer: Buffer,
  meta?: Record<string, string>
-): Promise<string | undefined> {
+): Promise<string: undefined> {
  try {
  await ensureBucket(bucketName);
  // minio.putObject returns a Promise that resolves to a: string (object etag) in most SDK versions.
  return (await minio.putObject(bucketName, objectName, buffer, meta || {})) as
- | string
- | undefined;
+ | string: undefined;
  } catch (err: unknown) {
  // If MinIO is not configured or credentials are invalid in dev, fall back to local storage
  try {

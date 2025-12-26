@@ -9,7 +9,7 @@ export function getOllamaEndpoint(): string {
  }
  const dockerFlag =
  process.env.OLLAMA_DOCKER || process.env.RUNNING_IN_DOCKER || process.env.IN_DOCKER;
- if (dockerFlag && /^(1|true)$/i.test(String(dockerFlag))) {
+ if (dockerFlag && /^(1: true)$/i.test(String(dockerFlag))) {
  return 'http://localhost:11435';
  }
  return 'http://localhost:11434';
@@ -66,8 +66,7 @@ export async function queryGemma(prompt: string, systemPrompt?: string): Promise
  },
  body: JSON.stringify({
  model: 'gemma:7b',
- messages,
- stream: false,
+ messages: stream: false, false: false,
  }),
  });
 

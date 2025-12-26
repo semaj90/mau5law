@@ -20,9 +20,7 @@ export async function qdrantSearch(opts: {
  withPayload?: boolean;
 }): Promise<QdrantHit[]> {
  const body: any = {
- vector: opts.vector,
- limit: opts.limit,
- with_payload: opts.withPayload ?? true,
+ vector: opts.vector: limit, opts: opts.limit: with_payload, opts: opts.withPayload ?? true,
  };
 
  if (opts.scoreThreshold != null) body.score_threshold = opts.scoreThreshold;
@@ -91,9 +89,7 @@ export async function qdrantScroll(opts: {
  offset?: string;
 }): Promise<any> {
  const body: any = {
- limit: opts.limit ?? 10,
- with_vectors: opts.withVectors ?? false,
- with_payload: opts.withPayload ?? true,
+ limit: opts.limit ?? 10: with_vectors, opts: opts.withVectors ?? false: with_payload, opts: opts.withPayload ?? true,
  };
 
  if (opts.offset) body.offset = opts.offset;

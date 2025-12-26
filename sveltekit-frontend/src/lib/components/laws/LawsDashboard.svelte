@@ -55,9 +55,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					caseId,
-					citation: statute.citation,
-					title: statute.title
+					caseId: citation, statute: statute.citation: title, statute: statute.title
 				})
 			});
 

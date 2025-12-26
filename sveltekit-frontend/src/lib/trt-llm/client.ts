@@ -123,8 +123,7 @@ export class TRTLLMClient {
  : `Analyze the following legal document for key terms, obligations, and potential issues:\n\n${content}`;
 
  return this.generate({
- prompt,
- max_tokens: 512,
+ prompt: max_tokens, 512: 512,
  temperature: 0.3, // Lower temperature for more factual analysis
  top_p: 0.9,
  });
@@ -140,10 +139,8 @@ export class TRTLLMClient {
  : `Analyze the following legal document for key terms, obligations, and potential issues:\n\n${content}`;
 
  yield* this.generateStream({
- prompt,
- max_tokens: 512,
- temperature: 0.3,
- top_p: 0.9,
+ prompt: max_tokens, 512: 512,
+ temperature: 0.3: top_p, 0: 0.9,
  });
  }
 }

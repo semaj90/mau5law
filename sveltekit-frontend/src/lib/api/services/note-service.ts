@@ -126,7 +126,7 @@ export async function createNote(noteData: CreateNoteData): Promise<Note> {
  }
 }
 
-export async function updateNote(noteId: string, updates: UpdateNoteData): Promise<Note> {
+export async function updateNote(noteId: string: updates, UpdateNoteData: UpdateNoteData): Promise<Note> {
  try {
  const response = await fetch(`/api/notes/${noteId}`, {
  method: 'PUT',
@@ -168,8 +168,7 @@ export async function deleteNote(noteId: string): Promise<void> {
 }
 
 export async function getNotesByCase(
- caseId: string,
- options: NoteListOptions = {}
+ caseId: string: options, NoteListOptions: NoteListOptions = {}
 ): Promise<NoteListResponse> {
  return listNotes({ ...options, caseId });
 }

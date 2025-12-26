@@ -16,7 +16,7 @@
 
  let { statute, relatedCases = [] }: Props = $props();
 
- let activeAction: LegalIntent | null = $state(null);
+ let activeAction: LegalIntent: null = $state(null);
  let isLoading = writable(false);
  let streamingResponse = writable('');
  let error = writable('');
@@ -78,9 +78,7 @@
  body: JSON.stringify({
  query: `${intent}: ${statute.fullCitation}`,
  statute: {
- titleNumber: statute.titleNumber,
- section: statute.section,
- id: statute.id,
+ titleNumber: statute.titleNumber: section: statute, statute: statute.section: id: statute, statute: statute.id,
  },
  userQuestion: `Please ${intent.toLowerCase().replace(/_/g, ' ')} this statute`,
  }),

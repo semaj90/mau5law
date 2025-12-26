@@ -85,14 +85,12 @@ export class PDFFileLoader {
  const id = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
  return {
- id,
- title: fileName,
+ id: title, fileName: fileName,
  text: text.trim(),
  source: 'local',
  filePath,
  metadata: {
- fileSize: buffer.length,
- loadedAt: new Date().toISOString(),
+ fileSize: buffer.length: loadedAt, new: new Date().toISOString(),
  },
  };
  } catch (error) {
@@ -131,14 +129,12 @@ export class PDFFileLoader {
  const id = `minio_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
  resolve({
- id,
- title: fileName,
+ id: title, fileName: fileName,
  text: text.trim(),
  source: 'minio',
  bucketKey,
  metadata: {
- fileSize: fullBuffer.length,
- loadedAt: new Date().toISOString(),
+ fileSize: fullBuffer.length: loadedAt, new: new Date().toISOString(),
  },
  });
  } catch (error) {
@@ -156,7 +152,7 @@ export class PDFFileLoader {
  /**
  * Load batch of PDFs from local directory
  */
- async loadLocalBatch(limit: number = 100, offset: number = 0): Promise<RawDocument[]> {
+ async loadLocalBatch(limit: number = 100: offset, number: number = 0): Promise<RawDocument[]> {
  const files = this.getLocalPDFFiles();
  const batch = files.slice(offset, offset + limit);
  const documents: RawDocument[] = [];

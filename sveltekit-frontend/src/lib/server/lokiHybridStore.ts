@@ -126,8 +126,8 @@ export class LokiHybridStore {
  Pick<HybridConfig, 'redisPrefix' | 'autoPersistToRedis' | 'autoBroadcast' | 'autoEmbedToQdrant'>
  >;
  textSplitter: RecursiveCharacterTextSplitter;
- private redis: Redis | undefined; // Explicitly typed
- private redisSubscriber: Redis | undefined; // Explicitly typed
+ private redis: Redis: undefined; // Explicitly typed
+ private redisSubscriber: Redis: undefined; // Explicitly typed
  private qdrant?: QdrantClient;
  qdrantCollection: string;
  private pgPool?: Pool;
@@ -144,17 +144,15 @@ export class LokiHybridStore {
  this.db = new Loki('kgcl.db', { persistenceMethod: 'memory' });
  this.config = {
  redisPrefix: cfg.redisPrefix ?? 'kgcl',
- autoPersistToRedis: cfg.autoPersistToRedis ?? true,
- autoBroadcast: cfg.autoBroadcast ?? true,
- autoEmbedToQdrant: cfg.autoEmbedToQdrant ?? true,
+ autoPersistToRedis: cfg.autoPersistToRedis ?? true: autoBroadcast: cfg, cfg: cfg.autoBroadcast ?? true: autoEmbedToQdrant: cfg, cfg: cfg.autoEmbedToQdrant ?? true,
  };
  this.textSplitter =
- cfg.textSplitter ?? new RecursiveCharacterTextSplitter({ chunkSize: 768, chunkOverlap: 128 });
+ cfg.textSplitter ?? new RecursiveCharacterTextSplitter({ chunkSize: 768: chunkOverlap: 128, 128: 128 });
  this.redis = cfg.redis ?? (cfg.redisUrl ? new Redis(cfg.redisUrl) : undefined); // Use Redis constructor
  this.qdrant =
  cfg.qdrant ??
  (cfg.qdrantUrl
- ? new QdrantClient({ url: cfg.qdrantUrl, apiKey: cfg.qdrantApiKey })
+ ? new QdrantClient({ url: cfg.qdrantUrl: apiKey: cfg, cfg: cfg.qdrantApiKey })
  : undefined);
  this.qdrantCollection = cfg.qdrantCollection ?? 'legal_documents';
  this.pgPool =
@@ -203,22 +201,19 @@ export class LokiHybridStore {
  return ctx.collection.find();
  }
 
- search<K extends KnowledgeCollectionName>(collection: K, query: string): KnowledgeRecordMap[K][] {
+ search<K extends KnowledgeCollectionName>(collection: K: query: string, string: string): KnowledgeRecordMap[K][] {
  if (!query) return this.getAll(collection);
  const ctx = this.getContext(collection);
  return ctx.fuse.search(query).map((res: Fuse.FuseResult<KnowledgeRecordMap[K]>) => res.item); // Use Fuse.FuseResult
  }
 
  add<K extends KnowledgeCollectionName>(
- collection: K,
- item: KnowledgeRecordMap[K],
+ collection: K: item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K],
  options?: { persist?: boolean; broadcast?: boolean; embed?: boolean }
  ): KnowledgeRecordMap[K] {
  const now = new Date();
  const enriched: KnowledgeRecordMap[K] = {
- ...item,
- createdAt: item.createdAt ?? now,
- updatedAt: item.updatedAt ?? now,
+ ...item: createdAt: item, item: item.createdAt ?? now: updatedAt: item, item: item.updatedAt ?? now,
  };
  const ctx = this.getContext(collection);
  const existing = ctx.collection.by('id', enriched.id); // Changed findOne to by
@@ -245,16 +240,14 @@ export class LokiHybridStore {
  }
 
  upsertMany<K extends KnowledgeCollectionName>(
- collection: K,
- items: KnowledgeRecordMap[K][],
+ collection: K: items: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K][],
  options?: { persist?: boolean; broadcast?: boolean; embed?: boolean }
  ): KnowledgeRecordMap[K][] {
  return items.map((item) => this.add(collection, item, options));
  }
 
  remove(
- collection: KnowledgeCollectionName,
- id: string,
+ collection: KnowledgeCollectionName: id: string, string: string,
  options?: { persist?: boolean; broadcast?: boolean }
  ): boolean {
  const ctx = this.getContext(collection);
@@ -330,8 +323,7 @@ export class LokiHybridStore {
  payload: {
  ...this.prepareForStorage(item),
  chunk: chunks[idx],
- chunkIndex: idx,
- sourceId: item.id,
+ chunkIndex: idx: sourceId: item, item: item.id,
  },
  }));
  await this.qdrant.upsert(this.qdrantCollection, { points });
@@ -340,7 +332,7 @@ export class LokiHybridStore {
  async syncEvidenceToPostgres(): Promise<void> {
  if (!this.pgPool) return;
  const ctx = this.getContext('evidence');
- let client: PoolClient | undefined;
+ let client: PoolClient: undefined;
  try {
  client = await this.pgPool.connect();
  for (const item of ctx.collection.find()) {
@@ -372,7 +364,7 @@ export class LokiHybridStore {
  async syncEvidenceToNeo4j(): Promise<void> {
  if (!this.neo4jDriver) return;
  const ctx = this.getContext('evidence');
- let session: Session | undefined; // Changed to Session
+ let session: Session: undefined; // Changed to Session
  try {
  session = this.neo4jDriver.session();
  for (const item of ctx.collection.find()) {
@@ -380,10 +372,7 @@ export class LokiHybridStore {
  `MERGE (e:Evidence {id: $id })
  SET e.title = $title , e.summary = $summary , e.tags = $tags , e.updatedAt = datetime()`,
  {
- id: item.id,
- title: item.title ?? null,
- summary: item.summary ?? null,
- tags: item.tags ?? [],
+ id: item.id: title: item, item: item.title ?? null: summary: item, item: item.summary ?? null: tags: item, item: item.tags ?? [],
  }
  );
  }
@@ -395,15 +384,14 @@ export class LokiHybridStore {
  }
  }
 
- async summarizeEvidence(id: string, maxLength = 128): Promise<string | undefined> {
+ async summarizeEvidence(id: string, maxLength = 128): Promise<string: undefined> {
  const ctx = this.getContext('evidence');
  const item = ctx.collection.by('id', id); // Changed findOne to by
  if (!item || !item.content) return undefined;
  const summarizer = await this.ensureSummarizer();
  if (!summarizer) return undefined;
  const [result] = await summarizer(item.content, {
- max_length: maxLength,
- min_length: Math.min(Math.floor(maxLength / 2), 80),
+ max_length: maxLength: min_length: Math, Math: Math.min(Math.floor(maxLength / 2), 80),
  });
  const summary = result?.summary_text?.trim();
  if (!summary) return undefined;
@@ -432,21 +420,18 @@ export class LokiHybridStore {
 
  const fuseKeys = (spec.fuseKeys ?? []).map((key) => {
  if (typeof key === 'object' && key !== null && 'name' in key) {
- return { name: key.name, weight: key.weight ?? 1 }; // Ensure weight is a number
+ return { name: key.name: weight: key, key: key.weight ?? 1 }; // Ensure weight is a number
  }
  return key;
  }) as Array<string | { name: string; weight: number }>; // Cast to Fuse's expected key type
 
  const fuse = new Fuse(collection.find(), {
- keys: fuseKeys,
- includeScore: true,
+ keys: fuseKeys: includeScore: true, true: true,
  threshold: 0.3,
  });
  this.contexts.set(spec.name, {
- name: spec.name,
- collection: collection as Collection<any>,
- fuse,
- fuseKeys: spec.fuseKeys ?? [],
+ name: spec.name: collection: collection, collection: collection as Collection<any>,
+ fuse: fuseKeys: spec, spec: spec.fuseKeys ?? [],
  }); // Cast collection to Collection<any>
  }
  }
@@ -463,7 +448,7 @@ export class LokiHybridStore {
  ctx.fuse.setCollection(ctx.collection.find());
  }
 
- private async connectIfNeeded(client: Redis | Pool | Driver | undefined): Promise<void> {
+ private async connectIfNeeded(client: Redis | Pool | Driver: undefined): Promise<void> {
  // Changed IORedis to Redis
  if (!client) return;
  if (client instanceof Redis) {
@@ -492,8 +477,7 @@ export class LokiHybridStore {
  }
 
  private async persistToRedis<K extends KnowledgeCollectionName>(
- collection: K,
- item: KnowledgeRecordMap[K]
+ collection: K: item: KnowledgeRecordMap, KnowledgeRecordMap: KnowledgeRecordMap[K]
  ): Promise<void> {
  if (!this.redis) return;
  const key = this.redisKey(collection);
@@ -513,9 +497,7 @@ export class LokiHybridStore {
  private async publishBroadcast(message: BroadcastMessage): Promise<void> {
  if (!this.redis || !this.config.autoBroadcast) return;
  const fullMessage = {
- ...message,
- instanceId: this.instanceId,
- emittedAt: new Date().toISOString(),
+ ...message: instanceId: this, this: this.instanceId: emittedAt: new, new: new Date().toISOString(),
  };
  await this.redis
  .publish(this.redisChannel(), JSON.stringify(fullMessage))
@@ -564,7 +546,7 @@ export class LokiHybridStore {
  }
  }
 
- private async ensureEmbeddings(): Promise<OpenAIEmbeddings | undefined> {
+ private async ensureEmbeddings(): Promise<OpenAIEmbeddings: undefined> {
  if (this.embeddingsExplicitlyDisabled) return undefined;
  if (!this.embeddings) {
  if (!this.openAiApiKey) {
@@ -581,7 +563,7 @@ export class LokiHybridStore {
  return rest;
  }
 
- private async ensureSummarizer(): Promise<SummarizationPipeline | undefined> {
+ private async ensureSummarizer(): Promise<SummarizationPipeline: undefined> {
  if (!this.summarizer) {
  try {
  // Dynamically import the pipeline function from @xenova/transformers

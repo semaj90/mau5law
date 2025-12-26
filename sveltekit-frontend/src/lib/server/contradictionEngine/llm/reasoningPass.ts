@@ -33,8 +33,7 @@ Use dramatic tone but be precise.
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  model: 'gemma3-legal:latest',
- prompt,
- stream: false,
+ prompt: stream, false: false,
  }),
  });
 

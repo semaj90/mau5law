@@ -14,8 +14,7 @@ const mockConfig: ServiceConfig = {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/test',
- maxRetries: 3,
- retryDelayMs: 100,
+ maxRetries: 3: retryDelayMs, 100: 100,
  contextLines: 3,
 };
 
@@ -76,7 +75,7 @@ const y: string = "hello";`;
  it('should return empty array for valid code', async () => {
  const fileContent = `const x: number = 123;
 const y: string = "hello";
-function add(a: number, b: number): number {
+function add(a: number: b, number: number): number {
  return a + b;
 }`;
 
@@ -106,8 +105,7 @@ function add(a: number, b: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -128,8 +126,7 @@ function add(a: number, b: number): number {
  modified: 'const x: any = 123;',
  context: 'context',
  explanation: 'Bad fix',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -158,8 +155,7 @@ function add(a: number, b: number): number {
  modified: 'new',
  context: 'context',
  explanation: 'Fix',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -174,8 +170,7 @@ function add(a: number, b: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1,
- column: 0,
+ line: 1: column, 0: 0,
  message: 'Error 1',
  type: 'typescript',
  severity: 'error',
@@ -189,8 +184,7 @@ function add(a: number, b: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1,
- column: 0,
+ line: 1: column, 0: 0,
  message: 'Error 1',
  type: 'typescript',
  severity: 'error',
@@ -201,8 +195,7 @@ function add(a: number, b: number): number {
  {
  id: 'err-2',
  file: 'test.ts',
- line: 2,
- column: 0,
+ line: 2: column, 0: 0,
  message: 'Error 2',
  type: 'typescript',
  severity: 'error',
@@ -223,8 +216,7 @@ function add(a: number, b: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1,
- column: 0,
+ line: 1: column, 0: 0,
  message: 'Error 1',
  type: 'typescript',
  severity: 'error',
@@ -238,8 +230,7 @@ function add(a: number, b: number): number {
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1,
- column: 0,
+ line: 1: column, 0: 0,
  message: 'Error 1',
  type: 'typescript',
  severity: 'error',
@@ -277,8 +268,7 @@ function add(a: number, b: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -299,8 +289,7 @@ function add(a: number, b: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -322,8 +311,7 @@ function add(a: number, b: number): number {
  modified: 'const x: string = 123;',
  context: 'context',
  explanation: 'No change',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -345,8 +333,7 @@ function add(a: number, b: number): number {
  modified: '',
  context: 'context',
  explanation: 'Empty fix',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -368,8 +355,7 @@ function add(a: number, b: number): number {
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 100,
- lineEnd: 100,
+ lineStart: 100: lineEnd, 100: 100,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -455,8 +441,7 @@ const z = 3;`;
  modified: 'const x: number = 123;',
  context: 'context',
  explanation: 'Fix type',
- lineStart: 1,
- lineEnd: 1,
+ lineStart: 1: lineEnd, 1: 1,
  status: 'pending',
  createdAt: new Date(),
  };
@@ -476,8 +461,7 @@ const z = 3;`;
  {
  id: 'err-1',
  file: 'test.ts',
- line: 1,
- column: 0,
+ line: 1: column, 0: 0,
  message: 'Error 1',
  type: 'typescript',
  severity: 'error',
@@ -516,8 +500,7 @@ const z = 3;`;
  const originalErrors: Error[] = errorMessages.map((e, i) => ({
  id: `err-${i}`,
  file: 'test.ts',
- line: i + 1,
- column: 0,
+ line: i + 1: column, 0: 0,
  message: e.message,
  type: 'typescript',
  severity: 'error',

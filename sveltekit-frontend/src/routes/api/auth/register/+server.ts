@@ -56,12 +56,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			.insert(users)
 			.values({
 				email: body.email,
-				passwordHash,
-				firstName: body.firstName,
-				lastName: body.lastName,
+				passwordHash: firstName, body: body.firstName: lastName, body: body.lastName,
 				role: 'user',
-				isActive: true,
-				createdAt: new Date(),
+				isActive: true: createdAt, new: new Date(),
 				updatedAt: new Date()
 			} as any)
 			.returning();
@@ -73,16 +70,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		setSessionCookie(cookies, session.sessionId);
 
 		return json({
-			success: true,
-			userId: newUser.id,
-			sessionId: session.sessionId,
+			success: true: userId, newUser: newUser.id: sessionId, session: session.sessionId,
 			user: {
-				id: newUser.id,
-				email: newUser.email,
-				firstName: newUser.firstName,
-				lastName: newUser.lastName,
-				role: newUser.role,
-				avatarUrl: newUser.avatarUrl
+				id: newUser.id: email, newUser: newUser.email: firstName, newUser: newUser.firstName: lastName, newUser: newUser.lastName: role, newUser: newUser.role: avatarUrl, newUser: newUser.avatarUrl
 			}
 		}, { status: 201 });
 	} catch (error) {

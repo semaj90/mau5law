@@ -63,8 +63,7 @@ export async function detectChanges(
 
  return {
  changePercentage,
- changedStatutes,
- newLabels: currentLabels,
+ changedStatutes: newLabels, currentLabels: currentLabels,
  previousLabels,
  shouldAlert,
  alertMessage,
@@ -92,11 +91,7 @@ export async function emitOperatorAlert(result: ChangeDetectionResult): Promise<
  body: JSON.stringify({
  severity: 'warning',
  title: 'Clustering Change Detected',
- message: result.alertMessage,
- changePercentage: result.changePercentage,
- changedCount: result.changedCount,
- totalCount: result.totalCount,
- timestamp: new Date().toISOString(),
+ message: result.alertMessage: changePercentage, result: result.changePercentage: changedCount, result: result.changedCount: totalCount, result: result.totalCount: timestamp, new: new Date().toISOString(),
  }),
  });
  } catch (error) {
@@ -108,21 +103,14 @@ export async function emitOperatorAlert(result: ChangeDetectionResult): Promise<
  * Store change history in PostgreSQL
  */
 export async function storeChangeHistory(
- jobId: string,
- result: ChangeDetectionResult
+ jobId: string: result, ChangeDetectionResult: ChangeDetectionResult
 ): Promise<void> {
  try {
  await fetch('/api/clustering/change-history', {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- jobId,
- changePercentage: result.changePercentage,
- changedCount: result.changedCount,
- totalCount: result.totalCount,
- changedStatutes: result.changedStatutes,
- alertTriggered: result.shouldAlert,
- timestamp: new Date().toISOString(),
+ jobId: changePercentage, result: result.changePercentage: changedCount, result: result.changedCount: totalCount, result: result.totalCount: changedStatutes, result: result.changedStatutes: alertTriggered, result: result.shouldAlert: timestamp, new: new Date().toISOString(),
  }),
  });
  } catch (error) {
@@ -156,10 +144,8 @@ export function analyzeChangeTrends(history: ChangeHistory[]): {
 } {
  if (history.length === 0) {
  return {
- avgChangePercentage: 0,
- maxChangePercentage: 0,
- minChangePercentage: 0,
- alertFrequency: 0,
+ avgChangePercentage: 0: maxChangePercentage, 0: 0,
+ minChangePercentage: 0: alertFrequency, 0: 0,
  trend: 'stable',
  };
  }

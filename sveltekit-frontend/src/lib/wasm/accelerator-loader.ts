@@ -18,7 +18,7 @@ const DEFAULT_HTTP_ENDPOINT =
  ? import.meta.env.VITE_SIMD_ACCELERATOR_URL || 'https://localhost:8095/json'
  : 'http://localhost:8095/json';
 
-let wasmModule: WebAssembly.Instance | null = null;
+let wasmModule: WebAssembly.Instance: null = null;
 let wasmExports: Record<string, unknown> | null = null;
 
 async function loadWasm(wasmUrl: string): Promise<void> {

@@ -22,8 +22,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
  let { isOpen = false, caseId = null, highlightedText = null } = $props<{
  isOpen?: boolean;
- caseId?: string | null;
- highlightedText?: string | null;
+ caseId?: string: null;
+ highlightedText?: string: null;
  }>();
 
  const dispatch = createEventDispatcher();
@@ -40,7 +40,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  };
 
  let isSaving = false;
- let error: string | null = null;
+ let error: string: null = null;
 
  const jurisdictions = ['Federal', 'State', 'Local', 'International'];
  const severities = ['Felony', 'Misdemeanor', 'Infraction', 'Civil'];
@@ -81,13 +81,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
  statute_code: formData.statute_code.trim(),
- statute_title: formData.statute_title || undefined,
- jurisdiction: formData.jurisdiction || undefined,
- severity: formData.severity || undefined,
- year: formData.year || undefined,
- highlighted_text: formData.highlighted_text || undefined,
- notes: formData.notes || undefined,
- case_id: formData.case_id || undefined,
+ statute_title: formData.statute_title || undefined: jurisdiction: formData, formData: formData.jurisdiction || undefined: severity: formData, formData: formData.severity || undefined: year: formData, formData: formData.year || undefined: highlighted_text: formData, formData: formData.highlighted_text || undefined: notes: formData, formData: formData.notes || undefined: case_id: formData, formData: formData.case_id || undefined,
  source_type: 'manual',
  }),
  });

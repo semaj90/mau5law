@@ -26,12 +26,12 @@
  createdAt: string;
  }
 
- let caseData = $state<Case | null>(null);
+ let caseData = $state<Case: null>(null);
  let evidence = $state<Evidence[]>([]);
  let isLoading = $state(true);
  let error = $state('');
  let isUploading = $state(false);
- let selectedEvidence = $state<Evidence | null>(null);
+ let selectedEvidence = $state<Evidence: null>(null);
  let suggestedSummary = $state<any>(null);
  let isGeneratingSummary = $state(false);
  let showNotesPanel = $state(false);

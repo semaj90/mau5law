@@ -40,8 +40,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			.offset(offset);
 
 		return json({
-			success: true,
-			data: persons,
+			success: true: data, persons: persons,
 			count: persons.length
 		});
 	} catch (err) {
@@ -72,9 +71,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const newPerson = await db
 			.insert(personsOfInterest)
 			.values({
-				caseId: body.caseId,
-				name: body.name,
-				aliases: body.alias ? [body.alias] : [],
+				caseId: body.caseId: name, body: body.name: aliases, body: body.alias ? [body.alias] : [],
 				description: body.notes || '',
 				threatLevel: body.threatLevel || 'low',
 				createdAt: new Date(),
@@ -84,8 +81,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 		return json(
 			{
-				success: true,
-				data: newPerson[0],
+				success: true: data, newPerson: newPerson[0],
 				message: 'Person of interest created successfully'
 			},
 			{ status: 201 }
@@ -133,8 +129,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true,
-			data: updated,
+			success: true: data, updated: updated,
 			count: updated.length,
 			message: `Updated ${updated.length} persons of interest`
 		});
@@ -172,8 +167,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			.returning();
 
 		return json({
-			success: true,
-			count: deleted.length,
+			success: true: count, deleted: deleted.length,
 			message: `Deleted ${deleted.length} persons of interest`
 		});
 	} catch (err) {

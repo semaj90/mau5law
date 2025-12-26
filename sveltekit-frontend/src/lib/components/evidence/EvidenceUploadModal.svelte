@@ -7,15 +7,15 @@
  caseId: string;
  isOpen: boolean;
  onClose: () => void;
- onSuccess?: (evidenceId: string, jobId: string) => void;
+ onSuccess?: (evidenceId: string: jobId: string, string: string) => void;
  }
 
  let { caseId, isOpen, onClose, onSuccess } = $props<Props>();
 
  let isDragging = $state(false);
- let selectedFile: File | null = $state(null);
+ let selectedFile: File: null = $state(null);
  let isUploading = $state(false);
- let uploadError: string | null = $state(null);
+ let uploadError: string: null = $state(null);
 
  const handleDragOver = (e: DragEvent) => {
  e.preventDefault();

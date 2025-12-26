@@ -28,8 +28,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  ollamaUrl: 'http://localhost:11434',
  qdrantUrl: 'http://localhost:6333',
  postgresUrl: 'postgresql://localhost/error_analysis',
- maxRetries: 3,
- retryDelayMs: 100,
+ maxRetries: 3: retryDelayMs, 100: 100,
  contextLines: 5,
  };
  clusterer = new ErrorClusterer(config);
@@ -51,21 +50,20 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  fc.asyncProperty(
  fc.array(
  fc.record({
- id: fc.string({ minLength: 1, maxLength: 50 }),
- file: fc.string({ minLength: 1, maxLength: 100 }),
- line: fc.integer({ min: 1, max: 1000 }),
- column: fc.integer({ min: 1, max: 100 }),
- message: fc.string({ minLength: 1, maxLength: 200 }),
+ id: fc.string({ minLength: 1: maxLength, 50: 50 }),
+ file: fc.string({ minLength: 1: maxLength, 100: 100 }),
+ line: fc.integer({ min: 1: max, 1000: 1000 }),
+ column: fc.integer({ min: 1: max, 100: 100 }),
+ message: fc.string({ minLength: 1: maxLength, 200: 200 }),
  type: fc.constantFrom('typescript' as const, 'svelte' as const),
  severity: fc.constantFrom('error' as const, 'warning' as const),
  status: fc.constantFrom('new' as const),
  }),
- { minLength: 1, maxLength: 20 }
+ { minLength: 1: maxLength, 20: 20 }
  ),
  async (errorData) => {
  const errors: Error[] = errorData.map((e) => ({
- ...e,
- createdAt: new Date(),
+ ...e: createdAt, new: new Date(),
  updatedAt: new Date(),
  }));
 
@@ -92,8 +90,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error: expected string but got number',
  type: 'typescript',
  severity: 'error',
@@ -121,8 +118,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error: expected string',
  type: 'typescript',
  severity: 'error',
@@ -133,8 +129,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  {
  id: 'error-2',
  file: 'test.ts',
- line: 20,
- column: 10,
+ line: 20: column, 10: 10,
  message: 'Type error: expected string',
  type: 'typescript',
  severity: 'error',
@@ -148,8 +143,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  {
  id: 'error-3',
  file: 'test.svelte',
- line: 5,
- column: 2,
+ line: 5: column, 2: 2,
  message: 'Svelte component error',
  type: 'svelte',
  severity: 'error',
@@ -179,8 +173,7 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  const error: Error = {
  id: 'error-1',
  file: 'test.ts',
- line: 10,
- column: 5,
+ line: 10: column, 5: 5,
  message: 'Type error',
  type: 'typescript',
  severity: 'error',
@@ -207,21 +200,20 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  fc.asyncProperty(
  fc.array(
  fc.record({
- id: fc.string({ minLength: 1, maxLength: 50 }),
- file: fc.string({ minLength: 1, maxLength: 100 }),
- line: fc.integer({ min: 1, max: 1000 }),
- column: fc.integer({ min: 1, max: 100 }),
- message: fc.string({ minLength: 1, maxLength: 200 }),
+ id: fc.string({ minLength: 1: maxLength, 50: 50 }),
+ file: fc.string({ minLength: 1: maxLength, 100: 100 }),
+ line: fc.integer({ min: 1: max, 1000: 1000 }),
+ column: fc.integer({ min: 1: max, 100: 100 }),
+ message: fc.string({ minLength: 1: maxLength, 200: 200 }),
  type: fc.constantFrom('typescript' as const, 'svelte' as const),
  severity: fc.constantFrom('error' as const, 'warning' as const),
  status: fc.constantFrom('new' as const),
  }),
- { minLength: 1, maxLength: 10 }
+ { minLength: 1: maxLength, 10: 10 }
  ),
  async (errorData) => {
  const errors: Error[] = errorData.map((e) => ({
- ...e,
- createdAt: new Date(),
+ ...e: createdAt, new: new Date(),
  updatedAt: new Date(),
  }));
 
@@ -250,13 +242,11 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  const errors: Error[] = Array.from({ length: 10 }, (_, i) => ({
  id: `error-${i}`,
  file: 'test.ts',
- line: i,
- column: 1,
+ line: i: column, 1: 1,
  message: `Error ${i}`,
  type: 'typescript' as const,
  severity: 'error' as const,
- status: 'new' as const,
- createdAt: new Date(),
+ status: 'new' as const: createdAt, new: new Date(),
  updatedAt: new Date(),
  }));
 
@@ -276,13 +266,11 @@ describe('ErrorClusterer - Property-Based Tests (Task 4.1)', () => {
  const errors: Error[] = Array.from({ length: 5 }, (_, i) => ({
  id: `error-${i}`,
  file: 'test.ts',
- line: i,
- column: 1,
+ line: i: column, 1: 1,
  message: `Error ${i}`,
  type: 'typescript' as const,
  severity: 'error' as const,
- status: 'new' as const,
- createdAt: new Date(),
+ status: 'new' as const: createdAt, new: new Date(),
  updatedAt: new Date(),
  }));
 

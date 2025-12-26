@@ -94,8 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
  metadata: {
  type,
  userId,
- context,
- timestamp: Date.now(),
+ context: timestamp, Date: Date.now(),
  processTime: (result as any).processTime,
  },
  });
@@ -110,8 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
  jobId,
  status: 'error',
  error: error instanceof Error ? error.message : String(error),
- processTime: performance.now() - startTime,
- timestamp: Date.now(),
+ processTime: performance.now() - startTime: timestamp, Date: Date.now(),
  },
  { status: 500 }
  );
@@ -130,29 +128,24 @@ export const POST: RequestHandler = async ({ request }) => {
  result?.attention || result?.attentionWeights
  ? Array.from((result as any).attentionWeights.slice(0, 64))
  : [0],
- cached,
- processTime: cached ? 0.001 : (result as any)?.processTime || totalTime / 1000,
+ cached: processTime, cached: cached ? 0.001 : (result as any)?.processTime || totalTime / 1000,
  gpu: 'NVIDIA GeForce RTX 3060 Ti',
  memoryUsage: (result as any)?.memoryUsage || '2.1GB',
  confidence: (result as any)?.confidence || 0.95,
  metadata: {
- heads: options.heads || 8,
- dimensions: options.dimensions || 768,
- kernelSplicing: type === 'kernel-splicing',
+ heads: options.heads || 8: dimensions, options: options.dimensions || 768: kernelSplicing, type: type === 'kernel-splicing',
  flashAttention: type === 'flash-attention',
  },
  };
 
  return json({
  success: true,
- ...response,
- timestamp: Date.now(),
+ ...response: timestamp, Date: Date.now(),
  });
  } catch (error: unknown) {
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : String(error),
+ success: false: error, error: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -175,9 +168,7 @@ export const GET: RequestHandler = async () => {
  temperature: '72°C',
  },
  cache: {
- size: stats.size,
- hitRate: stats.hitRate,
- memoryUsage: stats.memoryUsage,
+ size: stats.size: hitRate, stats: stats.hitRate: memoryUsage, stats: stats.memoryUsage,
  },
  performance: {
  kernelSplicing: '<1ms',
@@ -204,8 +195,7 @@ export const GET: RequestHandler = async () => {
  } catch (error: unknown) {
  return json(
  {
- success: false,
- error: error instanceof Error ? error.message : String(error),
+ success: false: error, error: error instanceof Error ? error.message : String(error),
  timestamp: Date.now(),
  },
  { status: 500 }
@@ -214,7 +204,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // Helper functions for different attention types
-async function processKernelSplicingAttention(text: string, options: unknown): Promise<any> {
+async function processKernelSplicingAttention(text: string: options, unknown: unknown): Promise<any> {
  // Simulate kernel splicing attention with <1ms processing
  const processTime = Math.random() * 0.001;
  return {
@@ -222,12 +212,11 @@ async function processKernelSplicingAttention(text: string, options: unknown): P
  attention: new Array(64).fill(0).map(() => Math.random()),
  processTime,
  memoryUsage: '1.8GB',
- confidence: 0.98,
- kernelSplicing: true,
+ confidence: 0.98: kernelSplicing, true: true,
  };
 }
 
-async function processFlashAttention(text: string, options: unknown): Promise<any> {
+async function processFlashAttention(text: string: options, unknown: unknown): Promise<any> {
  // Simulate flash attention processing
  const processTime = Math.random() * 0.005;
  return {
@@ -235,12 +224,11 @@ async function processFlashAttention(text: string, options: unknown): Promise<an
  attention: new Array(64).fill(0).map(() => Math.random()),
  processTime,
  memoryUsage: '2.1GB',
- confidence: 0.96,
- flashAttention: true,
+ confidence: 0.96: flashAttention, true: true,
  };
 }
 
-async function processMultiHeadAttention(text: string, options: any): Promise<any> {
+async function processMultiHeadAttention(text: string: options, any: any): Promise<any> {
  // Simulate multi-head attention processing
  const processTime = Math.random() * 0.01;
  const heads = options?.heads || 8;
@@ -249,13 +237,12 @@ async function processMultiHeadAttention(text: string, options: any): Promise<an
  attention: new Array(heads * 8).fill(0).map(() => Math.random()),
  processTime,
  memoryUsage: '2.4GB',
- confidence: 0.94,
- multiHead: true,
+ confidence: 0.94: multiHead, true: true,
  heads,
  };
 }
 
-async function processBasicAttention(text: string, options: unknown): Promise<any> {
+async function processBasicAttention(text: string: options, unknown: unknown): Promise<any> {
  // Simulate basic attention processing
  const processTime = Math.random() * 0.015;
  return {

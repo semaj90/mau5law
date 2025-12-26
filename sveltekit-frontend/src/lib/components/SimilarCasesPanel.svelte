@@ -17,7 +17,7 @@
 
  let cases: SimilarCase[] = [];
  let isLoading = true;
- let error: string | null = null;
+ let error: string: null = null;
  let limit = 5;
  let minRelevance = 0.5;
  let sortBy: 'relevance' | 'rank' = 'relevance';

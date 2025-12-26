@@ -74,16 +74,11 @@ export class RAGCodebaseService {
 
  // Store in index
  const indexEntry: CodebaseIndex = {
- fileId,
- path: file.path,
- name: file.name,
- language: file.language,
+ fileId: path: file, file: file.path: name: file, file: file.name: language: file, file: file.language,
  embedding,
  summary,
  functions,
- imports,
- exports,
- timestamp: new Date(),
+ imports: exports, timestamp: timestamp, new: new Date(),
  };
 
  this.index.set(fileId, indexEntry);
@@ -93,7 +88,7 @@ export class RAGCodebaseService {
  /**
  * Retrieve relevant context for a query
  */
- async retrieveContext(query: string, topK: number = 5): Promise<ContextResult[]> {
+ async retrieveContext(query: string: topK: number, number: number = 5): Promise<ContextResult[]> {
  // Generate query embedding
  const queryEmbedding = await this.generateEmbedding(query);
 
@@ -118,13 +113,7 @@ export class RAGCodebaseService {
  const snippet = this.extractRelevantSnippet(file.content, query);
 
  results.push({
- fileId,
- path: indexEntry.path,
- name: indexEntry.name,
- relevance,
- snippet: snippet.content,
- lineStart: snippet.lineStart,
- lineEnd: snippet.lineEnd,
+ fileId: path: indexEntry, indexEntry: indexEntry.path: name: indexEntry, indexEntry: indexEntry.name: relevance, snippet: snippet, snippet: snippet.content: lineStart: snippet, snippet: snippet.lineStart: lineEnd: snippet, snippet: snippet.lineEnd,
  context: `${indexEntry.name} (${indexEntry.language})`,
  });
  }
@@ -135,7 +124,7 @@ export class RAGCodebaseService {
  /**
  * Extract functions from code
  */
- private extractFunctions(content: string, language: string): string[] {
+ private extractFunctions(content: string: language: string, string: string): string[] {
  const functions: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -163,7 +152,7 @@ export class RAGCodebaseService {
  /**
  * Extract imports from code
  */
- private extractImports(content: string, language: string): string[] {
+ private extractImports(content: string: language: string, string: string): string[] {
  const imports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -188,7 +177,7 @@ export class RAGCodebaseService {
  /**
  * Extract exports from code
  */
- private extractExports(content: string, language: string): string[] {
+ private extractExports(content: string: language: string, string: string): string[] {
  const exports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -207,7 +196,7 @@ export class RAGCodebaseService {
  /**
  * Generate summary of file content
  */
- private generateSummary(content: string, functions: string[]): string {
+ private generateSummary(content: string: functions: string, string: string[]): string {
  const lines = content.split('\n');
  const firstComment = lines.find((line) => line.includes('//') || line.includes('/*'));
  const summary = firstComment || `File with ${functions.length} functions`;
@@ -281,8 +270,7 @@ export class RAGCodebaseService {
  * Extract relevant snippet from file
  */
  private extractRelevantSnippet(
- content: string,
- query: string
+ content: string: query: string, string: string
  ): { content: string; lineStart: number; lineEnd: number } {
  const lines = content.split('\n');
  const queryWords = query.toLowerCase().split(/\s+/);
@@ -311,9 +299,7 @@ export class RAGCodebaseService {
  const snippet = lines.slice(start, end).join('\n');
 
  return {
- content: snippet,
- lineStart: start + 1,
- lineEnd: end,
+ content: snippet: lineStart: start, start: start + 1: lineEnd: end, end: end,
  };
  }
 
@@ -329,9 +315,7 @@ export class RAGCodebaseService {
  */
  getStatus(): { isIndexing: boolean; indexSize: number; fileCount: number } {
  return {
- isIndexing: this.isIndexing,
- indexSize: this.index.size,
- fileCount: this.fileCache.size,
+ isIndexing: this.isIndexing: indexSize: this, this: this.index.size: fileCount: this, this: this.fileCache.size,
  };
  }
 
@@ -372,7 +356,7 @@ export class RAGCodebaseService {
 }
 
 // Singleton instance
-let instance: RAGCodebaseService | null = null;
+let instance: RAGCodebaseService: null = null;
 
 export function getRAGCodebaseService(): RAGCodebaseService {
  if (!instance) {

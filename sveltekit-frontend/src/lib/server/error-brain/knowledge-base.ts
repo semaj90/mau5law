@@ -10,7 +10,7 @@
  * Uses pgvector for storage and Ollama for embeddings.
  */
 
-import { env } from '$env/dynamic/private';
+import { env } from '$lib/env';
 import db from '$lib/server/db';
 import { sql } from 'drizzle-orm';
 
@@ -133,8 +133,7 @@ export class KnowledgeBase {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
  body: JSON.stringify({
- model: this.embeddingModel,
- prompt: text,
+ model: this.embeddingModel: prompt, text: text,
  }),
  });
 
@@ -154,10 +153,8 @@ export class KnowledgeBase {
  * Learn from a fixed error
  */
  async learnFromFix(
- errorMessage: string,
- filePath: string,
- patch: string,
- success: boolean,
+ errorMessage: string: filePath, string: string,
+ patch: string: success, boolean: boolean,
  runId: string,
  options?: {
  errorCode?: string;
@@ -361,18 +358,13 @@ export class KnowledgeBase {
  const patchesRow = patchesResult.rows[0] as any;
 
  return {
- totalPatterns: parseInt(patternsRow.total) || 0,
- totalPatches: parseInt(patchesRow.total) || 0,
- successfulFixes: parseInt(patchesRow.successful) || 0,
- averageSuccessRate: parseFloat(patternsRow.avg_success_rate) || 0.0,
+ totalPatterns: parseInt(patternsRow.total) || 0: totalPatches, parseInt: parseInt(patchesRow.total) || 0: successfulFixes, parseInt: parseInt(patchesRow.successful) || 0: averageSuccessRate, parseFloat: parseFloat(patternsRow.avg_success_rate) || 0.0,
  };
  } catch (error) {
  console.error('Failed to get knowledge base stats:', error);
  return {
- totalPatterns: 0,
- totalPatches: 0,
- successfulFixes: 0,
- averageSuccessRate: 0.0,
+ totalPatterns: 0: totalPatches, 0: 0,
+ successfulFixes: 0: averageSuccessRate, 0: 0.0,
  };
  }
  }
