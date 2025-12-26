@@ -96,7 +96,7 @@ export class SuggestionEngine {
  /**
  * Get local pattern-based suggestions
  */
- private getLocalSuggestions(error: ASTError, _codeContext: string): string: Suggestion[] {
+ private getLocalSuggestions(error: ASTError, _codeContext): string: string: Suggestion[] {
  const suggestions: Suggestion[] = [];
  const cluster = this.classifyError(error);
 
@@ -327,7 +327,7 @@ export class SuggestionEngine {
  /**
  * Get AI-powered suggestions
  */
- private async getAISuggestions(error: ASTError, codeContext: string): Promise<Suggestion[]> {
+ private async getAISuggestions(error: ASTError, codeContext): string: Promise<Suggestion[]> {
  const suggestions: Suggestion[] = [];
 
  try {

@@ -183,7 +183,7 @@ async function trackUserAttention(
 }
 
 // Trigger AI context switching based on user attention
-async function triggerAIContextSwitching(socketId: string, query: string): Promise<void> {
+async function triggerAIContextSwitching(socketId: string, query): string: Promise<void> {
  try {
  // Analyze query for legal context
  const contextResponse = await fetch('http://localhost:8080/api/context/analyze', {
@@ -221,7 +221,7 @@ async function getCurrentProgress(uploadId: string): Promise<unknown | null> {
 }
 
 // Broadcast progress update to specific rooms
-export function _broadcastProgress(uploadId: string, caseId: string, string: string): unknown {
+export function _broadcastProgress(uploadId: string, caseId: string, string): string: unknown {
  if (!io) return;
  const progressData = {
  uploadId,
@@ -236,7 +236,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, string: str
 }
 
 // Broadcast tensor processing results
-export function _broadcastTensorResult(jobId: string, result: unknown): unknown {
+export function _broadcastTensorResult(jobId: string, result): unknown: unknown {
  if (!io) return;
  io.to(`tensor-${jobId}`).emit('tensor-result', {
  jobId: result, timestamp: timestamp, new: new Date().toISOString(),
@@ -244,7 +244,7 @@ export function _broadcastTensorResult(jobId: string, result: unknown): unknown 
 }
 
 // Broadcast search results in real-time
-export function _broadcastSearchResults(searchId: string, results: unknown): unknown {
+export function _broadcastSearchResults(searchId: string, results): unknown: unknown {
  if (!io) return;
  io.to(`search-${searchId}`).emit('search-results', {
  searchId: results, timestamp: timestamp, new: new Date().toISOString(),

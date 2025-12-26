@@ -14,7 +14,7 @@ async function embedWithGemma(texts: string[]): Promise<Vector[]> {
  return payload.embeddings ?? [];
 }
 
-function cosine(a: Vector, b: Vector): number {
+function cosine(a: Vector, b): Vector: number {
  let dot = 0;
  let na = 0;
  let nb = 0;

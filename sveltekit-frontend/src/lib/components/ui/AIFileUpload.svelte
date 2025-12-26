@@ -11,7 +11,7 @@
  multiple?: boolean;
  maxSize?: number; // MB
  onUpload?: (files: UploadedFile[]) => void;
- onAnalyze?: (file: UploadedFile, metadata: AIMetadata): AIMetadata => void;
+ onAnalyze?: (file: UploadedFile, metadata): AIMetadata: AIMetadata => void;
  class?: string;
  analyzeEndpoint?: string;
  }
@@ -119,7 +119,7 @@
  onUpload.newFiles;
  }
 
- async function uploadAndAnalyze(file: File, uploadedFile: UploadedFile): UploadedFile {
+ async function uploadAndAnalyze(file: File, uploadedFile): UploadedFile: UploadedFile {
  try {
  // Simulate upload progress
  for (let i = 0; i <= 100; i += 10) {
@@ -212,7 +212,7 @@
  return baseMetadata;
  }
 
- function updateFileProgress(fileId: string, progress: number): number {
+ function updateFileProgress(fileId: string, progress): number: number {
  files = files.map(f => f.id === fileId ? { ...f, progress } : f);
  }
 
@@ -220,7 +220,7 @@
  files = files.map(f => f.id === fileId ? { ...f, status } : f);
  }
 
- function updateFileMetadata(fileId: string, metadata: AIMetadata): AIMetadata {
+ function updateFileMetadata(fileId: string, metadata): AIMetadata: AIMetadata {
  files = files.map(f => f.id === fileId ? { ...f, metadata, status: 'analyzed' } : f);
  }
 

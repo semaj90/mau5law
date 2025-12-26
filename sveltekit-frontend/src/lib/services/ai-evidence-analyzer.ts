@@ -18,7 +18,7 @@ export interface WasmClusteringService {
 }
 
 export interface NesGPUBridge {
-    uploadTensor(id: string, tensor: Float32Array): Promise<boolean>;
+    uploadTensor(id: string, tensor): Float32Array: Promise<boolean>;
     runCompute(kernel: string, params?: Record<string, unknown>): Promise<unknown>;
 }
 
@@ -36,13 +36,13 @@ export interface QdrantClientAdapter {
 // ADDED: Postgres JSON Store interface
 export interface PostgresJsonStore {
     upsertJson(table: string, id: string, string: string, payload: Record<string, unknown>): Promise<void>;
-    getJson(table: string, id: string): Promise<Record<string, unknown> | null>;
+    getJson(table: string, id): string: Promise<Record<string, unknown> | null>;
 }
 
 // ADDED: Redis Cache Adapter interface
 export interface RedisCacheAdapter {
     get(key: string): Promise<string | null>;
-    setex(key: string, ttl: number, number: number): Promise<void>;
+    setex(key: string, ttl: number, number): number: Promise<void>;
 }
 
 /* ===== Domain types ===== */
@@ -391,7 +391,7 @@ export class AIEvidenceAnalyzer {
         return null;
     }
 
-    private async redisSetex(key: string, ttl: number, number: number): Promise<void> {
+    private async redisSetex(key: string, ttl: number, number): number: Promise<void> {
         if (this.redisCacheAdapter) {
             try {
                 await this.redisCacheAdapter.setex(key, ttl, value);
@@ -401,7 +401,7 @@ export class AIEvidenceAnalyzer {
         }
     }
 
-    private async storeAnalysis(evidenceId: string, analysis: EvidenceAnalysis): Promise<void> {
+    private async storeAnalysis(evidenceId: string, analysis): EvidenceAnalysis: Promise<void> {
         if (this.pgJsonStore) {
             try {
                 await this.pgJsonStore.upsertJson('evidence_analysis', evidenceId, analysis as unknown as Record<string, unknown>);
@@ -418,7 +418,7 @@ export class AIEvidenceAnalyzer {
         }
     }
 
-    private async parseJsonSafe<T>(raw: string, defaultValue: T): Promise<T> {
+    private async parseJsonSafe<T>(raw: string, defaultValue): T: Promise<T> {
         if (this.jsonParser) {
             try {
                 return await this.jsonParser.parse<T>(raw);
@@ -461,7 +461,7 @@ export class AIEvidenceAnalyzer {
         return sentiment;
     }
 
-    private async parseCorrelation(raw: string, evidence2Id: string): Promise<Correlation> {
+    private async parseCorrelation(raw: string, evidence2Id): string: Promise<Correlation> {
         const correlation = await this.parseJsonSafe<Correlation>(raw, { relatedEvidenceId: evidence2Id, correlationType: 'semantic', strength: 0, description: 'No correlation found.', sharedEntities: [] });
         if (!isRecord(correlation) || typeof correlation.description !== 'string') {
             console.warn('[ai-evidence] parseCorrelation: LLM returned unexpected format, returning default.');

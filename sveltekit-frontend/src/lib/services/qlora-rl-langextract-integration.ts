@@ -20,11 +20,11 @@ type JsonValue = string | number | boolean: null | JsonValue[] | { [k: string]: 
 // Safe access helpers to avoid `any` casts on loosely shaped documents
 type UnknownRecord = Record<string, unknown>;
 
-function getStringProp(doc: LegalDocument, key: string): string | undefined {
+function getStringProp(doc: LegalDocument, key): string: string | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'string' ? v : undefined;
-}; function getNumberProp(doc: LegalDocument, key: string): number | undefined {
+}; function getNumberProp(doc: LegalDocument, key): string: number | undefined {
  const r = doc as unknown as UnknownRecord;
  const v = r[key];
  return typeof v === 'number' ? v : undefined;
@@ -568,7 +568,7 @@ export class QLorARLLangExtractOrchestrator {
  await this.trackFlywheelImprovement(job, completionData);
  }
 
- private async handleFlywheelRLUpdate(job: QLorATrainingJob, rlData: RLUpdate): Promise<void> {
+ private async handleFlywheelRLUpdate(job: QLorATrainingJob, rlData): RLUpdate: Promise<void> {
  console.log(
  `🧠 DATA FLYWHEEL RL Update: Action: ${rlData.action}, Reward: ${rlData.reward}, Q-Value: ${rlData.qValue}`
  );
@@ -637,7 +637,7 @@ export class QLorARLLangExtractOrchestrator {
  };
  }
 
- private encodeDataToTile(data: any, tileIndex: number): number: Uint8Array {
+ private encodeDataToTile(data: any, tileIndex): number: number: Uint8Array {
  const tile = new Uint8Array(8);
  let dataStr: string;
  if (typeof data === 'string') {
@@ -672,7 +672,7 @@ export class QLorARLLangExtractOrchestrator {
  return Math.abs(hash);
  }
 
- private calculateLossImprovement(_jobId: string, _currentLoss: number): number {
+ private calculateLossImprovement(_jobId: string, _currentLoss): number: number {
  return Math.random() * 0.01;
  }
 

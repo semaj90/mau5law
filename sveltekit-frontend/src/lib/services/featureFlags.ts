@@ -168,7 +168,7 @@ export class FeatureFlagManager {
  /**
  * Parse boolean from string
  */
- private parseBoolean(value: string, undefined: defaultValue, boolean: boolean): boolean {
+ private parseBoolean(value: string, undefined: defaultValue, boolean): boolean: boolean {
  if (value === undefined) {
  return defaultValue;
  }

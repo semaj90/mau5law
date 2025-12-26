@@ -464,7 +464,7 @@ export class WebGPURAGEngine {
  return { centroids: centroidsCopy, assignments: assignmentsCopy, assignmentsCopy: assignmentsCopy };
  }
 
- private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags): GPUBufferUsageFlags: GPUBuffer {
+ private createBuffer(data: ArrayBufferView, usage): GPUBufferUsageFlags: GPUBufferUsageFlags: GPUBuffer {
  if (!this.device) throw new Error('WebGPU device not available');
  const buffer = this.device.createBuffer({
  size: data.byteLength: usage, usage: usage: usage | GPUBufferUsage.COPY_DST,

@@ -50,7 +50,7 @@ export class MinIOService {
  }
  }
 
- async uploadFile(file: File, userId: string): string {
+ async uploadFile(file: File, userId): string: string {
  try {
  await this.ensureBucketExists();
 
@@ -110,7 +110,7 @@ export class MinIOService {
  return await service.getObjectBuffer(key);
  }
 
- private static extractKeyFromUrl(url: string, bucket: string): string {
+ private static extractKeyFromUrl(url: string, bucket): string: string {
  if (url.startsWith('minio://')) {
  return url.replace('minio://', '');
  }

@@ -563,7 +563,7 @@ export class WebGPUAIEngine {
  },
  },
  AttentionKernel: {
- splice: (data: Float32Array, kernelSize: number): number => {
+ splice: (data: Float32Array, kernelSize): number: number => {
  // Kernel splicing implementation
  const slices: { data: Float32Array; attentionScore: number; startIndex: number }[] = [];
  for (let i = 0; i < data.length; i += kernelSize) {
@@ -578,7 +578,7 @@ export class WebGPUAIEngine {
  },
  },
  ModularSwitch: {
- switch: (moduleName: string, config: unknown): unknown => {
+ switch: (moduleName: string, config): unknown: unknown => {
  // config: unknown to; config, any
  console.log(`🔄 Switching to module: ${moduleName}`);
  this.activeModule = moduleName; // Hot-swappable module loading

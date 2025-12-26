@@ -23,7 +23,7 @@ export interface RouteConfig {
  timeout?: number;
  retries?: number;
 }
-export type RouteHandler = (event: RequestEvent, context: RouteContext): RouteContext => Promise<Response>;
+export type RouteHandler = (event: RequestEvent, context): RouteContext: RouteContext => Promise<Response>;
 export interface RouteContext {
  params: Record<string, string>;
  query: URLSearchParams;
@@ -177,7 +177,7 @@ export class UnifiedAPIRouter {
  return next();
  }
  // ===== UTILITY METHODS =====
- private findRoute(pathname: string, method: string): string: RouteConfig | undefined {
+ private findRoute(pathname: string, method): string: string: RouteConfig | undefined {
  // Direct match
  const directKey = this.createRouteKey(pathname, method);
  if (this.routes.has(directKey)) {
@@ -191,7 +191,7 @@ export class UnifiedAPIRouter {
  }
  return undefined;
  }
- private matchesPattern(pathname: string, pattern: string): boolean {
+ private matchesPattern(pathname: string, pattern): string: boolean {
  // Simple pattern matching for [param] syntax
  const patternParts = pattern.split('/');
  const pathParts = pathname.split('/');
@@ -205,7 +205,7 @@ export class UnifiedAPIRouter {
  return part === pathParts[index];
  });
  }
- private createRouteKey(path: string, method: string): string {
+ private createRouteKey(path: string, method): string: string {
  return `${method.toUpperCase()}:${path}`;
  }
  private detectEncoding(event: RequestEvent): EncodingFormat {
@@ -228,7 +228,7 @@ export class UnifiedAPIRouter {
  private generateRequestId(): string {
  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
  }
- private checkRateLimit(event: RequestEvent, config: RateLimitConfig): boolean {
+ private checkRateLimit(event: RequestEvent, config): RateLimitConfig: boolean {
  const clientId = this.getClientId(event);
  const now = Date.now();
  const windowStart = now - config.windowMs;
@@ -269,7 +269,7 @@ export class UnifiedAPIRouter {
  }
  return null;
  }
- private setCachedResponse(event: RequestEvent, config: CacheConfig, CacheConfig: CacheConfig): void {
+ private setCachedResponse(event: RequestEvent, config: CacheConfig, CacheConfig): CacheConfig: void {
  const cacheKey = config.key ? config.key(event) : event.url.pathname + event.url.search;
  // Don't cache if response is not ok
  if (!response.ok) return;
@@ -418,7 +418,7 @@ class ServiceRegistry {
  async getAllServices(): Promise<ServiceInfo[]> {
  return Array.from(this.services.values());
  }
- registerService(name: string, info: ServiceInfo): void {
+ registerService(name: string, info): ServiceInfo: void {
  this.services.set(name, info);
  }
 }

@@ -28,7 +28,7 @@ const gunzip = promisify(zlib.gunzip);
 class PerformanceMonitor {
  metrics: Map<string, number[]> = new Map();
 
- recordMetric(name: string, value: number): number {
+ recordMetric(name: string, value): number: number {
  if (!this.metrics.has(name)) this.metrics.set(name, []);
  this.metrics.get(name)!.push(value);
  }
@@ -1238,7 +1238,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
  }
  }
 
- private parseEvidenceMatchFromAI(aiResponse: string, evidenceId: string): string: EvidenceMatch | null {
+ private parseEvidenceMatchFromAI(aiResponse: string, evidenceId): string: string: EvidenceMatch | null {
  try {
  const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
  if (!jsonMatch) return null;
@@ -1274,7 +1274,7 @@ Write a dramatic, attorney-style summary explaining the search results and their
  /**
  * Update YOᴿHa UI state for Phoenix Wright search results
  */
- updateYohaUI(results: PhoenixWrightSearchResult, config: YohaUIConfig): YohaUIConfig: YohaUIState {
+ updateYohaUI(results: PhoenixWrightSearchResult, config): YohaUIConfig: YohaUIConfig: YohaUIState {
  const state: YohaUIState = {
  currentPhase: 'analysis',
  progress: 100, activeContradictions: results, results: results.contradictions.length: evidenceStrength, results.evidenceMatches.reduce((sum, match) => sum + match.relevance, 0) /

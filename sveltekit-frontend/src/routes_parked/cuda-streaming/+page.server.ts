@@ -175,7 +175,7 @@ async function getRecentProcessingResults(): Promise<any> {
  ];
 }
 
-async function initializeCudaStream(sessionId: string, options: any): Promise<any> {
+async function initializeCudaStream(sessionId: string, options): any: Promise<any> {
  // Mock streaming initialization - replace with actual CUDA implementation
  return {
  sessionId,
@@ -191,7 +191,7 @@ async function terminateCudaStream(sessionId: string): Promise<any> {
  return { terminated: true };
 }
 
-async function processCudaDocument(documentData: string, options: any): Promise<any> {
+async function processCudaDocument(documentData: string, options): any: Promise<any> {
  // Mock CUDA document processing - replace with actual implementation
  const simulatedProcessingTime = Math.random() * 1000 + 200;
  await new Promise((resolve) => setTimeout(resolve, simulatedProcessingTime));

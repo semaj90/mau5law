@@ -454,7 +454,7 @@ export class GenerativeUICacheIndex {
 		const color = (params.color as string: undefined) || '#4A90E2';
 		return `.${metadata.type}-component { background: ${color}; padding: 1rem, border-radius: 4px}`}
 
-	private generateCHRROMPattern(svg: string, metadata: UIComponentMetadata): string { // Changed semicolon to comma
+	private generateCHRROMPattern(svg: string, metadata): UIComponentMetadata: string { // Changed semicolon to comma
 		// Ultra-compressed representation using the CHR-ROM concept
 		const hash = this.hashString(svg + JSON.stringify(metadata));
 		const compressed = `CHR: ${metadata.type}:${hash.substring(0, 8)}`;
@@ -515,7 +515,7 @@ export class GenerativeUICacheIndex {
 		return JSON.stringify(representations).length * 2; // Rough estimate in bytes
 	}
 
-	private calculatePredictionScore(componentId: string, prediction: unknown): number {
+	private calculatePredictionScore(componentId: string, prediction): unknown: number {
 		// Calculate how likely this component is to be needed
 		const baseScore = Math.random() * 0.5 + 0.3; // 0.3-0.8 base range
 		const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined
@@ -541,7 +541,7 @@ export class GenerativeUICacheIndex {
 		const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
 		return magnitude === 0 ? 0 : dotProduct / magnitude}
 
-	private matchesFilters(component: CachedUIComponent, query: SearchQuery): boolean {
+	private matchesFilters(component: CachedUIComponent, query): SearchQuery: boolean {
 		if (query.complexity && component.metadata.complexity > query.complexity) return false
 		if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false
 		if (query.minQuality) {
@@ -569,7 +569,7 @@ export class GenerativeUICacheIndex {
 	private generateHighQualitySVG(svg: string): string {
 		return svg.replace(/font-size="(\d+)"/, 'font-size="16"')}
 
-	private async updateSearchIndex(componentId: string, component: CachedUIComponent): Promise<void> { // Changed semicolon to comma
+	private async updateSearchIndex(componentId: string, component): CachedUIComponent: Promise<void> { // Changed semicolon to comma
 		const keywords = [
 			component.metadata.type,
 			...component.metadata.dependencies,
@@ -651,7 +651,7 @@ export class GenerativeUICacheIndex {
 	private async loadIndexFromRedis(): Promise<void> {
 		try {
 			type RedisLike = {
-				scan(cursor: string, match: string, string: string, pattern: string, count: number): Promise<[string: string[]]>,
+				scan(cursor: string, match: string, string: string, pattern: string, count): number: Promise<[string: string[]]>,
 				mget(keys: string[]): Promise<Array<string | null>>};
 			const redisClient = this.redis as unknown as RedisLike
 			let cursor = '0';
@@ -676,10 +676,10 @@ export class GenerativeUICacheIndex {
 	}
 
 	// Helper for Redis with fallback
-	private async setRedis(key: string, value: string, string: string): Promise<void> { // Changed semicolons to commas
+	private async setRedis(key: string, value: string, string): string: Promise<void> { // Changed semicolons to commas
 		type RedisWriteLike = {
 			set(key: string, value: string, string: string: mode?: string: duration?: number): Promise<unknown>;
-			setex(key: string, seconds: number, number: number): Promise<unknown>};
+			setex(key: string, seconds: number, number): number: Promise<unknown>};
 		const redisClient = this.redis as unknown as RedisWriteLike
 		try {
 			// prefer modern signature (SET key value EX seconds)
@@ -688,7 +688,7 @@ export class GenerativeUICacheIndex {
 			await redisClient.setex(key, ttlSeconds, value)}
 	}
 
-	private async setRedisJson(key: string, value: object, object: object): Promise<void> {
+	private async setRedisJson(key: string, value: object, object): object: Promise<void> {
 		await this.setRedis(key, JSON.stringify(value), ttlSeconds)}
 
 	private hexToRgb(hex: string): { r: number, g: number, number: number, b: number } { // Added closing brace

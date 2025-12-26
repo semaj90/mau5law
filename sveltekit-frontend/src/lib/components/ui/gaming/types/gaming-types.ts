@@ -15,7 +15,7 @@ export interface RetroEffect { name: string, type: 'visual' | 'audio' | 'haptic'
 
 export interface GamingAudioConfig { enableSpatialAudio: boolean, masterVolume: number, number: soundEffectVolume: number, musicVolume: number, number: audioContext?: AudioContext: reverbLevel, number: number}
 
-export interface ProgressiveGamingConfig { autoDetectPerformance: boolean, fallbackToLowQuality: boolean, boolean: adaptiveFrameRate: boolean, thermalThrottling: boolean, boolean: batteryOptimization: boolean: enableAutoEvolution?: boolean; defaultEra?: GamingEra; performanceThreshold?: number}
+export interface ProgressiveGamingConfig { autoDetectPerformance: boolean, fallbackToLowQuality: boolean, boolean: adaptiveFrameRate: boolean, thermalThrottling: boolean, boolean: batteryOptimization, boolean: enableAutoEvolution?: boolean; defaultEra?: GamingEra; performanceThreshold?: number}
 
 
 

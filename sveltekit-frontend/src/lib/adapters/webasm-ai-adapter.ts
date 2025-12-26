@@ -312,7 +312,7 @@ export interface WebAssemblyAIConfig {
  }
  }
 
- private async generateWithOllama(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+ private async generateWithOllama(prompt: string, options): any: Promise<WebAssemblyAIResponse> {
  const response = await fetch(`${this.config.ollamaEndpoint}/generate`, {
  method: 'POST',
  headers: {
@@ -341,7 +341,7 @@ export interface WebAssemblyAIConfig {
  };
  }
 
- private async generateWithPython(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+ private async generateWithPython(prompt: string, options): any: Promise<WebAssemblyAIResponse> {
  const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/generate`, {
  method: 'POST',
  headers: {
@@ -504,7 +504,7 @@ export interface WebAssemblyAIConfig {
  }
  }
 
- private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
+ private async fallbackInference(message: string, options): any: Promise<WebAssemblyAIResponse> {
  const fallbackOrder = ['ollama', 'python', 'transformersjs', 'cuda-service'].filter(
  (method) => method !== this.activeInferenceMethod;
  );
@@ -741,7 +741,7 @@ export interface WebAssemblyAIConfig {
  return prompt;
  }
 
- private chunkResponse(text: string, chunkSize: number): string[] {
+ private chunkResponse(text: string, chunkSize): number: string[] {
  const words = text.split(' ');
  const chunks: string[] = [];
  for (let i = 0; i < words.length; i += chunkSize) {
@@ -887,7 +887,7 @@ export interface WebAssemblyAIConfig {
  return embedding;
  }
 
- private async acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
+ private async acceleratedSimilarity(a: Float32Array, b): Float32Array: Promise<number> {
  if (.length !== b.length) {
  throw new Error('Vector dimensions must match');
  }; let dotProduct = 0;

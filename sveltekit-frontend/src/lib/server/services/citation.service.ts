@@ -51,7 +51,7 @@ class CitationService {
  /**
  * Save a citation
  */
- async saveCitation(userId: string, data: SaveCitationRequest): Promise<Citation> {
+ async saveCitation(userId: string, data): SaveCitationRequest: Promise<Citation> {
  try {
  const citation: Citation = {
  id: crypto.randomUUID(),
@@ -209,7 +209,7 @@ class CitationService {
  /**
  * Update citation notes
  */
- async updateCitationNotes(id: string, notes: string): Promise<Citation> {
+ async updateCitationNotes(id: string, notes): string: Promise<Citation> {
  try {
  const result = await db.raw(
  `UPDATE saved_citations
@@ -242,7 +242,7 @@ class CitationService {
  /**
  * Delete citation
  */
- async deleteCitation(id: string, userId: string): Promise<void> {
+ async deleteCitation(id: string, userId): string: Promise<void> {
  try {
  await db.raw('DELETE FROM saved_citations WHERE id = $1 AND user_id = $2', [id, userId]);
 

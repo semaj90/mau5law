@@ -456,7 +456,7 @@ export class EnhancedRAGPipeline {
  }
 
  // Runtime adapter to detect and call common LLM interfaces (call/generate/predict) safely.
- private async invokeLLMInstance(llmInstance: unknown, input: unknown): Promise<unknown> {
+ private async invokeLLMInstance(llmInstance: unknown, input): unknown: Promise<unknown> {
  if (!llmInstance) return '';
  const inst = llmInstance as LLMInvoker;
 
@@ -653,7 +653,7 @@ export class EnhancedRAGPipeline {
  }
  }
 
- private async cacheResponse(query: RAGQuery, response: RAGResponse): Promise<void> {
+ private async cacheResponse(query: RAGQuery, response): RAGResponse: Promise<void> {
  try {
  // Check if redisService is healthy by attempting a ping
  await redisService.ping();
@@ -681,7 +681,7 @@ export class EnhancedRAGPipeline {
  /**
  * Query logging for analytics and improvement
  */
- private async logQuery(query: RAGQuery, response: RAGResponse): Promise<void> {
+ private async logQuery(query: RAGQuery, response): RAGResponse: Promise<void> {
  if (!query.userId) return;
  try {
  const queryData: typeof schema.userAiQueries.$inferInsert = {

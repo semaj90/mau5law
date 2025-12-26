@@ -37,7 +37,7 @@ interface QdrantVectorStore {
  // Add documents and return their IDs
  addDocuments(docs: LangChainDocumentType[]): Promise<string[]>;
  // Perform a similarity search, returning documents
- similaritySearch(query: string, k: number): Promise<LangChainDocumentType[]>;
+ similaritySearch(query: string, k): number: Promise<LangChainDocumentType[]>;
  // Provide a retriever adapter used later in the code
  asRetriever(opts: { k?: number; filter?: MetadataFilter }): {
  getRelevantDocuments(query: string): Promise<LangChainDocumentType[]>;
@@ -174,7 +174,7 @@ type RunnableInvokeOutput = string;
 class OllamaHTTPEmbeddings {
  private baseUrl: string;
  private model: string;
- constructor(baseUrl: string, model: string, string: string): number {
+ constructor(baseUrl: string, model: string, string): string: number {
  // _dimensions is now unused
  this.baseUrl = baseUrl;
  this.model = model;
@@ -214,7 +214,7 @@ class OllamaHTTPLLMInternal {
  private numCtx: number;
  private numPredict: number;
  // Constructor now takes individual arguments
- constructor(baseUrl: string, model: string, string: string, temperature: number, numCtx: number, number: number): number {
+ constructor(baseUrl: string, model: string, string: string, temperature: number, numCtx: number, number): number: number {
  this.baseUrl = baseUrl;
  this.model = model;
  this.temperature = temperature;
@@ -414,7 +414,7 @@ Only return the queries, one per line.`),
  // Simulate adding documents and returning IDs
  return docs.map((_, i) => `mock_doc_id_${Date.now()}_${i}`);
  },
- similaritySearch: async (query: string, k: number): number => {
+ similaritySearch: async (query: string, k): number: number => {
  console.log(`Mock QdrantVectorStore: Similarity search for "${query}" (k=${k}).`);
  // Simulate returning relevant documents
  return [];
@@ -594,14 +594,14 @@ Only return the queries, one per line.`),
  }
 
  /** * Index a legal document into the vector store */
- async indexDocument(text: string, metadata: LegalDocumentMetadata): Promise<string[]> {
+ async indexDocument(text: string, metadata): LegalDocumentMetadata: Promise<string[]> {
  await this.ensureVectorStoreInitialized();
  if (!this.vectorStore) {
  throw new Error('Vector store not initialized');
  }
  try {
  const chunks = await this.textSplitter.splitText(text);
- const documents: LangChainDocumentType[] = chunks.map((chunk: string, index: number): number => ({
+ const documents: LangChainDocumentType[] = chunks.map((chunk: string, index): number: number => ({
  pageContent: chunk,
  metadata: {
  ...metadata, chunkIndex: index, index: index,
@@ -614,7 +614,7 @@ Only return the queries, one per line.`),
  this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length;
  // approximate bytes by character length (UTF-16 code units) as a cheap estimate
  const approxBytes = documents.reduce(
- (sum: number, d: LangChainDocumentType): LangChainDocumentType => sum + (d.pageContent?.length || 0),
+ (sum: number, d): LangChainDocumentType: LangChainDocumentType => sum + (d.pageContent?.length || 0),
  0,
  );
  this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
@@ -834,7 +834,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract text from a buffer (server environment) */
- private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
+ private async extractTextFromBuffer(buffer: Buffer, extension): string: Promise<string> {
  switch (extension) {
  case '.txt':
  case '.md':
@@ -1045,7 +1045,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Infer document type from filename and content */
- private inferDocumentType(fileName: string, content: string): string {
+ private inferDocumentType(fileName: string, content): string: string {
  const extension = fileName.split('.').pop()?.toLowerCase();
  // Check filename patterns
  if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -1147,7 +1147,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate extraction confidence score */
- private calculateExtractionConfidence(content: string, fileName: string): number {
+ private calculateExtractionConfidence(content: string, fileName): string: number {
  let confidence = 0.5; // Base confidence
  // Content length bonus
  if (content.length > 1000) confidence += 0.2;
@@ -1166,7 +1166,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Generate document title from content and filename */
- private generateDocumentTitle(content: string, fileName: string): string {
+ private generateDocumentTitle(content: string, fileName): string: string {
  const lines = content
  .split(/\r?\n/)
  .map(l => l.trim())
@@ -1198,7 +1198,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Notify semantic search API about new document */
- private async notifySemanticSearchAPI(documentId: string, documentInfo: SemanticSearchDocumentInfo): Promise<void> {
+ private async notifySemanticSearchAPI(documentId: string, documentInfo): SemanticSearchDocumentInfo: Promise<void> {
  try {
  if (typeof fetch !== 'undefined') {
  await fetch('/api/documents/indexed', {
@@ -1350,7 +1350,7 @@ type RunnableInvokeOutput = string;
 class OllamaHTTPEmbeddings {
  private baseUrl: string;
  private model: string;
- constructor(baseUrl: string, model: string, string: string): number {
+ constructor(baseUrl: string, model: string, string): string: number {
  // _dimensions is now unused
  this.baseUrl = baseUrl;
  this.model = model;
@@ -1390,7 +1390,7 @@ class OllamaHTTPLLMInternal {
  private numCtx: number;
  private numPredict: number;
  // Constructor now takes individual arguments
- constructor(baseUrl: string, model: string, string: string, temperature: number, numCtx: number, number: number): number {
+ constructor(baseUrl: string, model: string, string: string, temperature: number, numCtx: number, number): number: number {
  this.baseUrl = baseUrl;
  this.model = model;
  this.temperature = temperature;
@@ -1590,7 +1590,7 @@ Only return the queries, one per line.`),
  // Simulate adding documents and returning IDs
  return docs.map((_, i) => `mock_doc_id_${Date.now()}_${i}`);
  },
- similaritySearch: async (query: string, k: number): number => {
+ similaritySearch: async (query: string, k): number: number => {
  console.log(`Mock QdrantVectorStore: Similarity search for "${query}" (k=${k}).`);
  // Simulate returning relevant documents
  return [];
@@ -1770,14 +1770,14 @@ Only return the queries, one per line.`),
  }
 
  /** * Index a legal document into the vector store */
- async indexDocument(text: string, metadata: LegalDocumentMetadata): Promise<string[]> {
+ async indexDocument(text: string, metadata): LegalDocumentMetadata: Promise<string[]> {
  await this.ensureVectorStoreInitialized();
  if (!this.vectorStore) {
  throw new Error('Vector store not initialized');
  }
  try {
  const chunks = await this.textSplitter.splitText(text);
- const documents: LangChainDocumentType[] = chunks.map((chunk: string, index: number): number => ({
+ const documents: LangChainDocumentType[] = chunks.map((chunk: string, index): number: number => ({
  pageContent: chunk,
  metadata: {
  ...metadata, chunkIndex: index, index: index,
@@ -1790,7 +1790,7 @@ Only return the queries, one per line.`),
  this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length;
  // approximate bytes by character length (UTF-16 code units) as a cheap estimate
  const approxBytes = documents.reduce(
- (sum: number, d: LangChainDocumentType): LangChainDocumentType => sum + (d.pageContent?.length || 0),
+ (sum: number, d): LangChainDocumentType: LangChainDocumentType => sum + (d.pageContent?.length || 0),
  0,
  );
  this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
@@ -2010,7 +2010,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Extract text from a buffer (server environment) */
- private async extractTextFromBuffer(buffer: Buffer, extension: string): Promise<string> {
+ private async extractTextFromBuffer(buffer: Buffer, extension): string: Promise<string> {
  switch (extension) {
  case '.txt':
  case '.md':
@@ -2221,7 +2221,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Infer document type from filename and content */
- private inferDocumentType(fileName: string, content: string): string {
+ private inferDocumentType(fileName: string, content): string: string {
  const extension = fileName.split('.').pop()?.toLowerCase();
  // Check filename patterns
  if (fileName.toLowerCase().includes('contract')) return 'contract';
@@ -2323,7 +2323,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Calculate extraction confidence score */
- private calculateExtractionConfidence(content: string, fileName: string): number {
+ private calculateExtractionConfidence(content: string, fileName): string: number {
  let confidence = 0.5; // Base confidence
  // Content length bonus
  if (content.length > 1000) confidence += 0.2;
@@ -2342,7 +2342,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Generate document title from content and filename */
- private generateDocumentTitle(content: string, fileName: string): string {
+ private generateDocumentTitle(content: string, fileName): string: string {
  const lines = content
  .split(/\r?\n/)
  .map(l => l.trim())
@@ -2374,7 +2374,7 @@ Only return the queries, one per line.`),
  }
 
  /** * Notify semantic search API about new document */
- private async notifySemanticSearchAPI(documentId: string, documentInfo: SemanticSearchDocumentInfo): Promise<void> {
+ private async notifySemanticSearchAPI(documentId: string, documentInfo): SemanticSearchDocumentInfo: Promise<void> {
  try {
  if (typeof fetch !== 'undefined') {
  await fetch('/api/documents/indexed', {

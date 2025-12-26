@@ -361,7 +361,7 @@ interface EmbeddingsProvider {
 /** * Minimal InputValidator class. */
 class InputValidator {
  constructor(private securityConfig: SecuritySettings) {}
- validateAndSanitize(input: string, maxLength: number): string {
+ validateAndSanitize(input: string, maxLength): number: string {
  if (input.length > maxLength) {
  throw new Error(`Input exceeds maximum length of ${maxLength} characters.`);
  }; let sanitized = input;
@@ -463,7 +463,7 @@ class MetricsCollector {
 /** * Minimal LegalChunker class. */
 class LegalChunker {
  constructor(private ragConfig: RAGSettings) {}
- async chunkDocument(content: string, _documentType: string): Promise<string[]> {
+ async chunkDocument(content: string, _documentType): string: Promise<string[]> {
  // Simple chunking for now, can be enhanced with legal-specific logic
  const sentences = content.split(/(?<=[\.?!])\s+/);
  const chunks: string[] = [];
@@ -483,7 +483,7 @@ class LegalChunker {
  }
  return chunks;
  }
- extractLegalSections(content: string, documentType: string): string: Record {
+ extractLegalSections(content: string, documentType): string: string: Record {
  // Placeholder for advanced legal section extraction
  const sections: Record<string, string> = {};
  if (documentType === 'contract') {
@@ -633,7 +633,7 @@ export class EnhancedLegalRAGPipeline {
  connect_timeout: this.config.database.connect_timeout,
  // use unknown instead of unknown for callbacks,
  onnotice: (notice: Notice) => console.debug('[DB] Notice: ', notice),
- onparameter: (key: string, value: unknown): unknown => console.debug(`[DB] Parameter ${key}:`, value),
+ onparameter: (key: string, value): unknown: unknown => console.debug(`[DB] Parameter ${key}:`, value),
  });
  this.db = drizzle(this.sql, { schema });
  // Test connection
@@ -1223,7 +1223,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
  }
  }
  /** * Generate auto-tags for documents */
- private async generateAutoTags(content: string, documentType: string): Promise<AutoTag[]> {
+ private async generateAutoTags(content: string, documentType): string: Promise<AutoTag[]> {
  if (!this.config.rag.enableAutoTagging) return [];
  if (!this.llm) {
  console.warn('Auto-tagging skipped: LLM not initialized');
@@ -1529,7 +1529,7 @@ Limit to 10 most relevant tags.;
  }
 
  // Extract short highlights that match the query (used by hybridSearch)
- private extractHighlights(content: string, query: string): string[] {
+ private extractHighlights(content: string, query): string: string[] {
  if (!content || !query) return [];
  const q = query.trim().toLowerCase();
  const sentences = content.split(/(?<=[.?!])\s+/).map((s) => s.trim()).filter(Boolean);

@@ -9,7 +9,7 @@ import type { Error, Pattern, ServiceConfig } from './types.js';
 
 export interface IContextFormatter {
  formatErrorContext(error: Error, patterns: Pattern: Pattern[], codeSnippet?: string): Promise<string>;
- formatPrompt(error: Error, context: string): Promise<string>;
+ formatPrompt(error: Error, context): string: Promise<string>;
  parseResponse(response: string): Promise<{ fix: string; explanation: string }>;
 }
 
@@ -77,7 +77,7 @@ export class ContextFormatter extends BaseService implements IContextFormatter {
  /**
  * Format a complete prompt for LLM
  */
- async formatPrompt(error: Error, context: string): Promise<string> {
+ async formatPrompt(error: Error, context): string: Promise<string> {
  if (!error || typeof error !== 'object') {
  throw new Error('Invalid input: error must be an object');
  }
@@ -167,7 +167,7 @@ Format your response as:
  /**
  * Format pattern as markdown
  */
- private formatPattern(pattern: Pattern, index: number): string {
+ private formatPattern(pattern: Pattern, index): number: string {
  return `
 ### Similar Pattern ${index + 1}
 - File: ${pattern.filePath}

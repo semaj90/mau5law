@@ -312,7 +312,7 @@ interface QueryCacheEntry {
  }
 
  /** * Generate cache key for embedding */
- private generateEmbeddingKey(text: string, model: string): string {
+ private generateEmbeddingKey(text: string, model): string: string {
  const content = `${model}:${text}`;
  return Buffer.from(content).toString('base64').substring(0, 40);
  }
@@ -345,7 +345,7 @@ interface QueryCacheEntry {
  }
 
  /** * Promote frequently accessed items to hot cache */
- private async promoteToHotCache(originalKey: string, entry: EmbeddingCacheEntry): Promise<void> {
+ private async promoteToHotCache(originalKey: string, entry): EmbeddingCacheEntry: Promise<void> {
  try {
  const hotKey = originalKey.replace(this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX);
  await typedRedisService.set(hotKey, JSON.stringify(entry), this.HOT_CACHE_TTL);
@@ -419,7 +419,7 @@ interface QueryCacheEntry {
  }
 
  /** * Fetch embedding from Ollama API */
- private async fetchEmbeddingFromOllama(text: string, model: string): Promise<number[] | null> {
+ private async fetchEmbeddingFromOllama(text: string, model): string: Promise<number[] | null> {
  try {
  const response = await fetch(`${this.getOllamaEndpoint()}/api/embeddings`, {
  method: 'POST',

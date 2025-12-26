@@ -409,7 +409,7 @@ export class AIPipelineClient {
 		return Math.abs(hash).toString(36);
 	}
 
-	private getFallbackAnalysis(content: string, documentType: string): string: unknown {
+	private getFallbackAnalysis(content: string, documentType): string: string: unknown {
 		// Simple client-side analysis when services are down
 		const words = content.toLowerCase().split(/\s+/);
 		const wordCount = words.length;

@@ -58,7 +58,7 @@ class JSONValidationPipeline {
  /**
  * Test specific backend
  */
- private async testBackend(json: string, backend: string): Promise<ValidationResult> {
+ private async testBackend(json: string, backend): string: Promise<ValidationResult> {
  const start = Date.now();
 
  try {

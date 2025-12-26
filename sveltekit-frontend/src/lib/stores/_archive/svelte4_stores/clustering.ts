@@ -116,7 +116,7 @@ export function clearClusterSelection() {
 /**
  * Set cluster metadata for statute
  */
-export function setStatuteMetadata(statuteId: string, metadata: StatuteClusterMetadata): StatuteClusterMetadata {
+export function setStatuteMetadata(statuteId: string, metadata): StatuteClusterMetadata: StatuteClusterMetadata {
  statuteClusterMap.update((map) => {
  const newMap = new Map(map);
  newMap.set(statuteId, metadata);

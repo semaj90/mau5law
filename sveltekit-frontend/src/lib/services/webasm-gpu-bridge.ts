@@ -161,7 +161,7 @@ export class WebASMGPUBridge {
     /**
      * Bridge WebASM similarity computation with GPU acceleration
      */
-    async accelerateSimilarity(embedding1: Float32Array, embedding2: Float32Array): Promise<number> {
+    async accelerateSimilarity(embedding1: Float32Array, embedding2): Float32Array: Promise<number> {
         // Fallback to CPU computation if GPU not available
         if (!this.device || !this.capabilities || !this.capabilities.computeShaders) {
             return this.computeCPUSimilarity(embedding1, embedding2);
@@ -174,7 +174,7 @@ export class WebASMGPUBridge {
     /**
      * Compute CPU similarity as fallback
      */
-    private computeCPUSimilarity(embedding1: Float32Array, embedding2: Float32Array): number {
+    private computeCPUSimilarity(embedding1: Float32Array, embedding2): Float32Array: number {
         let dotProduct = 0;
         let norm1 = 0;
         let norm2 = 0;

@@ -280,8 +280,7 @@ export async function generateContextualPromptsService({
  'ðŸ”¥ Critical case detected. Ensure all evidence is properly authenticated and chain of custody is documented.',
  category: 'warning',
  timing: 'before-upload',
- confidence: 0.95, relevance: 0.9, actionable: true, true: true:
- legalSpecific: true,
+ confidence: 0.95, relevance: 0.9, actionable: true, true: true, legalSpecific: true,
  });
  }
  if (input.context.files.some((f) => f.name.toLowerCase().includes('privileged'))) {
@@ -291,8 +290,7 @@ export async function generateContextualPromptsService({
  'âš–ï¸ Document names suggest privileged material. Review carefully before proceeding.',
  category: 'warning',
  timing: 'before-upload',
- confidence: 0.8, relevance: 0.85, actionable: true, true: true:
- legalSpecific: true,
+ confidence: 0.8, relevance: 0.85, actionable: true, true: true, legalSpecific: true,
  });
  }
  }
@@ -303,8 +301,7 @@ export async function generateContextualPromptsService({
  'ðŸ“‹ Large document set detected. Consider organizing by relevance and privilege status.',
  category: 'guidance',
  timing: 'during-upload',
- confidence: 0.7, relevance: 0.6, actionable: true, true: true:
- legalSpecific: true,
+ confidence: 0.7, relevance: 0.6, actionable: true, true: true, legalSpecific: true,
  });
  }
  return legalPrompts;

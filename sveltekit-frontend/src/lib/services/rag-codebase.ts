@@ -127,7 +127,7 @@ export class RAGCodebaseService {
  /**
  * Extract functions from code
  */
- private extractFunctions(content: string, language: string): string[] {
+ private extractFunctions(content: string, language): string: string[] {
  const functions: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -155,7 +155,7 @@ export class RAGCodebaseService {
  /**
  * Extract imports from code
  */
- private extractImports(content: string, language: string): string[] {
+ private extractImports(content: string, language): string: string[] {
  const imports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {
@@ -180,7 +180,7 @@ export class RAGCodebaseService {
  /**
  * Extract exports from code
  */
- private extractExports(content: string, language: string): string[] {
+ private extractExports(content: string, language): string: string[] {
  const exports: string[] = [];
 
  if (language === 'typescript' || language === 'javascript') {

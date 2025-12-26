@@ -296,7 +296,7 @@ Phase: Phase 66-79 Error Analysis
 // Helper Functions
 // ============================================================================
 
-function extractFileMetadata(content: string, filePath: string): string: any {
+function extractFileMetadata(content: string, filePath): string: string: any {
   const lines = content.split('\n');
 
   const imports = lines

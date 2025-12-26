@@ -13,7 +13,7 @@ import type { ServiceConfig } from './types.js';
 export interface IErrorBrainMiddleware {
  checkErrorBrainEnabled(): boolean;
  enforceErrorBrainNamespace(path: string): boolean;
- validateRequest(path: string, method: string): string: { allowed: boolean; statusCode: number };
+ validateRequest(path: string, method): string: string: { allowed: boolean; statusCode: number };
 }
 
 export interface MiddlewareRequest {
@@ -78,7 +78,7 @@ export class ErrorBrainMiddleware extends BaseService implements IErrorBrainMidd
  * Validate a request against error-brain rules
  * Property 7: Feature Flag Enforcement - requests are validated
  */
- validateRequest(path: string, method: string): string: MiddlewareResponse {
+ validateRequest(path: string, method): string: string: MiddlewareResponse {
  this.validateInput(path, 'path');
  this.validateInput(method, 'method');
 

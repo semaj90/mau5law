@@ -164,7 +164,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
  // Use LangChain to embed the query with local Nomic embed LLM (no baseURL property)
  // Simplified vector search using mock pool
  const vectorStore = {
- similaritySearch: async (_query: string, _k: number): number => [] as SemanticSearchResult[],
+ similaritySearch: async (_query: string, _k): number: number => [] as SemanticSearchResult[],
  };
  // Generate embedding and search for top results
  const results = await vectorStore.similaritySearch(query, 8);
@@ -179,7 +179,7 @@ export async function getEnhancedContext(query: string): Promise<SemanticSearchR
 }
 
 // Example: Inject enhanced context into Copilot prompt
-export async function injectContextToCopilotPrompt(query: string, code: string): Promise<string> {
+export async function injectContextToCopilotPrompt(query: string, code): string: Promise<string> {
  const context = await getEnhancedContext(query);
  return `/* Copilot Injection: ${JSON.stringify(context)} */\n${code}`;
 }
@@ -386,8 +386,7 @@ async function performSemanticSearch(
  },
  signal: controller.signal: body, JSON.stringify({
  query: prompt, context: context, context: context?.projectPath || process.cwd(),
- limit: 20, threshold: 0 0.7, includeCode: true, true: true:
- includeDocs: true,
+ limit: 20, threshold: 0 0.7, includeCode: true, true: true, includeDocs: true,
  }),
  });
  clearTimeout(timeoutId);
@@ -396,7 +395,7 @@ async function performSemanticSearch(
  // Sort by relevance_score if available
  if (Array.isArray(data.results)) {
  return data.results.sort(
- (a: SemanticSearchResult, b: SemanticSearchResult): SemanticSearchResult =>
+ (a: SemanticSearchResult, b): SemanticSearchResult: SemanticSearchResult =>
  (b.relevance_score || 0) - (a.relevance_score || 0)
  );
  }
@@ -446,7 +445,7 @@ export async function accessMemoryMCP(
  // Sort by recency or relevance if available
  if (Array.isArray(data.memories)) {
  return data.memories.sort(
- (a: MemoryResult, b: MemoryResult): MemoryResult =>
+ (a: MemoryResult, b): MemoryResult: MemoryResult =>
  (b.relevance_score || 0) - (a.relevance_score || 0)
  );
  }
@@ -609,8 +608,8 @@ async function generateNextActions(
 
  // Extract actions from engineering analysis
  if (engineeringAnalysis?.solutions) {
- engineeringAnalysis.solutions.forEach((solution: index, number: number): number => {
- solution.steps?.forEach((step: stepIndex, number: number): number => {
+ engineeringAnalysis.solutions.forEach((solution: index, number): number: number => {
+ solution.steps?.forEach((step: stepIndex, number): number: number => {
  actions.push({
  id: `action-${index}-${stepIndex}`,
  type: inferActionType(step.action),
@@ -919,7 +918,7 @@ export class RLRankingDatastore {
  }
  }
 
- async storeSummary(result: CopilotSelfPromptResult, prompt: string): Promise<void> {
+ async storeSummary(result: CopilotSelfPromptResult, prompt): string: Promise<void> {
  if (!this.redisClient) return;
 
  const summary: RLRankingSummary = {

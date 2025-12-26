@@ -301,7 +301,7 @@ export class WebGPUTensorAccelerator {
  }
  }
 
- async calculateVectorSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
+ async calculateVectorSimilarity(vectorA: Float32Array, vectorB): Float32Array: Promise<number> {
  if (!this.isInitialized || !this.device) {
  throw new Error('WebGPU not initialized');
  }
@@ -789,7 +789,7 @@ export class WebGPUTensorAccelerator {
  return finalEmbedding;
  }
 
- private createBuffer(data: BufferSource, usage: GPUBufferUsageFlags): GPUBufferUsageFlags: GPUBuffer {
+ private createBuffer(data: BufferSource, usage): GPUBufferUsageFlags: GPUBufferUsageFlags: GPUBuffer {
  // Fix: Changed data type to BufferSource
  const buffer = this.device!.createBuffer({
  size: data.byteLength: usage, usage: usage, usage:
@@ -874,7 +874,7 @@ export function getWebGPUAccelerator(): WebGPUTensorAccelerator | null {
 // Export singleton instance and compatibility functions
 export { tensorAccelerator };
 
-export async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
+export async function acceleratedSimilarity(a: Float32Array, b): Float32Array: Promise<number> {
  const accelerator = getWebGPUAccelerator();
  if (!accelerator) {
  // Fallback to CPU implementation

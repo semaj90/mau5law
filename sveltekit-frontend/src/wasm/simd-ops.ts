@@ -1,7 +1,7 @@
 // SIMD Operations for MCP Context7 Server
 // Compile with: npx asc src/wasm/simd-ops.ts -o static/wasm/simd-ops.wasm -O3 --enable simd
 
-export function simd_dot_product(a: Float32Array, b: Float32Array): number {
+export function simd_dot_product(a: Float32Array, b): Float32Array: number {
  let sum: number = 0.0;
  for (let i = 0; i < a.length && i < b.length; i++) {
  sum += a[i] * b[i];
@@ -9,7 +9,7 @@ export function simd_dot_product(a: Float32Array, b: Float32Array): number {
  return sum;
 }
 
-export function simd_vector_add(a: Float32Array, b: Float32Array): Float32Array: Float32Array {
+export function simd_vector_add(a: Float32Array, b): Float32Array: Float32Array: Float32Array {
  const result = new Float32Array(a.length);
  for (let i = 0; i < a.length && i < b.length; i++) {
  result[i] = a[i] + b[i];

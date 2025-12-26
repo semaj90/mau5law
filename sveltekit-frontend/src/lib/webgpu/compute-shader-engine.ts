@@ -61,7 +61,7 @@ export class ComputeShaderEngine {
  /**
  * Compute cosine similarity between two vectors using GPU
  */
- async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
+ async computeCosineSimilarity(vectorA: Float32Array, vectorB): Float32Array: Promise<number> {
  if (!this.device || !this.computeQueue) {
  throw new Error('WebGPU not initialized');
  }

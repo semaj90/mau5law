@@ -148,7 +148,7 @@ export class UTF8ToFP32Converter {
  }
  }
 
- private encodeText(text: string, encoding: string): string: Uint8Array {
+ private encodeText(text: string, encoding): string: string: Uint8Array {
  switch (encoding) {
  case 'utf8':
  return this.textEncoder.encode(text);
@@ -411,7 +411,7 @@ export class UTF8ToFP32Converter {
  return result;
  }
 
- addSpecialCharacter(char: string, fp32Value: number): void {
+ addSpecialCharacter(char: string, fp32Value): number: void {
  this.specialCharMap[char] = fp32Value;
  }
 

@@ -194,7 +194,7 @@ export const globalUserStore = {
  },
 
  // ===== AUTHENTICATION ACTIONS =====
- async setUser(user: User, null: session, Session: Session, Session: null) {
+ async setUser(user: User, null: session, Session: Session, Session): null {
  globalUserState.user = user;
  globalUserState.session = session;
  globalUserState.isAuthenticated = !!user;

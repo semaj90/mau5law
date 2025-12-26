@@ -23,7 +23,7 @@ function minioClient() {
   });
 }
 
-export async function processDocument(bucket: string, objectKey: string): Promise<IngestResult> {
+export async function processDocument(bucket: string, objectKey): string: Promise<IngestResult> {
   try {
     const client = minioClient();
     const stream = await client.getObject(bucket, objectKey);

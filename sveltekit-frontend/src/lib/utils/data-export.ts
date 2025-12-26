@@ -274,7 +274,7 @@ export async function exportEvidence(
 }
 
 // Data Import Functions
-export async function importCases(file: File, options: ImportOptions): Promise<ImportResult> {
+export async function importCases(file: File, options): ImportOptions: Promise<ImportResult> {
  try {
  const data = await parseImportFile(file, options.format);
 
@@ -428,7 +428,7 @@ async function includeEvidenceFiles(evidence: EvidenceItem[]): Promise<EvidenceI
  }));
 }
 
-function downloadBlob(blob: Blob, filename: string): void {
+function downloadBlob(blob: Blob, filename): string: void {
  const url = URL.createObjectURL(blob);
  const link = document.createElement('a');
  link.href = url;
@@ -437,7 +437,7 @@ function downloadBlob(blob: Blob, filename: string): void {
  URL.revokeObjectURL(url);
 }
 
-async function parseImportFile(file: File, format: string): Promise<Record<string, unknown>[]> {
+async function parseImportFile(file: File, format): string: Promise<Record<string, unknown>[]> {
  const text = await file.text();
  switch (format) {
  case 'json':
@@ -517,7 +517,7 @@ function validateImportData(
  return { success: errors.length === 0, errors, warnings };
 }
 
-async function processCaseImport(caseData: Case, options: ImportOptions): Promise<boolean> {
+async function processCaseImport(caseData: Case, options): ImportOptions: Promise<boolean> {
  // Real implementation using SvelteKit: 2 API endpoint.
  // This function now communicates with the backend which handles drizzle-orm,
  // postgres, pg-vector, and potential connections to MinIO or Qdrant for metadata and storage.

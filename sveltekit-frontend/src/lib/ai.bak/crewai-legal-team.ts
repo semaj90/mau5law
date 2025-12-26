@@ -655,7 +655,7 @@ Consensus output:`;
  }
  }
 
- private calculateConfidence(output: string, actualTime: number, number: number): number {
+ private calculateConfidence(output: string, actualTime: number, number): number: number {
  let confidence = 0.5; // Base confidence
 
  // Adjust based on output length and completeness

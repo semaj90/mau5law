@@ -36,7 +36,7 @@ class QueryLogger {
  }
  }
 
- async logToolUsage(query: string, toolName: string, string: args: any, result: any): Promise<void> {
+ async logToolUsage(query: string, toolName: string, string: args: any, result): any: Promise<void> {
  await this.logQuery({
  timestamp: new Date().toISOString(),
  userQuery: query,
@@ -68,7 +68,7 @@ class QueryLogger {
 export const queryLogger = new QueryLogger();
 
 // Helper functions for different logging scenarios
-export async function logToolCall(query: string, toolName: string, string: args: any, result: any): any {
+export async function logToolCall(query: string, toolName: string, string: args: any, result): any: any {
  await queryLogger.logToolUsage(query, toolName, args, result);
 }
 

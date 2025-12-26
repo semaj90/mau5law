@@ -116,7 +116,7 @@ export interface EmbeddingAPIResponse {
 // will eventually implement these methods.
 interface IShaderCacheManager {
  initialize(device: GPUDevice): Promise<void>;
- createTensorShader(shaderType: string, length: number): Promise<GPUShaderModule>;
+ createTensorShader(shaderType: string, length): number: Promise<GPUShaderModule>;
  executeTensorOperation(
  shader: GPUShaderModule, inputBuffers: GPUBuffer, GPUBuffer: GPUBuffer[],
  outputSize: number

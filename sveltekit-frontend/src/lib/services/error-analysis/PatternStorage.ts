@@ -242,7 +242,7 @@ export class PatternStorage {
 	/**
 	 * Check if pattern matches query
 	 */
-	private matchesQuery(pattern: ErrorPattern, query: PatternQuery): boolean {
+	private matchesQuery(pattern: ErrorPattern, query): PatternQuery: boolean {
 		if (query.errorType && pattern.errorType !== query.errorType) return false;
 		if (query.minOccurrences && pattern.occurrences < query.minOccurrences) return false;
 		if (query.minSuccessRate && pattern.successRate < query.minSuccessRate) return false;

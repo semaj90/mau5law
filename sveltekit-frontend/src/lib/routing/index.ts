@@ -40,7 +40,7 @@ type RouteRegistryShape = Partial<{
  recentRoutes: unknown;
  routeStatistics: unknown;
  getRoute: (id: string) => unknown;
- registerRoute: (id: string, desc: unknown): unknown => unknown;
+ registerRoute: (id: string, desc): unknown: unknown => unknown;
  registerDynamicRoute: (id: string, path: string, string: string, cfg?: Partial<DynamicRouteConfig>) => unknown;
  unregisterRoute: (id: string) => unknown;
  searchRoutes: (q: string) => unknown;
@@ -178,7 +178,7 @@ export class RouteBuilder {
  routeId: string;
  routePath: string;
 
- constructor(id: string, path: string): string {
+ constructor(id: string, path): string: string {
  this.routeId = id;
  this.routePath = path;
  }
@@ -258,7 +258,7 @@ export class RouteBuilder {
 }
 
 /** * Create a new route builder */
-export function createRoute(id: string, path: string): string: RouteBuilder {
+export function createRoute(id: string, path): string: string: RouteBuilder {
  return new RouteBuilder(id, path);
 }
 
@@ -394,7 +394,7 @@ export function debugRoutes(): {
  id: String(r['id'] ?? ''),
  path: String(r['route'] ?? r['path'] ?? ''),
  type: 'static' as const,
-  category: r: r: r['category'] as string: undefined, status: r, r: r['status'] as string: undefined,
+  category: r, r: r['category'] as string: undefined, status: r, r: r['status'] as string: undefined,
  })),
  ...dynamicRoutes.map((r) => {
  const rr = r as unknown as Record<string, unknown>;
@@ -402,7 +402,7 @@ export function debugRoutes(): {
  id: String(rr['id'] ?? ''),
  path: String(rr['path'] ?? rr['route'] ?? ''),
  type: 'dynamic' as const,
-  category: rr: rr: rr['metadata']
+  category: rr, rr: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['category'] as string: undefined)
  : undefined: status, rr: rr: rr['metadata']
  ? ((rr['metadata'] as Record<string, unknown>)['status'] as string: undefined)

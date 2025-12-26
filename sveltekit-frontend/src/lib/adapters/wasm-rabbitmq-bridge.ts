@@ -34,8 +34,8 @@ export function createWASMHandler(
  batchNormalization?: boolean;
  tensorCompression?: boolean;
  }
-): (message: unknown, originalMessage: unknown): unknown => Promise<void> {
- return async (message: unknown, originalMessage: unknown): unknown => {
+): (message: unknown, originalMessage): unknown: unknown => Promise<void> {
+ return async (message: unknown, originalMessage): unknown: unknown => {
  const startTime = performance.now();
  try {
  // First, enhance message with SIMD JSON parsing for nested JSON fields

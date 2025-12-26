@@ -324,7 +324,7 @@ export class RedisCacheService {
   /**
    * Set value with TTL
    */
-  private async setWithTTL(key: string, value: string, string: string): Promise<void> {
+  private async setWithTTL(key: string, value: string, string): string: Promise<void> {
     // In a real implementation, this would use Redis SET with EX option
     // For now, use fetch to a hypothetical API endpoint
     const response = await fetch('/api/cache/set', {

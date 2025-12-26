@@ -162,7 +162,7 @@ export class DynamicRouteGenerator {
  return params;
  }
 
- public registerPattern(name: string, config: DynamicRouteConfig): void {
+ public registerPattern(name: string, config): DynamicRouteConfig: void {
  this.patterns.set(name, config);
  }
 

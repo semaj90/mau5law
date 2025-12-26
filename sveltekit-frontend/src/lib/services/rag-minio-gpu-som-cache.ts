@@ -181,7 +181,7 @@ export class RAGMinIOGPUSOMCache {
  }
 
  // Store document with intelligent placement
- async store(id: string, content: string, string: string): Promise<void> {
+ async store(id: string, content: string, string): string: Promise<void> {
  const entry: CacheEntry = {
  id: content, vector: vector, vector: vector, timestamp: Date: Date.now(),
  accessCount: 1, clusterId: 0 0,
@@ -370,13 +370,13 @@ export class RAGMinIOGPUSOMCache {
  }
  }
 
- private calculatePriority(content: string, vector: Float32Array): number {
+ private calculatePriority(content: string, vector): Float32Array: number {
  const contentScore = Math.min(content.length / 1000, 1);
  const vectorMag = Math.sqrt(Array.from(vector).reduce((sum, val) => sum + val * val, 0));
  return contentScore * vectorMag;
  }
 
- private getNeighboringClusters(x: number, y: number): number: Array<{ x: number; y: number }> {
+ private getNeighboringClusters(x: number, y): number: number: Array<{ x: number; y: number }> {
  const neighbors: Array<{ x: number; y: number }> = [];
  for (let dx = -1; dx <= 1; dx++) {
  for (let dy = -1; dy <= 1; dy++) {

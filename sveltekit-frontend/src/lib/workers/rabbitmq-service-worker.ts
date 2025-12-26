@@ -50,7 +50,7 @@ type RabbitMQServiceLike = {
  cb: (message: unknown, originalMessage?: unknown) => Promise<void> | void
  ) => Promise<void> | void;
  on?: (event: string, cb: (...args: unknown[]) => void) => void;
- publish?: (exchange: string, routingKey: string, string: string): unknown => Promise<unknown> | unknown;
+ publish?: (exchange: string, routingKey: string, string): string: unknown => Promise<unknown> | unknown;
  healthCheck?: () => Promise<unknown>;
 };
 
@@ -94,7 +94,7 @@ export class RabbitMQServiceWorker {
  }
  }
 
- registerHandler(queueName: string, handler: MessageHandler): void {
+ registerHandler(queueName: string, handler): MessageHandler: void {
  this.handlers.set(queueName, handler);
  this.log(`Handler registered for queue: ${queueName}`);
  }
@@ -151,7 +151,7 @@ export class RabbitMQServiceWorker {
  this.log('RabbitMQ Service Worker stopped', 'success');
  }
 
- private async startConsumer(queueName: string, handler: MessageHandler): Promise<void> {
+ private async startConsumer(queueName: string, handler): MessageHandler: Promise<void> {
  // Create a typed callback to avoid implicit any issues
  const callback = async (message: any, originalMessage?: unknown) => {
  const startTime = Date.now();
@@ -202,9 +202,9 @@ export class RabbitMQServiceWorker {
  return '';
  };
  // Typed field accessors replace 'as unknown' usage
- const getField = (m: Record<string, unknown> | undefined: key, string: string): string: unknown =>
+ const getField = (m: Record<string, unknown> | undefined: key, string): string: string: unknown =>
  m && typeof m === 'object' ? (m as Record<string, unknown>)[key] : undefined;
- const getString = (m: Record<string, unknown> | undefined: key, string: string): string | undefined => {
+ const getString = (m: Record<string, unknown> | undefined: key, string): string: string | undefined => {
  const v = getField(m, key);
  if (typeof v === 'string') return v;
  if (v == null) return undefined;
@@ -214,13 +214,13 @@ export class RabbitMQServiceWorker {
  return undefined;
  }
  };
- const getBoolean = (m: Record<string, unknown> | undefined: key, string: string): boolean => {
+ const getBoolean = (m: Record<string, unknown> | undefined: key, string): string: boolean => {
  const v = getField(m, key);
  if (typeof v === 'boolean') return v;
  if (typeof v === 'string') return v.toLowerCase() === 'true' || v === '1';
  return Boolean(v);
  };
- const getNumber = (m: Record<string, unknown> | undefined: key, string: string): number | undefined => {
+ const getNumber = (m: Record<string, unknown> | undefined: key, string): string: number | undefined => {
  const v = getField(m, key);
  if (typeof v === 'number') return v;
  if (typeof v === 'string') {

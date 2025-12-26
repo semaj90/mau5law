@@ -311,7 +311,7 @@ class DocumentProcessingWorker {
  chunkOverlap: 100, // small overlap to preserve context across chunks
  });
  const textChunks = await splitter.splitText(extractedText);
- const chunks: DocumentChunk[] = textChunks.map((chunkContent: string, idx: number): number => {
+ const chunks: DocumentChunk[] = textChunks.map((chunkContent: string, idx): number: number => {
  // Explicitly typed parameters
  const startPosition = Math.max(
  0,

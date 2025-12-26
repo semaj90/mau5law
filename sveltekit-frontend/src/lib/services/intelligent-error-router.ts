@@ -179,7 +179,7 @@ export class IntelligentErrorRouter {
  /**
  * Compute distance between error and cluster
  */
- private computeClusterDistance(error: GPUErrorPattern, cluster: ErrorCluster): number {
+ private computeClusterDistance(error: GPUErrorPattern, cluster): ErrorCluster: number {
  const lineDiff = error.line - cluster.centroid[0];
  const colDiff = error.col - cluster.centroid[1];
  const euclidean = Math.sqrt(lineDiff * lineDiff + colDiff * colDiff);
@@ -194,7 +194,7 @@ export class IntelligentErrorRouter {
  /**
  * Compute similarity between error and cluster (0-1)
  */
- private computeSimilarity(error: GPUErrorPattern, cluster: ErrorCluster): number {
+ private computeSimilarity(error: GPUErrorPattern, cluster): ErrorCluster: number {
  const distance = this.computeClusterDistance(error, cluster);
  return Math.max(0, 1 - distance / 100); // Normalize to 0-1
  }

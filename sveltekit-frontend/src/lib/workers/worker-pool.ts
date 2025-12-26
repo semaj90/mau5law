@@ -176,7 +176,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker message
  */
- private handleWorkerMessage(workerId: number, event: MessageEvent): void {
+ private handleWorkerMessage(workerId: number, event): MessageEvent: void {
  const { type, result, results, error } = event.data;
 
  switch (type) {
@@ -206,7 +206,7 @@ export class AnalyzerWorkerPool {
  /**
  * Handle worker error
  */
- private handleWorkerError(workerId: number, error: ErrorEvent): void {
+ private handleWorkerError(workerId: number, error): ErrorEvent: void {
  console.error(`Worker ${workerId} error:`, error);
  this.workerStatus.set(workerId, false);
 

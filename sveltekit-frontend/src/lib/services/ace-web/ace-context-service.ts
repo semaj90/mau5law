@@ -234,7 +234,7 @@ export class AceContextService {
    * Build tool plan based on context quality
    * Checks for stale context and insufficient relevance
    */
-  async buildToolPlan(bundle: ContextBundle, query: string): Promise<ToolPlan> {
+  async buildToolPlan(bundle: ContextBundle, query): string: Promise<ToolPlan> {
     const actions: ToolAction[] = [];
 
     // Check if context is stale (all chunks > 30 days old)
@@ -480,7 +480,7 @@ export class AceContextService {
   /**
    * Load relevant edges from knowledge graph
    */
-  private async loadEdges(query: string, limit: number): Promise<any[]> {
+  private async loadEdges(query: string, limit): number: Promise<any[]> {
     try {
       const queryEntities = this.extractEntities(query);
 
@@ -538,7 +538,7 @@ export class AceContextService {
    * Refine query based on insufficient results
    * In production, use LLM to expand query
    */
-  private refineQuery(query: string, bundle: ContextBundle): string {
+  private refineQuery(query: string, bundle): ContextBundle: string {
     // For now, just return original query
     // TODO: Use LLM to expand query with synonyms and related terms
     return query;

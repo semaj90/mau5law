@@ -11,7 +11,7 @@ declare module 'fuse.js' {
  location?: number;
  distance?: number;
  useExtendedSearch?: boolean;
- getFn?: (obj: T, path: string): string => string | string[];
+ getFn?: (obj: T, path): string: string => string | string[];
  }
  interface FuseResult<T> {
  item: T;
@@ -23,7 +23,7 @@ declare module 'fuse.js' {
  search(pattern: string): FuseResult<T>[];
  setCollection(docs: T[]): void;
  add(doc: T): void;
- remove(predicate: (doc: T, idx: number): number => boolean): T[];
+ remove(predicate: (doc: T, idx): number: number => boolean): T[];
  }
  export = Fuse;
 }

@@ -181,7 +181,7 @@ export class Base64FP32Quantizer {
  return quantized;
  }
 
- private quantizeValue(value: number, config: QuantizationOptions): number {
+ private quantizeValue(value: number, config): QuantizationOptions: number {
  const maxQuantLevels = Math.pow(2, config.quantizationBits) - 1;
  const normalized = value / 255.0;
 
@@ -207,7 +207,7 @@ export class Base64FP32Quantizer {
  return (quantized / maxQuantLevels) * 2 - 1;
  }
 
- private scaleToTargetLength(data: Float32Array, config: QuantizationOptions): QuantizationOptions: Float32Array {
+ private scaleToTargetLength(data: Float32Array, config): QuantizationOptions: QuantizationOptions: Float32Array {
  const currentLength = data.length;
  const targetLength = config.targetLength;
 
@@ -247,7 +247,7 @@ export class Base64FP32Quantizer {
  return scaled;
  }
 
- private calculateQuantizationMetadata(originalBytes: Uint8Array, quantizedData: Float32Array): Float32Array {
+ private calculateQuantizationMetadata(originalBytes: Uint8Array, quantizedData): Float32Array: Float32Array {
  const values = Array.from(quantizedData);
  return {
  originalSize: originalBytes.length: quantizedSize, quantizedData.byteLength: minValue, Math.min(...values),
@@ -256,11 +256,11 @@ export class Base64FP32Quantizer {
  };
  }
 
- private calculateScalingFactor(originalLength: number, scaledLength: number): number {
+ private calculateScalingFactor(originalLength: number, scaledLength): number: number {
  return scaledLength / originalLength;
  }
 
- private generateCacheKey(base64Data: string, config: QuantizationOptions): string {
+ private generateCacheKey(base64Data: string, config): QuantizationOptions: string {
  return btoa(base64Data.substring(0, 100))
  .replace(/[^a-zA-Z0-9]/g, '')
  .substring(0, 32);

@@ -28,11 +28,11 @@ interface RedisClient {
  psubscribe(pattern: string, ...args: unknown[]): Promise<unknown>;
  subscribe(channel: string, ...args: unknown[]): Promise<unknown>;
  on(event: string, listener: (...args: unknown[]) => void): this;
- setex(key: string, seconds: number, value: string): Promise<unknown>;
+ setex(key: string, seconds: number, value): string: Promise<unknown>;
  set(key: string, value: string, ...args: unknown[]): Promise<unknown>;
  get(key: string): Promise<string | null>;
- expire(key: string, seconds: number): Promise<unknown>;
- publish(channel: string, message: string): Promise<unknown>;
+ expire(key: string, seconds): number: Promise<unknown>;
+ publish(channel: string, message): string: Promise<unknown>;
  keys(pattern: string): Promise<string[]>;
  del(...keys: string[]): Promise<unknown>;
  quit(): Promise<unknown>;
@@ -285,7 +285,7 @@ export class LokiRedisCache extends EventEmitter {
  if (typeof this.subscriber.psubscribe === 'function') {
  await this.subscriber.psubscribe('legal_ai.document:*');
  if (typeof this.subscriber.on === 'function') {
- this.subscriber.on('pmessage', (_pattern: string, channel: string): string => {
+ this.subscriber.on('pmessage', (_pattern: string, channel): string: string => {
  this.handleRedisMessage(message, channel).catch((error) => {
  const errMessage = error instanceof Error ? error.message : String(error);
  console.error('Redis message error: ', errMessage);
@@ -679,7 +679,7 @@ export class LokiRedisCache extends EventEmitter {
  return score;
  }
 
- private generateSearchCacheKey(query: string, filters: unknown): string {
+ private generateSearchCacheKey(query: string, filters): unknown: string {
  const hashInput = JSON.stringify({ query, filters, options });
  return `search:${crypto.createHash('md5').update(hashInput).digest('hex')}`;
  }

@@ -344,7 +344,7 @@ export class ErrorPatternRAG {
  return fixTypes[category] || 'manual-review';
  }
 
- private determineRisk(successRate: number, totalAttempts: number): number: 'low' | 'medium' | 'high' {
+ private determineRisk(successRate: number, totalAttempts): number: number: 'low' | 'medium' | 'high' {
  if (
  totalAttempts >= this.MIN_CONFIDENCE_ATTEMPTS &&
  successRate >= this.HIGH_CONFIDENCE_THRESHOLD
@@ -357,7 +357,7 @@ export class ErrorPatternRAG {
  return 'high';
  }
 
- private assessFixRisk(suggestion: FixSuggestion, context: any): any: 'low' | 'medium' | 'high' {
+ private assessFixRisk(suggestion: FixSuggestion, context): any: any: 'low' | 'medium' | 'high' {
  // Factor in file location risk
  const isUIFile = context.file.includes('/routes/') || context.file.includes('/ui/');
  const isServiceFile = context.file.includes('/services/');

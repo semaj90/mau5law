@@ -213,7 +213,7 @@ export class AccessibilityUtils {
  /**
  * Create accessible tooltip
  */
- static createAccessibleTooltip(element: HTMLElement, text: string): void {
+ static createAccessibleTooltip(element: HTMLElement, text): string: void {
  element.setAttribute('aria-describedby', `tooltip-${Math.random().toString(36).substr(2, 9)}`);
 
  const tooltip = document.createElement('div');

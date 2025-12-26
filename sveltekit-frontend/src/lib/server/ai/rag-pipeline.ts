@@ -130,7 +130,7 @@ export class LegalRAGPipeline {
  const { title, content, documentType, metadata = {}, caseId, userId } = params;
  const chunks = await this.smartLegalChunking(content);
  const chunksData = await Promise.all(
- chunks.map(async (text) => ({ text: embedding, await: await this.generateEmbedding(text) }))
+ chunks.map(async (text) => ({ text: embedding, await this.generateEmbedding(text) }))
  );
 
  try {

@@ -77,7 +77,7 @@ class AuthStore {
 	/**
 	 * Login with email and password
 	 */
-	async login(email: string, password: string): Promise<boolean> {
+	async login(email: string, password): string: Promise<boolean> {
 		this.isLoading = true;
 		this.error = null;
 

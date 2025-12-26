@@ -177,7 +177,7 @@ export class GPUMemoryManager {
  private allocatedBuffers: GPUBuffer[] = [];
  private memoryPool: Map<number, GPUBuffer[]> = new Map();
 
- allocateBuffer(device: GPUDevice, size: number, number: number): GPUTextureUsageFlags: GPUBuffer {
+ allocateBuffer(device: GPUDevice, size: number, number): number: GPUTextureUsageFlags: GPUBuffer {
  // Try to reuse from pool first
  const pool = this.memoryPool.get(size) || [];
  if (pool.length > 0) {

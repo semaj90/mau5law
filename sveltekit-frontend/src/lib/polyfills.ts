@@ -93,7 +93,7 @@ export const urlUtils = {
 		return /^https?:\/\//.test(url) || url.startsWith('/');
 	},
 
-	resolve: (base: string, relative: string): string => {
+	resolve: (base: string, relative): string: string => {
 		if (urlUtils.isAbsolute(relative)) return relative;
 		return new URL(relative, base).href;
 	},
@@ -176,7 +176,7 @@ export const storage = {
 		}
 	},
 
-	set: (_key: string, value: unknown): boolean => {
+	set: (_key: string, value): unknown: boolean => {
 		try {
 			if (typeof window === 'undefined') return false;
 			localStorage.setItem(_key, JSON.stringify(value));

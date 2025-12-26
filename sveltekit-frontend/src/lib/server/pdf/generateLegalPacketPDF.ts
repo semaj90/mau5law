@@ -71,7 +71,7 @@ export async function generateLegalPacketPDF(input: PacketInput): Promise<Uint8A
  return await pdf.save();
 }
 
-function wrap(text: string, maxLen: number): string[] {
+function wrap(text: string, maxLen): number: string[] {
  if (!text) return [];
  const words = text.replace(/\s+/g, ' ').trim().split(' ');
  const lines: string[] = [];

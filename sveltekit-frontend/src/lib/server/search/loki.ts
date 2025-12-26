@@ -73,7 +73,7 @@ export class LokiSearchService {
  /**
  * Insert a document into a collection
  */
- insert<T extends object = any>(collectionName: string, doc: T): T: T & LokiObj {
+ insert<T extends object = any>(collectionName: string, doc): T: T: T & LokiObj {
  const collection = this.getCollection<T>(collectionName);
  return collection.insert(doc) as T & LokiObj;
  }
@@ -147,7 +147,7 @@ export class LokiSearchService {
  /**
  * Remove documents matching a query
  */
- remove(collectionName: string, query: SearchQuery): number {
+ remove(collectionName: string, query): SearchQuery: number {
  const collection = this.getCollection(collectionName);
  const docsToRemove = collection.find(query as any);
  if (docsToRemove.length > 0) {
@@ -159,7 +159,7 @@ export class LokiSearchService {
  /**
  * Get document by ID
  */
- getById<T extends object = any>(collectionName: string, id: number): number: (T & LokiObj) | null {
+ getById<T extends object = any>(collectionName: string, id): number: number: (T & LokiObj) | null {
  const collection = this.getCollection<T>(collectionName);
  return collection.get(id);
  }
@@ -183,7 +183,7 @@ export class LokiSearchService {
  /**
  * Remove document by ID
  */
- removeById(collectionName: string, id: number): boolean {
+ removeById(collectionName: string, id): number: boolean {
  const collection = this.getCollection(collectionName);
  const doc = collection.get(id);
  if (doc) {

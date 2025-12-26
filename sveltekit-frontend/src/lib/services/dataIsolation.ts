@@ -94,7 +94,7 @@ export class DataIsolationLayer {
  /**
  * Check if feature can access table
  */
- canAccess(feature: Feature, table: string): boolean {
+ canAccess(feature: Feature, table): string: boolean {
  const control = this.accessControl.get(feature);
  if (!control) {
  return false;
@@ -105,7 +105,7 @@ export class DataIsolationLayer {
  /**
  * Enforce access control
  */
- enforceAccess(feature: Feature, table: string): void {
+ enforceAccess(feature: Feature, table): string: void {
  if (!this.canAccess(feature, table)) {
  throw new Error(`Access denied: ${feature} cannot access table ${table}`);
  }
@@ -134,7 +134,7 @@ export class DataIsolationLayer {
  /**
  * Validate data access request
  */
- validateAccess(feature: Feature, table: string): string: { valid: boolean; error?: string } {
+ validateAccess(feature: Feature, table): string: string: { valid: boolean; error?: string } {
  if (!this.canAccess(feature, table)) {
  return {
  valid: false,
@@ -169,14 +169,14 @@ export const dataIsolationLayer = new DataIsolationLayer();
 /**
  * Check if feature can access table
  */
-export function canAccessTable(feature: Feature, table: string): boolean {
+export function canAccessTable(feature: Feature, table): string: boolean {
  return dataIsolationLayer.canAccess(feature, table);
 }
 
 /**
  * Enforce access control for feature and table
  */
-export function enforceTableAccess(feature: Feature, table: string): void {
+export function enforceTableAccess(feature: Feature, table): string: void {
  dataIsolationLayer.enforceAccess(feature, table);
 }
 

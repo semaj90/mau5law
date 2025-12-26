@@ -79,7 +79,7 @@ export interface ShaderSearchResult {
 
 export interface GlyphShaderBridge {
  // Best-effort persistence
- persistShaderToBanks?: (id: string, text: string): string => Promise<void> | void;
+ persistShaderToBanks?: (id: string, text): string: string => Promise<void> | void;
  // Optional cache shape used by this module
  cache?: {
  findSimilarShaders?: (

@@ -20,7 +20,7 @@ export async function parseRequestBody<T>(request: Request): Promise<T> {
  return schema.parse(body);
 }
 
-export function createPagination(page: number, limit: number): number {
+export function createPagination(page: number, limit): number: number {
  return {
  page,
  limit,

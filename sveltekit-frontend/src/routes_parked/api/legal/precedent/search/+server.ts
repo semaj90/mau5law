@@ -454,7 +454,7 @@ function generateMockPrecedents(
  );
 }
 
-function generateMockCitation(court: string, index: number): string {
+function generateMockCitation(court: string, index): number: string {
  if (court.includes('Supreme Court')) {
  return `${500 + index * 47} U.S. ${123 + index * 23} (${2024 - index})`;
  } else if (court.includes('Circuit')) {

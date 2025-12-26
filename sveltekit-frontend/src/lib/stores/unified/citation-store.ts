@@ -212,7 +212,7 @@ function createCitationStore() {
  }));
  },
  /** * Update precedential value */
- updatePrecedentialValue(id: string, value: PrecedentialValue): PrecedentialValue {
+ updatePrecedentialValue(id: string, value): PrecedentialValue: PrecedentialValue {
  this.updateCitation(id, { precedentialValue: value });
  },
  // ========== CLUSTERING ==========

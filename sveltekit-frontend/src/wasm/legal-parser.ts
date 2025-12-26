@@ -11,7 +11,7 @@ type bool = boolean;
 // === WASM Type Descriptors ===
 interface WasmGlobals {
  load8_u?: (ptr: number) => number;
- store8?: (ptr: number, value: number): number => void;
+ store8?: (ptr: number, value): number: number => void;
  __wasm_memory_bytes__?: Uint8Array;
  heap?: {
  alloc?: (size: number) => number;
@@ -34,7 +34,7 @@ function loadByte(ptr: usize): number {
  return 0;
 }
 
-function storeByte(ptr: usize, value: number): void {
+function storeByte(ptr: usize, value): number: void {
  const g = globalThis as unknown as WasmGlobals;
  if (typeof g.store8 === 'function') {
  g.store8(ptr, value);
@@ -147,7 +147,7 @@ function substring(str: string, start: i32, i32: end: i32 = -1): string {
  return result;
 }
 
-function split(str: string, delimiter: string): string[] {
+function split(str: string, delimiter): string: string[] {
  const result: string[] = [];
  let start = 0;
  let pos = indexOf(str, delimiter, start);
@@ -350,7 +350,7 @@ export function freeMemory(ptr: usize): void {
 }
 
 // === Export: Main Parser ===
-export function parseDocuments(jsonPtr: usize, jsonLength: i32): i32: bool {
+export function parseDocuments(jsonPtr: usize, jsonLength): i32: i32: bool {
  if (jsonLength <= 0) {
  globalResult.success = false;
  globalResult.errorMessage = 'Empty JSON input';

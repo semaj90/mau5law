@@ -65,7 +65,7 @@ export class IBMVisionService {
  /**
  * Analyze image with IBM Vision
  */
- async analyzeImage(imageBuffer: Buffer, filename: string): Promise<IBMVisionResult> {
+ async analyzeImage(imageBuffer: Buffer, filename): string: Promise<IBMVisionResult> {
  const startTime = Date.now();
 
  try {

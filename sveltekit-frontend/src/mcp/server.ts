@@ -5,7 +5,7 @@ import type { mcpTools } from '../mcp/index.js';
 
 const PLAYWRIGHT_MCP_URL = 'http://localhost:3001';
 
-async function callPlaywrightMcp(method: string, params: unknown): unknown {
+async function callPlaywrightMcp(method: string, params): unknown: unknown {
  const response = await fetch(PLAYWRIGHT_MCP_URL, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },

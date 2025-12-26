@@ -420,7 +420,7 @@ export const a11yUtils = {
  });
  },
  // Create accessible descriptions
- createDescription: (text: string, targetId: string): string => {
+ createDescription: (text: string, targetId): string: string => {
  const descId = a11yUtils.generateId('desc');
  let descElement = document.getElementById(descId);
  if (!descElement) {
@@ -445,7 +445,7 @@ export const a11yUtils = {
 /** * Composite Actions * Pre-configured combinations of actions for common patterns */
 export const compositeActions = {
  // Modal dialog with full accessibility
- modal: (element: HTMLElement, options: ModalOptions): ModalOptions => {
+ modal: (element: HTMLElement, options): ModalOptions: ModalOptions => {
  // removed unused titleId assignment
  const descId = a11yUtils.generateId('modal-desc');
  // Apply multiple actions
@@ -471,7 +471,7 @@ export const compositeActions = {
  };
  },
  // Accessible dropdown/combobox
- dropdown: (element: HTMLElement, options: DropdownOptions): DropdownOptions => {
+ dropdown: (element: HTMLElement, options): DropdownOptions: DropdownOptions => {
  const listboxId = a11yUtils.generateId('listbox');
  const ariaAction = ariaState(element, {
  role: 'combobox',

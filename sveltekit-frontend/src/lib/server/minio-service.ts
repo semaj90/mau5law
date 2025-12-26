@@ -190,7 +190,7 @@ export class MinIOService {
  }
  }
 
- static async objectExists(bucket: string, key: string): Promise<boolean> {
+ static async objectExists(bucket: string, key): string: Promise<boolean> {
  try {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key, key: key });
  await this.client.send(cmd);
@@ -204,7 +204,7 @@ export class MinIOService {
  }
  }
 
- static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
+ static async getObjectMetadata(bucket: string, key): string: Promise<FileMetadata | null> {
  try {
  const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key, key: key });
  const res = await this.client.send(cmd);

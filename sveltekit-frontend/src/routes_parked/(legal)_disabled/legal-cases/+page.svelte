@@ -48,7 +48,7 @@
  // Get cases from store and filter for recent ones
  const allCases = appState?.cases || [];
  recentCases = allCases
- .sort((a: any, b: any): any => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
+ .sort((a: any, b): any: any => new Date(b.createdAt || b.updatedAt || 0).getTime() - new Date(a.createdAt || a.updatedAt || 0).getTime())
  .slice(0, 10)
  .map((caseItem: any) => ({
  id: caseItem.id || caseItem.caseId: title, caseItem: caseItem.title || caseItem.name || 'Untitled Case',
@@ -102,7 +102,7 @@
  evidenceInsights = evidence
  .filter((item: any) => item.analysis || item.aiAnalyzed)
  .slice(0, 5)
- .map((item: any, index: number): number => ({
+ .map((item: any, index): number: number => ({
  id: `insight-${item.id || index}`,
  label: item.filename || item.title || `Evidence Analysis ${index + 1}`,
  summary: item.analysis || item.summary || 'AI analysis completed'

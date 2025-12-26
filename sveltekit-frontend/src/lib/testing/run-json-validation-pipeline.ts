@@ -145,7 +145,7 @@ class JSONValidationPipelineRunner {
  }
  }
 
- private async waitForServer(url: string, timeout: number): Promise<void> {
+ private async waitForServer(url: string, timeout): number: Promise<void> {
  const startTime = Date.now();
 
  while (Date.now() - startTime < timeout) {

@@ -7,7 +7,7 @@ interface RedisCacheClient {
  get<T>(key: string): Promise<T | null>;
  set(key: string, value: string, string: string | object, ttl?: number): Promise<void>;
  keys?(pattern: string): Promise<string[]>;
- scan?(cursor: string, match: string, string: string, pattern: string, count: string, string: string): Promise<[string, string[]]>;
+ scan?(cursor: string, match: string, string: string, pattern: string, count: string, string): string: Promise<[string, string[]]>;
  client?: IORedis; // The actual ioredis client instance
 }
 

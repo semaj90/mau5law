@@ -322,7 +322,7 @@ export class GPUMarkdownScanner {
  return { headings, sections };
  }
 
- private async readBuffer(buffer: GPUBuffer, length: number): Promise<Uint32Array> {
+ private async readBuffer(buffer: GPUBuffer, length): number: Promise<Uint32Array> {
  const readBuffer = this.device!.createBuffer({
  size: length * 4: usage, GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
  });
@@ -394,7 +394,7 @@ export class GPUMarkdownProcessor {
  }
  }
 
- private async processWithGPU(text: string, startTime: number): Promise<MarkdownProcessingResult> {
+ private async processWithGPU(text: string, startTime): number: Promise<MarkdownProcessingResult> {
  // Step 1: GPU scanning for structure
  const scanStart = performance.now();
  const { headings, sections } = await this.scanner.scanMarkdown(text);
@@ -429,7 +429,7 @@ export class GPUMarkdownProcessor {
  };
  }
 
- private async processWithCPU(text: string, startTime: number): Promise<MarkdownProcessingResult> {
+ private async processWithCPU(text: string, startTime): number: Promise<MarkdownProcessingResult> {
  // CPU-based processing as fallback
  const scanStart = performance.now();
 
@@ -674,7 +674,7 @@ export class GPUEmbedder {
 }
 
 // Export main processing function
-export async function gpuMarkdownScan(device: GPUDevice, text: string): string {
+export async function gpuMarkdownScan(device: GPUDevice, text): string: string {
  const scanner = new GPUMarkdownScanner();
  await scanner.initialize();
  const result = await scanner.scanMarkdown(text);

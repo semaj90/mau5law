@@ -196,7 +196,7 @@ export class AceAdapter {
   /**
    * Trigger web search and enqueue URLs for ingestion
    */
-  private async triggerWebSearch(query: string, sessionId: string): Promise<void> {
+  private async triggerWebSearch(query: string, sessionId): string: Promise<void> {
     try {
       // Perform web search
       const searchResults = await this.webSearchService.search(query, { limit: 5 });

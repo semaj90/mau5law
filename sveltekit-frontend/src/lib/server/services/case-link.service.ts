@@ -109,7 +109,7 @@ class CaseLinkService {
  /**
  * Unlink statute from case
  */
- async unlinkStatute(caseId: string, statuteCode: string, string: string): Promise<void> {
+ async unlinkStatute(caseId: string, statuteCode: string, string): string: Promise<void> {
  try {
  // Delete from database
  await db.raw(`DELETE FROM case_statute_links WHERE case_id = $1 AND statute_code = $2`, [
@@ -202,7 +202,7 @@ class CaseLinkService {
  /**
  * Get link detail
  */
- async getLinkDetail(caseId: string, statuteCode: string): Promise<CaseStatuteLink | null> {
+ async getLinkDetail(caseId: string, statuteCode): string: Promise<CaseStatuteLink | null> {
  try {
  const links = await db.raw(
  `SELECT * FROM case_statute_links WHERE case_id = $1 AND statute_code = $2`,

@@ -75,7 +75,7 @@ const y: string = "hello";`;
  it('should return empty array for valid code', async () => {
  const fileContent = `const x: number = 123;
 const y: string = "hello";
-function add(a: number, b: number): number {
+function add(a: number, b): number: number {
  return a + b;
 }`;
 

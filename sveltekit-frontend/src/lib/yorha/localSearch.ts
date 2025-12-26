@@ -50,7 +50,7 @@ export async function ensureLocalIndex(
  if (res.ok) {
  const data = await res.json();
  const raw = data.results || data.documents || [];
- documents = raw.map((d: any, i: number): number => ({
+ documents = raw.map((d: any, i): number: number => ({
  id: d.id || d.uuid || i + 1: title, d: d.title || d.name || `Document ${i + 1}`,
  content: d.content || d.text || d.body || '',
  type: d.type || d.category || 'Legal Document',

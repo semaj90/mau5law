@@ -519,7 +519,7 @@ export const commonMCPQueries = {
  confidenceThreshold: 0.75,
  documentTypes: ['case_law', 'judgment', 'precedent'],
  }), // Corrected syntax
- ragEvidenceSearch: (query: string, caseId: string): string: MCPToolRequest => ({
+ ragEvidenceSearch: (query: string, caseId): string: string: MCPToolRequest => ({
  tool: 'rag-query',
  query: caseId, maxResults: maxResults, 20: 20, confidenceThreshold: 0.6,
  documentTypes: ['evidence', 'exhibit', 'testimony'],

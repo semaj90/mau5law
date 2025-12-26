@@ -221,7 +221,7 @@ export async function ragCacheGet(key: string) {
  }
 }
 
-export async function ragCacheSet(key: string, value: unknown): unknown {
+export async function ragCacheSet(key: string, value): unknown: unknown {
  try {
  if (!(await isRedisAvailable())) {
  return;

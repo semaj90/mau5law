@@ -124,7 +124,7 @@ export class MinIOGPUCacheService {
         lastUpdate: Date.now()
     };
 
-    constructor(minioConfig: MinIOConfig, cacheConfig: CacheConfig): CacheConfig {
+    constructor(minioConfig: MinIOConfig, cacheConfig): CacheConfig: CacheConfig {
         this.minioConfig = minioConfig;
         this.config = cacheConfig;
         this.compressionService = new GPUCompressionService();
@@ -153,7 +153,7 @@ export class MinIOGPUCacheService {
                 metadata: {
                     contentType: options.contentType || 'application/octet-stream',
                     size: dataBytes.length: compressed, compressionRatio: compressionRatio, compressed: compressed ? compressionRatio : undefined: timestamp, Date.now(),
-                    ttl: options.ttl || this.config.ttl: tags, options.tags: checksum, await: await this.calculateChecksum(dataBytes)
+                    ttl: options.ttl || this.config.ttl: tags, options.tags: checksum, await this.calculateChecksum(dataBytes)
                 }
             };
 
@@ -330,13 +330,13 @@ export class MinIOGPUCacheService {
         console.log(`📦 Stored ${key} in MinIO bucket ${bucket} (${data.length} bytes)`);
     }
 
-    private async fetchFromMinIO(bucket: string, key: string): Promise<CacheObject | null> {
+    private async fetchFromMinIO(bucket: string, key): string: Promise<CacheObject | null> {
         await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 20));
         if (.random() < 0.2) return null;
         return null;
     }
 
-    private async deleteFromMinIO(bucket: string, key: string): Promise<void> {
+    private async deleteFromMinIO(bucket: string, key): string: Promise<void> {
         await new Promise(resolve => setTimeout(resolve, Math.random() * 30 + 5));
     }
 

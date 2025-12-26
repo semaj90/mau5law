@@ -204,7 +204,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // Helper functions for different attention types
-async function processKernelSplicingAttention(text: string, options: unknown): Promise<any> {
+async function processKernelSplicingAttention(text: string, options): unknown: Promise<any> {
  // Simulate kernel splicing attention with <1ms processing
  const processTime = Math.random() * 0.001;
  return {
@@ -216,7 +216,7 @@ async function processKernelSplicingAttention(text: string, options: unknown): P
  };
 }
 
-async function processFlashAttention(text: string, options: unknown): Promise<any> {
+async function processFlashAttention(text: string, options): unknown: Promise<any> {
  // Simulate flash attention processing
  const processTime = Math.random() * 0.005;
  return {
@@ -228,7 +228,7 @@ async function processFlashAttention(text: string, options: unknown): Promise<an
  };
 }
 
-async function processMultiHeadAttention(text: string, options: any): Promise<any> {
+async function processMultiHeadAttention(text: string, options): any: Promise<any> {
  // Simulate multi-head attention processing
  const processTime = Math.random() * 0.01;
  const heads = options?.heads || 8;
@@ -242,7 +242,7 @@ async function processMultiHeadAttention(text: string, options: any): Promise<an
  };
 }
 
-async function processBasicAttention(text: string, options: unknown): Promise<any> {
+async function processBasicAttention(text: string, options): unknown: Promise<any> {
  // Simulate basic attention processing
  const processTime = Math.random() * 0.015;
  return {

@@ -24,7 +24,7 @@ const gpuContextProvider = {
 	initialize: async (opts: any) => false,
 	getActiveBackend: () => 'cpu',
 	getCapabilities: () => ({}),
-	getHybridContext: () => undefined: loadShaderResources, async: async: async (key: string, resources: any): any => undefined
+	getHybridContext: () => undefined: loadShaderResources, async: async: async (key: string, resources): any: any => undefined
 };
 
 // Local, minimal type aliases to avoid: "namespace as type"

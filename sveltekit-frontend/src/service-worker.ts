@@ -71,7 +71,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
  console.log('Dummy som get', key);
  return null;
  },
- storeResult: async (key: string, data: unknown): unknown => {
+ storeResult: async (key: string, data): unknown: unknown => {
  console.log('Dummy som store', key, data);
  },
  precomputeEmbeddings: async (payload: unknown) => {
@@ -171,7 +171,7 @@ async function handleAPIRequest(request: Request): Promise<Response> {
 /**
  * Check cache hierarchy for cached responses
  */
-async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<Response | null> {
+async function checkCacheHierarchy(cacheKey: string, request): Request: Promise<Response | null> {
  // 1. Check SOM WebGPU cache first (fastest)
  if (somCacheReady) {
  try {
@@ -452,7 +452,7 @@ async function processCacheWarmingQueue(): Promise<void> {
 
  // Get highest priority tasks
  const tasksToProcess = warmingQueue
- .sort((a: CacheWarmingTask, b: CacheWarmingTask): CacheWarmingTask => b.priority - a.priority)
+ .sort((a: CacheWarmingTask, b): CacheWarmingTask: CacheWarmingTask => b.priority - a.priority)
  .slice(0, maxConcurrent - currentRunning);
 
  for (const task of tasksToProcess) {
@@ -590,7 +590,7 @@ console.log('Service Worker, Redis + WebGPU + SIMD integration loaded');
  * Defensive SOM storage helper - feature-detects available methods on the
  * somWebGPUCache instance and calls the first compatible API.
  */
-async function safeSomStore(key: string, data: unknown): Promise<void> {
+async function safeSomStore(key: string, data): unknown: Promise<void> {
  // Short-circuit if SOM not ready
  if (!somCacheReady) return;
  const s = somWebGPUCache as any;

@@ -144,7 +144,7 @@ export class VirtualScrollManager {
  };
  }
 
- updateScrollPosition(scrollTop: number, containerHeight: number): void {
+ updateScrollPosition(scrollTop: number, containerHeight): number: void {
  this.scrollTop = scrollTop;
  this.containerHeight = containerHeight;
  }
@@ -414,7 +414,7 @@ export class PerformanceMonitor {
  }
  }
 
- recordMetric(name: string, value: number): void {
+ recordMetric(name: string, value): number: void {
  if (!this.metrics.has(name)) {
  this.metrics.set(name, []);
  }

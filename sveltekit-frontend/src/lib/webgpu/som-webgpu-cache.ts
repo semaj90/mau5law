@@ -624,7 +624,7 @@ fn compute_error_embedding(@builtin(global_invocation_id) global_id: vec3<u32>) 
  return refinedTodos.sort((a, b) => b.priority - a.priority);
  }
 
- private calculateTodoSimilarity(todo1: IntelligentTodo, todo2: IntelligentTodo): number {
+ private calculateTodoSimilarity(todo1: IntelligentTodo, todo2): IntelligentTodo: number {
  let similarity = 0;
 
  if (todo1.category === todo2.category) similarity += 0.4;

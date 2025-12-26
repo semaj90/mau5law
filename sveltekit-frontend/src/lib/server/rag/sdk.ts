@@ -71,7 +71,7 @@ export async function getDocStatus(docId: string): Promise<DocStatusInfo> {
  };
 }
 
-export async function getShardChunks(docId: string, shardId: number): Promise<any[]> {
+export async function getShardChunks(docId: string, shardId): number: Promise<any[]> {
  const chunksKey = `rag:doc:${docId}:shard:${shardId}:chunks`;
  const chunksJson = await redis.get(chunksKey);
  return chunksJson ? JSON.parse(chunksJson) : [];

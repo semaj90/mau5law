@@ -356,7 +356,7 @@ export class AuthStore {
     /**
      * Private: Update auth state with user and session data
      */
-    private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
+    private static async updateAuthState(user: AuthUser, session): AuthSession: Promise<void> {
         // Get user permissions based on role - use local AccessControl helper
         const permissions = AccessControl.getRolePermissions(user.role);
 
